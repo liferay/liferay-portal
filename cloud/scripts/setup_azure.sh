@@ -98,31 +98,31 @@ function _create_tfstate_storage {
 
 	if ! az group show --name "${resource_group_name}" &> /dev/null
 	then
-		_log "Creating resource group ${resource_group_name}."
+		log_tfstate_setup "Creating resource group ${resource_group_name}."
 
 		az group create --location "${region}" --name "${resource_group_name}" --output none
 
-		_log "Resource group ${resource_group_name} was created successfully."
+		log_tfstate_setup "Resource group ${resource_group_name} was created successfully."
 	else
-		_log "Resource group ${resource_group_name} already exists. Skipping creation process."
+		log_tfstate_setup "Resource group ${resource_group_name} already exists. Skipping creation process."
 	fi
 
 	if ! az storage account show --name "${storage_account_name}" --resource-group "${resource_group_name}" &> /dev/null
 	then
-		_log "Creating storage account ${storage_account_name}."
+		log_tfstate_setup "Creating storage account ${storage_account_name}."
 
 		_create_storage_account "${region}" "${resource_group_name}" "${storage_account_name}"
 
-		_log "Storage account ${storage_account_name} was created successfully."
+		log_tfstate_setup "Storage account ${storage_account_name} was created successfully."
 	else
-		_log "Storage account ${storage_account_name} already exists. Skipping creation process."
+		log_tfstate_setup "Storage account ${storage_account_name} already exists. Skipping creation process."
 	fi
 
-	_log "Configuring storage account ${storage_account_name}."
+	log_tfstate_setup "Configuring storage account ${storage_account_name}."
 
 	_configure_storage_account "${resource_group_name}" "${storage_account_name}"
 
-	_log "Storage account ${storage_account_name} was configured successfully."
+	log_tfstate_setup "Storage account ${storage_account_name} was configured successfully."
 
 	if ! az storage container show \
 		--account-name "${storage_account_name}" \
@@ -130,7 +130,7 @@ function _create_tfstate_storage {
 		--name "${container_name}" \
 		&> /dev/null
 	then
-		_log "Creating storage container ${container_name}."
+		log_tfstate_setup "Creating storage container ${container_name}."
 
 		az storage container create \
 			--account-name "${storage_account_name}" \
@@ -138,9 +138,9 @@ function _create_tfstate_storage {
 			--name "${container_name}" \
 			--output none
 
-		_log "Storage container ${container_name} was created successfully."
+		log_tfstate_setup "Storage container ${container_name} was created successfully."
 	else
-		_log "Storage container ${container_name} already exists. Skipping creation process."
+		log_tfstate_setup "Storage container ${container_name} already exists. Skipping creation process."
 	fi
 
 	_grant_tfstate_access "${container_name}" "${resource_group_name}" "${storage_account_name}"
@@ -169,7 +169,7 @@ function _grant_tfstate_access {
 
 	user_id=$(az ad signed-in-user show --output tsv --query id)
 
-	_log "Assigning the Storage Blob Data Contributor role on the storage container ${container_name} to the current Azure user."
+	log_tfstate_setup "Assigning the Storage Blob Data Contributor role on the storage container ${container_name} to the current Azure user."
 
 	az role assignment create \
 		--assignee-object-id "${user_id}" \
@@ -180,7 +180,7 @@ function _grant_tfstate_access {
 
 	local timeout_minutes=5
 
-	_log "Waiting up to ${timeout_minutes} minutes for the role assignment to take effect."
+	log_tfstate_setup "Waiting up to ${timeout_minutes} minutes for the role assignment to take effect."
 
 	local timeout
 
@@ -196,7 +196,7 @@ function _grant_tfstate_access {
 		sleep 10
 	done
 
-	_log "Unable to access the storage container ${container_name} after ${timeout_minutes} minutes." >&2
+	log_tfstate_setup "Unable to access the storage container ${container_name} after ${timeout_minutes} minutes." >&2
 
 	return 1
 }
@@ -212,10 +212,6 @@ function _has_tfstate_access {
 		--num-results 1 \
 		--output none \
 		&> /dev/null
-}
-
-function _log {
-	echo "[Tfstate storage configuration] ${1}"
 }
 
 function _validate_setup_values {

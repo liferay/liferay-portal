@@ -78,6 +78,10 @@ function is_confirmed {
 	[[ ${reply} == yes ]]
 }
 
+function log_tfstate_setup {
+	echo "[Tfstate storage configuration] ${1}"
+}
+
 function prepare_terraform_stacks {
 	local cloud="${1}"
 	local cluster_terraform_stack="${2}"

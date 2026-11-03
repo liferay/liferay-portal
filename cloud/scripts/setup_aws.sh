@@ -54,7 +54,7 @@ function _configure_s3_bucket {
 
 	if [[ -z ${kms_key_id} ]]
 	then
-		_log "Creating KMS key for bucket ${bucket_name}."
+		log_tfstate_setup "Creating KMS key for bucket ${bucket_name}."
 
 		kms_key_id=$( \
 			aws kms create-key \
@@ -77,9 +77,9 @@ function _configure_s3_bucket {
 			--region "${region}" \
 			--target-key-id "${kms_key_id}"
 
-		_log "KMS key for bucket ${bucket_name} was created successfully."
+		log_tfstate_setup "KMS key for bucket ${bucket_name} was created successfully."
 	else
-		_log "KMS key for bucket ${bucket_name} already exists. Skipping creation process."
+		log_tfstate_setup "KMS key for bucket ${bucket_name} already exists. Skipping creation process."
 	fi
 
 	aws s3api put-bucket-encryption \
@@ -157,24 +157,20 @@ function _create_tfstate_bucket {
 
 	if ! aws s3api head-bucket --bucket "${bucket_name}" --region "${region}" &> /dev/null
 	then
-		_log "Creating bucket ${bucket_name}."
+		log_tfstate_setup "Creating bucket ${bucket_name}."
 
 		_create_s3_bucket "${bucket_name}" "${region}"
 
-		_log "Bucket ${bucket_name} was created successfully."
+		log_tfstate_setup "Bucket ${bucket_name} was created successfully."
 	else
-		_log "Bucket ${bucket_name} already exists. Skipping creation process."
+		log_tfstate_setup "Bucket ${bucket_name} already exists. Skipping creation process."
 	fi
 
-	_log "Configuring bucket ${bucket_name}."
+	log_tfstate_setup "Configuring bucket ${bucket_name}."
 
 	_configure_s3_bucket "${bucket_name}" "${region}"
 
-	_log "Bucket ${bucket_name} was configured successfully."
-}
-
-function _log {
-	echo "[Tfstate bucket configuration] ${1}"
+	log_tfstate_setup "Bucket ${bucket_name} was configured successfully."
 }
 
 function _set_up_aws_service_linked_roles {

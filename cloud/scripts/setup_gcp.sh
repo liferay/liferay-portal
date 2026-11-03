@@ -49,16 +49,16 @@ function _configure_gcs_bucket {
 		--project "${project_id}" \
 		&> /dev/null
 	then
-		_log "Creating KMS keyring ${key_name}."
+		log_tfstate_setup "Creating KMS keyring ${key_name}."
 
 		gcloud kms keyrings create \
 			"${key_name}" \
 			--location "${region}" \
 			--project "${project_id}"
 
-		_log "KMS keyring ${key_name} was created successfully."
+		log_tfstate_setup "KMS keyring ${key_name} was created successfully."
 	else
-		_log "KMS keyring ${key_name} already exists. Skipping creation process."
+		log_tfstate_setup "KMS keyring ${key_name} already exists. Skipping creation process."
 	fi
 
 	if ! gcloud kms keys describe \
@@ -68,7 +68,7 @@ function _configure_gcs_bucket {
 		--project "${project_id}" \
 		&> /dev/null
 	then
-		_log "Creating KMS key ${key_name}."
+		log_tfstate_setup "Creating KMS key ${key_name}."
 
 		gcloud kms keys create \
 			"${key_name}" \
@@ -77,9 +77,9 @@ function _configure_gcs_bucket {
 			--project "${project_id}" \
 			--purpose "encryption"
 
-		_log "KMS key ${key_name} was created successfully."
+		log_tfstate_setup "KMS key ${key_name} was created successfully."
 	else
-		_log "KMS key ${key_name} already exists. Skipping creation process."
+		log_tfstate_setup "KMS key ${key_name} already exists. Skipping creation process."
 
 		_ensure_enabled_kms_key_version "${key_name}" "${project_id}" "${region}"
 	fi
@@ -140,20 +140,20 @@ function _create_tfstate_bucket {
 
 	if ! gcloud storage buckets describe "gs://${bucket_name}" --project "${project_id}" &> /dev/null
 	then
-		_log "Creating bucket ${bucket_name}."
+		log_tfstate_setup "Creating bucket ${bucket_name}."
 
 		_create_gcs_bucket "${bucket_name}" "${project_id}" "${region}"
 
-		_log "Bucket ${bucket_name} was created successfully."
+		log_tfstate_setup "Bucket ${bucket_name} was created successfully."
 	else
-		_log "Bucket ${bucket_name} already exists. Skipping creation process."
+		log_tfstate_setup "Bucket ${bucket_name} already exists. Skipping creation process."
 	fi
 
-	_log "Configuring bucket ${bucket_name}."
+	log_tfstate_setup "Configuring bucket ${bucket_name}."
 
 	_configure_gcs_bucket "${bucket_name}" "${project_id}" "${region}"
 
-	_log "Bucket ${bucket_name} was configured successfully."
+	log_tfstate_setup "Bucket ${bucket_name} was configured successfully."
 }
 
 function _ensure_enabled_kms_key_version {
@@ -177,7 +177,7 @@ function _ensure_enabled_kms_key_version {
 		return
 	fi
 
-	_log "KMS key ${key_name} has no enabled version. Creating a primary version."
+	log_tfstate_setup "KMS key ${key_name} has no enabled version. Creating a primary version."
 
 	gcloud kms keys versions create \
 		--key "${key_name}" \
@@ -187,11 +187,7 @@ function _ensure_enabled_kms_key_version {
 		--project "${project_id}" \
 		> /dev/null
 
-	_log "A primary version of KMS key ${key_name} was created successfully."
-}
-
-function _log {
-	echo "[Tfstate bucket configuration] ${1}"
+	log_tfstate_setup "A primary version of KMS key ${key_name} was created successfully."
 }
 
 main "${@}"
