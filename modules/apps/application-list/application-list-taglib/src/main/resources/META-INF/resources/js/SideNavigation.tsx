@@ -205,13 +205,13 @@ function SideNavigation({
 				/>
 			</UnifiedSidebar.Top>
 
-			<UnifiedSidebar.Body className="c-px-0">
-				<div
-					className={classNames('side-navigation-scroll', {
-						'side-navigation-scroll-stuck': stuck,
-					})}
-					ref={scrollRef}
-				>
+			<div
+				className={classNames('side-navigation-scroll', {
+					'side-navigation-scroll-stuck': stuck,
+				})}
+				ref={scrollRef}
+			>
+				<UnifiedSidebar.Body className="c-px-0">
 					{showResultsSkeleton ? (
 						<SideNavigationResultsSkeleton />
 					) : numberOfResults ? (
@@ -281,10 +281,10 @@ function SideNavigation({
 							title={Liferay.Language.get('no-matching-items')}
 						/>
 					)}
+				</UnifiedSidebar.Body>
 
-					<div className="side-navigation-scroll-shadow" />
-				</div>
-			</UnifiedSidebar.Body>
+				<div className="side-navigation-scroll-shadow" />
+			</div>
 		</UnifiedSidebar>
 	);
 }
