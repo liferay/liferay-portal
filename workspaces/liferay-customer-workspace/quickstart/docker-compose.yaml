@@ -14,7 +14,7 @@ services:
         command: mysqld --character-set-filesystem=utf8mb4 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max_allowed_packet=32M
         container_name: liferay-customer-workspace-database
         env_file: database.env
-        image: mysql:5.7
+        image: mysql:8.4
         ports:
             -   3306:3306
     liferay:
