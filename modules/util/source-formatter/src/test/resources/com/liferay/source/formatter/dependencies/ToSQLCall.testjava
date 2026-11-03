@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author Shuyang Zhou
  */
-public class UnusedToSQLString {
+public class ToSQLCall {
 
 	public void method1(ASTNodeListener astNodeListener, DSLQuery dslQuery) {
 		dslQuery.toSQL(astNodeListener);

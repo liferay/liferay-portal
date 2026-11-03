@@ -1437,6 +1437,16 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testToSQLCall() throws Exception {
+		test(
+			"ToSQLCall.testjava",
+			"Use \"toSQL(string -> {}, astNodeListener)\" instead of " +
+				"\"toSQL(astNodeListener)\" when the SQL string is unused, " +
+					"see LPD-113238",
+			19);
+	}
+
+	@Test
 	public void testTruncateLongLines() throws Exception {
 		test("TruncateLongLines.testjava");
 	}
@@ -1549,16 +1559,6 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	@Test
 	public void testUnusedParameter() throws Exception {
 		test("UnusedParameter.testjava", "Parameter \"color\" is unused", 17);
-	}
-
-	@Test
-	public void testUnusedToSQLString() throws Exception {
-		test(
-			"UnusedToSQLString.testjava",
-			"Use \"toSQL(string -> {}, astNodeListener)\" instead of " +
-				"\"toSQL(astNodeListener)\" when the SQL string is unused, " +
-					"see LPD-113238",
-			19);
 	}
 
 	@Test

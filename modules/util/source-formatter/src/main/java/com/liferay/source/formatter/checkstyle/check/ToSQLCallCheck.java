@@ -13,7 +13,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 /**
  * @author Shuyang Zhou
  */
-public class UnusedToSQLStringCheck extends BaseCheck {
+public class ToSQLCallCheck extends BaseCheck {
 
 	@Override
 	public int[] getDefaultTokens() {
