@@ -6,6 +6,7 @@
 package com.liferay.portal.tools.db.migration.importer;
 
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.jdbc.postgresql.PostgreSQLJDBCUtil;
@@ -125,7 +126,7 @@ public class DBCopyTablesProcess {
 					}
 
 					String columnDefinition = StringBundler.concat(
-						columnName, " ",
+						_getQuotedName(StringUtil.toLowerCase(columnName)), " ",
 						_getPostgreSQLColumnType(
 							resultSet.getInt("COLUMN_SIZE"),
 							resultSet.getInt("DATA_TYPE"),
@@ -147,8 +148,10 @@ public class DBCopyTablesProcess {
 					else {
 						statement.executeUpdate(
 							StringBundler.concat(
-								"alter table ", tableName, " add ",
-								columnDefinition));
+								"alter table ",
+								_getQuotedName(
+									StringUtil.toLowerCase(tableName)),
+								" add ", columnDefinition));
 					}
 				}
 			}
@@ -158,8 +161,9 @@ public class DBCopyTablesProcess {
 
 				statement.executeUpdate(
 					StringBundler.concat(
-						"create table ", entry.getKey(), " (",
-						StringUtil.merge(entry.getValue()), ")"));
+						"create table ",
+						_getQuotedName(StringUtil.toLowerCase(entry.getKey())),
+						" (", StringUtil.merge(entry.getValue()), ")"));
 			}
 		}
 
@@ -193,8 +197,10 @@ public class DBCopyTablesProcess {
 			"select ", StringUtil.merge(sourceColumnNames), " from ",
 			sourceTableName);
 		String insertSQL = StringBundler.concat(
-			"insert into ", targetTableName, "(",
-			StringUtil.merge(targetColumnNames), ") values (",
+			"insert into ", _getQuotedName(targetTableName), " (",
+			StringUtil.merge(
+				ListUtil.toList(targetColumnNames, this::_getQuotedName), ", "),
+			") values (",
 			StringUtil.merge(
 				Collections.nCopies(targetColumnNames.size(), "?")),
 			")");
@@ -637,6 +643,13 @@ public class DBCopyTablesProcess {
 		}
 
 		return "text";
+	}
+
+	private String _getQuotedName(String name) {
+		return StringBundler.concat(
+			StringPool.QUOTE,
+			StringUtil.replace(name, CharPool.QUOTE, StringPool.DOUBLE_QUOTE),
+			StringPool.QUOTE);
 	}
 
 	private String _getSanitizedString(String value) {
