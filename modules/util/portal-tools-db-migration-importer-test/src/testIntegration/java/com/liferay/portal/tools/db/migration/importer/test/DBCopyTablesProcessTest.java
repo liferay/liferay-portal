@@ -509,6 +509,34 @@ public class DBCopyTablesProcessTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110099")
+	public void testRunWithToolTables() throws Exception {
+		Assume.assumeTrue(_sourceDB.getDBType() == DBType.ORACLE);
+
+		_sourceDB.runSQL("create table TestTable (id INTEGER)");
+		_sourceDB.runSQL(
+			"create materialized view log on TestTable with rowid");
+
+		_runDBCopyTablesProcess();
+
+		try (Connection connection = _targetDataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select relname from pg_class where relname like ? order by " +
+					"relname")) {
+
+			preparedStatement.setString(1, "%testtable");
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
+				Assert.assertEquals(
+					"testtable", resultSet.getString("relname"));
+				Assert.assertFalse(resultSet.next());
+			}
+		}
+	}
+
+	@Test
 	public void testSblobColumn() throws Exception {
 		_createTable("SBLOB");
 
