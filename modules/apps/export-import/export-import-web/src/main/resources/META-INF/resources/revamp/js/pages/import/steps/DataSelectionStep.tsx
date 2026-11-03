@@ -13,6 +13,7 @@ import {
 } from '../../../components/forms/formik';
 import {ImportPreview} from '../../../types/exportImportPreview';
 import {toPortletDataHandlerSections} from '../../../utils/contentSelection';
+import {getScopeSubtitle} from '../../../utils/getScopeSubtitle';
 import FileSummary from './FileSummary';
 import GroupSelection from './GroupSelection';
 
@@ -20,10 +21,12 @@ export default function DataSelectionStep({
 	commentsAndRatingsEnabled = false,
 	importPreview,
 	siteSelectionEnabled = false,
+	spaceSelectionEnabled = false,
 }: {
 	commentsAndRatingsEnabled?: boolean;
 	importPreview?: ImportPreview;
 	siteSelectionEnabled?: boolean;
+	spaceSelectionEnabled?: boolean;
 }) {
 	const labelId = useId();
 
@@ -31,37 +34,42 @@ export default function DataSelectionStep({
 		return null;
 	}
 
+	const sites = siteSelectionEnabled ? importPreview.sites ?? [] : [];
+	const spaces = spaceSelectionEnabled
+		? (importPreview.assetLibraries ?? []).filter(
+				({type}) => type === 'Space'
+			)
+		: [];
+
 	return (
 		<>
 			<FileSummary importPreview={importPreview} />
 
-			{siteSelectionEnabled &&
-				(!!importPreview.sites?.length ||
-					!!importPreview.previewAssetLibraries?.length) && (
-					<ScopeSection
-						subtitle={Liferay.Language.get(
-							'import-complete-sites-from-your-file,-including-all-their-pages,-content,-and-settings'
-						)}
-					>
-						{!!importPreview.sites?.length && (
-							<GroupSelection
-								groups={importPreview.sites}
-								name="siteExternalReferenceCodes"
-								type="site"
-							/>
-						)}
+			{(!!sites.length || !!spaces.length) && (
+				<ScopeSection
+					subtitle={getScopeSubtitle(
+						'import',
+						!!sites.length,
+						!!spaces.length
+					)}
+				>
+					{!!sites.length && (
+						<GroupSelection
+							groups={sites}
+							name="siteExternalReferenceCodes"
+							type="site"
+						/>
+					)}
 
-						{!!importPreview.previewAssetLibraries?.length && (
-							<div className="mt-4">
-								<GroupSelection
-									groups={importPreview.previewAssetLibraries}
-									name="assetLibraryExternalReferenceCodes"
-									type="space"
-								/>
-							</div>
-						)}
-					</ScopeSection>
-				)}
+					{!!spaces.length && (
+						<GroupSelection
+							groups={spaces}
+							name="spaceExternalReferenceCodes"
+							type="space"
+						/>
+					)}
+				</ScopeSection>
+			)}
 
 			<SectionHeader
 				id={labelId}

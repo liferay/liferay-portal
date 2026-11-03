@@ -7,7 +7,10 @@ import {FormikValues} from 'formik';
 
 export function getProcessFormErrors(
 	values: FormikValues,
-	siteSelectionEnabled = false
+	{
+		siteSelectionEnabled = false,
+		spaceSelectionEnabled = false,
+	}: {siteSelectionEnabled?: boolean; spaceSelectionEnabled?: boolean} = {}
 ): {
 	[key: string]: string;
 } {
@@ -18,13 +21,23 @@ export function getProcessFormErrors(
 	}
 
 	if (
-		!values.assetLibraryExternalReferenceCodes?.length &&
 		!values.contentSelection &&
-		!values.siteExternalReferenceCodes?.length
+		!values.siteExternalReferenceCodes?.length &&
+		!values.spaceExternalReferenceCodes?.length
 	) {
-		if (siteSelectionEnabled) {
+		if (siteSelectionEnabled && spaceSelectionEnabled) {
 			errors.selection = Liferay.Language.get(
-				'please-select-at-least-one-entity-type-site-or-space-to-continue'
+				'please-select-at-least-one-entity-type,-site,-or-space-to-continue'
+			);
+		}
+		else if (siteSelectionEnabled) {
+			errors.selection = Liferay.Language.get(
+				'please-select-at-least-one-entity-type-or-site-to-continue'
+			);
+		}
+		else if (spaceSelectionEnabled) {
+			errors.selection = Liferay.Language.get(
+				'please-select-at-least-one-entity-type-or-space-to-continue'
 			);
 		}
 		else {

@@ -4,7 +4,7 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import React, {ReactNode, useId} from 'react';
+import React, {Children, ReactNode, useId} from 'react';
 
 import SectionHeader from './SectionHeader';
 
@@ -31,7 +31,13 @@ export default function ScopeSection({
 				title={Liferay.Language.get('scope')}
 			/>
 
-			<ClayLayout.Sheet>{children}</ClayLayout.Sheet>
+			<ClayLayout.Sheet>
+				{Children.toArray(children).map((child, index) => (
+					<div className={index ? 'mt-4' : undefined} key={index}>
+						{child}
+					</div>
+				))}
+			</ClayLayout.Sheet>
 		</div>
 	);
 }

@@ -28,6 +28,7 @@ export function NewImport({
 	importProcessAPIURL,
 	scope,
 	siteSelectionEnabled = false,
+	spaceSelectionEnabled = false,
 }: {
 	backURL: string;
 	commentsAndRatingsEnabled?: boolean;
@@ -35,6 +36,7 @@ export function NewImport({
 	importProcessAPIURL: string;
 	scope: Scope;
 	siteSelectionEnabled?: boolean;
+	spaceSelectionEnabled?: boolean;
 }) {
 	const [importPreview, setImportPreview] = useState<
 		ImportPreview | undefined
@@ -62,16 +64,16 @@ export function NewImport({
 
 			<WizardStep
 				initialValues={{
-					assetLibraryExternalReferenceCodes: [],
 					contentSelection: undefined,
 					deletions: false,
 					permissions: false,
 					siteExternalReferenceCodes: [],
+					spaceExternalReferenceCodes: [],
 				}}
 				isStepValid={(values) =>
-					!!values.assetLibraryExternalReferenceCodes?.length ||
 					!!values.contentSelection ||
-					!!values.siteExternalReferenceCodes?.length
+					!!values.siteExternalReferenceCodes?.length ||
+					!!values.spaceExternalReferenceCodes?.length
 				}
 				title={Liferay.Language.get('data-selection')}
 			>
@@ -79,6 +81,7 @@ export function NewImport({
 					commentsAndRatingsEnabled={commentsAndRatingsEnabled}
 					importPreview={importPreview}
 					siteSelectionEnabled={siteSelectionEnabled}
+					spaceSelectionEnabled={spaceSelectionEnabled}
 				/>
 			</WizardStep>
 
@@ -105,8 +108,13 @@ export function NewImport({
 					const result = await postImportProcess({
 						importProcessRequest: {
 							...toProcessRequestFlags(contentSelection),
-							assetLibraryExternalReferenceCodes:
-								values.assetLibraryExternalReferenceCodes,
+							...(spaceSelectionEnabled && {
+								assetLibraries: (
+									values.spaceExternalReferenceCodes as string[]
+								).map((externalReferenceCode) => ({
+									externalReferenceCode,
+								})),
+							}),
 							dataStrategy: values.dataStrategy as DataStrategy,
 							deletions: !!values.deletions,
 							name: values.name,

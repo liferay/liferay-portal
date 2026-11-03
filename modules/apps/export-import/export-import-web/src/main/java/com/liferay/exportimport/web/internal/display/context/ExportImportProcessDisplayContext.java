@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -139,24 +140,6 @@ public class ExportImportProcessDisplayContext {
 		return _exportPreviewAPIURL;
 	}
 
-	public String getExportPreviewAssetLibrariesAPIURL() {
-		if (!isSiteSelectionEnabled() ||
-			!FeatureFlagManagerUtil.isEnabled(
-				_group.getCompanyId(), "LPD-41307")) {
-
-			return null;
-		}
-
-		if (_exportPreviewAssetLibrariesAPIURL != null) {
-			return _exportPreviewAssetLibrariesAPIURL;
-		}
-
-		_exportPreviewAssetLibrariesAPIURL = _getResourceAPIURL(
-			"/export-preview/preview-asset-libraries");
-
-		return _exportPreviewAssetLibrariesAPIURL;
-	}
-
 	public JSONObject getExportPreviewJSONObject() {
 		if (_exportPreviewJSONObject != null) {
 			return _exportPreviewJSONObject;
@@ -191,6 +174,22 @@ public class ExportImportProcessDisplayContext {
 		_exportPreviewSitesAPIURL = _getResourceAPIURL("/export-preview/sites");
 
 		return _exportPreviewSitesAPIURL;
+	}
+
+	public String getExportPreviewSpacesAPIURL() {
+		if (!isSpaceSelectionEnabled()) {
+			return null;
+		}
+
+		if (_exportPreviewSpacesAPIURL != null) {
+			return _exportPreviewSpacesAPIURL;
+		}
+
+		_exportPreviewSpacesAPIURL = HttpComponentsUtil.addParameter(
+			_getResourceAPIURL("/export-preview/asset-libraries"), "filter",
+			"type eq 'Space'");
+
+		return _exportPreviewSpacesAPIURL;
 	}
 
 	public String getExportProcessAPIURL() {
@@ -282,6 +281,17 @@ public class ExportImportProcessDisplayContext {
 		if ((getScope() == Scope.COMPANY) &&
 			FeatureFlagManagerUtil.isEnabled(
 				_group.getCompanyId(), "LPD-85946")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isSpaceSelectionEnabled() {
+		if ((getScope() == Scope.COMPANY) &&
+			FeatureFlagManagerUtil.isEnabled(
+				_group.getCompanyId(), "LPD-41307")) {
 
 			return true;
 		}
@@ -381,10 +391,10 @@ public class ExportImportProcessDisplayContext {
 	private final String _backMVCRenderCommandName;
 	private String _backURL;
 	private String _exportPreviewAPIURL;
-	private String _exportPreviewAssetLibrariesAPIURL;
 	private JSONObject _exportPreviewJSONObject;
 	private final ExportPreviewResource.Factory _exportPreviewResourceFactory;
 	private String _exportPreviewSitesAPIURL;
+	private String _exportPreviewSpacesAPIURL;
 	private String _exportProcessAPIURL;
 	private final Group _group;
 	private final long _groupId;

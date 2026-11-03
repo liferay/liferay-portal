@@ -26,18 +26,19 @@ import {
 	withSelectedLayoutSetCount,
 } from '../../utils/contentSelection';
 import {getProcessFormErrors} from '../../utils/getProcessFormErrors';
+import {getScopeSubtitle} from '../../utils/getScopeSubtitle';
 import {navigateToProcesses} from '../../utils/navigateToProcesses';
 import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
 import GroupSelection from './components/GroupSelection';
 
 type ExportFormValues = {
-	assetLibraryExternalReferenceCodes: string[];
 	contentSelection: ContentSelection | null | undefined;
 	dateFilterValues: DateFilterValues;
 	deletions: boolean;
 	name: string;
 	permissions: boolean;
 	siteExternalReferenceCodes: string[];
+	spaceExternalReferenceCodes: string[];
 };
 
 export function NewExport({
@@ -45,22 +46,24 @@ export function NewExport({
 	commentsAndRatingsEnabled = false,
 	exportPreview,
 	exportPreviewAPIURL,
-	exportPreviewAssetLibrariesAPIURL,
 	exportPreviewSitesAPIURL,
+	exportPreviewSpacesAPIURL,
 	exportProcessAPIURL,
 	pageTreeModalConfiguration,
 	siteSelectionEnabled = false,
+	spaceSelectionEnabled = false,
 	timeZoneId,
 }: {
 	backURL: string;
 	commentsAndRatingsEnabled?: boolean;
 	exportPreview?: Preview;
 	exportPreviewAPIURL: string;
-	exportPreviewAssetLibrariesAPIURL?: string;
 	exportPreviewSitesAPIURL?: string;
+	exportPreviewSpacesAPIURL?: string;
 	exportProcessAPIURL: string;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
 	siteSelectionEnabled?: boolean;
+	spaceSelectionEnabled?: boolean;
 	timeZoneId: string;
 }) {
 	const {appliedDateFilterRef, error, handleApplyFilter, loading, preview} =
@@ -75,14 +78,18 @@ export function NewExport({
 	);
 
 	const initialFormValues: ExportFormValues = {
-		assetLibraryExternalReferenceCodes: [],
 		contentSelection: undefined,
 		dateFilterValues: {range: Range.All},
 		deletions: false,
 		name: '',
 		permissions: false,
 		siteExternalReferenceCodes: [],
+		spaceExternalReferenceCodes: [],
 	};
+
+	const sitesSelectable = siteSelectionEnabled && !!exportPreviewSitesAPIURL;
+	const spacesSelectable =
+		spaceSelectionEnabled && !!exportPreviewSpacesAPIURL;
 
 	return (
 		<Formik
@@ -91,8 +98,14 @@ export function NewExport({
 				const result = await postExportProcess({
 					exportProcessRequest: {
 						...toProcessRequestFlags(values.contentSelection),
-						assetLibraryExternalReferenceCodes:
-							values.assetLibraryExternalReferenceCodes,
+						...(spaceSelectionEnabled && {
+							assetLibraries:
+								values.spaceExternalReferenceCodes.map(
+									(externalReferenceCode) => ({
+										externalReferenceCode,
+									})
+								),
+						}),
 						dateFilter: appliedDateFilterRef.current,
 						deletions: values.deletions,
 						name: values.name,
@@ -128,7 +141,10 @@ export function NewExport({
 				);
 			}}
 			validate={(values) =>
-				getProcessFormErrors(values, siteSelectionEnabled)
+				getProcessFormErrors(values, {
+					siteSelectionEnabled,
+					spaceSelectionEnabled,
+				})
 			}
 			validateOnMount
 		>
@@ -151,29 +167,31 @@ export function NewExport({
 							)}
 						/>
 
-						{siteSelectionEnabled && exportPreviewSitesAPIURL && (
+						{(sitesSelectable || spacesSelectable) && (
 							<ScopeSection
-								subtitle={Liferay.Language.get(
-									'export-complete-sites,-including-all-their-pages,-content,-and-settings'
+								subtitle={getScopeSubtitle(
+									'export',
+									sitesSelectable,
+									spacesSelectable
 								)}
 							>
-								<GroupSelection
-									apiURL={exportPreviewSitesAPIURL}
-									name="siteExternalReferenceCodes"
-									type="site"
-								/>
-
-								{exportPreviewAssetLibrariesAPIURL && (
-									<div className="mt-4">
+								{siteSelectionEnabled &&
+									exportPreviewSitesAPIURL && (
 										<GroupSelection
-											apiURL={
-												exportPreviewAssetLibrariesAPIURL
-											}
-											name="assetLibraryExternalReferenceCodes"
+											apiURL={exportPreviewSitesAPIURL}
+											name="siteExternalReferenceCodes"
+											type="site"
+										/>
+									)}
+
+								{spaceSelectionEnabled &&
+									exportPreviewSpacesAPIURL && (
+										<GroupSelection
+											apiURL={exportPreviewSpacesAPIURL}
+											name="spaceExternalReferenceCodes"
 											type="space"
 										/>
-									</div>
-								)}
+									)}
 							</ScopeSection>
 						)}
 
@@ -219,9 +237,9 @@ export function NewExport({
 							timeZoneId={timeZoneId}
 						/>
 
-						{(formik.touched.assetLibraryExternalReferenceCodes ||
-							formik.touched.contentSelection ||
-							formik.touched.siteExternalReferenceCodes) &&
+						{(formik.touched.contentSelection ||
+							formik.touched.siteExternalReferenceCodes ||
+							formik.touched.spaceExternalReferenceCodes) &&
 							selectionError && (
 								<ClayAlert
 									className="mt-4"
