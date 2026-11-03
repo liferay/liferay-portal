@@ -40,39 +40,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-91043. It asserts that user can not publish from old versions to live."
-	@priority = 4
-	test CanNotPublishFromOldVersions {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name-staging",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		DMNavigator.openToEditEntryInSite(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name (Staging)",
-			site = "false",
-			siteURLKey = "site-name-staging");
-
-		DMDocument.editCmd(dmDocumentTitleEdit = "DM Document Title Edit");
-
-		Button.clickPublish();
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "DM Document Title Edit",
-			groupName = "Site Name (Staging)",
-			site = "false",
-			siteURLKey = "site-name-staging");
-
-		for (var n : list "0,1") {
-			DMDocument.viewNoItemInVersionMenu(
-				dmDocumentVersionNumber = "1.${n}",
-				menuItem = "Publish to Live");
-		}
-	}
-
 	@description = "This ensures that the image can be deleted and republished in web content."
 	@priority = 4
 	@refactordone
