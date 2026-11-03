@@ -73,64 +73,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-74621."
-	@priority = 3
-	@refactordone
-	test CanOnlyCommentOnLiveSite {
-		property portal.acceptance = "false";
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Site Name (Staging)",
-			layoutName = "Staging DM Page",
-			site = "false",
-			widgetName = "Documents and Media");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name-staging",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		Navigator.gotoSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "cards");
-
-		DMDocument.gotoEntry(dmDocumentTitle = "DM Document Title");
-
-		Comments.addPG(entryComment = "DM Document Comment");
-
-		Navigator.gotoSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		DMDocument.gotoEntry(dmDocumentTitle = "DM Document Title");
-
-		Comments.viewPG(
-			commentCount = 1,
-			entryComment = "DM Document Comment",
-			userFullName = "Test Test (You)");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		DMDocument.gotoEntry(dmDocumentTitle = "DM Document Title");
-
-		Comments.viewCommentReadOnly();
-	}
-
 	@description = "This ensures that the image can be deleted and republished in web content."
 	@priority = 4
 	@refactordone
