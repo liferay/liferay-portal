@@ -319,7 +319,8 @@ public class ImportProcessResourceTest
 			importProcessRequest -> importProcessResource.postImportProcess(
 				null, _toInstanceImportProcessRequest(importProcessRequest)));
 
-		_testPostImportProcessWithAssetLibraries(companyGroup.getGroupId());
+		_testPostImportProcessWithAssetLibrariesAndSites(
+			companyGroup.getGroupId());
 		_testPostImportProcessWithPreviewForOtherGroup(
 			testGroup.getGroupId(),
 			file -> _importPreviewResource.postSiteImportPreview(
@@ -818,7 +819,7 @@ public class ImportProcessResourceTest
 		Assert.assertFalse(errorMessage, errorMessage.contains("java.lang."));
 	}
 
-	private void _testPostImportProcessWithAssetLibraries(
+	private void _testPostImportProcessWithAssetLibrariesAndSites(
 			long exportImportGroupId)
 		throws Exception {
 
@@ -851,18 +852,20 @@ public class ImportProcessResourceTest
 				}
 			};
 
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
-				LoggerTestUtil.WARN);
-			SafeCloseable safeCloseable =
-				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-41307")) {
+		for (String featureFlagKey : new String[] {"LPD-41307", "LPD-85946"}) {
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.portal.vulcan.internal.jaxrs.exception." +
+						"mapper.WebApplicationExceptionMapper",
+					LoggerTestUtil.WARN);
+				SafeCloseable safeCloseable =
+					FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+						false, featureFlagKey)) {
 
-			assertHttpResponseStatusCode(
-				400,
-				importProcessResource.postImportProcessHttpResponse(
-					null, instanceImportProcessRequest));
+				assertHttpResponseStatusCode(
+					400,
+					importProcessResource.postImportProcessHttpResponse(
+						null, instanceImportProcessRequest));
+			}
 		}
 
 		ImportProcess importProcess = importProcessResource.postImportProcess(

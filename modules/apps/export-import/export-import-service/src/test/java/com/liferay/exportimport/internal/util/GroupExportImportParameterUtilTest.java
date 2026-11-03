@@ -313,6 +313,15 @@ public class GroupExportImportParameterUtilTest {
 	}
 
 	@Test
+	public void testIsGroupExportImportEnabled() {
+		Assert.assertFalse(
+			_isGroupExportImportEnabled(false, "LPD-41307", "LPD-85946"));
+		Assert.assertFalse(_isGroupExportImportEnabled(true));
+		Assert.assertTrue(_isGroupExportImportEnabled(true, "LPD-41307"));
+		Assert.assertTrue(_isGroupExportImportEnabled(true, "LPD-85946"));
+	}
+
+	@Test
 	public void testIsGroupScopedWithCurrentGroupExternalReferenceCode() {
 		PortletDataContext portletDataContext = Mockito.mock(
 			PortletDataContext.class);
@@ -381,6 +390,47 @@ public class GroupExportImportParameterUtilTest {
 		boolean groupExportImportEnabled, Map<String, String[]> parameterMap) {
 
 		return _getPhasesCount(true, groupExportImportEnabled, parameterMap);
+	}
+
+	private boolean _isGroupExportImportEnabled(
+		boolean companyGroup, String... featureFlagKeys) {
+
+		long companyId = RandomTestUtil.randomLong();
+		long groupId = RandomTestUtil.randomLong();
+		StagingGroupHelper stagingGroupHelper = Mockito.mock(
+			StagingGroupHelper.class);
+
+		Mockito.when(
+			stagingGroupHelper.isCompanyGroup(companyId, groupId)
+		).thenReturn(
+			companyGroup
+		);
+
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class);
+			MockedStatic<StagingGroupHelperUtil>
+				stagingGroupHelperUtilMockedStatic = Mockito.mockStatic(
+					StagingGroupHelperUtil.class)) {
+
+			for (String featureFlagKey : featureFlagKeys) {
+				featureFlagManagerUtilMockedStatic.when(
+					() -> FeatureFlagManagerUtil.isEnabled(
+						companyId, featureFlagKey)
+				).thenReturn(
+					true
+				);
+			}
+
+			stagingGroupHelperUtilMockedStatic.when(
+				StagingGroupHelperUtil::getStagingGroupHelper
+			).thenReturn(
+				stagingGroupHelper
+			);
+
+			return GroupExportImportParameterUtil.isGroupExportImportEnabled(
+				companyId, groupId);
+		}
 	}
 
 }

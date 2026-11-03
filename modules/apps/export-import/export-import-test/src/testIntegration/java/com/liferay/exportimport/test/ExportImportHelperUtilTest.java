@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -125,6 +126,11 @@ public class ExportImportHelperUtilTest {
 		_stagingGroup = GroupTestUtil.addGroup();
 	}
 
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag(value = "LPD-57655"), @FeatureFlag("LPD-85946")
+		}
+	)
 	@Test
 	public void testGetChildGroupsCount() throws Exception {
 		UserTestUtil.setUser(TestPropsValues.getUser());
@@ -1259,16 +1265,41 @@ public class ExportImportHelperUtilTest {
 			ExportImportHelperUtil.isGroupSupported(depotEntry.getGroup()));
 	}
 
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
+			@FeatureFlag("LPD-85946")
+		}
+	)
 	@Test
 	public void testIsGroupSupportedWhenFeatureFlagIsDisabled()
 		throws Exception {
 
 		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
 
-		_depotGroups.add(depotEntry.getGroup());
+		Group depotGroup = depotEntry.getGroup();
 
-		Assert.assertFalse(
-			ExportImportHelperUtil.isGroupSupported(depotEntry.getGroup()));
+		_depotGroups.add(depotGroup);
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-41307")) {
+
+			Assert.assertFalse(
+				ExportImportHelperUtil.isGroupSupported(depotGroup));
+			Assert.assertTrue(
+				ExportImportHelperUtil.isGroupSupported(_liveGroup));
+		}
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-85946")) {
+
+			Assert.assertTrue(
+				ExportImportHelperUtil.isGroupSupported(depotGroup));
+			Assert.assertFalse(
+				ExportImportHelperUtil.isGroupSupported(_liveGroup));
+		}
 	}
 
 	@Test

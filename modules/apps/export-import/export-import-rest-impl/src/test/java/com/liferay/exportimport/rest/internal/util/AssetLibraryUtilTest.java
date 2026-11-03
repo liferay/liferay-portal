@@ -5,13 +5,11 @@
 
 package com.liferay.exportimport.rest.internal.util;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.exportimport.rest.dto.v1_0.AssetLibrary;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-
-import jakarta.ws.rs.BadRequestException;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -28,52 +26,47 @@ public class AssetLibraryUtilTest {
 	public static LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-41307"))
 	@Test
-	public void testGetExternalReferenceCodes() {
-		String externalReferenceCode = RandomTestUtil.randomString();
-
-		Assert.assertArrayEquals(
-			new String[] {externalReferenceCode},
-			AssetLibraryUtil.getExternalReferenceCodes(
-				new AssetLibrary[] {_toAssetLibrary(externalReferenceCode)},
-				_COMPANY_ID));
-
-		Assert.assertArrayEquals(
-			new String[0],
-			AssetLibraryUtil.getExternalReferenceCodes(null, _COMPANY_ID));
+	public void testToAssetLibraryType() {
+		Assert.assertNull(
+			AssetLibraryUtil.toAssetLibraryType(DepotConstants.TYPE_ANY));
+		Assert.assertEquals(
+			AssetLibrary.Type.ASSET_LIBRARY,
+			AssetLibraryUtil.toAssetLibraryType(
+				DepotConstants.TYPE_ASSET_LIBRARY));
+		Assert.assertEquals(
+			AssetLibrary.Type.DESIGN_LIBRARY,
+			AssetLibraryUtil.toAssetLibraryType(
+				DepotConstants.TYPE_DESIGN_LIBRARY));
+		Assert.assertEquals(
+			AssetLibrary.Type.PROJECT,
+			AssetLibraryUtil.toAssetLibraryType(DepotConstants.TYPE_PROJECT));
+		Assert.assertEquals(
+			AssetLibrary.Type.SPACE,
+			AssetLibraryUtil.toAssetLibraryType(DepotConstants.TYPE_SPACE));
 	}
 
 	@Test
-	public void testGetExternalReferenceCodesWhenFeatureFlagIsDisabled() {
-		Assert.assertArrayEquals(
-			new String[0],
-			AssetLibraryUtil.getExternalReferenceCodes(null, _COMPANY_ID));
-
-		try {
-			AssetLibraryUtil.getExternalReferenceCodes(
-				new AssetLibrary[] {
-					_toAssetLibrary(RandomTestUtil.randomString())
-				},
-				_COMPANY_ID);
-
-			Assert.fail();
-		}
-		catch (BadRequestException badRequestException) {
-			Assert.assertEquals(
-				"Asset libraries require the feature flag \"LPD-41307\"",
-				badRequestException.getMessage());
-		}
+	public void testToDepotEntryType() {
+		Assert.assertEquals(
+			DepotConstants.TYPE_ANY,
+			AssetLibraryUtil.toDepotEntryType(RandomTestUtil.randomString()));
+		Assert.assertEquals(
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			AssetLibraryUtil.toDepotEntryType(
+				AssetLibrary.Type.ASSET_LIBRARY.getValue()));
+		Assert.assertEquals(
+			DepotConstants.TYPE_DESIGN_LIBRARY,
+			AssetLibraryUtil.toDepotEntryType(
+				AssetLibrary.Type.DESIGN_LIBRARY.getValue()));
+		Assert.assertEquals(
+			DepotConstants.TYPE_PROJECT,
+			AssetLibraryUtil.toDepotEntryType(
+				AssetLibrary.Type.PROJECT.getValue()));
+		Assert.assertEquals(
+			DepotConstants.TYPE_SPACE,
+			AssetLibraryUtil.toDepotEntryType(
+				StringUtil.toLowerCase(AssetLibrary.Type.SPACE.getValue())));
 	}
-
-	private AssetLibrary _toAssetLibrary(String externalReferenceCode) {
-		AssetLibrary assetLibrary = new AssetLibrary();
-
-		assetLibrary.setExternalReferenceCode(externalReferenceCode);
-
-		return assetLibrary;
-	}
-
-	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 }
