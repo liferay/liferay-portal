@@ -769,7 +769,9 @@ describe('CreateLifecycle', () => {
 
 		expect(mockPush).not.toHaveBeenCalled();
 		expect(mockReplace).not.toHaveBeenCalled();
-		expect(screen.getByLabelText(/^name/i)).toHaveValue('My Lifecycle');
+		expect(
+			screen.getByRole('group', {name: /configuration summary/i})
+		).toHaveTextContent(/my lifecycle/i);
 	});
 
 	describe('when the name is already used in the channel', () => {
