@@ -336,16 +336,16 @@ public class ObjectEntryModelListenerTest {
 
 		// A member of the linked asset's space can link the asset
 
-		ObjectEntry cmsBasicWebContentObjectEntry =
-			CMPTestUtil.addCMSBasicWebContentObjectEntry(
-				_depotEntry, RandomTestUtil.randomString());
-
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
 
 		User user1 = UserTestUtil.addUser(cmpTaskObjectEntry.getGroupId());
 
 		_userLocalService.addGroupUser(
 			_depotEntry.getGroupId(), user1.getUserId());
+
+		ObjectEntry cmsBasicWebContentObjectEntry =
+			CMPTestUtil.addCMSBasicWebContentObjectEntry(
+				_depotEntry, RandomTestUtil.randomString());
 
 		Assert.assertNotNull(
 			CMPTestUtil.addCMPTaskLinkObjectEntry(
