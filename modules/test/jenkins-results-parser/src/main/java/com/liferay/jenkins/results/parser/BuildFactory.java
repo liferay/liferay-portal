@@ -69,10 +69,10 @@ public class BuildFactory {
 		if (jobName.contains("-downstream")) {
 			String queryString = matcher.group("queryString");
 
-			Map<String, String> parameters =
+			Map<String, String> queryParameters =
 				JenkinsResultsParserUtil.getQueryParameters(queryString);
 
-			String queryStringJobVariant = parameters.get("JOB_VARIANT");
+			String queryStringJobVariant = queryParameters.get("JOB_VARIANT");
 
 			if (!JenkinsResultsParserUtil.isNullOrEmpty(
 					queryStringJobVariant)) {

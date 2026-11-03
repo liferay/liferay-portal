@@ -3112,10 +3112,10 @@ public abstract class BaseBuild implements Build {
 	}
 
 	protected void loadParametersFromQueryString(String queryString) {
-		Map<String, String> parameters =
+		Map<String, String> queryParameters =
 			JenkinsResultsParserUtil.getQueryParameters(queryString);
 
-		for (Map.Entry<String, String> entry : parameters.entrySet()) {
+		for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
 			String value = entry.getValue();
 
 			if (value == null) {
