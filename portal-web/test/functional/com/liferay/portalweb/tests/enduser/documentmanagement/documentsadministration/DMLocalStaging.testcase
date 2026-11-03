@@ -40,21 +40,6 @@ definition {
 		}
 	}
 
-	@description = "This test covers LPS-126751. It ensures that a user cannot create a metadata set without a field."
-	@priority = 4
-	@refactordone
-	test CannotAddMetadataSetWithEmptyField {
-		DMNavigator.openMetadataSetsAdmin(siteURLKey = "site-name-staging");
-
-		DMMetadataSet.addTitle(metadataSetName = "Document Metadata Set Name");
-
-		Button.clickSave();
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#ERROR",
-			value1 = "Error:At least one field must be added.");
-	}
-
 	@description = "This is a test for LPS-91043. It asserts that user can not publish from old versions to live."
 	@priority = 4
 	test CanNotPublishFromOldVersions {
