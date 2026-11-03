@@ -173,11 +173,12 @@ public class RestrictedLiferayObjectWrapperTest
 
 	@Test
 	public void testGetWithBaseModel() throws Exception {
+
+		// Allowed
+
 		long companyId = RandomTestUtil.randomLong();
 
 		TestBaseModel testBaseModel = new TestBaseModel(companyId);
-
-		// Allowed
 
 		RestrictedLiferayObjectWrapper restrictedLiferayObjectWrapper =
 			new RestrictedLiferayObjectWrapper(
