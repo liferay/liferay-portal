@@ -94,13 +94,14 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		return depotEntry;
 	}
 
-	private AssetLibrary _getExportAssetLibrary(String externalReferenceCode)
+	private AssetLibrary _getExportPreviewAssetLibrary(
+			String externalReferenceCode)
 		throws Exception {
 
-		return _getExportAssetLibrary(externalReferenceCode, null);
+		return _getExportPreviewAssetLibrary(externalReferenceCode, null);
 	}
 
-	private AssetLibrary _getExportAssetLibrary(
+	private AssetLibrary _getExportPreviewAssetLibrary(
 			String externalReferenceCode, String filterString)
 		throws Exception {
 
@@ -128,7 +129,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 		Group group = depotEntry.getGroup();
 
-		AssetLibrary assetLibrary = _getExportAssetLibrary(
+		AssetLibrary assetLibrary = _getExportPreviewAssetLibrary(
 			group.getExternalReferenceCode());
 
 		Assert.assertEquals(
@@ -139,7 +140,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 		group = depotEntry.getGroup();
 
-		assetLibrary = _getExportAssetLibrary(group.getExternalReferenceCode());
+		assetLibrary = _getExportPreviewAssetLibrary(
+			group.getExternalReferenceCode());
 
 		Assert.assertEquals(
 			AssetLibrary.Type.ASSET_LIBRARY, assetLibrary.getType());
@@ -149,7 +151,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		_groups.add(group);
 
 		Assert.assertNull(
-			_getExportAssetLibrary(group.getExternalReferenceCode()));
+			_getExportPreviewAssetLibrary(group.getExternalReferenceCode()));
 	}
 
 	private void _testGetExportPreviewAssetLibrariesPageWithFilter()
@@ -165,19 +167,19 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		Group spaceGroup = depotEntry.getGroup();
 
 		Assert.assertNull(
-			_getExportAssetLibrary(
+			_getExportPreviewAssetLibrary(
 				assetLibraryGroup.getExternalReferenceCode(),
 				"type eq 'Space'"));
 		Assert.assertNotNull(
-			_getExportAssetLibrary(
+			_getExportPreviewAssetLibrary(
 				spaceGroup.getExternalReferenceCode(), "type eq 'Space'"));
 
 		Assert.assertNotNull(
-			_getExportAssetLibrary(
+			_getExportPreviewAssetLibrary(
 				assetLibraryGroup.getExternalReferenceCode(),
 				"type eq 'AssetLibrary'"));
 		Assert.assertNull(
-			_getExportAssetLibrary(
+			_getExportPreviewAssetLibrary(
 				spaceGroup.getExternalReferenceCode(),
 				"type eq 'AssetLibrary'"));
 	}
@@ -194,7 +196,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		group = _groupLocalService.updateGroup(group);
 
 		Assert.assertNull(
-			_getExportAssetLibrary(group.getExternalReferenceCode()));
+			_getExportPreviewAssetLibrary(group.getExternalReferenceCode()));
 	}
 
 	private void _testGetExportPreviewAssetLibrariesPageWithSearch()
