@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US" default-locale="en_US" version="1.0">
+	<dynamic-element field-reference="LinkToPage38292648" index-type="keyword" instance-id="kq8sTb2c" name="LinkToPage38292648" type="link_to_layout">
+		<dynamic-content language-id="en_US">
+			<![CDATA[
+				{
+					"groupId": "[$GROUP_ID$]",
+					"layoutId": "[$LAYOUT_ID$]",
+					"privateLayout": false
+				}
+			]]>
+		</dynamic-content>
+	</dynamic-element>
+</root>

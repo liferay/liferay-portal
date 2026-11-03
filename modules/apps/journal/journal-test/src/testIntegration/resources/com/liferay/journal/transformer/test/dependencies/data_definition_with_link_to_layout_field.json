@@ -1,0 +1,77 @@
+{
+	"availableLanguageIds": [
+		"en_US"
+	],
+	"contentType": "journal",
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"dataType": "link-to-page",
+				"fieldNamespace": "",
+				"fieldReference": "LinkToPage38292648",
+				"visibilityExpression": ""
+			},
+			"defaultValue": {
+				"en_US": ""
+			},
+			"fieldType": "link_to_layout",
+			"indexType": "keyword",
+			"indexable": true,
+			"label": {
+				"en_US": "Link to Page"
+			},
+			"localizable": true,
+			"name": "LinkToPage38292648",
+			"nestedDataDefinitionFields": [
+			],
+			"readOnly": false,
+			"repeatable": false,
+			"required": false,
+			"showLabel": true,
+			"tip": {
+				"en_US": ""
+			}
+		}
+	],
+	"defaultDataLayout": {
+		"dataLayoutFields": {
+		},
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"LinkToPage38292648"
+								]
+							}
+						]
+					}
+				],
+				"description": {
+					"en_US": ""
+				},
+				"title": {
+					"en_US": ""
+				}
+			}
+		],
+		"dataRules": [
+		],
+		"description": {
+		},
+		"name": {
+			"en_US": "Link to Page"
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "en_US",
+	"description": {
+	},
+	"name": {
+		"en_US": "Link to Page"
+	},
+	"storageType": "default"
+}
