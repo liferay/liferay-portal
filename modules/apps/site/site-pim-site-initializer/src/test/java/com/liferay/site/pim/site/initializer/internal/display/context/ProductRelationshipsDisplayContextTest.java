@@ -299,7 +299,7 @@ public class ProductRelationshipsDisplayContextTest {
 				productRelationshipsDisplayContext.getFDSActionDropdownItems();
 
 			Assert.assertEquals(
-				fdsActionDropdownItems.toString(), 3,
+				fdsActionDropdownItems.toString(), 4,
 				fdsActionDropdownItems.size());
 
 			FDSActionDropdownItem fdsActionDropdownItem =
@@ -359,7 +359,7 @@ public class ProductRelationshipsDisplayContextTest {
 			Assert.assertEquals("put", data.get("method"));
 			Assert.assertEquals("setPrimary", data.get("permissionKey"));
 
-			fdsActionDropdownItem = fdsActionDropdownItems.get(2);
+			fdsActionDropdownItem = fdsActionDropdownItems.get(3);
 
 			Assert.assertNull(fdsActionDropdownItem.get("href"));
 			Assert.assertEquals(
