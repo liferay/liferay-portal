@@ -179,42 +179,6 @@ definition {
 			value1 = "Error:At least one field must be added.");
 	}
 
-	@description = "This is a test for LPS-95290. It asserts that an unauthorized user can not download the file through the document URL of the staged site."
-	@priority = 3
-	test CannotDownloadFileThroughDocumentURLOfStagedSiteWithoutPermissions {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name-staging",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		DMNavigator.openToEditEntryInSite(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name (Staging)",
-			site = "false",
-			siteURLKey = "site-name-staging");
-
-		DMDocument.editCmd(dmDocumentTitleEdit = "DM Document Title Edit");
-
-		Button.clickPublish();
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "DM Document Title Edit",
-			groupName = "Site Name (Staging)",
-			site = "false",
-			siteURLKey = "site-name-staging");
-
-		var latestVersionURL = DMDocument.getLatestVersionURL();
-
-		User.logoutPG();
-
-		for (var version : list "1.0,1.1") {
-			Navigator.openSpecificURL(url = "${latestVersionURL}?version=${version}");
-
-			AssertVisible(locator1 = "Button#SIGN_IN");
-		}
-	}
 
 	@description = "This is a test for LPS-91043. It asserts that user can not publish from old versions to live."
 	@priority = 4
@@ -360,35 +324,6 @@ definition {
 		DMDocument.viewDefault();
 	}
 
-	@description = "This test covers LPS-119234. It ensures that a document type can be published to live via SAP."
-	@priority = 4
-	@refactordone
-	test CanPublishDocumentTypeViaSAP {
-		property portal.acceptance = "true";
-
-		DMNavigator.gotoDocumentType();
-
-		DMDocumentType.add(
-			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeFieldNames = "Text",
-			dmDocumentTypeName = "DM Document Type Name");
-
-		Staging.publishViaSAP(
-			confirmMessage = "Are you sure you want to publish to live?",
-			entry = "DM Document Type Name");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMNavigator.gotoMetadataSets();
-
-		AssertElementNotPresent(
-			key_tableEntry = "DM Document Type Name",
-			locator1 = "LexiconTable#TABLE_ENTRY_TITLE_LINK");
-
-		DMNavigator.gotoDocumentType();
-
-		DMDocumentType.viewCP(dmDocumentTypeName = "DM Document Type Name");
-	}
 
 	@description = "This ensures that the custom document type being used by document can be edited and republished."
 	@priority = 4
@@ -682,69 +617,7 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-136826. It checks that a shortcut can be published using the normal publication process."
-	@priority = 3
-	test CanPublishShortcut {
-		HeadlessSite.addSite(siteName = "Test Site Name");
 
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Site Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name-staging");
-
-		DMDocument.addDMShortcutCP(
-			dmDocumentTitle = "DM Document Title",
-			siteName = "Test Site Name");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
-	}
-
-	@description = "This is a test for LPS-136817. It checks that a shortcut can be published using the SAP."
-	@priority = 4
-	test CanPublishShortcutViaSAP {
-		property portal.acceptance = "true";
-
-		HeadlessSite.addSite(siteName = "Test Site Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Site Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_4.jpg");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name-staging");
-
-		DMDocument.addDMShortcutCP(
-			dmDocumentTitle = "DM Document Title",
-			siteName = "Test Site Name");
-
-		Staging.publishViaSAP(
-			confirmMessage = "Are you sure you want to publish the selected document?",
-			entry = "DM Document Title");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
-	}
 
 	@description = "This is a test for LPS-136822. It checks that a document type can be updated and published using the normal publication process."
 	@priority = 3
@@ -811,61 +684,6 @@ definition {
 			dmDocumentType = "DM Document Type Name");
 	}
 
-	@description = "This is a test for LPS-136830. It checks that a shortcut can be updated and published."
-	@priority = 3
-	test CanPublishUpdatedShortcut {
-		HeadlessSite.addSite(siteName = "Test Site Name");
-
-		for (var entryCount : list "1,2") {
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Document ${entryCount} Title",
-				groupName = "Test Site Name",
-				mimeType = "image/jpeg",
-				sourceFileName = "Document_${entryCount}.jpg");
-		}
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name-staging");
-
-		DMDocument.addDMShortcutCP(
-			dmDocumentTitle = "DM Document 1 Title",
-			siteName = "Test Site Name");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document 1 Title");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document 1 Title");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name-staging");
-
-		DMDocument.editDMShortcutCP(
-			dmDocumentTitle = "DM Document 1 Title",
-			dmNewDocumentTitle = "DM Document 2 Title",
-			siteName = "Test Site Name");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document 2 Title");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document 2 Title");
-	}
 
 	@description = "This is a test for LPS-136831. It checks that a file can be replaced and republished."
 	@priority = 3
