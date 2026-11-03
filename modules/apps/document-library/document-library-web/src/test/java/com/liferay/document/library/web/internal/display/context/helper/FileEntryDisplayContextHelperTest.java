@@ -12,11 +12,15 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -29,6 +33,7 @@ import org.mockito.Mockito;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Cristina González
@@ -56,6 +61,17 @@ public class FileEntryDisplayContextHelperTest {
 		_frameworkUtilMockedStatic.close();
 	}
 
+	@After
+	public void tearDown() {
+		for (ServiceRegistration<?> serviceRegistration :
+				_serviceRegistrations) {
+
+			serviceRegistration.unregister();
+		}
+
+		_serviceRegistrations.clear();
+	}
+
 	@Test
 	public void testIsCancelCheckoutDocumentActionAvailableWithCheckedOutAndOverridePermissionAndMoreThat1Version()
 		throws PortalException {
@@ -80,6 +96,35 @@ public class FileEntryDisplayContextHelperTest {
 			new FileEntryDisplayContextHelper(null, fileEntry);
 
 		Assert.assertTrue(
+			fileEntryDisplayContextHelper.
+				isCancelCheckoutDocumentActionAvailable());
+	}
+
+	@Test
+	@TestInfo("LPD-113625")
+	public void testIsCancelCheckoutDocumentActionAvailableWithCheckedOutAndWithoutOverridePermission()
+		throws PortalException {
+
+		FileEntry fileEntry = Mockito.mock(FileEntry.class);
+
+		Mockito.when(
+			fileEntry.getFileVersionsCount(Mockito.anyInt())
+		).thenReturn(
+			2
+		);
+
+		Mockito.when(
+			fileEntry.isCheckedOut()
+		).thenReturn(
+			true
+		);
+
+		_configureDLFileEntryPermission(false, false);
+
+		FileEntryDisplayContextHelper fileEntryDisplayContextHelper =
+			new FileEntryDisplayContextHelper(null, fileEntry);
+
+		Assert.assertFalse(
 			fileEntryDisplayContextHelper.
 				isCancelCheckoutDocumentActionAvailable());
 	}
@@ -317,24 +362,29 @@ public class FileEntryDisplayContextHelperTest {
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
-		bundleContext.registerService(
-			ModelResourcePermission.class,
-			new MockModelResourcePermission(
-				overrideCheckOutPermission, updatePermission),
-			MapUtil.singletonDictionary(
-				"model.class.name",
-				"com.liferay.document.library.kernel.model.DLFileEntry"));
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				ModelResourcePermission.class,
+				new MockModelResourcePermission(
+					overrideCheckOutPermission, updatePermission),
+				MapUtil.singletonDictionary(
+					"model.class.name",
+					"com.liferay.document.library.kernel.model.DLFileEntry")));
 
-		bundleContext.registerService(
+		_serviceRegistrations.add(
+			bundleContext.registerService(
 			ModelResourcePermission.class,
 			new MockModelResourcePermission(
 				overrideCheckOutPermission, updatePermission),
 			MapUtil.singletonDictionary(
 				"model.class.name",
-				"com.liferay.portal.kernel.repository.model.FileEntry"));
+				"com.liferay.portal.kernel.repository.model.FileEntry")));
 	}
 
 	private static final MockedStatic<FrameworkUtil>
 		_frameworkUtilMockedStatic = Mockito.mockStatic(FrameworkUtil.class);
+
+	private final List<ServiceRegistration<?>> _serviceRegistrations =
+		new ArrayList<>();
 
 }
