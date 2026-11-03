@@ -23,11 +23,14 @@ import com.liferay.portal.tools.db.migration.importer.jdbc.ConnectionConfigUtil;
 
 import java.math.BigDecimal;
 
+import java.nio.charset.StandardCharsets;
+
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -95,10 +98,12 @@ public class DBCopyTablesProcess {
 
 			Statement statement = targetConnection.createStatement()) {
 
+			DatabaseMetaData databaseMetaData = sourceConnection.getMetaData();
+
 			Map<String, List<String>> columnDefinitionsMap = new TreeMap<>(
 				String.CASE_INSENSITIVE_ORDER);
-
-			DatabaseMetaData databaseMetaData = sourceConnection.getMetaData();
+			Set<String> longNameTableNames = new TreeSet<>(
+				String.CASE_INSENSITIVE_ORDER);
 
 			try (ResultSet resultSet = databaseMetaData.getColumns(
 					sourceConnection.getCatalog(), sourceConnection.getSchema(),
@@ -111,28 +116,21 @@ public class DBCopyTablesProcess {
 						continue;
 					}
 
+					String columnName = resultSet.getString("COLUMN_NAME");
+
 					List<String> targetColumnNames = _targetColumnNamesMap.get(
 						tableName);
 
-					String columnName = resultSet.getString("COLUMN_NAME");
-
-					if ((targetColumnNames != null) &&
-						ListUtil.exists(
-							targetColumnNames,
-							targetColumnName -> StringUtil.equalsIgnoreCase(
-								targetColumnName, columnName))) {
-
-						continue;
-					}
-
-					String columnDefinition = StringBundler.concat(
-						_getQuotedName(StringUtil.toLowerCase(columnName)), " ",
-						_getPostgreSQLColumnType(
-							resultSet.getInt("COLUMN_SIZE"),
-							resultSet.getInt("DATA_TYPE"),
-							resultSet.getInt("DECIMAL_DIGITS")));
-
 					if (targetColumnNames == null) {
+						if (_isLongName(columnName) || _isLongName(tableName)) {
+							longNameTableNames.add(tableName);
+
+							continue;
+						}
+
+						String columnDefinition = _getColumnDefinition(
+							columnName, resultSet);
+
 						if (resultSet.getInt("NULLABLE") ==
 								DatabaseMetaData.columnNoNulls) {
 
@@ -144,16 +142,47 @@ public class DBCopyTablesProcess {
 								tableName, newTableName -> new ArrayList<>());
 
 						columnDefinitions.add(columnDefinition);
+
+						continue;
 					}
-					else {
-						statement.executeUpdate(
+
+					if (ListUtil.exists(
+							targetColumnNames,
+							targetColumnName -> StringUtil.equalsIgnoreCase(
+								targetColumnName, columnName))) {
+
+						continue;
+					}
+
+					if (_isLongName(columnName)) {
+						System.out.println(
 							StringBundler.concat(
-								"alter table ",
-								_getQuotedName(
-									StringUtil.toLowerCase(tableName)),
-								" add ", columnDefinition));
+								"Unable to add column ", columnName,
+								" to table ", tableName, _partitionMessage,
+								" because its name is longer than ",
+								_POSTGRESQL_NAME_MAX_LENGTH, " bytes"));
+
+						continue;
 					}
+
+					statement.executeUpdate(
+						StringBundler.concat(
+							"alter table ",
+							_getQuotedName(StringUtil.toLowerCase(tableName)),
+							" add ",
+							_getColumnDefinition(columnName, resultSet)));
 				}
+			}
+
+			for (String longNameTableName : longNameTableNames) {
+				columnDefinitionsMap.remove(longNameTableName);
+
+				System.out.println(
+					StringBundler.concat(
+						"Unable to create table ", longNameTableName,
+						_partitionMessage, " because its name or the name of ",
+						"one of its columns is longer than ",
+						_POSTGRESQL_NAME_MAX_LENGTH, " bytes"));
 			}
 
 			for (Map.Entry<String, List<String>> entry :
@@ -568,6 +597,16 @@ public class DBCopyTablesProcess {
 		_setColumn(index, preparedStatement, targetType, valueString);
 	}
 
+	private String _getColumnDefinition(String columnName, ResultSet resultSet)
+		throws SQLException {
+
+		return StringBundler.concat(
+			_getQuotedName(StringUtil.toLowerCase(columnName)), " ",
+			_getPostgreSQLColumnType(
+				resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("DATA_TYPE"),
+				resultSet.getInt("DECIMAL_DIGITS")));
+	}
+
 	private String _getPostgreSQLColumnType(
 		int columnSize, int dataType, int decimalDigits) {
 
@@ -673,6 +712,16 @@ public class DBCopyTablesProcess {
 		}
 
 		return views;
+	}
+
+	private boolean _isLongName(String name) {
+		byte[] bytes = name.getBytes(StandardCharsets.UTF_8);
+
+		if (bytes.length > _POSTGRESQL_NAME_MAX_LENGTH) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _loadColumnNamesMap(
@@ -809,6 +858,8 @@ public class DBCopyTablesProcess {
 			throw new IllegalArgumentException(sb.toString());
 		}
 	}
+
+	private static final int _POSTGRESQL_NAME_MAX_LENGTH = 63;
 
 	private static final int _SQL_TYPE_ORACLE_BINARY_DOUBLE = 101;
 
