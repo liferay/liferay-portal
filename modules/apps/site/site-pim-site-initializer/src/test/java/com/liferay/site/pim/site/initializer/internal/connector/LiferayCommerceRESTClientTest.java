@@ -84,7 +84,7 @@ public class LiferayCommerceRESTClientTest {
 			"http://localhost:8080");
 	}
 
-	private void _mockHttp(int responseCode, String responseBody)
+	private void _mockHttp(int responseCode, JSONObject responseJSONObject)
 		throws Exception {
 
 		_optionsList.clear();
@@ -102,13 +102,19 @@ public class LiferayCommerceRESTClientTest {
 
 				response.setResponseCode(responseCode);
 
-				return responseBody;
+				return responseJSONObject.toString();
 			}
 		);
 	}
 
 	private void _testAuthenticate() throws Exception {
-		_mockHttp(200, "{\"access_token\": \"TOKEN\", \"expires_in\": 600}");
+		_mockHttp(
+			200,
+			JSONUtil.put(
+				"access_token", "TOKEN"
+			).put(
+				"expires_in", 600
+			));
 
 		LiferayCommerceRESTClient liferayCommerceRESTClient =
 			_createLiferayCommerceRESTClient();
@@ -179,7 +185,7 @@ public class LiferayCommerceRESTClientTest {
 	}
 
 	private void _testAuthenticateWithErrorResponse() throws Exception {
-		_mockHttp(401, "{\"error\": \"invalid_client\"}");
+		_mockHttp(401, JSONUtil.put("error", "invalid_client"));
 
 		_assertPIMConnectorException(
 			"unable-to-authenticate-with-the-remote-instance",
@@ -187,7 +193,7 @@ public class LiferayCommerceRESTClientTest {
 	}
 
 	private void _testCheckCatalogWithErrorResponse() throws Exception {
-		_mockHttp(404, "{\"status\": \"NOT_FOUND\"}");
+		_mockHttp(404, JSONUtil.put("status", "NOT_FOUND"));
 
 		_assertPIMConnectorException(
 			"a-catalog-mapped-to-a-product-does-not-exist-in-the-remote-" +
@@ -195,7 +201,7 @@ public class LiferayCommerceRESTClientTest {
 			liferayCommerceRESTClient -> liferayCommerceRESTClient.checkCatalog(
 				_CATALOG_EXTERNAL_REFERENCE_CODE));
 
-		_mockHttp(403, "{\"status\": \"FORBIDDEN\"}");
+		_mockHttp(403, JSONUtil.put("status", "FORBIDDEN"));
 
 		_assertPIMConnectorException(
 			"unable-to-authenticate-with-the-remote-instance",
@@ -240,8 +246,11 @@ public class LiferayCommerceRESTClientTest {
 	private void _testPostImportTask() throws Exception {
 		_mockHttp(
 			200,
-			"{\"executeStatus\": \"INITIAL\", \"externalReferenceCode\": " +
-				"\"BATCH-1\"}");
+			JSONUtil.put(
+				"executeStatus", "INITIAL"
+			).put(
+				"externalReferenceCode", "BATCH-1"
+			));
 
 		LiferayCommerceRESTClient liferayCommerceRESTClient =
 			_createLiferayCommerceRESTClient();
@@ -274,7 +283,7 @@ public class LiferayCommerceRESTClientTest {
 	}
 
 	private void _testPostImportTaskWithErrorResponse() throws Exception {
-		_mockHttp(500, "{\"status\": \"INTERNAL_SERVER_ERROR\"}");
+		_mockHttp(500, JSONUtil.put("status", "INTERNAL_SERVER_ERROR"));
 
 		_assertPIMConnectorException(
 			"the-remote-instance-returned-an-error",
@@ -284,7 +293,7 @@ public class LiferayCommerceRESTClientTest {
 	}
 
 	private void _testPutOption() throws Exception {
-		_mockHttp(200, "{}");
+		_mockHttp(200, JSONFactoryUtil.createJSONObject());
 
 		LiferayCommerceRESTClient liferayCommerceRESTClient =
 			_createLiferayCommerceRESTClient();
@@ -309,14 +318,14 @@ public class LiferayCommerceRESTClientTest {
 	}
 
 	private void _testPutOptionWithErrorResponse() throws Exception {
-		_mockHttp(500, "{\"status\": \"INTERNAL_SERVER_ERROR\"}");
+		_mockHttp(500, JSONUtil.put("status", "INTERNAL_SERVER_ERROR"));
 
 		_assertPIMConnectorException(
 			"the-remote-instance-returned-an-error",
 			liferayCommerceRESTClient -> liferayCommerceRESTClient.putOption(
 				"color", JSONUtil.put("key", "color")));
 
-		_mockHttp(403, "{\"status\": \"FORBIDDEN\"}");
+		_mockHttp(403, JSONUtil.put("status", "FORBIDDEN"));
 
 		_assertPIMConnectorException(
 			"unable-to-authenticate-with-the-remote-instance",
