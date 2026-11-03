@@ -450,3 +450,63 @@ test(
 		});
 	}
 );
+
+test(
+	'A document can still be viewed after its author is deleted',
+	{tag: ['@LPD-113625', '@LPS-93031']},
+	async ({apiHelpers, documentLibraryPage, page, site}) => {
+		await page.goto(`/web${site.friendlyUrlPath}`);
+
+		const companyId = await page.evaluate(() =>
+			String(Liferay.ThemeDisplay.getCompanyId())
+		);
+
+		const administratorRole = await apiHelpers.jsonWebServicesRole.getRole(
+			companyId,
+			'Administrator'
+		);
+
+		const author = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
+			Number(administratorRole.roleId),
+			Number(author.id)
+		);
+
+		userData[author.alternateName] = {
+			name: author.givenName,
+			password: 'test',
+			surname: author.familyName,
+		};
+
+		const documentTitle = getRandomString();
+
+		await test.step('The author adds a document', async () => {
+			await performUserSwitch(page, author.alternateName);
+
+			await apiHelpers.headlessDelivery.postDocument(
+				site.id,
+				createReadStream(
+					path.join(__dirname, '/dependencies/image1.jpeg')
+				),
+				{fileName: documentTitle + '.jpeg', title: documentTitle}
+			);
+		});
+
+		await test.step('The author is deleted and the document still opens', async () => {
+			await performUserSwitch(page, 'test');
+
+			await apiHelpers.headlessAdminUser.deleteUserAccount(
+				Number(author.id)
+			);
+
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+
+			await documentLibraryPage.goToViewFileEntry(documentTitle);
+
+			await expect(
+				page.getByText('Download', {exact: true}).first()
+			).toBeVisible();
+		});
+	}
+);
