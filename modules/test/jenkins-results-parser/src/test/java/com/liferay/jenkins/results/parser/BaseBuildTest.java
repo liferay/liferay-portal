@@ -87,6 +87,37 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testGetJobURL() {
+		String masterName = RandomTestUtil.randomString();
+
+		JenkinsMaster jenkinsMaster = JenkinsMasterTestUtil.getJenkinsMaster(
+			masterName, "https://" + masterName + ".liferay.com/",
+			"http://" + masterName);
+
+		BaseBuild baseBuild = Mockito.mock(BaseBuild.class);
+
+		ReflectionTestUtil.setFieldValue(
+			baseBuild, "_jobName", "test portal(master)");
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuild
+		).getJobURL();
+
+		Mockito.when(
+			baseBuild.getJenkinsMaster()
+		).thenReturn(
+			jenkinsMaster
+		);
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"https://", masterName,
+				".liferay.com/job/test%20portal(master)"),
+			baseBuild.getJobURL());
+	}
+
+	@Test
 	public void testLoadParametersFromQueryString() {
 		Map<String, String> parameters = _loadParametersFromQueryString(
 			JenkinsResultsParserUtil.combine(
