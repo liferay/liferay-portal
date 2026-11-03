@@ -538,8 +538,8 @@ public class CPDefinitionLocalServiceImpl
 
 		CProduct newCProduct = (CProduct)originalCProduct.clone();
 
-		newCProduct.setUuid(PortalUUIDUtil.generate());
 		newCProduct.setNew(true);
+		newCProduct.setUuid(PortalUUIDUtil.generate());
 
 		long cProductId = counterLocalService.increment();
 
