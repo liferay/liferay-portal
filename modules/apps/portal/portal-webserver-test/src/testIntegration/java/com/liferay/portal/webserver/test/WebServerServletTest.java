@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.string.StringBundler;
@@ -47,6 +48,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -349,6 +351,90 @@ public class WebServerServletTest {
 		catch (Exception exception) {
 			Assert.assertTrue(exception instanceof PortalException);
 		}
+
+		User user = UserTestUtil.addGroupUser(
+			_group, RoleConstants.SITE_MEMBER);
+
+		try {
+			_sendFile(folder, title, user);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertTrue(exception instanceof PortalException);
+		}
+		finally {
+			UserLocalServiceUtil.deleteUser(user);
+		}
+	}
+
+	@Test
+	@TestInfo({"LPD-113625", "LPS-181561"})
+	public void testSendFileWithoutViewPermission() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		Folder folder = _dlAppLocalService.addFolder(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		String title = RandomTestUtil.randomString() + ".txt";
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			folder.getFolderId(), title, ContentTypes.TEXT_PLAIN,
+			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			serviceContext);
+
+		_removeResourcePermission(
+			fileEntry.getFileEntryId(), RoleConstants.GUEST, ActionKeys.VIEW);
+		_removeResourcePermission(
+			fileEntry.getFileEntryId(), RoleConstants.SITE_MEMBER,
+			ActionKeys.VIEW);
+
+		_assertSendFile(folder, title);
+	}
+
+	@Test
+	@TestInfo("LPD-113625")
+	public void testSendFileWithOnlyAccessPermissionOnFolder()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		Folder folder = _dlAppLocalService.addFolder(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		for (String roleName :
+				new String[] {RoleConstants.GUEST, RoleConstants.SITE_MEMBER}) {
+
+			Role role = RoleLocalServiceUtil.getRole(
+				_group.getCompanyId(), roleName);
+
+			ResourcePermissionLocalServiceUtil.setResourcePermissions(
+				_group.getCompanyId(), DLFolder.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(folder.getFolderId()), role.getRoleId(),
+				new String[] {ActionKeys.ACCESS});
+		}
+
+		String title = RandomTestUtil.randomString() + ".txt";
+
+		_dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			folder.getFolderId(), title, ContentTypes.TEXT_PLAIN,
+			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			serviceContext);
+
+		_assertSendFile(folder, title);
 	}
 
 	@Test
@@ -601,6 +687,31 @@ public class WebServerServletTest {
 		return layout.getIconImageId();
 	}
 
+	private void _assertSendFile(Folder folder, String title)
+		throws Exception {
+
+		MockHttpServletResponse mockHttpServletResponse = _sendFile(
+			folder, title, _user);
+
+		Assert.assertArrayEquals(
+			TestDataConstants.TEST_BYTE_ARRAY,
+			mockHttpServletResponse.getContentAsByteArray());
+
+		User user = UserTestUtil.addGroupUser(
+			_group, RoleConstants.SITE_MEMBER);
+
+		try {
+			mockHttpServletResponse = _sendFile(folder, title, user);
+
+			Assert.assertArrayEquals(
+				TestDataConstants.TEST_BYTE_ARRAY,
+				mockHttpServletResponse.getContentAsByteArray());
+		}
+		finally {
+			UserLocalServiceUtil.deleteUser(user);
+		}
+	}
+
 	private MockHttpServletRequest _createImageMockHttpServletRequest(
 		long imageId) {
 
@@ -723,6 +834,30 @@ public class WebServerServletTest {
 			_group.getCompanyId(), DLFileEntry.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(fileEntryId),
 			guestRole.getRoleId(), actionId);
+	}
+
+	private MockHttpServletResponse _sendFile(
+			Folder folder, String title, User user)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		ReflectionTestUtil.invoke(
+			_webServerServlet, "sendFile",
+			new Class<?>[] {
+				HttpServletRequest.class, HttpServletResponse.class, User.class,
+				long.class, long.class, String.class
+			},
+			mockHttpServletRequest, mockHttpServletResponse, user,
+			_group.getGroupId(), folder.getFolderId(), title);
+
+		return mockHttpServletResponse;
 	}
 
 	private MockHttpServletResponse _serviceDocumentRequest(
