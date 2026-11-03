@@ -70,6 +70,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.zip.ZipWriter;
@@ -90,6 +91,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -246,6 +248,8 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testPostSiteWithNondefaultLocales();
 		_testPostSiteWithParentSiteExternalReferenceCode();
 		_testPostSiteWithSelectedSitesOnExport();
+		_testPostSiteWithSelectedSitesOnExportWithDateRange();
+		_testPostSiteWithSelectedSitesOnExportWithUnmatchedDateRange();
 		_testPostSiteWithSelectedSitesOnImport();
 		_testPostSiteWithTypeSettingsFields();
 		_testPostSiteWithoutAuthentication();
@@ -506,7 +510,8 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			site.getName(), group.getName(LocaleUtil.getDefault()));
 	}
 
-	private File _exportLayoutsAsFile(String... groupExternalReferenceCodes)
+	private File _exportLayoutsAsFile(
+			Date startDate, Date endDate, String... groupExternalReferenceCodes)
 		throws Exception {
 
 		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
@@ -517,18 +522,24 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 				addDraftExportImportConfiguration(
 					TestPropsValues.getUserId(),
 					ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT,
-					ExportImportConfigurationSettingsMapFactoryUtil.
-						buildExportLayoutSettingsMap(
-							TestPropsValues.getUser(),
-							companyGroup.getGroupId(), false, new long[0],
-							HashMapBuilder.put(
-								PortletDataHandlerKeys.
-									GROUP_EXTERNAL_REFERENCE_CODES,
-								groupExternalReferenceCodes
-							).put(
-								PortletDataHandlerKeys.PORTLET_DATA,
-								new String[] {Boolean.TRUE.toString()}
-							).build())));
+					HashMapBuilder.putAll(
+						ExportImportConfigurationSettingsMapFactoryUtil.
+							buildExportLayoutSettingsMap(
+								TestPropsValues.getUser(),
+								companyGroup.getGroupId(), false, new long[0],
+								HashMapBuilder.put(
+									PortletDataHandlerKeys.
+										GROUP_EXTERNAL_REFERENCE_CODES,
+									groupExternalReferenceCodes
+								).put(
+									PortletDataHandlerKeys.PORTLET_DATA,
+									new String[] {Boolean.TRUE.toString()}
+								).build())
+					).put(
+						"endDate", () -> endDate
+					).put(
+						"startDate", () -> startDate
+					).build()));
 	}
 
 	private SiteResource _getSiteResource(User user) {
@@ -1315,7 +1326,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 		_groupLocalService.updateGroup(group);
 
-		File larFile = _exportLayoutsAsFile(externalReferenceCode);
+		File larFile = _exportLayoutsAsFile(null, null, externalReferenceCode);
 
 		siteResource.deleteSite(externalReferenceCode);
 
@@ -1504,7 +1515,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		String externalReferenceCode1 = site1.getExternalReferenceCode();
 		String externalReferenceCode2 = site2.getExternalReferenceCode();
 
-		File larFile = _exportLayoutsAsFile(externalReferenceCode1);
+		File larFile = _exportLayoutsAsFile(null, null, externalReferenceCode1);
 
 		siteResource.deleteSite(externalReferenceCode1);
 		siteResource.deleteSite(externalReferenceCode2);
@@ -1519,6 +1530,70 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 				externalReferenceCode2, TestPropsValues.getCompanyId()));
 	}
 
+	private void _testPostSiteWithSelectedSitesOnExportWithDateRange()
+		throws Exception {
+
+		Site site1 = _testPostSite_addSite(randomSite());
+		Site site2 = _testPostSite_addSite(randomSite());
+		Site site3 = _testPostSite_addSite(randomSite());
+
+		String externalReferenceCode1 = site1.getExternalReferenceCode();
+		String externalReferenceCode2 = site2.getExternalReferenceCode();
+		String externalReferenceCode3 = site3.getExternalReferenceCode();
+
+		Date date = new Date();
+
+		_updateModifiedDate(
+			externalReferenceCode1, new Date(date.getTime() - (4 * Time.DAY)));
+		_updateModifiedDate(
+			externalReferenceCode2, new Date(date.getTime() - (2 * Time.DAY)));
+
+		File larFile = _exportLayoutsAsFile(
+			new Date(date.getTime() - (3 * Time.DAY)),
+			new Date(date.getTime() - Time.DAY), externalReferenceCode1,
+			externalReferenceCode2, externalReferenceCode3);
+
+		siteResource.deleteSite(externalReferenceCode1);
+		siteResource.deleteSite(externalReferenceCode2);
+		siteResource.deleteSite(externalReferenceCode3);
+
+		_importSites(
+			larFile, externalReferenceCode1, externalReferenceCode2,
+			externalReferenceCode3);
+
+		Assert.assertNull(
+			_groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode1, TestPropsValues.getCompanyId()));
+		Assert.assertNotNull(
+			_groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode2, TestPropsValues.getCompanyId()));
+		Assert.assertNull(
+			_groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode3, TestPropsValues.getCompanyId()));
+	}
+
+	private void _testPostSiteWithSelectedSitesOnExportWithUnmatchedDateRange()
+		throws Exception {
+
+		Site site = _testPostSite_addSite(randomSite());
+
+		String externalReferenceCode = site.getExternalReferenceCode();
+
+		Date date = new Date();
+
+		File larFile = _exportLayoutsAsFile(
+			new Date(date.getTime() - (2 * Time.DAY)),
+			new Date(date.getTime() - Time.DAY), externalReferenceCode);
+
+		siteResource.deleteSite(externalReferenceCode);
+
+		_importSites(larFile, externalReferenceCode);
+
+		Assert.assertNull(
+			_groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode, TestPropsValues.getCompanyId()));
+	}
+
 	private void _testPostSiteWithSelectedSitesOnImport() throws Exception {
 		Site site1 = _testPostSite_addSite(randomSite());
 		Site site2 = _testPostSite_addSite(randomSite());
@@ -1527,7 +1602,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		String externalReferenceCode2 = site2.getExternalReferenceCode();
 
 		File larFile = _exportLayoutsAsFile(
-			externalReferenceCode1, externalReferenceCode2);
+			null, null, externalReferenceCode1, externalReferenceCode2);
 
 		siteResource.deleteSite(externalReferenceCode1);
 		siteResource.deleteSite(externalReferenceCode2);
@@ -2008,7 +2083,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 		group = _groupLocalService.updateGroup(group);
 
-		File larFile = _exportLayoutsAsFile(externalReferenceCode);
+		File larFile = _exportLayoutsAsFile(null, null, externalReferenceCode);
 
 		group.setName(RandomTestUtil.randomString(), LocaleUtil.getDefault());
 
@@ -2130,6 +2205,18 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
+	}
+
+	private void _updateModifiedDate(
+			String externalReferenceCode, Date modifiedDate)
+		throws Exception {
+
+		Group group = _groupLocalService.getGroupByExternalReferenceCode(
+			externalReferenceCode, TestPropsValues.getCompanyId());
+
+		group.setModifiedDate(modifiedDate);
+
+		_groupLocalService.updateGroup(group);
 	}
 
 	private static final String _CLASS_NAME_EXCEPTION_MAPPER =
