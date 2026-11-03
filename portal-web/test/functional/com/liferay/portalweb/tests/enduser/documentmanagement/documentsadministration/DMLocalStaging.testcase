@@ -164,7 +164,6 @@ definition {
 			previewImage = "Image_2.jpg");
 	}
 
-
 	@description = "This test covers LPS-126751. It ensures that a user cannot create a metadata set without a field."
 	@priority = 4
 	@refactordone
@@ -179,8 +178,6 @@ definition {
 			locator1 = "Message#ERROR",
 			value1 = "Error:At least one field must be added.");
 	}
-
-
 
 	@description = "This is a test for LPS-95290. It asserts that an unauthorized user can not download the file through the document URL of the staged site."
 	@priority = 3
@@ -310,7 +307,6 @@ definition {
 		Comments.viewCommentReadOnly();
 	}
 
-
 	@description = "This is a test for LPS-136824. It checks that a folder with multiple files can be deleted using the normal publication process."
 	@priority = 3
 	test CanPublishDeletedFolderWithMultipleFiles {
@@ -363,7 +359,6 @@ definition {
 
 		DMDocument.viewDefault();
 	}
-
 
 	@description = "This test covers LPS-119234. It ensures that a document type can be published to live via SAP."
 	@priority = 4
@@ -657,7 +652,6 @@ definition {
 			textFieldLabel = "Company");
 	}
 
-
 	@description = "This is a test for LPS-136828. It checks that multiple metadata sets can be published."
 	@priority = 3
 	test CanPublishMetadataSets {
@@ -687,8 +681,6 @@ definition {
 			DMMetadataSet.viewMetadataSetTitle(metadataSetTitle = "DM Metadata Set Name ${n}");
 		}
 	}
-
-
 
 	@description = "This is a test for LPS-136826. It checks that a shortcut can be published using the normal publication process."
 	@priority = 3
@@ -753,7 +745,6 @@ definition {
 
 		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
 	}
-
 
 	@description = "This is a test for LPS-136822. It checks that a document type can be updated and published using the normal publication process."
 	@priority = 3
@@ -876,7 +867,6 @@ definition {
 		DMDocument.viewCP(dmDocumentTitle = "DM Document 2 Title");
 	}
 
-
 	@description = "This is a test for LPS-136831. It checks that a file can be replaced and republished."
 	@priority = 3
 	test CanReplaceFileAndRepublish {
@@ -925,7 +915,6 @@ definition {
 
 		DMDocument.viewCP(dmDocumentTitle = "DM Document Title Edit");
 	}
-
 
 	@description = "This test covers LPS-154415. It checks that an external video displays properly in the Media Gallery widget after the friendlyURL has been edited and published on a site."
 	@priority = 4
@@ -1669,7 +1658,6 @@ definition {
 			key_imageSourceURL = "${portalURL}/documents/d/site-name/document_2_edit",
 			locator1 = "DocumentsAndMediaDocument#DOCUMENT_VIEWPORT_PREVIEW");
 	}
-
 
 	@description = "This test covers LPS-90557. It ensures that a basic document and a shortcut pointing to it can be removed and republished when enabling local staging."
 	@priority = 4

@@ -107,7 +107,9 @@ public class CopyDLObjectsMVCActionCommandTest {
 
 	@Test
 	@TestInfo({"LPD-113633", "LPS-186688"})
-	public void testCannotCopyToTheLiveGroupOfAStagedSite() throws Exception {
+	public void testDoProcessActionWhenDestinationGroupIsStaged()
+		throws Exception {
+
 		long destinationGroupId = RandomTestUtil.randomLong();
 
 		_setUpRepository(destinationGroupId, destinationGroupId);
