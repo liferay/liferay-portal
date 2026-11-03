@@ -24,6 +24,7 @@ import com.liferay.document.library.util.DLFileEntryTypeUtil;
 import com.liferay.dynamic.data.mapping.kernel.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.kernel.DDMFormValues;
 import com.liferay.dynamic.data.mapping.kernel.LocalizedValue;
+import com.liferay.dynamic.data.mapping.kernel.Value;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -98,7 +99,8 @@ public class DLLocalStagingTest {
 			serviceContext, PortletDataHandlerKeys.DATA_STRATEGY_MIRROR, true);
 		_addStagingAttribute(
 			serviceContext,
-			StagingUtil.getStagedPortletId(DLPortletKeys.DOCUMENT_LIBRARY_ADMIN),
+			StagingUtil.getStagedPortletId(
+				DLPortletKeys.DOCUMENT_LIBRARY_ADMIN),
 			true);
 
 		StagingLocalServiceUtil.enableLocalStaging(
@@ -127,10 +129,8 @@ public class DLLocalStagingTest {
 
 		_publish();
 
-		FileEntry liveFileEntry = _getLiveFileEntry(fileEntry);
-
 		DLFileEntryType liveDLFileEntryType = _getDLFileEntryType(
-			liveFileEntry);
+			_getLiveFileEntry(fileEntry));
 
 		Assert.assertEquals(
 			dlFileEntryType.getUuid(), liveDLFileEntryType.getUuid());
@@ -146,9 +146,7 @@ public class DLLocalStagingTest {
 
 	@Test
 	@TestInfo({"LPD-113633", "LPS-90557"})
-	public void testPublishDeletedFileEntryWithFileShortcut()
-		throws Exception {
-
+	public void testPublishDeletedFileEntryWithFileShortcut() throws Exception {
 		FileEntry fileEntry = _addFileEntry(
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
@@ -222,8 +220,8 @@ public class DLLocalStagingTest {
 			TestPropsValues.getUserId(), fileEntry.getFileEntryId(),
 			fileEntry.getFileName(), fileEntry.getMimeType(),
 			fileEntry.getTitle(), null, fileEntry.getDescription(),
-			StringPool.BLANK, DLVersionNumberIncrease.MINOR, (byte[])null,
-			null, null, null, _getServiceContext(dlFileEntryType, value));
+			StringPool.BLANK, DLVersionNumberIncrease.MINOR, (byte[])null, null,
+			null, null, _getServiceContext(dlFileEntryType, value));
 
 		_publish();
 
@@ -319,7 +317,9 @@ public class DLLocalStagingTest {
 
 		_publish();
 
-		for (DDMStructure ddmStructure : new DDMStructure[] {ddmStructure1, ddmStructure2}) {
+		for (DDMStructure ddmStructure :
+				new DDMStructure[] {ddmStructure1, ddmStructure2}) {
+
 			DDMStructure liveDDMStructure =
 				DDMStructureLocalServiceUtil.fetchDDMStructureByUuidAndGroupId(
 					ddmStructure.getUuid(), _liveGroup.getGroupId());
@@ -365,6 +365,7 @@ public class DLLocalStagingTest {
 		String description = RandomTestUtil.randomString();
 		String fileName = RandomTestUtil.randomString() + ".png";
 		String title = RandomTestUtil.randomString();
+
 		String value = RandomTestUtil.randomString();
 
 		serviceContext = _getServiceContext(dlFileEntryType, value);
@@ -489,9 +490,7 @@ public class DLLocalStagingTest {
 			Assert.assertFalse(ddmFormFieldValues.isEmpty());
 
 			for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
-
-				com.liferay.dynamic.data.mapping.kernel.Value
-					ddmFormFieldValueValue = ddmFormFieldValue.getValue();
+				Value ddmFormFieldValueValue = ddmFormFieldValue.getValue();
 
 				Assert.assertEquals(
 					value, ddmFormFieldValueValue.getString(LocaleUtil.US));
@@ -546,8 +545,7 @@ public class DLLocalStagingTest {
 			for (String fieldName : ddmStructure.getFieldNames()) {
 				DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
 
-				ddmFormFieldValue.setInstanceId(
-					StringUtil.randomString(8));
+				ddmFormFieldValue.setInstanceId(StringUtil.randomString(8));
 				ddmFormFieldValue.setName(fieldName);
 
 				LocalizedValue localizedValue = new LocalizedValue(
@@ -578,10 +576,10 @@ public class DLLocalStagingTest {
 	}
 
 	@Inject
-	private static DDMBeanTranslator _ddmBeanTranslator;
+	private DDMBeanTranslator _ddmBeanTranslator;
 
 	@Inject
-	private static FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _liveGroup;
