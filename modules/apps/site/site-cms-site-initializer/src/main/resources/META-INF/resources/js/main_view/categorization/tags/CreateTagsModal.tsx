@@ -211,7 +211,7 @@ export default function CreateTagsModalContent({
 						setSpaceInputError={setSpaceInputError}
 					/>
 
-					{cmpEnabled && Liferay.FeatureFlags['LPD-99403'] && (
+					{cmpEnabled && (
 						<CategorizationProjects
 							checkboxText="tag"
 							defaultAllScopesChecked={false}

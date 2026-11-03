@@ -77,7 +77,7 @@ export default function ViewTags({
 			multiple: true,
 			type: 'selection',
 		},
-		...(cmpEnabled && Liferay.FeatureFlags['LPD-99403']
+		...(cmpEnabled
 			? [
 					{
 						apiURL: "/o/search/v1.0/search?emptySearch=true&nestedFields=embedded&filter=objectDefinitionExternalReferenceCode eq 'l_cmp_project' and status in (0, 1)",

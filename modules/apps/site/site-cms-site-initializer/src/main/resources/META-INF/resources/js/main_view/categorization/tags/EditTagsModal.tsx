@@ -99,12 +99,11 @@ export default function EditTagsModalContent({
 		const body = {
 			assetLibraries: selectedSpaces.map((scopeKey) => ({scopeKey})),
 			name: values.tagName,
-			...(cmpEnabled &&
-				Liferay.FeatureFlags['LPD-99403'] && {
-					projects: allProjectsSelected
-						? [{id: ALL_SCOPES_ID}]
-						: selectedProjects.map((scopeKey) => ({scopeKey})),
-				}),
+			...(cmpEnabled && {
+				projects: allProjectsSelected
+					? [{id: ALL_SCOPES_ID}]
+					: selectedProjects.map((scopeKey) => ({scopeKey})),
+			}),
 		};
 
 		ApiHelper.put(editTagURL, body).then(({error, status}) => {
@@ -250,7 +249,7 @@ export default function EditTagsModalContent({
 						setSpaceInputError={setSpaceInputError}
 					/>
 
-					{cmpEnabled && Liferay.FeatureFlags['LPD-99403'] && (
+					{cmpEnabled && (
 						<CategorizationProjects
 							checkboxText="tag"
 							defaultAllScopesChecked={isAllScopes(projects)}
