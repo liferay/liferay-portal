@@ -1282,7 +1282,7 @@ public class GraphQLServletExtender {
 		return new ChainedInstrumentation(
 			new QueryDepthLimitInstrumentation(
 				headlessAPICompanyConfiguration.queryDepthLimit()),
-			_introspectionFieldLimitInstrumentation);
+			new IntrospectionFieldLimitInstrumentation());
 	}
 
 	private GraphQLObjectType _getPageGraphQLObjectType(
@@ -1979,9 +1979,6 @@ public class GraphQLServletExtender {
 		GraphQLServletExtender.class);
 
 	private static final GraphQLScalarType _dateGraphQLScalarType;
-	private static final IntrospectionFieldLimitInstrumentation
-		_introspectionFieldLimitInstrumentation =
-			new IntrospectionFieldLimitInstrumentation();
 	private static final GraphQLScalarType _mapGraphQLScalarType;
 	private static final GraphQLScalarType _objectGraphQLScalarType;
 	private static final Snapshot<ScopeChecker> _scopeCheckerSnapshot =
