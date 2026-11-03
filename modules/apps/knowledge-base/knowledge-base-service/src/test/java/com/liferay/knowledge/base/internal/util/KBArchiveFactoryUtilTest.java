@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.SettingsLocator;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -161,6 +162,59 @@ public class KBArchiveFactoryUtilTest {
 		Collection<KBArchive.File> files2 = folder2.getFiles();
 
 		Assert.assertEquals(files2.toString(), 2, files2.size());
+	}
+
+	@Test
+	@TestInfo("LPD-107698")
+	public void testZipReaderWithIntroFileInAnotherArticleExtension()
+		throws Exception {
+
+		Mockito.when(
+			_kbGroupServiceConfiguration.markdownImporterArticleExtensions()
+		).thenReturn(
+			new String[] {".markdown", ".md"}
+		);
+
+		Mockito.when(
+			_kbGroupServiceConfiguration.markdownImporterArticleIntro()
+		).thenReturn(
+			"intro.markdown"
+		);
+
+		Mockito.when(
+			_zipReader.getEntries()
+		).thenReturn(
+			Arrays.asList("/x/00-intro.md", "/x/01-a.md", "/y/intro.markdown")
+		);
+
+		KBArchive kbArchive = KBArchiveFactoryUtil.createKBArchive(
+			_configurationProvider, 1234L, _zipReader);
+
+		Collection<KBArchive.Folder> folders = kbArchive.getFolders();
+
+		Assert.assertEquals(folders.toString(), 2, folders.size());
+
+		Iterator<KBArchive.Folder> folderIterator = folders.iterator();
+
+		KBArchive.Folder folder0 = folderIterator.next();
+
+		Assert.assertEquals("/x", folder0.getName());
+
+		KBArchive.File introFile0 = folder0.getIntroFile();
+
+		Assert.assertEquals("/x/00-intro.md", introFile0.getName());
+
+		Collection<KBArchive.File> files0 = folder0.getFiles();
+
+		Assert.assertEquals(files0.toString(), 1, files0.size());
+
+		KBArchive.Folder folder1 = folderIterator.next();
+
+		Assert.assertEquals("/y", folder1.getName());
+
+		KBArchive.File introFile1 = folder1.getIntroFile();
+
+		Assert.assertEquals("/y/intro.markdown", introFile1.getName());
 	}
 
 	@Test(expected = KBArticleImportException.class)
