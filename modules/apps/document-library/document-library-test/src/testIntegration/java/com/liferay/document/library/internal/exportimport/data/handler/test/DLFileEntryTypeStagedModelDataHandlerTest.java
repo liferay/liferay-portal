@@ -192,6 +192,35 @@ public class DLFileEntryTypeStagedModelDataHandlerTest
 	}
 
 	@Test
+	@TestInfo({"LPD-113633", "LPS-119234"})
+	public void testImportDLFileEntryTypeWithAutoDataDefinition()
+		throws Exception {
+
+		DDMForm ddmForm = DDMStructureTestUtil.getSampleDDMForm();
+
+		DDMStructure ddmStructure = DDMStructureLocalServiceUtil.addStructure(
+			null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+			DDMStructureConstants.DEFAULT_PARENT_STRUCTURE_ID,
+			PortalUtil.getClassNameId(DLFileEntryMetadata.class.getName()),
+			null,
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()),
+			null, ddmForm, DDMUtil.getDefaultDDMFormLayout(ddmForm),
+			StorageType.DEFAULT.toString(), DDMStructureConstants.TYPE_AUTO,
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		_exportImportFileEntryType(_addFileEntryType(ddmStructure));
+
+		DDMStructure importedDDMStructure =
+			DDMStructureLocalServiceUtil.getDDMStructureByUuidAndGroupId(
+				ddmStructure.getUuid(), liveGroup.getGroupId());
+
+		Assert.assertEquals(
+			DDMStructureConstants.TYPE_AUTO, importedDDMStructure.getType());
+	}
+
+	@Test
 	@TestInfo("LPD-110143")
 	public void testImportDLFileEntryTypeWithDeletedDataDefinition()
 		throws Exception {
