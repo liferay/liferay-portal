@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US" default-locale="en_US" version="1.0">
+	<dynamic-element field-reference="Image27403159" index-type="text" instance-id="Mf4pKw2s" name="Image27403159" type="image">
+		<dynamic-content language-id="en_US">
+			<![CDATA[
+				{
+					"alt": "",
+					"fileEntryId": "[$FILE_ENTRY_ID$]",
+					"groupId": "[$GROUP_ID$]",
+					"name": "[$TITLE$]",
+					"title": "[$TITLE$]",
+					"type": "document",
+					"uuid": "[$UUID$]"
+				}
+			]]>
+		</dynamic-content>
+	</dynamic-element>
+</root>
