@@ -7,7 +7,7 @@ export {FormikFieldCheckbox} from './FormikFieldCheckbox';
 export {FormikFieldContentSelector} from './FormikFieldContentSelector';
 export {FormikFieldDateFilter} from './FormikFieldDateFilter';
 export {FormikFieldFileSelector} from './FormikFieldFileSelector';
+export {FormikFieldGroups} from './FormikFieldGroups';
 export {FormikFieldMultiCheckbox} from './FormikFieldMultiCheckbox';
 export {FormikFieldRadioGroup} from './FormikFieldRadioGroup';
-export {FormikFieldSites} from './FormikFieldSites';
 export {FormikFieldText} from './FormikFieldText';

@@ -9,80 +9,82 @@ import ClayLayout from '@clayui/layout';
 import {sub} from 'frontend-js-web';
 import React, {useId, useState} from 'react';
 
-import {GroupType, Site} from '../../../types/exportImportPreview';
+import {Group, GroupType} from '../../../types/exportImportPreview';
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import SectionTags from '../content_selector/SectionTags';
-import SiteSelectorModal from './SiteSelectorModal';
+import GroupSelectorModal from './GroupSelectorModal';
 
 const LABELS = {
-	assetLibrary: {
-		empty: Liferay.Language.get('no-spaces-are-selected'),
-		select: Liferay.Language.get('select-spaces'),
-		title: Liferay.Language.get('spaces'),
-	},
 	site: {
 		empty: Liferay.Language.get('no-sites-are-selected'),
 		select: Liferay.Language.get('select-sites'),
 		title: Liferay.Language.get('sites'),
 	},
+	space: {
+		empty: Liferay.Language.get('no-spaces-are-selected'),
+		select: Liferay.Language.get('select-spaces'),
+		title: Liferay.Language.get('spaces'),
+	},
 };
 
-function toEntries(sites: Site[]) {
-	return sites.map(
-		(site) => [site.externalReferenceCode, site] as [string, Site]
+function toEntries(groups: Group[]) {
+	return groups.map(
+		(group) => [group.externalReferenceCode, group] as [string, Group]
 	);
 }
 
-export default function SitesControl({
+export default function GroupsControl({
 	apiURL,
+	groups,
 	onChange,
 	process = 'export',
 	selectedExternalReferenceCodes,
-	sites,
 	totalCount,
-	type = 'site',
+	type,
 }: {
 	apiURL?: string;
+	groups?: Group[];
 	onChange: (externalReferenceCodes: string[]) => void;
 	process?: ExportImportProcess;
 	selectedExternalReferenceCodes: string[];
-	sites?: Site[];
 	totalCount?: number;
-	type?: GroupType;
+	type: GroupType;
 }) {
 	const descriptionId = useId();
 
 	const [showModal, setShowModal] = useState(false);
 
 	const [
-		knownSitesByExternalReferenceCode,
-		setKnownSitesByExternalReferenceCode,
-	] = useState(() => new Map(toEntries(sites ?? [])));
+		knownGroupsByExternalReferenceCode,
+		setKnownGroupsByExternalReferenceCode,
+	] = useState(() => new Map(toEntries(groups ?? [])));
 
-	const selectedSites = selectedExternalReferenceCodes.map(
+	const labels = LABELS[type];
+
+	const selectedGroups = selectedExternalReferenceCodes.map(
 		(externalReferenceCode) =>
-			knownSitesByExternalReferenceCode.get(externalReferenceCode) ?? {
+			knownGroupsByExternalReferenceCode.get(externalReferenceCode) ?? {
 				externalReferenceCode,
 			}
 	);
 
-	const description = selectedSites.length
+	const description = selectedGroups.length
 		? sub(
 				Liferay.Language.get('selected-x'),
-				selectedSites
+				selectedGroups
 					.map(
 						({descriptiveName, externalReferenceCode}) =>
 							descriptiveName || externalReferenceCode
 					)
 					.join(', ')
 			)
-		: LABELS[type].empty;
+		: labels.empty;
 
 	return (
 		<>
 			<ClayLayout.ContentRow verticalAlign="center">
 				<Text size={6} weight="bold">
-					{LABELS[type].title}
+					{labels.title}
 				</Text>
 
 				<SectionTags additionCount={totalCount} />
@@ -99,33 +101,33 @@ export default function SitesControl({
 				outline
 				size="sm"
 			>
-				{LABELS[type].select}
+				{labels.select}
 			</ClayButton>
 
 			{showModal && (
-				<SiteSelectorModal
+				<GroupSelectorModal
 					apiURL={apiURL}
+					groups={groups}
 					onClose={() => setShowModal(false)}
-					onSubmit={(nextSelectedSites) => {
-						setKnownSitesByExternalReferenceCode(
-							(previousKnownSitesByExternalReferenceCode) =>
+					onSubmit={(nextSelectedGroups) => {
+						setKnownGroupsByExternalReferenceCode(
+							(previousKnownGroupsByExternalReferenceCode) =>
 								new Map([
-									...previousKnownSitesByExternalReferenceCode,
-									...toEntries(nextSelectedSites),
+									...previousKnownGroupsByExternalReferenceCode,
+									...toEntries(nextSelectedGroups),
 								])
 						);
 
 						onChange(
-							nextSelectedSites.map(
+							nextSelectedGroups.map(
 								({externalReferenceCode}) =>
 									externalReferenceCode
 							)
 						);
 					}}
 					process={process}
-					selectedSites={selectedSites}
-					sites={sites}
-					title={LABELS[type].select}
+					selectedGroups={selectedGroups}
+					title={labels.select}
 					type={type}
 				/>
 			)}

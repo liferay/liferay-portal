@@ -12,7 +12,7 @@ import {
 } from '@liferay/frontend-data-set-web';
 import React, {useState} from 'react';
 
-import {GroupType, Site} from '../../../types/exportImportPreview';
+import {Group, GroupType} from '../../../types/exportImportPreview';
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 
 const SORTS = [
@@ -69,34 +69,36 @@ function getView(process: ExportImportProcess, type: GroupType): IView {
 	};
 }
 
-function sortByDescriptiveName(sites: Site[]) {
-	return [...sites].sort((site1, site2) =>
-		(site1.descriptiveName ?? '').localeCompare(site2.descriptiveName ?? '')
+function sortByDescriptiveName(groups: Group[]) {
+	return [...groups].sort((group1, group2) =>
+		(group1.descriptiveName ?? '').localeCompare(
+			group2.descriptiveName ?? ''
+		)
 	);
 }
 
-export default function SiteSelectorModal({
+export default function GroupSelectorModal({
 	apiURL,
+	groups,
 	onClose,
 	onSubmit,
 	process = 'export',
-	selectedSites,
-	sites,
+	selectedGroups,
 	title,
-	type = 'site',
+	type,
 }: {
 	apiURL?: string;
+	groups?: Group[];
 	onClose: () => void;
-	onSubmit: (selectedSites: Site[]) => void;
+	onSubmit: (selectedGroups: Group[]) => void;
 	process?: ExportImportProcess;
-	selectedSites: Site[];
-	sites?: Site[];
+	selectedGroups: Group[];
 	title: string;
-	type?: GroupType;
+	type: GroupType;
 }) {
 	const {observer, onClose: closeModal} = useModal({onClose});
 
-	const [selectedItems, setSelectedItems] = useState(selectedSites);
+	const [selectedItems, setSelectedItems] = useState(selectedGroups);
 
 	return (
 		<ClayModal observer={observer} size="full-screen">
@@ -110,7 +112,7 @@ export default function SiteSelectorModal({
 				<FrontendDataSet
 					apiURL={apiURL}
 					configInURLBehavior={EConfigInURLBehavior.OFF}
-					id={`exportImport${type === 'site' ? 'Site' : 'AssetLibrary'}Selector_${process}`}
+					id={`exportImportGroupSelector_${type}_${process}`}
 					onItemsPropSearch={(item, query) =>
 						(item.descriptiveName ?? '')
 							.toLowerCase()
@@ -123,8 +125,8 @@ export default function SiteSelectorModal({
 					selectionType="multiple"
 					style="fluid"
 					views={[getView(process, type)]}
-					{...(sites
-						? {items: sortByDescriptiveName(sites)}
+					{...(groups
+						? {items: sortByDescriptiveName(groups)}
 						: {sorts: SORTS})}
 				/>
 			</ClayModal.Body>

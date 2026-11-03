@@ -11,8 +11,6 @@ export interface Preview {
 	portletDataHandlers: PortletDataHandler[];
 }
 
-export type GroupType = 'assetLibrary' | 'site';
-
 export interface ImportPreview {
 	additionCount: number;
 	author: string;
@@ -25,16 +23,17 @@ export interface ImportPreview {
 	sites?: Site[];
 }
 
-export interface PreviewAssetLibrary {
+export interface Group {
 	descriptiveName?: string;
 	existsInInstance?: boolean;
 	externalReferenceCode: string;
 }
 
-export interface Site {
+export type GroupType = 'site' | 'space';
+
+export type PreviewAssetLibrary = Group;
+
+export interface Site extends Group {
 	childSitesCount?: number;
-	descriptiveName?: string;
-	existsInInstance?: boolean;
-	externalReferenceCode: string;
 	path?: string;
 }

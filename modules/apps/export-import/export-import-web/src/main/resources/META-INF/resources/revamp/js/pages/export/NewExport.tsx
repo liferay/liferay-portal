@@ -28,8 +28,7 @@ import {
 import {getProcessFormErrors} from '../../utils/getProcessFormErrors';
 import {navigateToProcesses} from '../../utils/navigateToProcesses';
 import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
-import AssetLibrarySelection from './components/AssetLibrarySelection';
-import SiteSelection from './components/SiteSelection';
+import GroupSelection from './components/GroupSelection';
 
 type ExportFormValues = {
 	assetLibraryExternalReferenceCodes: string[];
@@ -158,18 +157,20 @@ export function NewExport({
 									'export-complete-sites,-including-all-their-pages,-content,-and-settings'
 								)}
 							>
-								<SiteSelection
-									exportPreviewSitesAPIURL={
-										exportPreviewSitesAPIURL
-									}
+								<GroupSelection
+									apiURL={exportPreviewSitesAPIURL}
+									name="siteExternalReferenceCodes"
+									type="site"
 								/>
 
 								{exportPreviewAssetLibrariesAPIURL && (
 									<div className="mt-4">
-										<AssetLibrarySelection
-											exportPreviewAssetLibrariesAPIURL={
+										<GroupSelection
+											apiURL={
 												exportPreviewAssetLibrariesAPIURL
 											}
+											name="assetLibraryExternalReferenceCodes"
+											type="space"
 										/>
 									</div>
 								)}

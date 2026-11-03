@@ -13,9 +13,8 @@ import {
 } from '../../../components/forms/formik';
 import {ImportPreview} from '../../../types/exportImportPreview';
 import {toPortletDataHandlerSections} from '../../../utils/contentSelection';
-import AssetLibrarySelection from './AssetLibrarySelection';
 import FileSummary from './FileSummary';
-import SiteSelection from './SiteSelection';
+import GroupSelection from './GroupSelection';
 
 export default function DataSelectionStep({
 	commentsAndRatingsEnabled = false,
@@ -45,15 +44,19 @@ export default function DataSelectionStep({
 						)}
 					>
 						{!!importPreview.sites?.length && (
-							<SiteSelection sites={importPreview.sites} />
+							<GroupSelection
+								groups={importPreview.sites}
+								name="siteExternalReferenceCodes"
+								type="site"
+							/>
 						)}
 
 						{!!importPreview.previewAssetLibraries?.length && (
 							<div className="mt-4">
-								<AssetLibrarySelection
-									previewAssetLibraries={
-										importPreview.previewAssetLibraries
-									}
+								<GroupSelection
+									groups={importPreview.previewAssetLibraries}
+									name="assetLibraryExternalReferenceCodes"
+									type="space"
 								/>
 							</div>
 						)}

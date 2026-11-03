@@ -5,19 +5,21 @@
 
 import {addParams} from 'frontend-js-web';
 
-import {Site} from '../types/exportImportPreview';
+import {Group} from '../types/exportImportPreview';
 import ApiHelper, {RequestResult} from './ApiHelper';
 
-export interface SitesPage {
-	items: Site[];
+export interface GroupsPage {
+	items: Group[];
 	lastPage: number;
 	page: number;
 	pageSize: number;
 	totalCount: number;
 }
 
-export function getExportPreviewSitesCount(
+export function getExportPreviewGroupsCount(
 	url: string
-): Promise<RequestResult<SitesPage>> {
-	return ApiHelper.get<SitesPage>(addParams({page: '1', pageSize: '1'}, url));
+): Promise<RequestResult<GroupsPage>> {
+	return ApiHelper.get<GroupsPage>(
+		addParams({page: '1', pageSize: '1'}, url)
+	);
 }
