@@ -78,59 +78,6 @@ definition {
 			roleType = ${roleType});
 	}
 
-	@summary = "Default summary"
-	macro setUpOrgRoleLoginUserPG(orgName = null, roleTitle = null, userEmailAddress = null, newPassword = null, i = null, userFirstName = null, userLoginEmailAddress = null, pageName = null, currentPassword = null, portletName = null, userLastName = null, userScreenName = null, userLoginFullName = null) {
-		JSONUser.addUser(
-			userEmailAddress = ${userEmailAddress},
-			userFirstName = ${userFirstName},
-			userLastName = ${userLastName},
-			userScreenName = ${userScreenName});
-
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		User.editPasswordCP(
-			currentPassword = ${currentPassword},
-			newPassword = ${newPassword},
-			userEmailAddress = ${userEmailAddress},
-			userScreenName = ${userScreenName});
-
-		JSONOrganization.addOrganization(
-			organizationName = ${orgName},
-			organizationSite = "true");
-
-		JSONOrganization.assignUserToOrganization(
-			organizationName = ${orgName},
-			userEmailAddress = ${userEmailAddress});
-
-		JSONLayout.addPublicLayout(
-			groupName = ${orgName},
-			layoutName = ${pageName});
-
-		Navigator.gotoSitePage(
-			pageName = ${pageName},
-			siteName = "Organization Name");
-
-		Portlet.addPG(
-			i = ${i},
-			pageName = ${pageName},
-			portletName = ${portletName},
-			siteName = "Organization Name",
-			siteURL = "true");
-
-		JSONRole.addOrganizationRole(roleTitle = ${roleTitle});
-
-		JSONGroup.assignGroupRoleToUser(
-			groupName = ${orgName},
-			roleTitle = ${roleTitle},
-			userEmailAddress = ${userEmailAddress});
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = ${userLoginEmailAddress},
-			userLoginFullName = ${userLoginFullName});
-	}
 
 	@summary = "Default summary"
 	macro setUpRegRoleLoginUserCP(roleTitle = null, userLastName = null, userScreenName = null, userEmailAddress = null, userFirstName = null) {
@@ -250,70 +197,7 @@ definition {
 			userLoginFullName = ${userLoginFullName});
 	}
 
-	@summary = "Default summary"
-	macro setUpSiteRoleCP(roleTitle = null, userLastName = null, userScreenName = null, userEmailAddress = null, newPassword = null, siteName = null, userFirstName = null, userLoginFullName = null, userLoginEmailAddress = null, pageName = null, currentPassword = null) {
-		PortalSettings.gotoConfiguration(
-			configurationCategory = "Users",
-			configurationName = "Default User Associations",
-			configurationScope = "Virtual Instance Scope");
 
-		Portlet.waitForForm();
-
-		JSONUser.addUser(
-			userEmailAddress = ${userEmailAddress},
-			userFirstName = ${userFirstName},
-			userLastName = ${userLastName},
-			userScreenName = ${userScreenName});
-
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		User.editPasswordCP(
-			currentPassword = ${currentPassword},
-			newPassword = ${newPassword},
-			userEmailAddress = ${userEmailAddress},
-			userScreenName = ${userScreenName});
-
-		HeadlessSite.addSite(siteName = ${siteName});
-
-		JSONGroup.assignUserToGroup(
-			groupName = ${siteName},
-			userEmailAddress = ${userEmailAddress});
-
-		JSONLayout.addPublicLayout(
-			groupName = ${siteName},
-			layoutName = ${pageName});
-
-		JSONRole.addSiteRole(roleTitle = ${roleTitle});
-
-		JSONGroup.assignGroupRoleToUser(
-			groupName = ${siteName},
-			roleTitle = ${roleTitle},
-			userEmailAddress = ${userEmailAddress});
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = ${userLoginEmailAddress},
-			userLoginFullName = ${userLoginFullName});
-	}
-
-	@summary = "Default summary"
-	macro setUpSiteRoleLoginUserCP(roleTitle = null, userLastName = null, userScreenName = null, newPassword = null, siteName = null, userEmailAddress = null, userFirstName = null, userLoginFullName = null, userLoginEmailAddress = null, pageName = null) {
-		Permissions.setUpSiteRoleCP(
-			newPassword = ${newPassword},
-			pageName = ${pageName},
-			roleTitle = ${roleTitle},
-			siteName = ${siteName},
-			userEmailAddress = ${userEmailAddress},
-			userFirstName = ${userFirstName},
-			userLastName = ${userLastName},
-			userScreenName = ${userScreenName});
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = ${userLoginEmailAddress},
-			userLoginFullName = ${userLoginFullName});
-	}
 
 	@summary = "Default summary"
 	macro setUpSiteRoleLoginUserPG(roleTitle = null, userLastName = null, userScreenName = null, roleKey = null, userEmailAddress = null, siteName = null, userFirstName = null, userLoginFullName = null, userLoginEmailAddress = null, pageName = null, roleDescription = null, portletName = null) {
@@ -358,51 +242,5 @@ definition {
 			userLoginFullName = ${userLoginFullName});
 	}
 
-	@summary = "Default summary"
-	macro setUpSiteTeamRoleLoginUserPG(userEmailAddressVariation = null, teamName = null, userEmailAddress = null, siteName = null, userFirstName = null, teamDescription = null, userLoginEmailAddress = null, userLastName = null, userScreenName = null, userMiddleName = null, userGender = null, userLoginFullName = null, userNameIsNotFound = null, userBirthday = null) {
-		JSONUser.addUser(
-			userBirthday = ${userBirthday},
-			userEmailAddress = ${userEmailAddress},
-			userEmailAddressVariation = ${userEmailAddressVariation},
-			userFirstName = ${userFirstName},
-			userGender = ${userGender},
-			userLastName = ${userLastName},
-			userMiddleName = ${userMiddleName},
-			userScreenName = ${userScreenName});
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = ${userEmailAddress});
-
-		HeadlessSite.addSite(siteName = ${siteName});
-
-		JSONGroup.assignUserToGroup(
-			groupName = ${siteName},
-			userEmailAddress = ${userEmailAddress});
-
-		JSONTeam.addTeam(
-			siteName = ${siteName},
-			teamDescription = ${teamDescription},
-			teamName = ${teamName});
-
-		PagesAdmin.openPagesAdmin(siteURLKey = ${siteName});
-
-		ProductMenu.gotoPortlet(
-			category = "People",
-			portlet = "Teams");
-
-		Team.assignMembersCP(
-			siteName = ${siteName},
-			teamName = ${teamName},
-			userFirstName = ${userFirstName},
-			userLastName = ${userLastName},
-			userNameIsNotFound = ${userNameIsNotFound},
-			userScreenName = ${userScreenName});
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = ${userLoginEmailAddress},
-			userLoginFullName = ${userLoginFullName});
-	}
 
 }

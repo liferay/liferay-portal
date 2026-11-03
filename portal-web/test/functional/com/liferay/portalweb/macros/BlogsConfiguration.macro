@@ -106,32 +106,6 @@ definition {
 		Uncheck.uncheckToggleSwitch(locator1 = "Checkbox#ENABLE_RSS_SUBSCRIPTION");
 	}
 
-	@summary = "Default summary"
-	macro viewAsSiteMemberPG() {
-		var key_portletName = "Blogs";
-
-		AssertElementPresent(locator1 = "Portlet#TITLE");
-
-		var key_text = "New Entry";
-
-		AssertElementNotPresent(locator1 = "Button#ANY");
-
-		if (IsElementPresent(locator1 = "Portlet#OPTIONS_ICON")) {
-			Click.mouseOverClick(locator1 = "Portlet#OPTIONS_ICON");
-
-			MenuItem.viewNotPresent(menuItem = "Permissions");
-		}
-
-		AssertTextEquals(
-			locator1 = "Blogs#SUBSCRIBE_LINK",
-			value1 = "Subscribe");
-
-		var key_text = "RSS";
-
-		AssertTextEquals(
-			locator1 = "Button#ANY",
-			value1 = "RSS");
-	}
 
 	@summary = "Default summary"
 	macro viewDefaultConfiguration() {
@@ -185,20 +159,6 @@ definition {
 			value1 = "atom_1.0");
 	}
 
-	@summary = "Default summary"
-	macro viewNoPermissionCP() {
-		var key_portletTitle = "Blogs";
-
-		AssertTextEquals(
-			locator1 = "Home#SITE_ADMINISTRATION_PORTLET_TITLE",
-			value1 = "Blogs");
-
-		AssertElementPresent(locator1 = "NavBar#CONTAINER");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#EMPTY_INFO",
-			value1 = "No entries were found.");
-	}
 
 	@summary = "Default summary"
 	macro viewNoPermissionPG() {
@@ -227,23 +187,7 @@ definition {
 		}
 	}
 
-	@summary = "Default summary"
-	macro viewNoSubscribePG() {
-		AssertElementNotPresent(locator1 = "Blogs#SUBSCRIBE_LINK");
-	}
 
-	@summary = "Default summary"
-	macro viewPermissionsPG() {
-		Click.mouseOverClick(locator1 = "Portlet#OPTIONS_ICON");
-
-		if (IsElementPresent(locator1 = "Portlet#OPTIONS_MENULIST_PERMISSIONS")) {
-			Click(locator1 = "Portlet#OPTIONS_MENULIST_PERMISSIONS");
-
-			SelectFrame(locator1 = "IFrame#MODAL_BODY");
-		}
-
-		MenuItem.viewPresent(menuItem = "Permissions");
-	}
 
 	@summary = "Default summary"
 	macro viewScopeDefaultNoEntryCP(contentScopeName = null) {
@@ -271,11 +215,5 @@ definition {
 			value1 = ${scopeSelection});
 	}
 
-	@summary = "Default summary"
-	macro viewSubscribePG() {
-		AssertTextEquals(
-			locator1 = "Blogs#SUBSCRIBE_LINK",
-			value1 = "Subscribe");
-	}
 
 }

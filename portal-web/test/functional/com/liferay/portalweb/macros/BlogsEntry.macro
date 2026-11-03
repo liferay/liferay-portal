@@ -603,10 +603,6 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-	@summary = "Default summary"
-	macro moveToRecycleBinNoPermissionPG() {
-		AssertElementNotPresent(locator1 = "Link#MOVE_TO_RECYCLING_BIN");
-	}
 
 	@summary = "Default summary"
 	macro moveToRecycleBinPG(entryTitle = null, entryContent = null) {
@@ -1274,12 +1270,6 @@ definition {
 		}
 	}
 
-	@summary = "Default summary"
-	macro viewNoAddPermissions() {
-		var key_text = "New Entry";
-
-		AssertElementNotPresent(locator1 = "Button#ANY");
-	}
 
 	@summary = "Default summary"
 	macro viewNoCP(entryTitle = null) {
@@ -1378,27 +1368,7 @@ definition {
 		AssertElementNotPresent(locator1 = "Link#PERMISSIONS");
 	}
 
-	@summary = "Default summary"
-	macro viewPermissionsNoPermissionPG(entryTitle = null) {
-		var key_entryTitle = ${entryTitle};
 
-		MenuItem.viewNotPresent(menuItem = "Permissions");
-	}
-
-	@summary = "Default summary"
-	macro viewPermissionsPG(entryTitle = null) {
-		Portlet.mouseOverPortletTitle(portletTitleName = "Blogs");
-
-		Click(
-			key_entryTitle = ${entryTitle},
-			locator1 = "Blogs#WIDGET_VIEW_ENTRY_ELLIPSIS");
-
-		MenuItem.clickNoError(menuItem = "Permissions");
-
-		IFrame.selectPermissionsFrame();
-
-		SelectFrame(value1 = "relative=top");
-	}
 
 	@summary = "Default summary"
 	macro viewPG(readingTime = null, entrySubtitle = null, entryCardTitle = null, entryTitle = null, entryContent = null) {

@@ -16,21 +16,7 @@ definition {
 		AssertVisible(locator1 = "BlogsEntry#ENTRY_COVER_IMAGE_SELECT_FILE");
 	}
 
-	@summary = "Default summary"
-	macro gotoBlogsEntriesPermissionsCP() {
-		LexiconEntry.gotoHeaderMenuItem(menuItem = "Entries Permissions");
 
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-	}
-
-	@summary = "Default summary"
-	macro gotoBlogsEntryPermissionsCP(entryTitle = null) {
-		LexiconCard.clickEllipsisItem(
-			card = ${entryTitle},
-			item = "Permissions");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-	}
 
 	@summary = "Default summary"
 	macro gotoBlogsEntryPermissionsPG(entryTitle = null) {
@@ -227,12 +213,6 @@ definition {
 			urlAppend = "group/${siteURLKey}/~/control_panel/manage?p_p_id=com_liferay_blogs_web_portlet_BlogsAdminPortlet");
 	}
 
-	@summary = "Default summary"
-	macro openBlogsImages(baseURL = null, siteURLKey = null) {
-		Navigator.openWithAppendToBaseURL(
-			baseURL = ${baseURL},
-			urlAppend = "group/${siteURLKey}/~/control_panel/manage?p_p_id=com_liferay_blogs_web_portlet_BlogsAdminPortlet&_com_liferay_blogs_web_portlet_BlogsAdminPortlet_navigation=images");
-	}
 
 	// You can use this navigation when you need to access the configuration quickly without checking the UI.
 

@@ -121,14 +121,6 @@ definition {
 		SelectFrameTop();
 	}
 
-	@summary = "Default summary"
-	macro definePermissionPG(teamName = null, permissionDefinitionKey = null) {
-		Check.checkNotVisible(locator1 = "//tr[contains(.,'${teamName}')]/td//input[contains(@id,'${permissionDefinitionKey}')]");
-
-		PortletEntry.save();
-
-		AssertChecked.assertCheckedNotVisible(locator1 = "//tr[contains(.,'${teamName}')]/td//input[contains(@id,'${permissionDefinitionKey}')]");
-	}
 
 	@summary = "Default summary"
 	macro deleteCP(teamName = null) {
@@ -187,14 +179,6 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-	@summary = "Default summary"
-	macro removePermissionPG(teamName = null, permissionDefinitionKey = null) {
-		Uncheck.uncheckNotVisible(locator1 = "//tr[contains(.,'${teamName}')]/td//input[contains(@id,'${permissionDefinitionKey}')]");
-
-		PortletEntry.save();
-
-		AssertNotChecked.assertNotCheckedNotVisible(locator1 = "//tr[contains(.,'${teamName}')]/td//input[contains(@id,'${permissionDefinitionKey}')]");
-	}
 
 	@summary = "Default summary"
 	macro searchCP(membershipType = null, searchTerm = null, isEmpty = null) {

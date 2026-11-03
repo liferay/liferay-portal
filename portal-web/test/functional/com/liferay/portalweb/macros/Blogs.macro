@@ -1,43 +1,5 @@
 definition {
 
-	@summary = "Default summary"
-	macro addBlogsEntryLoginUserPG(entryInvalidContent = null, viewableBySelection = null, siteName = null, vocabularyName = null, entryAddRelatedAsset = null, tagName = null, userLoginEmailAddress = null, pageName = null, categoryName = null, assetType = null, entryAddCategory = null, viewableBy = null, entryAddTag = null, siteURLTemp = null, entryValidTitleLength = null, entryInvalidTitleLength = null, assetTitle = null, entryInvalidTitle = null, userLoginFullName = null, entryTitle = null, entryContent = null, entryAddPermissions = null) {
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test");
-
-		if (${siteURLTemp} == "true") {
-			Navigator.gotoSitePage(
-				pageName = ${pageName},
-				siteName = ${siteName});
-		}
-		else {
-			Navigator.gotoPage(pageName = ${pageName});
-		}
-
-		Blogs.addEntry(
-			assetTitle = ${assetTitle},
-			assetType = ${assetType},
-			categoryName = ${categoryName},
-			entryAddCategory = ${entryAddCategory},
-			entryAddPermissions = ${entryAddPermissions},
-			entryAddRelatedAsset = ${entryAddRelatedAsset},
-			entryAddTag = ${entryAddTag},
-			entryContent = ${entryContent},
-			entryInvalidContent = ${entryInvalidContent},
-			entryInvalidTitle = ${entryInvalidTitle},
-			entryInvalidTitleLength = ${entryInvalidTitleLength},
-			entryTitle = ${entryTitle},
-			entryValidTitleLength = ${entryValidTitleLength},
-			tagName = ${tagName},
-			viewableBy = ${viewableBy},
-			viewableBySelection = ${viewableBySelection},
-			vocabularyName = ${vocabularyName});
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = ${userLoginEmailAddress},
-			userLoginFullName = ${userLoginFullName});
-	}
 
 	@summary = "Default summary"
 	macro addDraft(entrySubtitle = null, siteURLKey = null, entryTitle = null, entryContent = null, layoutName = null) {
