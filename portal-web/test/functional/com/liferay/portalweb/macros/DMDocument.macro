@@ -2233,7 +2233,6 @@ definition {
 			locator1 = "Card#CARD_TITLE");
 	}
 
-
 	@summary = "Default summary"
 	macro linkImage(navTab = null, dmDocumentURL = null) {
 		ItemSelector.gotoItemSelectorViaAlloyEditor();
@@ -4126,7 +4125,6 @@ definition {
 			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE",
 			value1 = ${dmDocumentTitle});
 	}
-
 
 	@summary = "Default summary"
 	macro viewNoCacheControlConfigurationInConsole(responseHeader = null, cacheControlAttribute = null) {

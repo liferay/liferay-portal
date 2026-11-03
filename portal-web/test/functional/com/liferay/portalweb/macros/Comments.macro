@@ -273,7 +273,6 @@ definition {
 			value1 = "INFO:Comments are unavailable in staged sites.");
 	}
 
-
 	@summary = "Default summary"
 	macro viewNoComments(entryComment = null) {
 		AssertElementNotPresent(

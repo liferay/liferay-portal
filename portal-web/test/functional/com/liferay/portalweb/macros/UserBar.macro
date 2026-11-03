@@ -26,7 +26,6 @@ definition {
 			value1 = ${dropdownItem});
 	}
 
-
 	@summary = "Default summary"
 	macro openUserOrganizations() {
 		UserBar.gotoDropdown();

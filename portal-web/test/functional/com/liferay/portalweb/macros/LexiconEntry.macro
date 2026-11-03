@@ -295,7 +295,6 @@ definition {
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
 	}
 
-
 	@summary = "Default summary"
 	macro viewNoEntryMenuItem(rowEntry = null, menuItem = null) {
 		LexiconEntry.openEntryMenu(rowEntry = ${rowEntry});

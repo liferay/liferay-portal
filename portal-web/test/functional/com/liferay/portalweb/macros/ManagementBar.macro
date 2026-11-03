@@ -142,8 +142,6 @@ definition {
 			locator1 = "ManagementBar#FILTER_AND_ORDER_ITEM_SELECTED");
 	}
 
-
-
 	@summary = "Default summary"
 	macro viewNumberOfSelectedItems(text = null) {
 		AssertTextEquals(

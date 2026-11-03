@@ -46,7 +46,6 @@ definition {
 		DMFolder.viewEntryPresent(dmFolderName = ${dmFolderName});
 	}
 
-
 	@summary = "Default summary"
 	macro addPG(viewableBy = null, addOrRemoveViewPermission = null, roleTitle = null, dmFolderDescription = null, permissionDefinitionKeyList = null, dmFolder = null, dmFolderName = null) {
 		if (isSet(contentPage)) {
@@ -658,7 +657,6 @@ definition {
 
 		IFrame.selectPermissionsFrame();
 	}
-
 
 	@summary = "Default summary"
 	macro viewPG(dmFolderName = null) {
