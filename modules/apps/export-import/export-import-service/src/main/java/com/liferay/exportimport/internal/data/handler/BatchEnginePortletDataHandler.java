@@ -697,6 +697,9 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 			PortletPreferences portletPreferences)
 		throws PortalException {
 
+		boolean portletExportInProcess =
+			ExportImportThreadLocal.isPortletExportInProcess();
+
 		try (SafeCloseable safeCloseable =
 				PortletDataContextThreadLocal.
 					setPortletDataContextWithSafeCloseable(
@@ -769,7 +772,8 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 			}
 		}
 		finally {
-			ExportImportThreadLocal.setPortletExportInProcess(false);
+			ExportImportThreadLocal.setPortletExportInProcess(
+				portletExportInProcess);
 		}
 	}
 
