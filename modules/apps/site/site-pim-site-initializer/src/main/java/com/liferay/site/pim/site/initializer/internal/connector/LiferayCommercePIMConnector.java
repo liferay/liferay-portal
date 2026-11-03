@@ -117,14 +117,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 					entry.getKey(), pimFieldMappingObjectEntriesMap,
 					pimFieldMappingRuleObjectEntriesMap, entry.getValue());
 
-				String catalogExternalReferenceCode = jsonObject.getString(
-					"catalogExternalReferenceCode");
-
-				if (Validator.isNull(catalogExternalReferenceCode)) {
-					throw new PIMConnectorException(
-						"a-product-is-not-mapped-to-a-catalog");
-				}
-
 				JSONArray productOptionsJSONArray = jsonObject.getJSONArray(
 					"productOptions");
 
