@@ -8,6 +8,10 @@ package com.liferay.document.library.staging.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.document.library.constants.DLPortletKeys;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.document.library.video.external.shortcut.resolver.DLVideoExternalShortcutResolver;
+import com.liferay.document.library.video.external.shortcut.DLVideoExternalShortcut;
+import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
@@ -244,6 +248,32 @@ public class DLLocalStagingTest {
 	}
 
 	@Test
+	@TestInfo({"LPD-113633", "LPS-154416"})
+	public void testPublishFileEntryURLTitleChanges() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_stagingGroup.getGroupId());
+
+		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
+			RandomTestUtil.randomString(), "urltitle", StringPool.BLANK,
+			StringPool.BLANK, RandomTestUtil.randomBytes(), null, null, null,
+			serviceContext);
+
+		_publish();
+
+		_assertLiveURLTitle(fileEntry, "urltitle", "urltitle");
+
+		_updateURLTitle(fileEntry, "modifiedurltitle", serviceContext);
+
+		_publish();
+
+		_assertLiveURLTitle(fileEntry, "modifiedurltitle", "urltitle");
+	}
+
+	@Test
 	@TestInfo({"LPD-113633", "LPS-155794"})
 	public void testPublishFileEntryWithURLTitleAndDisableStaging()
 		throws Exception {
@@ -412,6 +442,40 @@ public class DLLocalStagingTest {
 		Assert.assertEquals(urlTitle, friendlyURLEntry.getUrlTitle());
 	}
 
+	@Test
+	@TestInfo({"LPD-113633", "LPS-154396", "LPS-154417"})
+	public void testPublishVideoExternalShortcut() throws Exception {
+		String url = "https://www.youtube.com/watch?v=HOdbzGCI5ME";
+
+		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_VND_LIFERAY_VIDEO_EXTERNAL_SHORTCUT_HTML,
+			RandomTestUtil.randomString(), "urltitle", StringPool.BLANK,
+			StringPool.BLANK, RandomTestUtil.randomBytes(), null, null, null,
+			_getVideoExternalShortcutServiceContext(url));
+
+		_publish();
+
+		_assertLiveURLTitle(fileEntry, "urltitle", "urltitle");
+
+		_updateURLTitle(
+			fileEntry, "modifiedurltitle",
+			_getVideoExternalShortcutServiceContext(url));
+
+		_publish();
+
+		FileEntry liveFileEntry = _assertLiveURLTitle(
+			fileEntry, "modifiedurltitle", "urltitle");
+
+		DLVideoExternalShortcut dlVideoExternalShortcut =
+			_dlVideoExternalShortcutResolver.resolve(
+				liveFileEntry.getFileVersion());
+
+		Assert.assertEquals(url, dlVideoExternalShortcut.getURL());
+	}
+
 	private FileEntry _addFileEntry(long folderId) throws Exception {
 		return DLAppLocalServiceUtil.addFileEntry(
 			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
@@ -498,6 +562,48 @@ public class DLLocalStagingTest {
 		}
 	}
 
+	private FileEntry _assertLiveURLTitle(
+			FileEntry fileEntry, String mainURLTitle, String urlTitle)
+		throws Exception {
+
+		FileEntry liveFileEntry = _getLiveFileEntry(fileEntry);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				PortalUtil.getPathContext(), "/documents/d",
+				_liveGroup.getFriendlyURL(), StringPool.SLASH, mainURLTitle),
+			_dlURLHelper.getPreviewURL(
+				liveFileEntry, liveFileEntry.getFileVersion(), null,
+				StringPool.BLANK, false, false));
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+				_liveGroup.getGroupId(),
+				PortalUtil.getClassNameId(FileEntry.class), urlTitle);
+
+		Assert.assertEquals(
+			liveFileEntry.getFileEntryId(), friendlyURLEntry.getClassPK());
+
+		return liveFileEntry;
+	}
+
+	private DDMFormFieldValue _createDDMFormFieldValue(
+		String name, String value) {
+
+		DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
+
+		ddmFormFieldValue.setName(name);
+
+		LocalizedValue localizedValue = new LocalizedValue(
+			LocaleUtil.getSiteDefault());
+
+		localizedValue.addString(LocaleUtil.getSiteDefault(), value);
+
+		ddmFormFieldValue.setValue(localizedValue);
+
+		return ddmFormFieldValue;
+	}
+
 	private DLFileEntryType _getDLFileEntryType(FileEntry fileEntry)
 		throws Exception {
 
@@ -567,6 +673,46 @@ public class DLLocalStagingTest {
 		return serviceContext;
 	}
 
+	private ServiceContext _getVideoExternalShortcutServiceContext(
+			String url)
+		throws Exception {
+
+		Group companyGroup = GroupLocalServiceUtil.getCompanyGroup(
+			_stagingGroup.getCompanyId());
+
+		DLFileEntryType dlFileEntryType =
+			DLFileEntryTypeLocalServiceUtil.getFileEntryType(
+				companyGroup.getGroupId(), "DL_VIDEO_EXTERNAL_SHORTCUT");
+
+		List<DDMStructure> ddmStructures = DLFileEntryTypeUtil.getDDMStructures(
+			dlFileEntryType);
+
+		DDMStructure ddmStructure = ddmStructures.get(0);
+
+		DDMFormValues ddmFormValues = new DDMFormValues(
+			_ddmBeanTranslator.translate(ddmStructure.getDDMForm()));
+
+		ddmFormValues.addAvailableLocale(LocaleUtil.getSiteDefault());
+		ddmFormValues.addDDMFormFieldValue(
+			_createDDMFormFieldValue("HTML", RandomTestUtil.randomString()));
+		ddmFormValues.addDDMFormFieldValue(
+			_createDDMFormFieldValue("URL", url));
+		ddmFormValues.setDefaultLocale(LocaleUtil.getSiteDefault());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_stagingGroup.getGroupId());
+
+		serviceContext.setAttribute(
+			DDMFormValues.class.getName() + StringPool.POUND +
+				ddmStructure.getStructureId(),
+			ddmFormValues);
+		serviceContext.setAttribute(
+			"fileEntryTypeId", dlFileEntryType.getFileEntryTypeId());
+
+		return serviceContext;
+	}
+
 	private void _publish() throws Exception {
 		StagingUtil.publishLayouts(
 			TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
@@ -575,8 +721,27 @@ public class DLLocalStagingTest {
 				buildFullPublishParameterMap());
 	}
 
+	private void _updateURLTitle(
+			FileEntry fileEntry, String urlTitle,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		DLAppLocalServiceUtil.updateFileEntry(
+			TestPropsValues.getUserId(), fileEntry.getFileEntryId(),
+			fileEntry.getFileName(), fileEntry.getMimeType(),
+			fileEntry.getTitle(), urlTitle, fileEntry.getDescription(),
+			StringPool.BLANK, DLVersionNumberIncrease.MINOR, (byte[])null,
+			null, null, null, serviceContext);
+	}
+
 	@Inject
 	private DDMBeanTranslator _ddmBeanTranslator;
+
+	@Inject
+	private DLURLHelper _dlURLHelper;
+
+	@Inject
+	private DLVideoExternalShortcutResolver _dlVideoExternalShortcutResolver;
 
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
