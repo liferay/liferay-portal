@@ -323,6 +323,7 @@ public class PortalWorkspaceGitRepositoryTest
 
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			_newPortalWorkspaceGitRepository(gitCommit);
+
 		PortalWorkspaceGitRepository basePortalWorkspaceGitRepository =
 			Mockito.mock(PortalWorkspaceGitRepository.class);
 
