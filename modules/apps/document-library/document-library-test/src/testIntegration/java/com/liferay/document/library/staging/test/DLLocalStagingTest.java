@@ -8,9 +8,6 @@ package com.liferay.document.library.staging.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.document.library.constants.DLPortletKeys;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.document.library.video.external.shortcut.resolver.DLVideoExternalShortcutResolver;
-import com.liferay.document.library.video.external.shortcut.DLVideoExternalShortcut;
 import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
@@ -25,6 +22,8 @@ import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUt
 import com.liferay.document.library.kernel.service.DLTrashServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.util.DLFileEntryTypeUtil;
+import com.liferay.document.library.video.external.shortcut.DLVideoExternalShortcut;
+import com.liferay.document.library.video.external.shortcut.resolver.DLVideoExternalShortcutResolver;
 import com.liferay.dynamic.data.mapping.kernel.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.kernel.DDMFormValues;
 import com.liferay.dynamic.data.mapping.kernel.LocalizedValue;
@@ -43,6 +42,7 @@ import com.liferay.exportimport.kernel.staging.StagingConstants;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -673,8 +673,7 @@ public class DLLocalStagingTest {
 		return serviceContext;
 	}
 
-	private ServiceContext _getVideoExternalShortcutServiceContext(
-			String url)
+	private ServiceContext _getVideoExternalShortcutServiceContext(String url)
 		throws Exception {
 
 		Group companyGroup = GroupLocalServiceUtil.getCompanyGroup(
@@ -722,16 +721,15 @@ public class DLLocalStagingTest {
 	}
 
 	private void _updateURLTitle(
-			FileEntry fileEntry, ServiceContext serviceContext,
-			String urlTitle)
+			FileEntry fileEntry, ServiceContext serviceContext, String urlTitle)
 		throws Exception {
 
 		DLAppLocalServiceUtil.updateFileEntry(
 			TestPropsValues.getUserId(), fileEntry.getFileEntryId(),
 			fileEntry.getFileName(), fileEntry.getMimeType(),
 			fileEntry.getTitle(), urlTitle, fileEntry.getDescription(),
-			StringPool.BLANK, DLVersionNumberIncrease.MINOR, (byte[])null,
-			null, null, null, serviceContext);
+			StringPool.BLANK, DLVersionNumberIncrease.MINOR, (byte[])null, null,
+			null, null, serviceContext);
 	}
 
 	@Inject

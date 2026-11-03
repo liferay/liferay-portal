@@ -440,8 +440,8 @@ public class DepotEntryFileEntryFriendlyURLTest {
 
 		FriendlyURLEntry friendlyURLEntry =
 			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
-				liveGroup.getGroupId(),
-				_portal.getClassNameId(FileEntry.class), "urltitle");
+				liveGroup.getGroupId(), _portal.getClassNameId(FileEntry.class),
+				"urltitle");
 
 		Assert.assertEquals(
 			liveFileEntry.getFileEntryId(), friendlyURLEntry.getClassPK());

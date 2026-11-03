@@ -195,7 +195,6 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-
 	@summary = "Default summary"
 	macro viewNoComments(entryComment = null) {
 		AssertElementNotPresent(

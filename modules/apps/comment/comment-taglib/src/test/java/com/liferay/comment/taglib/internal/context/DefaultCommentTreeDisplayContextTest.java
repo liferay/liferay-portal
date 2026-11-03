@@ -51,6 +51,13 @@ public class DefaultCommentTreeDisplayContextTest {
 		).thenReturn(
 			_themeDisplay
 		);
+
+		_defaultCommentTreeDisplayContext =
+			new DefaultCommentTreeDisplayContext(
+				_discussionRequestHelper,
+				Mockito.mock(DiscussionTaglibHelper.class),
+				Mockito.mock(DiscussionPermission.class),
+				Mockito.mock(DiscussionComment.class));
 	}
 
 	@Test
@@ -85,15 +92,9 @@ public class DefaultCommentTreeDisplayContextTest {
 			_defaultCommentTreeDisplayContext.isReplyButtonVisible());
 	}
 
+	private DefaultCommentTreeDisplayContext _defaultCommentTreeDisplayContext;
 	private final DiscussionRequestHelper _discussionRequestHelper =
 		Mockito.mock(DiscussionRequestHelper.class);
-	private final DefaultCommentTreeDisplayContext
-		_defaultCommentTreeDisplayContext =
-			new DefaultCommentTreeDisplayContext(
-				_discussionRequestHelper,
-				Mockito.mock(DiscussionTaglibHelper.class),
-				Mockito.mock(DiscussionPermission.class),
-				Mockito.mock(DiscussionComment.class));
 	private final Group _group = Mockito.mock(Group.class);
 	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
 

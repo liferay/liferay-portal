@@ -70,7 +70,8 @@ public class AddDataDefinitionMVCActionCommandTest {
 		mockLiferayPortletActionRequest.addParameter(
 			"dataDefinition", dataDefinition.toString());
 		mockLiferayPortletActionRequest.addParameter(
-			"dataLayout", String.valueOf(dataDefinition.getDefaultDataLayout()));
+			"dataLayout",
+			String.valueOf(dataDefinition.getDefaultDataLayout()));
 		mockLiferayPortletActionRequest.addParameter(
 			"groupId", String.valueOf(_group.getGroupId()));
 		mockLiferayPortletActionRequest.addParameter(
@@ -100,8 +101,8 @@ public class AddDataDefinitionMVCActionCommandTest {
 					SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE));
 
 		Assert.assertEquals(
-			0, _ddmStructureLocalService.getStructuresCount(
-				_group.getGroupId()));
+			0,
+			_ddmStructureLocalService.getStructuresCount(_group.getGroupId()));
 	}
 
 	@Inject

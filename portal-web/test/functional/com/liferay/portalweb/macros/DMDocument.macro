@@ -1466,7 +1466,6 @@ definition {
 		FileUtil.delete("${liferayHome}/${appServer}/temp");
 	}
 
-
 	@summary = "Default summary"
 	macro deleteViaActionsPG(dmDocumentTitle = null) {
 		var key_dmDocumentTitle = ${dmDocumentTitle};
@@ -4149,7 +4148,6 @@ definition {
 				locator1 = "MediaGallery#IMAGE_TITLE");
 		}
 	}
-
 
 	@summary = "Default summary"
 	macro viewNoPermission(menuItem = null) {
