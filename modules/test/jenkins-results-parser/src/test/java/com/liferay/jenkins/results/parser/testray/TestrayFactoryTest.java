@@ -92,7 +92,6 @@ public class TestrayFactoryTest
 		Job job = _mockJob(
 			"modules-integration-db-partition-postgresql163",
 			"modules-integration-mysql80", "modules-integration-postgresql163");
-
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
@@ -122,7 +121,6 @@ public class TestrayFactoryTest
 	@Test
 	public void testNewTestrayRunSameLengthBatchNames() throws Exception {
 		Job job = _mockJob("a-mysql80", "b-mysql80");
-
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
@@ -137,6 +135,8 @@ public class TestrayFactoryTest
 	}
 
 	private Job _mockJob(String... batchNames) {
+		Job job = Mockito.mock(Job.class);
+
 		List<AxisTestClassGroup> axisTestClassGroups = new ArrayList<>();
 
 		for (String batchName : batchNames) {
@@ -152,8 +152,6 @@ public class TestrayFactoryTest
 			axisTestClassGroups.add(axisTestClassGroup);
 		}
 
-		Job job = Mockito.mock(Job.class);
-
 		Mockito.when(
 			job.getAxisTestClassGroups()
 		).thenReturn(
@@ -166,21 +164,21 @@ public class TestrayFactoryTest
 			RandomTestUtil.randomString()
 		);
 
-		Properties properties = new Properties();
+		Properties jobProperties = new Properties();
 
-		properties.setProperty(
+		jobProperties.setProperty(
 			"testray.environment.factor.name[database]",
 			RandomTestUtil.randomString());
-		properties.setProperty(
+		jobProperties.setProperty(
 			"testray.environment.factor.value[database][mysql80]", "MySQL 8.0");
-		properties.setProperty(
+		jobProperties.setProperty(
 			"testray.environment.factor.value[database][postgresql163]",
 			"PostgreSQL 16.3");
 
 		Mockito.when(
 			job.getJobProperties()
 		).thenReturn(
-			properties
+			jobProperties
 		);
 
 		return job;

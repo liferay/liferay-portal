@@ -950,8 +950,8 @@ public class TestrayFactory {
 		runIdStrings = new HashMap<>();
 
 		for (Map.Entry<String, String> entry : factorRunIdStrings.entrySet()) {
-			String runIdString = entry.getValue();
 			String batchName = entry.getKey();
+			String runIdString = entry.getValue();
 
 			for (Map.Entry<String, String> otherEntry :
 					factorRunIdStrings.entrySet()) {

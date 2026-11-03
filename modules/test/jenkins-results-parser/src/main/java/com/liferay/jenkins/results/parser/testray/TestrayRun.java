@@ -448,10 +448,10 @@ public class TestrayRun {
 
 		String name = getRunIdString();
 
-		int x = name.indexOf(_BATCH_NAME_DELIMITER);
+		int index = name.indexOf(_BATCH_NAME_DELIMITER);
 
-		if (x != -1) {
-			name = name.substring(0, x);
+		if (index != -1) {
+			name = name.substring(0, index);
 		}
 
 		for (String optionName : name.split("\\|")) {
