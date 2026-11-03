@@ -5,6 +5,8 @@
 
 package com.liferay.osb.faro.web.internal.util;
 
+import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
+import com.liferay.osb.faro.engine.client.model.AccountLifecycleStage;
 import com.liferay.osb.faro.engine.client.model.Metric;
 import com.liferay.osb.faro.engine.client.model.Trend;
 import com.liferay.portal.json.JSONFactoryImpl;
@@ -12,6 +14,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import java.math.BigDecimal;
+
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -108,6 +112,40 @@ public class JSONUtilTest {
 				"valueKey", valueKey
 			).toString(),
 			JSONUtil.writeValueAsString(metric), JSONCompareMode.STRICT);
+	}
+
+	@Test
+	public void testWriteValueAsStringWithAccountLifecycleStages()
+		throws Exception {
+
+		AccountLifecycle accountLifecycle = new AccountLifecycle();
+
+		AccountLifecycleStage accountLifecycleStage =
+			new AccountLifecycleStage();
+
+		String name = RandomTestUtil.randomString();
+
+		accountLifecycleStage.setName(name);
+
+		int position = RandomTestUtil.randomInt();
+
+		accountLifecycleStage.setPosition(position);
+
+		accountLifecycle.setAccountLifecycleStages(
+			Collections.singletonList(accountLifecycleStage));
+
+		JSONAssert.assertEquals(
+			com.liferay.portal.kernel.json.JSONUtil.put(
+				"accountLifecycleStages",
+				com.liferay.portal.kernel.json.JSONUtil.putAll(
+					com.liferay.portal.kernel.json.JSONUtil.put(
+						"name", name
+					).put(
+						"position", position
+					))
+			).toString(),
+			JSONUtil.writeValueAsString(accountLifecycle),
+			JSONCompareMode.LENIENT);
 	}
 
 }

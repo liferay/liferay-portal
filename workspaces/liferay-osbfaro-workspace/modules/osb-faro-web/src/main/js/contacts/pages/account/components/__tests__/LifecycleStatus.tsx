@@ -170,6 +170,42 @@ describe('LifecycleStatus', () => {
 			).toBeInTheDocument();
 		});
 
+		it('should render the custom stage names in their position order', () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({
+					lifecyclesData: [{accountId: 'acc-1', id: 'al-1'}],
+					statusData: {
+						accountLifecycleStageStatuses: [
+							{
+								id: 'als-customer',
+								name: 'Customer',
+								position: 1,
+							},
+							{
+								id: 'als-prospect',
+								name: 'Prospect',
+								position: 0,
+							},
+						],
+						id: 'al-1',
+						name: 'Default Lifecycle',
+					},
+				})
+			);
+
+			const {container} = render(<LifecycleStatus />);
+
+			const multistep = container.querySelector(
+				'.lifecycle-status-multistep'
+			) as HTMLElement;
+
+			expect(
+				within(multistep)
+					.getAllByText(/^(Customer|Prospect)$/)
+					.map((title) => title.textContent)
+			).toEqual(['Prospect', 'Customer']);
+		});
+
 		it('should render numeric indicators 1 through 5 in the multistep view', () => {
 			const {container} = render(<LifecycleStatus />);
 
