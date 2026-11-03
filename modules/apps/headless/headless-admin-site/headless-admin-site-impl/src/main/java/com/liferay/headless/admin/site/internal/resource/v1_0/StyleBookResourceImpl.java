@@ -9,6 +9,10 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.exportimport.kernel.staging.Staging;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.internal.odata.entity.v1_0.StyleBookEntityModel;
 import com.liferay.headless.admin.site.internal.util.EnabledUtil;
@@ -18,7 +22,9 @@ import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -47,6 +53,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.constants.StyleBookConstants;
+import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.service.StyleBookEntryService;
@@ -61,6 +68,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -74,13 +82,15 @@ import org.osgi.service.component.annotations.ServiceScope;
 	properties = "OSGI-INF/liferay/rest/v1_0/style-book.properties",
 	property = {
 		"crud.entity.class.name=com.liferay.headless.admin.site.dto.v1_0.StyleBook",
-		"crud.item.delegate=true"
+		"crud.item.delegate=true",
+		"export.import.vulcan.batch.engine.task.item.delegate=true"
 	},
 	scope = ServiceScope.PROTOTYPE, service = StyleBookResource.class
 )
 public class StyleBookResourceImpl
 	extends BaseStyleBookResourceImpl
-	implements VulcanCRUDItemDelegate<StyleBook> {
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<StyleBook>,
+			   VulcanCRUDItemDelegate<StyleBook> {
 
 	@Override
 	public void deleteDesignLibraryStyleBook(
@@ -104,7 +114,7 @@ public class StyleBookResourceImpl
 
 		_styleBookEntryService.deleteStyleBookEntry(
 			styleBookExternalReferenceCode,
-			_getStagingAwareGroupId(siteExternalReferenceCode));
+			_getSiteGroupId(siteExternalReferenceCode));
 	}
 
 	@Override
@@ -138,10 +148,71 @@ public class StyleBookResourceImpl
 	}
 
 	@Override
-	public StyleBook getItem(Long id) throws Exception {
-		EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+	public ExportImportDescriptor<StyleBookEntry> getExportImportDescriptor() {
+		return new ExportImportDescriptor<>() {
 
-		return _toStyleBook(_styleBookEntryService.getStyleBookEntry(id));
+			@Override
+			public String getKey() {
+				return StyleBookResourceImpl.class.getName();
+			}
+
+			@Override
+			public String getLabelLanguageKey() {
+				return "style-books";
+			}
+
+			@Override
+			public Class<StyleBookEntry> getModelClass() {
+				return StyleBookEntry.class;
+			}
+
+			@Override
+			public String getPortletId() {
+				return StyleBookPortletKeys.STYLE_BOOK;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.SITE;
+			}
+
+			@Override
+			public String getSectionKey() {
+				return ExportImportConstants.SECTION_KEY_DESIGN;
+			}
+
+			@Override
+			public boolean isScopeSupported(long companyId, long groupId) {
+				DepotEntry depotEntry =
+					_depotEntryLocalService.fetchGroupDepotEntry(groupId);
+
+				if ((depotEntry != null) &&
+					(depotEntry.getType() ==
+						DepotConstants.TYPE_DESIGN_LIBRARY)) {
+
+					return FeatureFlagManagerUtil.isEnabled(
+						companyId, "LPD-57283");
+				}
+
+				return ExportImportDescriptor.super.isScopeSupported(
+					companyId, groupId);
+			}
+
+		};
+	}
+
+	@Override
+	public StyleBook getItem(Long id) throws Exception {
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryService.getStyleBookEntry(id);
+
+		Group group = _groupLocalService.getGroup(styleBookEntry.getGroupId());
+
+		if (group.isDepot()) {
+			EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+		}
+
+		return _toStyleBook(styleBookEntry);
 	}
 
 	@Override
@@ -221,9 +292,7 @@ public class StyleBookResourceImpl
 
 		return _toStyleBook(
 			_getStyleBookEntry(
-				GroupUtil.getGroupId(
-					true, contextCompany.getCompanyId(),
-					siteExternalReferenceCode),
+				_getSiteGroupId(siteExternalReferenceCode),
 				styleBookExternalReferenceCode));
 	}
 
@@ -234,8 +303,7 @@ public class StyleBookResourceImpl
 			Sort[] sorts)
 		throws Exception {
 
-		long groupId = GroupUtil.getGroupId(
-			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+		long groupId = _getSiteGroupId(siteExternalReferenceCode);
 
 		return _getStyleBooksPage(
 			HashMapBuilder.put(
@@ -282,16 +350,26 @@ public class StyleBookResourceImpl
 			String siteExternalReferenceCode, StyleBook styleBook)
 		throws Exception {
 
-		long groupId = _getStagingAwareGroupId(siteExternalReferenceCode);
+		long groupId = _getSiteGroupId(siteExternalReferenceCode);
+
+		String name = _getName(groupId, styleBook.getName(), 0);
+
+		String styleBookEntryKey = StringPool.BLANK;
+
+		if (Objects.equals(name, styleBook.getName())) {
+			styleBookEntryKey = _getStyleBookEntryKey(
+				StringPool.BLANK, groupId, styleBook.getKey());
+		}
+
+		ServiceContext serviceContext = _getServiceContext(groupId, styleBook);
 
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryService.addStyleBookEntry(
 				styleBook.getExternalReferenceCode(), groupId,
 				GetterUtil.getBoolean(styleBook.getDefaultStyleBook()),
 				styleBook.getFrontendTokenDefinition(),
-				styleBook.getFrontendTokensValues(), styleBook.getName(),
-				styleBook.getKey(), styleBook.getThemeId(),
-				_getServiceContext(groupId));
+				styleBook.getFrontendTokensValues(), name, styleBookEntryKey,
+				styleBook.getThemeId(), serviceContext);
 
 		long previewFileEntryId = _getPreviewFileEntryId(
 			groupId, styleBook.getPreviewFileEntryExternalReferenceCode());
@@ -299,7 +377,7 @@ public class StyleBookResourceImpl
 		if (previewFileEntryId != 0) {
 			styleBookEntry = _styleBookEntryService.updatePreviewFileEntryId(
 				styleBookEntry.getStyleBookEntryId(), previewFileEntryId,
-				_getServiceContext(groupId));
+				serviceContext);
 		}
 
 		return _toStyleBook(styleBookEntry);
@@ -348,7 +426,7 @@ public class StyleBookResourceImpl
 		styleBook.setExternalReferenceCode(
 			() -> styleBookExternalReferenceCode);
 
-		long groupId = _getStagingAwareGroupId(siteExternalReferenceCode);
+		long groupId = _getSiteGroupId(siteExternalReferenceCode);
 
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryService.fetchStyleBookEntryByExternalReferenceCode(
@@ -358,17 +436,30 @@ public class StyleBookResourceImpl
 			return postSiteStyleBook(siteExternalReferenceCode, styleBook);
 		}
 
-		return _toStyleBook(
-			_styleBookEntryService.updateStyleBookEntry(
-				styleBookEntry.getStyleBookEntryId(),
-				GetterUtil.getBoolean(styleBook.getDefaultStyleBook()),
-				styleBook.getFrontendTokenDefinition(),
-				styleBook.getFrontendTokensValues(), styleBook.getName(),
-				styleBook.getKey(),
-				_getPreviewFileEntryId(
-					groupId,
-					styleBook.getPreviewFileEntryExternalReferenceCode()),
-				styleBook.getThemeId(), _getServiceContext(groupId)));
+		String name = _getName(
+			groupId, styleBook.getName(), styleBookEntry.getStyleBookEntryId());
+
+		String styleBookEntryKey = _getStyleBookEntryKey(
+			styleBookEntry.getStyleBookEntryKey(), groupId, styleBook.getKey());
+
+		long previewFileEntryId = _getPreviewFileEntryId(
+			groupId, styleBook.getPreviewFileEntryExternalReferenceCode());
+
+		if ((previewFileEntryId == 0) &&
+			ExportImportThreadLocal.isImportInProcess()) {
+
+			previewFileEntryId = styleBookEntry.getPreviewFileEntryId();
+		}
+
+		styleBookEntry = _styleBookEntryService.updateStyleBookEntry(
+			styleBookEntry.getStyleBookEntryId(),
+			GetterUtil.getBoolean(styleBook.getDefaultStyleBook()),
+			styleBook.getFrontendTokenDefinition(),
+			styleBook.getFrontendTokensValues(), name, styleBookEntryKey,
+			previewFileEntryId, styleBook.getThemeId(),
+			_getServiceContext(groupId, styleBook));
+
+		return _toStyleBook(styleBookEntry);
 	}
 
 	private Map<String, Map<String, String>> _getActions(
@@ -469,6 +560,15 @@ public class StyleBookResourceImpl
 				externalReferenceCode);
 	}
 
+	private String _getName(long groupId, String name, long styleBookEntryId) {
+		if (!ExportImportThreadLocal.isImportInProcess()) {
+			return name;
+		}
+
+		return _styleBookEntryLocalService.generateStyleBookEntryName(
+			groupId, name, styleBookEntryId);
+	}
+
 	private long _getPreviewFileEntryId(
 			long groupId, String previewFileEntryExternalReferenceCode)
 		throws Exception {
@@ -497,11 +597,24 @@ public class StyleBookResourceImpl
 		return serviceContext;
 	}
 
-	private long _getStagingAwareGroupId(String siteExternalReferenceCode)
+	private ServiceContext _getServiceContext(
+		long groupId, StyleBook styleBook) {
+
+		ServiceContext serviceContext = _getServiceContext(groupId);
+
+		serviceContext.setCreateDate(styleBook.getDateCreated());
+		serviceContext.setModifiedDate(styleBook.getDateModified());
+
+		return serviceContext;
+	}
+
+	private long _getSiteGroupId(String siteExternalReferenceCode)
 		throws Exception {
 
-		return GroupUtil.getStagingAwareGroupId(
-			contextCompany.getCompanyId(), siteExternalReferenceCode);
+		return _staging.getLiveGroupId(
+			GroupUtil.getGroupId(
+				true, contextCompany.getCompanyId(),
+				siteExternalReferenceCode));
 	}
 
 	private StyleBookEntry _getStyleBookEntry(
@@ -519,6 +632,25 @@ public class StyleBookResourceImpl
 		}
 
 		return styleBookEntry;
+	}
+
+	private String _getStyleBookEntryKey(
+		String defaultStyleBookEntryKey, long groupId,
+		String styleBookEntryKey) {
+
+		if (!ExportImportThreadLocal.isImportInProcess()) {
+			return styleBookEntryKey;
+		}
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.fetchStyleBookEntry(
+				groupId, styleBookEntryKey);
+
+		if (styleBookEntry == null) {
+			return styleBookEntryKey;
+		}
+
+		return defaultStyleBookEntryKey;
 	}
 
 	private Page<StyleBook> _getStyleBooksPage(
@@ -642,6 +774,9 @@ public class StyleBookResourceImpl
 		target = "(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")"
 	)
 	private PortletResourcePermission _portletResourcePermission;
+
+	@Reference
+	private Staging _staging;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.StyleBookDTOConverter)"

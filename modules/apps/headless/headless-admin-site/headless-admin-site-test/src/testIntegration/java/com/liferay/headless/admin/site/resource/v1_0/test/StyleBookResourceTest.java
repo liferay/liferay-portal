@@ -35,6 +35,8 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -46,6 +48,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
@@ -58,6 +62,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -69,6 +75,13 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
+
 	@Override
 	@Test
 	public void testDeleteSiteStyleBook() throws Exception {
@@ -76,6 +89,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 		_testDeleteSiteStyleBookForNonexistingStyleBook();
 		_testDeleteSiteStyleBookWithDesignLibraryExternalReferenceCode();
+		_testDeleteSiteStyleBookWithStagedSite();
 	}
 
 	@Override
@@ -109,6 +123,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 		_testGetSiteStyleBookForNonexistingStyleBook();
 		_testGetSiteStyleBookWithDesignLibraryExternalReferenceCode();
+		_testGetSiteStyleBookWithStagedSite();
 	}
 
 	@Override
@@ -155,6 +170,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		_testPostSiteStyleBookWithInvalidFrontendTokensValues();
 		_testPostSiteStyleBookWithMalformedFrontendTokensValues();
 		_testPostSiteStyleBookWithNullDefaultStyleBook();
+		_testPostSiteStyleBookWithStagedSite();
 	}
 
 	@Override
@@ -175,6 +191,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		_testPutSiteStyleBookWithFrontendTokenDefinition();
 		_testPutSiteStyleBookWithInvalidFrontendTokenDefinition();
 		_testPutSiteStyleBookWithNullDefaultStyleBook();
+		_testPutSiteStyleBookWithStagedSite();
 		_testPutSiteStyleBookWithoutFrontendTokenDefinition();
 	}
 
@@ -333,6 +350,14 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		return group;
 	}
 
+	private Group _addStagedGroup() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		GroupTestUtil.enableLocalStaging(group);
+
+		return group;
+	}
+
 	private StyleBookEntry _addStyleBookEntry(
 			long groupId, String themeId, String name)
 		throws Exception {
@@ -460,6 +485,22 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			styleBookResource.getDesignLibraryStyleBook(
 				_getDesignLibraryExternalReferenceCode(),
 				styleBook.getExternalReferenceCode()));
+	}
+
+	private void _testDeleteSiteStyleBookWithStagedSite() throws Exception {
+		Group group = _addStagedGroup();
+
+		StyleBook styleBook = styleBookResource.postSiteStyleBook(
+			group.getExternalReferenceCode(), randomStyleBook());
+
+		styleBookResource.deleteSiteStyleBook(
+			group.getExternalReferenceCode(),
+			styleBook.getExternalReferenceCode());
+
+		Assert.assertNull(
+			_styleBookEntryLocalService.
+				fetchStyleBookEntryByExternalReferenceCode(
+					styleBook.getExternalReferenceCode(), group.getGroupId()));
 	}
 
 	private void _testGetDesignLibraryStyleBooksPageWithSiteExternalReferenceCode()
@@ -782,6 +823,21 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			"BAD_REQUEST", null,
 			() -> styleBookResource.getSiteStyleBook(
 				_getDesignLibraryExternalReferenceCode(),
+				styleBook.getExternalReferenceCode()));
+	}
+
+	private void _testGetSiteStyleBookWithStagedSite() throws Exception {
+		Group group = _addStagedGroup();
+
+		StyleBook styleBook = styleBookResource.postSiteStyleBook(
+			group.getExternalReferenceCode(), randomStyleBook());
+
+		Group stagingGroup = group.getStagingGroup();
+
+		assertEquals(
+			styleBook,
+			styleBookResource.getSiteStyleBook(
+				stagingGroup.getExternalReferenceCode(),
 				styleBook.getExternalReferenceCode()));
 	}
 
@@ -1178,6 +1234,33 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		Assert.assertFalse(postStyleBook.getDefaultStyleBook());
 	}
 
+	private void _testPostSiteStyleBookWithStagedSite() throws Exception {
+		Group group = _addStagedGroup();
+
+		StyleBook styleBook1 = styleBookResource.postSiteStyleBook(
+			group.getExternalReferenceCode(), randomStyleBook());
+
+		Assert.assertNotNull(
+			_styleBookEntryLocalService.
+				fetchStyleBookEntryByExternalReferenceCode(
+					styleBook1.getExternalReferenceCode(), group.getGroupId()));
+
+		Group stagingGroup = group.getStagingGroup();
+
+		StyleBook styleBook2 = styleBookResource.postSiteStyleBook(
+			stagingGroup.getExternalReferenceCode(), randomStyleBook());
+
+		Assert.assertNotNull(
+			_styleBookEntryLocalService.
+				fetchStyleBookEntryByExternalReferenceCode(
+					styleBook2.getExternalReferenceCode(), group.getGroupId()));
+
+		Assert.assertEquals(
+			0,
+			_styleBookEntryLocalService.getStyleBookEntriesCount(
+				stagingGroup.getGroupId()));
+	}
+
 	private void _testPutDesignLibraryStyleBookWithFrontendTokenDefinition()
 		throws Exception {
 
@@ -1288,6 +1371,27 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			postStyleBook.getExternalReferenceCode(), randomStyleBook2);
 
 		Assert.assertFalse(putStyleBook.getDefaultStyleBook());
+	}
+
+	private void _testPutSiteStyleBookWithStagedSite() throws Exception {
+		Group group = _addStagedGroup();
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		styleBookResource.putSiteStyleBook(
+			group.getExternalReferenceCode(), externalReferenceCode,
+			randomStyleBook());
+
+		StyleBook styleBook = styleBookResource.putSiteStyleBook(
+			group.getExternalReferenceCode(), externalReferenceCode,
+			randomStyleBook());
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.
+				getStyleBookEntryByExternalReferenceCode(
+					externalReferenceCode, group.getGroupId());
+
+		Assert.assertEquals(styleBook.getName(), styleBookEntry.getName());
 	}
 
 	private void _testPutSiteStyleBookWithoutFrontendTokenDefinition()
