@@ -195,11 +195,5 @@ definition {
 			value1 = "No results were found.");
 	}
 
-	@summary = "Default summary"
-	macro viewMetadataSetTitle(metadataSetTitle = null) {
-		AssertElementPresent(
-			key_metadataSetName = ${metadataSetTitle},
-			locator1 = "DocumentsAndMediaMetadataSets#METADATA_SETS_NAME");
-	}
 
 }
