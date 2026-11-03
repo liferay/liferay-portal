@@ -138,6 +138,32 @@ test('Order and enable visualization modes @LPD-107930', async ({
 			.poll(() => visualizationModesPage.getVisualizationModeLabels())
 			.toHaveLength(3);
 	});
+
+	await test.step('Open the table visualization mode and go back', async () => {
+		const errors: Error[] = [];
+
+		page.on('pageerror', (error) => errors.push(error));
+
+		await visualizationModesPage
+			.getVisualizationModeRow('Table')
+			.getByText('Table', {exact: true})
+			.click();
+
+		await expect(
+			visualizationModesPage.tableVisualizationModeContainer
+		).toBeVisible();
+
+		await page
+			.getByRole('navigation', {name: 'Breadcrumb'})
+			.getByRole('button', {name: 'Visualization Modes'})
+			.click();
+
+		await expect
+			.poll(() => visualizationModesPage.getVisualizationModeLabels())
+			.toHaveLength(3);
+
+		expect(errors).toEqual([]);
+	});
 });
 
 test('Configure cards visualization mode @LPD-10735', async ({

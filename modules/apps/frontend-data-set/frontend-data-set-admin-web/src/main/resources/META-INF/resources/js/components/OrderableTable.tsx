@@ -504,7 +504,7 @@ const OrderableTable = ({
 
 					// @ts-ignore
 
-					<DndProvider backend={HTML5Backend}>
+					<DndProvider backend={HTML5Backend} context={window}>
 						<Table
 							actions={actions}
 							fields={fields}
