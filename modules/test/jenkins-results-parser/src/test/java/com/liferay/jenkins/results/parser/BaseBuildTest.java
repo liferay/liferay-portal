@@ -243,9 +243,8 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 		Mockito.when(
 			baseBuild.getJobURL()
 		).thenReturn(
-			JenkinsResultsParserUtil.combine(
-				"https://test-1.liferay.com/job/",
-				"test-portal-acceptance-pullrequest%28master%29")
+			"https://test-1.liferay.com/job/test-portal-acceptance-" +
+				"pullrequest%28master%29"
 		);
 
 		Mockito.when(
