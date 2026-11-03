@@ -47,7 +47,7 @@ List<NavigationItem> navigationItems = localizedItemSelectorRendering.getNavigat
 						>
 							<clay:row>
 								<clay:col
-									lg="3"
+									md="3"
 								>
 									<clay:vertical-nav
 										verticalNavItems="<%= localizedItemSelectorRendering.getVerticalNavItemList() %>"
@@ -55,7 +55,7 @@ List<NavigationItem> navigationItems = localizedItemSelectorRendering.getNavigat
 								</clay:col>
 
 								<clay:col
-									lg="9"
+									md="9"
 								>
 									<clay:sheet
 										size="full"
