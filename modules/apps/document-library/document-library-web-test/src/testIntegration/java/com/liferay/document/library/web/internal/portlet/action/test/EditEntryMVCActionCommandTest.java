@@ -10,6 +10,7 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
@@ -17,8 +18,10 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -204,6 +207,61 @@ public class EditEntryMVCActionCommandTest {
 			initialFileEntry.getFileEntryId());
 
 		Assert.assertTrue(actualFileEntry.isCheckedOut());
+	}
+
+	@Test
+	@TestInfo("LPD-113588")
+	public void testMoveEntries() throws Exception {
+		FileEntry fileEntry1 = _addFileEntry();
+		FileEntry fileEntry2 = _addFileEntry();
+		FileEntry fileEntry3 = _addFileEntry();
+
+		Folder folder = _dlAppLocalService.addFolder(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext());
+
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
+		_mvcActionCommand.processAction(
+			new MockActionRequest(
+				company, _group,
+				HashMapBuilder.putAll(
+					_getParameters(fileEntry1, Constants.MOVE)
+				).put(
+					"newFolderId",
+					new String[] {String.valueOf(folder.getFolderId())}
+				).put(
+					"rowIdsFileEntry",
+					new String[] {
+						StringBundler.concat(
+							fileEntry1.getFileEntryId(), StringPool.COMMA,
+							fileEntry2.getFileEntryId())
+					}
+				).build()),
+			new MockActionResponse());
+
+		Assert.assertEquals(folder.getFolderId(), _getFolderId(fileEntry1));
+		Assert.assertEquals(folder.getFolderId(), _getFolderId(fileEntry2));
+		Assert.assertEquals(
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			_getFolderId(fileEntry3));
+	}
+
+	private FileEntry _addFileEntry() throws Exception {
+		return _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), ContentTypes.TEXT_PLAIN, null, null,
+			null, null, ServiceContextTestUtil.getServiceContext());
+	}
+
+	private long _getFolderId(FileEntry fileEntry) throws Exception {
+		fileEntry = _dlAppLocalService.getFileEntry(fileEntry.getFileEntryId());
+
+		return fileEntry.getFolderId();
 	}
 
 	private Map<String, String[]> _getParameters(
