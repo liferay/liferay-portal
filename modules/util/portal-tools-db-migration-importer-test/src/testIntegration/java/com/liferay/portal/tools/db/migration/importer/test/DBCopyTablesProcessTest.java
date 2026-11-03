@@ -54,6 +54,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,12 +78,6 @@ public class DBCopyTablesProcessTest {
 			System.getProperty("database.postgresql.username"),
 			System.getProperty("database.postgresql.password"),
 			StringPool.BLANK);
-
-		try (Connection connection = DataAccess.getConnection()) {
-			DBInspector dbInspector = new DBInspector(connection);
-
-			_sourceTableName = dbInspector.normalizeName("TestTable");
-		}
 
 		DataSource dataSource = InfrastructureUtil.getDataSource();
 
@@ -110,7 +105,8 @@ public class DBCopyTablesProcessTest {
 
 									return databaseMetaData.getColumns(
 										catalog, schemaPattern,
-										_sourceTableName, columnNamePattern);
+										"%" + _sourceTableName,
+										columnNamePattern);
 								}
 
 							},
@@ -149,12 +145,20 @@ public class DBCopyTablesProcessTest {
 		DataSourceFactoryUtil.destroyDataSource(_targetDataSource);
 	}
 
+	@Before
+	public void setUp() throws Exception {
+		_sourceTableName = _normalizeName("TestTable");
+	}
+
 	@After
 	public void tearDown() throws Exception {
-		_sourceDB.runSQL("DROP_TABLE_IF_EXISTS(TestTable)");
+		_sourceDB.runSQL("DROP_TABLE_IF_EXISTS(" + _sourceTableName + ")");
 
 		try (Connection connection = _targetDataSource.getConnection()) {
-			_targetDB.runSQL(connection, "DROP TABLE IF EXISTS TestTable");
+			_targetDB.runSQL(
+				connection,
+				"drop table if exists \"" +
+					StringUtil.toLowerCase(_sourceTableName) + "\"");
 		}
 	}
 
@@ -452,6 +456,30 @@ public class DBCopyTablesProcessTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110099")
+	public void testRunWithReservedWords() throws Exception {
+		_sourceTableName = _normalizeName("verbose");
+
+		_sourceDB.runSQL("create table verbose (id INTEGER, freeze INTEGER)");
+		_sourceDB.runSQL("insert into verbose (id, freeze) values (1, 2)");
+
+		_runDBCopyTablesProcess();
+
+		try (Connection connection = _targetDataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select \"id\", \"freeze\" from \"verbose\"");
+
+			ResultSet resultSet = preparedStatement.executeQuery()) {
+
+			Assert.assertTrue(resultSet.next());
+			Assert.assertEquals(2, resultSet.getInt("freeze"));
+			Assert.assertEquals(1, resultSet.getInt("id"));
+			Assert.assertFalse(resultSet.next());
+		}
+	}
+
+	@Test
 	public void testSblobColumn() throws Exception {
 		_createTable("SBLOB");
 
@@ -634,6 +662,21 @@ public class DBCopyTablesProcessTest {
 		}
 	}
 
+	private String _normalizeName(String name) throws Exception {
+		try (Connection connection = DataAccess.getConnection()) {
+			DBInspector dbInspector = new DBInspector(connection);
+
+			return dbInspector.normalizeName(name);
+		}
+	}
+
+	private void _runDBCopyTablesProcess() throws Exception {
+		DBCopyTablesProcess dbCopyTablesProcess = new DBCopyTablesProcess(
+			_sourceDataSource, _targetDataSource);
+
+		dbCopyTablesProcess.run();
+	}
+
 	private void _testColumnTypeOf(
 			Function<Object, Object> expectedFunction,
 			Function<Object, Object> getFunction, String type,
@@ -705,9 +748,7 @@ public class DBCopyTablesProcessTest {
 				"update TestTable set charColumn = '", charColumnValue,
 				"', longColumn = ", longColumnValue));
 
-		new DBCopyTablesProcess(
-			_sourceDataSource, _targetDataSource
-		).run();
+		_runDBCopyTablesProcess();
 
 		_assertColumnType("charColumn", "character varying(10)");
 
@@ -745,9 +786,7 @@ public class DBCopyTablesProcessTest {
 
 		_insertValues(values);
 
-		new DBCopyTablesProcess(
-			_sourceDataSource, _targetDataSource
-		).run();
+		_runDBCopyTablesProcess();
 
 		_assertColumnType("testColumn", expectedColumnType);
 
@@ -765,9 +804,7 @@ public class DBCopyTablesProcessTest {
 
 		_insertValues(values);
 
-		new DBCopyTablesProcess(
-			_sourceDataSource, _targetDataSource
-		).run();
+		_runDBCopyTablesProcess();
 
 		_assertColumnType("testColumn", "character varying(75) not null");
 
