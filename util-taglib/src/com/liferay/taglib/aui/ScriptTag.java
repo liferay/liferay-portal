@@ -225,15 +225,6 @@ public class ScriptTag extends BaseScriptTag {
 		return super.doStartTag();
 	}
 
-	@Override
-	protected void cleanUp() {
-		super.cleanUp();
-
-		setPosition(null);
-		setRequire(null);
-		setUse(null);
-	}
-
 	private int _endTag() throws IOException, JspException {
 		if (Validator.isNotNull(getRequire())) {
 			throw new JspException(
