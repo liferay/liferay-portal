@@ -83,6 +83,7 @@ public class AssetListEntryServiceTest {
 		throws PortalException {
 
 		String audienceEntryERC = RandomTestUtil.randomString();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
@@ -140,6 +141,7 @@ public class AssetListEntryServiceTest {
 		throws Exception {
 
 		String audienceEntryERC = RandomTestUtil.randomString();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
@@ -368,6 +370,7 @@ public class AssetListEntryServiceTest {
 		throws PortalException {
 
 		String audienceEntryERC = RandomTestUtil.randomString();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
@@ -402,6 +405,7 @@ public class AssetListEntryServiceTest {
 		throws Exception {
 
 		String audienceEntryERC = RandomTestUtil.randomString();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
@@ -763,6 +767,7 @@ public class AssetListEntryServiceTest {
 		throws PortalException {
 
 		String audienceEntryERC = RandomTestUtil.randomString();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
@@ -791,6 +796,7 @@ public class AssetListEntryServiceTest {
 		throws Exception {
 
 		String audienceEntryERC = RandomTestUtil.randomString();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
@@ -828,10 +834,11 @@ public class AssetListEntryServiceTest {
 	public void testUpdateAssetListEntryTypeSettingsWithAudienceEntryERC()
 		throws PortalException {
 
+		String typeSettings = RandomTestUtil.randomString();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
-		String typeSettings = RandomTestUtil.randomString();
 
 		AssetListEntry assetListEntry =
 			_assetListEntryService.addDynamicAssetListEntry(

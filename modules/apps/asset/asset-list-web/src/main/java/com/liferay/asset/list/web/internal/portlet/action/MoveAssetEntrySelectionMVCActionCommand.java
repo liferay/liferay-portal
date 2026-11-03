@@ -39,9 +39,9 @@ public class MoveAssetEntrySelectionMVCActionCommand
 
 		long assetListEntryId = ParamUtil.getLong(
 			actionRequest, "assetListEntryId");
+
 		String audienceEntryERC = AudienceVariationUtil.getAudienceEntryERC(
 			actionRequest);
-
 		int position = ParamUtil.getInteger(actionRequest, "position");
 		int newPosition = ParamUtil.getInteger(actionRequest, "newPosition");
 

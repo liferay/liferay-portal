@@ -583,8 +583,6 @@ public class AssetListEntryLocalServiceImpl
 					segmentsEntryId, serviceContext);
 		}
 
-		// Asset list entry
-
 		if (Validator.isNull(assetListEntry.getAssetEntryType())) {
 			String assetEntryType = _getManualAssetEntryType(assetListEntryId);
 
