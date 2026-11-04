@@ -1567,17 +1567,21 @@ public class CalendarBookingLocalServiceImpl
 		if (calendarBooking.isMasterBooking()) {
 			Date createDate = calendarBooking.getCreateDate();
 
-			NotificationTemplateType notificationTemplateType =
+			NotificationTemplateType defaultNotificationTemplateType =
 				NotificationTemplateType.INVITE;
 
 			if (!DateUtil.equals(createDate, oldModifiedDate)) {
-				notificationTemplateType = NotificationTemplateType.UPDATE;
+				defaultNotificationTemplateType =
+					NotificationTemplateType.UPDATE;
 			}
 
 			for (CalendarBooking childCalendarBooking : childCalendarBookings) {
 				if (childCalendarBooking.equals(calendarBooking)) {
 					continue;
 				}
+
+				NotificationTemplateType notificationTemplateType =
+					defaultNotificationTemplateType;
 
 				if (DateUtil.equals(
 						childCalendarBooking.getCreateDate(),
