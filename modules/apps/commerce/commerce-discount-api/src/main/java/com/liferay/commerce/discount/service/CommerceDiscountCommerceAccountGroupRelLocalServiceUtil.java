@@ -137,8 +137,9 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceUtil {
 	 */
 	@Deprecated
 	public static void
-		deleteCommerceDiscountCommerceAccountGroupRelsBycommerceAccountGroupId(
-			long commerceAccountGroupId) {
+			deleteCommerceDiscountCommerceAccountGroupRelsBycommerceAccountGroupId(
+				long commerceAccountGroupId)
+		throws PortalException {
 
 		getService().
 			deleteCommerceDiscountCommerceAccountGroupRelsBycommerceAccountGroupId(
@@ -389,4 +390,4 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceUtil {
 				CommerceDiscountCommerceAccountGroupRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1336936449
+// LIFERAY-SERVICE-BUILDER-HASH:1895733331

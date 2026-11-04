@@ -136,7 +136,9 @@ public class CommerceDiscountOrderTypeRelLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteCommerceDiscountOrderTypeRels(long commerceDiscountId) {
+	public void deleteCommerceDiscountOrderTypeRels(long commerceDiscountId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		_commerceDiscountOrderTypeRelLocalService.
 			deleteCommerceDiscountOrderTypeRels(commerceDiscountId);
 	}
@@ -493,4 +495,4 @@ public class CommerceDiscountOrderTypeRelLocalServiceWrapper
 		_commerceDiscountOrderTypeRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-531953368
+// LIFERAY-SERVICE-BUILDER-HASH:-1030808042

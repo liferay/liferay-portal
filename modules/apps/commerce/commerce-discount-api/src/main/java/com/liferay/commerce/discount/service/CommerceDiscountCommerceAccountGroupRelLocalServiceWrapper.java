@@ -159,8 +159,9 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceWrapper
 	@Deprecated
 	@Override
 	public void
-		deleteCommerceDiscountCommerceAccountGroupRelsBycommerceAccountGroupId(
-			long commerceAccountGroupId) {
+			deleteCommerceDiscountCommerceAccountGroupRelsBycommerceAccountGroupId(
+				long commerceAccountGroupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_commerceDiscountCommerceAccountGroupRelLocalService.
 			deleteCommerceDiscountCommerceAccountGroupRelsBycommerceAccountGroupId(
@@ -489,4 +490,4 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceWrapper
 		_commerceDiscountCommerceAccountGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1448818157
+// LIFERAY-SERVICE-BUILDER-HASH:-1192109441

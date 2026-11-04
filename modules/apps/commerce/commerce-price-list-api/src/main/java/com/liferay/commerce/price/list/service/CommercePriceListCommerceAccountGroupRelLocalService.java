@@ -106,7 +106,8 @@ public interface CommercePriceListCommerceAccountGroupRelLocalService
 		throws PortalException;
 
 	public void deleteCommercePriceListAccountGroupRelsByCommercePriceListId(
-		long commercePriceListId);
+			long commercePriceListId)
+		throws PortalException;
 
 	/**
 	 * Deletes the commerce price list commerce account group rel from the database. Also notifies the appropriate model listeners.
@@ -384,4 +385,4 @@ public interface CommercePriceListCommerceAccountGroupRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1843736399
+// LIFERAY-SERVICE-BUILDER-HASH:261476869

@@ -132,7 +132,8 @@ public class CommercePriceListOrderTypeRelLocalServiceUtil {
 	}
 
 	public static void deleteCommercePriceListOrderTypeRels(
-		long commercePriceListId) {
+			long commercePriceListId)
+		throws PortalException {
 
 		getService().deleteCommercePriceListOrderTypeRels(commercePriceListId);
 	}
@@ -416,4 +417,4 @@ public class CommercePriceListOrderTypeRelLocalServiceUtil {
 			CommercePriceListOrderTypeRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:76730430
+// LIFERAY-SERVICE-BUILDER-HASH:-1915605808

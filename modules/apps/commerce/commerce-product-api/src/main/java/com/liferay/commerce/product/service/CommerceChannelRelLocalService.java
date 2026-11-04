@@ -343,4 +343,4 @@ public interface CommerceChannelRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-209182612
+// LIFERAY-SERVICE-BUILDER-HASH:348619478
