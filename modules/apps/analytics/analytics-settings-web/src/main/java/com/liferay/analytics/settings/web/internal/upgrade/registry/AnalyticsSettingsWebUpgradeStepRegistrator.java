@@ -69,6 +69,12 @@ public class AnalyticsSettingsWebUpgradeStepRegistrator
 					" and dispatchTaskExecutorType in ",
 					"('export-analytics-asset-entities', ",
 					"'export-analytics-dxp-entities')")));
+
+		registry.register(
+			"1.0.4", "1.0.5",
+			new com.liferay.analytics.settings.web.internal.upgrade.v1_0_5.
+				AnalyticsDispatchTriggersUpgradeProcess(
+					_companyLocalService, _dispatchTriggerLocalService));
 	}
 
 	@Reference
