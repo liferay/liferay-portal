@@ -226,16 +226,29 @@ public class UpdateFaroProjectSubscriptionsMessageListener
 
 		if (faroProjectUsage == null) {
 			_faroProjectUsageLocalService.addFaroProjectUsage(
-				faroProject.getCompanyId(), 0, faroProject.getFaroProjectId(),
+				faroProject.getCompanyId(), 0,
+				projectUsageMetric.getActiveLogicalBytes(),
+				projectUsageMetric.getAnonymousIndividualsCount(),
+				projectUsageMetric.getEventsCount(),
+				faroProject.getFaroProjectId(),
 				projectUsageMetric.getKnownIndividualsCount(),
-				_getMonthDateKey(date), projectUsageMetric.getPageViewsCount(),
-				date);
+				projectUsageMetric.getLongTermLogicalBytes(),
+				_getMonthDateKey(date),
+				projectUsageMetric.getOnDemandBytesBilled(),
+				projectUsageMetric.getPageViewsCount(),
+				projectUsageMetric.getReservationSlotMs(), date);
 		}
 		else {
 			_faroProjectUsageLocalService.updateFaroProjectUsage(
 				faroProjectUsage.getFaroProjectUsageId(),
+				projectUsageMetric.getActiveLogicalBytes(),
+				projectUsageMetric.getAnonymousIndividualsCount(),
+				projectUsageMetric.getEventsCount(),
 				projectUsageMetric.getKnownIndividualsCount(),
-				projectUsageMetric.getPageViewsCount());
+				projectUsageMetric.getLongTermLogicalBytes(),
+				projectUsageMetric.getOnDemandBytesBilled(),
+				projectUsageMetric.getPageViewsCount(),
+				projectUsageMetric.getReservationSlotMs());
 		}
 	}
 

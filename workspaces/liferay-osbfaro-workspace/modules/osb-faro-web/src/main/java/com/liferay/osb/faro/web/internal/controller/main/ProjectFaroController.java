@@ -918,11 +918,18 @@ public class ProjectFaroController extends BaseFaroController {
 
 							_faroProjectUsageLocalService.addFaroProjectUsage(
 								faroProject.getCompanyId(), 0,
+								projectUsageMetric.getActiveLogicalBytes(),
+								projectUsageMetric.
+									getAnonymousIndividualsCount(),
+								projectUsageMetric.getEventsCount(),
 								faroProject.getFaroProjectId(),
 								projectUsageMetric.getKnownIndividualsCount(),
+								projectUsageMetric.getLongTermLogicalBytes(),
 								_getMonthDateKey(
 									projectUsageMetric.getCreateDate()),
+								projectUsageMetric.getOnDemandBytesBilled(),
 								projectUsageMetric.getPageViewsCount(),
+								projectUsageMetric.getReservationSlotMs(),
 								projectUsageMetric.getCreateDate());
 						}
 
