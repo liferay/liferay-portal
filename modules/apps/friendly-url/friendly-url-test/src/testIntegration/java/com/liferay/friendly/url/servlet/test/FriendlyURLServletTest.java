@@ -783,6 +783,39 @@ public class FriendlyURLServletTest {
 	}
 
 	@Test
+	public void testGetRedirectWithUnavailableI18nLanguageId()
+		throws Throwable {
+
+		GroupTestUtil.updateDisplaySettings(
+			_group.getGroupId(), Arrays.asList(LocaleUtil.UK), LocaleUtil.UK);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest(
+				"GET",
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING +
+					_group.getFriendlyURL());
+
+		mockHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_SERVLET_FORWARD_REQUEST_URI,
+			StringBundler.concat(
+				"/en-US",
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				_group.getFriendlyURL()));
+		mockHttpServletRequest.setAttribute(WebKeys.I18N_LANGUAGE_ID, "en_US");
+		mockHttpServletRequest.setAttribute(WebKeys.I18N_PATH, "/en-US");
+		mockHttpServletRequest.setPathInfo(_group.getFriendlyURL());
+
+		testGetRedirect(
+			mockHttpServletRequest, _group.getFriendlyURL(),
+			_redirectConstructor2.newInstance(
+				StringBundler.concat(
+					"/en-GB",
+					PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+					_group.getFriendlyURL()),
+				true, true));
+	}
+
+	@Test
 	public void testGetRedirectWithUpperCaseAccentedSourceURLRedirectEntry()
 		throws Throwable {
 

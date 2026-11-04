@@ -1111,6 +1111,9 @@ public class FriendlyURLServlet extends HttpServlet {
 			if ((x != -1) && ((x + 1) != path.length())) {
 				layoutFriendlyURL = path.substring(x);
 			}
+			else {
+				layoutFriendlyURL = layout.getFriendlyURL(locale);
+			}
 
 			int y = layoutFriendlyURL.indexOf(
 				VirtualLayoutConstants.CANONICAL_URL_SEPARATOR);
