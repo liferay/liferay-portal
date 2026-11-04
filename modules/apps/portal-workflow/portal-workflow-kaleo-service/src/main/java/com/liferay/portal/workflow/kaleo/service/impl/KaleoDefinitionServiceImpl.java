@@ -221,7 +221,7 @@ public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 			(permissionChecker.getCompanyId() != companyId)) {
 
 			throw new PrincipalException(
-				"User is not Omni Admin and is not from the actual company");
+				"User is not an omniadmin and does not belong to the company");
 		}
 
 		_portletResourcePermission.check(permissionChecker, groupId, actionId);
