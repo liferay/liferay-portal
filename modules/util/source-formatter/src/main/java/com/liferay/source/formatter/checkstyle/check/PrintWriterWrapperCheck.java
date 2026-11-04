@@ -228,6 +228,12 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 				parentDetailAST = parentDetailAST.getParent();
 			}
 
+			if ((parentDetailAST.getType() == TokenTypes.ASSIGN) &&
+				equals(parentDetailAST.getFirstChild(), identDetailAST)) {
+
+				continue;
+			}
+
 			if (parentDetailAST.getType() == TokenTypes.DOT) {
 				DetailAST grandparentDetailAST = parentDetailAST.getParent();
 				DetailAST methodNameDetailAST = parentDetailAST.getLastChild();
@@ -244,12 +250,6 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 
 					return false;
 				}
-
-				continue;
-			}
-
-			if ((parentDetailAST.getType() == TokenTypes.ASSIGN) &&
-				equals(parentDetailAST.getFirstChild(), identDetailAST)) {
 
 				continue;
 			}
