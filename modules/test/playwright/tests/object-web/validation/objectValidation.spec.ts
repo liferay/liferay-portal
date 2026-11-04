@@ -1296,7 +1296,9 @@ test.describe('Object Groovy Validation', () => {
 			await page.reload({timeout: 15000});
 		}).toPass({timeout: 60000});
 
-		await expect(page.getByRole('cell', {name: 'No'})).toBeVisible();
+		await expect(
+			page.getByRole('cell', {exact: true, name: 'No'})
+		).toBeVisible();
 	});
 
 	test('specific error is shown when groovy syntax is incorrect', async ({
