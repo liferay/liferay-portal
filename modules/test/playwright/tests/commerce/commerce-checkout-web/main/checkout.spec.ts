@@ -3025,19 +3025,95 @@ test(
 				)
 			).toContainText(deliveryTerm1.label['en_US']);
 		});
+	}
+);
 
-		await test.step('No term step is shown for a shipping option and a payment method without eligible terms', async () => {
-			await apiHelpers.headlessCommerceDeliveryCart.postCart(
-				{
-					accountId: account.id,
-					cartItems: [{quantity: 1, skuId: sku.id}],
-				},
-				channel.id
+test(
+	'Shipping options and payment methods without eligible terms skip the term steps at checkout',
+	{tag: '@LPD-108800'},
+	async ({
+		apiHelpers,
+		checkoutPage,
+		commerceAdminChannelDetailsPage,
+		commerceAdminChannelsPage,
+		page,
+		site,
+	}) => {
+		test.setTimeout(300000);
+
+		const {account, buyerUser, channel, checkoutLayout, sku} =
+			await checkoutStorefrontSetUp(
+				apiHelpers,
+				commerceAdminChannelsPage,
+				page,
+				site
 			);
 
+		await apiHelpers.headlessCommerceAdminAccount.postAddress(account.id, {
+			countryISOCode: 'US',
+			defaultBilling: true,
+			defaultShipping: true,
+		});
+
+		const deliveryTerm =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				label: {en_US: getRandomString()},
+				priority: 1,
+				type: 'delivery-terms',
+			});
+		const paymentTerm =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				label: {en_US: getRandomString()},
+				priority: 1,
+				type: 'payment-terms',
+			});
+
+		await test.step('Make the terms eligible for Standard Delivery and Money Order only', async () => {
+			await commerceAdminChannelsPage.setupCommerceChannelShippingMethod(
+				channel.name,
+				'Flat Rate',
+				['Expedited Delivery', 'Standard Delivery'],
+				true
+			);
+
+			await commerceAdminChannelsPage.addFlatRateDeliveryTermEligibility(
+				commerceAdminChannelDetailsPage,
+				channel.name,
+				deliveryTerm.label['en_US']
+			);
+
+			await activateChannelPaymentMethod(
+				apiHelpers,
+				channel.id,
+				'money-order'
+			);
+			await activateChannelPaymentMethod(
+				apiHelpers,
+				channel.id,
+				'paypal-integration'
+			);
+
+			await commerceAdminChannelsPage.addMoneyOrderPaymentTermEligibility(
+				commerceAdminChannelDetailsPage,
+				channel.name,
+				paymentTerm.label['en_US']
+			);
+		});
+
+		await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				cartItems: [{quantity: 1, skuId: sku.id}],
+			},
+			channel.id
+		);
+
+		await test.step('No term step is shown for Expedited Delivery and PayPal', async () => {
 			await performUserSwitch(page, buyerUser.alternateName);
 
-			await page.goto(checkoutPageURL);
+			await page.goto(
+				`/web${site.friendlyUrlPath}${checkoutLayout.friendlyUrlPath}`
+			);
 
 			await checkoutPage.performCheckoutUntilStep('Shipping Method');
 
