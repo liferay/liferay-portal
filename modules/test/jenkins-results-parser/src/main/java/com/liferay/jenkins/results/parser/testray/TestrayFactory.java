@@ -14,6 +14,8 @@ import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.Retryable;
 import com.liferay.jenkins.results.parser.TopLevelBuild;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
+import com.liferay.jenkins.results.parser.job.property.JobProperty;
+import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
 import com.liferay.jenkins.results.parser.test.clazz.BaseAntTargetTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.SemVerModulesTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
@@ -31,11 +33,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -774,16 +773,16 @@ public class TestrayFactory {
 	public static TestrayRun newTestrayRun(
 		TestrayBuild testrayBuild, AxisTestClassGroup axisTestClassGroup) {
 
-		Job job = axisTestClassGroup.getJob();
-
 		synchronized (_testrayRuns) {
+			Job job = axisTestClassGroup.getJob();
+
 			String name = TestrayRun.getRunIdString(
 				axisTestClassGroup.getEnhancedBatchName(),
 				job.getTestSuiteName(), job.getJobProperties());
 
 			if (name == null) {
 				throw new RuntimeException(
-					"Please set testray.environment.default[master]");
+					"Please set \"testray.environment.default[master]\"");
 			}
 
 			Set<String> suffixedBatchNames = _getSuffixedBatchNames(
@@ -830,7 +829,7 @@ public class TestrayFactory {
 
 			if (name == null) {
 				throw new RuntimeException(
-					"Please set testray.environment.default[master]");
+					"Please set \"testray.environment.default[master]\"");
 			}
 
 			return _newTestrayRun(testrayBuild, name);
@@ -932,23 +931,16 @@ public class TestrayFactory {
 			return suffixedBatchNames;
 		}
 
-		List<String> jobPropertyOptions = new ArrayList<>(
-			job.getJobPropertyOptions());
-
-		jobPropertyOptions.add(job.getTestSuiteName());
-
-		jobPropertyOptions.removeAll(Collections.singleton(null));
-
-		Properties jobProperties = job.getJobProperties();
-
 		Set<String> batchNames = new TreeSet<>();
 
 		for (String basePropertyName :
 				new String[] {"test.batch.names", "test.batch.names.smoke"}) {
 
-			String batchNamesString = JenkinsResultsParserUtil.getProperty(
-				jobProperties, basePropertyName,
-				jobPropertyOptions.toArray(new String[0]));
+			JobProperty jobProperty = JobPropertyFactory.newJobProperty(
+				basePropertyName, job.getTestSuiteName(), null, job, null, null,
+				true);
+
+			String batchNamesString = jobProperty.getValue();
 
 			if (JenkinsResultsParserUtil.isNullOrEmpty(batchNamesString)) {
 				continue;
@@ -966,6 +958,8 @@ public class TestrayFactory {
 		}
 
 		Map<String, String> factorRunIdStrings = new HashMap<>();
+
+		Properties jobProperties = job.getJobProperties();
 
 		for (String batchName : batchNames) {
 			String factorRunIdString = TestrayRun.getRunIdString(
