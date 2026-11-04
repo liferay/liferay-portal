@@ -612,7 +612,7 @@ public class TestrayJobHistory extends BaseJobHistory {
 			return testsCountMinimum;
 		}
 
-		return _TESTS_COUNT_MINIMUM;
+		return _TESTS_COUNT_MINIMUM_DEFAULT;
 	}
 
 	private int _getTestsCountThreshold(String batchName) {
@@ -624,7 +624,7 @@ public class TestrayJobHistory extends BaseJobHistory {
 			return testsCountThreshold;
 		}
 
-		return _TESTS_COUNT_THRESHOLD;
+		return _TESTS_COUNT_THRESHOLD_DEFAULT;
 	}
 
 	private boolean _isExcludedBatchName(String batchName) {
@@ -641,9 +641,9 @@ public class TestrayJobHistory extends BaseJobHistory {
 		return false;
 	}
 
-	private static final int _TESTS_COUNT_MINIMUM = 25;
+	private static final int _TESTS_COUNT_MINIMUM_DEFAULT = 25;
 
-	private static final int _TESTS_COUNT_THRESHOLD = 90;
+	private static final int _TESTS_COUNT_THRESHOLD_DEFAULT = 90;
 
 	private static final Map<String, Map<String, Integer>>
 		_expectedTestCountsMap = new HashMap<>();
