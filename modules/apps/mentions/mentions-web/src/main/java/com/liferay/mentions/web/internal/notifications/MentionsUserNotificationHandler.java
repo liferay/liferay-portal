@@ -11,7 +11,10 @@ import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.mentions.constants.MentionsPortletKeys;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.service.MBMessageLocalService;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
@@ -58,6 +61,18 @@ public class MentionsUserNotificationHandler
 	}
 
 	@Override
+	protected String getBodyContent(JSONObject jsonObject) {
+		MBMessage mbMessage = _mbMessageLocalService.fetchMBMessage(
+			jsonObject.getLong("classPK"));
+
+		if (_isCMSDiscussion(mbMessage)) {
+			return StringPool.BLANK;
+		}
+
+		return super.getBodyContent(jsonObject);
+	}
+
+	@Override
 	protected String getTitle(
 		JSONObject jsonObject, AssetRenderer<?> assetRenderer,
 		UserNotificationEvent userNotificationEvent,
@@ -66,15 +81,28 @@ public class MentionsUserNotificationHandler
 		MBMessage mbMessage = _mbMessageLocalService.fetchMBMessage(
 			jsonObject.getLong("classPK"));
 
+		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
+			"content.Language", serviceContext.getLocale(), getClass());
+
+		if (_isCMSDiscussion(mbMessage)) {
+			return _language.format(
+				resourceBundle, "x-mentioned-you-in-a-comment-on-x",
+				new String[] {
+					HtmlUtil.escape(
+						_portal.getUserName(
+							jsonObject.getLong("userId"), StringPool.BLANK)),
+					HtmlUtil.escape(
+						assetRenderer.getTitle(serviceContext.getLocale()))
+				},
+				false);
+		}
+
 		AssetRendererFactory<?> assetRendererFactory =
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
 				assetRenderer.getClassName());
 
 		String typeName = assetRendererFactory.getTypeName(
 			serviceContext.getLocale());
-
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", serviceContext.getLocale(), getClass());
 
 		if ((mbMessage != null) && mbMessage.isDiscussion()) {
 			return _language.format(
@@ -99,11 +127,33 @@ public class MentionsUserNotificationHandler
 			false);
 	}
 
+	private boolean _isCMSDiscussion(MBMessage mbMessage) {
+		if ((mbMessage == null) || !mbMessage.isDiscussion() ||
+			!FeatureFlagManagerUtil.isEnabled(
+				mbMessage.getCompanyId(), "LPD-104086")) {
+
+			return false;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+				mbMessage.getCompanyId(), mbMessage.getClassName());
+
+		if ((objectDefinition != null) && objectDefinition.isCMS()) {
+			return true;
+		}
+
+		return false;
+	}
+
 	@Reference
 	private Language _language;
 
 	@Reference
 	private MBMessageLocalService _mbMessageLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private Portal _portal;
