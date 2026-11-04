@@ -14,7 +14,7 @@ import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
 import com.liferay.expando.kernel.service.ExpandoColumnServiceUtil;
 import com.liferay.expando.kernel.service.ExpandoTableLocalServiceUtil;
 import com.liferay.expando.kernel.service.ExpandoValueLocalServiceUtil;
-import com.liferay.expando.kernel.service.ExpandoValueServiceUtil;
+import com.liferay.expando.kernel.service.permission.ExpandoColumnPermissionUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -26,6 +26,10 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.CopyLayoutThreadLocal;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -212,9 +216,20 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 		try {
 			if (secure) {
-				data = ExpandoValueServiceUtil.getData(
+				ExpandoColumn column = ExpandoColumnLocalServiceUtil.getColumn(
 					_companyId, _className,
-					ExpandoTableConstants.DEFAULT_TABLE_NAME, name, _classPK);
+					ExpandoTableConstants.DEFAULT_TABLE_NAME, name);
+
+				if ((column != null) &&
+					ExpandoColumnPermissionUtil.contains(
+						GuestOrUserUtil.getPermissionChecker(), column,
+						ActionKeys.VIEW)) {
+
+					data = ExpandoValueLocalServiceUtil.getData(
+						_companyId, _className,
+						ExpandoTableConstants.DEFAULT_TABLE_NAME, name,
+						_classPK);
+				}
 			}
 			else {
 				data = ExpandoValueLocalServiceUtil.getData(
@@ -312,15 +327,29 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 		Map<String, Serializable> attributeValues = null;
 
 		try {
+			attributeValues = ExpandoValueLocalServiceUtil.getData(
+				_companyId, _className,
+				ExpandoTableConstants.DEFAULT_TABLE_NAME, names, _classPK);
+
 			if (secure) {
-				attributeValues = ExpandoValueServiceUtil.getData(
-					_companyId, _className,
-					ExpandoTableConstants.DEFAULT_TABLE_NAME, names, _classPK);
-			}
-			else {
-				attributeValues = ExpandoValueLocalServiceUtil.getData(
-					_companyId, _className,
-					ExpandoTableConstants.DEFAULT_TABLE_NAME, names, _classPK);
+				long classNameId = ClassNameLocalServiceUtil.getClassNameId(
+					_className);
+				PermissionChecker permissionChecker =
+					GuestOrUserUtil.getPermissionChecker();
+
+				for (String name : names) {
+					if (ExpandoColumnPermissionUtil.contains(
+							permissionChecker,
+							ExpandoColumnLocalServiceUtil.getColumn(
+								_companyId, classNameId,
+								ExpandoTableConstants.DEFAULT_TABLE_NAME, name),
+							ActionKeys.VIEW)) {
+
+						continue;
+					}
+
+					attributeValues.remove(name);
+				}
 			}
 		}
 		catch (Exception exception) {
@@ -413,17 +442,16 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 		try {
 			if (secure) {
-				ExpandoValueServiceUtil.addValue(
-					_companyId, _className,
-					ExpandoTableConstants.DEFAULT_TABLE_NAME, name, _classPK,
-					value);
+				ExpandoColumnPermissionUtil.check(
+					GuestOrUserUtil.getPermissionChecker(), _companyId,
+					_className, ExpandoTableConstants.DEFAULT_TABLE_NAME, name,
+					ActionKeys.UPDATE);
 			}
-			else {
-				ExpandoValueLocalServiceUtil.addValue(
-					_companyId, _className,
-					ExpandoTableConstants.DEFAULT_TABLE_NAME, name, _classPK,
-					value);
-			}
+
+			ExpandoValueLocalServiceUtil.addValue(
+				_companyId, _className,
+				ExpandoTableConstants.DEFAULT_TABLE_NAME, name, _classPK,
+				value);
 		}
 		catch (Exception exception) {
 			ReflectionUtil.throwException(exception);
@@ -516,10 +544,22 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 		try {
 			if (secure) {
-				ExpandoValueServiceUtil.addValues(
-					_companyId, _className,
-					ExpandoTableConstants.DEFAULT_TABLE_NAME, _classPK,
-					attributes);
+				PermissionChecker permissionChecker =
+					GuestOrUserUtil.getPermissionChecker();
+
+				for (Map.Entry<String, Serializable> entry :
+						attributes.entrySet()) {
+
+					ExpandoColumnPermissionUtil.check(
+						permissionChecker, _companyId, _className,
+						ExpandoTableConstants.DEFAULT_TABLE_NAME,
+						entry.getKey(), ActionKeys.UPDATE);
+
+					ExpandoValueLocalServiceUtil.addValue(
+						_companyId, _className,
+						ExpandoTableConstants.DEFAULT_TABLE_NAME,
+						entry.getKey(), _classPK, entry.getValue());
+				}
 			}
 			else {
 				ExpandoValueLocalServiceUtil.addValues(
