@@ -84,7 +84,7 @@ export function NewImport({
 				actionButtonLabel={Liferay.Language.get('import')}
 				actionButtonSymbol="import"
 				initialValues={SETTINGS_STEP_INITIAL_VALUES}
-				onSubmit={async (values, formikHelpers) => {
+				onSubmit={async (values, {setStatus}) => {
 					if (!importPreview) {
 						Liferay.Util.openToast({
 							message: Liferay.Language.get(
@@ -136,7 +136,7 @@ export function NewImport({
 					}
 
 					navigateToProcesses(
-						formikHelpers,
+						setStatus,
 						Liferay.Language.get('the-process-has-started'),
 						backURL
 					);

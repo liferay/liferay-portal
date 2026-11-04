@@ -7,6 +7,7 @@ import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayLink from '@clayui/link';
+import {useFormikContext} from 'formik';
 import React from 'react';
 
 function Footer({
@@ -22,6 +23,8 @@ function Footer({
 	continueDisabled?: boolean;
 	onPrevious?: () => void;
 }) {
+	const {isSubmitting, isValid, status} = useFormikContext();
+
 	return (
 		<ClayLayout.SheetFooter className="mt-5">
 			<ClayLayout.Row className="flex-fill">
@@ -47,7 +50,14 @@ function Footer({
 							{Liferay.Language.get('cancel')}
 						</ClayLink>
 
-						<ClayButton disabled={continueDisabled} type="submit">
+						<ClayButton
+							disabled={
+								(continueDisabled ?? !isValid) ||
+								isSubmitting ||
+								status?.submitted
+							}
+							type="submit"
+						>
 							{actionButtonSymbol && (
 								<span className="inline-item inline-item-before">
 									<ClayIcon

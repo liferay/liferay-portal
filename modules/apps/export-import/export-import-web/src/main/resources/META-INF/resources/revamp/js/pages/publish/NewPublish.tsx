@@ -218,7 +218,7 @@ export function NewPublish({
 	return (
 		<Formik
 			initialValues={initialFormValues}
-			onSubmit={async (values, formikHelpers) => {
+			onSubmit={async (values, {setStatus}) => {
 				const scheduleValues = values.scheduleValues;
 
 				const scheduled = scheduleValues.enabled;
@@ -283,7 +283,7 @@ export function NewPublish({
 				}
 
 				navigateToProcesses(
-					formikHelpers,
+					setStatus,
 					scheduled
 						? Liferay.Language.get(
 								'the-publication-has-been-scheduled'
@@ -390,11 +390,6 @@ export function NewPublish({
 							}
 							actionButtonSymbol="change"
 							backURL={backURL}
-							continueDisabled={
-								formik.isSubmitting ||
-								formik.status?.submitted ||
-								!formik.isValid
-							}
 						/>
 					</Form>
 				);

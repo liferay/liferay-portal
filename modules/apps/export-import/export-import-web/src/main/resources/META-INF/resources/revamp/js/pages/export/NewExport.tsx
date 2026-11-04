@@ -83,7 +83,7 @@ export function NewExport({
 	return (
 		<Formik
 			initialValues={initialFormValues}
-			onSubmit={async (values, formikHelpers) => {
+			onSubmit={async (values, {setStatus}) => {
 				const result = await postExportProcess({
 					exportProcessRequest: {
 						...toProcessRequestFlags(values.contentSelection),
@@ -116,7 +116,7 @@ export function NewExport({
 				}
 
 				navigateToProcesses(
-					formikHelpers,
+					setStatus,
 					Liferay.Language.get('the-process-has-started'),
 					backURL
 				);
@@ -217,11 +217,6 @@ export function NewExport({
 							actionButtonLabel={Liferay.Language.get('export')}
 							actionButtonSymbol="export"
 							backURL={backURL}
-							continueDisabled={
-								formik.isSubmitting ||
-								formik.status?.submitted ||
-								!formik.isValid
-							}
 						/>
 					</Form>
 				);

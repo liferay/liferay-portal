@@ -129,11 +129,7 @@ export function Wizard({
 						actionButtonSymbol={actionButtonSymbol}
 						backURL={backURL}
 						continueDisabled={
-							formik.isSubmitting ||
-							formik.status?.submitted ||
-							(isStepValid
-								? !isStepValid(formik.values)
-								: !formik.isValid)
+							isStepValid && !isStepValid(formik.values)
 						}
 						onPrevious={stepNumber > 0 ? previous : undefined}
 					/>
