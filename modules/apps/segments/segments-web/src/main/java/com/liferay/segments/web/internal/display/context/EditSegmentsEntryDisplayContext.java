@@ -8,7 +8,6 @@ package com.liferay.segments.web.internal.display.context;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.learn.LearnMessageUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -28,6 +27,7 @@ import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
@@ -311,9 +311,11 @@ public class EditSegmentsEntryDisplayContext {
 	}
 
 	private long _getGroupId() throws PortalException {
-		return BeanParamUtil.getLong(
-			_getSegmentsEntry(), _httpServletRequest, "groupId",
-			_themeDisplay.getScopeGroupId());
+		return ParamUtil.getLong(
+			_httpServletRequest, "groupId",
+			GetterUtil.get(
+				_getSegmentsEntry(), SegmentsEntry::getGroupId,
+				_themeDisplay.getScopeGroupId()));
 	}
 
 	private JSONObject _getInitialSegmentsNameJSONObject() throws Exception {
