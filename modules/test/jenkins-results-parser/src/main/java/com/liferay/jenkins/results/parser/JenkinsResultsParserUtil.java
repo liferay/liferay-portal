@@ -417,10 +417,6 @@ public class JenkinsResultsParserUtil {
 		return jsonObject;
 	}
 
-	public static URL createURL(String url) throws Exception {
-		return encode(new URL(url));
-	}
-
 	public static String decode(String url)
 		throws UnsupportedEncodingException {
 
@@ -534,26 +530,6 @@ public class JenkinsResultsParserUtil {
 			});
 	}
 
-	public static String encode(String url)
-		throws MalformedURLException, URISyntaxException {
-
-		URL encodedURL = encode(new URL(url));
-
-		return encodedURL.toExternalForm();
-	}
-
-	public static URL encode(URL url)
-		throws MalformedURLException, URISyntaxException {
-
-		URI uri = new URI(
-			url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(),
-			url.getPath(), url.getQuery(), url.getRef());
-
-		String uriASCIIString = uri.toASCIIString();
-
-		return new URL(uriASCIIString.replace("#", "%23"));
-	}
-
 	public static String encodeLegacyURLPart(String part) {
 		try {
 			part = URLEncoder.encode(part, StandardCharsets.UTF_8.name());
@@ -564,18 +540,6 @@ public class JenkinsResultsParserUtil {
 			part = part.replaceAll("%25", "%");
 
 			return part.replaceAll("%2B", "+");
-		}
-		catch (UnsupportedEncodingException unsupportedEncodingException) {
-			throw new RuntimeException(unsupportedEncodingException);
-		}
-	}
-
-	public static String encodeURLParameterPart(String parameterPart) {
-		try {
-			parameterPart = URLEncoder.encode(
-				parameterPart, StandardCharsets.UTF_8.name());
-
-			return parameterPart.replace("+", "%20");
 		}
 		catch (UnsupportedEncodingException unsupportedEncodingException) {
 			throw new RuntimeException(unsupportedEncodingException);
@@ -1009,81 +973,6 @@ public class JenkinsResultsParserUtil {
 		json = json.replaceAll("\u00BB", "&raquo;");
 
 		return json;
-	}
-
-	public static String fixURL(String urlString) {
-		URL url = null;
-
-		try {
-			url = new URL(urlString);
-		}
-		catch (MalformedURLException malformedURLException) {
-			try {
-				urlString = URLEncoder.encode(
-					urlString, StandardCharsets.UTF_8.name());
-
-				urlString = urlString.replaceAll("\\+", "%20");
-
-				urlString = urlString.replaceAll("%21", "!");
-				urlString = urlString.replaceAll("%25", "%");
-				urlString = urlString.replaceAll("%2B", "+");
-
-				return urlString;
-			}
-			catch (UnsupportedEncodingException unsupportedEncodingException) {
-				throw new RuntimeException(unsupportedEncodingException);
-			}
-		}
-
-		if (!urlString.contains("?")) {
-			return urlString;
-		}
-
-		StringBuilder sb = new StringBuilder(
-			urlString.replaceAll("(.*\\?).*", "$1"));
-
-		String queryString = url.getQuery();
-
-		if ((queryString == null) || queryString.isEmpty()) {
-			return sb.toString();
-		}
-
-		Matcher matcher = _urlQueryStringPattern.matcher(url.getQuery());
-
-		while (matcher.find()) {
-			sb.append(matcher.group(1));
-			sb.append("=");
-
-			try {
-				String queryParameterValue = matcher.group(2);
-
-				queryParameterValue = URLEncoder.encode(
-					queryParameterValue, StandardCharsets.UTF_8.name());
-
-				queryParameterValue = queryParameterValue.replaceAll(
-					"\\+", "%20");
-
-				queryParameterValue = queryParameterValue.replaceAll(
-					"%21", "!");
-				queryParameterValue = queryParameterValue.replaceAll(
-					"%25", "%");
-				queryParameterValue = queryParameterValue.replaceAll(
-					"%2B", "+");
-
-				sb.append(queryParameterValue);
-			}
-			catch (UnsupportedEncodingException unsupportedEncodingException) {
-				throw new RuntimeException(unsupportedEncodingException);
-			}
-
-			if (matcher.hitEnd()) {
-				continue;
-			}
-
-			sb.append("&");
-		}
-
-		return sb.toString();
 	}
 
 	public static List<Build> flatten(List<Build> builds) {
@@ -7456,8 +7345,6 @@ public class JenkinsResultsParserUtil {
 		"test-1-(\\d+)");
 	private static final Set<String> _timeStamps = new HashSet<>();
 	private static Set<String> _topLevelJobNames;
-	private static final Pattern _urlQueryStringPattern = Pattern.compile(
-		"\\&??(\\w++)=([^\\&]*)");
 	private static final File _userHomeDir = new File(
 		System.getProperty("user.home"));
 
