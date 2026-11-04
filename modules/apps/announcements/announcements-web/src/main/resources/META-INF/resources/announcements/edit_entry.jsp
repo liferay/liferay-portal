@@ -12,12 +12,12 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 AnnouncementsEntry entry = (AnnouncementsEntry)request.getAttribute(AnnouncementsWebKeys.ANNOUNCEMENTS_ENTRY);
 
-long entryId = BeanParamUtil.getLong(entry, request, "entryId");
+long entryId = ParamUtil.getLong(request, "entryId", GetterUtil.get(entry, AnnouncementsEntry::getEntryId, 0L));
 
-String title = BeanParamUtil.getString(entry, request, "title");
-String content = BeanParamUtil.getString(entry, request, "content");
+String title = ParamUtil.getString(request, "title", GetterUtil.get(entry, AnnouncementsEntry::getTitle, StringPool.BLANK));
+String content = ParamUtil.getString(request, "content", GetterUtil.get(entry, AnnouncementsEntry::getContent, StringPool.BLANK));
 
-boolean alert = BeanParamUtil.getBoolean(entry, request, "alert");
+boolean alert = ParamUtil.getBoolean(request, "alert", GetterUtil.get(entry, AnnouncementsEntry::isAlert, false));
 
 boolean displayImmediately = ParamUtil.getBoolean(request, "displayImmediately", entry == null);
 
