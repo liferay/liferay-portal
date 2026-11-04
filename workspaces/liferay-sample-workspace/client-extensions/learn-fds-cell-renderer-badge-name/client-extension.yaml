@@ -1,0 +1,7 @@
+assemble:
+    -   from: build/static
+        into: static
+liferay-sample-fds-cell-renderer:
+    name: Liferay Sample Frontend Data Set Cell Renderer
+    type: fdsCellRenderer
+    url: index.*.js
