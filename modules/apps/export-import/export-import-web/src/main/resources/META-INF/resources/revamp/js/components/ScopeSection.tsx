@@ -31,13 +31,14 @@ export default function ScopeSection({
 				title={Liferay.Language.get('scope')}
 			/>
 
-			<ClayLayout.Sheet>
-				{Children.toArray(children).map((child, index) => (
-					<div className={index ? 'mt-4' : undefined} key={index}>
-						{child}
-					</div>
-				))}
-			</ClayLayout.Sheet>
+			{Children.toArray(children).map((child, index) => (
+				<ClayLayout.Sheet
+					className={index ? 'mt-4' : undefined}
+					key={index}
+				>
+					{child}
+				</ClayLayout.Sheet>
+			))}
 		</div>
 	);
 }
