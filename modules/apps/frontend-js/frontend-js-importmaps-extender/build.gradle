@@ -38,6 +38,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:frontend-js:frontend-js-importmaps-extender-api")
 	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 }

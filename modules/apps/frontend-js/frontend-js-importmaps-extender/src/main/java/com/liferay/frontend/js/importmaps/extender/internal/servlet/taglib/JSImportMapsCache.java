@@ -6,6 +6,7 @@
 package com.liferay.frontend.js.importmaps.extender.internal.servlet.taglib;
 
 import com.liferay.frontend.js.importmaps.extender.DynamicJSImportMapsContributor;
+import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -15,7 +16,6 @@ import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -100,45 +100,49 @@ public class JSImportMapsCache {
 
 		writer.write("{\"imports\": {");
 
-		StringBuilder importsSB = new StringBuilder();
+		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
 
-		_appendStaticImports(
-			_getGlobalImportMapsValues(COMPANY_ID_ALL), importsSB);
+		StringBundler sb = unsyncStringWriter.getStringBundler();
 
-		_appendStaticImports(_getGlobalImportMapsValues(companyId), importsSB);
+		_appendStaticImports(_getGlobalImportMapsValues(COMPANY_ID_ALL), sb);
+
+		_appendStaticImports(_getGlobalImportMapsValues(companyId), sb);
 
 		Map<Long, DynamicJSImportMapsContributor>
 			dynamicJSImportMapsContributors1 =
 				_getDynamicJSImportMapsContributors(COMPANY_ID_ALL);
 
 		_appendDynamicImports(
-			dynamicJSImportMapsContributors1, httpServletRequest, importsSB);
+			dynamicJSImportMapsContributors1, httpServletRequest,
+			unsyncStringWriter);
 
 		Map<Long, DynamicJSImportMapsContributor>
 			dynamicJSImportMapsContributors2 =
 				_getDynamicJSImportMapsContributors(companyId);
 
 		_appendDynamicImports(
-			dynamicJSImportMapsContributors2, httpServletRequest, importsSB);
+			dynamicJSImportMapsContributors2, httpServletRequest,
+			unsyncStringWriter);
 
-		writer.write(importsSB.toString());
+		writer.write(sb.toString());
 
 		writer.write("}, \"scopes\": {");
 
-		StringBuilder scopesSB = new StringBuilder();
+		sb.setIndex(0);
 
-		_appendStaticScopes(
-			_getScopedImportMapsValues(COMPANY_ID_ALL), scopesSB);
+		_appendStaticScopes(_getScopedImportMapsValues(COMPANY_ID_ALL), sb);
 
-		_appendStaticScopes(_getScopedImportMapsValues(companyId), scopesSB);
-
-		_appendDynamicScopes(
-			dynamicJSImportMapsContributors1, httpServletRequest, scopesSB);
+		_appendStaticScopes(_getScopedImportMapsValues(companyId), sb);
 
 		_appendDynamicScopes(
-			dynamicJSImportMapsContributors2, httpServletRequest, scopesSB);
+			dynamicJSImportMapsContributors1, httpServletRequest,
+			unsyncStringWriter);
 
-		writer.write(scopesSB.toString());
+		_appendDynamicScopes(
+			dynamicJSImportMapsContributors2, httpServletRequest,
+			unsyncStringWriter);
+
+		writer.write(sb.toString());
 
 		writer.write("}}");
 	}
@@ -146,75 +150,67 @@ public class JSImportMapsCache {
 	private void _appendDynamicImports(
 			Map<Long, DynamicJSImportMapsContributor>
 				dynamicJSImportMapsContributors,
-			HttpServletRequest httpServletRequest, StringBuilder sb)
+			HttpServletRequest httpServletRequest,
+			UnsyncStringWriter unsyncStringWriter)
 		throws IOException {
 
-		boolean first = true;
+		StringBundler sb = unsyncStringWriter.getStringBundler();
 
 		for (DynamicJSImportMapsContributor dynamicJSImportMapsContributor :
 				dynamicJSImportMapsContributors.values()) {
 
-			CharArrayWriter charArrayWriter = new CharArrayWriter();
+			int index = sb.index();
 
-			dynamicJSImportMapsContributor.writeGlobalImports(
-				httpServletRequest, charArrayWriter);
-
-			if (charArrayWriter.size() == 0) {
-				continue;
-			}
-
-			if (first) {
-				first = false;
-
-				if (!sb.isEmpty()) {
-					sb.append(StringPool.COMMA);
-				}
-			}
-			else {
+			if (index > 0) {
 				sb.append(StringPool.COMMA);
 			}
 
-			sb.append(charArrayWriter);
+			int contentIndex = sb.index();
+
+			dynamicJSImportMapsContributor.writeGlobalImports(
+				httpServletRequest, unsyncStringWriter);
+
+			if (sb.index() > contentIndex) {
+				continue;
+			}
+
+			sb.setIndex(index);
 		}
 	}
 
 	private void _appendDynamicScopes(
 			Map<Long, DynamicJSImportMapsContributor>
 				dynamicJSImportMapsContributors,
-			HttpServletRequest httpServletRequest, StringBuilder sb)
+			HttpServletRequest httpServletRequest,
+			UnsyncStringWriter unsyncStringWriter)
 		throws IOException {
 
-		boolean first = true;
+		StringBundler sb = unsyncStringWriter.getStringBundler();
 
 		for (DynamicJSImportMapsContributor dynamicJSImportMapsContributor :
 				dynamicJSImportMapsContributors.values()) {
 
-			CharArrayWriter charArrayWriter = new CharArrayWriter();
+			int index = sb.index();
 
-			dynamicJSImportMapsContributor.writeScopedImports(
-				httpServletRequest, charArrayWriter);
-
-			if (charArrayWriter.size() == 0) {
-				continue;
-			}
-
-			if (first) {
-				first = false;
-
-				if (!sb.isEmpty()) {
-					sb.append(StringPool.COMMA);
-				}
-			}
-			else {
+			if (index > 0) {
 				sb.append(StringPool.COMMA);
 			}
 
-			sb.append(charArrayWriter);
+			int contentIndex = sb.index();
+
+			dynamicJSImportMapsContributor.writeScopedImports(
+				httpServletRequest, unsyncStringWriter);
+
+			if (sb.index() > contentIndex) {
+				continue;
+			}
+
+			sb.setIndex(index);
 		}
 	}
 
 	private void _appendStaticImports(
-		Map<Long, String> globalImportMapsValues, StringBuilder sb) {
+		Map<Long, String> globalImportMapsValues, StringBundler sb) {
 
 		boolean first = true;
 
@@ -222,7 +218,7 @@ public class JSImportMapsCache {
 			if (first) {
 				first = false;
 
-				if (!sb.isEmpty()) {
+				if (sb.index() > 0) {
 					sb.append(StringPool.COMMA);
 				}
 			}
@@ -235,7 +231,7 @@ public class JSImportMapsCache {
 	}
 
 	private void _appendStaticScopes(
-		Map<String, String> scopedImportMapsValues, StringBuilder sb) {
+		Map<String, String> scopedImportMapsValues, StringBundler sb) {
 
 		boolean first = true;
 
@@ -245,7 +241,7 @@ public class JSImportMapsCache {
 			if (first) {
 				first = false;
 
-				if (!sb.isEmpty()) {
+				if (sb.index() > 0) {
 					sb.append(StringPool.COMMA);
 				}
 			}
