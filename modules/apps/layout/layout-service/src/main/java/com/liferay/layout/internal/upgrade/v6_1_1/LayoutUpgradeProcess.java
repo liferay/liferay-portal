@@ -6,18 +6,25 @@
 package com.liferay.layout.internal.upgrade.v6_1_1;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * @author Alberto Chaparro
+ * @author Adolfo Pérez
  */
 public class LayoutUpgradeProcess extends UpgradeProcess {
 
@@ -40,6 +47,9 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 		}
 
 		_upgradeLayoutExternalReferenceCodes();
+
+		_upgradeSegmentsExperiences(true);
+		_upgradeSegmentsExperiences(false);
 	}
 
 	private String _getLayoutSetPrototypeLayoutJoinSQL(
@@ -159,6 +169,98 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 		}
 
 		return upgraded;
+	}
+
+	private void _upgradeSegmentsExperiences(boolean privateLayout)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				StringBundler.concat(
+					"select distinct SegmentsExperience1.ctCollectionId, ",
+					"SegmentsExperience1.externalReferenceCode, ",
+					"SegmentsExperience1.segmentsExperienceId, ",
+					"SegmentsExperience1.uuid_, ",
+					"SegmentsExperience2.externalReferenceCode as ",
+					"layoutSetPrototypeERC, SegmentsExperience2.uuid_ as ",
+					"layoutSetPrototypeUUID from SegmentsExperience ",
+					"SegmentsExperience1 inner join Layout Layout1 on ",
+					"(Layout1.ctCollectionId = 0 or Layout1.ctCollectionId = ",
+					"SegmentsExperience1.ctCollectionId) and Layout1.plid = ",
+					"SegmentsExperience1.plid",
+					_getLayoutSetPrototypeLayoutJoinSQL(
+						"Layout1", "Layout2",
+						"Layout1.layoutSetPrototypeLayoutERC"),
+					" inner join SegmentsExperience SegmentsExperience2 on ",
+					"(SegmentsExperience2.ctCollectionId = 0 or ",
+					"SegmentsExperience1.ctCollectionId = ",
+					"SegmentsExperience2.ctCollectionId) and Layout2.groupId ",
+					"= SegmentsExperience2.groupId and Layout2.plid = ",
+					"SegmentsExperience2.plid and ",
+					"SegmentsExperience1.segmentsExperienceKey = ",
+					"SegmentsExperience2.segmentsExperienceKey where ",
+					"Layout1.privateLayout = ? and ",
+					"Layout1.layoutSetPrototypeLayoutERC is not null and ",
+					"Layout1.layoutSetPrototypeLayoutERC != ''"));
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					StringBundler.concat(
+						"update SegmentsExperience set externalReferenceCode ",
+						"= ?, uuid_ = ? where ctCollectionId = ? and ",
+						"segmentsExperienceId = ?"))) {
+
+			preparedStatement1.setBoolean(1, privateLayout);
+
+			String suffix = StringPool.BLANK;
+
+			if (privateLayout) {
+				suffix = LayoutConstants.EXTERNAL_REFERENCE_CODE_SUFFIX_PRIVATE;
+			}
+
+			Map<Long, String> uuids = new HashMap<>();
+
+			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
+				while (resultSet.next()) {
+					String externalReferenceCode = resultSet.getString(
+						"externalReferenceCode");
+					long segmentsExperienceId = resultSet.getLong(
+						"segmentsExperienceId");
+					String uuid = resultSet.getString("uuid_");
+
+					String newExternalReferenceCode =
+						resultSet.getString("layoutSetPrototypeERC") + suffix;
+
+					String newUUID = uuid;
+
+					if (privateLayout &&
+						Objects.equals(
+							uuid,
+							resultSet.getString("layoutSetPrototypeUUID"))) {
+
+						newUUID = uuids.computeIfAbsent(
+							segmentsExperienceId,
+							key -> PortalUUIDUtil.generate());
+					}
+
+					if (Objects.equals(
+							externalReferenceCode, newExternalReferenceCode) &&
+						Objects.equals(uuid, newUUID)) {
+
+						continue;
+					}
+
+					preparedStatement2.setString(1, newExternalReferenceCode);
+					preparedStatement2.setString(2, newUUID);
+					preparedStatement2.setLong(
+						3, resultSet.getLong("ctCollectionId"));
+					preparedStatement2.setLong(4, segmentsExperienceId);
+
+					preparedStatement2.addBatch();
+				}
+
+				preparedStatement2.executeBatch();
+			}
+		}
 	}
 
 	private final long _layoutSetPrototypeClassNameId;
