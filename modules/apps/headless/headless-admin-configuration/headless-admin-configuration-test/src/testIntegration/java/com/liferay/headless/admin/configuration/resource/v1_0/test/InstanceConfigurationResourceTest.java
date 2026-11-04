@@ -15,7 +15,9 @@ import com.liferay.headless.admin.configuration.test.configuration.TestConfigura
 import com.liferay.headless.admin.configuration.test.configuration.TestFactoryConfiguration;
 import com.liferay.headless.admin.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -30,6 +32,7 @@ import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
@@ -141,6 +144,7 @@ public class InstanceConfigurationResourceTest
 
 		_testPostInstanceConfigurationFromConfigurationScreen();
 		_testPostInstanceConfigurationWithMissingExternalReferenceCode();
+		_testPostInstanceConfigurationWithMissingFactoryExternalReferenceCode();
 	}
 
 	@Override
@@ -382,6 +386,82 @@ public class InstanceConfigurationResourceTest
 		Assert.assertEquals(
 			postInstanceConfiguration1.getExternalReferenceCode(),
 			postInstanceConfiguration2.getExternalReferenceCode());
+	}
+
+	private void _testPostInstanceConfigurationWithMissingFactoryExternalReferenceCode()
+		throws Exception {
+
+		InstanceConfiguration instanceConfiguration =
+			randomInstanceConfiguration();
+
+		instanceConfiguration.setExternalReferenceCode(
+			StringBundler.concat(
+				ConfigurationTestUtil.TEST_FACTORY_CONFIGURATION_PID, "~",
+				RandomTestUtil.randomString()));
+
+		InstanceConfiguration postInstanceConfiguration1 =
+			instanceConfigurationResource.postInstanceConfiguration(
+				instanceConfiguration);
+
+		assertEquals(instanceConfiguration, postInstanceConfiguration1);
+		Assert.assertEquals(
+			instanceConfiguration.getExternalReferenceCode(),
+			postInstanceConfiguration1.getExternalReferenceCode());
+
+		InstanceConfiguration postInstanceConfiguration2 =
+			instanceConfigurationResource.postInstanceConfiguration(
+				instanceConfiguration);
+
+		Assert.assertEquals(
+			instanceConfiguration.getExternalReferenceCode(),
+			postInstanceConfiguration2.getExternalReferenceCode());
+
+		instanceConfiguration =
+			instanceConfigurationResource.postInstanceConfiguration(
+				randomInstanceConfiguration());
+
+		Configuration configuration = _configurationAdmin.getConfiguration(
+			instanceConfiguration.getExternalReferenceCode(),
+			StringPool.QUESTION);
+
+		configuration.delete();
+
+		InstanceConfiguration postInstanceConfiguration3 =
+			instanceConfigurationResource.postInstanceConfiguration(
+				instanceConfiguration);
+
+		assertEquals(instanceConfiguration, postInstanceConfiguration3);
+		Assert.assertEquals(
+			instanceConfiguration.getExternalReferenceCode(),
+			postInstanceConfiguration3.getExternalReferenceCode());
+
+		InstanceConfiguration postInstanceConfiguration4 =
+			instanceConfigurationResource.postInstanceConfiguration(
+				instanceConfiguration);
+
+		Assert.assertEquals(
+			instanceConfiguration.getExternalReferenceCode(),
+			postInstanceConfiguration4.getExternalReferenceCode());
+
+		configuration = _configurationAdmin.getConfiguration(
+			instanceConfiguration.getExternalReferenceCode(),
+			StringPool.QUESTION);
+
+		Dictionary<String, Object> properties = configuration.getProperties();
+
+		properties.put(
+			ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
+			testGroup.getGroupId());
+
+		configuration.update(properties);
+
+		InstanceConfiguration postInstanceConfiguration5 =
+			instanceConfigurationResource.postInstanceConfiguration(
+				instanceConfiguration);
+
+		Assert.assertNotEquals(
+			instanceConfiguration.getExternalReferenceCode(),
+			postInstanceConfiguration5.getExternalReferenceCode());
 	}
 
 	private void _testPutInstanceConfigurationWithoutPermission()
