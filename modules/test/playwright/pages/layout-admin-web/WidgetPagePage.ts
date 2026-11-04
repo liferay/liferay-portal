@@ -105,7 +105,7 @@ export class WidgetPagePage {
 			await waitForAlert(
 				this.page,
 				'Success:The application was added to the page.',
-				{timeout: 3000}
+				{first: true, timeout: 3000}
 			);
 		}).toPass();
 	}
