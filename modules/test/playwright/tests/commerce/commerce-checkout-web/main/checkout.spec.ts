@@ -2754,12 +2754,11 @@ test(
 
 		const checkoutPageURL = `/web${site.friendlyUrlPath}${checkoutLayout.friendlyUrlPath}`;
 		const termDescription = getRandomString();
+		const termDescriptionHTML = `<ul><li><u><em><strong>${termDescription}</strong></em></u></li></ul>`;
 
 		const deliveryTerm1 =
 			await apiHelpers.headlessCommerceAdminOrder.postTerm({
-				description: {
-					en_US: `<ul><li><u><em><strong>${termDescription}</strong></em></u></li></ul>`,
-				},
+				description: {en_US: termDescriptionHTML},
 				label: {en_US: getRandomString()},
 				priority: 1,
 				type: 'delivery-terms',
@@ -2772,9 +2771,7 @@ test(
 			});
 		const paymentTerm1 =
 			await apiHelpers.headlessCommerceAdminOrder.postTerm({
-				description: {
-					en_US: `<ul><li><u><em><strong>${termDescription}</strong></em></u></li></ul>`,
-				},
+				description: {en_US: termDescriptionHTML},
 				label: {en_US: getRandomString()},
 				priority: 1,
 				type: 'payment-terms',
