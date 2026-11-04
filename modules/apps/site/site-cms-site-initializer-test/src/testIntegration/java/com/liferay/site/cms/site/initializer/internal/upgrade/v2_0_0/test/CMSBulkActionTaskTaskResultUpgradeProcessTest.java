@@ -11,9 +11,13 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -72,6 +76,42 @@ public class CMSBulkActionTaskTaskResultUpgradeProcessTest {
 		Assert.assertEquals(
 			ObjectFieldConstants.DB_TYPE_CLOB, objectField.getDBType());
 		Assert.assertTrue(objectField.isSystem());
+	}
+
+	@Test
+	@TestInfo("LPD-113941")
+	public void testUpgradeAddsTaskResultObjectFieldWithGermanDefaultLocale()
+		throws Exception {
+
+		Assert.assertNotNull(_objectDefinition);
+
+		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+			_objectDefinition.getObjectDefinitionId(), "taskResult");
+
+		if (objectField != null) {
+			_objectFieldLocalService.deleteObjectField(objectField);
+		}
+
+		try (SafeCloseable safeCloseable =
+				LocaleThreadLocal.setDefaultLocaleWithSafeCloseable(
+					LocaleUtil.GERMANY)) {
+
+			_runUpgrade();
+		}
+
+		objectField = _objectFieldLocalService.fetchObjectField(
+			_objectDefinition.getObjectDefinitionId(), "taskResult");
+
+		Assert.assertNotNull(objectField);
+		Assert.assertEquals(
+			LocaleUtil.toLanguageId(LocaleUtil.GERMANY),
+			objectField.getDefaultLanguageId());
+		Assert.assertEquals(
+			"Task Result", objectField.getLabel(LocaleUtil.GERMANY));
+
+		_objectFieldLocalService.deleteObjectField(objectField);
+
+		_runUpgrade();
 	}
 
 	private void _runUpgrade() throws Exception {
