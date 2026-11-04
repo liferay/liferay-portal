@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -84,11 +85,18 @@ public class ObjectEntryResourceCategorizationTest
 
 	@Test
 	public void testGetObjectEntryWithKeywords() throws Exception {
+		String tagName1 =
+			"tag1" + StringUtil.toLowerCase(RandomTestUtil.randomString());
+		String tagName2 =
+			"tag2" + StringUtil.toLowerCase(RandomTestUtil.randomString());
+		String tagName3 =
+			"tag3" + StringUtil.toLowerCase(RandomTestUtil.randomString());
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, "value"
 			).put(
-				"keywords", JSONUtil.putAll("tag1", "tag2")
+				"keywords", JSONUtil.putAll(tagName1, tagName2)
 			).toString(),
 			getObjectDefinition2().getRESTContextPath(), Http.Method.POST);
 
@@ -100,12 +108,12 @@ public class ObjectEntryResourceCategorizationTest
 
 		JSONArray keywordsJSONArray = jsonObject.getJSONArray("keywords");
 
-		Assert.assertEquals("tag1", keywordsJSONArray.get(0));
-		Assert.assertEquals("tag2", keywordsJSONArray.get(1));
+		Assert.assertEquals(tagName1, keywordsJSONArray.get(0));
+		Assert.assertEquals(tagName2, keywordsJSONArray.get(1));
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				"keywords", JSONUtil.putAll("tag1", "tag2", "tag3")
+				"keywords", JSONUtil.putAll(tagName1, tagName2, tagName3)
 			).toString(),
 			getObjectDefinition2().getRESTContextPath(), Http.Method.POST);
 
@@ -117,19 +125,19 @@ public class ObjectEntryResourceCategorizationTest
 
 		keywordsJSONArray = jsonObject.getJSONArray("keywords");
 
-		Assert.assertEquals("tag1", keywordsJSONArray.get(0));
-		Assert.assertEquals("tag2", keywordsJSONArray.get(1));
-		Assert.assertEquals("tag3", keywordsJSONArray.get(2));
+		Assert.assertEquals(tagName1, keywordsJSONArray.get(0));
+		Assert.assertEquals(tagName2, keywordsJSONArray.get(1));
+		Assert.assertEquals(tagName3, keywordsJSONArray.get(2));
 
 		AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
 			getObjectDefinition2().getClassName(), jsonObject.getLong("id"));
 
 		Map<String, Integer> expectedAssetCounts = HashMapBuilder.put(
-			"tag1", 2
+			tagName1, 2
 		).put(
-			"tag2", 2
+			tagName2, 2
 		).put(
-			"tag3", 1
+			tagName3, 1
 		).build();
 
 		Map<String, Integer> assetCounts = _getAssetCounts(
@@ -265,17 +273,24 @@ public class ObjectEntryResourceCategorizationTest
 
 	@Test
 	public void testPatchObjectEntryWithKeywords() throws Exception {
+		String tagName1 =
+			"tag1" + StringUtil.toLowerCase(RandomTestUtil.randomString());
+		String tagName2 =
+			"tag2" + StringUtil.toLowerCase(RandomTestUtil.randomString());
+		String tagName3 =
+			"tag3" + StringUtil.toLowerCase(RandomTestUtil.randomString());
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, "value"
 			).put(
-				"keywords", JSONUtil.putAll("tag1", "tag2")
+				"keywords", JSONUtil.putAll(tagName1, tagName2)
 			).toString(),
 			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				"keywords", JSONUtil.putAll("tag1", "tag2", "tag3")
+				"keywords", JSONUtil.putAll(tagName1, tagName2, tagName3)
 			).toString(),
 			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
 				jsonObject.getString("id"),
@@ -289,9 +304,9 @@ public class ObjectEntryResourceCategorizationTest
 
 		JSONArray keywordsJSONArray = jsonObject.getJSONArray("keywords");
 
-		Assert.assertEquals("tag1", keywordsJSONArray.get(0));
-		Assert.assertEquals("tag2", keywordsJSONArray.get(1));
-		Assert.assertEquals("tag3", keywordsJSONArray.get(2));
+		Assert.assertEquals(tagName1, keywordsJSONArray.get(0));
+		Assert.assertEquals(tagName2, keywordsJSONArray.get(1));
+		Assert.assertEquals(tagName3, keywordsJSONArray.get(2));
 	}
 
 	@Test
