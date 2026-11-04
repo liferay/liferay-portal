@@ -34,7 +34,6 @@
 			"dxp/apps/osb/osb-patcher/*",
 			"frontend-sdk/*",
 			"test/playwright",
-			"test/playwright-core",
 			"util/portal-tools-rest-builder-test-client-js"
 		]
 	}

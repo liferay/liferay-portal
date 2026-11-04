@@ -196,7 +196,6 @@ export default [
 	'@liferay/object-web',
 	'@liferay/osb-patcher-web',
 	'@liferay/playwright',
-	'@liferay/playwright-core',
 	'@liferay/portal-company-log-web',
 	'@liferay/portal-defaultpermissions-web',
 	'@liferay/portal-instances-web',

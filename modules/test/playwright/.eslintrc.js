@@ -21,18 +21,6 @@ const config = {
 	root: true,
 	rules: {
 		'@liferay/portal/no-global-fetch': 'off',
-		'no-restricted-imports': [
-			'error',
-			{
-				paths: [
-					{
-						message:
-							'Import from the playwright-core source by relative path. The package entry point is built output that CI does not build.',
-						name: '@liferay/playwright-core',
-					},
-				],
-			},
-		],
 		'notice/notice': [
 			'error',
 			{
