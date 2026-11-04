@@ -116,10 +116,7 @@ public class ConfigurationInvocationHandler<S> implements InvocationHandler {
 				return value;
 			}
 
-			Method valueOfMethod = returnType.getDeclaredMethod(
-				"valueOf", String.class);
-
-			return valueOfMethod.invoke(returnType, value);
+			return Enum.valueOf((Class<Enum>)returnType, value);
 		}
 
 		Constructor<?> constructor = returnType.getConstructor(String.class);
@@ -167,11 +164,9 @@ public class ConfigurationInvocationHandler<S> implements InvocationHandler {
 			return _typedSettings.getValues(method.getName());
 		}
 		else if (returnType.isEnum()) {
-			Method valueOfMethod = returnType.getDeclaredMethod(
-				"valueOf", String.class);
-
-			return valueOfMethod.invoke(
-				returnType, _typedSettings.getValue(method.getName()));
+			return Enum.valueOf(
+				(Class<Enum>)returnType,
+				_typedSettings.getValue(method.getName()));
 		}
 
 		Constructor<?> constructor = returnType.getConstructor(String.class);
