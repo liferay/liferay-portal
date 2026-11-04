@@ -187,9 +187,7 @@ public class LiferayCommerceRESTClient {
 		return false;
 	}
 
-	private Object _toLogValue(String responseString)
-		throws Exception {
-
+	private Object _toLogValue(String responseString) throws Exception {
 		if (!JSONUtil.isJSONObject(responseString)) {
 			return responseString;
 		}
