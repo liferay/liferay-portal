@@ -85,6 +85,36 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapperTest {
 
 	@Test
 	public void testExportImportProperties() throws Exception {
+		_testExportImportPropertiesWithFileEntryInDepotGroup();
+		_testExportImportPropertiesWithFileEntryInSameGroup();
+	}
+
+	@Test
+	public void testExportProperties() throws Exception {
+		_testExportPropertiesWithMissingFileEntry();
+		_testExportPropertiesWithoutLayoutSEOSite();
+	}
+
+	@Test
+	public void testImportProperties() throws Exception {
+		_testImportPropertiesWithMissingFileEntry();
+		_testImportPropertiesWithoutFileEntry();
+	}
+
+	private FileEntry _addFileEntry(String externalReferenceCode, long groupId)
+		throws Exception {
+
+		return _dlAppLocalService.addFileEntry(
+			externalReferenceCode, TestPropsValues.getUserId(), groupId,
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			RandomTestUtil.randomBytes(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(groupId));
+	}
+
+	private void _testExportImportPropertiesWithFileEntryInDepotGroup()
+		throws Exception {
+
 		Group sourceGroup = GroupTestUtil.addGroup();
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
@@ -146,8 +176,7 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapperTest {
 			layoutSEOSite.getOpenGraphImageFileEntryId());
 	}
 
-	@Test
-	public void testExportImportPropertiesWithFileEntryInSameGroup()
+	private void _testExportImportPropertiesWithFileEntryInSameGroup()
 		throws Exception {
 
 		Group sourceGroup = GroupTestUtil.addGroup();
@@ -190,21 +219,7 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapperTest {
 			layoutSEOSite.getOpenGraphImageFileEntryId());
 	}
 
-	@Test
-	public void testExportProperties() throws Exception {
-		Group group = GroupTestUtil.addGroup();
-
-		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
-			"site-configuration-open-graph");
-
-		Dictionary<String, Object> properties =
-			configurationScreen.exportProperties(group.getGroupId());
-
-		Assert.assertTrue(properties.isEmpty());
-	}
-
-	@Test
-	public void testExportPropertiesWithMissingFileEntry() throws Exception {
+	private void _testExportPropertiesWithMissingFileEntry() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
 		FileEntry fileEntry = _addFileEntry(
@@ -235,43 +250,19 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapperTest {
 		Assert.assertEquals(Boolean.FALSE, properties.get("openGraphEnabled"));
 	}
 
-	@Test
-	public void testImportProperties() throws Exception {
+	private void _testExportPropertiesWithoutLayoutSEOSite() throws Exception {
 		Group group = GroupTestUtil.addGroup();
-
-		FileEntry fileEntry = _addFileEntry(
-			RandomTestUtil.randomString(), group.getGroupId());
-
-		Map<Locale, String> openGraphImageAltMap =
-			RandomTestUtil.randomLocaleStringMap();
-
-		_updateLayoutSEOSite(
-			group.getGroupId(), true, openGraphImageAltMap,
-			fileEntry.getFileEntryId());
 
 		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
 			"site-configuration-open-graph");
 
-		configurationScreen.importProperties(
-			HashMapDictionaryBuilder.<String, Object>put(
-				"openGraphEnabled", false
-			).build(),
-			group.getGroupId());
+		Dictionary<String, Object> properties =
+			configurationScreen.exportProperties(group.getGroupId());
 
-		LayoutSEOSite layoutSEOSite =
-			_layoutSEOSiteLocalService.fetchLayoutSEOSiteByGroupId(
-				group.getGroupId());
-
-		Assert.assertFalse(layoutSEOSite.isOpenGraphEnabled());
-		Assert.assertEquals(
-			openGraphImageAltMap, layoutSEOSite.getOpenGraphImageAltMap());
-		Assert.assertEquals(
-			fileEntry.getFileEntryId(),
-			layoutSEOSite.getOpenGraphImageFileEntryId());
+		Assert.assertTrue(properties.isEmpty());
 	}
 
-	@Test
-	public void testImportPropertiesWithMissingFileEntry() throws Exception {
+	private void _testImportPropertiesWithMissingFileEntry() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
 		FileEntry fileEntry = _addFileEntry(
@@ -377,15 +368,38 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapperTest {
 			layoutSEOSite.getOpenGraphImageFileEntryId());
 	}
 
-	private FileEntry _addFileEntry(String externalReferenceCode, long groupId)
-		throws Exception {
+	private void _testImportPropertiesWithoutFileEntry() throws Exception {
+		Group group = GroupTestUtil.addGroup();
 
-		return _dlAppLocalService.addFileEntry(
-			externalReferenceCode, TestPropsValues.getUserId(), groupId,
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
-			RandomTestUtil.randomBytes(), null, null, null,
-			ServiceContextTestUtil.getServiceContext(groupId));
+		FileEntry fileEntry = _addFileEntry(
+			RandomTestUtil.randomString(), group.getGroupId());
+
+		Map<Locale, String> openGraphImageAltMap =
+			RandomTestUtil.randomLocaleStringMap();
+
+		_updateLayoutSEOSite(
+			group.getGroupId(), true, openGraphImageAltMap,
+			fileEntry.getFileEntryId());
+
+		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
+			"site-configuration-open-graph");
+
+		configurationScreen.importProperties(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"openGraphEnabled", false
+			).build(),
+			group.getGroupId());
+
+		LayoutSEOSite layoutSEOSite =
+			_layoutSEOSiteLocalService.fetchLayoutSEOSiteByGroupId(
+				group.getGroupId());
+
+		Assert.assertFalse(layoutSEOSite.isOpenGraphEnabled());
+		Assert.assertEquals(
+			openGraphImageAltMap, layoutSEOSite.getOpenGraphImageAltMap());
+		Assert.assertEquals(
+			fileEntry.getFileEntryId(),
+			layoutSEOSite.getOpenGraphImageFileEntryId());
 	}
 
 	private void _updateLayoutSEOSite(
