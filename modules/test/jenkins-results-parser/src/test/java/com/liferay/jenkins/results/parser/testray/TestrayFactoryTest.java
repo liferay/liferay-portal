@@ -24,7 +24,9 @@ import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import org.mockito.Mockito;
 
@@ -92,7 +94,7 @@ public class TestrayFactoryTest
 		Job job = _mockJob(
 			"modules-integration-db-partition-postgresql163," +
 				"modules-integration-mysql80,modules-integration-postgresql163",
-			null);
+			"");
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
@@ -134,7 +136,7 @@ public class TestrayFactoryTest
 		Job job = _mockJob(
 			"functional-tomcat101-postgresql163," +
 				"functional-upgrade-tomcat101-postgresql163",
-			null);
+			"");
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
@@ -158,7 +160,7 @@ public class TestrayFactoryTest
 
 	@Test
 	public void testNewTestrayRunSameLengthBatchNames() throws Exception {
-		Job job = _mockJob("a-mysql80,b-mysql80", null);
+		Job job = _mockJob("a-mysql80,b-mysql80", "");
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
@@ -193,6 +195,9 @@ public class TestrayFactoryTest
 
 		testEquals("MySQL 8.0#c-mysql80", testrayRun.getRunIdString());
 	}
+
+	@Rule
+	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
 	private AxisTestClassGroup _mockAxisTestClassGroup(
 		String batchName, String enhancedBatchName, Job job) {
@@ -236,10 +241,6 @@ public class TestrayFactoryTest
 
 		jobProperties.setProperty("test.batch.names", batchNames);
 
-		if (smokeBatchNames == null) {
-			smokeBatchNames = "";
-		}
-
 		jobProperties.setProperty("test.batch.names.smoke", smokeBatchNames);
 
 		jobProperties.setProperty(
@@ -257,10 +258,7 @@ public class TestrayFactoryTest
 			jobProperties
 		);
 
-		File jobPropertiesFile = File.createTempFile(
-			"TestrayFactoryTest", ".properties", new File("build"));
-
-		jobPropertiesFile.deleteOnExit();
+		File jobPropertiesFile = temporaryFolder.newFile();
 
 		try (OutputStream outputStream = new FileOutputStream(
 				jobPropertiesFile)) {
