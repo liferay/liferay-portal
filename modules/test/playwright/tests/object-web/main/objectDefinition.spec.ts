@@ -9,7 +9,7 @@ import {
 	ObjectFolderAPI,
 	ObjectRelationshipAPI,
 } from '@liferay/object-admin-rest-client-js/v1_0';
-import {expect, mergeTests} from '@playwright/test';
+import {Route, expect, mergeTests} from '@playwright/test';
 
 import {collectionsPagesTest} from '../../../fixtures/collectionsPagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
@@ -955,13 +955,22 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 			type: 'objectDefinition',
 		});
 
+		const heldRoutes: Route[] = [];
+
 		await page.route(
 			'**/object-definitions/by-external-reference-code/*',
-			async (route) => {
-				await new Promise((fulfill) => setTimeout(fulfill, 300));
-				await route.continue();
+			(route) => {
+				heldRoutes.push(route);
 			}
 		);
+
+		const continueHeldRoutes = async () => {
+			await expect.poll(() => heldRoutes.length).toBeGreaterThan(0);
+
+			for (const heldRoute of heldRoutes.splice(0)) {
+				await heldRoute.continue();
+			}
+		};
 
 		await editObjectDetailsPage.goto(objectDefinition.label['en_US']);
 
@@ -969,9 +978,7 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 
 		await expect(publishButton).toBeDisabled();
 
-		await page.waitForResponse(
-			'**/object-definitions/by-external-reference-code/*'
-		);
+		await continueHeldRoutes();
 
 		await expect(publishButton).toBeEnabled();
 
@@ -981,13 +988,17 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 
 		await expect(publishButton).toBeDisabled();
 
-		await page.waitForResponse('**/object-definitions/*/publish');
+		const publishResponsePromise = page.waitForResponse(
+			'**/object-definitions/*/publish'
+		);
+
+		await continueHeldRoutes();
+
+		await publishResponsePromise;
 
 		await expect(saveButton).toBeDisabled();
 
-		await page.waitForResponse(
-			'**/object-definitions/by-external-reference-code/*'
-		);
+		await continueHeldRoutes();
 
 		await expect(saveButton).toBeEnabled();
 
@@ -995,9 +1006,9 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 
 		await expect(saveButton).toBeDisabled();
 
-		await page.waitForResponse(
-			'**/object-definitions/by-external-reference-code/*'
-		);
+		await continueHeldRoutes();
+
+		await continueHeldRoutes();
 
 		await expect(saveButton).toBeEnabled();
 	});
