@@ -5,8 +5,6 @@
 
 package com.liferay.jenkins.results.parser;
 
-import org.json.JSONObject;
-
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -27,24 +25,40 @@ public class JUnitTestResultTest
 			"https://test-1-1.liferay.com/job/test%20portal(master)/12"
 		);
 
-		JSONObject caseJSONObject = new JSONObject();
+		JUnitTestResult jUnitTestResult = Mockito.mock(JUnitTestResult.class);
 
-		caseJSONObject.put(
-			"className", "com.liferay.portal.FooTest"
-		).put(
-			"duration", 1.0
-		).put(
-			"name", "testBar[0]"
-		).put(
-			"status", "PASSED"
+		Mockito.doCallRealMethod(
+		).when(
+			jUnitTestResult
+		).getTestReportURL();
+
+		Mockito.when(
+			jUnitTestResult.getBuild()
+		).thenReturn(
+			build
 		);
 
-		JUnitTestResult jUnitTestResult = new JUnitTestResult(
-			build, caseJSONObject);
+		Mockito.when(
+			jUnitTestResult.getEncodedTestName()
+		).thenReturn(
+			"testBar"
+		);
+
+		Mockito.when(
+			jUnitTestResult.getPackageName()
+		).thenReturn(
+			"com.liferay.portal"
+		);
+
+		Mockito.when(
+			jUnitTestResult.getSimpleClassName()
+		).thenReturn(
+			"FooTest"
+		);
 
 		testEquals(
 			"https://test-1-1.liferay.com/job/test%20portal(master)/12" +
-				"/testReport/com.liferay.portal/FooTest/testBar_0_",
+				"/testReport/com.liferay.portal/FooTest/testBar",
 			jUnitTestResult.getTestReportURL());
 	}
 
