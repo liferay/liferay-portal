@@ -580,6 +580,21 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 		Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
 		assertContains(accountGroup2, (List<AccountGroup>)page.getItems());
+
+		page = accountGroupResource.getAccountGroupsPage(
+			null, "id eq " + accountGroup1.getId(), Pagination.of(1, -1), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		assertContains(accountGroup1, (List<AccountGroup>)page.getItems());
+
+		page = accountGroupResource.getAccountGroupsPage(
+			null, "not (id in (" + accountGroup1.getId() + "))",
+			Pagination.of(1, -1), null);
+
+		Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+		assertContains(accountGroup2, (List<AccountGroup>)page.getItems());
 	}
 
 	private void _testPatchAccountGroupByExternalReferenceCodeWithoutName()

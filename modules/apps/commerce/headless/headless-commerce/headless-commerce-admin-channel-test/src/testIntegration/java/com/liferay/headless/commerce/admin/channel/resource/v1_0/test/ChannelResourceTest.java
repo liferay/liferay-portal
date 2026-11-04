@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -358,6 +359,9 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		Channel channel = testGetChannelsPage_addChannel(randomChannel);
 
+		_commerceChannels.add(
+			_commerceChannelLocalService.getCommerceChannel(channel.getId()));
+
 		Page<Channel> channelsPage = channelResource.getChannelsPage(
 			null,
 			"externalReferenceCode eq '" + channel.getExternalReferenceCode() +
@@ -369,6 +373,36 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		assertEquals(
 			Collections.singletonList(channel),
 			(List<Channel>)channelsPage.getItems());
+
+		channelsPage = channelResource.getChannelsPage(
+			null, "id eq " + channel.getId(), Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, channelsPage.getTotalCount());
+
+		assertEquals(
+			Collections.singletonList(channel),
+			(List<Channel>)channelsPage.getItems());
+
+		Channel notFilteredChannel = testGetChannelsPage_addChannel(
+			randomChannel());
+
+		_commerceChannels.add(
+			_commerceChannelLocalService.getCommerceChannel(
+				notFilteredChannel.getId()));
+
+		channelsPage = channelResource.getChannelsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		long totalCount = channelsPage.getTotalCount();
+
+		channelsPage = channelResource.getChannelsPage(
+			null, "not (id in (" + channel.getId() + "))", Pagination.of(1, -1),
+			null);
+
+		Assert.assertEquals(totalCount - 1, channelsPage.getTotalCount());
+
+		assertContains(
+			notFilteredChannel, (List<Channel>)channelsPage.getItems());
 	}
 
 	private void _testPatchChannelByExternalReferenceCodeWithAccountExternalReferenceCode()
@@ -837,6 +871,9 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 	@Inject
 	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
+
+	@DeleteAfterTestRun
+	private final List<CommerceChannel> _commerceChannels = new ArrayList<>();
 
 	private CommerceCurrency _commerceCurrency;
 	private Group _group;
