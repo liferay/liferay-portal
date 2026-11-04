@@ -334,17 +334,16 @@ public class SiteConfigurationResourceImpl
 			String siteExternalReferenceCode)
 		throws Exception {
 
-		String filterString =
-			ConfigurationFilterStringUtil.getGroupScopedFilterString(
-				contextCompany.getCompanyId(), groupId,
-				siteConfiguration.getExternalReferenceCode(),
-				siteExternalReferenceCode);
-
 		try {
 			Configuration configuration =
 				ConfigurationUtil.addOrUpdateConfiguration(
 					groupId, _configurationAdmin,
-					siteConfiguration.getExternalReferenceCode(), filterString,
+					siteConfiguration.getExternalReferenceCode(),
+					pid ->
+						ConfigurationFilterStringUtil.
+							getGroupScopedFilterString(
+								contextCompany.getCompanyId(), groupId, pid,
+								siteExternalReferenceCode),
 					siteConfiguration.getProperties(),
 					ExtendedObjectClassDefinition.Scope.GROUP,
 					_settingsLocatorHelper);

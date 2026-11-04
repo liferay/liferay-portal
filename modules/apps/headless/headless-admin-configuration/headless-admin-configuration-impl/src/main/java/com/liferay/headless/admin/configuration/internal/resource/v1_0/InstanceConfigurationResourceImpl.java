@@ -305,17 +305,17 @@ public class InstanceConfigurationResourceImpl
 
 		long companyId = contextCompany.getCompanyId();
 
-		String filterString =
-			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
-				companyId, instanceConfiguration.getExternalReferenceCode(),
-				contextCompany.getDefaultWebId());
-
 		try {
 			Configuration configuration =
 				ConfigurationUtil.addOrUpdateConfiguration(
 					companyId, _configurationAdmin,
 					instanceConfiguration.getExternalReferenceCode(),
-					filterString, instanceConfiguration.getProperties(),
+					pid ->
+						ConfigurationFilterStringUtil.
+							getCompanyScopedFilterString(
+								companyId, pid,
+								contextCompany.getDefaultWebId()),
+					instanceConfiguration.getProperties(),
 					ExtendedObjectClassDefinition.Scope.COMPANY,
 					_settingsLocatorHelper);
 

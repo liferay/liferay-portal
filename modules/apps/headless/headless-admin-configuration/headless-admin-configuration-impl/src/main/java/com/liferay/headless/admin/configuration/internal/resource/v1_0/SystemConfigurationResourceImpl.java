@@ -302,16 +302,13 @@ public class SystemConfigurationResourceImpl
 			SystemConfiguration systemConfiguration)
 		throws Exception {
 
-		String filterString =
-			ConfigurationFilterStringUtil.getSystemScopedFilterString(
-				systemConfiguration.getExternalReferenceCode());
-
 		try {
 			Configuration configuration =
 				ConfigurationUtil.addOrUpdateConfiguration(
 					null, _configurationAdmin,
 					systemConfiguration.getExternalReferenceCode(),
-					filterString, systemConfiguration.getProperties(),
+					ConfigurationFilterStringUtil::getSystemScopedFilterString,
+					systemConfiguration.getProperties(),
 					ExtendedObjectClassDefinition.Scope.SYSTEM,
 					_settingsLocatorHelper);
 

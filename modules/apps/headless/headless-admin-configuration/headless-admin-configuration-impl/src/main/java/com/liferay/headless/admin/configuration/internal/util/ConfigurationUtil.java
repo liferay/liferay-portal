@@ -34,6 +34,7 @@ import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.Configuration;
@@ -46,7 +47,8 @@ public class ConfigurationUtil {
 
 	public static Configuration addOrUpdateConfiguration(
 			Long classPK, ConfigurationAdmin configurationAdmin,
-			String externalReferenceCode, String filterString,
+			String externalReferenceCode,
+			Function<String, String> filterStringFunction,
 			Map<String, Object> propertiesMap,
 			ExtendedObjectClassDefinition.Scope scope,
 			SettingsLocatorHelper settingsLocatorHelper)
@@ -81,12 +83,12 @@ public class ConfigurationUtil {
 		if (scope.equals(ExtendedObjectClassDefinition.Scope.SYSTEM)) {
 			configuration = _getOrAddSystemConfiguration(
 				configurationAdmin, externalReferenceCode, ocd.factory(),
-				filterString);
+				filterStringFunction.apply(externalReferenceCode));
 		}
 		else {
 			configuration = _getOrAddScopedConfiguration(
 				configurationAdmin, externalReferenceCode, ocd.factory(),
-				filterString);
+				filterStringFunction);
 		}
 
 		if (configuration == null) {
@@ -248,11 +250,16 @@ public class ConfigurationUtil {
 
 	private static Configuration _getOrAddScopedConfiguration(
 			ConfigurationAdmin configurationAdmin, String externalReferenceCode,
-			boolean factory, String filterString)
+			boolean factory, Function<String, String> filterStringFunction)
 		throws Exception {
 
+		if (!factory) {
+			externalReferenceCode = ConfigurationPidUtil.getRawPid(
+				externalReferenceCode);
+		}
+
 		Configuration[] configurations = configurationAdmin.listConfigurations(
-			filterString);
+			filterStringFunction.apply(externalReferenceCode));
 
 		if (factory) {
 			if (ArrayUtil.isEmpty(configurations)) {
@@ -269,12 +276,6 @@ public class ConfigurationUtil {
 
 			return _createScopedConfiguration(
 				configurationAdmin, externalReferenceCode);
-		}
-
-		if (externalReferenceCode.contains("~") &&
-			ArrayUtil.isEmpty(configurations)) {
-
-			return null;
 		}
 
 		if (ArrayUtil.isNotEmpty(configurations)) {
