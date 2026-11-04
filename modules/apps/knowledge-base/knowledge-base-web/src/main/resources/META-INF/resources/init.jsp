@@ -115,7 +115,6 @@ page import="com.liferay.message.boards.model.MBMessage" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.configuration.metatype.util.ParameterMapUtil" %><%@
 page import="com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil" %><%@
-page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
 page import="com.liferay.portal.kernel.dao.orm.QueryUtil" %><%@
 page import="com.liferay.portal.kernel.dao.search.RowChecker" %><%@
 page import="com.liferay.portal.kernel.dao.search.SearchContainer" %><%@

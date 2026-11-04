@@ -21,7 +21,6 @@ import com.liferay.knowledge.base.util.comparator.KBObjectsPriorityComparator;
 import com.liferay.knowledge.base.util.comparator.KBObjectsTitleComparator;
 import com.liferay.knowledge.base.util.comparator.KBObjectsViewCountComparator;
 import com.liferay.knowledge.base.web.internal.search.KBSearcher;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -506,9 +505,11 @@ public class KBArticleItemSelectorViewDisplayContext {
 			return _kbFolderId;
 		}
 
-		_kbFolderId = BeanParamUtil.getLong(
-			_getKBFolder(), _httpServletRequest, "kbFolderId",
-			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+		_kbFolderId = ParamUtil.getLong(
+			_httpServletRequest, "kbFolderId",
+			GetterUtil.get(
+				_getKBFolder(), KBFolder::getKbFolderId,
+				KBFolderConstants.DEFAULT_PARENT_FOLDER_ID));
 
 		return _kbFolderId;
 	}
