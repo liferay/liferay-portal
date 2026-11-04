@@ -13,12 +13,15 @@ import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.editor.configuration.EditorConfiguration;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -30,6 +33,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Víctor Galán
@@ -153,6 +158,49 @@ public class CommentUtil {
 		).build();
 	}
 
+	public static String getSanitizedBody(
+			String body, String className, long classPK,
+			DiscussionPermission discussionPermission,
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-104086")) {
+
+			return body;
+		}
+
+		StringBundler sb = new StringBundler();
+
+		Matcher matcher = _mentionUserPattern.matcher(body);
+		int end = 0;
+
+		while (matcher.find()) {
+			sb.append(body.substring(end, matcher.start()));
+
+			User user = UserLocalServiceUtil.fetchUserByExternalReferenceCode(
+				matcher.group(1), themeDisplay.getCompanyId());
+
+			if ((user != null) &&
+				discussionPermission.hasViewPermission(
+					PermissionCheckerFactoryUtil.create(user),
+					themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
+					className, classPK)) {
+
+				sb.append(matcher.group());
+			}
+			else {
+				sb.append(matcher.group(2));
+			}
+
+			end = matcher.end();
+		}
+
+		sb.append(body.substring(end));
+
+		return sb.toString();
+	}
+
 	private static JSONObject _getAuthorJSONObject(
 			Comment comment, HttpServletRequest httpServletRequest)
 		throws PortalException {
@@ -187,5 +235,8 @@ public class CommentUtil {
 			"userId", commentUser.getUserId()
 		);
 	}
+
+	private static final Pattern _mentionUserPattern = Pattern.compile(
+		"<span class=\"mention mention-user-([^\"\\s]+)\">([^<]*)</span>");
 
 }

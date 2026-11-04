@@ -73,7 +73,10 @@ public class EditContentItemCommentStrutsAction implements StrutsAction {
 			}
 
 			long classPK = ParamUtil.getLong(httpServletRequest, "classPK");
-			String body = ParamUtil.getString(httpServletRequest, "body");
+
+			String body = CommentUtil.getSanitizedBody(
+				ParamUtil.getString(httpServletRequest, "body"), className1,
+				classPK, _discussionPermission, themeDisplay);
 
 			_commentManager.updateComment(
 				themeDisplay.getUserId(), className1, classPK, commentId, null,
