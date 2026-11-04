@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {searchTableRowByValue} from '../commerceDNDTablePage';
 
 export class CommerceAdminProductDetailsMediaPage {
@@ -109,5 +111,29 @@ export class CommerceAdminProductDetailsMediaPage {
 
 			throw new Error(`Cannot locate row with rowValue: ${rowValue}`);
 		};
+	}
+
+	async openAttachment(title: string) {
+		await this.page.reload();
+
+		await clickAndExpectToBeVisible({
+			target: this.sidePanelFrame.getByLabel('Title'),
+			trigger: this.mediaForm.getByText(title, {exact: true}),
+		});
+	}
+
+	async publishAttachment() {
+
+		// The tags autocomplete covers the Publish button, so close it first
+
+		await this.sidePanelFrame.getByLabel('Title').click();
+
+		await expect(this.sidePanelFrame.getByRole('listbox')).toBeHidden();
+
+		await this.sidePanelFrame
+			.getByRole('button', {exact: true, name: 'Publish'})
+			.click();
+
+		await waitForAlert(this.sidePanelFrame);
 	}
 }
