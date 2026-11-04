@@ -264,7 +264,17 @@ public class ConfigurationUtil {
 		if (factory) {
 			if (ArrayUtil.isEmpty(configurations)) {
 				if (externalReferenceCode.contains("~")) {
-					return null;
+					int index = externalReferenceCode.indexOf("~");
+
+					Configuration configuration =
+						configurationAdmin.getFactoryConfiguration(
+							externalReferenceCode.substring(0, index),
+							externalReferenceCode.substring(index + 1),
+							StringPool.QUESTION);
+
+					if (configuration.getProperties() == null) {
+						return configuration;
+					}
 				}
 
 				return _createScopedConfiguration(
