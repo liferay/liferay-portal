@@ -9,6 +9,7 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceWrapper;
 import com.liferay.object.entry.folder.util.ObjectEntryFolderThreadLocal;
+import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -92,10 +93,18 @@ public class PIMObjectEntryFolderDepotEntryLocalServiceWrapper
 	private void _deleteObjectEntryFolder(DepotEntry depotEntry)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				depotEntry.getCompanyId(), "LPD-96666") ||
-			(depotEntry.getType() != DepotConstants.TYPE_SPACE)) {
+		if (depotEntry.getType() != DepotConstants.TYPE_SPACE) {
+			return;
+		}
 
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.
+				fetchObjectEntryFolderByExternalReferenceCode(
+					PIMObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					depotEntry.getGroupId(), depotEntry.getCompanyId());
+
+		if (objectEntryFolder == null) {
 			return;
 		}
 
@@ -104,11 +113,8 @@ public class PIMObjectEntryFolderDepotEntryLocalServiceWrapper
 					setForceDeleteSystemObjectEntryFolderWithSafeCloseable(
 						true)) {
 
-			_objectEntryFolderLocalService.
-				deleteObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
-					depotEntry.getGroupId(), depotEntry.getCompanyId());
+			_objectEntryFolderLocalService.deleteObjectEntryFolder(
+				objectEntryFolder);
 		}
 	}
 
