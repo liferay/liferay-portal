@@ -16,7 +16,7 @@ import {
 	getCSRFTokenHeader,
 	getHeader,
 	readAuthToken,
-} from '../../playwright-core/src/authToken';
+} from '../core/authToken';
 import {liferayConfig} from '../liferay.config';
 import {AnalyticsSettingsRestApiHelper} from './AnalyticsSettingsRestApiHelper';
 import {ApiBuilderHelper} from './ApiBuilderHelper';

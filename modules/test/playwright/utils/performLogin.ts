@@ -9,8 +9,8 @@ import {
 	clearAuthToken,
 	getHeader,
 	readAuthToken,
-} from '../../playwright-core/src/authToken';
-import {performLogin} from '../../playwright-core/src/login';
+} from '../core/authToken';
+import {performLogin} from '../core/login';
 import {faroConfig} from '../tests/osb-faro-web/main/faro.config';
 
 export {
@@ -19,8 +19,8 @@ export {
 	performUserSwitch,
 	performUserSwitchViaApi,
 	userData,
-} from '../../playwright-core/src/login';
-export type {LoginScreenName} from '../../playwright-core/src/login';
+} from '../core/login';
+export type {LoginScreenName} from '../core/login';
 
 export async function performAnalyticsCloudLoginViaApi(
 	page: Page
