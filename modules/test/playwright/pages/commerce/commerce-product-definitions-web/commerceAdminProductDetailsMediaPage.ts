@@ -18,7 +18,15 @@ export class CommerceAdminProductDetailsMediaPage {
 	readonly selectFileButton: Locator;
 	readonly selectFileFrame: FrameLocator;
 	readonly selectFileIframe: Locator;
+	readonly sidePanelCustomFieldInput: (fieldName: string) => Locator;
 	readonly sidePanelFrame: FrameLocator;
+	readonly sidePanelTag: (tagName: string) => Locator;
+	readonly sidePanelTagOption: (tagName: string) => Locator;
+	readonly sidePanelTagsClearAllButton: Locator;
+	readonly sidePanelTagsInput: Locator;
+	readonly sidePanelTagsSelectButton: Locator;
+	readonly sidePanelTagsSelectFrame: FrameLocator;
+	readonly sidePanelTagsSelectIframe: Locator;
 	readonly tableRow: (
 		tableName: Locator,
 		colPosition: number,
@@ -50,6 +58,35 @@ export class CommerceAdminProductDetailsMediaPage {
 			'iframe[title="Select File"]'
 		);
 		this.selectFileFrame = this.selectFileIframe.contentFrame();
+		this.sidePanelCustomFieldInput = (fieldName: string) =>
+			this.sidePanelFrame.locator(
+				`input[name*="ExpandoAttribute--${fieldName}--"]`
+			);
+		this.sidePanelTag = (tagName: string) =>
+			this.sidePanelFrame
+				.locator('.label')
+				.filter({hasText: new RegExp(`^${tagName}$`)});
+		this.sidePanelTagOption = (tagName: string) =>
+			this.sidePanelFrame.getByRole('option', {
+				exact: true,
+				name: tagName,
+			});
+		this.sidePanelTagsClearAllButton = this.sidePanelFrame.getByRole(
+			'button',
+			{name: 'Clear All'}
+		);
+		this.sidePanelTagsInput = this.sidePanelFrame.locator(
+			"div[id*='assetTagsSelector'] input.form-control-inset"
+		);
+		this.sidePanelTagsSelectButton = this.sidePanelFrame.getByRole(
+			'button',
+			{exact: true, name: 'Select Tags'}
+		);
+		this.sidePanelTagsSelectIframe = this.sidePanelFrame.locator(
+			'iframe[title="Tags"]'
+		);
+		this.sidePanelTagsSelectFrame =
+			this.sidePanelTagsSelectIframe.contentFrame();
 		this.tableRow = async (
 			table: Locator,
 			colPosition: number,
