@@ -50,6 +50,7 @@ import com.liferay.portal.upload.test.util.UploadTestUtil;
 
 import java.util.Objects;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -80,6 +81,11 @@ public class SaveAsDraftArticleMVCActionCommandTest {
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			_group.getGroupId());
+	}
+
+	@After
+	public void tearDown() {
+		ReflectionTestUtil.setFieldValue(_mvcActionCommand, "_portal", _portal);
 	}
 
 	@Test
