@@ -387,6 +387,12 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		);
 	}
 
+	async getProductRelatedProducts(productId: number) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/products/${productId}/relatedProducts`
+		);
+	}
+
 	async getProductAccountGroups(productId: number) {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/products/${productId}/product-account-groups`

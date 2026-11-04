@@ -10,6 +10,7 @@ import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {workflowPagesTest} from '../../../../fixtures/workflowPagesTest';
+import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 
 export const test = mergeTests(
@@ -19,6 +20,99 @@ export const test = mergeTests(
 	loginTest(),
 	workflowPagesTest
 );
+
+const CP_DEFINITION_LINK_CLASS_NAME =
+	'com.liferay.commerce.product.model.CPDefinitionLink';
+
+const RELATION_TYPES = [
+	{label: 'Up-Sell', type: 'up-sell'},
+	{label: 'Cross-Sell', type: 'cross-sell'},
+	{label: 'Related', type: 'related'},
+	{label: 'Accessories', type: 'accessories'},
+	{label: 'Spare', type: 'spare'},
+];
+
+async function linkSingleApproverToProductLinks(apiHelpers: DataApiHelpers) {
+	const workflowDefinition =
+		await apiHelpers.headlessAdminWorkflow.getWorkflowDefinitionByName(
+			'Single Approver'
+		);
+
+	// CPDefinitionLinkWorkflowHandler is not scopeable, so the link must be
+	// company-wide
+
+	await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionLink(
+		CP_DEFINITION_LINK_CLASS_NAME,
+		0,
+		workflowDefinition.id,
+		workflowDefinition.name,
+		Number(workflowDefinition.version)
+	);
+}
+
+async function postProducts(apiHelpers: DataApiHelpers) {
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+	const sourceProduct =
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			name: {en_US: 'ABS Sensor ' + getRandomInt()},
+		});
+	const relatedProduct =
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			name: {en_US: 'Hoses ' + getRandomInt()},
+		});
+
+	return {relatedProduct, sourceProduct};
+}
+
+async function transitionWorkflowTasks({
+	apiHelpers,
+	relationIds,
+	taskName,
+	transitionName,
+}: {
+	apiHelpers: DataApiHelpers;
+	relationIds: Set<number>;
+	taskName: 'review' | 'update';
+	transitionName: 'approve' | 'reject' | 'resubmit';
+}) {
+	const userAccount = await apiHelpers.headlessAdminUser.getMyUserAccount();
+
+	let workflowTasks: any[] = [];
+
+	await expect(async () => {
+		const {items} =
+			await apiHelpers.headlessAdminWorkflow.getWorkflowTasksBySubmittingUser(
+				userAccount.id,
+				-1
+			);
+
+		workflowTasks = items.filter(
+			(item) =>
+				!item.completed &&
+				item.name === taskName &&
+				relationIds.has(item.objectReviewed?.id)
+		);
+
+		expect(workflowTasks).toHaveLength(relationIds.size);
+	}).toPass();
+
+	for (const workflowTask of workflowTasks) {
+		if (taskName === 'review') {
+			await apiHelpers.headlessAdminWorkflow.postAssignTaskToUser(
+				workflowTask.id,
+				userAccount.id
+			);
+		}
+
+		await apiHelpers.headlessAdminWorkflow.postWorkflowTaskChangeTransition(
+			workflowTask.id,
+			transitionName
+		);
+	}
+}
 
 test('LPD-13559 Bulk actions for product relations', async ({
 	apiHelpers,
@@ -298,6 +392,253 @@ test(
 		finally {
 			await configurationTabPage.goTo();
 
+			await configurationTabPage.unassignWorkflowFromAssetType(
+				'Product Link'
+			);
+		}
+	}
+);
+
+test(
+	'Product relations rejected under the Single Approver workflow stay pending until resubmitted and approved',
+	{tag: ['@COMMERCE-11571', '@LPD-111076']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsProductRelationsPage,
+		commerceAdminProductPage,
+		configurationTabPage,
+		page,
+	}) => {
+		await linkSingleApproverToProductLinks(apiHelpers);
+
+		try {
+			const {relatedProduct, sourceProduct} =
+				await postProducts(apiHelpers);
+
+			const relationIds = new Set<number>();
+
+			for (const {type} of RELATION_TYPES) {
+				const relation =
+					await apiHelpers.headlessCommerceAdminCatalog.postProductRelatedProduct(
+						sourceProduct.productId,
+						{productId: relatedProduct.productId, type}
+					);
+
+				relationIds.add(relation.id);
+			}
+
+			const expectRelationStatuses = async (status: string) => {
+				for (const {label} of RELATION_TYPES) {
+					await expect(
+						commerceAdminProductDetailsProductRelationsPage.productRelationStatusLabel(
+							relatedProduct.name.en_US,
+							label
+						)
+					).toHaveText(status);
+				}
+			};
+
+			await commerceAdminProductPage.gotoProduct(
+				sourceProduct.name.en_US
+			);
+
+			await commerceAdminProductDetailsPage.goToProductRelations();
+
+			await expectRelationStatuses('Pending');
+
+			// Reject
+
+			await transitionWorkflowTasks({
+				apiHelpers,
+				relationIds,
+				taskName: 'review',
+				transitionName: 'reject',
+			});
+
+			await page.reload();
+
+			await commerceAdminProductDetailsPage.goToProductRelations();
+
+			await expectRelationStatuses('Pending');
+
+			// Resubmit and approve
+
+			await transitionWorkflowTasks({
+				apiHelpers,
+				relationIds,
+				taskName: 'update',
+				transitionName: 'resubmit',
+			});
+
+			await transitionWorkflowTasks({
+				apiHelpers,
+				relationIds,
+				taskName: 'review',
+				transitionName: 'approve',
+			});
+
+			await page.reload();
+
+			await commerceAdminProductDetailsPage.goToProductRelations();
+
+			await expectRelationStatuses('Approved');
+		}
+		finally {
+			await configurationTabPage.unassignWorkflowFromAssetType(
+				'Product Link'
+			);
+		}
+	}
+);
+
+test(
+	'Product relations of a custom type follow the Single Approver workflow',
+	{tag: ['@COMMERCE-11570', '@COMMERCE-11572', '@LPD-111076']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsProductRelationsPage,
+		commerceAdminProductPage,
+		configurationTabPage,
+		page,
+		productRelationTypesSystemSettingPage,
+	}) => {
+		const customType = 'Custom-Relation-' + getRandomInt();
+		const relationIds = new Set<number>();
+
+		try {
+			await productRelationTypesSystemSettingPage.addType(customType);
+
+			await linkSingleApproverToProductLinks(apiHelpers);
+
+			const {relatedProduct, sourceProduct} =
+				await postProducts(apiHelpers);
+
+			await commerceAdminProductPage.gotoProduct(
+				sourceProduct.name.en_US
+			);
+
+			await commerceAdminProductDetailsPage.goToProductRelations();
+
+			// Add a relation of the custom type
+
+			await commerceAdminProductDetailsProductRelationsPage.addProductRelation(
+				customType,
+				relatedProduct.name.en_US
+			);
+
+			const {items} =
+				await apiHelpers.headlessCommerceAdminCatalog.getProductRelatedProducts(
+					sourceProduct.productId
+				);
+
+			for (const item of items) {
+				relationIds.add(item.id);
+			}
+
+			expect(relationIds.size).toBe(1);
+
+			const statusLabel =
+				commerceAdminProductDetailsProductRelationsPage.productRelationStatusLabel(
+					relatedProduct.name.en_US,
+					customType
+				);
+
+			await expect(statusLabel).toHaveText('Pending');
+
+			// Reject
+
+			await transitionWorkflowTasks({
+				apiHelpers,
+				relationIds,
+				taskName: 'review',
+				transitionName: 'reject',
+			});
+
+			await page.reload();
+
+			await commerceAdminProductDetailsPage.goToProductRelations();
+
+			await expect(statusLabel).toHaveText('Pending');
+
+			// Resubmit and approve
+
+			await transitionWorkflowTasks({
+				apiHelpers,
+				relationIds,
+				taskName: 'update',
+				transitionName: 'resubmit',
+			});
+
+			await transitionWorkflowTasks({
+				apiHelpers,
+				relationIds,
+				taskName: 'review',
+				transitionName: 'approve',
+			});
+
+			await page.reload();
+
+			await commerceAdminProductDetailsPage.goToProductRelations();
+
+			await expect(statusLabel).toHaveText('Approved');
+		}
+		finally {
+
+			// Deleting a relation whose type is no longer registered fails, so
+			// delete the relation before the type
+
+			for (const relationId of relationIds) {
+				await apiHelpers.headlessCommerceAdminCatalog.deleteRelatedProduct(
+					String(relationId)
+				);
+			}
+
+			await productRelationTypesSystemSettingPage.deleteType(customType);
+
+			await configurationTabPage.unassignWorkflowFromAssetType(
+				'Product Link'
+			);
+		}
+	}
+);
+
+test(
+	'The Single Approver review task shows the product relation details',
+	{tag: ['@COMMERCE-12048', '@LPD-111076']},
+	async ({
+		apiHelpers,
+		configurationTabPage,
+		page,
+		workflowTaskDetailsPage,
+		workflowTasksPage,
+	}) => {
+		await linkSingleApproverToProductLinks(apiHelpers);
+
+		try {
+			const {relatedProduct, sourceProduct} =
+				await postProducts(apiHelpers);
+
+			await apiHelpers.headlessCommerceAdminCatalog.postProductRelatedProduct(
+				sourceProduct.productId,
+				{productId: relatedProduct.productId, type: 'up-sell'}
+			);
+
+			await workflowTasksPage.goToAssignedToMyRoles();
+
+			await workflowTasksPage.waitForTask(sourceProduct.name.en_US);
+
+			await workflowTaskDetailsPage.selectAsset(sourceProduct.name.en_US);
+
+			await expect(
+				page
+					.getByRole('row')
+					.filter({hasText: relatedProduct.name.en_US})
+					.filter({hasText: 'Up-Sell'})
+			).toContainText('Pending');
+		}
+		finally {
 			await configurationTabPage.unassignWorkflowFromAssetType(
 				'Product Link'
 			);

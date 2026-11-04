@@ -71,6 +71,7 @@ import {CommerceAdminProductDetailsProductRelationsPage} from '../pages/commerce
 import {CommerceAdminProductDetailsSkusPage} from '../pages/commerce/commerce-product-definitions-web/commerceAdminProductDetailsSkusPage';
 import {CommerceAdminProductDetailsVisibilityPage} from '../pages/commerce/commerce-product-definitions-web/commerceAdminProductDetailsVisibilityPage';
 import {CommerceAdminProductPage} from '../pages/commerce/commerce-product-definitions-web/commerceAdminProductPage';
+import {ProductRelationTypesSystemSettingPage} from '../pages/commerce/commerce-product-definitions-web/productRelationTypesSystemSettingPage';
 import {CommerceSpecificationsPage} from '../pages/commerce/commerce-product-options-web/commerceSpecificationsPage';
 import {VirtualOrderItemContentPage} from '../pages/commerce/commerce-product-type-virtual-order-content-web/virtualOrderItemContentPage';
 import {CommerceAdminShipmentsPage} from '../pages/commerce/commerce-shipment-web/commerceAdminShipmentsPage';
@@ -163,6 +164,7 @@ const commercePagesTest = test.extend<{
 	productComparisonPage: ProductComparisonPage;
 	productDetailsPage: ProductDetailsPage;
 	productPublisherPage: ProductPublisherPage;
+	productRelationTypesSystemSettingPage: ProductRelationTypesSystemSettingPage;
 	refundReasonsSystemSettingPage: RefundReasonsSystemSettingPage;
 	returnDetailsPage: ReturnDetailsPage;
 	returnsPage: ReturnsPage;
@@ -400,6 +402,9 @@ const commercePagesTest = test.extend<{
 	},
 	productPublisherPage: async ({page}, use) => {
 		await use(new ProductPublisherPage(page));
+	},
+	productRelationTypesSystemSettingPage: async ({page}, use) => {
+		await use(new ProductRelationTypesSystemSettingPage(page));
 	},
 	refundReasonsSystemSettingPage: async ({page}, use) => {
 		await use(new RefundReasonsSystemSettingPage(page));
