@@ -47,32 +47,11 @@ public class RankingIndexReaderImpl implements RankingIndexReader {
 		String queryString, RankingIndexName rankingIndexName,
 		String sxpBlueprintExternalReferenceCode) {
 
-		if (rankingIndexName == null) {
-			return null;
-		}
-
-		CountSearchRequest countSearchRequest = new CountSearchRequest();
-
-		countSearchRequest.setIndexNames(rankingIndexName.getIndexName());
-
-		BooleanQuery booleanQuery = _getBooleanQuery(
-			excludeInactiveStatus, groupExternalReferenceCode, queryString,
-			sxpBlueprintExternalReferenceCode);
-
-		countSearchRequest.setQuery(booleanQuery);
-
-		CountSearchResponse countSearchResponse = _searchEngineAdapter.execute(
-			countSearchRequest);
-
-		SearchSearchRequest searchSearchRequest = new SearchSearchRequest();
-
-		searchSearchRequest.setIndexNames(rankingIndexName.getIndexName());
-		searchSearchRequest.setQuery(booleanQuery);
-		searchSearchRequest.setSize((int)countSearchResponse.getCount());
-
-		return _getRankings(
-			rankingIndexName,
-			_searchEngineAdapter.execute(searchSearchRequest));
+		return _fetch(
+			_getBooleanQuery(
+				excludeInactiveStatus, groupExternalReferenceCode, queryString,
+				sxpBlueprintExternalReferenceCode),
+			rankingIndexName);
 	}
 
 	@Override
@@ -105,9 +84,11 @@ public class RankingIndexReaderImpl implements RankingIndexReader {
 	public List<Ranking> fetchByGroupExternalReferenceCode(
 		String groupExternalReferenceCode, RankingIndexName rankingIndexName) {
 
-		return fetch(
-			false, groupExternalReferenceCode, StringPool.BLANK,
-			rankingIndexName, StringPool.BLANK);
+		return _fetch(
+			_getBooleanQuery(
+				RankingFields.GROUP_EXTERNAL_REFERENCE_CODE,
+				groupExternalReferenceCode),
+			rankingIndexName);
 	}
 
 	@Override
@@ -115,9 +96,11 @@ public class RankingIndexReaderImpl implements RankingIndexReader {
 		RankingIndexName rankingIndexName,
 		String sxpBlueprintExternalReferenceCode) {
 
-		return fetch(
-			false, StringPool.BLANK, StringPool.BLANK, rankingIndexName,
-			sxpBlueprintExternalReferenceCode);
+		return _fetch(
+			_getBooleanQuery(
+				RankingFields.SXP_BLUEPRINT_EXTERNAL_REFERENCE_CODE,
+				sxpBlueprintExternalReferenceCode),
+			rankingIndexName);
 	}
 
 	@Override
@@ -134,6 +117,32 @@ public class RankingIndexReaderImpl implements RankingIndexReader {
 	protected Ranking translate(Document document, String id) {
 		return DocumentToRankingTranslatorUtil.translate(
 			_rankingBuilderFactory, document, id);
+	}
+
+	private List<Ranking> _fetch(
+		BooleanQuery booleanQuery, RankingIndexName rankingIndexName) {
+
+		if (rankingIndexName == null) {
+			return null;
+		}
+
+		CountSearchRequest countSearchRequest = new CountSearchRequest();
+
+		countSearchRequest.setIndexNames(rankingIndexName.getIndexName());
+		countSearchRequest.setQuery(booleanQuery);
+
+		CountSearchResponse countSearchResponse = _searchEngineAdapter.execute(
+			countSearchRequest);
+
+		SearchSearchRequest searchSearchRequest = new SearchSearchRequest();
+
+		searchSearchRequest.setIndexNames(rankingIndexName.getIndexName());
+		searchSearchRequest.setQuery(booleanQuery);
+		searchSearchRequest.setSize((int)countSearchResponse.getCount());
+
+		return _getRankings(
+			rankingIndexName,
+			_searchEngineAdapter.execute(searchSearchRequest));
 	}
 
 	private BooleanQuery _getBooleanQuery(
@@ -195,6 +204,18 @@ public class RankingIndexReaderImpl implements RankingIndexReader {
 					RankingFields.GROUP_EXTERNAL_REFERENCE_CODE,
 					StringPool.BLANK));
 		}
+
+		return booleanQuery;
+	}
+
+	private BooleanQuery _getBooleanQuery(String fieldName, String value) {
+		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
+
+		booleanQuery.addFilterQueryClauses(QueriesUtil.term(fieldName, value));
+		booleanQuery.addMustNotQueryClauses(
+			QueriesUtil.term(
+				RankingFields.STATUS,
+				ResultRankingsConstants.STATUS_NOT_APPLICABLE));
 
 		return booleanQuery;
 	}

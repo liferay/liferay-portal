@@ -6,7 +6,6 @@
 package com.liferay.search.experiences.internal.model.listener;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.search.engine.SearchEngineInformation;
@@ -33,9 +32,7 @@ public class SXPBlueprintModelListener extends BaseModelListener<SXPBlueprint> {
 
 	@Override
 	public void onBeforeRemove(SXPBlueprint sxpBlueprint) {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				sxpBlueprint.getCompanyId(), "LPD-6368") ||
-			Objects.equals(
+		if (Objects.equals(
 				_searchEngineInformation.getVendorString(), "Solr")) {
 
 			return;
