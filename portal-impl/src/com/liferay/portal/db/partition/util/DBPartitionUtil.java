@@ -774,7 +774,10 @@ public class DBPartitionUtil {
 		try {
 			_copySchema(
 				connection, sourcePartitionName, targetPartitionName,
-				"RememberMeToken");
+				"OA2Auths_OA2ScopeGrants", "OAuth2Authorization",
+				"OpenIdConnectSession", "RememberMeToken", "SamlIbSloMessage",
+				"SamlIdpSpSession", "SamlIdpSsoSession", "SamlSpAuthRequest",
+				"SamlSpSession", "SharepointOAuth2TokenEntry", "Ticket");
 
 			DatabaseMetaData databaseMetaData = connection.getMetaData();
 
@@ -884,6 +887,14 @@ public class DBPartitionUtil {
 								"update ", partitionTableName, " set ownerId ",
 								"= ", toCompanyId, " where ownerId = ",
 								fromCompanyId));
+					}
+
+					if (StringUtil.equalsIgnoreCase(
+							fromTableName, "SharingEntry")) {
+
+						_deleteData(
+							toTableName, targetPartitionName, statement,
+							" where toTicketId > 0");
 					}
 
 					if (!StringUtil.equalsIgnoreCase(
