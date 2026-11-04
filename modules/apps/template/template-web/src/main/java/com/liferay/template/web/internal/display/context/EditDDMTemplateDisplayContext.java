@@ -10,7 +10,6 @@ import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.util.DDMTemplateHelper;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -25,6 +24,7 @@ import com.liferay.portal.kernel.template.TemplateHandlerRegistryUtil;
 import com.liferay.portal.kernel.template.TemplateVariableDefinition;
 import com.liferay.portal.kernel.template.TemplateVariableGroup;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -77,8 +77,9 @@ public class EditDDMTemplateDisplayContext {
 			return _classNameId;
 		}
 
-		_classNameId = BeanParamUtil.getLong(
-			getDDMTemplate(), _liferayPortletRequest, "classNameId");
+		_classNameId = ParamUtil.getLong(
+			_liferayPortletRequest, "classNameId",
+			GetterUtil.get(getDDMTemplate(), DDMTemplate::getClassNameId, 0L));
 
 		return _classNameId;
 	}
@@ -218,8 +219,9 @@ public class EditDDMTemplateDisplayContext {
 			return _smallImage;
 		}
 
-		_smallImage = BeanParamUtil.getBoolean(
-			getDDMTemplate(), _liferayPortletRequest, "smallImage");
+		_smallImage = ParamUtil.getBoolean(
+			_liferayPortletRequest, "smallImage",
+			GetterUtil.get(getDDMTemplate(), DDMTemplate::isSmallImage, false));
 
 		return _smallImage;
 	}
@@ -280,8 +282,10 @@ public class EditDDMTemplateDisplayContext {
 			return _script;
 		}
 
-		String script = BeanParamUtil.getString(
-			getDDMTemplate(), httpServletRequest, "script");
+		String script = ParamUtil.getString(
+			httpServletRequest, "script",
+			GetterUtil.get(
+				getDDMTemplate(), DDMTemplate::getScript, StringPool.BLANK));
 
 		if (Validator.isNull(script)) {
 			script = getDefaultScript();
