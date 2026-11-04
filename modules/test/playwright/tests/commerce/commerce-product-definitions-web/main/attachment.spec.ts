@@ -15,6 +15,7 @@ import {displayPageTemplatesPagesTest} from '../../../../fixtures/displayPageTem
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
+import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getGlobalSiteId from '../../../../utils/getGlobalSiteId';
 import getRandomString from '../../../../utils/getRandomString';
@@ -242,19 +243,115 @@ test(
 	}
 );
 
+async function addProductAttachment(apiHelpers: DataApiHelpers) {
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+	});
+
+	const title = getRandomString();
+
+	const document = await apiHelpers.headlessDelivery.postDocument(
+		await getGlobalSiteId(apiHelpers),
+		createReadStream(path.join(__dirname, '/dependencies/attachment.txt')),
+		{fileName: `${title}.txt`, title}
+	);
+
+	apiHelpers.data.push({id: document.id, type: 'document'});
+
+	await apiHelpers.headlessCommerceAdminCatalog.postAttachment(
+		product.productId,
+		document.id,
+		title
+	);
+
+	return {product, title};
+}
+
 test(
-	'Add, edit, tag and remove a product attachment',
-	{
-		tag: [
-			'@COMMERCE-6030',
-			'@COMMERCE-6031',
-			'@COMMERCE-6033',
-			'@COMMERCE-12853',
-			'@LPD-108797',
-			'@LPD-111085',
-			'@LPD-113914',
-		],
-	},
+	'Add a product attachment',
+	{tag: ['@COMMERCE-6030', '@LPD-108797', '@LPD-111085', '@LPD-113914']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsMediaPage,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+
+		const documentTitle = getRandomString();
+
+		const document = await apiHelpers.headlessDelivery.postDocument(
+			await getGlobalSiteId(apiHelpers),
+			createReadStream(
+				path.join(__dirname, '/dependencies/attachment.txt')
+			),
+			{fileName: `${documentTitle}.txt`, title: documentTitle}
+		);
+
+		apiHelpers.data.push({id: document.id, type: 'document'});
+
+		await test.step('Open the add attachment side panel', async () => {
+			await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+			await clickAndExpectToBeVisible({
+				target: commerceAdminProductDetailsMediaPage.addAttachmentButton,
+				trigger: commerceAdminProductDetailsPage.productMediaLink,
+			});
+
+			await commerceAdminProductDetailsMediaPage.addAttachmentButton.click();
+		});
+
+		await test.step('Select the file', async () => {
+			await clickAndExpectToBeVisible({
+				target: commerceAdminProductDetailsMediaPage.selectFileIframe,
+				trigger: commerceAdminProductDetailsMediaPage.selectFileButton,
+			});
+
+			const searchInput =
+				commerceAdminProductDetailsMediaPage.selectFileFrame.getByPlaceholder(
+					'Search for'
+				);
+
+			await searchInput.fill(documentTitle);
+			await searchInput.press('Enter');
+
+			await commerceAdminProductDetailsMediaPage.selectFileFrame
+				.getByText(documentTitle, {exact: true})
+				.click();
+		});
+
+		await test.step('Publish', async () => {
+			const title = getRandomString();
+
+			await commerceAdminProductDetailsMediaPage.sidePanelFrame
+				.getByLabel('Title')
+				.fill(title);
+
+			await commerceAdminProductDetailsMediaPage.publishAttachment();
+
+			await commerceAdminProductDetailsMediaPage.page.reload();
+
+			await expect(
+				commerceAdminProductDetailsMediaPage.mediaForm.getByText(
+					title,
+					{exact: true}
+				)
+			).toBeVisible();
+		});
+	}
+);
+
+test(
+	'Edit a product attachment',
+	{tag: ['@COMMERCE-6031', '@LPD-108797', '@LPD-111085', '@LPD-113914']},
 	async ({
 		addCustomFieldPage,
 		apiHelpers,
@@ -272,269 +369,49 @@ test(
 		});
 
 		try {
-			const catalog =
-				await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+			const {product, title} = await addProductAttachment(apiHelpers);
 
-			const product =
-				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-					catalogId: catalog.id,
-				});
+			await commerceAdminProductPage.gotoProduct(product.name['en_US']);
 
-			const globalSiteId = await getGlobalSiteId(apiHelpers);
-
-			const documentTitle = getRandomString();
-
-			const document = await apiHelpers.headlessDelivery.postDocument(
-				globalSiteId,
-				createReadStream(
-					path.join(__dirname, '/dependencies/attachment.txt')
-				),
-				{fileName: `${documentTitle}.txt`, title: documentTitle}
-			);
-
-			apiHelpers.data.push({id: document.id, type: 'document'});
-
-			const tagPrefix = getRandomString().toLowerCase();
-
-			const featuredTagName = `${tagPrefix}featured`;
-			const newTagName = `${tagPrefix}new`;
-
-			for (const tagName of [featuredTagName, newTagName]) {
-				await apiHelpers.headlessAdminTaxonomy.postSiteKeyword({
-					name: tagName,
-					siteId: globalSiteId,
-				});
-			}
-
-			const {sidePanelFrame} = commerceAdminProductDetailsMediaPage;
-
-			const openAttachment = async (title: string) => {
-				await commerceAdminProductDetailsMediaPage.page.reload();
-
-				await clickAndExpectToBeVisible({
-					target: sidePanelFrame.getByLabel('Title'),
-					trigger:
-						commerceAdminProductDetailsMediaPage.mediaForm.getByText(
-							title,
-							{exact: true}
-						),
-				});
-			};
-
-			const publishAttachment = async () => {
-				await sidePanelFrame.getByLabel('Title').click();
-
-				await expect(sidePanelFrame.getByRole('listbox')).toBeHidden();
-
-				await sidePanelFrame
-					.getByRole('button', {exact: true, name: 'Publish'})
-					.click();
-
-				await waitForAlert(sidePanelFrame);
-			};
-
-			const title = getRandomString();
-
-			await test.step('Add an attachment', async () => {
-				await commerceAdminProductPage.gotoProduct(
-					product.name['en_US']
-				);
-
-				await commerceAdminProductDetailsPage.productMediaLink.click();
-
-				await commerceAdminProductDetailsMediaPage.addAttachmentButton.click();
-
-				await clickAndExpectToBeVisible({
-					target: commerceAdminProductDetailsMediaPage.selectFileIframe,
-					trigger:
-						commerceAdminProductDetailsMediaPage.selectFileButton,
-				});
-
-				const searchInput =
-					commerceAdminProductDetailsMediaPage.selectFileFrame.getByPlaceholder(
-						'Search for'
-					);
-
-				await searchInput.fill(documentTitle);
-				await searchInput.press('Enter');
-
-				await commerceAdminProductDetailsMediaPage.selectFileFrame
-					.getByText(documentTitle, {exact: true})
-					.click();
-
-				await sidePanelFrame.getByLabel('Title').fill(title);
-
-				await publishAttachment();
-
-				await commerceAdminProductDetailsMediaPage.page.reload();
-
-				await expect(
-					commerceAdminProductDetailsMediaPage.mediaForm.getByText(
-						title,
-						{exact: true}
-					)
-				).toBeVisible();
+			await clickAndExpectToBeVisible({
+				target: commerceAdminProductDetailsMediaPage.addAttachmentButton,
+				trigger: commerceAdminProductDetailsPage.productMediaLink,
 			});
 
 			const editedTitle = getRandomString();
 
 			await test.step('Edit the title and the custom field', async () => {
-				await openAttachment(title);
+				await commerceAdminProductDetailsMediaPage.openAttachment(
+					title
+				);
 
-				await sidePanelFrame.getByLabel('Title').fill(editedTitle);
+				await commerceAdminProductDetailsMediaPage.sidePanelFrame
+					.getByLabel('Title')
+					.fill(editedTitle);
 
 				await commerceAdminProductDetailsMediaPage
 					.sidePanelCustomFieldInput(customFieldName)
 					.fill('Test');
 
-				await sidePanelFrame
+				await commerceAdminProductDetailsMediaPage.sidePanelFrame
 					.getByRole('button', {exact: true, name: 'Save as Draft'})
 					.click();
 
-				await waitForAlert(sidePanelFrame);
+				await waitForAlert(
+					commerceAdminProductDetailsMediaPage.sidePanelFrame
+				);
+			});
 
-				await openAttachment(editedTitle);
+			await test.step('Check the edited attachment', async () => {
+				await commerceAdminProductDetailsMediaPage.openAttachment(
+					editedTitle
+				);
 
 				await expect(
 					commerceAdminProductDetailsMediaPage.sidePanelCustomFieldInput(
 						customFieldName
 					)
 				).toHaveValue('Test');
-			});
-
-			const expectTags = async (tagNames: string[]) => {
-				await openAttachment(editedTitle);
-
-				for (const tagName of [featuredTagName, newTagName]) {
-					const tag =
-						commerceAdminProductDetailsMediaPage.sidePanelTag(
-							tagName
-						);
-
-					if (tagNames.includes(tagName)) {
-						await expect(tag).toBeVisible();
-					}
-					else {
-						await expect(tag).toHaveCount(0);
-					}
-				}
-			};
-
-			await test.step('Add tags by typing them', async () => {
-				await openAttachment(editedTitle);
-
-				for (const tagName of [featuredTagName, newTagName]) {
-					await commerceAdminProductDetailsMediaPage.sidePanelTagsInput.fill(
-						tagName
-					);
-
-					await commerceAdminProductDetailsMediaPage
-						.sidePanelTagOption(tagName)
-						.click();
-				}
-
-				await publishAttachment();
-
-				await expectTags([featuredTagName, newTagName]);
-			});
-
-			await test.step('Remove a tag', async () => {
-				await commerceAdminProductDetailsMediaPage
-					.sidePanelTag(newTagName)
-					.getByRole('button')
-					.click();
-
-				await publishAttachment();
-
-				await expectTags([featuredTagName]);
-			});
-
-			await test.step('Add a tag through the select modal', async () => {
-				await clickAndExpectToBeVisible({
-					target: commerceAdminProductDetailsMediaPage.sidePanelTagsSelectIframe,
-					trigger:
-						commerceAdminProductDetailsMediaPage.sidePanelTagsSelectButton,
-				});
-
-				await commerceAdminProductDetailsMediaPage.sidePanelTagsSelectFrame
-					.getByRole('row')
-					.filter({hasText: newTagName})
-					.getByRole('checkbox')
-					.check();
-
-				await sidePanelFrame
-					.getByRole('button', {exact: true, name: 'Done'})
-					.click();
-
-				await publishAttachment();
-
-				await expectTags([featuredTagName, newTagName]);
-			});
-
-			await test.step('Clear all the tags', async () => {
-				await commerceAdminProductDetailsMediaPage.sidePanelTagsClearAllButton.click();
-
-				await publishAttachment();
-
-				await expectTags([]);
-			});
-
-			await test.step('Add a tag from the autocomplete', async () => {
-				await commerceAdminProductDetailsMediaPage.sidePanelTagsInput.fill(
-					tagPrefix
-				);
-
-				await expect(
-					commerceAdminProductDetailsMediaPage.sidePanelTagOption(
-						featuredTagName
-					)
-				).toBeVisible();
-				await expect(
-					commerceAdminProductDetailsMediaPage.sidePanelTagOption(
-						newTagName
-					)
-				).toBeVisible();
-
-				await commerceAdminProductDetailsMediaPage.sidePanelTagsInput.fill(
-					`${tagPrefix}n`
-				);
-
-				await expect(
-					commerceAdminProductDetailsMediaPage.sidePanelTagOption(
-						featuredTagName
-					)
-				).toHaveCount(0);
-
-				await commerceAdminProductDetailsMediaPage
-					.sidePanelTagOption(newTagName)
-					.click();
-
-				await publishAttachment();
-
-				await expectTags([newTagName]);
-			});
-
-			await test.step('Delete the attachment', async () => {
-				await commerceAdminProductDetailsMediaPage.page.reload();
-
-				await commerceAdminProductDetailsMediaPage.mediaForm
-					.getByRole('row')
-					.filter({hasText: editedTitle})
-					.getByRole('button', {name: 'Actions'})
-					.click();
-
-				await commerceAdminProductDetailsMediaPage.page
-					.getByRole('menuitem', {name: 'Delete'})
-					.click();
-
-				await waitForAlert(commerceAdminProductDetailsMediaPage.page);
-
-				await expect(
-					commerceAdminProductDetailsMediaPage.mediaForm.getByText(
-						editedTitle,
-						{exact: true}
-					)
-				).toHaveCount(0);
 			});
 		}
 		finally {
@@ -543,6 +420,188 @@ test(
 				'Product Attachment'
 			);
 		}
+	}
+);
+
+test(
+	'Add and remove the tags of a product attachment',
+	{tag: ['@COMMERCE-12853', '@LPD-108797', '@LPD-111085', '@LPD-113914']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsMediaPage,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+	}) => {
+		const {product, title} = await addProductAttachment(apiHelpers);
+
+		const tagPrefix = getRandomString().toLowerCase();
+
+		const featuredTagName = `${tagPrefix}featured`;
+		const newTagName = `${tagPrefix}new`;
+
+		const globalSiteId = await getGlobalSiteId(apiHelpers);
+
+		for (const tagName of [featuredTagName, newTagName]) {
+			await apiHelpers.headlessAdminTaxonomy.postSiteKeyword({
+				name: tagName,
+				siteId: globalSiteId,
+			});
+		}
+
+		const expectTags = async (tagNames: string[]) => {
+			await commerceAdminProductDetailsMediaPage.openAttachment(title);
+
+			for (const tagName of [featuredTagName, newTagName]) {
+				const tag =
+					commerceAdminProductDetailsMediaPage.sidePanelTag(tagName);
+
+				if (tagNames.includes(tagName)) {
+					await expect(tag).toBeVisible();
+				}
+				else {
+					await expect(tag).toHaveCount(0);
+				}
+			}
+		};
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		await clickAndExpectToBeVisible({
+			target: commerceAdminProductDetailsMediaPage.addAttachmentButton,
+			trigger: commerceAdminProductDetailsPage.productMediaLink,
+		});
+
+		await test.step('Add tags by typing them', async () => {
+			await commerceAdminProductDetailsMediaPage.openAttachment(title);
+
+			for (const tagName of [featuredTagName, newTagName]) {
+				await commerceAdminProductDetailsMediaPage.sidePanelTagsInput.fill(
+					tagName
+				);
+
+				await commerceAdminProductDetailsMediaPage
+					.sidePanelTagOption(tagName)
+					.click();
+			}
+
+			await commerceAdminProductDetailsMediaPage.publishAttachment();
+
+			await expectTags([featuredTagName, newTagName]);
+		});
+
+		await test.step('Remove a tag', async () => {
+			await commerceAdminProductDetailsMediaPage
+				.sidePanelTag(newTagName)
+				.getByRole('button')
+				.click();
+
+			await commerceAdminProductDetailsMediaPage.publishAttachment();
+
+			await expectTags([featuredTagName]);
+		});
+
+		await test.step('Add a tag through the select modal', async () => {
+			await clickAndExpectToBeVisible({
+				target: commerceAdminProductDetailsMediaPage.sidePanelTagsSelectIframe,
+				trigger:
+					commerceAdminProductDetailsMediaPage.sidePanelTagsSelectButton,
+			});
+
+			await commerceAdminProductDetailsMediaPage.sidePanelTagsSelectFrame
+				.getByRole('row')
+				.filter({hasText: newTagName})
+				.getByRole('checkbox')
+				.check();
+
+			await commerceAdminProductDetailsMediaPage.sidePanelFrame
+				.getByRole('button', {exact: true, name: 'Done'})
+				.click();
+
+			await commerceAdminProductDetailsMediaPage.publishAttachment();
+
+			await expectTags([featuredTagName, newTagName]);
+		});
+
+		await test.step('Clear all the tags', async () => {
+			await commerceAdminProductDetailsMediaPage.sidePanelTagsClearAllButton.click();
+
+			await commerceAdminProductDetailsMediaPage.publishAttachment();
+
+			await expectTags([]);
+		});
+
+		await test.step('Add a tag from the autocomplete', async () => {
+			await commerceAdminProductDetailsMediaPage.sidePanelTagsInput.fill(
+				tagPrefix
+			);
+
+			await expect(
+				commerceAdminProductDetailsMediaPage.sidePanelTagOption(
+					featuredTagName
+				)
+			).toBeVisible();
+			await expect(
+				commerceAdminProductDetailsMediaPage.sidePanelTagOption(
+					newTagName
+				)
+			).toBeVisible();
+
+			await commerceAdminProductDetailsMediaPage.sidePanelTagsInput.fill(
+				`${tagPrefix}n`
+			);
+
+			await expect(
+				commerceAdminProductDetailsMediaPage.sidePanelTagOption(
+					featuredTagName
+				)
+			).toHaveCount(0);
+
+			await commerceAdminProductDetailsMediaPage
+				.sidePanelTagOption(newTagName)
+				.click();
+
+			await commerceAdminProductDetailsMediaPage.publishAttachment();
+
+			await expectTags([newTagName]);
+		});
+	}
+);
+
+test(
+	'Remove a product attachment',
+	{tag: ['@COMMERCE-6033', '@LPD-108797', '@LPD-111085', '@LPD-113914']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsMediaPage,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+	}) => {
+		const {product, title} = await addProductAttachment(apiHelpers);
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		await clickAndExpectToBeVisible({
+			target: commerceAdminProductDetailsMediaPage.addAttachmentButton,
+			trigger: commerceAdminProductDetailsPage.productMediaLink,
+		});
+
+		await commerceAdminProductDetailsMediaPage.mediaForm
+			.getByRole('row')
+			.filter({hasText: title})
+			.getByRole('button', {name: 'Actions'})
+			.click();
+
+		await commerceAdminProductDetailsMediaPage.page
+			.getByRole('menuitem', {name: 'Delete'})
+			.click();
+
+		await waitForAlert(commerceAdminProductDetailsMediaPage.page);
+
+		await expect(
+			commerceAdminProductDetailsMediaPage.mediaForm.getByText(title, {
+				exact: true,
+			})
+		).toHaveCount(0);
 	}
 );
 
