@@ -283,7 +283,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "MultiFactorAuthentication#EMAIL_OTP_VERIFY_SUCCESS_MESSAGE",
-			value1 = "Your one-time password has been sent by email.");
+			value1 = "Your one-time password has been sent by email. Please wait before requesting a new one-time password.");
 	}
 
 	@summary = "Default summary"
