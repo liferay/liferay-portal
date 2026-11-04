@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -921,20 +922,40 @@ public class TestrayFactory {
 			return runIdStrings;
 		}
 
-		List<AxisTestClassGroup> axisTestClassGroups = new ArrayList<>();
+		List<String> jobPropertyOptions = new ArrayList<>(
+			job.getJobPropertyOptions());
 
-		axisTestClassGroups.addAll(job.getAxisTestClassGroups());
-		axisTestClassGroups.addAll(job.getDependentAxisTestClassGroups());
+		jobPropertyOptions.add(job.getTestSuiteName());
+
+		jobPropertyOptions.removeAll(Collections.singleton(null));
+
+		Properties jobProperties = job.getJobProperties();
 
 		Set<String> batchNames = new TreeSet<>();
 
-		for (AxisTestClassGroup axisTestClassGroup : axisTestClassGroups) {
-			batchNames.add(axisTestClassGroup.getEnhancedBatchName());
+		for (String basePropertyName :
+				new String[] {"test.batch.names", "test.batch.names.smoke"}) {
+
+			String batchNamesString = JenkinsResultsParserUtil.getProperty(
+				jobProperties, basePropertyName,
+				jobPropertyOptions.toArray(new String[0]));
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(batchNamesString)) {
+				continue;
+			}
+
+			for (String batchName : batchNamesString.split(",")) {
+				batchName = batchName.trim();
+
+				if (batchName.isEmpty() || batchName.startsWith("#")) {
+					continue;
+				}
+
+				batchNames.add(batchName);
+			}
 		}
 
 		Map<String, String> factorRunIdStrings = new HashMap<>();
-
-		Properties jobProperties = job.getJobProperties();
 
 		for (String batchName : batchNames) {
 			String factorRunIdString = TestrayRun.getRunIdString(
