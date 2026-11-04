@@ -22,15 +22,15 @@ if (!cpSubscriptionTypes.isEmpty()) {
 	defaultCPSubscriptionType = firstCPSubscriptionType.getName();
 }
 
-boolean subscriptionEnabled = BeanParamUtil.getBoolean(cpDefinition, request, "subscriptionEnabled", false);
-int subscriptionLength = BeanParamUtil.getInteger(cpDefinition, request, "subscriptionLength", 1);
-String subscriptionType = BeanParamUtil.getString(cpDefinition, request, "subscriptionType", defaultCPSubscriptionType);
-long maxSubscriptionCycles = BeanParamUtil.getLong(cpDefinition, request, "maxSubscriptionCycles");
+boolean subscriptionEnabled = ParamUtil.getBoolean(request, "subscriptionEnabled", GetterUtil.get(cpDefinition, CPDefinition::isSubscriptionEnabled, false));
+int subscriptionLength = ParamUtil.getInteger(request, "subscriptionLength", GetterUtil.get(cpDefinition, CPDefinition::getSubscriptionLength, 1));
+String subscriptionType = ParamUtil.getString(request, "subscriptionType", GetterUtil.get(cpDefinition, CPDefinition::getSubscriptionType, defaultCPSubscriptionType));
+long maxSubscriptionCycles = ParamUtil.getLong(request, "maxSubscriptionCycles", GetterUtil.get(cpDefinition, CPDefinition::getMaxSubscriptionCycles, 0L));
 
-boolean deliverySubscriptionEnabled = BeanParamUtil.getBoolean(cpDefinition, request, "deliverySubscriptionEnabled", false);
-int deliverySubscriptionLength = BeanParamUtil.getInteger(cpDefinition, request, "deliverySubscriptionLength", 1);
-String deliverySubscriptionType = BeanParamUtil.getString(cpDefinition, request, "deliverySubscriptionType", defaultCPSubscriptionType);
-long deliveryMaxSubscriptionCycles = BeanParamUtil.getLong(cpDefinition, request, "deliveryMaxSubscriptionCycles");
+boolean deliverySubscriptionEnabled = ParamUtil.getBoolean(request, "deliverySubscriptionEnabled", GetterUtil.get(cpDefinition, CPDefinition::isDeliverySubscriptionEnabled, false));
+int deliverySubscriptionLength = ParamUtil.getInteger(request, "deliverySubscriptionLength", GetterUtil.get(cpDefinition, CPDefinition::getDeliverySubscriptionLength, 1));
+String deliverySubscriptionType = ParamUtil.getString(request, "deliverySubscriptionType", GetterUtil.get(cpDefinition, CPDefinition::getDeliverySubscriptionType, defaultCPSubscriptionType));
+long deliveryMaxSubscriptionCycles = ParamUtil.getLong(request, "deliveryMaxSubscriptionCycles", GetterUtil.get(cpDefinition, CPDefinition::getDeliveryMaxSubscriptionCycles, 0L));
 
 String defaultCPSubscriptionTypeLabel = StringPool.BLANK;
 String defaultDeliveryCPSubscriptionTypeLabel = StringPool.BLANK;
