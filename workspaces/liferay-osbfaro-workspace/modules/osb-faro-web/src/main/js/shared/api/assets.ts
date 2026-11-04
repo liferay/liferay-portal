@@ -22,7 +22,7 @@ interface IFetchAccountTopAssets {
 	groupId: string;
 	objectType?: AssetObjectTypes;
 	rangeEnd?: string | null;
-	rangeKey?: number | null;
+	rangeKey: number | null;
 	rangeStart?: string | null;
 	selectedMetric: TopAssetMetric;
 }
@@ -45,7 +45,7 @@ export async function fetchAccountTopAssets({
 			selectedMetric,
 			sort: `${selectedMetric},desc`,
 			...(objectType && {objectType}),
-			...(rangeKey ? {rangeKey} : {}),
+			...(rangeKey != null && {rangeKey}),
 			...(rangeEnd && rangeStart ? {rangeEnd, rangeStart} : {}),
 		},
 		method: 'GET',
@@ -59,7 +59,7 @@ interface IFetchIndividualTopAssets {
 	individualId: string;
 	objectType?: AssetObjectTypes;
 	rangeEnd?: string | null;
-	rangeKey?: number | null;
+	rangeKey: number | null;
 	rangeStart?: string | null;
 	selectedMetric: TopAssetMetric;
 }
@@ -88,7 +88,7 @@ export async function fetchIndividualTopAssets({
 			selectedMetric,
 			sort: `${selectedMetric},desc`,
 			...(objectType && {objectType}),
-			...(rangeKey ? {rangeKey} : {}),
+			...(rangeKey != null && {rangeKey}),
 			...(rangeEnd && rangeStart ? {rangeEnd, rangeStart} : {}),
 		},
 		method: 'GET',
