@@ -52,8 +52,8 @@ public class StagingImplTest {
 				() -> _stagingImpl.validateRemoteGroupIsSame(
 					RandomTestUtil.randomLong(),
 					RandomTestUtil.randomInt(1, Integer.MAX_VALUE),
-					"live.example.com", RandomTestUtil.randomInt(), null,
-					false)));
+					RandomTestUtil.randomString(), RandomTestUtil.randomInt(),
+					null, false)));
 	}
 
 	private final StagingImpl _stagingImpl = new StagingImpl();
