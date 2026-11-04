@@ -138,11 +138,11 @@ public class FriendlyUrlHistoryResourceImpl
 	private JSONObject _getFriendlyUrlPathJSONObject(Layout layout)
 		throws Exception {
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject();
-
 		if (!LayoutUtil.isPublished(layout)) {
-			return jsonObject;
+			return null;
 		}
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject();
 
 		long classNameId = _layoutFriendlyURLEntryHelper.getClassNameId(
 			layout.isPrivateLayout());
@@ -160,6 +160,10 @@ public class FriendlyUrlHistoryResourceImpl
 			}
 
 			jsonObject.put(LocaleUtil.toBCP47LanguageId(languageId), jsonArray);
+		}
+
+		if (jsonObject.length() == 0) {
+			return null;
 		}
 
 		return jsonObject;
