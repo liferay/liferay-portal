@@ -69,36 +69,34 @@ public class ParameterMapUtil {
 	}
 
 	public static Map<String, String[]> putDateRangeParameters(
-		DateFilter dateFilter, Date now, Map<String, String[]> parameterMap,
-		User user) {
+		DateFilter dateFilter, Map<String, String[]> parameterMap, User user) {
 
 		if (dateFilter instanceof DateRangeDateFilter dateRangeDateFilter) {
 			return putDateRangeParameters(
 				DateFilter.Type.DATE_RANGE.getValue(),
 				dateRangeDateFilter.getStartDate(),
-				dateRangeDateFilter.getEndDate(), null, now, parameterMap,
-				user);
+				dateRangeDateFilter.getEndDate(), null, parameterMap, user);
 		}
 
 		if (dateFilter instanceof FromLastPublishDateFilter) {
 			return putDateRangeParameters(
 				DateFilter.Type.FROM_LAST_PUBLISH_DATE.getValue(), null, null,
-				null, now, parameterMap, user);
+				null, parameterMap, user);
 		}
 
 		if (dateFilter instanceof LastHoursDateFilter lastHoursDateFilter) {
 			return putDateRangeParameters(
 				DateFilter.Type.LAST_HOURS.getValue(), null, null,
-				lastHoursDateFilter.getHours(), now, parameterMap, user);
+				lastHoursDateFilter.getHours(), parameterMap, user);
 		}
 
 		return putDateRangeParameters(
-			null, null, null, null, now, parameterMap, user);
+			null, null, null, null, parameterMap, user);
 	}
 
 	public static Map<String, String[]> putDateRangeParameters(
 		String dateFilterType, Date startDate, Date endDate, Integer hours,
-		Date now, Map<String, String[]> parameterMap, User user) {
+		Map<String, String[]> parameterMap, User user) {
 
 		if (dateFilterType == null) {
 			parameterMap.put(
@@ -147,14 +145,18 @@ public class ParameterMapUtil {
 				"A \"DateRange\" date filter needs a start or end date");
 		}
 
+		Date date = new Date();
+
 		if ((startDate != null) &&
-			(_truncateToSecond(startDate) > now.getTime())) {
+			(_truncateToSecond(startDate) > date.getTime())) {
 
 			throw new BadRequestException(
 				"The start date must not be in the future");
 		}
 
-		if ((endDate != null) && (_truncateToSecond(endDate) > now.getTime())) {
+		if ((endDate != null) &&
+			(_truncateToSecond(endDate) > date.getTime())) {
+
 			throw new BadRequestException(
 				"The end date must not be in the future");
 		}

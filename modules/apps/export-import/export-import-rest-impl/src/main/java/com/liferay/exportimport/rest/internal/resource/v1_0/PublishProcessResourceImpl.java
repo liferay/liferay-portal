@@ -51,7 +51,6 @@ import com.liferay.staging.StagingGroupHelper;
 import java.io.Serializable;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -185,7 +184,7 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				publishProcessRequest.getDateFilter(), new Date(),
+				publishProcessRequest.getDateFilter(),
 				ParameterMapUtil.toParameterMap(
 					publishProcessRequest,
 					PortletDataHandlerUtil.getExportPortletDataHandlers(

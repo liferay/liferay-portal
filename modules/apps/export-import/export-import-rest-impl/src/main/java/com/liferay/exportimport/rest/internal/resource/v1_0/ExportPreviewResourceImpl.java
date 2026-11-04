@@ -129,7 +129,7 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				dateFilterType, startDate, endDate, hours, new Date(),
+				dateFilterType, startDate, endDate, hours,
 				new LinkedHashMap<>(), contextUser);
 
 		PortletDataHandler[] exportPortletDataHandlers =

@@ -67,16 +67,9 @@ public class ParameterMapUtilTest {
 			"The end date must not be in the future",
 			new Date(time - Time.HOUR));
 		_assertBadRequest(
-			new Date(time + Time.SECOND),
-			"The end date must not be in the future", new Date(time),
-			new Date(time));
-		_assertBadRequest(
 			new Date(time - Time.HOUR + 300),
 			"The start date must be before the end date",
 			new Date(time - Time.HOUR + 100));
-		_assertBadRequest(
-			new Date(time), "The start date must not be in the future",
-			new Date(time), new Date(time + Time.SECOND));
 		_assertBadRequest(
 			null, "The start date must not be in the future",
 			new Date(time + Time.HOUR));
@@ -86,13 +79,8 @@ public class ParameterMapUtilTest {
 	public void testPutDateRangeParametersWhenDateFilterIsValid() {
 		long time = (System.currentTimeMillis() / Time.SECOND) * Time.SECOND;
 
-		_assertDateRange(
-			new Date(time + 999), new Date(time), new Date(time - Time.SECOND));
-		_assertDateRange(
-			new Date(time + Time.SECOND), new Date(time + Time.SECOND),
-			new Date(time + 999));
-		_assertDateRange(
-			new Date(time), new Date(time), new Date(time - Time.SECOND + 999));
+		_assertDateRange(new Date(time + 999), new Date(time - Time.SECOND));
+		_assertDateRange(new Date(time), new Date(time - Time.SECOND + 999));
 	}
 
 	@Test
@@ -353,7 +341,7 @@ public class ParameterMapUtilTest {
 			ParameterMapUtil.toPublishProcessRequest(
 				availablePortletDataHandlers, LocaleUtil.US,
 				ParameterMapUtil.putDateRangeParameters(
-					dateRangeDateFilter, new Date(),
+					dateRangeDateFilter,
 					ParameterMapUtil.toParameterMap(
 						publishProcessRequest, availablePortletDataHandlers),
 					_toUser()),
@@ -471,17 +459,11 @@ public class ParameterMapUtilTest {
 	private void _assertBadRequest(
 		Date endDate, String message, Date startDate) {
 
-		_assertBadRequest(endDate, message, new Date(), startDate);
-	}
-
-	private void _assertBadRequest(
-		Date endDate, String message, Date now, Date startDate) {
-
 		AssertUtils.assertFailure(
 			BadRequestException.class, message,
 			() -> ParameterMapUtil.putDateRangeParameters(
-				_toDateRangeDateFilter(endDate, startDate), now,
-				new HashMap<>(), null));
+				_toDateRangeDateFilter(endDate, startDate), new HashMap<>(),
+				null));
 	}
 
 	private void _assertBadRequest(
@@ -494,11 +476,11 @@ public class ParameterMapUtilTest {
 				_getAvailablePortletDataHandlers(), false));
 	}
 
-	private void _assertDateRange(Date endDate, Date now, Date startDate) {
+	private void _assertDateRange(Date endDate, Date startDate) {
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				_toDateRangeDateFilter(endDate, startDate), now,
-				new HashMap<>(), _toUser());
+				_toDateRangeDateFilter(endDate, startDate), new HashMap<>(),
+				_toUser());
 
 		Assert.assertArrayEquals(
 			new String[] {ExportImportDateUtil.RANGE_DATE_RANGE},
