@@ -261,14 +261,11 @@ public class ObjectEntryFolderLocalServiceImpl
 				objectEntryFolder.getObjectEntryFolderId());
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-42553")) {
-			_workflowDefinitionLinkLocalService.deleteWorkflowDefinitionLink(
-				objectEntryFolder.getCompanyId(),
-				objectEntryFolder.getGroupId(),
-				ObjectEntryFolder.class.getName(),
-				objectEntryFolder.getObjectEntryFolderId(),
-				ObjectDefinitionConstants.OBJECT_DEFINITION_ID_ALL);
-		}
+		_workflowDefinitionLinkLocalService.deleteWorkflowDefinitionLink(
+			objectEntryFolder.getCompanyId(), objectEntryFolder.getGroupId(),
+			ObjectEntryFolder.class.getName(),
+			objectEntryFolder.getObjectEntryFolderId(),
+			ObjectDefinitionConstants.OBJECT_DEFINITION_ID_ALL);
 
 		_resourceLocalService.deleteResource(
 			objectEntryFolder.getCompanyId(), ObjectEntryFolder.class.getName(),
