@@ -334,13 +334,13 @@ public class BatchEngineImportTaskLocalServiceTest {
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+			Assert.assertTrue(logEntries.isEmpty());
 		}
 
 		String content = _readContent(batchEngineImportTask);
 
-		Assert.assertTrue(content, content.contains(emailAddress));
-		Assert.assertFalse(content, content.contains(password));
+		Assert.assertTrue(content.contains(emailAddress));
+		Assert.assertFalse(content.contains(password));
 	}
 
 	private void _testUpdateBatchEngineImportTaskWithClearedFinderCache(
@@ -370,8 +370,8 @@ public class BatchEngineImportTaskLocalServiceTest {
 
 		String content = _readContent(batchEngineImportTask);
 
-		Assert.assertTrue(content, content.contains(emailAddress));
-		Assert.assertFalse(content, content.contains(password));
+		Assert.assertTrue(content.contains(emailAddress));
+		Assert.assertFalse(content.contains(password));
 	}
 
 	private void _testUpdateBatchEngineImportTaskWithMalformedContent(
