@@ -33,7 +33,6 @@ Provide-Capability:\
 		service.scope=prototype,\
 	osgi.serviceloader;\
 		osgi.serviceloader="jakarta.ws.rs.sse.SseEventSource.Builder";\
-		register:="org.apache.cxf.jaxrs.sse.client.SseEventSourceBuilderImpl";\
 		service.scope=prototype
 Require-Capability:\
 	osgi.contract;\
