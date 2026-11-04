@@ -23,7 +23,7 @@ export class ActionPage {
 		});
 		this.diagramViewPage = new DiagramViewPage(page);
 		this.editActionButton = page
-			.getByRole('tablist')
+			.locator('.panel-group')
 			.filter({hasText: 'Actions'})
 			.locator('a');
 		this.nameInput = page.locator('#name');

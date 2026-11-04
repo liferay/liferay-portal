@@ -30,17 +30,17 @@ export class NodePropertiesSidebarPage {
 
 	constructor(page: Page) {
 		this.addActionButton = page
-			.getByRole('tablist')
+			.locator('.panel-group')
 			.filter({hasText: 'Actions'})
 			.getByRole('button', {name: 'New'})
 			.first();
 		this.addNotificationButton = page
-			.getByRole('tablist')
+			.locator('.panel-group')
 			.filter({hasText: 'Notification'})
 			.getByRole('button', {name: 'New'})
 			.first();
 		this.addTimerButton = page
-			.getByRole('tablist')
+			.locator('.panel-group')
 			.filter({hasText: 'Timers'})
 			.getByRole('button', {name: 'New'})
 			.first();
@@ -49,11 +49,11 @@ export class NodePropertiesSidebarPage {
 		);
 		this.diagramViewPage = new DiagramViewPage(page);
 		this.editActionButton = page
-			.getByRole('tablist')
+			.locator('.panel-group')
 			.filter({hasText: 'Actions'})
 			.locator('a');
 		this.editAssignmentButton = page
-			.getByRole('tablist')
+			.locator('.panel-group')
 			.filter({hasText: 'Assignments'})
 			.locator('a');
 		this.nodeLabelInput = page.locator('#workflowDefinitionBaseNodeLabel');
