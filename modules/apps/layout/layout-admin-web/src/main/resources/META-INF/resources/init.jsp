@@ -55,7 +55,6 @@ page import="com.liferay.layout.page.template.kernel.provider.util.LayoutPageTem
 page import="com.liferay.layout.page.template.model.LayoutPageTemplateCollection" %><%@
 page import="com.liferay.layout.page.template.model.LayoutPageTemplateEntry" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
-page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
 page import="com.liferay.portal.kernel.dao.search.ResultRow" %><%@
 page import="com.liferay.portal.kernel.exception.GroupInheritContentException" %><%@
 page import="com.liferay.portal.kernel.exception.ImageTypeException" %><%@
