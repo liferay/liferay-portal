@@ -554,7 +554,7 @@ public class TestrayCaseResult {
 
 		testrayAttachments = new TreeMap<>();
 
-		String attachments = _jsonObject.getString("attachments");
+		String attachments = _jsonObject.optString("attachments");
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(attachments)) {
 			return;
