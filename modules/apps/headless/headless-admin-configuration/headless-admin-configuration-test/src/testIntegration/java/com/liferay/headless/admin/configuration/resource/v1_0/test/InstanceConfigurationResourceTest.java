@@ -15,6 +15,7 @@ import com.liferay.headless.admin.configuration.test.configuration.TestConfigura
 import com.liferay.headless.admin.configuration.test.configuration.TestFactoryConfiguration;
 import com.liferay.headless.admin.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -38,6 +39,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Thiago Buarque
@@ -135,15 +139,8 @@ public class InstanceConfigurationResourceTest
 	public void testPostInstanceConfiguration() throws Exception {
 		super.testPostInstanceConfiguration();
 
-		InstanceConfiguration randomInstanceConfiguration =
-			_randomInstanceConfigurationFromConfigurationScreen();
-
-		InstanceConfiguration postInstanceConfiguration =
-			testPostInstanceConfiguration_addInstanceConfiguration(
-				randomInstanceConfiguration);
-
-		assertEquals(randomInstanceConfiguration, postInstanceConfiguration);
-		assertValid(postInstanceConfiguration);
+		_testPostInstanceConfigurationFromConfigurationScreen();
+		_testPostInstanceConfigurationWithMissingExternalReferenceCode();
 	}
 
 	@Override
@@ -332,6 +329,61 @@ public class InstanceConfigurationResourceTest
 		}
 	}
 
+	private void _testPostInstanceConfigurationFromConfigurationScreen()
+		throws Exception {
+
+		InstanceConfiguration randomInstanceConfiguration =
+			_randomInstanceConfigurationFromConfigurationScreen();
+
+		InstanceConfiguration postInstanceConfiguration =
+			testPostInstanceConfiguration_addInstanceConfiguration(
+				randomInstanceConfiguration);
+
+		assertEquals(randomInstanceConfiguration, postInstanceConfiguration);
+		assertValid(postInstanceConfiguration);
+	}
+
+	private void _testPostInstanceConfigurationWithMissingExternalReferenceCode()
+		throws Exception {
+
+		InstanceConfiguration instanceConfiguration =
+			testGetInstanceConfiguration_addInstanceConfiguration();
+
+		Configuration configuration = _configurationAdmin.getConfiguration(
+			instanceConfiguration.getExternalReferenceCode(),
+			StringPool.QUESTION);
+
+		configuration.delete();
+
+		InstanceConfiguration postInstanceConfiguration1 =
+			instanceConfigurationResource.postInstanceConfiguration(
+				instanceConfiguration);
+
+		Assert.assertNotEquals(
+			instanceConfiguration.getExternalReferenceCode(),
+			postInstanceConfiguration1.getExternalReferenceCode());
+
+		Map<String, Object> properties = instanceConfiguration.getProperties();
+
+		Map<String, Object> postProperties1 =
+			postInstanceConfiguration1.getProperties();
+
+		Assert.assertArrayEquals(
+			(Object[])properties.get("arrayKey"),
+			(Object[])postProperties1.get("arrayKey"));
+		Assert.assertEquals(
+			properties.get("requiredBooleanKey"),
+			postProperties1.get("requiredBooleanKey"));
+
+		InstanceConfiguration postInstanceConfiguration2 =
+			instanceConfigurationResource.postInstanceConfiguration(
+				instanceConfiguration);
+
+		Assert.assertEquals(
+			postInstanceConfiguration1.getExternalReferenceCode(),
+			postInstanceConfiguration2.getExternalReferenceCode());
+	}
+
 	private void _testPutInstanceConfigurationWithoutPermission()
 		throws Exception {
 
@@ -357,6 +409,9 @@ public class InstanceConfigurationResourceTest
 
 	@Inject
 	private static SettingsLocatorHelper _settingsLocatorHelper;
+
+	@Inject
+	private ConfigurationAdmin _configurationAdmin;
 
 	private InstanceConfigurationResource _userInstanceConfigurationResource;
 

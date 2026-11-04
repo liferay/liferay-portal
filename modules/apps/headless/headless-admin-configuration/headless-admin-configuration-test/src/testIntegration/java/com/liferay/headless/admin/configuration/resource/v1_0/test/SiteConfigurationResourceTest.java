@@ -14,6 +14,7 @@ import com.liferay.headless.admin.configuration.test.configuration.TestFactoryCo
 import com.liferay.headless.admin.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -37,6 +38,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Thiago Buarque
@@ -102,15 +106,8 @@ public class SiteConfigurationResourceTest
 	public void testPostSiteSiteConfiguration() throws Exception {
 		super.testPostSiteSiteConfiguration();
 
-		SiteConfiguration randomSiteConfiguration =
-			_randomSiteConfigurationFromConfigurationScreen();
-
-		SiteConfiguration postSiteConfiguration =
-			testPostSiteSiteConfiguration_addSiteConfiguration(
-				randomSiteConfiguration);
-
-		assertEquals(randomSiteConfiguration, postSiteConfiguration);
-		assertValid(postSiteConfiguration);
+		_testPostSiteSiteConfigurationFromConfigurationScreen();
+		_testPostSiteSiteConfigurationWithMissingExternalReferenceCode();
 	}
 
 	@Override
@@ -293,6 +290,60 @@ public class SiteConfigurationResourceTest
 		}
 	}
 
+	private void _testPostSiteSiteConfigurationFromConfigurationScreen()
+		throws Exception {
+
+		SiteConfiguration randomSiteConfiguration =
+			_randomSiteConfigurationFromConfigurationScreen();
+
+		SiteConfiguration postSiteConfiguration =
+			testPostSiteSiteConfiguration_addSiteConfiguration(
+				randomSiteConfiguration);
+
+		assertEquals(randomSiteConfiguration, postSiteConfiguration);
+		assertValid(postSiteConfiguration);
+	}
+
+	private void _testPostSiteSiteConfigurationWithMissingExternalReferenceCode()
+		throws Exception {
+
+		SiteConfiguration siteConfiguration =
+			testGetSiteSiteConfiguration_addSiteConfiguration();
+
+		Configuration configuration = _configurationAdmin.getConfiguration(
+			siteConfiguration.getExternalReferenceCode(), StringPool.QUESTION);
+
+		configuration.delete();
+
+		SiteConfiguration postSiteConfiguration1 =
+			siteConfigurationResource.postSiteSiteConfiguration(
+				testGroup.getExternalReferenceCode(), siteConfiguration);
+
+		Assert.assertNotEquals(
+			siteConfiguration.getExternalReferenceCode(),
+			postSiteConfiguration1.getExternalReferenceCode());
+
+		Map<String, Object> properties = siteConfiguration.getProperties();
+
+		Map<String, Object> postProperties1 =
+			postSiteConfiguration1.getProperties();
+
+		Assert.assertArrayEquals(
+			(Object[])properties.get("arrayKey"),
+			(Object[])postProperties1.get("arrayKey"));
+		Assert.assertEquals(
+			properties.get("requiredBooleanKey"),
+			postProperties1.get("requiredBooleanKey"));
+
+		SiteConfiguration postSiteConfiguration2 =
+			siteConfigurationResource.postSiteSiteConfiguration(
+				testGroup.getExternalReferenceCode(), siteConfiguration);
+
+		Assert.assertEquals(
+			postSiteConfiguration1.getExternalReferenceCode(),
+			postSiteConfiguration2.getExternalReferenceCode());
+	}
+
 	private void _testPutSiteSiteConfigurationWithoutPermission()
 		throws Exception {
 
@@ -318,6 +369,9 @@ public class SiteConfigurationResourceTest
 
 	@Inject
 	private static SettingsLocatorHelper _settingsLocatorHelper;
+
+	@Inject
+	private ConfigurationAdmin _configurationAdmin;
 
 	private SiteConfigurationResource _userSiteConfigurationResource;
 
