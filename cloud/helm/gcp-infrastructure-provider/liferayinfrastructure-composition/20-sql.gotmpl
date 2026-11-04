@@ -7,6 +7,7 @@ script: |
 
     set -o errexit
     set -o nounset
+    set -o pipefail
 
     function main {
     	local timeout
@@ -20,9 +21,9 @@ script: |
     		--port "${DATABASE_PORT}" \
     		--username "${DATABASE_USERNAME}" > /dev/null 2>&1
     	do
-    		if [ "$(date +%s)" -ge "${timeout}" ]
+    		if [ $(date +%s) -ge ${timeout} ]
     		then
-    			echo "${DATABASE_USERNAME} could not be authenticated." >&2
+    			echo "${DATABASE_USERNAME} could not be authenticated" >&2
 
     			exit 1
     		fi
@@ -131,6 +132,7 @@ script: |
 
     set -o errexit
     set -o nounset
+    set -o pipefail
 
     function main {
     	local timeout
@@ -144,9 +146,9 @@ script: |
     		--port "${DATABASE_PORT}" \
     		--username "${DATABASE_USERNAME}" > /dev/null 2>&1
     	do
-    		if [ "$(date +%s)" -ge "${timeout}" ]
+    		if [ $(date +%s) -ge ${timeout} ]
     		then
-    			echo "${DATABASE_USERNAME} could not be authenticated." >&2
+    			echo "${DATABASE_USERNAME} could not be authenticated" >&2
 
     			exit 1
     		fi
