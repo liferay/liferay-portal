@@ -20,9 +20,9 @@ if (structure != null) {
 	structureVersion = structure.getLatestStructureVersion();
 }
 
-long groupId = BeanParamUtil.getLong(structure, request, "groupId", scopeGroupId);
+long groupId = ParamUtil.getLong(request, "groupId", GetterUtil.get(structure, DDMStructure::getGroupId, scopeGroupId));
 
-long parentStructureId = BeanParamUtil.getLong(structure, request, "parentStructureId", DDMStructureConstants.DEFAULT_PARENT_STRUCTURE_ID);
+long parentStructureId = ParamUtil.getLong(request, "parentStructureId", GetterUtil.get(structure, DDMStructure::getParentStructureId, DDMStructureConstants.DEFAULT_PARENT_STRUCTURE_ID));
 
 String parentStructureName = StringPool.BLANK;
 
@@ -35,15 +35,15 @@ catch (NoSuchStructureException nsee) {
 }
 
 long classNameId = PortalUtil.getClassNameId(DDMStructure.class);
-long classPK = BeanParamUtil.getLong(structure, request, "structureId");
+long classPK = ParamUtil.getLong(request, "structureId", GetterUtil.get(structure, DDMStructure::getStructureId, 0L));
 
 String script = null;
 
 if (structure != null) {
-	script = BeanParamUtil.getString(structureVersion, request, "definition");
+	script = ParamUtil.getString(request, "definition", structureVersion.getDefinition());
 }
 else {
-	script = BeanParamUtil.getString(structure, request, "definition");
+	script = ParamUtil.getString(request, "definition");
 }
 
 JSONArray fieldsJSONArray = null;
