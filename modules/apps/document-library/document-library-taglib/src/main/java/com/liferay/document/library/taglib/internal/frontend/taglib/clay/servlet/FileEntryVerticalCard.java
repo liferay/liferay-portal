@@ -5,6 +5,7 @@
 
 package com.liferay.document.library.taglib.internal.frontend.taglib.clay.servlet;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.taglib.internal.display.context.RepositoryBrowserTagDisplayContext;
 import com.liferay.document.library.util.DLURLHelperUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
@@ -12,7 +13,6 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
 import com.liferay.petra.reflect.ReflectionUtil;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -102,10 +102,7 @@ public class FileEntryVerticalCard implements VerticalCard {
 	@Override
 	public List<LabelItem> getLabels() {
 		return LabelItemListBuilder.add(
-			labelItem -> labelItem.setStatus(
-				BeanPropertiesUtil.getInteger(
-					_fileEntry.getModel(), "status",
-					WorkflowConstants.STATUS_APPROVED))
+			labelItem -> labelItem.setStatus(_getStatus())
 		).build();
 	}
 
@@ -138,6 +135,14 @@ public class FileEntryVerticalCard implements VerticalCard {
 	@Override
 	public boolean isSelectable() {
 		return !_actions.isEmpty();
+	}
+
+	private int _getStatus() {
+		if (_fileEntry.getModel() instanceof DLFileEntry dlFileEntry) {
+			return dlFileEntry.getStatus();
+		}
+
+		return WorkflowConstants.STATUS_APPROVED;
 	}
 
 	private final Set<String> _actions;
