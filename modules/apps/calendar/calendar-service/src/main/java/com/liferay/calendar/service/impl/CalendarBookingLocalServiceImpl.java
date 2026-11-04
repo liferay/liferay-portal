@@ -1208,8 +1208,9 @@ public class CalendarBookingLocalServiceImpl
 
 			calendarBooking.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
-		else if ((oldStartTime != calendarBooking.getStartTime()) ||
-				 (oldEndTime != calendarBooking.getEndTime())) {
+		else if (!calendarBooking.isDenied() &&
+				 ((oldStartTime != calendarBooking.getStartTime()) ||
+				  (oldEndTime != calendarBooking.getEndTime()))) {
 
 			if (isStagingCalendarBooking(calendarBooking)) {
 				calendarBooking.setStatus(
@@ -2556,10 +2557,6 @@ public class CalendarBookingLocalServiceImpl
 
 				deleteCalendarBooking(
 					childCalendarBooking.getCalendarBookingId());
-			}
-
-			if (childCalendarBooking.isDenied()) {
-				continue;
 			}
 
 			childCalendarBookingMap.put(
