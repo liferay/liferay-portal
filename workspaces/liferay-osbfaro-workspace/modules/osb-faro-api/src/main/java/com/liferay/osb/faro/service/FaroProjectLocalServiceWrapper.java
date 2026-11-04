@@ -51,16 +51,16 @@ public class FaroProjectLocalServiceWrapper
 			long userId, String name, String accountKey, String accountName,
 			String corpProjectName, String corpProjectUuid,
 			java.util.List<String> emailAddressDomains, String friendlyURL,
-			String incidentReportEmailAddresses, String serverLocation,
-			String services, String state, String subscription,
-			String timeZoneId, String weDeployKey)
+			String incidentReportEmailAddresses, String salesforceAccountId,
+			String serverLocation, String services, String state,
+			String subscription, String timeZoneId, String weDeployKey)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _faroProjectLocalService.addFaroProject(
 			userId, name, accountKey, accountName, corpProjectName,
 			corpProjectUuid, emailAddressDomains, friendlyURL,
-			incidentReportEmailAddresses, serverLocation, services, state,
-			subscription, timeZoneId, weDeployKey);
+			incidentReportEmailAddresses, salesforceAccountId, serverLocation,
+			services, state, subscription, timeZoneId, weDeployKey);
 	}
 
 	/**
@@ -267,6 +267,14 @@ public class FaroProjectLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.osb.faro.model.FaroProject
+		fetchFaroProjectBySalesforceAccountId(String salesforceAccountId) {
+
+		return _faroProjectLocalService.fetchFaroProjectBySalesforceAccountId(
+			salesforceAccountId);
+	}
+
+	@Override
 	public com.liferay.osb.faro.model.FaroProject fetchFaroProjectByWeDeployKey(
 		String weDeployKey) {
 
@@ -464,4 +472,4 @@ public class FaroProjectLocalServiceWrapper
 	private FaroProjectLocalService _faroProjectLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1622161548
+// LIFERAY-SERVICE-BUILDER-HASH:1884756296

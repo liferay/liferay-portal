@@ -72,9 +72,9 @@ public interface FaroProjectLocalService
 			long userId, String name, String accountKey, String accountName,
 			String corpProjectName, String corpProjectUuid,
 			List<String> emailAddressDomains, String friendlyURL,
-			String incidentReportEmailAddresses, String serverLocation,
-			String services, String state, String subscription,
-			String timeZoneId, String weDeployKey)
+			String incidentReportEmailAddresses, String salesforceAccountId,
+			String serverLocation, String services, String state,
+			String subscription, String timeZoneId, String weDeployKey)
 		throws PortalException;
 
 	/**
@@ -214,6 +214,10 @@ public interface FaroProjectLocalService
 	public FaroProject fetchFaroProjectByGroupId(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FaroProject fetchFaroProjectBySalesforceAccountId(
+		String salesforceAccountId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FaroProject fetchFaroProjectByWeDeployKey(String weDeployKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -319,4 +323,4 @@ public interface FaroProjectLocalService
 		long faroProjectId, String subscription);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-123464274
+// LIFERAY-SERVICE-BUILDER-HASH:1356163985
