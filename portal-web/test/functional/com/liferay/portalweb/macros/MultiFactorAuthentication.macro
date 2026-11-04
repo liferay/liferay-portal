@@ -2,13 +2,16 @@ definition {
 
 	@summary = "Default summary"
 	macro canAdminDisableBasicAuthentication() {
+		var userPassword = PropsUtil.get("default.admin.password");
+
 		var curl = '''
-			http://www.able.com:8080/api/jsonws/user/get-current-user
+			http://www.able.com:8080/api/jsonws/user/get-current-user \
+				-u test@www.able.com:${userPassword}
 		''';
 
 		var reponse = JSONCurlUtil.get(${curl});
 
-		if (contains(${reponse}, "Access denied to com.liferay.portal.kernel.service.UserService#getCurrentUser")) {
+		if (contains(${reponse}, "{}")) {
 			echo("Instance admin is able to disable Basic Authentication.");
 		}
 		else {
