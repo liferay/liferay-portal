@@ -174,11 +174,20 @@ public class OpenIdConnectAuthenticationHandlerImpl
 
 		httpSession = httpServletRequest.getSession();
 
-		long openIdConnectSessionId =
-			_offlineOpenIdConnectSessionManager.startOpenIdConnectSession(
-				oAuthClientEntry.getAuthServerWellKnownURI(),
-				String.valueOf(oidcClientInformation.getID()), oidcTokens,
-				userId);
+		long openIdConnectSessionId = 0;
+
+		try {
+			openIdConnectSessionId =
+				_offlineOpenIdConnectSessionManager.startOpenIdConnectSession(
+					oAuthClientEntry.getAuthServerWellKnownURI(),
+					String.valueOf(oidcClientInformation.getID()), oidcTokens,
+					userId);
+		}
+		catch (Exception exception) {
+			httpSession.invalidate();
+
+			throw exception;
+		}
 
 		httpSession.setAttribute(
 			OpenIdConnectWebKeys.OPEN_ID_CONNECT_SESSION,
