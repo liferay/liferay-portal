@@ -7,12 +7,12 @@ package com.liferay.document.library.web.internal.display.context;
 
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.util.DDMUtil;
 import com.liferay.frontend.js.loader.modules.extender.esm.ESImportUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -193,9 +193,12 @@ public class DLEditDDMStructureDisplayContext {
 		DDMStructure ddmStructure = getDDMStructure();
 
 		if (ddmStructure != null) {
-			_script = BeanParamUtil.getString(
-				ddmStructure.getLatestStructureVersion(), _httpServletRequest,
-				"definition");
+			DDMStructureVersion ddmStructureVersion =
+				ddmStructure.getLatestStructureVersion();
+
+			_script = ParamUtil.getString(
+				_httpServletRequest, "definition",
+				ddmStructureVersion.getDefinition());
 		}
 		else {
 			_script = ParamUtil.getString(_httpServletRequest, "definition");

@@ -10,7 +10,6 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriterion;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -22,6 +21,8 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 /**
@@ -58,13 +59,16 @@ public class DLEditFileShortcutDisplayContext {
 	}
 
 	public long getFileShortcutId() {
-		return BeanParamUtil.getLong(
-			_getFileShortcut(), _liferayPortletRequest, "fileShortcutId");
+		return ParamUtil.getLong(
+			_liferayPortletRequest, "fileShortcutId",
+			GetterUtil.get(
+				_getFileShortcut(), FileShortcut::getFileShortcutId, 0L));
 	}
 
 	public long getFolderId() {
-		return BeanParamUtil.getLong(
-			_getFileShortcut(), _liferayPortletRequest, "folderId");
+		return ParamUtil.getLong(
+			_liferayPortletRequest, "folderId",
+			GetterUtil.get(_getFileShortcut(), FileShortcut::getFolderId, 0L));
 	}
 
 	public String getItemSelectorURL() {
@@ -86,8 +90,10 @@ public class DLEditFileShortcutDisplayContext {
 	}
 
 	public long getRepositoryId() {
-		return BeanParamUtil.getLong(
-			_getFileShortcut(), _liferayPortletRequest, "repositoryId");
+		return ParamUtil.getLong(
+			_liferayPortletRequest, "repositoryId",
+			GetterUtil.get(
+				_getFileShortcut(), FileShortcut::getRepositoryId, 0L));
 	}
 
 	public String getTitle() {
@@ -105,8 +111,10 @@ public class DLEditFileShortcutDisplayContext {
 	}
 
 	public long getToFileEntryId() {
-		return BeanParamUtil.getLong(
-			_getFileShortcut(), _liferayPortletRequest, "toFileEntryId");
+		return ParamUtil.getLong(
+			_liferayPortletRequest, "toFileEntryId",
+			GetterUtil.get(
+				_getFileShortcut(), FileShortcut::getToFileEntryId, 0L));
 	}
 
 	public String getToFileEntryTitle() {

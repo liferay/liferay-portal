@@ -12,9 +12,9 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 DLFileEntryType fileEntryType = (DLFileEntryType)request.getAttribute(WebKeys.DOCUMENT_LIBRARY_FILE_ENTRY_TYPE);
 
-long fileEntryTypeId = BeanParamUtil.getLong(fileEntryType, request, "fileEntryTypeId");
+long fileEntryTypeId = ParamUtil.getLong(request, "fileEntryTypeId", GetterUtil.get(fileEntryType, DLFileEntryType::getFileEntryTypeId, 0L));
 
-long dataDefinitionId = BeanParamUtil.getLong(fileEntryType, request, "dataDefinitionId");
+long dataDefinitionId = ParamUtil.getLong(request, "dataDefinitionId", GetterUtil.get(fileEntryType, DLFileEntryType::getDataDefinitionId, 0L));
 
 String defaultLanguageId = LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault());
 

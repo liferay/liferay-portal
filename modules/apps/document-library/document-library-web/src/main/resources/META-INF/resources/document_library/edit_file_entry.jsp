@@ -14,18 +14,18 @@ String uploadProgressId = "dlFileEntryUploadProgress";
 
 FileEntry fileEntry = (FileEntry)request.getAttribute(WebKeys.DOCUMENT_LIBRARY_FILE_ENTRY);
 
-long fileEntryId = BeanParamUtil.getLong(fileEntry, request, "fileEntryId");
+long fileEntryId = ParamUtil.getLong(request, "fileEntryId", GetterUtil.get(fileEntry, FileEntry::getFileEntryId, 0L));
 
-long repositoryId = BeanParamUtil.getLong(fileEntry, request, "repositoryId");
+long repositoryId = ParamUtil.getLong(request, "repositoryId", GetterUtil.get(fileEntry, FileEntry::getRepositoryId, 0L));
 
 if (repositoryId <= 0) {
 
 	// <liferay-ui:asset_add_button /> only passes in groupId
 
-	repositoryId = BeanParamUtil.getLong(fileEntry, request, "groupId");
+	repositoryId = ParamUtil.getLong(request, "groupId", GetterUtil.get(fileEntry, FileEntry::getGroupId, 0L));
 }
 
-long folderId = BeanParamUtil.getLong(fileEntry, request, "folderId");
+long folderId = ParamUtil.getLong(request, "folderId", GetterUtil.get(fileEntry, FileEntry::getFolderId, 0L));
 
 Folder folder = null;
 

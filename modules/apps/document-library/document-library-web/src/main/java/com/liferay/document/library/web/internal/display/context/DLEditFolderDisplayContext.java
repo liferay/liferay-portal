@@ -13,7 +13,6 @@ import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUtil;
 import com.liferay.document.library.web.internal.security.permission.resource.DLFolderPermission;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -26,6 +25,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -122,8 +122,9 @@ public class DLEditFolderDisplayContext {
 			return _folderId;
 		}
 
-		_folderId = BeanParamUtil.getLong(
-			getFolder(), _httpServletRequest, "folderId");
+		_folderId = ParamUtil.getLong(
+			_httpServletRequest, "folderId",
+			GetterUtil.get(getFolder(), Folder::getFolderId, 0L));
 
 		return _folderId;
 	}
@@ -159,9 +160,11 @@ public class DLEditFolderDisplayContext {
 			return _parentFolderId;
 		}
 
-		_parentFolderId = BeanParamUtil.getLong(
-			getFolder(), _httpServletRequest, "parentFolderId",
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+		_parentFolderId = ParamUtil.getLong(
+			_httpServletRequest, "parentFolderId",
+			GetterUtil.get(
+				getFolder(), Folder::getParentFolderId,
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID));
 
 		return _parentFolderId;
 	}
@@ -191,8 +194,9 @@ public class DLEditFolderDisplayContext {
 			return _repositoryId;
 		}
 
-		_repositoryId = BeanParamUtil.getLong(
-			getFolder(), _httpServletRequest, "repositoryId");
+		_repositoryId = ParamUtil.getLong(
+			_httpServletRequest, "repositoryId",
+			GetterUtil.get(getFolder(), Folder::getRepositoryId, 0L));
 
 		return _repositoryId;
 	}
