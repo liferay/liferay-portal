@@ -4,10 +4,9 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import {Text} from '@clayui/core';
+import {Text, VerticalNav} from '@clayui/core';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
-import ClayList from '@clayui/list';
 import {stringUtils} from '@liferay/object-js-components-web';
 import {createResourceURL} from 'frontend-js-web';
 import React, {SetStateAction} from 'react';
@@ -93,9 +92,9 @@ export default function ObjectFoldersSideBar({
 	return (
 		<div className="lfr__object-web-view-object-definitions-object-folder-list-container">
 			<div className="lfr__object-web-view-object-definitions-object-folder-list-header">
-				<span className="lfr__object-web-view-object-definitions-object-folder-list-title mb-0">
-					{Liferay.Language.get('object-folders').toUpperCase()}
-				</span>
+				<h2 className="lfr__object-web-view-object-definitions-object-folder-list-title mb-0">
+					{Liferay.Language.get('object-folders')}
+				</h2>
 
 				{selectedObjectFolder && objectFoldersRequestInfo && (
 					<div className="d-flex">
@@ -141,20 +140,21 @@ export default function ObjectFoldersSideBar({
 				)}
 			</div>
 
-			<ClayList className="lfr__object-web-view-object-definitions-object-folder-list">
-				{objectFoldersRequestInfo &&
-					selectedObjectFolder &&
-					objectFoldersRequestInfo.items.map(
-						(currentObjectFolder) => (
-							<ClayList.Item
-								action
-								active={
-									selectedObjectFolder.externalReferenceCode ===
-									currentObjectFolder.externalReferenceCode
-								}
-								className="cursor-pointer lfr__object-web-view-object-definitions-object-folder-list-item"
-								flex
-								key={currentObjectFolder.name}
+			{objectFoldersRequestInfo && selectedObjectFolder && (
+				<VerticalNav
+					active={selectedObjectFolder.externalReferenceCode}
+					aria-label={Liferay.Language.get('object-folders')}
+					items={objectFoldersRequestInfo.items}
+				>
+					{(currentObjectFolder: ObjectFolder) => {
+						const label = stringUtils.getLocalizableLabel({
+							fallbackLabel: currentObjectFolder.name,
+							labels: currentObjectFolder.label,
+						});
+
+						return (
+							<VerticalNav.Item
+								key={currentObjectFolder.externalReferenceCode}
 								onClick={() => {
 									setSelectedObjectFolder(
 										currentObjectFolder
@@ -175,20 +175,14 @@ export default function ObjectFoldersSideBar({
 										currentURL.href
 									);
 								}}
+								textValue={label}
 							>
-								<span className="lfr__object-web-view-object-definitions-object-folder-list-item-label">
-									<Text truncate>
-										{stringUtils.getLocalizableLabel({
-											fallbackLabel:
-												currentObjectFolder.name,
-											labels: currentObjectFolder.label,
-										})}
-									</Text>
-								</span>
-							</ClayList.Item>
-						)
-					)}
-			</ClayList>
+								<Text truncate>{label}</Text>
+							</VerticalNav.Item>
+						);
+					}}
+				</VerticalNav>
+			)}
 		</div>
 	);
 }
