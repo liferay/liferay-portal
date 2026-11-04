@@ -293,9 +293,9 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private void _testActivateKaleoDefinition() throws Exception {
-		_setUpPermissionThreadLocal(_company1AdminUser);
-
 		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(_company1AdminUser);
 
 		ServiceContext serviceContext = _getCompany1ServiceContext();
 
@@ -496,9 +496,9 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private void _testDeactivateKaleoDefinition() throws Exception {
-		_setUpPermissionThreadLocal(_company1AdminUser);
-
 		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(_company1AdminUser);
 
 		ServiceContext serviceContext = _getCompany1ServiceContext();
 
@@ -617,9 +617,9 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private void _testDeleteKaleoDefinition() throws Exception {
-		_setUpPermissionThreadLocal(_company1AdminUser);
-
 		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(_company1AdminUser);
 
 		ServiceContext serviceContext = _getCompany1ServiceContext();
 
@@ -745,9 +745,9 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private void _testGetKaleoDefinitionWithGroupId() throws Exception {
-		_setUpPermissionThreadLocal(TestPropsValues.getUser());
-
 		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(TestPropsValues.getUser());
 
 		AccountEntry accountEntry = _addAccountEntry();
 
@@ -779,9 +779,9 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private void _testUpdateKaleoDefinition() throws Exception {
-		_setUpPermissionThreadLocal(_company1AdminUser);
-
 		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(_company1AdminUser);
 
 		ServiceContext serviceContext1 = _getCompany1ServiceContext();
 
@@ -864,9 +864,9 @@ public class KaleoDefinitionServiceImplTest {
 	private void _testUpdateKaleoDefinitionWithDifferentGroupId()
 		throws Exception {
 
-		_setUpPermissionThreadLocal(_company1AdminUser);
-
 		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(_company1AdminUser);
 
 		AccountEntry accountEntry1 = _addAccountEntry(
 			_company1AdminUser.getUserId());
@@ -900,9 +900,9 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private void _testUpdateKaleoDefinitionWithGroupId() throws Exception {
-		_setUpPermissionThreadLocal(_company1AdminUser);
-
 		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(_company1AdminUser);
 
 		AccountEntry accountEntry = _addAccountEntry(
 			_company1AdminUser.getUserId());
