@@ -5,26 +5,41 @@
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayEmptyState from '@clayui/empty-state';
+import {useModal} from '@clayui/modal';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import AddAudienceVariationModal from './AddAudienceVariationModal';
 import SortableList from './SortableList';
 
 const AudienceVariationsNav = ({
-	addVariationAvailable,
+	addVariationURL,
 	assetListEntryValid,
+	audiences,
 	defaultVariation,
 	portletNamespace,
 	updateVariationsPriorityURL,
 	variations,
 }) => {
-	const showAddVariationButton = assetListEntryValid && addVariationAvailable;
+	const showAddVariationButton = assetListEntryValid && !!audiences.length;
 
-	const handleAddVariation = () => {};
+	const {observer, onOpenChange, open} = useModal();
+
+	const handleAddVariation = () => onOpenChange(true);
 
 	return (
 		<>
+			{open && (
+				<AddAudienceVariationModal
+					addVariationURL={addVariationURL}
+					audiences={audiences}
+					observer={observer}
+					onClose={() => onOpenChange(false)}
+					portletNamespace={portletNamespace}
+				/>
+			)}
+
 			<div className="align-items-center d-flex justify-content-between mb-3">
 				<p className="font-weight-semi-bold h5 mb-0 text-uppercase">
 					{Liferay.Language.get('personalized-variations')}
@@ -87,8 +102,9 @@ const AudienceVariationsNav = ({
 };
 
 AudienceVariationsNav.propTypes = {
-	addVariationAvailable: PropTypes.bool.isRequired,
+	addVariationURL: PropTypes.string.isRequired,
 	assetListEntryValid: PropTypes.bool.isRequired,
+	audiences: PropTypes.array.isRequired,
 	defaultVariation: PropTypes.object.isRequired,
 	updateVariationsPriorityURL: PropTypes.string.isRequired,
 	variations: PropTypes.array.isRequired,

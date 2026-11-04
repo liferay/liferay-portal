@@ -72,6 +72,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
@@ -272,18 +273,30 @@ public class EditAssetListDisplayContext {
 		return _audienceEntryERC;
 	}
 
-	public Map<String, Object> getAudienceVariationsData() {
+	public Map<String, Object> getAudienceVariationsData()
+		throws PortalException {
+
 		List<AssetListEntryAudienceEntryRel> assetListEntryAudienceEntryRels =
 			_getAssetListEntryAudienceEntryRels();
 
 		return HashMapBuilder.<String, Object>put(
-			"addVariationAvailable",
-			() ->
-				assetListEntryAudienceEntryRels.size() <
-					AudiencesEntryLocalServiceUtil.getAudiencesEntriesCount(
-						_themeDisplay.getCompanyId())
+			"addVariationURL",
+			() -> PortletURLBuilder.create(
+				PortalUtil.getControlPanelPortletURL(
+					_httpServletRequest, _themeDisplay.getScopeGroup(),
+					AssetListPortletKeys.ASSET_LIST, 0, 0,
+					PortletRequest.ACTION_PHASE)
+			).setActionName(
+				"/asset_list/add_asset_list_entry_audience_variation"
+			).setBackURL(
+				getBackURL()
+			).setParameter(
+				"assetListEntryId", getAssetListEntryId()
+			).buildString()
 		).put(
 			"assetListEntryValid", _isAssetListEntryValid()
+		).put(
+			"audiences", () -> _getAudiences(assetListEntryAudienceEntryRels)
 		).put(
 			"defaultVariation",
 			() -> JSONUtil.put(
@@ -1353,6 +1366,49 @@ public class EditAssetListDisplayContext {
 					"label", assetTagName
 				).put(
 					"value", assetTagName
+				).build();
+			});
+	}
+
+	private List<Map<String, Object>> _getAudiences(
+			List<AssetListEntryAudienceEntryRel>
+				assetListEntryAudienceEntryRels)
+		throws PortalException {
+
+		AssetListEntry assetListEntry = getAssetListEntry();
+
+		Group group = GroupLocalServiceUtil.getGroup(
+			assetListEntry.getGroupId());
+
+		String groupERC = group.getExternalReferenceCode();
+
+		List<String> audienceEntryERCs = TransformUtil.transform(
+			assetListEntryAudienceEntryRels,
+			AssetListEntryAudienceEntryRel::getAudienceEntryERC);
+
+		return TransformUtil.transform(
+			AudiencesEntryLocalServiceUtil.getAudiencesEntries(
+				_themeDisplay.getCompanyId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS,
+				OrderByComparatorFactoryUtil.create(
+					"AudiencesEntry", "name", true)),
+			audiencesEntry -> {
+				if (audienceEntryERCs.contains(
+						audiencesEntry.getExternalReferenceCode())) {
+
+					return null;
+				}
+
+				List<String> groupERCs = audiencesEntry.getGroupERCs();
+
+				if (!groupERCs.isEmpty() && !groupERCs.contains(groupERC)) {
+					return null;
+				}
+
+				return HashMapBuilder.<String, Object>put(
+					"label", audiencesEntry.getName()
+				).put(
+					"value", audiencesEntry.getExternalReferenceCode()
 				).build();
 			});
 	}
