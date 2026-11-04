@@ -559,7 +559,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 
 		if (testrayProject != null) {
 			long topLevelBuildTestrayCaseId =
-				testrayProject.getTestrayCaseIdByName("Top Level Build");
+				testrayProject.getTopLevelBuildTestrayCaseId();
 
 			if (topLevelBuildTestrayCaseId > 0) {
 				_testrayAttachmentURLMatcher = _getTestrayAttachmentURLMatcher(

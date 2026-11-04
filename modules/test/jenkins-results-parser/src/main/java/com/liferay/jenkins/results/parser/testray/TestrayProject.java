@@ -377,6 +377,39 @@ public class TestrayProject {
 		return _testrayTeams;
 	}
 
+	public synchronized long getTopLevelBuildTestrayCaseId() {
+		if (_topLevelBuildTestrayCaseId != null) {
+			return _topLevelBuildTestrayCaseId;
+		}
+
+		_topLevelBuildTestrayCaseId = _testrayCaseIds.get("Top Level Build");
+
+		if (_topLevelBuildTestrayCaseId != null) {
+			return _topLevelBuildTestrayCaseId;
+		}
+
+		_topLevelBuildTestrayCaseId = 0L;
+
+		String filterString = JenkinsResultsParserUtil.combine(
+			"name eq 'Top Level Build' and r_projectToCases_c_projectId eq '",
+			String.valueOf(getId()), "'");
+
+		try {
+			Set<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
+				"cases", TestrayCase.FIELD_NAMES_CASE_IDS, filterString, null,
+				1, 1);
+
+			for (JSONObject entityJSONObject : entityJSONObjects) {
+				_topLevelBuildTestrayCaseId = entityJSONObject.getLong("id");
+			}
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+
+		return _topLevelBuildTestrayCaseId;
+	}
+
 	public URL getURL() {
 		try {
 			return new URL(
@@ -486,5 +519,6 @@ public class TestrayProject {
 		new HashMap<>();
 	private final TestrayServer _testrayServer;
 	private List<TestrayTeam> _testrayTeams;
+	private Long _topLevelBuildTestrayCaseId;
 
 }
