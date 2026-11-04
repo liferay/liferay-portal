@@ -6,10 +6,56 @@ Provide-Capability:\
 	osgi.contract;\
 		osgi.contract=JakartaRESTfulWebServices;\
 		uses:="jakarta.ws.rs,jakarta.ws.rs.client,jakarta.ws.rs.ext,jakarta.ws.rs.sse,jakarta.ws.rs.container,jakarta.ws.rs.core";\
-		version:Version="3.1.0"
+		version:Version="3.1.0",\
+	osgi.implementation;\
+		osgi.implementation="aries.jax-rs";\
+		version:Version="2.0.0",\
+	osgi.implementation;\
+		osgi.implementation="osgi.jaxrs";\
+		uses:="jakarta.ws.rs,jakarta.ws.rs.core,jakarta.ws.rs.ext,jakarta.ws.rs.client,jakarta.ws.rs.container,jakarta.ws.rs.sse,org.osgi.service.jaxrs.whiteboard";\
+		version:Version="1.0.0",\
+	osgi.service;\
+		effective:=active;\
+		objectClass:List<String>="jakarta.ws.rs.client.ClientBuilder",\
+	osgi.service;\
+		objectClass:List<String>="jakarta.ws.rs.client.ClientBuilder";\
+		uses:="jakarta.ws.rs.client,org.osgi.service.jaxrs.client",\
+	osgi.service;\
+		objectClass:List<String>="org.osgi.service.jaxrs.client.SseEventSourceFactory";\
+		uses:="org.osgi.service.jaxrs.client",\
+	osgi.service;\
+		objectClass:List<String>="org.osgi.service.jaxrs.runtime.JaxrsServiceRuntime";\
+		uses:="org.osgi.service.jaxrs.runtime,org.osgi.service.jaxrs.runtime.dto",\
+	osgi.serviceloader;\
+		osgi.serviceloader="jakarta.ws.rs.client.ClientBuilder";\
+		register:="org.apache.aries.jax.rs.whiteboard.internal.client.ClientBuilderImpl",\
+	osgi.serviceloader;\
+		osgi.serviceloader="jakarta.ws.rs.ext.RuntimeDelegate";\
+		register:="org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl";\
+		service.scope=prototype,\
+	osgi.serviceloader;\
+		osgi.serviceloader="jakarta.ws.rs.sse.SseEventSource.Builder";\
+		register:="org.apache.cxf.jaxrs.sse.client.SseEventSourceBuilderImpl";\
+		service.scope=prototype
 Require-Capability:\
+	osgi.contract;\
+		filter:="(&(osgi.contract=JakartaRESTfulWebServices)(version=3.1.0))";\
+		osgi.contract=JakartaRESTfulWebServices,\
+	osgi.contract;\
+		filter:="(&(osgi.contract=JakartaServlet)(version=5.0.0))";\
+		osgi.contract=JakartaServlet,\
 	osgi.extender;\
-		filter:="(&(osgi.extender=osgi.configurator)(version>=1.0)(!(version>=2.0)))"
+		filter:="(&(osgi.extender=osgi.configurator)(version>=1.0)(!(version>=2.0)))",\
+	osgi.extender;\
+		filter:="(&(osgi.extender=osgi.serviceloader.registrar)(version>=1.0.0)(!(version>=2.0.0)))",\
+	osgi.extender;\
+		filter:="(osgi.extender=osgi.serviceloader.registrar)";\
+		resolution:=optional,\
+	osgi.implementation;\
+		filter:="(&(osgi.implementation=osgi.http)(version>=1.0.0)(!(version>=2.0.0)))"
+-bundleannotations:\
+	!org.apache.aries.*,\
+	*
 -exportcontents:\
 	javax.wsdl;version="1.2",\
 	javax.wsdl.extensions;version="1.2",\
@@ -19,5 +65,9 @@ Require-Capability:\
 	javax.wsdl.extensions.soap;version="1.2",\
 	javax.wsdl.extensions.soap12;version="1.2",\
 	javax.wsdl.factory;version="1.2",\
-	javax.wsdl.xml;version="1.2"
+	javax.wsdl.xml;version="1.2",\
+	\
+	org.apache.aries.component.dsl;version="1.3.0";-noimport:=true,\
+	org.apache.aries.component.dsl.function;version="1.3.0";-noimport:=true,\
+	org.apache.aries.jax.rs.whiteboard;version="1.0.0";-noimport:=true
 -includeresource: OSGI-INF/configurator=configurator
