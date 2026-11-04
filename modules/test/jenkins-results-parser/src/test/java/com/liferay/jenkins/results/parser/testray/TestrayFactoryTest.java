@@ -94,27 +94,64 @@ public class TestrayFactoryTest
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
-			testrayBuild, "modules-integration-db-partition-postgresql163",
-			job);
+			testrayBuild,
+			_mockAxisTestClassGroup(
+				"modules-integration-db-partition-postgresql163",
+				"modules-integration-db-partition-postgresql163", job));
 
 		testEquals(
 			"PostgreSQL 16.3#modules-integration-db-partition-postgresql163",
 			testrayRun.getRunIdString());
 
 		testrayRun = TestrayFactory.newTestrayRun(
-			testrayBuild, "modules-integration-mysql80", job);
+			testrayBuild,
+			_mockAxisTestClassGroup(
+				"modules-integration-mysql80", "modules-integration-mysql80",
+				job));
 
 		testEquals("MySQL 8.0", testrayRun.getRunIdString());
 
 		testrayRun = TestrayFactory.newTestrayRun(
-			testrayBuild, "modules-integration-postgresql163", job);
+			testrayBuild,
+			_mockAxisTestClassGroup(
+				"modules-integration-postgresql163",
+				"modules-integration-postgresql163", job));
 
 		testEquals("PostgreSQL 16.3", testrayRun.getRunIdString());
 
 		testrayRun = TestrayFactory.newTestrayRun(
-			testrayBuild, "unit-postgresql163", job);
+			testrayBuild,
+			_mockAxisTestClassGroup(
+				"unit-postgresql163", "unit-postgresql163", job));
 
 		testEquals("PostgreSQL 16.3", testrayRun.getRunIdString());
+	}
+
+	@Test
+	public void testNewTestrayRunEnhancedBatchNames() throws Exception {
+		Job job = _mockJob(
+			"functional-tomcat101-postgresql163," +
+				"functional-upgrade-tomcat101-postgresql163",
+			null);
+		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
+
+		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
+			testrayBuild,
+			_mockAxisTestClassGroup(
+				"functional-tomcat101-postgresql163",
+				"functional-tomcat101-postgresql163-chrome139", job));
+
+		testEquals("PostgreSQL 16.3", testrayRun.getRunIdString());
+
+		testrayRun = TestrayFactory.newTestrayRun(
+			testrayBuild,
+			_mockAxisTestClassGroup(
+				"functional-upgrade-tomcat101-postgresql163",
+				"functional-upgrade-tomcat101-postgresql163-chrome139", job));
+
+		testEquals(
+			"PostgreSQL 16.3#functional-upgrade-tomcat101-postgresql163",
+			testrayRun.getRunIdString());
 	}
 
 	@Test
@@ -123,12 +160,14 @@ public class TestrayFactoryTest
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
-			testrayBuild, "a-mysql80", job);
+			testrayBuild,
+			_mockAxisTestClassGroup("a-mysql80", "a-mysql80", job));
 
 		testEquals("MySQL 8.0", testrayRun.getRunIdString());
 
 		testrayRun = TestrayFactory.newTestrayRun(
-			testrayBuild, "b-mysql80", job);
+			testrayBuild,
+			_mockAxisTestClassGroup("b-mysql80", "b-mysql80", job));
 
 		testEquals("MySQL 8.0#b-mysql80", testrayRun.getRunIdString());
 	}
@@ -141,14 +180,43 @@ public class TestrayFactoryTest
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
-			testrayBuild, "b-mysql80", job);
+			testrayBuild,
+			_mockAxisTestClassGroup("b-mysql80", "b-mysql80", job));
 
 		testEquals("MySQL 8.0", testrayRun.getRunIdString());
 
 		testrayRun = TestrayFactory.newTestrayRun(
-			testrayBuild, "c-mysql80", job);
+			testrayBuild,
+			_mockAxisTestClassGroup("c-mysql80", "c-mysql80", job));
 
 		testEquals("MySQL 8.0#c-mysql80", testrayRun.getRunIdString());
+	}
+
+	private AxisTestClassGroup _mockAxisTestClassGroup(
+		String batchName, String enhancedBatchName, Job job) {
+
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+
+		Mockito.when(
+			axisTestClassGroup.getBatchName()
+		).thenReturn(
+			batchName
+		);
+
+		Mockito.when(
+			axisTestClassGroup.getEnhancedBatchName()
+		).thenReturn(
+			enhancedBatchName
+		);
+
+		Mockito.when(
+			axisTestClassGroup.getJob()
+		).thenReturn(
+			job
+		);
+
+		return axisTestClassGroup;
 	}
 
 	private Job _mockJob(String batchNames, String smokeBatchNames) {
