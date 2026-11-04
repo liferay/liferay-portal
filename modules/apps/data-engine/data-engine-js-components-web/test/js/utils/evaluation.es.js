@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {mergePages} from '../../../src/main/resources/META-INF/resources/js/utils/evaluation.es';
+import {
+	evaluate,
+	mergePages,
+} from '../../../src/main/resources/META-INF/resources/js/utils/evaluation.es';
 import {PagesVisitor} from '../../../src/main/resources/META-INF/resources/js/utils/visitors.es';
 
 // The "select" field is localizable. The value the server validates comes from
@@ -47,6 +50,41 @@ const mergeField = ({sourceVisible, viewMode = true, ...fieldProps}) => {
 };
 
 describe('evaluation', () => {
+	describe('evaluate', () => {
+		it('evaluates a configuration in the default language', async () => {
+			const originalThemeDisplay = themeDisplay;
+
+			themeDisplay = {
+				...originalThemeDisplay,
+				getSiteGroupId: () => '20126',
+			};
+
+			jest.useFakeTimers();
+
+			fetch.mockResponseOnce(JSON.stringify([]));
+
+			const evaluation = evaluate('title', {
+				containerId: '_portletNamespace_editConfiguration',
+				defaultLanguageId: 'en_US',
+				editingLanguageId: 'es_ES',
+				pages: [],
+				portletNamespace: '_portletNamespace_',
+			});
+
+			jest.runAllTimers();
+
+			await evaluation;
+
+			const [, {body}] = fetch.mock.calls[0];
+
+			expect(body.get('languageId')).toBe('en_US');
+
+			jest.useRealTimers();
+
+			themeDisplay = originalThemeDisplay;
+		});
+	});
+
 	describe('mergePages', () => {
 		it('clears the value when a field without a predefined value becomes visible in view mode', () => {
 			const field = mergeField({

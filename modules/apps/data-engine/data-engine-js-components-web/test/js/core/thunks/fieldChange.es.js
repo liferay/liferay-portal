@@ -97,6 +97,58 @@ describe('fieldChange', () => {
 		expect(field.localizedValue[EDITING_LANGUAGE_ID]).toBeUndefined();
 	});
 
+	it('evaluates a configuration field in the default language', async () => {
+		const originalThemeDisplay = themeDisplay;
+
+		themeDisplay = {
+			...originalThemeDisplay,
+			getSiteGroupId: () => '20126',
+		};
+
+		jest.useFakeTimers();
+
+		const pages = createPages({[DEFAULT_LANGUAGE_ID]: 'Hello'}, true);
+
+		fetch.mockResponseOnce(JSON.stringify(pages));
+
+		const change = fieldChange({
+			containerId: '_portletNamespace_editConfiguration',
+			defaultLanguageId: DEFAULT_LANGUAGE_ID,
+			editingLanguageId: EDITING_LANGUAGE_ID,
+			focusedField: {},
+			formId: 'formId',
+			objectFields: [],
+			pages,
+			portletNamespace: '_portletNamespace_',
+			properties: {
+				fieldInstance: {
+					evaluable: true,
+					fieldName: 'Text1',
+					isDisposed: () => false,
+					name: 'Text1',
+					type: 'text',
+				},
+				key: 'value',
+				value: 'Hola',
+			},
+			rules: [],
+			submitButtonId: 'submitButtonId',
+			viewMode: false,
+		})(() => {});
+
+		jest.runAllTimers();
+
+		await change;
+
+		const [, {body}] = fetch.mock.calls[0];
+
+		expect(body.get('languageId')).toBe(DEFAULT_LANGUAGE_ID);
+
+		jest.useRealTimers();
+
+		themeDisplay = originalThemeDisplay;
+	});
+
 	it('records an edit when the locale is given its own value', async () => {
 		const field = await changeField(
 			{[DEFAULT_LANGUAGE_ID]: 'Hello'},
