@@ -18,7 +18,8 @@ public class DataSourceUsageMetricDisplay {
 		long connectorsConnectedCount, String corpProjectName,
 		String corpProjectUuid, List<DataSourceUsage> dataSourceUsages,
 		String lastAccessDateString, String lastAnniversaryDateString,
-		boolean offline, long realTimeSegmentsCount, String weDeployKey) {
+		boolean offline, long realTimeSegmentsCount, String salesforceAccountId,
+		String weDeployKey) {
 
 		_apiUsageMetricDisplays = apiUsageMetricDisplays;
 		_batchSegmentsCount = batchSegmentsCount;
@@ -31,6 +32,7 @@ public class DataSourceUsageMetricDisplay {
 		_lastAnniversaryDateString = lastAnniversaryDateString;
 		_offline = offline;
 		_realTimeSegmentsCount = realTimeSegmentsCount;
+		_salesforceAccountId = salesforceAccountId;
 		_weDeployKey = weDeployKey;
 	}
 
@@ -74,6 +76,10 @@ public class DataSourceUsageMetricDisplay {
 		return _realTimeSegmentsCount;
 	}
 
+	public String getSalesforceAccountId() {
+		return _salesforceAccountId;
+	}
+
 	public String getWeDeployKey() {
 		return _weDeployKey;
 	}
@@ -93,6 +99,7 @@ public class DataSourceUsageMetricDisplay {
 	private final String _lastAnniversaryDateString;
 	private final boolean _offline;
 	private final long _realTimeSegmentsCount;
+	private final String _salesforceAccountId;
 	private final String _weDeployKey;
 
 }

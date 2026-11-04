@@ -72,8 +72,15 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 public abstract class DemoCreatorService {
 
 	public void createDemo() throws Exception {
-		faroProject = faroProjectLocalService.fetchFaroProjectByCorpProjectUuid(
-			FaroPropsValues.FARO_PROJECT_ID);
+		faroProject =
+			faroProjectLocalService.fetchFaroProjectBySalesforceAccountId(
+				FaroPropsValues.FARO_PROJECT_ID);
+
+		if (faroProject == null) {
+			faroProject =
+				faroProjectLocalService.fetchFaroProjectByCorpProjectUuid(
+					FaroPropsValues.FARO_PROJECT_ID);
+		}
 
 		if (faroProject == null) {
 			faroProject = createFaroProject();
@@ -175,7 +182,7 @@ public abstract class DemoCreatorService {
 			osbAccountEntry.getSalesforceAccountId(),
 			osbAccountEntry.getCorpEntryName(), osbAccountEntry.getName(),
 			FaroPropsValues.FARO_PROJECT_ID, Collections.emptyList(),
-			StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, StringPool.BLANK, FaroPropsValues.FARO_PROJECT_ID,
 			LCPProject.Cluster.US.toString(), JSONConstants.NULL_JSON_ARRAY,
 			FaroProjectConstants.STATE_UNCONFIGURED,
 			_objectMapper.writeValueAsString(faroSubscriptionDisplay), "UTC",

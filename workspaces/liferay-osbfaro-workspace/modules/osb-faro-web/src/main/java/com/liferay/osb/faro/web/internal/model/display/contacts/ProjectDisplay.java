@@ -71,6 +71,7 @@ public class ProjectDisplay {
 		}
 
 		_recommendationsEnabled = faroProject.isRecommendationsEnabled();
+		_salesforceAccountId = faroProject.getSalesforceAccountId();
 		_serverLocation = faroProject.getServerLocation();
 		_state = faroProject.getState();
 		_timeZoneDisplay = TimeZoneUtil.getTimeZoneDisplay(
@@ -84,6 +85,7 @@ public class ProjectDisplay {
 		_corpProjectName = osbAccountEntry.getName();
 		_corpProjectUuid = osbAccountEntry.getCorpProjectUuid();
 		_faroSubscriptionDisplay = new FaroSubscriptionDisplay(osbAccountEntry);
+		_salesforceAccountId = osbAccountEntry.getSalesforceAccountId();
 	}
 
 	public String getCorpProjectUuid() {
@@ -96,6 +98,10 @@ public class ProjectDisplay {
 
 	public FaroSubscriptionDisplay getFaroSubscriptionDisplay() {
 		return _faroSubscriptionDisplay;
+	}
+
+	public String getSalesforceAccountId() {
+		return _salesforceAccountId;
 	}
 
 	public String getState() {
@@ -140,6 +146,7 @@ public class ProjectDisplay {
 	private String _name;
 	private String _ownerEmailAddress;
 	private boolean _recommendationsEnabled;
+	private String _salesforceAccountId;
 	private String _serverLocation;
 	private String _state;
 	private Date _stateEndDate;

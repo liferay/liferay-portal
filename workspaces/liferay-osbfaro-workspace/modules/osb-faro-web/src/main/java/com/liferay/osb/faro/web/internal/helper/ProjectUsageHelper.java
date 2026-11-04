@@ -235,7 +235,8 @@ public class ProjectUsageHelper {
 				faroProject.getLastAnniversaryDate(), DateUtil.PATTERN_DATE),
 			!StringUtil.equals(
 				faroProject.getState(), FaroProjectConstants.STATE_READY),
-			realTimeSegmentsCount, faroProject.getWeDeployKey());
+			realTimeSegmentsCount, faroProject.getSalesforceAccountId(),
+			faroProject.getWeDeployKey());
 	}
 
 	private Map<String, Map<String, ProjectMetric>> _getProjectMetricsMap(

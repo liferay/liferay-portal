@@ -252,7 +252,9 @@ public class UpdateFaroProjectSubscriptionsMessageListener
 	private OSBAccountEntry _getOSBAccountEntry(FaroProject faroProject)
 		throws Exception {
 
-		if (Validator.isNull(faroProject.getCorpProjectUuid())) {
+		if (Validator.isNull(faroProject.getCorpProjectUuid()) &&
+			Validator.isNull(faroProject.getSalesforceAccountId())) {
+
 			Date createDate = new Date(faroProject.getCreateTime());
 			String subscription = faroProject.getSubscription();
 

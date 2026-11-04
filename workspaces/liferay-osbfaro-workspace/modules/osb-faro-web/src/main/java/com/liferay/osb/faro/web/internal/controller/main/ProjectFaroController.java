@@ -318,7 +318,10 @@ public class ProjectFaroController extends BaseFaroController {
 			@DefaultValue("UTC") @FormParam("timeZoneId") String timeZoneId)
 		throws Exception {
 
-		_checkProvisionBackoff(corpProjectUuid);
+		String provisionKey = _getProvisionKey(
+			corpProjectUuid, salesforceAccountId);
+
+		_checkProvisionBackoff(provisionKey);
 
 		try {
 			User user = getUser();
@@ -359,12 +362,12 @@ public class ProjectFaroController extends BaseFaroController {
 				_dataSourceFaroController.generateDataSourceAccessToken(
 					faroProject.getGroupId(), faroProject.getFaroProjectId()));
 
-			_clearProvisionBackoff(corpProjectUuid);
+			_clearProvisionBackoff(provisionKey);
 
 			return projectDisplay;
 		}
 		catch (Exception exception) {
-			_putProvisionBackoff(corpProjectUuid, exception);
+			_putProvisionBackoff(provisionKey, exception);
 
 			throw exception;
 		}
@@ -393,7 +396,7 @@ public class ProjectFaroController extends BaseFaroController {
 			name, null, null, null, null,
 			emailAddressDomainsFaroParam.getValue(), friendlyURL,
 			incidentReportEmailAddressesFaroParam.getValue(), ownerEmailAddress,
-			serverLocation, timeZoneId, true);
+			null, serverLocation, timeZoneId, true);
 	}
 
 	@Path("/unprovisioned")
@@ -415,14 +418,24 @@ public class ProjectFaroController extends BaseFaroController {
 				<List<String>> incidentReportEmailAddressesFaroParam,
 			@FormParam("name") String name,
 			@FormParam("ownerEmailAddress") String ownerEmailAddress,
+			@FormParam("salesforceAccountId") String salesforceAccountId,
 			@FormParam("serverLocation") String serverLocation,
 			@DefaultValue("UTC") @FormParam("timeZoneId") String timeZoneId,
 			@FormParam("trial") boolean trial)
 		throws Exception {
 
-		FaroProject faroProject =
-			_faroProjectLocalService.fetchFaroProjectByCorpProjectUuid(
-				corpProjectUuid);
+		FaroProject faroProject = null;
+
+		if (Validator.isNotNull(salesforceAccountId)) {
+			faroProject =
+				_faroProjectLocalService.fetchFaroProjectBySalesforceAccountId(
+					salesforceAccountId);
+		}
+		else if (Validator.isNotNull(corpProjectUuid)) {
+			faroProject =
+				_faroProjectLocalService.fetchFaroProjectByCorpProjectUuid(
+					corpProjectUuid);
+		}
 
 		if (faroProject != null) {
 			ProjectDisplay projectDisplay = new ProjectDisplay(faroProject);
@@ -440,21 +453,25 @@ public class ProjectFaroController extends BaseFaroController {
 			return projectDisplay;
 		}
 
-		_checkProvisionBackoff(corpProjectUuid);
+		String provisionKey = _getProvisionKey(
+			corpProjectUuid, salesforceAccountId);
+
+		_checkProvisionBackoff(provisionKey);
 
 		try {
 			ProjectDisplay projectDisplay = _createUnprovisioned(
 				name, accountKey, accountName, corpProjectName, corpProjectUuid,
 				emailAddressDomainsFaroParam.getValue(), friendlyURL,
 				incidentReportEmailAddressesFaroParam.getValue(),
-				ownerEmailAddress, serverLocation, timeZoneId, trial);
+				ownerEmailAddress, salesforceAccountId, serverLocation,
+				timeZoneId, trial);
 
-			_clearProvisionBackoff(corpProjectUuid);
+			_clearProvisionBackoff(provisionKey);
 
 			return projectDisplay;
 		}
 		catch (Exception exception) {
-			_putProvisionBackoff(corpProjectUuid, exception);
+			_putProvisionBackoff(provisionKey, exception);
 
 			throw exception;
 		}
@@ -660,6 +677,10 @@ public class ProjectFaroController extends BaseFaroController {
 			@PathParam("corpProjectUuid") String corpProjectUuid)
 		throws Exception {
 
+		if (FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
+			return _getProjectDisplayBySalesforceAccountId(corpProjectUuid);
+		}
+
 		_validateCorpProjectUuid(corpProjectUuid);
 
 		FaroProject faroProject =
@@ -766,6 +787,8 @@ public class ProjectFaroController extends BaseFaroController {
 			@DefaultValue(StringPool.BLANK) @FormParam("corpProjectUuid") String
 				corpProjectUuid,
 			@PathParam("groupId") long groupId,
+			@DefaultValue(StringPool.BLANK) @FormParam("salesforceAccountId")
+				String salesforceAccountId,
 			@DefaultValue(StringPool.BLANK) @FormParam("timeZoneId") String
 				timeZoneId)
 		throws Exception {
@@ -779,6 +802,10 @@ public class ProjectFaroController extends BaseFaroController {
 
 		if (!Validator.isBlank(corpProjectUuid)) {
 			faroProject.setCorpProjectUuid(corpProjectUuid);
+		}
+
+		if (!Validator.isBlank(salesforceAccountId)) {
+			faroProject.setSalesforceAccountId(salesforceAccountId);
 		}
 
 		if (!Validator.isBlank(timeZoneId) &&
@@ -795,7 +822,9 @@ public class ProjectFaroController extends BaseFaroController {
 
 		faroProjectLocalService.updateFaroProject(faroProject);
 
-		if (!Validator.isBlank(corpProjectUuid)) {
+		if (!Validator.isBlank(corpProjectUuid) ||
+			!Validator.isBlank(salesforceAccountId)) {
+
 			getProjectDisplay(groupId, true, true);
 		}
 	}
@@ -1014,10 +1043,9 @@ public class ProjectFaroController extends BaseFaroController {
 				offeringEntriesFaroParam)
 		throws Exception {
 
-		if (!FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
-			throw new FaroException(
-				"Subscription push is not enabled",
-				Response.Status.NOT_IMPLEMENTED);
+		if (FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
+			return updateSubscriptionBySalesforceAccountId(
+				offeringEntriesFaroParam, corpProjectUuid);
 		}
 
 		FaroProject faroProject =
@@ -1031,43 +1059,34 @@ public class ProjectFaroController extends BaseFaroController {
 				Response.Status.NOT_FOUND);
 		}
 
-		_validateOfferingEntries(offeringEntriesFaroParam.getValue());
+		return _updateSubscription(
+			faroProject, offeringEntriesFaroParam.getValue());
+	}
 
-		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
+	@PATCH
+	@Path("/salesforceAccountId/{salesforceAccountId}/subscription")
+	@RolesAllowed(StringPool.BLANK)
+	public ProjectDisplay updateSubscriptionBySalesforceAccountId(
+			@FormParam("offeringEntries") FaroParam<List<OSBOfferingEntry>>
+				offeringEntriesFaroParam,
+			@PathParam("salesforceAccountId") String salesforceAccountId)
+		throws Exception {
 
-		osbAccountEntry.setOfferingEntries(offeringEntriesFaroParam.getValue());
+		_validateSubscriptionPushEnabled();
 
-		FaroSubscriptionDisplay faroSubscriptionDisplay =
-			new FaroSubscriptionDisplay(osbAccountEntry);
+		FaroProject faroProject =
+			_faroProjectLocalService.fetchFaroProjectBySalesforceAccountId(
+				salesforceAccountId);
 
-		if (_isSubscriptionPlanChanged(
-				faroProject, faroSubscriptionDisplay.getName())) {
-
-			faroProject.setSubscriptionModifiedTime(System.currentTimeMillis());
+		if (faroProject == null) {
+			throw new FaroException(
+				"No project exists with the Salesforce account ID " +
+					salesforceAccountId,
+				Response.Status.NOT_FOUND);
 		}
 
-		try {
-			if (Objects.equals(
-					faroProject.getState(),
-					FaroProjectConstants.STATE_UNAVAILABLE)) {
-
-				faroProject.setState(FaroProjectConstants.STATE_READY);
-			}
-
-			faroSubscriptionDisplay.setCounts(
-				faroProject, _faroProjectUsageLocalService);
-
-			faroProject.setSubscription(
-				JSONUtil.writeValueAsString(faroSubscriptionDisplay));
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-
-			faroProject.setState(FaroProjectConstants.STATE_UNAVAILABLE);
-		}
-
-		return _getProjectDisplay(
-			_faroProjectLocalService.updateFaroProject(faroProject));
+		return _updateSubscription(
+			faroProject, offeringEntriesFaroParam.getValue());
 	}
 
 	@Activate
@@ -1110,7 +1129,9 @@ public class ProjectFaroController extends BaseFaroController {
 	protected OSBAccountEntry getOSBAccountEntry(FaroProject faroProject)
 		throws Exception {
 
-		if (Validator.isNull(faroProject.getCorpProjectUuid())) {
+		if (Validator.isNull(faroProject.getCorpProjectUuid()) &&
+			Validator.isNull(faroProject.getSalesforceAccountId())) {
+
 			return new OSBAccountEntry() {
 				{
 					OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
@@ -1147,12 +1168,12 @@ public class ProjectFaroController extends BaseFaroController {
 		return _provisioningClient.getOSBAccountEntry(corpProjectUuid);
 	}
 
-	private void _checkProvisionBackoff(String corpProjectUuid) {
-		if (Validator.isNull(corpProjectUuid)) {
+	private void _checkProvisionBackoff(String provisionKey) {
+		if (Validator.isNull(provisionKey)) {
 			return;
 		}
 
-		Long retryAfterTime = _provisionBackoffPortalCache.get(corpProjectUuid);
+		Long retryAfterTime = _provisionBackoffPortalCache.get(provisionKey);
 
 		if (retryAfterTime == null) {
 			return;
@@ -1170,17 +1191,16 @@ public class ProjectFaroController extends BaseFaroController {
 				String.valueOf(
 					((retryAfterTime - now) + (Time.SECOND - 1)) / Time.SECOND)
 			).build(),
-			"Too many failed provisioning attempts for corp project UUID " +
-				corpProjectUuid,
+			"Too many failed provisioning attempts for " + provisionKey,
 			Response.Status.TOO_MANY_REQUESTS);
 	}
 
-	private void _clearProvisionBackoff(String corpProjectUuid) {
-		if (Validator.isNull(corpProjectUuid)) {
+	private void _clearProvisionBackoff(String provisionKey) {
+		if (Validator.isNull(provisionKey)) {
 			return;
 		}
 
-		_provisionBackoffPortalCache.remove(corpProjectUuid);
+		_provisionBackoffPortalCache.remove(provisionKey);
 	}
 
 	private FaroProject _create(
@@ -1227,7 +1247,8 @@ public class ProjectFaroController extends BaseFaroController {
 				osbAccountEntry.getCorpEntryName(), osbAccountEntry.getName(),
 				corpProjectUuid, emailAddressDomains, friendlyURL,
 				JSONUtil.writeValueAsString(incidentReportEmailAddresses),
-				serverLocation, JSONConstants.NULL_JSON_ARRAY, state,
+				salesforceAccountId, serverLocation,
+				JSONConstants.NULL_JSON_ARRAY, state,
 				JSONUtil.writeValueAsString(faroSubscriptionDisplay),
 				timeZoneId, null);
 		}
@@ -1247,12 +1268,13 @@ public class ProjectFaroController extends BaseFaroController {
 					groupFriendlyURLException.getType()));
 		}
 
-		if (corpProjectUuid.equals(FaroPropsValues.FARO_PROJECT_ID)) {
+		if (Objects.equals(corpProjectUuid, FaroPropsValues.FARO_PROJECT_ID) ||
+			Objects.equals(
+				salesforceAccountId, FaroPropsValues.FARO_PROJECT_ID)) {
+
 			faroProject.setWeDeployKey(
 				FaroPropsValues.FARO_DEFAULT_WE_DEPLOY_KEY);
 		}
-
-		faroProject.setSalesforceAccountId(salesforceAccountId);
 
 		String weDeployKey =
 			contactsEngineClient.addProject(faroProject) + ".lfr.cloud";
@@ -1274,7 +1296,8 @@ public class ProjectFaroController extends BaseFaroController {
 			String corpProjectName, String corpProjectUuid,
 			List<String> emailAddressDomains, String friendlyURL,
 			List<String> incidentReportEmailAddresses, String ownerEmailAddress,
-			String serverLocation, String timeZoneId, boolean trial)
+			String salesforceAccountId, String serverLocation,
+			String timeZoneId, boolean trial)
 		throws Exception {
 
 		_validateFriendlyURL(friendlyURL);
@@ -1291,7 +1314,8 @@ public class ProjectFaroController extends BaseFaroController {
 				getUserId(), name, accountKey, accountName, corpProjectName,
 				corpProjectUuid, emailAddressDomains, friendlyURL,
 				JSONUtil.writeValueAsString(incidentReportEmailAddresses),
-				serverLocation, JSONConstants.NULL_JSON_ARRAY,
+				salesforceAccountId, serverLocation,
+				JSONConstants.NULL_JSON_ARRAY,
 				FaroProjectConstants.STATE_NOT_READY,
 				JSONUtil.writeValueAsString(faroSubscriptionDisplay),
 				timeZoneId, null);
@@ -1578,6 +1602,30 @@ public class ProjectFaroController extends BaseFaroController {
 		return projectDisplay;
 	}
 
+	private ProjectDisplay _getProjectDisplayBySalesforceAccountId(
+			String salesforceAccountId)
+		throws Exception {
+
+		FaroProject faroProject =
+			_faroProjectLocalService.fetchFaroProjectBySalesforceAccountId(
+				salesforceAccountId);
+
+		if (faroProject == null) {
+			throw new FaroException(
+				"No project exists with the Salesforce account ID " +
+					salesforceAccountId,
+				Response.Status.NOT_FOUND);
+		}
+
+		if (!isOmniadmin() && !_isFaroUser(faroProject.getGroupId())) {
+			throw new FaroException(
+				"You do not have the required permissions",
+				Response.Status.FORBIDDEN);
+		}
+
+		return new ProjectDisplay(faroProject);
+	}
+
 	private ProjectUsageMetricDisplay _getProjectUsageMetricDisplay(
 			FaroProject faroProject, Date endDate, Date startDate)
 		throws Exception {
@@ -1644,7 +1692,8 @@ public class ProjectFaroController extends BaseFaroController {
 				DateUtil.PATTERN_DATE),
 			DateUtil.formatDate(
 				faroProject.getLastAnniversaryDate(), DateUtil.PATTERN_DATE),
-			offline, usageMetrics, faroProject.getWeDeployKey());
+			offline, faroProject.getSalesforceAccountId(), usageMetrics,
+			faroProject.getWeDeployKey());
 	}
 
 	private List<ProjectUsageMetric> _getProjectUsageMetrics(
@@ -1688,6 +1737,16 @@ public class ProjectFaroController extends BaseFaroController {
 			faroProject.getProjectId(), Collections.emptyList());
 	}
 
+	private String _getProvisionKey(
+		String corpProjectUuid, String salesforceAccountId) {
+
+		if (Validator.isNotNull(salesforceAccountId)) {
+			return salesforceAccountId;
+		}
+
+		return corpProjectUuid;
+	}
+
 	private String _getTimeZoneIdErrorMessage(User user) {
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			"content.Language", user.getLocale(), getClass());
@@ -1722,6 +1781,24 @@ public class ProjectFaroController extends BaseFaroController {
 		}
 	}
 
+	private boolean _isFaroUser(long groupId) {
+		FaroUser faroUser = _faroUserLocalService.fetchFaroUser(
+			groupId, getUserId());
+
+		if (faroUser == null) {
+			User user = getUser();
+
+			faroUser = _faroUserLocalService.fetchFaroUser(
+				groupId, user.getEmailAddress());
+		}
+
+		if (faroUser != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private boolean _isSubscriptionPlanChanged(
 			FaroProject faroProject, String subscriptionName)
 		throws Exception {
@@ -1752,19 +1829,17 @@ public class ProjectFaroController extends BaseFaroController {
 	}
 
 	private void _putProvisionBackoff(
-		String corpProjectUuid, Exception exception) {
+		String provisionKey, Exception exception) {
 
-		if (Validator.isNull(corpProjectUuid)) {
+		if (Validator.isNull(provisionKey)) {
 			return;
 		}
 
 		_log.error(
-			"Unable to provision project for corp project UUID " +
-				corpProjectUuid,
-			exception);
+			"Unable to provision project for " + provisionKey, exception);
 
 		_provisionBackoffPortalCache.put(
-			corpProjectUuid,
+			provisionKey,
 			System.currentTimeMillis() +
 				FaroPropsValues.
 					OSB_FARO_PROJECT_PROVISION_BACKOFF_WINDOW_MILLIS);
@@ -1775,6 +1850,9 @@ public class ProjectFaroController extends BaseFaroController {
 
 		if (StringUtil.equals(
 				faroProject.getCorpProjectUuid(),
+				FaroPropsValues.FARO_PROJECT_ID) ||
+			StringUtil.equals(
+				faroProject.getSalesforceAccountId(),
 				FaroPropsValues.FARO_PROJECT_ID)) {
 
 			_initializeFaroProject(faroProject);
@@ -1862,6 +1940,49 @@ public class ProjectFaroController extends BaseFaroController {
 				_getFriendlyURLErrorMessage(
 					groupFriendlyURLException.getType()));
 		}
+	}
+
+	private ProjectDisplay _updateSubscription(
+			FaroProject faroProject, List<OSBOfferingEntry> offeringEntries)
+		throws Exception {
+
+		_validateOfferingEntries(offeringEntries);
+
+		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
+
+		osbAccountEntry.setOfferingEntries(offeringEntries);
+
+		FaroSubscriptionDisplay faroSubscriptionDisplay =
+			new FaroSubscriptionDisplay(osbAccountEntry);
+
+		if (_isSubscriptionPlanChanged(
+				faroProject, faroSubscriptionDisplay.getName())) {
+
+			faroProject.setSubscriptionModifiedTime(System.currentTimeMillis());
+		}
+
+		try {
+			if (Objects.equals(
+					faroProject.getState(),
+					FaroProjectConstants.STATE_UNAVAILABLE)) {
+
+				faroProject.setState(FaroProjectConstants.STATE_READY);
+			}
+
+			faroSubscriptionDisplay.setCounts(
+				faroProject, _faroProjectUsageLocalService);
+
+			faroProject.setSubscription(
+				JSONUtil.writeValueAsString(faroSubscriptionDisplay));
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+
+			faroProject.setState(FaroProjectConstants.STATE_UNAVAILABLE);
+		}
+
+		return _getProjectDisplay(
+			_faroProjectLocalService.updateFaroProject(faroProject));
 	}
 
 	private void _validateCorpProjectUuid(String corpProjectUuid)
@@ -1967,6 +2088,14 @@ public class ProjectFaroController extends BaseFaroController {
 					"offeringEntries",
 					"Offering entries must have a valid \"status\"");
 			}
+		}
+	}
+
+	private void _validateSubscriptionPushEnabled() {
+		if (!FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
+			throw new FaroException(
+				"Subscription push is not enabled",
+				Response.Status.NOT_IMPLEMENTED);
 		}
 	}
 

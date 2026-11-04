@@ -8,16 +8,25 @@ package com.liferay.osb.faro.web.internal.controller.main;
 import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.provisioning.client.ProvisioningClient;
 import com.liferay.osb.faro.provisioning.client.constants.ProductConstants;
 import com.liferay.osb.faro.provisioning.client.internal.ProvisioningClientImpl;
 import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntry;
+import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntryBuilder;
 import com.liferay.osb.faro.provisioning.client.model.OSBOfferingEntry;
+import com.liferay.osb.faro.provisioning.client.model.display.main.FaroSubscriptionDisplay;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
+import com.liferay.osb.faro.service.FaroUserLocalService;
+import com.liferay.osb.faro.service.FaroUserLocalServiceUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
 import com.liferay.osb.faro.web.internal.exception.FaroValidationException;
+import com.liferay.osb.faro.web.internal.model.display.contacts.ProjectDisplay;
+import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.portal.cache.BasePortalCache;
+import com.liferay.portal.json.JSONFactoryImpl;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -39,6 +48,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import org.springframework.test.util.ReflectionTestUtils;
@@ -50,6 +60,12 @@ public class ProjectFaroControllerTest {
 
 	@Before
 	public void setUp() {
+		ReflectionTestUtils.setField(
+			_projectFaroController, "_faroProjectLocalService",
+			_faroProjectLocalService);
+		ReflectionTestUtils.setField(
+			_projectFaroController, "_faroUserLocalService",
+			_faroUserLocalService);
 		ReflectionTestUtils.setField(
 			_projectFaroController, "_provisionBackoffPortalCache",
 			new TestPortalCache());
@@ -66,16 +82,16 @@ public class ProjectFaroControllerTest {
 
 	@Test
 	public void testCheckProvisionBackoffWhenFailureRecordedWithinWindow() {
-		String corpProjectUuid = RandomTestUtil.randomString();
+		String salesforceAccountId = RandomTestUtil.randomString();
 
 		ReflectionTestUtils.invokeMethod(
-			_projectFaroController, "_putProvisionBackoff", corpProjectUuid,
+			_projectFaroController, "_putProvisionBackoff", salesforceAccountId,
 			new Exception());
 
 		try {
 			ReflectionTestUtils.invokeMethod(
 				_projectFaroController, "_checkProvisionBackoff",
-				corpProjectUuid);
+				salesforceAccountId);
 
 			Assert.fail();
 		}
@@ -91,17 +107,19 @@ public class ProjectFaroControllerTest {
 
 	@Test
 	public void testCheckProvisionBackoffWhenFailureWasCleared() {
-		String corpProjectUuid = RandomTestUtil.randomString();
+		String salesforceAccountId = RandomTestUtil.randomString();
 
 		ReflectionTestUtils.invokeMethod(
-			_projectFaroController, "_putProvisionBackoff", corpProjectUuid,
+			_projectFaroController, "_putProvisionBackoff", salesforceAccountId,
 			new Exception());
 
 		ReflectionTestUtils.invokeMethod(
-			_projectFaroController, "_clearProvisionBackoff", corpProjectUuid);
+			_projectFaroController, "_clearProvisionBackoff",
+			salesforceAccountId);
 
 		ReflectionTestUtils.invokeMethod(
-			_projectFaroController, "_checkProvisionBackoff", corpProjectUuid);
+			_projectFaroController, "_checkProvisionBackoff",
+			salesforceAccountId);
 	}
 
 	@Test
@@ -172,19 +190,161 @@ public class ProjectFaroControllerTest {
 	public void testCreateWithSalesforceAccountId() throws Exception {
 		String salesforceAccountId = RandomTestUtil.randomString();
 
-		FaroProject faroProject = _createFaroProject(
-			RandomTestUtil.randomString(), salesforceAccountId);
+		_createFaroProject(RandomTestUtil.randomString(), salesforceAccountId);
 
-		_assertSalesforceAccountId(faroProject, salesforceAccountId);
+		_assertSalesforceAccountId(salesforceAccountId);
 	}
 
 	@Test
 	public void testCreateWithoutSalesforceAccountId() throws Exception {
 		String salesforceAccountId = RandomTestUtil.randomString();
 
-		FaroProject faroProject = _createFaroProject(salesforceAccountId, null);
+		_createFaroProject(salesforceAccountId, null);
 
-		_assertSalesforceAccountId(faroProject, salesforceAccountId);
+		_assertSalesforceAccountId(salesforceAccountId);
+	}
+
+	@Test
+	public void testGetOSBAccountEntryWithSubscriptionPushEnabled()
+		throws Exception {
+
+		ReflectionTestUtil.setFieldValue(
+			FaroPropsValues.class, "OSB_FARO_SUBSCRIPTION_PUSH_ENABLED", true);
+
+		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
+
+		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
+
+		OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
+
+		osbOfferingEntry.setProductEntryId(
+			ProductConstants.SALESFORCE_PRODUCT_ID_ENTERPRISE);
+		osbOfferingEntry.setQuantity(1);
+
+		FaroProject faroProject = Mockito.mock(FaroProject.class);
+
+		Mockito.when(
+			faroProject.getSalesforceAccountId()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			faroProject.getSubscription()
+		).thenReturn(
+			JSONUtil.writeValueAsString(
+				new FaroSubscriptionDisplay(
+					OSBAccountEntryBuilder.setName(
+						RandomTestUtil.randomString()
+					).setOfferingEntries(
+						Collections.singletonList(osbOfferingEntry)
+					).build()))
+		);
+
+		OSBAccountEntry osbAccountEntry =
+			_projectFaroController.getOSBAccountEntry(faroProject);
+
+		List<OSBOfferingEntry> osbOfferingEntries =
+			osbAccountEntry.getOfferingEntries();
+
+		Assert.assertEquals(
+			osbOfferingEntries.toString(), 1, osbOfferingEntries.size());
+
+		osbOfferingEntry = osbOfferingEntries.get(0);
+
+		Assert.assertEquals(
+			ProductConstants.SALESFORCE_PRODUCT_ID_ENTERPRISE,
+			osbOfferingEntry.getProductEntryId());
+	}
+
+	@Test
+	public void testGetProjectDisplayBySalesforceAccountId() throws Exception {
+		String salesforceAccountId = RandomTestUtil.randomString();
+
+		long groupId = _setUpFaroProject(salesforceAccountId);
+
+		_setUpPermissionChecker(false);
+
+		Mockito.when(
+			_faroUserLocalService.fetchFaroUser(groupId, _USER_ID)
+		).thenReturn(
+			Mockito.mock(FaroUser.class)
+		);
+
+		_assertGetProjectDisplay(salesforceAccountId);
+	}
+
+	@Test
+	public void testGetProjectDisplayBySalesforceAccountIdWithOmniadmin()
+		throws Exception {
+
+		String salesforceAccountId = RandomTestUtil.randomString();
+
+		_setUpFaroProject(salesforceAccountId);
+
+		_setUpPermissionChecker(true);
+
+		_assertGetProjectDisplay(salesforceAccountId);
+
+		Mockito.verifyNoInteractions(_faroUserLocalService);
+	}
+
+	@Test
+	public void testGetProjectDisplayBySalesforceAccountIdWithPendingFaroUser()
+		throws Exception {
+
+		String salesforceAccountId = RandomTestUtil.randomString();
+
+		long groupId = _setUpFaroProject(salesforceAccountId);
+
+		_setUpPermissionChecker(false);
+
+		Mockito.when(
+			_faroUserLocalService.fetchFaroUser(groupId, _EMAIL_ADDRESS)
+		).thenReturn(
+			Mockito.mock(FaroUser.class)
+		);
+
+		_assertGetProjectDisplay(salesforceAccountId);
+	}
+
+	@Test
+	public void testGetProjectDisplayBySalesforceAccountIdWithoutFaroProject() {
+		_setUpPermissionChecker(true);
+
+		_assertGetProjectDisplayFails(
+			RandomTestUtil.randomString(), Response.Status.NOT_FOUND);
+	}
+
+	@Test
+	public void testGetProjectDisplayBySalesforceAccountIdWithoutFaroUser() {
+		String salesforceAccountId = RandomTestUtil.randomString();
+
+		_setUpFaroProject(salesforceAccountId);
+
+		_setUpPermissionChecker(false);
+
+		_assertGetProjectDisplayFails(
+			salesforceAccountId, Response.Status.FORBIDDEN);
+	}
+
+	@Test
+	public void testGetProvisionKey() {
+		String corpProjectUuid = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			corpProjectUuid,
+			ReflectionTestUtils.invokeMethod(
+				_projectFaroController, "_getProvisionKey", corpProjectUuid,
+				null));
+
+		String salesforceAccountId = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			salesforceAccountId,
+			ReflectionTestUtils.invokeMethod(
+				_projectFaroController, "_getProvisionKey", corpProjectUuid,
+				salesforceAccountId));
 	}
 
 	@Test
@@ -300,6 +460,72 @@ public class ProjectFaroControllerTest {
 	}
 
 	@Test
+	public void testUpdateSubscription() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			FaroPropsValues.class, "OSB_FARO_SUBSCRIPTION_PUSH_ENABLED", true);
+
+		String salesforceAccountId = RandomTestUtil.randomString();
+
+		try {
+			_projectFaroController.updateSubscription(
+				salesforceAccountId, null);
+
+			Assert.fail();
+		}
+		catch (FaroException faroException) {
+			Response response = faroException.getResponse();
+
+			Assert.assertEquals(
+				Response.Status.NOT_FOUND.getStatusCode(),
+				response.getStatus());
+		}
+
+		Mockito.verify(
+			_faroProjectLocalService, Mockito.never()
+		).fetchFaroProjectByCorpProjectUuid(
+			Mockito.anyString()
+		);
+
+		Mockito.verify(
+			_faroProjectLocalService
+		).fetchFaroProjectBySalesforceAccountId(
+			salesforceAccountId
+		);
+	}
+
+	@Test
+	public void testUpdateSubscriptionWithSubscriptionPushDisabled()
+		throws Exception {
+
+		String corpProjectUuid = RandomTestUtil.randomString();
+
+		try {
+			_projectFaroController.updateSubscription(corpProjectUuid, null);
+
+			Assert.fail();
+		}
+		catch (FaroException faroException) {
+			Response response = faroException.getResponse();
+
+			Assert.assertEquals(
+				Response.Status.NOT_FOUND.getStatusCode(),
+				response.getStatus());
+		}
+
+		Mockito.verify(
+			_faroProjectLocalService
+		).fetchFaroProjectByCorpProjectUuid(
+			corpProjectUuid
+		);
+
+		Mockito.verify(
+			_faroProjectLocalService, Mockito.never()
+		).fetchFaroProjectBySalesforceAccountId(
+			Mockito.anyString()
+		);
+	}
+
+	@Test
 	public void testValidateOfferingEntries() {
 		_validateOfferingEntries(ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE);
 
@@ -346,8 +572,53 @@ public class ProjectFaroControllerTest {
 			osbOfferingEntry.getStatus());
 	}
 
-	private void _assertSalesforceAccountId(
-			FaroProject faroProject, String salesforceAccountId)
+	private void _assertGetProjectDisplay(String salesforceAccountId)
+		throws Exception {
+
+		ReflectionTestUtil.setFieldValue(
+			FaroPropsValues.class, "OSB_FARO_SUBSCRIPTION_PUSH_ENABLED", true);
+
+		try (MockedStatic<FaroUserLocalServiceUtil>
+				faroUserLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					FaroUserLocalServiceUtil.class)) {
+
+			ProjectDisplay projectDisplay =
+				_projectFaroController.getProjectDisplay(salesforceAccountId);
+
+			Assert.assertEquals(
+				salesforceAccountId, projectDisplay.getSalesforceAccountId());
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(null);
+		}
+	}
+
+	private void _assertGetProjectDisplayFails(
+		String salesforceAccountId, Response.Status status) {
+
+		ReflectionTestUtil.setFieldValue(
+			FaroPropsValues.class, "OSB_FARO_SUBSCRIPTION_PUSH_ENABLED", true);
+
+		try {
+			_projectFaroController.getProjectDisplay(salesforceAccountId);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertTrue(exception instanceof FaroException);
+
+			FaroException faroException = (FaroException)exception;
+
+			Response response = faroException.getResponse();
+
+			Assert.assertEquals(status.getStatusCode(), response.getStatus());
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(null);
+		}
+	}
+
+	private void _assertSalesforceAccountId(String salesforceAccountId)
 		throws Exception {
 
 		Mockito.verify(
@@ -355,14 +626,9 @@ public class ProjectFaroControllerTest {
 		).addFaroProject(
 			Mockito.anyLong(), Mockito.any(), Mockito.eq(salesforceAccountId),
 			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.any(), Mockito.any(), Mockito.eq(salesforceAccountId),
 			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()
-		);
-
-		Mockito.verify(
-			faroProject
-		).setSalesforceAccountId(
-			salesforceAccountId
+			Mockito.any(), Mockito.any()
 		);
 	}
 
@@ -381,7 +647,7 @@ public class ProjectFaroControllerTest {
 		}
 	}
 
-	private FaroProject _createFaroProject(
+	private void _createFaroProject(
 			String osbAccountEntrySalesforceAccountId,
 			String salesforceAccountId)
 		throws Exception {
@@ -423,14 +689,10 @@ public class ProjectFaroControllerTest {
 				Mockito.anyLong(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
-				Mockito.any(), Mockito.any(), Mockito.any())
+				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())
 		).thenReturn(
 			faroProject
 		);
-
-		ReflectionTestUtils.setField(
-			_projectFaroController, "_faroProjectLocalService",
-			_faroProjectLocalService);
 
 		ReflectionTestUtils.setField(
 			_projectFaroController, "contactsEngineClient",
@@ -454,8 +716,72 @@ public class ProjectFaroControllerTest {
 		).updateFaroProject(
 			faroProject
 		);
+	}
 
-		return faroProject;
+	private long _setUpFaroProject(String salesforceAccountId) {
+		FaroProject faroProject = Mockito.mock(FaroProject.class);
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			faroProject.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
+		Mockito.when(
+			faroProject.getSalesforceAccountId()
+		).thenReturn(
+			salesforceAccountId
+		);
+
+		Mockito.when(
+			faroProject.getTimeZoneId()
+		).thenReturn(
+			"UTC"
+		);
+
+		Mockito.when(
+			_faroProjectLocalService.fetchFaroProjectBySalesforceAccountId(
+				salesforceAccountId)
+		).thenReturn(
+			faroProject
+		);
+
+		return groupId;
+	}
+
+	private void _setUpPermissionChecker(boolean omniadmin) {
+		PermissionChecker permissionChecker = Mockito.mock(
+			PermissionChecker.class);
+
+		User user = Mockito.mock(User.class);
+
+		Mockito.when(
+			user.getEmailAddress()
+		).thenReturn(
+			_EMAIL_ADDRESS
+		);
+
+		Mockito.when(
+			permissionChecker.getUser()
+		).thenReturn(
+			user
+		);
+
+		Mockito.when(
+			permissionChecker.getUserId()
+		).thenReturn(
+			_USER_ID
+		);
+
+		Mockito.when(
+			permissionChecker.isOmniadmin()
+		).thenReturn(
+			omniadmin
+		);
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 	}
 
 	private void _validateOfferingEntries(String productEntryId) {
@@ -469,8 +795,15 @@ public class ProjectFaroControllerTest {
 			Collections.singletonList(osbOfferingEntry));
 	}
 
+	private static final String _EMAIL_ADDRESS =
+		RandomTestUtil.randomString() + "@liferay.com";
+
+	private static final long _USER_ID = RandomTestUtil.randomLong();
+
 	private final FaroProjectLocalService _faroProjectLocalService =
 		Mockito.mock(FaroProjectLocalService.class);
+	private final FaroUserLocalService _faroUserLocalService = Mockito.mock(
+		FaroUserLocalService.class);
 	private final ProjectFaroController _projectFaroController =
 		new ProjectFaroController();
 

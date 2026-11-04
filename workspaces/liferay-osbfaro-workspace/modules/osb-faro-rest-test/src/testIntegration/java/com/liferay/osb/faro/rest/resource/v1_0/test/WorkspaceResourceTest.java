@@ -37,7 +37,7 @@ public class WorkspaceResourceTest extends BaseWorkspaceResourceTestCase {
 
 		FaroProject faroProject = _faroProjectLocalService.addFaroProject(
 			user.getUserId(), workspace.getName(), null, null, null, null,
-			Collections.emptyList(), null, null, null, null,
+			Collections.emptyList(), null, null, null, null, null,
 			FaroProjectConstants.STATE_READY, "{}", "UTC", null);
 
 		Role role = _roleLocalService.getRole(
