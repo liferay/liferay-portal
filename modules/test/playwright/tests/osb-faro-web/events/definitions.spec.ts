@@ -480,7 +480,9 @@ test(
 			projectGroupId: project.groupId,
 		});
 
-		await page.getByLabel('Display Name').fill(displayName);
+		await page
+			.getByRole('textbox', {name: 'Display Name'})
+			.fill(displayName);
 
 		await saveCustomEventEditor(page);
 
@@ -501,11 +503,13 @@ test(
 			projectGroupId: project.groupId,
 		});
 
-		await page.getByLabel('Display Name').fill('a'.repeat(256));
+		await page
+			.getByRole('textbox', {name: 'Display Name'})
+			.fill('a'.repeat(256));
 
 		// Blur so Formik runs validation and surfaces the field error
 
-		await page.getByLabel('Display Name').blur();
+		await page.getByRole('textbox', {name: 'Display Name'}).blur();
 
 		await expect(page.getByText('Exceeds maximum length.')).toBeVisible();
 	}
@@ -572,7 +576,9 @@ test(
 
 			await searchAttribute(attributeName);
 
-			await expect(page.getByText(dataType)).toBeVisible();
+			await expect(
+				page.getByRole('row', {name: attributeName}).getByText(dataType)
+			).toBeVisible();
 		}
 	}
 );
@@ -653,9 +659,11 @@ test(
 
 		await page.getByRole('button', {name: 'Edit'}).click();
 
-		await page.getByLabel('Display Name').fill('a'.repeat(256));
+		await page
+			.getByRole('textbox', {name: 'Display Name'})
+			.fill('a'.repeat(256));
 
-		await page.getByLabel('Display Name').blur();
+		await page.getByRole('textbox', {name: 'Display Name'}).blur();
 
 		await expect(page.getByText('Exceeds maximum length.')).toBeVisible();
 	}
@@ -767,7 +775,9 @@ test(
 
 			await openGlobalAttribute();
 
-			await page.getByLabel('Display Name').fill(displayName);
+			await page
+				.getByRole('textbox', {name: 'Display Name'})
+				.fill(displayName);
 
 			await saveAttributeEditor(page);
 
@@ -785,7 +795,9 @@ test(
 
 			await openGlobalAttribute();
 
-			await page.getByLabel('Display Name').fill(globalAttributeName);
+			await page
+				.getByRole('textbox', {name: 'Display Name'})
+				.fill(globalAttributeName);
 
 			await page.getByLabel('Description').fill('');
 
@@ -848,7 +860,9 @@ test(
 
 		// Renaming the display name to one that already exists is rejected
 
-		await page.getByLabel('Display Name').fill(existingEventName);
+		await page
+			.getByRole('textbox', {name: 'Display Name'})
+			.fill(existingEventName);
 
 		const [response] = await Promise.all([
 			page.waitForResponse((response) =>
