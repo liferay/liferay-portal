@@ -1379,14 +1379,14 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		LayoutFriendlyURL layoutFriendlyURL = layoutFriendlyURLs.get(0);
 
+		if (!LanguageUtil.isAvailableLocale(
+				layout.getGroupId(), layoutFriendlyURL.getLanguageId())) {
+
+			return null;
+		}
+
 		Locale locale = LocaleUtil.fromLanguageId(
 			layoutFriendlyURL.getLanguageId());
-
-		if (!LanguageUtil.isAvailableLocale(layout.getGroupId(), locale)) {
-			return LocaleUtil.fromLanguageId(
-				(String)httpServletRequest.getAttribute(
-					WebKeys.I18N_LANGUAGE_ID));
-		}
 
 		Locale groupLocale = locale;
 

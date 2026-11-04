@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -110,6 +111,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -589,6 +591,92 @@ public class FriendlyURLServletTest {
 			_redirectConstructor1.newInstance(getURL(_layout)));
 	}
 
+	@Test
+	public void testGetRedirectWithLocaleDisabledInCompany() throws Throwable {
+		Group group = GroupTestUtil.addGroup();
+
+		LayoutTestUtil.addTypePortletLayout(
+			group.getGroupId(), false,
+			HashMapBuilder.put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.UK, "/home-gb"
+			).put(
+				LocaleUtil.US, "/home"
+			).build());
+
+		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales();
+
+		try {
+			CompanyTestUtil.resetCompanyLocales(
+				TestPropsValues.getCompanyId(),
+				Arrays.asList(
+					LocaleUtil.BRAZIL, LocaleUtil.HUNGARY, LocaleUtil.US),
+				LocaleUtil.getDefault());
+
+			MockHttpServletRequest mockHttpServletRequest =
+				new MockHttpServletRequest(
+					"GET",
+					StringBundler.concat(
+						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+						group.getFriendlyURL(), "/home-gb"));
+
+			mockHttpServletRequest.setPathInfo(
+				group.getFriendlyURL() + "/home-gb");
+
+			testGetRedirect(
+				mockHttpServletRequest, group.getFriendlyURL() + "/home-gb",
+				_redirectConstructor2.newInstance(
+					StringBundler.concat(
+						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+						group.getFriendlyURL(), "/home"),
+					true, false));
+		}
+		finally {
+			CompanyTestUtil.resetCompanyLocales(
+				TestPropsValues.getCompanyId(), availableLocales,
+				LocaleUtil.getDefault());
+		}
+	}
+
+	@Test
+	public void testGetRedirectWithLocaleDisabledInSite() throws Throwable {
+		LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId(), false,
+			HashMapBuilder.put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.UK, "/home-gb"
+			).put(
+				LocaleUtil.US, "/home"
+			).build());
+
+		GroupTestUtil.updateDisplaySettings(
+			_group.getGroupId(),
+			Arrays.asList(LocaleUtil.BRAZIL, LocaleUtil.HUNGARY, LocaleUtil.US),
+			LocaleUtil.US);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest(
+				"GET",
+				StringBundler.concat(
+					PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+					_group.getFriendlyURL(), "/home-gb"));
+
+		mockHttpServletRequest.setPathInfo(
+			_group.getFriendlyURL() + "/home-gb");
+
+		testGetRedirect(
+			mockHttpServletRequest, _group.getFriendlyURL() + "/home-gb",
+			_redirectConstructor2.newInstance(
+				StringBundler.concat(
+					PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+					_group.getFriendlyURL(), "/home"),
+				true, false));
+	}
+
 	@Test(expected = NoSuchGroupException.class)
 	public void testGetRedirectWithNonexistentSite() throws Throwable {
 		MockHttpServletRequest mockHttpServletRequest =
@@ -886,43 +974,6 @@ public class FriendlyURLServletTest {
 			"/careers", mockHttpServletResponse.getHeader("Location"));
 		Assert.assertEquals(302, mockHttpServletResponse.getStatus());
 		Assert.assertTrue(mockHttpServletResponse.isCommitted());
-	}
-
-	@Test
-	public void testServiceForwardToDefaultLayoutWith404OnDisabledLocale()
-		throws Throwable {
-
-		Group group = GroupTestUtil.addGroup();
-
-		Locale locale = LocaleUtil.getSiteDefault();
-
-		Layout homeLayout = LayoutTestUtil.addTypePortletLayout(
-			group.getGroupId(), false,
-			HashMapBuilder.put(
-				locale, "home"
-			).build(),
-			HashMapBuilder.put(
-				locale, "/home"
-			).put(
-				LocaleUtil.UK, "/home1"
-			).build());
-
-		GroupTestUtil.updateDisplaySettings(
-			group.getGroupId(), Arrays.asList(LocaleUtil.UK), LocaleUtil.UK);
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		testGetRedirect(
-			new MockHttpServletRequest(
-				"GET",
-				StringBundler.concat(
-					PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-					group.getFriendlyURL(), "/home")),
-			mockHttpServletResponse, getPath(group, homeLayout) + "/home",
-			_redirectConstructor1.newInstance(getURL(homeLayout)));
-
-		Assert.assertEquals(404, mockHttpServletResponse.getStatus());
 	}
 
 	@Test
