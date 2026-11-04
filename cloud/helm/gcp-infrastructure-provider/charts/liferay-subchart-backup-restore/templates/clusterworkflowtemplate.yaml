@@ -258,7 +258,7 @@ spec:
                                     value: provisioning-database-user
                                 -   name: target-active-data-plane
                                     value: "{{ "{{" }}inputs.parameters.data-inactive}}"
-                        depends: reset-postgres-password && restore-dl-bucket
+                        depends: restore-cloudsql-backup && restore-dl-bucket
                         name: provision-database-user
                         template: apply-wait-infrastructure
                     -   arguments:
@@ -271,15 +271,6 @@ spec:
                                     value: "{{ "{{" }}inputs.parameters.data-inactive}}"
                         name: provision-target-data-plane
                         template: apply-wait-infrastructure
-                    -   arguments:
-                            parameters:
-                                -   name: data-inactive
-                                    value: "{{ "{{" }}inputs.parameters.data-inactive}}"
-                                -   name: restore-instance
-                                    value: "{{ "{{" }}tasks.get-inactive-cloudsql-instance.outputs.result}}"
-                        depends: restore-cloudsql-backup
-                        name: reset-postgres-password
-                        template: reset-postgres-password
                     -   arguments:
                             parameters:
                                 -   name: database-snapshot-uuid
@@ -315,32 +306,6 @@ spec:
                     -   name: vault-bucket
                     -   name: vault-path
             name: prepare-target-data-plane
-        -   container:
-                args:
-                    -   sql
-                    -   users
-                    -   set-password
-                    -   postgres
-                    -   --instance={{ "{{" }}inputs.parameters.restore-instance}}
-                    -   --password=$(PGPASSWORD)
-                    -   --quiet
-                command: [gcloud]
-                env:
-                    -   name: CLOUDSDK_CONFIG
-                        value: /tmp/gcloud
-                    -   name: PGPASSWORD
-                        valueFrom:
-                            secretKeyRef:
-                                key: password
-                                name: liferay-database-{{ "{{" }}inputs.parameters.data-inactive}}-root-password
-                image: "{{ .Values.images.gcloud.repository }}:{{ .Values.images.gcloud.tag }}"
-                resources:
-                    {{- .Values.resources.default | toYaml | nindent 20 }}
-            inputs:
-                parameters:
-                    -   name: data-inactive
-                    -   name: restore-instance
-            name: reset-postgres-password
         -   name: reset-restore-phase
             script:
                 command: [sh]
