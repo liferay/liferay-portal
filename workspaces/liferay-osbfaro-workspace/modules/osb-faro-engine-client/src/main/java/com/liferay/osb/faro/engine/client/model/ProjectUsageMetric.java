@@ -16,6 +16,15 @@ import java.util.Map;
  */
 public class ProjectUsageMetric {
 
+	public long getActiveLogicalBytes() {
+		return _activeLogicalBytes;
+	}
+
+	@JsonProperty("anonymousIndividuals")
+	public long getAnonymousIndividualsCount() {
+		return _anonymousIndividualsCount;
+	}
+
 	public Date getCreateDate() {
 		return _createDate;
 	}
@@ -25,9 +34,22 @@ public class ProjectUsageMetric {
 		return _embeddedResources;
 	}
 
+	@JsonProperty("events")
+	public long getEventsCount() {
+		return _eventsCount;
+	}
+
 	@JsonProperty("knownIndividuals")
 	public long getKnownIndividualsCount() {
 		return _knownIndividualsCount;
+	}
+
+	public long getLongTermLogicalBytes() {
+		return _longTermLogicalBytes;
+	}
+
+	public long getOnDemandBytesBilled() {
+		return _onDemandBytesBilled;
 	}
 
 	@JsonProperty("pageViews")
@@ -39,6 +61,18 @@ public class ProjectUsageMetric {
 		return _projectId;
 	}
 
+	public long getReservationSlotMs() {
+		return _reservationSlotMs;
+	}
+
+	public void setActiveLogicalBytes(long activeLogicalBytes) {
+		_activeLogicalBytes = activeLogicalBytes;
+	}
+
+	public void setAnonymousIndividualsCount(long anonymousIndividualsCount) {
+		_anonymousIndividualsCount = anonymousIndividualsCount;
+	}
+
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
@@ -47,8 +81,20 @@ public class ProjectUsageMetric {
 		_embeddedResources = embeddedResources;
 	}
 
+	public void setEventsCount(long eventsCount) {
+		_eventsCount = eventsCount;
+	}
+
 	public void setKnownIndividualsCount(long knownIndividualsCount) {
 		_knownIndividualsCount = knownIndividualsCount;
+	}
+
+	public void setLongTermLogicalBytes(long longTermLogicalBytes) {
+		_longTermLogicalBytes = longTermLogicalBytes;
+	}
+
+	public void setOnDemandBytesBilled(long onDemandBytesBilled) {
+		_onDemandBytesBilled = onDemandBytesBilled;
 	}
 
 	public void setPageViewsCount(long pageViewsCount) {
@@ -59,10 +105,20 @@ public class ProjectUsageMetric {
 		_projectId = projectId;
 	}
 
+	public void setReservationSlotMs(long reservationSlotMs) {
+		_reservationSlotMs = reservationSlotMs;
+	}
+
+	private long _activeLogicalBytes;
+	private long _anonymousIndividualsCount;
 	private Date _createDate;
 	private Map<String, Object> _embeddedResources = new HashMap<>();
+	private long _eventsCount;
 	private long _knownIndividualsCount;
+	private long _longTermLogicalBytes;
+	private long _onDemandBytesBilled;
 	private long _pageViewsCount;
 	private String _projectId;
+	private long _reservationSlotMs;
 
 }
