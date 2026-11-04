@@ -106,6 +106,8 @@ const Panel = ({
 	);
 };
 
+const mockRefetchLifecyclesPage = jest.fn();
+
 const mockLifecyclesPage = (items: ILifecycleDetail[], totalCount = 3) =>
 	mockedUseRequest.mockImplementation(
 		({
@@ -129,7 +131,10 @@ const mockLifecyclesPage = (items: ILifecycleDetail[], totalCount = 3) =>
 						),
 			error: false,
 			loading: false,
-			refetch: jest.fn(),
+			refetch:
+				dataSourceFn === API.lifecycle.fetchLifecyclesPage
+					? mockRefetchLifecyclesPage
+					: jest.fn(),
 		})
 	);
 
@@ -522,9 +527,7 @@ describe('LifecycleSwitchPanel', () => {
 			await waitFor(() => expect(onDefaultDelete).toHaveBeenCalled());
 
 			await waitFor(() =>
-				expect(getPageRequests().pop()).toEqual(
-					expect.objectContaining({refreshCount: 1})
-				)
+				expect(mockRefetchLifecyclesPage).toHaveBeenCalledTimes(1)
 			);
 		});
 
@@ -536,9 +539,7 @@ describe('LifecycleSwitchPanel', () => {
 			await deleteRow('Expansion Lifecycle');
 
 			await waitFor(() =>
-				expect(getPageRequests().pop()).toEqual(
-					expect.objectContaining({refreshCount: 1})
-				)
+				expect(mockRefetchLifecyclesPage).toHaveBeenCalledTimes(1)
 			);
 
 			expect(onDefaultDelete).not.toHaveBeenCalled();
@@ -554,9 +555,11 @@ describe('LifecycleSwitchPanel', () => {
 			await deleteRow('Partner Lifecycle');
 
 			await waitFor(() =>
-				expect(getPageRequests().pop()).toEqual(
-					expect.objectContaining({page: 2, refreshCount: 1})
-				)
+				expect(mockRefetchLifecyclesPage).toHaveBeenCalledTimes(1)
+			);
+
+			expect(getPageRequests().pop()).toEqual(
+				expect.objectContaining({page: 2})
 			);
 
 			expect(screen.getByTestId('view')).toHaveTextContent(
@@ -575,9 +578,11 @@ describe('LifecycleSwitchPanel', () => {
 
 			await waitFor(() =>
 				expect(getPageRequests().pop()).toEqual(
-					expect.objectContaining({page: 1, refreshCount: 0})
+					expect.objectContaining({page: 1})
 				)
 			);
+
+			expect(mockRefetchLifecyclesPage).not.toHaveBeenCalled();
 		});
 
 		it('reports a default deleted from its details', async () => {

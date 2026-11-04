@@ -112,8 +112,6 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 
 	const [pageState, setPageState] = useState({page: 1, search: ''});
 
-	const [refreshCount, setRefreshCount] = useState(0);
-
 	const search = useDebounce(query, SEARCH_DEBOUNCE_DELAY);
 
 	const page = pageState.search === search ? pageState.page : 1;
@@ -124,16 +122,13 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 		groupId: groupId!,
 		page,
 		pageSize: LIFECYCLES_PAGE_SIZE,
-		refreshCount,
 		search,
 	};
 
-	const {data, error, loading} = useRequest({
+	const {data, error, loading, refetch} = useRequest({
 		dataSourceFn: API.lifecycle.fetchLifecyclesPage,
 		variables,
 	});
-
-	const refresh = () => setRefreshCount((count) => count + 1);
 
 	const lifecycles = data?.items ?? [];
 
@@ -142,7 +137,7 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 			setPageState({page: page - 1, search});
 		}
 		else {
-			refresh();
+			refetch();
 		}
 
 		if (defaultAccountLifecycle) {
@@ -158,7 +153,7 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 		}
 
 		if (error) {
-			return <ErrorDisplay onReload={refresh} spacer />;
+			return <ErrorDisplay onReload={refetch} spacer />;
 		}
 
 		if (!lifecycles.length) {

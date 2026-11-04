@@ -983,6 +983,8 @@ describe('BaseLifecycle', () => {
 	});
 
 	describe('when the panel is open beside the dashboard', () => {
+		const mockRefetchList = jest.fn();
+
 		const LIST_LIFECYCLES = [
 			{id: '1', name: 'Growth Hub'},
 			{id: '2', name: 'Partner Lifecycle'},
@@ -1030,7 +1032,7 @@ describe('BaseLifecycle', () => {
 						},
 						error: false,
 						loading: false,
-						refetch: jest.fn(),
+						refetch: mockRefetchList,
 					};
 				}
 			);
@@ -1052,17 +1054,7 @@ describe('BaseLifecycle', () => {
 				screen.getByRole('button', {name: /switch dashboard/i})
 			);
 
-			const listRequests = () =>
-				mockedUseRequest.mock.calls.filter(
-					([{dataSourceFn}]) =>
-						dataSourceFn === API.lifecycle.fetchLifecyclesPage
-				);
-
-			const lastRefreshCount = () =>
-				listRequests()[listRequests().length - 1][0].variables
-					.refreshCount;
-
-			expect(lastRefreshCount()).toBe(0);
+			expect(mockRefetchList).not.toHaveBeenCalled();
 
 			fireEvent.click(
 				within(getRow('Retention Lifecycle')).getByRole('button', {
@@ -1078,7 +1070,9 @@ describe('BaseLifecycle', () => {
 				})
 			);
 
-			await waitFor(() => expect(lastRefreshCount()).toBe(1));
+			await waitFor(() =>
+				expect(mockRefetchList).toHaveBeenCalledTimes(1)
+			);
 
 			expect(API.lifecycle.deleteLifecycle).toHaveBeenCalledWith({
 				channelId: '123',
