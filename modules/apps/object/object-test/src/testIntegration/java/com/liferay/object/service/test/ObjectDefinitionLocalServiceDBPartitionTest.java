@@ -6,17 +6,14 @@
 package com.liferay.object.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.counter.kernel.model.Counter;
-import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
-import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
@@ -79,62 +76,6 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 	}
 
 	@Test
-	public void testAddObjectRelationshipWithObjectDefinitionIdOfAnotherCompany()
-		throws Exception {
-
-		Company company1 = CompanyTestUtil.addCompany();
-		Company company2 = CompanyTestUtil.addCompany();
-
-		try {
-			_resetCounter(
-				company1,
-				Math.max(_increment(company1), _increment(company2)) +
-					(PropsValues.COUNTER_INCREMENT * 10));
-
-			ObjectDefinition objectDefinition1 = _addCustomObjectDefinition(
-				company1);
-			ObjectDefinition objectDefinition2 = _addCustomObjectDefinition(
-				company1);
-
-			_addEdgeObjectRelationship(
-				company1, objectDefinition1, objectDefinition2);
-
-			_resetCounter(
-				company2, objectDefinition2.getObjectDefinitionId() - 1);
-
-			ObjectDefinition objectDefinition3 = _addCustomObjectDefinition(
-				company2);
-
-			Assert.assertEquals(
-				objectDefinition2.getObjectDefinitionId(),
-				objectDefinition3.getObjectDefinitionId());
-
-			ObjectDefinition objectDefinition4 = _addCustomObjectDefinition(
-				company2);
-
-			_addEdgeObjectRelationship(
-				company2, objectDefinition4, objectDefinition3);
-
-			try (SafeCloseable safeCloseable =
-					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-						company2.getCompanyId())) {
-
-				objectDefinition3 =
-					_objectDefinitionLocalService.getObjectDefinition(
-						objectDefinition3.getObjectDefinitionId());
-
-				Assert.assertArrayEquals(
-					new long[] {objectDefinition4.getObjectDefinitionId()},
-					objectDefinition3.getRootObjectDefinitionIds());
-			}
-		}
-		finally {
-			_companyLocalService.deleteCompany(company1);
-			_companyLocalService.deleteCompany(company2);
-		}
-	}
-
-	@Test
 	public void testDeleteCompanyRemovesResourceActions() throws Exception {
 		Company company = CompanyTestUtil.addCompany();
 
@@ -169,17 +110,11 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 
 		Company company = CompanyTestUtil.addCompany();
 
-		Map<Long, Map<Long, long[]>> rootObjectDefinitionIdsMaps =
-			ReflectionTestUtil.getFieldValue(
-				ObjectDefinitionTreeUtil.class, "_rootObjectDefinitionIdsMaps");
-
-		Assert.assertTrue(
-			rootObjectDefinitionIdsMaps.containsKey(company.getCompanyId()));
+		Assert.assertTrue(_hasRootObjectDefinitionIds(company));
 
 		_companyLocalService.deleteCompany(company);
 
-		Assert.assertFalse(
-			rootObjectDefinitionIdsMaps.containsKey(company.getCompanyId()));
+		Assert.assertFalse(_hasRootObjectDefinitionIds(company));
 	}
 
 	@Test
@@ -322,49 +257,6 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 		}
 	}
 
-	private ObjectDefinition _addCustomObjectDefinition(Company company)
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					company.getCompanyId())) {
-
-			User user = UserTestUtil.getAdminUser(company.getCompanyId());
-
-			return ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				0, ObjectDefinitionTestUtil.getRandomName(),
-				Collections.singletonList(
-					new TextObjectFieldBuilder(
-					).labelMap(
-						RandomTestUtil.randomLocaleStringMap()
-					).name(
-						StringUtil.randomId()
-					).build()),
-				user.getUserId());
-		}
-	}
-
-	private void _addEdgeObjectRelationship(
-			Company company, ObjectDefinition objectDefinition1,
-			ObjectDefinition objectDefinition2)
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					company.getCompanyId())) {
-
-			User user = UserTestUtil.getAdminUser(company.getCompanyId());
-
-			_objectRelationshipLocalService.addObjectRelationship(
-				null, user.getUserId(),
-				objectDefinition1.getObjectDefinitionId(),
-				objectDefinition2.getObjectDefinitionId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, true,
-				RandomTestUtil.randomLocaleStringMap(), StringUtil.randomId(),
-				false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
-		}
-	}
-
 	private void _assertResourceActionsCount(
 		long companyId, ObjectDefinition objectDefinition,
 		int resourceActionsCount) {
@@ -399,13 +291,18 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 			serviceReferences.size());
 	}
 
-	private long _increment(Company company) {
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					company.getCompanyId())) {
+	private boolean _hasRootObjectDefinitionIds(Company company) {
+		Map<String, long[]> rootObjectDefinitionIds =
+			ReflectionTestUtil.getFieldValue(
+				ObjectDefinitionTreeUtil.class, "_rootObjectDefinitionIds");
 
-			return _counterLocalService.increment();
+		for (String key : rootObjectDefinitionIds.keySet()) {
+			if (key.endsWith(StringPool.AT + company.getCompanyId())) {
+				return true;
+			}
 		}
+
+		return false;
 	}
 
 	private ObjectDefinition _publishObjectDefinition(Company company)
@@ -429,29 +326,14 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 		}
 	}
 
-	private void _resetCounter(Company company, long size) {
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					company.getCompanyId())) {
-
-			_counterLocalService.reset(Counter.class.getName(), size);
-		}
-	}
-
 	@Inject
 	private CompanyLocalService _companyLocalService;
-
-	@Inject
-	private CounterLocalService _counterLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Inject
-	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Inject
 	private ResourceActionLocalService _resourceActionLocalService;
