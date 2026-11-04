@@ -117,6 +117,7 @@ http://www.w3.org/TR/html401/struct/global.html
 		<regexp name="systemColor" value="(activeborder|activecaption|appworkspace|background|buttonface|buttonhighlight|buttonshadow|buttontext|captiontext|graytext|highlight|highlighttext|inactiveborder|inactivecaption|inactivecaptiontext|infobackground|infotext|menu|menutext|scrollbar|threeddarkshadow|threedface|threedhighlight|threedlightshadow|threedshadow|window|windowframe|windowtext)"/>
 
 
+		<regexp name="phoneURL" value="(\s)*(sms|tel):[\p{N}\+\-\.\(\)\p{Zs};,=\?&amp;\#\*%\p{L}]*(\s)*"/>
 		<regexp name="svgLength" value="(-|\+)?([0-9]+(\.[0-9]+)?|\.[0-9]+)(px|pt|pc|mm|cm|in|em|ex|%)?"/>
 		<regexp name="svgNumberList" value="(\s|,)*(-|\+)?([0-9]+(\.[0-9]+)?|\.[0-9]+)([eE](-|\+)?[0-9]+)?((\s|,)+(-|\+)?([0-9]+(\.[0-9]+)?|\.[0-9]+)([eE](-|\+)?[0-9]+)?)*(\s|,)*"/>
 		<regexp name="svgViewBox" value="(-|\+)?([0-9]+(\.[0-9]+)?)((\s|,)+(-|\+)?([0-9]+(\.[0-9]+)?)){3}"/>
@@ -658,6 +659,14 @@ http://www.w3.org/TR/html401/struct/global.html
 				<literal value="userSpaceOnUse"/>
 				<literal value="objectBoundingBox"/>
 			</literal-list>
+		</attribute>
+
+		<attribute name="href">
+			<regexp-list>
+				<regexp name="onsiteURL"/>
+				<regexp name="offsiteURL"/>
+				<regexp name="phoneURL"/>
+			</regexp-list>
 		</attribute>
 
 		<attribute name="image-rendering" onInvalid="removeAttribute">
