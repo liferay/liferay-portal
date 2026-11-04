@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
@@ -94,6 +94,50 @@ export class CollectionsPage {
 		await this.page.getByRole('link', {name}).click();
 
 		await this.page.waitForLoadState('networkidle');
+	}
+
+	/**
+	 * On a collection's edit page, adds a personalized variation for the given
+	 * audience.
+	 */
+	async addAudienceVariation(audienceName: string) {
+		await this.openAudiencePicker();
+
+		await this.page
+			.getByRole('option', {exact: true, name: audienceName})
+			.click();
+
+		await this.page
+			.locator('.modal')
+			.getByRole('button', {exact: true, name: 'Create'})
+			.click();
+
+		await expect(
+			this.page
+				.locator('.sortable-list-item')
+				.filter({hasText: audienceName})
+		).toBeVisible();
+
+		await waitForAlert(this.page);
+
+		await this.page.waitForLoadState('networkidle');
+	}
+
+	/**
+	 * On a collection's edit page, opens the new personalized variation modal
+	 * and expands its audience picker.
+	 */
+	async openAudiencePicker() {
+		const newPersonalizedVariationModal = this.page
+			.locator('.modal')
+			.filter({hasText: 'New Personalized Variation'});
+
+		await clickAndExpectToBeVisible({
+			target: newPersonalizedVariationModal,
+			trigger: this.page.getByRole('button', {name: 'Create Variation'}),
+		});
+
+		await newPersonalizedVariationModal.getByRole('combobox').click();
 	}
 
 	/**
@@ -444,6 +488,8 @@ export class CollectionsPage {
 			.locator('.modal-footer')
 			.getByRole('button', {exact: true, name: 'Select'})
 			.click();
+
+		await waitForAlert(this.page);
 	}
 
 	/**

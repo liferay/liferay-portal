@@ -44,6 +44,9 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -864,6 +867,47 @@ public class AssetListEntryServiceTest {
 			assetListEntry.getTypeSettings(audienceEntryERC));
 	}
 
+	@FeatureFlag("LPD-109242")
+	@Test
+	public void testUpdateAssetListEntryTypeSettingsWithAudienceEntryERCAndSegmentsEntryVariation()
+		throws PortalException {
+
+		String journalArticleTypeSettings = _getTypeSettings(
+			"com.liferay.journal.model.JournalArticle");
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry =
+			_assetListEntryService.addDynamicAssetListEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				RandomTestUtil.randomString(), journalArticleTypeSettings,
+				serviceContext);
+
+		_assetListEntryService.updateAssetListEntry(
+			assetListEntry.getAssetListEntryId(), RandomTestUtil.randomLong(),
+			_getTypeSettings("com.liferay.blogs.model.BlogsEntry"),
+			serviceContext);
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+
+		_addAssetListEntryAudienceEntryRel(
+			assetListEntry, audienceEntryERC, journalArticleTypeSettings,
+			serviceContext);
+
+		_assetListEntryService.updateAssetListEntryTypeSettings(
+			assetListEntry.getAssetListEntryId(), audienceEntryERC,
+			journalArticleTypeSettings);
+
+		assetListEntry = _assetListEntryService.getAssetListEntry(
+			assetListEntry.getAssetListEntryId());
+
+		Assert.assertEquals(
+			"com.liferay.journal.model.JournalArticle",
+			assetListEntry.getAssetEntryType());
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testUpdateAssetListEntryTypeSettingsWithoutPermission()
 		throws Exception {
@@ -881,6 +925,99 @@ public class AssetListEntryServiceTest {
 			_assetListEntryService.updateAssetListEntryTypeSettings(
 				assetListEntry.getAssetListEntryId(), audienceEntryERC,
 				RandomTestUtil.randomString());
+		}
+	}
+
+	@FeatureFlag("LPD-109242")
+	@Test
+	public void testUpdateAssetListEntryWithAudienceEntryERC()
+		throws PortalException {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry =
+			_assetListEntryService.addDynamicAssetListEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				RandomTestUtil.randomString(),
+				_getTypeSettings("com.liferay.journal.model.JournalArticle"),
+				serviceContext);
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+
+		String typeSettings = UnicodePropertiesBuilder.put(
+			"groupIds", _group.getGroupId()
+		).buildString();
+
+		_assetListEntryService.updateAssetListEntry(
+			assetListEntry.getAssetListEntryId(), audienceEntryERC,
+			typeSettings, serviceContext);
+
+		assetListEntry = _assetListEntryService.getAssetListEntry(
+			assetListEntry.getAssetListEntryId());
+
+		Assert.assertEquals(
+			AssetEntry.class.getName(), assetListEntry.getAssetEntryType());
+		Assert.assertEquals(
+			typeSettings, assetListEntry.getTypeSettings(audienceEntryERC));
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-109242")
+	@Test
+	public void testUpdateAssetListEntryWithSegmentsEntryIdAndAudienceEntryVariation()
+		throws PortalException {
+
+		String journalArticleTypeSettings = _getTypeSettings(
+			"com.liferay.journal.model.JournalArticle");
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry =
+			_assetListEntryService.addDynamicAssetListEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				RandomTestUtil.randomString(), journalArticleTypeSettings,
+				serviceContext);
+
+		_addAssetListEntryAudienceEntryRel(
+			assetListEntry, RandomTestUtil.randomString(),
+			_getTypeSettings("com.liferay.blogs.model.BlogsEntry"),
+			serviceContext);
+
+		_assetListEntryService.updateAssetListEntry(
+			assetListEntry.getAssetListEntryId(),
+			SegmentsEntryConstants.ID_DEFAULT, journalArticleTypeSettings,
+			serviceContext);
+
+		assetListEntry = _assetListEntryService.getAssetListEntry(
+			assetListEntry.getAssetListEntryId());
+
+		Assert.assertEquals(
+			"com.liferay.journal.model.JournalArticle",
+			assetListEntry.getAssetEntryType());
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testUpdateAssetListEntryWithoutPermission() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry =
+			_assetListEntryService.addDynamicAssetListEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				serviceContext);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER))) {
+
+			_assetListEntryService.updateAssetListEntry(
+				assetListEntry.getAssetListEntryId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				serviceContext);
 		}
 	}
 
@@ -941,6 +1078,12 @@ public class AssetListEntryServiceTest {
 						SegmentsEntryConstants.ID_DEFAULT, QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS),
 				AssetListEntryAssetEntryRel::getAssetEntryId));
+	}
+
+	private String _getTypeSettings(String className) {
+		return UnicodePropertiesBuilder.put(
+			"anyAssetType", PortalUtil.getClassNameId(className)
+		).buildString();
 	}
 
 	@Inject
