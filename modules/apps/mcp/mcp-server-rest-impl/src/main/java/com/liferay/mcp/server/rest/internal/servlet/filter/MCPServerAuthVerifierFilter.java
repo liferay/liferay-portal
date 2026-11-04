@@ -142,7 +142,7 @@ public class MCPServerAuthVerifierFilter extends AuthVerifierFilter {
 		User user = _userLocalService.fetchUser(
 			oAuth2Authorization.getUserId());
 
-		if ((user == null) || user.isGuestUser()) {
+		if ((user == null) || user.isGuestUser() || !user.isActive()) {
 			_sendInvalidTokenChallenge(
 				"Access token is unknown or revoked", httpServletRequest,
 				httpServletResponse);
