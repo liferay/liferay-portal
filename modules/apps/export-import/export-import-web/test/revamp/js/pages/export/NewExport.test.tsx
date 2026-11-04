@@ -167,6 +167,43 @@ describe('NewExport', () => {
 		expect(await screen.findByText('boom')).toBeInTheDocument();
 	});
 
+	describe('when the export process fails', () => {
+		beforeEach(() => {
+			jest.clearAllMocks();
+		});
+
+		it('keeps the user on the form and enables Export again', async () => {
+			renderComponent({exportPreview: mockPreview});
+
+			await userEvent.type(
+				screen.getByRole('textbox', {name: /^name/i}),
+				'test-file'
+			);
+
+			const exportButton = screen.getByRole('button', {
+				name: /^export$/i,
+			});
+
+			await waitFor(() => expect(exportButton).toBeEnabled());
+
+			fetch.mockResponseOnce(JSON.stringify({title: 'boom'}), {
+				status: 500,
+			});
+
+			await userEvent.click(exportButton);
+
+			await waitFor(() =>
+				expect(Liferay.Util.openToast).toHaveBeenCalledWith(
+					expect.objectContaining({type: 'danger'})
+				)
+			);
+
+			await waitFor(() => expect(exportButton).toBeEnabled());
+
+			expect(Liferay.Util.navigate).not.toHaveBeenCalled();
+		});
+	});
+
 	it('shows a required error on name when blurred empty', async () => {
 		renderComponent();
 
