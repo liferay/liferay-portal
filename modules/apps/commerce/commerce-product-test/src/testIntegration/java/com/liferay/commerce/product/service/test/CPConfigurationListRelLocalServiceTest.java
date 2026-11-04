@@ -12,6 +12,7 @@ import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.model.CommerceOrderType;
+import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPConfigurationListLocalService;
@@ -29,12 +30,20 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.search.document.Document;
+import com.liferay.portal.search.query.QueriesUtil;
+import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
+import com.liferay.portal.search.searcher.SearchResponse;
+import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.frutilla.FrutillaRule;
 
@@ -196,8 +205,68 @@ public class CPConfigurationListRelLocalServiceTest {
 					_cpConfigurationList.getCPConfigurationListId(), null));
 	}
 
+	@Test
+	public void testDeleteCPConfigurationListRels() throws Exception {
+		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
+			_user.getUserId(), AccountGroup.class.getName(),
+			_accountGroup.getAccountGroupId(),
+			_cpConfigurationList.getCPConfigurationListId());
+
+		_assertSearchCommerceAccountGroupIds(
+			ListUtil.fromArray(_accountGroup.getAccountGroupId()));
+
+		_cpConfigurationListRelLocalService.deleteCPConfigurationListRels(
+			AccountGroup.class.getName(),
+			_cpConfigurationList.getCPConfigurationListId());
+
+		_assertSearchCommerceAccountGroupIds(Collections.emptyList());
+
+		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
+			_user.getUserId(), AccountGroup.class.getName(),
+			_accountGroup.getAccountGroupId(),
+			_cpConfigurationList.getCPConfigurationListId());
+
+		_assertSearchCommerceAccountGroupIds(
+			ListUtil.fromArray(_accountGroup.getAccountGroupId()));
+
+		_cpConfigurationListRelLocalService.deleteCPConfigurationListRels(
+			_cpConfigurationList.getCPConfigurationListId());
+
+		_assertSearchCommerceAccountGroupIds(Collections.emptyList());
+	}
+
 	@Rule
 	public final FrutillaRule frutillaRule = new FrutillaRule();
+
+	private void _assertSearchCommerceAccountGroupIds(
+		List<Long> expectedCommerceAccountGroupIds) {
+
+		SearchResponse searchResponse = _searcher.search(
+			_searchRequestBuilderFactory.builder(
+			).companyId(
+				_cpConfigurationList.getCompanyId()
+			).emptySearchEnabled(
+				true
+			).fields(
+				"commerceAccountGroupIds"
+			).modelIndexerClasses(
+				CPConfigurationList.class
+			).query(
+				QueriesUtil.term(
+					CPField.CP_CONFIGURATION_LIST_ID,
+					_cpConfigurationList.getCPConfigurationListId())
+			).build());
+
+		List<Document> documents = searchResponse.getDocuments();
+
+		Assert.assertEquals(documents.toString(), 1, documents.size());
+
+		Document document = documents.get(0);
+
+		Assert.assertEquals(
+			expectedCommerceAccountGroupIds,
+			document.getLongs("commerceAccountGroupIds"));
+	}
 
 	@DeleteAfterTestRun
 	private AccountEntry _accountEntry;
@@ -232,6 +301,12 @@ public class CPConfigurationListRelLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+
+	@Inject
+	private Searcher _searcher;
 
 	private ServiceContext _serviceContext;
 	private User _user;
