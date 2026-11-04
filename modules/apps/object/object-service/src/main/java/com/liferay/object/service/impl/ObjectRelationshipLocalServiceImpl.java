@@ -15,6 +15,7 @@ import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.exception.DuplicateObjectRelationshipException;
 import com.liferay.object.exception.DuplicateObjectRelationshipExternalReferenceCodeException;
+import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.exception.NoSuchObjectRelationshipException;
 import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.exception.ObjectEntryGroupIdException;
@@ -74,12 +75,15 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.ShardedModel;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowInstanceLink;
@@ -2145,11 +2149,32 @@ public class ObjectRelationshipLocalServiceImpl
 					getSystemObjectDefinitionManager(
 						objectDefinition.getName());
 
-			systemObjectDefinitionManager.getBaseModelExternalReferenceCode(
-				primaryKey);
+			PersistedModel persistedModel =
+				systemObjectDefinitionManager.getPersistedModel(primaryKey);
+
+			if ((persistedModel instanceof ShardedModel shardedModel) &&
+				(shardedModel.getCompanyId() !=
+					objectDefinition.getCompanyId())) {
+
+				throw new NoSuchModelException(
+					StringBundler.concat(
+						"No ", objectDefinition.getShortName(),
+						" exists with the primary key ", primaryKey));
+			}
 		}
 		else {
-			_objectEntryPersistence.findByPrimaryKey(primaryKey);
+			ObjectEntry objectEntry = _objectEntryPersistence.findByPrimaryKey(
+				primaryKey);
+
+			if (objectEntry.getObjectDefinitionId() !=
+					objectDefinition.getObjectDefinitionId()) {
+
+				throw new NoSuchObjectEntryException(
+					StringBundler.concat(
+						"No ", objectDefinition.getShortName(),
+						" object entry exists with the primary key ",
+						primaryKey));
+			}
 		}
 	}
 
