@@ -17,6 +17,9 @@ public class BaseTestClassResultTest
 
 	@Test
 	public void testGetTestClassReportURL() {
+		BaseTestClassResult baseTestClassResult = Mockito.mock(
+			BaseTestClassResult.class);
+
 		Build build = Mockito.mock(Build.class);
 
 		Mockito.when(
@@ -24,9 +27,6 @@ public class BaseTestClassResultTest
 		).thenReturn(
 			"https://test-1-1.liferay.com/job/test%20portal(master)/12/"
 		);
-
-		BaseTestClassResult baseTestClassResult = Mockito.mock(
-			BaseTestClassResult.class);
 
 		Mockito.doCallRealMethod(
 		).when(

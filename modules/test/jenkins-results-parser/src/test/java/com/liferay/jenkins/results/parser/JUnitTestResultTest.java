@@ -17,6 +17,8 @@ public class JUnitTestResultTest
 
 	@Test
 	public void testGetTestReportURL() {
+		JUnitTestResult jUnitTestResult = Mockito.mock(JUnitTestResult.class);
+
 		Build build = Mockito.mock(Build.class);
 
 		Mockito.when(
@@ -24,8 +26,6 @@ public class JUnitTestResultTest
 		).thenReturn(
 			"https://test-1-1.liferay.com/job/test%20portal(master)/12"
 		);
-
-		JUnitTestResult jUnitTestResult = Mockito.mock(JUnitTestResult.class);
 
 		Mockito.doCallRealMethod(
 		).when(
