@@ -15,8 +15,8 @@ import com.liferay.journal.configuration.JournalFileUploadsConfiguration;
 import com.liferay.journal.configuration.JournalServiceConfiguration;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.web.internal.helper.JournalDDMTemplateHelper;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.template.TemplateVariableDefinition;
 import com.liferay.portal.kernel.template.TemplateVariableGroup;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -102,8 +103,9 @@ public class JournalEditDDMTemplateDisplayContext {
 			return _classPK;
 		}
 
-		_classPK = BeanParamUtil.getLong(
-			getDDMTemplate(), _httpServletRequest, "classPK");
+		_classPK = ParamUtil.getLong(
+			_httpServletRequest, "classPK",
+			GetterUtil.get(getDDMTemplate(), DDMTemplate::getClassPK, 0L));
 
 		return _classPK;
 	}
@@ -206,9 +208,11 @@ public class JournalEditDDMTemplateDisplayContext {
 			(ThemeDisplay)_httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		_groupId = BeanParamUtil.getLong(
-			getDDMTemplate(), _httpServletRequest, "groupId",
-			themeDisplay.getScopeGroupId());
+		_groupId = ParamUtil.getLong(
+			_httpServletRequest, "groupId",
+			GetterUtil.get(
+				getDDMTemplate(), DDMTemplate::getGroupId,
+				themeDisplay.getScopeGroupId()));
 
 		return _groupId;
 	}
@@ -228,8 +232,10 @@ public class JournalEditDDMTemplateDisplayContext {
 			return _script;
 		}
 
-		String script = BeanParamUtil.getString(
-			getDDMTemplate(), _httpServletRequest, "script");
+		String script = ParamUtil.getString(
+			_httpServletRequest, "script",
+			GetterUtil.get(
+				getDDMTemplate(), DDMTemplate::getScript, StringPool.BLANK));
 
 		if (Validator.isNotNull(script)) {
 			script = new String(Base64.decode(script));
@@ -416,8 +422,9 @@ public class JournalEditDDMTemplateDisplayContext {
 			return _cacheable;
 		}
 
-		_cacheable = BeanParamUtil.getBoolean(
-			getDDMTemplate(), _httpServletRequest, "cacheable", true);
+		_cacheable = ParamUtil.getBoolean(
+			_httpServletRequest, "cacheable",
+			GetterUtil.get(getDDMTemplate(), DDMTemplate::isCacheable, true));
 
 		return _cacheable;
 	}
@@ -427,8 +434,9 @@ public class JournalEditDDMTemplateDisplayContext {
 			return _smallImage;
 		}
 
-		_smallImage = BeanParamUtil.getBoolean(
-			getDDMTemplate(), _httpServletRequest, "smallImage");
+		_smallImage = ParamUtil.getBoolean(
+			_httpServletRequest, "smallImage",
+			GetterUtil.get(getDDMTemplate(), DDMTemplate::isSmallImage, false));
 
 		return _smallImage;
 	}

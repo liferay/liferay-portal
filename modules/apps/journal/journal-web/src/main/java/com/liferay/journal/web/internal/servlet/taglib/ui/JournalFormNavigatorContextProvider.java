@@ -10,10 +10,10 @@ import com.liferay.frontend.taglib.form.navigator.constants.FormNavigatorContext
 import com.liferay.frontend.taglib.form.navigator.context.FormNavigatorContextProvider;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.model.JournalArticle;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -43,8 +43,9 @@ public class JournalFormNavigatorContextProvider
 		String toLanguageId = ParamUtil.getString(
 			httpServletRequest, "toLanguageId");
 
-		long classNameId = BeanParamUtil.getLong(
-			article, httpServletRequest, "classNameId");
+		long classNameId = ParamUtil.getLong(
+			httpServletRequest, "classNameId",
+			GetterUtil.get(article, JournalArticle::getClassNameId, 0L));
 
 		if (Validator.isNotNull(toLanguageId)) {
 			return "translate";
