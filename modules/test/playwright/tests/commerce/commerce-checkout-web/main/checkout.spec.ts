@@ -25,6 +25,7 @@ import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
 	performLogout,
+	performUserSwitch,
 	userData,
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
@@ -33,6 +34,7 @@ import getPageDefinition from '../../../layout-content-page-editor-web/main/util
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {
 	activateChannelPaymentMethod,
+	checkoutStorefrontSetUp,
 	createAccountWithBuyerUser,
 	miniumSetUp,
 	selectCurrentAccount,
@@ -2717,6 +2719,344 @@ test(
 			expect(persistedDeliveryDate.getDate()).toBe(
 				requestedDeliveryDate.getDate()
 			);
+		});
+	}
+);
+
+test(
+	'Delivery and payment terms at checkout follow eligibility, can be changed before placing the order and edited from the orders admin',
+	{tag: ['@COMMERCE-9088', '@COMMERCE-10006', '@LPD-108800']},
+	async ({
+		apiHelpers,
+		checkoutPage,
+		commerceAdminChannelDetailsPage,
+		commerceAdminChannelsPage,
+		commerceAdminOrderDetailsPage,
+		commerceAdminOrdersPage,
+		page,
+		site,
+	}) => {
+		test.setTimeout(600000);
+
+		const {account, buyerUser, channel, checkoutLayout, sku} =
+			await checkoutStorefrontSetUp(
+				apiHelpers,
+				commerceAdminChannelsPage,
+				page,
+				site
+			);
+
+		await apiHelpers.headlessCommerceAdminAccount.postAddress(account.id, {
+			countryISOCode: 'US',
+			defaultBilling: true,
+			defaultShipping: true,
+		});
+
+		const checkoutPageURL = `/web${site.friendlyUrlPath}${checkoutLayout.friendlyUrlPath}`;
+		const termDescription = getRandomString();
+
+		const deliveryTerm1 =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				description: {
+					en_US: `<ul><li><u><em><strong>${termDescription}</strong></em></u></li></ul>`,
+				},
+				label: {en_US: getRandomString()},
+				priority: 1,
+				type: 'delivery-terms',
+			});
+		const deliveryTerm2 =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				label: {en_US: getRandomString()},
+				priority: 2,
+				type: 'delivery-terms',
+			});
+		const paymentTerm1 =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				description: {
+					en_US: `<ul><li><u><em><strong>${termDescription}</strong></em></u></li></ul>`,
+				},
+				label: {en_US: getRandomString()},
+				priority: 1,
+				type: 'payment-terms',
+			});
+		const paymentTerm2 =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				label: {en_US: getRandomString()},
+				priority: 2,
+				type: 'payment-terms',
+			});
+
+		await test.step('Make the terms eligible for Standard Delivery and Money Order only', async () => {
+			await commerceAdminChannelsPage.setupCommerceChannelShippingMethod(
+				channel.name,
+				'Flat Rate',
+				['Expedited Delivery', 'Standard Delivery'],
+				true
+			);
+
+			for (const deliveryTerm of [deliveryTerm1, deliveryTerm2]) {
+				await commerceAdminChannelsPage.addFlatRateDeliveryTermEligibility(
+					commerceAdminChannelDetailsPage,
+					channel.name,
+					deliveryTerm.label['en_US']
+				);
+			}
+
+			await activateChannelPaymentMethod(
+				apiHelpers,
+				channel.id,
+				'money-order'
+			);
+			await activateChannelPaymentMethod(
+				apiHelpers,
+				channel.id,
+				'paypal-integration'
+			);
+
+			for (const paymentTerm of [paymentTerm1, paymentTerm2]) {
+				await commerceAdminChannelsPage.addMoneyOrderPaymentTermEligibility(
+					commerceAdminChannelDetailsPage,
+					channel.name,
+					paymentTerm.label['en_US']
+				);
+			}
+		});
+
+		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				cartItems: [{quantity: 1, skuId: sku.id}],
+			},
+			channel.id
+		);
+
+		await test.step('The buyer sees the eligible delivery terms with their rich text description', async () => {
+			await performUserSwitch(page, buyerUser.alternateName);
+
+			await page.goto(checkoutPageURL);
+
+			await checkoutPage.performCheckoutUntilStep('Shipping Method');
+
+			await checkoutPage.shippingMethodRadio('Standard Delivery').check();
+
+			await checkoutPage.performCheckoutUntilStep('Delivery Terms');
+
+			await expect(
+				checkoutPage.deliveryTermOption(deliveryTerm1.label['en_US'])
+			).toBeVisible();
+			await expect(
+				checkoutPage.deliveryTermOption(deliveryTerm2.label['en_US'])
+			).toBeVisible();
+
+			await checkoutPage
+				.termMoreInfoLink(deliveryTerm1.label['en_US'])
+				.click();
+
+			const termModal = page.getByRole('dialog', {
+				name: deliveryTerm1.label['en_US'],
+			});
+
+			await expect(
+				termModal.locator('ul > li > u > em > strong')
+			).toHaveText(termDescription);
+
+			await termModal.getByRole('button', {name: 'Close'}).click();
+
+			await expect(termModal).toBeHidden();
+
+			await checkoutPage
+				.deliveryTermOption(deliveryTerm1.label['en_US'])
+				.check();
+		});
+
+		await test.step('The buyer sees the eligible payment terms of Money Order with their rich text description', async () => {
+			await checkoutPage.performCheckoutUntilStep('Payment Method');
+
+			await checkoutPage.paymentMethodRadio('Money Order').check();
+
+			await checkoutPage.performCheckoutUntilStep('Payment Terms');
+
+			await expect(
+				checkoutPage.paymentTermOption(paymentTerm1.label['en_US'])
+			).toBeVisible();
+			await expect(
+				checkoutPage.paymentTermOption(paymentTerm2.label['en_US'])
+			).toBeVisible();
+
+			await checkoutPage
+				.termMoreInfoLink(paymentTerm1.label['en_US'])
+				.click();
+
+			const termModal = page.getByRole('dialog', {
+				name: paymentTerm1.label['en_US'],
+			});
+
+			await expect(
+				termModal.locator('ul > li > u > em > strong')
+			).toHaveText(termDescription);
+
+			await termModal.getByRole('button', {name: 'Close'}).click();
+
+			await expect(termModal).toBeHidden();
+
+			await checkoutPage
+				.paymentTermOption(paymentTerm1.label['en_US'])
+				.check();
+
+			await checkoutPage.performCheckoutUntilStep('Order Summary');
+
+			await expect(
+				checkoutPage.deliveryTermLink(deliveryTerm1.label['en_US'])
+			).toBeVisible();
+			await expect(
+				checkoutPage.paymentTermLink(paymentTerm1.label['en_US'])
+			).toBeVisible();
+		});
+
+		await test.step('The buyer changes both terms before placing the order', async () => {
+			for (const step of [
+				'Payment Terms',
+				'Payment Method',
+				'Delivery Terms',
+			]) {
+				await checkoutPage.previousButton.click();
+
+				await expect(checkoutPage.activeCheckoutStep).toHaveText(step);
+			}
+
+			await checkoutPage
+				.deliveryTermOption(deliveryTerm2.label['en_US'])
+				.check();
+
+			await checkoutPage.performCheckoutUntilStep('Payment Terms');
+
+			await checkoutPage
+				.paymentTermOption(paymentTerm2.label['en_US'])
+				.check();
+
+			await checkoutPage.performCheckoutUntilStep('Order Summary');
+
+			await expect(
+				checkoutPage.deliveryTermLink(deliveryTerm2.label['en_US'])
+			).toBeVisible();
+			await expect(
+				checkoutPage.paymentTermLink(paymentTerm2.label['en_US'])
+			).toBeVisible();
+
+			await checkoutPage.continueButton.click();
+
+			await expect(checkoutPage.orderConfirmationContainer).toContainText(
+				'Your order has been processed but not completed yet.'
+			);
+		});
+
+		await test.step('The placed order keeps the terms and the payment method', async () => {
+			await performUserSwitch(page, 'test');
+
+			await commerceAdminOrdersPage.goto();
+
+			await (
+				await commerceAdminOrdersPage.tableRowLink({
+					colIndex: 1,
+					rowValue: cart.id,
+				})
+			).click();
+
+			await expect(
+				await commerceAdminOrderDetailsPage.orderDetailsEntryDescription(
+					'Delivery Terms'
+				)
+			).toContainText(deliveryTerm2.label['en_US']);
+			await expect(
+				await commerceAdminOrderDetailsPage.orderDetailsEntryDescription(
+					'Payment Terms'
+				)
+			).toContainText(paymentTerm2.label['en_US']);
+
+			await (
+				await commerceAdminOrderDetailsPage.orderDetailsTab('Payments')
+			).click();
+
+			await expect(
+				commerceAdminOrderDetailsPage.paymentMethodName
+			).toContainText('Money Order');
+		});
+
+		await test.step('The admin edits the terms of the placed order', async () => {
+			await (
+				await commerceAdminOrderDetailsPage.orderDetailsTab('General')
+			).click();
+
+			await (
+				await commerceAdminOrderDetailsPage.editEntryActionLink(
+					'Payment Terms Edit',
+					'Edit'
+				)
+			).click();
+
+			await commerceAdminOrderDetailsPage.selectPaymentTerms.selectOption(
+				String(paymentTerm1.id)
+			);
+
+			await commerceAdminOrderDetailsPage.submitModalButton.click();
+
+			await expect(
+				await commerceAdminOrderDetailsPage.orderDetailsEntryDescription(
+					'Payment Terms'
+				)
+			).toContainText(paymentTerm1.label['en_US']);
+
+			await (
+				await commerceAdminOrderDetailsPage.editEntryActionLink(
+					'Delivery Terms Edit',
+					'Edit'
+				)
+			).click();
+
+			await commerceAdminOrderDetailsPage.selectDeliveryTerms.selectOption(
+				String(deliveryTerm1.id)
+			);
+
+			await commerceAdminOrderDetailsPage.submitModalButton.click();
+
+			await expect(
+				await commerceAdminOrderDetailsPage.orderDetailsEntryDescription(
+					'Delivery Terms'
+				)
+			).toContainText(deliveryTerm1.label['en_US']);
+		});
+
+		await test.step('No term step is shown for a shipping option and a payment method without eligible terms', async () => {
+			await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [{quantity: 1, skuId: sku.id}],
+				},
+				channel.id
+			);
+
+			await performUserSwitch(page, buyerUser.alternateName);
+
+			await page.goto(checkoutPageURL);
+
+			await checkoutPage.performCheckoutUntilStep('Shipping Method');
+
+			await checkoutPage
+				.shippingMethodRadio('Expedited Delivery')
+				.check();
+
+			await checkoutPage.performCheckoutUntilStep('Payment Method');
+
+			await checkoutPage.paymentMethodRadio('PayPal').check();
+
+			await checkoutPage.performCheckoutUntilStep('Order Summary');
+
+			await expect(
+				page.getByText('Delivery Terms', {exact: true})
+			).toBeHidden();
+			await expect(
+				page.getByText('Payment Terms', {exact: true})
+			).toBeHidden();
 		});
 	}
 );

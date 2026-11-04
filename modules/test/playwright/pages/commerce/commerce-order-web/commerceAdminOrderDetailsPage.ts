@@ -229,10 +229,10 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 		});
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.selectDeliveryTerms = page
-			.frameLocator('iframe[title="Delivery Terms"]')
+			.frameLocator('iframe[title$="Delivery Terms"]')
 			.getByLabel('Title');
 		this.selectPaymentTerms = page
-			.frameLocator('iframe[title="Payment Terms"]')
+			.frameLocator('iframe[title$="Payment Terms"]')
 			.getByLabel('Title');
 		this.submitModalButton = page.getByRole('button', {
 			name: 'Submit',

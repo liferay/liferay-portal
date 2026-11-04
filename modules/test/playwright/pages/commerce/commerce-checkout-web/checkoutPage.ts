@@ -101,6 +101,7 @@ export class CheckoutPage extends CommerceDNDTablePage {
 	readonly subtypeMenuItem: (name: string) => Locator;
 	readonly subtypeResetModalTitle: Locator;
 	readonly subtypeResetSubtypeInput: Locator;
+	readonly termMoreInfoLink: (label: string) => Locator;
 	readonly orderSummaryShippingMethod: Locator;
 	readonly useAsBillingCheckbox: Locator;
 	readonly viewDeliveryGroupTableButton: Locator;
@@ -289,6 +290,12 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		this.subtypeResetSubtypeInput = page
 			.getByLabel('Reset Subtype')
 			.getByPlaceholder('Subtype');
+		this.termMoreInfoLink = (label: string) =>
+			page
+				.locator('.list-group-item', {
+					has: page.getByLabel(label, {exact: true}),
+				})
+				.getByRole('link', {name: 'More Info'});
 		this.orderSummaryShippingMethod = page.locator('div.shipping-method');
 		this.useAsBillingCheckbox = page.locator(
 			'[id="_com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet_use-as-billing"]'
