@@ -4744,7 +4744,6 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 			<for delimiter=";" list="@{test.task.group}" param="test.task" trim="true">
 				<sequential>
-					<local name="gradle.args" />
 					<local name="workspace.bundle.url" />
 					<local name="workspace.dir" />
 					<local name="workspace.path" />
@@ -4756,7 +4755,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 						select="\1"
 					/>
 
-					<fail message="Unable to find a workspace in the test task &quot;@{test.task}&quot;." unless="workspace.path" />
+					<fail message="Unable to find a workspace in the test task &quot;@{test.task}&quot;" unless="workspace.path" />
 
 					<property location="${workspace.path}" name="workspace.dir" />
 
@@ -4776,6 +4775,8 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 						dest="${workspace.dir}/build/license.xml"
 						src="@{workspace.license.xml.url}"
 					/>
+
+					<local name="gradle.args" />
 
 					<property name="gradle.args" value="--continue -Pintegration.test.target=bundle" />
 
