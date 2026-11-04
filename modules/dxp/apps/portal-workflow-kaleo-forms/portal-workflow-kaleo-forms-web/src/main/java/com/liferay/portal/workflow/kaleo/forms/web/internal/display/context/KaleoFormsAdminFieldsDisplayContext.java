@@ -11,7 +11,6 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureServiceUtil;
 import com.liferay.dynamic.data.mapping.util.DDMDisplay;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureModifiedDateComparator;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -19,6 +18,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -153,10 +153,16 @@ public class KaleoFormsAdminFieldsDisplayContext {
 			"historyKey", "fields"
 		).setParameter(
 			"kaleoProcessId",
-			BeanParamUtil.getLong(
-				(KaleoProcess)_httpServletRequest.getAttribute(
-					KaleoFormsWebKeys.KALEO_PROCESS),
-				_httpServletRequest, "kaleoProcessId")
+			() -> {
+				KaleoProcess kaleoProcess =
+					(KaleoProcess)_httpServletRequest.getAttribute(
+						KaleoFormsWebKeys.KALEO_PROCESS);
+
+				return ParamUtil.getLong(
+					_httpServletRequest, "kaleoProcessId",
+					GetterUtil.get(
+						kaleoProcess, KaleoProcess::getKaleoProcessId, 0L));
+			}
 		).buildPortletURL();
 
 		return _portletURL;

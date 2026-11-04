@@ -16,7 +16,7 @@ long kaleoProcessId = ParamUtil.getLong(request, "kaleoProcessId");
 
 KaleoProcess kaleoProcess = KaleoProcessServiceUtil.getKaleoProcess(kaleoProcessId);
 
-long groupId = BeanParamUtil.getLong(kaleoProcess, request, "groupId", scopeGroupId);
+long groupId = ParamUtil.getLong(request, "groupId", kaleoProcess.getGroupId());
 
 long workflowTaskId = ParamUtil.getLong(request, "workflowTaskId");
 
