@@ -367,10 +367,10 @@ public class InstanceConfigurationResourceTest
 			instanceConfiguration.getExternalReferenceCode(),
 			postInstanceConfiguration1.getExternalReferenceCode());
 
-		Map<String, Object> properties = instanceConfiguration.getProperties();
-
 		Map<String, Object> postProperties1 =
 			postInstanceConfiguration1.getProperties();
+
+		Map<String, Object> properties = instanceConfiguration.getProperties();
 
 		Assert.assertArrayEquals(
 			(Object[])properties.get("arrayKey"),

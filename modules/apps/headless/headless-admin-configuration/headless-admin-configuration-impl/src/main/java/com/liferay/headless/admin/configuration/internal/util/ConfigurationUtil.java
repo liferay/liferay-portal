@@ -248,7 +248,7 @@ public class ConfigurationUtil {
 			StringPool.QUESTION);
 	}
 
-	private static Configuration _getFactoryConfiguration(
+	private static Configuration _getNewFactoryConfiguration(
 			ConfigurationAdmin configurationAdmin, String externalReferenceCode)
 		throws Exception {
 
@@ -283,7 +283,7 @@ public class ConfigurationUtil {
 		if (factory) {
 			if (ArrayUtil.isEmpty(configurations)) {
 				if (externalReferenceCode.contains("~")) {
-					Configuration configuration = _getFactoryConfiguration(
+					Configuration configuration = _getNewFactoryConfiguration(
 						configurationAdmin, externalReferenceCode);
 
 					if (configuration != null) {
@@ -327,7 +327,7 @@ public class ConfigurationUtil {
 		if (factory) {
 			if (ArrayUtil.isEmpty(configurations)) {
 				if (externalReferenceCode.contains("~")) {
-					Configuration configuration = _getFactoryConfiguration(
+					Configuration configuration = _getNewFactoryConfiguration(
 						configurationAdmin, externalReferenceCode);
 
 					if (configuration != null) {

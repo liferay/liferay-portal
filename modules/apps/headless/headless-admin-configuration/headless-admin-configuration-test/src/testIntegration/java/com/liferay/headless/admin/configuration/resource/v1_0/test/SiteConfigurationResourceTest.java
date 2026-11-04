@@ -326,10 +326,10 @@ public class SiteConfigurationResourceTest
 			siteConfiguration.getExternalReferenceCode(),
 			postSiteConfiguration1.getExternalReferenceCode());
 
-		Map<String, Object> properties = siteConfiguration.getProperties();
-
 		Map<String, Object> postProperties1 =
 			postSiteConfiguration1.getProperties();
+
+		Map<String, Object> properties = siteConfiguration.getProperties();
 
 		Assert.assertArrayEquals(
 			(Object[])properties.get("arrayKey"),
