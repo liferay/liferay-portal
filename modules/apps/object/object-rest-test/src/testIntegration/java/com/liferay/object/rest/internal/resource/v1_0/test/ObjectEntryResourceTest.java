@@ -223,6 +223,7 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.filter.InvalidFilterException;
+import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.spring.aop.AopInvocationHandler;
 import com.liferay.portal.spring.hibernate.PortalTransactionManager;
 import com.liferay.portal.spring.hibernate.PortletTransactionManager;
@@ -288,6 +289,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -7981,6 +7983,35 @@ public class ObjectEntryResourceTest {
 		Assert.assertEquals("tag1", keywordsJSONArray.get(0));
 		Assert.assertEquals("tag2", keywordsJSONArray.get(1));
 		Assert.assertEquals("tag3", keywordsJSONArray.get(2));
+
+		AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
+			_getObjectDefinition2().getClassName(), jsonObject.getLong("id"));
+
+		IdempotentRetryAssert.retryAssert(
+			30, TimeUnit.SECONDS, 500, TimeUnit.MILLISECONDS,
+			() -> {
+				Map<String, Integer> assetCounts = new HashMap<>();
+
+				for (AssetTag assetTag :
+						AssetTagLocalServiceUtil.getAssetEntryAssetTags(
+							assetEntry.getEntryId())) {
+
+					assetCounts.put(
+						assetTag.getName(), assetTag.getAssetCount());
+				}
+
+				Assert.assertEquals(
+					HashMapBuilder.put(
+						"tag1", 2
+					).put(
+						"tag2", 2
+					).put(
+						"tag3", 1
+					).build(),
+					assetCounts);
+
+				return null;
+			});
 	}
 
 	@Test
