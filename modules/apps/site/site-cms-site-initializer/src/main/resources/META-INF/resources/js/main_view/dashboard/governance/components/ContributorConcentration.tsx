@@ -43,13 +43,15 @@ function getBars({contributors, totalCount}: Contributors): BarDatum[] {
 		});
 	}
 
+	bars.sort((a, b) => b.value - a.value);
+
 	const othersCount = totalCount - contributorsCount;
 
 	if (othersCount > 0) {
 		bars.push({label: Liferay.Language.get('others'), value: othersCount});
 	}
 
-	return bars.sort((a, b) => b.value - a.value);
+	return bars;
 }
 
 export function ContributorConcentration({

@@ -85,7 +85,7 @@ describe('ContributorConcentration', () => {
 		jest.clearAllMocks();
 	});
 
-	it('groups deleted users and the remaining contributors ordered by value', async () => {
+	it('orders contributors by value and shows the others bar last', async () => {
 		mockContributors(CONTRIBUTORS, 150);
 
 		renderContributorConcentration();
@@ -93,11 +93,11 @@ describe('ContributorConcentration', () => {
 		expect(await getBarLabels()).toEqual([
 			'deleted-users: 38',
 			'Daniel Reyes: 34',
-			'others: 25',
 			'Leo Brandt: 23',
 			'Ana Torres: 18',
 			'Iris Chen: 7',
 			'Nora Whitfield: 5',
+			'others: 25',
 		]);
 	});
 
