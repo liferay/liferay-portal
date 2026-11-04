@@ -435,32 +435,22 @@ public class ObjectEntryModelListenerTest {
 	@Test
 	public void testOnBeforeUpdate() throws Exception {
 
-		// A member of the linked asset's space can repoint the link to another
-		// asset in that space
+		// A member of the linked asset's space can repoint another user's link
+		// to an asset in that space
 
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
 
-		User user = UserTestUtil.addUser(cmpTaskObjectEntry.getGroupId());
+		User user1 = UserTestUtil.addUser(cmpTaskObjectEntry.getGroupId());
 
 		_userLocalService.addGroupUser(
-			_depotEntry.getGroupId(), user.getUserId());
+			_depotEntry.getGroupId(), user1.getUserId());
 
 		ObjectEntry cmpTaskLinkObjectEntry =
 			CMPTestUtil.addCMPTaskLinkObjectEntry(
 				cmpTaskObjectEntry,
 				CMPTestUtil.addCMSBasicWebContentObjectEntry(
 					_depotEntry, RandomTestUtil.randomString()),
-				user.getUserId());
-
-		Assert.assertNotNull(
-			_updateCMPTaskLinkObjectEntry(
-				cmpTaskLinkObjectEntry,
-				CMPTestUtil.addCMSBasicWebContentObjectEntry(
-					_depotEntry, RandomTestUtil.randomString()),
-				user.getUserId()));
-
-		// A user who is not a member of the linked asset's space cannot repoint
-		// the link to that asset
+				user1.getUserId());
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(
@@ -472,12 +462,29 @@ public class ObjectEntryModelListenerTest {
 			DepotConstants.TYPE_SPACE,
 			ServiceContextTestUtil.getServiceContext());
 
-		try {
+		User user2 = UserTestUtil.addUser(cmpTaskObjectEntry.getGroupId());
+
+		_userLocalService.addGroupUser(
+			depotEntry.getGroupId(), user2.getUserId());
+
+		UserTestUtil.setUser(user2);
+
+		Assert.assertNotNull(
 			_updateCMPTaskLinkObjectEntry(
 				cmpTaskLinkObjectEntry,
 				CMPTestUtil.addCMSBasicWebContentObjectEntry(
 					depotEntry, RandomTestUtil.randomString()),
-				user.getUserId());
+				user2.getUserId()));
+
+		// A user who is not a member of the linked asset's space cannot repoint
+		// another user's link to that asset
+
+		try {
+			_updateCMPTaskLinkObjectEntry(
+				cmpTaskLinkObjectEntry,
+				CMPTestUtil.addCMSBasicWebContentObjectEntry(
+					_depotEntry, RandomTestUtil.randomString()),
+				user2.getUserId());
 
 			Assert.fail();
 		}
@@ -486,8 +493,8 @@ public class ObjectEntryModelListenerTest {
 
 			Assert.assertEquals(
 				StringBundler.concat(
-					"User ", user.getUserId(), " must be a member of space ",
-					depotEntry.getGroupId(), " to link its assets"),
+					"User ", user2.getUserId(), " must be a member of space ",
+					_depotEntry.getGroupId(), " to link its assets"),
 				throwable.getMessage());
 		}
 	}
