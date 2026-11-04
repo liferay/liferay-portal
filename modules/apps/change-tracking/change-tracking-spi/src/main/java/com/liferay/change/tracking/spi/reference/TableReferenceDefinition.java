@@ -17,7 +17,7 @@ import com.liferay.portal.kernel.service.persistence.BasePersistence;
  *
  * @author Preston Crary
  */
-public interface TableReferenceDefinition<T extends Table<T>> {
+public interface TableReferenceDefinitionXYTestChange<T extends Table<T>> {
 
 	/**
 	 * Defines child rows using inner joins on the table.
