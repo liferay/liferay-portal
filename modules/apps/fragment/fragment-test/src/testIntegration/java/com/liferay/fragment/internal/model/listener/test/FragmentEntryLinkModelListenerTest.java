@@ -112,11 +112,12 @@ public class FragmentEntryLinkModelListenerTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-97145", "LPD-101550"})
+	@TestInfo({"LPD-97145", "LPD-101550", "LPD-113826"})
 	public void testAddFragmentEntryLink() throws Exception {
 		_testAddFragmentEntryLinkDoesNotEscapeLinkFieldHTMLContent();
 		_testAddFragmentEntryLinkEscapeTextField();
 		_testAddFragmentEntryLinkPreservesInlineSVGInLinkField();
+		_testAddFragmentEntryLinkPreservesPhoneLinksInRichTextField();
 		_testAddFragmentEntryLinkPreservesSpriteReferenceInLinkField();
 		_testAddFragmentEntryLinkPreservesSVGAccessibilityAttributes();
 		_testAddFragmentEntryLinkSanitizesLinkFieldScriptContent();
@@ -129,9 +130,10 @@ public class FragmentEntryLinkModelListenerTest {
 	}
 
 	@Test
-	@TestInfo("LPD-97145")
+	@TestInfo({"LPD-97145", "LPD-113826"})
 	public void testUpdateFragmentEntryLink() throws Exception {
 		_testUpdateFragmentEntryLinkEscapeTextField();
+		_testUpdateFragmentEntryLinkPreservesPhoneLinksInRichTextField();
 		_testUpdateFragmentEntryLinkWithHTMLField();
 		_testUpdateFragmentEntryLinkWithMappedTextField();
 		_testUpdateFragmentEntryLinkWithRichTextField();
@@ -273,6 +275,32 @@ public class FragmentEntryLinkModelListenerTest {
 			editableValues,
 			editableValues.contains("M12 2L2 7l10 5 10-5-10-5z"));
 		Assert.assertTrue(editableValues, editableValues.contains("Read More"));
+	}
+
+	private void _testAddFragmentEntryLinkPreservesPhoneLinksInRichTextField()
+		throws Exception {
+
+		String text = RandomTestUtil.randomString();
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"BASIC_COMPONENT-paragraph"),
+			_createEditableValues(
+				"element-text",
+				StringBundler.concat(
+					"<p><a href=\"tel:1123445566\">", text,
+					"</a><a href=\"sms:+34600000000\">", text,
+					"</a><a href=\"javascript:alert(1)\">", text, "</a></p>")),
+			_serviceContext);
+
+		Assert.assertEquals(
+			_createEditableValues(
+				"element-text",
+				StringBundler.concat(
+					"<p><a href=\"tel:1123445566\">", text,
+					"</a><a href=\"sms:+34600000000\">", text, "</a><a>", text,
+					"</a></p>")),
+			fragmentEntryLink.getEditableValues());
 	}
 
 	private void _testAddFragmentEntryLinkPreservesSVGAccessibilityAttributes()
@@ -555,6 +583,30 @@ public class FragmentEntryLinkModelListenerTest {
 
 		Assert.assertEquals(
 			editableValues, fragmentEntryLink.getEditableValues());
+	}
+
+	private void _testUpdateFragmentEntryLinkPreservesPhoneLinksInRichTextField()
+		throws Exception {
+
+		String text = RandomTestUtil.randomString();
+
+		FragmentEntryLink fragmentEntryLink = _updateFragmentEntryLink(
+			"BASIC_COMPONENT-paragraph",
+			_createEditableValues(
+				"element-text",
+				StringBundler.concat(
+					"<p><a href=\"tel:1123445566\">", text,
+					"</a><a href=\"sms:+34600000000\">", text,
+					"</a><a href=\"javascript:alert(1)\">", text, "</a></p>")));
+
+		Assert.assertEquals(
+			_createEditableValues(
+				"element-text",
+				StringBundler.concat(
+					"<p><a href=\"tel:1123445566\">", text,
+					"</a><a href=\"sms:+34600000000\">", text, "</a><a>", text,
+					"</a></p>")),
+			fragmentEntryLink.getEditableValues());
 	}
 
 	private void _testUpdateFragmentEntryLinkWithHTMLField() throws Exception {
