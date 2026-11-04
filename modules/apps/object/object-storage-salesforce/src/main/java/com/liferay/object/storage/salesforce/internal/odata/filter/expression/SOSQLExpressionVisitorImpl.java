@@ -137,9 +137,8 @@ public class SOSQLExpressionVisitorImpl implements ExpressionVisitor<Object> {
 		if (Objects.equals(
 				LiteralExpression.Type.STRING, literalExpression.getType())) {
 
-			return StringUtil.replace(
-				literalExpression.getText(), StringPool.DOUBLE_APOSTROPHE,
-				StringPool.APOSTROPHE);
+			return StringUtil.quote(
+				_escape(_normalizeStringLiteral(literalExpression.getText())));
 		}
 
 		return literalExpression.getText();
@@ -190,6 +189,19 @@ public class SOSQLExpressionVisitorImpl implements ExpressionVisitor<Object> {
 				StringPool.OPEN_PARENTHESIS, right,
 				StringPool.CLOSE_PARENTHESIS),
 			sb);
+	}
+
+	private String _escape(String value) {
+		return StringUtil.replace(
+			value, new String[] {StringPool.BACK_SLASH, StringPool.APOSTROPHE},
+			new String[] {StringPool.DOUBLE_BACK_SLASH, "\\'"});
+	}
+
+	private String _normalizeStringLiteral(String literal) {
+		literal = StringUtil.unquote(literal);
+
+		return StringUtil.replace(
+			literal, StringPool.DOUBLE_APOSTROPHE, StringPool.APOSTROPHE);
 	}
 
 	private final long _objectDefinitionId;
