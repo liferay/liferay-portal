@@ -6,12 +6,14 @@
 package com.liferay.exportimport.rest.internal.vulcan.problem;
 
 import com.liferay.exportimport.rest.internal.resource.exception.PublishProcessScheduleException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
 
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Magdalena Jedraszak
@@ -24,11 +26,28 @@ public class PublishProcessScheduleExceptionProblemMapper
 	public Problem getProblem(
 		PublishProcessScheduleException publishProcessScheduleException) {
 
+		if (publishProcessScheduleException instanceof
+				PublishProcessScheduleException.MustRunAtLeastOnce) {
+
+			return _getProblem(
+				"the-scheduled-process-will-never-run",
+				publishProcessScheduleException);
+		}
+
+		return _getProblem(
+			"please-enter-a-valid-cron-expression",
+			publishProcessScheduleException);
+	}
+
+	private Problem _getProblem(
+		String key,
+		PublishProcessScheduleException publishProcessScheduleException) {
+
 		return new Problem() {
 
 			@Override
 			public String getDetail(Locale locale) {
-				return publishProcessScheduleException.getMessage();
+				return _language.get(locale, key);
 			}
 
 			@Override
@@ -38,7 +57,7 @@ public class PublishProcessScheduleExceptionProblemMapper
 
 			@Override
 			public String getTitle(Locale locale) {
-				return publishProcessScheduleException.getMessage();
+				return _language.get(locale, key);
 			}
 
 			@Override
@@ -50,5 +69,8 @@ public class PublishProcessScheduleExceptionProblemMapper
 
 		};
 	}
+
+	@Reference
+	private Language _language;
 
 }
