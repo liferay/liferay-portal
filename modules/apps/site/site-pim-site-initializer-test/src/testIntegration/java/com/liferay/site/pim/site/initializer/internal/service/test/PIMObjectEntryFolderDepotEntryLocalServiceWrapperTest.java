@@ -10,7 +10,9 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
@@ -72,7 +74,12 @@ public class PIMObjectEntryFolderDepotEntryLocalServiceWrapperTest {
 	public void testDeleteDepotEntry() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		_depotEntryLocalService.deleteDepotEntry(depotEntry);
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-96666")) {
+
+			_depotEntryLocalService.deleteDepotEntry(depotEntry);
+		}
 
 		Assert.assertNull(
 			_objectEntryFolderLocalService.
