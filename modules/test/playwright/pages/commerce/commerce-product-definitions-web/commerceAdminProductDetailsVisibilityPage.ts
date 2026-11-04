@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page} from '@playwright/test';
+import {Locator, Page} from '@playwright/test';
 
 export class CommerceAdminProductDetailsVisibilityPage {
 	readonly addChannelButton: Locator;
 	readonly channelsEmptyStateMessage: Locator;
 	readonly deleteEntityLink: (entityName: string) => Locator;
-	readonly modalAddButton: Locator;
+	readonly modalSelectButton: Locator;
 	readonly page: Page;
 	readonly selectAccountGroupsButton: Locator;
 	readonly selectAccountGroupsCheckbox: (accountGroupName: string) => Locator;
-	readonly selectAccountGroupsFrame: FrameLocator;
+	readonly selectAccountGroupsModal: Locator;
 	readonly selectAccountGroupsRow: (
 		accountGroupName: string
 	) => Promise<Locator>;
 	readonly selectAccountGroupsTitle: Locator;
 	readonly selectChannelCheckbox: (channelName: string) => Locator;
-	readonly selectChannelFrame: FrameLocator;
+	readonly selectChannelModal: Locator;
 	readonly selectChannelTitle: Locator;
 	readonly sectionToggle: (sectionName: string) => Locator;
 	readonly sectionToggleInput: (sectionName: string) => Locator;
@@ -37,9 +37,9 @@ export class CommerceAdminProductDetailsVisibilityPage {
 				.getByRole('row')
 				.filter({hasText: entityName})
 				.getByRole('link', {exact: true, name: 'Delete'});
-		this.modalAddButton = page
+		this.modalSelectButton = page
 			.getByRole('dialog')
-			.getByRole('button', {exact: true, name: 'Add'});
+			.getByRole('button', {exact: true, name: 'Select'});
 		this.page = page;
 
 		this.sectionToggle = (sectionName: string) =>
@@ -57,15 +57,16 @@ export class CommerceAdminProductDetailsVisibilityPage {
 		this.selectAccountGroupsButton = page.getByLabel(
 			'Add Account Group Relation to'
 		);
-		this.selectAccountGroupsFrame = page.frameLocator(
-			'iframe[title="Select Account Groups"]'
-		);
+		this.selectAccountGroupsModal = page.getByRole('dialog', {
+			name: 'Select Account Groups',
+		});
 		this.selectAccountGroupsCheckbox = (accountGroupName: string) =>
-			this.selectAccountGroupsFrame
-				.getByRole('row', {name: new RegExp(accountGroupName)})
-				.getByTitle('Select');
+			this.selectAccountGroupsModal.getByRole('checkbox', {
+				exact: true,
+				name: `Select ${accountGroupName}`,
+			});
 		this.selectAccountGroupsRow = async (accountGroupName: string) => {
-			return this.selectAccountGroupsFrame.getByRole('cell', {
+			return this.selectAccountGroupsModal.getByRole('cell', {
 				exact: true,
 				name: accountGroupName,
 			});
@@ -73,13 +74,14 @@ export class CommerceAdminProductDetailsVisibilityPage {
 		this.selectAccountGroupsTitle = page.getByRole('heading', {
 			name: 'Select Account Groups',
 		});
-		this.selectChannelFrame = this.page.frameLocator(
-			'iframe[title="Select Channel"]'
-		);
+		this.selectChannelModal = page.getByRole('dialog', {
+			name: 'Select Channel',
+		});
 		this.selectChannelCheckbox = (channelName: string) =>
-			this.selectChannelFrame
-				.getByRole('row', {name: new RegExp(channelName)})
-				.getByTitle('Select');
+			this.selectChannelModal.getByRole('checkbox', {
+				exact: true,
+				name: `Select ${channelName}`,
+			});
 		this.selectChannelTitle = page.getByRole('heading', {
 			exact: true,
 			name: 'Select Channel',

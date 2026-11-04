@@ -9,7 +9,7 @@ import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import performLogin, {
+import {
 	performLoginViaApi,
 	performLogout,
 	userData,
@@ -21,131 +21,170 @@ export const test = mergeTests(
 	loginTest()
 );
 
-test('LPD-25206 Admin product page shows correct account groups for admin and account supplier role', async ({
-	apiHelpers,
-	commerceAdminProductDetailsPage,
-	commerceAdminProductDetailsVisibilityPage,
-	commerceAdminProductPage,
-	page,
-}) => {
-	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: 'Supplier account',
-		type: 'supplier',
-	});
+test(
+	'Admin product page shows correct account groups for admin and account supplier role',
+	{tag: ['@LPD-25206', '@LPD-110419']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsVisibilityPage,
+		commerceAdminProductPage,
+		page,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: 'Supplier Account ' + getRandomString(),
+			type: 'supplier',
+		});
 
-	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-		account.id,
-		['demo.unprivileged@liferay.com']
-	);
-
-	const user =
-		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-			'demo.unprivileged@liferay.com'
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			['demo.unprivileged@liferay.com']
 		);
 
-	const rolesResponse = await apiHelpers.headlessAdminUser.getAccountRoles(
-		account.id
-	);
+		const user =
+			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+				'demo.unprivileged@liferay.com'
+			);
 
-	const accountSupplierRole = rolesResponse?.items?.filter((role) => {
-		return role.name === 'Account Supplier';
-	});
+		const rolesResponse =
+			await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
 
-	await apiHelpers.headlessAdminUser.assignAccountRoles(
-		account.externalReferenceCode,
-		accountSupplierRole[0].id,
-		user.emailAddress
-	);
+		const accountSupplierRole = rolesResponse?.items?.filter((role) => {
+			return role.name === 'Account Supplier';
+		});
 
-	const accountGroup1 = await apiHelpers.headlessAdminUser.postAccountGroup({
-		name: getRandomString(),
-	});
+		await apiHelpers.headlessAdminUser.assignAccountRoles(
+			account.externalReferenceCode,
+			accountSupplierRole[0].id,
+			user.emailAddress
+		);
 
-	apiHelpers.data.push({id: accountGroup1.id, type: 'accountGroup'});
+		const accountGroup1 =
+			await apiHelpers.headlessAdminUser.postAccountGroup({
+				name: getRandomString(),
+			});
 
-	const accountGroup2 = await apiHelpers.headlessAdminUser.postAccountGroup({
-		name: getRandomString(),
-	});
+		apiHelpers.data.push({id: accountGroup1.id, type: 'accountGroup'});
 
-	apiHelpers.data.push({id: accountGroup2.id, type: 'accountGroup'});
+		const accountGroup2 =
+			await apiHelpers.headlessAdminUser.postAccountGroup({
+				name: getRandomString(),
+			});
 
-	await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
-		account.externalReferenceCode,
-		accountGroup1.externalReferenceCode
-	);
+		apiHelpers.data.push({id: accountGroup2.id, type: 'accountGroup'});
 
-	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
-		accountId: account.id,
-	});
+		const accountGroup3 =
+			await apiHelpers.headlessAdminUser.postAccountGroup({
+				name: getRandomString(),
+			});
 
-	const product1 = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-		catalogId: catalog.id,
-		name: {en_US: 'Product1'},
-		productAccountGroupFilter: true,
-		productAccountGroups: [
-			{accountGroupId: accountGroup1.id, id: 0},
-			{accountGroupId: accountGroup2.id, id: 0},
-		],
-	});
+		apiHelpers.data.push({id: accountGroup3.id, type: 'accountGroup'});
 
-	await commerceAdminProductPage.gotoProduct(product1.name['en_US']);
+		const accountGroup4 =
+			await apiHelpers.headlessAdminUser.postAccountGroup({
+				name: getRandomString(),
+			});
 
-	await expect(
-		await commerceAdminProductDetailsPage.productSkusLink
-	).toBeVisible();
+		apiHelpers.data.push({id: accountGroup4.id, type: 'accountGroup'});
 
-	await commerceAdminProductDetailsPage.goToProductVisibility();
+		await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
+			account.externalReferenceCode,
+			accountGroup1.externalReferenceCode
+		);
 
-	await expect(await page.getByText(accountGroup1.name)).toBeVisible();
-	await expect(await page.getByText(accountGroup2.name)).toBeVisible();
+		await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
+			account.externalReferenceCode,
+			accountGroup3.externalReferenceCode
+		);
 
-	await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsButton.click();
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				accountId: account.id,
+			});
 
-	await expect(
-		await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsTitle
-	).toBeVisible();
-	await expect(
-		await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsRow(
-			accountGroup1.name
-		)
-	).toBeVisible();
-	await expect(
-		await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsRow(
-			accountGroup2.name
-		)
-	).toBeVisible();
+		const product1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+				productAccountGroupFilter: true,
+				productAccountGroups: [
+					{accountGroupId: accountGroup1.id, id: 0},
+					{accountGroupId: accountGroup2.id, id: 0},
+				],
+			});
 
-	await performLogout(page);
+		await test.step('Assert that the account group picker of the admin excludes the assigned account groups', async () => {
+			await commerceAdminProductPage.gotoProduct(product1.name['en_US']);
 
-	await performLogin(page, 'demo.unprivileged');
+			await expect(
+				commerceAdminProductDetailsPage.productSkusLink
+			).toBeVisible();
 
-	await commerceAdminProductPage.gotoProduct(product1.name['en_US']);
+			await commerceAdminProductDetailsPage.goToProductVisibility();
 
-	await expect(
-		await commerceAdminProductDetailsPage.productSkusLink
-	).toBeVisible();
+			await expect(page.getByText(accountGroup1.name)).toBeVisible();
+			await expect(page.getByText(accountGroup2.name)).toBeVisible();
 
-	await commerceAdminProductDetailsPage.goToProductVisibility();
+			await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsButton.click();
 
-	await expect(await page.getByText(accountGroup1.name)).toBeVisible();
-	await expect(await page.getByText(accountGroup2.name)).toBeHidden();
+			await expect(
+				commerceAdminProductDetailsVisibilityPage.selectAccountGroupsTitle
+			).toBeVisible();
+			await expect(
+				await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsRow(
+					accountGroup3.name
+				)
+			).toBeVisible();
+			await expect(
+				await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsRow(
+					accountGroup4.name
+				)
+			).toBeVisible();
+			await expect(
+				await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsRow(
+					accountGroup1.name
+				)
+			).toBeHidden();
+			await expect(
+				await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsRow(
+					accountGroup2.name
+				)
+			).toBeHidden();
+		});
 
-	await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsButton.click();
+		await test.step('Assert that the account group picker of the supplier shows only its unassigned account groups', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
 
-	await expect(
-		await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsTitle
-	).toBeVisible();
-	await expect(
-		await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsRow(
-			accountGroup1.name
-		)
-	).toBeVisible();
-	await expect(
-		await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsRow(
-			accountGroup2.name
-		)
-	).toBeHidden();
-});
+			await commerceAdminProductPage.gotoProduct(product1.name['en_US']);
+
+			await expect(
+				commerceAdminProductDetailsPage.productSkusLink
+			).toBeVisible();
+
+			await commerceAdminProductDetailsPage.goToProductVisibility();
+
+			await expect(page.getByText(accountGroup1.name)).toBeVisible();
+			await expect(page.getByText(accountGroup2.name)).toBeHidden();
+
+			await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsButton.click();
+
+			await expect(
+				commerceAdminProductDetailsVisibilityPage.selectAccountGroupsTitle
+			).toBeVisible();
+			await expect(
+				await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsRow(
+					accountGroup3.name
+				)
+			).toBeVisible();
+			await expect(
+				await commerceAdminProductDetailsVisibilityPage.selectAccountGroupsRow(
+					accountGroup4.name
+				)
+			).toBeHidden();
+		});
+	}
+);
 
 test(
 	'Add and remove channel and account group filters on a product',
@@ -196,7 +235,7 @@ test(
 				.selectChannelCheckbox(channel.name)
 				.check();
 
-			await commerceAdminProductDetailsVisibilityPage.modalAddButton.click();
+			await commerceAdminProductDetailsVisibilityPage.modalSelectButton.click();
 
 			await expect(
 				commerceAdminProductDetailsVisibilityPage.visibilityEntityRow(
@@ -242,7 +281,7 @@ test(
 				.selectAccountGroupsCheckbox(accountGroup.name)
 				.check();
 
-			await commerceAdminProductDetailsVisibilityPage.modalAddButton.click();
+			await commerceAdminProductDetailsVisibilityPage.modalSelectButton.click();
 
 			await expect(
 				commerceAdminProductDetailsVisibilityPage.visibilityEntityRow(
