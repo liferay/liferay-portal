@@ -1,4 +1,35 @@
 {{- $databaseInstanceCondition := printf "resource.type != \"sqladmin.googleapis.com/Instance\" || resource.name.startsWith(\"projects/%s/instances/%s\")" $env.projectId $databaseInstanceNamePrefix }}
+{{- if $gsaMember }}
+---
+apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
+kind: ProjectIAMMember
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-client-role
+spec:
+    forProvider:
+        condition:
+            expression: {{ $databaseInstanceCondition }}
+            title: liferay-environment-database-instances
+        member: {{ $gsaMember }}
+        project: {{ $env.projectId }}
+        role: roles/cloudsql.client
+---
+apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
+kind: ProjectIAMMember
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-instance-user-role
+spec:
+    forProvider:
+        condition:
+            expression: {{ $databaseInstanceCondition }}
+            title: liferay-environment-database-instances
+        member: {{ $gsaMember }}
+        project: {{ $env.projectId }}
+        role: roles/cloudsql.instanceUser
+{{- end }}
+---
 apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
 kind: ServiceAccount
 metadata:
@@ -26,34 +57,6 @@ spec:
                 app: liferay
                 component: service-account
 {{- if $gsaMember }}
----
-apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
-kind: ProjectIAMMember
-metadata:
-    annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-instance-user-role
-spec:
-    forProvider:
-        condition:
-            expression: {{ $databaseInstanceCondition }}
-            title: liferay-environment-database-instances
-        member: {{ $gsaMember }}
-        project: {{ $env.projectId }}
-        role: roles/cloudsql.instanceUser
----
-apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
-kind: ProjectIAMMember
-metadata:
-    annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-client-role
-spec:
-    forProvider:
-        condition:
-            expression: {{ $databaseInstanceCondition }}
-            title: liferay-environment-database-instances
-        member: {{ $gsaMember }}
-        project: {{ $env.projectId }}
-        role: roles/cloudsql.client
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
