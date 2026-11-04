@@ -6,6 +6,7 @@
 package com.liferay.batch.engine.internal.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.batch.engine.BatchEngineContentProcessor;
 import com.liferay.batch.engine.BatchEngineImportTaskExecutor;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.BatchEngineTaskOperation;
@@ -39,6 +40,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelper;
 import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -390,6 +392,122 @@ public class BatchEngineImportTaskExecutorTest
 				LastSessionRecorderHelperUtil.class,
 				"_lastSessionRecorderHelper",
 				originalLastSessionRecorderHelper);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-108617")
+	public void testCreateBlogPostingsWithBatchEngineContentProcessor()
+		throws Exception {
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			BatchEngineImportTaskExecutorTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		List<String> processedHeadlines = new ArrayList<>();
+
+		List<ServiceRegistration<BatchEngineContentProcessor>>
+			serviceRegistrations = Arrays.asList(
+				bundleContext.registerService(
+					BatchEngineContentProcessor.class,
+					(content, fieldNameValueMap) -> StringUtil.randomString(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"field.name", "articleBody"
+					).put(
+						"model.class.name", BlogsEntry.class.getName()
+					).build()),
+				bundleContext.registerService(
+					BatchEngineContentProcessor.class,
+					(content, fieldNameValueMap) -> {
+						processedHeadlines.add(content);
+
+						return StringBundler.concat(
+							content, StringPool.DASH,
+							fieldNameValueMap.get("articleBody"));
+					},
+					HashMapDictionaryBuilder.<String, Object>put(
+						"field.name", "headline"
+					).put(
+						"model.class.name", BlogPosting.class.getName()
+					).build()));
+
+		String[] articleBodies = new String[ROWS_COUNT];
+		String[] headlines = new String[ROWS_COUNT];
+		String nestedHeadline = StringUtil.randomString();
+
+		StringBundler sb = new StringBundler();
+
+		sb.append(StringPool.OPEN_BRACKET);
+
+		for (int i = 0; i < ROWS_COUNT; i++) {
+			articleBodies[i] = StringUtil.randomString();
+			headlines[i] = StringUtil.randomString();
+
+			_createJSONRow(
+				sb, "articleBody", _toJSONValue(articleBodies[i]),
+				"datePublished",
+				_toJSONValue(
+					dateFormat.format(new Date(_toTime(baseDate, i - 1000)))),
+				"headline", _toJSONValue(headlines[i]),
+				StringUtil.randomString(),
+				"{\"headline\": " + _toJSONValue(nestedHeadline) + "}",
+				"siteId", String.valueOf(TestPropsValues.getGroupId()));
+
+			sb.append(StringPool.COMMA);
+		}
+
+		sb.setIndex(sb.index() - 1);
+
+		sb.append(StringPool.CLOSE_BRACKET);
+
+		ExportImportThreadLocal.setPortletImportInProcess(true);
+
+		try {
+			_importBlogPostings(
+				BatchEngineTaskOperation.CREATE, _toContent("JSON", sb), "JSON",
+				HashMapBuilder.put(
+					"articleBody", "articleBody"
+				).put(
+					"datePublished", "datePublished"
+				).put(
+					"headline", "headline"
+				).put(
+					"siteId", "siteId"
+				).build());
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+
+			for (ServiceRegistration<BatchEngineContentProcessor>
+					serviceRegistration : serviceRegistrations) {
+
+				serviceRegistration.unregister();
+			}
+		}
+
+		Assert.assertEquals(
+			ROWS_COUNT, _batchEngineImportTask.getProcessedItemsCount());
+		Assert.assertEquals(
+			processedHeadlines.toString(), ROWS_COUNT,
+			processedHeadlines.size());
+		Assert.assertFalse(processedHeadlines.contains(nestedHeadline));
+
+		List<BlogsEntry> blogsEntries = new ArrayList<>(
+			blogsEntryLocalService.getGroupEntries(
+				TestPropsValues.getGroupId(),
+				new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+
+		blogsEntries.sort(Comparator.comparingLong(BlogsEntry::getEntryId));
+
+		for (int i = 0; i < ROWS_COUNT; i++) {
+			BlogsEntry blogsEntry = blogsEntries.get(i + initialCount);
+
+			Assert.assertEquals(articleBodies[i], blogsEntry.getContent());
+			Assert.assertEquals(
+				StringBundler.concat(
+					headlines[i], StringPool.DASH, articleBodies[i]),
+				blogsEntry.getTitle());
 		}
 	}
 

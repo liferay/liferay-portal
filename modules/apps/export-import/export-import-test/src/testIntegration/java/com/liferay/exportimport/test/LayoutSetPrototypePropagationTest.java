@@ -22,9 +22,12 @@ import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
+import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.journal.constants.JournalContentPortletKeys;
 import com.liferay.journal.model.JournalArticle;
@@ -40,6 +43,7 @@ import com.liferay.layout.set.prototype.constants.LayoutSetPrototypePortletKeys;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.background.task.service.persistence.BackgroundTaskPersistence;
@@ -58,6 +62,7 @@ import com.liferay.portal.kernel.exception.LayoutParentLayoutIdException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -775,6 +780,60 @@ public class LayoutSetPrototypePropagationTest
 			_layoutLocalService.getLayoutsCount(group2.getGroupId(), false));
 
 		GroupLocalServiceUtil.deleteGroup(group2);
+	}
+
+	@Test
+	@TestInfo("LPD-108617")
+	public void testLayoutSetPrototypePropagationToPrivateAndPublicLayouts()
+		throws Exception {
+
+		_testLayoutSetPrototypePropagation(false, true);
+		_testLayoutSetPrototypePropagation(true, false);
+		_testLayoutSetPrototypePropagation(true, true);
+	}
+
+	@Test
+	@TestInfo("LPD-108617")
+	public void testLayoutSetPrototypePropagationWithChildLayoutFirst()
+		throws Exception {
+
+		Group testGroup = GroupTestUtil.addGroup();
+
+		setLinkEnabled(
+			testGroup, _layoutSetPrototype.getLayoutSetPrototypeId(), 0, true,
+			false);
+
+		Layout childLayout = LayoutTestUtil.addTypePortletLayout(
+			_layoutSetPrototypeGroup, true);
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(
+			_layoutSetPrototypeGroup, true);
+
+		childLayout = _layoutLocalService.updateParentLayoutId(
+			childLayout.getPlid(), parentLayout.getPlid());
+
+		long timestamp = System.currentTimeMillis();
+
+		propagateChanges(false, _layoutSetPrototype);
+
+		_assertNotification(
+			"successful", timestamp, TestPropsValues.getUserId());
+
+		Layout linkedChildLayout = _getLinkedLayout(
+			testGroup.getGroupId(), false, childLayout);
+		Layout linkedParentLayout = _getLinkedLayout(
+			testGroup.getGroupId(), false, parentLayout);
+
+		Assert.assertEquals(
+			linkedParentLayout.getLayoutId(),
+			linkedChildLayout.getParentLayoutId());
+		Assert.assertEquals(
+			LayoutConstants.TYPE_PORTLET, linkedParentLayout.getType());
+		Assert.assertEquals(
+			parentLayout.getUuid(), linkedParentLayout.getUuid());
+
+		Assert.assertEquals(childLayout.getUuid(), linkedChildLayout.getUuid());
+
+		GroupTestUtil.deleteGroup(testGroup);
 	}
 
 	@Test
@@ -1804,6 +1863,31 @@ public class LayoutSetPrototypePropagationTest
 			});
 	}
 
+	private Layout _getEditableValuesLayout(String editableValues, long groupId)
+		throws Exception {
+
+		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
+			editableValues);
+
+		JSONObject layoutJSONObject = JSONUtil.getValueAsJSONObject(
+			editableValuesJSONObject,
+			"JSONObject/" +
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+			"JSONObject/element-text", "JSONObject/config",
+			"JSONObject/layout");
+
+		if (layoutJSONObject.has("layoutId")) {
+			return _layoutLocalService.fetchLayout(
+				layoutJSONObject.getLong("groupId"),
+				layoutJSONObject.getBoolean("privateLayout"),
+				layoutJSONObject.getLong("layoutId"));
+		}
+
+		return _layoutLocalService.fetchLayoutByExternalReferenceCode(
+			layoutJSONObject.getString("externalReferenceCode"), groupId);
+	}
+
 	private String _getLatestMergeNotificationResult(
 			long timestamp, long userId)
 		throws Exception {
@@ -1831,6 +1915,28 @@ public class LayoutSetPrototypePropagationTest
 		}
 
 		return null;
+	}
+
+	private Layout _getLinkedLayout(
+			long groupId, boolean privateLayout, Layout prototypeLayout)
+		throws Exception {
+
+		for (Layout layout :
+				_layoutLocalService.getLayouts(groupId, privateLayout)) {
+
+			if (Objects.equals(
+					prototypeLayout.getExternalReferenceCode(),
+					layout.getLayoutSetPrototypeLayoutERC())) {
+
+				return layout;
+			}
+		}
+
+		throw new AssertionError(
+			StringBundler.concat(
+				"No layout is linked to ",
+				prototypeLayout.getExternalReferenceCode(), " in group ",
+				groupId, " with private layout ", privateLayout));
 	}
 
 	private int _getRandomStatus(int... statuses) {
@@ -1942,6 +2048,195 @@ public class LayoutSetPrototypePropagationTest
 		finally {
 			FileUtil.delete(testMessageListener._path);
 		}
+	}
+
+	private void _testLayoutSetPrototypePropagation(
+			boolean privateLayoutSetPrototypeLink,
+			boolean publicLayoutSetPrototypeLink)
+		throws Exception {
+
+		Group testGroup = GroupTestUtil.addGroup();
+
+		long publicLayoutSetPrototypeId = 0;
+
+		if (publicLayoutSetPrototypeLink) {
+			publicLayoutSetPrototypeId =
+				_layoutSetPrototype.getLayoutSetPrototypeId();
+		}
+
+		long privateLayoutSetPrototypeId = 0;
+
+		if (privateLayoutSetPrototypeLink) {
+			privateLayoutSetPrototypeId =
+				_layoutSetPrototype.getLayoutSetPrototypeId();
+		}
+
+		setLinkEnabled(
+			testGroup, publicLayoutSetPrototypeId, privateLayoutSetPrototypeId,
+			publicLayoutSetPrototypeLink, privateLayoutSetPrototypeLink);
+
+		Layout childLayout = LayoutTestUtil.addTypePortletLayout(
+			_layoutSetPrototypeGroup, true);
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(
+			_layoutSetPrototypeGroup, true);
+
+		childLayout = _layoutLocalService.updateParentLayoutId(
+			childLayout.getPlid(), parentLayout.getPlid());
+
+		Layout contentLayout = _addLayout(
+			_layoutSetPrototypeGroup.getGroupId());
+
+		Layout draftContentLayout = contentLayout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put(
+					"element-text",
+					JSONUtil.put(
+						"config",
+						JSONUtil.put(
+							"layout",
+							JSONUtil.put(
+								"groupId", childLayout.getGroupId()
+							).put(
+								"layoutId", childLayout.getLayoutId()
+							).put(
+								"layoutUuid", childLayout.getUuid()
+							).put(
+								"privateLayout", childLayout.isPrivateLayout()
+							)
+						).put(
+							"mapperType", "link"
+						)
+					).put(
+						"defaultValue", RandomTestUtil.randomString()
+					))
+			).toString(),
+			StringPool.BLANK, StringPool.BLANK, null, null,
+			"<h1 data-lfr-editable-id=\"element-text\" " +
+				"data-lfr-editable-type=\"text\">Heading Example</h1>",
+			StringPool.BLANK, draftContentLayout, "BASIC_COMPONENT-heading",
+			FragmentConstants.TYPE_COMPONENT, null, 0,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftContentLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftContentLayout, contentLayout);
+
+		if (!publicLayoutSetPrototypeLink) {
+			_layoutLocalService.addLayout(
+				childLayout.getExternalReferenceCode(),
+				TestPropsValues.getUserId(), testGroup.getGroupId(), false,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+				RandomTestUtil.randomString(), null, null,
+				LayoutConstants.TYPE_PORTLET, false, StringPool.BLANK,
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId()));
+		}
+
+		long timestamp = System.currentTimeMillis();
+
+		propagateChanges(false, _layoutSetPrototype);
+
+		_assertNotification(
+			"successful", timestamp, TestPropsValues.getUserId());
+
+		int privateLayoutsCount = _layoutLocalService.getLayoutsCount(
+			testGroup, true);
+		int publicLayoutsCount = _layoutLocalService.getLayoutsCount(
+			testGroup, false);
+
+		String languageId = LocaleUtil.toLanguageId(
+			LocaleUtil.getSiteDefault());
+		String name = RandomTestUtil.randomString();
+
+		_layoutLocalService.updateName(childLayout.getPlid(), name, languageId);
+		_layoutLocalService.updateName(
+			contentLayout.getPlid(), name, languageId);
+
+		timestamp = System.currentTimeMillis();
+
+		propagateChanges(false, _layoutSetPrototype);
+
+		_assertNotification(
+			"successful", timestamp, TestPropsValues.getUserId());
+
+		Assert.assertEquals(
+			privateLayoutsCount,
+			_layoutLocalService.getLayoutsCount(testGroup, true));
+		Assert.assertEquals(
+			publicLayoutsCount,
+			_layoutLocalService.getLayoutsCount(testGroup, false));
+
+		List<FragmentEntryLink> prototypeFragmentEntryLinks =
+			FragmentEntryLinkLocalServiceUtil.getFragmentEntryLinksByPlid(
+				contentLayout.getGroupId(), contentLayout.getPlid());
+
+		FragmentEntryLink prototypeFragmentEntryLink =
+			prototypeFragmentEntryLinks.get(0);
+
+		for (boolean privateLayout : new boolean[] {false, true}) {
+			if ((privateLayout && !privateLayoutSetPrototypeLink) ||
+				(!privateLayout && !publicLayoutSetPrototypeLink)) {
+
+				continue;
+			}
+
+			Layout linkedContentLayout = _getLinkedLayout(
+				testGroup.getGroupId(), privateLayout, contentLayout);
+
+			String suffix = StringPool.BLANK;
+
+			if (privateLayout) {
+				suffix = LayoutConstants.EXTERNAL_REFERENCE_CODE_SUFFIX_PRIVATE;
+			}
+
+			Assert.assertEquals(
+				contentLayout.getExternalReferenceCode() + suffix,
+				linkedContentLayout.getExternalReferenceCode());
+			Assert.assertEquals(name, linkedContentLayout.getName(languageId));
+
+			List<FragmentEntryLink> fragmentEntryLinks =
+				FragmentEntryLinkLocalServiceUtil.getFragmentEntryLinksByPlid(
+					testGroup.getGroupId(), linkedContentLayout.getPlid());
+
+			Assert.assertEquals(
+				fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
+
+			Layout linkedChildLayout = _getLinkedLayout(
+				testGroup.getGroupId(), privateLayout, childLayout);
+
+			Assert.assertEquals(name, linkedChildLayout.getName(languageId));
+
+			Layout linkedParentLayout = _getLinkedLayout(
+				testGroup.getGroupId(), privateLayout, parentLayout);
+
+			Assert.assertEquals(
+				linkedParentLayout.getLayoutId(),
+				linkedChildLayout.getParentLayoutId());
+
+			FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(0);
+
+			Assert.assertEquals(
+				linkedChildLayout,
+				_getEditableValuesLayout(
+					fragmentEntryLink.getEditableValues(),
+					testGroup.getGroupId()));
+
+			if (privateLayout) {
+				Assert.assertNotEquals(
+					prototypeFragmentEntryLink.getUuid(),
+					fragmentEntryLink.getUuid());
+			}
+			else {
+				Assert.assertEquals(
+					prototypeFragmentEntryLink.getUuid(),
+					fragmentEntryLink.getUuid());
+			}
+		}
+
+		GroupTestUtil.deleteGroup(testGroup);
 	}
 
 	private void _testLayoutSetPrototypePropagationCheckNotification(

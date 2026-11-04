@@ -504,7 +504,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPutSiteSitePageWithCachedFragmentEntryLink();
 		_testPutSiteSitePageWithContentPageSpecification();
 		_testPutSiteSitePageWithDefaultAssetPublisher();
-		_testPutSiteSitePageWithEmptyLayout(serviceContext);
+		_testPutSiteSitePageWithEmptyLayout();
 		_testPutSiteSitePageWithExportedPageSetSitePageAsFirstPage(
 			serviceContext);
 
@@ -1483,10 +1483,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			widgetPageSettings.getLayoutTemplateId());
 	}
 
-	private Layout _createEmptyLayout(
-			ServiceContext serviceContext, SitePage sitePage)
-		throws Exception {
-
+	private Layout _createEmptyLayout(SitePage sitePage) throws Exception {
 		Layout layout;
 
 		try (SafeCloseable safeCloseable =
@@ -1494,8 +1491,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 			layout = _layoutLocalService.getOrAddEmptyLayout(
 				sitePage.getExternalReferenceCode(),
-				TestPropsValues.getUserId(), testGroup.getGroupId(), false,
-				serviceContext);
+				TestPropsValues.getUserId(), testGroup.getGroupId(), false);
 		}
 
 		Assert.assertEquals(WorkflowConstants.STATUS_EMPTY, layout.getStatus());
@@ -4455,17 +4451,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				LayoutTypePortletConstants.DEFAULT_ASSET_PUBLISHER_PORTLET_ID));
 	}
 
-	private void _testPutSiteSitePageWithEmptyLayout(
-			ServiceContext serviceContext)
-		throws Exception {
-
+	private void _testPutSiteSitePageWithEmptyLayout() throws Exception {
 		PageElement[] pageElements = PageElementsTestUtil.getPageElements(
 			testGroup.getGroupId());
 
 		SitePage contentSitePage = _getSitePageWithPageElements(pageElements);
 
 		_testPutSiteSitePageWithEmptyLayout(
-			LayoutConstants.TYPE_CONTENT, serviceContext, contentSitePage,
+			LayoutConstants.TYPE_CONTENT, contentSitePage,
 			(layout, putSitePage) -> _assertPageElements(
 				pageElements, putSitePage));
 
@@ -4477,8 +4470,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				linkToPageSitePage.getExternalReferenceCode()));
 
 		_testPutSiteSitePageWithEmptyLayout(
-			LayoutConstants.TYPE_LINK_TO_LAYOUT, serviceContext,
-			linkToPageSitePage,
+			LayoutConstants.TYPE_LINK_TO_LAYOUT, linkToPageSitePage,
 			(layout, putSitePage) ->
 				PageSpecificationsTestUtil.assertPageSpecifications(
 					putSitePage.getPageSpecifications(),
@@ -4492,7 +4484,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				pageSetSitePage.getExternalReferenceCode()));
 
 		_testPutSiteSitePageWithEmptyLayout(
-			LayoutConstants.TYPE_NODE, serviceContext, pageSetSitePage,
+			LayoutConstants.TYPE_NODE, pageSetSitePage,
 			(layout, putSitePage) ->
 				PageSpecificationsTestUtil.assertPageSpecifications(
 					putSitePage.getPageSpecifications(),
@@ -4509,28 +4501,27 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				widgetSitePage.getExternalReferenceCode()));
 
 		_testPutSiteSitePageWithEmptyLayout(
-			LayoutConstants.TYPE_PORTLET, serviceContext, widgetSitePage,
+			LayoutConstants.TYPE_PORTLET, widgetSitePage,
 			(layout, putSitePage) ->
 				PageSpecificationsTestUtil.assertWidgetPageSpecifications(
 					widgetSitePage.getPageSpecifications(),
 					putSitePage.getPageSpecifications()));
 
 		_testPutSiteSitePageWithEmptyLayoutAndLayoutTypeException(
-			serviceContext, _getRandomSitePage(SitePage.Type.EMBEDDED_PAGE));
+			_getRandomSitePage(SitePage.Type.EMBEDDED_PAGE));
 		_testPutSiteSitePageWithEmptyLayoutAndLayoutTypeException(
-			serviceContext, _getRandomSitePage(SitePage.Type.LINK_TO_URL_PAGE));
+			_getRandomSitePage(SitePage.Type.LINK_TO_URL_PAGE));
 	}
 
 	private void _testPutSiteSitePageWithEmptyLayout(
-			String expectedType, ServiceContext serviceContext,
-			SitePage sitePage,
+			String expectedType, SitePage sitePage,
 			UnsafeBiConsumer<Layout, SitePage, Exception> unsafeBiConsumer)
 		throws Exception {
 
 		SitePageResource sitePageResource = _getSitePageResource(
 			"pageSpecifications");
 
-		_createEmptyLayout(serviceContext, sitePage);
+		_createEmptyLayout(sitePage);
 
 		SitePage putSitePage = sitePageResource.putSiteSitePage(
 			testGroup.getExternalReferenceCode(),
@@ -4553,13 +4544,13 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void _testPutSiteSitePageWithEmptyLayoutAndLayoutTypeException(
-			ServiceContext serviceContext, SitePage sitePage)
+			SitePage sitePage)
 		throws Exception {
 
 		SitePageResource sitePageResource = _getSitePageResource(
 			"pageSpecifications");
 
-		Layout layout = _createEmptyLayout(serviceContext, sitePage);
+		Layout layout = _createEmptyLayout(sitePage);
 
 		_assertProblemException(
 			"CONFLICT",

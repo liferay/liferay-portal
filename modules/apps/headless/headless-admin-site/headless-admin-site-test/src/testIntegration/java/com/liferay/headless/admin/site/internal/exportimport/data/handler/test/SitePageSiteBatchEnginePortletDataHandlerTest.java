@@ -52,9 +52,7 @@ public class SitePageSiteBatchEnginePortletDataHandlerTest
 		throws Exception {
 
 		_layoutLocalService.getOrAddEmptyLayout(
-			externalReferenceCode, TestPropsValues.getUserId(), groupId, false,
-			ServiceContextTestUtil.getServiceContext(
-				groupId, TestPropsValues.getUserId()));
+			externalReferenceCode, TestPropsValues.getUserId(), groupId, false);
 	}
 
 	@Override
