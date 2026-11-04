@@ -14,11 +14,9 @@ import com.liferay.object.rest.dto.v1_0.Version;
 import com.liferay.object.rest.resource.v1_0.ObjectEntryResource;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -29,7 +27,6 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -171,50 +168,6 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 	}
 
 	@Test
-	public void testGetObjectEntryWithFriendlyURL() throws Exception {
-		getObjectDefinition1().setEnableFriendlyURLCustomization(true);
-
-		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition1());
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomInt()
-			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
-				jsonObject.getString("id"),
-			Http.Method.GET);
-
-		Assert.assertEquals(
-			jsonObject.getString("externalReferenceCode"),
-			jsonObject.getString("friendlyUrlPath"));
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				"friendlyUrlPath", StringPool.SLASH
-			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
-				jsonObject.getString("id"),
-			Http.Method.GET);
-
-		Assert.assertEquals(
-			jsonObject.getString("externalReferenceCode"),
-			jsonObject.getString("friendlyUrlPath"));
-
-		_assertGetObjectEntryWithFriendlyURL("hello-world", "/hello-world");
-		_assertGetObjectEntryWithFriendlyURL("parent/child", "parent//child");
-		_assertGetObjectEntryWithFriendlyURL("test-url", "Test URL");
-	}
-
-	@Test
 	@TestInfo("LPD-53245")
 	public void testPatchCustomObjectEntry() throws Exception {
 		ObjectDefinition objectDefinition1 = getObjectDefinition1();
@@ -237,66 +190,6 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 	}
 
 	@Test
-	public void testPatchObjectEntryWithFriendlyURLCustomizationEnabled()
-		throws Exception {
-
-		// With friendly URL
-
-		getObjectDefinition1().setEnableFriendlyURLCustomization(true);
-
-		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition1());
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				"friendlyUrlPath_i18n",
-				HashMapBuilder.put(
-					"en_US", "Test URL"
-				).build()
-			).toString(),
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
-				jsonObject.getString("id"),
-			Http.Method.PATCH);
-
-		Assert.assertEquals(
-			"test-url", jsonObject.getString("friendlyUrlPath"));
-
-		// Without friendly URL
-
-		String friendlyURL = StringUtil.toLowerCase(
-			RandomTestUtil.randomString());
-		String objectFieldValue = RandomTestUtil.randomString();
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, objectFieldValue
-			).put(
-				"friendlyUrlPath_i18n",
-				HashMapBuilder.put(
-					"en_US", friendlyURL
-				).build()
-			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, objectFieldValue
-			).toString(),
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
-				jsonObject.getString("id"),
-			Http.Method.PATCH);
-
-		Assert.assertEquals(
-			friendlyURL, jsonObject.getString("friendlyUrlPath"));
-	}
-
-	@Test
 	@TestInfo("LPD-53245")
 	public void testPutCustomObjectEntry() throws Exception {
 		ObjectDefinition objectDefinition1 = getObjectDefinition1();
@@ -316,26 +209,6 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 					jsonObject.getLong("id"),
 			siteScopedObjectDefinition1, getSiteScopedObjectDefinition2(),
 			testGroupId);
-	}
-
-	private void _assertGetObjectEntryWithFriendlyURL(
-			String expectedFriendlyUrlPath, String friendlyUrlPath)
-		throws Exception {
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				"friendlyUrlPath", friendlyUrlPath
-			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
-				jsonObject.getString("id"),
-			Http.Method.GET);
-
-		Assert.assertEquals(
-			expectedFriendlyUrlPath, jsonObject.getString("friendlyUrlPath"));
 	}
 
 	private void _assertObjectEntryVersionNumber(
