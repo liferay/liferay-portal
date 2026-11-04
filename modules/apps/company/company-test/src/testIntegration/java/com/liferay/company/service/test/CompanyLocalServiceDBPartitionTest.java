@@ -43,6 +43,8 @@ import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.RememberMeToken;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.model.Ticket;
+import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
@@ -58,6 +60,7 @@ import com.liferay.portal.kernel.service.RememberMeTokenLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelper;
 import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
@@ -98,6 +101,9 @@ import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.util.PortalInstances;
 import com.liferay.search.experiences.model.SXPBlueprint;
 import com.liferay.search.experiences.service.SXPBlueprintLocalService;
+import com.liferay.sharing.model.SharingEntry;
+import com.liferay.sharing.security.permission.SharingEntryAction;
+import com.liferay.sharing.service.SharingEntryLocalService;
 
 import jakarta.portlet.Portlet;
 
@@ -813,6 +819,7 @@ public class CompanyLocalServiceDBPartitionTest
 
 		Company copiedCompany = null;
 		RememberMeToken rememberMeToken = null;
+		Ticket ticket = null;
 
 		try (AutoCloseable autoCloseable =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
@@ -839,6 +846,22 @@ public class CompanyLocalServiceDBPartitionTest
 				new Date(System.currentTimeMillis() + Time.DAY),
 				value -> {
 				});
+
+			ticket = _ticketLocalService.addTicket(
+				company.getCompanyId(), User.class.getName(),
+				TestPropsValues.getUserId(),
+				TicketConstants.TYPE_INVITE_COLLABORATOR,
+				RandomTestUtil.randomString() + "@liferay.com", null,
+				new Date(System.currentTimeMillis() + Time.DAY),
+				ServiceContextTestUtil.getServiceContext());
+
+			SharingEntry sharingEntry =
+				_sharingEntryLocalService.addSharingEntry(
+					null, TestPropsValues.getUserId(), ticket.getTicketId(), 0,
+					0, _portal.getClassNameId(User.class),
+					TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
+					true, Collections.singletonList(SharingEntryAction.VIEW),
+					null, ServiceContextTestUtil.getServiceContext());
 
 			ObjectDefinition objectDefinition =
 				ObjectDefinitionTestUtil.publishObjectDefinition();
@@ -886,6 +909,11 @@ public class CompanyLocalServiceDBPartitionTest
 			Assert.assertNotNull(
 				_rememberMeTokenLocalService.fetchRememberMeToken(
 					rememberMeToken.getRememberMeTokenId()));
+			Assert.assertNotNull(
+				_sharingEntryLocalService.fetchSharingEntry(
+					sharingEntry.getSharingEntryId()));
+			Assert.assertNotNull(
+				_ticketLocalService.fetchTicket(ticket.getTicketId()));
 
 			_assertCopyDBPartitionCompanyIsolation(copiedCompanyId, key);
 
@@ -896,6 +924,10 @@ public class CompanyLocalServiceDBPartitionTest
 			try (SafeCloseable safeCloseable2 =
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 						copiedCompanyId)) {
+
+				Assert.assertNull(
+					_sharingEntryLocalService.fetchSharingEntry(
+						sharingEntry.getSharingEntryId()));
 
 				ObjectDefinition copiedObjectDefinition =
 					_objectDefinitionLocalService.fetchObjectDefinition(
@@ -1010,6 +1042,10 @@ public class CompanyLocalServiceDBPartitionTest
 					if (rememberMeToken != null) {
 						_rememberMeTokenLocalService.deleteRememberMeToken(
 							rememberMeToken);
+					}
+
+					if (ticket != null) {
+						_ticketLocalService.deleteTicket(ticket);
 					}
 				}
 			}
@@ -1612,6 +1648,7 @@ public class CompanyLocalServiceDBPartitionTest
 
 			Assert.assertEquals(
 				0, _rememberMeTokenLocalService.getRememberMeTokensCount());
+			Assert.assertEquals(0, _ticketLocalService.getTicketsCount());
 		}
 	}
 
@@ -1923,6 +1960,9 @@ public class CompanyLocalServiceDBPartitionTest
 
 	private ServiceRegistration<RepositoryDefiner> _serviceRegistration;
 
+	@Inject
+	private SharingEntryLocalService _sharingEntryLocalService;
+
 	@Inject(
 		filter = "(&(objectClass=com.liferay.document.library.kernel.store.Store)(default=true))"
 	)
@@ -1930,6 +1970,9 @@ public class CompanyLocalServiceDBPartitionTest
 
 	@Inject
 	private SXPBlueprintLocalService _sxpBlueprintLocalService;
+
+	@Inject
+	private TicketLocalService _ticketLocalService;
 
 	@Inject
 	private VirtualHostLocalService _virtualHostLocalService;
