@@ -11,7 +11,6 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -28,6 +27,7 @@ import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -195,8 +195,10 @@ public class ReportsEngineDisplayContext {
 		Definition definition = (Definition)_httpServletRequest.getAttribute(
 			ReportsEngineWebKeys.DEFINITION);
 
-		String reportParameters = BeanParamUtil.getString(
-			definition, _httpServletRequest, "reportParameters");
+		String reportParameters = ParamUtil.getString(
+			_httpServletRequest, "reportParameters",
+			GetterUtil.get(
+				definition, Definition::getReportParameters, StringPool.BLANK));
 
 		if (!JSONUtil.isJSONArray(reportParameters)) {
 			return null;
