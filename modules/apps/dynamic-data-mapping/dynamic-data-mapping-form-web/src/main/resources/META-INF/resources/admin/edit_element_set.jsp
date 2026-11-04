@@ -12,7 +12,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 DDMStructure structure = ddmFormAdminDisplayContext.getDDMStructure();
 
-long groupId = BeanParamUtil.getLong(structure, request, "groupId", scopeGroupId);
+long groupId = ParamUtil.getLong(request, "groupId", GetterUtil.get(structure, DDMStructure::getGroupId, scopeGroupId));
 
 long structureId = ParamUtil.getLong(request, "structureId");
 
@@ -20,7 +20,7 @@ if (structure != null) {
 	structureId = structure.getStructureId();
 }
 
-String structureKey = BeanParamUtil.getString(structure, request, "structureKey");
+String structureKey = ParamUtil.getString(request, "structureKey", GetterUtil.get(structure, DDMStructure::getStructureKey, StringPool.BLANK));
 
 JSONObject formBuilderContextJSONObject = ddmFormAdminDisplayContext.getFormBuilderContextJSONObject();
 
