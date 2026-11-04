@@ -86,9 +86,10 @@ public class EditContentItemStrutsActionTest {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(
 			_groupLocalService.getGroup(
 				TestPropsValues.getCompanyId(), GroupConstants.CMS));
+		long messageId = RandomTestUtil.randomLong();
 
 		MockHttpServletResponse mockHttpServletResponse = _execute(
-			layout, objectEntry, TestPropsValues.getUser());
+			layout, messageId, objectEntry, TestPropsValues.getUser());
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.getObjectDefinition(
@@ -101,6 +102,9 @@ public class EditContentItemStrutsActionTest {
 				_portal.getClassNameId(objectDefinition.getClassName()), "/",
 				objectEntry.getObjectEntryId()),
 			HttpComponentsUtil.getPath(redirectedURL));
+		Assert.assertEquals(
+			String.valueOf(messageId),
+			HttpComponentsUtil.getParameter(redirectedURL, "messageId", false));
 		Assert.assertEquals(
 			Constants.READ,
 			HttpComponentsUtil.getParameter(redirectedURL, "p_l_mode", false));
@@ -126,7 +130,8 @@ public class EditContentItemStrutsActionTest {
 				TestPropsValues.getCompanyId(), GroupConstants.CMS));
 
 		MockHttpServletResponse mockHttpServletResponse = _execute(
-			layout, objectEntry, TestPropsValues.getUser());
+			layout, RandomTestUtil.randomLong(), objectEntry,
+			TestPropsValues.getUser());
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_NOT_FOUND,
@@ -162,7 +167,7 @@ public class EditContentItemStrutsActionTest {
 		User user = UserTestUtil.addUser();
 
 		MockHttpServletResponse mockHttpServletResponse = _execute(
-			layout, objectEntry, user);
+			layout, RandomTestUtil.randomLong(), objectEntry, user);
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_FORBIDDEN,
@@ -219,7 +224,7 @@ public class EditContentItemStrutsActionTest {
 	}
 
 	private MockHttpServletResponse _execute(
-			Layout layout, ObjectEntry objectEntry, User user)
+			Layout layout, long messageId, ObjectEntry objectEntry, User user)
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -227,6 +232,8 @@ public class EditContentItemStrutsActionTest {
 				_companyLocalService.getCompany(TestPropsValues.getCompanyId()),
 				layout.getGroup(), layout);
 
+		mockHttpServletRequest.setParameter(
+			"messageId", String.valueOf(messageId));
 		mockHttpServletRequest.setParameter(
 			"objectEntryId", String.valueOf(objectEntry.getObjectEntryId()));
 		mockHttpServletRequest.setParameter("p_l_mode", Constants.READ);
