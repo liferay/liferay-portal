@@ -7,6 +7,7 @@ import {IItemsActions} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
 import {IColumn, ITask} from '../../../../utils/types';
+import {State} from '../../../StateSelector';
 
 interface IKanbanContext {
 	boardData: {[k: string]: IColumn};
@@ -22,6 +23,7 @@ interface IKanbanContext {
 	hasAddTaskPermission: boolean;
 	itemsActions: IItemsActions[];
 	loadData: Function;
+	states: State[];
 }
 
 export const KanbanViewContext = React.createContext({} as IKanbanContext);

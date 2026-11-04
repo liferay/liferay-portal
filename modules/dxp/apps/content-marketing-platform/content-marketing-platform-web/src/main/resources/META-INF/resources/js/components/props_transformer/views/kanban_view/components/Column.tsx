@@ -6,11 +6,9 @@
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import {Col} from '@clayui/layout';
-import {ObjectField, StateFlowValue} from '@liferay/site-cms-site-initializer';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {useDrop} from 'react-dnd';
 
-import {getStateObjectField} from '../../../../../utils/api';
 import {openCMPModal} from '../../../../../utils/openCMPModal';
 import {IColumn} from '../../../../../utils/types';
 import StateLabel from '../../../../StateLabel';
@@ -26,44 +24,30 @@ interface IColumnProps {
 	column: IColumn;
 }
 
-interface IColumnViewProps extends IColumnProps {
-	stateFlow?: StateFlowValue;
-}
-
 export enum ItemTypes {
 	TASK = 'KANBAN_TASK',
 }
 
-export function ColumnView({
+export default function Column({
 	column: {icon, key, name, tasks},
-	stateFlow,
-}: IColumnViewProps) {
+}: IColumnProps) {
 	const {
 		changeTaskStatus,
 		cmpProjectObjectDefinitionId,
 		cmpProjectObjectEntryId,
 		hasAddTaskPermission,
 		loadData,
+		states,
 	} = useContext(KanbanViewContext);
 
 	const canTransition = (taskStateKey: string) => {
-		if (!stateFlow) {
-			return false;
-		}
-
-		const state = stateFlow.objectStates.find(
-			({key}) => key === taskStateKey
-		);
+		const state = states.find(({key}) => key === taskStateKey);
 
 		if (!state) {
 			return false;
 		}
 
-		const {objectStateTransitions} = state;
-
-		return objectStateTransitions.some(
-			({key: transitionsKey}) => transitionsKey === key
-		);
+		return state.nextStates.includes(key);
 	};
 
 	const [{canDrop, isOver}, drop] = useDrop({
@@ -85,7 +69,12 @@ export function ColumnView({
 	});
 
 	return (
-		<div className="lfr__kaban-view-column" ref={drop}>
+		<div
+			aria-label={name}
+			className="lfr__kaban-view-column"
+			ref={drop}
+			role="group"
+		>
 			<Col>
 				<div className="lfr__kaban-view-column-header">
 					<StateLabel state={{key, name}} />
@@ -152,33 +141,4 @@ export function ColumnView({
 			</Col>
 		</div>
 	);
-}
-
-export default function Column(props: IColumnProps) {
-	const [stateFlow, setStateFlow] = useState<StateFlowValue>();
-
-	useEffect(() => {
-		const makeFetch = async () => {
-			const {data} = (await getStateObjectField()) as {
-				data: {items: ObjectField[]};
-			};
-
-			const objectFieldSettings =
-				data?.items?.[0]?.objectFieldSettings ?? [];
-
-			const setting = objectFieldSettings!.find(
-				({name}) => name === 'stateFlow'
-			)!;
-
-			const value = setting?.value as StateFlowValue;
-
-			if (value) {
-				setStateFlow(value);
-			}
-		};
-
-		makeFetch();
-	}, []);
-
-	return <ColumnView {...props} stateFlow={stateFlow} />;
 }

@@ -11,6 +11,7 @@ import React, {useCallback, useContext, useEffect} from 'react';
 
 import {patchTaskById} from '../../../../utils/api';
 import {ITask} from '../../../../utils/types';
+import {State} from '../../../StateSelector';
 import {UPDATE_TASKS_QUICK_FILTER_VISIBILITY} from '../../../task/TasksQuickFilters';
 import Board from './components/Board';
 import {KanbanViewContext} from './context';
@@ -22,6 +23,7 @@ interface KanbanViewProps {
 	hasAddTaskPermission: boolean;
 	items: ITask[];
 	itemsActions: IItemsActions[];
+	states: State[];
 }
 
 function KanbanView(props: KanbanViewProps) {
@@ -68,6 +70,7 @@ function KanbanView(props: KanbanViewProps) {
 				hasAddTaskPermission: props.hasAddTaskPermission,
 				itemsActions: props.itemsActions,
 				loadData,
+				states: props.states,
 			}}
 		>
 			<Board />

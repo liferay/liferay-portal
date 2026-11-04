@@ -103,6 +103,7 @@ export default function ProjectTasksFDSPropsTransformer({
 				cmpProjectObjectEntryId:
 					additionalProps.cmpProjectObjectEntryId,
 				hasAddTaskPermission: additionalProps.hasAddTaskPermission,
+				states: additionalProps.states,
 			}),
 		default: false,
 		initialPaginationDelta: FDS_PAGINATION_DELTA_ALL,
