@@ -36,6 +36,12 @@ FaroProject faroProject = (FaroProject)request.getAttribute(FaroProject.class.ge
 				<%= faroProject.getCorpProjectName() %>
 			</p>
 
+			<div class="h5"><liferay-ui:message key="salesforce-account-id" /></div>
+
+			<p>
+				<%= faroProject.getSalesforceAccountId() %>
+			</p>
+
 			<div class="h5"><liferay-ui:message key="wedeploy-key" /></div>
 
 			<p>

@@ -49,7 +49,7 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 			Field.GROUP_ID, Field.NAME, Field.UID, Field.USER_ID,
 			"corpProjectName", "corpProjectUuid", "createDate",
 			"individualsUsage", "lastAccessDate", "offline", "pageViewsUsage",
-			"subscriptionName");
+			"salesforceAccountId", "subscriptionName");
 	}
 
 	@Override
@@ -68,6 +68,8 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 			addSearchTerm(searchQuery, searchContext, Field.NAME, true);
 			addSearchTerm(searchQuery, searchContext, "corpProjectName", true);
 			addSearchTerm(searchQuery, searchContext, "corpProjectUuid", false);
+			addSearchTerm(
+				searchQuery, searchContext, "salesforceAccountId", false);
 			addSearchTerm(searchQuery, searchContext, "weDeployKey", false);
 		}
 
@@ -163,6 +165,8 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 		}
 
 		document.addNumber("pageViewsUsage", faroProject.getPageViewsUsage());
+		document.addKeyword(
+			"salesforceAccountId", faroProject.getSalesforceAccountId());
 		document.addKeyword(
 			"subscriptionName", faroProject.getShortSubscriptionName());
 
