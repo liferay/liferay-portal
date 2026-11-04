@@ -21,10 +21,10 @@ public class TestrayTopLevelBuildReport extends BaseTopLevelBuildReport {
 			return null;
 		}
 
-		JenkinsMaster jenkinsMaster = getJenkinsMaster();
-
 		TestrayCloudBucket testrayCloudBucket =
 			TestrayCloudBucket.getInstance();
+
+		JenkinsMaster jenkinsMaster = getJenkinsMaster();
 
 		TestrayCloudObject buildDatabaseTestrayCloudObject =
 			testrayCloudBucket.getTestrayCloudObject(
