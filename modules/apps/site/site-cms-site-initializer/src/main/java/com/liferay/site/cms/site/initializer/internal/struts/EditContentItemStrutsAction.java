@@ -68,6 +68,13 @@ public class EditContentItemStrutsAction implements StrutsAction {
 			_objectDefinitionLocalService.getObjectDefinition(
 				objectEntry.getObjectDefinitionId()));
 
+		long messageId = ParamUtil.getLong(httpServletRequest, "messageId");
+
+		if (messageId > 0) {
+			editURL = HttpComponentsUtil.addParameter(
+				editURL, "messageId", messageId);
+		}
+
 		String layoutMode = ParamUtil.getString(httpServletRequest, "p_l_mode");
 
 		if (Objects.equals(layoutMode, Constants.READ)) {
