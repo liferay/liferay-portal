@@ -37,7 +37,9 @@ import java.util.Enumeration;
  * @author Brian Wing Shun Chan
  * @author Shuyang Zhou
  */
-public class PageContextWrapper extends PageContext {
+public class PageContextWrapper
+	extends PageContext
+	implements com.liferay.portal.kernel.servlet.taglib.PageContextWrapper {
 
 	public PageContextWrapper(PageContext pageContext) {
 		_pageContext = pageContext;
