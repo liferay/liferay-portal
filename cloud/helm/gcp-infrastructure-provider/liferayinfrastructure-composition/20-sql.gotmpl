@@ -1,6 +1,73 @@
 {{- $database := $xr.spec.database }}
 {{- $instanceType := $database.instanceType | default "db-custom-1-3840" }}
 
+{{- define "grant-database-script" -}}
+script: |
+    #!/bin/sh
+
+    set -o errexit
+    set -o nounset
+
+    function main {
+    	until pg_isready \
+    		--host 127.0.0.1 \
+    		--port "${DATABASE_PORT}" \
+    		--username "${DATABASE_USERNAME}"
+    	do
+    		sleep 2
+    	done
+
+    	psql \
+    		--dbname "${DATABASE_NAME}" \
+    		--host 127.0.0.1 \
+    		--port "${DATABASE_PORT}" \
+    		--set ON_ERROR_STOP=1 \
+    		--set database_name="${DATABASE_NAME}" \
+    		--set liferay_database_username="${LIFERAY_DATABASE_USERNAME}" \
+    		--username "${DATABASE_USERNAME}" <<'EOF'
+    DO $$
+    BEGIN
+    	IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'liferay_shared_owner')
+    	THEN
+    		CREATE ROLE liferay_shared_owner NOLOGIN;
+    	END IF;
+    END $$;
+
+    GRANT liferay_shared_owner TO postgres;
+
+    ALTER DATABASE :"database_name" OWNER TO liferay_shared_owner;
+
+    GRANT CONNECT, TEMPORARY ON DATABASE :"database_name" TO :"liferay_database_username";
+
+    GRANT liferay_shared_owner TO :"liferay_database_username";
+
+    ALTER ROLE :"liferay_database_username" SET ROLE liferay_shared_owner;
+    EOF
+
+    	local timeout
+
+    	timeout=$(($(date +%s) + 600))
+
+    	until PGCONNECT_TIMEOUT=10 PGPASSWORD=iam psql \
+    		--command "SELECT 1" \
+    		--dbname "${DATABASE_NAME}" \
+    		--host 127.0.0.1 \
+    		--port "${DATABASE_PORT}" \
+    		--username "${LIFERAY_DATABASE_USERNAME}" > /dev/null 2>&1
+    	do
+    		if [ "$(date +%s)" -ge "${timeout}" ]
+    		then
+    			echo "${LIFERAY_DATABASE_USERNAME} could not be authenticated." >&2
+
+    			exit 1
+    		fi
+
+    		sleep 2
+    	done
+    }
+
+    main
+{{- end }}
 {{- range $dataPlane := $dataPlanes }}
 {{- $rootPasswordName := printf "liferay-database-%s-root-password" $dataPlane }}
 ---
@@ -185,55 +252,19 @@ spec:
                         containers:
                             -   args:
                                     -   |
-                                            set -o errexit
-
-                                            function main {
-                                                until pg_isready --host 127.0.0.1 --port {{ $databasePort }} --username postgres
-                                                do 
-                                                    sleep 2
-                                                done
-
-                                                psql --dbname {{ $databaseName }} --host 127.0.0.1 --set ON_ERROR_STOP=1 --username postgres <<EOF
-                                            DO \$\$
-
-                                            BEGIN
-                                                IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'liferay_shared_owner')
-                                                THEN
-                                                    CREATE ROLE liferay_shared_owner NOLOGIN;
-                                                END IF;
-                                            END \$\$;
-
-                                            GRANT liferay_shared_owner TO postgres;
-
-                                            ALTER DATABASE "{{ $databaseName }}" OWNER TO liferay_shared_owner;
-
-                                            GRANT CONNECT, TEMPORARY ON DATABASE "{{ $databaseName }}" TO "{{ $databaseIamUser }}";
-
-                                            GRANT liferay_shared_owner TO "{{ $databaseIamUser }}";
-
-                                            ALTER ROLE "{{ $databaseIamUser }}" SET ROLE liferay_shared_owner;
-                                            EOF
-
-                                                timeout=$(($(date +%s) + 600))
-
-                                                until PGCONNECT_TIMEOUT=10 PGPASSWORD=iam psql --command "SELECT 1" --dbname {{ $databaseName }} --host 127.0.0.1 --port {{ $databasePort }} --username "{{ $databaseIamUser }}" >/dev/null 2>&1
-                                                do
-                                                    if [ $(date +%s) -ge $timeout ]
-                                                    then
-                                                        echo "{{ $databaseIamUser }} could not be authenticated" >&2
-
-                                                        exit 1
-                                                    fi
-
-                                                    sleep 2
-                                                done
-                                            }
-
-                                            main
+                                            {{- (include "grant-database-script" . | fromYaml).script | nindent 44 }}
                                 command:
                                     -   /bin/sh
                                     -   -c
                                 env:
+                                    -   name: DATABASE_NAME
+                                        value: {{ $databaseName }}
+                                    -   name: DATABASE_PORT
+                                        value: {{ $databasePort | quote }}
+                                    -   name: DATABASE_USERNAME
+                                        value: postgres
+                                    -   name: LIFERAY_DATABASE_USERNAME
+                                        value: {{ $databaseIamUser }}
                                     -   name: PGPASSWORD
                                         valueFrom:
                                             secretKeyRef:
