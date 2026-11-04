@@ -3,11 +3,4 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page} from '@playwright/test';
-
-import {waitForSPAToBeLoaded} from './waitForSPAToBeLoaded';
-
-export async function waitForPageToBeLoaded(page: Page) {
-	await page.waitForLoadState();
-	await waitForSPAToBeLoaded(page);
-}
+export {waitForPageToBeLoaded} from '../core/utils/waitForPageToBeLoaded';

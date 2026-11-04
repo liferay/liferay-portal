@@ -11,13 +11,8 @@ import {
 } from '@liferay/object-admin-rest-client-js/v1_0';
 import {Page} from '@playwright/test';
 
-import {
-	clearAuthToken,
-	getCSRFTokenHeader,
-	getHeader,
-	readAuthToken,
-} from '../core/authToken';
-import {liferayConfig} from '../liferay.config';
+import {BaseApiHelpers, TDataApiHelpersData} from '../core/ApiHelpers';
+import {clearAuthToken, getHeader, readAuthToken} from '../core/authToken';
 import {AnalyticsSettingsRestApiHelper} from './AnalyticsSettingsRestApiHelper';
 import {ApiBuilderHelper} from './ApiBuilderHelper';
 import {CookiesApiHelper} from './CookiesApiHelper';
@@ -99,29 +94,11 @@ import {JSONWebServicesUserApiHelper} from './json-web-services/JSONWebServicesU
 import {JSONWebServicesUserGroupApiHelper} from './json-web-services/JSONWebServicesUserGroupApiHelper';
 import {JSONWebServicesWorkflowDefinitionLinkApiHelper} from './json-web-services/JSONWebServicesWorkflowDefinitionLinkApiHelper';
 
-type TDataApiHelpersData = {
-	applicationName?: string;
-	id: any;
-	type: string;
-};
-
-interface HeadlessClientWithHeaders {
-	defaultHeaders: Record<string, string>;
-}
-
-interface RequestOptions<T> {
-	data?: T;
-	failOnStatusCode?: boolean;
-	headers?: {[key: string]: string};
-	multipart?: {[key: string]: any};
-}
-
 export {clearAuthToken, getHeader, readAuthToken};
 
-export class ApiHelpers {
+export class ApiHelpers extends BaseApiHelpers {
 	readonly analyticsSettingsRest: AnalyticsSettingsRestApiHelper;
 	readonly apiBuilder: ApiBuilderHelper;
-	readonly baseUrl: string;
 	readonly cookies: CookiesApiHelper;
 	readonly featureFlag: FeatureFlagApiHelper;
 	readonly dataEngine: DataEngineApiHelper;
@@ -197,21 +174,15 @@ export class ApiHelpers {
 	readonly objectAdmin: ObjectAdminApiHelper;
 	readonly objectEntry: ObjectEntryApiHelper;
 	readonly objectFolder: ObjectEntryFolderApiHelper;
-	readonly page: Page;
 	readonly scim: SCIMApiHelper;
 	readonly searchExperiences: SearchExperiencesApiHelper;
 	readonly seoStudio: SEOStudioApiHelper;
 
-	private static readonly _authorization = `Basic ${btoa(
-		`test@liferay.com:test`
-	)}`;
-
 	constructor(page: Page, baseUrl?: string) {
+		super(page, baseUrl);
+
 		this.analyticsSettingsRest = new AnalyticsSettingsRestApiHelper(this);
 		this.apiBuilder = new ApiBuilderHelper(this);
-		this.baseUrl = baseUrl
-			? baseUrl + '/o/'
-			: liferayConfig.environment.baseUrl + '/o/';
 		this.cookies = new CookiesApiHelper(this);
 		this.featureFlag = new FeatureFlagApiHelper(page);
 		this.dataEngine = new DataEngineApiHelper(this);
@@ -329,563 +300,303 @@ export class ApiHelpers {
 		this.objectAdmin = new ObjectAdminApiHelper(this);
 		this.objectEntry = new ObjectEntryApiHelper(this);
 		this.objectFolder = new ObjectEntryFolderApiHelper(this);
-		this.page = page;
 		this.scim = new SCIMApiHelper(this);
 		this.searchExperiences = new SearchExperiencesApiHelper(this);
 		this.seoStudio = new SEOStudioApiHelper(this);
 	}
-
-	async buildRestClient<
-		T extends new (
-			baseUrl: string
-		) => InstanceType<T> & HeadlessClientWithHeaders,
-	>(ApiClientClass: T): Promise<InstanceType<T>> {
-		const apiInstance = new ApiClientClass(
-			liferayConfig.environment.baseUrl + '/o'
-		);
-
-		apiInstance.defaultHeaders = {
-			Cookie: `JSESSIONID=${await this.getJSessionId()};`,
-			...(await getCSRFTokenHeader(this.page)),
-		};
-
-		return apiInstance;
-	}
-
-	private async _sendRequest(
-		method: 'delete' | 'get' | 'patch' | 'post' | 'put',
-		url: string,
-		options: {[key: string]: unknown} = {},
-		headers?: {[key: string]: string},
-		extraHeaders?: {[key: string]: string}
-	) {
-		const buildHeaders = async () =>
-			headers || {
-				...(await getHeader(this.page)),
-				...(extraHeaders || {}),
-			};
-
-		const response = await this.page.request[method](url, {
-			...options,
-			headers: await buildHeaders(),
-		});
-
-		if (headers || response.status() !== 403) {
-			return response;
-		}
-
-		clearAuthToken(this.page);
-
-		return await this.page.request[method](url, {
-			...options,
-			headers: await buildHeaders(),
-		});
-	}
-
-	async postResponse<T>(
-		url: string,
-		{data, failOnStatusCode, headers, multipart}: RequestOptions<T> = {}
-	) {
-		return await this._sendRequest(
-			'post',
-			url,
-			{data, failOnStatusCode: failOnStatusCode || false, multipart},
-			headers
-		);
-	}
-
-	async post<T>(url: string, options: RequestOptions<T> = {}) {
-		const response = await this.postResponse(url, options);
-		const status = response.status();
-
-		if (!response.ok()) {
-			const error = await response.text();
-
-			throw new Error(
-				`POST request to ${url} failed with code ${status}:\n\n${error}`
-			);
-		}
-
-		if (status === 204) {
-			return;
-		}
-
-		return response.json();
-	}
-
-	async getResponse(
-		url: string,
-		failOnStatusCode?: boolean,
-		headers?: {[key: string]: string}
-	) {
-		return await this._sendRequest(
-			'get',
-			url,
-			{failOnStatusCode: failOnStatusCode || false},
-			headers
-		);
-	}
-
-	async put<T>(url: string, options: RequestOptions<T> = {}) {
-		const response = await this.putResponse(url, options);
-
-		if (response.status() === 204) {
-			return;
-		}
-
-		return response.json();
-	}
-
-	async putResponse<T>(
-		url: string,
-		{data, failOnStatusCode, headers, multipart}: RequestOptions<T> = {}
-	) {
-		return await this._sendRequest(
-			'put',
-			url,
-			{data, failOnStatusCode: failOnStatusCode || false, multipart},
-			headers
-		);
-	}
-
-	async delete<T>(
-		url: string,
-		{data, failOnStatusCode, headers}: RequestOptions<T> = {}
-	) {
-		return this._sendRequest(
-			'delete',
-			url,
-			{data, failOnStatusCode: failOnStatusCode || false},
-			undefined,
-			headers
-		);
-	}
-
-	async get(
-		url: string,
-		failOnStatusCode?: boolean,
-		headers?: {[key: string]: string}
-	) {
-		const response = await this.getResponse(url, failOnStatusCode, headers);
-
-		return response.json();
-	}
-
-	async patch(url: string, data: DataObject) {
-		const response = await this._sendRequest('patch', url, {data});
-
-		const text = await response.text();
-
-		if (!text) {
-			return response;
-		}
-
-		return response.json();
-	}
-
-	async patchRequestOptions<T>(url: string, options: RequestOptions<T> = {}) {
-		const response = await this._sendRequest(
-			'patch',
-			url,
-			{
-				data: options.data,
-				failOnStatusCode: options.failOnStatusCode || false,
-				multipart: options.multipart,
-			},
-			options.headers
-		);
-
-		const text = await response.text();
-
-		if (!text) {
-			return response;
-		}
-
-		return response.json();
-	}
-
-	async getJSONWebServicesHeaders() {
-		return {
-			'Authorization': ApiHelpers._authorization,
-			'Content-Type': 'application/x-www-form-urlencoded',
-			...(await getCSRFTokenHeader(this.page)),
-		};
-	}
-
-	async getJSessionId() {
-		const cookies = await this.page.context().cookies();
-
-		return cookies.find((cookie) => cookie.name === 'JSESSIONID').value;
-	}
-
-	async getCSRFTokenHeader() {
-		return getCSRFTokenHeader(this.page);
-	}
-
-	getAuthorizationHeader() {
-		return ApiHelpers._authorization;
-	}
 }
 
 export class DataApiHelpers extends ApiHelpers {
-	readonly data: TDataApiHelpersData[];
+	protected async deleteData(item: TDataApiHelpersData) {
+		if (item.type === 'account') {
+			let response = await this.headlessAdminUser.deleteAccount(item.id);
 
-	constructor(page: Page, baseUrl?: string) {
-		super(page, baseUrl);
+			if (response && !response.ok()) {
+				await this.headlessAdminUser.deleteAccountValidatorResults(
+					item.id
+				);
+				await this.headlessCommerceAdminOrder.deleteOrdersByAccountId(
+					item.id
+				);
 
-		this.data = [];
-	}
-
-	async clearData() {
-		const failures: string[] = [];
-
-		for await (const item of this.data.reverse()) {
-			try {
-				if (item.type === 'account') {
-					let response = await this.headlessAdminUser.deleteAccount(
-						item.id
-					);
-
-					if (response && !response.ok()) {
-						await this.headlessAdminUser.deleteAccountValidatorResults(
-							item.id
-						);
-						await this.headlessCommerceAdminOrder.deleteOrdersByAccountId(
-							item.id
-						);
-
-						response = await this.headlessAdminUser.deleteAccount(
-							item.id
-						);
-					}
-				}
-				else if (item.type === 'accountGroup') {
-					await this.headlessAdminUser.deleteAccountGroup(item.id);
-				}
-				else if (item.type === 'address') {
-					await this.headlessAdminUser.deletePostalAddress(item.id);
-				}
-				else if (item.type === 'announcement') {
-					await this.jsonWebServicesAnnouncementsEntryApiHelper.deleteEntry(
-						item.id
-					);
-				}
-				else if (item.type === 'apiApplication') {
-					await this.apiBuilder.deleteApiApplication(item.id);
-				}
-				else if (item.type === 'assetLibrary') {
-					await this.headlessAssetLibrary.deleteAssetLibrary(item.id);
-				}
-				else if (item.type === 'audiencesEntry') {
-					await this.jsonWebServicesAudiencesEntry.deleteAudiencesEntry(
-						item.id
-					);
-				}
-				else if (item.type === 'catalog') {
-					await this.headlessCommerceAdminCatalog.deleteCatalog(
-						item.id
-					);
-				}
-				else if (item.type === 'channel') {
-					await this.headlessCommerceAdminChannel.deleteChannel(
-						item.id
-					);
-				}
-				else if (item.type === 'commerceReturn') {
-					await this.headlessCommerceReturn.deleteCommerceReturn(
-						item.id
-					);
-				}
-				else if (item.type === 'ctCollection') {
-					await this.headlessChangeTracking.deleteCTCollection(
-						item.id
-					);
-				}
-				else if (item.type === 'currency') {
-					await this.headlessCommerceAdminCatalog.deleteCurrency(
-						item.id
-					);
-				}
-				else if (item.type === 'discount') {
-					await this.headlessCommerceAdminPricing.deleteDiscount(
-						item.id
-					);
-				}
-				else if (item.type === 'document') {
-					await this.headlessDelivery.deleteDocument(item.id);
-				}
-				else if (item.type === 'documentDataDefinitionType') {
-					await this.headlessDelivery.deleteDocumentDataDefinitionType(
-						item.id
-					);
-				}
-				else if (item.type === 'documentFolder') {
-					await this.headlessDelivery.deleteDocumentFolder(item.id);
-				}
-				else if (item.type === 'keyword') {
-					await this.headlessAdminTaxonomy.deleteKeyword({
-						id: item.id,
-					});
-				}
-				else if (item.type === 'layoutPageTemplateEntry') {
-					await this.jsonWebServicesLayoutPageTemplateEntry.deleteLayoutPageTemplateEntry(
-						{layoutPageTemplateEntryId: String(item.id)}
-					);
-				}
-				else if (item.type === 'layoutSetPrototype') {
-					await this.jsonWebServicesLayoutSetPrototype.deleteLayoutSetPrototypes(
-						item.id
-					);
-				}
-				else if (item.type === 'listTypeDefinition') {
-					await this.listTypeAdmin.deleteListTypeDefinition(item.id);
-				}
-				else if (item.type === 'navigationMenu') {
-					const [
-						siteExternalReferenceCode,
-						navigationMenuExternalReferenceCode,
-					] = item.id.split('|');
-
-					await this.headlessAdminSite.deleteSiteNavigationMenu(
-						siteExternalReferenceCode,
-						navigationMenuExternalReferenceCode
-					);
-				}
-				else if (item.type === 'notificationQueueEntry') {
-					await this.notification.deleteNotificationQueueEntry(
-						item.id
-					);
-				}
-				else if (item.type === 'notificationTemplate') {
-					await this.notification.deleteNotificationTemplate(item.id);
-				}
-				else if (item.type === 'objectAction') {
-					const objectActionAPIClient =
-						await this.buildRestClient(ObjectActionAPI);
-					await objectActionAPIClient.deleteObjectAction(item.id);
-				}
-				else if (item.type === 'objectDefinition') {
-					await this.deleteObjectDefinition(item.id);
-				}
-				else if (item.type === 'objectEntry') {
-					await this.objectEntry.deleteObjectEntry(
-						item.applicationName!,
-						item.id
-					);
-				}
-				else if (item.type === 'objectEntryFolder') {
-					await this.objectFolder.deleteObjectEntryFolder(item.id);
-				}
-				else if (item.type === 'objectFolder') {
-					const objectFolderRESTClient =
-						await this.buildRestClient(ObjectFolderAPI);
-					await objectFolderRESTClient.deleteObjectFolder(item.id);
-				}
-				else if (item.type === 'objectRelationship') {
-					const objectRelationshipRESTClient =
-						await this.buildRestClient(ObjectRelationshipAPI);
-					await objectRelationshipRESTClient.deleteObjectRelationship(
-						item.id
-					);
-				}
-				else if (item.type === 'option') {
-					await this.headlessCommerceAdminCatalog.deleteOption(
-						item.id
-					);
-				}
-				else if (item.type === 'optionCategory') {
-					await this.headlessCommerceAdminCatalog.deleteOptionCategory(
-						item.id
-					);
-				}
-				else if (item.type === 'order') {
-					await this.headlessCommerceAdminOrder.deleteOrder(item.id);
-				}
-				else if (item.type === 'orderAttachment') {
-					const [orderId, attachmentId] = String(item.id)
-						.split('_')
-						.map(Number);
-
-					await this.headlessCommerceAdminOrderAttachment.deleteOrderAttachment(
-						attachmentId,
-						orderId
-					);
-				}
-				else if (item.type === 'orderRule') {
-					await this.headlessCommerceAdminOrder.deleteOrderRules(
-						item.id
-					);
-				}
-				else if (item.type === 'orderType') {
-					await this.headlessCommerceAdminOrder.deleteOrderTypes(
-						item.id
-					);
-				}
-				else if (item.type === 'organization') {
-					await this.headlessAdminUser.deleteOrganization(item.id);
-				}
-				else if (item.type === 'organizationUserAccountAssociation') {
-					const [organizationId, emailAddress] = item.id.split('_');
-					await this.headlessAdminUser.deleteOrganizationUserAccountAssociation(
-						organizationId,
-						emailAddress
-					);
-				}
-				else if (item.type === 'payment') {
-					await this.headlessCommerceAdminPaymentApiHelper.deletePayment(
-						item.id
-					);
-				}
-				else if (item.type === 'pin') {
-					await this.headlessCommerceAdminCatalog.deletePin(item.id);
-				}
-				else if (item.type === 'price-entry') {
-					await this.headlessCommerceAdminPricing.deletePriceEntry(
-						item.id
-					);
-				}
-				else if (item.type === 'price-list') {
-					await this.headlessCommerceAdminPricing.deletePriceList(
-						item.id
-					);
-				}
-				else if (item.type === 'product') {
-					await this.headlessCommerceAdminCatalog.deleteProduct(
-						item.id
-					);
-				}
-				else if (item.type === 'productGroup') {
-					await this.headlessCommerceAdminCatalog.deleteProductGroup(
-						item.id
-					);
-				}
-				else if (item.type === 'productConfiguration') {
-					await this.headlessCommerceAdminCatalog.deleteProductConfiguration(
-						item.id
-					);
-				}
-				else if (item.type === 'productConfigurationList') {
-					await this.headlessCommerceAdminCatalog.deleteProductConfigurationList(
-						item.id
-					);
-				}
-				else if (item.type === 'pushNotificationsDevice') {
-					await this.jsonWebServicesPushNotificationsDevice.deletePushNotificationsDevice(
-						item.id
-					);
-				}
-				else if (item.type === 'relatedProduct') {
-					await this.headlessCommerceAdminCatalog.deleteRelatedProduct(
-						item.id
-					);
-				}
-				else if (item.type === 'role') {
-					await this.headlessAdminUser.deleteRole(item.id);
-				}
-				else if (item.type === 'roleUserAccountAssociation') {
-					const [roleId, userId] = item.id.split('_');
-					await this.headlessAdminUser.deleteRoleUserAccountAssociation(
-						roleId,
-						userId
-					);
-				}
-				else if (item.type === 'shipment') {
-					await this.headlessCommerceAdminShipment.deleteShipment(
-						item.id
-					);
-				}
-				else if (item.type === 'site') {
-					await this.headlessAdminSite.deleteSite(item.id);
-				}
-				else if (item.type === 'skuUnitOfMeasure') {
-					await this.headlessCommerceAdminCatalog.deleteSkuUnitOfMeasure(
-						item.id
-					);
-				}
-				else if (item.type === 'specification') {
-					await this.headlessCommerceAdminCatalog.deleteSpecification(
-						item.id
-					);
-				}
-				else if (item.type === 'sxpBlueprint') {
-					await this.searchExperiences.deleteSXPBlueprint(item.id);
-				}
-				else if (item.type === 'sxpElement') {
-					await this.searchExperiences.deleteSXPElement(item.id);
-				}
-				else if (item.type === 'taxonomyCategory') {
-					await this.headlessAdminTaxonomy.deleteTaxonomyCategory(
-						item.id
-					);
-				}
-				else if (item.type === 'taxonomyVocabulary') {
-					await this.headlessAdminTaxonomy.deleteTaxonomyVocabulary(
-						item.id
-					);
-				}
-				else if (item.type === 'terms') {
-					await this.headlessCommerceAdminOrder.deleteTerms(item.id);
-				}
-				else if (item.type === 'tierPrice') {
-					await this.headlessCommerceAdminPricing.deleteTierPrice(
-						item.id
-					);
-				}
-				else if (item.type === 'userAccount') {
-					await this.headlessAdminUser.deleteUserAccount(item.id);
-				}
-				else if (item.type === 'userGroup') {
-					await this.headlessAdminUser.deleteUserGroup(item.id);
-				}
-				else if (item.type === 'userGroupUserAccountAssociation') {
-					const [userGroupId, ...userIds] = item.id.split('_');
-					await this.headlessAdminUser.deleteUserGroupUsers(
-						userGroupId,
-						userIds
-					);
-				}
-				else if (item.type === 'virtual-instance') {
-					await this.headlessPortalInstance.deleteVirtualInstance(
-						item.id
-					);
-				}
-				else if (item.type === 'warehouse') {
-					await this.headlessCommerceAdminInventoryApiHelper.deleteWarehouse(
-						item.id
-					);
-				}
-				else if (item.type === 'warehouse-item') {
-					await this.headlessCommerceAdminInventoryApiHelper.deleteWarehouseItem(
-						item.id
-					);
-				}
-				else if (item.type === 'webContent') {
-					const [siteId, articleId] = item.id.split('_');
-					await this.jsonWebServicesJournal.moveArticleToTrash(
-						siteId,
-						articleId
-					);
-				}
-				else if (item.type === 'wishList') {
-					await this.headlessCommerceDeliveryCatalog.deleteWishList(
-						item.id
-					);
-				}
-				else if (item.type === 'workflowDefinition') {
-					await this.headlessAdminWorkflow.deleteWorkflowDefinition(
-						item.id
-					);
-				}
-			}
-			catch (error) {
-				failures.push(`${item.type} ${item.id}: ${error.message}`);
+				response = await this.headlessAdminUser.deleteAccount(item.id);
 			}
 		}
-
-		if (failures.length) {
-			console.warn(
-				`Unable to delete ${failures.length} created entities:\n${failures.join('\n')}`
+		else if (item.type === 'accountGroup') {
+			await this.headlessAdminUser.deleteAccountGroup(item.id);
+		}
+		else if (item.type === 'address') {
+			await this.headlessAdminUser.deletePostalAddress(item.id);
+		}
+		else if (item.type === 'announcement') {
+			await this.jsonWebServicesAnnouncementsEntryApiHelper.deleteEntry(
+				item.id
 			);
+		}
+		else if (item.type === 'apiApplication') {
+			await this.apiBuilder.deleteApiApplication(item.id);
+		}
+		else if (item.type === 'assetLibrary') {
+			await this.headlessAssetLibrary.deleteAssetLibrary(item.id);
+		}
+		else if (item.type === 'audiencesEntry') {
+			await this.jsonWebServicesAudiencesEntry.deleteAudiencesEntry(
+				item.id
+			);
+		}
+		else if (item.type === 'catalog') {
+			await this.headlessCommerceAdminCatalog.deleteCatalog(item.id);
+		}
+		else if (item.type === 'channel') {
+			await this.headlessCommerceAdminChannel.deleteChannel(item.id);
+		}
+		else if (item.type === 'commerceReturn') {
+			await this.headlessCommerceReturn.deleteCommerceReturn(item.id);
+		}
+		else if (item.type === 'ctCollection') {
+			await this.headlessChangeTracking.deleteCTCollection(item.id);
+		}
+		else if (item.type === 'currency') {
+			await this.headlessCommerceAdminCatalog.deleteCurrency(item.id);
+		}
+		else if (item.type === 'discount') {
+			await this.headlessCommerceAdminPricing.deleteDiscount(item.id);
+		}
+		else if (item.type === 'document') {
+			await this.headlessDelivery.deleteDocument(item.id);
+		}
+		else if (item.type === 'documentDataDefinitionType') {
+			await this.headlessDelivery.deleteDocumentDataDefinitionType(
+				item.id
+			);
+		}
+		else if (item.type === 'documentFolder') {
+			await this.headlessDelivery.deleteDocumentFolder(item.id);
+		}
+		else if (item.type === 'keyword') {
+			await this.headlessAdminTaxonomy.deleteKeyword({
+				id: item.id,
+			});
+		}
+		else if (item.type === 'layoutPageTemplateEntry') {
+			await this.jsonWebServicesLayoutPageTemplateEntry.deleteLayoutPageTemplateEntry(
+				{layoutPageTemplateEntryId: String(item.id)}
+			);
+		}
+		else if (item.type === 'layoutSetPrototype') {
+			await this.jsonWebServicesLayoutSetPrototype.deleteLayoutSetPrototypes(
+				item.id
+			);
+		}
+		else if (item.type === 'listTypeDefinition') {
+			await this.listTypeAdmin.deleteListTypeDefinition(item.id);
+		}
+		else if (item.type === 'navigationMenu') {
+			const [
+				siteExternalReferenceCode,
+				navigationMenuExternalReferenceCode,
+			] = item.id.split('|');
+
+			await this.headlessAdminSite.deleteSiteNavigationMenu(
+				siteExternalReferenceCode,
+				navigationMenuExternalReferenceCode
+			);
+		}
+		else if (item.type === 'notificationQueueEntry') {
+			await this.notification.deleteNotificationQueueEntry(item.id);
+		}
+		else if (item.type === 'notificationTemplate') {
+			await this.notification.deleteNotificationTemplate(item.id);
+		}
+		else if (item.type === 'objectAction') {
+			const objectActionAPIClient =
+				await this.buildRestClient(ObjectActionAPI);
+			await objectActionAPIClient.deleteObjectAction(item.id);
+		}
+		else if (item.type === 'objectDefinition') {
+			await this.deleteObjectDefinition(item.id);
+		}
+		else if (item.type === 'objectEntry') {
+			await this.objectEntry.deleteObjectEntry(
+				item.applicationName!,
+				item.id
+			);
+		}
+		else if (item.type === 'objectEntryFolder') {
+			await this.objectFolder.deleteObjectEntryFolder(item.id);
+		}
+		else if (item.type === 'objectFolder') {
+			const objectFolderRESTClient =
+				await this.buildRestClient(ObjectFolderAPI);
+			await objectFolderRESTClient.deleteObjectFolder(item.id);
+		}
+		else if (item.type === 'objectRelationship') {
+			const objectRelationshipRESTClient = await this.buildRestClient(
+				ObjectRelationshipAPI
+			);
+			await objectRelationshipRESTClient.deleteObjectRelationship(
+				item.id
+			);
+		}
+		else if (item.type === 'option') {
+			await this.headlessCommerceAdminCatalog.deleteOption(item.id);
+		}
+		else if (item.type === 'optionCategory') {
+			await this.headlessCommerceAdminCatalog.deleteOptionCategory(
+				item.id
+			);
+		}
+		else if (item.type === 'order') {
+			await this.headlessCommerceAdminOrder.deleteOrder(item.id);
+		}
+		else if (item.type === 'orderAttachment') {
+			const [orderId, attachmentId] = String(item.id)
+				.split('_')
+				.map(Number);
+
+			await this.headlessCommerceAdminOrderAttachment.deleteOrderAttachment(
+				attachmentId,
+				orderId
+			);
+		}
+		else if (item.type === 'orderRule') {
+			await this.headlessCommerceAdminOrder.deleteOrderRules(item.id);
+		}
+		else if (item.type === 'orderType') {
+			await this.headlessCommerceAdminOrder.deleteOrderTypes(item.id);
+		}
+		else if (item.type === 'organization') {
+			await this.headlessAdminUser.deleteOrganization(item.id);
+		}
+		else if (item.type === 'organizationUserAccountAssociation') {
+			const [organizationId, emailAddress] = item.id.split('_');
+			await this.headlessAdminUser.deleteOrganizationUserAccountAssociation(
+				organizationId,
+				emailAddress
+			);
+		}
+		else if (item.type === 'payment') {
+			await this.headlessCommerceAdminPaymentApiHelper.deletePayment(
+				item.id
+			);
+		}
+		else if (item.type === 'pin') {
+			await this.headlessCommerceAdminCatalog.deletePin(item.id);
+		}
+		else if (item.type === 'price-entry') {
+			await this.headlessCommerceAdminPricing.deletePriceEntry(item.id);
+		}
+		else if (item.type === 'price-list') {
+			await this.headlessCommerceAdminPricing.deletePriceList(item.id);
+		}
+		else if (item.type === 'product') {
+			await this.headlessCommerceAdminCatalog.deleteProduct(item.id);
+		}
+		else if (item.type === 'productGroup') {
+			await this.headlessCommerceAdminCatalog.deleteProductGroup(item.id);
+		}
+		else if (item.type === 'productConfiguration') {
+			await this.headlessCommerceAdminCatalog.deleteProductConfiguration(
+				item.id
+			);
+		}
+		else if (item.type === 'productConfigurationList') {
+			await this.headlessCommerceAdminCatalog.deleteProductConfigurationList(
+				item.id
+			);
+		}
+		else if (item.type === 'pushNotificationsDevice') {
+			await this.jsonWebServicesPushNotificationsDevice.deletePushNotificationsDevice(
+				item.id
+			);
+		}
+		else if (item.type === 'relatedProduct') {
+			await this.headlessCommerceAdminCatalog.deleteRelatedProduct(
+				item.id
+			);
+		}
+		else if (item.type === 'role') {
+			await this.headlessAdminUser.deleteRole(item.id);
+		}
+		else if (item.type === 'roleUserAccountAssociation') {
+			const [roleId, userId] = item.id.split('_');
+			await this.headlessAdminUser.deleteRoleUserAccountAssociation(
+				roleId,
+				userId
+			);
+		}
+		else if (item.type === 'shipment') {
+			await this.headlessCommerceAdminShipment.deleteShipment(item.id);
+		}
+		else if (item.type === 'site') {
+			await this.headlessAdminSite.deleteSite(item.id);
+		}
+		else if (item.type === 'skuUnitOfMeasure') {
+			await this.headlessCommerceAdminCatalog.deleteSkuUnitOfMeasure(
+				item.id
+			);
+		}
+		else if (item.type === 'specification') {
+			await this.headlessCommerceAdminCatalog.deleteSpecification(
+				item.id
+			);
+		}
+		else if (item.type === 'sxpBlueprint') {
+			await this.searchExperiences.deleteSXPBlueprint(item.id);
+		}
+		else if (item.type === 'sxpElement') {
+			await this.searchExperiences.deleteSXPElement(item.id);
+		}
+		else if (item.type === 'taxonomyCategory') {
+			await this.headlessAdminTaxonomy.deleteTaxonomyCategory(item.id);
+		}
+		else if (item.type === 'taxonomyVocabulary') {
+			await this.headlessAdminTaxonomy.deleteTaxonomyVocabulary(item.id);
+		}
+		else if (item.type === 'terms') {
+			await this.headlessCommerceAdminOrder.deleteTerms(item.id);
+		}
+		else if (item.type === 'tierPrice') {
+			await this.headlessCommerceAdminPricing.deleteTierPrice(item.id);
+		}
+		else if (item.type === 'userAccount') {
+			await this.headlessAdminUser.deleteUserAccount(item.id);
+		}
+		else if (item.type === 'userGroup') {
+			await this.headlessAdminUser.deleteUserGroup(item.id);
+		}
+		else if (item.type === 'userGroupUserAccountAssociation') {
+			const [userGroupId, ...userIds] = item.id.split('_');
+			await this.headlessAdminUser.deleteUserGroupUsers(
+				userGroupId,
+				userIds
+			);
+		}
+		else if (item.type === 'virtual-instance') {
+			await this.headlessPortalInstance.deleteVirtualInstance(item.id);
+		}
+		else if (item.type === 'warehouse') {
+			await this.headlessCommerceAdminInventoryApiHelper.deleteWarehouse(
+				item.id
+			);
+		}
+		else if (item.type === 'warehouse-item') {
+			await this.headlessCommerceAdminInventoryApiHelper.deleteWarehouseItem(
+				item.id
+			);
+		}
+		else if (item.type === 'webContent') {
+			const [siteId, articleId] = item.id.split('_');
+			await this.jsonWebServicesJournal.moveArticleToTrash(
+				siteId,
+				articleId
+			);
+		}
+		else if (item.type === 'wishList') {
+			await this.headlessCommerceDeliveryCatalog.deleteWishList(item.id);
+		}
+		else if (item.type === 'workflowDefinition') {
+			await this.headlessAdminWorkflow.deleteWorkflowDefinition(item.id);
 		}
 	}
 
@@ -974,14 +685,6 @@ export class DataApiHelpers extends ApiHelpers {
 
 		for (const id of objectDefinitionIds) {
 			await objectDefinitionAPIClient.deleteObjectDefinition(id);
-		}
-	}
-
-	setData(data: TDataApiHelpersData[]) {
-		this.data.length = 0;
-
-		while (data.length) {
-			this.data.unshift(data.pop());
 		}
 	}
 }

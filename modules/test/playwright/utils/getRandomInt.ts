@@ -3,6 +3,4 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export function getRandomInt(): number {
-	return Math.floor(Math.random() * 9999999999);
-}
+export {getRandomInt} from '../core/utils/getRandomInt';
