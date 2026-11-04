@@ -28,18 +28,24 @@ import com.liferay.exportimport.rest.client.dto.v1_0.ScheduledPublishProcessRequ
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.pagination.Pagination;
+import com.liferay.exportimport.rest.client.resource.v1_0.ScheduledPublishProcessResource;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.test.log.LogCapture;
@@ -51,6 +57,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -233,30 +240,49 @@ public class ScheduledPublishProcessResourceTest
 	}
 
 	private void _assertPostSiteScheduledPublishProcessProblem(
-			String scheduledPublishProcessCronExpression, String title,
+			String key, String scheduledPublishProcessCronExpression,
 			String type)
 		throws Exception {
 
-		HttpInvoker.HttpResponse httpResponse =
-			scheduledPublishProcessResource.
-				postSiteScheduledPublishProcessHttpResponse(
-					testGroup.getExternalReferenceCode(),
-					new ScheduledPublishProcessRequest() {
-						{
-							cronExpression =
-								scheduledPublishProcessCronExpression;
-							publishProcessRequest = _toPublishProcessRequest(
-								RandomTestUtil.randomString());
-						}
-					});
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
-		assertHttpResponseStatusCode(400, httpResponse);
+		for (Locale locale :
+				new Locale[] {LocaleUtil.getDefault(), LocaleUtil.SPAIN}) {
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			httpResponse.getContent());
+			ScheduledPublishProcessResource scheduledPublishProcessResource =
+				ScheduledPublishProcessResource.builder(
+				).authentication(
+					user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+				).endpoint(
+					testCompany.getVirtualHostname(),
+					PortalUtil.getPortalServerPort(false), "http"
+				).locale(
+					locale
+				).build();
 
-		Assert.assertEquals(title, jsonObject.getString("title"));
-		Assert.assertEquals(type, jsonObject.getString("type"));
+			HttpInvoker.HttpResponse httpResponse =
+				scheduledPublishProcessResource.
+					postSiteScheduledPublishProcessHttpResponse(
+						testGroup.getExternalReferenceCode(),
+						new ScheduledPublishProcessRequest() {
+							{
+								cronExpression =
+									scheduledPublishProcessCronExpression;
+								publishProcessRequest =
+									_toPublishProcessRequest(
+										RandomTestUtil.randomString());
+							}
+						});
+
+			assertHttpResponseStatusCode(400, httpResponse);
+
+			JSONObject jsonObject = _jsonFactory.createJSONObject(
+				httpResponse.getContent());
+
+			Assert.assertEquals(
+				LanguageUtil.get(locale, key), jsonObject.getString("title"));
+			Assert.assertEquals(type, jsonObject.getString("type"));
+		}
 	}
 
 	private void _assertScheduledPublishProcess(
@@ -439,15 +465,15 @@ public class ScheduledPublishProcessResourceTest
 		throws Exception {
 
 		_assertPostSiteScheduledPublishProcessProblem(
-			"0 0 12 31 2 ? *", "The publication schedule never runs",
-			"PublishProcessScheduleException.MustRunAtLeastOnce");
-		_assertPostSiteScheduledPublishProcessProblem(
-			"0 30 9 22 8 ? 2020", "The publication schedule never runs",
-			"PublishProcessScheduleException.MustRunAtLeastOnce");
-		_assertPostSiteScheduledPublishProcessProblem(
+			"please-enter-a-valid-cron-expression",
 			RandomTestUtil.randomString(),
-			"The publication schedule is invalid",
 			"PublishProcessScheduleException.MustBeValid");
+		_assertPostSiteScheduledPublishProcessProblem(
+			"the-scheduled-process-will-never-run", "0 0 12 31 2 ? *",
+			"PublishProcessScheduleException.MustRunAtLeastOnce");
+		_assertPostSiteScheduledPublishProcessProblem(
+			"the-scheduled-process-will-never-run", "0 30 9 22 8 ? 2020",
+			"PublishProcessScheduleException.MustRunAtLeastOnce");
 	}
 
 	private void _testPostSiteScheduledPublishProcessWithInvalidDateRange()

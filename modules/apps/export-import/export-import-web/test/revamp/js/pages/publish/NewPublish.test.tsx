@@ -112,7 +112,7 @@ const getFilteredPreviewCall = () =>
 
 const mockAPIRoutes = ({
 	deleteStatus = 204,
-	postErrorType = '',
+	postError = false,
 	scheduledPublishProcess = SCHEDULED_PUBLISH_PROCESS,
 } = {}) => {
 	fetch.mockResponse(async (request) => {
@@ -124,7 +124,7 @@ const mockAPIRoutes = ({
 		}
 
 		if (
-			postErrorType &&
+			postError &&
 			request.method === 'POST' &&
 			request.url.endsWith('publish-processes')
 		) {
@@ -132,7 +132,6 @@ const mockAPIRoutes = ({
 				body: JSON.stringify({
 					status: 'BAD_REQUEST',
 					title: 'Server error title',
-					type: postErrorType,
 				}),
 				status: 400,
 			};
@@ -185,35 +184,6 @@ const pickCalendarDay = async (datePicker: HTMLElement) => {
 
 	await user.click(
 		within(calendar).getByLabelText(FUTURE_DATE.toDateString())
-	);
-};
-
-const submitRecurringSchedule = async (
-	repeat: string,
-	cronExpression?: string
-) => {
-	await fillRequiredFields();
-
-	await user.click(screen.getByRole('radio', {name: /schedule-for-later/}));
-
-	await user.click(screen.getByRole('textbox', {name: /start-date/}));
-
-	await user.paste(FUTURE_DISPLAY_DATE_TIME);
-
-	await user.selectOptions(
-		screen.getByRole('combobox', {name: 'repeat'}),
-		repeat
-	);
-
-	if (cronExpression) {
-		await user.type(
-			screen.getByRole('textbox', {name: /cron-expression/}),
-			cronExpression
-		);
-	}
-
-	await user.click(
-		screen.getByRole('button', {name: /schedule-publication-to-live/i})
 	);
 };
 
@@ -1151,8 +1121,8 @@ describe('NewPublish', () => {
 		);
 	});
 
-	it('shows the server error title for an unknown error type', async () => {
-		mockAPIRoutes({postErrorType: 'UnknownException'});
+	it('shows the server error title when the publication fails', async () => {
+		mockAPIRoutes({postError: true});
 
 		renderComponent();
 
@@ -1165,44 +1135,6 @@ describe('NewPublish', () => {
 		await waitFor(() => {
 			expect(Liferay.Util.openToast).toHaveBeenCalledWith({
 				message: 'Server error title',
-				type: 'danger',
-			});
-		});
-
-		expect(Liferay.Util.navigate).not.toHaveBeenCalled();
-	});
-
-	it('shows the cron expression error for an invalid custom recurrence', async () => {
-		mockAPIRoutes({
-			postErrorType: 'PublishProcessScheduleException.MustBeValid',
-		});
-
-		renderComponent();
-
-		await submitRecurringSchedule('custom', '0 0 12 * *');
-
-		await waitFor(() => {
-			expect(Liferay.Util.openToast).toHaveBeenCalledWith({
-				message: 'please-enter-a-valid-cron-expression',
-				type: 'danger',
-			});
-		});
-
-		expect(Liferay.Util.navigate).not.toHaveBeenCalled();
-	});
-
-	it('shows the never run error for a custom recurrence that never runs', async () => {
-		mockAPIRoutes({
-			postErrorType: 'PublishProcessScheduleException.MustRunAtLeastOnce',
-		});
-
-		renderComponent();
-
-		await submitRecurringSchedule('custom', '0 0 12 31 2 ? *');
-
-		await waitFor(() => {
-			expect(Liferay.Util.openToast).toHaveBeenCalledWith({
-				message: 'the-scheduled-process-will-never-run',
 				type: 'danger',
 			});
 		});
