@@ -37,8 +37,6 @@ describe('WorkflowTaskRenderer', () => {
 			dateDue: '',
 			id: '1',
 			label: 'Revisión',
-			myWorkflowTasksURL:
-				'http://www.test.com/myWorkflowTasks?p_p_id=com_liferay_portal_workflow_task_web_portlet_MyWorkflowTaskPortlet',
 			name: 'review',
 			objectReviewed: {
 				assetTitle: 'Test Content',
@@ -46,6 +44,8 @@ describe('WorkflowTaskRenderer', () => {
 				id: 2,
 			},
 			workflowLogs: [],
+			workflowTaskURL:
+				'http://www.test.com/workflowTask?p_p_id=com_liferay_portal_workflow_task_web_portlet_MyWorkflowTaskPortlet',
 		};
 
 		const {container} = render(

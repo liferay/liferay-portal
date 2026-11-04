@@ -18,10 +18,14 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -68,16 +72,9 @@ public class ViewHomeWorkflowTasksDisplayContextTest
 					WorkflowConstants.STATUS_APPROVED));
 		}
 
-		_fragmentRenderer.render(
-			fragmentRendererContext, mockHttpServletRequest,
-			new MockHttpServletResponse());
-
-		Object displayContext = mockHttpServletRequest.getAttribute(
-			"com.liferay.site.cms.site.initializer.internal.display.context." +
-				"ViewHomeWorkflowTasksDisplayContext");
-
 		Map<String, Object> reactData = ReflectionTestUtil.invoke(
-			displayContext, "getReactData", new Class<?>[0]);
+			_getSectionDisplayContext(mockHttpServletRequest), "getReactData",
+			new Class<?>[0]);
 
 		JSONArray objectDefinitionsJSONArray = (JSONArray)reactData.get(
 			"objectDefinitions");
@@ -97,6 +94,25 @@ public class ViewHomeWorkflowTasksDisplayContextTest
 				externalReferenceCodes.contains(
 					objectDefinition.getExternalReferenceCode()));
 		}
+
+		String workflowTaskURL = (String)reactData.get("workflowTaskURL");
+
+		Assert.assertEquals(
+			PortletKeys.MY_WORKFLOW_TASK,
+			HttpComponentsUtil.getParameter(workflowTaskURL, "p_p_id", false));
+	}
+
+	private Object _getSectionDisplayContext(
+			HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		_fragmentRenderer.render(
+			fragmentRendererContext, httpServletRequest,
+			new MockHttpServletResponse());
+
+		return httpServletRequest.getAttribute(
+			"com.liferay.site.cms.site.initializer.internal.display.context." +
+				"ViewHomeWorkflowTasksDisplayContext");
 	}
 
 	@Inject(
