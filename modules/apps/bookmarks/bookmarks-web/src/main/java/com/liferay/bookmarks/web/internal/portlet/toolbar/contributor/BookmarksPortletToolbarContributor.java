@@ -13,7 +13,6 @@ import com.liferay.bookmarks.model.BookmarksFolder;
 import com.liferay.bookmarks.service.BookmarksFolderService;
 import com.liferay.bookmarks.web.internal.portlet.util.BookmarksUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -30,6 +29,7 @@ import com.liferay.portal.kernel.servlet.taglib.ui.URLMenuItem;
 import com.liferay.portal.kernel.settings.SettingsException;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -218,8 +218,8 @@ public class BookmarksPortletToolbarContributor
 				settingsException);
 		}
 
-		long folderId = BeanParamUtil.getLong(
-			folder, portletRequest, "folderId", rootFolderId);
+		long folderId = ParamUtil.getLong(
+			portletRequest, "folderId", rootFolderId);
 
 		if (folderId != BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
 			try {
