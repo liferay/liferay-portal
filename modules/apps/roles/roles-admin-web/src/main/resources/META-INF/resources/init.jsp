@@ -34,7 +34,6 @@ page import="com.liferay.object.model.ObjectDefinition" %><%@
 page import="com.liferay.object.service.ObjectDefinitionLocalServiceUtil" %><%@
 page import="com.liferay.organizations.search.OrganizationSearch" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
-page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
 page import="com.liferay.portal.kernel.dao.orm.QueryUtil" %><%@
 page import="com.liferay.portal.kernel.dao.search.SearchContainer" %><%@
 page import="com.liferay.portal.kernel.exception.DataLimitExceededException" %><%@
