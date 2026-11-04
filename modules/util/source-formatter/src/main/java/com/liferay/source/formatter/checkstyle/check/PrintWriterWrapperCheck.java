@@ -235,23 +235,26 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 			}
 
 			if (parentDetailAST.getType() == TokenTypes.DOT) {
-				DetailAST grandParentDetailAST = parentDetailAST.getParent();
+				if (!equals(parentDetailAST.getFirstChild(), identDetailAST) ||
+					!TokenUtil.isOfType(
+						parentDetailAST.getParent(), TokenTypes.METHOD_CALL)) {
+
+					return false;
+				}
+
 				DetailAST methodNameDetailAST = parentDetailAST.getLastChild();
 
-				if (!equals(parentDetailAST.getFirstChild(), identDetailAST) ||
-					(grandParentDetailAST.getType() !=
-						TokenTypes.METHOD_CALL) ||
-					!ArrayUtil.contains(
+				if (ArrayUtil.contains(
 						new String[] {
 							"append", "close", "flush", "print", "println",
 							"write"
 						},
 						methodNameDetailAST.getText())) {
 
-					return false;
+					continue;
 				}
 
-				continue;
+				return false;
 			}
 
 			if (TokenUtil.isOfType(
