@@ -153,6 +153,60 @@ test(
 );
 
 test(
+	'Search columns in the column visibility dropdown',
+	{tag: '@LPD-107790'},
+	async ({fdsSamplePage, page}) => {
+		const menuItems = page.getByRole('menuitem');
+		const searchInput = page.getByRole('textbox', {name: 'Search'});
+
+		let menuItemsCount: number;
+
+		await test.step('Open the column visibility dropdown', async () => {
+			await fdsSamplePage.table.manageColumnsVisibilityButton.click();
+
+			await expect(searchInput).toBeVisible();
+
+			menuItemsCount = await menuItems.count();
+
+			expect(menuItemsCount).toBeGreaterThan(1);
+		});
+
+		await test.step('Filter the columns by name', async () => {
+			await searchInput.fill('DESC');
+
+			await expect(menuItems).toHaveCount(1);
+			await expect(menuItems.first()).toHaveText('Description');
+		});
+
+		await test.step('Show a message when no column matches', async () => {
+			await searchInput.fill('nonexistent column');
+
+			await expect(menuItems).toHaveCount(0);
+			await expect(page.getByText('No Results Found')).toBeVisible();
+		});
+
+		await test.step('Clear the search to show every column again', async () => {
+			await page.getByRole('button', {name: 'Clear Search'}).click();
+
+			await expect(searchInput).toHaveValue('');
+			await expect(menuItems).toHaveCount(menuItemsCount);
+		});
+
+		await test.step('Hide a column from the filtered list', async () => {
+			await searchInput.fill('desc');
+
+			await menuItems.first().getByRole('switch').click();
+
+			await expect(
+				fdsSamplePage.table.headerCells.filter({
+					hasText: 'Description',
+				})
+			).toHaveCount(0);
+		});
+	}
+);
+
+test(
 	'Columns with nested field names are shown',
 	{tag: '@LPD-75783'},
 	async ({fdsSamplePage, page, systemDataSetsPage}) => {
