@@ -31,7 +31,6 @@ import com.liferay.item.selector.criteria.DownloadFileEntryItemSelectorReturnTyp
 import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.image.criterion.ImageItemSelectorCriterion;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -51,6 +50,7 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -125,8 +125,10 @@ public class BlogsEditEntryDisplayContext {
 			return _content;
 		}
 
-		_content = BeanParamUtil.getString(
-			getBlogsEntry(), _httpServletRequest, "content");
+		_content = ParamUtil.getString(
+			_httpServletRequest, "content",
+			GetterUtil.get(
+				getBlogsEntry(), BlogsEntry::getContent, StringPool.BLANK));
 
 		return _content;
 	}
@@ -136,9 +138,11 @@ public class BlogsEditEntryDisplayContext {
 			return _coverImageCaption;
 		}
 
-		_coverImageCaption = BeanParamUtil.getString(
-			getBlogsEntry(), _httpServletRequest, "coverImageCaption",
-			LanguageUtil.get(_httpServletRequest, "caption"));
+		_coverImageCaption = ParamUtil.getString(
+			_httpServletRequest, "coverImageCaption",
+			GetterUtil.get(
+				getBlogsEntry(), BlogsEntry::getCoverImageCaption,
+				LanguageUtil.get(_httpServletRequest, "caption")));
 
 		return _coverImageCaption;
 	}
@@ -148,8 +152,10 @@ public class BlogsEditEntryDisplayContext {
 			return _coverImageFileEntryId;
 		}
 
-		_coverImageFileEntryId = BeanParamUtil.getLong(
-			getBlogsEntry(), _httpServletRequest, "coverImageFileEntryId");
+		_coverImageFileEntryId = ParamUtil.getLong(
+			_httpServletRequest, "coverImageFileEntryId",
+			GetterUtil.get(
+				getBlogsEntry(), BlogsEntry::getCoverImageFileEntryId, 0L));
 
 		return _coverImageFileEntryId;
 	}
@@ -184,8 +190,10 @@ public class BlogsEditEntryDisplayContext {
 			return _description;
 		}
 
-		String description = BeanParamUtil.getString(
-			getBlogsEntry(), _httpServletRequest, "description");
+		String description = ParamUtil.getString(
+			_httpServletRequest, "description",
+			GetterUtil.get(
+				getBlogsEntry(), BlogsEntry::getDescription, StringPool.BLANK));
 
 		if (!isCustomAbstract()) {
 			description = StringUtil.shorten(
@@ -230,8 +238,9 @@ public class BlogsEditEntryDisplayContext {
 			return _entryId;
 		}
 
-		_entryId = BeanParamUtil.getLong(
-			getBlogsEntry(), _httpServletRequest, "entryId");
+		_entryId = ParamUtil.getLong(
+			_httpServletRequest, "entryId",
+			GetterUtil.get(getBlogsEntry(), BlogsEntry::getEntryId, 0L));
 
 		return _entryId;
 	}
@@ -312,8 +321,10 @@ public class BlogsEditEntryDisplayContext {
 			return _smallImageFileEntryId;
 		}
 
-		_smallImageFileEntryId = BeanParamUtil.getLong(
-			getBlogsEntry(), _httpServletRequest, "smallImageFileEntryId");
+		_smallImageFileEntryId = ParamUtil.getLong(
+			_httpServletRequest, "smallImageFileEntryId",
+			GetterUtil.get(
+				getBlogsEntry(), BlogsEntry::getSmallImageFileEntryId, 0L));
 
 		return _smallImageFileEntryId;
 	}
@@ -381,8 +392,9 @@ public class BlogsEditEntryDisplayContext {
 					"status", blogsEntry.getStatus()
 				).put(
 					"subtitle",
-					BeanParamUtil.getString(
-						getBlogsEntry(), _httpServletRequest, "subtitle")
+					ParamUtil.getString(
+						_httpServletRequest, "subtitle",
+						blogsEntry.getSubtitle())
 				).put(
 					"title", getTitle()
 				).put(
@@ -397,8 +409,10 @@ public class BlogsEditEntryDisplayContext {
 			return _title;
 		}
 
-		_title = BeanParamUtil.getString(
-			getBlogsEntry(), _httpServletRequest, "title");
+		_title = ParamUtil.getString(
+			_httpServletRequest, "title",
+			GetterUtil.get(
+				getBlogsEntry(), BlogsEntry::getTitle, StringPool.BLANK));
 
 		return _title;
 	}
@@ -408,8 +422,10 @@ public class BlogsEditEntryDisplayContext {
 			return _urlTitle;
 		}
 
-		_urlTitle = BeanParamUtil.getString(
-			getBlogsEntry(), _httpServletRequest, "urlTitle");
+		_urlTitle = ParamUtil.getString(
+			_httpServletRequest, "urlTitle",
+			GetterUtil.get(
+				getBlogsEntry(), BlogsEntry::getUrlTitle, StringPool.BLANK));
 
 		return _urlTitle;
 	}
@@ -446,8 +462,10 @@ public class BlogsEditEntryDisplayContext {
 		}
 
 		if (PropsValues.BLOGS_PINGBACK_ENABLED &&
-			BeanParamUtil.getBoolean(
-				getBlogsEntry(), _httpServletRequest, "allowPingbacks", true)) {
+			ParamUtil.getBoolean(
+				_httpServletRequest, "allowPingbacks",
+				GetterUtil.get(
+					getBlogsEntry(), BlogsEntry::isAllowPingbacks, true))) {
 
 			_allowPingbacks = true;
 		}
@@ -464,9 +482,10 @@ public class BlogsEditEntryDisplayContext {
 		}
 
 		if (PropsValues.BLOGS_TRACKBACK_ENABLED &&
-			BeanParamUtil.getBoolean(
-				getBlogsEntry(), _httpServletRequest, "allowTrackbacks",
-				true)) {
+			ParamUtil.getBoolean(
+				_httpServletRequest, "allowTrackbacks",
+				GetterUtil.get(
+					getBlogsEntry(), BlogsEntry::isAllowTrackbacks, true))) {
 
 			_allowTrackbacks = true;
 		}

@@ -17,6 +17,7 @@ import java.text.ParsePosition;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -638,6 +639,14 @@ public class GetterUtil {
 		}
 
 		return value;
+	}
+
+	public static <T, V> V get(T t, Function<T, V> function, V defaultValue) {
+		if (t == null) {
+			return defaultValue;
+		}
+
+		return function.apply(t);
 	}
 
 	/**
