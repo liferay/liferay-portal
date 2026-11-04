@@ -7,6 +7,7 @@ package com.liferay.layout.internal.upgrade.v6_1_1;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -37,6 +38,8 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 		while (upgraded) {
 			upgraded = _upgradeParentLayoutLayoutSetPrototypeLayoutERCs();
 		}
+
+		_upgradeLayoutExternalReferenceCodes();
 	}
 
 	private String _getLayoutSetPrototypeLayoutJoinSQL(
@@ -53,6 +56,24 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 			layoutSetPrototypeLayoutAlias, ".externalReferenceCode and ",
 			layoutSetPrototypeLayoutAlias, ".groupId in (select groupId from ",
 			"Group_ where classNameId = ", _layoutSetPrototypeClassNameId, ")");
+	}
+
+	private void _upgradeLayoutExternalReferenceCodes() throws Exception {
+		runSQL(
+			StringBundler.concat(
+				"update Layout set externalReferenceCode = CONCAT(",
+				"layoutSetPrototypeLayoutERC, '",
+				LayoutConstants.EXTERNAL_REFERENCE_CODE_SUFFIX_PRIVATE,
+				"') where privateLayout = [$TRUE$] and ",
+				"layoutSetPrototypeLayoutERC is not null and ",
+				"layoutSetPrototypeLayoutERC != ''"));
+		runSQL(
+			StringBundler.concat(
+				"update Layout set externalReferenceCode = ",
+				"layoutSetPrototypeLayoutERC where privateLayout = [$FALSE$] ",
+				"and layoutSetPrototypeLayoutERC is not null and ",
+				"layoutSetPrototypeLayoutERC != '' and externalReferenceCode ",
+				"!= layoutSetPrototypeLayoutERC"));
 	}
 
 	private void _upgradeLayoutLayoutSetPrototypeLayoutERCs() throws Exception {
