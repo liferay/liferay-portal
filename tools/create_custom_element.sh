@@ -6,7 +6,7 @@ function check_usage {
 		echo "Usage: create_custom_element.sh <custom-element-name> <js-framework>"
 		echo ""
 		echo "  custom-element-name: liferay-hello-world"
-		echo "  js-framework: angular, react, vue2, vite-vue3"
+		echo "  js-framework: angular, react, vite-react, vue2, vite-vue3"
 		echo ""
 		echo "Example: create_custom_element.sh liferay-hello-world react"
 
@@ -184,6 +184,48 @@ EOF
 	cd ..
 }
 
+function create_vite_react_app {
+	check_utils yarn
+
+	npm init vite@latest ${CUSTOM_ELEMENT_NAME} -- --template react
+
+	cd ${CUSTOM_ELEMENT_NAME}
+
+	yarn add sass
+
+	yarn add -D sass-embedded
+
+	rm -f README
+
+	sed -i -e "s|<div id=\"root\"></div>|<${CUSTOM_ELEMENT_NAME} id=\"root\" route=\"hello-world\"></${CUSTOM_ELEMENT_NAME}>|g" index.html
+
+	rm -f public/vite.svg
+
+	write_react_client_extension
+
+	cd src
+
+	rm -f App* main*
+
+	mkdir -p routes/hello-bar/components routes/hello-bar/pages
+
+	touch routes/hello-bar/components/.gitkeep
+
+	mkdir -p routes/hello-foo/components routes/hello-foo/pages
+
+	touch routes/hello-foo/components/.gitkeep
+
+	mkdir -p routes/hello-world/components routes/hello-world/pages
+
+	touch routes/hello-world/components/.gitkeep
+
+	mkdir -p common/services/liferay common/styles
+
+	write_react_vite_files
+
+	cd ..
+}
+
 function create_vue_2_app {
 	check_utils npm
 
@@ -234,6 +276,9 @@ function main {
 	elif [ "${2}" == "react" ]
 	then
 		create_react_app
+	elif [ "${2}" == "vite-react" ]
+	then
+		create_vite_react_app
 	elif [ "${2}" == "vue2" ]
 	then
 		create_vue_2_app
@@ -484,6 +529,250 @@ EOF
 	#
 
 	cat << EOF > routes/hello-world/pages/HelloWorld.js
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import React from 'react';
+
+const HelloWorld = () => (
+	<div className="hello-world">
+		<h1>
+			Hello <span className="hello-world-name">World</span>
+		</h1>
+	</div>
+);
+
+export default HelloWorld;
+EOF
+}
+
+function write_react_vite_files {
+	#
+	# common/services/liferay/api.js
+	#
+
+	cat << EOF > common/services/liferay/api.js
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import {Liferay} from './liferay.js';
+
+const REACT_APP_LIFERAY_HOST = import.meta.env.REACT_APP_LIFERAY_HOST || window.location.origin;
+
+const baseFetch = async (url, options = {}) => {
+	return fetch(REACT_APP_LIFERAY_HOST + '/' + url, {
+		headers: {
+			'Content-Type': 'application/json',
+			'x-csrf-token': Liferay.authToken,
+		},
+		...options,
+	});
+};
+
+export default baseFetch;
+EOF
+
+	#
+	# common/services/liferay/liferay.js
+	#
+
+	cat << EOF > common/services/liferay/liferay.js
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+export const Liferay = window.Liferay || {
+	OAuth2: {
+		getAuthorizeURL: () => '',
+		getBuiltInRedirectURL: () => '',
+		getIntrospectURL: () => '',
+		getTokenURL: () => '',
+		getUserAgentApplication: (_serviceName) => {},
+	},
+	OAuth2Client: {
+		FromParameters: (_options) => {
+			return {};
+		},
+		FromUserAgentApplication: (_userAgentApplicationId) => {
+			return {};
+		},
+		fetch: (_url, _options = {}) => {},
+	},
+	ThemeDisplay: {
+		getCompanyGroupId: () => 0,
+		getScopeGroupId: () => 0,
+		getSiteGroupId: () => 0,
+		isSignedIn: () => {
+			return false;
+		},
+	},
+	authToken: '',
+};
+EOF
+
+	#
+	# common/styles/hello-world.scss
+	#
+
+	cat << EOF > common/styles/hello-world.scss
+.hello-world {
+	h1 {
+		color: \$primary-color;
+		font-weight: bold;
+	}
+}
+EOF
+
+	#
+	# common/styles/index.scss
+	#
+
+	cat << EOF > common/styles/index.scss
+${CUSTOM_ELEMENT_NAME} {
+	@import 'variables';
+
+	@import 'hello-world';
+}
+EOF
+
+	#
+	# common/styles/variables.scss
+	#
+
+	cat << EOF > common/styles/variables.scss
+\$primary-color: #295ccc;
+EOF
+
+	#
+	# App.jsx
+	#
+	cat << EOF > App.jsx
+import HelloBar from './routes/hello-bar/pages/HelloBar';
+import HelloFoo from './routes/hello-foo/pages/HelloFoo';
+import HelloWorld from './routes/hello-world/pages/HelloWorld';
+
+import './common/styles/index.scss';
+
+const App = ({route}) => {
+	if (route === 'hello-bar') {
+		return <HelloBar />;
+	}
+
+	if (route === 'hello-foo') {
+		return <HelloFoo />;
+	}
+
+	return (
+		<div>
+			<HelloWorld />
+		</div>
+	);
+};
+
+export default App;
+EOF
+
+	#
+	# main.jsx
+	#
+
+	cat << EOF > main.jsx
+import {createRoot} from 'react-dom/client';
+
+import api from './common/services/liferay/api';
+import {Liferay} from './common/services/liferay/liferay';
+import App from "./App.jsx";
+
+class WebComponent extends HTMLElement {
+	constructor() {
+		super();
+	}
+
+	connectedCallback() {
+		createRoot(this).render(
+			<App
+				route={this.getAttribute('route')}
+			/>,
+			this
+		);
+
+		if (Liferay.ThemeDisplay.isSignedIn()) {
+			api('o/headless-admin-user/v1.0/my-user-account')
+				.then((response) => response.json())
+				.then((response) => {
+					if (response.givenName) {
+						const nameElements = document.getElementsByClassName(
+							'hello-world-name'
+						);
+
+						if (nameElements.length) {
+							nameElements[0].innerHTML = response.givenName;
+						}
+					}
+				});
+		}
+	}
+}
+
+const ELEMENT_ID = '${CUSTOM_ELEMENT_NAME}';
+
+if (!customElements.get(ELEMENT_ID)) {
+	customElements.define(ELEMENT_ID, WebComponent);
+}
+EOF
+
+	#
+	# routes/hello-bar/pages/HelloBar.jsx
+	#
+
+	cat << EOF > routes/hello-bar/pages/HelloBar.jsx
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import React from 'react';
+
+const HelloBar = () => (
+	<div className="hello-bar">
+		<h1>Hello Bar</h1>
+	</div>
+);
+
+export default HelloBar;
+EOF
+
+	#
+	# routes/hello-foo/pages/HelloFoo.jsx
+	#
+
+	cat << EOF > routes/hello-foo/pages/HelloFoo.jsx
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import React from 'react';
+
+const HelloFoo = () => (
+	<div className="hello-foo">
+		<h1>Hello Foo</h1>
+	</div>
+);
+
+export default HelloFoo;
+EOF
+
+	#
+	# routes/hello-world/pages/HelloWorld.jsx
+	#
+
+	cat << EOF > routes/hello-world/pages/HelloWorld.jsx
 /**
  * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
