@@ -30,3 +30,7 @@
 		white-space: nowrap;
 	}
 }
+
+.cms-contributor-concentration .charts-legend {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
