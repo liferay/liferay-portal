@@ -944,7 +944,8 @@ public class ObjectEntryResourceNestedFieldsTest
 		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
-		Bundle bundle = FrameworkUtil.getBundle(ObjectEntryResourceTest.class);
+		Bundle bundle = FrameworkUtil.getBundle(
+			ObjectEntryResourceNestedFieldsTest.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
