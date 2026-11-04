@@ -54,11 +54,11 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 			return;
 		}
 
-		DetailAST grandparentDetailAST = parentDetailAST.getParent();
+		DetailAST grandParentDetailAST = parentDetailAST.getParent();
 
-		if (grandparentDetailAST.getType() == TokenTypes.ASSIGN) {
+		if (grandParentDetailAST.getType() == TokenTypes.ASSIGN) {
 			DetailAST variableDefinitionDetailAST =
-				grandparentDetailAST.getParent();
+				grandParentDetailAST.getParent();
 
 			if (TokenUtil.isOfType(
 					variableDefinitionDetailAST, TokenTypes.RESOURCE,
@@ -67,9 +67,9 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 				_checkVariable(detailAST, variableDefinitionDetailAST);
 			}
 		}
-		else if (grandparentDetailAST.getType() == TokenTypes.ELIST) {
+		else if (grandParentDetailAST.getType() == TokenTypes.ELIST) {
 			_checkArgument(
-				detailAST, parentDetailAST, grandparentDetailAST.getParent());
+				detailAST, parentDetailAST, grandParentDetailAST.getParent());
 		}
 	}
 
@@ -235,11 +235,11 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 			}
 
 			if (parentDetailAST.getType() == TokenTypes.DOT) {
-				DetailAST grandparentDetailAST = parentDetailAST.getParent();
+				DetailAST grandParentDetailAST = parentDetailAST.getParent();
 				DetailAST methodNameDetailAST = parentDetailAST.getLastChild();
 
 				if (!equals(parentDetailAST.getFirstChild(), identDetailAST) ||
-					(grandparentDetailAST.getType() !=
+					(grandParentDetailAST.getType() !=
 						TokenTypes.METHOD_CALL) ||
 					!ArrayUtil.contains(
 						new String[] {
