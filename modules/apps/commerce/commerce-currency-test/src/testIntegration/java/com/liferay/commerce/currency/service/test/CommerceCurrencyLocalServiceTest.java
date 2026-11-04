@@ -15,16 +15,22 @@ import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.currency.test.util.TestExchangeRateProvider;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistry;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -90,6 +96,36 @@ public class CommerceCurrencyLocalServiceTest {
 				LocalizationUtil.getLocalizationMap(
 					CommerceCurrencyConstants.DECIMAL_FORMAT_PATTERN),
 				2, 2, "HALF_EVEN", false, 0.0, false));
+	}
+
+	@Test
+	public void testDeleteCommerceCurrencies() throws Exception {
+		Company company = CompanyTestUtil.addCompany();
+
+		User user = UserTestUtil.addUser(company);
+
+		_commerceCurrencyLocalService.addCommerceCurrency(
+			null, user.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomString(3), BigDecimal.ONE,
+			LocalizationUtil.getLocalizationMap(
+				CommerceCurrencyConstants.DECIMAL_FORMAT_PATTERN),
+			2, 2, "HALF_EVEN", false, 0.0, true);
+
+		_assertSearchCommerceCurrenciesCount(
+			company,
+			_commerceCurrencyLocalService.getCommerceCurrenciesCount(
+				company.getCompanyId()));
+
+		_commerceCurrencyLocalService.deleteCommerceCurrencies(
+			company.getCompanyId());
+
+		Assert.assertEquals(
+			0,
+			_commerceCurrencyLocalService.getCommerceCurrenciesCount(
+				company.getCompanyId()));
+
+		_assertSearchCommerceCurrenciesCount(company, 0);
 	}
 
 	@Test
@@ -213,8 +249,28 @@ public class CommerceCurrencyLocalServiceTest {
 		Assert.assertEquals(oldExchangeRate, commerceCurrency.getRate());
 	}
 
+	@Rule
+	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	private void _assertSearchCommerceCurrenciesCount(
+			Company company, int expectedCount)
+		throws Exception {
+
+		Indexer<CommerceCurrency> indexer = _indexerRegistry.nullSafeGetIndexer(
+			CommerceCurrency.class);
+
+		SearchContext searchContext = new SearchContext();
+
+		searchContext.setCompanyId(company.getCompanyId());
+
+		Assert.assertEquals(expectedCount, indexer.searchCount(searchContext));
+	}
+
 	@Inject
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+
+	@Inject
+	private IndexerRegistry _indexerRegistry;
 
 	private User _user;
 

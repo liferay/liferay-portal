@@ -22,10 +22,15 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
+import com.liferay.portal.search.searcher.SearchResponse;
+import com.liferay.portal.search.searcher.Searcher;
+import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -62,6 +67,40 @@ public class CPDefinitionGroupedEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testDeleteCPDefinitionGroupedEntries() throws Exception {
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), GroupedCPTypeConstants.NAME, true,
+			true);
+		CPDefinition cpDefinition2 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		_cpDefinitionGroupedEntryLocalService.addCPDefinitionGroupedEntry(
+			cpDefinition1.getCPDefinitionId(), cpDefinition2.getCProductId(), 0,
+			1, _serviceContext);
+
+		CPDefinition cpDefinition3 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		_cpDefinitionGroupedEntryLocalService.addCPDefinitionGroupedEntry(
+			cpDefinition1.getCPDefinitionId(), cpDefinition3.getCProductId(), 0,
+			1, _serviceContext);
+
+		_assertSearchCPDefinitionGroupedEntriesCount(cpDefinition1, 2);
+
+		_cpDefinitionGroupedEntryLocalService.deleteCPDefinitionGroupedEntries(
+			cpDefinition1.getCPDefinitionId());
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_cpDefinitionGroupedEntryLocalService.getCPDefinitionGroupedEntries(
+				cpDefinition1.getCPDefinitionId()));
+
+		_assertSearchCPDefinitionGroupedEntriesCount(cpDefinition1, 0);
+	}
+
+	@Test
 	public void testDeleteCPDefinitionGroupedEntriesByEntryCProductId()
 		throws Exception {
 
@@ -92,6 +131,8 @@ public class CPDefinitionGroupedEntryLocalServiceTest {
 			cpDefinitionGroupedEntries.toString(), 2,
 			cpDefinitionGroupedEntries.size());
 
+		_assertSearchCPDefinitionGroupedEntriesCount(cpDefinition1, 2);
+
 		_cpDefinitionGroupedEntryLocalService.
 			deleteCPDefinitionGroupedEntriesByEntryCProductId(
 				cpDefinition2.getCProductId());
@@ -110,6 +151,36 @@ public class CPDefinitionGroupedEntryLocalServiceTest {
 		Assert.assertEquals(
 			cpDefinition3.getCPDefinitionId(),
 			cpDefinitionGroupedEntry.getEntryCPDefinitionId());
+
+		_assertSearchCPDefinitionGroupedEntriesCount(cpDefinition1, 1);
+
+		_cpDefinitionGroupedEntryLocalService.
+			deleteCPDefinitionGroupedEntriesByEntryCProductId(
+				cpDefinition3.getCProductId());
+
+		_assertSearchCPDefinitionGroupedEntriesCount(cpDefinition1, 0);
+	}
+
+	@Rule
+	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	private void _assertSearchCPDefinitionGroupedEntriesCount(
+		CPDefinition cpDefinition, int expectedCount) {
+
+		SearchResponse searchResponse = _searcher.search(
+			_searchRequestBuilderFactory.builder(
+			).companyId(
+				cpDefinition.getCompanyId()
+			).emptySearchEnabled(
+				true
+			).modelIndexerClasses(
+				CPDefinitionGroupedEntry.class
+			).withSearchContext(
+				searchContext -> searchContext.setAttribute(
+					"cpDefinitionId", cpDefinition.getCPDefinitionId())
+			).build());
+
+		Assert.assertEquals(expectedCount, searchResponse.getTotalHits());
 	}
 
 	private CommerceCatalog _commerceCatalog;
@@ -120,6 +191,12 @@ public class CPDefinitionGroupedEntryLocalServiceTest {
 	@Inject
 	private CPDefinitionGroupedEntryLocalService
 		_cpDefinitionGroupedEntryLocalService;
+
+	@Inject
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+
+	@Inject
+	private Searcher _searcher;
 
 	private ServiceContext _serviceContext;
 

@@ -65,12 +65,16 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.SystemEvent;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -90,6 +94,10 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
+import com.liferay.portal.search.query.QueriesUtil;
+import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
+import com.liferay.portal.search.searcher.SearchResponse;
+import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -822,6 +830,52 @@ public class CPDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testDeleteCPDefinitions() throws Exception {
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		Assert.assertFalse(
+			ListUtil.isEmpty(
+				_cpInstanceLocalService.getCPDefinitionInstances(
+					cpDefinition.getCPDefinitionId(),
+					WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)));
+
+		_assertSearchCPDefinitionsCount(cpDefinition, 1);
+
+		_cpDefinitionLocalService.deleteCPDefinitions(
+			cpDefinition.getCProductId(), cpDefinition.getStatus());
+
+		Assert.assertNull(
+			_cpDefinitionLocalService.fetchCPDefinition(
+				cpDefinition.getCPDefinitionId()));
+
+		Assert.assertTrue(
+			ListUtil.isEmpty(
+				_cpInstanceLocalService.getCPDefinitionInstances(
+					cpDefinition.getCPDefinitionId(),
+					WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)));
+
+		_assertSearchCPDefinitionsCount(cpDefinition, 0);
+
+		List<SystemEvent> systemEvents =
+			_systemEventLocalService.getSystemEvents(
+				cpDefinition.getGroupId(),
+				_portal.getClassNameId(cpDefinition.getModelClassName()),
+				cpDefinition.getCPDefinitionId(),
+				SystemEventConstants.TYPE_DELETE);
+
+		Assert.assertEquals(systemEvents.toString(), 1, systemEvents.size());
+
+		SystemEvent systemEvent = systemEvents.get(0);
+
+		Assert.assertEquals(
+			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
+	}
+
+	@Test
 	public void testFetchApprovedOnlyCPDefinitionByCProductId()
 		throws Exception {
 
@@ -1226,6 +1280,25 @@ public class CPDefinitionLocalServiceTest {
 		Assert.assertEquals(
 			cpDefinition.getCPDefinitionId(),
 			cProduct.getPublishedCPDefinitionId());
+	}
+
+	private void _assertSearchCPDefinitionsCount(
+		CPDefinition cpDefinition, int expectedCount) {
+
+		SearchResponse searchResponse = _searcher.search(
+			_searchRequestBuilderFactory.builder(
+			).companyId(
+				cpDefinition.getCompanyId()
+			).emptySearchEnabled(
+				true
+			).modelIndexerClasses(
+				CPDefinition.class
+			).query(
+				QueriesUtil.term(
+					Field.ENTRY_CLASS_PK, cpDefinition.getCPDefinitionId())
+			).build());
+
+		Assert.assertEquals(expectedCount, searchResponse.getTotalHits());
 	}
 
 	private void _assertUniqueExternalReferenceCodes(
@@ -3095,7 +3168,16 @@ public class CPDefinitionLocalServiceTest {
 	@Inject
 	private Portal _portal;
 
+	@Inject
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+
+	@Inject
+	private Searcher _searcher;
+
 	private ServiceContext _serviceContext;
+
+	@Inject
+	private SystemEventLocalService _systemEventLocalService;
 
 	@Inject
 	private WorkflowDefinitionLinkLocalService
