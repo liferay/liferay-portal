@@ -10,6 +10,7 @@ import path from 'path';
 import {collectionsPagesTest} from '../../../fixtures/collectionsPagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {createCategories} from '../../../helpers/CreateCategories';
@@ -37,6 +38,7 @@ const test = mergeTests(
 	contentDashboardPagesTest,
 	dataApiHelpersTest,
 	documentLibraryPagesTest,
+	featureFlagsTest({'LPS-178052': {enabled: true}}),
 	isolatedSiteTest,
 	journalPagesTest,
 	loginTest()
