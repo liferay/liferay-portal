@@ -8,34 +8,36 @@ import {NO_DATA_VALUE} from 'shared/util/constants';
 const EMPTY_VALUE = NO_DATA_VALUE;
 
 /**
- * The payload key a caller uses to title the table instead of leaving the
- * default. It names the table, so it never becomes a row of its own.
+ * The payload key a caller uses to title the main table instead of leaving the
+ * layout's title. It names the table, so it never becomes a row of its own.
  */
 const HEADER_KEY = 'header';
 
 /**
- * The payload keys holding groups of attributes, which arrive nested one level
- * down. Each is flattened into the table named beside it, so which table a
- * parameter lands in is the API's classification rather than a guess made from
- * the parameter's name.
+ * A group of attributes the payload nests one level down, under `key`. A group
+ * with a `title` gets a table of its own; one without joins the main table, so
+ * which table a property lands in is the payload's own classification rather
+ * than a guess made from the property's name.
+ *
+ * `links` maps a property to the sibling property holding where it links to.
+ * The link target is where the property points rather than an attribute, so it
+ * never becomes a row of its own.
  */
-const NESTED_KEYS = {
-	acquisitionProperties: 'utm',
-	campaign: 'campaign',
-	properties: 'attributes',
-} as const;
+export type PayloadGroup = {
+	key: string;
+	links?: Record<string, string>;
+	title?: string;
+};
 
 /**
- * The campaign group's property that names the campaign, which the table links
- * to the campaign's own page.
+ * How a payload splits into tables: the title of the main table, which holds
+ * every top-level property, and the groups nested inside the payload, whose
+ * own tables follow the main one in the order they are listed.
  */
-const CAMPAIGN_NAME_KEY = 'campaignName';
-
-/**
- * The campaign group's property that holds the campaign's page. It is where the
- * name links to rather than an attribute, so it never becomes a row of its own.
- */
-const CAMPAIGN_URL_KEY = 'campaignUrl';
+export type PayloadLayout = {
+	groups: PayloadGroup[];
+	title: string;
+};
 
 export type PayloadTableRow = {
 	href?: string;
@@ -57,91 +59,80 @@ const isNestedGroup = (value: unknown): value is Record<string, unknown> =>
 	typeof value === 'object' && value !== null;
 
 /**
- * Splits an event or session payload into the tables the activity timeline
- * renders when a row is expanded: the payload's own attributes, the campaign
- * the touch carried, and the acquisition parameters that came with it. A table
- * with no rows is left out entirely, so a payload carrying no UTM parameter
- * renders no UTM table and an empty payload renders none. A campaign that did
- * not resolve to a name has nothing to link, so only a named one is a link.
+ * A row only links when there is somewhere to go and something to click, so a
+ * property the payload sent empty renders as a plain dash.
+ */
+const toRow = (
+	property: string,
+	value: unknown,
+	href?: unknown
+): PayloadTableRow => {
+	const formattedValue = formatValue(value);
+
+	return {
+		...(typeof href === 'string' &&
+			href &&
+			formattedValue !== EMPTY_VALUE && {href}),
+		property,
+		value: formattedValue,
+	};
+};
+
+const toGroupRows = (
+	group: Record<string, unknown>,
+	links: Record<string, string> = {}
+): PayloadTableRow[] => {
+	const linkTargets = new Set(Object.values(links));
+
+	return Object.entries(group)
+		.filter(([property]) => !linkTargets.has(property))
+		.map(([property, value]) =>
+			toRow(property, value, links[property] && group[links[property]])
+		);
+};
+
+/**
+ * Splits a payload into the tables a row renders when expanded, following the
+ * given layout. A table with no rows is left out entirely, so a payload missing
+ * one of the layout's groups renders no table for it and an empty payload
+ * renders none.
  */
 export const formatPayloadTables = (
-	payload: Record<string, unknown>
+	payload: Record<string, unknown>,
+	{groups, title}: PayloadLayout
 ): PayloadTable[] => {
-	const rowsByGroup: Record<string, PayloadTableRow[]> = {
-		attributes: [],
-		campaign: [],
-		utm: [],
-	};
+	const groupsByKey = new Map(groups.map((group) => [group.key, group]));
 
-	let title = Liferay.Language.get('event-attributes');
+	const rowsByGroup = new Map<PayloadGroup, PayloadTableRow[]>();
 
-	const addRow = (
-		group: string,
-		property: string,
-		value: unknown,
-		href?: unknown
-	) => {
-		const formattedValue = formatValue(value);
-
-		rowsByGroup[group].push({
-			...(typeof href === 'string' &&
-				href &&
-				formattedValue !== EMPTY_VALUE && {href}),
-			property,
-			value: formattedValue,
-		});
-	};
+	const mainTable: PayloadTable = {rows: [], title};
 
 	Object.entries(payload).forEach(([key, value]) => {
+		const group = groupsByKey.get(key);
+
 		if (key === HEADER_KEY) {
-			title = String(value);
+			mainTable.title = String(value);
 		}
-		else if (key in NESTED_KEYS) {
-			const group = NESTED_KEYS[key as keyof typeof NESTED_KEYS];
+		else if (!group) {
+			mainTable.rows.push(toRow(key, value));
+		}
+		else if (isNestedGroup(value)) {
+			const rows = toGroupRows(value, group.links);
 
-			if (isNestedGroup(value)) {
-				const isCampaign = group === 'campaign';
-
-				Object.entries(value).forEach(([nestedKey, nestedValue]) => {
-					if (isCampaign && nestedKey === CAMPAIGN_URL_KEY) {
-						return;
-					}
-
-					addRow(
-						group,
-						nestedKey,
-						nestedValue,
-						isCampaign && nestedKey === CAMPAIGN_NAME_KEY
-							? value[CAMPAIGN_URL_KEY]
-							: undefined
-					);
-				});
+			if (group.title) {
+				rowsByGroup.set(group, rows);
 			}
-		}
-		else {
-			addRow('attributes', key, value);
+			else {
+				mainTable.rows.push(...rows);
+			}
 		}
 	});
 
-	const tables: PayloadTable[] = [];
+	const groupTables = groups.flatMap((group) =>
+		group.title
+			? [{rows: rowsByGroup.get(group) ?? [], title: group.title}]
+			: []
+	);
 
-	if (rowsByGroup.attributes.length) {
-		tables.push({rows: rowsByGroup.attributes, title});
-	}
-
-	if (rowsByGroup.campaign.length) {
-		tables.push({
-			rows: rowsByGroup.campaign,
-			title: Liferay.Language.get('campaign'),
-		});
-	}
-
-	if (rowsByGroup.utm.length) {
-		tables.push({
-			rows: rowsByGroup.utm,
-			title: Liferay.Language.get('utm-parameters'),
-		});
-	}
-
-	return tables;
+	return [mainTable, ...groupTables].filter(({rows}) => rows.length);
 };

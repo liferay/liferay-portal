@@ -21,6 +21,7 @@ import {
 	PayloadTable as IPayloadTable,
 } from 'shared/util/payloadTables';
 import {
+	ACTIVITY_PAYLOAD_LAYOUT,
 	isWebhookUserAgent,
 	SessionEvent,
 	VerticalTimelineIndividual,
@@ -308,9 +309,9 @@ const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => {
 			</div>
 
 			{view === 'table' ? (
-				formatPayloadTables(payload).map((table) => (
-					<PayloadTable key={table.title} table={table} />
-				))
+				formatPayloadTables(payload, ACTIVITY_PAYLOAD_LAYOUT).map(
+					(table) => <PayloadTable key={table.title} table={table} />
+				)
 			) : (
 				<PayloadCode payload={payload} />
 			)}
