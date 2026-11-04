@@ -13,6 +13,7 @@ import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.search.indexer.IndexerDocumentBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -40,6 +42,8 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Assert;
@@ -62,53 +66,11 @@ public class AccountEntryOrganizationRelModelListenerTest {
 	@Test
 	public void test() throws Exception {
 		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.addCustomObjectDefinition(
-				"A" + RandomTestUtil.randomString());
+			_addAccountEntryRestrictedObjectDefinition();
 
-		objectDefinition =
-			_objectDefinitionLocalService.enableAccountEntryRestricted(
-				_objectRelationshipLocalService.addObjectRelationship(
-					null, TestPropsValues.getUserId(),
-					_objectDefinitionLocalService.fetchSystemObjectDefinition(
-						TestPropsValues.getCompanyId(), "AccountEntry"
-					).getObjectDefinitionId(),
-					objectDefinition.getObjectDefinitionId(), 0,
-					ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null,
-					false,
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString()),
-					StringUtil.randomId(), false,
-					ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null));
+		AccountEntry accountEntry = _addAccountEntry();
 
-		objectDefinition =
-			_objectDefinitionLocalService.publishCustomObjectDefinition(
-				TestPropsValues.getUserId(),
-				objectDefinition.getObjectDefinitionId());
-
-		List<ObjectRelationship> objectRelationships =
-			_objectRelationshipLocalService.
-				getObjectRelationshipsByObjectDefinitionId2(
-					objectDefinition.getObjectDefinitionId());
-
-		ObjectRelationship objectRelationship = objectRelationships.get(0);
-
-		ObjectField relationshipObjectField =
-			_objectFieldLocalService.getObjectField(
-				objectRelationship.getObjectFieldId2());
-
-		AccountEntry accountEntry = _accountEntryLocalService.addAccountEntry(
-			StringPool.BLANK, TestPropsValues.getUserId(), 0L,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
-			null, null, RandomTestUtil.randomString(),
-			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
-			WorkflowConstants.STATUS_APPROVED,
-			ServiceContextTestUtil.getServiceContext());
-
-		ObjectEntryTestUtil.addObjectEntry(
-			0, objectDefinition.getObjectDefinitionId(),
-			Collections.singletonMap(
-				relationshipObjectField.getName(),
-				accountEntry.getAccountEntryId()));
+		_addObjectEntry(accountEntry, objectDefinition);
 
 		Organization organization = OrganizationTestUtil.addOrganization();
 
@@ -140,13 +102,7 @@ public class AccountEntryOrganizationRelModelListenerTest {
 
 			reindexed.set(false);
 
-			accountEntry = _accountEntryLocalService.addAccountEntry(
-				StringPool.BLANK, TestPropsValues.getUserId(), 0L,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				null, null, null, RandomTestUtil.randomString(),
-				AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
-				WorkflowConstants.STATUS_APPROVED,
-				ServiceContextTestUtil.getServiceContext());
+			accountEntry = _addAccountEntry();
 
 			AccountEntryOrganizationRel accountEntryOrganizationRel =
 				_accountEntryOrganizationRelLocalService.
@@ -168,6 +124,143 @@ public class AccountEntryOrganizationRelModelListenerTest {
 				_accountEntryOrganizationRelModelListener, "_serviceTrackerMap",
 				originalServiceTrackerMap);
 		}
+	}
+
+	@Test
+	public void testReindexOnlyObjectEntriesOfAccountEntry() throws Exception {
+		ObjectDefinition objectDefinition =
+			_addAccountEntryRestrictedObjectDefinition();
+
+		AccountEntry accountEntry1 = _addAccountEntry();
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			accountEntry1, objectDefinition);
+
+		AccountEntry accountEntry2 = _addAccountEntry();
+
+		_addObjectEntry(accountEntry2, objectDefinition);
+		_addObjectEntry(accountEntry2, objectDefinition);
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		ServiceTrackerMap<String, IndexerDocumentBuilder>
+			originalServiceTrackerMap = ReflectionTestUtil.getFieldValue(
+				_accountEntryOrganizationRelModelListener,
+				"_serviceTrackerMap");
+
+		Set<Long> objectEntryIds = new ConcurrentSkipListSet<>();
+
+		try {
+			ReflectionTestUtil.setFieldValue(
+				_accountEntryOrganizationRelModelListener, "_serviceTrackerMap",
+				ProxyUtil.newProxyInstance(
+					ServiceTrackerMap.class.getClassLoader(),
+					new Class<?>[] {ServiceTrackerMap.class},
+					(proxy, method, args) -> {
+						Object result = method.invoke(
+							originalServiceTrackerMap, args);
+
+						if (!Objects.equals(method.getName(), "getService") ||
+							(result == null)) {
+
+							return result;
+						}
+
+						return ProxyUtil.newProxyInstance(
+							IndexerDocumentBuilder.class.getClassLoader(),
+							new Class<?>[] {IndexerDocumentBuilder.class},
+							(documentBuilderProxy, documentBuilderMethod,
+							 documentBuilderArgs) -> {
+
+								if (Objects.equals(
+										documentBuilderMethod.getName(),
+										"getDocument") &&
+									(documentBuilderArgs[0] instanceof
+										ObjectEntry)) {
+
+									ObjectEntry curObjectEntry =
+										(ObjectEntry)documentBuilderArgs[0];
+
+									objectEntryIds.add(
+										curObjectEntry.getObjectEntryId());
+								}
+
+								return documentBuilderMethod.invoke(
+									result, documentBuilderArgs);
+							});
+					}));
+
+			_accountEntryOrganizationRelLocalService.
+				addAccountEntryOrganizationRel(
+					accountEntry1.getAccountEntryId(),
+					organization.getOrganizationId());
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_accountEntryOrganizationRelModelListener, "_serviceTrackerMap",
+				originalServiceTrackerMap);
+		}
+
+		Assert.assertEquals(
+			Collections.singleton(objectEntry.getObjectEntryId()),
+			objectEntryIds);
+	}
+
+	private AccountEntry _addAccountEntry() throws Exception {
+		return _accountEntryLocalService.addAccountEntry(
+			StringPool.BLANK, TestPropsValues.getUserId(), 0L,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			null, null, RandomTestUtil.randomString(),
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectDefinition _addAccountEntryRestrictedObjectDefinition()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+				"A" + RandomTestUtil.randomString());
+
+		objectDefinition =
+			_objectDefinitionLocalService.enableAccountEntryRestricted(
+				_objectRelationshipLocalService.addObjectRelationship(
+					null, TestPropsValues.getUserId(),
+					_objectDefinitionLocalService.fetchSystemObjectDefinition(
+						TestPropsValues.getCompanyId(), "AccountEntry"
+					).getObjectDefinitionId(),
+					objectDefinition.getObjectDefinitionId(), 0,
+					ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null,
+					false,
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString()),
+					StringUtil.randomId(), false,
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null));
+
+		return _objectDefinitionLocalService.publishCustomObjectDefinition(
+			TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId());
+	}
+
+	private ObjectEntry _addObjectEntry(
+			AccountEntry accountEntry, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		List<ObjectRelationship> objectRelationships =
+			_objectRelationshipLocalService.
+				getObjectRelationshipsByObjectDefinitionId2(
+					objectDefinition.getObjectDefinitionId());
+
+		ObjectRelationship objectRelationship = objectRelationships.get(0);
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		return ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinition.getObjectDefinitionId(),
+			Collections.singletonMap(
+				objectField.getName(), accountEntry.getAccountEntryId()));
 	}
 
 	@Inject
