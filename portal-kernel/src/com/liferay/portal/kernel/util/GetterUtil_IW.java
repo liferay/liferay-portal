@@ -91,6 +91,11 @@ public class GetterUtil_IW {
 		return GetterUtil.get(value, defaultValue);
 	}
 
+	public <T, V> V get(T t, java.util.function.Function<T, V> function,
+		V defaultValue) {
+		return GetterUtil.get(t, function, defaultValue);
+	}
+
 	public boolean getBoolean(java.lang.Object value) {
 		return GetterUtil.getBoolean(value);
 	}
