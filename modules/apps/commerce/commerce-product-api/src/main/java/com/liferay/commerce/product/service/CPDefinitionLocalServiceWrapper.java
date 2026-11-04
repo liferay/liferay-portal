@@ -282,7 +282,9 @@ public class CPDefinitionLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteCPDefinitions(long cProductId, int status) {
+	public void deleteCPDefinitions(long cProductId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		_cpDefinitionLocalService.deleteCPDefinitions(cProductId, status);
 	}
 
@@ -1161,4 +1163,4 @@ public class CPDefinitionLocalServiceWrapper
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:260024155
+// LIFERAY-SERVICE-BUILDER-HASH:-654007187

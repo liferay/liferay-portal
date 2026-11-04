@@ -135,8 +135,8 @@ public class CommerceNotificationQueueEntryLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteCommerceNotificationQueueEntries(
-		java.util.Date sentDate) {
+	public void deleteCommerceNotificationQueueEntries(java.util.Date sentDate)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_commerceNotificationQueueEntryLocalService.
 			deleteCommerceNotificationQueueEntries(sentDate);
@@ -550,4 +550,4 @@ public class CommerceNotificationQueueEntryLocalServiceWrapper
 		_commerceNotificationQueueEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1347826454
+// LIFERAY-SERVICE-BUILDER-HASH:-1163411780

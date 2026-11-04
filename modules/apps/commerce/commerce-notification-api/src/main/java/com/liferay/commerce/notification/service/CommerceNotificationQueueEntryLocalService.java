@@ -112,7 +112,8 @@ public interface CommerceNotificationQueueEntryLocalService
 			CommerceNotificationQueueEntry commerceNotificationQueueEntry)
 		throws PortalException;
 
-	public void deleteCommerceNotificationQueueEntries(Date sentDate);
+	public void deleteCommerceNotificationQueueEntries(Date sentDate)
+		throws PortalException;
 
 	public void deleteCommerceNotificationQueueEntries(long groupId)
 		throws PortalException;
@@ -341,4 +342,4 @@ public interface CommerceNotificationQueueEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1864779778
+// LIFERAY-SERVICE-BUILDER-HASH:-122325422

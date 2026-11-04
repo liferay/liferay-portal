@@ -132,7 +132,9 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteCommercePriceListDiscountRels(long commercePriceListId) {
+	public void deleteCommercePriceListDiscountRels(long commercePriceListId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		_commercePriceListDiscountRelLocalService.
 			deleteCommercePriceListDiscountRels(commercePriceListId);
 	}
@@ -489,4 +491,4 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 		_commercePriceListDiscountRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:828994561
+// LIFERAY-SERVICE-BUILDER-HASH:-1450766829

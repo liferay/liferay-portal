@@ -222,7 +222,8 @@ public interface CPDefinitionLocalService
 
 	public void deleteCPDefinitions(long companyId) throws PortalException;
 
-	public void deleteCPDefinitions(long cProductId, int status);
+	public void deleteCPDefinitions(long cProductId, int status)
+		throws PortalException;
 
 	/**
 	 * @throws PortalException
@@ -719,4 +720,4 @@ public interface CPDefinitionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1639712252
+// LIFERAY-SERVICE-BUILDER-HASH:10443816

@@ -267,7 +267,9 @@ public class CPDefinitionLocalServiceUtil {
 		getService().deleteCPDefinitions(companyId);
 	}
 
-	public static void deleteCPDefinitions(long cProductId, int status) {
+	public static void deleteCPDefinitions(long cProductId, int status)
+		throws PortalException {
+
 		getService().deleteCPDefinitions(cProductId, status);
 	}
 
@@ -1001,4 +1003,4 @@ public class CPDefinitionLocalServiceUtil {
 			CPDefinitionLocalServiceUtil.class, CPDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2144188950
+// LIFERAY-SERVICE-BUILDER-HASH:1874314472

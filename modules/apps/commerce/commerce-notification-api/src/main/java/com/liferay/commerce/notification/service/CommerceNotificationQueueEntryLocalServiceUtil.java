@@ -121,7 +121,8 @@ public class CommerceNotificationQueueEntryLocalServiceUtil {
 	}
 
 	public static void deleteCommerceNotificationQueueEntries(
-		java.util.Date sentDate) {
+			java.util.Date sentDate)
+		throws PortalException {
 
 		getService().deleteCommerceNotificationQueueEntries(sentDate);
 	}
@@ -439,4 +440,4 @@ public class CommerceNotificationQueueEntryLocalServiceUtil {
 			CommerceNotificationQueueEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1847671219
+// LIFERAY-SERVICE-BUILDER-HASH:1796707999
