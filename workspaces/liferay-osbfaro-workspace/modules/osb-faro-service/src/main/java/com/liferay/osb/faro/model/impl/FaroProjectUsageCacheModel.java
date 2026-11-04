@@ -67,7 +67,7 @@ public class FaroProjectUsageCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -81,14 +81,26 @@ public class FaroProjectUsageCacheModel
 		sb.append(createTime);
 		sb.append(", modifiedTime=");
 		sb.append(modifiedTime);
+		sb.append(", activeLogicalBytes=");
+		sb.append(activeLogicalBytes);
+		sb.append(", anonymousIndividualsCount=");
+		sb.append(anonymousIndividualsCount);
+		sb.append(", eventsCount=");
+		sb.append(eventsCount);
 		sb.append(", faroProjectId=");
 		sb.append(faroProjectId);
 		sb.append(", knownIndividualsCount=");
 		sb.append(knownIndividualsCount);
+		sb.append(", longTermLogicalBytes=");
+		sb.append(longTermLogicalBytes);
 		sb.append(", monthDateKey=");
 		sb.append(monthDateKey);
+		sb.append(", onDemandBytesBilled=");
+		sb.append(onDemandBytesBilled);
 		sb.append(", pageViewsCount=");
 		sb.append(pageViewsCount);
+		sb.append(", reservationSlotMs=");
+		sb.append(reservationSlotMs);
 		sb.append(", usageTime=");
 		sb.append(usageTime);
 		sb.append("}");
@@ -106,8 +118,13 @@ public class FaroProjectUsageCacheModel
 		faroProjectUsageImpl.setUserId(userId);
 		faroProjectUsageImpl.setCreateTime(createTime);
 		faroProjectUsageImpl.setModifiedTime(modifiedTime);
+		faroProjectUsageImpl.setActiveLogicalBytes(activeLogicalBytes);
+		faroProjectUsageImpl.setAnonymousIndividualsCount(
+			anonymousIndividualsCount);
+		faroProjectUsageImpl.setEventsCount(eventsCount);
 		faroProjectUsageImpl.setFaroProjectId(faroProjectId);
 		faroProjectUsageImpl.setKnownIndividualsCount(knownIndividualsCount);
+		faroProjectUsageImpl.setLongTermLogicalBytes(longTermLogicalBytes);
 
 		if (monthDateKey == null) {
 			faroProjectUsageImpl.setMonthDateKey("");
@@ -116,7 +133,9 @@ public class FaroProjectUsageCacheModel
 			faroProjectUsageImpl.setMonthDateKey(monthDateKey);
 		}
 
+		faroProjectUsageImpl.setOnDemandBytesBilled(onDemandBytesBilled);
 		faroProjectUsageImpl.setPageViewsCount(pageViewsCount);
+		faroProjectUsageImpl.setReservationSlotMs(reservationSlotMs);
 		faroProjectUsageImpl.setUsageTime(usageTime);
 
 		faroProjectUsageImpl.resetOriginalValues();
@@ -138,12 +157,24 @@ public class FaroProjectUsageCacheModel
 
 		modifiedTime = objectInput.readLong();
 
+		activeLogicalBytes = objectInput.readLong();
+
+		anonymousIndividualsCount = objectInput.readLong();
+
+		eventsCount = objectInput.readLong();
+
 		faroProjectId = objectInput.readLong();
 
 		knownIndividualsCount = objectInput.readLong();
+
+		longTermLogicalBytes = objectInput.readLong();
 		monthDateKey = objectInput.readUTF();
 
+		onDemandBytesBilled = objectInput.readLong();
+
 		pageViewsCount = objectInput.readLong();
+
+		reservationSlotMs = objectInput.readLong();
 
 		usageTime = objectInput.readLong();
 	}
@@ -162,9 +193,17 @@ public class FaroProjectUsageCacheModel
 
 		objectOutput.writeLong(modifiedTime);
 
+		objectOutput.writeLong(activeLogicalBytes);
+
+		objectOutput.writeLong(anonymousIndividualsCount);
+
+		objectOutput.writeLong(eventsCount);
+
 		objectOutput.writeLong(faroProjectId);
 
 		objectOutput.writeLong(knownIndividualsCount);
+
+		objectOutput.writeLong(longTermLogicalBytes);
 
 		if (monthDateKey == null) {
 			objectOutput.writeUTF("");
@@ -173,7 +212,11 @@ public class FaroProjectUsageCacheModel
 			objectOutput.writeUTF(monthDateKey);
 		}
 
+		objectOutput.writeLong(onDemandBytesBilled);
+
 		objectOutput.writeLong(pageViewsCount);
+
+		objectOutput.writeLong(reservationSlotMs);
 
 		objectOutput.writeLong(usageTime);
 	}
@@ -184,11 +227,17 @@ public class FaroProjectUsageCacheModel
 	public long userId;
 	public long createTime;
 	public long modifiedTime;
+	public long activeLogicalBytes;
+	public long anonymousIndividualsCount;
+	public long eventsCount;
 	public long faroProjectId;
 	public long knownIndividualsCount;
+	public long longTermLogicalBytes;
 	public String monthDateKey;
+	public long onDemandBytesBilled;
 	public long pageViewsCount;
+	public long reservationSlotMs;
 	public long usageTime;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1117778720
+// LIFERAY-SERVICE-BUILDER-HASH:156895086

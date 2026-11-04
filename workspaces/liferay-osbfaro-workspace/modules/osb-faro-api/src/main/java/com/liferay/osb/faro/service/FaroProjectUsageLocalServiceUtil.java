@@ -54,13 +54,17 @@ public class FaroProjectUsageLocalServiceUtil {
 	}
 
 	public static FaroProjectUsage addFaroProjectUsage(
-		long companyId, long userId, long faroProjectId,
-		long knownIndividualsCount, String monthDateKey, long pageViewsCount,
-		java.util.Date usageDate) {
+		long companyId, long userId, long activeLogicalBytes,
+		long anonymousIndividualsCount, long eventsCount, long faroProjectId,
+		long knownIndividualsCount, long longTermLogicalBytes,
+		String monthDateKey, long onDemandBytesBilled, long pageViewsCount,
+		long reservationSlotMs, java.util.Date usageDate) {
 
 		return getService().addFaroProjectUsage(
-			companyId, userId, faroProjectId, knownIndividualsCount,
-			monthDateKey, pageViewsCount, usageDate);
+			companyId, userId, activeLogicalBytes, anonymousIndividualsCount,
+			eventsCount, faroProjectId, knownIndividualsCount,
+			longTermLogicalBytes, monthDateKey, onDemandBytesBilled,
+			pageViewsCount, reservationSlotMs, usageDate);
 	}
 
 	/**
@@ -317,12 +321,17 @@ public class FaroProjectUsageLocalServiceUtil {
 	}
 
 	public static FaroProjectUsage updateFaroProjectUsage(
-			long faroProjectUsageId, long knownIndividualsCount,
-			long pageViewsCount)
+			long faroProjectUsageId, long activeLogicalBytes,
+			long anonymousIndividualsCount, long eventsCount,
+			long knownIndividualsCount, long longTermLogicalBytes,
+			long onDemandBytesBilled, long pageViewsCount,
+			long reservationSlotMs)
 		throws PortalException {
 
 		return getService().updateFaroProjectUsage(
-			faroProjectUsageId, knownIndividualsCount, pageViewsCount);
+			faroProjectUsageId, activeLogicalBytes, anonymousIndividualsCount,
+			eventsCount, knownIndividualsCount, longTermLogicalBytes,
+			onDemandBytesBilled, pageViewsCount, reservationSlotMs);
 	}
 
 	public static FaroProjectUsageLocalService getService() {
@@ -335,4 +344,4 @@ public class FaroProjectUsageLocalServiceUtil {
 			FaroProjectUsageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1056223522
+// LIFERAY-SERVICE-BUILDER-HASH:1214945084

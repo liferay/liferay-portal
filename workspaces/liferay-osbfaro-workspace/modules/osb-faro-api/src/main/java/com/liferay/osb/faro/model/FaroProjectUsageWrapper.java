@@ -38,10 +38,17 @@ public class FaroProjectUsageWrapper
 		attributes.put("userId", getUserId());
 		attributes.put("createTime", getCreateTime());
 		attributes.put("modifiedTime", getModifiedTime());
+		attributes.put("activeLogicalBytes", getActiveLogicalBytes());
+		attributes.put(
+			"anonymousIndividualsCount", getAnonymousIndividualsCount());
+		attributes.put("eventsCount", getEventsCount());
 		attributes.put("faroProjectId", getFaroProjectId());
 		attributes.put("knownIndividualsCount", getKnownIndividualsCount());
+		attributes.put("longTermLogicalBytes", getLongTermLogicalBytes());
 		attributes.put("monthDateKey", getMonthDateKey());
+		attributes.put("onDemandBytesBilled", getOnDemandBytesBilled());
 		attributes.put("pageViewsCount", getPageViewsCount());
+		attributes.put("reservationSlotMs", getReservationSlotMs());
 		attributes.put("usageTime", getUsageTime());
 
 		return attributes;
@@ -85,6 +92,25 @@ public class FaroProjectUsageWrapper
 			setModifiedTime(modifiedTime);
 		}
 
+		Long activeLogicalBytes = (Long)attributes.get("activeLogicalBytes");
+
+		if (activeLogicalBytes != null) {
+			setActiveLogicalBytes(activeLogicalBytes);
+		}
+
+		Long anonymousIndividualsCount = (Long)attributes.get(
+			"anonymousIndividualsCount");
+
+		if (anonymousIndividualsCount != null) {
+			setAnonymousIndividualsCount(anonymousIndividualsCount);
+		}
+
+		Long eventsCount = (Long)attributes.get("eventsCount");
+
+		if (eventsCount != null) {
+			setEventsCount(eventsCount);
+		}
+
 		Long faroProjectId = (Long)attributes.get("faroProjectId");
 
 		if (faroProjectId != null) {
@@ -98,16 +124,35 @@ public class FaroProjectUsageWrapper
 			setKnownIndividualsCount(knownIndividualsCount);
 		}
 
+		Long longTermLogicalBytes = (Long)attributes.get(
+			"longTermLogicalBytes");
+
+		if (longTermLogicalBytes != null) {
+			setLongTermLogicalBytes(longTermLogicalBytes);
+		}
+
 		String monthDateKey = (String)attributes.get("monthDateKey");
 
 		if (monthDateKey != null) {
 			setMonthDateKey(monthDateKey);
 		}
 
+		Long onDemandBytesBilled = (Long)attributes.get("onDemandBytesBilled");
+
+		if (onDemandBytesBilled != null) {
+			setOnDemandBytesBilled(onDemandBytesBilled);
+		}
+
 		Long pageViewsCount = (Long)attributes.get("pageViewsCount");
 
 		if (pageViewsCount != null) {
 			setPageViewsCount(pageViewsCount);
+		}
+
+		Long reservationSlotMs = (Long)attributes.get("reservationSlotMs");
+
+		if (reservationSlotMs != null) {
+			setReservationSlotMs(reservationSlotMs);
 		}
 
 		Long usageTime = (Long)attributes.get("usageTime");
@@ -120,6 +165,26 @@ public class FaroProjectUsageWrapper
 	@Override
 	public FaroProjectUsage cloneWithOriginalValues() {
 		return wrap(model.cloneWithOriginalValues());
+	}
+
+	/**
+	 * Returns the active logical bytes of this faro project usage.
+	 *
+	 * @return the active logical bytes of this faro project usage
+	 */
+	@Override
+	public long getActiveLogicalBytes() {
+		return model.getActiveLogicalBytes();
+	}
+
+	/**
+	 * Returns the anonymous individuals count of this faro project usage.
+	 *
+	 * @return the anonymous individuals count of this faro project usage
+	 */
+	@Override
+	public long getAnonymousIndividualsCount() {
+		return model.getAnonymousIndividualsCount();
 	}
 
 	/**
@@ -140,6 +205,16 @@ public class FaroProjectUsageWrapper
 	@Override
 	public long getCreateTime() {
 		return model.getCreateTime();
+	}
+
+	/**
+	 * Returns the events count of this faro project usage.
+	 *
+	 * @return the events count of this faro project usage
+	 */
+	@Override
+	public long getEventsCount() {
+		return model.getEventsCount();
 	}
 
 	/**
@@ -173,6 +248,16 @@ public class FaroProjectUsageWrapper
 	}
 
 	/**
+	 * Returns the long term logical bytes of this faro project usage.
+	 *
+	 * @return the long term logical bytes of this faro project usage
+	 */
+	@Override
+	public long getLongTermLogicalBytes() {
+		return model.getLongTermLogicalBytes();
+	}
+
+	/**
 	 * Returns the modified time of this faro project usage.
 	 *
 	 * @return the modified time of this faro project usage
@@ -203,6 +288,16 @@ public class FaroProjectUsageWrapper
 	}
 
 	/**
+	 * Returns the on demand bytes billed of this faro project usage.
+	 *
+	 * @return the on demand bytes billed of this faro project usage
+	 */
+	@Override
+	public long getOnDemandBytesBilled() {
+		return model.getOnDemandBytesBilled();
+	}
+
+	/**
 	 * Returns the page views count of this faro project usage.
 	 *
 	 * @return the page views count of this faro project usage
@@ -220,6 +315,16 @@ public class FaroProjectUsageWrapper
 	@Override
 	public long getPrimaryKey() {
 		return model.getPrimaryKey();
+	}
+
+	/**
+	 * Returns the reservation slot ms of this faro project usage.
+	 *
+	 * @return the reservation slot ms of this faro project usage
+	 */
+	@Override
+	public long getReservationSlotMs() {
+		return model.getReservationSlotMs();
 	}
 
 	/**
@@ -258,6 +363,26 @@ public class FaroProjectUsageWrapper
 	}
 
 	/**
+	 * Sets the active logical bytes of this faro project usage.
+	 *
+	 * @param activeLogicalBytes the active logical bytes of this faro project usage
+	 */
+	@Override
+	public void setActiveLogicalBytes(long activeLogicalBytes) {
+		model.setActiveLogicalBytes(activeLogicalBytes);
+	}
+
+	/**
+	 * Sets the anonymous individuals count of this faro project usage.
+	 *
+	 * @param anonymousIndividualsCount the anonymous individuals count of this faro project usage
+	 */
+	@Override
+	public void setAnonymousIndividualsCount(long anonymousIndividualsCount) {
+		model.setAnonymousIndividualsCount(anonymousIndividualsCount);
+	}
+
+	/**
 	 * Sets the company ID of this faro project usage.
 	 *
 	 * @param companyId the company ID of this faro project usage
@@ -275,6 +400,16 @@ public class FaroProjectUsageWrapper
 	@Override
 	public void setCreateTime(long createTime) {
 		model.setCreateTime(createTime);
+	}
+
+	/**
+	 * Sets the events count of this faro project usage.
+	 *
+	 * @param eventsCount the events count of this faro project usage
+	 */
+	@Override
+	public void setEventsCount(long eventsCount) {
+		model.setEventsCount(eventsCount);
 	}
 
 	/**
@@ -308,6 +443,16 @@ public class FaroProjectUsageWrapper
 	}
 
 	/**
+	 * Sets the long term logical bytes of this faro project usage.
+	 *
+	 * @param longTermLogicalBytes the long term logical bytes of this faro project usage
+	 */
+	@Override
+	public void setLongTermLogicalBytes(long longTermLogicalBytes) {
+		model.setLongTermLogicalBytes(longTermLogicalBytes);
+	}
+
+	/**
 	 * Sets the modified time of this faro project usage.
 	 *
 	 * @param modifiedTime the modified time of this faro project usage
@@ -338,6 +483,16 @@ public class FaroProjectUsageWrapper
 	}
 
 	/**
+	 * Sets the on demand bytes billed of this faro project usage.
+	 *
+	 * @param onDemandBytesBilled the on demand bytes billed of this faro project usage
+	 */
+	@Override
+	public void setOnDemandBytesBilled(long onDemandBytesBilled) {
+		model.setOnDemandBytesBilled(onDemandBytesBilled);
+	}
+
+	/**
 	 * Sets the page views count of this faro project usage.
 	 *
 	 * @param pageViewsCount the page views count of this faro project usage
@@ -355,6 +510,16 @@ public class FaroProjectUsageWrapper
 	@Override
 	public void setPrimaryKey(long primaryKey) {
 		model.setPrimaryKey(primaryKey);
+	}
+
+	/**
+	 * Sets the reservation slot ms of this faro project usage.
+	 *
+	 * @param reservationSlotMs the reservation slot ms of this faro project usage
+	 */
+	@Override
+	public void setReservationSlotMs(long reservationSlotMs) {
+		model.setReservationSlotMs(reservationSlotMs);
 	}
 
 	/**
@@ -398,4 +563,4 @@ public class FaroProjectUsageWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1606844121
+// LIFERAY-SERVICE-BUILDER-HASH:-1916331889

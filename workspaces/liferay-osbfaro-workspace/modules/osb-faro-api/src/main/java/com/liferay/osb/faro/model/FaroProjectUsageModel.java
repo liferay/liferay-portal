@@ -150,6 +150,48 @@ public interface FaroProjectUsageModel
 	public void setModifiedTime(long modifiedTime);
 
 	/**
+	 * Returns the active logical bytes of this faro project usage.
+	 *
+	 * @return the active logical bytes of this faro project usage
+	 */
+	public long getActiveLogicalBytes();
+
+	/**
+	 * Sets the active logical bytes of this faro project usage.
+	 *
+	 * @param activeLogicalBytes the active logical bytes of this faro project usage
+	 */
+	public void setActiveLogicalBytes(long activeLogicalBytes);
+
+	/**
+	 * Returns the anonymous individuals count of this faro project usage.
+	 *
+	 * @return the anonymous individuals count of this faro project usage
+	 */
+	public long getAnonymousIndividualsCount();
+
+	/**
+	 * Sets the anonymous individuals count of this faro project usage.
+	 *
+	 * @param anonymousIndividualsCount the anonymous individuals count of this faro project usage
+	 */
+	public void setAnonymousIndividualsCount(long anonymousIndividualsCount);
+
+	/**
+	 * Returns the events count of this faro project usage.
+	 *
+	 * @return the events count of this faro project usage
+	 */
+	public long getEventsCount();
+
+	/**
+	 * Sets the events count of this faro project usage.
+	 *
+	 * @param eventsCount the events count of this faro project usage
+	 */
+	public void setEventsCount(long eventsCount);
+
+	/**
 	 * Returns the faro project ID of this faro project usage.
 	 *
 	 * @return the faro project ID of this faro project usage
@@ -178,6 +220,20 @@ public interface FaroProjectUsageModel
 	public void setKnownIndividualsCount(long knownIndividualsCount);
 
 	/**
+	 * Returns the long term logical bytes of this faro project usage.
+	 *
+	 * @return the long term logical bytes of this faro project usage
+	 */
+	public long getLongTermLogicalBytes();
+
+	/**
+	 * Sets the long term logical bytes of this faro project usage.
+	 *
+	 * @param longTermLogicalBytes the long term logical bytes of this faro project usage
+	 */
+	public void setLongTermLogicalBytes(long longTermLogicalBytes);
+
+	/**
 	 * Returns the month date key of this faro project usage.
 	 *
 	 * @return the month date key of this faro project usage
@@ -193,6 +249,20 @@ public interface FaroProjectUsageModel
 	public void setMonthDateKey(String monthDateKey);
 
 	/**
+	 * Returns the on demand bytes billed of this faro project usage.
+	 *
+	 * @return the on demand bytes billed of this faro project usage
+	 */
+	public long getOnDemandBytesBilled();
+
+	/**
+	 * Sets the on demand bytes billed of this faro project usage.
+	 *
+	 * @param onDemandBytesBilled the on demand bytes billed of this faro project usage
+	 */
+	public void setOnDemandBytesBilled(long onDemandBytesBilled);
+
+	/**
 	 * Returns the page views count of this faro project usage.
 	 *
 	 * @return the page views count of this faro project usage
@@ -205,6 +275,20 @@ public interface FaroProjectUsageModel
 	 * @param pageViewsCount the page views count of this faro project usage
 	 */
 	public void setPageViewsCount(long pageViewsCount);
+
+	/**
+	 * Returns the reservation slot ms of this faro project usage.
+	 *
+	 * @return the reservation slot ms of this faro project usage
+	 */
+	public long getReservationSlotMs();
+
+	/**
+	 * Sets the reservation slot ms of this faro project usage.
+	 *
+	 * @param reservationSlotMs the reservation slot ms of this faro project usage
+	 */
+	public void setReservationSlotMs(long reservationSlotMs);
 
 	/**
 	 * Returns the usage time of this faro project usage.
@@ -228,4 +312,4 @@ public interface FaroProjectUsageModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:906419954
+// LIFERAY-SERVICE-BUILDER-HASH:454494512

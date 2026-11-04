@@ -49,13 +49,17 @@ public class FaroProjectUsageLocalServiceWrapper
 
 	@Override
 	public com.liferay.osb.faro.model.FaroProjectUsage addFaroProjectUsage(
-		long companyId, long userId, long faroProjectId,
-		long knownIndividualsCount, String monthDateKey, long pageViewsCount,
-		java.util.Date usageDate) {
+		long companyId, long userId, long activeLogicalBytes,
+		long anonymousIndividualsCount, long eventsCount, long faroProjectId,
+		long knownIndividualsCount, long longTermLogicalBytes,
+		String monthDateKey, long onDemandBytesBilled, long pageViewsCount,
+		long reservationSlotMs, java.util.Date usageDate) {
 
 		return _faroProjectUsageLocalService.addFaroProjectUsage(
-			companyId, userId, faroProjectId, knownIndividualsCount,
-			monthDateKey, pageViewsCount, usageDate);
+			companyId, userId, activeLogicalBytes, anonymousIndividualsCount,
+			eventsCount, faroProjectId, knownIndividualsCount,
+			longTermLogicalBytes, monthDateKey, onDemandBytesBilled,
+			pageViewsCount, reservationSlotMs, usageDate);
 	}
 
 	/**
@@ -358,12 +362,17 @@ public class FaroProjectUsageLocalServiceWrapper
 
 	@Override
 	public com.liferay.osb.faro.model.FaroProjectUsage updateFaroProjectUsage(
-			long faroProjectUsageId, long knownIndividualsCount,
-			long pageViewsCount)
+			long faroProjectUsageId, long activeLogicalBytes,
+			long anonymousIndividualsCount, long eventsCount,
+			long knownIndividualsCount, long longTermLogicalBytes,
+			long onDemandBytesBilled, long pageViewsCount,
+			long reservationSlotMs)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _faroProjectUsageLocalService.updateFaroProjectUsage(
-			faroProjectUsageId, knownIndividualsCount, pageViewsCount);
+			faroProjectUsageId, activeLogicalBytes, anonymousIndividualsCount,
+			eventsCount, knownIndividualsCount, longTermLogicalBytes,
+			onDemandBytesBilled, pageViewsCount, reservationSlotMs);
 	}
 
 	@Override
@@ -386,4 +395,4 @@ public class FaroProjectUsageLocalServiceWrapper
 	private FaroProjectUsageLocalService _faroProjectUsageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-702009314
+// LIFERAY-SERVICE-BUILDER-HASH:786839004

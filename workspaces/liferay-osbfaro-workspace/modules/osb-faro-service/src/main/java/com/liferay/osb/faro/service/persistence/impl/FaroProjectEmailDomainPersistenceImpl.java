@@ -546,4 +546,4 @@ public class FaroProjectEmailDomainPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-841058803
+// LIFERAY-SERVICE-BUILDER-HASH:-1229969843

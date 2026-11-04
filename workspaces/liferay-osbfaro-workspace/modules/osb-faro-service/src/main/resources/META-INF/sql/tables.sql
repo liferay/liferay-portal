@@ -102,10 +102,16 @@ create table OSBFaro_FaroProjectUsage (
 	userId LONG,
 	createTime LONG,
 	modifiedTime LONG,
+	activeLogicalBytes LONG,
+	anonymousIndividualsCount LONG,
+	eventsCount LONG,
 	faroProjectId LONG,
 	knownIndividualsCount LONG,
+	longTermLogicalBytes LONG,
 	monthDateKey VARCHAR(75) null,
+	onDemandBytesBilled LONG,
 	pageViewsCount LONG,
+	reservationSlotMs LONG,
 	usageTime LONG
 );
 

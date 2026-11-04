@@ -109,10 +109,16 @@
 		<field name="userId" type="long" />
 		<field name="createTime" type="long" />
 		<field name="modifiedTime" type="long" />
+		<field name="activeLogicalBytes" type="long" />
+		<field name="anonymousIndividualsCount" type="long" />
+		<field name="eventsCount" type="long" />
 		<field name="faroProjectId" type="long" />
 		<field name="knownIndividualsCount" type="long" />
+		<field name="longTermLogicalBytes" type="long" />
 		<field name="monthDateKey" type="String" />
+		<field name="onDemandBytesBilled" type="long" />
 		<field name="pageViewsCount" type="long" />
+		<field name="reservationSlotMs" type="long" />
 		<field name="usageTime" type="long" />
 	</model>
 	<model name="com.liferay.osb.faro.model.FaroUser">

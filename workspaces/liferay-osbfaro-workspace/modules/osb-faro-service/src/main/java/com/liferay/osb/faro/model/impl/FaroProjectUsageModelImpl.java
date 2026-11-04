@@ -63,10 +63,13 @@ public class FaroProjectUsageModelImpl
 		{"mvccVersion", Types.BIGINT}, {"faroProjectUsageId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"createTime", Types.BIGINT}, {"modifiedTime", Types.BIGINT},
-		{"faroProjectId", Types.BIGINT},
+		{"activeLogicalBytes", Types.BIGINT},
+		{"anonymousIndividualsCount", Types.BIGINT},
+		{"eventsCount", Types.BIGINT}, {"faroProjectId", Types.BIGINT},
 		{"knownIndividualsCount", Types.BIGINT},
-		{"monthDateKey", Types.VARCHAR}, {"pageViewsCount", Types.BIGINT},
-		{"usageTime", Types.BIGINT}
+		{"longTermLogicalBytes", Types.BIGINT}, {"monthDateKey", Types.VARCHAR},
+		{"onDemandBytesBilled", Types.BIGINT}, {"pageViewsCount", Types.BIGINT},
+		{"reservationSlotMs", Types.BIGINT}, {"usageTime", Types.BIGINT}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -79,15 +82,21 @@ public class FaroProjectUsageModelImpl
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("createTime", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("modifiedTime", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("activeLogicalBytes", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("anonymousIndividualsCount", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("eventsCount", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("faroProjectId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("knownIndividualsCount", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("longTermLogicalBytes", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("monthDateKey", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("onDemandBytesBilled", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("pageViewsCount", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("reservationSlotMs", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("usageTime", Types.BIGINT);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table OSBFaro_FaroProjectUsage (mvccVersion LONG default 0 not null,faroProjectUsageId LONG not null primary key,companyId LONG,userId LONG,createTime LONG,modifiedTime LONG,faroProjectId LONG,knownIndividualsCount LONG,monthDateKey VARCHAR(75) null,pageViewsCount LONG,usageTime LONG)";
+		"create table OSBFaro_FaroProjectUsage (mvccVersion LONG default 0 not null,faroProjectUsageId LONG not null primary key,companyId LONG,userId LONG,createTime LONG,modifiedTime LONG,activeLogicalBytes LONG,anonymousIndividualsCount LONG,eventsCount LONG,faroProjectId LONG,knownIndividualsCount LONG,longTermLogicalBytes LONG,monthDateKey VARCHAR(75) null,onDemandBytesBilled LONG,pageViewsCount LONG,reservationSlotMs LONG,usageTime LONG)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table OSBFaro_FaroProjectUsage";
@@ -247,14 +256,29 @@ public class FaroProjectUsageModelImpl
 			attributeGetterFunctions.put(
 				"modifiedTime", FaroProjectUsage::getModifiedTime);
 			attributeGetterFunctions.put(
+				"activeLogicalBytes", FaroProjectUsage::getActiveLogicalBytes);
+			attributeGetterFunctions.put(
+				"anonymousIndividualsCount",
+				FaroProjectUsage::getAnonymousIndividualsCount);
+			attributeGetterFunctions.put(
+				"eventsCount", FaroProjectUsage::getEventsCount);
+			attributeGetterFunctions.put(
 				"faroProjectId", FaroProjectUsage::getFaroProjectId);
 			attributeGetterFunctions.put(
 				"knownIndividualsCount",
 				FaroProjectUsage::getKnownIndividualsCount);
 			attributeGetterFunctions.put(
+				"longTermLogicalBytes",
+				FaroProjectUsage::getLongTermLogicalBytes);
+			attributeGetterFunctions.put(
 				"monthDateKey", FaroProjectUsage::getMonthDateKey);
 			attributeGetterFunctions.put(
+				"onDemandBytesBilled",
+				FaroProjectUsage::getOnDemandBytesBilled);
+			attributeGetterFunctions.put(
 				"pageViewsCount", FaroProjectUsage::getPageViewsCount);
+			attributeGetterFunctions.put(
+				"reservationSlotMs", FaroProjectUsage::getReservationSlotMs);
 			attributeGetterFunctions.put(
 				"usageTime", FaroProjectUsage::getUsageTime);
 
@@ -300,6 +324,18 @@ public class FaroProjectUsageModelImpl
 				(BiConsumer<FaroProjectUsage, Long>)
 					FaroProjectUsage::setModifiedTime);
 			attributeSetterBiConsumers.put(
+				"activeLogicalBytes",
+				(BiConsumer<FaroProjectUsage, Long>)
+					FaroProjectUsage::setActiveLogicalBytes);
+			attributeSetterBiConsumers.put(
+				"anonymousIndividualsCount",
+				(BiConsumer<FaroProjectUsage, Long>)
+					FaroProjectUsage::setAnonymousIndividualsCount);
+			attributeSetterBiConsumers.put(
+				"eventsCount",
+				(BiConsumer<FaroProjectUsage, Long>)
+					FaroProjectUsage::setEventsCount);
+			attributeSetterBiConsumers.put(
 				"faroProjectId",
 				(BiConsumer<FaroProjectUsage, Long>)
 					FaroProjectUsage::setFaroProjectId);
@@ -308,13 +344,25 @@ public class FaroProjectUsageModelImpl
 				(BiConsumer<FaroProjectUsage, Long>)
 					FaroProjectUsage::setKnownIndividualsCount);
 			attributeSetterBiConsumers.put(
+				"longTermLogicalBytes",
+				(BiConsumer<FaroProjectUsage, Long>)
+					FaroProjectUsage::setLongTermLogicalBytes);
+			attributeSetterBiConsumers.put(
 				"monthDateKey",
 				(BiConsumer<FaroProjectUsage, String>)
 					FaroProjectUsage::setMonthDateKey);
 			attributeSetterBiConsumers.put(
+				"onDemandBytesBilled",
+				(BiConsumer<FaroProjectUsage, Long>)
+					FaroProjectUsage::setOnDemandBytesBilled);
+			attributeSetterBiConsumers.put(
 				"pageViewsCount",
 				(BiConsumer<FaroProjectUsage, Long>)
 					FaroProjectUsage::setPageViewsCount);
+			attributeSetterBiConsumers.put(
+				"reservationSlotMs",
+				(BiConsumer<FaroProjectUsage, Long>)
+					FaroProjectUsage::setReservationSlotMs);
 			attributeSetterBiConsumers.put(
 				"usageTime",
 				(BiConsumer<FaroProjectUsage, Long>)
@@ -427,6 +475,48 @@ public class FaroProjectUsageModelImpl
 	}
 
 	@Override
+	public long getActiveLogicalBytes() {
+		return _activeLogicalBytes;
+	}
+
+	@Override
+	public void setActiveLogicalBytes(long activeLogicalBytes) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_activeLogicalBytes = activeLogicalBytes;
+	}
+
+	@Override
+	public long getAnonymousIndividualsCount() {
+		return _anonymousIndividualsCount;
+	}
+
+	@Override
+	public void setAnonymousIndividualsCount(long anonymousIndividualsCount) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_anonymousIndividualsCount = anonymousIndividualsCount;
+	}
+
+	@Override
+	public long getEventsCount() {
+		return _eventsCount;
+	}
+
+	@Override
+	public void setEventsCount(long eventsCount) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_eventsCount = eventsCount;
+	}
+
+	@Override
 	public long getFaroProjectId() {
 		return _faroProjectId;
 	}
@@ -465,6 +555,20 @@ public class FaroProjectUsageModelImpl
 	}
 
 	@Override
+	public long getLongTermLogicalBytes() {
+		return _longTermLogicalBytes;
+	}
+
+	@Override
+	public void setLongTermLogicalBytes(long longTermLogicalBytes) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_longTermLogicalBytes = longTermLogicalBytes;
+	}
+
+	@Override
 	public String getMonthDateKey() {
 		if (_monthDateKey == null) {
 			return "";
@@ -484,6 +588,20 @@ public class FaroProjectUsageModelImpl
 	}
 
 	@Override
+	public long getOnDemandBytesBilled() {
+		return _onDemandBytesBilled;
+	}
+
+	@Override
+	public void setOnDemandBytesBilled(long onDemandBytesBilled) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_onDemandBytesBilled = onDemandBytesBilled;
+	}
+
+	@Override
 	public long getPageViewsCount() {
 		return _pageViewsCount;
 	}
@@ -495,6 +613,20 @@ public class FaroProjectUsageModelImpl
 		}
 
 		_pageViewsCount = pageViewsCount;
+	}
+
+	@Override
+	public long getReservationSlotMs() {
+		return _reservationSlotMs;
+	}
+
+	@Override
+	public void setReservationSlotMs(long reservationSlotMs) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_reservationSlotMs = reservationSlotMs;
 	}
 
 	@Override
@@ -583,11 +715,18 @@ public class FaroProjectUsageModelImpl
 		faroProjectUsageImpl.setUserId(getUserId());
 		faroProjectUsageImpl.setCreateTime(getCreateTime());
 		faroProjectUsageImpl.setModifiedTime(getModifiedTime());
+		faroProjectUsageImpl.setActiveLogicalBytes(getActiveLogicalBytes());
+		faroProjectUsageImpl.setAnonymousIndividualsCount(
+			getAnonymousIndividualsCount());
+		faroProjectUsageImpl.setEventsCount(getEventsCount());
 		faroProjectUsageImpl.setFaroProjectId(getFaroProjectId());
 		faroProjectUsageImpl.setKnownIndividualsCount(
 			getKnownIndividualsCount());
+		faroProjectUsageImpl.setLongTermLogicalBytes(getLongTermLogicalBytes());
 		faroProjectUsageImpl.setMonthDateKey(getMonthDateKey());
+		faroProjectUsageImpl.setOnDemandBytesBilled(getOnDemandBytesBilled());
 		faroProjectUsageImpl.setPageViewsCount(getPageViewsCount());
+		faroProjectUsageImpl.setReservationSlotMs(getReservationSlotMs());
 		faroProjectUsageImpl.setUsageTime(getUsageTime());
 
 		faroProjectUsageImpl.resetOriginalValues();
@@ -611,14 +750,26 @@ public class FaroProjectUsageModelImpl
 			this.<Long>getColumnOriginalValue("createTime"));
 		faroProjectUsageImpl.setModifiedTime(
 			this.<Long>getColumnOriginalValue("modifiedTime"));
+		faroProjectUsageImpl.setActiveLogicalBytes(
+			this.<Long>getColumnOriginalValue("activeLogicalBytes"));
+		faroProjectUsageImpl.setAnonymousIndividualsCount(
+			this.<Long>getColumnOriginalValue("anonymousIndividualsCount"));
+		faroProjectUsageImpl.setEventsCount(
+			this.<Long>getColumnOriginalValue("eventsCount"));
 		faroProjectUsageImpl.setFaroProjectId(
 			this.<Long>getColumnOriginalValue("faroProjectId"));
 		faroProjectUsageImpl.setKnownIndividualsCount(
 			this.<Long>getColumnOriginalValue("knownIndividualsCount"));
+		faroProjectUsageImpl.setLongTermLogicalBytes(
+			this.<Long>getColumnOriginalValue("longTermLogicalBytes"));
 		faroProjectUsageImpl.setMonthDateKey(
 			this.<String>getColumnOriginalValue("monthDateKey"));
+		faroProjectUsageImpl.setOnDemandBytesBilled(
+			this.<Long>getColumnOriginalValue("onDemandBytesBilled"));
 		faroProjectUsageImpl.setPageViewsCount(
 			this.<Long>getColumnOriginalValue("pageViewsCount"));
+		faroProjectUsageImpl.setReservationSlotMs(
+			this.<Long>getColumnOriginalValue("reservationSlotMs"));
 		faroProjectUsageImpl.setUsageTime(
 			this.<Long>getColumnOriginalValue("usageTime"));
 
@@ -709,10 +860,20 @@ public class FaroProjectUsageModelImpl
 
 		faroProjectUsageCacheModel.modifiedTime = getModifiedTime();
 
+		faroProjectUsageCacheModel.activeLogicalBytes = getActiveLogicalBytes();
+
+		faroProjectUsageCacheModel.anonymousIndividualsCount =
+			getAnonymousIndividualsCount();
+
+		faroProjectUsageCacheModel.eventsCount = getEventsCount();
+
 		faroProjectUsageCacheModel.faroProjectId = getFaroProjectId();
 
 		faroProjectUsageCacheModel.knownIndividualsCount =
 			getKnownIndividualsCount();
+
+		faroProjectUsageCacheModel.longTermLogicalBytes =
+			getLongTermLogicalBytes();
 
 		faroProjectUsageCacheModel.monthDateKey = getMonthDateKey();
 
@@ -722,7 +883,12 @@ public class FaroProjectUsageModelImpl
 			faroProjectUsageCacheModel.monthDateKey = null;
 		}
 
+		faroProjectUsageCacheModel.onDemandBytesBilled =
+			getOnDemandBytesBilled();
+
 		faroProjectUsageCacheModel.pageViewsCount = getPageViewsCount();
+
+		faroProjectUsageCacheModel.reservationSlotMs = getReservationSlotMs();
 
 		faroProjectUsageCacheModel.usageTime = getUsageTime();
 
@@ -794,10 +960,16 @@ public class FaroProjectUsageModelImpl
 	private long _userId;
 	private long _createTime;
 	private long _modifiedTime;
+	private long _activeLogicalBytes;
+	private long _anonymousIndividualsCount;
+	private long _eventsCount;
 	private long _faroProjectId;
 	private long _knownIndividualsCount;
+	private long _longTermLogicalBytes;
 	private String _monthDateKey;
+	private long _onDemandBytesBilled;
 	private long _pageViewsCount;
+	private long _reservationSlotMs;
 	private long _usageTime;
 
 	public <T> T getColumnValue(String columnName) {
@@ -834,11 +1006,19 @@ public class FaroProjectUsageModelImpl
 		_columnOriginalValues.put("userId", _userId);
 		_columnOriginalValues.put("createTime", _createTime);
 		_columnOriginalValues.put("modifiedTime", _modifiedTime);
+		_columnOriginalValues.put("activeLogicalBytes", _activeLogicalBytes);
+		_columnOriginalValues.put(
+			"anonymousIndividualsCount", _anonymousIndividualsCount);
+		_columnOriginalValues.put("eventsCount", _eventsCount);
 		_columnOriginalValues.put("faroProjectId", _faroProjectId);
 		_columnOriginalValues.put(
 			"knownIndividualsCount", _knownIndividualsCount);
+		_columnOriginalValues.put(
+			"longTermLogicalBytes", _longTermLogicalBytes);
 		_columnOriginalValues.put("monthDateKey", _monthDateKey);
+		_columnOriginalValues.put("onDemandBytesBilled", _onDemandBytesBilled);
 		_columnOriginalValues.put("pageViewsCount", _pageViewsCount);
+		_columnOriginalValues.put("reservationSlotMs", _reservationSlotMs);
 		_columnOriginalValues.put("usageTime", _usageTime);
 	}
 
@@ -865,15 +1045,27 @@ public class FaroProjectUsageModelImpl
 
 		columnBitmasks.put("modifiedTime", 32L);
 
-		columnBitmasks.put("faroProjectId", 64L);
+		columnBitmasks.put("activeLogicalBytes", 64L);
 
-		columnBitmasks.put("knownIndividualsCount", 128L);
+		columnBitmasks.put("anonymousIndividualsCount", 128L);
 
-		columnBitmasks.put("monthDateKey", 256L);
+		columnBitmasks.put("eventsCount", 256L);
 
-		columnBitmasks.put("pageViewsCount", 512L);
+		columnBitmasks.put("faroProjectId", 512L);
 
-		columnBitmasks.put("usageTime", 1024L);
+		columnBitmasks.put("knownIndividualsCount", 1024L);
+
+		columnBitmasks.put("longTermLogicalBytes", 2048L);
+
+		columnBitmasks.put("monthDateKey", 4096L);
+
+		columnBitmasks.put("onDemandBytesBilled", 8192L);
+
+		columnBitmasks.put("pageViewsCount", 16384L);
+
+		columnBitmasks.put("reservationSlotMs", 32768L);
+
+		columnBitmasks.put("usageTime", 65536L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -882,4 +1074,4 @@ public class FaroProjectUsageModelImpl
 	private FaroProjectUsage _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2072316741
+// LIFERAY-SERVICE-BUILDER-HASH:108189174

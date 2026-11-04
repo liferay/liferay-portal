@@ -37,6 +37,16 @@ public class FaroProjectUsageTable extends BaseTable<FaroProjectUsageTable> {
 	public final Column<FaroProjectUsageTable, Long> modifiedTime =
 		createColumn(
 			"modifiedTime", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<FaroProjectUsageTable, Long> activeLogicalBytes =
+		createColumn(
+			"activeLogicalBytes", Long.class, Types.BIGINT,
+			Column.FLAG_DEFAULT);
+	public final Column<FaroProjectUsageTable, Long> anonymousIndividualsCount =
+		createColumn(
+			"anonymousIndividualsCount", Long.class, Types.BIGINT,
+			Column.FLAG_DEFAULT);
+	public final Column<FaroProjectUsageTable, Long> eventsCount = createColumn(
+		"eventsCount", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<FaroProjectUsageTable, Long> faroProjectId =
 		createColumn(
 			"faroProjectId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
@@ -44,12 +54,23 @@ public class FaroProjectUsageTable extends BaseTable<FaroProjectUsageTable> {
 		createColumn(
 			"knownIndividualsCount", Long.class, Types.BIGINT,
 			Column.FLAG_DEFAULT);
+	public final Column<FaroProjectUsageTable, Long> longTermLogicalBytes =
+		createColumn(
+			"longTermLogicalBytes", Long.class, Types.BIGINT,
+			Column.FLAG_DEFAULT);
 	public final Column<FaroProjectUsageTable, String> monthDateKey =
 		createColumn(
 			"monthDateKey", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<FaroProjectUsageTable, Long> onDemandBytesBilled =
+		createColumn(
+			"onDemandBytesBilled", Long.class, Types.BIGINT,
+			Column.FLAG_DEFAULT);
 	public final Column<FaroProjectUsageTable, Long> pageViewsCount =
 		createColumn(
 			"pageViewsCount", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<FaroProjectUsageTable, Long> reservationSlotMs =
+		createColumn(
+			"reservationSlotMs", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<FaroProjectUsageTable, Long> usageTime = createColumn(
 		"usageTime", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 
@@ -58,4 +79,4 @@ public class FaroProjectUsageTable extends BaseTable<FaroProjectUsageTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-230681255
+// LIFERAY-SERVICE-BUILDER-HASH:-795123421
