@@ -95,6 +95,9 @@ public class CPConfigurationListRelLocalServiceImpl
 
 		cpConfigurationListRelPersistence.remove(cpConfigurationListRel);
 
+		_reindexCPConfigurationList(
+			cpConfigurationListRel.getCPConfigurationListId());
+
 		return cpConfigurationListRel;
 	}
 
@@ -107,14 +110,8 @@ public class CPConfigurationListRelLocalServiceImpl
 			cpConfigurationListRelPersistence.findByPrimaryKey(
 				cpConfigurationListRelId);
 
-		cpConfigurationListRel =
-			cpConfigurationListRelLocalService.deleteCPConfigurationListRel(
-				cpConfigurationListRel);
-
-		_reindexCPConfigurationList(
-			cpConfigurationListRel.getCPConfigurationListId());
-
-		return cpConfigurationListRel;
+		return cpConfigurationListRelLocalService.deleteCPConfigurationListRel(
+			cpConfigurationListRel);
 	}
 
 	@Override

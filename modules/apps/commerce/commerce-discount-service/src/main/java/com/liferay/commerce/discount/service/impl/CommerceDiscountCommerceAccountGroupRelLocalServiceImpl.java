@@ -141,11 +141,19 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceImpl
 	@Deprecated
 	@Override
 	public void
-		deleteCommerceDiscountCommerceAccountGroupRelsBycommerceAccountGroupId(
-			long commerceAccountGroupId) {
+			deleteCommerceDiscountCommerceAccountGroupRelsBycommerceAccountGroupId(
+				long commerceAccountGroupId)
+		throws PortalException {
 
-		commerceDiscountCommerceAccountGroupRelPersistence.
-			removeByCommerceAccountGroupId(commerceAccountGroupId);
+		for (CommerceDiscountCommerceAccountGroupRel
+				commerceDiscountCommerceAccountGroupRel :
+					commerceDiscountCommerceAccountGroupRelPersistence.
+						findByCommerceAccountGroupId(commerceAccountGroupId)) {
+
+			commerceDiscountCommerceAccountGroupRelLocalService.
+				deleteCommerceDiscountCommerceAccountGroupRel(
+					commerceDiscountCommerceAccountGroupRel);
+		}
 	}
 
 	@Override

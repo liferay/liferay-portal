@@ -119,9 +119,17 @@ public class CommercePriceListOrderTypeRelLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommercePriceListOrderTypeRels(long commercePriceListId) {
-		commercePriceListOrderTypeRelPersistence.removeByCommercePriceListId(
-			commercePriceListId);
+	public void deleteCommercePriceListOrderTypeRels(long commercePriceListId)
+		throws PortalException {
+
+		for (CommercePriceListOrderTypeRel commercePriceListOrderTypeRel :
+				commercePriceListOrderTypeRelPersistence.
+					findByCommercePriceListId(commercePriceListId)) {
+
+			commercePriceListOrderTypeRelLocalService.
+				deleteCommercePriceListOrderTypeRel(
+					commercePriceListOrderTypeRel);
+		}
 	}
 
 	@Override

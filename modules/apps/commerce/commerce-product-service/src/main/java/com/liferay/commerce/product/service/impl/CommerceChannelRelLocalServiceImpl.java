@@ -8,6 +8,8 @@ package com.liferay.commerce.product.service.impl;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceCurrencyTable;
 import com.liferay.commerce.product.exception.DuplicateCommerceChannelRelException;
+import com.liferay.commerce.product.model.CPConfigurationList;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.model.CommerceChannelRelTable;
 import com.liferay.commerce.product.service.base.CommerceChannelRelLocalServiceBaseImpl;
@@ -18,6 +20,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.CountryTable;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -131,14 +134,25 @@ public class CommerceChannelRelLocalServiceImpl
 
 	@Override
 	public void deleteCommerceChannelRels(long commerceChannelId) {
-		commerceChannelRelPersistence.removeByCommerceChannelId(
-			commerceChannelId);
+		for (CommerceChannelRel commerceChannelRel :
+				commerceChannelRelPersistence.findByCommerceChannelId(
+					commerceChannelId)) {
+
+			commerceChannelRelLocalService.deleteCommerceChannelRel(
+				commerceChannelRel);
+		}
 	}
 
 	@Override
 	public void deleteCommerceChannelRels(String className, long classPK) {
-		commerceChannelRelPersistence.removeByC_C(
-			_classNameLocalService.getClassNameId(className), classPK);
+		for (CommerceChannelRel commerceChannelRel :
+				commerceChannelRelPersistence.findByC_C(
+					_classNameLocalService.getClassNameId(className),
+					classPK)) {
+
+			commerceChannelRelLocalService.deleteCommerceChannelRel(
+				commerceChannelRel);
+		}
 	}
 
 	@Override
@@ -341,14 +355,20 @@ public class CommerceChannelRelLocalServiceImpl
 
 	private void _reindexCommerceChannelRels(long classNameId, long classPK) {
 		try {
-			if (classNameId == _classNameLocalService.getClassNameId(
-					CommerceCurrency.class)) {
+			if ((classNameId == _classNameLocalService.getClassNameId(
+					CommerceCurrency.class)) ||
+				(classNameId == _classNameLocalService.getClassNameId(
+					CPConfigurationList.class)) ||
+				(classNameId == _classNameLocalService.getClassNameId(
+					CPDefinition.class))) {
 
-				Indexer<CommerceCurrency> indexer =
-					IndexerRegistryUtil.nullSafeGetIndexer(
-						CommerceCurrency.class);
+				ClassName className = _classNameLocalService.getClassName(
+					classNameId);
 
-				indexer.reindex(CommerceCurrency.class.getName(), classPK);
+				Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+					className.getValue());
+
+				indexer.reindex(className.getValue(), classPK);
 			}
 		}
 		catch (PortalException portalException) {

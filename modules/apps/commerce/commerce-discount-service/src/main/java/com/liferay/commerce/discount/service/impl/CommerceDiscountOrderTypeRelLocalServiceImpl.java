@@ -117,9 +117,17 @@ public class CommerceDiscountOrderTypeRelLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommerceDiscountOrderTypeRels(long commerceDiscountId) {
-		commerceDiscountOrderTypeRelPersistence.removeByCommerceDiscountId(
-			commerceDiscountId);
+	public void deleteCommerceDiscountOrderTypeRels(long commerceDiscountId)
+		throws PortalException {
+
+		for (CommerceDiscountOrderTypeRel commerceDiscountOrderTypeRel :
+				commerceDiscountOrderTypeRelPersistence.
+					findByCommerceDiscountId(commerceDiscountId)) {
+
+			commerceDiscountOrderTypeRelLocalService.
+				deleteCommerceDiscountOrderTypeRel(
+					commerceDiscountOrderTypeRel);
+		}
 	}
 
 	@Override
