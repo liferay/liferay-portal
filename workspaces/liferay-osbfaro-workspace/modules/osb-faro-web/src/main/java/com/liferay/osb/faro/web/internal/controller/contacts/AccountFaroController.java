@@ -239,57 +239,57 @@ public class AccountFaroController extends BaseFaroController {
 			@DefaultValue("20") @QueryParam("pageSize") int pageSize)
 		throws Exception {
 
-		if (Objects.equals(fieldMappingFieldName, "lifecycleStatus")) {
-			List<Map<String, String>> items = new ArrayList<>();
-
-			List<AccountLifecycle> accountLifecycles = null;
-
-			FaroProject faroProject =
-				faroProjectLocalService.getFaroProjectByGroupId(groupId);
-
-			if (Validator.isNull(accountLifecycleId)) {
-				Results<AccountLifecycle> accountLifecycleResults =
-					contactsEngineClient.getAccountLifecycles(
-						faroProject, channelId, null, null, null, 1, 10000,
-						null);
-
-				accountLifecycles = accountLifecycleResults.getItems();
-			}
-			else {
-				accountLifecycles = Collections.singletonList(
-					contactsEngineClient.getAccountLifecycle(
-						faroProject, accountLifecycleId));
-			}
-
-			for (AccountLifecycle accountLifecycle : accountLifecycles) {
-				items.addAll(
-					TransformUtil.transform(
-						accountLifecycle.getAccountLifecycleStages(),
-						accountLifecycleStage -> HashMapBuilder.put(
-							"externalReferenceCode",
-							accountLifecycleStage.getExternalReferenceCode()
-						).put(
-							"id", accountLifecycleStage.getId()
-						).put(
-							"lifecycleExternalReferenceCode",
-							accountLifecycle.getExternalReferenceCode()
-						).put(
-							"lifecycleName", accountLifecycle.getName()
-						).put(
-							"name", accountLifecycleStage.getName()
-						).build()));
-			}
-
+		if (!Objects.equals(fieldMappingFieldName, "lifecycleStatus")) {
 			return new FaroFDSResultsDisplay<>(
-				new Results<>(items, items.size()), page, pageSize);
+				contactsEngineClient.getAccountFieldValues(
+					faroProjectLocalService.getFaroProjectByGroupId(groupId),
+					channelId, fieldMappingFieldName, query, page, pageSize),
+				object -> Collections.singletonMap(
+					"name", String.valueOf(object)),
+				page, pageSize);
+		}
+
+		List<Map<String, String>> items = new ArrayList<>();
+
+		List<AccountLifecycle> accountLifecycles = null;
+
+		FaroProject faroProject =
+			faroProjectLocalService.getFaroProjectByGroupId(groupId);
+
+		if (Validator.isNull(accountLifecycleId)) {
+			Results<AccountLifecycle> accountLifecycleResults =
+				contactsEngineClient.getAccountLifecycles(
+					faroProject, channelId, null, null, null, 1, 10000, null);
+
+			accountLifecycles = accountLifecycleResults.getItems();
+		}
+		else {
+			accountLifecycles = Collections.singletonList(
+				contactsEngineClient.getAccountLifecycle(
+					faroProject, accountLifecycleId));
+		}
+
+		for (AccountLifecycle accountLifecycle : accountLifecycles) {
+			items.addAll(
+				TransformUtil.transform(
+					accountLifecycle.getAccountLifecycleStages(),
+					accountLifecycleStage -> HashMapBuilder.put(
+						"externalReferenceCode",
+						accountLifecycleStage.getExternalReferenceCode()
+					).put(
+						"id", accountLifecycleStage.getId()
+					).put(
+						"lifecycleExternalReferenceCode",
+						accountLifecycle.getExternalReferenceCode()
+					).put(
+						"lifecycleName", accountLifecycle.getName()
+					).put(
+						"name", accountLifecycleStage.getName()
+					).build()));
 		}
 
 		return new FaroFDSResultsDisplay<>(
-			contactsEngineClient.getAccountFieldValues(
-				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, fieldMappingFieldName, query, page, pageSize),
-			object -> Collections.singletonMap("name", String.valueOf(object)),
-			page, pageSize);
+			new Results<>(items, items.size()), page, pageSize);
 	}
 
 	@GET
