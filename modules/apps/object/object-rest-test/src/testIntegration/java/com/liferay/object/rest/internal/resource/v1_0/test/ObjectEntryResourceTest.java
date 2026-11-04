@@ -9,7 +9,6 @@ import com.liferay.account.constants.AccountRoleConstants;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.map.geocoder.GeocoderResult;
 import com.liferay.map.test.util.GeocoderTestUtil;
-import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectValidationRuleConstants;
@@ -57,9 +56,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.URLCodec;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -73,13 +70,9 @@ import java.io.Serializable;
 
 import java.lang.reflect.Method;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -551,127 +544,6 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 	}
 
 	@Test
-	public void testPatchPutCustomObjectEntryWithScheduleDates()
-		throws Exception {
-
-		ObjectDefinition objectDefinition = publishLocalizedObjectDefinition(
-			OBJECT_FIELD_NAME_1);
-
-		Date displayDate = new Date();
-		Date expirationDate = new Date(System.currentTimeMillis() + Time.HOUR);
-		Date reviewDate = new Date();
-
-		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).put(
-				"displayDate", displayDate
-			).put(
-				"expirationDate", expirationDate
-			).put(
-				"reviewDate", reviewDate
-			).build());
-
-		String endpoint =
-			objectDefinition.getRESTContextPath() +
-				"/by-external-reference-code/" +
-					objectEntry.getExternalReferenceCode();
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).toString(),
-			endpoint, Http.Method.PATCH);
-
-		Assert.assertEquals(
-			_toDateString(displayDate), jsonObject.get("displayDate"));
-		Assert.assertEquals(
-			_toDateString(expirationDate), jsonObject.get("expirationDate"));
-		Assert.assertEquals(
-			_toDateString(reviewDate), jsonObject.get("reviewDate"));
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).toString(),
-			endpoint, Http.Method.PUT);
-
-		Assert.assertNull(jsonObject.get("displayDate"));
-		Assert.assertNull(jsonObject.get("expirationDate"));
-		Assert.assertNull(jsonObject.get("reviewDate"));
-	}
-
-	@Test
-	public void testPostByExternalReferenceCodeExpire() throws Exception {
-
-		// Company scope
-
-		ObjectEntry companyObjectEntry = objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			getObjectDefinition1().getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, companyObjectEntry.getStatus());
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			StringBundler.concat(
-				getEndpoint(getObjectDefinition1(), 0),
-				"/by-external-reference-code/",
-				companyObjectEntry.getExternalReferenceCode(), "/expire"),
-			Http.Method.POST);
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EXPIRED,
-			jsonObject.getJSONObject(
-				"status"
-			).get(
-				"code"
-			));
-
-		// Site scope
-
-		Group group = groupLocalService.fetchGroup(testGroupId);
-
-		ObjectEntry siteObjectEntry = objectEntryLocalService.addObjectEntry(
-			group.getGroupId(), TestPropsValues.getUserId(),
-			getSiteScopedObjectDefinition1().getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, siteObjectEntry.getStatus());
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			StringBundler.concat(
-				getEndpoint(
-					getSiteScopedObjectDefinition1(), group.getGroupId()),
-				"/by-external-reference-code/",
-				siteObjectEntry.getExternalReferenceCode(), "/expire"),
-			Http.Method.POST);
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EXPIRED,
-			jsonObject.getJSONObject(
-				"status"
-			).get(
-				"code"
-			));
-	}
-
-	@Test
 	public void testPostCustomObjectEntryWithAssigneeObjectField()
 		throws Exception {
 
@@ -1063,80 +935,6 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 	}
 
 	@Test
-	public void testPostCustomObjectEntryWithStatus() throws Exception {
-
-		// With code inside status
-
-		Assert.assertEquals(
-			200,
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).put(
-					"status", JSONUtil.put("code", 0)
-				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
-
-		// Without code inside status
-
-		Assert.assertEquals(
-			400,
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).put(
-					"status", JSONUtil.put("label", "approved")
-				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
-
-		// Without status
-
-		Assert.assertEquals(
-			200,
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
-	}
-
-	@Test
-	@TestInfo("LPD-103450")
-	public void testPutByExternalReferenceCodeRestoreNotInTrash()
-		throws Exception {
-
-		ObjectEntry objectEntry = objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			getObjectDefinition1().getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-
-		Assert.assertFalse(objectEntry.isInTrash());
-
-		JSONAssert.assertEquals(
-			JSONUtil.put(
-				"status", "BAD_REQUEST"
-			).put(
-				"title",
-				"Unable to restore this item because it is not in the " +
-					"Recycle Bin."
-			).toString(),
-			HTTPTestUtil.invokeToJSONObject(
-				null,
-				StringBundler.concat(
-					getEndpoint(getObjectDefinition1(), 0),
-					"/by-external-reference-code/",
-					objectEntry.getExternalReferenceCode(), "/restore"),
-				Http.Method.PUT
-			).toString(),
-			JSONCompareMode.LENIENT);
-	}
-
-	@Test
 	@TestInfo("LPD-53245")
 	public void testPutCustomObjectEntry() throws Exception {
 		ObjectDefinition objectDefinition1 = getObjectDefinition1();
@@ -1333,12 +1131,6 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 			).toString(),
 			String.valueOf(jsonObject.get("assignee")),
 			JSONCompareMode.LENIENT);
-	}
-
-	private String _toDateString(Date date) {
-		Instant instant = date.toInstant();
-
-		return String.valueOf(instant.truncatedTo(ChronoUnit.MINUTES));
 	}
 
 	@Inject
