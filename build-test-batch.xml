@@ -4736,38 +4736,54 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 		<attribute default="" name="workspace.license.xml.url" />
 
 		<sequential>
-			<local name="workspace.dir" />
-			<local name="workspace.name" />
-			<local name="workspace.path" />
+			<fail message="Unable to select tests. &quot;test.task.group&quot; is empty.">
+				<condition>
+					<equals arg1="@{test.task.group}" arg2="" trim="true" />
+				</condition>
+			</fail>
 
-			<propertycopy from="workspaces.names[workspaces-integration][${env.CI_TEST_SUITE}]" name="workspace.name" silent="true" />
+			<for delimiter=";" list="@{test.task.group}" param="test.task" trim="true">
+				<sequential>
+					<local name="gradle.args" />
+					<local name="workspace.bundle.url" />
+					<local name="workspace.dir" />
+					<local name="workspace.path" />
 
-			<fail message="Unable to find a workspace for the &quot;workspaces-integration&quot; batch in the &quot;${env.CI_TEST_SUITE}&quot; suite." unless="workspace.name" />
+					<propertyregex
+						input="@{test.task}"
+						property="workspace.path"
+						regexp="^([^:\[]+):.*"
+						select="\1"
+					/>
 
-			<condition else="workspaces/${workspace.name}" property="workspace.path" value="${liferay.portal.private.dir}/workspaces/${workspace.name}">
-				<available file="${liferay.portal.private.dir}/workspaces/${workspace.name}" />
-			</condition>
+					<fail message="Unable to find a workspace in the test task &quot;@{test.task}&quot;." unless="workspace.path" />
 
-			<property location="${workspace.path}" name="workspace.dir" />
+					<property location="${workspace.path}" name="workspace.dir" />
 
-			<download-gradle-wrapper-binary workspace.dir="${workspace.dir}" />
+					<echo></echo>
+					<echo>##</echo>
+					<echo>## ${workspace.path}</echo>
+					<echo>##</echo>
+					<echo></echo>
 
-			<get-workspace-bundle-url mirror.dir="@{workspace.bundle.mirror.dir}" workspace.dir="${workspace.dir}" />
+					<download-gradle-wrapper-binary workspace.dir="${workspace.dir}" />
 
-			<mkdir dir="${workspace.dir}/build" />
+					<get-workspace-bundle-url mirror.dir="@{workspace.bundle.mirror.dir}" workspace.dir="${workspace.dir}" />
 
-			<mirrors-get
-				dest="${workspace.dir}/build/license.xml"
-				src="@{workspace.license.xml.url}"
-			/>
+					<mkdir dir="${workspace.dir}/build" />
 
-			<local name="gradle.args" />
+					<mirrors-get
+						dest="${workspace.dir}/build/license.xml"
+						src="@{workspace.license.xml.url}"
+					/>
 
-			<property name="gradle.args" value="--continue -Pintegration.test.target=bundle" />
+					<property name="gradle.args" value="--continue -Pintegration.test.target=bundle" />
 
-			<var if:set="workspace.bundle.url" name="gradle.args" value="${gradle.args} -Pliferay.workspace.bundle.url=${workspace.bundle.url}" />
+					<var if:set="workspace.bundle.url" name="gradle.args" value="${gradle.args} -Pliferay.workspace.bundle.url=${workspace.bundle.url}" />
 
-			<run-workspaces-junit-test gradle.target="gradle-execute-workspaces-integration" test.junit.args="${gradle.args}" test.task.group="@{test.task.group}" />
+					<run-workspaces-junit-test gradle.target="gradle-execute-workspaces-integration" test.junit.args="${gradle.args}" test.task.group="@{test.task}" />
+				</sequential>
+			</for>
 		</sequential>
 	</macrodef>
 
