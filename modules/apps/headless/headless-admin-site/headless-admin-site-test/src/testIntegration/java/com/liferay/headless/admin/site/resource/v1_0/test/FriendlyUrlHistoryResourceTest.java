@@ -87,10 +87,7 @@ public class FriendlyUrlHistoryResourceTest
 					testGroup.getExternalReferenceCode(),
 					layoutPageTemplateEntry.getExternalReferenceCode());
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			GetterUtil.getString(friendlyUrlHistory.getFriendlyUrlPath_i18n()));
-
-		Assert.assertEquals(0, jsonObject.length());
+		Assert.assertNull(friendlyUrlHistory.getFriendlyUrlPath_i18n());
 
 		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
 
@@ -182,10 +179,7 @@ public class FriendlyUrlHistoryResourceTest
 				testGroup.getExternalReferenceCode(),
 				layoutUtilityPageEntry.getExternalReferenceCode());
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			GetterUtil.getString(friendlyUrlHistory.getFriendlyUrlPath_i18n()));
-
-		Assert.assertEquals(0, jsonObject.length());
+		Assert.assertNull(friendlyUrlHistory.getFriendlyUrlPath_i18n());
 
 		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
 
@@ -301,11 +295,7 @@ public class FriendlyUrlHistoryResourceTest
 				layout.getExternalReferenceCode());
 
 		if (!layout.isPublished()) {
-			JSONObject jsonObject = _jsonFactory.createJSONObject(
-				GetterUtil.getString(
-					friendlyUrlHistory.getFriendlyUrlPath_i18n()));
-
-			Assert.assertEquals(0, jsonObject.length());
+			Assert.assertNull(friendlyUrlHistory.getFriendlyUrlPath_i18n());
 
 			ContentLayoutTestUtil.publishLayout(
 				layout.fetchDraftLayout(), layout);
