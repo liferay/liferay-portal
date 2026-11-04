@@ -247,6 +247,7 @@ test(
 					widgetConfig: {
 						displayStyle: 'full-content',
 						enableRelatedAssets: 'true',
+						selectionStyle: 'dynamic',
 					},
 					widgetName:
 						'com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet',
