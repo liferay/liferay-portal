@@ -3402,13 +3402,26 @@ public class StagingImpl implements Staging {
 			throw remoteOptionsException;
 		}
 
+		String remoteURL = null;
+
+		try {
+			remoteURL = _stagingURLHelper.buildRemoteURL(
+				remoteAddress, remotePort, remotePathContext, secureConnection);
+		}
+		catch (SystemException systemException) {
+			if (systemException.getCause() instanceof
+					RemoteOptionsException remoteOptionsException) {
+
+				throw remoteOptionsException;
+			}
+
+			throw systemException;
+		}
+
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
 		User user = permissionChecker.getUser();
-
-		String remoteURL = _stagingURLHelper.buildRemoteURL(
-			remoteAddress, remotePort, remotePathContext, secureConnection);
 
 		HttpPrincipal httpPrincipal = new HttpPrincipal(
 			remoteURL, user.getLogin(), user.getPassword(),
