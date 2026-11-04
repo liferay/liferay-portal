@@ -569,11 +569,21 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 
 		boolean reportFilesSynced = false;
 
-		List<String> failedReportNames = new ArrayList<>();
-
 		for (String reportName : reportNames) {
 			if (!reportName.startsWith("Flaky Test") && !reportFilesSynced) {
-				_syncReportFiles();
+				try {
+					CloudBucketUtil.syncGCPFiles(
+						_ARCHIVE_BASE_DIR_PATH + "/data",
+						_getBuildProperty(
+							"archive.ci.build.data.cloud.bucket.path"));
+
+					CloudBucketUtil.syncGCPFiles(
+						_ARCHIVE_BASE_DIR_PATH + "/reports",
+						_getGCPBucketBasePath() + "/reports");
+				}
+				catch (IOException ioException) {
+					throw new RuntimeException(ioException);
+				}
 
 				reportFilesSynced = true;
 			}
@@ -633,9 +643,7 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 					"ci-notifications",
 					"Unable to generate " + reportName + " report");
 
-				failedReportNames.add(reportName);
-
-				continue;
+				throw new RuntimeException(exception);
 			}
 
 			sb.append("<a href=\"");
@@ -655,12 +663,6 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		buildData.setBuildDescription(sb.toString());
 
 		updateBuildDescription();
-
-		if (!failedReportNames.isEmpty()) {
-			throw new RuntimeException(
-				"Unable to generate reports: " +
-					JenkinsResultsParserUtil.join(", ", failedReportNames));
-		}
 	}
 
 	private void _generateSpotInterruptionReport(String reportName)
@@ -964,21 +966,6 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 			System.out.println("Unable to merge files in: " + reportDirPath);
 
 			ioException.printStackTrace();
-		}
-	}
-
-	private void _syncReportFiles() {
-		try {
-			CloudBucketUtil.syncGCPFiles(
-				_ARCHIVE_BASE_DIR_PATH + "/data",
-				_getBuildProperty("archive.ci.build.data.cloud.bucket.path"));
-
-			CloudBucketUtil.syncGCPFiles(
-				_ARCHIVE_BASE_DIR_PATH + "/reports",
-				_getGCPBucketBasePath() + "/reports");
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
 		}
 	}
 
