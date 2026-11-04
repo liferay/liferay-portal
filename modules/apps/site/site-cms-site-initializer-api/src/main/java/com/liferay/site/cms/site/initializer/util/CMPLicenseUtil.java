@@ -118,8 +118,6 @@ public class CMPLicenseUtil {
 		return expirationDate.after(calendar.getTime());
 	}
 
-	private static final String[] _CMP_LAYOUT_FRIENDLY_URLS = {
-		"/planning", "/projects", "/tasks"
-	};
+	private static final String[] _CMP_LAYOUT_FRIENDLY_URLS = {"/projects"};
 
 }
