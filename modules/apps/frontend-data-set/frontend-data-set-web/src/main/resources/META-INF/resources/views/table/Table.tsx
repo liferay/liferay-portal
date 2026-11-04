@@ -890,11 +890,16 @@ const Table = ({
 					columnsVisibilityCell: itemsActions?.length
 						? Liferay.Language.get('item-actions')
 						: undefined,
+					columnsVisibilityClearSearch:
+						Liferay.Language.get('clear-search'),
 					columnsVisibilityDescription: Liferay.Language.get(
 						'at-least-one-column-must-remain-visible'
 					),
 					columnsVisibilityHeader:
 						Liferay.Language.get('columns-visibility'),
+					columnsVisibilityNoResults:
+						Liferay.Language.get('no-results-found'),
+					columnsVisibilitySearch: Liferay.Language.get('search'),
 					expandable: Liferay.Language.get('expandable'),
 					sortColumn: Liferay.Language.get('sort-by-x'),
 					sortDescription: Liferay.Language.get('sortable-column'),

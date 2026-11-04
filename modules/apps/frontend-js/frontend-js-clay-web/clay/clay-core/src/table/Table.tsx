@@ -105,8 +105,11 @@ interface IProps extends React.HTMLAttributes<HTMLTableElement> {
 	messages?: {
 		columnsVisibility: string;
 		columnsVisibilityCell?: string;
+		columnsVisibilityClearSearch?: string;
 		columnsVisibilityDescription: string;
 		columnsVisibilityHeader: string;
+		columnsVisibilityNoResults?: string;
+		columnsVisibilitySearch?: string;
 		expandable: string;
 		sortColumn?: string;
 		sortDescription: string;
@@ -205,9 +208,12 @@ export const Table = React.forwardRef(
 			itemIdKey = 'id',
 			messages = {
 				columnsVisibility: 'Manage Columns Visibility',
+				columnsVisibilityClearSearch: 'Clear Search',
 				columnsVisibilityDescription:
 					'At least one column must remain visible.',
 				columnsVisibilityHeader: 'Columns Visibility',
+				columnsVisibilityNoResults: 'No Results Found',
+				columnsVisibilitySearch: 'Search',
 				expandable: 'expandable',
 				sortColumn: 'sort by {0}',
 				sortDescription: 'sortable column',

@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import Button from '@clayui/button';
-import {ClayToggle as Toggle} from '@clayui/form';
+import Button, {ClayButtonWithIcon} from '@clayui/button';
+import {ClayInput, ClayToggle as Toggle} from '@clayui/form';
 import Icon from '@clayui/icon';
 import Layout from '@clayui/layout';
 import {useId} from '@clayui/shared';
-import React, {useEffect, useLayoutEffect} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 
 import {ChildrenFunction, Collection, useCollection} from '../collection';
 import {Item, Menu} from '../drop-down';
@@ -17,13 +17,28 @@ import {Scope, ScopeContext} from './ScopeContext';
 import {useTable} from './context';
 
 type HeaderProps = {
+	clearSearchLabel: string;
 	description: string;
 	descriptionId: string;
+	inputRef: React.Ref<HTMLInputElement>;
 	name: string;
 	nameId: string;
+	onSearchTermChange: (searchTerm: string) => void;
+	searchLabel: string;
+	searchTerm: string;
 };
 
-function Header({description, descriptionId, name, nameId}: HeaderProps) {
+function Header({
+	clearSearchLabel,
+	description,
+	descriptionId,
+	inputRef,
+	name,
+	nameId,
+	onSearchTermChange,
+	searchLabel,
+	searchTerm,
+}: HeaderProps) {
 	return (
 		<>
 			<div className="dropdown-subheader mb-0" id={nameId}>
@@ -35,6 +50,41 @@ function Header({description, descriptionId, name, nameId}: HeaderProps) {
 				id={descriptionId}
 			>
 				{description}
+			</div>
+
+			<div className="dropdown-section">
+				<ClayInput.Group small>
+					<ClayInput.GroupItem>
+						<ClayInput
+							aria-label={searchLabel}
+							insetAfter
+							onChange={(event) =>
+								onSearchTermChange(event.target.value)
+							}
+							placeholder={searchLabel}
+							ref={inputRef}
+							type="text"
+							value={searchTerm}
+						/>
+
+						<ClayInput.GroupInsetItem after tag="span">
+							{searchTerm ? (
+								<ClayButtonWithIcon
+									aria-label={clearSearchLabel}
+									displayType="unstyled"
+									monospaced
+									onClick={() => onSearchTermChange('')}
+									symbol="times"
+									title={clearSearchLabel}
+								/>
+							) : (
+								<div className="input-group-inset-icon">
+									<Icon symbol="search" />
+								</div>
+							)}
+						</ClayInput.GroupInsetItem>
+					</ClayInput.GroupItem>
+				</ClayInput.Group>
 			</div>
 
 			<div className="dropdown-divider" />
@@ -85,6 +135,32 @@ export function Head<T extends Record<string, any>>(
 	const columnsVisibilityDescriptionId = useId();
 	const columnsVisibilityHeaderId = useId();
 
+	const searchInputRef = useRef<HTMLInputElement>(null);
+
+	const [menuHeight, setMenuHeight] = useState<number>();
+	const [searchTerm, setSearchTerm] = useState('');
+
+	const onSearchTermChange = (searchTerm: string) => {
+		if (menuHeight === undefined) {
+			setMenuHeight(
+				searchInputRef.current?.closest<HTMLElement>('.dropdown-menu')
+					?.offsetHeight
+			);
+		}
+
+		setSearchTerm(searchTerm);
+	};
+
+	const columnsVisibilityItems = collection
+		.getItems()
+		.filter(
+			(item) =>
+				!alwaysVisibleColumns.has(item) &&
+				String(collection.getItem(item).value)
+					.toLowerCase()
+					.includes(searchTerm.trim().toLowerCase())
+		);
+
 	useIsomorphicEffect(() => {
 		if (visibleColumns.size === 0) {
 			onVisibleColumnsChange(collection.getItems(), 0);
@@ -115,29 +191,58 @@ export function Head<T extends Record<string, any>>(
 								}
 								aria-labelledby={columnsVisibilityHeaderId}
 								header={
-									<Header
-										description={
-											messages[
-												'columnsVisibilityDescription'
-											]!
-										}
-										descriptionId={
-											columnsVisibilityDescriptionId
-										}
-										name={
-											messages['columnsVisibilityHeader']!
-										}
-										nameId={columnsVisibilityHeaderId}
-									/>
+									<>
+										<Header
+											clearSearchLabel={
+												messages[
+													'columnsVisibilityClearSearch'
+												] ?? 'Clear Search'
+											}
+											description={
+												messages[
+													'columnsVisibilityDescription'
+												]!
+											}
+											descriptionId={
+												columnsVisibilityDescriptionId
+											}
+											inputRef={searchInputRef}
+											name={
+												messages[
+													'columnsVisibilityHeader'
+												]!
+											}
+											nameId={columnsVisibilityHeaderId}
+											onSearchTermChange={
+												onSearchTermChange
+											}
+											searchLabel={
+												messages[
+													'columnsVisibilitySearch'
+												] ?? 'Search'
+											}
+											searchTerm={searchTerm}
+										/>
+
+										{!columnsVisibilityItems.length && (
+											<div className="dropdown-section text-secondary">
+												{messages[
+													'columnsVisibilityNoResults'
+												] ?? 'No Results Found'}
+											</div>
+										)}
+									</>
 								}
-								items={collection
-									.getItems()
-									.filter(
-										(item) =>
-											!alwaysVisibleColumns.has(item)
-									)}
+								items={columnsVisibilityItems}
+								onActiveChange={(active: boolean) => {
+									if (!active) {
+										setMenuHeight(undefined);
+										setSearchTerm('');
+									}
+								}}
 								style={{
 									maxWidth: '210px',
+									minHeight: menuHeight,
 									minWidth: '210px',
 								}}
 								trigger={
