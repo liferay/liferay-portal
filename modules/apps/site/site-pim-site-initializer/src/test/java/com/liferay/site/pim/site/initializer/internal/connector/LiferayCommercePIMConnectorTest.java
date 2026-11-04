@@ -277,7 +277,7 @@ public class LiferayCommercePIMConnectorTest {
 			objectEntries.add(objectEntry);
 		}
 
-		_optionsList.clear();
+		_options.clear();
 
 		return _liferayCommercePIMConnector.doExecute(
 			pimConnectorConfigurationValues, _pimConnectorObjectEntry,
@@ -286,17 +286,18 @@ public class LiferayCommercePIMConnectorTest {
 	}
 
 	private Http.Options _getOptions(String location) {
-		List<Http.Options> optionsList = ListUtil.filter(
-			_optionsList,
+		List<Http.Options> matchingOptions = ListUtil.filter(
+			_options,
 			options -> {
 				String curLocation = options.getLocation();
 
 				return curLocation.contains(location);
 			});
 
-		Assert.assertEquals(optionsList.toString(), 1, optionsList.size());
+		Assert.assertEquals(
+			matchingOptions.toString(), 1, matchingOptions.size());
 
-		return optionsList.get(0);
+		return matchingOptions.get(0);
 	}
 
 	private JSONObject _getProductJSONObject(
@@ -367,7 +368,7 @@ public class LiferayCommercePIMConnectorTest {
 				Http.Options options = invocationOnMock.getArgument(
 					0, Http.Options.class);
 
-				_optionsList.add(options);
+				_options.add(options);
 
 				String location = options.getLocation();
 				Http.Response response = options.getResponse();
@@ -507,7 +508,7 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals(
 			_CATALOG_EXTERNAL_REFERENCE_CODE_1,
 			jsonObject.getString("catalogExternalReferenceCode"));
-		Assert.assertFalse(jsonObject.toString(), jsonObject.has("catalogId"));
+		Assert.assertFalse(jsonObject.has("catalogId"));
 		Assert.assertEquals(
 			"SKU-1", jsonObject.getString("externalReferenceCode"));
 		Assert.assertEquals("simple", jsonObject.getString("productType"));
@@ -648,7 +649,6 @@ public class LiferayCommercePIMConnectorTest {
 		options = _getOptions("/import-task/");
 
 		Assert.assertEquals(Http.Method.POST, options.getMethod());
-
 		Assert.assertEquals(
 			StringBundler.concat(
 				"https://example.com/o/headless-batch-engine/v1.0/import-task",
@@ -731,7 +731,7 @@ public class LiferayCommercePIMConnectorTest {
 				Collections.<String, ObjectEntry>emptyMap(),
 				pimProductObjectEntriesMap));
 
-		Assert.assertTrue(_optionsList.isEmpty());
+		Assert.assertTrue(_options.isEmpty());
 
 		Mockito.when(
 			_http.URLtoString(Mockito.any(Http.Options.class))
@@ -740,7 +740,7 @@ public class LiferayCommercePIMConnectorTest {
 				Http.Options options = invocationOnMock.getArgument(
 					0, Http.Options.class);
 
-				_optionsList.add(options);
+				_options.add(options);
 
 				Http.Response response = options.getResponse();
 
@@ -1284,9 +1284,9 @@ public class LiferayCommercePIMConnectorTest {
 	private void _testExecuteWithTrailingSlashURL() throws Exception {
 		_execute(
 			HashMapBuilder.<String, Serializable>put(
-				"clientId", "CLIENT"
+				"clientId", RandomTestUtil.randomString()
 			).put(
-				"clientSecret", "SECRET"
+				"clientSecret", RandomTestUtil.randomString()
 			).put(
 				"url", "https://example.com//"
 			).build(),
@@ -1366,9 +1366,9 @@ public class LiferayCommercePIMConnectorTest {
 	private static final Map<String, Serializable>
 		_pimConnectorConfigurationValues =
 			HashMapBuilder.<String, Serializable>put(
-				"clientId", "CLIENT"
+				"clientId", RandomTestUtil.randomString()
 			).put(
-				"clientSecret", "SECRET"
+				"clientSecret", RandomTestUtil.randomString()
 			).put(
 				"url", "https://example.com"
 			).build();
@@ -1393,7 +1393,7 @@ public class LiferayCommercePIMConnectorTest {
 	private final MockedStatic<ObjectFieldLocalServiceUtil>
 		_objectFieldLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ObjectFieldLocalServiceUtil.class);
-	private final List<Http.Options> _optionsList = new ArrayList<>();
+	private final List<Http.Options> _options = new ArrayList<>();
 	private final ObjectEntry _pimConnectorObjectEntry = Mockito.mock(
 		ObjectEntry.class);
 

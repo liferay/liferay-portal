@@ -69,10 +69,10 @@ public class LiferayCommerceRESTClientTest {
 
 		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
 
-		String log = jsonArray.toString();
+		String logJSON = jsonArray.toString();
 
-		Assert.assertFalse(log, log.contains("SECRET"));
-		Assert.assertFalse(log, log.contains("TOKEN"));
+		Assert.assertFalse(logJSON.contains("SECRET"));
+		Assert.assertFalse(logJSON.contains("TOKEN"));
 
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
@@ -115,9 +115,9 @@ public class LiferayCommerceRESTClientTest {
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
-		log = jsonArray.toString();
+		logJSON = jsonArray.toString();
 
-		Assert.assertFalse(log, log.contains("TOKEN"));
+		Assert.assertFalse(logJSON.contains("TOKEN"));
 	}
 
 	@Test

@@ -46,7 +46,7 @@ public class LiferayCommerceRESTClient {
 		options.setLocation(_url + "/o/oauth2/token");
 		options.setPost(true);
 
-		String response = _invoke(
+		String responseString = _invoke(
 			JSONUtil.put(
 				"client_id", _clientId
 			).put(
@@ -59,7 +59,7 @@ public class LiferayCommerceRESTClient {
 				"unable-to-authenticate-with-the-remote-instance");
 		}
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(response);
+		JSONObject jsonObject = _jsonFactory.createJSONObject(responseString);
 
 		_accessToken = jsonObject.getString("access_token");
 	}
@@ -82,20 +82,21 @@ public class LiferayCommerceRESTClient {
 			StringPool.UTF8);
 		options.setPost(true);
 
-		String response = _invoke(jsonArray, options);
+		String responseString = _invoke(jsonArray, options);
 
 		_checkResponse(options);
 
-		return _jsonFactory.createJSONObject(response);
+		return _jsonFactory.createJSONObject(responseString);
 	}
 
 	public void putOption(String externalReferenceCode, JSONObject jsonObject)
 		throws Exception {
 
 		Http.Options options = _createOptions(
-			"/o/headless-commerce-admin-catalog/v1.0/options" +
-				"/by-externalReferenceCode/" +
-					URLCodec.encodeURL(externalReferenceCode));
+			StringBundler.concat(
+				"/o/headless-commerce-admin-catalog/v1.0/options",
+				"/by-externalReferenceCode/",
+				URLCodec.encodeURL(externalReferenceCode)));
 
 		options.addHeader(
 			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
@@ -150,19 +151,19 @@ public class LiferayCommerceRESTClient {
 		_logJSONArray.put(jsonObject);
 
 		try {
-			String response = _http.URLtoString(options);
+			String responseString = _http.URLtoString(options);
 
-			Http.Response httpResponse = options.getResponse();
+			Http.Response response = options.getResponse();
 
 			jsonObject.put(
 				"response",
 				JSONUtil.put(
-					"body", _toLogValue(response)
+					"body", _toLogValue(responseString)
 				).put(
-					"status", httpResponse.getResponseCode()
+					"status", response.getResponseCode()
 				));
 
-			return response;
+			return responseString;
 		}
 		catch (IOException ioException) {
 			jsonObject.put(
@@ -186,12 +187,14 @@ public class LiferayCommerceRESTClient {
 		return false;
 	}
 
-	private Object _toLogValue(String response) throws Exception {
-		if (!JSONUtil.isJSONObject(response)) {
-			return response;
+	private Object _toLogValue(String responseString)
+		throws Exception {
+
+		if (!JSONUtil.isJSONObject(responseString)) {
+			return responseString;
 		}
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(response);
+		JSONObject jsonObject = _jsonFactory.createJSONObject(responseString);
 
 		jsonObject.remove("access_token");
 
