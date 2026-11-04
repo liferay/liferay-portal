@@ -626,19 +626,7 @@ else {
 	urlMax.setWindowState(WindowState.MAXIMIZED);
 }
 
-if (urlMax instanceof LiferayPortletURL) {
-	LiferayPortletURL liferayPortletURL = (LiferayPortletURL)urlMax;
-
-	liferayPortletURL.setWindowStateRestoreCurrentView(true);
-}
-else {
-	try {
-		BeanPropertiesUtil.setProperty(urlMax, "windowStateRestoreCurrentView", true);
-	}
-	catch (Exception e) {
-		_log.error(ClassUtil.getClassName(urlMax) + " must implement the method setWindowStateRestoreCurrentView(boolean)", e);
-	}
-}
+urlMax.setWindowStateRestoreCurrentView(true);
 
 urlMax.setEscapeXml(false);
 
