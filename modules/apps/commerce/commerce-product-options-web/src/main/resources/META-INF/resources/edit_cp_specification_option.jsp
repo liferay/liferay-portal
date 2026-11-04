@@ -10,7 +10,7 @@
 <%
 CPSpecificationOption cpSpecificationOption = (CPSpecificationOption)request.getAttribute(CPWebKeys.CP_SPECIFICATION_OPTION);
 
-long cpSpecificationOptionId = BeanParamUtil.getLong(cpSpecificationOption, request, "CPSpecificationOptionId");
+long cpSpecificationOptionId = ParamUtil.getLong(request, "CPSpecificationOptionId", GetterUtil.get(cpSpecificationOption, CPSpecificationOption::getCPSpecificationOptionId, 0L));
 
 renderResponse.setTitle(LanguageUtil.get(request, "specifications"));
 %>
