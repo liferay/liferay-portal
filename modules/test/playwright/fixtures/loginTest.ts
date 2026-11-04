@@ -4,7 +4,4 @@
  */
 
 export {loginTest} from '../core/fixtures/loginTest';
-export type {
-	Login,
-	LoginOptions,
-} from '../core/fixtures/loginTest';
+export type {Login, LoginOptions} from '../core/fixtures/loginTest';

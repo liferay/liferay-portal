@@ -5,11 +5,7 @@
 
 import {Cookie, Page, expect} from '@playwright/test';
 
-import {
-	clearAuthToken,
-	getHeader,
-	readAuthToken,
-} from '../core/authToken';
+import {clearAuthToken, getHeader, readAuthToken} from '../core/authToken';
 import {performLogin} from '../core/login';
 import {faroConfig} from '../tests/osb-faro-web/main/faro.config';
 
