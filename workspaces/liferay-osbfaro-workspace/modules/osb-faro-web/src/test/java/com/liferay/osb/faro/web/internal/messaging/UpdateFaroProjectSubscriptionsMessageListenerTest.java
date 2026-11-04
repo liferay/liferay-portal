@@ -7,8 +7,10 @@ package com.liferay.osb.faro.web.internal.messaging;
 
 import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
+import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.model.FaroProjectUsage;
 import com.liferay.osb.faro.provisioning.client.ProvisioningClient;
 import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntry;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
@@ -102,6 +104,81 @@ public class UpdateFaroProjectSubscriptionsMessageListenerTest {
 	}
 
 	@Test
+	public void testDoReceiveWithFaroProjectUsage() throws Exception {
+		FaroProject faroProject = _mockFaroProject(null);
+
+		FaroProjectUsage faroProjectUsage = Mockito.mock(
+			FaroProjectUsage.class);
+
+		Mockito.when(
+			faroProjectUsage.getFaroProjectUsageId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			_faroProjectUsageLocalService.fetchFaroProjectUsage(
+				Mockito.eq(faroProject.getFaroProjectId()),
+				Mockito.any(Date.class))
+		).thenReturn(
+			faroProjectUsage
+		);
+
+		_mockOSBAccountEntry(faroProject, null);
+
+		ProjectUsageMetric projectUsageMetric = _mockProjectUsageMetric(
+			faroProject);
+
+		_receive(faroProject);
+
+		Mockito.verify(
+			_faroProjectUsageLocalService
+		).updateFaroProjectUsage(
+			faroProjectUsage.getFaroProjectUsageId(),
+			projectUsageMetric.getActiveLogicalBytes(),
+			projectUsageMetric.getAnonymousIndividualsCount(),
+			projectUsageMetric.getEventsCount(),
+			projectUsageMetric.getKnownIndividualsCount(),
+			projectUsageMetric.getLongTermLogicalBytes(),
+			projectUsageMetric.getOnDemandBytesBilled(),
+			projectUsageMetric.getPageViewsCount(),
+			projectUsageMetric.getReservationSlotMs()
+		);
+	}
+
+	@Test
+	public void testDoReceiveWithProjectUsageMetric() throws Exception {
+		FaroProject faroProject = _mockFaroProject(null);
+
+		_mockOSBAccountEntry(faroProject, null);
+
+		ProjectUsageMetric projectUsageMetric = _mockProjectUsageMetric(
+			faroProject);
+
+		_receive(faroProject);
+
+		long companyId = faroProject.getCompanyId();
+		long faroProjectId = faroProject.getFaroProjectId();
+
+		Mockito.verify(
+			_faroProjectUsageLocalService
+		).addFaroProjectUsage(
+			Mockito.eq(companyId), Mockito.eq(0L),
+			Mockito.eq(projectUsageMetric.getActiveLogicalBytes()),
+			Mockito.eq(projectUsageMetric.getAnonymousIndividualsCount()),
+			Mockito.eq(projectUsageMetric.getEventsCount()),
+			Mockito.eq(faroProjectId),
+			Mockito.eq(projectUsageMetric.getKnownIndividualsCount()),
+			Mockito.eq(projectUsageMetric.getLongTermLogicalBytes()),
+			Mockito.anyString(),
+			Mockito.eq(projectUsageMetric.getOnDemandBytesBilled()),
+			Mockito.eq(projectUsageMetric.getPageViewsCount()),
+			Mockito.eq(projectUsageMetric.getReservationSlotMs()),
+			Mockito.any(Date.class)
+		);
+	}
+
+	@Test
 	public void testDoReceiveWithoutSalesforceAccountIdChange()
 		throws Exception {
 
@@ -182,6 +259,41 @@ public class UpdateFaroProjectSubscriptionsMessageListenerTest {
 		).thenReturn(
 			osbAccountEntry
 		);
+	}
+
+	private ProjectUsageMetric _mockProjectUsageMetric(FaroProject faroProject)
+		throws Exception {
+
+		String projectId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			faroProject.getProjectId()
+		).thenReturn(
+			projectId
+		);
+
+		ProjectUsageMetric projectUsageMetric = new ProjectUsageMetric();
+
+		projectUsageMetric.setActiveLogicalBytes(RandomTestUtil.randomLong());
+		projectUsageMetric.setAnonymousIndividualsCount(
+			RandomTestUtil.randomLong());
+		projectUsageMetric.setEventsCount(RandomTestUtil.randomLong());
+		projectUsageMetric.setKnownIndividualsCount(
+			RandomTestUtil.randomLong());
+		projectUsageMetric.setLongTermLogicalBytes(RandomTestUtil.randomLong());
+		projectUsageMetric.setOnDemandBytesBilled(RandomTestUtil.randomLong());
+		projectUsageMetric.setPageViewsCount(RandomTestUtil.randomLong());
+		projectUsageMetric.setProjectId(projectId);
+		projectUsageMetric.setReservationSlotMs(RandomTestUtil.randomLong());
+
+		Mockito.when(
+			_contactsEngineClient.getProjectUsageMetrics(
+				Mockito.eq(faroProject), Mockito.any(Date.class))
+		).thenReturn(
+			new Results<>(Collections.singletonList(projectUsageMetric), 1)
+		);
+
+		return projectUsageMetric;
 	}
 
 	private void _receive(FaroProject... faroProjects) {
