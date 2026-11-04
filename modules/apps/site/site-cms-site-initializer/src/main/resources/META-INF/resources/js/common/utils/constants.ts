@@ -99,6 +99,7 @@ export type ItemSelectorItemType =
 
 export const CMSSiteInitializerFDSNames = {
 	ALL_SECTION: '-allSection',
+	TASKS_SECTION: '-tasksSection',
 } as const;
 
 export const WORKFLOW_STATUS = {

@@ -19,6 +19,13 @@ ViewTasksDisplayContext viewTasksDisplayContext = (ViewTasksDisplayContext)reque
 		/>
 	</div>
 
+	<div>
+		<react:component
+			module="{TasksQuickFilters} from site-cms-site-initializer"
+			props="<%= viewTasksDisplayContext.getTasksQuickFiltersProps() %>"
+		/>
+	</div>
+
 	<div class="cms-section custom-empty-state">
 		<frontend-data-set:headless-display
 			apiURL="<%= viewTasksDisplayContext.getAPIURL() %>"

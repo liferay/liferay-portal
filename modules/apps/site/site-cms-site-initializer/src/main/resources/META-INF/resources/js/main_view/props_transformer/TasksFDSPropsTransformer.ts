@@ -8,6 +8,7 @@ import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 import {openCMSModal} from '../../common/utils/openCMSModal';
 import AssignToModalContent from '../home/modal/AssignToModalContent';
 import UpdateDueDateModalContent from '../home/modal/UpdateDueDateModalContent';
+import {tasksFDSAtom} from '../tasks/atoms';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
 import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
 import TaskStatusRenderer from './cell_renderers/TaskStatusRenderer';
@@ -20,6 +21,7 @@ export default function TasksFDSPropsTransformer({
 }) {
 	return {
 		...otherProps,
+		atom: tasksFDSAtom,
 		customRenderers: {
 			tableCell: [
 				{
