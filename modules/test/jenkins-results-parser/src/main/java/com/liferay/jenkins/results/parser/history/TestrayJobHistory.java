@@ -113,7 +113,10 @@ public class TestrayJobHistory extends BaseJobHistory {
 
 			for (TestrayBuild testrayBuild : testrayBuilds) {
 				if (!Objects.equals(testrayBuild.getImportStatus(), "DONE")) {
-					System.out.println("SKIPPED: " + testrayBuild.getURL());
+					System.out.println(
+						JenkinsResultsParserUtil.combine(
+							"SKIPPED: ",
+							String.valueOf(testrayBuild.getURL())));
 
 					continue;
 				}
@@ -220,13 +223,14 @@ public class TestrayJobHistory extends BaseJobHistory {
 
 				if (_isExcludedBatchName(batchName)) {
 					System.out.println(
-						"Skipping CI history validation for batch " +
-							batchName);
+						JenkinsResultsParserUtil.combine(
+							"Skipping CI history validation for batch ",
+							batchName));
 
 					continue;
 				}
 
-				Integer testsCount = _getTestsCount(testCounts, batchName);
+				Integer testsCount = _getTestsCount(batchName, testCounts);
 
 				if (testsCount == null) {
 					throw new RuntimeException(
@@ -592,7 +596,7 @@ public class TestrayJobHistory extends BaseJobHistory {
 	}
 
 	private Integer _getTestsCount(
-		Map<String, Integer> testCounts, String batchName) {
+		String batchName, Map<String, Integer> testCounts) {
 
 		Integer testsCount = testCounts.get(batchName);
 
@@ -612,7 +616,7 @@ public class TestrayJobHistory extends BaseJobHistory {
 			return testsCountMinimum;
 		}
 
-		return 25;
+		return _TESTS_COUNT_MINIMUM_DEFAULT;
 	}
 
 	private int _getTestsCountThreshold(String batchName) {
@@ -624,7 +628,7 @@ public class TestrayJobHistory extends BaseJobHistory {
 			return testsCountThreshold;
 		}
 
-		return 90;
+		return _TESTS_COUNT_THRESHOLD_DEFAULT;
 	}
 
 	private boolean _isExcludedBatchName(String batchName) {
@@ -640,6 +644,10 @@ public class TestrayJobHistory extends BaseJobHistory {
 
 		return false;
 	}
+
+	private static final int _TESTS_COUNT_MINIMUM_DEFAULT = 25;
+
+	private static final int _TESTS_COUNT_THRESHOLD_DEFAULT = 90;
 
 	private static final Map<String, Map<String, Integer>>
 		_expectedTestCountsMap = new HashMap<>();
