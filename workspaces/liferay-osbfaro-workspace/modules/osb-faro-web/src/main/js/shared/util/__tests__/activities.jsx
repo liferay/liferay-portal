@@ -1,5 +1,7 @@
 import * as data from 'test/data';
+import {formatPayloadTables} from '../payloadTables';
 import {
+	ACTIVITY_PAYLOAD_LAYOUT,
 	buildCampaignUrls,
 	buildTouchIndividualUrls,
 	formatEvents,
@@ -328,6 +330,79 @@ describe('activities', () => {
 			).toBeUndefined();
 
 			expect(getEventCampaign({})).toBeUndefined();
+		});
+	});
+
+	describe('ACTIVITY_PAYLOAD_LAYOUT', () => {
+		const CAMPAIGN_EVENT = {
+			acquisitionProperties: [{name: 'utm_medium', value: 'email'}],
+			applicationId: 'Page',
+			campaignEntityId: '6beeaea355642c82e8bb7f9c049f58e8',
+			campaignId: '7013a000002QwErtAAG',
+			campaignName: 'Spring Compactor Promo 2026',
+			createDate: '2026-07-16T10:00:00.000Z',
+			eventId: 'pageViewed',
+			name: 'pageViewed',
+			properties: [{name: 'utm_source', value: 'newsletter'}]
+		};
+
+		const getTables = (event) => {
+			const [{attributes}] = formatEvents([event], undefined, {
+				channelId: '456',
+				groupId: '23'
+			});
+
+			return formatPayloadTables(attributes, ACTIVITY_PAYLOAD_LAYOUT);
+		};
+
+		it('lays an event out as its attributes, its campaign, then its utm parameters', () => {
+			expect(
+				getTables(CAMPAIGN_EVENT).map(({title}) => title)
+			).toEqual(['Event Attributes', 'Campaign', 'UTM Parameters']);
+		});
+
+		it('keeps a utm named event property among the event attributes', () => {
+			const [attributesTable] = getTables(CAMPAIGN_EVENT);
+
+			expect(attributesTable.rows).toContainEqual({
+				property: 'utm_source',
+				value: 'newsletter'
+			});
+		});
+
+		it('links the campaign name to the campaign page instead of listing the url', () => {
+			const [, campaignTable] = getTables(CAMPAIGN_EVENT);
+
+			expect(campaignTable.rows).toEqual([
+				{
+					href: '/workspace/23/456/campaigns/6beeaea355642c82e8bb7f9c049f58e8',
+					property: 'campaignName',
+					value: 'Spring Compactor Promo 2026'
+				}
+			]);
+		});
+
+		it('leaves a campaign that resolved to no name unlinked', () => {
+			const [, campaignTable] = getTables({
+				...CAMPAIGN_EVENT,
+				campaignEntityId: null,
+				campaignName: null
+			});
+
+			expect(campaignTable.rows).toEqual([
+				{property: 'campaignName', value: '–'}
+			]);
+		});
+
+		it('lays out no campaign table for an event without a campaign', () => {
+			expect(
+				getTables({
+					...CAMPAIGN_EVENT,
+					campaignEntityId: null,
+					campaignId: null,
+					campaignName: null
+				}).map(({title}) => title)
+			).toEqual(['Event Attributes', 'UTM Parameters']);
 		});
 	});
 
