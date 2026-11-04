@@ -431,15 +431,15 @@ describe('CreateLifecycle', () => {
 
 		const nameInput = screen.getByLabelText(/^name/i);
 
-		expect(nameInput).toHaveAttribute('maxLength', '24');
+		expect(nameInput).toHaveAttribute('maxLength', '50');
 
-		fireEvent.change(nameInput, {target: {value: 'a'.repeat(23)}});
+		fireEvent.change(nameInput, {target: {value: 'a'.repeat(49)}});
 
 		expect(
 			screen.queryByText(/the character limit has been reached/i)
 		).toBeNull();
 
-		fireEvent.change(nameInput, {target: {value: 'a'.repeat(24)}});
+		fireEvent.change(nameInput, {target: {value: 'a'.repeat(50)}});
 
 		expect(
 			screen.getByText(/the character limit has been reached/i)
@@ -451,10 +451,10 @@ describe('CreateLifecycle', () => {
 
 		const descriptionInput = screen.getByLabelText(/^description/i);
 
-		expect(descriptionInput).toHaveAttribute('maxLength', '120');
+		expect(descriptionInput).toHaveAttribute('maxLength', '255');
 
 		fireEvent.change(descriptionInput, {
-			target: {value: 'a'.repeat(120)},
+			target: {value: 'a'.repeat(255)},
 		});
 
 		expect(
