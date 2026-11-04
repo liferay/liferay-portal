@@ -31,15 +31,26 @@ import com.liferay.fragment.renderer.FragmentRendererController;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.test.util.FragmentTestUtil;
+import com.liferay.info.exception.InfoFormValidationException;
+import com.liferay.info.field.InfoField;
+import com.liferay.info.field.type.OptionInfoFieldType;
+import com.liferay.info.field.type.SelectInfoFieldType;
+import com.liferay.info.form.InfoForm;
+import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.layout.constants.LayoutWebKeys;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.exception.InfoFormException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -50,6 +61,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -63,6 +75,8 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -517,6 +531,105 @@ public class FragmentEntryFragmentRendererTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112147")
+	public void testRenderWithSelectInfoFieldType() throws Exception {
+		FragmentEntry fragmentEntry =
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"INPUTS-select-from-list");
+		String inputFieldId = RandomTestUtil.randomString();
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(), null,
+				_defaultSegmentsExperienceId, _layout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put("inputFieldId", inputFieldId)
+				).toString(),
+				StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
+				fragmentEntry.getType(), _serviceContext);
+
+		String html =
+			"\"><img onerror=alert(1) src=x></script><script>alert(2)</script>";
+
+		InfoField<?> infoField = InfoField.builder(
+		).infoFieldType(
+			SelectInfoFieldType.INSTANCE
+		).namespace(
+			StringPool.BLANK
+		).name(
+			inputFieldId
+		).attribute(
+			SelectInfoFieldType.OPTIONS,
+			ListUtil.fromArray(
+				new OptionInfoFieldType(
+					true, InfoLocalizedValue.singleValue(html),
+					RandomTestUtil.randomString()))
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.singleValue(RandomTestUtil.randomString())
+		).build();
+
+		DefaultFragmentRendererContext defaultFragmentRendererContext =
+			new DefaultFragmentRendererContext(fragmentEntryLink);
+
+		defaultFragmentRendererContext.setInfoForm(
+			InfoForm.builder(
+			).infoFieldSetEntry(
+				infoField
+			).name(
+				RandomTestUtil.randomString()
+			).build());
+		defaultFragmentRendererContext.setLocale(_locale);
+
+		HttpServletRequest httpServletRequest = _getHttpServletRequest();
+
+		LayoutStructure layoutStructure = new LayoutStructure();
+
+		LayoutStructureItem rootLayoutStructureItem =
+			layoutStructure.addRootLayoutStructureItem();
+
+		FormStyledLayoutStructureItem formStyledLayoutStructureItem =
+			(FormStyledLayoutStructureItem)
+				layoutStructure.addFormStyledLayoutStructureItem(
+					rootLayoutStructureItem.getItemId(), 0);
+
+		formStyledLayoutStructureItem.setLocalizationConfigJSONObject(
+			JSONUtil.put(
+				"unlocalizedFieldsMessage",
+				JSONUtil.put(LocaleUtil.toLanguageId(_locale), html)));
+
+		layoutStructure.addFragmentStyledLayoutStructureItem(
+			fragmentEntryLink.getFragmentEntryLinkId(),
+			formStyledLayoutStructureItem.getItemId(), 0);
+
+		httpServletRequest.setAttribute(
+			LayoutWebKeys.LAYOUT_STRUCTURE, layoutStructure);
+
+		SessionErrors.add(
+			httpServletRequest, InfoFormException.class,
+			new InfoFormValidationException.CustomValidation(
+				infoField.getUniqueId(), html));
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_fragmentRenderer.render(
+			defaultFragmentRendererContext, httpServletRequest,
+			mockHttpServletResponse);
+
+		String content = mockHttpServletResponse.getContentAsString();
+
+		Assert.assertFalse(content.contains("<img onerror"));
+		Assert.assertFalse(content.contains("<script>alert(2)"));
+		Assert.assertTrue(
+			content.contains("value=\"" + HtmlUtil.escape(html) + "\""));
+	}
+
+	@Test
 	@TestInfo("LPD-32054")
 	public void testShouldOnlyCacheFragmentEntryLinkInProductionMode()
 		throws Exception {
@@ -816,6 +929,7 @@ public class FragmentEntryFragmentRendererTest {
 			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
 		themeDisplay.setRealUser(TestPropsValues.getUser());
 		themeDisplay.setRequest(httpServletRequest);
+		themeDisplay.setScopeGroupId(_group.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
