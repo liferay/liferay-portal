@@ -1183,32 +1183,9 @@ public abstract class BaseObjectEntryResourceTestCase {
 		objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition(
 			ObjectDefinitionTestUtil.getRandomName(),
 			Arrays.asList(
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
-					ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
-					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
-					Arrays.asList(
-						new ObjectFieldSettingBuilder(
-						).name(
-							ObjectFieldSettingConstants.
-								NAME_ACCEPTED_FILE_EXTENSIONS
-						).value(
-							"pdf"
-						).build(),
-						new ObjectFieldSettingBuilder(
-						).name(
-							ObjectFieldSettingConstants.NAME_FILE_SOURCE
-						).value(
-							ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA
-						).build(),
-						new ObjectFieldSettingBuilder(
-						).name(
-							ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
-						).value(
-							String.valueOf(MAX_FILE_SIZE_VALUE)
-						).build()),
-					false),
+				_createAttachmentObjectField(
+					"pdf", ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA,
+					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE),
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
 					ObjectFieldConstants.DB_TYPE_BOOLEAN, true, false, null,
@@ -2003,114 +1980,55 @@ public abstract class BaseObjectEntryResourceTestCase {
 		return clonedJSONObject.put(objectFieldName, objectFieldValue);
 	}
 
+	private ObjectField _createAttachmentObjectField(
+		String acceptedFileExtensions, String fileSource,
+		String objectFieldName) {
+
+		return ObjectFieldUtil.createObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
+			ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
+			objectFieldName, objectFieldName,
+			Arrays.asList(
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_ACCEPTED_FILE_EXTENSIONS
+				).value(
+					acceptedFileExtensions
+				).build(),
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_FILE_SOURCE
+				).value(
+					fileSource
+				).build(),
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+				).value(
+					String.valueOf(MAX_FILE_SIZE_VALUE)
+				).build()),
+			false);
+	}
+
 	private List<ObjectField> _createObjectFields(String objectDefinitionName) {
 		return Arrays.asList(
-			ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
-				ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-				OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE,
-				OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE,
-				Arrays.asList(
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.
-							NAME_ACCEPTED_FILE_EXTENSIONS
-					).value(
-						"jpg, txt"
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_FILE_SOURCE
-					).value(
-						ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
-					).value(
-						String.valueOf(MAX_FILE_SIZE_VALUE)
-					).build()),
-				false),
-			ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
-				ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
-				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
-				Arrays.asList(
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.
-							NAME_ACCEPTED_FILE_EXTENSIONS
-					).value(
-						"jpg, txt"
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_FILE_SOURCE
-					).value(
-						ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
-					).value(
-						String.valueOf(MAX_FILE_SIZE_VALUE)
-					).build()),
-				false),
-			ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
-				ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT_SOURCE,
-				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT_SOURCE,
-				Arrays.asList(
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.
-							NAME_ACCEPTED_FILE_EXTENSIONS
-					).value(
-						"jpg, txt"
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_FILE_SOURCE
-					).value(
-						ObjectFieldSettingConstants.
-							VALUE_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
-					).value(
-						String.valueOf(MAX_FILE_SIZE_VALUE)
-					).build()),
-				false),
-			ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
-				ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
-				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
-				Arrays.asList(
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.
-							NAME_ACCEPTED_FILE_EXTENSIONS
-					).value(
-						"jpg, txt"
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_FILE_SOURCE
-					).value(
-						ObjectFieldSettingConstants.
-							VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
-					).value(
-						String.valueOf(MAX_FILE_SIZE_VALUE)
-					).build()),
-				false),
+			_createAttachmentObjectField(
+				"jpg, txt",
+				ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT,
+				OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE),
+			_createAttachmentObjectField(
+				"jpg, txt", ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA,
+				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE),
+			_createAttachmentObjectField(
+				"jpg, txt",
+				ObjectFieldSettingConstants.
+					VALUE_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT,
+				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT_SOURCE),
+			_createAttachmentObjectField(
+				"jpg, txt",
+				ObjectFieldSettingConstants.
+					VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA,
+				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1),
 			ObjectFieldUtil.createObjectField(
 				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
 				ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
