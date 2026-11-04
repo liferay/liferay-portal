@@ -362,62 +362,6 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
-{{- range $dataPlane := list "blue" "green" }}
-{{- if or (has $dataPlane $dataPlanes) (hasKey $observedResources (printf "liferay-db-%s" $dataPlane)) }}
----
-apiVersion: protection.crossplane.io/v1beta1
-kind: Usage
-metadata:
-    annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: usage-instance-by-database-{{ $dataPlane }}
-    name: {{ $xr.metadata.name }}-instance-by-database-{{ $dataPlane }}
-    namespace: {{ $namespace }}
-spec:
-    by:
-        apiVersion: sql.gcp.m.upbound.io/v1beta1
-        kind: Database
-        resourceSelector:
-            matchLabels:
-                app: liferay
-                component: database
-                dataPlane: {{ $dataPlane }}
-    of:
-        apiVersion: sql.gcp.m.upbound.io/v1beta1
-        kind: DatabaseInstance
-        resourceSelector:
-            matchLabels:
-                app: liferay
-                component: database-instance
-                dataPlane: {{ $dataPlane }}
-{{- end }}
-{{- if and $gsaEmail (or (has $dataPlane $dataPlanes) (hasKey $observedResources (printf "liferay-iam-user-%s" $dataPlane))) (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
----
-apiVersion: protection.crossplane.io/v1beta1
-kind: Usage
-metadata:
-    annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: usage-instance-by-user-{{ $dataPlane }}
-    name: {{ $xr.metadata.name }}-instance-by-user-{{ $dataPlane }}
-    namespace: {{ $namespace }}
-spec:
-    by:
-        apiVersion: sql.gcp.m.upbound.io/v1beta1
-        kind: User
-        resourceSelector:
-            matchLabels:
-                app: liferay
-                component: database-user
-                dataPlane: {{ $dataPlane }}
-    of:
-        apiVersion: sql.gcp.m.upbound.io/v1beta1
-        kind: DatabaseInstance
-        resourceSelector:
-            matchLabels:
-                app: liferay
-                component: database-instance
-                dataPlane: {{ $dataPlane }}
-{{- end }}
-{{- end }}
 {{- $activeDatabaseConnectionName := dig (printf "database-primary-%s" $activeDataPlane) "resource" "status" "atProvider" "connectionName" "" $observedResources }}
 {{- $isDatabaseBootstrapped := false }}
 {{- range $condition := dig (printf "liferay-db-login-check-job-%s" $activeDataPlane) "resource" "status" "conditions" list $observedResources }}
