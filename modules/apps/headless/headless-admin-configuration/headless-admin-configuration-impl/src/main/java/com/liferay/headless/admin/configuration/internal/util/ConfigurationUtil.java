@@ -248,6 +248,25 @@ public class ConfigurationUtil {
 			StringPool.QUESTION);
 	}
 
+	private static Configuration _getFactoryConfiguration(
+			ConfigurationAdmin configurationAdmin, String externalReferenceCode)
+		throws Exception {
+
+		int index = externalReferenceCode.indexOf("~");
+
+		Configuration configuration =
+			configurationAdmin.getFactoryConfiguration(
+				externalReferenceCode.substring(0, index),
+				externalReferenceCode.substring(index + 1),
+				StringPool.QUESTION);
+
+		if (configuration.getProperties() == null) {
+			return configuration;
+		}
+
+		return null;
+	}
+
 	private static Configuration _getOrAddScopedConfiguration(
 			ConfigurationAdmin configurationAdmin, String externalReferenceCode,
 			boolean factory, Function<String, String> filterStringFunction)
@@ -264,15 +283,10 @@ public class ConfigurationUtil {
 		if (factory) {
 			if (ArrayUtil.isEmpty(configurations)) {
 				if (externalReferenceCode.contains("~")) {
-					int index = externalReferenceCode.indexOf("~");
+					Configuration configuration = _getFactoryConfiguration(
+						configurationAdmin, externalReferenceCode);
 
-					Configuration configuration =
-						configurationAdmin.getFactoryConfiguration(
-							externalReferenceCode.substring(0, index),
-							externalReferenceCode.substring(index + 1),
-							StringPool.QUESTION);
-
-					if (configuration.getProperties() == null) {
+					if (configuration != null) {
 						return configuration;
 					}
 				}
@@ -301,7 +315,9 @@ public class ConfigurationUtil {
 			boolean factory, String filterString)
 		throws Exception {
 
-		if (!factory && externalReferenceCode.contains("~")) {
+		if ((!factory && externalReferenceCode.contains("~")) ||
+			externalReferenceCode.contains(".scoped~")) {
+
 			return null;
 		}
 
@@ -311,7 +327,12 @@ public class ConfigurationUtil {
 		if (factory) {
 			if (ArrayUtil.isEmpty(configurations)) {
 				if (externalReferenceCode.contains("~")) {
-					return null;
+					Configuration configuration = _getFactoryConfiguration(
+						configurationAdmin, externalReferenceCode);
+
+					if (configuration != null) {
+						return configuration;
+					}
 				}
 
 				return _createSystemFactoryConfiguration(
