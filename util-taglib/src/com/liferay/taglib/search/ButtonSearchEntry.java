@@ -6,7 +6,6 @@
 package com.liferay.taglib.search;
 
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyHTMLRewriterUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,15 +17,6 @@ import java.io.Writer;
  * @author Brian Wing Shun Chan
  */
 public class ButtonSearchEntry extends TextSearchEntry {
-
-	@Override
-	public Object clone() {
-		ButtonSearchEntry buttonSearchEntry = new ButtonSearchEntry();
-
-		BeanPropertiesUtil.copyProperties(this, buttonSearchEntry);
-
-		return buttonSearchEntry;
-	}
 
 	@Override
 	public void print(
