@@ -12,13 +12,13 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 MBMessage message = (MBMessage)request.getAttribute(WebKeys.MESSAGE_BOARDS_MESSAGE);
 
-long messageId = BeanParamUtil.getLong(message, request, "messageId");
+long messageId = ParamUtil.getLong(request, "messageId", GetterUtil.get(message, MBMessage::getMessageId, 0L));
 
 long categoryId = MBUtil.getCategoryId(request, message);
-long threadId = BeanParamUtil.getLong(message, request, "threadId");
-long parentMessageId = BeanParamUtil.getLong(message, request, "parentMessageId", MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID);
+long threadId = ParamUtil.getLong(request, "threadId", GetterUtil.get(message, MBMessage::getThreadId, 0L));
+long parentMessageId = ParamUtil.getLong(request, "parentMessageId", GetterUtil.get(message, MBMessage::getParentMessageId, MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID));
 
-String subject = BeanParamUtil.getString(message, request, "subject");
+String subject = ParamUtil.getString(request, "subject", GetterUtil.get(message, MBMessage::getSubject, StringPool.BLANK));
 
 MBThread thread = null;
 
@@ -45,7 +45,7 @@ if (threadId > 0) {
 	}
 }
 
-String body = BeanParamUtil.getString(message, request, "body");
+String body = ParamUtil.getString(request, "body", GetterUtil.get(message, MBMessage::getBody, StringPool.BLANK));
 boolean quote = ParamUtil.getBoolean(request, "quote");
 boolean splitThread = ParamUtil.getBoolean(request, "splitThread");
 
@@ -55,7 +55,7 @@ if (message != null) {
 	existingAttachmentsFileEntries = message.getAttachmentsFileEntries();
 }
 
-boolean allowPingbacks = PropsValues.MESSAGE_BOARDS_PINGBACK_ENABLED && BeanParamUtil.getBoolean(message, request, "allowPingbacks", true);
+boolean allowPingbacks = PropsValues.MESSAGE_BOARDS_PINGBACK_ENABLED && ParamUtil.getBoolean(request, "allowPingbacks", GetterUtil.get(message, MBMessage::isAllowPingbacks, true));
 
 if (Validator.isNull(redirect)) {
 	redirect = PortletURLBuilder.createRenderURL(
@@ -352,7 +352,7 @@ if (portletTitleBasedNavigation) {
 					<c:if test="<%= (priorities.length > 0) && MBCategoryPermission.contains(permissionChecker, scopeGroupId, categoryId, ActionKeys.UPDATE_THREAD_PRIORITY) %>">
 
 						<%
-						double threadPriority = BeanParamUtil.getDouble(message, request, "priority");
+						double threadPriority = ParamUtil.getDouble(request, "priority", GetterUtil.get(message, MBMessage::getPriority, 0.0));
 						%>
 
 						<aui:select name="priority">
