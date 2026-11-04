@@ -32,6 +32,32 @@ export const test = mergeTests(
 	pageEditorPagesTest
 );
 
+async function addProductAttachment(apiHelpers: DataApiHelpers) {
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+	});
+
+	const title = getRandomString();
+
+	const document = await apiHelpers.headlessDelivery.postDocument(
+		await getGlobalSiteId(apiHelpers),
+		createReadStream(path.join(__dirname, '/dependencies/attachment.txt')),
+		{fileName: `${title}.txt`, title}
+	);
+
+	apiHelpers.data.push({id: document.id, type: 'document'});
+
+	await apiHelpers.headlessCommerceAdminCatalog.postAttachment(
+		product.productId,
+		document.id,
+		title
+	);
+
+	return {product, title};
+}
+
 test('LPD-3209 The download URL is present when the file entry is a file upload', async ({
 	apiHelpers,
 	attachmentsPage,
@@ -242,32 +268,6 @@ test(
 		});
 	}
 );
-
-async function addProductAttachment(apiHelpers: DataApiHelpers) {
-	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
-
-	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-		catalogId: catalog.id,
-	});
-
-	const title = getRandomString();
-
-	const document = await apiHelpers.headlessDelivery.postDocument(
-		await getGlobalSiteId(apiHelpers),
-		createReadStream(path.join(__dirname, '/dependencies/attachment.txt')),
-		{fileName: `${title}.txt`, title}
-	);
-
-	apiHelpers.data.push({id: document.id, type: 'document'});
-
-	await apiHelpers.headlessCommerceAdminCatalog.postAttachment(
-		product.productId,
-		document.id,
-		title
-	);
-
-	return {product, title};
-}
 
 test(
 	'Add a product attachment',
