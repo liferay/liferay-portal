@@ -42,7 +42,6 @@ import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelect
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -65,6 +64,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
@@ -133,8 +133,10 @@ public class AssetCategoriesDisplayContext {
 		).setParameter(
 			"parentCategoryId",
 			() -> {
-				long parentCategoryId = BeanParamUtil.getLong(
-					getCategory(), _httpServletRequest, "parentCategoryId");
+				long parentCategoryId = ParamUtil.getLong(
+					_httpServletRequest, "parentCategoryId",
+					GetterUtil.get(
+						getCategory(), AssetCategory::getParentCategoryId, 0L));
 
 				if (parentCategoryId > 0) {
 					return parentCategoryId;
@@ -469,8 +471,10 @@ public class AssetCategoriesDisplayContext {
 		).setParameter(
 			"categoryId",
 			() -> {
-				long parentCategoryId = BeanParamUtil.getLong(
-					getCategory(), _httpServletRequest, "parentCategoryId");
+				long parentCategoryId = ParamUtil.getLong(
+					_httpServletRequest, "parentCategoryId",
+					GetterUtil.get(
+						getCategory(), AssetCategory::getParentCategoryId, 0L));
 
 				if (parentCategoryId > 0) {
 					return parentCategoryId;
