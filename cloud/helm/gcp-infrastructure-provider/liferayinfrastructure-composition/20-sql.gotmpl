@@ -1,6 +1,97 @@
 {{- $database := $xr.spec.database }}
 {{- $instanceType := $database.instanceType | default "db-custom-1-3840" }}
 
+{{- define "database-job" -}}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-db-{{ .name }}-job-{{ .dataPlane }}
+    labels:
+        dataPlane: {{ .dataPlane }}
+    name: {{ .jobName }}
+spec:
+    forProvider:
+        manifest:
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+                labels:
+                    dataPlane: {{ .dataPlane }}
+                name: {{ .jobName }}
+                namespace: {{ .namespace }}
+            spec:
+                template:
+                    spec:
+                        containers:
+                            -   args:
+                                    -   |
+                                            {{- .script | nindent 44 }}
+                                command:
+                                    -   /bin/sh
+                                    -   -c
+                                env:
+                                    {{- .env | toYaml | nindent 36 }}
+                                image: postgres:18-alpine
+                                name: sql-runner
+                                resources:
+                                    limits:
+                                        cpu: 200m
+                                        memory: 256Mi
+                                    requests:
+                                        cpu: 100m
+                                        memory: 128Mi
+                                securityContext:
+                                    allowPrivilegeEscalation: false
+                                    capabilities:
+                                        drop:
+                                            -   ALL
+                                    runAsNonRoot: true
+                                    runAsUser: 1000
+                                    seccompProfile:
+                                        type: RuntimeDefault
+                        initContainers:
+                            -   args:
+                                    -   --auto-iam-authn
+                                    -   --port={{ .port }}
+                                    -   --private-ip
+                                    -   --structured-logs
+                                    -   "{{ .connectionName }}"
+                                image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.25.4
+                                name: cloud-sql-proxy
+                                resources:
+                                    limits:
+                                        cpu: 200m
+                                        memory: 256Mi
+                                    requests:
+                                        cpu: 100m
+                                        memory: 128Mi
+                                restartPolicy: Always
+                                securityContext:
+                                    allowPrivilegeEscalation: false
+                                    capabilities:
+                                        drop:
+                                            -   ALL
+                                    runAsNonRoot: true
+                                    runAsUser: 65532
+                                    seccompProfile:
+                                        type: RuntimeDefault
+                        restartPolicy: OnFailure
+                        securityContext:
+                            fsGroup: 1000
+                            runAsNonRoot: true
+                            seccompProfile:
+                                type: RuntimeDefault
+                        serviceAccountName: {{ .serviceAccountName }}
+                        volumes:
+                            -   emptyDir: {}
+                                name: term-log
+    managementPolicies: ["Create", "Delete", "Observe"]
+    readiness:
+        celQuery: object.status.succeeded == 1
+        policy: DeriveFromCelQuery
+{{- end }}
+
 {{- define "grant-database-script" -}}
 script: |
     #!/bin/sh
@@ -225,109 +316,24 @@ spec:
     {{- end }}
 {{- end }}
 {{- if and $isDatabaseInstanceReady $gsaEmail }}
+{{- $databaseConnectionName := dig "status" "atProvider" "connectionName" "" $observedDatabaseInstance }}
 {{- $databasePort := "5432" }}
-{{- $jobName := printf "%s-db-grant-%s" $xr.metadata.name $dataPlane }}
 ---
-apiVersion: kubernetes.m.crossplane.io/v1alpha1
-kind: Object
-metadata:
-    annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: liferay-db-grant-job-{{ $dataPlane }}
-    labels:
-        dataPlane: {{ $dataPlane }}
-    name: {{ $jobName }}
-spec:
-    forProvider:
-        manifest:
-            apiVersion: batch/v1
-            kind: Job
-            metadata:
-                labels:
-                    dataPlane: {{ $dataPlane }}
-                name: {{ $jobName }}
-                namespace: {{ $namespace }}
-            spec:
-                template:
-                    spec:
-                        containers:
-                            -   args:
-                                    -   |
-                                            {{- (include "grant-database-script" . | fromYaml).script | nindent 44 }}
-                                command:
-                                    -   /bin/sh
-                                    -   -c
-                                env:
-                                    -   name: DATABASE_NAME
-                                        value: {{ $databaseName }}
-                                    -   name: DATABASE_PORT
-                                        value: {{ $databasePort | quote }}
-                                    -   name: DATABASE_USERNAME
-                                        value: postgres
-                                    -   name: LIFERAY_DATABASE_USERNAME
-                                        value: {{ $databaseIamUser }}
-                                    -   name: PGPASSWORD
-                                        valueFrom:
-                                            secretKeyRef:
-                                                key: password
-                                                name: {{ $rootPasswordName }}
-                                image: postgres:18-alpine
-                                name: sql-runner
-                                resources:
-                                    limits:
-                                        cpu: 200m
-                                        memory: 256Mi
-                                    requests:
-                                        cpu: 100m
-                                        memory: 128Mi
-                                securityContext:
-                                    allowPrivilegeEscalation: false
-                                    capabilities:
-                                        drop:
-                                            -   ALL
-                                    runAsNonRoot: true
-                                    runAsUser: 1000
-                                    seccompProfile:
-                                        type: RuntimeDefault
-                        initContainers:
-                            -   args:
-                                    -   --auto-iam-authn
-                                    -   --port={{ $databasePort }}
-                                    -   --private-ip
-                                    -   --structured-logs
-                                    -   "{{ dig "status" "atProvider" "connectionName" "" $observedDatabaseInstance }}"
-                                image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.25.4
-                                name: cloud-sql-proxy
-                                resources:
-                                    limits:
-                                        cpu: 200m
-                                        memory: 256Mi
-                                    requests:
-                                        cpu: 100m
-                                        memory: 128Mi
-                                restartPolicy: Always
-                                securityContext:
-                                    allowPrivilegeEscalation: false
-                                    capabilities:
-                                        drop:
-                                            -   ALL
-                                    runAsNonRoot: true
-                                    runAsUser: 65532
-                                    seccompProfile:
-                                        type: RuntimeDefault
-                        restartPolicy: OnFailure
-                        securityContext:
-                            fsGroup: 1000
-                            runAsNonRoot: true
-                            seccompProfile:
-                                type: RuntimeDefault
-                        serviceAccountName: liferay-default
-                        volumes:
-                            -   emptyDir: {}
-                                name: term-log
-    managementPolicies: ["Create", "Delete", "Observe"]
-    readiness:
-        celQuery: object.status.succeeded == 1
-        policy: DeriveFromCelQuery
+{{ include "database-job" (dict
+    "connectionName" $databaseConnectionName
+    "dataPlane" $dataPlane
+    "env" (list
+        (dict "name" "DATABASE_NAME" "value" $databaseName)
+        (dict "name" "DATABASE_PORT" "value" $databasePort)
+        (dict "name" "DATABASE_USERNAME" "value" "postgres")
+        (dict "name" "LIFERAY_DATABASE_USERNAME" "value" $databaseIamUser)
+        (dict "name" "PGPASSWORD" "valueFrom" (dict "secretKeyRef" (dict "key" "password" "name" $rootPasswordName))))
+    "jobName" (printf "%s-db-grant-%s" $xr.metadata.name $dataPlane)
+    "name" "grant"
+    "namespace" $namespace
+    "port" $databasePort
+    "script" (include "grant-database-script" . | fromYaml).script
+    "serviceAccountName" "liferay-default") }}
 {{- end }}
 {{- end }}
 {{- end }}

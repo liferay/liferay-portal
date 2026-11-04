@@ -9,7 +9,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "-   \"\\{\\{ dig \"status\" \"atProvider\" \"connectionName\" \"\" \\$[A-Za-z]+ \\}\\}\""
+                    pattern: "\\$[A-Za-z]+ := dig \"status\" \"atProvider\" \"connectionName\" \"\" \\$[A-Za-z]+"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
