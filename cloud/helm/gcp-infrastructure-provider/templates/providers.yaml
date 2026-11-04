@@ -16,7 +16,7 @@ metadata:
         argocd.argoproj.io/sync-wave: {{ $provider.syncWave | default "-80" | quote }}
     name: {{ $provider.name }}
 spec:
-    package: xpkg.upbound.io/upbound/{{ $provider.name }}:v2.5.0
+    package: xpkg.upbound.io/upbound/{{ $provider.name }}:v3.1.0
     runtimeConfigRef:
         name: {{ $provider.runtimeConfigName }}
     skipDependencyResolution: true
