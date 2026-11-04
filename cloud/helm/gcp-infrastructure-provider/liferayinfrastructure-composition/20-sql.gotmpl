@@ -133,11 +133,24 @@ script: |
     set -o nounset
 
     function main {
-    	until pg_isready \
+    	local timeout
+
+    	timeout=$(($(date +%s) + 600))
+
+    	until PGCONNECT_TIMEOUT=10 psql \
+    		--command "SELECT 1" \
+    		--dbname "${DATABASE_NAME}" \
     		--host 127.0.0.1 \
     		--port "${DATABASE_PORT}" \
-    		--username "${DATABASE_USERNAME}"
+    		--username "${DATABASE_USERNAME}" > /dev/null 2>&1
     	do
+    		if [ "$(date +%s)" -ge "${timeout}" ]
+    		then
+    			echo "${DATABASE_USERNAME} could not be authenticated." >&2
+
+    			exit 1
+    		fi
+
     		sleep 2
     	done
 
@@ -157,7 +170,7 @@ script: |
     	END IF;
     END $$;
 
-    GRANT liferay_shared_owner TO postgres;
+    GRANT liferay_shared_owner TO CURRENT_USER;
 
     ALTER DATABASE :"database_name" OWNER TO liferay_shared_owner;
 
@@ -345,6 +358,12 @@ spec:
         type: CLOUD_IAM_SERVICE_ACCOUNT
     managementPolicies: ["Create", "Observe", "Update"]
 {{- end }}
+{{- $isDatabaseBootstrapUserReady := false }}
+{{- range $condition := dig (printf "database-bootstrap-iam-user-%s" $dataPlane) "resource" "status" "conditions" list $observedResources }}
+    {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
+        {{- $isDatabaseBootstrapUserReady = true }}
+    {{- end }}
+{{- end }}
 {{- $isDatabaseInstanceReady := false }}
 {{- $observedDatabaseInstance := dig (printf "database-primary-%s" $dataPlane) "resource" dict $observedResources }}
 {{- range $condition := dig "status" "conditions" list $observedDatabaseInstance }}
@@ -354,7 +373,7 @@ spec:
 {{- end }}
 {{- $databaseConnectionName := dig "status" "atProvider" "connectionName" "" $observedDatabaseInstance }}
 {{- $databasePort := "5432" }}
-{{- if and $isDatabaseInstanceReady $gsaEmail }}
+{{- if and $isDatabaseInstanceReady $isDatabaseBootstrapUserReady $gsaEmail }}
 ---
 {{ include "database-job" (dict
     "connectionName" $databaseConnectionName
@@ -362,15 +381,15 @@ spec:
     "env" (list
         (dict "name" "DATABASE_NAME" "value" $databaseName)
         (dict "name" "DATABASE_PORT" "value" $databasePort)
-        (dict "name" "DATABASE_USERNAME" "value" "postgres")
+        (dict "name" "DATABASE_USERNAME" "value" $databaseBootstrapIamUser)
         (dict "name" "LIFERAY_DATABASE_USERNAME" "value" $databaseIamUser)
-        (dict "name" "PGPASSWORD" "valueFrom" (dict "secretKeyRef" (dict "key" "password" "name" $rootPasswordName))))
+        (dict "name" "PGPASSWORD" "value" "iam"))
     "jobName" (printf "%s-db-grant-%s" $xr.metadata.name $dataPlane)
     "name" "grant"
     "namespace" $namespace
     "port" $databasePort
     "script" (include "grant-database-script" . | fromYaml).script
-    "serviceAccountName" "liferay-default") }}
+    "serviceAccountName" "database-bootstrap") }}
 {{- end }}
 {{- $isDatabaseGranted := false }}
 {{- range $condition := dig (printf "liferay-db-grant-job-%s" $dataPlane) "resource" "status" "conditions" list $observedResources }}
