@@ -229,7 +229,7 @@
 							<execute-analytics-cloud dir="${analytics.cloud.faro.dir}" timeout="${analytics.cloud.faro.timeout}">
 								export FARO_ENVIRONMENT_NAME=local
 
-								./gradlew buildDockerImage
+								./gradlew buildDockerImage -Dliferay.ci=true
 
 								docker tag ${analytics.cloud.faro.image.name} ${analytics.cloud.faro.tag.name}
 
