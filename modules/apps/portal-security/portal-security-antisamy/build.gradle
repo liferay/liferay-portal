@@ -465,6 +465,7 @@ private String _filterFragmentSanitizer(String line) {
 	if (line.contains("</common-regexps>")) {
 		line = """\
 			|
+			|		<regexp name="phoneURL" value="(\\s)*(sms|tel):[\\p{N}\\+\\-\\.\\(\\)\\p{Zs};,=\\?&amp;\\#\\*%\\p{L}]*(\\s)*"/>
 			|		<regexp name="svgLength" value="(-|\\+)?([0-9]+(\\.[0-9]+)?|\\.[0-9]+)(px|pt|pc|mm|cm|in|em|ex|%)?"/>
 			|		<regexp name="svgNumberList" value="(\\s|,)*(-|\\+)?([0-9]+(\\.[0-9]+)?|\\.[0-9]+)([eE](-|\\+)?[0-9]+)?((\\s|,)+(-|\\+)?([0-9]+(\\.[0-9]+)?|\\.[0-9]+)([eE](-|\\+)?[0-9]+)?)*(\\s|,)*"/>
 			|		<regexp name="svgViewBox" value="(-|\\+)?([0-9]+(\\.[0-9]+)?)((\\s|,)+(-|\\+)?([0-9]+(\\.[0-9]+)?)){3}"/>
@@ -661,6 +662,14 @@ private String _filterFragmentSanitizer(String line) {
 			|				<literal value="userSpaceOnUse"/>
 			|				<literal value="objectBoundingBox"/>
 			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="href">
+			|			<regexp-list>
+			|				<regexp name="onsiteURL"/>
+			|				<regexp name="offsiteURL"/>
+			|				<regexp name="phoneURL"/>
+			|			</regexp-list>
 			|		</attribute>
 			|
 			|		<attribute name="image-rendering" onInvalid="removeAttribute">
