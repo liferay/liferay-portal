@@ -151,7 +151,7 @@ public class CPDefinitionSystemObjectRelatedModelsProviderTest
 	}
 
 	@Override
-	protected void deleteBaseModel(long primaryKey) {
+	protected void deleteBaseModel(long primaryKey) throws Exception {
 		_cpDefinitionLocalService.deleteCPDefinitions(
 			primaryKey, WorkflowConstants.STATUS_APPROVED);
 	}
