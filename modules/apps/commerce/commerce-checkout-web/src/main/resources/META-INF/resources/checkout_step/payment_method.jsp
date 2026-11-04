@@ -12,7 +12,9 @@ PaymentMethodCheckoutStepDisplayContext paymentMethodCheckoutStepDisplayContext 
 
 List<CommercePaymentMethodGroupRel> commercePaymentMethodGroupRels = paymentMethodCheckoutStepDisplayContext.getCommercePaymentMethodGroupRels();
 
-String commercePaymentMethodKey = BeanParamUtil.getString(paymentMethodCheckoutStepDisplayContext.getCommerceOrder(), request, "commercePaymentMethodKey");
+CommerceOrder commerceOrder = paymentMethodCheckoutStepDisplayContext.getCommerceOrder();
+
+String commercePaymentMethodKey = ParamUtil.getString(request, "commercePaymentMethodKey", commerceOrder.getCommercePaymentMethodKey());
 %>
 
 <div id="commerce-payment-methods-container">

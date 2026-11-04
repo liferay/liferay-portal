@@ -12,7 +12,9 @@ TermCommerceCheckoutStepDisplayContext termCommerceCheckoutStepDisplayContext = 
 
 List<CommerceTermEntry> paymentCommerceTermEntries = termCommerceCheckoutStepDisplayContext.getPaymentCommerceTermEntries();
 
-long paymentCommerceTermEntryId = BeanParamUtil.getLong(termCommerceCheckoutStepDisplayContext.getCommerceOrder(), request, "paymentCommerceTermEntryId");
+CommerceOrder commerceOrder = termCommerceCheckoutStepDisplayContext.getCommerceOrder();
+
+long paymentCommerceTermEntryId = ParamUtil.getLong(request, "paymentCommerceTermEntryId", commerceOrder.getPaymentCommerceTermEntryId());
 %>
 
 <div id="commercePaymentTermContainer">
