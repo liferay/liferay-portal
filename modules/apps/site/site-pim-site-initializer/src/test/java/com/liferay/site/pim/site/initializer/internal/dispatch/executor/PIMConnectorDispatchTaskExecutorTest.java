@@ -10,6 +10,7 @@ import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.osgi.util.ServiceTrackerFactory;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -252,8 +253,8 @@ public class PIMConnectorDispatchTaskExecutorTest {
 
 		Mockito.doThrow(
 			new PIMConnectorException(
-				"unable-to-connect-to-the-remote-instance", "{\"log\": []}",
-				null)
+				"unable-to-connect-to-the-remote-instance",
+				JSONUtil.toString(JSONUtil.put("log", JSONUtil.putAll())), null)
 		).when(
 			_pimConnector
 		).execute(
@@ -279,7 +280,8 @@ public class PIMConnectorDispatchTaskExecutorTest {
 			"Localized unable-to-connect-to-the-remote-instance",
 			dispatchTaskExecutorOutput.getError());
 		Assert.assertEquals(
-			"{\"log\": []}", dispatchTaskExecutorOutput.getOutput());
+			JSONUtil.toString(JSONUtil.put("log", JSONUtil.putAll())),
+			dispatchTaskExecutorOutput.getOutput());
 	}
 
 	private void _testDoExecuteWithoutPIMConnector() throws Exception {
