@@ -10,6 +10,7 @@ import com.liferay.portal.odata.entity.ComplexEntityField;
 import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.odata.entity.IntegerEntityField;
 import com.liferay.portal.odata.entity.StringEntityField;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class AccountGroupEntityModel implements EntityModel {
 				"dateModified",
 				locale -> Field.getSortableFieldName(Field.MODIFIED_DATE),
 				locale -> Field.MODIFIED_DATE),
+			new IntegerEntityField("id", locale -> Field.ENTRY_CLASS_PK),
 			new StringEntityField(
 				"name", locale -> Field.getSortableFieldName(Field.NAME)));
 	}

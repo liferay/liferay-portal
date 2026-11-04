@@ -10,6 +10,7 @@ import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.IdEntityField;
+import com.liferay.portal.odata.entity.IntegerEntityField;
 import com.liferay.portal.odata.entity.StringEntityField;
 
 import java.util.Map;
@@ -31,6 +32,7 @@ public class ChannelEntityModel implements EntityModel {
 				locale -> Field.MODIFIED_DATE),
 			new IdEntityField(
 				"siteGroupId", locale -> Field.SCOPE_GROUP_ID, String::valueOf),
+			new IntegerEntityField("id", locale -> Field.ENTRY_CLASS_PK),
 			new StringEntityField(
 				"externalReferenceCode",
 				locale -> Field.getSortableFieldName("externalReferenceCode"),
