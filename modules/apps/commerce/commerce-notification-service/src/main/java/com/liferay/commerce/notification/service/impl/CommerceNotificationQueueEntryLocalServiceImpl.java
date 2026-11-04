@@ -131,8 +131,16 @@ public class CommerceNotificationQueueEntryLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommerceNotificationQueueEntries(Date sentDate) {
-		commerceNotificationQueueEntryPersistence.removeByLtSentDate(sentDate);
+	public void deleteCommerceNotificationQueueEntries(Date sentDate)
+		throws PortalException {
+
+		for (CommerceNotificationQueueEntry commerceNotificationQueueEntry :
+				commerceNotificationQueueEntryPersistence.findByLtSentDate(
+					sentDate)) {
+
+			commerceNotificationQueueEntryLocalService.
+				deleteCommerceNotificationQueue(commerceNotificationQueueEntry);
+		}
 	}
 
 	@Override

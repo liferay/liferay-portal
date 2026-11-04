@@ -107,7 +107,12 @@ public class CommerceWishListLocalServiceImpl
 
 	@Override
 	public void deleteCommerceWishLists(long userId, Date date) {
-		commerceWishListPersistence.removeByU_LtC(userId, date);
+		for (CommerceWishList commerceWishList :
+				commerceWishListPersistence.findByU_LtC(userId, date)) {
+
+			commerceWishListLocalService.forceDeleteCommerceWishList(
+				commerceWishList);
+		}
 	}
 
 	@Override

@@ -1455,8 +1455,14 @@ public class CPDefinitionLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCPDefinitions(long cProductId, int status) {
-		cpDefinitionPersistence.removeByC_S(cProductId, status);
+	public void deleteCPDefinitions(long cProductId, int status)
+		throws PortalException {
+
+		for (CPDefinition cpDefinition :
+				cpDefinitionPersistence.findByC_S(cProductId, status)) {
+
+			cpDefinitionLocalService.deleteCPDefinition(cpDefinition);
+		}
 	}
 
 	@Override

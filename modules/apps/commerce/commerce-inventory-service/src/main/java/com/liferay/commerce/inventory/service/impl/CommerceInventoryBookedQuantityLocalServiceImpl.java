@@ -101,8 +101,14 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 
 	@Override
 	public void checkCommerceInventoryBookedQuantities() {
-		commerceInventoryBookedQuantityPersistence.removeByLtExpirationDate(
-			new Date());
+		for (CommerceInventoryBookedQuantity commerceInventoryBookedQuantity :
+				commerceInventoryBookedQuantityPersistence.
+					findByLtExpirationDate(new Date())) {
+
+			commerceInventoryBookedQuantityLocalService.
+				deleteCommerceInventoryBookedQuantity(
+					commerceInventoryBookedQuantity);
+		}
 	}
 
 	@Override
@@ -130,12 +136,14 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 
 			commerceInventoryBookedQuantity.setQuantity(newQuantity);
 
-			return commerceInventoryBookedQuantityPersistence.update(
-				commerceInventoryBookedQuantity);
+			return commerceInventoryBookedQuantityLocalService.
+				updateCommerceInventoryBookedQuantity(
+					commerceInventoryBookedQuantity);
 		}
 
-		return commerceInventoryBookedQuantityPersistence.remove(
-			commerceInventoryBookedQuantityId);
+		return commerceInventoryBookedQuantityLocalService.
+			deleteCommerceInventoryBookedQuantity(
+				commerceInventoryBookedQuantity);
 	}
 
 	@Override
@@ -147,8 +155,9 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 		throws PortalException {
 
 		CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
-			commerceInventoryBookedQuantityPersistence.remove(
-				commerceInventoryBookedQuantityId);
+			commerceInventoryBookedQuantityLocalService.
+				deleteCommerceInventoryBookedQuantity(
+					commerceInventoryBookedQuantityId);
 
 		_commerceInventoryAuditLocalService.addCommerceInventoryAudit(
 			userId, commerceInventoryAuditType.getType(),
@@ -359,8 +368,9 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 			commerceInventoryAuditType.getLog(context), quantity, sku,
 			unitOfMeasureKey);
 
-		return commerceInventoryBookedQuantityPersistence.update(
-			commerceInventoryBookedQuantity);
+		return commerceInventoryBookedQuantityLocalService.
+			updateCommerceInventoryBookedQuantity(
+				commerceInventoryBookedQuantity);
 	}
 
 	@Override
@@ -371,8 +381,9 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 		throws PortalException {
 
 		CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
-			commerceInventoryBookedQuantityPersistence.remove(
-				commerceInventoryBookedQuantityId);
+			commerceInventoryBookedQuantityLocalService.
+				deleteCommerceInventoryBookedQuantity(
+					commerceInventoryBookedQuantityId);
 
 		CommerceInventoryAuditType commerceInventoryAuditType =
 			_commerceInventoryAuditTypeRegistry.getCommerceInventoryAuditType(

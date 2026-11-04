@@ -154,16 +154,26 @@ public class CPDefinitionGroupedEntryLocalServiceImpl
 			}
 		}
 
-		cpDefinitionGroupedEntryPersistence.removeByCPDefinitionId(
-			cpDefinitionId);
+		for (CPDefinitionGroupedEntry cpDefinitionGroupedEntry :
+				cpDefinitionGroupedEntryPersistence.findByCPDefinitionId(
+					cpDefinitionId)) {
+
+			cpDefinitionGroupedEntryLocalService.deleteCPDefinitionGroupedEntry(
+				cpDefinitionGroupedEntry);
+		}
 	}
 
 	@Override
 	public void deleteCPDefinitionGroupedEntriesByEntryCProductId(
 		long entryCProductId) {
 
-		cpDefinitionGroupedEntryPersistence.removeByEntryCProductId(
-			entryCProductId);
+		for (CPDefinitionGroupedEntry cpDefinitionGroupedEntry :
+				cpDefinitionGroupedEntryPersistence.findByEntryCProductId(
+					entryCProductId)) {
+
+			cpDefinitionGroupedEntryLocalService.deleteCPDefinitionGroupedEntry(
+				cpDefinitionGroupedEntry);
+		}
 	}
 
 	@Override

@@ -172,7 +172,12 @@ public class CommerceCurrencyLocalServiceImpl
 
 	@Override
 	public void deleteCommerceCurrencies(long companyId) {
-		commerceCurrencyPersistence.removeByCompanyId(companyId);
+		for (CommerceCurrency commerceCurrency :
+				commerceCurrencyPersistence.findByCompanyId(companyId)) {
+
+			commerceCurrencyLocalService.deleteCommerceCurrency(
+				commerceCurrency);
+		}
 	}
 
 	@Indexable(type = IndexableType.DELETE)

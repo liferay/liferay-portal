@@ -95,9 +95,17 @@ public class CommercePriceListDiscountRelLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommercePriceListDiscountRels(long commercePriceListId) {
-		commercePriceListDiscountRelPersistence.removeByCommercePriceListId(
-			commercePriceListId);
+	public void deleteCommercePriceListDiscountRels(long commercePriceListId)
+		throws PortalException {
+
+		for (CommercePriceListDiscountRel commercePriceListDiscountRel :
+				commercePriceListDiscountRelPersistence.
+					findByCommercePriceListId(commercePriceListId)) {
+
+			commercePriceListDiscountRelLocalService.
+				deleteCommercePriceListDiscountRel(
+					commercePriceListDiscountRel);
+		}
 	}
 
 	@Override
