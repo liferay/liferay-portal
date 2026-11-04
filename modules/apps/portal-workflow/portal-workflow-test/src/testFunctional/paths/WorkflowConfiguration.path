@@ -19,6 +19,36 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ASSET_TYPE_CELL</td>
+	<td>//*[@data-qa-id='row']/td[contains(@class,'lfr-asset-type-column')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_TYPE_ROW</td>
+	<td>//*[@data-qa-id='row'][td[contains(@class,'lfr-asset-type-column')][normalize-space()='${key_workflowResourceValue}']]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_TYPE_ROW_CANCEL</td>
+	<td>//*[@data-qa-id='row'][td[contains(@class,'lfr-asset-type-column')][normalize-space()='${key_workflowResourceValue}']]//button[contains(.,'Cancel')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_TYPE_ROW_EDIT</td>
+	<td>//*[@data-qa-id='row'][td[contains(@class,'lfr-asset-type-column')][normalize-space()='${key_workflowResourceValue}']]//*[normalize-space(text())='Edit']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_TYPE_ROW_SAVE</td>
+	<td>//*[@data-qa-id='row'][td[contains(@class,'lfr-asset-type-column')][normalize-space()='${key_workflowResourceValue}']]//button[contains(.,'Save')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_TYPE_ROW_SELECT</td>
+	<td>//*[@data-qa-id='row'][td[contains(@class,'lfr-asset-type-column')][normalize-space()='${key_workflowResourceValue}']]//select</td>
+	<td></td>
+</tr>
+<tr>
 	<td>RESOURCE_TABLE_CANCEL</td>
 	<td>//*[@data-qa-id='row' and contains(.,'${key_workflowResourceValue}')]//button[contains(.,'Cancel')]</td>
 	<td></td>
