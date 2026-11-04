@@ -253,17 +253,17 @@
 
 <tr>
 	<td>ACTION_DELETE_ICON</td>
-	<td>//*[@role='tabpanel'][descendant::input[@value='${actionName}']] //button[contains(@class,'delete-button')]</td>
+	<td>//*[contains(@class,'panel-collapse')][descendant::input[@value='${actionName}']] //button[contains(@class,'delete-button')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TIMER_ACTION_DESCRIPTION_INDEX</td>
-	<td>xpath=(//div[div[@class='sheet-subtitle'][contains(.,'Action')]] //input[@id='description'])[${key_index}]</td>
+	<td>xpath=(//div[button[contains(@class,'sheet-subtitle')][contains(.,'Action')]] //input[@id='description'])[${key_index}]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TIMER_ACTION_NAME_INDEX</td>
-	<td>xpath=(//div[div[@class='sheet-subtitle'][contains(.,'Action')]] //input[@id='name'])[${key_index}]</td>
+	<td>xpath=(//div[button[contains(@class,'sheet-subtitle')][contains(.,'Action')]] //input[@id='name'])[${key_index}]</td>
 	<td></td>
 </tr>
 <tr>
@@ -466,7 +466,7 @@
 </tr>
 <tr>
 	<td>NOTIFICATIONS_TYPE_DROPDOWN_BY_POSITION</td>
-	<td>//div[contains(@class,'panel-group') and contains(@role,'tablist')][${key_sectionOption}]//input[contains(@class,'inset')]</td>
+	<td>//div[contains(@class,'panel-group')][${key_sectionOption}]//input[contains(@class,'inset')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -496,7 +496,7 @@
 </tr>
 <tr>
 	<td>NOTIFICATION_VALUE_NODE_SIDEBAR</td>
-	<td>//div[contains(@class, 'sheet-subtitle') and contains(., 'Notifications')]//..//*[contains(@class, 'link-secondary') and contains(., '${key_nodeNotificationName}')]</td>
+	<td>//button[contains(@class, 'sheet-subtitle') and contains(., 'Notifications')]//..//*[contains(@class, 'link-secondary') and contains(., '${key_nodeNotificationName}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -526,7 +526,7 @@
 </tr>
 <tr>
 	<td>SELECTED_ASSIGNMENTS_VALUE</td>
-	<td>//div[@role='tab' and normalize-space()='Assignments']/following-sibling::div[@role='tabpanel']//*[contains(@class,'d-flex')]</td>
+	<td>//button[contains(@class,'sheet-subtitle') and normalize-space()='Assignments']/following-sibling::div[contains(@class,'panel-collapse')]//*[contains(@class,'d-flex')]</td>
 	<td></td>
 </tr>
 <tr>
