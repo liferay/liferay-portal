@@ -45,7 +45,7 @@ interface ILifecycleStageFieldValue {
 	stageType?: LifecycleStages;
 }
 
-const buildSelectionPreloadedData = (value?: string, label?: string) =>
+export const buildSelectionPreloadedData = (value?: string, label?: string) =>
 	value
 		? {
 				exclude: false,

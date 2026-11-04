@@ -48,6 +48,7 @@ export async function fetchCampaign({
 }
 
 interface IFetchCampaignMetrics {
+	accountId?: string;
 	channelId: string;
 	groupId: string;
 	rangeQueryValues?: {[key: string]: any};
@@ -59,12 +60,17 @@ interface IFetchCampaignMetrics {
  * same length before it, which is where each card's trend comes from.
  */
 export async function fetchCampaignMetrics({
+	accountId,
 	channelId,
 	groupId,
 	rangeQueryValues,
 }: IFetchCampaignMetrics): Promise<ICampaignMetric[]> {
 	return sendRequest({
-		data: {channelId, ...rangeQueryValues},
+		data: {
+			accountIds: accountId,
+			channelId,
+			...rangeQueryValues,
+		},
 		method: 'GET',
 		path: `contacts/${groupId}/campaigns/metrics`,
 	});

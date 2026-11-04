@@ -1,3 +1,4 @@
+import {pickBy} from 'lodash';
 import {setUriQueryValues} from 'shared/util/router';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useQueryParams} from 'shared/hooks/useQueryParams';
@@ -10,6 +11,7 @@ type Account = {
 interface IAccountFilter {
 	accountId?: string;
 	accountName?: string;
+	accountQueryValues: {accountId?: string; accountName?: string};
 	setAccount: (account: Account | null) => void;
 }
 
@@ -26,6 +28,7 @@ export const useAccountFilter = (): IAccountFilter => {
 	return {
 		accountId,
 		accountName,
+		accountQueryValues: pickBy({accountId, accountName}),
 		setAccount: (account) =>
 			history.push(
 				setUriQueryValues({

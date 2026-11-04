@@ -1,5 +1,6 @@
 import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
+import AccountDropdown from 'shared/components/AccountDropdown';
 import BasePage from 'shared/components/base-page';
 import CampaignsDataSet from '../components/CampaignsDataSet';
 import DataSourceEmptyState from 'shared/components/DataSourceEmptyState';
@@ -13,6 +14,7 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
 import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
+import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
@@ -21,6 +23,7 @@ import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const Campaigns: React.FC = () => {
+	const {accountId, accountName, setAccount} = useAccountFilter();
 	const currentUser = useCurrentUser();
 	const history = useHistoryAdapter();
 	const {selectedChannel} = useContext(ChannelContext);
@@ -41,6 +44,7 @@ const Campaigns: React.FC = () => {
 		dataSourceFn: API.campaigns.fetchCampaignMetrics,
 		skipRequest: noDataSources,
 		variables: {
+			accountId,
 			channelId: channelId!,
 			groupId: groupId!,
 			rangeQueryValues:
@@ -133,6 +137,13 @@ const Campaigns: React.FC = () => {
 
 			{!dataSourcesLoading && !noDataSources && (
 				<BasePage.SubHeader>
+					<AccountDropdown
+						className="mr-2"
+						initialAccountId={accountId}
+						initialAccountName={accountName}
+						onFilterChange={setAccount}
+					/>
+
 					<div className="d-flex justify-content-end w-100">
 						<DropdownRangeKey
 							bordered

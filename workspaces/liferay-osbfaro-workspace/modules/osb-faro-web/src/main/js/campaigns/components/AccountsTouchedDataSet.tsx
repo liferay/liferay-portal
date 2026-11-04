@@ -14,6 +14,7 @@ import {omit, pickBy} from 'lodash';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes, setUriQueryValues} from 'shared/util/router';
 import {toThousands} from 'shared/util/numbers';
+import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 import {ILifecycleDetail} from 'shared/api/lifecycle';
 
@@ -71,6 +72,7 @@ const AccountsTouchedDataSet: React.FC<IAccountsTouchedDataSetProps> = ({
 	lifecycles,
 	loading,
 }) => {
+	const {accountId} = useAccountFilter();
 	const rangeQueryValues = pickBy(useQueryRangeSelectors());
 
 	const apiRangeQueryValues =
@@ -86,6 +88,7 @@ const AccountsTouchedDataSet: React.FC<IAccountsTouchedDataSetProps> = ({
 		<FrontendDataSet
 			apiURL={setUriQueryValues(
 				pickBy({
+					accountIds: accountId,
 					accountLifecycleId: lifecycles?.[0]?.id,
 					channelId,
 					...apiRangeQueryValues,

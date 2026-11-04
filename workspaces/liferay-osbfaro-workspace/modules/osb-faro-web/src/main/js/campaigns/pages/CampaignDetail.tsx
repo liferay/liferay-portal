@@ -1,5 +1,6 @@
 import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
+import AccountDropdown from 'shared/components/AccountDropdown';
 import BasePage from 'shared/components/base-page';
 import MembershipsCard from '../components/MembershipsCard';
 import React, {useContext} from 'react';
@@ -8,12 +9,15 @@ import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRan
 import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
 import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
+import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const CampaignDetail: React.FC = () => {
+	const {accountId, accountName, accountQueryValues, setAccount} =
+		useAccountFilter();
 	const history = useHistoryAdapter();
 	const {selectedChannel} = useContext(ChannelContext);
 
@@ -64,7 +68,10 @@ const CampaignDetail: React.FC = () => {
 					breadcrumbs.getCampaigns({
 						channelId: channelId!,
 						groupId: groupId!,
-						queryValues: pickBy(rangeSelectors),
+						queryValues: pickBy({
+							...rangeSelectors,
+							...accountQueryValues,
+						}),
 					}),
 					breadcrumbs.getEntityName({label: title}),
 				]}
@@ -76,6 +83,13 @@ const CampaignDetail: React.FC = () => {
 			</BasePage.Header>
 
 			<BasePage.SubHeader>
+				<AccountDropdown
+					className="mr-2"
+					initialAccountId={accountId}
+					initialAccountName={accountName}
+					onFilterChange={setAccount}
+				/>
+
 				<div className="d-flex justify-content-end w-100">
 					<DropdownRangeKey
 						bordered

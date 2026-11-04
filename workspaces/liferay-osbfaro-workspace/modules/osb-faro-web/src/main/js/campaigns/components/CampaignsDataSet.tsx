@@ -1,5 +1,6 @@
 import Card from 'shared/components/Card';
 import React from 'react';
+import {buildSelectionPreloadedData} from 'shared/components/accounts-data-set/AccountsDataSet';
 import {
 	columns,
 	EMPTY_STATE_IMAGE,
@@ -10,6 +11,7 @@ import {
 import {omit, pickBy} from 'lodash';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes, setUriQueryValues} from 'shared/util/router';
+import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
 interface ICampaignsDataSetProps {
@@ -54,12 +56,14 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 	channelId,
 	groupId,
 }) => {
+	const {accountId, accountName, accountQueryValues} = useAccountFilter();
 	const rangeSelectors = useQueryRangeSelectors();
 
-	// The campaign link carries the range, `CUSTOM` included, so the detail
-	// page opens on the same selection.
-
 	const rangeQueryValues = pickBy(rangeSelectors);
+
+	// The link carries the range, `CUSTOM` included, and the account.
+
+	const linkQueryValues = {...rangeQueryValues, ...accountQueryValues};
 
 	// `CUSTOM` is a client side sentinel the API answers with a 500, so a
 	// custom range travels as its bounds alone.
@@ -88,7 +92,7 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 							channelId,
 							groupId,
 							itemData,
-							queryValues: rangeQueryValues,
+							queryValues: linkQueryValues,
 							route: Routes.CAMPAIGNS_DETAIL,
 							value,
 						}),
@@ -102,7 +106,26 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 					imageReducedMotion: EMPTY_STATE_REDUCED_MOTION_IMAGE,
 					title: Liferay.Language.get('no-campaigns-found'),
 				}}
+				filters={[
+					{
+						apiURL: `/o/faro/contacts/${groupId}/account/account-names?channelId=${channelId}`,
+						entityFieldType: 'string',
+						id: 'accountId',
+						itemKey: 'id',
+						itemLabel: 'name',
+						label: Liferay.Language.get('account'),
+						preloadedData: buildSelectionPreloadedData(
+							accountId,
+							accountName
+						),
+						type: 'selection',
+					},
+				]}
 				id="campaigns-list-dataset"
+
+				// `filters` is read only on mount: remount to seed it again.
+
+				key={accountId}
 				pagination={pagination}
 				showPagination
 				sorts={[
