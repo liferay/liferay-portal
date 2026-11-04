@@ -6,7 +6,6 @@
 package com.liferay.object.storage.salesforce.internal.rest.manager.v1_0;
 
 import com.liferay.account.constants.AccountConstants;
-import com.liferay.account.model.AccountEntryModel;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -191,6 +190,14 @@ public class SalesforceObjectEntryManagerImpl
 			objectDefinition, scopeKey);
 	}
 
+	private String _escape(String delimiter, String value) {
+		return StringUtil.replace(
+			value, new String[] {StringPool.BACK_SLASH, delimiter},
+			new String[] {
+				StringPool.DOUBLE_BACK_SLASH, StringPool.BACK_SLASH + delimiter
+			});
+	}
+
 	private String _getAccountRestrictionSOSQLString(
 			long companyId, DTOConverterContext dtoConverterContext,
 			ObjectDefinition objectDefinition, String scopeKey)
@@ -217,7 +224,9 @@ public class SalesforceObjectEntryManagerImpl
 							ACCOUNT_ENTRY_TYPES_DEFAULT_ALLOWED_TYPES,
 						WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS),
-					AccountEntryModel::getExternalReferenceCode),
+					accountEntry -> _escape(
+						StringPool.APOSTROPHE,
+						accountEntry.getExternalReferenceCode())),
 				"', '"),
 			"')");
 	}
@@ -234,7 +243,8 @@ public class SalesforceObjectEntryManagerImpl
 			return HttpComponentsUtil.addParameter(
 				"search", "q",
 				StringBundler.concat(
-					"FIND {`", search, "`} IN ALL FIELDS RETURNING ",
+					"FIND {`", _escape(StringPool.CLOSE_CURLY_BRACE, search),
+					"`} IN ALL FIELDS RETURNING ",
 					objectDefinition.getExternalReferenceCode(), "(FIELDS(ALL)",
 					predicateString,
 					_getSorts(objectDefinition.getObjectDefinitionId(), sorts),
