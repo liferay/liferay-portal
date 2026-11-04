@@ -241,7 +241,7 @@ public class AccountFaroController extends BaseFaroController {
 
 		if (Objects.equals(fieldMappingFieldName, "lifecycleStatus")) {
 			List<Map<String, String>> items = new ArrayList<>();
-		
+
 			List<AccountLifecycle> accountLifecycles = null;
 
 			FaroProject faroProject =
