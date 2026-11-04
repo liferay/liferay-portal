@@ -215,26 +215,27 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 	}
 
 	private void _processCheckstyle() throws CheckstyleException, IOException {
-		List<String[]> fileContents = null;
+		List<String[]> ungeneratedFileContents = null;
 
 		synchronized (this) {
-			fileContents = new ArrayList<>(_ungeneratedFileContents);
+			ungeneratedFileContents = new ArrayList<>(_ungeneratedFileContents);
 
 			_ungeneratedFileContents.clear();
 		}
 
-		_processCheckstyle(fileContents);
+		_processCheckstyle(ungeneratedFileContents);
 	}
 
-	private void _processCheckstyle(List<String[]> fileContents)
+	private void _processCheckstyle(List<String[]> ungeneratedFileContents)
 		throws CheckstyleException, IOException {
 
-		if (fileContents.isEmpty()) {
+		if (ungeneratedFileContents.isEmpty()) {
 			return;
 		}
 
 		Set<SourceFormatterMessage> sourceFormatterMessages = processCheckstyle(
-			_checkstyleConfiguration, _checkstyleLogger, fileContents);
+			_checkstyleConfiguration, _checkstyleLogger,
+			ungeneratedFileContents);
 
 		synchronized (this) {
 			_sourceFormatterMessages.addAll(sourceFormatterMessages);
@@ -251,21 +252,22 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 			return;
 		}
 
-		List<String[]> fileContents = null;
+		List<String[]> ungeneratedFileContents = null;
 
 		synchronized (this) {
 			_ungeneratedFileContents.add(
 				new String[] {absolutePath, javaContent});
 
 			if (_ungeneratedFileContents.size() == CheckstyleUtil.BATCH_SIZE) {
-				fileContents = new ArrayList<>(_ungeneratedFileContents);
+				ungeneratedFileContents = new ArrayList<>(
+					_ungeneratedFileContents);
 
 				_ungeneratedFileContents.clear();
 			}
 		}
 
-		if (fileContents != null) {
-			_processCheckstyle(fileContents);
+		if (ungeneratedFileContents != null) {
+			_processCheckstyle(ungeneratedFileContents);
 		}
 	}
 
