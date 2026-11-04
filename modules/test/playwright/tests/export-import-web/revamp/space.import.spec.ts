@@ -26,7 +26,7 @@ export const test = mergeTests(
 );
 
 test(
-	'Can see corresponding import wizard controls at asset library level',
+	'Can see corresponding import wizard controls at space level',
 	{tag: '@LPD-100545'},
 	async ({
 		apiHelpers,
