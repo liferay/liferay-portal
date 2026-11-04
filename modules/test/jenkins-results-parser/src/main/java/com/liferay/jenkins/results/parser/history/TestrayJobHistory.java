@@ -252,8 +252,9 @@ public class TestrayJobHistory extends BaseJobHistory {
 
 				throw new RuntimeException(
 					JenkinsResultsParserUtil.combine(
-						"Batch ", batchName, " has ", String.valueOf(testsCount),
-						" of ", String.valueOf(expectedTestsCount),
+						"Batch ", batchName, " has ",
+						String.valueOf(testsCount), " of ",
+						String.valueOf(expectedTestsCount),
 						" expected tests, below the ",
 						String.valueOf(testsCountThreshold), "% threshold in ",
 						String.valueOf(topLevelBuildReport.getBuildURL())));
