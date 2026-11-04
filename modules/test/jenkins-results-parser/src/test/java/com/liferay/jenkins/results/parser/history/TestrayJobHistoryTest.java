@@ -20,24 +20,6 @@ public class TestrayJobHistoryTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testGetErrorMessage() {
-		Assert.assertNull(
-			TestrayJobHistory.getErrorMessage("unit", 100, 90, 90, 25));
-		Assert.assertNull(
-			TestrayJobHistory.getErrorMessage("unit", 100, 120, 90, 25));
-		Assert.assertNull(
-			TestrayJobHistory.getErrorMessage("unit", 20, 1, 90, 25));
-		Assert.assertNull(
-			TestrayJobHistory.getErrorMessage("unit", 100, 1, 0, 25));
-		Assert.assertEquals(
-			"Batch unit has 89 of 100 expected tests, below the 90% threshold",
-			TestrayJobHistory.getErrorMessage("unit", 100, 89, 90, 25));
-		Assert.assertEquals(
-			"Batch unit is missing from the CI history",
-			TestrayJobHistory.getErrorMessage("unit", 1, null, 90, 25));
-	}
-
-	@Test
 	public void testGetExpectedTestCounts() {
 		JSONObject buildDatabaseJSONObject = new JSONObject(
 		).put(

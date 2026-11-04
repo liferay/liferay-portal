@@ -200,24 +200,14 @@ public class TestrayJobHistory extends BaseJobHistory {
 						testrayRoutine.getURL());
 			}
 
-			JSONObject buildDatabaseJSONObject = null;
+			Map<String, Integer> expectedTestCounts = _getExpectedTestCounts(
+				topLevelBuildReport);
 
-			if (topLevelBuildReport instanceof TestrayTopLevelBuildReport) {
-				TestrayTopLevelBuildReport testrayTopLevelBuildReport =
-					(TestrayTopLevelBuildReport)topLevelBuildReport;
-
-				buildDatabaseJSONObject =
-					testrayTopLevelBuildReport.getBuildDatabaseJSONObject();
-			}
-
-			if (buildDatabaseJSONObject == null) {
+			if (expectedTestCounts == null) {
 				throw new RuntimeException(
 					"Unable to find a build database for " +
 						topLevelBuildReport.getBuildURL());
 			}
-
-			Map<String, Integer> expectedTestCounts = getExpectedTestCounts(
-				buildDatabaseJSONObject);
 
 			for (Map.Entry<String, Integer> expectedTestCountEntry :
 					expectedTestCounts.entrySet()) {
@@ -392,6 +382,8 @@ public class TestrayJobHistory extends BaseJobHistory {
 			return expectedTestCounts;
 		}
 
+		Map<String, Set<String>> batchTestClassNames = new HashMap<>();
+
 		for (String jobKey : jobsJSONObject.keySet()) {
 			JSONObject jobJSONObject = jobsJSONObject.getJSONObject(jobKey);
 
@@ -404,26 +396,35 @@ public class TestrayJobHistory extends BaseJobHistory {
 			for (int i = 0; i < batchesJSONArray.length(); i++) {
 				JSONObject batchJSONObject = batchesJSONArray.getJSONObject(i);
 
-				Set<String> testClassNames = new HashSet<>();
+				Set<String> testClassNames =
+					batchTestClassNames.computeIfAbsent(
+						batchJSONObject.getString("batch_name"),
+						batchName -> new HashSet<>());
 
 				JSONArray segmentsJSONArray = batchJSONObject.optJSONArray(
 					"segments");
 
-				if (segmentsJSONArray != null) {
-					for (int j = 0; j < segmentsJSONArray.length(); j++) {
-						JSONObject segmentJSONObject =
-							segmentsJSONArray.getJSONObject(j);
-
-						_addTestClassNames(
-							segmentJSONObject.optJSONArray("axes"),
-							testClassNames);
-					}
+				if (segmentsJSONArray == null) {
+					continue;
 				}
 
-				expectedTestCounts.merge(
-					batchJSONObject.getString("batch_name"),
-					testClassNames.size(), Math::max);
+				for (int j = 0; j < segmentsJSONArray.length(); j++) {
+					JSONObject segmentJSONObject =
+						segmentsJSONArray.getJSONObject(j);
+
+					_addTestClassNames(
+						segmentJSONObject.optJSONArray("axes"), testClassNames);
+				}
 			}
+		}
+
+		for (Map.Entry<String, Set<String>> batchTestClassNamesEntry :
+				batchTestClassNames.entrySet()) {
+
+			Set<String> testClassNames = batchTestClassNamesEntry.getValue();
+
+			expectedTestCounts.put(
+				batchTestClassNamesEntry.getKey(), testClassNames.size());
 		}
 
 		return expectedTestCounts;
@@ -537,6 +538,39 @@ public class TestrayJobHistory extends BaseJobHistory {
 		return _excludedBatchNames;
 	}
 
+	private Map<String, Integer> _getExpectedTestCounts(
+		TopLevelBuildReport topLevelBuildReport) {
+
+		String buildURL = String.valueOf(topLevelBuildReport.getBuildURL());
+
+		Map<String, Integer> expectedTestCounts = _expectedTestCountsMap.get(
+			buildURL);
+
+		if (expectedTestCounts != null) {
+			return expectedTestCounts;
+		}
+
+		if (!(topLevelBuildReport instanceof TestrayTopLevelBuildReport)) {
+			return null;
+		}
+
+		TestrayTopLevelBuildReport testrayTopLevelBuildReport =
+			(TestrayTopLevelBuildReport)topLevelBuildReport;
+
+		JSONObject buildDatabaseJSONObject =
+			testrayTopLevelBuildReport.getBuildDatabaseJSONObject();
+
+		if (buildDatabaseJSONObject == null) {
+			return null;
+		}
+
+		expectedTestCounts = getExpectedTestCounts(buildDatabaseJSONObject);
+
+		_expectedTestCountsMap.put(buildURL, expectedTestCounts);
+
+		return expectedTestCounts;
+	}
+
 	private int _getIntegerBuildProperty(String propertyName, String... opts) {
 		try {
 			String propertyValue = JenkinsResultsParserUtil.getBuildProperty(
@@ -606,6 +640,9 @@ public class TestrayJobHistory extends BaseJobHistory {
 	private static final int _TEST_COUNT_MINIMUM = 25;
 
 	private static final int _TEST_COUNT_THRESHOLD = 90;
+
+	private static final Map<String, Map<String, Integer>>
+		_expectedTestCountsMap = new HashMap<>();
 
 	private List<String> _excludedBatchNames;
 	private final Map<Long, TopLevelBuildReport> _latestTopLevelBuildReports =
