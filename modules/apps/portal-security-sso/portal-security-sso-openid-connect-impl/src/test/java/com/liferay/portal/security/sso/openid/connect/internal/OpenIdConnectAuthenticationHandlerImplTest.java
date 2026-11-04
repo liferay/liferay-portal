@@ -5,19 +5,42 @@
 
 package com.liferay.portal.security.sso.openid.connect.internal;
 
+import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
+import com.liferay.oauth.client.persistence.service.OAuthClientEntryLocalService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.ORMException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException;
+import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
+import com.liferay.portal.security.sso.openid.connect.internal.session.manager.OfflineOpenIdConnectSessionManager;
+import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectClientInformationUtil;
+import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnectTokenRequestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.PlainJWT;
+import com.nimbusds.oauth2.sdk.id.State;
+import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
+import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.util.JSONObjectUtils;
+import com.nimbusds.openid.connect.sdk.AuthenticationSuccessResponse;
+import com.nimbusds.openid.connect.sdk.Nonce;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import com.nimbusds.openid.connect.sdk.rp.OIDCClientInformation;
+import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.net.SocketTimeoutException;
 import java.net.URI;
@@ -63,6 +86,53 @@ public class OpenIdConnectAuthenticationHandlerImplTest {
 			).toString());
 
 		Assert.assertNull(claims.get("email"));
+	}
+
+	@Test
+	public void testProcessAuthenticationResponse() throws Exception {
+		OfflineOpenIdConnectSessionManager offlineOpenIdConnectSessionManager =
+			Mockito.mock(OfflineOpenIdConnectSessionManager.class);
+		long openIdConnectSessionId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			offlineOpenIdConnectSessionManager.startOpenIdConnectSession(
+				Mockito.any(), Mockito.any(), Mockito.any(OIDCTokens.class),
+				Mockito.anyLong())
+		).thenReturn(
+			openIdConnectSessionId
+		);
+
+		HttpSession httpSession = Mockito.mock(HttpSession.class);
+
+		_processAuthenticationResponse(
+			httpSession, offlineOpenIdConnectSessionManager);
+
+		Mockito.verify(
+			httpSession
+		).setAttribute(
+			OpenIdConnectWebKeys.OPEN_ID_CONNECT_SESSION_ID,
+			openIdConnectSessionId
+		);
+
+		Mockito.when(
+			offlineOpenIdConnectSessionManager.startOpenIdConnectSession(
+				Mockito.any(), Mockito.any(), Mockito.any(OIDCTokens.class),
+				Mockito.anyLong())
+		).thenThrow(
+			new SystemException(new ORMException(RandomTestUtil.randomString()))
+		);
+
+		try {
+			_processAuthenticationResponse(
+				httpSession, offlineOpenIdConnectSessionManager);
+
+			Assert.fail();
+		}
+		catch (SystemException systemException) {
+			Mockito.verify(
+				httpSession
+			).invalidate();
+		}
 	}
 
 	@Test
@@ -146,6 +216,134 @@ public class OpenIdConnectAuthenticationHandlerImplTest {
 
 		return openIdConnectAuthenticationHandlerImpl.getUserInfoClaims(
 			mockJWT);
+	}
+
+	private void _processAuthenticationResponse(
+			HttpSession httpSession,
+			OfflineOpenIdConnectSessionManager
+				offlineOpenIdConnectSessionManager)
+		throws Exception {
+
+		OpenIdConnectAuthenticationHandlerImpl
+			openIdConnectAuthenticationHandlerImpl =
+				new OpenIdConnectAuthenticationHandlerImpl();
+
+		HttpServletRequest httpServletRequest = Mockito.mock(
+			HttpServletRequest.class);
+		HttpSession authenticationHttpSession = Mockito.mock(HttpSession.class);
+
+		State state = new State();
+
+		Mockito.when(
+			authenticationHttpSession.getAttribute(Mockito.anyString())
+		).thenReturn(
+			new OpenIdConnectAuthenticationSession(
+				new CodeVerifier(), new Nonce(), RandomTestUtil.randomLong(),
+				state)
+		);
+
+		Mockito.when(
+			httpServletRequest.getQueryString()
+		).thenReturn(
+			StringBundler.concat(
+				"code=", RandomTestUtil.randomString(), "&state=",
+				state.getValue())
+		);
+
+		Mockito.when(
+			httpServletRequest.getRequestURL()
+		).thenReturn(
+			new StringBuffer("http://" + RandomTestUtil.randomString())
+		);
+
+		Mockito.when(
+			httpServletRequest.getSession()
+		).thenReturn(
+			authenticationHttpSession, httpSession
+		);
+
+		OAuthClientEntryLocalService oAuthClientEntryLocalService =
+			Mockito.mock(OAuthClientEntryLocalService.class);
+
+		Mockito.when(
+			oAuthClientEntryLocalService.getOAuthClientEntry(Mockito.anyLong())
+		).thenReturn(
+			Mockito.mock(OAuthClientEntry.class)
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			openIdConnectAuthenticationHandlerImpl,
+			"_oAuthClientEntryLocalService", oAuthClientEntryLocalService);
+
+		AuthorizationServerMetadataResolver
+			authorizationServerMetadataResolver = Mockito.mock(
+				AuthorizationServerMetadataResolver.class);
+
+		Mockito.when(
+			authorizationServerMetadataResolver.resolveOIDCProviderMetadata(
+				Mockito.any(), Mockito.anyLong(), Mockito.anyInt(),
+				Mockito.anyLong())
+		).thenReturn(
+			Mockito.mock(OIDCProviderMetadata.class)
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			openIdConnectAuthenticationHandlerImpl,
+			"_authorizationServerMetadataResolver",
+			authorizationServerMetadataResolver);
+
+		ReflectionTestUtil.setFieldValue(
+			openIdConnectAuthenticationHandlerImpl,
+			"_offlineOpenIdConnectSessionManager",
+			offlineOpenIdConnectSessionManager);
+		ReflectionTestUtil.setFieldValue(
+			openIdConnectAuthenticationHandlerImpl, "_oidcUserInfoProcessor",
+			Mockito.mock(OIDCUserInfoProcessor.class));
+		ReflectionTestUtil.setFieldValue(
+			openIdConnectAuthenticationHandlerImpl, "_portal",
+			Mockito.mock(Portal.class));
+
+		try (MockedStatic<OpenIdConnectClientInformationUtil>
+				openIdConnectClientInformationUtilMockedStatic =
+					Mockito.mockStatic(
+						OpenIdConnectClientInformationUtil.class);
+			MockedStatic<OpenIdConnectTokenRequestUtil>
+				openIdConnectTokenRequestUtilMockedStatic = Mockito.mockStatic(
+					OpenIdConnectTokenRequestUtil.class);
+			MockedStatic<ServiceContextFactory>
+				serviceContextFactoryMockedStatic = Mockito.mockStatic(
+					ServiceContextFactory.class)) {
+
+			openIdConnectClientInformationUtilMockedStatic.when(
+				() ->
+					OpenIdConnectClientInformationUtil.getOIDCClientInformation(
+						Mockito.any(), Mockito.any(), Mockito.any(),
+						Mockito.any())
+			).thenReturn(
+				Mockito.mock(OIDCClientInformation.class)
+			);
+
+			openIdConnectTokenRequestUtilMockedStatic.when(
+				() -> OpenIdConnectTokenRequestUtil.request(
+					Mockito.any(AuthenticationSuccessResponse.class),
+					Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+					Mockito.any(), Mockito.anyInt(), Mockito.any())
+			).thenReturn(
+				new OIDCTokens(
+					new PlainJWT(
+						new JWTClaimsSet.Builder(
+						).subject(
+							RandomTestUtil.randomString()
+						).build()),
+					new BearerAccessToken(), null)
+			);
+
+			openIdConnectAuthenticationHandlerImpl.
+				processAuthenticationResponse(
+					httpServletRequest, Mockito.mock(HttpServletResponse.class),
+					userId -> {
+					});
+		}
 	}
 
 	private String _requestUserInfoJSON() throws Exception {
