@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -149,7 +150,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throws ModelListenerException {
 
 		try {
-			_validateLinkedObjectEntrySpaceMembership(objectEntry);
+			_validateLinkedObjectEntrySpaceMembership(
+				objectEntry, objectEntry.getUserId());
 		}
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
@@ -174,7 +176,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throws ModelListenerException {
 
 		try {
-			_validateLinkedObjectEntrySpaceMembership(objectEntry);
+			_validateLinkedObjectEntrySpaceMembership(
+				objectEntry, PrincipalThreadLocal.getUserId());
 		}
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
@@ -672,7 +675,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 	}
 
 	private void _validateLinkedObjectEntrySpaceMembership(
-			ObjectEntry objectEntry)
+			ObjectEntry objectEntry, long userId)
 		throws Exception {
 
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
@@ -689,10 +692,10 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 
 		if (_roleLocalService.hasUserRole(
-				objectEntry.getUserId(), objectEntry.getCompanyId(),
-				RoleConstants.ADMINISTRATOR, true) ||
+				userId, objectEntry.getCompanyId(), RoleConstants.ADMINISTRATOR,
+				true) ||
 			_roleLocalService.hasUserRole(
-				objectEntry.getUserId(), objectEntry.getCompanyId(),
+				userId, objectEntry.getCompanyId(),
 				RoleConstants.CMS_ADMINISTRATOR, true)) {
 
 			return;
@@ -718,8 +721,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		List<Long> depotEntryGroupIds =
 			_depotEntryLocalService.getDepotEntryGroupIds(
-				objectEntry.getCompanyId(), objectEntry.getUserId(),
-				DepotConstants.TYPE_SPACE);
+				objectEntry.getCompanyId(), userId, DepotConstants.TYPE_SPACE);
 
 		if (depotEntryGroupIds.contains(group.getGroupId())) {
 			return;
@@ -727,7 +729,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		throw new ValidationException(
 			StringBundler.concat(
-				"User ", objectEntry.getUserId(), " must be a member of space ",
+				"User ", userId, " must be a member of space ",
 				group.getGroupId(), " to link its assets"));
 	}
 
