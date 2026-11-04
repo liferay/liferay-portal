@@ -193,7 +193,7 @@ public class LayoutServiceUpgradeStepRegistrator
 	private CTEntryLocalService _ctEntryLocalService;
 
 	@Reference(
-		target = "(&(release.bundle.symbolic.name=com.liferay.fragment.service)(release.schema.version>=2.5.0))"
+		target = "(&(release.bundle.symbolic.name=com.liferay.fragment.service)(release.schema.version>=3.0.0))"
 	)
 	private Release _fragmentServiceRelease;
 
