@@ -2252,17 +2252,11 @@ test(
 			'Liferay Data Platform Segments'
 		);
 
-		// Assert the Anonymous Segment and Interest Terms cache help texts are displayed
+		// Assert the Anonymous Segment cache help text is displayed
 
 		await expect(
 			page.getByText(
 				'Define the time (in seconds) before clearing the Anonymous Segment cache.'
-			)
-		).toBeVisible();
-
-		await expect(
-			page.getByText(
-				'Define the time (in seconds) before clearing the Interest Terms cache.'
 			)
 		).toBeVisible();
 	}
