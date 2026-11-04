@@ -1,6 +1,39 @@
 {{- $database := $xr.spec.database }}
 {{- $instanceType := $database.instanceType | default "db-custom-1-3840" }}
 
+{{- define "check-database-login-script" -}}
+script: |
+    #!/bin/sh
+
+    set -o errexit
+    set -o nounset
+
+    function main {
+    	local timeout
+
+    	timeout=$(($(date +%s) + 600))
+
+    	until PGCONNECT_TIMEOUT=10 psql \
+    		--command "SELECT 1" \
+    		--dbname "${DATABASE_NAME}" \
+    		--host 127.0.0.1 \
+    		--port "${DATABASE_PORT}" \
+    		--username "${DATABASE_USERNAME}" > /dev/null 2>&1
+    	do
+    		if [ "$(date +%s)" -ge "${timeout}" ]
+    		then
+    			echo "${DATABASE_USERNAME} could not be authenticated." >&2
+
+    			exit 1
+    		fi
+
+    		sleep 2
+    	done
+    }
+
+    main
+{{- end }}
+
 {{- define "database-job" -}}
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
@@ -134,27 +167,6 @@ script: |
 
     ALTER ROLE :"liferay_database_username" SET ROLE liferay_shared_owner;
     EOF
-
-    	local timeout
-
-    	timeout=$(($(date +%s) + 600))
-
-    	until PGCONNECT_TIMEOUT=10 PGPASSWORD=iam psql \
-    		--command "SELECT 1" \
-    		--dbname "${DATABASE_NAME}" \
-    		--host 127.0.0.1 \
-    		--port "${DATABASE_PORT}" \
-    		--username "${LIFERAY_DATABASE_USERNAME}" > /dev/null 2>&1
-    	do
-    		if [ "$(date +%s)" -ge "${timeout}" ]
-    		then
-    			echo "${LIFERAY_DATABASE_USERNAME} could not be authenticated." >&2
-
-    			exit 1
-    		fi
-
-    		sleep 2
-    	done
     }
 
     main
@@ -315,9 +327,9 @@ spec:
         {{- $isDatabaseInstanceReady = true }}
     {{- end }}
 {{- end }}
-{{- if and $isDatabaseInstanceReady $gsaEmail }}
 {{- $databaseConnectionName := dig "status" "atProvider" "connectionName" "" $observedDatabaseInstance }}
 {{- $databasePort := "5432" }}
+{{- if and $isDatabaseInstanceReady $gsaEmail }}
 ---
 {{ include "database-job" (dict
     "connectionName" $databaseConnectionName
@@ -333,6 +345,29 @@ spec:
     "namespace" $namespace
     "port" $databasePort
     "script" (include "grant-database-script" . | fromYaml).script
+    "serviceAccountName" "liferay-default") }}
+{{- end }}
+{{- $isDatabaseGranted := false }}
+{{- range $condition := dig (printf "liferay-db-grant-job-%s" $dataPlane) "resource" "status" "conditions" list $observedResources }}
+    {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
+        {{- $isDatabaseGranted = true }}
+    {{- end }}
+{{- end }}
+{{- if $isDatabaseGranted }}
+---
+{{ include "database-job" (dict
+    "connectionName" $databaseConnectionName
+    "dataPlane" $dataPlane
+    "env" (list
+        (dict "name" "DATABASE_NAME" "value" $databaseName)
+        (dict "name" "DATABASE_PORT" "value" $databasePort)
+        (dict "name" "DATABASE_USERNAME" "value" $databaseIamUser)
+        (dict "name" "PGPASSWORD" "value" "iam"))
+    "jobName" (printf "%s-db-login-check-%s" $xr.metadata.name $dataPlane)
+    "name" "login-check"
+    "namespace" $namespace
+    "port" $databasePort
+    "script" (include "check-database-login-script" . | fromYaml).script
     "serviceAccountName" "liferay-default") }}
 {{- end }}
 {{- end }}
@@ -395,7 +430,7 @@ spec:
 {{- end }}
 {{- $activeDatabaseConnectionName := dig (printf "database-primary-%s" $activeDataPlane) "resource" "status" "atProvider" "connectionName" "" $observedResources }}
 {{- $isDatabaseBootstrapped := false }}
-{{- range $condition := dig (printf "liferay-db-grant-job-%s" $activeDataPlane) "resource" "status" "conditions" list $observedResources }}
+{{- range $condition := dig (printf "liferay-db-login-check-job-%s" $activeDataPlane) "resource" "status" "conditions" list $observedResources }}
     {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
         {{- $isDatabaseBootstrapped = true }}
     {{- end }}
