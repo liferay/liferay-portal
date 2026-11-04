@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.ServiceContextFunction;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -80,7 +79,9 @@ public class EditContentItemCommentStrutsAction implements StrutsAction {
 
 			_commentManager.updateComment(
 				themeDisplay.getUserId(), className1, classPK, commentId, null,
-				body, new ServiceContextFunction(httpServletRequest));
+				body,
+				CommentUtil.getServiceContextFunction(
+					classPK, httpServletRequest));
 
 			comment = _commentManager.fetchComment(commentId);
 
