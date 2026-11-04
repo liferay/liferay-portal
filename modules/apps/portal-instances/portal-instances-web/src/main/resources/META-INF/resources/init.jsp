@@ -18,7 +18,6 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ page import="com.liferay.portal.instances.web.internal.constants.PortalInstancesWebKeys" %><%@
 page import="com.liferay.portal.instances.web.internal.display.context.PortalInstancesManagementToolbarDisplayContext" %><%@
 page import="com.liferay.portal.instances.web.internal.taglib.util.CompanyActionDropdownItems" %><%@
-page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
 page import="com.liferay.portal.kernel.dao.search.SearchContainer" %><%@
 page import="com.liferay.portal.kernel.exception.CompanyMaxUsersException" %><%@
 page import="com.liferay.portal.kernel.exception.CompanyMxException" %><%@
@@ -35,6 +34,7 @@ page import="com.liferay.portal.kernel.security.auth.FullNameDefinitionFactory" 
 page import="com.liferay.portal.kernel.service.CompanyLocalServiceUtil" %><%@
 page import="com.liferay.portal.kernel.service.UserLocalServiceUtil" %><%@
 page import="com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil" %><%@
+page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
