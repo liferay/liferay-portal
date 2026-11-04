@@ -33,11 +33,13 @@ export default function ViewWorkflowTasks({
 	myRolesWorkflowTasksURL,
 	myWorkflowTasksURL,
 	objectDefinitions,
+	workflowTaskURL,
 }: {
 	id: string;
 	myRolesWorkflowTasksURL: string;
 	myWorkflowTasksURL: string;
 	objectDefinitions: any[];
+	workflowTaskURL: string;
 }) {
 	const filterItems = [
 		{
@@ -98,7 +100,7 @@ export default function ViewWorkflowTasks({
 			const items = res.items.map((item) => {
 				return {
 					...item,
-					myWorkflowTasksURL,
+					workflowTaskURL,
 				};
 			});
 
@@ -110,7 +112,7 @@ export default function ViewWorkflowTasks({
 		catch (error) {
 			setWorkflowTasks({items: [], totalCount: 0});
 		}
-	}, [pagination, selectedItem.value, myWorkflowTasksURL, objectDefinitions]);
+	}, [pagination, selectedItem.value, workflowTaskURL, objectDefinitions]);
 
 	useEffect(() => {
 		getWorkflowTasks();

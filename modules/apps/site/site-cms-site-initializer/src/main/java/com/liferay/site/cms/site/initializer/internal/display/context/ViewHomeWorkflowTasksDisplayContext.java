@@ -14,14 +14,18 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
+
+import jakarta.portlet.ActionRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -62,6 +66,15 @@ public class ViewHomeWorkflowTasksDisplayContext {
 			"myWorkflowTasksURL", tasksURL
 		).put(
 			"objectDefinitions", _getObjectDefinitionsJSONArray()
+		).put(
+			"workflowTaskURL",
+			PortletURLBuilder.create(
+				PortalUtil.getControlPanelPortletURL(
+					_httpServletRequest, PortletKeys.MY_WORKFLOW_TASK,
+					ActionRequest.RENDER_PHASE)
+			).setRedirect(
+				_themeDisplay.getURLCurrent()
+			).buildString()
 		).build();
 	}
 

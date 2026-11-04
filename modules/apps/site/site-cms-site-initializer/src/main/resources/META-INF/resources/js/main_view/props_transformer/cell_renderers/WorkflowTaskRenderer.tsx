@@ -37,7 +37,7 @@ const WorkflowTaskRenderer = ({itemData}: {itemData: WorkflowTask}) => {
 							<a
 								className="font-weight-bold text-decoration-underline"
 								href={createPortletURL(
-									itemData.myWorkflowTasksURL,
+									itemData.workflowTaskURL,
 									{
 										mvcPath: '/edit_workflow_task.jsp',
 										workflowTaskId: itemData.id,

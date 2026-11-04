@@ -17,7 +17,6 @@ export interface WorkflowTask {
 	dateDue: string;
 	id: string;
 	label: string;
-	myWorkflowTasksURL: string;
 	name: string;
 	objectReviewed: {
 		assetTitle: string;
@@ -25,4 +24,5 @@ export interface WorkflowTask {
 		id: Number;
 	};
 	workflowLogs: WorkflowLog[];
+	workflowTaskURL: string;
 }
