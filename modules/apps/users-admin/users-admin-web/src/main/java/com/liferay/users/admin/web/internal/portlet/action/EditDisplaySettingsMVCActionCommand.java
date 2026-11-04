@@ -5,7 +5,6 @@
 
 package com.liferay.users.admin.web.internal.portlet.action;
 
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -54,10 +53,10 @@ public class EditDisplaySettingsMVCActionCommand extends BaseMVCActionCommand {
 			themeDisplay.getPermissionChecker(), user.getUserId(),
 			ActionKeys.UPDATE);
 
-		String timeZoneId = BeanParamUtil.getString(
-			user, actionRequest, "timeZoneId");
-		String greeting = BeanParamUtil.getString(
-			user, actionRequest, "greeting");
+		String timeZoneId = ParamUtil.getString(
+			actionRequest, "timeZoneId", user.getTimeZoneId());
+		String greeting = ParamUtil.getString(
+			actionRequest, "greeting", user.getGreeting());
 
 		user.setTimeZoneId(timeZoneId);
 		user.setGreeting(greeting);

@@ -11,7 +11,6 @@ import com.liferay.asset.kernel.exception.AssetTagException;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
 import com.liferay.portal.kernel.exception.ContactBirthdayException;
 import com.liferay.portal.kernel.exception.ContactNameException;
@@ -351,13 +350,11 @@ public class EditUserMVCActionCommand
 
 		User user = portal.getSelectedUser(actionRequest);
 
-		Contact contact = user.getContact();
-
 		String oldPassword = ParamUtil.getString(actionRequest, "password");
 
 		String oldScreenName = user.getScreenName();
-		String screenName = BeanParamUtil.getString(
-			user, actionRequest, "screenName");
+		String screenName = ParamUtil.getString(
+			actionRequest, "screenName", user.getScreenName());
 
 		if (PrefsPropsUtil.getBoolean(
 				user.getCompanyId(),
@@ -367,8 +364,8 @@ public class EditUserMVCActionCommand
 		}
 
 		String oldEmailAddress = user.getEmailAddress();
-		String emailAddress = BeanParamUtil.getString(
-			user, actionRequest, "emailAddress");
+		String emailAddress = ParamUtil.getString(
+			actionRequest, "emailAddress", user.getEmailAddress());
 
 		Company company = portal.getCompany(actionRequest);
 
@@ -400,20 +397,23 @@ public class EditUserMVCActionCommand
 			portraitBytes = FileUtil.getBytes(fileEntry.getContentStream());
 		}
 
-		String languageId = BeanParamUtil.getString(
-			user, actionRequest, "languageId");
-		String firstName = BeanParamUtil.getString(
-			user, actionRequest, "firstName");
-		String middleName = BeanParamUtil.getString(
-			user, actionRequest, "middleName");
-		String lastName = BeanParamUtil.getString(
-			user, actionRequest, "lastName");
-		long prefixListTypeId = BeanParamUtil.getLong(
-			contact, actionRequest, "prefixListTypeId");
-		long suffixListTypeId = BeanParamUtil.getLong(
-			contact, actionRequest, "suffixListTypeId");
-		boolean male = BeanParamUtil.getBoolean(
-			user, actionRequest, "male", true);
+		String languageId = ParamUtil.getString(
+			actionRequest, "languageId", user.getLanguageId());
+		String firstName = ParamUtil.getString(
+			actionRequest, "firstName", user.getFirstName());
+		String middleName = ParamUtil.getString(
+			actionRequest, "middleName", user.getMiddleName());
+		String lastName = ParamUtil.getString(
+			actionRequest, "lastName", user.getLastName());
+
+		Contact contact = user.getContact();
+
+		long prefixListTypeId = ParamUtil.getLong(
+			actionRequest, "prefixListTypeId", contact.getPrefixListTypeId());
+		long suffixListTypeId = ParamUtil.getLong(
+			actionRequest, "suffixListTypeId", contact.getSuffixListTypeId());
+		boolean male = ParamUtil.getBoolean(
+			actionRequest, "male", contact.isMale());
 
 		Calendar calendar = CalendarFactoryUtil.getCalendar();
 
@@ -426,10 +426,10 @@ public class EditUserMVCActionCommand
 		int birthdayYear = ParamUtil.getInteger(
 			actionRequest, "birthdayYear", calendar.get(Calendar.YEAR));
 
-		String comments = BeanParamUtil.getString(
-			user, actionRequest, "comments");
-		String jobTitle = BeanParamUtil.getString(
-			user, actionRequest, "jobTitle");
+		String comments = ParamUtil.getString(
+			actionRequest, "comments", user.getComments());
+		String jobTitle = ParamUtil.getString(
+			actionRequest, "jobTitle", user.getJobTitle());
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			User.class.getName(), actionRequest);
