@@ -15,6 +15,9 @@ import com.liferay.headless.admin.configuration.test.configuration.TestConfigura
 import com.liferay.headless.admin.configuration.test.configuration.TestFactoryConfiguration;
 import com.liferay.headless.admin.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -29,6 +32,7 @@ import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +42,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Thiago Buarque
@@ -131,15 +138,8 @@ public class SystemConfigurationResourceTest
 	public void testPostSystemConfiguration() throws Exception {
 		super.testPostSystemConfiguration();
 
-		SystemConfiguration randomSystemConfiguration =
-			_randomSystemConfigurationFromConfigurationScreen();
-
-		SystemConfiguration postSystemConfiguration =
-			testPostSystemConfiguration_addSystemConfiguration(
-				randomSystemConfiguration);
-
-		assertEquals(randomSystemConfiguration, postSystemConfiguration);
-		assertValid(postSystemConfiguration);
+		_testPostSystemConfigurationFromConfigurationScreen();
+		_testPostSystemConfigurationWithMissingFactoryExternalReferenceCode();
 	}
 
 	@Override
@@ -321,6 +321,112 @@ public class SystemConfigurationResourceTest
 		}
 	}
 
+	private void _testPostSystemConfigurationFromConfigurationScreen()
+		throws Exception {
+
+		SystemConfiguration randomSystemConfiguration =
+			_randomSystemConfigurationFromConfigurationScreen();
+
+		SystemConfiguration postSystemConfiguration =
+			testPostSystemConfiguration_addSystemConfiguration(
+				randomSystemConfiguration);
+
+		assertEquals(randomSystemConfiguration, postSystemConfiguration);
+		assertValid(postSystemConfiguration);
+	}
+
+	private void _testPostSystemConfigurationWithMissingFactoryExternalReferenceCode()
+		throws Exception {
+
+		SystemConfiguration systemConfiguration = randomSystemConfiguration();
+
+		systemConfiguration.setExternalReferenceCode(
+			StringBundler.concat(
+				ConfigurationTestUtil.TEST_FACTORY_CONFIGURATION_PID, "~",
+				RandomTestUtil.randomString()));
+
+		SystemConfiguration postSystemConfiguration1 =
+			systemConfigurationResource.postSystemConfiguration(
+				systemConfiguration);
+
+		assertEquals(systemConfiguration, postSystemConfiguration1);
+		Assert.assertEquals(
+			systemConfiguration.getExternalReferenceCode(),
+			postSystemConfiguration1.getExternalReferenceCode());
+
+		SystemConfiguration postSystemConfiguration2 =
+			systemConfigurationResource.postSystemConfiguration(
+				systemConfiguration);
+
+		Assert.assertEquals(
+			systemConfiguration.getExternalReferenceCode(),
+			postSystemConfiguration2.getExternalReferenceCode());
+
+		systemConfiguration =
+			systemConfigurationResource.postSystemConfiguration(
+				randomSystemConfiguration());
+
+		Configuration configuration = _configurationAdmin.getConfiguration(
+			systemConfiguration.getExternalReferenceCode(),
+			StringPool.QUESTION);
+
+		configuration.delete();
+
+		SystemConfiguration postSystemConfiguration3 =
+			systemConfigurationResource.postSystemConfiguration(
+				systemConfiguration);
+
+		assertEquals(systemConfiguration, postSystemConfiguration3);
+		Assert.assertEquals(
+			systemConfiguration.getExternalReferenceCode(),
+			postSystemConfiguration3.getExternalReferenceCode());
+
+		SystemConfiguration postSystemConfiguration4 =
+			systemConfigurationResource.postSystemConfiguration(
+				systemConfiguration);
+
+		Assert.assertEquals(
+			systemConfiguration.getExternalReferenceCode(),
+			postSystemConfiguration4.getExternalReferenceCode());
+
+		configuration = _configurationAdmin.getConfiguration(
+			systemConfiguration.getExternalReferenceCode(),
+			StringPool.QUESTION);
+
+		Dictionary<String, Object> properties = configuration.getProperties();
+
+		properties.put(
+			ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
+			testGroup.getGroupId());
+
+		configuration.update(properties);
+
+		SystemConfiguration postSystemConfiguration5 =
+			systemConfigurationResource.postSystemConfiguration(
+				systemConfiguration);
+
+		Assert.assertNotEquals(
+			systemConfiguration.getExternalReferenceCode(),
+			postSystemConfiguration5.getExternalReferenceCode());
+
+		systemConfiguration.setExternalReferenceCode(
+			StringBundler.concat(
+				ConfigurationTestUtil.TEST_FACTORY_CONFIGURATION_PID,
+				".scoped~", RandomTestUtil.randomString()));
+
+		try {
+			systemConfigurationResource.postSystemConfiguration(
+				systemConfiguration);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
 	private void _testPutSystemConfigurationWithoutPermission()
 		throws Exception {
 
@@ -345,6 +451,9 @@ public class SystemConfigurationResourceTest
 
 	@Inject
 	private static SettingsLocatorHelper _settingsLocatorHelper;
+
+	@Inject
+	private ConfigurationAdmin _configurationAdmin;
 
 	private SystemConfigurationResource _userSystemConfigurationResource;
 
