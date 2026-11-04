@@ -15,7 +15,7 @@ List<CPOptionCategory> cpOptionCategories = cpDefinitionSpecificationOptionValue
 
 CPSpecificationOption cpSpecificationOption = cpDefinitionSpecificationOptionValue.getCPSpecificationOption();
 
-long cpOptionCategoryId = BeanParamUtil.getLong(cpDefinitionSpecificationOptionValue, request, "CPOptionCategoryId");
+long cpOptionCategoryId = ParamUtil.getLong(request, "CPOptionCategoryId", GetterUtil.get(cpDefinitionSpecificationOptionValue, CPDefinitionSpecificationOptionValue::getCPOptionCategoryId, 0L));
 
 Map<String, List<SelectOption>> selectOptionsMap = cpDefinitionSpecificationOptionValueDisplayContext.getSelectOptionsMap();
 %>

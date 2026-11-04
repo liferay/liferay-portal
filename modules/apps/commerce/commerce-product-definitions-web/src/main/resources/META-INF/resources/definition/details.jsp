@@ -16,7 +16,7 @@ List<CommerceCatalog> commerceCatalogs = cpDefinitionsDisplayContext.getCommerce
 
 String defaultLanguageId = cpDefinitionsDisplayContext.getCatalogDefaultLanguageId();
 
-String productTypeName = BeanParamUtil.getString(cpDefinition, request, "productTypeName");
+String productTypeName = ParamUtil.getString(request, "productTypeName", GetterUtil.get(cpDefinition, CPDefinition::getProductTypeName, StringPool.BLANK));
 
 String friendlyURLBase = themeDisplay.getPortalURL() + cpDefinitionsDisplayContext.getProductURLSeparator();
 
