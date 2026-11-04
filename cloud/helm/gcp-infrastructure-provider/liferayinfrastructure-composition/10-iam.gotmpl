@@ -1,4 +1,34 @@
 {{- $databaseInstanceCondition := printf "resource.type != \"sqladmin.googleapis.com/Instance\" || resource.name.startsWith(\"projects/%s/instances/%s\")" $env.projectId $databaseInstanceNamePrefix }}
+{{- if $databaseBootstrapMember }}
+---
+apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
+kind: ProjectIAMMember
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-sql-client-role
+spec:
+    forProvider:
+        condition:
+            expression: {{ $databaseInstanceCondition }}
+            title: liferay-environment-database-instances
+        member: {{ $databaseBootstrapMember }}
+        project: {{ $env.projectId }}
+        role: roles/cloudsql.client
+---
+apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
+kind: ProjectIAMMember
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-sql-instance-user-role
+spec:
+    forProvider:
+        condition:
+            expression: {{ $databaseInstanceCondition }}
+            title: liferay-environment-database-instances
+        member: {{ $databaseBootstrapMember }}
+        project: {{ $env.projectId }}
+        role: roles/cloudsql.instanceUser
+{{- end }}
 {{- if $gsaMember }}
 ---
 apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
@@ -34,6 +64,19 @@ apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
 kind: ServiceAccount
 metadata:
     annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-gsa
+    labels:
+        app: liferay
+        component: database-bootstrap-service-account
+    name: {{ $baseName }}-dba
+spec:
+    forProvider:
+        displayName: Liferay {{ $projectId }} {{ $environmentId }} database bootstrap
+---
+apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
+kind: ServiceAccount
+metadata:
+    annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-gsa
     labels:
         app: liferay
@@ -42,6 +85,20 @@ metadata:
 spec:
     forProvider:
         displayName: Liferay {{ $projectId }} {{ $environmentId }}
+---
+apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
+kind: ServiceAccountIAMMember
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-wi-binding
+spec:
+    forProvider:
+        member: serviceAccount:{{ $env.projectId }}.svc.id.goog[{{ $namespace }}/database-bootstrap]
+        role: roles/iam.workloadIdentityUser
+        serviceAccountIdSelector:
+            matchLabels:
+                app: liferay
+                component: database-bootstrap-service-account
 ---
 apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
 kind: ServiceAccountIAMMember
@@ -56,6 +113,25 @@ spec:
             matchLabels:
                 app: liferay
                 component: service-account
+{{- if $databaseBootstrapMember }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-ksa
+    name: {{ $xr.metadata.name }}-database-bootstrap-ksa
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+                annotations:
+                    iam.gke.io/gcp-service-account: {{ $databaseBootstrapEmail }}
+                name: database-bootstrap
+                namespace: {{ $namespace }}
+{{- end }}
 {{- if $gsaMember }}
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1

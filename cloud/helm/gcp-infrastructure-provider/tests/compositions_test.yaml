@@ -134,6 +134,14 @@ tests:
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "\\$[A-Za-z]+ := dig \"liferay-cryptokey\" \"resource\" \"status\" \"atProvider\" \"id\" \"\" \\$[A-Za-z]+"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := dig \"database-bootstrap-gsa\" \"resource\" \"status\" \"atProvider\" \"email\" \"\" \\$[A-Za-z]+"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := dig \"database-bootstrap-gsa\" \"resource\" \"status\" \"atProvider\" \"member\" \"\" \\$[A-Za-z]+"
         it: Reads the service account and key identities that GCP reports
     -   asserts:
             -   documentIndex: 0
