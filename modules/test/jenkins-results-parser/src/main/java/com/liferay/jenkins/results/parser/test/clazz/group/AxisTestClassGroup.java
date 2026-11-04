@@ -236,8 +236,7 @@ public class AxisTestClassGroup extends BaseTestClassGroup {
 		}
 
 		return TestrayFactory.newTestrayRun(
-			testrayContext.getTestrayBuild(getTestBaseDir()),
-			getEnhancedBatchName(), job);
+			testrayContext.getTestrayBuild(getTestBaseDir()), this);
 	}
 
 	public boolean isBuildCachingEnabled() {

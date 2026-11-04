@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -771,6 +772,34 @@ public class TestrayFactory {
 	}
 
 	public static TestrayRun newTestrayRun(
+		TestrayBuild testrayBuild, AxisTestClassGroup axisTestClassGroup) {
+
+		Job job = axisTestClassGroup.getJob();
+
+		synchronized (_testrayRuns) {
+			String name = TestrayRun.getRunIdString(
+				axisTestClassGroup.getEnhancedBatchName(),
+				job.getTestSuiteName(), job.getJobProperties());
+
+			if (name == null) {
+				throw new RuntimeException(
+					"Please set testray.environment.default[master]");
+			}
+
+			Set<String> suffixedBatchNames = _getSuffixedBatchNames(
+				testrayBuild, job);
+
+			String batchName = axisTestClassGroup.getBatchName();
+
+			if (suffixedBatchNames.contains(batchName)) {
+				name = TestrayRun.getBatchRunIdString(batchName, name);
+			}
+
+			return _newTestrayRun(testrayBuild, name);
+		}
+	}
+
+	public static TestrayRun newTestrayRun(
 		TestrayBuild testrayBuild, JSONObject jsonObject) {
 
 		synchronized (_testrayRuns) {
@@ -788,25 +817,6 @@ public class TestrayFactory {
 			_testrayRuns.put(key, testrayRun);
 
 			return testrayRun;
-		}
-	}
-
-	public static TestrayRun newTestrayRun(
-		TestrayBuild testrayBuild, String batchName, Job job) {
-
-		synchronized (_testrayRuns) {
-			Map<String, String> runIdStrings = _getRunIdStrings(
-				testrayBuild, job);
-
-			String name = runIdStrings.get(batchName);
-
-			if (name == null) {
-				return newTestrayRun(
-					testrayBuild, batchName, job.getTestSuiteName(),
-					job.getJobProperties());
-			}
-
-			return _newTestrayRun(testrayBuild, name);
 		}
 	}
 
@@ -909,17 +919,17 @@ public class TestrayFactory {
 			status, testrayBuild, topLevelBuildReport);
 	}
 
-	private static Map<String, String> _getRunIdStrings(
+	private static Set<String> _getSuffixedBatchNames(
 		TestrayBuild testrayBuild, Job job) {
 
 		String key = JenkinsResultsParserUtil.combine(
 			String.valueOf(testrayBuild.getId()), "__", job.getJobName(), "__",
 			job.getTestSuiteName());
 
-		Map<String, String> runIdStrings = _runIdStrings.get(key);
+		Set<String> suffixedBatchNames = _suffixedBatchNames.get(key);
 
-		if (runIdStrings != null) {
-			return runIdStrings;
+		if (suffixedBatchNames != null) {
+			return suffixedBatchNames;
 		}
 
 		List<String> jobPropertyOptions = new ArrayList<>(
@@ -968,11 +978,10 @@ public class TestrayFactory {
 			factorRunIdStrings.put(batchName, factorRunIdString);
 		}
 
-		runIdStrings = new HashMap<>();
+		suffixedBatchNames = new HashSet<>();
 
 		for (Map.Entry<String, String> entry : factorRunIdStrings.entrySet()) {
 			String batchName = entry.getKey();
-			String runIdString = entry.getValue();
 
 			for (Map.Entry<String, String> otherEntry :
 					factorRunIdStrings.entrySet()) {
@@ -980,7 +989,7 @@ public class TestrayFactory {
 				String otherBatchName = otherEntry.getKey();
 
 				if (otherBatchName.equals(batchName) ||
-					!runIdString.equals(otherEntry.getValue())) {
+					!Objects.equals(entry.getValue(), otherEntry.getValue())) {
 
 					continue;
 				}
@@ -989,19 +998,16 @@ public class TestrayFactory {
 					((otherBatchName.length() == batchName.length()) &&
 					 (otherBatchName.compareTo(batchName) < 0))) {
 
-					runIdString = TestrayRun.getBatchRunIdString(
-						batchName, runIdString);
+					suffixedBatchNames.add(batchName);
 
 					break;
 				}
 			}
-
-			runIdStrings.put(batchName, runIdString);
 		}
 
-		_runIdStrings.put(key, runIdStrings);
+		_suffixedBatchNames.put(key, suffixedBatchNames);
 
-		return runIdStrings;
+		return suffixedBatchNames;
 	}
 
 	private static TestrayRun _newTestrayRun(
@@ -1022,9 +1028,9 @@ public class TestrayFactory {
 		return testrayRun;
 	}
 
-	private static final Map<String, Map<String, String>> _runIdStrings =
-		new ConcurrentHashMap<>();
 	private static final Map<String, RunTestrayFactor> _runTestrayFactors =
+		new ConcurrentHashMap<>();
+	private static final Map<String, Set<String>> _suffixedBatchNames =
 		new ConcurrentHashMap<>();
 	private static final Map<Build, TestrayAttachmentRecorder>
 		_testrayAttachmentRecorders = new ConcurrentHashMap<>();
