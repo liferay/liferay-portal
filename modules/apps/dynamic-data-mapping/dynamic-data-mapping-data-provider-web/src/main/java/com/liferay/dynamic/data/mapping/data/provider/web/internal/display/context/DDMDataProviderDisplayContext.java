@@ -43,7 +43,6 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -163,8 +162,11 @@ public class DDMDataProviderDisplayContext {
 		DDMDataProviderInstance ddmDataProviderInstance =
 			fetchDataProviderInstance();
 
-		String type = BeanParamUtil.getString(
-			ddmDataProviderInstance, _renderRequest, "type");
+		String type = ParamUtil.getString(
+			_renderRequest, "type",
+			GetterUtil.get(
+				ddmDataProviderInstance, DDMDataProviderInstance::getType,
+				StringPool.BLANK));
 
 		DDMDataProvider ddmDataProvider =
 			_ddmDataProviderRegistry.getDDMDataProvider(type);
