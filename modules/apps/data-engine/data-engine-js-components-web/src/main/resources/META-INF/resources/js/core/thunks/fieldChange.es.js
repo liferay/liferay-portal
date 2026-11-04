@@ -161,6 +161,7 @@ export default function fieldChange({
 				disableSubmitButton(submitButtonId);
 
 				let evaluatedPages = await evaluate(fieldName, {
+					containerId,
 					defaultLanguageId,
 					editingLanguageId,
 					formId,

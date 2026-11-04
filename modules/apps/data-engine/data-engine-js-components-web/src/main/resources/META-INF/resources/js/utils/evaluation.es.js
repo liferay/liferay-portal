@@ -157,6 +157,7 @@ const doEvaluate = debounce((fieldName, evaluatorContext, callback) => {
 	makeFetch({
 		body: convertToFormData({
 			languageId:
+				containerId === `${portletNamespace}editConfiguration` ||
 				containerId === `${portletNamespace}editObjectEntry`
 					? defaultLanguageId
 					: editingLanguageId,

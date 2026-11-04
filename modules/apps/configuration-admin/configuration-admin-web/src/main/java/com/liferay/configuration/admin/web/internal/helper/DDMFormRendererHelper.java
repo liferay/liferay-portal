@@ -71,6 +71,8 @@ public class DDMFormRendererHelper {
 		DDMFormRenderingContext ddmFormRenderingContext =
 			new DDMFormRenderingContext();
 
+		ddmFormRenderingContext.setContainerId(
+			_portletResponse.getNamespace() + "editConfiguration");
 		ddmFormRenderingContext.setDDMFormValues(_getDDMFormValues(ddmForm));
 		ddmFormRenderingContext.setHttpServletRequest(
 			PortalUtil.getHttpServletRequest(_portletRequest));
