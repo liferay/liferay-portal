@@ -85,7 +85,7 @@ public class AnalyticsDispatchTriggersUpgradeProcess extends UpgradeProcess {
 				_dispatchTriggerLocalService.fetchDispatchTrigger(
 					companyId, "export-analytics-dxp-entities");
 
-			if (dispatchTrigger != null) {
+			if ((dispatchTrigger != null) && dispatchTrigger.isActive()) {
 				continue;
 			}
 
@@ -97,10 +97,13 @@ public class AnalyticsDispatchTriggersUpgradeProcess extends UpgradeProcess {
 				continue;
 			}
 
-			dispatchTrigger = _dispatchTriggerLocalService.addDispatchTrigger(
-				null, user.getUserId(), _dispatchTaskExecutor,
-				"export-analytics-dxp-entities", null,
-				"export-analytics-dxp-entities", false);
+			if (dispatchTrigger == null) {
+				dispatchTrigger =
+					_dispatchTriggerLocalService.addDispatchTrigger(
+						null, user.getUserId(), _dispatchTaskExecutor,
+						"export-analytics-dxp-entities", null,
+						"export-analytics-dxp-entities", false);
+			}
 
 			LocalDateTime localDateTime = LocalDateTime.now();
 
