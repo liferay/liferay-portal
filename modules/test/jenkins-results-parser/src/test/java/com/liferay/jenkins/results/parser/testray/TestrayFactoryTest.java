@@ -240,9 +240,7 @@ public class TestrayFactoryTest
 		Properties jobProperties = new Properties();
 
 		jobProperties.setProperty("test.batch.names", batchNames);
-
 		jobProperties.setProperty("test.batch.names.smoke", smokeBatchNames);
-
 		jobProperties.setProperty(
 			"testray.environment.factor.name[database]",
 			RandomTestUtil.randomString());
