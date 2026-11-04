@@ -26,6 +26,13 @@ export const useRequest = <TParams extends object, TData>({
 	const requestAbortControllerRef = useRef<AbortController>();
 	const debounceRef = useRef<ReturnType<typeof debounce>>();
 
+	// `refetch` is stored once in state, so it reads the variables from here
+	// instead of the first render's
+
+	const variablesRef = useRef(variables);
+
+	variablesRef.current = variables;
+
 	const debouncedDataSourceFn = useCallback<any>(
 		debounce(debounceDelay)((vars) => {
 			if (!dataSourceFn) {
@@ -63,7 +70,7 @@ export const useRequest = <TParams extends object, TData>({
 	const getData = () => {
 		setState({...state, loading: true});
 
-		debounceRef.current = debouncedDataSourceFn(variables);
+		debounceRef.current = debouncedDataSourceFn(variablesRef.current);
 	};
 
 	const [state, setState] = useState({

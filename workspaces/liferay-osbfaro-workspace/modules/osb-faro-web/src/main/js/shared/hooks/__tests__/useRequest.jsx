@@ -77,4 +77,57 @@ describe('withRequest', () => {
 			expect(spy).toHaveBeenCalledTimes(2);
 		});
 	});
+
+	it('refetches with the current variables after they change', async () => {
+		const spy = jest.fn(({type}) => Promise.resolve(type));
+
+		let result = null;
+
+		const Component = ({type}) => {
+			result = useRequest({dataSourceFn: spy, variables: {type}});
+
+			return null;
+		};
+
+		const {rerender} = render(<Component type="ALL" />);
+
+		await waitFor(() => expect(result.data).toBe('ALL'));
+
+		rerender(<Component type="CUSTOM" />);
+
+		await waitFor(() => expect(result.data).toBe('CUSTOM'));
+
+		spy.mockClear();
+
+		result.refetch();
+
+		await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
+
+		expect(spy).toHaveBeenLastCalledWith({type: 'CUSTOM'});
+	});
+
+	it('clears a previous error once a request succeeds', async () => {
+		const spy = jest
+			.fn()
+			.mockRejectedValueOnce('failed')
+			.mockResolvedValueOnce('passed');
+
+		let result = null;
+
+		const Component = () => {
+			result = useRequest({dataSourceFn: spy, variables: {}});
+
+			return null;
+		};
+
+		render(<Component />);
+
+		await waitFor(() => expect(result.error).toBe(true));
+
+		result.refetch();
+
+		await waitFor(() => expect(result.data).toBe('passed'));
+
+		expect(result.error).toBe(false);
+	});
 });
