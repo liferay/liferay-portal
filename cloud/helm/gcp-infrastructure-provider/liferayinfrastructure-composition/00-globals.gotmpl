@@ -29,6 +29,7 @@
 {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane -}}
 
 {{- $activeDataPlane := $targetActiveDataPlane -}}
+{{- $databaseBootstrapIamUser := trimSuffix ".gserviceaccount.com" $databaseBootstrapEmail -}}
 {{- $databaseIamUser := trimSuffix ".gserviceaccount.com" $gsaEmail -}}
 {{- $dataPlanes := list $targetActiveDataPlane -}}
 {{- $isCMKKeyReady := or (not $cmkEnabled) $cmkKeyId -}}

@@ -297,6 +297,31 @@ spec:
     managementPolicies: {{ $xr.spec.backup.enabled | ternary ((list "*") | toJson) $managementPolicies }}
 {{- end }}
 {{- if not (and (eq $dataPlane $targetActiveDataPlane) (eq $restorePhase "provisioning")) }}
+{{- if $databaseBootstrapEmail }}
+---
+apiVersion: sql.gcp.m.upbound.io/v1beta1
+kind: User
+metadata:
+    annotations:
+        crossplane.io/external-name: {{ $databaseBootstrapIamUser }}
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-iam-user-{{ $dataPlane }}
+    labels:
+        app: liferay
+        component: database-bootstrap-user
+        dataPlane: {{ $dataPlane }}
+    name: {{ $xr.metadata.name }}-db-bootstrap-user-{{ $dataPlane }}
+spec:
+    forProvider:
+        databaseRoles:
+            -   cloudsqlsuperuser
+        instanceSelector:
+            matchLabels:
+                app: liferay
+                component: database-instance
+                dataPlane: {{ $dataPlane }}
+        type: CLOUD_IAM_SERVICE_ACCOUNT
+    managementPolicies: ["Create", "Observe", "Update"]
+{{- end }}
 {{- if $gsaEmail }}
 ---
 apiVersion: sql.gcp.m.upbound.io/v1beta1
