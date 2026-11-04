@@ -14,6 +14,8 @@ import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 import java.net.URL;
 
@@ -199,9 +201,9 @@ public class TestrayFactoryTest
 			AxisTestClassGroup.class);
 
 		Mockito.when(
-			axisTestClassGroup.getBatchName()
+			axisTestClassGroup.getJob()
 		).thenReturn(
-			batchName
+			job
 		);
 
 		Mockito.when(
@@ -211,15 +213,17 @@ public class TestrayFactoryTest
 		);
 
 		Mockito.when(
-			axisTestClassGroup.getJob()
+			axisTestClassGroup.getBatchName()
 		).thenReturn(
-			job
+			batchName
 		);
 
 		return axisTestClassGroup;
 	}
 
-	private Job _mockJob(String batchNames, String smokeBatchNames) {
+	private Job _mockJob(String batchNames, String smokeBatchNames)
+		throws Exception {
+
 		Job job = Mockito.mock(Job.class);
 
 		Mockito.when(
@@ -232,10 +236,11 @@ public class TestrayFactoryTest
 
 		jobProperties.setProperty("test.batch.names", batchNames);
 
-		if (smokeBatchNames != null) {
-			jobProperties.setProperty(
-				"test.batch.names.smoke", smokeBatchNames);
+		if (smokeBatchNames == null) {
+			smokeBatchNames = "";
 		}
+
+		jobProperties.setProperty("test.batch.names.smoke", smokeBatchNames);
 
 		jobProperties.setProperty(
 			"testray.environment.factor.name[database]",
@@ -250,6 +255,23 @@ public class TestrayFactoryTest
 			job.getJobProperties()
 		).thenReturn(
 			jobProperties
+		);
+
+		File jobPropertiesFile = File.createTempFile(
+			"TestrayFactoryTest", ".properties", new File("build"));
+
+		jobPropertiesFile.deleteOnExit();
+
+		try (OutputStream outputStream = new FileOutputStream(
+				jobPropertiesFile)) {
+
+			jobProperties.store(outputStream, null);
+		}
+
+		Mockito.when(
+			job.getJobPropertiesFiles()
+		).thenReturn(
+			Collections.singletonList(jobPropertiesFile)
 		);
 
 		return job;
