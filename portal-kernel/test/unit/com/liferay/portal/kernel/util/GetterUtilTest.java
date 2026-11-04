@@ -18,6 +18,14 @@ import org.junit.Test;
 public class GetterUtilTest {
 
 	@Test
+	public void testGet() {
+		Assert.assertEquals(
+			Integer.valueOf(3), GetterUtil.get("abc", String::length, -1));
+		Assert.assertEquals(
+			Integer.valueOf(-1), GetterUtil.get(null, String::length, -1));
+	}
+
+	@Test
 	public void testGetBoolean() {
 		Assert.assertFalse(GetterUtil.getBoolean("false"));
 		Assert.assertTrue(GetterUtil.getBoolean("true"));
