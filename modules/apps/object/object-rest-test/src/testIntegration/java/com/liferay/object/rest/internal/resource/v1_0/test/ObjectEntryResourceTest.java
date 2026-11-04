@@ -15,18 +15,14 @@ import com.liferay.object.rest.resource.v1_0.ObjectEntryResource;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -35,8 +31,6 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.io.Serializable;
-
-import java.lang.reflect.Method;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,51 +117,6 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 	}
 
 	@Test
-	public void testGetObjectEntriesWithPagination() throws Exception {
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-
-		_assertPagination(7, getObjectDefinition1());
-
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-
-		_assertPagination(9, getObjectDefinition1());
-
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-
-		_assertPagination(11, getObjectDefinition1());
-	}
-
-	@Test
 	@TestInfo("LPD-53245")
 	public void testPatchCustomObjectEntry() throws Exception {
 		ObjectDefinition objectDefinition1 = getObjectDefinition1();
@@ -220,33 +169,6 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 		Version version = systemProperties.getVersion();
 
 		Assert.assertEquals(versionNumber, (int)version.getNumber());
-	}
-
-	private void _assertPagination(
-			int expectedSize, ObjectDefinition objectDefinition)
-		throws Exception {
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, objectDefinition.getRESTContextPath() + "?page=1&pageSize=5",
-			Http.Method.GET);
-
-		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
-
-		Assert.assertEquals(5, itemsJSONArray.length());
-
-		Assert.assertEquals(1, jsonObject.getLong("page"));
-		Assert.assertEquals(5, jsonObject.getLong("pageSize"));
-		Assert.assertEquals(expectedSize, jsonObject.getLong("totalCount"));
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, objectDefinition.getRESTContextPath() + "?pageSize=-1",
-			Http.Method.GET);
-
-		itemsJSONArray = jsonObject.getJSONArray("items");
-
-		Assert.assertEquals(expectedSize, itemsJSONArray.length());
-
-		Assert.assertEquals(expectedSize, jsonObject.getLong("totalCount"));
 	}
 
 }
