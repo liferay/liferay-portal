@@ -179,14 +179,20 @@ export class DepotStagingPage {
 	}
 
 	async selectCollection(assetLibraryName: string, collectionName: string) {
-		await this.configurationFrame
-			.getByRole('radio', {name: 'Collection'})
-			.click();
+		const collectionRadio = this.configurationFrame.getByRole('radio', {
+			name: 'Collection',
+		});
 
-		await waitForAlert(
-			this.configurationFrame,
-			'Success:You have successfully updated the setup.'
-		);
+		await expect(collectionRadio).toBeVisible();
+
+		if (!(await collectionRadio.isChecked())) {
+			await collectionRadio.click();
+
+			await waitForAlert(
+				this.configurationFrame,
+				'Success:You have successfully updated the setup.'
+			);
+		}
 
 		const selectCollectionButton = this.configurationFrame.locator(
 			'button[aria-label="Select Collection"]'
