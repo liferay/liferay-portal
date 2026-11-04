@@ -23,7 +23,7 @@ const test = mergeTests(
 async function enableEmailReport(page, frequency: string) {
 	await page.getByRole('button', {name: 'Configure Email Reports'}).click();
 
-	await page.locator('.toggle-switch-bar').click();
+	await page.getByRole('dialog').getByRole('checkbox').click();
 
 	await page.locator('select[name="frequency"]').selectOption(frequency);
 
@@ -53,7 +53,7 @@ test(
 
 		// Enable the toggle and pick Daily
 
-		await page.locator('.toggle-switch-bar').click();
+		await page.getByRole('dialog').getByRole('checkbox').click();
 
 		await page.locator('select[name="frequency"]').selectOption('daily');
 
@@ -82,7 +82,7 @@ test(
 			.getByRole('button', {name: 'Configure Email Reports'})
 			.click();
 
-		await page.locator('.toggle-switch-bar').click();
+		await page.getByRole('dialog').getByRole('checkbox').click();
 
 		for (const frequency of ['daily', 'weekly', 'monthly']) {
 			await page
@@ -179,7 +179,7 @@ test(
 			'daily'
 		);
 
-		await page.locator('.toggle-switch-bar').click();
+		await page.getByRole('dialog').getByRole('checkbox').click();
 
 		await page.getByRole('button', {name: 'Save'}).click();
 
