@@ -31,7 +31,7 @@ long categoryId = ParamUtil.getLong(request, "categoryId");
 <div class="lfr-attachment-cover-image-selector">
 	<liferay-item-selector:image-selector
 		draggableImage="vertical"
-		fileEntryId='<%= BeanParamUtil.getLong(cpAttachmentFileEntry, request, "fileEntryId") %>'
+		fileEntryId='<%= ParamUtil.getLong(request, "fileEntryId", GetterUtil.get(cpAttachmentFileEntry, CPAttachmentFileEntry::getFileEntryId, 0L)) %>'
 		itemSelectorEventName="addCategoryCPAttachmentFileEntry"
 		itemSelectorURL="<%= categoryCPAttachmentFileEntriesDisplayContext.getItemSelectorUrl() %>"
 		maxFileSize="<%= categoryCPAttachmentFileEntriesDisplayContext.getImageMaxSize() %>"
