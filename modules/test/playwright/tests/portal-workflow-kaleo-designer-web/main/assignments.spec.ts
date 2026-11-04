@@ -32,7 +32,6 @@ test.afterEach(async ({apiHelpers, scriptManagementPage}) => {
 
 test('can see Scripted Assignment option when script management configuration is enabled', async ({
 	diagramViewPage,
-	nodePropertiesSidebarPage,
 	page,
 	processBuilderPage,
 }) => {
@@ -44,7 +43,7 @@ test('can see Scripted Assignment option when script management configuration is
 
 	await diagramViewPage.clickNode('update');
 
-	await nodePropertiesSidebarPage.editAssignmentButton.click();
+	await page.getByRole('link', {exact: true, name: 'Asset Creator'}).click();
 
 	expect(
 		await page.$(`#assignment-type option[value="scriptedAssignment"]`)
@@ -53,7 +52,6 @@ test('can see Scripted Assignment option when script management configuration is
 
 test('cannot see Scripted Assignment option when script management configuration is disabled', async ({
 	diagramViewPage,
-	nodePropertiesSidebarPage,
 	page,
 	processBuilderPage,
 	scriptManagementPage,
@@ -68,7 +66,7 @@ test('cannot see Scripted Assignment option when script management configuration
 
 	await diagramViewPage.clickNode('update');
 
-	await nodePropertiesSidebarPage.editAssignmentButton.click();
+	await page.getByRole('link', {exact: true, name: 'Asset Creator'}).click();
 
 	expect(
 		await page.$(`#assignment-type option[value="scriptedAssignment"]`)
@@ -89,7 +87,7 @@ test('role name search box does not support regex strings', async ({
 
 	await diagramViewPage.clickNode('review');
 
-	await nodePropertiesSidebarPage.editAssignmentButton.click();
+	await page.getByRole('link', {name: 'Role Type'}).click();
 
 	await nodePropertiesSidebarPage.roleNameInput.fill('a');
 

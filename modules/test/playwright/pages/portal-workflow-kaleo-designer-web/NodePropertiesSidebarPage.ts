@@ -18,8 +18,6 @@ export class NodePropertiesSidebarPage {
 	readonly addTimerButton: Locator;
 	readonly deleteNotificationsButton: Locator;
 	readonly diagramViewPage: DiagramViewPage;
-	readonly editActionButton: Locator;
-	readonly editAssignmentButton: Locator;
 	readonly nodeLabelInput: Locator;
 	readonly notificationPage: NotificationSectionPage;
 	readonly page: Page;
@@ -29,33 +27,22 @@ export class NodePropertiesSidebarPage {
 	readonly timerPage: TimerPage;
 
 	constructor(page: Page) {
-		this.addActionButton = page
-			.locator('.panel-group')
-			.filter({hasText: 'Actions'})
-			.getByRole('button', {name: 'New'})
-			.first();
-		this.addNotificationButton = page
-			.locator('.panel-group')
-			.filter({hasText: 'Notification'})
-			.getByRole('button', {name: 'New'})
-			.first();
-		this.addTimerButton = page
-			.locator('.panel-group')
-			.filter({hasText: 'Timers'})
-			.getByRole('button', {name: 'New'})
-			.first();
+		this.addActionButton = page.getByRole('button', {
+			exact: true,
+			name: 'New Action',
+		});
+		this.addNotificationButton = page.getByRole('button', {
+			exact: true,
+			name: 'New Notification',
+		});
+		this.addTimerButton = page.getByRole('button', {
+			exact: true,
+			name: 'New Timer',
+		});
 		this.deleteNotificationsButton = page.locator(
 			'button[title="Delete Notifications"]'
 		);
 		this.diagramViewPage = new DiagramViewPage(page);
-		this.editActionButton = page
-			.locator('.panel-group')
-			.filter({hasText: 'Actions'})
-			.locator('a');
-		this.editAssignmentButton = page
-			.locator('.panel-group')
-			.filter({hasText: 'Assignments'})
-			.locator('a');
 		this.nodeLabelInput = page.locator('#workflowDefinitionBaseNodeLabel');
 		this.notificationPage = new NotificationSectionPage(page);
 		this.page = page;

@@ -10,7 +10,6 @@ import {DiagramViewPage} from '../../pages/portal-workflow-kaleo-designer-web/Di
 export class ActionPage {
 	readonly backButton: Locator;
 	readonly diagramViewPage: DiagramViewPage;
-	readonly editActionButton: Locator;
 	readonly nameInput: Locator;
 	readonly page: Page;
 	readonly scriptInput: Locator;
@@ -22,10 +21,6 @@ export class ActionPage {
 			name: 'Back',
 		});
 		this.diagramViewPage = new DiagramViewPage(page);
-		this.editActionButton = page
-			.locator('.panel-group')
-			.filter({hasText: 'Actions'})
-			.locator('a');
 		this.nameInput = page.locator('#name');
 		this.page = page;
 		this.scriptInput = page.locator('#script');

@@ -273,9 +273,9 @@ test('notification receptionType on source remains the same after clicking on no
 
 	await notificationEntry.click();
 
-	await expect(
-		page.locator('.panel-group').filter({hasText: 'Recipient Type'})
-	).toHaveCount(6);
+	await expect(page.getByText('Recipient Type', {exact: true})).toHaveCount(
+		6
+	);
 
 	await diagramViewPage.clickSourceViewButton();
 

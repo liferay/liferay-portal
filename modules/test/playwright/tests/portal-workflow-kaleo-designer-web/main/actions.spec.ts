@@ -198,7 +198,7 @@ test('can save a workflow definition that has a customer extension action after 
 
 	await diagramViewPage.clickNode(nodeTitle);
 
-	await nodePropertiesSidebarPage.editActionButton.click();
+	await page.getByRole('link', {exact: true, name: 'Test Name'}).click();
 
 	const typeActionOption =
 		'function#liferay-sample-etc-spring-boot-workflow-action-1';
@@ -216,7 +216,7 @@ test('can save a workflow definition that has a customer extension action after 
 
 	await diagramViewPage.clickNode(nodeTitle);
 
-	await actionPage.editActionButton.click();
+	await page.getByRole('link', {exact: true, name: 'Test Name'}).click();
 
 	await expect(actionPage.selectActionType).toHaveValue(typeActionOption);
 
@@ -228,7 +228,7 @@ test('can save a workflow definition that has a customer extension action after 
 
 	await diagramViewPage.clickNode(nodeTitle);
 
-	await actionPage.editActionButton.click();
+	await page.getByRole('link', {exact: true, name: 'Test Name'}).click();
 
 	await expect(actionPage.selectActionType).toHaveValue(typeActionOption);
 });
@@ -236,7 +236,6 @@ test('can save a workflow definition that has a customer extension action after 
 test('can save a workflow definition that has a customer extension action after changing from an UpdateStatus to a customer extension action', async ({
 	apiHelpers,
 	diagramViewPage,
-	nodePropertiesSidebarPage,
 	page,
 	processBuilderPage,
 }) => {
@@ -256,7 +255,7 @@ test('can save a workflow definition that has a customer extension action after 
 
 	await diagramViewPage.clickNode('Review');
 
-	await nodePropertiesSidebarPage.editActionButton.click();
+	await page.getByRole('link', {exact: true, name: 'action1'}).click();
 
 	await page
 		.locator('#type')
