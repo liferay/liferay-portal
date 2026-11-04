@@ -86,7 +86,7 @@ metadata:
         app: liferay
         component: database-instance
         dataPlane: {{ $dataPlane }}
-    name: {{ $xr.metadata.name }}-db-instance-{{ $dataPlane }}
+    name: {{ $databaseInstanceNamePrefix }}{{ $dataPlane }}
 spec:
     forProvider:
         databaseVersion: {{ printf "POSTGRES_%s" ($database.version | default "18") }}

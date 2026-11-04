@@ -145,3 +145,13 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "timezone: \\{\\{ \\$backup\\.timeZone \\| quote \\}\\}"
         it: Schedules the backups from the shared backup fields
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := printf \"%s-db-instance-\" \\$xr\\.metadata\\.name"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "printf \"resource\\.type != \\\\\"sqladmin\\.googleapis\\.com/Instance\\\\\" \\|\\| resource\\.name\\.startsWith\\(\\\\\"projects/%s/instances/%s\\\\\"\\)\" \\$env\\.projectId \\$[A-Za-z]+"
+        it: Scopes the Cloud SQL roles to the instances of the environment

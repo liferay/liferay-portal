@@ -1,3 +1,4 @@
+{{- $databaseInstanceCondition := printf "resource.type != \"sqladmin.googleapis.com/Instance\" || resource.name.startsWith(\"projects/%s/instances/%s\")" $env.projectId $databaseInstanceNamePrefix }}
 apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
 kind: ServiceAccount
 metadata:
@@ -33,6 +34,9 @@ metadata:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-instance-user-role
 spec:
     forProvider:
+        condition:
+            expression: {{ $databaseInstanceCondition }}
+            title: liferay-environment-database-instances
         member: {{ $gsaMember }}
         project: {{ $env.projectId }}
         role: roles/cloudsql.instanceUser
@@ -44,6 +48,9 @@ metadata:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-client-role
 spec:
     forProvider:
+        condition:
+            expression: {{ $databaseInstanceCondition }}
+            title: liferay-environment-database-instances
         member: {{ $gsaMember }}
         project: {{ $env.projectId }}
         role: roles/cloudsql.client
