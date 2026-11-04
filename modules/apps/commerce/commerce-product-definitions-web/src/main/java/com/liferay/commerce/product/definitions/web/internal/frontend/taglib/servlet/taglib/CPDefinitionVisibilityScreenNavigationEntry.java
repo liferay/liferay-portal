@@ -13,13 +13,12 @@ import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
-import com.liferay.commerce.product.service.CommerceChannelRelService;
+import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.CPTypeRegistry;
 import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
-import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -94,9 +93,9 @@ public class CPDefinitionVisibilityScreenNavigationEntry
 		CPDefinitionsDisplayContext cpDefinitionsDisplayContext =
 			new CPDefinitionsDisplayContext(
 				_actionHelper, httpServletRequest, _accountGroupRelLocalService,
-				_commerceCatalogService, _commerceChannelRelService,
+				_commerceCatalogService, _commerceChannelRelLocalService,
 				_configurationProvider, _cpDefinitionService, _cpFriendlyURL,
-				_itemSelector, _portletResourcePermission);
+				_portletResourcePermission);
 
 		httpServletRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT, cpDefinitionsDisplayContext);
@@ -125,7 +124,7 @@ public class CPDefinitionVisibilityScreenNavigationEntry
 	private CommerceCatalogService _commerceCatalogService;
 
 	@Reference
-	private CommerceChannelRelService _commerceChannelRelService;
+	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
@@ -138,9 +137,6 @@ public class CPDefinitionVisibilityScreenNavigationEntry
 
 	@Reference
 	private CPTypeRegistry _cpTypeRegistry;
-
-	@Reference
-	private ItemSelector _itemSelector;
 
 	@Reference
 	private JSPRenderer _jspRenderer;

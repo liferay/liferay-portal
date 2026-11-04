@@ -14,9 +14,8 @@ import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
-import com.liferay.commerce.product.service.CommerceChannelRelService;
+import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.product.url.CPFriendlyURL;
-import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
@@ -55,8 +54,8 @@ public class AddCPDefinitionMVCRenderCommand implements MVCRenderCommand {
 				new CPDefinitionsDisplayContext(
 					_actionHelper, _portal.getHttpServletRequest(renderRequest),
 					_accountGroupRelLocalService, _commerceCatalogService,
-					_commerceChannelRelService, _configurationProvider,
-					_cpDefinitionService, _cpFriendlyURL, _itemSelector,
+					_commerceChannelRelLocalService, _configurationProvider,
+					_cpDefinitionService, _cpFriendlyURL,
 					_portletResourcePermission);
 
 			renderRequest.setAttribute(
@@ -97,7 +96,7 @@ public class AddCPDefinitionMVCRenderCommand implements MVCRenderCommand {
 	private CommerceCatalogService _commerceCatalogService;
 
 	@Reference
-	private CommerceChannelRelService _commerceChannelRelService;
+	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
@@ -107,9 +106,6 @@ public class AddCPDefinitionMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private CPFriendlyURL _cpFriendlyURL;
-
-	@Reference
-	private ItemSelector _itemSelector;
 
 	@Reference
 	private Portal _portal;

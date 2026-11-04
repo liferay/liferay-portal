@@ -17,7 +17,7 @@ import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPMeasurementUnitLocalService;
 import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
-import com.liferay.commerce.product.service.CommerceChannelRelService;
+import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.CPTypeRegistry;
 import com.liferay.commerce.product.url.CPFriendlyURL;
@@ -27,7 +27,6 @@ import com.liferay.commerce.service.CommerceAvailabilityEstimateLocalService;
 import com.liferay.commerce.stock.activity.CommerceLowStockActivityRegistry;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
-import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -105,14 +104,14 @@ public class CPDefinitionConfigurationScreenNavigationEntry
 					_actionHelper, httpServletRequest,
 					_accountGroupRelLocalService,
 					_commerceAvailabilityEstimateLocalService,
-					_commerceCatalogService, _commerceChannelRelService,
+					_commerceCatalogService, _commerceChannelRelLocalService,
 					_commerceCurrencyLocalService,
 					_commerceLowStockActivityRegistry, _configurationProvider,
 					_cpdAvailabilityEstimateService,
 					_cpDefinitionInventoryEngineRegistry,
 					_cpDefinitionInventoryService, _cpDefinitionService,
-					_cpMeasurementUnitLocalService, _cpTaxCategoryLocalService,
-					_cpFriendlyURL, _itemSelector, _portletResourcePermission);
+					_cpFriendlyURL, _cpMeasurementUnitLocalService,
+					_cpTaxCategoryLocalService, _portletResourcePermission);
 
 		httpServletRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -146,7 +145,7 @@ public class CPDefinitionConfigurationScreenNavigationEntry
 	private CommerceCatalogService _commerceCatalogService;
 
 	@Reference
-	private CommerceChannelRelService _commerceChannelRelService;
+	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 	@Reference
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
@@ -181,9 +180,6 @@ public class CPDefinitionConfigurationScreenNavigationEntry
 
 	@Reference
 	private CPDAvailabilityEstimateService _cpdAvailabilityEstimateService;
-
-	@Reference
-	private ItemSelector _itemSelector;
 
 	@Reference
 	private JSPRenderer _jspRenderer;

@@ -23,7 +23,7 @@ import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPMeasurementUnitLocalService;
 import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
-import com.liferay.commerce.product.service.CommerceChannelRelService;
+import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.product.servlet.taglib.ui.constants.CPDefinitionScreenNavigationConstants;
 import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.commerce.service.CPDAvailabilityEstimateService;
@@ -32,7 +32,6 @@ import com.liferay.commerce.service.CommerceAvailabilityEstimateLocalService;
 import com.liferay.commerce.stock.activity.CommerceLowStockActivity;
 import com.liferay.commerce.stock.activity.CommerceLowStockActivityRegistry;
 import com.liferay.commerce.util.comparator.CommerceAvailabilityEstimatePriorityComparator;
-import com.liferay.item.selector.ItemSelector;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -60,24 +59,23 @@ public class CPDefinitionConfigurationDisplayContext
 		CommerceAvailabilityEstimateLocalService
 			commerceAvailabilityEstimateLocalService,
 		CommerceCatalogService commerceCatalogService,
-		CommerceChannelRelService commerceChannelRelService,
+		CommerceChannelRelLocalService commerceChannelRelLocalService,
 		CommerceCurrencyLocalService commerceCurrencyLocalService,
 		CommerceLowStockActivityRegistry commerceLowStockActivityRegistry,
 		ConfigurationProvider configurationProvider,
 		CPDAvailabilityEstimateService cpdAvailabilityEstimateService,
 		CPDefinitionInventoryEngineRegistry cpDefinitionInventoryEngineRegistry,
 		CPDefinitionInventoryService cpDefinitionInventoryService,
-		CPDefinitionService cpDefinitionService,
+		CPDefinitionService cpDefinitionService, CPFriendlyURL cpFriendlyURL,
 		CPMeasurementUnitLocalService cpMeasurementUnitLocalService,
 		CPTaxCategoryLocalService cpTaxCategoryLocalService,
-		CPFriendlyURL cpFriendlyURL, ItemSelector itemSelector,
 		PortletResourcePermission portletResourcePermission) {
 
 		super(
 			actionHelper, httpServletRequest, accountGroupRelLocalService,
-			commerceCatalogService, commerceChannelRelService,
+			commerceCatalogService, commerceChannelRelLocalService,
 			configurationProvider, cpDefinitionService, cpFriendlyURL,
-			itemSelector, portletResourcePermission);
+			portletResourcePermission);
 
 		_commerceAvailabilityEstimateLocalService =
 			commerceAvailabilityEstimateLocalService;

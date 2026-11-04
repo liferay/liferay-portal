@@ -4,131 +4,126 @@
  */
 
 import {FDS_EVENT} from '@liferay/frontend-data-set-web';
+import {openItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
 import {CommerceServiceProvider} from 'commerce-frontend-js';
-import {openSelectionModal, openToast} from 'frontend-js-components-web';
+import {openToast} from 'frontend-js-components-web';
 
-function handleEvent({
+import getAccountGroupsItemSelectorProps from './item_selector/getAccountGroupsItemSelectorProps';
+import getChannelsItemSelectorProps from './item_selector/getChannelsItemSelectorProps';
+
+async function updateProduct({
 	dataSetId,
 	fieldName,
 	fieldValueName,
 	filterFieldName,
+	ids,
 	productId,
-	selectedItems,
 }) {
 	const AdminCatalogResource = CommerceServiceProvider.AdminCatalogAPI('v1');
 
-	const formattedItems = [];
+	try {
+		await AdminCatalogResource.updateProduct(productId, {
+			[fieldName]: ids.map((id) => ({[fieldValueName]: id})),
+			[filterFieldName]: true,
+		});
+	}
+	catch (error) {
+		openToast({
+			message: Liferay.Language.get('an-unexpected-error-occurred'),
+			title: Liferay.Language.get('error'),
+			type: 'danger',
+		});
 
-	selectedItems.map((item) => {
-		formattedItems.push({[fieldValueName]: parseInt(item.value, 10)});
+		return false;
+	}
+
+	openToast({
+		message: Liferay.Language.get('your-request-completed-successfully'),
+		type: 'success',
 	});
 
-	const formattedData = {
-		[fieldName]: formattedItems,
-		[filterFieldName]: true,
-	};
+	Liferay.fire(FDS_EVENT.UPDATE_DISPLAY, {id: dataSetId});
 
-	return AdminCatalogResource.updateProduct(productId, formattedData)
-		.then(() => {
-			openToast({
-				message: Liferay.Language.get(
-					'your-request-completed-successfully'
-				),
-				type: 'success',
-			});
-
-			if (dataSetId) {
-				Liferay.fire(FDS_EVENT.UPDATE_DISPLAY, {
-					id: dataSetId,
-				});
-			}
-		})
-		.catch(() => {
-			openToast({
-				message: Liferay.Language.get('an-unexpected-error-occurred'),
-				title: Liferay.Language.get('error'),
-				type: 'danger',
-			});
-		});
+	return true;
 }
 
 export default function ({
 	accountGroupDataSetId,
-	accountGroupItemSelectorURL,
+	accountGroupIds,
 	channelDataSetId,
-	channelItemSelectorURL,
-	checkedAccountGroupIds,
-	checkedCommerceChannelIds,
+	commerceChannelIds,
 	namespace,
 	productId,
 }) {
-	const eventHandlers = [];
+	let assignedAccountGroupIds = accountGroupIds;
+	let assignedChannelIds = commerceChannelIds;
 
-	const selectCommerceAccountGroupHandler = Liferay.on(
-		`${namespace}selectCommerceAccountGroup`,
-		() => {
-			openSelectionModal({
-				multiple: true,
-				onSelect: (selectedItems) => {
-					if (!selectedItems || !selectedItems.length) {
+	const eventHandlers = [
+		Liferay.on(`${namespace}selectCommerceAccountGroup`, () => {
+			openItemSelectorModal({
+				...getAccountGroupsItemSelectorProps({
+					excludedAccountGroupIds: assignedAccountGroupIds,
+					portletNamespace: namespace,
+				}),
+				items: [],
+				onItemsChange: async (accountGroups) => {
+					if (!accountGroups.length) {
 						return;
 					}
 
-					const accountGroupIds = checkedAccountGroupIds.split(',');
+					const ids = [
+						...assignedAccountGroupIds,
+						...accountGroups.map((accountGroup) => accountGroup.id),
+					];
 
-					accountGroupIds.map((accountGroupId) => {
-						selectedItems.push({value: accountGroupId});
-					});
-
-					handleEvent({
+					const updated = await updateProduct({
 						dataSetId: accountGroupDataSetId,
 						fieldName: 'productAccountGroups',
 						fieldValueName: 'accountGroupId',
 						filterFieldName: 'productAccountGroupFilter',
+						ids,
 						productId,
-						selectedItems,
 					});
+
+					if (updated) {
+						assignedAccountGroupIds = ids;
+					}
 				},
-				title: Liferay.Language.get('select-account-group'),
-				url: accountGroupItemSelectorURL,
 			});
-		}
-	);
-
-	eventHandlers.push(selectCommerceAccountGroupHandler);
-
-	const selectCommerceChannelHandler = Liferay.on(
-		`${namespace}selectCommerceChannel`,
-		() => {
-			openSelectionModal({
-				multiple: true,
-				onSelect: (selectedItems) => {
-					if (!selectedItems || !selectedItems.length) {
+		}),
+		Liferay.on(`${namespace}selectCommerceChannel`, () => {
+			openItemSelectorModal({
+				...getChannelsItemSelectorProps({
+					excludedChannelIds: assignedChannelIds,
+					portletNamespace: namespace,
+				}),
+				items: [],
+				onItemsChange: async (channels) => {
+					if (!channels.length) {
 						return;
 					}
 
-					const channelIds = checkedCommerceChannelIds.split(',');
+					const ids = [
+						...assignedChannelIds,
+						...channels.map((channel) => channel.id),
+					];
 
-					channelIds.map((channelId) => {
-						selectedItems.push({value: channelId});
-					});
-
-					handleEvent({
+					const updated = await updateProduct({
 						dataSetId: channelDataSetId,
 						fieldName: 'productChannels',
 						fieldValueName: 'channelId',
 						filterFieldName: 'productChannelFilter',
+						ids,
 						productId,
-						selectedItems,
 					});
-				},
-				title: Liferay.Language.get('select-channel'),
-				url: channelItemSelectorURL,
-			});
-		}
-	);
 
-	eventHandlers.push(selectCommerceChannelHandler);
+					if (updated) {
+						assignedChannelIds = ids;
+					}
+				},
+			});
+		}),
+	];
 
 	Liferay.on('destroyPortlet', () => {
 		eventHandlers.forEach((eventHandler) => {
