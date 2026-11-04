@@ -37,13 +37,13 @@ public class TestrayTopLevelBuildReport extends BaseTopLevelBuildReport {
 			return null;
 		}
 
-		String value = buildDatabaseTestrayCloudObject.getValue();
+		String buildDatabaseJSON = buildDatabaseTestrayCloudObject.getValue();
 
-		if (JenkinsResultsParserUtil.isNullOrEmpty(value)) {
+		if (JenkinsResultsParserUtil.isNullOrEmpty(buildDatabaseJSON)) {
 			return null;
 		}
 
-		return new JSONObject(value);
+		return new JSONObject(buildDatabaseJSON);
 	}
 
 	@Override

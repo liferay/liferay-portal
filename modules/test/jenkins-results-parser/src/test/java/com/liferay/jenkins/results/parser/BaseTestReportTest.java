@@ -23,12 +23,12 @@ public class BaseTestReportTest
 				"LocalFile.PortalSmoke", "LocalFile.PortalSmoke#Smoke"));
 		testEquals(
 			"LocalFile.PortalSmoke#Smoke",
-			_getTestClassName(null, "LocalFile.PortalSmoke#Smoke"));
-		testEquals(
-			"LocalFile.PortalSmoke#Smoke",
 			_getTestClassName(
 				"com.liferay.poshi.runner.PoshiRunner",
 				"LocalFile.PortalSmoke#Smoke"));
+		testEquals(
+			"LocalFile.PortalSmoke#Smoke",
+			_getTestClassName(null, "LocalFile.PortalSmoke#Smoke"));
 		testEquals(
 			"com.liferay.jenkins.Jenkins.build-iw",
 			_getTestClassName(null, "com.liferay.jenkins.Jenkins.build-iw"));

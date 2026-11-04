@@ -190,14 +190,17 @@ public class TestrayJobHistory extends BaseJobHistory {
 				batchHistory.getBatchName(), testClassHistories.size());
 		}
 
+		int testsCountMinimum = _getTestsCountMinimum();
+
 		for (TestrayRoutine testrayRoutine : _testrayRoutines) {
 			TopLevelBuildReport topLevelBuildReport =
 				_latestTopLevelBuildReports.get(testrayRoutine.getId());
 
 			if (topLevelBuildReport == null) {
 				throw new RuntimeException(
-					"Unable to find a build report for routine " +
-						testrayRoutine.getURL());
+					JenkinsResultsParserUtil.combine(
+						"Unable to find a build report for routine ",
+						String.valueOf(testrayRoutine.getURL())));
 			}
 
 			Map<String, Integer> expectedTestCounts = _getExpectedTestCounts(
@@ -205,14 +208,15 @@ public class TestrayJobHistory extends BaseJobHistory {
 
 			if (expectedTestCounts == null) {
 				throw new RuntimeException(
-					"Unable to find a build database for " +
-						topLevelBuildReport.getBuildURL());
+					JenkinsResultsParserUtil.combine(
+						"Unable to find a build database for ",
+						String.valueOf(topLevelBuildReport.getBuildURL())));
 			}
 
-			for (Map.Entry<String, Integer> expectedTestCountEntry :
+			for (Map.Entry<String, Integer> entry :
 					expectedTestCounts.entrySet()) {
 
-				String batchName = expectedTestCountEntry.getKey();
+				String batchName = entry.getKey();
 
 				if (_isExcludedBatchName(batchName)) {
 					System.out.println(
@@ -222,9 +226,9 @@ public class TestrayJobHistory extends BaseJobHistory {
 					continue;
 				}
 
-				Integer testCount = _getTestCount(testCounts, batchName);
+				Integer testsCount = _getTestsCount(testCounts, batchName);
 
-				if (testCount == null) {
+				if (testsCount == null) {
 					throw new RuntimeException(
 						JenkinsResultsParserUtil.combine(
 							"Batch ", batchName,
@@ -232,26 +236,26 @@ public class TestrayJobHistory extends BaseJobHistory {
 							String.valueOf(topLevelBuildReport.getBuildURL())));
 				}
 
-				int expectedTestCount = expectedTestCountEntry.getValue();
+				int expectedTestsCount = entry.getValue();
 
-				if (expectedTestCount <= _getTestCountMinimum()) {
+				if (expectedTestsCount <= testsCountMinimum) {
 					continue;
 				}
 
-				int testCountThreshold = _getTestCountThreshold(batchName);
+				int testsCountThreshold = _getTestsCountThreshold(batchName);
 
-				if ((testCount * 100L) >=
-						(expectedTestCount * (long)testCountThreshold)) {
+				if ((testsCount * 100L) >=
+						(expectedTestsCount * (long)testsCountThreshold)) {
 
 					continue;
 				}
 
 				throw new RuntimeException(
 					JenkinsResultsParserUtil.combine(
-						"Batch ", batchName, " has ", String.valueOf(testCount),
-						" of ", String.valueOf(expectedTestCount),
+						"Batch ", batchName, " has ", String.valueOf(testsCount),
+						" of ", String.valueOf(expectedTestsCount),
 						" expected tests, below the ",
-						String.valueOf(testCountThreshold), "% threshold in ",
+						String.valueOf(testsCountThreshold), "% threshold in ",
 						String.valueOf(topLevelBuildReport.getBuildURL())));
 			}
 		}
@@ -418,13 +422,12 @@ public class TestrayJobHistory extends BaseJobHistory {
 			}
 		}
 
-		for (Map.Entry<String, Set<String>> batchTestClassNamesEntry :
+		for (Map.Entry<String, Set<String>> entry :
 				batchTestClassNames.entrySet()) {
 
-			Set<String> testClassNames = batchTestClassNamesEntry.getValue();
+			Set<String> testClassNames = entry.getValue();
 
-			expectedTestCounts.put(
-				batchTestClassNamesEntry.getKey(), testClassNames.size());
+			expectedTestCounts.put(entry.getKey(), testClassNames.size());
 		}
 
 		return expectedTestCounts;
@@ -587,40 +590,40 @@ public class TestrayJobHistory extends BaseJobHistory {
 		return -1;
 	}
 
-	private Integer _getTestCount(
+	private Integer _getTestsCount(
 		Map<String, Integer> testCounts, String batchName) {
 
-		Integer testCount = testCounts.get(batchName);
+		Integer testsCount = testCounts.get(batchName);
 
-		if ((testCount != null) || !batchName.endsWith("_stable")) {
-			return testCount;
+		if ((testsCount != null) || !batchName.endsWith("_stable")) {
+			return testsCount;
 		}
 
 		return testCounts.get(batchName.substring(0, batchName.length() - 7));
 	}
 
-	private int _getTestCountMinimum() {
-		int testCountMinimum = _getIntegerBuildProperty(
+	private int _getTestsCountMinimum() {
+		int testsCountMinimum = _getIntegerBuildProperty(
 			"test.history.batch.test.count.minimum",
 			getPortalUpstreamBranchName());
 
-		if (testCountMinimum > 0) {
-			return testCountMinimum;
+		if (testsCountMinimum > 0) {
+			return testsCountMinimum;
 		}
 
-		return _TEST_COUNT_MINIMUM;
+		return _TESTS_COUNT_MINIMUM;
 	}
 
-	private int _getTestCountThreshold(String batchName) {
-		int testCountThreshold = _getIntegerBuildProperty(
+	private int _getTestsCountThreshold(String batchName) {
+		int testsCountThreshold = _getIntegerBuildProperty(
 			"test.history.batch.test.count.threshold", batchName,
 			getPortalUpstreamBranchName());
 
-		if (testCountThreshold > 0) {
-			return testCountThreshold;
+		if (testsCountThreshold > 0) {
+			return testsCountThreshold;
 		}
 
-		return _TEST_COUNT_THRESHOLD;
+		return _TESTS_COUNT_THRESHOLD;
 	}
 
 	private boolean _isExcludedBatchName(String batchName) {
@@ -637,9 +640,9 @@ public class TestrayJobHistory extends BaseJobHistory {
 		return false;
 	}
 
-	private static final int _TEST_COUNT_MINIMUM = 25;
+	private static final int _TESTS_COUNT_MINIMUM = 25;
 
-	private static final int _TEST_COUNT_THRESHOLD = 90;
+	private static final int _TESTS_COUNT_THRESHOLD = 90;
 
 	private static final Map<String, Map<String, Integer>>
 		_expectedTestCountsMap = new HashMap<>();
