@@ -266,10 +266,16 @@
 
 		<!-- Other fields -->
 
+		<column name="activeLogicalBytes" type="long" />
+		<column name="anonymousIndividualsCount" type="long" />
+		<column name="eventsCount" type="long" />
 		<column name="faroProjectId" type="long" />
 		<column name="knownIndividualsCount" type="long" />
+		<column name="longTermLogicalBytes" type="long" />
 		<column name="monthDateKey" type="String" />
+		<column name="onDemandBytesBilled" type="long" />
 		<column name="pageViewsCount" type="long" />
+		<column name="reservationSlotMs" type="long" />
 		<column name="usageTime" type="long" />
 
 		<!-- Finder methods -->

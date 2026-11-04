@@ -190,6 +190,14 @@ public class FaroServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.dropTables(
 				"OSBFaro_ContactsCardTemplate",
 				"OSBFaro_ContactsLayoutTemplate"));
+
+		registry.register(
+			"23.0.0", "24.0.0",
+			UpgradeProcessFactory.addColumns(
+				"OSBFaro_FaroProjectUsage", "activeLogicalBytes LONG",
+				"anonymousIndividualsCount LONG", "eventsCount LONG",
+				"longTermLogicalBytes LONG", "onDemandBytesBilled LONG",
+				"reservationSlotMs LONG"));
 	}
 
 }

@@ -26,9 +26,11 @@ public class FaroProjectUsageLocalServiceImpl
 
 	@Override
 	public FaroProjectUsage addFaroProjectUsage(
-		long companyId, long userId, long faroProjectId,
-		long knownIndividualsCount, String monthDateKey, long pageViewsCount,
-		Date usageDate) {
+		long companyId, long userId, long activeLogicalBytes,
+		long anonymousIndividualsCount, long eventsCount, long faroProjectId,
+		long knownIndividualsCount, long longTermLogicalBytes,
+		String monthDateKey, long onDemandBytesBilled, long pageViewsCount,
+		long reservationSlotMs, Date usageDate) {
 
 		long faroProjectUsageId = counterLocalService.increment();
 
@@ -43,10 +45,17 @@ public class FaroProjectUsageLocalServiceImpl
 		faroProjectUsage.setCreateTime(now);
 		faroProjectUsage.setModifiedTime(now);
 
+		faroProjectUsage.setActiveLogicalBytes(activeLogicalBytes);
+		faroProjectUsage.setAnonymousIndividualsCount(
+			anonymousIndividualsCount);
+		faroProjectUsage.setEventsCount(eventsCount);
 		faroProjectUsage.setFaroProjectId(faroProjectId);
 		faroProjectUsage.setKnownIndividualsCount(knownIndividualsCount);
+		faroProjectUsage.setLongTermLogicalBytes(longTermLogicalBytes);
 		faroProjectUsage.setMonthDateKey(monthDateKey);
+		faroProjectUsage.setOnDemandBytesBilled(onDemandBytesBilled);
 		faroProjectUsage.setPageViewsCount(pageViewsCount);
+		faroProjectUsage.setReservationSlotMs(reservationSlotMs);
 		faroProjectUsage.setUsageTime(usageDate.getTime());
 
 		return faroProjectUsagePersistence.update(faroProjectUsage);
@@ -67,8 +76,11 @@ public class FaroProjectUsageLocalServiceImpl
 
 	@Override
 	public FaroProjectUsage updateFaroProjectUsage(
-			long faroProjectUsageId, long knownIndividualsCount,
-			long pageViewsCount)
+			long faroProjectUsageId, long activeLogicalBytes,
+			long anonymousIndividualsCount, long eventsCount,
+			long knownIndividualsCount, long longTermLogicalBytes,
+			long onDemandBytesBilled, long pageViewsCount,
+			long reservationSlotMs)
 		throws PortalException {
 
 		FaroProjectUsage faroProjectUsage = getFaroProjectUsage(
@@ -76,8 +88,15 @@ public class FaroProjectUsageLocalServiceImpl
 
 		faroProjectUsage.setModifiedTime(System.currentTimeMillis());
 
+		faroProjectUsage.setActiveLogicalBytes(activeLogicalBytes);
+		faroProjectUsage.setAnonymousIndividualsCount(
+			anonymousIndividualsCount);
+		faroProjectUsage.setEventsCount(eventsCount);
 		faroProjectUsage.setKnownIndividualsCount(knownIndividualsCount);
+		faroProjectUsage.setLongTermLogicalBytes(longTermLogicalBytes);
+		faroProjectUsage.setOnDemandBytesBilled(onDemandBytesBilled);
 		faroProjectUsage.setPageViewsCount(pageViewsCount);
+		faroProjectUsage.setReservationSlotMs(reservationSlotMs);
 
 		return faroProjectUsagePersistence.update(faroProjectUsage);
 	}
