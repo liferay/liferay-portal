@@ -1,0 +1,36 @@
+@import '_atlas-custom-properties-variables';
+
+.cms-quick-filter-button {
+	border-color: $secondary-l2;
+	height: 100%;
+	padding-bottom: 0.75rem;
+	padding-top: 0.75rem;
+	text-align: left;
+	width: 100%;
+
+	&:hover {
+		background-color: $light-l1;
+		border-color: $secondary-l0;
+	}
+
+	&.active {
+		background-color: $light;
+		border-color: $dark;
+	}
+
+	.sticker-danger {
+		background-color: $danger-l2;
+	}
+
+	.sticker-info {
+		background-color: $info-l2;
+	}
+
+	.sticker-secondary {
+		background-color: $secondary-l3;
+	}
+
+	.sticker-warning {
+		background-color: $warning-l2;
+	}
+}

@@ -3,26 +3,22 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
-import ClaySticker from '@clayui/sticker';
-import {IBaseFilterState, IFDSState} from '@liferay/frontend-data-set-web';
+import {IFDSState} from '@liferay/frontend-data-set-web';
 import {useLiferayState} from '@liferay/frontend-js-state-web/react';
-import classNames from 'classnames';
 import {fetch} from 'frontend-js-web';
-import React, {ComponentProps, useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 
+import useRefreshOnFDSDisplayUpdated from '../../common/hooks/useRefreshOnFDSDisplayUpdated';
 import {
 	CMSSiteInitializerFDSNames,
-	FDS_EVENT_DISPLAY_UPDATED,
 	FDS_FILTER_ID,
 } from '../../common/utils/constants';
+import QuickFilterButton from './QuickFilterButton';
 import {allFDSAtom} from './atoms';
 import {QUICK_FILTER_TYPES, QuickFilterType} from './constants';
 import {QUICK_FILTER_UPDATES} from './quickFilterUpdates';
-
-import './AllQuickFilters.scss';
+import {applyQuickFilterUpdates, getActiveQuickFilter} from './utils';
 
 interface QuickFilterCounts {
 	expired: number;
@@ -30,142 +26,6 @@ interface QuickFilterCounts {
 	inDraft: number;
 	reviewDateOverdue: number;
 	total: number;
-}
-
-type QuickFilterSelectedData = {
-	exclude?: boolean;
-	from?: {day: number; month: number; year: number} | null;
-	selectedItems?: Array<{value: number}>;
-	to?: {day: number; month: number; year: number} | null;
-};
-
-function isSameDateBound(
-	actualBound?: QuickFilterSelectedData['from'],
-	expectedBound?: QuickFilterSelectedData['from']
-) {
-	if (!actualBound || !expectedBound) {
-		return !actualBound && !expectedBound;
-	}
-
-	return (
-		actualBound.day === expectedBound.day &&
-		actualBound.month === expectedBound.month &&
-		actualBound.year === expectedBound.year
-	);
-}
-
-function matchesSelectedData(
-	actualData?: IBaseFilterState['selectedData'],
-	expectedData?: IBaseFilterState['selectedData']
-) {
-	if (!actualData || !expectedData) {
-		return false;
-	}
-
-	const actual = actualData as QuickFilterSelectedData;
-	const expected = expectedData as QuickFilterSelectedData;
-
-	if (Boolean(actual.exclude) !== Boolean(expected.exclude)) {
-		return false;
-	}
-
-	if (expected.selectedItems) {
-		const actualValues =
-			actual.selectedItems?.map(({value}) => value) ?? [];
-		const expectedValues = expected.selectedItems.map(({value}) => value);
-
-		return (
-			actualValues.length === expectedValues.length &&
-			expectedValues.every((value) => actualValues.includes(value))
-		);
-	}
-
-	return (
-		isSameDateBound(actual.from, expected.from) &&
-		isSameDateBound(actual.to, expected.to)
-	);
-}
-
-function getActiveQuickFilter(filters: readonly IBaseFilterState[] = []) {
-	const activeFilters = filters.filter(
-		({active, id}) => active && id !== FDS_FILTER_ID.SCOPE_GROUP_ID
-	);
-
-	if (!activeFilters.length) {
-		return null;
-	}
-
-	for (const quickFilterType of Object.values(QUICK_FILTER_TYPES)) {
-		const filterUpdates = QUICK_FILTER_UPDATES[quickFilterType]();
-
-		const filterIds = Object.keys(filterUpdates);
-
-		if (
-			activeFilters.length === filterIds.length &&
-			activeFilters.every((filter) =>
-				matchesSelectedData(
-					filter.selectedData,
-					filterUpdates[filter.id]
-				)
-			)
-		) {
-			return quickFilterType;
-		}
-	}
-
-	return null;
-}
-
-function clearedFilter(filter: IBaseFilterState): IBaseFilterState {
-	return {
-		...filter,
-		active: false,
-		odataFilterString: undefined,
-		selectedData: undefined,
-	};
-}
-
-function QuickFilterButton({
-	active,
-	count,
-	displayType,
-	icon,
-	label,
-	onClick,
-}: {
-	active: boolean;
-	count: number;
-	displayType: ComponentProps<typeof ClaySticker>['displayType'];
-	icon: string;
-	label: string;
-	onClick: () => void;
-}) {
-	return (
-		<ClayButton
-			aria-pressed={active}
-			className={classNames('quick-filter-button', {active})}
-			displayType="secondary"
-			onClick={onClick}
-		>
-			<div className="align-items-center d-flex">
-				<ClaySticker
-					className="rounded"
-					displayType={displayType}
-					size="lg"
-				>
-					<ClayIcon symbol={icon} />
-				</ClaySticker>
-
-				<div className="ml-2">
-					<div className="text-dark">{count}</div>
-
-					<div className="text-3 text-secondary text-weight-normal">
-						{label}
-					</div>
-				</div>
-			</div>
-		</ClayButton>
-	);
 }
 
 export default function AllQuickFilters({
@@ -176,7 +36,11 @@ export default function AllQuickFilters({
 	const [allFDSState, setAllFDSState] =
 		useLiferayState<IFDSState>(allFDSAtom);
 
-	const activeQuickFilter = getActiveQuickFilter(allFDSState.filters);
+	const activeQuickFilter = getActiveQuickFilter(
+		allFDSState.filters,
+		QUICK_FILTER_UPDATES,
+		[FDS_FILTER_ID.SCOPE_GROUP_ID]
+	);
 
 	const [counts, setCounts] = useState<QuickFilterCounts>({
 		expired: 0,
@@ -187,6 +51,10 @@ export default function AllQuickFilters({
 	});
 
 	const fetchCounts = useCallback(() => {
+		if (freeTier) {
+			return;
+		}
+
 		fetch('/o/headless-cms/v1.0/asset-statistics', {
 			headers: {
 				Accept: 'application/json',
@@ -211,47 +79,21 @@ export default function AllQuickFilters({
 			.catch((error) => {
 				console.error('Failed to fetch asset statistics', error);
 			});
-	}, []);
+	}, [freeTier]);
 
-	useEffect(() => {
-		if (freeTier) {
-			return;
-		}
-
-		fetchCounts();
-
-		const handleDisplayUpdated = (event?: {id?: string}) => {
-			if (event?.id?.endsWith(CMSSiteInitializerFDSNames.ALL_SECTION)) {
-				fetchCounts();
-			}
-		};
-
-		Liferay.on(FDS_EVENT_DISPLAY_UPDATED, handleDisplayUpdated);
-
-		return () => {
-			Liferay.detach(FDS_EVENT_DISPLAY_UPDATED, handleDisplayUpdated);
-		};
-	}, [fetchCounts, freeTier]);
+	useRefreshOnFDSDisplayUpdated(
+		CMSSiteInitializerFDSNames.ALL_SECTION,
+		fetchCounts
+	);
 
 	const applyQuickFilter = useCallback(
 		(quickFilterType: QuickFilterType) => {
-			const filterUpdates = QUICK_FILTER_UPDATES[quickFilterType]();
-
 			setAllFDSState({
 				...allFDSState,
-				filters: allFDSState.filters.map((filter: IBaseFilterState) => {
-					const selectedData = filterUpdates[filter.id];
-
-					if (selectedData) {
-						return {
-							...filter,
-							active: true,
-							selectedData,
-						};
-					}
-
-					return clearedFilter(filter);
-				}),
+				filters: applyQuickFilterUpdates(
+					allFDSState.filters,
+					QUICK_FILTER_UPDATES[quickFilterType]()
+				),
 			});
 		},
 		[allFDSState, setAllFDSState]
