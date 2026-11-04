@@ -16,6 +16,8 @@ import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 
 import java.util.Map;
 
+import java.util.Map;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
