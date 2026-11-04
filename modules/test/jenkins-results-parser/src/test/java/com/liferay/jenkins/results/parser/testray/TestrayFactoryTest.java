@@ -17,9 +17,7 @@ import java.io.File;
 
 import java.net.URL;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 
 import org.junit.Assert;
@@ -90,8 +88,9 @@ public class TestrayFactoryTest
 	@Test
 	public void testNewTestrayRun() throws Exception {
 		Job job = _mockJob(
-			"modules-integration-db-partition-postgresql163",
-			"modules-integration-mysql80", "modules-integration-postgresql163");
+			"modules-integration-db-partition-postgresql163," +
+				"modules-integration-mysql80,modules-integration-postgresql163",
+			null);
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
@@ -120,7 +119,7 @@ public class TestrayFactoryTest
 
 	@Test
 	public void testNewTestrayRunSameLengthBatchNames() throws Exception {
-		Job job = _mockJob("a-mysql80", "b-mysql80");
+		Job job = _mockJob("a-mysql80,b-mysql80", null);
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
@@ -134,29 +133,26 @@ public class TestrayFactoryTest
 		testEquals("MySQL 8.0#b-mysql80", testrayRun.getRunIdString());
 	}
 
-	private Job _mockJob(String... batchNames) {
+	@Test
+	public void testNewTestrayRunSmokeAndCommentedBatchNames()
+		throws Exception {
+
+		Job job = _mockJob("#a-mysql80,c-mysql80", "b-mysql80");
+		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
+
+		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
+			testrayBuild, "b-mysql80", job);
+
+		testEquals("MySQL 8.0", testrayRun.getRunIdString());
+
+		testrayRun = TestrayFactory.newTestrayRun(
+			testrayBuild, "c-mysql80", job);
+
+		testEquals("MySQL 8.0#c-mysql80", testrayRun.getRunIdString());
+	}
+
+	private Job _mockJob(String batchNames, String smokeBatchNames) {
 		Job job = Mockito.mock(Job.class);
-
-		List<AxisTestClassGroup> axisTestClassGroups = new ArrayList<>();
-
-		for (String batchName : batchNames) {
-			AxisTestClassGroup axisTestClassGroup = Mockito.mock(
-				AxisTestClassGroup.class);
-
-			Mockito.when(
-				axisTestClassGroup.getEnhancedBatchName()
-			).thenReturn(
-				batchName
-			);
-
-			axisTestClassGroups.add(axisTestClassGroup);
-		}
-
-		Mockito.when(
-			job.getAxisTestClassGroups()
-		).thenReturn(
-			axisTestClassGroups
-		);
 
 		Mockito.when(
 			job.getJobName()
@@ -165,6 +161,13 @@ public class TestrayFactoryTest
 		);
 
 		Properties jobProperties = new Properties();
+
+		jobProperties.setProperty("test.batch.names", batchNames);
+
+		if (smokeBatchNames != null) {
+			jobProperties.setProperty(
+				"test.batch.names.smoke", smokeBatchNames);
+		}
 
 		jobProperties.setProperty(
 			"testray.environment.factor.name[database]",
