@@ -30,12 +30,16 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DigesterUtil;
@@ -49,6 +53,7 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -130,18 +135,37 @@ public class MCPServerServletTest {
 			_addOAuth2Authorization(
 				expiredAccessToken,
 				new Date(System.currentTimeMillis() - Time.HOUR),
-				Collections.singletonList(_getMCPURL()));
+				Collections.singletonList(_getMCPURL()),
+				TestPropsValues.getUserId());
 
 			_assertInvalidTokenChallenge(
 				_getResponse("Bearer " + expiredAccessToken),
 				"Access token has expired");
+
+			String inactiveUserAccessToken = RandomTestUtil.randomString();
+
+			_user = UserTestUtil.addUser();
+
+			_addOAuth2Authorization(
+				inactiveUserAccessToken,
+				new Date(System.currentTimeMillis() + Time.HOUR),
+				Collections.singletonList(_getMCPURL()), _user.getUserId());
+
+			_userLocalService.updateStatus(
+				_user.getUserId(), WorkflowConstants.STATUS_INACTIVE,
+				new ServiceContext());
+
+			_assertInvalidTokenChallenge(
+				_getResponse("Bearer " + inactiveUserAccessToken),
+				"Access token is unknown or revoked");
 
 			String invalidAccessToken = RandomTestUtil.randomString();
 
 			_addOAuth2Authorization(
 				invalidAccessToken,
 				new Date(System.currentTimeMillis() + Time.HOUR),
-				Collections.singletonList(RandomTestUtil.randomString()));
+				Collections.singletonList(RandomTestUtil.randomString()),
+				TestPropsValues.getUserId());
 
 			_assertInvalidTokenChallenge(
 				_getResponse("Bearer " + invalidAccessToken),
@@ -197,11 +221,11 @@ public class MCPServerServletTest {
 
 	private OAuth2Authorization _addOAuth2Authorization(
 			String accessTokenContent, Date accessTokenExpirationDate,
-			List<String> audiencesList)
+			List<String> audiencesList, long userId)
 		throws Exception {
 
 		return _oAuth2AuthorizationLocalService.addOAuth2Authorization(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			TestPropsValues.getCompanyId(), userId,
 			RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
 			RandomTestUtil.randomLong(), accessTokenContent, new Date(),
 			accessTokenExpirationDate, audiencesList,
@@ -1641,5 +1665,11 @@ public class MCPServerServletTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@DeleteAfterTestRun
+	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
