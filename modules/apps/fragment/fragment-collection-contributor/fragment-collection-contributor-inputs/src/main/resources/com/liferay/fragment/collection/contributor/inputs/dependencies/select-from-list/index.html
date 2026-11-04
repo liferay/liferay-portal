@@ -69,8 +69,8 @@
 							[/#list]
 
 							[#if !selectedValueFoundInOptions && input.value?? && input.attributes.selectedOptionLabel??]
-								<li class="dropdown-item" data-option-label="${htmlUtil.escape(input.attributes.selectedOptionLabel)}" data-option-value="${input.value}" id="${fragmentElementId}-option-${input.value}" role="option">
-									${htmlUtil.escape(input.attributes.selectedOptionLabel)}
+								<li class="dropdown-item" data-option-label="${input.attributes.selectedOptionLabel}" data-option-value="${input.value}" id="${fragmentElementId}-option-${input.value}" role="option">
+									${input.attributes.selectedOptionLabel}
 								</li>
 							[/#if]
 						</ul>
