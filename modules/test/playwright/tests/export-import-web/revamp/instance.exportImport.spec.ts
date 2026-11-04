@@ -18,6 +18,7 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	exportImportPagesTest,
 	featureFlagsTest({
+		'LPD-41307': {enabled: true},
 		'LPD-57655': {enabled: true},
 		'LPD-85946': {enabled: true},
 	}),
@@ -104,6 +105,76 @@ test(
 			expect.objectContaining({
 				externalReferenceCode: objectEntry.externalReferenceCode,
 				textField: objectEntry.textField,
+			})
+		);
+	}
+);
+
+test(
+	'Can import a space with an object entry folder from an instance export',
+	{tag: '@LPD-75352'},
+	async ({
+		apiHelpers,
+		exportImportDataSelectionPage,
+		exportImportPage,
+		globalMenuPage,
+		page,
+	}) => {
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
+		const objectEntryFolder =
+			await apiHelpers.objectFolder.createObjectEntryFolder({
+				parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				scopeKey: space.name,
+				title: getRandomString(),
+			});
+
+		const lar = await test.step('Export the space', async () => {
+			await globalMenuPage.goToApplications('Export');
+
+			await exportImportPage.clickNew();
+
+			await exportImportDataSelectionPage.uncheckAllItems();
+
+			await exportImportDataSelectionPage.selectSpace(space.name);
+
+			return await exportAndDownloadLar(exportImportPage);
+		});
+
+		await apiHelpers.objectFolder.deleteObjectEntryFolder(
+			objectEntryFolder.id
+		);
+
+		await test.step('Import the space', async () => {
+			await globalMenuPage.goToApplications('Import');
+
+			await exportImportPage.clickNew();
+
+			await exportImportPage.import({
+				folderPath: lar.folderPath,
+				name: getRandomString(),
+				selectData: async () => {
+					await expect(
+						page.getByText('No spaces are selected.')
+					).toBeVisible();
+
+					await exportImportDataSelectionPage.selectSpace(space.name);
+				},
+			});
+		});
+
+		expect(
+			await apiHelpers.objectFolder.getObjectEntryFolderByExternalReferenceCode(
+				{
+					externalReferenceCode:
+						objectEntryFolder.externalReferenceCode,
+					scopeKey: space.name,
+				}
+			)
+		).toEqual(
+			expect.objectContaining({
+				externalReferenceCode: objectEntryFolder.externalReferenceCode,
+				title: objectEntryFolder.title,
 			})
 		);
 	}
