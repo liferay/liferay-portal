@@ -48,9 +48,10 @@ export class ViewObjectDefinitionsPage {
 		this.createObjectFolderButton = page.getByRole('button', {
 			name: 'Create Folder',
 		});
-		this.defaultObjectFolder = page
-			.getByRole('listitem')
-			.filter({hasText: 'Default'});
+		this.defaultObjectFolder = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Default',
+		});
 		this.deleteObjectDefinitionOption = page.getByRole('menuitem', {
 			name: 'Delete',
 		});
@@ -65,9 +66,9 @@ export class ViewObjectDefinitionsPage {
 		this.importObjectDefinitionOption = page.getByRole('menuitem', {
 			name: 'Import Object Definition',
 		});
-		this.objectFolders = page
-			.getByRole('list')
-			.filter({hasText: 'Default'});
+		this.objectFolders = page.getByRole('navigation', {
+			name: 'Object Folders',
+		});
 		this.objectFolderActions = page
 			.locator('div.lfr__object-web-view-object-definitions-title-kebab')
 			.getByLabel('Object Folder Actions');
@@ -315,9 +316,8 @@ export class ViewObjectDefinitionsPage {
 		objectFolderLabel: string,
 		options: {timeout?: number} = {}
 	) {
-		await this.page
-			.getByRole('listitem')
-			.filter({hasText: objectFolderLabel})
+		await this.objectFolders
+			.getByRole('menuitem', {name: objectFolderLabel})
 			.click({timeout: options?.timeout});
 	}
 
