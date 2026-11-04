@@ -1,0 +1,28 @@
+diff --git a/org/apache/cxf/staxutils/StaxUtils.java b/org/apache/cxf/staxutils/StaxUtils.java
+index 1062d3d..d13be02 100644
+--- a/org/apache/cxf/staxutils/StaxUtils.java
++++ b/org/apache/cxf/staxutils/StaxUtils.java
+@@ -146,10 +146,10 @@ public final class StaxUtils {
+             getInteger(MAX_TEXT_LENGTH, 128 * 1024 * 1024);  //128M - more than this should DEFINITELY use MTOM
+     private static final int MIN_TEXT_SEGMENT_VAL =
+             getInteger(MIN_TEXT_SEGMENT, 64); // Same default as woodstox
+-    private static final long MAX_ELEMENT_COUNT_VAL =
+-            getLong(MAX_ELEMENT_COUNT, Long.MAX_VALUE);
++    // The MAX_XML_CHARACTERS should be aligned with MAX_TEXT_LENGTH (maximum contiguous length of any character
++    // data segment)  
+     private static final long MAX_XML_CHARS_VAL =
+-            getLong(MAX_XML_CHARACTERS, Long.MAX_VALUE);
++            getLong(MAX_XML_CHARACTERS, 256 * 1024 * 1024); //256Mb, maximum length of input document, in characters 
+     private static final int PARSER_POOL_SIZE_VAL =
+             getInteger("org.apache.cxf.staxutils.pool-size", 20);
+     private static final boolean ALLOW_INSECURE_PARSER_VAL;
+@@ -160,6 +160,9 @@ public final class StaxUtils {
+             getInteger(MAX_ELEMENT_DEPTH, getInteger(INNER_ELEMENT_LEVEL_SYSTEM_PROP, 100));
+     private static final int MAX_CHILD_ELEMENTS_VAL =
+             getInteger(MAX_CHILD_ELEMENTS, getInteger(INNER_ELEMENT_COUNT_SYSTEM_PROP, 50000));
++    // The MAX_ELEMENT_COUNT should be aligned with MAX_CHILD_ELEMENTS
++    private static final long MAX_ELEMENT_COUNT_VAL =
++            getLong(MAX_ELEMENT_COUNT, Math.max(100L * MAX_CHILD_ELEMENTS_VAL, 50000L));
+ 
+     // Variables from Woodstox
+     private static final String P_MAX_ATTRIBUTES_PER_ELEMENT = "com.ctc.wstx.maxAttributesPerElement";

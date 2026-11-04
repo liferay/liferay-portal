@@ -1,0 +1,46 @@
+diff --git a/org/apache/cxf/common/util/CompressionUtils.java b/org/apache/cxf/common/util/CompressionUtils.java
+index 85477f2..27e3f77 100644
+--- a/org/apache/cxf/common/util/CompressionUtils.java
++++ b/org/apache/cxf/common/util/CompressionUtils.java
+@@ -26,6 +26,10 @@ import java.util.zip.Deflater;
+ import java.util.zip.Inflater;
+ 
+ public final class CompressionUtils {
++    // Guards against decompression-bomb style inputs that expand to an unbounded size on the heap
++    public static final long DEFAULT_MAX_INFLATED_SIZE =
++        SystemPropertyAction.getInteger("org.apache.cxf.compression-max-inflated-size", 10 * 1024 * 1024);
++
+     private CompressionUtils() {
+ 
+     }
+@@ -34,12 +38,17 @@ public final class CompressionUtils {
+         return inflate(deflatedToken, true);
+     }
+     public static InputStream inflate(byte[] deflatedToken, boolean nowrap)
++        throws DataFormatException {
++        return inflate(deflatedToken, nowrap, DEFAULT_MAX_INFLATED_SIZE);
++    }
++    public static InputStream inflate(byte[] deflatedToken, boolean nowrap, long maxInflatedSize)
+         throws DataFormatException {
+         Inflater inflater = new Inflater(nowrap);
+         inflater.setInput(deflatedToken);
+ 
+         byte[] buffer = new byte[deflatedToken.length];
+         int inflateLen;
++        long totalInflated = 0;
+         ByteArrayOutputStream inflatedToken = new ByteArrayOutputStream();
+         while (!inflater.finished()) {
+             inflateLen = inflater.inflate(buffer, 0, deflatedToken.length);
+@@ -50,6 +59,12 @@ public final class CompressionUtils {
+                 break;
+             }
+ 
++            totalInflated += inflateLen;
++            if (totalInflated > maxInflatedSize) {
++                throw new DataFormatException("Inflated data exceeds the maximum allowed size of "
++                    + maxInflatedSize + " bytes");
++            }
++
+             inflatedToken.write(buffer, 0, inflateLen);
+         }
+ 
