@@ -9,6 +9,7 @@ import com.liferay.petra.io.WriterOutputStream;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.ServletOutputStreamAdapter;
+import com.liferay.portal.kernel.servlet.taglib.PageContextWrapper;
 import com.liferay.portal.kernel.util.ServerDetector;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -57,10 +58,11 @@ public class PipingServletResponseFactory {
 		}
 
 		if (!(pageContext instanceof PageContextWrapper) ||
-			(jspWriter instanceof BodyContent)) {
+			(jspWriter instanceof BodyContent) ||
+			(jspWriter.getBufferSize() != 0)) {
 
 			// This optimization cannot be applied to a page context with a
-			// pushed body
+			// pushed body or a buffered writer
 
 			return new PipingServletResponse(httpServletResponse, jspWriter);
 		}
