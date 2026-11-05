@@ -38,6 +38,7 @@ import com.liferay.portal.workflow.kaleo.runtime.action.KaleoActionExecutor;
 import com.liferay.portal.workflow.kaleo.runtime.form.FormDefinitionRetriever;
 import com.liferay.portal.workflow.kaleo.runtime.notification.KaleoNotificationSender;
 import com.liferay.portal.workflow.kaleo.runtime.util.WorkflowContextUtil;
+import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenService;
 
 import java.io.Serializable;
 
@@ -246,7 +247,7 @@ public class DefaultTaskManagerImpl
 
 		try {
 			KaleoTaskInstanceToken kaleoTaskInstanceToken =
-				kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceToken(
+				_kaleoTaskInstanceTokenService.getKaleoTaskInstanceToken(
 					workflowTaskId);
 
 			if (kaleoTaskInstanceToken.isCompleted()) {
@@ -433,6 +434,9 @@ public class DefaultTaskManagerImpl
 
 	@Reference
 	private KaleoNotificationSender _kaleoNotificationSender;
+
+	@Reference
+	private KaleoTaskInstanceTokenService _kaleoTaskInstanceTokenService;
 
 	@Reference
 	private KaleoWorkflowModelConverter _kaleoWorkflowModelConverter;
