@@ -139,6 +139,7 @@ public class KaleoDefinitionLocalServiceTest
 		_testUpdateKaleoDefinitionWithEmptyStatus();
 		_testUpdateKaleoDefinitionWithScope();
 		_testUpdateKaleoDefinitionWithSystem();
+		_testUpdateKaleoDefinitionWithoutExternalReferenceCode();
 	}
 
 	private AccountEntry _addAccountEntry() throws Exception {
@@ -309,6 +310,23 @@ public class KaleoDefinitionLocalServiceTest
 		kaleoDefinition = updateKaleoDefinition(kaleoDefinition, false);
 
 		Assert.assertFalse(kaleoDefinition.isSystem());
+	}
+
+	private void _testUpdateKaleoDefinitionWithoutExternalReferenceCode()
+		throws Exception {
+
+		KaleoDefinition kaleoDefinition = addKaleoDefinition(null);
+
+		String externalReferenceCode =
+			kaleoDefinition.getExternalReferenceCode();
+
+		kaleoDefinition = _kaleoDefinitionLocalService.updatedKaleoDefinition(
+			null, kaleoDefinition.getKaleoDefinitionId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			kaleoDefinition.getContent(), false, serviceContext);
+
+		Assert.assertEquals(
+			externalReferenceCode, kaleoDefinition.getExternalReferenceCode());
 	}
 
 	@Inject
