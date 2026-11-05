@@ -410,6 +410,54 @@ public class SiteNavigationMenuExportImportTest
 	}
 
 	@Test
+	public void testExportImportWithLayoutDeletedFromStaging()
+		throws Exception {
+
+		_setUpLocalStaging();
+
+		_siteNavigationMenu = SiteNavigationMenuTestUtil.addSiteNavigationMenu(
+			_stagingGroup);
+
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(
+			_stagingGroup);
+
+		SiteNavigationMenuItem parentSiteNavigationMenuItem =
+			SiteNavigationMenuItemTestUtil.addLayoutTypeSiteNavigationMenuItem(
+				_siteNavigationMenu, parentLayout, 0L);
+
+		Layout childLayout = LayoutTestUtil.addTypePortletLayout(_stagingGroup);
+
+		SiteNavigationMenuItem childSiteNavigationMenuItem =
+			SiteNavigationMenuItemTestUtil.addLayoutTypeSiteNavigationMenuItem(
+				_siteNavigationMenu, childLayout,
+				parentSiteNavigationMenuItem.getSiteNavigationMenuItemId());
+
+		_publishAllLayouts();
+
+		_layoutLocalService.deleteLayout(parentLayout);
+
+		Map<String, String[]> parameterMap =
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildFullPublishParameterMap();
+
+		parameterMap.put(
+			PortletDataHandlerKeys.DELETIONS,
+			new String[] {Boolean.TRUE.toString()});
+
+		_publishAllLayouts(parameterMap);
+
+		Assert.assertNull(
+			_layoutLocalService.fetchLayoutByUuidAndGroupId(
+				parentLayout.getUuid(), _liveGroup.getGroupId(),
+				parentLayout.isPrivateLayout()));
+
+		_assertLiveSiteNavigationMenuItemExternalReferenceCodes(
+			null, parentSiteNavigationMenuItem);
+		_assertLiveSiteNavigationMenuItemExternalReferenceCodes(
+			parentSiteNavigationMenuItem, childSiteNavigationMenuItem);
+	}
+
+	@Test
 	@TestInfo("LPD-37038")
 	public void testExportImportWithSiteNavigationMenuFromDifferentGroup()
 		throws Exception {
