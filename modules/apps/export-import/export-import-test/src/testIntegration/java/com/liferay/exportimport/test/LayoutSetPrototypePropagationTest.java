@@ -1543,8 +1543,8 @@ public class LayoutSetPrototypePropagationTest
 			prototypeLayout, initialLayoutTemplateId);
 
 		_layoutSetPrototypeJournalArticle = JournalTestUtil.addArticle(
-			_layoutSetPrototypeGroup.getGroupId(), "Test Article",
-			"Test Content");
+			_layoutSetPrototypeGroup.getGroupId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		portletId = addPortletToLayout(
 			TestPropsValues.getUserId(), prototypeLayout,
@@ -1742,11 +1742,11 @@ public class LayoutSetPrototypePropagationTest
 			content.put(languageId, localization);
 		}
 
-		String newContent = DDMStructureTestUtil.getSampleStructuredContent(
-			"New Test Content");
+		String newContent = RandomTestUtil.randomString();
 
 		JournalTestUtil.updateArticle(
-			_layoutSetPrototypeJournalArticle, "New Test Title", newContent);
+			_layoutSetPrototypeJournalArticle, RandomTestUtil.randomString(),
+			DDMStructureTestUtil.getSampleStructuredContent(newContent));
 
 		propagateChanges(group);
 
@@ -1758,7 +1758,7 @@ public class LayoutSetPrototypePropagationTest
 				Constants.VIEW, languageId);
 
 			if (linkEnabled) {
-				Assert.assertEquals("New Test Content", importedLocalization);
+				Assert.assertEquals(newContent, importedLocalization);
 			}
 			else {
 				Assert.assertEquals(localization, importedLocalization);
