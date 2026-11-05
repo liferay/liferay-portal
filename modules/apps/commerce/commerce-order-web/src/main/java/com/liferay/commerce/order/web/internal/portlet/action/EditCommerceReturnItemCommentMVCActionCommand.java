@@ -8,12 +8,15 @@ package com.liferay.commerce.order.web.internal.portlet.action;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManager;
+import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContextFunction;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -66,6 +69,20 @@ public class EditCommerceReturnItemCommentMVCActionCommand
 
 		long commentId = ParamUtil.getLong(actionRequest, "commentId");
 
+		Comment comment = _commentManager.fetchComment(commentId);
+
+		if (comment == null) {
+			return;
+		}
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (comment.getUserId() != themeDisplay.getUserId()) {
+			_discussionPermission.checkDeletePermission(
+				themeDisplay.getPermissionChecker(), commentId);
+		}
+
 		_commentManager.deleteComment(commentId);
 	}
 
@@ -80,6 +97,14 @@ public class EditCommerceReturnItemCommentMVCActionCommand
 			return;
 		}
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (comment.getUserId() != themeDisplay.getUserId()) {
+			_discussionPermission.checkUpdatePermission(
+				themeDisplay.getPermissionChecker(), commentId);
+		}
+
 		String body = ParamUtil.getString(actionRequest, "body");
 
 		_commentManager.updateComment(
@@ -89,5 +114,8 @@ public class EditCommerceReturnItemCommentMVCActionCommand
 
 	@Reference
 	private CommentManager _commentManager;
+
+	@Reference
+	private DiscussionPermission _discussionPermission;
 
 }

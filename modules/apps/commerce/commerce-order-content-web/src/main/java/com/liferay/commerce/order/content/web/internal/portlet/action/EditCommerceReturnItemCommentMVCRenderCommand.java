@@ -8,6 +8,7 @@ package com.liferay.commerce.order.content.web.internal.portlet.action;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.order.content.web.internal.display.context.CommerceReturnItemCommentEditDisplayContext;
+import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -49,7 +50,7 @@ public class EditCommerceReturnItemCommentMVCRenderCommand
 			CommerceReturnItemCommentEditDisplayContext
 				commerceReturnItemCommentEditDisplayContext =
 					new CommerceReturnItemCommentEditDisplayContext(
-						renderRequest);
+						_discussionPermission, renderRequest);
 
 			renderRequest.setAttribute(
 				WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -96,6 +97,9 @@ public class EditCommerceReturnItemCommentMVCRenderCommand
 				LiferayWindowState.POP_UP
 			).buildString());
 	}
+
+	@Reference
+	private DiscussionPermission _discussionPermission;
 
 	@Reference
 	private Portal _portal;

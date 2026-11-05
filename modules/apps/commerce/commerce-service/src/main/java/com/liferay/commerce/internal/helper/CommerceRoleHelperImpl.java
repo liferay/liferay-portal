@@ -288,6 +288,10 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 	private void _setRolePermissions(Role role, ServiceContext serviceContext)
 		throws PortalException {
 
+		ObjectDefinition commerceReturnItemObjectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				role.getCompanyId(), "CommerceReturnItem");
+
 		Map<String, String[]> companyResourceActionIds = new HashMap<>();
 		Map<String, String[]> groupResourceActionIds = new HashMap<>();
 
@@ -347,6 +351,12 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 					CommerceOrderActionKeys.VIEW_COMMERCE_ORDERS,
 					CommerceOrderActionKeys.VIEW_OPEN_COMMERCE_ORDERS
 				});
+
+			if (commerceReturnItemObjectDefinition != null) {
+				groupResourceActionIds.put(
+					commerceReturnItemObjectDefinition.getClassName(),
+					new String[] {ActionKeys.ADD_DISCUSSION});
+			}
 		}
 		else if (name.equals(
 					AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_MANAGER)) {
@@ -419,6 +429,12 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 					CommerceOrderActionKeys.VIEW_COMMERCE_ORDERS,
 					CommerceOrderActionKeys.VIEW_OPEN_COMMERCE_ORDERS
 				});
+
+			if (commerceReturnItemObjectDefinition != null) {
+				groupResourceActionIds.put(
+					commerceReturnItemObjectDefinition.getClassName(),
+					new String[] {ActionKeys.ADD_DISCUSSION});
+			}
 		}
 		else if (name.equals(
 					AccountRoleConstants.ROLE_NAME_ACCOUNT_ORDER_MANAGER)) {
@@ -469,6 +485,12 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 					CommerceActionKeys.ADD_COMMERCE_SHIPMENT,
 					CommerceActionKeys.VIEW_COMMERCE_SHIPMENTS
 				});
+
+			if (commerceReturnItemObjectDefinition != null) {
+				groupResourceActionIds.put(
+					commerceReturnItemObjectDefinition.getClassName(),
+					new String[] {ActionKeys.ADD_DISCUSSION});
+			}
 		}
 		else if (name.equals(AccountRoleConstants.ROLE_NAME_ACCOUNT_SUPPLIER)) {
 			groupResourceActionIds.put(
@@ -689,8 +711,10 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 				companyResourceActionIds.put(
 					objectDefinition.getClassName(),
 					new String[] {
-						ActionKeys.DELETE, ActionKeys.PERMISSIONS,
-						ActionKeys.UPDATE, ActionKeys.VIEW
+						ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
+						ActionKeys.DELETE_DISCUSSION, ActionKeys.PERMISSIONS,
+						ActionKeys.UPDATE, ActionKeys.UPDATE_DISCUSSION,
+						ActionKeys.VIEW
 					});
 				companyResourceActionIds.put(
 					objectDefinition.getPortletId(),

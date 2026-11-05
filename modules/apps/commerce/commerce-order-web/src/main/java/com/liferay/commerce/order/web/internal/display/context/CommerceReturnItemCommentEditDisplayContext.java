@@ -7,8 +7,11 @@ package com.liferay.commerce.order.web.internal.display.context;
 
 import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManagerUtil;
+import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.RenderRequest;
 
@@ -18,12 +21,25 @@ import jakarta.portlet.RenderRequest;
 public class CommerceReturnItemCommentEditDisplayContext {
 
 	public CommerceReturnItemCommentEditDisplayContext(
+			DiscussionPermission discussionPermission,
 			RenderRequest renderRequest)
 		throws PortalException {
 
 		long commentId = ParamUtil.getLong(renderRequest, "commentId");
 
 		_comment = CommentManagerUtil.fetchComment(commentId);
+
+		if (_comment == null) {
+			return;
+		}
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (_comment.getUserId() != themeDisplay.getUserId()) {
+			discussionPermission.checkUpdatePermission(
+				themeDisplay.getPermissionChecker(), commentId);
+		}
 	}
 
 	public Comment getComment() {
