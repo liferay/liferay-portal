@@ -755,12 +755,6 @@ public class ProjectFaroControllerTest {
 		User user = Mockito.mock(User.class);
 
 		Mockito.when(
-			user.getEmailAddress()
-		).thenReturn(
-			_EMAIL_ADDRESS
-		);
-
-		Mockito.when(
 			permissionChecker.getUser()
 		).thenReturn(
 			user
@@ -776,6 +770,12 @@ public class ProjectFaroControllerTest {
 			permissionChecker.isOmniadmin()
 		).thenReturn(
 			omniadmin
+		);
+
+		Mockito.when(
+			user.getEmailAddress()
+		).thenReturn(
+			_EMAIL_ADDRESS
 		);
 
 		PermissionThreadLocal.setPermissionChecker(permissionChecker);
