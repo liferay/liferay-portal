@@ -287,11 +287,10 @@ public class StagingBarPortlet extends MVCPortlet {
 
 			if ((liveGroup != null) && group.isStagedRemotely()) {
 				try {
-					remoteURL = _stagingURLHelper.buildRemoteURL(
-						group.getTypeSettingsProperties());
-
 					remoteSiteURL = _staging.getRemoteSiteURL(
 						group, layout.isPrivateLayout());
+					remoteURL = _stagingURLHelper.buildRemoteURL(
+						group.getTypeSettingsProperties());
 				}
 				catch (AuthException authException) {
 					_log.error(authException);
