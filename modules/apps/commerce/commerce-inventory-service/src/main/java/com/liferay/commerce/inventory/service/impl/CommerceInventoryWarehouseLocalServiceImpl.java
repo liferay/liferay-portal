@@ -120,8 +120,7 @@ public class CommerceInventoryWarehouseLocalServiceImpl
 			commerceCountryCode);
 		commerceInventoryWarehouse.setLatitude(latitude);
 		commerceInventoryWarehouse.setLongitude(longitude);
-		commerceInventoryWarehouse.setStatus(
-			WorkflowConstants.STATUS_APPROVED);
+		commerceInventoryWarehouse.setStatus(WorkflowConstants.STATUS_APPROVED);
 		commerceInventoryWarehouse.setExpandoBridgeAttributes(serviceContext);
 
 		commerceInventoryWarehouse =

@@ -208,8 +208,7 @@ public class CommerceInventoryServiceUpgradeStepRegistrator
 				_resourceActionLocalService, _resourcePermissionLocalService));
 
 		registry.register(
-			"2.11.5", "2.11.6",
-			new CommerceInventoryWarehouseUpgradeProcess());
+			"2.11.5", "2.11.6", new CommerceInventoryWarehouseUpgradeProcess());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce inventory upgrade step registrator finished");
