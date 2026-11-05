@@ -180,8 +180,6 @@ public class SalesforceObjectEntryManagerImplTest {
 	private void _testGetObjectEntriesWithAccountEntryRestriction()
 		throws Exception {
 
-		ObjectDefinition objectDefinition = _mockObjectDefinition(true);
-
 		Mockito.when(
 			_inlineSQLHelper.isEnabled(Mockito.anyLong(), Mockito.anyLong())
 		).thenReturn(
@@ -213,6 +211,8 @@ public class SalesforceObjectEntryManagerImplTest {
 		).thenReturn(
 			accountEntries
 		);
+
+		ObjectDefinition objectDefinition = _mockObjectDefinition(true);
 
 		_salesforceObjectEntryManagerImpl.getObjectEntries(
 			RandomTestUtil.randomLong(), objectDefinition,
