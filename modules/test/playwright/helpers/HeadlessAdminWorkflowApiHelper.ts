@@ -136,4 +136,15 @@ export class HeadlessAdminWorkflowApiHelper {
 			}
 		);
 	}
+
+	async postWorkflowTaskUpdateDueDate(workflowTaskId: number, dueDate: Date) {
+		return await this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/workflow-tasks/${workflowTaskId}/update-due-date`,
+			{
+				data: {
+					dueDate: dueDate.toISOString().replace(/\.\d{3}Z$/, 'Z'),
+				},
+			}
+		);
+	}
 }
