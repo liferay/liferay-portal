@@ -140,6 +140,8 @@ describe('util', () => {
 			${'http://liferay.com/home?日本語ページ=0#section'}          | ${'http://liferay.com/home?%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%83%9A%E3%83%BC%E3%82%B8=0#section'}
 			${'http://liferay.com/home?js_fast_load=0&test=123#section'} | ${'http://liferay.com/home?js_fast_load=0&test=123#section'}
 			${'http://liferay.com'}                                      | ${'http://liferay.com'}
+			${'http://liferay.com/'}                                     | ${'http://liferay.com/'}
+			${'https%3A%2F%2Fwww.liferay.com%2F'}                        | ${'https://www.liferay.com/'}
 			${'it-is-a-custom-touchpoint'}                               | ${'it-is-a-custom-touchpoint'}
 			${'Any'}                                                     | ${null}
 			${''}                                                        | ${null}

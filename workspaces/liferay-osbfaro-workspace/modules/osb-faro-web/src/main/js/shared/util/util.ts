@@ -111,10 +111,18 @@ export const getSafeTouchpoint = (touchpoint: string) => {
 	if (!touchpoint) return null;
 
 	try {
-		const url = new URL(decodeURIComponent(touchpoint));
+		const decodedTouchpoint = decodeURIComponent(touchpoint);
+
+		const url = new URL(decodedTouchpoint);
 		const remainingUrl = url.href.replace(url.origin, '');
 
-		return remainingUrl === '/' ? url.origin : url.origin + remainingUrl;
+		// `URL` appends a slash to a bare origin, so it is dropped again to
+		// keep the touchpoint as given. A site root URL that arrived with its
+		// slash keeps it, since that is the URL the page list reports.
+
+		return remainingUrl === '/' && !decodedTouchpoint.endsWith('/')
+			? url.origin
+			: url.origin + remainingUrl;
 	}
 	catch (e) {
 		return touchpoint !== 'Any'
