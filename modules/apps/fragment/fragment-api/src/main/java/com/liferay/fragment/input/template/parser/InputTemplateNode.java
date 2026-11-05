@@ -176,7 +176,7 @@ public class InputTemplateNode extends LinkedHashMap<String, Object> {
 
 		public JSONObject toJSONObject() {
 			return JSONUtil.put(
-				"label", _label
+				"label", HtmlUtil.escape(_label)
 			).put(
 				"value", _value
 			);

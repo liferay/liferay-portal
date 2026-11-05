@@ -233,7 +233,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		HttpServletRequest httpServletRequest,
 		InputTemplateNode inputTemplateNode, String nonce) {
 
-		StringBundler sb = new StringBundler(38);
+		StringBundler sb = new StringBundler(41);
 
 		sb.append("<div id=\"");
 
@@ -343,7 +343,10 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 			sb.append("unescapeHTML(input.valueI18n[key] ?? '');}); if ");
 			sb.append("(input.attributes.selectedOptionLabel) {");
 			sb.append("input.attributes.selectedOptionLabel = Liferay.Util.");
-			sb.append("unescapeHTML(input.attributes.selectedOptionLabel);}");
+			sb.append("unescapeHTML(input.attributes.selectedOptionLabel);} ");
+			sb.append("(input.attributes.options || []).forEach(");
+			sb.append("function(option){ option.label = Liferay.Util.");
+			sb.append("unescapeHTML(option.label ?? '');})");
 		}
 
 		sb.append("; const layoutMode = '");
