@@ -796,7 +796,9 @@ public abstract class BaseStyleBookBatchEnginePortletDataHandlerTestCase
 	private String _getThemeWarningMessage(String name) {
 		return LanguageUtil.format(
 			LocaleUtil.US,
-			"the-theme-referenced-by-x-is-not-available-in-this-environment",
+			"the-theme-referenced-by-x-is-not-available-in-this-environment-" +
+				"the-style-book-will-be-inactive-and-its-tokens-cannot-be-" +
+					"verified-until-the-theme-is-available",
 			name);
 	}
 
