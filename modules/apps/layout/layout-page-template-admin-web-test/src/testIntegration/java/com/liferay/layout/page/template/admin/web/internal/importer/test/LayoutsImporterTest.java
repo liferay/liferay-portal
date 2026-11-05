@@ -71,6 +71,8 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortletIdException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -93,6 +95,7 @@ import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
@@ -109,6 +112,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -122,6 +126,7 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipReaderFactory;
@@ -157,6 +162,9 @@ import org.junit.runner.RunWith;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Rubén Pulido
@@ -1019,6 +1027,65 @@ public class LayoutsImporterTest {
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-114036")
+	public void testImportMasterLayoutPageTemplateEntryWithEmbeddedWidgets()
+		throws Exception {
+
+		_addFragmentEntry(
+			"<lfr-widget-nav id=\"desktopNav\"></lfr-widget-nav>" +
+				"<lfr-widget-nav id=\"mobileNav\"></lfr-widget-nav>",
+			"embedded-widgets-fragment", RandomTestUtil.randomString(),
+			_serviceContext1);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group1);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			ContentLayoutTestUtil.getMockHttpServletRequest(
+				_companyLocalService.getCompany(_group1.getCompanyId()),
+				_group1, layout);
+
+		mockHttpServletRequest.setParameter(
+			"p_l_id", String.valueOf(layout.getPlid()));
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)mockHttpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		themeDisplay.setRequest(mockHttpServletRequest);
+		themeDisplay.setResponse(new MockHttpServletResponse());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group1, TestPropsValues.getUserId());
+
+		serviceContext.setRequest(mockHttpServletRequest);
+
+		long namespacePlaceholderPortletPreferencesCount =
+			_getNamespacePlaceholderPortletPreferencesCount();
+
+		_importFile(
+			_getFile(
+				"com/liferay/layout/page/template/admin/web/internal/importer" +
+					"/test/dependencies/master-pages-with-embedded-widgets"),
+			LayoutsImportStrategy.OVERWRITE,
+			LayoutPageTemplateConstants.
+				PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+			serviceContext);
+
+		Assert.assertEquals(
+			namespacePlaceholderPortletPreferencesCount,
+			_getNamespacePlaceholderPortletPreferencesCount());
+
+		List<PortletPreferences> portletPreferences =
+			_portletPreferencesLocalService.getPortletPreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
+
+		Assert.assertEquals(
+			portletPreferences.toString(), 0, portletPreferences.size());
 	}
 
 	@Test
@@ -2128,6 +2195,16 @@ public class LayoutsImporterTest {
 		return layoutStructure.getLayoutStructureItem(childItemId);
 	}
 
+	private long _getNamespacePlaceholderPortletPreferencesCount() {
+		DynamicQuery dynamicQuery =
+			_portletPreferencesLocalService.dynamicQuery();
+
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.like("portletId", "%[$NAMESPACE$]%"));
+
+		return _portletPreferencesLocalService.dynamicQueryCount(dynamicQuery);
+	}
+
 	private JSONObject _getPageDefinitionJSONObject(
 			String layoutPageTemplateEntryKey, File file)
 		throws Exception {
@@ -2511,6 +2588,9 @@ public class LayoutsImporterTest {
 
 	@Inject
 	private AssetListEntryLocalService _assetListEntryLocalService;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;

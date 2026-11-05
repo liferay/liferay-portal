@@ -1,0 +1,51 @@
+{
+	"pageElement": {
+		"id": "6b2f3a1e-4c5d-4e8f-9a0b-1c2d3e4f5a6b",
+		"pageElements": [
+			{
+				"definition": {
+					"fragmentSettings": {
+						"unallowedFragments": [
+						]
+					}
+				},
+				"id": "7c3e4b2f-5d6e-4f9a-0b1c-2d3e4f5a6b7c",
+				"type": "DropZone"
+			},
+			{
+				"definition": {
+					"fragment": {
+						"key": "embedded-widgets-fragment"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					],
+					"indexed": true,
+					"widgetInstances": [
+						{
+							"widgetConfig": {
+							},
+							"widgetInstanceId": "desktopNav",
+							"widgetName": "com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet"
+						},
+						{
+							"widgetConfig": {
+							},
+							"widgetInstanceId": "mobileNav",
+							"widgetName": "com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet"
+						}
+					]
+				},
+				"id": "8d4f5c3a-6e7f-4a0b-1c2d-3e4f5a6b7c8d",
+				"type": "Fragment"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"colorSchemeName": "01",
+		"themeName": "Classic"
+	},
+	"version": 1.1
+}
