@@ -112,6 +112,8 @@ public class TimeBasedOTPBrowserSetupMFACheckerTest {
 	@FeatureFlag("LPD-6417")
 	@Test
 	public void testBuildAuditMessages() throws Exception {
+		PrincipalThreadLocal.setName(_REAL_USER_ID);
+
 		AuditMessage auditMessage = _buildAuditMessage(
 			"buildNonexistentUserVerificationFailureAuditMessage",
 			new Class<?>[] {long.class, long.class, String.class},
