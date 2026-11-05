@@ -220,4 +220,93 @@ describe('CampaignsDataSet', () => {
 
 		expect(lastFDSProps.emptyState.filtered).toBeUndefined();
 	});
+
+	describe('account filter', () => {
+		const getLinkParams = () => {
+			const {container} = render(
+				lastFDSProps.customDataRenderers.campaignNameRenderer({
+					itemData: {id: '7'},
+					value: 'Multi-Cloud Solutions Guide',
+				})
+			);
+
+			return new URL(
+				container.querySelector('a')!.getAttribute('href')!,
+				'http://localhost'
+			).searchParams;
+		};
+
+		it('should give the table its own account filter', () => {
+			renderDataSet();
+
+			expect(lastFDSProps.filters).toEqual([
+				{
+					apiURL: '/o/faro/contacts/23/account/account-names?channelId=123',
+					entityFieldType: 'string',
+					id: 'accountId',
+					itemKey: 'id',
+					itemLabel: 'name',
+					label: 'Account',
+					type: 'selection',
+				},
+			]);
+		});
+
+		it('should select a single account at a time', () => {
+			renderDataSet();
+
+			expect(lastFDSProps.filters[0].multiple).toBeUndefined();
+		});
+
+		it('should start the filter empty when no account is selected globally', () => {
+			renderDataSet();
+
+			expect(lastFDSProps.filters[0].preloadedData).toBeUndefined();
+		});
+
+		it('should seed the filter with the account selected globally', () => {
+			renderDataSet('/?accountId=9&accountName=Acme');
+
+			expect(lastFDSProps.filters[0].preloadedData).toEqual({
+				exclude: false,
+				selectedItems: [{label: 'Acme', value: '9'}],
+			});
+		});
+
+		it('should label the seeded account by its id when the name is missing', () => {
+			renderDataSet('/?accountId=9');
+
+			expect(lastFDSProps.filters[0].preloadedData).toEqual({
+				exclude: false,
+				selectedItems: [{label: '9', value: '9'}],
+			});
+		});
+
+		it('should leave the filtering of the table to its own filter', () => {
+			renderDataSet('/?accountId=9&accountName=Acme');
+
+			expect(lastFDSProps.apiURL).toBe(
+				'/o/faro/contacts/23/campaigns?channelId=123&rangeKey=30'
+			);
+		});
+
+		it('should carry the global account on the campaign link', () => {
+			renderDataSet('/?accountId=9&accountName=Acme&rangeKey=7');
+
+			const params = getLinkParams();
+
+			expect(params.get('accountId')).toBe('9');
+			expect(params.get('accountName')).toBe('Acme');
+			expect(params.get('rangeKey')).toBe('7');
+		});
+
+		it('should leave the account off the campaign link when none is selected', () => {
+			renderDataSet();
+
+			const params = getLinkParams();
+
+			expect(params.has('accountId')).toBe(false);
+			expect(params.has('accountName')).toBe(false);
+		});
+	});
 });

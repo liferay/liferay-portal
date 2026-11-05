@@ -59,6 +59,14 @@ describe('AccountsTouchedDataSet', () => {
 		);
 	});
 
+	it('should ask the endpoint for the account selected globally', () => {
+		renderDataSet('/?accountId=9&accountName=Acme');
+
+		expect(lastFDSProps.apiURL).toBe(
+			'/o/faro/contacts/23/campaigns/7/accounts?accountIds=9&accountLifecycleId=55&channelId=123&rangeKey=30'
+		);
+	});
+
 	it('should leave out the lifecycle when there is none', () => {
 		renderDataSet('/', {lifecycles: []});
 

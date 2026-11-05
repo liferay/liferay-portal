@@ -28,6 +28,7 @@ jest.mock('shared/hooks/useCurrentUser', () => ({
 	useCurrentUser: jest.fn(),
 }));
 
+let lastAccountDropdownProps: any;
 let lastDropdownRangeKeyProps: any;
 
 jest.mock('../../components/CampaignsDataSet', () => ({
@@ -38,6 +39,17 @@ jest.mock('../../components/CampaignsDataSet', () => ({
 jest.mock('../../components/OverviewSection', () => ({
 	__esModule: true,
 	default: () => <div data-testid="overview-section" />,
+}));
+
+// The real picker pages accounts through the API. Its own suite covers it.
+
+jest.mock('shared/components/AccountDropdown', () => ({
+	__esModule: true,
+	default: (props: any) => {
+		lastAccountDropdownProps = props;
+
+		return <div data-testid="account-dropdown" />;
+	},
 }));
 
 // The real dropdown queries its presets through Apollo, which these tests do
@@ -70,6 +82,7 @@ describe('Campaigns', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 
+		lastAccountDropdownProps = undefined;
 		lastDropdownRangeKeyProps = undefined;
 
 		mockedUseCurrentUser.mockReturnValue({isAdmin: () => true});
@@ -184,6 +197,114 @@ describe('Campaigns', () => {
 				expect.objectContaining({rangeQueryValues: {rangeKey: '90'}})
 			)
 		);
+	});
+
+	describe('account filter', () => {
+
+		// Some tests move the browser location, so put it back even when one
+		// of them fails halfway.
+
+		afterEach(() => window.history.pushState({}, '', '/'));
+
+		it('should render the account picker in the sub header', () => {
+			const {container} = renderCampaigns();
+
+			expect(
+				container.querySelector(
+					'.sub-header-root [data-testid="account-dropdown"]'
+				)
+			).toBeTruthy();
+		});
+
+		it('should start with no account selected', () => {
+			renderCampaigns();
+
+			expect(lastAccountDropdownProps.initialAccountId).toBeUndefined();
+			expect(lastAccountDropdownProps.initialAccountName).toBeUndefined();
+		});
+
+		it('should read the account from the URL', async () => {
+			renderCampaigns('/?accountId=9&accountName=Acme');
+
+			expect(lastAccountDropdownProps.initialAccountId).toBe('9');
+			expect(lastAccountDropdownProps.initialAccountName).toBe('Acme');
+
+			await waitFor(() =>
+				expect(fetchCampaignMetrics).toHaveBeenCalledWith(
+					expect.objectContaining({accountId: '9'})
+				)
+			);
+		});
+
+		it('should ask for the metrics of every account when none is selected', async () => {
+			renderCampaigns();
+
+			await waitFor(() =>
+				expect(fetchCampaignMetrics).toHaveBeenCalled()
+			);
+
+			expect(fetchCampaignMetrics).toHaveBeenCalledWith(
+				expect.not.objectContaining({accountId: expect.anything()})
+			);
+		});
+
+		it('should ask for the metrics of the account picked', async () => {
+			renderCampaigns();
+
+			act(() =>
+				lastAccountDropdownProps.onFilterChange({id: '9', name: 'Acme'})
+			);
+
+			expect(lastAccountDropdownProps.initialAccountId).toBe('9');
+			expect(lastAccountDropdownProps.initialAccountName).toBe('Acme');
+
+			await waitFor(() =>
+				expect(fetchCampaignMetrics).toHaveBeenCalledWith(
+					expect.objectContaining({accountId: '9'})
+				)
+			);
+		});
+
+		it('should ask for the metrics of every account again once it is cleared', async () => {
+			renderCampaigns('/?accountId=9&accountName=Acme');
+
+			act(() => lastAccountDropdownProps.onFilterChange(null));
+
+			expect(lastAccountDropdownProps.initialAccountId).toBeUndefined();
+
+			await waitFor(() =>
+				expect(fetchCampaignMetrics).toHaveBeenLastCalledWith(
+					expect.not.objectContaining({accountId: expect.anything()})
+				)
+			);
+		});
+
+		it('should keep the account when the range changes', async () => {
+
+			// The range write builds on the browser location, which a
+			// memory router does not move, so line the two up.
+
+			window.history.pushState({}, '', '/?accountId=9&accountName=Acme');
+
+			renderCampaigns('/?accountId=9&accountName=Acme');
+
+			act(() =>
+				lastDropdownRangeKeyProps.onRangeSelectorChange({
+					rangeEnd: '',
+					rangeKey: '90',
+					rangeStart: '',
+				})
+			);
+
+			await waitFor(() =>
+				expect(fetchCampaignMetrics).toHaveBeenLastCalledWith(
+					expect.objectContaining({
+						accountId: '9',
+						rangeQueryValues: {rangeKey: '90'},
+					})
+				)
+			);
+		});
 	});
 
 	describe('when no data source is connected', () => {
