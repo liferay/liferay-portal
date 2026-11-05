@@ -20,6 +20,7 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../../fixtures/pageManagementSiteTest';
 import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {getObjectERC} from '../../setup/page-management-site/main/utils/getObjectERC';
 import getFormContainerDefinition from '../main/utils/getFormContainerDefinition';
@@ -167,6 +168,140 @@ test(
 		for (const country of countries) {
 			await expect(
 				page.getByRole('option', {name: country})
+			).toBeVisible();
+		}
+	}
+);
+
+test(
+	'Can see more than 10 options on dropdown menu of select from list when editing an existing entry in a Display Page Template',
+	{
+		tag: '@LPD-114051',
+	},
+	async ({
+		apiHelpers,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create list type with 12 items
+
+		const listTypeDefinition =
+			await apiHelpers.listTypeAdmin.postRandomListTypeDefinition();
+
+		const itemNames = Array.from(
+			{length: 12},
+			(_, index) => `Item ${String(index + 1).padStart(2, '0')}`
+		);
+
+		for (const itemName of itemNames) {
+			await apiHelpers.listTypeAdmin.postListTypeEntry({
+				key: itemName.replace(' ', '').toLowerCase(),
+				listTypeDefinitionExternalReferenceCode:
+					listTypeDefinition.externalReferenceCode,
+				name_i18n: {en_US: itemName},
+			});
+		}
+
+		// Create object definition
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+		const objectDefinitionName = `Tomato${getRandomInt()}`;
+
+		const {body: objectDefinition} =
+			await objectDefinitionAPIClient.postObjectDefinition({
+				active: true,
+				externalReferenceCode: getRandomString(),
+				label: {en_US: objectDefinitionName},
+				name: objectDefinitionName,
+				objectFields: [
+					{
+						DBType: 'String',
+						businessType: 'Picklist',
+						externalReferenceCode: getRandomString(),
+						indexed: true,
+						indexedAsKeyword: false,
+						label: {en_US: 'Variety'},
+						listTypeDefinitionExternalReferenceCode:
+							listTypeDefinition.externalReferenceCode,
+						listTypeDefinitionId: listTypeDefinition.id,
+						name: 'variety',
+						required: false,
+					},
+				],
+				pluralLabel: {en_US: `${objectDefinitionName}s`},
+				scope: 'company',
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		// Create an entry with a selected option
+
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{variety: {key: 'item03'}},
+			`c/${objectDefinitionName.toLowerCase()}s`
+		);
+
+		// Create a display page template with a form container mapped to the object
+
+		const displayPageTemplateName = getRandomString();
+
+		const className =
+			await apiHelpers.jsonWebServicesClassName.fetchClassName(
+				objectDefinition.className
+			);
+
+		await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+			{
+				classNameId: className.classNameId,
+				groupId: site.id,
+				name: displayPageTemplateName,
+			}
+		);
+
+		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+		await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+		await pageEditorPage.addFragment('Form Components', 'Form Container');
+
+		await pageEditorPage.mapFormFragment(
+			await pageEditorPage.getFragmentId('Form Container'),
+			`${objectDefinitionName} (Default)`
+		);
+
+		await displayPageTemplatesPage.publishTemplate();
+
+		// Go to the display page and open the dropdown without editing the text
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}/e/${displayPageTemplateName}/${className.classNameId}/${objectEntry.id}`
+		);
+
+		await expect(page.getByPlaceholder('Choose an Option')).toHaveValue(
+			'Item 03'
+		);
+
+		const option = page.getByRole('option');
+
+		await clickAndExpectToBeVisible({
+			target: option.first(),
+			trigger: page.getByLabel('Open Options Menu'),
+		});
+
+		await expect(option).toHaveCount(itemNames.length);
+
+		for (const itemName of itemNames) {
+			await expect(
+				page.getByRole('option', {exact: true, name: itemName})
 			).toBeVisible();
 		}
 	}
