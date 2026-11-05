@@ -20,8 +20,10 @@ import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -36,7 +38,12 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -44,6 +51,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.util.comparator.GroupNameComparator;
 import com.liferay.portal.kernel.webserver.WebServerServletToken;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -397,19 +405,38 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 		JSONObject sitesJSONObject = _jsonFactory.createJSONObject();
 
-		User user = themeDisplay.getUser();
-
 		List<Group> recentGroups = _recentGroupManager.getRecentGroups(
 			httpServletRequest);
 
-		List<Group> mySiteGroups = ListUtil.filter(
-			user.getMySiteGroups(
-				new String[] {
-					Company.class.getName(), Group.class.getName(),
-					Organization.class.getName()
-				},
-				recentGroups.size() + _MAX_SITES + 1),
-			group -> !recentGroups.contains(group));
+		List<Group> mySiteGroups = null;
+
+		if (_isShowAllSites(themeDisplay.getPermissionChecker())) {
+			recentGroups = ListUtil.filter(recentGroups, Group::isSite);
+
+			mySiteGroups = _groupLocalService.search(
+				themeDisplay.getCompanyId(),
+				TransformUtil.transformToLongArray(
+					_CLASS_NAMES, _portal::getClassNameId),
+				null,
+				LinkedHashMapBuilder.<String, Object>put(
+					"active", Boolean.TRUE
+				).put(
+					"site", Boolean.TRUE
+				).build(),
+				0, recentGroups.size() + _MAX_SITES + 1,
+				new GroupNameComparator(true, themeDisplay.getLocale()));
+		}
+		else {
+			User user = themeDisplay.getUser();
+
+			mySiteGroups = user.getMySiteGroups(
+				_CLASS_NAMES, QueryUtil.ALL_POS);
+
+			recentGroups = ListUtil.filter(
+				recentGroups, mySiteGroups::contains);
+		}
+
+		mySiteGroups = ListUtil.remove(mySiteGroups, recentGroups);
 
 		int count = recentGroups.size() + mySiteGroups.size();
 
@@ -487,6 +514,18 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		return false;
 	}
 
+	private boolean _isShowAllSites(PermissionChecker permissionChecker)
+		throws Exception {
+
+		if (permissionChecker.isCompanyAdmin() ||
+			GroupPermissionUtil.contains(permissionChecker, ActionKeys.VIEW)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _processPanelCategories(
 			List<PanelCategory> applicationsMenuPanelCategories,
 			HttpServletRequest httpServletRequest,
@@ -520,10 +559,18 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		}
 	}
 
+	private static final String[] _CLASS_NAMES = {
+		Company.class.getName(), Group.class.getName(),
+		Organization.class.getName()
+	};
+
 	private static final int _MAX_SITES = 3;
 
 	@Reference
 	private AssetLibraryResource.Factory _assetLibraryResourceFactory;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private GroupURLProvider _groupURLProvider;

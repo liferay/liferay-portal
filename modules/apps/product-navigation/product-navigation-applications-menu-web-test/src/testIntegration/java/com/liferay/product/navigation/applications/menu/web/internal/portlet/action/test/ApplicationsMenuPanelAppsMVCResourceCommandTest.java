@@ -11,6 +11,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
@@ -54,6 +55,7 @@ import jakarta.portlet.ResourceResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
@@ -112,7 +114,9 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 	}
 
 	@Test
-	public void testGetPanelCategoriesJSONArray() {
+	public void testGetPanelCategoriesJSONArray() throws Exception {
+		_setCompanyAdmin();
+
 		JSONArray panelCategoriesJSONArray = ReflectionTestUtil.invoke(
 			_mvcResourceCommand, "_getPanelCategoriesJSONArray",
 			new Class<?>[] {
@@ -145,6 +149,38 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 	}
 
 	@Test
+	public void testGetSitesJSONObjectWithCompanyAdmin() throws Exception {
+		_setCompanyAdmin();
+
+		Group group = _addGroup();
+
+		_userLocalService.unsetGroupUsers(
+			group.getGroupId(), new long[] {TestPropsValues.getUserId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		Company company = _themeDisplay.getCompany();
+
+		Group companyGroup = company.getGroup();
+
+		_setRecentGroupsValue(
+			_mockHttpServletRequest,
+			StringUtil.merge(
+				new long[] {group.getGroupId(), companyGroup.getGroupId()}));
+
+		JSONObject jsonObject = _getSitesJSONObject();
+
+		JSONArray mySitesJSONArray = jsonObject.getJSONArray("mySites");
+
+		Assert.assertEquals(1, mySitesJSONArray.length());
+
+		Assert.assertTrue(jsonObject.has("viewAllURL"));
+
+		_assertGroupKeys(
+			Arrays.asList(group, companyGroup),
+			jsonObject.getJSONArray("recentSites"));
+	}
+
+	@Test
 	public void testGetSitesJSONObjectWithMySites() throws Exception {
 		_addMySiteGroups(1);
 
@@ -174,6 +210,26 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 	}
 
 	@Test
+	public void testGetSitesJSONObjectWithNonmemberRecentSites()
+		throws Exception {
+
+		_addMySiteGroups(2);
+
+		Group group = _addGroup();
+
+		_setRecentGroupsValue(
+			_mockHttpServletRequest, String.valueOf(group.getGroupId()));
+
+		JSONObject jsonObject = _getSitesJSONObject();
+
+		Assert.assertFalse(jsonObject.has("recentSites"));
+		Assert.assertFalse(jsonObject.has("viewAllURL"));
+
+		_assertGroupKeys(
+			_groups.subList(0, 2), jsonObject.getJSONArray("mySites"));
+	}
+
+	@Test
 	public void testGetSitesJSONObjectWithRecentSites() throws Exception {
 		_addRecentGroups(3);
 
@@ -184,13 +240,19 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 		_testGetSitesJSONObjectWithRecentSitesAndMaxPlus1Sites();
 	}
 
+	private Group _addGroup() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		LayoutTestUtil.addTypePortletLayout(group);
+
+		_groups.add(group);
+
+		return group;
+	}
+
 	private void _addMySiteGroups(int max) throws Exception {
 		for (int i = 0; i < max; i++) {
-			Group group = GroupTestUtil.addGroup();
-
-			LayoutTestUtil.addTypePortletLayout(group);
-
-			_groups.add(group);
+			Group group = _addGroup();
 
 			_userLocalService.setGroupUsers(
 				group.getGroupId(), new long[] {_user.getUserId()});
@@ -199,11 +261,7 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 
 	private void _addRecentGroups(int max) throws Exception {
 		for (int i = 0; i < max; i++) {
-			Group group = GroupTestUtil.addGroup();
-
-			LayoutTestUtil.addTypePortletLayout(group);
-
-			_groups.add(group);
+			Group group = _addGroup();
 
 			_recentGroups.add(group);
 
@@ -267,6 +325,14 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 		return themeDisplay;
 	}
 
+	private void _setCompanyAdmin() throws Exception {
+		User user = TestPropsValues.getUser();
+
+		_themeDisplay.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+		_themeDisplay.setUser(user);
+	}
+
 	private void _setRecentGroupsValue(
 		HttpServletRequest httpServletRequest, String value) {
 
@@ -277,6 +343,11 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 	private void _setUser() throws Exception {
 		_user = _addUser();
 
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(_user);
+
+		_themeDisplay.setPermissionChecker(permissionChecker);
+
 		_themeDisplay.setUser(_user);
 
 		_originalName = PrincipalThreadLocal.getName();
@@ -286,8 +357,7 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 		_originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_user));
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
 		_setRecentGroupsValue(_mockHttpServletRequest, StringPool.BLANK);
 	}
