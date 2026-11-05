@@ -86,7 +86,6 @@ public class LayoutModelDocumentContributor
 
 		document.addNumberSortable(
 			"parentLayoutId", layout.getParentLayoutId());
-
 		document.addText(
 			"privateLayout", String.valueOf(layout.isPrivateLayout()));
 		document.addText("systemLayout", String.valueOf(layout.isSystem()));
