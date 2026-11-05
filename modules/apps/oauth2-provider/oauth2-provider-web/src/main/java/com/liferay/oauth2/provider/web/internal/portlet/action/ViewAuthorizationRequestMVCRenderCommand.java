@@ -60,8 +60,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"jakarta.portlet.name=" + OAuth2ProviderPortletKeys.OAUTH2_AUTHORIZE,
-		"mvc.command.name=/",
-		"mvc.command.name=/oauth2_provider/view_authorization_request"
+		"mvc.command.name=/"
 	},
 	service = MVCRenderCommand.class
 )
