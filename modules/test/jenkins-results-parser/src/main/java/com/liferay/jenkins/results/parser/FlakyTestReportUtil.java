@@ -71,7 +71,13 @@ public class FlakyTestReportUtil {
 
 		TestrayJobHistory testrayJobHistory = (TestrayJobHistory)jobHistory;
 
-		testrayJobHistory.validate();
+		if (Boolean.parseBoolean(
+				JenkinsResultsParserUtil.getProperty(
+					_buildProperties, "test.history.validation.enabled",
+					upstreamBranchName))) {
+
+			testrayJobHistory.validate();
+		}
 
 		testrayJobHistory.writeCIHistoryJSONFile(ciHistoryJSONFilePath);
 
