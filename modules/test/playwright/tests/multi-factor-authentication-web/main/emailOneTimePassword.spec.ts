@@ -89,3 +89,61 @@ test(
 		}
 	}
 );
+
+test(
+	'verify heading is visible on the MFA challenge screen',
+	{tag: '@LPP-66280'},
+	async ({
+		apiHelpers,
+		browser,
+		multiFactorAuthenticationConfigurationPage,
+	}) => {
+		await multiFactorAuthenticationConfigurationPage.goto();
+
+		try {
+			await multiFactorAuthenticationConfigurationPage.enable();
+
+			const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			const userContext = await browser.newContext();
+			const userPage = await userContext.newPage();
+
+			const userLoginPage = new UserLoginPage(userPage);
+
+			try {
+				await userPage.goto('/');
+
+				await clickAndExpectToBeVisible({
+					target: userLoginPage.emailAddressInput,
+					trigger: userLoginPage.signInNavButton,
+				});
+
+				await userLoginPage.emailAddressInput.fill(user.emailAddress);
+				await userLoginPage.passwordInput.fill('test');
+
+				await userLoginPage.signInButton.click();
+
+				await expect(
+					userPage.getByLabel(
+						'Enter the one-time password from the email'
+					)
+				).toBeVisible({timeout: 10000});
+
+				await expect(
+					userPage.getByRole('heading', {
+						exact: true,
+						name: 'Multi-Factor Authentication Verify',
+					})
+				).toBeVisible();
+			}
+			finally {
+				await userContext.close();
+			}
+		}
+		finally {
+			await multiFactorAuthenticationConfigurationPage.goto();
+
+			await multiFactorAuthenticationConfigurationPage.resetConfiguration();
+		}
+	}
+);
