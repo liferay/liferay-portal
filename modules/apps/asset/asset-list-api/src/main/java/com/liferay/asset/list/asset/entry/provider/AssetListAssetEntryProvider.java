@@ -30,7 +30,8 @@ public interface AssetListAssetEntryProvider {
 		AssetListEntry assetListEntry, long[] segmentsEntryIds, String userId);
 
 	public BooleanQuery getBooleanQuery(
-			AssetListEntry assetListEntry, long segmentsEntryId)
+			AssetEntryQuery assetEntryQuery, AssetListEntry assetListEntry,
+			long segmentsEntryId)
 		throws Exception;
 
 }

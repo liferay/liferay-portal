@@ -180,21 +180,34 @@ public class AssetListAssetEntryProviderImpl
 
 	@Override
 	public BooleanQuery getBooleanQuery(
-			AssetListEntry assetListEntry, long segmentsEntryId)
+			AssetEntryQuery assetEntryQuery, AssetListEntry assetListEntry,
+			long segmentsEntryId)
 		throws Exception {
 
 		if (Objects.equals(
 				assetListEntry.getType(),
 				AssetListEntryTypeConstants.TYPE_MANUAL)) {
 
-			return null;
-		}
+			Map<AssetListEntryAssetEntryRel, Long> groupIds = _getGroupIds(
+				_assetListEntryAssetEntryRelLocalService.
+					getAssetListEntryAssetEntryRels(
+						assetListEntry.getAssetListEntryId(),
+						new long[] {segmentsEntryId}, QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS));
 
-		AssetEntryQuery assetEntryQuery = getAssetEntryQuery(
-			assetListEntry, segmentsEntryId, StringPool.BLANK);
+			if (MapUtil.isEmpty(groupIds)) {
+				return null;
+			}
 
-		if (!_hasClassNameIds(assetEntryQuery)) {
-			return null;
+			return _assetHelper.getBooleanQuery(
+				_getManualSearchContext(
+					null,
+					ListUtil.toList(
+						ListUtil.fromMapKeys(groupIds),
+						AssetListEntryAssetEntryRelModel::getAssetEntryId),
+					null, assetListEntry.getCompanyId(), null),
+				_getManualAssetEntryQuery(
+					assetListEntry, ArrayUtil.toLongArray(groupIds.values())));
 		}
 
 		return _assetHelper.getBooleanQuery(
@@ -360,7 +373,9 @@ public class AssetListAssetEntryProviderImpl
 
 		try {
 			assetEntryQueries = ListUtil.filter(
-				assetEntryQueries, this::_hasClassNameIds);
+				assetEntryQueries,
+				assetEntryQuery -> ArrayUtil.isNotEmpty(
+					assetEntryQuery.getClassNameIds()));
 
 			if (ListUtil.isEmpty(assetEntryQueries)) {
 				return InfoPage.of(Collections.emptyList());
@@ -1007,10 +1022,6 @@ public class AssetListAssetEntryProviderImpl
 		}
 
 		return groupIds;
-	}
-
-	private boolean _hasClassNameIds(AssetEntryQuery assetEntryQuery) {
-		return ArrayUtil.isNotEmpty(assetEntryQuery.getClassNameIds());
 	}
 
 	private void _setAssetEntryQueryFilters(

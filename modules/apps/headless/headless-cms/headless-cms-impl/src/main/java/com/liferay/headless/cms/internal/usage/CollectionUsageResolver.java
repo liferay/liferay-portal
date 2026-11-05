@@ -345,7 +345,7 @@ public class CollectionUsageResolver {
 
 			collectionUsages.addBooleanQuery(
 				_assetListAssetEntryProvider.getBooleanQuery(
-					assetListEntry, segmentsEntryId),
+					assetEntryQuery, assetListEntry, segmentsEntryId),
 				assetEntryQuery.getGroupIds(), booleanQueryKey);
 		}
 	}
