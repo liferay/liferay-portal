@@ -669,10 +669,11 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 		String unlocalizedFieldsMessage = StringPool.BLANK;
 
 		if (jsonObject != null) {
-			unlocalizedFieldsMessage = jsonObject.getString(
-				_language.getLanguageId(locale),
+			unlocalizedFieldsMessage = HtmlUtil.escape(
 				jsonObject.getString(
-					_language.getLanguageId(LocaleUtil.getSiteDefault())));
+					_language.getLanguageId(locale),
+					jsonObject.getString(
+						_language.getLanguageId(LocaleUtil.getSiteDefault()))));
 		}
 
 		if (Validator.isNull(unlocalizedFieldsMessage)) {
