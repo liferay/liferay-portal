@@ -102,7 +102,6 @@ public class CMSBulkActionTaskTaskResultUpgradeProcessTest {
 		objectField = _objectFieldLocalService.fetchObjectField(
 			_objectDefinition.getObjectDefinitionId(), "taskResult");
 
-		Assert.assertNotNull(objectField);
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(LocaleUtil.GERMANY),
 			objectField.getDefaultLanguageId());
