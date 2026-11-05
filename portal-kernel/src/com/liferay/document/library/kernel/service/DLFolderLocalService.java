@@ -123,8 +123,6 @@ public interface DLFolderLocalService
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public void deleteAllByGroup(long groupId) throws PortalException;
-
 	public void deleteAllByRepository(long repositoryId) throws PortalException;
 
 	public void deleteDLFileEntryTypeDLFolder(
@@ -301,12 +299,6 @@ public interface DLFolderLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DLFolder> getCompanyFolders(long companyId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCompanyFoldersCount(long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DLFolder> getDLFileEntryTypeDLFolders(long fileEntryTypeId);
@@ -508,14 +500,6 @@ public interface DLFolderLocalService
 	public DLFolder getMountFolder(long repositoryId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DLFolder> getMountFolders(
-		long groupId, long parentFolderId, int start, int end,
-		OrderByComparator<DLFolder> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getMountFoldersCount(long groupId, long parentFolderId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DLFolder> getNoAssetFolders();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -540,13 +524,6 @@ public interface DLFolderLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Long> getRepositoryFolderIds(
 		long repositoryId, long parentFolderId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DLFolder> getRepositoryFolders(
-		long repositoryId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRepositoryFoldersCount(long repositoryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public void getRepositorySubfolderIds(
@@ -582,8 +559,6 @@ public interface DLFolderLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public void rebuildTree(long companyId) throws PortalException;
-
 	public void rebuildTree(
 			long companyId, long parentFolderId, String parentTreePath,
 			boolean reindex)
@@ -591,10 +566,6 @@ public interface DLFolderLocalService
 
 	public void setDLFileEntryTypeDLFolders(
 		long fileEntryTypeId, long[] folderIds);
-
-	public void unlockFolder(
-			long groupId, long parentFolderId, String name, String lockUuid)
-		throws PortalException;
 
 	public void unlockFolder(long folderId, String lockUuid)
 		throws PortalException;
@@ -615,13 +586,6 @@ public interface DLFolderLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public DLFolder updateFolder(
 			long folderId, long parentFolderId, String name, String description,
-			long defaultFileEntryTypeId, List<Long> fileEntryTypeIds,
-			int restrictionType, ServiceContext serviceContext)
-		throws PortalException;
-
-	@Indexable(type = IndexableType.REINDEX)
-	public DLFolder updateFolder(
-			long folderId, String name, String description,
 			long defaultFileEntryTypeId, List<Long> fileEntryTypeIds,
 			int restrictionType, ServiceContext serviceContext)
 		throws PortalException;
@@ -664,4 +628,4 @@ public interface DLFolderLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2121924971
+// LIFERAY-SERVICE-BUILDER-HASH:-32862767

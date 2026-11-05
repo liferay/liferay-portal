@@ -119,13 +119,6 @@ public class DLFolderLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteAllByGroup(long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_dlFolderLocalService.deleteAllByGroup(groupId);
-	}
-
-	@Override
 	public void deleteAllByRepository(long repositoryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -398,18 +391,6 @@ public class DLFolderLocalServiceWrapper
 		getActionableDynamicQuery() {
 
 		return _dlFolderLocalService.getActionableDynamicQuery();
-	}
-
-	@Override
-	public java.util.List<DLFolder> getCompanyFolders(
-		long companyId, int start, int end) {
-
-		return _dlFolderLocalService.getCompanyFolders(companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyFoldersCount(long companyId) {
-		return _dlFolderLocalService.getCompanyFoldersCount(companyId);
 	}
 
 	@Override
@@ -759,22 +740,6 @@ public class DLFolderLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<DLFolder> getMountFolders(
-		long groupId, long parentFolderId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<DLFolder>
-			orderByComparator) {
-
-		return _dlFolderLocalService.getMountFolders(
-			groupId, parentFolderId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getMountFoldersCount(long groupId, long parentFolderId) {
-		return _dlFolderLocalService.getMountFoldersCount(
-			groupId, parentFolderId);
-	}
-
-	@Override
 	public java.util.List<DLFolder> getNoAssetFolders() {
 		return _dlFolderLocalService.getNoAssetFolders();
 	}
@@ -814,19 +779,6 @@ public class DLFolderLocalServiceWrapper
 
 		return _dlFolderLocalService.getRepositoryFolderIds(
 			repositoryId, parentFolderId);
-	}
-
-	@Override
-	public java.util.List<DLFolder> getRepositoryFolders(
-		long repositoryId, int start, int end) {
-
-		return _dlFolderLocalService.getRepositoryFolders(
-			repositoryId, start, end);
-	}
-
-	@Override
-	public int getRepositoryFoldersCount(long repositoryId) {
-		return _dlFolderLocalService.getRepositoryFoldersCount(repositoryId);
 	}
 
 	@Override
@@ -899,13 +851,6 @@ public class DLFolderLocalServiceWrapper
 	}
 
 	@Override
-	public void rebuildTree(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_dlFolderLocalService.rebuildTree(companyId);
-	}
-
-	@Override
 	public void rebuildTree(
 			long companyId, long parentFolderId, String parentTreePath,
 			boolean reindex)
@@ -921,15 +866,6 @@ public class DLFolderLocalServiceWrapper
 
 		_dlFolderLocalService.setDLFileEntryTypeDLFolders(
 			fileEntryTypeId, folderIds);
-	}
-
-	@Override
-	public void unlockFolder(
-			long groupId, long parentFolderId, String name, String lockUuid)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_dlFolderLocalService.unlockFolder(
-			groupId, parentFolderId, name, lockUuid);
 	}
 
 	@Override
@@ -964,19 +900,6 @@ public class DLFolderLocalServiceWrapper
 
 		return _dlFolderLocalService.updateFolder(
 			folderId, parentFolderId, name, description, defaultFileEntryTypeId,
-			fileEntryTypeIds, restrictionType, serviceContext);
-	}
-
-	@Override
-	public DLFolder updateFolder(
-			long folderId, String name, String description,
-			long defaultFileEntryTypeId, java.util.List<Long> fileEntryTypeIds,
-			int restrictionType,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _dlFolderLocalService.updateFolder(
-			folderId, name, description, defaultFileEntryTypeId,
 			fileEntryTypeIds, restrictionType, serviceContext);
 	}
 
@@ -1056,4 +979,4 @@ public class DLFolderLocalServiceWrapper
 	private DLFolderLocalService _dlFolderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:502399817
+// LIFERAY-SERVICE-BUILDER-HASH:-1813033381
