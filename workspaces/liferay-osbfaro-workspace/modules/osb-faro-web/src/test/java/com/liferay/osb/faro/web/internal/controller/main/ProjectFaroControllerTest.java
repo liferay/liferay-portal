@@ -85,8 +85,8 @@ public class ProjectFaroControllerTest {
 		String provisionKey = RandomTestUtil.randomString();
 
 		ReflectionTestUtils.invokeMethod(
-			_projectFaroController, "_putProvisionBackoff", provisionKey,
-			new Exception());
+			_projectFaroController, "_putProvisionBackoff", new Exception(),
+			provisionKey);
 
 		try {
 			ReflectionTestUtils.invokeMethod(
@@ -109,8 +109,8 @@ public class ProjectFaroControllerTest {
 		String provisionKey = RandomTestUtil.randomString();
 
 		ReflectionTestUtils.invokeMethod(
-			_projectFaroController, "_putProvisionBackoff", provisionKey,
-			new Exception());
+			_projectFaroController, "_putProvisionBackoff", new Exception(),
+			provisionKey);
 
 		ReflectionTestUtils.invokeMethod(
 			_projectFaroController, "_clearProvisionBackoff", provisionKey);

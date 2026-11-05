@@ -367,7 +367,7 @@ public class ProjectFaroController extends BaseFaroController {
 			return projectDisplay;
 		}
 		catch (Exception exception) {
-			_putProvisionBackoff(provisionKey, exception);
+			_putProvisionBackoff(exception, provisionKey);
 
 			throw exception;
 		}
@@ -471,7 +471,7 @@ public class ProjectFaroController extends BaseFaroController {
 			return projectDisplay;
 		}
 		catch (Exception exception) {
-			_putProvisionBackoff(provisionKey, exception);
+			_putProvisionBackoff(exception, provisionKey);
 
 			throw exception;
 		}
@@ -1829,7 +1829,7 @@ public class ProjectFaroController extends BaseFaroController {
 	}
 
 	private void _putProvisionBackoff(
-		String provisionKey, Exception exception) {
+		Exception exception, String provisionKey) {
 
 		if (Validator.isNull(provisionKey)) {
 			return;
