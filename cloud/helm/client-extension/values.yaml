@@ -43,12 +43,26 @@ workload:
     kind: Deployment
     livenessProbe: {}
     nodeSelector: {}
-    podSecurityContext: {}
+    podSecurityContext:
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+            type: RuntimeDefault
+        sysctls:
+            -   name: net.ipv4.ip_unprivileged_port_start
+                value: "0"
     readinessProbe: {}
     replicas: 1
     resources: {}
     schedule: ""
-    securityContext: {}
+    securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+            add:
+                -   NET_BIND_SERVICE
+            drop:
+                -   ALL
     startupProbe: {}
     tolerations: []
     volumeMounts: []
