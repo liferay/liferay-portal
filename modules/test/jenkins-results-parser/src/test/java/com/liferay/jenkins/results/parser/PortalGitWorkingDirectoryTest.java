@@ -116,9 +116,9 @@ public class PortalGitWorkingDirectoryTest
 					new File(portalDir, "modules/apps/foo/test/Foo.test.jsx"),
 					new File(portalDir, "modules/apps/foo/test/Foo.test.ts"),
 					new File(portalDir, "modules/apps/foo/test/Foo.test.tsx"),
+					new File(portalDir, "workspaces/bar/test/Bar.test.js"),
 					new File(
-						portalPrivateDir, "modules/dxp/baz/test/Baz.test.js"),
-					new File(portalDir, "workspaces/bar/test/Bar.test.js"))),
+						portalPrivateDir, "modules/dxp/baz/test/Baz.test.js"))),
 			new TreeSet<>(portalGitWorkingDirectory.getJSUnitFiles()));
 	}
 
