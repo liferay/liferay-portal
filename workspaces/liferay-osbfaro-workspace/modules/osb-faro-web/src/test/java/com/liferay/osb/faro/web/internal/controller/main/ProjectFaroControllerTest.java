@@ -5,6 +5,7 @@
 
 package com.liferay.osb.faro.web.internal.controller.main;
 
+import com.liferay.batch.engine.pagination.Page;
 import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.model.FaroProject;
@@ -17,12 +18,14 @@ import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntryBuilder;
 import com.liferay.osb.faro.provisioning.client.model.OSBOfferingEntry;
 import com.liferay.osb.faro.provisioning.client.model.display.main.FaroSubscriptionDisplay;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
+import com.liferay.osb.faro.service.FaroProjectUsageLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalServiceUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
 import com.liferay.osb.faro.web.internal.exception.FaroValidationException;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ProjectDisplay;
+import com.liferay.osb.faro.web.internal.model.display.contacts.ProjectUsageMetricDisplay;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.portal.cache.BasePortalCache;
 import com.liferay.portal.json.JSONFactoryImpl;
@@ -39,6 +42,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,6 +67,9 @@ public class ProjectFaroControllerTest {
 		ReflectionTestUtils.setField(
 			_projectFaroController, "_faroProjectLocalService",
 			_faroProjectLocalService);
+		ReflectionTestUtils.setField(
+			_projectFaroController, "_faroProjectUsageLocalService",
+			_faroProjectUsageLocalService);
 		ReflectionTestUtils.setField(
 			_projectFaroController, "_faroUserLocalService",
 			_faroUserLocalService);
@@ -327,6 +334,69 @@ public class ProjectFaroControllerTest {
 
 		_assertGetProjectDisplayFails(
 			salesforceAccountId, Response.Status.FORBIDDEN);
+	}
+
+	@Test
+	public void testGetProjectUsageMetricDisplays() throws Exception {
+		FaroProject faroProject = Mockito.mock(FaroProject.class);
+
+		Mockito.when(
+			faroProject.getLastAnniversaryDate()
+		).thenReturn(
+			new Date()
+		);
+
+		OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
+
+		osbOfferingEntry.setProductEntryId(
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE);
+		osbOfferingEntry.setQuantity(1);
+
+		Mockito.when(
+			faroProject.getSubscription()
+		).thenReturn(
+			JSONUtil.writeValueAsString(
+				new FaroSubscriptionDisplay(
+					OSBAccountEntryBuilder.setName(
+						RandomTestUtil.randomString()
+					).setOfferingEntries(
+						Collections.singletonList(osbOfferingEntry)
+					).build()))
+		);
+
+		Mockito.when(
+			_faroProjectLocalService.getFaroProjects(0, 20)
+		).thenReturn(
+			Collections.singletonList(faroProject)
+		);
+
+		Mockito.when(
+			_faroProjectUsageLocalService.dslQuery(Mockito.any())
+		).thenReturn(
+			Collections.emptyList()
+		);
+
+		Page<ProjectUsageMetricDisplay> page =
+			_projectFaroController.getProjectUsageMetricDisplays(
+				null, 1, 20, null);
+
+		List<ProjectUsageMetricDisplay> projectUsageMetricDisplays =
+			new ArrayList<>(page.getItems());
+
+		Assert.assertEquals(
+			projectUsageMetricDisplays.toString(), 1,
+			projectUsageMetricDisplays.size());
+
+		ProjectUsageMetricDisplay projectUsageMetricDisplay =
+			projectUsageMetricDisplays.get(0);
+
+		Assert.assertEquals(
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE,
+			projectUsageMetricDisplay.getProductEntryId());
+		Assert.assertEquals(
+			ProductConstants.getProductName(
+				ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE),
+			projectUsageMetricDisplay.getProductName());
 	}
 
 	@Test
@@ -800,6 +870,8 @@ public class ProjectFaroControllerTest {
 
 	private final FaroProjectLocalService _faroProjectLocalService =
 		Mockito.mock(FaroProjectLocalService.class);
+	private final FaroProjectUsageLocalService _faroProjectUsageLocalService =
+		Mockito.mock(FaroProjectUsageLocalService.class);
 	private final FaroUserLocalService _faroUserLocalService = Mockito.mock(
 		FaroUserLocalService.class);
 	private final ProjectFaroController _projectFaroController =

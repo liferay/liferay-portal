@@ -29,6 +29,7 @@ dependencies {
 	compileOnly project(":modules:osb-faro-engine-client")
 	compileOnly project(":modules:osb-faro-provisioning-client")
 	testImplementation group: "com.github.albfernandez", name: "juniversalchardet", version: "2.4.0"
+	testImplementation group: "com.liferay", name: "com.liferay.petra.sql.dsl.spi", version: "default"
 	testImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-2"
 	testImplementation group: "com.liferay", name: "jodd.util", version: "6.0.1.LIFERAY-PATCHED-2"
 	testImplementation group: "com.liferay", name: "org.apache.commons.configuration", version: "1.10.LIFERAY-PATCHED-2"
