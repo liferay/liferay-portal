@@ -7,6 +7,7 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -23,7 +24,6 @@ import jakarta.portlet.ActionRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +73,21 @@ public class ViewTasksDisplayContext {
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
-		return Collections.singletonList(
+		return FDSActionDropdownItemList.of(
+			FDSActionDropdownItemBuilder.setFDSActionDropdownItems(
+				FDSActionDropdownItemList.of(
+					FDSActionDropdownItemBuilder.setTarget(
+						"modal-workflow-transition"
+					).build(
+						"workflow-transition"
+					))
+			).setSeparator(
+				true
+			).setType(
+				"group"
+			).build(
+				"workflow-transitions"
+			),
 			FDSActionDropdownItemBuilder.setHref(
 				PortletURLBuilder.create(
 					PortalUtil.getControlPanelPortletURL(
@@ -94,6 +108,43 @@ public class ViewTasksDisplayContext {
 				"get"
 			).build(
 				"actionLinkWorkflowTask"
+			),
+			FDSActionDropdownItemBuilder.setLabel(
+				LanguageUtil.get(_httpServletRequest, "assign-to-me")
+			).setPermissionKey(
+				"assignToMe"
+			).setVisibilityFilters(
+				HashMapBuilder.<String, Object>put(
+					"embedded.assignedToMe", false
+				).put(
+					"embedded.completed", false
+				).build()
+			).build(
+				"assignToMeWorkflowTask"
+			),
+			FDSActionDropdownItemBuilder.setLabel(
+				LanguageUtil.get(_httpServletRequest, "assign-to-...")
+			).setPermissionKey(
+				"assignToUser"
+			).setVisibilityFilters(
+				HashMapBuilder.<String, Object>put(
+					"embedded.completed", false
+				).build()
+			).build(
+				"assignToWorkflowTask"
+			),
+			FDSActionDropdownItemBuilder.setIcon(
+				"date-time"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "update-due-date")
+			).setPermissionKey(
+				"updateDueDate"
+			).setVisibilityFilters(
+				HashMapBuilder.<String, Object>put(
+					"embedded.completed", false
+				).build()
+			).build(
+				"updateDueDateWorkflowTask"
 			));
 	}
 
