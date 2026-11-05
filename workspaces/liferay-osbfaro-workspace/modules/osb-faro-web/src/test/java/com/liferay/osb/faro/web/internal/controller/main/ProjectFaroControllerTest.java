@@ -306,7 +306,9 @@ public class ProjectFaroControllerTest {
 	}
 
 	@Test
-	public void testGetProjectDisplayBySalesforceAccountIdWithoutFaroProject() {
+	public void testGetProjectDisplayBySalesforceAccountIdWithoutFaroProject()
+		throws Exception {
+
 		_setUpPermissionChecker(true);
 
 		_assertGetProjectDisplayFails(
@@ -314,7 +316,9 @@ public class ProjectFaroControllerTest {
 	}
 
 	@Test
-	public void testGetProjectDisplayBySalesforceAccountIdWithoutFaroUser() {
+	public void testGetProjectDisplayBySalesforceAccountIdWithoutFaroUser()
+		throws Exception {
+
 		String salesforceAccountId = RandomTestUtil.randomString();
 
 		_setUpFaroProject(salesforceAccountId);
@@ -591,7 +595,8 @@ public class ProjectFaroControllerTest {
 	}
 
 	private void _assertGetProjectDisplayFails(
-		String salesforceAccountId, Response.Status status) {
+			String salesforceAccountId, Response.Status status)
+		throws Exception {
 
 		ReflectionTestUtil.setFieldValue(
 			FaroPropsValues.class, "OSB_FARO_SUBSCRIPTION_PUSH_ENABLED", true);
@@ -601,11 +606,7 @@ public class ProjectFaroControllerTest {
 
 			Assert.fail();
 		}
-		catch (Exception exception) {
-			Assert.assertTrue(exception instanceof FaroException);
-
-			FaroException faroException = (FaroException)exception;
-
+		catch (FaroException faroException) {
 			Response response = faroException.getResponse();
 
 			Assert.assertEquals(status.getStatusCode(), response.getStatus());
