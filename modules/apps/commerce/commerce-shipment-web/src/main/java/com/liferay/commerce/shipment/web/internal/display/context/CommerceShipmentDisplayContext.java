@@ -22,7 +22,6 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceOrderItemService;
-import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemService;
 import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.shipment.web.internal.portlet.action.helper.ActionHelper;
@@ -73,7 +72,6 @@ public class CommerceShipmentDisplayContext
 		CommerceAddressLocalService commerceAddressLocalService,
 		CommerceChannelService commerceChannelService,
 		CommerceOrderItemService commerceOrderItemService,
-		CommerceOrderLocalService commerceOrderLocalService,
 		CommerceShipmentItemService commerceShipmentItemService,
 		ModelResourcePermission<CommerceShipment>
 			commerceShipmentModelResourcePermission,
@@ -89,7 +87,6 @@ public class CommerceShipmentDisplayContext
 		_commerceAddressLocalService = commerceAddressLocalService;
 		_commerceChannelService = commerceChannelService;
 		_commerceOrderItemService = commerceOrderItemService;
-		_commerceOrderLocalService = commerceOrderLocalService;
 		_commerceShipmentItemService = commerceShipmentItemService;
 		_commerceShippingMethodService = commerceShippingMethodService;
 		_countryService = countryService;
@@ -435,7 +432,6 @@ public class CommerceShipmentDisplayContext
 	private final CommerceAddressLocalService _commerceAddressLocalService;
 	private final CommerceChannelService _commerceChannelService;
 	private final CommerceOrderItemService _commerceOrderItemService;
-	private final CommerceOrderLocalService _commerceOrderLocalService;
 	private final CommerceShipmentItemService _commerceShipmentItemService;
 	private final CommerceShippingMethodService _commerceShippingMethodService;
 	private final CountryService _countryService;

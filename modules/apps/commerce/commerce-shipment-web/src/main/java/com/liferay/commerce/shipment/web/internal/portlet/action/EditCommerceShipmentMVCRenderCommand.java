@@ -11,7 +11,6 @@ import com.liferay.commerce.model.CommerceShipment;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceOrderItemService;
-import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemService;
 import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.shipment.web.internal.display.context.CommerceShipmentDisplayContext;
@@ -56,8 +55,7 @@ public class EditCommerceShipmentMVCRenderCommand implements MVCRenderCommand {
 			new CommerceShipmentDisplayContext(
 				_actionHelper, _commerceAddressFormatter,
 				_commerceAddressLocalService, _commerceChannelService,
-				_commerceOrderItemService, _commerceOrderLocalService,
-				_commerceShipmentItemService,
+				_commerceOrderItemService, _commerceShipmentItemService,
 				_commerceShipmentModelResourcePermission,
 				_commerceShippingMethodService, _countryService,
 				_portal.getHttpServletRequest(renderRequest), _regionService);
@@ -119,9 +117,6 @@ public class EditCommerceShipmentMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private CommerceOrderItemService _commerceOrderItemService;
-
-	@Reference
-	private CommerceOrderLocalService _commerceOrderLocalService;
 
 	@Reference
 	private CommerceShipmentItemService _commerceShipmentItemService;
