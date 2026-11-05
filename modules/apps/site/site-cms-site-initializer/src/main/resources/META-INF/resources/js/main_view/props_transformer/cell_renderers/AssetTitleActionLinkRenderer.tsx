@@ -22,14 +22,17 @@ const AssetTitleActionLinkRenderer = ({
 		? replaceTokens(selectedAction.href, itemData)
 		: null;
 
+	const title =
+		value && value !== '' ? value : Liferay.Language.get('untitled-asset');
+
 	if (!href) {
-		return <>{value}</>;
+		return <>{title}</>;
 	}
 
 	return (
 		<div className="align-items-center d-flex table-list-title">
-			<ClayLink aria-label={value} data-senna-off href={href}>
-				{value}
+			<ClayLink aria-label={title} data-senna-off href={href}>
+				{title}
 			</ClayLink>
 		</div>
 	);
