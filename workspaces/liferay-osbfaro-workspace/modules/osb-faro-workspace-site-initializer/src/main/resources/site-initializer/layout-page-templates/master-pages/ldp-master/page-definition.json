@@ -1,0 +1,132 @@
+{
+	"pageElement": {
+		"id": "307eeda7-c54b-70c6-6a79-c20994668d81",
+		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "sidebar"
+					},
+					"fragmentConfig": {
+						"sidebarAriaLabel": "Liferay Data Platform Menu"
+					},
+					"fragmentFields": [
+						{
+							"id": "sidebarTitle",
+							"value": {
+								"fragmentLink": {
+								}
+							}
+						}
+					],
+					"indexed": true
+				},
+				"id": "6a354764-416e-2b1b-1cb0-47e49cb25627",
+				"pageElements": [
+					{
+						"definition": {
+							"fragmentDropZoneId": "topBar"
+						},
+						"id": "5aeb1eb5-f96e-96cb-06b7-61e612a0485b",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "page-bar"
+									},
+									"fragmentConfig": {
+										"alt": "Site Logo"
+									},
+									"fragmentFields": [
+										{
+											"id": "sidebarImage",
+											"value": {
+												"fragmentImage": {
+													"url": {
+														"value_i18n": {
+														}
+													}
+												},
+												"fragmentLink": {
+												}
+											}
+										},
+										{
+											"id": "sidebarTitle",
+											"value": {
+												"fragmentLink": {
+												}
+											}
+										}
+									],
+									"indexed": true
+								},
+								"id": "32f64cbe-57dd-937b-1d9e-edc1de70b958",
+								"pageElements": [
+									{
+										"definition": {
+											"fragmentDropZoneId": "sidebarTrigger"
+										},
+										"id": "57750634-2ad5-dbdb-bf52-0577eeca1155",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "sidebar-trigger"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+													],
+													"indexed": true
+												},
+												"id": "88b7f132-967b-ca14-4875-04240379f1e0",
+												"type": "Fragment"
+											}
+										],
+										"type": "FragmentDropZone"
+									}
+								],
+								"type": "Fragment"
+							}
+						],
+						"type": "FragmentDropZone"
+					},
+					{
+						"definition": {
+							"fragmentDropZoneId": "sidebarBody"
+						},
+						"id": "212eb06f-da24-4b75-cde8-face21ecf4e5",
+						"pageElements": [],
+						"type": "FragmentDropZone"
+					},
+					{
+						"definition": {
+							"fragmentDropZoneId": "content"
+						},
+						"id": "5400998b-15ff-c784-f346-4c6a2bf62947",
+						"pageElements": [
+							{
+								"definition": {
+									"fragmentSettings": {
+										"unallowedFragments": [
+										]
+									}
+								},
+								"id": "5b085050-70dd-18d8-7227-06afb1ebac78",
+								"type": "DropZone"
+							}
+						],
+						"type": "FragmentDropZone"
+					}
+				],
+				"type": "Fragment"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"themeName": "CMS"
+	},
+	"version": 1.1
+}
