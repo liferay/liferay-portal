@@ -8,10 +8,14 @@ import {createReadStream} from 'fs';
 import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import getRandomString from '../../../utils/getRandomString';
 import {blogsPagesTest} from '../../blogs-web/main/fixtures/blogsPagesTest';
+import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
+import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 
 const SAMPLE_IMAGE = path.join(
 	__dirname,
@@ -25,6 +29,16 @@ const test = mergeTests(
 	blogsPagesTest,
 	isolatedSiteTest,
 	loginTest()
+);
+
+const pageEditorTest = mergeTests(
+	apiHelpersTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
+	isolatedSiteTest,
+	loginTest(),
+	pageEditorPagesTest
 );
 
 test('Preview navigates through multiple images with the keyboard', async ({
@@ -179,3 +193,36 @@ test('Preview renders an SVG image', async ({
 		iframe.locator('.item-selector-preview img[src*="Document_1.svg"]')
 	).toBeVisible();
 });
+
+pageEditorTest(
+	'Preview of an image uploaded from the page editor has a dark background',
+	{tag: '@LPD-113646'},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+		const imageId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: imageId,
+					key: 'BASIC_COMPONENT-image',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.selectEditable(imageId, 'image-square');
+
+		await page.getByTitle('Select Image').click();
+
+		const iframe = page.frameLocator('iframe[title="Select"]');
+
+		await iframe.locator('input[type="file"]').setInputFiles(SAMPLE_IMAGE);
+
+		await expect(
+			iframe.locator('.item-selector-preview.fullscreen')
+		).toHaveCSS('background-color', 'rgb(39, 40, 51)');
+	}
+);
