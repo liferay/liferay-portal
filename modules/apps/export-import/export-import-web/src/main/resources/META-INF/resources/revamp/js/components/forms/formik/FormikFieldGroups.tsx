@@ -21,7 +21,7 @@ export function FormikFieldGroups({
 	apiURL?: string;
 	groups?: Group[];
 	name: string;
-	process?: ExportImportProcess;
+	process?: Exclude<ExportImportProcess, 'publish'>;
 	totalCount?: number;
 	type: GroupType;
 }) {
