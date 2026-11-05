@@ -144,9 +144,9 @@ public class MCPServerServletTest {
 				_getResponse("Bearer " + expiredAccessToken),
 				"Access token has expired");
 
-			String userAccessToken = RandomTestUtil.randomString();
-
 			_user = UserTestUtil.addUser();
+
+			String userAccessToken = RandomTestUtil.randomString();
 
 			_addOAuth2Authorization(
 				userAccessToken,
