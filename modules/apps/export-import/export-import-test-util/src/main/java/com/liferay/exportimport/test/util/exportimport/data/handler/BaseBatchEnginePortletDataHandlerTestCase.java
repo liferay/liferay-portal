@@ -291,7 +291,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 			_exportImportDescriptor.getModelClassName(),
 			ResourceConstants.SCOPE_INDIVIDUAL,
 			String.valueOf(getPrimaryKey(externalReferenceCode, _getGroupId())),
-			role.getRoleId(), new String[] {ActionKeys.VIEW});
+			role.getRoleId(), new String[] {getActionId()});
 
 		_exportImport(
 			null,
@@ -313,7 +313,7 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 				String.valueOf(
 					getPrimaryKey(
 						externalReferenceCode, targetGroup.getGroupId())),
-				targetRole.getRoleId(), ActionKeys.VIEW));
+				targetRole.getRoleId(), getActionId()));
 	}
 
 	@Test
@@ -430,6 +430,10 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 	protected abstract void exportImport(
 			Date endDate, Map<String, String[]> parameterMap, Date startDate)
 		throws Exception;
+
+	protected String getActionId() {
+		return ActionKeys.VIEW;
+	}
 
 	protected abstract long getCreatorUserId(
 			String externalReferenceCode, long groupId)
