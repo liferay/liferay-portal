@@ -28,6 +28,7 @@ public class ProjectUsageMetricDisplay {
 		_corpProjectUuid = corpProjectUuid;
 		_lastAccessDateString = lastAccessDateString;
 		_lastAnniversaryDateString = lastAnniversaryDateString;
+		_offline = offline;
 		_productEntryId = productEntryId;
 		_productName = productName;
 		_salesforceAccountId = salesforceAccountId;
