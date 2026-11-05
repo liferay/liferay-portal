@@ -60,12 +60,14 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.service.UserService;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
@@ -93,11 +95,14 @@ import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletException;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.URLEncoder;
@@ -373,6 +378,29 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		catch (Exception exception) {
 			throw new PortletException(exception);
 		}
+	}
+
+	@Override
+	public void render(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws IOException, PortletException {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		long userId = ParamUtil.getLong(renderRequest, "userId");
+
+		if (!themeDisplay.isSignedIn() && (userId > 0) &&
+			!_isMember(themeDisplay, userId)) {
+
+			SessionErrors.add(renderRequest, PrincipalException.class);
+
+			include("/error.jsp", renderRequest, renderResponse);
+
+			return;
+		}
+
+		super.render(renderRequest, renderResponse);
 	}
 
 	public void requestSocialRelation(
@@ -738,6 +766,9 @@ public class ContactsCenterPortlet extends MVCPortlet {
 
 	@Reference
 	protected File file;
+
+	@Reference
+	protected GroupLocalService groupLocalService;
 
 	@Reference
 	protected JSONFactory jsonFactory;
@@ -1137,6 +1168,29 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		);
 
 		return jsonObject;
+	}
+
+	private boolean _isMember(ThemeDisplay themeDisplay, long userId) {
+		if (!ContactsPortletKeys.MEMBERS.equals(getPortletName())) {
+			return false;
+		}
+
+		User user = userLocalService.fetchUser(userId);
+
+		if ((user == null) || !user.isActive()) {
+			return false;
+		}
+
+		Group group = themeDisplay.getScopeGroup();
+		Layout layout = themeDisplay.getLayout();
+
+		if (group.isUser() && layout.isPublicLayout()) {
+			return socialRelationLocalService.hasRelation(
+				group.getClassPK(), userId,
+				SocialRelationConstants.TYPE_BI_CONNECTION);
+		}
+
+		return groupLocalService.hasUserGroup(userId, group.getGroupId(), true);
 	}
 
 	private void _sendNotificationEvent(SocialRequest socialRequest)
