@@ -101,6 +101,20 @@
 							{
 								"definition": {
 									"fragment": {
+										"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroChannelSelectorFragmentRenderer"
+									},
+									"fragmentConfig": {
+									},
+									"fragmentFields": [
+									],
+									"indexed": true
+								},
+								"id": "9c2e4b7a-1d3f-4e5a-8b6c-7d8e9f0a1b2c",
+								"type": "Fragment"
+							},
+							{
+								"definition": {
+									"fragment": {
 										"key": "vertical-navigation"
 									},
 									"fragmentConfig": {
