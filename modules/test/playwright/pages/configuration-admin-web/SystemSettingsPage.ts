@@ -60,10 +60,10 @@ export class SystemSettingsPage {
 			})
 			.click();
 
-		let parent: Locator | Page = this.page;
+		let parent = this.page.getByRole('main');
 
 		if (sectionName) {
-			parent = this.page
+			parent = parent
 				.locator('div')
 				.filter({hasText: sectionName})
 				.locator('+ div')
