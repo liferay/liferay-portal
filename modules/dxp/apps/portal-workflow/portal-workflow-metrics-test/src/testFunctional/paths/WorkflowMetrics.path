@@ -307,7 +307,7 @@
 </tr>
 <tr>
 	<td>METRICS_DASHBOARD_TAB</td>
-	<td>//li[contains(@class,'nav-item')]//a[contains(@href, 'dashboard')]</td>
+	<td>//li[contains(@class,'nav-item')]//a[contains(@href,'#/metrics/') and contains(@href,'/dashboard')]</td>
 	<td></td>
 </tr>
 <tr>
