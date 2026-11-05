@@ -1,0 +1,24 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "CMS Control Menu",
+					"label": "page-bar-aria-label",
+					"localizable": true,
+					"name": "pagebarAriaLabel",
+					"type": "text"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": "Site Logo",
+					"label": "header-image-alt-description",
+					"localizable": true,
+					"name": "alt",
+					"type": "text"
+				}
+			]
+		}
+	]
+}

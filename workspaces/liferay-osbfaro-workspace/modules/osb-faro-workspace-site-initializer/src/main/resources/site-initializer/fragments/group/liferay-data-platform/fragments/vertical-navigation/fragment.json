@@ -1,0 +1,10 @@
+{
+	"cacheable": false,
+	"configurationPath": "index.json",
+	"cssPath": "index.css",
+	"htmlPath": "index.html",
+	"icon": "product-menu",
+	"jsPath": "index.js",
+	"name": "Vertical Navigation",
+	"type": "component"
+}

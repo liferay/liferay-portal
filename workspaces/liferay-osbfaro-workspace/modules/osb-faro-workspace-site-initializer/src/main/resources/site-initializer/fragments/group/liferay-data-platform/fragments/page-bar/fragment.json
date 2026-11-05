@@ -1,0 +1,10 @@
+{
+	"cacheable": false,
+	"configurationPath": "index.json",
+	"cssPath": "index.css",
+	"htmlPath": "index.html",
+	"icon": "hr",
+	"jsPath": "index.js",
+	"name": "Page Bar",
+	"type": "component"
+}

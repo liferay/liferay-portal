@@ -1,0 +1,145 @@
+[#assign
+	activeKey = ""
+	expandedKeys = ""
+	navItems = sourceObject.navItems
+	navItemsJSON = ""
+/]
+
+<div class="vertical-navigation-fragment">
+	[#if !navItems?has_content]
+		[#if themeDisplay.isSignedIn()]
+			<div class="alert alert-info">
+				[@liferay.language key="there-are-no-menu-items-to-display" /]
+			</div>
+		[/#if]
+	[#else]
+		<nav aria-label="${configuration.ariaLabel}" class="menubar menubar-primary menubar-transparent">
+			<ul aria-orientation="vertical" class="nav nav-nested" role="menubar">
+				[@buildNavigation
+					displayDepth=2
+					navItemLevel=1
+					navItems=navItems
+				/]
+			</ul>
+		</nav>
+
+		<script ${nonceAttribute} class="vertical-navigation-props" type="application/ld+json">
+			{
+				"active": "${activeKey}",
+				"expandedKeys": [${expandedKeys}],
+				"navItems": ${navItemsJSON}
+			}
+		</script>
+	[/#if]
+</div>
+
+[#macro buildNavigation
+	displayDepth
+	navItemLevel
+	navItems
+]
+	[#if navItems?has_content && ((displayDepth == 0) || (navItemLevel lte displayDepth))]
+		[#assign
+			firstNavItem = true
+			navItemsJSON = navItemsJSON + "["
+		/]
+
+		[#list navItems as navItem]
+			[#assign navLayout = navItem.getLayout()! /]
+
+			[#if isVisibleNavItem(navItem)]
+				[#if !firstNavItem]
+					[#assign navItemsJSON = navItemsJSON + "," /]
+				[/#if]
+
+				[#assign
+					firstNavItem = false
+					navItemCSSClass = "nav-item"
+					navItemsJSON = navItemsJSON + "{"
+					navLinkCSSClass = "nav-link"
+				/]
+
+				[#if navItem.getChildren()?has_content]
+					[#assign navItemCSSClass = "${navItemCSSClass} open" /]
+				[/#if]
+
+				[#if navItem.isChildSelected() || navItem.isSelected() || (navLayout.isChildSelected(true, layout))!false]
+					[#assign
+						activeKey = navItem.getLayoutId()
+						navLinkCSSClass = "${navLinkCSSClass} active"
+					/]
+				[/#if]
+
+				<li class="${navItemCSSClass}" role="none">
+					[#if navItem.isBrowsable()]
+						[#assign navItemsJSON = navItemsJSON + '"href": "${navItem.getRegularURL()!}",' /]
+
+						<a class="${navLinkCSSClass}" href="${navItem.getRegularURL()!}" ${navItem.getTarget()}>
+							[@buildLabelWithIcon navItem=navItem /]
+						</a>
+					[#else]
+						[#assign
+							expandedKeys = expandedKeys + (expandedKeys?length > 0)?then(",", "") + '"${navItem.getLayoutId()}"'
+							id = "navChildren" + navItem.getLayoutId()
+						/]
+
+						<button aria-controls="${id}" aria-expanded="true" class="btn btn-unstyled collapse-icon nav-link" disabled="disabled" role="menuitem" tabindex="-1" type="button">
+							[@buildLabelWithIcon navItem=navItem /]
+
+							<span class="collapse-icon-closed">[@clay["icon"] symbol="angle-right-small" /]</span>
+							<span class="collapse-icon-open">[@clay["icon"] symbol="angle-down-small" /]</span>
+						</button>
+
+						<ul class="nav nav-stacked show" id="${id}" role="menu">
+							[#assign navItemsJSON = navItemsJSON + '"items": ' /]
+
+							[@buildNavigation
+								displayDepth=displayDepth
+								navItemLevel=(navItemLevel + 1)
+								navItems=navItem.getChildren()
+							/]
+
+							[#assign navItemsJSON = navItemsJSON + "," /]
+						</ul>
+					[/#if]
+				</li>
+
+				[#assign
+					navItemsJSON = navItemsJSON + '"icon": "${(navItem.getDisplayIcon??)?then(navItem.getDisplayIcon(), "")}", "id": "${navItem.getLayoutId()}", "label": "${navItem.getName()}"}'
+				/]
+			[/#if]
+		[/#list]
+
+		[#assign navItemsJSON = navItemsJSON + "]" /]
+	[/#if]
+[/#macro]
+
+[#function hasVisibleNavItems navItems]
+	[#list navItems as navItem]
+		[#if isVisibleNavItem(navItem)]
+			[#return true]
+		[/#if]
+	[/#list]
+
+	[#return false]
+[/#function]
+
+[#function isVisibleNavItem navItem]
+	[#local navLayout = navItem.getLayout()! /]
+
+	[#return !((navLayout.isHidden())!false) && (navItem.isBrowsable() || hasVisibleNavItems(navItem.getChildren()))]
+[/#function]
+
+[#macro buildLabelWithIcon navItem]
+	<div class="autofit-row">
+		[#assign icon = (navItem.getDisplayIcon??)?then(navItem.getDisplayIcon(), "") /]
+
+		[#if icon?length > 0]
+			<div class="autofit-col">
+				[@clay["icon"] symbol="${icon}" /]
+			</div>
+		[/#if]
+
+		<div class="autofit-col autofit-col-expand">${navItem.getName()}</div>
+	</div>
+[/#macro]

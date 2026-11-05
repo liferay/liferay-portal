@@ -1,0 +1,16 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "CMS Product Menu",
+					"label": "sidebar-aria-label",
+					"localizable": true,
+					"name": "sidebarAriaLabel",
+					"type": "text"
+				}
+			]
+		}
+	]
+}

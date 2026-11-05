@@ -1,0 +1,21 @@
+<div class="sticky-top top-bar">
+	<lfr-drop-zone data-lfr-drop-zone-id="topBar"></lfr-drop-zone>
+</div>
+
+<div class="open sidebar-layout">
+	<nav aria-label="${configuration.sidebarAriaLabel}" class="sidebar-container">
+		<div class="position-relative sidebar">
+			<button class="close lfr-portal-tooltip m-2 p-2 rounded-lg sidebar-close-button sr-only sr-only-focusable" disabled title="${languageUtil.get(locale, 'close-product-menu')}" type="button">
+				[@clay["icon"] symbol="times" /]
+			</button>
+
+			<div class="px-0 sidebar-body">
+				<lfr-drop-zone data-lfr-drop-zone-id="sidebarBody"></lfr-drop-zone>
+			</div>
+		</div>
+	</nav>
+
+	<div class="content position-relative">
+		<lfr-drop-zone data-lfr-drop-zone-id="content"></lfr-drop-zone>
+	</div>
+</div>

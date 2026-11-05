@@ -1,0 +1,10 @@
+{
+	"cacheable": false,
+	"configurationPath": "index.json",
+	"cssPath": "index.css",
+	"htmlPath": "index.html",
+	"icon": "product-menu-open",
+	"jsPath": "index.js",
+	"name": "Sidebar",
+	"type": "component"
+}
