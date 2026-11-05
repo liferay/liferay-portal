@@ -175,7 +175,7 @@ public abstract class BaseStyleBookBatchEnginePortletDataHandlerTestCase
 
 		String newName = RandomTestUtil.randomString();
 
-		_updateName(newName, styleBookEntry);
+		_updateStyleBookEntry(newName, styleBookEntry);
 
 		_exportImport();
 
@@ -391,7 +391,7 @@ public abstract class BaseStyleBookBatchEnginePortletDataHandlerTestCase
 			RandomTestUtil.randomString(), targetGroup.getGroupId(), name,
 			StringPool.BLANK, _THEME_ID_CLASSIC);
 
-		_updateName(name, styleBookEntry);
+		_updateStyleBookEntry(name, styleBookEntry);
 
 		_exportImport();
 
@@ -696,7 +696,7 @@ public abstract class BaseStyleBookBatchEnginePortletDataHandlerTestCase
 	protected void updateEntry(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		_updateName(
+		_updateStyleBookEntry(
 			RandomTestUtil.randomString(),
 			_getStyleBookEntry(externalReferenceCode, groupId));
 	}
@@ -820,7 +820,8 @@ public abstract class BaseStyleBookBatchEnginePortletDataHandlerTestCase
 		return null;
 	}
 
-	private void _updateName(String name, StyleBookEntry styleBookEntry)
+	private void _updateStyleBookEntry(
+			String name, StyleBookEntry styleBookEntry)
 		throws Exception {
 
 		_styleBookEntryLocalService.updateStyleBookEntry(

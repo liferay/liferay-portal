@@ -63,9 +63,9 @@ public class StyleBookImportTaskPostAction implements ImportTaskPostAction {
 			_styleBookEntryLocalService.getStyleBookEntry(
 				persistedStyleBook.getId());
 
-		StyleBook styleBook = (StyleBook)item;
-
 		List<String> warningMessages = new ArrayList<>();
+
+		StyleBook styleBook = (StyleBook)item;
 
 		if (!StringUtil.equals(styleBook.getName(), styleBookEntry.getName())) {
 			warningMessages.add(
