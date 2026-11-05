@@ -11,8 +11,12 @@ import com.liferay.headless.builder.application.publisher.APIApplicationPublishe
 import com.liferay.headless.builder.constants.HeadlessBuilderConstants;
 import com.liferay.headless.builder.internal.application.endpoint.EndpointMatcher;
 import com.liferay.headless.builder.internal.helper.EndpointHelper;
+import com.liferay.headless.builder.internal.helper.ObjectEntryHelper;
 import com.liferay.headless.builder.internal.resource.HeadlessBuilderResourceImpl;
 import com.liferay.headless.builder.internal.resource.OpenAPIResourceImpl;
+import com.liferay.object.rest.filter.parser.ObjectDefinitionFilterParser;
+import com.liferay.object.rest.odata.entity.v1_0.provider.EntityModelProvider;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -22,6 +26,8 @@ import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiServic
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.odata.filter.expression.factory.ExpressionFactory;
+import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import jakarta.ws.rs.core.Application;
@@ -170,6 +176,11 @@ public class APIApplicationPublisherImpl
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
+
+		_endpointHelper = new EndpointHelper(
+			_entityModelProvider, _expressionFactory,
+			_objectDefinitionFilterParser, _objectDefinitionLocalService,
+			_objectEntryHelper, _sortParserProvider);
 	}
 
 	@Deactivate
@@ -296,17 +307,32 @@ public class APIApplicationPublisherImpl
 	private final Map<String, ServiceRegistration<Application>>
 		_applicationServiceRegistrationsMap = new HashMap<>();
 	private final Map<String, Set<Long>> _companyIdsMap = new HashMap<>();
-
-	@Reference
 	private EndpointHelper _endpointHelper;
-
 	private final Map<String, EndpointMatcher> _endpointMatchersMap =
 		new HashMap<>();
+
+	@Reference
+	private EntityModelProvider _entityModelProvider;
+
+	@Reference
+	private ExpressionFactory _expressionFactory;
+
+	@Reference
+	private ObjectDefinitionFilterParser _objectDefinitionFilterParser;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryHelper _objectEntryHelper;
 
 	@Reference
 	private OpenAPIResource _openAPIResource;
 
 	private final Map<String, List<ServiceRegistration<?>>>
 		_serviceRegistrationsMap = new HashMap<>();
+
+	@Reference
+	private SortParserProvider _sortParserProvider;
 
 }

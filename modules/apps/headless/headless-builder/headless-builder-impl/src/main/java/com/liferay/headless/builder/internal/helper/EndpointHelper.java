@@ -46,16 +46,28 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Luis Miguel Barcos
  * @author Carlos Correa
  * @author Alejandro Tardín
  */
-@Component(service = EndpointHelper.class)
 public class EndpointHelper {
+
+	public EndpointHelper(
+		EntityModelProvider entityModelProvider,
+		ExpressionFactory expressionFactory,
+		ObjectDefinitionFilterParser objectDefinitionFilterParser,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		ObjectEntryHelper objectEntryHelper,
+		SortParserProvider sortParserProvider) {
+
+		_entityModelProvider = entityModelProvider;
+		_expressionFactory = expressionFactory;
+		_objectDefinitionFilterParser = objectDefinitionFilterParser;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
+		_objectEntryHelper = objectEntryHelper;
+		_sortParserProvider = sortParserProvider;
+	}
 
 	public Map<String, Object> getResponseEntityMap(
 			long companyId, String pathParameter, String pathParameterValue,
@@ -421,22 +433,11 @@ public class EndpointHelper {
 		}
 	}
 
-	@Reference
-	private EntityModelProvider _entityModelProvider;
-
-	@Reference
-	private ExpressionFactory _expressionFactory;
-
-	@Reference
-	private ObjectDefinitionFilterParser _objectDefinitionFilterParser;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Reference
-	private ObjectEntryHelper _objectEntryHelper;
-
-	@Reference
-	private SortParserProvider _sortParserProvider;
+	private final EntityModelProvider _entityModelProvider;
+	private final ExpressionFactory _expressionFactory;
+	private final ObjectDefinitionFilterParser _objectDefinitionFilterParser;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private final ObjectEntryHelper _objectEntryHelper;
+	private final SortParserProvider _sortParserProvider;
 
 }
