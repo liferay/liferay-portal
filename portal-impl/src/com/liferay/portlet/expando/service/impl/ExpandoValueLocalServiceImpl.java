@@ -772,11 +772,12 @@ public class ExpandoValueLocalServiceImpl
 
 			value.setCompanyId(companyId);
 
-			Serializable attributeValue = attributes.get(column.getName());
-
 			value.setColumn(column);
 
 			int type = column.getType();
+
+			Serializable attributeValue = convertType(
+				type, attributes.get(column.getName()));
 
 			if (type == ExpandoColumnConstants.BOOLEAN) {
 				value.setBoolean((Boolean)attributeValue);
