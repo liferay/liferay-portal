@@ -42,6 +42,7 @@
 		<column name="subtype" type="String" />
 		<column name="type" type="int" />
 		<column name="zip" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
@@ -418,6 +419,7 @@
 		<column name="unitPriceWithTaxAmount" type="BigDecimal" />
 		<column name="weight" type="double" />
 		<column name="width" type="double" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
@@ -727,7 +729,7 @@
 			<finder-column comparator="&gt;=" name="quantity" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="CommerceShippingMethod" remote-service="true">
+	<entity external-reference-code="company" local-service="true" name="CommerceShippingMethod" remote-service="true">
 
 		<!-- PK fields -->
 
@@ -755,6 +757,7 @@
 		<column name="priority" type="double" />
 		<column name="trackingURL" type="String" />
 		<column name="typeSettings" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 

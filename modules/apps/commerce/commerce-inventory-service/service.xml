@@ -149,6 +149,7 @@
 		<column name="latitude" type="double" />
 		<column name="longitude" type="double" />
 		<column name="type" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
