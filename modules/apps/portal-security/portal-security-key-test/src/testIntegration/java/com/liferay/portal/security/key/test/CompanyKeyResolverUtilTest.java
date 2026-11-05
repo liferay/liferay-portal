@@ -6,6 +6,8 @@
 package com.liferay.portal.security.key.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
@@ -15,7 +17,7 @@ import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.key.spi.crypto.CryptoProvider;
@@ -24,7 +26,10 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.security.Key;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -59,12 +64,9 @@ public class CompanyKeyResolverUtilTest {
 					TestCompanyCryptoProvider.KEY_IDENTIFIER));
 		_keyManagerCustomProfileConfigurationTemporarySwapper =
 			new ConfigurationTemporarySwapper(
-				"com.liferay.portal.security.key.internal.profile." +
-					"configuration.KeyManagerCustomProfileConfiguration",
-				HashMapDictionaryBuilder.<String, Object>put(
-					"companyKEKProviderId",
-					TestCompanyCryptoProvider.PROVIDER_ID
-				).build());
+				_KEY_MANAGER_CUSTOM_PROFILE_CONFIGURATION_PID,
+				_getKeyManagerCustomProfileConfigurationProperties(
+					TestCompanyCryptoProvider.PROVIDER_ID));
 
 		Bundle bundle = FrameworkUtil.getBundle(
 			CompanyKeyResolverUtilTest.class);
@@ -86,6 +88,69 @@ public class CompanyKeyResolverUtilTest {
 		_keyManagerCustomProfileConfigurationTemporarySwapper.close();
 
 		_serviceRegistration.unregister();
+	}
+
+	@Test
+	public void testRotateKey() throws Exception {
+		Company company = _addCompany();
+
+		String keyString = company.getKey();
+
+		Assert.assertFalse(CompanyKeyResolverUtil.isFIPSKey(keyString));
+		Assert.assertTrue(CompanyKeyResolverUtil.isWrappedKey(keyString));
+
+		_saveKeyManagerConfiguration(StringPool.BLANK);
+
+		Assert.assertEquals(keyString, _getCompanyKey(company));
+
+		Company legacyCompany = _addCompany();
+
+		String legacyKeyString = legacyCompany.getKey();
+
+		Assert.assertFalse(CompanyKeyResolverUtil.isFIPSKey(legacyKeyString));
+		Assert.assertFalse(
+			CompanyKeyResolverUtil.isWrappedKey(legacyKeyString));
+
+		_saveKeyManagerConfiguration(TestCompanyCryptoProvider.KEY_IDENTIFIER);
+		_saveKeyManagerCustomProfileConfiguration(
+			RandomTestUtil.randomString());
+
+		Assert.assertEquals(legacyKeyString, _getCompanyKey(legacyCompany));
+
+		_saveKeyManagerCustomProfileConfiguration(
+			TestCompanyCryptoProvider.PROVIDER_ID);
+
+		String rotatedKeyString = _getCompanyKey(company);
+
+		Assert.assertEquals(rotatedKeyString, _getCompanyKey(company));
+		Assert.assertTrue(CompanyKeyResolverUtil.isFIPSKey(rotatedKeyString));
+		Assert.assertTrue(
+			CompanyKeyResolverUtil.isWrappedKey(rotatedKeyString));
+
+		Key key = CompanyKeyResolverUtil.unwrapKey(
+			company.getCompanyId(), rotatedKeyString);
+
+		byte[] encodedBytes = key.getEncoded();
+
+		Assert.assertEquals(
+			Arrays.toString(encodedBytes), 32, encodedBytes.length);
+
+		_saveKeyManagerConfiguration(StringPool.BLANK);
+
+		String rotatedLegacyKeyString = _getCompanyKey(legacyCompany);
+
+		Assert.assertTrue(
+			CompanyKeyResolverUtil.isFIPSKey(rotatedLegacyKeyString));
+		Assert.assertFalse(
+			CompanyKeyResolverUtil.isWrappedKey(rotatedLegacyKeyString));
+
+		key = CompanyKeyResolverUtil.unwrapKey(
+			legacyCompany.getCompanyId(), rotatedLegacyKeyString);
+
+		encodedBytes = key.getEncoded();
+
+		Assert.assertEquals(
+			Arrays.toString(encodedBytes), 32, encodedBytes.length);
 	}
 
 	@Test
@@ -123,12 +188,12 @@ public class CompanyKeyResolverUtilTest {
 
 	@Test
 	public void testWrapKey() throws Exception {
-		_company = CompanyTestUtil.addCompany();
+		Company company = _addCompany();
 
 		Assert.assertTrue(
-			CompanyKeyResolverUtil.isWrappedKey(_company.getKey()));
+			CompanyKeyResolverUtil.isWrappedKey(company.getKey()));
 
-		Key key = _company.getKeyObj();
+		Key key = company.getKeyObj();
 
 		Assert.assertNotNull(key);
 
@@ -141,7 +206,7 @@ public class CompanyKeyResolverUtilTest {
 		EntityCacheUtil.clearCache();
 
 		Company persistedCompany = CompanyLocalServiceUtil.getCompany(
-			_company.getCompanyId());
+			company.getCompanyId());
 
 		Assert.assertTrue(
 			CompanyKeyResolverUtil.isWrappedKey(persistedCompany.getKey()));
@@ -149,14 +214,44 @@ public class CompanyKeyResolverUtilTest {
 
 		_saveKeyManagerConfiguration(StringPool.BLANK);
 
-		_legacyCompany = CompanyTestUtil.addCompany();
+		Company legacyCompany = _addCompany();
 
-		String keyString = _legacyCompany.getKey();
+		String keyString = legacyCompany.getKey();
 
 		Assert.assertFalse(CompanyKeyResolverUtil.isWrappedKey(keyString));
 		Assert.assertEquals(
-			EncryptorUtil.deserializeKey(keyString),
-			_legacyCompany.getKeyObj());
+			EncryptorUtil.deserializeKey(keyString), legacyCompany.getKeyObj());
+	}
+
+	private Company _addCompany() throws Exception {
+		Company company = CompanyLocalServiceUtil.createCompany(
+			CounterLocalServiceUtil.increment());
+
+		company.setWebId(RandomTestUtil.randomString());
+
+		company = CompanyLocalServiceUtil.updateCompany(company);
+
+		_companies.add(company);
+
+		CompanyLocalServiceUtil.checkCompanyKey(company.getCompanyId());
+
+		return CompanyLocalServiceUtil.getCompany(company.getCompanyId());
+	}
+
+	private String _getCompanyKey(Company company) throws Exception {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			CompanyLocalServiceUtil.checkCompanyKey(company.getCompanyId());
+		}
+
+		EntityCacheUtil.clearCache();
+
+		Company persistedCompany = CompanyLocalServiceUtil.getCompany(
+			company.getCompanyId());
+
+		return persistedCompany.getKey();
 	}
 
 	private Dictionary<String, Object> _getKeyManagerConfigurationProperties(
@@ -169,6 +264,15 @@ public class CompanyKeyResolverUtilTest {
 		).build();
 	}
 
+	private Dictionary<String, Object>
+		_getKeyManagerCustomProfileConfigurationProperties(
+			String companyKEKProviderId) {
+
+		return HashMapDictionaryBuilder.<String, Object>put(
+			"companyKEKProviderId", companyKEKProviderId
+		).build();
+	}
+
 	private void _saveKeyManagerConfiguration(String companyKEKIdentifier)
 		throws Exception {
 
@@ -177,21 +281,31 @@ public class CompanyKeyResolverUtilTest {
 			_getKeyManagerConfigurationProperties(companyKEKIdentifier));
 	}
 
+	private void _saveKeyManagerCustomProfileConfiguration(
+			String companyKEKProviderId)
+		throws Exception {
+
+		ConfigurationTestUtil.saveConfiguration(
+			_KEY_MANAGER_CUSTOM_PROFILE_CONFIGURATION_PID,
+			_getKeyManagerCustomProfileConfigurationProperties(
+				companyKEKProviderId));
+	}
+
 	private static final String _KEY_MANAGER_CONFIGURATION_PID =
 		"com.liferay.portal.security.key.internal.profile.configuration." +
 			"KeyManagerConfiguration";
 
+	private static final String _KEY_MANAGER_CUSTOM_PROFILE_CONFIGURATION_PID =
+		"com.liferay.portal.security.key.internal.profile.configuration." +
+			"KeyManagerCustomProfileConfiguration";
+
 	@DeleteAfterTestRun
-	private Company _company;
+	private final List<Company> _companies = new ArrayList<>();
 
 	private ConfigurationTemporarySwapper
 		_keyManagerConfigurationTemporarySwapper;
 	private ConfigurationTemporarySwapper
 		_keyManagerCustomProfileConfigurationTemporarySwapper;
-
-	@DeleteAfterTestRun
-	private Company _legacyCompany;
-
 	private ServiceRegistration<CryptoProvider> _serviceRegistration;
 	private TestCompanyCryptoProvider _testCompanyCryptoProvider;
 
