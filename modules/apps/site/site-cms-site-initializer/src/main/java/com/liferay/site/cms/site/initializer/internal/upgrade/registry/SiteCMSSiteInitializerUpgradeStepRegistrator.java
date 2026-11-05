@@ -6,6 +6,7 @@
 package com.liferay.site.cms.site.initializer.internal.upgrade.registry;
 
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.layout.importer.LayoutsImporter;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -35,6 +36,7 @@ import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_2.CMSAdminist
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_3.CMSFileTypeDisplayPageUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_4.CMSFileTypeFriendlyURLUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_5.CMSSpaceAdministratorRoleUpgradeProcess;
+import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_6.CMSPlanningAndTasksPagesUpgradeProcess;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -103,6 +105,15 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 				_companyLocalService, _groupLocalService, _layoutLocalService,
 				_resourcePermissionLocalService, _roleLocalService,
 				_userLocalService));
+
+		registry.register(
+			"3.0.5", "3.0.6",
+			new CMSPlanningAndTasksPagesUpgradeProcess(
+				_companyLocalService, _groupLocalService, _layoutLocalService,
+				_layoutPageTemplateEntryLocalService,
+				_layoutPageTemplateStructureLocalService, _layoutsImporter,
+				_resourcePermissionLocalService, _roleLocalService,
+				_segmentsExperienceLocalService, _userLocalService));
 	}
 
 	@Reference
@@ -132,6 +143,9 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private LayoutsImporter _layoutsImporter;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
