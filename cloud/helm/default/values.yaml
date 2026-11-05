@@ -395,7 +395,7 @@ image:
     pullPolicy: IfNotPresent
     pullSecrets: []
     repository: liferay/dxp
-    tag: 2026.q1.8-lts
+    tag: 2026.q1.14-lts
 initContainers: []
 licensing:
     activationCodeSecretKey: activationCode
