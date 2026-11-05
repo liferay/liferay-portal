@@ -6,39 +6,52 @@
 import {getScopeSubtitle} from '../../../../src/main/resources/META-INF/resources/revamp/js/utils/getScopeSubtitle';
 
 describe('getScopeSubtitle', () => {
-	it('describes the sites of an export', () => {
-		expect(getScopeSubtitle('export', true, false)).toBe(
-			'export-complete-sites,-including-all-their-pages,-content,-and-settings'
-		);
-	});
-
-	it('describes the spaces of an export', () => {
-		expect(getScopeSubtitle('export', false, true)).toBe(
-			'export-complete-spaces,-including-all-their-content'
-		);
-	});
-
-	it('describes the sites and spaces of an export', () => {
-		expect(getScopeSubtitle('export', true, true)).toBe(
-			'export-complete-sites-and-spaces,-including-all-their-pages,-content,-and-settings'
-		);
-	});
-
-	it('describes the sites of an import', () => {
-		expect(getScopeSubtitle('import', true, false)).toBe(
-			'import-complete-sites-from-your-file,-including-all-their-pages,-content,-and-settings'
-		);
-	});
-
-	it('describes the spaces of an import', () => {
-		expect(getScopeSubtitle('import', false, true)).toBe(
-			'import-complete-spaces-from-your-file,-including-all-their-content'
-		);
-	});
-
-	it('describes the sites and spaces of an import', () => {
-		expect(getScopeSubtitle('import', true, true)).toBe(
-			'import-complete-sites-and-spaces-from-your-file,-including-all-their-pages,-content,-and-settings'
-		);
-	});
+	it.each([
+		[
+			'export',
+			true,
+			false,
+			'export-complete-sites,-including-all-their-pages,-content,-and-settings',
+		],
+		[
+			'export',
+			false,
+			true,
+			'export-complete-spaces,-including-all-their-content',
+		],
+		[
+			'export',
+			true,
+			true,
+			'export-complete-sites-and-spaces,-including-all-their-pages,-content,-and-settings',
+		],
+		[
+			'import',
+			true,
+			false,
+			'import-complete-sites-from-your-file,-including-all-their-pages,-content,-and-settings',
+		],
+		[
+			'import',
+			false,
+			true,
+			'import-complete-spaces-from-your-file,-including-all-their-content',
+		],
+		[
+			'import',
+			true,
+			true,
+			'import-complete-sites-and-spaces-from-your-file,-including-all-their-pages,-content,-and-settings',
+		],
+	] as const)(
+		'describes an %s with sites %s and spaces %s',
+		(process, siteSelectionEnabled, spaceSelectionEnabled, expected) => {
+			expect(
+				getScopeSubtitle(process, {
+					siteSelectionEnabled,
+					spaceSelectionEnabled,
+				})
+			).toBe(expected);
+		}
+	);
 });

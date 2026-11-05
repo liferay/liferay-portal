@@ -168,11 +168,10 @@ export function NewExport({
 
 						{(sitesAPIURL || spacesAPIURL) && (
 							<ScopeSection
-								subtitle={getScopeSubtitle(
-									'export',
-									!!sitesAPIURL,
-									!!spacesAPIURL
-								)}
+								subtitle={getScopeSubtitle('export', {
+									siteSelectionEnabled: !!sitesAPIURL,
+									spaceSelectionEnabled: !!spacesAPIURL,
+								})}
 							>
 								{sitesAPIURL && (
 									<GroupSelection

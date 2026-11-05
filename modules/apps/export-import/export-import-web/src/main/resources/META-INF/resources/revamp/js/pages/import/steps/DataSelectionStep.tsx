@@ -54,7 +54,10 @@ export default function DataSelectionStep({
 
 			{(sites || spaces) && (
 				<ScopeSection
-					subtitle={getScopeSubtitle('import', !!sites, !!spaces)}
+					subtitle={getScopeSubtitle('import', {
+						siteSelectionEnabled: !!sites,
+						spaceSelectionEnabled: !!spaces,
+					})}
 				>
 					{sites && (
 						<FormikFieldGroups

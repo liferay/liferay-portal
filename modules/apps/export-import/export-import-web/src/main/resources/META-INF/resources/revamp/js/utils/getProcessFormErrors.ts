@@ -5,12 +5,29 @@
 
 import {FormikValues} from 'formik';
 
+import {
+	EnabledGroupSelection,
+	getEnabledGroupSelection,
+} from './getEnabledGroupSelection';
+
+const SELECTION_MESSAGES: Record<EnabledGroupSelection, string> = {
+	sites: Liferay.Language.get(
+		'please-select-at-least-one-entity-type-or-site-to-continue'
+	),
+	sitesAndSpaces: Liferay.Language.get(
+		'please-select-at-least-one-entity-type,-site,-or-space-to-continue'
+	),
+	spaces: Liferay.Language.get(
+		'please-select-at-least-one-entity-type-or-space-to-continue'
+	),
+};
+
 export function getProcessFormErrors(
 	values: FormikValues,
-	{
-		siteSelectionEnabled = false,
-		spaceSelectionEnabled = false,
-	}: {siteSelectionEnabled?: boolean; spaceSelectionEnabled?: boolean} = {}
+	options: {
+		siteSelectionEnabled?: boolean;
+		spaceSelectionEnabled?: boolean;
+	} = {}
 ): {
 	[key: string]: string;
 } {
@@ -25,20 +42,10 @@ export function getProcessFormErrors(
 		!values.siteExternalReferenceCodes?.length &&
 		!values.spaceExternalReferenceCodes?.length
 	) {
-		if (siteSelectionEnabled && spaceSelectionEnabled) {
-			errors.selection = Liferay.Language.get(
-				'please-select-at-least-one-entity-type,-site,-or-space-to-continue'
-			);
-		}
-		else if (siteSelectionEnabled) {
-			errors.selection = Liferay.Language.get(
-				'please-select-at-least-one-entity-type-or-site-to-continue'
-			);
-		}
-		else if (spaceSelectionEnabled) {
-			errors.selection = Liferay.Language.get(
-				'please-select-at-least-one-entity-type-or-space-to-continue'
-			);
+		const enabledGroupSelection = getEnabledGroupSelection(options);
+
+		if (enabledGroupSelection) {
+			errors.selection = SELECTION_MESSAGES[enabledGroupSelection];
 		}
 		else {
 			errors.contentSelection = Liferay.Language.get(
