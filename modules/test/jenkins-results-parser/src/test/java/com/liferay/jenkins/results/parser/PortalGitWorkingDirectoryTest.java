@@ -5,12 +5,17 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.File;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeSet;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import org.mockito.Mockito;
 
@@ -61,19 +66,64 @@ public class PortalGitWorkingDirectoryTest
 	}
 
 	@Test
-	public void testGetJSUnitFilePaths() {
-		String standardOut = JenkinsResultsParserUtil.combine(
-			"modules/apps/foo/test/Foo.test.js:describe('Foo', () => {\n",
-			"modules/apps/bar/test/Bar.test.tsx:describe('Bar: x', () => {\n",
-			"modules/apps/baz/test/Baz.test.ts:describe('Baz', () => {");
+	public void testGetJSUnitFiles() throws Exception {
+		File portalDir = temporaryFolder.newFolder("portal");
+
+		_writeFile(portalDir, "modules/apps/foo/.tsc/Foo.test.js");
+		_writeFile(portalDir, "modules/apps/foo/build/Foo.test.js");
+		_writeFile(portalDir, "modules/apps/foo/dist/Foo.test.js");
+		_writeFile(portalDir, "modules/apps/foo/node_modules/Foo.test.js");
+		_writeFile(portalDir, "modules/apps/foo/test/Foo.test.java");
+		_writeFile(portalDir, "modules/apps/foo/test/Foo.test.js");
+		_writeFile(portalDir, "modules/apps/foo/test/Foo.test.jsx");
+		_writeFile(portalDir, "modules/apps/foo/test/Foo.test.ts");
+		_writeFile(portalDir, "modules/apps/foo/test/Foo.test.tsx");
+		_writeFile(portalDir, "portal-web/test/Foo.test.js");
+		_writeFile(portalDir, "workspaces/bar/test/Bar.test.js");
+
+		JenkinsResultsParserUtil.write(
+			new File(portalDir, "modules/apps/foo/src/Foo.js"),
+			"export default {};");
+
+		File portalPrivateDir = temporaryFolder.newFolder("portal-private");
+
+		_writeFile(portalPrivateDir, "modules/dxp/baz/test/Baz.test.js");
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
+			PortalGitWorkingDirectory.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalGitWorkingDirectory
+		).getJSUnitFiles();
+
+		Mockito.doReturn(
+			portalPrivateDir
+		).when(
+			portalGitWorkingDirectory
+		).getPortalPrivateDir();
+
+		Mockito.doReturn(
+			portalDir
+		).when(
+			portalGitWorkingDirectory
+		).getWorkingDirectory();
 
 		testEquals(
-			Arrays.asList(
-				"modules/apps/foo/test/Foo.test.js",
-				"modules/apps/bar/test/Bar.test.tsx",
-				"modules/apps/baz/test/Baz.test.ts"),
-			PortalGitWorkingDirectory.getJSUnitFilePaths(standardOut));
+			new TreeSet<>(
+				Arrays.asList(
+					new File(portalDir, "modules/apps/foo/test/Foo.test.js"),
+					new File(portalDir, "modules/apps/foo/test/Foo.test.jsx"),
+					new File(portalDir, "modules/apps/foo/test/Foo.test.ts"),
+					new File(portalDir, "modules/apps/foo/test/Foo.test.tsx"),
+					new File(
+						portalPrivateDir, "modules/dxp/baz/test/Baz.test.js"),
+					new File(portalDir, "workspaces/bar/test/Bar.test.js"))),
+			new TreeSet<>(portalGitWorkingDirectory.getJSUnitFiles()));
 	}
+
+	@Rule
+	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
 	private Map<String, String> _getFilteredEnvironment(
 			String upstreamBranchName)
@@ -94,6 +144,11 @@ public class PortalGitWorkingDirectoryTest
 		);
 
 		return portalGitWorkingDirectory.getFilteredEnvironment();
+	}
+
+	private void _writeFile(File baseDir, String filePath) throws Exception {
+		JenkinsResultsParserUtil.write(
+			new File(baseDir, filePath), "describe('Foo', () => {});");
 	}
 
 }

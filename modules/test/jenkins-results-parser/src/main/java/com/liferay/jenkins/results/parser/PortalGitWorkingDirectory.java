@@ -16,9 +16,10 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -121,32 +122,16 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 			return _jsUnitFiles;
 		}
 
-		_jsUnitFiles = new ArrayList<>(
-			findFiles(null, _FILE_CONTENT_SNIPPET_JS_UNIT));
+		List<File> jsUnitFiles = new ArrayList<>(
+			_getJSUnitFiles(getWorkingDirectory()));
 
 		File portalPrivateDir = getPortalPrivateDir();
 
 		if (portalPrivateDir != null) {
-			String standardOut = null;
-
-			try {
-				Process process = JenkinsResultsParserUtil.executeBashCommands(
-					false, portalPrivateDir, 60 * 1000,
-					"git grep " + _FILE_CONTENT_SNIPPET_JS_UNIT);
-
-				standardOut = JenkinsResultsParserUtil.readInputStream(
-					process.getInputStream());
-			}
-			catch (IOException | TimeoutException exception) {
-				throw new GitWorkingDirectoryRuntimeException(
-					this, "Unable to run: git grep in " + portalPrivateDir,
-					exception);
-			}
-
-			for (String filePath : getJSUnitFilePaths(standardOut)) {
-				_jsUnitFiles.add(new File(portalPrivateDir, filePath));
-			}
+			jsUnitFiles.addAll(_getJSUnitFiles(portalPrivateDir));
 		}
+
+		_jsUnitFiles = jsUnitFiles;
 
 		return _jsUnitFiles;
 	}
@@ -631,18 +616,6 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 	}
 
-	protected static List<String> getJSUnitFilePaths(String standardOut) {
-		Set<String> filePaths = new LinkedHashSet<>();
-
-		Matcher matcher = _jsUnitFilePathPattern.matcher(standardOut);
-
-		while (matcher.find()) {
-			filePaths.add(matcher.group("filePath"));
-		}
-
-		return new ArrayList<>(filePaths);
-	}
-
 	protected PortalGitWorkingDirectory(
 			String upstreamBranchName, String workingDirectoryPath)
 		throws IOException {
@@ -692,6 +665,77 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		}
 
 		return filteredEnv;
+	}
+
+	private List<File> _getJSUnitFiles(File portalDir) {
+		final List<File> jsUnitFiles = new ArrayList<>();
+
+		for (String baseDirName : _JS_UNIT_BASE_DIR_NAMES) {
+			File baseDir = new File(portalDir, baseDirName);
+
+			if (!baseDir.exists()) {
+				continue;
+			}
+
+			try {
+				Files.walkFileTree(
+					baseDir.toPath(),
+					new SimpleFileVisitor<Path>() {
+
+						@Override
+						public FileVisitResult preVisitDirectory(
+							Path filePath,
+							BasicFileAttributes basicFileAttributes) {
+
+							String fileName = String.valueOf(
+								filePath.getFileName());
+
+							if (fileName.startsWith(".") ||
+								_jsUnitSkippedDirNames.contains(fileName)) {
+
+								return FileVisitResult.SKIP_SUBTREE;
+							}
+
+							return FileVisitResult.CONTINUE;
+						}
+
+						@Override
+						public FileVisitResult visitFile(
+								Path filePath,
+								BasicFileAttributes basicFileAttributes)
+							throws IOException {
+
+							Matcher matcher = _jsUnitFileNamePattern.matcher(
+								String.valueOf(filePath.getFileName()));
+
+							if (!matcher.matches()) {
+								return FileVisitResult.CONTINUE;
+							}
+
+							File file = filePath.toFile();
+
+							String content = JenkinsResultsParserUtil.read(
+								file);
+
+							if (content.contains(
+									_FILE_CONTENT_SNIPPET_JS_UNIT)) {
+
+								jsUnitFiles.add(file);
+							}
+
+							return FileVisitResult.CONTINUE;
+						}
+
+					});
+			}
+			catch (IOException ioException) {
+				throw new GitWorkingDirectoryRuntimeException(
+					this, "Unable to find JS unit files in " + baseDir,
+					ioException);
+			}
+		}
+
+		return jsUnitFiles;
 	}
 
 	private boolean _isGitArchiveYarnCacheEnabled() {
@@ -761,13 +805,21 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		"\\.gradle/", "\\.yarn/", "modules/\\.tsc/", "node_modules_cache"
 	};
 
-	private static final String _FILE_CONTENT_SNIPPET_JS_UNIT =
-		"describe\\( -- '*.js' '*.jsx' '*.ts' '*.tsx'";
+	private static final String _FILE_CONTENT_SNIPPET_JS_UNIT = "describe(";
+
+	private static final String[] _JS_UNIT_BASE_DIR_NAMES = {
+		"modules", "workspaces"
+	};
 
 	private static final Pattern _esBuildFileNamePattern = Pattern.compile(
 		"@esbuild-(linux-.*?)-.*");
-	private static final Pattern _jsUnitFilePathPattern = Pattern.compile(
-		"(?<filePath>[^\\n:]+):.+");
+	private static final Pattern _jsUnitFileNamePattern = Pattern.compile(
+		".+\\.(js|jsx|ts|tsx)");
+	private static final Set<String> _jsUnitSkippedDirNames = new HashSet<>(
+		Arrays.asList(
+			"bin", "build", "classes", "dist", "lib", "node_modules",
+			"node_modules_cache", "test-classes", "test-coverage",
+			"test-results", "tmp"));
 
 	private Properties _appServerProperties;
 	private List<File> _jsUnitFiles;
