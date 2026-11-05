@@ -20,7 +20,6 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
-import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRenderer;
@@ -958,15 +957,18 @@ public class FragmentLayoutStructureItemImporter
 			return processedHTML;
 		}
 
-		FragmentEntryProcessorContext fragmentEntryProcessorContext =
-			new DefaultFragmentEntryProcessorContext(
-				companyId, httpServletRequest, httpServletResponse,
-				LocaleUtil.getMostRelevantLocale(),
-				FragmentEntryLinkConstants.EDIT,
-				serviceContext.getScopeGroupId());
+		DefaultFragmentEntryProcessorContext
+			defaultFragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					companyId, httpServletRequest, httpServletResponse,
+					LocaleUtil.getMostRelevantLocale(),
+					FragmentEntryLinkConstants.EDIT,
+					serviceContext.getScopeGroupId());
+
+		defaultFragmentEntryProcessorContext.setDisablePortletRender(true);
 
 		return _fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
-			fragmentEntryLink, fragmentEntryProcessorContext);
+			fragmentEntryLink, defaultFragmentEntryProcessorContext);
 	}
 
 	private String _getWarningMessage(
