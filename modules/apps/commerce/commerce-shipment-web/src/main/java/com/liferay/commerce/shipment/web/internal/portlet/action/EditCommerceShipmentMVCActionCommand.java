@@ -60,10 +60,7 @@ public class EditCommerceShipmentMVCActionCommand extends BaseMVCActionCommand {
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
 		try {
-			if (cmd.equals(Constants.ADD)) {
-				_addCommerceShipment(actionRequest);
-			}
-			else if (cmd.equals(Constants.DELETE)) {
+			if (cmd.equals(Constants.DELETE)) {
 				_deleteCommerceShipments(actionRequest);
 			}
 			else if (cmd.equals(Constants.UPDATE)) {
@@ -112,29 +109,6 @@ public class EditCommerceShipmentMVCActionCommand extends BaseMVCActionCommand {
 				throw exception;
 			}
 		}
-	}
-
-	private CommerceShipment _addCommerceShipment(ActionRequest actionRequest)
-		throws PortalException {
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CommerceShipment.class.getName(), actionRequest);
-
-		long groupId = ParamUtil.getLong(
-			actionRequest, "commerceChannelGroupId");
-		long commerceAccountId = ParamUtil.getLong(
-			actionRequest, "commerceAccountId");
-		long commerceAddressId = ParamUtil.getLong(
-			actionRequest, "commerceAddressId");
-		long commerceShippingMethodId = ParamUtil.getLong(
-			actionRequest, "commerceShippingMethodId");
-		String commerceShippingOptionName = ParamUtil.getString(
-			actionRequest, "commerceShippingOptionName");
-
-		return _commerceShipmentService.addCommerceShipment(
-			null, groupId, commerceAccountId, commerceAddressId,
-			commerceShippingMethodId, commerceShippingOptionName,
-			serviceContext);
 	}
 
 	private void _addCommerceShipmentItems(ActionRequest actionRequest)
