@@ -28,9 +28,13 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -55,7 +59,8 @@ public class CollectionUsageResolver {
 		DepotEntryLocalService depotEntryLocalService,
 		LayoutLocalService layoutLocalService,
 		LayoutPageTemplateEntryLocalService layoutPageTemplateEntryLocalService,
-		Portal portal) {
+		Portal portal,
+		PortletPreferencesLocalService portletPreferencesLocalService) {
 
 		_assetEntryLocalService = assetEntryLocalService;
 		_assetListEntryAssetEntryRelLocalService =
@@ -67,17 +72,22 @@ public class CollectionUsageResolver {
 		_layoutPageTemplateEntryLocalService =
 			layoutPageTemplateEntryLocalService;
 		_portal = portal;
+		_portletPreferencesLocalService = portletPreferencesLocalService;
 	}
 
 	public CollectionUsages getCollectionUsages(long companyId) {
 		CollectionUsages collectionUsages = new CollectionUsages();
+
+		long portletClassNameId = _portal.getClassNameId(Portlet.class);
 
 		List<Object[]> assetListEntryUsageObjectsList =
 			_assetListEntryUsageLocalService.dslQuery(
 				DSLQueryFactoryUtil.select(
 					AssetListEntryUsageTable.INSTANCE.groupId,
 					AssetListEntryUsageTable.INSTANCE.plid,
-					AssetListEntryUsageTable.INSTANCE.key
+					AssetListEntryUsageTable.INSTANCE.key,
+					AssetListEntryUsageTable.INSTANCE.containerKey,
+					AssetListEntryUsageTable.INSTANCE.containerType
 				).from(
 					AssetListEntryUsageTable.INSTANCE
 				).where(
@@ -87,9 +97,12 @@ public class CollectionUsageResolver {
 						AssetListEntryUsageTable.INSTANCE.classNameId.eq(
 							_portal.getClassNameId(AssetListEntry.class))
 					).and(
-						AssetListEntryUsageTable.INSTANCE.containerType.eq(
-							_portal.getClassNameId(
-								CollectionStyledLayoutStructureItem.class))
+						AssetListEntryUsageTable.INSTANCE.containerType.in(
+							new Long[] {
+								_portal.getClassNameId(
+									CollectionStyledLayoutStructureItem.class),
+								portletClassNameId
+							})
 					)
 				));
 
@@ -100,9 +113,16 @@ public class CollectionUsageResolver {
 			long groupId = (Long)row[0];
 			long plid = (Long)row[1];
 			String key = (String)row[2];
+			String containerKey = (String)row[3];
+			long containerType = (Long)row[4];
 
 			try {
 				Layout layout = resolutionContext.getLayout(plid);
+
+				if (containerType == portletClassNameId) {
+					layout = _getPortletLayout(
+						layout, containerKey, resolutionContext);
+				}
 
 				if ((layout == null) || !_isPublished(layout)) {
 					continue;
@@ -172,6 +192,34 @@ public class CollectionUsageResolver {
 		}
 	}
 
+	private Layout _getPortletLayout(
+		Layout layout, String portletId, ResolutionContext resolutionContext) {
+
+		if (layout == null) {
+			return null;
+		}
+
+		if (layout.isDraftLayout()) {
+			layout = resolutionContext.getLayout(layout.getClassPK());
+
+			if (layout == null) {
+				return null;
+			}
+		}
+
+		PortletPreferences portletPreferences =
+			_portletPreferencesLocalService.fetchPortletPreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid(),
+				portletId);
+
+		if (portletPreferences == null) {
+			return null;
+		}
+
+		return layout;
+	}
+
 	private boolean _isPublished(Layout layout) {
 		if (layout.isDraftLayout()) {
 			return false;
@@ -217,6 +265,8 @@ public class CollectionUsageResolver {
 	private final LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
 	private final Portal _portal;
+	private final PortletPreferencesLocalService
+		_portletPreferencesLocalService;
 
 	private class ResolutionContext {
 
