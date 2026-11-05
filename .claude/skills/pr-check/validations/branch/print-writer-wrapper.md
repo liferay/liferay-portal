@@ -22,9 +22,9 @@ This check is static and needs no build. It walks each changed Java file that co
 - Assigned to a local variable, a field, or a try-with-resources resource: reported when every use of the variable in the block that declares it is a call to `append`, `close`, `flush`, `print`, `println`, or `write`, an assignment to the variable, or a comparison with `null`.
 - Passed as an argument to an unqualified method call: reported when every method of the same name and argument count in the file is `private` and uses the matching parameter only in those calls.
 
-A writer that is passed to any other method, returned, assigned to another variable, put into a map, or used to call `printf`, `format`, or `checkError` is not reported. It uses `command grep` so each file and its added lines are searched by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults. Each finding prints as `<path>:<line>: wraps a writer in a PrintWriter only to print`, where `<line>` is the line of `new`.
+A writer that is passed to any other method, returned, assigned to another variable, put into a map, or used to call `checkError`, `format`, or `printf` is not reported. The check uses `command grep` so each file and its added lines are searched by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults. Each finding prints as `<path>:<line>: wraps a writer in a "PrintWriter" only to print`, where `<line>` is the line of `new`.
 
-A generated file carries the `@generated` Javadoc marker that Service Builder and the other code generators stamp on every file they produce (for example every `*LocalService` interface). The scan matches it case-insensitively, so the `@Generated` annotation on REST Builder output is covered too. That annotation is machine written boilerplate, not hand written writer code, so any file carrying it is excluded before the `PrintWriter` scan.
+A generated file carries the `@generated` Javadoc marker that Service Builder and the other code generators stamp on every file they produce (for example every `*LocalService` interface). The scan ignores case in that match, so the `@Generated` annotation on REST Builder output is covered too. That annotation is machine written boilerplate, not hand written writer code, so any file carrying it is excluded before the `PrintWriter` scan.
 
 Anchor that match to a Javadoc tag or an annotation rather than searching the whole file for the bare word, or a class that only mentions `@generated` in prose drops out of the scan entirely.
 
@@ -65,7 +65,7 @@ WRAPPERS='
 		count = arguments(open, pair[open])
 
 		for (m = 1; m <= n; m++) {
-			if ((tok[m] != name) || (tok[m + 1] != "(") || (tok[m - 1] !~ /^([[:alnum:]_$]+|>|\])$/) || (tok[m - 1] ~ /^(new|return|throw|else|case)$/)) {
+			if ((tok[m] != name) || (tok[m + 1] != "(") || (tok[m - 1] !~ /^([[:alnum:]_$]+|>|\])$/) || (tok[m - 1] ~ /^(case|else|new|return|throw)$/)) {
 				continue
 			}
 
@@ -91,7 +91,7 @@ WRAPPERS='
 				end = parameterEnd
 			}
 
-			for (position = end - 1; tok[position] == "]" || tok[position] == "["; position--) {
+			for (position = end - 1; (tok[position] == "[") || (tok[position] == "]"); position--) {
 			}
 
 			for (k = m - 1; (k > 0) && (tok[k] !~ /^[;{}]$/) && (tok[k] != "private"); k--) {
@@ -386,7 +386,7 @@ FINDINGS=$(
 		do
 			if command grep --fixed-strings --line-regexp --quiet "${LINE}" <<< "${ADDED}"
 			then
-				echo "${FILE}:${LINE}: wraps a writer in a PrintWriter only to print"
+				echo "${FILE}:${LINE}: wraps a writer in a \"PrintWriter\" only to print"
 			fi
 		done
 	done

@@ -831,13 +831,11 @@ public class WabBundleProcessor {
 				outputStream, StandardCharsets.UTF_8)) {
 
 			writer.write(
-				StringBundler.concat(
-					"last.modified=", _bundle.getLastModified(),
-					StringPool.NEW_LINE));
+				"last.modified=" + _bundle.getLastModified() +
+					StringPool.NEW_LINE);
 
 			if (annotatedClasses.isEmpty()) {
-				writer.write("annotated.classes=");
-				writer.write(StringPool.NEW_LINE);
+				writer.write("annotated.classes=\n");
 			}
 			else {
 				StringBundler sb = new StringBundler(
