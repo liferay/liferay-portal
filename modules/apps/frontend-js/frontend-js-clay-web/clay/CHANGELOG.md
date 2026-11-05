@@ -2,6 +2,451 @@
 
 All notable changes to Clay packages are documented in this file.
 
+# [3.167.0] (2026-11-05)
+
+## @clayui/alert
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-66970 Move useAutoClose to its own file ([367ed06](https://github.com/liferay/liferay-portal/commit/367ed067000e8c9e8437a7949e9464ea24e82f79))
+- LPD-66970 Simplify useAutoClose ([4f97960](https://github.com/liferay/liferay-portal/commit/4f979603d6e12d0a264946db673b371edbc9c7a3))
+- LPD-66970 Avoid starting a second auto close timer ([df929e2](https://github.com/liferay/liferay-portal/commit/df929e29f1eb8efd8439aad6a4b252d40dd2f874))
+- LPD-66970 Forget the auto close timer once it fires ([8b227ed](https://github.com/liferay/liferay-portal/commit/8b227eda29a3af521f919bd2f15e44e66924275f))
+- LPD-66970 Compute the remaining auto close time from the elapsed time ([2e46482](https://github.com/liferay/liferay-portal/commit/2e46482993b2f71a67b4fca57adc8ea5ec4e2c21))
+- LPD-66970 Keep alerts open when the Provider sets persistentAlerts ([1d387a6](https://github.com/liferay/liferay-portal/commit/1d387a6eb1e03b925a0d1d154406ccd8eb13f010))
+- LPD-66970 Keep a paused alert open when the Provider flag changes ([47681dd](https://github.com/liferay/liferay-portal/commit/47681dda7a0ae45879ca2d5a26d06ab2e36bf20e))
+- LPD-66970 Stop or restart the auto close timer when autoClose changes ([d4db521](https://github.com/liferay/liferay-portal/commit/d4db52184565f902a1e8ad59778eb3dde2989fc9))
+- LPD-66970 Call the latest onClose when an alert auto closes ([61f6ff6](https://github.com/liferay/liferay-portal/commit/61f6ff616b15031ad3765d2b3b3e7ed726ac4cb7))
+- LPD-66970 Keep alerts open while body has c-prefers-persistent-alerts ([6b4c8c3](https://github.com/liferay/liferay-portal/commit/6b4c8c37bec10fe56e572149de92d42fc007525d))
+- LPD-66970 Add a story for a toast that stays open with persistentAlerts ([78de07b](https://github.com/liferay/liferay-portal/commit/78de07bf89a738118608ca450a0606140dce622e))
+- LPD-66970 Document persistentAlerts in the Provider and Alert docs ([8a152da](https://github.com/liferay/liferay-portal/commit/8a152daa27a019b96771100b41c92554fa3a6f79))
+- LPD-66970 Test alert auto close with external override ([574efa4](https://github.com/liferay/liferay-portal/commit/574efa4945bb8fa4283ffe817668d7b63066d4ce))
+- LPD-66971 Move ClayAlert into Alert.tsx for the docs API Reference ([f08b9b6](https://github.com/liferay/liferay-portal/commit/f08b9b6f7706c3a0cbb5dd0f7a3232e387d8ee01))
+- LPD-66971 Extract usePrefersPersistentAlerts from useAutoClose ([7dd485d](https://github.com/liferay/liferay-portal/commit/7dd485d2d7151f7d847567684a6ed882180e31be))
+- LPD-66971 Export usePrefersPersistentAlerts from @clayui/alert ([978780a](https://github.com/liferay/liferay-portal/commit/978780ae9355cfc1c2f10e3e049b57ff4a9e4c2a))
+- LPD-66971 Document usePrefersPersistentAlerts ([32acffa](https://github.com/liferay/liferay-portal/commit/32acffaca61e1c03e3857919c6e378f9b79fc357))
+- LPD-66971 Test usePrefersPersistentAlerts ([1748d44](https://github.com/liferay/liferay-portal/commit/1748d442b9eb476f871499463d312d26ecd3d3eb))
+- LPD-66971 Remove the redundant ClayAlert auto close test ([387df0a](https://github.com/liferay/liferay-portal/commit/387df0adefba70b11683d3269dbe007045921572))
+- LPD-109681 Keep alert content mounted when the alert re-renders ([74199df](https://github.com/liferay/liferay-portal/commit/74199dfc754a059667275291d54bec71b5a0cac8))
+- LPD-109454 Keep consumer mouse handlers on ClayAlert ([8b124c9](https://github.com/liferay/liferay-portal/commit/8b124c9d18514971c80ac45159307de0483a6e55))
+- LPD-109454 Pause ClayAlert autoClose while focus is inside it ([f588a29](https://github.com/liferay/liferay-portal/commit/f588a29b17a7af1bd9f3c4f9ea28e8f35cd3b1d9))
+- LPD-109454 Let hover and focus pause ClayAlert autoClose independently ([99c7c3d](https://github.com/liferay/liferay-portal/commit/99c7c3d55c185f64d5d8c839d04c85b520c61e5a))
+- LPD-109454 Document how ClayAlert auto close works ([0192146](https://github.com/liferay/liferay-portal/commit/01921466fa9d66b4ea688cdc0685af25e5f6aa10))
+- LPD-109454 Test ClayAlert autoClose pause on focus ([43cf56e](https://github.com/liferay/liferay-portal/commit/43cf56e7ea62f236517e720e20af6ceee1132cda))
+- LPD-109681 Type the close event that ClayAlert passes to onClose ([2a9cee6](https://github.com/liferay/liferay-portal/commit/2a9cee6cfa04fc341a663ddef6d04f77cbab9148))
+- LPD-109681 Focus the alert when it is shown with autoFocus ([4cd2f3a](https://github.com/liferay/liferay-portal/commit/4cd2f3aa8c533c997ba584518108c8f31356b574))
+- LPD-109681 Keep the list of toasts in a Clay toast store ([c6602d4](https://github.com/liferay/liferay-portal/commit/c6602d4ea05ffefd7664d88b38f3e00f5b2eeae4))
+- LPD-109681 Document the Toaster, toast stacking and autoFocus ([5d3483c](https://github.com/liferay/liferay-portal/commit/5d3483ce0bc7e0cf196f5884477be0055ffd7668))
+- LPD-109681 Add tests for the Clay toast store, Toaster and alert focus ([8c574f7](https://github.com/liferay/liferay-portal/commit/8c574f702d4d3599685c91cb3b942c6863a88d41))
+- LPD-109681 Fix prose style violations in alert documentation ([0ff9ad9](https://github.com/liferay/liferay-portal/commit/0ff9ad99b450b84fee65ec5183488a1c570cf654))
+- LPD-109681 Fix heading casing in alert documentation ([f201115](https://github.com/liferay/liferay-portal/commit/f201115b3b4ea26db4ef91ab114b5075d474af14))
+
+## @clayui/autocomplete
+
+### Commits
+
+- LPD-100943 Align 'fuzzy' versions ([38131f3](https://github.com/liferay/liferay-portal/commit/38131f3273717a498d1e3c877bc70d9c986521d2))
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-101956 Add a caption slot to the Autocomplete menu ([2bd1b80](https://github.com/liferay/liferay-portal/commit/2bd1b80afb21339aaa93a61b9fa0a7d12d29dd37))
+- LPD-101956 Test the Autocomplete caption ([5e1f14a](https://github.com/liferay/liferay-portal/commit/5e1f14add9ebc6ab4c61a7383c3501bdab2e5a37))
+- LPD-108195 Use the canonical Jest matcher names ([4192f7a](https://github.com/liferay/liferay-portal/commit/4192f7afeb1bc13784e974144dc4775fff04cc87))
+
+## @clayui/badge
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/breadcrumb
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-108195 Use the canonical Jest matcher names ([4192f7a](https://github.com/liferay/liferay-portal/commit/4192f7afeb1bc13784e974144dc4775fff04cc87))
+
+## @clayui/button
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-108195 Use the canonical Jest matcher names ([4192f7a](https://github.com/liferay/liferay-portal/commit/4192f7afeb1bc13784e974144dc4775fff04cc87))
+
+## @clayui/card
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-105817 Let a card opt out of the template type classes ([ab7bec9](https://github.com/liferay/liferay-portal/commit/ab7bec936d5e7b4973a939cfbcad31f64c982953))
+- LPD-105817 Reuse the navigation card in the applications menu and asset library cards ([f3e589d](https://github.com/liferay/liferay-portal/commit/f3e589d53fc951aa6c256147f6bf9743c8748e68))
+- LPD-105817 @clayui/card update tests ([1f46218](https://github.com/liferay/liferay-portal/commit/1f462188f50aef3b5f9f13a5c6c416f74dbba3cb))
+
+## @clayui/color-picker
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-96942 @clayui/color-picker should support light-dark function ([eb3c8dd](https://github.com/liferay/liferay-portal/commit/eb3c8ddf27e9a45b179d0d791ea8ac2c919cf43d))
+- LPD-96942 @clayui/color-picker Add test for light-dark values ([48320f5](https://github.com/liferay/liferay-portal/commit/48320f54b2741c526ae6b7869299547a80be19c8))
+- LPD-102719 Make the color picker's saturation and brightness map operable ([7ebd4e6](https://github.com/liferay/liferay-portal/commit/7ebd4e63dc91d98e68221be4b544ff0a396a9eff))
+- LPD-102719 SF ([a99dd9c](https://github.com/liferay/liferay-portal/commit/a99dd9cbee34b8bdacd92299914ee09190c2b2d9))
+- LPD-102719 Assert on the color that changes and refresh the snapshot ([370d210](https://github.com/liferay/liferay-portal/commit/370d2105185f8be59f37ba04ab64edd90f379bb7))
+- LPD-108195 Use the canonical Jest matcher names ([4192f7a](https://github.com/liferay/liferay-portal/commit/4192f7afeb1bc13784e974144dc4775fff04cc87))
+
+## @clayui/core
+
+### Commits
+
+- LPD-100943 Align 'react-transition-group' versions ([f154bb6](https://github.com/liferay/liferay-portal/commit/f154bb645cb315667f4369660b3598e47cd7d4a6))
+- LPD-100943 Align 'fuzzy' versions ([38131f3](https://github.com/liferay/liferay-portal/commit/38131f3273717a498d1e3c877bc70d9c986521d2))
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-100175 Honor an aria-describedby prop on the vertical nav item ([189799b](https://github.com/liferay/liferay-portal/commit/189799b72db6bcf4a40abd159150a903f2dc6c6b))
+- LPD-106891 Keep disabled Picker options reachable by keyboard ([a041b83](https://github.com/liferay/liferay-portal/commit/a041b832f3a6d34941d9a4f39dbf4f7eaa509245))
+- LPD-106891 Reset the Picker highlight when closing on a disabled option ([d761e40](https://github.com/liferay/liferay-portal/commit/d761e40d8d7c29385e2224409c6d409a05b07de3))
+- LPD-106891 Add a Picker story with disabled options ([be2adfa](https://github.com/liferay/liferay-portal/commit/be2adfac7ce8f296410f47a4deeddc0181f21b57))
+- LPD-106891 Test keyboard navigation over disabled Picker options ([d40cfa0](https://github.com/liferay/liferay-portal/commit/d40cfa0d17de6b57313f46121a2504eb82f26bf7))
+- LPD-106912 Show the active sort direction on sortable table columns ([f30bdf4](https://github.com/liferay/liferay-portal/commit/f30bdf4d8c312564f961108796c0527c2a6bad10))
+- LPD-106912 Test the sort direction indicator on table columns ([960c322](https://github.com/liferay/liferay-portal/commit/960c322a4aeb54a8b47415bdd738f76518761448))
+- LPD-106214 Announce the column name on data set sort buttons ([f278c6e](https://github.com/liferay/liferay-portal/commit/f278c6e659ad5db909ab1ecc52f34b4cf0c0fafd))
+- LPD-106214 Show the column name in the sort button tooltip ([7c1884d](https://github.com/liferay/liferay-portal/commit/7c1884d573435c88472ce442a547375e51aa49a7))
+- LPD-107364 Keep visually hidden content from adding a page scrollbar ([5b9d496](https://github.com/liferay/liferay-portal/commit/5b9d4962df24bbb3de22dbbfd16ef226df04e056))
+- LPD-107364 Add tests ([9135f93](https://github.com/liferay/liferay-portal/commit/9135f931e2421199cd2408e3b5f07e78e54397a6))
+- LPD-107364 Limit the fixed position to the live announcer ([8d35cc0](https://github.com/liferay/liferay-portal/commit/8d35cc05c5a497e8fb42ea1640b006e3e3e80088))
+- LPD-107364 Add tests ([534e5ba](https://github.com/liferay/liferay-portal/commit/534e5ba9eb05e3ccdb14d9f059cefeac4a6d856a))
+- LPD-106216 Keep the dropdown menu anchored to its trigger when it fits neither below nor above ([21de791](https://github.com/liferay/liferay-portal/commit/21de791529bd7af6fa605ca6a64805116ccb66c4))
+- LPD-111385 Match the SidePanel transition timeouts to the slideout transition durations ([0ef0853](https://github.com/liferay/liferay-portal/commit/0ef085351a0956fa11ae7d92d092792daf2aaf2d))
+
+## @clayui/css
+
+### Commits
+
+- LPD-100943 Align 'sass' versions ([b2e1a20](https://github.com/liferay/liferay-portal/commit/b2e1a20f2843dce1e67bfc5a7ed3da4af70f7d9b))
+- LPD-98930 Update border-radius values to match Lexicon ([62f6815](https://github.com/liferay/liferay-portal/commit/62f68158cc4dce5176427bcc3f2873cf8e088660))
+- LPD-92565 Create importable files for atlas-custom-properties just like we do for atlas ([df0fcc7](https://github.com/liferay/liferay-portal/commit/df0fcc7f910487bb4c93324b99433d26a26c18a4))
+- Revert "LPD-92565 Create importable files for atlas-custom-properties just like we do for atlas" ([d424130](https://github.com/liferay/liferay-portal/commit/d4241309c8c10565ead13231e57f658481611d46))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-102793 @clayui/css InputGroupAI help text should be purple ([963c316](https://github.com/liferay/liferay-portal/commit/963c3160f39080f22de208dc5ed17a860e2db454))
+- LPD-102713 @clayui/css add flip-horizontal.svg and flip-vertical.svg ([7bad589](https://github.com/liferay/liferay-portal/commit/7bad5891646f4421edc21e258748a65f95f8b06b))
+- LPD-92565 Create importable files for atlas-custom-properties just like we do for atlas ([88fd18e](https://github.com/liferay/liferay-portal/commit/88fd18e06d904f99afa8c636f5f0e7cf186b50ed))
+- LPD-101689 @clayui/css Normalize cadmin dropdown and atlas-custom-properties dropdown with Lexicon ([0176bb1](https://github.com/liferay/liferay-portal/commit/0176bb1d4c79d87c64bed907f2dde47088d5c4e9))
+- LPD-96939 @clayui/css Add scrollbar tokens to the dark mode ramps ([5b8cb18](https://github.com/liferay/liferay-portal/commit/5b8cb181687ec1f0184c4a2a1964ab04a41857dc))
+- LPD-96939 @clayui/css Paint scrollbars under the dark color schemes ([4c59119](https://github.com/liferay/liferay-portal/commit/4c5911977adeb136b262b8f3865ee396b004746d))
+- LPD-96939 @clayui/css Add the scrollbar Sass variables ([da03dbd](https://github.com/liferay/liferay-portal/commit/da03dbd93464eb1482406a9617049f9fe0a66c81))
+- LPD-101365 @clayui/css fix invalid css output ([491aee3](https://github.com/liferay/liferay-portal/commit/491aee34e4b7964e80565389340303cdef84a96e))
+- LPD-101956 Add a caption slot to the Autocomplete menu ([2bd1b80](https://github.com/liferay/liferay-portal/commit/2bd1b80afb21339aaa93a61b9fa0a7d12d29dd37))
+- LPD-103935 Give tooltips and popovers a position independent width ([55f2abd](https://github.com/liferay/liferay-portal/commit/55f2abd2b89bdc29ec47db67ab0de70a434eaeab))
+- LPD-106015 @clayui/css fix @supports Sass error in older versions ([c7db09e](https://github.com/liferay/liferay-portal/commit/c7db09e1120f7d713686c73f62d2078fba9f118f))
+- LPD-106598 @clayui/css add spacing-all.svg, spacing-bottom.svg, spacing-horizontal.svg, spacing-left.svg, spacing-right.svg, spacing-top.svg and spacing-vertical.svg ([5e1d674](https://github.com/liferay/liferay-portal/commit/5e1d67497593efff3af8431363905f97046a1ed0))
+- LPD-100174 Paint scrollbars in light mode to match dark ([6879a96](https://github.com/liferay/liferay-portal/commit/6879a9682aea713cc6ac1ae7dfb747ba710597dd))
+- LPD-107024 @clayui/css modals use modal-banner-img instead of modal-body aspect-ratio for flush images ([def957f](https://github.com/liferay/liferay-portal/commit/def957fef8920854534ca821cb6afa47ef109e1e))
+- LPD-107024 Sort modal-banner-img map entries ([15106ed](https://github.com/liferay/liferay-portal/commit/15106ed7a40a98bf12d4d2cae9dc9ae6462b8780))
+- LPD-106891 Show the focus ring on a highlighted disabled Picker option ([33230f8](https://github.com/liferay/liferay-portal/commit/33230f804362a40fd850c5e36ecb6ad16b0802ed))
+- LPD-106912 Show the active sort direction on sortable table columns ([f30bdf4](https://github.com/liferay/liferay-portal/commit/f30bdf4d8c312564f961108796c0527c2a6bad10))
+- LPD-106912 Color the sorted column's arrow as well as its label ([1a79079](https://github.com/liferay/liferay-portal/commit/1a7907908c325ef6295769bb498c2340f1c2561a))
+- LPD-107074 Stop centered modals from scrolling with the backdrop ([535cc33](https://github.com/liferay/liferay-portal/commit/535cc33edef77bf07ccdd4184ec6043adf145222))
+- LPD-107074 Sort ([217f275](https://github.com/liferay/liferay-portal/commit/217f275319e6bd26e86a8e6423b34b0cb7d7644d))
+- LPD-105817 Reuse the navigation card in the applications menu and asset library cards ([f3e589d](https://github.com/liferay/liferay-portal/commit/f3e589d53fc951aa6c256147f6bf9743c8748e68))
+- LPD-105817 @clayui/css add navigation-card and navigation-card-horizontal ([f4080a9](https://github.com/liferay/liferay-portal/commit/f4080a9e3a32940d5865f9fd61ad31cbcb883868))
+- LPD-106264 Outline the Clay range thumb so it stays visible in dark mode ([411969e](https://github.com/liferay/liferay-portal/commit/411969e570fc2faf304085b4e70a9d7066d191ca))
+- LPD-107549 @clayui/css Size alert indicator icons like Atlas ([c948da9](https://github.com/liferay/liferay-portal/commit/c948da98cb187a90673a0b8be68673ff80a53887))
+- LPD-106659 @clayui/css remove duplicate ruleset c-empty-state-sm ([4cd885b](https://github.com/liferay/liferay-portal/commit/4cd885b2e70c2d74f1ae3f78199097aa1a08732b))
+- LPD-108035 @clayui/css Alerts and Modals remove remaining Sass math ([4cafe49](https://github.com/liferay/liferay-portal/commit/4cafe491e771d8b9da9dc5c539652f0205a0d1e4))
+- LPD-108199 Remove unused sassdoc dependency from clay-css package ([1ff177d](https://github.com/liferay/liferay-portal/commit/1ff177d5de9994604bd3c1a866eee5278b6d476e))
+- LPD-108199 SF ([bbcf752](https://github.com/liferay/liferay-portal/commit/bbcf7521cc88e30db20bc88cb74c663e575afca0))
+- LPD-108199 Upgrade jsdom for clay-css ([f3f5a1d](https://github.com/liferay/liferay-portal/commit/f3f5a1ddcc16cc4441e1bb81f95ba4577be6f72a))
+- LPD-108349 Keep the enlarged focus ring frame under reduced motion ([6440354](https://github.com/liferay/liferay-portal/commit/644035475925923788c3da0d4a03b990911516d8))
+- LPD-105063 @clayui/css Add empty_states.svg spritemap and make it availble to consume ([3aa741a](https://github.com/liferay/liferay-portal/commit/3aa741ac3949316e937dc19538cdfae8cd3760ff))
+- LPD-105063 @clayui/css add reduced motion styles for empty-states.svg and add c-empty-state-icon ([41b37fe](https://github.com/liferay/liferay-portal/commit/41b37fe9f9ffea39bc164cb4f637a59815e26d19))
+- LPD-108598 Apply the dark palettes only when the page asks ([65aa404](https://github.com/liferay/liferay-portal/commit/65aa40495b6ec5192536278065553e40018e7ee1))
+- LPD-109573 Make extra small monospaced admin buttons 24px wide ([3d45ff9](https://github.com/liferay/liferay-portal/commit/3d45ff9229ed3a7ee07a355d839c0ed826b8a86e))
+- LPD-108836 Close a contextual submenu when the pointer leaves ([2cd229e](https://github.com/liferay/liferay-portal/commit/2cd229eeecde48ac33f93c3b201ecc94fed4ff78))
+- LPD-61332 Apply the dark high contrast palette from data-prefers-contrast ([a34953e](https://github.com/liferay/liferay-portal/commit/a34953e9c1f9e96549544a0add532ee6bdb6c42d))
+- LPD-96940 @clayui/css Scope empty state svg to c-empty-state-illustration ([6864d3c](https://github.com/liferay/liferay-portal/commit/6864d3c1952cd9ecdd904170f2fe588e98b5dc79))
+- LPD-108865 Apply a light high contrast palette on light pages ([d72010c](https://github.com/liferay/liferay-portal/commit/d72010c51c8d6f2d6aaceac278b268c52c671ad1))
+- LPD-108865 Remove the unused dark high contrast palette maps ([712189d](https://github.com/liferay/liferay-portal/commit/712189dcfcca7d16b6e8faf5edb04e283b817d97))
+- LPD-109791 @clayui/css c-empty-state-illustration should contain the svg in the layout ([1cf61c1](https://github.com/liferay/liferay-portal/commit/1cf61c17b4dfc3c28c7e8623d15277d7de405b0a))
+- LPD-109791 @clayui/css fix size of empty state svg ([fd71024](https://github.com/liferay/liferay-portal/commit/fd710248683f6dfa61c7137889400501fa67cc70))
+- LPD-108865 Update the high contrast light yellow values ([77257f1](https://github.com/liferay/liferay-portal/commit/77257f1a831ef4f0a063169808595c0e3beb3a38))
+- LPD-108570 @clayui/css add product.svg ([4958643](https://github.com/liferay/liferay-portal/commit/4958643186c7e71378f3943cd3ed44c3615c4f2e))
+- LPD-108570 SF ([bfc980b](https://github.com/liferay/liferay-portal/commit/bfc980b441204e4c65760d8cbc4013947ac53ef7))
+- LPD-90825 Apply the high contrast palette when forced colors are active ([220d4eb](https://github.com/liferay/liferay-portal/commit/220d4eb57fbe04a2906387a121d6fae06e57a297))
+- LPD-109681 Stack toasts in fixed toast columns by count ([8915c7a](https://github.com/liferay/liferay-portal/commit/8915c7adefd9832365130799265a30109d9f0fe7))
+- LPD-109681 Center inline toasts in the stacked toast pile ([e807336](https://github.com/liferay/liferay-portal/commit/e807336b0692a181f0da170a38f2aee29fc8a82f))
+- LPD-112203 Pass clicks through the empty part of the toast container ([4a8d43f](https://github.com/liferay/liferay-portal/commit/4a8d43fa6141e46cd2bd02a1082ce978dc5da4b9))
+- LPD-110662 @clayui/css Convert c-slideout-transition-* and c-slideout-sidebar-width to use CSS variable ([838b47a](https://github.com/liferay/liferay-portal/commit/838b47a33ea9d5771278c17d9c02484a81d5a212))
+
+## @clayui/data-provider
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-108195 Use the canonical Jest matcher names ([4192f7a](https://github.com/liferay/liferay-portal/commit/4192f7afeb1bc13784e974144dc4775fff04cc87))
+
+## @clayui/date-picker
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-100943 Align 'date-fns' versions ([c4e02a2](https://github.com/liferay/liferay-portal/commit/c4e02a26746bf77592bd56f6e5d760cfa5a60e81))
+
+## @clayui/drop-down
+
+### Commits
+
+- LPD-100943 Align 'react-transition-group' versions ([f154bb6](https://github.com/liferay/liferay-portal/commit/f154bb645cb315667f4369660b3598e47cd7d4a6))
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-108195 Use the canonical Jest matcher names ([4192f7a](https://github.com/liferay/liferay-portal/commit/4192f7afeb1bc13784e974144dc4775fff04cc87))
+- LPD-110929 Add a headerContent slot to ClayDropDownWithItems ([9a49841](https://github.com/liferay/liferay-portal/commit/9a498414db284eaa93e2ed883988d6e1140f5702))
+
+## @clayui/empty-state
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-105063 @clayui/empty-state allow rendering element in place of img tag ([127e646](https://github.com/liferay/liferay-portal/commit/127e646b8afa5e652e4b5b37eb4e595e4b860a0f))
+- LPD-105063 @clayui/empty-state storybook add example using empty-states.svg and update tests ([4e62649](https://github.com/liferay/liferay-portal/commit/4e62649ab7ea4b3799fe9dbfc91d7cce7a0afcd5))
+- LPD-105063 Render c-empty-state-illustration only when image is set ([a17b433](https://github.com/liferay/liferay-portal/commit/a17b4338890ebceb62b3290001d94094080ae114))
+
+## @clayui/form
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-102793 @clayui/form add suggestion to InputGroupAI ([159fb4d](https://github.com/liferay/liferay-portal/commit/159fb4d2753e26e99f31fbd47d6a6faec3e29991))
+- LPD-102793 @clayui/form update InputGroupAI to use suggestion ([04bfd8b](https://github.com/liferay/liferay-portal/commit/04bfd8bef6762c0f68f2710ac4609416ec8a9fe1))
+- LPD-102793 @clayui/form update InputGroupAI test ([b7e4c27](https://github.com/liferay/liferay-portal/commit/b7e4c2772d2a5343eada64232e6d067c937c66d7))
+
+## @clayui/icon
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-102713 clayui.com add aliases for flip-horizontal and flip-vertical icons ([f6e0621](https://github.com/liferay/liferay-portal/commit/f6e0621e1955016dba590a51f3b68ed367cda6fc))
+- LPD-106598 clayui.com add aliases for spacing-all, spacing-bottom, spacing-horizontal, spacing-left, spacing-right, spacing-top and spacing-vertical icons ([4a5ef13](https://github.com/liferay/liferay-portal/commit/4a5ef133aae9131466a4e2edaffa8cf6f61dd671))
+- LPD-105063 @clayui/icon add option to omit lexicon-icon-* classes ([f4509a2](https://github.com/liferay/liferay-portal/commit/f4509a237dd9e62d8e0c03ba89bd855699e49610))
+- LPD-105063 @clayui/icon storybook add example without lexicon-icon-* class and update tests ([c54d0e8](https://github.com/liferay/liferay-portal/commit/c54d0e88a327e88d2f3c85e185c0da292287db59))
+- LPD-108570 clayui.com add aliases for product icon ([211b163](https://github.com/liferay/liferay-portal/commit/211b163c4ccb2d9a0d7bc2c7bc9aeee3c96a2dfd))
+
+## @clayui/label
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/layout
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+
+## @clayui/link
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/list
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+
+## @clayui/loading-indicator
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/localized-input
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-108195 Use the canonical Jest matcher names ([4192f7a](https://github.com/liferay/liferay-portal/commit/4192f7afeb1bc13784e974144dc4775fff04cc87))
+
+## @clayui/management-toolbar
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/modal
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-107024 @clayui/modal CardStyleModal update to use new modal-banner-img-* class ([8d431e5](https://github.com/liferay/liferay-portal/commit/8d431e5325a48ef079aedc12497c515b804622de))
+- LPD-107488 Stack sibling modals above the modal below ([340e57b](https://github.com/liferay/liferay-portal/commit/340e57bcee446a389a734b0394b9cfbe1b03671c))
+- LPD-107488 Keep modal-open on body until the last modal closes ([37e9b42](https://github.com/liferay/liferay-portal/commit/37e9b42962a90e7b1b6ba4081d92bcc802915dd9))
+- LPD-107488 Add a Storybook story for stacked modals ([f17a006](https://github.com/liferay/liferay-portal/commit/f17a0067b32c3a332d4949cea55c31df5187e5c9))
+- LPD-107488 Add tests for stacked modals ([a0efb90](https://github.com/liferay/liferay-portal/commit/a0efb90517d1b3b3cf41da52567e7ed85af54045))
+- LPD-107488 Use jest-dom matchers in modal interaction tests ([ef8b0a4](https://github.com/liferay/liferay-portal/commit/ef8b0a42926df848ad26fa083947abc5c79bd394))
+
+## @clayui/multi-select
+
+### Commits
+
+- LPD-100943 Align 'fuzzy' versions ([38131f3](https://github.com/liferay/liferay-portal/commit/38131f3273717a498d1e3c877bc70d9c986521d2))
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/multi-step-nav
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-103692 Apply the className prop passed to MultiStepNav.Item ([cb29c3b](https://github.com/liferay/liferay-portal/commit/cb29c3b11996a8e5a7c03008990830bbd6238b6f))
+
+## @clayui/nav
+
+### Commits
+
+- LPD-100943 Align 'react-transition-group' versions ([f154bb6](https://github.com/liferay/liferay-portal/commit/f154bb645cb315667f4369660b3598e47cd7d4a6))
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+
+## @clayui/navigation-bar
+
+### Commits
+
+- LPD-100943 Align 'react-transition-group' versions ([f154bb6](https://github.com/liferay/liferay-portal/commit/f154bb645cb315667f4369660b3598e47cd7d4a6))
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-108195 Use the canonical Jest matcher names ([4192f7a](https://github.com/liferay/liferay-portal/commit/4192f7afeb1bc13784e974144dc4775fff04cc87))
+
+## @clayui/pagination
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-105970 Let consumers localize the pagination aria labels ([5e4a126](https://github.com/liferay/liferay-portal/commit/5e4a1260b48a94a84231d492a0aa3d61a3ac3f0e))
+- LPD-105970 Update tests, docs, and stories for the pagination aria labels ([11eba3b](https://github.com/liferay/liferay-portal/commit/11eba3bdb2e832f8434fce786cf23ceac4087bf0))
+- LPD-105970 Update tests for the pagination aria labels ([345c41e](https://github.com/liferay/liferay-portal/commit/345c41e71390d4bcb58b0e657c4d0a57c31e69e5))
+
+## @clayui/pagination-bar
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-105970 Let consumers localize the pagination aria labels ([5e4a126](https://github.com/liferay/liferay-portal/commit/5e4a1260b48a94a84231d492a0aa3d61a3ac3f0e))
+- LPD-105970 Update tests, docs, and stories for the pagination aria labels ([11eba3b](https://github.com/liferay/liferay-portal/commit/11eba3bdb2e832f8434fce786cf23ceac4087bf0))
+- LPD-105970 Update tests for the pagination aria labels ([345c41e](https://github.com/liferay/liferay-portal/commit/345c41e71390d4bcb58b0e657c4d0a57c31e69e5))
+
+## @clayui/panel
+
+### Commits
+
+- LPD-100943 Align 'react-transition-group' versions ([f154bb6](https://github.com/liferay/liferay-portal/commit/f154bb645cb315667f4369660b3598e47cd7d4a6))
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/popover
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/progress-bar
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+
+## @clayui/provider
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-66970 Add persistentAlerts to the Clay Provider ([76f7354](https://github.com/liferay/liferay-portal/commit/76f73543d1c640af596f862bbeb54dede3509308))
+- LPD-66970 Document persistentAlerts in the Provider and Alert docs ([8a152da](https://github.com/liferay/liferay-portal/commit/8a152daa27a019b96771100b41c92554fa3a6f79))
+
+## @clayui/shared
+
+### Commits
+
+- LPD-100943 Align 'dom-align' versions ([f7b25c3](https://github.com/liferay/liferay-portal/commit/f7b25c311e46f41b489745ca04c7469c865244cf))
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-103935 Measure the alignment source where the last pass placed it ([6417492](https://github.com/liferay/liferay-portal/commit/64174929503ea86a9d3bda5aaa344c45d8ab278e))
+- LPD-106216 Keep the dropdown menu anchored to its trigger when it fits neither below nor above ([21de791](https://github.com/liferay/liferay-portal/commit/21de791529bd7af6fa605ca6a64805116ccb66c4))
+- LPD-106216 Keep the menu scroll position across alignment passes ([6281385](https://github.com/liferay/liferay-portal/commit/62813857a4baf9d6e98524b2da4d299ce26384a0))
+- LPD-106216 Restore the caller max height when the menu stops being constrained ([d450ddc](https://github.com/liferay/liferay-portal/commit/d450ddcc73933ae52d93bd721d6a1eb27237e570))
+- LPD-106216 Move the menu height constraint to its own file and split it into named steps ([3f65826](https://github.com/liferay/liferay-portal/commit/3f658268759ad39b30dda142d15a2c7a130b67bd))
+- LPD-106216 Pass named arguments to constrainHeightToViewport ([536b23c](https://github.com/liferay/liferay-portal/commit/536b23c48ab0035483584d0d9d17e8781f78b94b))
+- LPD-106216 Keep the scroll position handling inside constrainHeightToViewport ([f5d18f6](https://github.com/liferay/liferay-portal/commit/f5d18f6ddaa7e886a5cc3f9ed6cdab29364ea2b6))
+- LPD-106216 Add unit tests for constrainHeightToViewport ([838f07b](https://github.com/liferay/liferay-portal/commit/838f07be5cd458e986d6fef80d7fbcbf12b6b80b))
+
+## @clayui/slider
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/sticker
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/table
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+
+## @clayui/tabs
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Declare prettier in the clay packages that run it ([b049f48](https://github.com/liferay/liferay-portal/commit/b049f48735ca2a855fb43ef36c8ccf5668dd9e51))
+- LPD-104123 Apply the className prop passed to Tabs.Item ([e6b0db3](https://github.com/liferay/liferay-portal/commit/e6b0db39963c6ec2029b351cc00776cd65272715))
+- LPD-104123 Depend on @clayui/icon in the tabs package ([ec8f470](https://github.com/liferay/liferay-portal/commit/ec8f4708a7729c7c7d9316200b24e6fbc62c606e))
+- LPD-104123 Add Tabs.ItemWithIcon ([8ea4e5d](https://github.com/liferay/liferay-portal/commit/8ea4e5d3d3ce2279bdfff399ba3bc4801a3bc338))
+- LPD-104123 Document Tabs.ItemWithIcon ([901be9a](https://github.com/liferay/liferay-portal/commit/901be9afec3a5ec67c008ffe9e9733487c3abbc0))
+- LPD-104123 Test Tabs.ItemWithIcon ([10027d7](https://github.com/liferay/liferay-portal/commit/10027d70951b8513fc6fe673dc592238ffb261c3))
+- LPD-108195 Use the canonical Jest matcher names ([4192f7a](https://github.com/liferay/liferay-portal/commit/4192f7afeb1bc13784e974144dc4775fff04cc87))
+
+## @clayui/time-picker
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LRCI-8267 Remove unnecessary endline character ([5d4a0ef](https://github.com/liferay/liferay-portal/commit/5d4a0ef437f97578d64167ec304fcdfbd95a862b))
+- LPD-108222 Stop rendering unknown DOM properties ([d9451ba](https://github.com/liferay/liferay-portal/commit/d9451ba19cca5c06f80cca758b3d24e3a334032e))
+
+## @clayui/toolbar
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Declare prettier in the clay packages that run it ([b049f48](https://github.com/liferay/liferay-portal/commit/b049f48735ca2a855fb43ef36c8ccf5668dd9e51))
+
+## @clayui/tooltip
+
+### Commits
+
+- LPD-100943 Align 'dom-align' versions ([f7b25c3](https://github.com/liferay/liferay-portal/commit/f7b25c311e46f41b489745ca04c7469c865244cf))
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Replace caret dependency ranges with explicit versions ([5d9331b](https://github.com/liferay/liferay-portal/commit/5d9331bb04a0d66b482ee4221590e1cb2b8b24d4))
+- LPD-87545 Declare prettier in the clay packages that run it ([b049f48](https://github.com/liferay/liferay-portal/commit/b049f48735ca2a855fb43ef36c8ccf5668dd9e51))
+
+## @clayui/upper-toolbar
+
+### Commits
+
+- LPD-100943 Align 'cross-env' versions ([982f5e3](https://github.com/liferay/liferay-portal/commit/982f5e318a93608aa202469a3e9ecf58a0f10d38))
+- LPD-87545 Declare prettier in the clay packages that run it ([b049f48](https://github.com/liferay/liferay-portal/commit/b049f48735ca2a855fb43ef36c8ccf5668dd9e51))
+
 # [3.166.0] (2026-08-10)
 
 ## @clayui/autocomplete

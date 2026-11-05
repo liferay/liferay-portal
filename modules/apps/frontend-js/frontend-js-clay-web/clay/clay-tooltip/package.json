@@ -3,7 +3,7 @@
 		"extends browserslist-config-clay"
 	],
 	"dependencies": {
-		"@clayui/shared": "^3.166.0",
+		"@clayui/shared": "^3.167.0",
 		"classnames": "2.3.1",
 		"dom-align": "1.12.2",
 		"warning": "4.0.3"
@@ -24,7 +24,7 @@
 	"main": "src/index.tsx",
 	"name": "@clayui/tooltip",
 	"peerDependencies": {
-		"@clayui/css": "^3.166.0",
+		"@clayui/css": "^3.167.0",
 		"react": "^16.0.0 || ^17.0.0 || ^18.0.0",
 		"react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
 	},
@@ -37,5 +37,5 @@
 		"format": "prettier --write \"**/*.{js,ts,tsx,md,mdx,json,scss}\"",
 		"test": "jest --config ../../jest.config.js"
 	},
-	"version": "3.166.0"
+	"version": "3.167.0"
 }
