@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
  */
 public class FaroProjectOwnerUtil {
 
-	public static String getOwner(FaroProject faroProject) {
+	public static String fetchOwner(FaroProject faroProject) {
 		FaroUser faroUser = FaroUserLocalServiceUtil.fetchOwnerFaroUser(
 			faroProject.getGroupId());
 

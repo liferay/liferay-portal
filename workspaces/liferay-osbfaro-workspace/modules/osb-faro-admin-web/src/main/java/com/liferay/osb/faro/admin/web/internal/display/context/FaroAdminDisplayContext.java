@@ -51,6 +51,10 @@ public class FaroAdminDisplayContext {
 		_renderResponse = renderResponse;
 	}
 
+	public String fetchOwner(FaroProject faroProject) {
+		return FaroProjectOwnerUtil.fetchOwner(faroProject);
+	}
+
 	public List<DropdownItem> getActionDropdownItems(FaroProject faroProject) {
 		if (faroProject.isOffline()) {
 			return Collections.emptyList();
@@ -83,10 +87,6 @@ public class FaroAdminDisplayContext {
 						_httpServletRequest, "disconnect-data-sources"));
 			}
 		).build();
-	}
-
-	public String getOwner(FaroProject faroProject) {
-		return FaroProjectOwnerUtil.getOwner(faroProject);
 	}
 
 	public PortletURL getPortletURL() {

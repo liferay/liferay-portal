@@ -45,7 +45,7 @@ FaroAdminManagementToolbarDisplayContext faroAdminManagementToolbarDisplayContex
 
 				<liferay-ui:search-container-column-text
 					name="owner"
-					value="<%= faroAdminDisplayContext.getOwner(faroProject) %>"
+					value="<%= faroAdminDisplayContext.fetchOwner(faroProject) %>"
 				/>
 
 				<liferay-ui:search-container-column-date

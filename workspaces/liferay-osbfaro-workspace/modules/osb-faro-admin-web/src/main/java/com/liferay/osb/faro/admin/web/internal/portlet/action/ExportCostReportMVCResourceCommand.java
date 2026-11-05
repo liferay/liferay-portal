@@ -80,7 +80,7 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 			sb.append(CSVUtil.encode(faroProject.getProjectId()));
 			sb.append(StringPool.COMMA);
 			sb.append(
-				CSVUtil.encode(FaroProjectOwnerUtil.getOwner(faroProject)));
+				CSVUtil.encode(FaroProjectOwnerUtil.fetchOwner(faroProject)));
 			sb.append(StringPool.COMMA);
 			sb.append(CSVUtil.encode(faroProject.getShortSubscriptionName()));
 			sb.append(StringPool.COMMA);
