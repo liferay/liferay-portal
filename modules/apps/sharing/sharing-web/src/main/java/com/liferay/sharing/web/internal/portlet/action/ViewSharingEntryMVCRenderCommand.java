@@ -39,7 +39,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"jakarta.portlet.name=" + SharingPortletKeys.SHARED_ASSETS,
-		"mvc.command.name=/shared_assets/view_sharing_entry",
 		"mvc.command.name=/sharing/view_sharing_entry"
 	},
 	service = MVCRenderCommand.class
