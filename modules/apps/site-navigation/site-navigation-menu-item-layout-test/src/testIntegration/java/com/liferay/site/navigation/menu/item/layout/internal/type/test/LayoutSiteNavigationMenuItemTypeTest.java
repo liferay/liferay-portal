@@ -200,6 +200,11 @@ public class LayoutSiteNavigationMenuItemTypeTest {
 		Assert.assertEquals(
 			siteNavigationMenuItems.toString(), 1,
 			siteNavigationMenuItems.size());
+
+		SiteNavigationMenuItem siteNavigationMenuItem =
+			siteNavigationMenuItems.get(0);
+
+		Assert.assertEquals("welcome", siteNavigationMenuItem.getName());
 	}
 
 	@Test

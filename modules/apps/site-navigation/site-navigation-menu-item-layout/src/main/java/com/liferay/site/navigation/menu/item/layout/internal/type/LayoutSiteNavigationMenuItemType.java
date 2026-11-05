@@ -358,6 +358,8 @@ public class LayoutSiteNavigationMenuItemType
 			"externalReferenceCode", layout.getExternalReferenceCode()
 		).put(
 			"privateLayout", String.valueOf(layout.isPrivateLayout())
+		).put(
+			"title", layout.getName(LocaleUtil.getMostRelevantLocale())
 		).buildString();
 	}
 
