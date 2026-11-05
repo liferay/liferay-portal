@@ -670,7 +670,8 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	private List<File> _getJSUnitFiles(File portalDir) {
 		final List<File> jsUnitFiles = new ArrayList<>();
 
-		for (String baseDirName : _JS_UNIT_BASE_DIR_NAMES) {
+		for (String baseDirName :
+				new String[] {"modules", "workspaces"}) {
 			File baseDir = new File(portalDir, baseDirName);
 
 			if (!baseDir.exists()) {
@@ -717,8 +718,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 							String content = JenkinsResultsParserUtil.read(
 								file);
 
-							if (content.contains(
-									_FILE_CONTENT_SNIPPET_JS_UNIT)) {
+							if (content.contains("describe(")) {
 
 								jsUnitFiles.add(file);
 							}
@@ -803,12 +803,6 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 	private static final String[] _BINARIES_CACHE_EXCLUDE_REGEXES = {
 		"\\.gradle/", "\\.yarn/", "modules/\\.tsc/", "node_modules_cache"
-	};
-
-	private static final String _FILE_CONTENT_SNIPPET_JS_UNIT = "describe(";
-
-	private static final String[] _JS_UNIT_BASE_DIR_NAMES = {
-		"modules", "workspaces"
 	};
 
 	private static final Pattern _esBuildFileNamePattern = Pattern.compile(

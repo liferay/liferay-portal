@@ -83,7 +83,7 @@ public class PortalGitWorkingDirectoryTest
 
 		JenkinsResultsParserUtil.write(
 			new File(portalDir, "modules/apps/foo/src/Foo.js"),
-			"export default {};");
+			RandomTestUtil.randomString());
 
 		File portalPrivateDir = temporaryFolder.newFolder("portal-private");
 
