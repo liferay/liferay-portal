@@ -302,44 +302,21 @@ public class CommerceOrderAttachmentModelResourcePermissionTest {
 			CommerceOrderAttachment.class.getName(),
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(_commerceOrder.getCompanyId()), _role.getRoleId(),
-			new String[] {ActionKeys.VIEW});
-
-		Assert.assertFalse(
-			_commerceOrderAttachmentModelResourcePermission.contains(
-				permissionChecker,
-				commerceOrderAttachment.getCommerceOrderAttachmentId(),
-				ActionKeys.DELETE));
-		Assert.assertFalse(
-			_commerceOrderAttachmentModelResourcePermission.contains(
-				permissionChecker,
-				commerceOrderAttachment.getCommerceOrderAttachmentId(),
-				ActionKeys.UPDATE));
-		Assert.assertTrue(
-			_commerceOrderAttachmentModelResourcePermission.contains(
-				permissionChecker,
-				commerceOrderAttachment.getCommerceOrderAttachmentId(),
-				ActionKeys.VIEW));
-
-		_resourcePermissionLocalService.setResourcePermissions(
-			_commerceOrder.getCompanyId(),
-			CommerceOrderAttachment.class.getName(),
-			ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(_commerceOrder.getCompanyId()), _role.getRoleId(),
 			new String[] {
 				ActionKeys.DELETE, ActionKeys.UPDATE, ActionKeys.VIEW
 			});
 
-		Assert.assertTrue(
+		Assert.assertFalse(
 			_commerceOrderAttachmentModelResourcePermission.contains(
 				permissionChecker,
 				commerceOrderAttachment.getCommerceOrderAttachmentId(),
 				ActionKeys.DELETE));
-		Assert.assertTrue(
+		Assert.assertFalse(
 			_commerceOrderAttachmentModelResourcePermission.contains(
 				permissionChecker,
 				commerceOrderAttachment.getCommerceOrderAttachmentId(),
 				ActionKeys.UPDATE));
-		Assert.assertTrue(
+		Assert.assertFalse(
 			_commerceOrderAttachmentModelResourcePermission.contains(
 				permissionChecker,
 				commerceOrderAttachment.getCommerceOrderAttachmentId(),

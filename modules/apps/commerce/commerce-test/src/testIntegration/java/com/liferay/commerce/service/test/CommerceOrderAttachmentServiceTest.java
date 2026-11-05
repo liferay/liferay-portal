@@ -123,6 +123,30 @@ public class CommerceOrderAttachmentServiceTest {
 			CommerceOrderConstants.RESOURCE_NAME,
 			String.valueOf(_accountEntry.getAccountEntryGroupId()),
 			ResourceConstants.SCOPE_GROUP,
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_commerceOrderAttachmentService.addCommerceOrderAttachment(
+				_commerceOrder.getCommerceOrderId(),
+				RandomTestUtil.nextDouble(), false,
+				RandomTestUtil.randomString(), _TYPE_KEY,
+				RandomTestUtil.randomString(),
+				new ByteArrayInputStream("Liferay".getBytes()));
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(
+				CommerceOrderActionKeys.ADD_COMMERCE_ORDER_ATTACHMENT,
+				exception.getMessage(), _user.getUserId());
+		}
+
+		_setResourcePermissions(
+			CommerceOrderConstants.RESOURCE_NAME,
+			String.valueOf(_accountEntry.getAccountEntryGroupId()),
+			ResourceConstants.SCOPE_GROUP,
 			CommerceOrderActionKeys.ADD_COMMERCE_ORDER_ATTACHMENT,
 			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
 
@@ -217,6 +241,10 @@ public class CommerceOrderAttachmentServiceTest {
 			_addCommerceOrderAttachment(true);
 
 		_setResourcePermissions(
+			CommerceOrderAttachment.class.getName(),
+			String.valueOf(_commerceOrder.getCompanyId()),
+			ResourceConstants.SCOPE_COMPANY, ActionKeys.VIEW);
+		_setResourcePermissions(
 			CommerceOrderConstants.RESOURCE_NAME,
 			String.valueOf(_accountEntry.getAccountEntryGroupId()),
 			ResourceConstants.SCOPE_GROUP,
@@ -241,11 +269,6 @@ public class CommerceOrderAttachmentServiceTest {
 			ResourceConstants.SCOPE_GROUP,
 			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS,
 			CommerceOrderActionKeys.VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS);
-		_setResourcePermissions(
-			CommerceOrderAttachment.class.getName(),
-			String.valueOf(
-				commerceOrderAttachment.getCommerceOrderAttachmentId()),
-			ResourceConstants.SCOPE_INDIVIDUAL, ActionKeys.VIEW);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -300,6 +323,28 @@ public class CommerceOrderAttachmentServiceTest {
 		catch (Exception exception) {
 			_assertMessage(
 				ActionKeys.VIEW, exception.getMessage(), _user.getUserId());
+		}
+
+		_setResourcePermissions(
+			CommerceOrderConstants.RESOURCE_NAME,
+			String.valueOf(_accountEntry.getAccountEntryGroupId()),
+			ResourceConstants.SCOPE_GROUP,
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_commerceOrderAttachmentService.getCommerceOrderAttachments(
+				_commerceOrder.getCommerceOrderId(), true, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(
+				CommerceOrderActionKeys.
+					VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS,
+				exception.getMessage(), _user.getUserId());
 		}
 
 		_setResourcePermissions(
