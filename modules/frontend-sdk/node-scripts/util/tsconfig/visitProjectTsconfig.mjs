@@ -25,7 +25,7 @@ const GENERATED = '@generated';
 
 export default async function visitProjectTsconfig(
 	visitorFunction,
-	projectsEntryPoints,
+	projects,
 	projectDependencies,
 	projectDescription,
 	projectDir = '.',
@@ -37,7 +37,7 @@ export default async function visitProjectTsconfig(
 
 	const configPath = path.join(srcPath, 'tsconfig.json');
 
-	const currentProject = projectsEntryPoints[projectDescription.name];
+	const currentProject = projects[projectDescription.name];
 
 	const typeScriptFound = testConfig
 		? await hasTypeScriptFiles(srcPath)
@@ -82,8 +82,8 @@ export default async function visitProjectTsconfig(
 	const paths = {};
 	const references = [];
 
-	if (currentProject.path.submodules) {
-		Object.entries(currentProject.path.submodules).forEach(
+	if (currentProject.entryPoints.submodules) {
+		Object.entries(currentProject.entryPoints.submodules).forEach(
 			([submoduleName, subModulePath]) => {
 				paths[`${projectDescription.name}/${submoduleName}`] = [
 					'./' +
@@ -97,25 +97,25 @@ export default async function visitProjectTsconfig(
 	}
 
 	for (const dependency of Object.keys(projectDependencies)) {
-		const projectEntryPoint = projectsEntryPoints[dependency];
+		const dependencyProject = projects[dependency];
 
-		if (!projectEntryPoint) {
+		if (!dependencyProject) {
 			continue;
 		}
 
 		const projectMainEntryPointPath = path.join(
 			MODULES_DIR,
-			...`${projectEntryPoint.dir}/${projectEntryPoint.path.main}`.split(
+			...`${dependencyProject.dir}/${dependencyProject.entryPoints.main}`.split(
 				'/'
 			)
 		);
 
 		const projectSubmodulesEntryPointsPaths = Object.entries(
-			projectEntryPoint.path.submodules ?? {}
+			dependencyProject.entryPoints.submodules ?? {}
 		).reduce((map, [entryPointName, entryPointPath]) => {
 			map[entryPointName] = path.join(
 				MODULES_DIR,
-				...`${projectEntryPoint.dir}/${entryPointPath}`.split('/')
+				...`${dependencyProject.dir}/${entryPointPath}`.split('/')
 			);
 
 			return map;
@@ -133,13 +133,13 @@ export default async function visitProjectTsconfig(
 			}
 		);
 
-		if (!projectEntryPoint.typeScriptProject) {
+		if (!dependencyProject.typeScriptProject) {
 			continue;
 		}
 
 		const projectPath = path.posix.relative(
 			srcPath,
-			path.join(MODULES_DIR, projectEntryPoint.dir)
+			path.join(MODULES_DIR, dependencyProject.dir)
 		);
 
 		references.push({path: `${projectPath}/${SRC_TSCONFIG_PATH}`});
