@@ -21,6 +21,7 @@ import {SharedWithMePage} from '../pages/SharedWithMePage';
 import {SpaceSummaryPage} from '../pages/SpaceSummaryPage';
 import {StructuresPage} from '../pages/StructuresPage';
 import {TagsPage} from '../pages/TagsPage';
+import {ViewTasksPage} from '../pages/ViewTasksPage';
 import {VocabulariesPage} from '../pages/VocabulariesPage';
 
 const cmsPagesTest = test.extend<{
@@ -40,6 +41,7 @@ const cmsPagesTest = test.extend<{
 	spaceSummaryPage: SpaceSummaryPage;
 	structuresPage: StructuresPage;
 	tagsPage: TagsPage;
+	viewTasksPage: ViewTasksPage;
 	vocabulariesPage: VocabulariesPage;
 }>({
 	assetsPage: async ({page}, use) => {
@@ -89,6 +91,9 @@ const cmsPagesTest = test.extend<{
 	},
 	tagsPage: async ({page}, use) => {
 		await use(new TagsPage(page));
+	},
+	viewTasksPage: async ({page}, use) => {
+		await use(new ViewTasksPage(page));
 	},
 	vocabulariesPage: async ({page}, use) => {
 		await use(new VocabulariesPage(page));

@@ -37,6 +37,7 @@ export const PORTLET_URLS = {
 	cmsStructureBuilder: 'web/cms/structure-builder',
 	cmsStructures: 'web/cms/structures',
 	cmsTags: 'web/cms/categorization/view-tags',
+	cmsTasks: 'web/cms/tasks',
 	cmsViewFolder: 'web/cms/e/view-folder',
 	cmsVocabularies: 'web/cms/categorization/view-vocabularies',
 	collections:
