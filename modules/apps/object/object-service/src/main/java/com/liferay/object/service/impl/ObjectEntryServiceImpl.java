@@ -115,7 +115,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			_checkAddObjectEntryPortletResourcePermission(
 				groupId, objectDefinitionId, objectEntryFolderId, values);
 
-			_checkAttachmentPermissions(objectDefinitionId, null, values);
+			_checkAttachmentPermissions(null, objectDefinitionId, values);
 		}
 
 		_validateSubmissionLimit(objectDefinitionId, getUser());
@@ -140,7 +140,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			_checkAddObjectEntryPortletResourcePermission(
 				groupId, objectDefinitionId, objectEntryFolderId, values);
 
-			_checkAttachmentPermissions(objectDefinitionId, null, values);
+			_checkAttachmentPermissions(null, objectDefinitionId, values);
 		}
 		else {
 			checkModelResourcePermission(
@@ -148,7 +148,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 				ActionKeys.UPDATE);
 
 			_checkAttachmentPermissions(
-				objectDefinitionId, objectEntry.getValues(), values);
+				objectEntry.getValues(), objectDefinitionId, values);
 		}
 
 		return objectEntryLocalService.addOrUpdateObjectEntry(
@@ -196,7 +196,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			ActionKeys.UPDATE);
 
 		_checkAttachmentPermissions(
-			objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
+			objectEntry.getValues(), objectEntry.getObjectDefinitionId(),
 			values);
 
 		if (objectEntryFolderId !=
@@ -594,7 +594,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			ActionKeys.UPDATE);
 
 		_checkAttachmentPermissions(
-			objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
+			objectEntry.getValues(), objectEntry.getObjectDefinitionId(),
 			values);
 
 		if (objectEntryFolderId !=
@@ -646,7 +646,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 				objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
 
 			_checkAttachmentPermissions(
-				objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
+				objectEntry.getValues(), objectEntry.getObjectDefinitionId(),
 				values);
 		}
 
@@ -713,7 +713,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 				objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
 
 			_checkAttachmentPermissions(
-				objectEntry.getObjectDefinitionId(), objectEntry.getValues(),
+				objectEntry.getValues(), objectEntry.getObjectDefinitionId(),
 				values);
 		}
 
@@ -847,7 +847,7 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 	}
 
 	private void _checkAttachmentPermissions(
-			long objectDefinitionId, Map<String, Serializable> existingValues,
+			Map<String, Serializable> existingValues, long objectDefinitionId,
 			Map<String, Serializable> values)
 		throws PortalException {
 
