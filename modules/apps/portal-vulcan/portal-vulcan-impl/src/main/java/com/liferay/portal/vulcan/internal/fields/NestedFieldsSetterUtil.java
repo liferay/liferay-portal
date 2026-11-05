@@ -85,9 +85,13 @@ public class NestedFieldsSetterUtil {
 			return;
 		}
 
-		_setFieldValues(
-			item, nestedFieldsContext.getNestedFields(), nestedFieldsContext,
-			nestedFieldsSetterCustomizer, Collections.emptyMap());
+		List<Object> items = _getItems(item);
+
+		for (String nestedField : nestedFieldsContext.getNestedFields()) {
+			_setFieldValues(
+				items, nestedField, nestedFieldsContext,
+				nestedFieldsSetterCustomizer, Collections.emptyMap());
+		}
 	}
 
 	public interface NestedFieldsSetterCustomizer {
@@ -226,61 +230,57 @@ public class NestedFieldsSetterUtil {
 	}
 
 	private static void _setFieldValues(
-			Object entity, List<String> nestedFields,
+			List<Object> items, String nestedField,
 			NestedFieldsContext nestedFieldsContext,
 			NestedFieldsSetterCustomizer nestedFieldsSetterCustomizer,
 			Map<String, Object> parentPathParameters)
 		throws Exception {
 
-		List<Object> items = _getItems(entity);
+		String childNestedField = null;
 
-		for (String nestedField : nestedFields) {
-			String childNestedField = null;
+		int index = nestedField.indexOf(".");
 
-			int index = nestedField.indexOf(".");
+		if (index != -1) {
+			childNestedField = nestedField.substring(index + 1);
 
-			if (index != -1) {
-				childNestedField = nestedField.substring(index + 1);
+			nestedField = nestedField.substring(0, index);
+		}
 
-				nestedField = nestedField.substring(0, index);
+		for (Object item : items) {
+			Class<?> itemClass = item.getClass();
+
+			Field field = _getField(itemClass, nestedField);
+
+			if (field == null) {
+				continue;
 			}
 
-			for (Object item : items) {
-				Class<?> itemClass = item.getClass();
+			field.setAccessible(true);
 
-				Field field = _getField(itemClass, nestedField);
+			NestedFieldGetter nestedFieldGetter = _getNestedFieldGetter(
+				nestedField, itemClass, nestedFieldsContext);
 
-				if (field == null) {
-					continue;
-				}
-
-				field.setAccessible(true);
-
-				NestedFieldGetter nestedFieldGetter = _getNestedFieldGetter(
-					nestedField, itemClass, nestedFieldsContext);
-
-				if (nestedFieldGetter == null) {
-					continue;
-				}
-
-				NestedFieldValue nestedFieldValue = nestedFieldGetter.getValue(
-					nestedField, item, nestedFieldsContext,
-					nestedFieldsSetterCustomizer, parentPathParameters);
-
-				Object value = _adaptToFieldType(
-					field.getType(), nestedFieldValue.getValue());
-
-				field.set(item, value);
-
-				if ((childNestedField == null) || (value == null)) {
-					continue;
-				}
-
-				_setFieldValues(
-					value, Collections.singletonList(childNestedField),
-					nestedFieldsContext, nestedFieldsSetterCustomizer,
-					nestedFieldValue.getPathParameters());
+			if (nestedFieldGetter == null) {
+				continue;
 			}
+
+			NestedFieldValue nestedFieldValue = nestedFieldGetter.getValue(
+				nestedField, item, nestedFieldsContext,
+				nestedFieldsSetterCustomizer, parentPathParameters);
+
+			Object value = _adaptToFieldType(
+				field.getType(), nestedFieldValue.getValue());
+
+			field.set(item, value);
+
+			if ((childNestedField == null) || (value == null)) {
+				continue;
+			}
+
+			_setFieldValues(
+				_getItems(value), childNestedField, nestedFieldsContext,
+				nestedFieldsSetterCustomizer,
+				nestedFieldValue.getPathParameters());
 		}
 	}
 
