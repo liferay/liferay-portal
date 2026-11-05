@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {IInternalRenderer} from '@liferay/frontend-data-set-web';
+import {DateRenderer, IInternalRenderer} from '@liferay/frontend-data-set-web';
 
 import AssetTitleActionLinkRenderer from './cell_renderers/AssetTitleActionLinkRenderer';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
-import DueDateRenderer from './cell_renderers/DueDateRenderer';
 import TaskStatusRenderer from './cell_renderers/TaskStatusRenderer';
 
 export default function TasksFDSPropsTransformer({
@@ -31,7 +30,8 @@ export default function TasksFDSPropsTransformer({
 					type: 'internal',
 				} as IInternalRenderer,
 				{
-					component: DueDateRenderer,
+					component: ({itemData}) =>
+						DateRenderer({value: itemData.embedded?.dateDue}),
 					name: 'dueDateTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
