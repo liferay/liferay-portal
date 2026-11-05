@@ -31,7 +31,8 @@ public class AIHubCellUserTokenWebCacheItem extends BaseWebCacheItem {
 			AIHubCellUserTokenWebCacheItem.class.getName(), StringPool.POUND,
 			oAuth2Application.getCompanyId(), StringPool.POUND,
 			oAuth2Application.getOAuth2ApplicationId(), StringPool.POUND,
-			userId);
+			oAuth2Application.getOAuth2ApplicationScopeAliasesId(),
+			StringPool.POUND, userId);
 
 		String accessToken = (String)WebCachePoolUtil.get(
 			key,
