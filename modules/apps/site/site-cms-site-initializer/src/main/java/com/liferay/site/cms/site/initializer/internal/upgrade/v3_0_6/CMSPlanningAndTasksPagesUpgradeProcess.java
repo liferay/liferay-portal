@@ -129,8 +129,7 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 
 		layout = _layoutLocalService.addLayout(
 			null, serviceContext.getUserId(), group.getGroupId(), false,
-			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
-			Collections.singletonMap(defaultLocale, "Planning"),
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, _getPlanningNameMap(),
 			Collections.emptyMap(), Collections.emptyMap(),
 			Collections.emptyMap(), Collections.emptyMap(),
 			LayoutConstants.TYPE_NODE, StringPool.BLANK, false, false,
@@ -176,6 +175,16 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 		_setMasterLayout(group, layout);
 
 		return layout;
+	}
+
+	private Map<Locale, String> _getPlanningNameMap() {
+		Map<Locale, String> nameMap = new HashMap<>();
+
+		for (Locale locale : LanguageUtil.getAvailableLocales()) {
+			nameMap.put(locale, LanguageUtil.get(locale, "planning"));
+		}
+
+		return nameMap;
 	}
 
 	private Map<Locale, String> _getTasksNameMap() {
