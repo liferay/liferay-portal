@@ -21,7 +21,6 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.model.CommerceOrderNote;
 import com.liferay.commerce.model.CommerceOrderType;
-import com.liferay.commerce.model.CommerceShipment;
 import com.liferay.commerce.notification.model.CommerceNotificationQueueEntry;
 import com.liferay.commerce.notification.service.CommerceNotificationQueueEntryLocalService;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
@@ -437,22 +436,6 @@ public class CommerceOrderEditDisplayContext {
 			getCommercePaymentMethodGroupRel(
 				_commerceOrder.getGroupId(),
 				_commerceOrder.getCommercePaymentMethodKey());
-	}
-
-	public CommerceShipment getCommerceShipment() throws PortalException {
-		if (_commerceShipment != null) {
-			return _commerceShipment;
-		}
-
-		long commerceShipmentId = ParamUtil.getLong(
-			_commerceOrderRequestHelper.getRequest(), "commerceShipmentId");
-
-		if (commerceShipmentId > 0) {
-			_commerceShipment = _commerceShipmentService.getCommerceShipment(
-				commerceShipmentId);
-		}
-
-		return _commerceShipment;
 	}
 
 	public PortletURL getCommerceShipmentsPortletURL() {
@@ -882,7 +865,6 @@ public class CommerceOrderEditDisplayContext {
 	private final CommercePaymentMethodGroupRelLocalService
 		_commercePaymentMethodGroupRelLocalService;
 	private final CommercePriceFormatter _commercePriceFormatter;
-	private CommerceShipment _commerceShipment;
 	private final CommerceShipmentService _commerceShipmentService;
 	private final CommerceTermEntryLocalService _commerceTermEntryLocalService;
 	private final CPMeasurementUnitService _cpMeasurementUnitService;

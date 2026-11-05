@@ -32,18 +32,11 @@ public class CommerceOrderScreenNavigationConstants {
 	public static final String CATEGORY_KEY_COMMERCE_ORDER_SHIPMENTS =
 		"shipments";
 
-	public static final String CATEGORY_KEY_COMMERCE_ORDER_SHIPPING_SUMMARY =
-		"shipping-summary";
-
 	public static final String SCREEN_NAVIGATION_KEY_COMMERCE_ORDER_GENERAL =
 		"commerce.order.general";
 
 	public static final String
 		SCREEN_NAVIGATION_KEY_COMMERCE_ORDER_ITEM_GENERAL =
 			"commerce.order.item.general";
-
-	public static final String
-		SCREEN_NAVIGATION_KEY_COMMERCE_ORDER_SHIPMENT_GENERAL =
-			"commerce.order.shipment.general";
 
 }
