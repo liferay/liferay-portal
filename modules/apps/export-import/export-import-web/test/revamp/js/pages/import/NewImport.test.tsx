@@ -19,6 +19,7 @@ import React from 'react';
 
 import {NewImport} from '../../../../../src/main/resources/META-INF/resources/revamp/js/pages/import/NewImport';
 import {postImportPreview} from '../../../../../src/main/resources/META-INF/resources/revamp/js/services/postImportPreview';
+import {ImportPreview} from '../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportPreview';
 import {SCOPES} from '../../../../../src/main/resources/META-INF/resources/revamp/js/types/scope';
 import formatDate from '../../../../../src/main/resources/META-INF/resources/revamp/js/utils/formatDate';
 import {mockImportPreview} from '../../mocks/mockImportPreview';
@@ -100,6 +101,31 @@ const goToDataSelectionStep = async (
 	return result;
 };
 
+const mockPreviewWith = (overrides: Partial<ImportPreview>) =>
+	(postImportPreview as jest.Mock).mockImplementationOnce(() =>
+		Promise.resolve({
+			data: {...mockImportPreview, ...overrides},
+			error: null,
+		})
+	);
+
+const clearSections = async () => {
+	for (const name of ['Design', 'Site Builder', 'Content & Data']) {
+		await user.click(screen.getByRole('checkbox', {name}));
+	}
+};
+
+const pickGroup = async (label: string, title: string) => {
+	await user.click(screen.getByRole('button', {name: label}));
+
+	const row = await screen.findByText(title);
+
+	await user.click(
+		within(row.closest('tr') as HTMLElement).getByRole('checkbox')
+	);
+	await user.click(screen.getByRole('button', {name: 'select'}));
+};
+
 describe('NewImport', () => {
 	beforeAll(() => {
 		(Liferay.Language.get as jest.Mock).mockImplementation(
@@ -112,6 +138,12 @@ describe('NewImport', () => {
 					'selected-x': 'Selected {0}',
 					'show-all-x': 'Show All {0}',
 				})[key] ?? key
+		);
+	});
+
+	afterAll(() => {
+		(Liferay.Language.get as jest.Mock).mockImplementation(
+			(key: string) => key
 		);
 	});
 
@@ -294,12 +326,7 @@ describe('NewImport', () => {
 	});
 
 	it('shows the file summary and the lar contents on the Data Selection step after uploading a file and clicking Continue', async () => {
-		(postImportPreview as jest.Mock).mockImplementationOnce(() =>
-			Promise.resolve({
-				data: {...mockImportPreview, deletionCount: 0},
-				error: null,
-			})
-		);
+		mockPreviewWith({deletionCount: 0});
 
 		const {container} = await goToDataSelectionStep();
 
@@ -410,31 +437,13 @@ describe('NewImport', () => {
 	});
 
 	it('filters deletions-only sections based on the deletions toggle', async () => {
-		(postImportPreview as jest.Mock).mockImplementationOnce(() =>
-			Promise.resolve({
-				data: {
-					...mockImportPreview,
-					portletDataHandlers: toMockPortletDataHandlers(
-						mockPortletDataHandlerSectionsForFilterTest
-					),
-				},
-				error: null,
-			})
-		);
-
-		renderComponent();
-
-		await user.type(screen.getByLabelText(/^name/i), 'My import');
-
-		await uploadFile('site.lar');
-
-		await waitFor(() => {
-			expect(
-				screen.getByRole('button', {name: /continue/i})
-			).toBeEnabled();
+		mockPreviewWith({
+			portletDataHandlers: toMockPortletDataHandlers(
+				mockPortletDataHandlerSectionsForFilterTest
+			),
 		});
 
-		await user.click(screen.getByRole('button', {name: /continue/i}));
+		await goToDataSelectionStep();
 
 		expect(screen.getByText('Additions Only')).toBeInTheDocument();
 		expect(screen.queryByText('Deletions Only')).not.toBeInTheDocument();
@@ -449,37 +458,22 @@ describe('NewImport', () => {
 	});
 
 	it('keeps the entity types deselected when going back after selecting only sites', async () => {
-		(postImportPreview as jest.Mock).mockImplementationOnce(() =>
-			Promise.resolve({
-				data: {
-					...mockImportPreview,
-					sites: [
-						{
-							descriptiveName: 'Support',
-							existsInInstance: true,
-							externalReferenceCode: 'erc-support',
-							path: 'Global / Support',
-						},
-					],
+		mockPreviewWith({
+			sites: [
+				{
+					descriptiveName: 'Support',
+					existsInInstance: true,
+					externalReferenceCode: 'erc-support',
+					path: 'Global / Support',
 				},
-				error: null,
-			})
-		);
+			],
+		});
 
 		await goToDataSelectionStep({siteSelectionEnabled: true});
 
-		for (const name of ['Design', 'Site Builder', 'Content & Data']) {
-			await user.click(screen.getByRole('checkbox', {name}));
-		}
+		await clearSections();
 
-		await user.click(screen.getByRole('button', {name: 'select-sites'}));
-
-		const row = await screen.findByText('Support');
-
-		await user.click(
-			within(row.closest('tr') as HTMLElement).getByRole('checkbox')
-		);
-		await user.click(screen.getByRole('button', {name: 'select'}));
+		await pickGroup('select-sites', 'Support');
 
 		await waitFor(() => {
 			expect(
@@ -513,28 +507,22 @@ describe('NewImport', () => {
 	});
 
 	it('offers only the spaces among the asset libraries of the file', async () => {
-		(postImportPreview as jest.Mock).mockImplementationOnce(() =>
-			Promise.resolve({
-				data: {
-					...mockImportPreview,
-					assetLibraries: [
-						{
-							descriptiveName: 'Book',
-							existsInInstance: false,
-							externalReferenceCode: 'erc-book',
-							type: 'Space',
-						},
-						{
-							descriptiveName: 'Pictures',
-							existsInInstance: true,
-							externalReferenceCode: 'erc-pictures',
-							type: 'AssetLibrary',
-						},
-					],
+		mockPreviewWith({
+			assetLibraries: [
+				{
+					descriptiveName: 'Book',
+					existsInInstance: false,
+					externalReferenceCode: 'erc-book',
+					type: 'Space',
 				},
-				error: null,
-			})
-		);
+				{
+					descriptiveName: 'Pictures',
+					existsInInstance: true,
+					externalReferenceCode: 'erc-pictures',
+					type: 'AssetLibrary',
+				},
+			],
+		});
 
 		await goToDataSelectionStep({spaceSelectionEnabled: true});
 
@@ -551,22 +539,16 @@ describe('NewImport', () => {
 	});
 
 	it('imports only the spaces selected in the spaces section', async () => {
-		(postImportPreview as jest.Mock).mockImplementationOnce(() =>
-			Promise.resolve({
-				data: {
-					...mockImportPreview,
-					assetLibraries: [
-						{
-							descriptiveName: 'Book',
-							existsInInstance: false,
-							externalReferenceCode: 'erc-book',
-							type: 'Space',
-						},
-					],
+		mockPreviewWith({
+			assetLibraries: [
+				{
+					descriptiveName: 'Book',
+					existsInInstance: false,
+					externalReferenceCode: 'erc-book',
+					type: 'Space',
 				},
-				error: null,
-			})
-		);
+			],
+		});
 
 		fetch.mockResponse(JSON.stringify({id: 1}));
 
@@ -575,18 +557,9 @@ describe('NewImport', () => {
 			spaceSelectionEnabled: true,
 		});
 
-		for (const name of ['Design', 'Site Builder', 'Content & Data']) {
-			await user.click(screen.getByRole('checkbox', {name}));
-		}
+		await clearSections();
 
-		await user.click(screen.getByRole('button', {name: 'select-spaces'}));
-
-		const row = await screen.findByText('Book');
-
-		await user.click(
-			within(row.closest('tr') as HTMLElement).getByRole('checkbox')
-		);
-		await user.click(screen.getByRole('button', {name: 'select'}));
+		await pickGroup('select-spaces', 'Book');
 
 		await waitFor(() => {
 			expect(
