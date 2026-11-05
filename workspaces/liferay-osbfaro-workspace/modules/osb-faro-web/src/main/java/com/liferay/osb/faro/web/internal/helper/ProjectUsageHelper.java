@@ -15,6 +15,7 @@ import com.liferay.osb.faro.engine.client.model.ProjectMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroDataSourceUsage;
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.provisioning.client.model.display.main.FaroSubscriptionDisplay;
 import com.liferay.osb.faro.service.FaroDataSourceUsageLocalService;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.util.DateUtil;
@@ -22,6 +23,7 @@ import com.liferay.osb.faro.web.internal.model.display.contacts.ApiUsageMetricDi
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsage;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageMetric;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageMetricDisplay;
+import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -224,6 +226,9 @@ public class ProjectUsageHelper {
 							faroDataSourceUsage.getKnownIndividualsCount()))));
 		}
 
+		FaroSubscriptionDisplay faroSubscriptionDisplay = JSONUtil.readValue(
+			faroProject.getSubscription(), FaroSubscriptionDisplay.class);
+
 		return new DataSourceUsageMetricDisplay(
 			apiUsageMetricDisplays, batchSegmentsCount, dataSourcesCount,
 			connectorsCount, faroProject.getCorpProjectName(),
@@ -235,8 +240,9 @@ public class ProjectUsageHelper {
 				faroProject.getLastAnniversaryDate(), DateUtil.PATTERN_DATE),
 			!StringUtil.equals(
 				faroProject.getState(), FaroProjectConstants.STATE_READY),
-			realTimeSegmentsCount, faroProject.getSalesforceAccountId(),
-			faroProject.getWeDeployKey());
+			faroSubscriptionDisplay.getProductEntryId(),
+			faroSubscriptionDisplay.getName(), realTimeSegmentsCount,
+			faroProject.getSalesforceAccountId(), faroProject.getWeDeployKey());
 	}
 
 	private Map<String, Map<String, ProjectMetric>> _getProjectMetricsMap(
