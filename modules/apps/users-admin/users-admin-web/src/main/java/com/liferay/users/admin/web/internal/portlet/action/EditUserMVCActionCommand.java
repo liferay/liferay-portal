@@ -408,9 +408,9 @@ public class EditUserMVCActionCommand
 			user, actionRequest, "middleName");
 		String lastName = BeanParamUtil.getString(
 			user, actionRequest, "lastName");
-		long prefixListTypeId = BeanParamUtil.getInteger(
+		long prefixListTypeId = BeanParamUtil.getLong(
 			contact, actionRequest, "prefixListTypeId");
-		long suffixListTypeId = BeanParamUtil.getInteger(
+		long suffixListTypeId = BeanParamUtil.getLong(
 			contact, actionRequest, "suffixListTypeId");
 		boolean male = BeanParamUtil.getBoolean(
 			user, actionRequest, "male", true);
@@ -538,9 +538,9 @@ public class EditUserMVCActionCommand
 		String firstName = ParamUtil.getString(actionRequest, "firstName");
 		String middleName = ParamUtil.getString(actionRequest, "middleName");
 		String lastName = ParamUtil.getString(actionRequest, "lastName");
-		long prefixListTypeId = ParamUtil.getInteger(
+		long prefixListTypeId = ParamUtil.getLong(
 			actionRequest, "prefixListTypeId");
-		long suffixListTypeId = ParamUtil.getInteger(
+		long suffixListTypeId = ParamUtil.getLong(
 			actionRequest, "suffixListTypeId");
 		boolean male = ParamUtil.getBoolean(actionRequest, "male", true);
 		int birthdayMonth = ParamUtil.getInteger(

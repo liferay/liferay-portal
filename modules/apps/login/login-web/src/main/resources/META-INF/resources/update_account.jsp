@@ -31,8 +31,8 @@ String emailAddress = BeanParamUtil.getString(selUser, request, "emailAddress");
 String firstName = BeanParamUtil.getString(selUser, request, "firstName");
 String middleName = BeanParamUtil.getString(selUser, request, "middleName");
 String lastName = BeanParamUtil.getString(selUser, request, "lastName");
-int prefixListTypeId = BeanParamUtil.getInteger(selContact, request, "prefixListTypeId");
-int suffixListTypeId = BeanParamUtil.getInteger(selContact, request, "suffixListTypeId");
+long prefixListTypeId = BeanParamUtil.getLong(selContact, request, "prefixListTypeId");
+long suffixListTypeId = BeanParamUtil.getLong(selContact, request, "suffixListTypeId");
 
 Calendar calendar = CalendarFactoryUtil.getCalendar();
 

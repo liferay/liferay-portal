@@ -128,9 +128,9 @@ public class CreateAccountMVCActionCommand extends BaseMVCActionCommand {
 		String firstName = ParamUtil.getString(actionRequest, "firstName");
 		String middleName = ParamUtil.getString(actionRequest, "middleName");
 		String lastName = ParamUtil.getString(actionRequest, "lastName");
-		long prefixListTypeId = ParamUtil.getInteger(
+		long prefixListTypeId = ParamUtil.getLong(
 			actionRequest, "prefixListTypeId");
-		long suffixListTypeId = ParamUtil.getInteger(
+		long suffixListTypeId = ParamUtil.getLong(
 			actionRequest, "suffixListTypeId");
 		boolean male = ParamUtil.getBoolean(actionRequest, "male", true);
 		int birthdayMonth = ParamUtil.getInteger(
@@ -440,9 +440,9 @@ public class CreateAccountMVCActionCommand extends BaseMVCActionCommand {
 		String firstName = ParamUtil.getString(actionRequest, "firstName");
 		String middleName = ParamUtil.getString(actionRequest, "middleName");
 		String lastName = ParamUtil.getString(actionRequest, "lastName");
-		long prefixListTypeId = ParamUtil.getInteger(
+		long prefixListTypeId = ParamUtil.getLong(
 			actionRequest, "prefixListTypeId");
-		long suffixListTypeId = ParamUtil.getInteger(
+		long suffixListTypeId = ParamUtil.getLong(
 			actionRequest, "suffixListTypeId");
 		boolean male = ParamUtil.getBoolean(actionRequest, "male", true);
 		int birthdayMonth = ParamUtil.getInteger(
