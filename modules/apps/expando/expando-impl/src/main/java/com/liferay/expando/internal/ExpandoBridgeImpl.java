@@ -219,22 +219,18 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 					_companyId, _className,
 					ExpandoTableConstants.DEFAULT_TABLE_NAME, name);
 
-				if ((column != null) &&
-					ExpandoColumnPermissionUtil.contains(
+				if ((column == null) ||
+					!ExpandoColumnPermissionUtil.contains(
 						GuestOrUserUtil.getPermissionChecker(), column,
 						ActionKeys.VIEW)) {
 
-					data = ExpandoValueLocalServiceUtil.getData(
-						_companyId, _className,
-						ExpandoTableConstants.DEFAULT_TABLE_NAME, name,
-						_classPK);
+					return null;
 				}
 			}
-			else {
-				data = ExpandoValueLocalServiceUtil.getData(
-					_companyId, _className,
-					ExpandoTableConstants.DEFAULT_TABLE_NAME, name, _classPK);
-			}
+
+			data = ExpandoValueLocalServiceUtil.getData(
+				_companyId, _className,
+				ExpandoTableConstants.DEFAULT_TABLE_NAME, name, _classPK);
 		}
 		catch (Exception exception) {
 			ReflectionUtil.throwException(exception);
