@@ -23,18 +23,13 @@ $side-navigation-scope-item-height: 2.5rem;
 }
 
 .side-navigation-container {
+	--c-slideout-sidebar-width: 280px;
+	--c-slideout-transition-in: all 0.14s ease-out;
+	--c-slideout-transition-out: all 0.14s ease-out;
 	--menubar-primary-nav-link-active-class-background-color: #{$blue-l5};
 	--menubar-primary-nav-link-active-class-highlight-background-color: #{$blue-d1};
 	--menubar-primary-nav-link-padding: 0.5rem 1rem;
 	--skeleton-shimmer-color: var(--light-l1);
-
-	flex-shrink: 0;
-	transition: width 0.14s ease-out;
-	width: 0;
-
-	&.side-navigation-open {
-		width: 280px;
-	}
 
 	a.nav-link {
 		--menubar-primary-collapse-icon-font-size: 0.875rem;
@@ -80,7 +75,6 @@ $side-navigation-scope-item-height: 2.5rem;
 		border-right: 0.5px solid $secondary-l0;
 		box-shadow: none;
 		overflow: hidden;
-		width: 280px;
 
 		.sidebar-body {
 			flex: 1;
