@@ -68,16 +68,6 @@ public class OAuthClientEntryModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		_serviceRegistration = bundleContext.registerService(
-			AuditMessageProcessor.class, _auditMessages::add,
-			HashMapDictionaryBuilder.<String, Object>put(
-				"eventTypes", "*"
-			).build());
-
 		_companyConfigurationTemporarySwapper =
 			new CompanyConfigurationTemporarySwapper(
 				TestPropsValues.getCompanyId(),
@@ -87,6 +77,16 @@ public class OAuthClientEntryModelListenerTest {
 				).build());
 		_openIdConnectProviderHttpServer =
 			new OpenIdConnectProviderHttpServer();
+
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		_serviceRegistration = bundleContext.registerService(
+			AuditMessageProcessor.class, _auditMessages::add,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"eventTypes", "*"
+			).build());
 	}
 
 	@After
