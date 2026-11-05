@@ -210,6 +210,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [PrintWriter Wrapper](validations/branch/print-writer-wrapper.md)
 
+1. [Empty Service Properties](validations/branch/empty-service-properties.md)
+
 1. [HTML Escaping](validations/branch/html-escaping.md)
 
 1. [Full Portal Build](validations/portal/full-portal-build.md)
