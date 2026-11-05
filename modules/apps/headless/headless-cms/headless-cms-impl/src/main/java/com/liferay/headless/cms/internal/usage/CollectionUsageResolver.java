@@ -58,6 +58,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.query.BooleanQuery;
 import com.liferay.portal.search.query.NestedQuery;
 import com.liferay.portal.search.query.QueriesUtil;
+import com.liferay.segments.constants.SegmentsExperienceConstants;
+import com.liferay.segments.model.SegmentsExperienceTable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -184,6 +186,101 @@ public class CollectionUsageResolver {
 							collectionJSONObject.getJSONObject("config"),
 							groupId, key, resolutionContext);
 					}
+				}
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(exception);
+				}
+			}
+		}
+
+		List<Object[]> segmentsExperienceObjectsList =
+			_assetListEntryUsageLocalService.dslQuery(
+				DSLQueryFactoryUtil.select(
+					SegmentsExperienceTable.INSTANCE.segmentsExperienceId,
+					SegmentsExperienceTable.INSTANCE.groupId,
+					SegmentsExperienceTable.INSTANCE.plid
+				).from(
+					SegmentsExperienceTable.INSTANCE
+				).where(
+					SegmentsExperienceTable.INSTANCE.companyId.eq(
+						companyId
+					).and(
+						SegmentsExperienceTable.INSTANCE.segmentsExperienceKey.
+							neq(SegmentsExperienceConstants.KEY_DEFAULT)
+					).and(
+						SegmentsExperienceTable.INSTANCE.active.eq(true)
+					)
+				));
+
+		for (Object[] row : segmentsExperienceObjectsList) {
+			long segmentsExperienceId = (Long)row[0];
+			long groupId = (Long)row[1];
+			long plid = (Long)row[2];
+
+			try {
+				Layout layout = resolutionContext.getLayout(plid);
+
+				if ((layout == null) || !_isPublished(layout)) {
+					continue;
+				}
+
+				Set<Long> connectedDepotGroupIds =
+					resolutionContext.getConnectedDepotGroupIds(groupId);
+
+				if (connectedDepotGroupIds.isEmpty()) {
+					continue;
+				}
+
+				LayoutPageTemplateStructure layoutPageTemplateStructure =
+					_layoutPageTemplateStructureLocalService.
+						fetchLayoutPageTemplateStructure(groupId, plid);
+
+				if (layoutPageTemplateStructure == null) {
+					continue;
+				}
+
+				LayoutStructure layoutStructure = LayoutStructure.of(
+					layoutPageTemplateStructure.getData(segmentsExperienceId));
+
+				for (LayoutStructureItem layoutStructureItem :
+						layoutStructure.
+							getCollectionStyledLayoutStructureItems()) {
+
+					if (layoutStructure.isItemMarkedForDeletion(
+							layoutStructureItem.getItemId())) {
+
+						continue;
+					}
+
+					CollectionStyledLayoutStructureItem
+						collectionStyledLayoutStructureItem =
+							(CollectionStyledLayoutStructureItem)
+								layoutStructureItem;
+
+					JSONObject collectionJSONObject =
+						collectionStyledLayoutStructureItem.
+							getCollectionJSONObject();
+
+					if (collectionJSONObject == null) {
+						continue;
+					}
+
+					if (collectionJSONObject.has("classPK")) {
+						_addObjectEntryIds(
+							collectionJSONObject.getString("classPK"),
+							resolutionContext);
+					}
+
+					if (!collectionJSONObject.has("key")) {
+						continue;
+					}
+
+					_addQuery(
+						collectionJSONObject.getJSONObject("config"), groupId,
+						collectionJSONObject.getString("key"),
+						resolutionContext);
 				}
 			}
 			catch (Exception exception) {
