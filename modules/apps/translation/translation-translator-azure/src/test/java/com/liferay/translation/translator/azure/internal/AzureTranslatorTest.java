@@ -56,6 +56,19 @@ public class AzureTranslatorTest {
 	}
 
 	@Test
+	public void testTranslateWhenFieldsAreEmpty() throws Exception {
+		TranslatorPacket translatorPacket = _azureTranslator.translate(
+			_getTranslatorPacket(
+				Collections.emptyMap(), Collections.emptyMap()));
+
+		Assert.assertEquals(
+			Collections.emptyMap(), translatorPacket.getFieldsMap());
+
+		Assert.assertEquals(Collections.emptyMap(), _texts);
+		Assert.assertEquals(Collections.emptyList(), _userAgents);
+	}
+
+	@Test
 	public void testTranslateWhenFieldsAreHTML() throws Exception {
 		String fieldName = RandomTestUtil.randomString();
 		String text = StringBundler.concat(
