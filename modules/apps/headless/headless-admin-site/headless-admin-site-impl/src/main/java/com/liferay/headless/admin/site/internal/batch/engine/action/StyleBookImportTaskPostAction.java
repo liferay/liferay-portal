@@ -56,8 +56,6 @@ public class StyleBookImportTaskPostAction implements ImportTaskPostAction {
 			return;
 		}
 
-		List<String> warningMessages = new ArrayList<>();
-
 		StyleBook persistedStyleBook = (StyleBook)persistedItem;
 
 		StyleBookEntry styleBookEntry =
@@ -65,6 +63,8 @@ public class StyleBookImportTaskPostAction implements ImportTaskPostAction {
 				persistedStyleBook.getId());
 
 		StyleBook styleBook = (StyleBook)item;
+
+		List<String> warningMessages = new ArrayList<>();
 
 		if (!StringUtil.equals(styleBook.getName(), styleBookEntry.getName())) {
 			warningMessages.add(

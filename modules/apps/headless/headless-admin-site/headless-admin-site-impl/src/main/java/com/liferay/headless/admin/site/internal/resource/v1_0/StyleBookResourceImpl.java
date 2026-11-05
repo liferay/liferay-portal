@@ -114,7 +114,7 @@ public class StyleBookResourceImpl
 
 		_styleBookEntryService.deleteStyleBookEntry(
 			styleBookExternalReferenceCode,
-			_getSiteGroupId(siteExternalReferenceCode));
+			_getLiveGroupId(siteExternalReferenceCode));
 	}
 
 	@Override
@@ -292,7 +292,7 @@ public class StyleBookResourceImpl
 
 		return _toStyleBook(
 			_getStyleBookEntry(
-				_getSiteGroupId(siteExternalReferenceCode),
+				_getLiveGroupId(siteExternalReferenceCode),
 				styleBookExternalReferenceCode));
 	}
 
@@ -303,7 +303,7 @@ public class StyleBookResourceImpl
 			Sort[] sorts)
 		throws Exception {
 
-		long groupId = _getSiteGroupId(siteExternalReferenceCode);
+		long groupId = _getLiveGroupId(siteExternalReferenceCode);
 
 		return _getStyleBooksPage(
 			HashMapBuilder.put(
@@ -350,7 +350,7 @@ public class StyleBookResourceImpl
 			String siteExternalReferenceCode, StyleBook styleBook)
 		throws Exception {
 
-		long groupId = _getSiteGroupId(siteExternalReferenceCode);
+		long groupId = _getLiveGroupId(siteExternalReferenceCode);
 
 		String name = _getName(groupId, styleBook.getName(), 0);
 
@@ -426,7 +426,7 @@ public class StyleBookResourceImpl
 		styleBook.setExternalReferenceCode(
 			() -> styleBookExternalReferenceCode);
 
-		long groupId = _getSiteGroupId(siteExternalReferenceCode);
+		long groupId = _getLiveGroupId(siteExternalReferenceCode);
 
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryService.fetchStyleBookEntryByExternalReferenceCode(
@@ -438,7 +438,6 @@ public class StyleBookResourceImpl
 
 		String name = _getName(
 			groupId, styleBook.getName(), styleBookEntry.getStyleBookEntryId());
-
 		String styleBookEntryKey = _getStyleBookEntryKey(
 			styleBookEntry.getStyleBookEntryKey(), groupId, styleBook.getKey());
 
@@ -560,6 +559,15 @@ public class StyleBookResourceImpl
 				externalReferenceCode);
 	}
 
+	private long _getLiveGroupId(String siteExternalReferenceCode)
+		throws Exception {
+
+		return _staging.getLiveGroupId(
+			GroupUtil.getGroupId(
+				true, contextCompany.getCompanyId(),
+				siteExternalReferenceCode));
+	}
+
 	private String _getName(long groupId, String name, long styleBookEntryId) {
 		if (!ExportImportThreadLocal.isImportInProcess()) {
 			return name;
@@ -606,15 +614,6 @@ public class StyleBookResourceImpl
 		serviceContext.setModifiedDate(styleBook.getDateModified());
 
 		return serviceContext;
-	}
-
-	private long _getSiteGroupId(String siteExternalReferenceCode)
-		throws Exception {
-
-		return _staging.getLiveGroupId(
-			GroupUtil.getGroupId(
-				true, contextCompany.getCompanyId(),
-				siteExternalReferenceCode));
 	}
 
 	private StyleBookEntry _getStyleBookEntry(
