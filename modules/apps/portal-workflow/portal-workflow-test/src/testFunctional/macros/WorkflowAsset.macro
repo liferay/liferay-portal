@@ -1,9 +1,11 @@
 definition {
 
 	@summary = "Default summary"
-	macro assertDueDate(date = null) {
+	macro assertDueDate(date = null, period = null, time = null) {
 		AssertElementPresent(
 			key_date = ${date},
+			key_period = ${period},
+			key_time = ${time},
 			locator1 = "AssetWorkflow#DUE_DATE");
 	}
 

@@ -32,7 +32,7 @@
 </tr>
 <tr>
 	<td>DUE_DATE</td>
-	<td>//span[contains(@class,'control-label') and contains(text(),'Due Date')]/parent::div//div[contains(text(),'${key_date}')]</td>
+	<td>//span[contains(@class,'control-label') and contains(text(),'Due Date')]/parent::div//div[contains(text(),'${key_date}') and contains(text(),'${key_time}') and contains(text(),'${key_period}')]</td>
 	<td></td>
 </tr>
 <tr>
