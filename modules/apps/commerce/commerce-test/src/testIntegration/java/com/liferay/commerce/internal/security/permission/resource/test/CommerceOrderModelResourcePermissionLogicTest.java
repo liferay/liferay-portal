@@ -83,11 +83,11 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
 
-		AccountEntry accountEntry1 = _addAccountEntry(
-			AccountConstants.ACCOUNT_ENTRY_TYPE_GUEST, serviceContext);
-
 		_guestUser = _userLocalService.getGuestUser(
 			TestPropsValues.getCompanyId());
+
+		AccountEntry accountEntry1 = _addAccountEntry(
+			AccountConstants.ACCOUNT_ENTRY_TYPE_GUEST, serviceContext);
 
 		_commerceOrder1 = _commerceOrderLocalService.addCommerceOrder(
 			_guestUser.getUserId(), _commerceChannel.getGroupId(),
@@ -124,17 +124,11 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 		Assert.assertEquals(
 			Collections.emptyList(),
 			_filterActionIds(_commerceOrder1, null, null, _guestUser));
-		Assert.assertTrue(
-			_contains(
-				_commerceOrder1,
-				_createMockHttpServletRequest(
-					_commerceOrder1, null, _commerceOrder1.getUuid()),
-				_guestUser, ActionKeys.VIEW));
 		Assert.assertFalse(
 			_contains(
 				_commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, null, RandomTestUtil.randomString()),
+					_commerceOrder1, RandomTestUtil.randomString(), null),
 				_guestUser, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(
@@ -146,7 +140,13 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 			_contains(
 				_commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, RandomTestUtil.randomString(), null),
+					_commerceOrder1, null, RandomTestUtil.randomString()),
+				_guestUser, ActionKeys.VIEW));
+		Assert.assertTrue(
+			_contains(
+				_commerceOrder1,
+				_createMockHttpServletRequest(
+					_commerceOrder1, null, _commerceOrder1.getUuid()),
 				_guestUser, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(
@@ -178,17 +178,11 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 				_commerceOrder1,
 				_createMockHttpServletRequest(_commerceOrder1, null, null),
 				_user, ActionKeys.VIEW));
-		Assert.assertTrue(
-			_contains(
-				_commerceOrder1,
-				_createMockHttpServletRequest(
-					_commerceOrder1, null, _commerceOrder1.getUuid()),
-				_user, ActionKeys.VIEW));
 		Assert.assertFalse(
 			_contains(
 				_commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, null, RandomTestUtil.randomString()),
+					_commerceOrder1, RandomTestUtil.randomString(), null),
 				_user, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(
@@ -200,7 +194,13 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 			_contains(
 				_commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, RandomTestUtil.randomString(), null),
+					_commerceOrder1, null, RandomTestUtil.randomString()),
+				_user, ActionKeys.VIEW));
+		Assert.assertTrue(
+			_contains(
+				_commerceOrder1,
+				_createMockHttpServletRequest(
+					_commerceOrder1, null, _commerceOrder1.getUuid()),
 				_user, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(

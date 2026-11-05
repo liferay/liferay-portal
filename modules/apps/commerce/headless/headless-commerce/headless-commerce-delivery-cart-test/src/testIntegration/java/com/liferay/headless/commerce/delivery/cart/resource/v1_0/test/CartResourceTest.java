@@ -886,11 +886,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		CommerceOrder commerceOrder = _addGuestCommerceOrder();
 
-		String guestToken = URLCodec.encodeURL(
-			_encryptor.encrypt(
-				testCompany.getKeyObj(),
-				String.valueOf(commerceOrder.getCommerceOrderId())));
-
 		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
 		CartResource cartResource1 = CartResource.builder(
@@ -905,6 +900,11 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		String paymentURL = cartResource1.getCartPaymentURL(
 			commerceOrder.getCommerceOrderId(), RandomTestUtil.randomString());
+
+		String guestToken = URLCodec.encodeURL(
+			_encryptor.encrypt(
+				testCompany.getKeyObj(),
+				String.valueOf(commerceOrder.getCommerceOrderId())));
 
 		Assert.assertTrue(paymentURL.contains("guestToken=" + guestToken));
 
