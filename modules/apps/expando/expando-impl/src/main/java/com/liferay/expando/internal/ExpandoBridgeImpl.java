@@ -547,26 +547,17 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 				PermissionChecker permissionChecker =
 					GuestOrUserUtil.getPermissionChecker();
 
-				for (Map.Entry<String, Serializable> entry :
-						attributes.entrySet()) {
-
+				for (String name : attributes.keySet()) {
 					ExpandoColumnPermissionUtil.check(
 						permissionChecker, _companyId, _className,
-						ExpandoTableConstants.DEFAULT_TABLE_NAME,
-						entry.getKey(), ActionKeys.UPDATE);
-
-					ExpandoValueLocalServiceUtil.addValue(
-						_companyId, _className,
-						ExpandoTableConstants.DEFAULT_TABLE_NAME,
-						entry.getKey(), _classPK, entry.getValue());
+						ExpandoTableConstants.DEFAULT_TABLE_NAME, name,
+						ActionKeys.UPDATE);
 				}
 			}
-			else {
-				ExpandoValueLocalServiceUtil.addValues(
-					_companyId, _className,
-					ExpandoTableConstants.DEFAULT_TABLE_NAME, _classPK,
-					attributes);
-			}
+
+			ExpandoValueLocalServiceUtil.addValues(
+				_companyId, _className,
+				ExpandoTableConstants.DEFAULT_TABLE_NAME, _classPK, attributes);
 		}
 		catch (Exception exception) {
 			ReflectionUtil.throwException(exception);
