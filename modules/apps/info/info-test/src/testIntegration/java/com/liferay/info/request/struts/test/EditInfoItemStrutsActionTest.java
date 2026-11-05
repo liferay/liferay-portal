@@ -1080,6 +1080,61 @@ public class EditInfoItemStrutsActionTest {
 		}
 	}
 
+	@Test
+	public void testUpdateInfoItemWithoutReferer() throws Exception {
+		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
+			new MockMultipartHttpServletRequest();
+
+		mockMultipartHttpServletRequest.setContentType(
+			"multipart/form-data;boundary=" + System.currentTimeMillis());
+
+		String backURL = "/web/guest/" + RandomTestUtil.randomString();
+
+		UploadPortletRequest uploadPortletRequest =
+			UploadTestUtil.createUploadPortletRequest(
+				UploadTestUtil.createUploadServletRequest(
+					mockMultipartHttpServletRequest, null,
+					HashMapBuilder.put(
+						"backURL", Collections.singletonList(backURL)
+					).put(
+						"classNameId", Collections.singletonList(_classNameId)
+					).put(
+						"formItemId", Collections.singletonList(_formItemId)
+					).put(
+						"groupId",
+						Collections.singletonList(
+							String.valueOf(_group.getGroupId()))
+					).put(
+						"p_l_id",
+						Collections.singletonList(
+							String.valueOf(_layout.getPlid()))
+					).put(
+						"p_l_mode", Collections.singletonList(Constants.EDIT)
+					).put(
+						"plid",
+						Collections.singletonList(
+							String.valueOf(_layout.getPlid()))
+					).put(
+						"segmentsExperienceId",
+						Collections.singletonList(
+							String.valueOf(_defaultSegmentsExperienceId))
+					).build()),
+				null, RandomTestUtil.randomString());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_processEvents(mockHttpServletResponse, uploadPortletRequest, _user);
+
+		_editInfoItemStrutsAction.execute(
+			uploadPortletRequest,
+			new PipingServletResponse(
+				mockHttpServletResponse, new UnsyncStringWriter()));
+
+		Assert.assertEquals(
+			backURL, mockHttpServletResponse.getRedirectedUrl());
+	}
+
 	private Layout _addLayout() throws Exception {
 		Layout layout = _layoutLocalService.addLayout(
 			null, _user.getUserId(), _group.getGroupId(), false,
