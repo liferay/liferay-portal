@@ -14,6 +14,7 @@ import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -83,8 +84,11 @@ public class StyleBookImportTaskPostAction implements ImportTaskPostAction {
 			warningMessages.add(
 				_language.format(
 					LocaleUtil.US,
-					"the-theme-referenced-by-x-is-not-available-in-this-" +
-						"environment",
+					StringBundler.concat(
+						"the-theme-referenced-by-x-is-not-available-in-this-",
+						"environment-the-style-book-will-be-inactive-and-its-",
+						"tokens-cannot-be-verified-until-the-theme-is-",
+						"available"),
 					styleBookEntry.getName()));
 		}
 		else if (_hasMissingTokens(styleBookEntry)) {
