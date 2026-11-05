@@ -19,6 +19,7 @@ JavaDuplicateVariableCheck | .java | Finds variables where a variable with the s
 [JavaElseStatementCheck](check/java_else_statement_check.md#javaelsestatementcheck) | .java | Finds unnecessary `else` statements (when the `if` statement ends with a `return` statement). |
 JavaEmptyLineAfterSuperCallCheck | .java | Finds missing empty line after a `super` call. |
 [JavaUnusedSourceFormatterChecksCheck](check/java_unused_source_formatter_checks_check.md#javaunusedsourceformattercheckscheck) | .java | Finds `*Check` classes that are not configured. |
+[MVCRenderCommandViewTemplateCheck](check/mvc_render_command_view_template_check.md#mvcrendercommandviewtemplatecheck) | .java | Finds MVC render commands that only map `/` to a constant path that the portlet can declare as `view-template`. |
 [MapBuilderCheck](check/builder_check.md#buildercheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that `ConcurrentHashMapBuilder`, `HashMapBuilder`, `LinkedHashMapBuilder` or `TreeMapBuilder` is used when possible. |
 [PortletURLBuilderCheck](check/builder_check.md#buildercheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that `PortletURLBuilder` is used when possible. |
 PropertiesDuplicateKeysCheck | .properties | Checks for duplicate property keys. |

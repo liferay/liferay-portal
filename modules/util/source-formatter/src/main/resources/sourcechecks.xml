@@ -1104,6 +1104,10 @@
 			<description name="Validates the values of parameters passed to `_log.*` calls." />
 			<property name="enabled" value="false" />
 		</check>
+		<check name="MVCRenderCommandViewTemplateCheck">
+			<category name="Miscellaneous" />
+			<description name="Finds MVC render commands that only map `/` to a constant path that the portlet can declare as `view-template`." />
+		</check>
 		<check name="ResourceBundleCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that there are no calls to `java.util.ResourceBundle.getBundle`." />
