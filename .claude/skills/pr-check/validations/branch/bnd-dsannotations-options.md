@@ -18,7 +18,7 @@ This validation stands in for a Source Formatter check. Source Formatter catches
 
 This check is static and needs no build. It walks each changed `bnd.bnd` file and looks only at its first `-dsannotations-options` line, and only when the branch diff adds that line and its comma separated values include `inherit`, so an option already on master never fails the branch. The module is the directory of the `bnd.bnd` file, and the check reads its Java files from the working tree, as Source Formatter does. It uses `command grep` so the Java files and the paths git tracks are searched by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults.
 
-For each `@Component` class of the module, a file under `src/main/java` or `src/testIntegration/java` that carries `@org.osgi.service.component.annotations.Component`, or `@Component` and its import, the check follows the superclass chain. It resolves each superclass name through the imports and the package of the class that extends it, and looks for its source first in the module of that class and then where Source Formatter looks: the `src/main/java` and `src/testIntegration/java` directories under `modules`, and the source directories of `portal-impl`, `portal-kernel`, `portal-test`, `portal-test-integration`, and `util-taglib`. A superclass declares a DS member when a field or method of its body, indented by one tab, carries `@Activate`, `@Deactivate`, `@Modified`, or `@Reference` from `org.osgi.service.component.annotations`. The module needs the option when any chain reaches such a superclass, a superclass whose source is not found and that is not a `java`, `javax`, or `jakarta` class, or a 32nd superclass, so a module that may need it is never reported. A chain ends without need at a class that extends nothing or extends a `java`, `javax`, or `jakarta` class.
+For each `@Component` class of the module, a file under `src/main/java` or `src/testIntegration/java` that carries `@org.osgi.service.component.annotations.Component`, or `@Component` and its import, the check follows the superclass chain. It resolves each superclass name through the imports and the package of the class that extends it, and looks for its source first in the module of that class and then where Source Formatter looks: the `src/main/java` and `src/testIntegration/java` directories under `modules`, and the source directories of `portal-impl`, `portal-kernel`, `portal-test`, `portal-test-integration`, and `util-taglib`. A superclass declares a DS member when a field or method of its body, indented by one tab, carries `@Activate`, `@Deactivate`, `@Modified`, or `@Reference` from `org.osgi.service.component.annotations`. The module needs the option when any chain reaches such a superclass, a superclass whose source is not found and that is not a `jakarta`, `java`, or `javax` class, or a 32nd superclass, so a module that may need it is never reported. A chain ends without need at a class that extends nothing or extends a `jakarta`, `java`, or `javax` class.
 
 When no chain needs the option, the check prints `<path>:<line>: <message>`, with the message Source Formatter prints for it, where `<line>` is the `-dsannotations-options` line.
 
@@ -157,7 +157,7 @@ FINDINGS=$(
 			' "${FILE}"
 		)
 
-		[[ -n ${LINE} ]] || continue
+		[[ ! -z ${LINE} ]] || continue
 
 		MODULE_DIR=$(dirname "${FILE}")
 
@@ -182,7 +182,7 @@ FINDINGS=$(
 					CLASS_MODULE_DIR=${MODULE_DIR}
 					MEMBERS=0
 
-					for (( DEPTH = 0; DEPTH < 32; DEPTH++ ))
+					for (( DEPTH = 0; DEPTH < 32; ++DEPTH ))
 					do
 						SUPERCLASS=$(awk -v members="${MEMBERS}" "${CLASS}" "${CLASS_FILE}")
 
@@ -201,7 +201,8 @@ FINDINGS=$(
 
 						for DIR in "${CLASS_MODULE_DIR}/src/main/java" "${CLASS_MODULE_DIR}/src/testIntegration/java"
 						do
-							if [[ -n ${CLASS_MODULE_DIR} && -f ${DIR}/${CLASS_PATH} ]]
+							if [[ ! -z ${CLASS_MODULE_DIR} ]] &&
+								[[ -f ${DIR}/${CLASS_PATH} ]]
 							then
 								CLASS_FILE=${DIR}/${CLASS_PATH}
 
