@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.Validator;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -164,11 +165,9 @@ public class FreeMarkerFragmentEntryProcessor
 				_getLayoutMode(
 					fragmentEntryProcessorContext.getHttpServletRequest())
 			).putAll(
-				_fragmentEntryConfigurationParser.getContextObjects(
-					configurationValuesJSONObject, configurationJSONObject,
-					_getInfoItem(
-						configurationJSONObject, fragmentEntryProcessorContext),
-					fragmentEntryProcessorContext.getSegmentsEntryIds())
+				_getContextObjects(
+					configurationJSONObject, configurationValuesJSONObject,
+					fragmentEntryProcessorContext)
 			).build());
 
 		if (fragmentEntryLink.isTypeInput()) {
@@ -215,6 +214,53 @@ public class FreeMarkerFragmentEntryProcessor
 		}
 
 		return unsyncStringWriter.toString();
+	}
+
+	private Map<String, Object> _getContextObjects(
+		JSONObject configurationJSONObject,
+		JSONObject configurationValuesJSONObject,
+		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
+
+		Map<String, Object> contextObjects =
+			_fragmentEntryConfigurationParser.getContextObjects(
+				configurationValuesJSONObject, configurationJSONObject,
+				fragmentEntryProcessorContext.getContextInfoItem(),
+				fragmentEntryProcessorContext.getSegmentsEntryIds());
+
+		if ((contextObjects == null) ||
+			(fragmentEntryProcessorContext.getContextInfoItem() != null)) {
+
+			return contextObjects;
+		}
+
+		Object infoItem = null;
+
+		for (FragmentConfigurationField fragmentConfigurationField :
+				_fragmentEntryConfigurationParser.
+					getFragmentConfigurationFields(configurationJSONObject)) {
+
+			String name = fragmentConfigurationField.getName() + "Object";
+
+			if (!StringUtil.equalsIgnoreCase(
+					fragmentConfigurationField.getType(), "itemSelector") ||
+				contextObjects.containsKey(name)) {
+
+				continue;
+			}
+
+			if (infoItem == null) {
+				infoItem = _getInfoItem(
+					configurationJSONObject, fragmentEntryProcessorContext);
+
+				if (infoItem == null) {
+					break;
+				}
+			}
+
+			contextObjects.put(name, infoItem);
+		}
+
+		return contextObjects;
 	}
 
 	private Object _getInfoItem(
