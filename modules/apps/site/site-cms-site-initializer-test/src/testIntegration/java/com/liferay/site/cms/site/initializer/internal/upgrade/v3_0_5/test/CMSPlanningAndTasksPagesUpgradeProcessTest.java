@@ -16,6 +16,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -39,6 +40,8 @@ import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -95,6 +98,7 @@ public class CMSPlanningAndTasksPagesUpgradeProcessTest {
 			planningLayout.getParentLayoutId());
 
 		_assertResourcePermissions(planningLayout);
+		_assertNameMap(planningLayout, "planning");
 
 		Layout tasksLayout = _layoutLocalService.fetchLayoutByFriendlyURL(
 			group.getGroupId(), false, "/tasks");
@@ -132,6 +136,15 @@ public class CMSPlanningAndTasksPagesUpgradeProcessTest {
 			_layoutLocalService.fetchLayoutByFriendlyURL(
 				group.getGroupId(), false, "/tasks"
 			).getPlid());
+	}
+
+	private void _assertNameMap(Layout layout, String key) {
+		Map<Locale, String> nameMap = layout.getNameMap();
+
+		for (Locale locale : LanguageUtil.getAvailableLocales()) {
+			Assert.assertEquals(
+				LanguageUtil.get(locale, key), nameMap.get(locale));
+		}
 	}
 
 	private void _assertResourcePermissions(Layout layout) throws Exception {
