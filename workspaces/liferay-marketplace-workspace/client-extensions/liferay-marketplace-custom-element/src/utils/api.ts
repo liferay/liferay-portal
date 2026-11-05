@@ -14,30 +14,6 @@ const headers = {
 export const baseURL =
 	window.location.origin + Liferay.ThemeDisplay.getPathContext();
 
-// LiferayJsonWS.addExpandoValue
-
-export async function addExpandoValue({
-	attributeValues,
-	className,
-	classPK,
-	companyId,
-	tableName,
-}: {
-	attributeValues: Object;
-	className: string;
-	classPK: number;
-	companyId: string;
-	tableName: string;
-}) {
-	await Liferay.Service('/expandovalue/add-values', {
-		attributeValues,
-		className,
-		classPK,
-		companyId,
-		tableName,
-	});
-}
-
 export async function getTierPrice(
 	channelId: number,
 	productId: number | undefined,
