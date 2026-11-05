@@ -132,16 +132,6 @@ public class DLFileEntryLocalServiceWrapper
 
 	@Override
 	public DLFileEntry checkOutFileEntry(
-			long userId, long fileEntryId,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _dlFileEntryLocalService.checkOutFileEntry(
-			userId, fileEntryId, serviceContext);
-	}
-
-	@Override
-	public DLFileEntry checkOutFileEntry(
 			long userId, long fileEntryId, String owner, long expirationTime,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -237,13 +227,6 @@ public class DLFileEntryLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteFileEntries(long groupId, long folderId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_dlFileEntryLocalService.deleteFileEntries(groupId, folderId);
-	}
-
-	@Override
 	public void deleteFileEntries(
 			long groupId, long folderId, boolean includeTrashedEntries)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -280,15 +263,6 @@ public class DLFileEntryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _dlFileEntryLocalService.deleteFileEntry(userId, fileEntryId);
-	}
-
-	@Override
-	public DLFileEntry deleteFileEntryByExternalReferenceCode(
-			String externalReferenceCode, long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _dlFileEntryLocalService.deleteFileEntryByExternalReferenceCode(
-			externalReferenceCode, groupId);
 	}
 
 	@Override
@@ -644,11 +618,6 @@ public class DLFileEntryLocalServiceWrapper
 	}
 
 	@Override
-	public int getExtraSettingsFileEntriesCount() {
-		return _dlFileEntryLocalService.getExtraSettingsFileEntriesCount();
-	}
-
-	@Override
 	public java.io.InputStream getFileAsStream(long fileEntryId, String version)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -805,15 +774,6 @@ public class DLFileEntryLocalServiceWrapper
 	}
 
 	@Override
-	public DLFileEntry getFileEntryByName(
-			long groupId, long folderId, String name)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _dlFileEntryLocalService.getFileEntryByName(
-			groupId, folderId, name);
-	}
-
-	@Override
 	public DLFileEntry getFileEntryByUuidAndGroupId(String uuid, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -875,20 +835,6 @@ public class DLFileEntryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<DLFileEntry> getRepositoryFileEntries(
-		long repositoryId, int start, int end) {
-
-		return _dlFileEntryLocalService.getRepositoryFileEntries(
-			repositoryId, start, end);
-	}
-
-	@Override
-	public int getRepositoryFileEntriesCount(long repositoryId) {
-		return _dlFileEntryLocalService.getRepositoryFileEntriesCount(
-			repositoryId);
-	}
-
-	@Override
 	public String getUniqueTitle(
 			long groupId, long folderId, long fileEntryId, String title,
 			String extension)
@@ -944,13 +890,6 @@ public class DLFileEntryLocalServiceWrapper
 
 		return _dlFileEntryLocalService.moveFileEntry(
 			userId, fileEntryId, newFolderId, serviceContext);
-	}
-
-	@Override
-	public void rebuildTree(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_dlFileEntryLocalService.rebuildTree(companyId);
 	}
 
 	@Override
@@ -1137,4 +1076,4 @@ public class DLFileEntryLocalServiceWrapper
 	private DLFileEntryLocalService _dlFileEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1796900128
+// LIFERAY-SERVICE-BUILDER-HASH:299562544

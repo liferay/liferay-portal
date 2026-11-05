@@ -114,10 +114,6 @@ public class DLFolderLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
-	public static void deleteAllByGroup(long groupId) throws PortalException {
-		getService().deleteAllByGroup(groupId);
-	}
-
 	public static void deleteAllByRepository(long repositoryId)
 		throws PortalException {
 
@@ -348,16 +344,6 @@ public class DLFolderLocalServiceUtil {
 		getActionableDynamicQuery() {
 
 		return getService().getActionableDynamicQuery();
-	}
-
-	public static List<DLFolder> getCompanyFolders(
-		long companyId, int start, int end) {
-
-		return getService().getCompanyFolders(companyId, start, end);
-	}
-
-	public static int getCompanyFoldersCount(long companyId) {
-		return getService().getCompanyFoldersCount(companyId);
 	}
 
 	public static List<DLFolder> getDLFileEntryTypeDLFolders(
@@ -652,18 +638,6 @@ public class DLFolderLocalServiceUtil {
 		return getService().getMountFolder(repositoryId);
 	}
 
-	public static List<DLFolder> getMountFolders(
-		long groupId, long parentFolderId, int start, int end,
-		OrderByComparator<DLFolder> orderByComparator) {
-
-		return getService().getMountFolders(
-			groupId, parentFolderId, start, end, orderByComparator);
-	}
-
-	public static int getMountFoldersCount(long groupId, long parentFolderId) {
-		return getService().getMountFoldersCount(groupId, parentFolderId);
-	}
-
 	public static List<DLFolder> getNoAssetFolders() {
 		return getService().getNoAssetFolders();
 	}
@@ -698,16 +672,6 @@ public class DLFolderLocalServiceUtil {
 
 		return getService().getRepositoryFolderIds(
 			repositoryId, parentFolderId);
-	}
-
-	public static List<DLFolder> getRepositoryFolders(
-		long repositoryId, int start, int end) {
-
-		return getService().getRepositoryFolders(repositoryId, start, end);
-	}
-
-	public static int getRepositoryFoldersCount(long repositoryId) {
-		return getService().getRepositoryFoldersCount(repositoryId);
 	}
 
 	public static void getRepositorySubfolderIds(
@@ -769,10 +733,6 @@ public class DLFolderLocalServiceUtil {
 			userId, folderId, parentFolderId, serviceContext);
 	}
 
-	public static void rebuildTree(long companyId) throws PortalException {
-		getService().rebuildTree(companyId);
-	}
-
 	public static void rebuildTree(
 			long companyId, long parentFolderId, String parentTreePath,
 			boolean reindex)
@@ -786,13 +746,6 @@ public class DLFolderLocalServiceUtil {
 		long fileEntryTypeId, long[] folderIds) {
 
 		getService().setDLFileEntryTypeDLFolders(fileEntryTypeId, folderIds);
-	}
-
-	public static void unlockFolder(
-			long groupId, long parentFolderId, String name, String lockUuid)
-		throws PortalException {
-
-		getService().unlockFolder(groupId, parentFolderId, name, lockUuid);
 	}
 
 	public static void unlockFolder(long folderId, String lockUuid)
@@ -824,18 +777,6 @@ public class DLFolderLocalServiceUtil {
 
 		return getService().updateFolder(
 			folderId, parentFolderId, name, description, defaultFileEntryTypeId,
-			fileEntryTypeIds, restrictionType, serviceContext);
-	}
-
-	public static DLFolder updateFolder(
-			long folderId, String name, String description,
-			long defaultFileEntryTypeId, List<Long> fileEntryTypeIds,
-			int restrictionType,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().updateFolder(
-			folderId, name, description, defaultFileEntryTypeId,
 			fileEntryTypeIds, restrictionType, serviceContext);
 	}
 
@@ -886,4 +827,4 @@ public class DLFolderLocalServiceUtil {
 	private static volatile DLFolderLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1240963105
+// LIFERAY-SERVICE-BUILDER-HASH:1306778429

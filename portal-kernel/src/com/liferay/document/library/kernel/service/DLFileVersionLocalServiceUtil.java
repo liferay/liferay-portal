@@ -339,13 +339,6 @@ public class DLFileVersionLocalServiceUtil {
 		return getService().getFileVersion(fileEntryId, version);
 	}
 
-	public static DLFileVersion getFileVersionByUuidAndGroupId(
-			String uuid, long groupId)
-		throws PortalException {
-
-		return getService().getFileVersionByUuidAndGroupId(uuid, groupId);
-	}
-
 	public static List<DLFileVersion> getFileVersions(
 		long fileEntryId, int status) {
 
@@ -406,10 +399,6 @@ public class DLFileVersionLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static void rebuildTree(long companyId) throws PortalException {
-		getService().rebuildTree(companyId);
-	}
-
 	public static void setTreePaths(long folderId, String treePath)
 		throws PortalException {
 
@@ -443,4 +432,4 @@ public class DLFileVersionLocalServiceUtil {
 	private static volatile DLFileVersionLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1156495179
+// LIFERAY-SERVICE-BUILDER-HASH:-846323030
