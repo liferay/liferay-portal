@@ -34,7 +34,7 @@ import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorException;
-import com.liferay.portal.kernel.encryptor.EncryptorUtil;
+import com.liferay.portal.kernel.exception.CompanyKeyException;
 import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
 import com.liferay.portal.kernel.exception.CompanyMxException;
 import com.liferay.portal.kernel.exception.CompanyNameException;
@@ -85,6 +85,7 @@ import com.liferay.portal.kernel.search.facet.faceted.searcher.FacetedSearcherMa
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.EmailAddressValidator;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -167,6 +168,9 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadLocalRandom;
+
+import org.hibernate.StaleStateException;
+import org.hibernate.exception.ConstraintViolationException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -551,20 +555,21 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	public void checkCompanyKey(long companyId) throws PortalException {
 		Company company = companyPersistence.findByPrimaryKey(companyId);
 
-		if (Validator.isNotNull(company.getKey())) {
+		String key = company.getKey();
+
+		if (Validator.isNull(key)) {
+			company.setKey(_generateKey(companyId));
+
+			_companyInfoPersistence.update(company.getCompanyInfo());
+
 			return;
 		}
 
-		try {
-			company.setKey(
-				CompanyKeyResolverUtil.wrapKey(
-					companyId, EncryptorUtil.generateKey()));
-		}
-		catch (EncryptorException encryptorException) {
-			throw new SystemException(encryptorException);
-		}
+		if (PropsValues.FIPS_ENABLED &&
+			!CompanyKeyResolverUtil.isFIPSKey(key)) {
 
-		_companyInfoPersistence.update(company.getCompanyInfo());
+			_rotateKey(company);
+		}
 	}
 
 	@Override
@@ -2444,8 +2449,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 	private String _generateKey(long companyId) {
 		try {
-			return CompanyKeyResolverUtil.wrapKey(
-				companyId, EncryptorUtil.generateKey());
+			return CompanyKeyResolverUtil.generateKey(companyId);
 		}
 		catch (EncryptorException encryptorException) {
 			throw new SystemException(encryptorException);
@@ -2475,6 +2479,28 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		}
 
 		return nextLong;
+	}
+
+	private boolean _isCausedByConcurrentModification(Throwable throwable) {
+		Throwable causeThrowable = throwable.getCause();
+
+		while (throwable != causeThrowable) {
+			if (throwable instanceof ConstraintViolationException ||
+				throwable instanceof StaleStateException) {
+
+				return true;
+			}
+
+			if (causeThrowable == null) {
+				return false;
+			}
+
+			throwable = causeThrowable;
+
+			causeThrowable = throwable.getCause();
+		}
+
+		return false;
 	}
 
 	private String _normalizeVirtualHostname(String virtualHostname)
@@ -2542,6 +2568,45 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		}
 		catch (Throwable throwable) {
 			throw new PortalException(throwable);
+		}
+	}
+
+	private void _rotateKey(Company company) {
+		long companyId = company.getCompanyId();
+
+		try {
+			String key = CompanyKeyResolverUtil.generateKey(companyId);
+
+			if (CompanyKeyResolverUtil.isWrappedKey(company.getKey()) &&
+				!CompanyKeyResolverUtil.isWrappedKey(key)) {
+
+				throw new CompanyKeyException(
+					StringBundler.concat(
+						"Unable to wrap the rotated key for company ",
+						companyId, " because its current key is wrapped and ",
+						"the key manager's company-kek-identifier is not ",
+						"available"));
+			}
+
+			_updateKey(companyId, key);
+		}
+		catch (Throwable throwable) {
+			if (Objects.equals(
+					company.getWebId(), PropsValues.COMPANY_DEFAULT_WEB_ID)) {
+
+				FIPSApplicationStateMachineUtil.error(
+					"Default company key rotation",
+					new CompanyKeyException(
+						"Unable to rotate the key of the default company " +
+							companyId,
+						throwable));
+			}
+
+			_log.error(
+				StringBundler.concat(
+					"Unable to rotate the key for company ", companyId,
+					". The key is refused until a later start rotates it."),
+				throwable);
 		}
 	}
 
@@ -2640,6 +2705,63 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			PropsKeys.LOCALES, newLanguageIds);
 
 		_groupLocalService.updateGroup(group);
+	}
+
+	private void _updateKey(long companyId, String key) throws Throwable {
+		boolean rotated = false;
+
+		try {
+			rotated = TransactionInvokerUtil.invoke(
+				_transactionConfig,
+				() -> {
+					CompanyInfo companyInfo =
+						_companyInfoPersistence.findByCompanyId(companyId);
+
+					if (CompanyKeyResolverUtil.isFIPSKey(
+							companyInfo.getKey())) {
+
+						return false;
+					}
+
+					companyInfo.setKey(key);
+
+					_companyInfoPersistence.update(companyInfo);
+
+					return true;
+				});
+		}
+		catch (Throwable throwable) {
+			if (!_isCausedByConcurrentModification(throwable)) {
+				throw throwable;
+			}
+
+			_companyInfoPersistence.clearCache();
+
+			CompanyInfo companyInfo = TransactionInvokerUtil.invoke(
+				_transactionConfig,
+				() -> _companyInfoPersistence.fetchByCompanyId(
+					companyId, false));
+
+			if ((companyInfo == null) ||
+				!CompanyKeyResolverUtil.isFIPSKey(companyInfo.getKey())) {
+
+				throw new CompanyKeyException(
+					StringBundler.concat(
+						"Unable to store the rotated key for company ",
+						companyId, " because of a concurrent update"));
+			}
+		}
+
+		if (_log.isInfoEnabled()) {
+			if (rotated) {
+				_log.info("Rotated the key for company " + companyId);
+			}
+			else {
+				_log.info(
+					"Another node already rotated the key for company " +
+						companyId);
+			}
+		}
 	}
 
 	private void _validateMaxLengths(
