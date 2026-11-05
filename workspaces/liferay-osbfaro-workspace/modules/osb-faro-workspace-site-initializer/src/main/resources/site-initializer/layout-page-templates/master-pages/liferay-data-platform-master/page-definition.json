@@ -85,6 +85,29 @@
 											}
 										],
 										"type": "FragmentDropZone"
+									},
+									{
+										"definition": {
+											"fragmentDropZoneId": "actions"
+										},
+										"id": "957674a3-24dd-48fa-bf50-4509e7c703c7",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "com.liferay.osb.faro.web.internal.fragment.renderer.FaroPageBarActionsFragmentRenderer"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+													],
+													"indexed": true
+												},
+												"id": "2dd98c5f-6b78-4bd3-9d3b-535b959d4698",
+												"type": "Fragment"
+											}
+										],
+										"type": "FragmentDropZone"
 									}
 								],
 								"type": "Fragment"
