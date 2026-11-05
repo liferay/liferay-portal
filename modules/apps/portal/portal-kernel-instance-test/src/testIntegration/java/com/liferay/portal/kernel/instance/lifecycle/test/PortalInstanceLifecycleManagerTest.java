@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -74,7 +75,8 @@ public class PortalInstanceLifecycleManagerTest {
 					}
 
 				},
-				null);
+				MapUtil.singletonDictionary(
+					"service.ranking", Integer.MAX_VALUE));
 
 		_updateCompanyId(companyId, -companyId);
 
