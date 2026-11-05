@@ -147,6 +147,10 @@
 		"type": "Root"
 	},
 	"settings": {
+		"favIcon": {
+			"contentType": "Document",
+			"externalReferenceCode": "LDP_FAVICON"
+		},
 		"themeName": "CMS"
 	},
 	"version": 1.1
