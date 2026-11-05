@@ -356,11 +356,11 @@ public class CommerceChannelRelLocalServiceImpl
 	private void _reindexCommerceChannelRels(long classNameId, long classPK) {
 		try {
 			if ((classNameId == _classNameLocalService.getClassNameId(
-					CommerceCurrency.class)) ||
-				(classNameId == _classNameLocalService.getClassNameId(
 					CPConfigurationList.class)) ||
 				(classNameId == _classNameLocalService.getClassNameId(
-					CPDefinition.class))) {
+					CPDefinition.class)) ||
+				(classNameId == _classNameLocalService.getClassNameId(
+					CommerceCurrency.class))) {
 
 				ClassName className = _classNameLocalService.getClassName(
 					classNameId);
