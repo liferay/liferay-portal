@@ -84,9 +84,16 @@ definition {
 	@summary = "Default summary"
 	macro gotoPortlet(site = null, portlet = null, category = null) {
 		if (isSet(site)) {
-			var siteNameURL = StringUtil.replace(${site}, " ", "-");
+			var defaultSiteName = TestCase.getSiteName();
 
-			var siteNameURL = StringUtil.lowerCase(${siteNameURL});
+			if (${site} == ${defaultSiteName}) {
+				var siteNameURL = "guest";
+			}
+			else {
+				var siteNameURL = StringUtil.replace(${site}, " ", "-");
+
+				var siteNameURL = StringUtil.lowerCase(${siteNameURL});
+			}
 
 			Navigator.openWithAppendToBaseURL(urlAppend = "group/${siteNameURL}/~/control_panel/manage?p_p_id=com_liferay_layout_admin_web_portlet_GroupPagesPortlet");
 		}
