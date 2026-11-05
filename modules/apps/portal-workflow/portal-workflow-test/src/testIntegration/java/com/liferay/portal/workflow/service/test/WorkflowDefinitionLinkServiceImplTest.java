@@ -11,6 +11,8 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -26,6 +28,7 @@ import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBu
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -83,6 +86,9 @@ public class WorkflowDefinitionLinkServiceImplTest {
 
 	@Before
 	public void setUp() throws Exception {
+		_group = GroupTestUtil.addGroup(
+			_company.getCompanyId(), _companyAdminUser.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID);
 		_originalName = PrincipalThreadLocal.getName();
 		_originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
@@ -169,7 +175,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 
 		List<WorkflowDefinitionLink> workflowDefinitionLinks =
 			_workflowDefinitionLinkService.getWorkflowDefinitionLinks(
-				TestPropsValues.getCompanyId(), "Single Approver", 1);
+				_company.getCompanyId(), "Single Approver", 1);
 
 		WorkflowDefinitionLink workflowDefinitionLink2 =
 			workflowDefinitionLinks.get(0);
@@ -220,7 +226,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 		WorkflowDefinitionLink workflowDefinitionLink2 =
 			_workflowDefinitionLinkService.updateWorkflowDefinitionLink(
 				workflowDefinitionLink1.getExternalReferenceCode(),
-				TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+				_companyAdminUser.getUserId(), _company.getCompanyId(),
 				workflowDefinitionLink1.getGroupId(),
 				"com.liferay.account.model.AccountEntry", 0, 0,
 				kaleoDefinition.getName(),
@@ -258,8 +264,8 @@ public class WorkflowDefinitionLinkServiceImplTest {
 
 		return _workflowDefinitionLinkService.addWorkflowDefinitionLink(
 			externalReferenceCode, _companyAdminUser.getUserId(),
-			TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
-			className, 0, 0, kaleoDefinitionName, 1);
+			_company.getCompanyId(), _group.getGroupId(), className, 0, 0,
+			kaleoDefinitionName, 1);
 	}
 
 	private void _setUpPermissionThreadLocal(User user) {
@@ -275,6 +281,8 @@ public class WorkflowDefinitionLinkServiceImplTest {
 
 	@Inject
 	private static ConfigurationAdmin _configurationAdmin;
+
+	private Group _group;
 
 	@Inject
 	private KaleoDefinitionLocalService _kaleoDefinitionLocalService;
