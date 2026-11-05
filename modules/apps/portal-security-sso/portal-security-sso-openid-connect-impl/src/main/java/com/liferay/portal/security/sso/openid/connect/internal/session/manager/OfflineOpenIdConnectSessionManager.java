@@ -466,7 +466,9 @@ public class OfflineOpenIdConnectSessionManager {
 				_openIdConnectSessionLocalService.fetchOpenIdConnectSession(
 					openIdConnectSessionId);
 
-			if (openIdConnectSession == null) {
+			if ((openIdConnectSession == null) ||
+				!_isAccessTokenExpiringSoon(openIdConnectSession)) {
+
 				return;
 			}
 
