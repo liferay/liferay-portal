@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.Deactivate;
 		"jakarta.portlet.init-param.portlet-title-based-navigation=true",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/mfa_verify/",
 		"jakarta.portlet.name=" + MFAPortletKeys.MFA_VERIFY,
+		"jakarta.portlet.preferences=classpath:/META-INF/portlet-preferences/default-portlet-preferences.xml",
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.version=4.0",
 		"portlet.add.default.resource.check.whitelist=" + MFAPortletKeys.MFA_VERIFY

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<portlet-preferences>
+	<preference>
+		<name>portletSetupPortletDecoratorId</name>
+		<value>borderless</value>
+	</preference>
+</portlet-preferences>
