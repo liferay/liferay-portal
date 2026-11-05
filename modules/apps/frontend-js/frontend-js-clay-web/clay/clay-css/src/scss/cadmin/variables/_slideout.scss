@@ -1,4 +1,7 @@
-$cadmin-c-slideout-sidebar-width: 320px !default;
+$cadmin-c-slideout-sidebar-width: var(
+	--cadmin-c-slideout-sidebar-width,
+	320px
+) !default;
 
 $cadmin-c-slideout-sidebar-width-mobile: 280px !default;
 
@@ -16,7 +19,7 @@ $cadmin-c-slideout-transition-in: () !default;
 $cadmin-c-slideout-transition-in: map-merge(
 	(
 		overflow: hidden,
-		transition: all 0.3s ease-in-out,
+		transition: var(--cadmin-c-slideout-transition-in, all 0.3s ease-in-out),
 	),
 	$cadmin-c-slideout-transition-in
 );
@@ -25,7 +28,7 @@ $cadmin-c-slideout-transition-out: () !default;
 $cadmin-c-slideout-transition-out: map-merge(
 	(
 		overflow: hidden,
-		transition: all 0.2s ease-in,
+		transition: var(--cadmin-c-slideout-transition-out, all 0.2s ease-in),
 	),
 	$cadmin-c-slideout-transition-out
 );
