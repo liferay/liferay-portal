@@ -206,9 +206,9 @@ public class TestrayFactoryTest
 			AxisTestClassGroup.class);
 
 		Mockito.when(
-			axisTestClassGroup.getJob()
+			axisTestClassGroup.getBatchName()
 		).thenReturn(
-			job
+			batchName
 		);
 
 		Mockito.when(
@@ -218,9 +218,9 @@ public class TestrayFactoryTest
 		);
 
 		Mockito.when(
-			axisTestClassGroup.getBatchName()
+			axisTestClassGroup.getJob()
 		).thenReturn(
-			batchName
+			job
 		);
 
 		return axisTestClassGroup;
