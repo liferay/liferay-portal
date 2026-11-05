@@ -4,7 +4,7 @@
 			"fields": [
 				{
 					"dataType": "string",
-					"defaultValue": "CMS Control Menu",
+					"defaultValue": "Control Menu",
 					"label": "page-bar-aria-label",
 					"localizable": true,
 					"name": "pagebarAriaLabel",

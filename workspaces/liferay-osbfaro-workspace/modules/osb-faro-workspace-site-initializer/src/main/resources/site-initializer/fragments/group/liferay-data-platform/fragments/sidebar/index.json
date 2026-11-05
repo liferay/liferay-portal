@@ -4,7 +4,7 @@
 			"fields": [
 				{
 					"dataType": "string",
-					"defaultValue": "CMS Product Menu",
+					"defaultValue": "Product Menu",
 					"label": "sidebar-aria-label",
 					"localizable": true,
 					"name": "sidebarAriaLabel",
