@@ -145,8 +145,8 @@ public class SchedulerResponseManagerImpl implements SchedulerResponseManager {
 		if (schedulerResponse == null) {
 			throw new SchedulerException(
 				StringBundler.concat(
-					"Unable to find scheduled job {\"groupName\"=", groupName,
-					", \"jobName\"=", jobName, "}"));
+					"Unable to find scheduled job with group name \"",
+					groupName, "\" and job name \"", jobName, "\""));
 		}
 
 		if (!_hasPermission(permissionChecker, schedulerResponse)) {
