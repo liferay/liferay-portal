@@ -828,10 +828,10 @@ public class LayoutSetPrototypePropagationTest
 			linkedChildLayout.getParentLayoutId());
 		Assert.assertEquals(
 			LayoutConstants.TYPE_PORTLET, linkedParentLayout.getType());
-		Assert.assertEquals(
-			parentLayout.getUuid(), linkedParentLayout.getUuid());
 
 		Assert.assertEquals(childLayout.getUuid(), linkedChildLayout.getUuid());
+		Assert.assertEquals(
+			parentLayout.getUuid(), linkedParentLayout.getUuid());
 
 		GroupTestUtil.deleteGroup(testGroup);
 	}

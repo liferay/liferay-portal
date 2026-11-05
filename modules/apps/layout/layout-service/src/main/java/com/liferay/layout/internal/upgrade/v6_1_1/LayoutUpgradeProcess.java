@@ -398,6 +398,7 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 					connection,
 					"update Layout set layoutSetPrototypeLayoutERC = ? where " +
 						"plid = ?");
+
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
 			while (resultSet.next()) {
@@ -445,6 +446,7 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 					connection,
 					"update Layout set layoutSetPrototypeLayoutERC = ? where " +
 						"plid = ? and layoutSetPrototypeLayoutERC = ?");
+
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
 			while (resultSet.next()) {
@@ -536,7 +538,8 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 
 						newUUID = uuids.computeIfAbsent(
 							segmentsExperienceId,
-							key -> PortalUUIDUtil.generate());
+							curSegmentsExperienceId ->
+								PortalUUIDUtil.generate());
 					}
 
 					if (Objects.equals(

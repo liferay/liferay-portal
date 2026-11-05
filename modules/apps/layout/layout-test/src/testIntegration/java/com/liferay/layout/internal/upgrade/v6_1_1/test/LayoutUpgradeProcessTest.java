@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.version.Version;
@@ -206,7 +207,6 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 
 		Layout linkedGrandparentLayout = _getLinkedLayout(
 			_group, _grandparentLayout, false);
-
 		Layout linkedParentLayout = _getLinkedLayout(
 			_group, _parentLayout, false);
 
@@ -375,14 +375,14 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 
 		_assertLayoutExternalReferenceCode(layout, linkedLayout, privateLayout);
 
-		String suffix = _getSuffix(privateLayout);
-
 		List<FragmentEntryLink> fragmentEntryLinks =
 			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
 				layout.getGroupId(), layout.getPlid());
 		List<FragmentEntryLink> linkedFragmentEntryLinks =
 			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
 				linkedLayout.getGroupId(), linkedLayout.getPlid());
+
+		String suffix = _getSuffix(privateLayout);
 
 		Assert.assertEquals(
 			_getExternalReferenceCodes(fragmentEntryLinks, suffix),
@@ -479,7 +479,7 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 				layoutSetPrototypeLayout.getGroupId(),
 				layoutSetPrototypeLayout.getPlid());
 
-		if (fragmentEntryLinks.isEmpty()) {
+		if (ListUtil.isEmpty(fragmentEntryLinks)) {
 			return;
 		}
 
