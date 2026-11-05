@@ -38,7 +38,7 @@ import org.osgi.framework.ServiceRegistration;
  * @author Shuyang Zhou
  */
 @RunWith(Arquillian.class)
-public class PortalInstanceLifecycleManagerTest {
+public class PortalInstanceLifecycleListenerManagerImplTest {
 
 	@ClassRule
 	@Rule
@@ -46,15 +46,13 @@ public class PortalInstanceLifecycleManagerTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testRegisterListenerWhenUnregisterDeletedCompanyFails()
-		throws Exception {
-
+	public void testAddingService() throws Exception {
 		_company = CompanyTestUtil.addCompany();
 
 		long companyId = _company.getCompanyId();
 
 		Bundle bundle = FrameworkUtil.getBundle(
-			PortalInstanceLifecycleManagerTest.class);
+			PortalInstanceLifecycleListenerManagerImplTest.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
