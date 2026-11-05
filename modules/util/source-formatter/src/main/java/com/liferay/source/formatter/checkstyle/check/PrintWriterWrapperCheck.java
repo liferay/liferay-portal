@@ -60,35 +60,40 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 			DetailAST variableDefinitionDetailAST =
 				grandParentDetailAST.getParent();
 
-			if (TokenUtil.isOfType(
+			if (!TokenUtil.isOfType(
 					variableDefinitionDetailAST, TokenTypes.RESOURCE,
 					TokenTypes.VARIABLE_DEF)) {
 
-				_checkVariable(detailAST, variableDefinitionDetailAST);
+				return;
 			}
+
+			_checkVariable(detailAST, variableDefinitionDetailAST);
 		}
 		else if (grandParentDetailAST.getType() == TokenTypes.ELIST) {
+			DetailAST greatGrandParentDetailAST =
+				grandParentDetailAST.getParent();
+
+			if (greatGrandParentDetailAST.getType() != TokenTypes.METHOD_CALL) {
+				return;
+			}
+
 			_checkArgument(
-				detailAST, parentDetailAST, grandParentDetailAST.getParent());
+				detailAST, parentDetailAST, greatGrandParentDetailAST);
 		}
 	}
 
 	private void _checkArgument(
 		DetailAST literalNewDetailAST, DetailAST exprDetailAST,
-		DetailAST detailAST) {
+		DetailAST methodCallDetailAST) {
 
-		if (detailAST.getType() != TokenTypes.METHOD_CALL) {
-			return;
-		}
-
-		DetailAST firstChildDetailAST = detailAST.getFirstChild();
+		DetailAST firstChildDetailAST = methodCallDetailAST.getFirstChild();
 
 		if (firstChildDetailAST.getType() != TokenTypes.IDENT) {
 			return;
 		}
 
 		List<DetailAST> parameterExprDetailASTs = getParameterExprDetailASTs(
-			detailAST);
+			methodCallDetailAST);
 
 		int index = parameterExprDetailASTs.indexOf(exprDetailAST);
 
