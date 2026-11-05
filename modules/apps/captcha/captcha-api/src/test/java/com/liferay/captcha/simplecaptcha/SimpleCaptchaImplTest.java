@@ -75,13 +75,14 @@ public class SimpleCaptchaImplTest {
 
 		_serveImage(captchaId, mockHttpSession);
 
-		Map<String, String> captchaTexts = _getCaptchaTexts(mockHttpSession);
-
 		MockHttpServletRequest mockHttpServletRequest2 =
 			_getMockHttpServletRequest(captchaId, mockHttpSession);
 
+		Map<String, String> captchaTexts = _getCaptchaTexts(mockHttpSession);
+
 		mockHttpServletRequest2.setParameter(
 			"captchaText", captchaTexts.get(captchaId));
+
 		mockHttpServletRequest2.setRemoteUser(RandomTestUtil.randomString());
 
 		_simpleCaptchaImpl.check(mockHttpServletRequest2);
@@ -251,9 +252,9 @@ public class SimpleCaptchaImplTest {
 
 		Map<String, String> captchaTexts = _getCaptchaTexts(mockHttpSession);
 
+		Assert.assertFalse(captchaTexts.containsKey(captchaId));
 		Assert.assertEquals(
 			captchaTexts.toString(), maxCaptchaTexts, captchaTexts.size());
-		Assert.assertFalse(captchaTexts.containsKey(captchaId));
 	}
 
 	private void _testValidateChallenge() throws Exception {
@@ -266,11 +267,10 @@ public class SimpleCaptchaImplTest {
 
 		Map<String, String> captchaTexts = _getCaptchaTexts(mockHttpSession);
 
+		Assert.assertFalse(captchaTexts.containsKey(captchaId));
 		Assert.assertTrue(
 			_validateChallenge(
 				captchaId, captchaTexts.get(captchaId), mockHttpSession));
-
-		Assert.assertFalse(captchaTexts.containsKey(captchaId));
 	}
 
 	private void _testValidateChallengeWithWrongCaptchaText() throws Exception {
