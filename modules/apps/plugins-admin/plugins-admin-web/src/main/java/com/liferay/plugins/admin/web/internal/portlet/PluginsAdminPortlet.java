@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 		"jakarta.portlet.display-name=Plugins Configuration",
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
 		"jakarta.portlet.name=" + PluginsAdminPortletKeys.PLUGINS_ADMIN,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=administrator",
