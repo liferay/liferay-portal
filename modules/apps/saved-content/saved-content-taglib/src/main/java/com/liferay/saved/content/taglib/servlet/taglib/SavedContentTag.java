@@ -223,8 +223,6 @@ public class SavedContentTag extends IncludeTag {
 			PortalUtil.getControlPanelPortletURL(
 				httpServletRequest, MySavedContentPortletKeys.MY_SAVED_CONTENT,
 				PortletRequest.RENDER_PHASE)
-		).setMVCRenderCommandName(
-			"/saved_content/view_my_saved_content"
 		).setBackURL(
 			themeDisplay.getURLCurrent()
 		).buildString();

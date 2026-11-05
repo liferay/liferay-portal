@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.copy-request-parameters=true",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
-		"jakarta.portlet.init-param.view-template=/view.jsp",
+		"jakarta.portlet.init-param.view-template=/my_saved_content/view.jsp",
 		"jakarta.portlet.name=" + MySavedContentPortletKeys.MY_SAVED_CONTENT,
 		"jakarta.portlet.portlet-info.keywords=My Saved Content",
 		"jakarta.portlet.portlet-info.short-title=My Saved Content",

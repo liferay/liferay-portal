@@ -172,8 +172,6 @@ public class MySavedContentDisplayContext {
 
 		_portletURL = PortletURLBuilder.createRenderURL(
 			_renderResponse
-		).setMVCRenderCommandName(
-			"/saved_content/view_my_saved_content"
 		).setRedirect(
 			ParamUtil.getString(_httpServletRequest, "redirect")
 		).buildPortletURL();
