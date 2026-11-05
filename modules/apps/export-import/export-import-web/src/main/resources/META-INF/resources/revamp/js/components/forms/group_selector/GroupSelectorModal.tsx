@@ -86,7 +86,7 @@ export default function GroupSelectorModal({
 	groups,
 	onClose,
 	onSubmit,
-	process = 'export',
+	process,
 	selectedGroups,
 	title,
 	type,
@@ -95,7 +95,7 @@ export default function GroupSelectorModal({
 	groups?: Group[];
 	onClose: () => void;
 	onSubmit: (selectedGroups: Group[]) => void;
-	process?: GroupProcess;
+	process: GroupProcess;
 	selectedGroups: Group[];
 	title: string;
 	type: GroupType;
