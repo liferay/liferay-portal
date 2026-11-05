@@ -6,43 +6,34 @@
 package com.liferay.ai.hub.cell.internal.configuration.persistence.listener;
 
 import com.liferay.ai.hub.cell.configuration.AIHubCellConfiguration;
-import com.liferay.oauth2.provider.constants.ClientProfile;
-import com.liferay.oauth2.provider.constants.GrantType;
-import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.ai.hub.cell.internal.provisioning.AIHubCellProvisioner;
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
+import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
-import com.liferay.oauth2.provider.util.OAuth2SecureRandomGenerator;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.security.service.access.policy.model.SAPEntry;
 import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Dictionary;
-import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeSet;
 
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -59,18 +50,32 @@ public class AIHubCellConfigurationModelListener
 	@Override
 	public void onAfterSave(String pid, Dictionary<String, Object> properties) {
 		long companyId = GetterUtil.getLong(properties.get("companyId"));
+		String serviceURL = GetterUtil.getString(properties.get("serviceURL"));
 
-		Company company = _companyLocalService.fetchCompany(companyId);
-
-		if ((company == null) ||
-			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-62272")) {
+		if (companyId == CompanyConstants.SYSTEM) {
+			try {
+				_companyLocalService.forEachCompany(
+					company -> {
+						if (!_hasCompanyConfiguration(company)) {
+							_aiHubCellProvisioner.provision(
+								company.getCompanyId(), serviceURL);
+						}
+					});
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+			}
 
 			return;
 		}
 
-		_addOrUpdateOAuth2Application(
-			company, GetterUtil.getString(properties.get("serviceURL")));
-		_addSAPEntry(company);
+		Company company = _companyLocalService.fetchCompany(companyId);
+
+		if (company == null) {
+			return;
+		}
+
+		_aiHubCellProvisioner.provision(companyId, serviceURL);
 	}
 
 	@Override
@@ -88,124 +93,18 @@ public class AIHubCellConfigurationModelListener
 		}
 	}
 
-	private void _addOrUpdateOAuth2Application(
-		Company company, String serviceURL) {
-
-		try {
-			OAuth2Application oAuth2Application =
-				_oAuth2ApplicationLocalService.
-					fetchOAuth2ApplicationByExternalReferenceCode(
-						"AI-HUB-CELL", company.getCompanyId());
-
-			boolean local = StringUtil.equalsIgnoreCase(
-				company.getVirtualHostname(),
-				HttpComponentsUtil.getDomain(serviceURL));
-
-			if (oAuth2Application != null) {
-				if (!local) {
-					return;
-				}
-
-				Set<String> scopeAliases = new TreeSet<>(
-					_oAuth2ApplicationScopeAliasesLocalService.
-						getScopeAliasesList(
-							oAuth2Application.
-								getOAuth2ApplicationScopeAliasesId()));
-
-				if (Collections.addAll(
-						scopeAliases, "Liferay.AI.Hub.REST.everything",
-						"Liferay.AI.Hub.REST.everything.read",
-						"Liferay.AI.Hub.REST.everything.write")) {
-
-					oAuth2Application =
-						_oAuth2ApplicationLocalService.updateScopeAliases(
-							oAuth2Application.getUserId(),
-							oAuth2Application.getUserName(),
-							oAuth2Application.getOAuth2ApplicationId(),
-							new ArrayList<>(scopeAliases));
-				}
-
-				if (!Objects.equals(
-						oAuth2Application.getHomePageURL(), serviceURL)) {
-
-					oAuth2Application.setHomePageURL(serviceURL);
-
-					_oAuth2ApplicationLocalService.updateOAuth2Application(
-						oAuth2Application);
-				}
-
-				return;
-			}
-
-			User user = _userLocalService.fetchUserByScreenName(
-				company.getCompanyId(), "default-service-account");
-
-			if (user == null) {
-				return;
-			}
-
-			String homePageURL = company.getPortalURL(0);
-
-			if (local) {
-				homePageURL = serviceURL;
-			}
-
-			_oAuth2ApplicationLocalService.addOrUpdateOAuth2Application(
-				"AI-HUB-CELL", user.getUserId(), user.getScreenName(),
-				Arrays.asList(GrantType.CLIENT_CREDENTIALS),
-				"client_secret_post", user.getUserId(),
-				OAuth2SecureRandomGenerator.generateClientId(),
-				ClientProfile.HEADLESS_SERVER.id(),
-				OAuth2SecureRandomGenerator.generateClientSecret(), null, null,
-				homePageURL, 0, null, "AI Hub Cell", null, Arrays.asList(),
-				false,
-				Arrays.asList(
-					"Liferay.AI.Hub.REST.everything",
-					"Liferay.AI.Hub.REST.everything.read",
-					"Liferay.AI.Hub.REST.everything.write",
-					"Liferay.Bulk.REST.everything.write",
-					"Liferay.Headless.Admin.Fragment.everything",
-					"Liferay.Headless.Admin.Taxonomy.everything.read",
-					"Liferay.Headless.Admin.User.everything.read",
-					"Liferay.Headless.Batch.Engine.everything",
-					"Liferay.Headless.CMP.everything.read",
-					"Liferay.Object.Admin.REST.everything.read",
-					"Liferay.Portal.Search.REST.everything.read",
-					"cmpprojectlink.everything"),
-				false, new ServiceContext());
-		}
-		catch (PortalException portalException) {
-			_log.error(
-				"Unable to add or update OAuth2 application for company " +
-					company.getCompanyId(),
-				portalException);
-		}
+	@Activate
+	protected void activate() {
+		_aiHubCellProvisioner = new AIHubCellProvisioner(
+			_companyLocalService, _configurationProvider,
+			_oAuth2ApplicationLocalService,
+			_oAuth2ApplicationScopeAliasesLocalService, _sapEntryLocalService,
+			_scopeLocator, _userLocalService);
 	}
 
-	private void _addSAPEntry(Company company) {
-		try {
-			SAPEntry sapEntry = _sapEntryLocalService.fetchSAPEntry(
-				company.getCompanyId(), _SAP_ENTRY_NAME);
-
-			if (sapEntry != null) {
-				return;
-			}
-
-			_sapEntryLocalService.addSAPEntry(
-				_userLocalService.getGuestUserId(company.getCompanyId()),
-				"com.liferay.portal.search.rest.internal.resource.v1_0." +
-					"SearchResultResourceImpl#getSearchPage",
-				true, true, _SAP_ENTRY_NAME,
-				Collections.singletonMap(
-					LocaleUtil.getDefault(), _SAP_ENTRY_NAME),
-				new ServiceContext());
-		}
-		catch (PortalException portalException) {
-			_log.error(
-				"Unable to add service access policy entry for company " +
-					company.getCompanyId(),
-				portalException);
-		}
+	@Deactivate
+	protected void deactivate() {
+		_aiHubCellProvisioner.stopWaitingForScopeAliases();
 	}
 
 	private String _getMessage(String key) {
@@ -227,13 +126,32 @@ public class AIHubCellConfigurationModelListener
 			getClass());
 	}
 
-	private static final String _SAP_ENTRY_NAME = "AI_HUB_CELL_TOKEN";
+	private boolean _hasCompanyConfiguration(Company company) throws Exception {
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+				company.getCompanyId(), AIHubCellConfiguration.class.getName(),
+				company.getWebId()));
+
+		if (configurations != null) {
+			return true;
+		}
+
+		return false;
+	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AIHubCellConfigurationModelListener.class);
 
+	private AIHubCellProvisioner _aiHubCellProvisioner;
+
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private ConfigurationAdmin _configurationAdmin;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
@@ -244,6 +162,9 @@ public class AIHubCellConfigurationModelListener
 
 	@Reference
 	private SAPEntryLocalService _sapEntryLocalService;
+
+	@Reference
+	private ScopeLocator _scopeLocator;
 
 	@Reference
 	private UserLocalService _userLocalService;
