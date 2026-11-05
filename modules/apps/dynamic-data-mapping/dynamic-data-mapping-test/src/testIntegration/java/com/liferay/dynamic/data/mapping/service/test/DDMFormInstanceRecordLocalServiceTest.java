@@ -12,7 +12,9 @@ import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.dynamic.data.mapping.constants.DDMFormConstants;
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.exception.FormInstanceSubmissionLimitException;
+import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecordVersion;
@@ -20,6 +22,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormInstanceReport;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceVersion;
 import com.liferay.dynamic.data.mapping.model.DDMStorageLink;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordLocalService;
@@ -32,6 +35,15 @@ import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.dynamic.data.mapping.util.DDMFormUtil;
 import com.liferay.dynamic.data.mapping.util.DDMUtil;
+import com.liferay.object.constants.ObjectActionKeys;
+import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
+import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -51,10 +63,12 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -62,9 +76,11 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -244,9 +260,20 @@ public class DDMFormInstanceRecordLocalServiceTest
 
 	@Test
 	public void testAddFormInstanceRecordWithFileEntry() throws Exception {
+
+		// Default storage type
+
 		User user = TestPropsValues.getUser();
 
-		DDMFormInstance ddmFormInstance = _addDDMFormInstance(user);
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
+			DDMFormValuesTestUtil.createAvailableLocales(LocaleUtil.US),
+			LocaleUtil.US);
+
+		DDMFormTestUtil.addDocumentLibraryDDMFormField(ddmForm, "upload");
+
+		DDMFormInstance ddmFormInstance = _addDDMFormInstance(
+			ddmForm, DDMFormInstanceTestUtil.createSettingsDDMFormValues(),
+			user);
 
 		FileEntry tempFileEntry = _addTempFileEntry();
 
@@ -255,7 +282,10 @@ public class DDMFormInstanceRecordLocalServiceTest
 				user.getUserId(), group.getGroupId(),
 				ddmFormInstance.getFormInstanceId(),
 				_createDDMFormValues(
-					ddmFormInstance.getDDMForm(), tempFileEntry),
+					ddmForm,
+					HashMapBuilder.put(
+						"upload", tempFileEntry
+					).build()),
 				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 
 		Assert.assertNull(
@@ -268,11 +298,8 @@ public class DDMFormInstanceRecordLocalServiceTest
 		DLFileEntry dlFileEntry = _dlFileEntryLocalService.getDLFileEntry(
 			fileEntryJSONObject.getLong("fileEntryId"));
 
-		Assert.assertEquals(
-			DDMFormInstanceRecord.class.getName(), dlFileEntry.getClassName());
-		Assert.assertEquals(
-			ddmFormInstanceRecord.getFormInstanceRecordId(),
-			dlFileEntry.getClassPK());
+		_assertDLFileEntry(ddmFormInstanceRecord, dlFileEntry);
+
 		Assert.assertEquals(
 			_ddmFormFolder.getFolderId(), dlFileEntry.getFolderId());
 		Assert.assertEquals("file.txt", dlFileEntry.getTitle());
@@ -287,19 +314,140 @@ public class DDMFormInstanceRecordLocalServiceTest
 		Assert.assertEquals(
 			dlFileEntry.getUuid(), fileEntryJSONObject.getString("uuid"));
 
+		// Object storage type
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				ListUtil.fromArray(
+					new AttachmentObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"attachmentObjectFieldName1"
+					).objectFieldSettings(
+						ListUtil.fromArray(
+							new ObjectFieldSettingBuilder(
+							).name(
+								ObjectFieldSettingConstants.
+									NAME_ACCEPTED_FILE_EXTENSIONS
+							).value(
+								"txt"
+							).build(),
+							new ObjectFieldSettingBuilder(
+							).name(
+								ObjectFieldSettingConstants.NAME_FILE_SOURCE
+							).value(
+								ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA
+							).build(),
+							new ObjectFieldSettingBuilder(
+							).name(
+								ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+							).value(
+								"100"
+							).build())
+					).build(),
+					new AttachmentObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"attachmentObjectFieldName2"
+					).objectFieldSettings(
+						ListUtil.fromArray(
+							new ObjectFieldSettingBuilder(
+							).name(
+								ObjectFieldSettingConstants.
+									NAME_ACCEPTED_FILE_EXTENSIONS
+							).value(
+								"txt"
+							).build(),
+							new ObjectFieldSettingBuilder(
+							).name(
+								ObjectFieldSettingConstants.NAME_FILE_SOURCE
+							).value(
+								ObjectFieldSettingConstants.
+									VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
+							).build(),
+							new ObjectFieldSettingBuilder(
+							).name(
+								ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+							).value(
+								"100"
+							).build())
+					).build()));
+
 		Role role = _roleLocalService.getRole(
 			user.getCompanyId(), RoleConstants.GUEST);
 
-		Assert.assertTrue(
-			ListUtil.isEmpty(
-				_resourcePermissionLocalService.
-					getAvailableResourcePermissionActionIds(
-						user.getCompanyId(), DLFileEntry.class.getName(),
-						ResourceConstants.SCOPE_INDIVIDUAL,
-						String.valueOf(dlFileEntry.getFileEntryId()),
-						role.getRoleId(),
-						_resourceActions.getModelResourceActions(
-							DLFileEntry.class.getName()))));
+		_resourcePermissionLocalService.addResourcePermission(
+			user.getCompanyId(), objectDefinition.getResourceName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(user.getCompanyId()), role.getRoleId(),
+			ObjectActionKeys.ADD_OBJECT_ENTRY);
+
+		ddmForm = DDMFormTestUtil.createDDMForm(
+			DDMFormValuesTestUtil.createAvailableLocales(LocaleUtil.US),
+			LocaleUtil.US);
+
+		ddmForm.addDDMFormField(
+			_createDDMFormField("upload1", "attachmentObjectFieldName1"));
+		ddmForm.addDDMFormField(
+			_createDDMFormField("upload2", "attachmentObjectFieldName2"));
+
+		DDMFormValues settingsDDMFormValues =
+			DDMFormInstanceTestUtil.createSettingsDDMFormValues();
+
+		settingsDDMFormValues.addDDMFormFieldValue(
+			DDMFormValuesTestUtil.createUnlocalizedDDMFormFieldValue(
+				"objectDefinitionId",
+				String.valueOf(objectDefinition.getObjectDefinitionId())));
+
+		DDMFormFieldValue ddmFormFieldValue =
+			settingsDDMFormValues.getDDMFormFieldValue("storageType", false);
+
+		ddmFormFieldValue.setValue(new UnlocalizedValue("object"));
+
+		ddmFormInstance = _addDDMFormInstance(
+			ddmForm, settingsDDMFormValues, user);
+
+		user = _userLocalService.getGuestUser(TestPropsValues.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			ddmFormInstanceRecord =
+				_ddmFormInstanceRecordLocalService.addFormInstanceRecord(
+					user.getUserId(), group.getGroupId(),
+					ddmFormInstance.getFormInstanceId(),
+					_createDDMFormValues(
+						ddmForm,
+						HashMapBuilder.put(
+							"upload1", _addTempFileEntry()
+						).put(
+							"upload2", _addTempFileEntry()
+						).build()),
+					ServiceContextTestUtil.getServiceContext(
+						group.getGroupId(), user.getUserId()));
+		}
+
+		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
+			ddmFormInstanceRecord.getStorageId());
+
+		_assertDLFileEntry(
+			ddmFormInstanceRecord,
+			_dlFileEntryLocalService.getDLFileEntry(
+				MapUtil.getLong(
+					objectEntry.getValues(), "attachmentObjectFieldName1")));
+
+		dlFileEntry = _dlFileEntryLocalService.getDLFileEntry(
+			MapUtil.getLong(
+				objectEntry.getValues(), "attachmentObjectFieldName2"));
+
+		Assert.assertEquals(
+			objectDefinition.getClassName(), dlFileEntry.getClassName());
+		Assert.assertEquals(
+			objectEntry.getObjectEntryId(), dlFileEntry.getClassPK());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	@Test
@@ -455,6 +603,57 @@ public class DDMFormInstanceRecordLocalServiceTest
 			"1.1", string3);
 	}
 
+	@Test
+	public void testUpdateFormInstanceRecordWithFileEntry() throws Exception {
+		User user = TestPropsValues.getUser();
+
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
+			DDMFormValuesTestUtil.createAvailableLocales(LocaleUtil.US),
+			LocaleUtil.US);
+
+		DDMFormTestUtil.addDocumentLibraryDDMFormField(ddmForm, "upload");
+
+		DDMFormInstance ddmFormInstance = _addDDMFormInstance(
+			ddmForm, DDMFormInstanceTestUtil.createSettingsDDMFormValues(),
+			user);
+
+		DDMFormInstanceRecord ddmFormInstanceRecord =
+			_ddmFormInstanceRecordLocalService.addFormInstanceRecord(
+				user.getUserId(), group.getGroupId(),
+				ddmFormInstance.getFormInstanceId(),
+				_createDDMFormValues(
+					ddmForm,
+					HashMapBuilder.put(
+						"upload", _addTempFileEntry()
+					).build()),
+				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		FileEntry tempFileEntry = _addTempFileEntry();
+
+		ddmFormInstanceRecord =
+			_ddmFormInstanceRecordLocalService.updateFormInstanceRecord(
+				user.getUserId(),
+				ddmFormInstanceRecord.getFormInstanceRecordId(), false,
+				_createDDMFormValues(
+					ddmForm,
+					HashMapBuilder.put(
+						"upload", tempFileEntry
+					).build()),
+				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		Assert.assertNull(
+			_dlFileEntryLocalService.fetchDLFileEntry(
+				tempFileEntry.getFileEntryId()));
+
+		JSONObject fileEntryJSONObject = _getFileEntryJSONObject(
+			ddmFormInstanceRecord);
+
+		_assertDLFileEntry(
+			ddmFormInstanceRecord,
+			_dlFileEntryLocalService.getDLFileEntry(
+				fileEntryJSONObject.getLong("fileEntryId")));
+	}
+
 	private DDMFormInstance _addDDMFormInstance(
 			boolean limitToOneSubmissionPerUser, User user)
 		throws Exception {
@@ -475,12 +674,9 @@ public class DDMFormInstanceRecordLocalServiceTest
 			ddmFormInstance.getFormInstanceId(), ddmFormValues);
 	}
 
-	private DDMFormInstance _addDDMFormInstance(User user) throws Exception {
-		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
-			DDMFormValuesTestUtil.createAvailableLocales(LocaleUtil.US),
-			LocaleUtil.US);
-
-		DDMFormTestUtil.addDocumentLibraryDDMFormField(ddmForm, "upload");
+	private DDMFormInstance _addDDMFormInstance(
+			DDMForm ddmForm, DDMFormValues settingsDDMFormValues, User user)
+		throws Exception {
 
 		Repository repository = _portletFileRepository.addPortletRepository(
 			group.getGroupId(), DDMFormConstants.SERVICE_NAME,
@@ -493,7 +689,7 @@ public class DDMFormInstanceRecordLocalServiceTest
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 
 		return DDMFormInstanceTestUtil.addDDMFormInstance(
-			ddmForm, group, user.getUserId());
+			ddmForm, group, settingsDDMFormValues, user.getUserId());
 	}
 
 	private void _addFormInstanceRecords(
@@ -606,24 +802,71 @@ public class DDMFormInstanceRecordLocalServiceTest
 			expectedStructureVersionId, ddmStorageLink.getStructureVersionId());
 	}
 
+	private void _assertDLFileEntry(
+			DDMFormInstanceRecord ddmFormInstanceRecord,
+			DLFileEntry dlFileEntry)
+		throws Exception {
+
+		Assert.assertEquals(
+			DDMFormInstanceRecord.class.getName(), dlFileEntry.getClassName());
+		Assert.assertEquals(
+			ddmFormInstanceRecord.getFormInstanceRecordId(),
+			dlFileEntry.getClassPK());
+
+		Role role = _roleLocalService.getRole(
+			dlFileEntry.getCompanyId(), RoleConstants.GUEST);
+
+		Assert.assertTrue(
+			ListUtil.isEmpty(
+				_resourcePermissionLocalService.
+					getAvailableResourcePermissionActionIds(
+						dlFileEntry.getCompanyId(), DLFileEntry.class.getName(),
+						ResourceConstants.SCOPE_INDIVIDUAL,
+						String.valueOf(dlFileEntry.getFileEntryId()),
+						role.getRoleId(),
+						_resourceActions.getModelResourceActions(
+							DLFileEntry.class.getName()))));
+	}
+
+	private DDMFormField _createDDMFormField(
+		String name, String objectFieldName) {
+
+		DDMFormField ddmFormField = DDMFormTestUtil.createDDMFormField(
+			name, RandomTestUtil.randomString(),
+			DDMFormFieldTypeConstants.DOCUMENT_LIBRARY, "document-library",
+			true, false, false);
+
+		ddmFormField.setProperty(
+			"objectFieldName",
+			JSONUtil.putAll(
+				objectFieldName
+			).toString());
+
+		return ddmFormField;
+	}
+
 	private DDMFormValues _createDDMFormValues(
-		DDMForm ddmForm, FileEntry fileEntry) {
+		DDMForm ddmForm, Map<String, FileEntry> fileEntries) {
 
 		DDMFormValues ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(
 			ddmForm);
 
-		ddmFormValues.addDDMFormFieldValue(
-			DDMFormValuesTestUtil.createLocalizedDDMFormFieldValue(
-				"upload",
-				JSONUtil.put(
-					"fileEntryId", fileEntry.getFileEntryId()
-				).put(
-					"groupId", fileEntry.getGroupId()
-				).put(
-					"title", "file.txt"
-				).put(
-					"uuid", fileEntry.getUuid()
-				).toString()));
+		for (Map.Entry<String, FileEntry> entry : fileEntries.entrySet()) {
+			FileEntry fileEntry = entry.getValue();
+
+			ddmFormValues.addDDMFormFieldValue(
+				DDMFormValuesTestUtil.createLocalizedDDMFormFieldValue(
+					entry.getKey(),
+					JSONUtil.put(
+						"fileEntryId", fileEntry.getFileEntryId()
+					).put(
+						"groupId", fileEntry.getGroupId()
+					).put(
+						"title", "file.txt"
+					).put(
+						"uuid", fileEntry.getUuid()
+					).toString()));
+		}
 
 		return ddmFormValues;
 	}
@@ -703,6 +946,12 @@ public class DDMFormInstanceRecordLocalServiceTest
 	private DLFileEntryLocalService _dlFileEntryLocalService;
 
 	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
 	private PortletFileRepository _portletFileRepository;
 
 	@Inject
@@ -713,6 +962,9 @@ public class DDMFormInstanceRecordLocalServiceTest
 
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 	@Inject
 	private WorkflowDefinitionLinkLocalService
