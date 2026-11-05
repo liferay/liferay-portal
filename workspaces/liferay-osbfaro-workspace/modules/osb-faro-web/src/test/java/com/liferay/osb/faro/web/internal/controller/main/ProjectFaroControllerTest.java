@@ -716,9 +716,9 @@ public class ProjectFaroControllerTest {
 	}
 
 	private long _setUpFaroProject(String salesforceAccountId) {
-		FaroProject faroProject = Mockito.mock(FaroProject.class);
-
 		long groupId = RandomTestUtil.randomLong();
+
+		FaroProject faroProject = Mockito.mock(FaroProject.class);
 
 		Mockito.when(
 			faroProject.getGroupId()
