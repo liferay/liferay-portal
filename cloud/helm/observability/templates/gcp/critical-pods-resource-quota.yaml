@@ -1,0 +1,18 @@
+{{- if and (eq (include "observability.cloudProvider" .) "gcp") (index .Values "prometheus-node-exporter" "enabled") -}}
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ printf "%s-critical-pods" (include "observability.fullname" .) | trunc 63 | trimSuffix "-" | quote }}
+    namespace: {{ include "observability.namespace" . | quote }}
+spec:
+    hard:
+        pods: "1000"
+    scopeSelector:
+        matchExpressions:
+            -   operator: In
+                scopeName: PriorityClass
+                values:
+                    -   system-node-critical
+{{- end -}}
