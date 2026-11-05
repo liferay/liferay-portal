@@ -75,10 +75,11 @@ public interface ListTypeDefinitionService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ListTypeDefinition> getListTypeDefinitions(int start, int end);
+	public List<ListTypeDefinition> getListTypeDefinitions(int start, int end)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getListTypeDefinitionsCount();
+	public int getListTypeDefinitionsCount() throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ListTypeDefinition getOrAddEmptyListTypeDefinition(
@@ -99,4 +100,4 @@ public interface ListTypeDefinitionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1153335295
+// LIFERAY-SERVICE-BUILDER-HASH:1143466881

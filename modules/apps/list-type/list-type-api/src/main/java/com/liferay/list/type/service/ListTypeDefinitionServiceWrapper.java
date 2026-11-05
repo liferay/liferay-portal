@@ -95,13 +95,16 @@ public class ListTypeDefinitionServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.list.type.model.ListTypeDefinition>
-		getListTypeDefinitions(int start, int end) {
+			getListTypeDefinitions(int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _listTypeDefinitionService.getListTypeDefinitions(start, end);
 	}
 
 	@Override
-	public int getListTypeDefinitionsCount() {
+	public int getListTypeDefinitionsCount()
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		return _listTypeDefinitionService.getListTypeDefinitionsCount();
 	}
 
@@ -155,4 +158,4 @@ public class ListTypeDefinitionServiceWrapper
 	private ListTypeDefinitionService _listTypeDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1396014755
+// LIFERAY-SERVICE-BUILDER-HASH:1573538147

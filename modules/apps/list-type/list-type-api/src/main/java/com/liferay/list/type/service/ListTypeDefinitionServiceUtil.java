@@ -83,12 +83,13 @@ public class ListTypeDefinitionServiceUtil {
 	}
 
 	public static List<ListTypeDefinition> getListTypeDefinitions(
-		int start, int end) {
+			int start, int end)
+		throws PortalException {
 
 		return getService().getListTypeDefinitions(start, end);
 	}
 
-	public static int getListTypeDefinitionsCount() {
+	public static int getListTypeDefinitionsCount() throws PortalException {
 		return getService().getListTypeDefinitionsCount();
 	}
 
@@ -131,4 +132,4 @@ public class ListTypeDefinitionServiceUtil {
 			ListTypeDefinitionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1641408366
+// LIFERAY-SERVICE-BUILDER-HASH:2059298506

@@ -299,8 +299,9 @@ public class ListTypeDefinitionServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.list.type.model.ListTypeDefinition>
-		getListTypeDefinitions(
-			HttpPrincipal httpPrincipal, int start, int end) {
+			getListTypeDefinitions(
+				HttpPrincipal httpPrincipal, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -316,6 +317,13 @@ public class ListTypeDefinitionServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -332,7 +340,9 @@ public class ListTypeDefinitionServiceHttp {
 		}
 	}
 
-	public static int getListTypeDefinitionsCount(HttpPrincipal httpPrincipal) {
+	public static int getListTypeDefinitionsCount(HttpPrincipal httpPrincipal)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		try {
 			MethodKey methodKey = new MethodKey(
 				ListTypeDefinitionServiceUtil.class,
@@ -347,6 +357,13 @@ public class ListTypeDefinitionServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -488,4 +505,4 @@ public class ListTypeDefinitionServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:356113576
+// LIFERAY-SERVICE-BUILDER-HASH:-1789373028
