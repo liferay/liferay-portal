@@ -1,0 +1,12 @@
+apiVersion: apiextensions.crossplane.io/v1beta1
+data:
+    databaseScripts:
+        {{- range $path, $_ := .Files.Glob (printf "scripts/database/%s/*" .Values.database.engine) }}
+        {{ base $path }}: {{ $.Files.Get $path | toJson }}
+        {{- end }}
+kind: EnvironmentConfig
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-100"
+    name: database-scripts

@@ -1,5 +1,4 @@
 {{- $databaseAppRole := "liferay" -}}
-{{- $databaseOwnerRole := "liferay_shared_owner" -}}
 {{- $entraAdministratorReady := false -}}
 
 {{- range $condition := dig (printf "database-entra-administrator-%s" $activeDataPlane) "resource" "status" "conditions" list $observedResources -}}
@@ -8,7 +7,28 @@
     {{- end -}}
 {{- end }}
 
+{{- if not $env.databaseScripts }}
+{{- fail "The database-scripts EnvironmentConfig is missing, so the database Jobs have no scripts to run" }}
+{{- end }}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-scripts
+    name: {{ $baseName }}-database-scripts
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            data:
+                {{- $env.databaseScripts | toYaml | nindent 16 }}
+            kind: ConfigMap
+            metadata:
+                name: database-scripts
+                namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
 {{- if and $activeDatabaseFqdn $entraAdministratorReady }}
+---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
@@ -48,101 +68,14 @@ spec:
                             azure.workload.identity/use: "true"
                     spec:
                         containers:
-                            -   args:
-                                    -   |
-                                            set -o errexit
-                                            set -o nounset
-
-                                            function main {
-                                                PGPASSWORD=$(cat /entra/token)
-
-                                                export PGPASSWORD
-
-                                                _wait_for_server
-
-                                                psql \
-                                                    --dbname "{{ $databaseName }}" \
-                                                    --set ON_ERROR_STOP=1 \
-                                                    --set pw="${LIFERAY_PASSWORD}" <<EOF
-                                            DO \$\$
-
-                                            BEGIN
-                                                IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{{ $databaseOwnerRole }}')
-                                                THEN
-                                                    CREATE ROLE {{ $databaseOwnerRole }} NOLOGIN;
-                                                END IF;
-                                            END \$\$;
-
-                                            GRANT {{ $databaseOwnerRole }} TO "${PGUSER}";
-
-                                            ALTER DATABASE "{{ $databaseName }}" OWNER TO {{ $databaseOwnerRole }};
-
-                                            GRANT USAGE, CREATE ON SCHEMA public TO {{ $databaseOwnerRole }};
-
-                                            DO \$\$
-
-                                            BEGIN
-                                                IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{{ $databaseAppRole }}')
-                                                THEN
-                                                    CREATE ROLE {{ $databaseAppRole }} LOGIN;
-                                                END IF;
-                                            END \$\$;
-
-                                            ALTER ROLE {{ $databaseAppRole }} WITH LOGIN PASSWORD :'pw';
-
-                                            GRANT CONNECT, TEMPORARY ON DATABASE "{{ $databaseName }}" TO "{{ $databaseAppRole }}";
-
-                                            GRANT {{ $databaseOwnerRole }} TO "{{ $databaseAppRole }}";
-
-                                            ALTER ROLE "{{ $databaseAppRole }}" SET ROLE {{ $databaseOwnerRole }};
-                                            EOF
-
-                                                _verify_login
-                                            }
-
-                                            function _verify_login {
-                                                local password="${LIFERAY_PASSWORD}"
-                                                local timeout=$(($(date +%s) + 600))
-
-                                                until PGCONNECT_TIMEOUT=10 PGPASSWORD="${password}" psql \
-                                                    --command "SELECT 1" \
-                                                    --dbname "{{ $databaseName }}" \
-                                                    --username "{{ $databaseAppRole }}" >/dev/null 2>&1
-                                                do
-                                                    if [ $(date +%s) -ge ${timeout} ]
-                                                    then
-                                                        echo "{{ $databaseAppRole }} could not be authenticated" >&2
-
-                                                        exit 1
-                                                    fi
-
-                                                    sleep 2
-                                                done
-
-                                                echo "{{ $databaseAppRole }} authenticated successfully"
-                                            }
-
-                                            function _wait_for_server {
-                                                local timeout=$(($(date +%s) + 600))
-
-                                                until pg_isready --host "${PGHOST}" --port "${PGPORT}" --username "${PGUSER}"
-                                                do
-                                                    if [ $(date +%s) -ge ${timeout} ]
-                                                    then
-                                                        echo "${PGHOST} did not become ready" >&2
-
-                                                        exit 1
-                                                    fi
-
-                                                    sleep 2
-                                                done
-                                            }
-
-                                            main
-                                command:
+                            -   command:
                                     -   /bin/sh
-                                    -   -c
+                                    -   /scripts/bootstrap-database.sh
                                 env:
+                                    -   name: DATABASE_NAME
+                                        value: {{ $databaseName }}
+                                    -   name: LIFERAY_DATABASE_USERNAME
+                                        value: {{ $databaseAppRole }}
                                     -   name: LIFERAY_PASSWORD
                                         valueFrom:
                                             secretKeyRef:
@@ -179,26 +112,13 @@ spec:
                                     -   mountPath: /entra
                                         name: entra-token
                                         readOnly: true
+                                    -   mountPath: /scripts
+                                        name: database-scripts
+                                        readOnly: true
                         initContainers:
-                            -   args:
-                                    -   |
-                                            set -o errexit
-                                            set -o nounset
-
-                                            az login \
-                                                --allow-no-subscriptions \
-                                                --federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" \
-                                                --service-principal \
-                                                --tenant "${AZURE_TENANT_ID}" \
-                                                --username "${AZURE_CLIENT_ID}" >/dev/null
-
-                                            az account get-access-token \
-                                                --output tsv \
-                                                --query accessToken \
-                                                --resource-type oss-rdbms > /entra/token
-                                command:
+                            -   command:
                                     -   /bin/sh
-                                    -   -c
+                                    -   /scripts/entra-token.sh
                                 env:
                                     -   name: AZURE_CONFIG_DIR
                                         value: /tmp/azure
@@ -224,6 +144,9 @@ spec:
                                 volumeMounts:
                                     -   mountPath: /entra
                                         name: entra-token
+                                    -   mountPath: /scripts
+                                        name: database-scripts
+                                        readOnly: true
                                     -   mountPath: /tmp
                                         name: tmp
                         restartPolicy: OnFailure
@@ -234,6 +157,9 @@ spec:
                                 type: RuntimeDefault
                         serviceAccountName: database-bootstrap
                         volumes:
+                            -   configMap:
+                                    name: database-scripts
+                                name: database-scripts
                             -   emptyDir:
                                     medium: Memory
                                 name: entra-token

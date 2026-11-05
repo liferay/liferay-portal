@@ -1,6 +1,27 @@
 {{- $databaseAppUser := "liferay" -}}
 
+{{- if not $env.databaseScripts }}
+{{- fail "The database-scripts EnvironmentConfig is missing, so the database Jobs have no scripts to run" }}
+{{- end }}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-scripts
+    name: {{ $baseName }}-database-scripts
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            data:
+                {{- $env.databaseScripts | toYaml | nindent 16 }}
+            kind: ConfigMap
+            metadata:
+                name: database-scripts
+                namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
 {{- if $activeDatabaseFqdn }}
+---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
@@ -20,85 +41,21 @@ spec:
                     spec:
                         automountServiceAccountToken: false
                         containers:
-                            -   args:
-                                    -   |
-                                            set -o errexit
-                                            set -o nounset
-
-                                            function main {
-                                                _wait_for_server
-
-                                                local liferay_password=$(printf '%s' "${LIFERAY_PASSWORD}" | sed -e 's/\\/\\\\/g' -e "s/'/''/g")
-
-                                                MYSQL_PWD="${ADMIN_PASSWORD}" mysql \
-                                                    --host "${MYSQL_HOST}" \
-                                                    --ssl-mode REQUIRED \
-                                                    --user "{{ $databaseAdminLogin }}" <<EOF
-                                            CREATE USER IF NOT EXISTS '{{ $databaseAppUser }}'@'%' IDENTIFIED BY '${liferay_password}';
-
-                                            ALTER USER '{{ $databaseAppUser }}'@'%' IDENTIFIED BY '${liferay_password}';
-
-                                            GRANT ALL PRIVILEGES ON {{ $databaseName }}.* TO '{{ $databaseAppUser }}'@'%';
-                                            EOF
-
-                                                _verify_login
-                                            }
-
-                                            function _verify_login {
-                                                local timeout=$(($(date +%s) + 600))
-
-                                                until MYSQL_PWD="${LIFERAY_PASSWORD}" mysql \
-                                                    --connect-timeout 10 \
-                                                    --execute "SELECT 1" \
-                                                    --host "${MYSQL_HOST}" \
-                                                    --ssl-mode REQUIRED \
-                                                    --user "{{ $databaseAppUser }}" \
-                                                    "{{ $databaseName }}" >/dev/null 2>&1
-                                                do
-                                                    if [ $(date +%s) -ge ${timeout} ]
-                                                    then
-                                                        echo "{{ $databaseAppUser }} could not be authenticated" >&2
-
-                                                        exit 1
-                                                    fi
-
-                                                    sleep 2
-                                                done
-
-                                                echo "{{ $databaseAppUser }} authenticated successfully"
-                                            }
-
-                                            function _wait_for_server {
-                                                local timeout=$(($(date +%s) + 600))
-
-                                                until MYSQL_PWD="${ADMIN_PASSWORD}" mysqladmin \
-                                                    --connect-timeout 10 \
-                                                    --host "${MYSQL_HOST}" \
-                                                    --ssl-mode REQUIRED \
-                                                    --user "{{ $databaseAdminLogin }}" \
-                                                    ping
-                                                do
-                                                    if [ $(date +%s) -ge ${timeout} ]
-                                                    then
-                                                        echo "${MYSQL_HOST} did not become ready" >&2
-
-                                                        exit 1
-                                                    fi
-
-                                                    sleep 2
-                                                done
-                                            }
-
-                                            main
-                                command:
+                            -   command:
                                     -   /bin/sh
-                                    -   -c
+                                    -   /scripts/bootstrap-database.sh
                                 env:
                                     -   name: ADMIN_PASSWORD
                                         valueFrom:
                                             secretKeyRef:
                                                 key: password
                                                 name: database-admin-password
+                                    -   name: DATABASE_ADMIN_USERNAME
+                                        value: {{ $databaseAdminLogin }}
+                                    -   name: DATABASE_NAME
+                                        value: {{ $databaseName }}
+                                    -   name: LIFERAY_DATABASE_USERNAME
+                                        value: {{ $databaseAppUser }}
                                     -   name: LIFERAY_PASSWORD
                                         valueFrom:
                                             secretKeyRef:
@@ -125,12 +82,20 @@ spec:
                                     runAsUser: 1000
                                     seccompProfile:
                                         type: RuntimeDefault
+                                volumeMounts:
+                                    -   mountPath: /scripts
+                                        name: database-scripts
+                                        readOnly: true
                         restartPolicy: OnFailure
                         securityContext:
                             fsGroup: 1000
                             runAsNonRoot: true
                             seccompProfile:
                                 type: RuntimeDefault
+                        volumes:
+                            -   configMap:
+                                    name: database-scripts
+                                name: database-scripts
     managementPolicies: ["Create", "Observe", "Delete"]
     readiness:
         celQuery: object.status.succeeded == 1
