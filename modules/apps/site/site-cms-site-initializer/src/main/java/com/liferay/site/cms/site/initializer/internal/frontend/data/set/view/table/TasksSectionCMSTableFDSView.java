@@ -46,9 +46,11 @@ public class TasksSectionCMSTableFDSView extends BaseCMSTableFDSView {
 		).add(
 			"embedded.label", "task"
 		).add(
-			"dueDate", "due-date",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"dueDateTableCellRenderer")
+			addDateFDSTableSchemaField(
+				"embedded.dateDue", "due-date"
+			).setSortable(
+				false
+			)
 		).add(
 			"completed", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(

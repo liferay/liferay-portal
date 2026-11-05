@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {DateRenderer, IInternalRenderer} from '@liferay/frontend-data-set-web';
+import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
 import {openCMSModal} from '../../common/utils/openCMSModal';
 import AssignToModalContent from '../home/modal/AssignToModalContent';
@@ -25,12 +25,6 @@ export default function TasksFDSPropsTransformer({
 				{
 					component: AuthorRenderer,
 					name: 'authorTableCellRenderer',
-					type: 'internal',
-				} as IInternalRenderer,
-				{
-					component: ({itemData}) =>
-						DateRenderer({value: itemData.embedded?.dateDue}),
-					name: 'dueDateTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 				{
