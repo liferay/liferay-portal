@@ -16,6 +16,7 @@ import {
 	toProcessRequestFlags,
 } from '../../utils/contentSelection';
 import {navigateToProcesses} from '../../utils/navigateToProcesses';
+import {toGroupReferences} from '../../utils/toGroupReferences';
 import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
 import DataSelectionStep from './steps/DataSelectionStep';
 import FileSelectionStep from './steps/FileSelectionStep';
@@ -109,11 +110,9 @@ export function NewImport({
 						importProcessRequest: {
 							...toProcessRequestFlags(contentSelection),
 							...(spaceSelectionEnabled && {
-								assetLibraries: (
+								assetLibraries: toGroupReferences(
 									values.spaceExternalReferenceCodes as string[]
-								).map((externalReferenceCode) => ({
-									externalReferenceCode,
-								})),
+								),
 							}),
 							dataStrategy: values.dataStrategy as DataStrategy,
 							deletions: !!values.deletions,
@@ -126,11 +125,9 @@ export function NewImport({
 								contentSelection
 							),
 							...(siteSelectionEnabled && {
-								sites: (
+								sites: toGroupReferences(
 									values.siteExternalReferenceCodes as string[]
-								).map((externalReferenceCode) => ({
-									externalReferenceCode,
-								})),
+								),
 							}),
 							userIdStrategy:
 								values.userIdStrategy as UserIdStrategy,

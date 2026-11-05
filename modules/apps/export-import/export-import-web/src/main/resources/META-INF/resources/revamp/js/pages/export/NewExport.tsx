@@ -28,6 +28,7 @@ import {
 import {getProcessFormErrors} from '../../utils/getProcessFormErrors';
 import {getScopeSubtitle} from '../../utils/getScopeSubtitle';
 import {navigateToProcesses} from '../../utils/navigateToProcesses';
+import {toGroupReferences} from '../../utils/toGroupReferences';
 import {toPortletDataHandlers} from '../../utils/toPortletDataHandlers';
 import GroupSelection from './components/GroupSelection';
 
@@ -99,12 +100,9 @@ export function NewExport({
 					exportProcessRequest: {
 						...toProcessRequestFlags(values.contentSelection),
 						...(spaceSelectionEnabled && {
-							assetLibraries:
-								values.spaceExternalReferenceCodes.map(
-									(externalReferenceCode) => ({
-										externalReferenceCode,
-									})
-								),
+							assetLibraries: toGroupReferences(
+								values.spaceExternalReferenceCodes
+							),
 						}),
 						dateFilter: appliedDateFilterRef.current,
 						deletions: values.deletions,
@@ -115,10 +113,8 @@ export function NewExport({
 							values.contentSelection
 						),
 						...(siteSelectionEnabled && {
-							sites: values.siteExternalReferenceCodes.map(
-								(externalReferenceCode) => ({
-									externalReferenceCode,
-								})
+							sites: toGroupReferences(
+								values.siteExternalReferenceCodes
 							),
 						}),
 					},
