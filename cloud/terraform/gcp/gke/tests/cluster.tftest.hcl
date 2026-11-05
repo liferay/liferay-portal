@@ -41,21 +41,16 @@ run "should_derive_cluster_name_from_deployment_name" {
 	}
 	command=plan
 }
-run "should_disable_control_plane_logging_when_turned_off" {
+run "should_disable_control_plane_logging_by_default" {
 	assert {
 		condition=!contains(google_container_cluster.primary.logging_config[0].enable_components, "APISERVER") && !contains(google_container_cluster.primary.logging_config[0].enable_components, "CONTROLLER_MANAGER") && !contains(google_container_cluster.primary.logging_config[0].enable_components, "SCHEDULER")
-		error_message="Disabling control plane logging must drop APISERVER, CONTROLLER_MANAGER and SCHEDULER"
+		error_message="Control plane logging must be off unless it is turned on"
 	}
 	assert {
 		condition=contains(google_container_cluster.primary.logging_config[0].enable_components, "SYSTEM_COMPONENTS") && contains(google_container_cluster.primary.logging_config[0].enable_components, "WORKLOADS") && length(google_container_cluster.primary.logging_config[0].enable_components) == 2
-		error_message="Disabling control plane logging must keep the components GKE enables by default"
+		error_message="Leaving control plane logging off must keep the components GKE enables by default"
 	}
 	command=plan
-	variables {
-		control_plane_logging_config={
-			enabled=false
-		}
-	}
 }
 run "should_enable_authenticator_groups_with_a_security_group" {
 	assert {
@@ -71,16 +66,21 @@ run "should_enable_authenticator_groups_with_a_security_group" {
 		gke_security_group="gke-security-groups@example.com"
 	}
 }
-run "should_enable_control_plane_logging_by_default" {
+run "should_enable_control_plane_logging_when_turned_on" {
 	assert {
 		condition=contains(google_container_cluster.primary.logging_config[0].enable_components, "APISERVER") && contains(google_container_cluster.primary.logging_config[0].enable_components, "CONTROLLER_MANAGER") && contains(google_container_cluster.primary.logging_config[0].enable_components, "SCHEDULER")
-		error_message="Control plane logging must be enabled by default"
+		error_message="Turning control plane logging on must add APISERVER, CONTROLLER_MANAGER and SCHEDULER"
 	}
 	assert {
 		condition=contains(google_container_cluster.primary.logging_config[0].enable_components, "SYSTEM_COMPONENTS") && contains(google_container_cluster.primary.logging_config[0].enable_components, "WORKLOADS") && length(google_container_cluster.primary.logging_config[0].enable_components) == 5
-		error_message="Enabling control plane logging must not switch off the components GKE enables by default"
+		error_message="Turning control plane logging on must not switch off the components GKE enables by default"
 	}
 	command=plan
+	variables {
+		control_plane_logging_config={
+			enabled=true
+		}
+	}
 }
 run "should_locate_a_regional_cluster_in_the_region" {
 	assert {

@@ -2,7 +2,7 @@ variable "control_plane_logging_config" {
 	default={}
 	type=object(
 		{
-			enabled=optional(bool, true)
+			enabled=optional(bool, false)
 		}
 	)
 }
