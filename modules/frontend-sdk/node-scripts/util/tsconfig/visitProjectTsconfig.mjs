@@ -37,7 +37,13 @@ export default async function visitProjectTsconfig(
 
 	const configPath = path.join(srcPath, 'tsconfig.json');
 
-	if (!(await hasTypeScriptFiles(srcPath))) {
+	const currentProject = projectsEntryPoints[projectDescription.name];
+
+	const hasTypeScript = testConfig
+		? await hasTypeScriptFiles(srcPath)
+		: currentProject.hasTypeScript;
+
+	if (!hasTypeScript) {
 		if (await fileExists(configPath)) {
 			await visitorFunction(configPath, null);
 		}
@@ -75,8 +81,6 @@ export default async function visitProjectTsconfig(
 
 	const paths = {};
 	const references = [];
-
-	const currentProject = projectsEntryPoints[projectDescription.name];
 
 	if (currentProject.path.submodules) {
 		Object.entries(currentProject.path.submodules).forEach(
