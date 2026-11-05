@@ -211,7 +211,7 @@ const ItemSelectorPreview = ({
 	}, [currentItem]);
 
 	return (
-		<div className="fullscreen item-selector-preview">
+		<div className="cadmin fullscreen item-selector-preview">
 			<Header
 				disabledAddButton={!currentItem.url}
 				handleClickAdd={handleClickDone}
