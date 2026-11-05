@@ -86,6 +86,8 @@ public interface Rels {
 
 	public static final String ASSETS = "assets";
 
+	public static final String BIGQUERY_PRICES = "bigquery-prices";
+
 	public static final String BLOCKED_KEYWORD = "blocked-keyword";
 
 	public static final String BLOCKED_KEYWORDS = "blocked-keywords";

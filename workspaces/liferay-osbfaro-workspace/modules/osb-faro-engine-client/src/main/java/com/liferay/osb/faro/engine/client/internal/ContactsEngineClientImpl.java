@@ -40,6 +40,7 @@ import com.liferay.osb.faro.engine.client.model.AssetSummaryTag;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryType;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryVocabulary;
 import com.liferay.osb.faro.engine.client.model.Author;
+import com.liferay.osb.faro.engine.client.model.BigQueryPrice;
 import com.liferay.osb.faro.engine.client.model.BlockedKeyword;
 import com.liferay.osb.faro.engine.client.model.Campaign;
 import com.liferay.osb.faro.engine.client.model.CampaignMetric;
@@ -1741,6 +1742,15 @@ public class ContactsEngineClientImpl
 		}
 
 		return dataSources.get(0);
+	}
+
+	@Override
+	public BigQueryPrice getBigQueryPrice(FaroProject faroProject) {
+		return get(
+			faroProject, Rels.BIGQUERY_PRICES,
+			new ParameterizedTypeReference<BigQueryPrice>() {
+			},
+			getUriVariables(faroProject));
 	}
 
 	@Override

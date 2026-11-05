@@ -30,6 +30,7 @@ import com.liferay.osb.faro.engine.client.model.AssetSummaryTag;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryType;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryVocabulary;
 import com.liferay.osb.faro.engine.client.model.Author;
+import com.liferay.osb.faro.engine.client.model.BigQueryPrice;
 import com.liferay.osb.faro.engine.client.model.BlockedKeyword;
 import com.liferay.osb.faro.engine.client.model.Campaign;
 import com.liferay.osb.faro.engine.client.model.CampaignMetric;
@@ -340,6 +341,8 @@ public interface ContactsEngineClient {
 		String assetType, int cur, int delta, List<OrderByField> orderByFields);
 
 	public DataSource getAvailableTokenDataSource(FaroProject faroProject);
+
+	public BigQueryPrice getBigQueryPrice(FaroProject faroProject);
 
 	public BlockedKeyword getBlockedKeyword(FaroProject faroProject, String id);
 
