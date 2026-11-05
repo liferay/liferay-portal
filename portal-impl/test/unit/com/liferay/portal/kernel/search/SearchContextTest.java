@@ -21,10 +21,16 @@ public class SearchContextTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testDefaultValues() {
+	public void testGetEnd() {
 		SearchContext searchContext = new SearchContext();
 
 		Assert.assertEquals(5, searchContext.getEnd());
+	}
+
+	@Test
+	public void testGetStart() {
+		SearchContext searchContext = new SearchContext();
+
 		Assert.assertEquals(0, searchContext.getStart());
 	}
 

@@ -31,15 +31,15 @@ public class SearchRequestImplTest {
 		SearchRequestImpl searchRequestImpl = new SearchRequestImpl(
 			searchContext);
 
-		_assertWindow(0, 5, searchContext, searchRequestImpl);
+		_assertWindow(0, searchContext, searchRequestImpl, 5);
 
 		searchContext.setStart(3);
 
-		_assertWindow(3, 2, searchContext, searchRequestImpl);
+		_assertWindow(3, searchContext, searchRequestImpl, 2);
 
 		searchContext.setEnd(15);
 
-		_assertWindow(3, 12, searchContext, searchRequestImpl);
+		_assertWindow(3, searchContext, searchRequestImpl, 12);
 
 		searchContext.setEnd(QueryUtil.ALL_POS);
 
@@ -55,7 +55,7 @@ public class SearchRequestImplTest {
 
 		searchContext.setEnd(5);
 
-		_assertUnboundedStart(5, searchContext, searchRequestImpl);
+		_assertUnboundedStart(searchContext, searchRequestImpl, 5);
 
 		searchRequestImpl.setFrom(0);
 		searchRequestImpl.setSize(8);
@@ -63,7 +63,7 @@ public class SearchRequestImplTest {
 		searchContext.setEnd(22);
 		searchContext.setStart(10);
 
-		_assertWindow(10, 12, searchContext, searchRequestImpl);
+		_assertWindow(10, searchContext, searchRequestImpl, 12);
 	}
 
 	@Test
@@ -75,28 +75,28 @@ public class SearchRequestImplTest {
 
 		searchRequestImpl.setFrom(10);
 
-		_assertWindow(10, 5, searchContext, searchRequestImpl);
+		_assertWindow(10, searchContext, searchRequestImpl, 5);
 
 		searchRequestImpl.setFrom(null);
 
-		_assertUnboundedStart(5, searchContext, searchRequestImpl);
+		_assertUnboundedStart(searchContext, searchRequestImpl, 5);
 
 		searchRequestImpl.setSize(20);
 
-		_assertUnboundedStart(20, searchContext, searchRequestImpl);
+		_assertUnboundedStart(searchContext, searchRequestImpl, 20);
 
 		searchRequestImpl.setFrom(10);
 
-		_assertWindow(10, 20, searchContext, searchRequestImpl);
+		_assertWindow(10, searchContext, searchRequestImpl, 20);
 
 		searchRequestImpl.setFrom(30);
 		searchRequestImpl.setSize(40);
 
-		_assertWindow(30, 40, searchContext, searchRequestImpl);
+		_assertWindow(30, searchContext, searchRequestImpl, 40);
 
 		searchRequestImpl.setSize(0);
 
-		_assertWindow(30, 0, searchContext, searchRequestImpl);
+		_assertWindow(30, searchContext, searchRequestImpl, 0);
 	}
 
 	@Test
@@ -115,7 +115,7 @@ public class SearchRequestImplTest {
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 			_assertWindow(
-				0, Integer.MAX_VALUE, searchContext, searchRequestImpl);
+				0, searchContext, searchRequestImpl, Integer.MAX_VALUE);
 		}
 
 		searchRequestImpl.setSize(5);
@@ -127,7 +127,7 @@ public class SearchRequestImplTest {
 			Assert.fail();
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
-			_assertWindow(10, 5, searchContext, searchRequestImpl);
+			_assertWindow(10, searchContext, searchRequestImpl, 5);
 		}
 	}
 
@@ -144,7 +144,7 @@ public class SearchRequestImplTest {
 			Assert.fail();
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
-			_assertWindow(0, 5, searchContext, searchRequestImpl);
+			_assertWindow(0, searchContext, searchRequestImpl, 5);
 		}
 	}
 
@@ -173,7 +173,7 @@ public class SearchRequestImplTest {
 			Assert.fail();
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
-			_assertWindow(0, 5, searchContext, searchRequestImpl);
+			_assertWindow(0, searchContext, searchRequestImpl, 5);
 		}
 	}
 
@@ -191,7 +191,7 @@ public class SearchRequestImplTest {
 
 		searchRequestImpl.setSize(5);
 
-		_assertWindow(10, 5, searchContext, searchRequestImpl);
+		_assertWindow(10, searchContext, searchRequestImpl, 5);
 	}
 
 	@Test
@@ -203,7 +203,7 @@ public class SearchRequestImplTest {
 
 		searchRequestImpl.setSize(20);
 
-		_assertUnboundedStart(20, searchContext, searchRequestImpl);
+		_assertUnboundedStart(searchContext, searchRequestImpl, 20);
 	}
 
 	private void _assertUnboundedEnd(
@@ -217,8 +217,8 @@ public class SearchRequestImplTest {
 	}
 
 	private void _assertUnboundedStart(
-		int size, SearchContext searchContext,
-		SearchRequestImpl searchRequestImpl) {
+		SearchContext searchContext, SearchRequestImpl searchRequestImpl,
+		int size) {
 
 		Assert.assertEquals(size, searchContext.getEnd());
 		Assert.assertEquals(QueryUtil.ALL_POS, searchContext.getStart());
@@ -227,8 +227,8 @@ public class SearchRequestImplTest {
 	}
 
 	private void _assertWindow(
-		int from, int size, SearchContext searchContext,
-		SearchRequestImpl searchRequestImpl) {
+		int from, SearchContext searchContext,
+		SearchRequestImpl searchRequestImpl, int size) {
 
 		Assert.assertEquals(from + size, searchContext.getEnd());
 		Assert.assertEquals(from, searchContext.getStart());
