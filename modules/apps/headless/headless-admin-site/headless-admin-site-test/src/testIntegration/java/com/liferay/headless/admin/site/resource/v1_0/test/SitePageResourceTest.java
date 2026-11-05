@@ -2580,12 +2580,13 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		SitePageResource sitePageResource = _getSitePageResource(
 			"pageSpecificationVersions.pageSpecification");
 
-		Page<SitePage> page = sitePageResource.getSiteSitePageSitePagesPage(
-			testGroup.getExternalReferenceCode(),
-			parentLayout.getExternalReferenceCode(), null,
-			Pagination.of(1, 10));
+		Page<SitePage> sitePagesPage =
+			sitePageResource.getSiteSitePageSitePagesPage(
+				testGroup.getExternalReferenceCode(),
+				parentLayout.getExternalReferenceCode(), null,
+				Pagination.of(1, 10));
 
-		List<SitePage> sitePages = new ArrayList<>(page.getItems());
+		List<SitePage> sitePages = new ArrayList<>(sitePagesPage.getItems());
 
 		Assert.assertEquals(sitePages.toString(), 1, sitePages.size());
 
