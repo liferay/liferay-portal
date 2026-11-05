@@ -22,7 +22,7 @@ This check is static and needs no build. It walks each changed `.bnd` file and c
 - In a `bnd.bnd`, a clause of `-includeresource`, `-includeresource.<name>`, or `Include-Resource` that includes `package.json`, or that includes `test-classes/integration` in a `*-test` module whose `build.gradle` does not enable its `jar` task again.
 - In a `bnd.bnd`, an included path that does not exist, or that lies in a build output directory (`bin`, `build`, `classes`, `lib`, `node_modules`, `test-classes`, or `tmp` of a module), unless that directory is the module's own `build`, `classes`, or `tmp`, or its own `lib` holding a `-ws.jar` built from `wsdl`, a `-xbean.jar` built from `xsd`, or what its `build.gradle` copies `into "lib"`. An optional path, a path with a macro, a `test-classes/integration` path, a jar name or classpath pattern without a slash, and the jar of a core module are not checked. An existing path inside `src/main/resources` (`src/testIntegration/resources` in a `*-test` module) that lands at the same place in the jar is reported as included twice.
 - In a `bnd.bnd` outside `modules/sdk` and `modules/util`, a class unpacked by name (`@<jar>!/<path>.class`) whose source is missing from the core module or project dependency that builds the jar, or that the module's sources (`src/main`, `src/testIntegration` in a `*-test` module, `src` in a core module) never name: no `.ftl`, `.java`, `.js`, `.jsp`, `.jspf`, `.properties`, `.tag`, `.tld`, or `.xml` file holds its class name or its path, and no Java file that is in its package or imports its package with `.*` holds its simple name as a word.
-- In any `.bnd`, an entry of the first `Export-Package` or `-exportcontents` whose last segment starts upper case, unless the module has a `wsdl` or `xsd` directory or a directory of that package under `src`, `src/main/java`, or `src/main/resources`.
+- In any `.bnd`, an entry of the first `Export-Package` or `-exportcontents` whose last segment starts with an uppercase letter, unless the module has a `wsdl` or `xsd` directory or a directory of that package under `src`, `src/main/java`, or `src/main/resources`.
 
 ```bash
 CLAUSES='
@@ -330,168 +330,184 @@ FINDINGS=$(
 		do
 			PREFIX="${FILE}:${LINE}:"
 
-			case ${KIND} in
-				D)
-					echo "${PREFIX} Do not use \"-donotcopy\" in bnd.bnd"
-					;;
-				E)
-					for DIR in "src/${ARG2//.//}" "src/main/java/${ARG2//.//}" "src/main/resources/${ARG2//.//}" wsdl xsd
-					do
-						[[ -d ${MODULE_DIR}/${DIR} ]] && continue 2
-					done
+			if [[ ${KIND} == D ]]
+			then
+				echo "${PREFIX} Do not use \"-donotcopy\" in bnd.bnd"
+			elif [[ ${KIND} == E ]]
+			then
+				for DIR in "src/${ARG2//.//}" "src/main/java/${ARG2//.//}" "src/main/resources/${ARG2//.//}" wsdl xsd
+				do
+					[[ -d ${MODULE_DIR}/${DIR} ]] && continue 2
+				done
 
-					echo "${PREFIX} \"${ARG2}\" in ${ARG1} is a class name, use its package name"
-					;;
-				J)
-					echo "${PREFIX} Do not include \"package.json\", Gradle already includes it"
-					;;
-				P)
-					OUTPUT=""
-					PARENT=$(dirname "${ARG2}")
+				echo "${PREFIX} \"${ARG2}\" in ${ARG1} is a class name, use its package name"
+			elif [[ ${KIND} == J ]]
+			then
+				echo "${PREFIX} Do not include \"package.json\", Gradle already includes it"
+			elif [[ ${KIND} == P ]]
+			then
+				OUTPUT=""
+				PARENT=$(dirname "${ARG2}")
 
-					if [[ ${ARG2##*/} == "${PARENT##*/}.jar" && -e ${PARENT}/build.xml ]]
+				if [[ ${ARG2##*/} == "${PARENT##*/}.jar" ]] &&
+					[[ -e ${PARENT}/build.xml ]]
+				then
+					continue
+				fi
+
+				DIR=${ARG2}
+
+				while [[ -z ${OUTPUT} ]] &&
+					[[ ${DIR} != . ]] &&
+					[[ ${DIR} != .. ]] &&
+					[[ ${MODULE_DIR}/ != "${DIR}"/* ]]
+				do
+					PARENT=$(dirname "${DIR}")
+
+					if [[ ${DIR##*/} =~ ^(bin|build|classes|lib|node_modules|test-classes|tmp)$ ]] &&
+						[[ -e ${PARENT}/bnd.bnd ||
+							-e ${PARENT}/build.gradle ||
+							-e ${PARENT}/build.xml ]]
+					then
+						OUTPUT=${DIR}
+					fi
+
+					DIR=${PARENT}
+				done
+
+				if [[ -z ${OUTPUT} ]] &&
+					[[ -e ${ARG2} ]]
+				then
+					RESOURCES=src/main/resources
+
+					if [[ ${FILE} == *-test/bnd.bnd ]]
+					then
+						RESOURCES=src/testIntegration/resources
+					fi
+
+					TARGET=${ARG3}
+
+					if [[ -z ${TARGET} ]] &&
+						[[ ! -d ${ARG2} ]]
+					then
+						TARGET=${ARG2##*/}
+					fi
+
+					if [[ ${ARG2} == "${MODULE_DIR}/${RESOURCES}" &&
+							-z ${TARGET} ]] ||
+						[[ ${ARG2} == "${MODULE_DIR}/${RESOURCES}/${TARGET}" ]]
+					then
+						echo "${PREFIX} Do not include \"${ARG1}\", Gradle already includes it from \"${RESOURCES}\""
+					fi
+
+					continue
+				fi
+
+				if [[ ${OUTPUT%/*} == "${MODULE_DIR}" ]]
+				then
+					if [[ ${OUTPUT##*/} =~ ^(build|classes|tmp)$ ]]
 					then
 						continue
-					fi
-
-					DIR=${ARG2}
-
-					while [[ -z ${OUTPUT} && ${DIR} != . && ${DIR} != .. && ${MODULE_DIR}/ != "${DIR}"/* ]]
-					do
-						PARENT=$(dirname "${DIR}")
-
-						if [[ ${DIR##*/} =~ ^(bin|build|classes|lib|node_modules|test-classes|tmp)$ ]] && [[ -e ${PARENT}/bnd.bnd || -e ${PARENT}/build.gradle || -e ${PARENT}/build.xml ]]
+					elif [[ ${OUTPUT##*/} == lib ]]
+					then
+						if [[ ${ARG2} == *-ws.jar &&
+								-e ${MODULE_DIR}/wsdl/$(basename "${ARG2}" -ws.jar).wsdl ]] ||
+							[[ ${ARG2} == *-xbean.jar &&
+								-d ${MODULE_DIR}/xsd ]] ||
+							command grep --extended-regexp --quiet '^[[:space:]]*into "lib"$' "${MODULE_DIR}/build.gradle" 2> /dev/null
 						then
-							OUTPUT=${DIR}
+							continue
 						fi
-
-						DIR=${PARENT}
-					done
-
-					if [[ -z ${OUTPUT} && -e ${ARG2} ]]
-					then
-						RESOURCES=src/main/resources
-
-						if [[ ${FILE} == *-test/bnd.bnd ]]
-						then
-							RESOURCES=src/testIntegration/resources
-						fi
-
-						TARGET=${ARG3}
-
-						if [[ -z ${TARGET} && ! -d ${ARG2} ]]
-						then
-							TARGET=${ARG2##*/}
-						fi
-
-						if [[ ${ARG2} == "${MODULE_DIR}/${RESOURCES}" && -z ${TARGET} || ${ARG2} == "${MODULE_DIR}/${RESOURCES}/${TARGET}" ]]
-						then
-							echo "${PREFIX} Do not include \"${ARG1}\", Gradle already includes it from \"${RESOURCES}\""
-						fi
-
-						continue
 					fi
+				fi
 
-					if [[ ${OUTPUT%/*} == "${MODULE_DIR}" ]]
+				echo "${PREFIX} Included path \"${ARG1}\" does not exist in the repository"
+			elif [[ ${KIND} == T ]]
+			then
+				if ! awk "${JAR_ENABLED}" "${MODULE_DIR}/build.gradle" 2> /dev/null
+				then
+					echo "${PREFIX} Do not use \"test-classes/integration\" in bnd.bnd in test modules"
+				fi
+			elif [[ ${KIND} == U ]]
+			then
+				CLASS=${ARG2//\//.}
+				CORE_DIR=${ARG1#com.liferay.}
+				CORE_DIR=${CORE_DIR//./-}
+				PARENT=$(dirname "${ARG1}")
+				ROOT=${MODULE_DIR}
+				SOURCE_DIR=""
+
+				while [[ ! -e ${ROOT}/settings.gradle && ${ROOT} != . ]]
+				do
+					ROOT=$(dirname "${ROOT}")
+				done
+
+				if [[ ${ARG1} == */* ]]
+				then
+					if [[ ${ARG1##*/} == "${PARENT##*/}.jar" ]] &&
+						[[ -e ${PARENT}/build.xml ]]
 					then
-						case ${OUTPUT##*/} in
-							build|classes|tmp)
-								continue
-								;;
-							lib)
-								if [[ ${ARG2} == *-ws.jar && -e ${MODULE_DIR}/wsdl/$(basename "${ARG2}" -ws.jar).wsdl ]] || [[ ${ARG2} == *-xbean.jar && -d ${MODULE_DIR}/xsd ]] || command grep --extended-regexp --quiet '^[[:space:]]*into "lib"$' "${MODULE_DIR}/build.gradle" 2> /dev/null
-								then
-									continue
-								fi
-								;;
-						esac
+						SOURCE_DIR=${PARENT}/src
 					fi
+				elif [[ ${ARG1} == com.liferay.* ]] &&
+					[[ -e ${CORE_DIR}/build.xml ]]
+				then
+					SOURCE_DIR=${CORE_DIR}/src
+				else
+					SOURCE_DIR=$(
+						command grep --extended-regexp --only-matching 'project\((path: )?"[^"]+"' "${MODULE_DIR}/build.gradle" 2> /dev/null \
+							| awk -F '"' -v name="${ARG1}" -v root="${ROOT}" "${PROJECTS}"
+					)
+				fi
 
-					echo "${PREFIX} Included path \"${ARG1}\" does not exist in the repository"
-					;;
-				T)
-					if ! awk "${JAR_ENABLED}" "${MODULE_DIR}/build.gradle" 2> /dev/null
+				if [[ ! -z ${SOURCE_DIR} ]] &&
+					[[ ! -e ${SOURCE_DIR}/${ARG2}.java ]]
+				then
+					echo "${PREFIX} Unpacked class \"${CLASS}\" does not exist in its jar"
+
+					continue
+				fi
+
+				SOURCE_DIRS=("${MODULE_DIR}/src/main")
+
+				if [[ -e ${MODULE_DIR}/build.xml ]]
+				then
+					SOURCE_DIRS=("${MODULE_DIR}/src")
+				elif [[ ${FILE} == *-test/bnd.bnd ]]
+				then
+					SOURCE_DIRS+=("${MODULE_DIR}/src/testIntegration")
+				fi
+
+				if command grep \
+					--fixed-strings \
+					--include='*.ftl' \
+					--include='*.java' \
+					--include='*.js' \
+					--include='*.jsp' \
+					--include='*.jspf' \
+					--include='*.properties' \
+					--include='*.tag' \
+					--include='*.tld' \
+					--include='*.xml' \
+					--quiet \
+					--recursive \
+					--regexp="${CLASS}" \
+					--regexp="${ARG2}" \
+					"${SOURCE_DIRS[@]}" 2> /dev/null
+				then
+					continue
+				fi
+
+				while IFS= read -r JAVA_FILE
+				do
+					if command grep --fixed-strings --quiet --regexp="${CLASS##*.}" --word-regexp "${JAVA_FILE}"
 					then
-						echo "${PREFIX} Do not use \"test-classes/integration\" in bnd.bnd in test modules"
+						continue 2
 					fi
-					;;
-				U)
-					CLASS=${ARG2//\//.}
-					CORE_DIR=${ARG1#com.liferay.}
-					CORE_DIR=${CORE_DIR//./-}
-					PARENT=$(dirname "${ARG1}")
-					ROOT=${MODULE_DIR}
-					SOURCE_DIR=""
+				done < <(command grep --files-with-matches --fixed-strings --include='*.java' --recursive --regexp="package ${CLASS%.*};" --regexp="import ${CLASS%.*}.*;" "${SOURCE_DIRS[@]}" 2> /dev/null)
 
-					while [[ ! -e ${ROOT}/settings.gradle && ${ROOT} != . ]]
-					do
-						ROOT=$(dirname "${ROOT}")
-					done
-
-					if [[ ${ARG1} == */* ]]
-					then
-						if [[ ${ARG1##*/} == "${PARENT##*/}.jar" && -e ${PARENT}/build.xml ]]
-						then
-							SOURCE_DIR=${PARENT}/src
-						fi
-					elif [[ ${ARG1} == com.liferay.* && -e ${CORE_DIR}/build.xml ]]
-					then
-						SOURCE_DIR=${CORE_DIR}/src
-					else
-						SOURCE_DIR=$(
-							command grep --extended-regexp --only-matching 'project\((path: )?"[^"]+"' "${MODULE_DIR}/build.gradle" 2> /dev/null \
-								| awk -F '"' -v name="${ARG1}" -v root="${ROOT}" "${PROJECTS}"
-						)
-					fi
-
-					if [[ -n ${SOURCE_DIR} && ! -e ${SOURCE_DIR}/${ARG2}.java ]]
-					then
-						echo "${PREFIX} Unpacked class \"${CLASS}\" does not exist in its jar"
-
-						continue
-					fi
-
-					SOURCE_DIRS=("${MODULE_DIR}/src/main")
-
-					if [[ -e ${MODULE_DIR}/build.xml ]]
-					then
-						SOURCE_DIRS=("${MODULE_DIR}/src")
-					elif [[ ${FILE} == *-test/bnd.bnd ]]
-					then
-						SOURCE_DIRS+=("${MODULE_DIR}/src/testIntegration")
-					fi
-
-					if command grep \
-						--fixed-strings \
-						--include='*.ftl' \
-						--include='*.java' \
-						--include='*.js' \
-						--include='*.jsp' \
-						--include='*.jspf' \
-						--include='*.properties' \
-						--include='*.tag' \
-						--include='*.tld' \
-						--include='*.xml' \
-						--quiet \
-						--recursive \
-						--regexp="${CLASS}" \
-						--regexp="${ARG2}" \
-						"${SOURCE_DIRS[@]}" 2> /dev/null
-					then
-						continue
-					fi
-
-					while IFS= read -r JAVA_FILE
-					do
-						if command grep --fixed-strings --quiet --regexp="${CLASS##*.}" --word-regexp "${JAVA_FILE}"
-						then
-							continue 2
-						fi
-					done < <(command grep --files-with-matches --fixed-strings --include='*.java' --recursive --regexp="package ${CLASS%.*};" --regexp="import ${CLASS%.*}.*;" "${SOURCE_DIRS[@]}" 2> /dev/null)
-
-					echo "${PREFIX} Unpacked class \"${CLASS}\" is not referenced by the module"
-					;;
-			esac
+				echo "${PREFIX} Unpacked class \"${CLASS}\" is not referenced by the module"
+			fi
 		done
 	done
 )
