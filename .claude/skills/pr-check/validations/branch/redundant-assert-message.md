@@ -25,7 +25,7 @@ This check is static and needs no build. It walks each changed Java file that im
 
 The method of a call is the run of lines between two blank lines at class level, which is one member in formatted code. Each finding prints as `<path>:<line>: the message repeats the asserted value`, where `<line>` is the line the message starts on.
 
-A generated file carries the `@generated` Javadoc marker that Service Builder and the other code generators stamp on every file they produce (for example every `*LocalService` interface). The scan matches it case-insensitively, so the `@Generated` annotation on REST Builder output is covered too. That annotation is machine written boilerplate, not hand written assert code, so any file carrying it is excluded before the assert scan.
+A generated file carries the `@generated` Javadoc marker that Service Builder and the other code generators stamp on every file they produce (for example every `*LocalService` interface). The scan ignores case in that match, so the `@Generated` annotation on REST Builder output is covered too. That annotation is machine written boilerplate, not hand written assert code, so any file carrying it is excluded before the assert scan.
 
 Anchor that match to a Javadoc tag or an annotation rather than searching the whole file for the bare word, or a class that only mentions `@generated` in prose drops out of the scan entirely.
 
