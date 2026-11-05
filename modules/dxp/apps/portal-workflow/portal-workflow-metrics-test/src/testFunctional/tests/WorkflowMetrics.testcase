@@ -498,7 +498,7 @@ definition {
 
 			Workflow.gotoTaskDetails(workflowAssetTitle = "Blogs Entry Title ${blogNumber}");
 
-			WorkflowAsset.assertDueDate(date = "4/11/${futureYearShort} 4:30 PM");
+			WorkflowAsset.assertDueDate(date = "4/11/${futureYearShort}, 4:30");
 		}
 	}
 
@@ -1611,7 +1611,7 @@ definition {
 
 		Workflow.gotoTaskDetails(workflowAssetTitle = "Blogs Entry Title");
 
-		WorkflowAsset.assertDueDate(date = "4/11/${futureYearShort} 4:30 PM");
+		WorkflowAsset.assertDueDate(date = "4/11/${futureYearShort}, 4:30");
 	}
 
 	@description = "LRQA-60717 - Automate LPS-105497: As a Operation Manager, I want to update the due date a workflow instance while analyzing my process metrics"
