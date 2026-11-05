@@ -16,6 +16,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.common.SQLTransformer;
@@ -113,6 +114,14 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 	public void portalInstancePreunregistered(Company company)
 		throws Exception {
 
+		for (ObjectDefinition objectDefinition :
+				_objectDefinitionPersistence.findByCompanyId(
+					company.getCompanyId())) {
+
+			ObjectDefinitionTreeUtil.removeRootObjectDefinitionIds(
+				objectDefinition);
+		}
+
 		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
 			return;
 		}
@@ -170,12 +179,6 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 					objectDefinition);
 			}
 		}
-	}
-
-	@Override
-	public void portalInstanceUnregistered(Company company) throws Exception {
-		ObjectDefinitionTreeUtil.removeRootObjectDefinitionIds(
-			company.getCompanyId());
 	}
 
 	private void _executeUpdates(
@@ -313,6 +316,9 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectDefinitionPersistence _objectDefinitionPersistence;
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;

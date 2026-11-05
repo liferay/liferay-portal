@@ -52,7 +52,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
@@ -256,10 +255,12 @@ public class ObjectDefinitionTreeUtil {
 		}
 	}
 
-	public static void removeRootObjectDefinitionIds(long companyId) {
-		Set<String> keys = _rootObjectDefinitionIds.keySet();
+	public static void removeRootObjectDefinitionIds(
+		ObjectDefinition objectDefinition) {
 
-		keys.removeIf(key -> key.endsWith(StringPool.AT + companyId));
+		_rootObjectDefinitionIds.remove(
+			_getPartitionKey(
+				objectDefinition.getObjectDefinitionId(), objectDefinition));
 	}
 
 	public static void unbindObjectDefinitions(
