@@ -1,4 +1,4 @@
-$c-slideout-sidebar-width: 320px !default;
+$c-slideout-sidebar-width: var(--c-slideout-sidebar-width, 320px) !default;
 
 $c-slideout-sidebar-width-mobile: 280px !default;
 
@@ -16,7 +16,7 @@ $c-slideout-transition-in: () !default;
 $c-slideout-transition-in: map-merge(
 	(
 		overflow: hidden,
-		transition: all 0.3s ease-in-out,
+		transition: var(--c-slideout-transition-in, all 0.3s ease-in-out),
 	),
 	$c-slideout-transition-in
 );
@@ -25,7 +25,7 @@ $c-slideout-transition-out: () !default;
 $c-slideout-transition-out: map-merge(
 	(
 		overflow: hidden,
-		transition: all 0.2s ease-in,
+		transition: var(--c-slideout-transition-out, all 0.2s ease-in),
 	),
 	$c-slideout-transition-out
 );
