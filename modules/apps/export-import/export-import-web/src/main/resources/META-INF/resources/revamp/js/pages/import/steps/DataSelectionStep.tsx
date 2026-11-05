@@ -10,12 +10,12 @@ import SectionHeader from '../../../components/SectionHeader';
 import {
 	FormikFieldCheckbox,
 	FormikFieldContentSelector,
+	FormikFieldGroups,
 } from '../../../components/forms/formik';
 import {ImportPreview} from '../../../types/exportImportPreview';
 import {toPortletDataHandlerSections} from '../../../utils/contentSelection';
 import {getScopeSubtitle} from '../../../utils/getScopeSubtitle';
 import FileSummary from './FileSummary';
-import GroupSelection from './GroupSelection';
 
 export default function DataSelectionStep({
 	commentsAndRatingsEnabled = false,
@@ -34,37 +34,44 @@ export default function DataSelectionStep({
 		return null;
 	}
 
-	const sites = siteSelectionEnabled ? importPreview.sites ?? [] : [];
-	const spaces = spaceSelectionEnabled
-		? (importPreview.assetLibraries ?? []).filter(
-				({type}) => type === 'Space'
-			)
-		: [];
+	const sites =
+		siteSelectionEnabled && importPreview.sites?.length
+			? importPreview.sites
+			: undefined;
+
+	const previewSpaces = importPreview.assetLibraries?.filter(
+		({type}) => type === 'Space'
+	);
+
+	const spaces =
+		spaceSelectionEnabled && previewSpaces?.length
+			? previewSpaces
+			: undefined;
 
 	return (
 		<>
 			<FileSummary importPreview={importPreview} />
 
-			{(!!sites.length || !!spaces.length) && (
+			{(sites || spaces) && (
 				<ScopeSection
-					subtitle={getScopeSubtitle(
-						'import',
-						!!sites.length,
-						!!spaces.length
-					)}
+					subtitle={getScopeSubtitle('import', !!sites, !!spaces)}
 				>
-					{!!sites.length && (
-						<GroupSelection
+					{sites && (
+						<FormikFieldGroups
 							groups={sites}
 							name="siteExternalReferenceCodes"
+							process="import"
+							totalCount={sites.length}
 							type="site"
 						/>
 					)}
 
-					{!!spaces.length && (
-						<GroupSelection
+					{spaces && (
+						<FormikFieldGroups
 							groups={spaces}
 							name="spaceExternalReferenceCodes"
+							process="import"
+							totalCount={spaces.length}
 							type="space"
 						/>
 					)}
