@@ -39,11 +39,11 @@ export default async function visitProjectTsconfig(
 
 	const currentProject = projectsEntryPoints[projectDescription.name];
 
-	const hasTypeScript = testConfig
+	const typeScriptFound = testConfig
 		? await hasTypeScriptFiles(srcPath)
-		: currentProject.hasTypeScript;
+		: currentProject.typeScriptProject;
 
-	if (!hasTypeScript) {
+	if (!typeScriptFound) {
 		if (await fileExists(configPath)) {
 			await visitorFunction(configPath, null);
 		}
@@ -133,7 +133,7 @@ export default async function visitProjectTsconfig(
 			}
 		);
 
-		if (!projectEntryPoint.hasTypeScript) {
+		if (!projectEntryPoint.typeScriptProject) {
 			continue;
 		}
 

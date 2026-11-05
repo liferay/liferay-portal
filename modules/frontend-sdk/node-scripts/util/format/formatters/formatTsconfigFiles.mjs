@@ -41,9 +41,9 @@ export default async function formatTsconfigFiles(check) {
 				print(
 					2,
 					print.success('SUCCESS:'),
-					'Deleted file',
+					'File',
 					print.underline(relFilePath),
-					'\n'
+					'was deleted\n'
 				);
 			}
 		}
@@ -64,9 +64,9 @@ export default async function formatTsconfigFiles(check) {
 			print(
 				2,
 				print.success('SUCCESS:'),
-				'Regenerated file',
+				'File',
 				print.underline(relFilePath),
-				'\n'
+				'was regenerated\n'
 			);
 		}
 	});

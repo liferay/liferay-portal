@@ -34,13 +34,13 @@ export default async function visitOutdatedTsconfigFiles(visitorFunction) {
  * {
  *	 '@liferay/frontend-js-react-web': {
  *		dir: 'modules/apps/frontend-js/frontend-js-react-web',
- *		hasTypeScript: true,
  *		path: {
  *			main: 'src/main/resources/META-INF/resources/js/index.ts',
  *			submodules: {
  *				foo: 'src/main/resources/META-INF/resources/js/foo.ts',
  *			}
- *		}
+ *		},
+ *		typeScriptProject: true,
  *	 },
  *	 ...
  * }
@@ -55,10 +55,10 @@ async function getProjectsEntryPoints(projectDirs, modulesDir) {
 
 			projectsEntryPoints[name] = {
 				dir: path.relative(modulesDir, projectDir),
-				hasTypeScript: await hasTypeScriptFiles(
+				path: typescript,
+				typeScriptProject: await hasTypeScriptFiles(
 					path.join(projectDir, SRC_PATH)
 				),
-				path: typescript,
 			};
 		})
 	);
