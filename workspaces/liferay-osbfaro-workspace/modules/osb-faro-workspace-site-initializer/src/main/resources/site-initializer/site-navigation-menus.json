@@ -1,0 +1,101 @@
+[
+	{
+		"externalReferenceCode": "LDPPRIMARYNAVIGATION",
+		"menuItems": [
+			{
+				"externalReferenceCode": "LDPPRIMARYNAVIGATION1",
+				"menuItems": [
+					{
+						"displayIcon": "diagram",
+						"externalReferenceCode": "LDPPRIMARYNAVIGATION2",
+						"friendlyURL": "/lifecycles",
+						"privateLayout": false,
+						"type": "layout"
+					},
+					{
+						"displayIcon": "megaphone",
+						"externalReferenceCode": "LDPPRIMARYNAVIGATION3",
+						"friendlyURL": "/campaigns",
+						"privateLayout": false,
+						"type": "layout"
+					},
+					{
+						"displayIcon": "globe",
+						"externalReferenceCode": "LDPPRIMARYNAVIGATION4",
+						"friendlyURL": "/sites",
+						"privateLayout": false,
+						"type": "layout"
+					},
+					{
+						"displayIcon": "documents-and-media",
+						"externalReferenceCode": "LDPPRIMARYNAVIGATION5",
+						"friendlyURL": "/assets",
+						"privateLayout": false,
+						"type": "layout"
+					},
+					{
+						"displayIcon": "bolt",
+						"externalReferenceCode": "LDPPRIMARYNAVIGATION6",
+						"friendlyURL": "/events",
+						"privateLayout": false,
+						"type": "layout"
+					}
+				],
+				"name_i18n": {
+					"en_US": "Touchpoints"
+				},
+				"title": "Touchpoints",
+				"type": "node"
+			},
+			{
+				"externalReferenceCode": "LDPPRIMARYNAVIGATION7",
+				"menuItems": [
+					{
+						"displayIcon": "filter",
+						"externalReferenceCode": "LDPPRIMARYNAVIGATION8",
+						"friendlyURL": "/segments",
+						"privateLayout": false,
+						"type": "layout"
+					},
+					{
+						"displayIcon": "briefcase",
+						"externalReferenceCode": "LDPPRIMARYNAVIGATION9",
+						"friendlyURL": "/accounts",
+						"privateLayout": false,
+						"type": "layout"
+					},
+					{
+						"displayIcon": "users",
+						"externalReferenceCode": "LDPPRIMARYNAVIGATION10",
+						"friendlyURL": "/individuals",
+						"privateLayout": false,
+						"type": "layout"
+					}
+				],
+				"name_i18n": {
+					"en_US": "People"
+				},
+				"title": "People",
+				"type": "node"
+			},
+			{
+				"externalReferenceCode": "LDPPRIMARYNAVIGATION11",
+				"menuItems": [
+					{
+						"displayIcon": "test",
+						"externalReferenceCode": "LDPPRIMARYNAVIGATION12",
+						"friendlyURL": "/tests",
+						"privateLayout": false,
+						"type": "layout"
+					}
+				],
+				"name_i18n": {
+					"en_US": "Optimize"
+				},
+				"title": "Optimize",
+				"type": "node"
+			}
+		],
+		"name": "Liferay Data Platform Primary Navigation"
+	}
+]

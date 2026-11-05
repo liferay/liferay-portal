@@ -97,7 +97,28 @@
 							"fragmentDropZoneId": "sidebarBody"
 						},
 						"id": "212eb06f-da24-4b75-cde8-face21ecf4e5",
-						"pageElements": [],
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "vertical-navigation"
+									},
+									"fragmentConfig": {
+										"ariaLabel": "Liferay Data Platform Primary Navigation",
+										"displayStyle": "stacked",
+										"hoveredItemColor": "",
+										"selectedItemColor": "",
+										"source": "{\"parentSiteNavigationMenuItemId\": \"0\", \"privateLayout\": \"false\", \"siteNavigationMenuExternalReferenceCode\": \"LDPPRIMARYNAVIGATION\", \"title\": \"Liferay Data Platform Primary Navigation\", \"type\": \"class com.liferay.site.navigation.item.selector.SiteNavigationMenuItemSelectorReturnType\"}",
+										"sublevels": "-1"
+									},
+									"fragmentFields": [
+									],
+									"indexed": true
+								},
+								"id": "339a84e4-b200-a686-2e8e-724ca1458332",
+								"type": "Fragment"
+							}
+						],
 						"type": "FragmentDropZone"
 					},
 					{
