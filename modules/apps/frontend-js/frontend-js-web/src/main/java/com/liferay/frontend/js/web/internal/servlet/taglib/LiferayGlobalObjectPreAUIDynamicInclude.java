@@ -445,7 +445,7 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 
 			sb.append(StringPool.APOSTROPHE);
 			sb.append(featureFlag.getKey());
-			sb.append("':true,");
+			sb.append("': true, ");
 		}
 
 		for (FeatureFlag featureFlag :
@@ -454,7 +454,7 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 
 			sb.append(StringPool.APOSTROPHE);
 			sb.append(featureFlag.getKey());
-			sb.append("':true,");
+			sb.append("': true, ");
 		}
 
 		sb.append("},\n");

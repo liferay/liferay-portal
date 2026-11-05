@@ -101,7 +101,7 @@ type: 'warning'
 },
 ],
 },
-FeatureFlags: {'LPD-00042':true,'LPD-00042':true,},
+FeatureFlags: {'LPD-00042': true, 'LPD-00042': true, },
 Language: {
 	_cache:
 		window?.Liferay?.Language?._cache
