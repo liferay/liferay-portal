@@ -110,12 +110,13 @@ public class AttachmentDDMFormFieldTemplateContextContributorTest
 
 	@Test
 	public void testGetParametersDeleteURL() {
+
+		// With a rendering portlet
+
 		_ddmFormField.setProperty(
 			ObjectFieldSettingConstants.NAME_FILE_SOURCE,
 			ObjectFieldSettingConstants.VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA);
 		_ddmFormField.setProperty("portletId", RandomTestUtil.randomString());
-
-		// With a rendering portlet
 
 		String portletId = RandomTestUtil.randomString();
 

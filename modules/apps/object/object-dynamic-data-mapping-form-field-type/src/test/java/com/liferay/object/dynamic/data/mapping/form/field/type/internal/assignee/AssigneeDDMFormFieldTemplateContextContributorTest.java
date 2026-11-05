@@ -74,12 +74,13 @@ public class AssigneeDDMFormFieldTemplateContextContributorTest {
 
 	@Test
 	public void testGetParameters() throws Exception {
+
+		// With a rendering portlet
+
 		Portal portal = Mockito.mock(Portal.class);
 
 		ReflectionTestUtil.setFieldValue(
 			_assigneeDDMFormFieldTemplateContextContributor, "_portal", portal);
-
-		// With a rendering portlet
 
 		DDMFormField ddmFormField = new DDMFormField(
 			"assignee", ObjectDDMFormFieldTypeConstants.ASSIGNEE);
