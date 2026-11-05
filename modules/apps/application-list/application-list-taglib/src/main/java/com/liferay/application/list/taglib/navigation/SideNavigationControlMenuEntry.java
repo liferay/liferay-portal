@@ -19,6 +19,7 @@ import com.liferay.portal.template.react.renderer.ReactRenderer;
 import com.liferay.product.navigation.control.menu.BaseProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuCategoryKeys;
+import com.liferay.product.navigation.product.menu.helper.ProductNavigationProductMenuHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -121,6 +122,12 @@ public class SideNavigationControlMenuEntry
 
 	@Override
 	public boolean isShow(HttpServletRequest httpServletRequest) {
+		if (_productNavigationProductMenuHelper.isShowProductMenu(
+				httpServletRequest)) {
+
+			return true;
+		}
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -140,6 +147,10 @@ public class SideNavigationControlMenuEntry
 
 	@Reference
 	private PanelAppRegistry _panelAppRegistry;
+
+	@Reference
+	private ProductNavigationProductMenuHelper
+		_productNavigationProductMenuHelper;
 
 	@Reference
 	private ReactRenderer _reactRenderer;

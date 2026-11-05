@@ -30,6 +30,7 @@ interface Props {
 	colorSchemeSessionKey: string;
 	expandedKeys: Array<React.Key>;
 	expandedKeysSessionKey: string;
+	fixed?: boolean;
 	items: Array<SideNavigationItem>;
 	label: string;
 	navigationItemsURL: string;
@@ -61,6 +62,7 @@ function SideNavigation({
 	colorSchemeSessionKey,
 	expandedKeys: externalExpandedKeys,
 	expandedKeysSessionKey,
+	fixed = false,
 	items: externalItems,
 	label,
 	navigationItemsURL,
@@ -129,6 +131,8 @@ function SideNavigation({
 		[expandedKeys, expandedKeysSessionKey, isFilterActive]
 	);
 
+	const sidenavTransitionControllerRef = useRef<AbortController | null>(null);
+
 	const updateVisible = useCallback(
 		async (visible: boolean) => {
 			await Liferay.Util.Session.set(
@@ -136,12 +140,47 @@ function SideNavigation({
 				visible ? 'visible' : 'hidden'
 			);
 
+			if (fixed) {
+				const {body} = document;
+
+				sidenavTransitionControllerRef.current?.abort();
+
+				const sidenavTransitionController = new AbortController();
+
+				sidenavTransitionControllerRef.current =
+					sidenavTransitionController;
+
+				body.addEventListener(
+					'transitionend',
+					(event) => {
+						if (event.propertyName === 'padding-left') {
+							body.classList.remove('sidenav-transition');
+
+							sidenavTransitionController.abort();
+						}
+					},
+					{signal: sidenavTransitionController.signal}
+				);
+
+				body.classList.add('sidenav-transition');
+				body.classList.toggle('open', visible);
+				body.classList.toggle('product-menu-open', visible);
+			}
+
 			setVisible(visible);
 
 			Liferay.fire('sideNavigationStateChanged', {visible});
 		},
-		[visibleSessionKey]
+		[fixed, visibleSessionKey]
 	);
+
+	useEffect(function cleanupSidenavTransition() {
+		return () => {
+			sidenavTransitionControllerRef.current?.abort();
+
+			document.body.classList.remove('sidenav-transition');
+		};
+	}, []);
 
 	useEffect(
 		function setupVisibilityRequestHandler() {
@@ -194,6 +233,14 @@ function SideNavigation({
 			open={visible}
 			testId="sideNavigation"
 		>
+			{fixed && visible && (
+				<div
+					aria-hidden="true"
+					className="side-navigation-backdrop"
+					onClick={() => updateVisible(false)}
+				/>
+			)}
+
 			<UnifiedSidebar.Top>
 				<SideNavigationSearchInput
 					onChange={setQuery}

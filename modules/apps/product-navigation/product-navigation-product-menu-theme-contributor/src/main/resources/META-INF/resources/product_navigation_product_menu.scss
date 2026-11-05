@@ -12,7 +12,7 @@ html#{$cadmin-selector} {
 		.cadmin.control-menu-container {
 			@include media-breakpoint-up(sm, $cadmin-grid-breakpoints) {
 				@media (prefers-reduced-motion: no-preference) {
-					transition: $cadmin-sidenav-transition;
+					transition: $product-menu-transition;
 				}
 			}
 		}

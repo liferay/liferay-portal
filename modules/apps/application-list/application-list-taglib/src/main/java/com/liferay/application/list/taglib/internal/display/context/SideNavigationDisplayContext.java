@@ -100,6 +100,8 @@ public class SideNavigationDisplayContext {
 		).put(
 			"expandedKeysSessionKey", _getExpandedKeysSessionKey()
 		).put(
+			"fixed", _siteAdministration
+		).put(
 			"items", _getPropsItems()
 		).put(
 			"label", _getLabel()
