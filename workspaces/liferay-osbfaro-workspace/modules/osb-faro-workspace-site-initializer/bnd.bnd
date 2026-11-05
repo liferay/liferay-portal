@@ -1,0 +1,6 @@
+Bundle-Name: Liferay OSB Faro Workspace Site Initializer
+Bundle-SymbolicName: com.liferay.osb.faro.workspace.site.initializer
+Bundle-Version: 1.0.0
+Liferay-Site-Initializer-Name: Liferay Data Platform Workspace
+Provide-Capability: liferay.site.initializer
+Web-ContextPath: /osb-faro-workspace-site-initializer
