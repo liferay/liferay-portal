@@ -28,8 +28,7 @@ import org.osgi.service.component.annotations.Deactivate;
 @Component(
 	property = {
 		"jakarta.portlet.name=" + UsersAdminPortletKeys.SERVICE_ACCOUNTS,
-		"mvc.command.name=/",
-		"mvc.command.name=/users_admin/view_service_accounts"
+		"mvc.command.name=/"
 	},
 	service = MVCRenderCommand.class
 )
