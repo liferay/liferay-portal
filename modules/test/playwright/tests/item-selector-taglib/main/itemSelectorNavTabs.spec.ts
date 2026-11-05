@@ -165,6 +165,7 @@ test(
 
 pageEditorTest(
 	'Item selector shows a vertical navigation when it has more than five tabs',
+	{tag: '@LPD-114043'},
 	async ({apiHelpers, page, pageEditorPage, site}) => {
 		const contentDisplayId = getRandomString();
 
@@ -192,6 +193,11 @@ pageEditorTest(
 
 		await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
+		// Narrow the viewport to a width between the md (768px) and lg (992px)
+		// Bootstrap breakpoints so the item selector modal renders in that range
+
+		await page.setViewportSize({height: 800, width: 900});
+
 		// Open the Content Display item selector
 
 		await pageEditorPage.selectFragment(contentDisplayId);
@@ -201,10 +207,31 @@ pageEditorTest(
 		// With more than five tabs, the navigation renders as a vertical
 		// menubar rather than as horizontal tabs
 
-		await expect(
-			page
-				.frameLocator('iframe[title="Select"]')
-				.locator('nav[class*="menubar-vertical"]')
-		).toBeVisible();
+		const iframe = page.frameLocator('iframe[title="Select"]');
+
+		const verticalNav = iframe.locator('nav[class*="menubar-vertical"]');
+
+		const sheet = iframe.locator('.sheet').first();
+
+		await expect(verticalNav).toBeVisible();
+
+		await expect(sheet).toBeVisible();
+
+		// The vertical navigation sits beside the sheet below the lg
+		// breakpoint, not stacked on top of it
+
+		await expect(async () => {
+			const navBox = await verticalNav.boundingBox();
+
+			const sheetBox = await sheet.boundingBox();
+
+			expect(navBox).not.toBeNull();
+
+			expect(sheetBox).not.toBeNull();
+
+			expect(navBox!.x + navBox!.width).toBeLessThanOrEqual(
+				sheetBox!.x
+			);
+		}).toPass({timeout: 5000});
 	}
 );
