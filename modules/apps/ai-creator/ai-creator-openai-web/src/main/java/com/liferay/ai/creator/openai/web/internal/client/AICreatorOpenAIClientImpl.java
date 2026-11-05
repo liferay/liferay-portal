@@ -72,7 +72,7 @@ public class AICreatorOpenAIClientImpl implements AICreatorOpenAIClient {
 						"role", "user"
 					))
 			).put(
-				"model", "gpt-3.5-turbo"
+				"model", "gpt-5.6-terra"
 			).toString(),
 			ContentTypes.APPLICATION_JSON, StringPool.UTF8);
 		options.setPost(true);
