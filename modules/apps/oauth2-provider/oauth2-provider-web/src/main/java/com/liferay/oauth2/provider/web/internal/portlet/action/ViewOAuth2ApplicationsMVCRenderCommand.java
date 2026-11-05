@@ -35,8 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 	configurationPid = "com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration",
 	property = {
 		"jakarta.portlet.name=" + OAuth2ProviderPortletKeys.OAUTH2_ADMIN,
-		"mvc.command.name=/",
-		"mvc.command.name=/oauth2_provider/view_oauth2_applications"
+		"mvc.command.name=/"
 	},
 	service = MVCRenderCommand.class
 )
