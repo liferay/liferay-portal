@@ -12,6 +12,7 @@ import {
 	rangeSelectors,
 } from 'shared/components/FrontendDataSet';
 import {
+	isLifecycleStage,
 	LifecycleStages,
 	lifecycleStagesLabelMap,
 } from 'contacts/pages/account/utils/constants';
@@ -119,16 +120,18 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 					accountLifecycleStageRenderer: ({
 						value,
 					}: {
-						value: LifecycleStages;
+						value: string;
 					}) => (
 						<DataValue
-							format={(stage: LifecycleStages) =>
-								columns.cmsLabelRenderer({
-									displayType:
-										lifecycleStagesLabelMap[stage]
-											.displayType,
-									label: lifecycleStagesLabelMap[stage].label,
-								})
+							format={(stage: string) =>
+								columns.cmsLabelRenderer(
+									isLifecycleStage(stage)
+										? lifecycleStagesLabelMap[stage]
+										: {
+												displayType: 'secondary',
+												label: stage,
+											}
+								)
 							}
 							value={value}
 						/>

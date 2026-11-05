@@ -7,7 +7,7 @@ import {
 	pagination,
 } from 'shared/components/FrontendDataSet';
 import {
-	LifecycleStages,
+	isLifecycleStage,
 	lifecycleStagesLabelMap,
 } from 'contacts/pages/account/utils/constants';
 import {omit, pickBy} from 'lodash';
@@ -120,14 +120,14 @@ const AccountsTouchedDataSet: React.FC<IAccountsTouchedDataSetProps> = ({
 						</div>
 					);
 				},
-				lifecycleStageRenderer: ({value}: {value: LifecycleStages}) => (
+				lifecycleStageRenderer: ({value}: {value: string}) => (
 					<DataValue
-						format={(stage: LifecycleStages) =>
-							columns.cmsLabelRenderer({
-								displayType:
-									lifecycleStagesLabelMap[stage].displayType,
-								label: lifecycleStagesLabelMap[stage].label,
-							})
+						format={(stage: string) =>
+							columns.cmsLabelRenderer(
+								isLifecycleStage(stage)
+									? lifecycleStagesLabelMap[stage]
+									: {displayType: 'secondary', label: stage}
+							)
 						}
 						value={value}
 					/>
