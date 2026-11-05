@@ -41,6 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 		"jakarta.portlet.display-name=Blogs Aggregator",
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/blogs_aggregator/view.jsp",
 		"jakarta.portlet.name=" + BlogsPortletKeys.BLOGS_AGGREGATOR,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=guest,power-user,user",

@@ -19,8 +19,6 @@
 			URLCodec.encodeURL(
 				PortletURLBuilder.createRenderURL(
 					renderResponse
-				).setMVCRenderCommandName(
-					"/blogs_aggregator/view"
 				).setParameter(
 					"blogsPortletFound", false
 				).buildString()));

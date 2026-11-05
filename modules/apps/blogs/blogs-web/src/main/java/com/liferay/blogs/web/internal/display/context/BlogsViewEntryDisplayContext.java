@@ -284,7 +284,7 @@ public class BlogsViewEntryDisplayContext {
 				_liferayPortletRequest.getPortletName(),
 				BlogsPortletKeys.BLOGS_AGGREGATOR)) {
 
-			mvcRenderCommandName = "/blogs_aggregator/view";
+			mvcRenderCommandName = "/";
 		}
 
 		return mvcRenderCommandName;
