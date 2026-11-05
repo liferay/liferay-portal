@@ -1,0 +1,36 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
+import org.osgi.service.component.annotations.Component;
+
+/**
+ * @author Shuyang Zhou
+ */
+@Component(
+	property = {
+		"jakarta.portlet.name=foo", "mvc.command.name=/",
+		"mvc.command.name=/foo/view"
+	},
+	service = MVCRenderCommand.class
+)
+public class MVCViewRootAndName implements MVCRenderCommand {
+
+	@Override
+	public String render(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws PortletException {
+
+		return "/view.jsp";
+	}
+
+}
