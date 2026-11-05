@@ -67,17 +67,8 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 	@Override
 	public void addAttribute(String name) throws PortalException {
-		boolean secure =
-			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_WRITE_CHECK_BY_DEFAULT;
-
-		if (CopyLayoutThreadLocal.isCopyLayout() ||
-			ExportImportThreadLocal.isImportInProcess() ||
-			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			secure = false;
-		}
-
-		addAttribute(name, ExpandoColumnConstants.STRING, null, secure);
+		addAttribute(
+			name, ExpandoColumnConstants.STRING, null, _isSecure(true));
 	}
 
 	@Override
@@ -89,17 +80,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 	@Override
 	public void addAttribute(String name, int type) throws PortalException {
-		boolean secure =
-			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_WRITE_CHECK_BY_DEFAULT;
-
-		if (CopyLayoutThreadLocal.isCopyLayout() ||
-			ExportImportThreadLocal.isImportInProcess() ||
-			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			secure = false;
-		}
-
-		addAttribute(name, type, null, secure);
+		addAttribute(name, type, null, _isSecure(true));
 	}
 
 	@Override
@@ -113,17 +94,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 	public void addAttribute(String name, int type, Serializable defaultValue)
 		throws PortalException {
 
-		boolean secure =
-			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_WRITE_CHECK_BY_DEFAULT;
-
-		if (CopyLayoutThreadLocal.isCopyLayout() ||
-			ExportImportThreadLocal.isImportInProcess() ||
-			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			secure = false;
-		}
-
-		addAttribute(name, type, defaultValue, secure);
+		addAttribute(name, type, defaultValue, _isSecure(true));
 	}
 
 	@Override
@@ -196,17 +167,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 	@Override
 	public Serializable getAttribute(String name) {
-		boolean secure =
-			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_READ_CHECK_BY_DEFAULT;
-
-		if (CopyLayoutThreadLocal.isCopyLayout() ||
-			ExportImportThreadLocal.isExportInProcess() ||
-			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			secure = false;
-		}
-
-		return getAttribute(name, secure);
+		return getAttribute(name, _isSecure(false));
 	}
 
 	@Override
@@ -275,17 +236,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 	@Override
 	public Map<String, Serializable> getAttributes() {
-		boolean secure =
-			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_READ_CHECK_BY_DEFAULT;
-
-		if (CopyLayoutThreadLocal.isCopyLayout() ||
-			ExportImportThreadLocal.isExportInProcess() ||
-			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			secure = false;
-		}
-
-		return getAttributes(secure);
+		return getAttributes(_isSecure(false));
 	}
 
 	@Override
@@ -302,17 +253,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 	@Override
 	public Map<String, Serializable> getAttributes(Collection<String> names) {
-		boolean secure =
-			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_READ_CHECK_BY_DEFAULT;
-
-		if (CopyLayoutThreadLocal.isCopyLayout() ||
-			ExportImportThreadLocal.isExportInProcess() ||
-			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			secure = false;
-		}
-
-		return getAttributes(names, secure);
+		return getAttributes(names, _isSecure(false));
 	}
 
 	@Override
@@ -411,17 +352,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 	@Override
 	public void setAttribute(String name, Serializable value) {
-		boolean secure =
-			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_WRITE_CHECK_BY_DEFAULT;
-
-		if (CopyLayoutThreadLocal.isCopyLayout() ||
-			ExportImportThreadLocal.isImportInProcess() ||
-			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			secure = false;
-		}
-
-		setAttribute(name, value, secure);
+		setAttribute(name, value, _isSecure(true));
 	}
 
 	@Override
@@ -469,17 +400,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 	public void setAttributeProperties(
 		String name, UnicodeProperties unicodeProperties) {
 
-		boolean secure =
-			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_WRITE_CHECK_BY_DEFAULT;
-
-		if (CopyLayoutThreadLocal.isCopyLayout() ||
-			ExportImportThreadLocal.isImportInProcess() ||
-			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			secure = false;
-		}
-
-		setAttributeProperties(name, unicodeProperties, secure);
+		setAttributeProperties(name, unicodeProperties, _isSecure(true));
 	}
 
 	@Override
@@ -507,17 +428,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 	@Override
 	public void setAttributes(Map<String, Serializable> attributes) {
-		boolean secure =
-			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_WRITE_CHECK_BY_DEFAULT;
-
-		if (CopyLayoutThreadLocal.isCopyLayout() ||
-			ExportImportThreadLocal.isImportInProcess() ||
-			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			secure = false;
-		}
-
-		setAttributes(attributes, secure);
+		setAttributes(attributes, _isSecure(true));
 	}
 
 	@Override
@@ -557,17 +468,7 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 
 	@Override
 	public void setAttributes(ServiceContext serviceContext) {
-		boolean secure =
-			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_WRITE_CHECK_BY_DEFAULT;
-
-		if (CopyLayoutThreadLocal.isCopyLayout() ||
-			ExportImportThreadLocal.isImportInProcess() ||
-			MergeLayoutPrototypesThreadLocal.isInProgress()) {
-
-			secure = false;
-		}
-
-		setAttributes(serviceContext, secure);
+		setAttributes(serviceContext, _isSecure(true));
 	}
 
 	@Override
@@ -670,6 +571,29 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 		}
 
 		return table;
+	}
+
+	private boolean _isSecure(boolean write) {
+		if (CopyLayoutThreadLocal.isCopyLayout() ||
+			MergeLayoutPrototypesThreadLocal.isInProgress()) {
+
+			return false;
+		}
+
+		if (write) {
+			if (ExportImportThreadLocal.isImportInProcess()) {
+				return false;
+			}
+
+			return PropsValues.
+				PERMISSIONS_CUSTOM_ATTRIBUTE_WRITE_CHECK_BY_DEFAULT;
+		}
+
+		if (ExportImportThreadLocal.isExportInProcess()) {
+			return false;
+		}
+
+		return PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_READ_CHECK_BY_DEFAULT;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
