@@ -143,10 +143,10 @@ public class StatusStrutsActionTest {
 							"Liferay</a>")));
 		Assert.assertTrue(content, content.contains(expectedContent));
 
-		String contentElement = content.substring(
+		String contentHTML = content.substring(
 			content.indexOf("id=\"content\""));
 
-		Assert.assertTrue(contentElement.contains("lfr-url-error"));
+		Assert.assertTrue(contentHTML.contains("lfr-url-error"));
 	}
 
 	@Inject
