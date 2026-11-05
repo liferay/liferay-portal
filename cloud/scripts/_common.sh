@@ -334,14 +334,68 @@ function _install_liferay_platform_chart {
 		--version "${platform_target_revision}"
 }
 
+function _terminate_argocd_operations {
+	local application_names
+
+	application_names=$(
+		kubectl \
+			get \
+			applications.argoproj.io \
+			--namespace argocd-system \
+			--output json \
+			| jq --raw-output '.items[] | select(.status.operationState.phase == "Running") | .metadata.name')
+
+	local application_name
+
+	for application_name in ${application_names}
+	do
+		echo "Terminating the sync operation of the Argo CD application ${application_name}."
+
+		kubectl \
+			patch \
+			applications.argoproj.io \
+			"${application_name}" \
+			--namespace argocd-system \
+			--patch '{"status": {"operationState": {"phase": "Terminating"}}}' \
+			--type merge
+	done
+}
+
 function _uninstall_liferay_platform_chart {
+	if [[ -z $(kubectl get customresourcedefinitions applications.argoproj.io --ignore-not-found --output name) ]]
+	then
+		echo "Argo CD is not installed. Skipping the Liferay platform root application uninstall."
+
+		return
+	fi
+
 	echo "Uninstalling the Liferay platform root application."
 
 	helm \
 		uninstall \
 		liferay-platform \
 		--ignore-not-found \
-		--namespace argocd-system \
-		--timeout 30m0s \
-		--wait
+		--namespace argocd-system
+
+	local timeout_minutes=30
+
+	local timeout
+
+	timeout=$(($(date +%s) + timeout_minutes * 60))
+
+	while [[ -n $(kubectl get applications.argoproj.io liferay-platform --ignore-not-found --namespace argocd-system --output name) ]]
+	do
+		if [ $(date +%s) -ge ${timeout} ]
+		then
+			echo "Argo CD did not delete the Liferay platform root application within ${timeout_minutes} minutes." >&2
+
+			return 1
+		fi
+
+		_terminate_argocd_operations
+
+		echo "Waiting for Argo CD to delete the Liferay platform applications."
+
+		sleep 10
+	done
 }
