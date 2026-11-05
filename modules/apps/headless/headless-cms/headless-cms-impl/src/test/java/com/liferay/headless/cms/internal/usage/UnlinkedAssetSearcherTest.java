@@ -67,7 +67,7 @@ public class UnlinkedAssetSearcherTest {
 			siteNavigationMenuItemLocalService);
 
 		unlinkedAssetSearcher.search(
-			RandomTestUtil.randomLong(),
+			new CollectionUsages(), RandomTestUtil.randomLong(),
 			new Long[] {RandomTestUtil.randomLong()},
 			RandomTestUtil.randomString(), Pagination.of(501, 20), null, null);
 

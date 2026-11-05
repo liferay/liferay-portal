@@ -10,9 +10,11 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:asset:asset-link-api")
+	compileOnly project(":apps:asset:asset-list-api")
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:headless:headless-cms:headless-cms-api")
 	compileOnly project(":apps:layout:layout-api")
+	compileOnly project(":apps:layout:layout-page-template-api")
 	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:object:object-rest-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")

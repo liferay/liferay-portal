@@ -5,13 +5,19 @@
 
 package com.liferay.headless.cms.internal.resource.v1_0;
 
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.link.service.AssetLinkLocalService;
+import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
+import com.liferay.asset.list.service.AssetListEntryLocalService;
+import com.liferay.asset.list.service.AssetListEntryUsageLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.headless.cms.dto.v1_0.UnlinkedAsset;
+import com.liferay.headless.cms.internal.usage.CollectionUsageResolver;
 import com.liferay.headless.cms.internal.usage.UnlinkedAssetSearcher;
 import com.liferay.headless.cms.internal.util.CMSGroupUtil;
 import com.liferay.headless.cms.resource.v1_0.UnlinkedAssetResource;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -27,6 +33,7 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -92,6 +99,13 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 			return Page.of(Collections.emptyList());
 		}
 
+		CollectionUsageResolver collectionUsageResolver =
+			new CollectionUsageResolver(
+				_assetEntryLocalService,
+				_assetListEntryAssetEntryRelLocalService,
+				_assetListEntryLocalService, _assetListEntryUsageLocalService,
+				_depotEntryLocalService, _layoutLocalService,
+				_layoutPageTemplateEntryLocalService, _portal);
 		UnlinkedAssetSearcher unlinkedAssetSearcher = new UnlinkedAssetSearcher(
 			_aggregations, _assetLinkLocalService,
 			_objectDefinitionLocalService, _objectEntryLocalService,
@@ -99,6 +113,8 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 			_searchRequestBuilderFactory, _siteNavigationMenuItemLocalService);
 
 		SearchResponse searchResponse = unlinkedAssetSearcher.search(
+			collectionUsageResolver.getCollectionUsages(
+				contextCompany.getCompanyId()),
 			contextCompany.getCompanyId(), selectedSpaceGroupIds,
 			contextAcceptLanguage.getPreferredLanguageId(), pagination, search,
 			sorts);
@@ -184,13 +200,33 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 	private Aggregations _aggregations;
 
 	@Reference
+	private AssetEntryLocalService _assetEntryLocalService;
+
+	@Reference
 	private AssetLinkLocalService _assetLinkLocalService;
+
+	@Reference
+	private AssetListEntryAssetEntryRelLocalService
+		_assetListEntryAssetEntryRelLocalService;
+
+	@Reference
+	private AssetListEntryLocalService _assetListEntryLocalService;
+
+	@Reference
+	private AssetListEntryUsageLocalService _assetListEntryUsageLocalService;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private DepotEntryService _depotEntryService;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
