@@ -303,33 +303,6 @@ public class DDMTemplateLinkLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static DDMTemplateLink getTemplateLink(long templateLinkId)
-		throws PortalException {
-
-		return getService().getTemplateLink(templateLinkId);
-	}
-
-	public static DDMTemplateLink getTemplateLink(
-			long classNameId, long classPK)
-		throws PortalException {
-
-		return getService().getTemplateLink(classNameId, classPK);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public static List<DDMTemplateLink> getTemplateLinks(long classNameId) {
-		return getService().getTemplateLinks(classNameId);
-	}
-
-	public static List<DDMTemplateLink> getTemplateLinksByTemplateId(
-		long templateId) {
-
-		return getService().getTemplateLinksByTemplateId(templateId);
-	}
-
 	/**
 	 * Updates the ddm template link in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -344,13 +317,6 @@ public class DDMTemplateLinkLocalServiceUtil {
 		DDMTemplateLink ddmTemplateLink) {
 
 		return getService().updateDDMTemplateLink(ddmTemplateLink);
-	}
-
-	public static DDMTemplateLink updateTemplateLink(
-			long templateLinkId, long templateId)
-		throws PortalException {
-
-		return getService().updateTemplateLink(templateLinkId, templateId);
 	}
 
 	public static DDMTemplateLink updateTemplateLink(
@@ -370,4 +336,4 @@ public class DDMTemplateLinkLocalServiceUtil {
 			DDMTemplateLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1951611433
+// LIFERAY-SERVICE-BUILDER-HASH:-521565827

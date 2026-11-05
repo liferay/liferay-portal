@@ -31,17 +31,6 @@ public class DDMContentLocalServiceWrapper
 		_ddmContentLocalService = ddmContentLocalService;
 	}
 
-	@Override
-	public DDMContent addContent(
-			long userId, long groupId, String name, String description,
-			String data,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmContentLocalService.addContent(
-			userId, groupId, name, description, data, serviceContext);
-	}
-
 	/**
 	 * Adds the ddm content to the database. Also notifies the appropriate model listeners.
 	 *
@@ -77,11 +66,6 @@ public class DDMContentLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _ddmContentLocalService.createPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public void deleteContent(DDMContent content) {
-		_ddmContentLocalService.deleteContent(content);
 	}
 
 	/**
@@ -257,18 +241,6 @@ public class DDMContentLocalServiceWrapper
 		return _ddmContentLocalService.getActionableDynamicQuery();
 	}
 
-	@Override
-	public DDMContent getContent(long contentId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmContentLocalService.getContent(contentId);
-	}
-
-	@Override
-	public java.util.List<DDMContent> getContents() {
-		return _ddmContentLocalService.getContents();
-	}
-
 	/**
 	 * Returns the ddm content with the primary key.
 	 *
@@ -398,16 +370,6 @@ public class DDMContentLocalServiceWrapper
 		return _ddmContentLocalService.getPersistedModel(primaryKeyObj);
 	}
 
-	@Override
-	public DDMContent updateContent(
-			long contentId, String name, String description, String data,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmContentLocalService.updateContent(
-			contentId, name, description, data, serviceContext);
-	}
-
 	/**
 	 * Updates the ddm content in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -463,4 +425,4 @@ public class DDMContentLocalServiceWrapper
 	private DDMContentLocalService _ddmContentLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:578986731
+// LIFERAY-SERVICE-BUILDER-HASH:-256795316

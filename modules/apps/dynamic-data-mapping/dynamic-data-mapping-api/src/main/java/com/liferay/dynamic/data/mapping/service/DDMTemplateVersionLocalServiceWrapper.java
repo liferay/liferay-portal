@@ -326,14 +326,6 @@ public class DDMTemplateVersionLocalServiceWrapper
 	}
 
 	@Override
-	public DDMTemplateVersion getTemplateVersion(long templateVersionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmTemplateVersionLocalService.getTemplateVersion(
-			templateVersionId);
-	}
-
-	@Override
 	public DDMTemplateVersion getTemplateVersion(
 			long templateId, String version)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -347,22 +339,6 @@ public class DDMTemplateVersionLocalServiceWrapper
 		long templateId) {
 
 		return _ddmTemplateVersionLocalService.getTemplateVersions(templateId);
-	}
-
-	@Override
-	public java.util.List<DDMTemplateVersion> getTemplateVersions(
-		long templateId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<DDMTemplateVersion>
-			orderByComparator) {
-
-		return _ddmTemplateVersionLocalService.getTemplateVersions(
-			templateId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getTemplateVersionsCount(long templateId) {
-		return _ddmTemplateVersionLocalService.getTemplateVersionsCount(
-			templateId);
 	}
 
 	/**
@@ -423,4 +399,4 @@ public class DDMTemplateVersionLocalServiceWrapper
 	private DDMTemplateVersionLocalService _ddmTemplateVersionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-46132158
+// LIFERAY-SERVICE-BUILDER-HASH:-1170926001

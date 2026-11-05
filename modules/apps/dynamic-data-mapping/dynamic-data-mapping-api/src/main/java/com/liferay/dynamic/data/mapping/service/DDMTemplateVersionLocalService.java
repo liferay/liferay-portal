@@ -260,24 +260,12 @@ public interface DDMTemplateVersionLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMTemplateVersion getTemplateVersion(long templateVersionId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDMTemplateVersion getTemplateVersion(
 			long templateId, String version)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMTemplateVersion> getTemplateVersions(long templateId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMTemplateVersion> getTemplateVersions(
-		long templateId, int start, int end,
-		OrderByComparator<DDMTemplateVersion> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getTemplateVersionsCount(long templateId);
 
 	/**
 	 * Updates the ddm template version in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -309,4 +297,4 @@ public interface DDMTemplateVersionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-356959104
+// LIFERAY-SERVICE-BUILDER-HASH:1327277575

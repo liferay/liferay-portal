@@ -315,18 +315,6 @@ public class DDMStructureVersionLocalServiceUtil {
 		return getService().getStructureVersions(structureId);
 	}
 
-	public static List<DDMStructureVersion> getStructureVersions(
-		long structureId, int start, int end,
-		OrderByComparator<DDMStructureVersion> orderByComparator) {
-
-		return getService().getStructureVersions(
-			structureId, start, end, orderByComparator);
-	}
-
-	public static int getStructureVersionsCount(long structureId) {
-		return getService().getStructureVersionsCount(structureId);
-	}
-
 	/**
 	 * Updates the ddm structure version in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -353,4 +341,4 @@ public class DDMStructureVersionLocalServiceUtil {
 			DDMStructureVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:218827383
+// LIFERAY-SERVICE-BUILDER-HASH:812109735

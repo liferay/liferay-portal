@@ -262,23 +262,10 @@ public class DDMFormInstanceVersionLocalServiceUtil {
 	}
 
 	public static DDMFormInstanceVersion getFormInstanceVersion(
-			long ddmFormInstanceVersionId)
-		throws PortalException {
-
-		return getService().getFormInstanceVersion(ddmFormInstanceVersionId);
-	}
-
-	public static DDMFormInstanceVersion getFormInstanceVersion(
 			long ddmFormInstanceId, String version)
 		throws PortalException {
 
 		return getService().getFormInstanceVersion(ddmFormInstanceId, version);
-	}
-
-	public static List<DDMFormInstanceVersion> getFormInstanceVersions(
-		long ddmFormInstanceId) {
-
-		return getService().getFormInstanceVersions(ddmFormInstanceId);
 	}
 
 	public static List<DDMFormInstanceVersion> getFormInstanceVersions(
@@ -287,10 +274,6 @@ public class DDMFormInstanceVersionLocalServiceUtil {
 
 		return getService().getFormInstanceVersions(
 			ddmFormInstanceId, start, end, orderByComparator);
-	}
-
-	public static int getFormInstanceVersionsCount(long ddmFormInstanceId) {
-		return getService().getFormInstanceVersionsCount(ddmFormInstanceId);
 	}
 
 	public static
@@ -360,4 +343,4 @@ public class DDMFormInstanceVersionLocalServiceUtil {
 			DDMFormInstanceVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-162746067
+// LIFERAY-SERVICE-BUILDER-HASH:664650464

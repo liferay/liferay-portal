@@ -226,10 +226,6 @@ public class DDMStorageLinkLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
-	public static DDMStorageLink fetchClassStorageLink(long classPK) {
-		return getService().fetchClassStorageLink(classPK);
-	}
-
 	public static DDMStorageLink fetchDDMStorageLink(long storageLinkId) {
 		return getService().fetchDDMStorageLink(storageLinkId);
 	}
@@ -338,33 +334,8 @@ public class DDMStorageLinkLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static DDMStorageLink getStorageLink(long storageLinkId)
-		throws PortalException {
-
-		return getService().getStorageLink(storageLinkId);
-	}
-
-	public static List<DDMStorageLink> getStructureStorageLinks(
-		long structureId) {
-
-		return getService().getStructureStorageLinks(structureId);
-	}
-
 	public static int getStructureStorageLinksCount(long structureId) {
 		return getService().getStructureStorageLinksCount(structureId);
-	}
-
-	public static List<DDMStorageLink> getStructureVersionStorageLinks(
-		long structureVersionId) {
-
-		return getService().getStructureVersionStorageLinks(structureVersionId);
-	}
-
-	public static int getStructureVersionStorageLinksCount(
-		long structureVersionId) {
-
-		return getService().getStructureVersionStorageLinksCount(
-			structureVersionId);
 	}
 
 	/**
@@ -383,14 +354,6 @@ public class DDMStorageLinkLocalServiceUtil {
 		return getService().updateDDMStorageLink(ddmStorageLink);
 	}
 
-	public static DDMStorageLink updateStorageLink(
-			long storageLinkId, long classNameId, long classPK)
-		throws PortalException {
-
-		return getService().updateStorageLink(
-			storageLinkId, classNameId, classPK);
-	}
-
 	public static DDMStorageLinkLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -401,4 +364,4 @@ public class DDMStorageLinkLocalServiceUtil {
 			DDMStorageLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1383552024
+// LIFERAY-SERVICE-BUILDER-HASH:-1666490152

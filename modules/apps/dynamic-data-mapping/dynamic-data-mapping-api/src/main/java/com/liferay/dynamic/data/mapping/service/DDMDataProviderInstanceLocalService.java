@@ -223,10 +223,6 @@ public interface DDMDataProviderInstanceLocalService
 		DynamicQuery dynamicQuery, Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMDataProviderInstance fetchDataProviderInstance(
-		long dataProviderInstanceId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDMDataProviderInstance fetchDataProviderInstanceByUuid(String uuid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -248,26 +244,12 @@ public interface DDMDataProviderInstanceLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMDataProviderInstance getDataProviderInstance(
-			long dataProviderInstanceId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDMDataProviderInstance getDataProviderInstanceByUuid(String uuid)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMDataProviderInstance> getDataProviderInstances(
 		long[] groupIds);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMDataProviderInstance> getDataProviderInstances(
-		long[] groupIds, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMDataProviderInstance> getDataProviderInstances(
-		long[] groupIds, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator);
 
 	/**
 	 * Returns the ddm data provider instance with the primary key.
@@ -403,4 +385,4 @@ public interface DDMDataProviderInstanceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1128889194
+// LIFERAY-SERVICE-BUILDER-HASH:913160379

@@ -347,14 +347,6 @@ public class DDMFormInstanceRecordVersionLocalServiceWrapper
 	}
 
 	@Override
-	public int getFormInstanceRecordVersionsCount(
-		long ddmFormInstanceRecordId) {
-
-		return _ddmFormInstanceRecordVersionLocalService.
-			getFormInstanceRecordVersionsCount(ddmFormInstanceRecordId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -464,4 +456,4 @@ public class DDMFormInstanceRecordVersionLocalServiceWrapper
 		_ddmFormInstanceRecordVersionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-677673032
+// LIFERAY-SERVICE-BUILDER-HASH:553937546

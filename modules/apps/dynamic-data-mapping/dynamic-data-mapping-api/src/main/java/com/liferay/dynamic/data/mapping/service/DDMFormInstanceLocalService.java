@@ -173,8 +173,6 @@ public interface DDMFormInstanceLocalService
 	public void deleteFormInstance(long ddmFormInstanceId)
 		throws PortalException;
 
-	public void deleteFormInstances(long groupId) throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -355,10 +353,6 @@ public interface DDMFormInstanceLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMFormInstance getFormInstance(String uuid, long ddmFormInstanceId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDMFormInstance getFormInstanceByStructureId(long structureId)
 		throws PortalException;
 
@@ -455,4 +449,4 @@ public interface DDMFormInstanceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1315380377
+// LIFERAY-SERVICE-BUILDER-HASH:2108574772

@@ -247,11 +247,6 @@ public class DDMStorageLinkLocalServiceWrapper
 	}
 
 	@Override
-	public DDMStorageLink fetchClassStorageLink(long classPK) {
-		return _ddmStorageLinkLocalService.fetchClassStorageLink(classPK);
-	}
-
-	@Override
 	public DDMStorageLink fetchDDMStorageLink(long storageLinkId) {
 		return _ddmStorageLinkLocalService.fetchDDMStorageLink(storageLinkId);
 	}
@@ -373,38 +368,9 @@ public class DDMStorageLinkLocalServiceWrapper
 	}
 
 	@Override
-	public DDMStorageLink getStorageLink(long storageLinkId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmStorageLinkLocalService.getStorageLink(storageLinkId);
-	}
-
-	@Override
-	public java.util.List<DDMStorageLink> getStructureStorageLinks(
-		long structureId) {
-
-		return _ddmStorageLinkLocalService.getStructureStorageLinks(
-			structureId);
-	}
-
-	@Override
 	public int getStructureStorageLinksCount(long structureId) {
 		return _ddmStorageLinkLocalService.getStructureStorageLinksCount(
 			structureId);
-	}
-
-	@Override
-	public java.util.List<DDMStorageLink> getStructureVersionStorageLinks(
-		long structureVersionId) {
-
-		return _ddmStorageLinkLocalService.getStructureVersionStorageLinks(
-			structureVersionId);
-	}
-
-	@Override
-	public int getStructureVersionStorageLinksCount(long structureVersionId) {
-		return _ddmStorageLinkLocalService.getStructureVersionStorageLinksCount(
-			structureVersionId);
 	}
 
 	/**
@@ -420,15 +386,6 @@ public class DDMStorageLinkLocalServiceWrapper
 	@Override
 	public DDMStorageLink updateDDMStorageLink(DDMStorageLink ddmStorageLink) {
 		return _ddmStorageLinkLocalService.updateDDMStorageLink(ddmStorageLink);
-	}
-
-	@Override
-	public DDMStorageLink updateStorageLink(
-			long storageLinkId, long classNameId, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmStorageLinkLocalService.updateStorageLink(
-			storageLinkId, classNameId, classPK);
 	}
 
 	@Override
@@ -471,4 +428,4 @@ public class DDMStorageLinkLocalServiceWrapper
 	private DDMStorageLinkLocalService _ddmStorageLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-357765659
+// LIFERAY-SERVICE-BUILDER-HASH:1667023335

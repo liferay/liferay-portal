@@ -220,13 +220,6 @@ public interface DDMStructureLinkLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMStructureLink> getClassNameStructureLinks(long classNameId);
-
-	/**
 	 * Returns the ddm structure link with the primary key.
 	 *
 	 * @param structureLinkId the primary key of the ddm structure link
@@ -275,10 +268,6 @@ public interface DDMStructureLinkLocalService
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMStructureLink getStructureLink(long structureLinkId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -349,4 +338,4 @@ public interface DDMStructureLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1528983766
+// LIFERAY-SERVICE-BUILDER-HASH:1299875531

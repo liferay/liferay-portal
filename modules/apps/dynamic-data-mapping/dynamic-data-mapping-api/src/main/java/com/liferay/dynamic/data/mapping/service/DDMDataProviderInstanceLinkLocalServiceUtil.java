@@ -96,18 +96,6 @@ public class DDMDataProviderInstanceLinkLocalServiceUtil {
 		getService().deleteDataProviderInstanceLink(dataProviderInstanceLinkId);
 	}
 
-	public static void deleteDataProviderInstanceLink(
-			long dataProviderInstanceId, long structureId)
-		throws PortalException {
-
-		getService().deleteDataProviderInstanceLink(
-			dataProviderInstanceId, structureId);
-	}
-
-	public static void deleteDataProviderInstanceLinks(long structureId) {
-		getService().deleteDataProviderInstanceLinks(structureId);
-	}
-
 	/**
 	 * Deletes the ddm data provider instance link from the database. Also notifies the appropriate model listeners.
 	 *
@@ -239,13 +227,6 @@ public class DDMDataProviderInstanceLinkLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
-	public static DDMDataProviderInstanceLink fetchDataProviderInstanceLink(
-		long dataProviderInstanceId, long structureId) {
-
-		return getService().fetchDataProviderInstanceLink(
-			dataProviderInstanceId, structureId);
-	}
-
 	public static DDMDataProviderInstanceLink fetchDDMDataProviderInstanceLink(
 		long dataProviderInstanceLinkId) {
 
@@ -358,4 +339,4 @@ public class DDMDataProviderInstanceLinkLocalServiceUtil {
 			DDMDataProviderInstanceLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-487695712
+// LIFERAY-SERVICE-BUILDER-HASH:1374613188

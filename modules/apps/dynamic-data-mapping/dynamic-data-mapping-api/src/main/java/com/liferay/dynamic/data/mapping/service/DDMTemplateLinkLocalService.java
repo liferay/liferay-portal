@@ -264,24 +264,6 @@ public interface DDMTemplateLinkLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMTemplateLink getTemplateLink(long templateLinkId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMTemplateLink getTemplateLink(long classNameId, long classPK)
-		throws PortalException;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMTemplateLink> getTemplateLinks(long classNameId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMTemplateLink> getTemplateLinksByTemplateId(long templateId);
-
 	/**
 	 * Updates the ddm template link in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -295,10 +277,6 @@ public interface DDMTemplateLinkLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public DDMTemplateLink updateDDMTemplateLink(
 		DDMTemplateLink ddmTemplateLink);
-
-	public DDMTemplateLink updateTemplateLink(
-			long templateLinkId, long templateId)
-		throws PortalException;
 
 	public DDMTemplateLink updateTemplateLink(
 		long classNameId, long classPK, long templateId);
@@ -319,4 +297,4 @@ public interface DDMTemplateLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2073946431
+// LIFERAY-SERVICE-BUILDER-HASH:365622432

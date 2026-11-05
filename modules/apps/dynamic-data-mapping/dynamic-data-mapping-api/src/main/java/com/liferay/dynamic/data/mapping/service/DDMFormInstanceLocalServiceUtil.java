@@ -193,12 +193,6 @@ public class DDMFormInstanceLocalServiceUtil {
 		getService().deleteFormInstance(ddmFormInstanceId);
 	}
 
-	public static void deleteFormInstances(long groupId)
-		throws PortalException {
-
-		getService().deleteFormInstances(groupId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -421,13 +415,6 @@ public class DDMFormInstanceLocalServiceUtil {
 		return getService().getFormInstance(ddmFormInstanceId);
 	}
 
-	public static DDMFormInstance getFormInstance(
-			String uuid, long ddmFormInstanceId)
-		throws PortalException {
-
-		return getService().getFormInstance(uuid, ddmFormInstanceId);
-	}
-
 	public static DDMFormInstance getFormInstanceByStructureId(long structureId)
 		throws PortalException {
 
@@ -568,4 +555,4 @@ public class DDMFormInstanceLocalServiceUtil {
 			DDMFormInstanceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:432827766
+// LIFERAY-SERVICE-BUILDER-HASH:2046615117

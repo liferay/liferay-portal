@@ -102,21 +102,6 @@ public class DDMDataProviderInstanceLinkLocalServiceWrapper
 			dataProviderInstanceLinkId);
 	}
 
-	@Override
-	public void deleteDataProviderInstanceLink(
-			long dataProviderInstanceId, long structureId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_ddmDataProviderInstanceLinkLocalService.deleteDataProviderInstanceLink(
-			dataProviderInstanceId, structureId);
-	}
-
-	@Override
-	public void deleteDataProviderInstanceLinks(long structureId) {
-		_ddmDataProviderInstanceLinkLocalService.
-			deleteDataProviderInstanceLinks(structureId);
-	}
-
 	/**
 	 * Deletes the ddm data provider instance link from the database. Also notifies the appropriate model listeners.
 	 *
@@ -270,14 +255,6 @@ public class DDMDataProviderInstanceLinkLocalServiceWrapper
 
 		return _ddmDataProviderInstanceLinkLocalService.dynamicQueryCount(
 			dynamicQuery, projection);
-	}
-
-	@Override
-	public DDMDataProviderInstanceLink fetchDataProviderInstanceLink(
-		long dataProviderInstanceId, long structureId) {
-
-		return _ddmDataProviderInstanceLinkLocalService.
-			fetchDataProviderInstanceLink(dataProviderInstanceId, structureId);
 	}
 
 	@Override
@@ -442,4 +419,4 @@ public class DDMDataProviderInstanceLinkLocalServiceWrapper
 		_ddmDataProviderInstanceLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:669429598
+// LIFERAY-SERVICE-BUILDER-HASH:-1035262227

@@ -244,25 +244,13 @@ public interface DDMFormInstanceVersionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDMFormInstanceVersion getFormInstanceVersion(
-			long ddmFormInstanceVersionId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMFormInstanceVersion getFormInstanceVersion(
 			long ddmFormInstanceId, String version)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMFormInstanceVersion> getFormInstanceVersions(
-		long ddmFormInstanceId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMFormInstanceVersion> getFormInstanceVersions(
 		long ddmFormInstanceId, int start, int end,
 		OrderByComparator<DDMFormInstanceVersion> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getFormInstanceVersionsCount(long ddmFormInstanceId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -322,4 +310,4 @@ public interface DDMFormInstanceVersionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-543087249
+// LIFERAY-SERVICE-BUILDER-HASH:-416949373

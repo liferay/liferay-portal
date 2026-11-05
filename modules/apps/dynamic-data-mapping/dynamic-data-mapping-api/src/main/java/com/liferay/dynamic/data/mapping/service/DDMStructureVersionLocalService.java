@@ -279,14 +279,6 @@ public interface DDMStructureVersionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMStructureVersion> getStructureVersions(long structureId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMStructureVersion> getStructureVersions(
-		long structureId, int start, int end,
-		OrderByComparator<DDMStructureVersion> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getStructureVersionsCount(long structureId);
-
 	/**
 	 * Updates the ddm structure version in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -317,4 +309,4 @@ public interface DDMStructureVersionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-757704729
+// LIFERAY-SERVICE-BUILDER-HASH:-308394293

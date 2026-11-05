@@ -300,28 +300,11 @@ public class DDMFormInstanceVersionLocalServiceWrapper
 
 	@Override
 	public DDMFormInstanceVersion getFormInstanceVersion(
-			long ddmFormInstanceVersionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmFormInstanceVersionLocalService.getFormInstanceVersion(
-			ddmFormInstanceVersionId);
-	}
-
-	@Override
-	public DDMFormInstanceVersion getFormInstanceVersion(
 			long ddmFormInstanceId, String version)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _ddmFormInstanceVersionLocalService.getFormInstanceVersion(
 			ddmFormInstanceId, version);
-	}
-
-	@Override
-	public java.util.List<DDMFormInstanceVersion> getFormInstanceVersions(
-		long ddmFormInstanceId) {
-
-		return _ddmFormInstanceVersionLocalService.getFormInstanceVersions(
-			ddmFormInstanceId);
 	}
 
 	@Override
@@ -332,12 +315,6 @@ public class DDMFormInstanceVersionLocalServiceWrapper
 
 		return _ddmFormInstanceVersionLocalService.getFormInstanceVersions(
 			ddmFormInstanceId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getFormInstanceVersionsCount(long ddmFormInstanceId) {
-		return _ddmFormInstanceVersionLocalService.getFormInstanceVersionsCount(
-			ddmFormInstanceId);
 	}
 
 	@Override
@@ -448,4 +425,4 @@ public class DDMFormInstanceVersionLocalServiceWrapper
 		_ddmFormInstanceVersionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1021018296
+// LIFERAY-SERVICE-BUILDER-HASH:-949741775

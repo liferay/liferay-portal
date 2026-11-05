@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
-import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -116,8 +115,6 @@ public interface DDMFieldLocalService
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public DDMField deleteDDMField(long fieldId) throws PortalException;
-
-	public void deleteDDMFields(long structureId);
 
 	public void deleteDDMFormValues(long storageId);
 
@@ -257,13 +254,6 @@ public interface DDMFieldLocalService
 		DDMForm ddmForm, long storageId, String languageId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDDMFormValuesCount(long structureId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDDMFormValuesCount(
-		long companyId, String fieldType, Map<String, Object> attributes);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -313,4 +303,4 @@ public interface DDMFieldLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1424422141
+// LIFERAY-SERVICE-BUILDER-HASH:293405165

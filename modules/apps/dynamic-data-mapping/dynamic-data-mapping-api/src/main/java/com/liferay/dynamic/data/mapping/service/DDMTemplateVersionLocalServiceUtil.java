@@ -291,12 +291,6 @@ public class DDMTemplateVersionLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static DDMTemplateVersion getTemplateVersion(long templateVersionId)
-		throws PortalException {
-
-		return getService().getTemplateVersion(templateVersionId);
-	}
-
 	public static DDMTemplateVersion getTemplateVersion(
 			long templateId, String version)
 		throws PortalException {
@@ -308,18 +302,6 @@ public class DDMTemplateVersionLocalServiceUtil {
 		long templateId) {
 
 		return getService().getTemplateVersions(templateId);
-	}
-
-	public static List<DDMTemplateVersion> getTemplateVersions(
-		long templateId, int start, int end,
-		OrderByComparator<DDMTemplateVersion> orderByComparator) {
-
-		return getService().getTemplateVersions(
-			templateId, start, end, orderByComparator);
-	}
-
-	public static int getTemplateVersionsCount(long templateId) {
-		return getService().getTemplateVersionsCount(templateId);
 	}
 
 	/**
@@ -348,4 +330,4 @@ public class DDMTemplateVersionLocalServiceUtil {
 			DDMTemplateVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1382605240
+// LIFERAY-SERVICE-BUILDER-HASH:1563989832

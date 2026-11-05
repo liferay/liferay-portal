@@ -97,12 +97,6 @@ public interface DDMDataProviderInstanceLinkLocalService
 	public void deleteDataProviderInstanceLink(long dataProviderInstanceLinkId)
 		throws PortalException;
 
-	public void deleteDataProviderInstanceLink(
-			long dataProviderInstanceId, long structureId)
-		throws PortalException;
-
-	public void deleteDataProviderInstanceLinks(long structureId);
-
 	/**
 	 * Deletes the ddm data provider instance link from the database. Also notifies the appropriate model listeners.
 	 *
@@ -213,10 +207,6 @@ public interface DDMDataProviderInstanceLinkLocalService
 		DynamicQuery dynamicQuery, Projection projection);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMDataProviderInstanceLink fetchDataProviderInstanceLink(
-		long dataProviderInstanceId, long structureId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDMDataProviderInstanceLink fetchDDMDataProviderInstanceLink(
 		long dataProviderInstanceLinkId);
 
@@ -310,4 +300,4 @@ public interface DDMDataProviderInstanceLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:216261205
+// LIFERAY-SERVICE-BUILDER-HASH:-121800730

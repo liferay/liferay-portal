@@ -240,12 +240,6 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
-	public static DDMDataProviderInstance fetchDataProviderInstance(
-		long dataProviderInstanceId) {
-
-		return getService().fetchDataProviderInstance(dataProviderInstanceId);
-	}
-
 	public static DDMDataProviderInstance fetchDataProviderInstanceByUuid(
 		String uuid) {
 
@@ -280,13 +274,6 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static DDMDataProviderInstance getDataProviderInstance(
-			long dataProviderInstanceId)
-		throws PortalException {
-
-		return getService().getDataProviderInstance(dataProviderInstanceId);
-	}
-
 	public static DDMDataProviderInstance getDataProviderInstanceByUuid(
 			String uuid)
 		throws PortalException {
@@ -298,20 +285,6 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 		long[] groupIds) {
 
 		return getService().getDataProviderInstances(groupIds);
-	}
-
-	public static List<DDMDataProviderInstance> getDataProviderInstances(
-		long[] groupIds, int start, int end) {
-
-		return getService().getDataProviderInstances(groupIds, start, end);
-	}
-
-	public static List<DDMDataProviderInstance> getDataProviderInstances(
-		long[] groupIds, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator) {
-
-		return getService().getDataProviderInstances(
-			groupIds, start, end, orderByComparator);
 	}
 
 	/**
@@ -479,4 +452,4 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 			DDMDataProviderInstanceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-428885462
+// LIFERAY-SERVICE-BUILDER-HASH:1296302195

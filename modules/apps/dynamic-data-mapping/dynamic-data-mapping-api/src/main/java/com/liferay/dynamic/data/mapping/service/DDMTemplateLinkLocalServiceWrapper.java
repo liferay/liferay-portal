@@ -337,38 +337,6 @@ public class DDMTemplateLinkLocalServiceWrapper
 		return _ddmTemplateLinkLocalService.getPersistedModel(primaryKeyObj);
 	}
 
-	@Override
-	public DDMTemplateLink getTemplateLink(long templateLinkId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmTemplateLinkLocalService.getTemplateLink(templateLinkId);
-	}
-
-	@Override
-	public DDMTemplateLink getTemplateLink(long classNameId, long classPK)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmTemplateLinkLocalService.getTemplateLink(
-			classNameId, classPK);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public java.util.List<DDMTemplateLink> getTemplateLinks(long classNameId) {
-		return _ddmTemplateLinkLocalService.getTemplateLinks(classNameId);
-	}
-
-	@Override
-	public java.util.List<DDMTemplateLink> getTemplateLinksByTemplateId(
-		long templateId) {
-
-		return _ddmTemplateLinkLocalService.getTemplateLinksByTemplateId(
-			templateId);
-	}
-
 	/**
 	 * Updates the ddm template link in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -385,15 +353,6 @@ public class DDMTemplateLinkLocalServiceWrapper
 
 		return _ddmTemplateLinkLocalService.updateDDMTemplateLink(
 			ddmTemplateLink);
-	}
-
-	@Override
-	public DDMTemplateLink updateTemplateLink(
-			long templateLinkId, long templateId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmTemplateLinkLocalService.updateTemplateLink(
-			templateLinkId, templateId);
 	}
 
 	@Override
@@ -444,4 +403,4 @@ public class DDMTemplateLinkLocalServiceWrapper
 	private DDMTemplateLinkLocalService _ddmTemplateLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-422638415
+// LIFERAY-SERVICE-BUILDER-HASH:-86585510

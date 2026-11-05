@@ -281,18 +281,6 @@ public class DDMStructureLinkLocalServiceWrapper
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public java.util.List<DDMStructureLink> getClassNameStructureLinks(
-		long classNameId) {
-
-		return _ddmStructureLinkLocalService.getClassNameStructureLinks(
-			classNameId);
-	}
-
-	/**
 	 * Returns the ddm structure link with the primary key.
 	 *
 	 * @param structureLinkId the primary key of the ddm structure link
@@ -362,13 +350,6 @@ public class DDMStructureLinkLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _ddmStructureLinkLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public DDMStructureLink getStructureLink(long structureLinkId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmStructureLinkLocalService.getStructureLink(structureLinkId);
 	}
 
 	@Override
@@ -504,4 +485,4 @@ public class DDMStructureLinkLocalServiceWrapper
 	private DDMStructureLinkLocalService _ddmStructureLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1279273604
+// LIFERAY-SERVICE-BUILDER-HASH:-2000733692

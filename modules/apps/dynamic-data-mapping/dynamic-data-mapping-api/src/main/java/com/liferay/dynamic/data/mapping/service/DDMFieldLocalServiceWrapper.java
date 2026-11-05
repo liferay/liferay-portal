@@ -102,11 +102,6 @@ public class DDMFieldLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteDDMFields(long structureId) {
-		_ddmFieldLocalService.deleteDDMFields(structureId);
-	}
-
-	@Override
 	public void deleteDDMFormValues(long storageId) {
 		_ddmFieldLocalService.deleteDDMFormValues(storageId);
 	}
@@ -321,20 +316,6 @@ public class DDMFieldLocalServiceWrapper
 	}
 
 	@Override
-	public int getDDMFormValuesCount(long structureId) {
-		return _ddmFieldLocalService.getDDMFormValuesCount(structureId);
-	}
-
-	@Override
-	public int getDDMFormValuesCount(
-		long companyId, String fieldType,
-		java.util.Map<String, Object> attributes) {
-
-		return _ddmFieldLocalService.getDDMFormValuesCount(
-			companyId, fieldType, attributes);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -425,4 +406,4 @@ public class DDMFieldLocalServiceWrapper
 	private DDMFieldLocalService _ddmFieldLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1497078996
+// LIFERAY-SERVICE-BUILDER-HASH:682595537

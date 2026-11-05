@@ -203,13 +203,6 @@ public class DDMFormInstanceLocalServiceWrapper
 		_ddmFormInstanceLocalService.deleteFormInstance(ddmFormInstanceId);
 	}
 
-	@Override
-	public void deleteFormInstances(long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_ddmFormInstanceLocalService.deleteFormInstances(groupId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -473,14 +466,6 @@ public class DDMFormInstanceLocalServiceWrapper
 	}
 
 	@Override
-	public DDMFormInstance getFormInstance(String uuid, long ddmFormInstanceId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmFormInstanceLocalService.getFormInstance(
-			uuid, ddmFormInstanceId);
-	}
-
-	@Override
 	public DDMFormInstance getFormInstanceByStructureId(long structureId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -672,4 +657,4 @@ public class DDMFormInstanceLocalServiceWrapper
 	private DDMFormInstanceLocalService _ddmFormInstanceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:916841985
+// LIFERAY-SERVICE-BUILDER-HASH:-324035988

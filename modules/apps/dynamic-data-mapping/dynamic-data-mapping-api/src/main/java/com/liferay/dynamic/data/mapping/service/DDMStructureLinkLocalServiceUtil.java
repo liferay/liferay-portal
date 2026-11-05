@@ -245,16 +245,6 @@ public class DDMStructureLinkLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public static List<DDMStructureLink> getClassNameStructureLinks(
-		long classNameId) {
-
-		return getService().getClassNameStructureLinks(classNameId);
-	}
-
-	/**
 	 * Returns the ddm structure link with the primary key.
 	 *
 	 * @param structureLinkId the primary key of the ddm structure link
@@ -316,12 +306,6 @@ public class DDMStructureLinkLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static DDMStructureLink getStructureLink(long structureLinkId)
-		throws PortalException {
-
-		return getService().getStructureLink(structureLinkId);
 	}
 
 	public static List<DDMStructureLink> getStructureLinks(long structureId) {
@@ -408,4 +392,4 @@ public class DDMStructureLinkLocalServiceUtil {
 			DDMStructureLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:526579141
+// LIFERAY-SERVICE-BUILDER-HASH:-340775591
