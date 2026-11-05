@@ -100,9 +100,6 @@ public abstract class SXPBlueprintInfoCollectionProvider<T>
 	protected SearchRequestBuilder getSearchRequestBuilder(
 		CollectionQuery collectionQuery, Pagination pagination) {
 
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
 		Integer from = null;
 		Integer size = null;
 
@@ -112,6 +109,9 @@ public abstract class SXPBlueprintInfoCollectionProvider<T>
 			from = pagination.getStart();
 			size = pagination.getEnd() - pagination.getStart();
 		}
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
 
 		return searchRequestBuilderFactory.builder(
 		).companyId(
