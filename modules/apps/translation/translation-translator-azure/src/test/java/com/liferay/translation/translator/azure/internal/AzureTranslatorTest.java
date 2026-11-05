@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.security.key.secret.SecretResolver;
@@ -105,6 +106,58 @@ public class AzureTranslatorTest {
 				"plain", Collections.singletonList(plainText)
 			).build(),
 			_texts);
+	}
+
+	@Test
+	public void testTranslateWhenFieldsAreInterleaved() throws Exception {
+		String htmlFieldName1 = RandomTestUtil.randomString();
+		String htmlFieldName2 = RandomTestUtil.randomString();
+		String htmlText1 = StringBundler.concat(
+			"<b>", RandomTestUtil.randomString(), "</b>");
+		String htmlText2 = StringBundler.concat(
+			"<b>", RandomTestUtil.randomString(), "</b>");
+		String plainFieldName1 = RandomTestUtil.randomString();
+		String plainFieldName2 = RandomTestUtil.randomString();
+		String plainText1 = RandomTestUtil.randomString();
+		String plainText2 = RandomTestUtil.randomString();
+
+		Map<String, String> fieldsMap = LinkedHashMapBuilder.put(
+			htmlFieldName1, htmlText1
+		).put(
+			plainFieldName1, plainText1
+		).put(
+			htmlFieldName2, htmlText2
+		).put(
+			plainFieldName2, plainText2
+		).build();
+
+		Map<String, Boolean> htmlMap = LinkedHashMapBuilder.put(
+			htmlFieldName1, true
+		).put(
+			plainFieldName1, false
+		).put(
+			htmlFieldName2, true
+		).put(
+			plainFieldName2, false
+		).build();
+
+		TranslatorPacket translatorPacket = _azureTranslator.translate(
+			_getTranslatorPacket(fieldsMap, htmlMap));
+
+		Assert.assertEquals(fieldsMap, translatorPacket.getFieldsMap());
+		Assert.assertEquals(htmlMap, translatorPacket.getHTMLMap());
+		Assert.assertEquals("en_US", translatorPacket.getSourceLanguageId());
+		Assert.assertEquals("ca_ES", translatorPacket.getTargetLanguageId());
+
+		Assert.assertEquals(
+			HashMapBuilder.put(
+				"html", List.of(htmlText1, htmlText2)
+			).put(
+				"plain", List.of(plainText1, plainText2)
+			).build(),
+			_texts);
+
+		Assert.assertEquals(List.of("Liferay", "Liferay"), _userAgents);
 	}
 
 	@Test
