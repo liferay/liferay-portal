@@ -7,8 +7,10 @@ package com.liferay.headless.cms.internal.resource.v1_0;
 
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.link.service.AssetLinkLocalService;
+import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
+import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryUsageLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
@@ -397,9 +399,10 @@ public class AssetStatisticsResourceImpl
 		try {
 			CollectionUsageResolver collectionUsageResolver =
 				new CollectionUsageResolver(
-					_assetEntryLocalService,
+					_assetEntryLocalService, _assetListAssetEntryProvider,
 					_assetListEntryAssetEntryRelLocalService,
 					_assetListEntryLocalService,
+					_assetListEntrySegmentsEntryRelLocalService,
 					_assetListEntryUsageLocalService, _depotEntryLocalService,
 					_layoutLocalService, _layoutPageTemplateEntryLocalService,
 					_layoutPageTemplateStructureLocalService,
@@ -496,11 +499,18 @@ public class AssetStatisticsResourceImpl
 	private AssetLinkLocalService _assetLinkLocalService;
 
 	@Reference
+	private AssetListAssetEntryProvider _assetListAssetEntryProvider;
+
+	@Reference
 	private AssetListEntryAssetEntryRelLocalService
 		_assetListEntryAssetEntryRelLocalService;
 
 	@Reference
 	private AssetListEntryLocalService _assetListEntryLocalService;
+
+	@Reference
+	private AssetListEntrySegmentsEntryRelLocalService
+		_assetListEntrySegmentsEntryRelLocalService;
 
 	@Reference
 	private AssetListEntryUsageLocalService _assetListEntryUsageLocalService;

@@ -7,12 +7,16 @@ package com.liferay.headless.cms.internal.usage;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
+import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
+import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
+import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
 import com.liferay.asset.list.model.AssetListEntryUsageTable;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
+import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryUsageLocalService;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
@@ -50,6 +54,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -58,6 +63,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.query.BooleanQuery;
 import com.liferay.portal.search.query.NestedQuery;
 import com.liferay.portal.search.query.QueriesUtil;
+import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.model.SegmentsExperienceTable;
 
@@ -75,9 +81,12 @@ public class CollectionUsageResolver {
 
 	public CollectionUsageResolver(
 		AssetEntryLocalService assetEntryLocalService,
+		AssetListAssetEntryProvider assetListAssetEntryProvider,
 		AssetListEntryAssetEntryRelLocalService
 			assetListEntryAssetEntryRelLocalService,
 		AssetListEntryLocalService assetListEntryLocalService,
+		AssetListEntrySegmentsEntryRelLocalService
+			assetListEntrySegmentsEntryRelLocalService,
 		AssetListEntryUsageLocalService assetListEntryUsageLocalService,
 		DepotEntryLocalService depotEntryLocalService,
 		LayoutLocalService layoutLocalService,
@@ -89,9 +98,12 @@ public class CollectionUsageResolver {
 		PortletPreferencesLocalService portletPreferencesLocalService) {
 
 		_assetEntryLocalService = assetEntryLocalService;
+		_assetListAssetEntryProvider = assetListAssetEntryProvider;
 		_assetListEntryAssetEntryRelLocalService =
 			assetListEntryAssetEntryRelLocalService;
 		_assetListEntryLocalService = assetListEntryLocalService;
+		_assetListEntrySegmentsEntryRelLocalService =
+			assetListEntrySegmentsEntryRelLocalService;
 		_assetListEntryUsageLocalService = assetListEntryUsageLocalService;
 		_depotEntryLocalService = depotEntryLocalService;
 		_layoutLocalService = layoutLocalService;
@@ -174,7 +186,7 @@ public class CollectionUsageResolver {
 				}
 
 				if (classNameId == assetListEntryClassNameId) {
-					_addObjectEntryIds(key, resolutionContext);
+					_addObjectEntryIdsOrBooleanQueries(key, resolutionContext);
 				}
 				else {
 					JSONObject collectionJSONObject =
@@ -268,7 +280,7 @@ public class CollectionUsageResolver {
 					}
 
 					if (collectionJSONObject.has("classPK")) {
-						_addObjectEntryIds(
+						_addObjectEntryIdsOrBooleanQueries(
 							collectionJSONObject.getString("classPK"),
 							resolutionContext);
 					}
@@ -293,28 +305,53 @@ public class CollectionUsageResolver {
 		return collectionUsages;
 	}
 
+	private void _addBooleanQueries(
+			AssetListEntry assetListEntry, CollectionUsages collectionUsages)
+		throws Exception {
+
+		List<AssetListEntrySegmentsEntryRel> assetListEntrySegmentsEntryRels =
+			_assetListEntrySegmentsEntryRelLocalService.
+				getAssetListEntrySegmentsEntryRels(
+					assetListEntry.getAssetListEntryId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+		long[] segmentsEntryIds = {SegmentsEntryConstants.ID_DEFAULT};
+
+		if (!assetListEntrySegmentsEntryRels.isEmpty()) {
+			segmentsEntryIds = ListUtil.toLongArray(
+				assetListEntrySegmentsEntryRels,
+				AssetListEntrySegmentsEntryRel::getSegmentsEntryId);
+		}
+
+		for (long segmentsEntryId : segmentsEntryIds) {
+			String booleanQueryKey = StringBundler.concat(
+				assetListEntry.getGroupId(), StringPool.POUND,
+				assetListEntry.getAssetEntryType(), StringPool.POUND,
+				assetListEntry.getAssetEntrySubtype(), StringPool.POUND,
+				assetListEntry.getTypeSettings(segmentsEntryId));
+
+			if (collectionUsages.hasBooleanQuery(booleanQueryKey)) {
+				continue;
+			}
+
+			AssetEntryQuery assetEntryQuery =
+				_assetListAssetEntryProvider.getAssetEntryQuery(
+					assetListEntry, new long[] {segmentsEntryId},
+					StringPool.BLANK);
+
+			if (ArrayUtil.isEmpty(assetEntryQuery.getClassNameIds())) {
+				continue;
+			}
+
+			collectionUsages.addBooleanQuery(
+				_assetListAssetEntryProvider.getBooleanQuery(
+					assetListEntry, segmentsEntryId),
+				assetEntryQuery.getGroupIds(), booleanQueryKey);
+		}
+	}
+
 	private void _addObjectEntryIds(
-		String key, ResolutionContext resolutionContext) {
-
-		Set<String> resolutionKeys = resolutionContext.getResolutionKeys();
-
-		if (!resolutionKeys.add(key)) {
-			return;
-		}
-
-		AssetListEntry assetListEntry =
-			_assetListEntryLocalService.fetchAssetListEntry(
-				GetterUtil.getLong(key));
-
-		if ((assetListEntry == null) ||
-			(assetListEntry.getType() !=
-				AssetListEntryTypeConstants.TYPE_MANUAL)) {
-
-			return;
-		}
-
-		CollectionUsages collectionUsages =
-			resolutionContext.getCollectionUsages();
+		AssetListEntry assetListEntry, CollectionUsages collectionUsages) {
 
 		for (AssetListEntryAssetEntryRel assetListEntryAssetEntryRel :
 				_assetListEntryAssetEntryRelLocalService.
@@ -335,6 +372,37 @@ public class CollectionUsageResolver {
 			}
 
 			collectionUsages.addObjectEntryId(assetEntry.getClassPK());
+		}
+	}
+
+	private void _addObjectEntryIdsOrBooleanQueries(
+			String key, ResolutionContext resolutionContext)
+		throws Exception {
+
+		Set<String> resolutionKeys = resolutionContext.getResolutionKeys();
+
+		if (!resolutionKeys.add(key)) {
+			return;
+		}
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.fetchAssetListEntry(
+				GetterUtil.getLong(key));
+
+		if (assetListEntry == null) {
+			return;
+		}
+
+		CollectionUsages collectionUsages =
+			resolutionContext.getCollectionUsages();
+
+		if (assetListEntry.getType() ==
+				AssetListEntryTypeConstants.TYPE_MANUAL) {
+
+			_addObjectEntryIds(assetListEntry, collectionUsages);
+		}
+		else {
+			_addBooleanQueries(assetListEntry, collectionUsages);
 		}
 	}
 
@@ -515,9 +583,12 @@ public class CollectionUsageResolver {
 		CollectionUsageResolver.class);
 
 	private final AssetEntryLocalService _assetEntryLocalService;
+	private final AssetListAssetEntryProvider _assetListAssetEntryProvider;
 	private final AssetListEntryAssetEntryRelLocalService
 		_assetListEntryAssetEntryRelLocalService;
 	private final AssetListEntryLocalService _assetListEntryLocalService;
+	private final AssetListEntrySegmentsEntryRelLocalService
+		_assetListEntrySegmentsEntryRelLocalService;
 	private final AssetListEntryUsageLocalService
 		_assetListEntryUsageLocalService;
 	private final DepotEntryLocalService _depotEntryLocalService;
