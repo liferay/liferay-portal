@@ -52,6 +52,13 @@ describe('getAccountInfoDisplayValues', () => {
 			).toEqual({displayType: 'secondary', label: 'NOT_A_STAGE'});
 		});
 
+		it('should keep the raw name of a stage named after an inherited property', () => {
+			expect(
+				getAccountInfoDisplayValues({lifecycleStage: 'toString'})
+					.lifecycleStage
+			).toEqual({displayType: 'secondary', label: 'toString'});
+		});
+
 		it('should leave a missing stage undefined', () => {
 			expect(
 				getAccountInfoDisplayValues({}).lifecycleStage

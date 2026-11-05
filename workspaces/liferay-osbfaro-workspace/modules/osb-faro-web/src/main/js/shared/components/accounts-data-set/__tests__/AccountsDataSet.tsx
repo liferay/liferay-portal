@@ -140,7 +140,7 @@ type FakeCustomDataRenderers = {
 		value: string;
 	}) => React.ReactElement;
 	accountLifecycleStageRenderer: (props: {
-		value?: LifecycleStages | '';
+		value?: string;
 	}) => React.ReactElement;
 	activitiesCountRenderer: (props: {value?: number}) => React.ReactElement;
 	annualRevenueRenderer: (props: {value?: number}) => React.ReactElement;
@@ -470,6 +470,23 @@ describe('AccountsDataSet', () => {
 		);
 
 		expect(container).toHaveTextContent('Engaged');
+	});
+
+	it('should render a custom lifecycle stage name as a secondary label', async () => {
+		await renderAccountsDataSet(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const {container} = render(
+			lastCustomDataRenderers!.accountLifecycleStageRenderer({
+				value: 'Key Customer',
+			})
+		);
+
+		expect(container).toHaveTextContent('Key Customer');
+		expect(
+			container.querySelector('.label-inverse-secondary')
+		).toBeTruthy();
 	});
 
 	it.each([

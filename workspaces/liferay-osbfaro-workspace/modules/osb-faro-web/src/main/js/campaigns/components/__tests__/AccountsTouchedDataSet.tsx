@@ -179,6 +179,21 @@ describe('AccountsTouchedDataSet', () => {
 		expect(container.querySelector('.label-inverse-danger')).toBeTruthy();
 	});
 
+	it('should render a custom lifecycle stage name as a secondary label', () => {
+		renderDataSet();
+
+		const {container} = render(
+			lastFDSProps.customDataRenderers.lifecycleStageRenderer({
+				value: 'Key Customer',
+			})
+		);
+
+		expect(container).toHaveTextContent('Key Customer');
+		expect(
+			container.querySelector('.label-inverse-secondary')
+		).toBeTruthy();
+	});
+
 	it.each([
 		['missing', undefined],
 		['empty', ''],
