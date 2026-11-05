@@ -123,7 +123,7 @@ public class InfoFormValidationException extends InfoFormException {
 		@Override
 		public String getLocalizedMessage(Locale locale) {
 			if (_message != null) {
-				return _message;
+				return HtmlUtil.escape(_message);
 			}
 
 			return super.getLocalizedMessage(locale);
@@ -525,7 +525,7 @@ public class InfoFormValidationException extends InfoFormException {
 		@Override
 		public String getLocalizedMessage(Locale locale) {
 			if (_message != null) {
-				return _message;
+				return HtmlUtil.escape(_message);
 			}
 
 			return super.getLocalizedMessage(locale);
