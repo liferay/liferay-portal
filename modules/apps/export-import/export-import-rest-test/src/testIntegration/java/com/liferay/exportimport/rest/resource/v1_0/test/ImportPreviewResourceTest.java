@@ -600,12 +600,12 @@ public class ImportPreviewResourceTest
 
 		ImportPreview importPreview = unsafeFunction.apply(file);
 
-		Assert.assertTrue(
-			_getAdditionCount(importPreview, objectDefinition.getPortletId()) >
-				0);
 		Assert.assertEquals(file.getName(), importPreview.getFileName());
 		Assert.assertEquals(
 			Long.valueOf(file.length()), importPreview.getFileSize());
+		Assert.assertTrue(
+			_getAdditionCount(importPreview, objectDefinition.getPortletId()) >
+				0);
 	}
 
 	private void _testPostImportPreviewWithSiteMissingFromInstance()
