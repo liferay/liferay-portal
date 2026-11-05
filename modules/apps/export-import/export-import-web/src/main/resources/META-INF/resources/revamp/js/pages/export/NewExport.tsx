@@ -88,9 +88,12 @@ export function NewExport({
 		spaceExternalReferenceCodes: [],
 	};
 
-	const sitesSelectable = siteSelectionEnabled && !!exportPreviewSitesAPIURL;
-	const spacesSelectable =
-		spaceSelectionEnabled && !!exportPreviewSpacesAPIURL;
+	const sitesAPIURL = siteSelectionEnabled
+		? exportPreviewSitesAPIURL
+		: undefined;
+	const spacesAPIURL = spaceSelectionEnabled
+		? exportPreviewSpacesAPIURL
+		: undefined;
 
 	return (
 		<Formik
@@ -163,31 +166,29 @@ export function NewExport({
 							)}
 						/>
 
-						{(sitesSelectable || spacesSelectable) && (
+						{(sitesAPIURL || spacesAPIURL) && (
 							<ScopeSection
 								subtitle={getScopeSubtitle(
 									'export',
-									sitesSelectable,
-									spacesSelectable
+									!!sitesAPIURL,
+									!!spacesAPIURL
 								)}
 							>
-								{siteSelectionEnabled &&
-									exportPreviewSitesAPIURL && (
-										<GroupSelection
-											apiURL={exportPreviewSitesAPIURL}
-											name="siteExternalReferenceCodes"
-											type="site"
-										/>
-									)}
+								{sitesAPIURL && (
+									<GroupSelection
+										apiURL={sitesAPIURL}
+										name="siteExternalReferenceCodes"
+										type="site"
+									/>
+								)}
 
-								{spaceSelectionEnabled &&
-									exportPreviewSpacesAPIURL && (
-										<GroupSelection
-											apiURL={exportPreviewSpacesAPIURL}
-											name="spaceExternalReferenceCodes"
-											type="space"
-										/>
-									)}
+								{spacesAPIURL && (
+									<GroupSelection
+										apiURL={spacesAPIURL}
+										name="spaceExternalReferenceCodes"
+										type="space"
+									/>
+								)}
 							</ScopeSection>
 						)}
 
