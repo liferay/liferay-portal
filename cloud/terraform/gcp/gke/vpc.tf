@@ -63,6 +63,7 @@ resource "google_compute_subnetwork" "subnet" {
 	}
 }
 resource "google_service_networking_connection" "private_vpc_connection" {
+	deletion_policy="REMOVE_PEERING"
 	network=google_compute_network.vpc.id
 	reserved_peering_ranges=[google_compute_global_address.private_ip_alloc.name]
 	service="servicenetworking.googleapis.com"
