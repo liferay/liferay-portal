@@ -4904,6 +4904,13 @@ public class BatchEnginePortletDataHandlerTest {
 	}
 
 	@Test
+	@TestInfo("LPD-109747")
+	public void testIsStaged() throws Exception {
+		_testIsStaged(false);
+		_testIsStaged(true);
+	}
+
+	@Test
 	@TestInfo("LPD-73132")
 	public void testIsStagedWithObjectDefinitions() throws Exception {
 		String portletId = StringBundler.concat(
@@ -7267,6 +7274,26 @@ public class BatchEnginePortletDataHandlerTest {
 
 			Assert.assertEquals(
 				stagingSupported, portletDataHandler.isConfigurationEnabled());
+		}
+	}
+
+	private void _testIsStaged(boolean stagingSupported) throws Exception {
+		String portletId = RandomTestUtil.randomString();
+
+		try (SafeCloseable safeCloseable = _register(
+				new TestExportImportVulcanBatchEngineTaskItemDelegateBuilder(
+				).withPortletId(
+					portletId
+				).withStagingSupported(
+					stagingSupported
+				).build())) {
+
+			PortletDataHandler portletDataHandler =
+				_portletDataHandlerProvider.provide(
+					TestPropsValues.getCompanyId(), portletId);
+
+			Assert.assertEquals(
+				stagingSupported, portletDataHandler.isStaged());
 		}
 	}
 
