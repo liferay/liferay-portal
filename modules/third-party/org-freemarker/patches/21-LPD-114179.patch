@@ -1,0 +1,26 @@
+diff --git a/freemarker/core/Configurable.java b/freemarker/core/Configurable.java
+index eff86a8a19c11..1f4b0adc2149f 100644
+--- a/freemarker/core/Configurable.java
++++ b/freemarker/core/Configurable.java
+@@ -513,7 +513,7 @@ public class Configurable {
+      */
+     public Configurable(Configurable parent) {
+         this.parent = parent;
+-        properties = new ConcurrentHashMap<>(parent.properties);
++        properties = new ConcurrentHashMap<>();
+         customAttributes = new HashMap<>(0);
+     }
+     
+@@ -2933,7 +2933,11 @@ public class Configurable {
+      */
+     @Deprecated
+     public String getSetting(String key) {
+-        return properties.get(key);
++        String value = properties.get(key);
++        if (value == null && parent != null) {
++            return parent.getSetting(key);
++        }
++        return value;
+     }
+     
+     /**

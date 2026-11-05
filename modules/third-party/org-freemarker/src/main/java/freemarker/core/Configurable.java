@@ -513,7 +513,7 @@ public class Configurable {
      */
     public Configurable(Configurable parent) {
         this.parent = parent;
-        properties = new ConcurrentHashMap<>(parent.properties);
+        properties = new ConcurrentHashMap<>();
         customAttributes = new HashMap<>(0);
     }
     
@@ -2933,7 +2933,11 @@ public class Configurable {
      */
     @Deprecated
     public String getSetting(String key) {
-        return properties.get(key);
+        String value = properties.get(key);
+        if (value == null && parent != null) {
+            return parent.getSetting(key);
+        }
+        return value;
     }
     
     /**
