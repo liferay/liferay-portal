@@ -292,7 +292,7 @@ public class AICreatorOpenAIClientTest {
 		JSONObject contentJSONObject = new JSONObjectImpl(body.getContent());
 
 		Assert.assertEquals(
-			"gpt-3.5-turbo", contentJSONObject.getString("model"));
+			"gpt-5.6-terra", contentJSONObject.getString("model"));
 
 		JSONArray messagesJSONArray = contentJSONObject.getJSONArray(
 			"messages");
