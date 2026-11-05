@@ -30,9 +30,8 @@ import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecordVersion;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceReport;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceSettings;
+import com.liferay.dynamic.data.mapping.model.DDMFormInstanceVersion;
 import com.liferay.dynamic.data.mapping.model.DDMStorageLink;
-import com.liferay.dynamic.data.mapping.model.DDMStructure;
-import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordVersionLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceReportLocalService;
@@ -904,14 +903,13 @@ public class DDMFormInstanceRecordLocalServiceImpl
 			return primaryKey;
 		}
 
-		DDMStructure ddmStructure = ddmFormInstance.getStructure();
-
-		DDMStructureVersion ddmStructureVersion =
-			ddmStructure.getLatestStructureVersion();
+		DDMFormInstanceVersion ddmFormInstanceVersion =
+			ddmFormInstance.getFormInstanceVersion(
+				ddmFormInstance.getVersion());
 
 		_ddmStorageLinkLocalService.addStorageLink(
 			_portal.getClassNameId(DDMContent.class.getName()), primaryKey,
-			ddmStructureVersion.getStructureVersionId(), serviceContext);
+			ddmFormInstanceVersion.getStructureVersionId(), serviceContext);
 
 		return primaryKey;
 	}
