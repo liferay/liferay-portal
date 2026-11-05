@@ -33,7 +33,6 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerControl;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
-import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
@@ -61,7 +60,6 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.staging.StagingGroupHelper;
-import com.liferay.style.book.constants.StyleBookPortletKeys;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -376,16 +374,17 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public boolean isStaged() {
-		String portletId = getPortletId();
+		for (Registration registration : _registrations) {
+			ExportImportVulcanBatchEngineTaskItemDelegate.ExportImportDescriptor
+				exportImportDescriptor =
+					registration.getExportImportDescriptor();
 
-		if (StringUtil.startsWith(
-				portletId, ObjectPortletKeys.OBJECT_DEFINITIONS) ||
-			StringUtil.equals(portletId, StyleBookPortletKeys.STYLE_BOOK)) {
-
-			return false;
+			if (exportImportDescriptor.isStagingSupported()) {
+				return true;
+			}
 		}
 
-		return true;
+		return false;
 	}
 
 	public void registerExportImportVulcanBatchEngineTaskItemDelegate(
