@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.query.BooleanQuery;
 import com.liferay.portal.search.query.QueriesUtil;
+import com.liferay.portal.search.query.Query;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
@@ -382,6 +383,10 @@ public class UnlinkedAssetSearcher {
 			CMSSearchUtil.getTermsQuery(
 				"externalReferenceCode",
 				externalReferenceCodes.toArray(new String[0])));
+
+		List<Query> queries = collectionUsages.getQueries();
+
+		booleanQuery.addMustNotQueryClauses(queries.toArray(new Query[0]));
 
 		return _getSearchRequestBuilder(
 			booleanQuery, companyId

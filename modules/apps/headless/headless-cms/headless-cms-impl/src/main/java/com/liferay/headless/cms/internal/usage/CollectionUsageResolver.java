@@ -17,26 +17,47 @@ import com.liferay.asset.list.service.AssetListEntryUsageLocalService;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.headless.cms.internal.util.CMSSearchUtil;
+import com.liferay.info.collection.provider.InfoCollectionProvider;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectField;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletPreferences;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.search.query.BooleanQuery;
+import com.liferay.portal.search.query.NestedQuery;
+import com.liferay.portal.search.query.QueriesUtil;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +80,10 @@ public class CollectionUsageResolver {
 		DepotEntryLocalService depotEntryLocalService,
 		LayoutLocalService layoutLocalService,
 		LayoutPageTemplateEntryLocalService layoutPageTemplateEntryLocalService,
-		Portal portal,
+		LayoutPageTemplateStructureLocalService
+			layoutPageTemplateStructureLocalService,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		ObjectFieldLocalService objectFieldLocalService, Portal portal,
 		PortletPreferencesLocalService portletPreferencesLocalService) {
 
 		_assetEntryLocalService = assetEntryLocalService;
@@ -71,6 +95,10 @@ public class CollectionUsageResolver {
 		_layoutLocalService = layoutLocalService;
 		_layoutPageTemplateEntryLocalService =
 			layoutPageTemplateEntryLocalService;
+		_layoutPageTemplateStructureLocalService =
+			layoutPageTemplateStructureLocalService;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
+		_objectFieldLocalService = objectFieldLocalService;
 		_portal = portal;
 		_portletPreferencesLocalService = portletPreferencesLocalService;
 	}
@@ -78,24 +106,31 @@ public class CollectionUsageResolver {
 	public CollectionUsages getCollectionUsages(long companyId) {
 		CollectionUsages collectionUsages = new CollectionUsages();
 
+		long assetListEntryClassNameId = _portal.getClassNameId(
+			AssetListEntry.class);
 		long portletClassNameId = _portal.getClassNameId(Portlet.class);
 
 		List<Object[]> assetListEntryUsageObjectsList =
 			_assetListEntryUsageLocalService.dslQuery(
 				DSLQueryFactoryUtil.select(
 					AssetListEntryUsageTable.INSTANCE.groupId,
-					AssetListEntryUsageTable.INSTANCE.plid,
-					AssetListEntryUsageTable.INSTANCE.key,
+					AssetListEntryUsageTable.INSTANCE.classNameId,
 					AssetListEntryUsageTable.INSTANCE.containerKey,
-					AssetListEntryUsageTable.INSTANCE.containerType
+					AssetListEntryUsageTable.INSTANCE.containerType,
+					AssetListEntryUsageTable.INSTANCE.key,
+					AssetListEntryUsageTable.INSTANCE.plid
 				).from(
 					AssetListEntryUsageTable.INSTANCE
 				).where(
 					AssetListEntryUsageTable.INSTANCE.companyId.eq(
 						companyId
 					).and(
-						AssetListEntryUsageTable.INSTANCE.classNameId.eq(
-							_portal.getClassNameId(AssetListEntry.class))
+						AssetListEntryUsageTable.INSTANCE.classNameId.in(
+							new Long[] {
+								assetListEntryClassNameId,
+								_portal.getClassNameId(
+									InfoCollectionProvider.class)
+							})
 					).and(
 						AssetListEntryUsageTable.INSTANCE.containerType.in(
 							new Long[] {
@@ -107,14 +142,15 @@ public class CollectionUsageResolver {
 				));
 
 		ResolutionContext resolutionContext = new ResolutionContext(
-			collectionUsages);
+			collectionUsages, companyId);
 
 		for (Object[] row : assetListEntryUsageObjectsList) {
 			long groupId = (Long)row[0];
-			long plid = (Long)row[1];
-			String key = (String)row[2];
-			String containerKey = (String)row[3];
-			long containerType = (Long)row[4];
+			long classNameId = (Long)row[1];
+			String containerKey = (String)row[2];
+			long containerType = (Long)row[3];
+			String key = (String)row[4];
+			long plid = (Long)row[5];
 
 			try {
 				Layout layout = resolutionContext.getLayout(plid);
@@ -135,7 +171,20 @@ public class CollectionUsageResolver {
 					continue;
 				}
 
-				_addObjectEntryIds(key, resolutionContext);
+				if (classNameId == assetListEntryClassNameId) {
+					_addObjectEntryIds(key, resolutionContext);
+				}
+				else {
+					JSONObject collectionJSONObject =
+						resolutionContext.getCollectionJSONObject(
+							groupId, containerKey, layout.getPlid());
+
+					if (collectionJSONObject != null) {
+						_addQuery(
+							collectionJSONObject.getJSONObject("config"),
+							groupId, key, resolutionContext);
+					}
+				}
 			}
 			catch (Exception exception) {
 				if (_log.isWarnEnabled()) {
@@ -190,6 +239,120 @@ public class CollectionUsageResolver {
 
 			collectionUsages.addObjectEntryId(assetEntry.getClassPK());
 		}
+	}
+
+	private void _addQuery(
+			JSONObject configJSONObject, long groupId, String key,
+			ResolutionContext resolutionContext)
+		throws Exception {
+
+		if (!StringUtil.startsWith(
+				key,
+				ObjectDefinitionConstants.
+					CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION)) {
+
+			return;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+				resolutionContext.getCompanyId(), key);
+
+		if ((objectDefinition == null) || !objectDefinition.isCMS()) {
+			return;
+		}
+
+		Set<String> resolutionKeys = resolutionContext.getResolutionKeys();
+
+		if (!resolutionKeys.add(
+				StringBundler.concat(
+					groupId, StringPool.POUND, key, StringPool.POUND,
+					configJSONObject))) {
+
+			return;
+		}
+
+		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
+
+		booleanQuery.addFilterQueryClauses(
+			QueriesUtil.term(Field.ENTRY_CLASS_NAME, key),
+			CMSSearchUtil.getTermsQuery(
+				Field.GROUP_ID,
+				ArrayUtil.toStringArray(
+					resolutionContext.getConnectedDepotGroupIds(groupId))),
+			QueriesUtil.term(Field.STATUS, WorkflowConstants.STATUS_APPROVED));
+
+		if (configJSONObject != null) {
+			for (String fieldName : configJSONObject.keySet()) {
+				JSONArray fieldValuesJSONArray = configJSONObject.getJSONArray(
+					fieldName);
+
+				String fieldValue = null;
+
+				if (fieldValuesJSONArray == null) {
+					fieldValue = configJSONObject.getString(fieldName);
+				}
+				else {
+					fieldValue = fieldValuesJSONArray.getString(0);
+				}
+
+				if (Validator.isNull(fieldValue)) {
+					continue;
+				}
+
+				ObjectField objectField =
+					_objectFieldLocalService.fetchObjectField(
+						objectDefinition.getObjectDefinitionId(), fieldName);
+
+				if (objectField == null) {
+					return;
+				}
+
+				if (objectField.isIndexedAsKeyword()) {
+					booleanQuery.addFilterQueryClauses(
+						_getNestedQuery(
+							fieldName, "value_keyword",
+							StringUtil.lowerCase(fieldValue)));
+				}
+				else if (Objects.equals(
+							objectField.getBusinessType(),
+							ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN)) {
+
+					booleanQuery.addFilterQueryClauses(
+						_getNestedQuery(
+							fieldName, "value_boolean",
+							GetterUtil.getBoolean(fieldValue)));
+				}
+				else if (Objects.equals(
+							objectField.getBusinessType(),
+							ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+
+					booleanQuery.addFilterQueryClauses(
+						_getNestedQuery(
+							fieldName, "value_keyword_lowercase", fieldValue));
+				}
+				else {
+					return;
+				}
+			}
+		}
+
+		CollectionUsages collectionUsages =
+			resolutionContext.getCollectionUsages();
+
+		collectionUsages.addQuery(booleanQuery);
+	}
+
+	private NestedQuery _getNestedQuery(
+		String fieldName, String valueFieldName, Object value) {
+
+		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
+
+		booleanQuery.addFilterQueryClauses(
+			QueriesUtil.term("nestedFieldArray.fieldName", fieldName),
+			QueriesUtil.term("nestedFieldArray." + valueFieldName, value));
+
+		return QueriesUtil.nested("nestedFieldArray", booleanQuery);
 	}
 
 	private Layout _getPortletLayout(
@@ -264,14 +427,60 @@ public class CollectionUsageResolver {
 	private final LayoutLocalService _layoutLocalService;
 	private final LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
+	private final LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private final ObjectFieldLocalService _objectFieldLocalService;
 	private final Portal _portal;
 	private final PortletPreferencesLocalService
 		_portletPreferencesLocalService;
 
 	private class ResolutionContext {
 
+		public JSONObject getCollectionJSONObject(
+			long groupId, String itemId, long plid) {
+
+			LayoutStructure layoutStructure = _layoutStructures.get(plid);
+
+			if (layoutStructure == null) {
+				LayoutPageTemplateStructure layoutPageTemplateStructure =
+					_layoutPageTemplateStructureLocalService.
+						fetchLayoutPageTemplateStructure(groupId, plid);
+
+				if (layoutPageTemplateStructure == null) {
+					return null;
+				}
+
+				layoutStructure = LayoutStructure.of(
+					layoutPageTemplateStructure.
+						getDefaultSegmentsExperienceData());
+
+				_layoutStructures.put(plid, layoutStructure);
+			}
+
+			LayoutStructureItem layoutStructureItem =
+				layoutStructure.getLayoutStructureItem(itemId);
+
+			if (!(layoutStructureItem instanceof
+					CollectionStyledLayoutStructureItem)) {
+
+				return null;
+			}
+
+			CollectionStyledLayoutStructureItem
+				collectionStyledLayoutStructureItem =
+					(CollectionStyledLayoutStructureItem)layoutStructureItem;
+
+			return collectionStyledLayoutStructureItem.
+				getCollectionJSONObject();
+		}
+
 		public CollectionUsages getCollectionUsages() {
 			return _collectionUsages;
+		}
+
+		public long getCompanyId() {
+			return _companyId;
 		}
 
 		public Set<Long> getConnectedDepotGroupIds(long groupId)
@@ -305,12 +514,18 @@ public class CollectionUsageResolver {
 			return _resolutionKeys;
 		}
 
-		private ResolutionContext(CollectionUsages collectionUsages) {
+		private ResolutionContext(
+			CollectionUsages collectionUsages, long companyId) {
+
 			_collectionUsages = collectionUsages;
+			_companyId = companyId;
 		}
 
 		private final CollectionUsages _collectionUsages;
+		private final long _companyId;
 		private final Map<Long, Set<Long>> _connectedDepotGroupIdsMap =
+			new HashMap<>();
+		private final Map<Long, LayoutStructure> _layoutStructures =
 			new HashMap<>();
 		private final Map<Long, Layout> _layouts = new HashMap<>();
 		private final Set<String> _resolutionKeys = new HashSet<>();

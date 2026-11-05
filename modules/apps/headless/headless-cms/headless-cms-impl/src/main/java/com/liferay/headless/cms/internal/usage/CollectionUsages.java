@@ -5,7 +5,11 @@
 
 package com.liferay.headless.cms.internal.usage;
 
+import com.liferay.portal.search.query.Query;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,10 +21,19 @@ public class CollectionUsages {
 		_objectEntryIds.add(String.valueOf(objectEntryId));
 	}
 
+	public void addQuery(Query query) {
+		_queries.add(query);
+	}
+
 	public Set<String> getObjectEntryIds() {
 		return _objectEntryIds;
 	}
 
+	public List<Query> getQueries() {
+		return _queries;
+	}
+
 	private final Set<String> _objectEntryIds = new HashSet<>();
+	private final List<Query> _queries = new ArrayList<>();
 
 }

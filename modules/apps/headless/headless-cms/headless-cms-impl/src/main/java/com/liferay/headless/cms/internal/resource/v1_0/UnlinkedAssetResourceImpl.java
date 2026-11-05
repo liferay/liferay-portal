@@ -18,12 +18,14 @@ import com.liferay.headless.cms.internal.usage.UnlinkedAssetSearcher;
 import com.liferay.headless.cms.internal.util.CMSGroupUtil;
 import com.liferay.headless.cms.resource.v1_0.UnlinkedAssetResource;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -106,8 +108,10 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 				_assetListEntryAssetEntryRelLocalService,
 				_assetListEntryLocalService, _assetListEntryUsageLocalService,
 				_depotEntryLocalService, _layoutLocalService,
-				_layoutPageTemplateEntryLocalService, _portal,
-				_portletPreferencesLocalService);
+				_layoutPageTemplateEntryLocalService,
+				_layoutPageTemplateStructureLocalService,
+				_objectDefinitionLocalService, _objectFieldLocalService,
+				_portal, _portletPreferencesLocalService);
 		UnlinkedAssetSearcher unlinkedAssetSearcher = new UnlinkedAssetSearcher(
 			_aggregations, _assetLinkLocalService,
 			_objectDefinitionLocalService, _objectEntryLocalService,
@@ -231,6 +235,10 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 		_layoutPageTemplateEntryLocalService;
 
 	@Reference
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
+
+	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
@@ -241,6 +249,9 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 
 	@Reference
 	private ObjectEntryService _objectEntryService;
+
+	@Reference
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;

@@ -13,6 +13,7 @@ dependencies {
 	compileOnly project(":apps:asset:asset-list-api")
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:headless:headless-cms:headless-cms-api")
+	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
 	compileOnly project(":apps:object:object-api")
