@@ -45,9 +45,7 @@ public class GroupModelListenerTest {
 	@Test
 	public void testOnBeforeRemove() throws Exception {
 		Group group = GroupTestUtil.addGroup();
-
 		String queryString = RandomTestUtil.randomString();
-
 		RankingIndexName rankingIndexName =
 			_rankingIndexNameBuilder.getRankingIndexName(
 				TestPropsValues.getCompanyId());
