@@ -269,7 +269,7 @@ test.describe('Missing reference warnings for Navigation Menu Items', () => {
 	test(
 		'Missing reference for a Layout type Navigation Menu Item',
 		{
-			tag: '@LPD-71409',
+			tag: ['@LPD-71409', '@LPD-114349'],
 		},
 		async ({apiHelpers, navigationMenusPage, page, site}) => {
 			const {layout1, layout2} =
@@ -333,11 +333,11 @@ test.describe('Missing reference warnings for Navigation Menu Items', () => {
 					.getByRole('link', {name: navigationMenuName})
 					.click();
 
-				// Layout type Navigation Menu Items are deleted from the Navigation Menu when the Layout is deleted
-
-				await expect(
-					page.getByText(layout1.nameCurrentValue)
-				).not.toBeVisible();
+				await assertMissingReferenceWarnings(
+					page,
+					layout1.nameCurrentValue,
+					navigationMenusPage
+				);
 			});
 
 			await test.step("Verify that Navigation Menu's rendered preview doesn't show Menu Items with missing references", async () => {

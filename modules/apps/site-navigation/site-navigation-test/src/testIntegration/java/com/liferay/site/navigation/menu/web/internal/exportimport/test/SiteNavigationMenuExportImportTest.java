@@ -402,7 +402,7 @@ public class SiteNavigationMenuExportImportTest
 				fetchSiteNavigationMenuItemByExternalReferenceCode(
 					layoutItem2.getExternalReferenceCode(),
 					_liveGroup.getGroupId()));
-		Assert.assertNull(
+		Assert.assertNotNull(
 			_siteNavigationMenuItemLocalService.
 				fetchSiteNavigationMenuItemByExternalReferenceCode(
 					layoutItem3.getExternalReferenceCode(),

@@ -22,10 +22,8 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.navigation.menu.item.layout.constants.SiteNavigationMenuItemTypeConstants;
-import com.liferay.site.navigation.model.SiteNavigationMenu;
 import com.liferay.site.navigation.model.SiteNavigationMenuItem;
 import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
-import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
 
 import java.util.List;
@@ -54,26 +52,6 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 				CharPool.COMMA));
 
 		_addLayoutSiteNavigationMenuItems(siteNavigationMenuIds, layout);
-	}
-
-	@Override
-	public void onAfterRemove(Layout layout) throws ModelListenerException {
-		if (layout == null) {
-			return;
-		}
-
-		List<SiteNavigationMenu> siteNavigationMenus =
-			_siteNavigationMenuLocalService.getSiteNavigationMenus(
-				layout.getGroupId());
-
-		try {
-			for (SiteNavigationMenu siteNavigationMenu : siteNavigationMenus) {
-				_deleteSiteNavigationMenuItem(siteNavigationMenu, layout);
-			}
-		}
-		catch (PortalException portalException) {
-			throw new ModelListenerException(portalException);
-		}
 	}
 
 	@Override
@@ -166,36 +144,6 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 		}
 	}
 
-	private void _deleteSiteNavigationMenuItem(
-			SiteNavigationMenu siteNavigationMenu, Layout layout)
-		throws PortalException {
-
-		List<SiteNavigationMenuItem> siteNavigationMenuItems =
-			_siteNavigationMenuItemLocalService.getSiteNavigationMenuItems(
-				siteNavigationMenu.getSiteNavigationMenuId());
-
-		for (SiteNavigationMenuItem siteNavigationMenuItem :
-				siteNavigationMenuItems) {
-
-			UnicodeProperties unicodeProperties =
-				UnicodePropertiesBuilder.fastLoad(
-					siteNavigationMenuItem.getTypeSettings()
-				).build();
-
-			String externalReferenceCode = unicodeProperties.getProperty(
-				"externalReferenceCode");
-
-			if (!Objects.equals(
-					layout.getExternalReferenceCode(), externalReferenceCode)) {
-
-				continue;
-			}
-
-			_siteNavigationMenuItemLocalService.deleteSiteNavigationMenuItem(
-				siteNavigationMenuItem.getSiteNavigationMenuItemId());
-		}
-	}
-
 	private long _getParentSiteNavigationMenuItemId(
 		long parentPlid, long siteNavigationMenuItemId) {
 
@@ -280,8 +228,5 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 		target = "(site.navigation.menu.item.type=" + SiteNavigationMenuItemTypeConstants.LAYOUT + ")"
 	)
 	private SiteNavigationMenuItemType _siteNavigationMenuItemType;
-
-	@Reference
-	private SiteNavigationMenuLocalService _siteNavigationMenuLocalService;
 
 }
