@@ -1631,12 +1631,32 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 		WorkflowTask workflowTask = _getWorkflowTask();
 
 		Date date = new Date(System.currentTimeMillis() + Time.DAY);
+		long workflowTaskId = workflowTask.getWorkflowTaskId();
 
 		workflowTask = _workflowTaskManager.updateDueDate(
 			_siteAdminUser.getCompanyId(), _siteAdminUser.getUserId(),
-			workflowTask.getWorkflowTaskId(), StringPool.BLANK, date);
+			workflowTaskId, StringPool.BLANK, date);
 
 		Assert.assertEquals(date, workflowTask.getDueDate());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_siteContentReviewerUser)) {
+
+			date = new Date(System.currentTimeMillis() + (2 * Time.DAY));
+
+			workflowTask = _workflowTaskManager.updateDueDate(
+				_siteContentReviewerUser.getCompanyId(),
+				_siteContentReviewerUser.getUserId(), workflowTaskId,
+				StringPool.BLANK, date);
+
+			Assert.assertEquals(date, workflowTask.getDueDate());
+		}
+
+		_assertMustHavePermission(
+			() -> _workflowTaskManager.updateDueDate(
+				_siteMemberUser.getCompanyId(), _siteMemberUser.getUserId(),
+				workflowTaskId, StringPool.BLANK,
+				new Date(System.currentTimeMillis() + Time.DAY)));
 
 		_blogsEntryLocalService.deleteEntry(blogsEntry);
 
