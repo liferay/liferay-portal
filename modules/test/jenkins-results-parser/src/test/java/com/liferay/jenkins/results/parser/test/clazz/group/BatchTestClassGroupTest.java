@@ -5,7 +5,11 @@
 
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
+import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
+import com.liferay.jenkins.results.parser.PortalTestClassJob;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
+import com.liferay.jenkins.results.parser.history.BatchHistory;
+import com.liferay.jenkins.results.parser.history.JobHistory;
 import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
@@ -111,6 +115,15 @@ public class BatchTestClassGroupTest
 		_testGetSegmentMaxChildren(25, "");
 		_testGetSegmentMaxChildren(25, "-2");
 		_testGetSegmentMaxChildren(3, "3");
+	}
+
+	@Test
+	public void testGetTargetAxisDuration() {
+		_testGetTargetAxisDuration(
+			Mockito.mock(BatchHistory.class), true,
+			RandomTestUtil.randomString());
+		_testGetTargetAxisDuration(null, false, RandomTestUtil.randomString());
+		_testGetTargetAxisDuration(null, true, "master");
 	}
 
 	@Test
@@ -314,6 +327,64 @@ public class BatchTestClassGroupTest
 		testEquals(
 			expectedSegmentMaxChildren,
 			batchTestClassGroup.getSegmentMaxChildren());
+	}
+
+	private void _testGetTargetAxisDuration(
+		BatchHistory batchHistory, boolean expectedTargetAxisDuration,
+		String upstreamBranchName) {
+
+		JobPropertyFactory.clear();
+
+		Properties jobProperties = new Properties();
+
+		long targetAxisDuration = Math.abs(RandomTestUtil.randomInt());
+
+		jobProperties.setProperty(
+			"test.batch.target.axis.duration",
+			String.valueOf(targetAxisDuration));
+
+		PortalTestClassJob portalTestClassJob =
+			BatchTestClassGroupTestUtil.getPortalTestClassJob(jobProperties);
+
+		BatchTestClassGroup batchTestClassGroup = Mockito.spy(
+			new BatchTestClassGroup("default", portalTestClassJob) {
+			});
+
+		JobHistory jobHistory = portalTestClassJob.getJobHistory();
+
+		String batchName = batchTestClassGroup.getBatchName();
+
+		Mockito.doReturn(
+			batchHistory
+		).when(
+			jobHistory
+		).getBatchHistory(
+			batchName
+		);
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
+			PortalGitWorkingDirectory.class);
+
+		Mockito.doReturn(
+			upstreamBranchName
+		).when(
+			portalGitWorkingDirectory
+		).getUpstreamBranchName();
+
+		Mockito.doReturn(
+			portalGitWorkingDirectory
+		).when(
+			batchTestClassGroup
+		).getPortalGitWorkingDirectory();
+
+		if (expectedTargetAxisDuration) {
+			testEquals(
+				targetAxisDuration,
+				batchTestClassGroup.getTargetAxisDuration());
+		}
+		else {
+			testEquals(0L, batchTestClassGroup.getTargetAxisDuration());
+		}
 	}
 
 	private void _testSetAxisTestClassGroups(
