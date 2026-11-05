@@ -354,17 +354,6 @@ public class DepotEntryLocalServiceUtil {
 			companyId, userId, type, dynamicInheritanceOnly);
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static List<DepotEntry> getDepotEntryGroupRelsByUuidAndCompanyId(
-		String uuid, long companyId) {
-
-		return getService().getDepotEntryGroupRelsByUuidAndCompanyId(
-			uuid, companyId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -463,4 +452,4 @@ public class DepotEntryLocalServiceUtil {
 			DepotEntryLocalServiceUtil.class, DepotEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-719857016
+// LIFERAY-SERVICE-BUILDER-HASH:28257391

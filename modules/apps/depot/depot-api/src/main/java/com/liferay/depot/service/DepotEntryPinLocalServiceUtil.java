@@ -249,17 +249,6 @@ public class DepotEntryPinLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static List<DepotEntryPin> getDepotEntryDepotEntryPins(
-		long depotEntryId, int start, int end) {
-
-		return getService().getDepotEntryDepotEntryPins(
-			depotEntryId, start, end);
-	}
-
-	public static int getDepotEntryDepotEntryPinsCount(long depotEntryId) {
-		return getService().getDepotEntryDepotEntryPinsCount(depotEntryId);
-	}
-
 	/**
 	 * Returns the depot entry pin with the primary key.
 	 *
@@ -271,12 +260,6 @@ public class DepotEntryPinLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getDepotEntryPin(depotEntryPinId);
-	}
-
-	public static DepotEntryPin getDepotEntryPin(long userId, long depotEntryId)
-		throws PortalException {
-
-		return getService().getDepotEntryPin(userId, depotEntryId);
 	}
 
 	/**
@@ -411,4 +394,4 @@ public class DepotEntryPinLocalServiceUtil {
 			DepotEntryPinLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1138796042
+// LIFERAY-SERVICE-BUILDER-HASH:610582013

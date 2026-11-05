@@ -275,20 +275,6 @@ public class DepotEntryPinLocalServiceWrapper
 		return _depotEntryPinLocalService.getActionableDynamicQuery();
 	}
 
-	@Override
-	public java.util.List<DepotEntryPin> getDepotEntryDepotEntryPins(
-		long depotEntryId, int start, int end) {
-
-		return _depotEntryPinLocalService.getDepotEntryDepotEntryPins(
-			depotEntryId, start, end);
-	}
-
-	@Override
-	public int getDepotEntryDepotEntryPinsCount(long depotEntryId) {
-		return _depotEntryPinLocalService.getDepotEntryDepotEntryPinsCount(
-			depotEntryId);
-	}
-
 	/**
 	 * Returns the depot entry pin with the primary key.
 	 *
@@ -301,14 +287,6 @@ public class DepotEntryPinLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _depotEntryPinLocalService.getDepotEntryPin(depotEntryPinId);
-	}
-
-	@Override
-	public DepotEntryPin getDepotEntryPin(long userId, long depotEntryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _depotEntryPinLocalService.getDepotEntryPin(
-			userId, depotEntryId);
 	}
 
 	/**
@@ -485,4 +463,4 @@ public class DepotEntryPinLocalServiceWrapper
 	private DepotEntryPinLocalService _depotEntryPinLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-972458589
+// LIFERAY-SERVICE-BUILDER-HASH:-1589513475

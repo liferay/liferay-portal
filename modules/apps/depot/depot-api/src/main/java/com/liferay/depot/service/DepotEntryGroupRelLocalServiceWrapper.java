@@ -344,14 +344,6 @@ public class DepotEntryGroupRelLocalServiceWrapper
 			depotEntry);
 	}
 
-	@Override
-	public java.util.List<DepotEntryGroupRel> getDepotEntryGroupRels(
-		com.liferay.depot.model.DepotEntry depotEntry, int start, int end) {
-
-		return _depotEntryGroupRelLocalService.getDepotEntryGroupRels(
-			depotEntry, start, end);
-	}
-
 	/**
 	 * Returns a range of all the depot entry group rels.
 	 *
@@ -569,4 +561,4 @@ public class DepotEntryGroupRelLocalServiceWrapper
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1108806505
+// LIFERAY-SERVICE-BUILDER-HASH:59249127

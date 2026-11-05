@@ -224,13 +224,6 @@ public interface DepotEntryPinLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DepotEntryPin> getDepotEntryDepotEntryPins(
-		long depotEntryId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDepotEntryDepotEntryPinsCount(long depotEntryId);
-
 	/**
 	 * Returns the depot entry pin with the primary key.
 	 *
@@ -240,10 +233,6 @@ public interface DepotEntryPinLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DepotEntryPin getDepotEntryPin(long depotEntryPinId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DepotEntryPin getDepotEntryPin(long userId, long depotEntryId)
 		throws PortalException;
 
 	/**
@@ -361,4 +350,4 @@ public interface DepotEntryPinLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1703178391
+// LIFERAY-SERVICE-BUILDER-HASH:-1156582129

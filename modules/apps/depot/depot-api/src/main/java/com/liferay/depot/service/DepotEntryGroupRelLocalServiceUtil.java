@@ -303,12 +303,6 @@ public class DepotEntryGroupRelLocalServiceUtil {
 		return getService().getDepotEntryGroupRels(depotEntry);
 	}
 
-	public static List<DepotEntryGroupRel> getDepotEntryGroupRels(
-		com.liferay.depot.model.DepotEntry depotEntry, int start, int end) {
-
-		return getService().getDepotEntryGroupRels(depotEntry, start, end);
-	}
-
 	/**
 	 * Returns a range of all the depot entry group rels.
 	 *
@@ -469,4 +463,4 @@ public class DepotEntryGroupRelLocalServiceUtil {
 			DepotEntryGroupRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:446811924
+// LIFERAY-SERVICE-BUILDER-HASH:-842062070
