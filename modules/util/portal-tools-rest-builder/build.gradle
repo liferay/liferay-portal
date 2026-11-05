@@ -18,7 +18,7 @@ copyCSS {
 }
 
 dependencies {
-	api group: "com.liferay", name: "org.freemarker", transitive: false, version: "2.3.33.LIFERAY-PATCHED-4"
+	api group: "com.liferay", name: "org.freemarker", transitive: false, version: "2.3.33.LIFERAY-PATCHED-6"
 
 	api(group: "com.puppycrawl.tools", name: "checkstyle", version: "10.18.0") {
 		exclude group: "org.apache.maven.doxia"
