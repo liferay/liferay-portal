@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
+import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -48,6 +49,7 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -142,12 +144,12 @@ public class MCPServerServletTest {
 				_getResponse("Bearer " + expiredAccessToken),
 				"Access token has expired");
 
-			String inactiveUserAccessToken = RandomTestUtil.randomString();
+			String userAccessToken = RandomTestUtil.randomString();
 
 			_user = UserTestUtil.addUser();
 
 			_addOAuth2Authorization(
-				inactiveUserAccessToken,
+				userAccessToken,
 				new Date(System.currentTimeMillis() + Time.HOUR),
 				Collections.singletonList(_getMCPURL()), _user.getUserId());
 
@@ -156,8 +158,34 @@ public class MCPServerServletTest {
 				new ServiceContext());
 
 			_assertInvalidTokenChallenge(
-				_getResponse("Bearer " + inactiveUserAccessToken),
+				_getResponse("Bearer " + userAccessToken),
 				"Access token is unknown or revoked");
+
+			_userLocalService.updateStatus(
+				_user.getUserId(), WorkflowConstants.STATUS_APPROVED,
+				new ServiceContext());
+
+			_userLocalService.updatePasswordReset(_user.getUserId(), true);
+
+			_assertInvalidTokenChallenge(
+				_getResponse("Bearer " + userAccessToken),
+				"Access token is unknown or revoked");
+
+			_userLocalService.updatePasswordReset(_user.getUserId(), false);
+
+			_userLocalService.updateEmailAddressVerified(
+				_user.getUserId(), false);
+
+			try (SafeCloseable safeCloseable =
+					PrefsPropsTestUtil.swapWithSafeCloseable(
+						TestPropsValues.getCompanyId(),
+						PropsKeys.COMPANY_SECURITY_STRANGERS_VERIFY,
+						Boolean.TRUE.toString())) {
+
+				_assertInvalidTokenChallenge(
+					_getResponse("Bearer " + userAccessToken),
+					"Access token is unknown or revoked");
+			}
 
 			String invalidAccessToken = RandomTestUtil.randomString();
 
