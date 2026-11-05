@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -23,6 +24,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkService;
 import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -146,6 +148,109 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110161")
+	public void testAddWorkflowDefinitionLinkAsAnotherUser() throws Exception {
+		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(cmsAdministratorUser);
+
+		User user = _addUser();
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			StringBundler.concat(
+				"User ", cmsAdministratorUser.getUserId(),
+				" must be an omniadmin to act on behalf of user ",
+				user.getUserId()),
+			() -> _workflowDefinitionLinkService.addWorkflowDefinitionLink(
+				null, user.getUserId(), _company.getCompanyId(), 0, null, 0, 0,
+				null, 0));
+	}
+
+	@Test
+	@TestInfo("LPD-110161")
+	public void testAddWorkflowDefinitionLinkFromAnotherCompany()
+		throws Exception {
+
+		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(cmsAdministratorUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			StringBundler.concat(
+				"User ", cmsAdministratorUser.getUserId(),
+				" must be an omniadmin to act in company ",
+				TestPropsValues.getCompanyId()),
+			() -> _workflowDefinitionLinkService.addWorkflowDefinitionLink(
+				null, cmsAdministratorUser.getUserId(),
+				TestPropsValues.getCompanyId(), 0, null, 0, 0, null, 0));
+	}
+
+	@Test
+	@TestInfo("LPD-110161")
+	public void testAddWorkflowDefinitionLinkWithGroupFromAnotherCompany()
+		throws Exception {
+
+		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(cmsAdministratorUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			StringBundler.concat(
+				"Group ", TestPropsValues.getGroupId(),
+				" does not belong to company ", _company.getCompanyId()),
+			() -> _workflowDefinitionLinkService.addWorkflowDefinitionLink(
+				null, cmsAdministratorUser.getUserId(), _company.getCompanyId(),
+				TestPropsValues.getGroupId(), null, 0, 0, null, 0));
+	}
+
+	@Test
+	@TestInfo("LPD-110161")
+	public void testAddWorkflowDefinitionLinkWithoutGroupPermission()
+		throws Exception {
+
+		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(cmsAdministratorUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustBeCompanyAdmin.class,
+			StringBundler.concat(
+				"User ", cmsAdministratorUser.getUserId(),
+				" must be the company administrator to perform the action"),
+			() -> _workflowDefinitionLinkService.addWorkflowDefinitionLink(
+				null, cmsAdministratorUser.getUserId(), _company.getCompanyId(),
+				0, null, 0, 0, null, 0));
+	}
+
+	@Test
+	@TestInfo("LPD-110161")
+	public void testAddWorkflowDefinitionLinkWithoutUpdateGroupPermission()
+		throws Exception {
+
+		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(cmsAdministratorUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", cmsAdministratorUser.getUserId(),
+				" must have UPDATE permission for ", Group.class.getName(),
+				StringPool.SPACE, _group.getGroupId()),
+			() -> _workflowDefinitionLinkService.addWorkflowDefinitionLink(
+				null, cmsAdministratorUser.getUserId(), _company.getCompanyId(),
+				_group.getGroupId(), null, 0, 0, null, 0));
+	}
+
+	@Test
 	public void testGetWorkflowDefinitionLinks() throws Exception {
 		_setUpPermissionThreadLocal(_companyAdminUser);
 
@@ -238,6 +343,111 @@ public class WorkflowDefinitionLinkServiceImplTest {
 		Assert.assertEquals(
 			kaleoDefinition.getName(),
 			workflowDefinitionLink2.getWorkflowDefinitionName());
+	}
+
+	@Test
+	@TestInfo("LPD-110161")
+	public void testUpdateWorkflowDefinitionLinkAsAnotherUser()
+		throws Exception {
+
+		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(cmsAdministratorUser);
+
+		User user = _addUser();
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			StringBundler.concat(
+				"User ", cmsAdministratorUser.getUserId(),
+				" must be an omniadmin to act on behalf of user ",
+				user.getUserId()),
+			() -> _workflowDefinitionLinkService.updateWorkflowDefinitionLink(
+				null, user.getUserId(), _company.getCompanyId(), 0, null, 0, 0,
+				null, 0));
+	}
+
+	@Test
+	@TestInfo("LPD-110161")
+	public void testUpdateWorkflowDefinitionLinkFromAnotherCompany()
+		throws Exception {
+
+		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(cmsAdministratorUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			StringBundler.concat(
+				"User ", cmsAdministratorUser.getUserId(),
+				" must be an omniadmin to act in company ",
+				TestPropsValues.getCompanyId()),
+			() -> _workflowDefinitionLinkService.updateWorkflowDefinitionLink(
+				null, cmsAdministratorUser.getUserId(),
+				TestPropsValues.getCompanyId(), 0, null, 0, 0, null, 0));
+	}
+
+	@Test
+	@TestInfo("LPD-110161")
+	public void testUpdateWorkflowDefinitionLinkWithGroupFromAnotherCompany()
+		throws Exception {
+
+		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(cmsAdministratorUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			StringBundler.concat(
+				"Group ", TestPropsValues.getGroupId(),
+				" does not belong to company ", _company.getCompanyId()),
+			() -> _workflowDefinitionLinkService.updateWorkflowDefinitionLink(
+				null, cmsAdministratorUser.getUserId(), _company.getCompanyId(),
+				TestPropsValues.getGroupId(), null, 0, 0, null, 0));
+	}
+
+	@Test
+	@TestInfo("LPD-110161")
+	public void testUpdateWorkflowDefinitionLinkWithoutGroupPermission()
+		throws Exception {
+
+		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(cmsAdministratorUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustBeCompanyAdmin.class,
+			StringBundler.concat(
+				"User ", cmsAdministratorUser.getUserId(),
+				" must be the company administrator to perform the action"),
+			() -> _workflowDefinitionLinkService.updateWorkflowDefinitionLink(
+				null, cmsAdministratorUser.getUserId(), _company.getCompanyId(),
+				0, null, 0, 0, null, 0));
+	}
+
+	@Test
+	@TestInfo("LPD-110161")
+	public void testUpdateWorkflowDefinitionLinkWithoutUpdateGroupPermission()
+		throws Exception {
+
+		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(cmsAdministratorUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", cmsAdministratorUser.getUserId(),
+				" must have UPDATE permission for ", Group.class.getName(),
+				StringPool.SPACE, _group.getGroupId()),
+			() -> _workflowDefinitionLinkService.updateWorkflowDefinitionLink(
+				null, cmsAdministratorUser.getUserId(), _company.getCompanyId(),
+				_group.getGroupId(), null, 0, 0, null, 0));
 	}
 
 	private KaleoDefinition _addKaleoDefinition() throws Exception {
