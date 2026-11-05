@@ -13,6 +13,7 @@ interface IProject {
 	name: string;
 	ownerEmailAddress: string;
 	recommendationsEnabled: boolean;
+	salesforceAccountId: string;
 	serverLocation: string;
 	state: string;
 	stateStartDate: number;
@@ -33,6 +34,7 @@ export default class Project
 		name: '',
 		ownerEmailAddress: '',
 		recommendationsEnabled: false,
+		salesforceAccountId: null,
 		serverLocation: null,
 		state: null,
 		stateStartDate: null,
@@ -52,6 +54,7 @@ export default class Project
 	declare name: string;
 	declare ownerEmailAddress: string;
 	declare recommendationsEnabled: boolean;
+	declare salesforceAccountId: string;
 	declare serverLocation: string;
 	declare state: string;
 	declare stateStartDate: number;

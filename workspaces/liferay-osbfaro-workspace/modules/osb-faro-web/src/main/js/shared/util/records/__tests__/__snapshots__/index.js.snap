@@ -13,6 +13,7 @@ Immutable.Record {
   "name": "",
   "ownerEmailAddress": "",
   "recommendationsEnabled": false,
+  "salesforceAccountId": null,
   "serverLocation": null,
   "state": null,
   "stateStartDate": null,

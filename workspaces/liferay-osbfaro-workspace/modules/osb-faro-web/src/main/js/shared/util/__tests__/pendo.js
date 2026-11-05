@@ -86,6 +86,19 @@ describe('Pendo account', () => {
 		).toEqual({id: 'KOR-1', name: 'Corp Project', planLevel: 'Basic'});
 	});
 
+	it('falls back to the Salesforce account when there is no corp project', () => {
+		expect(
+			account({
+				...subscription,
+				accountKey: 'ACC-1',
+				accountName: 'Account',
+				groupId: 123,
+				name: 'Workspace',
+				salesforceAccountId: 'SF-1',
+			})
+		).toEqual({id: 'SF-1', name: 'Account', planLevel: 'Basic'});
+	});
+
 	it('falls back to the account when there is no corp project', () => {
 		expect(
 			account({
