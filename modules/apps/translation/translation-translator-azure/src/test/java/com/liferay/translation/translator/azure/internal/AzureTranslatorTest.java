@@ -174,6 +174,29 @@ public class AzureTranslatorTest {
 	}
 
 	@Test
+	public void testTranslateWhenHTMLFlagsAreNull() throws Exception {
+		String htmlFieldName = RandomTestUtil.randomString();
+		String htmlText = StringBundler.concat(
+			"<p>", RandomTestUtil.randomString(), "</p>");
+		String plainText = RandomTestUtil.randomString();
+
+		Map<String, String> fieldsMap = LinkedHashMapBuilder.put(
+			htmlFieldName, htmlText
+		).put(
+			RandomTestUtil.randomString(), plainText
+		).build();
+
+		TranslatorPacket translatorPacket = _azureTranslator.translate(
+			_getTranslatorPacket(
+				fieldsMap, Collections.singletonMap(htmlFieldName, null)));
+
+		Assert.assertEquals(fieldsMap, translatorPacket.getFieldsMap());
+
+		Assert.assertEquals(
+			Map.of("plain", List.of(htmlText, plainText)), _texts);
+	}
+
+	@Test
 	public void testTranslateWhenResponseCodeIsNotOK() throws Exception {
 		ReflectionTestUtil.setFieldValue(
 			_azureTranslator, "_http", _setUpHttp(500));
