@@ -172,9 +172,7 @@ public class TemporaryFileEntriesCapabilityTest {
 
 	@Test
 	@TestInfo("LPD-113193")
-	public void testGetTempFileNamesDoesNotAddTemporaryFolders()
-		throws Exception {
-
+	public void testGetTempFileNames() throws Exception {
 		String folderName = RandomTestUtil.randomString();
 
 		Assert.assertArrayEquals(
