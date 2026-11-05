@@ -39,12 +39,9 @@ public abstract class BaseInfoItemDetailsProvider
 		if (Objects.equals(
 				infoItemIdentifierClass, ClassPKInfoItemIdentifier.class)) {
 
-			return new InfoItemDetails(
-				getInfoItemClassDetails(),
-				new InfoItemReference(
-					_getModelClassName(),
-					infoItemIdentifierFactory.createClassPKInfoItemIdentifier(
-						model)));
+			return _getInfoItemDetails(
+				infoItemIdentifierFactory.createClassPKInfoItemIdentifier(
+					model));
 		}
 
 		if (Objects.equals(
@@ -59,10 +56,7 @@ public abstract class BaseInfoItemDetailsProvider
 				return null;
 			}
 
-			return new InfoItemDetails(
-				getInfoItemClassDetails(),
-				new InfoItemReference(
-					_getModelClassName(), ercInfoItemIdentifier));
+			return _getInfoItemDetails(ercInfoItemIdentifier);
 		}
 
 		if (Objects.equals(
@@ -76,10 +70,7 @@ public abstract class BaseInfoItemDetailsProvider
 				return null;
 			}
 
-			return new InfoItemDetails(
-				getInfoItemClassDetails(),
-				new InfoItemReference(
-					_getModelClassName(), groupKeyInfoItemIdentifier));
+			return _getInfoItemDetails(groupKeyInfoItemIdentifier);
 		}
 
 		if (Objects.equals(
@@ -94,10 +85,7 @@ public abstract class BaseInfoItemDetailsProvider
 				return null;
 			}
 
-			return new InfoItemDetails(
-				getInfoItemClassDetails(),
-				new InfoItemReference(
-					_getModelClassName(), groupUrlTitleInfoItemIdentifier));
+			return _getInfoItemDetails(groupUrlTitleInfoItemIdentifier);
 		}
 
 		return null;
@@ -138,10 +126,15 @@ public abstract class BaseInfoItemDetailsProvider
 	protected abstract InfoItemIdentifierFactory<T>
 		getInfoItemIdentifierFactory();
 
-	private String _getModelClassName() {
+	private InfoItemDetails _getInfoItemDetails(
+		InfoItemIdentifier infoItemIdentifier) {
+
 		InfoItemClassDetails infoItemClassDetails = getInfoItemClassDetails();
 
-		return infoItemClassDetails.getClassName();
+		return new InfoItemDetails(
+			infoItemClassDetails,
+			new InfoItemReference(
+				infoItemClassDetails.getClassName(), infoItemIdentifier));
 	}
 
 	private String _getScopeExternalReferenceCode(
