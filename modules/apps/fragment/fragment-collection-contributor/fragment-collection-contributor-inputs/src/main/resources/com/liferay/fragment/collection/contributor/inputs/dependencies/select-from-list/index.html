@@ -52,10 +52,6 @@
 							[#assign selectedValueFoundInOptions=false]
 
 							[#list options as option]
-								[#if option?index == 10]
-									[#break]
-								[/#if]
-
 								[#assign selectedOption=false]
 
 								[#if input.value?? && option.value == input.value]
