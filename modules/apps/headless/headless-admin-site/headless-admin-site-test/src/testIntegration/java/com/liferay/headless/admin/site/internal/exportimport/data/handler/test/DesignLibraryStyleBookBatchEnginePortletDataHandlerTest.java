@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
  */
 @FeatureFlag("LPD-57283")
 @RunWith(Arquillian.class)
-public class StyleBookDesignLibraryBatchEnginePortletDataHandlerTest
+public class DesignLibraryStyleBookBatchEnginePortletDataHandlerTest
 	extends BaseStyleBookBatchEnginePortletDataHandlerTestCase {
 
 	@ClassRule

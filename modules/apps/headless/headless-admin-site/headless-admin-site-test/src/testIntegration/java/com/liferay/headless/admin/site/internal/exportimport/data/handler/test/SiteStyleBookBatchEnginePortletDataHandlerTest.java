@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
  * @author Thiago Buarque
  */
 @RunWith(Arquillian.class)
-public class StyleBookSiteBatchEnginePortletDataHandlerTest
+public class SiteStyleBookBatchEnginePortletDataHandlerTest
 	extends BaseStyleBookBatchEnginePortletDataHandlerTestCase {
 
 	@ClassRule
