@@ -82,16 +82,15 @@ public class ProjectFaroControllerTest {
 
 	@Test
 	public void testCheckProvisionBackoffWhenFailureRecordedWithinWindow() {
-		String salesforceAccountId = RandomTestUtil.randomString();
+		String provisionKey = RandomTestUtil.randomString();
 
 		ReflectionTestUtils.invokeMethod(
-			_projectFaroController, "_putProvisionBackoff", salesforceAccountId,
+			_projectFaroController, "_putProvisionBackoff", provisionKey,
 			new Exception());
 
 		try {
 			ReflectionTestUtils.invokeMethod(
-				_projectFaroController, "_checkProvisionBackoff",
-				salesforceAccountId);
+				_projectFaroController, "_checkProvisionBackoff", provisionKey);
 
 			Assert.fail();
 		}
@@ -107,19 +106,17 @@ public class ProjectFaroControllerTest {
 
 	@Test
 	public void testCheckProvisionBackoffWhenFailureWasCleared() {
-		String salesforceAccountId = RandomTestUtil.randomString();
+		String provisionKey = RandomTestUtil.randomString();
 
 		ReflectionTestUtils.invokeMethod(
-			_projectFaroController, "_putProvisionBackoff", salesforceAccountId,
+			_projectFaroController, "_putProvisionBackoff", provisionKey,
 			new Exception());
 
 		ReflectionTestUtils.invokeMethod(
-			_projectFaroController, "_clearProvisionBackoff",
-			salesforceAccountId);
+			_projectFaroController, "_clearProvisionBackoff", provisionKey);
 
 		ReflectionTestUtils.invokeMethod(
-			_projectFaroController, "_checkProvisionBackoff",
-			salesforceAccountId);
+			_projectFaroController, "_checkProvisionBackoff", provisionKey);
 	}
 
 	@Test
