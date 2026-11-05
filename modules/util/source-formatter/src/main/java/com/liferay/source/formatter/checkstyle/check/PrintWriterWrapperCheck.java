@@ -137,10 +137,8 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 			DetailAST modifiersDetailAST =
 				methodDefinitionDetailAST.findFirstToken(TokenTypes.MODIFIERS);
 
-			DetailAST privateDetailAST = modifiersDetailAST.findFirstToken(
-				TokenTypes.LITERAL_PRIVATE);
-
-			if ((privateDetailAST == null) ||
+			if (!modifiersDetailAST.branchContains(
+					TokenTypes.LITERAL_PRIVATE) ||
 				!_isPrintOnly(parameterDefinitionDetailASTs.get(index))) {
 
 				return;
