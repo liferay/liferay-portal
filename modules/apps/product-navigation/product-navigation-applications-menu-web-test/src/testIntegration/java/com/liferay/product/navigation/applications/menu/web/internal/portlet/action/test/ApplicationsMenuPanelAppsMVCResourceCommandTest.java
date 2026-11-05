@@ -173,11 +173,11 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 
 		Assert.assertEquals(1, mySitesJSONArray.length());
 
-		Assert.assertTrue(jsonObject.has("viewAllURL"));
-
 		_assertGroupKeys(
 			Arrays.asList(group, companyGroup),
 			jsonObject.getJSONArray("recentSites"));
+
+		Assert.assertTrue(jsonObject.has("viewAllURL"));
 	}
 
 	@Test
