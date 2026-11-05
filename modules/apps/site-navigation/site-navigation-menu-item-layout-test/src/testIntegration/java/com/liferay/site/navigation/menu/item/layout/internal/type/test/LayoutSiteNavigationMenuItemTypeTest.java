@@ -367,7 +367,7 @@ public class LayoutSiteNavigationMenuItemTypeTest {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.site.navigation.menu.item.layout.internal.type." +
 					"LayoutSiteNavigationMenuItemType",
-				LoggerTestUtil.WARN)) {
+				LoggerTestUtil.DEBUG)) {
 
 			Assert.assertEquals(
 				layout,

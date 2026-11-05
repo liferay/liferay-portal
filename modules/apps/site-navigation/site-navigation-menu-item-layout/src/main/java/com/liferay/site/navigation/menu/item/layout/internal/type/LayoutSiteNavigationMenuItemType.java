@@ -610,8 +610,8 @@ public class LayoutSiteNavigationMenuItemType
 		Layout layout = _layoutLocalService.fetchLayoutByExternalReferenceCode(
 			externalReferenceCode, groupId);
 
-		if ((layout == null) && _log.isWarnEnabled()) {
-			_log.warn(
+		if ((layout == null) && _log.isDebugEnabled()) {
+			_log.debug(
 				StringBundler.concat(
 					"No layout found for site navigation menu item ID ",
 					siteNavigationMenuItem.getSiteNavigationMenuItemId(),
