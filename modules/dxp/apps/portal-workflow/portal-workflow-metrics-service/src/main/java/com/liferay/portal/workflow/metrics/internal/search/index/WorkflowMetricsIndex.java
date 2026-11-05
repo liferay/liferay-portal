@@ -98,7 +98,20 @@ public enum WorkflowMetricsIndex {
 			_readJSON(_indexType + "-mappings.json"));
 		createIndexRequest.setSettings(_readJSON("settings.json"));
 
-		searchEngineAdapter.execute(createIndexRequest);
+		try {
+			searchEngineAdapter.execute(createIndexRequest);
+		}
+		catch (RuntimeException runtimeException) {
+			if (_hasIndex(
+					searchEngineAdapter,
+					getIndexName(
+						indexNameBuilder, _indexNameSuffix, companyId))) {
+
+				return false;
+			}
+
+			throw runtimeException;
+		}
 
 		return true;
 	}
