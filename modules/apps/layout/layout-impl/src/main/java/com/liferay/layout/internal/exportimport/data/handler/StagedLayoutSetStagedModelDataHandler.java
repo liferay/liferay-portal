@@ -246,8 +246,13 @@ public class StagedLayoutSetStagedModelDataHandler
 
 		_checkLayoutSetPrototypeLayouts(portletDataContext);
 
-		_updateLayoutSetSettingsProperties(
-			portletDataContext, importedStagedLayoutSet);
+		if (MapUtil.getBoolean(
+				portletDataContext.getParameterMap(),
+				PortletDataHandlerKeys.LAYOUT_SET_SETTINGS)) {
+
+			_updateLayoutSetSettingsProperties(
+				portletDataContext, importedStagedLayoutSet);
+		}
 
 		_importFaviconFileEntry(
 			portletDataContext, stagedLayoutSet, stagedLayoutSetElement);

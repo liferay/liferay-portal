@@ -958,6 +958,39 @@ public class LayoutSetPrototypePropagationTest
 	}
 
 	@Test
+	public void testLayoutSetPrototypePropagationWithLayoutSetSettingsUnselected()
+		throws Exception {
+
+		LayoutSet layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
+			group.getGroupId(), false);
+
+		UnicodeProperties settingsUnicodeProperties =
+			layoutSet.getSettingsProperties();
+
+		settingsUnicodeProperties.setProperty(
+			Sites.SHOW_SITE_NAME, Boolean.FALSE.toString());
+
+		layoutSet.setSettingsProperties(settingsUnicodeProperties);
+
+		layoutSet = LayoutSetLocalServiceUtil.updateLayoutSet(layoutSet);
+
+		_sites.mergeLayoutSetPrototypeLayouts(
+			_layoutSetPrototype, TestPropsValues.getUserId(),
+			ExportImportHelperUtil.getAllLayoutIds(
+				_layoutSetPrototypeGroup.getGroupId(), true),
+			_getSelectionParameterMap(false));
+
+		layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
+			layoutSet.getLayoutSetId());
+
+		settingsUnicodeProperties = layoutSet.getSettingsProperties();
+
+		Assert.assertEquals(
+			Boolean.FALSE.toString(),
+			settingsUnicodeProperties.getProperty(Sites.SHOW_SITE_NAME));
+	}
+
+	@Test
 	public void testLayoutSetPrototypePropagationWithLinkDisabled()
 		throws Exception {
 
