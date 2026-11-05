@@ -69,7 +69,7 @@ public class OnDemandAdminTicketGeneratorImpl
 		throws PortalException {
 
 		_checkRequestAdministratorAccessPermission(
-			company.getCompanyId(), requestorUser.getUserId());
+			company.getCompanyId(), requestorUser);
 
 		User user = _addOnDemandAdminUser(
 			requestorUser.getUserId(), company.getCompanyId(), company.getMx(),
@@ -155,15 +155,13 @@ public class OnDemandAdminTicketGeneratorImpl
 	}
 
 	private void _checkRequestAdministratorAccessPermission(
-			long companyId, long userId)
+			long companyId, User user)
 		throws PortalException {
 
 		if (companyId == PortalInstancePool.getDefaultCompanyId()) {
 			throw new PrincipalException(
 				"Target company must not be the default company");
 		}
-
-		User user = _userLocalService.getUser(userId);
 
 		if (user.getCompanyId() != PortalInstancePool.getDefaultCompanyId()) {
 			throw new PrincipalException(
@@ -178,7 +176,8 @@ public class OnDemandAdminTicketGeneratorImpl
 				OnDemandAdminActionKeys.REQUEST_ADMINISTRATOR_ACCESS, true)) {
 
 			throw new PrincipalException.MustHavePermission(
-				userId, OnDemandAdminActionKeys.REQUEST_ADMINISTRATOR_ACCESS);
+				user.getUserId(),
+				OnDemandAdminActionKeys.REQUEST_ADMINISTRATOR_ACCESS);
 		}
 	}
 
