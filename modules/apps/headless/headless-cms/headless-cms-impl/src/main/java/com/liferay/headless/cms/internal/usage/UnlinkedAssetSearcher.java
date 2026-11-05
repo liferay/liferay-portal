@@ -225,17 +225,18 @@ public class UnlinkedAssetSearcher {
 						DynamicObjectRelationshipMappingTableFactory.create(
 							objectRelationship);
 
-				List<Object[]> rows = _objectEntryLocalService.dslQuery(
-					DSLQueryFactoryUtil.select(
-						dynamicObjectRelationshipMappingTable.
-							getPrimaryKeyColumn1(),
-						dynamicObjectRelationshipMappingTable.
-							getPrimaryKeyColumn2()
-					).from(
-						dynamicObjectRelationshipMappingTable
-					));
+				List<Object[]> objectRelationshipMappingObjectsList =
+					_objectEntryLocalService.dslQuery(
+						DSLQueryFactoryUtil.select(
+							dynamicObjectRelationshipMappingTable.
+								getPrimaryKeyColumn1(),
+							dynamicObjectRelationshipMappingTable.
+								getPrimaryKeyColumn2()
+						).from(
+							dynamicObjectRelationshipMappingTable
+						));
 
-				for (Object[] row : rows) {
+				for (Object[] row : objectRelationshipMappingObjectsList) {
 					objectEntryIds.add(String.valueOf(row[0]));
 					objectEntryIds.add(String.valueOf(row[1]));
 				}
