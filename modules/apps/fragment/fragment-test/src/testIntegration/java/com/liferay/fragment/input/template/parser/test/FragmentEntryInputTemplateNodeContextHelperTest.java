@@ -111,6 +111,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -165,6 +166,16 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 				"myText", RandomTestUtil.randomString()
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		for (ObjectDefinition objectDefinition : _objectDefinitions) {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
+		}
+
+		_objectDefinitionLocalService.deleteObjectDefinition(_objectDefinition);
 	}
 
 	@Test
@@ -253,6 +264,8 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 								"100"))
 					).build()),
 				ObjectDefinitionConstants.SCOPE_SITE);
+
+		_objectDefinitions.add(objectDefinition);
 
 		Assert.assertNotNull(
 			_getPreviewURL(
@@ -363,6 +376,8 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 									VALUE_CONVERT_TO_UTC))
 					).build()),
 				ObjectDefinitionConstants.SCOPE_SITE);
+
+		_objectDefinitions.add(objectDefinition);
 
 		DLFileEntry dlFileEntry = _addDLFileEntry();
 
@@ -557,6 +572,8 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 						ObjectFieldConstants.DB_TYPE_STRING, "myText", "myText",
 						false)),
 				ObjectDefinitionConstants.SCOPE_SITE);
+
+		_objectDefinitions.add(objectDefinition);
 
 		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
 			_layoutDisplayPageProviderRegistry.
@@ -771,15 +788,6 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 	}
 
 	private ObjectDefinition _addObjectDefinition() throws Exception {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				_group.getCompanyId(), "C_CustomObjectDefinition");
-
-		if (objectDefinition != null) {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition.getObjectDefinitionId());
-		}
-
 		_listTypeEntries.add(
 			ListTypeEntryUtil.createListTypeEntry(
 				"Apple", Collections.singletonMap(LocaleUtil.US, "Apple")));
@@ -876,7 +884,7 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 				RandomTestUtil.randomString(), "myPrecisionDecimal", false),
 			myRichTextObjectField);
 
-		objectDefinition =
+		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
 				null, TestPropsValues.getUserId(), 0, null, null, true, false,
 				true, false, true, true, false, false, false, null,
@@ -1160,6 +1168,7 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
+	private final List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
 	private ObjectEntry _objectEntry;
 
 	@Inject
