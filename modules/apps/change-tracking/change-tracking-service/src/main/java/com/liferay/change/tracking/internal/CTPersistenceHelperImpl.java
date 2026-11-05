@@ -186,12 +186,14 @@ public class CTPersistenceHelperImpl implements CTPersistenceHelper {
 		setCTCollectionIdWithSafeCloseable(
 			Class<T> ctModelClass, Serializable primaryKey) {
 
-		if (isProductionMode(ctModelClass, primaryKey)) {
-			return CTCollectionThreadLocal.setProductionModeWithSafeCloseable();
+		if (CTCollectionThreadLocal.isProductionMode() ||
+			!isProductionMode(ctModelClass, primaryKey)) {
+
+			return () -> {
+			};
 		}
 
-		return CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-			CTCollectionThreadLocal.getCTCollectionId());
+		return CTCollectionThreadLocal.setProductionModeWithSafeCloseable();
 	}
 
 	@Reference
