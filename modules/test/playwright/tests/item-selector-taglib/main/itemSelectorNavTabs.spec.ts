@@ -229,9 +229,7 @@ pageEditorTest(
 
 			expect(sheetBox).not.toBeNull();
 
-			expect(navBox!.x + navBox!.width).toBeLessThanOrEqual(
-				sheetBox!.x
-			);
+			expect(navBox!.x + navBox!.width).toBeLessThanOrEqual(sheetBox!.x);
 		}).toPass({timeout: 5000});
 	}
 );
