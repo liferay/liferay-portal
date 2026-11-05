@@ -23,6 +23,7 @@ if (calendarNotificationTemplate != null) {
 
 String fromName = NotificationUtil.getTemplatePropertyValue(calendarNotificationTemplate, CalendarNotificationTemplateConstants.PROPERTY_FROM_NAME, PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_NAME));
 String fromAddress = NotificationUtil.getTemplatePropertyValue(calendarNotificationTemplate, CalendarNotificationTemplateConstants.PROPERTY_FROM_ADDRESS, PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_ADDRESS));
+
 String body = NotificationUtil.getDefaultTemplate(notificationType, notificationTemplateType, NotificationField.BODY);
 String subject = NotificationUtil.getDefaultTemplate(notificationType, notificationTemplateType, NotificationField.SUBJECT);
 
