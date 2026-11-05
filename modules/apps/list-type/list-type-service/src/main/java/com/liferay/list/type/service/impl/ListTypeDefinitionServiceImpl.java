@@ -125,13 +125,21 @@ public class ListTypeDefinitionServiceImpl
 	}
 
 	@Override
-	public List<ListTypeDefinition> getListTypeDefinitions(int start, int end) {
-		return listTypeDefinitionPersistence.findAll(start, end);
+	public List<ListTypeDefinition> getListTypeDefinitions(int start, int end)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		return listTypeDefinitionPersistence.filterFindByCompanyId(
+			permissionChecker.getCompanyId(), start, end);
 	}
 
 	@Override
-	public int getListTypeDefinitionsCount() {
-		return listTypeDefinitionPersistence.countAll();
+	public int getListTypeDefinitionsCount() throws PortalException {
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		return listTypeDefinitionPersistence.filterCountByCompanyId(
+			permissionChecker.getCompanyId());
 	}
 
 	@Override
