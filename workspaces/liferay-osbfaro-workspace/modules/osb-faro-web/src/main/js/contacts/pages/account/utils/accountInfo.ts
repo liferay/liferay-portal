@@ -1,6 +1,6 @@
 import {
 	DisplayType,
-	LifecycleStages,
+	isLifecycleStage,
 	lifecycleStagesLabelMap,
 } from 'contacts/pages/account/utils/constants';
 import {formatDataValue} from 'shared/util/data-value';
@@ -30,17 +30,16 @@ export const getAccountInfoDisplayValues = ({
 	annualRevenue,
 	lifecycleStage,
 }: IAccountInfoFirmographics): IAccountInfoDisplayValues => {
-	const lifecycleStageEntry =
-		lifecycleStagesLabelMap[lifecycleStage as LifecycleStages];
+	let accountInfoLifecycleStage: IAccountInfoLifecycleStage | undefined;
+
+	if (lifecycleStage) {
+		accountInfoLifecycleStage = isLifecycleStage(lifecycleStage)
+			? lifecycleStagesLabelMap[lifecycleStage]
+			: {displayType: 'secondary', label: lifecycleStage};
+	}
 
 	return {
-		lifecycleStage: lifecycleStage
-			? {
-					displayType:
-						lifecycleStageEntry?.displayType ?? 'secondary',
-					label: lifecycleStageEntry?.label ?? lifecycleStage,
-				}
-			: undefined,
+		lifecycleStage: accountInfoLifecycleStage,
 		revenue: formatDataValue(annualRevenue, 'count'),
 	};
 };

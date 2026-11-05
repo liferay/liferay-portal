@@ -43,3 +43,6 @@ export const lifecycleStagesLabelMap: Record<
 		label: Liferay.Language.get('pipeline'),
 	},
 };
+
+export const isLifecycleStage = (value: string): value is LifecycleStages =>
+	Object.prototype.hasOwnProperty.call(lifecycleStagesLabelMap, value);
