@@ -11,6 +11,7 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.test.util.FrontendDataSetTestUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -48,12 +49,39 @@ public class ViewTasksDisplayContextTest extends BaseDisplayContextTestCase {
 				"getFDSActionDropdownItems", new Class<?>[0]);
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 1,
+			fdsActionDropdownItems.toString(), 5,
 			fdsActionDropdownItems.size());
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"view", "actionLinkWorkflowTask", "View", null,
+			null, "workflow-transitions", null, null, "group", null,
 			fdsActionDropdownItems.get(0));
+
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"view", "actionLinkWorkflowTask", "View", null,
+			fdsActionDropdownItems.get(1));
+
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			null, "assignToMeWorkflowTask", "Assign to Me", null,
+			HashMapBuilder.<String, Object>put(
+				"embedded.assignedToMe", false
+			).put(
+				"embedded.completed", false
+			).build(),
+			fdsActionDropdownItems.get(2));
+
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			null, "assignToWorkflowTask", "Assign to...", null,
+			HashMapBuilder.<String, Object>put(
+				"embedded.completed", false
+			).build(),
+			fdsActionDropdownItems.get(3));
+
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"date-time", "updateDueDateWorkflowTask", "Update Due Date", null,
+			HashMapBuilder.<String, Object>put(
+				"embedded.completed", false
+			).build(),
+			fdsActionDropdownItems.get(4));
 	}
 
 	private Object _getSectionDisplayContext(

@@ -9,6 +9,7 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import getRandomString from '../../../utils/getRandomString';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
 const test = mergeTests(
@@ -61,6 +62,30 @@ test(
 			await expect(taskRow).toBeVisible();
 			await expect(taskRow.getByText('Basic Web Content')).toBeVisible();
 			await expect(taskRow.getByText('Pending')).toBeVisible();
+
+			await test.step('Row actions include Assign to Me, Assign to... and Update Due Date', async () => {
+				await taskRow.getByRole('button').click();
+
+				await expect(
+					page.getByRole('menuitem', {name: 'Assign to Me'})
+				).toBeVisible();
+				await expect(
+					page.getByRole('menuitem', {name: 'Assign to...'})
+				).toBeVisible();
+				await expect(
+					page.getByRole('menuitem', {name: 'Update Due Date'})
+				).toBeVisible();
+
+				await page
+					.getByRole('menuitem', {name: 'Assign to Me'})
+					.click();
+				await page.getByRole('button', {name: 'Save'}).click();
+
+				await waitForAlert(
+					page,
+					'Success:Your request completed successfully.'
+				);
+			});
 
 			await test.step('Can view the workflow task from its asset title link', async () => {
 				await taskRow.getByRole('link', {name: contentName}).click();
