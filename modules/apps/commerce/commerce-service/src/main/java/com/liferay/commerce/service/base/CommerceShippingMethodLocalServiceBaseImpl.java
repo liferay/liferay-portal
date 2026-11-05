@@ -251,6 +251,25 @@ public abstract class CommerceShippingMethodLocalServiceBaseImpl
 			commerceShippingMethodId);
 	}
 
+	@Override
+	public CommerceShippingMethod
+		fetchCommerceShippingMethodByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return commerceShippingMethodPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
+	}
+
+	@Override
+	public CommerceShippingMethod
+			getCommerceShippingMethodByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return commerceShippingMethodPersistence.findByERC_C(
+			externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the commerce shipping method with the primary key.
 	 *
@@ -484,4 +503,4 @@ public abstract class CommerceShippingMethodLocalServiceBaseImpl
 		CommerceShippingMethodLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:638168838
+// LIFERAY-SERVICE-BUILDER-HASH:1749059541

@@ -1213,6 +1213,20 @@ public interface CommerceOrderItemModel
 	 */
 	public void setWidth(double width);
 
+	/**
+	 * Returns the status of this commerce order item.
+	 *
+	 * @return the status of this commerce order item
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this commerce order item.
+	 *
+	 * @param status the status of this commerce order item
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 
@@ -1234,4 +1248,4 @@ public interface CommerceOrderItemModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:355301585
+// LIFERAY-SERVICE-BUILDER-HASH:-2124807930

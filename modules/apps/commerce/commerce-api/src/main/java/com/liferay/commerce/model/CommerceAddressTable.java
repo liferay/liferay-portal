@@ -87,10 +87,12 @@ public class CommerceAddressTable extends BaseTable<CommerceAddressTable> {
 		"type_", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<CommerceAddressTable, String> zip = createColumn(
 		"zip", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceAddressTable, Integer> status = createColumn(
+		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CommerceAddressTable() {
 		super("CommerceAddress", CommerceAddressTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-882194115
+// LIFERAY-SERVICE-BUILDER-HASH:-1670476603

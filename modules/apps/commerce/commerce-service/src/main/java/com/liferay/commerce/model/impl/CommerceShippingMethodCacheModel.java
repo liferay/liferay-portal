@@ -69,10 +69,12 @@ public class CommerceShippingMethodCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(37);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", commerceShippingMethodId=");
 		sb.append(commerceShippingMethodId);
 		sb.append(", groupId=");
@@ -103,6 +105,8 @@ public class CommerceShippingMethodCacheModel
 		sb.append(trackingURL);
 		sb.append(", typeSettings=");
 		sb.append(typeSettings);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -114,6 +118,15 @@ public class CommerceShippingMethodCacheModel
 			new CommerceShippingMethodImpl();
 
 		commerceShippingMethodImpl.setMvccVersion(mvccVersion);
+
+		if (externalReferenceCode == null) {
+			commerceShippingMethodImpl.setExternalReferenceCode("");
+		}
+		else {
+			commerceShippingMethodImpl.setExternalReferenceCode(
+				externalReferenceCode);
+		}
+
 		commerceShippingMethodImpl.setCommerceShippingMethodId(
 			commerceShippingMethodId);
 		commerceShippingMethodImpl.setGroupId(groupId);
@@ -181,6 +194,8 @@ public class CommerceShippingMethodCacheModel
 			commerceShippingMethodImpl.setTypeSettings(typeSettings);
 		}
 
+		commerceShippingMethodImpl.setStatus(status);
+
 		commerceShippingMethodImpl.resetOriginalValues();
 
 		return commerceShippingMethodImpl;
@@ -191,6 +206,7 @@ public class CommerceShippingMethodCacheModel
 		throws ClassNotFoundException, IOException {
 
 		mvccVersion = objectInput.readLong();
+		externalReferenceCode = objectInput.readUTF();
 
 		commerceShippingMethodId = objectInput.readLong();
 
@@ -213,11 +229,20 @@ public class CommerceShippingMethodCacheModel
 		priority = objectInput.readDouble();
 		trackingURL = objectInput.readUTF();
 		typeSettings = (String)objectInput.readObject();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		objectOutput.writeLong(mvccVersion);
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
+		}
 
 		objectOutput.writeLong(commerceShippingMethodId);
 
@@ -277,9 +302,12 @@ public class CommerceShippingMethodCacheModel
 		else {
 			objectOutput.writeObject(typeSettings);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
+	public String externalReferenceCode;
 	public long commerceShippingMethodId;
 	public long groupId;
 	public long companyId;
@@ -295,6 +323,7 @@ public class CommerceShippingMethodCacheModel
 	public double priority;
 	public String trackingURL;
 	public String typeSettings;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1527010396
+// LIFERAY-SERVICE-BUILDER-HASH:-1143182215

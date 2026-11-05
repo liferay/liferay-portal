@@ -167,6 +167,8 @@ public class CommerceInventoryWarehousePersistenceTest {
 
 		newCommerceInventoryWarehouse.setType(RandomTestUtil.randomString());
 
+		newCommerceInventoryWarehouse.setStatus(RandomTestUtil.nextInt());
+
 		newCommerceInventoryWarehouse = _persistence.update(
 			newCommerceInventoryWarehouse);
 
@@ -247,6 +249,9 @@ public class CommerceInventoryWarehousePersistenceTest {
 		Assert.assertEquals(
 			existingCommerceInventoryWarehouse.getType(),
 			newCommerceInventoryWarehouse.getType());
+		Assert.assertEquals(
+			existingCommerceInventoryWarehouse.getStatus(),
+			newCommerceInventoryWarehouse.getStatus());
 	}
 
 	@Test(
@@ -374,7 +379,7 @@ public class CommerceInventoryWarehousePersistenceTest {
 			"active", true, "street1", true, "street2", true, "street3", true,
 			"city", true, "zip", true, "commerceRegionCode", true,
 			"countryTwoLettersISOCode", true, "latitude", true, "longitude",
-			true, "type", true);
+			true, "type", true, "status", true);
 	}
 
 	@Test
@@ -744,6 +749,8 @@ public class CommerceInventoryWarehousePersistenceTest {
 
 		commerceInventoryWarehouse.setType(RandomTestUtil.randomString());
 
+		commerceInventoryWarehouse.setStatus(RandomTestUtil.nextInt());
+
 		_commerceInventoryWarehouses.add(
 			_persistence.update(commerceInventoryWarehouse));
 
@@ -756,4 +763,4 @@ public class CommerceInventoryWarehousePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:48017621
+// LIFERAY-SERVICE-BUILDER-HASH:269754954

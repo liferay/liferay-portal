@@ -249,7 +249,8 @@ create table CommerceOrderItem (
 	unitPrice BIGDECIMAL null,
 	unitPriceWithTaxAmount BIGDECIMAL null,
 	weight DOUBLE,
-	width DOUBLE
+	width DOUBLE,
+	status INTEGER
 );
 
 create table CommerceOrderNote (
@@ -364,6 +365,7 @@ create table CommerceShipmentItem (
 
 create table CommerceShippingMethod (
 	mvccVersion LONG default 0 not null,
+	externalReferenceCode VARCHAR(75) null,
 	commerceShippingMethodId LONG not null primary key,
 	groupId LONG,
 	companyId LONG,
@@ -378,7 +380,8 @@ create table CommerceShippingMethod (
 	imageId LONG,
 	priority DOUBLE,
 	trackingURL STRING null,
-	typeSettings TEXT null
+	typeSettings TEXT null,
+	status INTEGER
 );
 
 create table CommerceSubscriptionEntry (

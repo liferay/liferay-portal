@@ -61,6 +61,7 @@ public class CommerceInventoryWarehouseWrapper
 		attributes.put("latitude", getLatitude());
 		attributes.put("longitude", getLongitude());
 		attributes.put("type", getType());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -201,6 +202,12 @@ public class CommerceInventoryWarehouseWrapper
 
 		if (type != null) {
 			setType(type);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -506,6 +513,16 @@ public class CommerceInventoryWarehouseWrapper
 	@Override
 	public long getPrimaryKey() {
 		return model.getPrimaryKey();
+	}
+
+	/**
+	 * Returns the status of this commerce inventory warehouse.
+	 *
+	 * @return the status of this commerce inventory warehouse
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -896,6 +913,16 @@ public class CommerceInventoryWarehouseWrapper
 	}
 
 	/**
+	 * Sets the status of this commerce inventory warehouse.
+	 *
+	 * @param status the status of this commerce inventory warehouse
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the street1 of this commerce inventory warehouse.
 	 *
 	 * @param street1 the street1 of this commerce inventory warehouse
@@ -1004,4 +1031,4 @@ public class CommerceInventoryWarehouseWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1604881562
+// LIFERAY-SERVICE-BUILDER-HASH:-929497066

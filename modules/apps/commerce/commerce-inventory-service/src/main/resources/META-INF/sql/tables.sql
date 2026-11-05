@@ -67,7 +67,8 @@ create table CIWarehouse (
 	countryTwoLettersISOCode VARCHAR(75) null,
 	latitude DOUBLE,
 	longitude DOUBLE,
-	type_ VARCHAR(75) null
+	type_ VARCHAR(75) null,
+	status INTEGER
 );
 
 create table CIWarehouseGroupRel (

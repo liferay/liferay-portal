@@ -272,6 +272,14 @@ public class CommerceShippingMethodLocalServiceUtil {
 		return getService().fetchCommerceShippingMethod(groupId, engineKey);
 	}
 
+	public static CommerceShippingMethod
+		fetchCommerceShippingMethodByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return getService().fetchCommerceShippingMethodByExternalReferenceCode(
+			externalReferenceCode, companyId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -308,6 +316,15 @@ public class CommerceShippingMethodLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getCommerceShippingMethod(commerceShippingMethodId);
+	}
+
+	public static CommerceShippingMethod
+			getCommerceShippingMethodByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().getCommerceShippingMethodByExternalReferenceCode(
+			externalReferenceCode, companyId);
 	}
 
 	/**
@@ -440,4 +457,4 @@ public class CommerceShippingMethodLocalServiceUtil {
 			CommerceShippingMethodLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1697821901
+// LIFERAY-SERVICE-BUILDER-HASH:-581278433

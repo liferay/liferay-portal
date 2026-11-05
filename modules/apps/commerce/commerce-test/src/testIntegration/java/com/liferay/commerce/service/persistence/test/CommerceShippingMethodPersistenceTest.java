@@ -6,6 +6,7 @@
 package com.liferay.commerce.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.exception.DuplicateCommerceShippingMethodExternalReferenceCodeException;
 import com.liferay.commerce.exception.NoSuchShippingMethodException;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.service.CommerceShippingMethodLocalServiceUtil;
@@ -118,6 +119,9 @@ public class CommerceShippingMethodPersistenceTest {
 		CommerceShippingMethod newCommerceShippingMethod =
 			addCommerceShippingMethod();
 
+		newCommerceShippingMethod.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
 		newCommerceShippingMethod.setGroupId(RandomTestUtil.nextLong());
 
 		newCommerceShippingMethod.setCompanyId(RandomTestUtil.nextLong());
@@ -147,6 +151,8 @@ public class CommerceShippingMethodPersistenceTest {
 		newCommerceShippingMethod.setTypeSettings(
 			RandomTestUtil.randomString());
 
+		newCommerceShippingMethod.setStatus(RandomTestUtil.nextInt());
+
 		newCommerceShippingMethod = _persistence.update(
 			newCommerceShippingMethod);
 
@@ -159,6 +165,9 @@ public class CommerceShippingMethodPersistenceTest {
 		Assert.assertEquals(
 			existingCommerceShippingMethod.getMvccVersion(),
 			newCommerceShippingMethod.getMvccVersion());
+		Assert.assertEquals(
+			existingCommerceShippingMethod.getExternalReferenceCode(),
+			newCommerceShippingMethod.getExternalReferenceCode());
 		Assert.assertEquals(
 			existingCommerceShippingMethod.getCommerceShippingMethodId(),
 			newCommerceShippingMethod.getCommerceShippingMethodId());
@@ -207,6 +216,35 @@ public class CommerceShippingMethodPersistenceTest {
 		Assert.assertEquals(
 			existingCommerceShippingMethod.getTypeSettings(),
 			newCommerceShippingMethod.getTypeSettings());
+		Assert.assertEquals(
+			existingCommerceShippingMethod.getStatus(),
+			newCommerceShippingMethod.getStatus());
+	}
+
+	@Test(
+		expected = DuplicateCommerceShippingMethodExternalReferenceCodeException.class
+	)
+	public void testUpdateWithExistingExternalReferenceCode() throws Exception {
+		CommerceShippingMethod commerceShippingMethod =
+			addCommerceShippingMethod();
+
+		CommerceShippingMethod newCommerceShippingMethod =
+			addCommerceShippingMethod();
+
+		newCommerceShippingMethod.setCompanyId(
+			commerceShippingMethod.getCompanyId());
+
+		newCommerceShippingMethod = _persistence.update(
+			newCommerceShippingMethod);
+
+		Session session = _persistence.getCurrentSession();
+
+		session.evict(newCommerceShippingMethod);
+
+		newCommerceShippingMethod.setExternalReferenceCode(
+			commerceShippingMethod.getExternalReferenceCode());
+
+		_persistence.update(newCommerceShippingMethod);
 	}
 
 	@Test
@@ -231,6 +269,15 @@ public class CommerceShippingMethodPersistenceTest {
 		_persistence.countByG_E(0L, "null");
 
 		_persistence.countByG_E(0L, (String)null);
+	}
+
+	@Test
+	public void testCountByERC_C() throws Exception {
+		_persistence.countByERC_C("", RandomTestUtil.nextLong());
+
+		_persistence.countByERC_C("null", 0L);
+
+		_persistence.countByERC_C((String)null, 0L);
 	}
 
 	@Test
@@ -262,11 +309,11 @@ public class CommerceShippingMethodPersistenceTest {
 	protected OrderByComparator<CommerceShippingMethod> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
 			"CommerceShippingMethod", "mvccVersion", true,
-			"commerceShippingMethodId", true, "groupId", true, "companyId",
-			true, "userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "name", true, "description", true, "active",
-			true, "engineKey", true, "imageId", true, "priority", true,
-			"trackingURL", true);
+			"externalReferenceCode", true, "commerceShippingMethodId", true,
+			"groupId", true, "companyId", true, "userId", true, "userName",
+			true, "createDate", true, "modifiedDate", true, "name", true,
+			"description", true, "active", true, "engineKey", true, "imageId",
+			true, "priority", true, "trackingURL", true, "status", true);
 	}
 
 	@Test
@@ -572,6 +619,17 @@ public class CommerceShippingMethodPersistenceTest {
 			ReflectionTestUtil.invoke(
 				commerceShippingMethod, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "engineKey"));
+
+		Assert.assertEquals(
+			commerceShippingMethod.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				commerceShippingMethod, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(commerceShippingMethod.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				commerceShippingMethod, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
 	}
 
 	protected CommerceShippingMethod addCommerceShippingMethod()
@@ -580,6 +638,9 @@ public class CommerceShippingMethodPersistenceTest {
 		long pk = RandomTestUtil.nextLong();
 
 		CommerceShippingMethod commerceShippingMethod = _persistence.create(pk);
+
+		commerceShippingMethod.setExternalReferenceCode(
+			RandomTestUtil.randomString());
 
 		commerceShippingMethod.setGroupId(RandomTestUtil.nextLong());
 
@@ -609,6 +670,8 @@ public class CommerceShippingMethodPersistenceTest {
 
 		commerceShippingMethod.setTypeSettings(RandomTestUtil.randomString());
 
+		commerceShippingMethod.setStatus(RandomTestUtil.nextInt());
+
 		_commerceShippingMethods.add(
 			_persistence.update(commerceShippingMethod));
 
@@ -621,4 +684,4 @@ public class CommerceShippingMethodPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-311589532
+// LIFERAY-SERVICE-BUILDER-HASH:-1639128359

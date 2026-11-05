@@ -36,6 +36,7 @@ public class CommerceShippingMethodWrapper
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("mvccVersion", getMvccVersion());
+		attributes.put("externalReferenceCode", getExternalReferenceCode());
 		attributes.put(
 			"commerceShippingMethodId", getCommerceShippingMethodId());
 		attributes.put("groupId", getGroupId());
@@ -52,6 +53,7 @@ public class CommerceShippingMethodWrapper
 		attributes.put("priority", getPriority());
 		attributes.put("trackingURL", getTrackingURL());
 		attributes.put("typeSettings", getTypeSettings());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -62,6 +64,13 @@ public class CommerceShippingMethodWrapper
 
 		if (mvccVersion != null) {
 			setMvccVersion(mvccVersion);
+		}
+
+		String externalReferenceCode = (String)attributes.get(
+			"externalReferenceCode");
+
+		if (externalReferenceCode != null) {
+			setExternalReferenceCode(externalReferenceCode);
 		}
 
 		Long commerceShippingMethodId = (Long)attributes.get(
@@ -153,6 +162,12 @@ public class CommerceShippingMethodWrapper
 
 		if (typeSettings != null) {
 			setTypeSettings(typeSettings);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -298,6 +313,16 @@ public class CommerceShippingMethodWrapper
 	}
 
 	/**
+	 * Returns the external reference code of this commerce shipping method.
+	 *
+	 * @return the external reference code of this commerce shipping method
+	 */
+	@Override
+	public String getExternalReferenceCode() {
+		return model.getExternalReferenceCode();
+	}
+
+	/**
 	 * Returns the group ID of this commerce shipping method.
 	 *
 	 * @return the group ID of this commerce shipping method
@@ -438,6 +463,16 @@ public class CommerceShippingMethodWrapper
 	@Override
 	public double getPriority() {
 		return model.getPriority();
+	}
+
+	/**
+	 * Returns the status of this commerce shipping method.
+	 *
+	 * @return the status of this commerce shipping method
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -645,6 +680,16 @@ public class CommerceShippingMethodWrapper
 	}
 
 	/**
+	 * Sets the external reference code of this commerce shipping method.
+	 *
+	 * @param externalReferenceCode the external reference code of this commerce shipping method
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		model.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	/**
 	 * Sets the group ID of this commerce shipping method.
 	 *
 	 * @param groupId the group ID of this commerce shipping method
@@ -768,6 +813,16 @@ public class CommerceShippingMethodWrapper
 	}
 
 	/**
+	 * Sets the status of this commerce shipping method.
+	 *
+	 * @param status the status of this commerce shipping method
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the tracking url of this commerce shipping method.
 	 *
 	 * @param trackingURL the tracking url of this commerce shipping method
@@ -838,4 +893,4 @@ public class CommerceShippingMethodWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-915464218
+// LIFERAY-SERVICE-BUILDER-HASH:-1681284770

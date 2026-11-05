@@ -80,7 +80,7 @@ public class CommerceAddressModelImpl
 		{"phoneNumber", Types.VARCHAR}, {"street1", Types.VARCHAR},
 		{"street2", Types.VARCHAR}, {"street3", Types.VARCHAR},
 		{"subtype", Types.VARCHAR}, {"type_", Types.INTEGER},
-		{"zip", Types.VARCHAR}
+		{"zip", Types.VARCHAR}, {"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -114,10 +114,11 @@ public class CommerceAddressModelImpl
 		TABLE_COLUMNS_MAP.put("subtype", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("zip", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceAddress (mvccVersion LONG default 0 not null,externalReferenceCode VARCHAR(75) null,commerceAddressId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,countryId LONG,regionId LONG,city VARCHAR(75) null,defaultBilling BOOLEAN,defaultShipping BOOLEAN,description STRING null,latitude DOUBLE,longitude DOUBLE,name VARCHAR(255) null,phoneNumber VARCHAR(75) null,street1 VARCHAR(255) null,street2 VARCHAR(255) null,street3 VARCHAR(255) null,subtype VARCHAR(75) null,type_ INTEGER,zip VARCHAR(75) null)";
+		"create table CommerceAddress (mvccVersion LONG default 0 not null,externalReferenceCode VARCHAR(75) null,commerceAddressId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,countryId LONG,regionId LONG,city VARCHAR(75) null,defaultBilling BOOLEAN,defaultShipping BOOLEAN,description STRING null,latitude DOUBLE,longitude DOUBLE,name VARCHAR(255) null,phoneNumber VARCHAR(75) null,street1 VARCHAR(255) null,street2 VARCHAR(255) null,street3 VARCHAR(255) null,subtype VARCHAR(75) null,type_ INTEGER,zip VARCHAR(75) null,status INTEGER)";
 
 	public static final String TABLE_SQL_DROP = "drop table CommerceAddress";
 
@@ -362,6 +363,7 @@ public class CommerceAddressModelImpl
 				"subtype", CommerceAddress::getSubtype);
 			attributeGetterFunctions.put("type", CommerceAddress::getType);
 			attributeGetterFunctions.put("zip", CommerceAddress::getZip);
+			attributeGetterFunctions.put("status", CommerceAddress::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -480,6 +482,10 @@ public class CommerceAddressModelImpl
 			attributeSetterBiConsumers.put(
 				"zip",
 				(BiConsumer<CommerceAddress, String>)CommerceAddress::setZip);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CommerceAddress, Integer>)
+					CommerceAddress::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -1098,6 +1104,21 @@ public class CommerceAddressModelImpl
 		_zip = zip;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	public long getColumnBitmask() {
 		if (_columnBitmask > 0) {
 			return _columnBitmask;
@@ -1182,6 +1203,7 @@ public class CommerceAddressModelImpl
 		commerceAddressImpl.setSubtype(getSubtype());
 		commerceAddressImpl.setType(getType());
 		commerceAddressImpl.setZip(getZip());
+		commerceAddressImpl.setStatus(getStatus());
 
 		commerceAddressImpl.resetOriginalValues();
 
@@ -1245,6 +1267,8 @@ public class CommerceAddressModelImpl
 		commerceAddressImpl.setType(
 			this.<Integer>getColumnOriginalValue("type_"));
 		commerceAddressImpl.setZip(this.<String>getColumnOriginalValue("zip"));
+		commerceAddressImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return commerceAddressImpl;
 	}
@@ -1462,6 +1486,8 @@ public class CommerceAddressModelImpl
 			commerceAddressCacheModel.zip = null;
 		}
 
+		commerceAddressCacheModel.status = getStatus();
+
 		return commerceAddressCacheModel;
 	}
 
@@ -1551,6 +1577,7 @@ public class CommerceAddressModelImpl
 	private String _subtype;
 	private int _type;
 	private String _zip;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1610,6 +1637,7 @@ public class CommerceAddressModelImpl
 		_columnOriginalValues.put("subtype", _subtype);
 		_columnOriginalValues.put("type_", _type);
 		_columnOriginalValues.put("zip", _zip);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1687,6 +1715,8 @@ public class CommerceAddressModelImpl
 
 		columnBitmasks.put("zip", 67108864L);
 
+		columnBitmasks.put("status", 134217728L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1694,4 +1724,4 @@ public class CommerceAddressModelImpl
 	private CommerceAddress _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1544729626
+// LIFERAY-SERVICE-BUILDER-HASH:-2137141897

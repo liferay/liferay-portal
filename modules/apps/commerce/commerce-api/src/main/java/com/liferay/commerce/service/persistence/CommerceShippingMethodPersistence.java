@@ -201,6 +201,49 @@ public interface CommerceShippingMethodPersistence
 	public int countByG_E(long groupId, String engineKey);
 
 	/**
+	 * Returns the commerce shipping method where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchShippingMethodException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce shipping method
+	 * @throws NoSuchShippingMethodException if a matching commerce shipping method could not be found
+	 */
+	public CommerceShippingMethod findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchShippingMethodException;
+
+	/**
+	 * Returns the commerce shipping method where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching commerce shipping method, or <code>null</code> if a matching commerce shipping method could not be found
+	 */
+	public CommerceShippingMethod fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache);
+
+	/**
+	 * Removes the commerce shipping method where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the commerce shipping method that was removed
+	 */
+	public CommerceShippingMethod removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchShippingMethodException;
+
+	/**
+	 * Returns the number of commerce shipping methods where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching commerce shipping methods
+	 */
+	public int countByERC_C(String externalReferenceCode, long companyId);
+
+	/**
 	 * Creates a new commerce shipping method with the primary key. Does not add the commerce shipping method to the database.
 	 *
 	 * @param commerceShippingMethodId the primary key for the new commerce shipping method
@@ -252,6 +295,19 @@ public interface CommerceShippingMethodPersistence
 		long groupId, String engineKey) {
 
 		return fetchByG_E(groupId, engineKey, true);
+	}
+
+	/**
+	 * Returns the commerce shipping method where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce shipping method, or <code>null</code> if a matching commerce shipping method could not be found
+	 */
+	public default CommerceShippingMethod fetchByERC_C(
+		String externalReferenceCode, long companyId) {
+
+		return fetchByERC_C(externalReferenceCode, companyId, true);
 	}
 
 	/**
@@ -365,4 +421,4 @@ public interface CommerceShippingMethodPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-33687997
+// LIFERAY-SERVICE-BUILDER-HASH:-1631153429

@@ -504,6 +504,20 @@ public interface CommerceAddressModel
 	 */
 	public void setZip(String zip);
 
+	/**
+	 * Returns the status of this commerce address.
+	 *
+	 * @return the status of this commerce address
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this commerce address.
+	 *
+	 * @param status the status of this commerce address
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public CommerceAddress cloneWithOriginalValues();
 
@@ -512,4 +526,4 @@ public interface CommerceAddressModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1331699633
+// LIFERAY-SERVICE-BUILDER-HASH:-778742648

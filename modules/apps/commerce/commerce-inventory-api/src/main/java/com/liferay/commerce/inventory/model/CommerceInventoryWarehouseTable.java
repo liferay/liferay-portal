@@ -88,10 +88,13 @@ public class CommerceInventoryWarehouseTable
 			"longitude", Double.class, Types.DOUBLE, Column.FLAG_DEFAULT);
 	public final Column<CommerceInventoryWarehouseTable, String> type =
 		createColumn("type_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceInventoryWarehouseTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CommerceInventoryWarehouseTable() {
 		super("CIWarehouse", CommerceInventoryWarehouseTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-925189515
+// LIFERAY-SERVICE-BUILDER-HASH:-1640728522

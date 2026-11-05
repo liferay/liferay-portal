@@ -587,6 +587,20 @@ public interface CommerceInventoryWarehouseModel
 	 */
 	public void setType(String type);
 
+	/**
+	 * Returns the status of this commerce inventory warehouse.
+	 *
+	 * @return the status of this commerce inventory warehouse
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this commerce inventory warehouse.
+	 *
+	 * @param status the status of this commerce inventory warehouse
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 
@@ -608,4 +622,4 @@ public interface CommerceInventoryWarehouseModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-364153256
+// LIFERAY-SERVICE-BUILDER-HASH:-1969284061

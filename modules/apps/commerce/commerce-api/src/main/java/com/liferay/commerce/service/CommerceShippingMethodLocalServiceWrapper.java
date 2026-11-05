@@ -311,6 +311,16 @@ public class CommerceShippingMethodLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.model.CommerceShippingMethod
+		fetchCommerceShippingMethodByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return _commerceShippingMethodLocalService.
+			fetchCommerceShippingMethodByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -352,6 +362,17 @@ public class CommerceShippingMethodLocalServiceWrapper
 
 		return _commerceShippingMethodLocalService.getCommerceShippingMethod(
 			commerceShippingMethodId);
+	}
+
+	@Override
+	public com.liferay.commerce.model.CommerceShippingMethod
+			getCommerceShippingMethodByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceShippingMethodLocalService.
+			getCommerceShippingMethodByExternalReferenceCode(
+				externalReferenceCode, companyId);
 	}
 
 	/**
@@ -525,4 +546,4 @@ public class CommerceShippingMethodLocalServiceWrapper
 		_commerceShippingMethodLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:895523900
+// LIFERAY-SERVICE-BUILDER-HASH:-2057623098

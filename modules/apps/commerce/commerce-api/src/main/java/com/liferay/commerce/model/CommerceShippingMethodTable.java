@@ -29,6 +29,10 @@ public class CommerceShippingMethodTable
 	public final Column<CommerceShippingMethodTable, Long> mvccVersion =
 		createColumn(
 			"mvccVersion", Long.class, Types.BIGINT, Column.FLAG_NULLITY);
+	public final Column<CommerceShippingMethodTable, String>
+		externalReferenceCode = createColumn(
+			"externalReferenceCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CommerceShippingMethodTable, Long>
 		commerceShippingMethodId = createColumn(
 			"commerceShippingMethodId", Long.class, Types.BIGINT,
@@ -71,10 +75,13 @@ public class CommerceShippingMethodTable
 	public final Column<CommerceShippingMethodTable, Clob> typeSettings =
 		createColumn(
 			"typeSettings", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<CommerceShippingMethodTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CommerceShippingMethodTable() {
 		super("CommerceShippingMethod", CommerceShippingMethodTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-592530336
+// LIFERAY-SERVICE-BUILDER-HASH:1706486773

@@ -130,6 +130,7 @@ public class CommerceOrderItemWrapper
 		attributes.put("unitPriceWithTaxAmount", getUnitPriceWithTaxAmount());
 		attributes.put("weight", getWeight());
 		attributes.put("width", getWidth());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -581,6 +582,12 @@ public class CommerceOrderItemWrapper
 
 		if (width != null) {
 			setWidth(width);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -1339,6 +1346,16 @@ public class CommerceOrderItemWrapper
 	@Override
 	public String getSku() {
 		return model.getSku();
+	}
+
+	/**
+	 * Returns the status of this commerce order item.
+	 *
+	 * @return the status of this commerce order item
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -2245,6 +2262,16 @@ public class CommerceOrderItemWrapper
 	}
 
 	/**
+	 * Sets the status of this commerce order item.
+	 *
+	 * @param status the status of this commerce order item
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets whether this commerce order item is subscription.
 	 *
 	 * @param subscription the subscription of this commerce order item
@@ -2405,4 +2432,4 @@ public class CommerceOrderItemWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2111553592
+// LIFERAY-SERVICE-BUILDER-HASH:1604462620

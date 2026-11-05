@@ -257,10 +257,12 @@ public class CommerceOrderItemTable extends BaseTable<CommerceOrderItemTable> {
 		"weight", Double.class, Types.DOUBLE, Column.FLAG_DEFAULT);
 	public final Column<CommerceOrderItemTable, Double> width = createColumn(
 		"width", Double.class, Types.DOUBLE, Column.FLAG_DEFAULT);
+	public final Column<CommerceOrderItemTable, Integer> status = createColumn(
+		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CommerceOrderItemTable() {
 		super("CommerceOrderItem", CommerceOrderItemTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1664458550
+// LIFERAY-SERVICE-BUILDER-HASH:753018585

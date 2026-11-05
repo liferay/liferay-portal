@@ -83,7 +83,8 @@ public class CommerceInventoryWarehouseModelImpl
 		{"city", Types.VARCHAR}, {"zip", Types.VARCHAR},
 		{"commerceRegionCode", Types.VARCHAR},
 		{"countryTwoLettersISOCode", Types.VARCHAR}, {"latitude", Types.DOUBLE},
-		{"longitude", Types.DOUBLE}, {"type_", Types.VARCHAR}
+		{"longitude", Types.DOUBLE}, {"type_", Types.VARCHAR},
+		{"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -112,10 +113,11 @@ public class CommerceInventoryWarehouseModelImpl
 		TABLE_COLUMNS_MAP.put("latitude", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("longitude", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("type_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CIWarehouse (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CIWarehouseId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,description STRING null,active_ BOOLEAN,street1 VARCHAR(75) null,street2 VARCHAR(75) null,street3 VARCHAR(75) null,city VARCHAR(75) null,zip VARCHAR(75) null,commerceRegionCode VARCHAR(75) null,countryTwoLettersISOCode VARCHAR(75) null,latitude DOUBLE,longitude DOUBLE,type_ VARCHAR(75) null)";
+		"create table CIWarehouse (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CIWarehouseId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,description STRING null,active_ BOOLEAN,street1 VARCHAR(75) null,street2 VARCHAR(75) null,street3 VARCHAR(75) null,city VARCHAR(75) null,zip VARCHAR(75) null,commerceRegionCode VARCHAR(75) null,countryTwoLettersISOCode VARCHAR(75) null,latitude DOUBLE,longitude DOUBLE,type_ VARCHAR(75) null,status INTEGER)";
 
 	public static final String TABLE_SQL_DROP = "drop table CIWarehouse";
 
@@ -336,6 +338,8 @@ public class CommerceInventoryWarehouseModelImpl
 				"longitude", CommerceInventoryWarehouse::getLongitude);
 			attributeGetterFunctions.put(
 				"type", CommerceInventoryWarehouse::getType);
+			attributeGetterFunctions.put(
+				"status", CommerceInventoryWarehouse::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -444,6 +448,10 @@ public class CommerceInventoryWarehouseModelImpl
 				"type",
 				(BiConsumer<CommerceInventoryWarehouse, String>)
 					CommerceInventoryWarehouse::setType);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CommerceInventoryWarehouse, Integer>)
+					CommerceInventoryWarehouse::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -1102,6 +1110,21 @@ public class CommerceInventoryWarehouseModelImpl
 		_type = type;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1281,6 +1304,7 @@ public class CommerceInventoryWarehouseModelImpl
 		commerceInventoryWarehouseImpl.setLatitude(getLatitude());
 		commerceInventoryWarehouseImpl.setLongitude(getLongitude());
 		commerceInventoryWarehouseImpl.setType(getType());
+		commerceInventoryWarehouseImpl.setStatus(getStatus());
 
 		commerceInventoryWarehouseImpl.resetOriginalValues();
 
@@ -1336,6 +1360,8 @@ public class CommerceInventoryWarehouseModelImpl
 			this.<Double>getColumnOriginalValue("longitude"));
 		commerceInventoryWarehouseImpl.setType(
 			this.<String>getColumnOriginalValue("type_"));
+		commerceInventoryWarehouseImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return commerceInventoryWarehouseImpl;
 	}
@@ -1568,6 +1594,8 @@ public class CommerceInventoryWarehouseModelImpl
 			commerceInventoryWarehouseCacheModel.type = null;
 		}
 
+		commerceInventoryWarehouseCacheModel.status = getStatus();
+
 		return commerceInventoryWarehouseCacheModel;
 	}
 
@@ -1656,6 +1684,7 @@ public class CommerceInventoryWarehouseModelImpl
 	private double _latitude;
 	private double _longitude;
 	private String _type;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1712,6 +1741,7 @@ public class CommerceInventoryWarehouseModelImpl
 		_columnOriginalValues.put("latitude", _latitude);
 		_columnOriginalValues.put("longitude", _longitude);
 		_columnOriginalValues.put("type_", _type);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1782,6 +1812,8 @@ public class CommerceInventoryWarehouseModelImpl
 
 		columnBitmasks.put("type_", 2097152L);
 
+		columnBitmasks.put("status", 4194304L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1789,4 +1821,4 @@ public class CommerceInventoryWarehouseModelImpl
 	private CommerceInventoryWarehouse _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1584055025
+// LIFERAY-SERVICE-BUILDER-HASH:1289910890

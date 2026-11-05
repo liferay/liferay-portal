@@ -72,7 +72,7 @@ public class CommerceInventoryWarehouseCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(45);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -118,6 +118,8 @@ public class CommerceInventoryWarehouseCacheModel
 		sb.append(longitude);
 		sb.append(", type=");
 		sb.append(type);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -249,6 +251,8 @@ public class CommerceInventoryWarehouseCacheModel
 			commerceInventoryWarehouseImpl.setType(type);
 		}
 
+		commerceInventoryWarehouseImpl.setStatus(status);
+
 		commerceInventoryWarehouseImpl.resetOriginalValues();
 
 		return commerceInventoryWarehouseImpl;
@@ -284,6 +288,8 @@ public class CommerceInventoryWarehouseCacheModel
 
 		longitude = objectInput.readDouble();
 		type = objectInput.readUTF();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -395,6 +401,8 @@ public class CommerceInventoryWarehouseCacheModel
 		else {
 			objectOutput.writeUTF(type);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -419,6 +427,7 @@ public class CommerceInventoryWarehouseCacheModel
 	public double latitude;
 	public double longitude;
 	public String type;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2097447705
+// LIFERAY-SERVICE-BUILDER-HASH:-978556128

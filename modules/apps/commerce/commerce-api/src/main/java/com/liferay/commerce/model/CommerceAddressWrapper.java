@@ -63,6 +63,7 @@ public class CommerceAddressWrapper
 		attributes.put("subtype", getSubtype());
 		attributes.put("type", getType());
 		attributes.put("zip", getZip());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -230,6 +231,12 @@ public class CommerceAddressWrapper
 
 		if (zip != null) {
 			setZip(zip);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -470,6 +477,16 @@ public class CommerceAddressWrapper
 	@Override
 	public long getRegionId() {
 		return model.getRegionId();
+	}
+
+	/**
+	 * Returns the status of this commerce address.
+	 *
+	 * @return the status of this commerce address
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -803,6 +820,16 @@ public class CommerceAddressWrapper
 	}
 
 	/**
+	 * Sets the status of this commerce address.
+	 *
+	 * @param status the status of this commerce address
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the street1 of this commerce address.
 	 *
 	 * @param street1 the street1 of this commerce address
@@ -903,4 +930,4 @@ public class CommerceAddressWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:179772339
+// LIFERAY-SERVICE-BUILDER-HASH:-814573995

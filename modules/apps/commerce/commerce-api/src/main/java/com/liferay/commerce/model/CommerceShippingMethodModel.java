@@ -8,6 +8,7 @@ package com.liferay.commerce.model;
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.LocalizedModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -32,8 +33,8 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface CommerceShippingMethodModel
-	extends BaseModel<CommerceShippingMethod>, GroupedModel, LocalizedModel,
-			MVCCModel, ShardedModel {
+	extends BaseModel<CommerceShippingMethod>, ExternalReferenceCodeModel,
+			GroupedModel, LocalizedModel, MVCCModel, ShardedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -70,6 +71,23 @@ public interface CommerceShippingMethodModel
 	 */
 	@Override
 	public void setMvccVersion(long mvccVersion);
+
+	/**
+	 * Returns the external reference code of this commerce shipping method.
+	 *
+	 * @return the external reference code of this commerce shipping method
+	 */
+	@AutoEscape
+	@Override
+	public String getExternalReferenceCode();
+
+	/**
+	 * Sets the external reference code of this commerce shipping method.
+	 *
+	 * @param externalReferenceCode the external reference code of this commerce shipping method
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode);
 
 	/**
 	 * Returns the commerce shipping method ID of this commerce shipping method.
@@ -492,6 +510,20 @@ public interface CommerceShippingMethodModel
 	 */
 	public void setTypeSettings(String typeSettings);
 
+	/**
+	 * Returns the status of this commerce shipping method.
+	 *
+	 * @return the status of this commerce shipping method
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this commerce shipping method.
+	 *
+	 * @param status the status of this commerce shipping method
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 
@@ -513,4 +545,4 @@ public interface CommerceShippingMethodModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1841674737
+// LIFERAY-SERVICE-BUILDER-HASH:-2004333446

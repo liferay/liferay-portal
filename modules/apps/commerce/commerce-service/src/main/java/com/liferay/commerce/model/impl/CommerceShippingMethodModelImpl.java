@@ -70,7 +70,7 @@ public class CommerceShippingMethodModelImpl
 	public static final String TABLE_NAME = "CommerceShippingMethod";
 
 	public static final Object[][] TABLE_COLUMNS = {
-		{"mvccVersion", Types.BIGINT},
+		{"mvccVersion", Types.BIGINT}, {"externalReferenceCode", Types.VARCHAR},
 		{"commerceShippingMethodId", Types.BIGINT}, {"groupId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
@@ -78,7 +78,7 @@ public class CommerceShippingMethodModelImpl
 		{"description", Types.VARCHAR}, {"active_", Types.BOOLEAN},
 		{"engineKey", Types.VARCHAR}, {"imageId", Types.BIGINT},
 		{"priority", Types.DOUBLE}, {"trackingURL", Types.VARCHAR},
-		{"typeSettings", Types.CLOB}
+		{"typeSettings", Types.CLOB}, {"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -86,6 +86,7 @@ public class CommerceShippingMethodModelImpl
 
 	static {
 		TABLE_COLUMNS_MAP.put("mvccVersion", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("externalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("commerceShippingMethodId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
@@ -101,10 +102,11 @@ public class CommerceShippingMethodModelImpl
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("trackingURL", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("typeSettings", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceShippingMethod (mvccVersion LONG default 0 not null,commerceShippingMethodId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,description STRING null,active_ BOOLEAN,engineKey VARCHAR(75) null,imageId LONG,priority DOUBLE,trackingURL STRING null,typeSettings TEXT null)";
+		"create table CommerceShippingMethod (mvccVersion LONG default 0 not null,externalReferenceCode VARCHAR(75) null,commerceShippingMethodId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,description STRING null,active_ BOOLEAN,engineKey VARCHAR(75) null,imageId LONG,priority DOUBLE,trackingURL STRING null,typeSettings TEXT null,status INTEGER)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CommerceShippingMethod";
@@ -133,20 +135,32 @@ public class CommerceShippingMethodModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long ENGINEKEY_COLUMN_BITMASK = 2L;
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long GROUPID_COLUMN_BITMASK = 4L;
+	public static final long ENGINEKEY_COLUMN_BITMASK = 4L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 8L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long GROUPID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIORITY_COLUMN_BITMASK = 8L;
+	public static final long PRIORITY_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -263,6 +277,9 @@ public class CommerceShippingMethodModelImpl
 			attributeGetterFunctions.put(
 				"mvccVersion", CommerceShippingMethod::getMvccVersion);
 			attributeGetterFunctions.put(
+				"externalReferenceCode",
+				CommerceShippingMethod::getExternalReferenceCode);
+			attributeGetterFunctions.put(
 				"commerceShippingMethodId",
 				CommerceShippingMethod::getCommerceShippingMethodId);
 			attributeGetterFunctions.put(
@@ -293,6 +310,8 @@ public class CommerceShippingMethodModelImpl
 				"trackingURL", CommerceShippingMethod::getTrackingURL);
 			attributeGetterFunctions.put(
 				"typeSettings", CommerceShippingMethod::getTypeSettings);
+			attributeGetterFunctions.put(
+				"status", CommerceShippingMethod::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -316,6 +335,10 @@ public class CommerceShippingMethodModelImpl
 				"mvccVersion",
 				(BiConsumer<CommerceShippingMethod, Long>)
 					CommerceShippingMethod::setMvccVersion);
+			attributeSetterBiConsumers.put(
+				"externalReferenceCode",
+				(BiConsumer<CommerceShippingMethod, String>)
+					CommerceShippingMethod::setExternalReferenceCode);
 			attributeSetterBiConsumers.put(
 				"commerceShippingMethodId",
 				(BiConsumer<CommerceShippingMethod, Long>)
@@ -376,6 +399,10 @@ public class CommerceShippingMethodModelImpl
 				"typeSettings",
 				(BiConsumer<CommerceShippingMethod, String>)
 					CommerceShippingMethod::setTypeSettings);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CommerceShippingMethod, Integer>)
+					CommerceShippingMethod::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -396,6 +423,35 @@ public class CommerceShippingMethodModelImpl
 		}
 
 		_mvccVersion = mvccVersion;
+	}
+
+	@JSON
+	@Override
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCode == null) {
+			return "";
+		}
+		else {
+			return _externalReferenceCode;
+		}
+	}
+
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_externalReferenceCode = externalReferenceCode;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalExternalReferenceCode() {
+		return getColumnOriginalValue("externalReferenceCode");
 	}
 
 	@JSON
@@ -450,6 +506,16 @@ public class CommerceShippingMethodModelImpl
 		}
 
 		_companyId = companyId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalCompanyId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("companyId"));
 	}
 
 	@JSON
@@ -888,6 +954,21 @@ public class CommerceShippingMethodModelImpl
 		_typeSettings = typeSettings;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	public long getColumnBitmask() {
 		if (_columnBitmask > 0) {
 			return _columnBitmask;
@@ -1035,6 +1116,8 @@ public class CommerceShippingMethodModelImpl
 			new CommerceShippingMethodImpl();
 
 		commerceShippingMethodImpl.setMvccVersion(getMvccVersion());
+		commerceShippingMethodImpl.setExternalReferenceCode(
+			getExternalReferenceCode());
 		commerceShippingMethodImpl.setCommerceShippingMethodId(
 			getCommerceShippingMethodId());
 		commerceShippingMethodImpl.setGroupId(getGroupId());
@@ -1051,6 +1134,7 @@ public class CommerceShippingMethodModelImpl
 		commerceShippingMethodImpl.setPriority(getPriority());
 		commerceShippingMethodImpl.setTrackingURL(getTrackingURL());
 		commerceShippingMethodImpl.setTypeSettings(getTypeSettings());
+		commerceShippingMethodImpl.setStatus(getStatus());
 
 		commerceShippingMethodImpl.resetOriginalValues();
 
@@ -1064,6 +1148,8 @@ public class CommerceShippingMethodModelImpl
 
 		commerceShippingMethodImpl.setMvccVersion(
 			this.<Long>getColumnOriginalValue("mvccVersion"));
+		commerceShippingMethodImpl.setExternalReferenceCode(
+			this.<String>getColumnOriginalValue("externalReferenceCode"));
 		commerceShippingMethodImpl.setCommerceShippingMethodId(
 			this.<Long>getColumnOriginalValue("commerceShippingMethodId"));
 		commerceShippingMethodImpl.setGroupId(
@@ -1094,6 +1180,8 @@ public class CommerceShippingMethodModelImpl
 			this.<String>getColumnOriginalValue("trackingURL"));
 		commerceShippingMethodImpl.setTypeSettings(
 			this.<String>getColumnOriginalValue("typeSettings"));
+		commerceShippingMethodImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return commerceShippingMethodImpl;
 	}
@@ -1181,6 +1269,18 @@ public class CommerceShippingMethodModelImpl
 
 		commerceShippingMethodCacheModel.mvccVersion = getMvccVersion();
 
+		commerceShippingMethodCacheModel.externalReferenceCode =
+			getExternalReferenceCode();
+
+		String externalReferenceCode =
+			commerceShippingMethodCacheModel.externalReferenceCode;
+
+		if ((externalReferenceCode != null) &&
+			(externalReferenceCode.length() == 0)) {
+
+			commerceShippingMethodCacheModel.externalReferenceCode = null;
+		}
+
 		commerceShippingMethodCacheModel.commerceShippingMethodId =
 			getCommerceShippingMethodId();
 
@@ -1263,6 +1363,8 @@ public class CommerceShippingMethodModelImpl
 			commerceShippingMethodCacheModel.typeSettings = null;
 		}
 
+		commerceShippingMethodCacheModel.status = getStatus();
+
 		return commerceShippingMethodCacheModel;
 	}
 
@@ -1326,6 +1428,7 @@ public class CommerceShippingMethodModelImpl
 	}
 
 	private long _mvccVersion;
+	private String _externalReferenceCode;
 	private long _commerceShippingMethodId;
 	private long _groupId;
 	private long _companyId;
@@ -1344,6 +1447,7 @@ public class CommerceShippingMethodModelImpl
 	private double _priority;
 	private String _trackingURL;
 	private String _typeSettings;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1377,6 +1481,8 @@ public class CommerceShippingMethodModelImpl
 
 		_columnOriginalValues.put("mvccVersion", _mvccVersion);
 		_columnOriginalValues.put(
+			"externalReferenceCode", _externalReferenceCode);
+		_columnOriginalValues.put(
 			"commerceShippingMethodId", _commerceShippingMethodId);
 		_columnOriginalValues.put("groupId", _groupId);
 		_columnOriginalValues.put("companyId", _companyId);
@@ -1392,6 +1498,7 @@ public class CommerceShippingMethodModelImpl
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("trackingURL", _trackingURL);
 		_columnOriginalValues.put("typeSettings", _typeSettings);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1417,35 +1524,39 @@ public class CommerceShippingMethodModelImpl
 
 		columnBitmasks.put("mvccVersion", 1L);
 
-		columnBitmasks.put("commerceShippingMethodId", 2L);
+		columnBitmasks.put("externalReferenceCode", 2L);
 
-		columnBitmasks.put("groupId", 4L);
+		columnBitmasks.put("commerceShippingMethodId", 4L);
 
-		columnBitmasks.put("companyId", 8L);
+		columnBitmasks.put("groupId", 8L);
 
-		columnBitmasks.put("userId", 16L);
+		columnBitmasks.put("companyId", 16L);
 
-		columnBitmasks.put("userName", 32L);
+		columnBitmasks.put("userId", 32L);
 
-		columnBitmasks.put("createDate", 64L);
+		columnBitmasks.put("userName", 64L);
 
-		columnBitmasks.put("modifiedDate", 128L);
+		columnBitmasks.put("createDate", 128L);
 
-		columnBitmasks.put("name", 256L);
+		columnBitmasks.put("modifiedDate", 256L);
 
-		columnBitmasks.put("description", 512L);
+		columnBitmasks.put("name", 512L);
 
-		columnBitmasks.put("active_", 1024L);
+		columnBitmasks.put("description", 1024L);
 
-		columnBitmasks.put("engineKey", 2048L);
+		columnBitmasks.put("active_", 2048L);
 
-		columnBitmasks.put("imageId", 4096L);
+		columnBitmasks.put("engineKey", 4096L);
 
-		columnBitmasks.put("priority", 8192L);
+		columnBitmasks.put("imageId", 8192L);
 
-		columnBitmasks.put("trackingURL", 16384L);
+		columnBitmasks.put("priority", 16384L);
 
-		columnBitmasks.put("typeSettings", 32768L);
+		columnBitmasks.put("trackingURL", 32768L);
+
+		columnBitmasks.put("typeSettings", 65536L);
+
+		columnBitmasks.put("status", 131072L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1454,4 +1565,4 @@ public class CommerceShippingMethodModelImpl
 	private CommerceShippingMethod _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1109142175
+// LIFERAY-SERVICE-BUILDER-HASH:-904719696

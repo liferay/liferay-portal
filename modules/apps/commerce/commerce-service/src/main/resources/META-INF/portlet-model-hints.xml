@@ -45,6 +45,7 @@
 		<field name="zip" type="String">
 			<validator name="required" />
 		</field>
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.commerce.model.CommerceAddressRestriction">
 		<field name="mvccVersion" type="long" />
@@ -261,6 +262,7 @@
 		<field name="unitPriceWithTaxAmount" type="BigDecimal" />
 		<field name="weight" type="double" />
 		<field name="width" type="double" />
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.commerce.model.CommerceOrderNote">
 		<field name="mvccVersion" type="long" />
@@ -377,6 +379,7 @@
 	</model>
 	<model name="com.liferay.commerce.model.CommerceShippingMethod">
 		<field name="mvccVersion" type="long" />
+		<field name="externalReferenceCode" type="String" />
 		<field name="commerceShippingMethodId" type="long" />
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
@@ -400,6 +403,7 @@
 		<field name="typeSettings" type="String">
 			<hint-collection name="CLOB" />
 		</field>
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.commerce.model.CommerceShippingOptionAccountEntryRel">
 		<field name="mvccVersion" type="long" />

@@ -71,7 +71,7 @@ public class CommerceAddressCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(55);
+		StringBundler sb = new StringBundler(57);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -127,6 +127,8 @@ public class CommerceAddressCacheModel
 		sb.append(type);
 		sb.append(", zip=");
 		sb.append(zip);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -247,6 +249,8 @@ public class CommerceAddressCacheModel
 			commerceAddressImpl.setZip(zip);
 		}
 
+		commerceAddressImpl.setStatus(status);
+
 		commerceAddressImpl.resetOriginalValues();
 
 		return commerceAddressImpl;
@@ -294,6 +298,8 @@ public class CommerceAddressCacheModel
 
 		type = objectInput.readInt();
 		zip = objectInput.readUTF();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -405,6 +411,8 @@ public class CommerceAddressCacheModel
 		else {
 			objectOutput.writeUTF(zip);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -434,6 +442,7 @@ public class CommerceAddressCacheModel
 	public String subtype;
 	public int type;
 	public String zip;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1218006342
+// LIFERAY-SERVICE-BUILDER-HASH:203040492

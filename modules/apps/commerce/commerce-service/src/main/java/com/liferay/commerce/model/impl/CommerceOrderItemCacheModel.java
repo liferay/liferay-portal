@@ -71,7 +71,7 @@ public class CommerceOrderItemCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(137);
+		StringBundler sb = new StringBundler(139);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -209,6 +209,8 @@ public class CommerceOrderItemCacheModel
 		sb.append(weight);
 		sb.append(", width=");
 		sb.append(width);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -422,6 +424,7 @@ public class CommerceOrderItemCacheModel
 		commerceOrderItemImpl.setUnitPriceWithTaxAmount(unitPriceWithTaxAmount);
 		commerceOrderItemImpl.setWeight(weight);
 		commerceOrderItemImpl.setWidth(width);
+		commerceOrderItemImpl.setStatus(status);
 
 		commerceOrderItemImpl.resetOriginalValues();
 
@@ -536,6 +539,8 @@ public class CommerceOrderItemCacheModel
 		weight = objectInput.readDouble();
 
 		width = objectInput.readDouble();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -728,6 +733,8 @@ public class CommerceOrderItemCacheModel
 		objectOutput.writeDouble(weight);
 
 		objectOutput.writeDouble(width);
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -798,6 +805,7 @@ public class CommerceOrderItemCacheModel
 	public BigDecimal unitPriceWithTaxAmount;
 	public double weight;
 	public double width;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-766857863
+// LIFERAY-SERVICE-BUILDER-HASH:-326351220

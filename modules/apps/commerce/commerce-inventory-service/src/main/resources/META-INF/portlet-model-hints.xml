@@ -70,6 +70,7 @@
 		<field name="latitude" type="double" />
 		<field name="longitude" type="double" />
 		<field name="type" type="String" />
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem">
 		<field name="mvccVersion" type="long" />

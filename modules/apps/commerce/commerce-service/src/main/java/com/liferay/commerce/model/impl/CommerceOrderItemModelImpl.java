@@ -120,7 +120,7 @@ public class CommerceOrderItemModelImpl
 		{"UOMIncrementalOrderQuantity", Types.DECIMAL},
 		{"unitOfMeasureKey", Types.VARCHAR}, {"unitPrice", Types.DECIMAL},
 		{"unitPriceWithTaxAmount", Types.DECIMAL}, {"weight", Types.DOUBLE},
-		{"width", Types.DOUBLE}
+		{"width", Types.DOUBLE}, {"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -195,10 +195,11 @@ public class CommerceOrderItemModelImpl
 		TABLE_COLUMNS_MAP.put("unitPriceWithTaxAmount", Types.DECIMAL);
 		TABLE_COLUMNS_MAP.put("weight", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("width", Types.DOUBLE);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceOrderItem (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commerceOrderItemId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CIBookedQuantityId LONG,commerceOrderId LONG,commercePriceListId LONG,CPInstanceId LONG,CPMeasurementUnitId LONG,CProductId LONG,customerCommerceOrderItemId LONG,parentCommerceOrderItemId LONG,shippingAddressId LONG,deliveryGroupName VARCHAR(75) null,deliveryMaxSubscriptionCycles LONG,deliverySubscriptionLength INTEGER,deliverySubscriptionType VARCHAR(75) null,deliverySubTypeSettings VARCHAR(75) null,depth DOUBLE,discountAmount BIGDECIMAL null,discountManuallyAdjusted BOOLEAN,discountPercentageLevel1 BIGDECIMAL null,discountPercentageLevel2 BIGDECIMAL null,discountPercentageLevel3 BIGDECIMAL null,discountPercentageLevel4 BIGDECIMAL null,discountPctLevel1WithTaxAmount BIGDECIMAL null,discountPctLevel2WithTaxAmount BIGDECIMAL null,discountPctLevel3WithTaxAmount BIGDECIMAL null,discountPctLevel4WithTaxAmount BIGDECIMAL null,discountWithTaxAmount BIGDECIMAL null,finalPrice BIGDECIMAL null,finalPriceWithTaxAmount BIGDECIMAL null,freeShipping BOOLEAN,height DOUBLE,json TEXT null,manuallyAdjusted BOOLEAN,maxSubscriptionCycles LONG,name STRING null,priceManuallyAdjusted BOOLEAN,priceOnApplication BOOLEAN,printedNote STRING null,promoPrice BIGDECIMAL null,promoPriceWithTaxAmount BIGDECIMAL null,quantity BIGDECIMAL null,replacedCPInstanceId LONG,replacedSku VARCHAR(75) null,requestedDeliveryDate DATE null,shipSeparately BOOLEAN,shippable BOOLEAN,shippedQuantity BIGDECIMAL null,shippingExtraPrice DOUBLE,sku VARCHAR(75) null,subscription BOOLEAN,subscriptionLength INTEGER,subscriptionType VARCHAR(75) null,subscriptionTypeSettings VARCHAR(75) null,UOMIncrementalOrderQuantity BIGDECIMAL null,unitOfMeasureKey VARCHAR(75) null,unitPrice BIGDECIMAL null,unitPriceWithTaxAmount BIGDECIMAL null,weight DOUBLE,width DOUBLE)";
+		"create table CommerceOrderItem (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commerceOrderItemId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CIBookedQuantityId LONG,commerceOrderId LONG,commercePriceListId LONG,CPInstanceId LONG,CPMeasurementUnitId LONG,CProductId LONG,customerCommerceOrderItemId LONG,parentCommerceOrderItemId LONG,shippingAddressId LONG,deliveryGroupName VARCHAR(75) null,deliveryMaxSubscriptionCycles LONG,deliverySubscriptionLength INTEGER,deliverySubscriptionType VARCHAR(75) null,deliverySubTypeSettings VARCHAR(75) null,depth DOUBLE,discountAmount BIGDECIMAL null,discountManuallyAdjusted BOOLEAN,discountPercentageLevel1 BIGDECIMAL null,discountPercentageLevel2 BIGDECIMAL null,discountPercentageLevel3 BIGDECIMAL null,discountPercentageLevel4 BIGDECIMAL null,discountPctLevel1WithTaxAmount BIGDECIMAL null,discountPctLevel2WithTaxAmount BIGDECIMAL null,discountPctLevel3WithTaxAmount BIGDECIMAL null,discountPctLevel4WithTaxAmount BIGDECIMAL null,discountWithTaxAmount BIGDECIMAL null,finalPrice BIGDECIMAL null,finalPriceWithTaxAmount BIGDECIMAL null,freeShipping BOOLEAN,height DOUBLE,json TEXT null,manuallyAdjusted BOOLEAN,maxSubscriptionCycles LONG,name STRING null,priceManuallyAdjusted BOOLEAN,priceOnApplication BOOLEAN,printedNote STRING null,promoPrice BIGDECIMAL null,promoPriceWithTaxAmount BIGDECIMAL null,quantity BIGDECIMAL null,replacedCPInstanceId LONG,replacedSku VARCHAR(75) null,requestedDeliveryDate DATE null,shipSeparately BOOLEAN,shippable BOOLEAN,shippedQuantity BIGDECIMAL null,shippingExtraPrice DOUBLE,sku VARCHAR(75) null,subscription BOOLEAN,subscriptionLength INTEGER,subscriptionType VARCHAR(75) null,subscriptionTypeSettings VARCHAR(75) null,UOMIncrementalOrderQuantity BIGDECIMAL null,unitOfMeasureKey VARCHAR(75) null,unitPrice BIGDECIMAL null,unitPriceWithTaxAmount BIGDECIMAL null,weight DOUBLE,width DOUBLE,status INTEGER)";
 
 	public static final String TABLE_SQL_DROP = "drop table CommerceOrderItem";
 
@@ -486,6 +487,8 @@ public class CommerceOrderItemModelImpl
 			attributeGetterFunctions.put(
 				"weight", CommerceOrderItem::getWeight);
 			attributeGetterFunctions.put("width", CommerceOrderItem::getWidth);
+			attributeGetterFunctions.put(
+				"status", CommerceOrderItem::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -781,6 +784,10 @@ public class CommerceOrderItemModelImpl
 				"width",
 				(BiConsumer<CommerceOrderItem, Double>)
 					CommerceOrderItem::setWidth);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CommerceOrderItem, Integer>)
+					CommerceOrderItem::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -2173,6 +2180,21 @@ public class CommerceOrderItemModelImpl
 		_width = width;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -2373,6 +2395,7 @@ public class CommerceOrderItemModelImpl
 			getUnitPriceWithTaxAmount());
 		commerceOrderItemImpl.setWeight(getWeight());
 		commerceOrderItemImpl.setWidth(getWidth());
+		commerceOrderItemImpl.setStatus(getStatus());
 
 		commerceOrderItemImpl.resetOriginalValues();
 
@@ -2529,6 +2552,8 @@ public class CommerceOrderItemModelImpl
 			this.<Double>getColumnOriginalValue("weight"));
 		commerceOrderItemImpl.setWidth(
 			this.<Double>getColumnOriginalValue("width"));
+		commerceOrderItemImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return commerceOrderItemImpl;
 	}
@@ -2890,6 +2915,8 @@ public class CommerceOrderItemModelImpl
 
 		commerceOrderItemCacheModel.width = getWidth();
 
+		commerceOrderItemCacheModel.status = getStatus();
+
 		return commerceOrderItemCacheModel;
 	}
 
@@ -3022,6 +3049,7 @@ public class CommerceOrderItemModelImpl
 	private BigDecimal _unitPriceWithTaxAmount;
 	private double _weight;
 	private double _width;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -3153,6 +3181,7 @@ public class CommerceOrderItemModelImpl
 			"unitPriceWithTaxAmount", _unitPriceWithTaxAmount);
 		_columnOriginalValues.put("weight", _weight);
 		_columnOriginalValues.put("width", _width);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -3188,4 +3217,4 @@ public class CommerceOrderItemModelImpl
 	private CommerceOrderItem _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-123807016
+// LIFERAY-SERVICE-BUILDER-HASH:164434306

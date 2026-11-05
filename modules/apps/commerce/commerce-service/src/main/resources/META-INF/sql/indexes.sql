@@ -67,6 +67,7 @@ create unique index IX_4FAC36D0 on CommerceShipmentItem (commerceShipmentId, com
 create unique index IX_29D8E379 on CommerceShipmentItem (externalReferenceCode[$COLUMN_LENGTH:75$], companyId);
 create unique index IX_D8C6E9A4 on CommerceShipmentItem (uuid_[$COLUMN_LENGTH:75$], groupId);
 
+create unique index IX_6C4C1C1B on CommerceShippingMethod (externalReferenceCode[$COLUMN_LENGTH:75$], companyId);
 create index IX_42E5F6EF on CommerceShippingMethod (groupId, active_);
 create unique index IX_C4557F93 on CommerceShippingMethod (groupId, engineKey[$COLUMN_LENGTH:75$]);
 

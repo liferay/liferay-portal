@@ -285,6 +285,8 @@ public class CommerceOrderItemPersistenceTest {
 
 		newCommerceOrderItem.setWidth(RandomTestUtil.nextDouble());
 
+		newCommerceOrderItem.setStatus(RandomTestUtil.nextInt());
+
 		newCommerceOrderItem = _persistence.update(newCommerceOrderItem);
 
 		_commerceOrderItems.add(newCommerceOrderItem);
@@ -502,6 +504,9 @@ public class CommerceOrderItemPersistenceTest {
 		AssertUtils.assertEquals(
 			existingCommerceOrderItem.getWidth(),
 			newCommerceOrderItem.getWidth());
+		Assert.assertEquals(
+			existingCommerceOrderItem.getStatus(),
+			newCommerceOrderItem.getStatus());
 	}
 
 	@Test(
@@ -690,7 +695,7 @@ public class CommerceOrderItemPersistenceTest {
 			"subscriptionType", true, "subscriptionTypeSettings", true,
 			"unitOfMeasureIncrementalOrderQuantity", true, "unitOfMeasureKey",
 			true, "unitPrice", true, "unitPriceWithTaxAmount", true, "weight",
-			true, "width", true);
+			true, "width", true, "status", true);
 	}
 
 	@Test
@@ -1156,6 +1161,8 @@ public class CommerceOrderItemPersistenceTest {
 
 		commerceOrderItem.setWidth(RandomTestUtil.nextDouble());
 
+		commerceOrderItem.setStatus(RandomTestUtil.nextInt());
+
 		_commerceOrderItems.add(_persistence.update(commerceOrderItem));
 
 		return commerceOrderItem;
@@ -1167,4 +1174,4 @@ public class CommerceOrderItemPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1683525383
+// LIFERAY-SERVICE-BUILDER-HASH:1372708906

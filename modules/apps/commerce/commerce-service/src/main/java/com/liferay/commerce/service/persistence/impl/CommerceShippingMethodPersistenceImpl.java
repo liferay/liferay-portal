@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.service.persistence.impl;
 
+import com.liferay.commerce.exception.DuplicateCommerceShippingMethodExternalReferenceCodeException;
 import com.liferay.commerce.exception.NoSuchShippingMethodException;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingMethodTable;
@@ -19,16 +20,24 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.sanitizer.Sanitizer;
+import com.liferay.portal.kernel.sanitizer.SanitizerException;
+import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
@@ -38,6 +47,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -320,6 +330,75 @@ public class CommerceShippingMethodPersistenceImpl
 			finderCache, new Object[] {groupId, engineKey});
 	}
 
+	private UniquePersistenceFinder
+		<CommerceShippingMethod, NoSuchShippingMethodException>
+			_uniquePersistenceFinderByERC_C;
+
+	/**
+	 * Returns the commerce shipping method where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchShippingMethodException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce shipping method
+	 * @throws NoSuchShippingMethodException if a matching commerce shipping method could not be found
+	 */
+	@Override
+	public CommerceShippingMethod findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchShippingMethodException {
+
+		return _uniquePersistenceFinderByERC_C.find(
+			finderCache, new Object[] {externalReferenceCode, companyId});
+	}
+
+	/**
+	 * Returns the commerce shipping method where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching commerce shipping method, or <code>null</code> if a matching commerce shipping method could not be found
+	 */
+	@Override
+	public CommerceShippingMethod fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache) {
+
+		return _uniquePersistenceFinderByERC_C.fetch(
+			finderCache, new Object[] {externalReferenceCode, companyId},
+			useFinderCache);
+	}
+
+	/**
+	 * Removes the commerce shipping method where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the commerce shipping method that was removed
+	 */
+	@Override
+	public CommerceShippingMethod removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchShippingMethodException {
+
+		CommerceShippingMethod commerceShippingMethod = findByERC_C(
+			externalReferenceCode, companyId);
+
+		return remove(commerceShippingMethod);
+	}
+
+	/**
+	 * Returns the number of commerce shipping methods where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching commerce shipping methods
+	 */
+	@Override
+	public int countByERC_C(String externalReferenceCode, long companyId) {
+		return _uniquePersistenceFinderByERC_C.count(
+			finderCache, new Object[] {externalReferenceCode, companyId});
+	}
+
 	public CommerceShippingMethodPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -428,6 +507,76 @@ public class CommerceShippingMethodPersistenceImpl
 
 		CommerceShippingMethodModelImpl commerceShippingMethodModelImpl =
 			(CommerceShippingMethodModelImpl)commerceShippingMethod;
+
+		if (Validator.isNull(
+				commerceShippingMethod.getExternalReferenceCode())) {
+
+			commerceShippingMethod.setExternalReferenceCode(
+				String.valueOf(commerceShippingMethod.getPrimaryKey()));
+		}
+		else {
+			if (!Objects.equals(
+					commerceShippingMethodModelImpl.getColumnOriginalValue(
+						"externalReferenceCode"),
+					commerceShippingMethod.getExternalReferenceCode())) {
+
+				long userId = GetterUtil.getLong(
+					PrincipalThreadLocal.getName());
+
+				if (userId > 0) {
+					long companyId = commerceShippingMethod.getCompanyId();
+
+					long groupId = commerceShippingMethod.getGroupId();
+
+					long classPK = 0;
+
+					if (!isNew) {
+						classPK = commerceShippingMethod.getPrimaryKey();
+					}
+
+					try {
+						commerceShippingMethod.setExternalReferenceCode(
+							SanitizerUtil.sanitize(
+								companyId, groupId, userId,
+								CommerceShippingMethod.class.getName(), classPK,
+								ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL,
+								commerceShippingMethod.
+									getExternalReferenceCode(),
+								null));
+					}
+					catch (SanitizerException sanitizerException) {
+						throw new SystemException(sanitizerException);
+					}
+				}
+			}
+
+			CommerceShippingMethod ercCommerceShippingMethod = fetchByERC_C(
+				commerceShippingMethod.getExternalReferenceCode(),
+				commerceShippingMethod.getCompanyId());
+
+			if (isNew) {
+				if (ercCommerceShippingMethod != null) {
+					throw new DuplicateCommerceShippingMethodExternalReferenceCodeException(
+						"Duplicate commerce shipping method with external reference code " +
+							commerceShippingMethod.getExternalReferenceCode() +
+								" and company " +
+									commerceShippingMethod.getCompanyId());
+				}
+			}
+			else {
+				if ((ercCommerceShippingMethod != null) &&
+					(commerceShippingMethod.getCommerceShippingMethodId() !=
+						ercCommerceShippingMethod.
+							getCommerceShippingMethodId())) {
+
+					throw new DuplicateCommerceShippingMethodExternalReferenceCodeException(
+						"Duplicate commerce shipping method with external reference code " +
+							commerceShippingMethod.getExternalReferenceCode() +
+								" and company " +
+									commerceShippingMethod.getCompanyId());
+				}
+			}
+		}
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
@@ -618,6 +767,25 @@ public class CommerceShippingMethodPersistenceImpl
 				FinderColumn.Type.STRING, "=", true, true,
 				CommerceShippingMethod::getEngineKey));
 
+		_uniquePersistenceFinderByERC_C = new UniquePersistenceFinder<>(
+			this,
+			createUniqueFinderPath(
+				FINDER_CLASS_NAME_ENTITY, "fetchByERC_C",
+				new String[] {String.class.getName(), Long.class.getName()},
+				new String[] {"externalReferenceCode", "companyId"}, 0, 1,
+				false,
+				convertNullFunction(
+					CommerceShippingMethod::getExternalReferenceCode),
+				CommerceShippingMethod::getCompanyId),
+			_SQL_SELECT_COMMERCESHIPPINGMETHOD_WHERE, "",
+			new FinderColumn<>(
+				"commerceShippingMethod.", "externalReferenceCode",
+				FinderColumn.Type.STRING, "=", true, true,
+				CommerceShippingMethod::getExternalReferenceCode),
+			new FinderColumn<>(
+				"commerceShippingMethod.", "companyId", FinderColumn.Type.LONG,
+				"=", true, true, CommerceShippingMethod::getCompanyId));
+
 		CommerceShippingMethodUtil.setPersistence(this);
 	}
 
@@ -681,4 +849,4 @@ public class CommerceShippingMethodPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:173457426
+// LIFERAY-SERVICE-BUILDER-HASH:-513127280
