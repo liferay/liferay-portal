@@ -25,7 +25,6 @@ import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.CommerceOrderTypeService;
-import com.liferay.commerce.service.CommerceShipmentService;
 import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.commerce.util.CommerceOrderItemQuantityFormatter;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -90,9 +89,9 @@ public class EditCommerceOrderPaymentStatusMVCRenderCommand
 					_commerceOrderService, _commerceOrderStatusRegistry,
 					_commerceOrderStepTrackerHelper, _commerceOrderTypeService,
 					_commercePaymentMethodGroupRelLocalService,
-					_commercePriceFormatter, _commerceShipmentService,
-					_commerceTermEntryLocalService, _cpMeasurementUnitService,
-					_modelResourcePermission, renderRequest);
+					_commercePriceFormatter, _commerceTermEntryLocalService,
+					_cpMeasurementUnitService, _modelResourcePermission,
+					renderRequest);
 
 			renderRequest.setAttribute(
 				WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -171,9 +170,6 @@ public class EditCommerceOrderPaymentStatusMVCRenderCommand
 
 	@Reference
 	private CommercePriceFormatter _commercePriceFormatter;
-
-	@Reference
-	private CommerceShipmentService _commerceShipmentService;
 
 	@Reference
 	private CommerceTermEntryLocalService _commerceTermEntryLocalService;

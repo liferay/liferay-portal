@@ -38,7 +38,6 @@ import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.CommerceOrderTypeService;
-import com.liferay.commerce.service.CommerceShipmentService;
 import com.liferay.commerce.term.constants.CommerceTermEntryConstants;
 import com.liferay.commerce.term.model.CommerceTermEntry;
 import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
@@ -109,7 +108,6 @@ public class CommerceOrderEditDisplayContext {
 			CommercePaymentMethodGroupRelLocalService
 				commercePaymentMethodGroupRelLocalService,
 			CommercePriceFormatter commercePriceFormatter,
-			CommerceShipmentService commerceShipmentService,
 			CommerceTermEntryLocalService commerceTermEntryLocalService,
 			CPMeasurementUnitService cpMeasurementUnitService,
 			ModelResourcePermission<CommerceOrder> modelResourcePermission,
@@ -136,7 +134,6 @@ public class CommerceOrderEditDisplayContext {
 		_commercePaymentMethodGroupRelLocalService =
 			commercePaymentMethodGroupRelLocalService;
 		_commercePriceFormatter = commercePriceFormatter;
-		_commerceShipmentService = commerceShipmentService;
 		_commerceTermEntryLocalService = commerceTermEntryLocalService;
 		_cpMeasurementUnitService = cpMeasurementUnitService;
 		_modelResourcePermission = modelResourcePermission;
@@ -865,7 +862,6 @@ public class CommerceOrderEditDisplayContext {
 	private final CommercePaymentMethodGroupRelLocalService
 		_commercePaymentMethodGroupRelLocalService;
 	private final CommercePriceFormatter _commercePriceFormatter;
-	private final CommerceShipmentService _commerceShipmentService;
 	private final CommerceTermEntryLocalService _commerceTermEntryLocalService;
 	private final CPMeasurementUnitService _cpMeasurementUnitService;
 	private final ModelResourcePermission<CommerceOrder>
