@@ -80,20 +80,11 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	public File createYarnCache(String fileName) {
 		setUpYarn();
 
-		StringBuilder sb = new StringBuilder();
-
-		for (String excludeRegex : _BINARIES_CACHE_EXCLUDE_REGEXES) {
-			sb.append(" | grep -v '");
-			sb.append(excludeRegex);
-			sb.append("'");
-		}
-
 		GitUtil.ExecutionResult executionResult = executeBashCommands(
 			3, GitUtil.MILLIS_RETRY_DELAY, 1000 * 60 * 10,
 			JenkinsResultsParserUtil.combine(
-				"zip -q -r -y ", fileName,
-				" $(git ls-files --directory --no-empty-directory --others ",
-				sb.toString(), ") modules/yarn.lock"));
+				"zip -q -r -y ", fileName, " ",
+				JenkinsResultsParserUtil.join(" ", getYarnCacheFilePaths())));
 
 		if (executionResult.getExitValue() != 0) {
 			throw new GitWorkingDirectoryRuntimeException(
@@ -667,11 +658,87 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		return filteredEnv;
 	}
 
+	protected List<String> getYarnCacheFilePaths() {
+		final List<String> yarnCacheFilePaths = new ArrayList<>();
+		final File workingDirectory = getWorkingDirectory();
+
+		for (String baseDirName : _JS_BASE_DIR_NAMES) {
+			File baseDir = new File(workingDirectory, baseDirName);
+
+			if (!baseDir.exists()) {
+				continue;
+			}
+
+			try {
+				Files.walkFileTree(
+					baseDir.toPath(),
+					new SimpleFileVisitor<Path>() {
+
+						@Override
+						public FileVisitResult preVisitDirectory(
+							Path filePath,
+							BasicFileAttributes basicFileAttributes) {
+
+							String fileName = String.valueOf(
+								filePath.getFileName());
+
+							if (fileName.startsWith(".")) {
+								return FileVisitResult.SKIP_SUBTREE;
+							}
+
+							if (!fileName.equals("node_modules")) {
+								return FileVisitResult.CONTINUE;
+							}
+
+							yarnCacheFilePaths.add(
+								JenkinsResultsParserUtil.getPathRelativeTo(
+									filePath.toFile(), workingDirectory));
+
+							return FileVisitResult.SKIP_SUBTREE;
+						}
+
+					});
+			}
+			catch (IOException ioException) {
+				throw new GitWorkingDirectoryRuntimeException(
+					this, "Unable to find node_modules in " + baseDir,
+					ioException);
+			}
+		}
+
+		Collections.sort(yarnCacheFilePaths);
+
+		for (String yarnCacheFilePath : _YARN_CACHE_FILE_PATHS) {
+			File yarnCacheFile = new File(workingDirectory, yarnCacheFilePath);
+
+			if (!yarnCacheFile.exists()) {
+				continue;
+			}
+
+			yarnCacheFilePaths.add(yarnCacheFilePath);
+		}
+
+		File toolsDir = new File(workingDirectory, "tools");
+
+		if (toolsDir.exists()) {
+			for (File gradleZipFile :
+					toolsDir.listFiles(
+						JenkinsResultsParserUtil.newFilenameFilter(
+							"gradle-.*-bin\\.zip"))) {
+
+				yarnCacheFilePaths.add("tools/" + gradleZipFile.getName());
+			}
+		}
+
+		return yarnCacheFilePaths;
+	}
+
 	private List<File> _getJSUnitFiles(File portalDir) {
 		List<File> jsUnitFiles = new ArrayList<>();
 
-		jsUnitFiles.addAll(_getJSUnitFiles(portalDir, "modules"));
-		jsUnitFiles.addAll(_getJSUnitFiles(portalDir, "workspaces"));
+		for (String baseDirName : _JS_BASE_DIR_NAMES) {
+			jsUnitFiles.addAll(_getJSUnitFiles(portalDir, baseDirName));
+		}
 
 		return jsUnitFiles;
 	}
@@ -805,8 +872,13 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		return false;
 	}
 
-	private static final String[] _BINARIES_CACHE_EXCLUDE_REGEXES = {
-		"\\.gradle/", "\\.yarn/", "modules/\\.tsc/", "node_modules_cache"
+	private static final String[] _JS_BASE_DIR_NAMES = {
+		"modules", "workspaces"
+	};
+
+	private static final String[] _YARN_CACHE_FILE_PATHS = {
+		"build/node", "modules/frontend-sdk/prettier-plugin/dist",
+		"modules/yarn.lock"
 	};
 
 	private static final Pattern _esBuildFileNamePattern = Pattern.compile(

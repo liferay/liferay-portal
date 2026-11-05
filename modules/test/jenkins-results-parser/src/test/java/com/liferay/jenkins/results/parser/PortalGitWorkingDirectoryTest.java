@@ -122,6 +122,68 @@ public class PortalGitWorkingDirectoryTest
 			new TreeSet<>(portalGitWorkingDirectory.getJSUnitFiles()));
 	}
 
+	@Test
+	public void testGetYarnCacheFilePaths() throws Exception {
+		File portalDir = temporaryFolder.newFolder("portal");
+
+		_writeFile(portalDir, "build/node/bin/node");
+		_writeFile(portalDir, "modules/.yarn/node_modules/foo/index.js");
+		_writeFile(portalDir, "modules/apps/foo/node_modules/bar/index.js");
+		_writeFile(
+			portalDir,
+			"modules/apps/foo/node_modules/bar/node_modules/baz/index.js");
+		_writeFile(portalDir, "modules/apps/foo/src/Foo.js");
+		_writeFile(
+			portalDir, "modules/frontend-sdk/prettier-plugin/dist/index.js");
+		_writeFile(portalDir, "modules/node_modules/foo/index.js");
+		_writeFile(portalDir, "modules/node_modules_cache/foo.tgz");
+		_writeFile(portalDir, "modules/yarn.lock");
+		_writeFile(portalDir, "node_modules/foo/index.js");
+		_writeFile(portalDir, "tools/gradle-8.5.LIFERAY-PATCHED-1-bin.zip");
+		_writeFile(portalDir, "tools/gradle.properties");
+		_writeFile(portalDir, "tools/sdk/build.xml");
+		_writeFile(portalDir, "tools/sdk/dependencies/bar/ivy.xml");
+		_writeFile(portalDir, "tools/sdk/dependencies/bar/lib/bar.jar");
+		_writeFile(portalDir, "tools/sdk/dependencies/foo/ivy.xml");
+		_writeFile(portalDir, "tools/sdk/dependencies/foo/ivy.xml.MD5");
+		_writeFile(portalDir, "tools/sdk/dependencies/foo/lib/foo.jar");
+		_writeFile(portalDir, "workspaces/bar/node_modules/foo/index.js");
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
+			PortalGitWorkingDirectory.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalGitWorkingDirectory
+		).getYarnCacheFilePaths();
+
+		Mockito.doReturn(
+			portalDir
+		).when(
+			portalGitWorkingDirectory
+		).getWorkingDirectory();
+
+		testEquals(
+			Arrays.asList(
+				"modules/apps/foo/node_modules", "modules/node_modules",
+				"workspaces/bar/node_modules", "build/node",
+				"modules/frontend-sdk/prettier-plugin/dist",
+				"modules/yarn.lock",
+				"tools/gradle-8.5.LIFERAY-PATCHED-1-bin.zip"),
+			portalGitWorkingDirectory.getYarnCacheFilePaths());
+
+		JenkinsResultsParserUtil.delete(new File(portalDir, "build"));
+		JenkinsResultsParserUtil.delete(
+			new File(portalDir, "modules/frontend-sdk/prettier-plugin/dist"));
+		JenkinsResultsParserUtil.delete(new File(portalDir, "tools"));
+
+		testEquals(
+			Arrays.asList(
+				"modules/apps/foo/node_modules", "modules/node_modules",
+				"workspaces/bar/node_modules", "modules/yarn.lock"),
+			portalGitWorkingDirectory.getYarnCacheFilePaths());
+	}
+
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
