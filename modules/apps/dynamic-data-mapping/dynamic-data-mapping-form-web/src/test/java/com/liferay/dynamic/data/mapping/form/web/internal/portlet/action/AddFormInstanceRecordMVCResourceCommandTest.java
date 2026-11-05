@@ -8,8 +8,8 @@ package com.liferay.dynamic.data.mapping.form.web.internal.portlet.action;
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormContextDeserializer;
 import com.liferay.dynamic.data.mapping.form.builder.internal.context.DDMFormContextToDDMFormValues;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
-import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
-import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMFormInstanceVersion;
+import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
@@ -51,7 +51,6 @@ public class AddFormInstanceRecordMVCResourceCommandTest {
 		_setUpDDMFormContextToDDMFormValues();
 
 		_setUpAddFormInstanceRecordMVCResourceCommand();
-		_setUpDDMFormInstance();
 		_setUpLanguage();
 		_setUpLanguageUtil();
 	}
@@ -78,6 +77,11 @@ public class AddFormInstanceRecordMVCResourceCommandTest {
 			true
 		);
 
+		DDMFormInstanceVersion ddmFormInstanceVersion = Mockito.mock(
+			DDMFormInstanceVersion.class);
+		DDMStructureVersion ddmStructureVersion = Mockito.mock(
+			DDMStructureVersion.class);
+
 		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
 
 		ddmForm.addDDMFormField(
@@ -88,9 +92,15 @@ public class AddFormInstanceRecordMVCResourceCommandTest {
 				"TextField2", true, false, false));
 
 		Mockito.when(
-			_ddmStructure.getDDMForm()
+			ddmStructureVersion.getDDMForm()
 		).thenReturn(
 			ddmForm
+		);
+
+		Mockito.when(
+			ddmFormInstanceVersion.getStructureVersion()
+		).thenReturn(
+			ddmStructureVersion
 		);
 
 		LocalizedValue value1 = new LocalizedValue();
@@ -119,7 +129,7 @@ public class AddFormInstanceRecordMVCResourceCommandTest {
 
 		DDMFormValues ddmFormValues2 =
 			_addFormInstanceRecordMVCResourceCommand.createDDMFormValues(
-				_ddmFormInstance, _resourceRequest);
+				ddmFormInstanceVersion, _resourceRequest);
 
 		Assert.assertNotEquals(LocaleUtil.getSiteDefault(), LocaleUtil.BRAZIL);
 		Assert.assertTrue(Objects.equals(ddmFormValues1, ddmFormValues2));
@@ -141,14 +151,6 @@ public class AddFormInstanceRecordMVCResourceCommandTest {
 		ReflectionTestUtil.setFieldValue(
 			_ddmFormContextToDDMFormValues, "jsonFactory",
 			new JSONFactoryImpl());
-	}
-
-	private static void _setUpDDMFormInstance() throws Exception {
-		Mockito.when(
-			_ddmFormInstance.getStructure()
-		).thenReturn(
-			_ddmStructure
-		);
 	}
 
 	private static void _setUpLanguage() {
@@ -175,10 +177,6 @@ public class AddFormInstanceRecordMVCResourceCommandTest {
 		_addFormInstanceRecordMVCResourceCommand;
 	private static DDMFormContextDeserializer<DDMFormValues>
 		_ddmFormContextToDDMFormValues;
-	private static final DDMFormInstance _ddmFormInstance = Mockito.mock(
-		DDMFormInstance.class);
-	private static final DDMStructure _ddmStructure = Mockito.mock(
-		DDMStructure.class);
 	private static final Language _language = Mockito.mock(Language.class);
 
 	private final ResourceRequest _resourceRequest = Mockito.mock(

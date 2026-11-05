@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockRenderResponse;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -383,11 +384,8 @@ public class DDMFormDisplayContextTest {
 		DDMFormInstance ddmFormInstance = _mockDDMFormInstance(
 			Mockito.mock(DDMFormInstanceSettings.class));
 
-		Mockito.doReturn(
-			ddmFormInstance
-		).when(
-			ddmFormDisplayContext
-		).getFormInstance();
+		ReflectionTestUtil.setFieldValue(
+			ddmFormDisplayContext, "_ddmFormInstance", ddmFormInstance);
 
 		Mockito.doReturn(
 			themeDisplay

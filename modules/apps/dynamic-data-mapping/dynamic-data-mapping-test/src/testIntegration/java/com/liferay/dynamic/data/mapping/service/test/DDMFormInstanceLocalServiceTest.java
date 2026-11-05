@@ -247,6 +247,59 @@ public class DDMFormInstanceLocalServiceTest extends BaseDDMServiceTestCase {
 	}
 
 	@Test
+	public void testUpdateFormInstanceShouldKeepApprovedFormInstanceVersion()
+		throws Exception {
+
+		DDMStructure structure = addStructure(_classNameId, "Test Structure");
+
+		DDMForm settingsDDMForm = DDMFormTestUtil.createDDMForm();
+
+		DDMFormValues settingsDDMFormValues =
+			DDMFormValuesTestUtil.createDDMFormValues(settingsDDMForm);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group, TestPropsValues.getUserId());
+
+		DDMFormInstance formInstance =
+			DDMFormInstanceLocalServiceUtil.addFormInstance(
+				structure.getUserId(), structure.getGroupId(),
+				structure.getStructureId(), structure.getNameMap(),
+				structure.getNameMap(), settingsDDMFormValues, serviceContext);
+
+		serviceContext.setAttribute("status", WorkflowConstants.STATUS_DRAFT);
+
+		formInstance = DDMFormInstanceLocalServiceUtil.updateFormInstance(
+			formInstance.getFormInstanceId(), formInstance.getStructureId(),
+			formInstance.getNameMap(), formInstance.getDescriptionMap(),
+			settingsDDMFormValues, serviceContext);
+
+		Assert.assertEquals("1.0", formInstance.getVersion());
+
+		DDMFormInstanceVersion formInstanceVersion =
+			formInstance.getFormInstanceVersion("1.1");
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, formInstanceVersion.getStatus());
+
+		serviceContext.setAttribute(
+			"status", WorkflowConstants.STATUS_APPROVED);
+
+		formInstance = DDMFormInstanceLocalServiceUtil.updateFormInstance(
+			formInstance.getFormInstanceId(), formInstance.getStructureId(),
+			formInstance.getNameMap(), formInstance.getDescriptionMap(),
+			settingsDDMFormValues, serviceContext);
+
+		Assert.assertEquals("1.1", formInstance.getVersion());
+
+		formInstanceVersion = formInstance.getFormInstanceVersion(
+			formInstance.getVersion());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, formInstanceVersion.getStatus());
+	}
+
+	@Test
 	public void testUpdateFormInstanceShouldKeepFormInstanceVersion()
 		throws Exception {
 

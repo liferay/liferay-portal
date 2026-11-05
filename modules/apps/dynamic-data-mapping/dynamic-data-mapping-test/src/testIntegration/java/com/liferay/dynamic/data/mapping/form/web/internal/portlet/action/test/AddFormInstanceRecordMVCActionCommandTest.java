@@ -10,12 +10,17 @@ import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
+import com.liferay.dynamic.data.mapping.model.DDMFormLayout;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormInstanceTestUtil;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormLayoutTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
+import com.liferay.dynamic.data.mapping.util.DDMUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
@@ -38,6 +43,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -176,6 +182,117 @@ public class AddFormInstanceRecordMVCActionCommandTest {
 			value2);
 	}
 
+	@Test
+	public void testProcessActionWithDraftFormInstanceVersion()
+		throws Exception {
+
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
+			DDMFormTestUtil.createAvailableLocales(
+				LocaleUtil.BRAZIL, LocaleUtil.US),
+			LocaleUtil.US);
+
+		DDMFormTestUtil.addDDMFormRule(
+			Collections.singletonList("jumpPage(0, 2)"), "TRUE", ddmForm);
+		DDMFormTestUtil.addTextDDMFormFields(
+			ddmForm, "TextField1", "TextField2", "TextField3");
+
+		DDMFormValues settingsDDMFormValues =
+			DDMFormInstanceTestUtil.createSettingsDDMFormValues(false);
+
+		DDMFormInstance ddmFormInstance =
+			DDMFormInstanceTestUtil.addDDMFormInstance(
+				ddmForm, _group, settingsDDMFormValues,
+				TestPropsValues.getUserId());
+
+		DDMFormLayout ddmFormLayout = DDMFormLayoutTestUtil.createDDMFormLayout(
+			DDMFormLayoutTestUtil.createDDMFormLayoutPage("TextField1"),
+			DDMFormLayoutTestUtil.createDDMFormLayoutPage("TextField2"),
+			DDMFormLayoutTestUtil.createDDMFormLayoutPage("TextField3"));
+
+		ddmFormLayout.setDefaultLocale(LocaleUtil.US);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		_ddmFormInstanceLocalService.updateFormInstance(
+			TestPropsValues.getUserId(), ddmFormInstance.getFormInstanceId(),
+			ddmFormInstance.getNameMap(), ddmFormInstance.getDescriptionMap(),
+			ddmForm, ddmFormLayout, settingsDDMFormValues, serviceContext);
+
+		serviceContext.setAttribute("status", WorkflowConstants.STATUS_DRAFT);
+		serviceContext.setAttribute("validateDDMFormValues", Boolean.FALSE);
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		_ddmFormInstanceRecordLocalService.addFormInstanceRecord(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			ddmFormInstance.getFormInstanceId(),
+			DDMFormValuesTestUtil.createDDMFormValues(ddmForm), serviceContext);
+
+		DDMForm draftDDMForm = DDMFormTestUtil.createDDMForm(
+			DDMFormTestUtil.createAvailableLocales(
+				LocaleUtil.BRAZIL, LocaleUtil.US),
+			LocaleUtil.US);
+
+		DDMFormTestUtil.addTextDDMFormFields(draftDDMForm, "TextField1");
+
+		ddmFormInstance = _ddmFormInstanceLocalService.updateFormInstance(
+			TestPropsValues.getUserId(), ddmFormInstance.getFormInstanceId(),
+			ddmFormInstance.getNameMap(), ddmFormInstance.getDescriptionMap(),
+			draftDDMForm, DDMUtil.getDefaultDDMFormLayout(draftDDMForm),
+			settingsDDMFormValues, serviceContext);
+
+		ddmFormInstance.setVersion("1.2");
+
+		ddmFormInstance = _ddmFormInstanceLocalService.updateDDMFormInstance(
+			ddmFormInstance);
+
+		String value1 = RandomTestUtil.randomString();
+
+		_mockLiferayPortletActionRequest.addParameter(
+			"ddm$$TextField1$1$0$$pt_BR", value1);
+
+		String value2 = RandomTestUtil.randomString();
+
+		_mockLiferayPortletActionRequest.addParameter(
+			"ddm$$TextField2$2$0$$pt_BR", value2);
+
+		String value3 = RandomTestUtil.randomString();
+
+		_mockLiferayPortletActionRequest.addParameter(
+			"ddm$$TextField3$3$0$$pt_BR", value3);
+
+		_mockLiferayPortletActionRequest.addParameter(
+			"defaultLanguageId", "pt_BR");
+		_mockLiferayPortletActionRequest.addParameter(
+			"formInstanceId",
+			String.valueOf(ddmFormInstance.getFormInstanceId()));
+
+		_addFormInstanceRecordMVCActionCommand.processAction(
+			_mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		List<DDMFormInstanceRecord> ddmFormInstanceRecords =
+			_ddmFormInstanceRecordLocalService.getFormInstanceRecords(
+				ddmFormInstance.getFormInstanceId());
+
+		Assert.assertEquals(
+			String.valueOf(ddmFormInstanceRecords), 1,
+			ddmFormInstanceRecords.size());
+
+		DDMFormInstanceRecord ddmFormInstanceRecord =
+			ddmFormInstanceRecords.get(0);
+
+		DDMFormValues ddmFormValues = ddmFormInstanceRecord.getDDMFormValues();
+
+		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
+			ddmFormValues.getDDMFormFieldValuesMap(false);
+
+		_assertValue("TextField1", ddmFormFieldValuesMap, value1);
+		_assertValue("TextField2", ddmFormFieldValuesMap, StringPool.BLANK);
+		_assertValue("TextField3", ddmFormFieldValuesMap, value3);
+	}
+
 	private void _assertValue(
 		String ddmFormFieldName,
 		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap,
@@ -246,6 +363,9 @@ public class AddFormInstanceRecordMVCActionCommandTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DDMFormInstanceLocalService _ddmFormInstanceLocalService;
 
 	@Inject
 	private DDMFormInstanceRecordLocalService
