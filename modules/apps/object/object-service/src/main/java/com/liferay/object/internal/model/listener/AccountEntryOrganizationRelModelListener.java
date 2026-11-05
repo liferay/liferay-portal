@@ -6,20 +6,14 @@
 package com.liferay.object.internal.model.listener;
 
 import com.liferay.account.model.AccountEntryOrganizationRel;
-import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.internal.search.ObjectEntryBatchReindexer;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
-import com.liferay.object.rest.filter.factory.FilterFactory;
-import com.liferay.object.scope.ObjectScopeProvider;
-import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
-import com.liferay.petra.sql.dsl.expression.Predicate;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -85,44 +79,30 @@ public class AccountEntryOrganizationRelModelListener
 		for (ObjectDefinition objectDefinition :
 				_objectDefinitionLocalService.getObjectDefinitions(true)) {
 
-			if (!objectDefinition.isEnableIndexSearch()) {
+			if (!objectDefinition.isEnableIndexSearch() ||
+				objectDefinition.isUnmodifiableSystemObject()) {
+
 				continue;
 			}
 
-			ObjectScopeProvider objectScopeProvider =
-				_objectScopeProviderRegistry.getObjectScopeProvider(
-					objectDefinition.getScope());
+			ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+				objectDefinition.getAccountEntryRestrictedObjectFieldId());
 
-			if (!objectScopeProvider.isGroupAware()) {
-				ObjectField objectField =
-					_objectFieldLocalService.fetchObjectField(
-						objectDefinition.
-							getAccountEntryRestrictedObjectFieldId());
-
-				if (objectField == null) {
-					continue;
-				}
-
-				int count = _objectEntryLocalService.getValuesListCount(
-					new Long[] {0L}, accountEntryOrganizationRel.getCompanyId(),
-					objectDefinition.getUserId(),
-					objectDefinition.getObjectDefinitionId(),
-					_filterFactory.create(
-						StringBundler.concat(
-							objectField.getName(), " eq '",
-							accountEntryOrganizationRel.getAccountEntryId(),
-							"'"),
-						objectDefinition),
-					false, null);
-
-				if (count <= 0) {
-					continue;
-				}
+			if (objectField == null) {
+				continue;
 			}
 
 			ObjectEntryBatchReindexer objectEntryBatchReindexer =
 				new ObjectEntryBatchReindexer(
-					_objectEntryLocalService, objectDefinition);
+					_objectEntryLocalService, objectDefinition, objectField);
+
+			long count = objectEntryBatchReindexer.getObjectEntriesCount(
+				accountEntryOrganizationRel.getAccountEntryId(),
+				accountEntryOrganizationRel.getCompanyId());
+
+			if (count <= 0) {
+				continue;
+			}
 
 			IndexerDocumentBuilder indexerDocumentBuilder =
 				_serviceTrackerMap.getService(
@@ -135,11 +115,6 @@ public class AccountEntryOrganizationRelModelListener
 		}
 	}
 
-	@Reference(
-		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
-	)
-	private FilterFactory<Predicate> _filterFactory;
-
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
@@ -148,9 +123,6 @@ public class AccountEntryOrganizationRelModelListener
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
-
-	@Reference
-	private ObjectScopeProviderRegistry _objectScopeProviderRegistry;
 
 	private ServiceTrackerMap<String, IndexerDocumentBuilder>
 		_serviceTrackerMap;
