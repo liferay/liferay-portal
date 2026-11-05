@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.CopyLayoutThreadLocal;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -332,17 +331,13 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 				ExpandoTableConstants.DEFAULT_TABLE_NAME, names, _classPK);
 
 			if (secure) {
-				long classNameId = ClassNameLocalServiceUtil.getClassNameId(
-					_className);
 				PermissionChecker permissionChecker =
 					GuestOrUserUtil.getPermissionChecker();
 
 				for (String name : names) {
 					if (ExpandoColumnPermissionUtil.contains(
-							permissionChecker,
-							ExpandoColumnLocalServiceUtil.getColumn(
-								_companyId, classNameId,
-								ExpandoTableConstants.DEFAULT_TABLE_NAME, name),
+							permissionChecker, _companyId, _className,
+							ExpandoTableConstants.DEFAULT_TABLE_NAME, name,
 							ActionKeys.VIEW)) {
 
 						continue;
