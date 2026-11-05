@@ -1,40 +1,6 @@
 {{- $database := $xr.spec.database }}
 {{- $instanceType := $database.instanceType | default "db-custom-1-3840" }}
 
-{{- define "check-database-login-script" -}}
-script: |
-    #!/bin/sh
-
-    set -o errexit
-    set -o nounset
-    set -o pipefail
-
-    function main {
-    	local timeout
-
-    	timeout=$(($(date +%s) + 600))
-
-    	until PGCONNECT_TIMEOUT=10 psql \
-    		--command "SELECT 1" \
-    		--dbname "${DATABASE_NAME}" \
-    		--host 127.0.0.1 \
-    		--port "${DATABASE_PORT}" \
-    		--username "${DATABASE_USERNAME}" > /dev/null 2>&1
-    	do
-    		if [ $(date +%s) -ge ${timeout} ]
-    		then
-    			echo "${DATABASE_USERNAME} could not be authenticated" >&2
-
-    			exit 1
-    		fi
-
-    		sleep 2
-    	done
-    }
-
-    main
-{{- end }}
-
 {{- define "database-job" -}}
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
@@ -58,12 +24,9 @@ spec:
                 template:
                     spec:
                         containers:
-                            -   args:
-                                    -   |
-                                            {{- .script | nindent 44 }}
-                                command:
+                            -   command:
                                     -   /bin/sh
-                                    -   -c
+                                    -   /scripts/{{ .scriptName }}
                                 env:
                                     {{- .env | toYaml | nindent 36 }}
                                 image: postgres:18-alpine
@@ -84,6 +47,10 @@ spec:
                                     runAsUser: 1000
                                     seccompProfile:
                                         type: RuntimeDefault
+                                volumeMounts:
+                                    -   mountPath: /scripts
+                                        name: database-scripts
+                                        readOnly: true
                         initContainers:
                             -   args:
                                     -   --auto-iam-authn
@@ -118,74 +85,36 @@ spec:
                                 type: RuntimeDefault
                         serviceAccountName: {{ .serviceAccountName }}
                         volumes:
-                            -   emptyDir: {}
-                                name: term-log
+                            -   configMap:
+                                    name: database-scripts
+                                name: database-scripts
     managementPolicies: ["Create", "Delete", "Observe"]
     readiness:
         celQuery: object.status.succeeded == 1
         policy: DeriveFromCelQuery
 {{- end }}
 
-{{- define "grant-database-script" -}}
-script: |
-    #!/bin/sh
-
-    set -o errexit
-    set -o nounset
-    set -o pipefail
-
-    function main {
-    	local timeout
-
-    	timeout=$(($(date +%s) + 600))
-
-    	until PGCONNECT_TIMEOUT=10 psql \
-    		--command "SELECT 1" \
-    		--dbname "${DATABASE_NAME}" \
-    		--host 127.0.0.1 \
-    		--port "${DATABASE_PORT}" \
-    		--username "${DATABASE_USERNAME}" > /dev/null 2>&1
-    	do
-    		if [ $(date +%s) -ge ${timeout} ]
-    		then
-    			echo "${DATABASE_USERNAME} could not be authenticated" >&2
-
-    			exit 1
-    		fi
-
-    		sleep 2
-    	done
-
-    	psql \
-    		--dbname "${DATABASE_NAME}" \
-    		--host 127.0.0.1 \
-    		--port "${DATABASE_PORT}" \
-    		--set ON_ERROR_STOP=1 \
-    		--set database_name="${DATABASE_NAME}" \
-    		--set liferay_database_username="${LIFERAY_DATABASE_USERNAME}" \
-    		--username "${DATABASE_USERNAME}" <<'EOF'
-    DO $$
-    BEGIN
-    	IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'liferay_shared_owner')
-    	THEN
-    		CREATE ROLE liferay_shared_owner NOLOGIN;
-    	END IF;
-    END $$;
-
-    GRANT liferay_shared_owner TO CURRENT_USER;
-
-    ALTER DATABASE :"database_name" OWNER TO liferay_shared_owner;
-
-    GRANT CONNECT, TEMPORARY ON DATABASE :"database_name" TO :"liferay_database_username";
-
-    GRANT liferay_shared_owner TO :"liferay_database_username";
-
-    ALTER ROLE :"liferay_database_username" SET ROLE liferay_shared_owner;
-    EOF
-    }
-
-    main
+{{- if not $env.databaseScripts }}
+{{- fail "The database-scripts EnvironmentConfig is missing, so the database Jobs have no scripts to run" }}
 {{- end }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-scripts
+    name: {{ $xr.metadata.name }}-database-scripts
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            data:
+                {{- $env.databaseScripts | toYaml | nindent 16 }}
+            kind: ConfigMap
+            metadata:
+                name: database-scripts
+                namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
 {{- range $dataPlane := $dataPlanes }}
 ---
 apiVersion: sql.gcp.m.upbound.io/v1beta1
@@ -336,7 +265,7 @@ spec:
     "name" "grant"
     "namespace" $namespace
     "port" $databasePort
-    "script" (include "grant-database-script" . | fromYaml).script
+    "scriptName" "grant-database.sh"
     "serviceAccountName" "database-bootstrap") }}
 {{- end }}
 {{- $isDatabaseGranted := false }}
@@ -359,7 +288,7 @@ spec:
     "name" "login-check"
     "namespace" $namespace
     "port" $databasePort
-    "script" (include "check-database-login-script" . | fromYaml).script
+    "scriptName" "check-database-login.sh"
     "serviceAccountName" "liferay-default") }}
 {{- end }}
 {{- end }}

@@ -29,6 +29,9 @@ spec:
                         -   ref:
                                 name: environment-config
                             type: Reference
+                        -   ref:
+                                name: database-scripts
+                            type: Reference
             step: environment-configs
         -   functionRef:
                 name: function-go-templating
