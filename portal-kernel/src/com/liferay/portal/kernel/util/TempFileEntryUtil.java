@@ -186,8 +186,20 @@ public class TempFileEntryUtil {
 			long groupId, long userId, String folderName)
 		throws PortalException {
 
+		Repository repository = RepositoryLocalServiceUtil.fetchRepository(
+			groupId, TempFileEntryUtil.class.getName(),
+			TempFileEntryUtil.class.getName());
+
+		if (repository == null) {
+			return StringPool.EMPTY_ARRAY;
+		}
+
+		LocalRepository localRepository =
+			RepositoryProviderUtil.getLocalRepository(
+				repository.getRepositoryId());
+
 		TemporaryFileEntriesCapability temporaryFileEntriesCapability =
-			_getTemporaryFileEntriesCapability(groupId);
+			localRepository.getCapability(TemporaryFileEntriesCapability.class);
 
 		List<FileEntry> fileEntries =
 			temporaryFileEntriesCapability.getTemporaryFileEntries(
