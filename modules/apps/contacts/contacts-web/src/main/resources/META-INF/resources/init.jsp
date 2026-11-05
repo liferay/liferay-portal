@@ -61,12 +61,12 @@ page import="com.liferay.portal.kernel.service.WebsiteServiceUtil" %><%@
 page import="com.liferay.portal.kernel.service.permission.UserPermissionUtil" %><%@
 page import="com.liferay.portal.kernel.servlet.ServletContextPool" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
+page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.LinkedHashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.portal.kernel.util.PortletKeys" %><%@
-page import="com.liferay.portal.kernel.util.PrefsParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.kernel.util.comparator.UserLastNameComparator" %><%@
@@ -97,17 +97,16 @@ String currentURL = PortalUtil.getCurrentURL(request);
 
 String portletResource = ParamUtil.getString(request, "portletResource");
 
-int displayStyle = PrefsParamUtil.getInteger(portletPreferences, request, "displayStyle", ContactsConstants.DISPLAY_STYLE_FULL);
-
-boolean showAdditionalEmailAddresses = PrefsParamUtil.getBoolean(portletPreferences, request, "showAdditionalEmailAddresses", true);
-boolean showAddresses = PrefsParamUtil.getBoolean(portletPreferences, request, "showAddresses", true);
-boolean showComments = PrefsParamUtil.getBoolean(portletPreferences, request, "showComments", true);
-boolean showCompleteYourProfile = PrefsParamUtil.getBoolean(portletPreferences, request, "showCompleteYourProfile", false);
-boolean showEmailAddress = PrefsParamUtil.getBoolean(portletPreferences, request, "showEmailAddress", false);
-boolean showIcon = PrefsParamUtil.getBoolean(portletPreferences, request, "showIcon", true);
-boolean showInstantMessenger = PrefsParamUtil.getBoolean(portletPreferences, request, "showInstantMessenger", true);
-boolean showPhones = PrefsParamUtil.getBoolean(portletPreferences, request, "showPhones", true);
-boolean showRecentActivity = PrefsParamUtil.getBoolean(portletPreferences, request, "showRecentActivity", false);
+int displayStyle = GetterUtil.getInteger(portletPreferences.getValue("displayStyle", null), ContactsConstants.DISPLAY_STYLE_FULL);
+boolean showAdditionalEmailAddresses = GetterUtil.getBoolean(portletPreferences.getValue("showAdditionalEmailAddresses", null), true);
+boolean showAddresses = GetterUtil.getBoolean(portletPreferences.getValue("showAddresses", null), true);
+boolean showComments = GetterUtil.getBoolean(portletPreferences.getValue("showComments", null), true);
+boolean showCompleteYourProfile = GetterUtil.getBoolean(portletPreferences.getValue("showCompleteYourProfile", null));
+boolean showEmailAddress = GetterUtil.getBoolean(portletPreferences.getValue("showEmailAddress", null));
+boolean showIcon = GetterUtil.getBoolean(portletPreferences.getValue("showIcon", null), true);
+boolean showInstantMessenger = GetterUtil.getBoolean(portletPreferences.getValue("showInstantMessenger", null), true);
+boolean showPhones = GetterUtil.getBoolean(portletPreferences.getValue("showPhones", null), true);
+boolean showRecentActivity = GetterUtil.getBoolean(portletPreferences.getValue("showRecentActivity", null));
 
 boolean showOnlySiteMembers = false;
 
@@ -117,12 +116,12 @@ if (portletId.equals(ContactsPortletKeys.MEMBERS)) {
 	showOnlySiteMembers = true;
 }
 
-boolean showSites = PrefsParamUtil.getBoolean(portletPreferences, request, "showSites", false);
-boolean showSMS = PrefsParamUtil.getBoolean(portletPreferences, request, "showSMS", true);
-boolean showSocialNetwork = PrefsParamUtil.getBoolean(portletPreferences, request, "showSocialNetwork", true);
-boolean showTags = PrefsParamUtil.getBoolean(portletPreferences, request, "showTags", false);
-boolean showUsersInformation = PrefsParamUtil.getBoolean(portletPreferences, request, "showUsersInformation", true);
-boolean showWebsites = PrefsParamUtil.getBoolean(portletPreferences, request, "showWebsites", true);
+boolean showSites = GetterUtil.getBoolean(portletPreferences.getValue("showSites", null));
+boolean showSMS = GetterUtil.getBoolean(portletPreferences.getValue("showSMS", null), true);
+boolean showSocialNetwork = GetterUtil.getBoolean(portletPreferences.getValue("showSocialNetwork", null), true);
+boolean showTags = GetterUtil.getBoolean(portletPreferences.getValue("showTags", null));
+boolean showUsersInformation = GetterUtil.getBoolean(portletPreferences.getValue("showUsersInformation", null), true);
+boolean showWebsites = GetterUtil.getBoolean(portletPreferences.getValue("showWebsites", null), true);
 
 Group scopeGroup = themeDisplay.getScopeGroup();
 
