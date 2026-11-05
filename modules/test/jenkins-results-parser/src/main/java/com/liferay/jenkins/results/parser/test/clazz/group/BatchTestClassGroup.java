@@ -962,7 +962,9 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 
 		String upstreamBranchName = gitWorkingDirectory.getUpstreamBranchName();
 
-		if (!upstreamBranchName.equals("master")) {
+		if (!upstreamBranchName.equals("master") &&
+			(getBatchHistory() == null)) {
+
 			return 0;
 		}
 
