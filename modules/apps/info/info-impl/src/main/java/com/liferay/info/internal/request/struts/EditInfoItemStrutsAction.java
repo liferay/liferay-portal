@@ -170,7 +170,7 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 				httpServletRequest, formItemId, infoFormException);
 
 			httpServletResponse.sendRedirect(
-				httpServletRequest.getHeader(HttpHeaders.REFERER));
+				_getFallbackRedirect(httpServletRequest));
 
 			return null;
 		}
@@ -453,7 +453,10 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 		}
 
 		if (Validator.isNull(redirect)) {
-			redirect = httpServletRequest.getHeader(HttpHeaders.REFERER);
+			redirect = _getFallbackRedirect(httpServletRequest);
+		}
+		else {
+			redirect = _portal.escapeRedirect(redirect);
 		}
 
 		String notificationText = ParamUtil.getString(
@@ -465,7 +468,7 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 				notificationText);
 		}
 
-		httpServletResponse.sendRedirect(_portal.escapeRedirect(redirect));
+		httpServletResponse.sendRedirect(redirect);
 
 		return null;
 	}
@@ -737,6 +740,23 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private String _getFallbackRedirect(HttpServletRequest httpServletRequest) {
+		String redirect = _portal.escapeRedirect(
+			httpServletRequest.getHeader(HttpHeaders.REFERER));
+
+		if (Validator.isNotNull(redirect)) {
+			return redirect;
+		}
+
+		String backURL = ParamUtil.getString(httpServletRequest, "backURL");
+
+		if (Validator.isNull(backURL)) {
+			return redirect;
+		}
+
+		return _portal.escapeRedirect(backURL);
 	}
 
 	private InfoItemEntry _getInfoItemEntry(
