@@ -39,6 +39,7 @@ import org.osgi.service.component.annotations.Reference;
 		"jakarta.portlet.display-name=Virtual Instances",
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
+		"jakarta.portlet.init-param.view-template=/view.jsp",
 		"jakarta.portlet.name=" + PortalInstancesPortletKeys.PORTAL_INSTANCES,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=administrator",

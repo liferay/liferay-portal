@@ -10,11 +10,7 @@
 <%
 int cur = ParamUtil.getInteger(request, SearchContainer.DEFAULT_CUR_PARAM);
 
-PortletURL portletURL = PortletURLBuilder.createRenderURL(
-	renderResponse
-).setMVCRenderCommandName(
-	"/portal_instances/view"
-).buildPortletURL();
+PortletURL portletURL = renderResponse.createRenderURL();
 %>
 
 <clay:management-toolbar
@@ -24,7 +20,6 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 />
 
 <portlet:renderURL var="redirectURL">
-	<portlet:param name="mvcRenderCommandName" value="/portal_instances/view" />
 	<portlet:param name="cur" value="<%= String.valueOf(cur) %>" />
 </portlet:renderURL>
 
