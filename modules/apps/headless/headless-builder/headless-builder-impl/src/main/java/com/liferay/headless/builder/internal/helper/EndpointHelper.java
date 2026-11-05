@@ -7,15 +7,34 @@ package com.liferay.headless.builder.internal.helper;
 
 import com.liferay.headless.builder.application.APIApplication;
 import com.liferay.headless.builder.constants.HeadlessBuilderConstants;
+import com.liferay.headless.builder.internal.odata.entity.APIPropertyEntityField;
+import com.liferay.headless.builder.internal.odata.entity.APISchemaEntityModel;
+import com.liferay.headless.builder.internal.odata.filter.expression.APISchemaTranslatorExpressionVisitor;
 import com.liferay.object.exception.NoSuchObjectEntryException;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.object.rest.filter.parser.ObjectDefinitionFilterParser;
+import com.liferay.object.rest.odata.entity.v1_0.provider.EntityModelProvider;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.odata.entity.EntityField;
+import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.odata.filter.InvalidFilterException;
+import com.liferay.portal.odata.filter.expression.BinaryExpression;
+import com.liferay.portal.odata.filter.expression.Expression;
+import com.liferay.portal.odata.filter.expression.ExpressionVisitException;
+import com.liferay.portal.odata.filter.expression.factory.ExpressionFactory;
+import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.util.SortUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,13 +127,10 @@ public class EndpointHelper {
 
 		Page<ObjectEntry> objectEntriesPage =
 			_objectEntryHelper.getObjectEntriesPage(
-				companyId,
-				_filterExpressionHelper.getExpression(
-					companyId, endpoint, filterString),
+				companyId, _getExpression(companyId, endpoint, filterString),
 				ListUtil.fromCollection(relationshipsNames), pagination,
 				schema.getMainObjectDefinitionExternalReferenceCode(), scopeKey,
-				_sortsHelper.getSorts(
-					acceptLanguage, companyId, endpoint, sortString));
+				_getSorts(acceptLanguage, companyId, endpoint, sortString));
 
 		for (ObjectEntry objectEntry : objectEntriesPage.getItems()) {
 			responseEntityMaps.add(_getResponseEntityMap(objectEntry, schema));
@@ -147,6 +163,81 @@ public class EndpointHelper {
 				requestSchema.getMainObjectDefinitionExternalReferenceCode(),
 				objectEntry, scopeKey),
 			responseSchema);
+	}
+
+	private EntityModel _getEntityModel(
+			long companyId, APIApplication.Schema schema)
+		throws Exception {
+
+		return _entityModelProvider.getEntityModel(
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					schema.getMainObjectDefinitionExternalReferenceCode(),
+					companyId));
+	}
+
+	private Expression _getExpression(
+			long companyId, APIApplication.Endpoint endpoint,
+			String filterString)
+		throws Exception {
+
+		APIApplication.Filter filter = endpoint.getFilter();
+
+		if ((filter == null) && Validator.isNull(filterString)) {
+			return null;
+		}
+
+		Expression endpointFilterExpression = null;
+
+		APIApplication.Schema schema = endpoint.getResponseSchema();
+
+		String objectDefinitionExternalReferenceCode =
+			schema.getMainObjectDefinitionExternalReferenceCode();
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					objectDefinitionExternalReferenceCode, companyId);
+
+		EntityModel entityModel = _entityModelProvider.getEntityModel(
+			objectDefinition);
+
+		if (filter != null) {
+			endpointFilterExpression = _objectDefinitionFilterParser.parse(
+				entityModel, filter.getODataFilterString(), objectDefinition);
+		}
+
+		Expression requestFilterExpression = null;
+
+		if (Validator.isNotNull(filterString)) {
+			EntityModel apiSchemaEntityModel = new APISchemaEntityModel(
+				entityModel, endpoint.getResponseSchema());
+
+			Expression expression = _objectDefinitionFilterParser.parse(
+				apiSchemaEntityModel, filterString, objectDefinition);
+
+			try {
+				requestFilterExpression = expression.accept(
+					new APISchemaTranslatorExpressionVisitor(
+						apiSchemaEntityModel, _expressionFactory));
+			}
+			catch (ExpressionVisitException expressionVisitException) {
+				throw new InvalidFilterException(
+					expressionVisitException.getMessage(),
+					expressionVisitException);
+			}
+		}
+
+		if (endpointFilterExpression == null) {
+			return requestFilterExpression;
+		}
+		else if (requestFilterExpression == null) {
+			return endpointFilterExpression;
+		}
+
+		return _expressionFactory.createBinaryExpression(
+			endpointFilterExpression, BinaryExpression.Operation.AND,
+			requestFilterExpression);
 	}
 
 	private Map<String, Object> _getObjectEntryProperties(
@@ -261,6 +352,52 @@ public class EndpointHelper {
 		return responseEntityMap;
 	}
 
+	private Sort[] _getSorts(
+			AcceptLanguage acceptLanguage, long companyId,
+			APIApplication.Endpoint endpoint, String sortString)
+		throws Exception {
+
+		APIApplication.Schema responseSchema = endpoint.getResponseSchema();
+
+		if (Validator.isNotNull(sortString)) {
+			APISchemaEntityModel apiSchemaEntityModel =
+				new APISchemaEntityModel(
+					_getEntityModel(companyId, responseSchema), responseSchema);
+
+			Map<String, EntityField> entityFieldsMap =
+				apiSchemaEntityModel.getEntityFieldsMap();
+
+			return TransformUtil.transform(
+				SortUtil.getSorts(
+					acceptLanguage, apiSchemaEntityModel,
+					_sortParserProvider.provide(apiSchemaEntityModel),
+					sortString),
+				sort -> {
+					APIPropertyEntityField apiPropertyEntityField =
+						(APIPropertyEntityField)entityFieldsMap.get(
+							sort.getFieldName());
+
+					sort.setFieldName(apiPropertyEntityField.getInternalName());
+					sort.setFieldPath(apiPropertyEntityField.getInternalName());
+
+					return sort;
+				},
+				Sort.class);
+		}
+
+		APIApplication.Sort sort = endpoint.getSort();
+
+		if (sort == null) {
+			return null;
+		}
+
+		return SortUtil.getSorts(
+			acceptLanguage, _getEntityModel(companyId, responseSchema),
+			_sortParserProvider.provide(
+				_getEntityModel(companyId, responseSchema)),
+			sort.getODataSortString());
+	}
+
 	private void _populateObjectEntryProperties(
 		Map<String, Object> objectEntryProperties,
 		Map<String, Object> properties, APIApplication.Property property) {
@@ -285,12 +422,21 @@ public class EndpointHelper {
 	}
 
 	@Reference
-	private FilterExpressionHelper _filterExpressionHelper;
+	private EntityModelProvider _entityModelProvider;
+
+	@Reference
+	private ExpressionFactory _expressionFactory;
+
+	@Reference
+	private ObjectDefinitionFilterParser _objectDefinitionFilterParser;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectEntryHelper _objectEntryHelper;
 
 	@Reference
-	private SortsHelper _sortsHelper;
+	private SortParserProvider _sortParserProvider;
 
 }
