@@ -428,14 +428,6 @@ public class PatcherFixPackLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.osb.patcher.model.PatcherFixPack>
-		getPatcherFixPacksByPatcherFixComponentId(long patcherFixComponentId) {
-
-		return _patcherFixPackLocalService.
-			getPatcherFixPacksByPatcherFixComponentId(patcherFixComponentId);
-	}
-
-	@Override
-	public java.util.List<com.liferay.osb.patcher.model.PatcherFixPack>
 		getPatcherFixPacksByStatus(long patcherProjectVersionId, int status) {
 
 		return _patcherFixPackLocalService.getPatcherFixPacksByStatus(
@@ -577,4 +569,4 @@ public class PatcherFixPackLocalServiceWrapper
 	private PatcherFixPackLocalService _patcherFixPackLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:942468160
+// LIFERAY-SERVICE-BUILDER-HASH:309389105

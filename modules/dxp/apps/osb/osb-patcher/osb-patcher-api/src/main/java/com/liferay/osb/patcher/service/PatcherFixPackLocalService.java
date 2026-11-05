@@ -287,10 +287,6 @@ public interface PatcherFixPackLocalService
 		boolean older);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<PatcherFixPack> getPatcherFixPacksByPatcherFixComponentId(
-		long patcherFixComponentId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherFixPack> getPatcherFixPacksByStatus(
 		long patcherProjectVersionId, int status);
 
@@ -363,4 +359,4 @@ public interface PatcherFixPackLocalService
 	public PatcherFixPack updatePatcherFixPack(PatcherFixPack patcherFixPack);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:966130274
+// LIFERAY-SERVICE-BUILDER-HASH:1463042717

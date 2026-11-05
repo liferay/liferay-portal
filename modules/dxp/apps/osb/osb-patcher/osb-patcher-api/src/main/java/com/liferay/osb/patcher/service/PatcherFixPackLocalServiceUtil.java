@@ -364,13 +364,6 @@ public class PatcherFixPackLocalServiceUtil {
 			patcherFixComponentId, patcherProjectVersionId, version, older);
 	}
 
-	public static List<PatcherFixPack>
-		getPatcherFixPacksByPatcherFixComponentId(long patcherFixComponentId) {
-
-		return getService().getPatcherFixPacksByPatcherFixComponentId(
-			patcherFixComponentId);
-	}
-
 	public static List<PatcherFixPack> getPatcherFixPacksByStatus(
 		long patcherProjectVersionId, int status) {
 
@@ -483,4 +476,4 @@ public class PatcherFixPackLocalServiceUtil {
 			PatcherFixPackLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-104066383
+// LIFERAY-SERVICE-BUILDER-HASH:894421273
