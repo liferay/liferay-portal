@@ -3,12 +3,12 @@
 		"extends browserslist-config-clay"
 	],
 	"dependencies": {
-		"@clayui/button": "^3.166.0",
-		"@clayui/drop-down": "^3.166.0",
-		"@clayui/form": "^3.166.0",
-		"@clayui/icon": "^3.166.0",
-		"@clayui/shared": "^3.166.0",
-		"@clayui/slider": "^3.166.0",
+		"@clayui/button": "^3.167.0",
+		"@clayui/drop-down": "^3.167.0",
+		"@clayui/form": "^3.167.0",
+		"@clayui/icon": "^3.167.0",
+		"@clayui/shared": "^3.167.0",
+		"@clayui/slider": "^3.167.0",
 		"classnames": "2.3.1",
 		"tinycolor2": "1.4.2"
 	},
@@ -27,7 +27,7 @@
 	"main": "src/index.tsx",
 	"name": "@clayui/color-picker",
 	"peerDependencies": {
-		"@clayui/css": "^3.166.0",
+		"@clayui/css": "^3.167.0",
 		"react": "^16.0.0 || ^17.0.0 || ^18.0.0",
 		"react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
 	},
@@ -39,5 +39,5 @@
 		"buildTypes": "tsc --project ./tsconfig.declarations.json",
 		"test": "jest --config ../../jest.config.js"
 	},
-	"version": "3.166.0"
+	"version": "3.167.0"
 }

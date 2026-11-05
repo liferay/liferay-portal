@@ -1,10 +1,10 @@
 {
 	"dependencies": {
-		"@clayui/button": "^3.166.0",
-		"@clayui/drop-down": "^3.166.0",
-		"@clayui/icon": "^3.166.0",
-		"@clayui/loading-indicator": "^3.166.0",
-		"@clayui/sticker": "^3.166.0",
+		"@clayui/button": "^3.167.0",
+		"@clayui/drop-down": "^3.167.0",
+		"@clayui/icon": "^3.167.0",
+		"@clayui/loading-indicator": "^3.167.0",
+		"@clayui/sticker": "^3.167.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
