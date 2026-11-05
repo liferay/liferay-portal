@@ -7,16 +7,14 @@ package com.liferay.osb.faro.admin.web.internal.display.context;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.osb.faro.admin.web.internal.util.FaroProjectOwnerUtil;
 import com.liferay.osb.faro.model.FaroProject;
-import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.service.FaroProjectLocalServiceUtil;
-import com.liferay.osb.faro.service.FaroUserLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.url.builder.ActionURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Field;
@@ -25,7 +23,6 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -89,24 +86,7 @@ public class FaroAdminDisplayContext {
 	}
 
 	public String getOwner(FaroProject faroProject) {
-		FaroUser faroUser = FaroUserLocalServiceUtil.fetchOwnerFaroUser(
-			faroProject.getGroupId());
-
-		if (faroUser == null) {
-			return null;
-		}
-
-		if (faroUser.getLiveUserId() <= 0) {
-			return faroUser.getEmailAddress();
-		}
-
-		User user = UserLocalServiceUtil.fetchUser(faroUser.getLiveUserId());
-
-		if (user != null) {
-			return user.getFullName() + " " + user.getEmailAddress();
-		}
-
-		return null;
+		return FaroProjectOwnerUtil.getOwner(faroProject);
 	}
 
 	public PortletURL getPortletURL() {
