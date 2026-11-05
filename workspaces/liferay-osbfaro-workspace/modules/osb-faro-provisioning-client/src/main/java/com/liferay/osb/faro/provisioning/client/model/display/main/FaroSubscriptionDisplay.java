@@ -57,6 +57,7 @@ public class FaroSubscriptionDisplay {
 		_endDate = baseOSBOfferingEntry.getSupportEndDate();
 		_name = ProductConstants.getProductName(
 			baseOSBOfferingEntry.getProductEntryId());
+		_productEntryId = baseOSBOfferingEntry.getProductEntryId();
 
 		_startDate = baseOSBOfferingEntry.getStartDate();
 
@@ -189,6 +190,10 @@ public class FaroSubscriptionDisplay {
 
 	public int getPageViewsStatus() {
 		return _pageViewsStatus;
+	}
+
+	public String getProductEntryId() {
+		return _productEntryId;
 	}
 
 	public long getRealTimeSegmentsLimit() {
@@ -475,6 +480,7 @@ public class FaroSubscriptionDisplay {
 	private long _pageViewsCountSinceLastAnniversary;
 	private long _pageViewsLimit;
 	private int _pageViewsStatus;
+	private String _productEntryId;
 	private long _realTimeSegmentsLimit;
 	private Date _startDate;
 	private long _syncedIndividualsCount;
