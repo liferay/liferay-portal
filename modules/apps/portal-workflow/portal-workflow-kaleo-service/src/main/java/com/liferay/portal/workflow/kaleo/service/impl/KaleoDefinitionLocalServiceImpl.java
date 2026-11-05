@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
@@ -392,7 +393,9 @@ public class KaleoDefinitionLocalServiceImpl
 		_validateGroupId(
 			serviceContext.getScopeGroupId(), kaleoDefinition.getScope());
 
-		kaleoDefinition.setExternalReferenceCode(externalReferenceCode);
+		if (Validator.isNotNull(externalReferenceCode)) {
+			kaleoDefinition.setExternalReferenceCode(externalReferenceCode);
+		}
 
 		if (!Objects.equals(
 				kaleoDefinition.getScope(),
@@ -423,8 +426,9 @@ public class KaleoDefinitionLocalServiceImpl
 		kaleoDefinition.setSystem(system);
 		kaleoDefinition.setStatus(
 			EmptyModelManagerUtil.solveEmptyModel(
-				externalReferenceCode, KaleoDefinition.class.getName(),
-				kaleoDefinition.getCompanyId(), 0, kaleoDefinition.getStatus(),
+				kaleoDefinition.getExternalReferenceCode(),
+				KaleoDefinition.class.getName(), kaleoDefinition.getCompanyId(),
+				0, kaleoDefinition.getStatus(),
 				() -> WorkflowConstants.STATUS_DRAFT));
 
 		kaleoDefinition = kaleoDefinitionPersistence.update(kaleoDefinition);
