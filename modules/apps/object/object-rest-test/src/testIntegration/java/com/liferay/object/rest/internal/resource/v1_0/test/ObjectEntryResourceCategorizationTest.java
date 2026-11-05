@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -56,7 +55,6 @@ import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -124,31 +122,26 @@ public class ObjectEntryResourceCategorizationTest
 		AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
 			getObjectDefinition2().getClassName(), jsonObject.getLong("id"));
 
-		IdempotentRetryAssert.retryAssert(
-			30, TimeUnit.SECONDS, 500, TimeUnit.MILLISECONDS,
-			() -> {
-				Map<String, Integer> assetCounts = new HashMap<>();
+		Map<String, Integer> expectedAssetCounts = HashMapBuilder.put(
+			"tag1", 2
+		).put(
+			"tag2", 2
+		).put(
+			"tag3", 1
+		).build();
 
-				for (AssetTag assetTag :
-						AssetTagLocalServiceUtil.getAssetEntryAssetTags(
-							assetEntry.getEntryId())) {
+		Map<String, Integer> assetCounts = _getAssetCounts(
+			assetEntry.getEntryId());
 
-					assetCounts.put(
-						assetTag.getName(), assetTag.getAssetCount());
-				}
+		for (int i = 0; !expectedAssetCounts.equals(assetCounts) && (i < 60);
+			 i++) {
 
-				Assert.assertEquals(
-					HashMapBuilder.put(
-						"tag1", 2
-					).put(
-						"tag2", 2
-					).put(
-						"tag3", 1
-					).build(),
-					assetCounts);
+			Thread.sleep(500);
 
-				return null;
-			});
+			assetCounts = _getAssetCounts(assetEntry.getEntryId());
+		}
+
+		Assert.assertEquals(expectedAssetCounts, assetCounts);
 	}
 
 	@Test
@@ -512,6 +505,18 @@ public class ObjectEntryResourceCategorizationTest
 		JSONAssert.assertEquals(
 			jsonArray2.toString(), jsonArray1.toString(),
 			JSONCompareMode.NON_EXTENSIBLE);
+	}
+
+	private Map<String, Integer> _getAssetCounts(long assetEntryId) {
+		Map<String, Integer> assetCounts = new HashMap<>();
+
+		for (AssetTag assetTag :
+				AssetTagLocalServiceUtil.getAssetEntryAssetTags(assetEntryId)) {
+
+			assetCounts.put(assetTag.getName(), assetTag.getAssetCount());
+		}
+
+		return assetCounts;
 	}
 
 	private TaxonomyCategory _postTaxonomyCategoryTaxonomyCategory(
