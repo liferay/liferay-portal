@@ -65,6 +65,11 @@ public class DirectRequestDispatcherFactoryUtil {
 
 		String contextPath = servletContext.getContextPath();
 
+		if (DirectServletRegistryUtil.isModulePath(contextPath)) {
+			return new IncludePathRequestDispatcher(
+				path, servletContext.getRequestDispatcher(path));
+		}
+
 		String fullPath = contextPath.concat(path);
 
 		String queryString = null;

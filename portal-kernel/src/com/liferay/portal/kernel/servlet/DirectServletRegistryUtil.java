@@ -70,10 +70,12 @@ public class DirectServletRegistryUtil {
 		return servlet;
 	}
 
-	public static void putServlet(String path, Servlet servlet) {
-		if (path.startsWith(PathModulePrefixHolder._PATH_MODULE_PREFIX) ||
-			_servletInfos.containsKey(path)) {
+	public static boolean isModulePath(String path) {
+		return path.startsWith(PathModulePrefixHolder._PATH_MODULE_PREFIX);
+	}
 
+	public static void putServlet(String path, Servlet servlet) {
+		if (isModulePath(path) || _servletInfos.containsKey(path)) {
 			return;
 		}
 
