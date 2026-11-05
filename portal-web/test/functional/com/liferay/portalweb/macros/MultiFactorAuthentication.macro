@@ -1,39 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro assertDescriptions() {
-		AssertTextEquals(
-			key_fieldName = "enabled",
-			locator1 = "MultiFactorAuthentication#EMAIL_OTP_CONFIG_TEXT",
-			value1 = "Enabling multi-factor authentication implies enabling Email One-Time Password. It is strongly advised that other forms of user authentication that only support a single factor are disabled (e.g. Basic, Digest, WEBDAV).");
-
-		AssertTextEquals(
-			key_fieldName = "otpSize",
-			locator1 = "MultiFactorAuthentication#EMAIL_OTP_CONFIG_TEXT",
-			value1 = "Set the length of a one-time password.");
-
-		AssertTextEquals(
-			key_fieldName = "resendEmailTimeout",
-			locator1 = "MultiFactorAuthentication#EMAIL_OTP_CONFIG_TEXT",
-			value1 = "Set the allowed time in seconds between one-time password requests.");
-
-		AssertTextEquals(
-			key_fieldName = "emailFromAddress",
-			locator1 = "MultiFactorAuthentication#EMAIL_OTP_CONFIG_TEXT",
-			value1 = "Set the sender address on the one-time password email.");
-
-		AssertTextEquals(
-			key_fieldName = "failedAttemptsAllowed",
-			locator1 = "MultiFactorAuthentication#EMAIL_OTP_CONFIG_TEXT",
-			value1 = "Set the number of verification attempts allowed before blocking for the retry timeout.");
-
-		AssertTextEquals(
-			key_fieldName = "retryTimeout",
-			locator1 = "MultiFactorAuthentication#EMAIL_OTP_CONFIG_TEXT",
-			value1 = "Set the time in seconds to block requests after reaching the limit for failed attempts allowed.");
-	}
-
-	@summary = "Default summary"
 	macro canAdminDisableBasicAuthentication() {
 		var curl = '''
 			http://www.able.com:8080/api/jsonws/user/get-current-user

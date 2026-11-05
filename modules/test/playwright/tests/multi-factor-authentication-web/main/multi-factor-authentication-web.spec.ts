@@ -104,3 +104,69 @@ test('LPD-56908 verify that only one user notification is sent along the cluster
 		await multiFactorAuthenticationConfigurationPage.resetConfiguration();
 	}
 });
+
+test(
+	'shows the descriptions of the multi-factor authentication configuration entries',
+	{tag: ['@LPS-110309', '@LPS-112805']},
+	async ({
+		multiFactorAuthenticationConfigurationPage,
+		page,
+		systemSettingsPage,
+	}) => {
+		await test.step('MFA system configuration', async () => {
+			await systemSettingsPage.goToSystemSetting(
+				'Multi-Factor Authentication',
+				'Multi-Factor Authentication System Configuration'
+			);
+
+			const disableMultiFactorAuthenticationCheckbox = page.getByLabel(
+				'Disable Multi-Factor Authentication',
+				{exact: true}
+			);
+
+			await expect(
+				disableMultiFactorAuthenticationCheckbox
+			).not.toBeChecked();
+			await expect(
+				disableMultiFactorAuthenticationCheckbox
+			).toHaveAccessibleDescription(
+				'Disable multi-factor authentication system-wide.'
+			);
+		});
+
+		await test.step('Email one-time password configuration', async () => {
+			await multiFactorAuthenticationConfigurationPage.goto();
+
+			await expect(
+				multiFactorAuthenticationConfigurationPage.enabledCheckBox
+			).toHaveAccessibleDescription(
+				'Enabling multi-factor authentication implies enabling Email One-Time Password. It is strongly advised that other forms of user authentication that only support a single factor are disabled (e.g. Basic, Digest, WEBDAV).'
+			);
+			await expect(
+				multiFactorAuthenticationConfigurationPage.oneTimePasswordLength
+			).toHaveAccessibleDescription(
+				'Set the length of a one-time password.'
+			);
+			await expect(
+				multiFactorAuthenticationConfigurationPage.resendEmailTimeout
+			).toHaveAccessibleDescription(
+				'Set the allowed time in seconds between one-time password requests.'
+			);
+			await expect(
+				page.getByLabel('Template for Email "From" Field')
+			).toHaveAccessibleDescription(
+				'Set the sender address on the one-time password email.'
+			);
+			await expect(
+				multiFactorAuthenticationConfigurationPage.failedAttemptsAllowed
+			).toHaveAccessibleDescription(
+				'Set the number of verification attempts allowed before blocking for the retry timeout.'
+			);
+			await expect(
+				multiFactorAuthenticationConfigurationPage.retryTimeout
+			).toHaveAccessibleDescription(
+				'Set the time in seconds to block requests after reaching the limit for failed attempts allowed.'
+			);
+		});
+	}
+);

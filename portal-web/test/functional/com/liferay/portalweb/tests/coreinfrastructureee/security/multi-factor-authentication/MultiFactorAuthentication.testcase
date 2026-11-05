@@ -1301,29 +1301,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-110309 and LPS-112805. As an Instance Administrator, I want to see description texts for the MFA configuration entries."
-	@priority = 4
-	test ViewDescriptionTextsForMFAConfigurationEntries {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Assert Disable multi-factor authentication system-wide message is present in Multi-Factor Authentication System configuration") {
-			MultiFactorAuthentication.openToConfigInSystemSettings();
-
-			AssertNotChecked.assertNotCheckedNotVisible(
-				key_settingFieldName = "Disable Multi-Factor Authentication",
-				locator1 = "SystemSettings#SETTING_FIELD_NAME_CHECKBOX");
-
-			SystemSettings.viewSettingsText(settingsText = "Disable multi-factor authentication system-wide.");
-		}
-
-		task ("Assert default descriptions at multi-factor authentication") {
-			MultiFactorAuthentication.openToConfigInInstanceSettings();
-
-			MultiFactorAuthentication.assertDescriptions();
-		}
-	}
-
 	@description = "This is a use case for LPS-109786. As an Instance administrator, I want to get a notification if the MFA has been disabled/enabled in system level."
 	@priority = 4
 	test ViewNotificationsAfterMFADisabledAndEnabled {
