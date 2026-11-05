@@ -575,10 +575,13 @@ public class DDMFormInstanceLocalServiceImpl
 		boolean majorVersion = GetterUtil.getBoolean(
 			serviceContext.getAttribute("majorVersion"));
 
-		String version = _getNextVersion(
-			latestDDMFormInstanceVersion.getVersion(), majorVersion);
+		String version = latestDDMFormInstanceVersion.getVersion();
 
 		if (!updateVersion) {
+			version = _getNextVersion(version, majorVersion);
+		}
+
+		if (status != WorkflowConstants.STATUS_DRAFT) {
 			ddmFormInstance.setVersionUserId(user.getUserId());
 			ddmFormInstance.setVersionUserName(user.getFullName());
 			ddmFormInstance.setVersion(version);
