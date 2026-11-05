@@ -670,8 +670,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	private List<File> _getJSUnitFiles(File portalDir) {
 		final List<File> jsUnitFiles = new ArrayList<>();
 
-		for (String baseDirName :
-				new String[] {"modules", "workspaces"}) {
+		for (String baseDirName : new String[] {"modules", "workspaces"}) {
 			File baseDir = new File(portalDir, baseDirName);
 
 			if (!baseDir.exists()) {
@@ -719,7 +718,6 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 								file);
 
 							if (content.contains("describe(")) {
-
 								jsUnitFiles.add(file);
 							}
 
