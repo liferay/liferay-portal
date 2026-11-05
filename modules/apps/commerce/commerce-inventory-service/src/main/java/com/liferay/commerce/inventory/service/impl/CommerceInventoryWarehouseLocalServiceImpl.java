@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
 
@@ -119,6 +120,8 @@ public class CommerceInventoryWarehouseLocalServiceImpl
 			commerceCountryCode);
 		commerceInventoryWarehouse.setLatitude(latitude);
 		commerceInventoryWarehouse.setLongitude(longitude);
+		commerceInventoryWarehouse.setStatus(
+			WorkflowConstants.STATUS_APPROVED);
 		commerceInventoryWarehouse.setExpandoBridgeAttributes(serviceContext);
 
 		commerceInventoryWarehouse =

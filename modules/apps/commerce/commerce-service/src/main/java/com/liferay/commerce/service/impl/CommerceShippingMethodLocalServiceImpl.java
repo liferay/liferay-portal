@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.File;
 
@@ -111,6 +112,7 @@ public class CommerceShippingMethodLocalServiceImpl
 		commerceShippingMethod.setEngineKey(engineKey);
 		commerceShippingMethod.setPriority(priority);
 		commerceShippingMethod.setTrackingURL(trackingURL);
+		commerceShippingMethod.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		commerceShippingMethod = commerceShippingMethodPersistence.update(
 			commerceShippingMethod);

@@ -1437,6 +1437,7 @@ public class CommerceOrderItemLocalServiceImpl
 		commerceOrderItem.setUnitOfMeasureIncrementalOrderQuantity(
 			unitOfMeasureIncrementalOrderQuantity);
 		commerceOrderItem.setUnitOfMeasureKey(unitOfMeasureKey);
+		commerceOrderItem.setStatus(WorkflowConstants.STATUS_APPROVED);
 		commerceOrderItem.setExpandoBridgeAttributes(serviceContext);
 
 		_setDimensions(commerceOrderItem, cpInstance);
