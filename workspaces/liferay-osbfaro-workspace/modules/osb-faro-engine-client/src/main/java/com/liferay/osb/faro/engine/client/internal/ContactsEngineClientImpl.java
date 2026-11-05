@@ -1772,10 +1772,15 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Campaign getCampaign(
-			FaroProject faroProject, long channelId, String id)
+			FaroProject faroProject, String accountIds, long channelId,
+			String id)
 		throws FaroEngineClientException {
 
 		Map<String, Object> uriVariables = getUriVariables(faroProject, id);
+
+		if (Validator.isNotNull(accountIds)) {
+			uriVariables.put("accountIds", accountIds);
+		}
 
 		uriVariables.put("channelId", channelId);
 
@@ -1785,14 +1790,18 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Results<Account> getCampaignAccounts(
-			FaroProject faroProject, String accountLifecycleId, long channelId,
-			String filterString, String id, String query, String rangeEnd,
-			Integer rangeKey, String rangeStart, String sortString, int cur,
-			int delta)
+			FaroProject faroProject, String accountIds,
+			String accountLifecycleId, long channelId, String filterString,
+			String id, String query, String rangeEnd, Integer rangeKey,
+			String rangeStart, String sortString, int cur, int delta)
 		throws FaroEngineClientException {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
+
+		if (Validator.isNotNull(accountIds)) {
+			uriVariables.put("accountIds", accountIds);
+		}
 
 		if (Validator.isNotNull(accountLifecycleId)) {
 			uriVariables.put("accountLifecycleId", accountLifecycleId);
@@ -1888,11 +1897,15 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public List<CampaignMetric> getCampaignMetrics(
-			FaroProject faroProject, long channelId, String rangeEnd,
-			Integer rangeKey, String rangeStart)
+			FaroProject faroProject, String accountIds, long channelId,
+			String rangeEnd, Integer rangeKey, String rangeStart)
 		throws FaroEngineClientException {
 
 		Map<String, Object> uriVariables = getUriVariables(faroProject);
+
+		if (Validator.isNotNull(accountIds)) {
+			uriVariables.put("accountIds", accountIds);
+		}
 
 		uriVariables.put("channelId", channelId);
 

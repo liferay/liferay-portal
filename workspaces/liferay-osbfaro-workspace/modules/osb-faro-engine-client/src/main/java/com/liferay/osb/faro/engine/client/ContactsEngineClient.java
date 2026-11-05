@@ -348,14 +348,15 @@ public interface ContactsEngineClient {
 		List<OrderByField> orderByFields);
 
 	public Campaign getCampaign(
-			FaroProject faroProject, long channelId, String id)
+			FaroProject faroProject, String accountIds, long channelId,
+			String id)
 		throws FaroEngineClientException;
 
 	public Results<Account> getCampaignAccounts(
-			FaroProject faroProject, String accountLifecycleId, long channelId,
-			String filterString, String id, String query, String rangeEnd,
-			Integer rangeKey, String rangeStart, String sortString, int cur,
-			int delta)
+			FaroProject faroProject, String accountIds,
+			String accountLifecycleId, long channelId, String filterString,
+			String id, String query, String rangeEnd, Integer rangeKey,
+			String rangeStart, String sortString, int cur, int delta)
 		throws FaroEngineClientException;
 
 	public Results<Individual> getCampaignIndividuals(
@@ -365,8 +366,8 @@ public interface ContactsEngineClient {
 		throws FaroEngineClientException;
 
 	public List<CampaignMetric> getCampaignMetrics(
-			FaroProject faroProject, long channelId, String rangeEnd,
-			Integer rangeKey, String rangeStart)
+			FaroProject faroProject, String accountIds, long channelId,
+			String rangeEnd, Integer rangeKey, String rangeStart)
 		throws FaroEngineClientException;
 
 	public Results<Campaign> getCampaigns(
