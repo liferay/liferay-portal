@@ -108,12 +108,12 @@ test.afterAll(async ({browser}) => {
 });
 
 test(
-	'My Workflow Tasks full view preserves the back button when switching tabs',
-	{tag: ['@LPD-78912', '@LPD-92859']},
+	'My Workflow Tasks "Open" button opens the Tasks page in a new tab',
+	{tag: ['@LPD-78912', '@LPD-92859', '@LPD-112143']},
 	async ({context, homePage, page}) => {
 		await homePage.goto();
 
-		const [fullViewPage] = await Promise.all([
+		const [tasksPage] = await Promise.all([
 			context.waitForEvent('page'),
 			page
 				.getByRole('button', {
@@ -122,41 +122,13 @@ test(
 				.click(),
 		]);
 
-		await fullViewPage.waitForLoadState();
+		await tasksPage.waitForLoadState();
 
-		const toolbar = fullViewPage.locator(
-			'.cms-control-menu.portlet-header'
-		);
+		await expect(tasksPage).toHaveURL(/\/tasks$/);
 
 		await expect(
-			toolbar.getByRole('heading', {name: 'My Workflow Tasks'})
+			tasksPage.getByRole('heading', {level: 2, name: 'Tasks'})
 		).toBeVisible();
-
-		const backButton = toolbar.getByRole('link', {
-			name: 'Back',
-		});
-
-		await expect(backButton).toBeVisible();
-
-		await fullViewPage
-			.getByRole('link', {
-				name: 'Assigned to Me',
-			})
-			.click();
-
-		await expect(fullViewPage).toHaveURL(/tabs1=assigned-to-me/);
-
-		await expect(backButton).toBeVisible();
-
-		await fullViewPage
-			.getByRole('link', {
-				name: 'Assigned to My Roles',
-			})
-			.click();
-
-		await expect(fullViewPage).toHaveURL(/tabs1=assigned-to-my-roles/);
-
-		await expect(backButton).toBeVisible();
 	}
 );
 
