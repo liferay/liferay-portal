@@ -23,6 +23,7 @@ export interface UnifiedSidebarProps {
 	children?: React.ReactNode;
 	colorScheme?: 'dark' | 'light';
 	colorSchemeSessionKey?: string;
+	containerRef?: React.RefObject<HTMLElement>;
 	headerActions?: React.ReactNode;
 	headerMessages?: HeaderMessages;
 	label: string;
@@ -31,8 +32,6 @@ export interface UnifiedSidebarProps {
 	open?: boolean;
 	testId?: string;
 }
-
-const PANEL_WIDTH = 280;
 
 function UnifiedSidebarTop({children}: {children?: React.ReactNode}) {
 	return <>{children}</>;
@@ -44,6 +43,7 @@ export default function UnifiedSidebar({
 	children,
 	colorScheme,
 	colorSchemeSessionKey,
+	containerRef: externalContainerRef,
 	headerActions,
 	headerMessages,
 	label,
@@ -52,7 +52,9 @@ export default function UnifiedSidebar({
 	open = false,
 	testId = 'unified-sidebar',
 }: UnifiedSidebarProps) {
-	const containerRef = useRef<HTMLElement>(null);
+	const internalContainerRef = useRef<HTMLElement>(null);
+
+	const containerRef = externalContainerRef ?? internalContainerRef;
 
 	const closeButtonProps = Liferay.FeatureFlags['LPD-57922']
 		? {
@@ -80,7 +82,6 @@ export default function UnifiedSidebar({
 			id={navigationId}
 			onOpenChange={onOpenChange}
 			open={open}
-			panelWidth={PANEL_WIDTH}
 			position="fixed"
 		>
 			<SidePanel.Header
