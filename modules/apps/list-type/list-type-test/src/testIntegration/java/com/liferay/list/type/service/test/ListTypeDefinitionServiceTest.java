@@ -247,7 +247,8 @@ public class ListTypeDefinitionServiceTest {
 		_setResourcePermissions(
 			ListTypeDefinition.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(adminUserListTypeDefinition.getListTypeDefinitionId()),
+			String.valueOf(
+				adminUserListTypeDefinition.getListTypeDefinitionId()),
 			RoleConstants.USER, new String[] {ActionKeys.VIEW});
 
 		listTypeDefinitions = _getListTypeDefinitions(_user);
@@ -261,7 +262,8 @@ public class ListTypeDefinitionServiceTest {
 			new String[] {ActionKeys.VIEW});
 
 		Assert.assertEquals(
-			_getListTypeDefinitions(_adminUser), _getListTypeDefinitions(_user));
+			_getListTypeDefinitions(_adminUser),
+			_getListTypeDefinitions(_user));
 
 		_removeResourcePermission(
 			ListTypeDefinition.class.getName(), ResourceConstants.SCOPE_COMPANY,
