@@ -46,16 +46,13 @@ export default async function formatPortal(check, files) {
 		checksPassed = false;
 	}
 
-	if (
-		(!files ||
-			!!files.find(
-				(file) =>
-					file.endsWith('/package.json') ||
-					file.endsWith('.ts') ||
-					file.endsWith('.tsx')
-			)) &&
-		!(await formatTsconfigFiles(check))
-	) {
+	// We always check tsconfig files, no matter which files changed, because
+	// the list of changed files never contains deleted files, and deleting the
+	// last TypeScript file of a project leaves its tsconfig file obsolete. The
+	// check is cheap enough, and otherwise the next unrelated change would be
+	// the one failing.
+
+	if (!(await formatTsconfigFiles(check))) {
 		checksPassed = false;
 	}
 
