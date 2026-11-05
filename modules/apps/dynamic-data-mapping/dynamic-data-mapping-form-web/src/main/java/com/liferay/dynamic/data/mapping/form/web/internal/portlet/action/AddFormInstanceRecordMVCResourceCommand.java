@@ -15,10 +15,12 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecordVersion;
-import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMFormInstanceVersion;
+import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordVersionLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceVersionLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -164,9 +166,15 @@ public class AddFormInstanceRecordMVCResourceCommand
 	protected DDMForm getDDMForm(DDMFormInstance ddmFormInstance)
 		throws PortalException {
 
-		DDMStructure ddmStructure = ddmFormInstance.getStructure();
+		DDMFormInstanceVersion latestDDMFormInstanceVersion =
+			_ddmFormInstanceVersionLocalService.getLatestFormInstanceVersion(
+				ddmFormInstance.getFormInstanceId(),
+				WorkflowConstants.STATUS_APPROVED);
 
-		return ddmStructure.getDDMForm();
+		DDMStructureVersion ddmStructureVersion =
+			latestDDMFormInstanceVersion.getStructureVersion();
+
+		return ddmStructureVersion.getDDMForm();
 	}
 
 	private ServiceContext _createServiceContext(
@@ -201,6 +209,10 @@ public class AddFormInstanceRecordMVCResourceCommand
 	@Reference
 	private DDMFormInstanceRecordVersionLocalService
 		_ddmFormInstanceRecordVersionLocalService;
+
+	@Reference
+	private DDMFormInstanceVersionLocalService
+		_ddmFormInstanceVersionLocalService;
 
 	@Reference
 	private Language _language;
