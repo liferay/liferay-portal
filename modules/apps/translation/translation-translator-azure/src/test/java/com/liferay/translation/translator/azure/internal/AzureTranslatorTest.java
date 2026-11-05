@@ -8,6 +8,7 @@ package com.liferay.translation.translator.azure.internal;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.json.JSONFactoryImpl;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
@@ -90,6 +91,22 @@ public class AzureTranslatorTest {
 	}
 
 	@Test
+	public void testTranslateWhenResponseCodeIsNotOK() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			_azureTranslator, "_http", _setUpHttp(500));
+
+		try {
+			_azureTranslator.translate(_getTranslatorPacket());
+
+			Assert.fail();
+		}
+		catch (PortalException portalException) {
+			Assert.assertEquals(
+				"Response code 500", portalException.getMessage());
+		}
+	}
+
+	@Test
 	public void testTranslateWhenUserAgentIsConfigured() throws Exception {
 		String userAgent = RandomTestUtil.randomString();
 
@@ -151,7 +168,7 @@ public class AzureTranslatorTest {
 			_azureTranslator, "_configurationProvider",
 			_setUpConfigurationProvider(_COMPANY_ID, userAgent));
 		ReflectionTestUtil.setFieldValue(
-			_azureTranslator, "_http", _setUpHttp());
+			_azureTranslator, "_http", _setUpHttp(200));
 		ReflectionTestUtil.setFieldValue(
 			_azureTranslator, "_jsonFactory", _jsonFactoryImpl);
 
@@ -211,7 +228,7 @@ public class AzureTranslatorTest {
 		return configurationProvider;
 	}
 
-	private Http _setUpHttp() throws Exception {
+	private Http _setUpHttp(int responseCode) throws Exception {
 		Http http = Mockito.mock(Http.class);
 
 		Mockito.when(
@@ -224,7 +241,7 @@ public class AzureTranslatorTest {
 
 				Http.Response httpResponse = new Http.Response();
 
-				httpResponse.setResponseCode(200);
+				httpResponse.setResponseCode(responseCode);
 
 				options.setResponse(httpResponse);
 
