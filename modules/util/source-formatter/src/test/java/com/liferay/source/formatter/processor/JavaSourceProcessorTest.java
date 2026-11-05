@@ -234,6 +234,24 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testEmptyServiceProperties() throws Exception {
+		String message =
+			"Pass \"null\" instead of an empty \"Dictionary\" as the service " +
+				"properties";
+
+		test(
+			SourceProcessorTestParameters.create(
+				"EmptyServiceProperties.testjava"
+			).addExpectedMessage(
+				message, 23
+			).addExpectedMessage(
+				message, 28
+			).addExpectedMessage(
+				message, 34
+			));
+	}
+
+	@Test
 	public void testExceedMaxLineLength() throws Exception {
 		test("ExceedMaxLineLength.testjava", "> 80", 27);
 	}

@@ -425,6 +425,12 @@
 			<property name="enabled" value="false" />
 			<message key="empty.constructor.unneeded" value="Empty constructor is not needed" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.EmptyServicePropertiesCheck">
+			<property name="category" value="Performance" />
+			<property name="description" value="Finds `registerService` calls that pass an empty `Hashtable` or `HashMapDictionary` as the service properties, which should pass `null` instead." />
+			<property name="enabled" value="false" />
+			<message key="service.properties.null" value="Pass &quot;null&quot; instead of an empty &quot;Dictionary&quot; as the service properties" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.EnumConstantDividerCheck">
 			<property name="category" value="Styling" />
 			<property name="description" value="Find unnecessary empty lines between enum constants." />

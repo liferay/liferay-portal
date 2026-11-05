@@ -7,6 +7,7 @@ AssignAsUsedCheck | .java | Finds cases where an assign statement can be inlined
 [BatchableUpdateCheck](check/batchable_update_check.md#batchableupdatecheck) | .java | Checks for cases where batch updates should be used inside a loop instead of individual executeUpdate calls. |
 ConcatCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks for correct use of `StringBundler.concat`. |
 ConstructorGlobalVariableDeclarationCheck | .java | Checks that initial values of global variables are not set in the constructor. |
+[EmptyServicePropertiesCheck](check/empty_service_properties_check.md#emptyservicepropertiescheck) | .java | Finds `registerService` calls that pass an empty `Hashtable` or `HashMapDictionary` as the service properties, which should pass `null` instead. |
 [ExceptionCheck](check/exception_check.md#exceptioncheck) | .java | Finds private methods that throw unnecessary exception. |
 [FrameworkBundleCheck](check/framework_bundle_check.md#frameworkbundlecheck) | .java | Checks that `org.osgi.framework.Bundle.getHeaders()` is not used. |
 [GradleDependenciesCheck](check/gradle_dependencies_check.md#gradledependenciescheck) | .gradle | Checks that modules are not depending on other modules. |
