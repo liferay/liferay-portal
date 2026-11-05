@@ -13,6 +13,7 @@ import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.RelatedInfoFieldValue;
 import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.DateTimeInfoFieldType;
+import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.list.type.model.ListTypeEntry;
@@ -29,6 +30,8 @@ import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.rest.dto.v1_0.Status;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
+import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
+import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
@@ -39,6 +42,7 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -152,6 +156,114 @@ public class ObjectEntryUtil {
 		}
 
 		return value;
+	}
+
+	public static void relateNestedObjectEntries(
+			long companyId, long groupId,
+			InfoItemFieldValues infoItemFieldValues,
+			ObjectEntryManagerRegistry objectEntryManagerRegistry,
+			ServiceContext serviceContext, long userId)
+		throws Exception {
+
+		Map<String, ObjectDefinition> objectDefinitionMap = new HashMap<>();
+
+		for (InfoFieldValue<Object> infoFieldValue :
+				infoItemFieldValues.getInfoFieldValues()) {
+
+			InfoField infoField = infoFieldValue.getInfoField();
+
+			if (!StringUtil.startsWith(
+					infoField.getUniqueId(),
+					ObjectRelationship.class.getSimpleName()) ||
+				!(infoField.getInfoFieldType() instanceof
+					RelationshipInfoFieldType)) {
+
+				continue;
+			}
+
+			InfoField<RelationshipInfoFieldType>
+				relationshipInfoFieldTypeInfoField =
+					(InfoField<RelationshipInfoFieldType>)infoField;
+
+			if (!relationshipInfoFieldTypeInfoField.getAttribute(
+					RelationshipInfoFieldType.MULTIPLE)) {
+
+				continue;
+			}
+
+			RelatedInfoFieldValue relatedInfoFieldValue =
+				(RelatedInfoFieldValue)infoFieldValue.getValue();
+
+			String[] parts = StringUtil.split(
+				infoField.getUniqueId(), StringPool.POUND);
+
+			Map
+				<RelatedInfoFieldValue.RelatedInfoFieldValueIdentifier,
+				 InfoFieldValue<?>> relatedInfoFieldValues =
+					relatedInfoFieldValue.getRelatedInfoFieldValues();
+
+			for (Map.Entry
+					<RelatedInfoFieldValue.RelatedInfoFieldValueIdentifier,
+					 InfoFieldValue<?>> entry :
+						relatedInfoFieldValues.entrySet()) {
+
+				InfoFieldValue<?> entryInfoFieldValue = entry.getValue();
+
+				if (entryInfoFieldValue == null) {
+					continue;
+				}
+
+				Object value = entryInfoFieldValue.getValue();
+
+				if (!(value instanceof List<?>) ||
+					ListUtil.isEmpty((List<?>)value)) {
+
+					continue;
+				}
+
+				String objectDefinitionName = parts[1];
+
+				ObjectDefinition objectDefinition = objectDefinitionMap.get(
+					objectDefinitionName);
+
+				if (objectDefinition == null) {
+					objectDefinition =
+						ObjectDefinitionLocalServiceUtil.getObjectDefinition(
+							companyId, objectDefinitionName);
+
+					objectDefinitionMap.put(
+						objectDefinitionName, objectDefinition);
+				}
+
+				if (!objectDefinition.isDefaultStorageType()) {
+					continue;
+				}
+
+				RelatedInfoFieldValue.RelatedInfoFieldValueIdentifier
+					relatedInfoFieldValueIdentifier = entry.getKey();
+
+				ObjectEntry objectEntry =
+					ObjectEntryLocalServiceUtil.getObjectEntry(
+						relatedInfoFieldValueIdentifier.
+							getExternalReferenceCode(),
+						groupId, objectDefinition.getObjectDefinitionId());
+
+				_relateObjectEntries(
+					DefaultObjectEntryManagerProvider.provide(
+						objectEntryManagerRegistry.getObjectEntryManager(
+							objectDefinition.getCompanyId(),
+							objectDefinition.getStorageType())),
+					objectDefinition,
+					ObjectRelationshipLocalServiceUtil.getObjectRelationship(
+						objectDefinition.getObjectDefinitionId(),
+						StringUtil.removeSubstring(
+							infoField.getName(),
+							ObjectRelationshipConstants.
+								OBJECT_RELATIONSHIP_FIELD_NAME_PREFIX)),
+					objectEntry.getPrimaryKey(), (List<String>)value,
+					serviceContext, userId);
+			}
+		}
 	}
 
 	public static void relateObjectEntries(

@@ -7,20 +7,15 @@ package com.liferay.object.web.internal.info.item.updater;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
-import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.RelatedInfoFieldValue;
-import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.item.updater.InfoItemFieldValuesUpdater;
-import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.info.item.util.ObjectEntryInfoItemUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.model.ObjectRelationship;
-import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.object.rest.dto.v1_0.Status;
 import com.liferay.object.rest.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
@@ -51,7 +46,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -61,8 +55,6 @@ import com.liferay.portal.vulcan.scope.Scope;
 
 import java.text.DateFormat;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -253,10 +245,11 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 					updatedObjectEntry.getPrimaryKey(), serviceContext,
 					themeDisplay.getUserId());
 
-				_relateNestedObjectEntries(
+				ObjectEntryUtil.relateNestedObjectEntries(
 					themeDisplay.getCompanyId(),
 					updatedObjectEntry.getGroupId(), infoItemFieldValues,
-					serviceContext, themeDisplay.getUserId());
+					_objectEntryManagerRegistry, serviceContext,
+					themeDisplay.getUserId());
 			}
 
 			return updatedObjectEntry;
@@ -408,139 +401,6 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 		}
 
 		return _toTaxonomyCategoryBriefs(assetCategoryIds, locale);
-	}
-
-	private void _relateNestedObjectEntries(
-			long companyId, long groupId,
-			InfoItemFieldValues infoItemFieldValues,
-			ServiceContext serviceContext, long userId)
-		throws Exception {
-
-		Map<String, ObjectDefinition> objectDefinitionMap = new HashMap<>();
-
-		for (InfoFieldValue<Object> infoFieldValue :
-				infoItemFieldValues.getInfoFieldValues()) {
-
-			InfoField infoField = infoFieldValue.getInfoField();
-
-			if (!StringUtil.startsWith(
-					infoField.getUniqueId(),
-					ObjectRelationship.class.getSimpleName()) ||
-				!(infoField.getInfoFieldType() instanceof
-					RelationshipInfoFieldType)) {
-
-				continue;
-			}
-
-			InfoField<RelationshipInfoFieldType>
-				relationshipInfoFieldTypeInfoField =
-					(InfoField<RelationshipInfoFieldType>)infoField;
-
-			if (!relationshipInfoFieldTypeInfoField.getAttribute(
-					RelationshipInfoFieldType.MULTIPLE)) {
-
-				continue;
-			}
-
-			RelatedInfoFieldValue relatedInfoFieldValue =
-				(RelatedInfoFieldValue)infoFieldValue.getValue();
-
-			String[] parts = StringUtil.split(
-				infoField.getUniqueId(), StringPool.POUND);
-
-			Map
-				<RelatedInfoFieldValue.RelatedInfoFieldValueIdentifier,
-				 InfoFieldValue<?>> relatedInfoFieldValues =
-					relatedInfoFieldValue.getRelatedInfoFieldValues();
-
-			for (Map.Entry
-					<RelatedInfoFieldValue.RelatedInfoFieldValueIdentifier,
-					 InfoFieldValue<?>> entry :
-						relatedInfoFieldValues.entrySet()) {
-
-				InfoFieldValue<?> entryInfoFieldValue = entry.getValue();
-
-				if (entryInfoFieldValue == null) {
-					continue;
-				}
-
-				Object value = entryInfoFieldValue.getValue();
-
-				if (!(value instanceof List<?>) ||
-					ListUtil.isEmpty((List<?>)value)) {
-
-					continue;
-				}
-
-				String objectDefinitionName = parts[1];
-
-				ObjectDefinition objectDefinition = objectDefinitionMap.get(
-					objectDefinitionName);
-
-				if (objectDefinition == null) {
-					objectDefinition =
-						ObjectDefinitionLocalServiceUtil.getObjectDefinition(
-							companyId, objectDefinitionName);
-
-					objectDefinitionMap.put(
-						objectDefinitionName, objectDefinition);
-				}
-
-				if (!objectDefinition.isDefaultStorageType()) {
-					continue;
-				}
-
-				DefaultObjectEntryManager defaultObjectEntryManager =
-					DefaultObjectEntryManagerProvider.provide(
-						_objectEntryManagerRegistry.getObjectEntryManager(
-							objectDefinition.getCompanyId(),
-							objectDefinition.getStorageType()));
-
-				RelatedInfoFieldValue.RelatedInfoFieldValueIdentifier
-					relatedInfoFieldValueIdentifier = entry.getKey();
-
-				ObjectEntry objectEntry =
-					ObjectEntryLocalServiceUtil.fetchObjectEntry(
-						relatedInfoFieldValueIdentifier.
-							getExternalReferenceCode(),
-						groupId, objectDefinition.getObjectDefinitionId());
-
-				ObjectRelationship objectRelationship =
-					ObjectRelationshipLocalServiceUtil.getObjectRelationship(
-						objectDefinition.getObjectDefinitionId(),
-						StringUtil.removeSubstring(
-							infoField.getName(),
-							ObjectRelationshipConstants.
-								OBJECT_RELATIONSHIP_FIELD_NAME_PREFIX));
-
-				ObjectDefinition relatedObjectDefinition =
-					ObjectRelationshipUtil.getRelatedObjectDefinition(
-						objectDefinition, objectRelationship);
-
-				defaultObjectEntryManager.disassociateRelatedModels(
-					new DefaultDTOConverterContext(
-						false, null, null, null,
-						LocaleUtil.fromLanguageId(
-							objectDefinition.getDefaultLanguageId(), true,
-							false),
-						null, null),
-					objectDefinition, objectRelationship,
-					objectEntry.getPrimaryKey(), relatedObjectDefinition,
-					userId);
-
-				List<String> relatedObjectEntryIds = (List<String>)value;
-
-				for (String relatedObjectEntryId : relatedObjectEntryIds) {
-					ObjectRelationshipLocalServiceUtil.
-						addObjectRelationshipMappingTableValues(
-							userId,
-							objectRelationship.getObjectRelationshipId(),
-							objectEntry.getPrimaryKey(),
-							GetterUtil.getLong(relatedObjectEntryId),
-							serviceContext);
-				}
-			}
-		}
 	}
 
 	private TaxonomyCategoryBrief[] _toTaxonomyCategoryBriefs(

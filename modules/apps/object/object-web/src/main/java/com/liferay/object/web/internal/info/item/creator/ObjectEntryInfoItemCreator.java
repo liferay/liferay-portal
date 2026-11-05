@@ -134,12 +134,20 @@ public class ObjectEntryInfoItemCreator
 						_objectScopeProviderRegistry));
 
 			if (objectDefinition.isDefaultStorageType()) {
+				ObjectEntry addedObjectEntry = ObjectEntryUtil.toObjectEntry(
+					objectDefinition, objectEntry);
+
 				ObjectEntryUtil.relateObjectEntries(
 					DefaultObjectEntryManagerProvider.provide(
 						objectEntryManager),
 					infoItemFieldValues, objectDefinition,
-					GetterUtil.getLong(objectEntry.getId()), serviceContext,
+					addedObjectEntry.getPrimaryKey(), serviceContext,
 					themeDisplay.getUserId());
+
+				ObjectEntryUtil.relateNestedObjectEntries(
+					themeDisplay.getCompanyId(), addedObjectEntry.getGroupId(),
+					infoItemFieldValues, _objectEntryManagerRegistry,
+					serviceContext, themeDisplay.getUserId());
 			}
 
 			ObjectEntry serviceBuilderObjectEntry =
