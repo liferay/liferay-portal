@@ -123,12 +123,12 @@ public class AddDisplayPageMVCActionCommandTest {
 	private void _testGetRedirectURLFromDesignLibrary() throws Exception {
 		Group depotGroup = _addDesignLibraryGroup();
 
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest(depotGroup);
+
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				depotGroup.getGroupId());
-
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			_getMockLiferayPortletActionRequest(depotGroup);
 
 		String expectedBackURL = DesignLibraryUtil.getDesignLibraryResourcesURL(
 			depotGroup,
