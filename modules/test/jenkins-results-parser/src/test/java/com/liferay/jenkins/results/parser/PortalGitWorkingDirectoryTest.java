@@ -98,16 +98,16 @@ public class PortalGitWorkingDirectoryTest
 		).getJSUnitFiles();
 
 		Mockito.doReturn(
-			portalPrivateDir
-		).when(
-			portalGitWorkingDirectory
-		).getPortalPrivateDir();
-
-		Mockito.doReturn(
 			portalDir
 		).when(
 			portalGitWorkingDirectory
 		).getWorkingDirectory();
+
+		Mockito.doReturn(
+			portalPrivateDir
+		).when(
+			portalGitWorkingDirectory
+		).getPortalPrivateDir();
 
 		testEquals(
 			new TreeSet<>(
