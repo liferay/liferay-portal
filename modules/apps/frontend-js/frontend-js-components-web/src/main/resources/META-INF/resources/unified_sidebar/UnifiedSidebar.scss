@@ -1,7 +1,37 @@
 @import 'cadmin-variables';
 
 html#{$cadmin-selector} {
+	.unified-sidebar {
+		.menubar-primary a.nav-link {
+			padding: var(--menubar-primary-nav-link-padding, 10px 16px);
+
+			&.active {
+				background-color: var(
+					--menubar-primary-nav-link-active-class-background-color,
+					#{$cadmin-primary-l3}
+				);
+
+				&::before {
+					background-color: var(
+						--menubar-primary-nav-link-active-class-highlight-background-color,
+						#{$cadmin-primary}
+					);
+				}
+			}
+		}
+
+		&.sidebar-light .unified-sidebar-header.sidebar-header {
+			background-color: transparent;
+		}
+	}
+
 	.unified-sidebar-header {
+		.sticker img {
+			height: 20px;
+			object-fit: contain;
+			width: 20px;
+		}
+
 		.unified-sidebar-close-button {
 			margin-bottom: auto;
 			margin-top: auto;
