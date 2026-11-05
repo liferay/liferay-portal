@@ -409,9 +409,12 @@ public class PortalInstanceLifecycleListenerManagerImpl
 						});
 				}
 				catch (Throwable throwable) {
-					_log.error(throwable.getMessage());
+					_companies.remove(company);
 
-					return portalInstanceLifecycleListener;
+					_log.error(
+						"Unable to unregister deleted portal instance " +
+							company,
+						throwable);
 				}
 			}
 
