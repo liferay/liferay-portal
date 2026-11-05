@@ -27,6 +27,11 @@ import org.osgi.service.component.annotations.Reference;
 public class DocumentLibraryPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "vocabulary";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

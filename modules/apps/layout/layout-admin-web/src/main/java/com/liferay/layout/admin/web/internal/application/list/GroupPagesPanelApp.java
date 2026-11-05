@@ -36,6 +36,11 @@ import org.osgi.service.component.annotations.Reference;
 public class GroupPagesPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "sheets";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}

@@ -31,6 +31,11 @@ import org.osgi.service.component.annotations.Reference;
 public class TrashPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "trash";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
