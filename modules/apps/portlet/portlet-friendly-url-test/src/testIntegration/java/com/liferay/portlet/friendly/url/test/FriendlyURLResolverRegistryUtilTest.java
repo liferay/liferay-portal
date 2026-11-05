@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -59,8 +58,7 @@ public class FriendlyURLResolverRegistryUtilTest {
 		_friendlyURLResolver = _createFriendlyURLResolver();
 
 		_serviceRegistration = _bundleContext.registerService(
-			FriendlyURLResolver.class, _friendlyURLResolver,
-			new HashMapDictionary());
+			FriendlyURLResolver.class, _friendlyURLResolver, null);
 	}
 
 	@AfterClass
@@ -185,8 +183,7 @@ public class FriendlyURLResolverRegistryUtilTest {
 		ServiceRegistration<FriendlyURLResolver> serviceRegistration =
 			_bundleContext.registerService(
 				FriendlyURLResolver.class,
-				_createFriendlyURLResolver(companyId, urlSeparator),
-				new HashMapDictionary<>());
+				_createFriendlyURLResolver(companyId, urlSeparator), null);
 
 		try {
 			_assertURLSeparators(_COMPANY_ID, _SEPARATOR, urlSeparator);

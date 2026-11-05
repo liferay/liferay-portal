@@ -646,8 +646,7 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 		// Register portlet using class name
 
 		registerService(
-			jakarta.portlet.Portlet.class, _internalClassTestPortlet,
-			new HashMapDictionary<String, Object>());
+			jakarta.portlet.Portlet.class, _internalClassTestPortlet, null);
 
 		_testPortletIsAvailable(expectedPortletId);
 	}

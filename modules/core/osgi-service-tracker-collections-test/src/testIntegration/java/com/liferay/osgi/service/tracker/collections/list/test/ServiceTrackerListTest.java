@@ -289,9 +289,7 @@ public class ServiceTrackerListTest {
 	protected <T> ServiceRegistration<T> registerService(
 		Class<T> clazz, T service) {
 
-		Hashtable<String, Object> properties = new Hashtable<>();
-
-		return registerService(clazz, service, properties);
+		return registerService(clazz, service, null);
 	}
 
 	protected <T> ServiceRegistration<T> registerService(

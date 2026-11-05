@@ -85,7 +85,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -1469,7 +1468,7 @@ public class ObjectRelationshipLocalServiceTest {
 				new TestSystemObjectDefinitionManager(
 					objectDefinition.getModelClass(),
 					objectDefinition.getName(), restContextPath),
-				new HashMapDictionary<>());
+				null);
 		}
 	}
 

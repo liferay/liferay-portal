@@ -52,7 +52,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -280,7 +279,7 @@ public class PortalImplAlternateURLTest {
 
 						return null;
 					}),
-				new HashMapDictionary<>());
+				null);
 
 		FriendlyURLResolverRegistryUtil.removeURLSeparators();
 

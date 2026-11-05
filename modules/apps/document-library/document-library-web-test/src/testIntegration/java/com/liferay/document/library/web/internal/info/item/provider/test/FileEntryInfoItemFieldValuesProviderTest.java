@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -70,8 +69,7 @@ public class FileEntryInfoItemFieldValuesProviderTest {
 		ServiceRegistration<InfoItemFieldReader> serviceRegistration =
 			bundleContext.registerService(
 				InfoItemFieldReader.class,
-				new TestFileEntryInfoItemFieldReader(),
-				new HashMapDictionary<String, String>());
+				new TestFileEntryInfoItemFieldReader(), null);
 
 		FileEntry fileEntry = _dlAppService.addFileEntry(
 			null, _group.getGroupId(),

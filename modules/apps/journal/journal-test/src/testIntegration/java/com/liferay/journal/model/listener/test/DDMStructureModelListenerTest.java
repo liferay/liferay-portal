@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -238,8 +237,7 @@ public class DDMStructureModelListenerTest {
 		ServiceRegistration<?> serviceRegistration =
 			bundleContext.registerService(
 				ModelListener.class,
-				new TestDDMStructureModelListener(runtimeException),
-				new HashMapDictionary<>());
+				new TestDDMStructureModelListener(runtimeException), null);
 
 		try {
 			_updateDataDefinition(

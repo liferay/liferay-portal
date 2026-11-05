@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.plugin.PluginPackage;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.plugin.PluginPackageUtil;
 
@@ -94,8 +93,7 @@ public class ResourceImporterExtender {
 
 				ServiceRegistration<ServletContext> serviceRegistration =
 					_bundleContext.registerService(
-						ServletContext.class, servletContext,
-						new HashMapDictionary<String, Object>());
+						ServletContext.class, servletContext, null);
 
 				Message message = new Message();
 

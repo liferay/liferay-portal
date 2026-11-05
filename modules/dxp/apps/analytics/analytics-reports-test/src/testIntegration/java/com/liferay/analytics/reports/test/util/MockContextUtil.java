@@ -13,7 +13,6 @@ import com.liferay.analytics.reports.test.analytics.reports.info.item.MockObject
 import com.liferay.analytics.reports.test.analytics.reports.info.item.MockSuperClassObjectAnalyticsReportsInfoItem;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.petra.function.UnsafeRunnable;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,13 +56,12 @@ public class MockContextUtil {
 						}
 
 					},
-					new HashMapDictionary<>()));
+					null));
 			serviceRegistrations.add(
 				bundleContext.registerService(
 					(Class<AnalyticsReportsInfoItem<MockObject>>)
 						(Class<?>)AnalyticsReportsInfoItem.class,
-					mockContext.getMockObjectAnalyticsReportsInfoItem(),
-					new HashMapDictionary<>()));
+					mockContext.getMockObjectAnalyticsReportsInfoItem(), null));
 			serviceRegistrations.add(
 				bundleContext.registerService(
 					AnalyticsReportsInfoItemObjectProvider.class,
@@ -84,14 +82,14 @@ public class MockContextUtil {
 						}
 
 					},
-					new HashMapDictionary<>()));
+					null));
 			serviceRegistrations.add(
 				bundleContext.registerService(
 					(Class<AnalyticsReportsInfoItem<MockSuperClassObject>>)
 						(Class<?>)AnalyticsReportsInfoItem.class,
 					mockContext.
 						getMockSuperClassObjectAnalyticsReportsInfoItem(),
-					new HashMapDictionary<>()));
+					null));
 			unsafeRunnable.run();
 		}
 		finally {

@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.SecureRandomUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.PortalInetSocketAddressEventListener;
@@ -200,8 +199,7 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 		_serviceRegistration = bundleContext.registerService(
 			PortalInetSocketAddressEventListener.class,
-			new ClusterExecutorPortalInetSocketAddressEventListener(),
-			new HashMapDictionary<String, Object>());
+			new ClusterExecutorPortalInetSocketAddressEventListener(), null);
 	}
 
 	@Deactivate

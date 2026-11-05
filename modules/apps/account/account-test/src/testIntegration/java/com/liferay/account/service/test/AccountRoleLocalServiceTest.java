@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -292,7 +291,7 @@ public class AccountRoleLocalServiceTest {
 					}
 
 				},
-				new HashMapDictionary<>());
+				null);
 
 		try {
 			_testDeleteAccountRole(_accountRoleLocalService::deleteAccountRole);

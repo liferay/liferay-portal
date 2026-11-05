@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.cluster.ClusterLink;
 import com.liferay.portal.kernel.cluster.ClusterMasterExecutor;
 import com.liferay.portal.kernel.cluster.ClusterMasterTokenTransitionListener;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -61,13 +60,11 @@ public class ModulePortalProfile extends BaseDSModulePortalProfile {
 
 			bundleContext.registerService(
 				ClusterLink.class,
-				ProxyFactory.newDummyInstance(ClusterLink.class),
-				new HashMapDictionary<>());
+				ProxyFactory.newDummyInstance(ClusterLink.class), null);
 
 			bundleContext.registerService(
 				ClusterExecutor.class,
-				ProxyFactory.newDummyInstance(ClusterExecutor.class),
-				new HashMapDictionary<>());
+				ProxyFactory.newDummyInstance(ClusterExecutor.class), null);
 
 			bundleContext.registerService(
 				ClusterMasterExecutor.class,
@@ -103,7 +100,7 @@ public class ModulePortalProfile extends BaseDSModulePortalProfile {
 					}
 
 				},
-				new HashMapDictionary<>());
+				null);
 		}
 
 		init(

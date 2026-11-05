@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.scheduler.SchedulerEngine;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -62,8 +61,7 @@ public class ModulePortalProfile extends BaseDSModulePortalProfile {
 
 			_triggerFactoryServiceRegistration = bundleContext.registerService(
 				TriggerFactory.class,
-				ProxyFactory.newDummyInstance(TriggerFactory.class),
-				new HashMapDictionary<>());
+				ProxyFactory.newDummyInstance(TriggerFactory.class), null);
 		}
 
 		init(

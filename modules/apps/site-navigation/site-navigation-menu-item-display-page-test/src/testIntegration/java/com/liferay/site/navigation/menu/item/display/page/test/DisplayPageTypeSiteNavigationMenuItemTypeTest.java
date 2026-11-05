@@ -59,7 +59,6 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -176,7 +175,7 @@ public class DisplayPageTypeSiteNavigationMenuItemTypeTest {
 					}
 
 				},
-				new HashMapDictionary<String, String>());
+				null);
 
 			Assert.assertTrue(siteNavigationMenuItemType.isMultiSelection());
 		}

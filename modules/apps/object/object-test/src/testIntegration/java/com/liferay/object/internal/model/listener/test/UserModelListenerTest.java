@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Localization;
@@ -90,7 +89,7 @@ public class UserModelListenerTest {
 				StringBundler.concat(
 					"/o/", RandomTestUtil.randomString(), StringPool.SLASH,
 					RandomTestUtil.randomString())),
-			new HashMapDictionary<>());
+			null);
 	}
 
 	@After

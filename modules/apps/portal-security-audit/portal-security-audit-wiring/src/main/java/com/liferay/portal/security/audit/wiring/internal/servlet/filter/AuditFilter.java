@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.TryFilter;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
@@ -162,7 +161,7 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 		_auditLogContext = new AuditLogContext();
 
 		_serviceRegistration = bundleContext.registerService(
-			LogContext.class, _auditLogContext, new HashMapDictionary());
+			LogContext.class, _auditLogContext, null);
 
 		_auditLogContextConfiguration = ConfigurableUtil.createConfigurable(
 			AuditLogContextConfiguration.class, properties);

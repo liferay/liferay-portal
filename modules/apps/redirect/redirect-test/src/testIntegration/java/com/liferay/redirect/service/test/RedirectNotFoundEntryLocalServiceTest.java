@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.spring.transaction.DefaultTransactionExecutor;
 import com.liferay.portal.test.rule.ExpectedDBType;
 import com.liferay.portal.test.rule.ExpectedLog;
@@ -399,7 +398,7 @@ public class RedirectNotFoundEntryLocalServiceTest {
 					private boolean _executed;
 
 				},
-				new HashMapDictionary<>());
+				null);
 
 		return serviceRegistration::unregister;
 	}

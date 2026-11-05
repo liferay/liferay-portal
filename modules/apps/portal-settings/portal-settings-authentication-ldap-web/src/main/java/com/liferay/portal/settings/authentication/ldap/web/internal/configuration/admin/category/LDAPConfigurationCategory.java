@@ -8,7 +8,6 @@ package com.liferay.portal.settings.authentication.ldap.web.internal.configurati
 import com.liferay.configuration.admin.category.ConfigurationCategory;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.settings.authentication.ldap.web.internal.configuration.admin.display.ExportLDAPPortalSettingsConfigurationScreenWrapper;
 import com.liferay.portal.settings.authentication.ldap.web.internal.configuration.admin.display.GeneralLDAPPortalSettingsConfigurationScreenWrapper;
 import com.liferay.portal.settings.authentication.ldap.web.internal.configuration.admin.display.ImportLDAPPortalSettingsConfigurationScreenWrapper;
@@ -89,12 +88,12 @@ public class LDAPConfigurationCategory implements ConfigurationCategory {
 			bundleContext.registerService(
 				ConfigurationScreen.class,
 				function.apply(ExtendedObjectClassDefinition.Scope.SYSTEM),
-				new HashMapDictionary<>()));
+				null));
 		_serviceRegistrations.add(
 			bundleContext.registerService(
 				ConfigurationScreen.class,
 				function.apply(ExtendedObjectClassDefinition.Scope.COMPANY),
-				new HashMapDictionary<>()));
+				null));
 	}
 
 	@Reference

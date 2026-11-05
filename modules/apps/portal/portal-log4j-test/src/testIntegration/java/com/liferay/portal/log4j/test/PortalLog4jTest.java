@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.IOException;
@@ -749,7 +748,7 @@ public class PortalLog4jTest {
 					}
 
 				},
-				new HashMapDictionary());
+				null);
 
 		PatternLayout.Builder patternLayoutBuilder = PatternLayout.newBuilder();
 

@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.permission.contributor.PermissionSQLContributor;
 import com.liferay.sharing.configuration.SharingConfiguration;
@@ -90,7 +89,7 @@ public class SharingModelResourcePermissionConfiguratorImpl
 					_classNameLocalService, _groupLocalService,
 					_sharingConfigurationFactory, _sharingEntryLocalService,
 					_userGroupLocalService, _userLocalService),
-				new HashMapDictionary<>());
+				null);
 	}
 
 	@Deactivate

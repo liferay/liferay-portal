@@ -40,7 +40,6 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.CollectionEntityField;
 import com.liferay.portal.odata.entity.DateTimeEntityField;
@@ -113,8 +112,7 @@ public class BaseBatchEngineTaskExecutorTest {
 		_batchEngineTaskItemDelegateServiceRegistration =
 			bundleContext.registerService(
 				BatchEngineTaskItemDelegate.class.getName(),
-				new TestBlogPostingBatchEngineTaskItemDelegate(),
-				new HashMapDictionary<String, String>());
+				new TestBlogPostingBatchEngineTaskItemDelegate(), null);
 
 		initialCount = getBlogEntriesCount();
 	}

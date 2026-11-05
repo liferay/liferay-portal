@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -178,7 +177,7 @@ public class AntivirusAsyncStatisticsManager
 					_virusFoundCounter.incrementAndGet();
 				}
 			},
-			new HashMapDictionary<>());
+			null);
 	}
 
 	@Deactivate

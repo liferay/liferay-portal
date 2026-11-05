@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -81,8 +80,6 @@ public abstract class BasePortletContainerTestCase {
 
 	protected void registerService(
 		Class<?> clazz, Object object, Dictionary<String, Object> properties) {
-
-		Assert.assertNotNull(properties);
 
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
 

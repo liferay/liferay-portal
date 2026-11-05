@@ -20,7 +20,6 @@ import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFacto
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.search.capabilities.SearchCapabilities;
@@ -370,8 +369,7 @@ public class ConfigurationEntryRetrieverImpl
 
 		ServiceRegistration<ConfigurationCategory> serviceRegistration =
 			_bundleContext.registerService(
-				ConfigurationCategory.class, configurationCategory,
-				new HashMapDictionary<>());
+				ConfigurationCategory.class, configurationCategory, null);
 
 		_configurationCategoryServiceRegistrations.add(serviceRegistration);
 	}

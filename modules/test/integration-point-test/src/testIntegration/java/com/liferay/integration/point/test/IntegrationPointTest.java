@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.auth.FullNameGenerator;
 import com.liferay.portal.kernel.security.auth.FullNameGeneratorFactory;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ProxyFactory;
 
@@ -62,8 +61,7 @@ public class IntegrationPointTest {
 			XStreamConverter.class);
 
 		_serviceRegistration = _bundleContext.registerService(
-			XStreamConverter.class, xStreamConverter,
-			new HashMapDictionary<>());
+			XStreamConverter.class, xStreamConverter, null);
 
 		Set<XStreamConverter> xStreamConverters =
 			XStreamConverterRegistryUtil.getXStreamConverters();
@@ -91,7 +89,7 @@ public class IntegrationPointTest {
 		Sanitizer sanitizer = ProxyFactory.newDummyInstance(Sanitizer.class);
 
 		_serviceRegistration = _bundleContext.registerService(
-			Sanitizer.class, sanitizer, new HashMapDictionary<>());
+			Sanitizer.class, sanitizer, null);
 
 		List<Sanitizer> sanitizers = new ArrayList<>();
 

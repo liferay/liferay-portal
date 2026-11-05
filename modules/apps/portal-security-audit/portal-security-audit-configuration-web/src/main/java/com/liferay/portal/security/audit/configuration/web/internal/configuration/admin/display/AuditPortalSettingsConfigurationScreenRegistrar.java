@@ -9,7 +9,6 @@ import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenFactory;
 
 import jakarta.servlet.ServletContext;
@@ -40,7 +39,7 @@ public class AuditPortalSettingsConfigurationScreenRegistrar {
 					_portalSettingsConfigurationScreenFactory,
 					ExtendedObjectClassDefinition.Scope.COMPANY,
 					_servletContext),
-				new HashMapDictionary<>()));
+				null));
 		_serviceRegistrations.add(
 			bundleContext.registerService(
 				ConfigurationScreen.class,
@@ -49,7 +48,7 @@ public class AuditPortalSettingsConfigurationScreenRegistrar {
 					_portalSettingsConfigurationScreenFactory,
 					ExtendedObjectClassDefinition.Scope.SYSTEM,
 					_servletContext),
-				new HashMapDictionary<>()));
+				null));
 	}
 
 	@Deactivate

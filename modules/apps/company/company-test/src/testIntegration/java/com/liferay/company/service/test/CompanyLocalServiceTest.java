@@ -97,7 +97,6 @@ import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -1454,7 +1453,7 @@ public class CompanyLocalServiceTest {
 					}
 
 				},
-				new HashMapDictionary<>()));
+				null));
 		_serviceRegistrations.add(
 			bundleContext.registerService(
 				ModelListener.class,
@@ -1468,7 +1467,7 @@ public class CompanyLocalServiceTest {
 					}
 
 				},
-				new HashMapDictionary<>()));
+				null));
 
 		return modelListeners;
 	}

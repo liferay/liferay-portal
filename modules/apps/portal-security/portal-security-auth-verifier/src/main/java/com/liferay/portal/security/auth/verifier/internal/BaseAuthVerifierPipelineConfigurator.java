@@ -8,7 +8,6 @@ package com.liferay.portal.security.auth.verifier.internal;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifier;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierConfiguration;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.security.auth.AuthVerifierPipeline;
 
 import java.util.Map;
@@ -55,8 +54,7 @@ public abstract class BaseAuthVerifierPipelineConfigurator {
 		authVerifierConfiguration.setProperties(translatedProperties);
 
 		_serviceRegistration = bundleContext.registerService(
-			AuthVerifierConfiguration.class, authVerifierConfiguration,
-			new HashMapDictionary<>());
+			AuthVerifierConfiguration.class, authVerifierConfiguration, null);
 	}
 
 	@Deactivate

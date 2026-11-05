@@ -39,7 +39,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -184,7 +183,7 @@ public class LayoutDisplayPageObjectProviderAnalyticsReportsInfoItemTest {
 					}
 
 				},
-				new HashMapDictionary<String, String>());
+				null);
 
 		try {
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -284,7 +283,7 @@ public class LayoutDisplayPageObjectProviderAnalyticsReportsInfoItemTest {
 				).createDate(
 					createDate
 				).build(),
-				new HashMapDictionary<String, String>());
+				null);
 
 		try {
 			Assert.assertEquals(
@@ -317,7 +316,7 @@ public class LayoutDisplayPageObjectProviderAnalyticsReportsInfoItemTest {
 				).createDate(
 					new Date()
 				).build(),
-				new HashMapDictionary<String, String>());
+				null);
 
 		try {
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -366,7 +365,7 @@ public class LayoutDisplayPageObjectProviderAnalyticsReportsInfoItemTest {
 				).title(
 					title
 				).build(),
-				new HashMapDictionary<String, String>());
+				null);
 
 		try {
 			Assert.assertEquals(

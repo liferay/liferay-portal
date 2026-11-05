@@ -485,10 +485,6 @@ public abstract class BaseTestPreparatorBundleActivator
 	protected ServiceRegistration<ScopeFinder> registerScopeFinder(
 		ScopeFinder scopeFinder, Dictionary<String, Object> properties) {
 
-		if ((properties == null) || properties.isEmpty()) {
-			properties = new HashMapDictionary<>();
-		}
-
 		ServiceRegistration<ScopeFinder> serviceRegistration =
 			bundleContext.registerService(
 				ScopeFinder.class, scopeFinder, properties);
