@@ -35,6 +35,44 @@ const SITES: Site[] = [
 	},
 ];
 
+const SPACES: AssetLibrary[] = [
+	{
+		descriptiveName: 'Book',
+		existsInInstance: true,
+		externalReferenceCode: 'erc-book',
+		type: 'Space',
+	},
+	{
+		descriptiveName: 'Catalog',
+		existsInInstance: false,
+		externalReferenceCode: 'erc-catalog',
+		type: 'Space',
+	},
+];
+
+const GROUPS = {
+	site: {
+		groups: SITES,
+		labels: {
+			empty: 'no-sites-are-selected',
+			select: 'select-sites',
+			title: 'sites',
+		},
+		picked: 'Support',
+		pickedCode: 'erc-support',
+	},
+	space: {
+		groups: SPACES,
+		labels: {
+			empty: 'no-spaces-are-selected',
+			select: 'select-spaces',
+			title: 'spaces',
+		},
+		picked: 'Catalog',
+		pickedCode: 'erc-catalog',
+	},
+};
+
 const renderControl = (
 	props: Partial<React.ComponentProps<typeof GroupsControl>> = {}
 ) => {
@@ -54,19 +92,27 @@ const renderControl = (
 	return {...renderResult, onChange};
 };
 
-const openDialog = () =>
-	userEvent.click(screen.getByRole('button', {name: 'select-sites'}));
+const openDialog = (label = 'select-sites') =>
+	userEvent.click(screen.getByRole('button', {name: label}));
 
 const findRow = async (title: string) =>
 	(await screen.findByText(title)).closest('tr') as HTMLElement;
 
-const SITES_PAGE = JSON.stringify({
-	items: SITES,
-	lastPage: 1,
-	page: 1,
-	pageSize: 20,
-	totalCount: SITES.length,
-});
+const getColumnHeaders = () =>
+	screen
+		.getAllByRole('columnheader')
+		.map((columnHeader) => columnHeader.textContent);
+
+const toPage = (items: Site[] | AssetLibrary[]) =>
+	JSON.stringify({
+		items,
+		lastPage: 1,
+		page: 1,
+		pageSize: 20,
+		totalCount: items.length,
+	});
+
+const SITES_PAGE = toPage(SITES);
 
 describe('GroupsControl', () => {
 	beforeAll(() => {
@@ -79,29 +125,76 @@ describe('GroupsControl', () => {
 		);
 	});
 
+	afterAll(() => {
+		(Liferay.Language.get as jest.Mock).mockImplementation(
+			(key: string) => key
+		);
+	});
+
 	beforeEach(() => {
 		fetch.resetMocks();
 		fetch.mockResponse(SITES_PAGE);
 	});
 
-	it('shows the total number of sites available', () => {
-		renderControl();
+	describe.each(['site', 'space'] as const)('selecting %ss', (type) => {
+		const {groups, labels, picked, pickedCode} = GROUPS[type];
 
-		expect(screen.getByText('sites')).toBeInTheDocument();
+		const renderGroups = (
+			props: Partial<React.ComponentProps<typeof GroupsControl>> = {}
+		) => renderControl({groups, totalCount: groups.length, type, ...props});
 
-		expect(screen.getByText('2 Items')).toBeInTheDocument();
-	});
+		it('names the section and its empty state', () => {
+			renderGroups();
 
-	it('says nothing is selected when nothing is selected', () => {
-		renderControl();
+			expect(screen.getByText(labels.title)).toBeInTheDocument();
+			expect(screen.getByText(labels.empty)).toBeInTheDocument();
+		});
 
-		expect(screen.getByText('no-sites-are-selected')).toBeInTheDocument();
-	});
+		it('shows how many are available', () => {
+			renderGroups();
 
-	it('names the selected sites', () => {
-		renderControl({selectedExternalReferenceCodes: ['erc-support']});
+			expect(screen.getByText('2 Items')).toBeInTheDocument();
+		});
 
-		expect(screen.getByText('Selected Support')).toBeInTheDocument();
+		it('names the selected ones', () => {
+			renderGroups({selectedExternalReferenceCodes: [pickedCode]});
+
+			expect(screen.getByText(`Selected ${picked}`)).toBeInTheDocument();
+		});
+
+		it('opens a dialog named after the type', async () => {
+			renderGroups();
+
+			await openDialog(labels.select);
+
+			expect(
+				await screen.findByRole('dialog', {name: labels.select})
+			).toBeInTheDocument();
+		});
+
+		it('hands the picked groups back to the row', async () => {
+			const {onChange} = renderGroups();
+
+			await openDialog(labels.select);
+
+			const row = await findRow(picked);
+
+			await userEvent.click(within(row).getByRole('checkbox'));
+
+			await userEvent.click(screen.getByRole('button', {name: 'select'}));
+
+			expect(onChange).toHaveBeenCalledWith([pickedCode]);
+		});
+
+		it('reopening keeps what was already picked', async () => {
+			renderGroups({selectedExternalReferenceCodes: [pickedCode]});
+
+			await openDialog(labels.select);
+
+			const row = await findRow(picked);
+
+			expect(within(row).getByRole('checkbox')).toBeChecked();
+		});
 	});
 
 	it('names selected sites that go by the same name rather than counting them', () => {
@@ -121,79 +214,29 @@ describe('GroupsControl', () => {
 		expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
 	});
 
-	it('opens the dialog from the link', async () => {
-		renderControl();
+	it.each([
+		['site', 'export', ['title', 'path', 'child-sites']],
+		['site', 'import', ['title', 'path', 'exists-in-instance']],
+		['space', 'export', ['title']],
+		['space', 'import', ['title', 'exists-in-instance']],
+	] as const)(
+		'reads the %s columns of an %s as %j',
+		async (type, process, columns) => {
+			const {groups, labels, picked} = GROUPS[type];
 
-		await openDialog();
+			renderControl({groups, process, totalCount: groups.length, type});
 
-		expect(await screen.findByRole('dialog')).toBeInTheDocument();
-	});
+			await openDialog(labels.select);
 
-	it('hands the picked sites back to the row', async () => {
-		const {onChange} = renderControl();
+			await screen.findByText(picked);
 
-		await openDialog();
-
-		const row = await findRow('Support');
-
-		const checkbox = within(row).getByRole('checkbox');
-
-		await userEvent.click(checkbox);
-
-		await userEvent.click(screen.getByRole('button', {name: 'select'}));
-
-		expect(onChange).toHaveBeenCalledWith(['erc-support']);
-	});
-
-	it('reopening keeps what was already picked', async () => {
-		renderControl({selectedExternalReferenceCodes: ['erc-support']});
-
-		await openDialog();
-
-		const row = await findRow('Support');
-
-		expect(within(row).getByRole('checkbox')).toBeChecked();
-	});
-
-	it('reads title, path and child sites when exporting', async () => {
-		renderControl();
-
-		await openDialog();
-
-		await screen.findByText('Support');
-
-		const columnHeaders = screen
-			.getAllByRole('columnheader')
-			.map((columnHeader) => columnHeader.textContent);
-
-		expect(columnHeaders).toEqual([
-			expect.anything(),
-			'title',
-			'path',
-			'child-sites',
-			'manage-columns-visibility',
-		]);
-	});
-
-	it('reads title, path and exists in instance when importing', async () => {
-		renderControl({process: 'import'});
-
-		await openDialog();
-
-		await screen.findByText('Support');
-
-		const columnHeaders = screen
-			.getAllByRole('columnheader')
-			.map((columnHeader) => columnHeader.textContent);
-
-		expect(columnHeaders).toEqual([
-			expect.anything(),
-			'title',
-			'path',
-			'exists-in-instance',
-			'manage-columns-visibility',
-		]);
-	});
+			expect(getColumnHeaders()).toEqual([
+				expect.anything(),
+				...columns,
+				'manage-columns-visibility',
+			]);
+		}
+	);
 
 	it('says whether the instance already has each site', async () => {
 		renderControl({process: 'import'});
@@ -221,99 +264,7 @@ describe('GroupsControl', () => {
 		).toBeInTheDocument();
 	});
 
-	describe('selecting spaces', () => {
-		const SPACES: AssetLibrary[] = [
-			{
-				descriptiveName: 'Book',
-				existsInInstance: true,
-				externalReferenceCode: 'erc-book',
-				type: 'Space',
-			},
-			{
-				descriptiveName: 'Catalog',
-				existsInInstance: false,
-				externalReferenceCode: 'erc-catalog',
-				type: 'Space',
-			},
-		];
-
-		const openSpacesDialog = () =>
-			userEvent.click(
-				screen.getByRole('button', {name: 'select-spaces'})
-			);
-
-		it('names the section and its empty state after spaces', () => {
-			renderControl({groups: SPACES, type: 'space'});
-
-			expect(screen.getByText('spaces')).toBeInTheDocument();
-			expect(
-				screen.getByText('no-spaces-are-selected')
-			).toBeInTheDocument();
-		});
-
-		it('opens a dialog named after spaces', async () => {
-			renderControl({groups: SPACES, type: 'space'});
-
-			await openSpacesDialog();
-
-			expect(
-				await screen.findByRole('dialog', {name: 'select-spaces'})
-			).toBeInTheDocument();
-		});
-
-		it('hands the picked spaces back to the row', async () => {
-			const {onChange} = renderControl({groups: SPACES, type: 'space'});
-
-			await openSpacesDialog();
-
-			const row = await findRow('Catalog');
-
-			await userEvent.click(within(row).getByRole('checkbox'));
-
-			await userEvent.click(screen.getByRole('button', {name: 'select'}));
-
-			expect(onChange).toHaveBeenCalledWith(['erc-catalog']);
-		});
-
-		it('reads only the title when exporting', async () => {
-			renderControl({groups: SPACES, type: 'space'});
-
-			await openSpacesDialog();
-
-			await screen.findByText('Catalog');
-
-			const columnHeaders = screen
-				.getAllByRole('columnheader')
-				.map((columnHeader) => columnHeader.textContent);
-
-			expect(columnHeaders).toEqual([
-				expect.anything(),
-				'title',
-				'manage-columns-visibility',
-			]);
-		});
-
-		it('reads title and exists in instance when importing', async () => {
-			renderControl({groups: SPACES, process: 'import', type: 'space'});
-
-			await openSpacesDialog();
-
-			await screen.findByText('Catalog');
-
-			const columnHeaders = screen
-				.getAllByRole('columnheader')
-				.map((columnHeader) => columnHeader.textContent);
-
-			expect(columnHeaders).toEqual([
-				expect.anything(),
-				'title',
-				'exists-in-instance',
-				'manage-columns-visibility',
-			]);
-		});
-	});
-
-	describe('reading the sites from the API', () => {
+	describe('reading the groups from the API', () => {
 		const API_URL = '/o/export-import/v1.0/export-preview/sites';
 
 		it('hands the picked sites back to the row', async () => {
@@ -331,6 +282,26 @@ describe('GroupsControl', () => {
 			await userEvent.click(screen.getByRole('button', {name: 'select'}));
 
 			expect(onChange).toHaveBeenCalledWith(['erc-support']);
+		});
+
+		it('hands the picked spaces back to the row', async () => {
+			fetch.mockResponse(toPage(SPACES));
+
+			const {onChange} = renderControl({
+				apiURL: '/o/export-import/v1.0/export-preview/asset-libraries',
+				groups: undefined,
+				type: 'space',
+			});
+
+			await openDialog('select-spaces');
+
+			const row = await findRow('Catalog');
+
+			await userEvent.click(within(row).getByRole('checkbox'));
+
+			await userEvent.click(screen.getByRole('button', {name: 'select'}));
+
+			expect(onChange).toHaveBeenCalledWith(['erc-catalog']);
 		});
 
 		it('names the sites after they are picked', async () => {
