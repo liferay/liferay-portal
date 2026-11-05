@@ -18,11 +18,11 @@ This validation stands in for a Source Formatter check. Source Formatter catches
 
 This check is static and needs no build. A changed `build.gradle` can add a dependency line, and a changed source file or `bnd.bnd` can remove the last use of one, so the scan walks each module that holds a changed path: the nearest directory above the path with a `build.gradle`, stopping at a directory with only a `bnd.bnd`. Like the Source Formatter check, it takes a module under `modules/apps`, `modules/core`, or `modules/dxp/apps`, or one under `modules/dxp`, `modules/test`, or `modules/util` with a `.lfrbuild-portal` marker, and skips a module whose `build.gradle` generates sources with `buildWSDL` or `buildXSD`. It uses `command grep` so the files are filtered by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults.
 
-The scan reads each line of the module's `build.gradle` that is exactly `<configuration> project("<project>")` in one of the four configurations. It skips a configuration that the file reads as `configurations.<name>`, a provider outside `modules/apps`, `modules/core`, `modules/dxp`, `modules/test`, and `modules/util`, and a provider with no class under `src/main/java`, `src/main/groovy`, or `src/main/kotlin` and no package in `Export-Package` or `-exportcontents`. It checks only a line the branch adds, one missing from the `build.gradle` of the merge base (followed through a rename), and a line whose provider a line the branch removes from the module named, so a line that master already leaves unused never fails the branch.
+The scan reads each line of the module's `build.gradle` that is exactly `<configuration> project("<project>")` in one of the four configurations. It skips a configuration that the file reads as `configurations.<name>`, a provider outside `modules/apps`, `modules/core`, `modules/dxp`, `modules/test`, and `modules/util`, and a provider with no class under `src/main/java`, `src/main/groovy`, or `src/main/kotlin` and no package in `Export-Package` or `-exportcontents`. It checks only a line the branch adds, one missing from the `build.gradle` of the merge base (followed through a rename), and a line whose provider was named by a line that the branch removes from the module, so a line that master already leaves unused never fails the branch.
 
 A line is used when a file its configuration feeds names the provider. `compileOnly` feeds every file of the module, `testCompileOnly` feeds `src/test`, and the `testIntegration` configurations feed `src/testIntegration`, while a file under any other directory of `src` feeds none. A Java, Groovy, Kotlin, JSP, or resource file names the provider when it imports, names, or declares a package that the provider has a class in or exports, wildcards included, and a JSP also when it declares the URI of a TLD of the provider. The module's `bnd.bnd` names it for every configuration, with one of its packages in a package instruction, its name in a resource instruction such as `-includeresource`, its symbolic name in `Fragment-Host`, or one of its classes in any other instruction. A name in a comment also counts, which only makes the scan more lenient than the check.
 
-The JSP compiler loads the tag handlers of each taglib a JSP declares, and the classes those handlers use, so a `compileOnly` line is also used when the sources that hold the TLD of such a taglib, such as `util-taglib`, name a package of the provider. javac can also need a provider that the module never names, such as a supertype of a class the module uses, or a type in the signature of a method the module calls or overrides, and such a class can only come from a dependency whose own sources name the provider. For each line that is still unused, the scan lists the module's other project dependencies, and the core projects such as `portal-kernel`, whose sources name a package of the provider. Each finding prints as `<path>:<line>: <configuration> project("<project>")`, followed by ` through <dependencies>` when any dependency names the provider, where `<path>` is the module's `build.gradle` and `<line>` is the line of the dependency.
+The JSP compiler loads the tag handlers of each taglib a JSP declares, and the classes those handlers use, so a `compileOnly` line is also used when the sources that hold the TLD of such a taglib, such as `util-taglib`, name a package of the provider. The Java compiler can also need a provider that the module never names, such as a supertype of a class the module uses, or a type in the signature of a method the module calls or overrides, and such a class can only come from a dependency whose own sources name the provider. For each line that is still unused, the scan lists the module's other project dependencies, and the core projects such as `portal-kernel`, whose sources name a package of the provider. Each finding prints as `<path>:<line>: <configuration> project("<project>")`, followed by ` through <dependencies>` when any dependency names the provider, where `<path>` is the module's `build.gradle` and `<line>` is the line of the dependency.
 
 ```bash
 SCAN='
@@ -435,7 +435,9 @@ FINDINGS=$(
 	do
 		DIR=$(dirname "${FILE}")
 
-		until [[ -f ${DIR}/build.gradle || -f ${DIR}/bnd.bnd || ${DIR} != modules/*/* ]]
+		until [[ -f ${DIR}/bnd.bnd ]] ||
+			[[ -f ${DIR}/build.gradle ]] ||
+			[[ ${DIR} != modules/*/* ]]
 		do
 			DIR=$(dirname "${DIR}")
 		done
@@ -446,16 +448,14 @@ FINDINGS=$(
 		fi
 	done | sort --unique | while IFS= read -r MODULE
 	do
-		case ${MODULE} in
-			modules/apps/* | modules/core/* | modules/dxp/apps/*)
-				;;
-			modules/dxp/* | modules/test/* | modules/util/*)
-				compgen -G "${MODULE}/.lfrbuild-portal*" > /dev/null || continue
-				;;
-			*)
+		if [[ ! ${MODULE} =~ ^modules/(apps|core|dxp/apps)/ ]]
+		then
+			if [[ ! ${MODULE} =~ ^modules/(dxp|test|util)/ ]] ||
+				! compgen -G "${MODULE}/.lfrbuild-portal*" > /dev/null
+			then
 				continue
-				;;
-		esac
+			fi
+		fi
 
 		LINES=$(
 			awk \
@@ -495,13 +495,10 @@ FINDINGS=$(
 			PROJECT=${DEPENDENCY#project(\"}
 			PROJECT=${PROJECT%\")}
 
-			case ${PROJECT} in
-				:apps:* | :core:* | :dxp:* | :test:* | :util:*)
-					;;
-				*)
-					continue
-					;;
-			esac
+			if [[ ! ${PROJECT} =~ ^:(apps|core|dxp|test|util): ]]
+			then
+				continue
+			fi
 
 			ADDED=true
 
@@ -515,7 +512,8 @@ FINDINGS=$(
 				ADDED=false
 			fi
 
-			if [[ ${ADDED} == false && -z ${REMOVED} ]]
+			if [[ ${ADDED} == false ]] &&
+				[[ -z ${REMOVED} ]]
 			then
 				continue
 			fi
@@ -527,17 +525,15 @@ FINDINGS=$(
 				continue
 			fi
 
-			case ${CONFIGURATION} in
-				compileOnly)
-					SCOPES="bnd|main|test|testIntegration"
-					;;
-				testCompileOnly)
-					SCOPES="bnd|test"
-					;;
-				*)
-					SCOPES="bnd|testIntegration"
-					;;
-			esac
+			if [[ ${CONFIGURATION} == compileOnly ]]
+			then
+				SCOPES="bnd|main|test|testIntegration"
+			elif [[ ${CONFIGURATION} == testCompileOnly ]]
+			then
+				SCOPES="bnd|test"
+			else
+				SCOPES="bnd|testIntegration"
+			fi
 
 			if [[ ${ADDED} == false ]] &&
 				! awk -v scopes="^(${SCOPES})$" "${JOIN}" <(echo "${PROVIDED}") <(echo "${REMOVED}")
@@ -555,17 +551,18 @@ FINDINGS=$(
 				continue
 			fi
 
-			PACKAGES=$(sed -n -e 's/[.]/[.]/g' -e 's/^p://p' <<< "${PROVIDED}" | paste -d '|' -s -)
-			PREFIXES=$(sed -n -e 's/[.]/[.]/g' -e 's/^s://p' <<< "${PROVIDED}" | paste -d '|' -s -)
+			PACKAGES=$(sed -e 's/[.]/[.]/g' -e 's/^p://p' -n <<< "${PROVIDED}" | paste -d '|' -s -)
+			PREFIXES=$(sed -e 's/[.]/[.]/g' -e 's/^s://p' -n <<< "${PROVIDED}" | paste -d '|' -s -)
 
 			PATTERN="(^|[^[:alnum:]_.])((${PACKAGES})[.][A-Z*]${PREFIXES:+|(${PREFIXES})[.][[:alnum:]_]})"
 
-			if [[ ${CONFIGURATION} == compileOnly && ${OWNERS} == - ]]
+			if [[ ${CONFIGURATION} == compileOnly ]] &&
+				[[ ${OWNERS} == - ]]
 			then
 				OWNERS=""
 				URIS=$(awk '$1 == "main" && $2 ~ /^u:/ { print "<uri>" substr($2, 3) "</uri>" }' <<< "${KEYS}")
 
-				if [[ -n ${URIS} ]]
+				if [[ ! -z ${URIS} ]]
 				then
 					OWNERS=$(
 						git grep --files-with-matches --fixed-strings -f - -- "*.tld" <<< "${URIS}" \
@@ -583,7 +580,8 @@ FINDINGS=$(
 
 			THROUGH=$(
 				{
-					if [[ ${CONFIGURATION} == compileOnly && -n ${OWNERS} ]]
+					if [[ ${CONFIGURATION} == compileOnly ]] &&
+						[[ ! -z ${OWNERS} ]]
 					then
 						sed -e 's/^/jsp /' <<< "${OWNERS}"
 					fi
@@ -602,7 +600,8 @@ FINDINGS=$(
 					printf '%s\n' portal-impl portal-kernel portal-test util-bridges util-java util-slf4j util-taglib | sed -e 's#.*#& &/src#'
 				} | while read -r NAME SOURCE
 				do
-					if [[ ${NAME} != "${PROJECT}" && -d ${SOURCE} ]] &&
+					if [[ ${NAME} != "${PROJECT}" ]] &&
+						[[ -d ${SOURCE} ]] &&
 						command grep \
 							--extended-regexp \
 							--include="*.groovy" \
