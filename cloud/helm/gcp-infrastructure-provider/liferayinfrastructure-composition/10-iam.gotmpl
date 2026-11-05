@@ -6,6 +6,9 @@ kind: ProjectIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-sql-client-role
+    labels:
+        app: liferay
+        component: database-bootstrap-sql-client-role
 spec:
     forProvider:
         condition:
@@ -20,6 +23,9 @@ kind: ProjectIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-sql-instance-user-role
+    labels:
+        app: liferay
+        component: database-bootstrap-sql-instance-user-role
 spec:
     forProvider:
         condition:
@@ -36,6 +42,9 @@ kind: ProjectIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-client-role
+    labels:
+        app: liferay
+        component: liferay-sql-client-role
 spec:
     forProvider:
         condition:
@@ -50,6 +59,9 @@ kind: ProjectIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-instance-user-role
+    labels:
+        app: liferay
+        component: liferay-sql-instance-user-role
 spec:
     forProvider:
         condition:
@@ -150,4 +162,34 @@ spec:
                     iam.gke.io/gcp-service-account: {{ $gsaEmail }}
                 name: liferay-default
                 namespace: {{ $namespace }}
+{{- end }}
+{{- range $grant, $serviceAccount := dict
+    "database-bootstrap-sql-client-role" "database-bootstrap-service-account"
+    "database-bootstrap-sql-instance-user-role" "database-bootstrap-service-account"
+    "liferay-sql-client-role" "service-account"
+    "liferay-sql-instance-user-role" "service-account" }}
+---
+apiVersion: protection.crossplane.io/v1beta1
+kind: Usage
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: usage-{{ $serviceAccount }}-by-{{ $grant }}
+    name: {{ $xr.metadata.name }}-{{ $serviceAccount }}-by-{{ $grant }}
+    namespace: {{ $namespace }}
+spec:
+    by:
+        apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
+        kind: ProjectIAMMember
+        resourceSelector:
+            matchControllerRef: true
+            matchLabels:
+                component: {{ $grant }}
+    of:
+        apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
+        kind: ServiceAccount
+        resourceSelector:
+            matchControllerRef: true
+            matchLabels:
+                component: {{ $serviceAccount }}
+    replayDeletion: true
 {{- end }}

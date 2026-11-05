@@ -5,6 +5,9 @@ kind: BucketIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-gsa-overlay-bucket-iam
+    labels:
+        app: liferay
+        component: liferay-gsa-overlay-bucket-iam
 spec:
     forProvider:
         bucket: {{ $overlayBucketName }}
@@ -13,6 +16,30 @@ spec:
     managementPolicies: {{ $managementPolicies }}
 ---
 {{- end }}
+apiVersion: protection.crossplane.io/v1beta1
+kind: Usage
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: usage-service-account-by-liferay-gsa-overlay-bucket-iam
+    name: {{ $xr.metadata.name }}-service-account-by-liferay-gsa-overlay-bucket-iam
+    namespace: {{ $namespace }}
+spec:
+    by:
+        apiVersion: storage.gcp.m.upbound.io/v1beta1
+        kind: BucketIAMMember
+        resourceSelector:
+            matchControllerRef: true
+            matchLabels:
+                component: liferay-gsa-overlay-bucket-iam
+    of:
+        apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
+        kind: ServiceAccount
+        resourceSelector:
+            matchControllerRef: true
+            matchLabels:
+                component: service-account
+    replayDeletion: true
+---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
