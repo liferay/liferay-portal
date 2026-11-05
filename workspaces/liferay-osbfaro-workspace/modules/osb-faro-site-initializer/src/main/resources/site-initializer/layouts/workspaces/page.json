@@ -1,0 +1,24 @@
+{
+	"friendlyURL": "/workspaces",
+	"hidden": true,
+	"name": "Workspaces",
+	"permissions": [
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "User",
+			"scope": 4
+		}
+	],
+	"priority": 1,
+	"private": false,
+	"system": false,
+	"type": "Content"
+}

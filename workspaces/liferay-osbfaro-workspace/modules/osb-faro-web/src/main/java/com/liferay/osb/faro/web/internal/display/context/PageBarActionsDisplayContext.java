@@ -99,7 +99,7 @@ public class PageBarActionsDisplayContext {
 			_themeDisplay.getCompanyId(), GroupConstants.GUEST);
 
 		Layout layout = LayoutLocalServiceUtil.fetchLayoutByFriendlyURL(
-			group.getGroupId(), false, "/home");
+			group.getGroupId(), false, "/workspaces");
 
 		User user = _themeDisplay.getUser();
 
