@@ -523,6 +523,83 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 	}
 
 	@Test
+	public void testUpdateFromInfoItemFieldValuesWithManyToManyObjectRelationship()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"name"
+					).build()));
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, objectDefinition2,
+				objectDefinition,
+				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+				StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		ObjectEntry relatedObjectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"name", RandomTestUtil.randomString()
+			).build());
+
+		_objectRelationshipLocalService.addObjectRelationshipMappingTableValues(
+			TestPropsValues.getUserId(),
+			objectRelationship.getObjectRelationshipId(),
+			objectEntry2.getObjectEntryId(),
+			relatedObjectEntry1.getObjectEntryId(),
+			ServiceContextTestUtil.getServiceContext());
+
+		_updateFromInfoItemFieldValues(
+			_getInfoItemFieldValues(objectRelationship, null),
+			objectDefinition2, objectEntry2);
+
+		_assertManyToManyObjectEntries(
+			objectRelationship, relatedObjectEntry1.getObjectEntryId());
+
+		ObjectEntry relatedObjectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"name", RandomTestUtil.randomString()
+			).build());
+
+		_updateFromInfoItemFieldValues(
+			_getInfoItemFieldValues(
+				objectRelationship,
+				Collections.singletonList(
+					String.valueOf(relatedObjectEntry2.getObjectEntryId()))),
+			objectDefinition2, objectEntry2);
+
+		_assertManyToManyObjectEntries(
+			objectRelationship, relatedObjectEntry2.getObjectEntryId());
+
+		AssertUtils.assertFailure(
+			InfoFormException.class, null,
+			() -> _updateFromInfoItemFieldValues(
+				_getInfoItemFieldValues(
+					objectRelationship,
+					Collections.singletonList(
+						String.valueOf(RandomTestUtil.randomLong()))),
+				objectDefinition2, objectEntry2));
+
+		_updateFromInfoItemFieldValues(
+			_getInfoItemFieldValues(
+				objectRelationship, Collections.emptyList()),
+			objectDefinition2, objectEntry2);
+
+		_assertManyToManyObjectEntries(objectRelationship);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
 	public void testUpdateFromInfoItemFieldValuesWithNestedManyToManyObjectRelationship()
 		throws Exception {
 
@@ -849,6 +926,28 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 			ContentTypes.TEXT_PLAIN);
 	}
 
+	private void _assertManyToManyObjectEntries(
+			ObjectRelationship objectRelationship, long... objectEntryIds)
+		throws Exception {
+
+		List<ObjectEntry> objectEntries =
+			objectEntryLocalService.getManyToManyObjectEntries(
+				0, objectRelationship.getObjectRelationshipId(),
+				objectEntry2.getObjectEntryId(), true, false, null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			objectEntries.toString(), objectEntryIds.length,
+			objectEntries.size());
+
+		for (int i = 0; i < objectEntryIds.length; i++) {
+			ObjectEntry objectEntry = objectEntries.get(i);
+
+			Assert.assertEquals(
+				objectEntryIds[i], objectEntry.getObjectEntryId());
+		}
+	}
+
 	private List<ObjectEntry> _getCMSBasicDocumentObjectEntries(
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
 			String title)
@@ -914,6 +1013,47 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 		}
 
 		return objectEntryFolder;
+	}
+
+	private InfoItemFieldValues _getInfoItemFieldValues(
+		ObjectRelationship objectRelationship,
+		List<String> relatedObjectEntryIds) {
+
+		InfoItemFieldValues.Builder builder = InfoItemFieldValues.builder(
+		).infoFieldValue(
+			new InfoFieldValue<>(
+				InfoField.builder(
+				).infoFieldType(
+					TextInfoFieldType.INSTANCE
+				).namespace(
+					ObjectField.class.getSimpleName()
+				).name(
+					"name"
+				).build(),
+				RandomTestUtil.randomString())
+		);
+
+		if (relatedObjectEntryIds == null) {
+			return builder.build();
+		}
+
+		builder.infoFieldValue(
+			new InfoFieldValue<>(
+				InfoField.builder(
+				).infoFieldType(
+					RelationshipInfoFieldType.INSTANCE
+				).namespace(
+					ObjectField.class.getSimpleName()
+				).name(
+					ObjectRelationshipConstants.
+						OBJECT_RELATIONSHIP_FIELD_NAME_PREFIX +
+							objectRelationship.getName()
+				).attribute(
+					RelationshipInfoFieldType.MULTIPLE, true
+				).build(),
+				relatedObjectEntryIds));
+
+		return builder.build();
 	}
 
 	private ObjectEntry _getObjectEntry(
