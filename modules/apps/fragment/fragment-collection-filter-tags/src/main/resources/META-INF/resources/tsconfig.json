@@ -1,5 +1,5 @@
 {
-	"@generated": "d522ba67fc02f7649cb71e421ef5b818d31adabf",
+	"@generated": "acda0d5e56a8421e5dd97e93b533e4f4cabb3bee",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -34,11 +34,5 @@
 		"../../../../../../../../global.d.ts"
 	],
 	"references": [
-		{
-			"path": "../../../../../../fragment-renderer-collection-filter-impl/src/main/resources/META-INF/resources/tsconfig.json"
-		},
-		{
-			"path": "../../../../../../../asset/asset-taglib/src/main/resources/META-INF/resources/tsconfig.json"
-		}
 	]
 }

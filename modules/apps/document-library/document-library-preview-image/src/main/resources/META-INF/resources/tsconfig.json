@@ -1,5 +1,5 @@
 {
-	"@generated": "7c57ed835da30bd95e2c5d56d652f06cdbd658e8",
+	"@generated": "965498af398389bc21eba83e5c7ccc5df4220f9d",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -43,9 +43,6 @@
 		"../../../../../../../../global.d.ts"
 	],
 	"references": [
-		{
-			"path": "../../../../../../document-library-preview-css/src/main/resources/META-INF/resources/tsconfig.json"
-		},
 		{
 			"path": "../../../../../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},

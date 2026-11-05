@@ -1,5 +1,5 @@
 {
-	"@generated": "99a5a40d1dcd23037fc15c77b194865f1431b7bd",
+	"@generated": "49830d8a9cf3c8859a504e3a5f06cf6232c6ff25",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -63,12 +63,6 @@
 	"references": [
 		{
 			"path": "../../../../../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/tsconfig.json"
-		},
-		{
-			"path": "../../../../../../../map/map-google-maps/src/main/resources/META-INF/resources/tsconfig.json"
-		},
-		{
-			"path": "../../../../../../../map/map-openstreetmap/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../../../../../object/object-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"

@@ -1,5 +1,5 @@
 {
-	"@generated": "05183a717d7cb7dc1da5137bb882a7977a1d08ce",
+	"@generated": "986a41b630236d5c69c3c535e515fb0d244631af",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -48,9 +48,6 @@
 	"references": [
 		{
 			"path": "../../../../../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/tsconfig.json"
-		},
-		{
-			"path": "../../../../../../../asset/asset-taglib/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../../../../commerce-frontend-js/src/main/resources/META-INF/resources/tsconfig.json"

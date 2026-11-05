@@ -1,5 +1,5 @@
 {
-	"@generated": "3e8affd5db82eeb6c44e028bdffeaf9371fab7eb",
+	"@generated": "dcd85117622514f566526c2edbff5c81a8114048",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -45,9 +45,6 @@
 		"../src/**/*.tsx"
 	],
 	"references": [
-		{
-			"path": "../../document-library-preview-css/src/main/resources/META-INF/resources/tsconfig.json"
-		},
 		{
 			"path": "../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},

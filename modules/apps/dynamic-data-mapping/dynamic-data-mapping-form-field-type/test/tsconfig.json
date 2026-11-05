@@ -1,5 +1,5 @@
 {
-	"@generated": "516cdfaef9d0e140bb1916d1aca5dd44f8c0e444",
+	"@generated": "7bea37baac92c312ad32016168a9a26e79105f93",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -65,12 +65,6 @@
 	"references": [
 		{
 			"path": "../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/tsconfig.json"
-		},
-		{
-			"path": "../../../map/map-google-maps/src/main/resources/META-INF/resources/tsconfig.json"
-		},
-		{
-			"path": "../../../map/map-openstreetmap/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../object/object-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"

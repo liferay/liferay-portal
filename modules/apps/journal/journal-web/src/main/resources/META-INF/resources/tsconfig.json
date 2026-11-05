@@ -1,5 +1,5 @@
 {
-	"@generated": "71b53707799ad054722b8ae546cba8d9cb00d89e",
+	"@generated": "735197013bf993b45ae84b54401d5d5399a0623c",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -63,9 +63,6 @@
 		},
 		{
 			"path": "../../../../../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
-		},
-		{
-			"path": "../../../../../../../template/template-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../../../../../data-engine/data-engine-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"

@@ -1,5 +1,5 @@
 {
-	"@generated": "861907a7afcdb196df6dac9d25e6487cadac8a4e",
+	"@generated": "1dc713f04442449f9463b3beaa4f5bc6bda1a0eb",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -65,9 +65,6 @@
 		},
 		{
 			"path": "../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
-		},
-		{
-			"path": "../../asset-taglib/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
