@@ -95,6 +95,25 @@ public class CommerceOrderModelResourcePermissionLogic
 				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
 		}
 
+		if (actionId.equals(
+				CommerceOrderActionKeys.ADD_COMMERCE_ORDER_ATTACHMENT) ||
+			actionId.equals(
+				CommerceOrderActionKeys.
+					VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS)) {
+
+			if ((accountEntry.getAccountEntryId() !=
+					AccountConstants.ACCOUNT_ENTRY_ID_GUEST) &&
+				_hasAncestorPermission(
+					permissionChecker, accountEntry.getAccountEntryGroupId(),
+					actionId)) {
+
+				return true;
+			}
+
+			return _hasPermission(
+				permissionChecker, commerceOrder.getGroupId(), actionId);
+		}
+
 		if (permissionChecker.isCompanyAdmin(commerceOrder.getCompanyId()) ||
 			permissionChecker.isGroupAdmin(commerceOrder.getGroupId()) ||
 			((accountEntry.getAccountEntryId() !=

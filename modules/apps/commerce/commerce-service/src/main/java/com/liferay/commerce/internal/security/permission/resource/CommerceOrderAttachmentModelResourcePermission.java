@@ -71,12 +71,6 @@ public class CommerceOrderAttachmentModelResourcePermission
 			return false;
 		}
 
-		if (permissionChecker.hasPermission(
-				null, CommerceOrderAttachment.class.getName(), 0, actionId)) {
-
-			return true;
-		}
-
 		if (commerceOrderAttachment.isRestricted()) {
 			CommerceOrder commerceOrder =
 				_commerceOrderLocalService.getCommerceOrder(
@@ -97,7 +91,9 @@ public class CommerceOrderAttachmentModelResourcePermission
 			}
 		}
 
-		if (permissionChecker.hasOwnerPermission(
+		if (permissionChecker.hasPermission(
+				null, CommerceOrderAttachment.class.getName(), 0, actionId) ||
+			permissionChecker.hasOwnerPermission(
 				commerceOrderAttachment.getCompanyId(),
 				CommerceOrderAttachment.class.getName(),
 				commerceOrderAttachment.getCommerceOrderAttachmentId(),
