@@ -668,69 +668,75 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	}
 
 	private List<File> _getJSUnitFiles(File portalDir) {
+		List<File> jsUnitFiles = new ArrayList<>();
+
+		jsUnitFiles.addAll(_getJSUnitFiles(portalDir, "modules"));
+		jsUnitFiles.addAll(_getJSUnitFiles(portalDir, "workspaces"));
+
+		return jsUnitFiles;
+	}
+
+	private List<File> _getJSUnitFiles(File portalDir, String baseDirName) {
 		final List<File> jsUnitFiles = new ArrayList<>();
 
-		for (String baseDirName : new String[] {"modules", "workspaces"}) {
-			File baseDir = new File(portalDir, baseDirName);
+		File baseDir = new File(portalDir, baseDirName);
 
-			if (!baseDir.exists()) {
-				continue;
-			}
+		if (!baseDir.exists()) {
+			return jsUnitFiles;
+		}
 
-			try {
-				Files.walkFileTree(
-					baseDir.toPath(),
-					new SimpleFileVisitor<Path>() {
+		try {
+			Files.walkFileTree(
+				baseDir.toPath(),
+				new SimpleFileVisitor<Path>() {
 
-						@Override
-						public FileVisitResult preVisitDirectory(
+					@Override
+					public FileVisitResult preVisitDirectory(
+						Path filePath,
+						BasicFileAttributes basicFileAttributes) {
+
+						String fileName = String.valueOf(
+							filePath.getFileName());
+
+						if (fileName.startsWith(".") ||
+							_jsUnitSkippedDirNames.contains(fileName)) {
+
+							return FileVisitResult.SKIP_SUBTREE;
+						}
+
+						return FileVisitResult.CONTINUE;
+					}
+
+					@Override
+					public FileVisitResult visitFile(
 							Path filePath,
-							BasicFileAttributes basicFileAttributes) {
+							BasicFileAttributes basicFileAttributes)
+						throws IOException {
 
-							String fileName = String.valueOf(
-								filePath.getFileName());
+						Matcher matcher = _jsUnitFileNamePattern.matcher(
+							String.valueOf(filePath.getFileName()));
 
-							if (fileName.startsWith(".") ||
-								_jsUnitSkippedDirNames.contains(fileName)) {
-
-								return FileVisitResult.SKIP_SUBTREE;
-							}
-
+						if (!matcher.matches()) {
 							return FileVisitResult.CONTINUE;
 						}
 
-						@Override
-						public FileVisitResult visitFile(
-								Path filePath,
-								BasicFileAttributes basicFileAttributes)
-							throws IOException {
+						File file = filePath.toFile();
 
-							Matcher matcher = _jsUnitFileNamePattern.matcher(
-								String.valueOf(filePath.getFileName()));
+						String content = JenkinsResultsParserUtil.read(file);
 
-							if (!matcher.matches()) {
-								return FileVisitResult.CONTINUE;
-							}
-
-							File file = filePath.toFile();
-
-							String content = JenkinsResultsParserUtil.read(
-								file);
-
-							if (content.contains("describe(")) {
-								jsUnitFiles.add(file);
-							}
-
-							return FileVisitResult.CONTINUE;
+						if (content.contains("describe(")) {
+							jsUnitFiles.add(file);
 						}
 
-					});
-			}
-			catch (IOException ioException) {
-				throw new GitWorkingDirectoryRuntimeException(
-					this, "Unable to find JS unit files in " + baseDir,
-					ioException);
-			}
+						return FileVisitResult.CONTINUE;
+					}
+
+				});
+		}
+		catch (IOException ioException) {
+			throw new GitWorkingDirectoryRuntimeException(
+				this, "Unable to find JS unit files in " + baseDir,
+				ioException);
 		}
 
 		return jsUnitFiles;
