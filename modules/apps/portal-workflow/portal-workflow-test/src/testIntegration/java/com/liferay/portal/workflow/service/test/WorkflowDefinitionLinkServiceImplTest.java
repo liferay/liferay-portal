@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -226,7 +227,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 				" must be the company administrator to perform the action"),
 			() -> _workflowDefinitionLinkService.addWorkflowDefinitionLink(
 				null, cmsAdministratorUser.getUserId(), _company.getCompanyId(),
-				0, null, 0, 0, null, 0));
+				WorkflowConstants.DEFAULT_GROUP_ID, null, 0, 0, null, 0));
 	}
 
 	@Test
@@ -426,7 +427,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 				" must be the company administrator to perform the action"),
 			() -> _workflowDefinitionLinkService.updateWorkflowDefinitionLink(
 				null, cmsAdministratorUser.getUserId(), _company.getCompanyId(),
-				0, null, 0, 0, null, 0));
+				WorkflowConstants.DEFAULT_GROUP_ID, null, 0, 0, null, 0));
 	}
 
 	@Test
