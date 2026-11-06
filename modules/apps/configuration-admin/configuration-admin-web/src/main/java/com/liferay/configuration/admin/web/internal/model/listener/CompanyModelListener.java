@@ -39,7 +39,7 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 	private void _clean(Company company) throws Exception {
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
 			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
-				company.getCompanyId(), null));
+				company.getCompanyId(), company.getWebId()));
 
 		if (configurations == null) {
 			return;
