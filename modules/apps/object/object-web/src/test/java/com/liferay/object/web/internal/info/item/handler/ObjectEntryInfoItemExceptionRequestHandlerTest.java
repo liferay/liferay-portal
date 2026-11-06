@@ -7,6 +7,7 @@ package com.liferay.object.web.internal.info.item.handler;
 
 import com.liferay.asset.kernel.exception.AssetCategoryException;
 import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.info.exception.InfoFormOptimisticLockException;
 import com.liferay.info.exception.InfoFormValidationException;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.form.InfoForm;
@@ -23,6 +24,8 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import jakarta.persistence.OptimisticLockException;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +57,7 @@ public class ObjectEntryInfoItemExceptionRequestHandlerTest {
 		_testHandleInfoFormExceptionWhenInvalidValue();
 		_testHandleInfoFormExceptionWhenObjectEntryManagerHttpException();
 		_testHandleInfoFormExceptionWhenObjectValidationRuleEngineException();
+		_testHandleInfoFormExceptionWhenOptimisticLockException();
 		_testHandleInfoFormExceptionWhenRequiredLanguageId();
 	}
 
@@ -244,6 +248,15 @@ public class ObjectEntryInfoItemExceptionRequestHandlerTest {
 			errorMessage,
 			infoFormValidationExceptionCustomValidation.getLocalizedMessage(
 				LocaleUtil.US));
+	}
+
+	private void _testHandleInfoFormExceptionWhenOptimisticLockException() {
+		Assert.assertThrows(
+			InfoFormOptimisticLockException.class,
+			() ->
+				ObjectEntryInfoItemExceptionRequestHandler.
+					handleInfoFormException(
+						new OptimisticLockException(), 0, null, 0));
 	}
 
 	private void _testHandleInfoFormExceptionWhenRequiredLanguageId()
