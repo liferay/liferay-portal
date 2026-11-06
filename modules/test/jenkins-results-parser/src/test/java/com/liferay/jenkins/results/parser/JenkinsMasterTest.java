@@ -518,9 +518,6 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		_setQueueAPIJSONObject(queueItemJSONObject);
 
-		ReflectionTestUtil.setFieldValue(
-			_jenkinsMaster, "_queueUpdateTime", null);
-
 		queueItems = _jenkinsMaster.readQueueItems(1, 1, 7000);
 
 		verifyURLReaderRead(false, 2, 1, 7000);
