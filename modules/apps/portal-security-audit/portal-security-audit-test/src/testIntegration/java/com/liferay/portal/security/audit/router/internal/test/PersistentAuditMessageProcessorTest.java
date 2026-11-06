@@ -118,40 +118,15 @@ public class PersistentAuditMessageProcessorTest {
 	private void _testProcessCorrelationIdPersistsAfterClear()
 		throws Exception {
 
-		String correlationId = RandomTestUtil.randomString();
-		String eventType1 = _createEventType();
-		String eventType2 = _createEventType();
-
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					PersistentAuditMessageProcessorConfiguration.class.
 						getName(),
 					HashMapDictionaryBuilder.<String, Object>put(
-						"bufferSize", 2000
-					).put(
-						"flushInterval", _FLUSH_INTERVAL
+						"bufferSize", 1
 					).build())) {
 
-			try {
-				AuditRequestContext auditRequestContext =
-					AuditRequestContextThreadLocal.getAuditRequestContext();
-
-				auditRequestContext.setCorrelationId(correlationId);
-
-				_route(TestPropsValues.getCompanyId(), eventType1);
-
-				auditRequestContext.setCorrelationId(null);
-
-				Assert.assertEquals(
-					0,
-					_getAuditEventsCount(
-						TestPropsValues.getCompanyId(), eventType1));
-
-				_route(TestPropsValues.getCompanyId(), eventType2);
-			}
-			finally {
-				AuditRequestContextThreadLocal.removeAuditRequestContext();
-			}
+			_route(TestPropsValues.getCompanyId(), _createEventType());
 		}
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
@@ -159,12 +134,32 @@ public class PersistentAuditMessageProcessorTest {
 					PersistentAuditMessageProcessorConfiguration.class.
 						getName(),
 					HashMapDictionaryBuilder.<String, Object>put(
-						"bufferSize", 1
+						"bufferSize", 2
 					).put(
 						"flushInterval", _FLUSH_INTERVAL
 					).build())) {
 
-			_route(TestPropsValues.getCompanyId(), _createEventType());
+			String correlationId = RandomTestUtil.randomString();
+
+			AuditRequestContext auditRequestContext =
+				AuditRequestContextThreadLocal.getAuditRequestContext();
+
+			auditRequestContext.setCorrelationId(correlationId);
+
+			String eventType1 = _createEventType();
+
+			_route(TestPropsValues.getCompanyId(), eventType1);
+
+			auditRequestContext.setCorrelationId(null);
+
+			Assert.assertEquals(
+				0,
+				_getAuditEventsCount(
+					TestPropsValues.getCompanyId(), eventType1));
+
+			String eventType2 = _createEventType();
+
+			_route(TestPropsValues.getCompanyId(), eventType2);
 
 			AuditEvent auditEvent1 = _getAuditEvent(
 				TestPropsValues.getCompanyId(), eventType1);
@@ -174,6 +169,8 @@ public class PersistentAuditMessageProcessorTest {
 			Assert.assertEquals(correlationId, auditEvent1.getCorrelationId());
 			Assert.assertEquals(
 				StringPool.BLANK, auditEvent2.getCorrelationId());
+
+			AuditRequestContextThreadLocal.removeAuditRequestContext();
 		}
 	}
 
