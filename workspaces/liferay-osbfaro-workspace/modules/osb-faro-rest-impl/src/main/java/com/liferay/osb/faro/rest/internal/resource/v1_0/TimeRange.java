@@ -11,7 +11,7 @@ package com.liferay.osb.faro.rest.internal.resource.v1_0;
 public enum TimeRange {
 
 	LAST_7_DAYS(7), LAST_24_HOURS(0), LAST_28_DAYS(28), LAST_30_DAYS(30),
-	LAST_90_DAYS(90), LAST_180_DAYS(180), LAST_YEAR(365), YESTERDAY(1);
+	LAST_90_DAYS(90), LAST_180_DAYS(180), YESTERDAY(1);
 
 	public static Integer getRangeKey(String timeRangeString) {
 		if (timeRangeString == null) {
