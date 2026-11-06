@@ -20,13 +20,20 @@ const renderAccountValue = (metric?: Metric) =>
 		[toThousands(metric?.value ?? 0)]
 	);
 
-const TotalAccounts = ({groupId}: {groupId: string}) => {
+const TotalAccounts = ({
+	campaignId,
+	groupId,
+}: {
+	campaignId?: string;
+	groupId: string;
+}) => {
 	const {channelId} = useParams<{
 		channelId: string;
 	}>();
 	const {data, loading} = useRequest({
 		dataSourceFn: API.accounts.fetchMetrics,
 		variables: {
+			campaignId,
 			channelId,
 			groupId,
 		},

@@ -1,5 +1,6 @@
 import * as API from 'shared/api';
 import Card from 'shared/components/Card';
+import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import React, {useMemo} from 'react';
@@ -140,7 +141,15 @@ function transformCountriesInQueryString(countries: string[]) {
 		.join(Conjunctions.Or);
 }
 
-const IndividualsList: React.FC = () => {
+interface IIndividualsListProps {
+	campaignId?: string;
+	onClearFilters?: () => void;
+}
+
+const IndividualsList: React.FC<IIndividualsListProps> = ({
+	campaignId,
+	onClearFilters,
+}) => {
 	const {channelId = '', groupId = ''} = useParams<{
 		channelId: string;
 		groupId: string;
@@ -199,7 +208,29 @@ const IndividualsList: React.FC = () => {
 			paginationParams.filterBy.get('individualTypes')?.toArray() || [],
 	};
 
-	const renderNoResults = () => (
+	const renderNoResults = () =>
+		campaignId ? (
+			<NoResultsDisplay
+				description={Liferay.Language.get(
+					'review-your-filters-and-try-again'
+				)}
+				icon={{
+					border: false,
+					size: Sizes.XXXLarge,
+					symbol: 'search',
+				}}
+				spacer
+				title={Liferay.Language.get('no-results-found')}
+			>
+				<ClayButton displayType="secondary" onClick={onClearFilters}>
+					{Liferay.Language.get('clear-filters')}
+				</ClayButton>
+			</NoResultsDisplay>
+		) : (
+			renderNoDataSources()
+		);
+
+	const renderNoDataSources = () => (
 		<NoResultsDisplay
 			description={
 				<>
@@ -256,6 +287,7 @@ const IndividualsList: React.FC = () => {
 							accountTypes: selectedFilters.accountTypes.length
 								? selectedFilters.accountTypes
 								: undefined,
+							campaignId,
 							channelId,
 							filter: selectedFilters.filter,
 							groupId,

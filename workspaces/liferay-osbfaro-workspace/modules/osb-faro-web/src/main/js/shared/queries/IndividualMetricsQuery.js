@@ -2,11 +2,13 @@ import {gql} from '@apollo/client';
 
 export default gql`
 	query IndividualMetrics(
+		$campaignIds: String
 		$channelId: String!
 		$interval: String!
 		$rangeKey: Int!
 	) {
 		individualMetric(
+			campaignIds: $campaignIds
 			channelId: $channelId
 			interval: $interval
 			rangeKey: $rangeKey

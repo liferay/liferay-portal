@@ -1,5 +1,10 @@
+import FaroConstants from 'shared/util/constants';
 import sendRequest from 'shared/util/request';
 import {Metric} from 'contacts/pages/account/utils/types';
+
+const {
+	pagination: {delta: DEFAULT_DELTA},
+} = FaroConstants;
 
 /**
  * Mirrors `CampaignDisplay` on the Faro BFF, whose de-underscored field names
@@ -111,5 +116,35 @@ export async function fetchCampaignMetrics({
 		},
 		method: 'GET',
 		path: `contacts/${groupId}/campaigns/metrics`,
+	});
+}
+
+interface ISearchCampaignNames {
+	channelId?: string;
+	groupId: string;
+	page?: number;
+	pageSize?: number;
+	query?: string;
+}
+
+/**
+ * Feeds the campaign picker. Modeled on `account-names`: it pages from zero,
+ * filters by `keywords` and reports its total as `totalCount`. The backend
+ * decides whether the names come from UTM or Salesforce.
+ */
+export async function searchCampaignNames({
+	channelId = '',
+	groupId,
+	page = 0,
+	pageSize = DEFAULT_DELTA,
+	query = '',
+}: ISearchCampaignNames): Promise<{
+	items: {id: string; name: string}[];
+	totalCount: number;
+}> {
+	return sendRequest({
+		data: {channelId, keywords: query, page, pageSize},
+		method: 'GET',
+		path: `contacts/${groupId}/campaigns/campaign-names`,
 	});
 }

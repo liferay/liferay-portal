@@ -2,6 +2,7 @@ import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet';
 import BasePage from 'shared/components/base-page';
+import CampaignDropdown from 'shared/components/CampaignDropdown';
 import Link from '@clayui/link';
 import Loading from 'shared/components/Loading';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
@@ -15,6 +16,7 @@ import {isNil} from 'lodash/fp';
 import {RangeKeyTimeRanges, Sizes} from 'shared/util/constants';
 import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
+import {useCampaignFilter} from 'shared/hooks/useCampaignFilter';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDispatch} from 'react-redux';
@@ -28,6 +30,8 @@ interface IListProps {
 
 const List: React.FC<IListProps> = ({channelId, groupId}) => {
 	const currentUser = useCurrentUser();
+
+	const {campaignId, campaignName, setCampaign} = useCampaignFilter();
 
 	const dispatch = useDispatch();
 	const {selectedChannel} = useChannelContext();
@@ -150,10 +154,24 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 					/>
 				</BasePage.Row>
 			</BasePage.Header>
+
+			{dataSourceConnected && (
+				<BasePage.SubHeader>
+					<CampaignDropdown
+						initialCampaignId={campaignId}
+						initialCampaignName={campaignName}
+						onFilterChange={setCampaign}
+					/>
+				</BasePage.SubHeader>
+			)}
+
 			<BasePage.Body>
 				{dataSourceConnected ? (
 					<>
-						<TotalAccounts groupId={groupId} />
+						<TotalAccounts
+							campaignId={campaignId}
+							groupId={groupId}
+						/>
 
 						<SectionHeader
 							icon="box-container"
@@ -169,10 +187,13 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 									{accountLifecycleId, channelId},
 									`/o/faro/contacts/${groupId}/account/search`
 								)}
+								campaignId={campaignId}
+								campaignName={campaignName}
 								channelId={channelId}
 								fieldCatalog={fieldCatalogData?.items}
 								groupId={groupId}
 								rangeKeyFilter={RangeKeyTimeRanges.Last30Days}
+								showCampaignFilter
 							/>
 						)}
 					</>

@@ -86,9 +86,12 @@ export async function fetchLifecycleStatus({
 	});
 }
 
-export function fetchMetrics({channelId, groupId}) {
+/**
+ * @param {{campaignId?: string, channelId?: string, groupId: string}} params
+ */
+export function fetchMetrics({campaignId, channelId, groupId}) {
 	return sendRequest({
-		data: {channelId},
+		data: {campaignIds: campaignId, channelId},
 		method: 'GET',
 		path: `contacts/${groupId}/account/metrics`,
 	});
