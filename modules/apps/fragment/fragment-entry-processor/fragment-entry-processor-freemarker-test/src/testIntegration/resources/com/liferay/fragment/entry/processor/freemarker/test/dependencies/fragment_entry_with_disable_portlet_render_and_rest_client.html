@@ -1,0 +1,7 @@
+[#assign response = restClient.get("/headless-admin-user/v1.0/my-user-account") /]
+
+<div class="fragment-entry">
+	<div id="dummy-rest-client">${(response?is_hash && (response?size == 0))?c}</div>
+
+	<div id="runtime-portlet">[#if liferay_portlet["runtime"]?is_macro]disabled[/#if][@liferay_portlet["runtime"] portletName="com_liferay_login_web_portlet_LoginPortlet" /]</div>
+</div>

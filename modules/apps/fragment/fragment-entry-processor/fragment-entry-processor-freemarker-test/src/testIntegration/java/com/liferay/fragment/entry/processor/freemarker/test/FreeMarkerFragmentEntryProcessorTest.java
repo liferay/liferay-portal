@@ -998,6 +998,44 @@ public class FreeMarkerFragmentEntryProcessorTest {
 	}
 
 	@Test
+	@TestInfo("LPD-114036")
+	public void testProcessFragmentEntryLinkHTMLWithDisablePortletRenderAndRESTClient()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
+
+		fragmentEntryLink.setHtml(
+			_readFileToString(
+				"fragment_entry_with_disable_portlet_render_and_rest_client." +
+					"html"));
+
+		DefaultFragmentEntryProcessorContext
+			defaultFragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					_serviceContext.getCompanyId(),
+					_serviceContext.getRequest(), new MockHttpServletResponse(),
+					LocaleUtil.getDefault(), null,
+					_serviceContext.getScopeGroupId());
+
+		defaultFragmentEntryProcessorContext.setDisablePortletRender(true);
+		defaultFragmentEntryProcessorContext.setDisableRESTClient(false);
+
+		String html =
+			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+				fragmentEntryLink, defaultFragmentEntryProcessorContext);
+
+		Assert.assertThat(
+			html,
+			CoreMatchers.containsString(
+				"<div id=\"dummy-rest-client\">false</div>"));
+		Assert.assertThat(
+			html,
+			CoreMatchers.containsString(
+				"<div id=\"runtime-portlet\">disabled</div>"));
+	}
+
+	@Test
 	public void testProcessFragmentEntryLinkHTMLWithInvalidFreeMarker()
 		throws Exception {
 
