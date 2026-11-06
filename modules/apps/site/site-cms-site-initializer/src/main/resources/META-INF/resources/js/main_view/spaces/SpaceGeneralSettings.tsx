@@ -108,20 +108,16 @@ export default function SpaceGeneralSettings({
 					friendlyURL,
 					name,
 					settings: {
+						googleMapsAPIKey:
+							mapProviderKey === 'GoogleMaps'
+								? googleMapsAPIKey
+								: '',
 						logoColor,
+						mapProviderKey,
 						sharingEnabled,
 						trashEnabled,
 						trashEntriesMaxAge:
 							Number(trashEntriesMaxAge) * MINUTES_PER_DAY,
-						...(Liferay.FeatureFlags['LPD-11388']
-							? {
-									googleMapsAPIKey:
-										mapProviderKey === 'GoogleMaps'
-											? googleMapsAPIKey
-											: '',
-									mapProviderKey,
-								}
-							: {}),
 					},
 				}
 			);
@@ -403,153 +399,143 @@ export default function SpaceGeneralSettings({
 				</>
 			</SpacePanel>
 
-			{Liferay.FeatureFlags['LPD-11388'] && (
-				<SpacePanel title={Liferay.Language.get('location-provider')}>
-					<>
-						<p className="mb-4">
-							{Liferay.Language.get(
-								'choose-the-map-provider-used-by-location-fields-on-assets-in-this-space'
-							)}
-						</p>
+			<SpacePanel title={Liferay.Language.get('location-provider')}>
+				<>
+					<p className="mb-4">
+						{Liferay.Language.get(
+							'choose-the-map-provider-used-by-location-fields-on-assets-in-this-space'
+						)}
+					</p>
 
-						<ClayForm.Group>
-							<label id={`${id}mapProviderKey`}>
-								{Liferay.Language.get('provider')}
-							</label>
+					<ClayForm.Group>
+						<label id={`${id}mapProviderKey`}>
+							{Liferay.Language.get('provider')}
+						</label>
 
-							<ClayRadioGroup
-								aria-labelledby={`${id}mapProviderKey`}
-								name="mapProviderKey"
-								onChange={(value) =>
-									setFieldValue('mapProviderKey', value)
-								}
-								role="radiogroup"
-								value={values.mapProviderKey}
+						<ClayRadioGroup
+							aria-labelledby={`${id}mapProviderKey`}
+							name="mapProviderKey"
+							onChange={(value) =>
+								setFieldValue('mapProviderKey', value)
+							}
+							role="radiogroup"
+							value={values.mapProviderKey}
+						>
+							<ClayRadio
+								label={sub(
+									Liferay.Language.get('instance-default-x'),
+									companyMapProviderKey === 'GoogleMaps'
+										? Liferay.Language.get('google-maps')
+										: Liferay.Language.get('openstreetmap')
+								)}
+								value=""
 							>
-								<ClayRadio
-									label={sub(
-										Liferay.Language.get(
-											'instance-default-x'
-										),
-										companyMapProviderKey === 'GoogleMaps'
-											? Liferay.Language.get(
-													'google-maps'
-												)
-											: Liferay.Language.get(
-													'openstreetmap'
-												)
+								<div className="font-weight-normal form-text mb-1 mt-0">
+									{Liferay.Language.get(
+										'this-option-uses-the-provider-set-in-instance-settings'
 									)}
-									value=""
-								>
-									<div className="font-weight-normal form-text mb-1 mt-0">
-										{Liferay.Language.get(
-											'this-option-uses-the-provider-set-in-instance-settings'
-										)}
-									</div>
-								</ClayRadio>
+								</div>
+							</ClayRadio>
 
-								<ClayRadio
-									label={Liferay.Language.get(
-										'openstreetmap'
+							<ClayRadio
+								label={Liferay.Language.get('openstreetmap')}
+								value="OpenStreetMap"
+							>
+								<div className="font-weight-normal form-text mb-1 mt-0">
+									{Liferay.Language.get(
+										'no-api-key-is-required.-this-option-uses-the-public-openstreetmap-tile-service'
 									)}
-									value="OpenStreetMap"
-								>
-									<div className="font-weight-normal form-text mb-1 mt-0">
-										{Liferay.Language.get(
-											'no-api-key-is-required.-this-option-uses-the-public-openstreetmap-tile-service'
-										)}
-									</div>
-								</ClayRadio>
+								</div>
+							</ClayRadio>
 
-								<ClayRadio
-									label={Liferay.Language.get('google-maps')}
-									value="GoogleMaps"
-								>
-									<div className="font-weight-normal form-text mb-1 mt-0">
-										{Liferay.Language.get(
-											'a-google-maps-api-key-with-billing-enabled-is-required'
-										)}
-									</div>
-								</ClayRadio>
-							</ClayRadioGroup>
-
-							{values.mapProviderKey === 'GoogleMaps' && (
-								<FieldWrapper
-									className="ml-4"
-									errorMessage={
-										touched.googleMapsAPIKey
-											? (errors?.googleMapsAPIKey as string)
-											: undefined
-									}
-									feedbackId={`feedback-${id}googleMapsAPIKey`}
-									fieldId={`${id}googleMapsAPIKey`}
-									helpMessage={Liferay.Language.get(
-										'enable-the-geocoding-api,-maps-javascript-api,-and-places-api-for-this-key-in-google-cloud'
+							<ClayRadio
+								label={Liferay.Language.get('google-maps')}
+								value="GoogleMaps"
+							>
+								<div className="font-weight-normal form-text mb-1 mt-0">
+									{Liferay.Language.get(
+										'a-google-maps-api-key-with-billing-enabled-is-required'
 									)}
-									label={Liferay.Language.get('api-key')}
-									required
-								>
-									<ClayInput.Group>
-										<ClayInput.GroupItem>
-											<ClayInput
-												aria-describedby={`feedback-${id}googleMapsAPIKey`}
-												autoComplete="new-password"
-												data-1p-ignore
-												id={`${id}googleMapsAPIKey`}
-												insetAfter
-												name="googleMapsAPIKey"
-												onBlur={handleBlur}
-												onChange={handleChange}
-												placeholder={Liferay.Language.get(
-													'enter-your-google-maps-api-key'
-												)}
-												required
-												type={
+								</div>
+							</ClayRadio>
+						</ClayRadioGroup>
+
+						{values.mapProviderKey === 'GoogleMaps' && (
+							<FieldWrapper
+								className="ml-4"
+								errorMessage={
+									touched.googleMapsAPIKey
+										? (errors?.googleMapsAPIKey as string)
+										: undefined
+								}
+								feedbackId={`feedback-${id}googleMapsAPIKey`}
+								fieldId={`${id}googleMapsAPIKey`}
+								helpMessage={Liferay.Language.get(
+									'enable-the-geocoding-api,-maps-javascript-api,-and-places-api-for-this-key-in-google-cloud'
+								)}
+								label={Liferay.Language.get('api-key')}
+								required
+							>
+								<ClayInput.Group>
+									<ClayInput.GroupItem>
+										<ClayInput
+											aria-describedby={`feedback-${id}googleMapsAPIKey`}
+											autoComplete="new-password"
+											data-1p-ignore
+											id={`${id}googleMapsAPIKey`}
+											insetAfter
+											name="googleMapsAPIKey"
+											onBlur={handleBlur}
+											onChange={handleChange}
+											placeholder={Liferay.Language.get(
+												'enter-your-google-maps-api-key'
+											)}
+											required
+											type={
+												showGoogleMapsAPIKey
+													? 'text'
+													: 'password'
+											}
+											value={values.googleMapsAPIKey}
+										/>
+
+										<ClayInput.GroupInsetItem
+											after
+											tag="span"
+										>
+											<ClayButtonWithIcon
+												aria-label={Liferay.Util.sub(
 													showGoogleMapsAPIKey
-														? 'text'
-														: 'password'
+														? Liferay.Language.get(
+																'hide-x'
+															)
+														: Liferay.Language.get(
+																'show-x'
+															),
+													Liferay.Language.get(
+														'google-maps-api-key'
+													)
+												)}
+												displayType="unstyled"
+												onClick={() =>
+													setShowGoogleMapsAPIKey(
+														!showGoogleMapsAPIKey
+													)
 												}
-												value={values.googleMapsAPIKey}
+												symbol={
+													showGoogleMapsAPIKey
+														? 'hidden'
+														: 'view'
+												}
 											/>
-
-											<ClayInput.GroupInsetItem
-												after
-												tag="span"
-											>
-												<ClayButtonWithIcon
-													aria-label={Liferay.Util.sub(
-														showGoogleMapsAPIKey
-															? Liferay.Language.get(
-																	'hide-x'
-																)
-															: Liferay.Language.get(
-																	'show-x'
-																),
-														Liferay.Language.get(
-															'google-maps-api-key'
-														)
-													)}
-													displayType="unstyled"
-													onClick={() =>
-														setShowGoogleMapsAPIKey(
-															!showGoogleMapsAPIKey
-														)
-													}
-													symbol={
-														showGoogleMapsAPIKey
-															? 'hidden'
-															: 'view'
-													}
-												/>
-											</ClayInput.GroupInsetItem>
-										</ClayInput.GroupItem>
-									</ClayInput.Group>
-								</FieldWrapper>
-							)}
-						</ClayForm.Group>
-					</>
-				</SpacePanel>
-			)}
+										</ClayInput.GroupInsetItem>
+									</ClayInput.GroupItem>
+								</ClayInput.Group>
+							</FieldWrapper>
+						)}
+					</ClayForm.Group>
+				</>
+			</SpacePanel>
 
 			<ClayButton.Group className="mt-2" spaced>
 				<ClayButton onClick={onSave}>
