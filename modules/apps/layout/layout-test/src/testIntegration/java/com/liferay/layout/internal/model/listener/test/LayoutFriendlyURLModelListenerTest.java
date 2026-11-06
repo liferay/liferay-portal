@@ -65,6 +65,16 @@ public class LayoutFriendlyURLModelListenerTest {
 	@Test
 	@TestInfo("LPD-74225")
 	public void testCreateLayoutFriendlyURL() throws Exception {
+		_testCreateLayoutFriendlyURL();
+	}
+
+	@Test
+	@TestInfo("LPD-74225")
+	public void testUpdateLayoutFriendlyURL() throws Exception {
+		_testUpdateLayoutFriendlyURL();
+	}
+
+	private void _testCreateLayoutFriendlyURL() throws Exception {
 		_testCreateLayoutFriendlyURL(1);
 
 		ExportImportThreadLocal.setLayoutImportInProcess(true);
@@ -96,9 +106,18 @@ public class LayoutFriendlyURLModelListenerTest {
 		}
 	}
 
-	@Test
-	@TestInfo("LPD-74225")
-	public void testUpdateLayoutFriendlyURL() throws Exception {
+	private void _testCreateLayoutFriendlyURL(int count) throws Exception {
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		List<FriendlyURLEntry> friendlyURLEntries =
+			_friendlyURLEntryLocalService.getFriendlyURLEntries(
+				_group.getGroupId(), _classNameId, layout.getPlid());
+
+		Assert.assertEquals(
+			friendlyURLEntries.toString(), count, friendlyURLEntries.size());
+	}
+
+	private void _testUpdateLayoutFriendlyURL() throws Exception {
 		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
 
 		_testUpdateLayoutFriendlyURL(1, layout);
@@ -130,17 +149,6 @@ public class LayoutFriendlyURLModelListenerTest {
 
 			_testUpdateLayoutFriendlyURL(1, layout);
 		}
-	}
-
-	private void _testCreateLayoutFriendlyURL(int count) throws Exception {
-		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
-
-		List<FriendlyURLEntry> friendlyURLEntries =
-			_friendlyURLEntryLocalService.getFriendlyURLEntries(
-				_group.getGroupId(), _classNameId, layout.getPlid());
-
-		Assert.assertEquals(
-			friendlyURLEntries.toString(), count, friendlyURLEntries.size());
 	}
 
 	private void _testUpdateLayoutFriendlyURL(int count, Layout layout)
