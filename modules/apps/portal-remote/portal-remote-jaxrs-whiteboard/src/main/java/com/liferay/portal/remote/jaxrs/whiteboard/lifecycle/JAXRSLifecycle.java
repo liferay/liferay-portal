@@ -39,14 +39,14 @@ import org.osgi.service.jaxrs.client.SseEventSourceFactory;
 public class JAXRSLifecycle {
 
 	public void ensureReady() {
-		if (_jaxrsReady) {
-			return;
-		}
-
-		_jaxrsReady = true;
-
 		_serviceRegistrationDCLSingleton.getSingleton(
 			() -> {
+				if (_jaxrsReady) {
+					return null;
+				}
+
+				_jaxrsReady = true;
+
 				_start();
 
 				return _bundleContext.registerService(
