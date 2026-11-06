@@ -43,7 +43,8 @@ public class WorkspaceResourceImpl extends BaseWorkspaceResourceImpl {
 
 					return new Workspace() {
 						{
-							setGroupId(faroProject::getGroupId);
+							setGroupId(
+								() -> String.valueOf(faroProject.getGroupId()));
 							setName(faroProject::getName);
 						}
 					};
