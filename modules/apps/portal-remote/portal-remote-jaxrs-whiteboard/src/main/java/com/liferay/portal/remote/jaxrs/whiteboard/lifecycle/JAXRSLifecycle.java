@@ -25,7 +25,6 @@ import org.apache.aries.component.dsl.OSGi;
 import org.apache.aries.component.dsl.OSGiResult;
 import org.apache.aries.jax.rs.whiteboard.internal.Whiteboard;
 import org.apache.aries.jax.rs.whiteboard.internal.client.ClientBuilderFactory;
-import org.apache.aries.jax.rs.whiteboard.internal.utils.LogUtils;
 import org.apache.aries.jax.rs.whiteboard.internal.utils.PropertyHolder;
 import org.apache.aries.jax.rs.whiteboard.internal.utils.Utils;
 import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
@@ -41,9 +40,6 @@ import org.osgi.service.http.runtime.HttpServiceRuntime;
 import org.osgi.service.http.runtime.HttpServiceRuntimeConstants;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.jaxrs.client.SseEventSourceFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Stian Sigvartsen
@@ -99,11 +95,7 @@ public class JAXRSLifecycle {
 	private OSGi<?> _registerClient() {
 		return OSGi.register(
 			ClientBuilder.class, new ClientBuilderFactory(),
-			(Map<String, Object>)null
-		).effects(
-			LogUtils.ifInfoEnabled(_log, () -> "Registered ClientBuilder"),
-			LogUtils.ifInfoEnabled(_log, () -> "Unregistered ClientBuilder")
-		);
+			(Map<String, Object>)null);
 	}
 
 	private OSGi<?> _registerSseEventSourceFactory() {
@@ -128,13 +120,7 @@ public class JAXRSLifecycle {
 				}
 
 			},
-			new Hashtable<>()
-		).effects(
-			LogUtils.ifInfoEnabled(
-				_log, () -> "Registered SseEventSourceFactory"),
-			LogUtils.ifInfoEnabled(
-				_log, () -> "Unregistered SseEventSourceFactory")
-		);
+			new Hashtable<>());
 	}
 
 	private OSGi<?> _runWhiteboard(Dictionary<String, ?> configuration) {
@@ -153,17 +139,6 @@ public class JAXRSLifecycle {
 			).then(
 				OSGi.just(
 					Whiteboard.createWhiteboard(configuration)
-				).effects(
-					LogUtils.ifInfoEnabled(
-						_log,
-						() ->
-							"created whiteboard from configuration: " +
-								configuration),
-					LogUtils.ifInfoEnabled(
-						_log,
-						() ->
-							"destroyed whiteboard from configuration: " +
-								configuration)
 				).flatMap(
 					whiteboard -> OSGi.all(
 						OSGi.effects(
@@ -172,22 +147,13 @@ public class JAXRSLifecycle {
 						OSGi.ignore(
 							endpoints.effects(
 								whiteboard::addHttpEndpoints,
-								whiteboard::removeHttpEndpoints)
-						).effects(
-							LogUtils.debugTracking(
-								_log,
-								() -> "endpoint for whiteboard: " + whiteboard)
-						))
+								whiteboard::removeHttpEndpoints)))
 				)
 			));
 	}
 
 	private void _start() {
 		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
-
-		if (_log.isDebugEnabled()) {
-			_log.debug("Starting the whiteboard factory");
-		}
 
 		OSGi<?> runWhiteboards = OSGi.all(
 			OSGi.configurations("org.apache.aries.jax.rs.whiteboard"),
@@ -207,8 +173,6 @@ public class JAXRSLifecycle {
 					}))
 		).filter(
 			c -> !Objects.equals(c.get("enabled"), "false")
-		).effects(
-			LogUtils.debugTracking(_log, () -> "whiteboard configuration")
 		).flatMap(
 			configuration -> _runWhiteboard(configuration)
 		);
@@ -220,28 +184,13 @@ public class JAXRSLifecycle {
 		).run(
 			_bundleContext
 		);
-
-		if (_log.isDebugEnabled()) {
-			_log.debug("Whiteboard factory started");
-		}
 	}
 
 	private void _stop() {
-		if (_log.isDebugEnabled()) {
-			_log.debug("Stopping whiteboard factory");
-		}
-
 		_osgiResult.close();
-
-		if (_log.isDebugEnabled()) {
-			_log.debug("Stopped whiteboard factory");
-		}
 
 		RuntimeDelegate.setInstance(null);
 	}
-
-	private static final Logger _log = LoggerFactory.getLogger(
-		JAXRSLifecycle.class);
 
 	private BundleContext _bundleContext;
 	private boolean _jaxrsReady;

@@ -3,6 +3,5 @@
 <suppressions>
 	<source-check>
 		<suppress checks="BNDExportsCheck" />
-		<suppress checks="IllegalImportsCheck" files="src/main/java/com/liferay/portal/remote/jaxrs/whiteboard/lifecycle/JAXRSLifecycle\.java" />
 	</source-check>
 </suppressions>
