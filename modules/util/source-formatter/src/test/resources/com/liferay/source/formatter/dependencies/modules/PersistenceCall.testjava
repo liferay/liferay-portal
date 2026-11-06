@@ -1,0 +1,31 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.modules;
+
+import com.liferay.portal.kernel.service.persistence.UserUtil;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionConfig;
+import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
+
+/**
+ * @author Shuyang Zhou
+ */
+public class PersistenceCall {
+
+	public int countUsers(long companyId) {
+		return UserUtil.countByCompanyId(companyId);
+	}
+
+	public int countUsersInTransaction(long companyId) throws Throwable {
+		return TransactionInvokerUtil.invoke(
+			_transactionConfig, () -> UserUtil.countByCompanyId(companyId));
+	}
+
+	private static final TransactionConfig _transactionConfig =
+		TransactionConfig.Factory.create(
+			Propagation.SUPPORTS, new Class<?>[] {Exception.class});
+
+}
