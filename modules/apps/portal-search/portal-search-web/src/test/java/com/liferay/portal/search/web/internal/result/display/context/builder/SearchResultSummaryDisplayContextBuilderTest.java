@@ -137,18 +137,18 @@ public class SearchResultSummaryDisplayContextBuilderTest {
 
 		document.addKeyword(Field.CREATE_DATE, "20180425171442");
 
-		_assertCreationDate(document, "Apr 25, 18, 5:14 PM");
+		_assertCreationDate(document, "Apr 25, 18, 5:14\u202FPM");
 
 		_assertCreationDate(
 			document, "25 de abr. de 18 17:14", LocaleUtil.BRAZIL);
-		_assertCreationDate(document, "18年4月25日 下午5:14", LocaleUtil.CHINA);
+		_assertCreationDate(document, "18年4月25日 17:14", LocaleUtil.CHINA);
 		_assertCreationDate(document, "25.04.18, 17:14", LocaleUtil.GERMANY);
 		_assertCreationDate(document, "18. ápr. 25. 17:14", LocaleUtil.HUNGARY);
 		_assertCreationDate(document, "25 apr 18, 17:14", LocaleUtil.ITALY);
 		_assertCreationDate(document, "18/04/25 17:14", LocaleUtil.JAPAN);
 		_assertCreationDate(
-			document, "25 apr. 18 17:14", LocaleUtil.NETHERLANDS);
-		_assertCreationDate(document, "25 abr 18 17:14", LocaleUtil.SPAIN);
+			document, "25 apr 18 17:14", LocaleUtil.NETHERLANDS);
+		_assertCreationDate(document, "25 abr 18, 17:14", LocaleUtil.SPAIN);
 	}
 
 	@Test
