@@ -918,6 +918,34 @@ public class TestrayFactory {
 			status, testrayBuild, topLevelBuildReport);
 	}
 
+	private static Set<String> _getBatchNames(
+		String basePropertyName, Job job) {
+
+		Set<String> batchNames = new HashSet<>();
+
+		JobProperty jobProperty = JobPropertyFactory.newJobProperty(
+			basePropertyName, job.getTestSuiteName(), null, job, null, null,
+			true);
+
+		String batchNamesString = jobProperty.getValue();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(batchNamesString)) {
+			return batchNames;
+		}
+
+		for (String batchName : batchNamesString.split(",")) {
+			batchName = batchName.trim();
+
+			if (batchName.isEmpty() || batchName.startsWith("#")) {
+				continue;
+			}
+
+			batchNames.add(batchName);
+		}
+
+		return batchNames;
+	}
+
 	private static Set<String> _getSuffixedBatchNames(
 		TestrayBuild testrayBuild, Job job) {
 
@@ -933,29 +961,8 @@ public class TestrayFactory {
 
 		Set<String> batchNames = new TreeSet<>();
 
-		for (String basePropertyName :
-				new String[] {"test.batch.names", "test.batch.names.smoke"}) {
-
-			JobProperty jobProperty = JobPropertyFactory.newJobProperty(
-				basePropertyName, job.getTestSuiteName(), null, job, null, null,
-				true);
-
-			String batchNamesString = jobProperty.getValue();
-
-			if (JenkinsResultsParserUtil.isNullOrEmpty(batchNamesString)) {
-				continue;
-			}
-
-			for (String batchName : batchNamesString.split(",")) {
-				batchName = batchName.trim();
-
-				if (batchName.isEmpty() || batchName.startsWith("#")) {
-					continue;
-				}
-
-				batchNames.add(batchName);
-			}
-		}
+		batchNames.addAll(_getBatchNames("test.batch.names", job));
+		batchNames.addAll(_getBatchNames("test.batch.names.smoke", job));
 
 		Map<String, String> factorRunIdStrings = new HashMap<>();
 
