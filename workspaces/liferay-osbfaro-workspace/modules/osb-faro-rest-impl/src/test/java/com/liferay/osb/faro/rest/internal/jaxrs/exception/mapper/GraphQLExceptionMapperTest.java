@@ -88,6 +88,23 @@ public class GraphQLExceptionMapperTest {
 				"DataFetchingException", "query-in-progress", null));
 	}
 
+	@Test
+	public void testToResponseWithHTTPStatus() {
+		_assertResponse(
+			Response.Status.BAD_REQUEST,
+			"Check the parameter values against the tool description",
+			_getGraphQLError(400));
+		_assertResponse(
+			Response.Status.BAD_REQUEST,
+			"Check the parameter values against the tool description",
+			_getGraphQLError(403));
+		_assertResponse(
+			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",
+			_getGraphQLError(500));
+		_assertResponse(
+			Response.Status.NOT_FOUND, "Not Found", _getGraphQLError(404));
+	}
+
 	private void _assertResponse(
 		Response.Status expectedStatus, String expectedTitle,
 		GraphQLError... graphQLErrors) {
@@ -103,6 +120,22 @@ public class GraphQLExceptionMapperTest {
 
 		Assert.assertEquals(expectedTitle, problem.getTitle());
 		Assert.assertNull(problem.getType());
+	}
+
+	private GraphQLError _getGraphQLError(int httpStatus) {
+		GraphQLError graphQLError = new GraphQLError();
+
+		graphQLError.setExtensions(
+			HashMapBuilder.<String, Object>put(
+				"classification", "DataFetchingException"
+			).put(
+				"errorId", RandomTestUtil.randomString()
+			).put(
+				"httpStatus", httpStatus
+			).build());
+		graphQLError.setMessage(RandomTestUtil.randomString());
+
+		return graphQLError;
 	}
 
 	private GraphQLError _getGraphQLError(
