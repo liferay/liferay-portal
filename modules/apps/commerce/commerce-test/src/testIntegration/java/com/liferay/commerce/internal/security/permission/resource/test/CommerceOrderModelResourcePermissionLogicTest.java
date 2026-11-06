@@ -79,82 +79,63 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
 			_group.getGroupId(), _commerceCurrency.getCode());
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId());
-
-		_guestUser = _userLocalService.getGuestUser(
-			TestPropsValues.getCompanyId());
-
-		AccountEntry accountEntry1 = _addAccountEntry(
-			AccountConstants.ACCOUNT_ENTRY_TYPE_GUEST, serviceContext);
-
-		_commerceOrder1 = _commerceOrderLocalService.addCommerceOrder(
-			_guestUser.getUserId(), _commerceChannel.getGroupId(),
-			accountEntry1.getAccountEntryId(), _commerceCurrency.getCode(), 0);
-
-		_commerceOrder2 = _commerceOrderLocalService.addCommerceOrder(
-			_guestUser.getUserId(), _commerceChannel.getGroupId(),
-			AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
-			_commerceCurrency.getCode(), 0);
-
-		AccountEntry accountEntry2 = _addAccountEntry(
-			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS, serviceContext);
-
-		_user = UserTestUtil.addUser();
-
-		_accountEntryUserRelLocalService.addAccountEntryUserRel(
-			accountEntry2.getAccountEntryId(), _user.getUserId());
-
-		_commerceOrder3 = _commerceOrderLocalService.addCommerceOrder(
-			_user.getUserId(), _commerceChannel.getGroupId(),
-			accountEntry2.getAccountEntryId(), _commerceCurrency.getCode(), 0);
-
-		AccountEntry accountEntry3 = _addAccountEntry(
-			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS, serviceContext);
-
-		_commerceOrder4 = _commerceOrderLocalService.addCommerceOrder(
-			TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
-			accountEntry3.getAccountEntryId(), _commerceCurrency.getCode(), 0);
+		_serviceContext = ServiceContextTestUtil.getServiceContext(
+			_group.getGroupId(), TestPropsValues.getUserId());
 	}
 
 	@Test
 	public void testContains() throws Exception {
-		Assert.assertTrue(_commerceOrder1.isGuestOrder());
+		AccountEntry accountEntry1 = _addAccountEntry(
+			AccountConstants.ACCOUNT_ENTRY_TYPE_GUEST);
+		User guestUser = _userLocalService.getGuestUser(
+			TestPropsValues.getCompanyId());
+
+		CommerceOrder commerceOrder1 =
+			_commerceOrderLocalService.addCommerceOrder(
+				guestUser.getUserId(), _commerceChannel.getGroupId(),
+				accountEntry1.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		Assert.assertTrue(commerceOrder1.isGuestOrder());
+		Assert.assertTrue(
+			_contains(
+				commerceOrder1,
+				_createMockHttpServletRequest(commerceOrder1, null, null),
+				TestPropsValues.getUser(), ActionKeys.VIEW));
 		Assert.assertEquals(
 			Collections.emptyList(),
-			_filterActionIds(_commerceOrder1, null, null, _guestUser));
+			_filterActionIds(commerceOrder1, null, null, guestUser));
 		Assert.assertFalse(
 			_contains(
-				_commerceOrder1,
+				commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, RandomTestUtil.randomString(), null),
-				_guestUser, ActionKeys.VIEW));
+					commerceOrder1, RandomTestUtil.randomString(), null),
+				guestUser, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(
-				_commerceOrder1,
+				commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, _commerceOrder1.getUuid(), null),
-				_guestUser, ActionKeys.VIEW));
+					commerceOrder1, commerceOrder1.getUuid(), null),
+				guestUser, ActionKeys.VIEW));
 		Assert.assertFalse(
 			_contains(
-				_commerceOrder1,
+				commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, null, RandomTestUtil.randomString()),
-				_guestUser, ActionKeys.VIEW));
+					commerceOrder1, null, RandomTestUtil.randomString()),
+				guestUser, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(
-				_commerceOrder1,
+				commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, null, _commerceOrder1.getUuid()),
-				_guestUser, ActionKeys.VIEW));
+					commerceOrder1, null, commerceOrder1.getUuid()),
+				guestUser, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(
-				_commerceOrder1,
+				commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, _commerceOrder1.getUuid(),
-					_commerceOrder1.getUuid()),
-				_guestUser, ActionKeys.VIEW));
+					commerceOrder1, commerceOrder1.getUuid(),
+					commerceOrder1.getUuid()),
+				guestUser, ActionKeys.VIEW));
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -162,94 +143,114 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 		HttpSession httpSession = mockHttpServletRequest.getSession();
 
 		httpSession.setAttribute(
-			_commerceOrderHttpHelper.getCookieName(
-				_commerceOrder1.getGroupId()),
-			_commerceOrder1.getUuid());
+			_commerceOrderHttpHelper.getCookieName(commerceOrder1.getGroupId()),
+			commerceOrder1.getUuid());
 
 		Assert.assertTrue(
 			_contains(
-				_commerceOrder1, mockHttpServletRequest, _guestUser,
+				commerceOrder1, mockHttpServletRequest, guestUser,
 				ActionKeys.VIEW));
 		Assert.assertTrue(
-			_contains(_commerceOrder1, null, _guestUser, ActionKeys.VIEW));
+			_contains(commerceOrder1, null, guestUser, ActionKeys.VIEW));
+
+		User user = UserTestUtil.addUser();
 
 		Assert.assertFalse(
 			_contains(
-				_commerceOrder1,
-				_createMockHttpServletRequest(_commerceOrder1, null, null),
-				_user, ActionKeys.VIEW));
+				commerceOrder1,
+				_createMockHttpServletRequest(commerceOrder1, null, null), user,
+				ActionKeys.VIEW));
 		Assert.assertFalse(
 			_contains(
-				_commerceOrder1,
+				commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, RandomTestUtil.randomString(), null),
-				_user, ActionKeys.VIEW));
+					commerceOrder1, RandomTestUtil.randomString(), null),
+				user, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(
-				_commerceOrder1,
+				commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, _commerceOrder1.getUuid(), null),
-				_user, ActionKeys.VIEW));
+					commerceOrder1, commerceOrder1.getUuid(), null),
+				user, ActionKeys.VIEW));
 		Assert.assertFalse(
 			_contains(
-				_commerceOrder1,
+				commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, null, RandomTestUtil.randomString()),
-				_user, ActionKeys.VIEW));
+					commerceOrder1, null, RandomTestUtil.randomString()),
+				user, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(
-				_commerceOrder1,
+				commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, null, _commerceOrder1.getUuid()),
-				_user, ActionKeys.VIEW));
+					commerceOrder1, null, commerceOrder1.getUuid()),
+				user, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(
-				_commerceOrder1,
+				commerceOrder1,
 				_createMockHttpServletRequest(
-					_commerceOrder1, _commerceOrder1.getUuid(),
-					_commerceOrder1.getUuid()),
-				_user, ActionKeys.VIEW));
-		Assert.assertTrue(
-			_contains(
-				_commerceOrder1,
-				_createMockHttpServletRequest(_commerceOrder1, null, null),
-				TestPropsValues.getUser(), ActionKeys.VIEW));
+					commerceOrder1, commerceOrder1.getUuid(),
+					commerceOrder1.getUuid()),
+				user, ActionKeys.VIEW));
 
-		Assert.assertTrue(_commerceOrder2.isGuestOrder());
+		CommerceOrder commerceOrder2 =
+			_commerceOrderLocalService.addCommerceOrder(
+				guestUser.getUserId(), _commerceChannel.getGroupId(),
+				AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+				_commerceCurrency.getCode(), 0);
+
+		Assert.assertTrue(commerceOrder2.isGuestOrder());
 		Assert.assertEquals(
 			Collections.emptyList(),
-			_filterActionIds(_commerceOrder2, null, null, _guestUser));
+			_filterActionIds(commerceOrder2, null, null, guestUser));
 
-		Assert.assertFalse(_commerceOrder3.isGuestOrder());
+		AccountEntry accountEntry2 = _addAccountEntry(
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			accountEntry2.getAccountEntryId(), user.getUserId());
+
+		CommerceOrder commerceOrder3 =
+			_commerceOrderLocalService.addCommerceOrder(
+				user.getUserId(), _commerceChannel.getGroupId(),
+				accountEntry2.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		Assert.assertFalse(commerceOrder3.isGuestOrder());
 		Assert.assertFalse(
 			_contains(
-				_commerceOrder3,
-				_createMockHttpServletRequest(_commerceOrder3, null, null),
-				_guestUser, ActionKeys.VIEW));
+				commerceOrder3,
+				_createMockHttpServletRequest(commerceOrder3, null, null),
+				guestUser, ActionKeys.VIEW));
 		Assert.assertTrue(
 			_contains(
-				_commerceOrder3,
-				_createMockHttpServletRequest(_commerceOrder3, null, null),
-				_user, ActionKeys.VIEW));
+				commerceOrder3,
+				_createMockHttpServletRequest(commerceOrder3, null, null), user,
+				ActionKeys.VIEW));
 
-		Assert.assertFalse(_commerceOrder4.isGuestOrder());
+		AccountEntry accountEntry3 = _addAccountEntry(
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
+
+		CommerceOrder commerceOrder4 =
+			_commerceOrderLocalService.addCommerceOrder(
+				TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
+				accountEntry3.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		Assert.assertFalse(commerceOrder4.isGuestOrder());
 		Assert.assertFalse(
 			_contains(
-				_commerceOrder4,
-				_createMockHttpServletRequest(_commerceOrder4, null, null),
-				_user, ActionKeys.VIEW));
+				commerceOrder4,
+				_createMockHttpServletRequest(commerceOrder4, null, null), user,
+				ActionKeys.VIEW));
 	}
 
-	private AccountEntry _addAccountEntry(
-			String type, ServiceContext serviceContext)
-		throws Exception {
-
+	private AccountEntry _addAccountEntry(String type) throws Exception {
 		return _accountEntryLocalService.addAccountEntry(
 			null, TestPropsValues.getUserId(),
 			AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
 			RandomTestUtil.randomString(), null, null,
 			RandomTestUtil.randomString() + "@liferay.com", null, null, type,
-			WorkflowConstants.STATUS_APPROVED, serviceContext);
+			WorkflowConstants.STATUS_APPROVED, _serviceContext);
 	}
 
 	private boolean _contains(
@@ -343,10 +344,6 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 
 	private CommerceChannel _commerceChannel;
 	private CommerceCurrency _commerceCurrency;
-	private CommerceOrder _commerceOrder1;
-	private CommerceOrder _commerceOrder2;
-	private CommerceOrder _commerceOrder3;
-	private CommerceOrder _commerceOrder4;
 
 	@Inject
 	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
@@ -361,8 +358,7 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 		_commerceOrderModelResourcePermission;
 
 	private Group _group;
-	private User _guestUser;
-	private User _user;
+	private ServiceContext _serviceContext;
 
 	@Inject
 	private UserLocalService _userLocalService;
