@@ -396,11 +396,6 @@ public class ContactsCenterPortletTest {
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest();
 
-		ThemeDisplay themeDisplay = _createThemeDisplay(user);
-
-		themeDisplay.setLayout(layout);
-		themeDisplay.setScopeGroupId(layout.getGroupId());
-
 		mockLiferayPortletRenderRequest.setAttribute(
 			MVCRenderConstants.
 				PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX +
@@ -411,8 +406,15 @@ public class ContactsCenterPortletTest {
 				PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX +
 					"/view_user.jsp",
 			new MockLiferayPortletContext("/view_user.jsp"));
+
+		ThemeDisplay themeDisplay = _createThemeDisplay(user);
+
+		themeDisplay.setLayout(layout);
+		themeDisplay.setScopeGroupId(layout.getGroupId());
+
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
+
 		mockLiferayPortletRenderRequest.setParameter(
 			"mvcPath", "/view_user.jsp");
 		mockLiferayPortletRenderRequest.setParameter(
