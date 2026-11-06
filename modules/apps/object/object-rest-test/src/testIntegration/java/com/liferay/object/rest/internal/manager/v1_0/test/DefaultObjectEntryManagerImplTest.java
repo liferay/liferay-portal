@@ -1247,6 +1247,31 @@ public class DefaultObjectEntryManagerImplTest
 				_objectDefinition3.getResourceName(), StringPool.SPACE),
 			() -> _addObjectEntry(accountEntry1));
 
+		_assignOrganizationRole(
+			organization1,
+			_roleLocalService.getRole(
+				companyId, RoleConstants.ORGANIZATION_ADMINISTRATOR),
+			_user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(),
+				" must have ADD_OBJECT_ENTRY permission for ",
+				_objectDefinition3.getResourceName(), StringPool.SPACE),
+			() -> _addObjectEntry(accountEntry1));
+
+		Role organizationUserRole = _roleLocalService.getRole(
+			companyId, RoleConstants.ORGANIZATION_USER);
+
+		_addResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY, organizationUserRole);
+
+		Assert.assertNotNull(_addObjectEntry(accountEntry1));
+
+		_removeResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY, organizationUserRole);
+
 		_addResourcePermission(
 			ObjectActionKeys.ADD_OBJECT_ENTRY, _accountManagerRole);
 
@@ -10033,6 +10058,26 @@ public class DefaultObjectEntryManagerImplTest
 		_assignOrganizationRole(organization1, _accountManagerRole, _user);
 
 		_assertObjectEntriesSize1(1);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have UPDATE permission for ",
+				_objectDefinition3.getClassName(), StringPool.SPACE,
+				objectEntry1.getId()),
+			() -> _defaultObjectEntryManager.updateObjectEntry(
+				_simpleDTOConverterContext, _objectDefinition3,
+				objectEntry1.getId(), objectEntry1));
+
+		Role organizationRole = RoleTestUtil.addRole(
+			RoleConstants.TYPE_ORGANIZATION);
+
+		_resourcePermissionLocalService.addResourcePermission(
+			companyId, Organization.class.getName(),
+			ResourceConstants.SCOPE_GROUP_TEMPLATE, "0",
+			organizationRole.getRoleId(), ActionKeys.MANAGE_SUBORGANIZATIONS);
+
+		_assignOrganizationRole(organization1, organizationRole, _user);
 
 		AssertUtils.assertFailure(
 			PrincipalException.MustHavePermission.class,
