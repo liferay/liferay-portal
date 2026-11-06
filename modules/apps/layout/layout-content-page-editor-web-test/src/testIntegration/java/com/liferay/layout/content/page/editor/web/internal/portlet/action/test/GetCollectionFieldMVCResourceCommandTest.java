@@ -618,6 +618,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 	}
 
 	@Test
+	@TestInfo({"LPD-58700", "LPD-113290"})
 	public void testGetCollectionFieldWithListItemStyleOfAnotherItemType()
 		throws Exception {
 
@@ -656,6 +657,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 	}
 
 	@Test
+	@TestInfo("LPD-113290")
 	public void testGetCollectionFieldWithTemplateEntry() throws Exception {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(), RandomTestUtil.randomString(),
