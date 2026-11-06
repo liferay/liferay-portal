@@ -24,9 +24,12 @@ import {
 } from '../types/Structure';
 import {FIELD_TYPE_TO_DB_TYPE, Field, getFieldBusinessType} from './field';
 import getOwnFields from './getOwnFields';
+import getRepeatableGroups from './getRepeatableGroups';
 import isField from './isField';
 import {isFieldTextSearchable} from './isFieldTextSearchable';
 import isRepeatableGroup from './isRepeatableGroup';
+
+export const REPEATABLE_GROUP_BOX_NAME_PREFIX = 'repeatable-group-';
 
 export default function buildObjectDefinition({
 	children = new Map(),
@@ -142,9 +145,7 @@ function buildLayout({
 	label: Structure['label'];
 	titleFieldName: Structure['titleFieldName'];
 }): ObjectLayout | undefined {
-	const groups = Array.from(children.values()).filter(isPlainGroup);
-
-	if (!groups.length) {
+	if (!Array.from(children.values()).some(isPlainGroup)) {
 		return undefined;
 	}
 
@@ -154,15 +155,27 @@ function buildLayout({
 		(field) => field.name !== titleFieldName
 	);
 
-	if (fields.length) {
+	const repeatableGroups = Array.from(children.values()).filter(
+		isRepeatableGroup
+	);
+
+	if (fields.length || repeatableGroups.length) {
 		objectLayoutTabs.push({
 			name: label,
-			objectLayoutBoxes: [buildBox({fields})],
+			objectLayoutBoxes: [
+				buildBox({fields}),
+				...repeatableGroups.map(buildRepeatableGroupBox),
+			].map((objectLayoutBox, priority) => ({
+				...objectLayoutBox,
+				priority,
+			})),
 		});
 	}
 
-	for (const group of groups) {
-		objectLayoutTabs.push(buildTab(group));
+	for (const child of children.values()) {
+		if (isPlainGroup(child)) {
+			objectLayoutTabs.push(buildTab(child));
+		}
 	}
 
 	return {
@@ -196,6 +209,19 @@ function buildBox({
 	};
 }
 
+function buildRepeatableGroupBox(group: RepeatableGroup): ObjectLayoutBox {
+	return {
+		collapsable: false,
+		name: {
+			[Liferay.ThemeDisplay.getDefaultLanguageId()]:
+				REPEATABLE_GROUP_BOX_NAME_PREFIX + group.relationshipName,
+		},
+		objectLayoutRows: [],
+		priority: 0,
+		type: 'regular',
+	};
+}
+
 function buildTab(group: NonRepeatableGroup): ObjectLayoutTab {
 	const objectLayoutBoxes: ObjectLayoutBox[] = [];
 
@@ -214,6 +240,9 @@ function buildTab(group: NonRepeatableGroup): ObjectLayoutTab {
 					name: child.label,
 				})
 			);
+		}
+		else if (isRepeatableGroup(child)) {
+			objectLayoutBoxes.push(buildRepeatableGroupBox(child));
 		}
 	}
 
@@ -235,8 +264,23 @@ function isPlainGroup(child: StructureChild): child is NonRepeatableGroup {
 	return child.type === 'group' && !child.isRepeatable;
 }
 
+function getOwnChildren(children: Structure['children']): StructureChild[] {
+	const ownChildren: StructureChild[] = [];
+
+	for (const child of children.values()) {
+		if (isPlainGroup(child)) {
+			ownChildren.push(...getOwnChildren(child.children));
+		}
+		else {
+			ownChildren.push(child);
+		}
+	}
+
+	return ownChildren;
+}
+
 function getRelatedContents(children: Structure['children']): RelatedContent[] {
-	return Array.from(children.values()).filter(
+	return getOwnChildren(children).filter(
 		(child) => child.type === 'related-content'
 	) as RelatedContent[];
 }
@@ -244,15 +288,9 @@ function getRelatedContents(children: Structure['children']): RelatedContent[] {
 function getReferencedStructures(
 	children: Structure['children']
 ): ReferencedStructure[] {
-	return Array.from(children.values()).filter(
+	return getOwnChildren(children).filter(
 		(child) => child.type === 'referenced-structure'
 	) as ReferencedStructure[];
-}
-
-function getRepeatableGroups(
-	children: Structure['children']
-): RepeatableGroup[] {
-	return Array.from(children.values()).filter(isRepeatableGroup);
 }
 
 function buildFields(fields: Field[]) {

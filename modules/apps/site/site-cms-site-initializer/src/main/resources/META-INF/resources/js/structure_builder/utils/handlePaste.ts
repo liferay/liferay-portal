@@ -12,8 +12,8 @@ import {Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import exceedsMaxNesting, {getMaxNesting} from './exceedsMaxNesting';
 import findChild from './findChild';
+import getPlacementErrorMessage from './getPlacementErrorMessage';
 import isReferenced from './isReferenced';
-import isRelationship from './isRelationship';
 
 export default function handlePaste({
 	clipboard,
@@ -41,17 +41,14 @@ export default function handlePaste({
 		return;
 	}
 
-	if (
-		Liferay.FeatureFlags['LPD-96666'] &&
-		targetUuid !== structure.uuid &&
-		clipboard.items.some(isRelationship)
-	) {
-		openToast({
-			message: Liferay.Language.get(
-				'repeatable-groups-and-referenced-structures-can-only-be-placed-at-the-first-level'
-			),
-			type: 'danger',
-		});
+	const message = getPlacementErrorMessage({
+		items: clipboard.items,
+		structure,
+		targetUuid,
+	});
+
+	if (message) {
+		openToast({message, type: 'danger'});
 
 		return;
 	}

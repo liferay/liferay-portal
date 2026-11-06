@@ -164,9 +164,7 @@ export default function refreshReferencedStructures({
 	// If we are inside referenced structure or repeatable group, insert new elements
 
 	if (objectDefinition && !isPlainGroup(root)) {
-		const childrenNames = Array.from(root.children.values()).map(
-			(child) => child.name
-		);
+		const childrenNames = getOwnChildNames(root.children);
 
 		const childrenERCs = getOwnFields(root.children).map(({erc}) => erc);
 
@@ -249,4 +247,20 @@ export default function refreshReferencedStructures({
 
 function isPlainGroup(root: ReferencedStructure | Group | Structure): boolean {
 	return root.type === 'group' && !root.isRepeatable;
+}
+
+function getOwnChildNames(
+	children: (ReferencedStructure | Group | Structure)['children']
+): Array<string | undefined> {
+	const names: Array<string | undefined> = [];
+
+	for (const child of children.values()) {
+		names.push(child.name);
+
+		if (child.type === 'group' && !child.isRepeatable) {
+			names.push(...getOwnChildNames(child.children));
+		}
+	}
+
+	return names;
 }

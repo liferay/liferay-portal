@@ -18,11 +18,11 @@ import {Uuid} from '../types/Uuid';
 import exceedsMaxNesting, {getMaxNesting} from './exceedsMaxNesting';
 import findAvailableFieldName from './findAvailableFieldName';
 import findChild from './findChild';
+import getPlacementErrorMessage from './getPlacementErrorMessage';
 import getUndeletableChildren, {
 	UndeletableReason,
 } from './getUndeletableChildren';
 import isReferenced from './isReferenced';
-import isRelationship from './isRelationship';
 
 export default async function handleMoveChildren({
 	deletedChildren,
@@ -39,19 +39,14 @@ export default async function handleMoveChildren({
 	targetUuid: Uuid;
 	uuids: Uuid[];
 }) {
-	if (
-		Liferay.FeatureFlags['LPD-96666'] &&
-		targetUuid !== structure.uuid &&
-		uuids.some((uuid) =>
-			isRelationship(findChild({root: structure, uuid})!)
-		)
-	) {
-		openToast({
-			message: Liferay.Language.get(
-				'repeatable-groups-and-referenced-structures-can-only-be-placed-at-the-first-level'
-			),
-			type: 'danger',
-		});
+	const message = getPlacementErrorMessage({
+		items: uuids.map((uuid) => findChild({root: structure, uuid})!),
+		structure,
+		targetUuid,
+	});
+
+	if (message) {
+		openToast({message, type: 'danger'});
 
 		return;
 	}

@@ -7,7 +7,7 @@ import {ObjectDefinition} from '../../common/types/ObjectDefinition';
 import {State} from '../contexts/StateContext';
 import {RepeatableGroup, Structure} from '../types/Structure';
 import buildObjectDefinition from './buildObjectDefinition';
-import isRepeatableGroup from './isRepeatableGroup';
+import getRepeatableGroups from './getRepeatableGroups';
 
 export default function buildGroupObjectDefinitions({
 	children,
@@ -20,10 +20,7 @@ export default function buildGroupObjectDefinitions({
 }) {
 	let definitions: ObjectDefinition[] = [...objectDefinitions];
 
-	for (const child of children.values()) {
-		if (!isRepeatableGroup(child)) {
-			continue;
-		}
+	for (const child of getRepeatableGroups(children)) {
 
 		// A repeatable group becomes a root descendant node only once it has
 		// been published, and from then on the allowStandaloneObjectEntry

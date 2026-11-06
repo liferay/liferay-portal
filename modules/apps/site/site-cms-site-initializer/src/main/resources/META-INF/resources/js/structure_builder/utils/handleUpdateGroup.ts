@@ -9,7 +9,9 @@ import {Dispatch} from 'react';
 
 import {Action, State} from '../contexts/StateContext';
 import {Group, Structure} from '../types/Structure';
+import canContainRepeatableGroup from './canContainRepeatableGroup';
 import {getChildrenUuids} from './getChildrenUuids';
+import {hasRepeatableGroups} from './getRepeatableGroups';
 import isLocked from './isLocked';
 
 export default async function handleUpdateGroup({
@@ -30,10 +32,14 @@ export default async function handleUpdateGroup({
 	if (isRepeatable !== undefined && group.isRepeatable !== isRepeatable) {
 		const uuids = Array.from(getChildrenUuids({root: group}));
 
-		if (isRepeatable && group.parent !== structure.uuid) {
+		if (
+			isRepeatable &&
+			(!canContainRepeatableGroup({structure, uuid: group.parent}) ||
+				hasRepeatableGroups(group.children))
+		) {
 			openToast({
 				message: Liferay.Language.get(
-					'a-group-can-only-be-repeatable-at-the-first-level'
+					'repeatable-groups-can-only-be-placed-at-the-first-level-or-inside-a-tab'
 				),
 				type: 'danger',
 			});

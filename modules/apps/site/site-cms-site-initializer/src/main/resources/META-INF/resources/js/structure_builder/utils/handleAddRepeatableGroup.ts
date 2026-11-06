@@ -11,6 +11,7 @@ import {Dispatch} from 'react';
 import {Action, State} from '../contexts/StateContext';
 import {Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
+import canContainRepeatableGroup from './canContainRepeatableGroup';
 import exceedsMaxNesting, {getMaxNesting} from './exceedsMaxNesting';
 import findChild from './findChild';
 import getUndeletableChildren from './getUndeletableChildren';
@@ -91,6 +92,17 @@ export default async function handleAddRepeatableGroup({
 	}
 
 	const [parent] = parents;
+
+	if (!canContainRepeatableGroup({structure, uuid: parent.uuid})) {
+		openToast({
+			message: Liferay.Language.get(
+				'repeatable-groups-can-only-be-placed-at-the-first-level-or-inside-a-tab'
+			),
+			type: 'danger',
+		});
+
+		return;
+	}
 
 	if (
 		exceedsMaxNesting({

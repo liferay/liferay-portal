@@ -45,6 +45,11 @@ function getRelatedContents(
 				...getRelatedContents(child.children, child.erc)
 			);
 		}
+		else if (child.type === 'group') {
+			relatedContents.push(
+				...getRelatedContents(child.children, parentERC)
+			);
+		}
 		else if (child.type === 'related-content') {
 			relatedContents.push({parentERC, relatedContent: child});
 		}

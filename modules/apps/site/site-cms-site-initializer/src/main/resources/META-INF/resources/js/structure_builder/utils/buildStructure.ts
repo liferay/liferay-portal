@@ -22,10 +22,12 @@ import {
 } from '../types/Structure';
 import {SystemFieldNames} from '../types/SystemFieldNames';
 import {Uuid} from '../types/Uuid';
+import {REPEATABLE_GROUP_BOX_NAME_PREFIX} from './buildObjectDefinition';
 import {Field, FieldType, SelectFromListField} from './field';
 import getUuid from './getUuid';
 import isCustomObjectField from './isCustomObjectField';
 import isField from './isField';
+import isRepeatableGroupChild from './isRepeatableGroup';
 import isSystemFieldName from './isSystemFieldName';
 import sortChildren from './state/sortChildren';
 
@@ -207,6 +209,29 @@ function applyLayout({
 			.map((field) => [field.name, field])
 	);
 
+	const repeatableGroups = new Map(
+		Array.from(children.values())
+			.filter(isRepeatableGroupChild)
+			.map((repeatableGroup) => [
+				repeatableGroup.relationshipName,
+				repeatableGroup,
+			])
+	);
+
+	const getRepeatableGroup = (objectLayoutBox: ObjectLayoutBox) => {
+		const name = Object.values(objectLayoutBox.name ?? {}).find((value) =>
+			value?.startsWith(REPEATABLE_GROUP_BOX_NAME_PREFIX)
+		);
+
+		if (!name) {
+			return undefined;
+		}
+
+		return repeatableGroups.get(
+			name.substring(REPEATABLE_GROUP_BOX_NAME_PREFIX.length)
+		);
+	};
+
 	const takeFields = (objectLayoutBox: ObjectLayoutBox, groupParent: Uuid) =>
 		objectLayoutBox.objectLayoutRows.flatMap((objectLayoutRow) =>
 			objectLayoutRow.objectLayoutColumns.flatMap(
@@ -238,7 +263,14 @@ function applyLayout({
 		const groupChildren: StructureChild[] = [];
 
 		for (const objectLayoutBox of objectLayoutTab.objectLayoutBoxes) {
-			if (objectLayoutBox.collapsable && objectLayoutBox.name) {
+			const repeatableGroup = getRepeatableGroup(objectLayoutBox);
+
+			if (repeatableGroup) {
+				nextChildren.delete(repeatableGroup.uuid);
+
+				groupChildren.push({...repeatableGroup, parent: uuid});
+			}
+			else if (objectLayoutBox.collapsable && objectLayoutBox.name) {
 				const nestedUuid = getUuid();
 
 				groupChildren.push(
