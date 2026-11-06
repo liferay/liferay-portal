@@ -130,6 +130,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		super.testGetSiteStyleBook();
 
 		_testGetSiteStyleBookForNonexistingStyleBook();
+		_testGetSiteStyleBookWithDeletedPreviewFileEntry();
 		_testGetSiteStyleBookWithDesignLibraryExternalReferenceCode();
 		_testGetSiteStyleBookWithStagedSite();
 	}
@@ -913,6 +914,33 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			() -> styleBookResource.getSiteStyleBook(
 				testGetSiteStyleBook_getSiteExternalReferenceCode(),
 				RandomTestUtil.randomString()));
+	}
+
+	private void _testGetSiteStyleBookWithDeletedPreviewFileEntry()
+		throws Exception {
+
+		StyleBook randomStyleBook = randomStyleBook();
+
+		randomStyleBook.setThumbnailURLReference(
+			_randomThumbnailURLReference());
+
+		StyleBookResource styleBookResource = _getStyleBookResource();
+
+		StyleBook postStyleBook = styleBookResource.postSiteStyleBook(
+			testGroup.getExternalReferenceCode(), randomStyleBook);
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.getStyleBookEntry(
+				postStyleBook.getId());
+
+		PortletFileRepositoryUtil.deletePortletFileEntry(
+			styleBookEntry.getPreviewFileEntryId());
+
+		StyleBook getStyleBook = styleBookResource.getSiteStyleBook(
+			testGroup.getExternalReferenceCode(),
+			postStyleBook.getExternalReferenceCode());
+
+		Assert.assertNull(getStyleBook.getThumbnailURLReference());
 	}
 
 	private void _testGetSiteStyleBookWithDesignLibraryExternalReferenceCode()

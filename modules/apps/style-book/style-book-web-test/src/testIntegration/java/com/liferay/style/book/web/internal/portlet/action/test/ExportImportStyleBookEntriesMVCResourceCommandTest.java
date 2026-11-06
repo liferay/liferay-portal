@@ -6,6 +6,7 @@
 package com.liferay.style.book.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.frontend.token.definition.FrontendToken;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
@@ -454,6 +455,61 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 			_user.getFullName(), targetGroupStyleBookEntry.getUserName());
 	}
 
+	@Test
+	public void testExportImportSingleStyleBookEntryAndOverwriteWithoutPreviewFileEntry()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_sourceGroup, TestPropsValues.getUserId());
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				null, TestPropsValues.getUserId(), _sourceGroup.getGroupId(),
+				false, StringPool.BLANK, _read("frontend-tokens-values.json"),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), serviceContext);
+
+		FileEntry fileEntry = _addFileEntry(styleBookEntry);
+
+		_styleBookEntryLocalService.updatePreviewFileEntryId(
+			styleBookEntry.getStyleBookEntryId(), fileEntry.getFileEntryId(),
+			serviceContext);
+
+		File file1 = _exportStyleBookEntry(
+			styleBookEntry.getStyleBookEntryId());
+
+		_importStyleBookEntry(file1, false);
+
+		StyleBookEntry targetGroupStyleBookEntry1 =
+			_styleBookEntryLocalService.fetchStyleBookEntry(
+				_targetGroup.getGroupId(),
+				styleBookEntry.getStyleBookEntryKey());
+
+		Assert.assertNotEquals(
+			0, targetGroupStyleBookEntry1.getPreviewFileEntryId());
+
+		_styleBookEntryLocalService.updatePreviewFileEntryId(
+			styleBookEntry.getStyleBookEntryId(), 0, serviceContext);
+
+		File file2 = _exportStyleBookEntry(
+			styleBookEntry.getStyleBookEntryId());
+
+		_importStyleBookEntry(file2, true);
+
+		StyleBookEntry targetGroupStyleBookEntry2 =
+			_styleBookEntryLocalService.fetchStyleBookEntry(
+				_targetGroup.getGroupId(),
+				styleBookEntry.getStyleBookEntryKey());
+
+		Assert.assertEquals(
+			0, targetGroupStyleBookEntry2.getPreviewFileEntryId());
+
+		Assert.assertNull(
+			_dlAppLocalService.fetchFileEntry(
+				targetGroupStyleBookEntry1.getPreviewFileEntryId()));
+	}
+
 	@FeatureFlag("LPD-84497")
 	@Test
 	public void testExportImportSingleStyleBookEntryWithFrontendTokensValues()
@@ -640,7 +696,8 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 			styleBookEntry.getStyleBookEntryId(), RandomTestUtil.randomString(),
 			repository.getDlFolderId(),
 			clazz.getResourceAsStream("dependencies/thumbnail.png"),
-			RandomTestUtil.randomString(), ContentTypes.IMAGE_PNG, false);
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			false);
 	}
 
 	private File _exportStyleBookEntry(long styleBookEntryId) throws Exception {
@@ -932,6 +989,9 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
 
 	@Inject(filter = "mvc.command.name=/style_book/export_style_book_entries")
 	private MVCResourceCommand _exportStyleBookEntriesMVCResourceCommand;

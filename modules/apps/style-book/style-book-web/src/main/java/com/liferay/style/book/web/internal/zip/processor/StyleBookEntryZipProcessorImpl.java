@@ -358,8 +358,9 @@ public class StyleBookEntryZipProcessorImpl
 
 		if (Validator.isNotNull(styleBookEntryContent)) {
 			if (styleBookEntry.getPreviewFileEntryId() > 0) {
-				PortletFileRepositoryUtil.deletePortletFileEntry(
-					styleBookEntry.getPreviewFileEntryId());
+				_styleBookEntryService.updatePreviewFileEntryId(
+					styleBookEntry.getStyleBookEntryId(), 0,
+					new ServiceContext());
 			}
 
 			JSONObject jsonObject = _jsonFactory.createJSONObject(

@@ -5,10 +5,12 @@
 
 package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.dto.v1_0.util.ThumbnailURLReferenceUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -90,13 +92,32 @@ public class StyleBookDTOConverter
 				setThumbnailURLReference(
 					() -> NestedFieldsSupplier.supply(
 						"thumbnailURLReference",
-						fieldName ->
-							ThumbnailURLReferenceUtil.
+						fieldName -> {
+							long previewFileEntryId =
+								styleBookEntry.getPreviewFileEntryId();
+
+							if (previewFileEntryId <= 0) {
+								return null;
+							}
+
+							FileEntry fileEntry =
+								_dlAppLocalService.fetchFileEntry(
+									previewFileEntryId);
+
+							if (fileEntry == null) {
+								return null;
+							}
+
+							return ThumbnailURLReferenceUtil.
 								getFileEntryThumbnailURLReference(
-									styleBookEntry.getPreviewFileEntryId())));
+									previewFileEntryId);
+						}));
 			}
 		};
 	}
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
