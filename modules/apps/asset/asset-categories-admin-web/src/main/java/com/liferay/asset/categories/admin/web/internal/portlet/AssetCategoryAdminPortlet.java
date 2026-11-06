@@ -27,6 +27,7 @@ import com.liferay.asset.kernel.exception.VocabularyNameException;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
 import com.liferay.change.tracking.spi.history.util.CTTimelineUtil;
 import com.liferay.item.selector.ItemSelector;
@@ -94,7 +95,8 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		if (SessionErrors.contains(
+		if (_isStaleCategory(renderRequest, renderResponse) ||
+			SessionErrors.contains(
 				renderRequest, NoSuchCategoryException.class.getName()) ||
 			SessionErrors.contains(
 				renderRequest, NoSuchVocabularyException.class.getName()) ||
@@ -154,6 +156,25 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 		return false;
 	}
 
+	private boolean _isStaleCategory(
+		RenderRequest renderRequest, RenderResponse renderResponse) {
+
+		long categoryId = ParamUtil.getLong(renderRequest, "categoryId");
+
+		if ((categoryId > 0) &&
+			Objects.equals(
+				getPath(renderRequest, renderResponse),
+				"/edit_asset_category.jsp") &&
+			(_assetCategoryLocalService.fetchCategory(categoryId) == null)) {
+
+			SessionErrors.add(renderRequest, NoSuchCategoryException.class);
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _setShowEditAssetVocabularyHeader(
 		RenderRequest renderRequest) {
 
@@ -187,6 +208,9 @@ public class AssetCategoryAdminPortlet extends MVCPortlet {
 
 	private volatile AssetCategoriesAdminWebConfiguration
 		_assetCategoriesAdminWebConfiguration;
+
+	@Reference
+	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
 	private AssetDisplayPageFriendlyURLProvider
