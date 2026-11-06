@@ -57,18 +57,8 @@ public class HashedFilesRegistryImplTest {
 				cachingStrategy,
 				_getCachingStrategy(cachingStrategy.getValue()));
 		}
-	}
 
-	@Test
-	public void testGetCachingStrategyWhenCachingStrategyIsInvalid()
-		throws Exception {
-
-		Assert.assertEquals(
-			CachingStrategy.DO_NOT_USE_HASHES,
-			_getCachingStrategy(StringPool.BLANK));
-		Assert.assertEquals(
-			CachingStrategy.DO_NOT_USE_HASHES,
-			_getCachingStrategy(RandomTestUtil.randomString()));
+		_testGetCachingStrategyWhenValueIsInvalid();
 	}
 
 	@Test
@@ -126,9 +116,7 @@ public class HashedFilesRegistryImplTest {
 				new Class<?>[] {Map.class}, hashedFileURIs));
 	}
 
-	private CachingStrategy _getCachingStrategy(String cachingStrategyString)
-		throws Exception {
-
+	private CachingStrategy _getCachingStrategy(String value) throws Exception {
 		HashedFilesRegistryImpl hashedFilesRegistryImpl =
 			new HashedFilesRegistryImpl();
 
@@ -141,7 +129,7 @@ public class HashedFilesRegistryImplTest {
 		Mockito.when(
 			frontendCachingConfiguration.cachingStrategy()
 		).thenReturn(
-			cachingStrategyString
+			value
 		);
 
 		Mockito.when(
@@ -235,6 +223,17 @@ public class HashedFilesRegistryImplTest {
 			_mockServiceTrackerMap(servletContextPath));
 
 		return hashedFilesRegistryImpl;
+	}
+
+	private void _testGetCachingStrategyWhenValueIsInvalid() throws Exception {
+		for (String value :
+				new String[] {
+					null, StringPool.BLANK, RandomTestUtil.randomString()
+				}) {
+
+			Assert.assertEquals(
+				CachingStrategy.DO_NOT_USE_HASHES, _getCachingStrategy(value));
+		}
 	}
 
 }
