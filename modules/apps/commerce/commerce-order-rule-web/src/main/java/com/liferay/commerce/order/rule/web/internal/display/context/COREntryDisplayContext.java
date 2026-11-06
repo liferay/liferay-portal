@@ -111,7 +111,7 @@ public class COREntryDisplayContext {
 			return null;
 		}
 
-		return _corEntryService.fetchCOREntry(corEntryId);
+		return _corEntryService.getCOREntry(corEntryId);
 	}
 
 	public List<FDSActionDropdownItem> getCOREntryFDSActionDropdownItems()
