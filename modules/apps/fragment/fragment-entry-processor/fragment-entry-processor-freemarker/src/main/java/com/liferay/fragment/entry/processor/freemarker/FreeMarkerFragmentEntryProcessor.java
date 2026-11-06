@@ -254,7 +254,7 @@ public class FreeMarkerFragmentEntryProcessor
 
 			String name = fragmentConfigurationField.getName();
 
-			if (contextObjects.containsKey(name + "Object") &&
+			if (contextObjects.containsKey(name + _CONTEXT_OBJECT_SUFFIX) &&
 				(freeMarkerEditableValuesJSONObject != null) &&
 				(freeMarkerEditableValuesJSONObject.get(name) != null)) {
 
@@ -269,7 +269,7 @@ public class FreeMarkerFragmentEntryProcessor
 				}
 			}
 
-			contextObjects.put(name + "Object", infoItem);
+			contextObjects.put(name + _CONTEXT_OBJECT_SUFFIX, infoItem);
 		}
 
 		return contextObjects;
@@ -339,6 +339,8 @@ public class FreeMarkerFragmentEntryProcessor
 		return "[#ftl] [#macro __noop args...][/#macro][#global " +
 			"liferay_portlet = liferay_portlet + {\"runtime\": __noop}]" + html;
 	}
+
+	private static final String _CONTEXT_OBJECT_SUFFIX = "Object";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FreeMarkerFragmentEntryProcessor.class);
