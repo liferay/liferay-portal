@@ -48,6 +48,7 @@ public class TestrayRunTest extends com.liferay.jenkins.results.parser.Test {
 	@Test
 	public void testGetTestrayFactorsBatchRunIdString() throws Exception {
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
+
 		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
 
 		Mockito.doReturn(
