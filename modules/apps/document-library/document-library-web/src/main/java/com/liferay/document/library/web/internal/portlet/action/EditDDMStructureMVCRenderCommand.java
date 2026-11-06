@@ -46,7 +46,7 @@ public class EditDDMStructureMVCRenderCommand implements MVCRenderCommand {
 		try {
 			renderRequest.setAttribute(
 				WebKeys.DOCUMENT_LIBRARY_DYNAMIC_DATA_MAPPING_STRUCTURE,
-				_fetchDDMStructure(renderRequest));
+				_getDDMStructure(renderRequest));
 		}
 		catch (PortalException portalException) {
 			SessionErrors.add(renderRequest, portalException.getClass());
@@ -57,20 +57,24 @@ public class EditDDMStructureMVCRenderCommand implements MVCRenderCommand {
 		return "/document_library/ddm/edit_ddm_structure.jsp";
 	}
 
-	private DDMStructure _fetchDDMStructure(RenderRequest renderRequest)
+	private DDMStructure _getDDMStructure(RenderRequest renderRequest)
 		throws PortalException {
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.fetchDDMStructure(
-			ParamUtil.getLong(renderRequest, "ddmStructureId"));
+		long ddmStructureId = ParamUtil.getLong(
+			renderRequest, "ddmStructureId");
 
-		if (ddmStructure != null) {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-			_ddmStructureModelResourcePermission.check(
-				themeDisplay.getPermissionChecker(), ddmStructure,
-				ActionKeys.UPDATE);
+		if (ddmStructureId <= 0) {
+			return null;
 		}
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
+			ddmStructureId);
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		_ddmStructureModelResourcePermission.check(
+			themeDisplay.getPermissionChecker(), ddmStructure,
+			ActionKeys.UPDATE);
 
 		return ddmStructure;
 	}
