@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -139,6 +140,15 @@ public class PersistenceCallCheck extends BaseCheck {
 
 				return;
 			}
+		}
+
+		String absolutePath = getAbsolutePath();
+
+		if ((absolutePath.contains("/src/test/") ||
+			 absolutePath.contains("/src/testIntegration/")) &&
+			_isInTransactionInvocation(methodCallDetailAST)) {
+
+			return;
 		}
 
 		String fieldName = childDetailAST.getText();
@@ -278,6 +288,36 @@ public class PersistenceCallCheck extends BaseCheck {
 		return variablesMap;
 	}
 
+	private boolean _isInTransactionInvocation(DetailAST detailAST) {
+		DetailAST lambdaDetailAST = getParentWithTokenType(
+			detailAST, TokenTypes.LAMBDA);
+
+		while (lambdaDetailAST != null) {
+			DetailAST methodCallDetailAST = getParentWithTokenType(
+				lambdaDetailAST, TokenTypes.METHOD_CALL);
+
+			if ((methodCallDetailAST != null) &&
+				Objects.equals(getMethodName(methodCallDetailAST), "invoke")) {
+
+				String className = getClassOrVariableName(methodCallDetailAST);
+
+				if (className != null) {
+					Matcher matcher = _transactionUtilPattern.matcher(
+						className);
+
+					if (matcher.matches()) {
+						return true;
+					}
+				}
+			}
+
+			lambdaDetailAST = getParentWithTokenType(
+				lambdaDetailAST, TokenTypes.LAMBDA);
+		}
+
+		return false;
+	}
+
 	private static final String _MSG_ILLEGAL_PERSISTENCE_CALL =
 		"persistence.call.illegal";
 
@@ -286,5 +326,7 @@ public class PersistenceCallCheck extends BaseCheck {
 
 	private static final Pattern _extendedClassPattern = Pattern.compile(
 		"\\sextends\\s+(\\w+)\\W");
+	private static final Pattern _transactionUtilPattern = Pattern.compile(
+		"Transaction\\w*Util");
 
 }
