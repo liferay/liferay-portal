@@ -217,7 +217,7 @@ test(
 
 test(
 	'Action column stays frozen during horizontal scroll',
-	{tag: '@LPD-106210'},
+	{tag: ['@LPD-106210', '@LPD-114095']},
 	async ({fdsSamplePage, page}) => {
 		const actionsHeaderCell = fdsSamplePage.table.headerCells.last();
 		const firstRowActionsCell = fdsSamplePage.table.bodyRows
@@ -225,22 +225,50 @@ test(
 			.locator('.cell-item-actions');
 		const scrollContainer = page.locator('.fds .table-responsive');
 
+		async function getBoxShadow(locator: Locator) {
+			return locator.evaluate(
+				(element) => getComputedStyle(element).boxShadow
+			);
+		}
+
 		async function getRightEdge(locator: Locator) {
 			const boundingBox = await locator.boundingBox();
 
 			return boundingBox.x + boundingBox.width;
 		}
 
+		async function hasHorizontalScroll() {
+			return scrollContainer.evaluate(
+				(element) => element.scrollWidth > element.clientWidth
+			);
+		}
+
+		await test.step('Check the action column has no shadow without horizontal scroll', async () => {
+			await page.setViewportSize({height: 900, width: 2560});
+
+			await expect.poll(hasHorizontalScroll).toBe(false);
+
+			await expect
+				.poll(() => getBoxShadow(actionsHeaderCell))
+				.toBe('none');
+			await expect
+				.poll(() => getBoxShadow(firstRowActionsCell))
+				.toBe('none');
+		});
+
 		await test.step('Narrow the viewport to force horizontal scroll', async () => {
 			await page.setViewportSize({height: 900, width: 700});
 
+			await expect.poll(hasHorizontalScroll).toBe(true);
+		});
+
+		await test.step('Check the action column has a shadow with horizontal scroll', async () => {
 			await expect
-				.poll(() =>
-					scrollContainer.evaluate(
-						(element) => element.scrollWidth > element.clientWidth
-					)
-				)
-				.toBe(true);
+				.poll(() => getBoxShadow(actionsHeaderCell))
+				.not.toBe('none');
+			await expect
+				.poll(() => getBoxShadow(firstRowActionsCell))
+				.not.toBe('none');
 		});
 
 		for (const scrollPosition of ['start', 'middle', 'end']) {
