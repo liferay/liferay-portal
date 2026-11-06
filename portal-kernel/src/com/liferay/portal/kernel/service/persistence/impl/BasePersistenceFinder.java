@@ -149,7 +149,7 @@ public abstract class BasePersistenceFinder
 			basePersistenceImpl.getCTPersistenceHelper();
 
 		if (ctPersistenceHelper == null) {
-			return _NO_OP_SAFE_CLOSEABLE;
+			return SafeCloseable.EMPTY;
 		}
 
 		return ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
@@ -198,8 +198,5 @@ public abstract class BasePersistenceFinder
 
 		return sb.toString();
 	}
-
-	private static final SafeCloseable _NO_OP_SAFE_CLOSEABLE = () -> {
-	};
 
 }

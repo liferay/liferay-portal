@@ -34,8 +34,7 @@ public class BackgroundTaskThreadLocal {
 			return _backgroundTaskId.setWithSafeCloseable(backgroundTaskId);
 		}
 
-		return () -> {
-		};
+		return SafeCloseable.EMPTY;
 	}
 
 	private static final CentralizedThreadLocal<Long> _backgroundTaskId =

@@ -133,8 +133,7 @@ public class CompanyThreadLocal {
 
 		if (companyId == currentCompanyId) {
 			if (isLocked()) {
-				return () -> {
-				};
+				return SafeCloseable.EMPTY;
 			}
 
 			_locked.set(true);

@@ -6491,8 +6491,7 @@ public class BatchEnginePortletDataHandlerTest {
 		String portletId =
 			testExportImportVulcanBatchEngineTaskItemDelegate._portletId;
 
-		SafeCloseable safeCloseable1 = () -> {
-		};
+		SafeCloseable safeCloseable1 = SafeCloseable.EMPTY;
 
 		if (ArrayUtil.isEmpty(
 				_bundleContext.getServiceReferences(

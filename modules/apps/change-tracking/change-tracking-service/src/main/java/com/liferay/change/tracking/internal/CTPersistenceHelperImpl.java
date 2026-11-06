@@ -189,8 +189,7 @@ public class CTPersistenceHelperImpl implements CTPersistenceHelper {
 		if (CTCollectionThreadLocal.isProductionMode() ||
 			!isProductionMode(ctModelClass, primaryKey)) {
 
-			return () -> {
-			};
+			return SafeCloseable.EMPTY;
 		}
 
 		return CTCollectionThreadLocal.setProductionModeWithSafeCloseable();
