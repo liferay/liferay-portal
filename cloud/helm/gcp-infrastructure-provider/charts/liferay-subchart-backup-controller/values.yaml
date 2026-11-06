@@ -1,5 +1,5 @@
 cpuLimit: "1"
-cpuRequest: "1"
+cpuRequest: 50m
 env:
     GOMEMLIMIT: 819MiB
     LCP_ENABLE_DATABASE_DUMPS: false
@@ -7,5 +7,5 @@ env:
     LCP_ENABLE_SANDBOX_FILTER: false
 imageTag: 1.7.0
 memoryLimit: 1Gi
-memoryRequest: 1Gi
-replicas: 3
+memoryRequest: 128Mi
+replicas: 1
