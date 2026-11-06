@@ -40,11 +40,6 @@
 			<finder-column name="className" />
 			<finder-column name="key" />
 		</finder>
-		<finder name="C_U_C" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="userId" />
-			<finder-column name="className" />
-		</finder>
 	</entity>
 	<exceptions>
 		<exception>DuplicateLock</exception>
