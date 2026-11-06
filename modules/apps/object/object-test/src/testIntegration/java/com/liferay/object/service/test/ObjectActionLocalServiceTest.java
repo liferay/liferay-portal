@@ -2713,6 +2713,59 @@ public class ObjectActionLocalServiceTest {
 	}
 
 	@Test
+	public void testExecuteObjectActionWithManyToManySystemObjectRelationship()
+		throws Exception {
+
+		_publishCustomObjectDefinition();
+
+		ObjectDefinition commerceProductObjectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+				TestPropsValues.getCompanyId(), CPDefinition.class.getName());
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService,
+				commerceProductObjectDefinition, _objectDefinition,
+				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+				StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		ObjectAction objectAction = _addObjectAction(
+			commerceProductObjectDefinition.getObjectDefinitionId(),
+			ObjectActionExecutorConstants.KEY_ADD_OBJECT_ENTRY,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
+			UnicodePropertiesBuilder.put(
+				"objectDefinitionId", _objectDefinition.getObjectDefinitionId()
+			).put(
+				"predefinedValues",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"inputAsValue", true
+					).put(
+						"name", "firstName"
+					).put(
+						"value", RandomTestUtil.randomString()
+					)
+				).toString()
+			).put(
+				"relatedObjectEntries", "true"
+			).build());
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_group.getGroupId());
+
+		List<ObjectEntry> objectEntries =
+			_objectEntryLocalService.getManyToManyObjectEntries(
+				0, objectRelationship.getObjectRelationshipId(),
+				cpDefinition.getCProductId(), true, false, null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(objectEntries.toString(), 1, objectEntries.size());
+
+		_objectActionLocalService.deleteObjectAction(objectAction);
+	}
+
+	@Test
 	public void testExecuteObjectActionWithUnmodifiableSystemObjectDefinition()
 		throws Exception {
 

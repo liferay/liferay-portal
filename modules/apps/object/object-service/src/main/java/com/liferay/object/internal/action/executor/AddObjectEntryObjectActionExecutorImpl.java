@@ -23,6 +23,7 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
+import com.liferay.petra.sql.dsl.Column;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -102,6 +103,9 @@ public class AddObjectEntryObjectActionExecutorImpl
 			return;
 		}
 
+		long sourcePrimaryKey = _getPrimaryKey(
+			sourceObjectDefinition, payloadJSONObject);
+
 		for (ObjectRelationship objectRelationship :
 				_objectRelationshipLocalService.getObjectRelationships(
 					sourceObjectDefinition.getObjectDefinitionId(),
@@ -111,7 +115,7 @@ public class AddObjectEntryObjectActionExecutorImpl
 			_objectRelationshipLocalService.
 				addObjectRelationshipMappingTableValues(
 					userId, objectRelationship.getObjectRelationshipId(),
-					payloadJSONObject.getLong("classPK"), primaryKey,
+					sourcePrimaryKey, primaryKey,
 					_getServiceContext(companyId, userId));
 		}
 	}
@@ -191,6 +195,33 @@ public class AddObjectEntryObjectActionExecutorImpl
 		return MapUtil.getLong(
 			(Map<String, Object>)payloadJSONObject.get("objectEntry"),
 			"groupId");
+	}
+
+	private long _getPrimaryKey(
+		ObjectDefinition objectDefinition, JSONObject payloadJSONObject) {
+
+		if (!objectDefinition.isUnmodifiableSystemObject()) {
+			return payloadJSONObject.getLong("classPK");
+		}
+
+		SystemObjectDefinitionManager systemObjectDefinitionManager =
+			_systemObjectDefinitionManagerRegistry.
+				getSystemObjectDefinitionManager(objectDefinition.getName());
+
+		Class<?> modelClass = systemObjectDefinitionManager.getModelClass();
+
+		Map<String, Object> modelAttributes =
+			(Map<String, Object>)payloadJSONObject.get(
+				"model" + modelClass.getSimpleName());
+
+		if (modelAttributes == null) {
+			return payloadJSONObject.getLong("classPK");
+		}
+
+		Column<?, Long> primaryKeyColumn =
+			systemObjectDefinitionManager.getPrimaryKeyColumn();
+
+		return MapUtil.getLong(modelAttributes, primaryKeyColumn.getName());
 	}
 
 	private ServiceContext _getServiceContext(long companyId, long userId) {
