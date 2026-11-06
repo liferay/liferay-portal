@@ -73,6 +73,8 @@ public class JAXRSLifecycle {
 
 	@Deactivate
 	protected void deactivate() {
+		_jaxrsReady = true;
+
 		_safeCloseableDCLSingleton.destroy(SafeCloseable::close);
 	}
 
