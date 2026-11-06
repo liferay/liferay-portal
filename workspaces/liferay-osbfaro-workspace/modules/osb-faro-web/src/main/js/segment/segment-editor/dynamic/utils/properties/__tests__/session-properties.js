@@ -13,12 +13,11 @@ import {
 
 describe('session-properties', () => {
 	describe('CHANNEL_OPTIONS', () => {
-		it('should offer the seven acquisition channels', () => {
+		it('should offer the six acquisition channels', () => {
 			expect(CHANNEL_OPTIONS).toEqual([
 				{label: 'Direct', value: 'direct'},
 				{label: 'Organic', value: 'organic'},
-				{label: 'Search', value: 'search'},
-				{label: 'Paid', value: 'paid'},
+				{label: 'Paid Search', value: 'paid search'},
 				{label: 'Referral', value: 'referral'},
 				{label: 'Social', value: 'social'},
 				{label: 'AI Chatbot', value: 'chatbot'},
