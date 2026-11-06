@@ -209,22 +209,6 @@ public class UIItemsBuilderTest {
 	@Test
 	@TestInfo("LPD-113065")
 	public void testCreateHistoryDropdownItem() throws Exception {
-		PortalUtil portalUtil = new PortalUtil();
-
-		PortalImpl portalImpl = Mockito.spy(new PortalImpl());
-
-		Mockito.doReturn(
-			new MockLiferayPortletURL()
-		).when(
-			portalImpl
-		).getControlPanelPortletURL(
-			Mockito.any(PortletRequest.class), Mockito.nullable(Group.class),
-			Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong(),
-			Mockito.anyString()
-		);
-
-		portalUtil.setPortal(portalImpl);
-
 		FileShortcut fileShortcut = Mockito.mock(FileShortcut.class);
 
 		long fileEntryId = RandomTestUtil.randomLong();
@@ -246,6 +230,22 @@ public class UIItemsBuilderTest {
 		).thenReturn(
 			_fileVersion
 		);
+
+		PortalUtil portalUtil = new PortalUtil();
+
+		PortalImpl portalImpl = Mockito.spy(new PortalImpl());
+
+		Mockito.doReturn(
+			new MockLiferayPortletURL()
+		).when(
+			portalImpl
+		).getControlPanelPortletURL(
+			Mockito.any(PortletRequest.class), Mockito.nullable(Group.class),
+			Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong(),
+			Mockito.anyString()
+		);
+
+		portalUtil.setPortal(portalImpl);
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
