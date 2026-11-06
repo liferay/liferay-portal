@@ -2,6 +2,7 @@
 
 set -o errexit
 set -o nounset
+set -o pipefail
 
 function main {
 	_wait_for_server

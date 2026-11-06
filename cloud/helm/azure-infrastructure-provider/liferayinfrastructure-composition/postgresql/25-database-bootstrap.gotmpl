@@ -8,7 +8,7 @@
 {{- end }}
 
 {{- if not $env.databaseScripts }}
-{{- fail "The database-scripts EnvironmentConfig is missing, so the database Jobs have no scripts to run" }}
+{{- fail "The \"database-scripts\" EnvironmentConfig is missing, so the database Jobs have no scripts to run" }}
 {{- end }}
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object

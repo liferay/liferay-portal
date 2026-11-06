@@ -378,7 +378,6 @@ function _uninstall_liferay_platform_chart {
 		--namespace argocd-system
 
 	local timeout_minutes=30
-
 	local timeout
 
 	timeout=$(($(date +%s) + timeout_minutes * 60))
