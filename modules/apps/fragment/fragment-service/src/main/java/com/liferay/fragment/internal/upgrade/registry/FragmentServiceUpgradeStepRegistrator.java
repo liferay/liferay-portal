@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.view.count.ViewCountManager;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
@@ -289,6 +290,21 @@ public class FragmentServiceUpgradeStepRegistrator
 		registry.register(
 			"4.0.0", "4.1.0",
 			new FragmentEntryLinkConfigurationUpgradeProcess());
+
+		registry.register(
+			"4.1.0", "4.1.1",
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"update FragmentEntry set status = ",
+					WorkflowConstants.STATUS_DRAFT,
+					" where head = [$FALSE$] and status != ",
+					WorkflowConstants.STATUS_DRAFT)),
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"update FragmentEntry set status = ",
+					WorkflowConstants.STATUS_APPROVED,
+					" where head = [$TRUE$] and status != ",
+					WorkflowConstants.STATUS_APPROVED)));
 	}
 
 	@Reference
