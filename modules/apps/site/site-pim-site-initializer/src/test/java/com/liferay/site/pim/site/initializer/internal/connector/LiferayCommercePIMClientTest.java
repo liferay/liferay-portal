@@ -31,7 +31,7 @@ import org.mockito.Mockito;
 /**
  * @author Tancredi Covioli
  */
-public class LiferayCommerceRESTClientTest {
+public class LiferayCommercePIMClientTest {
 
 	@ClassRule
 	@Rule
@@ -44,7 +44,7 @@ public class LiferayCommerceRESTClientTest {
 
 		_assertPIMConnectorException(
 			"unable-to-authenticate-with-the-remote-instance",
-			LiferayCommerceRESTClient::authenticate);
+			LiferayCommercePIMClient::authenticate);
 
 		_mockHttp(
 			200,
@@ -54,18 +54,18 @@ public class LiferayCommerceRESTClientTest {
 				"expires_in", 600
 			));
 
-		LiferayCommerceRESTClient liferayCommerceRESTClient =
-			_createLiferayCommerceRESTClient();
+		LiferayCommercePIMClient liferayCommercePIMClient =
+			_createLiferayCommercePIMClient();
 
-		liferayCommerceRESTClient.authenticate();
+		liferayCommercePIMClient.authenticate();
 
-		Http.Options options = _optionsList.get(0);
+		Http.Options options = _options.get(0);
 
 		Assert.assertEquals(
 			"https://example.com/o/oauth2/token", options.getLocation());
 		Assert.assertEquals(Http.Method.POST, options.getMethod());
 
-		JSONArray jsonArray = liferayCommerceRESTClient.getLogJSONArray();
+		JSONArray jsonArray = liferayCommercePIMClient.getLogJSONArray();
 
 		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
 
@@ -95,10 +95,10 @@ public class LiferayCommerceRESTClientTest {
 		Assert.assertFalse(bodyJSONObject.has("access_token"));
 		Assert.assertEquals(600, bodyJSONObject.getInt("expires_in"));
 
-		liferayCommerceRESTClient.putOption(
+		liferayCommercePIMClient.putOptionByExternalReferenceCode(
 			"color", JSONUtil.put("key", "color"));
 
-		options = _optionsList.get(1);
+		options = _options.get(1);
 
 		Assert.assertEquals(
 			"https://example.com/o/headless-commerce-admin-catalog/v1.0" +
@@ -111,7 +111,7 @@ public class LiferayCommerceRESTClientTest {
 		Assert.assertEquals(
 			"Bearer TOKEN", headers.get(HttpHeaders.AUTHORIZATION));
 
-		jsonArray = liferayCommerceRESTClient.getLogJSONArray();
+		jsonArray = liferayCommercePIMClient.getLogJSONArray();
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
@@ -126,8 +126,8 @@ public class LiferayCommerceRESTClientTest {
 
 		_assertPIMConnectorException(
 			"the-remote-instance-returned-an-error",
-			liferayCommerceRESTClient ->
-				liferayCommerceRESTClient.postImportTask(JSONUtil.putAll()));
+			liferayCommercePIMClient -> liferayCommercePIMClient.postImportTask(
+				JSONUtil.putAll()));
 
 		_mockHttp(
 			200,
@@ -137,15 +137,15 @@ public class LiferayCommerceRESTClientTest {
 				"externalReferenceCode", "BATCH-1"
 			));
 
-		LiferayCommerceRESTClient liferayCommerceRESTClient =
-			_createLiferayCommerceRESTClient();
+		LiferayCommercePIMClient liferayCommercePIMClient =
+			_createLiferayCommercePIMClient();
 
-		JSONObject jsonObject = liferayCommerceRESTClient.postImportTask(
+		JSONObject jsonObject = liferayCommercePIMClient.postImportTask(
 			JSONUtil.putAll(JSONUtil.put("externalReferenceCode", "SKU-1")));
 
 		Assert.assertEquals("INITIAL", jsonObject.getString("executeStatus"));
 
-		Http.Options options = _optionsList.get(0);
+		Http.Options options = _options.get(0);
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -174,14 +174,15 @@ public class LiferayCommerceRESTClientTest {
 			new IOException("Connection refused")
 		);
 
-		LiferayCommerceRESTClient liferayCommerceRESTClient =
+		LiferayCommercePIMClient liferayCommercePIMClient =
 			_assertPIMConnectorException(
 				"unable-to-connect-to-the-remote-instance",
-				curLiferayCommerceRESTClient ->
-					curLiferayCommerceRESTClient.putOption(
-						"color", JSONUtil.put("key", "color")));
+				curLiferayCommercePIMClient ->
+					curLiferayCommercePIMClient.
+						putOptionByExternalReferenceCode(
+							"color", JSONUtil.put("key", "color")));
 
-		JSONArray jsonArray = liferayCommerceRESTClient.getLogJSONArray();
+		JSONArray jsonArray = liferayCommercePIMClient.getLogJSONArray();
 
 		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
 
@@ -196,26 +197,26 @@ public class LiferayCommerceRESTClientTest {
 
 		_assertPIMConnectorException(
 			"unable-to-authenticate-with-the-remote-instance",
-			curLiferayCommerceRESTClient ->
-				curLiferayCommerceRESTClient.putOption(
+			curLiferayCommercePIMClient ->
+				curLiferayCommercePIMClient.putOptionByExternalReferenceCode(
 					"color", JSONUtil.put("key", "color")));
 
 		_mockHttp(500, JSONUtil.put("status", "INTERNAL_SERVER_ERROR"));
 
 		_assertPIMConnectorException(
 			"the-remote-instance-returned-an-error",
-			curLiferayCommerceRESTClient ->
-				curLiferayCommerceRESTClient.putOption(
+			curLiferayCommercePIMClient ->
+				curLiferayCommercePIMClient.putOptionByExternalReferenceCode(
 					"color", JSONUtil.put("key", "color")));
 
 		_mockHttp(200, JSONFactoryUtil.createJSONObject());
 
-		liferayCommerceRESTClient = _createLiferayCommerceRESTClient();
+		liferayCommercePIMClient = _createLiferayCommercePIMClient();
 
-		liferayCommerceRESTClient.putOption(
+		liferayCommercePIMClient.putOptionByExternalReferenceCode(
 			"color", JSONUtil.put("key", "color"));
 
-		Http.Options options = _optionsList.get(0);
+		Http.Options options = _options.get(0);
 
 		Assert.assertEquals(
 			"https://example.com/o/headless-commerce-admin-catalog/v1.0" +
@@ -231,15 +232,15 @@ public class LiferayCommerceRESTClientTest {
 			"application/json", headers.get(HttpHeaders.CONTENT_TYPE));
 	}
 
-	private LiferayCommerceRESTClient _assertPIMConnectorException(
+	private LiferayCommercePIMClient _assertPIMConnectorException(
 			String expectedMessage, UnsafeConsumer unsafeConsumer)
 		throws Exception {
 
-		LiferayCommerceRESTClient liferayCommerceRESTClient =
-			_createLiferayCommerceRESTClient();
+		LiferayCommercePIMClient liferayCommercePIMClient =
+			_createLiferayCommercePIMClient();
 
 		try {
-			unsafeConsumer.accept(liferayCommerceRESTClient);
+			unsafeConsumer.accept(liferayCommercePIMClient);
 
 			Assert.fail();
 		}
@@ -248,11 +249,11 @@ public class LiferayCommerceRESTClientTest {
 				expectedMessage, pimConnectorException.getMessage());
 		}
 
-		return liferayCommerceRESTClient;
+		return liferayCommercePIMClient;
 	}
 
-	private LiferayCommerceRESTClient _createLiferayCommerceRESTClient() {
-		return new LiferayCommerceRESTClient(
+	private LiferayCommercePIMClient _createLiferayCommercePIMClient() {
+		return new LiferayCommercePIMClient(
 			"CLIENT", "SECRET", _http, JSONFactoryUtil.getJSONFactory(),
 			"https://example.com");
 	}
@@ -260,7 +261,7 @@ public class LiferayCommerceRESTClientTest {
 	private void _mockHttp(int responseCode, JSONObject responseJSONObject)
 		throws Exception {
 
-		_optionsList.clear();
+		_options.clear();
 
 		Mockito.when(
 			_http.URLtoString(Mockito.any(Http.Options.class))
@@ -269,7 +270,7 @@ public class LiferayCommerceRESTClientTest {
 				Http.Options options = invocationOnMock.getArgument(
 					0, Http.Options.class);
 
-				_optionsList.add(options);
+				_options.add(options);
 
 				Http.Response response = options.getResponse();
 
@@ -281,11 +282,11 @@ public class LiferayCommerceRESTClientTest {
 	}
 
 	private final Http _http = Mockito.mock(Http.class);
-	private final List<Http.Options> _optionsList = new ArrayList<>();
+	private final List<Http.Options> _options = new ArrayList<>();
 
 	private interface UnsafeConsumer {
 
-		public void accept(LiferayCommerceRESTClient liferayCommerceRESTClient)
+		public void accept(LiferayCommercePIMClient liferayCommercePIMClient)
 			throws Exception;
 
 	}
