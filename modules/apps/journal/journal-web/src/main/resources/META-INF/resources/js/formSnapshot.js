@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {useCallback, useEffect, useRef} from 'react';
+
 export function getFormSnapshot(form, namespace) {
 	const excludedNames = new Set([
 		`${namespace}formDate`,
@@ -36,4 +38,72 @@ export function isFormSnapshotDifferent(snapshot1, snapshot2) {
 	}
 
 	return false;
+}
+
+export function useFormChanges(namespace) {
+	const formChangesRef = useRef(null);
+
+	useEffect(() => {
+		const form = document.getElementById(`${namespace}fm1`);
+
+		if (!form) {
+			return;
+		}
+
+		const formChanges = trackFormChanges(form, namespace);
+
+		formChangesRef.current = formChanges;
+
+		return () => {
+			formChanges.detach();
+
+			formChangesRef.current = null;
+		};
+	}, [namespace]);
+
+	const hasFormChanges = useCallback(
+		() => formChangesRef.current?.hasChanges() ?? true,
+		[]
+	);
+
+	const markFormSaved = useCallback(() => {
+		formChangesRef.current?.markSaved();
+	}, []);
+
+	return {hasFormChanges, markFormSaved};
+}
+
+function trackFormChanges(form, namespace) {
+	let savedSnapshot = getFormSnapshot(form, namespace);
+
+	const addRenderedFields = () => {
+		for (const [name, value] of getFormSnapshot(form, namespace)) {
+			if (!savedSnapshot.has(name)) {
+				savedSnapshot.set(name, value);
+			}
+		}
+	};
+
+	const mutationObserver = new MutationObserver(addRenderedFields);
+
+	mutationObserver.observe(form, {childList: true, subtree: true});
+
+	return {
+		detach() {
+			mutationObserver.disconnect();
+		},
+		hasChanges() {
+			if (mutationObserver.takeRecords().length) {
+				addRenderedFields();
+			}
+
+			return isFormSnapshotDifferent(
+				getFormSnapshot(form, namespace),
+				savedSnapshot
+			);
+		},
+		markSaved() {
+			savedSnapshot = getFormSnapshot(form, namespace);
+		},
+	};
 }

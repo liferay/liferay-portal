@@ -116,6 +116,12 @@ public class SaveAsDraftArticleMVCActionCommand extends BaseMVCActionCommand {
 		if (cmd.equals(Constants.ADD)) {
 			actionName = "/journal/add_article";
 		}
+		else if (cmd.equals(Constants.PREVIEW)) {
+			return _journalArticleService.getArticle(
+				ParamUtil.getLong(actionRequest, "groupId"),
+				ParamUtil.getString(actionRequest, "articleId"),
+				ParamUtil.getDouble(actionRequest, "version"));
+		}
 		else if (cmd.equals(Constants.UPDATE)) {
 			actionName = "/journal/update_article";
 		}

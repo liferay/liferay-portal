@@ -9,6 +9,7 @@ import {openSelectionModal} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useMemo, useState} from 'react';
 
+import {useFormChanges} from '../formSnapshot';
 import AssetDisplayPageSelector from './AssetDisplayPageSelector';
 import PreviewButton from './PreviewButton';
 
@@ -27,6 +28,8 @@ export default function AssetDisplayPagePreview({
 	const [selectedSite, setSelectedSite] = useState();
 	const [active, setActive] = useState(false);
 	const [assetDisplayPageSelected, setAssetDisplayPageSelected] = useState();
+
+	const {hasFormChanges, markFormSaved} = useFormChanges(namespace);
 
 	const siteInputId = `${namespace}siteInput`;
 	const siteLabelId = `${namespace}siteLabel`;
@@ -150,6 +153,8 @@ export default function AssetDisplayPagePreview({
 
 					return url;
 				}}
+				hasFormChanges={hasFormChanges}
+				markFormSaved={markFormSaved}
 				namespace={namespace}
 				newArticle={newArticle}
 				saveAsDraftURL={saveAsDraftURL}

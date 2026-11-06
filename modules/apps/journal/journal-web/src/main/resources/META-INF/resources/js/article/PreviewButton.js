@@ -10,6 +10,8 @@ import React, {useEffect, useRef, useState} from 'react';
 export default function PreviewButton({
 	disabled,
 	getPreviewURL,
+	hasFormChanges,
+	markFormSaved,
 	namespace,
 	newArticle,
 	saveAsDraftURL,
@@ -68,10 +70,16 @@ export default function PreviewButton({
 
 				const formData = new FormData(form);
 
-				formData.append(
-					`${namespace}cmd`,
-					newArticle && !articleId ? 'add' : 'update'
-				);
+				let cmd = 'update';
+
+				if (newArticle && !articleId) {
+					cmd = 'add';
+				}
+				else if (!hasFormChanges()) {
+					cmd = 'preview';
+				}
+
+				formData.append(`${namespace}cmd`, cmd);
 
 				return Liferay.Util.fetch(saveAsDraftURL, {
 					body: formData,
@@ -119,6 +127,8 @@ export default function PreviewButton({
 									});
 								}
 							);
+
+							markFormSaved();
 
 							openModal({
 								title: Liferay.Language.get('preview'),

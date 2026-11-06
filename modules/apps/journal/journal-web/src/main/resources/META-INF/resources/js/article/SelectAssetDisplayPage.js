@@ -6,6 +6,7 @@
 import ClayForm, {ClayInput, ClaySelectWithOption} from '@clayui/form';
 import React, {useEffect, useState} from 'react';
 
+import {useFormChanges} from '../formSnapshot';
 import AssetDisplayPageSelector from './AssetDisplayPageSelector';
 import PreviewButton from './PreviewButton';
 
@@ -55,6 +56,8 @@ export default function SelectAssetDisplayPage({
 			return null;
 		}
 	);
+
+	const {hasFormChanges, markFormSaved} = useFormChanges(namespace);
 
 	const ITEMS = [
 		{
@@ -158,6 +161,8 @@ export default function SelectAssetDisplayPage({
 							!defaultDisplayPageName)
 					}
 					getPreviewURL={({previewURL}) => previewURL}
+					hasFormChanges={hasFormChanges}
+					markFormSaved={markFormSaved}
 					namespace={namespace}
 					newArticle={newArticle}
 					saveAsDraftURL={saveAsDraftURL}
