@@ -129,9 +129,21 @@ public class FrontendResourceFilterTest {
 	public void testContentWhenCompressionStrategyIsUseSystemDefaults()
 		throws Exception {
 
-		// System defaults enable compression
+		// System defaults disable compression
 
 		MockHttpServletResponse mockHttpServletResponse = _send(
+			"gzip, deflate", RandomTestUtil.randomString(),
+			"use-system-defaults", true, false, true, Deflater.NO_COMPRESSION);
+
+		_assertContent(false, mockHttpServletResponse);
+
+		Assert.assertNull(
+			mockHttpServletResponse.getHeader("Content-Encoding"));
+		Assert.assertNull(mockHttpServletResponse.getHeader("Vary"));
+
+		// System defaults enable compression
+
+		mockHttpServletResponse = _send(
 			"gzip, deflate", RandomTestUtil.randomString(),
 			"use-system-defaults", true, false, true, Deflater.BEST_SPEED);
 
@@ -146,18 +158,6 @@ public class FrontendResourceFilterTest {
 
 		Assert.assertEquals(
 			"Accept-Encoding", mockHttpServletResponse.getHeader("Vary"));
-
-		// System defaults disable compression
-
-		mockHttpServletResponse = _send(
-			"gzip, deflate", RandomTestUtil.randomString(),
-			"use-system-defaults", true, false, true, Deflater.NO_COMPRESSION);
-
-		_assertContent(false, mockHttpServletResponse);
-
-		Assert.assertNull(
-			mockHttpServletResponse.getHeader("Content-Encoding"));
-		Assert.assertNull(mockHttpServletResponse.getHeader("Vary"));
 	}
 
 	@Test
@@ -355,7 +355,7 @@ public class FrontendResourceFilterTest {
 	}
 
 	private FrontendResource _mockFrontendResource(
-		String cacheKey, boolean immutable, boolean isPrivate,
+		String cacheKey, boolean immutable, boolean privateResource,
 		boolean sendNoCache) {
 
 		return new FrontendResource() {
@@ -395,7 +395,7 @@ public class FrontendResourceFilterTest {
 
 			@Override
 			public boolean isPrivate() {
-				return isPrivate;
+				return privateResource;
 			}
 
 			@Override
@@ -408,7 +408,7 @@ public class FrontendResourceFilterTest {
 
 	private MockHttpServletResponse _send(
 			String acceptEncoding, String cacheKey, String compressionStrategy,
-			boolean immutable, boolean isPrivate, boolean sendNoCache,
+			boolean immutable, boolean privateResource, boolean sendNoCache,
 			int systemCompressionLevel)
 		throws Exception {
 
@@ -427,7 +427,8 @@ public class FrontendResourceFilterTest {
 			new MockHttpServletResponse();
 
 		frontendResourceFilter.send(
-			_mockFrontendResource(cacheKey, immutable, isPrivate, sendNoCache),
+			_mockFrontendResource(
+				cacheKey, immutable, privateResource, sendNoCache),
 			mockHttpServletRequest, mockHttpServletResponse);
 
 		return mockHttpServletResponse;

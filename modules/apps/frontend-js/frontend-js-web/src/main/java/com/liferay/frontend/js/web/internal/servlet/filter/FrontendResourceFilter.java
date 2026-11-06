@@ -262,7 +262,7 @@ public class FrontendResourceFilter extends BasePortalFilter {
 		}
 	}
 
-	private GZIPOutputStream _createGZipOutputStream(
+	private GZIPOutputStream _createGZIPOutputStream(
 			int compressionLevel, OutputStream outputStream)
 		throws Exception {
 
@@ -322,7 +322,7 @@ public class FrontendResourceFilter extends BasePortalFilter {
 			new UnsyncByteArrayOutputStream();
 
 		try (InputStream inputStream = frontendResource.getInputStream();
-			GZIPOutputStream gzipOutputStream = _createGZipOutputStream(
+			GZIPOutputStream gzipOutputStream = _createGZIPOutputStream(
 				compressionLevel, unsyncByteArrayOutputStream)) {
 
 			StreamUtil.transfer(inputStream, gzipOutputStream, false);
