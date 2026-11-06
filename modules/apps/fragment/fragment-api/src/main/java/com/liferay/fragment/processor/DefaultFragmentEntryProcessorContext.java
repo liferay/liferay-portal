@@ -140,6 +140,15 @@ public class DefaultFragmentEntryProcessorContext
 	}
 
 	@Override
+	public boolean isDisableRESTClient() {
+		if (_disableRESTClient == null) {
+			return _disablePortletRender;
+		}
+
+		return _disableRESTClient;
+	}
+
+	@Override
 	public boolean isEditMode() {
 		return Objects.equals(getMode(), FragmentEntryLinkConstants.EDIT);
 	}
@@ -181,6 +190,10 @@ public class DefaultFragmentEntryProcessorContext
 		_disablePortletRender = disablePortletRender;
 	}
 
+	public void setDisableRESTClient(boolean disableRESTClient) {
+		_disableRESTClient = disableRESTClient;
+	}
+
 	public void setFragmentElementId(String fragmentElementId) {
 		_fragmentElementId = fragmentElementId;
 	}
@@ -217,6 +230,7 @@ public class DefaultFragmentEntryProcessorContext
 	private final long _companyId;
 	private Object _contextInfoItem;
 	private boolean _disablePortletRender;
+	private Boolean _disableRESTClient;
 	private String _fragmentElementId;
 	private final HttpServletRequest _httpServletRequest;
 	private final HttpServletResponse _httpServletResponse;

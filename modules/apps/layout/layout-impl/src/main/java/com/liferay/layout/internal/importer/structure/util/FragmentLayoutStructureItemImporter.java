@@ -966,6 +966,7 @@ public class FragmentLayoutStructureItemImporter
 					serviceContext.getScopeGroupId());
 
 		defaultFragmentEntryProcessorContext.setDisablePortletRender(true);
+		defaultFragmentEntryProcessorContext.setDisableRESTClient(false);
 
 		return _fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
 			fragmentEntryLink, defaultFragmentEntryProcessorContext);

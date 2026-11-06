@@ -98,6 +98,10 @@ public interface FragmentEntryProcessorContext {
 
 	public boolean isDisablePortletRender();
 
+	public default boolean isDisableRESTClient() {
+		return isDisablePortletRender();
+	}
+
 	public boolean isEditMode();
 
 	public boolean isIndexMode();

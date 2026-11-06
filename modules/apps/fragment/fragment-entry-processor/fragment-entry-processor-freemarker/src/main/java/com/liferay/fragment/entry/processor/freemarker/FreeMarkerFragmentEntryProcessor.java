@@ -193,7 +193,7 @@ public class FreeMarkerFragmentEntryProcessor
 
 		template.prepare(fragmentEntryProcessorContext.getHttpServletRequest());
 
-		if (fragmentEntryProcessorContext.isDisablePortletRender()) {
+		if (fragmentEntryProcessorContext.isDisableRESTClient()) {
 			template.put("restClient", new DummyRESTClient());
 		}
 
