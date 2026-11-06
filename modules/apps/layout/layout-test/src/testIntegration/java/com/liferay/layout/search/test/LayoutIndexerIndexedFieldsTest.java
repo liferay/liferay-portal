@@ -198,6 +198,11 @@ public class LayoutIndexerIndexedFieldsTest {
 		).put(
 			"groupExternalReferenceCode", _group.getExternalReferenceCode()
 		).put(
+			"parentLayoutId", String.valueOf(layout.getParentLayoutId())
+		).put(
+			"parentLayoutId_Number_sortable",
+			String.valueOf(layout.getParentLayoutId())
+		).put(
 			"privateLayout", "false"
 		).put(
 			"scopeGroupExternalReferenceCode", _group.getExternalReferenceCode()
