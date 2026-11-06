@@ -120,7 +120,9 @@ public class ActionHelperImpl implements ActionHelper {
 		long cpDefinitionId = ParamUtil.getLong(
 			portletRequest, "cpDefinitionId");
 
-		cpDefinition = _cpDefinitionService.fetchCPDefinition(cpDefinitionId);
+		if (cpDefinitionId > 0) {
+			cpDefinition = _cpDefinitionService.getCPDefinition(cpDefinitionId);
+		}
 
 		if (cpDefinition != null) {
 			portletRequest.setAttribute(CPWebKeys.CP_DEFINITION, cpDefinition);
@@ -325,7 +327,7 @@ public class ActionHelperImpl implements ActionHelper {
 		if (cpDefinitionSpecificationOptionValueId > 0) {
 			cpDefinitionSpecificationOptionValue =
 				_cpDefinitionSpecificationOptionValueService.
-					fetchCPDefinitionSpecificationOptionValue(
+					getCPDefinitionSpecificationOptionValue(
 						cpDefinitionSpecificationOptionValueId);
 		}
 
