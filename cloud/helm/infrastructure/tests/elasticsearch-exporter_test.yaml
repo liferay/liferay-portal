@@ -40,6 +40,19 @@ tests:
                 -   elasticsearch
                 -   opensearch
     -   asserts:
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-25"
+            -   equal:
+                    path: spec.replicas
+                    value: 1
+            -   equal:
+                    path: spec.strategy.type
+                    value: Recreate
+        it: Runs a single exporter in the Elasticsearch sync wave
+        set:
+            search.elasticsearch.exporter.enabled: true
+    -   asserts:
             -   contains:
                     content: --es.uri=http://my-release-es-es-http:9200
                     path: spec.template.spec.containers[0].args

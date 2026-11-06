@@ -3,6 +3,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-25"
     labels:
         app.kubernetes.io/component: metrics
         app.kubernetes.io/name: elasticsearch-exporter
@@ -10,10 +12,12 @@ metadata:
     name: {{ include "elasticsearch.name" . }}-exporter
     namespace: {{ include "elasticsearch.namespace" . }}
 spec:
-    replicas: {{ $exporter.replicaCount }}
+    replicas: 1
     selector:
         matchLabels:
             app.kubernetes.io/name: elasticsearch-exporter
+    strategy:
+        type: Recreate
     template:
         metadata:
             labels:

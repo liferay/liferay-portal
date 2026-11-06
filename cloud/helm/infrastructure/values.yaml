@@ -57,7 +57,6 @@ search:
                 initialDelaySeconds: 5
                 periodSeconds: 10
                 timeoutSeconds: 5
-            replicaCount: 1
             resources:
                 limits:
                     cpu: 300m

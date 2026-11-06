@@ -65,14 +65,14 @@ tests:
             -   equal:
                     path: spec.nodeSets[0].config
                     value:
-                        xpack.security.authc.anonymous.roles: monitoring_user
+                        action.destructive_requires_name: true
         documentSelector:
             path: kind
             value: Elasticsearch
         it: Applies the configured node settings
         set:
             search.elasticsearch.config:
-                xpack.security.authc.anonymous.roles: monitoring_user
+                action.destructive_requires_name: true
     -   asserts:
             -   contains:
                     content:
