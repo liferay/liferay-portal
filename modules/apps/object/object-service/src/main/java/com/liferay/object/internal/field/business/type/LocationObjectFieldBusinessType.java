@@ -20,7 +20,6 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.dto.v1_0.Coordinates;
 import com.liferay.object.rest.dto.v1_0.Location;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
@@ -195,12 +194,6 @@ public class LocationObjectFieldBusinessType
 		return _getValue(
 			groupId, objectField,
 			super.getValue(groupId, objectField, userId, values));
-	}
-
-	@Override
-	public boolean isVisible(ObjectDefinition objectDefinition) {
-		return FeatureFlagManagerUtil.isEnabled(
-			objectDefinition.getCompanyId(), "LPD-11388");
 	}
 
 	private Object _getValue(
