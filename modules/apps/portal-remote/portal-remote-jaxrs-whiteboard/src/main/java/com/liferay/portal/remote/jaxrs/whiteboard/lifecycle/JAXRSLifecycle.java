@@ -19,7 +19,6 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.apache.aries.component.dsl.OSGi;
 import org.apache.aries.component.dsl.OSGiResult;
@@ -159,8 +158,6 @@ public class JAXRSLifecycle {
 
 					return properties;
 				})
-		).filter(
-			c -> !Objects.equals(c.get("enabled"), "false")
 		).flatMap(
 			configuration -> _runWhiteboard(configuration)
 		);
