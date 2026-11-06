@@ -7,8 +7,11 @@ package com.liferay.portal.security.pwd;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.UserPasswordException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.security.pwd.Toolkit;
 
 import java.nio.charset.StandardCharsets;
@@ -38,6 +41,18 @@ public class PwdToolkitUtil {
 			throw new UserPasswordException.MustMatch(userId);
 		}
 
+		try {
+			FIPSModeValidator.validatePassword(password1);
+		}
+		catch (SecurityException securityException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(securityException);
+			}
+
+			throw new UserPasswordException.MustBeLonger(
+				userId, FIPSModeValidator.PASSWORDS_MIN_LENGTH);
+		}
+
 		if ((passwordPolicy != null) &&
 			PwdToolkitUtilThreadLocal.isValidate()) {
 
@@ -49,6 +64,8 @@ public class PwdToolkitUtil {
 
 	private PwdToolkitUtil() {
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(PwdToolkitUtil.class);
 
 	private static final Snapshot<Toolkit> _toolkitSnapshot = new Snapshot<>(
 		PwdToolkitUtil.class, Toolkit.class, null, true);
