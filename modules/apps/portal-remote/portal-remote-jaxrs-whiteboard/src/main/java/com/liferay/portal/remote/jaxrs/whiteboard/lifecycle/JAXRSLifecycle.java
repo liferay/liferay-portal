@@ -6,15 +6,44 @@
 package com.liferay.portal.remote.jaxrs.whiteboard.lifecycle;
 
 import com.liferay.petra.concurrent.DCLSingleton;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.MapUtil;
 
-import org.apache.aries.jax.rs.whiteboard.WhiteboardUtil;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.ext.RuntimeDelegate;
+import jakarta.ws.rs.sse.SseEventSource;
+
+import java.util.Arrays;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.aries.component.dsl.OSGi;
+import org.apache.aries.component.dsl.OSGiResult;
+import org.apache.aries.jax.rs.whiteboard.internal.Whiteboard;
+import org.apache.aries.jax.rs.whiteboard.internal.client.ClientBuilderFactory;
+import org.apache.aries.jax.rs.whiteboard.internal.utils.LogUtils;
+import org.apache.aries.jax.rs.whiteboard.internal.utils.PropertyHolder;
+import org.apache.aries.jax.rs.whiteboard.internal.utils.Utils;
+import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
+import org.apache.cxf.jaxrs.sse.client.SseEventSourceBuilderImpl;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.http.runtime.HttpServiceRuntime;
+import org.osgi.service.http.runtime.HttpServiceRuntimeConstants;
+import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
+import org.osgi.service.jaxrs.client.SseEventSourceFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stian Sigvartsen
@@ -31,7 +60,7 @@ public class JAXRSLifecycle {
 
 		_serviceRegistrationDCLSingleton.getSingleton(
 			() -> {
-				WhiteboardUtil.start();
+				_start();
 
 				return _bundleContext.registerService(
 					Object.class, new Object(),
@@ -51,12 +80,172 @@ public class JAXRSLifecycle {
 			serviceRegistration -> {
 				serviceRegistration.unregister();
 
-				WhiteboardUtil.stop();
+				_stop();
 			});
 	}
 
+	private String _endpointFilter(PropertyHolder configuration) {
+		Object whiteBoardTargetProperty = configuration.get(
+			HttpWhiteboardConstants.HTTP_WHITEBOARD_TARGET);
+
+		String targetFilter = (whiteBoardTargetProperty != null) ?
+			whiteBoardTargetProperty.toString() : "(osgi.http.endpoint=*)";
+
+		return StringBundler.concat(
+			"(&(objectClass=", HttpServiceRuntime.class.getName(), ")",
+			targetFilter, ")");
+	}
+
+	private OSGi<?> _registerClient() {
+		return OSGi.register(
+			ClientBuilder.class, new ClientBuilderFactory(),
+			(Map<String, Object>)null
+		).effects(
+			LogUtils.ifInfoEnabled(_log, () -> "Registered ClientBuilder"),
+			LogUtils.ifInfoEnabled(_log, () -> "Unregistered ClientBuilder")
+		);
+	}
+
+	private OSGi<?> _registerSseEventSourceFactory() {
+		return OSGi.register(
+			SseEventSourceFactory.class,
+			new SseEventSourceFactory() {
+
+				@Override
+				public SseEventSource.Builder newBuilder(WebTarget target) {
+					return new SseEventSourceBuilderImpl() {
+						{
+							target(target);
+						}
+					};
+				}
+
+				@Override
+				public SseEventSource newSource(WebTarget target) {
+					return newBuilder(
+						target
+					).build();
+				}
+
+			},
+			new Hashtable<>()
+		).effects(
+			LogUtils.ifInfoEnabled(
+				_log, () -> "Registered SseEventSourceFactory"),
+			LogUtils.ifInfoEnabled(
+				_log, () -> "Unregistered SseEventSourceFactory")
+		);
+	}
+
+	private OSGi<?> _runWhiteboard(Dictionary<String, ?> configuration) {
+		OSGi<List<String>> endpoints = OSGi.serviceReferences(
+			_endpointFilter(configuration::get)
+		).map(
+			r -> Arrays.asList(
+				Utils.canonicalize(
+					r.getProperty(
+						HttpServiceRuntimeConstants.HTTP_SERVICE_ENDPOINT)))
+		);
+
+		return OSGi.once(
+			OSGi.serviceReferences(
+				_endpointFilter(configuration::get), __ -> false
+			).then(
+				OSGi.just(
+					Whiteboard.createWhiteboard(configuration)
+				).effects(
+					LogUtils.ifInfoEnabled(
+						_log,
+						() ->
+							"created whiteboard from configuration: " +
+								configuration),
+					LogUtils.ifInfoEnabled(
+						_log,
+						() ->
+							"destroyed whiteboard from configuration: " +
+								configuration)
+				).flatMap(
+					whiteboard -> OSGi.all(
+						OSGi.effects(
+							() -> whiteboard.start(_bundleContext),
+							whiteboard::stop),
+						OSGi.ignore(
+							endpoints.effects(
+								whiteboard::addHttpEndpoints,
+								whiteboard::removeHttpEndpoints)
+						).effects(
+							LogUtils.debugTracking(
+								_log,
+								() -> "endpoint for whiteboard: " + whiteboard)
+						))
+				)
+			));
+	}
+
+	private void _start() {
+		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("Starting the whiteboard factory");
+		}
+
+		OSGi<?> runWhiteboards = OSGi.all(
+			OSGi.configurations("org.apache.aries.jax.rs.whiteboard"),
+			OSGi.coalesce(
+				OSGi.configuration(
+					"org.apache.aries.jax.rs.whiteboard.default"),
+				OSGi.just(
+					() -> {
+						Dictionary<String, Object> properties =
+							new Hashtable<>();
+
+						properties.put(
+							Constants.SERVICE_PID,
+							"org.apache.aries.jax.rs.whiteboard.default");
+
+						return properties;
+					}))
+		).filter(
+			c -> !Objects.equals(c.get("enabled"), "false")
+		).effects(
+			LogUtils.debugTracking(_log, () -> "whiteboard configuration")
+		).flatMap(
+			configuration -> _runWhiteboard(configuration)
+		);
+
+		_osgiResult = OSGi.all(
+			OSGi.ignore(_registerClient()),
+			OSGi.ignore(_registerSseEventSourceFactory()),
+			OSGi.ignore(runWhiteboards)
+		).run(
+			_bundleContext
+		);
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("Whiteboard factory started");
+		}
+	}
+
+	private void _stop() {
+		if (_log.isDebugEnabled()) {
+			_log.debug("Stopping whiteboard factory");
+		}
+
+		_osgiResult.close();
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("Stopped whiteboard factory");
+		}
+
+		RuntimeDelegate.setInstance(null);
+	}
+
+	private static final Logger _log = LoggerFactory.getLogger(
+		JAXRSLifecycle.class);
+
 	private BundleContext _bundleContext;
 	private boolean _jaxrsReady;
+	private OSGiResult _osgiResult;
 	private final DCLSingleton<ServiceRegistration<?>>
 		_serviceRegistrationDCLSingleton = new DCLSingleton<>();
 
