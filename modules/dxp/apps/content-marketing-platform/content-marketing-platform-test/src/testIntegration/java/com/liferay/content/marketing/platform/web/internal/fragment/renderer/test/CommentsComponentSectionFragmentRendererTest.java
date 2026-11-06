@@ -11,6 +11,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -26,6 +27,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Carolina Barbosa
  */
+@FeatureFlag(enable = false, value = "LPD-104086")
 @RunWith(Arquillian.class)
 public class CommentsComponentSectionFragmentRendererTest
 	extends BaseComponentSectionFragmentRendererTestCase {
@@ -50,6 +52,17 @@ public class CommentsComponentSectionFragmentRendererTest
 			_getURL("/edit_content_item_comment"), props.get("editCommentURL"));
 		Assert.assertEquals(
 			_getURL("/get_asset_comments"), props.get("getCommentsURL"));
+		Assert.assertNull(props.get("getMentionUsersURL"));
+	}
+
+	@FeatureFlag("LPD-104086")
+	@Test
+	public void testGetPropsWithFeatureFlag() throws Exception {
+		Map<String, Object> props = getProps();
+
+		Assert.assertEquals(
+			_getURL("/get_content_item_mention_users"),
+			props.get("getMentionUsersURL"));
 	}
 
 	@Override
