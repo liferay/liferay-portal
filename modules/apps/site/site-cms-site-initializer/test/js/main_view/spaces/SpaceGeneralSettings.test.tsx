@@ -151,6 +151,11 @@ describe('SpaceGeneralSettings', () => {
 					description: 'My space description',
 					externalReferenceCode: 'My New ERC',
 					name: 'My Space',
+					settings: {
+						...space.settings,
+						googleMapsAPIKey: '',
+						mapProviderKey: '',
+					},
 				}
 			);
 
@@ -334,14 +339,6 @@ describe('SpaceGeneralSettings', () => {
 	});
 
 	describe('Location provider', () => {
-		beforeEach(() => {
-			Liferay.FeatureFlags['LPD-11388'] = true;
-		});
-
-		afterEach(() => {
-			delete Liferay.FeatureFlags['LPD-11388'];
-		});
-
 		it('saves the instance default with an empty API key', async () => {
 			renderComponent({
 				space: {
