@@ -38,6 +38,7 @@ export default async function visitOutdatedTsconfigFiles(visitorFunction) {
  *			}
  *		},
  *		typeScriptProject: true,
+ *		typeScriptTests: false,
  *	 },
  *	 ...
  * }
@@ -55,6 +56,9 @@ async function getProjects(projectDirs, modulesDir) {
 				entryPoints: typescript,
 				typeScriptProject: await hasTypeScriptFiles(
 					path.join(projectDir, SRC_PATH)
+				),
+				typeScriptTests: await hasTypeScriptFiles(
+					path.join(projectDir, 'test')
 				),
 			};
 		})

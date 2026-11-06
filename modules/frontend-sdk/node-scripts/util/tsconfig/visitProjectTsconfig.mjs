@@ -19,7 +19,6 @@ import {
 } from '../locations.mjs';
 import objectSF from '../objectSF.mjs';
 import baseTsconfig from './baseTsconfig.mjs';
-import hasTypeScriptFiles from './hasTypeScriptFiles.mjs';
 
 const GENERATED = '@generated';
 
@@ -40,7 +39,7 @@ export default async function visitProjectTsconfig(
 	const currentProject = projects[projectDescription.name];
 
 	const typeScriptFound = testConfig
-		? await hasTypeScriptFiles(srcPath)
+		? currentProject.typeScriptTests
 		: currentProject.typeScriptProject;
 
 	if (!typeScriptFound) {
