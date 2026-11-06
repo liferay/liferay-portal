@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkService;
@@ -117,7 +116,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 		_kaleoDefinitionLocalService.activateKaleoDefinition(
 			kaleoDefinition.getKaleoDefinitionId(), _serviceContext);
 
-		_setUpPermissionThreadLocal(_companyAdminUser);
+		UserTestUtil.setUser(_companyAdminUser);
 
 		AssertUtils.assertFailure(
 			PrincipalException.MustBeCompanyAdmin.class,
@@ -238,7 +237,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 
 	@Test
 	public void testGetWorkflowDefinitionLinks() throws Exception {
-		_setUpPermissionThreadLocal(_companyAdminUser);
+		UserTestUtil.setUser(_companyAdminUser);
 
 		ConfigurationTestUtil.saveConfiguration(
 			_configuration,
@@ -252,7 +251,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 
 		User user = _addUser();
 
-		_setUpPermissionThreadLocal(user);
+		UserTestUtil.setUser(user);
 
 		AssertUtils.assertFailure(
 			PrincipalException.MustBeCompanyAdmin.class,
@@ -262,7 +261,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 			() -> _workflowDefinitionLinkService.getWorkflowDefinitionLinks(
 				TestPropsValues.getCompanyId(), "Single Approver", 1));
 
-		_setUpPermissionThreadLocal(_companyAdminUser);
+		UserTestUtil.setUser(_companyAdminUser);
 
 		List<WorkflowDefinitionLink> workflowDefinitionLinks =
 			_workflowDefinitionLinkService.getWorkflowDefinitionLinks(
@@ -281,7 +280,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 
 	@Test
 	public void testUpdateWorkflowDefinitionLink() throws Exception {
-		_setUpPermissionThreadLocal(_companyAdminUser);
+		UserTestUtil.setUser(_companyAdminUser);
 
 		ConfigurationTestUtil.saveConfiguration(
 			_configuration,
@@ -297,7 +296,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 
 		User user = _addUser();
 
-		_setUpPermissionThreadLocal(user);
+		UserTestUtil.setUser(user);
 
 		AssertUtils.assertFailure(
 			PrincipalException.MustBeCompanyAdmin.class,
@@ -312,7 +311,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 				kaleoDefinition.getName(),
 				workflowDefinitionLink1.getWorkflowDefinitionVersion()));
 
-		_setUpPermissionThreadLocal(_companyAdminUser);
+		UserTestUtil.setUser(_companyAdminUser);
 
 		WorkflowDefinitionLink workflowDefinitionLink2 =
 			_workflowDefinitionLinkService.updateWorkflowDefinitionLink(
@@ -453,16 +452,9 @@ public class WorkflowDefinitionLinkServiceImplTest {
 		User user = UserTestUtil.addCompanyUser(
 			_company, RoleConstants.CMS_ADMINISTRATOR);
 
-		_setUpPermissionThreadLocal(user);
+		UserTestUtil.setUser(user);
 
 		return user;
-	}
-
-	private void _setUpPermissionThreadLocal(User user) {
-		PrincipalThreadLocal.setName(user.getUserId());
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(user));
 	}
 
 	private static Company _company;
