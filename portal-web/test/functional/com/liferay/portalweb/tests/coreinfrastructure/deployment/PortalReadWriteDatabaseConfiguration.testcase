@@ -4,7 +4,7 @@ definition {
 	property app.server.types = "tomcat";
 	property ci.retries.disabled = "true";
 	property configure.read.write.database = "jdbc";
-	property database.types = "mysql";
+	property database.types = "mysql,postgresql";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property test.assert.warning.exceptions = "true";
@@ -36,7 +36,7 @@ definition {
 		MenuItem.click(menuItem = "Checkout");
 
 		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM lportal.Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
+			mysqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
 			text = 1);
 
 		Refresh();
@@ -48,7 +48,7 @@ definition {
 		Click(locator1 = "Button#SAVE");
 
 		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM lportal.Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
+			mysqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
 			text = 0);
 
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
@@ -62,7 +62,7 @@ definition {
 		}
 
 		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM lportal.Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
+			mysqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
 			text = 0);
 
 		JSONMBMessage.addMessage(
@@ -79,7 +79,7 @@ definition {
 		MenuItem.click(menuItem = "Lock");
 
 		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM lportal.Lock_ WHERE className LIKE '%com.liferay.message.boards.model.MBThread%'",
+			mysqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.message.boards.model.MBThread%'",
 			text = 1);
 
 		Click(locator1 = "MessageBoards#VERTICAL_ELLIPSIS");
@@ -87,7 +87,7 @@ definition {
 		MenuItem.click(menuItem = "Unlock");
 
 		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM lportal.Lock_ WHERE className LIKE '%com.liferay.message.boards.model.MBThread%'",
+			mysqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.message.boards.model.MBThread%'",
 			text = 0);
 	}
 
