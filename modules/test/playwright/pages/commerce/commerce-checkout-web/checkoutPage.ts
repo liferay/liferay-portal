@@ -435,7 +435,12 @@ export class CheckoutPage extends CommerceDNDTablePage {
 			const previousStep = currentStep;
 
 			await expect(async () => {
-				await this.continueButton.click();
+				if (
+					(await this.activeCheckoutStep.textContent()) ===
+					previousStep
+				) {
+					await this.continueButton.click();
+				}
 
 				await expect(this.activeCheckoutStep).not.toHaveText(
 					previousStep,
