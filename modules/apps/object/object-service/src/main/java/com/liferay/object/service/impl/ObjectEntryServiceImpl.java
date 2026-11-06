@@ -19,6 +19,7 @@ import com.liferay.object.internal.security.permission.util.ObjectEntryPermissio
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectEntryFolderService;
@@ -53,6 +54,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelper;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil;
@@ -374,6 +376,43 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 	@Override
 	public int getObjectEntriesCount(
 		long groupId, long objectDefinitionId, int status) {
+
+		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission() &&
+			(PermissionThreadLocal.getPermissionChecker() != null)) {
+
+			ObjectDefinition objectDefinition =
+				_objectDefinitionPersistence.fetchByPrimaryKey(
+					objectDefinitionId);
+
+			if (objectDefinition == null) {
+				return 0;
+			}
+
+			if (_inlineSQLHelper.isEnabled(
+					objectDefinition.getCompanyId(), groupId)) {
+
+				Predicate predicate = null;
+
+				if (status != WorkflowConstants.STATUS_ANY) {
+					predicate = ObjectEntryTable.INSTANCE.status.eq(status);
+				}
+
+				try {
+					return objectEntryLocalService.getValuesListCount(
+						new Long[] {groupId}, objectDefinition.getCompanyId(),
+						getUserId(), objectDefinitionId, predicate, false,
+						null);
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							"Unable to count object entries", portalException);
+					}
+
+					return 0;
+				}
+			}
+		}
 
 		if (status == WorkflowConstants.STATUS_ANY) {
 			int count = objectEntryPersistence.countByG_ODI(
