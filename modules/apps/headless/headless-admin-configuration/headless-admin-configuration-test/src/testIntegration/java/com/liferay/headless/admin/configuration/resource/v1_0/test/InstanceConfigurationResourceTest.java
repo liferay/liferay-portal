@@ -18,15 +18,20 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -104,6 +109,7 @@ public class InstanceConfigurationResourceTest
 		_testGetInstanceConfigurationFromConfigurationScreen();
 		_testGetInstanceConfigurationWithoutPermission();
 		_testGetInstanceConfigurationWithPasswordKey();
+		_testGetInstanceConfigurationWithVirtualInstanceId();
 	}
 
 	@Override
@@ -315,6 +321,52 @@ public class InstanceConfigurationResourceTest
 		properties = instanceConfiguration.getProperties();
 
 		Assert.assertNull(properties.get("passwordStringKey"));
+	}
+
+	private void _testGetInstanceConfigurationWithVirtualInstanceId()
+		throws Exception {
+
+		Configuration configuration =
+			_configurationAdmin.createFactoryConfiguration(
+				ConfigurationTestUtil.TEST_CONFIGURATION_PID + ".scoped",
+				StringPool.QUESTION);
+		Company company = CompanyTestUtil.addCompanyWithWebId("www.able.com");
+
+		try {
+			configuration.update(
+				HashMapDictionaryBuilder.<String, Object>put(
+					"dxp.lxc.liferay.com.virtualInstanceId",
+					testCompany.getWebId()
+				).put(
+					"requiredBooleanKey", RandomTestUtil.randomBoolean()
+				).build());
+
+			InstanceConfigurationResource companyInstanceConfigurationResource =
+				InstanceConfigurationResource.builder(
+				).authentication(
+					"test@www.able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+				).endpoint(
+					company.getVirtualHostname(),
+					PortalUtil.getPortalServerPort(false), "http"
+				).locale(
+					LocaleUtil.getDefault()
+				).build();
+
+			companyInstanceConfigurationResource.getInstanceConfiguration(
+				ConfigurationTestUtil.TEST_CONFIGURATION_PID);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+		finally {
+			configuration.delete();
+
+			CompanyLocalServiceUtil.deleteCompany(company);
+		}
 	}
 
 	private void _testGetInstanceConfigurationWithoutPermission()
