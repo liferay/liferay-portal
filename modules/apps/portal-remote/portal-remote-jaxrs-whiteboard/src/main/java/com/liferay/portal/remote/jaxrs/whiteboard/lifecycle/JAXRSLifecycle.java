@@ -7,6 +7,7 @@ package com.liferay.portal.remote.jaxrs.whiteboard.lifecycle;
 
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import jakarta.ws.rs.client.ClientBuilder;
@@ -15,27 +16,29 @@ import jakarta.ws.rs.ext.RuntimeDelegate;
 import jakarta.ws.rs.sse.SseEventSource;
 
 import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.Map;
 
-import org.apache.aries.component.dsl.OSGi;
-import org.apache.aries.component.dsl.OSGiResult;
 import org.apache.aries.jax.rs.whiteboard.internal.Whiteboard;
 import org.apache.aries.jax.rs.whiteboard.internal.client.ClientBuilderFactory;
 import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
 import org.apache.cxf.jaxrs.sse.client.SseEventSourceBuilderImpl;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.jaxrs.client.SseEventSourceFactory;
 
 /**
  * @author Stian Sigvartsen
  */
-@Component(service = JAXRSLifecycle.class)
+@Component(
+	configurationPid = "org.apache.aries.jax.rs.whiteboard.default",
+	configurationPolicy = ConfigurationPolicy.REQUIRE,
+	service = JAXRSLifecycle.class
+)
 public class JAXRSLifecycle {
 
 	public void ensureReady() {
@@ -52,22 +55,25 @@ public class JAXRSLifecycle {
 	}
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
 		_bundleContext = bundleContext;
+
+		for (Map.Entry<String, Object> entry : properties.entrySet()) {
+			String key = entry.getKey();
+
+			if (key.equals("component.id") || key.equals("component.name")) {
+				continue;
+			}
+
+			_configuration.put(key, entry.getValue());
+		}
 	}
 
 	@Deactivate
 	protected void deactivate() {
 		_safeCloseableDCLSingleton.destroy(SafeCloseable::close);
-	}
-
-	private OSGi<?> _runWhiteboard(Dictionary<String, ?> configuration) {
-		return OSGi.just(
-			Whiteboard.createWhiteboard(configuration)
-		).flatMap(
-			whiteboard -> OSGi.effects(
-				() -> whiteboard.start(_bundleContext), whiteboard::stop)
-		);
 	}
 
 	private SafeCloseable _start() {
@@ -104,23 +110,9 @@ public class JAXRSLifecycle {
 					},
 					null);
 
-		OSGi<?> runWhiteboards = OSGi.coalesce(
-			OSGi.configuration("org.apache.aries.jax.rs.whiteboard.default"),
-			OSGi.just(
-				() -> {
-					Dictionary<String, Object> properties = new Hashtable<>();
+		Whiteboard whiteboard = Whiteboard.createWhiteboard(_configuration);
 
-					properties.put(
-						Constants.SERVICE_PID,
-						"org.apache.aries.jax.rs.whiteboard.default");
-
-					return properties;
-				})
-		).flatMap(
-			configuration -> _runWhiteboard(configuration)
-		);
-
-		OSGiResult osgiResult = runWhiteboards.run(_bundleContext);
+		whiteboard.start(_bundleContext);
 
 		ServiceRegistration<?> serviceRegistration =
 			_bundleContext.registerService(
@@ -131,7 +123,7 @@ public class JAXRSLifecycle {
 		return () -> {
 			serviceRegistration.unregister();
 
-			osgiResult.close();
+			whiteboard.stop();
 
 			sseEventSourceFactoryServiceRegistration.unregister();
 
@@ -142,6 +134,8 @@ public class JAXRSLifecycle {
 	}
 
 	private BundleContext _bundleContext;
+	private final Dictionary<String, Object> _configuration =
+		new HashMapDictionary<>();
 	private boolean _jaxrsReady;
 	private final DCLSingleton<SafeCloseable> _safeCloseableDCLSingleton =
 		new DCLSingleton<>();
