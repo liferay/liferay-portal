@@ -864,16 +864,15 @@ test(
 			.getByRole('textbox', {name: 'Display Name'})
 			.fill(existingEventName);
 
-		const [response] = await Promise.all([
-			page.waitForResponse((response) =>
-				response.url().includes('opname=UpdateEventDefinition')
-			),
-			page.getByRole('button', {name: 'Save'}).click(),
-		]);
+		await page.getByRole('button', {name: 'Save'}).click();
 
-		expect(await response.text()).toContain(
-			`Display name ${existingEventName} is already used`
-		);
+		await expect(
+			page.getByText(
+				'An event already exists with that display name. Please enter a different display name.'
+			)
+		).toBeVisible();
+
+		await expect(page.getByRole('button', {name: 'Save'})).toBeDisabled();
 	}
 );
 
