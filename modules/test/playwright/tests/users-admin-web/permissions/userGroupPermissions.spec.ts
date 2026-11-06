@@ -11,6 +11,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {rolesPagesTest} from '../../../fixtures/rolesPagesTest';
 import {userGroupsPageTest} from '../../../fixtures/userGroupsPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -266,11 +267,12 @@ test(
 
 		await userGroupsPage.goToWithLimitedAccess();
 
-		await (
-			await userGroupsPage.userGroupsTableRowActions(userGroup.name)
-		).click();
-
-		await expect(userGroupsPage.managePagesMenuItem).toBeVisible();
+		await clickAndExpectToBeVisible({
+			target: userGroupsPage.managePagesMenuItem,
+			trigger: await userGroupsPage.userGroupsTableRowActions(
+				userGroup.name
+			),
+		});
 	}
 );
 
