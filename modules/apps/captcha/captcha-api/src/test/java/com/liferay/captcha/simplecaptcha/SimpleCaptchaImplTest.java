@@ -278,10 +278,14 @@ public class SimpleCaptchaImplTest {
 
 		Map<String, String> captchaTexts = _getCaptchaTexts(mockHttpSession);
 
-		Assert.assertFalse(captchaTexts.containsKey(captchaId));
+		String captchaText = captchaTexts.get(captchaId);
+
 		Assert.assertTrue(
-			_validateChallenge(
-				captchaId, captchaTexts.get(captchaId), mockHttpSession));
+			_validateChallenge(captchaId, captchaText, mockHttpSession));
+
+		Assert.assertThrows(
+			CaptchaTextException.class,
+			() -> _validateChallenge(captchaId, captchaText, mockHttpSession));
 	}
 
 	private void _testValidateChallengeWithWrongCaptchaText() throws Exception {
