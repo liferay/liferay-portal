@@ -11,10 +11,10 @@
 DDMTemplate template = (DDMTemplate)request.getAttribute(DDMWebKeys.DYNAMIC_DATA_MAPPING_TEMPLATE);
 
 String portletResource = ParamUtil.getString(request, "portletResource");
-long templateId = ParamUtil.getLong(request, "templateId", GetterUtil.get(template, DDMTemplate::getTemplateId, 0L));
-long classNameId = ParamUtil.getLong(request, "classNameId", GetterUtil.get(template, DDMTemplate::getClassNameId, 0L));
-long classPK = ParamUtil.getLong(request, "classPK", GetterUtil.get(template, DDMTemplate::getClassPK, 0L));
-long resourceClassNameId = ParamUtil.getLong(request, "resourceClassNameId", GetterUtil.get(template, DDMTemplate::getResourceClassNameId, 0L));
+long templateId = ParamUtil.getLong(request, "templateId", template.getTemplateId());
+long classNameId = ParamUtil.getLong(request, "classNameId", template.getClassNameId());
+long classPK = ParamUtil.getLong(request, "classPK", template.getClassPK());
+long resourceClassNameId = ParamUtil.getLong(request, "resourceClassNameId", template.getResourceClassNameId());
 
 DDMTemplateVersion templateVersion = template.getTemplateVersion();
 
