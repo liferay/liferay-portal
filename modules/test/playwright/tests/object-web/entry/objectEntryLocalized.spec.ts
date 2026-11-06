@@ -44,7 +44,6 @@ export const test = mergeTests(
 	isolatedSiteTest,
 	editObjectDefinitionPagesTest,
 	featureFlagsTest({
-		'LPD-11388': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	formsPagesTest,

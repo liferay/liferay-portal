@@ -6,7 +6,6 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
@@ -147,11 +146,7 @@ test(
 	}
 );
 
-const locationProviderTest = mergeTests(
-	test,
-	featureFlagsTest({'LPD-11388': {enabled: true}}),
-	spaceSettingsPagesTest
-);
+const locationProviderTest = mergeTests(test, spaceSettingsPagesTest);
 
 locationProviderTest(
 	'Location provider option and Google Maps API key is saved',
