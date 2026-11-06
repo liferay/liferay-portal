@@ -33,6 +33,7 @@ import com.liferay.portal.search.test.util.HitsAssert;
 import com.liferay.portal.search.test.util.IndexedFieldsFixture;
 import com.liferay.portal.search.test.util.SearchContextTestUtil;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.users.admin.test.util.search.UserSearchFixture;
@@ -53,6 +54,9 @@ import org.junit.runner.RunWith;
  * @author Igor Fabiano Nazar
  * @author Vagner B.C
  */
+@LanguageIds(
+	availableLanguageIds = {"en_US", "ja_JP"}, defaultLanguageId = "en_US"
+)
 @RunWith(Arquillian.class)
 public class LayoutIndexerIndexedFieldsTest {
 
