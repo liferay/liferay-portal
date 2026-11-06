@@ -510,33 +510,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _deleteCommerceProductAttachment(attachmentName = null, type = null, productName = null) {
-		Variables.assertDefined(parameterList = "${attachmentName},${productName},${type}");
-
-		var baseURL = JSONCompany.getPortalURL();
-
-		if (!(isSet(baseURL))) {
-			var baseURL = JSONCompany.getPortalURL();
-		}
-
-		var attachmentId = CommerceJSONProductsAPI.getCommerceProductMediaFieldValues(
-			jsonPath = "$.items[?(@['title']['en_US'] == '${attachmentName}')].['id']",
-			productName = ${productName},
-			type = ${type});
-		var userLoginInfo = JSONUtil2.formatJSONUser();
-
-		var curl = '''
-			${baseURL}/o/headless-commerce-admin-catalog/v1.0/attachment/${attachmentId} \
-				-u ${userLoginInfo} \
-				-H 'accept: application/json' \
-		''';
-
-		JSONCurlUtil.delete(${curl});
-
-		echo("Deleting Commerce Product Attachment with id: ${attachmentId}");
-	}
-
-	@summary = "Default summary"
 	macro _getCommerceFieldValue(groupName = null, field = null) {
 		var portalURL = JSONCompany.getPortalURL();
 		var title = StringUtil.replace(${title}, " ", "%20");
@@ -554,30 +527,6 @@ definition {
 		echo(${curl});
 
 		return ${curl};
-	}
-
-	@summary = "Default summary"
-	macro _getCommerceProductAttachments(productName = null) {
-		Variables.assertDefined(parameterList = ${productName});
-
-		var baseURL = ${baseURL};
-
-		if (!(isSet(baseURL))) {
-			var baseURL = JSONCompany.getPortalURL();
-		}
-
-		var productId = CommerceJSONProductsAPI._getProductId(productName = ${productName});
-		var userLoginInfo = JSONUtil2.formatJSONUser();
-
-		var curl = '''
-			${baseURL}/o/headless-commerce-admin-catalog/v1.0/products/${productId}/attachments \
-				-u ${userLoginInfo} \
-				-H 'accept: application/json' \
-		''';
-
-		var responseBody = JSONCurlUtil.get(${curl});
-
-		return ${responseBody};
 	}
 
 	@summary = "Default summary"
@@ -659,30 +608,6 @@ definition {
 		}
 
 		return ${productImageIds};
-	}
-
-	@summary = "Default summary"
-	macro _getCommerceProductImages(productName = null) {
-		Variables.assertDefined(parameterList = ${productName});
-
-		var baseURL = ${baseURL};
-
-		if (!(isSet(baseURL))) {
-			var baseURL = JSONCompany.getPortalURL();
-		}
-
-		var productId = CommerceJSONProductsAPI._getProductId(productName = ${productName});
-		var userLoginInfo = JSONUtil2.formatJSONUser();
-
-		var curl = '''
-			${baseURL}/o/headless-commerce-admin-catalog/v1.0/products/${productId}/images \
-				-u ${userLoginInfo} \
-				-H 'accept: application/json' \
-		''';
-
-		var responseBody = JSONCurlUtil.get(${curl});
-
-		return ${responseBody};
 	}
 
 	@summary = "Default summary"
@@ -1511,25 +1436,6 @@ definition {
 		var skuId = JSONUtil.getWithJSONPath(${responseBody}, "$..['id']");
 
 		return ${skuId};
-	}
-
-	@summary = "Default summary"
-	macro getCommerceProductMediaFieldValues(jsonPath = null, type = null, productName = null) {
-		Variables.assertDefined(parameterList = "${jsonPath},${productName}");
-
-		if (${type} == "images") {
-			var responseBody = CommerceJSONProductsAPI._getCommerceProductImages(productName = ${productName});
-		}
-
-		if (${type} == "attachment") {
-			var responseBody = CommerceJSONProductsAPI._getCommerceProductAttachments(productName = ${productName});
-		}
-
-		var fieldValues = JSONUtil.getWithJSONPath(${responseBody}, ${jsonPath});
-
-		echo("Field: ${fieldValues}");
-
-		return ${fieldValues};
 	}
 
 	@summary = "Default summary"
