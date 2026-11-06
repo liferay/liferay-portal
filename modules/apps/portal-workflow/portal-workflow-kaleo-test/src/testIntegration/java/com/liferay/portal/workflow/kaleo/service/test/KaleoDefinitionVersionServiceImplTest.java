@@ -8,6 +8,7 @@ package com.liferay.portal.workflow.kaleo.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -33,6 +35,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.PortalInstances;
+import com.liferay.portal.workflow.configuration.WorkflowDefinitionConfiguration;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionLocalService;
@@ -84,6 +87,29 @@ public class KaleoDefinitionVersionServiceImplTest {
 				StringPool.SPACE),
 			() -> _kaleoDefinitionVersionService.deleteKaleoDefinitionVersions(
 				kaleoDefinition.getCompanyId(), kaleoDefinition.getName()));
+
+		Company company = CompanyTestUtil.addCompany();
+
+		PortalInstances.initCompany(company);
+
+		_setUpPermissionThreadLocal(UserTestUtil.addCompanyAdminUser(company));
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					WorkflowDefinitionConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"company.administrator.can.publish", true
+					).build())) {
+
+			AssertUtils.assertFailure(
+				PrincipalException.class,
+				"User is not an omniadmin and does not belong to the company",
+				() ->
+					_kaleoDefinitionVersionService.
+						deleteKaleoDefinitionVersions(
+							kaleoDefinition.getCompanyId(),
+							kaleoDefinition.getName()));
+		}
 
 		_setUpPermissionThreadLocal(TestPropsValues.getUser());
 
