@@ -11,6 +11,9 @@ package com.liferay.petra.lang;
 @FunctionalInterface
 public interface SafeCloseable extends AutoCloseable {
 
+	public static final SafeCloseable EMPTY = () -> {
+	};
+
 	@Override
 	public void close();
 
