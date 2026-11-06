@@ -513,8 +513,10 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		}
 
 		content = _renderFragmentEntry(
-			_toConfiguration(fragmentEntryLink, fragmentRendererContext), css,
-			fragmentRendererContext, html, httpServletRequest,
+			_toConfiguration(
+				fragmentCacheHostAllowed, fragmentEntryLink,
+				fragmentRendererContext),
+			css, fragmentRendererContext, html, httpServletRequest,
 			inputTemplateNode, nonce);
 
 		if (!cacheable) {
@@ -531,6 +533,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 	}
 
 	private String _toConfiguration(
+			boolean fragmentCacheHostAllowed,
 			FragmentEntryLink fragmentEntryLink,
 			FragmentRendererContext fragmentRendererContext)
 		throws JSONException {
@@ -541,34 +544,41 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 			return "{}";
 		}
 
-		String key = String.valueOf(fragmentEntryLink.getFragmentEntryLinkId());
+		String key = null;
 
-		if (configuration.contains("localizable")) {
-			key = key.concat(StringPool.POUND);
-			key = key.concat(
-				LocaleUtil.toLanguageId(fragmentRendererContext.getLocale()));
+		if (fragmentCacheHostAllowed) {
+			key = String.valueOf(fragmentEntryLink.getFragmentEntryLinkId());
+
+			if (configuration.contains("localizable")) {
+				key = key.concat(StringPool.POUND);
+				key = key.concat(
+					LocaleUtil.toLanguageId(
+						fragmentRendererContext.getLocale()));
+			}
+
+			Map.Entry<Long, String> entry = _configurationPortalCache.get(key);
+
+			if ((entry != null) &&
+				(entry.getKey() == fragmentEntryLink.getMvccVersion())) {
+
+				return entry.getValue();
+			}
 		}
 
-		Map.Entry<Long, String> entry = _configurationPortalCache.get(key);
-
-		if ((entry != null) &&
-			(entry.getKey() == fragmentEntryLink.getMvccVersion())) {
-
-			return entry.getValue();
-		}
-
-		JSONObject jsonObject =
+		String configurationJSON = String.valueOf(
 			_fragmentEntryConfigurationParser.getConfigurationJSONObject(
 				fragmentEntryLink.getConfigurationJSONObject(),
 				fragmentEntryLink.getEditableValuesJSONObject(),
-				fragmentRendererContext.getLocale());
+				fragmentRendererContext.getLocale()));
 
-		entry = new AbstractMap.SimpleImmutableEntry<>(
-			fragmentEntryLink.getMvccVersion(), jsonObject.toString());
+		if (fragmentCacheHostAllowed) {
+			_configurationPortalCache.put(
+				key,
+				new AbstractMap.SimpleImmutableEntry<>(
+					fragmentEntryLink.getMvccVersion(), configurationJSON));
+		}
 
-		_configurationPortalCache.put(key, entry);
-
-		return entry.getValue();
+		return configurationJSON;
 	}
 
 	private String _writePortletPaths(
