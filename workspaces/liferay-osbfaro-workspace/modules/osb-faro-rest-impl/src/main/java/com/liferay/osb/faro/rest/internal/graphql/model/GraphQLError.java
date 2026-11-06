@@ -29,6 +29,22 @@ public class GraphQLError {
 		return _extensions;
 	}
 
+	public Integer getHTTPStatus() {
+		if (_extensions == null) {
+			return null;
+		}
+
+		Object httpStatus = _extensions.get("httpStatus");
+
+		if (!(httpStatus instanceof Number)) {
+			return null;
+		}
+
+		Number number = (Number)httpStatus;
+
+		return number.intValue();
+	}
+
 	public String getMessage() {
 		return _message;
 	}

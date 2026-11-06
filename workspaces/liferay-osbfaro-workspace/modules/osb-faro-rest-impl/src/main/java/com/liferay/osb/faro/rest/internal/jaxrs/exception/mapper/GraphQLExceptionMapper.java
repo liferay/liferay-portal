@@ -14,6 +14,8 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 
@@ -52,6 +54,32 @@ public class GraphQLExceptionMapper
 
 				return HeadlessRequestRejectedExceptionMapper.getProblem(
 					null, messageKey, null);
+			}
+		}
+
+		for (GraphQLError graphQLError : graphQLErrors) {
+			Integer httpStatus = graphQLError.getHTTPStatus();
+
+			if (httpStatus == null) {
+				continue;
+			}
+
+			if (httpStatus == HttpServletResponse.SC_NOT_FOUND) {
+				return new Problem(
+					Response.Status.NOT_FOUND,
+					Response.Status.NOT_FOUND.getReasonPhrase());
+			}
+
+			if ((httpStatus >= HttpServletResponse.SC_BAD_REQUEST) &&
+				(httpStatus < HttpServletResponse.SC_INTERNAL_SERVER_ERROR)) {
+
+				if (_log.isDebugEnabled()) {
+					_log.debug(graphQLException);
+				}
+
+				return new Problem(
+					Response.Status.BAD_REQUEST,
+					"Check the parameter values against the tool description");
 			}
 		}
 
