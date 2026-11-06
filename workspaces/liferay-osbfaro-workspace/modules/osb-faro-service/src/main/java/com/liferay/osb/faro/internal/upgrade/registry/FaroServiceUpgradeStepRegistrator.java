@@ -5,13 +5,16 @@
 
 package com.liferay.osb.faro.internal.upgrade.registry;
 
+import com.liferay.osb.faro.internal.upgrade.v24_1_0.GroupUsersUpgradeProcess;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Matthew Kong
@@ -198,6 +201,13 @@ public class FaroServiceUpgradeStepRegistrator
 				"anonymousIndividualsCount LONG", "eventsCount LONG",
 				"longTermLogicalBytes LONG", "onDemandBytesBilled LONG",
 				"reservationSlotMs LONG"));
+
+		registry.register(
+			"24.0.0", "24.1.0",
+			new GroupUsersUpgradeProcess(_groupLocalService));
 	}
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 }
