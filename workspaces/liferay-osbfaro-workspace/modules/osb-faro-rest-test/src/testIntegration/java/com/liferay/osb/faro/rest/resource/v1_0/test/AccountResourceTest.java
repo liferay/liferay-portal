@@ -220,7 +220,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		catch (BadRequestException badRequestException) {
 			Assert.assertEquals(
 				"No account lifecycle stage was found with the name " +
-					"\"PIPELINE\"",
+					"\"PIPELINE\". Valid stages: At Risk.",
 				badRequestException.getMessage());
 		}
 	}
