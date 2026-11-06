@@ -91,7 +91,7 @@ public abstract class BaseFileEntryMVCRenderCommand
 	protected abstract String getPath();
 
 	protected boolean isFileEntryRequired() {
-		return false;
+		return true;
 	}
 
 	protected void setAttributes(

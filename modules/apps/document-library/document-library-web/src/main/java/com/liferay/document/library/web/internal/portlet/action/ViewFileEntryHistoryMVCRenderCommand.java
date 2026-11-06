@@ -50,11 +50,6 @@ public class ViewFileEntryHistoryMVCRenderCommand
 	}
 
 	@Override
-	protected boolean isFileEntryRequired() {
-		return true;
-	}
-
-	@Override
 	protected void setAttributes(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortalException {

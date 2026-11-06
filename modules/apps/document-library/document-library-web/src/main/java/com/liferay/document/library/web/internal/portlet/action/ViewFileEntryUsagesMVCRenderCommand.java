@@ -40,9 +40,4 @@ public class ViewFileEntryUsagesMVCRenderCommand
 		return "/document_library/view_file_entry_usages.jsp";
 	}
 
-	@Override
-	protected boolean isFileEntryRequired() {
-		return true;
-	}
-
 }

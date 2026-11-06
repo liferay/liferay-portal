@@ -70,6 +70,11 @@ public class EditFileEntryMVCRenderCommand
 		return "/document_library/edit_file_entry.jsp";
 	}
 
+	@Override
+	protected boolean isFileEntryRequired() {
+		return false;
+	}
+
 	@Reference
 	private DDMFormValuesToMapConverter _ddmFormValuesToMapConverter;
 
