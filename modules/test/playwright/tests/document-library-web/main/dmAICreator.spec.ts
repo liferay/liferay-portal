@@ -6,16 +6,27 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
-const test = mergeTests(
+const baseTest = mergeTests(
 	documentLibraryPagesTest,
 	isolatedSiteTest,
 	loginTest(),
 	siteSettingsPagesTest
+);
+
+const aiCreatorDisabledTest = mergeTests(
+	baseTest,
+	featureFlagsTest({'LPD-93786': {enabled: false}})
+);
+
+const test = mergeTests(
+	baseTest,
+	featureFlagsTest({'LPD-93786': {enabled: true}})
 );
 
 test(
@@ -212,5 +223,23 @@ test(
 				'scr:disable com.liferay.ai.creator.openai.web.internal.client.MockAICreatorOpenAIClient'
 			);
 		}
+	}
+);
+
+aiCreatorDisabledTest(
+	'Create AI Image option is hidden while the feature flag is disabled',
+	{tag: '@LPD-114710'},
+	async ({documentLibraryPage, page, site}) => {
+		await expect(async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.openNewButton();
+
+			await expect(
+				page.getByRole('menuitem', {exact: true, name: 'Folder'})
+			).toBeVisible({timeout: 3000});
+			await expect(
+				page.getByRole('menuitem', {name: 'Create AI Image'})
+			).toBeHidden({timeout: 3000});
+		}).toPass({timeout: 30000});
 	}
 );

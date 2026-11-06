@@ -382,34 +382,32 @@ aiCreatorDisabledTest(
 );
 
 aiCreatorDisabledTest(
-	'The ChatGPT option is not available in the OpenAI configuration while the feature flag is disabled',
-	{tag: '@LPD-108694'},
+	'The AI Creator configuration is not available in the Instance Settings and the Site Settings while the feature flag is disabled',
+	{tag: '@LPD-114710'},
 	async ({aiCreatorInstanceSettingsPage, page, site, siteSettingsPage}) => {
-		await aiCreatorInstanceSettingsPage.goto();
 
-		await expect(
-			aiCreatorInstanceSettingsPage.openAIImageGenerationCheckbox
-		).toBeChecked();
-		await expect(aiCreatorInstanceSettingsPage.chatGPTCheckbox).toHaveCount(
-			0
-		);
+		// The AI Creator category is not listed in the Instance Settings
 
-		await siteSettingsPage.goToSiteSetting(
-			'AI Creator',
-			'OpenAI',
-			site.friendlyUrlPath
+		await aiCreatorInstanceSettingsPage.globalMenuPage.goToControlPanel(
+			'Instance Settings'
 		);
 
 		await expect(
-			aiCreatorInstanceSettingsPage.openAIImageGenerationCheckbox
-		).toBeChecked();
-		await expect(aiCreatorInstanceSettingsPage.chatGPTCheckbox).toHaveCount(
-			0
-		);
+			page.getByRole('link', {exact: true, name: 'Accessibility'})
+		).toBeVisible();
 		await expect(
-			page.getByText(
-				'To enable ChatGPT for this site, first enable it for your instance.'
-			)
+			page.getByRole('link', {exact: true, name: 'AI Creator'})
+		).toHaveCount(0);
+
+		// The AI Creator category is not listed in the Site Settings
+
+		await siteSettingsPage.goto(site.friendlyUrlPath);
+
+		await expect(
+			page.getByRole('link', {exact: true, name: 'Accessibility'})
+		).toBeVisible();
+		await expect(
+			page.getByRole('link', {exact: true, name: 'AI Creator'})
 		).toHaveCount(0);
 	}
 );
