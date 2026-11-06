@@ -14,16 +14,22 @@ import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.rest.dto.v1_0.Account;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.converter.FaroDTOConverterContext;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroPaginationUtil;
+import com.liferay.osb.faro.rest.internal.jaxrs.util.ProblemUtil;
 import com.liferay.osb.faro.rest.resource.v1_0.AccountResource;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.util.TransformUtil;
 
 import jakarta.ws.rs.BadRequestException;
 
@@ -46,13 +52,25 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 	public Account getWorkspaceGroupAccount(Long groupId, String accountId)
 		throws Exception {
 
-		com.liferay.osb.faro.engine.client.model.Account account =
-			_contactsEngineClient.getAccount(
+		com.liferay.osb.faro.engine.client.model.Account account = null;
+
+		try {
+			account = _contactsEngineClient.getAccount(
 				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
 				accountId, null);
+		}
+		catch (NoSuchEntryException noSuchEntryException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchEntryException);
+			}
+		}
 
 		if ((account == null) || Validator.isNull(account.getId())) {
-			throw new NoSuchEntryException();
+			throw ProblemUtil.getNotFoundException(
+				StringBundler.concat(
+					"No account was found with ID ", accountId,
+					". Call \"getWorkspaceGroupChannelAccountsPage\" to find ",
+					"account IDs."));
 		}
 
 		return _accountDTOConverter.toDTO(
@@ -139,11 +157,29 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 				accountLifecycleStage.getExternalReferenceCode(), "'))");
 		}
 
+		String message = StringBundler.concat(
+			"No account lifecycle stage was found with the name \"",
+			lifecycleStage, "\"");
+
+		List<AccountLifecycleStage> accountLifecycleStages =
+			accountLifecycle.getAccountLifecycleStages();
+
+		if (ListUtil.isEmpty(accountLifecycleStages)) {
+			throw new BadRequestException(message);
+		}
+
 		throw new BadRequestException(
 			StringBundler.concat(
-				"No account lifecycle stage was found with the name \"",
-				lifecycleStage, "\""));
+				message, ". Valid stages: ",
+				StringUtil.merge(
+					TransformUtil.transform(
+						accountLifecycleStages, AccountLifecycleStage::getName),
+					StringPool.COMMA_AND_SPACE),
+				"."));
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AccountResourceImpl.class);
 
 	@Reference(
 		target = "(component.name=com.liferay.osb.faro.rest.internal.dto.v1_0.converter.AccountDTOConverter)"
