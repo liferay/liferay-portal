@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.DateTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -25,6 +26,8 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -76,14 +79,22 @@ public class BlogsEntryCTEventListenerTest {
 					"/guest/file1?download=true&amp;previewCTCollectionId=",
 					ctCollectionId, "\">file1</a></p><p><a href=\"/documents/d",
 					"/guest/file2?previewCTCollectionId=", ctCollectionId,
-					"1\">file2</a></p>"),
+					"1\">file2</a></p><p><a href=\"/documents/d/guest/file3",
+					"?download=true&amp;previewCTCollectionId=", ctCollectionId,
+					"&amp;version=1.0\">file3</a></p><p><a href=\"/documents/d",
+					"/guest/file4?_foo_previewCTCollectionId=", ctCollectionId,
+					"&amp;version=1.0\">file4</a></p>"),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 		}
+
+		Date modifiedDate = blogsEntry.getModifiedDate();
 
 		_ctCollectionService.publishCTCollection(
 			TestPropsValues.getUserId(), ctCollectionId);
 
 		blogsEntry = _blogsEntryLocalService.getEntry(blogsEntry.getEntryId());
+
+		DateTestUtil.assertEquals(modifiedDate, blogsEntry.getModifiedDate());
 
 		String content = blogsEntry.getContent();
 
@@ -95,6 +106,16 @@ public class BlogsEntryCTEventListenerTest {
 				StringBundler.concat(
 					"href=\"/documents/d/guest/file2?previewCTCollectionId=",
 					ctCollectionId, "1\"")));
+		Assert.assertTrue(
+			content.contains(
+				"href=\"/documents/d/guest/file3?download=true&amp;" +
+					"version=1.0\""));
+		Assert.assertTrue(
+			content.contains(
+				StringBundler.concat(
+					"href=\"/documents/d/guest/file4",
+					"?_foo_previewCTCollectionId=", ctCollectionId,
+					"&amp;version=1.0\"")));
 		Assert.assertTrue(
 			content.contains("src=\"/documents/d/guest/image1\""));
 		Assert.assertTrue(
