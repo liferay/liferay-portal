@@ -16,18 +16,18 @@ List<CommerceCatalog> commerceCatalogs = cpDefinitionsDisplayContext.getCommerce
 
 String defaultLanguageId = cpDefinitionsDisplayContext.getCatalogDefaultLanguageId();
 
-String productTypeName = ParamUtil.getString(request, "productTypeName", GetterUtil.get(cpDefinition, CPDefinition::getProductTypeName, StringPool.BLANK));
+String productTypeName = ParamUtil.getString(request, "productTypeName", cpDefinition.getProductTypeName());
 
 String friendlyURLBase = themeDisplay.getPortalURL() + cpDefinitionsDisplayContext.getProductURLSeparator();
 
 boolean neverExpire = ParamUtil.getBoolean(request, "neverExpire", true);
 
-if ((cpDefinition != null) && (cpDefinition.getExpirationDate() != null)) {
+if (cpDefinition.getExpirationDate() != null) {
 	neverExpire = false;
 }
 %>
 
-<c:if test="<%= (cpDefinition != null) && cpDefinition.isPending() %>">
+<c:if test="<%= cpDefinition.isPending() %>">
 	<div class="alert alert-info">
 		<liferay-ui:message key="there-is-a-publication-workflow-in-process" />
 	</div>
@@ -36,7 +36,7 @@ if ((cpDefinition != null) && (cpDefinition.getExpirationDate() != null)) {
 <portlet:actionURL name="/cp_definitions/edit_cp_definition" var="editProductDefinitionActionURL" />
 
 <aui:form action="<%= editProductDefinitionActionURL %>" cssClass="pt-4" method="post" name="fm">
-	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (cpDefinition == null) ? Constants.ADD : Constants.UPDATE %>" />
+	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="cpDefinitionId" type="hidden" value="<%= String.valueOf(cpDefinitionId) %>" />
 	<aui:input name="productTypeName" type="hidden" value="<%= productTypeName %>" />
@@ -57,42 +57,26 @@ if ((cpDefinition != null) && (cpDefinition.getExpirationDate() != null)) {
 			<commerce-ui:panel
 				title='<%= LanguageUtil.get(request, "details") %>'
 			>
-				<c:choose>
-					<c:when test="<%= (cpDefinition != null) || ((cpDefinition == null) && (commerceCatalogs.size() > 1)) %>">
-						<aui:select disabled="<%= cpDefinition != null %>" label="catalog" name="commerceCatalogGroupId" required="<%= true %>">
+				<aui:select disabled="<%= true %>" label="catalog" name="commerceCatalogGroupId" required="<%= true %>">
 
-							<%
-							for (CommerceCatalog curCommerceCatalog : commerceCatalogs) {
-							%>
+					<%
+					for (CommerceCatalog curCommerceCatalog : commerceCatalogs) {
+					%>
 
-								<aui:option data-languageId="<%= HtmlUtil.escapeAttribute(curCommerceCatalog.getCatalogDefaultLanguageId()) %>" label="<%= HtmlUtil.escape(curCommerceCatalog.getName()) %>" selected="<%= (cpDefinition == null) ? (commerceCatalogs.size() == 1) : cpDefinitionsDisplayContext.isSelectedCatalog(curCommerceCatalog) %>" value="<%= curCommerceCatalog.getGroupId() %>" />
+						<aui:option data-languageId="<%= HtmlUtil.escapeAttribute(curCommerceCatalog.getCatalogDefaultLanguageId()) %>" label="<%= HtmlUtil.escape(curCommerceCatalog.getName()) %>" selected="<%= cpDefinitionsDisplayContext.isSelectedCatalog(curCommerceCatalog) %>" value="<%= curCommerceCatalog.getGroupId() %>" />
 
-							<%
-							}
-							%>
+					<%
+					}
+					%>
 
-						</aui:select>
-					</c:when>
-					<c:otherwise>
-
-						<%
-						CommerceCatalog commerceCatalog = commerceCatalogs.get(0);
-						%>
-
-						<aui:input name="commerceCatalogGroupId" type="hidden" value="<%= commerceCatalog.getGroupId() %>" />
-					</c:otherwise>
-				</c:choose>
+				</aui:select>
 
 				<aui:input defaultLanguageId="<%= defaultLanguageId %>" label="name" localized="<%= true %>" name="nameMapAsXML" required="<%= true %>" type="text" />
 
 				<aui:input defaultLanguageId="<%= defaultLanguageId %>" label="short-description" localized="<%= true %>" name="shortDescriptionMapAsXML" resizable="<%= true %>" type="textarea" />
 
 				<%
-				String descriptionMapAsXML = StringPool.BLANK;
-
-				if (cpDefinition != null) {
-					descriptionMapAsXML = cpDefinition.getDescriptionMapAsXML();
-				}
+				String descriptionMapAsXML = cpDefinition.getDescriptionMapAsXML();
 				%>
 
 				<aui:field-wrapper>
@@ -186,7 +170,7 @@ if ((cpDefinition != null) && (cpDefinition.getExpirationDate() != null)) {
 				>
 					<liferay-expando:custom-attribute-list
 						className="<%= CPDefinition.class.getName() %>"
-						classPK="<%= (cpDefinition != null) ? cpDefinition.getCPDefinitionId() : 0 %>"
+						classPK="<%= cpDefinition.getCPDefinitionId() %>"
 						editable="<%= true %>"
 						label="<%= true %>"
 					/>
@@ -194,29 +178,27 @@ if ((cpDefinition != null) && (cpDefinition.getExpirationDate() != null)) {
 			</c:if>
 		</div>
 
-		<c:if test="<%= cpDefinition != null %>">
-			<div class="col-12">
-				<commerce-ui:panel
-					bodyClasses="p-0"
-					title='<%= LanguageUtil.get(request, "specifications") %>'
-				>
-					<frontend-data-set:classic-display
-						contextParams='<%=
-							HashMapBuilder.<String, String>put(
-								"cpDefinitionId", String.valueOf(cpDefinitionId)
-							).build()
-						%>'
-						creationMenu="<%= cpDefinitionsDisplayContext.getCPDefinitionSpecificationOptionValueCreationMenu() %>"
-						dataProviderKey="<%= CommerceProductFDSNames.PRODUCT_DEFINITION_SPECIFICATIONS %>"
-						formName="fm"
-						id="<%= CommerceProductFDSNames.PRODUCT_DEFINITION_SPECIFICATIONS %>"
-						selectedItemsKey="cpdefinitionSpecificationOptionValueId"
-						showManagementBar="<%= true %>"
-						showSearch="<%= true %>"
-					/>
-				</commerce-ui:panel>
-			</div>
-		</c:if>
+		<div class="col-12">
+			<commerce-ui:panel
+				bodyClasses="p-0"
+				title='<%= LanguageUtil.get(request, "specifications") %>'
+			>
+				<frontend-data-set:classic-display
+					contextParams='<%=
+						HashMapBuilder.<String, String>put(
+							"cpDefinitionId", String.valueOf(cpDefinitionId)
+						).build()
+					%>'
+					creationMenu="<%= cpDefinitionsDisplayContext.getCPDefinitionSpecificationOptionValueCreationMenu() %>"
+					dataProviderKey="<%= CommerceProductFDSNames.PRODUCT_DEFINITION_SPECIFICATIONS %>"
+					formName="fm"
+					id="<%= CommerceProductFDSNames.PRODUCT_DEFINITION_SPECIFICATIONS %>"
+					selectedItemsKey="cpdefinitionSpecificationOptionValueId"
+					showManagementBar="<%= true %>"
+					showSearch="<%= true %>"
+				/>
+			</commerce-ui:panel>
+		</div>
 	</div>
 </aui:form>
 

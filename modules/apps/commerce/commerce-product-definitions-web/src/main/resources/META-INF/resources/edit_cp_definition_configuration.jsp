@@ -16,7 +16,7 @@ long cpDefinitionId = cpDefinitionConfigurationDisplayContext.getCPDefinitionId(
 CPDefinitionInventory cpDefinitionInventory = cpDefinitionConfigurationDisplayContext.getCPDefinitionInventory();
 List<CPTaxCategory> cpTaxCategories = cpDefinitionConfigurationDisplayContext.getCPTaxCategories();
 
-boolean shippable = ParamUtil.getBoolean(request, "shippable", GetterUtil.get(cpDefinition, CPDefinition::isShippable, true));
+boolean shippable = ParamUtil.getBoolean(request, "shippable", cpDefinition.isShippable());
 %>
 
 <portlet:actionURL name="/cp_definitions/edit_cp_definition" var="editProductDefinitionConfigurationActionURL" />
@@ -44,7 +44,7 @@ boolean shippable = ParamUtil.getBoolean(request, "shippable", GetterUtil.get(cp
 							for (CPTaxCategory cpTaxCategory : cpTaxCategories) {
 							%>
 
-								<aui:option label="<%= HtmlUtil.escape(cpTaxCategory.getName(locale)) %>" selected="<%= (cpDefinition != null) && (cpDefinition.getCPTaxCategoryId() == cpTaxCategory.getCPTaxCategoryId()) %>" value="<%= cpTaxCategory.getCPTaxCategoryId() %>" />
+								<aui:option label="<%= HtmlUtil.escape(cpTaxCategory.getName(locale)) %>" selected="<%= cpDefinition.getCPTaxCategoryId() == cpTaxCategory.getCPTaxCategoryId() %>" value="<%= cpTaxCategory.getCPTaxCategoryId() %>" />
 
 							<%
 							}
@@ -54,7 +54,7 @@ boolean shippable = ParamUtil.getBoolean(request, "shippable", GetterUtil.get(cp
 					</div>
 
 					<div class="col-6">
-						<aui:input checked="<%= (cpDefinition == null) ? false : cpDefinition.isTaxExempt() %>" name="taxExempt" type="toggle-switch" />
+						<aui:input checked="<%= cpDefinition.isTaxExempt() %>" name="taxExempt" type="toggle-switch" />
 					</div>
 				</div>
 			</commerce-ui:panel>
@@ -207,12 +207,12 @@ boolean shippable = ParamUtil.getBoolean(request, "shippable", GetterUtil.get(cp
 			>
 				<aui:model-context bean="<%= cpDefinition %>" model="<%= CPDefinition.class %>" />
 
-				<aui:input checked="<%= shippable %>" disabled="<%= (cpDefinition != null) && StringUtil.equalsIgnoreCase(cpDefinition.getProductTypeName(), VirtualCPTypeConstants.NAME) %>" name="shippable" type="toggle-switch" value="<%= shippable %>" />
+				<aui:input checked="<%= shippable %>" disabled="<%= StringUtil.equalsIgnoreCase(cpDefinition.getProductTypeName(), VirtualCPTypeConstants.NAME) %>" name="shippable" type="toggle-switch" value="<%= shippable %>" />
 
 				<div class="<%= shippable ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />shippableOptions">
-					<aui:input checked='<%= ParamUtil.getBoolean(request, "freeShipping", GetterUtil.get(cpDefinition, CPDefinition::isFreeShipping, false)) %>' inlineField="<%= true %>" name="freeShipping" type="toggle-switch" />
+					<aui:input checked='<%= ParamUtil.getBoolean(request, "freeShipping", cpDefinition.isFreeShipping()) %>' inlineField="<%= true %>" name="freeShipping" type="toggle-switch" />
 
-					<aui:input checked='<%= ParamUtil.getBoolean(request, "shipSeparately", GetterUtil.get(cpDefinition, CPDefinition::isShipSeparately, false)) %>' inlineField="<%= true %>" label="ship-separately" name="shipSeparately" type="toggle-switch" />
+					<aui:input checked='<%= ParamUtil.getBoolean(request, "shipSeparately", cpDefinition.isShipSeparately()) %>' inlineField="<%= true %>" label="ship-separately" name="shipSeparately" type="toggle-switch" />
 
 					<aui:input name="shippingExtraPrice" suffix="<%= HtmlUtil.escape(cpDefinitionConfigurationDisplayContext.getCommerceCurrencyCode()) %>" />
 

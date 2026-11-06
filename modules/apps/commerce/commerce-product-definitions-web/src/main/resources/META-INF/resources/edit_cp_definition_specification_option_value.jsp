@@ -15,7 +15,7 @@ List<CPOptionCategory> cpOptionCategories = cpDefinitionSpecificationOptionValue
 
 CPSpecificationOption cpSpecificationOption = cpDefinitionSpecificationOptionValue.getCPSpecificationOption();
 
-long cpOptionCategoryId = ParamUtil.getLong(request, "CPOptionCategoryId", GetterUtil.get(cpDefinitionSpecificationOptionValue, CPDefinitionSpecificationOptionValue::getCPOptionCategoryId, 0L));
+long cpOptionCategoryId = ParamUtil.getLong(request, "CPOptionCategoryId", cpDefinitionSpecificationOptionValue.getCPOptionCategoryId());
 
 Map<String, List<SelectOption>> selectOptionsMap = cpDefinitionSpecificationOptionValueDisplayContext.getSelectOptionsMap();
 %>
@@ -40,7 +40,7 @@ Map<String, List<SelectOption>> selectOptionsMap = cpDefinitionSpecificationOpti
 					<aui:field-wrapper label='<%= LanguageUtil.get(resourceBundle, "value") %>' name="valueFieldWrapper">
 						<liferay-ui:input-localized
 							name="value"
-							xml="<%= (cpDefinitionSpecificationOptionValue == null) ? StringPool.BLANK : cpDefinitionSpecificationOptionValue.getValue() %>"
+							xml="<%= cpDefinitionSpecificationOptionValue.getValue() %>"
 						/>
 					</aui:field-wrapper>
 				</c:when>
@@ -85,12 +85,12 @@ Map<String, List<SelectOption>> selectOptionsMap = cpDefinitionSpecificationOpti
 				<aui:validator name="number" />
 			</aui:input>
 
-			<aui:input checked="<%= (cpDefinitionSpecificationOptionValue == null) ? cpSpecificationOption.isVisible() : cpDefinitionSpecificationOptionValue.isVisible() %>" inlineLabel="right" label="visible" labelCssClass="simple-toggle-switch" name="visible" type="toggle-switch" />
+			<aui:input checked="<%= cpDefinitionSpecificationOptionValue.isVisible() %>" inlineLabel="right" label="visible" labelCssClass="simple-toggle-switch" name="visible" type="toggle-switch" />
 
 			<c:if test="<%= cpDefinitionSpecificationOptionValueDisplayContext.hasCustomAttributesAvailable() %>">
 				<liferay-expando:custom-attribute-list
 					className="<%= CPDefinitionSpecificationOptionValue.class.getName() %>"
-					classPK="<%= (cpDefinitionSpecificationOptionValue != null) ? cpDefinitionSpecificationOptionValue.getCPDefinitionSpecificationOptionValueId() : 0 %>"
+					classPK="<%= cpDefinitionSpecificationOptionValue.getCPDefinitionSpecificationOptionValueId() %>"
 					editable="<%= true %>"
 					label="<%= true %>"
 				/>
