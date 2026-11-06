@@ -349,6 +349,7 @@ public class AIHubCellFeatureFlagListenerTest {
 						"Liferay.AI.Hub.REST.everything.read",
 						"Liferay.AI.Hub.REST.everything.write",
 						"Liferay.Bulk.REST.everything.write",
+						"Liferay.Headless.Admin.Fragment.everything",
 						"Liferay.Headless.Admin.Taxonomy.everything.read",
 						"Liferay.Headless.Admin.User.everything.read",
 						"Liferay.Headless.Batch.Engine.everything",
