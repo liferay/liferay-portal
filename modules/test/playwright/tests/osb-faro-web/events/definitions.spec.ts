@@ -963,7 +963,7 @@ test(
 			.click();
 
 		await page
-			.locator('.confirmation-modal-root')
+			.getByRole('dialog')
 			.getByRole('button', {name: 'Block'})
 			.click();
 
@@ -1003,7 +1003,7 @@ test(
 		await page.getByRole('button', {name: 'Block Events'}).click();
 
 		await page
-			.locator('.confirmation-modal-root')
+			.getByRole('dialog')
 			.getByRole('button', {name: 'Block'})
 			.click();
 
@@ -1126,7 +1126,7 @@ test(
 				.click();
 
 			await page
-				.locator('.confirmation-modal-root')
+				.getByRole('dialog')
 				.getByRole('button', {name: 'Block'})
 				.click();
 		}
@@ -1177,7 +1177,7 @@ test(
 			.click();
 
 		await page
-			.locator('.confirmation-modal-root')
+			.getByRole('dialog')
 			.getByRole('button', {exact: true, name: 'Hide'})
 			.click();
 

@@ -3657,7 +3657,7 @@ test(
 				await row.getByRole('button', {name: 'Set to Hide'}).click();
 
 				await page
-					.locator('.confirmation-modal-root')
+					.getByRole('dialog')
 					.getByRole('button', {exact: true, name: 'Hide'})
 					.click();
 
@@ -3866,7 +3866,7 @@ test(
 			.click();
 
 		await page
-			.locator('.confirmation-modal-root')
+			.getByRole('dialog')
 			.getByRole('button', {exact: true, name: 'Hide'})
 			.click();
 
