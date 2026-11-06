@@ -6,6 +6,7 @@
 package com.liferay.asset.tags.exportimport.data.handler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.exception.DuplicateTagException;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.model.AssetTagGroupRel;
 import com.liferay.asset.kernel.service.AssetTagGroupRelLocalService;
@@ -42,6 +43,9 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -88,15 +92,41 @@ public class AssetTagsPortletDataHandlerTest
 
 		File larFile = _exportLayout();
 
-		assetTag.setExternalReferenceCode(RandomTestUtil.randomString());
+		String name = assetTag.getName();
+
+		assetTag.setName(RandomTestUtil.randomString());
 
 		_assetTagLocalService.updateAssetTag(assetTag);
+
+		_addTag(name);
 
 		ExportImportConfiguration exportImportConfiguration =
 			_setUpExportImportConfiguration();
 
-		_exportImportLocalService.importLayouts(
-			exportImportConfiguration, larFile);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			_exportImportLocalService.importLayouts(
+				exportImportConfiguration, larFile);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(
+				DuplicateTagException.class, throwable.getClass());
+			Assert.assertEquals(
+				"A tag with the name " + name + " already exists",
+				throwable.getMessage());
+		}
 
 		List<ExportImportReportEntry> exportImportReportEntries =
 			_exportImportReportEntryLocalService.getExportImportReportEntries(
@@ -113,8 +143,7 @@ public class AssetTagsPortletDataHandlerTest
 				exportImportReportEntry ->
 					Objects.equals(
 						exportImportReportEntry.getErrorMessage(),
-						"A tag with the name " + assetTag.getName() +
-							" already exists") &&
+						"A tag with the name " + name + " already exists") &&
 					(exportImportReportEntry.getType() ==
 						ExportImportReportEntryConstants.TYPE_ERROR)));
 	}
@@ -149,9 +178,13 @@ public class AssetTagsPortletDataHandlerTest
 		File larFile = _exportImportLocalService.exportPortletInfoAsFile(
 			exportImportConfiguration);
 
-		assetTag.setExternalReferenceCode(RandomTestUtil.randomString());
+		String name = assetTag.getName();
+
+		assetTag.setName(RandomTestUtil.randomString());
 
 		_assetTagLocalService.updateAssetTag(assetTag);
+
+		_addTag(name);
 
 		exportImportConfiguration =
 			_exportImportConfigurationLocalService.
@@ -165,22 +198,44 @@ public class AssetTagsPortletDataHandlerTest
 							AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN,
 							parameterMap));
 
-		long backgroundTaskId =
-			_exportImportLocalService.importPortletInfoInBackground(
-				TestPropsValues.getUserId(), exportImportConfiguration,
-				larFile);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
 
-		ExportImportTestUtil.retryAssert(
-			1, TimeUnit.SECONDS, 5, TimeUnit.SECONDS,
-			() -> {
-				BackgroundTask backgroundTask =
-					BackgroundTaskManagerUtil.getBackgroundTask(
-						backgroundTaskId);
+			long backgroundTaskId =
+				_exportImportLocalService.importPortletInfoInBackground(
+					TestPropsValues.getUserId(), exportImportConfiguration,
+					larFile);
 
-				Assert.assertEquals(
-					BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
-					backgroundTask.getStatus());
-			});
+			ExportImportTestUtil.retryAssert(
+				1, TimeUnit.SECONDS, 5, TimeUnit.SECONDS,
+				() -> {
+					BackgroundTask backgroundTask =
+						BackgroundTaskManagerUtil.getBackgroundTask(
+							backgroundTaskId);
+
+					Assert.assertEquals(
+						BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
+						backgroundTask.getStatus());
+				});
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(
+				DuplicateTagException.class, throwable.getClass());
+			Assert.assertEquals(
+				"A tag with the name " + name + " already exists",
+				throwable.getMessage());
+		}
 	}
 
 	@Test
@@ -295,9 +350,12 @@ public class AssetTagsPortletDataHandlerTest
 	}
 
 	private AssetTag _addTag() throws Exception {
+		return _addTag(RandomTestUtil.randomString());
+	}
+
+	private AssetTag _addTag(String name) throws Exception {
 		return _assetTagLocalService.addTag(
-			"", TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-			RandomTestUtil.randomString(),
+			"", TestPropsValues.getUserId(), stagingGroup.getGroupId(), name,
 			ServiceContextTestUtil.getServiceContext());
 	}
 
