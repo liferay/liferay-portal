@@ -46,6 +46,35 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 
 	@Test
 	public void testLayoutFriendlyURL() throws Exception {
+		_testLayoutFriendlyURL();
+	}
+
+	private void _assertPublishLayoutsWithLayoutFriendlyURLsException(
+			Layout layout)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			publishLayouts(new long[] {layout.getLayoutId()});
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertTrue(
+				String.valueOf(throwable),
+				throwable instanceof LayoutFriendlyURLsException);
+		}
+	}
+
+	private void _testLayoutFriendlyURL() throws Exception {
 		String originalFriendlyURL = stagingLayout.getFriendlyURL();
 
 		String testFriendlyURL = "/test";
@@ -156,31 +185,6 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		Assert.assertEquals(
 			liveLayout2.getPlid(),
 			liveFriendlyURLEntryLocalization3.getClassPK());
-	}
-
-	private void _assertPublishLayoutsWithLayoutFriendlyURLsException(
-			Layout layout)
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.batch.engine.internal." +
-					"BatchEngineImportTaskExecutorImpl",
-				LoggerTestUtil.ERROR)) {
-
-			publishLayouts(new long[] {layout.getLayoutId()});
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Throwable throwable = logEntry.getThrowable();
-
-			Assert.assertTrue(
-				String.valueOf(throwable),
-				throwable instanceof LayoutFriendlyURLsException);
-		}
 	}
 
 	@Inject
