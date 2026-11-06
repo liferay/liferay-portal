@@ -91,22 +91,6 @@ public class IndividualResourceTest extends BaseIndividualResourceTestCase {
 		super.testGetWorkspaceGroupIndividual();
 	}
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetWorkspaceGroupIndividual() throws Exception {
-		super.testGraphQLGetWorkspaceGroupIndividual();
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetWorkspaceGroupIndividualNotFound()
-		throws Exception {
-
-		super.testGraphQLGetWorkspaceGroupIndividualNotFound();
-	}
-
 	private Object[] _getWorkspaceGroupChannelIndividualsPage(
 			String profileType, Sort[] sorts)
 		throws Exception {
