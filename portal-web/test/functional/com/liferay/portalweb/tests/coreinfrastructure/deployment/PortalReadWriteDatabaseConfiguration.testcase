@@ -100,6 +100,8 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
+		PagesAdmin.enableWidgetPages();
+
 		Clustering.viewClusterStatusInConsole();
 
 		Page.assertNodePortPG(nodePort = 8080);
@@ -149,6 +151,8 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
+		PagesAdmin.enableWidgetPages();
+
 		Smoke.viewWelcomeContentPage();
 
 		ServerAdministration.openServerAdmin();
@@ -170,6 +174,8 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
+		PagesAdmin.enableWidgetPages();
+
 		Smoke.viewWelcomeContentPage();
 
 		ServerAdministration.openServerAdmin();
@@ -190,6 +196,8 @@ definition {
 		property configure.read.write.database = "jndi";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
+
+		PagesAdmin.enableWidgetPages();
 
 		Smoke.viewWelcomeContentPage();
 
