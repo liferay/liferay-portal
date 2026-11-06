@@ -86,7 +86,9 @@ test(
 		});
 
 		await test.step(`Go to View Connected Sites modal and connect the space to ${siteName} site`, async () => {
-			await page.getByRole('cell', {name: 'Actions'}).nth(2).click();
+			await page
+				.getByRole('button', {name: `${spaceName} Actions`})
+				.click();
 			await page
 				.getByRole('menuitem', {name: 'View Connected Sites'})
 				.click();
