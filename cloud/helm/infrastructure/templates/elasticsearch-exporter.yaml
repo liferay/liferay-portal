@@ -1,6 +1,5 @@
-{{- $search := .Values.search.elasticsearch -}}
-{{- if and .Values.enabled (eq (include "search.engine" .) "elasticsearch") $search.exporter.enabled -}}
-{{- $exporter := $search.exporter -}}
+{{- $exporter := .Values.search.elasticsearch.exporter -}}
+{{- if and .Values.enabled (eq (include "search.engine" .) "elasticsearch") $exporter.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
