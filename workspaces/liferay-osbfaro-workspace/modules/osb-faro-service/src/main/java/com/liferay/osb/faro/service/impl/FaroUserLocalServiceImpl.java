@@ -83,6 +83,8 @@ public class FaroUserLocalServiceImpl extends FaroUserLocalServiceBaseImpl {
 			curFaroUser.setStatus(FaroUserConstants.STATUS_APPROVED);
 
 			updateFaroUser(curFaroUser);
+
+			_groupLocalService.addUserGroup(userId, curFaroUser.getGroupId());
 		}
 
 		return faroUsers;
