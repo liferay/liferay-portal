@@ -89,6 +89,22 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		}
 	}
 
+	private void _deleteFriendlyURLEntryLocalization(
+			String friendlyURL, long groupId)
+		throws Exception {
+
+		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
+				groupId, _layoutFriendlyURLEntryHelper.getClassNameId(false),
+				FriendlyURLEntryConstants.
+					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
+				friendlyURL);
+
+		_friendlyURLEntryLocalService.deleteFriendlyURLLocalizationEntry(
+			friendlyURLEntryLocalization.getFriendlyURLEntryId(),
+			friendlyURLEntryLocalization.getLanguageId());
+	}
+
 	private String _randomFriendlyURL() {
 		String urlTitle = StringUtil.toLowerCase(
 			RandomTestUtil.randomString(
@@ -124,16 +140,8 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		long layoutClassNameId = _layoutFriendlyURLEntryHelper.getClassNameId(
 			false);
 
-		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
-			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
-				stagingGroup.getGroupId(), layoutClassNameId,
-				FriendlyURLEntryConstants.
-					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-				testFriendlyURL);
-
-		_friendlyURLEntryLocalService.deleteFriendlyURLLocalizationEntry(
-			friendlyURLEntryLocalization.getFriendlyURLEntryId(),
-			friendlyURLEntryLocalization.getLanguageId());
+		_deleteFriendlyURLEntryLocalization(
+			testFriendlyURL, stagingGroup.getGroupId());
 
 		stagingLayout2 = LayoutTestUtil.updateFriendlyURL(
 			stagingLayout2,
@@ -168,16 +176,8 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		Assert.assertEquals(
 			originalFriendlyURL, liveLayout.getFriendlyURL(_locale));
 
-		FriendlyURLEntryLocalization liveFriendlyURLEntryLocalization1 =
-			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
-				liveGroup.getGroupId(), layoutClassNameId,
-				FriendlyURLEntryConstants.
-					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-				testFriendlyURL);
-
-		_friendlyURLEntryLocalService.deleteFriendlyURLLocalizationEntry(
-			liveFriendlyURLEntryLocalization1.getFriendlyURLEntryId(),
-			liveFriendlyURLEntryLocalization1.getLanguageId());
+		_deleteFriendlyURLEntryLocalization(
+			testFriendlyURL, liveGroup.getGroupId());
 
 		publishLayouts();
 
@@ -186,7 +186,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		Assert.assertEquals(
 			testFriendlyURL, liveLayout2.getFriendlyURL(_locale));
 
-		FriendlyURLEntryLocalization liveFriendlyURLEntryLocalization2 =
+		FriendlyURLEntryLocalization liveFriendlyURLEntryLocalization =
 			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
 				liveGroup.getGroupId(), layoutClassNameId,
 				FriendlyURLEntryConstants.
@@ -195,9 +195,9 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 
 		Assert.assertEquals(
 			liveLayout.getPlid(),
-			liveFriendlyURLEntryLocalization2.getClassPK());
+			liveFriendlyURLEntryLocalization.getClassPK());
 
-		FriendlyURLEntryLocalization liveFriendlyURLEntryLocalization3 =
+		liveFriendlyURLEntryLocalization =
 			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
 				liveGroup.getGroupId(), layoutClassNameId,
 				FriendlyURLEntryConstants.
@@ -206,7 +206,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 
 		Assert.assertEquals(
 			liveLayout2.getPlid(),
-			liveFriendlyURLEntryLocalization3.getClassPK());
+			liveFriendlyURLEntryLocalization.getClassPK());
 	}
 
 	@Inject
