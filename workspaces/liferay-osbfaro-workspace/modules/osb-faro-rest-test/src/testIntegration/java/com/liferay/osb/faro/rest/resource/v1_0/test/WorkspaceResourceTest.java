@@ -50,7 +50,7 @@ public class WorkspaceResourceTest extends BaseWorkspaceResourceTestCase {
 
 		return new Workspace() {
 			{
-				setGroupId(faroProject.getGroupId());
+				setGroupId(String.valueOf(faroProject.getGroupId()));
 				setName(faroProject.getName());
 			}
 		};
