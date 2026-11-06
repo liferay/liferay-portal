@@ -6,6 +6,7 @@
 package com.liferay.fragment.internal.renderer;
 
 import com.liferay.fragment.cache.FragmentEntryLinkCache;
+import com.liferay.fragment.configuration.FragmentCacheConfiguration;
 import com.liferay.fragment.configuration.FragmentJavaScriptConfiguration;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.helper.FragmentEntryLinkHelper;
@@ -41,6 +42,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.taglib.util.OutputData;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -202,6 +204,25 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		}
 
 		return fragmentEntry.isCacheable();
+	}
+
+	private boolean _isFragmentCacheHostAllowed(long companyId, String host)
+		throws PortalException {
+
+		FragmentCacheConfiguration fragmentCacheConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				FragmentCacheConfiguration.class, companyId);
+
+		String[] fragmentCacheHostsAllowed =
+			fragmentCacheConfiguration.fragmentCacheHostsAllowed();
+
+		if (ArrayUtil.isEmpty(fragmentCacheHostsAllowed) ||
+			ArrayUtil.contains(fragmentCacheHostsAllowed, host, true)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _isJavaScriptModuleEnabled(
@@ -379,8 +400,16 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		FragmentEntryLink fragmentEntryLink = _getFragmentEntryLink(
 			fragmentRendererContext);
 
-		boolean cacheable = _isCacheable(
-			fragmentEntryLink, fragmentRendererContext);
+		boolean fragmentCacheHostAllowed = _isFragmentCacheHostAllowed(
+			fragmentEntryLink.getCompanyId(),
+			_portal.getForwardedHost(httpServletRequest));
+
+		boolean cacheable = false;
+
+		if (fragmentCacheHostAllowed) {
+			cacheable = _isCacheable(
+				fragmentEntryLink, fragmentRendererContext);
+		}
 
 		if (cacheable) {
 			content = _fragmentEntryLinkCache.getFragmentEntryLinkContent(
