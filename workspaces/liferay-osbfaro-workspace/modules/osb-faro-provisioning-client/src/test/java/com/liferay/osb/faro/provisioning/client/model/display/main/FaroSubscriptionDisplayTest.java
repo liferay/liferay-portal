@@ -21,6 +21,8 @@ public class FaroSubscriptionDisplayTest {
 
 	@Test
 	public void testGetProductEntryId() {
+		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
+
 		OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
 
 		osbOfferingEntry.setProductEntryId(
@@ -28,8 +30,6 @@ public class FaroSubscriptionDisplayTest {
 		osbOfferingEntry.setQuantity(1);
 		osbOfferingEntry.setStatus(
 			ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
-
-		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
 
 		osbAccountEntry.setOfferingEntries(
 			Collections.singletonList(osbOfferingEntry));

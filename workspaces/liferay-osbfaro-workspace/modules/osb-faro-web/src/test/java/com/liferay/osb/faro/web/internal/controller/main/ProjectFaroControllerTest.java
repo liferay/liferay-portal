@@ -389,10 +389,6 @@ public class ProjectFaroControllerTest {
 		List<ProjectUsageMetricDisplay> projectUsageMetricDisplays =
 			new ArrayList<>(page.getItems());
 
-		Assert.assertEquals(
-			projectUsageMetricDisplays.toString(), 1,
-			projectUsageMetricDisplays.size());
-
 		ProjectUsageMetricDisplay projectUsageMetricDisplay =
 			projectUsageMetricDisplays.get(0);
 
@@ -404,6 +400,10 @@ public class ProjectFaroControllerTest {
 				ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE),
 			projectUsageMetricDisplay.getProductName());
 		Assert.assertTrue(projectUsageMetricDisplay.isOffline());
+
+		Assert.assertEquals(
+			projectUsageMetricDisplays.toString(), 1,
+			projectUsageMetricDisplays.size());
 	}
 
 	@Test

@@ -104,10 +104,6 @@ public class ProjectUsageHelperTest {
 		List<DataSourceUsageMetricDisplay> dataSourceUsageMetricDisplays =
 			new ArrayList<>(page.getItems());
 
-		Assert.assertEquals(
-			dataSourceUsageMetricDisplays.toString(), 1,
-			dataSourceUsageMetricDisplays.size());
-
 		DataSourceUsageMetricDisplay dataSourceUsageMetricDisplay =
 			dataSourceUsageMetricDisplays.get(0);
 
@@ -118,6 +114,10 @@ public class ProjectUsageHelperTest {
 			ProductConstants.getProductName(
 				ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE),
 			dataSourceUsageMetricDisplay.getProductName());
+
+		Assert.assertEquals(
+			dataSourceUsageMetricDisplays.toString(), 1,
+			dataSourceUsageMetricDisplays.size());
 	}
 
 	private final ContactsEngineClient _contactsEngineClient = Mockito.mock(
