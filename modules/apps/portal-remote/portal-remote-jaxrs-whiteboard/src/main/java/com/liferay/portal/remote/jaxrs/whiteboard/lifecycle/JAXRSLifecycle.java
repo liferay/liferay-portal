@@ -6,6 +6,7 @@
 package com.liferay.portal.remote.jaxrs.whiteboard.lifecycle;
 
 import com.liferay.petra.concurrent.DCLSingleton;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import jakarta.ws.rs.client.ClientBuilder;
@@ -39,7 +40,7 @@ import org.osgi.service.jaxrs.client.SseEventSourceFactory;
 public class JAXRSLifecycle {
 
 	public void ensureReady() {
-		_serviceRegistrationDCLSingleton.getSingleton(
+		_safeCloseableDCLSingleton.getSingleton(
 			() -> {
 				if (_jaxrsReady) {
 					return null;
@@ -47,12 +48,7 @@ public class JAXRSLifecycle {
 
 				_jaxrsReady = true;
 
-				_start();
-
-				return _bundleContext.registerService(
-					Object.class, new Object(),
-					MapUtil.singletonDictionary(
-						"liferay.jaxrs.whiteboard.ready", true));
+				return _start();
 			});
 	}
 
@@ -63,12 +59,7 @@ public class JAXRSLifecycle {
 
 	@Deactivate
 	protected void deactivate() {
-		_serviceRegistrationDCLSingleton.destroy(
-			serviceRegistration -> {
-				serviceRegistration.unregister();
-
-				_stop();
-			});
+		_safeCloseableDCLSingleton.destroy(SafeCloseable::close);
 	}
 
 	private OSGi<?> _registerClient() {
@@ -111,7 +102,7 @@ public class JAXRSLifecycle {
 		);
 	}
 
-	private void _start() {
+	private SafeCloseable _start() {
 		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
 
 		OSGi<?> runWhiteboards = OSGi.coalesce(
@@ -130,25 +121,32 @@ public class JAXRSLifecycle {
 			configuration -> _runWhiteboard(configuration)
 		);
 
-		_osgiResult = OSGi.all(
+		OSGiResult osgiResult = OSGi.all(
 			OSGi.ignore(_registerClient()),
 			OSGi.ignore(_registerSseEventSourceFactory()),
 			OSGi.ignore(runWhiteboards)
 		).run(
 			_bundleContext
 		);
-	}
 
-	private void _stop() {
-		_osgiResult.close();
+		ServiceRegistration<?> serviceRegistration =
+			_bundleContext.registerService(
+				Object.class, new Object(),
+				MapUtil.singletonDictionary(
+					"liferay.jaxrs.whiteboard.ready", true));
 
-		RuntimeDelegate.setInstance(null);
+		return () -> {
+			serviceRegistration.unregister();
+
+			osgiResult.close();
+
+			RuntimeDelegate.setInstance(null);
+		};
 	}
 
 	private BundleContext _bundleContext;
 	private boolean _jaxrsReady;
-	private OSGiResult _osgiResult;
-	private final DCLSingleton<ServiceRegistration<?>>
-		_serviceRegistrationDCLSingleton = new DCLSingleton<>();
+	private final DCLSingleton<SafeCloseable> _safeCloseableDCLSingleton =
+		new DCLSingleton<>();
 
 }
