@@ -17,6 +17,7 @@ import {
 	RelationalOperators,
 } from '../utils/constants';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
+import {getSegmentCategoryLabel} from 'segment/utils/labels';
 import {
 	AttributeConjunctionChangeParams,
 	Criterion,
@@ -458,7 +459,7 @@ export class BehaviorInput extends React.Component<
 			<div className="criteria-statement">
 				<Form.Group autoFit className="page-asset-criteria">
 					<Form.GroupItem className="entity-name" label shrink>
-						{property.entityName}
+						{getSegmentCategoryLabel(segmentCategory)}
 					</Form.GroupItem>
 
 					<OperatorDropdown />
