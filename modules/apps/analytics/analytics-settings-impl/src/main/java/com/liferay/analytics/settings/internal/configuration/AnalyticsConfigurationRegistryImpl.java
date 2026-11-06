@@ -19,6 +19,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.BaseManagedServiceFactory;
+import com.liferay.portal.kernel.cluster.ClusterMasterExecutor;
 import com.liferay.portal.kernel.concurrent.SystemExecutorServiceUtil;
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -342,6 +343,10 @@ public class AnalyticsConfigurationRegistryImpl
 	private void _enable(long companyId) {
 		try {
 			_active = true;
+
+			if (!_clusterMasterExecutor.isMaster()) {
+				return;
+			}
 
 			_addAnalyticsAdministratorUser(companyId);
 			_addSAPEntry(companyId);
@@ -898,6 +903,10 @@ public class AnalyticsConfigurationRegistryImpl
 				_enable((Long)dictionary.get("companyId"));
 			}
 
+			if (!_clusterMasterExecutor.isMaster()) {
+				return;
+			}
+
 			AnalyticsConfiguration analyticsConfiguration =
 				getAnalyticsConfiguration(companyId);
 
@@ -956,6 +965,9 @@ public class AnalyticsConfigurationRegistryImpl
 
 	@Reference
 	private AnalyticsSettingsManager _analyticsSettingsManager;
+
+	@Reference
+	private ClusterMasterExecutor _clusterMasterExecutor;
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
