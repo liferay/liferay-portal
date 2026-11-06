@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -139,6 +140,40 @@ public class SaveAsDraftArticleMVCActionCommandTest {
 
 		Assert.assertTrue(
 			previewURL.contains(String.valueOf(journalArticle.getVersion())));
+	}
+
+	@Test
+	public void testProcessActionPreview() throws Exception {
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest(journalArticle);
+
+		mockLiferayPortletActionRequest.addParameter(
+			Constants.CMD, Constants.PREVIEW);
+
+		MockLiferayPortletActionResponse mockLiferayPortletActionResponse =
+			new MockLiferayPortletActionResponse();
+
+		_mvcActionCommand.processAction(
+			mockLiferayPortletActionRequest, mockLiferayPortletActionResponse);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			(MockHttpServletResponse)
+				mockLiferayPortletActionResponse.getHttpServletResponse();
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			mockHttpServletResponse.getContentAsString());
+
+		Assert.assertEquals(
+			journalArticle.getVersion(), jsonObject.getDouble("version"), 0);
+
+		Assert.assertEquals(
+			1,
+			JournalArticleLocalServiceUtil.getArticlesCount(
+				_group.getGroupId(), journalArticle.getArticleId()));
 	}
 
 	private MockMultipartHttpServletRequest
