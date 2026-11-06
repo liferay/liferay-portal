@@ -12,7 +12,7 @@ import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.service.CommerceAddressLocalService;
-import com.liferay.commerce.service.CommerceOrderLocalService;
+import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
@@ -55,8 +55,8 @@ public class CommerceCheckoutDeliveryGroupsFDSDataProvider
 		long commerceOrderId = ParamUtil.getLong(
 			httpServletRequest, "commerceOrderId");
 
-		CommerceOrder commerceOrder =
-			_commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
+			commerceOrderId);
 
 		for (CommerceOrderItem commerceOrderItem :
 				commerceOrder.getCommerceOrderItems()) {
@@ -97,14 +97,14 @@ public class CommerceCheckoutDeliveryGroupsFDSDataProvider
 			httpServletRequest, "commerceOrderId");
 
 		return CommerceOrderUtil.getCommerceOrderDeliveryGroupNamesCount(
-			_commerceOrderLocalService.getCommerceOrder(commerceOrderId));
+			_commerceOrderService.getCommerceOrder(commerceOrderId));
 	}
 
 	@Reference
 	private CommerceAddressLocalService _commerceAddressLocalService;
 
 	@Reference
-	private CommerceOrderLocalService _commerceOrderLocalService;
+	private CommerceOrderService _commerceOrderService;
 
 	@Reference
 	private Portal _portal;
