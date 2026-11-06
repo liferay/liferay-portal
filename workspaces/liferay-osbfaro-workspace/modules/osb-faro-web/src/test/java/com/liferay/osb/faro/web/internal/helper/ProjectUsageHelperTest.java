@@ -79,6 +79,12 @@ public class ProjectUsageHelperTest {
 		);
 
 		Mockito.when(
+			faroProject.isDataPlatform()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
 			_contactsEngineClient.getApiUsageMetrics(
 				Mockito.any(), Mockito.any(), Mockito.any())
 		).thenReturn(
@@ -114,6 +120,7 @@ public class ProjectUsageHelperTest {
 			ProductConstants.getProductName(
 				ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE),
 			dataSourceUsageMetricDisplay.getProductName());
+		Assert.assertTrue(dataSourceUsageMetricDisplay.isDataPlatform());
 
 		Assert.assertEquals(
 			dataSourceUsageMetricDisplays.toString(), 1,
