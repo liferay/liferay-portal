@@ -794,9 +794,8 @@ components:
                 groupId:
                     description:
                         "ID of the Liferay site that owns the LDP workspace. Use this with other endpoints to scope requests to this workspace."
-                    format: int64
                     readOnly: true
-                    type: integer
+                    type: string
                 name:
                     description:
                         "Display name of the workspace."
