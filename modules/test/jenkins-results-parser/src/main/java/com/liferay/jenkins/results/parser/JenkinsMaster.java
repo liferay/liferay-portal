@@ -1030,6 +1030,32 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return false;
 	}
 
+	public List<QueueItem> readQueueItems(
+			int maxRetries, int retryPeriodSeconds, int timeoutMillis)
+		throws IOException {
+
+		List<QueueItem> queueItems = new ArrayList<>();
+
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			getURL() + "/queue/api/json");
+
+		uriBuilder.addParameter(
+			"tree", "items[id,inQueueSince,task[name,url],url,why]");
+
+		JSONObject queueAPIJSONObject = JenkinsResultsParserUtil.toJSONObject(
+			uriBuilder.toString(), false, maxRetries, retryPeriodSeconds,
+			timeoutMillis);
+
+		JSONArray itemsJSONArray = queueAPIJSONObject.getJSONArray("items");
+
+		for (int i = 0; i < itemsJSONArray.length(); i++) {
+			queueItems.add(
+				new QueueItem(this, itemsJSONArray.getJSONObject(i)));
+		}
+
+		return queueItems;
+	}
+
 	public List<RunningBuild> readRunningBuilds(
 			int maxRetries, int retryPeriodSeconds, int timeoutMillis)
 		throws IOException {
@@ -1383,6 +1409,12 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 		public String getWhy() {
 			return _jsonObject.optString("why");
+		}
+
+		public boolean isBlocked() {
+			String className = _jsonObject.optString("_class");
+
+			return className.equals("hudson.model.Queue$BlockedItem");
 		}
 
 		public boolean isCancelled() {

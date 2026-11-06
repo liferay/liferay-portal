@@ -32,6 +32,10 @@ public class MonitorFactory {
 				return new JobHealthMonitor(monitorConfig);
 			}
 
+			if (type.equals("queued-build-duration")) {
+				return new QueuedBuildDurationMonitor(monitorConfig);
+			}
+
 			if (type.equals("report-freshness")) {
 				return new ReportFreshnessMonitor(monitorConfig);
 			}
