@@ -160,7 +160,6 @@ public class DDMFormInstanceReportLocalServiceImpl
 				fieldName, ddmFormValuesList, fieldJSONObject);
 		}
 
-		ddmFormInstanceReport.setModifiedDate(new Date());
 		ddmFormInstanceReport.setData(
 			ddmFormInstanceReportDataJSONObject.toString());
 
