@@ -903,17 +903,27 @@ test(
 			linkText: string,
 			imageSrc: RegExp
 		) => {
+			const optionsButton = page
+				.locator('.control-menu-nav-item')
+				.getByLabel('Options', {exact: true});
+			const previewMenuItem = page.getByRole('menuitem', {
+				name: 'Preview in a New Tab',
+			});
+
 			const [previewPage] = await Promise.all([
 				page.context().waitForEvent('page'),
-				clickAndExpectToBeVisible({
-					autoClick: true,
-					target: page.getByRole('menuitem', {
-						name: 'Preview in a New Tab',
-					}),
-					trigger: page
-						.locator('.control-menu-nav-item')
-						.getByLabel('Options', {exact: true}),
-				}),
+				expect(async () => {
+					if (!(await previewMenuItem.isVisible())) {
+						await optionsButton.click({timeout: 100});
+					}
+
+					await expect(previewMenuItem).toBeVisible({timeout: 100});
+
+					await previewMenuItem.click({
+						noWaitAfter: true,
+						timeout: 100,
+					});
+				}).toPass(),
 			]);
 
 			await expectCard(previewPage, linkText, imageSrc);
