@@ -102,7 +102,7 @@ public class CookiesConfigurationProviderImpl
 
 		Configuration configuration =
 			_getCookiesPreferenceHandlingCompanyConfiguration(
-				_portal.getCompanyId(httpServletRequest));
+				_portal.getCompany(httpServletRequest));
 
 		if (configuration != null) {
 			pid = configuration.getPid();
@@ -487,16 +487,16 @@ public class CookiesConfigurationProviderImpl
 	}
 
 	private Configuration _getCookiesPreferenceHandlingCompanyConfiguration(
-			long companyId)
+			Company company)
 		throws ConfigurationException {
 
 		try {
 			Configuration[] configuration =
 				_configurationAdmin.listConfigurations(
 					ConfigurationFilterStringUtil.getCompanyScopedFilterString(
-						companyId,
+						company.getCompanyId(),
 						CookiesPreferenceHandlingConfiguration.class.getName(),
-						null));
+						company.getWebId()));
 
 			if (configuration != null) {
 				return configuration[0];
