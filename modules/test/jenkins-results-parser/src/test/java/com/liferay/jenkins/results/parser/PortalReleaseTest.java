@@ -101,8 +101,7 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		_testGetPortalVersion(
 			"2026.q2.3", "liferay-dxp-tomcat-2026.q2.3-1780905368.7z");
 		_testGetPortalVersion(
-			"2026.q4.0",
-			"liferay-cms-tomcat-2026.q4.0-cms-standalone-1792785628.7z");
+			"2026.q4.0", "liferay-cms-tomcat-2026.q4.0-1793923431.7z");
 		_testGetPortalVersion(
 			"7.0.10.17-sp17",
 			"liferay-dxp-digital-enterprise-tomcat-7.0.10.17-sp17.7z");
@@ -113,35 +112,34 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		_testGetPortalVersion(
 			"7.4.13-u154", "liferay-dxp-tomcat-7.4.13-u154-1791054167.7z");
 		_testGetPortalVersion(
-			"7.4.13-u154",
-			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z");
-		_testGetPortalVersion(
 			"7.4.13.u1", "liferay-dxp-tomcat-7.4.13.u1-20211221182705869.7z");
 	}
 
 	@Test
 	public void testGetStandaloneBuildProfile() throws Exception {
 		_testGetStandaloneBuildProfile(
-			"cms-standalone",
-			"liferay-dxp-tomcat-2026.q3.1-lts-cms-standalone-1791273379.7z",
+			"cms-standalone", "liferay-cms-tomcat-2026.q3.1-lts-1791273379.7z",
 			true);
 		_testGetStandaloneBuildProfile(
-			"cms-standalone",
-			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z",
+			"cms-standalone", "liferay-cms-tomcat-2026.q4.0-1793923431.7z",
 			true);
+		_testGetStandaloneBuildProfile(
+			null, "liferay-cms-tomcat-2026.q4.0-1793923431.7z", false);
+		_testGetStandaloneBuildProfile(
+			null, "liferay-cms-tomcat-2026.q4.0.7z", true);
 		_testGetStandaloneBuildProfile(
 			null, "liferay-dxp-tomcat-7.4.13-u154-1791054167.7z", true);
 		_testGetStandaloneBuildProfile(
-			null, "liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z",
-			false);
+			null, "liferay-portal-tomcat-7.4.3.132-ga132-1791054167.7z", true);
 
-		String productName = RandomTestUtil.randomLowerCaseString();
+		String productName = JenkinsResultsParserUtil.combine(
+			RandomTestUtil.randomLowerCaseString(), "-",
+			RandomTestUtil.randomLowerCaseString());
 
 		_testGetStandaloneBuildProfile(
 			productName + "-standalone",
 			JenkinsResultsParserUtil.combine(
-				"liferay-", productName, "-tomcat-7.4.13-u154-", productName,
-				"-standalone-1791273379.zip"),
+				"liferay-", productName, "-tomcat-2026.q4.0-1793923431.zip"),
 			true);
 	}
 
@@ -183,34 +181,41 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 	@Test
 	public void testIsStandaloneBundleURL() throws Exception {
 		_testIsStandaloneBundleURL(
-			false,
-			"liferay-dxp-osgi-7.4.13-u154-cms-standalone-1791273379.zip");
+			false, "liferay-Cms-tomcat-2026.q4.0-1793923431.7z");
 		_testIsStandaloneBundleURL(
-			false, "liferay-dxp-tomcat-2026.q2.3-1780905368.7z");
+			false, "liferay-cms-osgi-2026.q4.0-1793923431.zip");
 		_testIsStandaloneBundleURL(
-			false, "liferay-dxp-tomcat-7.4.13-u154-1791054167.7z");
+			false, "liferay-cms-tomcat-2026.q4.0-1793923431.7z.MD5");
+		_testIsStandaloneBundleURL(false, "liferay-cms-tomcat-2026.q4.0.7z");
 		_testIsStandaloneBundleURL(
-			false,
-			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z.MD5");
+			false, "liferay-cms2-tomcat-2026.q4.0-1793923431.7z");
 		_testIsStandaloneBundleURL(
-			false, "liferay-dxp-tomcat-7.4.13-u154-cms-standalone.7z");
+			false, "liferay-dxp-tomcat-2026.q4.0-1793923431.7z");
 		_testIsStandaloneBundleURL(
-			true,
-			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z");
+			false, "liferay-portal-tomcat-7.4.3.132-ga132-1791054167.7z");
 		_testIsStandaloneBundleURL(
 			true,
-			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.tar.gz");
+			"2026.q4.0-1793923431/liferay-cms-tomcat-2026.q4.0-1793923431.7z");
 		_testIsStandaloneBundleURL(
-			true,
-			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.zip");
-
-		String productName = RandomTestUtil.randomLowerCaseString();
-
+			true, "liferay-cms-tomcat-2026.q3.1-lts-1791273379.7z");
+		_testIsStandaloneBundleURL(
+			true, "liferay-cms-tomcat-2026.q4.0-1793923431.7z");
+		_testIsStandaloneBundleURL(
+			true, "liferay-cms-tomcat-2026.q4.0-1793923431.tar.gz");
+		_testIsStandaloneBundleURL(
+			true, "liferay-cms-tomcat-2026.q4.0-1793923431.zip");
+		_testIsStandaloneBundleURL(
+			true, "liferay-cms-tomcat-7.4.13-ga1-20211020105546063.7z");
+		_testIsStandaloneBundleURL(
+			true, "liferay-cms-tomcat-7.4.13-u154-1791054167.7z");
+		_testIsStandaloneBundleURL(
+			true, "liferay-cms-tomcat-7.4.13.u1-20211221182705869.7z");
 		_testIsStandaloneBundleURL(
 			true,
 			JenkinsResultsParserUtil.combine(
-				"liferay-", productName, "-tomcat-7.4.13-u154-", productName,
-				"-standalone-1791273379.zip"));
+				"liferay-", RandomTestUtil.randomLowerCaseString(), "-",
+				RandomTestUtil.randomLowerCaseString(),
+				"-tomcat-2026.q4.0-1793923431.7z"));
 	}
 
 	@Test
@@ -244,8 +249,7 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 			new URL(
 				JenkinsResultsParserUtil.combine(
 					"https://", RandomTestUtil.randomString(),
-					"/liferay-dxp-tomcat-7.4.13-u154-cms-standalone-",
-					"1791273379.7z")));
+					"/liferay-cms-tomcat-7.4.13-u154-1791273379.7z")));
 		portalRelease.setStandalone(true);
 
 		JSONObject portalReleaseJSONObject = portalRelease.getJSONObject();
