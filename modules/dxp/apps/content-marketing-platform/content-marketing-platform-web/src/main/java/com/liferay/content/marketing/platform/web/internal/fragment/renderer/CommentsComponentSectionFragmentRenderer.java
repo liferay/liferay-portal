@@ -15,6 +15,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.editor.configuration.EditorConfiguration;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactoryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -112,6 +113,19 @@ public class CommentsComponentSectionFragmentRenderer
 			_getURL(
 				"/get_asset_comments", objectDefinition, objectEntry,
 				themeDisplay)
+		).put(
+			"getMentionUsersURL",
+			() -> {
+				if (FeatureFlagManagerUtil.isEnabled(
+						themeDisplay.getCompanyId(), "LPD-104086")) {
+
+					return _getURL(
+						"/get_content_item_mention_users", objectDefinition,
+						objectEntry, themeDisplay);
+				}
+
+				return null;
+			}
 		).build();
 	}
 
