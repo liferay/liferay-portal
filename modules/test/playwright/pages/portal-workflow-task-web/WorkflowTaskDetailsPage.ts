@@ -14,6 +14,7 @@ const MY_WORKFLOW_TASK_PORTLET_NAMESPACE =
 export class WorkflowTaskDetailsPage {
 	readonly activitiesButton: Locator;
 	readonly approveMenuItem: Locator;
+	readonly assetTableRow: (...textFilters: string[]) => Locator;
 	readonly assignToDialogIFRAME: FrameLocator;
 	readonly assignToMenuItem: Locator;
 	readonly assignToSingleSelect: Locator;
@@ -38,6 +39,11 @@ export class WorkflowTaskDetailsPage {
 	constructor(page: Page) {
 		this.activitiesButton = page.getByRole('button', {name: 'Activities'});
 		this.approveMenuItem = page.getByRole('menuitem', {name: 'approve'});
+		this.assetTableRow = (...textFilters: string[]) =>
+			textFilters.reduce(
+				(row, text) => row.filter({hasText: text}),
+				page.getByRole('row')
+			);
 		this.assignToDialogIFRAME = page.frameLocator(
 			`iframe[id="${MY_WORKFLOW_TASK_PORTLET_NAMESPACE}assignToDialog_iframe_"]`
 		);

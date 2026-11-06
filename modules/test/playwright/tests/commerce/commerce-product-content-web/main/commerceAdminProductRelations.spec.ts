@@ -575,7 +575,6 @@ test(
 	async ({
 		apiHelpers,
 		assignWorkflowToAssetType,
-		page,
 		workflowTaskDetailsPage,
 		workflowTasksPage,
 	}) => {
@@ -595,10 +594,10 @@ test(
 		await workflowTaskDetailsPage.selectAsset(sourceProduct.name.en_US);
 
 		await expect(
-			page
-				.getByRole('row')
-				.filter({hasText: relatedProduct.name.en_US})
-				.filter({hasText: 'Up-Sell'})
+			workflowTaskDetailsPage.assetTableRow(
+				relatedProduct.name.en_US,
+				'Up-Sell'
+			)
 		).toContainText('Pending');
 	}
 );
