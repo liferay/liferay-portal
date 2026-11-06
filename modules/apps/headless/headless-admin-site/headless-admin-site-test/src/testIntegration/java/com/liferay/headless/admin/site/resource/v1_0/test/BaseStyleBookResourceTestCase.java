@@ -194,7 +194,6 @@ public abstract class BaseStyleBookResourceTestCase {
 		styleBook.setFrontendTokensValues(regex);
 		styleBook.setKey(regex);
 		styleBook.setName(regex);
-		styleBook.setPreviewFileEntryExternalReferenceCode(regex);
 		styleBook.setThemeId(regex);
 
 		String json = StyleBookSerDes.toJSON(styleBook);
@@ -208,8 +207,6 @@ public abstract class BaseStyleBookResourceTestCase {
 		Assert.assertEquals(regex, styleBook.getFrontendTokensValues());
 		Assert.assertEquals(regex, styleBook.getKey());
 		Assert.assertEquals(regex, styleBook.getName());
-		Assert.assertEquals(
-			regex, styleBook.getPreviewFileEntryExternalReferenceCode());
 		Assert.assertEquals(regex, styleBook.getThemeId());
 	}
 
@@ -1768,19 +1765,6 @@ public abstract class BaseStyleBookResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
-					"previewFileEntryExternalReferenceCode",
-					additionalAssertFieldName)) {
-
-				if (styleBook.getPreviewFileEntryExternalReferenceCode() ==
-						null) {
-
-					valid = false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("scope", additionalAssertFieldName)) {
 				if (styleBook.getScope() == null) {
 					valid = false;
@@ -1791,6 +1775,16 @@ public abstract class BaseStyleBookResourceTestCase {
 
 			if (Objects.equals("themeId", additionalAssertFieldName)) {
 				if (styleBook.getThemeId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"thumbnailURLReference", additionalAssertFieldName)) {
+
+				if (styleBook.getThumbnailURLReference() == null) {
 					valid = false;
 				}
 
@@ -2040,21 +2034,6 @@ public abstract class BaseStyleBookResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals(
-					"previewFileEntryExternalReferenceCode",
-					additionalAssertFieldName)) {
-
-				if (!Objects.deepEquals(
-						styleBook1.getPreviewFileEntryExternalReferenceCode(),
-						styleBook2.
-							getPreviewFileEntryExternalReferenceCode())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("scope", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						styleBook1.getScope(), styleBook2.getScope())) {
@@ -2068,6 +2047,19 @@ public abstract class BaseStyleBookResourceTestCase {
 			if (Objects.equals("themeId", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						styleBook1.getThemeId(), styleBook2.getThemeId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"thumbnailURLReference", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						styleBook1.getThumbnailURLReference(),
+						styleBook2.getThumbnailURLReference())) {
 
 					return false;
 				}
@@ -2490,53 +2482,6 @@ public abstract class BaseStyleBookResourceTestCase {
 			return sb.toString();
 		}
 
-		if (entityFieldName.equals("previewFileEntryExternalReferenceCode")) {
-			Object object =
-				styleBook.getPreviewFileEntryExternalReferenceCode();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
-		}
-
 		if (entityFieldName.equals("scope")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2586,6 +2531,11 @@ public abstract class BaseStyleBookResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("thumbnailURLReference")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		throw new IllegalArgumentException(
@@ -2647,8 +2597,6 @@ public abstract class BaseStyleBookResourceTestCase {
 				id = RandomTestUtil.randomLong();
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
-				previewFileEntryExternalReferenceCode = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
 				themeId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
@@ -2897,4 +2845,4 @@ public abstract class BaseStyleBookResourceTestCase {
 		_styleBookResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1411686847
+// LIFERAY-REST-BUILDER-HASH:1479594835

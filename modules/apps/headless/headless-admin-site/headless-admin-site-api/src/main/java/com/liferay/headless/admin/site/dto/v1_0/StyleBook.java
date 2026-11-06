@@ -534,57 +534,6 @@ public class StyleBook implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The style book's preview file entry external reference code."
-	)
-	public String getPreviewFileEntryExternalReferenceCode() {
-		if (_previewFileEntryExternalReferenceCodeSupplier != null) {
-			previewFileEntryExternalReferenceCode =
-				_previewFileEntryExternalReferenceCodeSupplier.get();
-
-			_previewFileEntryExternalReferenceCodeSupplier = null;
-		}
-
-		return previewFileEntryExternalReferenceCode;
-	}
-
-	public void setPreviewFileEntryExternalReferenceCode(
-		String previewFileEntryExternalReferenceCode) {
-
-		this.previewFileEntryExternalReferenceCode =
-			previewFileEntryExternalReferenceCode;
-
-		_previewFileEntryExternalReferenceCodeSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setPreviewFileEntryExternalReferenceCode(
-		UnsafeSupplier<String, Exception>
-			previewFileEntryExternalReferenceCodeUnsafeSupplier) {
-
-		_previewFileEntryExternalReferenceCodeSupplier = () -> {
-			try {
-				return previewFileEntryExternalReferenceCodeUnsafeSupplier.
-					get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "The style book's preview file entry external reference code."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String previewFileEntryExternalReferenceCode;
-
-	@JsonIgnore
-	private Supplier<String> _previewFileEntryExternalReferenceCodeSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The style book's scope, identifying its owning site or asset library."
 	)
 	@Valid
@@ -675,6 +624,53 @@ public class StyleBook implements Serializable {
 
 	@JsonIgnore
 	private Supplier<String> _themeIdSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The style book's preview image."
+	)
+	@Valid
+	public ThumbnailURLReference getThumbnailURLReference() {
+		if (_thumbnailURLReferenceSupplier != null) {
+			thumbnailURLReference = _thumbnailURLReferenceSupplier.get();
+
+			_thumbnailURLReferenceSupplier = null;
+		}
+
+		return thumbnailURLReference;
+	}
+
+	public void setThumbnailURLReference(
+		ThumbnailURLReference thumbnailURLReference) {
+
+		this.thumbnailURLReference = thumbnailURLReference;
+
+		_thumbnailURLReferenceSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setThumbnailURLReference(
+		UnsafeSupplier<ThumbnailURLReference, Exception>
+			thumbnailURLReferenceUnsafeSupplier) {
+
+		_thumbnailURLReferenceSupplier = () -> {
+			try {
+				return thumbnailURLReferenceUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The style book's preview image.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ThumbnailURLReference thumbnailURLReference;
+
+	@JsonIgnore
+	private Supplier<ThumbnailURLReference> _thumbnailURLReferenceSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -866,23 +862,6 @@ public class StyleBook implements Serializable {
 			sb.append("\"");
 		}
 
-		String previewFileEntryExternalReferenceCode =
-			getPreviewFileEntryExternalReferenceCode();
-
-		if (previewFileEntryExternalReferenceCode != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"previewFileEntryExternalReferenceCode\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(previewFileEntryExternalReferenceCode));
-
-			sb.append("\"");
-		}
-
 		com.liferay.portal.vulcan.scope.Scope scope = getScope();
 
 		if (scope != null) {
@@ -909,6 +888,19 @@ public class StyleBook implements Serializable {
 			sb.append(_escape(themeId));
 
 			sb.append("\"");
+		}
+
+		ThumbnailURLReference thumbnailURLReference =
+			getThumbnailURLReference();
+
+		if (thumbnailURLReference != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"thumbnailURLReference\": ");
+
+			sb.append(String.valueOf(thumbnailURLReference));
 		}
 
 		sb.append("}");
@@ -1033,4 +1025,4 @@ public class StyleBook implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1535970903
+// LIFERAY-REST-BUILDER-HASH:485666274

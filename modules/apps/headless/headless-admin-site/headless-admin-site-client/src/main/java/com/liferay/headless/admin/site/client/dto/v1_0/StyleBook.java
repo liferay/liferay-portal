@@ -255,32 +255,6 @@ public class StyleBook implements Cloneable, Serializable {
 
 	protected String name;
 
-	public String getPreviewFileEntryExternalReferenceCode() {
-		return previewFileEntryExternalReferenceCode;
-	}
-
-	public void setPreviewFileEntryExternalReferenceCode(
-		String previewFileEntryExternalReferenceCode) {
-
-		this.previewFileEntryExternalReferenceCode =
-			previewFileEntryExternalReferenceCode;
-	}
-
-	public void setPreviewFileEntryExternalReferenceCode(
-		UnsafeSupplier<String, Exception>
-			previewFileEntryExternalReferenceCodeUnsafeSupplier) {
-
-		try {
-			previewFileEntryExternalReferenceCode =
-				previewFileEntryExternalReferenceCodeUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String previewFileEntryExternalReferenceCode;
-
 	public com.liferay.headless.admin.site.client.scope.Scope getScope() {
 		return scope;
 	}
@@ -327,6 +301,30 @@ public class StyleBook implements Cloneable, Serializable {
 
 	protected String themeId;
 
+	public ThumbnailURLReference getThumbnailURLReference() {
+		return thumbnailURLReference;
+	}
+
+	public void setThumbnailURLReference(
+		ThumbnailURLReference thumbnailURLReference) {
+
+		this.thumbnailURLReference = thumbnailURLReference;
+	}
+
+	public void setThumbnailURLReference(
+		UnsafeSupplier<ThumbnailURLReference, Exception>
+			thumbnailURLReferenceUnsafeSupplier) {
+
+		try {
+			thumbnailURLReference = thumbnailURLReferenceUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ThumbnailURLReference thumbnailURLReference;
+
 	@Override
 	public StyleBook clone() throws CloneNotSupportedException {
 		return (StyleBook)super.clone();
@@ -359,4 +357,4 @@ public class StyleBook implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1119664938
+// LIFERAY-REST-BUILDER-HASH:-2065783042
