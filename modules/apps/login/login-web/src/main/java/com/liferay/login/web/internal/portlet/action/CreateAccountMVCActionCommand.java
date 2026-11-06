@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -432,7 +433,13 @@ public class CreateAccountMVCActionCommand extends BaseMVCActionCommand {
 			httpSession.getAttribute(WebKeys.FACEBOOK_INCOMPLETE_USER_ID));
 
 		if (facebookId > 0) {
-			password1 = PwdGenerator.getPassword();
+			if (PropsValues.FIPS_ENABLED) {
+				password1 = PwdGenerator.getPassword(
+					FIPSModeValidator.PASSWORDS_MIN_LENGTH);
+			}
+			else {
+				password1 = PwdGenerator.getPassword();
+			}
 
 			password2 = password1;
 		}

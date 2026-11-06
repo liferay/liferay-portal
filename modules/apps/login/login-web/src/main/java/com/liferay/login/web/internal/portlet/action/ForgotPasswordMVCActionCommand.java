@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SortedArrayList;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -349,7 +350,7 @@ public class ForgotPasswordMVCActionCommand extends BaseMVCActionCommand {
 			PasswordPolicy passwordPolicy = user.getPasswordPolicy();
 
 			if ((passwordPolicy != null) && passwordPolicy.isChangeable()) {
-				PasswordEncryptorUtil.encrypt("ticketKey");
+				PasswordEncryptorUtil.encrypt(PortalUUIDUtil.generate());
 			}
 
 			SessionMessages.add(

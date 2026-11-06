@@ -527,27 +527,12 @@ public class LDAPAuth implements Authenticator {
 			companyId, preferredLDAPServerId, emailAddress, screenName, userId,
 			password);
 
-		LDAPImportConfiguration ldapImportConfiguration =
-			_ldapImportConfigurationProvider.getConfiguration(companyId);
-
 		if (preferredLDAPServerResult == SUCCESS) {
 			if (_log.isDebugEnabled()) {
 				_log.debug("Found preferred LDAP server");
 			}
 
-			if (ldapImportConfiguration.importUserPasswordEnabled()) {
-				if (_log.isDebugEnabled()) {
-					_log.debug("Import user password enabled");
-				}
-
-				return preferredLDAPServerResult;
-			}
-
-			if (_log.isDebugEnabled()) {
-				_log.debug("Import user password disabled");
-			}
-
-			return Authenticator.SKIP_LIFERAY_CHECK;
+			return _getAuthenticatedResult(companyId, password);
 		}
 
 		List<LDAPServerConfiguration> ldapServerConfigurations =
@@ -571,11 +556,7 @@ public class LDAPAuth implements Authenticator {
 				screenName, userId, password);
 
 			if (result == SUCCESS) {
-				if (ldapImportConfiguration.importUserPasswordEnabled()) {
-					return result;
-				}
-
-				return Authenticator.SKIP_LIFERAY_CHECK;
+				return _getAuthenticatedResult(companyId, password);
 			}
 		}
 
@@ -682,6 +663,36 @@ public class LDAPAuth implements Authenticator {
 
 		if (ldapAuthConfiguration.required()) {
 			return failureCode;
+		}
+
+		return SUCCESS;
+	}
+
+	private int _getAuthenticatedResult(long companyId, String password) {
+		LDAPImportConfiguration ldapImportConfiguration =
+			_ldapImportConfigurationProvider.getConfiguration(companyId);
+
+		if (!ldapImportConfiguration.importUserPasswordEnabled()) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Import user password disabled");
+			}
+
+			return Authenticator.SKIP_LIFERAY_CHECK;
+		}
+
+		if (FIPSModeValidator.isNotAllowedPassword(password)) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Password must be at least " +
+						FIPSModeValidator.PASSWORDS_MIN_LENGTH +
+							" bytes in FIPS mode");
+			}
+
+			return Authenticator.SKIP_LIFERAY_CHECK;
+		}
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("Import user password enabled");
 		}
 
 		return SUCCESS;
