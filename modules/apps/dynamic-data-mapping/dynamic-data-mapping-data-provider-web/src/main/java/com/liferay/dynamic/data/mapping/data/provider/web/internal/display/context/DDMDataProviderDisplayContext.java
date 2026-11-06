@@ -109,25 +109,6 @@ public class DDMDataProviderDisplayContext {
 			renderRequest);
 	}
 
-	public DDMDataProviderInstance getDataProviderInstance()
-		throws PortalException {
-
-		if (_ddmDataProviderInstance != null) {
-			return _ddmDataProviderInstance;
-		}
-
-		long dataProviderInstanceId = ParamUtil.getLong(
-			_renderRequest, "dataProviderInstanceId");
-
-		if (dataProviderInstanceId > 0) {
-			_ddmDataProviderInstance =
-				_ddmDataProviderInstanceService.getDataProviderInstance(
-					dataProviderInstanceId);
-		}
-
-		return _ddmDataProviderInstance;
-	}
-
 	public List<DropdownItem> getActionItemsDropdownItems() {
 		return DropdownItemListBuilder.add(
 			dropdownItem -> {
@@ -162,6 +143,25 @@ public class DDMDataProviderDisplayContext {
 				}
 			}
 		};
+	}
+
+	public DDMDataProviderInstance getDataProviderInstance()
+		throws PortalException {
+
+		if (_ddmDataProviderInstance != null) {
+			return _ddmDataProviderInstance;
+		}
+
+		long dataProviderInstanceId = ParamUtil.getLong(
+			_renderRequest, "dataProviderInstanceId");
+
+		if (dataProviderInstanceId > 0) {
+			_ddmDataProviderInstance =
+				_ddmDataProviderInstanceService.getDataProviderInstance(
+					dataProviderInstanceId);
+		}
+
+		return _ddmDataProviderInstance;
 	}
 
 	public String getDataProviderInstanceDDMFormHTML() throws PortalException {
