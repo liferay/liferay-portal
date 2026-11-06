@@ -32,7 +32,19 @@ public class ParameterMapUtilWhenSettingAParameterMapWithPrefixesTest {
 			ParameterMapUtilTestUtil.TestBean.class,
 			ParameterMapUtilTestUtil.getTestBean(),
 			HashMapBuilder.put(
+				"prefix--testBigDecimal1--",
+				new String[] {
+					String.valueOf(
+						ParameterMapUtilTestUtil.PARAMETER_MAP_BIG_DECIMAL)
+				}
+			).put(
 				"prefix--testBoolean1--", new String[] {"false"}
+			).put(
+				"prefix--testEnum1--",
+				new String[] {
+					String.valueOf(
+						ParameterMapUtilTestUtil.TestEnum.PARAMETER_MAP)
+				}
 			).put(
 				"prefix--testString1--",
 				new String[] {ParameterMapUtilTestUtil.PARAMETER_MAP_STRING}
@@ -45,7 +57,13 @@ public class ParameterMapUtilWhenSettingAParameterMapWithPrefixesTest {
 
 	@Test
 	public void testValuesInTheParameterMapAreReadFirst() {
+		Assert.assertEquals(
+			ParameterMapUtilTestUtil.PARAMETER_MAP_BIG_DECIMAL,
+			_testBean.testBigDecimal1());
 		Assert.assertFalse(_testBean.testBoolean1());
+		Assert.assertEquals(
+			ParameterMapUtilTestUtil.TestEnum.PARAMETER_MAP,
+			_testBean.testEnum1());
 		Assert.assertEquals(
 			ParameterMapUtilTestUtil.PARAMETER_MAP_STRING,
 			_testBean.testString1());
