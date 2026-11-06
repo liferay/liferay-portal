@@ -12,13 +12,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 WikiNode node = (WikiNode)request.getAttribute(WikiWebKeys.WIKI_NODE);
 
-long nodeId = ParamUtil.getLong(request, "nodeId", GetterUtil.get(node, WikiNode::getNodeId, 0L));
-
-long[] nodeIds = null;
-
-if (node != null) {
-	nodeIds = new long[] {nodeId};
-}
+long nodeId = ParamUtil.getLong(request, "nodeId", node.getNodeId());
 
 String keywords = ParamUtil.getString(request, "keywords");
 
