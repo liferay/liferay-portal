@@ -11,7 +11,6 @@ import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerChoice;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerControl;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerTreeSelection;
-import com.liferay.exportimport.rest.client.dto.v1_0.SyncProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.SyncProcessRequest;
 import com.liferay.exportimport.rest.client.resource.v1_0.SyncProcessResource;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
@@ -116,47 +115,22 @@ public class SyncProcessResourceTest extends BaseSyncProcessResourceTestCase {
 	@Override
 	@Test
 	public void testPostSiteTemplateSyncProcess() throws Exception {
-		super.testPostSiteTemplateSyncProcess();
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			_layoutSetPrototypeGroup, true);
+
+		assertHttpResponseStatusCode(
+			204,
+			syncProcessResource.postSiteTemplateSyncProcessHttpResponse(
+				_layoutSetPrototype.getLayoutSetPrototypeId(),
+				_toSyncProcessRequest()));
+
+		_waitForMerge(layout);
 
 		_testPostSiteTemplateSyncProcessWithLayoutSelection();
 		_testPostSiteTemplateSyncProcessWithFeatureFlagDisabled();
 		_testPostSiteTemplateSyncProcessWithInactiveLayoutSetPrototype();
 		_testPostSiteTemplateSyncProcessWithoutPermission();
 		_testPostSiteTemplateSyncProcessWithoutPortletDataHandlers();
-	}
-
-	@Override
-	protected String[] getAdditionalAssertFieldNames() {
-		return new String[] {"siteTemplateId", "siteTemplateName"};
-	}
-
-	@Override
-	protected SyncProcess randomSyncProcess() throws Exception {
-		return new SyncProcess() {
-			{
-				siteTemplateId = _layoutSetPrototype.getLayoutSetPrototypeId();
-				siteTemplateName = _layoutSetPrototype.getName(
-					LocaleUtil.getDefault());
-			}
-		};
-	}
-
-	@Override
-	protected SyncProcess testPostSiteTemplateSyncProcess_addSyncProcess(
-			SyncProcess syncProcess)
-		throws Exception {
-
-		Layout layout = LayoutTestUtil.addTypePortletLayout(
-			_layoutSetPrototypeGroup, true);
-
-		SyncProcess postSyncProcess =
-			syncProcessResource.postSiteTemplateSyncProcess(
-				_layoutSetPrototype.getLayoutSetPrototypeId(),
-				_toSyncProcessRequest());
-
-		_waitForMerge(layout);
-
-		return postSyncProcess;
 	}
 
 	private void _testPostSiteTemplateSyncProcessWithFeatureFlagDisabled()
