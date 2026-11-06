@@ -103,16 +103,17 @@ public class ProjectUsageHelperTest {
 			Collections.singletonList(faroProject)
 		);
 
-		Page<DataSourceUsageMetricDisplay> page =
+		Page<DataSourceUsageMetricDisplay> dataSourceUsageMetricDisplaysPage =
 			_projectUsageHelper.getDataSourceUsageMetricDisplays(
 				null, 1, 15, null);
 
 		List<DataSourceUsageMetricDisplay> dataSourceUsageMetricDisplays =
-			new ArrayList<>(page.getItems());
+			new ArrayList<>(dataSourceUsageMetricDisplaysPage.getItems());
 
 		DataSourceUsageMetricDisplay dataSourceUsageMetricDisplay =
 			dataSourceUsageMetricDisplays.get(0);
 
+		Assert.assertTrue(dataSourceUsageMetricDisplay.isDataPlatform());
 		Assert.assertEquals(
 			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE,
 			dataSourceUsageMetricDisplay.getProductEntryId());
@@ -120,7 +121,6 @@ public class ProjectUsageHelperTest {
 			ProductConstants.getProductName(
 				ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE),
 			dataSourceUsageMetricDisplay.getProductName());
-		Assert.assertTrue(dataSourceUsageMetricDisplay.isDataPlatform());
 
 		Assert.assertEquals(
 			dataSourceUsageMetricDisplays.toString(), 1,
