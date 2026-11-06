@@ -25,7 +25,6 @@ import org.apache.aries.component.dsl.OSGi;
 import org.apache.aries.component.dsl.OSGiResult;
 import org.apache.aries.jax.rs.whiteboard.internal.Whiteboard;
 import org.apache.aries.jax.rs.whiteboard.internal.client.ClientBuilderFactory;
-import org.apache.aries.jax.rs.whiteboard.internal.utils.PropertyHolder;
 import org.apache.aries.jax.rs.whiteboard.internal.utils.Utils;
 import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
 import org.apache.cxf.jaxrs.sse.client.SseEventSourceBuilderImpl;
@@ -38,7 +37,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.http.runtime.HttpServiceRuntime;
 import org.osgi.service.http.runtime.HttpServiceRuntimeConstants;
-import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.osgi.service.jaxrs.client.SseEventSourceFactory;
 
 /**
@@ -80,16 +78,10 @@ public class JAXRSLifecycle {
 			});
 	}
 
-	private String _endpointFilter(PropertyHolder configuration) {
-		Object whiteBoardTargetProperty = configuration.get(
-			HttpWhiteboardConstants.HTTP_WHITEBOARD_TARGET);
-
-		String targetFilter = (whiteBoardTargetProperty != null) ?
-			whiteBoardTargetProperty.toString() : "(osgi.http.endpoint=*)";
-
+	private String _endpointFilter() {
 		return StringBundler.concat(
-			"(&(objectClass=", HttpServiceRuntime.class.getName(), ")",
-			targetFilter, ")");
+			"(&(objectClass=", HttpServiceRuntime.class.getName(),
+			")(osgi.http.endpoint=*))");
 	}
 
 	private OSGi<?> _registerClient() {
@@ -125,7 +117,7 @@ public class JAXRSLifecycle {
 
 	private OSGi<?> _runWhiteboard(Dictionary<String, ?> configuration) {
 		OSGi<List<String>> endpoints = OSGi.serviceReferences(
-			_endpointFilter(configuration::get)
+			_endpointFilter()
 		).map(
 			r -> Arrays.asList(
 				Utils.canonicalize(
@@ -135,7 +127,7 @@ public class JAXRSLifecycle {
 
 		return OSGi.once(
 			OSGi.serviceReferences(
-				_endpointFilter(configuration::get), __ -> false
+				_endpointFilter(), __ -> false
 			).then(
 				OSGi.just(
 					Whiteboard.createWhiteboard(configuration)
@@ -155,22 +147,18 @@ public class JAXRSLifecycle {
 	private void _start() {
 		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
 
-		OSGi<?> runWhiteboards = OSGi.all(
-			OSGi.configurations("org.apache.aries.jax.rs.whiteboard"),
-			OSGi.coalesce(
-				OSGi.configuration(
-					"org.apache.aries.jax.rs.whiteboard.default"),
-				OSGi.just(
-					() -> {
-						Dictionary<String, Object> properties =
-							new Hashtable<>();
+		OSGi<?> runWhiteboards = OSGi.coalesce(
+			OSGi.configuration("org.apache.aries.jax.rs.whiteboard.default"),
+			OSGi.just(
+				() -> {
+					Dictionary<String, Object> properties = new Hashtable<>();
 
-						properties.put(
-							Constants.SERVICE_PID,
-							"org.apache.aries.jax.rs.whiteboard.default");
+					properties.put(
+						Constants.SERVICE_PID,
+						"org.apache.aries.jax.rs.whiteboard.default");
 
-						return properties;
-					}))
+					return properties;
+				})
 		).filter(
 			c -> !Objects.equals(c.get("enabled"), "false")
 		).flatMap(
