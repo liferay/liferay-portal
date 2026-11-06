@@ -8,8 +8,10 @@ package com.liferay.object.rest.internal.odata.filter.expression.field.predicate
 import com.liferay.asset.kernel.model.AssetEntries_AssetTagsTable;
 import com.liferay.asset.kernel.model.AssetEntryTable;
 import com.liferay.asset.kernel.model.AssetTagTable;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.odata.filter.expression.field.predicate.provider.FieldPredicateProvider;
 import com.liferay.object.rest.internal.util.BinaryExpressionConverterUtil;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
@@ -17,6 +19,7 @@ import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Expression;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.filter.expression.BinaryExpression;
 
@@ -24,6 +27,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alejandro Tardín
@@ -41,7 +45,7 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 		BinaryExpression.Operation operation, Object right) {
 
 		return _getKeywordsPredicate(
-			objectDefinitionColumnSupplier,
+			objectDefinitionColumnSupplier, objectDefinitionId,
 			BinaryExpressionConverterUtil.getExpressionPredicate(
 				DSLFunctionFactoryUtil.lower(AssetTagTable.INSTANCE.name),
 				operation, StringUtil.toLowerCase((String)right)));
@@ -53,7 +57,7 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 		String fieldName, Object fieldValue) {
 
 		return _getKeywordsPredicate(
-			objectDefinitionColumnSupplier,
+			objectDefinitionColumnSupplier, 0,
 			DSLFunctionFactoryUtil.lower(
 				AssetTagTable.INSTANCE.name
 			).like(
@@ -68,7 +72,7 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 		Object left, List<Object> rights) {
 
 		return _getKeywordsPredicate(
-			objectDefinitionColumnSupplier,
+			objectDefinitionColumnSupplier, 0,
 			DSLFunctionFactoryUtil.lower(
 				AssetTagTable.INSTANCE.name
 			).in(
@@ -108,7 +112,7 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 		String fieldName, Object fieldValue) {
 
 		return _getKeywordsPredicate(
-			objectDefinitionColumnSupplier,
+			objectDefinitionColumnSupplier, 0,
 			DSLFunctionFactoryUtil.lower(
 				AssetTagTable.INSTANCE.name
 			).like(
@@ -116,9 +120,27 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 			));
 	}
 
+	private Predicate _getClassNameIdPredicate(long objectDefinitionId) {
+		if (objectDefinitionId <= 0) {
+			return null;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				objectDefinitionId);
+
+		if (objectDefinition == null) {
+			return null;
+		}
+
+		return AssetEntryTable.INSTANCE.classNameId.eq(
+			_classNameLocalService.getClassNameId(
+				objectDefinition.getClassName()));
+	}
+
 	private Predicate _getKeywordsPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Expression<Boolean> valueExpression) {
+		long objectDefinitionId, Expression<Boolean> valueExpression) {
 
 		Column<?, ?> column = objectDefinitionColumnSupplier.apply("id");
 
@@ -130,7 +152,10 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 			).innerJoinON(
 				AssetEntries_AssetTagsTable.INSTANCE,
 				AssetEntryTable.INSTANCE.entryId.eq(
-					AssetEntries_AssetTagsTable.INSTANCE.entryId)
+					AssetEntries_AssetTagsTable.INSTANCE.entryId
+				).and(
+					_getClassNameIdPredicate(objectDefinitionId)
+				)
 			).innerJoinON(
 				AssetTagTable.INSTANCE,
 				AssetTagTable.INSTANCE.tagId.eq(
@@ -140,5 +165,11 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 				)
 			));
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 }

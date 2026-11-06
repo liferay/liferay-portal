@@ -7,19 +7,23 @@ package com.liferay.object.rest.internal.odata.filter.expression.field.predicate
 
 import com.liferay.asset.entry.rel.model.AssetEntryAssetCategoryRelTable;
 import com.liferay.asset.kernel.model.AssetEntryTable;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.odata.filter.expression.field.predicate.provider.FieldPredicateProvider;
 import com.liferay.object.rest.internal.util.BinaryExpressionConverterUtil;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Expression;
 import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.odata.filter.expression.BinaryExpression;
 
 import java.util.List;
 import java.util.function.Function;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alejandro Tardín
@@ -38,7 +42,7 @@ public class TaxonomyCategoryIdsFieldPredicateProvider
 		BinaryExpression.Operation operation, Object right) {
 
 		return _getTaxonomyCategoryIdsPredicate(
-			objectDefinitionColumnSupplier,
+			objectDefinitionColumnSupplier, objectDefinitionId,
 			BinaryExpressionConverterUtil.getExpressionPredicate(
 				AssetEntryAssetCategoryRelTable.INSTANCE.assetCategoryId,
 				operation, (Long)right));
@@ -59,7 +63,7 @@ public class TaxonomyCategoryIdsFieldPredicateProvider
 		Object left, List<Object> rights) {
 
 		return _getTaxonomyCategoryIdsPredicate(
-			objectDefinitionColumnSupplier,
+			objectDefinitionColumnSupplier, 0,
 			AssetEntryAssetCategoryRelTable.INSTANCE.assetCategoryId.in(
 				TransformUtil.transformToArray(
 					rights, assetCategoryId -> (Long)assetCategoryId,
@@ -95,9 +99,27 @@ public class TaxonomyCategoryIdsFieldPredicateProvider
 				"taxonomyCategoryIds");
 	}
 
+	private Predicate _getClassNameIdPredicate(long objectDefinitionId) {
+		if (objectDefinitionId <= 0) {
+			return null;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				objectDefinitionId);
+
+		if (objectDefinition == null) {
+			return null;
+		}
+
+		return AssetEntryTable.INSTANCE.classNameId.eq(
+			_classNameLocalService.getClassNameId(
+				objectDefinition.getClassName()));
+	}
+
 	private Predicate _getTaxonomyCategoryIdsPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Expression<Boolean> valueExpression) {
+		long objectDefinitionId, Expression<Boolean> valueExpression) {
 
 		Column<?, ?> column = objectDefinitionColumnSupplier.apply("id");
 
@@ -112,8 +134,16 @@ public class TaxonomyCategoryIdsFieldPredicateProvider
 					AssetEntryAssetCategoryRelTable.INSTANCE.assetEntryId
 				).and(
 					valueExpression
+				).and(
+					_getClassNameIdPredicate(objectDefinitionId)
 				)
 			));
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 }
