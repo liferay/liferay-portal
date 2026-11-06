@@ -478,7 +478,7 @@
 				<rect fill="url(#audience-paint9_linear_10_281)" height="32" rx="8" width="48" x="72" y="36" />
 				<g>
 					<path clip-rule="evenodd" d="M91.7047 44C87.41 44 86.8931 48.9763 86.8931 51.432C86.8931 53.8875 87.4971 59 91.7047 59C95.9703 59 96.5162 53.8875 96.5162 51.432C96.5162 48.9883 95.9703 44 91.7047 44ZM93.716 48.1064C93.404 46.9764 92.8291 46.0176 91.7028 46.0414C89.2944 45.994 89.2762 50.0294 89.3633 52.5444L93.716 48.1064ZM91.7028 56.9527C90.6074 56.9053 90.0325 55.9643 89.7188 54.8639L94.0479 50.4497L94.0442 50.8127C94.0206 53.3159 93.988 56.9527 91.7028 56.9527Z" fill="url(#audience-paint10_linear_10_281)" fill-rule="evenodd" />
-					<path clip-rule="evenodd" d="M103.188 44C98.8938 44 98.377 48.9763 98.377 51.432C98.377 53.8875 98.9809 59 103.188 59C107.454 59 108 53.8875 108 51.432C108 48.9883 107.454 44 103.188 44ZM103.188 46.0414C104.315 46.0176 104.89 46.9764 105.203 48.1064L100.851 52.5444C100.756 50.0294 100.78 45.994 103.188 46.0414ZM101.204 54.8639C101.518 55.9643 102.093 56.9053 103.188 56.9527C105.472 56.9527 105.506 53.3029 105.53 50.7994L105.533 50.4497L101.204 54.8639Z" fill="url(#audience-paint11_linear_10_281)" fill-rule="evenodd" />
+					<path clip-rule="evenodd" d="M103.188 44C98.8938 44 98.377 48.9763 98.377 51.432C98.377 53.8875 98.9809 59 103.188 59C107.454 59 108 53.8875 108 51.432C108 48.9883 107.454 44 103.188 44ZM103.188 46.0414C104.315 46.0176 104.89 46.9764 105.203 48.1064L100.851 52.5444C100.756 50.0294 100.78 45.994 103.188 46.0414ZM101.204 54.8639C101.518 55.9643 102.093 56.9053 103.188 56.9527C105.472 56.9527 105.506 53.3029 105.53 50.7994L105.533 50.4497L101.204 54.8639Z" fill="url(#audience-paint10_linear_10_281)" fill-rule="evenodd" />
 					<path d="M85.7143 56.9881C85.7143 58.0339 84.8836 58.8817 83.8571 58.8817C82.8306 58.8817 82 58.0339 82 56.9881C82 55.9424 82.8306 55.0946 83.8571 55.0946C84.8836 55.0946 85.7143 55.9424 85.7143 56.9881Z" fill="url(#audience-paint12_linear_10_281)" />
 				</g>
 			</g>
@@ -525,10 +525,6 @@
 				<stop offset="1" stop-color="var(--c-empty-state-primary-d2, #004ad7)" />
 			</linearGradient>
 			<linearGradient gradientUnits="userSpaceOnUse" id="audience-paint10_linear_10_281" x1="95" x2="95" y1="44" y2="59">
-				<stop stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" />
-				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.5" />
-			</linearGradient>
-			<linearGradient gradientUnits="userSpaceOnUse" id="audience-paint11_linear_10_281" x1="95" x2="95" y1="44" y2="59">
 				<stop stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" />
 				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.5" />
 			</linearGradient>
@@ -624,7 +620,7 @@
 			<path class="contenttypes-es05-chip contenttypes-es05-chip-aa" d="M196.828 126.845C197.94 122.84 205.404 123.36 205.4 127.592V133.628C205.399 135.091 202.665 135.217 202.967 133.139C198.093 139.41 190.721 127.766 202.962 128.482C203.408 125.094 199.266 125.758 199.012 127.387C198.863 128.457 196.457 128.334 196.828 126.845ZM186.971 122.307C187.641 120.586 190.012 120.543 190.681 122.307L194.566 133.187C195.069 134.637 192.903 135.558 192.286 133.964L191.39 131.23H186.253L185.357 133.969C184.766 135.51 182.565 134.693 183.077 133.19L186.971 122.307ZM202.971 130.104C200.132 129.942 198.767 130.225 198.732 131.68C198.732 133.693 203.211 133.947 202.971 130.104ZM188.795 123.456L186.874 129.325H190.764L188.843 123.456H188.795Z" fill="url(#contenttypes-paint4_linear_10_281)" />
 			<g class="contenttypes-es05-chip contenttypes-es05-chip-num">
 				<path clip-rule="evenodd" d="M91.7047 172C87.41 172 86.8931 176.976 86.8931 179.432C86.8931 181.887 87.4971 187 91.7047 187C95.9703 187 96.5162 181.887 96.5162 179.432C96.5162 176.988 95.9703 172 91.7047 172ZM93.716 176.106C93.404 174.976 92.8291 174.018 91.7028 174.041C89.2944 173.994 89.2762 178.029 89.3633 180.544L93.716 176.106ZM91.7028 184.953C90.6074 184.905 90.0325 183.964 89.7188 182.864L94.0479 178.45L94.0442 178.813C94.0206 181.316 93.988 184.953 91.7028 184.953Z" fill="url(#contenttypes-paint5_linear_10_281)" fill-rule="evenodd" />
-				<path clip-rule="evenodd" d="M103.188 172C98.8938 172 98.377 176.976 98.377 179.432C98.377 181.887 98.9809 187 103.188 187C107.454 187 108 181.887 108 179.432C108 176.988 107.454 172 103.188 172ZM103.188 174.041C104.315 174.018 104.89 174.976 105.203 176.106L100.851 180.544C100.756 178.029 100.78 173.994 103.188 174.041ZM101.204 182.864C101.518 183.964 102.093 184.905 103.188 184.953C105.472 184.953 105.506 181.303 105.53 178.799L105.533 178.45L101.204 182.864Z" fill="url(#contenttypes-paint6_linear_10_281)" fill-rule="evenodd" />
+				<path clip-rule="evenodd" d="M103.188 172C98.8938 172 98.377 176.976 98.377 179.432C98.377 181.887 98.9809 187 103.188 187C107.454 187 108 181.887 108 179.432C108 176.988 107.454 172 103.188 172ZM103.188 174.041C104.315 174.018 104.89 174.976 105.203 176.106L100.851 180.544C100.756 178.029 100.78 173.994 103.188 174.041ZM101.204 182.864C101.518 183.964 102.093 184.905 103.188 184.953C105.472 184.953 105.506 181.303 105.53 178.799L105.533 178.45L101.204 182.864Z" fill="url(#contenttypes-paint5_linear_10_281)" fill-rule="evenodd" />
 				<path d="M85.7143 184.988C85.7143 186.034 84.8836 186.882 83.8571 186.882C82.8306 186.882 82 186.034 82 184.988C82 183.942 82.8306 183.095 83.8571 183.095C84.8836 183.095 85.7143 183.942 85.7143 184.988Z" fill="url(#contenttypes-paint7_linear_10_281)" />
 			</g>
 		</g>
@@ -650,10 +646,6 @@
 				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.3" />
 			</linearGradient>
 			<linearGradient gradientUnits="userSpaceOnUse" id="contenttypes-paint5_linear_10_281" x1="95" x2="95" y1="172" y2="187">
-				<stop stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" />
-				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.3" />
-			</linearGradient>
-			<linearGradient gradientUnits="userSpaceOnUse" id="contenttypes-paint6_linear_10_281" x1="95" x2="95" y1="172" y2="187">
 				<stop stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" />
 				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.3" />
 			</linearGradient>
@@ -697,8 +689,8 @@
 				<rect fill="url(#discovery-paint6_linear_10_281)" height="40" rx="6" width="43" x="177" y="80" />
 				<g>
 					<path clip-rule="evenodd" d="M194.824 91C190.034 91 189.458 96.6399 189.458 99.423C189.458 102.206 190.131 108 194.824 108C199.582 108 200.191 102.206 200.191 99.423C200.191 96.6534 199.582 91 194.824 91ZM197.068 95.6539C196.72 94.3732 196.079 93.2866 194.822 93.3136C192.136 93.2599 192.116 97.8334 192.213 100.684L197.068 95.6539ZM194.822 105.68C193.601 105.626 192.959 104.56 192.609 103.312L197.438 98.3096L197.434 98.721C197.408 101.558 197.371 105.68 194.822 105.68Z" fill="url(#discovery-paint7_linear_10_281)" fill-rule="evenodd" />
-					<path clip-rule="evenodd" d="M207.633 91C202.843 91 202.267 96.6399 202.267 99.423C202.267 102.206 202.94 108 207.633 108C212.391 108 213 102.206 213 99.423C213 96.6534 212.391 91 207.633 91ZM207.633 93.3136C208.89 93.2866 209.531 94.3732 209.881 95.6539L205.026 100.684C204.921 97.8334 204.947 93.2599 207.633 93.3136ZM205.42 103.312C205.77 104.56 206.411 105.626 207.633 105.68C210.18 105.68 210.219 101.543 210.245 98.706L210.249 98.3096L205.42 103.312Z" fill="url(#discovery-paint8_linear_10_281)" fill-rule="evenodd" />
-					<path d="M188.143 105.72C188.143 106.905 187.216 107.866 186.071 107.866C184.926 107.866 184 106.905 184 105.72C184 104.535 184.926 103.574 186.071 103.574C187.216 103.574 188.143 104.535 188.143 105.72Z" fill="url(#discovery-paint9_linear_10_281)" />
+					<path clip-rule="evenodd" d="M207.633 91C202.843 91 202.267 96.6399 202.267 99.423C202.267 102.206 202.94 108 207.633 108C212.391 108 213 102.206 213 99.423C213 96.6534 212.391 91 207.633 91ZM207.633 93.3136C208.89 93.2866 209.531 94.3732 209.881 95.6539L205.026 100.684C204.921 97.8334 204.947 93.2599 207.633 93.3136ZM205.42 103.312C205.77 104.56 206.411 105.626 207.633 105.68C210.18 105.68 210.219 101.543 210.245 98.706L210.249 98.3096L205.42 103.312Z" fill="url(#discovery-paint7_linear_10_281)" fill-rule="evenodd" />
+					<path d="M188.143 105.72C188.143 106.905 187.216 107.866 186.071 107.866C184.926 107.866 184 106.905 184 105.72C184 104.535 184.926 103.574 186.071 103.574C187.216 103.574 188.143 104.535 188.143 105.72Z" fill="url(#discovery-paint7_linear_10_281)" />
 				</g>
 			</g>
 			<g class="discovery-es07-chip discovery-es07-chip-card">
@@ -737,14 +729,6 @@
 				<stop offset="1" stop-color="var(--c-empty-state-primary-d2, #004ad7)" />
 			</linearGradient>
 			<linearGradient gradientUnits="userSpaceOnUse" id="discovery-paint7_linear_10_281" x1="198.5" x2="198.5" y1="91" y2="108">
-				<stop stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" />
-				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.5" />
-			</linearGradient>
-			<linearGradient gradientUnits="userSpaceOnUse" id="discovery-paint8_linear_10_281" x1="198.5" x2="198.5" y1="91" y2="108">
-				<stop stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" />
-				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.5" />
-			</linearGradient>
-			<linearGradient gradientUnits="userSpaceOnUse" id="discovery-paint9_linear_10_281" x1="198.5" x2="198.5" y1="91" y2="108">
 				<stop stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" />
 				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.5" />
 			</linearGradient>
@@ -790,8 +774,8 @@
 			</g>
 			<g class="document-es08-chip-num">
 				<path clip-rule="evenodd" d="M189.437 192C183.491 192 182.775 198.635 182.775 201.909C182.775 205.183 183.611 212 189.437 212C195.343 212 196.099 205.183 196.099 201.909C196.099 198.651 195.343 192 189.437 192ZM192.222 197.475C191.79 195.969 190.994 194.69 189.435 194.722C186.1 194.659 186.075 200.039 186.195 203.393L192.222 197.475ZM189.435 209.27C187.918 209.207 187.122 207.952 186.688 206.485L192.682 200.6L192.677 201.084C192.644 204.421 192.599 209.27 189.435 209.27Z" fill="url(#document-paint5_linear_10_281)" fill-rule="evenodd" />
-				<path clip-rule="evenodd" d="M205.338 192C199.391 192 198.676 198.635 198.676 201.909C198.676 205.183 199.512 212 205.338 212C211.244 212 212 205.183 212 201.909C212 198.651 211.244 192 205.338 192ZM205.338 194.722C206.897 194.69 207.693 195.969 208.128 197.475L202.101 203.393C201.97 200.039 202.003 194.659 205.338 194.722ZM202.591 206.485C203.025 207.952 203.821 209.207 205.338 209.27C208.499 209.27 208.547 204.404 208.58 201.066L208.585 200.6L202.591 206.485Z" fill="url(#document-paint6_linear_10_281)" fill-rule="evenodd" />
-				<path d="M181.143 209.318C181.143 210.712 179.993 211.842 178.571 211.842C177.15 211.842 176 210.712 176 209.318C176 207.923 177.15 206.793 178.571 206.793C179.993 206.793 181.143 207.923 181.143 209.318Z" fill="url(#document-paint7_linear_10_281)" />
+				<path clip-rule="evenodd" d="M205.338 192C199.391 192 198.676 198.635 198.676 201.909C198.676 205.183 199.512 212 205.338 212C211.244 212 212 205.183 212 201.909C212 198.651 211.244 192 205.338 192ZM205.338 194.722C206.897 194.69 207.693 195.969 208.128 197.475L202.101 203.393C201.97 200.039 202.003 194.659 205.338 194.722ZM202.591 206.485C203.025 207.952 203.821 209.207 205.338 209.27C208.499 209.27 208.547 204.404 208.58 201.066L208.585 200.6L202.591 206.485Z" fill="url(#document-paint5_linear_10_281)" fill-rule="evenodd" />
+				<path d="M181.143 209.318C181.143 210.712 179.993 211.842 178.571 211.842C177.15 211.842 176 210.712 176 209.318C176 207.923 177.15 206.793 178.571 206.793C179.993 206.793 181.143 207.923 181.143 209.318Z" fill="url(#document-paint5_linear_10_281)" />
 			</g>
 			<path class="document-es08-doc" d="M88 90C88 82.268 94.268 76 102 76H136L168 113.385V170C168 177.732 161.732 184 154 184H102C94.268 184 88 177.732 88 170V90Z" fill="color-mix(in srgb, var(--c-empty-state-primary-l2, #b3cdff), var(--c-empty-state-primary-l3, #f0f5ff))" />
 			<rect class="document-es08-line" fill="var(--c-empty-state-primary-l1, #80acff)" height="16" rx="6" width="48" x="104" y="104" />
@@ -825,14 +809,6 @@
 				<stop offset="1" stop-color="var(--c-empty-state-primary-d2, #004ad7)" />
 			</linearGradient>
 			<linearGradient gradientUnits="userSpaceOnUse" id="document-paint5_linear_10_281" x1="194" x2="194" y1="192" y2="212">
-				<stop stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" />
-				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.5" />
-			</linearGradient>
-			<linearGradient gradientUnits="userSpaceOnUse" id="document-paint6_linear_10_281" x1="194" x2="194" y1="192" y2="212">
-				<stop stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" />
-				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.5" />
-			</linearGradient>
-			<linearGradient gradientUnits="userSpaceOnUse" id="document-paint7_linear_10_281" x1="194" x2="194" y1="192" y2="212">
 				<stop stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" />
 				<stop offset="1" stop-color="var(--c-empty-state-primary-l3, #f0f5ff)" stop-opacity="0.5" />
 			</linearGradient>
@@ -1304,8 +1280,8 @@
 			<rect class="toolbar-list-es11-row toolbar-list-es11-row-2" fill="var(--c-empty-state-primary-l1, #80acff)" height="8" rx="4" transform="matrix(-1 0 0 1 94 132)" width="13" />
 			<rect class="toolbar-list-es11-row" fill="var(--c-empty-state-primary-l1, #80acff)" height="8" rx="4" transform="matrix(-1 0 0 1 94 95)" width="13" />
 			<rect class="toolbar-list-es11-row toolbar-list-es11-row-3" fill="url(#toolbar-list-paint4_linear_10_281)" height="8" rx="4" transform="matrix(-1 0 0 1 189 169)" width="89" />
-			<rect class="toolbar-list-es11-row toolbar-list-es11-row-2" fill="url(#toolbar-list-paint5_linear_10_281)" height="8" rx="4" transform="matrix(-1 0 0 1 189 132)" width="89" />
-			<rect class="toolbar-list-es11-row" fill="url(#toolbar-list-paint6_linear_10_281)" height="8" rx="4" transform="matrix(-1 0 0 1 189 95)" width="89" />
+			<rect class="toolbar-list-es11-row toolbar-list-es11-row-2" fill="url(#toolbar-list-paint4_linear_10_281)" height="8" rx="4" transform="matrix(-1 0 0 1 189 132)" width="89" />
+			<rect class="toolbar-list-es11-row" fill="url(#toolbar-list-paint4_linear_10_281)" height="8" rx="4" transform="matrix(-1 0 0 1 189 95)" width="89" />
 			<g class="toolbar-list-es11-toolbar">
 				<rect fill="url(#toolbar-list-paint7_linear_10_281)" height="36" rx="8" width="148" x="36" y="60" />
 				<path d="M53.4047 69.8641C54.1562 68.712 55.8438 68.712 56.5953 69.8641L56.9686 70.4364C57.3979 71.0946 58.1873 71.4215 58.9562 71.2597L59.6249 71.119C60.971 70.8357 62.1643 72.029 61.881 73.3751L61.7403 74.0438C61.5785 74.8127 61.9054 75.6021 62.5636 76.0314L63.1359 76.4047C64.288 77.1562 64.288 78.8438 63.1359 79.5953L62.5636 79.9686C61.9054 80.3979 61.5785 81.1873 61.7403 81.9562L61.881 82.6249C62.1643 83.971 60.971 85.1643 59.6249 84.881L58.9562 84.7403C58.1873 84.5785 57.3979 84.9054 56.9686 85.5636L56.5953 86.1359C55.8438 87.288 54.1562 87.288 53.4047 86.1359L53.0314 85.5636C52.6021 84.9054 51.8127 84.5785 51.0438 84.7403L50.3751 84.881C49.029 85.1643 47.8357 83.971 48.119 82.6249L48.2597 81.9562C48.4215 81.1873 48.0946 80.3979 47.4364 79.9686L46.8641 79.5953C45.712 78.8438 45.712 77.1562 46.8641 76.4047L47.4364 76.0314C48.0946 75.6021 48.4215 74.8127 48.2597 74.0438L48.119 73.3751C47.8357 72.029 49.029 70.8357 50.3751 71.119L51.0438 71.2597C51.8127 71.4215 52.6021 71.0946 53.0314 70.4364L53.4047 69.8641Z" fill="url(#toolbar-list-paint8_linear_10_281)" />
@@ -1342,14 +1318,6 @@
 				<stop offset="1" stop-color="var(--c-empty-state-primary-l1, #80acff)" stop-opacity="0" />
 			</linearGradient>
 			<linearGradient gradientUnits="userSpaceOnUse" id="toolbar-list-paint4_linear_10_281" x1="0" x2="89" y1="4" y2="4">
-				<stop stop-color="var(--c-empty-state-primary-l1, #80acff)" stop-opacity="0" />
-				<stop offset="1" stop-color="var(--c-empty-state-primary-l1, #80acff)" />
-			</linearGradient>
-			<linearGradient gradientUnits="userSpaceOnUse" id="toolbar-list-paint5_linear_10_281" x1="0" x2="89" y1="4" y2="4">
-				<stop stop-color="var(--c-empty-state-primary-l1, #80acff)" stop-opacity="0" />
-				<stop offset="1" stop-color="var(--c-empty-state-primary-l1, #80acff)" />
-			</linearGradient>
-			<linearGradient gradientUnits="userSpaceOnUse" id="toolbar-list-paint6_linear_10_281" x1="0" x2="89" y1="4" y2="4">
 				<stop stop-color="var(--c-empty-state-primary-l1, #80acff)" stop-opacity="0" />
 				<stop offset="1" stop-color="var(--c-empty-state-primary-l1, #80acff)" />
 			</linearGradient>
