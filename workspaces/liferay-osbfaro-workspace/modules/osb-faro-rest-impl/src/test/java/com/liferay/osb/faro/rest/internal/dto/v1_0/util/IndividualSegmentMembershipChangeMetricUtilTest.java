@@ -48,26 +48,6 @@ public class IndividualSegmentMembershipChangeMetricUtilTest {
 		Assert.assertEquals(
 			Double.valueOf(9), knownIndividualsMetric.getPreviousValue());
 
-		Metric addedIndividualsMetric =
-			individualSegmentMembershipChangeMetric.getAddedIndividuals();
-
-		Assert.assertEquals(
-			Double.valueOf(4), addedIndividualsMetric.getValue());
-		Assert.assertEquals(
-			Double.valueOf(2), addedIndividualsMetric.getPreviousValue());
-		Assert.assertEquals(
-			Double.valueOf(100), addedIndividualsMetric.getTrendPercentage());
-
-		Metric removedIndividualsMetric =
-			individualSegmentMembershipChangeMetric.getRemovedIndividuals();
-
-		Assert.assertEquals(
-			Double.valueOf(2), removedIndividualsMetric.getValue());
-		Assert.assertEquals(
-			Double.valueOf(1), removedIndividualsMetric.getPreviousValue());
-		Assert.assertEquals(
-			"POSITIVE", removedIndividualsMetric.getTrendClassification());
-
 		HistogramBucket[] histogramBuckets =
 			individualsMetric.getHistogramBuckets();
 
@@ -116,36 +96,31 @@ public class IndividualSegmentMembershipChangeMetricUtilTest {
 	}
 
 	private IndividualSegmentMembershipChangeAggregation _aggregation(
-		long addedIndividualsCount, long individualsCount,
-		long intervalInitDate, long knownIndividualsCount,
-		long removedIndividualsCount) {
+		long individualsCount, long intervalInitDate,
+		long knownIndividualsCount) {
 
 		IndividualSegmentMembershipChangeAggregation
 			individualSegmentMembershipChangeAggregation =
 				new IndividualSegmentMembershipChangeAggregation();
 
-		individualSegmentMembershipChangeAggregation.setAddedIndividualsCount(
-			addedIndividualsCount);
 		individualSegmentMembershipChangeAggregation.setIndividualsCount(
 			individualsCount);
 		individualSegmentMembershipChangeAggregation.setIntervalInitDate(
 			new Date(intervalInitDate));
 		individualSegmentMembershipChangeAggregation.setKnownIndividualsCount(
 			knownIndividualsCount);
-		individualSegmentMembershipChangeAggregation.setRemovedIndividualsCount(
-			removedIndividualsCount);
 
 		return individualSegmentMembershipChangeAggregation;
 	}
 
 	private List<IndividualSegmentMembershipChangeAggregation> _aggregations() {
 		return Arrays.asList(
-			_aggregation(0, 10, 1789084800000L, 8, 0),
-			_aggregation(2, 12, 1789171200000L, 9, 0),
-			_aggregation(0, 11, 1789257600000L, 9, 1),
-			_aggregation(4, 15, 1789344000000L, 12, 0),
-			_aggregation(0, 15, 1789430400000L, 12, 0),
-			_aggregation(0, 13, 1789516800000L, 10, 2));
+			_aggregation(10, 1789084800000L, 8),
+			_aggregation(12, 1789171200000L, 9),
+			_aggregation(11, 1789257600000L, 9),
+			_aggregation(15, 1789344000000L, 12),
+			_aggregation(15, 1789430400000L, 12),
+			_aggregation(13, 1789516800000L, 10));
 	}
 
 }
