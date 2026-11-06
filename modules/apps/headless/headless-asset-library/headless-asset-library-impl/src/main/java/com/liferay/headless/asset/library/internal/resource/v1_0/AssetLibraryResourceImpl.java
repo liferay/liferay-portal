@@ -27,7 +27,6 @@ import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.DuplicateGroupExternalReferenceCodeException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Field;
@@ -572,18 +571,10 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			true
 		).put(
 			MapProviderWebKeys.MAP_PROVIDER_KEY,
-			() -> {
-				if (!FeatureFlagManagerUtil.isEnabled(
-						contextCompany.getCompanyId(), "LPD-11388")) {
-
-					return null;
-				}
-
-				return GetterUtil.getString(
-					settings.getMapProviderKey(),
-					unicodeProperties.getProperty(
-						MapProviderWebKeys.MAP_PROVIDER_KEY));
-			}
+			GetterUtil.getString(
+				settings.getMapProviderKey(),
+				unicodeProperties.getProperty(
+					MapProviderWebKeys.MAP_PROVIDER_KEY))
 		).put(
 			"autoTaggingEnabled",
 			_getBooleanValue(
@@ -591,17 +582,9 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 				settings.getAutoTaggingEnabled())
 		).put(
 			"googleMapsAPIKey",
-			() -> {
-				if (!FeatureFlagManagerUtil.isEnabled(
-						contextCompany.getCompanyId(), "LPD-11388")) {
-
-					return null;
-				}
-
-				return GetterUtil.getString(
-					settings.getGoogleMapsAPIKey(),
-					unicodeProperties.getProperty("googleMapsAPIKey"));
-			}
+			GetterUtil.getString(
+				settings.getGoogleMapsAPIKey(),
+				unicodeProperties.getProperty("googleMapsAPIKey"))
 		).put(
 			"inheritLocales",
 			() -> {
@@ -657,30 +640,12 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 		return UnicodePropertiesBuilder.create(
 			true
 		).put(
-			MapProviderWebKeys.MAP_PROVIDER_KEY,
-			() -> {
-				if (!FeatureFlagManagerUtil.isEnabled(
-						contextCompany.getCompanyId(), "LPD-11388")) {
-
-					return null;
-				}
-
-				return settings.getMapProviderKey();
-			}
+			MapProviderWebKeys.MAP_PROVIDER_KEY, settings.getMapProviderKey()
 		).put(
 			"autoTaggingEnabled",
 			GetterUtil.getBoolean(settings.getAutoTaggingEnabled())
 		).put(
-			"googleMapsAPIKey",
-			() -> {
-				if (!FeatureFlagManagerUtil.isEnabled(
-						contextCompany.getCompanyId(), "LPD-11388")) {
-
-					return null;
-				}
-
-				return settings.getGoogleMapsAPIKey();
-			}
+			"googleMapsAPIKey", settings.getGoogleMapsAPIKey()
 		).put(
 			"inheritLocales",
 			!GetterUtil.getBoolean(settings.getUseCustomLanguages())
