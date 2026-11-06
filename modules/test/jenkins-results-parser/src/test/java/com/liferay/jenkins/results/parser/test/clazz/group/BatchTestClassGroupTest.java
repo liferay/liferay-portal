@@ -330,13 +330,12 @@ public class BatchTestClassGroupTest
 	}
 
 	private void _testGetTargetAxisDuration(
-		BatchHistory batchHistory, boolean expectedTargetAxisDuration,
+		BatchHistory batchHistory, boolean targetAxisDurationExpected,
 		String upstreamBranchName) {
 
 		JobPropertyFactory.clear();
 
 		Properties jobProperties = new Properties();
-
 		long targetAxisDuration = Math.abs(RandomTestUtil.randomInt());
 
 		jobProperties.setProperty(
@@ -351,7 +350,6 @@ public class BatchTestClassGroupTest
 			});
 
 		JobHistory jobHistory = portalTestClassJob.getJobHistory();
-
 		String batchName = batchTestClassGroup.getBatchName();
 
 		Mockito.doReturn(
@@ -377,7 +375,7 @@ public class BatchTestClassGroupTest
 			batchTestClassGroup
 		).getPortalGitWorkingDirectory();
 
-		if (expectedTargetAxisDuration) {
+		if (targetAxisDurationExpected) {
 			testEquals(
 				targetAxisDuration,
 				batchTestClassGroup.getTargetAxisDuration());
