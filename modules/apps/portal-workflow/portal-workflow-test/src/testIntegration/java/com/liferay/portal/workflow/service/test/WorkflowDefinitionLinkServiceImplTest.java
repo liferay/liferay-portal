@@ -151,10 +151,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	@Test
 	@TestInfo("LPD-110161")
 	public void testAddWorkflowDefinitionLinkAsAnotherUser() throws Exception {
-		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
-			_company, RoleConstants.CMS_ADMINISTRATOR);
-
-		_setUpPermissionThreadLocal(cmsAdministratorUser);
+		User cmsAdministratorUser = _setUpCMSAdministratorUser();
 
 		User user = _addUser();
 
@@ -174,10 +171,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	public void testAddWorkflowDefinitionLinkFromAnotherCompany()
 		throws Exception {
 
-		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
-			_company, RoleConstants.CMS_ADMINISTRATOR);
-
-		_setUpPermissionThreadLocal(cmsAdministratorUser);
+		User cmsAdministratorUser = _setUpCMSAdministratorUser();
 
 		AssertUtils.assertFailure(
 			PrincipalException.class,
@@ -195,10 +189,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	public void testAddWorkflowDefinitionLinkWithGroupFromAnotherCompany()
 		throws Exception {
 
-		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
-			_company, RoleConstants.CMS_ADMINISTRATOR);
-
-		_setUpPermissionThreadLocal(cmsAdministratorUser);
+		User cmsAdministratorUser = _setUpCMSAdministratorUser();
 
 		AssertUtils.assertFailure(
 			PrincipalException.class,
@@ -215,10 +206,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	public void testAddWorkflowDefinitionLinkWithoutGroupPermission()
 		throws Exception {
 
-		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
-			_company, RoleConstants.CMS_ADMINISTRATOR);
-
-		_setUpPermissionThreadLocal(cmsAdministratorUser);
+		User cmsAdministratorUser = _setUpCMSAdministratorUser();
 
 		AssertUtils.assertFailure(
 			PrincipalException.MustBeCompanyAdmin.class,
@@ -235,10 +223,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	public void testAddWorkflowDefinitionLinkWithoutUpdateGroupPermission()
 		throws Exception {
 
-		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
-			_company, RoleConstants.CMS_ADMINISTRATOR);
-
-		_setUpPermissionThreadLocal(cmsAdministratorUser);
+		User cmsAdministratorUser = _setUpCMSAdministratorUser();
 
 		AssertUtils.assertFailure(
 			PrincipalException.MustHavePermission.class,
@@ -351,10 +336,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	public void testUpdateWorkflowDefinitionLinkAsAnotherUser()
 		throws Exception {
 
-		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
-			_company, RoleConstants.CMS_ADMINISTRATOR);
-
-		_setUpPermissionThreadLocal(cmsAdministratorUser);
+		User cmsAdministratorUser = _setUpCMSAdministratorUser();
 
 		User user = _addUser();
 
@@ -374,10 +356,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	public void testUpdateWorkflowDefinitionLinkFromAnotherCompany()
 		throws Exception {
 
-		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
-			_company, RoleConstants.CMS_ADMINISTRATOR);
-
-		_setUpPermissionThreadLocal(cmsAdministratorUser);
+		User cmsAdministratorUser = _setUpCMSAdministratorUser();
 
 		AssertUtils.assertFailure(
 			PrincipalException.class,
@@ -395,10 +374,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	public void testUpdateWorkflowDefinitionLinkWithGroupFromAnotherCompany()
 		throws Exception {
 
-		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
-			_company, RoleConstants.CMS_ADMINISTRATOR);
-
-		_setUpPermissionThreadLocal(cmsAdministratorUser);
+		User cmsAdministratorUser = _setUpCMSAdministratorUser();
 
 		AssertUtils.assertFailure(
 			PrincipalException.class,
@@ -415,10 +391,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	public void testUpdateWorkflowDefinitionLinkWithoutGroupPermission()
 		throws Exception {
 
-		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
-			_company, RoleConstants.CMS_ADMINISTRATOR);
-
-		_setUpPermissionThreadLocal(cmsAdministratorUser);
+		User cmsAdministratorUser = _setUpCMSAdministratorUser();
 
 		AssertUtils.assertFailure(
 			PrincipalException.MustBeCompanyAdmin.class,
@@ -435,10 +408,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	public void testUpdateWorkflowDefinitionLinkWithoutUpdateGroupPermission()
 		throws Exception {
 
-		User cmsAdministratorUser = UserTestUtil.addCompanyUser(
-			_company, RoleConstants.CMS_ADMINISTRATOR);
-
-		_setUpPermissionThreadLocal(cmsAdministratorUser);
+		User cmsAdministratorUser = _setUpCMSAdministratorUser();
 
 		AssertUtils.assertFailure(
 			PrincipalException.MustHavePermission.class,
@@ -477,6 +447,15 @@ public class WorkflowDefinitionLinkServiceImplTest {
 			externalReferenceCode, _companyAdminUser.getUserId(),
 			_company.getCompanyId(), _group.getGroupId(), className, 0, 0,
 			kaleoDefinitionName, 1);
+	}
+
+	private User _setUpCMSAdministratorUser() throws Exception {
+		User user = UserTestUtil.addCompanyUser(
+			_company, RoleConstants.CMS_ADMINISTRATOR);
+
+		_setUpPermissionThreadLocal(user);
+
+		return user;
 	}
 
 	private void _setUpPermissionThreadLocal(User user) {
