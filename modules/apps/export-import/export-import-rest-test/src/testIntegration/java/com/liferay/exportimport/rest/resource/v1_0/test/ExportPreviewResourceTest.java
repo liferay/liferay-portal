@@ -39,8 +39,6 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.function.UnsafeSupplier;
-import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -57,13 +55,11 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -291,20 +287,6 @@ public class ExportPreviewResourceTest
 		_testGetSiteExportPreviewWithLayoutSetPrototypeGroup();
 		_testGetSiteExportPreviewWithSitePage(
 			externalReferenceCode, BlogsPortletKeys.BLOGS);
-	}
-
-	@FeatureFlag("LPD-82107")
-	@Override
-	@Test
-	public void testGetSiteTemplateExportPreview() throws Exception {
-		_layoutSetPrototype = LayoutTestUtil.addLayoutSetPrototype(
-			RandomTestUtil.randomString());
-
-		_testGetSiteTemplateExportPreviewWithLookAndFeel();
-		_testGetSiteTemplateExportPreviewWithPrivateLayouts();
-		_testGetSiteTemplateExportPreviewWithFeatureFlagDisabled();
-		_testGetSiteTemplateExportPreviewWithoutPermission();
-		_testGetSiteTemplateExportPreviewWithPermission();
 	}
 
 	private LayoutPageTemplateCollection _addBasicLayoutPageTemplateCollection()
@@ -891,86 +873,6 @@ public class ExportPreviewResourceTest
 		}
 	}
 
-	private void _testGetSiteTemplateExportPreviewWithFeatureFlagDisabled()
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-82107")) {
-
-			assertHttpResponseStatusCode(
-				404,
-				exportPreviewResource.getSiteTemplateExportPreviewHttpResponse(
-					_layoutSetPrototype.getLayoutSetPrototypeId()));
-		}
-	}
-
-	private void _testGetSiteTemplateExportPreviewWithLookAndFeel()
-		throws Exception {
-
-		PortletDataHandler portletDataHandler = _getPortletDataHandler(
-			exportPreviewResource.getSiteTemplateExportPreview(
-				_layoutSetPrototype.getLayoutSetPrototypeId()),
-			"LOOK_AND_FEEL");
-
-		Assert.assertEquals(
-			"[THEME_REFERENCE, LOGO, LAYOUT_SET_SETTINGS]",
-			Arrays.toString(
-				TransformUtil.transform(
-					portletDataHandler.getPortletDataHandlerControls(),
-					PortletDataHandlerControl::getName, String.class)));
-	}
-
-	private void _testGetSiteTemplateExportPreviewWithPermission()
-		throws Exception {
-
-		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
-
-		_resourcePermissionLocalService.setResourcePermissions(
-			testCompany.getCompanyId(), LayoutSetPrototype.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(_layoutSetPrototype.getLayoutSetPrototypeId()),
-			_role.getRoleId(), new String[] {ActionKeys.UPDATE});
-
-		assertHttpResponseStatusCode(
-			200,
-			_exportPreviewResource.getSiteTemplateExportPreviewHttpResponse(
-				_layoutSetPrototype.getLayoutSetPrototypeId()));
-	}
-
-	private void _testGetSiteTemplateExportPreviewWithPrivateLayouts()
-		throws Exception {
-
-		Group group = _layoutSetPrototype.getGroup();
-
-		LayoutTestUtil.addTypePortletLayout(group, true);
-		LayoutTestUtil.addTypePortletLayout(group, true);
-
-		PortletDataHandler portletDataHandler = _getPortletDataHandler(
-			exportPreviewResource.getSiteTemplateExportPreview(
-				_layoutSetPrototype.getLayoutSetPrototypeId()),
-			"PORTLET_DATA_" + LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS);
-
-		Assert.assertNull(_getChoice(portletDataHandler, "public-pages"));
-
-		Choice choice = _getChoice(portletDataHandler, "private-pages");
-
-		Assert.assertEquals(
-			_layoutLocalService.getLayoutsCount(group, true),
-			GetterUtil.getLong(choice.getAdditionCount()));
-	}
-
-	private void _testGetSiteTemplateExportPreviewWithoutPermission()
-		throws Exception {
-
-		assertHttpResponseStatusCode(
-			404,
-			_exportPreviewResource.getSiteTemplateExportPreviewHttpResponse(
-				_layoutSetPrototype.getLayoutSetPrototypeId()));
-	}
-
 	private String _toDateFilterType(Date startDate, Date endDate) {
 		if ((startDate == null) && (endDate == null)) {
 			return null;
@@ -1015,9 +917,6 @@ public class ExportPreviewResourceTest
 
 	@Inject
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@DeleteAfterTestRun
 	private Role _role;

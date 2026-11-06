@@ -7,7 +7,6 @@ package com.liferay.exportimport.rest.internal.resource.v1_0;
 
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
-import com.liferay.exportimport.rest.dto.v1_0.SyncProcess;
 import com.liferay.exportimport.rest.dto.v1_0.SyncProcessRequest;
 import com.liferay.exportimport.rest.internal.util.LayoutUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
@@ -45,7 +44,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class SyncProcessResourceImpl extends BaseSyncProcessResourceImpl {
 
 	@Override
-	public SyncProcess postSiteTemplateSyncProcess(
+	public void postSiteTemplateSyncProcess(
 			Long siteTemplateId, SyncProcessRequest syncProcessRequest)
 		throws Exception {
 
@@ -91,15 +90,6 @@ public class SyncProcessResourceImpl extends BaseSyncProcessResourceImpl {
 			throw new BadRequestException(
 				illegalStateException.getMessage(), illegalStateException);
 		}
-
-		return new SyncProcess() {
-			{
-				setSiteTemplateId(layoutSetPrototype::getLayoutSetPrototypeId);
-				setSiteTemplateName(
-					() -> layoutSetPrototype.getName(
-						contextAcceptLanguage.getPreferredLocale()));
-			}
-		};
 	}
 
 	@Reference
