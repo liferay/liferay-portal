@@ -349,8 +349,9 @@ public class BatchTestClassGroupTest
 			new BatchTestClassGroup("default", portalTestClassJob) {
 			});
 
-		JobHistory jobHistory = portalTestClassJob.getJobHistory();
 		String batchName = batchTestClassGroup.getBatchName();
+
+		JobHistory jobHistory = portalTestClassJob.getJobHistory();
 
 		Mockito.doReturn(
 			batchHistory
