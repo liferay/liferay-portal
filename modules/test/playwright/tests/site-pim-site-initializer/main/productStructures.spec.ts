@@ -224,3 +224,183 @@ test(
 		}
 	}
 );
+
+test(
+	'Make a group inside a tab of a product structure repeatable',
+	{tag: ['@LPD-114145']},
+	async ({
+		page,
+		productPage,
+		productStructuresPage,
+		productsPage,
+		structureBuilderPage,
+	}) => {
+		const fieldLabel = `Caption ${getRandomInt()}`;
+		const groupLabel = `Images ${getRandomInt()}`;
+		const productTitle = getRandomString();
+		const structureLabel = `ProductType${getRandomInt()}`;
+		const tabLabel = `Media ${getRandomInt()}`;
+
+		try {
+			await productStructuresPage.goto();
+
+			await test.step('Create a repeatable group inside a new tab', async () => {
+				await productStructuresPage.addTab(tabLabel);
+
+				await structureBuilderPage.addField('Text', {label: tabLabel});
+
+				await structureBuilderPage.changeFieldSettings({
+					label: fieldLabel,
+					name: `caption${getRandomInt()}`,
+				});
+
+				await productStructuresPage.createRepeatableGroup({
+					fieldLabel,
+					label: groupLabel,
+				});
+
+				await structureBuilderPage.checkIsParent({
+					child: {label: groupLabel},
+					parent: {label: tabLabel},
+				});
+			});
+
+			await structureBuilderPage.selectStructure();
+
+			await structureBuilderPage.changeStructureSettings({
+				label: structureLabel,
+			});
+
+			const structureId = await structureBuilderPage.saveStructure();
+
+			await structureBuilderPage.publishStructure();
+
+			await test.step('The repeatable group is still inside its tab after a reload', async () => {
+				await structureBuilderPage.editStructure(structureId);
+
+				await structureBuilderPage.expandField({label: tabLabel});
+
+				await structureBuilderPage.checkIsParent({
+					child: {label: groupLabel},
+					parent: {label: tabLabel},
+				});
+
+				await structureBuilderPage.expandField({label: groupLabel});
+
+				await structureBuilderPage.checkIsParent({
+					child: {label: fieldLabel},
+					parent: {label: groupLabel},
+				});
+			});
+
+			const captions = page.getByRole('textbox', {name: fieldLabel});
+
+			await test.step('A product of the new type adds entries to the repeatable group in its tab', async () => {
+				await productsPage.goto();
+
+				await productsPage.openNewProductEditor(
+					'Default',
+					structureLabel
+				);
+
+				await clickAndExpectToBeVisible({
+					target: productPage.title,
+					trigger: productPage.getTab('Details'),
+				});
+
+				await productPage.sku.fill(getRandomString());
+				await productPage.title.fill(productTitle);
+
+				await clickAndExpectToBeVisible({
+					target: captions.first(),
+					trigger: productPage.getTab(tabLabel),
+				});
+
+				await captions.first().fill('Front');
+
+				await page.getByRole('button', {name: 'Add New'}).click();
+
+				await expect(captions).toHaveCount(2);
+
+				await captions.last().fill('Back');
+
+				await productPage.save();
+
+				await expect(
+					productsPage.getProduct(productTitle)
+				).toBeVisible();
+			});
+
+			await test.step('The entries are persisted', async () => {
+				await productsPage.goto();
+
+				await productsPage.openProductEditor(productTitle);
+
+				await clickAndExpectToBeVisible({
+					target: captions.first(),
+					trigger: productPage.getTab(tabLabel),
+				});
+
+				await expect(captions).toHaveCount(2);
+				await expect(captions.first()).toHaveValue('Front');
+				await expect(captions.last()).toHaveValue('Back');
+			});
+		}
+		finally {
+			await productsPage.goto();
+
+			await productsPage.deleteProduct(productTitle);
+		}
+	}
+);
+
+test(
+	'Show a repeatable group at the first level of a product structure in the tab named after the structure',
+	{tag: ['@LPD-114145']},
+	async ({
+		page,
+		productPage,
+		productStructuresPage,
+		productsPage,
+		structureBuilderPage,
+	}) => {
+		const fieldLabel = `Note ${getRandomInt()}`;
+		const groupLabel = `Notes ${getRandomInt()}`;
+		const structureLabel = `ProductType${getRandomInt()}`;
+
+		await productStructuresPage.goto();
+
+		await structureBuilderPage.addField('Text');
+
+		await structureBuilderPage.changeFieldSettings({
+			label: fieldLabel,
+			name: `note${getRandomInt()}`,
+		});
+
+		await productStructuresPage.createRepeatableGroup({
+			fieldLabel,
+			label: groupLabel,
+		});
+
+		await structureBuilderPage.selectStructure();
+
+		await structureBuilderPage.changeStructureSettings({
+			label: structureLabel,
+		});
+
+		await structureBuilderPage.saveStructure();
+
+		await structureBuilderPage.publishStructure();
+
+		await productsPage.goto();
+
+		await productsPage.openNewProductEditor('Default', structureLabel);
+
+		await expect(productPage.getTab(groupLabel)).toHaveCount(0);
+
+		await clickAndExpectToBeVisible({
+			target: page.getByRole('textbox', {name: fieldLabel}),
+			trigger: productPage.getTab(structureLabel),
+		});
+	}
+);

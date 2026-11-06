@@ -106,7 +106,9 @@ export class BaseApiHelpers {
 		const isCMSObjectDefinition =
 			objectDefinition.objectFolderExternalReferenceCode?.startsWith(
 				'L_CMS'
-			);
+			) ||
+			objectDefinition.objectFolderExternalReferenceCode ===
+				'L_PIM_PRODUCT_TYPES';
 
 		for (const objectRelationship of objectRelationships.items) {
 			if (!objectRelationship.edge) {

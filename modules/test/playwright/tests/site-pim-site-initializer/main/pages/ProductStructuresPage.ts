@@ -39,6 +39,42 @@ export class ProductStructuresPage {
 		await expect(this.getTreeItem(label)).toBeVisible();
 	}
 
+	async createRepeatableGroup({
+		fieldLabel,
+		label,
+	}: {
+		fieldLabel: string;
+		label: string;
+	}) {
+		const treeItem = this.page.getByRole('treeitem', {name: fieldLabel});
+
+		await treeItem.click();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: 'Group',
+			}),
+			trigger: treeItem.getByRole('button', {name: 'Field Options'}),
+		});
+
+		const labelInput = this.page.getByLabel('Label');
+
+		await labelInput.fill(label);
+		await labelInput.blur();
+
+		await expect(this.getTreeItem(label)).toBeVisible();
+
+		const repeatableToggle = this.page.getByLabel('Repeatable', {
+			exact: true,
+		});
+
+		await repeatableToggle.check();
+
+		await expect(repeatableToggle).toBeChecked();
+	}
+
 	getTreeItem(label: string) {
 		return this.page.locator('.treeview-link', {hasText: label});
 	}
