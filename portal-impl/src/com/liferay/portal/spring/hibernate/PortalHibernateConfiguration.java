@@ -81,29 +81,6 @@ public class PortalHibernateConfiguration
 	implements FactoryBean<SessionFactory>, PersistenceExceptionTranslator {
 
 	public void afterPropertiesSet() {
-		Dialect dialect = DialectDetector.getDialect(_dataSource);
-
-		Properties properties = PropsUtil.getProperties();
-
-		properties.setProperty(
-			"hibernate.allow_update_outside_transaction", "true");
-		properties.setProperty("hibernate.cache.use_query_cache", "false");
-		properties.setProperty(
-			"hibernate.cache.use_second_level_cache", "false");
-		properties.setProperty(
-			"hibernate.current_session_context_class",
-			PortalCurrentSessionContext.class.getName());
-		properties.setProperty(
-			"hibernate.id.sequence.increment_size_mismatch_strategy", "FIX");
-
-		if (Validator.isNull(PropsValues.HIBERNATE_DIALECT)) {
-			Class<?> clazz = dialect.getClass();
-
-			properties.setProperty("hibernate.dialect", clazz.getName());
-		}
-
-		properties.setProperty("jakarta.persistence.validation.mode", "none");
-
 		BootstrapServiceRegistryBuilder bootstrapServiceRegistryBuilder =
 			new BootstrapServiceRegistryBuilder();
 
@@ -129,9 +106,17 @@ public class PortalHibernateConfiguration
 			configuration.setInterceptor(new CTSQLInterceptor());
 		}
 
-		configuration.addProperties(properties);
+		configuration.addProperties(PropsUtil.getProperties());
 
-		properties = configuration.getProperties();
+		Properties properties = configuration.getProperties();
+
+		if (Validator.isNull(PropsValues.HIBERNATE_DIALECT)) {
+			Dialect dialect = DialectDetector.getDialect(_dataSource);
+
+			Class<?> clazz = dialect.getClass();
+
+			properties.setProperty("hibernate.dialect", clazz.getName());
+		}
 
 		if (_dataSource != null) {
 			properties.put("hibernate.connection.datasource", _dataSource);
@@ -403,6 +388,16 @@ public class PortalHibernateConfiguration
 
 	static {
 		_bundleContext = SystemBundleUtil.getBundleContext();
+
+		PropsUtil.set("hibernate.allow_update_outside_transaction", "true");
+		PropsUtil.set("hibernate.cache.use_query_cache", "false");
+		PropsUtil.set("hibernate.cache.use_second_level_cache", "false");
+		PropsUtil.set(
+			"hibernate.current_session_context_class",
+			PortalCurrentSessionContext.class.getName());
+		PropsUtil.set(
+			"hibernate.id.sequence.increment_size_mismatch_strategy", "FIX");
+		PropsUtil.set("jakarta.persistence.validation.mode", "none");
 
 		try {
 			_META_MODEL_FIELD = ReflectionUtil.getDeclaredField(
