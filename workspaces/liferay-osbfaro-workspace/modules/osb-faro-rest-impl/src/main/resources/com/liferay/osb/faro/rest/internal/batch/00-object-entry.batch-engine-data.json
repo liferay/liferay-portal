@@ -1,0 +1,22 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.rest.dto.v1_0.ObjectEntry",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-63311",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "PARTIAL_UPDATE"
+		},
+		"taskItemDelegateName": "MCPServerProfile"
+	},
+	"items": [
+		{
+			"description": "LDP MCP profile: the read only LDP (Liferay Data Platform) analytics tools of faro-rest, for AI clients.",
+			"externalReferenceCode": "LDP_MCP_SERVER_PROFILE",
+			"instructions": "Read only analytics from LDP (Liferay Data Platform). Start with getWorkspacesPage to find the workspaces the user can use (their groupId), then getWorkspaceGroupChannelsPage to find the properties of a workspace (their channelId); most tools need both. All IDs are strings. To fetch one account, individual or segment by ID, find the ID first with the matching list tool. For a date range pass rangeKey (LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS or LAST_180_DAYS) or both rangeStart and rangeEnd as yyyy-MM-dd dates, at most 180 days apart; a custom range takes precedence over rangeKey. pageSize is at most 100. Request only the fields you need with the fields input, and leave out demographics, events and attributes unless the question needs them. Every error says what to change: after a 400, fix the parameter the message names; after a 403 or 404, call the tool the message names to find valid IDs; after a 503, wait the stated number of seconds and repeat the identical call; after a 504, narrow the date range or the page size. Never repeat an unchanged request that returned a 400, 403 or 404.",
+			"name": "ldp"
+		}
+	]
+}
