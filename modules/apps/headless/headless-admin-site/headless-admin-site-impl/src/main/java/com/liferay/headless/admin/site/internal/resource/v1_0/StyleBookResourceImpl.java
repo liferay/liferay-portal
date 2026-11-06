@@ -13,6 +13,7 @@ import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
+import com.liferay.headless.admin.site.dto.v1_0.ThumbnailURLReference;
 import com.liferay.headless.admin.site.dto.v1_0.util.FileEntryUtil;
 import com.liferay.headless.admin.site.internal.odata.entity.v1_0.StyleBookEntityModel;
 import com.liferay.headless.admin.site.internal.util.EnabledUtil;
@@ -23,10 +24,14 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeCon
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -585,13 +590,20 @@ public class StyleBookResourceImpl
 			long groupId, long previewFileEntryId, StyleBook styleBook)
 		throws Exception {
 
-		if (styleBook.getThumbnailURLReference() == null) {
+		ThumbnailURLReference thumbnailURLReference =
+			styleBook.getThumbnailURLReference();
+
+		if (thumbnailURLReference == null) {
 			return previewFileEntryId;
 		}
 
+		_validatePreviewFileEntry(
+			thumbnailURLReference.getExternalReferenceCode(), groupId,
+			previewFileEntryId);
+
 		return FileEntryUtil.getPreviewFileEntryId(
-			groupId, StyleBookPortletKeys.STYLE_BOOK,
-			styleBook.getThumbnailURLReference(), contextUser.getUserId());
+			groupId, StyleBookPortletKeys.STYLE_BOOK, thumbnailURLReference,
+			contextUser.getUserId());
 	}
 
 	private ServiceContext _getServiceContext(long groupId) {
@@ -706,6 +718,33 @@ public class StyleBookResourceImpl
 			});
 	}
 
+	private boolean _isAvailablePreviewFileEntry(
+		FileEntry fileEntry, long groupId) {
+
+		Repository repository =
+			PortletFileRepositoryUtil.fetchPortletRepository(
+				groupId, StyleBookPortletKeys.STYLE_BOOK);
+
+		if ((repository == null) ||
+			(repository.getRepositoryId() != fileEntry.getRepositoryId())) {
+
+			return false;
+		}
+
+		for (StyleBookEntry styleBookEntry :
+				_styleBookEntryLocalService.getStyleBookEntries(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+			if (styleBookEntry.getPreviewFileEntryId() ==
+					fileEntry.getFileEntryId()) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private Map<String, String> _resolveActionHref(
 		Map<String, String> action, String designLibraryExternalReferenceCode,
 		String styleBookExternalReferenceCode) {
@@ -758,6 +797,26 @@ public class StyleBookResourceImpl
 		throws Exception {
 
 		return _toStyleBook(styleBookEntry.getGroupId(), styleBookEntry);
+	}
+
+	private void _validatePreviewFileEntry(
+		String externalReferenceCode, long groupId, long previewFileEntryId) {
+
+		FileEntry fileEntry =
+			PortletFileRepositoryUtil.
+				fetchPortletFileEntryByExternalReferenceCode(
+					externalReferenceCode, groupId);
+
+		if ((fileEntry == null) ||
+			(fileEntry.getFileEntryId() == previewFileEntryId) ||
+			_isAvailablePreviewFileEntry(fileEntry, groupId)) {
+
+			return;
+		}
+
+		throw new IllegalArgumentException(
+			"Unable to use file " + externalReferenceCode +
+				" as a style book preview");
 	}
 
 	private static final EntityModel _entityModel = new StyleBookEntityModel();

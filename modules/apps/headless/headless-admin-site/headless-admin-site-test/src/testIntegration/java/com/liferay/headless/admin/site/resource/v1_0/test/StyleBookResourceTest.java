@@ -14,6 +14,7 @@ import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.resource.v1_0.StyleBookResource;
 import com.liferay.headless.admin.site.client.scope.Scope;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.DesignLibraryTestUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.FileEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ProblemExceptionTestUtil;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Indexer;
@@ -188,6 +190,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		_testPostSiteStyleBookWithNullDefaultStyleBook();
 		_testPostSiteStyleBookWithStagedSite();
 		_testPostSiteStyleBookWithThumbnailURLReference();
+		_testPostSiteStyleBookWithUnavailableThumbnailURLReference();
 	}
 
 	@Override
@@ -1504,6 +1507,55 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 				postStyleBook.getExternalReferenceCode()));
 	}
 
+	private void _testPostSiteStyleBookWithUnavailableThumbnailURLReference()
+		throws Exception {
+
+		FileEntry fileEntry = FileEntryTestUtil.addPreviewFileEntry(
+			testGroup, _portletFileRepository, getClass());
+
+		StyleBook randomStyleBook1 = randomStyleBook();
+
+		ThumbnailURLReference thumbnailURLReference1 =
+			new ThumbnailURLReference();
+
+		thumbnailURLReference1.setExternalReferenceCode(
+			fileEntry.getExternalReferenceCode());
+
+		randomStyleBook1.setThumbnailURLReference(thumbnailURLReference1);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			"Unable to use file " + fileEntry.getExternalReferenceCode() +
+				" as a style book preview",
+			() -> testPostSiteStyleBook_addStyleBook(randomStyleBook1));
+
+		StyleBook randomStyleBook2 = randomStyleBook();
+
+		ThumbnailURLReference thumbnailURLReference2 =
+			_randomThumbnailURLReference();
+
+		randomStyleBook2.setThumbnailURLReference(thumbnailURLReference2);
+
+		testPostSiteStyleBook_addStyleBook(randomStyleBook2);
+
+		StyleBook randomStyleBook3 = randomStyleBook();
+
+		ThumbnailURLReference thumbnailURLReference3 =
+			new ThumbnailURLReference();
+
+		thumbnailURLReference3.setExternalReferenceCode(
+			thumbnailURLReference2.getExternalReferenceCode());
+
+		randomStyleBook3.setThumbnailURLReference(thumbnailURLReference3);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			"Unable to use file " +
+				thumbnailURLReference2.getExternalReferenceCode() +
+					" as a style book preview",
+			() -> testPostSiteStyleBook_addStyleBook(randomStyleBook3));
+	}
+
 	private void _testPutDesignLibraryStyleBookWithFrontendTokenDefinition()
 		throws Exception {
 
@@ -1787,6 +1839,9 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	private Language _language;
 
 	private Layout _pageSpecificationLayout;
+
+	@Inject
+	private PortletFileRepository _portletFileRepository;
 
 	@Inject
 	private StyleBookEntryLocalService _styleBookEntryLocalService;

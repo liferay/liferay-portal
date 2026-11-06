@@ -247,8 +247,7 @@ public class StyleBookEntryLocalServiceImpl
 		throws PortalException {
 
 		if (styleBookEntry.getPreviewFileEntryId() > 0) {
-			PortletFileRepositoryUtil.deletePortletFileEntry(
-				styleBookEntry.getPreviewFileEntryId());
+			_deletePreviewFileEntry(styleBookEntry.getPreviewFileEntryId());
 		}
 
 		return delete(styleBookEntry);
@@ -734,8 +733,7 @@ public class StyleBookEntryLocalServiceImpl
 			styleBookEntry, serviceContext);
 
 		if ((previewFileEntryId == 0) && (previousPreviewFileEntryId > 0)) {
-			_portletFileRepository.deletePortletFileEntry(
-				previousPreviewFileEntryId);
+			_deletePreviewFileEntry(previousPreviewFileEntryId);
 		}
 
 		return styleBookEntry;
@@ -832,8 +830,7 @@ public class StyleBookEntryLocalServiceImpl
 		if ((previousPreviewFileEntryId > 0) &&
 			(previousPreviewFileEntryId != previewFileEntryId)) {
 
-			_portletFileRepository.deletePortletFileEntry(
-				previousPreviewFileEntryId);
+			_deletePreviewFileEntry(previousPreviewFileEntryId);
 		}
 
 		return styleBookEntry;
@@ -879,6 +876,26 @@ public class StyleBookEntryLocalServiceImpl
 			false);
 
 		return fileEntry.getFileEntryId();
+	}
+
+	private void _deletePreviewFileEntry(long previewFileEntryId)
+		throws PortalException {
+
+		FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
+			previewFileEntryId);
+
+		if (fileEntry == null) {
+			return;
+		}
+
+		Repository repository = _portletFileRepository.fetchPortletRepository(
+			fileEntry.getGroupId(), StyleBookPortletKeys.STYLE_BOOK);
+
+		if ((repository != null) &&
+			(repository.getRepositoryId() == fileEntry.getRepositoryId())) {
+
+			_portletFileRepository.deletePortletFileEntry(previewFileEntryId);
+		}
 	}
 
 	private StyleBookEntry _deleteStyleBookEntryVersions(
