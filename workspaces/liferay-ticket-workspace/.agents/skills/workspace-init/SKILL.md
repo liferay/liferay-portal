@@ -116,7 +116,7 @@ On a fresh Liferay instance, the default admin `test@liferay.com` is created wit
 
 - **Already started**: the manual login is the only way through — syncing the properties now will not clear a `passwordReset` flag already in the database.
 
-Prompt the user to log into `http://localhost:${PORT}` as `test@liferay.com` / `test`, accept the Terms of Use, and complete the password change (use `test` as the new password so existing credentials stay valid). Wait for their reply before making any API or MCP calls.
+Prompt the user to log into `http://localhost:${PORT}` as `test@liferay.com` / `test`, accept the Terms of Use if it appears, and complete the password change. Liferay rejects a new password that matches the current one, so tell the user to choose a different password and send it back to you. Wait for their reply before making any API or MCP calls, then use the new password in place of `test` for every call that follows.
 
 Do not automate the browser login flow — Liferay's login form structure varies across versions and automation is brittle.
 
