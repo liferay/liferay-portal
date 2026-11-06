@@ -148,7 +148,8 @@ public class StyleSheetFrontendResourceRequestHandlerTest
 					ExpectedCacheKey.URL_AND_LAST_MODIFIED) {
 
 			Assert.assertEquals(
-				url + "#" + LAST_MODIFIED, frontendResource.getCacheKey());
+				StringBundler.concat(url, "#", LAST_MODIFIED),
+				frontendResource.getCacheKey());
 		}
 		else if (_EXPECTED_CACHE_KEY[index] ==
 					ExpectedCacheKey.URL_AND_LAST_MODIFIED_AND_TOKENS) {
