@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.internal.upgrade.registry;
 
 import com.liferay.osb.faro.internal.upgrade.v24_1_0.GroupUsersUpgradeProcess;
+import com.liferay.osb.faro.internal.upgrade.v24_2_0.GroupFriendlyURLUpgradeProcess;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
@@ -205,6 +206,10 @@ public class FaroServiceUpgradeStepRegistrator
 		registry.register(
 			"24.0.0", "24.1.0",
 			new GroupUsersUpgradeProcess(_groupLocalService));
+
+		registry.register(
+			"24.1.0", "24.2.0",
+			new GroupFriendlyURLUpgradeProcess(_groupLocalService));
 	}
 
 	@Reference
