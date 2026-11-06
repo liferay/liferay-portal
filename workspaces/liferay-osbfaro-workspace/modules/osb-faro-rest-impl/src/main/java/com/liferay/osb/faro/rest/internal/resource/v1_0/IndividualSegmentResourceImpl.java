@@ -12,11 +12,17 @@ import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegment;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.converter.FaroDTOConverterContext;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroPaginationUtil;
 import com.liferay.osb.faro.rest.internal.helper.IndividualSegmentHelper;
+import com.liferay.osb.faro.rest.internal.security.permission.WorkspacePermission;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualSegmentResource;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -70,10 +76,18 @@ public class IndividualSegmentResourceImpl
 		FaroProject faroProject =
 			_faroProjectLocalService.getFaroProjectByGroupId(groupId);
 
+		List<String> excludedChannelIds = Collections.emptyList();
+
+		if (Validator.isNull(channelId)) {
+			excludedChannelIds = _workspacePermission.getInaccessibleChannelIds(
+				faroProject.getGroupId(),
+				PermissionThreadLocal.getPermissionChecker());
+		}
+
 		Results<com.liferay.osb.faro.engine.client.model.IndividualSegment>
 			results = _contactsEngineClient.getIndividualIndividualSegments(
-				faroProject, channelId, individualId, search, status,
-				FaroPaginationUtil.getCur(pagination),
+				faroProject, channelId, excludedChannelIds, individualId,
+				search, status, FaroPaginationUtil.getCur(pagination),
 				FaroPaginationUtil.getDelta(pagination), null);
 
 		return Page.of(
@@ -118,6 +132,9 @@ public class IndividualSegmentResourceImpl
 
 	@Reference
 	private IndividualSegmentHelper _individualSegmentHelper;
+
+	@Reference
+	private WorkspacePermission _workspacePermission;
 
 }
 

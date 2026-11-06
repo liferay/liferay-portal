@@ -8,8 +8,12 @@ package com.liferay.osb.faro.rest.internal.security.permission;
 import com.liferay.osb.faro.constants.FaroChannelConstants;
 import com.liferay.osb.faro.constants.FaroUserConstants;
 import com.liferay.osb.faro.model.FaroChannel;
+import com.liferay.osb.faro.model.FaroChannelTable;
 import com.liferay.osb.faro.model.FaroUser;
+import com.liferay.osb.faro.service.FaroChannelLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -17,6 +21,9 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -26,6 +33,40 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = WorkspacePermission.class)
 public class WorkspacePermission {
+
+	public List<String> getInaccessibleChannelIds(
+		long groupId, PermissionChecker permissionChecker) {
+
+		if (permissionChecker.isOmniadmin() ||
+			_hasWorkspaceRole(
+				groupId, permissionChecker,
+				_WORKSPACE_ADMINISTRATOR_ROLE_NAMES)) {
+
+			return Collections.emptyList();
+		}
+
+		return TransformUtil.transform(
+			_faroChannelLocalService.<List<FaroChannel>>dslQuery(
+				DSLQueryFactoryUtil.select(
+					FaroChannelTable.INSTANCE
+				).from(
+					FaroChannelTable.INSTANCE
+				).where(
+					FaroChannelTable.INSTANCE.workspaceGroupId.eq(
+						groupId
+					).and(
+						FaroChannelTable.INSTANCE.permissionType.eq(
+							FaroChannelConstants.PERMISSION_SELECT_USERS)
+					)
+				)),
+			faroChannel -> {
+				if (hasChannelPermission(faroChannel, permissionChecker)) {
+					return null;
+				}
+
+				return faroChannel.getChannelId();
+			});
+	}
 
 	public boolean hasChannelPermission(
 		FaroChannel faroChannel, PermissionChecker permissionChecker) {
@@ -81,6 +122,9 @@ public class WorkspacePermission {
 		RoleConstants.SITE_ADMINISTRATOR, RoleConstants.SITE_MEMBER,
 		RoleConstants.SITE_OWNER
 	};
+
+	@Reference
+	private FaroChannelLocalService _faroChannelLocalService;
 
 	@Reference
 	private FaroUserLocalService _faroUserLocalService;
