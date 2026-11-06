@@ -179,15 +179,17 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 		URL url = hashedFilesRegistry.getResource(
 			deployHashed ? _VALID_HASHED_URL : _VALID_URL);
 
-		if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.LAST_MODIFIED) {
-			Assert.assertEquals(
-				url + "#" + LAST_MODIFIED, frontendResource.getCacheKey());
-		}
-		else if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.NULL) {
+		if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.NULL) {
 			Assert.assertNull(frontendResource.getCacheKey());
 		}
 		else if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.URL) {
 			Assert.assertEquals(url.toString(), frontendResource.getCacheKey());
+		}
+		else if (_EXPECTED_CACHE_KEY[index] ==
+					ExpectedCacheKey.URL_AND_LAST_MODIFIED) {
+
+			Assert.assertEquals(
+				url + "#" + LAST_MODIFIED, frontendResource.getCacheKey());
 		}
 
 		if (_EXPECTED_E_TAG[index] == ExpectedETag.HASH) {
@@ -285,9 +287,10 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 	}
 
 	private static final ExpectedCacheKey[] _EXPECTED_CACHE_KEY = {
-		null, null, null, null, ExpectedCacheKey.LAST_MODIFIED, null, null,
-		ExpectedCacheKey.NULL, null, null, ExpectedCacheKey.LAST_MODIFIED, null,
-		null, ExpectedCacheKey.LAST_MODIFIED, ExpectedCacheKey.URL,
+		null, null, null, null, ExpectedCacheKey.URL_AND_LAST_MODIFIED, null,
+		null, ExpectedCacheKey.NULL, null, null,
+		ExpectedCacheKey.URL_AND_LAST_MODIFIED, null, null,
+		ExpectedCacheKey.URL_AND_LAST_MODIFIED, ExpectedCacheKey.URL,
 		ExpectedCacheKey.URL, ExpectedCacheKey.URL, ExpectedCacheKey.NULL,
 		ExpectedCacheKey.NULL, ExpectedCacheKey.NULL, ExpectedCacheKey.URL,
 		ExpectedCacheKey.URL, ExpectedCacheKey.URL, ExpectedCacheKey.URL,
@@ -407,7 +410,7 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 
 	private enum ExpectedCacheKey {
 
-		LAST_MODIFIED, NULL, URL
+		NULL, URL, URL_AND_LAST_MODIFIED
 
 	}
 

@@ -141,12 +141,17 @@ public class StyleSheetFrontendResourceRequestHandlerTest
 		URL url = hashedFilesRegistry.getResource(
 			deployHashed ? _VALID_HASHED_URL : _VALID_URL);
 
-		if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.LAST_MODIFIED) {
+		if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.URL) {
+			Assert.assertEquals(url.toString(), frontendResource.getCacheKey());
+		}
+		else if (_EXPECTED_CACHE_KEY[index] ==
+					ExpectedCacheKey.URL_AND_LAST_MODIFIED) {
+
 			Assert.assertEquals(
 				url + "#" + LAST_MODIFIED, frontendResource.getCacheKey());
 		}
 		else if (_EXPECTED_CACHE_KEY[index] ==
-					ExpectedCacheKey.LAST_MODIFIED_TOKENIZED) {
+					ExpectedCacheKey.URL_AND_LAST_MODIFIED_AND_TOKENS) {
 
 			Assert.assertEquals(
 				StringBundler.concat(
@@ -155,10 +160,9 @@ public class StyleSheetFrontendResourceRequestHandlerTest
 					_THEME_STATIC_RESOURCE_PATH, _THEME_IMAGES_PATH),
 				frontendResource.getCacheKey());
 		}
-		else if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.URL) {
-			Assert.assertEquals(url.toString(), frontendResource.getCacheKey());
-		}
-		else if (_EXPECTED_CACHE_KEY[index] == ExpectedCacheKey.URL_TOKENIZED) {
+		else if (_EXPECTED_CACHE_KEY[index] ==
+					ExpectedCacheKey.URL_AND_TOKENS) {
+
 			Assert.assertEquals(
 				StringBundler.concat(
 					url, "#base_url=#portal_ctx=#theme_image_path=",
@@ -281,14 +285,14 @@ public class StyleSheetFrontendResourceRequestHandlerTest
 	private static final long _CSS_STYLE_SHEETS_MAX_AGE = 1000;
 
 	private static final ExpectedCacheKey[] _EXPECTED_CACHE_KEY = {
-		null, null, ExpectedCacheKey.LAST_MODIFIED,
-		ExpectedCacheKey.LAST_MODIFIED, null, null,
-		ExpectedCacheKey.LAST_MODIFIED,
-		ExpectedCacheKey.LAST_MODIFIED_TOKENIZED, null, null,
+		null, null, ExpectedCacheKey.URL_AND_LAST_MODIFIED,
+		ExpectedCacheKey.URL_AND_LAST_MODIFIED, null, null,
+		ExpectedCacheKey.URL_AND_LAST_MODIFIED,
+		ExpectedCacheKey.URL_AND_LAST_MODIFIED_AND_TOKENS, null, null,
 		ExpectedCacheKey.URL, ExpectedCacheKey.URL, ExpectedCacheKey.URL,
 		ExpectedCacheKey.URL, ExpectedCacheKey.URL,
-		ExpectedCacheKey.URL_TOKENIZED, ExpectedCacheKey.URL,
-		ExpectedCacheKey.URL_TOKENIZED
+		ExpectedCacheKey.URL_AND_TOKENS, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL_AND_TOKENS
 	};
 
 	private static final boolean[] _EXPECTED_CAN_HANDLE_REQUEST = {
@@ -376,7 +380,8 @@ public class StyleSheetFrontendResourceRequestHandlerTest
 
 	private enum ExpectedCacheKey {
 
-		LAST_MODIFIED, LAST_MODIFIED_TOKENIZED, URL, URL_TOKENIZED
+		URL, URL_AND_LAST_MODIFIED, URL_AND_LAST_MODIFIED_AND_TOKENS,
+		URL_AND_TOKENS
 
 	}
 
