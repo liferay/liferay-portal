@@ -2635,7 +2635,6 @@ public class ObjectActionLocalServiceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-11388")
 	@Test
 	public void testExecuteObjectActionWithLocationObjectField()
 		throws Exception {

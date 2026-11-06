@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -128,7 +127,6 @@ public class ObjectEntryAuditModelListenerTest {
 			).build());
 	}
 
-	@FeatureFlag("LPD-11388")
 	@Test
 	public void testOnAfterCreateWithLocationObjectField() throws Exception {
 		ObjectFieldUtil.addCustomObjectField(
