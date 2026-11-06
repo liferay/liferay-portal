@@ -11,7 +11,6 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.TreeModel;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -127,10 +126,7 @@ public class DLFolderLocalServiceTreeTest extends BaseLocalServiceTreeTestCase {
 
 	@Override
 	protected void rebuildTree() throws Exception {
-		DLFolderLocalServiceUtil.rebuildTree(
-			TestPropsValues.getCompanyId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, StringPool.SLASH,
-			false);
+		DLFolderLocalServiceUtil.rebuildTree(TestPropsValues.getCompanyId());
 	}
 
 }

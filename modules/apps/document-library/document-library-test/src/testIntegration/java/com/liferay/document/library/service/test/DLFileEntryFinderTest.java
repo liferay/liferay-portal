@@ -142,6 +142,12 @@ public class DLFileEntryFinderTest {
 	}
 
 	@Test
+	public void testCountByExtraSettings() throws Exception {
+		Assert.assertEquals(
+			4, DLFileEntryLocalServiceUtil.getExtraSettingsFileEntriesCount());
+	}
+
+	@Test
 	public void testCountByG_U_F_M_StatusApprovedByMimeType_BothRepositories()
 		throws Exception {
 

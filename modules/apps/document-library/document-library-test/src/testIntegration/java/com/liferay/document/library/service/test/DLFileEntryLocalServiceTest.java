@@ -961,7 +961,6 @@ public class DLFileEntryLocalServiceTest {
 
 		DLFileEntryLocalServiceUtil.checkOutFileEntry(
 			TestPropsValues.getUserId(), dlFileEntry.getFileEntryId(),
-			StringPool.BLANK, DLFileEntryConstants.LOCK_EXPIRATION_TIME,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		dlFileVersion = dlFileEntry.getLatestFileVersion(true);
@@ -1021,7 +1020,6 @@ public class DLFileEntryLocalServiceTest {
 
 		DLFileEntryLocalServiceUtil.checkOutFileEntry(
 			TestPropsValues.getUserId(), dlFileEntry.getFileEntryId(),
-			StringPool.BLANK, DLFileEntryConstants.LOCK_EXPIRATION_TIME,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		DLFileEntryLocalServiceUtil.updateFileEntry(

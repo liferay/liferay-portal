@@ -92,6 +92,14 @@ public class DLFileVersionLocalServiceImpl
 	}
 
 	@Override
+	public DLFileVersion getFileVersionByUuidAndGroupId(
+			String uuid, long groupId)
+		throws PortalException {
+
+		return dlFileVersionPersistence.findByUUID_G(uuid, groupId);
+	}
+
+	@Override
 	public List<DLFileVersion> getFileVersions(long fileEntryId, int status) {
 		List<DLFileVersion> dlFileVersions = null;
 
@@ -169,6 +177,11 @@ public class DLFileVersionLocalServiceImpl
 		}
 
 		return getLatestFileVersion(fileEntryId, excludeWorkingCopy);
+	}
+
+	@Override
+	public void rebuildTree(long companyId) throws PortalException {
+		_dlFolderLocalService.rebuildTree(companyId);
 	}
 
 	@Override
