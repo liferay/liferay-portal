@@ -180,6 +180,18 @@ public class SalesforceObjectEntryManagerImplTest {
 	private void _testGetObjectEntriesWithAccountEntryRestriction()
 		throws Exception {
 
+		List<AccountEntry> accountEntries = Arrays.asList(
+			_mockAccountEntry("test's"), _mockAccountEntry("test\\"));
+
+		Mockito.when(
+			_accountEntryLocalService.getUserAccountEntries(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.any(),
+				Mockito.any(), Mockito.anyInt(), Mockito.anyInt(),
+				Mockito.anyInt())
+		).thenReturn(
+			accountEntries
+		);
+
 		Mockito.when(
 			_inlineSQLHelper.isEnabled(Mockito.anyLong(), Mockito.anyLong())
 		).thenReturn(
@@ -198,18 +210,6 @@ public class SalesforceObjectEntryManagerImplTest {
 			_objectFieldLocalService.getObjectField(Mockito.anyLong())
 		).thenReturn(
 			objectField
-		);
-
-		List<AccountEntry> accountEntries = Arrays.asList(
-			_mockAccountEntry("test's"), _mockAccountEntry("test\\"));
-
-		Mockito.when(
-			_accountEntryLocalService.getUserAccountEntries(
-				Mockito.anyLong(), Mockito.anyLong(), Mockito.any(),
-				Mockito.any(), Mockito.anyInt(), Mockito.anyInt(),
-				Mockito.anyInt())
-		).thenReturn(
-			accountEntries
 		);
 
 		ObjectDefinition objectDefinition = _mockObjectDefinition(true);
