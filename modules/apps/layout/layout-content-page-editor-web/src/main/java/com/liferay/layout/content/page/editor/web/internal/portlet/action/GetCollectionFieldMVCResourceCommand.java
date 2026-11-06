@@ -345,18 +345,11 @@ public class GetCollectionFieldMVCResourceCommand
 					return null;
 				}
 
-				if (Validator.isNotNull(listItemStyle)) {
-					List<InfoItemRenderer<?>> infoItemRenderers =
-						infoListRenderer.getAvailableInfoItemRenderers();
+				if (Validator.isNotNull(listItemStyle) &&
+					!_hasAvailableInfoItemRenderer(
+						infoListRenderer, listItemStyle)) {
 
-					if (ListUtil.isNotEmpty(infoItemRenderers) &&
-						!ListUtil.exists(
-							infoItemRenderers,
-							infoItemRenderer -> Objects.equals(
-								infoItemRenderer.getKey(), listItemStyle))) {
-
-						return null;
-					}
+					return null;
 				}
 
 				UnsyncStringWriter unsyncStringWriter =
@@ -664,6 +657,22 @@ public class GetCollectionFieldMVCResourceCommand
 		}
 
 		return null;
+	}
+
+	private boolean _hasAvailableInfoItemRenderer(
+		InfoListRenderer<?> infoListRenderer, String listItemStyle) {
+
+		List<InfoItemRenderer<?>> infoItemRenderers =
+			infoListRenderer.getAvailableInfoItemRenderers();
+
+		if (ListUtil.isEmpty(infoItemRenderers)) {
+			return true;
+		}
+
+		return ListUtil.exists(
+			infoItemRenderers,
+			infoItemRenderer -> Objects.equals(
+				infoItemRenderer.getKey(), listItemStyle));
 	}
 
 	private boolean _hasViewPermission(
