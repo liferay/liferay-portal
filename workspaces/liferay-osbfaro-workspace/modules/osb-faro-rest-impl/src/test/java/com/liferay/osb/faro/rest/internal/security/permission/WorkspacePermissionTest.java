@@ -9,7 +9,9 @@ import com.liferay.osb.faro.constants.FaroChannelConstants;
 import com.liferay.osb.faro.constants.FaroUserConstants;
 import com.liferay.osb.faro.model.FaroChannel;
 import com.liferay.osb.faro.model.FaroUser;
+import com.liferay.osb.faro.service.FaroChannelLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -17,7 +19,9 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,6 +46,9 @@ public class WorkspacePermissionTest {
 		);
 
 		ReflectionTestUtil.setFieldValue(
+			_workspacePermission, "_faroChannelLocalService",
+			_faroChannelLocalService);
+		ReflectionTestUtil.setFieldValue(
 			_workspacePermission, "_faroUserLocalService",
 			_faroUserLocalService);
 		ReflectionTestUtil.setFieldValue(
@@ -62,6 +69,67 @@ public class WorkspacePermissionTest {
 		_mockFaroUser(
 			RoleConstants.SITE_OWNER, FaroUserConstants.STATUS_APPROVED,
 			_USER_ID_OWNER);
+	}
+
+	@Test
+	public void testGetInaccessibleChannelIds() {
+		FaroChannel faroChannel = _mockFaroChannel(
+			FaroChannelConstants.PERMISSION_SELECT_USERS);
+
+		String uninvitedChannelId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			faroChannel.getChannelId()
+		).thenReturn(
+			uninvitedChannelId
+		);
+
+		FaroChannel invitedFaroChannel = _mockFaroChannel(
+			FaroChannelConstants.PERMISSION_SELECT_USERS);
+
+		Mockito.when(
+			invitedFaroChannel.getChannelId()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			invitedFaroChannel.getGroupId()
+		).thenReturn(
+			_CHANNEL_GROUP_ID_INVITED
+		);
+
+		Mockito.when(
+			_userGroupRoleLocalService.getUserGroupRoles(
+				_USER_ID_MEMBER, _CHANNEL_GROUP_ID_INVITED)
+		).thenReturn(
+			Collections.singletonList(Mockito.mock(UserGroupRole.class))
+		);
+
+		Mockito.doReturn(
+			Arrays.asList(faroChannel, invitedFaroChannel)
+		).when(
+			_faroChannelLocalService
+		).dslQuery(
+			Mockito.any(DSLQuery.class)
+		);
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_workspacePermission.getInaccessibleChannelIds(
+				_GROUP_ID, _mockPermissionChecker(_USER_ID_ADMINISTRATOR)));
+		Assert.assertEquals(
+			Collections.singletonList(uninvitedChannelId),
+			_workspacePermission.getInaccessibleChannelIds(
+				_GROUP_ID, _mockPermissionChecker(_USER_ID_MEMBER)));
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_workspacePermission.getInaccessibleChannelIds(
+				_GROUP_ID, _mockPermissionChecker(_USER_ID_OMNIADMIN)));
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_workspacePermission.getInaccessibleChannelIds(
+				_GROUP_ID, _mockPermissionChecker(_USER_ID_OWNER)));
 	}
 
 	@Test
@@ -219,22 +287,29 @@ public class WorkspacePermissionTest {
 		return permissionChecker;
 	}
 
-	private static final long _CHANNEL_GROUP_ID = 100;
+	private static final long _CHANNEL_GROUP_ID = RandomTestUtil.randomLong();
 
-	private static final long _GROUP_ID = 200;
+	private static final long _CHANNEL_GROUP_ID_INVITED =
+		RandomTestUtil.randomLong();
 
-	private static final long _USER_ID_ADMINISTRATOR = 1;
+	private static final long _GROUP_ID = RandomTestUtil.randomLong();
 
-	private static final long _USER_ID_MEMBER = 2;
+	private static final long _USER_ID_ADMINISTRATOR =
+		RandomTestUtil.randomLong();
 
-	private static final long _USER_ID_OMNIADMIN = 3;
+	private static final long _USER_ID_MEMBER = RandomTestUtil.randomLong();
 
-	private static final long _USER_ID_OUTSIDER = 4;
+	private static final long _USER_ID_OMNIADMIN = RandomTestUtil.randomLong();
 
-	private static final long _USER_ID_OWNER = 5;
+	private static final long _USER_ID_OUTSIDER = RandomTestUtil.randomLong();
 
-	private static final long _USER_ID_PENDING_ADMINISTRATOR = 6;
+	private static final long _USER_ID_OWNER = RandomTestUtil.randomLong();
 
+	private static final long _USER_ID_PENDING_ADMINISTRATOR =
+		RandomTestUtil.randomLong();
+
+	private final FaroChannelLocalService _faroChannelLocalService =
+		Mockito.mock(FaroChannelLocalService.class);
 	private final FaroUserLocalService _faroUserLocalService = Mockito.mock(
 		FaroUserLocalService.class);
 	private final RoleLocalService _roleLocalService = Mockito.mock(

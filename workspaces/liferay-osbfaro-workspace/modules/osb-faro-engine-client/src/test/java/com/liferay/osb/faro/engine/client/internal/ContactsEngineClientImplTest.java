@@ -11,6 +11,7 @@ import com.liferay.osb.faro.engine.client.constants.FieldMappingConstants;
 import com.liferay.osb.faro.engine.client.model.EntityModelPagedModel;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.lang.reflect.Type;
 
@@ -141,6 +142,38 @@ public class ContactsEngineClientImplTest {
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString())));
+	}
+
+	@Test
+	public void testGetIndividualIndividualSegmentsWithChannelId() {
+		long channelId = RandomTestUtil.randomLong();
+
+		_contactsEngineClientImpl.getIndividualIndividualSegments(
+			_faroProject, String.valueOf(channelId),
+			RandomTestUtil.randomString(), null, null,
+			RandomTestUtil.randomInt(), RandomTestUtil.randomInt(), null);
+
+		String filterString = GetterUtil.getString(_uriVariables.get("filter"));
+
+		Assert.assertFalse(filterString.contains(" ne "));
+		Assert.assertTrue(filterString.contains("channelId eq " + channelId));
+	}
+
+	@Test
+	public void testGetIndividualIndividualSegmentsWithExcludedChannelIds() {
+		long channelId1 = RandomTestUtil.randomLong();
+		long channelId2 = RandomTestUtil.randomLong();
+
+		_contactsEngineClientImpl.getIndividualIndividualSegments(
+			_faroProject, null,
+			List.of(String.valueOf(channelId1), String.valueOf(channelId2)),
+			RandomTestUtil.randomString(), null, null,
+			RandomTestUtil.randomInt(), RandomTestUtil.randomInt(), null);
+
+		String filterString = GetterUtil.getString(_uriVariables.get("filter"));
+
+		Assert.assertTrue(filterString.contains("channelId ne " + channelId1));
+		Assert.assertTrue(filterString.contains("channelId ne " + channelId2));
 	}
 
 	@Test

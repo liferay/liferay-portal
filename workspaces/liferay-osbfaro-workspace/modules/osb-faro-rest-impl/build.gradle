@@ -6,6 +6,7 @@ dependencies {
 	compileOnly project(":modules:osb-faro-api")
 	compileOnly project(":modules:osb-faro-engine-client")
 	compileOnly project(":modules:osb-faro-rest-api")
+	testImplementation group: "com.liferay", name: "com.liferay.petra.sql.dsl.spi", version: "default"
 	testImplementation group: "com.liferay", name: "com.liferay.portal.vulcan.impl", version: "5.0.157"
 	testImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.12.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.12.JAKARTA-LIFERAY-PATCHED-1"
