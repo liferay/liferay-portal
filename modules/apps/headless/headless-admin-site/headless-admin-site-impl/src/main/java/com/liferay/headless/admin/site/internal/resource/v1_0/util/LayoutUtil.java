@@ -541,7 +541,11 @@ public class LayoutUtil {
 				contentPageSpecification.getPageExperiences(), serviceContext);
 		}
 
-		if (status == layout.getStatus()) {
+		if ((status == layout.getStatus()) &&
+			!(layout.isDraftLayout() &&
+			  (status == WorkflowConstants.STATUS_APPROVED) &&
+			  !isPublished(layout))) {
+
 			return layout;
 		}
 
