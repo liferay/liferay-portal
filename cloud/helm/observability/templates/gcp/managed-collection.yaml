@@ -19,6 +19,23 @@ spec:
                 insecureSkipVerify: true
 ---
 {{- end }}
+{{- if $scrape.elasticsearchExporter.enabled }}
+apiVersion: monitoring.googleapis.com/v1
+kind: ClusterPodMonitoring
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ printf "%s-elasticsearch-exporter" (include "observability.fullname" .) | trunc 63 | trimSuffix "-" }}
+spec:
+    endpoints:
+        -   interval: {{ $interval | quote }}
+            path: {{ $scrape.elasticsearchExporter.path | quote }}
+            port: {{ $scrape.elasticsearchExporter.port }}
+    selector:
+        matchLabels:
+            app.kubernetes.io/name: elasticsearch-exporter
+---
+{{- end }}
 {{- if $scrape.envoy.enabled }}
 apiVersion: monitoring.googleapis.com/v1
 kind: ClusterPodMonitoring

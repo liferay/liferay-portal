@@ -12,18 +12,21 @@ tests:
             aws.ampWorkspaceURL: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-00000000-0000-0000-0000-000000000000
             cloudProvider: aws
     -   asserts:
+            -   notMatchRegex:
+                    path: data["config.alloy"]
+                    pattern: elasticsearch_exporter
+        it: Omits the Elasticsearch exporter scrape when it is disabled
+        set:
+            alloy.enabled: true
+            alloy.scrape.elasticsearchExporter.enabled: false
+            aws.ampWorkspaceURL: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-00000000-0000-0000-0000-000000000000
+            cloudProvider: aws
+    -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits the alloy configuration when alloy is disabled on Azure
         set:
             cloudProvider: azure
-    -   asserts:
-            -   failedTemplate:
-                    errorPattern: alloy.remoteWrite.url is required when cloud provider is not AWS, Azure, or GCP
-        it: Rejects an unrecognized cloud provider without a remote write URL
-        set:
-            alloy.enabled: true
-            cloudProvider: alibaba
     -   asserts:
             -   failedTemplate:
                     errorPattern: azure.remoteWrite.dataCollectionRuleId is required when cloudProvider is azure
@@ -65,6 +68,13 @@ tests:
             azure.subscriptionId: 00000000-0000-0000-0000-000000000000
             cloudProvider: azure
     -   asserts:
+            -   failedTemplate:
+                    errorPattern: alloy.remoteWrite.url is required when cloud provider is not AWS, Azure, or GCP
+        it: Rejects an unrecognized cloud provider without a remote write URL
+        set:
+            alloy.enabled: true
+            cloudProvider: alibaba
+    -   asserts:
             -   matchRegex:
                     path: data["config.alloy"]
                     pattern: prometheus.exporter.azure "postgresql" \{\s+included_resource_tags = \["environment-id", "project-id"\]\s+metric_aggregations = \["average"\]\s+metrics = \["cpu_percent","is_db_alive","memory_percent","storage_free","storage_used"\]\s+resource_type = "Microsoft.DBforPostgreSQL/flexibleServers"\s+subscriptions = \["00000000-0000-0000-0000-000000000000"\]
@@ -97,6 +107,21 @@ tests:
             azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
             azure.subscriptionId: 00000000-0000-0000-0000-000000000000
             cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
+                    path: data["config.alloy"]
+                    pattern: discovery.kubernetes "elasticsearch_exporter" \{\s+role = "pod"\s+selectors \{\s+label = "app.kubernetes.io/name=elasticsearch-exporter"
+            -   matchRegex:
+                    path: data["config.alloy"]
+                    pattern: action = "keep"\s+regex = "metrics"\s+source_labels = \["__meta_kubernetes_pod_container_port_name"\]
+            -   matchRegex:
+                    path: data["config.alloy"]
+                    pattern: replacement = "elasticsearch-exporter"\s+target_label = "job"
+        it: Scrapes the Elasticsearch exporter pods on their metrics port
+        set:
+            alloy.enabled: true
+            aws.ampWorkspaceURL: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-00000000-0000-0000-0000-000000000000
+            cloudProvider: aws
     -   asserts:
             -   matchRegex:
                     path: data["config.alloy"]

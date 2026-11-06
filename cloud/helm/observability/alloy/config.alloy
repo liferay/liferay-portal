@@ -198,6 +198,47 @@ prometheus.scrape "cloudwatch_rds" {
 }
 {{- end }}
 
+{{- if .Values.alloy.scrape.elasticsearchExporter.enabled }}
+discovery.kubernetes "elasticsearch_exporter" {
+    role = "pod"
+    selectors {
+        label = "app.kubernetes.io/name=elasticsearch-exporter"
+        role = "pod"
+    }
+}
+
+discovery.relabel "elasticsearch_exporter" {
+    rule {
+        action = "keep"
+        regex = "{{ .Values.alloy.scrape.elasticsearchExporter.port }}"
+        source_labels = ["__meta_kubernetes_pod_container_port_name"]
+    }
+    rule {
+        replacement = {{ .Values.alloy.scrape.elasticsearchExporter.path | quote }}
+        target_label = "__metrics_path__"
+    }
+    rule {
+        replacement = "elasticsearch-exporter"
+        target_label = "job"
+    }
+    rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label = "namespace"
+    }
+    rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label = "pod"
+    }
+    targets = discovery.kubernetes.elasticsearch_exporter.targets
+}
+
+prometheus.scrape "elasticsearch_exporter" {
+    forward_to = [prometheus.remote_write.default.receiver]
+    scrape_interval = {{ $interval | quote }}
+    targets = discovery.relabel.elasticsearch_exporter.output
+}
+{{- end }}
+
 {{- if .Values.alloy.scrape.envoy.enabled }}
 discovery.kubernetes "envoy_pods" {
     role = "pod"

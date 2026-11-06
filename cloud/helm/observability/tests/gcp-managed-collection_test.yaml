@@ -1,0 +1,33 @@
+set:
+    cloudProvider: gcp
+    gcp.projectId: liferay-test
+suite: GCP managed collection
+templates:
+    -   templates/gcp/managed-collection.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                    filterAware: true
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: RELEASE-NAME-observability-elasticsearch-exporter
+        it: Omits the Elasticsearch exporter monitoring when it is disabled
+        set:
+            alloy.scrape.elasticsearchExporter.enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec
+                    value:
+                        endpoints:
+                            -   interval: 1m
+                                path: /metrics
+                                port: metrics
+                        selector:
+                            matchLabels:
+                                app.kubernetes.io/name: elasticsearch-exporter
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-elasticsearch-exporter
+        it: Scrapes the Elasticsearch exporter pods in every namespace

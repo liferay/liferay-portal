@@ -498,6 +498,10 @@ alloy:
             nameTagRegex: .*-database-(blue|green)$
             region: ""
             scrapeInterval: 1m
+        elasticsearchExporter:
+            enabled: true
+            path: /metrics
+            port: metrics
         envoy:
             enabled: true
             path: /stats/prometheus
