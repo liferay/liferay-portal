@@ -349,18 +349,6 @@ public class BatchTestClassGroupTest
 			new BatchTestClassGroup("default", portalTestClassJob) {
 			});
 
-		String batchName = batchTestClassGroup.getBatchName();
-
-		JobHistory jobHistory = portalTestClassJob.getJobHistory();
-
-		Mockito.doReturn(
-			batchHistory
-		).when(
-			jobHistory
-		).getBatchHistory(
-			batchName
-		);
-
 		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
 			PortalGitWorkingDirectory.class);
 
@@ -375,6 +363,18 @@ public class BatchTestClassGroupTest
 		).when(
 			batchTestClassGroup
 		).getPortalGitWorkingDirectory();
+
+		String batchName = batchTestClassGroup.getBatchName();
+
+		JobHistory jobHistory = portalTestClassJob.getJobHistory();
+
+		Mockito.doReturn(
+			batchHistory
+		).when(
+			jobHistory
+		).getBatchHistory(
+			batchName
+		);
 
 		if (targetAxisDurationExpected) {
 			testEquals(
