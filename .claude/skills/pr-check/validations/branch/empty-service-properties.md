@@ -21,7 +21,7 @@ This check is static and needs no build. It walks each changed Java file that ca
 - It is `new Hashtable<...>()`, `new java.util.Hashtable<...>()`, or `new HashMapDictionary<...>()`, with or without type arguments: reported at the line of the argument. `HashMapDictionaryBuilder` has no `create()` without arguments, so every dictionary it builds starts from a map or a `put`, and it is not matched.
 - It is a variable name, and the nearest declaration of that name in a block enclosing the call is initialized with one of those constructions, and the name appears nowhere else in the declaring block: reported at the line of the argument when the branch adds either that line or the line of the declaration.
 
-An unqualified `registerService(` call is a helper method of the class rather than an OSGi registration, and the helper may require a non-null dictionary, so it is not reported. A variable that is filled, read, or passed anywhere else in its block is not reported either. The check uses `command grep` so each file and its added lines are searched by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults. Each finding prints as `<path>:<line>: registers a service with an empty "Dictionary", pass "null"`.
+An unqualified `registerService(` call is a helper method of the class rather than an OSGi registration, and the helper may require a nonnull dictionary, so it is not reported. A variable that is filled, read, or passed anywhere else in its block is not reported either. The check uses `command grep` so each file and its added lines are searched by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults. Each finding prints as `<path>:<line>: registers a service with an empty "Dictionary", pass "null"`.
 
 A generated file carries the `@generated` Javadoc marker that Service Builder and the other code generators stamp on every file they produce (for example every `*LocalService` interface). The scan ignores case in that match, so the `@Generated` annotation on REST Builder output is covered too. That annotation is machine written boilerplate, not hand written registration code, so any file carrying it is excluded before the registration scan.
 
@@ -290,7 +290,7 @@ FINDINGS=$(
 		command grep \
 			--extended-regexp \
 			--quiet \
-			--regexp='Hashtable|HashMapDictionary' \
+			--regexp='HashMapDictionary|Hashtable' \
 			"${FILE}" || continue
 
 		if command grep \
