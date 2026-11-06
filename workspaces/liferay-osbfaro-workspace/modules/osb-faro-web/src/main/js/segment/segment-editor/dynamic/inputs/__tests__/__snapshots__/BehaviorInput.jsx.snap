@@ -12,7 +12,9 @@ exports[`BehaviorInput should render 1`] = `
     >
       <div
         class="form-group-item entity-name form-group-item-label form-group-item-shrink"
-      />
+      >
+        Individual
+      </div>
       <div>
         test
       </div>
@@ -240,7 +242,9 @@ exports[`BehaviorInput should render w/ data 1`] = `
     >
       <div
         class="form-group-item entity-name form-group-item-label form-group-item-shrink"
-      />
+      >
+        Individual
+      </div>
       <div>
         test
       </div>

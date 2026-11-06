@@ -12,7 +12,7 @@ import {Map} from 'immutable';
 import {Property, Segment} from 'shared/util/records';
 import {Provider} from 'react-redux';
 import {ReferencedObjectsProvider} from '../../context/referencedObjects';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 
 jest.unmock('react-dom');
 
@@ -116,6 +116,28 @@ describe('BehaviorInput', () => {
 		);
 
 		expect(container).toMatchSnapshot();
+	});
+
+	it('should start the rule with Account in an account segment', () => {
+		const {getByText, queryByText} = render(
+			<DefaultComponent
+				property={new Property({entityName: 'Individual'})}
+				segmentCategory={SegmentCategories.Account}
+			/>
+		);
+
+		expect(getByText('Account')).toBeTruthy();
+		expect(getByText('individual who triggered')).toBeTruthy();
+		expect(queryByText('Individual')).toBeNull();
+	});
+
+	it('should start the rule with Individual in an individual segment', () => {
+		const {getByText, queryByText} = render(
+			<DefaultComponent segmentCategory={SegmentCategories.Individual} />
+		);
+
+		expect(getByText('Individual')).toBeTruthy();
+		expect(queryByText('individual who triggered')).toBeNull();
 	});
 
 	it('should render with has-error for occurenceCount', () => {
