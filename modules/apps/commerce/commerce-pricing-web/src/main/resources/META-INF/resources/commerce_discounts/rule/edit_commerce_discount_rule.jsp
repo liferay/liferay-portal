@@ -12,7 +12,7 @@ CommerceDiscountRuleDisplayContext commerceDiscountRuleDisplayContext = (Commerc
 
 CommerceDiscountRule commerceDiscountRule = commerceDiscountRuleDisplayContext.getCommerceDiscountRule();
 
-String type = ParamUtil.getString(request, "type", GetterUtil.get(commerceDiscountRule, CommerceDiscountRule::getType, StringPool.BLANK));
+String type = ParamUtil.getString(request, "type", commerceDiscountRule.getType());
 %>
 
 <portlet:actionURL name="/commerce_discount/edit_commerce_discount_rule" var="editCommerceDiscountRuleActionURL" />
@@ -21,7 +21,7 @@ String type = ParamUtil.getString(request, "type", GetterUtil.get(commerceDiscou
 	title='<%= LanguageUtil.get(request, "edit-rule") %>'
 >
 	<aui:form action="<%= editCommerceDiscountRuleActionURL %>" method="post" name="fm">
-		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceDiscountRule == null) ? Constants.ADD : Constants.UPDATE %>" />
+		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 		<aui:input name="commerceDiscountId" type="hidden" value="<%= commerceDiscountRule.getCommerceDiscountId() %>" />
 		<aui:input name="commerceDiscountRuleId" type="hidden" value="<%= commerceDiscountRule.getCommerceDiscountRuleId() %>" />
