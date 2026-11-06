@@ -119,7 +119,22 @@ public class ScheduleLaunchMVCActionCommandTest {
 
 		Assert.assertEquals(
 			_language.get(
-				LocaleUtil.US, "the-publish-time-must-be-in-the-future"),
+				LocaleUtil.US,
+				"the-date-and-time-must-be-at-least-one-minute-in-the-future"),
+			jsonObject.getString("validationError"));
+
+		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
+
+		// Date less than one minute in the future
+
+		jsonObject = _processAction(
+			System.currentTimeMillis() + (Time.SECOND * 30),
+			TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			_language.get(
+				LocaleUtil.US,
+				"the-date-and-time-must-be-at-least-one-minute-in-the-future"),
 			jsonObject.getString("validationError"));
 
 		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
