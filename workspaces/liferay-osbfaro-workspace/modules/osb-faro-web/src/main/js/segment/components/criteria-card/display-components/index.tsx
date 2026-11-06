@@ -24,6 +24,7 @@ const NON_REMOTE_DISPLAYS: Record<string, React.ComponentType<any>> = {
 const DisplayComponent: React.FC<IDisplayComponentProps> = ({
 	criterion,
 	property,
+	segmentCategory,
 	segmentType,
 }) => {
 	const Display = (getRemoteCriterionTypeByPropertyKey(property.propertyKey)
@@ -35,6 +36,7 @@ const DisplayComponent: React.FC<IDisplayComponentProps> = ({
 		<Display
 			criterion={criterion}
 			property={property}
+			segmentCategory={segmentCategory}
 			segmentType={segmentType}
 		/>
 	);

@@ -1,11 +1,12 @@
 import {Criterion} from 'segment/segment-editor/dynamic/utils/types';
 import {Map} from 'immutable';
 import {Property} from 'shared/util/records';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 
 export interface IDisplayComponentProps {
 	criterion: Criterion;
 	property: Property;
+	segmentCategory?: SegmentCategories;
 	segmentType: SegmentTypes;
 	timeZoneId?: string;
 }

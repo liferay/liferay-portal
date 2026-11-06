@@ -13,7 +13,11 @@ import {Routes, SEGMENTS, setUriQueryValues, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {getSegmentAlerts} from 'segment/utils/alerts';
 import {Segment} from 'shared/util/records';
-import {SegmentStates, SegmentTypes} from 'shared/util/constants';
+import {
+	SegmentCategories,
+	SegmentStates,
+	SegmentTypes,
+} from 'shared/util/constants';
 import {useChannelContext} from 'shared/context/channel';
 import {useDeleteSegments} from 'segment/hooks/useDeleteSegments';
 import {useLifecycleDetails} from 'lifecycle/hooks/useLifecycleDetails';
@@ -155,6 +159,7 @@ const AccountProfile: React.FC<IAccountProfileProps> = ({
 						criteriaString={segment.criteriaString ?? ''}
 						groupId={groupId}
 						includeAnonymousUsers={segment.includeAnonymousUsers}
+						segmentCategory={SegmentCategories.Account}
 						segmentType={SegmentTypes.Batch}
 						sequential={false}
 						timeZoneId={timeZoneId}

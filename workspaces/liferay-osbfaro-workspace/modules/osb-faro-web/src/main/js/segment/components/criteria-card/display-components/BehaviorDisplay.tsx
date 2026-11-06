@@ -17,18 +17,22 @@ import {getOperatorLabel, maybeFormatToKnownType} from '../utils';
 import {IDisplayComponentProps} from '../types';
 import {Map} from 'immutable';
 import {parseActivityKey} from 'segment/segment-editor/dynamic/utils/utils';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
+import {getSegmentCategoryLabel} from 'segment/utils/labels';
 
 const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 	criterion,
 	property,
+	segmentCategory,
 	segmentType,
 }) => {
 	const {operatorName, value} = criterion;
 
 	const valueIMap = value as CustomValue;
 
-	const {entityName, label, type} = property;
+	const {label, type} = property;
+
+	const isAccountSegment = segmentCategory === SegmentCategories.Account;
 
 	const activityKeys = getActivityKeysFromValue(valueIMap);
 
@@ -64,9 +68,13 @@ const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 
 	return (
 		<>
-			{entityName}
+			{getSegmentCategoryLabel(segmentCategory)}
 
 			<span>{operatorLabel}</span>
+
+			{isAccountSegment && (
+				<span>{Liferay.Language.get('individual-who-triggered')}</span>
+			)}
 
 			<span>{label}</span>
 

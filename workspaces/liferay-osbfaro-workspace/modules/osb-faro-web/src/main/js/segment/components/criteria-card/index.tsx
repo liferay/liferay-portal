@@ -6,7 +6,7 @@ import React, {useContext, useEffect, useMemo} from 'react';
 import {extractRemoteCriterionEntries} from 'segment/segment-editor/dynamic/criterion-types/extract';
 import {ReferencedObjectsContext} from 'segment/segment-editor/dynamic/context/referencedObjects';
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {translateQueryToCriteria} from 'segment/segment-editor/dynamic/utils/odata';
 
 interface ICriteriaCardProps {
@@ -14,6 +14,7 @@ interface ICriteriaCardProps {
 	criteriaString: string;
 	groupId?: string;
 	includeAnonymousUsers: boolean;
+	segmentCategory?: SegmentCategories;
 	segmentType: SegmentTypes;
 	sequential: boolean;
 	timeZoneId: string;
@@ -24,6 +25,7 @@ const CriteriaCard: React.FC<ICriteriaCardProps> = ({
 	criteriaString,
 	groupId,
 	includeAnonymousUsers,
+	segmentCategory,
 	segmentType,
 	sequential,
 	timeZoneId,
@@ -80,6 +82,7 @@ const CriteriaCard: React.FC<ICriteriaCardProps> = ({
 						<CriteriaView
 							criteria={criteria}
 							ref={_criteriaViewRef}
+							segmentCategory={segmentCategory}
 							segmentType={segmentType}
 							sequential={sequential}
 							timeZoneId={timeZoneId}

@@ -1,6 +1,10 @@
 import DisplayComponent from './display-components';
 import React, {Fragment, useContext} from 'react';
-import {ConjunctionKey, SegmentTypes} from 'shared/util/constants';
+import {
+	ConjunctionKey,
+	SegmentCategories,
+	SegmentTypes,
+} from 'shared/util/constants';
 import {Criteria} from 'segment/segment-editor/dynamic/utils/types';
 import {findPropertyByCriterion} from 'segment/segment-editor/dynamic/utils/utils';
 import {ReferencedObjectsContext} from 'segment/segment-editor/dynamic/context/referencedObjects';
@@ -8,6 +12,7 @@ import {ReferencedObjectsContext} from 'segment/segment-editor/dynamic/context/r
 interface ICriteriaViewProps extends React.HTMLAttributes<HTMLDivElement> {
 	criteria: Criteria;
 	forwardedRef?: React.Ref<any>;
+	segmentCategory?: SegmentCategories;
 	segmentType: SegmentTypes;
 	sequential: boolean;
 	timeZoneId: string;
@@ -22,6 +27,7 @@ const CONJUNCTION_MAP: Record<string, string> = {
 const CriteriaView: React.FC<ICriteriaViewProps> = ({
 	criteria,
 	forwardedRef,
+	segmentCategory,
 	segmentType,
 	sequential,
 	timeZoneId,
@@ -85,6 +91,7 @@ const CriteriaView: React.FC<ICriteriaViewProps> = ({
 					<DisplayComponent
 						criterion={criterion}
 						property={property}
+						segmentCategory={segmentCategory}
 						segmentType={segmentType}
 						timeZoneId={timeZoneId}
 					/>

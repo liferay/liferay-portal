@@ -11,13 +11,17 @@ import {
 import {getOperatorLabel, maybeFormatToKnownType} from '../utils';
 import {IDisplayComponentProps} from '../types';
 import {Map} from 'immutable';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
+import {getSegmentCategoryLabel} from 'segment/utils/labels';
 
 const EventDisplay: React.FC<IDisplayComponentProps> = ({
 	criterion,
 	property,
+	segmentCategory,
 	segmentType,
 }) => {
+	const isAccountSegment = segmentCategory === SegmentCategories.Account;
+
 	const {operatorName, value} = criterion;
 
 	const valueIMap = value as CustomValue;
@@ -61,12 +65,16 @@ const EventDisplay: React.FC<IDisplayComponentProps> = ({
 	return (
 		<>
 			<span className="sentence-start">
-				{Liferay.Language.get('individual')}
+				{getSegmentCategoryLabel(segmentCategory)}
 			</span>
 
 			<span>{operatorLabel}</span>
 
-			<span>{Liferay.Language.get('performed').toLowerCase()}</span>
+			<span>
+				{isAccountSegment
+					? Liferay.Language.get('individual-who-triggered')
+					: Liferay.Language.get('performed').toLowerCase()}
+			</span>
 
 			<b>{label}</b>
 
