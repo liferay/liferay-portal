@@ -113,7 +113,7 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.content.dashboard.item.ContentDashboardItem"
-					keyProperty="id"
+					keyPropertyName="id"
 					modelVar="contentDashboardItem"
 				>
 

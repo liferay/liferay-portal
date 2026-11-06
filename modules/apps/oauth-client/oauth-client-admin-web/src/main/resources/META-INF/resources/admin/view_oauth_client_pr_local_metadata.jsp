@@ -51,7 +51,7 @@ OAuthClientPRLocalMetadataManagementToolbarDisplayContext oAuthClientPRLocalMeta
 			<liferay-ui:search-container-row
 				className="com.liferay.oauth.client.persistence.model.OAuthClientPRLocalMetadata"
 				escapedModel="<%= true %>"
-				keyProperty="OAuthClientPRLocalMetadataId"
+				keyPropertyName="OAuthClientPRLocalMetadataId"
 				modelVar="oAuthClientPRLocalMetadata"
 			>
 				<portlet:renderURL var="editURL">

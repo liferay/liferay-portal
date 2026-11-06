@@ -29,7 +29,7 @@ pushNotificationsDeviceSearchContainer.setResultsAndTotal(() -> PushNotification
 		<liferay-ui:search-container-row
 			className="com.liferay.push.notifications.model.PushNotificationsDevice"
 			escapedModel="<%= true %>"
-			keyProperty="pushNotificationsDeviceId"
+			keyPropertyName="pushNotificationsDeviceId"
 			modelVar="pushNotificationsDevice"
 		>
 

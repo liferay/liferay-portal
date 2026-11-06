@@ -39,7 +39,7 @@ LayoutPrototypeManagementToolbarDisplayContext layoutPrototypeManagementToolbarD
 		<liferay-ui:search-container-row
 			className="com.liferay.layout.page.template.model.LayoutPageTemplateEntry"
 			escapedModel="<%= true %>"
-			keyProperty="layoutPrototypeId"
+			keyPropertyName="layoutPrototypeId"
 			modelVar="layoutPageTemplateEntry"
 		>
 

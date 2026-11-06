@@ -25,7 +25,7 @@ PatcherFixComponentsDisplayContext patcherFixComponentsDisplayContext = new Patc
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherFixComponent"
 		escapedModel="<%= true %>"
-		keyProperty="patcherFixComponentId"
+		keyPropertyName="patcherFixComponentId"
 		modelVar="patcherFixComponent"
 	>
 		<liferay-ui:search-container-column-text

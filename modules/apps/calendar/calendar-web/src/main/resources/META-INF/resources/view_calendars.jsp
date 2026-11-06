@@ -46,7 +46,7 @@ CalendarResource calendarResource = (CalendarResource)request.getAttribute(Calen
 
 		<liferay-ui:search-container-row
 			className="com.liferay.calendar.model.Calendar"
-			keyProperty="calendarId"
+			keyPropertyName="calendarId"
 			modelVar="calendar"
 		>
 			<liferay-ui:search-container-column-text

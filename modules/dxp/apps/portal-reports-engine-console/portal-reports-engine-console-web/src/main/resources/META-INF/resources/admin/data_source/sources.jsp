@@ -25,7 +25,7 @@
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.reports.engine.console.model.Source"
-			keyProperty="sourceId"
+			keyPropertyName="sourceId"
 			modelVar="source"
 		>
 			<liferay-portlet:renderURL varImpl="rowURL">

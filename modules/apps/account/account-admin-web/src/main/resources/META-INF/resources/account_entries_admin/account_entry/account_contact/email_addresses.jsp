@@ -74,7 +74,7 @@ List<EmailAddress> emailAddresses = EmailAddressServiceUtil.getEmailAddresses(cl
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.EmailAddress"
 		escapedModel="<%= true %>"
-		keyProperty="emailAddressId"
+		keyPropertyName="emailAddressId"
 		modelVar="emailAddress"
 	>
 		<liferay-ui:search-container-column-text

@@ -39,7 +39,7 @@ AssetCategoryActionDropdownItemsProvider assetCategoryActionDropdownItemsProvide
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.asset.kernel.model.AssetCategory"
-			keyProperty="categoryId"
+			keyPropertyName="categoryId"
 			modelVar="curCategory"
 		>
 			<portlet:renderURL var="rowURL">

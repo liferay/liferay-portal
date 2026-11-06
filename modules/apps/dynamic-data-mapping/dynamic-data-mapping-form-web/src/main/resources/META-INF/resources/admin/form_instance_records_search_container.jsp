@@ -88,7 +88,7 @@ DDMFormInstance ddmFormInstance = ddmFormViewFormInstanceRecordsDisplayContext.g
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord"
-				keyProperty="formInstanceRecordId"
+				keyPropertyName="formInstanceRecordId"
 				modelVar="formInstanceRecord"
 			>
 				<c:if test="<%= ddmFormViewFormInstanceRecordsDisplayContext.getAvailableLocalesCount() > 1 %>">

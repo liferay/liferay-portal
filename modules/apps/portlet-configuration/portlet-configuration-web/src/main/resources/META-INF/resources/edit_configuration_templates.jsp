@@ -52,7 +52,7 @@ PortletConfigurationTemplatesDisplayContext portletConfigurationTemplatesDisplay
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.portal.kernel.model.PortletItem"
-						keyProperty="name"
+						keyPropertyName="name"
 						modelVar="portletItem"
 					>
 						<c:choose>

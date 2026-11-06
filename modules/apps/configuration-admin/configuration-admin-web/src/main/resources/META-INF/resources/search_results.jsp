@@ -59,7 +59,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "search-results"));
 
 		<liferay-ui:search-container-row
 			className="com.liferay.configuration.admin.web.internal.display.ConfigurationEntry"
-			keyProperty="key"
+			keyPropertyName="key"
 			modelVar="configurationEntry"
 		>
 			<liferay-ui:search-container-column-text

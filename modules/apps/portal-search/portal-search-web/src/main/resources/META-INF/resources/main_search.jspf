@@ -46,7 +46,7 @@ Hits hits = searchDisplayContext.getHits();
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.kernel.search.Document"
 				escapedModel="<%= false %>"
-				keyProperty="UID"
+				keyPropertyName="UID"
 				modelVar="document"
 				stringKey="<%= true %>"
 			>

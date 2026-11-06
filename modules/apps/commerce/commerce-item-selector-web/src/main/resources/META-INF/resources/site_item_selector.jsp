@@ -22,7 +22,7 @@ SimpleSiteItemSelectorViewDisplayContext simpleSiteItemSelectorViewDisplayContex
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.Group"
-			keyProperty="groupId"
+			keyPropertyName="groupId"
 			modelVar="group"
 		>
 			<liferay-ui:search-container-column-text

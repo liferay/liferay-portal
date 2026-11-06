@@ -138,7 +138,7 @@ renderResponse.setTitle(categoryDisplayName);
 
 					<liferay-ui:search-container-row
 						className="com.liferay.configuration.admin.web.internal.model.ConfigurationModel"
-						keyProperty="ID"
+						keyPropertyName="ID"
 						modelVar="curConfigurationModel"
 					>
 						<portlet:renderURL var="editFactoryInstanceURL">

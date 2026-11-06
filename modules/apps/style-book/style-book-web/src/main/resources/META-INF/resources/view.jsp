@@ -42,7 +42,7 @@ StyleBookDisplayContext styleBookDisplayContext = (StyleBookDisplayContext)reque
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.style.book.model.StyleBookEntry"
-				keyProperty="styleBookEntryId"
+				keyPropertyName="styleBookEntryId"
 				modelVar="styleBookEntry"
 			>
 				<liferay-ui:search-container-column-text>

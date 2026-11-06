@@ -27,7 +27,7 @@ CommerceSubscriptionContentDisplayContext commerceSubscriptionContentDisplayCont
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.commerce.model.CommerceSubscriptionEntry"
-						keyProperty="commerceSubscriptionEntryId"
+						keyPropertyName="commerceSubscriptionEntryId"
 						modelVar="commerceSubscriptionEntry"
 					>
 

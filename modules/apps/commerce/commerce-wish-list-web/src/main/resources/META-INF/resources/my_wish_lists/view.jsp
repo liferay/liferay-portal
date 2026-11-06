@@ -52,7 +52,7 @@ CommerceWishListDisplayContext commerceWishListDisplayContext = (CommerceWishLis
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.commerce.wish.list.model.CommerceWishList"
-						keyProperty="commerceWishListId"
+						keyPropertyName="commerceWishListId"
 						modelVar="commerceWishList"
 					>
 						<liferay-ui:search-container-column-text

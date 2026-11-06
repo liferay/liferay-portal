@@ -22,7 +22,7 @@
 	<liferay-ui:search-container-row
 		className="com.liferay.social.kernel.model.SocialRequest"
 		escapedModel="<%= true %>"
-		keyProperty="requestId"
+		keyPropertyName="requestId"
 		modelVar="socialRequest"
 	>
 

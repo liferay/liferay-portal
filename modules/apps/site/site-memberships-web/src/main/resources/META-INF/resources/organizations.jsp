@@ -39,7 +39,7 @@ OrganizationsDisplayContext organizationsDisplayContext = new OrganizationsDispl
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.Organization"
 			escapedModel="<%= true %>"
-			keyProperty="organizationId"
+			keyPropertyName="organizationId"
 			modelVar="organization"
 		>
 

@@ -25,7 +25,7 @@
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.reports.engine.console.model.Definition"
-			keyProperty="definitionId"
+			keyPropertyName="definitionId"
 			modelVar="definition"
 		>
 			<liferay-portlet:renderURL varImpl="rowURL">

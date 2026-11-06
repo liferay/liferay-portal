@@ -16,7 +16,7 @@ UADExportProcessDisplayContext uadExportProcessDisplayContext = new UADExportPro
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.backgroundtask.BackgroundTask"
-		keyProperty="backgroundTaskId"
+		keyPropertyName="backgroundTaskId"
 		modelVar="backgroundTask"
 	>
 		<liferay-ui:search-container-column-text

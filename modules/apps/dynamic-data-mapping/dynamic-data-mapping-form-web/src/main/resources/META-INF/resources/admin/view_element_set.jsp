@@ -32,7 +32,7 @@ FieldSetPermissionCheckerHelper fieldSetPermissionCheckerHelper = ddmFormAdminDi
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.dynamic.data.mapping.model.DDMStructure"
-						keyProperty="structureId"
+						keyPropertyName="structureId"
 						modelVar="structure"
 					>
 						<portlet:renderURL var="rowURL">

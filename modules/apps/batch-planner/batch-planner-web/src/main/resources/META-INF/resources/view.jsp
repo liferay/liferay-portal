@@ -32,7 +32,7 @@ SearchContainer<BatchPlannerPlanDisplay> batchPlannerPlanDisplaySearchContainer 
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.batch.planner.web.internal.display.BatchPlannerPlanDisplay"
-			keyProperty="batchPlannerPlanId"
+			keyPropertyName="batchPlannerPlanId"
 			modelVar="batchPlannerPlanDisplay"
 		>
 			<liferay-ui:search-container-column-text

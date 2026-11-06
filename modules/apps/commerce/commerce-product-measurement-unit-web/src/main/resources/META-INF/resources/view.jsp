@@ -35,7 +35,7 @@ CPMeasurementUnitsDisplayContext cpMeasurementUnitsDisplayContext = (CPMeasureme
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.commerce.product.model.CPMeasurementUnit"
-					keyProperty="CPMeasurementUnitId"
+					keyPropertyName="CPMeasurementUnitId"
 					modelVar="cpMeasurementUnit"
 				>
 					<liferay-ui:search-container-column-text

@@ -25,7 +25,7 @@ PatcherFixPacksDisplayContext patcherFixPacksDisplayContext = new PatcherFixPack
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherFixPack"
 		escapedModel="<%= true %>"
-		keyProperty="patcherFixPackId"
+		keyPropertyName="patcherFixPackId"
 		modelVar="patcherFixPack"
 	>
 		<portlet:renderURL var="viewPatcherFixPackURL">

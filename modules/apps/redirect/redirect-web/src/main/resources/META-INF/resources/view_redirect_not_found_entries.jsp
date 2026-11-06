@@ -28,7 +28,7 @@ RedirectNotFoundEntriesDisplayContext redirectNotFoundEntriesDisplayContext = (R
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.redirect.model.RedirectNotFoundEntry"
-					keyProperty="redirectNotFoundEntryId"
+					keyPropertyName="redirectNotFoundEntryId"
 					modelVar="redirectNotFoundEntry"
 				>
 

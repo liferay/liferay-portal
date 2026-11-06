@@ -74,7 +74,7 @@ renderResponse.setTitle(assetListDisplayContext.getAssetListEntryTitle());
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.asset.list.model.AssetListEntryUsage"
-						keyProperty="assetListEntryUsageId"
+						keyPropertyName="assetListEntryUsageId"
 						modelVar="assetListEntryUsage"
 					>
 						<liferay-ui:search-container-column-text

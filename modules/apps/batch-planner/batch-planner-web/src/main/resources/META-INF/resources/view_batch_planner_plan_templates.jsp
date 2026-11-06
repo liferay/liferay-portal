@@ -36,7 +36,7 @@ BatchPlannerPlanTemplateManagementToolbarDisplayContext batchPlannerPlanTemplate
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.batch.planner.web.internal.display.BatchPlannerPlanTemplateDisplay"
-				keyProperty="batchPlannerPlanId"
+				keyPropertyName="batchPlannerPlanId"
 				modelVar="batchPlannerPlanTemplateDisplay"
 			>
 

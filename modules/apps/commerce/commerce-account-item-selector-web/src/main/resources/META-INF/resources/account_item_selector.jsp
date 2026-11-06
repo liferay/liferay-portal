@@ -25,7 +25,7 @@ String itemSelectedEventName = commerceAccountItemSelectorViewDisplayContext.get
 		<liferay-ui:search-container-row
 			className="com.liferay.account.model.AccountEntry"
 			cssClass="commerce-account-row"
-			keyProperty="accountEntryId"
+			keyPropertyName="accountEntryId"
 			modelVar="accountEntry"
 		>
 

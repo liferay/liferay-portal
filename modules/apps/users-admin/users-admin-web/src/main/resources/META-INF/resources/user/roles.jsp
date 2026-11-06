@@ -101,7 +101,7 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.kernel.model.Role"
-				keyProperty="roleId"
+				keyPropertyName="roleId"
 				modelVar="role"
 			>
 				<liferay-ui:search-container-column-text
@@ -239,7 +239,7 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.Group"
-					keyProperty="groupId"
+					keyPropertyName="groupId"
 					modelVar="group"
 					rowIdProperty="friendlyURL"
 				>
@@ -332,7 +332,7 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.UserGroupRole"
-					keyProperty="roleId"
+					keyPropertyName="roleId"
 					modelVar="userGroupRole"
 				>
 
@@ -597,7 +597,7 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.UserGroupRole"
-					keyProperty="roleId"
+					keyPropertyName="roleId"
 					modelVar="userGroupRole"
 				>
 
@@ -817,7 +817,7 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.UserGroupGroupRole"
-					keyProperty="roleId"
+					keyPropertyName="roleId"
 					modelVar="userGroupGroupRole"
 				>
 					<liferay-ui:search-container-column-text

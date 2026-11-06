@@ -23,7 +23,7 @@ accountRoleDisplaySearchContainer.setRowChecker(new AccountEntryUserAccountRoleR
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.account.admin.web.internal.display.AccountRoleDisplay"
-			keyProperty="accountRoleId"
+			keyPropertyName="accountRoleId"
 			modelVar="accountRole"
 		>
 			<liferay-ui:search-container-column-text

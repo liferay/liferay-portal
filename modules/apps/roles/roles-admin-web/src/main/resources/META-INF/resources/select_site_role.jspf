@@ -99,7 +99,7 @@ SearchContainer<Role> roleSearchContainer = selectRoleManagementToolbarDisplayCo
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.Group"
 					escapedModel="<%= true %>"
-					keyProperty="groupId"
+					keyPropertyName="groupId"
 					modelVar="group"
 					rowIdProperty="friendlyURL"
 				>
@@ -199,7 +199,7 @@ SearchContainer<Role> roleSearchContainer = selectRoleManagementToolbarDisplayCo
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.Role"
-					keyProperty="roleId"
+					keyPropertyName="roleId"
 					modelVar="role"
 				>
 					<liferay-ui:search-container-column-text

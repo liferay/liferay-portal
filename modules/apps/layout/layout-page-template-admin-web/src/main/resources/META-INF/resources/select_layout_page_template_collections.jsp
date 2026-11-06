@@ -22,7 +22,7 @@ LayoutPageTemplateCollectionsDisplayContext layoutPageTemplateCollectionsDisplay
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.layout.page.template.model.LayoutPageTemplateCollection"
-			keyProperty="layoutPageTemplateCollectionId"
+			keyPropertyName="layoutPageTemplateCollectionId"
 			modelVar="layoutPageTemplateCollection"
 		>
 			<liferay-ui:search-container-column-text

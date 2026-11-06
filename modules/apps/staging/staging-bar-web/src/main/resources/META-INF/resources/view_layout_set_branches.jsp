@@ -49,7 +49,7 @@ request.setAttribute("view_layout_set_branches.jsp-currentLayoutSetBranchId", St
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.kernel.model.LayoutSetBranch"
 				escapedModel="<%= true %>"
-				keyProperty="layoutSetBranchId"
+				keyPropertyName="layoutSetBranchId"
 				modelVar="curLayoutSetBranch"
 			>
 				<liferay-ui:search-container-column-text

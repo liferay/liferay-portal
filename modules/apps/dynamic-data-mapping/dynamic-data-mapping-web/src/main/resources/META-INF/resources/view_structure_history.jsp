@@ -70,7 +70,7 @@ PortletURL backURL = PortletURLBuilder.createRenderURL(
 
 		<liferay-ui:search-container-row
 			className="com.liferay.dynamic.data.mapping.model.DDMStructureVersion"
-			keyProperty="structureVersionId"
+			keyPropertyName="structureVersionId"
 			modelVar="structureVersion"
 		>
 			<portlet:renderURL var="rowURL">

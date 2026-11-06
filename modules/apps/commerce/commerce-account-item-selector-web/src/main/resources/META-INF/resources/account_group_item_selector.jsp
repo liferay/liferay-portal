@@ -25,7 +25,7 @@ SearchContainer<AccountGroup> commerceAccountGroupSearchContainer = commerceAcco
 		<liferay-ui:search-container-row
 			className="com.liferay.account.model.AccountGroup"
 			cssClass="commerce-account-row"
-			keyProperty="accountGroupId"
+			keyPropertyName="accountGroupId"
 			modelVar="accountGroup"
 		>
 

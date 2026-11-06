@@ -206,7 +206,7 @@ if (commerceAddress != null) {
 	<liferay-ui:search-container-row
 		className="com.liferay.commerce.model.CommerceShipmentItem"
 		escapedModel="<%= true %>"
-		keyProperty="commerceShipmentItemId"
+		keyPropertyName="commerceShipmentItemId"
 		modelVar="commerceShipmentItem"
 	>
 

@@ -72,7 +72,7 @@
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.exportimport.kernel.model.ExportImportConfiguration"
-						keyProperty="exportImportConfigurationId"
+						keyPropertyName="exportImportConfigurationId"
 						modelVar="exportImportConfiguration"
 					>
 						<liferay-ui:search-container-column-text

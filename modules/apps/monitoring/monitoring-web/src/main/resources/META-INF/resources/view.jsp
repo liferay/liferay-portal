@@ -56,7 +56,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.UserTracker"
-					keyProperty="userTrackerId"
+					keyPropertyName="userTrackerId"
 					modelVar="userTracker"
 				>
 

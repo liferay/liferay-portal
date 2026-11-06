@@ -39,7 +39,7 @@ accountEntryAddressDisplaySearchContainer.setRowChecker(null);
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.account.admin.web.internal.display.AddressDisplay"
-			keyProperty="addressId"
+			keyPropertyName="addressId"
 			modelVar="addressDisplay"
 		>
 			<liferay-ui:search-container-column-text

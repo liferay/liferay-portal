@@ -57,7 +57,7 @@ renderResponse.setTitle(cpDefinition.getName(themeDisplay.getLanguageId()));
 					>
 						<liferay-ui:search-container-row
 							className="com.liferay.commerce.product.type.grouped.model.CPDefinitionGroupedEntry"
-							keyProperty="CPDefinitionGroupedEntryId"
+							keyPropertyName="CPDefinitionGroupedEntryId"
 							modelVar="cpDefinitionGroupedEntry"
 						>
 

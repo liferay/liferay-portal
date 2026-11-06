@@ -25,7 +25,7 @@ String itemSelectedEventName = commercePriceListItemSelectorViewDisplayContext.g
 		<liferay-ui:search-container-row
 			className="com.liferay.commerce.price.list.model.CommercePriceList"
 			cssClass="commerce-price-list-row"
-			keyProperty="commercePriceListId"
+			keyPropertyName="commercePriceListId"
 			modelVar="commercePriceList"
 		>
 			<liferay-ui:search-container-column-text

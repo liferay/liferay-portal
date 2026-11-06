@@ -92,7 +92,7 @@ String keywords = ParamUtil.getString(request, "keywords");
 				<liferay-ui:search-container-row
 					className="com.liferay.analytics.settings.web.internal.model.Channel"
 					escapedModel="<%= true %>"
-					keyProperty="id"
+					keyPropertyName="id"
 					modelVar="channel"
 				>
 					<portlet:renderURL var="editChannelURL">

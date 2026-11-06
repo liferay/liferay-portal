@@ -99,7 +99,7 @@ List<DepotEntryGroupRel> depotEntryGroupRels = depotAdminSitesDisplayContext.get
 
 		<liferay-ui:search-container-row
 			className="com.liferay.depot.model.DepotEntryGroupRel"
-			keyProperty="depotEntryGroupRelId"
+			keyPropertyName="depotEntryGroupRelId"
 			modelVar="depotEntryGroupRel"
 		>
 			<liferay-ui:search-container-column-text

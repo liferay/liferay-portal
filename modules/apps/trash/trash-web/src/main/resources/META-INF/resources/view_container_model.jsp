@@ -44,7 +44,7 @@ String lastElementBreadcrumbTitle = StringUtil.upperCaseFirstLetter(trashDisplay
 
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.ContainerModel"
-			keyProperty="containerModelId"
+			keyPropertyName="containerModelId"
 			modelVar="curContainerModel"
 		>
 

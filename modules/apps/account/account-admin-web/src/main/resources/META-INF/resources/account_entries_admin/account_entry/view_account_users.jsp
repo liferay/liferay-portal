@@ -43,7 +43,7 @@ renderResponse.setTitle(accountEntryDisplay.getName());
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.account.admin.web.internal.display.AccountUserDisplay"
-				keyProperty="userId"
+				keyPropertyName="userId"
 				modelVar="accountUser"
 			>
 

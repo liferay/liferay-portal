@@ -22,7 +22,7 @@ EditRolesUsersDisplayContext editRolesUsersDisplayContext = new EditRolesUsersDi
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.User"
 		escapedModel="<%= true %>"
-		keyProperty="userId"
+		keyPropertyName="userId"
 		modelVar="user2"
 		rowIdProperty="screenName"
 	>

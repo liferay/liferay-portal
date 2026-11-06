@@ -29,7 +29,7 @@ String itemSelectedEventName = cpOptionItemSelectorViewDisplayContext.getItemSel
 		<liferay-ui:search-container-row
 			className="com.liferay.commerce.product.model.CPOption"
 			cssClass="commerce-product-option-row"
-			keyProperty="CPOptionId"
+			keyPropertyName="CPOptionId"
 			modelVar="cpOption"
 		>
 			<liferay-ui:search-container-column-text

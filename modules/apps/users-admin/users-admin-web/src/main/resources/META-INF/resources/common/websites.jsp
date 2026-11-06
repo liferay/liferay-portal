@@ -70,7 +70,7 @@ List<Website> websites = WebsiteServiceUtil.getWebsites(className, classPK);
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.Website"
 		escapedModel="<%= true %>"
-		keyProperty="websiteId"
+		keyPropertyName="websiteId"
 		modelVar="website"
 	>
 		<liferay-ui:search-container-column-text

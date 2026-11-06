@@ -38,7 +38,7 @@ DLViewFileEntryTypesDisplayContext dlViewFileEntryTypesDisplayContext = new DLVi
 		<liferay-ui:search-container-row
 			className="com.liferay.document.library.kernel.model.DLFileEntryType"
 			escapedModel="<%= true %>"
-			keyProperty="fileEntryTypeId"
+			keyPropertyName="fileEntryTypeId"
 			modelVar="fileEntryType"
 		>
 

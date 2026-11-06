@@ -82,7 +82,7 @@ request.setAttribute("view.jsp-orderByType", wikiNodesManagementToolbarDisplayCo
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.wiki.model.WikiNode"
-					keyProperty="nodeId"
+					keyPropertyName="nodeId"
 					modelVar="node"
 				>
 

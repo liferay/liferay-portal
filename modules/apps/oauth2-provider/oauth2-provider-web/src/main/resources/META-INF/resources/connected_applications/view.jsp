@@ -36,7 +36,7 @@ if (Validator.isNotNull(backURL)) {
 			<liferay-ui:search-container-row
 				className="com.liferay.oauth2.provider.model.OAuth2Authorization"
 				escapedModel="<%= true %>"
-				keyProperty="OAuth2AuthorizationId"
+				keyPropertyName="OAuth2AuthorizationId"
 				modelVar="oAuth2Authorization"
 			>
 

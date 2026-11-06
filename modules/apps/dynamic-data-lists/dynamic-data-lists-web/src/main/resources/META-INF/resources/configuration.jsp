@@ -96,7 +96,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 									<liferay-ui:search-container-row
 										className="com.liferay.dynamic.data.lists.model.DDLRecordSet"
 										escapedModel="<%= true %>"
-										keyProperty="recordSetId"
+										keyPropertyName="recordSetId"
 										modelVar="recordSet"
 									>
 

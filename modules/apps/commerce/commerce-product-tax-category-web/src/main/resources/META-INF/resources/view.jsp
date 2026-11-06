@@ -30,7 +30,7 @@ CPTaxCategoryDisplayContext cpTaxCategoryDisplayContext = (CPTaxCategoryDisplayC
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.commerce.product.model.CPTaxCategory"
-					keyProperty="CPTaxCategoryId"
+					keyPropertyName="CPTaxCategoryId"
 					modelVar="cpTaxCategory"
 				>
 

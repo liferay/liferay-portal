@@ -38,7 +38,7 @@ String target = ParamUtil.getString(request, "target", groupItemSelectorCriterio
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.Group"
 			escapedModel="<%= true %>"
-			keyProperty="groupId"
+			keyPropertyName="groupId"
 			modelVar="group"
 			rowIdProperty="friendlyURL"
 			rowVar="row"

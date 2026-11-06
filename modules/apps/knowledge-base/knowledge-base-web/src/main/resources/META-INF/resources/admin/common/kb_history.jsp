@@ -69,7 +69,7 @@ if (portletTitleBasedNavigation) {
 		<liferay-ui:search-container-row
 			className="com.liferay.knowledge.base.model.KBArticle"
 			escapedModel="<%= true %>"
-			keyProperty="version"
+			keyPropertyName="version"
 			modelVar="curKBArticle"
 		>
 			<liferay-portlet:renderURL var="rowURL">

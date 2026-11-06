@@ -276,7 +276,7 @@ SearchEngineDisplayContext searchEngineDisplayContext = (SearchEngineDisplayCont
 												<liferay-ui:search-container-row
 													className="com.liferay.portal.search.engine.NodeInformation"
 													escapedModel="<%= true %>"
-													keyProperty="name"
+													keyPropertyName="name"
 													modelVar="nodeInformation"
 												>
 													<liferay-ui:search-container-column-text

@@ -17,7 +17,7 @@ SiteAdminDisplayContext siteAdminDisplayContext = (SiteAdminDisplayContext)reque
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.Group"
 		escapedModel="<%= true %>"
-		keyProperty="groupId"
+		keyPropertyName="groupId"
 		modelVar="curGroup"
 		rowIdProperty="friendlyURL"
 	>

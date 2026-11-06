@@ -26,7 +26,7 @@ SearchContainer<CommerceChannel> commerceChannelSearchContainer = commerceChanne
 			className="com.liferay.commerce.product.model.CommerceChannel"
 			cssClass="commerce-channel-row"
 			escapedModel="<%= true %>"
-			keyProperty="commerceChannelId"
+			keyPropertyName="commerceChannelId"
 			modelVar="commerceChannel"
 		>
 

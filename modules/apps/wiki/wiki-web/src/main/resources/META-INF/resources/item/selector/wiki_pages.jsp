@@ -53,7 +53,7 @@ String searchURL = HttpComponentsUtil.removeParameter(
 		<liferay-ui:search-container-row
 			className="com.liferay.wiki.model.WikiPage"
 			cssClass="wiki-page-item"
-			keyProperty="pageId"
+			keyPropertyName="pageId"
 			modelVar="curPage"
 		>
 			<liferay-ui:search-container-column-icon

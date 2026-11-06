@@ -83,7 +83,7 @@ renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x",
 					>
 						<liferay-ui:search-container-row
 							className="com.liferay.fragment.model.FragmentEntryLink"
-							keyProperty="fragmentEntryLinkId"
+							keyPropertyName="fragmentEntryLinkId"
 							modelVar="fragmentEntryLink"
 						>
 							<liferay-ui:search-container-column-text

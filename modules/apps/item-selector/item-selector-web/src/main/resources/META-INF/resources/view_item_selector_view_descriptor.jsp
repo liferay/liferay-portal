@@ -41,7 +41,7 @@ SearchContainer<Object> searchContainer = itemSelectorViewDescriptorRendererDisp
 			ariaLabel='<%= multipleSelection ? StringPool.BLANK : LanguageUtil.get(request, "press-enter-to-select-the-item-and-close-the-modal") %>'
 			className="Object"
 			cssClass='<%= (listView && !multipleSelection) ? "entry entry-selector" : StringPool.BLANK %>'
-			keyProperty="<%= itemSelectorViewDescriptor.getKeyProperty() %>"
+			keyPropertyName="<%= itemSelectorViewDescriptor.getKeyProperty() %>"
 			modelVar="entry"
 			tabIndex='<%= multipleSelection ? StringPool.BLANK : "0" %>'
 		>

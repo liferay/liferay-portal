@@ -48,7 +48,7 @@ renderResponse.setTitle(layoutPageTemplateEntry.getName());
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.asset.display.page.model.AssetDisplayPageEntry"
-			keyProperty="assetDisplayPageEntryId"
+			keyPropertyName="assetDisplayPageEntryId"
 			modelVar="assetDisplayPageEntry"
 		>
 			<liferay-ui:search-container-column-text

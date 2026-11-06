@@ -14,7 +14,7 @@ MBThreadsDisplayContext mbThreadsDisplayContext = new MBThreadsDisplayContext(re
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.BaseModel"
-		keyProperty="primaryKeyObj"
+		keyPropertyName="primaryKeyObj"
 		modelVar="result"
 	>
 		<%@ include file="/message_boards/thread_cast_result.jspf" %>

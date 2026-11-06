@@ -34,7 +34,7 @@ ViewKBTemplatesDisplayContext viewKBTemplatesDisplayContext = (ViewKBTemplatesDi
 					>
 						<liferay-ui:search-container-row
 							className="com.liferay.knowledge.base.model.KBTemplate"
-							keyProperty="kbTemplateId"
+							keyPropertyName="kbTemplateId"
 							modelVar="kbTemplate"
 						>
 

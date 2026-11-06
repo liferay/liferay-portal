@@ -29,7 +29,7 @@ CategoryCPAttachmentFileEntriesManagementToolbarDisplayContext categoryCPAttachm
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.commerce.product.model.CPAttachmentFileEntry"
-			keyProperty="CPAttachmentFileEntryId"
+			keyPropertyName="CPAttachmentFileEntryId"
 			modelVar="cpAttachmentFileEntry"
 		>
 

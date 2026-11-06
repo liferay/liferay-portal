@@ -74,7 +74,7 @@ List<Phone> phones = PhoneServiceUtil.getPhones(className, classPK);
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.Phone"
 		escapedModel="<%= true %>"
-		keyProperty="phoneId"
+		keyPropertyName="phoneId"
 		modelVar="phone"
 	>
 		<liferay-ui:search-container-column-text

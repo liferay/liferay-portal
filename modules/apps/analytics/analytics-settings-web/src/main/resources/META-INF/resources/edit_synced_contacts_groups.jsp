@@ -75,7 +75,7 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.kernel.model.UserGroup"
 				escapedModel="<%= true %>"
-				keyProperty="userGroupId"
+				keyPropertyName="userGroupId"
 				modelVar="userGroup"
 			>
 				<liferay-ui:search-container-column-text

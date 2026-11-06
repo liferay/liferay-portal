@@ -23,7 +23,7 @@ CommerceMLForecastAlertEntryListDisplayContext commerceMLForecastAlertEntryListD
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.commerce.machine.learning.forecast.alert.model.CommerceMLForecastAlertEntry"
-					keyProperty="commerceMLForecastAlertEntryId"
+					keyPropertyName="commerceMLForecastAlertEntryId"
 					modelVar="commerceMLForecastAlertEntry"
 				>
 

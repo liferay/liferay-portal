@@ -102,7 +102,7 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "
 					<liferay-ui:search-container-row
 						className="com.liferay.analytics.settings.web.internal.model.Field"
 						escapedModel="<%= true %>"
-						keyProperty="name"
+						keyPropertyName="name"
 						modelVar="contactField"
 					>
 						<liferay-ui:search-container-column-text
@@ -150,7 +150,7 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "
 					<liferay-ui:search-container-row
 						className="com.liferay.analytics.settings.web.internal.model.Field"
 						escapedModel="<%= true %>"
-						keyProperty="name"
+						keyPropertyName="name"
 						modelVar="userField"
 					>
 						<liferay-ui:search-container-column-text

@@ -68,7 +68,7 @@ PortletURL backURL = PortletURLBuilder.createRenderURL(
 
 		<liferay-ui:search-container-row
 			className="com.liferay.dynamic.data.mapping.model.DDMTemplateVersion"
-			keyProperty="templateVersionId"
+			keyPropertyName="templateVersionId"
 			modelVar="templateVersion"
 		>
 			<portlet:renderURL var="rowURL">

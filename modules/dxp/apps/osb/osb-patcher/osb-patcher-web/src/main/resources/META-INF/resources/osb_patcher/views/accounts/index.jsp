@@ -25,7 +25,7 @@ PatcherAccountsDisplayContext patcherAccountsDisplayContext = new PatcherAccount
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherAccount"
 		escapedModel="<%= true %>"
-		keyProperty="patcherAccountId"
+		keyPropertyName="patcherAccountId"
 		modelVar="patcherAccount"
 	>
 		<liferay-ui:search-container-column-text

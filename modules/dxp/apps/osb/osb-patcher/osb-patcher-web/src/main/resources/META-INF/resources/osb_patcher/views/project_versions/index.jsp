@@ -25,7 +25,7 @@ PatcherProjectVersionsDisplayContext patcherProjectVersionsDisplayContext = new 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherProjectVersion"
 		escapedModel="<%= true %>"
-		keyProperty="patcherProjectVersionId"
+		keyPropertyName="patcherProjectVersionId"
 		modelVar="patcherProjectVersion"
 	>
 		<liferay-ui:search-container-column-text

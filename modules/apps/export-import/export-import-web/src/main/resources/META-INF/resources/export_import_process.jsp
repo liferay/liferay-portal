@@ -25,7 +25,7 @@ if (Validator.isNotNull(backURL)) {
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.backgroundtask.BackgroundTask"
-		keyProperty="backgroundTaskId"
+		keyPropertyName="backgroundTaskId"
 		modelVar="curBackgroundTask"
 	>
 

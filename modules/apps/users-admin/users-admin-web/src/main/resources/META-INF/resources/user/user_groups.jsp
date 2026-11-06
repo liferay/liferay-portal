@@ -79,7 +79,7 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.UserGroup"
 		escapedModel="<%= true %>"
-		keyProperty="userGroupId"
+		keyPropertyName="userGroupId"
 		modelVar="userGroup"
 	>
 		<liferay-ui:search-container-column-text

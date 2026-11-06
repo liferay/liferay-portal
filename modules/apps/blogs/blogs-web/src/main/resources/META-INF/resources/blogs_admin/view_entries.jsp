@@ -56,7 +56,7 @@ PortletURL portletURL = entriesSearchContainer.getIteratorURL();
 			<liferay-ui:search-container-row
 				className="com.liferay.blogs.model.BlogsEntry"
 				escapedModel="<%= true %>"
-				keyProperty="entryId"
+				keyPropertyName="entryId"
 				modelVar="entry"
 			>
 				<liferay-portlet:renderURL varImpl="rowURL">

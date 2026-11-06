@@ -37,7 +37,7 @@ DepotAdminManagementToolbarDisplayContext depotAdminManagementToolbarDisplayCont
 				<liferay-ui:search-container-row
 					className="com.liferay.depot.model.DepotEntry"
 					escapedModel="<%= true %>"
-					keyProperty="depotEntryId"
+					keyPropertyName="depotEntryId"
 					rowIdProperty="depotEntryId"
 				>
 

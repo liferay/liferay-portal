@@ -11,7 +11,7 @@
 	<liferay-ui:search-container-row
 		className="Object"
 		escapedModel="<%= true %>"
-		keyProperty="categoryId"
+		keyPropertyName="categoryId"
 		modelVar="result"
 	>
 		<%@ include file="/message_boards/cast_result.jspf" %>

@@ -27,7 +27,7 @@ KBCommentResultRowSplitter resultRowSplitter = (KBCommentResultRowSplitter)reque
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.knowledge.base.model.KBComment"
-			keyProperty="kbCommentId"
+			keyPropertyName="kbCommentId"
 			modelVar="kbComment"
 		>
 			<c:if test="<%= kbSuggestionListManagementToolbarDisplayContext != null %>">

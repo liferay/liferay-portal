@@ -46,7 +46,7 @@ OAuthClientEntriesManagementToolbarDisplayContext oAuthClientEntriesManagementTo
 		<liferay-ui:search-container-row
 			className="com.liferay.oauth.client.persistence.model.OAuthClientEntry"
 			escapedModel="<%= true %>"
-			keyProperty="clientId"
+			keyPropertyName="clientId"
 			modelVar="oAuthClientEntry"
 		>
 			<portlet:renderURL var="editURL">

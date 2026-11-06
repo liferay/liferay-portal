@@ -35,7 +35,7 @@ renderResponse.setTitle(accountEntryDisplay.getName());
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.kernel.model.Organization"
-				keyProperty="organizationId"
+				keyPropertyName="organizationId"
 				modelVar="accountOrganization"
 			>
 				<liferay-ui:search-container-column-text

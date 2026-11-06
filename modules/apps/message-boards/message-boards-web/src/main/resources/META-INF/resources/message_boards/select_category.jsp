@@ -56,7 +56,7 @@ else {
 			<liferay-ui:search-container-row
 				className="com.liferay.message.boards.model.MBCategory"
 				escapedModel="<%= true %>"
-				keyProperty="categoryId"
+				keyPropertyName="categoryId"
 				modelVar="curCategory"
 			>
 				<portlet:renderURL var="rowURL">

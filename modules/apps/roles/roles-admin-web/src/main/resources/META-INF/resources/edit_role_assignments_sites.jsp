@@ -19,7 +19,7 @@ String displayStyle = (String)request.getAttribute("edit_role_assignments.jsp-di
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.Group"
 		escapedModel="<%= true %>"
-		keyProperty="groupId"
+		keyPropertyName="groupId"
 		modelVar="group"
 		rowIdProperty="friendlyURL"
 	>

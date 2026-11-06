@@ -10,7 +10,7 @@
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.calendar.model.CalendarResource"
-		keyProperty="<%= calendarDisplayContext.getSearchContainerId() %>"
+		keyPropertyName="<%= calendarDisplayContext.getSearchContainerId() %>"
 		modelVar="resource"
 	>
 		<liferay-ui:search-container-column-text

@@ -18,7 +18,7 @@ CommerceShipmentContentDisplayContext commerceShipmentContentDisplayContext = (C
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.commerce.model.CommerceShipment"
-		keyProperty="commerceShipmentId"
+		keyPropertyName="commerceShipmentId"
 		modelVar="commerceShipment"
 	>
 

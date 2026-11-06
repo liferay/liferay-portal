@@ -228,7 +228,7 @@ if (patcherBuild != null) {
 			<liferay-ui:search-container-row
 				className="com.liferay.osb.patcher.model.PatcherFix"
 				escapedModel="<%= true %>"
-				keyProperty="patcherFixId"
+				keyPropertyName="patcherFixId"
 				modelVar="patcherFix"
 			>
 				<portlet:renderURL var="viewPatcherFixURL">
@@ -338,7 +338,7 @@ Set<PatcherFixPack> prerequisitePatcherFixPacks = PatcherFixPackUtil.getPrerequi
 				<liferay-ui:search-container-row
 					className="com.liferay.osb.patcher.model.PatcherFixPack"
 					escapedModel="<%= true %>"
-					keyProperty="patcherFixPackId"
+					keyPropertyName="patcherFixPackId"
 					modelVar="curPatcherFixPack"
 				>
 					<portlet:renderURL var="viewPatcherFixPackURL">

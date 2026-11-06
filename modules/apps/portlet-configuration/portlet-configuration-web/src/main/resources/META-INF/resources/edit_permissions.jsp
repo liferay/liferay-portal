@@ -44,7 +44,7 @@ if (Validator.isNotNull(portletConfigurationPermissionsDisplayContext.getModelRe
 					className="com.liferay.portal.kernel.model.Role"
 					cssClass="table-title"
 					escapedModel="<%= true %>"
-					keyProperty="roleId"
+					keyPropertyName="roleId"
 					modelVar="role"
 				>
 

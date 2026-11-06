@@ -141,7 +141,7 @@ if (Validator.isNotNull(workflowDefinition)) {
 		<c:otherwise>
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion"
-				keyProperty="kaleoDefinitionVersionId"
+				keyPropertyName="kaleoDefinitionVersionId"
 				modelVar="kaleoDefinitionVersion"
 			>
 				<liferay-ui:search-container-row-parameter

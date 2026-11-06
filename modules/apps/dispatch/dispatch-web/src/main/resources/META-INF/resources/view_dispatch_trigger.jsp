@@ -39,7 +39,7 @@ PortletURL portletURL = PortletURLBuilder.create(
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.dispatch.model.DispatchTrigger"
-					keyProperty="dispatchTriggerId"
+					keyPropertyName="dispatchTriggerId"
 					modelVar="dispatchTrigger"
 				>
 					<liferay-ui:search-container-column-text

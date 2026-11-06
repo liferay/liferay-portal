@@ -27,7 +27,7 @@ SiteNavigationAdminManagementToolbarDisplayContext siteNavigationAdminManagement
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.site.navigation.model.SiteNavigationMenu"
-			keyProperty="siteNavigationMenuId"
+			keyPropertyName="siteNavigationMenuId"
 			modelVar="siteNavigationMenu"
 		>
 

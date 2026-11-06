@@ -62,7 +62,7 @@ if (Validator.isNotNull(backURL)) {
 				<liferay-ui:search-container-row
 					className="com.liferay.subscription.model.Subscription"
 					escapedModel="<%= true %>"
-					keyProperty="subscriptionId"
+					keyPropertyName="subscriptionId"
 					modelVar="subscription"
 				>
 

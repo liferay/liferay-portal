@@ -129,7 +129,7 @@ request.setAttribute("view.jsp-viewCategory", Boolean.TRUE.toString());
 				<liferay-ui:search-container-row
 					className="com.liferay.message.boards.model.MBCategory"
 					escapedModel="<%= true %>"
-					keyProperty="categoryId"
+					keyPropertyName="categoryId"
 					modelVar="curCategory"
 				>
 					<liferay-portlet:renderURL varImpl="rowURL">

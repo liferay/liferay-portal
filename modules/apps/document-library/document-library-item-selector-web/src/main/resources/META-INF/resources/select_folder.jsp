@@ -38,7 +38,7 @@ DLBreadcrumbUtil.addPortletBreadcrumbEntries(ParamUtil.getString(request, "displ
 
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.kernel.repository.model.Folder"
-				keyProperty="folderId"
+				keyPropertyName="folderId"
 				modelVar="curFolder"
 				rowVar="row"
 			>

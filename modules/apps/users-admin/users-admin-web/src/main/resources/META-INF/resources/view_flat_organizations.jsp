@@ -103,7 +103,7 @@ if (filterManageableOrganizations) {
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.Organization"
 					escapedModel="<%= true %>"
-					keyProperty="organizationId"
+					keyPropertyName="organizationId"
 					modelVar="organization"
 				>
 					<liferay-portlet:renderURL varImpl="rowURL">

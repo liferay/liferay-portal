@@ -39,7 +39,7 @@ else {
 	<liferay-ui:search-container-row
 		className="com.liferay.announcements.kernel.model.AnnouncementsDelivery"
 		escapedModel="<%= true %>"
-		keyProperty="deliveryId"
+		keyPropertyName="deliveryId"
 		modelVar="delivery"
 	>
 		<liferay-ui:search-container-column-text

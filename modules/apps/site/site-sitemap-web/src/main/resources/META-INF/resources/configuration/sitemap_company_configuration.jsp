@@ -208,7 +208,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.Group"
 					escapedModel="<%= true %>"
-					keyProperty="groupId"
+					keyPropertyName="groupId"
 					modelVar="group"
 					rowIdProperty="groupId"
 				>
@@ -302,7 +302,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 				<liferay-ui:search-container-row
 					className="com.liferay.object.model.ObjectDefinition"
 					escapedModel="<%= true %>"
-					keyProperty="objectDefinitionId"
+					keyPropertyName="objectDefinitionId"
 					modelVar="objectDefinition"
 					rowIdProperty="objectDefinitionId"
 				>

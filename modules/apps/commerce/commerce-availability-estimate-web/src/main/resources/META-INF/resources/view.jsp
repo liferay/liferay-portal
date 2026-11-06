@@ -31,7 +31,7 @@ CommerceAvailabilityEstimateDisplayContext commerceAvailabilityEstimateDisplayCo
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.commerce.model.CommerceAvailabilityEstimate"
-					keyProperty="commerceAvailabilityEstimateId"
+					keyPropertyName="commerceAvailabilityEstimateId"
 					modelVar="commerceAvailabilityEstimate"
 				>
 					<liferay-ui:search-container-column-text

@@ -95,7 +95,7 @@ long[] groupIds = viewUADEntitiesDisplay.getGroupIds();
 					<liferay-ui:search-container-row
 						className="com.liferay.user.associated.data.web.internal.display.UADEntity"
 						escapedModel="<%= true %>"
-						keyProperty="primaryKey"
+						keyPropertyName="primaryKey"
 						modelVar="uadEntity"
 					>
 

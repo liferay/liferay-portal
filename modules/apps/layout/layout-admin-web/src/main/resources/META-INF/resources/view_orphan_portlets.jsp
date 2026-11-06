@@ -47,7 +47,7 @@ renderResponse.setTitle(selLayout.getName(locale) + StringPool.SPACE + LanguageU
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.Portlet"
 			escapedModel="<%= true %>"
-			keyProperty="portletId"
+			keyPropertyName="portletId"
 			modelVar="portlet"
 		>
 			<c:choose>

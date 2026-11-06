@@ -439,7 +439,7 @@ SearchContainer<PatcherBuild> patcherBuildSearchContainer = patcherViewBuildsDis
 				<liferay-ui:search-container-row
 					className="com.liferay.osb.patcher.model.PatcherBuild"
 					escapedModel="<%= true %>"
-					keyProperty="patcherBuildId"
+					keyPropertyName="patcherBuildId"
 					modelVar="patcherBuildKeyVersion"
 				>
 					<c:if test="<%= patcherBuild.getPatcherBuildId() == patcherBuildKeyVersion.getPatcherBuildId() %>">

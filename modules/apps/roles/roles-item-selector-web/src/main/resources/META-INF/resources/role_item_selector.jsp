@@ -25,7 +25,7 @@ RoleItemSelectorViewDisplayContext roleItemSelectorViewDisplayContext = (RoleIte
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.Role"
 			cssClass="entry"
-			keyProperty="roleId"
+			keyPropertyName="roleId"
 			modelVar="role"
 		>
 

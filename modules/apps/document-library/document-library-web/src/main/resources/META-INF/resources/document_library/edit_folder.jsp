@@ -112,7 +112,7 @@ renderResponse.setTitle(dlEditFolderDisplayContext.getHeaderTitle());
 									<liferay-ui:search-container-row
 										className="com.liferay.document.library.kernel.model.DLFileEntryType"
 										escapedModel="<%= true %>"
-										keyProperty="fileEntryTypeId"
+										keyPropertyName="fileEntryTypeId"
 										modelVar="dlFileEntryType"
 									>
 										<liferay-ui:search-container-column-text

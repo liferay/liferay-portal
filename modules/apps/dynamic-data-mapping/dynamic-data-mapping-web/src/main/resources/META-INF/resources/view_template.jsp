@@ -75,7 +75,7 @@ if (layout != null) {
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.dynamic.data.mapping.model.DDMTemplate"
-				keyProperty="templateId"
+				keyPropertyName="templateId"
 				modelVar="template"
 			>
 

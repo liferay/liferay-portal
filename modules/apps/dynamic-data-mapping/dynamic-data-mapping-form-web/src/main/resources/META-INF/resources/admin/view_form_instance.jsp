@@ -35,7 +35,7 @@ FormInstancePermissionCheckerHelper formInstancePermissionCheckerHelper = ddmFor
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.dynamic.data.mapping.model.DDMFormInstance"
-						keyProperty="formInstanceId"
+						keyPropertyName="formInstanceId"
 						modelVar="formInstance"
 					>
 						<portlet:renderURL var="rowURL">

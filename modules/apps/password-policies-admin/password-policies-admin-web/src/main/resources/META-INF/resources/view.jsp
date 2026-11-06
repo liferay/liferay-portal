@@ -71,7 +71,7 @@ PortletURL portletURL = viewPasswordPoliciesManagementToolbarDisplayContext.getP
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.kernel.model.PasswordPolicy"
 				escapedModel="<%= true %>"
-				keyProperty="passwordPolicyId"
+				keyPropertyName="passwordPolicyId"
 				modelVar="passwordPolicy"
 			>
 

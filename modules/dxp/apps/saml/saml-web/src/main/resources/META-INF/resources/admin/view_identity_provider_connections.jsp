@@ -26,7 +26,7 @@
 	<liferay-ui:search-container-row
 		className="com.liferay.saml.persistence.model.SamlSpIdpConnection"
 		escapedModel="<%= true %>"
-		keyProperty="samlSpIdpConnectionId"
+		keyPropertyName="samlSpIdpConnectionId"
 		modelVar="samlSpIdpConnection"
 	>
 		<portlet:renderURL var="rowURL">

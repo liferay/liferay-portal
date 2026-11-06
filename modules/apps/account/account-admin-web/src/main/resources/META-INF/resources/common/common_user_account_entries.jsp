@@ -90,7 +90,7 @@ boolean singleSelect = ParamUtil.getBoolean(request, "singleSelect", true);
 
 		<liferay-ui:search-container-row
 			className="com.liferay.account.admin.web.internal.display.AccountEntryDisplay"
-			keyProperty="accountEntryId"
+			keyPropertyName="accountEntryId"
 			modelVar="accountEntryDisplay"
 		>
 			<liferay-ui:search-container-column-text

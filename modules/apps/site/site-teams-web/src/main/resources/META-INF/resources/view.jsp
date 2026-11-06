@@ -29,7 +29,7 @@ SiteTeamsManagementToolbarDisplayContext siteTeamsManagementToolbarDisplayContex
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.Team"
 			escapedModel="<%= true %>"
-			keyProperty="teamId"
+			keyPropertyName="teamId"
 			modelVar="team"
 		>
 

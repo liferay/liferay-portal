@@ -19,7 +19,7 @@
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.reports.engine.console.model.Entry"
-			keyProperty="entryId"
+			keyPropertyName="entryId"
 			modelVar="entry"
 		>
 			<liferay-portlet:renderURL varImpl="rowURL">

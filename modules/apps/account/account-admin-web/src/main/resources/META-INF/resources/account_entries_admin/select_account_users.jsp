@@ -34,7 +34,7 @@ SelectAccountUsersManagementToolbarDisplayContext selectAccountUsersManagementTo
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.account.admin.web.internal.display.AccountUserDisplay"
-			keyProperty="userId"
+			keyPropertyName="userId"
 			modelVar="accountUserDisplay"
 		>
 			<liferay-ui:search-container-column-text

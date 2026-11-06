@@ -118,7 +118,7 @@ if (Validator.isNotNull(backURL)) {
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.UserNotificationEvent"
-					keyProperty="userNotificationEventId"
+					keyPropertyName="userNotificationEventId"
 					modelVar="userNotificationEvent"
 				>
 

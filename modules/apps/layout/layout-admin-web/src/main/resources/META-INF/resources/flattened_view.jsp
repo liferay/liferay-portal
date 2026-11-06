@@ -13,7 +13,7 @@
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.Layout"
-		keyProperty="plid"
+		keyPropertyName="plid"
 		modelVar="layout"
 	>
 		<liferay-ui:search-container-column-text

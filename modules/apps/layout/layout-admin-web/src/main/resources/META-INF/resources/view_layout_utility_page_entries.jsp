@@ -28,7 +28,7 @@ LayoutUtilityPageEntryDisplayContext layoutUtilityPageEntryDisplayContext = (Lay
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.layout.utility.page.model.LayoutUtilityPageEntry"
-			keyProperty="layoutUtilityPageEntryId"
+			keyPropertyName="layoutUtilityPageEntryId"
 			modelVar="layoutUtilityPageEntry"
 		>
 

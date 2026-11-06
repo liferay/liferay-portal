@@ -27,7 +27,7 @@ long segmentsEntryId = ParamUtil.getLong(request, "segmentsEntryId");
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.User"
 			escapedModel="<%= true %>"
-			keyProperty="userId"
+			keyPropertyName="userId"
 			modelVar="user2"
 		>
 			<liferay-ui:search-container-column-text>

@@ -55,7 +55,7 @@ CommerceAddressDisplayContext commerceAddressDisplayContext = (CommerceAddressDi
 						>
 							<liferay-ui:search-container-row
 								className="com.liferay.commerce.model.CommerceAddress"
-								keyProperty="commerceAddressId"
+								keyPropertyName="commerceAddressId"
 								modelVar="commerceAddress"
 							>
 								<liferay-ui:search-container-column-text

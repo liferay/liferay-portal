@@ -25,7 +25,7 @@ CommerceOrder commerceOrder = (CommerceOrder)request.getAttribute(CommerceOrderC
 		<liferay-ui:search-container-row
 			className="com.liferay.commerce.model.CommerceOrderItem"
 			escapedModel="<%= true %>"
-			keyProperty="commerceOrderItemId"
+			keyPropertyName="commerceOrderItemId"
 			modelVar="commerceOrderItem"
 		>
 			<liferay-ui:search-container-column-text

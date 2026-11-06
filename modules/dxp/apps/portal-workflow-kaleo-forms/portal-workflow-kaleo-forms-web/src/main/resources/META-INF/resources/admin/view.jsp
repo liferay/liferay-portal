@@ -32,7 +32,7 @@ String displayStyle = kaleoFormsAdminDisplayContext.getDisplayStyle();
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess"
-				keyProperty="kaleoProcessId"
+				keyPropertyName="kaleoProcessId"
 				modelVar="process"
 			>
 				<portlet:renderURL var="rowURL">

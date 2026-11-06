@@ -62,7 +62,7 @@ LayoutClassedModelUsagesDisplayContext layoutClassedModelUsagesDisplayContext = 
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.layout.model.LayoutClassedModelUsage"
-						keyProperty="layoutClassedModelUsageId"
+						keyPropertyName="layoutClassedModelUsageId"
 						modelVar="layoutClassedModelUsage"
 					>
 						<liferay-ui:search-container-column-text

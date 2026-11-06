@@ -49,7 +49,7 @@ AnnouncementsAdminViewDisplayContext announcementsAdminViewDisplayContext = new 
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.announcements.kernel.model.AnnouncementsEntry"
-				keyProperty="entryId"
+				keyPropertyName="entryId"
 				modelVar="entry"
 			>
 

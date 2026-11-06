@@ -101,7 +101,7 @@ TrashManagementToolbarDisplayContext trashManagementToolbarDisplayContext = new 
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.trash.model.TrashEntry"
-					keyProperty="entryId"
+					keyPropertyName="entryId"
 					modelVar="trashEntry"
 					rowVar="row"
 				>

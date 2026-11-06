@@ -72,7 +72,7 @@ renderResponse.setTitle(StringBundler.concat(selectedUser.getFullName(), " - ", 
 
 					<liferay-ui:search-container-row
 						className="com.liferay.user.associated.data.web.internal.display.UADApplicationExportDisplay"
-						keyProperty="applicationKey"
+						keyPropertyName="applicationKey"
 						modelVar="uadApplicationExportDisplay"
 					>
 

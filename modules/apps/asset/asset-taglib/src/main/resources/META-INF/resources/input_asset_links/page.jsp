@@ -47,7 +47,7 @@
 
 	<liferay-ui:search-container-row
 		className="com.liferay.asset.link.model.AssetLink"
-		keyProperty="entryId2"
+		keyPropertyName="entryId2"
 		modelVar="assetLink"
 	>
 

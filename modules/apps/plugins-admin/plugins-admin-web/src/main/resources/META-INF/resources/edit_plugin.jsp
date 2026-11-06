@@ -104,7 +104,7 @@ renderResponse.setTitle(title);
 
 											<liferay-ui:search-container-row
 												className="com.liferay.portal.kernel.model.Role"
-												keyProperty="name"
+												keyPropertyName="name"
 												modelVar="role"
 											>
 												<liferay-ui:search-container-column-text
@@ -163,7 +163,7 @@ renderResponse.setTitle(title);
 
 											<liferay-ui:search-container-row
 												className="com.liferay.portal.kernel.model.Role"
-												keyProperty="name"
+												keyPropertyName="name"
 												modelVar="role"
 											>
 												<liferay-ui:search-container-column-text

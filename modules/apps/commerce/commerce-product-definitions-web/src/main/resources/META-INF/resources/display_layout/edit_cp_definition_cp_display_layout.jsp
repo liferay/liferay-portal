@@ -65,7 +65,7 @@ String searchContainerId = "CPDefinitionsSearchContainer";
 
 						<liferay-ui:search-container-row
 							className="com.liferay.commerce.product.model.CPDefinition"
-							keyProperty="CPDefinitionId"
+							keyPropertyName="CPDefinitionId"
 							modelVar="cpDefinition"
 						>
 							<liferay-ui:search-container-column-text

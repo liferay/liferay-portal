@@ -122,7 +122,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 
 							<liferay-ui:search-container-row
 								className="com.liferay.layout.page.template.model.LayoutPageTemplateEntry"
-								keyProperty="layoutPageTemplateEntryId"
+								keyPropertyName="layoutPageTemplateEntryId"
 								modelVar="layoutPageTemplateEntry"
 							>
 								<liferay-ui:search-container-column-text>

@@ -69,7 +69,7 @@ DepotAdminRolesDisplayContext depotAdminRolesDisplayContext = (DepotAdminRolesDi
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.UserGroupRole"
 		escapedModel="<%= true %>"
-		keyProperty="roleId"
+		keyPropertyName="roleId"
 		modelVar="userGroupRole"
 	>
 		<liferay-ui:search-container-column-text

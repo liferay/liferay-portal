@@ -30,7 +30,7 @@ ViewDisplayContext viewDisplayContext = (ViewDisplayContext)request.getAttribute
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.translation.model.TranslationEntry"
-				keyProperty="translationEntryId"
+				keyPropertyName="translationEntryId"
 				modelVar="translationEntry"
 			>
 

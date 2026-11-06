@@ -26,7 +26,7 @@ SearchContainer<Region> regionSearchContainer = RegionSearchContainerFactory.cre
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.kernel.model.Region"
-				keyProperty="regionId"
+				keyPropertyName="regionId"
 				modelVar="region"
 			>
 

@@ -64,7 +64,7 @@ request.setAttribute("view_layout_branches.jsp-currenttLayoutBranchId", String.v
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.kernel.model.LayoutRevision"
 				escapedModel="<%= true %>"
-				keyProperty="layoutRevisionId"
+				keyPropertyName="layoutRevisionId"
 				modelVar="layoutRevision"
 			>
 

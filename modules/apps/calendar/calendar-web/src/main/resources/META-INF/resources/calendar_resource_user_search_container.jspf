@@ -10,7 +10,7 @@
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.User"
-		keyProperty="userId"
+		keyPropertyName="userId"
 		modelVar="user"
 	>
 		<liferay-ui:search-container-column-text

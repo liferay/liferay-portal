@@ -34,7 +34,7 @@
 					<liferay-ui:search-container-row
 						className="com.liferay.message.boards.model.MBMessage"
 						escapedModel="<%= true %>"
-						keyProperty="messageId"
+						keyPropertyName="messageId"
 						modelVar="message"
 					>
 						<liferay-portlet:renderURL varImpl="rowURL">

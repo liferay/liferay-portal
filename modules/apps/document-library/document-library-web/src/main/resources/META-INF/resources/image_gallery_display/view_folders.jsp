@@ -38,7 +38,7 @@ if (permissionChecker.isContentReviewer(user.getCompanyId(), scopeGroupId)) {
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.repository.model.Folder"
 		escapedModel="<%= true %>"
-		keyProperty="folderId"
+		keyPropertyName="folderId"
 		modelVar="curFolder"
 	>
 		<liferay-portlet:renderURL varImpl="rowURL">

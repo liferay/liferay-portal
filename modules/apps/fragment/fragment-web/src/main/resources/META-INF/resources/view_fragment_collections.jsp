@@ -22,7 +22,7 @@ FragmentCollectionsDisplayContext fragmentCollectionsDisplayContext = (FragmentC
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.fragment.model.FragmentCollection"
-			keyProperty="fragmentCollectionId"
+			keyPropertyName="fragmentCollectionId"
 			modelVar="fragmentCollection"
 		>
 			<liferay-ui:search-container-column-text

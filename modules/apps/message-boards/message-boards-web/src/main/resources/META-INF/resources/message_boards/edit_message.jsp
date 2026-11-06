@@ -250,7 +250,7 @@ if (portletTitleBasedNavigation) {
 								<liferay-ui:search-container-row
 									className="com.liferay.portal.kernel.repository.model.FileEntry"
 									escapedModel="<%= true %>"
-									keyProperty="fileEntryId"
+									keyPropertyName="fileEntryId"
 									modelVar="fileEntry"
 								>
 									<liferay-ui:search-container-column-text

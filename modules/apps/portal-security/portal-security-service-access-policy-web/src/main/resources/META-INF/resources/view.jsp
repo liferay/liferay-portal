@@ -22,7 +22,7 @@ SAPEntryDisplayContext sapEntryDisplayContext = new SAPEntryDisplayContext(lifer
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.security.service.access.policy.model.SAPEntry"
 			escapedModel="<%= true %>"
-			keyProperty="sapEntryId"
+			keyPropertyName="sapEntryId"
 			modelVar="sapEntry"
 		>
 			<portlet:renderURL var="rowURL">

@@ -22,7 +22,7 @@ LayoutPortletsDisplayContext layoutPortletsDisplayContext = new LayoutPortletsDi
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.Portlet"
 			escapedModel="<%= true %>"
-			keyProperty="portletId"
+			keyPropertyName="portletId"
 			modelVar="portlet"
 		>
 			<liferay-ui:search-container-column-text

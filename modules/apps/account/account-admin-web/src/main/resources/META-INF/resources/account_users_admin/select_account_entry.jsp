@@ -49,7 +49,7 @@ if (selectAccountEntryManagementToolbarDisplayContext.isSingleSelect()) {
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.account.admin.web.internal.display.AccountEntryDisplay"
-			keyProperty="accountEntryId"
+			keyPropertyName="accountEntryId"
 			modelVar="accountEntryDisplay"
 		>
 

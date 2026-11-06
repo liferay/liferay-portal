@@ -57,7 +57,7 @@ RedirectEntriesDisplayContext redirectEntriesDisplayContext = (RedirectEntriesDi
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.redirect.model.RedirectEntry"
-					keyProperty="redirectEntryId"
+					keyPropertyName="redirectEntryId"
 					modelVar="redirectEntry"
 				>
 

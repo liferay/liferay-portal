@@ -89,7 +89,7 @@ String textCssClass = menuAccessConfigurationDisplayContext.isShowControlMenuByR
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.Role"
 					escapedModel="<%= true %>"
-					keyProperty="roleId"
+					keyPropertyName="roleId"
 					modelVar="role"
 				>
 					<liferay-ui:search-container-column-text

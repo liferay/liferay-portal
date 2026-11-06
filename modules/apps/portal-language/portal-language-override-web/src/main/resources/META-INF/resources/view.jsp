@@ -32,7 +32,7 @@ ViewDisplayContext viewDisplayContext = (ViewDisplayContext)request.getAttribute
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.language.override.web.internal.display.LanguageItemDisplay"
-			keyProperty="key"
+			keyPropertyName="key"
 			modelVar="languageItemDisplay"
 		>
 			<portlet:renderURL var="editPLOEntryURL">

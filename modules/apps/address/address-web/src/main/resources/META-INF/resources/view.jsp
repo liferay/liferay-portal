@@ -26,7 +26,7 @@ SearchContainer<Country> countrySearchContainer = CountrySearchContainerFactory.
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.kernel.model.Country"
-				keyProperty="countryId"
+				keyPropertyName="countryId"
 				modelVar="country"
 			>
 

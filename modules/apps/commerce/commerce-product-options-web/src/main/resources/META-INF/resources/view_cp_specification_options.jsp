@@ -60,7 +60,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "specifications"));
 						>
 							<liferay-ui:search-container-row
 								className="com.liferay.commerce.product.model.CPSpecificationOption"
-								keyProperty="CPSpecificationOptionId"
+								keyPropertyName="CPSpecificationOptionId"
 								modelVar="cpSpecificationOption"
 							>
 

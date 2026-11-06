@@ -150,7 +150,7 @@ WikiPagesManagementToolbarDisplayContext wikiPagesManagementToolbarDisplayContex
 
 				<liferay-ui:search-container-row
 					className="com.liferay.wiki.model.WikiPage"
-					keyProperty="pageId"
+					keyPropertyName="pageId"
 					modelVar="curPage"
 				>
 

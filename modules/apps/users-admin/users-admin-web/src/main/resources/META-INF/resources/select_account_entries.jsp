@@ -22,7 +22,7 @@ SearchContainer<AccountEntry> accountEntrySearchContainer = SelectAccountEntries
 		<liferay-ui:search-container-row
 			className="com.liferay.account.model.AccountEntry"
 			escapedModel="<%= true %>"
-			keyProperty="accountEntryId"
+			keyPropertyName="accountEntryId"
 			modelVar="accountEntry"
 		>
 			<liferay-ui:search-container-column-text

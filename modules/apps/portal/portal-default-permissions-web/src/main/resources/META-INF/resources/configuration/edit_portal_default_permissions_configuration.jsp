@@ -34,7 +34,7 @@ SearchContainer<Role> roleSearchContainer = editPortalDefaultPermissionsConfigur
 					className="com.liferay.portal.kernel.model.Role"
 					cssClass="table-title"
 					escapedModel="<%= true %>"
-					keyProperty="roleId"
+					keyPropertyName="roleId"
 					modelVar="role"
 				>
 

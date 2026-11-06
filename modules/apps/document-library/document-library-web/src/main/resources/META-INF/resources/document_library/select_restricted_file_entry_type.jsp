@@ -31,7 +31,7 @@ DLSelectRestrictedFileEntryTypesDisplayContext selectRestrictedFileEntryTypesDis
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.document.library.kernel.model.DLFileEntryType"
-			keyProperty="fileEntryTypeId"
+			keyPropertyName="fileEntryTypeId"
 			modelVar="fileEntryType"
 		>
 			<liferay-ui:search-container-column-icon

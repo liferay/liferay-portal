@@ -26,7 +26,7 @@ ViewPrpKBArticlesDisplayContext viewPrpKBArticlesDisplayContext = new ViewPrpKBA
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.asset.kernel.model.AssetEntry"
-		keyProperty="entryId"
+		keyPropertyName="entryId"
 		modelVar="assetEntry"
 	>
 		<liferay-portlet:renderURL varImpl="rowURL">

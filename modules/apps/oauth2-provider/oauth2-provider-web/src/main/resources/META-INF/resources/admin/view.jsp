@@ -42,7 +42,7 @@ String displayStyle = oAuth2ApplicationsManagementToolbarDisplayContext.getDispl
 			<liferay-ui:search-container-row
 				className="com.liferay.oauth2.provider.model.OAuth2Application"
 				escapedModel="<%= true %>"
-				keyProperty="OAuth2ApplicationId"
+				keyPropertyName="OAuth2ApplicationId"
 				modelVar="oAuth2Application"
 			>
 				<portlet:renderURL var="editURL">

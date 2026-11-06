@@ -49,7 +49,7 @@ String executeLayoutSetPrototypeSyncInfoMessage = (String)SessionMessages.get(re
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.LayoutSetPrototype"
-			keyProperty="layoutSetPrototypeId"
+			keyPropertyName="layoutSetPrototypeId"
 			modelVar="layoutSetPrototype"
 		>
 

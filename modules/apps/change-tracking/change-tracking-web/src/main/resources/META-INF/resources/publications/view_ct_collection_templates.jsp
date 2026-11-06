@@ -32,7 +32,7 @@ portletDisplay.setShowBackIcon(true);
 	<liferay-ui:search-container-row
 		className="com.liferay.change.tracking.model.CTCollectionTemplate"
 		escapedModel="<%= true %>"
-		keyProperty="ctCollectionTemplateId"
+		keyPropertyName="ctCollectionTemplateId"
 		modelVar="ctCollectionTemplate"
 	>
 		<c:choose>

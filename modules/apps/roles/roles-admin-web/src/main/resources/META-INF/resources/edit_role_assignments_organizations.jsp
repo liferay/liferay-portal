@@ -19,7 +19,7 @@ String displayStyle = (String)request.getAttribute("edit_role_assignments.jsp-di
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.Organization"
 		escapedModel="<%= true %>"
-		keyProperty="group.groupId"
+		keyPropertyName="group.groupId"
 		modelVar="organization"
 	>
 		<%@ include file="/organization_columns.jspf" %>

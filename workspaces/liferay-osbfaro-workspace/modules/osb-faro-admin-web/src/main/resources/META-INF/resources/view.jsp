@@ -34,7 +34,7 @@ FaroAdminManagementToolbarDisplayContext faroAdminManagementToolbarDisplayContex
 			<liferay-ui:search-container-row
 				className="com.liferay.osb.faro.model.FaroProject"
 				escapedModel="<%= true %>"
-				keyProperty="faroProjectId"
+				keyPropertyName="faroProjectId"
 				modelVar="faroProject"
 				rowIdProperty="faroProjectId"
 			>

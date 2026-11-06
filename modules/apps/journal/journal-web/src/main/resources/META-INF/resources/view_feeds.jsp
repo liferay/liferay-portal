@@ -40,7 +40,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "feeds"));
 		<liferay-ui:search-container-row
 			className="com.liferay.journal.model.JournalFeed"
 			escapedModel="<%= true %>"
-			keyProperty="feedId"
+			keyPropertyName="feedId"
 			modelVar="feed"
 		>
 

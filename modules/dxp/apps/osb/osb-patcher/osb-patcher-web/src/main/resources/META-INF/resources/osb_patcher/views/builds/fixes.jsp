@@ -50,7 +50,7 @@ else if (patcherFixes.size() > 1) {
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherFix"
 		escapedModel="<%= true %>"
-		keyProperty="patcherFixId"
+		keyPropertyName="patcherFixId"
 		modelVar="patcherFix"
 	>
 		<portlet:renderURL var="viewPatcherFixURL">

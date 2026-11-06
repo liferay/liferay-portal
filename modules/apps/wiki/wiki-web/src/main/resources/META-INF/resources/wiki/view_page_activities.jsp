@@ -65,7 +65,7 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "history
 		<liferay-ui:search-container-row
 			className="com.liferay.social.kernel.model.SocialActivity"
 			escapedModel="<%= true %>"
-			keyProperty="activityId"
+			keyPropertyName="activityId"
 			modelVar="socialActivity"
 		>
 

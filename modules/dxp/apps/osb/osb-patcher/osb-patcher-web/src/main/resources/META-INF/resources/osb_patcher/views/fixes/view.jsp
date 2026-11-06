@@ -317,7 +317,7 @@ SearchContainer<PatcherFix> patcherFixSearchContainer = patcherViewFixesDisplayC
 				<liferay-ui:search-container-row
 					className="com.liferay.osb.patcher.model.PatcherFix"
 					escapedModel="<%= true %>"
-					keyProperty="patcherFixId"
+					keyPropertyName="patcherFixId"
 					modelVar="patcherFixKeyVersion"
 				>
 					<c:if test="<%= patcherFix.getPatcherFixId() == patcherFixKeyVersion.getPatcherFixId() %>">

@@ -55,7 +55,7 @@ renderResponse.setTitle(HtmlUtil.escape(ddmTemplate.getName(locale)));
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.portal.kernel.model.PortletPreferences"
-						keyProperty="portletPreferencesId"
+						keyPropertyName="portletPreferencesId"
 						modelVar="curPortletPreferences"
 					>
 

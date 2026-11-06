@@ -39,7 +39,7 @@ AssetListManagementToolbarDisplayContext assetListManagementToolbarDisplayContex
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.asset.list.model.AssetListEntry"
-					keyProperty="assetListEntryId"
+					keyPropertyName="assetListEntryId"
 					modelVar="assetListEntry"
 				>
 

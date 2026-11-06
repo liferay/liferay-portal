@@ -27,7 +27,7 @@ ViewAccountGroupsManagementToolbarDisplayContext viewAccountGroupsManagementTool
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.account.admin.web.internal.display.AccountGroupDisplay"
-				keyProperty="accountGroupId"
+				keyPropertyName="accountGroupId"
 				modelVar="accountGroupDisplay"
 			>
 

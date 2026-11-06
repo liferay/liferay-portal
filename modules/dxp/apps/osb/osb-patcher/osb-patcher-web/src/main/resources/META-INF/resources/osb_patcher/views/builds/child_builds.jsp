@@ -28,7 +28,7 @@ List<PatcherBuild> childPatcherBuilds = PatcherBuildRelUtil.getChildPatcherBuild
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherBuild"
 		escapedModel="<%= true %>"
-		keyProperty="patcherBuildId"
+		keyPropertyName="patcherBuildId"
 		modelVar="childPatcherBuild"
 	>
 		<portlet:renderURL var="viewPatcherBuildURL">

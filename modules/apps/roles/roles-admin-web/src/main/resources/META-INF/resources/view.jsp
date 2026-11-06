@@ -73,7 +73,7 @@ PortletURL portletURL = viewRolesManagementToolbarDisplayContext.getPortletURL()
 
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.Role"
-			keyProperty="roleId"
+			keyPropertyName="roleId"
 			modelVar="role"
 		>
 

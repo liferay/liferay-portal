@@ -29,7 +29,7 @@
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion"
 			escapedModel="<%= false %>"
-			keyProperty="kaleoDefinitionVersionId"
+			keyPropertyName="kaleoDefinitionVersionId"
 			modelVar="kaleoDefinitionVersion"
 		>
 			<liferay-portlet:renderURL portletName="<%= KaleoDesignerPortletKeys.KALEO_DESIGNER %>" var="rowURL">

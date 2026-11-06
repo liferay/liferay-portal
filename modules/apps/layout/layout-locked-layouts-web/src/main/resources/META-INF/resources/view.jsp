@@ -40,7 +40,7 @@ LockedLayoutsDisplayContext lockedLayoutsDisplayContext = (LockedLayoutsDisplayC
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.layout.model.LockedLayout"
-					keyProperty="plid"
+					keyPropertyName="plid"
 					modelVar="lockedLayout"
 				>
 

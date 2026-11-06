@@ -28,7 +28,7 @@ if (Validator.isNotNull(backURL)) {
 		<liferay-ui:search-container-row
 			className="com.liferay.saved.content.model.SavedContentEntry"
 			escapedModel="<%= true %>"
-			keyProperty="savedContentEntryId"
+			keyPropertyName="savedContentEntryId"
 			modelVar="savedContentEntry"
 		>
 

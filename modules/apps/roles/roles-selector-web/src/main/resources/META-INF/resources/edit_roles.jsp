@@ -17,7 +17,7 @@ EditRolesDisplayContext editRolesDisplayContext = new EditRolesDisplayContext(re
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.Role"
 		escapedModel="<%= true %>"
-		keyProperty="roleId"
+		keyPropertyName="roleId"
 		modelVar="role"
 	>
 		<portlet:renderURL var="rowURL">

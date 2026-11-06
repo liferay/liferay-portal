@@ -235,7 +235,7 @@ renderResponse.setTitle(title);
 
 							<liferay-ui:search-container-row
 								className="com.liferay.dynamic.data.mapping.model.DDMStructure"
-								keyProperty="structureId"
+								keyPropertyName="structureId"
 								modelVar="ddmStructure"
 							>
 								<liferay-ui:search-container-column-text

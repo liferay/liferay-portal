@@ -25,7 +25,7 @@ PatcherProductVersionsDisplayContext patcherProductVersionsDisplayContext = new 
 	<liferay-ui:search-container-row
 		className="com.liferay.osb.patcher.model.PatcherProductVersion"
 		escapedModel="<%= true %>"
-		keyProperty="patcherProductVersionId"
+		keyPropertyName="patcherProductVersionId"
 		modelVar="patcherProductVersion"
 	>
 		<liferay-ui:search-container-column-text

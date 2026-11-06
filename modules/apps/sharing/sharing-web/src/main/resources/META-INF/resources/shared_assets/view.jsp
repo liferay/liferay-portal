@@ -38,7 +38,7 @@ ViewSharedAssetsDisplayContext viewSharedAssetsDisplayContext = (ViewSharedAsset
 		<liferay-ui:search-container-row
 			className="com.liferay.sharing.model.SharingEntry"
 			escapedModel="<%= true %>"
-			keyProperty="sharingEntryId"
+			keyPropertyName="sharingEntryId"
 			modelVar="sharingEntry"
 		>
 			<liferay-ui:search-container-column-text

@@ -48,7 +48,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 					>
 						<liferay-ui:search-container-row
 							className="com.liferay.site.admin.web.internal.util.SiteInitializerItem"
-							keyProperty="key"
+							keyPropertyName="key"
 							modelVar="siteInitializerItem"
 						>
 							<liferay-ui:search-container-column-text>

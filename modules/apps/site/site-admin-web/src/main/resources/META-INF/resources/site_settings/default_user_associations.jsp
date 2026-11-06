@@ -55,7 +55,7 @@ DefaultUserAssociationsDisplayContext defaultUserAssociationsDisplayContext = (D
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.Role"
-		keyProperty="roleId"
+		keyPropertyName="roleId"
 		modelVar="role"
 	>
 		<liferay-ui:search-container-column-text
@@ -117,7 +117,7 @@ DefaultUserAssociationsDisplayContext defaultUserAssociationsDisplayContext = (D
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.model.Team"
-		keyProperty="teamId"
+		keyPropertyName="teamId"
 		modelVar="team"
 	>
 		<liferay-ui:search-container-column-text

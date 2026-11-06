@@ -32,7 +32,7 @@ ProcessListDisplayContext processListDisplayContext = new ProcessListDisplayCont
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.backgroundtask.BackgroundTask"
-			keyProperty="backgroundTaskId"
+			keyPropertyName="backgroundTaskId"
 			modelVar="backgroundTask"
 		>
 			<c:choose>

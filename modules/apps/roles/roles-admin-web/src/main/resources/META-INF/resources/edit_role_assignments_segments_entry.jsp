@@ -14,7 +14,7 @@
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.segments.model.SegmentsEntry"
-		keyProperty="segmentsEntryId"
+		keyPropertyName="segmentsEntryId"
 		modelVar="segmentsEntry"
 	>
 		<liferay-ui:search-container-column-text

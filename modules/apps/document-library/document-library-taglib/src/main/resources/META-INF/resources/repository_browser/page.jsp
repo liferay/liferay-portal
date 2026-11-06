@@ -34,7 +34,7 @@ RepositoryBrowserTagDisplayContext repositoryBrowserTagDisplayContext = (Reposit
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.repository.model.RepositoryEntry"
-			keyProperty="primaryKey"
+			keyPropertyName="primaryKey"
 			modelVar="repositoryEntry"
 		>
 			<c:choose>

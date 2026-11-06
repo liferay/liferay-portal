@@ -26,7 +26,7 @@
 			<liferay-ui:search-container-row
 				className="com.liferay.portal.security.audit.AuditEvent"
 				escapedModel="<%= true %>"
-				keyProperty="auditEventId"
+				keyPropertyName="auditEventId"
 				modelVar="event"
 			>
 				<liferay-portlet:renderURL varImpl="rowURL">

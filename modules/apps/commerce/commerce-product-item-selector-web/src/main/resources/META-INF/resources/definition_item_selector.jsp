@@ -29,7 +29,7 @@ String itemSelectedEventName = cpDefinitionItemSelectorViewDisplayContext.getIte
 		<liferay-ui:search-container-row
 			className="com.liferay.commerce.product.model.CPDefinition"
 			cssClass="commerce-product-definition-row"
-			keyProperty="CPDefinitionId"
+			keyPropertyName="CPDefinitionId"
 			modelVar="cpDefinition"
 		>
 

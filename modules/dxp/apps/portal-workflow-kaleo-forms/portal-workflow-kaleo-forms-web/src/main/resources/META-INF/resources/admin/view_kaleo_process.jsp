@@ -80,7 +80,7 @@ KaleoProcess kaleoProcess = kaleoFormsViewRecordsDisplayContext.getKaleoProcess(
 		>
 			<liferay-ui:search-container-row
 				className="com.liferay.dynamic.data.lists.model.DDLRecord"
-				keyProperty="recordId"
+				keyPropertyName="recordId"
 				modelVar="record"
 			>
 

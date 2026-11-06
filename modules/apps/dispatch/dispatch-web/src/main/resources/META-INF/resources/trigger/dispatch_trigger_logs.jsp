@@ -42,7 +42,7 @@ SearchContainer<DispatchLog> dispatchLogSearchContainer = DispatchLogSearchConta
 				>
 					<liferay-ui:search-container-row
 						className="com.liferay.dispatch.model.DispatchLog"
-						keyProperty="dispatchLogId"
+						keyPropertyName="dispatchLogId"
 						modelVar="dispatchLog"
 					>
 						<liferay-ui:search-container-column-text

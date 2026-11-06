@@ -21,7 +21,7 @@ ListItemsActionDropdownItems listItemsActionDropdownItems = (ListItemsActionDrop
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.asset.kernel.model.AssetEntry"
-			keyProperty="entryId"
+			keyPropertyName="entryId"
 			modelVar="assetEntry"
 		>
 

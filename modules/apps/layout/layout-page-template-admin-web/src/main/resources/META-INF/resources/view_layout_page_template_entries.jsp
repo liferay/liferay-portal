@@ -32,7 +32,7 @@ LayoutPageTemplateManagementToolbarDisplayContext layoutPageTemplateManagementTo
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.layout.page.template.model.LayoutPageTemplateEntry"
-			keyProperty="layoutPageTemplateEntryId"
+			keyPropertyName="layoutPageTemplateEntryId"
 			modelVar="layoutPageTemplateEntry"
 		>
 

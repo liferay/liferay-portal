@@ -23,7 +23,7 @@ SearchContainer<Organization> organizationSearchContainer = AssignableAccountOrg
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.model.Organization"
-			keyProperty="organizationId"
+			keyPropertyName="organizationId"
 			modelVar="organization"
 		>
 			<liferay-ui:search-container-column-text
