@@ -64,7 +64,11 @@
 				margin-left: 4px;
 			}
 
-			> span,
+			> span {
+				margin-left: 4px;
+				text-transform: lowercase;
+			}
+
 			.sentence-start {
 				margin: 0;
 				text-transform: capitalize;
