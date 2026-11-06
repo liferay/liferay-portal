@@ -7,10 +7,16 @@ package com.liferay.layout.internal.model.listener;
 
 import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.friendly.url.constants.FriendlyURLEntryConstants;
+import com.liferay.friendly.url.model.FriendlyURLEntry;
+import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.layout.friendly.url.LayoutFriendlyURLEntryHelper;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.ModelListener;
@@ -68,10 +74,14 @@ public class LayoutFriendlyURLModelListener
 		}
 
 		try {
+			long classNameId = _layoutFriendlyURLEntryHelper.getClassNameId(
+				layoutFriendlyURL.isPrivateLayout());
+
+			_deleteHistoricalFriendlyURLEntryLocalization(
+				classNameId, layoutFriendlyURL);
+
 			_friendlyURLEntryLocalService.addFriendlyURLEntry(
-				layoutFriendlyURL.getGroupId(),
-				_layoutFriendlyURLEntryHelper.getClassNameId(
-					layoutFriendlyURL.isPrivateLayout()),
+				layoutFriendlyURL.getGroupId(), classNameId,
 				layoutFriendlyURL.getPlid(),
 				Collections.singletonMap(
 					layoutFriendlyURL.getLanguageId(),
@@ -87,6 +97,64 @@ public class LayoutFriendlyURLModelListener
 			}
 		}
 	}
+
+	private void _deleteHistoricalFriendlyURLEntryLocalization(
+			long classNameId, LayoutFriendlyURL layoutFriendlyURL)
+		throws PortalException {
+
+		if (!ExportImportThreadLocal.isStagingInProcess()) {
+			return;
+		}
+
+		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
+				layoutFriendlyURL.getGroupId(), classNameId,
+				FriendlyURLEntryConstants.
+					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
+				layoutFriendlyURL.getLanguageId(),
+				layoutFriendlyURL.getFriendlyURL());
+
+		if ((friendlyURLEntryLocalization == null) ||
+			(friendlyURLEntryLocalization.getClassPK() ==
+				layoutFriendlyURL.getPlid())) {
+
+			return;
+		}
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+				friendlyURLEntryLocalization.getFriendlyURLEntryId());
+
+		if (friendlyURLEntry != null) {
+			FriendlyURLEntry mainFriendlyURLEntry =
+				_friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
+					friendlyURLEntry.getClassNameId(),
+					friendlyURLEntry.getClassPK());
+
+			if ((mainFriendlyURLEntry != null) &&
+				(mainFriendlyURLEntry.getFriendlyURLEntryId() ==
+					friendlyURLEntry.getFriendlyURLEntryId())) {
+
+				return;
+			}
+		}
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				StringBundler.concat(
+					"Releasing friendly URL ",
+					layoutFriendlyURL.getFriendlyURL(),
+					" from the URL history of layout ",
+					friendlyURLEntryLocalization.getClassPK(), " for layout ",
+					layoutFriendlyURL.getPlid()));
+		}
+
+		_friendlyURLEntryLocalService.deleteFriendlyURLLocalizationEntry(
+			friendlyURLEntryLocalization);
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutFriendlyURLModelListener.class);
 
 	@Reference
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
