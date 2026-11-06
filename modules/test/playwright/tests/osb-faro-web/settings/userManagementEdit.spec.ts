@@ -91,6 +91,7 @@ test(
 
 		await waitForAlert(page, 'Permissions have been changed', {
 			autoClose: false,
+			first: true,
 		});
 
 		// Assert that the user role is now Member

@@ -413,9 +413,11 @@ test(
 				await page.getByRole('button', {name: 'Save'}).click();
 
 				await expect(
-					page.getByText(
-						'Success:Permissions have been changed for 1 users.'
-					)
+					page
+						.getByText(
+							'Success:Permissions have been changed for 1 users.'
+						)
+						.first()
 				).toBeVisible();
 
 				await expect(
