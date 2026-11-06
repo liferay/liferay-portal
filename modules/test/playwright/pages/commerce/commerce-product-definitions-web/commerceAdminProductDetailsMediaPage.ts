@@ -123,9 +123,6 @@ export class CommerceAdminProductDetailsMediaPage {
 	}
 
 	async publishAttachment() {
-
-		// The tags autocomplete covers the Publish button, so close it first
-
 		await this.sidePanelFrame.getByLabel('Title').click();
 
 		await expect(this.sidePanelFrame.getByRole('listbox')).toBeHidden();
