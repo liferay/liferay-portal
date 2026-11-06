@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockPortletSession;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -427,6 +428,39 @@ public class EditUserMVCActionCommandTest {
 		}
 	}
 
+	@Test
+	public void testUpdateUser() throws Exception {
+		ListType listType = _listTypeLocalService.createListType(
+			Integer.MAX_VALUE + 1L);
+
+		listType.setCompanyId(TestPropsValues.getCompanyId());
+		listType.setName(StringUtil.toLowerCase(RandomTestUtil.randomString()));
+		listType.setType(ListTypeConstants.CONTACT_PREFIX);
+
+		_listType = _listTypeLocalService.addListType(listType);
+
+		_user = UserTestUtil.addUser();
+
+		_processAction(
+			"/users_admin/edit_user",
+			HashMapBuilder.put(
+				Constants.CMD, Constants.UPDATE
+			).put(
+				"p_u_i_d", String.valueOf(_user.getUserId())
+			).put(
+				"prefixListTypeValue", _listType.getName()
+			).build(),
+			PermissionThreadLocal.getPermissionChecker(),
+			TestPropsValues.getUserId());
+
+		User user = _userLocalService.getUser(_user.getUserId());
+
+		Contact contact = user.getContact();
+
+		Assert.assertEquals(
+			_listType.getListTypeId(), contact.getPrefixListTypeId());
+	}
+
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
 			FileEntry fileEntry)
 		throws Exception {
@@ -533,6 +567,9 @@ public class EditUserMVCActionCommandTest {
 	@Inject
 	private LayoutLocalService _layoutLocalService;
 
+	@DeleteAfterTestRun
+	private ListType _listType;
+
 	@Inject
 	private ListTypeLocalService _listTypeLocalService;
 
@@ -552,6 +589,9 @@ public class EditUserMVCActionCommandTest {
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 	@Inject
 	private UserLocalService _userLocalService;
