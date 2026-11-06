@@ -201,18 +201,24 @@ public class ParameterMapUtil {
 			else if (returnType.equals(String[].class)) {
 				return _getMapValueArray(method.getName());
 			}
-			else if (returnType.isEnum()) {
+
+			String value = _getMapValue(method.getName());
+
+			if (value == null) {
+				return null;
+			}
+
+			if (returnType.isEnum()) {
 				Method valueOfMethod = returnType.getDeclaredMethod(
 					"valueOf", String.class);
 
-				return valueOfMethod.invoke(
-					returnType, _parameterMap.get(method.getName()));
+				return valueOfMethod.invoke(returnType, value);
 			}
 
 			Constructor<?> constructor = returnType.getConstructor(
 				String.class);
 
-			return constructor.newInstance(_parameterMap.get(method.getName()));
+			return constructor.newInstance(value);
 		}
 
 		private static final Log _log = LogFactoryUtil.getLog(
