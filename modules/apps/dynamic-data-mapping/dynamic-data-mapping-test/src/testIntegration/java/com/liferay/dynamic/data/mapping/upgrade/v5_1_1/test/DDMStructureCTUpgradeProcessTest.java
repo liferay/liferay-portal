@@ -67,6 +67,11 @@ public class DDMStructureCTUpgradeProcessTest
 	}
 
 	@Override
+	protected void deleteCTModel(long primaryKey) throws Exception {
+		_ddmStructureLocalService.deleteStructure(primaryKey);
+	}
+
+	@Override
 	protected CTService<?> getCTService() {
 		return _ddmStructureLocalService;
 	}

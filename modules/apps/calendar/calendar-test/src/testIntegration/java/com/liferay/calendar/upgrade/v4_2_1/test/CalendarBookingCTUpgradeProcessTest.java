@@ -48,6 +48,11 @@ public class CalendarBookingCTUpgradeProcessTest
 	}
 
 	@Override
+	protected void deleteCTModel(long primaryKey) throws Exception {
+		_calendarBookingLocalService.deleteCalendarBooking(primaryKey);
+	}
+
+	@Override
 	protected CTService<?> getCTService() {
 		return _calendarBookingLocalService;
 	}
