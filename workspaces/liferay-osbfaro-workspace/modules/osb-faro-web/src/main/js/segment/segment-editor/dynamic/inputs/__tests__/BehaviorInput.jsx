@@ -127,7 +127,7 @@ describe('BehaviorInput', () => {
 		);
 
 		expect(getByText('Account')).toBeTruthy();
-		expect(getByText('individual who triggered')).toBeTruthy();
+		expect(getByText('at least one individual who triggered')).toBeTruthy();
 		expect(queryByText('Individual')).toBeNull();
 	});
 
@@ -137,7 +137,7 @@ describe('BehaviorInput', () => {
 		);
 
 		expect(getByText('Individual')).toBeTruthy();
-		expect(queryByText('individual who triggered')).toBeNull();
+		expect(queryByText('at least one individual who triggered')).toBeNull();
 	});
 
 	it('should render with has-error for occurenceCount', () => {

@@ -93,7 +93,7 @@ describe('BehaviorDisplay', () => {
 		);
 
 		expect(getByText('Account')).toBeTruthy();
-		expect(getByText('individual who triggered')).toBeTruthy();
+		expect(getByText('at least one individual who triggered')).toBeTruthy();
 		expect(queryByText('Individual')).toBeNull();
 	});
 
