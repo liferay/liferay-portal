@@ -778,7 +778,7 @@ baseTest(
 		await journalPage.changeView('Table');
 
 		await expect(
-			page.getByRole('cell', {name: 'Description'})
+			page.getByRole('columnheader', {name: 'Description'})
 		).toBeVisible();
 
 		await page
@@ -805,9 +805,9 @@ baseTest(
 
 		await journalPage.goto(site.friendlyUrlPath);
 
-		await expect(page.getByRole('cell', {name: 'Description'})).toHaveCount(
-			0
-		);
+		await expect(
+			page.getByRole('columnheader', {name: 'Description'})
+		).toHaveCount(0);
 	}
 );
 

@@ -83,7 +83,7 @@ test(
 				'Title',
 			]) {
 				await expect(
-					page.locator('thead').getByRole('cell', {
+					page.locator('thead').getByRole('columnheader', {
 						exact: true,
 						name: columnHeader,
 					})
