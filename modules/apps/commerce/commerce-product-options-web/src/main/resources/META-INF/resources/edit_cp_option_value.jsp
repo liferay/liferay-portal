@@ -12,7 +12,7 @@ CPOptionValueDisplayContext cpOptionValueDisplayContext = (CPOptionValueDisplayC
 
 CPOptionValue cpOptionValue = (CPOptionValue)request.getAttribute(CPWebKeys.CP_OPTION_VALUE);
 
-long cpOptionValueId = ParamUtil.getLong(request, "CPOptionValueId", GetterUtil.get(cpOptionValue, CPOptionValue::getCPOptionValueId, 0L));
+long cpOptionValueId = ParamUtil.getLong(request, "CPOptionValueId", cpOptionValue.getCPOptionValueId());
 
 long cpOptionId = ParamUtil.getLong(request, "cpOptionId");
 
@@ -22,10 +22,8 @@ Set<Locale> availableLocalesSet = new HashSet<>();
 
 availableLocalesSet.add(LocaleUtil.fromLanguageId(defaultLanguageId));
 
-if (cpOptionValue != null) {
-	for (String languageId : cpOptionValue.getAvailableLanguageIds()) {
-		availableLocalesSet.add(LocaleUtil.fromLanguageId(languageId));
-	}
+for (String languageId : cpOptionValue.getAvailableLanguageIds()) {
+	availableLocalesSet.add(LocaleUtil.fromLanguageId(languageId));
 }
 %>
 
@@ -35,7 +33,7 @@ if (cpOptionValue != null) {
 	title='<%= LanguageUtil.format(request, "edit-x", cpOptionValue.getName(locale), false) %>'
 >
 	<aui:form action="<%= editProductOptionValueActionURL %>" method="post" name="fm">
-		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (cpOptionValue == null) ? Constants.ADD : Constants.UPDATE %>" />
+		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 		<aui:input name="cpOptionId" type="hidden" value="<%= cpOptionId %>" />
 		<aui:input name="cpOptionValueId" type="hidden" value="<%= cpOptionValueId %>" />
@@ -146,7 +144,7 @@ if (cpOptionValue != null) {
 				<aui:fieldset>
 					<liferay-expando:custom-attribute-list
 						className="<%= CPOptionValue.class.getName() %>"
-						classPK="<%= (cpOptionValue != null) ? cpOptionValue.getCPOptionValueId() : 0 %>"
+						classPK="<%= cpOptionValue.getCPOptionValueId() %>"
 						editable="<%= true %>"
 						label="<%= true %>"
 					/>
