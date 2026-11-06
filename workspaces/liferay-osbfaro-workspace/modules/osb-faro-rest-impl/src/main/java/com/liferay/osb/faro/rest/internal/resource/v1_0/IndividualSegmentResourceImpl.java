@@ -6,20 +6,17 @@
 package com.liferay.osb.faro.rest.internal.resource.v1_0;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
-import com.liferay.osb.faro.engine.client.exception.FaroEngineClientException;
-import com.liferay.osb.faro.engine.client.exception.NoSuchEntryException;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegment;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.converter.FaroDTOConverterContext;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroPaginationUtil;
+import com.liferay.osb.faro.rest.internal.helper.IndividualSegmentHelper;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualSegmentResource;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-
-import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -96,30 +93,14 @@ public class IndividualSegmentResourceImpl
 			Long groupId, String individualSegmentId)
 		throws Exception {
 
-		com.liferay.osb.faro.engine.client.model.IndividualSegment
-			individualSegment = null;
-
-		try {
-			individualSegment = _contactsEngineClient.getIndividualSegment(
-				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				individualSegmentId, false);
-		}
-		catch (FaroEngineClientException faroEngineClientException) {
-			if (faroEngineClientException.getStatus() ==
-					HttpServletResponse.SC_BAD_REQUEST) {
-
-				throw new NoSuchEntryException(faroEngineClientException);
-			}
-
-			throw faroEngineClientException;
-		}
-
 		return _individualSegmentDTOConverter.toDTO(
 			new FaroDTOConverterContext(
 				contextAcceptLanguage.isAcceptAllLanguages(),
 				individualSegmentId,
 				contextAcceptLanguage.getPreferredLocale()),
-			individualSegment);
+			_individualSegmentHelper.getIndividualSegment(
+				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
+				individualSegmentId));
 	}
 
 	@Reference
@@ -134,6 +115,9 @@ public class IndividualSegmentResourceImpl
 	private DTOConverter
 		<com.liferay.osb.faro.engine.client.model.IndividualSegment,
 		 IndividualSegment> _individualSegmentDTOConverter;
+
+	@Reference
+	private IndividualSegmentHelper _individualSegmentHelper;
 
 }
 

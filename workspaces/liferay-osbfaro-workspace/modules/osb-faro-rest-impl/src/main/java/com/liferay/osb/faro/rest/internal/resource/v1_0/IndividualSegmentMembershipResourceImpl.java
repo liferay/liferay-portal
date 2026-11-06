@@ -7,9 +7,11 @@ package com.liferay.osb.faro.rest.internal.resource.v1_0;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.model.Results;
+import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegmentMembership;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.converter.FaroDTOConverterContext;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroPaginationUtil;
+import com.liferay.osb.faro.rest.internal.helper.IndividualSegmentHelper;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualSegmentMembershipResource;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.portal.kernel.search.Sort;
@@ -39,13 +41,17 @@ public class IndividualSegmentMembershipResourceImpl
 				Sort[] sorts)
 		throws Exception {
 
+		FaroProject faroProject =
+			_faroProjectLocalService.getFaroProjectByGroupId(groupId);
+
+		_individualSegmentHelper.getIndividualSegment(
+			faroProject, individualSegmentId);
+
 		Results
 			<com.liferay.osb.faro.engine.client.model.
 				IndividualSegmentMembership> results =
 					_contactsEngineClient.getIndividualSegmentMemberships(
-						_faroProjectLocalService.getFaroProjectByGroupId(
-							groupId),
-						individualSegmentId,
+						faroProject, individualSegmentId,
 						FaroPaginationUtil.getCur(pagination),
 						FaroPaginationUtil.getDelta(pagination),
 						FaroPaginationUtil.toOrderByFields(sorts));
@@ -68,6 +74,9 @@ public class IndividualSegmentMembershipResourceImpl
 
 	@Reference
 	private FaroProjectLocalService _faroProjectLocalService;
+
+	@Reference
+	private IndividualSegmentHelper _individualSegmentHelper;
 
 	@Reference(
 		target = "(component.name=com.liferay.osb.faro.rest.internal.dto.v1_0.converter.IndividualSegmentMembershipDTOConverter)"
