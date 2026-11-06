@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.rest.internal.jaxrs.exception.mapper;
 
 import com.liferay.osb.faro.engine.client.exception.HeadlessRequestRejectedException;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
@@ -14,6 +15,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 
 import java.util.Objects;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -30,6 +32,10 @@ import org.osgi.service.component.annotations.Component;
 )
 public class HeadlessRequestRejectedExceptionMapper
 	extends BaseExceptionMapper<HeadlessRequestRejectedException> {
+
+	public static boolean isMessageKey(String messageKey) {
+		return _messageKeys.contains(messageKey);
+	}
 
 	@Override
 	public Response toResponse(
@@ -57,18 +63,14 @@ public class HeadlessRequestRejectedExceptionMapper
 		return responseBuilder.build();
 	}
 
-	@Override
-	protected Problem getProblem(
-		HeadlessRequestRejectedException headlessRequestRejectedException) {
-
-		String messageKey = headlessRequestRejectedException.getMessageKey();
+	protected static Problem getProblem(
+		Long limit, String messageKey, Long retryAfterSeconds) {
 
 		if (Objects.equals(messageKey, "date-range-limit-exceeded")) {
 			return new Problem(
 				Response.Status.BAD_REQUEST,
 				_getLimitTitle(
-					"Date range is too large",
-					headlessRequestRejectedException.getLimit(),
+					"Date range is too large", limit,
 					"Date range must be at most %d days"));
 		}
 
@@ -110,8 +112,7 @@ public class HeadlessRequestRejectedExceptionMapper
 			return new Problem(
 				Response.Status.BAD_REQUEST,
 				_getLimitTitle(
-					"Page size is too large",
-					headlessRequestRejectedException.getLimit(),
+					"Page size is too large", limit,
 					"Page size must be at most %d"));
 		}
 
@@ -119,7 +120,7 @@ public class HeadlessRequestRejectedExceptionMapper
 			return new Problem(
 				Response.Status.SERVICE_UNAVAILABLE,
 				_getRetryTitle(
-					headlessRequestRejectedException.getRetryAfterSeconds(),
+					retryAfterSeconds,
 					"Query is still running, repeat the same request with " +
 						"the same parameters %s"));
 		}
@@ -136,11 +137,21 @@ public class HeadlessRequestRejectedExceptionMapper
 		return new Problem(
 			Response.Status.SERVICE_UNAVAILABLE,
 			_getRetryTitle(
-				headlessRequestRejectedException.getRetryAfterSeconds(),
+				retryAfterSeconds,
 				"Unable to process the request right now, retry %s"));
 	}
 
-	private String _getLimitTitle(
+	@Override
+	protected Problem getProblem(
+		HeadlessRequestRejectedException headlessRequestRejectedException) {
+
+		return getProblem(
+			headlessRequestRejectedException.getLimit(),
+			headlessRequestRejectedException.getMessageKey(),
+			headlessRequestRejectedException.getRetryAfterSeconds());
+	}
+
+	private static String _getLimitTitle(
 		String defaultTitle, Long limit, String limitTitle) {
 
 		if (limit == null) {
@@ -150,12 +161,18 @@ public class HeadlessRequestRejectedExceptionMapper
 		return String.format(limitTitle, limit);
 	}
 
-	private String _getRetryTitle(Long retryAfterSeconds, String title) {
+	private static String _getRetryTitle(Long retryAfterSeconds, String title) {
 		if (retryAfterSeconds == null) {
 			return String.format(title, "later");
 		}
 
 		return String.format(title, "after " + retryAfterSeconds + " seconds");
 	}
+
+	private static final Set<String> _messageKeys = SetUtil.fromArray(
+		"date-range-limit-exceeded", "page-size-limit-exceeded",
+		"query-in-progress", "query-timeout-exceeded",
+		"request-deadline-exceeded", "service-capacity-unavailable",
+		"too-many-concurrent-requests");
 
 }

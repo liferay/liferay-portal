@@ -49,6 +49,10 @@ public class FaroGraphQLClient {
 			faroProject, Collections.emptyMap(), _GRAPHQL_PATH,
 			Collections.emptyMap(), graphQLRequest, Map.class);
 
+		if (response == null) {
+			throw new GraphQLException(Collections.emptyList(), operationName);
+		}
+
 		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> errors =
 			(List<Map<String, Object>>)response.get("errors");

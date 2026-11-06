@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Leslie Wong
@@ -16,12 +17,32 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GraphQLError {
 
+	public String getClassification() {
+		if (_extensions == null) {
+			return null;
+		}
+
+		return Objects.toString(_extensions.get("classification"), null);
+	}
+
 	public Map<String, Object> getExtensions() {
 		return _extensions;
 	}
 
 	public String getMessage() {
 		return _message;
+	}
+
+	public String getMessageKey() {
+		if (_messageKey != null) {
+			return _messageKey;
+		}
+
+		if (_extensions == null) {
+			return null;
+		}
+
+		return Objects.toString(_extensions.get("messageKey"), null);
 	}
 
 	public List<Object> getPath() {
@@ -36,6 +57,10 @@ public class GraphQLError {
 		_message = message;
 	}
 
+	public void setMessageKey(String messageKey) {
+		_messageKey = messageKey;
+	}
+
 	public void setPath(List<Object> path) {
 		_path = path;
 	}
@@ -46,6 +71,13 @@ public class GraphQLError {
 
 		sb.append("{message=");
 		sb.append(_message);
+
+		String messageKey = getMessageKey();
+
+		if (messageKey != null) {
+			sb.append(", messageKey=");
+			sb.append(messageKey);
+		}
 
 		if (_path != null) {
 			sb.append(", path=");
@@ -59,6 +91,7 @@ public class GraphQLError {
 
 	private Map<String, Object> _extensions;
 	private String _message;
+	private String _messageKey;
 	private List<Object> _path;
 
 }
