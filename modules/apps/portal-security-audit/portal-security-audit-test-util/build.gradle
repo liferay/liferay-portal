@@ -1,0 +1,11 @@
+dependencies {
+	compileInclude group: "org.json", name: "json", version: "20231013"
+	compileInclude group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
+	compileOnly group: "junit", name: "junit", version: "4.13.1"
+}
+
+liferay {
+	deployDir = file("${liferayHome}/osgi/test")
+}

@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Portal Security Audit Test Utilities
+Bundle-SymbolicName: com.liferay.portal.security.audit.test.util
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.portal.security.audit.test.util

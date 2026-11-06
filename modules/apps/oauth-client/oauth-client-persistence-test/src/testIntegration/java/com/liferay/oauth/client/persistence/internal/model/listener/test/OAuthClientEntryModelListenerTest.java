@@ -28,8 +28,8 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.router.configuration.LoggingAuditMessageProcessorConfiguration;
+import com.liferay.portal.security.audit.test.util.AuditMessageTestUtil;
 import com.liferay.portal.test.log.LogCapture;
-import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -123,15 +123,7 @@ public class OAuthClientEntryModelListenerTest {
 				"instance.oauthcliententry.add",
 				auditMessage.getResourceAction());
 
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			JSONAssert.assertEquals(
-				String.valueOf(auditMessage.toJSONObject()),
-				logEntry.getMessage(), JSONCompareMode.NON_EXTENSIBLE);
+			AuditMessageTestUtil.assertLogEntries(auditMessage, logCapture);
 		}
 	}
 
