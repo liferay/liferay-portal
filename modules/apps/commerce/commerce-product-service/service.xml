@@ -660,10 +660,6 @@
 			<finder-column name="CPDefinitionId" />
 			<finder-column name="status" />
 		</finder>
-		<finder name="CP_T" return-type="Collection">
-			<finder-column name="CProductId" />
-			<finder-column name="type" />
-		</finder>
 		<finder name="CP_S" return-type="Collection">
 			<finder-column name="CProductId" />
 			<finder-column name="status" />
