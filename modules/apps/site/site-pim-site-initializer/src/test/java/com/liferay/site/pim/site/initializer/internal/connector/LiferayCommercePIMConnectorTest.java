@@ -314,7 +314,7 @@ public class LiferayCommercePIMConnectorTest {
 				externalReferenceCode, Arrays.asList(pimProductObjectEntries)
 			).build());
 
-		Http.Options options = _getOptions("/import-task/");
+		Http.Options options = _getOptions("/import-task");
 
 		Http.Body body = options.getBody();
 
@@ -380,7 +380,7 @@ public class LiferayCommercePIMConnectorTest {
 						response.setResponseCode(entry.getValue());
 
 						return JSONUtil.put(
-							"title", "Error"
+							"title", RandomTestUtil.randomString()
 						).toString();
 					}
 				}
@@ -393,7 +393,7 @@ public class LiferayCommercePIMConnectorTest {
 					).toString();
 				}
 
-				if (location.contains("/import-task/")) {
+				if (location.contains("/import-task")) {
 					return JSONUtil.put(
 						"executeStatus", "INITIAL"
 					).put(
@@ -553,8 +553,7 @@ public class LiferayCommercePIMConnectorTest {
 				StringPool.BLANK));
 
 		JSONObject jsonObject = _getProductJSONObject(
-			"SKU-1", objectEntries,
-			Collections.<String, ObjectEntry>emptyMap(),
+			"SKU-1", objectEntries, Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
 				"SKU-1",
 				HashMapBuilder.<String, Serializable>put(
@@ -564,8 +563,7 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals("simple", jsonObject.getString("productType"));
 
 		jsonObject = _getProductJSONObject(
-			"SKU-2", objectEntries,
-			Collections.<String, ObjectEntry>emptyMap(),
+			"SKU-2", objectEntries, Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
 				"SKU-2",
 				HashMapBuilder.<String, Serializable>put(
@@ -607,7 +605,7 @@ public class LiferayCommercePIMConnectorTest {
 							HashMapBuilder.<String, Serializable>put(
 								"catalog", _CATALOG_EXTERNAL_REFERENCE_CODE_1
 							).put(
-								"color", "Red"
+								"color", RandomTestUtil.randomString()
 							).build()))
 				).put(
 					"SKU-2",
@@ -617,7 +615,7 @@ public class LiferayCommercePIMConnectorTest {
 							HashMapBuilder.<String, Serializable>put(
 								"catalog", _CATALOG_EXTERNAL_REFERENCE_CODE_2
 							).put(
-								"color", "Blue"
+								"color", RandomTestUtil.randomString()
 							).build()))
 				).build()));
 
@@ -646,7 +644,7 @@ public class LiferayCommercePIMConnectorTest {
 
 		Assert.assertEquals("Color", nameJSONObject.getString("en_US"));
 
-		options = _getOptions("/import-task/");
+		options = _getOptions("/import-task");
 
 		Assert.assertEquals(Http.Method.POST, options.getMethod());
 		Assert.assertEquals(
@@ -754,7 +752,7 @@ public class LiferayCommercePIMConnectorTest {
 					).toString();
 				}
 
-				if (location.contains("/import-task/")) {
+				if (location.contains("/import-task")) {
 					return "<html>Login</html>";
 				}
 
@@ -777,7 +775,7 @@ public class LiferayCommercePIMConnectorTest {
 								HashMapBuilder.<String, Serializable>put(
 									"sku", "SKU-1"
 								).put(
-									"title", "Shirt"
+									"title", RandomTestUtil.randomString()
 								).build()))
 					).build()));
 
@@ -799,7 +797,7 @@ public class LiferayCommercePIMConnectorTest {
 
 		_mockHttp(
 			HashMapBuilder.put(
-				"/import-task/", 500
+				"/import-task", 500
 			).build());
 
 		pimConnectorException = _assertPIMConnectorException(
@@ -1300,7 +1298,7 @@ public class LiferayCommercePIMConnectorTest {
 						HashMapBuilder.<String, Serializable>put(
 							"sku", "SKU-1"
 						).put(
-							"title", "Shirt"
+							"title", RandomTestUtil.randomString()
 						).build()))
 			).build());
 

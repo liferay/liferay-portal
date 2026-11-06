@@ -5,12 +5,14 @@
 
 package com.liferay.site.pim.site.initializer.internal.connector;
 
+import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
@@ -40,7 +42,7 @@ public class LiferayCommercePIMClientTest {
 
 	@Test
 	public void testAuthenticate() throws Exception {
-		_mockHttp(401, JSONUtil.put("error", "invalid_client"));
+		_mockHttp(401, JSONUtil.put("error", RandomTestUtil.randomString()));
 
 		_assertPIMConnectorException(
 			"unable-to-authenticate-with-the-remote-instance",
@@ -122,7 +124,7 @@ public class LiferayCommercePIMClientTest {
 
 	@Test
 	public void testPostImportTask() throws Exception {
-		_mockHttp(500, JSONUtil.put("status", "INTERNAL_SERVER_ERROR"));
+		_mockHttp(500, JSONUtil.put("status", RandomTestUtil.randomString()));
 
 		_assertPIMConnectorException(
 			"the-remote-instance-returned-an-error",
@@ -134,14 +136,16 @@ public class LiferayCommercePIMClientTest {
 			JSONUtil.put(
 				"executeStatus", "INITIAL"
 			).put(
-				"externalReferenceCode", "BATCH-1"
+				"externalReferenceCode", RandomTestUtil.randomString()
 			));
 
 		LiferayCommercePIMClient liferayCommercePIMClient =
 			_createLiferayCommercePIMClient();
 
 		JSONObject jsonObject = liferayCommercePIMClient.postImportTask(
-			JSONUtil.putAll(JSONUtil.put("externalReferenceCode", "SKU-1")));
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"externalReferenceCode", RandomTestUtil.randomString())));
 
 		Assert.assertEquals("INITIAL", jsonObject.getString("executeStatus"));
 
@@ -167,7 +171,7 @@ public class LiferayCommercePIMClientTest {
 	}
 
 	@Test
-	public void testPutOption() throws Exception {
+	public void testPutOptionByExternalReferenceCode() throws Exception {
 		Mockito.when(
 			_http.URLtoString(Mockito.any(Http.Options.class))
 		).thenThrow(
@@ -193,7 +197,7 @@ public class LiferayCommercePIMClientTest {
 		Assert.assertEquals(
 			"Connection refused", responseJSONObject.getString("error"));
 
-		_mockHttp(403, JSONUtil.put("status", "FORBIDDEN"));
+		_mockHttp(403, JSONUtil.put("status", RandomTestUtil.randomString()));
 
 		_assertPIMConnectorException(
 			"unable-to-authenticate-with-the-remote-instance",
@@ -201,7 +205,7 @@ public class LiferayCommercePIMClientTest {
 				curLiferayCommercePIMClient.putOptionByExternalReferenceCode(
 					"color", JSONUtil.put("key", "color")));
 
-		_mockHttp(500, JSONUtil.put("status", "INTERNAL_SERVER_ERROR"));
+		_mockHttp(500, JSONUtil.put("status", RandomTestUtil.randomString()));
 
 		_assertPIMConnectorException(
 			"the-remote-instance-returned-an-error",
@@ -233,7 +237,8 @@ public class LiferayCommercePIMClientTest {
 	}
 
 	private LiferayCommercePIMClient _assertPIMConnectorException(
-			String expectedMessage, UnsafeConsumer unsafeConsumer)
+			String expectedMessage,
+			UnsafeConsumer<LiferayCommercePIMClient, Exception> unsafeConsumer)
 		throws Exception {
 
 		LiferayCommercePIMClient liferayCommercePIMClient =
@@ -283,12 +288,5 @@ public class LiferayCommercePIMClientTest {
 
 	private final Http _http = Mockito.mock(Http.class);
 	private final List<Http.Options> _options = new ArrayList<>();
-
-	private interface UnsafeConsumer {
-
-		public void accept(LiferayCommercePIMClient liferayCommercePIMClient)
-			throws Exception;
-
-	}
 
 }
