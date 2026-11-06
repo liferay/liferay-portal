@@ -48,6 +48,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -355,8 +356,15 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 
 		_loadPlaywrightJSONObjects();
 
-		JSONObject configJSONObject = _playwrightJSONObject.getJSONObject(
+		JSONObject configJSONObject = _playwrightJSONObject.optJSONObject(
 			"config");
+
+		if (configJSONObject == null) {
+			throw new RuntimeException(
+				"Unable to set test classes because the Playwright test " +
+					"listing \"test --list --reporter=json\" did not return " +
+						"a config");
+		}
 
 		File rootDir = new File(configJSONObject.getString("rootDir"));
 
@@ -486,44 +494,15 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 		File baseDir, String command, Map<String, String> environmentVariables,
 		long timeout) {
 
-		StringBuilder sb = new StringBuilder();
-
-		if (JenkinsResultsParserUtil.isCINode()) {
-			sb.append("export CI=true\n");
-		}
-
-		sb.append("export npm_config_package_lock=false\n");
-
-		if (environmentVariables != null) {
-			for (Map.Entry<String, String> environmentVariable :
-					environmentVariables.entrySet()) {
-
-				sb.append("export ");
-				sb.append(environmentVariable.getKey());
-				sb.append("=");
-				sb.append(environmentVariable.getValue());
-				sb.append("\n");
-			}
-		}
-
-		sb.append(
-			JenkinsResultsParserUtil.getCanonicalPath(
-				new File(
-					portalGitWorkingDirectory.getWorkingDirectory(),
-					"gradlew")));
-
-		sb.append(" ");
-		sb.append(command);
+		Process process = _executeGradleCommand(
+			baseDir, command, environmentVariables, timeout);
 
 		try {
-			Process process = JenkinsResultsParserUtil.executeBashCommands(
-				true, baseDir, timeout, sb.toString());
-
 			return JenkinsResultsParserUtil.readInputStream(
 				process.getInputStream());
 		}
-		catch (IOException | TimeoutException exception) {
-			throw new RuntimeException(exception);
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
 		}
 	}
 
@@ -570,6 +549,48 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 		}
 		finally {
 			JenkinsResultsParserUtil.delete(npmScriptFile);
+		}
+	}
+
+	private Process _executeGradleCommand(
+		File baseDir, String command, Map<String, String> environmentVariables,
+		long timeout) {
+
+		StringBuilder sb = new StringBuilder();
+
+		if (JenkinsResultsParserUtil.isCINode()) {
+			sb.append("export CI=true\n");
+		}
+
+		sb.append("export npm_config_package_lock=false\n");
+
+		if (environmentVariables != null) {
+			for (Map.Entry<String, String> environmentVariable :
+					environmentVariables.entrySet()) {
+
+				sb.append("export ");
+				sb.append(environmentVariable.getKey());
+				sb.append("=");
+				sb.append(environmentVariable.getValue());
+				sb.append("\n");
+			}
+		}
+
+		sb.append(
+			JenkinsResultsParserUtil.getCanonicalPath(
+				new File(
+					portalGitWorkingDirectory.getWorkingDirectory(),
+					"gradlew")));
+
+		sb.append(" ");
+		sb.append(command);
+
+		try {
+			return JenkinsResultsParserUtil.executeBashCommands(
+				true, baseDir, timeout, sb.toString());
+		}
+		catch (IOException | TimeoutException exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
@@ -690,7 +711,7 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 				JenkinsResultsParserUtil.getCanonicalPath(
 					playwrightReportFile));
 
-			_callGradleCommand(
+			Process process = _executeGradleCommand(
 				playwrightBaseDir,
 				JenkinsResultsParserUtil.combine(
 					"runPlaywright -Pplaywright.args=\"", playwrightArgs, "\""),
@@ -698,7 +719,26 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 
 			String result = JenkinsResultsParserUtil.read(playwrightReportFile);
 
-			return new JSONObject(result.trim());
+			try {
+				return new JSONObject(result.trim());
+			}
+			catch (JSONException jsonException) {
+				String standardError = JenkinsResultsParserUtil.readInputStream(
+					process.getErrorStream());
+				String standardOut = JenkinsResultsParserUtil.readInputStream(
+					process.getInputStream());
+
+				throw new RuntimeException(
+					JenkinsResultsParserUtil.combine(
+						"Playwright test listing \"", playwrightArgs,
+						"\" did not write a JSON report (exit code ",
+						String.valueOf(process.exitValue()),
+						")\nStandard output:\n",
+						StringUtils.right(standardOut, 5000),
+						"\nStandard error:\n",
+						StringUtils.right(standardError, 5000)),
+					jsonException);
+			}
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
