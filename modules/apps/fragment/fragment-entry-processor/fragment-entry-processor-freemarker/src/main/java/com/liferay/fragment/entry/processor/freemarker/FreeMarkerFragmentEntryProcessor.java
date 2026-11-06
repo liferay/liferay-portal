@@ -262,8 +262,7 @@ public class FreeMarkerFragmentEntryProcessor
 			}
 
 			if (infoItem == null) {
-				infoItem = _getInfoItem(
-					configurationJSONObject, fragmentEntryProcessorContext);
+				infoItem = _getInfoItem(fragmentEntryProcessorContext);
 
 				if (infoItem == null) {
 					break;
@@ -277,22 +276,12 @@ public class FreeMarkerFragmentEntryProcessor
 	}
 
 	private Object _getInfoItem(
-		JSONObject configurationJSONObject,
 		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
-
-		Object infoItem = fragmentEntryProcessorContext.getContextInfoItem();
-
-		if (infoItem != null) {
-			return infoItem;
-		}
 
 		InfoItemReference infoItemReference =
 			fragmentEntryProcessorContext.getContextInfoItemReference();
 
-		if ((infoItemReference == null) ||
-			!_hasItemSelectorFragmentConfigurationField(
-				configurationJSONObject)) {
-
+		if (infoItemReference == null) {
 			return null;
 		}
 
@@ -349,23 +338,6 @@ public class FreeMarkerFragmentEntryProcessor
 
 		return "[#ftl] [#macro __noop args...][/#macro][#global " +
 			"liferay_portlet = liferay_portlet + {\"runtime\": __noop}]" + html;
-	}
-
-	private boolean _hasItemSelectorFragmentConfigurationField(
-		JSONObject configurationJSONObject) {
-
-		for (FragmentConfigurationField fragmentConfigurationField :
-				_fragmentEntryConfigurationParser.
-					getFragmentConfigurationFields(configurationJSONObject)) {
-
-			if (StringUtil.equalsIgnoreCase(
-					fragmentConfigurationField.getType(), "itemSelector")) {
-
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
