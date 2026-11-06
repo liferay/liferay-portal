@@ -1614,6 +1614,18 @@ public class CalendarBookingLocalServiceImpl
 				}
 			}
 		}
+		else if ((oldStatus == WorkflowConstants.STATUS_DENIED) &&
+				 (status == WorkflowConstants.STATUS_PENDING)) {
+
+			CalendarBooking parentCalendarBooking =
+				calendarBooking.getParentCalendarBooking();
+
+			if (parentCalendarBooking.isApproved()) {
+				_sendNotification(
+					calendarBooking, NotificationTemplateType.INVITE,
+					serviceContext);
+			}
+		}
 
 		return calendarBooking;
 	}
