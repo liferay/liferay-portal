@@ -113,10 +113,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="G_U" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="userId" />
-		</finder>
 		<finder name="G_N" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="name" />
@@ -162,14 +158,6 @@
 		<finder name="C_C" return-type="Collection">
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
-		</finder>
-		<finder name="G_C_C_N_O_S" return-type="SocialActivityStatsEntry" unique="true">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
-			<finder-column name="classPK" />
-			<finder-column name="name" />
-			<finder-column name="ownerType" />
-			<finder-column name="startPeriod" />
 		</finder>
 		<finder name="G_C_C_N_O_E" return-type="SocialActivityStatsEntry" unique="true">
 			<finder-column name="groupId" />
