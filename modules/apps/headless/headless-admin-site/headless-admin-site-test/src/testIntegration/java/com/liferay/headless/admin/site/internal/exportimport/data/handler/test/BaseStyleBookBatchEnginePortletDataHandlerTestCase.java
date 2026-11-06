@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -48,6 +49,8 @@ import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.test.util.FrontendTokenDefinitionTestUtil;
 
+import java.io.InputStream;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -61,6 +64,59 @@ import org.junit.Test;
  */
 public abstract class BaseStyleBookBatchEnginePortletDataHandlerTestCase
 	extends BaseSiteBatchEnginePortletDataHandlerTestCase {
+
+	@Test
+	public void testExportImportCopiesPreviewFileEntry() throws Exception {
+		String externalReferenceCode = RandomTestUtil.randomString();
+		Group group = getGroup();
+
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			externalReferenceCode, group.getGroupId(),
+			RandomTestUtil.randomString(), StringPool.BLANK, _THEME_ID_CLASSIC);
+
+		FileEntry previewFileEntry = _addPreviewFileEntry(styleBookEntry);
+
+		_styleBookEntryLocalService.updatePreviewFileEntryId(
+			styleBookEntry.getStyleBookEntryId(),
+			previewFileEntry.getFileEntryId(),
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId()));
+
+		_exportImport();
+
+		Group targetGroup = getTargetGroup();
+
+		StyleBookEntry importedStyleBookEntry1 = _getStyleBookEntry(
+			externalReferenceCode, targetGroup.getGroupId());
+
+		FileEntry importedPreviewFileEntry =
+			PortletFileRepositoryUtil.getPortletFileEntry(
+				importedStyleBookEntry1.getPreviewFileEntryId());
+
+		Assert.assertEquals(
+			previewFileEntry.getExternalReferenceCode(),
+			importedPreviewFileEntry.getExternalReferenceCode());
+		Assert.assertEquals(
+			targetGroup.getGroupId(), importedPreviewFileEntry.getGroupId());
+
+		InputStream importedInputStream =
+			importedPreviewFileEntry.getContentStream();
+
+		InputStream inputStream = previewFileEntry.getContentStream();
+
+		Assert.assertArrayEquals(
+			FileUtil.getBytes(inputStream),
+			FileUtil.getBytes(importedInputStream));
+
+		_exportImport();
+
+		StyleBookEntry importedStyleBookEntry2 = _getStyleBookEntry(
+			externalReferenceCode, targetGroup.getGroupId());
+
+		Assert.assertEquals(
+			importedStyleBookEntry1.getPreviewFileEntryId(),
+			importedStyleBookEntry2.getPreviewFileEntryId());
+	}
 
 	@Test
 	public void testExportImportGeneratesKeyWhenKeyIsTaken() throws Exception {

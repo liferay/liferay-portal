@@ -8,12 +8,12 @@ package com.liferay.headless.admin.site.internal.resource.v1_0;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
+import com.liferay.headless.admin.site.dto.v1_0.util.FileEntryUtil;
 import com.liferay.headless.admin.site.internal.odata.entity.v1_0.StyleBookEntityModel;
 import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.resource.v1_0.StyleBookResource;
@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -165,6 +164,11 @@ public class StyleBookResourceImpl
 			@Override
 			public Class<StyleBookEntry> getModelClass() {
 				return StyleBookEntry.class;
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of("thumbnailURLReference");
 			}
 
 			@Override
@@ -334,8 +338,7 @@ public class StyleBookResourceImpl
 				styleBook.getKey(), styleBook.getThemeId(),
 				_getServiceContext(groupId));
 
-		long previewFileEntryId = _getPreviewFileEntryId(
-			groupId, styleBook.getPreviewFileEntryExternalReferenceCode());
+		long previewFileEntryId = _getPreviewFileEntryId(groupId, 0, styleBook);
 
 		if (previewFileEntryId != 0) {
 			styleBookEntry = _styleBookEntryService.updatePreviewFileEntryId(
@@ -372,8 +375,7 @@ public class StyleBookResourceImpl
 				styleBook.getFrontendTokensValues(), name, styleBookEntryKey,
 				styleBook.getThemeId(), serviceContext);
 
-		long previewFileEntryId = _getPreviewFileEntryId(
-			groupId, styleBook.getPreviewFileEntryExternalReferenceCode());
+		long previewFileEntryId = _getPreviewFileEntryId(groupId, 0, styleBook);
 
 		if (previewFileEntryId != 0) {
 			styleBookEntry = _styleBookEntryService.updatePreviewFileEntryId(
@@ -413,8 +415,7 @@ public class StyleBookResourceImpl
 				styleBook.getFrontendTokensValues(), styleBook.getName(),
 				styleBook.getKey(),
 				_getPreviewFileEntryId(
-					groupId,
-					styleBook.getPreviewFileEntryExternalReferenceCode()),
+					groupId, styleBookEntry.getPreviewFileEntryId(), styleBook),
 				styleBook.getThemeId(), _getServiceContext(groupId)));
 	}
 
@@ -442,24 +443,26 @@ public class StyleBookResourceImpl
 		String styleBookEntryKey = _getStyleBookEntryKey(
 			styleBookEntry.getStyleBookEntryKey(), groupId, styleBook.getKey());
 
-		long previewFileEntryId = _getPreviewFileEntryId(
-			groupId, styleBook.getPreviewFileEntryExternalReferenceCode());
-
-		if ((previewFileEntryId == 0) &&
-			ExportImportThreadLocal.isImportInProcess()) {
-
-			previewFileEntryId = styleBookEntry.getPreviewFileEntryId();
-		}
-
 		styleBookEntry = _styleBookEntryService.updateStyleBookEntry(
 			styleBookEntry.getStyleBookEntryId(),
 			GetterUtil.getBoolean(styleBook.getDefaultStyleBook()),
 			styleBook.getFrontendTokenDefinition(),
 			styleBook.getFrontendTokensValues(), name, styleBookEntryKey,
-			previewFileEntryId, styleBook.getThemeId(),
-			_getServiceContext(groupId, styleBook));
+			_getPreviewFileEntryId(
+				groupId, styleBookEntry.getPreviewFileEntryId(), styleBook),
+			styleBook.getThemeId(), _getServiceContext(groupId, styleBook));
 
 		return _toStyleBook(styleBookEntry);
+	}
+
+	@Override
+	protected void preparePatch(
+		StyleBook styleBook, StyleBook existingStyleBook) {
+
+		if (styleBook.getThumbnailURLReference() != null) {
+			existingStyleBook.setThumbnailURLReference(
+				styleBook::getThumbnailURLReference);
+		}
 	}
 
 	private Map<String, Map<String, String>> _getActions(
@@ -579,20 +582,16 @@ public class StyleBookResourceImpl
 	}
 
 	private long _getPreviewFileEntryId(
-			long groupId, String previewFileEntryExternalReferenceCode)
+			long groupId, long previewFileEntryId, StyleBook styleBook)
 		throws Exception {
 
-		long previewFileEntryId = 0;
-
-		FileEntry fileEntry =
-			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-				groupId, previewFileEntryExternalReferenceCode);
-
-		if (fileEntry != null) {
-			previewFileEntryId = fileEntry.getFileEntryId();
+		if (styleBook.getThumbnailURLReference() == null) {
+			return previewFileEntryId;
 		}
 
-		return previewFileEntryId;
+		return FileEntryUtil.getPreviewFileEntryId(
+			groupId, StyleBookPortletKeys.STYLE_BOOK,
+			styleBook.getThumbnailURLReference(), contextUser.getUserId());
 	}
 
 	private ServiceContext _getServiceContext(long groupId) {
@@ -765,9 +764,6 @@ public class StyleBookResourceImpl
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Reference
-	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;

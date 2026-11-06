@@ -5,14 +5,14 @@
 
 package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
-import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
+import com.liferay.headless.admin.site.dto.v1_0.util.ThumbnailURLReferenceUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 
@@ -82,35 +82,21 @@ public class StyleBookDTOConverter
 				setId(styleBookEntry::getStyleBookEntryId);
 				setKey(styleBookEntry::getStyleBookEntryKey);
 				setName(styleBookEntry::getName);
-				setPreviewFileEntryExternalReferenceCode(
-					() -> {
-						long previewFileEntryId =
-							styleBookEntry.getPreviewFileEntryId();
-
-						if (previewFileEntryId == 0) {
-							return null;
-						}
-
-						FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
-							previewFileEntryId);
-
-						if (fileEntry == null) {
-							return null;
-						}
-
-						return fileEntry.getExternalReferenceCode();
-					});
 				setScope(
 					() -> ItemScopeUtil.getItemScope(
 						styleBookEntry.getGroupId(),
 						dtoConverterContext.getLocale(), scopeGroupId));
 				setThemeId(styleBookEntry::getThemeId);
+				setThumbnailURLReference(
+					() -> NestedFieldsSupplier.supply(
+						"thumbnailURLReference",
+						fieldName ->
+							ThumbnailURLReferenceUtil.
+								getFileEntryThumbnailURLReference(
+									styleBookEntry.getPreviewFileEntryId())));
 			}
 		};
 	}
-
-	@Reference
-	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
