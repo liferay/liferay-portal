@@ -123,37 +123,38 @@ siteInitializers.forEach(({mask, name, taskStatus}) => {
 				});
 			});
 
-			if (taskStatus === 'completedWithErrors') {
-				await test.step('Assert the import only reports missing references', async () => {
-					await exportImportPage.goToImportDetails(exportName);
+			await test.step('Assert the import only reports missing references', async (step) => {
+				step.skip(
+					taskStatus === 'success',
+					'A successful import has no report entries'
+				);
 
-					await exportImportPage.filterReportBy(
-						'Type',
-						'Missing Reference'
-					);
+				await exportImportPage.goToImportDetails(exportName);
 
-					await waitForFDS({page});
+				await exportImportPage.filterReportBy(
+					'Type',
+					'Missing Reference'
+				);
 
-					await expect(
-						page
-							.getByRole('cell', {
-								exact: true,
-								name: 'Missing Reference',
-							})
-							.first()
-					).toBeVisible();
+				await waitForFDS({page});
 
-					await exportImportPage.excludeReportFilter();
+				await expect(
+					page
+						.getByRole('cell', {
+							exact: true,
+							name: 'Missing Reference',
+						})
+						.first()
+				).toBeVisible();
 
-					await waitForFDS({empty: true, page});
+				await exportImportPage.excludeReportFilter();
 
-					await expect(
-						page.getByText('No Results Found')
-					).toBeVisible();
+				await waitForFDS({empty: true, page});
 
-					await exportImportPage.removeReportFilter();
-				});
-			}
+				await expect(page.getByText('No Results Found')).toBeVisible();
+
+				await exportImportPage.removeReportFilter();
+			});
 
 			await test.step('Assert the exportable items from site 1 and site 2 are equal', async () => {
 				await exportImportPage.goToExport(site2.friendlyUrlPath);
