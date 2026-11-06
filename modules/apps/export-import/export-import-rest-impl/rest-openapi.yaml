@@ -840,44 +840,39 @@ components:
                     type: integer
                 label:
                     type: string
-        SyncProcess:
+        SyncPreview:
             description:
-                The site template sync started on the sites linked to a site template.
+                Represents what a site template sync can cover, with the counts of the site template's content.
             properties:
-                siteTemplateId:
-                    description:
-                        The ID of the synced site template.
+                additionCount:
                     format: int64
                     readOnly: true
                     type: integer
-                siteTemplateName:
-                    description:
-                        The name of the synced site template.
+                deletionCount:
+                    format: int64
                     readOnly: true
-                    type: string
-            required:
-                -   siteTemplateId
-                -   siteTemplateName
+                    type: integer
+                portletDataHandlers:
+                    items:
+                        $ref: "#/components/schemas/PortletDataHandler"
+                    readOnly: true
+                    type: array
             type: object
         SyncProcessRequest:
             description:
-                The data selection to sync from a site template to its linked sites.
+                Represents a sync of a site template to the sites linked to it.
             properties:
                 comments:
                     default: false
-                    description:
-                        Whether to sync the comments of the selected content.
                     type: boolean
                 portletDataHandlers:
                     description:
-                        The portlet data handlers to sync, taken from the site template's export preview.
+                        The portlet data handlers to sync, taken from the sync preview.
                     items:
                         $ref: "#/components/schemas/PortletDataHandler"
                     type: array
                 ratings:
                     default: false
-                    description:
-                        Whether to sync the ratings of the selected content.
                     type: boolean
             required:
                 -   portletDataHandlers
@@ -1973,11 +1968,11 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ReportEntry"
             tags: ["ReportEntry"]
-    "/site-templates/{siteTemplateId}/export-preview":
+    "/site-templates/{siteTemplateId}/sync-preview":
         get:
             description:
-                Retrieves the exportable data of the specified site template.
-            operationId: getSiteTemplateExportPreview
+                Retrieves the portlet data handlers and counts for a sync of the specified site template to the sites linked to it.
+            operationId: getSiteTemplateSyncPreview
             parameters:
                 -   in: path
                     name: siteTemplateId
@@ -1990,17 +1985,16 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/ExportPreview"
+                                $ref: "#/components/schemas/SyncPreview"
                         application/xml:
                             schema:
-                                $ref: "#/components/schemas/ExportPreview"
-            tags: ["ExportPreview"]
+                                $ref: "#/components/schemas/SyncPreview"
+            tags: ["SyncPreview"]
             x-feature-flag: LPD-82107
     "/site-templates/{siteTemplateId}/sync-processes":
         post:
             description:
-                Starts a site template sync that propagates the selected data of the specified site template to every site linked to it.
-            operationId: postSiteTemplateSyncProcess
+                Starts a sync of the specified site template to the sites linked to it, with a background process for each site. A notification reports the result once every site is synced.
             parameters:
                 -   in: path
                     name: siteTemplateId
@@ -2017,14 +2011,10 @@ paths:
                         schema:
                             $ref: "#/components/schemas/SyncProcessRequest"
             responses:
-                200:
+                204:
                     content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/SyncProcess"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/SyncProcess"
+                        application/json: {}
+                        application/xml: {}
             tags: ["SyncProcess"]
             x-feature-flag: LPD-82107
     "/sites/{siteExternalReferenceCode}/export-preview":
