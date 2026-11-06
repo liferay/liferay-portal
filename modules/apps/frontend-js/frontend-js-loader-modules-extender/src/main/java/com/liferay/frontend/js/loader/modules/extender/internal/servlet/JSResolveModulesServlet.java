@@ -172,8 +172,9 @@ public class JSResolveModulesServlet extends HttpServlet {
 		if (!body.startsWith(_MODULES_PREFIX)) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					"Module resolution request body must start with \"" +
-						_MODULES_PREFIX + "\"");
+					StringBundler.concat(
+						"Module resolution request body must start with \"",
+						_MODULES_PREFIX, "\""));
 			}
 
 			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
