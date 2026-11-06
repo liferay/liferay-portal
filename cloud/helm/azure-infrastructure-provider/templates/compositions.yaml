@@ -27,10 +27,10 @@ spec:
                 spec:
                     environmentConfigs:
                         -   ref:
-                                name: environment-config
+                                name: database-scripts
                             type: Reference
                         -   ref:
-                                name: database-scripts
+                                name: environment-config
                             type: Reference
             step: environment-configs
         -   functionRef:
