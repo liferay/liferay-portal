@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -197,7 +198,7 @@ public class LayoutPreviewRendererTest {
 		Assert.assertThat(
 			spanishHTML, CoreMatchers.containsString(spanishName));
 		Assert.assertThat(
-			spanishHTML,
+			StringUtil.removeSubstring(spanishHTML, layout.getFriendlyURL()),
 			CoreMatchers.not(CoreMatchers.containsString(englishName)));
 	}
 
