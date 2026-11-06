@@ -2725,8 +2725,14 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<description>A property to use as the primary key for the object type in the <![CDATA[<code>className</code>]]> attribute.</description>
+			<description>Deprecated as of 7.4.0, replaced by the attribute <![CDATA[<code>keyPropertyName</code>]]>.</description>
 			<name>keyProperty</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>A property name to use as the primary key for the object type in the <![CDATA[<code>className</code>]]> attribute.</description>
+			<name>keyPropertyName</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
