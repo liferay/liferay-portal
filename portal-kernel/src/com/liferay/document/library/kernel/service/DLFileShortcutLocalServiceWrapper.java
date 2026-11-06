@@ -535,6 +535,13 @@ public class DLFileShortcutLocalServiceWrapper
 	}
 
 	@Override
+	public void rebuildTree(long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_dlFileShortcutLocalService.rebuildTree(companyId);
+	}
+
+	@Override
 	public void setTreePaths(long folderId, String treePath)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -642,4 +649,4 @@ public class DLFileShortcutLocalServiceWrapper
 	private DLFileShortcutLocalService _dlFileShortcutLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2114302384
+// LIFERAY-SERVICE-BUILDER-HASH:357996749

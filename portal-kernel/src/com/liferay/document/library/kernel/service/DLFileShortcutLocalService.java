@@ -388,6 +388,8 @@ public interface DLFileShortcutLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	public void rebuildTree(long companyId) throws PortalException;
+
 	public void setTreePaths(long folderId, String treePath)
 		throws PortalException;
 
@@ -440,4 +442,4 @@ public interface DLFileShortcutLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1025755485
+// LIFERAY-SERVICE-BUILDER-HASH:881345720

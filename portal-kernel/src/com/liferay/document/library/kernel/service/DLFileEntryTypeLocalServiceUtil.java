@@ -225,6 +225,14 @@ public class DLFileEntryTypeLocalServiceUtil {
 		getService().deleteFileEntryType(fileEntryTypeId);
 	}
 
+	public static void deleteFileEntryTypeByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		getService().deleteFileEntryTypeByExternalReferenceCode(
+			externalReferenceCode, groupId);
+	}
+
 	public static void deleteFileEntryTypes(long groupId)
 		throws PortalException {
 
@@ -680,4 +688,4 @@ public class DLFileEntryTypeLocalServiceUtil {
 	private static volatile DLFileEntryTypeLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1543139688
+// LIFERAY-SERVICE-BUILDER-HASH:-663848710

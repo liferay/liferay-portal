@@ -376,6 +376,15 @@ public class DLFileVersionLocalServiceWrapper
 	}
 
 	@Override
+	public DLFileVersion getFileVersionByUuidAndGroupId(
+			String uuid, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _dlFileVersionLocalService.getFileVersionByUuidAndGroupId(
+			uuid, groupId);
+	}
+
+	@Override
 	public java.util.List<DLFileVersion> getFileVersions(
 		long fileEntryId, int status) {
 
@@ -448,6 +457,13 @@ public class DLFileVersionLocalServiceWrapper
 	}
 
 	@Override
+	public void rebuildTree(long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_dlFileVersionLocalService.rebuildTree(companyId);
+	}
+
+	@Override
 	public void setTreePaths(long folderId, String treePath)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -509,4 +525,4 @@ public class DLFileVersionLocalServiceWrapper
 	private DLFileVersionLocalService _dlFileVersionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:293383880
+// LIFERAY-SERVICE-BUILDER-HASH:1398958783

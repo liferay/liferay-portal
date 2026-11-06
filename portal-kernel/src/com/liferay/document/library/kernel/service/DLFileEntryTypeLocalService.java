@@ -197,6 +197,10 @@ public interface DLFileEntryTypeLocalService
 	public void deleteFileEntryType(long fileEntryTypeId)
 		throws PortalException;
 
+	public void deleteFileEntryTypeByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException;
+
 	public void deleteFileEntryTypes(long groupId) throws PortalException;
 
 	/**
@@ -530,4 +534,4 @@ public interface DLFileEntryTypeLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:354366257
+// LIFERAY-SERVICE-BUILDER-HASH:-751307731

@@ -132,6 +132,10 @@ public interface DLFileEntryLocalService
 		throws PortalException;
 
 	public DLFileEntry checkOutFileEntry(
+			long userId, long fileEntryId, ServiceContext serviceContext)
+		throws PortalException;
+
+	public DLFileEntry checkOutFileEntry(
 			long userId, long fileEntryId, String owner, long expirationTime,
 			ServiceContext serviceContext)
 		throws PortalException;
@@ -193,6 +197,9 @@ public interface DLFileEntryLocalService
 	public DLFileEntry deleteDLFileEntry(long fileEntryId)
 		throws PortalException;
 
+	public void deleteFileEntries(long groupId, long folderId)
+		throws PortalException;
+
 	public void deleteFileEntries(
 			long groupId, long folderId, boolean includeTrashedEntries)
 		throws PortalException;
@@ -214,6 +221,11 @@ public interface DLFileEntryLocalService
 
 	@Indexable(type = IndexableType.DELETE)
 	public DLFileEntry deleteFileEntry(long userId, long fileEntryId)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.DELETE)
+	public DLFileEntry deleteFileEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -444,6 +456,9 @@ public interface DLFileEntryLocalService
 	public List<DLFileEntry> getExtraSettingsFileEntries(int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getExtraSettingsFileEntriesCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public InputStream getFileAsStream(long fileEntryId, String version)
 		throws PortalException;
 
@@ -525,6 +540,11 @@ public interface DLFileEntryLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DLFileEntry getFileEntryByName(
+			long groupId, long folderId, String name)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DLFileEntry getFileEntryByUuidAndGroupId(String uuid, long groupId)
 		throws PortalException;
 
@@ -559,6 +579,13 @@ public interface DLFileEntryLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DLFileEntry> getRepositoryFileEntries(
+		long repositoryId, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getRepositoryFileEntriesCount(long repositoryId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public String getUniqueTitle(
 			long groupId, long folderId, long fileEntryId, String title,
 			String extension)
@@ -589,6 +616,8 @@ public interface DLFileEntryLocalService
 			long userId, long fileEntryId, long newFolderId,
 			ServiceContext serviceContext)
 		throws PortalException;
+
+	public void rebuildTree(long companyId) throws PortalException;
 
 	public void revertFileEntry(
 			long userId, long fileEntryId, String version,
@@ -678,4 +707,4 @@ public interface DLFileEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-398306605
+// LIFERAY-SERVICE-BUILDER-HASH:-1719352316

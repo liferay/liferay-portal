@@ -475,6 +475,10 @@ public class DLFileShortcutLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static void rebuildTree(long companyId) throws PortalException {
+		getService().rebuildTree(companyId);
+	}
+
 	public static void setTreePaths(long folderId, String treePath)
 		throws PortalException {
 
@@ -549,4 +553,4 @@ public class DLFileShortcutLocalServiceUtil {
 	private static volatile DLFileShortcutLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-112082884
+// LIFERAY-SERVICE-BUILDER-HASH:1404503981
