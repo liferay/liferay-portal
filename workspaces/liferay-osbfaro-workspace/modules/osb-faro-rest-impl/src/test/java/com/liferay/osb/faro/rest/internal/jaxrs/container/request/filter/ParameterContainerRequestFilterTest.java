@@ -58,8 +58,11 @@ public class ParameterContainerRequestFilterTest {
 
 	@Test
 	public void testFilter() {
+		Assert.assertNull(_filter("pageSize", "100"));
 		Assert.assertNull(_filter("rangeKey", "LAST_30_DAYS"));
 		Assert.assertNull(_filter("sort", "transitionDate:desc"));
+		Assert.assertNull(
+			_filter(_getRangeQueryParameters("2026-10-02", "2026-04-06")));
 		Assert.assertNull(_filter(null, null));
 
 		_assertTitle(
@@ -68,29 +71,26 @@ public class ParameterContainerRequestFilterTest {
 					"toAccountLifecycleStageId, transitionDate",
 			_filter("sort", "bogusColumn:desc"));
 		_assertTitle(
-			"\"pageSize\" must be a whole number from 1 to 500",
-			_filter("pageSize", "501"));
+			"\"pageSize\" must be a whole number from 1 to 100",
+			_filter("pageSize", "101"));
 		_assertTitle(
 			"\"rangeEnd\" and \"rangeStart\" must be set together",
 			_filter("rangeStart", "2026-10-01"));
 		_assertTitle(
 			"\"rangeKey\" must be one of LAST_180_DAYS, LAST_24_HOURS, " +
 				"LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, " +
-					"LAST_YEAR, YESTERDAY",
-			_filter("rangeKey", "LAST_2_DAYS"));
+					"YESTERDAY",
+			_filter("rangeKey", "LAST_YEAR"));
 		_assertTitle(
 			"\"rangeStart\" must not be after \"rangeEnd\"",
-			_filter(
-				new MultivaluedHashMap<String, String>() {
-					{
-						putSingle("rangeEnd", "2026-10-01");
-						putSingle("rangeStart", "2026-10-20");
-					}
-				}));
+			_filter(_getRangeQueryParameters("2026-10-01", "2026-10-20")));
 		_assertTitle(
 			"\"sort\" must be a comma separated list of \"column:asc\" or " +
 				"\"column:desc\" expressions",
 			_filter("sort", "accountName:sideways"));
+		_assertTitle(
+			"Date range must be at most 180 days",
+			_filter(_getRangeQueryParameters("2026-10-02", "2026-04-05")));
 	}
 
 	private void _assertTitle(String expectedTitle, Response response) {
@@ -99,7 +99,9 @@ public class ParameterContainerRequestFilterTest {
 
 		Problem problem = (Problem)response.getEntity();
 
+		Assert.assertEquals(Response.Status.BAD_REQUEST, problem.getStatus());
 		Assert.assertEquals(expectedTitle, problem.getTitle());
+		Assert.assertNull(problem.getType());
 	}
 
 	private Response _filter(MultivaluedMap<String, String> queryParameters) {
@@ -155,6 +157,18 @@ public class ParameterContainerRequestFilterTest {
 		}
 
 		return _filter(queryParameters);
+	}
+
+	private MultivaluedMap<String, String> _getRangeQueryParameters(
+		String rangeEnd, String rangeStart) {
+
+		MultivaluedMap<String, String> queryParameters =
+			new MultivaluedHashMap<>();
+
+		queryParameters.putSingle("rangeEnd", rangeEnd);
+		queryParameters.putSingle("rangeStart", rangeStart);
+
+		return queryParameters;
 	}
 
 	private final ParameterContainerRequestFilter
