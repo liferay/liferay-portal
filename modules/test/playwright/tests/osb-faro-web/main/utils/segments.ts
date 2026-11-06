@@ -45,7 +45,7 @@ export async function addSegmentField({
 	await clickAndExpectToBeVisible({
 		autoClick: true,
 		target: page.getByRole('option', {name: criterionType}),
-		trigger: page.getByRole('combobox'),
+		trigger: page.getByRole('combobox', {name: 'Condition Type'}),
 	});
 
 	if (customField) {
@@ -202,7 +202,7 @@ export async function includeAnonymousToggle({
 }
 
 export async function saveSegment(page: Page) {
-	await page.locator('button[type="submit"]').click();
+	await page.getByRole('button', {name: 'Save Segment'}).click();
 
 	await waitForAlert(page, 'Success:Changes to segment saved.', {
 		autoClose: false,

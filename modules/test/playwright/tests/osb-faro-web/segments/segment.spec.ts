@@ -2327,7 +2327,7 @@ test(
 
 			await page.keyboard.press('Escape');
 
-			await page.locator('button[type="submit"]').click();
+			await page.getByRole('button', {name: 'Save Segment'}).click();
 
 			await waitForAlert(page, 'This segment name is currently in use', {
 				autoClose: false,
@@ -2392,7 +2392,7 @@ test(
 				segmentName: secondSegmentName,
 			});
 
-			await page.locator('button[type="submit"]').click();
+			await page.getByRole('button', {name: 'Save Segment'}).click();
 
 			await waitForAlert(page, 'This segment name is currently in use', {
 				autoClose: false,
