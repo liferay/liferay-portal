@@ -1487,7 +1487,22 @@ public class DSRequestManagerImpl implements DSRequestManager {
 
 			long fileEntryId = MapUtil.getLong(values, "fileEntryId");
 
-			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+			FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
+				fileEntryId);
+
+			if ((fileEntry == null) || fileEntry.isInTrash()) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Unable to update file entry ", fileEntryId,
+							" of digital signature envelope ",
+							dsEnvelope.getDSEnvelopeId(),
+							" because the file entry does not exist or is in ",
+							"the trash"));
+				}
+
+				continue;
+			}
 
 			FileVersion latestFileVersion = fileEntry.getLatestFileVersion(
 				true);
