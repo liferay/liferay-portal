@@ -215,6 +215,10 @@ public class AICreatorOpenAIConfigurationManagerImpl
 			long companyId)
 		throws ConfigurationException {
 
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-93786")) {
+			return false;
+		}
+
 		AICreatorOpenAICompanyConfiguration
 			aiCreatorOpenAICompanyConfiguration =
 				_configurationProvider.getCompanyConfiguration(
