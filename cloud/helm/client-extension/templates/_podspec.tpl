@@ -48,14 +48,6 @@ containers:
             {{- toYaml . | nindent 12 }}
         {{- end }}
         volumeMounts:
-            -   mountPath: /etc/liferay/lxc/dxp-metadata
-                name: lxc-dxp-metadata
-                readOnly: true
-            {{- if $extInit }}
-            -   mountPath: /etc/liferay/lxc/ext-init-metadata
-                name: lxc-ext-init-metadata
-                readOnly: true
-            {{- end }}
             {{- if .Values.artifact.reference }}
             {{- range .Values.artifact.mounts }}
             -   mountPath: {{ .mountPath }}
@@ -65,6 +57,16 @@ containers:
                 subPath: {{ . }}
                 {{- end }}
             {{- end }}
+            {{- end }}
+            -   mountPath: /etc/caddy.d
+                name: caddy-d
+            -   mountPath: /etc/liferay/lxc/dxp-metadata
+                name: lxc-dxp-metadata
+                readOnly: true
+            {{- if $extInit }}
+            -   mountPath: /etc/liferay/lxc/ext-init-metadata
+                name: lxc-ext-init-metadata
+                readOnly: true
             {{- end }}
             {{- with .Values.workload.volumeMounts }}
             {{- toYaml . | nindent 12 }}
@@ -98,6 +100,8 @@ volumes:
             reference: {{ . }}
         name: artifact
     {{- end }}
+    -   emptyDir: {}
+        name: caddy-d
     -   configMap:
             name: {{ include "liferay-client-extension.dxpMetadataName" . }}
         name: lxc-dxp-metadata

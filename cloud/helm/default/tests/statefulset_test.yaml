@@ -115,6 +115,20 @@ tests:
             value: StatefulSet
         it: Mounts the patching directory into the Liferay container
     -   asserts:
+            -   contains:
+                    content:
+                        mountPath: /opt/liferay/osgi/configs/com.liferay.portal.k8s.agent.configuration.PortalK8sAgentConfiguration.config
+                        name: liferay-configmap
+                        subPath: com.liferay.portal.k8s.agent.configuration.PortalK8sAgentConfiguration.config
+                    path: spec.template.spec.containers[0].volumeMounts
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Mounts the portal K8s agent configuration when client extension delivery is enabled
+        set:
+            clientExtensions.delivery.enabled: true
+    -   asserts:
             -   equal:
                     path: metadata.name
                     value: my-portal
@@ -131,6 +145,21 @@ tests:
         it: Names the StatefulSet and its container after the chart name override
         set:
             nameOverride: my-portal
+    -   asserts:
+            -   notContains:
+                    content:
+                        mountPath: /opt/liferay/osgi/configs/com.liferay.portal.k8s.agent.configuration.PortalK8sAgentConfiguration.config
+                        name: liferay-configmap
+                        subPath: com.liferay.portal.k8s.agent.configuration.PortalK8sAgentConfiguration.config
+                    path: spec.template.spec.containers[0].volumeMounts
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Omits the portal K8s agent configuration mount when configmap defaults are overridden
+        set:
+            clientExtensions.delivery.enabled: true
+            configmap.overrideDefaults: true
     -   asserts:
             -   notExists:
                     path: spec.replicas

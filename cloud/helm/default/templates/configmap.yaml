@@ -27,6 +27,15 @@ data:
 
             echo "${JMX_AGENT_YAML}" > /opt/liferay/metrics/metrics_exporter.yaml
         fi
+    {{- if .Values.clientExtensions.delivery.enabled }}
+    com.liferay.portal.k8s.agent.configuration.PortalK8sAgentConfiguration.config: |
+        apiServerHost="$[env:KUBERNETES_SERVICE_HOST]"
+        apiServerPort="$[env:KUBERNETES_SERVICE_PORT]"
+        apiServerSSL=b"true"
+        caCertData="$[secret:ca.crt]"
+        namespace="$[secret:namespace]"
+        saToken="$[secret:token]"
+    {{- end }}
     portal-cloud.properties: |
         {{- if .Values.portalProperties }}
         {{- .Values.portalProperties | nindent 8 }}
