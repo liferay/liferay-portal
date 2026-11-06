@@ -577,6 +577,11 @@ public class UserLocalServiceTest {
 			"PBKDF2WITHHMACSHA1/160/2600000", "PBKDF2WITHHMACSHA1/160/1300000");
 		_testAuthenticateByEmailAddressWithOutdatedPasswordsEncryptionAlgorithm(
 			"SHA-384", "PBKDF2WITHHMACSHA1/160/1300000");
+		_testAuthenticateByEmailAddressWithOutdatedPasswordsEncryptionAlgorithmInFIPSMode(
+			"PBKDF2WITHHMACSHA1/160/1300000", RandomTestUtil.randomString(13));
+		_testAuthenticateByEmailAddressWithOutdatedPasswordsEncryptionAlgorithmInFIPSMode(
+			"PBKDF2WITHHMACSHA256/256/1300000",
+			RandomTestUtil.randomString(14));
 	}
 
 	@Test
@@ -2215,6 +2220,31 @@ public class UserLocalServiceTest {
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
 		}
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			String newPassword = RandomTestUtil.randomString(13);
+			long userId = user.getUserId();
+
+			Assert.assertThrows(
+				UserPasswordException.MustBeLonger.class,
+				() -> _userLocalService.updatePassword(
+					userId, newPassword, newPassword, false, false));
+			Assert.assertThrows(
+				UserPasswordException.MustBeLonger.class,
+				() -> _userLocalService.updatePassword(
+					userId, newPassword, newPassword, false, true));
+			Assert.assertThrows(
+				UserPasswordException.MustNotBeNull.class,
+				() -> _userLocalService.updatePassword(
+					userId, null, null, false, false));
+		}
+
+		User curUser = _userLocalService.getUser(user.getUserId());
+
+		Assert.assertEquals(user.getPassword(), curUser.getPassword());
 	}
 
 	@Test
@@ -2971,6 +3001,54 @@ public class UserLocalServiceTest {
 
 			Assert.assertEquals(
 				newPasswordsEncryptionAlgorithm,
+				PasswordEncryptorUtil.getEncryptedPasswordAlgorithmSettings(
+					user.getPassword()));
+		}
+	}
+
+	private void
+			_testAuthenticateByEmailAddressWithOutdatedPasswordsEncryptionAlgorithmInFIPSMode(
+				String expectedPasswordsEncryptionAlgorithm, String password)
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		try (AutoCloseable autoCloseable =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					PasswordEncryptorUtil.class,
+					"_PASSWORDS_ENCRYPTION_ALGORITHM",
+					"PBKDF2WITHHMACSHA1/160/1300000")) {
+
+			user = _userLocalService.updatePassword(
+				user.getUserId(), password, password, false, true);
+		}
+
+		String passwordsEncryptionAlgorithm =
+			"PBKDF2WITHHMACSHA256/256/1300000";
+
+		try (AutoCloseable autoCloseable1 =
+				PropsValuesTestUtil.swapWithSafeCloseable("FIPS_ENABLED", true);
+			AutoCloseable autoCloseable2 =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					PasswordEncryptorUtil.class,
+					"_PASSWORDS_ENCRYPTION_ALGORITHM",
+					passwordsEncryptionAlgorithm);
+			AutoCloseable autoCloseable3 =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					UserLocalServiceImpl.class,
+					"_PASSWORDS_ENCRYPTION_ALGORITHM",
+					passwordsEncryptionAlgorithm)) {
+
+			Assert.assertEquals(
+				Authenticator.SUCCESS,
+				_userLocalService.authenticateByEmailAddress(
+					user.getCompanyId(), user.getDisplayEmailAddress(),
+					password, null, null, null));
+
+			user = _userLocalService.getUser(user.getUserId());
+
+			Assert.assertEquals(
+				expectedPasswordsEncryptionAlgorithm,
 				PasswordEncryptorUtil.getEncryptedPasswordAlgorithmSettings(
 					user.getPassword()));
 		}

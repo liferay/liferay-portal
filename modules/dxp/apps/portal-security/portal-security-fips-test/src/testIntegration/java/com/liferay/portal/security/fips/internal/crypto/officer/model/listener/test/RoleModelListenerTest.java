@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
 import com.liferay.portal.kernel.service.PasswordPolicyRelLocalService;
@@ -63,7 +64,10 @@ public class RoleModelListenerTest {
 			_testAddUserRoles(false, role, UserTestUtil.addUser(company));
 			_testAddUserRoles(
 				true, role,
-				UserTestUtil.addUser(company, RandomTestUtil.randomString()));
+				UserTestUtil.addUser(
+					company,
+					RandomTestUtil.randomString(
+						FIPSModeValidator.PASSWORDS_MIN_LENGTH)));
 
 			Assert.assertThrows(
 				ModelListenerException.class,
@@ -117,7 +121,8 @@ public class RoleModelListenerTest {
 				_companyLocalService.getCompany(
 					TestPropsValues.getCompanyId()));
 
-			String password = RandomTestUtil.randomString();
+			String password = RandomTestUtil.randomString(
+				FIPSModeValidator.PASSWORDS_MIN_LENGTH);
 			Role role = _roleLocalService.fetchRole(
 				TestPropsValues.getCompanyId(), RoleConstants.CRYPTO_OFFICER);
 
