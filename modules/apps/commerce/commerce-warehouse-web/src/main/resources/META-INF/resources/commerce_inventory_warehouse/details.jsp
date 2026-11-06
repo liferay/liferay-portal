@@ -12,9 +12,9 @@ CommerceInventoryWarehousesDisplayContext cIWarehousesDisplayContext = (Commerce
 
 CommerceInventoryWarehouse commerceInventoryWarehouse = cIWarehousesDisplayContext.getCommerceInventoryWarehouse();
 
-String countryTwoLettersISOCode = ParamUtil.getString(request, "countryTwoLettersISOCode", GetterUtil.get(commerceInventoryWarehouse, CommerceInventoryWarehouse::getCountryTwoLettersISOCode, StringPool.BLANK));
+String countryTwoLettersISOCode = ParamUtil.getString(request, "countryTwoLettersISOCode", commerceInventoryWarehouse.getCountryTwoLettersISOCode());
 
-String commerceRegionCode = ParamUtil.getString(request, "commerceRegionCode", GetterUtil.get(commerceInventoryWarehouse, CommerceInventoryWarehouse::getCommerceRegionCode, StringPool.BLANK));
+String commerceRegionCode = ParamUtil.getString(request, "commerceRegionCode", commerceInventoryWarehouse.getCommerceRegionCode());
 %>
 
 <liferay-ui:error exception="<%= CommerceGeocoderException.class %>">
@@ -32,7 +32,7 @@ String commerceRegionCode = ParamUtil.getString(request, "commerceRegionCode", G
 </liferay-util:html-top>
 
 <aui:form action="<%= editCommerceInventoryWarehouseActionURL %>" cssClass="pt-4" method="post" name="fm">
-	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceInventoryWarehouse == null) ? Constants.ADD : Constants.UPDATE %>" />
+	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="mvccVersion" type="hidden" value="<%= commerceInventoryWarehouse.getMvccVersion() %>" />
 	<aui:input name="externalReferenceCode" type="hidden" value="<%= commerceInventoryWarehouse.getExternalReferenceCode() %>" />
