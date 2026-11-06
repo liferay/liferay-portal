@@ -514,6 +514,11 @@ public interface ContactsEngineClient {
 		FaroProject faroProject, String displayName);
 
 	public Results<IndividualSegment> getIndividualIndividualSegments(
+		FaroProject faroProject, String channelId,
+		List<String> excludedChannelIds, String individualId, String query,
+		String status, int cur, int delta, List<OrderByField> orderByFields);
+
+	public Results<IndividualSegment> getIndividualIndividualSegments(
 		FaroProject faroProject, String channelId, String individualId,
 		String query, String status, int cur, int delta,
 		List<OrderByField> orderByFields);
