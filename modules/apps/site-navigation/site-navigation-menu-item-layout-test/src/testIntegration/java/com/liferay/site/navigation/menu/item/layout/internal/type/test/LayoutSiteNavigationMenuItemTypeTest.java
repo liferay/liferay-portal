@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -335,6 +336,39 @@ public class LayoutSiteNavigationMenuItemTypeTest {
 
 		Assert.assertEquals(
 			siteNavigationMenuItem.getName(), updatedLayoutName);
+	}
+
+	@Test
+	public void testHasPermission() throws Exception {
+		SiteNavigationMenuItemType siteNavigationMenuItemType =
+			_siteNavigationMenuItemTypeRegistry.getSiteNavigationMenuItemType(
+				SiteNavigationMenuItemTypeConstants.LAYOUT);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		SiteNavigationMenuItem siteNavigationMenuItem =
+			_siteNavigationMenuItemLocalService.addSiteNavigationMenuItem(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				_siteNavigationMenu.getSiteNavigationMenuId(), 0,
+				SiteNavigationMenuItemTypeConstants.LAYOUT,
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"externalReferenceCode", layout.getExternalReferenceCode()
+				).buildString(),
+				_serviceContext);
+
+		Assert.assertTrue(
+			siteNavigationMenuItemType.hasPermission(
+				PermissionThreadLocal.getPermissionChecker(),
+				siteNavigationMenuItem));
+
+		_layoutLocalService.deleteLayout(layout);
+
+		Assert.assertFalse(
+			siteNavigationMenuItemType.hasPermission(
+				PermissionThreadLocal.getPermissionChecker(),
+				siteNavigationMenuItem));
 	}
 
 	private void _assertGetLayout(Layout layout) throws Exception {
