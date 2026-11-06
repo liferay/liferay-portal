@@ -17,7 +17,7 @@ import visitProjectTsconfig from './visitProjectTsconfig.mjs';
 export default async function visitOutdatedTsconfigFiles(visitorFunction) {
 	const projectDirs = await getBuildableProjectDirs();
 
-	const projects = await getProjects(projectDirs, MODULES_DIR);
+	const projects = await getProjects(MODULES_DIR, projectDirs);
 
 	await Promise.all([
 		...projectDirs.map((projectDir) =>
@@ -43,7 +43,7 @@ export default async function visitOutdatedTsconfigFiles(visitorFunction) {
  *	 ...
  * }
  */
-async function getProjects(projectDirs, modulesDir) {
+async function getProjects(modulesDir, projectDirs) {
 	const projects = {};
 
 	await Promise.all(
