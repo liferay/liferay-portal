@@ -835,6 +835,19 @@ public abstract class BaseDDMTestCase {
 	protected void whenLanguageGetAvailableLocalesThen(
 		Set<Locale> availableLocales) {
 
+		Map<String, Locale> availableLocaleMap = new HashMap<>();
+
+		for (Locale availableLocale : availableLocales) {
+			availableLocaleMap.put(
+				LocaleUtil.toLanguageId(availableLocale), availableLocale);
+		}
+
+		Mockito.when(
+			language.getAvailableLocaleMap()
+		).thenReturn(
+			availableLocaleMap
+		);
+
 		Mockito.when(
 			language.getAvailableLocales()
 		).thenReturn(
