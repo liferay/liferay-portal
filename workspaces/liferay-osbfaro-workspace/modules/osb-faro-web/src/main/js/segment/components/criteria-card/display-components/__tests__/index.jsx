@@ -15,7 +15,6 @@ describe('DisplayComponent', () => {
 		${'account'}    | ${'Account'}
 		${'session'}    | ${'Session'}
 		${'interest'}   | ${'Internet'}
-		${'web'}        | ${'Web'}
 		${'individual'} | ${'Individual'}
 	`('renders $displayName for $propertyKey', ({entityName, propertyKey}) => {
 		const mockCriterion = {

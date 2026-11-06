@@ -13,7 +13,7 @@ import {EventTypes} from 'event-analysis/utils/types';
 import {List, Map} from 'immutable';
 import {render} from '@testing-library/react';
 import {Segment} from 'shared/util/records';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {withReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
 
 jest.unmock('react-dom');
@@ -114,6 +114,30 @@ describe('EventDisplay', () => {
 		);
 
 		expect(container).toMatchSnapshot();
+	});
+
+	it('renders the account wording in an account segment', () => {
+		const {getByText, queryByText} = render(
+			<WrappedEventDisplay
+				criterion={mockCriterion}
+				property={{
+					entityName: 'Individual',
+					label: 'Downloaded Document',
+					name: 'documentDownloaded',
+					options: [{label: 'hidden', value: false}],
+					propertykey: 'event',
+					type: PropertyTypes.Event
+				}}
+				segment={mockSegment}
+				segmentCategory={SegmentCategories.Account}
+				segmentType={SegmentTypes.Batch}
+			/>
+		);
+
+		expect(getByText('Account')).toBeTruthy();
+		expect(getByText('individual who triggered')).toBeTruthy();
+		expect(queryByText('Individual')).toBeNull();
+		expect(queryByText('performed')).toBeNull();
 	});
 
 	it('show an error message when custom event is hidden', () => {

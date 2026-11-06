@@ -11,7 +11,7 @@ import {
 } from 'segment/segment-editor/dynamic/utils/constants';
 import {List, Map} from 'immutable';
 import {Property, Segment} from 'shared/util/records';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {withReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
 
 jest.unmock('react-dom');
@@ -79,6 +79,22 @@ describe('BehaviorDisplay', () => {
 
 		expect(container).toMatchSnapshot();
 		expect(queryByText('Foo Attribute String')).toBeNull();
+	});
+
+	it('renders the account wording in an account segment', () => {
+		const {getByText, queryByText} = render(
+			<WrappedBehaviorDisplay
+				criterion={mockCriterion}
+				property={mockProperty}
+				segment={mockSegment}
+				segmentCategory={SegmentCategories.Account}
+				segmentType={SegmentTypes.Batch}
+			/>
+		);
+
+		expect(getByText('Account')).toBeTruthy();
+		expect(getByText('individual who triggered')).toBeTruthy();
+		expect(queryByText('Individual')).toBeNull();
 	});
 
 	it('renders the attribute filter when an attribute/<id> criterion is present', () => {
