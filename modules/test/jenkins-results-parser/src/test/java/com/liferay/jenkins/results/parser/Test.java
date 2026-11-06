@@ -462,6 +462,13 @@ public class Test {
 	protected void verifyURLReaderRead(
 		boolean checkCache, int maxRetries, int timeoutMillis) {
 
+		verifyURLReaderRead(checkCache, 1, maxRetries, timeoutMillis);
+	}
+
+	protected void verifyURLReaderRead(
+		boolean checkCache, int expectedCount, int maxRetries,
+		int timeoutMillis) {
+
 		int count = 0;
 
 		for (BaseURLReader<?> baseURLReader : _baseURLReaders) {
@@ -497,7 +504,7 @@ public class Test {
 			}
 		}
 
-		testEquals(1, count);
+		testEquals(expectedCount, count);
 	}
 
 	protected void verifyURLReaderSleepDurations(List<Long> expectedDurations) {

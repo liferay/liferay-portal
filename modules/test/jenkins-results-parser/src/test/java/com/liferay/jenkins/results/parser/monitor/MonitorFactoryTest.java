@@ -110,6 +110,23 @@ public class MonitorFactoryTest
 	}
 
 	@Test
+	public void testNewMonitorQueuedBuildDuration() {
+		Properties monitorProperties = new Properties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[cohort.name]", RandomTestUtil.randomString());
+		monitorProperties.setProperty(
+			"monitor[a].type", "queued-build-duration");
+
+		List<MonitorConfig> monitorConfigs =
+			MonitorConfigLoader.getMonitorConfigs(monitorProperties);
+
+		Monitor monitor = MonitorFactory.newMonitor(monitorConfigs.get(0));
+
+		Assert.assertTrue(monitor instanceof QueuedBuildDurationMonitor);
+	}
+
+	@Test
 	public void testNewMonitorReportFreshness() {
 		Properties monitorProperties = new Properties();
 
