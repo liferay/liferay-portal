@@ -8,7 +8,14 @@ import {
 	ObjectField,
 	ObjectRelationship,
 } from '../../../../src/main/resources/META-INF/resources/js/common/types/ObjectDefinition';
-import {NonRepeatableGroup} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
+import {
+	Group,
+	NonRepeatableGroup,
+	RepeatableGroup,
+	Structure,
+	StructureChild,
+} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
+import buildGroupObjectDefinitions from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildGroupObjectDefinitions';
 import buildObjectDefinition from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildObjectDefinition';
 import buildObjectRelationships from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildObjectRelationships';
 import buildStructure from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildStructure';
@@ -726,5 +733,182 @@ describe('buildStructure object layout', () => {
 				({name}) => name
 			)
 		).toEqual([textField.name]);
+	});
+});
+
+describe('buildStructure repeatable groups in the object layout', () => {
+	const buildTextField = (name: string): Field => ({
+		erc: `${name}ERC`,
+		indexableConfig: {indexed: false},
+		label: {en_US: name},
+		localized: false,
+		locked: false,
+		name,
+		parent: getUuid(),
+		required: false,
+		settings: {},
+		type: 'text',
+		uuid: getUuid(),
+	});
+
+	const buildGroup = (
+		label: string,
+		children: StructureChild[]
+	): NonRepeatableGroup => {
+		const uuid = getUuid();
+
+		return {
+			children: new Map(
+				children.map((child) => [child.uuid, {...child, parent: uuid}])
+			),
+			isRepeatable: false,
+			label: {en_US: label},
+			parent: getUuid(),
+			type: 'group',
+			uuid,
+		};
+	};
+
+	const buildRepeatableGroup = (
+		name: string,
+		children: StructureChild[]
+	): RepeatableGroup => ({
+		...buildGroup(name, children),
+		erc: `${name}ERC`,
+		isRepeatable: true,
+		name,
+		relationshipERC: `${name}RelationshipERC`,
+		relationshipName: `${name}Relationship`,
+	});
+
+	const roundTrip = (children: StructureChild[]): Structure => {
+		const childrenMap = new Map(
+			children.map((child) => [child.uuid, child])
+		);
+
+		const mainObjectDefinition = buildObjectDefinition({
+			children: childrenMap,
+			erc: 'structureERC',
+			label: {en_US: 'Structure'},
+			name: 'myStructure',
+			spaces: [],
+			status: 'draft',
+		});
+
+		const objectDefinitions = Object.fromEntries(
+			[
+				mainObjectDefinition,
+				...buildGroupObjectDefinitions({
+					children: childrenMap,
+					publishedChildren: new Set(),
+				}),
+			].map((objectDefinition) => [
+				objectDefinition.externalReferenceCode,
+				objectDefinition,
+			])
+		);
+
+		return buildStructure({
+			mainObjectDefinition,
+			objectDefinitions,
+			systemFieldNames: {},
+		});
+	};
+
+	const getChildren = (parent: Group | Structure) =>
+		Array.from(parent.children.values());
+
+	const getNames = (parent: Group | Structure) =>
+		getChildren(parent)
+			.map((child) => child.name ?? child.label.en_US)
+			.sort();
+
+	it('Restores a repeatable group inside its tab', () => {
+		const structure = roundTrip([
+			buildGroup('Details', [
+				buildTextField('sku'),
+				buildRepeatableGroup('images', [buildTextField('caption')]),
+			]),
+		]);
+
+		const [tab] = getChildren(structure) as Group[];
+
+		expect(tab.label).toEqual({en_US: 'Details'});
+		expect(tab.isRepeatable).toBe(false);
+		expect(getNames(tab)).toEqual(['images', 'sku']);
+
+		const repeatableGroup = getChildren(tab).find(
+			(child) => child.name === 'images'
+		) as RepeatableGroup;
+
+		expect(repeatableGroup.isRepeatable).toBe(true);
+		expect(repeatableGroup.parent).toBe(tab.uuid);
+		expect(repeatableGroup.relationshipName).toBe('imagesRelationship');
+		expect(getNames(repeatableGroup)).toEqual(['caption']);
+	});
+
+	it('Keeps a repeatable group at the first level', () => {
+		const structure = roundTrip([
+			buildTextField('note'),
+			buildRepeatableGroup('images', [buildTextField('caption')]),
+			buildGroup('Details', [buildTextField('sku')]),
+		]);
+
+		expect(getNames(structure)).toEqual(['Details', 'images', 'note']);
+
+		const repeatableGroup = getChildren(structure).find(
+			(child) => child.name === 'images'
+		) as RepeatableGroup;
+
+		expect(repeatableGroup.isRepeatable).toBe(true);
+		expect(repeatableGroup.parent).toBe(structure.uuid);
+	});
+
+	it('Keeps a repeatable group at the first level when there are no fields at the first level', () => {
+		const structure = roundTrip([
+			buildRepeatableGroup('images', [buildTextField('caption')]),
+			buildGroup('Details', [buildTextField('sku')]),
+		]);
+
+		expect(getNames(structure)).toEqual(['Details', 'images']);
+
+		const repeatableGroup = getChildren(structure).find(
+			(child) => child.name === 'images'
+		) as RepeatableGroup;
+
+		expect(repeatableGroup.isRepeatable).toBe(true);
+		expect(repeatableGroup.parent).toBe(structure.uuid);
+	});
+
+	it('Keeps a tab that holds only a repeatable group with the same label', () => {
+		const structure = roundTrip([
+			buildGroup('images', [
+				buildRepeatableGroup('images', [buildTextField('caption')]),
+			]),
+		]);
+
+		const [tab] = getChildren(structure) as Group[];
+
+		expect(getChildren(structure)).toHaveLength(1);
+		expect(tab.label).toEqual({en_US: 'images'});
+		expect(tab.isRepeatable).toBe(false);
+		expect(getNames(tab)).toEqual(['images']);
+	});
+
+	it('Declares a repeatable group inside a tab as a related definition', () => {
+		const tab = buildGroup('Details', [
+			buildRepeatableGroup('images', [buildTextField('caption')]),
+		]);
+
+		const objectDefinitions = buildGroupObjectDefinitions({
+			children: new Map([[tab.uuid, tab]]),
+			publishedChildren: new Set(),
+		});
+
+		expect(
+			objectDefinitions.map(
+				({externalReferenceCode}) => externalReferenceCode
+			)
+		).toEqual(['imagesERC']);
 	});
 });

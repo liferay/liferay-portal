@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ObjectDefinition} from '../../../../src/main/resources/META-INF/resources/js/common/types/ObjectDefinition';
+import {
+	ObjectDefinition,
+	ObjectRelationship,
+} from '../../../../src/main/resources/META-INF/resources/js/common/types/ObjectDefinition';
 import {
 	NonRepeatableGroup,
 	ReferencedStructure,
@@ -287,5 +290,117 @@ describe('refreshReferencedStructures with groups', () => {
 		expect(
 			Array.from(nested.children.values()).map(({name}) => name)
 		).toEqual(['longText']);
+	});
+
+	it('Does not duplicate a repeatable group inside a group', () => {
+		const structureUuid = getUuid();
+		const outerUuid = getUuid();
+		const tabUuid = getUuid();
+		const innerUuid = getUuid();
+
+		const buildObjectDefinition = (
+			externalReferenceCode: string,
+			name: string,
+			objectRelationships: ObjectRelationship[] = []
+		): ObjectDefinition => ({
+			enableComments: true,
+			enableFriendlyURLCustomization: true,
+			enableIndexSearch: true,
+			enableLocalization: true,
+			enableObjectEntryDraft: true,
+			enableObjectEntryHistory: true,
+			enableObjectEntrySchedule: true,
+			enableObjectEntryVersioning: true,
+			externalReferenceCode,
+			id: 1,
+			label: {en_US: name},
+			name,
+			objectFields: [],
+			objectFolderExternalReferenceCode:
+				'L_CMS_STRUCTURE_REPEATABLE_GROUPS',
+			objectRelationships,
+			pluralLabel: {},
+			scope: 'depot',
+		});
+
+		const innerGroup: RepeatableGroup = {
+			children: new Map(),
+			erc: 'inner-erc',
+			isRepeatable: true,
+			label: {en_US: 'Inner'},
+			name: 'C_Inner',
+			parent: tabUuid,
+			relationshipERC: 'inner-relationship-erc',
+			relationshipName: 'innerRelationship',
+			type: 'group',
+			uuid: innerUuid,
+		};
+
+		const tab: NonRepeatableGroup = {
+			children: new Map([[innerUuid, innerGroup]]),
+			isRepeatable: false,
+			label: {en_US: 'Tab'},
+			parent: outerUuid,
+			type: 'group',
+			uuid: tabUuid,
+		};
+
+		const outerGroup: RepeatableGroup = {
+			children: new Map<Uuid, StructureChild>([[tabUuid, tab]]),
+			erc: 'outer-erc',
+			isRepeatable: true,
+			label: {en_US: 'Outer'},
+			name: 'C_Outer',
+			parent: structureUuid,
+			relationshipERC: 'outer-relationship-erc',
+			relationshipName: 'outerRelationship',
+			type: 'group',
+			uuid: outerUuid,
+		};
+
+		const root: Structure = {
+			children: new Map([[outerUuid, outerGroup]]),
+			erc: 'structure-erc',
+			label: {en_US: 'Structure'},
+			name: 'structure-name',
+			path: '',
+			slug: '',
+			spaces: [],
+			status: 'published',
+			system: false,
+			titleFieldName: 'title',
+			type: 'L_CMS_CONTENT_STRUCTURES',
+			uuid: structureUuid,
+			workflows: {},
+		};
+
+		const children = refreshReferencedStructures({
+			objectDefinitions: {
+				'inner-erc': buildObjectDefinition('inner-erc', 'C_Inner'),
+				'outer-erc': buildObjectDefinition('outer-erc', 'C_Outer', [
+					{
+						deletionType: 'cascade',
+						edge: true,
+						externalReferenceCode: 'inner-relationship-erc',
+						label: {en_US: 'Inner'},
+						name: 'innerRelationship',
+						objectDefinitionExternalReferenceCode1: 'outer-erc',
+						objectDefinitionExternalReferenceCode2: 'inner-erc',
+						objectDefinitionName2: 'C_Inner',
+						type: 'oneToMany',
+					},
+				]),
+			},
+			root,
+			systemFieldNames: {},
+		});
+
+		const outer = children.get(outerUuid) as RepeatableGroup;
+
+		expect(Array.from(outer.children.keys())).toEqual([tabUuid]);
+
+		const refreshedTab = outer.children.get(tabUuid) as NonRepeatableGroup;
+
+		expect(Array.from(refreshedTab.children.keys())).toEqual([innerUuid]);
 	});
 });

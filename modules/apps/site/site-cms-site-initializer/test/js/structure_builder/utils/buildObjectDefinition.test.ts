@@ -626,4 +626,91 @@ describe('buildObjectDefinition object layout', () => {
 			TEXT_FIELD.name
 		);
 	});
+	const buildRepeatableGroup = (
+		label: string,
+		children: StructureChild[]
+	): RepeatableGroup => ({
+		...buildGroup(label, children),
+		erc: `${label}-erc`,
+		isRepeatable: true,
+		name: label,
+		relationshipERC: `${label}-relationship-erc`,
+		relationshipName: `${label}Relationship`,
+	});
+
+	it('Puts a repeatable group of a group in a box of its tab', () => {
+		const objectDefinition = build([
+			buildGroup('Group', [
+				TEXT_FIELD,
+				buildRepeatableGroup('images', [TITLE_FIELD]),
+				buildGroup('Nested', [EMAIL_FIELD]),
+			]),
+		]);
+
+		const [objectLayout] = objectDefinition.objectLayouts!;
+
+		const [{objectLayoutBoxes}] = objectLayout.objectLayoutTabs;
+
+		expect(objectLayoutBoxes.map(({name}) => name)).toEqual([
+			{en_US: 'Group'},
+			{en_US: 'repeatable-group-imagesRelationship'},
+			{en_US: 'Nested'},
+		]);
+		expect(objectLayoutBoxes[1]).toEqual({
+			collapsable: false,
+			name: {en_US: 'repeatable-group-imagesRelationship'},
+			objectLayoutRows: [],
+			priority: 1,
+			type: 'regular',
+		});
+		expect(objectDefinition.objectRelationships).toEqual([
+			expect.objectContaining({
+				name: 'imagesRelationship',
+				objectDefinitionExternalReferenceCode2: 'images-erc',
+			}),
+		]);
+		expect(
+			objectDefinition.objectFields!.map(({name}) => name)
+		).not.toContain(TITLE_FIELD.name);
+	});
+
+	it('Puts a repeatable group at the first level in the first tab', () => {
+		const [objectLayout] = build([
+			TEXT_FIELD,
+			buildRepeatableGroup('images', [TITLE_FIELD]),
+			buildGroup('Group', [EMAIL_FIELD]),
+		]).objectLayouts!;
+
+		const [first, second] = objectLayout.objectLayoutTabs;
+
+		expect(first.name).toEqual({en_US: 'Structure'});
+		expect(first.objectLayoutBoxes.map(({name}) => name)).toEqual([
+			undefined,
+			{en_US: 'repeatable-group-imagesRelationship'},
+		]);
+		expect(
+			first.objectLayoutBoxes[0].objectLayoutRows[0]
+				.objectLayoutColumns[0].objectFieldName
+		).toBe(TEXT_FIELD.name);
+		expect(second.name).toEqual({en_US: 'Group'});
+	});
+
+	it('Starts the first tab with an empty box without a name when there are no fields at the first level', () => {
+		const [objectLayout] = build([
+			buildRepeatableGroup('images', [TITLE_FIELD]),
+			buildGroup('Group', [TEXT_FIELD]),
+		]).objectLayouts!;
+
+		const [first] = objectLayout.objectLayoutTabs;
+
+		expect(first.name).toEqual({en_US: 'Structure'});
+		expect(first.objectLayoutBoxes).toEqual([
+			expect.objectContaining({objectLayoutRows: [], priority: 0}),
+			expect.objectContaining({
+				name: {en_US: 'repeatable-group-imagesRelationship'},
+				priority: 1,
+			}),
+		]);
+		expect(first.objectLayoutBoxes[0]).not.toHaveProperty('name');
+	});
 });
