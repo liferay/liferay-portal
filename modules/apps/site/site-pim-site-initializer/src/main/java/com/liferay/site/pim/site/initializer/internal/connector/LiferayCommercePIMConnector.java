@@ -108,7 +108,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			throw new PIMConnectorException("enter-a-valid-url");
 		}
 
-		Map<String, JSONObject> optionJSONObjects = new TreeMap<>();
+		Map<String, JSONObject> optionJSONObjectsMap = new TreeMap<>();
 
 		JSONArray jsonArray = JSONUtil.toJSONArray(
 			pimProductObjectEntriesMap.entrySet(),
@@ -128,7 +128,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 					JSONObject productOptionJSONObject =
 						productOptionsJSONArray.getJSONObject(i);
 
-					optionJSONObjects.putIfAbsent(
+					optionJSONObjectsMap.putIfAbsent(
 						productOptionJSONObject.getString(
 							"optionExternalReferenceCode"),
 						JSONUtil.put(
@@ -146,30 +146,30 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				return jsonObject;
 			});
 
-		LiferayCommerceRESTClient liferayCommerceRESTClient =
-			new LiferayCommerceRESTClient(
+		LiferayCommercePIMClient liferayCommercePIMClient =
+			new LiferayCommercePIMClient(
 				MapUtil.getString(pimConnectorConfigurationValues, "clientId"),
 				MapUtil.getString(
 					pimConnectorConfigurationValues, "clientSecret"),
 				_http, _jsonFactory, url);
 
 		try {
-			liferayCommerceRESTClient.authenticate();
+			liferayCommercePIMClient.authenticate();
 
 			for (Map.Entry<String, JSONObject> entry :
-					optionJSONObjects.entrySet()) {
+					optionJSONObjectsMap.entrySet()) {
 
-				liferayCommerceRESTClient.putOption(
+				liferayCommercePIMClient.putOptionByExternalReferenceCode(
 					entry.getKey(), entry.getValue());
 			}
 
-			JSONObject jsonObject = liferayCommerceRESTClient.postImportTask(
+			JSONObject jsonObject = liferayCommercePIMClient.postImportTask(
 				jsonArray);
 
 			return JSONUtil.put(
 				"batchId", jsonObject.getString("externalReferenceCode")
 			).put(
-				"log", liferayCommerceRESTClient.getLogJSONArray()
+				"log", liferayCommercePIMClient.getLogJSONArray()
 			).put(
 				"status", jsonObject.getString("executeStatus")
 			).toString(
@@ -180,7 +180,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			throw new PIMConnectorException(
 				pimConnectorException.getMessage(),
 				JSONUtil.put(
-					"log", liferayCommerceRESTClient.getLogJSONArray()
+					"log", liferayCommercePIMClient.getLogJSONArray()
 				).toString(
 					2
 				),
@@ -190,7 +190,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			throw new PIMConnectorException(
 				"an-unexpected-error-occurred",
 				JSONUtil.put(
-					"log", liferayCommerceRESTClient.getLogJSONArray()
+					"log", liferayCommercePIMClient.getLogJSONArray()
 				).toString(
 					2
 				),

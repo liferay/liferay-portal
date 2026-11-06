@@ -24,9 +24,9 @@ import java.io.IOException;
 /**
  * @author Tancredi Covioli
  */
-public class LiferayCommerceRESTClient {
+public class LiferayCommercePIMClient {
 
-	public LiferayCommerceRESTClient(
+	public LiferayCommercePIMClient(
 		String clientId, String clientSecret, Http http,
 		JSONFactory jsonFactory, String url) {
 
@@ -54,7 +54,7 @@ public class LiferayCommerceRESTClient {
 			),
 			options);
 
-		if (!_isSuccessfulResponse(options)) {
+		if (!_isSuccessfulResponse(options.getResponse())) {
 			throw new PIMConnectorException(
 				"unable-to-authenticate-with-the-remote-instance");
 		}
@@ -84,12 +84,13 @@ public class LiferayCommerceRESTClient {
 
 		String responseString = _invoke(jsonArray, options);
 
-		_checkResponse(options);
+		_validateResponse(options.getResponse());
 
 		return _jsonFactory.createJSONObject(responseString);
 	}
 
-	public void putOption(String externalReferenceCode, JSONObject jsonObject)
+	public void putOptionByExternalReferenceCode(
+			String externalReferenceCode, JSONObject jsonObject)
 		throws Exception {
 
 		Http.Options options = _createOptions(
@@ -107,24 +108,7 @@ public class LiferayCommerceRESTClient {
 
 		_invoke(jsonObject, options);
 
-		_checkResponse(options);
-	}
-
-	private void _checkResponse(Http.Options options) throws Exception {
-		Http.Response response = options.getResponse();
-
-		if ((response.getResponseCode() ==
-				HttpServletResponse.SC_UNAUTHORIZED) ||
-			(response.getResponseCode() == HttpServletResponse.SC_FORBIDDEN)) {
-
-			throw new PIMConnectorException(
-				"unable-to-authenticate-with-the-remote-instance");
-		}
-
-		if (!_isSuccessfulResponse(options)) {
-			throw new PIMConnectorException(
-				"the-remote-instance-returned-an-error");
-		}
+		_validateResponse(options.getResponse());
 	}
 
 	private Http.Options _createOptions(String path) {
@@ -137,11 +121,13 @@ public class LiferayCommerceRESTClient {
 		return options;
 	}
 
-	private String _invoke(Object body, Http.Options options) throws Exception {
+	private String _invoke(Object requestBody, Http.Options options)
+		throws Exception {
+
 		JSONObject jsonObject = JSONUtil.put(
 			"request",
 			JSONUtil.put(
-				"body", body
+				"body", requestBody
 			).put(
 				"method", String.valueOf(options.getMethod())
 			).put(
@@ -174,9 +160,7 @@ public class LiferayCommerceRESTClient {
 		}
 	}
 
-	private boolean _isSuccessfulResponse(Http.Options options) {
-		Http.Response response = options.getResponse();
-
+	private boolean _isSuccessfulResponse(Http.Response response) {
 		if ((response.getResponseCode() >= HttpServletResponse.SC_OK) &&
 			(response.getResponseCode() <
 				HttpServletResponse.SC_MULTIPLE_CHOICES)) {
@@ -197,6 +181,21 @@ public class LiferayCommerceRESTClient {
 		jsonObject.remove("access_token");
 
 		return jsonObject;
+	}
+
+	private void _validateResponse(Http.Response response) throws Exception {
+		if ((response.getResponseCode() ==
+				HttpServletResponse.SC_UNAUTHORIZED) ||
+			(response.getResponseCode() == HttpServletResponse.SC_FORBIDDEN)) {
+
+			throw new PIMConnectorException(
+				"unable-to-authenticate-with-the-remote-instance");
+		}
+
+		if (!_isSuccessfulResponse(response)) {
+			throw new PIMConnectorException(
+				"the-remote-instance-returned-an-error");
+		}
 	}
 
 	private String _accessToken;
