@@ -232,7 +232,7 @@ public class QueuedBuildDurationMonitor extends BaseMonitor {
 
 		List<String> stuckQueueItemMessages = new ArrayList<>();
 
-		if (stuckQueueItems.size() <= _STUCK_QUEUE_ITEMS_SIZE_MAX) {
+		if (stuckQueueItems.size() <= 3) {
 			for (JenkinsMaster.QueueItem stuckQueueItem : stuckQueueItems) {
 				JenkinsMaster jenkinsMaster = stuckQueueItem.getJenkinsMaster();
 
@@ -290,7 +290,10 @@ public class QueuedBuildDurationMonitor extends BaseMonitor {
 			String.valueOf(stuckQueueItems.size()), " ",
 			JenkinsResultsParserUtil.getNounForm(
 				stuckQueueItems.size(), "builds", "build"),
-			" in cohort ", _cohortName, " queued over ",
+			" in cohort ", _cohortName, " ",
+			JenkinsResultsParserUtil.getNounForm(
+				stuckQueueItems.size(), "were", "was"),
+			" queued over ",
 			JenkinsResultsParserUtil.toDurationString(
 				_queueDurationMaximumSeconds * 1000),
 			": ", JenkinsResultsParserUtil.join(", ", stuckQueueItemMessages));
@@ -388,8 +391,6 @@ public class QueuedBuildDurationMonitor extends BaseMonitor {
 	private static final int _RETRIES_SIZE_MAX = 1;
 
 	private static final int _SECONDS_RETRY_PERIOD = 1;
-
-	private static final int _STUCK_QUEUE_ITEMS_SIZE_MAX = 3;
 
 	private final long _buildStartGapMaximumSeconds;
 	private final String _cohortName;

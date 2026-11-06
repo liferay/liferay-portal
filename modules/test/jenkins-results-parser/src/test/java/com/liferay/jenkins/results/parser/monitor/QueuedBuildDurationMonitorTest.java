@@ -543,14 +543,16 @@ public class QueuedBuildDurationMonitorTest
 
 	private String _getStuckMessage(int count, String stuckQueueItemsMessage) {
 		String noun = "builds";
+		String verb = "were";
 
 		if (count == 1) {
 			noun = "build";
+			verb = "was";
 		}
 
 		return JenkinsResultsParserUtil.combine(
-			String.valueOf(count), " ", noun, " in cohort ", _COHORT_NAME,
-			" queued over 3 hours: ", stuckQueueItemsMessage);
+			String.valueOf(count), " ", noun, " in cohort ", _COHORT_NAME, " ",
+			verb, " queued over 3 hours: ", stuckQueueItemsMessage);
 	}
 
 	private String _getStuckQueueItemMessage(

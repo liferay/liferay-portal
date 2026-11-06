@@ -511,7 +511,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		List<JenkinsMaster.QueueItem> queueItems =
 			_jenkinsMaster.readQueueItems(1, 1, 7000);
 
-		Assert.assertTrue(queueItems.toString(), queueItems.isEmpty());
+		Assert.assertTrue(queueItems.isEmpty());
 
 		JSONObject queueItemJSONObject = _newQueueItemJSONObject(
 			"hudson.model.Queue$BuildableItem");
@@ -529,12 +529,12 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		JenkinsMaster.QueueItem queueItem = queueItems.get(0);
 
-		Assert.assertSame(_jenkinsMaster, queueItem.getJenkinsMaster());
 		Assert.assertEquals(
 			queueItemJSONObject.getLong("id"), queueItem.getId());
 		Assert.assertEquals(
 			queueItemJSONObject.getLong("inQueueSince"),
 			queueItem.getInQueueSince());
+		Assert.assertSame(_jenkinsMaster, queueItem.getJenkinsMaster());
 
 		JSONObject taskJSONObject = queueItemJSONObject.getJSONObject("task");
 
@@ -544,10 +544,10 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 			taskJSONObject.getString("url"), queueItem.getTaskURL());
 
 		Assert.assertEquals(
-			queueItemJSONObject.getString("why"), queueItem.getWhy());
-		Assert.assertEquals(
 			_jenkinsMaster.getURL() + queueItemJSONObject.getString("url"),
 			queueItem.getURL());
+		Assert.assertEquals(
+			queueItemJSONObject.getString("why"), queueItem.getWhy());
 
 		Assert.assertNull(
 			ReflectionTestUtil.getFieldValue(
