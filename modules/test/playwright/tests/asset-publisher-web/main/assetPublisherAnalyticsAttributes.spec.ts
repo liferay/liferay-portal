@@ -141,7 +141,11 @@ test(
 
 		await pageEditorPage.publishPage();
 
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+		await expect(async () => {
+			await page.goto(
+				`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+			);
+		}).toPass();
 
 		for (const [name, titleElement] of Object.entries(displayTemplates)) {
 			const titleLocator = page.locator(
