@@ -6,6 +6,7 @@
 package com.liferay.object.web.internal.info.item.handler;
 
 import com.liferay.asset.kernel.exception.AssetCategoryException;
+import com.liferay.info.exception.InfoFormOptimisticLockException;
 import com.liferay.info.exception.InfoFormValidationException;
 import com.liferay.info.exception.NoSuchFormVariationException;
 import com.liferay.info.field.InfoField;
@@ -29,6 +30,8 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+
+import jakarta.persistence.OptimisticLockException;
 
 import java.util.List;
 
@@ -452,6 +455,10 @@ public class ObjectEntryInfoItemExceptionRequestHandler {
 			throw new InfoFormValidationException.
 				UniqueValueConstraintViolation(
 					String.valueOf(arguments.get(0)));
+		}
+
+		if (exception instanceof OptimisticLockException) {
+			throw new InfoFormOptimisticLockException();
 		}
 
 		if (_log.isDebugEnabled()) {
