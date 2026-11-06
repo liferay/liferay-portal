@@ -50,7 +50,6 @@ page import="com.liferay.commerce.model.CommerceOrderNote" %><%@
 page import="com.liferay.commerce.model.CommerceOrderType" %><%@
 page import="com.liferay.commerce.model.CommerceReturn" %><%@
 page import="com.liferay.commerce.model.CommerceReturnItem" %><%@
-page import="com.liferay.commerce.model.CommerceShipment" %><%@
 page import="com.liferay.commerce.notification.model.CommerceNotificationQueueEntry" %><%@
 page import="com.liferay.commerce.order.CommerceOrderValidatorResult" %><%@
 page import="com.liferay.commerce.order.web.internal.constants.CommerceOrderFDSNames" %><%@

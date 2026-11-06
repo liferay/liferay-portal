@@ -37,7 +37,6 @@ page import="com.liferay.commerce.model.CommerceOrderItem" %><%@
 page import="com.liferay.commerce.model.CommerceShipment" %><%@
 page import="com.liferay.commerce.model.CommerceShipmentItem" %><%@
 page import="com.liferay.commerce.model.CommerceShippingMethod" %><%@
-page import="com.liferay.commerce.product.model.CommerceChannel" %><%@
 page import="com.liferay.commerce.shipment.web.internal.constants.CommerceShipmentScreenNavigationConstants" %><%@
 page import="com.liferay.commerce.shipment.web.internal.display.context.CommerceShipmentDisplayContext" %><%@
 page import="com.liferay.commerce.shipment.web.internal.display.context.CommerceShipmentItemDisplayContext" %><%@
