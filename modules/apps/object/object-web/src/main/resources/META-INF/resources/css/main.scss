@@ -12,7 +12,7 @@
 	~ .flex-grow-1
 	.lfr-objects__model-builder-custom-vertical-bar.c-slideout-start {
 	@include media-breakpoint-up(md) {
-		inset-inline-start: $c-slideout-sidebar-width;
+		inset-inline-start: 280px;
 		z-index: calc(#{$zindex-c-slideout} - 1);
 	}
 }
