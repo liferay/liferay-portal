@@ -381,7 +381,13 @@ test(
 					name: 'Asset Entries',
 				});
 
-			await assetEntries.getByRole('button', {name: 'Select'}).click();
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: assetEntries.getByRole('button', {name: 'Select'}),
+				trigger: assetEntries.getByRole('button', {
+					name: 'Asset Entries',
+				}),
+			});
 
 			// Both documents are listed with their document type
 
