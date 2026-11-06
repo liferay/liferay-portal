@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -657,8 +658,19 @@ public class StyleBookResourceImpl
 			long groupId, Pagination pagination, String search, Sort[] sorts)
 		throws Exception {
 
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (ExportImportThreadLocal.isExportInProcess() &&
+			!_portletResourcePermission.contains(
+				permissionChecker, groupId,
+				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
+
+			return Page.of(Collections.emptyList());
+		}
+
 		_portletResourcePermission.check(
-			PermissionThreadLocal.getPermissionChecker(), groupId,
+			permissionChecker, groupId,
 			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
 
 		if (ArrayUtil.isEmpty(sorts)) {
