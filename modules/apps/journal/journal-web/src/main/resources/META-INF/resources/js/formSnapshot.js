@@ -5,7 +5,7 @@
 
 import {useCallback, useEffect, useRef} from 'react';
 
-export function getFormSnapshot(form, namespace) {
+export function getFormSnapshot(form, namespace, isIgnored = () => false) {
 	const excludedNames = new Set([
 		`${namespace}formDate`,
 		`${namespace}languageId`,
@@ -17,7 +17,8 @@ export function getFormSnapshot(form, namespace) {
 		if (
 			element.name &&
 			element.name.startsWith(namespace) &&
-			!excludedNames.has(element.name)
+			!excludedNames.has(element.name) &&
+			!isIgnored(element)
 		) {
 			values.set(element.name, (element.value ?? '').trim());
 		}
@@ -74,10 +75,20 @@ export function useFormChanges(namespace) {
 }
 
 function trackFormChanges(form, namespace) {
-	let savedSnapshot = getFormSnapshot(form, namespace);
+	const getSnapshot = () =>
+		getFormSnapshot(
+			form,
+			namespace,
+			(element) =>
+				element.classList.contains('language-value') ||
+				element.name === `${namespace}availableLocales` ||
+				element.name.endsWith('_edited')
+		);
+
+	let savedSnapshot = getSnapshot();
 
 	const addRenderedFields = () => {
-		for (const [name, value] of getFormSnapshot(form, namespace)) {
+		for (const [name, value] of getSnapshot()) {
 			if (!savedSnapshot.has(name)) {
 				savedSnapshot.set(name, value);
 			}
@@ -97,13 +108,10 @@ function trackFormChanges(form, namespace) {
 				addRenderedFields();
 			}
 
-			return isFormSnapshotDifferent(
-				getFormSnapshot(form, namespace),
-				savedSnapshot
-			);
+			return isFormSnapshotDifferent(getSnapshot(), savedSnapshot);
 		},
 		markSaved() {
-			savedSnapshot = getFormSnapshot(form, namespace);
+			savedSnapshot = getSnapshot();
 		},
 	};
 }
