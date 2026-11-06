@@ -74,8 +74,11 @@ public class AuditMessageBuilder {
 
 		long realUserId = auditRequestContext.getRealUserId();
 
-		String realUserName = PortalUtil.getUserName(
-			realUserId, StringPool.BLANK);
+		String realUserName = StringPool.BLANK;
+
+		if (realUserId > 0) {
+			realUserName = PortalUtil.getUserName(realUserId, StringPool.BLANK);
+		}
 
 		JSONObject additionalInfoJSONObject =
 			JSONFactoryUtil.createJSONObject();
