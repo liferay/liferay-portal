@@ -63,8 +63,8 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 	@Test
 	@TestInfo("LPD-113926")
 	public void testLayoutFriendlyURL() throws Exception {
-		_testLayoutFriendlyURL();
 		_testLayoutFriendlyURLWithReusedFriendlyURLCombinedPublish();
+		_testLayoutFriendlyURLWithReusedFriendlyURLIndividualPublish();
 		_testLayoutFriendlyURLWithSwappedFriendlyURLs();
 	}
 
@@ -94,13 +94,13 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		}
 	}
 
-	private void _deleteFriendlyURLEntryLocalization(
-			String friendlyURL, long groupId)
+	private void _deleteFriendlyURLEntryLocalization(String friendlyURL)
 		throws Exception {
 
 		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
 			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
-				groupId, _layoutFriendlyURLEntryHelper.getClassNameId(false),
+				stagingGroup.getGroupId(),
+				_layoutFriendlyURLEntryHelper.getClassNameId(false),
 				FriendlyURLEntryConstants.
 					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
 				friendlyURL);
@@ -123,7 +123,42 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		return StringPool.FORWARD_SLASH + urlTitle;
 	}
 
-	private void _testLayoutFriendlyURL() throws Exception {
+	private void _testLayoutFriendlyURLWithReusedFriendlyURLCombinedPublish()
+		throws Exception {
+
+		Layout layout1 = LayoutTestUtil.addTypePortletLayout(stagingGroup);
+
+		String friendlyURL = layout1.getFriendlyURL(_locale);
+
+		publishLayouts(new long[] {layout1.getLayoutId()});
+
+		layout1 = _updateFriendlyURL(_randomFriendlyURL(), layout1);
+
+		_deleteFriendlyURLEntryLocalization(friendlyURL);
+
+		Layout layout2 = LayoutTestUtil.addTypePortletLayout(stagingGroup);
+
+		layout2 = _updateFriendlyURL(friendlyURL, layout2);
+
+		_layoutLocalService.updatePriority(
+			layout2.getPlid(), layout1.getPriority());
+
+		_assertPublishLayoutsWithLayoutFriendlyURLsException(
+			1, layout1.getLayoutId(), layout2.getLayoutId());
+
+		Assert.assertNull(_fetchLiveLayout(layout2));
+
+		publishLayouts(
+			new long[] {layout1.getLayoutId(), layout2.getLayoutId()});
+
+		Layout liveLayout2 = _fetchLiveLayout(layout2);
+
+		Assert.assertEquals(friendlyURL, liveLayout2.getFriendlyURL(_locale));
+	}
+
+	private void _testLayoutFriendlyURLWithReusedFriendlyURLIndividualPublish()
+		throws Exception {
+
 		String originalFriendlyURL1 = stagingLayout.getFriendlyURL();
 
 		String friendlyURL = _randomFriendlyURL();
@@ -150,8 +185,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		long layoutClassNameId = _layoutFriendlyURLEntryHelper.getClassNameId(
 			false);
 
-		_deleteFriendlyURLEntryLocalization(
-			friendlyURL, stagingGroup.getGroupId());
+		_deleteFriendlyURLEntryLocalization(friendlyURL);
 
 		stagingLayout2 = LayoutTestUtil.updateFriendlyURL(
 			stagingLayout2,
@@ -188,9 +222,6 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		Assert.assertEquals(
 			originalFriendlyURL1, liveLayout.getFriendlyURL(_locale));
 
-		_deleteFriendlyURLEntryLocalization(
-			friendlyURL, liveGroup.getGroupId());
-
 		publishLayouts();
 
 		Assert.assertEquals(
@@ -220,40 +251,6 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 			liveFriendlyURLEntryLocalization.getClassPK());
 	}
 
-	private void _testLayoutFriendlyURLWithReusedFriendlyURLCombinedPublish()
-		throws Exception {
-
-		Layout layout1 = LayoutTestUtil.addTypePortletLayout(stagingGroup);
-
-		String friendlyURL = layout1.getFriendlyURL(_locale);
-
-		publishLayouts(new long[] {layout1.getLayoutId()});
-
-		layout1 = _updateFriendlyURL(_randomFriendlyURL(), layout1);
-
-		_deleteFriendlyURLEntryLocalization(
-			friendlyURL, stagingGroup.getGroupId());
-
-		Layout layout2 = LayoutTestUtil.addTypePortletLayout(stagingGroup);
-
-		layout2 = _updateFriendlyURL(friendlyURL, layout2);
-
-		_layoutLocalService.updatePriority(
-			layout2.getPlid(), layout1.getPriority());
-
-		_assertPublishLayoutsWithLayoutFriendlyURLsException(
-			1, layout1.getLayoutId(), layout2.getLayoutId());
-
-		Assert.assertNull(_fetchLiveLayout(layout2));
-
-		publishLayouts(
-			new long[] {layout1.getLayoutId(), layout2.getLayoutId()});
-
-		Layout liveLayout2 = _fetchLiveLayout(layout2);
-
-		Assert.assertEquals(friendlyURL, liveLayout2.getFriendlyURL(_locale));
-	}
-
 	private void _testLayoutFriendlyURLWithSwappedFriendlyURLs()
 		throws Exception {
 
@@ -268,13 +265,11 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 
 		layout1 = _updateFriendlyURL(_randomFriendlyURL(), layout1);
 
-		_deleteFriendlyURLEntryLocalization(
-			friendlyURL1, stagingGroup.getGroupId());
+		_deleteFriendlyURLEntryLocalization(friendlyURL1);
 
 		layout2 = _updateFriendlyURL(friendlyURL1, layout2);
 
-		_deleteFriendlyURLEntryLocalization(
-			friendlyURL2, stagingGroup.getGroupId());
+		_deleteFriendlyURLEntryLocalization(friendlyURL2);
 
 		layout1 = _updateFriendlyURL(friendlyURL2, layout1);
 
