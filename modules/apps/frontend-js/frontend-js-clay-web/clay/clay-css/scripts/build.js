@@ -88,6 +88,10 @@ async function build() {
 			}\n`
 		);
 
+		if (result === data) {
+			return;
+		}
+
 		fs.writeFile(licenseText, result, 'utf8', (error) => {
 			if (error) {
 				return console.error(error);
