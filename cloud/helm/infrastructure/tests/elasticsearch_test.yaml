@@ -32,6 +32,48 @@ tests:
                 ES_SETTING_ONE: one
                 ES_SETTING_TWO: two
     -   asserts:
+            -   equal:
+                    path: spec.nodeSets[0].podTemplate.spec.containers[0].volumeMounts
+                    value:
+                        -   mountPath: /extra
+                            name: extra
+            -   equal:
+                    path: spec.nodeSets[0].podTemplate.spec.initContainers[1]
+                    value:
+                        image: busybox:1.36
+                        name: extra-init
+            -   equal:
+                    path: spec.nodeSets[0].podTemplate.spec.volumes
+                    value:
+                        -   emptyDir: {}
+                            name: extra
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Adds the extra init containers, volume mounts and volumes
+        set:
+            search.elasticsearch.extraInitContainers:
+                -   image: busybox:1.36
+                    name: extra-init
+            search.elasticsearch.extraVolumeMounts:
+                -   mountPath: /extra
+                    name: extra
+            search.elasticsearch.extraVolumes:
+                -   emptyDir: {}
+                    name: extra
+    -   asserts:
+            -   equal:
+                    path: spec.nodeSets[0].config
+                    value:
+                        xpack.security.authc.anonymous.roles: monitoring_user
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Applies the configured node settings
+        set:
+            search.elasticsearch.config:
+                xpack.security.authc.anonymous.roles: monitoring_user
+    -   asserts:
             -   contains:
                     content:
                         name: ES_JAVA_OPTS
@@ -55,6 +97,38 @@ tests:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
                     value: "-25"
         it: Assigns the Elasticsearch resources their sync waves
+    -   asserts:
+            -   documentSelector:
+                    path: kind
+                    value: Elasticsearch
+                equal:
+                    path: metadata.labels
+                    value:
+                        component: search
+                        environmentId: env1
+                        projectId: proj1
+            -   documentSelector:
+                    path: kind
+                    value: Elasticsearch
+                equal:
+                    path: spec.nodeSets[0].podTemplate.metadata.labels
+                    value:
+                        component: search
+                        environmentId: env1
+                        projectId: proj1
+            -   documentSelector:
+                    path: kind
+                    value: Namespace
+                isSubset:
+                    content:
+                        component: search
+                        environmentId: env1
+                        projectId: proj1
+                    path: metadata.labels
+        it: Labels the Elasticsearch resources, pods and namespace with the search labels
+        set:
+            environmentId: env1
+            projectId: proj1
     -   asserts:
             -   equal:
                     path: metadata.name
@@ -96,6 +170,20 @@ tests:
             path: kind
             value: Elasticsearch
         it: Omits the data volume storage class by default
+    -   asserts:
+            -   lengthEqual:
+                    count: 1
+                    path: spec.nodeSets[0].podTemplate.spec.initContainers
+            -   notExists:
+                    path: spec.nodeSets[0].config
+            -   notExists:
+                    path: spec.nodeSets[0].podTemplate.spec.containers[0].volumeMounts
+            -   notExists:
+                    path: spec.nodeSets[0].podTemplate.spec.volumes
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Omits the extra init containers, node settings, volume mounts and volumes by default
     -   asserts:
             -   contains:
                     content:
@@ -146,6 +234,14 @@ tests:
             path: kind
             value: Namespace
         it: Restricts the Elasticsearch namespace to the restricted pod security standard
+    -   asserts:
+            -   equal:
+                    path: spec.nodeSets[0].podTemplate.spec.serviceAccountName
+                    value: elasticsearch
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Runs the Elasticsearch pods as the Elasticsearch service account
     -   asserts:
             -   equal:
                     path: spec.nodeSets[0].podTemplate.metadata.annotations

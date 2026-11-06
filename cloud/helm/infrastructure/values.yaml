@@ -33,8 +33,41 @@ persistence:
 projectId: ""
 search:
     elasticsearch:
+        config: {}
         env:
             ES_JAVA_OPTS: -Xms4g -Xmx4g
+        exporter:
+            enabled: false
+            image:
+                pullPolicy: IfNotPresent
+                repository: quay.io/prometheuscommunity/elasticsearch-exporter
+                tag: v1.10.0
+            livenessProbe:
+                failureThreshold: 3
+                initialDelaySeconds: 10
+                periodSeconds: 30
+                tcpSocket:
+                    port: metrics
+                timeoutSeconds: 5
+            readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                    path: /healthz
+                    port: metrics
+                initialDelaySeconds: 5
+                periodSeconds: 10
+                timeoutSeconds: 5
+            replicaCount: 1
+            resources:
+                limits:
+                    cpu: 300m
+                    memory: 384Mi
+                requests:
+                    cpu: 50m
+                    memory: 128Mi
+        extraInitContainers: []
+        extraVolumeMounts: []
+        extraVolumes: []
         nodeCount: 1
         resources:
             limits:

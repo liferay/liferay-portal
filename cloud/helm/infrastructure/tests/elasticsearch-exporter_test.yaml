@@ -1,0 +1,56 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: Elasticsearch Exporter
+templates:
+    -   templates/elasticsearch-exporter.yaml
+tests:
+    -   asserts:
+            -   isSubset:
+                    content:
+                        app.kubernetes.io/name: elasticsearch-exporter
+                        component: search
+                        environmentId: env1
+                        projectId: proj1
+                    path: metadata.labels
+            -   isSubset:
+                    content:
+                        app.kubernetes.io/name: elasticsearch-exporter
+                        component: search
+                        environmentId: env1
+                        projectId: proj1
+                    path: spec.template.metadata.labels
+        it: Labels the exporter and its pods with the search labels
+        set:
+            environmentId: env1
+            projectId: proj1
+            search.elasticsearch.exporter.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the exporter by default
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the exporter when the engine is OpenSearch
+        set:
+            search.elasticsearch.exporter.enabled: true
+            search.engine: opensearch
+            search.supportedEngines:
+                -   elasticsearch
+                -   opensearch
+    -   asserts:
+            -   contains:
+                    content: --es.uri=http://my-release-es-es-http:9200
+                    path: spec.template.spec.containers[0].args
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace-elasticsearch
+            -   equal:
+                    path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef
+                    value:
+                        key: elastic
+                        name: my-release-es-es-elastic-user
+        it: Scrapes the Elasticsearch cluster with the elastic user credentials
+        set:
+            search.elasticsearch.exporter.enabled: true

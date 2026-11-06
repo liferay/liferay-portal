@@ -1,0 +1,72 @@
+{{- $search := .Values.search.elasticsearch -}}
+{{- if and .Values.enabled (eq (include "search.engine" .) "elasticsearch") $search.exporter.enabled -}}
+{{- $exporter := $search.exporter -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        app.kubernetes.io/component: metrics
+        app.kubernetes.io/name: elasticsearch-exporter
+        {{- include "elasticsearch.labels" . | nindent 8 }}
+    name: {{ include "elasticsearch.name" . }}-exporter
+    namespace: {{ include "elasticsearch.namespace" . }}
+spec:
+    replicas: {{ $exporter.replicaCount }}
+    selector:
+        matchLabels:
+            app.kubernetes.io/name: elasticsearch-exporter
+    template:
+        metadata:
+            labels:
+                app.kubernetes.io/component: metrics
+                app.kubernetes.io/name: elasticsearch-exporter
+                {{- include "elasticsearch.labels" . | nindent 16 }}
+        spec:
+            automountServiceAccountToken: false
+            containers:
+                -   args:
+                        -   --collector.clustersettings
+                        -   --es.all
+                        -   --es.indices
+                        -   --es.indices_settings
+                        -   --es.shards
+                        -   --es.timeout=20s
+                        -   --es.uri=http://{{ include "elasticsearch.name" . }}-es-http:9200
+                        -   --log.format=json
+                        -   --web.listen-address=:9114
+                        -   --web.telemetry-path=/metrics
+                    env:
+                        -   name: ES_PASSWORD
+                            valueFrom:
+                                secretKeyRef:
+                                    key: elastic
+                                    name: {{ include "elasticsearch.elasticUserSecretName" . }}
+                        -   name: ES_USERNAME
+                            value: elastic
+                    image: {{ printf "%s:%s" $exporter.image.repository ($exporter.image.tag | toString) }}
+                    imagePullPolicy: {{ $exporter.image.pullPolicy }}
+                    livenessProbe:
+                        {{- toYaml $exporter.livenessProbe | nindent 24 }}
+                    name: exporter
+                    ports:
+                        -   containerPort: 9114
+                            name: metrics
+                            protocol: TCP
+                    readinessProbe:
+                        {{- toYaml $exporter.readinessProbe | nindent 24 }}
+                    resources:
+                        {{- toYaml $exporter.resources | nindent 24 }}
+                    securityContext:
+                        allowPrivilegeEscalation: false
+                        capabilities:
+                            drop:
+                                -   ALL
+                        readOnlyRootFilesystem: true
+            securityContext:
+                fsGroup: 65534
+                runAsGroup: 65534
+                runAsNonRoot: true
+                runAsUser: 65534
+                seccompProfile:
+                    type: RuntimeDefault
+{{- end -}}

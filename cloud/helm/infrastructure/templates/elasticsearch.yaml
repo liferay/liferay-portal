@@ -9,6 +9,8 @@ kind: Elasticsearch
 metadata:
     annotations:
         argocd.argoproj.io/sync-wave: "-25"
+    labels:
+        {{- include "elasticsearch.labels" . | nindent 8 }}
     name: {{ include "elasticsearch.name" . }}
     namespace: {{ include "elasticsearch.namespace" . }}
 spec:
@@ -17,7 +19,11 @@ spec:
             selfSignedCertificate:
                 disabled: true
     nodeSets:
-        -   count: {{ $search.nodeCount }}
+        -   {{- with $search.config }}
+            config:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
+            count: {{ $search.nodeCount }}
             name: default
             podTemplate:
                 metadata:
@@ -27,6 +33,8 @@ spec:
                         instrumentation.opentelemetry.io/inject-nodejs: "false"
                         instrumentation.opentelemetry.io/inject-python: "false"
                         sidecar.opentelemetry.io/inject: "false"
+                    labels:
+                        {{- include "elasticsearch.labels" . | nindent 24 }}
                 spec:
                     containers:
                         -   env:
@@ -36,6 +44,10 @@ spec:
                                 {{- $search.resources | toYaml | nindent 32 }}
                             securityContext:
                                 {{- include "elasticsearch.containerSecurityContext" . | nindent 32 }}
+                            {{- with $search.extraVolumeMounts }}
+                            volumeMounts:
+                                {{- toYaml . | nindent 32 }}
+                            {{- end }}
                     initContainers:
                         -   command:
                                 -   sh
@@ -51,13 +63,16 @@ spec:
                             name: install-plugins
                             securityContext:
                                 {{- include "elasticsearch.containerSecurityContext" . | nindent 32 }}
+                        {{- with $search.extraInitContainers }}
+                        {{- toYaml . | nindent 24 }}
+                        {{- end }}
                     securityContext:
-                        fsGroup: 1000
-                        runAsGroup: 1000
-                        runAsNonRoot: true
-                        runAsUser: 1000
-                        seccompProfile:
-                            type: RuntimeDefault
+                        {{- include "elasticsearch.podSecurityContext" . | nindent 24 }}
+                    serviceAccountName: elasticsearch
+                    {{- with $search.extraVolumes }}
+                    volumes:
+                        {{- toYaml . | nindent 24 }}
+                    {{- end }}
             volumeClaimTemplates:
                 -   metadata:
                         name: elasticsearch-data
@@ -78,6 +93,7 @@ metadata:
     annotations:
         argocd.argoproj.io/sync-wave: "-25"
     labels:
+        {{- include "elasticsearch.labels" . | nindent 8 }}
         name: {{ include "elasticsearch.namespace" . }}
         pod-security.kubernetes.io/enforce: restricted
     name: {{ include "elasticsearch.namespace" . }}
