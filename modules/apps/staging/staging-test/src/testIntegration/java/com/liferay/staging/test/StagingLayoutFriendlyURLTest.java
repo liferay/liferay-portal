@@ -26,8 +26,10 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,6 +45,15 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 	@Rule
 	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Before
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_languageId = liveGroup.getDefaultLanguageId();
+
+		_locale = LocaleUtil.fromLanguageId(_languageId);
+	}
 
 	@Test
 	public void testLayoutFriendlyURL() throws Exception {
@@ -82,7 +93,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		stagingLayout = LayoutTestUtil.updateFriendlyURL(
 			stagingLayout,
 			HashMapBuilder.put(
-				LocaleUtil.US, testFriendlyURL
+				_locale, testFriendlyURL
 			).build());
 
 		Layout stagingLayout2 = LayoutTestUtil.addTypePortletLayout(
@@ -95,7 +106,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		stagingLayout = LayoutTestUtil.updateFriendlyURL(
 			stagingLayout,
 			HashMapBuilder.put(
-				LocaleUtil.US, originalFriendlyURL
+				_locale, originalFriendlyURL
 			).build());
 
 		long layoutClassNameId = _layoutFriendlyURLEntryHelper.getClassNameId(
@@ -115,7 +126,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		stagingLayout2 = LayoutTestUtil.updateFriendlyURL(
 			stagingLayout2,
 			HashMapBuilder.put(
-				LocaleUtil.US, testFriendlyURL
+				_locale, testFriendlyURL
 			).build());
 
 		_assertPublishLayoutsWithLayoutFriendlyURLsException(stagingLayout2);
@@ -125,8 +136,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 			stagingLayout2.isPrivateLayout());
 
 		Assert.assertEquals(
-			originalLayout2FriendlyURL,
-			liveLayout2.getFriendlyURL(LocaleUtil.US));
+			originalLayout2FriendlyURL, liveLayout2.getFriendlyURL(_locale));
 
 		_assertPublishLayoutsWithLayoutFriendlyURLsException(stagingLayout2);
 
@@ -144,7 +154,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		publishLayouts(new long[] {stagingLayout.getLayoutId()});
 
 		Assert.assertEquals(
-			originalFriendlyURL, liveLayout.getFriendlyURL(LocaleUtil.US));
+			originalFriendlyURL, liveLayout.getFriendlyURL(_locale));
 
 		FriendlyURLEntryLocalization liveFriendlyURLEntryLocalization1 =
 			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
@@ -160,16 +170,16 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		publishLayouts();
 
 		Assert.assertEquals(
-			originalFriendlyURL, liveLayout.getFriendlyURL(LocaleUtil.US));
+			originalFriendlyURL, liveLayout.getFriendlyURL(_locale));
 		Assert.assertEquals(
-			testFriendlyURL, liveLayout2.getFriendlyURL(LocaleUtil.US));
+			testFriendlyURL, liveLayout2.getFriendlyURL(_locale));
 
 		FriendlyURLEntryLocalization liveFriendlyURLEntryLocalization2 =
 			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
 				liveGroup.getGroupId(), layoutClassNameId,
 				FriendlyURLEntryConstants.
 					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-				"en_US", originalFriendlyURL);
+				_languageId, originalFriendlyURL);
 
 		Assert.assertEquals(
 			liveLayout.getPlid(),
@@ -180,7 +190,7 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 				liveGroup.getGroupId(), layoutClassNameId,
 				FriendlyURLEntryConstants.
 					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-				"en_US", testFriendlyURL);
+				_languageId, testFriendlyURL);
 
 		Assert.assertEquals(
 			liveLayout2.getPlid(),
@@ -193,10 +203,14 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
+	private String _languageId;
+
 	@Inject
 	private LayoutFriendlyURLEntryHelper _layoutFriendlyURLEntryHelper;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	private Locale _locale;
 
 }
