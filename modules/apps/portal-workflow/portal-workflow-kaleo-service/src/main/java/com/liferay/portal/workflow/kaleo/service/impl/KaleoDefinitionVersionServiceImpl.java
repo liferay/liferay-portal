@@ -41,7 +41,7 @@ public class KaleoDefinitionVersionServiceImpl
 	public void deleteKaleoDefinitionVersions(long companyId, String name)
 		throws PortalException {
 
-		_checkPermissions(ActionKeys.DELETE);
+		_checkPermissions(ActionKeys.DELETE, companyId);
 
 		_kaleoDefinitionVersionLocalService.deleteKaleoDefinitionVersions(
 			companyId, name);
@@ -71,12 +71,21 @@ public class KaleoDefinitionVersionServiceImpl
 			companyId, name);
 	}
 
-	private void _checkPermissions(String actionId) throws PrincipalException {
+	private void _checkPermissions(String actionId, long companyId)
+		throws PrincipalException {
+
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
 		if (permissionChecker == null) {
 			return;
+		}
+
+		if (!permissionChecker.isOmniadmin() &&
+			(permissionChecker.getCompanyId() != companyId)) {
+
+			throw new PrincipalException(
+				"User is not an omniadmin and does not belong to the company");
 		}
 
 		_portletResourcePermission.check(
