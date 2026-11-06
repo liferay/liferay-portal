@@ -32,6 +32,7 @@ import com.liferay.gradle.plugins.workspace.internal.util.JsonNodeUtil;
 import com.liferay.gradle.plugins.workspace.internal.util.StringUtil;
 import com.liferay.gradle.plugins.workspace.internal.util.copy.HashifyAction;
 import com.liferay.gradle.plugins.workspace.task.CreateClientExtensionConfigTask;
+import com.liferay.gradle.plugins.workspace.task.PublishClientExtensionTask;
 import com.liferay.gradle.plugins.workspace.task.WriteLanguageBatchEngineDataTask;
 import com.liferay.gradle.util.ArrayUtil;
 import com.liferay.gradle.util.Validator;
@@ -77,6 +78,7 @@ import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.initialization.Settings;
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.logging.Logger;
@@ -85,7 +87,9 @@ import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.PluginManager;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.provider.SetProperty;
+import org.gradle.api.publish.plugins.PublishingPlugin;
 import org.gradle.api.tasks.Copy;
 import org.gradle.api.tasks.Delete;
 import org.gradle.api.tasks.JavaExec;
@@ -115,6 +119,9 @@ public class ClientExtensionProjectConfigurator
 
 	public static final String CREATE_CLIENT_EXTENSION_CONFIG_TASK_NAME =
 		"createClientExtensionConfig";
+
+	public static final String PUBLISH_CLIENT_EXTENSION_TASK_NAME =
+		"publishClientExtension";
 
 	public static final String VALIDATE_CLIENT_EXTENSION_IDS_TASK_NAME =
 		"validateClientExtensionIds";
@@ -314,6 +321,9 @@ public class ClientExtensionProjectConfigurator
 			project, assembleClientExtensionTaskProvider,
 			createClientExtensionConfigTaskProvider, workspaceExtension);
 
+		_addPublishClientExtensionTask(
+			project, createClientExtensionConfigTaskProvider);
+
 		_configureLiferayRoutes(project, workspaceExtension);
 
 		if (_isLanguageProject(project)) {
@@ -449,6 +459,7 @@ public class ClientExtensionProjectConfigurator
 		SetProperty<String> setProperty = dockerBuildImage.getImages();
 
 		setProperty.add(dockerImageId);
+		setProperty.addAll(_getRegistryImageProvider(project));
 
 		Property<String> property = dockerRemoveImage.getImageId();
 
@@ -474,6 +485,85 @@ public class ClientExtensionProjectConfigurator
 			project, LifecycleBasePlugin.CLEAN_TASK_NAME);
 
 		cleanTask.dependsOn(dockerRemoveImage);
+	}
+
+	private void _addPublishClientExtensionTask(
+		Project project,
+		TaskProvider<CreateClientExtensionConfigTask>
+			createClientExtensionConfigTaskProvider) {
+
+		TaskProvider<PublishClientExtensionTask>
+			publishClientExtensionTaskProvider = GradleUtil.addTaskProvider(
+				project, PUBLISH_CLIENT_EXTENSION_TASK_NAME,
+				PublishClientExtensionTask.class);
+
+		publishClientExtensionTaskProvider.configure(
+			publishClientExtensionTask -> {
+				publishClientExtensionTask.dependsOn(
+					RootProjectConfigurator.BUILD_DOCKER_IMAGE_TASK_NAME);
+				publishClientExtensionTask.setDescription(
+					"Pushes the client extension's Docker image and writes " +
+						"the liferay-client-extension chart values that " +
+							"deploy it.");
+				publishClientExtensionTask.setGroup(
+					PublishingPlugin.PUBLISH_TASK_GROUP);
+
+				Property<String> chartProperty =
+					publishClientExtensionTask.getChart();
+
+				chartProperty.convention(
+					_getGradlePropertyProvider(project, "chart", _CHART_URL));
+
+				Property<String> chartVersionProperty =
+					publishClientExtensionTask.getChartVersion();
+
+				chartVersionProperty.convention(
+					_getGradlePropertyProvider(
+						project, "chart.version", _CHART_VERSION));
+
+				RegularFileProperty clientExtensionConfigFileProperty =
+					publishClientExtensionTask.getClientExtensionConfigFile();
+
+				clientExtensionConfigFileProperty.fileProvider(
+					createClientExtensionConfigTaskProvider.map(
+						CreateClientExtensionConfigTask::
+							getClientExtensionConfigFile));
+
+				RegularFileProperty dockerfileProperty =
+					publishClientExtensionTask.getDockerfile();
+
+				dockerfileProperty.fileProvider(
+					createClientExtensionConfigTaskProvider.map(
+						CreateClientExtensionConfigTask::getDockerFile));
+
+				Property<String> helmProperty =
+					publishClientExtensionTask.getHelm();
+
+				helmProperty.convention(
+					_getGradlePropertyProvider(project, "helm", "helm"));
+
+				SetProperty<String> imagesSetProperty =
+					publishClientExtensionTask.getImages();
+
+				imagesSetProperty.addAll(_getRegistryImageProvider(project));
+
+				RegularFileProperty lcpJsonFileProperty =
+					publishClientExtensionTask.getLcpJsonFile();
+
+				lcpJsonFileProperty.fileProvider(
+					createClientExtensionConfigTaskProvider.map(
+						CreateClientExtensionConfigTask::getLcpJsonFile));
+
+				Property<String> registryProperty =
+					publishClientExtensionTask.getRegistry();
+
+				registryProperty.convention(_getRegistryProvider(project));
+
+				Property<String> versionProperty =
+					publishClientExtensionTask.getVersion();
+
+				versionProperty.convention(_getVersionProvider(project));
+			});
 	}
 
 	private TaskProvider<Zip> _baseConfigureClientExtensionProject(
@@ -1191,6 +1281,17 @@ public class ClientExtensionProjectConfigurator
 		return project.getName() + ":latest";
 	}
 
+	private Provider<String> _getGradlePropertyProvider(
+		Project project, String name, String defaultValue) {
+
+		ProviderFactory providerFactory = project.getProviders();
+
+		Provider<String> provider = providerFactory.gradleProperty(
+			_PROPERTY_PREFIX + name);
+
+		return provider.orElse(defaultValue);
+	}
+
 	private JsonNode _getJsonNode(File file) {
 		if (!file.exists()) {
 			return _yamlObjectMapper.createObjectNode();
@@ -1224,6 +1325,44 @@ public class ClientExtensionProjectConfigurator
 		}
 
 		return (Map<String, Object>)value;
+	}
+
+	private Provider<List<String>> _getRegistryImageProvider(Project project) {
+		Provider<String> registryProvider = _getRegistryProvider(project);
+
+		Provider<String> imageProvider = registryProvider.zip(
+			_getVersionProvider(project),
+			(registry, version) -> StringUtil.concat(
+				registry, "/", project.getName(), ":", version));
+
+		Provider<List<String>> imagesProvider = imageProvider.map(
+			Collections::singletonList);
+
+		return imagesProvider.orElse(Collections.emptyList());
+	}
+
+	private Provider<String> _getRegistryProvider(Project project) {
+		ProviderFactory providerFactory = project.getProviders();
+
+		return providerFactory.gradleProperty(_PROPERTY_PREFIX + "registry");
+	}
+
+	private Provider<String> _getVersionProvider(Project project) {
+		ProviderFactory providerFactory = project.getProviders();
+
+		Provider<String> versionProvider = providerFactory.provider(
+			() -> {
+				String version = String.valueOf(project.getVersion());
+
+				if (version.equals(Project.DEFAULT_VERSION)) {
+					return null;
+				}
+
+				return version;
+			});
+
+		return versionProvider.orElse(
+			providerFactory.gradleProperty(_PROPERTY_PREFIX + "version"));
 	}
 
 	private boolean _isActiveProfile(Project project, String profileName) {
@@ -1443,6 +1582,12 @@ public class ClientExtensionProjectConfigurator
 				StringUtil.join(StringUtil.COMMA_AND_SPACE, validValues)));
 	}
 
+	private static final String _CHART_URL =
+		"oci://us-central1-docker.pkg.dev/external-assets-prd" +
+			"/liferay-helm-chart/liferay-client-extension";
+
+	private static final String _CHART_VERSION = "0.1.1";
+
 	private static final String _CLIENT_EXTENSION_YAML =
 		"client-extension.yaml";
 
@@ -1452,6 +1597,9 @@ public class ClientExtensionProjectConfigurator
 		"LIFERAY_ROUTES_CLIENT_EXTENSION";
 
 	private static final String _ENV_LIFERAY_ROUTES_DXP = "LIFERAY_ROUTES_DXP";
+
+	private static final String _PROPERTY_PREFIX =
+		WorkspacePlugin.PROPERTY_PREFIX + "client.extension.";
 
 	private static final Pattern _overrideClientExtensionYamlPattern =
 		Pattern.compile("^client-extension\\.([a-z]+)\\.yaml$");

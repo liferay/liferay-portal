@@ -48,7 +48,7 @@ public class ClientExtensionValuesTest {
 	}
 
 	@Test
-	public void testDeriveWhenClientExtensionIsBatch() {
+	public void testDeriveWhenIsBatch() {
 		Map<String, Object> values = _derive(
 			Map.of(
 				"com.liferay.oauth2.provider.configuration." +
@@ -68,7 +68,7 @@ public class ClientExtensionValuesTest {
 	}
 
 	@Test
-	public void testDeriveWhenClientExtensionIsConfigurationOnly() {
+	public void testDeriveWhenIsConfigurationOnly() {
 		Map<String, Object> values = _derive(
 			Map.of(), "liferay/noop", Map.of());
 
@@ -82,7 +82,7 @@ public class ClientExtensionValuesTest {
 	}
 
 	@Test
-	public void testDeriveWhenClientExtensionIsFrontend() {
+	public void testDeriveWhenIsFrontend() {
 		for (String baseImage :
 				new String[] {
 					"liferay/caddy:latest",
