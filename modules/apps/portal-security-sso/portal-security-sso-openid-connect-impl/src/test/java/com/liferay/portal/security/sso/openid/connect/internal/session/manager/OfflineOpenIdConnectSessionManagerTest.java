@@ -106,30 +106,29 @@ public class OfflineOpenIdConnectSessionManagerTest {
 			expiringOpenIdConnectSession
 		);
 
-		OpenIdConnectSession recentOpenIdConnectSession =
-			_createOpenIdConnectSession(
-				authServerWellKnownURI, clientId, companyId,
-				RandomTestUtil.randomString());
+		OpenIdConnectSession openIdConnectSession = _createOpenIdConnectSession(
+			authServerWellKnownURI, clientId, companyId,
+			RandomTestUtil.randomString());
 
 		Mockito.when(
-			recentOpenIdConnectSession.getAccessTokenExpirationDate()
+			openIdConnectSession.getAccessTokenExpirationDate()
 		).thenReturn(
 			new Date()
 		);
 
 		Mockito.when(
-			recentOpenIdConnectSession.getModifiedDate()
+			openIdConnectSession.getModifiedDate()
 		).thenReturn(
 			new Date()
 		);
 
-		long recentOpenIdConnectSessionId = RandomTestUtil.randomLong();
+		long openIdConnectSessionId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			openIdConnectSessionLocalService.fetchOpenIdConnectSession(
-				recentOpenIdConnectSessionId)
+				openIdConnectSessionId)
 		).thenReturn(
-			recentOpenIdConnectSession
+			openIdConnectSession
 		);
 
 		OpenIdConnectSession refreshedOpenIdConnectSession =
@@ -179,8 +178,7 @@ public class OfflineOpenIdConnectSessionManagerTest {
 				_createMessage(RandomTestUtil.randomLong()));
 			messageListener.receive(
 				_createMessage(expiringOpenIdConnectSessionId));
-			messageListener.receive(
-				_createMessage(recentOpenIdConnectSessionId));
+			messageListener.receive(_createMessage(openIdConnectSessionId));
 			messageListener.receive(
 				_createMessage(refreshedOpenIdConnectSessionId));
 		}
@@ -194,7 +192,7 @@ public class OfflineOpenIdConnectSessionManagerTest {
 		Mockito.verify(
 			openIdConnectSessionLocalService, Mockito.never()
 		).updateOpenIdConnectSession(
-			recentOpenIdConnectSession
+			openIdConnectSession
 		);
 
 		Mockito.verify(
