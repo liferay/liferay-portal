@@ -29,20 +29,16 @@ public class CachingStrategyTest {
 					CachingStrategy.USE_ONE_HASH_PER_FILE));
 		}
 
-		_testFromValueWhenValueIsInvalid();
+		_testFromValueWhenValueIsInvalid(RandomTestUtil.randomString());
+		_testFromValueWhenValueIsInvalid(StringPool.BLANK);
+		_testFromValueWhenValueIsInvalid(null);
 	}
 
-	private void _testFromValueWhenValueIsInvalid() {
-		for (String value :
-				new String[] {
-					null, StringPool.BLANK, RandomTestUtil.randomString()
-				}) {
-
-			Assert.assertEquals(
-				CachingStrategy.DO_NOT_USE_HASHES,
-				CachingStrategy.fromValue(
-					value, CachingStrategy.DO_NOT_USE_HASHES));
-		}
+	private void _testFromValueWhenValueIsInvalid(String value) {
+		Assert.assertEquals(
+			CachingStrategy.DO_NOT_USE_HASHES,
+			CachingStrategy.fromValue(
+				value, CachingStrategy.DO_NOT_USE_HASHES));
 	}
 
 }
