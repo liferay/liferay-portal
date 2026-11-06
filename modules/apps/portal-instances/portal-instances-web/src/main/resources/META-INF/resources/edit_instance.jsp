@@ -12,7 +12,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 Company selCompany = (Company)request.getAttribute(WebKeys.SEL_COMPANY);
 
-long companyId = ParamUtil.getLong(request, "companyId", GetterUtil.get(selCompany, Company::getCompanyId, 0L));
+long companyId = ParamUtil.getLong(request, "companyId", selCompany.getCompanyId());
 
 VirtualHost virtualHost = VirtualHostLocalServiceUtil.fetchCompanyDefaultVirtualHost(companyId);
 
