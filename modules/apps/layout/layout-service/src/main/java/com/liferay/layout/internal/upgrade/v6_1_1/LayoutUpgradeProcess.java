@@ -38,6 +38,9 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
+		if (!_hasLayoutSetPrototypeLinks()) {
+			return;
+		}
 
 		// Order is important.
 
@@ -176,6 +179,17 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 		}
 
 		return layoutStructureItemIds;
+	}
+
+	private boolean _hasLayoutSetPrototypeLinks() throws Exception {
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				"select 1 from LayoutSet where layoutSetPrototypeUuid is not " +
+					"null and layoutSetPrototypeUuid != ''");
+
+			ResultSet resultSet = preparedStatement.executeQuery()) {
+
+			return resultSet.next();
+		}
 	}
 
 	private void _upgradeFragmentEntryLinks(boolean privateLayout)

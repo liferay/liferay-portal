@@ -307,6 +307,30 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 			true);
 	}
 
+	@Test
+	@TestInfo("LPD-108617")
+	public void testUpgradeWithoutLayoutSetPrototypeLinks() throws Exception {
+		Layout linkedParentLayout = _getLinkedLayout(
+			_group, _parentLayout, false);
+
+		_updateLayoutSetPrototypeLayoutERC(
+			linkedParentLayout, _childLayout.getExternalReferenceCode());
+
+		_executeUpdate(
+			"update LayoutSet set layoutSetPrototypeUuid = null where " +
+				"groupId = ?",
+			_group.getGroupId());
+
+		runUpgrade();
+
+		linkedParentLayout = _layoutLocalService.getLayout(
+			linkedParentLayout.getPlid());
+
+		Assert.assertEquals(
+			_childLayout.getExternalReferenceCode(),
+			linkedParentLayout.getLayoutSetPrototypeLayoutERC());
+	}
+
 	@Override
 	protected CTModel<?> addCTModel() throws Exception {
 		_resetExternalReferenceCodes(_group);
