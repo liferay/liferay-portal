@@ -1086,6 +1086,23 @@ public class LayoutsImporterTest {
 
 		Assert.assertEquals(
 			portletPreferences.toString(), 0, portletPreferences.size());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
+				_group1.getGroupId(),
+				LayoutPageTemplateConstants.
+					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+				"Embedded Widgets Master Page",
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
+
+		portletPreferences =
+			_portletPreferencesLocalService.getPortletPreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT,
+				layoutPageTemplateEntry.getPlid());
+
+		Assert.assertEquals(
+			portletPreferences.toString(), 2, portletPreferences.size());
 	}
 
 	@Test
