@@ -10,11 +10,12 @@ import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.change.tracking.spi.listener.CTEventListener;
-import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.Portal;
 
-import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -27,6 +28,8 @@ public class BlogsEntryCTEventListener implements CTEventListener {
 
 	@Override
 	public void onAfterPublish(long ctCollectionId) {
+		Pattern pattern = _getPattern(ctCollectionId);
+
 		for (CTEntry ctEntry :
 				_ctEntryLocalService.getCTEntries(
 					ctCollectionId,
@@ -35,70 +38,33 @@ public class BlogsEntryCTEventListener implements CTEventListener {
 			BlogsEntry blogsEntry = _blogsEntryLocalService.fetchBlogsEntry(
 				ctEntry.getModelClassPK());
 
-			if (blogsEntry == null) {
+			if ((blogsEntry == null) || (blogsEntry.getContent() == null)) {
 				continue;
 			}
 
-			String content = _removePreviewCTCollectionId(
-				blogsEntry.getContent(), ctCollectionId);
+			Matcher matcher = pattern.matcher(blogsEntry.getContent());
 
-			if (Objects.equals(content, blogsEntry.getContent())) {
+			String content = matcher.replaceAll(StringPool.BLANK);
+
+			if (content.equals(blogsEntry.getContent())) {
 				continue;
 			}
 
+			blogsEntry.setModifiedDate(blogsEntry.getModifiedDate());
 			blogsEntry.setContent(content);
 
 			_blogsEntryLocalService.updateBlogsEntry(blogsEntry);
 		}
 	}
 
-	private String _removePreviewCTCollectionId(
-		String content, long ctCollectionId) {
+	private Pattern _getPattern(long ctCollectionId) {
+		String parameter =
+			"previewCTCollectionId=" + ctCollectionId + "(?!\\d)";
 
-		if (content == null) {
-			return null;
-		}
-
-		String parameter = "previewCTCollectionId=" + ctCollectionId;
-
-		int index = content.indexOf(parameter);
-
-		while (index >= 0) {
-			int end = index + parameter.length();
-
-			if ((end < content.length()) &&
-				Character.isDigit(content.charAt(end))) {
-
-				index = content.indexOf(parameter, end);
-
-				continue;
-			}
-
-			if (content.startsWith(StringPool.AMPERSAND_ENCODED, end)) {
-				end += StringPool.AMPERSAND_ENCODED.length();
-			}
-			else if (content.startsWith(StringPool.AMPERSAND, end)) {
-				end++;
-			}
-			else if (content.startsWith(
-						StringPool.AMPERSAND_ENCODED,
-						index - StringPool.AMPERSAND_ENCODED.length())) {
-
-				index -= StringPool.AMPERSAND_ENCODED.length();
-			}
-			else if ((index > 0) &&
-					 ((content.charAt(index - 1) == CharPool.AMPERSAND) ||
-					  (content.charAt(index - 1) == CharPool.QUESTION))) {
-
-				index--;
-			}
-
-			content = content.substring(0, index) + content.substring(end);
-
-			index = content.indexOf(parameter, index);
-		}
-
-		return content;
+		return Pattern.compile(
+			StringBundler.concat(
+				"(?<=\\?|&amp;)", parameter, "&amp;|(?:\\?|&amp;)", parameter,
+				"(?!&amp;)"));
 	}
 
 	@Reference
