@@ -177,7 +177,13 @@ export async function editCriteriaConjunction({
 }
 
 export async function editSegment(page: Page) {
-	await page.getByRole('link', {name: 'Edit Segment'}).click();
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.getByRole('menuitem', {name: 'Edit Segment'}),
+		trigger: page
+			.locator('.page-actions-toolbar')
+			.getByRole('button', {name: 'Menu'}),
+	});
 
 	await expect(
 		page.getByRole('heading', {level: 1, name: 'Edit Segment'})
