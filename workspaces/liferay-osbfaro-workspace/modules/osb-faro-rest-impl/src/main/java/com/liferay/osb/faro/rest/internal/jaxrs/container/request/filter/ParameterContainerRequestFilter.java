@@ -5,6 +5,7 @@
 
 package com.liferay.osb.faro.rest.internal.jaxrs.container.request.filter;
 
+import com.liferay.osb.faro.rest.internal.jaxrs.util.ProblemUtil;
 import com.liferay.osb.faro.rest.internal.resource.v1_0.Interval;
 import com.liferay.osb.faro.rest.internal.resource.v1_0.TimeRange;
 import com.liferay.petra.string.CharPool;
@@ -15,7 +16,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
 import jakarta.annotation.Priority;
 
@@ -25,7 +25,6 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -34,6 +33,7 @@ import java.lang.reflect.Method;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -66,13 +66,9 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 		}
 		catch (BadRequestException badRequestException) {
 			containerRequestContext.abortWith(
-				Response.status(
-					Response.Status.BAD_REQUEST
-				).entity(
-					new Problem(badRequestException)
-				).type(
-					MediaType.APPLICATION_JSON
-				).build());
+				ProblemUtil.toResponse(
+					Response.Status.BAD_REQUEST,
+					badRequestException.getMessage()));
 		}
 	}
 
@@ -132,7 +128,7 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 
 		_validateInteger(
 			Integer.MAX_VALUE, "page", queryParameters.getFirst("page"));
-		_validateInteger(500, "pageSize", queryParameters.getFirst("pageSize"));
+		_validateInteger(100, "pageSize", queryParameters.getFirst("pageSize"));
 		_validateRange(
 			queryParameters.getFirst("rangeEnd"),
 			queryParameters.getFirst("rangeStart"));
@@ -179,11 +175,20 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 				"\"rangeEnd\" and \"rangeStart\" must be set together");
 		}
 
-		if ((rangeEndLocalDate != null) &&
-			rangeStartLocalDate.isAfter(rangeEndLocalDate)) {
+		if (rangeEndLocalDate == null) {
+			return;
+		}
 
+		if (rangeStartLocalDate.isAfter(rangeEndLocalDate)) {
 			throw new BadRequestException(
 				"\"rangeStart\" must not be after \"rangeEnd\"");
+		}
+
+		if (ChronoUnit.DAYS.between(rangeStartLocalDate, rangeEndLocalDate) >=
+				_DATE_RANGE_LIMIT) {
+
+			throw new BadRequestException(
+				"Date range must be at most " + _DATE_RANGE_LIMIT + " days");
 		}
 	}
 
@@ -250,6 +255,8 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 					StringUtil.merge(validValues, StringPool.COMMA_AND_SPACE)));
 		}
 	}
+
+	private static final int _DATE_RANGE_LIMIT = 180;
 
 	private static final Map<String, String[]> _sortableFieldNames =
 		HashMapBuilder.put(
