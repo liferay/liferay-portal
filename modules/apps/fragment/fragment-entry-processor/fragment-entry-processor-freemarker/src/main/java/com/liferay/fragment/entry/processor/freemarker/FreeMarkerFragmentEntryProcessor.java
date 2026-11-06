@@ -5,6 +5,7 @@
 
 package com.liferay.fragment.entry.processor.freemarker;
 
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.entry.processor.freemarker.internal.configuration.FreeMarkerFragmentEntryProcessorConfiguration;
 import com.liferay.fragment.entry.processor.freemarker.internal.template.DummyRESTClient;
 import com.liferay.fragment.exception.FragmentEntryContentException;
@@ -167,7 +168,7 @@ public class FreeMarkerFragmentEntryProcessor
 			).putAll(
 				_getContextObjects(
 					configurationJSONObject, configurationValuesJSONObject,
-					fragmentEntryProcessorContext)
+					editableValuesJSONObject, fragmentEntryProcessorContext)
 			).build());
 
 		if (fragmentEntryLink.isTypeInput()) {
@@ -219,6 +220,7 @@ public class FreeMarkerFragmentEntryProcessor
 	private Map<String, Object> _getContextObjects(
 		JSONObject configurationJSONObject,
 		JSONObject configurationValuesJSONObject,
+		JSONObject editableValuesJSONObject,
 		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
 
 		Map<String, Object> contextObjects =
@@ -233,17 +235,28 @@ public class FreeMarkerFragmentEntryProcessor
 			return contextObjects;
 		}
 
+		JSONObject freeMarkerEditableValuesJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+
 		Object infoItem = null;
 
 		for (FragmentConfigurationField fragmentConfigurationField :
 				_fragmentEntryConfigurationParser.
 					getFragmentConfigurationFields(configurationJSONObject)) {
 
-			String name = fragmentConfigurationField.getName() + "Object";
-
 			if (!StringUtil.equalsIgnoreCase(
-					fragmentConfigurationField.getType(), "itemSelector") ||
-				contextObjects.containsKey(name)) {
+					fragmentConfigurationField.getType(), "itemSelector")) {
+
+				continue;
+			}
+
+			String name = fragmentConfigurationField.getName();
+
+			if (contextObjects.containsKey(name + "Object") &&
+				(freeMarkerEditableValuesJSONObject != null) &&
+				(freeMarkerEditableValuesJSONObject.get(name) != null)) {
 
 				continue;
 			}
@@ -257,7 +270,7 @@ public class FreeMarkerFragmentEntryProcessor
 				}
 			}
 
-			contextObjects.put(name, infoItem);
+			contextObjects.put(name + "Object", infoItem);
 		}
 
 		return contextObjects;
