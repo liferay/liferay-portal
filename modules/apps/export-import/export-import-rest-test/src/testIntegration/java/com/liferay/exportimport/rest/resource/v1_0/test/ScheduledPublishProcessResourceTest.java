@@ -467,13 +467,13 @@ public class ScheduledPublishProcessResourceTest
 		_assertPostSiteScheduledPublishProcessProblem(
 			"please-enter-a-valid-cron-expression",
 			RandomTestUtil.randomString(),
-			"PublishProcessScheduleException.MustBeValid");
+			"ScheduledPublishProcessException.MustBeValid");
 		_assertPostSiteScheduledPublishProcessProblem(
 			"the-scheduled-process-will-never-run", "0 0 12 31 2 ? *",
-			"PublishProcessScheduleException.MustRunAtLeastOnce");
+			"ScheduledPublishProcessException.MustRunAtLeastOnce");
 		_assertPostSiteScheduledPublishProcessProblem(
 			"the-scheduled-process-will-never-run", "0 30 9 22 8 ? 2020",
-			"PublishProcessScheduleException.MustRunAtLeastOnce");
+			"ScheduledPublishProcessException.MustRunAtLeastOnce");
 	}
 
 	private void _testPostSiteScheduledPublishProcessWithInvalidDateRange()

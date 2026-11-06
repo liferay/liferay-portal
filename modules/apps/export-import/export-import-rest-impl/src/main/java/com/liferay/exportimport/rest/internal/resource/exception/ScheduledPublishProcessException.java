@@ -10,9 +10,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 /**
  * @author Magdalena Jedraszak
  */
-public class PublishProcessScheduleException extends PortalException {
+public class ScheduledPublishProcessException extends PortalException {
 
-	public static class MustBeValid extends PublishProcessScheduleException {
+	public static class MustBeValid extends ScheduledPublishProcessException {
 
 		public MustBeValid() {
 			super("The publication schedule is invalid");
@@ -21,7 +21,7 @@ public class PublishProcessScheduleException extends PortalException {
 	}
 
 	public static class MustRunAtLeastOnce
-		extends PublishProcessScheduleException {
+		extends ScheduledPublishProcessException {
 
 		public MustRunAtLeastOnce() {
 			super("The publication schedule never runs");
@@ -29,7 +29,7 @@ public class PublishProcessScheduleException extends PortalException {
 
 	}
 
-	private PublishProcessScheduleException(String msg) {
+	private ScheduledPublishProcessException(String msg) {
 		super(msg);
 	}
 
