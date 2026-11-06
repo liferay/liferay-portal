@@ -30,15 +30,13 @@ import WorkflowTaskRenderer from '../props_transformer/cell_renderers/WorkflowTa
 
 export default function ViewWorkflowTasks({
 	id,
-	myRolesWorkflowTasksURL,
-	myWorkflowTasksURL,
 	objectDefinitions,
+	tasksURL,
 	workflowTaskURL,
 }: {
 	id: string;
-	myRolesWorkflowTasksURL: string;
-	myWorkflowTasksURL: string;
 	objectDefinitions: any[];
+	tasksURL: string;
 	workflowTaskURL: string;
 }) {
 	const filterItems = [
@@ -338,24 +336,17 @@ export default function ViewWorkflowTasks({
 						<ClayButton
 							aria-label={sub(
 								Liferay.Language.get('open-x'),
-								`${Liferay.Language.get('my-workflow-tasks')}: ${selectedItem.label}`
+								Liferay.Language.get('tasks')
 							)}
 							borderless
 							className="btn-sm cms-btn-icon-only cms-btn-secondary ml-2"
 							displayType="secondary"
-							onClick={() =>
-								window.open(
-									selectedItem.value === 'assigned-to-me'
-										? myWorkflowTasksURL
-										: myRolesWorkflowTasksURL,
-									'_blank'
-								)
-							}
+							onClick={() => window.open(tasksURL, '_blank')}
 							title={sub(
 								Liferay.Language.get(
 									'open-x-in-full-page-view'
 								),
-								`"${selectedItem.label}"`
+								Liferay.Language.get('tasks')
 							)}
 							type="button"
 						>

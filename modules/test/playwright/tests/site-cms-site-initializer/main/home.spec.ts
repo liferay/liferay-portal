@@ -117,7 +117,7 @@ test(
 			context.waitForEvent('page'),
 			page
 				.getByRole('button', {
-					name: /Open My Workflow Tasks: Assigned to Me/i,
+					name: 'Open Tasks',
 				})
 				.click(),
 		]);

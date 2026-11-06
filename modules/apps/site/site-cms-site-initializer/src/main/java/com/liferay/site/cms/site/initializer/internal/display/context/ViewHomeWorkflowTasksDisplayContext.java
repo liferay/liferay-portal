@@ -53,19 +53,16 @@ public class ViewHomeWorkflowTasksDisplayContext {
 	}
 
 	public Map<String, Object> getReactData() throws Exception {
-		String tasksURL = PortalUtil.getLayoutFullURL(
-			LayoutLocalServiceUtil.getLayoutByFriendlyURL(
-				_themeDisplay.getScopeGroupId(), false, "/tasks"),
-			_themeDisplay);
-
 		return HashMapBuilder.<String, Object>put(
 			"id", CMSSiteInitializerFDSNames.HOME_MY_WORKFLOW_TASKS_SECTION
 		).put(
-			"myRolesWorkflowTasksURL", tasksURL
-		).put(
-			"myWorkflowTasksURL", tasksURL
-		).put(
 			"objectDefinitions", _getObjectDefinitionsJSONArray()
+		).put(
+			"tasksURL",
+			PortalUtil.getLayoutFullURL(
+				LayoutLocalServiceUtil.getLayoutByFriendlyURL(
+					_themeDisplay.getScopeGroupId(), false, "/tasks"),
+				_themeDisplay)
 		).put(
 			"workflowTaskURL",
 			PortletURLBuilder.create(
