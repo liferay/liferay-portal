@@ -61,31 +61,6 @@ public class JAXRSLifecycle {
 		_safeCloseableDCLSingleton.destroy(SafeCloseable::close);
 	}
 
-	private OSGi<?> _registerSseEventSourceFactory() {
-		return OSGi.register(
-			SseEventSourceFactory.class,
-			new SseEventSourceFactory() {
-
-				@Override
-				public SseEventSource.Builder newBuilder(WebTarget target) {
-					return new SseEventSourceBuilderImpl() {
-						{
-							target(target);
-						}
-					};
-				}
-
-				@Override
-				public SseEventSource newSource(WebTarget target) {
-					return newBuilder(
-						target
-					).build();
-				}
-
-			},
-			new Hashtable<>());
-	}
-
 	private OSGi<?> _runWhiteboard(Dictionary<String, ?> configuration) {
 		return OSGi.just(
 			Whiteboard.createWhiteboard(configuration)
@@ -101,6 +76,33 @@ public class JAXRSLifecycle {
 		ServiceRegistration<ClientBuilder> clientBuilderServiceRegistration =
 			_bundleContext.registerService(
 				ClientBuilder.class, new ClientBuilderFactory(), null);
+
+		ServiceRegistration<SseEventSourceFactory>
+			sseEventSourceFactoryServiceRegistration =
+				_bundleContext.registerService(
+					SseEventSourceFactory.class,
+					new SseEventSourceFactory() {
+
+						@Override
+						public SseEventSource.Builder newBuilder(
+							WebTarget target) {
+
+							return new SseEventSourceBuilderImpl() {
+								{
+									target(target);
+								}
+							};
+						}
+
+						@Override
+						public SseEventSource newSource(WebTarget target) {
+							return newBuilder(
+								target
+							).build();
+						}
+
+					},
+					null);
 
 		OSGi<?> runWhiteboards = OSGi.coalesce(
 			OSGi.configuration("org.apache.aries.jax.rs.whiteboard.default"),
@@ -118,12 +120,7 @@ public class JAXRSLifecycle {
 			configuration -> _runWhiteboard(configuration)
 		);
 
-		OSGiResult osgiResult = OSGi.all(
-			OSGi.ignore(_registerSseEventSourceFactory()),
-			OSGi.ignore(runWhiteboards)
-		).run(
-			_bundleContext
-		);
+		OSGiResult osgiResult = runWhiteboards.run(_bundleContext);
 
 		ServiceRegistration<?> serviceRegistration =
 			_bundleContext.registerService(
@@ -135,6 +132,8 @@ public class JAXRSLifecycle {
 			serviceRegistration.unregister();
 
 			osgiResult.close();
+
+			sseEventSourceFactoryServiceRegistration.unregister();
 
 			clientBuilderServiceRegistration.unregister();
 
