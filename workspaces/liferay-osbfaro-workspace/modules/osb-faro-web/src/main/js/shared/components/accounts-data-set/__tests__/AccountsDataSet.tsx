@@ -320,6 +320,62 @@ describe('AccountsDataSet', () => {
 		expect(industryFilter?.preloadedData).toBeUndefined();
 	});
 
+	it('should omit the campaign filter unless showCampaignFilter is set', async () => {
+		await renderAccountsDataSet(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		expect(lastFilters?.find((f) => f.id === 'campaignId')).toBeUndefined();
+	});
+
+	it('should offer the campaigns and preload the one selected', async () => {
+		await renderAccountsDataSet(
+			<AccountsDataSet
+				apiURL="fake-url"
+				campaignId="7"
+				campaignName="Spring Sale"
+				channelId="123"
+				groupId="23"
+				showCampaignFilter
+			/>
+		);
+
+		const campaignFilter = lastFilters?.find((f) => f.id === 'campaignId');
+
+		expect(campaignFilter?.apiURL).toBe(
+			'/o/faro/contacts/23/campaigns/campaign-names?channelId=123'
+		);
+		expect(campaignFilter?.preloadedData).toEqual({
+			exclude: false,
+			selectedItems: [{label: 'Spring Sale', value: '7'}],
+		});
+	});
+
+	it('should remount the data set when the campaign changes', async () => {
+		const {rerender} = await renderAccountsDataSet(
+			<AccountsDataSet
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+				showCampaignFilter
+			/>
+		);
+
+		expect(mountCount).toBe(1);
+
+		rerender(
+			<AccountsDataSet
+				apiURL="fake-url"
+				campaignId="7"
+				channelId="123"
+				groupId="23"
+				showCampaignFilter
+			/>
+		);
+
+		await waitFor(() => expect(mountCount).toBe(2));
+	});
+
 	it('should omit the lifecycleStatus filter when accountLifecycleId is not provided', async () => {
 		await renderAccountsDataSet(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />

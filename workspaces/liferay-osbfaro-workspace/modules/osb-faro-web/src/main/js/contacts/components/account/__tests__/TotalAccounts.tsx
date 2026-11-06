@@ -74,4 +74,18 @@ describe('TotalAccounts', () => {
 
 		expect(container).toMatchSnapshot();
 	});
+
+	it('should ask for the metrics of the campaign selected', () => {
+		mockMetrics();
+
+		render(<TotalAccounts campaignId="7" groupId="123" />);
+
+		const useRequest = require('shared/hooks/useRequest');
+
+		expect(useRequest.useRequest).toHaveBeenCalledWith(
+			expect.objectContaining({
+				variables: expect.objectContaining({campaignId: '7'}),
+			})
+		);
+	});
 });

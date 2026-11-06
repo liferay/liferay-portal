@@ -7,7 +7,7 @@ import {AccountTypes} from 'segment/segment-editor/dynamic/utils/constants';
 import {createOrderIOMap, NAME} from 'shared/util/pagination';
 import {Map, Set} from 'immutable';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
-import {render} from '@testing-library/react';
+import {fireEvent, render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
@@ -142,6 +142,75 @@ describe('Individuals List', () => {
 		expect(
 			getByText('Access our documentation to learn more.')
 		).toBeInTheDocument();
+	});
+
+	it('sends the selected campaign to the search API', async () => {
+
+		// @ts-ignore
+		API.individuals.search.mockReturnValue(
+			Promise.resolve({items: [], total: 0})
+		);
+
+		render(
+			<MemoryRouter>
+				<IndividualsList campaignId="7" />
+			</MemoryRouter>
+		);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		expect(API.individuals.search as jest.Mock).toHaveBeenCalledWith(
+			expect.objectContaining({campaignId: '7'})
+		);
+	});
+
+	it('renders the filtered empty state when the campaign has no individuals', async () => {
+
+		// @ts-ignore
+		API.individuals.search.mockReturnValue(
+			Promise.resolve({items: [], total: 0})
+		);
+
+		const {getByText, queryByText} = render(
+			<MemoryRouter>
+				<IndividualsList campaignId="7" onClearFilters={jest.fn()} />
+			</MemoryRouter>
+		);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		expect(getByText('No Results Found')).toBeInTheDocument();
+		expect(
+			getByText('Review your filters and try again.')
+		).toBeInTheDocument();
+		expect(getByText('Clear Filters')).toBeInTheDocument();
+		expect(
+			queryByText('No Individuals Synced from Data Sources')
+		).toBeNull();
+	});
+
+	it('clears the filters from the filtered empty state', async () => {
+		const onClearFilters = jest.fn();
+
+		// @ts-ignore
+		API.individuals.search.mockReturnValue(
+			Promise.resolve({items: [], total: 0})
+		);
+
+		const {getByText} = render(
+			<MemoryRouter>
+				<IndividualsList
+					campaignId="7"
+					onClearFilters={onClearFilters}
+				/>
+			</MemoryRouter>
+		);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		fireEvent.click(getByText('Clear Filters'));
+
+		expect(onClearFilters).toHaveBeenCalledTimes(1);
 	});
 
 	it('passes Last 30 Days as the default range key to the search API', async () => {

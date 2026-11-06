@@ -61,6 +61,44 @@ exports[`List rendering should match the snapshot 1`] = `
       />
     </header>
     <div
+      class="sub-header-root"
+    >
+      <div
+        class="row-root align-items-center d-flex justify-content-between header-container"
+      >
+        <div
+          class="dropdown"
+        >
+          <button
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-label="Filter By Campaigns"
+            class="rounded-lg text-nowrap btn btn-sm btn-secondary"
+            role="combobox"
+            type="button"
+          >
+            <svg
+              class="lexicon-icon lexicon-icon-filter inline-item inline-item-before"
+              role="presentation"
+            >
+              <use
+                href="#filter"
+              />
+            </svg>
+            All Campaigns
+            <svg
+              class="lexicon-icon lexicon-icon-caret-bottom inline-item inline-item-after"
+              role="presentation"
+            >
+              <use
+                href="#caret-bottom"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
       class="body-root page-container"
     >
       <span
