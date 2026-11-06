@@ -35,10 +35,11 @@ public class PortalRelease {
 	}
 
 	public static boolean isStandaloneBundleURL(URL bundleURL) {
-		Matcher matcher = _standaloneBundleURLPattern.matcher(
-			bundleURL.toString());
+		if (_getStandaloneBuildProfile(bundleURL.toString()) == null) {
+			return false;
+		}
 
-		return matcher.matches();
+		return true;
 	}
 
 	public PortalRelease(URL bundlesBaseURL, String portalVersion) {
@@ -281,14 +282,12 @@ public class PortalRelease {
 	}
 
 	public String getStandaloneBuildProfile() {
-		Matcher matcher = _standaloneBundleURLPattern.matcher(
-			String.valueOf(getPortalBundleTomcatURL()));
-
-		if (_standalone && matcher.matches()) {
-			return matcher.group("buildProfile");
+		if (!_standalone) {
+			return null;
 		}
 
-		return null;
+		return _getStandaloneBuildProfile(
+			String.valueOf(getPortalBundleTomcatURL()));
 	}
 
 	public boolean isStandalone() {
@@ -554,6 +553,22 @@ public class PortalRelease {
 		_portalVersion = getPortalVersion(bundleURL);
 
 		_initializeURLs();
+	}
+
+	private static String _getStandaloneBuildProfile(String bundleURLString) {
+		Matcher matcher = _standaloneBundleURLPattern.matcher(bundleURLString);
+
+		if (!matcher.matches()) {
+			return null;
+		}
+
+		String product = matcher.group("product");
+
+		if (product.equals("dxp") || product.equals("portal")) {
+			return null;
+		}
+
+		return product + "-standalone";
 	}
 
 	private static void _initalizePortalVersionsMap() {
@@ -853,8 +868,8 @@ public class PortalRelease {
 	private static final Pattern _quarterlyReleaseVersionPattern =
 		Pattern.compile(_QUARTERLY_RELEASE_VERSION_REGEX);
 	private static final Pattern _standaloneBundleURLPattern = Pattern.compile(
-		"https?://.+/liferay-[a-z]+-tomcat-.+-" +
-			"(?<buildProfile>[a-z]+-standalone)-\\d+\\.(7z|tar\\.gz|zip)");
+		"https?://.+/liferay-(?<product>[a-z]+(-[a-z]+)*)-tomcat-[^/]+-" +
+			"\\d+\\.(7z|tar\\.gz|zip)");
 	private static final Pattern _tomcatBundlePropertyPattern = Pattern.compile(
 		"portal.bundle.tomcat\\[(?<portalVersion>.+)\\]");
 	private static final Pattern _tomcatBundleURLPattern = Pattern.compile(
