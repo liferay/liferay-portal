@@ -797,6 +797,9 @@ public class StyleBookEntryLocalServiceImpl
 			styleBookEntry.setUserName(user.getFullName());
 		}
 
+		long previousPreviewFileEntryId =
+			styleBookEntry.getPreviewFileEntryId();
+
 		styleBookEntry.setFrontendTokenDefinition(frontendTokenDefinition);
 		styleBookEntry.setFrontendTokensValues(frontendTokensValues);
 		styleBookEntry.setName(name);
@@ -823,8 +826,17 @@ public class StyleBookEntryLocalServiceImpl
 			styleBookEntryLocalService.deleteDraft(draftStyleBookEntry);
 		}
 
-		return _deleteStyleBookEntryVersions(
+		styleBookEntry = _deleteStyleBookEntryVersions(
 			styleBookEntryPersistence.update(styleBookEntry, serviceContext));
+
+		if ((previousPreviewFileEntryId > 0) &&
+			(previousPreviewFileEntryId != previewFileEntryId)) {
+
+			_portletFileRepository.deletePortletFileEntry(
+				previousPreviewFileEntryId);
+		}
+
+		return styleBookEntry;
 	}
 
 	private long _copyStyleBookEntryPreviewFileEntry(
