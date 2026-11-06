@@ -7,7 +7,6 @@ package com.liferay.ai.hub.cell.internal.configuration.persistence.listener;
 
 import com.liferay.ai.hub.cell.configuration.AIHubCellConfiguration;
 import com.liferay.ai.hub.cell.internal.provisioning.AIHubCellProvisioner;
-import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
@@ -18,7 +17,6 @@ import com.liferay.portal.configuration.persistence.listener.ConfigurationModelL
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -29,8 +27,6 @@ import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalSe
 import java.util.Dictionary;
 import java.util.ResourceBundle;
 
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -50,24 +46,6 @@ public class AIHubCellConfigurationModelListener
 	@Override
 	public void onAfterSave(String pid, Dictionary<String, Object> properties) {
 		long companyId = GetterUtil.getLong(properties.get("companyId"));
-		String serviceURL = GetterUtil.getString(properties.get("serviceURL"));
-
-		if (companyId == CompanyConstants.SYSTEM) {
-			try {
-				_companyLocalService.forEachCompany(
-					company -> {
-						if (!_hasCompanyConfiguration(company)) {
-							_aiHubCellProvisioner.provision(
-								company.getCompanyId(), serviceURL);
-						}
-					});
-			}
-			catch (Exception exception) {
-				_log.error(exception);
-			}
-
-			return;
-		}
 
 		Company company = _companyLocalService.fetchCompany(companyId);
 
@@ -75,7 +53,8 @@ public class AIHubCellConfigurationModelListener
 			return;
 		}
 
-		_aiHubCellProvisioner.provision(companyId, serviceURL);
+		_aiHubCellProvisioner.provision(
+			companyId, GetterUtil.getString(properties.get("serviceURL")));
 	}
 
 	@Override
@@ -126,19 +105,6 @@ public class AIHubCellConfigurationModelListener
 			getClass());
 	}
 
-	private boolean _hasCompanyConfiguration(Company company) throws Exception {
-		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
-				company.getCompanyId(), AIHubCellConfiguration.class.getName(),
-				company.getWebId()));
-
-		if (configurations != null) {
-			return true;
-		}
-
-		return false;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		AIHubCellConfigurationModelListener.class);
 
@@ -146,9 +112,6 @@ public class AIHubCellConfigurationModelListener
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
-
-	@Reference
-	private ConfigurationAdmin _configurationAdmin;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;

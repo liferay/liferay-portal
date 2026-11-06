@@ -33,16 +33,11 @@ public class AIHubCellFeatureFlagListener implements FeatureFlagListener {
 	public void onValue(
 		long companyId, String featureFlagKey, boolean enabled) {
 
-		if (companyId == CompanyConstants.SYSTEM) {
+		if ((companyId == CompanyConstants.SYSTEM) || !enabled) {
 			return;
 		}
 
-		if (enabled) {
-			_aiHubCellProvisioner.provision(companyId);
-		}
-		else {
-			_aiHubCellProvisioner.deprovision(companyId);
-		}
+		_aiHubCellProvisioner.provision(companyId);
 	}
 
 	@Activate

@@ -68,39 +68,6 @@ public class AIHubCellProvisioner {
 		_userLocalService = userLocalService;
 	}
 
-	public void deprovision(long companyId) {
-		Runnable runnable = _runnables.remove(companyId);
-
-		if (runnable != null) {
-			_scopeLocator.stopWaitingForScopeAliases(runnable);
-		}
-
-		try {
-			OAuth2Application oAuth2Application =
-				_oAuth2ApplicationLocalService.
-					fetchOAuth2ApplicationByExternalReferenceCode(
-						_OAUTH2_APPLICATION_EXTERNAL_REFERENCE_CODE, companyId);
-
-			if (oAuth2Application != null) {
-				_oAuth2ApplicationLocalService.deleteOAuth2Application(
-					oAuth2Application.getOAuth2ApplicationId());
-			}
-
-			SAPEntry sapEntry = _sapEntryLocalService.fetchSAPEntry(
-				companyId, _SAP_ENTRY_NAME);
-
-			if (sapEntry != null) {
-				_sapEntryLocalService.deleteSAPEntry(sapEntry);
-			}
-		}
-		catch (PortalException portalException) {
-			_log.error(
-				"Unable to delete OAuth2 application and service access " +
-					"policy entry for company " + companyId,
-				portalException);
-		}
-	}
-
 	public void provision(long companyId) {
 		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-62272")) {
 			return;
