@@ -174,6 +174,46 @@ describe('SelectAssetDisplayPage', () => {
 			expect(getCmd()).toBe('update');
 		});
 
+		it('previews the saved version when only the editing language changes', async () => {
+			await renderComponentInForm();
+
+			const form = document.getElementById(
+				`${DEFAULT_PROPS.portletNamespace}fm1`
+			);
+
+			form.insertAdjacentHTML(
+				'beforeend',
+				`
+				<input name="${DEFAULT_PROPS.portletNamespace}availableLocales" value="en_US" />
+				<input name="${DEFAULT_PROPS.portletNamespace}ddm$$content$$en_US_edited" value="true" />
+				<input class="language-value" name="${DEFAULT_PROPS.portletNamespace}friendlyURL" value="title" />
+				<input name="${DEFAULT_PROPS.portletNamespace}friendlyURL_en_US" value="title" />
+			`
+			);
+
+			await act(() => Promise.resolve());
+
+			form.elements[
+				`${DEFAULT_PROPS.portletNamespace}availableLocales`
+			].value = 'en_US,ca_ES';
+			form.elements[
+				`${DEFAULT_PROPS.portletNamespace}friendlyURL`
+			].value = '';
+
+			form.elements[
+				`${DEFAULT_PROPS.portletNamespace}ddm$$content$$en_US_edited`
+			].name =
+				`${DEFAULT_PROPS.portletNamespace}ddm$$content$$ca_ES_edited`;
+
+			await userEvent.click(
+				screen.getByRole('button', {name: /preview/})
+			);
+
+			await waitFor(() => expect(openModal).toHaveBeenCalled());
+
+			expect(getCmd()).toBe('preview');
+		});
+
 		it('saves a draft before previewing edits made while the display page type was none', async () => {
 			await renderComponentInForm();
 
