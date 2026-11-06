@@ -3678,6 +3678,12 @@ jdbc.read.password=password</echo>
 					<then>
 						<prepare-database-jndi />
 
+						<local name="database.read.url" />
+
+						<condition else="jdbc:mysql://${database.host}/lportal?useUnicode=true&amp;amp;characterEncoding=UTF-8&amp;amp;useFastDateParsing=false&amp;amp;serverTimezone=GMT&amp;amp;dontTrackOpenResources=true&amp;amp;holdResultsOpenOverStatementClose=true" property="database.read.url" value="${database.url}">
+							<equals arg1="${database.type}" arg2="postgresql" />
+						</condition>
+
 						<replace
 							file="${app.server.dir}/conf/context.xml"
 						>
@@ -3707,7 +3713,7 @@ jdbc.read.password=password</echo>
 											name="jdbc/LiferayReadPool"
 											password="password"
 											type="javax.sql.DataSource"
-											url="jdbc:mysql://${database.host}/lportal?useUnicode=true&amp;characterEncoding=UTF-8&amp;useFastDateParsing=false&amp;serverTimezone=GMT&amp;dontTrackOpenResources=true&amp;holdResultsOpenOverStatementClose=true"
+											url="${database.read.url}"
 											username="read_only_user"
 										/>
 								]]>
@@ -10081,13 +10087,33 @@ create database lportal character set utf8mb4;</echo>
 				<if>
 					<isset property="configure.read.write.database" />
 					<then>
-						<echo append="true" file="create.sql">
+						<if>
+							<equals arg1="${database.type}" arg2="postgresql" />
+							<then>
+								<echo append="true" file="create.sql">
+
+\c lportal;
+
+do $do$ begin if not exists (select from pg_roles where rolname = 'read_only_user') then create role read_only_user login password 'password'; end if; end $do$;
+
+grant connect on database lportal to read_only_user;
+
+grant usage on schema public to read_only_user;
+
+grant select on all tables in schema public to read_only_user;
+
+alter default privileges in schema public grant select on tables to read_only_user;</echo>
+							</then>
+							<else>
+								<echo append="true" file="create.sql">
 
 create user 'read_only_user'@'%' identified BY 'password';
 
 grant select ON *.* TO 'read_only_user'@'%';
 
 flush privileges;</echo>
+							</else>
+						</if>
 					</then>
 				</if>
 
