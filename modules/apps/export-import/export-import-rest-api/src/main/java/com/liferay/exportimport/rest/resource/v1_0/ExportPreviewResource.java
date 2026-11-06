@@ -58,9 +58,6 @@ public interface ExportPreviewResource {
 			String sitePageExternalReferenceCode, Date startDate)
 		throws Exception;
 
-	public ExportPreview getSiteTemplateExportPreview(Long siteTemplateId)
-		throws Exception;
-
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
 	}
@@ -149,4 +146,4 @@ public interface ExportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-841118125
+// LIFERAY-REST-BUILDER-HASH:-1240444858

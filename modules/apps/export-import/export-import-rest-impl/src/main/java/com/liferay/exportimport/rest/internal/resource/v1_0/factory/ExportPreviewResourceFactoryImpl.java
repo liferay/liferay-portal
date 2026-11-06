@@ -5,7 +5,6 @@
 
 package com.liferay.exportimport.rest.internal.resource.v1_0.factory;
 
-import com.liferay.exportimport.rest.internal.resource.v1_0.BaseExportPreviewResourceImpl;
 import com.liferay.exportimport.rest.internal.security.permission.LiberalPermissionChecker;
 import com.liferay.exportimport.rest.resource.v1_0.ExportPreviewResource;
 import com.liferay.portal.kernel.model.Company;
@@ -28,14 +27,12 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
-import com.liferay.portal.vulcan.feature.flag.FeatureFlagChecker;
 
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.lang.reflect.Constructor;
@@ -182,14 +179,6 @@ public class ExportPreviewResourceFactoryImpl
 			UriInfo uriInfo, User user)
 		throws Throwable {
 
-		if (!_featureFlagChecker.isEnabled(
-				user.getCompanyId(),
-				BaseExportPreviewResourceImpl.class.getMethod(
-					method.getName(), method.getParameterTypes()))) {
-
-			throw new NotFoundException();
-		}
-
 		String name = PrincipalThreadLocal.getName();
 
 		PrincipalThreadLocal.setName(user.getUserId());
@@ -260,9 +249,6 @@ public class ExportPreviewResourceFactoryImpl
 		target = "(result.class.name=com.liferay.portal.kernel.search.filter.Filter)"
 	)
 	private ExpressionConvert<Filter> _expressionConvert;
-
-	@Reference
-	private FeatureFlagChecker _featureFlagChecker;
 
 	@Reference
 	private FilterParserProvider _filterParserProvider;
@@ -344,4 +330,4 @@ public class ExportPreviewResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-353982692
+// LIFERAY-REST-BUILDER-HASH:-1222811261

@@ -5,7 +5,6 @@
 
 package com.liferay.exportimport.rest.resource.v1_0;
 
-import com.liferay.exportimport.rest.dto.v1_0.SyncProcess;
 import com.liferay.exportimport.rest.dto.v1_0.SyncProcessRequest;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -42,7 +41,7 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface SyncProcessResource {
 
-	public SyncProcess postSiteTemplateSyncProcess(
+	public void postSiteTemplateSyncProcess(
 			Long siteTemplateId, SyncProcessRequest syncProcessRequest)
 		throws Exception;
 
@@ -134,4 +133,4 @@ public interface SyncProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2089868150
+// LIFERAY-REST-BUILDER-HASH:765481623

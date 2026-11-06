@@ -105,6 +105,8 @@ public class OpenAPIResourceImpl {
 
 			add(SiteResourceImpl.class);
 
+			add(SyncPreviewResourceImpl.class);
+
 			add(SyncProcessResourceImpl.class);
 
 			add(OpenAPIResourceImpl.class);
@@ -112,4 +114,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-81438098
+// LIFERAY-REST-BUILDER-HASH:-1866767801

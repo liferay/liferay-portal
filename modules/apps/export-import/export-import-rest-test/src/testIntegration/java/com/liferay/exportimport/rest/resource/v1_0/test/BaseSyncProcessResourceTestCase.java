@@ -5,20 +5,10 @@
 
 package com.liferay.exportimport.rest.resource.v1_0.test;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-
-import com.liferay.exportimport.rest.client.dto.v1_0.SyncProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.Type;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.resource.v1_0.SyncProcessResource;
-import com.liferay.exportimport.rest.client.serdes.v1_0.SyncProcessSerDes;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -29,7 +19,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -122,91 +111,16 @@ public abstract class BaseSyncProcessResourceTestCase {
 	}
 
 	@Test
-	public void testClientSerDesToDTO() throws Exception {
-		ObjectMapper objectMapper = getClientSerDesObjectMapper();
-
-		SyncProcess syncProcess1 = randomSyncProcess();
-
-		String json = objectMapper.writeValueAsString(syncProcess1);
-
-		SyncProcess syncProcess2 = SyncProcessSerDes.toDTO(json);
-
-		Assert.assertTrue(equals(syncProcess1, syncProcess2));
-	}
-
-	@Test
-	public void testClientSerDesToJSON() throws Exception {
-		ObjectMapper objectMapper = getClientSerDesObjectMapper();
-
-		SyncProcess syncProcess = randomSyncProcess();
-
-		String json1 = objectMapper.writeValueAsString(syncProcess);
-		String json2 = SyncProcessSerDes.toJSON(syncProcess);
-
-		Assert.assertEquals(
-			objectMapper.readTree(json1), objectMapper.readTree(json2));
-	}
-
-	protected ObjectMapper getClientSerDesObjectMapper() {
-		return new ObjectMapper() {
-			{
-				configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
-				configure(
-					SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
-				enable(SerializationFeature.INDENT_OUTPUT);
-				setDateFormat(new ISO8601DateFormat());
-				setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-				setSerializationInclusion(JsonInclude.Include.NON_NULL);
-				setVisibility(
-					PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-				setVisibility(
-					PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
-			}
-		};
-	}
-
-	@Test
-	public void testEscapeRegexInStringFields() throws Exception {
-		String regex = "^[0-9]+(\\.[0-9]{1,2})\"?";
-
-		SyncProcess syncProcess = randomSyncProcess();
-
-		syncProcess.setSiteTemplateName(regex);
-
-		String json = SyncProcessSerDes.toJSON(syncProcess);
-
-		Assert.assertFalse(json.contains(regex));
-
-		syncProcess = SyncProcessSerDes.toDTO(json);
-
-		Assert.assertEquals(regex, syncProcess.getSiteTemplateName());
-	}
-
-	@Test
 	public void testPostSiteTemplateSyncProcess() throws Exception {
-		SyncProcess randomSyncProcess = randomSyncProcess();
-
-		SyncProcess postSyncProcess =
-			testPostSiteTemplateSyncProcess_addSyncProcess(randomSyncProcess);
-
-		assertEquals(randomSyncProcess, postSyncProcess);
-		assertValid(postSyncProcess);
-	}
-
-	protected SyncProcess testPostSiteTemplateSyncProcess_addSyncProcess(
-			SyncProcess syncProcess)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		Assert.assertTrue(false);
 	}
 
 	protected void assertContains(
-		SyncProcess syncProcess, List<SyncProcess> syncProcesses) {
+		Object syncProcess, List<Object> syncProcesses) {
 
 		boolean contains = false;
 
-		for (SyncProcess item : syncProcesses) {
+		for (Object item : syncProcesses) {
 			if (equals(syncProcess, item)) {
 				contains = true;
 
@@ -226,36 +140,34 @@ public abstract class BaseSyncProcessResourceTestCase {
 			expectedHttpResponseStatusCode, actualHttpResponse.getStatusCode());
 	}
 
-	protected void assertEquals(
-		SyncProcess syncProcess1, SyncProcess syncProcess2) {
-
+	protected void assertEquals(Object syncProcess1, Object syncProcess2) {
 		Assert.assertTrue(
 			syncProcess1 + " does not equal " + syncProcess2,
 			equals(syncProcess1, syncProcess2));
 	}
 
 	protected void assertEquals(
-		List<SyncProcess> syncProcesses1, List<SyncProcess> syncProcesses2) {
+		List<Object> syncProcesses1, List<Object> syncProcesses2) {
 
 		Assert.assertEquals(syncProcesses1.size(), syncProcesses2.size());
 
 		for (int i = 0; i < syncProcesses1.size(); i++) {
-			SyncProcess syncProcess1 = syncProcesses1.get(i);
-			SyncProcess syncProcess2 = syncProcesses2.get(i);
+			Object syncProcess1 = syncProcesses1.get(i);
+			Object syncProcess2 = syncProcesses2.get(i);
 
 			assertEquals(syncProcess1, syncProcess2);
 		}
 	}
 
 	protected void assertEqualsIgnoringOrder(
-		List<SyncProcess> syncProcesses1, List<SyncProcess> syncProcesses2) {
+		List<Object> syncProcesses1, List<Object> syncProcesses2) {
 
 		Assert.assertEquals(syncProcesses1.size(), syncProcesses2.size());
 
-		for (SyncProcess syncProcess1 : syncProcesses1) {
+		for (Object syncProcess1 : syncProcesses1) {
 			boolean contains = false;
 
-			for (SyncProcess syncProcess2 : syncProcesses2) {
+			for (Object syncProcess2 : syncProcesses2) {
 				if (equals(syncProcess1, syncProcess2)) {
 					contains = true;
 
@@ -268,27 +180,11 @@ public abstract class BaseSyncProcessResourceTestCase {
 		}
 	}
 
-	protected void assertValid(SyncProcess syncProcess) throws Exception {
+	protected void assertValid(Object syncProcess) throws Exception {
 		boolean valid = true;
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
-
-			if (Objects.equals("siteTemplateId", additionalAssertFieldName)) {
-				if (syncProcess.getSiteTemplateId() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("siteTemplateName", additionalAssertFieldName)) {
-				if (syncProcess.getSiteTemplateName() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
 
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
@@ -298,17 +194,16 @@ public abstract class BaseSyncProcessResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
-	protected void assertValid(Page<SyncProcess> page) {
+	protected void assertValid(Page<Object> page) {
 		assertValid(page, Collections.emptyMap());
 	}
 
 	protected void assertValid(
-		Page<SyncProcess> page,
-		Map<String, Map<String, String>> expectedActions) {
+		Page<Object> page, Map<String, Map<String, String>> expectedActions) {
 
 		boolean valid = false;
 
-		java.util.Collection<SyncProcess> syncProcesses = page.getItems();
+		java.util.Collection<Object> syncProcesses = page.getItems();
 
 		int size = syncProcesses.size();
 
@@ -348,19 +243,6 @@ public abstract class BaseSyncProcessResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
-		for (java.lang.reflect.Field field :
-				getDeclaredFields(
-					com.liferay.exportimport.rest.dto.v1_0.SyncProcess.class)) {
-
-			if (!ArrayUtil.contains(
-					getAdditionalAssertFieldNames(), field.getName())) {
-
-				continue;
-			}
-
-			graphQLFields.addAll(getGraphQLFields(field));
-		}
-
 		return graphQLFields;
 	}
 
@@ -398,37 +280,13 @@ public abstract class BaseSyncProcessResourceTestCase {
 		return new String[0];
 	}
 
-	protected boolean equals(
-		SyncProcess syncProcess1, SyncProcess syncProcess2) {
-
+	protected boolean equals(Object syncProcess1, Object syncProcess2) {
 		if (syncProcess1 == syncProcess2) {
 			return true;
 		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
-
-			if (Objects.equals("siteTemplateId", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						syncProcess1.getSiteTemplateId(),
-						syncProcess2.getSiteTemplateId())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("siteTemplateName", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						syncProcess1.getSiteTemplateName(),
-						syncProcess2.getSiteTemplateName())) {
-
-					return false;
-				}
-
-				continue;
-			}
 
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
@@ -525,7 +383,7 @@ public abstract class BaseSyncProcessResourceTestCase {
 	}
 
 	protected String getFilterString(
-		EntityField entityField, String operator, SyncProcess syncProcess) {
+		EntityField entityField, String operator, Object syncProcess) {
 
 		StringBundler sb = new StringBundler();
 
@@ -536,57 +394,6 @@ public abstract class BaseSyncProcessResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
-
-		if (entityFieldName.equals("siteTemplateId")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
-		if (entityFieldName.equals("siteTemplateName")) {
-			Object object = syncProcess.getSiteTemplateName();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
-		}
 
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
@@ -630,26 +437,6 @@ public abstract class BaseSyncProcessResourceTestCase {
 
 		return JSONFactoryUtil.createJSONObject(
 			invoke(queryGraphQLField.toString()));
-	}
-
-	protected SyncProcess randomSyncProcess() throws Exception {
-		return new SyncProcess() {
-			{
-				siteTemplateId = RandomTestUtil.randomLong();
-				siteTemplateName = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
-			}
-		};
-	}
-
-	protected SyncProcess randomIrrelevantSyncProcess() throws Exception {
-		SyncProcess randomIrrelevantSyncProcess = randomSyncProcess();
-
-		return randomIrrelevantSyncProcess;
-	}
-
-	protected SyncProcess randomPatchSyncProcess() throws Exception {
-		return randomSyncProcess();
 	}
 
 	protected SyncProcessResource syncProcessResource;
@@ -862,4 +649,4 @@ public abstract class BaseSyncProcessResourceTestCase {
 		_syncProcessResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-654822106
+// LIFERAY-REST-BUILDER-HASH:-1588976104

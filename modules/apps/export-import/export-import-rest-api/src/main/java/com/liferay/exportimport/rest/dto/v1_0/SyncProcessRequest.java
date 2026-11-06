@@ -40,11 +40,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "The data selection to sync from a site template to its linked sites.",
+	description = "Represents a sync of a site template to the sites linked to it.",
 	value = "SyncProcessRequest"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "The data selection to sync from a site template to its linked sites.",
+	description = "Represents a sync of a site template to the sites linked to it.",
 	requiredProperties = {"portletDataHandlers"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -59,9 +59,7 @@ public class SyncProcessRequest implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(SyncProcessRequest.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Whether to sync the comments of the selected content."
-	)
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getComments() {
 		if (_commentsSupplier != null) {
 			comments = _commentsSupplier.get();
@@ -95,9 +93,7 @@ public class SyncProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Whether to sync the comments of the selected content."
-	)
+	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean comments;
 
@@ -105,7 +101,7 @@ public class SyncProcessRequest implements Serializable {
 	private Supplier<Boolean> _commentsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The portlet data handlers to sync, taken from the site template's export preview."
+		description = "The portlet data handlers to sync, taken from the sync preview."
 	)
 	@Valid
 	public PortletDataHandler[] getPortletDataHandlers() {
@@ -145,7 +141,7 @@ public class SyncProcessRequest implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The portlet data handlers to sync, taken from the site template's export preview."
+		description = "The portlet data handlers to sync, taken from the sync preview."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
@@ -154,9 +150,7 @@ public class SyncProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<PortletDataHandler[]> _portletDataHandlersSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Whether to sync the ratings of the selected content."
-	)
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getRatings() {
 		if (_ratingsSupplier != null) {
 			ratings = _ratingsSupplier.get();
@@ -190,9 +184,7 @@ public class SyncProcessRequest implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Whether to sync the ratings of the selected content."
-	)
+	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean ratings;
 
@@ -394,4 +386,4 @@ public class SyncProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-820198
+// LIFERAY-REST-BUILDER-HASH:-352123838

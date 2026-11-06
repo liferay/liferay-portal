@@ -5,7 +5,6 @@
 
 package com.liferay.exportimport.rest.internal.resource.v1_0;
 
-import com.liferay.exportimport.rest.dto.v1_0.SyncProcess;
 import com.liferay.exportimport.rest.dto.v1_0.SyncProcessRequest;
 import com.liferay.exportimport.rest.resource.v1_0.SyncProcessResource;
 import com.liferay.petra.function.UnsafeFunction;
@@ -50,7 +49,7 @@ public abstract class BaseSyncProcessResourceImpl
 	 */
 	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-82107")
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Starts a site template sync that propagates the selected data of the specified site template to every site linked to it."
+		description = "Starts a sync of the specified site template to the sites linked to it, with a background process for each site. A notification reports the result once every site is synced."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -68,15 +67,13 @@ public abstract class BaseSyncProcessResourceImpl
 	@jakarta.ws.rs.POST
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public SyncProcess postSiteTemplateSyncProcess(
+	public void postSiteTemplateSyncProcess(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("siteTemplateId")
 			Long siteTemplateId,
 			SyncProcessRequest syncProcessRequest)
 		throws Exception {
-
-		return new SyncProcess();
 	}
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
@@ -524,4 +521,4 @@ public abstract class BaseSyncProcessResourceImpl
 		LogFactoryUtil.getLog(BaseSyncProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1695613184
+// LIFERAY-REST-BUILDER-HASH:-2018187475

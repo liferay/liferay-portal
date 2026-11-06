@@ -5,11 +5,9 @@
 
 package com.liferay.exportimport.rest.client.resource.v1_0;
 
-import com.liferay.exportimport.rest.client.dto.v1_0.SyncProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.SyncProcessRequest;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.problem.Problem;
-import com.liferay.exportimport.rest.client.serdes.v1_0.SyncProcessSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -33,7 +31,7 @@ public interface SyncProcessResource {
 		return new Builder();
 	}
 
-	public SyncProcess postSiteTemplateSyncProcess(
+	public void postSiteTemplateSyncProcess(
 			Long siteTemplateId, SyncProcessRequest syncProcessRequest)
 		throws Exception;
 
@@ -149,7 +147,7 @@ public interface SyncProcessResource {
 
 	public static class SyncProcessResourceImpl implements SyncProcessResource {
 
-		public SyncProcess postSiteTemplateSyncProcess(
+		public void postSiteTemplateSyncProcess(
 				Long siteTemplateId, SyncProcessRequest syncProcessRequest)
 			throws Exception {
 
@@ -205,7 +203,7 @@ public interface SyncProcessResource {
 			}
 
 			try {
-				return SyncProcessSerDes.toDTO(content);
+				return;
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -270,4 +268,4 @@ public interface SyncProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1768495776
+// LIFERAY-REST-BUILDER-HASH:-2055228228

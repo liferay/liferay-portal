@@ -19,8 +19,7 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -40,51 +39,48 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "The site template sync started on the sites linked to a site template.",
-	value = "SyncProcess"
+	description = "Represents what a site template sync can cover, with the counts of the site template's content.",
+	value = "SyncPreview"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "The site template sync started on the sites linked to a site template.",
-	requiredProperties = {"siteTemplateId", "siteTemplateName"}
+	description = "Represents what a site template sync can cover, with the counts of the site template's content."
 )
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "SyncProcess")
-public class SyncProcess implements Serializable {
+@XmlRootElement(name = "SyncPreview")
+public class SyncPreview implements Serializable {
 
-	public static SyncProcess toDTO(String json) {
-		return ObjectMapperUtil.readValue(SyncProcess.class, json);
+	public static SyncPreview toDTO(String json) {
+		return ObjectMapperUtil.readValue(SyncPreview.class, json);
 	}
 
-	public static SyncProcess unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(SyncProcess.class, json);
+	public static SyncPreview unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SyncPreview.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The ID of the synced site template."
-	)
-	public Long getSiteTemplateId() {
-		if (_siteTemplateIdSupplier != null) {
-			siteTemplateId = _siteTemplateIdSupplier.get();
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getAdditionCount() {
+		if (_additionCountSupplier != null) {
+			additionCount = _additionCountSupplier.get();
 
-			_siteTemplateIdSupplier = null;
+			_additionCountSupplier = null;
 		}
 
-		return siteTemplateId;
+		return additionCount;
 	}
 
-	public void setSiteTemplateId(Long siteTemplateId) {
-		this.siteTemplateId = siteTemplateId;
+	public void setAdditionCount(Long additionCount) {
+		this.additionCount = additionCount;
 
-		_siteTemplateIdSupplier = null;
+		_additionCountSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setSiteTemplateId(
-		UnsafeSupplier<Long, Exception> siteTemplateIdUnsafeSupplier) {
+	public void setAdditionCount(
+		UnsafeSupplier<Long, Exception> additionCountUnsafeSupplier) {
 
-		_siteTemplateIdSupplier = () -> {
+		_additionCountSupplier = () -> {
 			try {
-				return siteTemplateIdUnsafeSupplier.get();
+				return additionCountUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -95,40 +91,37 @@ public class SyncProcess implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The ID of the synced site template.")
+	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	@NotNull
-	protected Long siteTemplateId;
+	protected Long additionCount;
 
 	@JsonIgnore
-	private Supplier<Long> _siteTemplateIdSupplier;
+	private Supplier<Long> _additionCountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The name of the synced site template."
-	)
-	public String getSiteTemplateName() {
-		if (_siteTemplateNameSupplier != null) {
-			siteTemplateName = _siteTemplateNameSupplier.get();
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getDeletionCount() {
+		if (_deletionCountSupplier != null) {
+			deletionCount = _deletionCountSupplier.get();
 
-			_siteTemplateNameSupplier = null;
+			_deletionCountSupplier = null;
 		}
 
-		return siteTemplateName;
+		return deletionCount;
 	}
 
-	public void setSiteTemplateName(String siteTemplateName) {
-		this.siteTemplateName = siteTemplateName;
+	public void setDeletionCount(Long deletionCount) {
+		this.deletionCount = deletionCount;
 
-		_siteTemplateNameSupplier = null;
+		_deletionCountSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setSiteTemplateName(
-		UnsafeSupplier<String, Exception> siteTemplateNameUnsafeSupplier) {
+	public void setDeletionCount(
+		UnsafeSupplier<Long, Exception> deletionCountUnsafeSupplier) {
 
-		_siteTemplateNameSupplier = () -> {
+		_deletionCountSupplier = () -> {
 			try {
-				return siteTemplateNameUnsafeSupplier.get();
+				return deletionCountUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -139,13 +132,57 @@ public class SyncProcess implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The name of the synced site template.")
+	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	@NotEmpty
-	protected String siteTemplateName;
+	protected Long deletionCount;
 
 	@JsonIgnore
-	private Supplier<String> _siteTemplateNameSupplier;
+	private Supplier<Long> _deletionCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public PortletDataHandler[] getPortletDataHandlers() {
+		if (_portletDataHandlersSupplier != null) {
+			portletDataHandlers = _portletDataHandlersSupplier.get();
+
+			_portletDataHandlersSupplier = null;
+		}
+
+		return portletDataHandlers;
+	}
+
+	public void setPortletDataHandlers(
+		PortletDataHandler[] portletDataHandlers) {
+
+		this.portletDataHandlers = portletDataHandlers;
+
+		_portletDataHandlersSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPortletDataHandlers(
+		UnsafeSupplier<PortletDataHandler[], Exception>
+			portletDataHandlersUnsafeSupplier) {
+
+		_portletDataHandlersSupplier = () -> {
+			try {
+				return portletDataHandlersUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected PortletDataHandler[] portletDataHandlers;
+
+	@JsonIgnore
+	private Supplier<PortletDataHandler[]> _portletDataHandlersSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -153,13 +190,13 @@ public class SyncProcess implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof SyncProcess)) {
+		if (!(object instanceof SyncPreview)) {
 			return false;
 		}
 
-		SyncProcess syncProcess = (SyncProcess)object;
+		SyncPreview syncPreview = (SyncPreview)object;
 
-		return Objects.equals(toString(), syncProcess.toString());
+		return Objects.equals(toString(), syncPreview.toString());
 	}
 
 	@Override
@@ -174,32 +211,50 @@ public class SyncProcess implements Serializable {
 
 		sb.append("{");
 
-		Long siteTemplateId = getSiteTemplateId();
+		Long additionCount = getAdditionCount();
 
-		if (siteTemplateId != null) {
+		if (additionCount != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"siteTemplateId\": ");
+			sb.append("\"additionCount\": ");
 
-			sb.append(siteTemplateId);
+			sb.append(additionCount);
 		}
 
-		String siteTemplateName = getSiteTemplateName();
+		Long deletionCount = getDeletionCount();
 
-		if (siteTemplateName != null) {
+		if (deletionCount != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"siteTemplateName\": ");
+			sb.append("\"deletionCount\": ");
 
-			sb.append("\"");
+			sb.append(deletionCount);
+		}
 
-			sb.append(_escape(siteTemplateName));
+		PortletDataHandler[] portletDataHandlers = getPortletDataHandlers();
 
-			sb.append("\"");
+		if (portletDataHandlers != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"portletDataHandlers\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < portletDataHandlers.length; i++) {
+				sb.append(String.valueOf(portletDataHandlers[i]));
+
+				if ((i + 1) < portletDataHandlers.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		sb.append("}");
@@ -209,7 +264,7 @@ public class SyncProcess implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.SyncProcess",
+		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.SyncPreview",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -324,4 +379,4 @@ public class SyncProcess implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-450230665
+// LIFERAY-REST-BUILDER-HASH:470527369
