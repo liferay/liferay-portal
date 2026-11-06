@@ -8,7 +8,11 @@ import path from 'path';
 import resolve from 'resolve';
 
 import fileExists from '../../fileExists.mjs';
-import {PORTAL_DIR, SRC_TSCONFIG_PATH} from '../../locations.mjs';
+import {
+	PORTAL_DIR,
+	SRC_TSCONFIG_PATH,
+	TEST_TSCONFIG_PATH,
+} from '../../locations.mjs';
 import print from '../../print.mjs';
 import runConcurrentTasks from '../../runConcurrentTasks.mjs';
 
@@ -69,10 +73,8 @@ async function checkProject(projectDir, errors) {
 		configPaths.push('tsconfig.json');
 	}
 
-	const testConfigPath = path.join('test', 'tsconfig.json');
-
-	if (await fileExists(path.join(projectDir, testConfigPath))) {
-		configPaths.push(testConfigPath);
+	if (await fileExists(path.join(projectDir, TEST_TSCONFIG_PATH))) {
+		configPaths.push(TEST_TSCONFIG_PATH);
 	}
 
 	let output = '';

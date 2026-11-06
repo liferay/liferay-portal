@@ -14,6 +14,7 @@ import {
 	MODULES_DIR,
 	SRC_PATH,
 	SRC_TSCONFIG_PATH,
+	TEST_PATH,
 	TSC_BUILDINFO_DIR,
 	TSC_TYPES_DIR,
 } from '../locations.mjs';
@@ -31,7 +32,7 @@ export default async function visitProjectTsconfig(
 	testConfig = false
 ) {
 	const srcPath = testConfig
-		? path.join(projectDir, 'test')
+		? path.join(projectDir, TEST_PATH)
 		: path.join(projectDir, SRC_PATH);
 
 	const configPath = path.join(srcPath, 'tsconfig.json');

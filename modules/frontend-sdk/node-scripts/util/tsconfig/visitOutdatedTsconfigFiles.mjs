@@ -10,7 +10,7 @@ import getProjectDescription from '../configuration/getProjectDescription.mjs';
 import getProjectEntryPoints from '../configuration/getProjectEntryPoints.mjs';
 import fileExists from '../fileExists.mjs';
 import getBuildableProjectDirs from '../getBuildableProjectDirs.mjs';
-import {MODULES_DIR, SRC_PATH} from '../locations.mjs';
+import {MODULES_DIR, SRC_PATH, TEST_PATH} from '../locations.mjs';
 import hasTypeScriptFiles from './hasTypeScriptFiles.mjs';
 import visitProjectTsconfig from './visitProjectTsconfig.mjs';
 
@@ -58,7 +58,7 @@ async function getProjects(projectDirs, modulesDir) {
 					path.join(projectDir, SRC_PATH)
 				),
 				typeScriptTests: await hasTypeScriptFiles(
-					path.join(projectDir, 'test')
+					path.join(projectDir, TEST_PATH)
 				),
 			};
 		})

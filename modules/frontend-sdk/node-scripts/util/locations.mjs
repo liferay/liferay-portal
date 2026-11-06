@@ -81,6 +81,9 @@ export const SRC_PATH = path.join(
 export const SRC_LANGUAGE_JSON_PATH = path.join(SRC_PATH, 'language.json');
 export const SRC_TSCONFIG_PATH = path.join(SRC_PATH, 'tsconfig.json');
 
+export const TEST_PATH = 'test';
+export const TEST_TSCONFIG_PATH = path.join(TEST_PATH, 'tsconfig.json');
+
 //
 // Paths to build artifacts
 //
