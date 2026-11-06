@@ -466,7 +466,9 @@ export class BehaviorInput extends React.Component<
 
 					{isAccountSegment ? (
 						<Form.GroupItem className="entity-name" label shrink>
-							{Liferay.Language.get('individual-who-triggered')}
+							{Liferay.Language.get(
+								'at-least-one-individual-who-triggered'
+							)}
 						</Form.GroupItem>
 					) : (
 						<Form.GroupItem className="entity-name" label shrink>

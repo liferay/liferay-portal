@@ -72,7 +72,9 @@ const EventDisplay: React.FC<IDisplayComponentProps> = ({
 
 			<span>
 				{isAccountSegment
-					? Liferay.Language.get('individual-who-triggered')
+					? Liferay.Language.get(
+							'at-least-one-individual-who-triggered'
+						)
 					: Liferay.Language.get('performed').toLowerCase()}
 			</span>
 

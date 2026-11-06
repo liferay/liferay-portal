@@ -73,7 +73,11 @@ const BehaviorDisplay: React.FC<IDisplayComponentProps> = ({
 			<span>{operatorLabel}</span>
 
 			{isAccountSegment && (
-				<span>{Liferay.Language.get('individual-who-triggered')}</span>
+				<span>
+					{Liferay.Language.get(
+						'at-least-one-individual-who-triggered'
+					)}
+				</span>
 			)}
 
 			<span>{label}</span>
