@@ -109,16 +109,21 @@ public class DDMDataProviderDisplayContext {
 			renderRequest);
 	}
 
-	public DDMDataProviderInstance fetchDataProviderInstance()
+	public DDMDataProviderInstance getDataProviderInstance()
 		throws PortalException {
 
 		if (_ddmDataProviderInstance != null) {
 			return _ddmDataProviderInstance;
 		}
 
-		_ddmDataProviderInstance =
-			_ddmDataProviderInstanceService.fetchDataProviderInstance(
-				ParamUtil.getLong(_renderRequest, "dataProviderInstanceId"));
+		long dataProviderInstanceId = ParamUtil.getLong(
+			_renderRequest, "dataProviderInstanceId");
+
+		if (dataProviderInstanceId > 0) {
+			_ddmDataProviderInstance =
+				_ddmDataProviderInstanceService.getDataProviderInstance(
+					dataProviderInstanceId);
+		}
 
 		return _ddmDataProviderInstance;
 	}
@@ -161,7 +166,7 @@ public class DDMDataProviderDisplayContext {
 
 	public String getDataProviderInstanceDDMFormHTML() throws PortalException {
 		DDMDataProviderInstance ddmDataProviderInstance =
-			fetchDataProviderInstance();
+			getDataProviderInstance();
 
 		String type = BeanParamUtil.getString(
 			ddmDataProviderInstance, _renderRequest, "type",
@@ -199,7 +204,7 @@ public class DDMDataProviderDisplayContext {
 
 	public String getDataProviderInstanceDescription() throws PortalException {
 		DDMDataProviderInstance ddmDataProviderInstance =
-			fetchDataProviderInstance();
+			getDataProviderInstance();
 
 		if (ddmDataProviderInstance == null) {
 			return StringPool.BLANK;
@@ -211,7 +216,7 @@ public class DDMDataProviderDisplayContext {
 
 	public String getDataProviderInstanceName() throws PortalException {
 		DDMDataProviderInstance ddmDataProviderInstance =
-			fetchDataProviderInstance();
+			getDataProviderInstance();
 
 		if (ddmDataProviderInstance == null) {
 			return StringPool.BLANK;
