@@ -88,6 +88,7 @@ DockerfileInstructionCheck | [Styling](styling_checks.md#styling-checks) | Docke
 EmbeddedJSONCheck | [Styling](styling_checks.md#styling-checks) | .action, .function, .hcl, .jelly, .jrxml, .macro, .markdown, .md, .pom, .project, .properties, .qti, .svg, .testcase, .tf, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Ensures consistent formatting for embedded JSON. |
 EmptyCollectionCheck | [Styling](styling_checks.md#styling-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that there are no calls to `Collections.EMPTY_LIST`, `Collections.EMPTY_MAP` or `Collections.EMPTY_SET`. |
 EmptyConstructorCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds unnecessary empty constructors. |
+[EmptySafeCloseableCheck](check/empty_safe_closeable_check.md#emptysafecloseablecheck) | [Styling](styling_checks.md#styling-checks) | .java | Finds empty lambdas used as `SafeCloseable`, which should use `SafeCloseable.EMPTY` instead. |
 EnumConstantDividerCheck | [Styling](styling_checks.md#styling-checks) | .java | Find unnecessary empty lines between enum constants. |
 EnumConstantOrderCheck | [Styling](styling_checks.md#styling-checks) | .java | Checks the order of enum constants. |
 EqualClauseIfStatementsCheck | [Styling](styling_checks.md#styling-checks) | .java | Finds consecutive if-statements with identical clauses. |

@@ -1,0 +1,107 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.lang.SafeCloseable;
+
+import java.util.function.Supplier;
+
+/**
+ * @author Shuyang Zhou
+ */
+public class EmptySafeCloseable {
+
+	public SafeCloseable method01() {
+		return () -> {
+		};
+	}
+
+	public SafeCloseable method02(boolean value) {
+		return value ? _EMPTY_SAFE_CLOSEABLE :
+			() -> {
+			};
+	}
+
+	public void method03(boolean value) {
+		SafeCloseable safeCloseable1 = () -> {
+		};
+
+		safeCloseable1.close();
+
+		SafeCloseable safeCloseable2 = value ? _EMPTY_SAFE_CLOSEABLE :
+			() -> {
+			};
+
+		safeCloseable2.close();
+	}
+
+	public void method04() {
+		_safeCloseable = () -> {
+
+			// There is nothing to close.
+
+		};
+	}
+
+	public Runnable method05() {
+		return () -> {
+		};
+	}
+
+	public void method06() throws Exception {
+		Runnable runnable = () -> {
+		};
+
+		runnable.run();
+
+		UnsafeRunnable<Exception> unsafeRunnable = () -> {
+		};
+
+		unsafeRunnable.run();
+	}
+
+	public SafeCloseable method07() {
+		return () -> {
+			if (_safeCloseable != null) {
+				_safeCloseable.close();
+			}
+		};
+	}
+
+	public Supplier<SafeCloseable> method08() {
+		return () -> {
+			_safeCloseable.close();
+
+			return () -> {
+			};
+		};
+	}
+
+	public void method09() {
+		_close(
+			() -> {
+			});
+	}
+
+	public NestedSafeCloseable method10() {
+		return () -> {
+		};
+	}
+
+	private void _close(SafeCloseable safeCloseable) {
+		safeCloseable.close();
+	}
+
+	private static final SafeCloseable _EMPTY_SAFE_CLOSEABLE = () -> {
+	};
+
+	private SafeCloseable _safeCloseable;
+
+	private interface NestedSafeCloseable extends SafeCloseable {
+	}
+
+}

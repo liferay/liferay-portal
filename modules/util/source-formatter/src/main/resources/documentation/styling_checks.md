@@ -32,6 +32,7 @@ DockerfileInstructionCheck | Dockerfile | Performs styling rules on instructions
 [EarlyLoopExitCheck](check/early_loop_exit_check.md#earlyloopexitcheck) | .java | Finds if-statements at the end of a loop body that can be inverted to use `break`, `continue`, `return`, or `throw` as early as possible. |
 EmbeddedJSONCheck | .action, .function, .hcl, .jelly, .jrxml, .macro, .markdown, .md, .pom, .project, .properties, .qti, .svg, .testcase, .tf, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Ensures consistent formatting for embedded JSON. |
 EmptyCollectionCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that there are no calls to `Collections.EMPTY_LIST`, `Collections.EMPTY_MAP` or `Collections.EMPTY_SET`. |
+[EmptySafeCloseableCheck](check/empty_safe_closeable_check.md#emptysafecloseablecheck) | .java | Finds empty lambdas used as `SafeCloseable`, which should use `SafeCloseable.EMPTY` instead. |
 EnumConstantDividerCheck | .java | Find unnecessary empty lines between enum constants. |
 EnumConstantOrderCheck | .java | Checks the order of enum constants. |
 EqualClauseIfStatementsCheck | .java | Finds consecutive if-statements with identical clauses. |

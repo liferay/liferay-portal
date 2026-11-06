@@ -234,6 +234,36 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testEmptySafeCloseable() throws Exception {
+		String message =
+			"Use \"SafeCloseable.EMPTY\" instead of an empty lambda";
+		String ternaryOperatorMessage =
+			"Use if-else-statement instead of ternary conditional operator " +
+				"for better readability";
+
+		test(
+			SourceProcessorTestParameters.create(
+				"EmptySafeCloseable.testjava"
+			).addExpectedMessage(
+				message, 19
+			).addExpectedMessage(
+				ternaryOperatorMessage, 24
+			).addExpectedMessage(
+				message, 25
+			).addExpectedMessage(
+				message, 30
+			).addExpectedMessage(
+				ternaryOperatorMessage, 35
+			).addExpectedMessage(
+				message, 36
+			).addExpectedMessage(
+				message, 43
+			).addExpectedMessage(
+				message, 99
+			));
+	}
+
+	@Test
 	public void testExceedMaxLineLength() throws Exception {
 		test("ExceedMaxLineLength.testjava", "> 80", 27);
 	}
