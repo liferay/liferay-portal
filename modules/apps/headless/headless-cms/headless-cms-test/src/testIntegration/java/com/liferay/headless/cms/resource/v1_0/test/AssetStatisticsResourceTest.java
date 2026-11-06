@@ -1149,7 +1149,6 @@ public class AssetStatisticsResourceTest
 
 		_assertWorkflowTasksCounts(depotEntry1.getGroupId(), 1, 1, 1);
 		_assertWorkflowTasksCounts(depotEntry1.getDepotEntryId(), 1, 1, 1);
-
 		_assertWorkflowTasksCounts(depotEntry2.getGroupId(), 0, 1, 1);
 		_assertWorkflowTasksCounts(depotEntry2.getDepotEntryId(), 0, 1, 1);
 
