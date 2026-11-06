@@ -187,17 +187,8 @@ public class GetCollectionFieldMVCResourceCommandTest {
 
 		BlogsEntry blogsEntry = _addBlogsEntry();
 
-		JSONObject jsonObject = ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
-			new Class<?>[] {
-				long.class, HttpServletRequest.class, HttpServletResponse.class,
-				int.class, boolean.class, boolean.class, String.class,
-				String.class, String.class, String.class, String.class,
-				int.class, int.class, int.class, String.class, long.class,
-				long.class, String.class
-			},
-			_group.getCompanyId(), _getHttpServletRequest(),
-			new MockHttpServletResponse(), 0, false, false,
+		JSONObject jsonObject = _getCollectionFieldsJSONObject(
+			0, false, false, _getHttpServletRequest(),
 			LocaleUtil.toLanguageId(LocaleUtil.US),
 			JSONUtil.put(
 				"itemType", BlogsEntry.class.getName()
@@ -206,8 +197,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			).put(
 				"type", InfoListProviderItemSelectorReturnType.class.getName()
 			).toString(),
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 1, 20, 0,
-			"regular", _group.getGroupId(),
+			StringPool.BLANK, StringPool.BLANK, 1, 20, 0, "regular",
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			StringPool.BLANK);
@@ -232,17 +222,8 @@ public class GetCollectionFieldMVCResourceCommandTest {
 
 		BlogsEntry blogsEntry = _addBlogsEntry();
 
-		JSONObject jsonObject = ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
-			new Class<?>[] {
-				long.class, HttpServletRequest.class, HttpServletResponse.class,
-				int.class, boolean.class, boolean.class, String.class,
-				String.class, String.class, String.class, String.class,
-				int.class, int.class, int.class, String.class, long.class,
-				long.class, String.class
-			},
-			_group.getCompanyId(), _getHttpServletRequest(),
-			new MockHttpServletResponse(), 0, false, false,
+		JSONObject jsonObject = _getCollectionFieldsJSONObject(
+			0, false, false, _getHttpServletRequest(),
 			LocaleUtil.toLanguageId(LocaleUtil.US),
 			JSONUtil.put(
 				"itemType", BlogsEntry.class.getName()
@@ -251,8 +232,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			).put(
 				"type", InfoListProviderItemSelectorReturnType.class.getName()
 			).toString(),
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 1, 20, 0,
-			"regular", _group.getGroupId(),
+			StringPool.BLANK, StringPool.BLANK, 1, 20, 0, "regular",
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			StringPool.BLANK);
@@ -280,17 +260,8 @@ public class GetCollectionFieldMVCResourceCommandTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				"Collection Title", _getTypeSettings(), _serviceContext);
 
-		JSONObject jsonObject = ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
-			new Class<?>[] {
-				long.class, HttpServletRequest.class, HttpServletResponse.class,
-				int.class, boolean.class, boolean.class, String.class,
-				String.class, String.class, String.class, String.class,
-				int.class, int.class, int.class, String.class, long.class,
-				long.class, String.class
-			},
-			_group.getCompanyId(), _getHttpServletRequest(),
-			new MockHttpServletResponse(), 0, false, false,
+		JSONObject jsonObject = _getCollectionFieldsJSONObject(
+			0, false, false, _getHttpServletRequest(),
 			LocaleUtil.toLanguageId(LocaleUtil.US),
 			JSONUtil.put(
 				"classNameId",
@@ -303,8 +274,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			).put(
 				"type", InfoListItemSelectorReturnType.class.getName()
 			).toString(),
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 2, 20, 0,
-			"regular", _group.getGroupId(),
+			StringPool.BLANK, StringPool.BLANK, 2, 20, 0, "regular",
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			StringPool.BLANK);
@@ -339,17 +309,8 @@ public class GetCollectionFieldMVCResourceCommandTest {
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
 				"Collection Title", _getTypeSettings(), _serviceContext);
 
-		JSONObject jsonObject = ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
-			new Class<?>[] {
-				long.class, HttpServletRequest.class, HttpServletResponse.class,
-				int.class, boolean.class, boolean.class, String.class,
-				String.class, String.class, String.class, String.class,
-				int.class, int.class, int.class, String.class, long.class,
-				long.class, String.class
-			},
-			_group.getCompanyId(), _getHttpServletRequest(),
-			new MockHttpServletResponse(), 0, false, false,
+		JSONObject jsonObject = _getCollectionFieldsJSONObject(
+			0, false, false, _getHttpServletRequest(),
 			LocaleUtil.toLanguageId(LocaleUtil.US),
 			JSONUtil.put(
 				"classNameId",
@@ -362,8 +323,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			).put(
 				"type", InfoListItemSelectorReturnType.class.getName()
 			).toString(),
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 1, 1, 1,
-			"regular", _group.getGroupId(),
+			StringPool.BLANK, StringPool.BLANK, 1, 1, 1, "regular",
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			StringPool.BLANK);
@@ -414,17 +374,8 @@ public class GetCollectionFieldMVCResourceCommandTest {
 		mockHttpServletRequest.setParameter(
 			"classPK", String.valueOf(journalArticle.getResourcePrimKey()));
 
-		JSONObject jsonObject = ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
-			new Class<?>[] {
-				long.class, HttpServletRequest.class, HttpServletResponse.class,
-				int.class, boolean.class, boolean.class, String.class,
-				String.class, String.class, String.class, String.class,
-				int.class, int.class, int.class, String.class, long.class,
-				long.class, String.class
-			},
-			_group.getCompanyId(), mockHttpServletRequest,
-			new MockHttpServletResponse(), 0, false, false,
+		JSONObject jsonObject = _getCollectionFieldsJSONObject(
+			0, false, false, mockHttpServletRequest,
 			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
 			JSONUtil.put(
 				"fieldName", "Fieldset"
@@ -437,8 +388,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			).put(
 				"type", InfoListProviderItemSelectorReturnType.class.getName()
 			).toString(),
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 3, 3, 1,
-			"regular", _group.getGroupId(),
+			StringPool.BLANK, StringPool.BLANK, 3, 3, 1, "regular",
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			StringPool.BLANK);
@@ -530,17 +480,8 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			},
 			segmentsEntry1.getSegmentsEntryId(), _serviceContext);
 
-		JSONObject jsonObject = ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
-			new Class<?>[] {
-				long.class, HttpServletRequest.class, HttpServletResponse.class,
-				int.class, boolean.class, boolean.class, String.class,
-				String.class, String.class, String.class, String.class,
-				int.class, int.class, int.class, String.class, long.class,
-				long.class, String.class
-			},
-			_group.getCompanyId(), _getHttpServletRequest(),
-			new MockHttpServletResponse(), 0, false, false,
+		JSONObject jsonObject = _getCollectionFieldsJSONObject(
+			0, false, false, _getHttpServletRequest(),
 			LocaleUtil.toLanguageId(LocaleUtil.US),
 			JSONUtil.put(
 				"classNameId",
@@ -552,23 +493,13 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			).put(
 				"type", InfoListItemSelectorReturnType.class.getName()
 			).toString(),
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 1, 1, 1,
-			"regular", _group.getGroupId(), defaultSegmentsExperienceId,
-			StringPool.BLANK);
+			StringPool.BLANK, StringPool.BLANK, 1, 1, 1, "regular",
+			defaultSegmentsExperienceId, StringPool.BLANK);
 
 		Assert.assertEquals(1, jsonObject.getInt("length"));
 
-		jsonObject = ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
-			new Class<?>[] {
-				long.class, HttpServletRequest.class, HttpServletResponse.class,
-				int.class, boolean.class, boolean.class, String.class,
-				String.class, String.class, String.class, String.class,
-				int.class, int.class, int.class, String.class, long.class,
-				long.class, String.class
-			},
-			_group.getCompanyId(), _getHttpServletRequest(),
-			new MockHttpServletResponse(), 0, false, false,
+		jsonObject = _getCollectionFieldsJSONObject(
+			0, false, false, _getHttpServletRequest(),
 			LocaleUtil.toLanguageId(LocaleUtil.US),
 			JSONUtil.put(
 				"classNameId",
@@ -580,23 +511,13 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			).put(
 				"type", InfoListItemSelectorReturnType.class.getName()
 			).toString(),
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 1, 1, 1,
-			"regular", _group.getGroupId(),
+			StringPool.BLANK, StringPool.BLANK, 1, 1, 1, "regular",
 			segmentsExperience1.getSegmentsExperienceId(), StringPool.BLANK);
 
 		Assert.assertEquals(3, jsonObject.getInt("length"));
 
-		jsonObject = ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
-			new Class<?>[] {
-				long.class, HttpServletRequest.class, HttpServletResponse.class,
-				int.class, boolean.class, boolean.class, String.class,
-				String.class, String.class, String.class, String.class,
-				int.class, int.class, int.class, String.class, long.class,
-				long.class, String.class
-			},
-			_group.getCompanyId(), _getHttpServletRequest(),
-			new MockHttpServletResponse(), 0, false, false,
+		jsonObject = _getCollectionFieldsJSONObject(
+			0, false, false, _getHttpServletRequest(),
 			LocaleUtil.toLanguageId(LocaleUtil.US),
 			JSONUtil.put(
 				"classNameId",
@@ -608,8 +529,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			).put(
 				"type", InfoListItemSelectorReturnType.class.getName()
 			).toString(),
-			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 1, 1, 1,
-			"regular", _group.getGroupId(),
+			StringPool.BLANK, StringPool.BLANK, 1, 1, 1, "regular",
 			segmentsExperience2.getSegmentsExperienceId(), StringPool.BLANK);
 
 		Assert.assertEquals(1, jsonObject.getInt("length"));
@@ -622,17 +542,8 @@ public class GetCollectionFieldMVCResourceCommandTest {
 
 		_addBlogsEntry();
 
-		JSONObject jsonObject = ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
-			new Class<?>[] {
-				long.class, HttpServletRequest.class, HttpServletResponse.class,
-				int.class, boolean.class, boolean.class, String.class,
-				String.class, String.class, String.class, String.class,
-				int.class, int.class, int.class, String.class, long.class,
-				long.class, String.class
-			},
-			_group.getCompanyId(), _getHttpServletRequest(),
-			new MockHttpServletResponse(), 0, false, false,
+		JSONObject jsonObject = _getCollectionFieldsJSONObject(
+			0, false, false, _getHttpServletRequest(),
 			LocaleUtil.toLanguageId(LocaleUtil.US),
 			JSONUtil.put(
 				"itemType", BlogsEntry.class.getName()
@@ -641,11 +552,11 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			).put(
 				"type", InfoListProviderItemSelectorReturnType.class.getName()
 			).toString(),
-			"com.liferay.blogs.web.internal.info.list.renderer." +
-				"BulletedBlogsEntryBasicInfoListRenderer",
 			"com.liferay.journal.web.internal.info.item.renderer." +
 				"JournalArticleTitleInfoItemRenderer",
-			StringPool.BLANK, 1, 20, 0, "regular", _group.getGroupId(),
+			"com.liferay.blogs.web.internal.info.list.renderer." +
+				"BulletedBlogsEntryBasicInfoListRenderer",
+			1, 20, 0, "regular",
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			StringPool.BLANK);
@@ -671,17 +582,8 @@ public class GetCollectionFieldMVCResourceCommandTest {
 
 		_serviceContext.setRequest(httpServletRequest);
 
-		JSONObject jsonObject = ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
-			new Class<?>[] {
-				long.class, HttpServletRequest.class, HttpServletResponse.class,
-				int.class, boolean.class, boolean.class, String.class,
-				String.class, String.class, String.class, String.class,
-				int.class, int.class, int.class, String.class, long.class,
-				long.class, String.class
-			},
-			_group.getCompanyId(), httpServletRequest,
-			new MockHttpServletResponse(), 0, false, false,
+		JSONObject jsonObject = _getCollectionFieldsJSONObject(
+			0, false, false, httpServletRequest,
 			LocaleUtil.toLanguageId(LocaleUtil.US),
 			JSONUtil.put(
 				"itemType", JournalArticle.class.getName()
@@ -690,11 +592,11 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			).put(
 				"type", InfoListProviderItemSelectorReturnType.class.getName()
 			).toString(),
-			"com.liferay.journal.web.internal.info.list.renderer." +
-				"BulletedJournalArticleBasicInfoListRenderer",
 			"com.liferay.template.internal.info.item.renderer." +
 				"TemplateInfoItemTemplatedRenderer",
-			StringPool.BLANK, 1, 20, 0, "regular", _group.getGroupId(),
+			"com.liferay.journal.web.internal.info.list.renderer." +
+				"BulletedJournalArticleBasicInfoListRenderer",
+			1, 20, 0, "regular",
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				_layout.getPlid()),
 			String.valueOf(templateEntry.getTemplateEntryId()));
@@ -784,6 +686,32 @@ public class GetCollectionFieldMVCResourceCommandTest {
 				_jsonDDMFormDeserializer.deserialize(builder.build());
 
 		return ddmFormDeserializerDeserializeResponse.getDDMForm();
+	}
+
+	private JSONObject _getCollectionFieldsJSONObject(
+			int activePage, boolean displayAllItems, boolean displayAllPages,
+			HttpServletRequest httpServletRequest, String languageId,
+			String layoutObjectReference, String listItemStyle,
+			String listStyle, int numberOfItems, int numberOfItemsPerPage,
+			int numberOfPages, String paginationType, long segmentsExperienceId,
+			String templateKey)
+		throws Exception {
+
+		return ReflectionTestUtil.invoke(
+			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
+			new Class<?>[] {
+				long.class, HttpServletRequest.class, HttpServletResponse.class,
+				int.class, boolean.class, boolean.class, String.class,
+				String.class, String.class, String.class, String.class,
+				int.class, int.class, int.class, String.class, long.class,
+				long.class, String.class
+			},
+			_group.getCompanyId(), httpServletRequest,
+			new MockHttpServletResponse(), activePage, displayAllItems,
+			displayAllPages, languageId, layoutObjectReference, listStyle,
+			listItemStyle, StringPool.BLANK, numberOfItems,
+			numberOfItemsPerPage, numberOfPages, paginationType,
+			_group.getGroupId(), segmentsExperienceId, templateKey);
 	}
 
 	private HttpServletRequest _getHttpServletRequest() throws Exception {
