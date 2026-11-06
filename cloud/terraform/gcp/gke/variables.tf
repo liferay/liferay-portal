@@ -34,7 +34,7 @@ variable "master_ipv4_cidr_block" {
 	type=string
 }
 variable "max_node_count" {
-	default=4
+	default=8
 	type=number
 }
 variable "min_node_count" {
