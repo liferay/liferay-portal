@@ -495,6 +495,14 @@ public class LaunchSetPublisherTest {
 			() -> _launchSetPublisher.schedulePublish(
 				null, launchSetId, TestPropsValues.getUserId()));
 
+		Assert.assertThrows(
+			PortalException.class,
+			() -> _launchSetPublisher.schedulePublish(
+				new Date(System.currentTimeMillis() + (Time.SECOND * 30)),
+				launchSetId, TestPropsValues.getUserId()));
+
+		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
+
 		Date date = new Date(System.currentTimeMillis() + Time.DAY);
 
 		_launchSetPublisher.schedulePublish(
