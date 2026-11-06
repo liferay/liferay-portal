@@ -138,7 +138,9 @@ test(
 		await expect(async () => {
 			await rolesPage.rolesTable.changeView('Table');
 
-			await expect(rolesPage.rolesTable.cell('Title')).toBeVisible({
+			await expect(
+				rolesPage.rolesTable.columnHeader('Title')
+			).toBeVisible({
 				timeout: 300,
 			});
 		}).toPass();

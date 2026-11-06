@@ -43,6 +43,7 @@ export class DataTablePage {
 	) => Promise<Locator>;
 	readonly clearButton: Locator;
 	readonly clickOrderMenuItem: (option: string) => Promise<void>;
+	readonly columnHeader: (name: string) => Locator;
 	readonly filterButton: Locator;
 	readonly filterMenuItem: (option: string) => Locator;
 	readonly firstRow: () => Promise<Locator>;
@@ -120,6 +121,8 @@ export class DataTablePage {
 
 			await menuItem.click({timeout: 500});
 		};
+		this.columnHeader = (name) =>
+			this.page.getByRole('columnheader', {exact: true, name}).first();
 		this.filterButton = page.getByLabel('Filter', {exact: true});
 		this.filterMenuItem = (option: string) => {
 			return page.getByRole('menuitem', {

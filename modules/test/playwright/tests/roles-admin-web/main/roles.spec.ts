@@ -50,7 +50,7 @@ test.beforeAll(async ({browser}) => {
 	await expect(async () => {
 		await rolesPage.rolesTable.changeView('Table');
 
-		await expect(rolesPage.rolesTable.cell('Title')).toBeVisible({
+		await expect(rolesPage.rolesTable.columnHeader('Title')).toBeVisible({
 			timeout: 300,
 		});
 	}).toPass();
@@ -351,10 +351,12 @@ test(
 
 		await rolesPage.rolesTable.changeView('Table');
 
-		await expect(rolesPage.rolesTable.cell('Title')).toBeVisible();
-		await expect(rolesPage.rolesTable.cell('Description')).toBeVisible();
+		await expect(rolesPage.rolesTable.columnHeader('Title')).toBeVisible();
 		await expect(
-			rolesPage.rolesTable.cell('Number of Assignees')
+			rolesPage.rolesTable.columnHeader('Description')
+		).toBeVisible();
+		await expect(
+			rolesPage.rolesTable.columnHeader('Number of Assignees')
 		).toBeVisible();
 	}
 );
