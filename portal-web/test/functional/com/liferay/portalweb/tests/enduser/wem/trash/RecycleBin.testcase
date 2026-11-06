@@ -91,6 +91,7 @@ definition {
 	@priority = 3
 	test RecycleBinScheduledCleanup {
 		property custom.properties = "feature.flag.LPD-35013=true${line.separator}trash.entries.max.age=0";
+		property test.liferay.virtual.instance = "false";
 
 		task ("Add a blogs widget to page and a blog entry") {
 			JSONLayout.addWidgetToPublicLayout(
