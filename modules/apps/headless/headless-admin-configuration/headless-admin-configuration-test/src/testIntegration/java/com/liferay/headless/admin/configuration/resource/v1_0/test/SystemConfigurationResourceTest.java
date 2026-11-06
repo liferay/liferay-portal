@@ -396,8 +396,8 @@ public class SystemConfigurationResourceTest
 		Dictionary<String, Object> properties = configuration.getProperties();
 
 		properties.put(
-			ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-			testGroup.getGroupId());
+			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+			testGroup.getCompanyId());
 
 		configuration.update(properties);
 
