@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
-import com.liferay.portal.workflow.kaleo.exception.NoSuchDefinitionException;
 import com.liferay.portal.workflow.kaleo.exception.NoSuchDefinitionVersionException;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
 import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionLocalService;
@@ -166,7 +165,8 @@ public class KaleoDesignerPortletTest {
 			new MockLiferayPortletRenderResponse());
 
 		_assertSessionError(
-			NoSuchDefinitionException.class, mockLiferayPortletRenderRequest);
+			NoSuchDefinitionVersionException.class,
+			mockLiferayPortletRenderRequest);
 	}
 
 	private void _testRenderWithNonexistentKaleoDefinitionVersion()
