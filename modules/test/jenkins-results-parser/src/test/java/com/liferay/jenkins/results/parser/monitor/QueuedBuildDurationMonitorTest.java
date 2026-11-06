@@ -648,7 +648,6 @@ public class QueuedBuildDurationMonitorTest
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
 		Assert.assertNull(monitorResult.getLinkURLs());
-
 		testEquals(expectedMessage, monitorResult.getMessage());
 
 		Map<String, String> metrics = monitorResult.getMetrics();
