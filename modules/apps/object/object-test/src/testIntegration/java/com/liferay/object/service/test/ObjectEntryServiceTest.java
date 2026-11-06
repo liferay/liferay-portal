@@ -686,6 +686,72 @@ public class ObjectEntryServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112318")
+	public void testGetObjectEntriesCount() throws Exception {
+
+		// Can count object entries as company administrator
+
+		ObjectEntry objectEntry1 = _addObjectEntry(_adminUser);
+
+		_assertObjectEntriesCount(1, WorkflowConstants.STATUS_ANY);
+
+		// Can count object entries as site administrator
+
+		_setUser(UserTestUtil.addGroupAdminUser(_group));
+
+		_assertObjectEntriesCount(1, WorkflowConstants.STATUS_ANY);
+
+		// Can count object entries with individual model permission
+
+		_setUser(_user);
+
+		_setResourcePermissions(
+			_objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(objectEntry1.getObjectEntryId()), RoleConstants.USER,
+			new String[] {ActionKeys.VIEW});
+
+		_assertObjectEntriesCount(0, WorkflowConstants.STATUS_DRAFT);
+		_assertObjectEntriesCount(1, WorkflowConstants.STATUS_ANY);
+		_assertObjectEntriesCount(1, WorkflowConstants.STATUS_APPROVED);
+
+		// Cannot count object entries in the trash
+
+		ObjectEntry objectEntry2 = _addObjectEntry(_adminUser);
+
+		_setResourcePermissions(
+			_objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(objectEntry2.getObjectEntryId()), RoleConstants.USER,
+			new String[] {ActionKeys.VIEW});
+
+		_objectEntryLocalService.moveObjectEntryToTrash(
+			_adminUser.getUserId(), objectEntry2,
+			ServiceContextTestUtil.getServiceContext());
+
+		_assertObjectEntriesCount(1, WorkflowConstants.STATUS_ANY);
+
+		// Cannot count object entries of a deleted object definition
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		Assert.assertEquals(
+			0,
+			_objectEntryService.getObjectEntriesCount(
+				_group.getGroupId(), objectDefinition.getObjectDefinitionId(),
+				WorkflowConstants.STATUS_ANY));
+
+		// Cannot count object entries without model permission
+
+		_addObjectEntry(_adminUser);
+
+		_assertObjectEntriesCount(1, WorkflowConstants.STATUS_ANY);
+	}
+
+	@Test
 	public void testGetObjectEntry() throws Exception {
 
 		// Can get object entry with individual model permission
@@ -1543,6 +1609,14 @@ public class ObjectEntryServiceTest {
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()),
 			guestRole.getRoleId(), ObjectActionKeys.ADD_OBJECT_ENTRY);
+	}
+
+	private void _assertObjectEntriesCount(int count, int status) {
+		Assert.assertEquals(
+			count,
+			_objectEntryService.getObjectEntriesCount(
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
+				status));
 	}
 
 	private void _assertUserNotificationEventsCount() throws PortalException {
