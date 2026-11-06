@@ -14,7 +14,6 @@ import com.liferay.asset.tags.constants.AssetTagsAdminPortletKeys;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.DataLevel;
@@ -22,8 +21,6 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
-import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
-import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
 import com.liferay.exportimport.report.model.ExportImportReportEntry;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
@@ -38,7 +35,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -222,7 +218,15 @@ public class AssetTagsPortletDataHandlerTest
 
 			AssetTag assetTag = _addTag();
 
-			DepotEntry depotEntry = _addStagedDepotEntry();
+			DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+				HashMapBuilder.put(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()
+				).build(),
+				HashMapBuilder.put(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()
+				).build(),
+				DepotConstants.TYPE_SPACE,
+				ServiceContextTestUtil.getServiceContext());
 
 			Group depotGroup = depotEntry.getGroup();
 
@@ -290,48 +294,11 @@ public class AssetTagsPortletDataHandlerTest
 		return true;
 	}
 
-	private DepotEntry _addStagedDepotEntry() throws Exception {
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			DepotConstants.TYPE_ASSET_LIBRARY,
-			ServiceContextTestUtil.getServiceContext());
-
-		return _enableLocalStaging(depotEntry);
-	}
-
 	private AssetTag _addTag() throws Exception {
 		return _assetTagLocalService.addTag(
 			"", TestPropsValues.getUserId(), stagingGroup.getGroupId(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
-	}
-
-	private DepotEntry _enableLocalStaging(DepotEntry depotEntry)
-		throws Exception {
-
-		Group stagingGroup = _enableLocalStaging(depotEntry.getGroup());
-
-		return DepotEntryLocalServiceUtil.fetchGroupDepotEntry(
-			stagingGroup.getGroupId());
-	}
-
-	private Group _enableLocalStaging(Group group) throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(group.getGroupId());
-
-		_setStagingAttributes(serviceContext);
-
-		serviceContext.setAttribute("staging", Boolean.TRUE);
-
-		StagingLocalServiceUtil.enableLocalStaging(
-			TestPropsValues.getUserId(), group, false, false, serviceContext);
-
-		return group.getStagingGroup();
 	}
 
 	private File _exportLayout() throws Exception {
@@ -352,25 +319,6 @@ public class AssetTagsPortletDataHandlerTest
 									AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN,
 								new String[] {Boolean.TRUE.toString()}
 							).build())));
-	}
-
-	private void _setStagingAttribute(
-		ServiceContext serviceContext, String key) {
-
-		serviceContext.setAttribute(
-			StagingConstants.STAGED_PREFIX + key + StringPool.DOUBLE_DASH,
-			String.valueOf(Boolean.TRUE));
-	}
-
-	private void _setStagingAttributes(ServiceContext serviceContext) {
-		_setStagingAttribute(
-			serviceContext, PortletDataHandlerKeys.DATA_STRATEGY_MIRROR);
-		_setStagingAttribute(
-			serviceContext, PortletDataHandlerKeys.PORTLET_CONFIGURATION_ALL);
-		_setStagingAttribute(
-			serviceContext, PortletDataHandlerKeys.PORTLET_DATA_ALL);
-		_setStagingAttribute(
-			serviceContext, PortletDataHandlerKeys.PORTLET_SETUP_ALL);
 	}
 
 	private ExportImportConfiguration _setUpExportImportConfiguration()
