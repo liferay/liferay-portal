@@ -16,7 +16,6 @@ import jakarta.ws.rs.sse.SseEventSource;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.apache.aries.component.dsl.OSGi;
 import org.apache.aries.component.dsl.OSGiResult;
@@ -62,12 +61,6 @@ public class JAXRSLifecycle {
 		_safeCloseableDCLSingleton.destroy(SafeCloseable::close);
 	}
 
-	private OSGi<?> _registerClient() {
-		return OSGi.register(
-			ClientBuilder.class, new ClientBuilderFactory(),
-			(Map<String, Object>)null);
-	}
-
 	private OSGi<?> _registerSseEventSourceFactory() {
 		return OSGi.register(
 			SseEventSourceFactory.class,
@@ -105,6 +98,10 @@ public class JAXRSLifecycle {
 	private SafeCloseable _start() {
 		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
 
+		ServiceRegistration<ClientBuilder> clientBuilderServiceRegistration =
+			_bundleContext.registerService(
+				ClientBuilder.class, new ClientBuilderFactory(), null);
+
 		OSGi<?> runWhiteboards = OSGi.coalesce(
 			OSGi.configuration("org.apache.aries.jax.rs.whiteboard.default"),
 			OSGi.just(
@@ -122,7 +119,6 @@ public class JAXRSLifecycle {
 		);
 
 		OSGiResult osgiResult = OSGi.all(
-			OSGi.ignore(_registerClient()),
 			OSGi.ignore(_registerSseEventSourceFactory()),
 			OSGi.ignore(runWhiteboards)
 		).run(
@@ -139,6 +135,8 @@ public class JAXRSLifecycle {
 			serviceRegistration.unregister();
 
 			osgiResult.close();
+
+			clientBuilderServiceRegistration.unregister();
 
 			RuntimeDelegate.setInstance(null);
 		};
