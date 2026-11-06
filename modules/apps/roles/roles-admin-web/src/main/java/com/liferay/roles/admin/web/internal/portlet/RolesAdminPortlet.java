@@ -629,9 +629,10 @@ public class RolesAdminPortlet extends MVCPortlet {
 				include("/edit_role.jsp", renderRequest, renderResponse);
 			}
 		}
-		else if (SessionErrors.contains(
-					renderRequest,
-					DataLimitExceededException.class.getName()) ||
+		else if (_isStaleRole(renderRequest, roleId, mvcPath) ||
+				 SessionErrors.contains(
+					 renderRequest,
+					 DataLimitExceededException.class.getName()) ||
 				 SessionErrors.contains(
 					 renderRequest, NoSuchRoleException.class.getName()) ||
 				 SessionErrors.contains(
@@ -705,6 +706,20 @@ public class RolesAdminPortlet extends MVCPortlet {
 		catch (PortalException portalException) {
 			return ReflectionUtil.throwException(portalException);
 		}
+	}
+
+	private boolean _isStaleRole(
+		RenderRequest renderRequest, long roleId, String mvcPath) {
+
+		if ((roleId > 0) && mvcPath.equals("/edit_role.jsp") &&
+			(_roleLocalService.fetchRole(roleId) == null)) {
+
+			SessionErrors.add(renderRequest, NoSuchRoleException.class);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _setAttributes(PortletRequest portletRequest) {
