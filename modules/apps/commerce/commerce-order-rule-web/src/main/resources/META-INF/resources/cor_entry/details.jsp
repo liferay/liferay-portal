@@ -15,17 +15,17 @@ long corEntryId = corEntryDisplayContext.getCOREntryId();
 
 boolean neverExpire = ParamUtil.getBoolean(request, "neverExpire", true);
 
-if ((corEntry != null) && (corEntry.getExpirationDate() != null)) {
+if (corEntry.getExpirationDate() != null) {
 	neverExpire = false;
 }
 
-String type = ParamUtil.getString(renderRequest, "type", GetterUtil.get(corEntry, COREntry::getType, COREntryConstants.TYPE_MINIMUM_ORDER_AMOUNT));
+String type = ParamUtil.getString(renderRequest, "type", corEntry.getType());
 %>
 
 <portlet:actionURL name="/cor_entry/edit_cor_entry" var="editCOREntryActionURL" />
 
 <aui:form action="<%= editCOREntryActionURL %>" cssClass="pt-4" method="post" name="fm">
-	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (corEntry == null) ? Constants.ADD : Constants.UPDATE %>" />
+	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="externalReferenceCode" type="hidden" value="<%= corEntry.getExternalReferenceCode() %>" />
 	<aui:input name="corEntryId" type="hidden" value="<%= corEntryId %>" />
