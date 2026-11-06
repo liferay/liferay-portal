@@ -6,6 +6,7 @@
 package com.liferay.object.web.internal.info.item.creator.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.info.exception.InfoFormValidationException;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.RelatedInfoFieldValue;
@@ -30,7 +31,6 @@ import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.web.internal.info.item.BaseObjectEntryInfoItemTestCase;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.InfoFormException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.OrganizationConstants;
@@ -353,7 +353,7 @@ public class ObjectEntryInfoItemCreatorTest
 				InfoItemCreator.class, objectDefinition2.getClassName());
 
 		AssertUtils.assertFailure(
-			InfoFormException.class, null,
+			InfoFormValidationException.InvalidInfoFieldValue.class, null,
 			() -> infoItemCreator.createFromInfoItemFieldValues(
 				0,
 				_getInfoItemFieldValues(

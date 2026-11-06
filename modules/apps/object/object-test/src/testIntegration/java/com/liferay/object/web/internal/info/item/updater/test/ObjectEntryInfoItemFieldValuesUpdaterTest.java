@@ -16,6 +16,7 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.test.util.DLTestUtil;
+import com.liferay.info.exception.InfoFormValidationException;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.RelatedInfoFieldValue;
@@ -581,7 +582,7 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 			objectRelationship, relatedObjectEntry2.getObjectEntryId());
 
 		AssertUtils.assertFailure(
-			InfoFormException.class, null,
+			InfoFormValidationException.InvalidInfoFieldValue.class, null,
 			() -> _updateFromInfoItemFieldValues(
 				_getInfoItemFieldValues(
 					objectRelationship,

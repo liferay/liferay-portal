@@ -20,6 +20,7 @@ import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -37,6 +38,7 @@ import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.object.web.internal.model.ProxyObjectEntry;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -688,11 +690,20 @@ public class ObjectEntryUtil {
 			relatedObjectDefinition, userId);
 
 		for (String relatedObjectEntryId : relatedObjectEntryIds) {
-			ObjectRelationshipLocalServiceUtil.
-				addObjectRelationshipMappingTableValues(
-					userId, objectRelationship.getObjectRelationshipId(),
-					primaryKey, GetterUtil.getLong(relatedObjectEntryId),
-					serviceContext);
+			try {
+				ObjectRelationshipLocalServiceUtil.
+					addObjectRelationshipMappingTableValues(
+						userId, objectRelationship.getObjectRelationshipId(),
+						primaryKey, GetterUtil.getLong(relatedObjectEntryId),
+						serviceContext);
+			}
+			catch (NoSuchModelException noSuchModelException) {
+				throw new ObjectEntryValuesException.InvalidValue(
+					noSuchModelException.getMessage(),
+					ObjectRelationshipConstants.
+						OBJECT_RELATIONSHIP_FIELD_NAME_PREFIX +
+							objectRelationship.getName());
+			}
 		}
 	}
 
