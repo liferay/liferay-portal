@@ -1816,19 +1816,27 @@ public class CompanyLocalServiceTest {
 
 		_testUpdateCompanyVirtualHostnames(new String[] {hostname}, false);
 
-		Group group = GroupTestUtil.addGroupToCompany(_company.getCompanyId());
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					_company.getCompanyId())) {
 
-		try {
-			_layoutSetLocalService.updateVirtualHosts(
-				group.getGroupId(), false,
-				TreeMapBuilder.put(
-					ascii ? unicodeHostname : asciiHostname, StringPool.BLANK
-				).build());
+			Group group = GroupTestUtil.addGroupToCompany(
+				_company.getCompanyId());
 
-			_testUpdateCompanyVirtualHostnames(new String[] {hostname}, true);
-		}
-		finally {
-			_groupLocalService.deleteGroup(group);
+			try {
+				_layoutSetLocalService.updateVirtualHosts(
+					group.getGroupId(), false,
+					TreeMapBuilder.put(
+						ascii ? unicodeHostname : asciiHostname,
+						StringPool.BLANK
+					).build());
+
+				_testUpdateCompanyVirtualHostnames(
+					new String[] {hostname}, true);
+			}
+			finally {
+				_groupLocalService.deleteGroup(group);
+			}
 		}
 	}
 
