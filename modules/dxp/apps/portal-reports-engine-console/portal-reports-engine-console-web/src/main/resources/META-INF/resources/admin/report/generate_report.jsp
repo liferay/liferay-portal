@@ -10,7 +10,7 @@
 <%
 Definition definition = (Definition)request.getAttribute(ReportsEngineWebKeys.DEFINITION);
 
-String reportName = ParamUtil.getString(request, "reportName", GetterUtil.get(definition, Definition::getReportName, StringPool.BLANK));
+String reportName = ParamUtil.getString(request, "reportName", definition.getReportName());
 
 portletDisplay.setShowBackIcon(true);
 
