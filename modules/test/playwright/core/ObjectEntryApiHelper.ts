@@ -8,7 +8,7 @@ import {liferayConfig} from './liferayConfig';
 
 type DataObject = {[key: string]: unknown};
 
-type ObjectEntry = {[key: string]: any};
+type ObjectEntry = any;
 
 export class ObjectEntryApiHelper {
 	readonly apiHelpers: BaseApiHelpers;

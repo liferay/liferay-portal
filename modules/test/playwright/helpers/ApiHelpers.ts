@@ -5,7 +5,6 @@
 
 import {
 	ObjectActionAPI,
-	ObjectDefinitionAPI,
 	ObjectFolderAPI,
 	ObjectRelationshipAPI,
 } from '@liferay/object-admin-rest-client-js/v1_0';
@@ -48,8 +47,6 @@ import {LaunchApiHelper} from './LaunchApiHelper';
 import {ListTypeAdminApiHelper} from './ListTypeAdminApiHelper';
 import {NotificationApiHelper} from './NotificationApiHelper';
 import {ObjectActionApiHelper} from './ObjectActionApiHelper';
-import {ObjectAdminApiHelper} from './ObjectAdminApiHelper';
-import {ObjectEntryApiHelper} from './ObjectEntryApiHelper';
 import {ObjectEntryFolderApiHelper} from './ObjectEntryFolderApiHelper';
 import {SCIMApiHelper} from './SCIMApiHelper';
 import {SEOStudioApiHelper} from './SEOStudioApiHelper';
@@ -171,8 +168,6 @@ export class ApiHelpers extends BaseApiHelpers {
 	readonly listTypeAdmin: ListTypeAdminApiHelper;
 	readonly notification: NotificationApiHelper;
 	readonly objectAction: ObjectActionApiHelper;
-	readonly objectAdmin: ObjectAdminApiHelper;
-	readonly objectEntry: ObjectEntryApiHelper;
 	readonly objectFolder: ObjectEntryFolderApiHelper;
 	readonly scim: SCIMApiHelper;
 	readonly searchExperiences: SearchExperiencesApiHelper;
@@ -297,8 +292,6 @@ export class ApiHelpers extends BaseApiHelpers {
 		this.listTypeAdmin = new ListTypeAdminApiHelper(this);
 		this.notification = new NotificationApiHelper(this);
 		this.objectAction = new ObjectActionApiHelper(this);
-		this.objectAdmin = new ObjectAdminApiHelper(this);
-		this.objectEntry = new ObjectEntryApiHelper(this);
 		this.objectFolder = new ObjectEntryFolderApiHelper(this);
 		this.scim = new SCIMApiHelper(this);
 		this.searchExperiences = new SearchExperiencesApiHelper(this);
@@ -597,94 +590,6 @@ export class DataApiHelpers extends ApiHelpers {
 		}
 		else if (item.type === 'workflowDefinition') {
 			await this.headlessAdminWorkflow.deleteWorkflowDefinition(item.id);
-		}
-	}
-
-	async collectObjectDefinitionIds(
-		objectDefinitionId: number,
-		objectDefinitionIds: number[],
-		visitedObjectDefinitionIds: Set<number>
-	) {
-		if (visitedObjectDefinitionIds.has(objectDefinitionId)) {
-			return;
-		}
-
-		visitedObjectDefinitionIds.add(objectDefinitionId);
-
-		const objectDefinitionAPIClient =
-			await this.buildRestClient(ObjectDefinitionAPI);
-
-		const {body: objectDefinition} =
-			await objectDefinitionAPIClient.getObjectDefinition(
-				objectDefinitionId
-			);
-
-		const objectRelationshipAPIClient = await this.buildRestClient(
-			ObjectRelationshipAPI
-		);
-
-		const {body: objectRelationships} =
-			await objectRelationshipAPIClient.getObjectDefinitionByExternalReferenceCodeObjectRelationshipsPage(
-				objectDefinition.externalReferenceCode
-			);
-
-		const isCMSObjectDefinition =
-			objectDefinition.objectFolderExternalReferenceCode?.startsWith(
-				'L_CMS'
-			);
-
-		for (const objectRelationship of objectRelationships.items) {
-			if (!objectRelationship.edge) {
-				continue;
-			}
-
-			if (
-				isCMSObjectDefinition &&
-				objectRelationship.objectDefinitionId2
-			) {
-				const {body: relatedObjectDefinition} =
-					await objectDefinitionAPIClient.getObjectDefinition(
-						objectRelationship.objectDefinitionId2
-					);
-
-				if (
-					relatedObjectDefinition.objectFolderExternalReferenceCode ===
-					'L_CMS_STRUCTURE_REPEATABLE_GROUPS'
-				) {
-					await this.collectObjectDefinitionIds(
-						objectRelationship.objectDefinitionId2,
-						objectDefinitionIds,
-						visitedObjectDefinitionIds
-					);
-				}
-			}
-
-			await objectRelationshipAPIClient.putObjectRelationship(
-				objectRelationship.id,
-				{
-					...objectRelationship,
-					edge: false,
-				}
-			);
-		}
-
-		objectDefinitionIds.push(objectDefinitionId);
-	}
-
-	async deleteObjectDefinition(objectDefinitionId: number) {
-		const objectDefinitionAPIClient =
-			await this.buildRestClient(ObjectDefinitionAPI);
-
-		const objectDefinitionIds: number[] = [];
-
-		await this.collectObjectDefinitionIds(
-			objectDefinitionId,
-			objectDefinitionIds,
-			new Set()
-		);
-
-		for (const id of objectDefinitionIds) {
-			await objectDefinitionAPIClient.deleteObjectDefinition(id);
 		}
 	}
 }
