@@ -63,12 +63,6 @@ public class IndividualSegmentMembershipChangeMetricUtil {
 
 		return new IndividualSegmentMembershipChangeMetric() {
 			{
-				setAddedIndividuals(
-					() -> _toSumMetric(
-						currentIndividualSegmentMembershipChangeAggregations,
-						previousIndividualSegmentMembershipChangeAggregations,
-						IndividualSegmentMembershipChangeAggregation::
-							getAddedIndividualsCount));
 				setIndividuals(
 					() -> _toLatestValueMetric(
 						currentIndividualSegmentMembershipChangeAggregations,
@@ -81,12 +75,6 @@ public class IndividualSegmentMembershipChangeMetricUtil {
 						previousIndividualSegmentMembershipChangeAggregations,
 						IndividualSegmentMembershipChangeAggregation::
 							getKnownIndividualsCount));
-				setRemovedIndividuals(
-					() -> _toSumMetric(
-						currentIndividualSegmentMembershipChangeAggregations,
-						previousIndividualSegmentMembershipChangeAggregations,
-						IndividualSegmentMembershipChangeAggregation::
-							getRemovedIndividualsCount));
 			}
 		};
 	}
@@ -108,29 +96,6 @@ public class IndividualSegmentMembershipChangeMetricUtil {
 
 		return (double)toLongFunction.applyAsLong(
 			individualSegmentMembershipChangeAggregation);
-	}
-
-	private static Double _getSum(
-		List<IndividualSegmentMembershipChangeAggregation>
-			individualSegmentMembershipChangeAggregations,
-		ToLongFunction<IndividualSegmentMembershipChangeAggregation>
-			toLongFunction) {
-
-		if (individualSegmentMembershipChangeAggregations.isEmpty()) {
-			return null;
-		}
-
-		long sum = 0;
-
-		for (IndividualSegmentMembershipChangeAggregation
-				individualSegmentMembershipChangeAggregation :
-					individualSegmentMembershipChangeAggregations) {
-
-			sum += toLongFunction.applyAsLong(
-				individualSegmentMembershipChangeAggregation);
-		}
-
-		return (double)sum;
 	}
 
 	private static String _getTrendClassification(
@@ -235,25 +200,6 @@ public class IndividualSegmentMembershipChangeMetricUtil {
 				setValue(() -> metricValue);
 			}
 		};
-	}
-
-	private static Metric _toSumMetric(
-		List<IndividualSegmentMembershipChangeAggregation>
-			currentIndividualSegmentMembershipChangeAggregations,
-		List<IndividualSegmentMembershipChangeAggregation>
-			previousIndividualSegmentMembershipChangeAggregations,
-		ToLongFunction<IndividualSegmentMembershipChangeAggregation>
-			toLongFunction) {
-
-		return _toMetric(
-			currentIndividualSegmentMembershipChangeAggregations,
-			_getSum(
-				currentIndividualSegmentMembershipChangeAggregations,
-				toLongFunction),
-			_getSum(
-				previousIndividualSegmentMembershipChangeAggregations,
-				toLongFunction),
-			toLongFunction);
 	}
 
 }

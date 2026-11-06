@@ -603,15 +603,11 @@ components:
             type: object
         IndividualSegmentMembershipChangeMetric:
             description:
-                "How an individual segment's membership changed over the selected date range, bucketed by day. `individuals` and `knownIndividuals` are the segment's size: `value` is the size at the end of the range and `previousValue` the size at the end of the preceding range of the same length. `addedIndividuals` and `removedIndividuals` are how much the segment grew and shrank, summed over the range. Those two are derived from the change in size between consecutive days, so on any one day only one of them can be non-zero: a day on which 10 individuals joined and 10 left reports zero for both, and a day on which 12 joined and 10 left reports 2 added and 0 removed. Read them as net movement, not as counts of individuals entering and leaving. For the current member list use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+                "How an individual segment's membership changed over the selected date range, bucketed by day. `individuals` and `knownIndividuals` are the segment's size: `value` is the size at the end of the range and `previousValue` the size at the end of the preceding range of the same length. For the current member list use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
             properties:
-                addedIndividuals:
-                    $ref: "#/components/schemas/Metric"
                 individuals:
                     $ref: "#/components/schemas/Metric"
                 knownIndividuals:
-                    $ref: "#/components/schemas/Metric"
-                removedIndividuals:
                     $ref: "#/components/schemas/Metric"
             type: object
         Metric:
@@ -2021,7 +2017,7 @@ paths:
     "/workspace/{groupId}/individual-segments/{individualSegmentId}/membership-change-metrics":
         get:
             description:
-                "How an individual segment's membership changed over a date range: its size at the end of the range and how much it grew and shrank, each with the preceding range's figure, a trend percentage, and a daily time series. Use this to answer 'is this segment growing or shrinking' style questions. Growth and shrinkage are net per day and cannot report individuals joining and leaving on the same day; see the `IndividualSegmentMembershipChangeMetric` schema. Buckets are always daily and the range always ends today, so pass `rangeKey` as one of LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. LAST_30_DAYS is used when omitted. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "How an individual segment's size changed over a date range: its size at the end of the range with the preceding range's figure, a trend percentage, and a daily time series. Use this to answer 'is this segment growing or shrinking' style questions. The analytics engine does not record individuals joining or leaving a segment, so only the segment size is reported. Buckets are always daily and the range always ends today, so pass `rangeKey` as one of LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. LAST_30_DAYS is used when omitted. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupIndividualSegmentMembershipChangeMetric
             parameters:
                 -   in: path
