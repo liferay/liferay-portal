@@ -257,6 +257,9 @@ public class ObjectFieldUtil {
 		else if (value.length() == 16) {
 			return "yyyy-MM-dd HH:mm";
 		}
+		else if ((value.length() == 19) && (value.charAt(10) == 'T')) {
+			return "yyyy-MM-dd'T'HH:mm:ss";
+		}
 		else if (value.length() == 20) {
 			return "yyyy-MM-dd'T'HH:mm:ss'Z'";
 		}
