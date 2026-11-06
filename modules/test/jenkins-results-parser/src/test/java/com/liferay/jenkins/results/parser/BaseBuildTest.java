@@ -99,16 +99,16 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 		ReflectionTestUtil.setFieldValue(
 			baseBuild, "_jobName", "test portal(master)");
 
-		Mockito.doCallRealMethod(
-		).when(
-			baseBuild
-		).getJobURL();
-
 		Mockito.when(
 			baseBuild.getJenkinsMaster()
 		).thenReturn(
 			jenkinsMaster
 		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuild
+		).getJobURL();
 
 		testEquals(
 			JenkinsResultsParserUtil.combine(

@@ -27,11 +27,6 @@ public class JUnitTestResultTest
 			"https://test-1-1.liferay.com/job/test%20portal(master)/12"
 		);
 
-		Mockito.doCallRealMethod(
-		).when(
-			jUnitTestResult
-		).getTestReportURL();
-
 		Mockito.when(
 			jUnitTestResult.getBuild()
 		).thenReturn(
@@ -55,6 +50,11 @@ public class JUnitTestResultTest
 		).thenReturn(
 			"FooTest"
 		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			jUnitTestResult
+		).getTestReportURL();
 
 		testEquals(
 			"https://test-1-1.liferay.com/job/test%20portal(master)/12" +

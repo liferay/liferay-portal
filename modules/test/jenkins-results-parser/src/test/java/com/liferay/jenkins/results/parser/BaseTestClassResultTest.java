@@ -28,11 +28,6 @@ public class BaseTestClassResultTest
 			"https://test-1-1.liferay.com/job/test%20portal(master)/12/"
 		);
 
-		Mockito.doCallRealMethod(
-		).when(
-			baseTestClassResult
-		).getTestClassReportURL();
-
 		Mockito.when(
 			baseTestClassResult.getBuild()
 		).thenReturn(
@@ -50,6 +45,11 @@ public class BaseTestClassResultTest
 		).thenReturn(
 			"FooTest"
 		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTestClassResult
+		).getTestClassReportURL();
 
 		testEquals(
 			"https://test-1-1.liferay.com/job/test%20portal(master)/12" +
