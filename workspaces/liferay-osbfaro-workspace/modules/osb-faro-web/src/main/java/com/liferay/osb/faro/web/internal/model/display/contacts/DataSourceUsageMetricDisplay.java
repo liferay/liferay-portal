@@ -16,11 +16,11 @@ public class DataSourceUsageMetricDisplay {
 		List<ApiUsageMetricDisplay> apiUsageMetricDisplays,
 		long batchSegmentsCount, long connectedDataSourcesCount,
 		long connectorsConnectedCount, String corpProjectName,
-		String corpProjectUuid, List<DataSourceUsage> dataSourceUsages,
-		String lastAccessDateString, String lastAnniversaryDateString,
-		boolean offline, String productEntryId, String productName,
-		long realTimeSegmentsCount, String salesforceAccountId,
-		String weDeployKey) {
+		String corpProjectUuid, boolean dataPlatform,
+		List<DataSourceUsage> dataSourceUsages, String lastAccessDateString,
+		String lastAnniversaryDateString, boolean offline,
+		String productEntryId, String productName, long realTimeSegmentsCount,
+		String salesforceAccountId, String weDeployKey) {
 
 		_apiUsageMetricDisplays = apiUsageMetricDisplays;
 		_batchSegmentsCount = batchSegmentsCount;
@@ -28,6 +28,7 @@ public class DataSourceUsageMetricDisplay {
 		_connectorsConnectedCount = connectorsConnectedCount;
 		_corpProjectName = corpProjectName;
 		_corpProjectUuid = corpProjectUuid;
+		_dataPlatform = dataPlatform;
 		_dataSourceUsages = dataSourceUsages;
 		_lastAccessDateString = lastAccessDateString;
 		_lastAnniversaryDateString = lastAnniversaryDateString;
@@ -95,6 +96,10 @@ public class DataSourceUsageMetricDisplay {
 		return _weDeployKey;
 	}
 
+	public boolean isDataPlatform() {
+		return _dataPlatform;
+	}
+
 	public boolean isOffline() {
 		return _offline;
 	}
@@ -105,6 +110,7 @@ public class DataSourceUsageMetricDisplay {
 	private final long _connectorsConnectedCount;
 	private final String _corpProjectName;
 	private final String _corpProjectUuid;
+	private final boolean _dataPlatform;
 	private final List<DataSourceUsage> _dataSourceUsages;
 	private final String _lastAccessDateString;
 	private final String _lastAnniversaryDateString;

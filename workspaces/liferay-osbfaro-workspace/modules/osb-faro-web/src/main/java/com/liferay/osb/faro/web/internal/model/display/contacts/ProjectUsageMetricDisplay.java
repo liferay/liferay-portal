@@ -18,14 +18,16 @@ public class ProjectUsageMetricDisplay {
 
 	public ProjectUsageMetricDisplay(
 			String corpProjectName, String corpProjectUuid,
-			String lastAccessDateString, String lastAnniversaryDateString,
-			boolean offline, String productEntryId, String productName,
+			boolean dataPlatform, String lastAccessDateString,
+			String lastAnniversaryDateString, boolean offline,
+			String productEntryId, String productName,
 			String salesforceAccountId, List<UsageMetric> usageMetrics,
 			String weDeployKey)
 		throws Exception {
 
 		_corpProjectName = corpProjectName;
 		_corpProjectUuid = corpProjectUuid;
+		_dataPlatform = dataPlatform;
 		_lastAccessDateString = lastAccessDateString;
 		_lastAnniversaryDateString = lastAnniversaryDateString;
 		_offline = offline;
@@ -76,12 +78,17 @@ public class ProjectUsageMetricDisplay {
 		return _weDeployKey;
 	}
 
+	public boolean isDataPlatform() {
+		return _dataPlatform;
+	}
+
 	public boolean isOffline() {
 		return _offline;
 	}
 
 	private String _corpProjectName;
 	private String _corpProjectUuid;
+	private boolean _dataPlatform;
 	private String _lastAccessDateString;
 	private String _lastAnniversaryDateString;
 	private boolean _offline;

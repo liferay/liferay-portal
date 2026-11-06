@@ -232,7 +232,8 @@ public class ProjectUsageHelper {
 		return new DataSourceUsageMetricDisplay(
 			apiUsageMetricDisplays, batchSegmentsCount, dataSourcesCount,
 			connectorsCount, faroProject.getCorpProjectName(),
-			faroProject.getCorpProjectUuid(), dataSourceUsages,
+			faroProject.getCorpProjectUuid(), faroProject.isDataPlatform(),
+			dataSourceUsages,
 			DateUtil.formatDate(
 				new Date(faroProject.getLastAccessTime()),
 				DateUtil.PATTERN_DATE),

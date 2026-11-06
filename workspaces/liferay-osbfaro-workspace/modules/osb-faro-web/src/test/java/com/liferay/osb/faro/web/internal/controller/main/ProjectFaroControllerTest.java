@@ -371,6 +371,12 @@ public class ProjectFaroControllerTest {
 		);
 
 		Mockito.when(
+			faroProject.isDataPlatform()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
 			_faroProjectLocalService.getFaroProjects(0, 20)
 		).thenReturn(
 			Collections.singletonList(faroProject)
@@ -399,6 +405,7 @@ public class ProjectFaroControllerTest {
 			ProductConstants.getProductName(
 				ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE),
 			projectUsageMetricDisplay.getProductName());
+		Assert.assertTrue(projectUsageMetricDisplay.isDataPlatform());
 		Assert.assertTrue(projectUsageMetricDisplay.isOffline());
 
 		Assert.assertEquals(

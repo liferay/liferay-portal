@@ -1697,6 +1697,7 @@ public class ProjectFaroController extends BaseFaroController {
 
 		return new ProjectUsageMetricDisplay(
 			faroProject.getCorpProjectName(), faroProject.getCorpProjectUuid(),
+			faroProject.isDataPlatform(),
 			DateUtil.formatDate(
 				new Date(faroProject.getLastAccessTime()),
 				DateUtil.PATTERN_DATE),
