@@ -181,8 +181,7 @@ public class InstanceConfigurationResourceImpl
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
 			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
-				contextCompany.getCompanyId(),
-				contextCompany.getDefaultWebId()));
+				contextCompany.getCompanyId(), contextCompany.getWebId()));
 
 		if (ArrayUtil.isEmpty(configurations)) {
 			return;
@@ -246,7 +245,7 @@ public class InstanceConfigurationResourceImpl
 			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
 				contextCompany.getCompanyId(),
 				instanceConfigurationExternalReferenceCode,
-				contextCompany.getDefaultWebId()));
+				contextCompany.getWebId()));
 
 		if (ArrayUtil.isEmpty(configurations)) {
 			throw new NotFoundException(
@@ -313,8 +312,7 @@ public class InstanceConfigurationResourceImpl
 					pid ->
 						ConfigurationFilterStringUtil.
 							getCompanyScopedFilterString(
-								companyId, pid,
-								contextCompany.getDefaultWebId()),
+								companyId, pid, contextCompany.getWebId()),
 					instanceConfiguration.getProperties(),
 					ExtendedObjectClassDefinition.Scope.COMPANY,
 					_settingsLocatorHelper);
