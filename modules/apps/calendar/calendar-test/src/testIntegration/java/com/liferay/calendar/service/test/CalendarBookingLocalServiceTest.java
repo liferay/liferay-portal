@@ -3333,6 +3333,69 @@ public class CalendarBookingLocalServiceTest {
 			invitedCalendarBooking.getTitle(LocaleUtil.US));
 	}
 
+	@Test
+	public void testUpdateStatusNotifiesReinvitedInvitee() throws Exception {
+		ServiceContext serviceContext = createServiceContext();
+
+		Calendar calendar = CalendarTestUtil.addCalendar(_user, serviceContext);
+
+		User invitedUser = UserTestUtil.addUser();
+
+		Calendar invitedCalendar = CalendarTestUtil.addCalendar(invitedUser);
+
+		long startTime = System.currentTimeMillis();
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
+
+		CalendarBooking calendarBooking =
+			CalendarBookingTestUtil.addMasterCalendarBooking(
+				_user, calendar, new long[] {invitedCalendar.getCalendarId()},
+				startTime, startTime + (Time.HOUR * 10), serviceContext);
+
+		CalendarBooking childCalendarBooking = getChildCalendarBooking(
+			calendarBooking);
+
+		childCalendarBooking = _calendarBookingLocalService.updateStatus(
+			_user.getUserId(), childCalendarBooking,
+			WorkflowConstants.STATUS_DENIED, serviceContext);
+
+		MailServiceTestUtil.clearMessages();
+
+		_calendarBookingLocalService.updateStatus(
+			_user.getUserId(), childCalendarBooking,
+			WorkflowConstants.STATUS_PENDING, serviceContext);
+
+		String mailMessageSubject = StringBundler.concat(
+			"Calendar: Event Notification for \"",
+			calendarBooking.getTitle(LocaleUtil.getSiteDefault()),
+			StringPool.QUOTE);
+
+		assertMailSubjectCount(mailMessageSubject, 1);
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		calendarBooking = CalendarBookingTestUtil.addMasterCalendarBooking(
+			_user, calendar, new long[] {invitedCalendar.getCalendarId()},
+			startTime, startTime + (Time.HOUR * 10), serviceContext);
+
+		childCalendarBooking = getChildCalendarBooking(calendarBooking);
+
+		childCalendarBooking = _calendarBookingLocalService.updateStatus(
+			_user.getUserId(), childCalendarBooking,
+			WorkflowConstants.STATUS_DENIED, serviceContext);
+
+		_calendarBookingLocalService.updateStatus(
+			_user.getUserId(), childCalendarBooking,
+			WorkflowConstants.STATUS_PENDING, serviceContext);
+
+		mailMessageSubject = StringBundler.concat(
+			"Calendar: Event Notification for \"",
+			calendarBooking.getTitle(LocaleUtil.getSiteDefault()),
+			StringPool.QUOTE);
+
+		assertMailSubjectCount(mailMessageSubject, 0);
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
