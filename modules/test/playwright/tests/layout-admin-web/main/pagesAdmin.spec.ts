@@ -746,7 +746,7 @@ test('Changes the permissions of a group of pages', async ({
 	const permissionsFrame = page.frameLocator('iframe[title="Permissions"]');
 
 	await permissionsFrame
-		.getByRole('cell', {exact: true, name: 'Role'})
+		.getByRole('columnheader', {exact: true, name: 'Role'})
 		.waitFor();
 
 	// Check that the Guest-View permission value for both pages is indeterminate
@@ -1004,7 +1004,7 @@ test(
 		);
 
 		await permissionsFrame
-			.getByRole('cell', {exact: true, name: 'Role'})
+			.getByRole('columnheader', {exact: true, name: 'Role'})
 			.waitFor();
 
 		await expect(
@@ -1075,7 +1075,7 @@ test(
 		);
 
 		await permissionsFrame
-			.getByRole('cell', {exact: true, name: 'Role'})
+			.getByRole('columnheader', {exact: true, name: 'Role'})
 			.waitFor();
 
 		await expect(

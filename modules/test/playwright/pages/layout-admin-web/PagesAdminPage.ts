@@ -722,7 +722,7 @@ export class PagesAdminPage {
 		);
 
 		await permissionsFrame
-			.getByRole('cell', {exact: true, name: 'Role'})
+			.getByRole('columnheader', {exact: true, name: 'Role'})
 			.waitFor();
 
 		// Check the permissions
