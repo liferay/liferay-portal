@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
@@ -47,14 +48,17 @@ public class ScheduleLaunchMVCActionCommand extends BaseLaunchMVCActionCommand {
 		Date publishDate = new Date(
 			ParamUtil.getLong(actionRequest, "publishTime"));
 
-		if (!publishDate.after(new Date())) {
+		if (publishDate.getTime() <
+				(System.currentTimeMillis() + Time.MINUTE)) {
+
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse,
 				JSONUtil.put(
 					"validationError",
 					language.get(
 						portal.getHttpServletRequest(actionRequest),
-						"the-publish-time-must-be-in-the-future")));
+						"the-date-and-time-must-be-at-least-one-minute-in-" +
+							"the-future")));
 
 			return;
 		}
