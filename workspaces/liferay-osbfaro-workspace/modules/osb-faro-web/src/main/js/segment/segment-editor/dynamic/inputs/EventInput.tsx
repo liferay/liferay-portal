@@ -33,6 +33,7 @@ import {
 } from '../utils/custom-inputs';
 import {isBoolean, isNil} from 'lodash';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
+import {getSegmentCategoryLabel} from 'segment/utils/labels';
 
 type Touched = {
 	attribute: boolean;
@@ -368,9 +369,7 @@ const EventInput: React.FC<IEventInputProps> = ({
 					label
 					shrink
 				>
-					{isAccountSegment
-						? Liferay.Language.get('account')
-						: Liferay.Language.get('individual')}
+					{getSegmentCategoryLabel(segmentCategory)}
 				</Form.GroupItem>
 
 				<OperatorDropdown />
