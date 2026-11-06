@@ -127,6 +127,25 @@ public class WorkflowDefinitionLinkResourceTest
 
 	@Override
 	protected WorkflowDefinitionLink
+			testGraphQLGetWorkflowDefinitionByExternalReferenceCodeWorkflowDefinitionLinksPageWorkflowDefinitionWorkflowDefinitionLink_addWorkflowDefinitionLink(
+				String externalReferenceCode,
+				WorkflowDefinitionLink workflowDefinitionLink)
+		throws Exception {
+
+		return testGetWorkflowDefinitionByExternalReferenceCodeWorkflowDefinitionLinksPage_addWorkflowDefinitionLink(
+			externalReferenceCode, workflowDefinitionLink);
+	}
+
+	@Override
+	protected Long
+			testGraphQLPostWorkflowDefinitionByExternalReferenceCodeWorkflowDefinitionLink_getWorkflowDefinitionId()
+		throws Exception {
+
+		return _kaleoDefinition.getKaleoDefinitionId();
+	}
+
+	@Override
+	protected WorkflowDefinitionLink
 			testPostWorkflowDefinitionByExternalReferenceCodeWorkflowDefinitionLink_addWorkflowDefinitionLink(
 				WorkflowDefinitionLink workflowDefinitionLink)
 		throws Exception {
