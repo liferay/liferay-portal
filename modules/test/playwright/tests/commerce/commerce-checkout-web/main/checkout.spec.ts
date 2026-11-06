@@ -20,6 +20,7 @@ import {productMenuPageTest} from '../../../../fixtures/productMenuPageTest';
 import {systemSettingsPageTest} from '../../../../fixtures/systemSettingsPageTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {liferayConfig} from '../../../../liferay.config';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {
@@ -2736,7 +2737,7 @@ test(
 		page,
 		site,
 	}) => {
-		test.setTimeout(600000);
+		test.setTimeout(180000);
 
 		const {account, buyerUser, channel, checkoutLayout, sku} =
 			await checkoutStorefrontSetUp(
@@ -2845,12 +2846,15 @@ test(
 				checkoutPage.deliveryTermOption(deliveryTerm2.label['en_US'])
 			).toBeVisible();
 
-			await checkoutPage
-				.termMoreInfoLink(deliveryTerm1.label['en_US'])
-				.click();
-
 			const termModal = page.getByRole('dialog', {
 				name: deliveryTerm1.label['en_US'],
+			});
+
+			await clickAndExpectToBeVisible({
+				target: termModal,
+				trigger: checkoutPage.termMoreInfoLink(
+					deliveryTerm1.label['en_US']
+				),
 			});
 
 			await expect(
@@ -2880,12 +2884,15 @@ test(
 				checkoutPage.paymentTermOption(paymentTerm2.label['en_US'])
 			).toBeVisible();
 
-			await checkoutPage
-				.termMoreInfoLink(paymentTerm1.label['en_US'])
-				.click();
-
 			const termModal = page.getByRole('dialog', {
 				name: paymentTerm1.label['en_US'],
+			});
+
+			await clickAndExpectToBeVisible({
+				target: termModal,
+				trigger: checkoutPage.termMoreInfoLink(
+					paymentTerm1.label['en_US']
+				),
 			});
 
 			await expect(
@@ -3036,8 +3043,6 @@ test(
 		page,
 		site,
 	}) => {
-		test.setTimeout(300000);
-
 		const {account, buyerUser, channel, checkoutLayout, sku} =
 			await checkoutStorefrontSetUp(
 				apiHelpers,
@@ -3124,12 +3129,12 @@ test(
 
 			await checkoutPage.performCheckoutUntilStep('Order Summary');
 
-			await expect(
-				page.getByText('Delivery Terms', {exact: true})
-			).toBeHidden();
-			await expect(
-				page.getByText('Payment Terms', {exact: true})
-			).toBeHidden();
+			await expect(checkoutPage.checkoutStepLabels).not.toContainText([
+				'Delivery Terms',
+			]);
+			await expect(checkoutPage.checkoutStepLabels).not.toContainText([
+				'Payment Terms',
+			]);
 		});
 	}
 );
