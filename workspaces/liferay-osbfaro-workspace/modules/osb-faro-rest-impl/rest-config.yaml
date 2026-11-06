@@ -11,5 +11,6 @@ compatibilityVersion: 15
 forcePredictableOperationId: true
 forcePredictableSchemaName: true
 generateBatch: false
+generateGraphQL: false
 javaEEPackage: jakarta
 testDir: ../osb-faro-rest-test/src/testIntegration/java
