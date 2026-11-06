@@ -87,10 +87,11 @@ public class DeleteFormInstanceRecordMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		long formInstanceId = ParamUtil.getLong(
-			actionRequest, "formInstanceId");
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		long formInstanceId = ParamUtil.getLong(
+			actionRequest, "formInstanceId");
 
 		_ddmFormInstanceModelResourcePermission.check(
 			themeDisplay.getPermissionChecker(), formInstanceId,
