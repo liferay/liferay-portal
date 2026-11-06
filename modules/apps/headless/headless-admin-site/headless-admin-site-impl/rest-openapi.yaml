@@ -4013,10 +4013,6 @@ components:
                     description:
                         The style book's name.
                     type: string
-                previewFileEntryExternalReferenceCode:
-                    description:
-                        The style book's preview file entry external reference code.
-                    type: string
                 scope:
                     description:
                         The style book's scope, identifying its owning site or asset library.
@@ -4025,6 +4021,10 @@ components:
                     description:
                         The theme id or the themeCSS client extension external reference code this style book is based on.
                     type: string
+                thumbnailURLReference:
+                    $ref: "#/components/schemas/ThumbnailURLReference"
+                    description:
+                        The style book's preview image.
             type: object
         SuccessFormContainerSubmissionResult:
             # @review
