@@ -280,10 +280,6 @@ public class EmailAddressLocalServiceUtil {
 		return getService().getEmailAddressByUuidAndCompanyId(uuid, companyId);
 	}
 
-	public static List<EmailAddress> getEmailAddresses() {
-		return getService().getEmailAddresses();
-	}
-
 	/**
 	 * Returns a range of all the email addresses.
 	 *
@@ -382,4 +378,4 @@ public class EmailAddressLocalServiceUtil {
 	private static volatile EmailAddressLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1333410692
+// LIFERAY-SERVICE-BUILDER-HASH:-1572608644

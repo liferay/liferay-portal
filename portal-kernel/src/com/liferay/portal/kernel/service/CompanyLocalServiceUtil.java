@@ -94,19 +94,6 @@ public class CompanyLocalServiceUtil {
 	}
 
 	/**
-	 * Returns the company with the web domain.
-	 *
-	 * The method sets mail domain to the web domain to the default name set in
-	 * portal.properties
-	 *
-	 * @param webId the company's web domain
-	 * @return the company with the web domain
-	 */
-	public static Company checkCompany(String webId) throws PortalException {
-		return getService().checkCompany(webId);
-	}
-
-	/**
 	 * Checks if the company has an encryption key. It will create a key if one
 	 * does not exist.
 	 *
@@ -717,4 +704,4 @@ public class CompanyLocalServiceUtil {
 	private static volatile CompanyLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1089887598
+// LIFERAY-SERVICE-BUILDER-HASH:-313236327

@@ -307,10 +307,6 @@ public class WebsiteLocalServiceUtil {
 		return getService().getWebsiteByUuidAndCompanyId(uuid, companyId);
 	}
 
-	public static List<Website> getWebsites() {
-		return getService().getWebsites();
-	}
-
 	/**
 	 * Returns a range of all the websites.
 	 *
@@ -375,4 +371,4 @@ public class WebsiteLocalServiceUtil {
 	private static volatile WebsiteLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-9520030
+// LIFERAY-SERVICE-BUILDER-HASH:859479771

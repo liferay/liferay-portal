@@ -103,17 +103,6 @@ public interface CompanyLocalService
 		throws PortalException;
 
 	/**
-	 * Returns the company with the web domain.
-	 *
-	 * The method sets mail domain to the web domain to the default name set in
-	 * portal.properties
-	 *
-	 * @param webId the company's web domain
-	 * @return the company with the web domain
-	 */
-	public Company checkCompany(String webId) throws PortalException;
-
-	/**
 	 * Checks if the company has an encryption key. It will create a key if one
 	 * does not exist.
 	 *
@@ -590,4 +579,4 @@ public interface CompanyLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1664745889
+// LIFERAY-SERVICE-BUILDER-HASH:-1560764492

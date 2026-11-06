@@ -273,9 +273,6 @@ public interface WebsiteLocalService
 	public Website getWebsiteByUuidAndCompanyId(String uuid, long companyId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Website> getWebsites();
-
 	/**
 	 * Returns a range of all the websites.
 	 *
@@ -321,4 +318,4 @@ public interface WebsiteLocalService
 	public Website updateWebsite(Website website);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-53102354
+// LIFERAY-SERVICE-BUILDER-HASH:-2083257402

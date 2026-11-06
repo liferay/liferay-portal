@@ -273,16 +273,6 @@ public class RegionLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static Region getOrAddEmptyRegion(
-			String externalReferenceCode, long companyId, long userId,
-			long countryId, String regionCode, String name)
-		throws PortalException {
-
-		return getService().getOrAddEmptyRegion(
-			externalReferenceCode, companyId, userId, countryId, regionCode,
-			name);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -376,14 +366,6 @@ public class RegionLocalServiceUtil {
 	}
 
 	public static List<Region> getRegions(
-		long countryId, boolean active, int start, int end,
-		OrderByComparator<Region> orderByComparator) {
-
-		return getService().getRegions(
-			countryId, active, start, end, orderByComparator);
-	}
-
-	public static List<Region> getRegions(
 		long countryId, int start, int end,
 		OrderByComparator<Region> orderByComparator) {
 
@@ -405,14 +387,6 @@ public class RegionLocalServiceUtil {
 	 */
 	public static int getRegionsCount() {
 		return getService().getRegionsCount();
-	}
-
-	public static int getRegionsCount(long countryId) {
-		return getService().getRegionsCount(countryId);
-	}
-
-	public static int getRegionsCount(long countryId, boolean active) {
-		return getService().getRegionsCount(countryId, active);
 	}
 
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult<Region>
@@ -483,4 +457,4 @@ public class RegionLocalServiceUtil {
 	private static volatile RegionLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1916021605
+// LIFERAY-SERVICE-BUILDER-HASH:806530438

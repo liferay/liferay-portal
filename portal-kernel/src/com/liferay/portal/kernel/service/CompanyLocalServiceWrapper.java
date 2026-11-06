@@ -89,22 +89,6 @@ public class CompanyLocalServiceWrapper
 	}
 
 	/**
-	 * Returns the company with the web domain.
-	 *
-	 * The method sets mail domain to the web domain to the default name set in
-	 * portal.properties
-	 *
-	 * @param webId the company's web domain
-	 * @return the company with the web domain
-	 */
-	@Override
-	public com.liferay.portal.kernel.model.Company checkCompany(String webId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _companyLocalService.checkCompany(webId);
-	}
-
-	/**
 	 * Checks if the company has an encryption key. It will create a key if one
 	 * does not exist.
 	 *
@@ -811,4 +795,4 @@ public class CompanyLocalServiceWrapper
 	private CompanyLocalService _companyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2051316432
+// LIFERAY-SERVICE-BUILDER-HASH:-2051222514

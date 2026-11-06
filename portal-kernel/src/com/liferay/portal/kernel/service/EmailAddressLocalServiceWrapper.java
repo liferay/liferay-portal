@@ -310,11 +310,6 @@ public class EmailAddressLocalServiceWrapper
 			uuid, companyId);
 	}
 
-	@Override
-	public java.util.List<EmailAddress> getEmailAddresses() {
-		return _emailAddressLocalService.getEmailAddresses();
-	}
-
 	/**
 	 * Returns a range of all the email addresses.
 	 *
@@ -453,4 +448,4 @@ public class EmailAddressLocalServiceWrapper
 	private EmailAddressLocalService _emailAddressLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2120282650
+// LIFERAY-SERVICE-BUILDER-HASH:-1050194158

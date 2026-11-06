@@ -260,20 +260,7 @@ public interface CountryLocalService
 	public List<Country> getCompanyCountries(long companyId, boolean active);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Country> getCompanyCountries(
-		long companyId, boolean active, int start, int end,
-		OrderByComparator<Country> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Country> getCompanyCountries(
-		long companyId, int start, int end,
-		OrderByComparator<Country> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCompanyCountriesCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCompanyCountriesCount(long companyId, boolean active);
 
 	/**
 	 * Returns a range of all the countries.
@@ -309,10 +296,6 @@ public interface CountryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Country getCountryByA2(long companyId, String a2)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Country getCountryByA3(long companyId, String a3)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -354,12 +337,6 @@ public interface CountryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Country getOrAddEmptyCountry(
-			String externalReferenceCode, String a2, String a3, long companyId,
-			String name, long userId)
-		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -435,4 +412,4 @@ public interface CountryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:987180304
+// LIFERAY-SERVICE-BUILDER-HASH:-1470156077

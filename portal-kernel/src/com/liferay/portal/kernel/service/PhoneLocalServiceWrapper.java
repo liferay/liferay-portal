@@ -335,11 +335,6 @@ public class PhoneLocalServiceWrapper
 		return _phoneLocalService.getPhoneByUuidAndCompanyId(uuid, companyId);
 	}
 
-	@Override
-	public java.util.List<Phone> getPhones() {
-		return _phoneLocalService.getPhones();
-	}
-
 	/**
 	 * Returns a range of all the phones.
 	 *
@@ -436,4 +431,4 @@ public class PhoneLocalServiceWrapper
 	private PhoneLocalService _phoneLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1072211448
+// LIFERAY-SERVICE-BUILDER-HASH:-313272064

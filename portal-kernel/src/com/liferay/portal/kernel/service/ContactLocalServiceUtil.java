@@ -228,16 +228,6 @@ public class ContactLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static List<Contact> getCompanyContacts(
-		long companyId, int start, int end) {
-
-		return getService().getCompanyContacts(companyId, start, end);
-	}
-
-	public static int getCompanyContactsCount(long companyId) {
-		return getService().getCompanyContactsCount(companyId);
-	}
-
 	/**
 	 * Returns the contact with the primary key.
 	 *
@@ -264,14 +254,6 @@ public class ContactLocalServiceUtil {
 		return getService().getContacts(start, end);
 	}
 
-	public static List<Contact> getContacts(
-		long classNameId, long classPK, int start, int end,
-		OrderByComparator<Contact> orderByComparator) {
-
-		return getService().getContacts(
-			classNameId, classPK, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of contacts.
 	 *
@@ -279,10 +261,6 @@ public class ContactLocalServiceUtil {
 	 */
 	public static int getContactsCount() {
 		return getService().getContactsCount();
-	}
-
-	public static int getContactsCount(long classNameId, long classPK) {
-		return getService().getContactsCount(classNameId, classPK);
 	}
 
 	public static
@@ -350,4 +328,4 @@ public class ContactLocalServiceUtil {
 	private static volatile ContactLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:444362040
+// LIFERAY-SERVICE-BUILDER-HASH:-1497992730

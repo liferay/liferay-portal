@@ -66,15 +66,6 @@ public class AddressLocalServiceUtil {
 			serviceContext);
 	}
 
-	public static Address copyAddress(
-			long sourceAddressId, String className, long classPK,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().copyAddress(
-			sourceAddressId, className, classPK, serviceContext);
-	}
-
 	/**
 	 * Creates a new address with the primary key. Does not add the address to the database.
 	 *
@@ -297,10 +288,6 @@ public class AddressLocalServiceUtil {
 		return getService().getAddressByUuidAndCompanyId(uuid, companyId);
 	}
 
-	public static List<Address> getAddresses() {
-		return getService().getAddresses();
-	}
-
 	/**
 	 * Returns a range of all the addresses.
 	 *
@@ -365,15 +352,6 @@ public class AddressLocalServiceUtil {
 
 		return getService().getListTypeAddresses(
 			companyId, className, classPK, listTypeIds);
-	}
-
-	public static List<Address> getListTypeAddresses(
-		long companyId, String className, long classPK, long[] listTypeIds,
-		int start, int end, OrderByComparator<Address> orderByComparator) {
-
-		return getService().getListTypeAddresses(
-			companyId, className, classPK, listTypeIds, start, end,
-			orderByComparator);
 	}
 
 	public static Address getOrAddEmptyAddress(
@@ -469,4 +447,4 @@ public class AddressLocalServiceUtil {
 	private static volatile AddressLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-670040602
+// LIFERAY-SERVICE-BUILDER-HASH:-2068497387

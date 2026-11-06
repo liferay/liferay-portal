@@ -347,13 +347,6 @@ public class WebsiteLocalServiceWrapper
 			uuid, companyId);
 	}
 
-	@Override
-	public java.util.List<com.liferay.portal.kernel.model.Website>
-		getWebsites() {
-
-		return _websiteLocalService.getWebsites();
-	}
-
 	/**
 	 * Returns a range of all the websites.
 	 *
@@ -434,4 +427,4 @@ public class WebsiteLocalServiceWrapper
 	private WebsiteLocalService _websiteLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-483958114
+// LIFERAY-SERVICE-BUILDER-HASH:140355360

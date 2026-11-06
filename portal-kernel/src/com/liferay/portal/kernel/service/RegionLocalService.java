@@ -250,12 +250,6 @@ public interface RegionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Region getOrAddEmptyRegion(
-			String externalReferenceCode, long companyId, long userId,
-			long countryId, String regionCode, String name)
-		throws PortalException;
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -330,11 +324,6 @@ public interface RegionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Region> getRegions(
-		long countryId, boolean active, int start, int end,
-		OrderByComparator<Region> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Region> getRegions(
 		long countryId, int start, int end,
 		OrderByComparator<Region> orderByComparator);
 
@@ -349,12 +338,6 @@ public interface RegionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getRegionsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRegionsCount(long countryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRegionsCount(long countryId, boolean active);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<Region> searchRegions(
@@ -409,4 +392,4 @@ public interface RegionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-402038845
+// LIFERAY-SERVICE-BUILDER-HASH:327344305

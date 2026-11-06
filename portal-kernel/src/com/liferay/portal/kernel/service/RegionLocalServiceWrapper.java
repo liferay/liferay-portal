@@ -300,17 +300,6 @@ public class RegionLocalServiceWrapper
 		return _regionLocalService.getIndexableActionableDynamicQuery();
 	}
 
-	@Override
-	public Region getOrAddEmptyRegion(
-			String externalReferenceCode, long companyId, long userId,
-			long countryId, String regionCode, String name)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _regionLocalService.getOrAddEmptyRegion(
-			externalReferenceCode, companyId, userId, countryId, regionCode,
-			name);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -417,16 +406,6 @@ public class RegionLocalServiceWrapper
 
 	@Override
 	public java.util.List<Region> getRegions(
-		long countryId, boolean active, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<Region>
-			orderByComparator) {
-
-		return _regionLocalService.getRegions(
-			countryId, active, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<Region> getRegions(
 		long countryId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<Region>
 			orderByComparator) {
@@ -451,16 +430,6 @@ public class RegionLocalServiceWrapper
 	@Override
 	public int getRegionsCount() {
 		return _regionLocalService.getRegionsCount();
-	}
-
-	@Override
-	public int getRegionsCount(long countryId) {
-		return _regionLocalService.getRegionsCount(countryId);
-	}
-
-	@Override
-	public int getRegionsCount(long countryId, boolean active) {
-		return _regionLocalService.getRegionsCount(countryId, active);
 	}
 
 	@Override
@@ -566,4 +535,4 @@ public class RegionLocalServiceWrapper
 	private RegionLocalService _regionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-896386275
+// LIFERAY-SERVICE-BUILDER-HASH:872997732

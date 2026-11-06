@@ -287,28 +287,8 @@ public class CountryLocalServiceUtil {
 		return getService().getCompanyCountries(companyId, active);
 	}
 
-	public static List<Country> getCompanyCountries(
-		long companyId, boolean active, int start, int end,
-		OrderByComparator<Country> orderByComparator) {
-
-		return getService().getCompanyCountries(
-			companyId, active, start, end, orderByComparator);
-	}
-
-	public static List<Country> getCompanyCountries(
-		long companyId, int start, int end,
-		OrderByComparator<Country> orderByComparator) {
-
-		return getService().getCompanyCountries(
-			companyId, start, end, orderByComparator);
-	}
-
 	public static int getCompanyCountriesCount(long companyId) {
 		return getService().getCompanyCountriesCount(companyId);
-	}
-
-	public static int getCompanyCountriesCount(long companyId, boolean active) {
-		return getService().getCompanyCountriesCount(companyId, active);
 	}
 
 	/**
@@ -350,12 +330,6 @@ public class CountryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getCountryByA2(companyId, a2);
-	}
-
-	public static Country getCountryByA3(long companyId, String a3)
-		throws PortalException {
-
-		return getService().getCountryByA3(companyId, a3);
 	}
 
 	public static Country getCountryByExternalReferenceCode(
@@ -419,15 +393,6 @@ public class CountryLocalServiceUtil {
 			getIndexableActionableDynamicQuery() {
 
 		return getService().getIndexableActionableDynamicQuery();
-	}
-
-	public static Country getOrAddEmptyCountry(
-			String externalReferenceCode, String a2, String a3, long companyId,
-			String name, long userId)
-		throws PortalException {
-
-		return getService().getOrAddEmptyCountry(
-			externalReferenceCode, a2, a3, companyId, name, userId);
 	}
 
 	/**
@@ -526,4 +491,4 @@ public class CountryLocalServiceUtil {
 	private static volatile CountryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1629884040
+// LIFERAY-SERVICE-BUILDER-HASH:-207434744

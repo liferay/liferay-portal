@@ -318,33 +318,8 @@ public class CountryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<Country> getCompanyCountries(
-		long companyId, boolean active, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<Country>
-			orderByComparator) {
-
-		return _countryLocalService.getCompanyCountries(
-			companyId, active, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<Country> getCompanyCountries(
-		long companyId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<Country>
-			orderByComparator) {
-
-		return _countryLocalService.getCompanyCountries(
-			companyId, start, end, orderByComparator);
-	}
-
-	@Override
 	public int getCompanyCountriesCount(long companyId) {
 		return _countryLocalService.getCompanyCountriesCount(companyId);
-	}
-
-	@Override
-	public int getCompanyCountriesCount(long companyId, boolean active) {
-		return _countryLocalService.getCompanyCountriesCount(companyId, active);
 	}
 
 	/**
@@ -392,13 +367,6 @@ public class CountryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _countryLocalService.getCountryByA2(companyId, a2);
-	}
-
-	@Override
-	public Country getCountryByA3(long companyId, String a3)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _countryLocalService.getCountryByA3(companyId, a3);
 	}
 
 	@Override
@@ -471,16 +439,6 @@ public class CountryLocalServiceWrapper
 		getIndexableActionableDynamicQuery() {
 
 		return _countryLocalService.getIndexableActionableDynamicQuery();
-	}
-
-	@Override
-	public Country getOrAddEmptyCountry(
-			String externalReferenceCode, String a2, String a3, long companyId,
-			String name, long userId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _countryLocalService.getOrAddEmptyCountry(
-			externalReferenceCode, a2, a3, companyId, name, userId);
 	}
 
 	/**
@@ -618,4 +576,4 @@ public class CountryLocalServiceWrapper
 	private CountryLocalService _countryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:668921470
+// LIFERAY-SERVICE-BUILDER-HASH:-1758230882

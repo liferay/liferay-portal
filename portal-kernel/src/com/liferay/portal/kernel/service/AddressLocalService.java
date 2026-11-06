@@ -90,11 +90,6 @@ public interface AddressLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	public Address copyAddress(
-			long sourceAddressId, String className, long classPK,
-			ServiceContext serviceContext)
-		throws PortalException;
-
 	/**
 	 * Creates a new address with the primary key. Does not add the address to the database.
 	 *
@@ -273,9 +268,6 @@ public interface AddressLocalService
 	public Address getAddressByUuidAndCompanyId(String uuid, long companyId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Address> getAddresses();
-
 	/**
 	 * Returns a range of all the addresses.
 	 *
@@ -321,11 +313,6 @@ public interface AddressLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Address> getListTypeAddresses(
 		long companyId, String className, long classPK, long[] listTypeIds);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Address> getListTypeAddresses(
-		long companyId, String className, long classPK, long[] listTypeIds,
-		int start, int end, OrderByComparator<Address> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Address getOrAddEmptyAddress(
@@ -399,4 +386,4 @@ public interface AddressLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:552144508
+// LIFERAY-SERVICE-BUILDER-HASH:-483785648

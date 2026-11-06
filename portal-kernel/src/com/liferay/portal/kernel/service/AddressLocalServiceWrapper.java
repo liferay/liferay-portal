@@ -60,16 +60,6 @@ public class AddressLocalServiceWrapper
 			serviceContext);
 	}
 
-	@Override
-	public Address copyAddress(
-			long sourceAddressId, String className, long classPK,
-			ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _addressLocalService.copyAddress(
-			sourceAddressId, className, classPK, serviceContext);
-	}
-
 	/**
 	 * Creates a new address with the primary key. Does not add the address to the database.
 	 *
@@ -326,11 +316,6 @@ public class AddressLocalServiceWrapper
 			uuid, companyId);
 	}
 
-	@Override
-	public java.util.List<Address> getAddresses() {
-		return _addressLocalService.getAddresses();
-	}
-
 	/**
 	 * Returns a range of all the addresses.
 	 *
@@ -405,18 +390,6 @@ public class AddressLocalServiceWrapper
 
 		return _addressLocalService.getListTypeAddresses(
 			companyId, className, classPK, listTypeIds);
-	}
-
-	@Override
-	public java.util.List<Address> getListTypeAddresses(
-		long companyId, String className, long classPK, long[] listTypeIds,
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<Address>
-			orderByComparator) {
-
-		return _addressLocalService.getListTypeAddresses(
-			companyId, className, classPK, listTypeIds, start, end,
-			orderByComparator);
 	}
 
 	@Override
@@ -547,4 +520,4 @@ public class AddressLocalServiceWrapper
 	private AddressLocalService _addressLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1852787782
+// LIFERAY-SERVICE-BUILDER-HASH:1502267961

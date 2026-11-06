@@ -263,9 +263,6 @@ public interface EmailAddressLocalService
 			String uuid, long companyId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<EmailAddress> getEmailAddresses();
-
 	/**
 	 * Returns a range of all the email addresses.
 	 *
@@ -348,4 +345,4 @@ public interface EmailAddressLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2023112764
+// LIFERAY-SERVICE-BUILDER-HASH:2147228495
