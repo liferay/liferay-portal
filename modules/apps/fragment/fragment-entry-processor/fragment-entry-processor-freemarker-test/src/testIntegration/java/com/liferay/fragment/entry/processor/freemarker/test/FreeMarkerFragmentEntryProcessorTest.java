@@ -770,9 +770,6 @@ public class FreeMarkerFragmentEntryProcessorTest {
 		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
 			_group.getGroupId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
-		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
-			_group.getGroupId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString());
 
 		DefaultFragmentEntryProcessorContext
 			defaultFragmentEntryProcessorContext =
@@ -792,6 +789,38 @@ public class FreeMarkerFragmentEntryProcessorTest {
 		fragmentEntryLink.setHtml(
 			"<div class=\"fragment_name\">[#if itemSelector1Object??]" +
 				"${itemSelector1Object}[/#if]</div>");
+
+		// Default value
+
+		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
+			_group.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		fragmentEntryLink.setConfiguration(
+			_readJSONFileToString(
+				"configuration_itemselector.json",
+				HashMapBuilder.put(
+					"className", JournalArticle.class.getName()
+				).put(
+					"classNameId",
+					String.valueOf(
+						_portal.getClassNameId(JournalArticle.class.getName()))
+				).put(
+					"classPK",
+					String.valueOf(journalArticle2.getResourcePrimKey())
+				).build()));
+
+		String html = _getProcessedHTML(
+			fragmentEntryLink, JSONFactoryUtil.createJSONObject(),
+			defaultFragmentEntryProcessorContext);
+
+		_assertContainsJournalArticleInfo(html, journalArticle1);
+
+		Assert.assertFalse(
+			html.contains(journalArticle2.getExternalReferenceCode()));
+
+		// No selected item
+
 		fragmentEntryLink.setConfiguration(
 			_readJSONFileToString(
 				"configuration_itemselector.json",
@@ -803,9 +832,7 @@ public class FreeMarkerFragmentEntryProcessorTest {
 					"classPK", StringPool.BLANK
 				).build()));
 
-		// No selected item
-
-		String html = _getProcessedHTML(
+		html = _getProcessedHTML(
 			fragmentEntryLink, JSONFactoryUtil.createJSONObject(),
 			defaultFragmentEntryProcessorContext);
 
