@@ -16,6 +16,7 @@ import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.service.base.FaroProjectLocalServiceBaseImpl;
 import com.liferay.osb.faro.util.EmailUtil;
 import com.liferay.osb.faro.util.FaroEmailSender;
+import com.liferay.osb.faro.util.FaroProjectUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
@@ -84,12 +85,12 @@ public class FaroProjectLocalServiceImpl
 			false, true, null);
 
 		// friendlyURL will be derived from the group name if empty, so it has
-		// to be removed after creation
+		// to be replaced after creation
 
 		if ((friendlyURL == null) || Validator.isBlank(friendlyURL.trim())) {
-			group.setFriendlyURL(null);
-
-			group = _groupLocalService.updateGroup(group);
+			group = _groupLocalService.updateFriendlyURL(
+				group.getGroupId(),
+				FaroProjectUtil.getDefaultFriendlyURL(group.getGroupId()));
 		}
 
 		long groupId = group.getGroupId();

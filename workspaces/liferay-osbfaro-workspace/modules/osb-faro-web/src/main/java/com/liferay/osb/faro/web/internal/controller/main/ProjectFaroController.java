@@ -33,6 +33,7 @@ import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroProjectUsageLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.util.DateUtil;
+import com.liferay.osb.faro.util.FaroProjectUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.annotations.Unauthenticated;
 import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
@@ -1573,7 +1574,14 @@ public class ProjectFaroController extends BaseFaroController {
 
 		Group group = _groupLocalService.getGroup(faroProject.getGroupId());
 
-		projectDisplay.setFriendlyURL(group.getFriendlyURL());
+		String friendlyURL = group.getFriendlyURL();
+
+		if (!StringUtil.equals(
+				friendlyURL,
+				FaroProjectUtil.getDefaultFriendlyURL(group.getGroupId()))) {
+
+			projectDisplay.setFriendlyURL(friendlyURL);
+		}
 
 		Map<String, Object> globalStateMap = projectHelper.getGlobalStateMap(
 			faroProject);
@@ -1925,11 +1933,8 @@ public class ProjectFaroController extends BaseFaroController {
 		throws Exception {
 
 		if ((friendlyURL == null) || Validator.isBlank(friendlyURL.trim())) {
-			Group group = _groupLocalService.getGroup(groupId);
-
-			group.setFriendlyURL(null);
-
-			_groupLocalService.updateGroup(group);
+			_groupLocalService.updateFriendlyURL(
+				groupId, FaroProjectUtil.getDefaultFriendlyURL(groupId));
 
 			return;
 		}

@@ -106,7 +106,10 @@ public class EmailUtil {
 
 		String friendlyURL = group.getFriendlyURL();
 
-		if ((friendlyURL != null) && !friendlyURL.isEmpty()) {
+		if ((friendlyURL != null) && !friendlyURL.isEmpty() &&
+			!friendlyURL.equals(
+				FaroProjectUtil.getDefaultFriendlyURL(group.getGroupId()))) {
+
 			sb.append(friendlyURL);
 		}
 		else {
