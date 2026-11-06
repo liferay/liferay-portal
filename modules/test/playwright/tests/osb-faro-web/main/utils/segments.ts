@@ -235,6 +235,62 @@ export async function selectAsset({
 	await page.getByRole('button', {name: 'Add'}).click();
 }
 
+export async function selectBehaviorAsset({
+	assetName,
+	assetType,
+	page,
+}: {
+	assetName: string;
+	assetType: string;
+	page: Page;
+}) {
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.getByRole('option', {name: assetType}),
+		trigger: page.getByRole('combobox', {exact: true, name: 'Asset Type'}),
+	});
+
+	await page.getByRole('button', {name: 'Add Assets'}).click();
+
+	await page
+		.getByRole('dialog')
+		.getByRole('row', {name: assetName})
+		.getByRole('checkbox')
+		.check();
+
+	await page
+		.getByRole('dialog')
+		.getByRole('button', {exact: true, name: 'Select'})
+		.click();
+}
+
+export async function selectBehaviorPage({
+	page,
+	pageName,
+}: {
+	page: Page;
+	pageName: string;
+}) {
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.getByRole('option', {exact: true, name: 'Page'}),
+		trigger: page.getByRole('combobox', {name: 'Page or Asset Type'}),
+	});
+
+	await page.getByRole('button', {name: 'Add Pages'}).click();
+
+	await page
+		.getByRole('dialog')
+		.getByRole('row', {name: pageName})
+		.getByRole('checkbox')
+		.check();
+
+	await page
+		.getByRole('dialog')
+		.getByRole('button', {exact: true, name: 'Select'})
+		.click();
+}
+
 export async function selectOperator({
 	index = 0,
 	operator,
