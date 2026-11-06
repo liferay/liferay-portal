@@ -53,10 +53,16 @@
 		tbody tr > td.cell-item-actions,
 		thead tr > th:last-child {
 			background-color: $white;
-			box-shadow: -4px 0 8px -4px unquote('hsl(from #{$gray-900} h s l / 0.15)');
 			position: sticky;
 			right: 0;
 			z-index: 2;
+		}
+
+		&.table-horizontal-scroll {
+			tbody tr > td.cell-item-actions,
+			thead tr > th:last-child {
+				box-shadow: -4px 0 8px -4px unquote('hsl(from #{$gray-900} h s l / 0.15)');
+			}
 		}
 
 		tbody tr:hover > td.cell-item-actions,
