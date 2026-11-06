@@ -96,8 +96,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Locale;
 
-import org.hamcrest.CoreMatchers;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -701,10 +699,11 @@ public class GetCollectionFieldMVCResourceCommandTest {
 				_layout.getPlid()),
 			String.valueOf(templateEntry.getTemplateEntryId()));
 
-		Assert.assertThat(
-			jsonObject.getString("content"),
-			CoreMatchers.containsString(
-				journalArticle.getTitle(LocaleUtil.US)));
+		String content = jsonObject.getString("content");
+
+		Assert.assertTrue(
+			content.contains(journalArticle.getTitle(LocaleUtil.US)));
+
 		Assert.assertEquals(1, jsonObject.getInt("length"));
 	}
 
