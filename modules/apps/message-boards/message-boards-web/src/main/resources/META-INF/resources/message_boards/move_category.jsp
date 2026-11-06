@@ -14,7 +14,7 @@ MBCategory category = (MBCategory)request.getAttribute(WebKeys.MESSAGE_BOARDS_CA
 
 long categoryId = MBUtil.getCategoryId(request, category);
 
-long parentCategoryId = ParamUtil.getLong(request, "parentCategoryId", GetterUtil.get(category, MBCategory::getParentCategoryId, MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID));
+long parentCategoryId = ParamUtil.getLong(request, "parentCategoryId", category.getParentCategoryId());
 
 boolean portletTitleBasedNavigation = GetterUtil.getBoolean(portletConfig.getInitParameter("portlet-title-based-navigation"));
 
@@ -72,7 +72,7 @@ if (portletTitleBasedNavigation) {
 							).setParameter(
 								"excludedMBCategoryId", categoryId
 							).setParameter(
-								"mbCategoryId", (category == null) ? MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID : category.getParentCategoryId()
+								"mbCategoryId", category.getParentCategoryId()
 							).setWindowState(
 								LiferayWindowState.POP_UP
 							).buildString()

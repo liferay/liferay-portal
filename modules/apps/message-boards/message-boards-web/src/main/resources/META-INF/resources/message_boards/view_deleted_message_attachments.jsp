@@ -10,7 +10,7 @@
 <%
 MBMessage message = (MBMessage)request.getAttribute(WebKeys.MESSAGE_BOARDS_MESSAGE);
 
-long messageId = ParamUtil.getLong(request, "messageId", GetterUtil.get(message, MBMessage::getMessageId, 0L));
+long messageId = ParamUtil.getLong(request, "messageId", message.getMessageId());
 
 MBBreadcrumbUtil.addPortletBreadcrumbEntries(message, request, renderResponse);
 %>
