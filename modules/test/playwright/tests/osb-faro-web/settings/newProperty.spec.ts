@@ -426,7 +426,10 @@ test(
 
 			await page.getByLabel('Property Name').fill(propertyName);
 
-			await page.getByRole('button', {name: dismissAction}).click();
+			await page
+				.getByRole('dialog')
+				.getByRole('button', {name: dismissAction})
+				.click();
 
 			await searchByTerm({page, searchTerm: propertyName});
 
