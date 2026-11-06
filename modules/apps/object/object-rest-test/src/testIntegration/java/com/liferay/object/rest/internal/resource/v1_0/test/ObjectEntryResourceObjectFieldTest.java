@@ -607,7 +607,6 @@ public class ObjectEntryResourceObjectFieldTest
 		}
 	}
 
-	@FeatureFlag("LPD-11388")
 	@Test
 	public void testPostCustomObjectEntryWithLocationObjectField()
 		throws Exception {

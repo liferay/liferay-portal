@@ -220,7 +220,6 @@ public class ObjectEntryResourceLocalizationTest
 			JSONCompareMode.LENIENT);
 	}
 
-	@FeatureFlag("LPD-11388")
 	@Test
 	public void testPostCustomObjectEntryWithLocalizedLocationObjectField()
 		throws Exception {
