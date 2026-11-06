@@ -14,12 +14,12 @@ User selUser = userDisplayContext.getSelectedUser();
 boolean passwordReset = false;
 boolean passwordResetDisabled = false;
 
-if (((selUser == null) || (selUser.getLastLoginDate() == null)) && passwordPolicy.isChangeable() && passwordPolicy.isChangeRequired()) {
+if ((selUser.getLastLoginDate() == null) && passwordPolicy.isChangeable() && passwordPolicy.isChangeRequired()) {
 	passwordReset = true;
 	passwordResetDisabled = true;
 }
 else {
-	passwordReset = ParamUtil.getBoolean(request, "passwordReset", GetterUtil.get(selUser, User::isPasswordReset, false));
+	passwordReset = ParamUtil.getBoolean(request, "passwordReset", selUser.isPasswordReset());
 
 	if (!passwordPolicy.isChangeable()) {
 		passwordResetDisabled = true;
@@ -148,7 +148,7 @@ else {
 		</aui:validator>
 	</aui:input>
 
-	<c:if test="<%= (selUser == null) || (user.getUserId() != selUser.getUserId()) %>">
+	<c:if test="<%= user.getUserId() != selUser.getUserId() %>">
 		<aui:input disabled="<%= passwordResetDisabled %>" label="require-password-reset" name="passwordReset" type="checkbox" value="<%= passwordReset %>" />
 	</c:if>
 </clay:sheet-section>
