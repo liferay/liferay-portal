@@ -141,18 +141,14 @@ public class CPConfigurationListDisplayContext {
 	}
 
 	public long getCPConfigurationEntryId() throws PortalException {
-		if (Objects.equals(
-				httpServletRequest.getParameter("screenNavigationCategoryKey"),
-				"details")) {
+		long cpConfigurationEntryId = ParamUtil.getLong(
+			httpServletRequest, "cpConfigurationEntryId");
 
-			CPConfigurationList cpConfigurationList = getCPConfigurationList();
-
-			if (cpConfigurationList != null) {
-				return cpConfigurationList.getTemplateCPConfigurationEntryId();
-			}
+		if (cpConfigurationEntryId > 0) {
+			return cpConfigurationEntryId;
 		}
 
-		return ParamUtil.getLong(httpServletRequest, "cpConfigurationEntryId");
+		return getTemplateCPConfigurationEntryId();
 	}
 
 	public CPConfigurationList getCPConfigurationList() throws PortalException {
