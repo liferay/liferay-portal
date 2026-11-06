@@ -123,7 +123,7 @@ public class ReplicasClusterListenerTest {
 		).when(
 			_replicasManager
 		).updateNumberOfReplicas(
-			Mockito.anyInt(), Mockito.any()
+			Mockito.anyInt(), Mockito.any(String[].class)
 		);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -167,7 +167,7 @@ public class ReplicasClusterListenerTest {
 		Mockito.verify(
 			_replicasManager, Mockito.never()
 		).updateNumberOfReplicas(
-			Mockito.anyInt(), Mockito.any()
+			Mockito.anyInt(), Mockito.any(String[].class)
 		);
 	}
 
