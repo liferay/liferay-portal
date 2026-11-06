@@ -9,7 +9,9 @@ import com.liferay.ai.creator.openai.configuration.manager.AICreatorOpenAIConfig
 import com.liferay.ai.creator.openai.web.internal.display.context.AICreatorOpenAIGroupConfigurationDisplayContext;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenFactory;
 
@@ -82,6 +84,12 @@ public class AICreatorOpenAISiteSettingsConfigurationScreenWrapper
 		@Override
 		public ServletContext getServletContext() {
 			return _servletContext;
+		}
+
+		@Override
+		public boolean isVisible(Group group) {
+			return FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-93786");
 		}
 
 		@Override

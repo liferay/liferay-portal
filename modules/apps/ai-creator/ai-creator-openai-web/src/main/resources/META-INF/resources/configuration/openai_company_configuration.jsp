@@ -65,21 +65,19 @@ AICreatorOpenAICompanyConfigurationDisplayContext aiCreatorOpenAICompanyConfigur
 	</clay:content-col>
 </clay:content-row>
 
-<c:if test='<%= FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-93786") %>'>
-	<clay:content-row>
-		<clay:content-col
-			cssClass="ai-creator-config-checkbox"
-			expand="<%= true %>"
-		>
-			<clay:checkbox
-				checked="<%= aiCreatorOpenAICompanyConfigurationDisplayContext.isChatGPTEnabled() %>"
-				id='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
-				label='<%= LanguageUtil.get(request, "enable-chatgpt-to-create-content") %>'
-				name='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
-			/>
-		</clay:content-col>
-	</clay:content-row>
-</c:if>
+<clay:content-row>
+	<clay:content-col
+		cssClass="ai-creator-config-checkbox"
+		expand="<%= true %>"
+	>
+		<clay:checkbox
+			checked="<%= aiCreatorOpenAICompanyConfigurationDisplayContext.isChatGPTEnabled() %>"
+			id='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
+			label='<%= LanguageUtil.get(request, "enable-chatgpt-to-create-content") %>'
+			name='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
+		/>
+	</clay:content-col>
+</clay:content-row>
 
 <clay:content-row
 	cssClass="ai-creator-config-checkbox c-my-5"
