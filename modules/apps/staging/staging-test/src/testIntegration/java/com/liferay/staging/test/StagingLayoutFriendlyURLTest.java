@@ -10,15 +10,19 @@ import com.liferay.friendly.url.constants.FriendlyURLEntryConstants;
 import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.layout.friendly.url.LayoutFriendlyURLEntryHelper;
+import com.liferay.layout.test.util.LayoutFriendlyURLRandomizerBumper;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLsException;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -85,10 +89,18 @@ public class StagingLayoutFriendlyURLTest extends BaseLocalStagingTestCase {
 		}
 	}
 
+	private String _randomFriendlyURL() {
+		String urlTitle = StringUtil.toLowerCase(
+			RandomTestUtil.randomString(
+				LayoutFriendlyURLRandomizerBumper.INSTANCE));
+
+		return StringPool.FORWARD_SLASH + urlTitle;
+	}
+
 	private void _testLayoutFriendlyURL() throws Exception {
 		String originalFriendlyURL = stagingLayout.getFriendlyURL();
 
-		String testFriendlyURL = "/test";
+		String testFriendlyURL = _randomFriendlyURL();
 
 		stagingLayout = LayoutTestUtil.updateFriendlyURL(
 			stagingLayout,
