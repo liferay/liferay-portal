@@ -390,11 +390,13 @@ public class PortalHibernateConfiguration
 		_bundleContext = SystemBundleUtil.getBundleContext();
 
 		PropsUtil.set("hibernate.allow_update_outside_transaction", "true");
+		PropsUtil.set("hibernate.auto_quote_keyword", "false");
 		PropsUtil.set("hibernate.cache.use_query_cache", "false");
 		PropsUtil.set("hibernate.cache.use_second_level_cache", "false");
 		PropsUtil.set(
 			"hibernate.current_session_context_class",
 			PortalCurrentSessionContext.class.getName());
+		PropsUtil.set("hibernate.globally_quoted_identifiers", "false");
 		PropsUtil.set(
 			"hibernate.id.sequence.increment_size_mismatch_strategy", "FIX");
 		PropsUtil.set("jakarta.persistence.validation.mode", "none");
