@@ -353,16 +353,16 @@ public class BatchTestClassGroupTest
 			PortalGitWorkingDirectory.class);
 
 		Mockito.doReturn(
-			upstreamBranchName
-		).when(
-			portalGitWorkingDirectory
-		).getUpstreamBranchName();
-
-		Mockito.doReturn(
 			portalGitWorkingDirectory
 		).when(
 			batchTestClassGroup
 		).getPortalGitWorkingDirectory();
+
+		Mockito.doReturn(
+			upstreamBranchName
+		).when(
+			portalGitWorkingDirectory
+		).getUpstreamBranchName();
 
 		String batchName = batchTestClassGroup.getBatchName();
 
