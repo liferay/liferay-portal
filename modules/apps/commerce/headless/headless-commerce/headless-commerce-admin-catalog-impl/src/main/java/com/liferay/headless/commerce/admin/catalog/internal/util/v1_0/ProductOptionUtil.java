@@ -140,7 +140,7 @@ public class ProductOptionUtil {
 			cpDefinitionOptionRel =
 				cpDefinitionOptionRelService.updateCPDefinitionOptionRel(
 					cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
-					productOption.getOptionId(),
+					cpOption.getCPOptionId(),
 					LanguageUtils.getLocalizedMap(nameMap),
 					LanguageUtils.getLocalizedMap(descriptionMap),
 					GetterUtil.get(
