@@ -617,15 +617,6 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 
 		db.runSQL(
 			StringBundler.concat(
-				"update Layout set externalReferenceCode = CAST_TEXT(plid) ",
-				"where groupId = ", group.getGroupId()));
-		db.runSQL(
-			StringBundler.concat(
-				"update SegmentsExperience set externalReferenceCode = ",
-				"CAST_TEXT(segmentsExperienceId) where groupId = ",
-				group.getGroupId()));
-		db.runSQL(
-			StringBundler.concat(
 				"update FragmentEntryLink set externalReferenceCode = ",
 				"CAST_TEXT(fragmentEntryLinkId) where groupId = ",
 				group.getGroupId()));
@@ -635,6 +626,15 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 				"CAST_TEXT(fragmentEntryLinkId) where groupId = ",
 				group.getGroupId(),
 				" and originalFragmentEntryLinkERC is not null"));
+		db.runSQL(
+			StringBundler.concat(
+				"update Layout set externalReferenceCode = CAST_TEXT(plid) ",
+				"where groupId = ", group.getGroupId()));
+		db.runSQL(
+			StringBundler.concat(
+				"update SegmentsExperience set externalReferenceCode = ",
+				"CAST_TEXT(segmentsExperienceId) where groupId = ",
+				group.getGroupId()));
 
 		_entityCache.clearCache();
 		_multiVMPool.clear();

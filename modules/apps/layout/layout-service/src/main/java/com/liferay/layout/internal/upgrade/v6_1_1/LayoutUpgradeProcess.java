@@ -42,7 +42,7 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 			return;
 		}
 
-		// Order is important.
+		// Order is important
 
 		_upgradeLayoutLayoutSetPrototypeLayoutERCs();
 
@@ -55,9 +55,11 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 		_upgradeLayoutExternalReferenceCodes();
 
 		_upgradeSegmentsExperiences(true);
+
 		_upgradeSegmentsExperiences(false);
 
 		_upgradeFragmentEntryLinks(true);
+
 		_upgradeFragmentEntryLinks(false);
 	}
 
@@ -388,6 +390,7 @@ public class LayoutUpgradeProcess extends UpgradeProcess {
 				"') where privateLayout = [$TRUE$] and ",
 				"layoutSetPrototypeLayoutERC is not null and ",
 				"layoutSetPrototypeLayoutERC != ''"));
+
 		runSQL(
 			StringBundler.concat(
 				"update Layout set externalReferenceCode = ",
