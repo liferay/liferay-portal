@@ -28,7 +28,8 @@ import com.liferay.object.exception.ObjectRelationshipReverseException;
 import com.liferay.object.exception.ObjectRelationshipSystemException;
 import com.liferay.object.exception.ObjectRelationshipTypeException;
 import com.liferay.object.internal.dao.db.ObjectDBManagerUtil;
-import com.liferay.object.internal.info.collection.provider.RelatedInfoCollectionProviderFactory;
+import com.liferay.object.internal.info.collection.provider.ManyToManyObjectRelationshipRelatedInfoCollectionProvider;
+import com.liferay.object.internal.info.collection.provider.OneToManyObjectRelationshipRelatedInfoCollectionProvider;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryTable;
@@ -74,6 +75,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -1465,6 +1467,36 @@ public class ObjectRelationshipLocalServiceImpl
 			objectRelationship);
 	}
 
+	private RelatedInfoItemCollectionProvider
+		_createRelatedInfoItemCollectionProvider(
+			ObjectDefinition objectDefinition1,
+			ObjectDefinition objectDefinition2,
+			ObjectRelationship objectRelationship) {
+
+		if (objectDefinition2.isUnmodifiableSystemObject()) {
+			return null;
+		}
+
+		if (Objects.equals(
+				objectRelationship.getType(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY)) {
+
+			return new ManyToManyObjectRelationshipRelatedInfoCollectionProvider(
+				_language, objectDefinition1, objectDefinition2,
+				_objectEntryLocalService, objectRelationship);
+		}
+		else if (Objects.equals(
+					objectRelationship.getType(),
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+
+			return new OneToManyObjectRelationshipRelatedInfoCollectionProvider(
+				_language, objectDefinition1, objectDefinition2,
+				_objectEntryLocalService, objectRelationship);
+		}
+
+		return null;
+	}
+
 	private void _deleteObjectFields(
 			long objectDefinitionId, ObjectRelationship objectRelationship)
 		throws PortalException {
@@ -1701,7 +1733,7 @@ public class ObjectRelationshipLocalServiceImpl
 		}
 
 		RelatedInfoItemCollectionProvider relatedInfoItemCollectionProvider =
-			_relatedInfoCollectionProviderFactory.create(
+			_createRelatedInfoItemCollectionProvider(
 				objectDefinition1, objectDefinition2, objectRelationship);
 
 		if (relatedInfoItemCollectionProvider == null) {
@@ -2356,6 +2388,9 @@ public class ObjectRelationshipLocalServiceImpl
 	private CurrentConnection _currentConnection;
 
 	@Reference
+	private Language _language;
+
+	@Reference
 	private ObjectActionPersistence _objectActionPersistence;
 
 	@Reference
@@ -2391,10 +2426,6 @@ public class ObjectRelationshipLocalServiceImpl
 
 	@Reference
 	private ObjectLayoutTabLocalService _objectLayoutTabLocalService;
-
-	@Reference
-	private RelatedInfoCollectionProviderFactory
-		_relatedInfoCollectionProviderFactory;
 
 	private final Map<String, ServiceRegistration<?>> _serviceRegistrations =
 		new ConcurrentHashMap<>();
