@@ -37,46 +37,22 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Rodolfo Roza Miranda
  */
-@Component(
-	configurationPid = "com.liferay.frontend.js.loader.modules.extender.internal.configuration.Details",
-	service = BrowserModulesResolver.class
-)
 public class BrowserModulesResolver {
 
-	public BrowserModulesResolution resolve(
-		List<String> moduleNames, HttpServletRequest httpServletRequest) {
+	public BrowserModulesResolver(
+		AbsolutePortalURLBuilderFactory absolutePortalURLBuilderFactory,
+		BundleContext bundleContext, JSONFactory jsonFactory,
+		NPMRegistry npmRegistry, Map<String, Object> properties) {
 
-		BrowserModulesResolution browserModulesResolution =
-			new BrowserModulesResolution(
-				_jsonFactory, _details.explainResolutions());
-
-		BrowserModulesMap browserModulesMap = new BrowserModulesMap(
-			browserModulesResolution, _npmRegistry);
-
-		for (String moduleName : moduleNames) {
-			_resolve(
-				browserModulesMap, moduleName, browserModulesResolution,
-				httpServletRequest);
-		}
-
-		_populateMappedModuleNames(browserModulesResolution);
-
-		return browserModulesResolution;
-	}
-
-	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
+		_absolutePortalURLBuilderFactory = absolutePortalURLBuilderFactory;
+		_jsonFactory = jsonFactory;
+		_npmRegistry = npmRegistry;
 
 		_details = ConfigurableUtil.createConfigurable(
 			Details.class, properties);
@@ -147,9 +123,29 @@ public class BrowserModulesResolver {
 			});
 	}
 
-	@Deactivate
-	protected void deactivate() {
+	public void destroy() {
 		_serviceTracker.close();
+	}
+
+	public BrowserModulesResolution resolve(
+		List<String> moduleNames, HttpServletRequest httpServletRequest) {
+
+		BrowserModulesResolution browserModulesResolution =
+			new BrowserModulesResolution(
+				_jsonFactory, _details.explainResolutions());
+
+		BrowserModulesMap browserModulesMap = new BrowserModulesMap(
+			browserModulesResolution, _npmRegistry);
+
+		for (String moduleName : moduleNames) {
+			_resolve(
+				browserModulesMap, moduleName, browserModulesResolution,
+				httpServletRequest);
+		}
+
+		_populateMappedModuleNames(browserModulesResolution);
+
+		return browserModulesResolution;
 	}
 
 	private void _populateMappedModuleNames(
@@ -284,20 +280,14 @@ public class BrowserModulesResolver {
 			httpServletRequest);
 	}
 
-	@Reference
-	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
-
+	private final AbsolutePortalURLBuilderFactory
+		_absolutePortalURLBuilderFactory;
 	private final Map<String, BrowserModule> _browserModulesMap =
 		new ConcurrentHashMap<>();
-	private Details _details;
-
-	@Reference
-	private JSONFactory _jsonFactory;
-
-	@Reference
-	private NPMRegistry _npmRegistry;
-
-	private ServiceTracker<ServletContext, JSConfigGeneratorPackage>
+	private final Details _details;
+	private final JSONFactory _jsonFactory;
+	private final NPMRegistry _npmRegistry;
+	private final ServiceTracker<ServletContext, JSConfigGeneratorPackage>
 		_serviceTracker;
 
 }
