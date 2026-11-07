@@ -10,6 +10,7 @@ import com.liferay.bulk.rest.dto.v1_0.Selection;
 import com.liferay.bulk.rest.internal.selection.v1_0.DocumentBulkSelectionFactory;
 import com.liferay.bulk.rest.resource.v1_0.SelectionResource;
 import com.liferay.bulk.selection.BulkSelection;
+import com.liferay.bulk.selection.BulkSelectionFactoryRegistry;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 
 import org.osgi.service.component.annotations.Component;
@@ -31,8 +32,8 @@ public class SelectionResourceImpl extends BaseSelectionResourceImpl {
 			DocumentBulkSelection documentBulkSelection)
 		throws Exception {
 
-		BulkSelection<?> bulkSelection = _documentBulkSelectionFactory.create(
-			documentBulkSelection);
+		BulkSelection<?> bulkSelection = DocumentBulkSelectionFactory.create(
+			_bulkSelectionFactoryRegistry, documentBulkSelection);
 
 		return new Selection() {
 			{
@@ -42,6 +43,6 @@ public class SelectionResourceImpl extends BaseSelectionResourceImpl {
 	}
 
 	@Reference
-	private DocumentBulkSelectionFactory _documentBulkSelectionFactory;
+	private BulkSelectionFactoryRegistry _bulkSelectionFactoryRegistry;
 
 }

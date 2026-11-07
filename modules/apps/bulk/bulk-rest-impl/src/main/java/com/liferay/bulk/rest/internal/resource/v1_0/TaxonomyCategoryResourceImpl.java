@@ -11,6 +11,7 @@ import com.liferay.bulk.rest.internal.selection.v1_0.DocumentBulkSelectionFactor
 import com.liferay.bulk.rest.resource.v1_0.TaxonomyCategoryResource;
 import com.liferay.bulk.selection.BulkSelection;
 import com.liferay.bulk.selection.BulkSelectionAction;
+import com.liferay.bulk.selection.BulkSelectionFactoryRegistry;
 import com.liferay.bulk.selection.BulkSelectionInputParameters;
 import com.liferay.bulk.selection.BulkSelectionRunner;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -54,7 +55,8 @@ public class TaxonomyCategoryResourceImpl
 			TaxonomyCategoryBulkSelection taxonomyCategoryBulkSelection)
 		throws Exception {
 
-		BulkSelection<?> bulkSelection = _documentBulkSelectionFactory.create(
+		BulkSelection<?> bulkSelection = DocumentBulkSelectionFactory.create(
+			_bulkSelectionFactoryRegistry,
 			taxonomyCategoryBulkSelection.getDocumentBulkSelection());
 
 		_bulkSelectionRunner.run(
@@ -74,10 +76,10 @@ public class TaxonomyCategoryResourceImpl
 	}
 
 	@Reference
-	private BulkSelectionRunner _bulkSelectionRunner;
+	private BulkSelectionFactoryRegistry _bulkSelectionFactoryRegistry;
 
 	@Reference
-	private DocumentBulkSelectionFactory _documentBulkSelectionFactory;
+	private BulkSelectionRunner _bulkSelectionRunner;
 
 	@Reference(target = "(bulk.selection.action.key=edit.categories)")
 	private BulkSelectionAction<AssetEntry> _editCategoriesBulkSelectionAction;

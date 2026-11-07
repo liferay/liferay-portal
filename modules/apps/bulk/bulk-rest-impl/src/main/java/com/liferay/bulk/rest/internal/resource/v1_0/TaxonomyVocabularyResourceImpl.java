@@ -239,7 +239,8 @@ public class TaxonomyVocabularyResourceImpl
 		Map<String, Object> map = (Map<String, Object>)object;
 
 		if (map.containsKey("documentIds")) {
-			return _documentBulkSelectionFactory.create(
+			return DocumentBulkSelectionFactory.create(
+				_bulkSelectionFactoryRegistry,
 				DocumentBulkSelection.toDTO(
 					_jsonFactory.toString(_jsonFactory.createJSONObject(map))));
 		}
@@ -298,9 +299,6 @@ public class TaxonomyVocabularyResourceImpl
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
-
-	@Reference
-	private DocumentBulkSelectionFactory _documentBulkSelectionFactory;
 
 	@Reference(
 		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"

@@ -16,20 +16,17 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import java.util.Collections;
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Javier Gamarra
  */
-@Component(service = DocumentBulkSelectionFactory.class)
 public class DocumentBulkSelectionFactory {
 
-	public BulkSelection<?> create(
+	public static BulkSelection<?> create(
+		BulkSelectionFactoryRegistry bulkSelectionFactoryRegistry,
 		DocumentBulkSelection documentBulkSelection) {
 
 		BulkSelectionFactory<Object> bulkSelectionFactory =
-			_bulkSelectionFactoryRegistry.getBulkSelectionFactory(
+			bulkSelectionFactoryRegistry.getBulkSelectionFactory(
 				DLFileEntry.class.getName());
 
 		return bulkSelectionFactory.create(
@@ -38,7 +35,7 @@ public class DocumentBulkSelectionFactory {
 				documentBulkSelection.getSelectionScope()));
 	}
 
-	private Map<String, String[]> _getParameterMap(
+	private static Map<String, String[]> _getParameterMap(
 		String[] rowIdsFileEntry, SelectionScope selectionScope) {
 
 		if (selectionScope.getRepositoryId() == 0) {
@@ -58,8 +55,5 @@ public class DocumentBulkSelectionFactory {
 			new String[] {Boolean.toString(selectionScope.getSelectAll())}
 		).build();
 	}
-
-	@Reference
-	private BulkSelectionFactoryRegistry _bulkSelectionFactoryRegistry;
 
 }

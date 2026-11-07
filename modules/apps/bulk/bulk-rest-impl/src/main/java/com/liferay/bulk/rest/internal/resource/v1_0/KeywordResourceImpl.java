@@ -188,7 +188,8 @@ public class KeywordResourceImpl extends BaseKeywordResourceImpl {
 		Map<String, Object> map = (Map<String, Object>)object;
 
 		if (map.containsKey("documentIds")) {
-			return _documentBulkSelectionFactory.create(
+			return DocumentBulkSelectionFactory.create(
+				_bulkSelectionFactoryRegistry,
 				DocumentBulkSelection.toDTO(
 					_jsonFactory.toString(_jsonFactory.createJSONObject(map))));
 		}
@@ -215,7 +216,8 @@ public class KeywordResourceImpl extends BaseKeywordResourceImpl {
 			boolean append, KeywordBulkSelection keywordBulkSelection)
 		throws Exception {
 
-		BulkSelection<?> bulkSelection = _documentBulkSelectionFactory.create(
+		BulkSelection<?> bulkSelection = DocumentBulkSelectionFactory.create(
+			_bulkSelectionFactoryRegistry,
 			keywordBulkSelection.getDocumentBulkSelection());
 
 		_bulkSelectionRunner.run(
@@ -240,9 +242,6 @@ public class KeywordResourceImpl extends BaseKeywordResourceImpl {
 
 	@Reference
 	private BulkSelectionRunner _bulkSelectionRunner;
-
-	@Reference
-	private DocumentBulkSelectionFactory _documentBulkSelectionFactory;
 
 	@Reference(target = "(bulk.selection.action.key=edit.tags)")
 	private BulkSelectionAction<AssetEntry> _editTagsBulkSelectionAction;
