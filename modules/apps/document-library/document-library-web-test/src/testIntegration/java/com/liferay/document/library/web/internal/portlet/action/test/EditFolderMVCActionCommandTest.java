@@ -62,7 +62,7 @@ public class EditFolderMVCActionCommandTest {
 
 	@Test
 	@TestInfo({"LPD-113625", "LPS-128366"})
-	public void testProcessActionAddFolderViewableByOwner() throws Exception {
+	public void testProcessAction() throws Exception {
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
 

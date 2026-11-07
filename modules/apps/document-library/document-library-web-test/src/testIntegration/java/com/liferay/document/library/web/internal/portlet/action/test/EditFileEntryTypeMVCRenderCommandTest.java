@@ -60,7 +60,7 @@ public class EditFileEntryTypeMVCRenderCommandTest {
 
 	@Test
 	@TestInfo({"LPD-113625", "LPS-100096"})
-	public void testRenderWithoutUpdatePermission() throws Exception {
+	public void testRender() throws Exception {
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
 			_group.getGroupId(), DLFileEntryMetadata.class.getName());
 
