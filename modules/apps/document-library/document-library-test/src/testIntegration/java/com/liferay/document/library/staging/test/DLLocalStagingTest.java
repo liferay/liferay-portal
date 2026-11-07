@@ -6,7 +6,7 @@
 package com.liferay.document.library.staging.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.helper.DLURLHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
@@ -15,11 +15,11 @@ import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
-import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLAppServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUtil;
-import com.liferay.document.library.kernel.service.DLTrashServiceUtil;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
+import com.liferay.document.library.kernel.service.DLTrashService;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.util.DLFileEntryTypeUtil;
 import com.liferay.document.library.video.external.shortcut.DLVideoExternalShortcut;
@@ -31,13 +31,13 @@ import com.liferay.dynamic.data.mapping.kernel.Value;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
-import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.dynamic.data.mapping.util.DDMBeanTranslator;
 import com.liferay.dynamic.data.mapping.util.DDMUtil;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
-import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
+import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.kernel.staging.StagingConstants;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
@@ -48,7 +48,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -107,11 +107,11 @@ public class DLLocalStagingTest {
 				DLPortletKeys.DOCUMENT_LIBRARY_ADMIN),
 			true);
 
-		StagingLocalServiceUtil.enableLocalStaging(
+		_stagingLocalService.enableLocalStaging(
 			TestPropsValues.getUserId(), _liveGroup, false, false,
 			serviceContext);
 
-		_liveGroup = GroupLocalServiceUtil.getGroup(_liveGroup.getGroupId());
+		_liveGroup = _groupLocalService.getGroup(_liveGroup.getGroupId());
 
 		_stagingGroup = _liveGroup.getStagingGroup();
 	}
@@ -124,7 +124,7 @@ public class DLLocalStagingTest {
 		DLFileEntryType dlFileEntryType = _addFileEntryType(
 			_addMetadataSetDDMStructure());
 
-		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
@@ -139,12 +139,12 @@ public class DLLocalStagingTest {
 		Assert.assertEquals(
 			dlFileEntryType.getUuid(), liveDLFileEntryType.getUuid());
 
-		DLAppLocalServiceUtil.deleteFileEntry(fileEntry.getFileEntryId());
+		_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
 
 		_publish();
 
 		Assert.assertNull(
-			DLFileEntryLocalServiceUtil.fetchDLFileEntryByUuidAndGroupId(
+			_dlFileEntryLocalService.fetchDLFileEntryByUuidAndGroupId(
 				fileEntry.getUuid(), _liveGroup.getGroupId()));
 	}
 
@@ -154,7 +154,7 @@ public class DLLocalStagingTest {
 		FileEntry fileEntry = _addFileEntry(
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
-		DLAppLocalServiceUtil.addFileShortcut(
+		_dlAppLocalService.addFileShortcut(
 			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			fileEntry.getFileEntryId(),
@@ -166,7 +166,7 @@ public class DLLocalStagingTest {
 		Assert.assertEquals(
 			2, _getLiveFoldersAndFileEntriesAndFileShortcutsCount());
 
-		DLAppLocalServiceUtil.deleteFileEntry(fileEntry.getFileEntryId());
+		_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
 
 		_publish();
 
@@ -197,7 +197,7 @@ public class DLLocalStagingTest {
 
 		String name = RandomTestUtil.randomString();
 
-		DLFileEntryTypeLocalServiceUtil.updateFileEntryType(
+		_dlFileEntryTypeLocalService.updateFileEntryType(
 			dlFileEntryType.getFileEntryTypeId(),
 			Collections.singletonMap(LocaleUtil.US, name),
 			dlFileEntryType.getDescriptionMap());
@@ -211,7 +211,7 @@ public class DLLocalStagingTest {
 
 		ddmForm.addDDMFormField(ddmFormFields.get(0));
 
-		DDMStructureLocalServiceUtil.updateStructure(
+		_ddmStructureLocalService.updateStructure(
 			TestPropsValues.getUserId(),
 			metadataSetDDMStructure.getStructureId(), ddmForm,
 			DDMUtil.getDefaultDDMFormLayout(ddmForm),
@@ -220,7 +220,7 @@ public class DLLocalStagingTest {
 
 		String value = RandomTestUtil.randomString();
 
-		DLAppLocalServiceUtil.updateFileEntry(
+		_dlAppLocalService.updateFileEntry(
 			TestPropsValues.getUserId(), fileEntry.getFileEntryId(),
 			fileEntry.getFileName(), fileEntry.getMimeType(),
 			fileEntry.getTitle(), null, fileEntry.getDescription(),
@@ -239,7 +239,7 @@ public class DLLocalStagingTest {
 		Assert.assertEquals(name, liveDLFileEntryType.getName(LocaleUtil.US));
 
 		DDMStructure liveMetadataSetDDMStructure =
-			DDMStructureLocalServiceUtil.getDDMStructureByUuidAndGroupId(
+			_ddmStructureLocalService.getDDMStructureByUuidAndGroupId(
 				metadataSetDDMStructure.getUuid(), _liveGroup.getGroupId());
 
 		Assert.assertTrue(liveMetadataSetDDMStructure.hasField("newField"));
@@ -254,7 +254,7 @@ public class DLLocalStagingTest {
 			ServiceContextTestUtil.getServiceContext(
 				_stagingGroup.getGroupId());
 
-		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
@@ -281,7 +281,7 @@ public class DLLocalStagingTest {
 		byte[] bytes = RandomTestUtil.randomBytes();
 		String urlTitle = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
-		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
@@ -292,11 +292,11 @@ public class DLLocalStagingTest {
 
 		_publish();
 
-		StagingLocalServiceUtil.disableStaging(
+		_stagingLocalService.disableStaging(
 			_liveGroup,
 			ServiceContextTestUtil.getServiceContext(_liveGroup.getGroupId()));
 
-		Group group = GroupLocalServiceUtil.getGroup(_liveGroup.getGroupId());
+		Group group = _groupLocalService.getGroup(_liveGroup.getGroupId());
 
 		Assert.assertFalse(group.hasStagingGroup());
 
@@ -305,7 +305,7 @@ public class DLLocalStagingTest {
 				_liveGroup.getGroupId(),
 				PortalUtil.getClassNameId(FileEntry.class), urlTitle);
 
-		FileEntry liveFileEntry = DLAppLocalServiceUtil.getFileEntry(
+		FileEntry liveFileEntry = _dlAppLocalService.getFileEntry(
 			friendlyURLEntry.getClassPK());
 
 		Assert.assertEquals(fileEntry.getUuid(), liveFileEntry.getUuid());
@@ -316,7 +316,7 @@ public class DLLocalStagingTest {
 	@Test
 	@TestInfo({"LPD-113633", "LPS-136824"})
 	public void testPublishFolderMovedToRecycleBin() throws Exception {
-		Folder folder = DLAppLocalServiceUtil.addFolder(
+		Folder folder = _dlAppLocalService.addFolder(
 			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString(), StringPool.BLANK,
@@ -331,7 +331,7 @@ public class DLLocalStagingTest {
 		Assert.assertEquals(
 			1, _getLiveFoldersAndFileEntriesAndFileShortcutsCount());
 
-		DLTrashServiceUtil.moveFolderToTrash(folder.getFolderId());
+		_dlTrashService.moveFolderToTrash(folder.getFolderId());
 
 		_publish();
 
@@ -351,7 +351,7 @@ public class DLLocalStagingTest {
 				new DDMStructure[] {ddmStructure1, ddmStructure2}) {
 
 			DDMStructure liveDDMStructure =
-				DDMStructureLocalServiceUtil.fetchDDMStructureByUuidAndGroupId(
+				_ddmStructureLocalService.fetchDDMStructureByUuidAndGroupId(
 					ddmStructure.getUuid(), _liveGroup.getGroupId());
 
 			Assert.assertEquals(
@@ -377,7 +377,7 @@ public class DLLocalStagingTest {
 
 		String urlTitle = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
-		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
@@ -402,7 +402,7 @@ public class DLLocalStagingTest {
 
 		serviceContext.setAssetTagNames(new String[] {tagName});
 
-		DLAppLocalServiceUtil.updateFileEntry(
+		_dlAppLocalService.updateFileEntry(
 			TestPropsValues.getUserId(), fileEntry.getFileEntryId(), fileName,
 			ContentTypes.IMAGE_PNG, title, urlTitle, description,
 			StringPool.BLANK, DLVersionNumberIncrease.MAJOR, bytes, null, null,
@@ -431,7 +431,7 @@ public class DLLocalStagingTest {
 
 		Assert.assertArrayEquals(
 			new String[] {tagName},
-			AssetTagLocalServiceUtil.getTagNames(
+			_assetTagLocalService.getTagNames(
 				DLFileEntry.class.getName(), liveFileEntry.getFileEntryId()));
 
 		FriendlyURLEntry friendlyURLEntry =
@@ -447,7 +447,7 @@ public class DLLocalStagingTest {
 	public void testPublishVideoExternalShortcut() throws Exception {
 		String url = "https://www.youtube.com/watch?v=HOdbzGCI5ME";
 
-		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString(),
@@ -477,7 +477,7 @@ public class DLLocalStagingTest {
 	}
 
 	private FileEntry _addFileEntry(long folderId) throws Exception {
-		return DLAppLocalServiceUtil.addFileEntry(
+		return _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
 			folderId, RandomTestUtil.randomString() + ".txt",
 			ContentTypes.TEXT_PLAIN, RandomTestUtil.randomBytes(), null, null,
@@ -494,7 +494,7 @@ public class DLLocalStagingTest {
 			_stagingGroup.getGroupId(), DLFileEntryMetadata.class.getName());
 
 		DLFileEntryType dlFileEntryType =
-			DLFileEntryTypeLocalServiceUtil.addFileEntryType(
+			_dlFileEntryTypeLocalService.addFileEntryType(
 				null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
 				ddmStructure.getStructureId(), null,
 				Collections.singletonMap(
@@ -505,15 +505,15 @@ public class DLLocalStagingTest {
 				ServiceContextTestUtil.getServiceContext(
 					_stagingGroup.getGroupId()));
 
-		ddmStructure = DDMStructureLocalServiceUtil.getDDMStructure(
+		ddmStructure = _ddmStructureLocalService.getDDMStructure(
 			ddmStructure.getStructureId());
 
 		ddmStructure.setStructureKey(
 			DLUtil.getDDMStructureKey(dlFileEntryType));
 
-		DDMStructureLocalServiceUtil.updateDDMStructure(ddmStructure);
+		_ddmStructureLocalService.updateDDMStructure(ddmStructure);
 
-		DLFileEntryTypeLocalServiceUtil.addDDMStructureLinks(
+		_dlFileEntryTypeLocalService.addDDMStructureLinks(
 			dlFileEntryType.getFileEntryTypeId(),
 			Collections.singleton(metadataSetDDMStructure.getStructureId()));
 
@@ -609,19 +609,19 @@ public class DLLocalStagingTest {
 
 		DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
 
-		return DLFileEntryTypeLocalServiceUtil.getDLFileEntryType(
+		return _dlFileEntryTypeLocalService.getDLFileEntryType(
 			dlFileEntry.getFileEntryTypeId());
 	}
 
 	private FileEntry _getLiveFileEntry(FileEntry fileEntry) throws Exception {
-		return DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
+		return _dlAppLocalService.getFileEntryByUuidAndGroupId(
 			fileEntry.getUuid(), _liveGroup.getGroupId());
 	}
 
 	private int _getLiveFoldersAndFileEntriesAndFileShortcutsCount()
 		throws Exception {
 
-		return DLAppServiceUtil.getFoldersAndFileEntriesAndFileShortcutsCount(
+		return _dlAppService.getFoldersAndFileEntriesAndFileShortcutsCount(
 			_liveGroup.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			WorkflowConstants.STATUS_APPROVED, false);
 	}
@@ -639,7 +639,7 @@ public class DLLocalStagingTest {
 
 		for (DDMStructure ddmStructure :
 				DLFileEntryTypeUtil.getDDMStructures(
-					DLFileEntryTypeLocalServiceUtil.getFileEntryType(
+					_dlFileEntryTypeLocalService.getFileEntryType(
 						dlFileEntryType.getFileEntryTypeId()))) {
 
 			DDMFormValues ddmFormValues = new DDMFormValues(
@@ -676,11 +676,11 @@ public class DLLocalStagingTest {
 	private ServiceContext _getVideoExternalShortcutServiceContext(String url)
 		throws Exception {
 
-		Group companyGroup = GroupLocalServiceUtil.getCompanyGroup(
+		Group companyGroup = _groupLocalService.getCompanyGroup(
 			_stagingGroup.getCompanyId());
 
 		DLFileEntryType dlFileEntryType =
-			DLFileEntryTypeLocalServiceUtil.getFileEntryType(
+			_dlFileEntryTypeLocalService.getFileEntryType(
 				companyGroup.getGroupId(), "DL_VIDEO_EXTERNAL_SHORTCUT");
 
 		List<DDMStructure> ddmStructures = DLFileEntryTypeUtil.getDDMStructures(
@@ -724,7 +724,7 @@ public class DLLocalStagingTest {
 			FileEntry fileEntry, ServiceContext serviceContext, String urlTitle)
 		throws Exception {
 
-		DLAppLocalServiceUtil.updateFileEntry(
+		_dlAppLocalService.updateFileEntry(
 			TestPropsValues.getUserId(), fileEntry.getFileEntryId(),
 			fileEntry.getFileName(), fileEntry.getMimeType(),
 			fileEntry.getTitle(), urlTitle, fileEntry.getDescription(),
@@ -733,7 +733,28 @@ public class DLLocalStagingTest {
 	}
 
 	@Inject
+	private AssetTagLocalService _assetTagLocalService;
+
+	@Inject
 	private DDMBeanTranslator _ddmBeanTranslator;
+
+	@Inject
+	private DDMStructureLocalService _ddmStructureLocalService;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
+	private DLAppService _dlAppService;
+
+	@Inject
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Inject
+	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;
+
+	@Inject
+	private DLTrashService _dlTrashService;
 
 	@Inject
 	private DLURLHelper _dlURLHelper;
@@ -744,9 +765,15 @@ public class DLLocalStagingTest {
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
+	@Inject
+	private GroupLocalService _groupLocalService;
+
 	@DeleteAfterTestRun
 	private Group _liveGroup;
 
 	private Group _stagingGroup;
+
+	@Inject
+	private StagingLocalService _stagingLocalService;
 
 }
