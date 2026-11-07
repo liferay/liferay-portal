@@ -7,6 +7,7 @@ package com.liferay.exportimport.internal.batch.engine;
 
 import com.liferay.batch.engine.BatchEngineContentProcessor;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -34,6 +35,11 @@ public class LiveExternalReferenceCodeBatchEngineContentProcessorImpl
 			return content;
 		}
 
+		content =
+			_exportImportPortletPreferencesProcessorHelper.
+				getGroupImportPortletPreferencesExternalReferenceCode(
+					CompanyThreadLocal.getCompanyId(), content);
+
 		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
 			content, CompanyThreadLocal.getCompanyId());
 
@@ -49,6 +55,10 @@ public class LiveExternalReferenceCodeBatchEngineContentProcessorImpl
 
 		return liveGroup.getExternalReferenceCode();
 	}
+
+	@Reference
+	private ExportImportPortletPreferencesProcessorHelper
+		_exportImportPortletPreferencesProcessorHelper;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
