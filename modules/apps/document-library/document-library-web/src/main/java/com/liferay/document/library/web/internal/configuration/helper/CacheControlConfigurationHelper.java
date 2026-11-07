@@ -20,29 +20,13 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 
 /**
  * @author Adolfo Pérez
  */
-@Component(
-	configurationPid = "com.liferay.document.library.web.internal.configuration.CacheControlConfiguration",
-	service = CacheControlConfigurationHelper.class
-)
 public class CacheControlConfigurationHelper {
 
-	public CacheControlConfiguration getCompanyCacheControlConfiguration(
-		long companyId) {
-
-		return _companyConfigurationBeans.getOrDefault(
-			companyId, _systemCacheControlConfiguration);
-	}
-
-	@Activate
-	protected void activate(
+	public CacheControlConfigurationHelper(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
 		modified(properties);
@@ -56,13 +40,18 @@ public class CacheControlConfigurationHelper {
 					"CacheControlConfiguration.scoped"));
 	}
 
-	@Deactivate
-	protected void deactivate() {
+	public void destroy() {
 		_serviceRegistration.unregister();
 	}
 
-	@Modified
-	protected void modified(Map<String, Object> properties) {
+	public CacheControlConfiguration getCompanyCacheControlConfiguration(
+		long companyId) {
+
+		return _companyConfigurationBeans.getOrDefault(
+			companyId, _systemCacheControlConfiguration);
+	}
+
+	public void modified(Map<String, Object> properties) {
 		_systemCacheControlConfiguration = ConfigurableUtil.createConfigurable(
 			CacheControlConfiguration.class, properties);
 	}
@@ -70,7 +59,8 @@ public class CacheControlConfigurationHelper {
 	private final Map<Long, CacheControlConfiguration>
 		_companyConfigurationBeans = new ConcurrentHashMap<>();
 	private final Map<String, Long> _companyIds = new ConcurrentHashMap<>();
-	private ServiceRegistration<ManagedServiceFactory> _serviceRegistration;
+	private final ServiceRegistration<ManagedServiceFactory>
+		_serviceRegistration;
 	private volatile CacheControlConfiguration _systemCacheControlConfiguration;
 
 	private class CacheControlConfigurationManagedServiceFactory

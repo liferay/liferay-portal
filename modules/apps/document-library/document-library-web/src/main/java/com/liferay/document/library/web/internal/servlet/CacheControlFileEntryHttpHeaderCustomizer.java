@@ -22,7 +22,13 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import java.util.Map;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -46,6 +52,24 @@ public class CacheControlFileEntryHttpHeaderCustomizer
 
 			return currentValue;
 		}
+	}
+
+	@Activate
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
+		_cacheControlConfigurationHelper = new CacheControlConfigurationHelper(
+			bundleContext, properties);
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_cacheControlConfigurationHelper.destroy();
+	}
+
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		_cacheControlConfigurationHelper.modified(properties);
 	}
 
 	private String _getHttpHeaderValue(FileEntry fileEntry, String currentValue)
@@ -89,7 +113,6 @@ public class CacheControlFileEntryHttpHeaderCustomizer
 	private static final Log _log = LogFactoryUtil.getLog(
 		CacheControlFileEntryHttpHeaderCustomizer.class);
 
-	@Reference
 	private CacheControlConfigurationHelper _cacheControlConfigurationHelper;
 
 	@Reference
