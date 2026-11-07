@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.user.associated.data.web.internal.configuration;
+package com.liferay.user.associated.data.web.internal.util;
+
+import com.liferay.user.associated.data.web.internal.configuration.AnonymousUserConfiguration;
 
 import java.io.IOException;
 
@@ -14,7 +16,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 /**
  * @author Drew Brokke
  */
-public class AnonymousUserConfigurationRetriever {
+public class AnonymousUserConfigurationUtil {
 
 	public static Configuration get(
 			long companyId, ConfigurationAdmin configurationAdmin)

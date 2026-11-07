@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.user.associated.data.web.internal.configuration.AnonymousUserConfigurationRetriever;
+import com.liferay.user.associated.data.web.internal.util.AnonymousUserConfigurationUtil;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ public class UserModelListener extends BaseModelListener<User> {
 	private void _deleteAnonymousUserConfiguration(long companyId, long userId)
 		throws InvalidSyntaxException, IOException {
 
-		Configuration configuration = AnonymousUserConfigurationRetriever.get(
+		Configuration configuration = AnonymousUserConfigurationUtil.get(
 			companyId, _configurationAdmin, userId);
 
 		if (configuration == null) {

@@ -33,7 +33,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.security.pwd.PwdToolkitUtil;
 import com.liferay.user.associated.data.anonymizer.UADAnonymousUserProvider;
 import com.liferay.user.associated.data.web.internal.configuration.AnonymousUserConfiguration;
-import com.liferay.user.associated.data.web.internal.configuration.AnonymousUserConfigurationRetriever;
+import com.liferay.user.associated.data.web.internal.util.AnonymousUserConfigurationUtil;
 
 import java.util.Calendar;
 import java.util.Dictionary;
@@ -160,7 +160,7 @@ public class UADAnonymousUserProviderImpl implements UADAnonymousUserProvider {
 	}
 
 	private User _getAnonymousUser(long companyId) throws Exception {
-		Configuration configuration = AnonymousUserConfigurationRetriever.get(
+		Configuration configuration = AnonymousUserConfigurationUtil.get(
 			companyId, _configurationAdmin);
 
 		if (configuration == null) {
