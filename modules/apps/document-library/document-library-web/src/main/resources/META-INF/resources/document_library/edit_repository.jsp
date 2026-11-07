@@ -12,7 +12,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 Repository repository = (Repository)request.getAttribute(WebKeys.DOCUMENT_LIBRARY_REPOSITORY);
 
-long repositoryId = ParamUtil.getLong(request, "repositoryId", GetterUtil.get(repository, Repository::getRepositoryId, 0L));
+long repositoryId = ParamUtil.getLong(request, "repositoryId");
 
 long folderId = ParamUtil.getLong(request, "folderId");
 

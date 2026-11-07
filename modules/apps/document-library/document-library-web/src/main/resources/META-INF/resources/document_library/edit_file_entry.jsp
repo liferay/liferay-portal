@@ -14,7 +14,7 @@ String uploadProgressId = "dlFileEntryUploadProgress";
 
 FileEntry fileEntry = (FileEntry)request.getAttribute(WebKeys.DOCUMENT_LIBRARY_FILE_ENTRY);
 
-long fileEntryId = ParamUtil.getLong(request, "fileEntryId", GetterUtil.get(fileEntry, FileEntry::getFileEntryId, 0L));
+long fileEntryId = ParamUtil.getLong(request, "fileEntryId");
 
 long repositoryId = ParamUtil.getLong(request, "repositoryId", GetterUtil.get(fileEntry, FileEntry::getRepositoryId, 0L));
 

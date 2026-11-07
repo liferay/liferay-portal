@@ -59,10 +59,7 @@ public class DLEditFileShortcutDisplayContext {
 	}
 
 	public long getFileShortcutId() {
-		return ParamUtil.getLong(
-			_liferayPortletRequest, "fileShortcutId",
-			GetterUtil.get(
-				_getFileShortcut(), FileShortcut::getFileShortcutId, 0L));
+		return ParamUtil.getLong(_liferayPortletRequest, "fileShortcutId");
 	}
 
 	public long getFolderId() {
