@@ -271,10 +271,7 @@ public class ThumbnailsOSGiCommandsTest {
 			new ImagePreviewableDLProcessor();
 
 		_serviceRegistration = bundleContext.registerService(
-			new String[] {
-				DLProcessor.class.getName(), ImageProcessor.class.getName()
-			},
-			imagePreviewableDLProcessor,
+			DLProcessor.class, imagePreviewableDLProcessor,
 			MapUtil.singletonDictionary(
 				"type", DLProcessorConstants.IMAGE_PROCESSOR));
 
