@@ -9,8 +9,10 @@ import com.liferay.configuration.admin.category.ConfigurationCategory;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.feature.flag.web.internal.configuration.admin.display.FeatureFlagConfigurationScreen;
 import com.liferay.feature.flag.web.internal.display.FeatureFlagsDisplayContextFactory;
+import com.liferay.feature.flag.web.internal.feature.flag.FeatureFlagsBagProvider;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagType;
+import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.servlet.ServletContext;
 
@@ -49,6 +51,10 @@ public class FeatureFlagConfigurationCategory implements ConfigurationCategory {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
+		FeatureFlagsDisplayContextFactory featureFlagsDisplayContextFactory =
+			new FeatureFlagsDisplayContextFactory(
+				_featureFlagsBagProvider, _portal);
+
 		for (int i = 0; i < _orderedFeatureFlagTypes.length; i++) {
 			FeatureFlagType featureFlagType = _orderedFeatureFlagTypes[i];
 
@@ -56,7 +62,7 @@ public class FeatureFlagConfigurationCategory implements ConfigurationCategory {
 				bundleContext.registerService(
 					ConfigurationScreen.class,
 					new FeatureFlagConfigurationScreen(
-						featureFlagType, _featureFlagsDisplayContextFactory, i,
+						featureFlagType, featureFlagsDisplayContextFactory, i,
 						ExtendedObjectClassDefinition.Scope.SYSTEM.getValue(),
 						_servletContext),
 					null));
@@ -65,7 +71,7 @@ public class FeatureFlagConfigurationCategory implements ConfigurationCategory {
 				bundleContext.registerService(
 					ConfigurationScreen.class,
 					new FeatureFlagConfigurationScreen(
-						featureFlagType, _featureFlagsDisplayContextFactory, i,
+						featureFlagType, featureFlagsDisplayContextFactory, i,
 						ExtendedObjectClassDefinition.Scope.COMPANY.getValue(),
 						_servletContext),
 					null));
@@ -85,8 +91,10 @@ public class FeatureFlagConfigurationCategory implements ConfigurationCategory {
 	};
 
 	@Reference
-	private FeatureFlagsDisplayContextFactory
-		_featureFlagsDisplayContextFactory;
+	private FeatureFlagsBagProvider _featureFlagsBagProvider;
+
+	@Reference
+	private Portal _portal;
 
 	private final List<ServiceRegistration<ConfigurationScreen>>
 		_serviceRegistrations = new ArrayList<>();

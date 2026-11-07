@@ -43,14 +43,17 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Drew Brokke
  */
-@Component(service = FeatureFlagsDisplayContextFactory.class)
 public class FeatureFlagsDisplayContextFactory {
+
+	public FeatureFlagsDisplayContextFactory(
+		FeatureFlagsBagProvider featureFlagsBagProvider, Portal portal) {
+
+		_featureFlagsBagProvider = featureFlagsBagProvider;
+		_portal = portal;
+	}
 
 	public FeatureFlagsDisplayContext create(
 		FeatureFlagType featureFlagType, HttpServletRequest httpServletRequest,
@@ -224,10 +227,7 @@ public class FeatureFlagsDisplayContextFactory {
 		return StringUtil.toLowerCase(string, locale);
 	}
 
-	@Reference
-	private FeatureFlagsBagProvider _featureFlagsBagProvider;
-
-	@Reference
-	private Portal _portal;
+	private final FeatureFlagsBagProvider _featureFlagsBagProvider;
+	private final Portal _portal;
 
 }
