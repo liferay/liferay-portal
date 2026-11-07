@@ -137,7 +137,6 @@ import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -4564,8 +4563,7 @@ public class BundleSiteInitializerTest {
 
 	private void _assertSiteSettings() throws Exception {
 		Configuration configuration = _getFactoryConfiguration(
-			"test.pid.scoped", ExtendedObjectClassDefinition.Scope.GROUP,
-			_group.getGroupId());
+			"test.pid.scoped", _group.getGroupId());
 
 		Assert.assertNotNull(configuration);
 
@@ -4933,15 +4931,14 @@ public class BundleSiteInitializerTest {
 	}
 
 	private Configuration _getFactoryConfiguration(
-			String factoryPid, ExtendedObjectClassDefinition.Scope scope,
-			Serializable scopePK)
+			String factoryPid, long groupId)
 		throws Exception {
 
 		try {
 			Configuration[] configurations =
 				_configurationAdmin.listConfigurations(
-					ConfigurationFilterStringUtil.getScopedFilterString(
-						_group.getCompanyId(), factoryPid, scope, scopePK));
+					ConfigurationFilterStringUtil.getGroupScopedFilterString(
+						_group.getCompanyId(), groupId, factoryPid, null));
 
 			if (configurations != null) {
 				return configurations[0];

@@ -8,7 +8,6 @@ package com.liferay.portal.security.ldap.internal.upgrade.v1_0_1.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -162,9 +161,8 @@ public class LDAPReferralUpgradeProcessTest {
 
 	private String _getReferral(long companyId) throws Exception {
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			ConfigurationFilterStringUtil.getScopedFilterString(
-				companyId, SystemLDAPConfiguration.class.getName(),
-				ExtendedObjectClassDefinition.Scope.COMPANY, companyId));
+			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+				companyId, SystemLDAPConfiguration.class.getName(), null));
 
 		if (ArrayUtil.isEmpty(configurations)) {
 			return null;

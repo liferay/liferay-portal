@@ -52,7 +52,8 @@ public class CSPOSGiCommandsTest {
 		Company company = CompanyTestUtil.addCompany(false);
 
 		_testResetContentSecurityPolicyConfiguration(
-			null,
+			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+				company.getCompanyId(), _CLASS_NAME, null),
 			HashMapDictionaryBuilder.<String, Object>put(
 				"companyId", company.getCompanyId()
 			).build(),
@@ -62,7 +63,8 @@ public class CSPOSGiCommandsTest {
 		Group group = GroupTestUtil.addGroup();
 
 		_testResetContentSecurityPolicyConfiguration(
-			group.getCompanyId(),
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				group.getCompanyId(), group.getGroupId(), _CLASS_NAME, null),
 			HashMapDictionaryBuilder.<String, Object>put(
 				"companyId", group.getCompanyId()
 			).put(
@@ -71,7 +73,9 @@ public class CSPOSGiCommandsTest {
 			ExtendedObjectClassDefinition.Scope.GROUP, group.getGroupId());
 
 		_testResetContentSecurityPolicyConfiguration(
-			null, new HashMapDictionary<>(),
+			ConfigurationFilterStringUtil.getSystemScopedFilterString(
+				_CLASS_NAME),
+			new HashMapDictionary<>(),
 			ExtendedObjectClassDefinition.Scope.SYSTEM,
 			CompanyConstants.SYSTEM);
 	}
@@ -125,7 +129,7 @@ public class CSPOSGiCommandsTest {
 	}
 
 	private void _testResetContentSecurityPolicyConfiguration(
-			Long companyId, Dictionary<String, Object> properties,
+			String filterString, Dictionary<String, Object> properties,
 			ExtendedObjectClassDefinition.Scope scope, long scopePK)
 		throws Exception {
 
@@ -133,10 +137,7 @@ public class CSPOSGiCommandsTest {
 
 		_resetConfiguration(scope, scopePK);
 
-		Assert.assertNull(
-			_configurationAdmin.listConfigurations(
-				ConfigurationFilterStringUtil.getScopedFilterString(
-					companyId, _CLASS_NAME, scope, scopePK)));
+		Assert.assertNull(_configurationAdmin.listConfigurations(filterString));
 	}
 
 	private static final String _CLASS_NAME =

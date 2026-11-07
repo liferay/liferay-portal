@@ -514,9 +514,21 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 			Long scopePK)
 		throws Exception {
 
+		String filterString = null;
+
+		if (scope == ExtendedObjectClassDefinition.Scope.COMPANY) {
+			filterString =
+				ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+					scopePK, className, null);
+		}
+		else {
+			filterString =
+				ConfigurationFilterStringUtil.getGroupScopedFilterString(
+					TestPropsValues.getCompanyId(), scopePK, className, null);
+		}
+
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			ConfigurationFilterStringUtil.getScopedFilterString(
-				TestPropsValues.getCompanyId(), className, scope, scopePK));
+			filterString);
 
 		if (configurations == null) {
 			return null;

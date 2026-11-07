@@ -77,14 +77,16 @@ public class ConfigurationProviderTest {
 
 		_createFactoryConfiguration(null, _PID, scope, companyId);
 
-		Assert.assertEquals(
-			1, _getFactoryConfigurationsCount(_PID, scope, companyId));
+		String filterString =
+			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+				companyId, _PID, null);
+
+		Assert.assertEquals(1, _getFactoryConfigurationsCount(filterString));
 
 		_configurationProvider.deleteCompanyConfiguration(
 			TestConfiguration.class, companyId);
 
-		Assert.assertEquals(
-			0, _getFactoryConfigurationsCount(_PID, scope, companyId));
+		Assert.assertEquals(0, _getFactoryConfigurationsCount(filterString));
 	}
 
 	@Test
@@ -100,22 +102,23 @@ public class ConfigurationProviderTest {
 		_createFactoryConfiguration(
 			CompanyThreadLocal.getCompanyId(), _PID, scope, groupId2);
 
-		Assert.assertEquals(
-			2, _getFactoryConfigurationsCount(_PID, scope, null));
+		String filterString =
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				CompanyThreadLocal.getCompanyId(), null, _PID, null);
+
+		Assert.assertEquals(2, _getFactoryConfigurationsCount(filterString));
 
 		_configurationProvider.deleteGroupConfiguration(
 			TestConfiguration.class, CompanyThreadLocal.getCompanyId(),
 			groupId1);
 
-		Assert.assertEquals(
-			1, _getFactoryConfigurationsCount(_PID, scope, null));
+		Assert.assertEquals(1, _getFactoryConfigurationsCount(filterString));
 
 		_configurationProvider.deleteGroupConfiguration(
 			TestConfiguration.class, CompanyThreadLocal.getCompanyId(),
 			groupId2);
 
-		Assert.assertEquals(
-			0, _getFactoryConfigurationsCount(_PID, scope, null));
+		Assert.assertEquals(0, _getFactoryConfigurationsCount(filterString));
 	}
 
 	@Test
@@ -127,14 +130,16 @@ public class ConfigurationProviderTest {
 
 		_createFactoryConfiguration(null, _PID, scope, portletInstanceId);
 
-		Assert.assertEquals(
-			1, _getFactoryConfigurationsCount(_PID, scope, portletInstanceId));
+		String filterString =
+			ConfigurationFilterStringUtil.getPortletScopedFilterString(
+				_PID, portletInstanceId);
+
+		Assert.assertEquals(1, _getFactoryConfigurationsCount(filterString));
 
 		_configurationProvider.deletePortletInstanceConfiguration(
 			TestConfiguration.class, portletInstanceId);
 
-		Assert.assertEquals(
-			0, _getFactoryConfigurationsCount(_PID, scope, portletInstanceId));
+		Assert.assertEquals(0, _getFactoryConfigurationsCount(filterString));
 	}
 
 	@Test
@@ -162,8 +167,11 @@ public class ConfigurationProviderTest {
 		ExtendedObjectClassDefinition.Scope scope =
 			ExtendedObjectClassDefinition.Scope.COMPANY;
 
-		Configuration configuration = _getFactoryConfiguration(
-			null, _PID, scope, companyId);
+		String filterString =
+			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+				companyId, _PID, null);
+
+		Configuration configuration = _getFactoryConfiguration(filterString);
 
 		_assertFactoryPropertyValues(
 			_properties, configuration.getProperties(), scope.getPropertyKey(),
@@ -172,7 +180,7 @@ public class ConfigurationProviderTest {
 		_configurationProvider.saveCompanyConfiguration(
 			companyId, _PID, _properties);
 
-		configuration = _getFactoryConfiguration(null, _PID, scope, companyId);
+		configuration = _getFactoryConfiguration(filterString);
 
 		_assertFactoryPropertyValues(
 			_properties, configuration.getProperties(), scope.getPropertyKey(),
@@ -199,7 +207,8 @@ public class ConfigurationProviderTest {
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE;
 
 		Configuration configuration = _getFactoryConfiguration(
-			null, _PID, scope, portletInstanceId);
+			ConfigurationFilterStringUtil.getPortletScopedFilterString(
+				_PID, portletInstanceId));
 
 		_assertFactoryPropertyValues(
 			_properties, configuration.getProperties(), scope.getPropertyKey(),
@@ -298,14 +307,11 @@ public class ConfigurationProviderTest {
 		return configurations.length;
 	}
 
-	private Configuration _getFactoryConfiguration(
-			Serializable companyId, String factoryPid,
-			ExtendedObjectClassDefinition.Scope scope, Serializable scopePK)
+	private Configuration _getFactoryConfiguration(String filterString)
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			ConfigurationFilterStringUtil.getScopedFilterString(
-				companyId, factoryPid, scope, scopePK));
+			filterString);
 
 		if (configurations != null) {
 			Configuration configuration = configurations[0];
@@ -318,14 +324,11 @@ public class ConfigurationProviderTest {
 		return null;
 	}
 
-	private int _getFactoryConfigurationsCount(
-			String pid, ExtendedObjectClassDefinition.Scope scope,
-			Serializable scopePK)
+	private int _getFactoryConfigurationsCount(String filterString)
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			ConfigurationFilterStringUtil.getScopedFilterString(
-				CompanyThreadLocal.getCompanyId(), pid, scope, scopePK));
+			filterString);
 
 		if (configurations == null) {
 			return 0;
@@ -351,15 +354,21 @@ public class ConfigurationProviderTest {
 		ExtendedObjectClassDefinition.Scope scope =
 			ExtendedObjectClassDefinition.Scope.GROUP;
 
-		Configuration configuration = _getFactoryConfiguration(
-			CompanyThreadLocal.getCompanyId(), _PID, scope, groupId1);
+		String filterString1 =
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				CompanyThreadLocal.getCompanyId(), groupId1, _PID, null);
+
+		Configuration configuration = _getFactoryConfiguration(filterString1);
 
 		_assertFactoryPropertyValues(
 			_properties, configuration.getProperties(), scope.getPropertyKey(),
 			groupId1);
 
-		configuration = _getFactoryConfiguration(
-			CompanyThreadLocal.getCompanyId(), _PID, scope, groupId2);
+		String filterString2 =
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				CompanyThreadLocal.getCompanyId(), groupId2, _PID, null);
+
+		configuration = _getFactoryConfiguration(filterString2);
 
 		_assertFactoryPropertyValues(
 			new HashMapDictionary<>(), configuration.getProperties(),
@@ -370,15 +379,13 @@ public class ConfigurationProviderTest {
 		_configurationProvider.saveGroupConfiguration(
 			CompanyThreadLocal.getCompanyId(), groupId1, _PID, _properties);
 
-		configuration = _getFactoryConfiguration(
-			CompanyThreadLocal.getCompanyId(), _PID, scope, groupId1);
+		configuration = _getFactoryConfiguration(filterString1);
 
 		_assertFactoryPropertyValues(
 			_properties, configuration.getProperties(), scope.getPropertyKey(),
 			groupId1);
 
-		configuration = _getFactoryConfiguration(
-			CompanyThreadLocal.getCompanyId(), _PID, scope, groupId2);
+		configuration = _getFactoryConfiguration(filterString2);
 
 		_assertFactoryPropertyValues(
 			new HashMapDictionary<>(), configuration.getProperties(),
@@ -406,7 +413,8 @@ public class ConfigurationProviderTest {
 			ExtendedObjectClassDefinition.Scope.GROUP;
 
 		Configuration configuration = _getFactoryConfiguration(
-			companyId1, _PID, scope, groupId);
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				companyId1, groupId, _PID, null));
 
 		properties.put(
 			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
@@ -417,7 +425,8 @@ public class ConfigurationProviderTest {
 			groupId);
 
 		configuration = _getFactoryConfiguration(
-			companyId2, _PID, scope, groupId);
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				companyId2, groupId, _PID, null));
 
 		properties.put(
 			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
