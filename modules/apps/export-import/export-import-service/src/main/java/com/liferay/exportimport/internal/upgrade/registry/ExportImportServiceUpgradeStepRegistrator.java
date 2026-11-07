@@ -13,6 +13,7 @@ import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalSer
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -56,8 +57,12 @@ public class ExportImportServiceUpgradeStepRegistrator
 		registry.register(
 			"1.0.1", "1.0.2",
 			new ExportImportServiceConfigurationUpgradeProcess(
-				_configurationAdmin, _configurationProvider));
+				_companyLocalService, _configurationAdmin,
+				_configurationProvider));
 	}
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;

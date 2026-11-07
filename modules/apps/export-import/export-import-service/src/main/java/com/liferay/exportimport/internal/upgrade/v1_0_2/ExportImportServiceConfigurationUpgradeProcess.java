@@ -7,6 +7,7 @@ package com.liferay.exportimport.internal.upgrade.v1_0_2;
 
 import com.liferay.exportimport.configuration.ExportImportServiceConfiguration;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -24,9 +25,11 @@ public class ExportImportServiceConfigurationUpgradeProcess
 	extends UpgradeProcess {
 
 	public ExportImportServiceConfigurationUpgradeProcess(
+		CompanyLocalService companyLocalService,
 		ConfigurationAdmin configurationAdmin,
 		ConfigurationProvider configurationProvider) {
 
+		_companyLocalService = companyLocalService;
 		_configurationAdmin = configurationAdmin;
 		_configurationProvider = configurationProvider;
 	}
@@ -82,6 +85,10 @@ public class ExportImportServiceConfigurationUpgradeProcess
 				exportImportProperties.get("companyId"));
 
 			if (companyId != 0) {
+				if (_companyLocalService.fetchCompany(companyId) == null) {
+					continue;
+				}
+
 				stagingProperties.put("companyId", companyId);
 
 				_configurationProvider.saveCompanyConfiguration(
@@ -94,6 +101,7 @@ public class ExportImportServiceConfigurationUpgradeProcess
 		}
 	}
 
+	private final CompanyLocalService _companyLocalService;
 	private final ConfigurationAdmin _configurationAdmin;
 	private final ConfigurationProvider _configurationProvider;
 
