@@ -216,13 +216,12 @@ public class DLAppServiceWhenViewingFolderContentsTest
 			StringUtil.randomString(), null, StringUtil.randomString(),
 			StringPool.BLANK, (byte[])null, null, null, null, serviceContext);
 
-		for (String roleName :
-				new String[] {RoleConstants.GUEST, RoleConstants.SITE_MEMBER}) {
-
-			_removeViewPermission(
-				DLFileEntry.class.getName(), fileEntry.getFileEntryId(),
-				roleName);
-		}
+		_removeViewPermission(
+			DLFileEntry.class.getName(), fileEntry.getFileEntryId(),
+			RoleConstants.GUEST);
+		_removeViewPermission(
+			DLFileEntry.class.getName(), fileEntry.getFileEntryId(),
+			RoleConstants.SITE_MEMBER);
 
 		_assertFoldersAndFileEntriesAndFileShortcutsCount(
 			1, _userLocalService.getGuestUser(TestPropsValues.getCompanyId()));

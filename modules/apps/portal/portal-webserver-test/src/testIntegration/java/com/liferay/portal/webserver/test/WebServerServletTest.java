@@ -313,18 +313,23 @@ public class WebServerServletTest {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			serviceContext);
 
-		for (String roleName :
-				new String[] {RoleConstants.GUEST, RoleConstants.SITE_MEMBER}) {
+		Role guestRole = RoleLocalServiceUtil.getRole(
+			_group.getCompanyId(), RoleConstants.GUEST);
 
-			Role role = RoleLocalServiceUtil.getRole(
-				_group.getCompanyId(), roleName);
+		ResourcePermissionLocalServiceUtil.setResourcePermissions(
+			_group.getCompanyId(), DLFolder.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(folder.getFolderId()), guestRole.getRoleId(),
+			new String[] {ActionKeys.ACCESS});
 
-			ResourcePermissionLocalServiceUtil.setResourcePermissions(
-				_group.getCompanyId(), DLFolder.class.getName(),
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(folder.getFolderId()), role.getRoleId(),
-				new String[] {ActionKeys.ACCESS});
-		}
+		Role siteMemberRole = RoleLocalServiceUtil.getRole(
+			_group.getCompanyId(), RoleConstants.SITE_MEMBER);
+
+		ResourcePermissionLocalServiceUtil.setResourcePermissions(
+			_group.getCompanyId(), DLFolder.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(folder.getFolderId()), siteMemberRole.getRoleId(),
+			new String[] {ActionKeys.ACCESS});
 
 		String title = RandomTestUtil.randomString() + ".txt";
 

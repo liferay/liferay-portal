@@ -101,19 +101,25 @@ public class EditFolderMVCActionCommandTest {
 			_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			name);
 
-		for (String roleName :
-				new String[] {RoleConstants.GUEST, RoleConstants.SITE_MEMBER}) {
+		Role guestRole = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.GUEST);
 
-			Role role = _roleLocalService.getRole(
-				_group.getCompanyId(), roleName);
+		Assert.assertFalse(
+			_resourcePermissionLocalService.hasResourcePermission(
+				_group.getCompanyId(), DLFolder.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(folder.getFolderId()), guestRole.getRoleId(),
+				ActionKeys.VIEW));
 
-			Assert.assertFalse(
-				_resourcePermissionLocalService.hasResourcePermission(
-					_group.getCompanyId(), DLFolder.class.getName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(folder.getFolderId()), role.getRoleId(),
-					ActionKeys.VIEW));
-		}
+		Role siteMemberRole = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.SITE_MEMBER);
+
+		Assert.assertFalse(
+			_resourcePermissionLocalService.hasResourcePermission(
+				_group.getCompanyId(), DLFolder.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(folder.getFolderId()),
+				siteMemberRole.getRoleId(), ActionKeys.VIEW));
 	}
 
 	@Inject

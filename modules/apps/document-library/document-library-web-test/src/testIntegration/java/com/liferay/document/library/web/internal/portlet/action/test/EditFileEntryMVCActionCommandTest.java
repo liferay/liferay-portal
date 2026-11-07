@@ -354,26 +354,17 @@ public class EditFileEntryMVCActionCommandTest {
 				).build()),
 			new MockLiferayPortletActionResponse());
 
-		for (String fileName : new String[] {"test.gif", "test.jpg"}) {
-			FileEntry fileEntry = _dlAppLocalService.getFileEntryByFileName(
-				_group.getGroupId(), tempFileEntry1.getFolderId(), fileName);
+		FileEntry gifFileEntry = _dlAppLocalService.getFileEntryByFileName(
+			_group.getGroupId(), tempFileEntry1.getFolderId(), "test.gif");
 
-			for (String roleName :
-					new String[] {
-						RoleConstants.GUEST, RoleConstants.SITE_MEMBER
-					}) {
+		_assertNoViewPermission(gifFileEntry, RoleConstants.GUEST);
+		_assertNoViewPermission(gifFileEntry, RoleConstants.SITE_MEMBER);
 
-				Role role = _roleLocalService.getRole(
-					_group.getCompanyId(), roleName);
+		FileEntry jpgFileEntry = _dlAppLocalService.getFileEntryByFileName(
+			_group.getGroupId(), tempFileEntry1.getFolderId(), "test.jpg");
 
-				Assert.assertFalse(
-					_resourcePermissionLocalService.hasResourcePermission(
-						_group.getCompanyId(), DLFileEntry.class.getName(),
-						ResourceConstants.SCOPE_INDIVIDUAL,
-						String.valueOf(fileEntry.getFileEntryId()),
-						role.getRoleId(), ActionKeys.VIEW));
-			}
-		}
+		_assertNoViewPermission(jpgFileEntry, RoleConstants.GUEST);
+		_assertNoViewPermission(jpgFileEntry, RoleConstants.SITE_MEMBER);
 	}
 
 	@Test
@@ -632,6 +623,19 @@ public class EditFileEntryMVCActionCommandTest {
 				LocaleUtil.US, RandomTestUtil.randomString()),
 			ServiceContextTestUtil.getServiceContext(
 				_group, TestPropsValues.getUserId()));
+	}
+
+	private void _assertNoViewPermission(FileEntry fileEntry, String roleName)
+		throws Exception {
+
+		Role role = _roleLocalService.getRole(_group.getCompanyId(), roleName);
+
+		Assert.assertFalse(
+			_resourcePermissionLocalService.hasResourcePermission(
+				_group.getCompanyId(), DLFileEntry.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(fileEntry.getFileEntryId()), role.getRoleId(),
+				ActionKeys.VIEW));
 	}
 
 	private MockMultipartHttpServletRequest
