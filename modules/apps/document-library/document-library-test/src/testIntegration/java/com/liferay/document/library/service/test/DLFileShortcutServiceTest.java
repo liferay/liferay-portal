@@ -69,9 +69,7 @@ public class DLFileShortcutServiceTest {
 	@TestInfo({"LPD-113625", "LPS-90864"})
 	public void testAddFileShortcut() throws Exception {
 		FileEntry fileEntry = DLAppTestUtil.addFileEntry(_group.getGroupId());
-
 		DLFolder dlFolder = DLTestUtil.addDLFolder(_group.getGroupId());
-
 		DLFolder restrictedDLFolder = _addRestrictedDLFolder();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(

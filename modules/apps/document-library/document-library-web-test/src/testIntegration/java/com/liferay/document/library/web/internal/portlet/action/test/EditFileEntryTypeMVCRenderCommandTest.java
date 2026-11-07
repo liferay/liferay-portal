@@ -107,10 +107,10 @@ public class EditFileEntryTypeMVCRenderCommandTest {
 			"fileEntryTypeId",
 			String.valueOf(dlFileEntryType.getFileEntryTypeId()));
 
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(user);
-
-		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(_group.getCompanyId()));

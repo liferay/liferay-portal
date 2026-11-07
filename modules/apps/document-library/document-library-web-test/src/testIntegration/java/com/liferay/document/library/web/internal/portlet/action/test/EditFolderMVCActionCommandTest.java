@@ -67,9 +67,9 @@ public class EditFolderMVCActionCommandTest {
 			new MockLiferayPortletActionRequest();
 
 		mockLiferayPortletActionRequest.addParameter(
-			"inputPermissionsViewRole", RoleConstants.OWNER);
-		mockLiferayPortletActionRequest.addParameter(
 			Constants.CMD, Constants.ADD);
+		mockLiferayPortletActionRequest.addParameter(
+			"inputPermissionsViewRole", RoleConstants.OWNER);
 
 		String name = RandomTestUtil.randomString();
 
