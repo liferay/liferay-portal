@@ -7,7 +7,6 @@ package com.liferay.batch.planner.rest.internal.resource.v1_0;
 
 import com.liferay.batch.planner.rest.dto.v1_0.AssetLibraryScope;
 import com.liferay.batch.planner.rest.internal.vulcan.batch.engine.util.EntityScopesUtil;
-import com.liferay.batch.planner.rest.internal.vulcan.yaml.openapi.OpenAPIYAMLProvider;
 import com.liferay.batch.planner.rest.resource.v1_0.AssetLibraryScopeResource;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.service.DepotEntryService;
@@ -15,7 +14,9 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateRegistry;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +44,7 @@ public class AssetLibraryScopeResourceImpl
 		List<String> entityScopes = EntityScopesUtil.getEntityScopes(
 			contextCompany.getCompanyId(), GetterUtil.getBoolean(export),
 			internalClassNameKey, _objectDefinitionLocalService,
-			_openAPIYAMLProvider);
+			_openAPIResource, _vulcanBatchEngineTaskItemDelegateRegistry);
 
 		if (!entityScopes.contains("depot")) {
 			return Page.of(Collections.emptyList());
@@ -80,6 +81,10 @@ public class AssetLibraryScopeResourceImpl
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
-	private OpenAPIYAMLProvider _openAPIYAMLProvider;
+	private OpenAPIResource _openAPIResource;
+
+	@Reference
+	private VulcanBatchEngineTaskItemDelegateRegistry
+		_vulcanBatchEngineTaskItemDelegateRegistry;
 
 }

@@ -7,12 +7,13 @@ package com.liferay.batch.planner.rest.internal.resource.v1_0;
 
 import com.liferay.batch.planner.rest.dto.v1_0.Field;
 import com.liferay.batch.planner.rest.internal.vulcan.batch.engine.util.FieldProviderUtil;
-import com.liferay.batch.planner.rest.internal.vulcan.yaml.openapi.OpenAPIYAMLProvider;
 import com.liferay.batch.planner.rest.resource.v1_0.FieldResource;
 import com.liferay.object.rest.openapi.v1_0.ObjectEntryOpenAPIResourceProvider;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateRegistry;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import java.util.Comparator;
 import java.util.List;
@@ -39,8 +40,8 @@ public class FieldResourceImpl extends BaseFieldResourceImpl {
 			FieldProviderUtil.getFields(
 				contextCompany.getCompanyId(), internalClassNameKey,
 				_objectDefinitionLocalService,
-				_objectEntryOpenAPIResourceProvider, _openAPIYAMLProvider,
-				contextUriInfo);
+				_objectEntryOpenAPIResourceProvider, _openAPIResource,
+				contextUriInfo, _vulcanBatchEngineTaskItemDelegateRegistry);
 
 		if (GetterUtil.getBoolean(export)) {
 			vulcanFields = FieldProviderUtil.filter(
@@ -81,6 +82,10 @@ public class FieldResourceImpl extends BaseFieldResourceImpl {
 		_objectEntryOpenAPIResourceProvider;
 
 	@Reference
-	private OpenAPIYAMLProvider _openAPIYAMLProvider;
+	private OpenAPIResource _openAPIResource;
+
+	@Reference
+	private VulcanBatchEngineTaskItemDelegateRegistry
+		_vulcanBatchEngineTaskItemDelegateRegistry;
 
 }

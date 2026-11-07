@@ -13,7 +13,6 @@ import com.liferay.batch.planner.rest.dto.v1_0.Mapping;
 import com.liferay.batch.planner.rest.dto.v1_0.Plan;
 import com.liferay.batch.planner.rest.dto.v1_0.Policy;
 import com.liferay.batch.planner.rest.internal.vulcan.batch.engine.util.FieldProviderUtil;
-import com.liferay.batch.planner.rest.internal.vulcan.yaml.openapi.OpenAPIYAMLProvider;
 import com.liferay.batch.planner.rest.resource.v1_0.PlanResource;
 import com.liferay.batch.planner.service.BatchPlannerMappingService;
 import com.liferay.batch.planner.service.BatchPlannerPlanService;
@@ -24,8 +23,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.batch.engine.Field;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateRegistry;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import jakarta.ws.rs.core.Response;
 
@@ -64,8 +65,8 @@ public class PlanResourceImpl extends BasePlanResourceImpl {
 			FieldProviderUtil.getFields(
 				contextCompany.getCompanyId(), internalClassNameKey,
 				_objectDefinitionLocalService,
-				_objectEntryOpenAPIResourceProvider, _openAPIYAMLProvider,
-				contextUriInfo));
+				_objectEntryOpenAPIResourceProvider, _openAPIResource,
+				contextUriInfo, _vulcanBatchEngineTaskItemDelegateRegistry));
 	}
 
 	@Override
@@ -261,6 +262,10 @@ public class PlanResourceImpl extends BasePlanResourceImpl {
 		_objectEntryOpenAPIResourceProvider;
 
 	@Reference
-	private OpenAPIYAMLProvider _openAPIYAMLProvider;
+	private OpenAPIResource _openAPIResource;
+
+	@Reference
+	private VulcanBatchEngineTaskItemDelegateRegistry
+		_vulcanBatchEngineTaskItemDelegateRegistry;
 
 }

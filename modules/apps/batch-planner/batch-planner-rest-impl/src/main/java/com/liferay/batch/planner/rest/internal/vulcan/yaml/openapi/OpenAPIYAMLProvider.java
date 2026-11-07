@@ -16,21 +16,20 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.Collections;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Matija Petanjek
  */
-@Component(service = OpenAPIYAMLProvider.class)
 public class OpenAPIYAMLProvider {
 
-	public OpenAPIYAML getOpenAPIYAML(
-			long companyId, String internalClassNameKey)
+	public static OpenAPIYAML getOpenAPIYAML(
+			long companyId, String internalClassNameKey,
+			OpenAPIResource openAPIResource,
+			VulcanBatchEngineTaskItemDelegateRegistry
+				vulcanBatchEngineTaskItemDelegateRegistry)
 		throws Exception {
 
 		VulcanBatchEngineTaskItemDelegate vulcanBatchEngineTaskItemDelegate =
-			_vulcanBatchEngineTaskItemDelegateRegistry.
+			vulcanBatchEngineTaskItemDelegateRegistry.
 				getVulcanBatchEngineTaskItemDelegate(
 					companyId, internalClassNameKey);
 
@@ -38,7 +37,7 @@ public class OpenAPIYAMLProvider {
 			throw new NotFoundException();
 		}
 
-		Response response = _openAPIResource.getOpenAPI(
+		Response response = openAPIResource.getOpenAPI(
 			Collections.singleton(
 				vulcanBatchEngineTaskItemDelegate.getResourceClass()),
 			"yaml");
@@ -51,12 +50,5 @@ public class OpenAPIYAMLProvider {
 
 		return YAMLUtil.loadOpenAPIYAML((String)response.getEntity());
 	}
-
-	@Reference
-	private OpenAPIResource _openAPIResource;
-
-	@Reference
-	private VulcanBatchEngineTaskItemDelegateRegistry
-		_vulcanBatchEngineTaskItemDelegateRegistry;
 
 }

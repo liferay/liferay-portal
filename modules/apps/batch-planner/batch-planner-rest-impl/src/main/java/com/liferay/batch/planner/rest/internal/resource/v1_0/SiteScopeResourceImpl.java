@@ -7,7 +7,6 @@ package com.liferay.batch.planner.rest.internal.resource.v1_0;
 
 import com.liferay.batch.planner.rest.dto.v1_0.SiteScope;
 import com.liferay.batch.planner.rest.internal.vulcan.batch.engine.util.EntityScopesUtil;
-import com.liferay.batch.planner.rest.internal.vulcan.yaml.openapi.OpenAPIYAMLProvider;
 import com.liferay.batch.planner.rest.resource.v1_0.SiteScopeResource;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -18,7 +17,9 @@ import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateRegistry;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.resource.OpenAPIResource;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,8 @@ public class SiteScopeResourceImpl extends BaseSiteScopeResourceImpl {
 				EntityScopesUtil.getEntityScopes(
 					contextCompany.getCompanyId(),
 					GetterUtil.getBoolean(export), internalClassNameKey,
-					_objectDefinitionLocalService, _openAPIYAMLProvider)));
+					_objectDefinitionLocalService, _openAPIResource,
+					_vulcanBatchEngineTaskItemDelegateRegistry)));
 	}
 
 	private List<SiteScope> _getSiteScopes(List<String> entityScopes)
@@ -91,9 +93,13 @@ public class SiteScopeResourceImpl extends BaseSiteScopeResourceImpl {
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
-	private OpenAPIYAMLProvider _openAPIYAMLProvider;
+	private OpenAPIResource _openAPIResource;
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private VulcanBatchEngineTaskItemDelegateRegistry
+		_vulcanBatchEngineTaskItemDelegateRegistry;
 
 }
