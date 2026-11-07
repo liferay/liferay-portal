@@ -12,7 +12,7 @@ import com.liferay.bulk.rest.dto.v1_0.DocumentBulkSelection;
 import com.liferay.bulk.rest.dto.v1_0.Keyword;
 import com.liferay.bulk.rest.dto.v1_0.KeywordBulkSelection;
 import com.liferay.bulk.rest.internal.selection.v1_0.BulkActionBulkSelectionFactory;
-import com.liferay.bulk.rest.internal.selection.v1_0.DocumentBulkSelectionFactory;
+import com.liferay.bulk.rest.internal.util.DocumentBulkSelectionUtil;
 import com.liferay.bulk.rest.resource.v1_0.KeywordResource;
 import com.liferay.bulk.selection.BulkSelection;
 import com.liferay.bulk.selection.BulkSelectionAction;
@@ -188,7 +188,7 @@ public class KeywordResourceImpl extends BaseKeywordResourceImpl {
 		Map<String, Object> map = (Map<String, Object>)object;
 
 		if (map.containsKey("documentIds")) {
-			return DocumentBulkSelectionFactory.create(
+			return DocumentBulkSelectionUtil.create(
 				_bulkSelectionFactoryRegistry,
 				DocumentBulkSelection.toDTO(
 					_jsonFactory.toString(_jsonFactory.createJSONObject(map))));
@@ -216,7 +216,7 @@ public class KeywordResourceImpl extends BaseKeywordResourceImpl {
 			boolean append, KeywordBulkSelection keywordBulkSelection)
 		throws Exception {
 
-		BulkSelection<?> bulkSelection = DocumentBulkSelectionFactory.create(
+		BulkSelection<?> bulkSelection = DocumentBulkSelectionUtil.create(
 			_bulkSelectionFactoryRegistry,
 			keywordBulkSelection.getDocumentBulkSelection());
 

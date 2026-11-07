@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.bulk.rest.internal.selection.v1_0;
+package com.liferay.bulk.rest.internal.util;
 
 import com.liferay.bulk.rest.dto.v1_0.DocumentBulkSelection;
 import com.liferay.bulk.rest.dto.v1_0.SelectionScope;
@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * @author Javier Gamarra
  */
-public class DocumentBulkSelectionFactory {
+public class DocumentBulkSelectionUtil {
 
 	public static BulkSelection<?> create(
 		BulkSelectionFactoryRegistry bulkSelectionFactoryRegistry,

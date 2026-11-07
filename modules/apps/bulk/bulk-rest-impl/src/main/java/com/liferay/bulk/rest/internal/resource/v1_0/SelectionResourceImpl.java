@@ -7,7 +7,7 @@ package com.liferay.bulk.rest.internal.resource.v1_0;
 
 import com.liferay.bulk.rest.dto.v1_0.DocumentBulkSelection;
 import com.liferay.bulk.rest.dto.v1_0.Selection;
-import com.liferay.bulk.rest.internal.selection.v1_0.DocumentBulkSelectionFactory;
+import com.liferay.bulk.rest.internal.util.DocumentBulkSelectionUtil;
 import com.liferay.bulk.rest.resource.v1_0.SelectionResource;
 import com.liferay.bulk.selection.BulkSelection;
 import com.liferay.bulk.selection.BulkSelectionFactoryRegistry;
@@ -32,7 +32,7 @@ public class SelectionResourceImpl extends BaseSelectionResourceImpl {
 			DocumentBulkSelection documentBulkSelection)
 		throws Exception {
 
-		BulkSelection<?> bulkSelection = DocumentBulkSelectionFactory.create(
+		BulkSelection<?> bulkSelection = DocumentBulkSelectionUtil.create(
 			_bulkSelectionFactoryRegistry, documentBulkSelection);
 
 		return new Selection() {
