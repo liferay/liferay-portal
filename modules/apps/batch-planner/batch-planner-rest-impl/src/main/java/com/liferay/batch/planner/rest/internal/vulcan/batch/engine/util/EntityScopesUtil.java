@@ -6,7 +6,6 @@
 package com.liferay.batch.planner.rest.internal.vulcan.batch.engine.util;
 
 import com.liferay.batch.planner.batch.engine.task.TaskItemUtil;
-import com.liferay.batch.planner.rest.internal.vulcan.yaml.openapi.OpenAPIYAMLProvider;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringPool;
@@ -40,7 +39,7 @@ public class EntityScopesUtil {
 			return Collections.singletonList(objectDefinition.getScope());
 		}
 
-		OpenAPIYAML openAPIYAML = OpenAPIYAMLProvider.getOpenAPIYAML(
+		OpenAPIYAML openAPIYAML = OpenAPIYAMLUtil.getOpenAPIYAML(
 			companyId, internalClassNameKey, openAPIResource,
 			vulcanBatchEngineTaskItemDelegateRegistry);
 
