@@ -17,15 +17,17 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.aui.AUIUtil;
 import com.liferay.user.associated.data.anonymizer.UADAnonymizer;
+import com.liferay.user.associated.data.anonymizer.UADAnonymousUserProvider;
 import com.liferay.user.associated.data.constants.UserAssociatedDataPortletKeys;
 import com.liferay.user.associated.data.display.UADDisplay;
-import com.liferay.user.associated.data.web.internal.helper.SelectedUserHelper;
 import com.liferay.user.associated.data.web.internal.registry.UADRegistry;
+import com.liferay.user.associated.data.web.internal.util.SelectedUserUtil;
 import com.liferay.user.associated.data.web.internal.util.UADApplicationSummaryUtil;
 
 import jakarta.portlet.ActionRequest;
@@ -189,13 +191,15 @@ public abstract class BaseUADMVCActionCommand extends BaseMVCActionCommand {
 	protected User getSelectedUser(ActionRequest actionRequest)
 		throws PortalException {
 
-		return selectedUserHelper.getSelectedUser(actionRequest);
+		return SelectedUserUtil.getSelectedUser(
+			portal, actionRequest, uadAnonymousUserProvider);
 	}
 
 	protected long getSelectedUserId(ActionRequest actionRequest)
 		throws PortalException {
 
-		return selectedUserHelper.getSelectedUserId(actionRequest);
+		return SelectedUserUtil.getSelectedUserId(
+			portal, actionRequest, uadAnonymousUserProvider);
 	}
 
 	protected UADAnonymizer<?> getUADAnonymizer(
@@ -249,7 +253,10 @@ public abstract class BaseUADMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	@Reference
-	protected SelectedUserHelper selectedUserHelper;
+	protected Portal portal;
+
+	@Reference
+	protected UADAnonymousUserProvider uadAnonymousUserProvider;
 
 	@Reference
 	protected UADRegistry uadRegistry;

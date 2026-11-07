@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.user.associated.data.anonymizer.UADAnonymousUserProvider;
 import com.liferay.user.associated.data.constants.UserAssociatedDataPortletKeys;
 import com.liferay.user.associated.data.display.UADDisplay;
 import com.liferay.user.associated.data.web.internal.constants.UADConstants;
@@ -19,9 +20,9 @@ import com.liferay.user.associated.data.web.internal.dao.search.UADHierarchyResu
 import com.liferay.user.associated.data.web.internal.display.UADHierarchyDisplay;
 import com.liferay.user.associated.data.web.internal.display.UADInfoPanelDisplay;
 import com.liferay.user.associated.data.web.internal.display.ViewUADEntitiesDisplay;
-import com.liferay.user.associated.data.web.internal.helper.SelectedUserHelper;
 import com.liferay.user.associated.data.web.internal.registry.UADRegistry;
 import com.liferay.user.associated.data.web.internal.util.GroupUtil;
+import com.liferay.user.associated.data.web.internal.util.SelectedUserUtil;
 import com.liferay.user.associated.data.web.internal.util.UADSearchContainerBuilderUtil;
 
 import jakarta.portlet.PortletException;
@@ -111,7 +112,9 @@ public class ViewUADHierarchyMVCRenderCommand implements MVCRenderCommand {
 
 		long[] groupIds = GroupUtil.getGroupIds(
 			_groupLocalService,
-			_selectedUserHelper.getSelectedUser(renderRequest), scope);
+			SelectedUserUtil.getSelectedUser(
+				_portal, renderRequest, _uadAnonymousUserProvider),
+			scope);
 
 		viewUADEntitiesDisplay.setGroupIds(groupIds);
 
@@ -128,7 +131,8 @@ public class ViewUADHierarchyMVCRenderCommand implements MVCRenderCommand {
 				PortletURLUtil.getCurrent(renderRequest, renderResponse),
 				groupIds, uadDisplay.getTypeKey(),
 				ParamUtil.getLong(renderRequest, "parentContainerId"),
-				_selectedUserHelper.getSelectedUser(renderRequest),
+				SelectedUserUtil.getSelectedUser(
+					_portal, renderRequest, _uadAnonymousUserProvider),
 				uadHierarchyDisplay));
 		viewUADEntitiesDisplay.setTypeKeys(uadHierarchyDisplay.getTypeKeys());
 
@@ -142,7 +146,7 @@ public class ViewUADHierarchyMVCRenderCommand implements MVCRenderCommand {
 	private Portal _portal;
 
 	@Reference
-	private SelectedUserHelper _selectedUserHelper;
+	private UADAnonymousUserProvider _uadAnonymousUserProvider;
 
 	@Reference
 	private UADRegistry _uadRegistry;
