@@ -10,26 +10,25 @@ import java.io.IOException;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Drew Brokke
  */
-@Component(service = AnonymousUserConfigurationRetriever.class)
 public class AnonymousUserConfigurationRetriever {
 
-	public Configuration get(long companyId)
+	public static Configuration get(
+			long companyId, ConfigurationAdmin configurationAdmin)
 		throws InvalidSyntaxException, IOException {
 
 		String filterString = String.format(
 			"(&(service.factoryPid=%s)(companyId=%s))", _getFactoryPid(),
 			companyId);
 
-		return _get(filterString);
+		return _get(configurationAdmin, filterString);
 	}
 
-	public Configuration get(long companyId, long userId)
+	public static Configuration get(
+			long companyId, ConfigurationAdmin configurationAdmin, long userId)
 		throws InvalidSyntaxException, IOException {
 
 		String filterString = String.format(
@@ -37,13 +36,14 @@ public class AnonymousUserConfigurationRetriever {
 			_getFactoryPid(), String.valueOf(companyId),
 			String.valueOf(userId));
 
-		return _get(filterString);
+		return _get(configurationAdmin, filterString);
 	}
 
-	private Configuration _get(String filterString)
+	private static Configuration _get(
+			ConfigurationAdmin configurationAdmin, String filterString)
 		throws InvalidSyntaxException, IOException {
 
-		Configuration[] configurations = _configurationAdmin.listConfigurations(
+		Configuration[] configurations = configurationAdmin.listConfigurations(
 			filterString);
 
 		if (configurations == null) {
@@ -53,11 +53,8 @@ public class AnonymousUserConfigurationRetriever {
 		return configurations[0];
 	}
 
-	private String _getFactoryPid() {
+	private static String _getFactoryPid() {
 		return AnonymousUserConfiguration.class.getName() + ".scoped";
 	}
-
-	@Reference
-	private ConfigurationAdmin _configurationAdmin;
 
 }
