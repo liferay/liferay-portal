@@ -9,32 +9,26 @@ import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateAdaptorFactory;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Matija Petanjek
  */
-@Component(service = BatchEngineTaskItemDelegateProvider.class)
 public class BatchEngineTaskItemDelegateProvider {
 
-	public BatchEngineTaskItemDelegate<?> toBatchEngineTaskItemDelegate(
-		Object service) {
+	public static BatchEngineTaskItemDelegate<?> toBatchEngineTaskItemDelegate(
+		Object service,
+		VulcanBatchEngineTaskItemDelegateAdaptorFactory
+			vulcanBatchEngineTaskItemDelegateAdaptorFactory) {
 
 		if (service instanceof BatchEngineTaskItemDelegate) {
 			return (BatchEngineTaskItemDelegate<?>)service;
 		}
 
 		if (service instanceof VulcanBatchEngineTaskItemDelegate) {
-			return _vulcanBatchEngineTaskItemDelegateAdaptorFactory.create(
+			return vulcanBatchEngineTaskItemDelegateAdaptorFactory.create(
 				(VulcanBatchEngineTaskItemDelegate<?>)service);
 		}
 
 		throw new IllegalArgumentException("Unknown service :" + service);
 	}
-
-	@Reference
-	private VulcanBatchEngineTaskItemDelegateAdaptorFactory
-		_vulcanBatchEngineTaskItemDelegateAdaptorFactory;
 
 }

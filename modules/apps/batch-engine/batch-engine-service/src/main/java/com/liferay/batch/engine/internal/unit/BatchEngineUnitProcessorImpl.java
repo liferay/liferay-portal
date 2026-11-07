@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateAdaptorFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -180,8 +181,8 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		}
 
 		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
-			_batchEngineTaskItemDelegateProvider.toBatchEngineTaskItemDelegate(
-				service);
+			BatchEngineTaskItemDelegateProvider.toBatchEngineTaskItemDelegate(
+				service, _vulcanBatchEngineTaskItemDelegateAdaptorFactory);
 
 		String name = PrincipalThreadLocal.getName();
 
@@ -705,10 +706,6 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 	private BatchEngineImportTaskLocalService
 		_batchEngineImportTaskLocalService;
 
-	@Reference
-	private BatchEngineTaskItemDelegateProvider
-		_batchEngineTaskItemDelegateProvider;
-
 	private BundleContext _bundleContext;
 
 	@Reference
@@ -726,6 +723,10 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference
+	private VulcanBatchEngineTaskItemDelegateAdaptorFactory
+		_vulcanBatchEngineTaskItemDelegateAdaptorFactory;
 
 	private static class BatchEngineUnitData {
 
