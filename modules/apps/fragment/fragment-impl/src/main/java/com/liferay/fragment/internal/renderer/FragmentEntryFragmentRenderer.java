@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNo
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -336,7 +335,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 
 		if (fragmentEntryLink.isTypeInput()) {
 			sb.append("; const input = ");
-			sb.append(JSONUtil.toString(inputTemplateNode.toJSONObject()));
+			sb.append(inputTemplateNode.toJSONObject());
 			sb.append("; input.value = Liferay.Util.unescapeHTML(input.value ");
 			sb.append("?? ''); Object.keys(input.valueI18n).forEach(");
 			sb.append("function(key){ input.valueI18n[key] = Liferay.Util.");
