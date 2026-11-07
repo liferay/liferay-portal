@@ -1,6 +1,6 @@
 import * as API from 'shared/api';
 import AccountSelectInput from '../AccountSelectInput';
-import React from 'react';
+import React, {useState} from 'react';
 import {cleanup, fireEvent, render, waitFor} from '@testing-library/react';
 import {createCustomValueMap} from '../../utils/custom-inputs';
 import {Property} from 'shared/util/records';
@@ -30,6 +30,17 @@ const defaultProps = {
 const DefaultComponent = props => (
 	<AccountSelectInput {...defaultProps} {...props} />
 );
+
+const StatefulComponent = ({value: initialValue}) => {
+	const [value, setValue] = useState(initialValue);
+
+	return (
+		<DefaultComponent
+			onChange={({value}) => setValue(value)}
+			value={value}
+		/>
+	);
+};
 
 const getItems = (onChange, call = 0) =>
 	onChange.mock.calls[call][0].value
@@ -144,7 +155,7 @@ describe('AccountSelectInput', () => {
 
 		fireEvent.click(getByText('Add Stage'));
 
-		const items = getAllByRole('menuitem');
+		const items = getAllByRole('option');
 
 		expect(items).toHaveLength(2);
 		expect(items[0]).toHaveTextContent('Aware');
@@ -164,7 +175,7 @@ describe('AccountSelectInput', () => {
 	it('should add a stage to the selected stages', async () => {
 		const onChange = jest.fn();
 
-		const {findByText, getAllByRole, getByText} = render(
+		const {findByText, getAllByRole, getByRole} = render(
 			<DefaultComponent
 				onChange={onChange}
 				value={getMockValue(
@@ -177,9 +188,9 @@ describe('AccountSelectInput', () => {
 
 		await findByText('Engaged');
 
-		fireEvent.click(getByText('Add Stage'));
+		fireEvent.focus(getByRole('combobox', {name: 'Stages'}));
 
-		const items = getAllByRole('menuitem');
+		const items = getAllByRole('option');
 
 		expect(items).toHaveLength(1);
 
@@ -204,6 +215,131 @@ describe('AccountSelectInput', () => {
 		]);
 	});
 
+	it('should show the stages input instead of the Add Stage button when clicking it', async () => {
+		const {findByText, getByRole, getByText, queryByRole, queryByText} =
+			render(
+				<DefaultComponent
+					value={getMockValue(
+						'lifecycleStatus@erc-lifecycle-100',
+						'ne',
+						null
+					)}
+				/>
+			);
+
+		await findByText('Customer');
+
+		expect(queryByRole('combobox', {name: 'Stages'})).toBeNull();
+
+		fireEvent.click(getByText('Add Stage'));
+
+		expect(getByRole('combobox', {name: 'Stages'})).toHaveFocus();
+		expect(queryByText('Add Stage')).toBeNull();
+	});
+
+	it('should show the Add Stage button when closing the stages input without selecting a stage', async () => {
+		const {findByText, getByRole, getByText, queryByRole} = render(
+			<DefaultComponent
+				value={getMockValue(
+					'lifecycleStatus@erc-lifecycle-100',
+					'ne',
+					null
+				)}
+			/>
+		);
+
+		await findByText('Customer');
+
+		fireEvent.click(getByText('Add Stage'));
+
+		fireEvent.keyDown(getByRole('combobox', {name: 'Stages'}), {
+			key: 'Escape'
+		});
+
+		expect(queryByRole('combobox', {name: 'Stages'})).toBeNull();
+		expect(getByText('Add Stage')).toBeInTheDocument();
+	});
+
+	it('should keep the stages input after selecting the first stage', async () => {
+		const {findByText, getByRole, getByText} = render(
+			<StatefulComponent
+				value={getMockValue(
+					'lifecycleStatus@erc-lifecycle-100',
+					'ne',
+					null
+				)}
+			/>
+		);
+
+		await findByText('Customer');
+
+		fireEvent.click(getByText('Add Stage'));
+		fireEvent.click(getByRole('option', {name: 'Aware'}));
+
+		expect(getByRole('combobox', {name: 'Stages'})).toBeInTheDocument();
+		expect(getByText('Aware')).toBeInTheDocument();
+	});
+
+	it('should show the Add Stage button after removing every stage', async () => {
+		const {findByText, getByLabelText, getByText, queryByRole} = render(
+			<StatefulComponent
+				value={getMockValue(
+					'lifecycleStatus@erc-lifecycle-100',
+					'eq',
+					'erc-stage-1002'
+				)}
+			/>
+		);
+
+		await findByText('Engaged');
+
+		fireEvent.click(getByLabelText('Remove Engaged'));
+
+		expect(queryByRole('combobox', {name: 'Stages'})).toBeNull();
+		expect(getByText('Add Stage')).toBeInTheDocument();
+	});
+
+	it('should show the Add Stage button after clearing every stage', async () => {
+		const {findByText, getByLabelText, getByText, queryByRole} = render(
+			<StatefulComponent
+				value={getMockValue(
+					'lifecycleStatus@erc-lifecycle-100',
+					'eq',
+					'erc-stage-1002'
+				)}
+			/>
+		);
+
+		await findByText('Engaged');
+
+		fireEvent.click(getByLabelText('Clear All'));
+
+		expect(queryByRole('combobox', {name: 'Stages'})).toBeNull();
+		expect(getByText('Add Stage')).toBeInTheDocument();
+	});
+
+	it('should show the Add Stage button after changing the lifecycle while adding stages', async () => {
+		const {findByText, getByLabelText, getByRole, getByText, queryByRole} =
+			render(
+				<StatefulComponent
+					value={getMockValue(
+						'lifecycleStatus@erc-lifecycle-100',
+						'ne',
+						null
+					)}
+				/>
+			);
+
+		await findByText('Customer');
+
+		fireEvent.click(getByText('Add Stage'));
+		fireEvent.click(getByLabelText('Lifecycle'));
+		fireEvent.click(getByRole('option', {name: 'Partner'}));
+
+		expect(queryByRole('combobox', {name: 'Stages'})).toBeNull();
+		expect(getByText('Add Stage')).toBeInTheDocument();
+	});
+
 	it('should match the lifecycle at any stage after removing every stage', async () => {
 		const onChange = jest.fn();
 
@@ -220,7 +356,7 @@ describe('AccountSelectInput', () => {
 
 		await findByText('Engaged');
 
-		fireEvent.click(getByLabelText('Close'));
+		fireEvent.click(getByLabelText('Remove Engaged'));
 
 		expect(getItems(onChange)).toEqual([
 			{
@@ -268,7 +404,7 @@ describe('AccountSelectInput', () => {
 
 		expect(getByText('Aware')).toBeInTheDocument();
 
-		fireEvent.click(getByLabelText('Clear'));
+		fireEvent.click(getByLabelText('Clear All'));
 
 		expect(getItems(onChange)).toEqual([
 			{
@@ -346,7 +482,7 @@ describe('AccountSelectInput', () => {
 		);
 
 		expect(queryByText('erc-stage-3001')).toBeNull();
-		expect(queryByLabelText('Clear')).toBeNull();
+		expect(queryByLabelText('Clear All')).toBeNull();
 	});
 
 	it('should show a stage that does not exist as undefined', async () => {
