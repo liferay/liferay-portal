@@ -7,7 +7,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {createReadStream} from 'fs';
 import path from 'path';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
@@ -23,7 +23,7 @@ import getPageDefinition from '../../layout-content-page-editor-web/main/utils/g
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 
 const test = mergeTests(
-	apiHelpersTest,
+	dataApiHelpersTest,
 	documentLibraryPagesTest,
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
