@@ -17,7 +17,7 @@ import com.liferay.info.field.type.PicklistSelectInfoFieldType;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.type.KeyLocalizedLabelPair;
 import com.liferay.layout.helper.structure.LayoutStructureRulesHelper;
-import com.liferay.layout.internal.util.AdvancedLayoutStructureRuleEvaluator;
+import com.liferay.layout.internal.util.AdvancedLayoutStructureRuleUtil;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureRule;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -224,7 +224,7 @@ public class LayoutStructureRulesHelperImpl
 		LayoutStructureRulesContext layoutStructureRulesContext) {
 
 		if (layoutStructureRule.isAdvancedRule()) {
-			return AdvancedLayoutStructureRuleEvaluator.evaluateScript(
+			return AdvancedLayoutStructureRuleUtil.evaluateScript(
 				_ddmExpressionFactory, layoutStructureRulesContext.getGroupId(),
 				layoutStructureRulesContext.getRoleIds(),
 				layoutStructureRule.getScript(), fieldValuesMap,
@@ -449,7 +449,7 @@ public class LayoutStructureRulesHelperImpl
 
 		if (layoutStructureRule.isAdvancedRule()) {
 			itemIds.addAll(
-				AdvancedLayoutStructureRuleEvaluator.getItemIds(
+				AdvancedLayoutStructureRuleUtil.getItemIds(
 					layoutStructureRule));
 		}
 		else {

@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 /**
  * @author Víctor Galán
  */
-public class AdvancedLayoutStructureRuleEvaluator {
+public class AdvancedLayoutStructureRuleUtil {
 
 	public static boolean evaluateScript(
 		DDMExpressionFactory ddmExpressionFactory, long groupId, long[] roleIds,
@@ -83,7 +83,7 @@ public class AdvancedLayoutStructureRuleEvaluator {
 	private static final String _INPUT_PREFIX = "input__";
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		AdvancedLayoutStructureRuleEvaluator.class);
+		AdvancedLayoutStructureRuleUtil.class);
 
 	private static final Pattern _pattern = Pattern.compile(
 		_INPUT_PREFIX + "[A-Za-z0-9_]*");
