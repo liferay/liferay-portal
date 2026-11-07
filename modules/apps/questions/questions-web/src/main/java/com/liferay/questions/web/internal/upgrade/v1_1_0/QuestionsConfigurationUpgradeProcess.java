@@ -11,6 +11,7 @@ import com.liferay.message.boards.service.MBCategoryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.questions.web.internal.configuration.QuestionsConfiguration;
 
@@ -26,10 +27,12 @@ import org.osgi.service.cm.ConfigurationAdmin;
 public class QuestionsConfigurationUpgradeProcess extends UpgradeProcess {
 
 	public QuestionsConfigurationUpgradeProcess(
+		CompanyLocalService companyLocalService,
 		ConfigurationAdmin configurationAdmin,
 		ConfigurationProvider configurationProvider,
 		MBCategoryLocalService mbCategoryLocalService) {
 
+		_companyLocalService = companyLocalService;
 		_configurationAdmin = configurationAdmin;
 		_configurationProvider = configurationProvider;
 		_mbCategoryLocalService = mbCategoryLocalService;
@@ -101,7 +104,7 @@ public class QuestionsConfigurationUpgradeProcess extends UpgradeProcess {
 			long companyId = (long)properties.get(
 				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey());
 
-			if (companyId == 0) {
+			if (_companyLocalService.fetchCompany(companyId) == null) {
 				continue;
 			}
 
@@ -135,6 +138,7 @@ public class QuestionsConfigurationUpgradeProcess extends UpgradeProcess {
 		"com.liferay.questions.web.internal.configuration." +
 			"QuestionsConfiguration";
 
+	private final CompanyLocalService _companyLocalService;
 	private final ConfigurationAdmin _configurationAdmin;
 	private final ConfigurationProvider _configurationProvider;
 	private final MBCategoryLocalService _mbCategoryLocalService;

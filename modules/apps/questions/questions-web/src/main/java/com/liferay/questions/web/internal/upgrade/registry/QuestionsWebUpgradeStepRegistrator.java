@@ -7,6 +7,7 @@ package com.liferay.questions.web.internal.upgrade.registry;
 
 import com.liferay.message.boards.service.MBCategoryLocalService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.security.service.access.policy.service.SAPEntryService;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
@@ -41,14 +42,17 @@ public class QuestionsWebUpgradeStepRegistrator
 			"1.0.1", "1.0.2",
 			new com.liferay.questions.web.internal.upgrade.v1_1_0.
 				QuestionsConfigurationUpgradeProcess(
-					_configurationAdmin, _configurationProvider,
-					_mbCategoryLocalService));
+					_companyLocalService, _configurationAdmin,
+					_configurationProvider, _mbCategoryLocalService));
 
 		registry.register(
 			"1.0.2", "1.1.0",
 			new com.liferay.questions.web.internal.upgrade.v1_1_0.
 				UpgradePortletPreferences(_mbCategoryLocalService));
 	}
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
