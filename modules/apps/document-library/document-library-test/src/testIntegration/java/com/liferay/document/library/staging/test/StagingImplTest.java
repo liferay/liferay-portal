@@ -499,9 +499,9 @@ public class StagingImplTest {
 		DLFileEntryType liveDLFileEntryType = _getDLFileEntryType(
 			liveFileEntry);
 
+		Assert.assertEquals(name, liveDLFileEntryType.getName(LocaleUtil.US));
 		Assert.assertEquals(
 			dlFileEntryType.getUuid(), liveDLFileEntryType.getUuid());
-		Assert.assertEquals(name, liveDLFileEntryType.getName(LocaleUtil.US));
 
 		DDMStructure liveMetadataSetDDMStructure =
 			_ddmStructureLocalService.getDDMStructureByUuidAndGroupId(
