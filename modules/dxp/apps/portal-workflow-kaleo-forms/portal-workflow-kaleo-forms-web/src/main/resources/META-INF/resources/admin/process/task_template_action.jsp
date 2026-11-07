@@ -22,9 +22,7 @@ KaleoTaskFormPair kaleoTaskFormPair = (KaleoTaskFormPair)row.getObject();
 >
 
 	<%
-	KaleoProcess kaleoProcess = (KaleoProcess)request.getAttribute(KaleoFormsWebKeys.KALEO_PROCESS);
-
-	long kaleoProcessId = ParamUtil.getLong(request, "kaleoProcessId", GetterUtil.get(kaleoProcess, KaleoProcess::getKaleoProcessId, 0L));
+	long kaleoProcessId = ParamUtil.getLong(request, "kaleoProcessId");
 
 	long ddmStructureId = KaleoFormsUtil.getKaleoProcessDDMStructureId(kaleoProcessId, portletSession);
 

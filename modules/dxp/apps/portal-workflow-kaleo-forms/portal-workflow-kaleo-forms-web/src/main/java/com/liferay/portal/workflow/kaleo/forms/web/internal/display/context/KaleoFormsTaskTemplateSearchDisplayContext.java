@@ -11,11 +11,8 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.workflow.kaleo.forms.constants.KaleoFormsWebKeys;
-import com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess;
 import com.liferay.portal.workflow.kaleo.forms.model.KaleoTaskFormPair;
 import com.liferay.portal.workflow.kaleo.forms.model.KaleoTaskFormPairs;
 import com.liferay.portal.workflow.kaleo.forms.web.internal.util.KaleoFormsUtil;
@@ -113,13 +110,8 @@ public class KaleoFormsTaskTemplateSearchDisplayContext {
 			return _kaleoProcessId;
 		}
 
-		KaleoProcess kaleoProcess =
-			(KaleoProcess)_httpServletRequest.getAttribute(
-				KaleoFormsWebKeys.KALEO_PROCESS);
-
 		_kaleoProcessId = ParamUtil.getLong(
-			_httpServletRequest, "kaleoProcessId",
-			GetterUtil.get(kaleoProcess, KaleoProcess::getKaleoProcessId, 0L));
+			_httpServletRequest, "kaleoProcessId");
 
 		return _kaleoProcessId;
 	}
