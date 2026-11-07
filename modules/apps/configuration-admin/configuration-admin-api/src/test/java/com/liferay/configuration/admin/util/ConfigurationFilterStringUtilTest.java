@@ -7,6 +7,7 @@ package com.liferay.configuration.admin.util;
 
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.Serializable;
@@ -108,6 +109,11 @@ public class ConfigurationFilterStringUtilTest {
 				"siteExternalReferenceCode", "any"
 			).build());
 		_test(
+			false, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				"dxp.lxc.liferay.com.virtualInstanceId", "default"
+			).build());
+		_test(
 			true, filterString,
 			HashMapBuilder.<String, Serializable>put(
 				"companyId", companyId
@@ -138,6 +144,16 @@ public class ConfigurationFilterStringUtilTest {
 			true, filterString,
 			HashMapBuilder.<String, Serializable>put(
 				"dxp.lxc.liferay.com.virtualInstanceId", "(*)\\"
+			).build());
+
+		filterString =
+			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+				companyId, PropsValues.COMPANY_DEFAULT_WEB_ID);
+
+		_test(
+			true, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				"dxp.lxc.liferay.com.virtualInstanceId", "default"
 			).build());
 
 		String pid = "foo.scoped~123";

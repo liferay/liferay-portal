@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -87,6 +88,24 @@ public class ConfigurationProviderTest {
 			TestConfiguration.class, companyId);
 
 		Assert.assertEquals(0, _getFactoryConfigurationsCount(filterString));
+
+		String pid = ConfigurationTestUtil.createFactoryConfiguration(
+			_PID + ".scoped",
+			HashMapDictionaryBuilder.<String, Object>put(
+				"dxp.lxc.liferay.com.virtualInstanceId",
+				RandomTestUtil.randomString()
+			).build());
+
+		try {
+			_configurationProvider.deleteCompanyConfiguration(
+				TestConfiguration.class, companyId);
+
+			Assert.assertEquals(1, _getConfigurationsCount(pid));
+		}
+		finally {
+			ConfigurationTestUtil.deleteFactoryConfiguration(
+				pid, _PID + ".scoped");
+		}
 	}
 
 	@Test
