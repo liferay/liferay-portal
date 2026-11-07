@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.workflow.kaleo.runtime.internal.helper;
+package com.liferay.portal.workflow.kaleo.runtime.internal.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -20,24 +20,18 @@ import java.io.Serializable;
 
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Marcellus Tavares
  */
-@Component(service = NotificationMessageHelper.class)
-public class NotificationMessageHelper {
+public class NotificationMessageUtil {
 
-	public JSONObject createMessageJSONObject(
-		String notificationMessage, ExecutionContext executionContext) {
-
-		JSONObject jsonObject = jsonFactory.createJSONObject();
+	public static JSONObject createMessageJSONObject(
+		ExecutionContext executionContext, String notificationMessage) {
 
 		Map<String, Serializable> workflowContext =
 			executionContext.getWorkflowContext();
 
-		jsonObject.put(
+		JSONObject jsonObject = JSONUtil.put(
 			WorkflowConstants.CONTEXT_COMPANY_ID,
 			String.valueOf(
 				workflowContext.get(WorkflowConstants.CONTEXT_COMPANY_ID))
@@ -93,10 +87,7 @@ public class NotificationMessageHelper {
 		return jsonObject;
 	}
 
-	@Reference
-	protected JSONFactory jsonFactory;
-
-	private long _getUserId(
+	private static long _getUserId(
 		ExecutionContext executionContext,
 		KaleoInstanceToken kaleoInstanceToken) {
 
@@ -119,6 +110,6 @@ public class NotificationMessageHelper {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		NotificationMessageHelper.class);
+		NotificationMessageUtil.class);
 
 }
