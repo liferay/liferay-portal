@@ -29,32 +29,23 @@ public class ConfigurationFilterStringUtil {
 	public static String getCompanyScopedFilterString(
 		Serializable companyId, String virtualInstanceId) {
 
-		return StringBundler.concat(
-			"(&(|(",
-			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-			StringPool.EQUAL, _toString(companyId),
-			")(dxp.lxc.liferay.com.virtualInstanceId=",
-			GetterUtil.get(
-				SystemBundleUtil.escapeFilterValue(virtualInstanceId), "*"),
-			StringPool.CLOSE_PARENTHESIS,
-			_getDefaultVirtualInstanceIdFilterString(virtualInstanceId), ")(!(",
-			ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-			"=*))(!(siteExternalReferenceCode=*))(!(",
-			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
-				getPropertyKey(),
-			"=*)))");
+		StringBundler sb = new StringBundler(13);
+
+		_appendCompanyScopedFilterString(sb, companyId, virtualInstanceId);
+
+		return sb.toString();
 	}
 
 	public static String getCompanyScopedFilterString(
 		Serializable companyId, String pid, String virtualInstanceId) {
 
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("(&");
 
 		_appendScopedFilterString(sb, pid);
+		_appendCompanyScopedFilterString(sb, companyId, virtualInstanceId);
 
-		sb.append(getCompanyScopedFilterString(companyId, virtualInstanceId));
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 
 		return sb.toString();
@@ -148,6 +139,28 @@ public class ConfigurationFilterStringUtil {
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 
 		return sb.toString();
+	}
+
+	private static void _appendCompanyScopedFilterString(
+		StringBundler sb, Serializable companyId, String virtualInstanceId) {
+
+		sb.append("(&(|(");
+		sb.append(ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey());
+		sb.append(StringPool.EQUAL);
+		sb.append(_toString(companyId));
+		sb.append(")(dxp.lxc.liferay.com.virtualInstanceId=");
+		sb.append(
+			GetterUtil.get(
+				SystemBundleUtil.escapeFilterValue(virtualInstanceId), "*"));
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+		sb.append(_getDefaultVirtualInstanceIdFilterString(virtualInstanceId));
+		sb.append(")(!(");
+		sb.append(ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey());
+		sb.append("=*))(!(siteExternalReferenceCode=*))(!(");
+		sb.append(
+			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
+				getPropertyKey());
+		sb.append("=*)))");
 	}
 
 	private static void _appendGroupScopedFilterString(
