@@ -21,6 +21,7 @@ import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroProjectUsageLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalServiceUtil;
+import com.liferay.osb.faro.util.FaroProjectUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
 import com.liferay.osb.faro.web.internal.exception.FaroValidationException;
@@ -442,33 +443,19 @@ public class ProjectFaroControllerTest {
 
 		long groupId = RandomTestUtil.randomLong();
 
-		Group group = Mockito.mock(Group.class);
-
-		Mockito.when(
-			groupLocalService.getGroup(groupId)
-		).thenReturn(
-			group
-		);
-
 		ReflectionTestUtils.invokeMethod(
 			_projectFaroController, "_updateFriendlyURL", "", groupId);
 
 		Mockito.verify(
-			group
-		).setFriendlyURL(
-			null
-		);
-
-		Mockito.verify(
 			groupLocalService
-		).updateGroup(
-			group
+		).updateFriendlyURL(
+			groupId, FaroProjectUtil.getDefaultFriendlyURL(groupId)
 		);
 
 		Mockito.verify(
 			groupLocalService, Mockito.never()
-		).updateFriendlyURL(
-			Mockito.anyLong(), Mockito.anyString()
+		).updateGroup(
+			Mockito.any(Group.class)
 		);
 	}
 
