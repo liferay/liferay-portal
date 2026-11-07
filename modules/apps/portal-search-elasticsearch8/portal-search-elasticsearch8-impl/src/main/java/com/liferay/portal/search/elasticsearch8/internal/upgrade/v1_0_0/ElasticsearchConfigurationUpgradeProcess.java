@@ -5,7 +5,6 @@
 
 package com.liferay.portal.search.elasticsearch8.internal.upgrade.v1_0_0;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.persistence.upgrade.ConfigurationUpgradeStepFactory;
 import com.liferay.portal.file.install.constants.FileInstallConstants;
@@ -163,19 +162,6 @@ public class ElasticsearchConfigurationUpgradeProcess extends UpgradeProcess {
 				ElasticsearchConnectionConfiguration.class.getName());
 
 		upgradeStep.upgrade();
-
-		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			StringBundler.concat(
-				"(service.factoryPid=",
-				ElasticsearchConnectionConfiguration.class.getName(), ")"));
-
-		if (configurations == null) {
-			return;
-		}
-
-		for (Configuration configuration : configurations) {
-			configuration.update(configuration.getProperties());
-		}
 	}
 
 	private static final String _CLASS_NAME_ELASTICSEARCH_CONFIGURATION =
