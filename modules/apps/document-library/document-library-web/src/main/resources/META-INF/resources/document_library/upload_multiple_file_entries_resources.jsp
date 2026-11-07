@@ -43,10 +43,6 @@ if ((folder != null) && (folder.getModel() instanceof DLFolder)) {
 
 List<DLFileEntryType> fileEntryTypes = DLFileEntryTypeServiceUtil.getFolderFileEntryTypes(PortalUtil.getCurrentAndAncestorSiteGroupIds(scopeGroupId), folderId, inherited);
 
-FileVersion fileVersion = null;
-
-long fileVersionId = 0;
-
 long fileEntryTypeId = ParamUtil.getLong(request, "fileEntryTypeId", -1);
 
 DLFileEntryType fileEntryType = null;
@@ -79,7 +75,7 @@ DLEditFileEntryDisplayContext dlEditFileEntryDisplayContext = dlDisplayContextPr
 		<liferay-ui:message key="select-documents-from-the-left-to-add-them-to-the-documents-and-media" />
 	</div>
 
-	<aui:model-context bean="<%= fileVersion %>" model="<%= DLFileVersion.class %>" />
+	<aui:model-context model="<%= DLFileVersion.class %>" />
 
 	<liferay-ui:panel-container
 		extended="<%= false %>"
@@ -170,7 +166,7 @@ DLEditFileEntryDisplayContext dlEditFileEntryDisplayContext = dlDisplayContextPr
 											).put(
 												"selectedLanguageId", LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault())
 											).put(
-												"translatedLanguageIds", DDMStructureUtil.getTranslatedLanguageIds(ddmStructures, dlEditFileEntryDisplayContext, fileVersionId)
+												"translatedLanguageIds", DDMStructureUtil.getTranslatedLanguageIds(ddmStructures, dlEditFileEntryDisplayContext, 0)
 											).build()
 										%>'
 									/>
@@ -287,7 +283,7 @@ DLEditFileEntryDisplayContext dlEditFileEntryDisplayContext = dlDisplayContextPr
 			>
 				<liferay-expando:custom-attribute-list
 					className="<%= DLFileEntryConstants.getClassName() %>"
-					classPK="<%= fileVersionId %>"
+					classPK="<%= 0 %>"
 					editable="<%= true %>"
 					label="<%= true %>"
 				/>
