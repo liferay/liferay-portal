@@ -9,10 +9,11 @@ import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.opener.google.drive.web.internal.DLOpenerGoogleDriveManager;
 import com.liferay.document.library.opener.google.drive.web.internal.constants.DLOpenerGoogleDriveWebKeys;
-import com.liferay.document.library.opener.google.drive.web.internal.helper.GoogleDrivePortletRequestAuthorizationHelper;
+import com.liferay.document.library.opener.google.drive.web.internal.oauth.GoogleDrivePortletRequestAuthorizationUtil;
 import com.liferay.document.library.opener.google.drive.web.internal.oauth.OAuth2StateUtil;
 import com.liferay.document.library.opener.oauth.OAuth2State;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -55,8 +56,10 @@ public class OpenGoogleDocsMVCRenderCommand implements MVCRenderCommand {
 					_portal.getHttpServletRequest(renderRequest)));
 
 			if (oAuth2State == null) {
-				_googleDrivePortletRequestAuthorizationHelper.
-					performAuthorizationFlow(renderRequest, renderResponse);
+				GoogleDrivePortletRequestAuthorizationUtil.
+					performAuthorizationFlow(
+						_googleDriveManager, _portal, renderRequest,
+						renderResponse, _portletURLFactory);
 			}
 			else {
 				renderRequest.setAttribute(
@@ -90,11 +93,10 @@ public class OpenGoogleDocsMVCRenderCommand implements MVCRenderCommand {
 	private DLOpenerGoogleDriveManager _googleDriveManager;
 
 	@Reference
-	private GoogleDrivePortletRequestAuthorizationHelper
-		_googleDrivePortletRequestAuthorizationHelper;
+	private Portal _portal;
 
 	@Reference
-	private Portal _portal;
+	private PortletURLFactory _portletURLFactory;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.document.library.opener.google.drive.web)"
