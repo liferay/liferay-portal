@@ -7,7 +7,7 @@ package com.liferay.batch.engine.internal;
 
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.ItemClassRegistry;
-import com.liferay.batch.engine.internal.writer.BatchEngineTaskItemDelegateProvider;
+import com.liferay.batch.engine.internal.util.BatchEngineTaskItemDelegateUtil;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateAdaptorFactory;
@@ -126,7 +126,7 @@ public class ItemClassRegistryImpl implements ItemClassRegistry {
 		BundleContext bundleContext, ServiceReference<?> serviceReference) {
 
 		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
-			BatchEngineTaskItemDelegateProvider.toBatchEngineTaskItemDelegate(
+			BatchEngineTaskItemDelegateUtil.toBatchEngineTaskItemDelegate(
 				bundleContext.getService(serviceReference),
 				_vulcanBatchEngineTaskItemDelegateAdaptorFactory);
 

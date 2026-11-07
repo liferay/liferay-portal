@@ -10,7 +10,7 @@ import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.constants.BatchEngineImportTaskConstants;
-import com.liferay.batch.engine.internal.writer.BatchEngineTaskItemDelegateProvider;
+import com.liferay.batch.engine.internal.util.BatchEngineTaskItemDelegateUtil;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.batch.engine.unit.BatchEngineUnit;
@@ -181,7 +181,7 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		}
 
 		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
-			BatchEngineTaskItemDelegateProvider.toBatchEngineTaskItemDelegate(
+			BatchEngineTaskItemDelegateUtil.toBatchEngineTaskItemDelegate(
 				service, _vulcanBatchEngineTaskItemDelegateAdaptorFactory);
 
 		String name = PrincipalThreadLocal.getName();
