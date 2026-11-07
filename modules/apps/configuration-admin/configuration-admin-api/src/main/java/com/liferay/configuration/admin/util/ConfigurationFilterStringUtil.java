@@ -128,21 +128,31 @@ public class ConfigurationFilterStringUtil {
 	}
 
 	public static String getSystemScopedFilterString(String pid) {
-		String filterString = StringBundler.concat(
-			StringPool.OPEN_PARENTHESIS, StringPool.PIPE,
-			_getPropertyFilterString(
-				ConfigurationAdmin.SERVICE_FACTORYPID, pid),
-			_getPropertyFilterString(Constants.SERVICE_PID, pid),
-			StringPool.CLOSE_PARENTHESIS);
+		StringBundler sb = new StringBundler(12);
+
+		sb.append("(|");
+
+		_appendPropertyFilterString(
+			sb, ConfigurationAdmin.SERVICE_FACTORYPID, pid);
+		_appendPropertyFilterString(sb, Constants.SERVICE_PID, pid);
+
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		String filterString = sb.toString();
 
 		if (pid.contains("~")) {
-			filterString = StringBundler.concat(
-				StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND,
-				_getPropertyFilterString(
-					ConfigurationAdmin.SERVICE_FACTORYPID,
-					ConfigurationPidUtil.getRawPid(pid)),
-				_getPropertyFilterString(Constants.SERVICE_PID, pid),
-				StringPool.CLOSE_PARENTHESIS);
+			sb = new StringBundler(12);
+
+			sb.append("(&");
+
+			_appendPropertyFilterString(
+				sb, ConfigurationAdmin.SERVICE_FACTORYPID,
+				ConfigurationPidUtil.getRawPid(pid));
+			_appendPropertyFilterString(sb, Constants.SERVICE_PID, pid);
+
+			sb.append(StringPool.CLOSE_PARENTHESIS);
+
+			filterString = sb.toString();
 		}
 
 		return StringBundler.concat(
@@ -162,33 +172,47 @@ public class ConfigurationFilterStringUtil {
 		return StringPool.BLANK;
 	}
 
-	private static String _getPropertyFilterString(String key, String value) {
+	private static void _appendPropertyFilterString(
+		StringBundler sb, String key, String value) {
+
 		if (Validator.isNull(key) || Validator.isNull(value)) {
-			return StringPool.BLANK;
+			return;
 		}
 
-		return StringBundler.concat(
-			StringPool.OPEN_PARENTHESIS, key, StringPool.EQUAL,
-			SystemBundleUtil.escapeFilterValue(value),
-			StringPool.CLOSE_PARENTHESIS);
+		sb.append(StringPool.OPEN_PARENTHESIS);
+		sb.append(key);
+		sb.append(StringPool.EQUAL);
+		sb.append(SystemBundleUtil.escapeFilterValue(value));
+		sb.append(StringPool.CLOSE_PARENTHESIS);
 	}
 
 	private static String _getScopedFilterString(String pid) {
 		String rawPid = ConfigurationPidUtil.getRawPid(pid);
 
-		String filterString = StringBundler.concat(
-			StringPool.OPEN_PARENTHESIS, StringPool.PIPE,
-			_getPropertyFilterString(
-				ConfigurationAdmin.SERVICE_FACTORYPID, rawPid),
-			_getPropertyFilterString(
-				ConfigurationAdmin.SERVICE_FACTORYPID, rawPid + ".scoped"),
-			StringPool.CLOSE_PARENTHESIS);
+		StringBundler sb = new StringBundler(12);
+
+		sb.append("(|");
+
+		_appendPropertyFilterString(
+			sb, ConfigurationAdmin.SERVICE_FACTORYPID, rawPid);
+		_appendPropertyFilterString(
+			sb, ConfigurationAdmin.SERVICE_FACTORYPID, rawPid + ".scoped");
+
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		String filterString = sb.toString();
 
 		if (pid.contains("~")) {
-			filterString = StringBundler.concat(
-				StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND, filterString,
-				_getPropertyFilterString(Constants.SERVICE_PID, pid),
-				StringPool.CLOSE_PARENTHESIS);
+			sb = new StringBundler(8);
+
+			sb.append("(&");
+			sb.append(filterString);
+
+			_appendPropertyFilterString(sb, Constants.SERVICE_PID, pid);
+
+			sb.append(StringPool.CLOSE_PARENTHESIS);
+
+			filterString = sb.toString();
 		}
 
 		return filterString;
