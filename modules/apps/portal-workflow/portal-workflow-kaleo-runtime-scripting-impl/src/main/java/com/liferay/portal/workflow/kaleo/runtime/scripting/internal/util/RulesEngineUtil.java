@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * @author Jiaxu Wei
  */
-public class RulesEngineExecutor {
+public class RulesEngineUtil {
 
 	public static Map<String, ?> executeAndMergeWorkflowContexts(
 			ExecutionContext executionContext, String resource,
