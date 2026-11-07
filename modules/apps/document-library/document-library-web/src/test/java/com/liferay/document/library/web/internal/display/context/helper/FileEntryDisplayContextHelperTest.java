@@ -370,7 +370,6 @@ public class FileEntryDisplayContextHelperTest {
 				MapUtil.singletonDictionary(
 					"model.class.name",
 					"com.liferay.document.library.kernel.model.DLFileEntry")));
-
 		_serviceRegistrations.add(
 			bundleContext.registerService(
 				ModelResourcePermission.class,
