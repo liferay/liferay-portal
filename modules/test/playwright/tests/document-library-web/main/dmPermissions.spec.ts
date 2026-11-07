@@ -9,6 +9,7 @@ import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
@@ -24,6 +25,9 @@ import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils
 const test = mergeTests(
 	apiHelpersTest,
 	documentLibraryPagesTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
 	isolatedSiteTest,
 	loginTest()
 );
