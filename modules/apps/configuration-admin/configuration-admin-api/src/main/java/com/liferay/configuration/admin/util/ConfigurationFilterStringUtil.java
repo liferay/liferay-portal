@@ -48,11 +48,16 @@ public class ConfigurationFilterStringUtil {
 	public static String getCompanyScopedFilterString(
 		Serializable companyId, String pid, String virtualInstanceId) {
 
-		return StringBundler.concat(
-			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND,
-			_getScopedFilterString(pid),
-			getCompanyScopedFilterString(companyId, virtualInstanceId),
-			StringPool.CLOSE_PARENTHESIS);
+		StringBundler sb = new StringBundler(21);
+
+		sb.append("(&");
+
+		_appendScopedFilterString(sb, pid);
+
+		sb.append(getCompanyScopedFilterString(companyId, virtualInstanceId));
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		return sb.toString();
 	}
 
 	public static String getGroupScopedFilterString(
@@ -85,12 +90,18 @@ public class ConfigurationFilterStringUtil {
 		Serializable companyId, Serializable groupId, String pid,
 		String siteExternalReferenceCode) {
 
-		return StringBundler.concat(
-			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND,
-			_getScopedFilterString(pid),
+		StringBundler sb = new StringBundler(21);
+
+		sb.append("(&");
+
+		_appendScopedFilterString(sb, pid);
+
+		sb.append(
 			getGroupScopedFilterString(
-				companyId, groupId, siteExternalReferenceCode),
-			StringPool.CLOSE_PARENTHESIS);
+				companyId, groupId, siteExternalReferenceCode));
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		return sb.toString();
 	}
 
 	public static String getPortletScopedFilterString(
@@ -106,11 +117,16 @@ public class ConfigurationFilterStringUtil {
 	public static String getPortletScopedFilterString(
 		String pid, Serializable portletInstanceId) {
 
-		return StringBundler.concat(
-			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND,
-			_getScopedFilterString(pid),
-			getPortletScopedFilterString(portletInstanceId),
-			StringPool.CLOSE_PARENTHESIS);
+		StringBundler sb = new StringBundler(21);
+
+		sb.append("(&");
+
+		_appendScopedFilterString(sb, pid);
+
+		sb.append(getPortletScopedFilterString(portletInstanceId));
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		return sb.toString();
 	}
 
 	public static String getSystemScopedFilterString() {
@@ -186,12 +202,19 @@ public class ConfigurationFilterStringUtil {
 		return StringPool.BLANK;
 	}
 
-	private static String _getScopedFilterString(String pid) {
+	private static void _appendScopedFilterString(
+		StringBundler sb, String pid) {
+
+		boolean factoryEntry = pid.contains("~");
+
+		if (factoryEntry) {
+			sb.append("(&(|");
+		}
+		else {
+			sb.append("(|");
+		}
+
 		String rawPid = ConfigurationPidUtil.getRawPid(pid);
-
-		StringBundler sb = new StringBundler(12);
-
-		sb.append("(|");
 
 		_appendPropertyFilterString(
 			sb, ConfigurationAdmin.SERVICE_FACTORYPID, rawPid);
@@ -200,22 +223,11 @@ public class ConfigurationFilterStringUtil {
 
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 
-		String filterString = sb.toString();
-
-		if (pid.contains("~")) {
-			sb = new StringBundler(8);
-
-			sb.append("(&");
-			sb.append(filterString);
-
+		if (factoryEntry) {
 			_appendPropertyFilterString(sb, Constants.SERVICE_PID, pid);
 
 			sb.append(StringPool.CLOSE_PARENTHESIS);
-
-			filterString = sb.toString();
 		}
-
-		return filterString;
 	}
 
 	private static String _toString(Serializable value) {
