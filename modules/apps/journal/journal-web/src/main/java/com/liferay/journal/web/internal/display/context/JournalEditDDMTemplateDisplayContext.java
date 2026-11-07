@@ -14,7 +14,9 @@ import com.liferay.dynamic.data.mapping.util.DDMTemplateHelper;
 import com.liferay.journal.configuration.JournalFileUploadsConfiguration;
 import com.liferay.journal.configuration.JournalServiceConfiguration;
 import com.liferay.journal.model.JournalArticle;
-import com.liferay.journal.web.internal.helper.JournalDDMTemplateHelper;
+import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -22,6 +24,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -50,6 +54,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -58,13 +63,11 @@ import java.util.ResourceBundle;
 public class JournalEditDDMTemplateDisplayContext {
 
 	public JournalEditDDMTemplateDisplayContext(
-			DDMTemplateHelper ddmTemplateHelper,
-			JournalDDMTemplateHelper journalDDMTemplateHelper, Portal portal,
+			DDMTemplateHelper ddmTemplateHelper, Portal portal,
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws ConfigurationException {
 
 		_ddmTemplateHelper = ddmTemplateHelper;
-		_journalDDMTemplateHelper = journalDDMTemplateHelper;
 		_portal = portal;
 		_renderResponse = renderResponse;
 
@@ -332,9 +335,7 @@ public class JournalEditDDMTemplateDisplayContext {
 
 				templateVariableDefinitionJSONArray.put(
 					JSONUtil.put(
-						"content",
-						_journalDDMTemplateHelper.getDataContent(
-							templateVariableDefinition)
+						"content", _getDataContent(templateVariableDefinition)
 					).put(
 						"label",
 						LanguageUtil.get(
@@ -346,9 +347,8 @@ public class JournalEditDDMTemplateDisplayContext {
 						templateVariableDefinition.isRepeatable()
 					).put(
 						"tooltip",
-						_journalDDMTemplateHelper.getPaletteItemTitle(
-							_httpServletRequest, resourceBundle,
-							templateVariableDefinition)
+						_getPaletteItemTitle(
+							resourceBundle, templateVariableDefinition)
 					));
 			}
 
@@ -441,6 +441,185 @@ public class JournalEditDDMTemplateDisplayContext {
 		return _journalFileUploadsConfiguration.smallImageMaxSize();
 	}
 
+	private String _getDataContent(
+		TemplateVariableDefinition templateVariableDefinition) {
+
+		String dataContent = StringPool.BLANK;
+
+		String dataType = templateVariableDefinition.getDataType();
+
+		if (templateVariableDefinition.isCollection()) {
+			TemplateVariableDefinition itemTemplateVariableDefinition =
+				templateVariableDefinition.getItemTemplateVariableDefinition();
+
+			dataContent = _getListCode(
+				templateVariableDefinition.getName(),
+				itemTemplateVariableDefinition.getName(),
+				itemTemplateVariableDefinition.getAccessor());
+		}
+		else if (Validator.isNull(dataType)) {
+			dataContent = _getVariableReferenceCode(
+				templateVariableDefinition.getName(),
+				templateVariableDefinition.getAccessor());
+		}
+		else if (dataType.equals("reserved-article")) {
+			dataContent = _getVariableReferenceCode(
+				".vars[\"" + templateVariableDefinition.getName() + "\"]",
+				templateVariableDefinition.getAccessor());
+		}
+		else if (dataType.equals("service-locator")) {
+			Class<?> templateVariableDefinitionClass =
+				templateVariableDefinition.getClazz();
+
+			String variableName =
+				templateVariableDefinitionClass.getSimpleName();
+
+			dataContent = StringBundler.concat(
+				_getVariableAssignmentCode(
+					variableName,
+					"serviceLocator.findService(\"" +
+						templateVariableDefinition.getName() + "\")"),
+				"[$CURSOR$]", _getVariableReferenceCode(variableName, null));
+		}
+		else {
+			try {
+				dataContent = templateVariableDefinition.generateCode(
+					TemplateConstants.LANG_TYPE_FTL)[0];
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+			}
+		}
+
+		return dataContent;
+	}
+
+	private String _getListCode(
+		String variableName, String itemName, String accessor) {
+
+		return StringBundler.concat(
+			"<#if ", variableName, "?has_content>\n\t<#list ", variableName,
+			" as ", itemName, ">\n\t\t",
+			_getVariableReferenceCode(itemName, accessor),
+			"[$CURSOR$]\n\t</#list>\n</#if>");
+	}
+
+	private String _getPaletteItemTitle(
+		ResourceBundle resourceBundle,
+		TemplateVariableDefinition templateVariableDefinition) {
+
+		StringBundler sb = new StringBundler(12);
+
+		String help = templateVariableDefinition.getHelp();
+
+		if (Validator.isNotNull(help)) {
+			sb.append("<p>");
+			sb.append(
+				HtmlUtil.escape(
+					LanguageUtil.get(
+						_httpServletRequest, resourceBundle, help)));
+			sb.append("</p>");
+		}
+
+		if (templateVariableDefinition.isCollection()) {
+			sb.append("<p><i>*");
+			sb.append(
+				LanguageUtil.get(
+					_httpServletRequest, "this-is-a-collection-of-fields"));
+			sb.append("</i></p>");
+		}
+		else if (templateVariableDefinition.isRepeatable()) {
+			sb.append("<p><i>*");
+			sb.append(
+				LanguageUtil.get(
+					_httpServletRequest, "this-is-a-repeatable-field"));
+			sb.append("</i></p>");
+		}
+
+		if (!Objects.equals(
+				templateVariableDefinition.getDataType(), "service-locator")) {
+
+			sb.append(LanguageUtil.get(_httpServletRequest, "variable"));
+			sb.append(StringPool.COLON);
+			sb.append(StringPool.NBSP);
+			sb.append(HtmlUtil.escape(templateVariableDefinition.getName()));
+		}
+
+		sb.append(
+			_getPaletteItemTitle(
+				"class", templateVariableDefinition.getClazz()));
+
+		if (templateVariableDefinition.isCollection()) {
+			TemplateVariableDefinition itemTemplateVariableDefinition =
+				templateVariableDefinition.getItemTemplateVariableDefinition();
+
+			sb.append(
+				_getPaletteItemTitle(
+					"items-class", itemTemplateVariableDefinition.getClazz()));
+		}
+
+		return sb.toString();
+	}
+
+	private String _getPaletteItemTitle(String label, Class<?> clazz) {
+		if (clazz == null) {
+			return StringPool.BLANK;
+		}
+
+		StringBundler sb = new StringBundler(10);
+
+		sb.append("<br />");
+		sb.append(LanguageUtil.get(_httpServletRequest, label));
+		sb.append(StringPool.COLON);
+		sb.append(StringPool.NBSP);
+
+		String className = clazz.getName();
+		String javadocURL = null;
+
+		if (className.startsWith("com.liferay.portal.kernel")) {
+			javadocURL =
+				"http://docs.liferay.com/portal/7.0/javadocs/portal-kernel/";
+		}
+
+		if (Validator.isNotNull(javadocURL)) {
+			sb.append("<a href=\"");
+			sb.append(javadocURL);
+			sb.append(
+				StringUtil.replace(className, CharPool.PERIOD, CharPool.SLASH));
+			sb.append(".html\" target=\"_blank\">");
+		}
+
+		sb.append(clazz.getSimpleName());
+
+		if (Validator.isNull(javadocURL)) {
+			sb.append("</a>");
+		}
+
+		return sb.toString();
+	}
+
+	private String _getVariableAssignmentCode(
+		String variableName, String variableValue) {
+
+		return StringBundler.concat(
+			"<#assign ", variableName, " = ", variableValue, ">");
+	}
+
+	private String _getVariableReferenceCode(
+		String variableName, String accessor) {
+
+		String methodInvocation = StringPool.BLANK;
+
+		if (Validator.isNotNull(accessor)) {
+			methodInvocation = StringPool.PERIOD + accessor;
+		}
+
+		return StringBundler.concat("${", variableName, methodInvocation, "}");
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		JournalEditDDMTemplateDisplayContext.class);
+
 	private Boolean _cacheable;
 	private Long _classPK;
 	private DDMStructure _ddmStructure;
@@ -449,7 +628,6 @@ public class JournalEditDDMTemplateDisplayContext {
 	private Long _ddmTemplateId;
 	private Long _groupId;
 	private final HttpServletRequest _httpServletRequest;
-	private final JournalDDMTemplateHelper _journalDDMTemplateHelper;
 	private final JournalFileUploadsConfiguration
 		_journalFileUploadsConfiguration;
 	private final JournalServiceConfiguration _journalServiceConfiguration;

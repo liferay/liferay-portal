@@ -12,7 +12,6 @@ import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.util.DDMTemplateHelper;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.web.internal.display.context.JournalEditDDMTemplateDisplayContext;
-import com.liferay.journal.web.internal.helper.JournalDDMTemplateHelper;
 import com.liferay.journal.web.internal.security.permission.resource.DDMTemplatePermission;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
@@ -50,8 +49,7 @@ public abstract class BaseDDMTemplateMVCRenderCommand
 			renderRequest.setAttribute(
 				JournalEditDDMTemplateDisplayContext.class.getName(),
 				new JournalEditDDMTemplateDisplayContext(
-					ddmTemplateHelper, journalDDMTemplateHelper, portal,
-					renderRequest, renderResponse));
+					ddmTemplateHelper, portal, renderRequest, renderResponse));
 		}
 		catch (Exception exception) {
 			if (exception instanceof NoSuchTemplateException ||
@@ -72,9 +70,6 @@ public abstract class BaseDDMTemplateMVCRenderCommand
 
 	@Reference
 	protected DDMTemplateHelper ddmTemplateHelper;
-
-	@Reference
-	protected JournalDDMTemplateHelper journalDDMTemplateHelper;
 
 	@Reference
 	protected Portal portal;
