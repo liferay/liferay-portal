@@ -19,14 +19,16 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.sharing.model.SharingEntry;
+import com.liferay.sharing.security.permission.SharingPermission;
 import com.liferay.sharing.service.SharingEntryLocalService;
 import com.liferay.sharing.web.internal.constants.SharingPortletKeys;
 import com.liferay.sharing.web.internal.constants.SharingWebKeys;
 import com.liferay.sharing.web.internal.display.SharingEntryPermissionDisplay;
 import com.liferay.sharing.web.internal.display.SharingEntryPermissionDisplayAction;
-import com.liferay.sharing.web.internal.helper.SharingHelper;
+import com.liferay.sharing.web.internal.util.SharingUtil;
 
 import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
@@ -148,9 +150,8 @@ public class ViewManageCollaboratorsMVCRenderCommand
 
 				SharingEntryPermissionDisplayAction
 					userSharingEntryPermissionDisplayActionKey =
-						_sharingHelper.
-							getSharingEntryPermissionDisplayActionKey(
-								sharingEntry);
+						SharingUtil.getSharingEntryPermissionDisplayActionKey(
+							sharingEntry);
 
 				collaboratorsJSONArray.put(
 					JSONUtil.put(
@@ -195,9 +196,10 @@ public class ViewManageCollaboratorsMVCRenderCommand
 			WebKeys.THEME_DISPLAY);
 
 		List<SharingEntryPermissionDisplay> sharingEntryPermissionDisplays =
-			_sharingHelper.getSharingEntryPermissionDisplays(
-				themeDisplay.getPermissionChecker(), classNameId, classPK,
-				themeDisplay.getScopeGroupId(), themeDisplay.getLocale());
+			SharingUtil.getSharingEntryPermissionDisplays(
+				classNameId, classPK, themeDisplay.getScopeGroupId(),
+				themeDisplay.getLocale(), themeDisplay.getPermissionChecker(),
+				_portal, _sharingPermission);
 
 		JSONArray sharingEntryPermissionDisplaySelectOptionsJSONArray =
 			_jsonFactory.createJSONArray();
@@ -225,10 +227,13 @@ public class ViewManageCollaboratorsMVCRenderCommand
 	private Language _language;
 
 	@Reference
+	private Portal _portal;
+
+	@Reference
 	private SharingEntryLocalService _sharingEntryLocalService;
 
 	@Reference
-	private SharingHelper _sharingHelper;
+	private SharingPermission _sharingPermission;
 
 	@Reference
 	private UserLocalService _userLocalService;

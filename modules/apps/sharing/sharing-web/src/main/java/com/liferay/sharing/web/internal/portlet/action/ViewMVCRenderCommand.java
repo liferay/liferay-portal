@@ -10,11 +10,13 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.sharing.constants.SharingPortletKeys;
+import com.liferay.sharing.security.permission.SharingPermission;
 import com.liferay.sharing.web.internal.constants.SharingWebKeys;
 import com.liferay.sharing.web.internal.display.SharingEntryPermissionDisplayAction;
-import com.liferay.sharing.web.internal.helper.SharingHelper;
+import com.liferay.sharing.web.internal.util.SharingUtil;
 
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
@@ -63,11 +65,12 @@ public class ViewMVCRenderCommand implements MVCRenderCommand {
 				SharingEntryPermissionDisplayAction.VIEW.getActionId()
 			).put(
 				"sharingEntryPermissionDisplays",
-				_sharingHelper.getSharingEntryPermissionDisplays(
-					themeDisplay.getPermissionChecker(),
+				SharingUtil.getSharingEntryPermissionDisplays(
 					ParamUtil.getLong(renderRequest, "classNameId"),
 					ParamUtil.getLong(renderRequest, "classPK"),
-					themeDisplay.getScopeGroupId(), themeDisplay.getLocale())
+					themeDisplay.getScopeGroupId(), themeDisplay.getLocale(),
+					themeDisplay.getPermissionChecker(), _portal,
+					_sharingPermission)
 			).put(
 				"sharingVerifyEmailAddressURL",
 				_getSharingVerifyEmailAddressURL(renderResponse)
@@ -105,6 +108,9 @@ public class ViewMVCRenderCommand implements MVCRenderCommand {
 	}
 
 	@Reference
-	private SharingHelper _sharingHelper;
+	private Portal _portal;
+
+	@Reference
+	private SharingPermission _sharingPermission;
 
 }

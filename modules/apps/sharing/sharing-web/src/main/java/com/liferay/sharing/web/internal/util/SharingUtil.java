@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.sharing.web.internal.helper;
+package com.liferay.sharing.web.internal.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -23,16 +23,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Sergio González
  */
-@Component(service = SharingHelper.class)
-public class SharingHelper {
+public class SharingUtil {
 
-	public SharingEntryPermissionDisplayAction
+	public static SharingEntryPermissionDisplayAction
 		getSharingEntryPermissionDisplayActionKey(SharingEntry sharingEntry) {
 
 		if (sharingEntry.hasSharingPermission(SharingEntryAction.UPDATE)) {
@@ -52,10 +48,11 @@ public class SharingHelper {
 		return null;
 	}
 
-	public List<SharingEntryPermissionDisplay>
+	public static List<SharingEntryPermissionDisplay>
 		getSharingEntryPermissionDisplays(
-			PermissionChecker permissionChecker, long classNameId, long classPK,
-			long groupId, Locale locale) {
+			long classNameId, long classPK, long groupId, Locale locale,
+			PermissionChecker permissionChecker, Portal portal,
+			SharingPermission sharingPermission) {
 
 		List<SharingEntryAction> sharingEntryActions = new ArrayList<>();
 
@@ -63,7 +60,7 @@ public class SharingHelper {
 				SharingEntryAction.values()) {
 
 			try {
-				if (_sharingPermission.contains(
+				if (sharingPermission.contains(
 						permissionChecker, classNameId, classPK, groupId,
 						Collections.singletonList(sharingEntryAction))) {
 
@@ -76,19 +73,13 @@ public class SharingHelper {
 		}
 
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, SharingHelper.class);
+			locale, SharingUtil.class);
 
 		return SharingEntryPermissionDisplay.getSharingEntryPermissionDisplays(
-			_portal.getClassName(classNameId), sharingEntryActions,
+			portal.getClassName(classNameId), sharingEntryActions,
 			resourceBundle);
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(SharingHelper.class);
-
-	@Reference
-	private Portal _portal;
-
-	@Reference
-	private SharingPermission _sharingPermission;
+	private static final Log _log = LogFactoryUtil.getLog(SharingUtil.class);
 
 }
