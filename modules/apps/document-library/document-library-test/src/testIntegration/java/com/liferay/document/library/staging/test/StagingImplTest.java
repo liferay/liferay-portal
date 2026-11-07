@@ -524,8 +524,9 @@ public class StagingImplTest {
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
 			RandomTestUtil.randomString(), "urltitle", StringPool.BLANK,
-			StringPool.BLANK, RandomTestUtil.randomBytes(), null, null, null,
-			serviceContext);
+			StringPool.BLANK,
+			FileUtil.getBytes(getClass(), "dependencies/liferay.jpg"), null,
+			null, null, serviceContext);
 
 		_publish();
 
@@ -543,7 +544,8 @@ public class StagingImplTest {
 
 		_enableLocalStaging();
 
-		byte[] bytes = RandomTestUtil.randomBytes();
+		byte[] bytes = FileUtil.getBytes(
+			getClass(), "dependencies/liferay.jpg");
 		String urlTitle = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
@@ -648,7 +650,8 @@ public class StagingImplTest {
 			RandomTestUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
 			RandomTestUtil.randomString(), urlTitle,
 			RandomTestUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
+			FileUtil.getBytes(getClass(), "dependencies/liferay.jpg"), null,
+			null, null, serviceContext);
 
 		_publish();
 
@@ -656,7 +659,7 @@ public class StagingImplTest {
 
 		Assert.assertEquals(fileEntry.getTitle(), liveFileEntry.getTitle());
 
-		byte[] bytes = RandomTestUtil.randomBytes();
+		byte[] bytes = FileUtil.getBytes(getClass(), "dependencies/sample.png");
 		String description = RandomTestUtil.randomString();
 		String fileName = RandomTestUtil.randomString() + ".png";
 		String title = RandomTestUtil.randomString();
