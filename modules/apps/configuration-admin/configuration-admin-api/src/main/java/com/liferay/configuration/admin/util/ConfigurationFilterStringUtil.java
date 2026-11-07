@@ -29,7 +29,7 @@ public class ConfigurationFilterStringUtil {
 	public static String getCompanyScopedFilterString(
 		Serializable companyId, String virtualInstanceId) {
 
-		StringBundler sb = new StringBundler(13);
+		StringBundler sb = new StringBundler(11);
 
 		_appendCompanyScopedFilterString(sb, companyId, virtualInstanceId);
 
@@ -39,7 +39,7 @@ public class ConfigurationFilterStringUtil {
 	public static String getCompanyScopedFilterString(
 		Serializable companyId, String pid, String virtualInstanceId) {
 
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("(&");
 
@@ -152,9 +152,16 @@ public class ConfigurationFilterStringUtil {
 		sb.append(
 			GetterUtil.get(
 				SystemBundleUtil.escapeFilterValue(virtualInstanceId), "*"));
-		sb.append(StringPool.CLOSE_PARENTHESIS);
-		sb.append(_getDefaultVirtualInstanceIdFilterString(virtualInstanceId));
-		sb.append(")(!(");
+
+		if (Objects.equals(
+				virtualInstanceId, PropsValues.COMPANY_DEFAULT_WEB_ID)) {
+
+			sb.append(")(dxp.lxc.liferay.com.virtualInstanceId=default))(!(");
+		}
+		else {
+			sb.append("))(!(");
+		}
+
 		sb.append(ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey());
 		sb.append("=*))(!(siteExternalReferenceCode=*))(!(");
 		sb.append(
@@ -261,18 +268,6 @@ public class ConfigurationFilterStringUtil {
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
 				getPropertyKey());
 		sb.append("=*)))");
-	}
-
-	private static String _getDefaultVirtualInstanceIdFilterString(
-		String virtualInstanceId) {
-
-		if (Objects.equals(
-				virtualInstanceId, PropsValues.COMPANY_DEFAULT_WEB_ID)) {
-
-			return "(dxp.lxc.liferay.com.virtualInstanceId=default)";
-		}
-
-		return StringPool.BLANK;
 	}
 
 	private static String _toString(Serializable value) {
