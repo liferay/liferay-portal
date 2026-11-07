@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
 import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiServiceUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -127,6 +128,9 @@ public class FeatureFlagsBagProviderImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
+		_featureFlagPreferencesManager = new FeatureFlagPreferencesManager(
+			_portalPreferencesLocalService);
+
 		_serviceRegistration = bundleContext.registerService(
 			IdentifiableOSGiService.class, this, null);
 
@@ -412,9 +416,7 @@ public class FeatureFlagsBagProviderImpl
 	@Reference
 	private CompanyLocalService _companyLocalService;
 
-	@Reference
 	private FeatureFlagPreferencesManager _featureFlagPreferencesManager;
-
 	private final Properties _featureFlagProperties = PropsUtil.getProperties(
 		FeatureFlagConstants.PORTAL_PROPERTY_KEY_FEATURE_FLAG +
 			StringPool.PERIOD,
@@ -427,6 +429,9 @@ public class FeatureFlagsBagProviderImpl
 
 	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED)
 	private ModuleServiceLifecycle _moduleServiceLifecycle;
+
+	@Reference
+	private PortalPreferencesLocalService _portalPreferencesLocalService;
 
 	private ServiceRegistration<IdentifiableOSGiService> _serviceRegistration;
 	private ServiceTrackerMap<String, List<FeatureFlagListener>>

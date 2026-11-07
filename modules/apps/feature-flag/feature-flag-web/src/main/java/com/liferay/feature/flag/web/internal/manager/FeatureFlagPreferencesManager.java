@@ -13,14 +13,16 @@ import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.PortalPreferencesWrapper;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Drew Brokke
  */
-@Component(service = FeatureFlagPreferencesManager.class)
 public class FeatureFlagPreferencesManager {
+
+	public FeatureFlagPreferencesManager(
+		PortalPreferencesLocalService portalPreferencesLocalService) {
+
+		_portalPreferencesLocalService = portalPreferencesLocalService;
+	}
 
 	public Boolean isEnabled(long companyId, String key) {
 		if (Validator.isNull(
@@ -62,7 +64,6 @@ public class FeatureFlagPreferencesManager {
 		return portalPreferencesWrapper.getPortalPreferencesImpl();
 	}
 
-	@Reference
-	private PortalPreferencesLocalService _portalPreferencesLocalService;
+	private final PortalPreferencesLocalService _portalPreferencesLocalService;
 
 }
