@@ -131,7 +131,10 @@ public class DLFolderItemSelectorView
 
 		Folder folder = _fetchFolder(folderId);
 
-		if (folder != null) {
+		if (folder == null) {
+			folderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
+		}
+		else {
 			repositoryId = folder.getRepositoryId();
 		}
 
@@ -157,7 +160,8 @@ public class DLFolderItemSelectorView
 			DLSelectFolderDisplayContext.class.getName(),
 			new DLSelectFolderDisplayContext(
 				itemSelectorCriterion.getBlockedFolderId(), _dlAppService,
-				_fetchFolder(folderId), _folderModelResourcePermission,
+				_fetchFolder(folderId), folderId,
+				_folderModelResourcePermission,
 				(HttpServletRequest)servletRequest, portletURL, repositoryId,
 				itemSelectorCriterion.getSelectedFolderId(),
 				itemSelectorCriterion.getSelectedRepositoryId(),
