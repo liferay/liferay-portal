@@ -19,12 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.osgi.service.component.annotations.Component;
-
 /**
  * @author Feliphe Marinho
  */
-@Component(service = ObjectFieldFDSFilterFactoryRegistry.class)
 public class ObjectFieldFDSFilterFactoryRegistry {
 
 	public ObjectFieldFDSFilterFactoryRegistry(
