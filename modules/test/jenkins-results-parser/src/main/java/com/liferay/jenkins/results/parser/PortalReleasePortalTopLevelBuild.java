@@ -297,8 +297,9 @@ public class PortalReleasePortalTopLevelBuild
 						". The file name must match ",
 						"\"liferay-<product>-tomcat-<version>-<timestamp>.",
 						"(7z|tar.gz|zip)\", where the product is not \"dxp\" ",
-						"or \"portal\". Set TEST_PORTAL_RELEASE_STANDALONE to ",
-						"false to test a regular release."));
+						"or \"portal\". Set ",
+						"\"TEST_PORTAL_RELEASE_STANDALONE\" to \"false\" to ",
+						"test a regular release."));
 			}
 
 			PortalRelease portalRelease = PortalReleaseFactory.newPortalRelease(
