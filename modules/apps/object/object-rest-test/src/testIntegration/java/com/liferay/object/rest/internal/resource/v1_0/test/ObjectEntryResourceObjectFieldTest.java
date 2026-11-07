@@ -22,6 +22,7 @@ import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -488,6 +489,75 @@ public class ObjectEntryResourceObjectFieldTest
 				defaultValue, geocoderResult.getLatitude(),
 				geocoderResult.getLongitude(),
 				jsonObject.getJSONObject("location"));
+		}
+	}
+
+	@Test
+	public void testPutCustomObjectEntryWithLocationObjectField()
+		throws Exception {
+
+		GeocoderResult geocoderResult = new GeocoderResult(
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble());
+
+		try (SafeCloseable safeCloseable =
+				GeocoderTestUtil.swapWithSafeCloseable(
+					geocoderResult,
+					objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+						ObjectFieldConstants.BUSINESS_TYPE_LOCATION))) {
+
+			ObjectDefinition objectDefinition =
+				ObjectDefinitionTestUtil.publishObjectDefinition(
+					Collections.singletonList(
+						new LocationObjectFieldBuilder(
+						).labelMap(
+							RandomTestUtil.randomLocaleStringMap()
+						).name(
+							"location"
+						).objectFieldSettings(
+							Arrays.asList(
+								new ObjectFieldSettingBuilder(
+								).name(
+									ObjectFieldSettingConstants.
+										NAME_DEFAULT_VALUE
+								).value(
+									JSONUtil.put(
+										"address", RandomTestUtil.randomString()
+									).toString()
+								).build(),
+								new ObjectFieldSettingBuilder(
+								).name(
+									ObjectFieldSettingConstants.
+										NAME_DEFAULT_VALUE_TYPE
+								).value(
+									ObjectFieldSettingConstants.
+										VALUE_INPUT_AS_VALUE
+								).build())
+						).build()));
+
+			String address = RandomTestUtil.randomString();
+
+			JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"location", JSONUtil.put("address", address)
+				).toString(),
+				objectDefinition.getRESTContextPath(), Http.Method.POST);
+
+			assertLocationJSONObject(
+				address, geocoderResult.getLatitude(),
+				geocoderResult.getLongitude(),
+				jsonObject.getJSONObject("location"));
+
+			jsonObject = HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"location", StringPool.BLANK
+				).toString(),
+				StringBundler.concat(
+					objectDefinition.getRESTContextPath(), StringPool.SLASH,
+					jsonObject.get("id")),
+				Http.Method.PUT);
+
+			Assert.assertTrue(jsonObject.isNull("location"));
 		}
 	}
 
