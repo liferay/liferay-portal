@@ -18,15 +18,13 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -93,16 +91,16 @@ public class FileEntryWebServerTest extends BaseWebServerTestCase {
 			fileEntry.getFolderId(), StringPool.SLASH, fileEntry.getFileName(),
 			StringPool.SLASH, fileEntry.getUuid());
 
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_regularUser));
-		PrincipalThreadLocal.setName(_regularUser.getUserId());
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_regularUser)) {
 
-		MockHttpServletResponse mockHttpServletResponse = service(
-			Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
-			_regularUser, null);
+			MockHttpServletResponse mockHttpServletResponse = service(
+				Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
+				_regularUser, null);
 
-		Assert.assertEquals(
-			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+			Assert.assertEquals(
+				HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+		}
 	}
 
 	@Test
@@ -136,16 +134,17 @@ public class FileEntryWebServerTest extends BaseWebServerTestCase {
 				fileEntry.getFolderId(), StringPool.SLASH,
 				fileEntry.getFileName(), StringPool.SLASH, fileEntry.getUuid());
 
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_regularUser));
-			PrincipalThreadLocal.setName(_regularUser.getUserId());
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					_regularUser)) {
 
-			MockHttpServletResponse mockHttpServletResponse = service(
-				Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
-				_regularUser, null);
+				MockHttpServletResponse mockHttpServletResponse = service(
+					Method.GET, url, Collections.emptyMap(),
+					Collections.emptyMap(), _regularUser, null);
 
-			Assert.assertEquals(
-				HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+				Assert.assertEquals(
+					HttpServletResponse.SC_OK,
+					mockHttpServletResponse.getStatus());
+			}
 		}
 		finally {
 			_roleLocalService.deleteRole(regularRole);
@@ -181,16 +180,17 @@ public class FileEntryWebServerTest extends BaseWebServerTestCase {
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_regularUser));
-		PrincipalThreadLocal.setName(_regularUser.getUserId());
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_regularUser)) {
 
-		mockHttpServletResponse = service(
-			Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
-			_regularUser, null);
+			mockHttpServletResponse = service(
+				Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
+				_regularUser, null);
 
-		Assert.assertNotEquals(
-			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+			Assert.assertEquals(
+				HttpServletResponse.SC_UNAUTHORIZED,
+				mockHttpServletResponse.getStatus());
+		}
 	}
 
 	private void _addDownloadResourcePermission(Role guestRole)
