@@ -13,6 +13,7 @@ import com.liferay.document.library.internal.constants.LegacyDLKeys;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PrefsProps;
@@ -201,7 +202,9 @@ public class DLConfigurationUpgradeHelper {
 				configuration,
 				ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(), 0L);
 
-			if ((companyId != 0) && (groupId == 0)) {
+			if ((groupId == 0) &&
+				(_companyLocalService.fetchCompany(companyId) != null)) {
+
 				_configurationProvider.saveCompanyConfiguration(
 					DLFileEntryConfiguration.class, companyId, dictionary);
 
@@ -303,6 +306,9 @@ public class DLConfigurationUpgradeHelper {
 				"fileMaxSize", fileMaxSize
 			).build());
 	}
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
