@@ -13,12 +13,17 @@ import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
@@ -77,6 +82,15 @@ public class EditFileEntryTypeMVCRenderCommandTest {
 			"/document_library/edit_file_entry_type.jsp",
 			_render(dlFileEntryType, TestPropsValues.getUser()));
 
+		Role role = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.SITE_MEMBER);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), DLFileEntryType.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(dlFileEntryType.getFileEntryTypeId()),
+			role.getRoleId(), new String[] {ActionKeys.VIEW});
+
 		_user = UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER);
 
 		Assert.assertEquals(
@@ -130,6 +144,12 @@ public class EditFileEntryTypeMVCRenderCommandTest {
 		filter = "component.name=com.liferay.document.library.web.internal.portlet.action.EditFileEntryTypeMVCRenderCommand"
 	)
 	private MVCRenderCommand _mvcRenderCommand;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@DeleteAfterTestRun
 	private User _user;
