@@ -35,10 +35,8 @@ public class DocumentLibraryThumbnailsConfigurationUpgradeProcess
 			_companyLocalService.forEachCompany(
 				company -> {
 					try {
-						AMCompanyThumbnailConfigurationUtil.
-							initializeCompany(
-								_amImageConfigurationHelper, company,
-								_prefsProps);
+						AMCompanyThumbnailConfigurationUtil.initializeCompany(
+							_amImageConfigurationHelper, company, _prefsProps);
 					}
 					catch (Exception exception) {
 						_log.error(exception);
