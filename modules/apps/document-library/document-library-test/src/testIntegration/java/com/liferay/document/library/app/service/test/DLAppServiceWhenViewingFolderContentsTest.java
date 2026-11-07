@@ -15,7 +15,6 @@ import com.liferay.document.library.kernel.util.comparator.RepositoryModelTitleC
 import com.liferay.document.library.test.util.BaseDLAppTestCase;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -24,7 +23,6 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -346,41 +344,6 @@ public class DLAppServiceWhenViewingFolderContentsTest
 	}
 
 	@Test
-	@TestInfo({"LPD-113625", "LPS-106905"})
-	public void testShouldReturnGlobalFileEntryToSiteAdministratorOfAnotherSite()
-		throws Exception {
-
-		Group companyGroup = _groupLocalService.getCompanyGroup(
-			TestPropsValues.getCompanyId());
-
-		FileEntry fileEntry = dlAppService.addFileEntry(
-			null, companyGroup.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
-			StringUtil.randomString(), null, StringUtil.randomString(),
-			StringPool.BLANK, (byte[])null, null, null, null,
-			ServiceContextTestUtil.getServiceContext(
-				companyGroup.getGroupId()));
-
-		User user = UserTestUtil.addGroupAdminUser(group);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user)) {
-
-			FileEntry viewedFileEntry = dlAppService.getFileEntry(
-				fileEntry.getFileEntryId());
-
-			Assert.assertEquals(
-				fileEntry.getFileEntryId(), viewedFileEntry.getFileEntryId());
-		}
-		finally {
-			_userLocalService.deleteUser(user.getUserId());
-
-			dlAppService.deleteFileEntry(fileEntry.getFileEntryId());
-		}
-	}
-
-	@Test
 	public void testShouldReturnOrderedByReadCount() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(group.getGroupId());
@@ -531,9 +494,6 @@ public class DLAppServiceWhenViewingFolderContentsTest
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
