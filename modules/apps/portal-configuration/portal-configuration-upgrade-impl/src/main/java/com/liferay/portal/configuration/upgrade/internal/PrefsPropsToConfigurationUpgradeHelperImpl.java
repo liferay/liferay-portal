@@ -10,6 +10,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.upgrade.PrefsPropsToConfigurationUpgradeHelper;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.KeyValuePair;
@@ -63,9 +65,12 @@ public class PrefsPropsToConfigurationUpgradeHelperImpl
 					configurationClass.getName());
 		}
 		else {
+			Company company = _companyLocalService.getCompany(companyId);
+
 			filterString =
 				ConfigurationFilterStringUtil.getCompanyScopedFilterString(
-					companyId, configurationClass.getName(), null);
+					companyId, configurationClass.getName(),
+					company.getWebId());
 		}
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
@@ -179,6 +184,9 @@ public class PrefsPropsToConfigurationUpgradeHelperImpl
 			}
 		}
 	}
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
