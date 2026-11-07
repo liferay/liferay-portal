@@ -39,19 +39,6 @@ import org.osgi.service.component.annotations.Reference;
 public class CompanyModelListener extends BaseModelListener<Company> {
 
 	@Override
-	public void onAfterRemove(Company company) {
-		try {
-			_configurationProvider.deleteCompanyConfiguration(
-				CTSettingsConfiguration.class, company.getCompanyId());
-		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
-			}
-		}
-	}
-
-	@Override
 	public void onBeforeRemove(Company company) {
 		try {
 			_ctCollectionLocalService.deleteCompanyCTCollections(
@@ -96,6 +83,16 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 					))) {
 
 			_ctSchemaVersionLocalService.deleteCTSchemaVersion(ctSchemaVersion);
+		}
+
+		try {
+			_configurationProvider.deleteCompanyConfiguration(
+				CTSettingsConfiguration.class, company.getCompanyId());
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
 		}
 	}
 
