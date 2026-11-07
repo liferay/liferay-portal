@@ -19,6 +19,7 @@ import com.liferay.message.boards.service.MBThreadLocalService;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.BaseModelResourcePermissionWrapper;
 import com.liferay.portal.kernel.security.permission.resource.DynamicInheritancePermissionLogic;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
@@ -26,96 +27,80 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.security.permission.resource.StagedModelPermissionLogic;
 import com.liferay.portal.kernel.security.permission.resource.WorkflowedModelPermissionLogic;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PropsValues;
 
-import java.util.Dictionary;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Preston Crary
  */
-@Component(service = {})
-public class MBMessagePermissionRegistrar {
+@Component(
+	property = {
+		"model.class.name=com.liferay.message.boards.model.MBMessage",
+		"permissions.view.dynamic.inheritance.checking=true"
+	},
+	service = ModelResourcePermission.class
+)
+public class MBMessageModelResourcePermissionWrapper
+	extends BaseModelResourcePermissionWrapper<MBMessage> {
 
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		Dictionary<String, Object> properties =
-			HashMapDictionaryBuilder.<String, Object>put(
-				"model.class.name", MBMessage.class.getName()
-			).put(
-				"permissions.view.dynamic.inheritance.checking", "true"
-			).build();
+	@Override
+	protected ModelResourcePermission<MBMessage>
+		doGetModelResourcePermission() {
 
-		_serviceRegistration = bundleContext.registerService(
-			(Class<ModelResourcePermission<MBMessage>>)
-				(Class<?>)ModelResourcePermission.class,
-			ModelResourcePermissionFactory.create(
-				MBMessage.class, MBMessage::getMessageId,
-				(Long resourcePrimKey) -> {
-					MBThread mbThread = _mbThreadLocalService.fetchThread(
-						resourcePrimKey);
+		return ModelResourcePermissionFactory.create(
+			MBMessage.class, MBMessage::getMessageId,
+			(Long resourcePrimKey) -> {
+				MBThread mbThread = _mbThreadLocalService.fetchThread(
+					resourcePrimKey);
 
-					if (mbThread == null) {
-						return _mbMessageLocalService.getMessage(
-							resourcePrimKey);
-					}
+				if (mbThread == null) {
+					return _mbMessageLocalService.getMessage(resourcePrimKey);
+				}
 
-					return _mbMessageLocalService.getMessage(
-						mbThread.getRootMessageId());
-				},
-				_portletResourcePermission,
-				(modelResourcePermission, consumer) -> {
+				return _mbMessageLocalService.getMessage(
+					mbThread.getRootMessageId());
+			},
+			_portletResourcePermission,
+			(modelResourcePermission, consumer) -> {
+				consumer.accept(
+					(permissionChecker, name, message, actionId) -> {
+						if (_mbBanLocalService.hasBan(
+								message.getGroupId(),
+								permissionChecker.getUserId())) {
+
+							return false;
+						}
+
+						MBThread thread = message.getThread();
+
+						if (!message.isRoot() &&
+							!modelResourcePermission.contains(
+								permissionChecker, thread.getRootMessageId(),
+								ActionKeys.VIEW)) {
+
+							return false;
+						}
+
+						return null;
+					});
+				consumer.accept(
+					new StagedModelPermissionLogic<>(
+						_stagingPermission, MBPortletKeys.MESSAGE_BOARDS,
+						MBMessage::getMessageId));
+				consumer.accept(
+					new WorkflowedModelPermissionLogic<>(
+						modelResourcePermission, _groupLocalService,
+						MBMessage::getMessageId));
+
+				if (PropsValues.PERMISSIONS_VIEW_DYNAMIC_INHERITANCE) {
 					consumer.accept(
-						(permissionChecker, name, message, actionId) -> {
-							if (_mbBanLocalService.hasBan(
-									message.getGroupId(),
-									permissionChecker.getUserId())) {
-
-								return false;
-							}
-
-							MBThread thread = message.getThread();
-
-							if (!message.isRoot() &&
-								!modelResourcePermission.contains(
-									permissionChecker,
-									thread.getRootMessageId(),
-									ActionKeys.VIEW)) {
-
-								return false;
-							}
-
-							return null;
-						});
-					consumer.accept(
-						new StagedModelPermissionLogic<>(
-							_stagingPermission, MBPortletKeys.MESSAGE_BOARDS,
-							MBMessage::getMessageId));
-					consumer.accept(
-						new WorkflowedModelPermissionLogic<>(
-							modelResourcePermission, _groupLocalService,
-							MBMessage::getMessageId));
-
-					if (PropsValues.PERMISSIONS_VIEW_DYNAMIC_INHERITANCE) {
-						consumer.accept(
-							new DynamicInheritancePermissionLogic<>(
-								_mbCategoryModelResourcePermission,
-								_getFetchParentFunction(), false));
-					}
-				}),
-			properties);
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_serviceRegistration.unregister();
+						new DynamicInheritancePermissionLogic<>(
+							_mbCategoryModelResourcePermission,
+							_getFetchParentFunction(), false));
+				}
+			});
 	}
 
 	private UnsafeFunction<MBMessage, MBCategory, PortalException>
@@ -162,9 +147,6 @@ public class MBMessagePermissionRegistrar {
 
 	@Reference(target = "(resource.name=" + MBConstants.RESOURCE_NAME + ")")
 	private PortletResourcePermission _portletResourcePermission;
-
-	private ServiceRegistration<ModelResourcePermission<MBMessage>>
-		_serviceRegistration;
 
 	@Reference
 	private StagingPermission _stagingPermission;

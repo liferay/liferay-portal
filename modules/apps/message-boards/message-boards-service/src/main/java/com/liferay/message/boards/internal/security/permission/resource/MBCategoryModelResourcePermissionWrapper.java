@@ -15,82 +15,68 @@ import com.liferay.message.boards.service.MBCategoryLocalService;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.BaseModelResourcePermissionWrapper;
 import com.liferay.portal.kernel.security.permission.resource.DynamicInheritancePermissionLogic;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.StagedModelPermissionLogic;
-import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PropsValues;
 
-import java.util.Dictionary;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Sergio González
  */
-@Component(service = {})
-public class MBCategoryPermissionRegistrar {
+@Component(
+	property = {
+		"model.class.name=com.liferay.message.boards.model.MBCategory",
+		"permissions.view.dynamic.inheritance.checking=true"
+	},
+	service = ModelResourcePermission.class
+)
+public class MBCategoryModelResourcePermissionWrapper
+	extends BaseModelResourcePermissionWrapper<MBCategory> {
 
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		Dictionary<String, Object> properties =
-			HashMapDictionaryBuilder.<String, Object>put(
-				"model.class.name", MBCategory.class.getName()
-			).put(
-				"permissions.view.dynamic.inheritance.checking", "true"
-			).build();
+	@Override
+	protected ModelResourcePermission<MBCategory>
+		doGetModelResourcePermission() {
 
-		_serviceRegistration = bundleContext.registerService(
-			(Class<ModelResourcePermission<MBCategory>>)
-				(Class<?>)ModelResourcePermission.class,
-			ModelResourcePermissionFactory.create(
-				MBCategory.class, MBCategory::getCategoryId,
-				_mbCategoryLocalService::getCategory,
-				_portletResourcePermission,
-				(modelResourcePermission, consumer) -> {
+		return ModelResourcePermissionFactory.create(
+			MBCategory.class, MBCategory::getCategoryId,
+			_mbCategoryLocalService::getCategory, _portletResourcePermission,
+			(modelResourcePermission, consumer) -> {
+				consumer.accept(
+					(permissionChecker, name, message, actionId) -> {
+						if (_mbBanLocalService.hasBan(
+								message.getGroupId(),
+								permissionChecker.getUserId())) {
+
+							return false;
+						}
+
+						return null;
+					});
+				consumer.accept(
+					new StagedModelPermissionLogic<>(
+						_stagingPermission, MBPortletKeys.MESSAGE_BOARDS,
+						MBCategory::getCategoryId));
+
+				if (PropsValues.PERMISSIONS_VIEW_DYNAMIC_INHERITANCE) {
 					consumer.accept(
-						(permissionChecker, name, message, actionId) -> {
-							if (_mbBanLocalService.hasBan(
-									message.getGroupId(),
-									permissionChecker.getUserId())) {
+						new DynamicInheritancePermissionLogic<>(
+							modelResourcePermission, _getFetchParentFunction(),
+							false));
+				}
+			},
+			actionId -> {
+				if (ActionKeys.ADD_CATEGORY.equals(actionId)) {
+					return ActionKeys.ADD_SUBCATEGORY;
+				}
 
-								return false;
-							}
-
-							return null;
-						});
-					consumer.accept(
-						new StagedModelPermissionLogic<>(
-							_stagingPermission, MBPortletKeys.MESSAGE_BOARDS,
-							MBCategory::getCategoryId));
-
-					if (PropsValues.PERMISSIONS_VIEW_DYNAMIC_INHERITANCE) {
-						consumer.accept(
-							new DynamicInheritancePermissionLogic<>(
-								modelResourcePermission,
-								_getFetchParentFunction(), false));
-					}
-				},
-				actionId -> {
-					if (ActionKeys.ADD_CATEGORY.equals(actionId)) {
-						return ActionKeys.ADD_SUBCATEGORY;
-					}
-
-					return actionId;
-				}),
-			properties);
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_serviceRegistration.unregister();
+				return actionId;
+			});
 	}
 
 	private UnsafeFunction<MBCategory, MBCategory, PortalException>
@@ -119,9 +105,6 @@ public class MBCategoryPermissionRegistrar {
 
 	@Reference(target = "(resource.name=" + MBConstants.RESOURCE_NAME + ")")
 	private PortletResourcePermission _portletResourcePermission;
-
-	private ServiceRegistration<ModelResourcePermission<MBCategory>>
-		_serviceRegistration;
 
 	@Reference
 	private StagingPermission _stagingPermission;
