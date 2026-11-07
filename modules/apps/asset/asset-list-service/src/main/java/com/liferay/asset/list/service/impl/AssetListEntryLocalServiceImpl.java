@@ -16,6 +16,7 @@ import com.liferay.asset.list.exception.RequiredAssetListEntryException;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRelTable;
+import com.liferay.asset.list.model.AssetListEntryAudienceEntryRel;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
@@ -469,6 +470,55 @@ public class AssetListEntryLocalServiceImpl
 		assetListEntry.setTitle(title);
 
 		return assetListEntryPersistence.update(assetListEntry);
+	}
+
+	@Override
+	public AssetListEntry updateAssetListEntry(
+			long assetListEntryId, String audienceEntryERC, String typeSettings,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		// Asset list entry
+
+		AssetListEntry assetListEntry =
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
+
+		if (assetListEntry.getType() ==
+				AssetListEntryTypeConstants.TYPE_DYNAMIC) {
+
+			String assetEntryType = _getDynamicAssetEntryType(
+				assetListEntry, audienceEntryERC,
+				SegmentsEntryConstants.ID_DEFAULT, typeSettings);
+
+			assetListEntry.setAssetEntrySubtype(
+				_getDynamicAssetEntrySubtype(
+					assetEntryType, assetListEntry, audienceEntryERC,
+					SegmentsEntryConstants.ID_DEFAULT, typeSettings));
+			assetListEntry.setAssetEntryType(assetEntryType);
+		}
+
+		assetListEntry = assetListEntryPersistence.update(assetListEntry);
+
+		// Asset list entry audience entry rel
+
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
+			_assetListEntryAudienceEntryRelPersistence.fetchByA_AEERC(
+				assetListEntryId, audienceEntryERC);
+
+		if (assetListEntryAudienceEntryRel == null) {
+			_assetListEntryAudienceEntryRelLocalService.
+				addAssetListEntryAudienceEntryRel(
+					serviceContext.getUserId(), assetListEntry.getGroupId(),
+					assetListEntryId, audienceEntryERC, typeSettings,
+					serviceContext);
+		}
+		else {
+			_assetListEntryAudienceEntryRelLocalService.
+				updateAssetListEntryAudienceEntryRelTypeSettings(
+					assetListEntryId, audienceEntryERC, typeSettings);
+		}
+
+		return assetListEntry;
 	}
 
 	@Override

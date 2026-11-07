@@ -507,6 +507,22 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 			assetListEntryId, title);
 	}
 
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	@Override
+	public void updateAssetListEntry(
+			long assetListEntryId, String audienceEntryERC, String typeSettings,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		_assetListEntryModelResourcePermission.check(
+			getPermissionChecker(),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
+			ActionKeys.UPDATE);
+
+		assetListEntryLocalService.updateAssetListEntry(
+			assetListEntryId, audienceEntryERC, typeSettings, serviceContext);
+	}
+
 	@Override
 	public void updateAssetListEntryTypeSettings(
 			long assetListEntryId, long segmentsEntryId, String typeSettings)
