@@ -7,6 +7,7 @@ package com.liferay.ai.creator.openai.internal.upgrade.registry;
 
 import com.liferay.ai.creator.openai.internal.upgrade.v1_1_0.AICreatorOpenAIConfigurationUpgradeProcess;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
@@ -30,7 +31,8 @@ public class AICreatorOpenAIUpgradeStepRegistrator
 		registry.register(
 			"1.0.0", "1.1.0",
 			new AICreatorOpenAIConfigurationUpgradeProcess(
-				_configurationAdmin, _configurationProvider));
+				_companyLocalService, _configurationAdmin,
+				_configurationProvider));
 
 		registry.register(
 			"1.1.0", "1.2.0",
@@ -38,6 +40,9 @@ public class AICreatorOpenAIUpgradeStepRegistrator
 				AICreatorOpenAIConfigurationUpgradeProcess(
 					_configurationAdmin));
 	}
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
