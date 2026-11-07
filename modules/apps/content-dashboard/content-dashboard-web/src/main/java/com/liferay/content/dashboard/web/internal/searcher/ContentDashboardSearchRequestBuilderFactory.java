@@ -14,22 +14,23 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author David Arques
  */
-@Component(service = ContentDashboardSearchRequestBuilderFactory.class)
 public class ContentDashboardSearchRequestBuilderFactory {
 
-	public SearchRequestBuilder builder(SearchContext searchContext) {
+	public static SearchRequestBuilder builder(
+		ContentDashboardItemFactoryRegistry contentDashboardItemFactoryRegistry,
+		InfoSearchClassMapperRegistry infoSearchClassMapperRegistry,
+		SearchContext searchContext,
+		SearchRequestBuilderFactory searchRequestBuilderFactory) {
+
 		if (ArrayUtil.isEmpty(searchContext.getEntryClassNames())) {
 			searchContext.setEntryClassNames(
 				TransformUtil.transformToArray(
-					_contentDashboardItemFactoryRegistry.getClassNames(),
+					contentDashboardItemFactoryRegistry.getClassNames(),
 					className ->
-						_infoSearchClassMapperRegistry.getSearchClassName(
+						infoSearchClassMapperRegistry.getSearchClassName(
 							className),
 					String.class));
 		}
@@ -38,12 +39,12 @@ public class ContentDashboardSearchRequestBuilderFactory {
 				TransformUtil.transform(
 					searchContext.getEntryClassNames(),
 					className ->
-						_infoSearchClassMapperRegistry.getSearchClassName(
+						infoSearchClassMapperRegistry.getSearchClassName(
 							className),
 					String.class));
 		}
 
-		return _searchRequestBuilderFactory.builder(
+		return searchRequestBuilderFactory.builder(
 			searchContext
 		).emptySearchEnabled(
 			true
@@ -56,15 +57,5 @@ public class ContentDashboardSearchRequestBuilderFactory {
 			false
 		);
 	}
-
-	@Reference
-	private ContentDashboardItemFactoryRegistry
-		_contentDashboardItemFactoryRegistry;
-
-	@Reference
-	private InfoSearchClassMapperRegistry _infoSearchClassMapperRegistry;
-
-	@Reference
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 }

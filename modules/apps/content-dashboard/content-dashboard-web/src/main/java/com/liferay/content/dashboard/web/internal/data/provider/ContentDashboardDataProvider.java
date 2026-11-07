@@ -10,8 +10,6 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.content.dashboard.web.internal.model.AssetCategoryMetric;
 import com.liferay.content.dashboard.web.internal.model.AssetVocabularyMetric;
-import com.liferay.content.dashboard.web.internal.search.request.ContentDashboardSearchContextBuilder;
-import com.liferay.content.dashboard.web.internal.searcher.ContentDashboardSearchRequestBuilderFactory;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -48,21 +46,14 @@ import java.util.Set;
 public class ContentDashboardDataProvider {
 
 	public ContentDashboardDataProvider(
-		Aggregations aggregations,
-		ContentDashboardSearchContextBuilder
-			contentDashboardSearchContextBuilder,
-		ContentDashboardSearchRequestBuilderFactory
-			contentDashboardSearchRequestBuilderFactory,
-		Locale locale, ResourceBundle resourceBundle, Searcher searcher) {
+		Aggregations aggregations, Locale locale, ResourceBundle resourceBundle,
+		SearchRequestBuilder searchRequestBuilder, Searcher searcher) {
 
 		_aggregations = aggregations;
 		_locale = locale;
 		_resourceBundle = resourceBundle;
+		_searchRequestBuilder = searchRequestBuilder;
 		_searcher = searcher;
-
-		_searchRequestBuilder =
-			contentDashboardSearchRequestBuilderFactory.builder(
-				contentDashboardSearchContextBuilder.build());
 	}
 
 	public AssetVocabularyMetric getAssetVocabularyMetric(

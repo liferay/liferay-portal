@@ -24,12 +24,14 @@ import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 
@@ -51,19 +53,18 @@ public class ContentDashboardItemSearchContainerFactory {
 		ContentDashboardItemFactoryRegistry contentDashboardItemFactoryRegistry,
 		ContentDashboardItemFilterProviderRegistry
 			contentDashboardItemFilterProviderRegistry,
-		ContentDashboardSearchRequestBuilderFactory
-			contentDashboardSearchRequestBuilderFactory,
 		InfoSearchClassMapperRegistry infoSearchClassMapperRegistry,
 		Portal portal, PortletRequest portletRequest,
-		PortletResponse portletResponse, Searcher searcher) {
+		PortletResponse portletResponse,
+		SearchRequestBuilderFactory searchRequestBuilderFactory,
+		Searcher searcher) {
 
 		return new ContentDashboardItemSearchContainerFactory(
 			assetCategoryLocalService, assetVocabularyLocalService,
 			contentDashboardItemFactoryRegistry,
 			contentDashboardItemFilterProviderRegistry,
-			contentDashboardSearchRequestBuilderFactory,
 			infoSearchClassMapperRegistry, portal, portletRequest,
-			portletResponse, searcher);
+			portletResponse, searchRequestBuilderFactory, searcher);
 	}
 
 	public SearchContainer<ContentDashboardItem<?>> create()
@@ -83,11 +84,11 @@ public class ContentDashboardItemSearchContainerFactory {
 		ContentDashboardItemFactoryRegistry contentDashboardItemFactoryRegistry,
 		ContentDashboardItemFilterProviderRegistry
 			contentDashboardItemFilterProviderRegistry,
-		ContentDashboardSearchRequestBuilderFactory
-			contentDashboardSearchRequestBuilderFactory,
 		InfoSearchClassMapperRegistry infoSearchClassMapperRegistry,
 		Portal portal, PortletRequest portletRequest,
-		PortletResponse portletResponse, Searcher searcher) {
+		PortletResponse portletResponse,
+		SearchRequestBuilderFactory searchRequestBuilderFactory,
+		Searcher searcher) {
 
 		_assetCategoryLocalService = assetCategoryLocalService;
 		_assetVocabularyLocalService = assetVocabularyLocalService;
@@ -95,12 +96,11 @@ public class ContentDashboardItemSearchContainerFactory {
 			contentDashboardItemFactoryRegistry;
 		_contentDashboardItemFilterProviderRegistry =
 			contentDashboardItemFilterProviderRegistry;
-		_contentDashboardSearchRequestBuilderFactory =
-			contentDashboardSearchRequestBuilderFactory;
 		_infoSearchClassMapperRegistry = infoSearchClassMapperRegistry;
 		_portal = portal;
 		_portletRequest = portletRequest;
 		_portletResponse = portletResponse;
+		_searchRequestBuilderFactory = searchRequestBuilderFactory;
 		_searcher = searcher;
 
 		_locale = portal.getLocale(portletRequest);
@@ -176,19 +176,23 @@ public class ContentDashboardItemSearchContainerFactory {
 	}
 
 	private SearchResponse _getSearchResponse(int end, int start) {
+		SearchContext searchContext = new ContentDashboardSearchContextBuilder(
+			_portal.getHttpServletRequest(_portletRequest),
+			_assetCategoryLocalService, _assetVocabularyLocalService,
+			_contentDashboardItemFilterProviderRegistry
+		).withEnd(
+			end
+		).withSort(
+			_getSort(_getOrderByCol(), _getOrderByType())
+		).withStart(
+			start
+		).build();
+
 		return _searcher.search(
-			_contentDashboardSearchRequestBuilderFactory.builder(
-				new ContentDashboardSearchContextBuilder(
-					_portal.getHttpServletRequest(_portletRequest),
-					_assetCategoryLocalService, _assetVocabularyLocalService,
-					_contentDashboardItemFilterProviderRegistry
-				).withEnd(
-					end
-				).withSort(
-					_getSort(_getOrderByCol(), _getOrderByType())
-				).withStart(
-					start
-				).build()
+			ContentDashboardSearchRequestBuilderFactory.builder(
+				_contentDashboardItemFactoryRegistry,
+				_infoSearchClassMapperRegistry, searchContext,
+				_searchRequestBuilderFactory
 			).build());
 	}
 
@@ -254,8 +258,6 @@ public class ContentDashboardItemSearchContainerFactory {
 		_contentDashboardItemFactoryRegistry;
 	private final ContentDashboardItemFilterProviderRegistry
 		_contentDashboardItemFilterProviderRegistry;
-	private final ContentDashboardSearchRequestBuilderFactory
-		_contentDashboardSearchRequestBuilderFactory;
 	private final InfoSearchClassMapperRegistry _infoSearchClassMapperRegistry;
 	private final Locale _locale;
 	private String _orderByCol;
@@ -263,6 +265,7 @@ public class ContentDashboardItemSearchContainerFactory {
 	private final Portal _portal;
 	private final PortletRequest _portletRequest;
 	private final PortletResponse _portletResponse;
+	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
 	private final Searcher _searcher;
 
 }

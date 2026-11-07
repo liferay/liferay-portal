@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.search.aggregation.Aggregations;
+import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.sharing.display.context.util.SharingJavaScriptFactory;
 
@@ -90,15 +91,22 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			_portal.getLocale(renderRequest), getClass());
 
-		ContentDashboardDataProvider contentDashboardDataProvider =
-			new ContentDashboardDataProvider(
-				_aggregations,
+		ContentDashboardSearchContextBuilder
+			contentDashboardSearchContextBuilder =
 				new ContentDashboardSearchContextBuilder(
 					_portal.getHttpServletRequest(renderRequest),
 					_assetCategoryLocalService, _assetVocabularyLocalService,
-					_contentDashboardItemFilterProviderRegistry),
-				_contentDashboardSearchRequestBuilderFactory,
-				_portal.getLocale(renderRequest), resourceBundle, _searcher);
+					_contentDashboardItemFilterProviderRegistry);
+
+		ContentDashboardDataProvider contentDashboardDataProvider =
+			new ContentDashboardDataProvider(
+				_aggregations, _portal.getLocale(renderRequest), resourceBundle,
+				ContentDashboardSearchRequestBuilderFactory.builder(
+					_contentDashboardItemFactoryRegistry,
+					_infoSearchClassMapperRegistry,
+					contentDashboardSearchContextBuilder.build(),
+					_searchRequestBuilderFactory),
+				_searcher);
 
 		LiferayPortletRequest liferayPortletRequest =
 			_portal.getLiferayPortletRequest(renderRequest);
@@ -111,9 +119,8 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 					_assetCategoryLocalService, _assetVocabularyLocalService,
 					_contentDashboardItemFactoryRegistry,
 					_contentDashboardItemFilterProviderRegistry,
-					_contentDashboardSearchRequestBuilderFactory,
 					_infoSearchClassMapperRegistry, _portal, renderRequest,
-					renderResponse, _searcher);
+					renderResponse, _searchRequestBuilderFactory, _searcher);
 
 		SearchContainer<ContentDashboardItem<?>> searchContainer =
 			contentDashboardItemSearchContainerFactory.create();
@@ -204,10 +211,6 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 		_contentDashboardItemSubtypeFactoryRegistry;
 
 	@Reference
-	private ContentDashboardSearchRequestBuilderFactory
-		_contentDashboardSearchRequestBuilderFactory;
-
-	@Reference
 	private GroupLocalService _groupLocalService;
 
 	@Reference
@@ -221,6 +224,9 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference
 	private Searcher _searcher;
