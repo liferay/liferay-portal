@@ -12,6 +12,8 @@ import com.liferay.dynamic.data.mapping.exception.StructureDefinitionException;
 import com.liferay.dynamic.data.mapping.exception.StructureLayoutException;
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormContextDeserializer;
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormContextDeserializerRequest;
+import com.liferay.dynamic.data.mapping.form.evaluator.DDMFormEvaluator;
+import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesRegistry;
 import com.liferay.dynamic.data.mapping.form.web.internal.portlet.action.util.DDMFormInstanceFieldSettingsValidator;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
@@ -65,6 +67,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -116,6 +119,14 @@ public class SaveFormInstanceMVCCommandHelper {
 			portletRequest, formInstanceId, validateDDMFormFieldSettings);
 	}
 
+	@Activate
+	protected void activate() {
+		formInstanceFieldSettingsValidator =
+			new DDMFormInstanceFieldSettingsValidator(
+				_ddmFormEvaluator, _ddmFormFieldTypeServicesRegistry,
+				jsonFactory, _portal);
+	}
+
 	protected DDMFormLayout getDDMFormLayout(PortletRequest portletRequest)
 		throws PortalException {
 
@@ -150,8 +161,7 @@ public class SaveFormInstanceMVCCommandHelper {
 	protected DDMFormContextDeserializer<DDMFormValues>
 		ddmFormTemplateContextToDDMFormValues;
 
-	@Reference
-	protected volatile DDMFormInstanceFieldSettingsValidator
+	protected DDMFormInstanceFieldSettingsValidator
 		formInstanceFieldSettingsValidator;
 
 	@Reference
@@ -517,6 +527,12 @@ public class SaveFormInstanceMVCCommandHelper {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SaveFormInstanceMVCCommandHelper.class);
+
+	@Reference
+	private DDMFormEvaluator _ddmFormEvaluator;
+
+	@Reference
+	private DDMFormFieldTypeServicesRegistry _ddmFormFieldTypeServicesRegistry;
 
 	@Reference
 	private Language _language;
