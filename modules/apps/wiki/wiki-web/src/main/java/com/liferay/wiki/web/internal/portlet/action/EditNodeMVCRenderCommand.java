@@ -12,12 +12,14 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.wiki.constants.WikiPortletKeys;
 import com.liferay.wiki.constants.WikiWebKeys;
 import com.liferay.wiki.exception.NoSuchNodeException;
+import com.liferay.wiki.service.WikiNodeService;
 
 import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian Wing Shun Chan
@@ -41,7 +43,7 @@ public class EditNodeMVCRenderCommand implements MVCRenderCommand {
 
 			if (nodeId > 0) {
 				renderRequest.setAttribute(
-					WikiWebKeys.WIKI_NODE, ActionUtil.getNode(renderRequest));
+					WikiWebKeys.WIKI_NODE, _wikiNodeService.getNode(nodeId));
 			}
 		}
 		catch (Exception exception) {
@@ -58,5 +60,8 @@ public class EditNodeMVCRenderCommand implements MVCRenderCommand {
 
 		return "/wiki_admin/edit_node.jsp";
 	}
+
+	@Reference
+	private WikiNodeService _wikiNodeService;
 
 }
