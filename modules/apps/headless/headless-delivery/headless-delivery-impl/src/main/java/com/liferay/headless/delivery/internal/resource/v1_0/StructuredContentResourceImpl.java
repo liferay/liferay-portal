@@ -12,6 +12,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.link.model.AssetLink;
 import com.liferay.asset.link.service.AssetLinkLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
+import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.io.DDMFormValuesSerializer;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -45,7 +46,6 @@ import com.liferay.headless.delivery.dynamic.data.mapping.DDMFormFieldUtil;
 import com.liferay.headless.delivery.internal.dto.v1_0.util.DisplayPageRendererUtil;
 import com.liferay.headless.delivery.internal.dto.v1_0.util.RatingUtil;
 import com.liferay.headless.delivery.internal.dto.v1_0.util.RenderedContentValueUtil;
-import com.liferay.headless.delivery.internal.odata.entity.v1_0.EntityFieldsProvider;
 import com.liferay.headless.delivery.internal.odata.entity.v1_0.StructuredContentEntityModel;
 import com.liferay.headless.delivery.resource.v1_0.StructuredContentResource;
 import com.liferay.headless.delivery.search.aggregation.AggregationUtil;
@@ -92,17 +92,26 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.odata.entity.BooleanEntityField;
+import com.liferay.portal.odata.entity.DateEntityField;
+import com.liferay.portal.odata.entity.DateTimeEntityField;
+import com.liferay.portal.odata.entity.DoubleEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.odata.entity.IntegerEntityField;
+import com.liferay.portal.odata.entity.StringEntityField;
 import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
@@ -126,6 +135,9 @@ import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.io.Serializable;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -138,6 +150,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
@@ -297,7 +310,9 @@ public class StructuredContentResourceImpl
 			DDMStructure ddmStructure = _ddmStructureService.getStructure(
 				contentStructureId);
 
-			entityFields = _entityFieldsProvider.provide(ddmStructure);
+			entityFields = transform(
+				ddmStructure.getDDMFormFields(false),
+				ddmFormField -> _createEntityField(ddmStructure, ddmFormField));
 		}
 
 		return new StructuredContentEntityModel(
@@ -806,6 +821,96 @@ public class StructuredContentResourceImpl
 		return false;
 	}
 
+	private EntityField _createEntityField(
+			DDMStructure ddmStructure, DDMFormField ddmFormField)
+		throws Exception {
+
+		String indexType = ddmStructure.getFieldProperty(
+			ddmFormField.getName(), "indexType");
+
+		if (Validator.isNull(indexType)) {
+			return null;
+		}
+
+		if (Objects.equals(
+				ddmFormField.getType(), DDMFormFieldTypeConstants.CHECKBOX)) {
+
+			return new BooleanEntityField(
+				ddmFormField.getFieldReference(),
+				locale -> _toFilterableOrSortableFieldName(
+					ddmStructure.getStructureId(),
+					ddmFormField.getFieldReference(), locale, "String"));
+		}
+		else if (Objects.equals(
+					ddmFormField.getDataType(), FieldConstants.DATE)) {
+
+			return new DateEntityField(
+				ddmFormField.getFieldReference(),
+				locale -> _toFilterableOrSortableFieldName(
+					ddmStructure.getStructureId(),
+					ddmFormField.getFieldReference(), locale, "String"),
+				locale -> _toFilterableOrSortableFieldName(
+					ddmStructure.getStructureId(),
+					ddmFormField.getFieldReference(), locale, "String"),
+				this::_toFieldValue);
+		}
+		else if (Objects.equals(
+					ddmFormField.getDataType(), FieldConstants.DATETIME)) {
+
+			return new DateTimeEntityField(
+				ddmFormField.getFieldReference(),
+				locale -> _toFilterableOrSortableFieldName(
+					ddmStructure.getStructureId(),
+					ddmFormField.getFieldReference(), locale, "String"),
+				locale -> _toFilterableOrSortableFieldName(
+					ddmStructure.getStructureId(),
+					ddmFormField.getFieldReference(), locale, "String"));
+		}
+		else if (Objects.equals(
+					ddmFormField.getDataType(), FieldConstants.DOUBLE) ||
+				 Objects.equals(
+					 ddmFormField.getDataType(), FieldConstants.NUMBER)) {
+
+			return new DoubleEntityField(
+				ddmFormField.getFieldReference(),
+				locale -> _toFilterableOrSortableFieldName(
+					ddmStructure.getStructureId(),
+					ddmFormField.getFieldReference(), locale, "Number"));
+		}
+		else if (Objects.equals(
+					ddmFormField.getDataType(), FieldConstants.INTEGER) ||
+				 Objects.equals(
+					 ddmFormField.getDataType(), FieldConstants.LONG)) {
+
+			return new IntegerEntityField(
+				ddmFormField.getFieldReference(),
+				locale -> _toFilterableOrSortableFieldName(
+					ddmStructure.getStructureId(),
+					ddmFormField.getFieldReference(), locale, "Number"));
+		}
+		else if (Objects.equals(
+					ddmFormField.getType(), DDMFormFieldTypeConstants.RADIO) ||
+				 (Objects.equals(ddmFormField.getIndexType(), "keyword") &&
+				  (Objects.equals(
+					  ddmFormField.getType(),
+					  DDMFormFieldTypeConstants.CHECKBOX_MULTIPLE) ||
+				   Objects.equals(
+					   ddmFormField.getType(),
+					   DDMFormFieldTypeConstants.SELECT) ||
+				   Objects.equals(
+					   ddmFormField.getType(),
+					   DDMFormFieldTypeConstants.TEXT)))) {
+
+			return new StringEntityField(
+				ddmFormField.getFieldReference(),
+				locale -> _toFilterableOrSortableFieldName(
+					ddmStructure.getStructureId(),
+					ddmFormField.getFieldReference(), locale, "String"));
+		}
+
+		return null;
+	}
+
 	private ServiceContext _createServiceContext(
 			Long[] assetCategoryIds, long[] assetLinkEntryIds,
 			double assetPriority, String[] assetTagNames, long groupId,
@@ -1208,6 +1313,24 @@ public class StructuredContentResourceImpl
 		return titleMap.keySet();
 	}
 
+	private String _toFieldValue(Object fieldValue) {
+		DateFormat indexDateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			PropsUtil.get(PropsKeys.INDEX_DATE_FORMAT_PATTERN));
+
+		try {
+			Date date = indexDateFormat.parse(String.valueOf(fieldValue));
+
+			DateFormat searchDateFormat =
+				DateFormatFactoryUtil.getSimpleDateFormat(
+					"yyyy-MM-dd", LocaleUtil.US);
+
+			return searchDateFormat.format(date);
+		}
+		catch (ParseException parseException) {
+			throw new RuntimeException(parseException);
+		}
+	}
+
 	private Fields _toFields(
 			Set<Locale> availableLocales, ContentField[] contentFields,
 			JournalArticle journalArticle)
@@ -1295,6 +1418,16 @@ public class StructuredContentResourceImpl
 			_fieldsToDDMFormValuesConverter.convert(ddmStructure, fields));
 
 		return fields;
+	}
+
+	private String _toFilterableOrSortableFieldName(
+		long ddmStructureId, String fieldReference, Locale locale,
+		String type) {
+
+		return com.liferay.portal.kernel.search.Field.getSortableFieldName(
+			StringBundler.concat(
+				_ddmIndexer.encodeName(ddmStructureId, fieldReference, locale),
+				StringPool.UNDERLINE, type));
 	}
 
 	private Fields _toPatchedFields(
@@ -1623,9 +1756,6 @@ public class StructuredContentResourceImpl
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
-
-	@Reference
-	private EntityFieldsProvider _entityFieldsProvider;
 
 	@Reference
 	private ExpandoColumnLocalService _expandoColumnLocalService;
