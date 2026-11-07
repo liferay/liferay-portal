@@ -335,6 +335,8 @@ public class PortletConfigurationPortletTest {
 			HashMapBuilder.put(
 				guestRole.getRoleId() + "_ACTION_ADD_DISCUSSION", "true"
 			).put(
+				guestRole.getRoleId() + "_ACTION_DOWNLOAD", "true"
+			).put(
 				guestRole.getRoleId() + "_ACTION_VIEW", "true"
 			).build(),
 			DLFileEntry.class.getName(), resourcePrimKeys,
@@ -343,6 +345,9 @@ public class PortletConfigurationPortletTest {
 		for (String resourcePrimKey : resourcePrimKeys) {
 			_assertHasResourcePermission(
 				ActionKeys.ADD_DISCUSSION, true, DLFileEntry.class.getName(),
+				resourcePrimKey, guestRole.getRoleId());
+			_assertHasResourcePermission(
+				ActionKeys.DOWNLOAD, true, DLFileEntry.class.getName(),
 				resourcePrimKey, guestRole.getRoleId());
 			_assertHasResourcePermission(
 				ActionKeys.VIEW, true, DLFileEntry.class.getName(),
