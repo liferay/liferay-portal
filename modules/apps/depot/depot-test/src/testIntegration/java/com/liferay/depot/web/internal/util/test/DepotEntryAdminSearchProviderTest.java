@@ -12,9 +12,11 @@ import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.search.DepotEntrySearch;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.depot.service.DepotEntryService;
 import com.liferay.depot.test.util.DepotTestUtil;
 import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCriterion;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -25,7 +27,6 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
-import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -60,8 +61,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.springframework.mock.web.MockHttpServletRequest;
-
 /**
  * @author Roberto Díaz
  */
@@ -81,7 +80,11 @@ public class DepotEntryAdminSearchProviderTest {
 
 		_company = _companyLocalService.getCompany(_group.getCompanyId());
 
-		_depotEntryAdminSearchProvider = _getDepotEntryAdminSearchProvider();
+		Class<?> mvcRenderCommandClass = _mvcRenderCommand.getClass();
+
+		_depotEntryAdminSearchProviderClass = Class.forName(
+			"com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider",
+			true, mvcRenderCommandClass.getClassLoader());
 
 		_addDepotEntries();
 	}
@@ -102,12 +105,13 @@ public class DepotEntryAdminSearchProviderTest {
 		_assertDepotEntries(
 			5,
 			ReflectionTestUtil.invoke(
-				_depotEntryAdminSearchProvider, "getDepotEntrySearch",
+				_depotEntryAdminSearchProviderClass, "getDepotEntrySearch",
 				new Class<?>[] {
-					GroupItemSelectorCriterion.class, PortletRequest.class,
-					PortletResponse.class, PortletURL.class
+					DepotEntryService.class, GroupItemSelectorCriterion.class,
+					Language.class, PortletRequest.class, PortletResponse.class,
+					PortletURL.class
 				},
-				depotGroupItemSelectorCriterion,
+				_depotEntryService, depotGroupItemSelectorCriterion, _language,
 				mockLiferayPortletActionRequest,
 				new MockLiferayPortletRenderResponse(),
 				new MockLiferayPortletURL()));
@@ -156,12 +160,14 @@ public class DepotEntryAdminSearchProviderTest {
 		mockLiferayPortletActionRequest.setParameter("keywords", keywords);
 
 		DepotEntrySearch depotEntrySearch = ReflectionTestUtil.invoke(
-			_depotEntryAdminSearchProvider, "getDepotEntrySearch",
+			_depotEntryAdminSearchProviderClass, "getDepotEntrySearch",
 			new Class<?>[] {
-				GroupItemSelectorCriterion.class, PortletRequest.class,
-				PortletResponse.class, PortletURL.class
+				DepotEntryService.class, GroupItemSelectorCriterion.class,
+				Language.class, PortletRequest.class, PortletResponse.class,
+				PortletURL.class
 			},
-			groupItemSelectorCriterion, mockLiferayPortletActionRequest,
+			_depotEntryService, groupItemSelectorCriterion, _language,
+			mockLiferayPortletActionRequest,
 			new MockLiferayPortletRenderResponse(),
 			new MockLiferayPortletURL());
 
@@ -203,14 +209,16 @@ public class DepotEntryAdminSearchProviderTest {
 				_assertDepotEntries(
 					1,
 					ReflectionTestUtil.invoke(
-						_depotEntryAdminSearchProvider, "getDepotEntrySearch",
+						_depotEntryAdminSearchProviderClass,
+						"getDepotEntrySearch",
 						new Class<?>[] {
-							GroupItemSelectorCriterion.class,
+							DepotEntryService.class,
+							GroupItemSelectorCriterion.class, Language.class,
 							PortletRequest.class, PortletResponse.class,
 							PortletURL.class
 						},
-						groupItemSelectorCriterion,
-						mockLiferayPortletActionRequest,
+						_depotEntryService, groupItemSelectorCriterion,
+						_language, mockLiferayPortletActionRequest,
 						new MockLiferayPortletRenderResponse(),
 						new MockLiferayPortletURL()));
 			});
@@ -256,12 +264,14 @@ public class DepotEntryAdminSearchProviderTest {
 		_assertDepotEntries(
 			3,
 			ReflectionTestUtil.invoke(
-				_depotEntryAdminSearchProvider, "getDepotEntrySearch",
+				_depotEntryAdminSearchProviderClass, "getDepotEntrySearch",
 				new Class<?>[] {
-					GroupItemSelectorCriterion.class, PortletRequest.class,
-					PortletResponse.class, PortletURL.class
+					DepotEntryService.class, GroupItemSelectorCriterion.class,
+					Language.class, PortletRequest.class, PortletResponse.class,
+					PortletURL.class
 				},
-				groupItemSelectorCriterion, mockLiferayPortletActionRequest,
+				_depotEntryService, groupItemSelectorCriterion, _language,
+				mockLiferayPortletActionRequest,
 				new MockLiferayPortletRenderResponse(),
 				new MockLiferayPortletURL()));
 	}
@@ -327,21 +337,6 @@ public class DepotEntryAdminSearchProviderTest {
 			ListUtil.toList(groupSearch.getResults(), Group.GROUP_ID_ACCESSOR));
 	}
 
-	private Object _getDepotEntryAdminSearchProvider() throws Exception {
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			new MockLiferayPortletRenderRequest(_getMockHttpServletRequest());
-
-		_mvcRenderCommand.render(
-			mockLiferayPortletRenderRequest,
-			new MockLiferayPortletRenderResponse());
-
-		return ReflectionTestUtil.getFieldValue(
-			mockLiferayPortletRenderRequest.getAttribute(
-				"com.liferay.depot.web.internal.display.context." +
-					"DepotAdminDisplayContext"),
-			"_depotEntryAdminSearchProvider");
-	}
-
 	private GroupSearch _getGroupSearch(
 			GroupItemSelectorCriterion groupItemSelectorCriterion)
 		throws Exception {
@@ -353,26 +348,16 @@ public class DepotEntryAdminSearchProviderTest {
 			WebKeys.THEME_DISPLAY, _getThemeDisplay());
 
 		return ReflectionTestUtil.invoke(
-			_depotEntryAdminSearchProvider, "getGroupSearch",
+			_depotEntryAdminSearchProviderClass, "getGroupSearch",
 			new Class<?>[] {
-				GroupItemSelectorCriterion.class, PortletRequest.class,
-				PortletResponse.class, PortletURL.class
+				DepotEntryService.class, GroupItemSelectorCriterion.class,
+				Language.class, PortletRequest.class, PortletResponse.class,
+				PortletURL.class
 			},
-			groupItemSelectorCriterion, mockLiferayPortletActionRequest,
+			_depotEntryService, groupItemSelectorCriterion, _language,
+			mockLiferayPortletActionRequest,
 			new MockLiferayPortletRenderResponse(),
 			new MockLiferayPortletURL());
-	}
-
-	private MockHttpServletRequest _getMockHttpServletRequest()
-		throws Exception {
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _getThemeDisplay());
-
-		return mockHttpServletRequest;
 	}
 
 	private ThemeDisplay _getThemeDisplay() throws Exception {
@@ -392,7 +377,7 @@ public class DepotEntryAdminSearchProviderTest {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	private Object _depotEntryAdminSearchProvider;
+	private Class<?> _depotEntryAdminSearchProviderClass;
 
 	@Inject
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
@@ -400,12 +385,18 @@ public class DepotEntryAdminSearchProviderTest {
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
 
+	@Inject
+	private DepotEntryService _depotEntryService;
+
 	private Group _group;
 
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _initialDepotEntries = new ArrayList<>();
 
 	private String _keywords;
+
+	@Inject
+	private Language _language;
 
 	@Inject(
 		filter = "component.name=com.liferay.depot.web.internal.portlet.action.ViewMVCRenderCommand"

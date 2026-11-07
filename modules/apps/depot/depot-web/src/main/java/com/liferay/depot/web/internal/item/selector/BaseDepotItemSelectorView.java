@@ -5,6 +5,7 @@
 
 package com.liferay.depot.web.internal.item.selector;
 
+import com.liferay.depot.service.DepotEntryService;
 import com.liferay.depot.web.internal.application.list.DepotPanelAppController;
 import com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider;
 import com.liferay.item.selector.ItemSelectorReturnType;
@@ -16,6 +17,7 @@ import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCrite
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -116,10 +118,13 @@ public abstract class BaseDepotItemSelectorView
 	protected abstract String getTitleLanguageKey();
 
 	@Reference
-	protected DepotEntryAdminSearchProvider depotEntryAdminSearchProvider;
+	protected DepotEntryService depotEntryService;
 
 	@Reference
 	protected DepotPanelAppController depotPanelAppController;
+
+	@Reference
+	protected Language language;
 
 	@Reference
 	protected StagingGroupHelper stagingGroupHelper;
@@ -176,9 +181,10 @@ public abstract class BaseDepotItemSelectorView
 					_groupItemSelectorCriterion);
 
 				GroupSearch groupSearch =
-					depotEntryAdminSearchProvider.getGroupSearch(
-						_groupItemSelectorCriterion, getPortletRequest(),
-						getPortletResponse(), getPortletURL());
+					DepotEntryAdminSearchProvider.getGroupSearch(
+						depotEntryService, _groupItemSelectorCriterion,
+						language, getPortletRequest(), getPortletResponse(),
+						getPortletURL());
 				ThemeDisplay themeDisplay =
 					(ThemeDisplay)_httpServletRequest.getAttribute(
 						WebKeys.THEME_DISPLAY);

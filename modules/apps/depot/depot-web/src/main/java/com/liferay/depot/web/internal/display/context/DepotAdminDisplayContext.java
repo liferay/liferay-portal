@@ -10,6 +10,7 @@ import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.search.DepotEntrySearch;
 import com.liferay.depot.service.DepotEntryGroupRelServiceUtil;
+import com.liferay.depot.service.DepotEntryService;
 import com.liferay.depot.service.DepotEntryServiceUtil;
 import com.liferay.depot.web.internal.frontend.taglib.clay.servlet.taglib.DepotEntryVerticalCard;
 import com.liferay.depot.web.internal.servlet.taglib.util.DepotActionDropdownItemsProvider;
@@ -17,6 +18,7 @@ import com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -42,11 +44,12 @@ import java.util.Objects;
 public class DepotAdminDisplayContext {
 
 	public DepotAdminDisplayContext(
-		DepotEntryAdminSearchProvider depotEntryAdminSearchProvider,
+		DepotEntryService depotEntryService, Language language,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
-		_depotEntryAdminSearchProvider = depotEntryAdminSearchProvider;
+		_depotEntryService = depotEntryService;
+		_language = language;
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
 	}
@@ -171,9 +174,9 @@ public class DepotAdminDisplayContext {
 			(PortletResponse)_liferayPortletRequest.getAttribute(
 				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
-		_depotEntrySearch = _depotEntryAdminSearchProvider.getDepotEntrySearch(
-			DepotConstants.TYPE_ASSET_LIBRARY, portletRequest, portletResponse,
-			_getPortletURL());
+		_depotEntrySearch = DepotEntryAdminSearchProvider.getDepotEntrySearch(
+			_depotEntryService, DepotConstants.TYPE_ASSET_LIBRARY, _language,
+			portletRequest, portletResponse, _getPortletURL());
 
 		return _depotEntrySearch;
 	}
@@ -186,9 +189,10 @@ public class DepotAdminDisplayContext {
 		).buildPortletURL();
 	}
 
-	private final DepotEntryAdminSearchProvider _depotEntryAdminSearchProvider;
 	private DepotEntrySearch _depotEntrySearch;
+	private final DepotEntryService _depotEntryService;
 	private String _displayStyle;
+	private final Language _language;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
 

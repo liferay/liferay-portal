@@ -6,8 +6,9 @@
 package com.liferay.depot.web.internal.portlet.action;
 
 import com.liferay.depot.constants.DepotPortletKeys;
+import com.liferay.depot.service.DepotEntryService;
 import com.liferay.depot.web.internal.display.context.DepotAdminDisplayContext;
-import com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -36,7 +37,7 @@ public class ViewMVCRenderCommand implements MVCRenderCommand {
 		renderRequest.setAttribute(
 			DepotAdminDisplayContext.class.getName(),
 			new DepotAdminDisplayContext(
-				_depotEntryAdminSearchProvider,
+				_depotEntryService, _language,
 				_portal.getLiferayPortletRequest(renderRequest),
 				_portal.getLiferayPortletResponse(renderResponse)));
 
@@ -44,7 +45,10 @@ public class ViewMVCRenderCommand implements MVCRenderCommand {
 	}
 
 	@Reference
-	private DepotEntryAdminSearchProvider _depotEntryAdminSearchProvider;
+	private DepotEntryService _depotEntryService;
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private Portal _portal;
