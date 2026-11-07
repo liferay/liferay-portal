@@ -190,18 +190,6 @@ public class ConfigurationFilterStringUtil {
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 	}
 
-	private static String _getDefaultVirtualInstanceIdFilterString(
-		String virtualInstanceId) {
-
-		if (Objects.equals(
-				virtualInstanceId, PropsValues.COMPANY_DEFAULT_WEB_ID)) {
-
-			return "(dxp.lxc.liferay.com.virtualInstanceId=default)";
-		}
-
-		return StringPool.BLANK;
-	}
-
 	private static void _appendScopedFilterString(
 		StringBundler sb, String pid) {
 
@@ -228,6 +216,18 @@ public class ConfigurationFilterStringUtil {
 
 			sb.append(StringPool.CLOSE_PARENTHESIS);
 		}
+	}
+
+	private static String _getDefaultVirtualInstanceIdFilterString(
+		String virtualInstanceId) {
+
+		if (Objects.equals(
+				virtualInstanceId, PropsValues.COMPANY_DEFAULT_WEB_ID)) {
+
+			return "(dxp.lxc.liferay.com.virtualInstanceId=default)";
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private static String _toString(Serializable value) {
