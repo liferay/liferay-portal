@@ -16,18 +16,18 @@ This validation stands in for a Source Formatter check. Source Formatter catches
 
 ## Command
 
-This check is static and needs no build. It walks each changed Java file the match selects, skips a file the branch deletes and a file whose diff adds no line, and reads the rest from `HEAD`. A file is a candidate when it implements `MVCRenderCommand`, registers the quoted string `"mvc.command.name=/"`, and the body of its `render` method is a single `return` of a string literal. A registration that builds the name from a constant has no literal to search for and is not collected.
+This check is static and needs no build. It walks each changed Java file the match selects, skips a file the branch deletes and a file whose diff adds no line, and reads the rest from the working tree. A file is a candidate when it implements `MVCRenderCommand`, registers the quoted string `"mvc.command.name=/"`, and the body of its `render` method is a single `return` of a string literal. A registration that builds the name from a constant has no literal to search for and is not collected.
 
 Liferay formats a method body two tabs deep and closes the method with a single tab and a brace, so the scan reads the `render` body as the lines between the `{` that ends the signature, which may span several lines and a `throws` clause, and the first line that is only `\t}`. Blank lines do not count.
 
-Each candidate prints as `<path>:<line>: maps / to <path>, and its render method does nothing else`, where the line is the one that registers `/`.
+Each candidate prints as `<file>:<line>: maps "/" to <path>, and its "render" method does nothing else`, where the line is the one that registers `/` and the path is the one that the command returns.
 
 ```bash
 FINDINGS=$(
 	bash "${SKILL_DIR}/select_paths.sh" "${MERGE_BASE}" "${VALIDATION_FILE}" | while IFS= read -r FILE
 	do
 		if [[ ! -f ${FILE} ]] ||
-		   ! git diff --unified=0 "${MERGE_BASE}...HEAD" -- "${FILE}" | command grep --quiet --regexp='^+[^+]' ||
+		   ! git diff --unified=0 "${MERGE_BASE}...HEAD" -- "${FILE}" | command grep --regexp='^+[^+]' > /dev/null ||
 		   ! command grep --quiet --regexp='implements MVCRenderCommand' "${FILE}" ||
 		   ! command grep --fixed-strings --quiet --regexp='"mvc.command.name=/"' "${FILE}"
 		then
@@ -61,7 +61,7 @@ FINDINGS=$(
 		then
 			LINE=$(command grep --fixed-strings --line-number --max-count=1 --regexp='"mvc.command.name=/"' "${FILE}")
 
-			echo "${FILE}:${LINE%%:*}: maps / to ${BASH_REMATCH[1]}, and its render method does nothing else"
+			echo "${FILE}:${LINE%%:*}: maps \"/\" to ${BASH_REMATCH[1]}, and its \"render\" method does nothing else"
 		fi
 	done | sort --unique
 )
@@ -83,12 +83,12 @@ Otherwise, each printed line is a candidate, not a finding. Judge each one befor
 
 1. **Read the command and the code around the line.** A candidate is not a finding when the line only renames, reformats, or moves existing code.
 
-Every candidate left after these steps is a finding. The fix is to set `jakarta.portlet.init-param.view-template` on the portlet to the path the command returns, replacing a view template that points somewhere else, to delete the command, and to let the URLs that named its other names render the default view: drop the `mvcRenderCommandName` they set, or use `/` where the code picks the name among several commands.
+Every candidate left after these steps is a finding. The fix is to set `jakarta.portlet.init-param.view-template` on the portlet to the path the command returns, replacing a view template that points somewhere else, to delete the command, and to let the URLs that use its other names render the default view: drop the `mvcRenderCommandName` they set, or use `/` where the code picks the name among several commands.
 
-When any candidate is a finding, the validation fails. Report the message below to the developer with one row for each finding, giving the path and the line as the candidate prints them, and return it as the failure note.
+When any candidate is a finding, the validation fails. Report the message below to the developer with one row for each finding, giving the file, the line, and the path as the candidate prints them, and return it as the failure note.
 
 ```markdown
-**An MVC render command only repeats the view template.** Each command below maps `/` to a JSP and does nothing else. Set `jakarta.portlet.init-param.view-template` on the portlet to that JSP, delete the command, and let the URLs that named it render the default view, before requesting review. For additional questions, use #t-core-infrastructure on Slack.
+**An MVC render command only repeats the view template.** Each command below maps `/` to a JSP and does nothing else. Before requesting review, set `jakarta.portlet.init-param.view-template` on the portlet to that JSP, delete the command, and let the URLs that named it render the default view. For additional questions, use #t-core-infrastructure on Slack.
 
 | File | Line | Path |
 | --- | --- | --- |
