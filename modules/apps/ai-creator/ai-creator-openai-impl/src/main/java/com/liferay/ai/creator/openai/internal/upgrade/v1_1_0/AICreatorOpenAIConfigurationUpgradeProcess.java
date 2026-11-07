@@ -58,13 +58,11 @@ public class AICreatorOpenAIConfigurationUpgradeProcess extends UpgradeProcess {
 		).build();
 	}
 
-	private Configuration[] _getScopedConfigurations(
-			String className, ExtendedObjectClassDefinition.Scope scope)
+	private Configuration[] _getConfigurations(String filterString)
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			ConfigurationFilterStringUtil.getScopedFilterString(
-				CompanyThreadLocal.getCompanyId(), className, scope, null));
+			filterString);
 
 		if (configurations == null) {
 			return new Configuration[0];
@@ -75,9 +73,10 @@ public class AICreatorOpenAIConfigurationUpgradeProcess extends UpgradeProcess {
 
 	private void _updateCompanyConfigurations() throws Exception {
 		Configuration[] aiCreatorOpenAICompanyConfigurations =
-			_getScopedConfigurations(
-				AICreatorOpenAICompanyConfiguration.class.getName(),
-				ExtendedObjectClassDefinition.Scope.COMPANY);
+			_getConfigurations(
+				ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+					null, AICreatorOpenAICompanyConfiguration.class.getName(),
+					null));
 
 		for (Configuration aiCreatorOpenAICompanyConfiguration :
 				aiCreatorOpenAICompanyConfigurations) {
@@ -105,10 +104,10 @@ public class AICreatorOpenAIConfigurationUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _updateGroupConfigurations() throws Exception {
-		Configuration[] aiCreatorOpenAIGroupConfigurations =
-			_getScopedConfigurations(
-				AICreatorOpenAIGroupConfiguration.class.getName(),
-				ExtendedObjectClassDefinition.Scope.GROUP);
+		Configuration[] aiCreatorOpenAIGroupConfigurations = _getConfigurations(
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				CompanyThreadLocal.getCompanyId(), null,
+				AICreatorOpenAIGroupConfiguration.class.getName(), null));
 
 		for (Configuration aiCreatorOpenAIGroupConfiguration :
 				aiCreatorOpenAIGroupConfigurations) {
