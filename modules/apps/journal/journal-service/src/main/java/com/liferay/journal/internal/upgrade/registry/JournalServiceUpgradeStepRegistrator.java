@@ -13,6 +13,7 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.comment.upgrade.DiscussionSubscriptionClassNameUpgradeProcess;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.store.Store;
 import com.liferay.dynamic.data.mapping.service.DDMFieldLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStorageLinkLocalService;
@@ -199,15 +200,19 @@ public class JournalServiceUpgradeStepRegistrator
 
 		registry.register("1.0.1", "1.0.2", new DummyUpgradeStep());
 
+		JournalArticleImageUpgradeHelper journalArticleImageUpgradeHelper =
+			new JournalArticleImageUpgradeHelper(
+				_dlAppLocalService, _portletFileRepository);
+
 		registry.register(
 			"1.0.2", "1.0.3",
 			new DocumentLibraryTypeContentUpgradeProcess(
-				_journalArticleImageUpgradeHelper));
+				journalArticleImageUpgradeHelper));
 
 		registry.register(
 			"1.0.3", "1.0.4",
 			new ImageTypeContentUpgradeProcess(
-				_imageLocalService, _journalArticleImageUpgradeHelper,
+				_imageLocalService, journalArticleImageUpgradeHelper,
 				_portletFileRepository));
 
 		registry.register(
@@ -236,7 +241,7 @@ public class JournalServiceUpgradeStepRegistrator
 		registry.register(
 			"1.1.4", "1.1.5",
 			new ContentImagesUpgradeProcess(
-				_journalArticleImageUpgradeHelper, _portletFileRepository));
+				journalArticleImageUpgradeHelper, _portletFileRepository));
 
 		registry.register(
 			"1.1.5", "1.1.6",
@@ -481,7 +486,7 @@ public class JournalServiceUpgradeStepRegistrator
 		registry.register(
 			"6.1.10", "6.1.11",
 			new DDMFieldAttributeUpgradeProcess(
-				_classNameLocalService, _journalArticleImageUpgradeHelper));
+				_classNameLocalService, journalArticleImageUpgradeHelper));
 
 		registry.register(
 			"6.1.11", "6.1.12",
@@ -554,6 +559,9 @@ public class JournalServiceUpgradeStepRegistrator
 	private DefaultDDMStructureHelper _defaultDDMStructureHelper;
 
 	@Reference
+	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
 	private FieldsToDDMFormValuesConverter _fieldsToDDMFormValuesConverter;
 
 	@Reference
@@ -564,9 +572,6 @@ public class JournalServiceUpgradeStepRegistrator
 
 	@Reference
 	private ImageLocalService _imageLocalService;
-
-	@Reference
-	private JournalArticleImageUpgradeHelper _journalArticleImageUpgradeHelper;
 
 	@Reference
 	private JournalContentCompatibilityConverter
