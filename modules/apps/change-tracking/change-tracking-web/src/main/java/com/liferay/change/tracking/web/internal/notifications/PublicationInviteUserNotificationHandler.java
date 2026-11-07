@@ -29,17 +29,28 @@ import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.portlet.PortletRequest;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Samuel Trong Tran
  */
-@Component(service = PublicationInviteUserNotificationHandler.class)
 public class PublicationInviteUserNotificationHandler
 	extends BaseUserNotificationHandler {
 
-	public PublicationInviteUserNotificationHandler() {
+	public PublicationInviteUserNotificationHandler(
+		CTCollectionLocalService ctCollectionLocalService,
+		GroupLocalService groupLocalService, JSONFactory jsonFactory,
+		Language language, Portal portal, RoleLocalService roleLocalService,
+		UserGroupRoleLocalService userGroupRoleLocalService,
+		UserNotificationEventLocalService userNotificationEventLocalService) {
+
+		_ctCollectionLocalService = ctCollectionLocalService;
+		_groupLocalService = groupLocalService;
+		_jsonFactory = jsonFactory;
+		_language = language;
+		_portal = portal;
+		_roleLocalService = roleLocalService;
+		_userGroupRoleLocalService = userGroupRoleLocalService;
+		_userNotificationEventLocalService = userNotificationEventLocalService;
+
 		setPortletId(CTPortletKeys.PUBLICATIONS);
 	}
 
@@ -162,29 +173,14 @@ public class PublicationInviteUserNotificationHandler
 		return PublicationRoleConstants.LABEL_VIEWER;
 	}
 
-	@Reference
-	private CTCollectionLocalService _ctCollectionLocalService;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
-
-	@Reference
-	private JSONFactory _jsonFactory;
-
-	@Reference
-	private Language _language;
-
-	@Reference
-	private Portal _portal;
-
-	@Reference
-	private RoleLocalService _roleLocalService;
-
-	@Reference
-	private UserGroupRoleLocalService _userGroupRoleLocalService;
-
-	@Reference
-	private UserNotificationEventLocalService
+	private final CTCollectionLocalService _ctCollectionLocalService;
+	private final GroupLocalService _groupLocalService;
+	private final JSONFactory _jsonFactory;
+	private final Language _language;
+	private final Portal _portal;
+	private final RoleLocalService _roleLocalService;
+	private final UserGroupRoleLocalService _userGroupRoleLocalService;
+	private final UserNotificationEventLocalService
 		_userNotificationEventLocalService;
 
 }

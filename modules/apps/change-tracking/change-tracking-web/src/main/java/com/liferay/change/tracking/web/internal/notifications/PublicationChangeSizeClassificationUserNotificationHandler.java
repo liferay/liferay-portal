@@ -22,19 +22,21 @@ import jakarta.portlet.PortletRequest;
 
 import java.util.Locale;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Gislayne Vitorino
  */
-@Component(
-	service = PublicationChangeSizeClassificationUserNotificationHandler.class
-)
 public class PublicationChangeSizeClassificationUserNotificationHandler
 	extends BaseUserNotificationHandler {
 
-	public PublicationChangeSizeClassificationUserNotificationHandler() {
+	public PublicationChangeSizeClassificationUserNotificationHandler(
+		CTCollectionLocalService ctCollectionLocalService,
+		JSONFactory jsonFactory, Language language, Portal portal) {
+
+		_ctCollectionLocalService = ctCollectionLocalService;
+		_jsonFactory = jsonFactory;
+		_language = language;
+		_portal = portal;
+
 		setPortletId(CTPortletKeys.PUBLICATIONS);
 	}
 
@@ -95,16 +97,9 @@ public class PublicationChangeSizeClassificationUserNotificationHandler
 		).buildString();
 	}
 
-	@Reference
-	private CTCollectionLocalService _ctCollectionLocalService;
-
-	@Reference
-	private JSONFactory _jsonFactory;
-
-	@Reference
-	private Language _language;
-
-	@Reference
-	private Portal _portal;
+	private final CTCollectionLocalService _ctCollectionLocalService;
+	private final JSONFactory _jsonFactory;
+	private final Language _language;
+	private final Portal _portal;
 
 }

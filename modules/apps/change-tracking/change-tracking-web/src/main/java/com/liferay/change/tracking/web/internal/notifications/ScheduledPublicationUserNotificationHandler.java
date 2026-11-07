@@ -25,17 +25,26 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.portlet.PortletRequest;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Brooke Dalton
  */
-@Component(service = ScheduledPublicationUserNotificationHandler.class)
 public class ScheduledPublicationUserNotificationHandler
 	extends BaseUserNotificationHandler {
 
-	public ScheduledPublicationUserNotificationHandler() {
+	public ScheduledPublicationUserNotificationHandler(
+		CTCollectionLocalService ctCollectionLocalService,
+		JSONFactory jsonFactory, Language language, Portal portal,
+		RoleLocalService roleLocalService, UserLocalService userLocalService,
+		UserNotificationEventLocalService userNotificationEventLocalService) {
+
+		_ctCollectionLocalService = ctCollectionLocalService;
+		_jsonFactory = jsonFactory;
+		_language = language;
+		_portal = portal;
+		_roleLocalService = roleLocalService;
+		_userLocalService = userLocalService;
+		_userNotificationEventLocalService = userNotificationEventLocalService;
+
 		setPortletId(CTPortletKeys.PUBLICATIONS);
 	}
 
@@ -176,26 +185,13 @@ public class ScheduledPublicationUserNotificationHandler
 			role.getRoleId(), userNotificationEvent.getUserId());
 	}
 
-	@Reference
-	private CTCollectionLocalService _ctCollectionLocalService;
-
-	@Reference
-	private JSONFactory _jsonFactory;
-
-	@Reference
-	private Language _language;
-
-	@Reference
-	private Portal _portal;
-
-	@Reference
-	private RoleLocalService _roleLocalService;
-
-	@Reference
-	private UserLocalService _userLocalService;
-
-	@Reference
-	private UserNotificationEventLocalService
+	private final CTCollectionLocalService _ctCollectionLocalService;
+	private final JSONFactory _jsonFactory;
+	private final Language _language;
+	private final Portal _portal;
+	private final RoleLocalService _roleLocalService;
+	private final UserLocalService _userLocalService;
+	private final UserNotificationEventLocalService
 		_userNotificationEventLocalService;
 
 }
