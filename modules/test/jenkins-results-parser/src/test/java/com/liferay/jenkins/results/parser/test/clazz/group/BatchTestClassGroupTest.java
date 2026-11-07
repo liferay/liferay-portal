@@ -365,7 +365,6 @@ public class BatchTestClassGroupTest
 		).getUpstreamBranchName();
 
 		String batchName = batchTestClassGroup.getBatchName();
-
 		JobHistory jobHistory = portalTestClassJob.getJobHistory();
 
 		Mockito.doReturn(
