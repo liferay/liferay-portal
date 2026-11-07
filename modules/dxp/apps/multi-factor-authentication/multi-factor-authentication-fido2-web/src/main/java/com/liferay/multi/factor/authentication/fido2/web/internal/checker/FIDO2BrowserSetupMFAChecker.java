@@ -13,10 +13,10 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import com.liferay.multi.factor.authentication.fido2.credential.model.MFAFIDO2CredentialEntry;
 import com.liferay.multi.factor.authentication.fido2.credential.service.MFAFIDO2CredentialEntryLocalService;
-import com.liferay.multi.factor.authentication.fido2.web.internal.audit.MFAFIDO2AuditMessageBuilder;
 import com.liferay.multi.factor.authentication.fido2.web.internal.configuration.MFAFIDO2Configuration;
 import com.liferay.multi.factor.authentication.fido2.web.internal.constants.MFAFIDO2WebKeys;
 import com.liferay.multi.factor.authentication.fido2.web.internal.util.ConvertUtil;
+import com.liferay.multi.factor.authentication.fido2.web.internal.util.MFAFIDO2AuditMessageUtil;
 import com.liferay.multi.factor.authentication.fido2.web.internal.yubico.webauthn.MFAFIDO2CredentialRepository;
 import com.liferay.multi.factor.authentication.spi.checker.browser.BrowserMFAChecker;
 import com.liferay.multi.factor.authentication.spi.checker.setup.SetupMFAChecker;
@@ -192,9 +192,8 @@ public class FIDO2BrowserSetupMFAChecker
 				continue;
 			}
 
-			MFAFIDO2AuditMessageBuilder.routeAuditMessage(
-				MFAFIDO2AuditMessageBuilder.buildSetupRemovedAuditMessage(
-					userId),
+			MFAFIDO2AuditMessageUtil.routeAuditMessage(
+				MFAFIDO2AuditMessageUtil.buildSetupRemovedAuditMessage(userId),
 				auditRouter);
 		}
 	}
@@ -221,8 +220,8 @@ public class FIDO2BrowserSetupMFAChecker
 			AuditRouter auditRouter = _auditRouterSnapshot.get();
 
 			if (auditRouter != null) {
-				MFAFIDO2AuditMessageBuilder.routeAuditMessage(
-					MFAFIDO2AuditMessageBuilder.buildSetupAddedAuditMessage(
+				MFAFIDO2AuditMessageUtil.routeAuditMessage(
+					MFAFIDO2AuditMessageUtil.buildSetupAddedAuditMessage(
 						userId),
 					auditRouter);
 			}
@@ -258,8 +257,8 @@ public class FIDO2BrowserSetupMFAChecker
 			AuditRouter auditRouter = _auditRouterSnapshot.get();
 
 			if (auditRouter != null) {
-				MFAFIDO2AuditMessageBuilder.routeAuditMessage(
-					MFAFIDO2AuditMessageBuilder.
+				MFAFIDO2AuditMessageUtil.routeAuditMessage(
+					MFAFIDO2AuditMessageUtil.
 						buildNonexistentUserVerificationFailureAuditMessage(
 							CompanyThreadLocal.getCompanyId(), userId,
 							_getClassName()),
@@ -279,8 +278,8 @@ public class FIDO2BrowserSetupMFAChecker
 			AuditRouter auditRouter = _auditRouterSnapshot.get();
 
 			if (auditRouter != null) {
-				MFAFIDO2AuditMessageBuilder.routeAuditMessage(
-					MFAFIDO2AuditMessageBuilder.
+				MFAFIDO2AuditMessageUtil.routeAuditMessage(
+					MFAFIDO2AuditMessageUtil.
 						buildUnconfiguredUserVerificationFailureAuditMessage(
 							CompanyThreadLocal.getCompanyId(), user,
 							_getClassName()),
@@ -303,8 +302,8 @@ public class FIDO2BrowserSetupMFAChecker
 				AuditRouter auditRouter = _auditRouterSnapshot.get();
 
 				if (auditRouter != null) {
-					MFAFIDO2AuditMessageBuilder.routeAuditMessage(
-						MFAFIDO2AuditMessageBuilder.
+					MFAFIDO2AuditMessageUtil.routeAuditMessage(
+						MFAFIDO2AuditMessageUtil.
 							buildVerificationFailureAuditMessage(
 								user, _getClassName(),
 								"Incorrect FIDO2 verification"),
@@ -340,8 +339,8 @@ public class FIDO2BrowserSetupMFAChecker
 		AuditRouter auditRouter = _auditRouterSnapshot.get();
 
 		if (auditRouter != null) {
-			MFAFIDO2AuditMessageBuilder.routeAuditMessage(
-				MFAFIDO2AuditMessageBuilder.buildVerifiedAuditMessage(
+			MFAFIDO2AuditMessageUtil.routeAuditMessage(
+				MFAFIDO2AuditMessageUtil.buildVerifiedAuditMessage(
 					user, _getClassName()),
 				auditRouter);
 		}
@@ -538,8 +537,8 @@ public class FIDO2BrowserSetupMFAChecker
 			AuditRouter auditRouter = _auditRouterSnapshot.get();
 
 			if (auditRouter != null) {
-				MFAFIDO2AuditMessageBuilder.routeAuditMessage(
-					MFAFIDO2AuditMessageBuilder.
+				MFAFIDO2AuditMessageUtil.routeAuditMessage(
+					MFAFIDO2AuditMessageUtil.
 						buildNonexistentUserVerificationFailureAuditMessage(
 							CompanyThreadLocal.getCompanyId(), userId,
 							_getClassName()),
@@ -553,8 +552,8 @@ public class FIDO2BrowserSetupMFAChecker
 			AuditRouter auditRouter = _auditRouterSnapshot.get();
 
 			if (auditRouter != null) {
-				MFAFIDO2AuditMessageBuilder.routeAuditMessage(
-					MFAFIDO2AuditMessageBuilder.buildNotVerifiedAuditMessage(
+				MFAFIDO2AuditMessageUtil.routeAuditMessage(
+					MFAFIDO2AuditMessageUtil.buildNotVerifiedAuditMessage(
 						user, _getClassName(), "Empty session"),
 					auditRouter);
 			}

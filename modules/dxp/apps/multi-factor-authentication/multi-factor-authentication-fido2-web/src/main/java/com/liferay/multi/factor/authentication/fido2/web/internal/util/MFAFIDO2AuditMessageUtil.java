@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.multi.factor.authentication.fido2.web.internal.audit;
+package com.liferay.multi.factor.authentication.fido2.web.internal.util;
 
 import com.liferay.multi.factor.authentication.fido2.web.internal.constants.MFAFIDO2EventTypes;
 import com.liferay.portal.kernel.audit.AuditException;
@@ -21,7 +21,7 @@ import com.liferay.portal.security.audit.event.generators.util.AuditMessageBuild
 /**
  * @author Marta Medio
  */
-public class MFAFIDO2AuditMessageBuilder {
+public class MFAFIDO2AuditMessageUtil {
 
 	public static AuditMessage
 		buildNonexistentUserVerificationFailureAuditMessage(
@@ -145,6 +145,6 @@ public class MFAFIDO2AuditMessageBuilder {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		MFAFIDO2AuditMessageBuilder.class);
+		MFAFIDO2AuditMessageUtil.class);
 
 }

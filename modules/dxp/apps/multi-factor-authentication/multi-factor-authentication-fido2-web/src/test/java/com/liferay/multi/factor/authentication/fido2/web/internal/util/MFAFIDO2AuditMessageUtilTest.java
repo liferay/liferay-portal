@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.multi.factor.authentication.fido2.web.internal.audit;
+package com.liferay.multi.factor.authentication.fido2.web.internal.util;
 
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.json.JSONFactoryImpl;
@@ -27,7 +27,7 @@ import org.mockito.Mockito;
 /**
  * @author Regisson Aguiar
  */
-public class MFAFIDO2AuditMessageBuilderTest {
+public class MFAFIDO2AuditMessageUtilTest {
 
 	@ClassRule
 	@Rule
@@ -45,7 +45,7 @@ public class MFAFIDO2AuditMessageBuilderTest {
 	@Test
 	public void testBuildAuditMessages() throws Exception {
 		AuditMessage auditMessage =
-			MFAFIDO2AuditMessageBuilder.
+			MFAFIDO2AuditMessageUtil.
 				buildNonexistentUserVerificationFailureAuditMessage(
 					RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString());
@@ -60,23 +60,23 @@ public class MFAFIDO2AuditMessageBuilderTest {
 		_assertAuditMessage(
 			auditMessage, "verify_failure", "verification_failure");
 		_assertAuditMessage(
-			MFAFIDO2AuditMessageBuilder.buildNotVerifiedAuditMessage(
+			MFAFIDO2AuditMessageUtil.buildNotVerifiedAuditMessage(
 				_getUser(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString()),
 			"verify_failure", "not_verified");
 		_assertAuditMessage(
-			MFAFIDO2AuditMessageBuilder.
+			MFAFIDO2AuditMessageUtil.
 				buildUnconfiguredUserVerificationFailureAuditMessage(
 					RandomTestUtil.randomLong(), _getUser(),
 					RandomTestUtil.randomString()),
 			"verify_failure", "verification_failure");
 		_assertAuditMessage(
-			MFAFIDO2AuditMessageBuilder.buildVerificationFailureAuditMessage(
+			MFAFIDO2AuditMessageUtil.buildVerificationFailureAuditMessage(
 				_getUser(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString()),
 			"verify_failure", "verification_failure");
 		_assertAuditMessage(
-			MFAFIDO2AuditMessageBuilder.buildVerifiedAuditMessage(
+			MFAFIDO2AuditMessageUtil.buildVerifiedAuditMessage(
 				_getUser(), RandomTestUtil.randomString()),
 			"verify", "verified");
 
@@ -117,7 +117,7 @@ public class MFAFIDO2AuditMessageBuilderTest {
 			String reason = RandomTestUtil.randomString();
 
 			AuditMessage auditMessage =
-				MFAFIDO2AuditMessageBuilder.buildNotVerifiedAuditMessage(
+				MFAFIDO2AuditMessageUtil.buildNotVerifiedAuditMessage(
 					_getUser(), RandomTestUtil.randomString(), reason);
 
 			JSONObject additionalInfoJSONObject =

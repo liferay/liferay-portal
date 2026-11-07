@@ -7,7 +7,7 @@ package com.liferay.multi.factor.authentication.fido2.web.internal.portlet.actio
 
 import com.liferay.multi.factor.authentication.fido2.credential.model.MFAFIDO2CredentialEntry;
 import com.liferay.multi.factor.authentication.fido2.credential.service.MFAFIDO2CredentialEntryLocalService;
-import com.liferay.multi.factor.authentication.fido2.web.internal.audit.MFAFIDO2AuditMessageBuilder;
+import com.liferay.multi.factor.authentication.fido2.web.internal.util.MFAFIDO2AuditMessageUtil;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -64,8 +64,8 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommand
 			_mfaFIDO2CredentialEntryLocalService.deleteMFAFIDO2CredentialEntry(
 				mfaFIDO2CredentialEntry.getMfaFIDO2CredentialEntryId());
 
-			MFAFIDO2AuditMessageBuilder.routeAuditMessage(
-				MFAFIDO2AuditMessageBuilder.buildSetupRemovedAuditMessage(
+			MFAFIDO2AuditMessageUtil.routeAuditMessage(
+				MFAFIDO2AuditMessageUtil.buildSetupRemovedAuditMessage(
 					mfaFIDO2CredentialEntry.getUserId()),
 				_auditRouter);
 		}
