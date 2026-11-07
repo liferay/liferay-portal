@@ -25,6 +25,8 @@ import java.nio.file.Files;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -76,6 +78,12 @@ public class ConfigurationUpgradeStepFactoryImpl
 						newServicePid, dictionary);
 
 					_reloadablePersistenceManager.delete(oldServicePid);
+
+					Configuration configuration =
+						_configurationAdmin.getConfiguration(
+							newServicePid, StringPool.QUESTION);
+
+					configuration.update(dictionary);
 				}
 
 				File configResourcesDir = new File(
@@ -117,6 +125,9 @@ public class ConfigurationUpgradeStepFactoryImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ConfigurationUpgradeStepFactoryImpl.class);
+
+	@Reference
+	private ConfigurationAdmin _configurationAdmin;
 
 	@Reference
 	private ReloadablePersistenceManager _reloadablePersistenceManager;
