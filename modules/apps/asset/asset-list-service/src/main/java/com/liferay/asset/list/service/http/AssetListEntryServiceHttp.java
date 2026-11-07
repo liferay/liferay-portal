@@ -1448,6 +1448,45 @@ public class AssetListEntryServiceHttp {
 		}
 	}
 
+	public static void updateAssetListEntry(
+			HttpPrincipal httpPrincipal, long assetListEntryId,
+			String audienceEntryERC, String typeSettings,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				AssetListEntryServiceUtil.class, "updateAssetListEntry",
+				_updateAssetListEntryParameterTypes37);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, assetListEntryId, audienceEntryERC, typeSettings,
+				serviceContext);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static void updateAssetListEntryTypeSettings(
 			HttpPrincipal httpPrincipal, long assetListEntryId,
 			long segmentsEntryId, String typeSettings)
@@ -1457,7 +1496,7 @@ public class AssetListEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				AssetListEntryServiceUtil.class,
 				"updateAssetListEntryTypeSettings",
-				_updateAssetListEntryTypeSettingsParameterTypes37);
+				_updateAssetListEntryTypeSettingsParameterTypes38);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, assetListEntryId, segmentsEntryId, typeSettings);
@@ -1495,7 +1534,7 @@ public class AssetListEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				AssetListEntryServiceUtil.class,
 				"updateAssetListEntryTypeSettings",
-				_updateAssetListEntryTypeSettingsParameterTypes38);
+				_updateAssetListEntryTypeSettingsParameterTypes39);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, assetListEntryId, audienceEntryERC, typeSettings);
@@ -1650,14 +1689,19 @@ public class AssetListEntryServiceHttp {
 		};
 	private static final Class<?>[] _updateAssetListEntryParameterTypes36 =
 		new Class[] {long.class, String.class};
-	private static final Class<?>[]
-		_updateAssetListEntryTypeSettingsParameterTypes37 = new Class[] {
-			long.class, long.class, String.class
+	private static final Class<?>[] _updateAssetListEntryParameterTypes37 =
+		new Class[] {
+			long.class, String.class, String.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
 		_updateAssetListEntryTypeSettingsParameterTypes38 = new Class[] {
+			long.class, long.class, String.class
+		};
+	private static final Class<?>[]
+		_updateAssetListEntryTypeSettingsParameterTypes39 = new Class[] {
 			long.class, String.class, String.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1784394937
+// LIFERAY-SERVICE-BUILDER-HASH:1611571065

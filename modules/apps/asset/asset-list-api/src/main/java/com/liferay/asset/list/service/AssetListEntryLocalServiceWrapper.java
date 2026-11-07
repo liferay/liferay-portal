@@ -595,6 +595,16 @@ public class AssetListEntryLocalServiceWrapper
 	}
 
 	@Override
+	public AssetListEntry updateAssetListEntry(
+			long assetListEntryId, String audienceEntryERC, String typeSettings,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assetListEntryLocalService.updateAssetListEntry(
+			assetListEntryId, audienceEntryERC, typeSettings, serviceContext);
+	}
+
+	@Override
 	public void updateAssetListEntryTypeSettings(
 			long companyId, long classNameId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -661,4 +671,4 @@ public class AssetListEntryLocalServiceWrapper
 	private AssetListEntryLocalService _assetListEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-431587547
+// LIFERAY-SERVICE-BUILDER-HASH:69563490

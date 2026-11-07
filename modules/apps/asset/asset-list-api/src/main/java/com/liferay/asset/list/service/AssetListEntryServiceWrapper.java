@@ -373,6 +373,16 @@ public class AssetListEntryServiceWrapper
 	}
 
 	@Override
+	public void updateAssetListEntry(
+			long assetListEntryId, String audienceEntryERC, String typeSettings,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_assetListEntryService.updateAssetListEntry(
+			assetListEntryId, audienceEntryERC, typeSettings, serviceContext);
+	}
+
+	@Override
 	public void updateAssetListEntryTypeSettings(
 			long assetListEntryId, long segmentsEntryId, String typeSettings)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -403,4 +413,4 @@ public class AssetListEntryServiceWrapper
 	private AssetListEntryService _assetListEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-444328579
+// LIFERAY-SERVICE-BUILDER-HASH:729913756
