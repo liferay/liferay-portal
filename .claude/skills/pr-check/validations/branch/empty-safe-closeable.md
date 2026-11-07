@@ -1,6 +1,6 @@
 # Empty SafeCloseable
 
-Flags an empty lambda, `() -> {}`, that the branch adds where it stands for a `SafeCloseable`: returned from a method declared to return `SafeCloseable`, or used to initialize or assign a variable or field declared as `SafeCloseable`. `SafeCloseable.EMPTY` is the shared no-op instance, so such code uses it instead of writing another empty lambda.
+Flags an empty lambda, `() -> {}`, that the branch adds where it stands for a `SafeCloseable`: returned from a method declared to return `SafeCloseable`, or used to initialize or assign a variable or field declared as `SafeCloseable`. `SafeCloseable.EMPTY` is the shared instance that does nothing, so such code uses it instead of writing another empty lambda.
 
 ## Source Formatter Candidate
 
@@ -167,7 +167,7 @@ EMPTY_LAMBDAS='
 					braces[++braceDepth] = k
 				}
 			}
-			else if ((tok[k] ~ /^[)}\]]$/) && (depth > 0)) {
+			else if ((tok[k] ~ /^[])}]$/) && (depth > 0)) {
 				pair[k] = stack[depth]
 				pair[stack[depth]] = k
 				depth--
@@ -265,7 +265,7 @@ When `${FINDINGS}` is empty, the branch adds no empty lambda that stands for a `
 Otherwise, the validation fails. Report the message below to the developer with one row for each finding, giving the path and the line as the finding prints them, and return it as the failure note.
 
 ```markdown
-**An empty lambda stands for a `SafeCloseable`.** Each line below returns or stores `() -> {}` where a `SafeCloseable` is expected. `SafeCloseable.EMPTY` is the shared no-op instance. Use it instead.
+**An empty lambda stands for a `SafeCloseable`.** Each line below returns or stores `() -> {}` where a `SafeCloseable` is expected. `SafeCloseable.EMPTY` is the shared instance that does nothing. Use it instead.
 
 | File | Line |
 | --- | --- |
