@@ -31,23 +31,19 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Víctor Galán
  */
-@Component(service = AdvancedLayoutStructureRuleEvaluator.class)
 public class AdvancedLayoutStructureRuleEvaluator {
 
-	public boolean evaluateScript(
-		long groupId, long[] roleIds, String script,
-		Map<String, Object> scriptFieldValues, long[] segmentsEntryIds,
-		User user) {
+	public static boolean evaluateScript(
+		DDMExpressionFactory ddmExpressionFactory, long groupId, long[] roleIds,
+		String script, Map<String, Object> scriptFieldValues,
+		long[] segmentsEntryIds, User user) {
 
 		try {
 			DDMExpression<Boolean> ddmExpression =
-				_ddmExpressionFactory.createExpression(
+				ddmExpressionFactory.createExpression(
 					CreateExpressionRequest.Builder.newBuilder(
 						script
 					).withDDMExpressionFieldAccessor(
@@ -67,7 +63,9 @@ public class AdvancedLayoutStructureRuleEvaluator {
 		return false;
 	}
 
-	public List<String> getItemIds(LayoutStructureRule layoutStructureRule) {
+	public static List<String> getItemIds(
+		LayoutStructureRule layoutStructureRule) {
+
 		List<String> itemIds = new ArrayList<>();
 
 		Matcher matcher = _pattern.matcher(layoutStructureRule.getScript());
@@ -89,9 +87,6 @@ public class AdvancedLayoutStructureRuleEvaluator {
 
 	private static final Pattern _pattern = Pattern.compile(
 		_INPUT_PREFIX + "[A-Za-z0-9_]*");
-
-	@Reference
-	private DDMExpressionFactory _ddmExpressionFactory;
 
 	private static class LayoutStructureRuleDDMExpressionFieldAccessor
 		implements DDMExpressionFieldAccessor {

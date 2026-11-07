@@ -5,6 +5,7 @@
 
 package com.liferay.layout.internal.helper.structure;
 
+import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.dynamic.data.mapping.form.validation.util.DateParameterUtil;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
@@ -223,8 +224,8 @@ public class LayoutStructureRulesHelperImpl
 		LayoutStructureRulesContext layoutStructureRulesContext) {
 
 		if (layoutStructureRule.isAdvancedRule()) {
-			return _advancedLayoutStructureRuleEvaluator.evaluateScript(
-				layoutStructureRulesContext.getGroupId(),
+			return AdvancedLayoutStructureRuleEvaluator.evaluateScript(
+				_ddmExpressionFactory, layoutStructureRulesContext.getGroupId(),
 				layoutStructureRulesContext.getRoleIds(),
 				layoutStructureRule.getScript(), fieldValuesMap,
 				layoutStructureRulesContext.getSegmentsEntryIds(),
@@ -448,7 +449,7 @@ public class LayoutStructureRulesHelperImpl
 
 		if (layoutStructureRule.isAdvancedRule()) {
 			itemIds.addAll(
-				_advancedLayoutStructureRuleEvaluator.getItemIds(
+				AdvancedLayoutStructureRuleEvaluator.getItemIds(
 					layoutStructureRule));
 		}
 		else {
@@ -772,8 +773,7 @@ public class LayoutStructureRulesHelperImpl
 		LayoutStructureRulesHelperImpl.class);
 
 	@Reference
-	private AdvancedLayoutStructureRuleEvaluator
-		_advancedLayoutStructureRuleEvaluator;
+	private DDMExpressionFactory _ddmExpressionFactory;
 
 	@Reference
 	private JSONFactory _jsonFactory;
