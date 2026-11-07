@@ -15,12 +15,14 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -561,10 +563,7 @@ public class CookiesConfigurationProviderImpl
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			ConfigurationFilterStringUtil.getScopedFilterString(
-				CompanyThreadLocal.getCompanyId(),
-				CookiesPreferenceHandlingConfiguration.class.getName(), scope,
-				scopePK));
+			_getScopedFilterString(scope, scopePK));
 
 		if (configurations == null) {
 			return null;
@@ -572,6 +571,26 @@ public class CookiesConfigurationProviderImpl
 
 		return configurations[0];
 	}
+
+	private String _getScopedFilterString(
+			ExtendedObjectClassDefinition.Scope scope, long scopePK)
+		throws Exception {
+
+		if (scope == ExtendedObjectClassDefinition.Scope.COMPANY) {
+			Company company = _companyLocalService.getCompany(scopePK);
+
+			return ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+				scopePK, CookiesPreferenceHandlingConfiguration.class.getName(),
+				company.getWebId());
+		}
+
+		return ConfigurationFilterStringUtil.getGroupScopedFilterString(
+			CompanyThreadLocal.getCompanyId(), scopePK,
+			CookiesPreferenceHandlingConfiguration.class.getName(), null);
+	}
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
