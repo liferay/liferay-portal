@@ -13,7 +13,7 @@ import com.liferay.dispatch.exception.DuplicateDispatchTriggerException;
 import com.liferay.dispatch.executor.DispatchTaskClusterMode;
 import com.liferay.dispatch.executor.DispatchTaskExecutor;
 import com.liferay.dispatch.executor.DispatchTaskExecutorRegistry;
-import com.liferay.dispatch.internal.helper.DispatchTriggerHelper;
+import com.liferay.dispatch.internal.util.DispatchTriggerSchedulerUtil;
 import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.dispatch.service.DispatchLogLocalService;
 import com.liferay.dispatch.service.base.DispatchTriggerLocalServiceBaseImpl;
@@ -27,7 +27,9 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.SchedulerException;
+import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -131,8 +133,9 @@ public class DispatchTriggerLocalServiceImpl
 			DispatchTaskClusterMode.valueOf(
 				dispatchTrigger.getDispatchTaskClusterMode());
 
-		_dispatchTriggerHelper.deleteSchedulerJob(
-			dispatchTrigger, dispatchTaskClusterMode.getStorageType());
+		DispatchTriggerSchedulerUtil.deleteSchedulerJob(
+			dispatchTrigger, _schedulerEngineHelper,
+			dispatchTaskClusterMode.getStorageType());
 
 		return dispatchTrigger;
 	}
@@ -184,8 +187,9 @@ public class DispatchTriggerLocalServiceImpl
 				dispatchTrigger.getDispatchTaskClusterMode());
 
 		try {
-			return _dispatchTriggerHelper.getPreviousFireDate(
-				dispatchTrigger, dispatchTaskClusterMode.getStorageType());
+			return DispatchTriggerSchedulerUtil.getPreviousFireDate(
+				dispatchTrigger, _schedulerEngineHelper,
+				dispatchTaskClusterMode.getStorageType());
 		}
 		catch (SchedulerException schedulerException) {
 			if (_log.isWarnEnabled()) {
@@ -239,8 +243,9 @@ public class DispatchTriggerLocalServiceImpl
 			DispatchTaskClusterMode.valueOf(
 				dispatchTrigger.getDispatchTaskClusterMode());
 
-		return _dispatchTriggerHelper.getNextFireDate(
-			dispatchTrigger, dispatchTaskClusterMode.getStorageType());
+		return DispatchTriggerSchedulerUtil.getNextFireDate(
+			dispatchTrigger, _schedulerEngineHelper,
+			dispatchTaskClusterMode.getStorageType());
 	}
 
 	@Override
@@ -296,13 +301,15 @@ public class DispatchTriggerLocalServiceImpl
 
 		dispatchTrigger = dispatchTriggerPersistence.update(dispatchTrigger);
 
-		_dispatchTriggerHelper.deleteSchedulerJob(
-			dispatchTrigger, oldDispatchTaskClusterMode.getStorageType());
+		DispatchTriggerSchedulerUtil.deleteSchedulerJob(
+			dispatchTrigger, _schedulerEngineHelper,
+			oldDispatchTaskClusterMode.getStorageType());
 
 		if (active) {
-			_dispatchTriggerHelper.addSchedulerJob(
-				dispatchTrigger, dispatchTaskClusterMode.getStorageType(),
-				timeZoneId);
+			DispatchTriggerSchedulerUtil.addSchedulerJob(
+				dispatchTrigger, _schedulerEngineHelper,
+				dispatchTaskClusterMode.getStorageType(), timeZoneId,
+				_triggerFactory);
 		}
 
 		return dispatchTrigger;
@@ -381,13 +388,16 @@ public class DispatchTriggerLocalServiceImpl
 	private DispatchTaskExecutorRegistry _dispatchTaskExecutorRegistry;
 
 	@Reference
-	private DispatchTriggerHelper _dispatchTriggerHelper;
-
-	@Reference
 	private Portal _portal;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;
+
+	@Reference
+	private SchedulerEngineHelper _schedulerEngineHelper;
+
+	@Reference
+	private TriggerFactory _triggerFactory;
 
 	@Reference
 	private UserLocalService _userLocalService;

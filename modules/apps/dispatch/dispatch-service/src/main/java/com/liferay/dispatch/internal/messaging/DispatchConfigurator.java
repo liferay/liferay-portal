@@ -8,7 +8,7 @@ package com.liferay.dispatch.internal.messaging;
 import com.liferay.dispatch.constants.DispatchConstants;
 import com.liferay.dispatch.exception.DispatchTriggerSchedulerException;
 import com.liferay.dispatch.executor.DispatchTaskClusterMode;
-import com.liferay.dispatch.internal.helper.DispatchTriggerHelper;
+import com.liferay.dispatch.internal.util.DispatchTriggerSchedulerUtil;
 import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
 import com.liferay.portal.kernel.cluster.BaseClusterMasterTokenTransitionListener;
@@ -19,8 +19,10 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationConfiguration;
 import com.liferay.portal.kernel.messaging.DestinationFactory;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 
 import java.util.Arrays;
@@ -116,15 +118,17 @@ public class DispatchConfigurator {
 					dispatchTaskClusterMode.getStorageType();
 
 				if (storageType == StorageType.MEMORY) {
-					_dispatchTriggerHelper.addLocalSchedulerJob(
-						dispatchTrigger, dispatchTrigger.getTimeZoneId());
+					DispatchTriggerSchedulerUtil.addLocalSchedulerJob(
+						dispatchTrigger, _schedulerEngineHelper,
+						dispatchTrigger.getTimeZoneId(), _triggerFactory);
 				}
-				else if (!_dispatchTriggerHelper.hasSchedulerJob(
-							dispatchTrigger, storageType)) {
+				else if (!DispatchTriggerSchedulerUtil.hasSchedulerJob(
+							dispatchTrigger, _schedulerEngineHelper,
+							storageType)) {
 
-					_dispatchTriggerHelper.addSchedulerJob(
-						dispatchTrigger, storageType,
-						dispatchTrigger.getTimeZoneId());
+					DispatchTriggerSchedulerUtil.addSchedulerJob(
+						dispatchTrigger, _schedulerEngineHelper, storageType,
+						dispatchTrigger.getTimeZoneId(), _triggerFactory);
 				}
 			}
 			catch (DispatchTriggerSchedulerException | SchedulerException
@@ -149,11 +153,12 @@ public class DispatchConfigurator {
 			StorageType storageType = dispatchTaskClusterMode.getStorageType();
 
 			if (storageType == StorageType.MEMORY) {
-				_dispatchTriggerHelper.deleteLocalSchedulerJob(dispatchTrigger);
+				DispatchTriggerSchedulerUtil.deleteLocalSchedulerJob(
+					dispatchTrigger, _schedulerEngineHelper);
 			}
 			else {
-				_dispatchTriggerHelper.deleteSchedulerJob(
-					dispatchTrigger, storageType);
+				DispatchTriggerSchedulerUtil.deleteSchedulerJob(
+					dispatchTrigger, _schedulerEngineHelper, storageType);
 			}
 		}
 	}
@@ -184,12 +189,15 @@ public class DispatchConfigurator {
 		_dispatchClusterMasterTokenTransitionListener;
 
 	@Reference
-	private DispatchTriggerHelper _dispatchTriggerHelper;
-
-	@Reference
 	private DispatchTriggerLocalService _dispatchTriggerLocalService;
 
+	@Reference
+	private SchedulerEngineHelper _schedulerEngineHelper;
+
 	private ServiceRegistration<Destination> _serviceRegistration;
+
+	@Reference
+	private TriggerFactory _triggerFactory;
 
 	private class DispatchClusterMasterTokenTransitionListener
 		extends BaseClusterMasterTokenTransitionListener {

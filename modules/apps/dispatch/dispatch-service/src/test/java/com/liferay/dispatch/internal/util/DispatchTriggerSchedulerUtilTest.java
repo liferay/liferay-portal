@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.dispatch.internal.helper;
+package com.liferay.dispatch.internal.util;
 
 import com.liferay.dispatch.exception.DispatchTriggerSchedulerException;
 import com.liferay.dispatch.model.DispatchTrigger;
@@ -37,7 +37,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -45,7 +44,7 @@ import org.mockito.MockitoAnnotations;
 /**
  * @author Adolfo Pérez
  */
-public class DispatchTriggerHelperTest {
+public class DispatchTriggerSchedulerUtilTest {
 
 	@ClassRule
 	@Rule
@@ -102,8 +101,9 @@ public class DispatchTriggerHelperTest {
 
 		Assert.assertThrows(
 			DispatchTriggerSchedulerException.class,
-			() -> _dispatchTriggerHelper.addLocalSchedulerJob(
-				_dispatchTrigger, "UTC"));
+			() -> DispatchTriggerSchedulerUtil.addLocalSchedulerJob(
+				_dispatchTrigger, _schedulerEngineHelper, "UTC",
+				_triggerFactory));
 
 		Mockito.verify(
 			_schedulerEngineHelper
@@ -143,9 +143,11 @@ public class DispatchTriggerHelperTest {
 		);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				DispatchTriggerHelper.class.getName(), LoggerTestUtil.ERROR)) {
+				DispatchTriggerSchedulerUtil.class.getName(),
+				LoggerTestUtil.ERROR)) {
 
-			_dispatchTriggerHelper.deleteLocalSchedulerJob(_dispatchTrigger);
+			DispatchTriggerSchedulerUtil.deleteLocalSchedulerJob(
+				_dispatchTrigger, _schedulerEngineHelper);
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
@@ -185,10 +187,6 @@ public class DispatchTriggerHelperTest {
 
 	@Mock
 	private DispatchTrigger _dispatchTrigger;
-
-	@InjectMocks
-	private final DispatchTriggerHelper _dispatchTriggerHelper =
-		new DispatchTriggerHelper();
 
 	@Mock
 	private SchedulerEngineHelper _schedulerEngineHelper;

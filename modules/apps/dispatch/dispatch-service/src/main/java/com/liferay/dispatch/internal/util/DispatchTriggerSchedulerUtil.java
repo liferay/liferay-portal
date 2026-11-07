@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.dispatch.internal.helper;
+package com.liferay.dispatch.internal.util;
 
 import com.liferay.dispatch.constants.DispatchConstants;
 import com.liferay.dispatch.exception.DispatchTriggerSchedulerException;
@@ -25,24 +25,24 @@ import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Matija Petanjek
  */
-@Component(service = DispatchTriggerHelper.class)
-public class DispatchTriggerHelper {
+public class DispatchTriggerSchedulerUtil {
 
-	public void addLocalSchedulerJob(
-			DispatchTrigger dispatchTrigger, String timeZoneId)
+	public static void addLocalSchedulerJob(
+			DispatchTrigger dispatchTrigger,
+			SchedulerEngineHelper schedulerEngineHelper, String timeZoneId,
+			TriggerFactory triggerFactory)
 		throws DispatchTriggerSchedulerException {
 
 		ClusterableContextThreadLocal.putThreadLocalContext(
 			SchedulerEngine.SCHEDULER_CLUSTER_INVOKING, false);
 
 		try {
-			addSchedulerJob(dispatchTrigger, StorageType.MEMORY, timeZoneId);
+			addSchedulerJob(
+				dispatchTrigger, schedulerEngineHelper, StorageType.MEMORY,
+				timeZoneId, triggerFactory);
 		}
 		finally {
 			ClusterableContextThreadLocal.putThreadLocalContext(
@@ -50,9 +50,11 @@ public class DispatchTriggerHelper {
 		}
 	}
 
-	public void addSchedulerJob(
-			DispatchTrigger dispatchTrigger, StorageType storageType,
-			String timeZoneId)
+	public static void addSchedulerJob(
+			DispatchTrigger dispatchTrigger,
+			SchedulerEngineHelper schedulerEngineHelper,
+			StorageType storageType, String timeZoneId,
+			TriggerFactory triggerFactory)
 		throws DispatchTriggerSchedulerException {
 
 		Date date = new Date();
@@ -67,19 +69,19 @@ public class DispatchTriggerHelper {
 			startDate = date;
 		}
 
-		Trigger trigger = _triggerFactory.createTrigger(
-			_getJobName(dispatchTrigger), _getGroupName(dispatchTrigger),
-			startDate, endDate, dispatchTrigger.getCronExpression(),
-			TimeZone.getTimeZone(timeZoneId));
-
 		Message message = new Message();
 
 		message.put("companyId", dispatchTrigger.getCompanyId());
 
 		message.setPayload(_getPayload(dispatchTrigger.getDispatchTriggerId()));
 
+		Trigger trigger = triggerFactory.createTrigger(
+			_getJobName(dispatchTrigger), _getGroupName(dispatchTrigger),
+			startDate, endDate, dispatchTrigger.getCronExpression(),
+			TimeZone.getTimeZone(timeZoneId));
+
 		try {
-			_schedulerEngineHelper.schedule(
+			schedulerEngineHelper.schedule(
 				trigger, storageType, null,
 				DispatchConstants.EXECUTOR_DESTINATION_NAME, message);
 
@@ -97,12 +99,15 @@ public class DispatchTriggerHelper {
 		}
 	}
 
-	public void deleteLocalSchedulerJob(DispatchTrigger dispatchTrigger) {
+	public static void deleteLocalSchedulerJob(
+		DispatchTrigger dispatchTrigger,
+		SchedulerEngineHelper schedulerEngineHelper) {
+
 		ClusterableContextThreadLocal.putThreadLocalContext(
 			SchedulerEngine.SCHEDULER_CLUSTER_INVOKING, false);
 
 		try {
-			_schedulerEngineHelper.delete(
+			schedulerEngineHelper.delete(
 				_getJobName(dispatchTrigger), _getGroupName(dispatchTrigger),
 				StorageType.MEMORY);
 		}
@@ -118,21 +123,22 @@ public class DispatchTriggerHelper {
 		}
 	}
 
-	public void deleteSchedulerJob(
-		DispatchTrigger dispatchTrigger, StorageType storageType) {
+	public static void deleteSchedulerJob(
+		DispatchTrigger dispatchTrigger,
+		SchedulerEngineHelper schedulerEngineHelper, StorageType storageType) {
 
 		try {
 			String jobName = _getJobName(dispatchTrigger);
 			String groupName = _getGroupName(dispatchTrigger);
 
-			_schedulerEngineHelper.delete(jobName, groupName, storageType);
+			schedulerEngineHelper.delete(jobName, groupName, storageType);
 
 			SchedulerResponse scheduledJob =
-				_schedulerEngineHelper.getScheduledJob(
+				schedulerEngineHelper.getScheduledJob(
 					jobName, groupName, storageType);
 
 			while (scheduledJob != null) {
-				scheduledJob = _schedulerEngineHelper.getScheduledJob(
+				scheduledJob = schedulerEngineHelper.getScheduledJob(
 					jobName, groupName, storageType);
 			}
 		}
@@ -144,12 +150,14 @@ public class DispatchTriggerHelper {
 		}
 	}
 
-	public Date getNextFireDate(
-			DispatchTrigger dispatchTrigger, StorageType storageType)
+	public static Date getNextFireDate(
+			DispatchTrigger dispatchTrigger,
+			SchedulerEngineHelper schedulerEngineHelper,
+			StorageType storageType)
 		throws SchedulerException {
 
 		SchedulerResponse schedulerResponse =
-			_schedulerEngineHelper.getScheduledJob(
+			schedulerEngineHelper.getScheduledJob(
 				_getJobName(dispatchTrigger), _getGroupName(dispatchTrigger),
 				storageType);
 
@@ -157,15 +165,17 @@ public class DispatchTriggerHelper {
 			return null;
 		}
 
-		return _schedulerEngineHelper.getNextFireDate(schedulerResponse);
+		return schedulerEngineHelper.getNextFireDate(schedulerResponse);
 	}
 
-	public Date getPreviousFireDate(
-			DispatchTrigger dispatchTrigger, StorageType storageType)
+	public static Date getPreviousFireDate(
+			DispatchTrigger dispatchTrigger,
+			SchedulerEngineHelper schedulerEngineHelper,
+			StorageType storageType)
 		throws SchedulerException {
 
 		SchedulerResponse schedulerResponse =
-			_schedulerEngineHelper.getScheduledJob(
+			schedulerEngineHelper.getScheduledJob(
 				_getJobName(dispatchTrigger), _getGroupName(dispatchTrigger),
 				storageType);
 
@@ -173,15 +183,17 @@ public class DispatchTriggerHelper {
 			return null;
 		}
 
-		return _schedulerEngineHelper.getPreviousFireDate(schedulerResponse);
+		return schedulerEngineHelper.getPreviousFireDate(schedulerResponse);
 	}
 
-	public boolean hasSchedulerJob(
-			DispatchTrigger dispatchTrigger, StorageType storageType)
+	public static boolean hasSchedulerJob(
+			DispatchTrigger dispatchTrigger,
+			SchedulerEngineHelper schedulerEngineHelper,
+			StorageType storageType)
 		throws SchedulerException {
 
 		SchedulerResponse schedulerResponse =
-			_schedulerEngineHelper.getScheduledJob(
+			schedulerEngineHelper.getScheduledJob(
 				_getJobName(dispatchTrigger), _getGroupName(dispatchTrigger),
 				storageType);
 
@@ -192,32 +204,26 @@ public class DispatchTriggerHelper {
 		return true;
 	}
 
-	private String _getGroupName(DispatchTrigger dispatchTrigger) {
+	private static String _getGroupName(DispatchTrigger dispatchTrigger) {
 		return StringBundler.concat(
 			"DISPATCH_GROUP_",
 			String.format("%07d", dispatchTrigger.getDispatchTriggerId()),
 			StringPool.AT, dispatchTrigger.getCompanyId());
 	}
 
-	private String _getJobName(DispatchTrigger dispatchTrigger) {
+	private static String _getJobName(DispatchTrigger dispatchTrigger) {
 		return StringBundler.concat(
 			"DISPATCH_JOB_",
 			String.format("%07d", dispatchTrigger.getDispatchTriggerId()),
 			StringPool.AT, dispatchTrigger.getCompanyId());
 	}
 
-	private String _getPayload(long dispatchTriggerId) {
+	private static String _getPayload(long dispatchTriggerId) {
 		return StringBundler.concat(
 			"{\"dispatchTriggerId\": ", dispatchTriggerId, "}");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		DispatchTriggerHelper.class);
-
-	@Reference
-	private SchedulerEngineHelper _schedulerEngineHelper;
-
-	@Reference
-	private TriggerFactory _triggerFactory;
+		DispatchTriggerSchedulerUtil.class);
 
 }

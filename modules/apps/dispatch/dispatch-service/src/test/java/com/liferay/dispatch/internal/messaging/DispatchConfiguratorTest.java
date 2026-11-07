@@ -5,24 +5,33 @@
 
 package com.liferay.dispatch.internal.messaging;
 
+import com.liferay.dispatch.constants.DispatchConstants;
 import com.liferay.dispatch.executor.DispatchTaskClusterMode;
-import com.liferay.dispatch.internal.helper.DispatchTriggerHelper;
 import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.cluster.ClusterMasterExecutor;
 import com.liferay.portal.kernel.cluster.ClusterMasterTokenTransitionListener;
 import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationFactory;
+import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.scheduler.Trigger;
+import com.liferay.portal.kernel.scheduler.TriggerFactory;
+import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -89,6 +98,20 @@ public class DispatchConfiguratorTest {
 			_singleNodeMemoryClusteredDispatchTrigger,
 			_singleNodePersistedDispatchTrigger);
 
+		for (DispatchTrigger dispatchTrigger : dispatchTriggers) {
+			Mockito.when(
+				dispatchTrigger.getDispatchTriggerId()
+			).thenReturn(
+				RandomTestUtil.randomLong()
+			);
+
+			Mockito.when(
+				dispatchTrigger.getTimeZoneId()
+			).thenReturn(
+				"UTC"
+			);
+		}
+
 		Mockito.when(
 			_dispatchTriggerLocalService.getActiveDispatchTriggers(
 				Mockito.anyList())
@@ -102,6 +125,25 @@ public class DispatchConfiguratorTest {
 					dispatchTrigger -> dispatchTaskClusterModes.contains(
 						DispatchTaskClusterMode.valueOf(
 							dispatchTrigger.getDispatchTaskClusterMode())));
+			}
+		);
+
+		Mockito.when(
+			_triggerFactory.createTrigger(
+				Mockito.anyString(), Mockito.anyString(),
+				Mockito.nullable(Date.class), Mockito.nullable(Date.class),
+				Mockito.nullable(String.class), Mockito.any(TimeZone.class))
+		).thenAnswer(
+			invocationOnMock -> {
+				Trigger trigger = Mockito.mock(Trigger.class);
+
+				Mockito.when(
+					trigger.getJobName()
+				).thenReturn(
+					invocationOnMock.getArgument(0)
+				);
+
+				return trigger;
 			}
 		);
 	}
@@ -124,7 +166,7 @@ public class DispatchConfiguratorTest {
 
 		_dispatchConfigurator.activate(_bundleContext);
 
-		Mockito.reset(_dispatchTriggerHelper);
+		Mockito.reset(_schedulerEngineHelper);
 
 		Mockito.verify(
 			_clusterMasterExecutor, Mockito.never()
@@ -163,38 +205,16 @@ public class DispatchConfiguratorTest {
 					DispatchTaskClusterMode.SINGLE_NODE_PERSISTED))
 		);
 
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).addLocalSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
-		);
+		_verifySchedule(_allNodesDispatchTrigger, StorageType.MEMORY);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any(), Mockito.any()
-		);
+		_verifyNeverSchedule(_notApplicableDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger), Mockito.any(),
-			Mockito.any()
-		);
+		_verifySchedule(
+			_singleNodeMemoryClusteredDispatchTrigger,
+			StorageType.MEMORY_CLUSTERED);
 
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).addSchedulerJob(
-			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY_CLUSTERED), Mockito.any()
-		);
-
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).addSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger),
-			Mockito.eq(StorageType.PERSISTED), Mockito.any()
-		);
+		_verifySchedule(
+			_singleNodePersistedDispatchTrigger, StorageType.PERSISTED);
 	}
 
 	@Test
@@ -214,38 +234,13 @@ public class DispatchConfiguratorTest {
 				Collections.singletonList(DispatchTaskClusterMode.ALL_NODES))
 		);
 
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).addLocalSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
-		);
+		_verifySchedule(_allNodesDispatchTrigger, StorageType.MEMORY);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any(), Mockito.any()
-		);
+		_verifyNeverSchedule(_notApplicableDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger), Mockito.any(),
-			Mockito.any()
-		);
+		_verifyNeverSchedule(_singleNodeMemoryClusteredDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.any(), Mockito.any()
-		);
-
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger), Mockito.any(),
-			Mockito.any()
-		);
+		_verifyNeverSchedule(_singleNodePersistedDispatchTrigger);
 	}
 
 	@Test
@@ -259,28 +254,20 @@ public class DispatchConfiguratorTest {
 		);
 
 		Mockito.when(
-			_dispatchTriggerHelper.hasSchedulerJob(
-				Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-				Mockito.eq(StorageType.MEMORY_CLUSTERED))
+			_schedulerEngineHelper.getScheduledJob(
+				_getJobName(_singleNodeMemoryClusteredDispatchTrigger),
+				_getGroupName(_singleNodeMemoryClusteredDispatchTrigger),
+				StorageType.MEMORY_CLUSTERED)
 		).thenThrow(
 			new SchedulerException()
 		);
 
 		_dispatchConfigurator.activate(_bundleContext);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.any(), Mockito.any()
-		);
+		_verifyNeverSchedule(_singleNodeMemoryClusteredDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).addSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger),
-			Mockito.eq(StorageType.PERSISTED), Mockito.any()
-		);
+		_verifySchedule(
+			_singleNodePersistedDispatchTrigger, StorageType.PERSISTED);
 	}
 
 	@Test
@@ -292,48 +279,27 @@ public class DispatchConfiguratorTest {
 		);
 
 		Mockito.when(
-			_dispatchTriggerHelper.hasSchedulerJob(Mockito.any(), Mockito.any())
+			_schedulerEngineHelper.getScheduledJob(
+				Mockito.anyString(), Mockito.anyString(), Mockito.any())
 		).thenReturn(
-			true
+			Mockito.mock(SchedulerResponse.class)
 		);
 
 		_dispatchConfigurator.activate(_bundleContext);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).hasSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
-		);
+		_verifyNeverGetScheduledJob(_allNodesDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).addLocalSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
-		);
+		_verifySchedule(_allNodesDispatchTrigger, StorageType.MEMORY);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any(), Mockito.any()
-		);
+		_verifyNeverSchedule(_singleNodeMemoryClusteredDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.any(), Mockito.any()
-		);
-
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger), Mockito.any(),
-			Mockito.any()
-		);
+		_verifyNeverSchedule(_singleNodePersistedDispatchTrigger);
 	}
 
 	@Test
-	public void testDeactivateUnschedulesAllTypeOfJobsOnMasterNode() {
+	public void testDeactivateUnschedulesAllTypeOfJobsOnMasterNode()
+		throws Exception {
+
 		Mockito.when(
 			_clusterMasterExecutor.isMaster()
 		).thenReturn(
@@ -358,41 +324,22 @@ public class DispatchConfiguratorTest {
 					DispatchTaskClusterMode.SINGLE_NODE_PERSISTED))
 		);
 
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).deleteLocalSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger)
-		);
+		_verifyDelete(_allNodesDispatchTrigger, StorageType.MEMORY);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).deleteSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
-		);
+		_verifyNeverGetScheduledJob(_allNodesDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).deleteSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger), Mockito.any()
-		);
+		_verifyNeverDelete(_notApplicableDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).deleteSchedulerJob(
-			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY_CLUSTERED)
-		);
+		_verifyDelete(
+			_singleNodeMemoryClusteredDispatchTrigger,
+			StorageType.MEMORY_CLUSTERED);
 
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).deleteSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger),
-			Mockito.eq(StorageType.PERSISTED)
-		);
+		_verifyDelete(
+			_singleNodePersistedDispatchTrigger, StorageType.PERSISTED);
 	}
 
 	@Test
-	public void testDeactivateUnschedulesOnlyAllNodesJobs() {
+	public void testDeactivateUnschedulesOnlyAllNodesJobs() throws Exception {
 		Mockito.when(
 			_clusterMasterExecutor.isMaster()
 		).thenReturn(
@@ -414,36 +361,15 @@ public class DispatchConfiguratorTest {
 				Collections.singletonList(DispatchTaskClusterMode.ALL_NODES))
 		);
 
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).deleteLocalSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger)
-		);
+		_verifyDelete(_allNodesDispatchTrigger, StorageType.MEMORY);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).deleteSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
-		);
+		_verifyNeverGetScheduledJob(_allNodesDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).deleteSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger), Mockito.any()
-		);
+		_verifyNeverDelete(_notApplicableDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).deleteSchedulerJob(
-			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.any()
-		);
+		_verifyNeverDelete(_singleNodeMemoryClusteredDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).deleteSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger), Mockito.any()
-		);
+		_verifyNeverDelete(_singleNodePersistedDispatchTrigger);
 	}
 
 	@Test
@@ -464,7 +390,7 @@ public class DispatchConfiguratorTest {
 
 		_dispatchConfigurator.activate(_bundleContext);
 
-		Mockito.reset(_dispatchTriggerHelper);
+		Mockito.reset(_schedulerEngineHelper);
 
 		ArgumentCaptor<ClusterMasterTokenTransitionListener> argumentCaptor =
 			ArgumentCaptor.forClass(ClusterMasterTokenTransitionListener.class);
@@ -495,38 +421,16 @@ public class DispatchConfiguratorTest {
 					DispatchTaskClusterMode.SINGLE_NODE_PERSISTED))
 		);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addLocalSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
-		);
+		_verifyNeverSchedule(_allNodesDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any(), Mockito.any()
-		);
+		_verifyNeverSchedule(_notApplicableDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger), Mockito.any(),
-			Mockito.any()
-		);
+		_verifySchedule(
+			_singleNodeMemoryClusteredDispatchTrigger,
+			StorageType.MEMORY_CLUSTERED);
 
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).addSchedulerJob(
-			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY_CLUSTERED), Mockito.any()
-		);
-
-		Mockito.verify(
-			_dispatchTriggerHelper
-		).addSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger),
-			Mockito.eq(StorageType.PERSISTED), Mockito.any()
-		);
+		_verifySchedule(
+			_singleNodePersistedDispatchTrigger, StorageType.PERSISTED);
 
 		_dispatchConfigurator.deactivate();
 
@@ -555,7 +459,7 @@ public class DispatchConfiguratorTest {
 
 		_dispatchConfigurator.activate(_bundleContext);
 
-		Mockito.reset(_dispatchTriggerHelper);
+		Mockito.reset(_schedulerEngineHelper);
 
 		ArgumentCaptor<ClusterMasterTokenTransitionListener> argumentCaptor =
 			ArgumentCaptor.forClass(ClusterMasterTokenTransitionListener.class);
@@ -584,27 +488,16 @@ public class DispatchConfiguratorTest {
 		);
 
 		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addLocalSchedulerJob(
-			Mockito.any(), Mockito.any()
-		);
-
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.any(), Mockito.any(), Mockito.any()
-		);
-
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).deleteLocalSchedulerJob(
+			_schedulerEngineHelper, Mockito.never()
+		).schedule(
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
 			Mockito.any()
 		);
 
 		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).deleteSchedulerJob(
-			Mockito.any(), Mockito.any()
+			_schedulerEngineHelper, Mockito.never()
+		).delete(
+			Mockito.any(), Mockito.any(), Mockito.any()
 		);
 
 		_dispatchConfigurator.deactivate();
@@ -632,7 +525,7 @@ public class DispatchConfiguratorTest {
 
 		_dispatchConfigurator.activate(_bundleContext);
 
-		Mockito.reset(_dispatchTriggerHelper);
+		Mockito.reset(_schedulerEngineHelper);
 
 		ArgumentCaptor<ClusterMasterTokenTransitionListener> argumentCaptor =
 			ArgumentCaptor.forClass(ClusterMasterTokenTransitionListener.class);
@@ -670,31 +563,88 @@ public class DispatchConfiguratorTest {
 
 		clusterMasterTokenTransitionListener.masterTokenAcquired();
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addLocalSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
-		);
+		_verifyNeverSchedule(_allNodesDispatchTrigger);
 
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).addSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any(), Mockito.any()
-		);
-
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).deleteLocalSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger)
-		);
-
-		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
-		).deleteSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
-		);
+		_verifyNeverDelete(_allNodesDispatchTrigger);
 
 		_dispatchConfigurator.deactivate();
+	}
+
+	private String _getGroupName(DispatchTrigger dispatchTrigger) {
+		return StringBundler.concat(
+			"DISPATCH_GROUP_",
+			String.format("%07d", dispatchTrigger.getDispatchTriggerId()), "@",
+			dispatchTrigger.getCompanyId());
+	}
+
+	private String _getJobName(DispatchTrigger dispatchTrigger) {
+		return StringBundler.concat(
+			"DISPATCH_JOB_",
+			String.format("%07d", dispatchTrigger.getDispatchTriggerId()), "@",
+			dispatchTrigger.getCompanyId());
+	}
+
+	private void _verifyDelete(
+			DispatchTrigger dispatchTrigger, StorageType storageType)
+		throws Exception {
+
+		Mockito.verify(
+			_schedulerEngineHelper
+		).delete(
+			_getJobName(dispatchTrigger), _getGroupName(dispatchTrigger),
+			storageType
+		);
+	}
+
+	private void _verifyNeverDelete(DispatchTrigger dispatchTrigger)
+		throws Exception {
+
+		Mockito.verify(
+			_schedulerEngineHelper, Mockito.never()
+		).delete(
+			Mockito.eq(_getJobName(dispatchTrigger)), Mockito.anyString(),
+			Mockito.any()
+		);
+	}
+
+	private void _verifyNeverGetScheduledJob(DispatchTrigger dispatchTrigger)
+		throws Exception {
+
+		Mockito.verify(
+			_schedulerEngineHelper, Mockito.never()
+		).getScheduledJob(
+			Mockito.eq(_getJobName(dispatchTrigger)), Mockito.anyString(),
+			Mockito.any()
+		);
+	}
+
+	private void _verifyNeverSchedule(DispatchTrigger dispatchTrigger)
+		throws Exception {
+
+		String jobName = _getJobName(dispatchTrigger);
+
+		Mockito.verify(
+			_schedulerEngineHelper, Mockito.never()
+		).schedule(
+			Mockito.argThat(trigger -> jobName.equals(trigger.getJobName())),
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()
+		);
+	}
+
+	private void _verifySchedule(
+			DispatchTrigger dispatchTrigger, StorageType storageType)
+		throws Exception {
+
+		String jobName = _getJobName(dispatchTrigger);
+
+		Mockito.verify(
+			_schedulerEngineHelper
+		).schedule(
+			Mockito.argThat(trigger -> jobName.equals(trigger.getJobName())),
+			Mockito.eq(storageType), Mockito.isNull(),
+			Mockito.eq(DispatchConstants.EXECUTOR_DESTINATION_NAME),
+			Mockito.any(Message.class)
+		);
 	}
 
 	@Mock
@@ -714,18 +664,21 @@ public class DispatchConfiguratorTest {
 		new DispatchConfigurator();
 
 	@Mock
-	private DispatchTriggerHelper _dispatchTriggerHelper;
-
-	@Mock
 	private DispatchTriggerLocalService _dispatchTriggerLocalService;
 
 	@Mock
 	private DispatchTrigger _notApplicableDispatchTrigger;
 
 	@Mock
+	private SchedulerEngineHelper _schedulerEngineHelper;
+
+	@Mock
 	private DispatchTrigger _singleNodeMemoryClusteredDispatchTrigger;
 
 	@Mock
 	private DispatchTrigger _singleNodePersistedDispatchTrigger;
+
+	@Mock
+	private TriggerFactory _triggerFactory;
 
 }
