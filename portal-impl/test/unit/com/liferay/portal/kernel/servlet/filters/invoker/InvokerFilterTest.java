@@ -67,14 +67,14 @@ public class InvokerFilterTest {
 
 		portalUtil.setPortal(ProxyFactory.newDummyInstance(Portal.class));
 
+		InvokerFilter invokerFilter = new InvokerFilter();
+
 		MockServletContext mockServletContext = new MockServletContext();
 
 		MockFilterConfig mockFilterConfig = new MockFilterConfig(
 			mockServletContext, "Include Invoker Filter");
 
 		mockFilterConfig.addInitParameter("dispatcher", "INCLUDE");
-
-		InvokerFilter invokerFilter = new InvokerFilter();
 
 		invokerFilter.init(mockFilterConfig);
 
