@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
@@ -38,6 +39,7 @@ import com.liferay.portal.vulcan.permission.PermissionUtil;
 import java.io.Serializable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -251,10 +253,17 @@ public class OAuthClientEntryResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		return DateRangeUtil.filter(
-			OAuthClientEntry::getDateModified,
-			super.read(filter, pagination, sorts, parameters, search),
-			parameters);
+		Page<OAuthClientEntry> page = super.read(
+			filter, pagination, sorts, parameters, search);
+
+		List<OAuthClientEntry> oAuthClientEntries = DateRangeUtil.filter(
+			OAuthClientEntry::getDateModified, page.getItems(), parameters);
+
+		return Page.of(
+			ListUtil.subList(
+				oAuthClientEntries, pagination.getStartPosition(),
+				pagination.getEndPosition()),
+			pagination, oAuthClientEntries.size());
 	}
 
 	private OAuthClientASLocalMetadata _toOAuthClientASLocalMetadata(

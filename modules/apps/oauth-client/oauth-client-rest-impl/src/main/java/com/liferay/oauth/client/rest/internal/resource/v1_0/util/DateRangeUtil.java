@@ -9,11 +9,12 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.vulcan.pagination.Page;
 
 import java.io.Serializable;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -22,35 +23,34 @@ import java.util.function.Function;
  */
 public class DateRangeUtil {
 
-	public static <T> Page<T> filter(
-		Function<T, Date> dateModifiedFunction, Page<T> page,
+	public static <T> List<T> filter(
+		Function<T, Date> dateModifiedFunction, Collection<T> items,
 		Map<String, Serializable> parameters) {
 
 		long endTime = GetterUtil.getLong(parameters.get("endTime"));
 		long startTime = GetterUtil.getLong(parameters.get("startTime"));
 
 		if ((endTime == 0) && (startTime == 0)) {
-			return page;
+			return ListUtil.fromCollection(items);
 		}
 
-		return Page.of(
-			ListUtil.filter(
-				ListUtil.fromCollection(page.getItems()),
-				item -> {
-					Date dateModified = dateModifiedFunction.apply(item);
+		return ListUtil.filter(
+			ListUtil.fromCollection(items),
+			item -> {
+				Date dateModified = dateModifiedFunction.apply(item);
 
-					long time = dateModified.getTime();
+				long time = dateModified.getTime();
 
-					if ((endTime != 0) && (time > endTime)) {
-						return false;
-					}
+				if ((endTime != 0) && (time > endTime)) {
+					return false;
+				}
 
-					if ((startTime != 0) && (time < startTime)) {
-						return false;
-					}
+				if ((startTime != 0) && (time < startTime)) {
+					return false;
+				}
 
-					return true;
-				}));
+				return true;
+			});
 	}
 
 	public static Map<String, Serializable> getParameters(
