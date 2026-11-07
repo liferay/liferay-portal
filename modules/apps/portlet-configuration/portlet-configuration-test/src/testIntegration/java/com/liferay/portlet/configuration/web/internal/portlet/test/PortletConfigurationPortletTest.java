@@ -303,6 +303,7 @@ public class PortletConfigurationPortletTest {
 	}
 
 	@Test
+	@TestInfo("LPD-113588")
 	public void testUpdateRolePermissionsInBulk() throws Exception {
 		List<String> plids = _addLayouts(100);
 		List<Long> roleIds = _addRoles();
@@ -313,12 +314,6 @@ public class PortletConfigurationPortletTest {
 			_getMockActionRequest(plids, roleIds), new MockActionResponse());
 
 		_assertResourcePermissions(plids, roleIds);
-	}
-
-	@Test
-	@TestInfo("LPD-113588")
-	public void testUpdateRolePermissionsInBulkForDLFileEntries()
-		throws Exception {
 
 		FileEntry fileEntry1 = _addFileEntry();
 		FileEntry fileEntry2 = _addFileEntry();
@@ -369,20 +364,14 @@ public class PortletConfigurationPortletTest {
 				ActionKeys.VIEW, false, DLFileEntry.class.getName(),
 				resourcePrimKey, guestRole.getRoleId());
 		}
-	}
 
-	@Test
-	@TestInfo("LPD-113588")
-	public void testUpdateRolePermissionsInBulkForDLFolders() throws Exception {
 		Folder folder1 = _addFolder();
-		Folder folder2 = _addFolder();
 
-		Role guestRole = _roleLocalService.getRole(
-			_company.getCompanyId(), RoleConstants.GUEST);
+		Folder folder2 = _addFolder();
 
 		_removeViewPermission(folder2, guestRole);
 
-		List<String> resourcePrimKeys = Arrays.asList(
+		resourcePrimKeys = Arrays.asList(
 			String.valueOf(folder1.getFolderId()),
 			String.valueOf(folder2.getFolderId()));
 

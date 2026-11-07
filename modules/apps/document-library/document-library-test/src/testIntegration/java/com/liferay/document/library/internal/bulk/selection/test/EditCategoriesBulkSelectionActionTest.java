@@ -75,8 +75,8 @@ public class EditCategoriesBulkSelectionActionTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-113588", "LPS-94955"})
-	public void testExecuteWithAppend() throws Exception {
+	@TestInfo({"LPD-113588", "LPS-94955", "LPS-94956"})
+	public void testExecute() throws Exception {
 		FileEntry fileEntry1 = _addFileEntry();
 		FileEntry fileEntry2 = _addFileEntry();
 
@@ -86,22 +86,18 @@ public class EditCategoriesBulkSelectionActionTest {
 
 		_assertCategoryIds(fileEntry1, _category1.getCategoryId());
 		_assertCategoryIds(fileEntry2, _category1.getCategoryId());
-	}
 
-	@Test
-	@TestInfo({"LPD-113588", "LPS-94956"})
-	public void testExecuteWithAppendRemovingCommonCategory() throws Exception {
-		FileEntry fileEntry1 = _addFileEntry(
+		FileEntry fileEntry3 = _addFileEntry(
 			_category1.getCategoryId(), _category2.getCategoryId());
-		FileEntry fileEntry2 = _addFileEntry(
+		FileEntry fileEntry4 = _addFileEntry(
 			_category1.getCategoryId(), _category3.getCategoryId());
 
 		_execute(
 			true, new long[0], new long[] {_category1.getCategoryId()},
-			fileEntry1, fileEntry2);
+			fileEntry3, fileEntry4);
 
-		_assertCategoryIds(fileEntry1, _category2.getCategoryId());
-		_assertCategoryIds(fileEntry2, _category3.getCategoryId());
+		_assertCategoryIds(fileEntry3, _category2.getCategoryId());
+		_assertCategoryIds(fileEntry4, _category3.getCategoryId());
 	}
 
 	private FileEntry _addFileEntry(long... categoryIds) throws Exception {

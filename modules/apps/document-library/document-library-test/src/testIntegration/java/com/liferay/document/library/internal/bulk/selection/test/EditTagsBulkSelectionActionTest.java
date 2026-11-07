@@ -63,8 +63,8 @@ public class EditTagsBulkSelectionActionTest {
 	}
 
 	@Test
-	@TestInfo("LPD-113588")
-	public void testExecuteWithAppend() throws Exception {
+	@TestInfo({"LPD-113588", "LPS-91586", "LPS-91749"})
+	public void testExecute() throws Exception {
 		FileEntry fileEntry1 = _addFileEntry("tagone");
 		FileEntry fileEntry2 = _addFileEntry("tagone");
 		FileEntry fileEntry3 = _addFileEntry();
@@ -81,52 +81,44 @@ public class EditTagsBulkSelectionActionTest {
 		_assertTagNames(fileEntry1, "tagthree", "tagtwo");
 		_assertTagNames(fileEntry2, "tagthree");
 		_assertTagNames(fileEntry3, "tagthree");
-	}
 
-	@Test
-	@TestInfo({"LPD-113588", "LPS-91749"})
-	public void testExecuteWithAppendCheckedOutFileEntries() throws Exception {
-		FileEntry fileEntry1 = _addFileEntry();
-		FileEntry fileEntry2 = _addFileEntry();
+		FileEntry fileEntry4 = _addFileEntry();
+		FileEntry fileEntry5 = _addFileEntry();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
 		_dlAppService.checkOutFileEntry(
-			fileEntry1.getFileEntryId(), serviceContext);
+			fileEntry4.getFileEntryId(), serviceContext);
 		_dlAppService.checkOutFileEntry(
-			fileEntry2.getFileEntryId(), serviceContext);
+			fileEntry5.getFileEntryId(), serviceContext);
 
 		_execute(
-			true, new String[] {"tagone"}, new String[0], fileEntry1,
-			fileEntry2);
+			true, new String[] {"tagone"}, new String[0], fileEntry4,
+			fileEntry5);
 
-		_assertTagNames(fileEntry1, "tagone");
-		_assertTagNames(fileEntry2, "tagone");
-	}
+		_assertTagNames(fileEntry4, "tagone");
+		_assertTagNames(fileEntry5, "tagone");
 
-	@Test
-	@TestInfo({"LPD-113588", "LPS-91586"})
-	public void testExecuteWithReplace() throws Exception {
-		FileEntry fileEntry1 = _addFileEntry("tag1");
-		FileEntry fileEntry2 = _addFileEntry("tag2");
-		FileEntry fileEntry3 = _addFileEntry("tag3");
+		FileEntry fileEntry6 = _addFileEntry("tag1");
+		FileEntry fileEntry7 = _addFileEntry("tag2");
+		FileEntry fileEntry8 = _addFileEntry("tag3");
 
 		_execute(
 			false, new String[] {"newtag"}, new String[] {"tag1", "tag3"},
-			fileEntry1, fileEntry3);
+			fileEntry6, fileEntry8);
 
-		_assertTagNames(fileEntry1, "newtag");
-		_assertTagNames(fileEntry2, "tag2");
-		_assertTagNames(fileEntry3, "newtag");
+		_assertTagNames(fileEntry6, "newtag");
+		_assertTagNames(fileEntry7, "tag2");
+		_assertTagNames(fileEntry8, "newtag");
 
 		_execute(
-			false, new String[0], new String[] {"newtag", "tag2"}, fileEntry1,
-			fileEntry2);
+			false, new String[0], new String[] {"newtag", "tag2"}, fileEntry6,
+			fileEntry7);
 
-		_assertTagNames(fileEntry1);
-		_assertTagNames(fileEntry2);
-		_assertTagNames(fileEntry3, "newtag");
+		_assertTagNames(fileEntry6);
+		_assertTagNames(fileEntry7);
+		_assertTagNames(fileEntry8, "newtag");
 	}
 
 	private FileEntry _addFileEntry(String... tagNames) throws Exception {
