@@ -5,7 +5,7 @@
 
 package com.liferay.enterprise.product.notification.web.internal.jaxrs.application;
 
-import com.liferay.enterprise.product.notification.web.internal.EPNManager;
+import com.liferay.enterprise.product.notification.web.internal.util.EPNUtil;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -52,7 +52,7 @@ public class EPNApplication extends Application {
 			).build();
 		}
 
-		EPNManager.confirm(_portletPreferencesFactory, userId);
+		EPNUtil.confirm(_portletPreferencesFactory, userId);
 
 		return Response.ok(
 		).build();

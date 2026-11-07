@@ -5,8 +5,8 @@
 
 package com.liferay.enterprise.product.notification.web.internal.servlet.taglib;
 
-import com.liferay.enterprise.product.notification.web.internal.EPNManager;
 import com.liferay.enterprise.product.notification.web.internal.constants.EPNWebKeys;
+import com.liferay.enterprise.product.notification.web.internal.util.EPNUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -46,7 +46,7 @@ public class EPNJSPDynamicInclude extends BaseJSPDynamicInclude {
 			HttpServletResponse httpServletResponse, String key)
 		throws IOException {
 
-		String bodyHTML = EPNManager.getBodyHTML(
+		String bodyHTML = EPNUtil.getBodyHTML(
 			_language, _portal.getLocale(httpServletRequest),
 			_portletPreferencesFactory, _portal.getUserId(httpServletRequest),
 			_userLocalService);
