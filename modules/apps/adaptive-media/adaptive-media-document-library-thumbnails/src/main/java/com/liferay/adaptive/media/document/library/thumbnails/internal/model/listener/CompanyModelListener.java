@@ -5,7 +5,7 @@
 
 package com.liferay.adaptive.media.document.library.thumbnails.internal.model.listener;
 
-import com.liferay.adaptive.media.document.library.thumbnails.internal.util.AMCompanyThumbnailConfigurationInitializer;
+import com.liferay.adaptive.media.document.library.thumbnails.internal.util.AMCompanyThumbnailConfigurationUtil;
 import com.liferay.adaptive.media.exception.AMImageConfigurationException;
 import com.liferay.adaptive.media.image.configuration.AMImageConfigurationHelper;
 import com.liferay.portal.kernel.exception.ModelListenerException;
@@ -30,7 +30,7 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 	@Override
 	public void onAfterCreate(Company company) throws ModelListenerException {
 		try {
-			AMCompanyThumbnailConfigurationInitializer.initializeCompany(
+			AMCompanyThumbnailConfigurationUtil.initializeCompany(
 				_amImageConfigurationHelper, company, _prefsProps);
 		}
 		catch (AMImageConfigurationException | IOException exception) {

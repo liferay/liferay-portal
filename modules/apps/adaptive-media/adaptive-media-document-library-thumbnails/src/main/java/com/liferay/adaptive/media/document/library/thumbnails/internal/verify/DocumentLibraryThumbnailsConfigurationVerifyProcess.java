@@ -5,7 +5,7 @@
 
 package com.liferay.adaptive.media.document.library.thumbnails.internal.verify;
 
-import com.liferay.adaptive.media.document.library.thumbnails.internal.util.AMCompanyThumbnailConfigurationInitializer;
+import com.liferay.adaptive.media.document.library.thumbnails.internal.util.AMCompanyThumbnailConfigurationUtil;
 import com.liferay.adaptive.media.image.configuration.AMImageConfigurationHelper;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -28,7 +28,7 @@ public class DocumentLibraryThumbnailsConfigurationVerifyProcess
 		_companyLocalService.forEachCompany(
 			company -> {
 				try {
-					AMCompanyThumbnailConfigurationInitializer.
+					AMCompanyThumbnailConfigurationUtil.
 						initializeCompany(
 							_amImageConfigurationHelper, company, _prefsProps);
 				}

@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /**
  * @author Adolfo Pérez
  */
-public class AMCompanyThumbnailConfigurationInitializer {
+public class AMCompanyThumbnailConfigurationUtil {
 
 	public static void initializeCompany(
 			AMImageConfigurationHelper amImageConfigurationHelper,
