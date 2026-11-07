@@ -1050,8 +1050,25 @@ public class DBPartitionUtil {
 
 			preparedStatement.executeUpdate();
 		}
-		catch (SQLException sqlException) {
-			throw new PortalException(sqlException);
+		catch (SQLException sqlException1) {
+			DataSource dataSource = InfrastructureUtil.getDataSource();
+
+			try (Connection existsConnection = dataSource.getConnection()) {
+				if (_dbPartitionDB.existsPartition(
+						existsConnection, partitionName)) {
+
+					throw new IllegalArgumentException(
+						StringBundler.concat(
+							"Database partition ", partitionName,
+							" already exists"),
+						sqlException1);
+				}
+			}
+			catch (SQLException sqlException2) {
+				sqlException1.addSuppressed(sqlException2);
+			}
+
+			throw new PortalException(sqlException1);
 		}
 	}
 
