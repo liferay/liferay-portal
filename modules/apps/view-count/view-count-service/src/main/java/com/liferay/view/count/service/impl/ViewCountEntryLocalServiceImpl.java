@@ -21,10 +21,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.mass.delete.MassDeleteCacheThreadLocal;
 import com.liferay.portal.kernel.model.ClassName;
-import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
 import com.liferay.portal.kernel.search.ReindexCacheThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.SQLStateAcceptor;
 import com.liferay.portal.kernel.spring.aop.Property;
 import com.liferay.portal.kernel.spring.aop.Retry;
@@ -33,12 +31,10 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.view.count.ViewCountManager;
 import com.liferay.view.count.configuration.ViewCountConfiguration;
 import com.liferay.view.count.model.ViewCountEntry;
 import com.liferay.view.count.model.ViewCountEntryTable;
 import com.liferay.view.count.model.listener.ViewCountEntryModelListener;
-import com.liferay.view.count.service.ViewCountEntryLocalService;
 import com.liferay.view.count.service.base.ViewCountEntryLocalServiceBaseImpl;
 import com.liferay.view.count.service.persistence.ViewCountEntryPK;
 
@@ -65,7 +61,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 @CTAware
 public class ViewCountEntryLocalServiceImpl
-	extends ViewCountEntryLocalServiceBaseImpl implements ViewCountManager {
+	extends ViewCountEntryLocalServiceBaseImpl {
 
 	@Override
 	public void deleteViewCount(
@@ -101,14 +97,6 @@ public class ViewCountEntryLocalServiceImpl
 		ListUtil.isNotEmptyForEach(
 			viewCountEntries,
 			viewCountEntry -> viewCountEntryPersistence.remove(viewCountEntry));
-	}
-
-	@Override
-	public Class<?>[] getAopInterfaces() {
-		return new Class<?>[] {
-			IdentifiableOSGiService.class, PersistedModelLocalService.class,
-			ViewCountEntryLocalService.class, ViewCountManager.class
-		};
 	}
 
 	@Override
