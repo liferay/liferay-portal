@@ -701,14 +701,17 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 			}
 			catch (IOException ioException) {
 				throw new GitWorkingDirectoryRuntimeException(
-					this, "Unable to find node_modules in " + baseDir,
+					this, "Unable to find \"node_modules\" in " + baseDir,
 					ioException);
 			}
 		}
 
 		Collections.sort(yarnCacheFilePaths);
 
-		for (String yarnCacheFilePath : _YARN_CACHE_FILE_PATHS) {
+		for (String yarnCacheFilePath : new String[] {
+				"build/node", "modules/frontend-sdk/prettier-plugin/dist",
+				"modules/yarn.lock"
+			}) {
 			File yarnCacheFile = new File(workingDirectory, yarnCacheFilePath);
 
 			if (!yarnCacheFile.exists()) {
@@ -874,11 +877,6 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 	private static final String[] _JS_BASE_DIR_NAMES = {
 		"modules", "workspaces"
-	};
-
-	private static final String[] _YARN_CACHE_FILE_PATHS = {
-		"build/node", "modules/frontend-sdk/prettier-plugin/dist",
-		"modules/yarn.lock"
 	};
 
 	private static final Pattern _esBuildFileNamePattern = Pattern.compile(
