@@ -162,7 +162,6 @@ public class BaseDBProcessTest extends BaseDBProcess {
 
 		Assert.assertFalse(
 			_dbInspector.hasColumn(_TABLE_NAME, "typeVarcharDefault"));
-
 		Assert.assertTrue(
 			_dbInspector.hasColumnType(
 				_TABLE_NAME, "typeVarcharDefaultTest",
