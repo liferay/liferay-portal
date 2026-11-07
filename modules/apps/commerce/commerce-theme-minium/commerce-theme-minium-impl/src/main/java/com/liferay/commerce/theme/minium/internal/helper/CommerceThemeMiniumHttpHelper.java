@@ -35,14 +35,20 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Marco Leo
  */
-@Component(service = CommerceThemeMiniumHttpHelper.class)
 public class CommerceThemeMiniumHttpHelper {
+
+	public CommerceThemeMiniumHttpHelper(
+		CommerceAccountHelper commerceAccountHelper, Language language,
+		PanelAppRegistry panelAppRegistry, Portal portal) {
+
+		_commerceAccountHelper = commerceAccountHelper;
+		_language = language;
+		_panelAppRegistry = panelAppRegistry;
+		_portal = portal;
+	}
 
 	public String getAccountManagementPortletURL(
 			HttpServletRequest httpServletRequest)
@@ -159,16 +165,9 @@ public class CommerceThemeMiniumHttpHelper {
 		return String.valueOf(portletURL);
 	}
 
-	@Reference
-	private CommerceAccountHelper _commerceAccountHelper;
-
-	@Reference
-	private Language _language;
-
-	@Reference
-	private PanelAppRegistry _panelAppRegistry;
-
-	@Reference
-	private Portal _portal;
+	private final CommerceAccountHelper _commerceAccountHelper;
+	private final Language _language;
+	private final PanelAppRegistry _panelAppRegistry;
+	private final Portal _portal;
 
 }
