@@ -6,6 +6,7 @@
 package com.liferay.enterprise.product.notification.web.internal.jaxrs.application;
 
 import com.liferay.enterprise.product.notification.web.internal.EPNManager;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,7 +52,7 @@ public class EPNApplication extends Application {
 			).build();
 		}
 
-		_epnManager.confirm(userId);
+		EPNManager.confirm(_portletPreferencesFactory, userId);
 
 		return Response.ok(
 		).build();
@@ -62,9 +63,9 @@ public class EPNApplication extends Application {
 	}
 
 	@Reference
-	private EPNManager _epnManager;
+	private Portal _portal;
 
 	@Reference
-	private Portal _portal;
+	private PortletPreferencesFactory _portletPreferencesFactory;
 
 }

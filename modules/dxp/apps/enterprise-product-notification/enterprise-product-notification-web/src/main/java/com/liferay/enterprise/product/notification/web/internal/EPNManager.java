@@ -23,18 +23,16 @@ import com.liferay.portal.kernel.util.PropsValues;
 
 import java.util.Locale;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Drew Brokke
  */
-@Component(service = EPNManager.class)
 public class EPNManager {
 
-	public void confirm(long userId) {
+	public static void confirm(
+		PortletPreferencesFactory portletPreferencesFactory, long userId) {
+
 		PortalPreferences portalPreferences =
-			_portletPreferencesFactory.getPortalPreferences(userId, true);
+			portletPreferencesFactory.getPortalPreferences(userId, true);
 
 		portalPreferences.resetValues(_NAMESPACE);
 
@@ -47,7 +45,11 @@ public class EPNManager {
 				keyValuePair -> keyValuePair.getKey(), String.class));
 	}
 
-	public String getBodyHTML(Locale locale, long userId) {
+	public static String getBodyHTML(
+		Language language, Locale locale,
+		PortletPreferencesFactory portletPreferencesFactory, long userId,
+		UserLocalService userLocalService) {
+
 		if (PortalRunMode.isTestMode() ||
 			!PropsValues.ENTERPRISE_PRODUCT_NOTIFICATION_ENABLED ||
 			(userId == 0L)) {
@@ -55,7 +57,7 @@ public class EPNManager {
 			return null;
 		}
 
-		User user = _userLocalService.fetchUser(userId);
+		User user = userLocalService.fetchUser(userId);
 
 		if ((user == null) || !user.isSetupComplete()) {
 			return null;
@@ -72,7 +74,7 @@ public class EPNManager {
 		StringBundler sb = new StringBundler();
 
 		PortalPreferences portalPreferences =
-			_portletPreferencesFactory.getPortalPreferences(userId, true);
+			portletPreferencesFactory.getPortalPreferences(userId, true);
 
 		String[] confirmedKeys = GetterUtil.getStringValues(
 			portalPreferences.getValues(_NAMESPACE, "confirmedKeys"));
@@ -86,24 +88,24 @@ public class EPNManager {
 
 			sb.append("<div><h2 class=\"h4\">");
 			sb.append(
-				_language.get(
+				language.get(
 					locale,
 					"enterprise-product-notification-title[" + key + "]"));
 			sb.append("</h2><div>");
 			sb.append(
-				_language.format(
+				language.format(
 					locale, "enterprise-product-notification-body[" + key + "]",
 					new String[] {
 						String.format(
 							StringBundler.concat(
 								"<a class=\"lfr-portal-tooltip ",
 								"text-decoration-underline\" data-title=\"",
-								_language.get(locale, "opens-new-window"),
+								language.get(locale, "opens-new-window"),
 								"\" href=\"%s\" target=\"_blank\">"),
 							"https://learn.liferay.com/" +
 								keyValuePair.getValue()),
 						"<span class=\"sr-only\">" +
-							_language.get(locale, "opens-new-window") +
+							language.get(locale, "opens-new-window") +
 								"</span></a>",
 						"<a class=\"text-decoration-underline\" " +
 							"href=\"mailto:sales@liferay.com\">" +
@@ -115,7 +117,7 @@ public class EPNManager {
 		return sb.toString();
 	}
 
-	private boolean _isEnabled(String key) {
+	private static boolean _isEnabled(String key) {
 		return GetterUtil.getBoolean(
 			PropsUtil.get("enterprise.product." + key + ".enabled"));
 	}
@@ -123,20 +125,11 @@ public class EPNManager {
 	private static final String _NAMESPACE =
 		"com.liferay.enterprise.product.notification.web";
 
-	private final KeyValuePair[] _keyValuePairs = {
+	private static final KeyValuePair[] _keyValuePairs = {
 		new KeyValuePair(
 			"enterprise.search",
 			"w/dxp/search/liferay-enterprise-search" +
 				"/deactivating-liferay-enterprise-search")
 	};
-
-	@Reference
-	private Language _language;
-
-	@Reference
-	private PortletPreferencesFactory _portletPreferencesFactory;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }
