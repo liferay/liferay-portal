@@ -65,7 +65,7 @@ import org.junit.runner.RunWith;
  * @author Roberto Díaz
  */
 @RunWith(Arquillian.class)
-public class DepotEntryAdminSearchProviderTest {
+public class DepotEntryAdminSearchUtilTest {
 
 	@ClassRule
 	@Rule
@@ -82,8 +82,8 @@ public class DepotEntryAdminSearchProviderTest {
 
 		Class<?> mvcRenderCommandClass = _mvcRenderCommand.getClass();
 
-		_depotEntryAdminSearchProviderClass = Class.forName(
-			"com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider",
+		_depotEntryAdminSearchUtilClass = Class.forName(
+			"com.liferay.depot.web.internal.util.DepotEntryAdminSearchUtil",
 			true, mvcRenderCommandClass.getClassLoader());
 
 		_addDepotEntries();
@@ -105,7 +105,7 @@ public class DepotEntryAdminSearchProviderTest {
 		_assertDepotEntries(
 			5,
 			ReflectionTestUtil.invoke(
-				_depotEntryAdminSearchProviderClass, "getDepotEntrySearch",
+				_depotEntryAdminSearchUtilClass, "getDepotEntrySearch",
 				new Class<?>[] {
 					DepotEntryService.class, GroupItemSelectorCriterion.class,
 					Language.class, PortletRequest.class, PortletResponse.class,
@@ -160,7 +160,7 @@ public class DepotEntryAdminSearchProviderTest {
 		mockLiferayPortletActionRequest.setParameter("keywords", keywords);
 
 		DepotEntrySearch depotEntrySearch = ReflectionTestUtil.invoke(
-			_depotEntryAdminSearchProviderClass, "getDepotEntrySearch",
+			_depotEntryAdminSearchUtilClass, "getDepotEntrySearch",
 			new Class<?>[] {
 				DepotEntryService.class, GroupItemSelectorCriterion.class,
 				Language.class, PortletRequest.class, PortletResponse.class,
@@ -209,8 +209,7 @@ public class DepotEntryAdminSearchProviderTest {
 				_assertDepotEntries(
 					1,
 					ReflectionTestUtil.invoke(
-						_depotEntryAdminSearchProviderClass,
-						"getDepotEntrySearch",
+						_depotEntryAdminSearchUtilClass, "getDepotEntrySearch",
 						new Class<?>[] {
 							DepotEntryService.class,
 							GroupItemSelectorCriterion.class, Language.class,
@@ -264,7 +263,7 @@ public class DepotEntryAdminSearchProviderTest {
 		_assertDepotEntries(
 			3,
 			ReflectionTestUtil.invoke(
-				_depotEntryAdminSearchProviderClass, "getDepotEntrySearch",
+				_depotEntryAdminSearchUtilClass, "getDepotEntrySearch",
 				new Class<?>[] {
 					DepotEntryService.class, GroupItemSelectorCriterion.class,
 					Language.class, PortletRequest.class, PortletResponse.class,
@@ -348,7 +347,7 @@ public class DepotEntryAdminSearchProviderTest {
 			WebKeys.THEME_DISPLAY, _getThemeDisplay());
 
 		return ReflectionTestUtil.invoke(
-			_depotEntryAdminSearchProviderClass, "getGroupSearch",
+			_depotEntryAdminSearchUtilClass, "getGroupSearch",
 			new Class<?>[] {
 				DepotEntryService.class, GroupItemSelectorCriterion.class,
 				Language.class, PortletRequest.class, PortletResponse.class,
@@ -377,7 +376,7 @@ public class DepotEntryAdminSearchProviderTest {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	private Class<?> _depotEntryAdminSearchProviderClass;
+	private Class<?> _depotEntryAdminSearchUtilClass;
 
 	@Inject
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;

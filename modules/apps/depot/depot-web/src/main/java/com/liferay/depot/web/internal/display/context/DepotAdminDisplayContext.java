@@ -14,7 +14,7 @@ import com.liferay.depot.service.DepotEntryService;
 import com.liferay.depot.service.DepotEntryServiceUtil;
 import com.liferay.depot.web.internal.frontend.taglib.clay.servlet.taglib.DepotEntryVerticalCard;
 import com.liferay.depot.web.internal.servlet.taglib.util.DepotActionDropdownItemsProvider;
-import com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider;
+import com.liferay.depot.web.internal.util.DepotEntryAdminSearchUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -174,7 +174,7 @@ public class DepotAdminDisplayContext {
 			(PortletResponse)_liferayPortletRequest.getAttribute(
 				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
-		_depotEntrySearch = DepotEntryAdminSearchProvider.getDepotEntrySearch(
+		_depotEntrySearch = DepotEntryAdminSearchUtil.getDepotEntrySearch(
 			_depotEntryService, DepotConstants.TYPE_ASSET_LIBRARY, _language,
 			portletRequest, portletResponse, _getPortletURL());
 

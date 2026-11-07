@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * @author Roberto Díaz
  */
-public class DepotEntryAdminSearchProvider {
+public class DepotEntryAdminSearchUtil {
 
 	public static DepotEntrySearch getDepotEntrySearch(
 			DepotEntryService depotEntryService,

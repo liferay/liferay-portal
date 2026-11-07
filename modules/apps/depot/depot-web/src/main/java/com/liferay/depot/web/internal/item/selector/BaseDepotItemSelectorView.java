@@ -7,7 +7,7 @@ package com.liferay.depot.web.internal.item.selector;
 
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.depot.web.internal.application.list.DepotPanelAppController;
-import com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider;
+import com.liferay.depot.web.internal.util.DepotEntryAdminSearchUtil;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.GroupItemSelectorReturnType;
@@ -181,7 +181,7 @@ public abstract class BaseDepotItemSelectorView
 					_groupItemSelectorCriterion);
 
 				GroupSearch groupSearch =
-					DepotEntryAdminSearchProvider.getGroupSearch(
+					DepotEntryAdminSearchUtil.getGroupSearch(
 						depotEntryService, _groupItemSelectorCriterion,
 						language, getPortletRequest(), getPortletResponse(),
 						getPortletURL());
