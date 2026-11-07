@@ -21,17 +21,42 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.util.List;
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author David Truong
  */
-@Component(service = CTSchemaVersionHelper.class)
-public class CTSchemaVersionHelper {
+public class CTCollectionExpirationUtil {
 
-	public void expireCTCollection(CTCollection ctCollection) {
-		if (_ctSchemaVersionLocalService.isLatestCTSchemaVersion(
+	public static void expireCTCollections(
+		CTCollectionLocalService ctCollectionLocalService,
+		CTSchemaVersionLocalService ctSchemaVersionLocalService) {
+
+		for (CTCollection ctCollection :
+				ctCollectionLocalService.<List<CTCollection>>dslQuery(
+					DSLQueryFactoryUtil.select(
+						CTCollectionTable.INSTANCE
+					).from(
+						CTCollectionTable.INSTANCE
+					).where(
+						CTCollectionTable.INSTANCE.status.eq(
+							WorkflowConstants.STATUS_DRAFT
+						).or(
+							CTCollectionTable.INSTANCE.status.eq(
+								WorkflowConstants.STATUS_INCOMPLETE)
+						)
+					))) {
+
+			_expireCTCollection(
+				ctCollection, ctCollectionLocalService,
+				ctSchemaVersionLocalService);
+		}
+	}
+
+	private static void _expireCTCollection(
+		CTCollection ctCollection,
+		CTCollectionLocalService ctCollectionLocalService,
+		CTSchemaVersionLocalService ctSchemaVersionLocalService) {
+
+		if (ctSchemaVersionLocalService.isLatestCTSchemaVersion(
 				ctCollection.getSchemaVersionId())) {
 
 			return;
@@ -39,7 +64,7 @@ public class CTSchemaVersionHelper {
 
 		try {
 			Map<Long, List<ConflictInfo>> conflictMap =
-				_ctCollectionLocalService.checkConflicts(ctCollection);
+				ctCollectionLocalService.checkConflicts(ctCollection);
 
 			for (Map.Entry<Long, List<ConflictInfo>> entry :
 					conflictMap.entrySet()) {
@@ -54,7 +79,7 @@ public class CTSchemaVersionHelper {
 							WorkflowConstants.STATUS_EXPIRED);
 
 						ctCollection =
-							_ctCollectionLocalService.updateCTCollection(
+							ctCollectionLocalService.updateCTCollection(
 								ctCollection);
 
 						return;
@@ -63,13 +88,13 @@ public class CTSchemaVersionHelper {
 			}
 
 			CTSchemaVersion ctSchemaVersion =
-				_ctSchemaVersionLocalService.getLatestCTSchemaVersion(
+				ctSchemaVersionLocalService.getLatestCTSchemaVersion(
 					ctCollection.getCompanyId());
 
 			ctCollection.setSchemaVersionId(
 				ctSchemaVersion.getSchemaVersionId());
 
-			ctCollection = _ctCollectionLocalService.updateCTCollection(
+			ctCollection = ctCollectionLocalService.updateCTCollection(
 				ctCollection);
 		}
 		catch (PortalException portalException) {
@@ -79,37 +104,11 @@ public class CTSchemaVersionHelper {
 
 			ctCollection.setStatus(WorkflowConstants.STATUS_EXPIRED);
 
-			_ctCollectionLocalService.updateCTCollection(ctCollection);
-		}
-	}
-
-	public void expireCTCollections() {
-		for (CTCollection ctCollection :
-				_ctCollectionLocalService.<List<CTCollection>>dslQuery(
-					DSLQueryFactoryUtil.select(
-						CTCollectionTable.INSTANCE
-					).from(
-						CTCollectionTable.INSTANCE
-					).where(
-						CTCollectionTable.INSTANCE.status.eq(
-							WorkflowConstants.STATUS_DRAFT
-						).or(
-							CTCollectionTable.INSTANCE.status.eq(
-								WorkflowConstants.STATUS_INCOMPLETE)
-						)
-					))) {
-
-			expireCTCollection(ctCollection);
+			ctCollectionLocalService.updateCTCollection(ctCollection);
 		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		CTSchemaVersionHelper.class);
-
-	@Reference
-	private CTCollectionLocalService _ctCollectionLocalService;
-
-	@Reference
-	private CTSchemaVersionLocalService _ctSchemaVersionLocalService;
+		CTCollectionExpirationUtil.class);
 
 }

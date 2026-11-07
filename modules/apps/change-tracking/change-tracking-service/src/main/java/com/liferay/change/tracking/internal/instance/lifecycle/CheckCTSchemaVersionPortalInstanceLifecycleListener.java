@@ -5,9 +5,10 @@
 
 package com.liferay.change.tracking.internal.instance.lifecycle;
 
-import com.liferay.change.tracking.internal.util.CTSchemaVersionHelper;
+import com.liferay.change.tracking.internal.util.CTCollectionExpirationUtil;
 import com.liferay.change.tracking.model.CTSchemaVersion;
 import com.liferay.change.tracking.model.CTSchemaVersionTable;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTSchemaVersionLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
@@ -48,12 +49,13 @@ public class CheckCTSchemaVersionPortalInstanceLifecycleListener
 			!_ctSchemaVersionLocalService.isLatestCTSchemaVersion(
 				ctSchemaVersions.get(0), false)) {
 
-			_ctSchemaVersionHelper.expireCTCollections();
+			CTCollectionExpirationUtil.expireCTCollections(
+				_ctCollectionLocalService, _ctSchemaVersionLocalService);
 		}
 	}
 
 	@Reference
-	private CTSchemaVersionHelper _ctSchemaVersionHelper;
+	private CTCollectionLocalService _ctCollectionLocalService;
 
 	@Reference
 	private CTSchemaVersionLocalService _ctSchemaVersionLocalService;

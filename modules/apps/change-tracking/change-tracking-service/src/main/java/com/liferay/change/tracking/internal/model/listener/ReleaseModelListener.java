@@ -5,7 +5,9 @@
 
 package com.liferay.change.tracking.internal.model.listener;
 
-import com.liferay.change.tracking.internal.util.CTSchemaVersionHelper;
+import com.liferay.change.tracking.internal.util.CTCollectionExpirationUtil;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTSchemaVersionLocalService;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.Release;
@@ -26,13 +28,15 @@ public class ReleaseModelListener extends BaseModelListener<Release> {
 	@Override
 	public void onAfterCreate(Release release) {
 		if (!Objects.equals(release.getSchemaVersion(), "0.0.0")) {
-			_ctSchemaVersionHelper.expireCTCollections();
+			CTCollectionExpirationUtil.expireCTCollections(
+				_ctCollectionLocalService, _ctSchemaVersionLocalService);
 		}
 	}
 
 	@Override
 	public void onAfterRemove(Release release) {
-		_ctSchemaVersionHelper.expireCTCollections();
+		CTCollectionExpirationUtil.expireCTCollections(
+			_ctCollectionLocalService, _ctSchemaVersionLocalService);
 	}
 
 	@Override
@@ -48,13 +52,17 @@ public class ReleaseModelListener extends BaseModelListener<Release> {
 			if ((version1.getMajor() != version2.getMajor()) ||
 				(version1.getMinor() != version2.getMinor())) {
 
-				_ctSchemaVersionHelper.expireCTCollections();
+				CTCollectionExpirationUtil.expireCTCollections(
+					_ctCollectionLocalService, _ctSchemaVersionLocalService);
 			}
 		}
 	}
 
 	@Reference
-	private CTSchemaVersionHelper _ctSchemaVersionHelper;
+	private CTCollectionLocalService _ctCollectionLocalService;
+
+	@Reference
+	private CTSchemaVersionLocalService _ctSchemaVersionLocalService;
 
 	@Reference(target = ModuleServiceLifecycle.PORTLETS_INITIALIZED)
 	private ModuleServiceLifecycle _moduleServiceLifecycle;
