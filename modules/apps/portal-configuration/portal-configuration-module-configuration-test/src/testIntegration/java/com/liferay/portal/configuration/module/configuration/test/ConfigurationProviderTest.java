@@ -70,7 +70,7 @@ public class ConfigurationProviderTest {
 
 	@Test
 	public void testDeleteCompanyConfiguration() throws Exception {
-		long companyId = RandomTestUtil.randomLong();
+		long companyId = CompanyThreadLocal.getCompanyId();
 
 		ExtendedObjectClassDefinition.Scope scope =
 			ExtendedObjectClassDefinition.Scope.COMPANY;
@@ -154,7 +154,7 @@ public class ConfigurationProviderTest {
 		_properties.put("key1", "companyValue1");
 		_properties.put("key2", "companyValue2");
 
-		long companyId = RandomTestUtil.randomLong();
+		long companyId = CompanyThreadLocal.getCompanyId();
 
 		_configurationProvider.saveCompanyConfiguration(
 			TestConfiguration.class, companyId, _properties);
