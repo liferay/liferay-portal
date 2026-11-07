@@ -1630,8 +1630,9 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 
 		WorkflowTask workflowTask = _getWorkflowTask();
 
-		Date date = new Date(System.currentTimeMillis() + Time.DAY);
 		long workflowTaskId = workflowTask.getWorkflowTaskId();
+
+		Date date = new Date(System.currentTimeMillis() + Time.DAY);
 
 		workflowTask = _workflowTaskManager.updateDueDate(
 			_siteAdminUser.getCompanyId(), _siteAdminUser.getUserId(),
