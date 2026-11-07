@@ -574,6 +574,17 @@ public abstract class BaseSamlTestCase {
 		);
 	}
 
+	private void _setUpHttpClientFactory() {
+		httpClientFactory = new HttpClientFactory() {
+
+			@Override
+			public HttpClient getHttpClient() {
+				return httpClient;
+			}
+
+		};
+	}
+
 	private void _setUpIdentifiers() {
 		samlIdentifierGenerator = IdentifierGeneratorStrategyFactory.create(16);
 
@@ -744,17 +755,6 @@ public abstract class BaseSamlTestCase {
 
 		userLocalService = getMockPortalService(
 			UserLocalServiceUtil.class, UserLocalService.class);
-	}
-
-	private void _setUpHttpClientFactory() {
-		httpClientFactory = new HttpClientFactory() {
-
-			@Override
-			public HttpClient getHttpClient() {
-				return httpClient;
-			}
-
-		};
 	}
 
 	private void _setUpSamlPeerBindingsLocalService() throws Exception {
