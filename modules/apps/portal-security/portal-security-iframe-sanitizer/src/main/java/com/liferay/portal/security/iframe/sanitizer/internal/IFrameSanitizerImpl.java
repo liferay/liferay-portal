@@ -22,8 +22,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 
 /**
  * @author Roberto Díaz
@@ -80,6 +83,24 @@ public class IFrameSanitizerImpl implements Sanitizer {
 		return sb.toString();
 	}
 
+	@Activate
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
+		_iFrameConfigurationHelper = new IFrameConfigurationHelper(
+			bundleContext, properties);
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_iFrameConfigurationHelper.destroy();
+	}
+
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		_iFrameConfigurationHelper.modified(properties);
+	}
+
 	private Document _getDocument(String content) {
 		Document document = Jsoup.parseBodyFragment(content);
 
@@ -118,7 +139,6 @@ public class IFrameSanitizerImpl implements Sanitizer {
 		return false;
 	}
 
-	@Reference
 	private IFrameConfigurationHelper _iFrameConfigurationHelper;
 
 }

@@ -26,19 +26,29 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 
 /**
  * @author Alicia García
  */
-@Component(
-	configurationPid = "com.liferay.portal.security.iframe.sanitizer.configuration.IFrameConfiguration",
-	service = IFrameConfigurationHelper.class
-)
 public class IFrameConfigurationHelper {
+
+	public IFrameConfigurationHelper(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
+		modified(properties);
+
+		_serviceRegistration = bundleContext.registerService(
+			ManagedServiceFactory.class,
+			new IFrameConfigurationManagedServiceFactory(),
+			MapUtil.singletonDictionary(
+				Constants.SERVICE_PID,
+				"com.liferay.portal.security.iframe.sanitizer.configuration." +
+					"IFrameConfiguration.scoped"));
+	}
+
+	public void destroy() {
+		_serviceRegistration.unregister();
+	}
 
 	public Set<String> getCompanyBlacklist(long companyId) {
 		return _companyBlacklist.getOrDefault(companyId, _defaultBlacklist);
@@ -53,28 +63,7 @@ public class IFrameConfigurationHelper {
 		return _companyWhitelist.getOrDefault(companyId, _defaultWhitelist);
 	}
 
-	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
-		modified(properties);
-
-		_serviceRegistration = bundleContext.registerService(
-			ManagedServiceFactory.class,
-			new IFrameConfigurationManagedServiceFactory(),
-			MapUtil.singletonDictionary(
-				Constants.SERVICE_PID,
-				"com.liferay.portal.security.iframe.sanitizer.configuration." +
-					"IFrameConfiguration.scoped"));
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_serviceRegistration.unregister();
-	}
-
-	@Modified
-	protected void modified(Map<String, Object> properties) {
+	public void modified(Map<String, Object> properties) {
 		_defaultIFrameConfiguration = ConfigurableUtil.createConfigurable(
 			IFrameConfiguration.class, properties);
 
@@ -152,7 +141,8 @@ public class IFrameConfigurationHelper {
 	private volatile Set<String> _defaultBlacklist = new HashSet<>();
 	private volatile IFrameConfiguration _defaultIFrameConfiguration;
 	private volatile Set<String> _defaultWhitelist = new HashSet<>();
-	private ServiceRegistration<ManagedServiceFactory> _serviceRegistration;
+	private final ServiceRegistration<ManagedServiceFactory>
+		_serviceRegistration;
 
 	private class IFrameConfigurationManagedServiceFactory
 		implements ManagedServiceFactory {
