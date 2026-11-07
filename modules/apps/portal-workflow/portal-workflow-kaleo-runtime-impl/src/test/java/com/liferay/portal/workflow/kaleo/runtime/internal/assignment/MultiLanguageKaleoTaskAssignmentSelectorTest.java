@@ -6,6 +6,7 @@
 package com.liferay.portal.workflow.kaleo.runtime.internal.assignment;
 
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
@@ -170,6 +171,9 @@ public class MultiLanguageKaleoTaskAssignmentSelectorTest {
 		ReflectionTestUtil.setFieldValue(
 			multiLanguageKaleoTaskAssignmentSelector,
 			"_kaleoInstanceLocalService", _getKaleoInstanceLocalService());
+		ReflectionTestUtil.setFieldValue(
+			multiLanguageKaleoTaskAssignmentSelector, "_multiVMPool",
+			Mockito.mock(MultiVMPool.class));
 
 		KaleoTaskAssignmentFactory kaleoTaskAssignmentFactory = Mockito.mock(
 			KaleoTaskAssignmentFactory.class);

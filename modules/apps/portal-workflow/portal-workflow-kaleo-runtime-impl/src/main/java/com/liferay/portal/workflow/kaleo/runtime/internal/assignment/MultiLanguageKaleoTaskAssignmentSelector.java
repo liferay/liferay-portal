@@ -8,6 +8,8 @@ package com.liferay.portal.workflow.kaleo.runtime.internal.assignment;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
@@ -16,11 +18,11 @@ import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.assignment.BaseKaleoTaskAssignmentSelector;
 import com.liferay.portal.workflow.kaleo.runtime.assignment.KaleoTaskAssignmentSelector;
 import com.liferay.portal.workflow.kaleo.runtime.assignment.ScriptingAssigneeSelector;
-import com.liferay.portal.workflow.kaleo.runtime.internal.cache.KaleoTaskScriptedAssignmentCache;
 import com.liferay.portal.workflow.kaleo.runtime.internal.configuration.WorkflowTaskScriptConfiguration;
 import com.liferay.portal.workflow.kaleo.runtime.internal.util.ServiceSelectorUtil;
 import com.liferay.portal.workflow.kaleo.service.KaleoInstanceLocalService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -72,9 +74,8 @@ public class MultiLanguageKaleoTaskAssignmentSelector
 				scriptedAssignmentCacheExpirationTime();
 
 		if (scriptedAssignmentCacheExpirationTime > 0) {
-			kaleoTaskAssignments =
-				_kaleoTaskScriptedAssignmentCache.getKaleoTaskAssignments(
-					kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId());
+			kaleoTaskAssignments = _portalCache.get(
+				kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId());
 		}
 
 		if (kaleoTaskAssignments == null) {
@@ -83,9 +84,9 @@ public class MultiLanguageKaleoTaskAssignmentSelector
 					executionContext, kaleoTaskAssignment));
 
 			if (scriptedAssignmentCacheExpirationTime > 0) {
-				_kaleoTaskScriptedAssignmentCache.putKaleoTaskAssignments(
+				_portalCache.put(
 					kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId(),
-					kaleoTaskAssignments,
+					new ArrayList<>(kaleoTaskAssignments),
 					scriptedAssignmentCacheExpirationTime * 60);
 			}
 		}
@@ -99,6 +100,11 @@ public class MultiLanguageKaleoTaskAssignmentSelector
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
+		_portalCache =
+			(PortalCache<Long, ArrayList<KaleoTaskAssignment>>)
+				_multiVMPool.getPortalCache(
+					MultiLanguageKaleoTaskAssignmentSelector.class.getName());
+
 		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 			bundleContext, ScriptingAssigneeSelector.class,
 			"scripting.language");
@@ -106,6 +112,9 @@ public class MultiLanguageKaleoTaskAssignmentSelector
 
 	@Deactivate
 	protected void deactivate() {
+		_multiVMPool.removePortalCache(
+			MultiLanguageKaleoTaskAssignmentSelector.class.getName());
+
 		_serviceTrackerMap.close();
 	}
 
@@ -116,8 +125,9 @@ public class MultiLanguageKaleoTaskAssignmentSelector
 	private KaleoInstanceLocalService _kaleoInstanceLocalService;
 
 	@Reference
-	private KaleoTaskScriptedAssignmentCache _kaleoTaskScriptedAssignmentCache;
+	private MultiVMPool _multiVMPool;
 
+	private PortalCache<Long, ArrayList<KaleoTaskAssignment>> _portalCache;
 	private ServiceTrackerMap<String, List<ScriptingAssigneeSelector>>
 		_serviceTrackerMap;
 
