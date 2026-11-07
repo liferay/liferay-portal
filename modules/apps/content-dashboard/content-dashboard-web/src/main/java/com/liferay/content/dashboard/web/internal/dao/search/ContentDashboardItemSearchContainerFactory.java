@@ -13,7 +13,7 @@ import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPort
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactoryRegistry;
 import com.liferay.content.dashboard.web.internal.item.filter.ContentDashboardItemFilterProviderRegistry;
 import com.liferay.content.dashboard.web.internal.search.request.ContentDashboardSearchContextBuilder;
-import com.liferay.content.dashboard.web.internal.searcher.ContentDashboardSearchRequestBuilderFactory;
+import com.liferay.content.dashboard.web.internal.util.ContentDashboardSearchRequestBuilderUtil;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -189,7 +189,7 @@ public class ContentDashboardItemSearchContainerFactory {
 		).build();
 
 		return _searcher.search(
-			ContentDashboardSearchRequestBuilderFactory.builder(
+			ContentDashboardSearchRequestBuilderUtil.builder(
 				_contentDashboardItemFactoryRegistry,
 				_infoSearchClassMapperRegistry, searchContext,
 				_searchRequestBuilderFactory

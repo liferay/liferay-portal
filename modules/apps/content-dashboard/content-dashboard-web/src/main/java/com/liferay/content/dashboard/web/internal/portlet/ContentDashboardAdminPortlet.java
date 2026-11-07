@@ -19,8 +19,8 @@ import com.liferay.content.dashboard.web.internal.display.context.ContentDashboa
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactoryRegistry;
 import com.liferay.content.dashboard.web.internal.item.filter.ContentDashboardItemFilterProviderRegistry;
 import com.liferay.content.dashboard.web.internal.search.request.ContentDashboardSearchContextBuilder;
-import com.liferay.content.dashboard.web.internal.searcher.ContentDashboardSearchRequestBuilderFactory;
 import com.liferay.content.dashboard.web.internal.servlet.taglib.util.ContentDashboardDropdownItemsProvider;
+import com.liferay.content.dashboard.web.internal.util.ContentDashboardSearchRequestBuilderUtil;
 import com.liferay.content.dashboard.web.internal.util.ContentDashboardUtil;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
 import com.liferay.item.selector.ItemSelector;
@@ -101,7 +101,7 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 		ContentDashboardDataProvider contentDashboardDataProvider =
 			new ContentDashboardDataProvider(
 				_aggregations, _portal.getLocale(renderRequest), resourceBundle,
-				ContentDashboardSearchRequestBuilderFactory.builder(
+				ContentDashboardSearchRequestBuilderUtil.builder(
 					_contentDashboardItemFactoryRegistry,
 					_infoSearchClassMapperRegistry,
 					contentDashboardSearchContextBuilder.build(),
