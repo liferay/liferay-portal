@@ -13,7 +13,10 @@ import com.liferay.portal.url.builder.internal.util.CacheHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -31,7 +34,16 @@ public class AbsolutePortalURLBuilderFactoryImpl
 			_cacheHelper, _hashedFilesRegistry, _portal, httpServletRequest);
 	}
 
-	@Reference
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_cacheHelper = new CacheHelper(bundleContext);
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_cacheHelper.destroy();
+	}
+
 	private CacheHelper _cacheHelper;
 
 	@Reference
