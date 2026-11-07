@@ -12,8 +12,11 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
@@ -217,9 +220,12 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 		Dictionary<String, Object> properties = _createDictionary(
 			_MAX_NUMBER_OF_PAGES_KEY, 7);
 
+		_company = CompanyTestUtil.addCompany();
+
 		_createScopedConfiguration(
 			_CLASS_NAME_PDF_PREVIEW_CONFIGURATION, properties,
-			ExtendedObjectClassDefinition.Scope.COMPANY, 77777L);
+			ExtendedObjectClassDefinition.Scope.COMPANY,
+			_company.getCompanyId());
 
 		properties = _createDictionary(_MAX_NUMBER_OF_PAGES_KEY, 5);
 
@@ -253,7 +259,8 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 			_assertConfigurationValuesEquals(
 				_getScopedConfiguration(
 					_CLASS_NAME_DL_FILE_ENTRY_CONFIGURATION,
-					ExtendedObjectClassDefinition.Scope.COMPANY, 77777L),
+					ExtendedObjectClassDefinition.Scope.COMPANY,
+					_company.getCompanyId()),
 				7,
 				DLFileEntryConfigurationConstants.
 					PREVIEWABLE_PROCESSOR_MAX_SIZE_DEFAULT);
@@ -596,6 +603,9 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 
 	private static final String _PREVIEWABLE_PROCESSOR_MAX_SIZE_KEY =
 		"previewableProcessorMaxSize";
+
+	@DeleteAfterTestRun
+	private Company _company;
 
 	@Inject
 	private ConfigurationAdmin _configurationAdmin;
