@@ -8,8 +8,10 @@ package com.liferay.object.service.impl;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.object.internal.layout.tab.screen.navigation.category.ObjectLayoutTabScreenNavigationCategory;
+import com.liferay.object.internal.layout.tab.screen.navigation.entry.ObjectLayoutTabScreenNavigationEntry;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectLayoutTab;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.base.ObjectLayoutTabLocalServiceBaseImpl;
 import com.liferay.object.service.persistence.ObjectRelationshipPersistence;
 import com.liferay.petra.string.StringBundler;
@@ -21,6 +23,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
 
+import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -109,17 +113,34 @@ public class ObjectLayoutTabLocalServiceImpl
 
 			_serviceRegistrations.computeIfAbsent(
 				_getServiceRegistrationKey(objectDefinition, objectLayoutTab),
-				serviceRegistrationKey -> _bundleContext.registerService(
-					new String[] {
-						ScreenNavigationCategory.class.getName(),
-						ScreenNavigationEntry.class.getName()
-					},
-					new ObjectLayoutTabScreenNavigationCategory(
-						objectDefinition, objectLayoutTab,
+				serviceRegistrationKey -> {
+					ObjectRelationship objectRelationship =
 						_objectRelationshipPersistence.fetchByPrimaryKey(
-							objectLayoutTab.getObjectRelationshipId())),
-					MapUtil.singletonDictionary(
-						"screen.navigation.category.order", order)));
+							objectLayoutTab.getObjectRelationshipId());
+
+					ObjectLayoutTabScreenNavigationCategory
+						objectLayoutTabScreenNavigationCategory =
+							new ObjectLayoutTabScreenNavigationCategory(
+								objectDefinition, objectLayoutTab,
+								objectRelationship);
+
+					Dictionary<String, Integer> properties =
+						MapUtil.singletonDictionary(
+							"screen.navigation.category.order", order);
+
+					return Arrays.asList(
+						_bundleContext.registerService(
+							ScreenNavigationCategory.class,
+							objectLayoutTabScreenNavigationCategory,
+							properties),
+						_bundleContext.registerService(
+							ScreenNavigationEntry.class,
+							new ObjectLayoutTabScreenNavigationEntry(
+								objectDefinition, objectLayoutTab,
+								objectLayoutTabScreenNavigationCategory,
+								objectRelationship),
+							properties));
+				});
 		}
 	}
 
@@ -135,14 +156,18 @@ public class ObjectLayoutTabLocalServiceImpl
 				continue;
 			}
 
-			ServiceRegistration<?> serviceRegistration =
+			List<ServiceRegistration<?>> serviceRegistrations =
 				_serviceRegistrations.remove(serviceRegistrationKey);
 
-			if (serviceRegistration == null) {
+			if (serviceRegistrations == null) {
 				continue;
 			}
 
-			serviceRegistration.unregister();
+			for (ServiceRegistration<?> serviceRegistration :
+					serviceRegistrations) {
+
+				serviceRegistration.unregister();
+			}
 		}
 	}
 
@@ -172,8 +197,8 @@ public class ObjectLayoutTabLocalServiceImpl
 	@Reference
 	private ObjectRelationshipPersistence _objectRelationshipPersistence;
 
-	private final Map<String, ServiceRegistration<?>> _serviceRegistrations =
-		new ConcurrentHashMap<>();
+	private final Map<String, List<ServiceRegistration<?>>>
+		_serviceRegistrations = new ConcurrentHashMap<>();
 
 	@Reference
 	private UserLocalService _userLocalService;

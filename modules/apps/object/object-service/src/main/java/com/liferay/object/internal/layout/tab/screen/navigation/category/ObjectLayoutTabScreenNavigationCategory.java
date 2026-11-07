@@ -6,23 +6,12 @@
 package com.liferay.object.internal.layout.tab.screen.navigation.category;
 
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
-import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
-import com.liferay.object.constants.ObjectWebKeys;
 import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.model.ObjectLayout;
 import com.liferay.object.model.ObjectLayoutTab;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
-import com.liferay.object.service.ObjectLayoutLocalServiceUtil;
-import com.liferay.object.service.ObjectLayoutTabLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.model.User;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
 
 import java.util.Locale;
 
@@ -30,8 +19,7 @@ import java.util.Locale;
  * @author Feliphe Marinho
  */
 public class ObjectLayoutTabScreenNavigationCategory
-	implements ScreenNavigationCategory,
-			   ScreenNavigationEntry<ObjectLayoutTab> {
+	implements ScreenNavigationCategory {
 
 	public ObjectLayoutTabScreenNavigationCategory(
 		ObjectDefinition objectDefinition, ObjectLayoutTab objectLayoutTab,
@@ -44,11 +32,6 @@ public class ObjectLayoutTabScreenNavigationCategory
 
 	@Override
 	public String getCategoryKey() {
-		return _getKey();
-	}
-
-	@Override
-	public String getEntryKey() {
 		return _getKey();
 	}
 
@@ -76,51 +59,6 @@ public class ObjectLayoutTabScreenNavigationCategory
 	@Override
 	public String getScreenNavigationKey() {
 		return _objectDefinition.getClassName();
-	}
-
-	@Override
-	public boolean isVisible(User user, ObjectLayoutTab objectLayoutTab) {
-		ObjectLayout objectLayout =
-			ObjectLayoutLocalServiceUtil.fetchDefaultObjectLayout(
-				_objectDefinition.getObjectDefinitionId());
-
-		if ((objectLayout != null) && (_objectLayoutTab == null)) {
-			return false;
-		}
-
-		if (_objectLayoutTab != null) {
-			ObjectLayoutTab currentObjectLayoutTab =
-				ObjectLayoutTabLocalServiceUtil.fetchObjectLayoutTab(
-					_objectLayoutTab.getObjectLayoutTabId());
-
-			if (currentObjectLayoutTab == null) {
-				return false;
-			}
-		}
-
-		if (_objectRelationship == null) {
-			return true;
-		}
-
-		ObjectDefinition objectDefinition =
-			ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
-				_objectRelationship.getObjectDefinitionId2());
-
-		if ((objectDefinition == null) || !objectDefinition.isActive()) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public void render(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
-		throws IOException {
-
-		httpServletRequest.setAttribute(
-			ObjectWebKeys.REGULAR_OBJECT_LAYOUT_TAB, Boolean.TRUE);
 	}
 
 	private String _getKey() {

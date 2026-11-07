@@ -23,6 +23,7 @@ import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.deployer.ObjectDefinitionDeployer;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.internal.layout.tab.screen.navigation.category.ObjectLayoutTabScreenNavigationCategory;
+import com.liferay.object.internal.layout.tab.screen.navigation.entry.ObjectLayoutTabScreenNavigationEntry;
 import com.liferay.object.internal.notification.handler.ObjectDefinitionNotificationHandler;
 import com.liferay.object.internal.notification.term.contributor.ObjectDefinitionNotificationTermEvaluator;
 import com.liferay.object.internal.related.models.ObjectEntry1to1ObjectRelatedModelsProviderImpl;
@@ -112,6 +113,7 @@ import com.liferay.user.associated.data.display.UADDisplay;
 import com.liferay.user.associated.data.exporter.UADExporter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -675,21 +677,37 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 		_serviceRegistrations.computeIfAbsent(
 			_getServiceRegistrationKey(objectDefinition, objectRelationship),
-			serviceRegistrationKey -> _bundleContext.registerService(
-				new String[] {
-					ScreenNavigationCategory.class.getName(),
-					ScreenNavigationEntry.class.getName()
-				},
-				new ObjectLayoutTabScreenNavigationCategory(
-					objectDefinition, null, objectRelationship),
-				null));
+			serviceRegistrationKey -> {
+				ObjectLayoutTabScreenNavigationCategory
+					objectLayoutTabScreenNavigationCategory =
+						new ObjectLayoutTabScreenNavigationCategory(
+							objectDefinition, null, objectRelationship);
+
+				return Arrays.asList(
+					_bundleContext.registerService(
+						ScreenNavigationCategory.class,
+						objectLayoutTabScreenNavigationCategory, null),
+					_bundleContext.registerService(
+						ScreenNavigationEntry.class,
+						new ObjectLayoutTabScreenNavigationEntry(
+							objectDefinition, null,
+							objectLayoutTabScreenNavigationCategory,
+							objectRelationship),
+						null));
+			});
 	}
 
 	private void _unregister(String serviceRegistrationKey) {
-		ServiceRegistration<?> serviceRegistration =
+		List<ServiceRegistration<?>> serviceRegistrations =
 			_serviceRegistrations.remove(serviceRegistrationKey);
 
-		if (serviceRegistration != null) {
+		if (serviceRegistrations == null) {
+			return;
+		}
+
+		for (ServiceRegistration<?> serviceRegistration :
+				serviceRegistrations) {
+
 			serviceRegistration.unregister();
 		}
 	}
@@ -732,8 +750,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private final ResourcePermissionLocalService
 		_resourcePermissionLocalService;
 	private final SearchLocalizationHelper _searchLocalizationHelper;
-	private final Map<String, ServiceRegistration<?>> _serviceRegistrations =
-		new ConcurrentHashMap<>();
+	private final Map<String, List<ServiceRegistration<?>>>
+		_serviceRegistrations = new ConcurrentHashMap<>();
 	private final SharingModelResourcePermissionConfigurator
 		_sharingModelResourcePermissionConfigurator;
 	private final SystemEventLocalService _systemEventLocalService;
