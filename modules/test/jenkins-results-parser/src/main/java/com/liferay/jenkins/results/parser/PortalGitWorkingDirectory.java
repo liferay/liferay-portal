@@ -708,12 +708,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 		Collections.sort(yarnCacheFilePaths);
 
-		for (String yarnCacheFilePath :
-				new String[] {
-					"build/node", "modules/frontend-sdk/prettier-plugin/dist",
-					"modules/yarn.lock"
-				}) {
-
+		for (String yarnCacheFilePath : _YARN_CACHE_FILE_PATHS) {
 			File yarnCacheFile = new File(workingDirectory, yarnCacheFilePath);
 
 			if (!yarnCacheFile.exists()) {
@@ -879,6 +874,11 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 	private static final String[] _JS_BASE_DIR_NAMES = {
 		"modules", "workspaces"
+	};
+
+	private static final String[] _YARN_CACHE_FILE_PATHS = {
+		"build/node", "modules/frontend-sdk/prettier-plugin/dist",
+		"modules/yarn.lock"
 	};
 
 	private static final Pattern _esBuildFileNamePattern = Pattern.compile(
