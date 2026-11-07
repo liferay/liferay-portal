@@ -86,9 +86,7 @@ public abstract class BasePortletContainerTestCase {
 		BundleContext bundleContext = bundle.getBundleContext();
 
 		ServiceRegistration<?> serviceRegistration =
-			bundleContext.registerService(
-				new String[] {Object.class.getName(), clazz.getName()}, object,
-				properties);
+			bundleContext.registerService(clazz.getName(), object, properties);
 
 		serviceRegistrations.add(serviceRegistration);
 	}
