@@ -92,23 +92,23 @@ public class ConfigurationFilterStringUtil {
 	public static String getPortletScopedFilterString(
 		Serializable portletInstanceId) {
 
-		return StringBundler.concat(
-			"(&(",
-			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
-				getPropertyKey(),
-			"=", _toString(portletInstanceId), "))");
+		StringBundler sb = new StringBundler(5);
+
+		_appendPortletScopedFilterString(sb, portletInstanceId);
+
+		return sb.toString();
 	}
 
 	public static String getPortletScopedFilterString(
 		String pid, Serializable portletInstanceId) {
 
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("(&");
 
 		_appendScopedFilterString(sb, pid);
+		_appendPortletScopedFilterString(sb, portletInstanceId);
 
-		sb.append(getPortletScopedFilterString(portletInstanceId));
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 
 		return sb.toString();
@@ -191,6 +191,18 @@ public class ConfigurationFilterStringUtil {
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
 				getPropertyKey());
 		sb.append("=*)))");
+	}
+
+	private static void _appendPortletScopedFilterString(
+		StringBundler sb, Serializable portletInstanceId) {
+
+		sb.append("(&(");
+		sb.append(
+			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
+				getPropertyKey());
+		sb.append(StringPool.EQUAL);
+		sb.append(_toString(portletInstanceId));
+		sb.append("))");
 	}
 
 	private static void _appendPropertyFilterString(
