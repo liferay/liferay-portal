@@ -23,9 +23,11 @@ import com.liferay.document.library.internal.upgrade.v3_2_7.DownloadViewActionRe
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.store.Store;
 import com.liferay.dynamic.data.mapping.security.permission.DDMPermissionSupport;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.upgrade.PrefsPropsToConfigurationUpgradeHelper;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -35,9 +37,11 @@ import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.upgrade.ViewCountUpgradeProcess;
+import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.subscription.service.SubscriptionLocalService;
 
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -132,10 +136,15 @@ public class DLServiceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 			"3.2.2", "3.2.3",
 			new DLFileEntryUpgradeProcess(_classNameLocalService));
 
+		DLConfigurationUpgradeHelper dlConfigurationUpgradeHelper =
+			new DLConfigurationUpgradeHelper(
+				_companyLocalService, _configurationAdmin,
+				_configurationProvider, _prefsProps);
+
 		registry.register(
 			"3.2.3", "3.2.4",
 			new DLSizeLimitConfigurationUpgradeProcess(
-				_dlConfigurationUpgradeHelper));
+				dlConfigurationUpgradeHelper));
 
 		registry.register(
 			"3.2.4", "3.2.5",
@@ -154,27 +163,27 @@ public class DLServiceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 			"3.2.7", "3.2.8",
 			new com.liferay.document.library.internal.upgrade.v3_2_8.
 				DLFileEntryConfigurationUpgradeProcess(
-					_dlConfigurationUpgradeHelper));
+					dlConfigurationUpgradeHelper));
 
 		registry.register(
 			"3.2.8", "3.2.8.step-1",
 			new com.liferay.document.library.internal.upgrade.v3_2_9.
 				DLConfigurationUpgradeProcess(
-					_dlConfigurationUpgradeHelper,
+					dlConfigurationUpgradeHelper,
 					_prefsPropsToConfigurationUpgradeHelper));
 
 		registry.register(
 			"3.2.8.step-1", "3.2.8.step-2",
 			new com.liferay.document.library.internal.upgrade.v3_2_9.
 				DLFileEntryConfigurationUpgradeProcess(
-					_dlConfigurationUpgradeHelper,
+					dlConfigurationUpgradeHelper,
 					_prefsPropsToConfigurationUpgradeHelper));
 
 		registry.register(
 			"3.2.8.step-2", "3.2.9",
 			new com.liferay.document.library.internal.upgrade.v3_2_9.
 				DLSizeLimitConfigurationUpgradeProcess(
-					_dlConfigurationUpgradeHelper));
+					dlConfigurationUpgradeHelper));
 
 		registry.register(
 			"3.2.9", "3.2.10",
@@ -186,10 +195,19 @@ public class DLServiceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
+	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private ConfigurationAdmin _configurationAdmin;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
+
+	@Reference
 	private DDMPermissionSupport _ddmPermissionSupport;
 
 	@Reference
-	private DLConfigurationUpgradeHelper _dlConfigurationUpgradeHelper;
+	private PrefsProps _prefsProps;
 
 	@Reference
 	private PrefsPropsToConfigurationUpgradeHelper
