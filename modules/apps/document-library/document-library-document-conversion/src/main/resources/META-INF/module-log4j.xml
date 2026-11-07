@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-
-<Configuration strict="true">
-	<Loggers>
-		<Logger level="WARN" name="com.liferay.document.library.document.conversion.internal.configuration.scanner" />
-	</Loggers>
-</Configuration>
