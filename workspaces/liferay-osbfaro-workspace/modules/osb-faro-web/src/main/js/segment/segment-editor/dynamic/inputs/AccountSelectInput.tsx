@@ -1,9 +1,8 @@
 import ClayButton from '@clayui/button';
-import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from 'shared/components/Icon';
-import ClayLabel from '@clayui/label';
+import ClayMultiSelect from '@clayui/multi-select';
 import Form from 'shared/components/form';
-import React from 'react';
+import React, {useState} from 'react';
 import {Conjunctions, RelationalOperators} from '../utils/constants';
 import {CustomValue} from 'shared/util/records';
 import {fromJS, List} from 'immutable';
@@ -12,6 +11,7 @@ import {
 	getLifecycleStageERCsFromValue,
 } from '../utils/custom-inputs';
 import {ISegmentEditorCustomInputBase} from '../utils/types';
+import {Item} from '@clayui/multi-select/lib/types';
 import {Option, Picker} from '@clayui/core';
 import {sortBy} from 'lodash';
 import {useChannelLifecycles} from 'shared/hooks/useChannelLifecycles';
@@ -31,6 +31,8 @@ const AccountSelectInput: React.FC<IAccountSelectProps> = ({
 	value,
 }) => {
 	const {channelId} = useParams();
+
+	const [addingStages, setAddingStages] = useState(false);
 
 	const {lifecycles} = useChannelLifecycles({channelId, groupId});
 
@@ -116,6 +118,8 @@ const AccountSelectInput: React.FC<IAccountSelectProps> = ({
 						items={lifecycles}
 						onSelectionChange={(selectedLifecycleERC) => {
 							if (String(selectedLifecycleERC) !== lifecycleERC) {
+								setAddingStages(false);
+
 								handleChange(String(selectedLifecycleERC), []);
 							}
 						}}
@@ -128,100 +132,56 @@ const AccountSelectInput: React.FC<IAccountSelectProps> = ({
 					</Picker>
 				</Form.GroupItem>
 
-				{selectedStages.length > 0 && (
-					<Form.GroupItem shrink>
-						<div
-							className="input-group-item input-list-root"
-							style={{maxWidth: '52rem', width: 'fit-content'}}
-						>
-							<div
-								className="form-control form-control-tag-group"
-								style={{
-									maxWidth: '52rem',
-									overflowY: 'auto',
-									width: 'fit-content',
-								}}
-							>
-								{selectedStages.map(
-									({externalReferenceCode, name}) => (
-										<ClayLabel
-											closeButtonProps={{
-												'aria-label':
-													Liferay.Language.get(
-														'close'
-													),
-												onClick: () =>
-													handleChange(
-														lifecycleERC,
-														lifecycleStageERCs.filter(
-															(
-																lifecycleStageERC
-															) =>
-																lifecycleStageERC !==
-																externalReferenceCode
-														)
-													),
-											}}
-											displayType="secondary"
-											inverse
-											key={externalReferenceCode}
-										>
-											{name}
-										</ClayLabel>
-									)
-								)}
-
-								<ClayButton
-									aria-label={Liferay.Language.get('clear')}
-									className="button-root text-secondary"
-									displayType="unstyled"
-									onClick={() =>
-										handleChange(lifecycleERC, [])
-									}
-								>
-									<ClayIcon
-										className="icon-root"
-										symbol="times-circle"
-									/>
-								</ClayButton>
-							</div>
-						</div>
-					</Form.GroupItem>
-				)}
-
 				<Form.GroupItem shrink>
-					<ClayDropDown
-						closeOnClick
-						trigger={
-							<ClayButton
-								className="button-root"
-								disabled={!availableStages.length}
-								displayType="secondary"
-							>
-								<ClayIcon symbol="plus" />
+					{selectedStages.length || addingStages ? (
+						<ClayMultiSelect
+							allowsCustomLabel={false}
+							aria-label={Liferay.Language.get('stages')}
+							autoFocus={addingStages}
+							clearAllTitle={Liferay.Language.get('clear-all')}
+							closeButtonAriaLabel={Liferay.Language.get(
+								'remove-x'
+							)}
+							items={selectedStages.map(
+								({externalReferenceCode, name}) => ({
+									label: name,
+									value: externalReferenceCode,
+								})
+							)}
+							onActiveChange={(active: boolean) => {
+								if (!active) {
+									setAddingStages(false);
+								}
+							}}
+							onItemsChange={(items: Item[]) => {
+								setAddingStages(false);
 
-								<span className="ml-2">
-									{Liferay.Language.get('add-stage')}
-								</span>
-							</ClayButton>
-						}
-					>
-						{availableStages.map(
-							({externalReferenceCode, name}) => (
-								<ClayDropDown.Item
-									key={externalReferenceCode}
-									onClick={() =>
-										handleChange(lifecycleERC, [
-											...lifecycleStageERCs,
-											externalReferenceCode,
-										])
-									}
-								>
-									{name}
-								</ClayDropDown.Item>
-							)
-						)}
-					</ClayDropDown>
+								handleChange(
+									lifecycleERC,
+									items.map(({value}) => String(value))
+								);
+							}}
+							sourceItems={availableStages.map(
+								({externalReferenceCode, name}) => ({
+									label: name,
+									value: externalReferenceCode,
+								})
+							)}
+						/>
+					) : (
+						<ClayButton
+							className="button-root"
+							disabled={!availableStages.length}
+							displayType="secondary"
+							onClick={() => setAddingStages(true)}
+						>
+							<ClayIcon symbol="plus" />
+
+							<span className="ml-2">
+								{Liferay.Language.get('add-stage')}
+							</span>
+						</ClayButton>
+					)}
 				</Form.GroupItem>
 			</Form.Group>
 		</div>
