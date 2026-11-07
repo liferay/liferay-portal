@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Michael C. Han
  */
-@Component(service = PushNotificationMessagingConfigurator.class)
+@Component(service = {})
 public class PushNotificationMessagingConfigurator {
 
 	@Activate
