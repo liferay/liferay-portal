@@ -8,10 +8,12 @@ package com.liferay.blogs.web.internal.portlet.action;
 import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.blogs.exception.NoSuchEntryException;
 import com.liferay.blogs.exception.TrackbackValidationException;
+import com.liferay.blogs.linkback.LinkbackConsumer;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.web.internal.trackback.Trackback;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
@@ -19,6 +21,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContextFunction;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -36,6 +39,7 @@ import jakarta.portlet.PortletPreferences;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -95,6 +99,12 @@ public class TrackbackMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		_sendSuccess(actionRequest, actionResponse);
+	}
+
+	@Activate
+	protected void activate() {
+		_trackback = new Trackback(
+			_commentManager, _linkbackConsumer, _portal, _userLocalService);
 	}
 
 	@Override
@@ -227,9 +237,17 @@ public class TrackbackMVCActionCommand extends BaseMVCActionCommand {
 		TrackbackMVCActionCommand.class);
 
 	@Reference
-	private Portal _portal;
+	private CommentManager _commentManager;
 
 	@Reference
+	private LinkbackConsumer _linkbackConsumer;
+
+	@Reference
+	private Portal _portal;
+
 	private Trackback _trackback;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }

@@ -20,15 +20,21 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.function.Function;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Alexander Chow
  * @author André de Oliveira
  */
-@Component(service = Trackback.class)
 public class Trackback {
+
+	public Trackback(
+		CommentManager commentManager, LinkbackConsumer linkbackConsumer,
+		Portal portal, UserLocalService userLocalService) {
+
+		_commentManager = commentManager;
+		_linkbackConsumer = linkbackConsumer;
+		_portal = portal;
+		_userLocalService = userLocalService;
+	}
 
 	public void addTrackback(
 			BlogsEntry entry, ThemeDisplay themeDisplay, String excerpt,
@@ -91,16 +97,9 @@ public class Trackback {
 			themeDisplay.translate("read-more"), "</a>");
 	}
 
-	@Reference
-	private CommentManager _commentManager;
-
-	@Reference
-	private LinkbackConsumer _linkbackConsumer;
-
-	@Reference
-	private Portal _portal;
-
-	@Reference
-	private UserLocalService _userLocalService;
+	private final CommentManager _commentManager;
+	private final LinkbackConsumer _linkbackConsumer;
+	private final Portal _portal;
+	private final UserLocalService _userLocalService;
 
 }

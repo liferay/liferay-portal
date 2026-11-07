@@ -10,6 +10,7 @@ import com.liferay.blogs.linkback.LinkbackConsumer;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
 import com.liferay.portal.kernel.comment.CommentManagerUtil;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.IdentityServiceContextFunction;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -71,13 +72,13 @@ public class TrackbackImplTest {
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
-		ServiceReference<?> serviceReference =
-			bundleContext.getServiceReference(
-				"com.liferay.blogs.web.internal.trackback.Trackback");
+		ServiceReference<?>[] serviceReferences =
+			bundleContext.getServiceReferences(
+				MVCActionCommand.class.getName(),
+				"(mvc.command.name=/blogs/trackback)");
 
-		Assert.assertNotNull(serviceReference);
-
-		Object trackback = bundleContext.getService(serviceReference);
+		Object trackback = ReflectionTestUtil.getFieldValue(
+			bundleContext.getService(serviceReferences[0]), "_trackback");
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
