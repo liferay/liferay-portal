@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Reference;
 public class PLOEntryModelListener extends BaseModelListener<PLOEntry> {
 
 	public static void clearCache(ClusterExecutor clusterExecutor) {
-		PLOOverrideResourceBundleManager.clearCache();
+		PLOLanguageOverrideProvider.clearCache();
 
 		if (!clusterExecutor.isEnabled() ||
 			!ClusterInvokeThreadLocal.isEnabled()) {
@@ -59,8 +59,7 @@ public class PLOEntryModelListener extends BaseModelListener<PLOEntry> {
 
 	private static final MethodHandler _clearCacheMethodHandle =
 		new MethodHandler(
-			new MethodKey(
-				PLOOverrideResourceBundleManager.class, "clearCache"));
+			new MethodKey(PLOLanguageOverrideProvider.class, "clearCache"));
 
 	@Reference
 	private ClusterExecutor _clusterExecutor;

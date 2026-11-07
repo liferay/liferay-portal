@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
  * @author Jorge Díaz
  */
 @RunWith(Arquillian.class)
-public class PLOOverrideResourceBundleManagerTest {
+public class PLOLanguageOverrideProviderTest {
 
 	@ClassRule
 	@Rule
