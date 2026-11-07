@@ -32,29 +32,20 @@ import java.util.List;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adolfo Pérez
  */
-@Component(service = SharingEntryDropdownItemContributorRegistry.class)
 public class SharingEntryDropdownItemContributorRegistry {
 
-	public SharingEntryDropdownItemContributor
-			getSharingEntryMenuItemContributor(long classNameId)
-		throws PortalException {
+	public SharingEntryDropdownItemContributorRegistry(
+		BundleContext bundleContext,
+		ClassNameLocalService classNameLocalService,
+		ObjectFolderLocalService objectFolderLocalService) {
 
-		ClassName className = _classNameLocalService.getClassName(classNameId);
+		_classNameLocalService = classNameLocalService;
+		_objectFolderLocalService = objectFolderLocalService;
 
-		return new CompositeSharingEntryDropdownItemContributor(
-			_serviceTrackerMap.getService(className.getClassName()));
-	}
-
-	@Activate
-	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 			bundleContext, SharingEntryDropdownItemContributor.class,
 			"(model.class.name=*)",
@@ -78,9 +69,18 @@ public class SharingEntryDropdownItemContributorRegistry {
 			});
 	}
 
-	@Deactivate
-	protected void deactivate() {
+	public void destroy() {
 		_serviceTrackerMap.close();
+	}
+
+	public SharingEntryDropdownItemContributor
+			getSharingEntryMenuItemContributor(long classNameId)
+		throws PortalException {
+
+		ClassName className = _classNameLocalService.getClassName(classNameId);
+
+		return new CompositeSharingEntryDropdownItemContributor(
+			_serviceTrackerMap.getService(className.getClassName()));
 	}
 
 	private boolean _isTracked(
@@ -127,14 +127,10 @@ public class SharingEntryDropdownItemContributorRegistry {
 	private static final Log _log = LogFactoryUtil.getLog(
 		SharingEntryDropdownItemContributorRegistry.class);
 
-	@Reference
-	private ClassNameLocalService _classNameLocalService;
-
-	@Reference
-	private ObjectFolderLocalService _objectFolderLocalService;
-
-	private ServiceTrackerMap<String, List<SharingEntryDropdownItemContributor>>
-		_serviceTrackerMap;
+	private final ClassNameLocalService _classNameLocalService;
+	private final ObjectFolderLocalService _objectFolderLocalService;
+	private final ServiceTrackerMap
+		<String, List<SharingEntryDropdownItemContributor>> _serviceTrackerMap;
 
 	private static final class CompositeSharingEntryDropdownItemContributor
 		implements SharingEntryDropdownItemContributor {

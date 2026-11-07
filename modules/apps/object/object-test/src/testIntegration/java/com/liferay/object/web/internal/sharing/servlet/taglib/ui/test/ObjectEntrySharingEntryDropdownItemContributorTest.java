@@ -209,14 +209,13 @@ public class ObjectEntrySharingEntryDropdownItemContributorTest {
 		return OSGiServiceUtil.callService(
 			_bundleContext,
 			bundle.loadClass(
-				"com.liferay.sharing.web.internal.servlet.taglib.ui." +
-					"SharingEntryDropdownItemContributorRegistry"),
-			sharingEntryDropdownItemContributorRegistry -> {
-				Assert.assertNotNull(
-					sharingEntryDropdownItemContributorRegistry);
-
+				"com.liferay.sharing.web.internal.display.context." +
+					"ViewSharedAssetsDisplayContextFactory"),
+			viewSharedAssetsDisplayContextFactory -> {
 				Object serviceTrackerMap = ReflectionTestUtil.getFieldValue(
-					sharingEntryDropdownItemContributorRegistry,
+					ReflectionTestUtil.<Object>getFieldValue(
+						viewSharedAssetsDisplayContextFactory,
+						"_sharingEntryDropdownItemContributorRegistry"),
 					"_serviceTrackerMap");
 
 				List<SharingEntryDropdownItemContributor>

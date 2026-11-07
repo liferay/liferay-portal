@@ -6,6 +6,8 @@
 package com.liferay.sharing.web.internal.display.context;
 
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.object.service.ObjectFolderLocalService;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Portal;
@@ -20,7 +22,10 @@ import com.liferay.sharing.web.internal.servlet.taglib.ui.SharingEntryDropdownIt
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -43,6 +48,22 @@ public class ViewSharedAssetsDisplayContextFactory {
 			_sharingEntryLocalService, _sharingPermission);
 	}
 
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_sharingEntryDropdownItemContributorRegistry =
+			new SharingEntryDropdownItemContributorRegistry(
+				bundleContext, _classNameLocalService,
+				_objectFolderLocalService);
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_sharingEntryDropdownItemContributorRegistry.destroy();
+	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
+
 	@Reference
 	private CompanyLocalService _companyLocalService;
 
@@ -51,6 +72,9 @@ public class ViewSharedAssetsDisplayContextFactory {
 
 	@Reference
 	private ItemSelector _itemSelector;
+
+	@Reference
+	private ObjectFolderLocalService _objectFolderLocalService;
 
 	@Reference
 	private Portal _portal;
@@ -64,7 +88,6 @@ public class ViewSharedAssetsDisplayContextFactory {
 	@Reference
 	private SharingDropdownItemFactory _sharingDropdownItemFactory;
 
-	@Reference
 	private SharingEntryDropdownItemContributorRegistry
 		_sharingEntryDropdownItemContributorRegistry;
 
