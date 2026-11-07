@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.commerce.address.content.web.internal.portlet.action.helper;
+package com.liferay.commerce.address.content.web.internal.portlet.action;
 
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.model.CommerceAddress;
@@ -13,16 +13,14 @@ import com.liferay.portal.kernel.util.ParamUtil;
 
 import jakarta.portlet.RenderRequest;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = ActionHelper.class)
-public class ActionHelper {
+public class ActionUtil {
 
-	public CommerceAddress getCommerceAddress(RenderRequest renderRequest)
+	public static CommerceAddress getCommerceAddress(
+			CommerceAddressService commerceAddressService,
+			RenderRequest renderRequest)
 		throws PortalException {
 
 		CommerceAddress commerceAddress =
@@ -37,7 +35,7 @@ public class ActionHelper {
 			renderRequest, "commerceAddressId");
 
 		if (commerceAddressId > 0) {
-			commerceAddress = _commerceAddressService.fetchCommerceAddress(
+			commerceAddress = commerceAddressService.fetchCommerceAddress(
 				commerceAddressId);
 		}
 
@@ -48,8 +46,5 @@ public class ActionHelper {
 
 		return commerceAddress;
 	}
-
-	@Reference
-	private CommerceAddressService _commerceAddressService;
 
 }

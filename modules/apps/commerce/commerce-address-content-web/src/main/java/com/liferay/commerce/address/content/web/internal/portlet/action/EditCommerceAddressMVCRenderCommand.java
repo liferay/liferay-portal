@@ -6,7 +6,6 @@
 package com.liferay.commerce.address.content.web.internal.portlet.action;
 
 import com.liferay.commerce.address.content.web.internal.display.context.CommerceAddressDisplayContext;
-import com.liferay.commerce.address.content.web.internal.portlet.action.helper.ActionHelper;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.exception.NoSuchAddressException;
@@ -50,9 +49,8 @@ public class EditCommerceAddressMVCRenderCommand implements MVCRenderCommand {
 		try {
 			CommerceAddressDisplayContext commerceAddressDisplayContext =
 				new CommerceAddressDisplayContext(
-					_actionHelper, _commerceAccountHelper,
-					_commerceAddressService, _countryService,
-					_groupLocalService,
+					_commerceAccountHelper, _commerceAddressService,
+					_countryService, _groupLocalService,
 					_portal.getHttpServletRequest(renderRequest),
 					_regionService);
 
@@ -80,15 +78,12 @@ public class EditCommerceAddressMVCRenderCommand implements MVCRenderCommand {
 			RenderRequest renderRequest)
 		throws PortalException {
 
-		CommerceAddress commerceAddress = _actionHelper.getCommerceAddress(
-			renderRequest);
+		CommerceAddress commerceAddress = ActionUtil.getCommerceAddress(
+			_commerceAddressService, renderRequest);
 
 		renderRequest.setAttribute(
 			CommerceWebKeys.COMMERCE_ADDRESS, commerceAddress);
 	}
-
-	@Reference
-	private ActionHelper _actionHelper;
 
 	@Reference
 	private CommerceAccountHelper _commerceAccountHelper;

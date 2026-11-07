@@ -6,7 +6,6 @@
 package com.liferay.commerce.address.content.web.internal.portlet;
 
 import com.liferay.commerce.address.content.web.internal.display.context.CommerceAddressDisplayContext;
-import com.liferay.commerce.address.content.web.internal.portlet.action.helper.ActionHelper;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.helper.CommerceAccountHelper;
 import com.liferay.commerce.service.CommerceAddressService;
@@ -64,9 +63,8 @@ public class CommerceAddressContentPortlet extends MVCPortlet {
 		try {
 			CommerceAddressDisplayContext commerceAddressDisplayContext =
 				new CommerceAddressDisplayContext(
-					_actionHelper, _commerceAccountHelper,
-					_commerceAddressService, _countryService,
-					_groupLocalService,
+					_commerceAccountHelper, _commerceAddressService,
+					_countryService, _groupLocalService,
 					_portal.getHttpServletRequest(renderRequest),
 					_regionService);
 
@@ -82,9 +80,6 @@ public class CommerceAddressContentPortlet extends MVCPortlet {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceAddressContentPortlet.class);
-
-	@Reference
-	private ActionHelper _actionHelper;
 
 	@Reference
 	private CommerceAccountHelper _commerceAccountHelper;
