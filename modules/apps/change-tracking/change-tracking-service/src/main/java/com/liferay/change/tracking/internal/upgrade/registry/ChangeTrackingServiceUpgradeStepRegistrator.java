@@ -14,6 +14,7 @@ import com.liferay.change.tracking.internal.upgrade.v2_4_0.CTSchemaVersionUpgrad
 import com.liferay.change.tracking.internal.upgrade.v2_7_0.CTProcessUpgradeProcess;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.model.Release;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseUuidUpgradeProcess;
@@ -152,7 +153,8 @@ public class ChangeTrackingServiceUpgradeStepRegistrator
 			"2.13.0", "2.13.1",
 			new com.liferay.change.tracking.internal.upgrade.v2_13_1.
 				CTConflictConfigurationUpgradeProcess(
-					_configurationAdmin, _configurationProvider));
+					_companyLocalService, _configurationAdmin,
+					_configurationProvider));
 
 		registry.register(
 			"2.13.1", "2.14.0",
@@ -166,6 +168,9 @@ public class ChangeTrackingServiceUpgradeStepRegistrator
 		registry.register(
 			"2.15.0", "3.0.0", UpgradeProcessFactory.dropTables("CTScore"));
 	}
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;

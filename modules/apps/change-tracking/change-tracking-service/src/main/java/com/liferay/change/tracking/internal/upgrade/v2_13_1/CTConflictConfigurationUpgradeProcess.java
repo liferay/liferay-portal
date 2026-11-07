@@ -9,6 +9,7 @@ import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -25,9 +26,11 @@ import org.osgi.service.cm.ConfigurationAdmin;
 public class CTConflictConfigurationUpgradeProcess extends UpgradeProcess {
 
 	public CTConflictConfigurationUpgradeProcess(
+		CompanyLocalService companyLocalService,
 		ConfigurationAdmin configurationAdmin,
 		ConfigurationProvider configurationProvider) {
 
+		_companyLocalService = companyLocalService;
 		_configurationAdmin = configurationAdmin;
 		_configurationProvider = configurationProvider;
 	}
@@ -81,6 +84,10 @@ public class CTConflictConfigurationUpgradeProcess extends UpgradeProcess {
 				ctConflictConfigurationProperties.get(
 					ExtendedObjectClassDefinition.Scope.COMPANY.
 						getPropertyKey()));
+
+			if (_companyLocalService.fetchCompany(companyId) == null) {
+				continue;
+			}
 
 			Configuration[] ctSettingsConfigurations =
 				_configurationAdmin.listConfigurations(
@@ -149,6 +156,7 @@ public class CTConflictConfigurationUpgradeProcess extends UpgradeProcess {
 	private static final String _CLASS_NAME =
 		"com.liferay.change.tracking.configuration.CTConflictConfiguration";
 
+	private final CompanyLocalService _companyLocalService;
 	private final ConfigurationAdmin _configurationAdmin;
 	private final ConfigurationProvider _configurationProvider;
 
