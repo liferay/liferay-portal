@@ -6,6 +6,7 @@
 package com.liferay.data.engine.rest.resource.v2_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.data.engine.content.type.DataDefinitionContentType;
 import com.liferay.data.engine.nativeobject.tracker.DataEngineNativeObjectRegistry;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinitionField;
@@ -1400,7 +1401,9 @@ public class DataDefinitionResourceTest
 	@Inject(type = Portal.class)
 	private Portal _portal;
 
-	@Inject
+	@Inject(
+		filter = "content.type=test", type = DataDefinitionContentType.class
+	)
 	private TestDataDefinitionContentType _testDataDefinitionContentType;
 
 }
