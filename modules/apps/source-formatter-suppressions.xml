@@ -26,7 +26,6 @@
 		<suppress checks="ComponentExposureCheck" files="item-selector/item-selector-taglib/src/main/java/com/liferay/item/selector/taglib/internal/servlet/ServletContextUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="item-selector/item-selector-taglib/src/main/java/com/liferay/item/selector/taglib/internal/servlet/item/selector/ItemSelectorUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="item-selector/item-selector-taglib/src/main/java/com/liferay/item/selector/taglib/internal/util/GroupItemSelectorProviderRegistryUtil\.java" />
-		<suppress checks="ComponentExposureCheck" files="journal/journal-service/src/main/java/com/liferay/journal/internal/util/JournalServiceComponentProvider\.java" />
 		<suppress checks="ComponentExposureCheck" files="journal/journal-taglib/src/main/java/com/liferay/journal/taglib/internal/servlet/ServletContextUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="knowledge-base/knowledge-base-web/src/main/java/com/liferay/knowledge/base/web/internal/display/context/DLMimeTypeDisplayContextUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="layout/layout-taglib/src/main/java/com/liferay/layout/taglib/internal/frontend/js/loader/modules/extender/npm/NPMResolverProvider\.java" />
