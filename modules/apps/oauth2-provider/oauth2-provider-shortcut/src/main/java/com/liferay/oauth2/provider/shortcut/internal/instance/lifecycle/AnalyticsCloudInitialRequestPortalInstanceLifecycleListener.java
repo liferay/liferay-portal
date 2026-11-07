@@ -10,6 +10,7 @@ import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.constants.OAuth2ProviderActionKeys;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.scope.spi.application.descriptor.ApplicationDescriptor;
+import com.liferay.oauth2.provider.scope.spi.prefix.handler.PrefixHandler;
 import com.liferay.oauth2.provider.scope.spi.prefix.handler.PrefixHandlerFactory;
 import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
 import com.liferay.oauth2.provider.scope.spi.scope.mapper.ScopeMapper;
@@ -42,7 +43,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserService;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.language.LanguageResources;
@@ -53,6 +56,7 @@ import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -91,24 +95,46 @@ public class AnalyticsCloudInitialRequestPortalInstanceLifecycleListener
 					sapEntryObjectArray[0], "OAUTH2_", StringPool.BLANK));
 		}
 
-		_serviceRegistration = bundleContext.registerService(
-			new String[] {
-				ApplicationDescriptor.class.getName(),
-				PrefixHandlerFactory.class.getName(),
-				ScopeFinder.class.getName(), ScopeMapper.class.getName()
-			},
-			new OAuth2ProviderShortcutScopeFinder(_sapEntryLocalService),
-			HashMapDictionaryBuilder.<String, Object>put(
-				"osgi.jaxrs.name",
-				OAuth2ProviderShortcutConstants.APPLICATION_NAME
-			).put(
-				"sap.scope.finder", true
-			).build());
+		Dictionary<String, String> properties = MapUtil.singletonDictionary(
+			"osgi.jaxrs.name",
+			OAuth2ProviderShortcutConstants.APPLICATION_NAME);
+
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				ApplicationDescriptor.class, this::_describeApplication,
+				properties));
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				PrefixHandlerFactory.class,
+				propertyAccessorFunction ->
+					PrefixHandler.PASS_THROUGH_PREFIX_HANDLER,
+				properties));
+
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				ScopeFinder.class,
+				new OAuth2ProviderShortcutScopeFinder(_sapEntryLocalService),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"osgi.jaxrs.name",
+					OAuth2ProviderShortcutConstants.APPLICATION_NAME
+				).put(
+					"sap.scope.finder", true
+				).build()));
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				ScopeMapper.class, ScopeMapper.PASS_THROUGH_SCOPE_MAPPER,
+				properties));
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_serviceRegistration.unregister();
+		for (ServiceRegistration<?> serviceRegistration :
+				_serviceRegistrations) {
+
+			serviceRegistration.unregister();
+		}
+
+		_serviceRegistrations.clear();
 	}
 
 	@Override
@@ -258,6 +284,17 @@ public class AnalyticsCloudInitialRequestPortalInstanceLifecycleListener
 			));
 	}
 
+	private String _describeApplication(Locale locale) {
+		return GetterUtil.getString(
+			ResourceBundleUtil.getString(
+				ResourceBundleUtil.getBundle(
+					locale,
+					AnalyticsCloudInitialRequestPortalInstanceLifecycleListener.
+						class),
+				"analytics"),
+			"analytics");
+	}
+
 	private static final String _APPLICATION_NAME = "Analytics Cloud";
 
 	private static final String[][] _SAP_ENTRY_OBJECT_ARRAYS = {
@@ -320,7 +357,8 @@ public class AnalyticsCloudInitialRequestPortalInstanceLifecycleListener
 	private SAPEntryLocalService _sapEntryLocalService;
 
 	private List<String> _scopeAliasesList;
-	private ServiceRegistration<?> _serviceRegistration;
+	private final List<ServiceRegistration<?>> _serviceRegistrations =
+		new ArrayList<>();
 
 	@Reference
 	private UserLocalService _userLocalService;
