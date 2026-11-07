@@ -56,11 +56,13 @@ public class QueuedBuildDurationMonitor extends BaseMonitor {
 		}
 
 		Map<String, String> queueExceptionMessages = new ConcurrentHashMap<>();
-		Map<String, String> runningBuildExceptionMessages =
-			new ConcurrentHashMap<>();
 
 		List<List<JenkinsMaster.QueueItem>> queueItemsList = _readQueueItems(
 			queueExceptionMessages, jenkinsMasters);
+
+		Map<String, String> runningBuildExceptionMessages =
+			new ConcurrentHashMap<>();
+
 		List<List<JenkinsMaster.RunningBuild>> runningBuildsList =
 			_readRunningBuilds(runningBuildExceptionMessages, jenkinsMasters);
 
