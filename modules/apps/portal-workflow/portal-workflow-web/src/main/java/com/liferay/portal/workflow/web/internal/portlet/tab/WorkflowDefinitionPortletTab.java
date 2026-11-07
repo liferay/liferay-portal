@@ -22,7 +22,7 @@ import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 import com.liferay.portal.workflow.portlet.tab.BaseWorkflowPortletTab;
 import com.liferay.portal.workflow.portlet.tab.WorkflowPortletTab;
 import com.liferay.portal.workflow.web.internal.display.context.WorkflowDefinitionDisplayContext;
-import com.liferay.portal.workflow.web.internal.request.preprocessor.helper.WorkflowPreprocessorHelper;
+import com.liferay.portal.workflow.web.internal.util.WorkflowPreprocessorUtil;
 
 import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
@@ -60,9 +60,6 @@ public class WorkflowDefinitionPortletTab extends BaseWorkflowPortletTab {
 		throws PortletException {
 
 		try {
-			String path = workflowPreprocessorHelper.getPath(
-				renderRequest, renderResponse);
-
 			WorkflowDefinitionDisplayContext displayContext =
 				new WorkflowDefinitionDisplayContext(
 					ctEntryLocalService, portal, _portletResourcePermission,
@@ -74,6 +71,9 @@ public class WorkflowDefinitionPortletTab extends BaseWorkflowPortletTab {
 				WorkflowWebKeys.WORKFLOW_DEFINITION_DISPLAY_CONTEXT,
 				displayContext);
 
+			String path = WorkflowPreprocessorUtil.getPath(
+				renderRequest, renderResponse);
+
 			if (Objects.equals(
 					path, "/definition/edit_workflow_definition.jsp") ||
 				Objects.equals(
@@ -83,9 +83,9 @@ public class WorkflowDefinitionPortletTab extends BaseWorkflowPortletTab {
 			}
 		}
 		catch (Exception exception) {
-			if (workflowPreprocessorHelper.isSessionErrorException(exception)) {
-				workflowPreprocessorHelper.hideDefaultErrorMessage(
-					renderRequest);
+			if (WorkflowPreprocessorUtil.isSessionErrorException(exception)) {
+				WorkflowPreprocessorUtil.hideDefaultErrorMessage(
+					portal, renderRequest);
 
 				SessionErrors.add(renderRequest, exception.getClass());
 			}
@@ -108,9 +108,6 @@ public class WorkflowDefinitionPortletTab extends BaseWorkflowPortletTab {
 
 	@Reference
 	protected UserLocalService userLocalService;
-
-	@Reference
-	protected WorkflowPreprocessorHelper workflowPreprocessorHelper;
 
 	private void _setWorkflowDefinitionRenderRequestAttribute(
 			RenderRequest renderRequest)
