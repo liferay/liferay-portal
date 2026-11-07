@@ -21,6 +21,7 @@ import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
 import com.liferay.batch.engine.unit.BundleBatchEngineUnit;
 import com.liferay.petra.concurrent.BaseFutureListener;
 import com.liferay.petra.concurrent.DefaultNoticeableFuture;
+import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.lang.SafeCloseable;
@@ -72,6 +73,7 @@ import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -161,6 +163,15 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
+
+		_featureFlagBatchEngineUnitProcessor =
+			new FeatureFlagBatchEngineUnitProcessor(
+				bundleContext, _portalExecutorManager);
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_featureFlagBatchEngineUnitProcessor.destroy();
 	}
 
 	private void _execute(
@@ -711,12 +722,14 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 	@Reference
 	private CompanyLocalService _companyLocalService;
 
-	@Reference
 	private FeatureFlagBatchEngineUnitProcessor
 		_featureFlagBatchEngineUnitProcessor;
 
 	@Reference
 	private File _file;
+
+	@Reference
+	private PortalExecutorManager _portalExecutorManager;
 
 	@Reference
 	private RoleLocalService _roleLocalService;

@@ -21,16 +21,26 @@ import java.util.concurrent.ExecutorService;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Carlos Correa
  */
-@Component(service = FeatureFlagBatchEngineUnitProcessor.class)
 public class FeatureFlagBatchEngineUnitProcessor {
+
+	public FeatureFlagBatchEngineUnitProcessor(
+		BundleContext bundleContext,
+		PortalExecutorManager portalExecutorManager) {
+
+		_portalExecutorManager = portalExecutorManager;
+
+		_serviceRegistration = bundleContext.registerService(
+			FeatureFlagListener.class, new FeatureFlagListenerImpl(),
+			MapUtil.singletonDictionary("feature.flag.key", "*"));
+	}
+
+	public void destroy() {
+		_serviceRegistration.unregister();
+	}
 
 	public void registerBatchEngineUnits(
 		long companyId, String featureFlagKey,
@@ -49,25 +59,11 @@ public class FeatureFlagBatchEngineUnitProcessor {
 			});
 	}
 
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		_serviceRegistration = bundleContext.registerService(
-			FeatureFlagListener.class, new FeatureFlagListenerImpl(),
-			MapUtil.singletonDictionary("feature.flag.key", "*"));
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_serviceRegistration.unregister();
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		FeatureFlagBatchEngineUnitProcessor.class);
 
-	@Reference
-	private PortalExecutorManager _portalExecutorManager;
-
-	private ServiceRegistration<FeatureFlagListener> _serviceRegistration;
+	private final PortalExecutorManager _portalExecutorManager;
+	private final ServiceRegistration<FeatureFlagListener> _serviceRegistration;
 	private final Map<Map.Entry<Long, String>, List<UnsafeRunnable<Exception>>>
 		_unsafeRunnables = new ConcurrentHashMap<>();
 
