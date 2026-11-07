@@ -6,10 +6,12 @@
 package com.liferay.portal.workflow.kaleo.runtime.scripting.internal.assignment;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.rules.engine.RulesEngine;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.assignment.ScriptingAssigneeSelector;
 import com.liferay.portal.workflow.kaleo.runtime.scripting.internal.util.RulesEngineExecutor;
+import com.liferay.portal.workflow.kaleo.runtime.util.RulesContextBuilder;
 
 import java.util.Map;
 
@@ -31,11 +33,15 @@ public class DRLScriptingAssigneeSelector implements ScriptingAssigneeSelector {
 			KaleoTaskAssignment kaleoTaskAssignment)
 		throws PortalException {
 
-		return _rulesEngineExecutor.executeAndMergeWorkflowContexts(
-			executionContext, kaleoTaskAssignment.getAssigneeScript());
+		return RulesEngineExecutor.executeAndMergeWorkflowContexts(
+			executionContext, kaleoTaskAssignment.getAssigneeScript(),
+			_rulesContextBuilder, _rulesEngine);
 	}
 
 	@Reference
-	private RulesEngineExecutor _rulesEngineExecutor;
+	private RulesContextBuilder _rulesContextBuilder;
+
+	@Reference
+	private RulesEngine _rulesEngine;
 
 }

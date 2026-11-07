@@ -18,22 +18,19 @@ import java.io.Serializable;
 
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Jiaxu Wei
  */
-@Component(enabled = false, service = RulesEngineExecutor.class)
 public class RulesEngineExecutor {
 
-	public Map<String, ?> executeAndMergeWorkflowContexts(
-			ExecutionContext executionContext, String resource)
+	public static Map<String, ?> executeAndMergeWorkflowContexts(
+			ExecutionContext executionContext, String resource,
+			RulesContextBuilder rulesContextBuilder, RulesEngine rulesEngine)
 		throws PortalException {
 
-		Map<String, ?> results = _rulesEngine.execute(
+		Map<String, ?> results = rulesEngine.execute(
 			new RulesResourceRetriever(new StringResourceRetriever(resource)),
-			_rulesContextBuilder.buildRulesContext(executionContext),
+			rulesContextBuilder.buildRulesContext(executionContext),
 			Query.createStandardQuery());
 
 		Map<String, Serializable> resultsWorkflowContext =
@@ -45,11 +42,5 @@ public class RulesEngineExecutor {
 
 		return results;
 	}
-
-	@Reference
-	private RulesContextBuilder _rulesContextBuilder;
-
-	@Reference
-	private RulesEngine _rulesEngine;
 
 }

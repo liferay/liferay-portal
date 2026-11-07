@@ -6,10 +6,12 @@
 package com.liferay.portal.workflow.kaleo.runtime.scripting.internal.condition;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.rules.engine.RulesEngine;
 import com.liferay.portal.workflow.kaleo.model.KaleoCondition;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.condition.ConditionEvaluator;
 import com.liferay.portal.workflow.kaleo.runtime.scripting.internal.util.RulesEngineExecutor;
+import com.liferay.portal.workflow.kaleo.runtime.util.RulesContextBuilder;
 
 import java.util.Map;
 
@@ -31,8 +33,9 @@ public class DRLConditionEvaluator implements ConditionEvaluator {
 		throws PortalException {
 
 		Map<String, ?> results =
-			_rulesEngineExecutor.executeAndMergeWorkflowContexts(
-				executionContext, kaleoCondition.getScript());
+			RulesEngineExecutor.executeAndMergeWorkflowContexts(
+				executionContext, kaleoCondition.getScript(),
+				_rulesContextBuilder, _rulesEngine);
 
 		String returnValue = (String)results.get(_RETURN_VALUE);
 
@@ -48,6 +51,9 @@ public class DRLConditionEvaluator implements ConditionEvaluator {
 	private static final String _RETURN_VALUE = "returnValue";
 
 	@Reference
-	private RulesEngineExecutor _rulesEngineExecutor;
+	private RulesContextBuilder _rulesContextBuilder;
+
+	@Reference
+	private RulesEngine _rulesEngine;
 
 }

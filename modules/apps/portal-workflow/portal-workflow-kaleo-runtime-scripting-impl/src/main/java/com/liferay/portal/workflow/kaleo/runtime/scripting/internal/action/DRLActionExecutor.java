@@ -5,11 +5,13 @@
 
 package com.liferay.portal.workflow.kaleo.runtime.scripting.internal.action;
 
+import com.liferay.portal.rules.engine.RulesEngine;
 import com.liferay.portal.workflow.kaleo.model.KaleoAction;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.action.executor.ActionExecutor;
 import com.liferay.portal.workflow.kaleo.runtime.action.executor.ActionExecutorException;
 import com.liferay.portal.workflow.kaleo.runtime.scripting.internal.util.RulesEngineExecutor;
+import com.liferay.portal.workflow.kaleo.runtime.util.RulesContextBuilder;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -26,8 +28,9 @@ public class DRLActionExecutor implements ActionExecutor {
 		throws ActionExecutorException {
 
 		try {
-			_rulesEngineExecutor.executeAndMergeWorkflowContexts(
-				executionContext, kaleoAction.getScript());
+			RulesEngineExecutor.executeAndMergeWorkflowContexts(
+				executionContext, kaleoAction.getScript(), _rulesContextBuilder,
+				_rulesEngine);
 		}
 		catch (Exception exception) {
 			throw new ActionExecutorException(exception);
@@ -40,6 +43,9 @@ public class DRLActionExecutor implements ActionExecutor {
 	}
 
 	@Reference
-	private RulesEngineExecutor _rulesEngineExecutor;
+	private RulesContextBuilder _rulesContextBuilder;
+
+	@Reference
+	private RulesEngine _rulesEngine;
 
 }
