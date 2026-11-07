@@ -10,6 +10,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.persistence.upgrade.ConfigurationUpgradeStepFactory;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.file.install.constants.FileInstallConstants;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
@@ -25,7 +26,9 @@ import java.io.File;
 
 import java.net.URI;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 
 import org.apache.felix.cm.PersistenceManager;
 
@@ -37,8 +40,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.ConfigurationEvent;
+import org.osgi.service.cm.SynchronousConfigurationListener;
 
 /**
  * @author Hai Yu
@@ -286,11 +293,37 @@ public class ConfigurationUpgradeStepFactoryTest {
 
 		_assert(factory, data, configFile, felixFileName, false);
 
+		List<String> pids = new ArrayList<>();
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		ServiceRegistration<SynchronousConfigurationListener>
+			serviceRegistration = bundleContext.registerService(
+				SynchronousConfigurationListener.class,
+				configurationEvent -> {
+					String pid = configurationEvent.getPid();
+
+					if ((configurationEvent.getType() ==
+							ConfigurationEvent.CM_UPDATED) &&
+						pid.startsWith(_TEST_PID_NEW)) {
+
+						pids.add(pid);
+					}
+				},
+				null);
+
 		UpgradeStep upgradeStep =
 			_configurationUpgradeStepFactory.createUpgradeStep(
 				_TEST_PID_OLD, _TEST_PID_NEW);
 
-		upgradeStep.upgrade();
+		try {
+			upgradeStep.upgrade();
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		Assert.assertEquals(pids.toString(), data, !pids.isEmpty());
 
 		_assert(factory, data, configFile, felixFileName, true);
 	}
