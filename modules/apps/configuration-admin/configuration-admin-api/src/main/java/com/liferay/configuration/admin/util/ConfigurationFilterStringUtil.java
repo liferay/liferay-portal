@@ -11,9 +11,12 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
+
+import java.util.Objects;
 
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -33,7 +36,9 @@ public class ConfigurationFilterStringUtil {
 			")(dxp.lxc.liferay.com.virtualInstanceId=",
 			GetterUtil.get(
 				SystemBundleUtil.escapeFilterValue(virtualInstanceId), "*"),
-			"))(!(", ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
+			StringPool.CLOSE_PARENTHESIS,
+			_getDefaultVirtualInstanceIdFilterString(virtualInstanceId), ")(!(",
+			ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
 			"=*))(!(siteExternalReferenceCode=*))(!(",
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
 				getPropertyKey(),
@@ -162,6 +167,18 @@ public class ConfigurationFilterStringUtil {
 		return StringBundler.concat(
 			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND, filterString,
 			getSystemScopedFilterString(), StringPool.CLOSE_PARENTHESIS);
+	}
+
+	private static String _getDefaultVirtualInstanceIdFilterString(
+		String virtualInstanceId) {
+
+		if (Objects.equals(
+				virtualInstanceId, PropsValues.COMPANY_DEFAULT_WEB_ID)) {
+
+			return "(dxp.lxc.liferay.com.virtualInstanceId=default)";
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private static String _getPropertyFilterString(String key, String value) {
