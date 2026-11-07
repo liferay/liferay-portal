@@ -36,6 +36,8 @@ public class ProductOptionUtilTest {
 
 		CPDefinitionOptionRelService cpDefinitionOptionRelService =
 			Mockito.mock(CPDefinitionOptionRelService.class);
+		CPDefinitionOptionRel cpDefinitionOptionRel = Mockito.mock(
+			CPDefinitionOptionRel.class);
 		CPOptionService cpOptionService = Mockito.mock(CPOptionService.class);
 
 		CPOption cpOption = Mockito.mock(CPOption.class);
@@ -60,9 +62,6 @@ public class ProductOptionUtilTest {
 		).thenReturn(
 			cpOption
 		);
-
-		CPDefinitionOptionRel cpDefinitionOptionRel = Mockito.mock(
-			CPDefinitionOptionRel.class);
 
 		long cpDefinitionOptionRelId = RandomTestUtil.randomLong();
 
