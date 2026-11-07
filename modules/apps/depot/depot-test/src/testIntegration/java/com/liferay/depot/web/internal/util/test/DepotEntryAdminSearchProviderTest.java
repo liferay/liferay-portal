@@ -335,9 +335,11 @@ public class DepotEntryAdminSearchProviderTest {
 			mockLiferayPortletRenderRequest,
 			new MockLiferayPortletRenderResponse());
 
-		return mockLiferayPortletRenderRequest.getAttribute(
-			"com.liferay.depot.web.internal.util." +
-				"DepotEntryAdminSearchProvider");
+		return ReflectionTestUtil.getFieldValue(
+			mockLiferayPortletRenderRequest.getAttribute(
+				"com.liferay.depot.web.internal.display.context." +
+					"DepotAdminDisplayContext"),
+			"_depotEntryAdminSearchProvider");
 	}
 
 	private GroupSearch _getGroupSearch(

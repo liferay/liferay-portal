@@ -32,8 +32,6 @@ import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
 import jakarta.portlet.PortletURL;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -44,16 +42,13 @@ import java.util.Objects;
 public class DepotAdminDisplayContext {
 
 	public DepotAdminDisplayContext(
-		HttpServletRequest httpServletRequest,
+		DepotEntryAdminSearchProvider depotEntryAdminSearchProvider,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
+		_depotEntryAdminSearchProvider = depotEntryAdminSearchProvider;
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
-
-		_depotEntryAdminSearchProvider =
-			(DepotEntryAdminSearchProvider)httpServletRequest.getAttribute(
-				DepotEntryAdminSearchProvider.class.getName());
 	}
 
 	public List<DropdownItem> getActionDropdownItems(DepotEntry depotEntry) {

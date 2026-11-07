@@ -6,8 +6,10 @@
 package com.liferay.depot.web.internal.portlet.action;
 
 import com.liferay.depot.constants.DepotPortletKeys;
+import com.liferay.depot.web.internal.display.context.DepotAdminDisplayContext;
 import com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
@@ -32,13 +34,19 @@ public class ViewMVCRenderCommand implements MVCRenderCommand {
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
 		renderRequest.setAttribute(
-			DepotEntryAdminSearchProvider.class.getName(),
-			_depotEntryAdminSearchProvider);
+			DepotAdminDisplayContext.class.getName(),
+			new DepotAdminDisplayContext(
+				_depotEntryAdminSearchProvider,
+				_portal.getLiferayPortletRequest(renderRequest),
+				_portal.getLiferayPortletResponse(renderResponse)));
 
 		return "/view.jsp";
 	}
 
 	@Reference
 	private DepotEntryAdminSearchProvider _depotEntryAdminSearchProvider;
+
+	@Reference
+	private Portal _portal;
 
 }

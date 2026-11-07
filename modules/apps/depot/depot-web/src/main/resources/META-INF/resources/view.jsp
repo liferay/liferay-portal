@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-DepotAdminDisplayContext depotAdminDisplayContext = new DepotAdminDisplayContext(request, liferayPortletRequest, liferayPortletResponse);
+DepotAdminDisplayContext depotAdminDisplayContext = (DepotAdminDisplayContext)request.getAttribute(DepotAdminDisplayContext.class.getName());
 
 DepotAdminManagementToolbarDisplayContext depotAdminManagementToolbarDisplayContext = new DepotAdminManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, depotAdminDisplayContext);
 %>
