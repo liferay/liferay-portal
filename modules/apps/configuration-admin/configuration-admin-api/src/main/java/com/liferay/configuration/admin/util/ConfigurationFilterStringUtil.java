@@ -64,41 +64,26 @@ public class ConfigurationFilterStringUtil {
 		Serializable companyId, Serializable groupId,
 		String siteExternalReferenceCode) {
 
-		if ((companyId == null) ||
-			(GetterUtil.getLong(companyId) == CompanyConstants.SYSTEM)) {
+		StringBundler sb = new StringBundler(13);
 
-			throw new IllegalArgumentException(
-				"A valid company is expected when building a group scoped " +
-					"configuration filter string");
-		}
+		_appendGroupScopedFilterString(
+			sb, companyId, groupId, siteExternalReferenceCode);
 
-		return StringBundler.concat(
-			"(&(|(", ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-			StringPool.EQUAL, _toString(groupId),
-			")(siteExternalReferenceCode=",
-			GetterUtil.get(
-				SystemBundleUtil.escapeFilterValue(siteExternalReferenceCode),
-				"*"),
-			"))(", ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-			StringPool.EQUAL, _toString(companyId), ")(!(",
-			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
-				getPropertyKey(),
-			"=*)))");
+		return sb.toString();
 	}
 
 	public static String getGroupScopedFilterString(
 		Serializable companyId, Serializable groupId, String pid,
 		String siteExternalReferenceCode) {
 
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("(&");
 
 		_appendScopedFilterString(sb, pid);
+		_appendGroupScopedFilterString(
+			sb, companyId, groupId, siteExternalReferenceCode);
 
-		sb.append(
-			getGroupScopedFilterString(
-				companyId, groupId, siteExternalReferenceCode));
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 
 		return sb.toString();
@@ -174,6 +159,38 @@ public class ConfigurationFilterStringUtil {
 		return StringBundler.concat(
 			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND, filterString,
 			getSystemScopedFilterString(), StringPool.CLOSE_PARENTHESIS);
+	}
+
+	private static void _appendGroupScopedFilterString(
+		StringBundler sb, Serializable companyId, Serializable groupId,
+		String siteExternalReferenceCode) {
+
+		if ((companyId == null) ||
+			(GetterUtil.getLong(companyId) == CompanyConstants.SYSTEM)) {
+
+			throw new IllegalArgumentException(
+				"A valid company is expected when building a group scoped " +
+					"configuration filter string");
+		}
+
+		sb.append("(&(|(");
+		sb.append(ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey());
+		sb.append(StringPool.EQUAL);
+		sb.append(_toString(groupId));
+		sb.append(")(siteExternalReferenceCode=");
+		sb.append(
+			GetterUtil.get(
+				SystemBundleUtil.escapeFilterValue(siteExternalReferenceCode),
+				"*"));
+		sb.append("))(");
+		sb.append(ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey());
+		sb.append(StringPool.EQUAL);
+		sb.append(_toString(companyId));
+		sb.append(")(!(");
+		sb.append(
+			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
+				getPropertyKey());
+		sb.append("=*)))");
 	}
 
 	private static void _appendPropertyFilterString(
