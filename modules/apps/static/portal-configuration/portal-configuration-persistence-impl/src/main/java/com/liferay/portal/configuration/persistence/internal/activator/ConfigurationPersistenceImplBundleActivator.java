@@ -7,8 +7,6 @@ package com.liferay.portal.configuration.persistence.internal.activator;
 
 import com.liferay.portal.configuration.persistence.ReloadablePersistenceManager;
 import com.liferay.portal.configuration.persistence.internal.ConfigurationPersistenceManager;
-import com.liferay.portal.configuration.persistence.internal.upgrade.ConfigurationUpgradeStepFactoryImpl;
-import com.liferay.portal.configuration.persistence.upgrade.ConfigurationUpgradeStepFactory;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 
@@ -45,21 +43,10 @@ public class ConfigurationPersistenceImplBundleActivator
 					PersistenceManager.PROPERTY_NAME,
 					ConfigurationPersistenceManager.class.getName()
 				).build());
-
-		_configurationUpgradeStepFactoryServiceRegistration =
-			bundleContext.registerService(
-				ConfigurationUpgradeStepFactory.class,
-				new ConfigurationUpgradeStepFactoryImpl(
-					_configurationPersistenceManager),
-				null);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) {
-		if (_configurationUpgradeStepFactoryServiceRegistration != null) {
-			_configurationUpgradeStepFactoryServiceRegistration.unregister();
-		}
-
 		if (_configurationPersistenceManagerServiceRegistration != null) {
 			_configurationPersistenceManagerServiceRegistration.unregister();
 		}
@@ -70,7 +57,5 @@ public class ConfigurationPersistenceImplBundleActivator
 	private ConfigurationPersistenceManager _configurationPersistenceManager;
 	private ServiceRegistration<?>
 		_configurationPersistenceManagerServiceRegistration;
-	private ServiceRegistration<ConfigurationUpgradeStepFactory>
-		_configurationUpgradeStepFactoryServiceRegistration;
 
 }

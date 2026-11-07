@@ -7,6 +7,7 @@ package com.liferay.portal.configuration.persistence.internal.upgrade;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.persistence.ReloadablePersistenceManager;
 import com.liferay.portal.configuration.persistence.upgrade.ConfigurationUpgradeStepFactory;
 import com.liferay.portal.file.install.constants.FileInstallConstants;
 import com.liferay.portal.kernel.log.Log;
@@ -24,26 +25,22 @@ import java.nio.file.Files;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
-import org.apache.felix.cm.PersistenceManager;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Preston Crary
  */
+@Component(service = ConfigurationUpgradeStepFactory.class)
 public class ConfigurationUpgradeStepFactoryImpl
 	implements ConfigurationUpgradeStepFactory {
-
-	public ConfigurationUpgradeStepFactoryImpl(
-		PersistenceManager persistenceManager) {
-
-		_persistenceManager = persistenceManager;
-	}
 
 	@Override
 	public UpgradeStep createUpgradeStep(String oldPid, String newPid) {
 		return () -> {
 			try {
 				Enumeration<Dictionary<String, String>> enumeration =
-					_persistenceManager.getDictionaries();
+					_reloadablePersistenceManager.getDictionaries();
 
 				while (enumeration.hasMoreElements()) {
 					Dictionary<String, String> dictionary =
@@ -75,9 +72,10 @@ public class ConfigurationUpgradeStepFactoryImpl
 							StringUtil.replace(fileName, oldPid, newPid));
 					}
 
-					_persistenceManager.store(newServicePid, dictionary);
+					_reloadablePersistenceManager.store(
+						newServicePid, dictionary);
 
-					_persistenceManager.delete(oldServicePid);
+					_reloadablePersistenceManager.delete(oldServicePid);
 				}
 
 				File configResourcesDir = new File(
@@ -120,6 +118,7 @@ public class ConfigurationUpgradeStepFactoryImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		ConfigurationUpgradeStepFactoryImpl.class);
 
-	private final PersistenceManager _persistenceManager;
+	@Reference
+	private ReloadablePersistenceManager _reloadablePersistenceManager;
 
 }
