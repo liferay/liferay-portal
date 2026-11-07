@@ -433,6 +433,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		super.testPatchProductByExternalReferenceCode();
 
 		_testPatchProductByExternalReferenceCodeBatch();
+		_testPatchProductByExternalReferenceCodeWithOptionExternalReferenceCode();
 	}
 
 	@Override
@@ -1324,6 +1325,61 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			Http.Method.GET);
 
 		Assert.assertEquals(value, jsonObject.getString(objectField.getName()));
+	}
+
+	private void _testPatchProductByExternalReferenceCodeWithOptionExternalReferenceCode()
+		throws Exception {
+
+		CPOption cpOption = CPTestUtil.addCPOption(
+			testGroup.getGroupId(), true);
+
+		ProductOption productOption = new ProductOption() {
+			{
+				fieldType = CPConstants.PRODUCT_OPTION_SELECT_KEY;
+				key = cpOption.getKey();
+				name = LanguageUtils.getLanguageIdMap(
+					RandomTestUtil.randomLocaleStringMap());
+				optionExternalReferenceCode =
+					cpOption.getExternalReferenceCode();
+			}
+		};
+
+		Product randomProduct = randomProduct();
+
+		randomProduct.setProductOptions(new ProductOption[] {productOption});
+
+		Product postProduct = productResource.postProduct(randomProduct);
+
+		productResource.patchProductByExternalReferenceCode(
+			postProduct.getExternalReferenceCode(),
+			new Product() {
+				{
+					productOptions = new ProductOption[] {productOption};
+				}
+			});
+
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ProductResource nestedFieldsProductResource = ProductResource.builder(
+		).authentication(
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "productOptions"
+		).build();
+
+		Product product =
+			nestedFieldsProductResource.getProductByExternalReferenceCode(
+				postProduct.getExternalReferenceCode());
+
+		ProductOption[] productOptions = product.getProductOptions();
+
+		Assert.assertEquals(
+			Arrays.toString(productOptions), 1, productOptions.length);
+		Assert.assertEquals(
+			Long.valueOf(cpOption.getCPOptionId()),
+			productOptions[0].getOptionId());
 	}
 
 	private void _testPatchProductWithInvalidCommerceCatalog()
