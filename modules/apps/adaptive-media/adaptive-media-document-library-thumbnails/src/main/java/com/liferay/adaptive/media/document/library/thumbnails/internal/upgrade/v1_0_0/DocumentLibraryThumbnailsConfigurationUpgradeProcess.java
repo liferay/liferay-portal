@@ -6,11 +6,13 @@
 package com.liferay.adaptive.media.document.library.thumbnails.internal.upgrade.v1_0_0;
 
 import com.liferay.adaptive.media.document.library.thumbnails.internal.util.AMCompanyThumbnailConfigurationInitializer;
+import com.liferay.adaptive.media.image.configuration.AMImageConfigurationHelper;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LoggingTimer;
+import com.liferay.portal.kernel.util.PrefsProps;
 
 /**
  * @author Roberto Díaz
@@ -19,13 +21,12 @@ public class DocumentLibraryThumbnailsConfigurationUpgradeProcess
 	extends UpgradeProcess {
 
 	public DocumentLibraryThumbnailsConfigurationUpgradeProcess(
-		AMCompanyThumbnailConfigurationInitializer
-			amCompanyThumbnailConfigurationInitializer,
-		CompanyLocalService companyLocalService) {
+		AMImageConfigurationHelper amImageConfigurationHelper,
+		CompanyLocalService companyLocalService, PrefsProps prefsProps) {
 
-		_amCompanyThumbnailConfigurationInitializer =
-			amCompanyThumbnailConfigurationInitializer;
+		_amImageConfigurationHelper = amImageConfigurationHelper;
 		_companyLocalService = companyLocalService;
+		_prefsProps = prefsProps;
 	}
 
 	@Override
@@ -34,8 +35,10 @@ public class DocumentLibraryThumbnailsConfigurationUpgradeProcess
 			_companyLocalService.forEachCompany(
 				company -> {
 					try {
-						_amCompanyThumbnailConfigurationInitializer.
-							initializeCompany(company);
+						AMCompanyThumbnailConfigurationInitializer.
+							initializeCompany(
+								_amImageConfigurationHelper, company,
+								_prefsProps);
 					}
 					catch (Exception exception) {
 						_log.error(exception);
@@ -47,8 +50,8 @@ public class DocumentLibraryThumbnailsConfigurationUpgradeProcess
 	private static final Log _log = LogFactoryUtil.getLog(
 		DocumentLibraryThumbnailsConfigurationUpgradeProcess.class);
 
-	private final AMCompanyThumbnailConfigurationInitializer
-		_amCompanyThumbnailConfigurationInitializer;
+	private final AMImageConfigurationHelper _amImageConfigurationHelper;
 	private final CompanyLocalService _companyLocalService;
+	private final PrefsProps _prefsProps;
 
 }

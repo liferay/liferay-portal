@@ -6,8 +6,9 @@
 package com.liferay.adaptive.media.document.library.thumbnails.internal.upgrade.registry;
 
 import com.liferay.adaptive.media.document.library.thumbnails.internal.upgrade.v1_0_0.DocumentLibraryThumbnailsConfigurationUpgradeProcess;
-import com.liferay.adaptive.media.document.library.thumbnails.internal.util.AMCompanyThumbnailConfigurationInitializer;
+import com.liferay.adaptive.media.image.configuration.AMImageConfigurationHelper;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
@@ -29,15 +30,17 @@ public class AMDocumentLibraryThumbnailsUpgradeStepRegistrator
 		registry.register(
 			"1.0.0", "1.0.1",
 			new DocumentLibraryThumbnailsConfigurationUpgradeProcess(
-				_amCompanyThumbnailConfigurationInitializer,
-				_companyLocalService));
+				_amImageConfigurationHelper, _companyLocalService,
+				_prefsProps));
 	}
 
 	@Reference
-	private AMCompanyThumbnailConfigurationInitializer
-		_amCompanyThumbnailConfigurationInitializer;
+	private AMImageConfigurationHelper _amImageConfigurationHelper;
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private PrefsProps _prefsProps;
 
 }

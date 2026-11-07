@@ -7,12 +7,14 @@ package com.liferay.adaptive.media.document.library.thumbnails.internal.model.li
 
 import com.liferay.adaptive.media.document.library.thumbnails.internal.util.AMCompanyThumbnailConfigurationInitializer;
 import com.liferay.adaptive.media.exception.AMImageConfigurationException;
+import com.liferay.adaptive.media.image.configuration.AMImageConfigurationHelper;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.util.PrefsProps;
 
 import java.io.IOException;
 
@@ -28,8 +30,8 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 	@Override
 	public void onAfterCreate(Company company) throws ModelListenerException {
 		try {
-			_amCompanyThumbnailConfigurationInitializer.initializeCompany(
-				company);
+			AMCompanyThumbnailConfigurationInitializer.initializeCompany(
+				_amImageConfigurationHelper, company, _prefsProps);
 		}
 		catch (AMImageConfigurationException | IOException exception) {
 			if (_log.isWarnEnabled()) {
@@ -45,7 +47,9 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 		CompanyModelListener.class);
 
 	@Reference
-	private AMCompanyThumbnailConfigurationInitializer
-		_amCompanyThumbnailConfigurationInitializer;
+	private AMImageConfigurationHelper _amImageConfigurationHelper;
+
+	@Reference
+	private PrefsProps _prefsProps;
 
 }

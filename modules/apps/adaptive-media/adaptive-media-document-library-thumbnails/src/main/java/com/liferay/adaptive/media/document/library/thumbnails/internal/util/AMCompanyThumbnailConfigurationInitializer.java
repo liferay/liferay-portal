@@ -20,79 +20,83 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Adolfo Pérez
  */
-@Component(service = AMCompanyThumbnailConfigurationInitializer.class)
 public class AMCompanyThumbnailConfigurationInitializer {
 
-	public void initializeCompany(Company company)
+	public static void initializeCompany(
+			AMImageConfigurationHelper amImageConfigurationHelper,
+			Company company, PrefsProps prefsProps)
 		throws AMImageConfigurationException, IOException {
 
-		int dlFileEntryPreviewMaxHeight = _prefsProps.getInteger(
+		int dlFileEntryPreviewMaxHeight = prefsProps.getInteger(
 			PropsKeys.DL_FILE_ENTRY_PREVIEW_DOCUMENT_MAX_HEIGHT);
-		int dlFileEntryPreviewMaxWidth = _prefsProps.getInteger(
+		int dlFileEntryPreviewMaxWidth = prefsProps.getInteger(
 			PropsKeys.DL_FILE_ENTRY_PREVIEW_DOCUMENT_MAX_WIDTH);
 
 		if ((dlFileEntryPreviewMaxHeight > 0) ||
 			(dlFileEntryPreviewMaxWidth > 0)) {
 
 			_createAMDocumentLibraryPreviewConfiguration(
-				company, dlFileEntryPreviewMaxHeight,
-				dlFileEntryPreviewMaxWidth);
+				amImageConfigurationHelper, company,
+				dlFileEntryPreviewMaxHeight, dlFileEntryPreviewMaxWidth);
 		}
 
-		int dlFileEntryThumbnailMaxHeight = _prefsProps.getInteger(
+		int dlFileEntryThumbnailMaxHeight = prefsProps.getInteger(
 			PropsKeys.DL_FILE_ENTRY_THUMBNAIL_MAX_HEIGHT);
-		int dlFileEntryThumbnailMaxWidth = _prefsProps.getInteger(
+		int dlFileEntryThumbnailMaxWidth = prefsProps.getInteger(
 			PropsKeys.DL_FILE_ENTRY_THUMBNAIL_MAX_WIDTH);
 
 		if ((dlFileEntryThumbnailMaxHeight > 0) &&
 			(dlFileEntryThumbnailMaxWidth > 0)) {
 
 			_createAMDocumentLibraryThumbnailConfiguration(
-				company, dlFileEntryThumbnailMaxHeight,
-				dlFileEntryThumbnailMaxWidth);
+				amImageConfigurationHelper, company,
+				dlFileEntryThumbnailMaxHeight, dlFileEntryThumbnailMaxWidth);
 		}
 
-		int dlFileEntryThumbnailCustom1MaxHeight = _prefsProps.getInteger(
+		int dlFileEntryThumbnailCustom1MaxHeight = prefsProps.getInteger(
 			PropsKeys.DL_FILE_ENTRY_THUMBNAIL_CUSTOM_1_MAX_HEIGHT);
-		int dlFileEntryThumbnailCustom1MaxWidth = _prefsProps.getInteger(
+		int dlFileEntryThumbnailCustom1MaxWidth = prefsProps.getInteger(
 			PropsKeys.DL_FILE_ENTRY_THUMBNAIL_CUSTOM_1_MAX_WIDTH);
 
 		if ((dlFileEntryThumbnailCustom1MaxHeight > 0) &&
 			(dlFileEntryThumbnailCustom1MaxWidth > 0)) {
 
 			_createAMDocumentLibraryThumbnailConfiguration(
-				company, dlFileEntryThumbnailCustom1MaxHeight,
+				amImageConfigurationHelper, company,
+				dlFileEntryThumbnailCustom1MaxHeight,
 				dlFileEntryThumbnailCustom1MaxWidth);
 		}
 
-		int dlFileEntryThumbnailCustom2MaxHeight = _prefsProps.getInteger(
+		int dlFileEntryThumbnailCustom2MaxHeight = prefsProps.getInteger(
 			PropsKeys.DL_FILE_ENTRY_THUMBNAIL_CUSTOM_2_MAX_HEIGHT);
-		int dlFileEntryThumbnailCustom2MaxWidth = _prefsProps.getInteger(
+		int dlFileEntryThumbnailCustom2MaxWidth = prefsProps.getInteger(
 			PropsKeys.DL_FILE_ENTRY_THUMBNAIL_CUSTOM_2_MAX_WIDTH);
 
 		if ((dlFileEntryThumbnailCustom2MaxHeight > 0) &&
 			(dlFileEntryThumbnailCustom2MaxWidth > 0)) {
 
 			_createAMDocumentLibraryThumbnailConfiguration(
-				company, dlFileEntryThumbnailCustom2MaxHeight,
+				amImageConfigurationHelper, company,
+				dlFileEntryThumbnailCustom2MaxHeight,
 				dlFileEntryThumbnailCustom2MaxWidth);
 		}
 	}
 
-	private void _createAMDocumentLibraryConfiguration(
+	private static void _createAMDocumentLibraryConfiguration(
+			AMImageConfigurationHelper amImageConfigurationHelper,
 			Company company, String name, int maxHeight, int maxWidth)
 		throws AMImageConfigurationException, IOException {
 
 		String uuid = _normalize(name);
 
-		if (!_hasConfiguration(company.getCompanyId(), name, uuid)) {
-			_amImageConfigurationHelper.addAMImageConfigurationEntry(
+		if (!_hasConfiguration(
+				amImageConfigurationHelper, company.getCompanyId(), name,
+				uuid)) {
+
+			amImageConfigurationHelper.addAMImageConfigurationEntry(
 				company.getCompanyId(), name,
 				"This image resolution was automatically added.", uuid,
 				HashMapBuilder.put(
@@ -103,17 +107,19 @@ public class AMCompanyThumbnailConfigurationInitializer {
 		}
 	}
 
-	private void _createAMDocumentLibraryPreviewConfiguration(
+	private static void _createAMDocumentLibraryPreviewConfiguration(
+			AMImageConfigurationHelper amImageConfigurationHelper,
 			Company company, int maxHeight, int maxWidth)
 		throws AMImageConfigurationException, IOException {
 
 		String name = String.format("%s %dx%d", "Preview", maxWidth, maxHeight);
 
 		_createAMDocumentLibraryConfiguration(
-			company, name, maxHeight, maxWidth);
+			amImageConfigurationHelper, company, name, maxHeight, maxWidth);
 	}
 
-	private void _createAMDocumentLibraryThumbnailConfiguration(
+	private static void _createAMDocumentLibraryThumbnailConfiguration(
+			AMImageConfigurationHelper amImageConfigurationHelper,
 			Company company, int maxHeight, int maxWidth)
 		throws AMImageConfigurationException, IOException {
 
@@ -121,14 +127,15 @@ public class AMCompanyThumbnailConfigurationInitializer {
 			"%s %dx%d", "Thumbnail", maxWidth, maxHeight);
 
 		_createAMDocumentLibraryConfiguration(
-			company, name, maxHeight, maxWidth);
+			amImageConfigurationHelper, company, name, maxHeight, maxWidth);
 	}
 
-	private boolean _hasConfiguration(
-		long companyId, String name, String uuid) {
+	private static boolean _hasConfiguration(
+		AMImageConfigurationHelper amImageConfigurationHelper, long companyId,
+		String name, String uuid) {
 
 		Collection<AMImageConfigurationEntry> amImageConfigurationEntries =
-			_amImageConfigurationHelper.getAMImageConfigurationEntries(
+			amImageConfigurationHelper.getAMImageConfigurationEntries(
 				companyId,
 				amImageConfigurationEntry -> {
 					if (name.equals(amImageConfigurationEntry.getName()) ||
@@ -143,18 +150,12 @@ public class AMCompanyThumbnailConfigurationInitializer {
 		return !amImageConfigurationEntries.isEmpty();
 	}
 
-	private String _normalize(String str) {
+	private static String _normalize(String str) {
 		Matcher matcher = _pattern.matcher(str);
 
 		return matcher.replaceAll(StringPool.DASH);
 	}
 
 	private static final Pattern _pattern = Pattern.compile("[^\\w-]");
-
-	@Reference
-	private AMImageConfigurationHelper _amImageConfigurationHelper;
-
-	@Reference
-	private PrefsProps _prefsProps;
 
 }
