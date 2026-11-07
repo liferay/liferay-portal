@@ -8,6 +8,7 @@ package com.liferay.multi.factor.authentication.fido2.web.internal.portlet.actio
 import com.liferay.multi.factor.authentication.fido2.credential.model.MFAFIDO2CredentialEntry;
 import com.liferay.multi.factor.authentication.fido2.credential.service.MFAFIDO2CredentialEntryLocalService;
 import com.liferay.multi.factor.authentication.fido2.web.internal.audit.MFAFIDO2AuditMessageBuilder;
+import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -63,9 +64,10 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommand
 			_mfaFIDO2CredentialEntryLocalService.deleteMFAFIDO2CredentialEntry(
 				mfaFIDO2CredentialEntry.getMfaFIDO2CredentialEntryId());
 
-			_mfaFIDO2AuditMessageBuilder.routeAuditMessage(
-				_mfaFIDO2AuditMessageBuilder.buildSetupRemovedAuditMessage(
-					mfaFIDO2CredentialEntry.getUserId()));
+			MFAFIDO2AuditMessageBuilder.routeAuditMessage(
+				MFAFIDO2AuditMessageBuilder.buildSetupRemovedAuditMessage(
+					mfaFIDO2CredentialEntry.getUserId()),
+				_auditRouter);
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
@@ -87,7 +89,7 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommand
 		RemoveMFAFIDO2CredentialEntryMVCActionCommand.class);
 
 	@Reference
-	private MFAFIDO2AuditMessageBuilder _mfaFIDO2AuditMessageBuilder;
+	private AuditRouter _auditRouter;
 
 	@Reference
 	private MFAFIDO2CredentialEntryLocalService

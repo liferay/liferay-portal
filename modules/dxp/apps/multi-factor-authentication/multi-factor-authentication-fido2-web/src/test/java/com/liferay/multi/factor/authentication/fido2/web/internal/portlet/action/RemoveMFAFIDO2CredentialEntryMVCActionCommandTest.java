@@ -96,8 +96,8 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommandTest
 		);
 
 		ReflectionTestUtil.setFieldValue(
-			_removeMFAFIDO2CredentialEntryMVCActionCommand,
-			"_mfaFIDO2AuditMessageBuilder", mfaFIDO2AuditMessageBuilder);
+			_removeMFAFIDO2CredentialEntryMVCActionCommand, "_auditRouter",
+			auditRouter);
 		ReflectionTestUtil.setFieldValue(
 			_removeMFAFIDO2CredentialEntryMVCActionCommand,
 			"_mfaFIDO2CredentialEntryLocalService",

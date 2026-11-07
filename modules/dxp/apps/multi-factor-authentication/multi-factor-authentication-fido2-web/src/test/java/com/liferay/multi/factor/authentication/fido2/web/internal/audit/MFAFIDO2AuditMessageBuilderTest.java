@@ -44,11 +44,8 @@ public class MFAFIDO2AuditMessageBuilderTest {
 	@FeatureFlag("LPD-6417")
 	@Test
 	public void testBuildAuditMessages() throws Exception {
-		MFAFIDO2AuditMessageBuilder mfaFIDO2AuditMessageBuilder =
-			new MFAFIDO2AuditMessageBuilder();
-
 		AuditMessage auditMessage =
-			mfaFIDO2AuditMessageBuilder.
+			MFAFIDO2AuditMessageBuilder.
 				buildNonexistentUserVerificationFailureAuditMessage(
 					RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString());
@@ -63,23 +60,23 @@ public class MFAFIDO2AuditMessageBuilderTest {
 		_assertAuditMessage(
 			auditMessage, "verify_failure", "verification_failure");
 		_assertAuditMessage(
-			mfaFIDO2AuditMessageBuilder.buildNotVerifiedAuditMessage(
+			MFAFIDO2AuditMessageBuilder.buildNotVerifiedAuditMessage(
 				_getUser(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString()),
 			"verify_failure", "not_verified");
 		_assertAuditMessage(
-			mfaFIDO2AuditMessageBuilder.
+			MFAFIDO2AuditMessageBuilder.
 				buildUnconfiguredUserVerificationFailureAuditMessage(
 					RandomTestUtil.randomLong(), _getUser(),
 					RandomTestUtil.randomString()),
 			"verify_failure", "verification_failure");
 		_assertAuditMessage(
-			mfaFIDO2AuditMessageBuilder.buildVerificationFailureAuditMessage(
+			MFAFIDO2AuditMessageBuilder.buildVerificationFailureAuditMessage(
 				_getUser(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString()),
 			"verify_failure", "verification_failure");
 		_assertAuditMessage(
-			mfaFIDO2AuditMessageBuilder.buildVerifiedAuditMessage(
+			MFAFIDO2AuditMessageBuilder.buildVerifiedAuditMessage(
 				_getUser(), RandomTestUtil.randomString()),
 			"verify", "verified");
 
@@ -119,11 +116,8 @@ public class MFAFIDO2AuditMessageBuilderTest {
 
 			String reason = RandomTestUtil.randomString();
 
-			MFAFIDO2AuditMessageBuilder mfaFIDO2AuditMessageBuilder =
-				new MFAFIDO2AuditMessageBuilder();
-
 			AuditMessage auditMessage =
-				mfaFIDO2AuditMessageBuilder.buildNotVerifiedAuditMessage(
+				MFAFIDO2AuditMessageBuilder.buildNotVerifiedAuditMessage(
 					_getUser(), RandomTestUtil.randomString(), reason);
 
 			JSONObject additionalInfoJSONObject =

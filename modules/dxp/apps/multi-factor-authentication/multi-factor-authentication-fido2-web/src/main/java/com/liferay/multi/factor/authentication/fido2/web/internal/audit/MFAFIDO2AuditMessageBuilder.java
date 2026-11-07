@@ -18,17 +18,14 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.security.audit.event.generators.util.AuditMessageBuilder;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Marta Medio
  */
-@Component(service = MFAFIDO2AuditMessageBuilder.class)
 public class MFAFIDO2AuditMessageBuilder {
 
-	public AuditMessage buildNonexistentUserVerificationFailureAuditMessage(
-		long companyId, long userId, String checkerClassName) {
+	public static AuditMessage
+		buildNonexistentUserVerificationFailureAuditMessage(
+			long companyId, long userId, String checkerClassName) {
 
 		AuditMessage auditMessage = new AuditMessage(
 			companyId, userId, "Nonexistent", "verify_failure",
@@ -41,7 +38,7 @@ public class MFAFIDO2AuditMessageBuilder {
 		return auditMessage;
 	}
 
-	public AuditMessage buildNotVerifiedAuditMessage(
+	public static AuditMessage buildNotVerifiedAuditMessage(
 		User user, String checkerClassName, String reason) {
 
 		AuditMessage auditMessage = new AuditMessage(
@@ -55,20 +52,21 @@ public class MFAFIDO2AuditMessageBuilder {
 		return auditMessage;
 	}
 
-	public AuditMessage buildSetupAddedAuditMessage(long userId) {
+	public static AuditMessage buildSetupAddedAuditMessage(long userId) {
 		return AuditMessageBuilder.buildAuditMessage(
 			User.class.getName(), userId,
 			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_ADDED, null);
 	}
 
-	public AuditMessage buildSetupRemovedAuditMessage(long userId) {
+	public static AuditMessage buildSetupRemovedAuditMessage(long userId) {
 		return AuditMessageBuilder.buildAuditMessage(
 			User.class.getName(), userId,
 			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, null);
 	}
 
-	public AuditMessage buildUnconfiguredUserVerificationFailureAuditMessage(
-		long companyId, User user, String checkerClassName) {
+	public static AuditMessage
+		buildUnconfiguredUserVerificationFailureAuditMessage(
+			long companyId, User user, String checkerClassName) {
 
 		AuditMessage auditMessage = new AuditMessage(
 			companyId, user.getUserId(), "Unconfigured", "verify_failure",
@@ -81,7 +79,7 @@ public class MFAFIDO2AuditMessageBuilder {
 		return auditMessage;
 	}
 
-	public AuditMessage buildVerificationFailureAuditMessage(
+	public static AuditMessage buildVerificationFailureAuditMessage(
 		User user, String checkerClassName, String reason) {
 
 		AuditMessage auditMessage = new AuditMessage(
@@ -95,7 +93,7 @@ public class MFAFIDO2AuditMessageBuilder {
 		return auditMessage;
 	}
 
-	public AuditMessage buildVerifiedAuditMessage(
+	public static AuditMessage buildVerifiedAuditMessage(
 		User user, String checkerClassName) {
 
 		AuditMessage auditMessage = new AuditMessage(
@@ -108,9 +106,11 @@ public class MFAFIDO2AuditMessageBuilder {
 		return auditMessage;
 	}
 
-	public void routeAuditMessage(AuditMessage auditMessage) {
+	public static void routeAuditMessage(
+		AuditMessage auditMessage, AuditRouter auditRouter) {
+
 		try {
-			_auditRouter.route(auditMessage);
+			auditRouter.route(auditMessage);
 		}
 		catch (AuditException auditException) {
 			if (_log.isWarnEnabled()) {
@@ -124,7 +124,7 @@ public class MFAFIDO2AuditMessageBuilder {
 		}
 	}
 
-	private void _setVerificationResult(
+	private static void _setVerificationResult(
 		AuditMessage auditMessage, String outcome) {
 
 		long companyId = auditMessage.getCompanyId();
@@ -146,8 +146,5 @@ public class MFAFIDO2AuditMessageBuilder {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		MFAFIDO2AuditMessageBuilder.class);
-
-	@Reference
-	private AuditRouter _auditRouter;
 
 }
