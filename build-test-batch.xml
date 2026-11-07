@@ -1008,6 +1008,16 @@ mariadb.executable=${mariadb.executable}]]></echo>
 							}
 						}
 
+						if (standaloneRelease && standaloneBuildProfile.endsWith("-standalone") && !hasBuildProfileTestUtilModule(standaloneBuildProfile, releasedAppDirs)) {
+							String baseBuildProfile = StringUtils.removeEnd(standaloneBuildProfile, "-standalone");
+
+							if (hasBuildProfileTestUtilModule(baseBuildProfile, releasedAppDirs)) {
+								System.out.println("No test util module is marked .lfrbuild-" + standaloneBuildProfile + ", using .lfrbuild-" + baseBuildProfile);
+
+								standaloneBuildProfile = baseBuildProfile;
+							}
+						}
+
 						boolean standaloneTestUtilModuleFound = false;
 						List testUtilModules = new ArrayList();
 
@@ -1060,6 +1070,22 @@ mariadb.executable=${mariadb.executable}]]></echo>
 						}
 
 						return testUtilModules;
+					}
+
+					public boolean hasBuildProfileTestUtilModule(String buildProfile, List releasedAppDirs) {
+						for (File releasedAppDir : releasedAppDirs) {
+							List testUtilModuleBuildGradleFiles = findFiles(releasedAppDir, ".+test-util/build.gradle");
+
+							for (File testUtilModuleBuildGradleFile : testUtilModuleBuildGradleFiles) {
+								File buildProfileFile = new File(testUtilModuleBuildGradleFile.getParent(), ".lfrbuild-" + buildProfile);
+
+								if (buildProfileFile.exists()) {
+									return true;
+								}
+							}
+						}
+
+						return false;
 					}
 
 					public boolean isPostStartupTestUtilModule(String testUtilModule) {
