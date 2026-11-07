@@ -20,7 +20,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.user.associated.data.constants.UserAssociatedDataPortletKeys;
 import com.liferay.user.associated.data.web.internal.helper.SelectedUserHelper;
-import com.liferay.user.associated.data.web.internal.helper.UADApplicationSummaryHelper;
+import com.liferay.user.associated.data.web.internal.registry.UADRegistry;
+import com.liferay.user.associated.data.web.internal.util.UADApplicationSummaryUtil;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -80,14 +81,13 @@ public class ErasePersonalDataMVCActionCommand
 		String mvcRenderCommandName = "/user_associated_data/review_uad_data";
 
 		int totalReviewableUADEntitiesCount =
-			_uadApplicationSummaryHelper.getTotalReviewableUADEntitiesCount(
-				selectedUser.getUserId());
+			UADApplicationSummaryUtil.getTotalReviewableUADEntitiesCount(
+				_uadRegistry, selectedUser.getUserId());
 
 		if (totalReviewableUADEntitiesCount == 0) {
 			int totalNonreviewableUADEntitiesCount =
-				_uadApplicationSummaryHelper.
-					getTotalNonreviewableUADEntitiesCount(
-						selectedUser.getUserId());
+				UADApplicationSummaryUtil.getTotalNonreviewableUADEntitiesCount(
+					_uadRegistry, selectedUser.getUserId());
 
 			if (totalNonreviewableUADEntitiesCount == 0) {
 				mvcRenderCommandName =
@@ -114,7 +114,7 @@ public class ErasePersonalDataMVCActionCommand
 	private SelectedUserHelper _selectedUserHelper;
 
 	@Reference
-	private UADApplicationSummaryHelper _uadApplicationSummaryHelper;
+	private UADRegistry _uadRegistry;
 
 	@Reference
 	private UserGroupLocalService _userGroupLocalService;

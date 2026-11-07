@@ -25,8 +25,8 @@ import com.liferay.user.associated.data.anonymizer.UADAnonymizer;
 import com.liferay.user.associated.data.constants.UserAssociatedDataPortletKeys;
 import com.liferay.user.associated.data.display.UADDisplay;
 import com.liferay.user.associated.data.web.internal.helper.SelectedUserHelper;
-import com.liferay.user.associated.data.web.internal.helper.UADApplicationSummaryHelper;
 import com.liferay.user.associated.data.web.internal.registry.UADRegistry;
+import com.liferay.user.associated.data.web.internal.util.UADApplicationSummaryUtil;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -64,13 +64,13 @@ public abstract class BaseUADMVCActionCommand extends BaseMVCActionCommand {
 		long selectedUserId = getSelectedUserId(actionRequest);
 
 		int totalNonreviewableUADEntitiesCount =
-			uadApplicationSummaryHelper.getTotalNonreviewableUADEntitiesCount(
-				selectedUserId);
+			UADApplicationSummaryUtil.getTotalNonreviewableUADEntitiesCount(
+				uadRegistry, selectedUserId);
 
 		if (totalNonreviewableUADEntitiesCount == 0) {
 			int totalReviewableUADEntitiesCount =
-				uadApplicationSummaryHelper.getTotalReviewableUADEntitiesCount(
-					selectedUserId);
+				UADApplicationSummaryUtil.getTotalReviewableUADEntitiesCount(
+					uadRegistry, selectedUserId);
 
 			if (totalReviewableUADEntitiesCount == 0) {
 				mvcRenderCommandName =
@@ -107,13 +107,13 @@ public abstract class BaseUADMVCActionCommand extends BaseMVCActionCommand {
 		long selectedUserId = getSelectedUserId(actionRequest);
 
 		int totalReviewableUADEntitiesCount =
-			uadApplicationSummaryHelper.getTotalReviewableUADEntitiesCount(
-				selectedUserId);
+			UADApplicationSummaryUtil.getTotalReviewableUADEntitiesCount(
+				uadRegistry, selectedUserId);
 
 		if (totalReviewableUADEntitiesCount == 0) {
 			int totalNonreviewableUADEntitiesCount =
-				uadApplicationSummaryHelper.
-					getTotalNonreviewableUADEntitiesCount(selectedUserId);
+				UADApplicationSummaryUtil.getTotalNonreviewableUADEntitiesCount(
+					uadRegistry, selectedUserId);
 
 			if (totalNonreviewableUADEntitiesCount == 0) {
 				mvcRenderCommandName =
@@ -250,9 +250,6 @@ public abstract class BaseUADMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	protected SelectedUserHelper selectedUserHelper;
-
-	@Reference
-	protected UADApplicationSummaryHelper uadApplicationSummaryHelper;
 
 	@Reference
 	protected UADRegistry uadRegistry;

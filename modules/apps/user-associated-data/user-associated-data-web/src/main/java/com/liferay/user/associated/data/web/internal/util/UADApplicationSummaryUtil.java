@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.user.associated.data.web.internal.helper;
+package com.liferay.user.associated.data.web.internal.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -19,40 +19,36 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Drew Brokke
  */
-@Component(service = UADApplicationSummaryHelper.class)
-public class UADApplicationSummaryHelper {
+public class UADApplicationSummaryUtil {
 
-	public List<UADAnonymizer<?>> getApplicationUADAnonymizers(
-		String applicationKey) {
+	public static List<UADAnonymizer<?>> getApplicationUADAnonymizers(
+		String applicationKey, UADRegistry uadRegistry) {
 
 		List<UADAnonymizer<?>> uadAnonymizers = new ArrayList<>();
 
 		for (UADDisplay<?> uadDisplay :
-				_uadRegistry.getApplicationUADDisplays(applicationKey)) {
+				uadRegistry.getApplicationUADDisplays(applicationKey)) {
 
 			uadAnonymizers.add(
-				_uadRegistry.getUADAnonymizer(uadDisplay.getTypeKey()));
+				uadRegistry.getUADAnonymizer(uadDisplay.getTypeKey()));
 		}
 
 		return uadAnonymizers;
 	}
 
-	public String getDefaultUADRegistryKey(String applicationKey) {
+	public static String getDefaultUADRegistryKey(
+		String applicationKey, UADRegistry uadRegistry) {
+
 		List<UADDisplay<?>> uadDisplays;
 
 		if (applicationKey.equals("all-applications")) {
-			uadDisplays = ListUtil.fromCollection(
-				_uadRegistry.getUADDisplays());
+			uadDisplays = ListUtil.fromCollection(uadRegistry.getUADDisplays());
 		}
 		else {
-			uadDisplays = _uadRegistry.getApplicationUADDisplays(
-				applicationKey);
+			uadDisplays = uadRegistry.getApplicationUADDisplays(applicationKey);
 		}
 
 		UADDisplay<?> uadDisplay = uadDisplays.get(0);
@@ -64,17 +60,21 @@ public class UADApplicationSummaryHelper {
 		return uadDisplay.getTypeKey();
 	}
 
-	public int getTotalNonreviewableUADEntitiesCount(long userId) {
+	public static int getTotalNonreviewableUADEntitiesCount(
+		UADRegistry uadRegistry, long userId) {
+
 		return _getNonreviewableUADEntitiesCount(
-			_uadRegistry.getNonreviewableUADAnonymizers(), userId);
+			uadRegistry.getNonreviewableUADAnonymizers(), userId);
 	}
 
-	public int getTotalReviewableUADEntitiesCount(long userId) {
+	public static int getTotalReviewableUADEntitiesCount(
+		UADRegistry uadRegistry, long userId) {
+
 		return _getReviewableUADEntitiesCount(
-			_uadRegistry.getUADDisplays(), userId);
+			uadRegistry.getUADDisplays(), userId);
 	}
 
-	public UADApplicationSummaryDisplay getUADApplicationSummaryDisplay(
+	public static UADApplicationSummaryDisplay getUADApplicationSummaryDisplay(
 		String applicationKey, List<UADDisplay<?>> uadDisplays, long userId,
 		long[] groupIds) {
 
@@ -88,8 +88,9 @@ public class UADApplicationSummaryHelper {
 		return uadApplicationSummaryDisplay;
 	}
 
-	public List<UADApplicationSummaryDisplay> getUADApplicationSummaryDisplays(
-		long userId, long[] groupIds) {
+	public static List<UADApplicationSummaryDisplay>
+		getUADApplicationSummaryDisplays(
+			long[] groupIds, UADRegistry uadRegistry, long userId) {
 
 		List<UADApplicationSummaryDisplay> uadApplicationSummaryDisplays =
 			new ArrayList<>();
@@ -107,12 +108,12 @@ public class UADApplicationSummaryHelper {
 		int count = 0;
 
 		for (String applicationKey :
-				_uadRegistry.getApplicationUADDisplaysKeySet()) {
+				uadRegistry.getApplicationUADDisplaysKeySet()) {
 
 			List<UADDisplay<?>> applicationUADDisplays = new ArrayList<>();
 
 			for (UADDisplay<?> uadDisplay :
-					_uadRegistry.getApplicationUADDisplays(applicationKey)) {
+					uadRegistry.getApplicationUADDisplays(applicationKey)) {
 
 				if (ArrayUtil.isNotEmpty(groupIds) !=
 						uadDisplay.isSiteScoped()) {
@@ -157,7 +158,7 @@ public class UADApplicationSummaryHelper {
 		return uadApplicationSummaryDisplays;
 	}
 
-	private int _getNonreviewableUADEntitiesCount(
+	private static int _getNonreviewableUADEntitiesCount(
 		Collection<UADAnonymizer<?>> uadAnonymizers, long userId) {
 
 		int sum = 0;
@@ -176,7 +177,7 @@ public class UADApplicationSummaryHelper {
 		return sum;
 	}
 
-	private int _getReviewableUADEntitiesCount(
+	private static int _getReviewableUADEntitiesCount(
 		Collection<UADDisplay<?>> uadDisplays, long userId) {
 
 		int sum = 0;
@@ -190,7 +191,7 @@ public class UADApplicationSummaryHelper {
 		return sum;
 	}
 
-	private int _getReviewableUADEntitiesCount(
+	private static int _getReviewableUADEntitiesCount(
 		List<UADDisplay<?>> uadDisplays, long userId, long[] groupIds) {
 
 		int sum = 0;
@@ -203,8 +204,5 @@ public class UADApplicationSummaryHelper {
 
 		return sum;
 	}
-
-	@Reference
-	private UADRegistry _uadRegistry;
 
 }
