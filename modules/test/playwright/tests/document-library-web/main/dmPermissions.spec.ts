@@ -298,6 +298,7 @@ test(
 					exact: true,
 					name: visibleItems[0],
 				}),
+				timeout: 2000,
 				trigger: newButton,
 			});
 
