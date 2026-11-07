@@ -115,50 +115,39 @@ public class ConfigurationFilterStringUtil {
 	}
 
 	public static String getSystemScopedFilterString() {
-		return StringBundler.concat(
-			"(&(|(!(",
-			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-			"=*))(",
-			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-			"=0))(!(dxp.lxc.liferay.com.virtualInstanceId=*))(!(",
-			ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-			"=*))(!(siteExternalReferenceCode=*))(!(",
-			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
-				getPropertyKey(),
-			"=*)))");
+		StringBundler sb = new StringBundler(9);
+
+		_appendSystemScopedFilterString(sb);
+
+		return sb.toString();
 	}
 
 	public static String getSystemScopedFilterString(String pid) {
-		StringBundler sb = new StringBundler(12);
-
-		sb.append("(|");
-
-		_appendPropertyFilterString(
-			sb, ConfigurationAdmin.SERVICE_FACTORYPID, pid);
-		_appendPropertyFilterString(sb, Constants.SERVICE_PID, pid);
-
-		sb.append(StringPool.CLOSE_PARENTHESIS);
-
-		String filterString = sb.toString();
+		StringBundler sb = new StringBundler(22);
 
 		if (pid.contains("~")) {
-			sb = new StringBundler(12);
-
-			sb.append("(&");
+			sb.append("(&(&");
 
 			_appendPropertyFilterString(
 				sb, ConfigurationAdmin.SERVICE_FACTORYPID,
 				ConfigurationPidUtil.getRawPid(pid));
-			_appendPropertyFilterString(sb, Constants.SERVICE_PID, pid);
+		}
+		else {
+			sb.append("(&(|");
 
-			sb.append(StringPool.CLOSE_PARENTHESIS);
-
-			filterString = sb.toString();
+			_appendPropertyFilterString(
+				sb, ConfigurationAdmin.SERVICE_FACTORYPID, pid);
 		}
 
-		return StringBundler.concat(
-			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND, filterString,
-			getSystemScopedFilterString(), StringPool.CLOSE_PARENTHESIS);
+		_appendPropertyFilterString(sb, Constants.SERVICE_PID, pid);
+
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		_appendSystemScopedFilterString(sb);
+
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		return sb.toString();
 	}
 
 	private static void _appendGroupScopedFilterString(
@@ -245,6 +234,20 @@ public class ConfigurationFilterStringUtil {
 
 			sb.append(StringPool.CLOSE_PARENTHESIS);
 		}
+	}
+
+	private static void _appendSystemScopedFilterString(StringBundler sb) {
+		sb.append("(&(|(!(");
+		sb.append(ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey());
+		sb.append("=*))(");
+		sb.append(ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey());
+		sb.append("=0))(!(dxp.lxc.liferay.com.virtualInstanceId=*))(!(");
+		sb.append(ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey());
+		sb.append("=*))(!(siteExternalReferenceCode=*))(!(");
+		sb.append(
+			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
+				getPropertyKey());
+		sb.append("=*)))");
 	}
 
 	private static String _getDefaultVirtualInstanceIdFilterString(
