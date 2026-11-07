@@ -103,13 +103,12 @@ public class SingleLogoutProfileIntegrationTest extends BaseSamlTestCase {
 		ReflectionTestUtil.setFieldValue(
 			_singleLogoutProfileImpl, "credentialResolver", credentialResolver);
 		ReflectionTestUtil.setFieldValue(
+			_singleLogoutProfileImpl, "httpClientFactory", httpClientFactory);
+		ReflectionTestUtil.setFieldValue(
 			_singleLogoutProfileImpl, "localEntityManager",
 			keyStoreLocalEntityManager);
 		ReflectionTestUtil.setFieldValue(
 			_singleLogoutProfileImpl, "portal", portal);
-		ReflectionTestUtil.setFieldValue(
-			_singleLogoutProfileImpl, "samlBindingProvider",
-			samlBindingProvider);
 		ReflectionTestUtil.setFieldValue(
 			_singleLogoutProfileImpl, "_samlPeerBindingLocalService",
 			samlPeerBindingLocalService);
@@ -267,7 +266,7 @@ public class SingleLogoutProfileIntegrationTest extends BaseSamlTestCase {
 			(MessageContext<LogoutRequest>)
 				_singleLogoutProfileImpl.decodeSamlMessage(
 					mockHttpServletRequest, mockHttpServletResponse,
-					samlBindingProvider.getSamlBinding(
+					_singleLogoutProfileImpl.getSamlBinding(
 						SAMLConstants.SAML2_REDIRECT_BINDING_URI),
 					true);
 
@@ -338,7 +337,7 @@ public class SingleLogoutProfileIntegrationTest extends BaseSamlTestCase {
 		MessageContext<?> messageContext =
 			_singleLogoutProfileImpl.decodeSamlMessage(
 				mockHttpServletRequest, mockHttpServletResponse,
-				samlBindingProvider.getSamlBinding(
+				_singleLogoutProfileImpl.getSamlBinding(
 					SAMLConstants.SAML2_REDIRECT_BINDING_URI),
 				true);
 
