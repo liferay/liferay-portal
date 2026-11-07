@@ -9,9 +9,15 @@ import com.liferay.adaptive.media.constants.AMOptimizeImagesBackgroundTaskConsta
 import com.liferay.adaptive.media.web.internal.optimizer.AMImageOptimizerUtil;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
 
+import org.osgi.service.component.annotations.Component;
+
 /**
  * @author Sergio González
  */
+@Component(
+	property = "background.task.executor.class.name=com.liferay.adaptive.media.web.internal.background.task.OptimizeImagesSingleConfigurationBackgroundTaskExecutor",
+	service = BackgroundTaskExecutor.class
+)
 public class OptimizeImagesSingleConfigurationBackgroundTaskExecutor
 	extends BaseOptimizeImagesBackgroundTaskExecutor {
 
