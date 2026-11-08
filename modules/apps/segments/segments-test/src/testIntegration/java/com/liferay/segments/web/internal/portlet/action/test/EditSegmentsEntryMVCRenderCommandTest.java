@@ -220,6 +220,16 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 		}
 	}
 
+	@Test
+	public void testRender() throws Exception {
+		_testRender(0);
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			_group.getGroupId());
+
+		_testRender(segmentsEntry.getSegmentsEntryId());
+	}
+
 	private SegmentsEntry _addSegmentEntry(String filterString)
 		throws Exception {
 
@@ -258,6 +268,39 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		return themeDisplay;
+	}
+
+	private void _testRender(long segmentsEntryId) throws Exception {
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequests();
+
+		mockLiferayPortletRenderRequest.setAttribute(
+			WebKeys.USER, TestPropsValues.getUser());
+		mockLiferayPortletRenderRequest.setParameter(
+			"segmentsEntryId", String.valueOf(segmentsEntryId));
+
+		_mvcRenderCommand.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		long groupId = ReflectionTestUtil.invoke(
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
+			"getGroupId", new Class<?>[0]);
+
+		Assert.assertEquals(_group.getGroupId(), groupId);
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"groupId", String.valueOf(groupId));
+
+		_mvcRenderCommand.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		Map<String, Object> data = ReflectionTestUtil.invoke(
+			mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
+			"getData", new Class<?>[0]);
+
+		Assert.assertNull(data.get("error"));
 	}
 
 	private static final String _CLASS_NAME =
