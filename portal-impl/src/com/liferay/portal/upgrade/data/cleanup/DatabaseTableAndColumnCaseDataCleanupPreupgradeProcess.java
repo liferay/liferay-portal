@@ -15,8 +15,6 @@ import com.liferay.portal.kernel.db.DBResourceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.module.util.BundleUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.DataCleanupLoggingUtil;
@@ -31,9 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 
 /**
  * @author Jorge Avalos
@@ -100,39 +95,25 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess
 			alterTableName(tempTableName, expectedTableName);
 		}
 
-		Map<String, Map<String, String>> expectedColumnsByTable = new TreeMap<>(
+		Map<String, Map<String, String>> expectedColumnNamesMap = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
 
 		_putColumnNames(
 			DBResourceUtil.getServiceComponentPortalColumnDefinitionsMap(
 				connection),
-			expectedColumnsByTable);
+			expectedColumnNamesMap);
 		_putColumnNames(
 			DBResourceUtil.getServiceComponentModuleColumnDefinitionsMap(
 				connection),
-			expectedColumnsByTable);
+			expectedColumnNamesMap);
 		_putColumnNames(
 			DBResourceUtil.getPortalColumnDefinitionsMap(),
-			expectedColumnsByTable);
+			expectedColumnNamesMap);
+		_putColumnNames(
+			DBResourceUtil.getModuleColumnDefinitionsMap(),
+			expectedColumnNamesMap);
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		for (Bundle bundle : bundleContext.getBundles()) {
-			String symbolicName = bundle.getSymbolicName();
-
-			if ((symbolicName == null) ||
-				!symbolicName.startsWith("com.liferay") ||
-				!BundleUtil.isLiferayServiceBundle(bundle)) {
-
-				continue;
-			}
-
-			_putColumnNames(
-				DBResourceUtil.getModuleColumnDefinitionsMap(bundle),
-				expectedColumnsByTable);
-		}
-
-		Map<String, Map<String, String>> existingColumnsByTable = new TreeMap<>(
+		Map<String, Map<String, String>> columnNamesMap = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
 
 		for (String tableName : expectedTableNames) {
@@ -143,7 +124,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess
 				while (resultSet.next()) {
 					String columnName = resultSet.getString("COLUMN_NAME");
 
-					existingColumnsByTable.computeIfAbsent(
+					columnNamesMap.computeIfAbsent(
 						tableName,
 						k -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER)
 					).put(
@@ -154,12 +135,12 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess
 		}
 
 		for (Map.Entry<String, Map<String, String>> entry :
-				existingColumnsByTable.entrySet()) {
+				columnNamesMap.entrySet()) {
 
 			String tableName = entry.getKey();
 
 			Map<String, String> expectedColumnNames =
-				expectedColumnsByTable.get(tableName);
+				expectedColumnNamesMap.get(tableName);
 
 			if (expectedColumnNames == null) {
 				continue;
@@ -187,14 +168,14 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess
 	}
 
 	private void _putColumnNames(
-		Map<String, List<String>> definitionsByTable,
-		Map<String, Map<String, String>> expectedColumnsByTable) {
+		Map<String, List<String>> columnDefinitionsMap,
+		Map<String, Map<String, String>> expectedColumnNamesMap) {
 
 		for (Map.Entry<String, List<String>> entry :
-				definitionsByTable.entrySet()) {
+				columnDefinitionsMap.entrySet()) {
 
 			Map<String, String> columnNames =
-				expectedColumnsByTable.computeIfAbsent(
+				expectedColumnNamesMap.computeIfAbsent(
 					entry.getKey(),
 					tableName -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER));
 
@@ -212,10 +193,6 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess
 			Collection<String> expectedColumnNames, int maxColumnNameLength,
 			String tableName)
 		throws Exception {
-
-		if ((columnNames == null) || columnNames.isEmpty()) {
-			return;
-		}
 
 		DB db = DBManagerUtil.getDB();
 
