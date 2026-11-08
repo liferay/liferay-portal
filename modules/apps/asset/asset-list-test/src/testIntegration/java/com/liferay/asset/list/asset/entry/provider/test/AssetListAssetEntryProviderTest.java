@@ -964,6 +964,25 @@ public class AssetListAssetEntryProviderTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112512")
+	public void testGetDynamicAssetEntriesFromDepotEntryAndGroup()
+		throws Exception {
+
+		_depotEntry = _addDepotEntry();
+
+		FileEntry depotFileEntry = _addFileEntry(
+			_depotEntry.getGroupId(), RandomTestUtil.randomString());
+
+		FileEntry fileEntry = _addFileEntry(
+			_group.getGroupId(), RandomTestUtil.randomString());
+
+		_assertAssetListEntryResults(
+			_getDepotDynamicAssetEntriesInfoPage(
+				true, _depotEntry.getGroupId(), _group.getGroupId()),
+			2, _getAssetEntry(depotFileEntry), _getAssetEntry(fileEntry));
+	}
+
+	@Test
 	public void testGetDynamicAssetEntriesMatchingAllAssetCategories()
 		throws Exception {
 
