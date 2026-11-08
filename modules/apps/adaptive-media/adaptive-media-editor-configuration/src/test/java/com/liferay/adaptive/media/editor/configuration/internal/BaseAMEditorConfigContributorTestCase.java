@@ -445,7 +445,7 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			_itemSelector, Mockito.never()
 		).getItemSelectorURL(
 			Mockito.any(RequestBackedPortletURLFactory.class),
-			Mockito.anyString(), Mockito.any(ItemSelectorCriterion.class)
+			Mockito.anyString(), Mockito.any(ItemSelectorCriterion[].class)
 		);
 
 		JSONObject expectedJSONObject = JSONFactoryUtil.createJSONObject(
@@ -487,7 +487,7 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			_itemSelector, Mockito.never()
 		).getItemSelectorURL(
 			Mockito.any(RequestBackedPortletURLFactory.class),
-			Mockito.anyString(), Mockito.any(ItemSelectorCriterion.class)
+			Mockito.anyString(), Mockito.any(ItemSelectorCriterion[].class)
 		);
 
 		JSONObject expectedJSONObject = JSONFactoryUtil.createJSONObject(
