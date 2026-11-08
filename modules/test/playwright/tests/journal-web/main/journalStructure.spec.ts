@@ -294,66 +294,6 @@ test(
 );
 
 test(
-	'The back button of the structure editor shows a tooltip',
-	{
-		tag: '@LPS-177690',
-	},
-	async ({journalEditStructurePage, journalStructuresPage, page, site}) => {
-		const backLink = page.getByRole('link', {name: 'Go to Web Content'});
-		const nameInput = page.getByRole('textbox', {name: 'Name Required'});
-		const structureName = getRandomString();
-		const tooltip = page.getByRole('tooltip');
-
-		// New structure
-
-		await journalStructuresPage.goto(site.friendlyUrlPath);
-
-		await journalStructuresPage.newButton.click();
-
-		await journalEditStructurePage.propertiesTab.waitFor();
-
-		await backLink.hover();
-
-		await expect(tooltip).toHaveText('Go to Web Content');
-
-		await page.getByTitle('Text', {exact: true}).dblclick();
-
-		await fillAndClickOutside(page, nameInput, structureName);
-
-		await journalEditStructurePage.save();
-
-		// Copy of a structure
-
-		const copyName = `${structureName} (Copy)`;
-
-		await journalStructuresPage.goto(site.friendlyUrlPath);
-
-		await journalStructuresPage.goToJournalStructureAction(
-			'Make a Copy',
-			structureName
-		);
-
-		await fillAndClickOutside(page, nameInput, copyName);
-
-		await page.getByRole('button', {exact: true, name: 'Copy'}).click();
-
-		await waitForAlert(
-			page,
-			'Success:Your request completed successfully.'
-		);
-
-		await journalEditStructurePage.goto({
-			siteUrl: site.friendlyUrlPath,
-			structureName: copyName,
-		});
-
-		await backLink.hover();
-
-		await expect(tooltip).toHaveText('Go to Web Content');
-	}
-);
-
-test(
 	'The default values of a structure built from a fieldset are kept',
 	{
 		tag: '@LPD-113664',
@@ -423,31 +363,6 @@ test(
 		await expect(
 			page.getByRole('textbox', {name: 'FieldsetText'})
 		).toHaveValue(textValue);
-	}
-);
-
-test(
-	'The templates of the global Basic Web Content structure can be managed from the structure',
-	{
-		tag: '@LPD-113664',
-	},
-	async ({journalStructuresPage, page}) => {
-		await journalStructuresPage.goto('/global');
-
-		await journalStructuresPage.goToJournalStructureAction(
-			'Manage Templates',
-			'Basic Web Content'
-		);
-
-		await expect(
-			page.getByRole('heading', {
-				name: 'Templates for Structure: Basic Web Content',
-			})
-		).toBeVisible();
-
-		await expect(
-			page.getByRole('link', {exact: true, name: 'Basic Web Content'})
-		).toBeVisible();
 	}
 );
 

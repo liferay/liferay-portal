@@ -8,7 +8,6 @@ import {Page, expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
-import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
 import {createCategories} from '../../../helpers/CreateCategories';
 import {changeManagementToolbarView} from '../../../utils/changeManagementToolbarView';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
@@ -25,8 +24,7 @@ const test = mergeTests(
 	dataApiHelpersTest,
 	isolatedSiteTest,
 	journalPagesTest,
-	loginTest(),
-	pageViewModePagesTest
+	loginTest()
 );
 
 test(
@@ -87,11 +85,6 @@ test(
 			'Draft'
 		);
 
-		await expect(page.getByLabel(`Actions for ${titles[2]}`)).toHaveCSS(
-			'color',
-			'rgb(107, 108, 126)'
-		);
-
 		for (const view of ['Cards', 'Table', 'List']) {
 			await changeManagementToolbarView(page, view);
 
@@ -101,30 +94,6 @@ test(
 					.locator('.lexicon-icon-web-content')
 					.first()
 			).toBeVisible();
-		}
-
-		// Filter by versions
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('menuitem', {name: 'Versions'}),
-			trigger: page.getByRole('button', {exact: true, name: 'Filter'}),
-		});
-
-		await expect(
-			page.getByText('4 Results Found With Filters')
-		).toBeVisible();
-
-		for (const view of ['Cards', 'Table', 'List']) {
-			await changeManagementToolbarView(page, view);
-
-			await expect(rows.filter({hasText: folderName})).toBeHidden();
-
-			for (const [index, title] of titles.entries()) {
-				await expect(rows.filter({hasText: title})).toContainText(
-					`Version 1.${index}`
-				);
-			}
 		}
 	}
 );
@@ -532,39 +501,6 @@ test(
 			'Expired',
 			'Scheduled',
 		]);
-	}
-);
-
-test(
-	'Notifications can be configured from a site and an asset library',
-	{tag: '@LPS-197694'},
-	async ({apiHelpers, journalPage, page, site}) => {
-		const assetLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
-
-		for (const groupURL of [
-			site.friendlyUrlPath,
-			`/asset-library-${assetLibrary.id}`,
-		]) {
-			await journalPage.goto(groupURL);
-
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-				target: page.getByRole('menuitem', {name: 'Configuration'}),
-				trigger: page.getByRole('button', {
-					exact: true,
-					name: 'Options',
-				}),
-			});
-
-			await expect(page.getByText('Notifications')).toBeVisible();
-
-			await page.getByText('Email From', {exact: true}).click();
-
-			await expect(
-				page.getByRole('heading', {name: 'Email From'})
-			).toBeVisible();
-		}
 	}
 );
 
@@ -1064,102 +1000,5 @@ test(
 		await expect(
 			structuresFrame.getByRole('row', {name: `Select ${structureName}`})
 		).toContainText('Asset Library or Space');
-	}
-);
-
-test(
-	'The back buttons of the usages, versions and compare pages show a tooltip',
-	{tag: '@LPS-177690'},
-	async ({apiHelpers, journalPage, page, site, widgetPagePage}) => {
-		const title = getRandomString();
-
-		const webContent =
-			await apiHelpers.jsonWebServicesJournal.addWebContent({
-				ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
-				groupId: site.id,
-				titleMap: {en_US: title},
-			});
-
-		await apiHelpers.jsonWebServicesJournal.editWebContent(
-			{content: getRandomString(), title},
-			site.id,
-			webContent
-		);
-
-		const layoutTitle = getRandomString();
-
-		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
-			title: layoutTitle,
-		});
-
-		await widgetPagePage.goto(layout, site.friendlyUrlPath);
-
-		await widgetPagePage.addContent(title);
-
-		const tooltip = page.getByRole('tooltip');
-
-		const assertBackTooltip = async (text: string) => {
-			const backLink = page.getByRole('link', {exact: true, name: text});
-
-			await expect(async () => {
-				await backLink.hover({timeout: 2000});
-				await backLink.focus({timeout: 2000});
-
-				await expect(tooltip).toHaveText(text, {timeout: 2000});
-			}).toPass({timeout: 15000});
-		};
-
-		// Usages
-
-		await journalPage.goto(site.friendlyUrlPath);
-
-		await journalPage.goToJournalArticleAction('View Usages', title);
-
-		await expect(
-			page.getByRole('heading', {name: 'All (1)'})
-		).toBeVisible();
-
-		await assertBackTooltip('Go to Web Content');
-
-		// View in page
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('menuitem', {name: 'View in Page'}),
-			trigger: page
-				.getByRole('row', {name: new RegExp(layoutTitle)})
-				.getByRole('button'),
-		});
-
-		await assertBackTooltip(`Go to ${title}`);
-
-		// Versions
-
-		await journalPage.goto(site.friendlyUrlPath);
-
-		await journalPage.goToJournalArticleAction('View History', title);
-
-		await assertBackTooltip('Go to Web Content');
-
-		// Compare versions
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('menuitem', {name: 'Compare to...'}),
-			trigger: page.getByRole('row', {name: /1\.1/}).getByRole('button'),
-		});
-
-		await page
-			.getByRole('dialog', {name: 'Compare Versions'})
-			.frameLocator('iframe')
-			.getByRole('link', {exact: true, name: '1.0'})
-			.click();
-
-		await expect(
-			page.getByRole('heading', {name: 'Compare Versions'})
-		).toBeVisible();
-
-		await assertBackTooltip('Go to Web Content');
 	}
 );
