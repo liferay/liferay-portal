@@ -15,9 +15,6 @@ Provide-Capability:\
 		uses:="jakarta.ws.rs,jakarta.ws.rs.core,jakarta.ws.rs.ext,jakarta.ws.rs.client,jakarta.ws.rs.container,jakarta.ws.rs.sse,org.osgi.service.jaxrs.whiteboard";\
 		version:Version="1.0.0",\
 	osgi.service;\
-		objectClass:List<String>="org.osgi.service.jaxrs.client.SseEventSourceFactory";\
-		uses:="org.osgi.service.jaxrs.client",\
-	osgi.service;\
 		objectClass:List<String>="org.osgi.service.jaxrs.runtime.JaxrsServiceRuntime";\
 		uses:="org.osgi.service.jaxrs.runtime,org.osgi.service.jaxrs.runtime.dto",\
 	osgi.serviceloader;\

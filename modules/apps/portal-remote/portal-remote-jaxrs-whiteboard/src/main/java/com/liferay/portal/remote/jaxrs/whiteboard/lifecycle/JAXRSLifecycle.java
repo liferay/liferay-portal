@@ -10,16 +10,13 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MapUtil;
 
-import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.ext.RuntimeDelegate;
-import jakarta.ws.rs.sse.SseEventSource;
 
 import java.util.Dictionary;
 import java.util.Map;
 
 import org.apache.aries.jax.rs.whiteboard.internal.Whiteboard;
 import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
-import org.apache.cxf.jaxrs.sse.client.SseEventSourceBuilderImpl;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -27,7 +24,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.jaxrs.client.SseEventSourceFactory;
 
 /**
  * @author Stian Sigvartsen
@@ -78,33 +74,6 @@ public class JAXRSLifecycle {
 	private SafeCloseable _start() {
 		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
 
-		ServiceRegistration<SseEventSourceFactory>
-			sseEventSourceFactoryServiceRegistration =
-				_bundleContext.registerService(
-					SseEventSourceFactory.class,
-					new SseEventSourceFactory() {
-
-						@Override
-						public SseEventSource.Builder newBuilder(
-							WebTarget target) {
-
-							return new SseEventSourceBuilderImpl() {
-								{
-									target(target);
-								}
-							};
-						}
-
-						@Override
-						public SseEventSource newSource(WebTarget target) {
-							return newBuilder(
-								target
-							).build();
-						}
-
-					},
-					null);
-
 		Whiteboard whiteboard = Whiteboard.createWhiteboard(_configuration);
 
 		whiteboard.start(_bundleContext);
@@ -119,8 +88,6 @@ public class JAXRSLifecycle {
 			serviceRegistration.unregister();
 
 			whiteboard.stop();
-
-			sseEventSourceFactoryServiceRegistration.unregister();
 
 			RuntimeDelegate.setInstance(null);
 		};
