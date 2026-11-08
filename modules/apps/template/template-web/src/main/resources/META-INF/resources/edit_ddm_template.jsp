@@ -14,22 +14,29 @@ long ddmTemplateId = ParamUtil.getLong(request, "ddmTemplateId");
 
 DDMTemplate ddmTemplate = DDMTemplateLocalServiceUtil.fetchDDMTemplate(ddmTemplateId);
 
-long classNameId = ParamUtil.getLong(request, "classNameId", GetterUtil.get(ddmTemplate, DDMTemplate::getClassNameId, 0L));
-long classPK = ParamUtil.getLong(request, "classPK", GetterUtil.get(ddmTemplate, DDMTemplate::getClassPK, 0L));
-long resourceClassNameId = ParamUtil.getLong(request, "resourceClassNameId", GetterUtil.get(ddmTemplate, DDMTemplate::getResourceClassNameId, 0L));
+EditDDMTemplateDisplayContext editDDMTemplateDisplayContext = (EditDDMTemplateDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+
+long classNameId = editDDMTemplateDisplayContext.getClassNameId();
+
+long classPK = 0;
+long resourceClassNameId = 0;
 
 long templateEntryId = ParamUtil.getLong(request, "templateEntryId");
-
-EditDDMTemplateDisplayContext editDDMTemplateDisplayContext = (EditDDMTemplateDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
 portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 
 if (ddmTemplate != null) {
+	classPK = ddmTemplate.getClassPK();
+	resourceClassNameId = ddmTemplate.getResourceClassNameId();
+
 	renderResponse.setTitle(LanguageUtil.format(request, "edit-x", HtmlUtil.escape(ddmTemplate.getName(locale))));
 }
 else {
+	classPK = ParamUtil.getLong(request, "classPK");
+	resourceClassNameId = ParamUtil.getLong(request, "resourceClassNameId");
+
 	renderResponse.setTitle(LanguageUtil.format(request, "add-x", HtmlUtil.escape(editDDMTemplateDisplayContext.getTemplateTypeLabel())));
 }
 %>
