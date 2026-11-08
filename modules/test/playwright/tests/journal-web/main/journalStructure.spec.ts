@@ -389,7 +389,10 @@ test(
 			'Link to Page',
 			'Separator',
 		];
-		const backButton = page.getByRole('button', {name: 'Back'});
+		const backButton = page.getByRole('button', {
+			exact: true,
+			name: 'Back',
+		});
 		const getFieldLabel = (label: string) =>
 			page
 				.locator('.ddm-form-builder-wrapper')

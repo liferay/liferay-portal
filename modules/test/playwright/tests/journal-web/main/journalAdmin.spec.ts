@@ -224,6 +224,7 @@ test(
 		const versionRow = (version: string) =>
 			infoPanel.locator('li').filter({
 				has: page.getByText(`Version ${version}`, {exact: true}),
+				visible: true,
 			});
 
 		await clickAndExpectToBeVisible({
