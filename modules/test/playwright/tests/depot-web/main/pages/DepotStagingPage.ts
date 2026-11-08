@@ -274,6 +274,9 @@ export class DepotStagingPage {
 
 		await scopeFrame.getByPlaceholder('Search for').fill(assetLibraryName);
 		await scopeFrame.getByPlaceholder('Search for').press('Enter');
+
+		await expect(scopeFrame.getByText(/Results? Found for/)).toBeVisible();
+
 		await scopeFrame
 			.getByRole('link', {exact: true, name: assetLibraryName})
 			.click();
