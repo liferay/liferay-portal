@@ -59,10 +59,6 @@ async function selectDepotCollection({
 
 	await widgetPagePage.clickOnAction('Asset Publisher', 'Configuration');
 
-	await assetPublisherWidgetPage.configurationIframe
-		.getByLabel('Collection', {exact: true})
-		.check();
-
 	await assetPublisherWidgetPage.collectionInput.click();
 
 	await gotoDepotInItemSelector(
@@ -283,10 +279,6 @@ test(
 		await assetPublisherWidgetPage.addAssetPublisherPortlet(site);
 
 		await widgetPagePage.clickOnAction('Asset Publisher', 'Configuration');
-
-		await assetPublisherWidgetPage.configurationIframe
-			.getByLabel('Collection', {exact: true})
-			.check();
 
 		await assetPublisherWidgetPage.collectionInput.click();
 

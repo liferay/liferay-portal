@@ -5,8 +5,10 @@
 
 import {Locator, Page, expect, mergeTests} from '@playwright/test';
 
+import {assetPublisherPagesTest} from '../../../fixtures/assetPublisherPagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {displayPageTemplatesPagesTest} from '../../../fixtures/displayPageTemplatesPagesTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
@@ -23,8 +25,12 @@ import addConnectedDepot from './utils/addConnectedDepot';
 import gotoDepotInItemSelector from './utils/gotoDepotInItemSelector';
 
 const test = mergeTests(
+	assetPublisherPagesTest,
 	dataApiHelpersTest,
 	displayPageTemplatesPagesTest,
+	featureFlagsTest({
+		'LPD-39304': {enabled: true},
+	}),
 	isolatedSiteTest,
 	journalPagesTest,
 	loginTest(),
@@ -318,6 +324,7 @@ test(
 	{tag: '@LPD-112512'},
 	async ({
 		apiHelpers,
+		assetPublisherPage,
 		journalEditArticlePage,
 		journalEditTemplatePage,
 		journalPage,
@@ -419,7 +426,9 @@ test(
 			await journalEditArticlePage.publishArticle();
 
 			await expect(
-				page.getByRole('link', {exact: true, name: title})
+				page
+					.getByTestId('row')
+					.getByRole('link', {exact: true, name: title})
 			).toBeVisible();
 		});
 
@@ -446,6 +455,15 @@ test(
 				'Asset Publisher',
 				'Content Management'
 			);
+
+			await widgetPagePage.clickOnAction(
+				'Asset Publisher',
+				'Configuration'
+			);
+
+			await assetPublisherPage.changeAssetSelection('Dynamic');
+
+			await assetPublisherPage.closeConfiguration();
 
 			await widgetPagePage.goto(layout, site.friendlyUrlPath);
 
