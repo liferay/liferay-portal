@@ -14,15 +14,18 @@ DLEditDDMStructureDisplayContext dlEditDDMStructureDisplayContext = new DLEditDD
 
 com.liferay.dynamic.data.mapping.model.DDMStructure ddmStructure = dlEditDDMStructureDisplayContext.getDDMStructure();
 
-long ddmStructureId = ParamUtil.getLong(request, "structureId", GetterUtil.get(ddmStructure, DDMStructure::getStructureId, 0L));
-
-long groupId = ParamUtil.getLong(request, "groupId", GetterUtil.get(ddmStructure, DDMStructure::getGroupId, scopeGroupId));
-
+long ddmStructureId = 0;
+long groupId = scopeGroupId;
 String title = LanguageUtil.format(request, "new-x", LanguageUtil.get(resourceBundle, "metadata-set"), false);
 
 if (ddmStructure != null) {
+	ddmStructureId = ddmStructure.getStructureId();
+	groupId = ddmStructure.getGroupId();
 	title = LanguageUtil.format(request, "edit-x", ddmStructure.getName(locale), false);
 }
+
+ddmStructureId = ParamUtil.getLong(request, "structureId", ddmStructureId);
+groupId = ParamUtil.getLong(request, "groupId", groupId);
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
