@@ -175,7 +175,6 @@ public abstract class BaseDepotItemSelectorView
 					depotEntryAdminSearchProvider.getGroupSearch(
 						_groupItemSelectorCriterion, getPortletRequest(),
 						getPortletResponse(), getPortletURL());
-
 				ThemeDisplay themeDisplay =
 					(ThemeDisplay)_httpServletRequest.getAttribute(
 						WebKeys.THEME_DISPLAY);
