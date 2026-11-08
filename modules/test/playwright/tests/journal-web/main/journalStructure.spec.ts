@@ -325,17 +325,17 @@ test(
 
 		await journalStructuresPage.newButton.click();
 
-		await journalEditStructurePage.fieldsetsTab.click();
-
-		await page
-			.getByRole('button', {name: `Press enter to add ${fieldsetName}`})
-			.dblclick();
-
 		await fillAndClickOutside(
 			page,
 			page.getByRole('textbox', {name: 'Name Required'}),
 			structureName
 		);
+
+		await journalEditStructurePage.fieldsetsTab.click();
+
+		await page
+			.getByRole('button', {name: `Press enter to add ${fieldsetName}`})
+			.dblclick();
 
 		await journalEditStructurePage.save();
 
