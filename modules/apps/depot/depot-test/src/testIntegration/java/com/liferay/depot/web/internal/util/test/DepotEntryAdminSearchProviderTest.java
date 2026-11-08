@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -51,7 +52,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -118,22 +118,29 @@ public class DepotEntryAdminSearchProviderTest {
 	public void testGetDepotEntrySearchWithDescriptionKeywords()
 		throws Exception {
 
-		Set<Long> depotEntryIds = new HashSet<>();
 		String keywords = RandomTestUtil.randomString();
 
-		for (int i = 0; i < 2; i++) {
-			DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-				Collections.singletonMap(
-					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-				Collections.singletonMap(
-					LocaleUtil.getDefault(), keywords + StringPool.SPACE + i),
-				DepotConstants.TYPE_ASSET_LIBRARY,
-				ServiceContextTestUtil.getServiceContext());
+		DepotEntry depotEntry1 = _depotEntryLocalService.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			Collections.singletonMap(
+				LocaleUtil.getDefault(),
+				keywords + StringPool.SPACE + RandomTestUtil.randomString()),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
 
-			_initialDepotEntries.add(depotEntry);
+		_initialDepotEntries.add(depotEntry1);
 
-			depotEntryIds.add(depotEntry.getDepotEntryId());
-		}
+		DepotEntry depotEntry2 = _depotEntryLocalService.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			Collections.singletonMap(
+				LocaleUtil.getDefault(),
+				RandomTestUtil.randomString() + StringPool.SPACE + keywords),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		_initialDepotEntries.add(depotEntry2);
 
 		GroupItemSelectorCriterion groupItemSelectorCriterion =
 			new GroupItemSelectorCriterion();
@@ -159,7 +166,8 @@ public class DepotEntryAdminSearchProviderTest {
 			new MockLiferayPortletURL());
 
 		Assert.assertEquals(
-			depotEntryIds,
+			SetUtil.fromArray(
+				depotEntry1.getDepotEntryId(), depotEntry2.getDepotEntryId()),
 			new HashSet<>(
 				ListUtil.toList(
 					depotEntrySearch.getResults(),
