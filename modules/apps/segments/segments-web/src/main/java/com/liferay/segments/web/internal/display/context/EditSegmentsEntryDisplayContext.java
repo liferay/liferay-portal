@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
@@ -137,12 +136,21 @@ public class EditSegmentsEntryDisplayContext {
 		return _data;
 	}
 
-	public long getGroupId() {
+	public long getGroupId() throws PortalException {
 		if (_groupId != null) {
 			return _groupId;
 		}
 
-		_groupId = ParamUtil.getLong(_httpServletRequest, "groupId");
+		SegmentsEntry segmentsEntry = _getSegmentsEntry();
+
+		if (segmentsEntry == null) {
+			_groupId = ParamUtil.getLong(
+				_httpServletRequest, "groupId",
+				_themeDisplay.getScopeGroupId());
+		}
+		else {
+			_groupId = segmentsEntry.getGroupId();
+		}
 
 		return _groupId;
 	}
@@ -216,7 +224,7 @@ public class EditSegmentsEntryDisplayContext {
 		Map<String, String> availableLocales = new HashMap<>();
 
 		for (Locale availableLocale :
-				LanguageUtil.getAvailableLocales(_getGroupId())) {
+				LanguageUtil.getAvailableLocales(getGroupId())) {
 
 			String availableLanguageId = LocaleUtil.toLanguageId(
 				availableLocale);
@@ -286,7 +294,7 @@ public class EditSegmentsEntryDisplayContext {
 		Locale siteDefaultLocale = null;
 
 		try {
-			siteDefaultLocale = PortalUtil.getSiteDefaultLocale(_getGroupId());
+			siteDefaultLocale = PortalUtil.getSiteDefaultLocale(getGroupId());
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
@@ -305,17 +313,9 @@ public class EditSegmentsEntryDisplayContext {
 	}
 
 	private String _getGroupDescriptiveName() throws Exception {
-		Group group = _groupLocalService.getGroup(_getGroupId());
+		Group group = _groupLocalService.getGroup(getGroupId());
 
 		return group.getDescriptiveName(_locale);
-	}
-
-	private long _getGroupId() throws PortalException {
-		return ParamUtil.getLong(
-			_httpServletRequest, "groupId",
-			GetterUtil.get(
-				_getSegmentsEntry(), SegmentsEntry::getGroupId,
-				_themeDisplay.getScopeGroupId()));
 	}
 
 	private JSONObject _getInitialSegmentsNameJSONObject() throws Exception {
@@ -383,7 +383,7 @@ public class EditSegmentsEntryDisplayContext {
 		).put(
 			"formId", _renderResponse.getNamespace() + "editSegmentFm"
 		).put(
-			"groupId", _getGroupId()
+			"groupId", getGroupId()
 		).put(
 			"hasUpdatePermission", _hasUpdatePermission()
 		).put(
