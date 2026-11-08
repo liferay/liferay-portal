@@ -696,6 +696,26 @@ public class BlogsEntryServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-113649")
+	public void testGetEntryWithDraftStatus() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId());
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		BlogsEntry entry = _addEntry(new Date(), serviceContext);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _blogsEntryService.getEntry(entry.getEntryId()));
+		}
+	}
+
+	@Test
 	public void testGetEntryWithViewPermission() throws Exception {
 		BlogsEntry entry = _addEntry();
 
@@ -742,26 +762,6 @@ public class BlogsEntryServiceTest {
 
 			_blogsEntryService.getEntry(
 				entry.getGroupId(), entry.getUrlTitle());
-		}
-	}
-
-	@Test
-	@TestInfo("LPD-113649")
-	public void testGetEntryWithoutViewPermissionOfDraft() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group, TestPropsValues.getUserId());
-
-		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
-
-		BlogsEntry entry = _addEntry(new Date(), serviceContext);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, _permissionChecker)) {
-
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() -> _blogsEntryService.getEntry(entry.getEntryId()));
 		}
 	}
 
