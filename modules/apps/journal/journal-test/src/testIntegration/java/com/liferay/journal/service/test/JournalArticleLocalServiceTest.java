@@ -2166,14 +2166,23 @@ public class JournalArticleLocalServiceTest {
 				"WebContent31406873.getData()) />${webContentData.title}",
 			LocaleUtil.US);
 
-		JournalArticleDisplay journalArticleDisplay =
-			_journalArticleLocalService.getArticleDisplay(
-				journalArticle, ddmTemplate.getTemplateKey(), Constants.VIEW,
-				LocaleUtil.toLanguageId(LocaleUtil.US), 1, null, _themeDisplay);
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
-		Assert.assertEquals(
-			depotJournalArticle.getTitle(LocaleUtil.US),
-			StringUtil.trim(journalArticleDisplay.getContent()));
+		try {
+			JournalArticleDisplay journalArticleDisplay =
+				_journalArticleLocalService.getArticleDisplay(
+					journalArticle, ddmTemplate.getTemplateKey(),
+					Constants.VIEW, LocaleUtil.toLanguageId(LocaleUtil.US), 1,
+					null, _themeDisplay);
+
+			Assert.assertEquals(
+				depotJournalArticle.getTitle(LocaleUtil.US),
+				StringUtil.trim(journalArticleDisplay.getContent()));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	@Test
