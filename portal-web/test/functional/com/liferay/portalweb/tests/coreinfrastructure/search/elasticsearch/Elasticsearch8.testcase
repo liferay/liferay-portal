@@ -528,8 +528,8 @@ definition {
 		task ("Assert that the indexNameCurrent field is still populated in the lportal.Company database table") {
 			var companyId = JSONCompany.getCompanyId();
 
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT indexNameCurrent FROM lportal.Company WHERE companyId LIKE '%${companyId}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT indexNameCurrent FROM lportal.Company WHERE companyId LIKE '%${companyId}%'",
 				text = "liferay-${companyId}");
 		}
 	}
@@ -622,8 +622,8 @@ definition {
 		task ("Assert that indexNameCurrent and indexNameNext fields in the database table 'Company' are empty when a Concurrent reindex has not been executed yet") {
 			var companyId = JSONCompany.getCompanyId();
 
-			SQL.assertTextNotInMySQLStatementResult(
-				mysqlStatement = "SELECT indexNameCurrent,indexNameNext FROM lportal.Company WHERE companyId LIKE '%${companyId}%'",
+			SQL.assertTextNotInSQLStatementResult(
+				sqlStatement = "SELECT indexNameCurrent,indexNameNext FROM lportal.Company WHERE companyId LIKE '%${companyId}%'",
 				text = "liferay-${companyId}");
 		}
 
@@ -637,8 +637,8 @@ definition {
 		task ("Assert that the indexNameNext field is now populated in the database table 'Company'") {
 			var companyId = JSONCompany.getCompanyId();
 
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT indexNameNext FROM lportal.Company WHERE companyId LIKE '%${companyId}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT indexNameNext FROM lportal.Company WHERE companyId LIKE '%${companyId}%'",
 				text = "liferay-${companyId}");
 		}
 
@@ -673,8 +673,8 @@ definition {
 		task ("Assert that the indexNameCurrent field is now populated in the database table 'Company'") {
 			var companyId = JSONCompany.getCompanyId();
 
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT indexNameCurrent FROM lportal.Company WHERE companyId LIKE '%${companyId}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT indexNameCurrent FROM lportal.Company WHERE companyId LIKE '%${companyId}%'",
 				text = "liferay-${companyId}");
 		}
 	}

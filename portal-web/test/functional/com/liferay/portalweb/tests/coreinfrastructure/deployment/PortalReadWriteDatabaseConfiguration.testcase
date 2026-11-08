@@ -35,8 +35,8 @@ definition {
 
 		MenuItem.click(menuItem = "Checkout");
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
 			text = 1);
 
 		Refresh();
@@ -47,8 +47,8 @@ definition {
 
 		Click(locator1 = "Button#SAVE");
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
 			text = 0);
 
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
@@ -61,8 +61,8 @@ definition {
 			Refresh();
 		}
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.document.library.kernel.model.DLFileEntry%'",
 			text = 0);
 
 		JSONMBMessage.addMessage(
@@ -78,16 +78,16 @@ definition {
 
 		MenuItem.click(menuItem = "Lock");
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.message.boards.model.MBThread%'",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.message.boards.model.MBThread%'",
 			text = 1);
 
 		Click(locator1 = "MessageBoards#VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Unlock");
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.message.boards.model.MBThread%'",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SELECT COUNT(*) FROM Lock_ WHERE className LIKE '%com.liferay.message.boards.model.MBThread%'",
 			text = 0);
 	}
 

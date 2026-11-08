@@ -22,21 +22,21 @@ definition {
 		}
 	}
 
-	@summary = "Assert the ${text} in MySQL Statement Result"
-	macro assertTextInMySQLStatementResult(text = null, mysqlStatement = null) {
-		var sqlResults = SQL.executeSQLStatement(sqlStatement = ${mysqlStatement});
+	@summary = "Assert the ${text} in SQL Statement Result"
+	macro assertTextInSQLStatementResult(text = null, sqlStatement = null) {
+		var sqlResults = SQL.executeSQLStatement(sqlStatement = ${sqlStatement});
 
 		if (!(contains(${sqlResults}, ${text}))) {
-			fail("The MySql query result does not contain text: ${text}");
+			fail("The SQL query result does not contain text: ${text}");
 		}
 	}
 
-	@summary = "Assert the ${text} is not in MySQL Statement Result"
-	macro assertTextNotInMySQLStatementResult(text = null, mysqlStatement = null) {
-		var sqlResults = SQL.executeSQLStatement(sqlStatement = ${mysqlStatement});
+	@summary = "Assert the ${text} is not in SQL Statement Result"
+	macro assertTextNotInSQLStatementResult(text = null, sqlStatement = null) {
+		var sqlResults = SQL.executeSQLStatement(sqlStatement = ${sqlStatement});
 
 		if (contains(${sqlResults}, ${text})) {
-			fail("The MySql query result contains text: ${text}");
+			fail("The SQL query result contains text: ${text}");
 		}
 	}
 

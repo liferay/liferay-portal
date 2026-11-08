@@ -88,8 +88,8 @@ definition {
 
 		User.firstLoginPG();
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%com.liferay.portal.upload.internal.configuration.UploadServletRequestConfiguration%'",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%com.liferay.portal.upload.internal.configuration.UploadServletRequestConfiguration%'",
 			text = "maxTries=\"50\"");
 	}
 
@@ -283,8 +283,8 @@ definition {
 		}
 
 		task ("Then the config is added to the database") {
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = "checkInterval=I\"44\"");
 		}
 
@@ -329,14 +329,14 @@ definition {
 		}
 
 		task ("Then the config is updated in the database") {
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = "checkInterval=I\"44\"");
 		}
 
 		task ("And a second config entry is not added to the database") {
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = 1);
 		}
 
@@ -365,8 +365,8 @@ definition {
 		}
 
 		task ("Then the config should not be added to the database") {
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = 0);
 		}
 	}
@@ -380,12 +380,12 @@ definition {
 
 		var configName = "com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration";
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}~test1%'",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}~test1%'",
 			text = "urlsIncludes=\"/api/liferay/test1\"");
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}~test2%'",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}~test2%'",
 			text = "urlsIncludes=\"/api/liferay/test2\"");
 	}
 
@@ -400,8 +400,8 @@ definition {
 		task ("Given an existing factory config") {
 			var configName = "com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration~test1";
 
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = "urlsIncludes=\"/api/liferay/original\"");
 		}
 
@@ -414,8 +414,8 @@ definition {
 		task ("Then the factory config should be successfully updated") {
 			OSGiConfig.waitForOSGiConfig();
 
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = "urlsIncludes=\"/api/liferay/new\"");
 		}
 	}
@@ -448,8 +448,8 @@ definition {
 
 			Button.clickSave();
 
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = "checkInterval=I\"33\"");
 		}
 
@@ -462,14 +462,14 @@ definition {
 		}
 
 		task ("Then the config is updated in the database") {
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = "checkInterval=I\"44\"");
 		}
 
 		task ("And a second config entry is not added to the database") {
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = 1);
 		}
 	}
@@ -483,12 +483,12 @@ definition {
 
 		var configName = "com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration~default";
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 			text = "urlsIncludes=\"/api/liferay/new\"");
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 			text = 1);
 	}
 
@@ -527,14 +527,14 @@ definition {
 		task ("Then the default factory configuration should be successfully re-added") {
 			OSGiConfig.waitForOSGiConfig();
 
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = "urlsIncludes=\"/api/liferay/do\"");
 		}
 
 		task ("And a second default config entry is not added to the database") {
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}%'",
 				text = 1);
 		}
 	}
@@ -549,8 +549,8 @@ definition {
 		task ("Given an existing factory config") {
 			var configName = "com.liferay.portal.security.auth.verifier.internal.tunnel.configuration.TunnelAuthVerifierConfiguration";
 
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}~original%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}~original%'",
 				text = "enabled=\"true\"");
 		}
 
@@ -565,14 +565,14 @@ definition {
 		task ("Then the old entry is removed from the database") {
 			OSGiConfig.waitForOSGiConfig();
 
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}~original%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT COUNT(*) FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}~original%'",
 				text = 0);
 		}
 
 		task ("And the new one is added") {
-			SQL.assertTextInMySQLStatementResult(
-				mysqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}~new%'",
+			SQL.assertTextInSQLStatementResult(
+				sqlStatement = "SELECT * FROM lportal.Configuration_ WHERE configurationId LIKE '%${configName}~new%'",
 				text = "enabled=\"true\"");
 		}
 	}

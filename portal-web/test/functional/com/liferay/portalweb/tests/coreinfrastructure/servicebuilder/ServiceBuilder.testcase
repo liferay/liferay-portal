@@ -77,12 +77,12 @@ definition {
 
 		WaitForConsoleTextPresent(value1 = "STARTED com.liferay.external.data.source.test.service_");
 
-		SQL.assertTextNotInMySQLStatementResult(
-			mysqlStatement = "SHOW tables in lportal",
+		SQL.assertTextNotInSQLStatementResult(
+			sqlStatement = "SHOW tables in lportal",
 			text = "TestEntity");
 
-		SQL.assertTextInMySQLStatementResult(
-			mysqlStatement = "SHOW tables in lportal1",
+		SQL.assertTextInSQLStatementResult(
+			sqlStatement = "SHOW tables in lportal1",
 			text = "TestEntity");
 
 		SignIn.signInTestSetup();
