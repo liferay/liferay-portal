@@ -1564,9 +1564,14 @@ public class JournalArticleLocalServiceTest {
 		ServiceContextThreadLocal.pushServiceContext(
 			ServiceContextTestUtil.getServiceContext());
 
-		_journalArticleLocalService.deleteArticleDefaultValues(
-			journalArticle.getGroupId(), journalArticle.getArticleId(),
-			journalArticle.getDDMStructureId());
+		try {
+			_journalArticleLocalService.deleteArticleDefaultValues(
+				journalArticle.getGroupId(), journalArticle.getArticleId(),
+				journalArticle.getDDMStructureId());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 
 		Assert.assertNull(
 			_journalArticleLocalService.fetchLatestArticle(
