@@ -35,7 +35,6 @@ import org.osgi.service.jaxrs.client.SseEventSourceFactory;
  * @author Stian Sigvartsen
  */
 @Component(
-	configurationPid = "org.apache.aries.jax.rs.whiteboard.default",
 	configurationPolicy = ConfigurationPolicy.REQUIRE,
 	service = JAXRSLifecycle.class
 )

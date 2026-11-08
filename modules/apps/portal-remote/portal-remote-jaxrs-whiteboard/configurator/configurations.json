@@ -1,5 +1,5 @@
 {
-	"org.apache.aries.jax.rs.whiteboard.default": {
+	"com.liferay.portal.remote.jaxrs.whiteboard.lifecycle.JAXRSLifecycle": {
 		"application.ready.service.filter": "(liferay.jaxrs.whiteboard.ready=true)",
 		"default.application.base": "/rest",
 		"default.web": false

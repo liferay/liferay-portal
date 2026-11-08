@@ -6,6 +6,7 @@
 package com.liferay.portal.configuration.persistence.internal.upgrade.registry;
 
 import com.liferay.portal.configuration.persistence.internal.upgrade.v2_0_0.ConfigurationDBPartitionUpgradeProcess;
+import com.liferay.portal.configuration.persistence.upgrade.ConfigurationUpgradeStepFactory;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
@@ -59,10 +60,20 @@ public class ConfigurationPersistenceUpgradeStepRegistrator
 			new com.liferay.portal.configuration.persistence.internal.upgrade.
 				v2_0_1.ConfigurationUpgradeProcess(
 					_configurationAdmin, _groupLocalService));
+
+		registry.register(
+			"2.0.1", "2.0.2",
+			_configurationUpgradeStepFactory.createUpgradeStep(
+				"org.apache.aries.jax.rs.whiteboard.default",
+				"com.liferay.portal.remote.jaxrs.whiteboard.lifecycle." +
+					"JAXRSLifecycle"));
 	}
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
+
+	@Reference
+	private ConfigurationUpgradeStepFactory _configurationUpgradeStepFactory;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

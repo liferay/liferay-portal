@@ -2,4 +2,4 @@ Bundle-Activator: com.liferay.portal.configuration.persistence.internal.activato
 Bundle-Name: Liferay Portal Configuration Persistence Implementation
 Bundle-SymbolicName: com.liferay.portal.configuration.persistence.impl
 Bundle-Version: 4.0.50
-Liferay-Require-SchemaVersion: 2.0.1
+Liferay-Require-SchemaVersion: 2.0.2
