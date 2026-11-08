@@ -9,7 +9,6 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.db.partition.db.DBPartitionDB;
@@ -787,23 +786,15 @@ public class DBPartitionUtil {
 				lowerCaseSQL, DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX);
 		}
 
-		if ((count > 0) || lowerCaseSQL.contains("/*!") ||
-			lowerCaseSQL.contains("search_path") ||
-			lowerCaseSQL.contains("set_config")) {
-
+		if (count > 0) {
 			throw new UnsupportedOperationException("Unsupported SQL: " + sql);
 		}
 
-		for (String statementSQL :
-				StringUtil.split(lowerCaseSQL, CharPool.SEMICOLON)) {
+		Matcher setPartitionMatcher = _setPartitionPattern.matcher(
+			lowerCaseSQL);
 
-			Matcher setPartitionMatcher = _setPartitionPattern.matcher(
-				statementSQL);
-
-			if (setPartitionMatcher.lookingAt()) {
-				throw new UnsupportedOperationException(
-					"Unsupported SQL: " + sql);
-			}
+		if (setPartitionMatcher.lookingAt()) {
+			throw new UnsupportedOperationException("Unsupported SQL: " + sql);
 		}
 
 		if (!lowerCaseSQL.contains(
@@ -818,15 +809,8 @@ public class DBPartitionUtil {
 		String unquotedSQL = quotedStringMatcher.replaceAll(
 			StringPool.DOUBLE_APOSTROPHE);
 
-		if (!lowerCaseSQL.contains(StringPool.BACK_SLASH) &&
-			!ArrayUtil.exists(
-				_SQL_COMMENT_AND_QUOTE_TOKENS, unquotedSQL::contains)) {
-
-			lowerCaseSQL = unquotedSQL;
-		}
-
 		Matcher defaultPartitionNameMatcher =
-			_defaultPartitionNamePattern.matcher(lowerCaseSQL);
+			_defaultPartitionNamePattern.matcher(unquotedSQL);
 
 		if (defaultPartitionNameMatcher.find()) {
 			throw new UnsupportedOperationException("Unsupported SQL: " + sql);
@@ -2292,11 +2276,6 @@ public class DBPartitionUtil {
 	private static final String _REGEX_SQL_WHITESPACE =
 		"(?:\\s++|/\\*.*?\\*/|--[^\\n]*+|#[^\\n]*+)*+";
 
-	private static final String[] _SQL_COMMENT_AND_QUOTE_TOKENS = {
-		"/*", StringPool.DOLLAR, StringPool.DOUBLE_DASH,
-		StringPool.GRAVE_ACCENT, StringPool.POUND, StringPool.QUOTE
-	};
-
 	private static final String _TABLE_NAME_PREFIX_QUARTZ = GetterUtil.get(
 		PropsUtil.get("persisted.scheduler.org.quartz.jobStore.tablePrefix"),
 		"QUARTZ_");
@@ -2312,10 +2291,9 @@ public class DBPartitionUtil {
 		"'(?:[^'\\\\]++|\\\\.|'')*+'");
 	private static final Pattern _setPartitionPattern = Pattern.compile(
 		StringBundler.concat(
-			_REGEX_SQL_WHITESPACE, "(?:(?:discard|reset)\\b",
-			_REGEX_SQL_WHITESPACE, "all\\b|use\\b|set\\b",
-			_REGEX_SQL_WHITESPACE, "(?:(?:local|session)\\b",
-			_REGEX_SQL_WHITESPACE, ")?(?:schema|search_path)\\b)"),
+			_REGEX_SQL_WHITESPACE, "(?:use\\b|set\\b", _REGEX_SQL_WHITESPACE,
+			"(?:(?:local|session)\\b", _REGEX_SQL_WHITESPACE,
+			")?(?:schema|search_path)\\b)"),
 		Pattern.DOTALL);
 
 }

@@ -534,33 +534,17 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 			"drop view if exists " + defaultPartitionName + "/**/.TestView",
 			true);
 		_testDefaultPartitionName(
-			"drop view if exists /* ' */ " + defaultPartitionName +
-				".TestView /* ' */",
-			true);
-		_testDefaultPartitionName(
 			StringBundler.concat(
 				"drop view if exists ", defaultPartitionName, " -- ",
 				RandomTestUtil.randomString(), "\n.TestView"),
 			true);
 
 		if (db.getDBType() == DBType.POSTGRESQL) {
-			_testDefaultPartitionName("discard all", true);
-			_testDefaultPartitionName(
-				"drop view if exists TestView; set schema '" +
-					defaultPartitionName + "'",
-				true);
 			_testDefaultPartitionName(
 				"drop view if exists \"" + defaultPartitionName + "\".TestView",
 				true);
-			_testDefaultPartitionName("reset all", true);
-			_testDefaultPartitionName("reset search_path", true);
 			_testDefaultPartitionName(
 				"set search_path to " + defaultPartitionName, true);
-			_testDefaultPartitionName(
-				StringBundler.concat(
-					"delete from ClassName_ where value = set_config('search' ",
-					"|| '_path', '", defaultPartitionName, "', false)"),
-				true);
 			_testDefaultPartitionName(
 				StringBundler.concat(
 					"drop view if exists ", dbInspector.getCatalog(), ".",
@@ -570,8 +554,6 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 		else {
 			_testDefaultPartitionName(
 				"/* ' */ use " + defaultPartitionName + " /* ' */", true);
-			_testDefaultPartitionName(
-				"/*!32302 use " + defaultPartitionName + " */", true);
 			_testDefaultPartitionName(
 				"drop view if exists `" + defaultPartitionName + "`.TestView",
 				true);
