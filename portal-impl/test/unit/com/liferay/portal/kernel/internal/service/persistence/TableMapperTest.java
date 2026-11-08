@@ -1800,7 +1800,7 @@ public class TableMapperTest {
 		_mappingSqlQueryFactoryUtilMockedStatic.when(
 			() -> MappingSqlQueryFactoryUtil.getMappingSqlQuery(
 				Mockito.any(), Mockito.anyString(), Mockito.any(),
-				Mockito.any())
+				Mockito.any(ParamSetter[].class))
 		).thenAnswer(
 			invocation -> {
 				InterceptedInvocation interceptedInvocation =
@@ -1856,7 +1856,8 @@ public class TableMapperTest {
 
 		_sqlUpdateFactoryUtilMockedStatic.when(
 			() -> SqlUpdateFactoryUtil.getSqlUpdate(
-				Mockito.any(), Mockito.anyString(), Mockito.any())
+				Mockito.any(), Mockito.anyString(),
+				Mockito.any(ParamSetter[].class))
 		).thenAnswer(
 			invocation -> {
 				InterceptedInvocation interceptedInvocation =

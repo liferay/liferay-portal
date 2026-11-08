@@ -1642,7 +1642,7 @@ public class CTTableMapperTest {
 		_mappingSqlQueryFactoryUtilMockedStatic.when(
 			() -> MappingSqlQueryFactoryUtil.getMappingSqlQuery(
 				Mockito.any(), Mockito.anyString(), Mockito.any(),
-				Mockito.any())
+				Mockito.any(ParamSetter[].class))
 		).thenAnswer(
 			invocation -> {
 				InterceptedInvocation interceptedInvocation =
@@ -1740,7 +1740,8 @@ public class CTTableMapperTest {
 
 		_sqlUpdateFactoryUtilMockedStatic.when(
 			() -> SqlUpdateFactoryUtil.getSqlUpdate(
-				Mockito.any(), Mockito.anyString(), Mockito.any())
+				Mockito.any(), Mockito.anyString(),
+				Mockito.any(ParamSetter[].class))
 		).thenAnswer(
 			invocation -> {
 				InterceptedInvocation interceptedInvocation =
