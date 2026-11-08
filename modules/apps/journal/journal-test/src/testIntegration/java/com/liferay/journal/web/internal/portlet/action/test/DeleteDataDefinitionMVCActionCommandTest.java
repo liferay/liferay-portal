@@ -56,37 +56,30 @@ public class DeleteDataDefinitionMVCActionCommandTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
-
-		Class<?> clazz = getClass();
-
-		_dataDefinition = DataDefinitionTestUtil.addDataDefinition(
-			"journal", _dataDefinitionResourceFactory, _group.getGroupId(),
-			StringUtil.read(
-				clazz.getResourceAsStream(
-					"dependencies/data_definition_with_valid_fields.json")),
-			TestPropsValues.getUser());
 	}
 
 	@Test
 	@TestInfo("LPD-113664")
 	public void testProcessAction() throws Exception {
+		DataDefinition dataDefinition = _addDataDefinition();
+
 		_mvcActionCommand.processAction(
-			_createMockLiferayPortletActionRequest(),
+			_createMockLiferayPortletActionRequest(dataDefinition),
 			new MockLiferayPortletActionResponse());
 
 		Assert.assertNull(
-			_ddmStructureLocalService.fetchStructure(_dataDefinition.getId()));
-	}
+			_ddmStructureLocalService.fetchStructure(dataDefinition.getId()));
 
-	@Test
-	@TestInfo("LPD-113664")
-	public void testProcessActionWithDisplayPageTemplate() throws Exception {
+		// Structure used by a display page template
+
+		DataDefinition usedDataDefinition = _addDataDefinition();
+
 		_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			LayoutPageTemplateConstants.
 				PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 			null, _portal.getClassNameId(JournalArticle.class),
-			_dataDefinition.getDataDefinitionKey(),
+			usedDataDefinition.getDataDefinitionKey(),
 			RandomTestUtil.randomString(),
 			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
 			WorkflowConstants.STATUS_APPROVED,
@@ -95,7 +88,7 @@ public class DeleteDataDefinitionMVCActionCommandTest {
 		PortletException portletException = Assert.assertThrows(
 			PortletException.class,
 			() -> _mvcActionCommand.processAction(
-				_createMockLiferayPortletActionRequest(),
+				_createMockLiferayPortletActionRequest(usedDataDefinition),
 				new MockLiferayPortletActionResponse()));
 
 		Assert.assertTrue(
@@ -104,18 +97,31 @@ public class DeleteDataDefinitionMVCActionCommandTest {
 					MustNotDeleteStructureReferencedByStructureLinks);
 
 		Assert.assertNotNull(
-			_ddmStructureLocalService.fetchStructure(_dataDefinition.getId()));
+			_ddmStructureLocalService.fetchStructure(
+				usedDataDefinition.getId()));
+	}
+
+	private DataDefinition _addDataDefinition() throws Exception {
+		Class<?> clazz = getClass();
+
+		return DataDefinitionTestUtil.addDataDefinition(
+			"journal", _dataDefinitionResourceFactory, _group.getGroupId(),
+			StringUtil.read(
+				clazz.getResourceAsStream(
+					"dependencies/data_definition_with_valid_fields.json")),
+			TestPropsValues.getUser());
 	}
 
 	private MockLiferayPortletActionRequest
-			_createMockLiferayPortletActionRequest()
+			_createMockLiferayPortletActionRequest(
+				DataDefinition dataDefinition)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
 
 		mockLiferayPortletActionRequest.addParameter(
-			"dataDefinitionId", String.valueOf(_dataDefinition.getId()));
+			"dataDefinitionId", String.valueOf(dataDefinition.getId()));
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -126,8 +132,6 @@ public class DeleteDataDefinitionMVCActionCommandTest {
 
 		return mockLiferayPortletActionRequest;
 	}
-
-	private DataDefinition _dataDefinition;
 
 	@Inject
 	private DataDefinitionResource.Factory _dataDefinitionResourceFactory;
