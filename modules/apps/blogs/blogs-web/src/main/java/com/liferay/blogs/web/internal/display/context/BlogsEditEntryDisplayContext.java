@@ -50,7 +50,6 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -98,6 +97,53 @@ public class BlogsEditEntryDisplayContext {
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		boolean allowPingbacks = true;
+		boolean allowTrackbacks = true;
+		String content = StringPool.BLANK;
+		String coverImageCaption = LanguageUtil.get(
+			httpServletRequest, "caption");
+		long coverImageFileEntryId = 0;
+		boolean customAbstract = false;
+		String description = StringPool.BLANK;
+		long entryId = 0;
+		long smallImageFileEntryId = 0;
+		String title = StringPool.BLANK;
+		String urlTitle = StringPool.BLANK;
+
+		if (blogsEntry != null) {
+			allowPingbacks = blogsEntry.isAllowPingbacks();
+			allowTrackbacks = blogsEntry.isAllowTrackbacks();
+			content = blogsEntry.getContent();
+			coverImageCaption = blogsEntry.getCoverImageCaption();
+			coverImageFileEntryId = blogsEntry.getCoverImageFileEntryId();
+			customAbstract = Validator.isNotNull(blogsEntry.getDescription());
+			description = blogsEntry.getDescription();
+			entryId = blogsEntry.getEntryId();
+			smallImageFileEntryId = blogsEntry.getSmallImageFileEntryId();
+			title = blogsEntry.getTitle();
+			urlTitle = blogsEntry.getUrlTitle();
+		}
+
+		_allowPingbacks = ParamUtil.getBoolean(
+			httpServletRequest, "allowPingbacks", allowPingbacks);
+		_allowTrackbacks = ParamUtil.getBoolean(
+			httpServletRequest, "allowTrackbacks", allowTrackbacks);
+		_content = ParamUtil.getString(httpServletRequest, "content", content);
+		_coverImageCaption = ParamUtil.getString(
+			httpServletRequest, "coverImageCaption", coverImageCaption);
+		_coverImageFileEntryId = ParamUtil.getLong(
+			httpServletRequest, "coverImageFileEntryId", coverImageFileEntryId);
+		_customAbstract = ParamUtil.getBoolean(
+			httpServletRequest, "customAbstract", customAbstract);
+		_description = ParamUtil.getString(
+			httpServletRequest, "description", description);
+		_entryId = ParamUtil.getLong(httpServletRequest, "entryId", entryId);
+		_smallImageFileEntryId = ParamUtil.getLong(
+			httpServletRequest, "smallImageFileEntryId", smallImageFileEntryId);
+		_title = ParamUtil.getString(httpServletRequest, "title", title);
+		_urlTitle = ParamUtil.getString(
+			httpServletRequest, "urlTitle", urlTitle);
 	}
 
 	public JSONArray getAvailableFriendlyURLAssetCategoriesJSONArray()
@@ -121,42 +167,14 @@ public class BlogsEditEntryDisplayContext {
 	}
 
 	public String getContent() {
-		if (_content != null) {
-			return _content;
-		}
-
-		_content = ParamUtil.getString(
-			_httpServletRequest, "content",
-			GetterUtil.get(
-				getBlogsEntry(), BlogsEntry::getContent, StringPool.BLANK));
-
 		return _content;
 	}
 
 	public String getCoverImageCaption() {
-		if (_coverImageCaption != null) {
-			return _coverImageCaption;
-		}
-
-		_coverImageCaption = ParamUtil.getString(
-			_httpServletRequest, "coverImageCaption",
-			GetterUtil.get(
-				getBlogsEntry(), BlogsEntry::getCoverImageCaption,
-				LanguageUtil.get(_httpServletRequest, "caption")));
-
 		return _coverImageCaption;
 	}
 
 	public long getCoverImageFileEntryId() {
-		if (_coverImageFileEntryId != null) {
-			return _coverImageFileEntryId;
-		}
-
-		_coverImageFileEntryId = ParamUtil.getLong(
-			_httpServletRequest, "coverImageFileEntryId",
-			GetterUtil.get(
-				getBlogsEntry(), BlogsEntry::getCoverImageFileEntryId, 0L));
-
 		return _coverImageFileEntryId;
 	}
 
@@ -186,21 +204,10 @@ public class BlogsEditEntryDisplayContext {
 	}
 
 	public String getDescription() {
-		if (_description != null) {
-			return _description;
+		if (!_customAbstract) {
+			return StringUtil.shorten(
+				_content, PropsValues.BLOGS_PAGE_ABSTRACT_LENGTH);
 		}
-
-		String description = ParamUtil.getString(
-			_httpServletRequest, "description",
-			GetterUtil.get(
-				getBlogsEntry(), BlogsEntry::getDescription, StringPool.BLANK));
-
-		if (!isCustomAbstract()) {
-			description = StringUtil.shorten(
-				getContent(), PropsValues.BLOGS_PAGE_ABSTRACT_LENGTH);
-		}
-
-		_description = description;
 
 		return _description;
 	}
@@ -234,14 +241,6 @@ public class BlogsEditEntryDisplayContext {
 	}
 
 	public long getEntryId() {
-		if (_entryId != null) {
-			return _entryId;
-		}
-
-		_entryId = ParamUtil.getLong(
-			_httpServletRequest, "entryId",
-			GetterUtil.get(getBlogsEntry(), BlogsEntry::getEntryId, 0L));
-
 		return _entryId;
 	}
 
@@ -317,15 +316,6 @@ public class BlogsEditEntryDisplayContext {
 	}
 
 	public long getSmallImageFileEntryId() {
-		if (_smallImageFileEntryId != null) {
-			return _smallImageFileEntryId;
-		}
-
-		_smallImageFileEntryId = ParamUtil.getLong(
-			_httpServletRequest, "smallImageFileEntryId",
-			GetterUtil.get(
-				getBlogsEntry(), BlogsEntry::getSmallImageFileEntryId, 0L));
-
 		return _smallImageFileEntryId;
 	}
 
@@ -405,28 +395,10 @@ public class BlogsEditEntryDisplayContext {
 	}
 
 	public String getTitle() {
-		if (_title != null) {
-			return _title;
-		}
-
-		_title = ParamUtil.getString(
-			_httpServletRequest, "title",
-			GetterUtil.get(
-				getBlogsEntry(), BlogsEntry::getTitle, StringPool.BLANK));
-
 		return _title;
 	}
 
 	public String getURLTitle() {
-		if (_urlTitle != null) {
-			return _urlTitle;
-		}
-
-		_urlTitle = ParamUtil.getString(
-			_httpServletRequest, "urlTitle",
-			GetterUtil.get(
-				getBlogsEntry(), BlogsEntry::getUrlTitle, StringPool.BLANK));
-
 		return _urlTitle;
 	}
 
@@ -457,43 +429,19 @@ public class BlogsEditEntryDisplayContext {
 	}
 
 	public boolean isAllowPingbacks() {
-		if (_allowPingbacks != null) {
-			return _allowPingbacks;
+		if (PropsValues.BLOGS_PINGBACK_ENABLED && _allowPingbacks) {
+			return true;
 		}
 
-		if (PropsValues.BLOGS_PINGBACK_ENABLED &&
-			ParamUtil.getBoolean(
-				_httpServletRequest, "allowPingbacks",
-				GetterUtil.get(
-					getBlogsEntry(), BlogsEntry::isAllowPingbacks, true))) {
-
-			_allowPingbacks = true;
-		}
-		else {
-			_allowPingbacks = false;
-		}
-
-		return _allowPingbacks;
+		return false;
 	}
 
 	public boolean isAllowTrackbacks() {
-		if (_allowTrackbacks != null) {
-			return _allowTrackbacks;
+		if (PropsValues.BLOGS_TRACKBACK_ENABLED && _allowTrackbacks) {
+			return true;
 		}
 
-		if (PropsValues.BLOGS_TRACKBACK_ENABLED &&
-			ParamUtil.getBoolean(
-				_httpServletRequest, "allowTrackbacks",
-				GetterUtil.get(
-					getBlogsEntry(), BlogsEntry::isAllowTrackbacks, true))) {
-
-			_allowTrackbacks = true;
-		}
-		else {
-			_allowTrackbacks = false;
-		}
-
-		return _allowTrackbacks;
+		return false;
 	}
 
 	public boolean isAutoTaggingEnabled() {
@@ -534,21 +482,6 @@ public class BlogsEditEntryDisplayContext {
 	}
 
 	public boolean isCustomAbstract() {
-		if (_customAbstract != null) {
-			return _customAbstract;
-		}
-
-		BlogsEntry entry = getBlogsEntry();
-
-		boolean defaultValue = false;
-
-		if ((entry != null) && Validator.isNotNull(entry.getDescription())) {
-			defaultValue = true;
-		}
-
-		_customAbstract = ParamUtil.getBoolean(
-			_httpServletRequest, "customAbstract", defaultValue);
-
 		return _customAbstract;
 	}
 
@@ -696,21 +629,21 @@ public class BlogsEditEntryDisplayContext {
 		new Snapshot<>(
 			BlogsEditEntryDisplayContext.class, ItemSelector.class, null, true);
 
-	private Boolean _allowPingbacks;
-	private Boolean _allowTrackbacks;
+	private final boolean _allowPingbacks;
+	private final boolean _allowTrackbacks;
 	private final AssetAutoTaggerConfiguration _assetAutoTaggerConfiguration;
 	private long[] _assetCategoryIds;
 	private final AssetVocabularyLocalService _assetVocabularyLocalService;
 	private final BlogsEntry _blogsEntry;
 	private final BlogsFileUploadsConfiguration _blogsFileUploadsConfiguration;
 	private final BlogsGroupServiceSettings _blogsGroupServiceSettings;
-	private String _content;
-	private String _coverImageCaption;
-	private Long _coverImageFileEntryId;
-	private Boolean _customAbstract;
-	private String _description;
+	private final String _content;
+	private final String _coverImageCaption;
+	private final long _coverImageFileEntryId;
+	private final boolean _customAbstract;
+	private final String _description;
 	private Boolean _emailEntryUpdatedEnabled;
-	private Long _entryId;
+	private final long _entryId;
 	private long[] _friendlyURLAssetCategoryIds;
 	private final HttpServletRequest _httpServletRequest;
 	private final ItemSelector _itemSelector;
@@ -718,9 +651,9 @@ public class BlogsEditEntryDisplayContext {
 	private String _redirect;
 	private final SiteConnectedGroupGroupProvider
 		_siteConnectedGroupGroupProvider;
-	private Long _smallImageFileEntryId;
+	private final long _smallImageFileEntryId;
 	private final ThemeDisplay _themeDisplay;
-	private String _title;
-	private String _urlTitle;
+	private final String _title;
+	private final String _urlTitle;
 
 }
