@@ -103,38 +103,25 @@ public class CopyDLObjectsMVCActionCommandTest {
 
 	@Test
 	@TestInfo("LPD-113295")
-	public void testCheckDestinationGroupFromSiteToConnectedDepot()
-		throws Exception {
+	public void testCheckDestinationGroup() throws Exception {
+		long depotGroupId = RandomTestUtil.randomLong();
 
-		long siteGroupId = RandomTestUtil.randomLong();
+		Group depotGroup = _setUpDepotGroup(depotGroupId);
 
-		Group depotGroup = _setUpDepotGroup();
+		long siteGroupId1 = RandomTestUtil.randomLong();
 
-		_setUpSiteGroup(
-			siteGroupId, new long[] {siteGroupId, depotGroup.getGroupId()});
+		_setUpSiteGroup(siteGroupId1, new long[] {siteGroupId1, depotGroupId});
 
-		ReflectionTestUtil.invoke(
-			_copyDLObjectsMVCActionCommand, "_checkDestinationGroup",
-			new Class<?>[] {Group.class, long[].class, long.class}, depotGroup,
-			new long[] {depotGroup.getGroupId()}, siteGroupId);
-	}
+		_checkDestinationGroup(
+			depotGroup, new long[] {depotGroupId}, siteGroupId1);
 
-	@Test
-	@TestInfo("LPD-113295")
-	public void testCheckDestinationGroupFromSiteToUnconnectedDepot()
-		throws Exception {
+		long siteGroupId2 = RandomTestUtil.randomLong();
 
-		long siteGroupId = RandomTestUtil.randomLong();
-
-		_setUpSiteGroup(siteGroupId, new long[] {siteGroupId});
-
-		Group depotGroup = _setUpDepotGroup();
+		_setUpSiteGroup(siteGroupId2, new long[] {siteGroupId2});
 
 		try {
-			ReflectionTestUtil.invoke(
-				_copyDLObjectsMVCActionCommand, "_checkDestinationGroup",
-				new Class<?>[] {Group.class, long[].class, long.class},
-				depotGroup, new long[] {depotGroup.getGroupId()}, siteGroupId);
+			_checkDestinationGroup(
+				depotGroup, new long[] {depotGroupId}, siteGroupId2);
 
 			Assert.fail();
 		}
@@ -182,6 +169,15 @@ public class CopyDLObjectsMVCActionCommandTest {
 		);
 	}
 
+	private void _checkDestinationGroup(
+		Group group, long[] groupIds, long sourceGroupId) {
+
+		ReflectionTestUtil.invoke(
+			_copyDLObjectsMVCActionCommand, "_checkDestinationGroup",
+			new Class<?>[] {Group.class, long[].class, long.class}, group,
+			groupIds, sourceGroupId);
+	}
+
 	private MockActionRequest _getMockActionRequest(
 		long destinationRepositoryId, long sourceRepositoryId) {
 
@@ -198,19 +194,25 @@ public class CopyDLObjectsMVCActionCommandTest {
 		return mockActionRequest;
 	}
 
-	private Group _setUpDepotGroup() {
+	private Group _setUpDepotGroup(long groupId) throws Exception {
 		Group group = Mockito.mock(Group.class);
 
 		Mockito.when(
 			group.getGroupId()
 		).thenReturn(
-			RandomTestUtil.randomLong()
+			groupId
 		);
 
 		Mockito.when(
 			group.isDepot()
 		).thenReturn(
 			true
+		);
+
+		Mockito.when(
+			_groupLocalService.getGroup(groupId)
+		).thenReturn(
+			group
 		);
 
 		return group;
