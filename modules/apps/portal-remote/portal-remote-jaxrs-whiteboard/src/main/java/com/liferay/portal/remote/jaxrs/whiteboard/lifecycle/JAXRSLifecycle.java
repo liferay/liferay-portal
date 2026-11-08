@@ -10,7 +10,6 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MapUtil;
 
-import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 import jakarta.ws.rs.sse.SseEventSource;
@@ -19,7 +18,6 @@ import java.util.Dictionary;
 import java.util.Map;
 
 import org.apache.aries.jax.rs.whiteboard.internal.Whiteboard;
-import org.apache.aries.jax.rs.whiteboard.internal.client.ClientBuilderFactory;
 import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
 import org.apache.cxf.jaxrs.sse.client.SseEventSourceBuilderImpl;
 
@@ -80,10 +78,6 @@ public class JAXRSLifecycle {
 	private SafeCloseable _start() {
 		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
 
-		ServiceRegistration<ClientBuilder> clientBuilderServiceRegistration =
-			_bundleContext.registerService(
-				ClientBuilder.class, new ClientBuilderFactory(), null);
-
 		ServiceRegistration<SseEventSourceFactory>
 			sseEventSourceFactoryServiceRegistration =
 				_bundleContext.registerService(
@@ -127,8 +121,6 @@ public class JAXRSLifecycle {
 			whiteboard.stop();
 
 			sseEventSourceFactoryServiceRegistration.unregister();
-
-			clientBuilderServiceRegistration.unregister();
 
 			RuntimeDelegate.setInstance(null);
 		};
