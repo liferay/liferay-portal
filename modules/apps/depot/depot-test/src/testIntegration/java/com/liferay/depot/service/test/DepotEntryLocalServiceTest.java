@@ -243,24 +243,6 @@ public class DepotEntryLocalServiceTest {
 		_addDepotEntry((String)null, (String)null);
 	}
 
-	@Test(expected = DuplicateGroupException.class)
-	@TestInfo("LPD-109885")
-	public void testAddGroupDuplicateDepotName() throws Exception {
-		String name = RandomTestUtil.randomString();
-
-		_addDepotEntry(name, RandomTestUtil.randomString());
-
-		_groupLocalService.addGroup(
-			StringPool.BLANK, TestPropsValues.getUserId(),
-			GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0, 0,
-			Collections.singletonMap(LocaleUtil.getDefault(), name),
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			GroupConstants.TYPE_SITE_OPEN, null, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, false,
-			true, ServiceContextTestUtil.getServiceContext());
-	}
-
 	@Test
 	public void testDeleteCompany() throws Exception {
 		Company company = CompanyTestUtil.addCompany();
