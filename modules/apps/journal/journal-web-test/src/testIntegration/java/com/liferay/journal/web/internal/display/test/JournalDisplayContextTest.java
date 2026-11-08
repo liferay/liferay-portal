@@ -425,12 +425,11 @@ public class JournalDisplayContextTest {
 		JournalArticle journalArticle = _addJournalArticle(
 			RandomTestUtil.randomString());
 
-		for (int i = 0; i < 2; i++) {
-			journalArticle = JournalTestUtil.updateArticle(
-				journalArticle, RandomTestUtil.randomString());
-		}
+		journalArticle = JournalTestUtil.updateArticle(
+			journalArticle, RandomTestUtil.randomString());
 
-		return journalArticle;
+		return JournalTestUtil.updateArticle(
+			journalArticle, RandomTestUtil.randomString());
 	}
 
 	private void _assertArticleActionDropdownItemLabels(
