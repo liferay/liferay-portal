@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.vulcan.problem;
 
+import com.liferay.headless.admin.site.internal.util.LayoutPageTemplateCollectionUtil;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionException;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
@@ -17,7 +18,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class PageTemplateSetExceptionProblemMapper
+public class DuplicateLayoutPageTemplateCollectionNameExceptionProblemMapper
 	implements ProblemMapper<DuplicateLayoutPageTemplateCollectionException> {
 
 	@Override
@@ -25,19 +26,30 @@ public class PageTemplateSetExceptionProblemMapper
 		DuplicateLayoutPageTemplateCollectionException
 			duplicateLayoutPageTemplateCollectionException) {
 
-		String message =
-			"A page template set with the same name already exists";
-		String name =
-			duplicateLayoutPageTemplateCollectionException.getMessage();
+		return ProblemUtil.getProblem(
+			_getMessage(duplicateLayoutPageTemplateCollectionException),
+			Problem.Status.CONFLICT,
+			duplicateLayoutPageTemplateCollectionException);
+	}
 
-		if (Validator.isNotNull(name)) {
-			message = StringBundler.concat(
-				"A page template set with name ", name, " already exists");
+	private String _getMessage(
+		DuplicateLayoutPageTemplateCollectionException
+			duplicateLayoutPageTemplateCollectionException) {
+
+		String name = LayoutPageTemplateCollectionUtil.getName(
+			duplicateLayoutPageTemplateCollectionException.getType());
+
+		if (Validator.isNull(
+				duplicateLayoutPageTemplateCollectionException.getName())) {
+
+			return StringBundler.concat(
+				"A ", name, " with the same name already exists");
 		}
 
-		return ProblemUtil.getProblem(
-			message, Problem.Status.CONFLICT,
-			duplicateLayoutPageTemplateCollectionException);
+		return StringBundler.concat(
+			"A ", name, " with the name \"",
+			duplicateLayoutPageTemplateCollectionException.getName(),
+			"\" already exists");
 	}
 
 }

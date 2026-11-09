@@ -525,7 +525,8 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 		throws PortalException {
 
 		if (Validator.isNull(name)) {
-			throw new LayoutPageTemplateCollectionNameException.MustNotBeNull();
+			throw new LayoutPageTemplateCollectionNameException.MustNotBeNull(
+				type);
 		}
 
 		int nameMaxLength = ModelHintsUtil.getMaxLength(
@@ -533,7 +534,7 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 
 		if (name.length() > nameMaxLength) {
 			throw new LayoutPageTemplateCollectionNameException.
-				MustNotExceedMaximumSize(nameMaxLength);
+				MustNotExceedMaximumSize(nameMaxLength, type);
 		}
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
@@ -541,7 +542,8 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 				groupId, parentLayoutPageTemplateCollection, name, type);
 
 		if (layoutPageTemplateCollection != null) {
-			throw new DuplicateLayoutPageTemplateCollectionException(name);
+			throw new DuplicateLayoutPageTemplateCollectionException(
+				name, type);
 		}
 	}
 

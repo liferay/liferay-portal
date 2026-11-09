@@ -5,7 +5,6 @@
 
 package com.liferay.layout.page.template.exception;
 
-import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 
@@ -15,6 +14,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 public class
 	LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException
 		extends PortalException {
+
+	public String getLayoutPageTemplateCollectionKey() {
+		return _layoutPageTemplateCollectionKey;
+	}
 
 	public int getType() {
 		return _type;
@@ -31,7 +34,7 @@ public class
 					"Duplicate layout page template collection for group ",
 					groupId, " with layout page template collection key ",
 					layoutPageTemplateCollectionKey),
-				type);
+				layoutPageTemplateCollectionKey, type);
 		}
 
 	}
@@ -48,7 +51,7 @@ public class
 					layoutPageTemplateCollectionKey,
 					" must contain only alphanumeric characters, dashes, and ",
 					"underscores"),
-				type);
+				layoutPageTemplateCollectionKey, type);
 		}
 
 	}
@@ -65,47 +68,30 @@ public class
 					"Layout page template collection key ",
 					layoutPageTemplateCollectionKey, " must have fewer than ",
 					layoutPageTemplateCollectionKeyMaxSize, " characters"),
-				type);
+				layoutPageTemplateCollectionKey, type);
+
+			_layoutPageTemplateCollectionKeyMaxSize =
+				layoutPageTemplateCollectionKeyMaxSize;
 		}
 
-	}
+		public int getLayoutPageTemplateCollectionKeyMaxSize() {
+			return _layoutPageTemplateCollectionKeyMaxSize;
+		}
 
-	private LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException() {
-		_type = LayoutPageTemplateCollectionTypeConstants.BASIC;
-	}
+		private final int _layoutPageTemplateCollectionKeyMaxSize;
 
-	private LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException(
-		String msg) {
-
-		super(msg);
-
-		_type = LayoutPageTemplateCollectionTypeConstants.BASIC;
 	}
 
 	private LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException(
-		String msg, int type) {
+		String msg, String layoutPageTemplateCollectionKey, int type) {
 
 		super(msg);
 
+		_layoutPageTemplateCollectionKey = layoutPageTemplateCollectionKey;
 		_type = type;
 	}
 
-	private LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException(
-		String msg, Throwable throwable) {
-
-		super(msg, throwable);
-
-		_type = LayoutPageTemplateCollectionTypeConstants.BASIC;
-	}
-
-	private LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException(
-		Throwable throwable) {
-
-		super(throwable);
-
-		_type = LayoutPageTemplateCollectionTypeConstants.BASIC;
-	}
-
+	private final String _layoutPageTemplateCollectionKey;
 	private final int _type;
 
 }

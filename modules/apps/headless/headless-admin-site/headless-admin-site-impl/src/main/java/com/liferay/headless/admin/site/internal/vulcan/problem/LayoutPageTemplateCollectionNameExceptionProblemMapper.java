@@ -5,7 +5,9 @@
 
 package com.liferay.headless.admin.site.internal.vulcan.problem;
 
+import com.liferay.headless.admin.site.internal.util.LayoutPageTemplateCollectionUtil;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionNameException;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
 
@@ -15,7 +17,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class PageTemplateSetNameExceptionProblemMapper
+public class LayoutPageTemplateCollectionNameExceptionProblemMapper
 	implements ProblemMapper<LayoutPageTemplateCollectionNameException> {
 
 	@Override
@@ -33,20 +35,25 @@ public class PageTemplateSetNameExceptionProblemMapper
 		LayoutPageTemplateCollectionNameException
 			layoutPageTemplateCollectionNameException) {
 
+		String name = LayoutPageTemplateCollectionUtil.getName(
+			layoutPageTemplateCollectionNameException.getType());
+
 		if (layoutPageTemplateCollectionNameException instanceof
 				LayoutPageTemplateCollectionNameException.MustNotBeNull) {
 
-			return "A name is required for each template folder or set";
+			return "A name is required for the " + name;
 		}
 
 		if (layoutPageTemplateCollectionNameException instanceof
 				LayoutPageTemplateCollectionNameException.
-					MustNotExceedMaximumSize) {
+					MustNotExceedMaximumSize mustNotExceedMaximumSize) {
 
-			return "The name for the template folder or set is too long";
+			return StringBundler.concat(
+				"The name of the ", name, " must not exceed ",
+				mustNotExceedMaximumSize.getNameMaxLength(), " characters");
 		}
 
-		return "The name for the template folder or set is invalid";
+		return StringBundler.concat("The name of the ", name, " is invalid");
 	}
 
 }
