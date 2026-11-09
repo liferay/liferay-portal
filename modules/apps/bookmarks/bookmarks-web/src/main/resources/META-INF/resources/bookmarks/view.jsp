@@ -10,7 +10,7 @@
 <%
 BookmarksFolder folder = (BookmarksFolder)request.getAttribute(BookmarksWebKeys.BOOKMARKS_FOLDER);
 
-long folderId = ParamUtil.getLong(request, "folderId", GetterUtil.get(folder, BookmarksFolder::getFolderId, rootFolderId));
+long folderId = BeanParamUtil.getLong(folder, request, "folderId", rootFolderId);
 
 String keywords = ParamUtil.getString(request, "keywords");
 

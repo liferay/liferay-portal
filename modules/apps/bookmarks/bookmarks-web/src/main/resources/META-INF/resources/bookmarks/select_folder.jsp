@@ -10,7 +10,7 @@
 <%
 BookmarksFolder folder = (BookmarksFolder)request.getAttribute(BookmarksWebKeys.BOOKMARKS_FOLDER);
 
-long folderId = ParamUtil.getLong(request, "folderId", GetterUtil.get(folder, BookmarksFolder::getFolderId, BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+long folderId = BeanParamUtil.getLong(folder, request, "folderId", BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 String eventName = ParamUtil.getString(request, "eventName", liferayPortletResponse.getNamespace() + "selectFolder");
 
