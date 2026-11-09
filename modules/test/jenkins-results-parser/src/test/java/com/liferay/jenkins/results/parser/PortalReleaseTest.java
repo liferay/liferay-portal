@@ -124,9 +124,15 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 			"cms-standalone", "liferay-cms-tomcat-2026.q4.0-1793923431.7z",
 			true);
 		_testGetStandaloneBuildProfile(
+			null, "liferay-ce-portal-tomcat-7.4.3.132-ga132-1791054167.7z",
+			true);
+		_testGetStandaloneBuildProfile(
 			null, "liferay-cms-tomcat-2026.q4.0-1793923431.7z", false);
 		_testGetStandaloneBuildProfile(
 			null, "liferay-cms-tomcat-2026.q4.0.7z", true);
+		_testGetStandaloneBuildProfile(
+			null, "liferay-dxp-digital-enterprise-tomcat-7.0.10-1791054167.7z",
+			true);
 		_testGetStandaloneBuildProfile(
 			null, "liferay-dxp-tomcat-7.4.13-u154-1791054167.7z", true);
 		_testGetStandaloneBuildProfile(
@@ -183,12 +189,17 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		_testIsStandaloneBundleURL(
 			false, "liferay-Cms-tomcat-2026.q4.0-1793923431.7z");
 		_testIsStandaloneBundleURL(
+			false, "liferay-ce-portal-tomcat-7.4.3.132-ga132-1791054167.7z");
+		_testIsStandaloneBundleURL(
 			false, "liferay-cms-osgi-2026.q4.0-1793923431.zip");
 		_testIsStandaloneBundleURL(
 			false, "liferay-cms-tomcat-2026.q4.0-1793923431.7z.MD5");
 		_testIsStandaloneBundleURL(false, "liferay-cms-tomcat-2026.q4.0.7z");
 		_testIsStandaloneBundleURL(
 			false, "liferay-cms2-tomcat-2026.q4.0-1793923431.7z");
+		_testIsStandaloneBundleURL(
+			false,
+			"liferay-dxp-digital-enterprise-tomcat-7.0.10-1791054167.7z");
 		_testIsStandaloneBundleURL(
 			false, "liferay-dxp-tomcat-2026.q4.0-1793923431.7z");
 		_testIsStandaloneBundleURL(
