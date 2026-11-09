@@ -159,27 +159,33 @@ public class PortalReleasePortalTopLevelBuildTest
 				"TEST_PORTAL_RELEASE_STANDALONE is true",
 			null);
 
-		String[] invalidURLStrings = {
-			JenkinsResultsParserUtil.combine(
-				"https://", RandomTestUtil.randomString(),
-				"/liferay-cms-osgi-7.4.13-u154-1791054167.zip"),
-			JenkinsResultsParserUtil.combine(
-				"https://", RandomTestUtil.randomString(),
-				"/liferay-portal-tomcat-7.4.3.132-ga132-1791054167.7z")
-		};
+		String osgiURLString = JenkinsResultsParserUtil.combine(
+			"https://", RandomTestUtil.randomString(),
+			"/liferay-cms-osgi-7.4.13-u154-1791054167.zip");
 
-		for (String invalidURLString : invalidURLStrings) {
-			_testGetPortalReleaseStandaloneFailure(
-				JenkinsResultsParserUtil.combine(
-					"Invalid standalone bundle URL ", invalidURLString,
-					". The file name must match ",
-					"\"liferay-<product>-tomcat-<version>-<timestamp>.",
-					"(7z|tar.gz|zip)\", where the product is not \"dxp\" or ",
-					"\"portal\". Set ",
-					"\"TEST_PORTAL_RELEASE_STANDALONE\" to \"false\" to ",
-					"test a regular release."),
-				invalidURLString);
-		}
+		_testGetPortalReleaseStandaloneFailure(
+			JenkinsResultsParserUtil.combine(
+				"Invalid standalone bundle URL ", osgiURLString,
+				". The file name must match ",
+				"\"liferay-<product>-tomcat-<version>-<timestamp>.",
+				"(7z|tar.gz|zip)\", where the product is not \"dxp\" or ",
+				"\"portal\". Set \"TEST_PORTAL_RELEASE_STANDALONE\" to ",
+				"\"false\" to test a regular release."),
+			osgiURLString);
+
+		String portalURLString = JenkinsResultsParserUtil.combine(
+			"https://", RandomTestUtil.randomString(),
+			"/liferay-portal-tomcat-7.4.3.132-ga132-1791054167.7z");
+
+		_testGetPortalReleaseStandaloneFailure(
+			JenkinsResultsParserUtil.combine(
+				"Invalid standalone bundle URL ", portalURLString,
+				". The file name must match ",
+				"\"liferay-<product>-tomcat-<version>-<timestamp>.",
+				"(7z|tar.gz|zip)\", where the product is not \"dxp\" or ",
+				"\"portal\". Set \"TEST_PORTAL_RELEASE_STANDALONE\" to ",
+				"\"false\" to test a regular release."),
+			portalURLString);
 	}
 
 	private PortalReleasePortalTopLevelBuild
