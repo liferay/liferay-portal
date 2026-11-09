@@ -1012,7 +1012,7 @@ mariadb.executable=${mariadb.executable}]]></echo>
 							String baseBuildProfile = StringUtils.removeEnd(standaloneBuildProfile, "-standalone");
 
 							if (hasBuildProfileTestUtilModule(baseBuildProfile, releasedAppDirs)) {
-								System.out.println("No test util module is marked .lfrbuild-" + standaloneBuildProfile + ", using .lfrbuild-" + baseBuildProfile);
+								System.out.println("No test util module is marked \".lfrbuild-" + standaloneBuildProfile + "\", using \".lfrbuild-" + baseBuildProfile + "\"");
 
 								standaloneBuildProfile = baseBuildProfile;
 							}
