@@ -7,8 +7,7 @@
 		textarea {
 			border: none;
 			border-radius: 4px;
-			font-family: SFMono-Regular, Menlo, Monaco, Consolas,
-				'Liberation Mono', 'Courier New', monospace;
+			font-family: var(--font-family-monospace);
 			height: 300px;
 			padding: 16px;
 			resize: none;
