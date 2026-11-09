@@ -146,6 +146,7 @@
 /sql/velocity.log*
 /support-tomcat/*.ipr
 /support-tomcat/*.iws
+/support-tomcat/build
 /support-tomcat/classes
 /support-tomcat/support-tomcat*.jar
 /svn-revision
