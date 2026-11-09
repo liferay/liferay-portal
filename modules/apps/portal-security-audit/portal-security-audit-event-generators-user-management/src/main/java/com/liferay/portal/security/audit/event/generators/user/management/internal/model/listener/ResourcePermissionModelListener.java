@@ -9,8 +9,8 @@ import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.ResourceAction;
@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.event.generators.util.AuditMessageBuilder;
 
@@ -37,7 +38,7 @@ public class ResourcePermissionModelListener
 
 		_route(
 			_getActionIdsJSONArray(null, resourcePermission), EventTypes.ADD,
-			_jsonFactory.createJSONArray(), resourcePermission);
+			JSONUtil.putAll(), resourcePermission);
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class ResourcePermissionModelListener
 		throws ModelListenerException {
 
 		_route(
-			_jsonFactory.createJSONArray(), EventTypes.DELETE,
+			JSONUtil.putAll(), EventTypes.DELETE,
 			_getActionIdsJSONArray(null, resourcePermission),
 			resourcePermission);
 	}
@@ -79,23 +80,18 @@ public class ResourcePermissionModelListener
 		ResourcePermission excludedResourcePermission,
 		ResourcePermission resourcePermission) {
 
-		JSONArray jsonArray = _jsonFactory.createJSONArray();
-
-		for (ResourceAction resourceAction :
+		return JSONUtil.toJSONArray(
+			ListUtil.filter(
 				_resourceActionLocalService.getResourceActions(
-					resourcePermission.getName())) {
-
-			if (!resourcePermission.hasAction(resourceAction) ||
-				((excludedResourcePermission != null) &&
-				 excludedResourcePermission.hasAction(resourceAction))) {
-
-				continue;
-			}
-
-			jsonArray.put(resourceAction.getActionId());
-		}
-
-		return jsonArray;
+					resourcePermission.getName()),
+				resourceAction ->
+					resourcePermission.hasAction(resourceAction) &&
+					((excludedResourcePermission == null) ||
+					 !excludedResourcePermission.hasAction(resourceAction))),
+			ResourceAction::getActionId,
+			exception -> {
+				throw new ModelListenerException(exception);
+			});
 	}
 
 	private void _route(
@@ -143,9 +139,6 @@ public class ResourcePermissionModelListener
 
 	@Reference
 	private AuditRouter _auditRouter;
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private ResourceActionLocalService _resourceActionLocalService;
