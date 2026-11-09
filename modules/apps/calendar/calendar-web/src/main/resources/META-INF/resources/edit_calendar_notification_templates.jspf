@@ -15,21 +15,11 @@ NotificationType notificationType = NotificationType.parse(tabs3Values[1]);
 
 CalendarNotificationTemplate calendarNotificationTemplate = CalendarNotificationTemplateLocalServiceUtil.fetchCalendarNotificationTemplate(calendar.getCalendarId(), notificationType, notificationTemplateType);
 
-long calendarNotificationTemplateId = 0;
-
-if (calendarNotificationTemplate != null) {
-	calendarNotificationTemplateId = calendarNotificationTemplate.getCalendarNotificationTemplateId();
-}
+long calendarNotificationTemplateId = BeanPropertiesUtil.getLong(calendarNotificationTemplate, "calendarNotificationTemplateId");
 
 String fromName = NotificationUtil.getTemplatePropertyValue(calendarNotificationTemplate, CalendarNotificationTemplateConstants.PROPERTY_FROM_NAME, PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_NAME));
 String fromAddress = NotificationUtil.getTemplatePropertyValue(calendarNotificationTemplate, CalendarNotificationTemplateConstants.PROPERTY_FROM_ADDRESS, PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_ADDRESS));
-String body = NotificationUtil.getDefaultTemplate(notificationType, notificationTemplateType, NotificationField.BODY);
-String subject = NotificationUtil.getDefaultTemplate(notificationType, notificationTemplateType, NotificationField.SUBJECT);
-
-if (calendarNotificationTemplate != null) {
-	body = calendarNotificationTemplate.getBody();
-	subject = calendarNotificationTemplate.getSubject();
-}
+String body = BeanPropertiesUtil.getString(calendarNotificationTemplate, "body", NotificationUtil.getDefaultTemplate(notificationType, notificationTemplateType, NotificationField.BODY));
 %>
 
 <liferay-ui:header
@@ -86,7 +76,7 @@ if (calendarNotificationTemplate != null) {
 
 		<aui:input name="fromAddress" value="<%= fromAddress %>" />
 
-		<aui:input name="subject" value="<%= subject %>" />
+		<aui:input name="subject" value='<%= BeanPropertiesUtil.getString(calendarNotificationTemplate, "subject", NotificationUtil.getDefaultTemplate(notificationType, notificationTemplateType, NotificationField.SUBJECT)) %>' />
 
 		<c:choose>
 			<c:when test='<%= !FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
