@@ -721,6 +721,31 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 		</DTDDoc>
 	</target>
 
+	<target name="find-security-bugs-core">
+		<property name="find.security.bugs.projects" value="portal-impl,portal-test,portal-web,support-tomcat,util-bridges,util-java,util-slf4j,util-taglib" />
+
+		<antcall target="compile" />
+
+		<if>
+			<contains string="${find.security.bugs.projects}" substring="portal-web" />
+			<then>
+				<for list="util-java,util-taglib,portal-kernel,portal-impl" param="find.security.bugs.jar.project">
+					<sequential>
+						<ant dir="${project.dir}/@{find.security.bugs.jar.project}" inheritAll="false" target="jar" />
+					</sequential>
+				</for>
+
+				<ant dir="${project.dir}/portal-web" inheritAll="false" target="compile-tomcat" />
+			</then>
+		</if>
+
+		<for list="${find.security.bugs.projects}" param="find.security.bugs.project">
+			<sequential>
+				<gradle-execute dir="${project.dir}/@{find.security.bugs.project}" forcedcacheenabled="false" stacktrace="false" task="findSecurityBugs" />
+			</sequential>
+		</for>
+	</target>
+
 	<target name="install-portal-snapshots">
 		<lstopwatch action="start" name="install.portal.snapshots" />
 
