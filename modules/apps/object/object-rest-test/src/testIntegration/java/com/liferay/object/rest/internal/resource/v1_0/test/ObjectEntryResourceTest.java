@@ -5510,13 +5510,13 @@ public class ObjectEntryResourceTest {
 		_userAccountJSONObject = UserAccountTestUtil.addUserAccountJSONObject(
 			_systemObjectDefinitionManager, Collections.emptyMap());
 
-		TaxonomyCategory taxonomyCategory =
-			_postTaxonomyVocabularyTaxonomyCategory();
-
 		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
 			_objectDefinition1, _userSystemObjectDefinition,
 			_objectEntry1.getPrimaryKey(), _userAccountJSONObject.getLong("id"),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		TaxonomyCategory taxonomyCategory =
+			_postTaxonomyVocabularyTaxonomyCategory();
 
 		_testFilterObjectEntriesByRelatedSystemObjectEntriesFields(
 			_escape(
