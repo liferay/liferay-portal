@@ -17,6 +17,7 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateActionKeys;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -210,7 +211,8 @@ public class LayoutActionDropdownItemsProvider {
 					_translationURLProvider.getTranslateURL(
 						_themeDisplay.getScopeGroupId(),
 						PortalUtil.getClassNameId(Layout.class.getName()),
-						_getPlid(draftLayout, layout),
+						BeanPropertiesUtil.getLong(
+							draftLayout, "plid", layout.getPlid()),
 						RequestBackedPortletURLFactoryUtil.create(
 							_httpServletRequest))
 				).setRedirect(
@@ -537,7 +539,8 @@ public class LayoutActionDropdownItemsProvider {
 					_translationURLProvider.getExportTranslationURL(
 						layout.getGroupId(),
 						PortalUtil.getClassNameId(Layout.class.getName()),
-						_getPlid(draftLayout, layout),
+						BeanPropertiesUtil.getLong(
+							draftLayout, "plid", layout.getPlid()),
 						RequestBackedPortletURLFactoryUtil.create(
 							_httpServletRequest))
 				).setRedirect(
@@ -570,7 +573,8 @@ public class LayoutActionDropdownItemsProvider {
 					_translationURLProvider.getImportTranslationURL(
 						layout.getGroupId(),
 						PortalUtil.getClassNameId(Layout.class.getName()),
-						_getPlid(draftLayout, layout),
+						BeanPropertiesUtil.getLong(
+							draftLayout, "plid", layout.getPlid()),
 						RequestBackedPortletURLFactoryUtil.create(
 							_httpServletRequest))
 				).setRedirect(
@@ -646,14 +650,6 @@ public class LayoutActionDropdownItemsProvider {
 			String.valueOf(layout.getPlid()),
 			LiferayWindowState.POP_UP.toString(), null,
 			_themeDisplay.getRequest());
-	}
-
-	private long _getPlid(Layout draftLayout, Layout layout) {
-		if (draftLayout == null) {
-			return layout.getPlid();
-		}
-
-		return draftLayout.getPlid();
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
