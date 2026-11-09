@@ -1,7 +1,7 @@
 task runGradleTest
 
 dependencies {
-	providedModules group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
+	providedModules group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.12"
 	providedModules group: "com.thoughtworks.qdox", name: "qdox"
 }
 
@@ -9,7 +9,7 @@ runGradleTest {
 	dependsOn initBundle
 
 	doLast {
-		File expectedFile = new File(initBundle.destinationDir, "osgi/modules/jackson-annotations-2.18.11.jar")
+		File expectedFile = new File(initBundle.destinationDir, "osgi/modules/jackson-annotations-2.18.12.jar")
 
 		assert expectedFile.exists()
 
