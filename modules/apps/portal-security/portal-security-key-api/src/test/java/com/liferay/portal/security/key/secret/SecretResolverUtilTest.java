@@ -12,6 +12,8 @@ import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Collections;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -134,6 +136,44 @@ public class SecretResolverUtilTest {
 			secretResolver, Mockito.never()
 		).resolve(
 			companyId, identifier, plainValue
+		);
+	}
+
+	@Test
+	public void testResolveWithSecretContext() {
+		long companyId = RandomTestUtil.randomLong();
+		String keyReferenceString = _randomKeyReferenceString();
+		String resolvedValue = RandomTestUtil.randomString();
+
+		SecretContext secretContext =
+			SecretContext.createConfigurationSecretContext(
+				RandomTestUtil.randomString(), Collections.emptyMap());
+
+		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
+
+		Mockito.when(
+			secretResolver.resolve(companyId, secretContext, keyReferenceString)
+		).thenReturn(
+			resolvedValue
+		);
+
+		_setUpSecretResolverSnapshot(secretResolver);
+
+		Assert.assertSame(
+			resolvedValue,
+			SecretResolverUtil.resolve(
+				companyId, secretContext, keyReferenceString));
+
+		String plainValue = RandomTestUtil.randomString();
+
+		Assert.assertSame(
+			plainValue,
+			SecretResolverUtil.resolve(companyId, secretContext, plainValue));
+
+		Mockito.verify(
+			secretResolver, Mockito.never()
+		).resolve(
+			companyId, secretContext, plainValue
 		);
 	}
 
