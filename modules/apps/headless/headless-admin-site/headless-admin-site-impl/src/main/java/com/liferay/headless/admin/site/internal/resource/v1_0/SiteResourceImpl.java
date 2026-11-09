@@ -175,14 +175,14 @@ public class SiteResourceImpl
 					_getGroupExternalReferenceCodes(portletDataContext);
 
 				return HashMapBuilder.<String, Serializable>put(
-					_END_DATE, portletDataContext.getEndDate()
-				).put(
-					_SELECTED_EXTERNAL_REFERENCE_CODES,
-					groupExternalReferenceCodes
-				).put(
-					_START_DATE, portletDataContext.getStartDate()
+					"endDate", portletDataContext.getEndDate()
 				).put(
 					"externalReferenceCodes", groupExternalReferenceCodes
+				).put(
+					"selectedExternalReferenceCodes",
+					groupExternalReferenceCodes
+				).put(
+					"startDate", portletDataContext.getStartDate()
 				).build();
 			}
 
@@ -379,8 +379,8 @@ public class SiteResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		Date endDate = (Date)parameters.get(_END_DATE);
-		Date startDate = (Date)parameters.get(_START_DATE);
+		Date endDate = (Date)parameters.get("endDate");
+		Date startDate = (Date)parameters.get("startDate");
 
 		if ((endDate == null) && (startDate == null)) {
 			return super.read(filter, pagination, sorts, parameters, search);
@@ -896,7 +896,7 @@ public class SiteResourceImpl
 		}
 
 		String[] selectedExternalReferenceCodes = (String[])parameters.get(
-			_SELECTED_EXTERNAL_REFERENCE_CODES);
+			"selectedExternalReferenceCodes");
 
 		if (selectedExternalReferenceCodes == null) {
 			return sites;
@@ -1345,17 +1345,11 @@ public class SiteResourceImpl
 		}
 	}
 
-	private static final String _END_DATE = "endDate";
-
 	private static final String[] _EXCLUDED_TYPE_SETTINGS = {
 		GooglePlacesWebKeys.GOOGLE_PLACES_API_KEY, "defaultSiteRoleIds",
 		"defaultTeamIds", "googleMapsAPIKey"
 	};
 
-	private static final String _SELECTED_EXTERNAL_REFERENCE_CODES =
-		"selectedExternalReferenceCodes";
-
-	private static final String _START_DATE = "startDate";
 
 	@Reference
 	private GroupLocalService _groupLocalService;
