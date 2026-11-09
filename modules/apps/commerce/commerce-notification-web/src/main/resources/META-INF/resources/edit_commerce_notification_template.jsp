@@ -12,15 +12,14 @@ CommerceNotificationTemplatesDisplayContext commerceNotificationTemplatesDisplay
 
 CommerceNotificationTemplate commerceNotificationTemplate = commerceNotificationTemplatesDisplayContext.getCommerceNotificationTemplate();
 
-String title = LanguageUtil.get(resourceBundle, "add-notification-template");
-String type = StringPool.BLANK;
+String bcc = ParamUtil.getString(renderRequest, "bcc", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getBcc, StringPool.BLANK));
+String cc = ParamUtil.getString(renderRequest, "cc", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getCc, StringPool.BLANK));
+String description = ParamUtil.getString(renderRequest, "description", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getDescription, StringPool.BLANK));
+String from = ParamUtil.getString(renderRequest, "from", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getFrom, StringPool.BLANK));
+String fromName = ParamUtil.getString(renderRequest, "fromName", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getFromName, StringPool.BLANK));
+String name = ParamUtil.getString(renderRequest, "name", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getName, StringPool.BLANK));
 
-if (commerceNotificationTemplate != null) {
-	title = LanguageUtil.format(request, "edit-x", commerceNotificationTemplate.getName(), false);
-	type = commerceNotificationTemplate.getType();
-}
-
-type = ParamUtil.getString(renderRequest, "type", type);
+String type = ParamUtil.getString(renderRequest, "type", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getType, StringPool.BLANK));
 
 CommerceNotificationType commerceNotificationType = commerceNotificationTemplatesDisplayContext.getCommerceNotificationType(type);
 
@@ -28,6 +27,12 @@ Map<String, String> definitionTerms = null;
 
 if (commerceNotificationType != null) {
 	definitionTerms = commerceNotificationTemplatesDisplayContext.getDefinitionTerms(CommerceDefinitionTermConstants.RECIPIENT_DEFINITION_TERMS_CONTRIBUTOR, commerceNotificationType.getKey(), locale);
+}
+
+String title = LanguageUtil.get(resourceBundle, "add-notification-template");
+
+if (commerceNotificationTemplate != null) {
+	title = LanguageUtil.format(request, "edit-x", commerceNotificationTemplate.getName(), false);
 }
 %>
 
@@ -53,9 +58,9 @@ if (commerceNotificationType != null) {
 		>
 			<div class="row">
 				<div class="col-12">
-					<aui:input name="name" />
+					<aui:input name="name" value="<%= name %>" />
 
-					<aui:input name="description" />
+					<aui:input name="description" value="<%= description %>" />
 				</div>
 
 				<div class="col-6">
@@ -97,15 +102,15 @@ if (commerceNotificationType != null) {
 				</div>
 
 				<div class="col-6">
-					<aui:input name="cc" />
+					<aui:input name="cc" value="<%= cc %>" />
 
-					<aui:input label="from-address" name="from" />
+					<aui:input label="from-address" name="from" value="<%= from %>" />
 				</div>
 
 				<div class="col-6">
-					<aui:input name="bcc" />
+					<aui:input name="bcc" value="<%= bcc %>" />
 
-					<aui:input name="fromName" />
+					<aui:input name="fromName" value="<%= fromName %>" />
 				</div>
 
 				<c:if test="<%= (definitionTerms != null) && !definitionTerms.isEmpty() %>">
