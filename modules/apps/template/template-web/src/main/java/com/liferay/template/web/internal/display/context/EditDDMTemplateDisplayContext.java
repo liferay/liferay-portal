@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.template.TemplateHandlerRegistryUtil;
 import com.liferay.portal.kernel.template.TemplateVariableDefinition;
 import com.liferay.portal.kernel.template.TemplateVariableGroup;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -65,24 +66,6 @@ public class EditDDMTemplateDisplayContext {
 			liferayPortletRequest);
 		_themeDisplay = (ThemeDisplay)liferayPortletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
-
-		DDMTemplate ddmTemplate = getDDMTemplate();
-
-		long classNameId = 0;
-		String script = StringPool.BLANK;
-		boolean smallImage = false;
-
-		if (ddmTemplate != null) {
-			classNameId = ddmTemplate.getClassNameId();
-			script = ddmTemplate.getScript();
-			smallImage = ddmTemplate.isSmallImage();
-		}
-
-		_classNameId = ParamUtil.getLong(
-			liferayPortletRequest, "classNameId", classNameId);
-		_rawScript = ParamUtil.getString(httpServletRequest, "script", script);
-		_smallImage = ParamUtil.getBoolean(
-			liferayPortletRequest, "smallImage", smallImage);
 	}
 
 	public boolean autogenerateTemplateKey() {
@@ -90,6 +73,14 @@ public class EditDDMTemplateDisplayContext {
 	}
 
 	public long getClassNameId() {
+		if (_classNameId != null) {
+			return _classNameId;
+		}
+
+		_classNameId = ParamUtil.getLong(
+			_liferayPortletRequest, "classNameId",
+			GetterUtil.get(getDDMTemplate(), DDMTemplate::getClassNameId, 0L));
+
 		return _classNameId;
 	}
 
@@ -224,6 +215,14 @@ public class EditDDMTemplateDisplayContext {
 	}
 
 	public boolean isSmallImage() {
+		if (_smallImage != null) {
+			return _smallImage;
+		}
+
+		_smallImage = ParamUtil.getBoolean(
+			_liferayPortletRequest, "smallImage",
+			GetterUtil.get(getDDMTemplate(), DDMTemplate::isSmallImage, false));
+
 		return _smallImage;
 	}
 
@@ -283,7 +282,10 @@ public class EditDDMTemplateDisplayContext {
 			return _script;
 		}
 
-		String script = _rawScript;
+		String script = ParamUtil.getString(
+			httpServletRequest, "script",
+			GetterUtil.get(
+				getDDMTemplate(), DDMTemplate::getScript, StringPool.BLANK));
 
 		if (Validator.isNull(script)) {
 			script = getDefaultScript();
@@ -369,16 +371,15 @@ public class EditDDMTemplateDisplayContext {
 		return templateVariableGroupJSONArray;
 	}
 
-	private final long _classNameId;
+	private Long _classNameId;
 	private final DDMGroupServiceConfiguration _ddmGroupServiceConfiguration;
 	private DDMTemplate _ddmTemplate;
 	private final DDMTemplateHelper _ddmTemplateHelper;
 	private Long _ddmTemplateId;
 	private final LiferayPortletRequest _liferayPortletRequest;
-	private final String _rawScript;
 	private String _refererWebDAVToken;
 	private String _script;
-	private final boolean _smallImage;
+	private Boolean _smallImage;
 	private String _smallImageSource;
 	private String _tabs1;
 	private Long _templateEntryId;
