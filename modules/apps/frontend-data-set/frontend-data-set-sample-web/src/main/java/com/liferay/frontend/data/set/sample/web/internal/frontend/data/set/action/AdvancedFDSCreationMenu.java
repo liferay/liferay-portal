@@ -91,12 +91,12 @@ public class AdvancedFDSCreationMenu implements FDSCreationMenu {
 		).addPrimaryDropdownItem(
 			DropdownItemBuilder.putData(
 				"id", "permissionTest"
+			).putData(
+				"permissionKey", "update"
 			).setDropdownItems(
 				DropdownItemListBuilder.add(
 					DropdownItemBuilder.putData(
 						"id", "newTemplate"
-					).putData(
-						"permissionKey", "update"
 					).setHref(
 						"#"
 					).setLabel(

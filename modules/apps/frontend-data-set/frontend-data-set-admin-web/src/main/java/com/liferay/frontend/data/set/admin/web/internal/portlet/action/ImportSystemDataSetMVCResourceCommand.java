@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -439,8 +440,10 @@ public class ImportSystemDataSetMVCResourceCommand
 			fdsCreationMenu.getFDSEntryItemImportPolicy();
 
 		if (fdsEntryItemImportPolicy == FDSEntryItemImportPolicy.DETACHED) {
-			for (DropdownItem dropdownItem :
-					_getLeafDropdownItems(primaryDropdownItems)) {
+			for (ObjectValuePair<DropdownItem, String> objectValuePair :
+					_getLeafDropdownItems(primaryDropdownItems, null)) {
+
+				DropdownItem dropdownItem = objectValuePair.getKey();
 
 				Map<String, Serializable> objectEntryValues =
 					HashMapBuilder.<String, Serializable>put(
@@ -451,6 +454,8 @@ public class ImportSystemDataSetMVCResourceCommand
 						() -> _getLocalizeableValue(
 							defaultLanguageId,
 							_getOptionalValue(dropdownItem.get("label")))
+					).put(
+						"permissionKey", objectValuePair::getValue
 					).put(
 						"r_dataSetToDataSetActions_l_dataSetId",
 						objectEntry.getObjectEntryId()
@@ -481,9 +486,6 @@ public class ImportSystemDataSetMVCResourceCommand
 						).put(
 							"modalSize",
 							() -> _getOptionalValue(data.get("modalSize"))
-						).put(
-							"permissionKey",
-							() -> _getOptionalValue(data.get("permissionKey"))
 						).put(
 							"title_i18n",
 							() -> _getLocalizeableValue(
@@ -656,8 +658,12 @@ public class ImportSystemDataSetMVCResourceCommand
 			fdsItemsActions.getFDSEntryItemImportPolicy();
 
 		if (fdsEntryItemImportPolicy == FDSEntryItemImportPolicy.DETACHED) {
-			for (FDSActionDropdownItem fdsActionDropdownItem :
-					_getLeafDropdownItems(fdsActionDropdownItems)) {
+			for (ObjectValuePair<FDSActionDropdownItem, String>
+					objectValuePair :
+						_getLeafDropdownItems(fdsActionDropdownItems, null)) {
+
+				FDSActionDropdownItem fdsActionDropdownItem =
+					objectValuePair.getKey();
 
 				Map<String, Object> data =
 					(Map<String, Object>)fdsActionDropdownItem.get("data");
@@ -706,7 +712,7 @@ public class ImportSystemDataSetMVCResourceCommand
 						() -> _getOptionalValue(data.get("modalSize"))
 					).put(
 						"permissionKey",
-						() -> _getOptionalValue(data.get("permissionKey"))
+						() -> _getItemActionPermissionKey(objectValuePair)
 					).put(
 						"r_dataSetToDataSetActions_l_dataSetId",
 						objectEntry.getObjectEntryId()
@@ -900,14 +906,34 @@ public class ImportSystemDataSetMVCResourceCommand
 		return labels;
 	}
 
-	private <T extends DropdownItem> List<T> _getLeafDropdownItems(
-		List<T> dropdownItems) {
+	private String _getItemActionPermissionKey(
+		ObjectValuePair<FDSActionDropdownItem, String> objectValuePair) {
 
-		List<T> leafDropdownItems = new ArrayList<>();
+		FDSActionDropdownItem fdsActionDropdownItem = objectValuePair.getKey();
+
+		if (Objects.equals(fdsActionDropdownItem.get("target"), "headless")) {
+			return _getPermissionKey(fdsActionDropdownItem);
+		}
+
+		return objectValuePair.getValue();
+	}
+
+	private <T extends DropdownItem> List<ObjectValuePair<T, String>>
+		_getLeafDropdownItems(List<T> dropdownItems, String permissionKey) {
+
+		List<ObjectValuePair<T, String>> objectValuePairs = new ArrayList<>();
 
 		for (T dropdownItem : dropdownItems) {
+			String dropdownItemPermissionKey = _getPermissionKey(dropdownItem);
+
+			if (dropdownItemPermissionKey == null) {
+				dropdownItemPermissionKey = permissionKey;
+			}
+
 			if (!_isGroupDropdownItem(dropdownItem)) {
-				leafDropdownItems.add(dropdownItem);
+				objectValuePairs.add(
+					new ObjectValuePair<>(
+						dropdownItem, dropdownItemPermissionKey));
 
 				continue;
 			}
@@ -918,11 +944,12 @@ public class ImportSystemDataSetMVCResourceCommand
 				continue;
 			}
 
-			leafDropdownItems.addAll(
-				_getLeafDropdownItems(nestedDropdownItems));
+			objectValuePairs.addAll(
+				_getLeafDropdownItems(
+					nestedDropdownItems, dropdownItemPermissionKey));
 		}
 
-		return leafDropdownItems;
+		return objectValuePairs;
 	}
 
 	private Serializable _getLocalizeableValue(
@@ -943,6 +970,17 @@ public class ImportSystemDataSetMVCResourceCommand
 		}
 
 		return String.valueOf(value);
+	}
+
+	private String _getPermissionKey(DropdownItem dropdownItem) {
+		Map<String, Object> data = (Map<String, Object>)dropdownItem.get(
+			"data");
+
+		if ((data == null) || (data.get("permissionKey") == null)) {
+			return null;
+		}
+
+		return String.valueOf(data.get("permissionKey"));
 	}
 
 	private boolean _hasNestedDropdownItems(DropdownItem dropdownItem) {

@@ -317,6 +317,22 @@ test(
 				).toHaveCount(1);
 			}
 
+			await actionsPage.creationActionsTable
+				.locator('tr')
+				.filter({hasText: 'New Template'})
+				.locator('.dropdown-toggle')
+				.click();
+
+			await actionsPage.page
+				.locator('.dropdown-menu.show')
+				.getByRole('menuitem', {name: 'Edit'})
+				.click();
+
+			await expect(form.labelInput).toHaveValue('New Template');
+			await expect(form.headlessActionKeyInput).toHaveValue('update');
+
+			await form.cancelButton.click();
+
 			await page.getByTitle('Back').click();
 		});
 
