@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlParser;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -39,6 +40,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.workflow.kaleo.forms.constants.KaleoFormsActionKeys;
 import com.liferay.portal.workflow.kaleo.forms.constants.KaleoFormsPortletKeys;
+import com.liferay.portal.workflow.kaleo.forms.constants.KaleoFormsWebKeys;
 import com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess;
 import com.liferay.portal.workflow.kaleo.forms.service.KaleoProcessServiceUtil;
 import com.liferay.portal.workflow.kaleo.forms.util.comparator.KaleoProcessCreateDateComparator;
@@ -194,8 +196,13 @@ public class KaleoFormsAdminDisplayContext {
 			return _kaleoProcessId;
 		}
 
+		KaleoProcess kaleoProcess =
+			(KaleoProcess)_httpServletRequest.getAttribute(
+				KaleoFormsWebKeys.KALEO_PROCESS);
+
 		_kaleoProcessId = ParamUtil.getLong(
-			_httpServletRequest, "kaleoProcessId");
+			_httpServletRequest, "kaleoProcessId",
+			GetterUtil.get(kaleoProcess, KaleoProcess::getKaleoProcessId, 0L));
 
 		return _kaleoProcessId;
 	}
