@@ -210,8 +210,6 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Service Holder Usage](validations/branch/service-holder-usage.md)
 
-1. [PrintWriter Wrapper](validations/branch/print-writer-wrapper.md)
-
 1. [Empty Service Properties](validations/branch/empty-service-properties.md)
 
 1. [Empty SafeCloseable](validations/branch/empty-safe-closeable.md)
