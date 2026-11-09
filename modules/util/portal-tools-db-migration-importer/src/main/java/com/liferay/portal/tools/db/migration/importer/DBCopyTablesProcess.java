@@ -11,8 +11,11 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.jdbc.postgresql.PostgreSQLJDBCUtil;
 import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.IndexMetadata;
+import com.liferay.portal.kernel.dao.db.IndexMetadataFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.framework.ThrowableCollector;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -81,6 +84,12 @@ public class DBCopyTablesProcess {
 		else {
 			_partitionMessage = " in partition " + partitionName;
 		}
+	}
+
+	public void addCustomPrimaryKeysAndIndexes() throws Exception {
+		_addCustomPrimaryKeys();
+
+		_addCustomIndexes();
 	}
 
 	public void run() throws Exception {
@@ -193,6 +202,8 @@ public class DBCopyTablesProcess {
 						"create table ",
 						_getQuotedName(StringUtil.toLowerCase(entry.getKey())),
 						" (", StringUtil.merge(entry.getValue()), ")"));
+
+				_customTableNames.add(entry.getKey());
 			}
 		}
 
@@ -201,6 +212,157 @@ public class DBCopyTablesProcess {
 
 		_loadColumnNamesMap(
 			_targetColumnNamesMap, _targetColumnsType, _targetDataSource);
+	}
+
+	private void _addCustomIndexes() throws Exception {
+		try (Connection sourceConnection = _sourceDataSource.getConnection();
+
+			Connection targetConnection = _targetDataSource.getConnection();
+
+			Statement statement = targetConnection.createStatement()) {
+
+			DatabaseMetaData databaseMetaData = targetConnection.getMetaData();
+			Set<String> targetNames = new HashSet<>();
+
+			try (ResultSet resultSet = databaseMetaData.getTables(
+					targetConnection.getCatalog(), targetConnection.getSchema(),
+					null, null)) {
+
+				while (resultSet.next()) {
+					targetNames.add(resultSet.getString("TABLE_NAME"));
+				}
+			}
+
+			for (Map.Entry<String, List<String>> entry :
+					_sourceColumnNamesMap.entrySet()) {
+
+				String tableName = entry.getKey();
+
+				String targetTableName = StringUtil.toLowerCase(tableName);
+
+				List<IndexMetadata> targetIndexMetadatas = _getIndexMetadatas(
+					targetConnection, targetTableName);
+
+				List<String> columnNames = ListUtil.toList(
+					entry.getValue(), StringUtil::toLowerCase);
+
+				for (IndexMetadata indexMetadata :
+						_getIndexMetadatas(sourceConnection, tableName)) {
+
+					if (ListUtil.exists(
+							targetIndexMetadatas,
+							targetIndexMetadata ->
+								StringUtil.equalsIgnoreCase(
+									targetIndexMetadata.getIndexName(),
+									indexMetadata.getIndexName()) ||
+								targetIndexMetadata.equals(indexMetadata))) {
+
+						continue;
+					}
+
+					String[] indexColumnNames = indexMetadata.getColumnNames();
+
+					if (!columnNames.containsAll(
+							ListUtil.fromArray(indexColumnNames))) {
+
+						System.out.println(
+							StringBundler.concat(
+								"Unable to create index ",
+								indexMetadata.getIndexName(), " on table ",
+								tableName, _partitionMessage,
+								" because one of its columns is an ",
+								"expression"));
+
+						continue;
+					}
+
+					String targetIndexName = StringUtil.toLowerCase(
+						indexMetadata.getIndexName());
+
+					if (targetNames.contains(targetIndexName)) {
+						targetIndexName = StringUtil.toLowerCase(
+							IndexMetadataFactoryUtil.createIndexName(
+								targetTableName, indexColumnNames));
+
+						System.out.println(
+							StringBundler.concat(
+								"Renaming index ", indexMetadata.getIndexName(),
+								" on table ", tableName, _partitionMessage,
+								" to ", targetIndexName,
+								" because a relation with the same name ",
+								"already exists"));
+					}
+
+					IndexMetadata targetIndexMetadata = new IndexMetadata(
+						_getQuotedName(targetIndexName),
+						_getQuotedName(targetTableName),
+						indexMetadata.isUnique(),
+						ArrayUtil.toStringArray(
+							ListUtil.toList(
+								ListUtil.fromArray(indexColumnNames),
+								this::_getQuotedName)));
+
+					try {
+						statement.executeUpdate(
+							targetIndexMetadata.getCreateSQL(null));
+					}
+					catch (SQLException sqlException) {
+						System.out.println(
+							StringBundler.concat(
+								"Unable to create index ",
+								indexMetadata.getIndexName(), " on table ",
+								tableName, _partitionMessage, ": ",
+								sqlException.getMessage()));
+
+						continue;
+					}
+
+					targetIndexMetadatas.add(indexMetadata);
+					targetNames.add(targetIndexName);
+				}
+			}
+		}
+	}
+
+	private void _addCustomPrimaryKeys() throws Exception {
+		try (Connection sourceConnection = _sourceDataSource.getConnection();
+
+			Connection targetConnection = _targetDataSource.getConnection();
+
+			Statement statement = targetConnection.createStatement()) {
+
+			DatabaseMetaData databaseMetaData = sourceConnection.getMetaData();
+
+			for (String customTableName : _customTableNames) {
+				Map<Integer, String> primaryKeyColumnNamesMap = new TreeMap<>();
+
+				try (ResultSet resultSet = databaseMetaData.getPrimaryKeys(
+						sourceConnection.getCatalog(),
+						sourceConnection.getSchema(), customTableName)) {
+
+					while (resultSet.next()) {
+						primaryKeyColumnNamesMap.put(
+							resultSet.getInt("KEY_SEQ"),
+							_getQuotedName(
+								StringUtil.toLowerCase(
+									resultSet.getString("COLUMN_NAME"))));
+					}
+				}
+
+				if (primaryKeyColumnNamesMap.isEmpty()) {
+					continue;
+				}
+
+				statement.executeUpdate(
+					StringBundler.concat(
+						"alter table ",
+						_getQuotedName(StringUtil.toLowerCase(customTableName)),
+						" add primary key (",
+						StringUtil.merge(
+							primaryKeyColumnNamesMap.values(), ", "),
+						")"));
+			}
+		}
 	}
 
 	private void _copyTable(String sourceTableName, String targetTableName)
@@ -607,6 +769,63 @@ public class DBCopyTablesProcess {
 				resultSet.getInt("DECIMAL_DIGITS")));
 	}
 
+	private List<IndexMetadata> _getIndexMetadatas(
+			Connection connection, String tableName)
+		throws SQLException {
+
+		List<IndexMetadata> indexMetadatas = new ArrayList<>();
+
+		DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+		try (ResultSet resultSet = databaseMetaData.getIndexInfo(
+				connection.getCatalog(), connection.getSchema(), tableName,
+				false, true)) {
+
+			String[] columnNames = new String[0];
+			String previousIndexName = null;
+			boolean unique = false;
+
+			while (resultSet.next()) {
+				if (resultSet.getShort("ORDINAL_POSITION") == 0) {
+					continue;
+				}
+
+				String indexName = resultSet.getString("INDEX_NAME");
+
+				if ((previousIndexName != null) &&
+					!previousIndexName.equals(indexName)) {
+
+					indexMetadatas.add(
+						new IndexMetadata(
+							previousIndexName,
+							StringUtil.toLowerCase(tableName), unique,
+							columnNames));
+
+					columnNames = new String[0];
+				}
+
+				previousIndexName = indexName;
+
+				unique = !resultSet.getBoolean("NON_UNIQUE");
+
+				columnNames = ArrayUtil.append(
+					columnNames,
+					StringUtil.toLowerCase(
+						GetterUtil.getString(
+							resultSet.getString("COLUMN_NAME"))));
+			}
+
+			if (previousIndexName != null) {
+				indexMetadatas.add(
+					new IndexMetadata(
+						previousIndexName, StringUtil.toLowerCase(tableName),
+						unique, columnNames));
+			}
+		}
+
+		return indexMetadatas;
+	}
+
 	private String _getPostgreSQLColumnType(
 		int columnSize, int dataType, int decimalDigits) {
 
@@ -926,6 +1145,8 @@ public class DBCopyTablesProcess {
 
 	private static final int _SQL_TYPE_SQL_SERVER_DATETIMEOFFSET = -155;
 
+	private final Set<String> _customTableNames = new TreeSet<>(
+		String.CASE_INSENSITIVE_ORDER);
 	private final String _partitionMessage;
 	private final Map<String, List<String>> _sourceColumnNamesMap =
 		new TreeMap<>(String.CASE_INSENSITIVE_ORDER);

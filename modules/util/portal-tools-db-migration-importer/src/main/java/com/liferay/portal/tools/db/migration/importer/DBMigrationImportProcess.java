@@ -142,9 +142,13 @@ public class DBMigrationImportProcess {
 			_executorService.submit(
 				() -> {
 					try {
-						new DBCopyTablesProcess(
-							_sourceDataSource, _targetDataSource
-						).run();
+						DBCopyTablesProcess dbCopyTablesProcess =
+							new DBCopyTablesProcess(
+								_sourceDataSource, _targetDataSource);
+
+						dbCopyTablesProcess.run();
+
+						_dbCopyTablesProcesses.add(dbCopyTablesProcess);
 
 						_dataSourceInfos.add(
 							0,
@@ -172,10 +176,14 @@ public class DBMigrationImportProcess {
 									_targetJDBCURL, _targetPassword,
 									_targetUser, partitionName);
 
-							new DBCopyTablesProcess(
-								partitionName, sourceDataSource,
-								targetDataSource
-							).run();
+							DBCopyTablesProcess dbCopyTablesProcess =
+								new DBCopyTablesProcess(
+									partitionName, sourceDataSource,
+									targetDataSource);
+
+							dbCopyTablesProcess.run();
+
+							_dbCopyTablesProcesses.add(dbCopyTablesProcess);
 
 							_dataSourceInfos.add(
 								_getDataSourceInfo(
@@ -205,6 +213,10 @@ public class DBMigrationImportProcess {
 
 	private void _createIndexes() throws Exception {
 		_executeFilesSQL("indexes.sql");
+
+		for (DBCopyTablesProcess dbCopyTablesProcess : _dbCopyTablesProcesses) {
+			dbCopyTablesProcess.addCustomPrimaryKeysAndIndexes();
+		}
 	}
 
 	private void _createTables() throws Exception {
@@ -460,6 +472,8 @@ public class DBMigrationImportProcess {
 	private final List<String> _asyncSQLs = new ArrayList<>();
 	private final List<String> _dataSourceInfos = Collections.synchronizedList(
 		new ArrayList<>());
+	private final List<DBCopyTablesProcess> _dbCopyTablesProcesses =
+		Collections.synchronizedList(new ArrayList<>());
 	private final ExecutorService _executorService =
 		Executors.newFixedThreadPool(5);
 	private final List<String> _partitionNames = new ArrayList<>();
