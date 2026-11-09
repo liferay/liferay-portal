@@ -35,9 +35,12 @@ import getPageDefinition from '../../../layout-content-page-editor-web/main/util
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {
 	activateChannelPaymentMethod,
+	assignUserToNewRole,
 	checkoutStorefrontSetUp,
+	configureBuyerUserWithOrderPermissions,
 	createAccountWithBuyerUser,
 	miniumSetUp,
+	restrictChannelPaymentMethodView,
 	selectCurrentAccount,
 } from '../../utils/commerce';
 import {getDateFormatted, setFutureDate} from '../../utils/date';
@@ -3136,5 +3139,231 @@ test(
 				'Payment Terms',
 			]);
 		});
+	}
+);
+
+test(
+	'Buyers can only select the payment methods they can view at checkout',
+	{tag: ['@COMMERCE-9506', '@LPD-108800', '@LPD-110849', '@LPD-113924']},
+	async ({
+		apiHelpers,
+		checkoutPage,
+		commerceAdminChannelsPage,
+		page,
+		site,
+	}) => {
+		const {account, buyerUser, channel, checkoutLayout, sku} =
+			await checkoutStorefrontSetUp(
+				apiHelpers,
+				commerceAdminChannelsPage,
+				page,
+				site
+			);
+
+		await apiHelpers.headlessCommerceAdminAccount.postAddress(account.id, {
+			countryISOCode: 'US',
+			defaultBilling: true,
+			defaultShipping: true,
+		});
+
+		await commerceAdminChannelsPage.setupCommerceChannelShippingMethod(
+			channel.name,
+			'Flat Rate',
+			['Standard Delivery'],
+			true
+		);
+
+		await activateChannelPaymentMethod(
+			apiHelpers,
+			channel.id,
+			'authorize-net'
+		);
+
+		const moneyOrder = await activateChannelPaymentMethod(
+			apiHelpers,
+			channel.id,
+			'money-order'
+		);
+		const payPal = await activateChannelPaymentMethod(
+			apiHelpers,
+			channel.id,
+			'paypal-integration'
+		);
+
+		const buyerRole = await assignUserToNewRole(apiHelpers, buyerUser.id);
+
+		await restrictChannelPaymentMethodView(apiHelpers, moneyOrder, [
+			buyerRole.id,
+		]);
+		await restrictChannelPaymentMethodView(apiHelpers, payPal, []);
+
+		await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				cartItems: [{quantity: 1, skuId: sku.id}],
+			},
+			channel.id
+		);
+
+		await performUserSwitch(page, buyerUser.alternateName);
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}${checkoutLayout.friendlyUrlPath}`
+		);
+
+		await checkoutPage.performCheckoutUntilStep('Payment Method');
+
+		await expect(
+			checkoutPage.paymentMethodRadio('Authorize.Net')
+		).toBeVisible();
+		await expect(
+			checkoutPage.paymentMethodRadio('Money Order')
+		).toBeVisible();
+		await expect(checkoutPage.paymentMethodRadio('PayPal')).toHaveCount(0);
+
+		await checkoutPage.paymentMethodRadio('Money Order').check();
+
+		await checkoutPage.performCheckoutUntilStep('Order Summary');
+
+		await expect(checkoutPage.orderSummaryPaymentMethod).toContainText(
+			'Money Order'
+		);
+
+		await checkoutPage.continueButton.click();
+
+		await expect(checkoutPage.orderConfirmationContainer).toContainText(
+			'Your order has been processed but not completed yet.'
+		);
+	}
+);
+
+test(
+	'Buyers without the manage term permissions skip the term steps at checkout',
+	{tag: ['@LPD-108800', '@LPD-110849', '@LPD-113924']},
+	async ({
+		apiHelpers,
+		checkoutPage,
+		commerceAdminChannelDetailsPage,
+		commerceAdminChannelsPage,
+		page,
+		site,
+	}) => {
+		const {account, channel, checkoutLayout, sku} =
+			await checkoutStorefrontSetUp(
+				apiHelpers,
+				commerceAdminChannelsPage,
+				page,
+				site
+			);
+
+		await apiHelpers.headlessCommerceAdminAccount.postAddress(account.id, {
+			countryISOCode: 'US',
+			defaultBilling: true,
+			defaultShipping: true,
+		});
+
+		const deliveryTerm1 =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				label: {en_US: getRandomString()},
+				priority: 1,
+				type: 'delivery-terms',
+			});
+		const deliveryTerm2 =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				label: {en_US: getRandomString()},
+				priority: 2,
+				type: 'delivery-terms',
+			});
+		const paymentTerm1 =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				label: {en_US: getRandomString()},
+				priority: 1,
+				type: 'payment-terms',
+			});
+		const paymentTerm2 =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				label: {en_US: getRandomString()},
+				priority: 2,
+				type: 'payment-terms',
+			});
+
+		await commerceAdminChannelsPage.setupCommerceChannelShippingMethod(
+			channel.name,
+			'Flat Rate',
+			['Standard Delivery'],
+			true
+		);
+
+		for (const deliveryTerm of [deliveryTerm1, deliveryTerm2]) {
+			await commerceAdminChannelsPage.addFlatRateDeliveryTermEligibility(
+				commerceAdminChannelDetailsPage,
+				channel.name,
+				deliveryTerm.label['en_US']
+			);
+		}
+
+		await activateChannelPaymentMethod(
+			apiHelpers,
+			channel.id,
+			'money-order'
+		);
+
+		for (const paymentTerm of [paymentTerm1, paymentTerm2]) {
+			await commerceAdminChannelsPage.addMoneyOrderPaymentTermEligibility(
+				commerceAdminChannelDetailsPage,
+				channel.name,
+				paymentTerm.label['en_US']
+			);
+		}
+
+		const buyerUser = await configureBuyerUserWithOrderPermissions(
+			account,
+			apiHelpers,
+			[
+				'ADD_COMMERCE_ORDER',
+				'CHECKOUT_OPEN_COMMERCE_ORDERS',
+				'MANAGE_COMMERCE_ORDER_PAYMENT_METHODS',
+				'MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS',
+				'VIEW_BILLING_ADDRESS',
+				'VIEW_COMMERCE_ORDERS',
+				'VIEW_OPEN_COMMERCE_ORDERS',
+			],
+			site
+		);
+
+		await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				cartItems: [{quantity: 1, skuId: sku.id}],
+			},
+			channel.id
+		);
+
+		await performUserSwitch(page, buyerUser.alternateName);
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}${checkoutLayout.friendlyUrlPath}`
+		);
+
+		await checkoutPage.performCheckoutUntilStep('Order Summary');
+
+		await expect(checkoutPage.checkoutStepLabels).not.toContainText([
+			'Delivery Terms',
+		]);
+		await expect(checkoutPage.checkoutStepLabels).not.toContainText([
+			'Payment Terms',
+		]);
+		await expect(
+			checkoutPage.deliveryTermLink(deliveryTerm2.label['en_US'])
+		).toBeVisible();
+		await expect(
+			checkoutPage.paymentTermLink(paymentTerm2.label['en_US'])
+		).toBeVisible();
+
+		await checkoutPage.continueButton.click();
+
+		await expect(checkoutPage.orderConfirmationContainer).toContainText(
+			'Your order has been processed but not completed yet.'
+		);
 	}
 );
