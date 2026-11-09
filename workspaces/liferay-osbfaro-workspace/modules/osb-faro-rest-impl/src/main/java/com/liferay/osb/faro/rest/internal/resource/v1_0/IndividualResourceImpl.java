@@ -47,10 +47,10 @@ public class IndividualResourceImpl extends BaseIndividualResourceImpl {
 		Results<com.liferay.osb.faro.engine.client.model.Individual> results =
 			_contactsEngineClient.getIndividuals(
 				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				accountId, null, activityStatus, channelId, null, null, null,
-				false, individualSegmentId, _getIndividualTypes(profileType),
-				interestName, null, search, rangeEnd,
-				TimeRange.getRangeKey(rangeKey), rangeStart,
+				accountId, null, activityStatus, null, channelId, null, null,
+				null, false, individualSegmentId,
+				_getIndividualTypes(profileType), interestName, null, search,
+				rangeEnd, TimeRange.getRangeKey(rangeKey), rangeStart,
 				FaroPaginationUtil.getCur(pagination),
 				FaroPaginationUtil.getDelta(pagination),
 				FaroPaginationUtil.toOrderByFields(sorts, true));

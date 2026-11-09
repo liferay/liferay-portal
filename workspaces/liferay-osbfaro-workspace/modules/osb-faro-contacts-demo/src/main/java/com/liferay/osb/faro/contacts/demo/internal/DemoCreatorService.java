@@ -274,9 +274,9 @@ public abstract class DemoCreatorService {
 
 		Results<Individual> individualResults =
 			contactsEngineClient.getIndividuals(
-				faroProject, null, null, null, channel.getId(), null, null,
-				null, false, null, null, null, null, null, null, null, null, 1,
-				0, null);
+				faroProject, null, null, null, null, channel.getId(), null,
+				null, null, false, null, null, null, null, null, null, null,
+				null, 1, 0, null);
 
 		if (individualResults.getTotal() > 0) {
 			return true;

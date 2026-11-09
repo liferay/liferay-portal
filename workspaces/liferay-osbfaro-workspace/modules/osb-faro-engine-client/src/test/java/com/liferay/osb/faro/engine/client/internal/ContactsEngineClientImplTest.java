@@ -8,8 +8,11 @@ package com.liferay.osb.faro.engine.client.internal;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.liferay.osb.faro.engine.client.constants.FieldMappingConstants;
+import com.liferay.osb.faro.engine.client.model.EntityModelPagedModel;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+
+import java.lang.reflect.Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,12 +25,70 @@ import org.junit.Test;
 
 import org.mockito.Mockito;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 
 /**
  * @author Eudaldo Alonso
  */
 public class ContactsEngineClientImplTest {
+
+	@Test
+	public void testGetAccountMetrics() {
+		String campaignId = RandomTestUtil.randomString();
+		long channelId = RandomTestUtil.randomLong();
+
+		_contactsEngineClientImpl.getAccountMetrics(
+			_faroProject, campaignId, channelId);
+
+		Assert.assertEquals(campaignId, _uriVariables.get("campaignId"));
+
+		_contactsEngineClientImpl.getAccountMetrics(
+			_faroProject, null, channelId);
+
+		Assert.assertFalse(_uriVariables.containsKey("campaignId"));
+	}
+
+	@Test
+	public void testGetAccounts() {
+		String campaignId = RandomTestUtil.randomString();
+		String channelId = RandomTestUtil.randomString();
+		int cur = RandomTestUtil.randomInt();
+		int delta = RandomTestUtil.randomInt();
+
+		_contactsEngineClientImpl.getAccounts(
+			_faroProject, null, campaignId, channelId, null, false, null, null,
+			null, null, null, cur, delta, null);
+
+		Assert.assertEquals(campaignId, _uriVariables.get("campaignId"));
+
+		_contactsEngineClientImpl.getAccounts(
+			_faroProject, null, null, channelId, null, false, null, null, null,
+			null, null, cur, delta, null);
+
+		Assert.assertFalse(_uriVariables.containsKey("campaignId"));
+	}
+
+	@Test
+	public void testGetCampaignNames() {
+		Long channelId = RandomTestUtil.randomLong();
+		int cur = RandomTestUtil.randomInt();
+		int delta = RandomTestUtil.randomInt();
+		String query = RandomTestUtil.randomString();
+
+		_contactsEngineClientImpl.getCampaignNames(
+			_faroProject, channelId, query, cur, delta);
+
+		Assert.assertEquals(channelId, _uriVariables.get("channelId"));
+		Assert.assertEquals(query, _uriVariables.get("keywords"));
+		Assert.assertEquals(cur - 1, _uriVariables.get("page"));
+		Assert.assertEquals(delta, _uriVariables.get("size"));
+
+		_contactsEngineClientImpl.getCampaignNames(
+			_faroProject, channelId, null, cur, delta);
+
+		Assert.assertFalse(_uriVariables.containsKey("keywords"));
+	}
 
 	@Test
 	public void testGetFieldNamesList() {
@@ -61,6 +122,28 @@ public class ContactsEngineClientImplTest {
 					RandomTestUtil.randomString())));
 	}
 
+	@Test
+	public void testGetIndividuals() {
+		String campaignId = RandomTestUtil.randomString();
+		String channelId = RandomTestUtil.randomString();
+		int cur = RandomTestUtil.randomInt();
+		int delta = RandomTestUtil.randomInt();
+
+		_contactsEngineClientImpl.getIndividuals(
+			_faroProject, null, null, null, campaignId, channelId, null, null,
+			null, false, null, null, null, null, null, null, null, null, cur,
+			delta, null);
+
+		Assert.assertEquals(campaignId, _uriVariables.get("campaignId"));
+
+		_contactsEngineClientImpl.getIndividuals(
+			_faroProject, null, null, null, null, channelId, null, null, null,
+			false, null, null, null, null, null, null, null, null, cur, delta,
+			null);
+
+		Assert.assertFalse(_uriVariables.containsKey("campaignId"));
+	}
+
 	private final ContactsEngineClientImpl _contactsEngineClientImpl =
 		new ContactsEngineClientImpl() {
 
@@ -73,8 +156,29 @@ public class ContactsEngineClientImplTest {
 				return (List<T>)_fieldNamesList;
 			}
 
+			@Override
+			protected <T> T get(
+				FaroProject faroProject, String type,
+				ParameterizedTypeReference<T> parameterizedTypeReference,
+				Map<String, Object> uriVariables) {
+
+				_uriVariables = uriVariables;
+
+				Type responseType = parameterizedTypeReference.getType();
+
+				String typeName = responseType.getTypeName();
+
+				if (typeName.contains("PagedModel")) {
+					return (T)Mockito.mock(EntityModelPagedModel.class);
+				}
+
+				return null;
+			}
+
 		};
 
+	private final FaroProject _faroProject = Mockito.mock(FaroProject.class);
 	private List<List<String>> _fieldNamesList;
+	private Map<String, Object> _uriVariables;
 
 }

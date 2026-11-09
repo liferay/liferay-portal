@@ -101,9 +101,9 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 
 		poll(
 			() -> contactsEngineClient.getIndividuals(
-				faroProject, null, null, null, channelId, null, null, null,
-				false, null, null, null, null, null, null, null, null, 1, 0,
-				null),
+				faroProject, null, null, null, null, channelId, null, null,
+				null, false, null, null, null, null, null, null, null, null, 1,
+				0, null),
 			_LIFERAY_INDIVIDUALS_COUNT,
 			_LIFERAY_INDIVIDUALS_COUNT * 2 * Time.SECOND, "individuals");
 

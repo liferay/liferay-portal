@@ -103,6 +103,8 @@ public interface Rels {
 
 	public static final String CAMPAIGN_INDIVIDUALS = "campaign-individuals";
 
+	public static final String CAMPAIGN_NAMES = "campaign-names";
+
 	public static final String CAMPAIGNS = "campaigns";
 
 	public static final String CAMPAIGNS_METRICS = "campaigns-metrics";

@@ -9,6 +9,7 @@ import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.model.Account;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStage;
+import com.liferay.osb.faro.engine.client.model.AccountMetric;
 import com.liferay.osb.faro.engine.client.model.Campaign;
 import com.liferay.osb.faro.engine.client.model.Individual;
 import com.liferay.osb.faro.engine.client.model.Metric;
@@ -52,6 +53,34 @@ public class AccountFaroControllerTest {
 		ReflectionTestUtils.setField(
 			_accountFaroController, "faroProjectLocalService",
 			_faroProjectLocalService);
+	}
+
+	@Test
+	public void testGetAccountMetrics() throws Exception {
+		List<AccountMetric> accountMetrics = Collections.singletonList(
+			new AccountMetric());
+		String campaignId = RandomTestUtil.randomString();
+		long channelId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_contactsEngineClient.getAccountMetrics(
+				_faroProject, campaignId, channelId)
+		).thenReturn(
+			accountMetrics
+		);
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Assert.assertSame(
+			accountMetrics,
+			_accountFaroController.getAccountMetrics(
+				groupId, campaignId, channelId));
+
+		Mockito.verify(
+			_faroProjectLocalService
+		).getFaroProjectByGroupId(
+			groupId
+		);
 	}
 
 	@Test
@@ -179,6 +208,7 @@ public class AccountFaroControllerTest {
 	@Test
 	public void testSearch() throws Exception {
 		String accountLifecycleId = RandomTestUtil.randomString();
+		String campaignId = RandomTestUtil.randomString();
 		String channelId = RandomTestUtil.randomString();
 		String filterString = RandomTestUtil.randomString();
 		boolean includeAnonymousUsers = RandomTestUtil.randomBoolean();
@@ -194,9 +224,9 @@ public class AccountFaroControllerTest {
 
 		Mockito.when(
 			_contactsEngineClient.getAccounts(
-				_faroProject, accountLifecycleId, channelId, filterString,
-				includeAnonymousUsers, search, rangeEnd, rangeKey, rangeStart,
-				segmentId, page, pageSize, sortString)
+				_faroProject, accountLifecycleId, campaignId, channelId,
+				filterString, includeAnonymousUsers, search, rangeEnd, rangeKey,
+				rangeStart, segmentId, page, pageSize, sortString)
 		).thenReturn(
 			new Results<>(Collections.emptyList(), total)
 		);
@@ -205,18 +235,18 @@ public class AccountFaroControllerTest {
 
 		FaroFDSResultsDisplay<Account> faroFDSResultsDisplay =
 			_accountFaroController.search(
-				groupId, accountLifecycleId, channelId, filterString,
-				includeAnonymousUsers, rangeEnd, rangeKey, rangeStart, search,
-				segmentId, page, pageSize, sortString);
+				groupId, accountLifecycleId, campaignId, channelId,
+				filterString, includeAnonymousUsers, rangeEnd, rangeKey,
+				rangeStart, search, segmentId, page, pageSize, sortString);
 
 		Assert.assertEquals(total, faroFDSResultsDisplay.getTotalCount());
 
 		Mockito.verify(
 			_contactsEngineClient
 		).getAccounts(
-			_faroProject, accountLifecycleId, channelId, filterString,
-			includeAnonymousUsers, search, rangeEnd, rangeKey, rangeStart,
-			segmentId, page, pageSize, sortString
+			_faroProject, accountLifecycleId, campaignId, channelId,
+			filterString, includeAnonymousUsers, search, rangeEnd, rangeKey,
+			rangeStart, segmentId, page, pageSize, sortString
 		);
 	}
 

@@ -75,7 +75,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		Results<com.liferay.osb.faro.engine.client.model.Account> results =
 			_contactsEngineClient.getAccounts(
-				faroProject, accountLifecycleId, channelId,
+				faroProject, accountLifecycleId, null, channelId,
 				_getLifecycleStageFilterString(
 					accountLifecycleId, channelId, faroProject, lifecycleStage),
 				true, search, rangeEnd, TimeRange.getRangeKey(rangeKey),
