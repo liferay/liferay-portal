@@ -45,7 +45,8 @@ String itemSelectedEventName = commerceAccountGroupAccountItemSelectorViewDispla
 
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-expand"
-				property="active"
+				name="active"
+				value="<%= String.valueOf(accountEntry.isApproved()) %>"
 			/>
 		</liferay-ui:search-container-row>
 
