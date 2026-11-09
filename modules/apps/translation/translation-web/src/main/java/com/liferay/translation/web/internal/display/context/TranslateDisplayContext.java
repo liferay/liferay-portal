@@ -19,12 +19,12 @@ import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.editor.configuration.EditorConfiguration;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -519,9 +519,15 @@ public class TranslateDisplayContext {
 			return _groupId;
 		}
 
-		_groupId = BeanParamUtil.getLong(
-			_object, _httpServletRequest, "groupId",
-			_themeDisplay.getScopeGroupId());
+		if (_object instanceof GroupedModel groupedModel) {
+			_groupId = ParamUtil.getLong(
+				_httpServletRequest, "groupId", groupedModel.getGroupId());
+		}
+		else {
+			_groupId = ParamUtil.getLong(
+				_httpServletRequest, "groupId",
+				_themeDisplay.getScopeGroupId());
+		}
 
 		return _groupId;
 	}

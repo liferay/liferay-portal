@@ -12,7 +12,7 @@ TermCommerceCheckoutStepDisplayContext termCommerceCheckoutStepDisplayContext = 
 
 List<CommerceTermEntry> deliveryCommerceTermEntries = termCommerceCheckoutStepDisplayContext.getDeliveryCommerceTermEntries();
 
-long deliveryCommerceTermEntryId = BeanParamUtil.getLong(termCommerceCheckoutStepDisplayContext.getCommerceOrder(), request, "deliveryCommerceTermEntryId");
+long deliveryCommerceTermEntryId = BeanParamUtil.getLong(termCommerceCheckoutStepDisplayContext.getCommerceOrder(), request, "deliveryCommerceTermEntryId", CommerceOrder::getDeliveryCommerceTermEntryId);
 %>
 
 <div id="commerceDeliveryTermContainer">

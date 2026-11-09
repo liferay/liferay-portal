@@ -7,6 +7,7 @@ package com.liferay.document.library.web.internal.display.context;
 
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.util.DDMUtil;
 import com.liferay.frontend.js.loader.modules.extender.esm.ESImportUtil;
@@ -195,7 +196,7 @@ public class DLEditDDMStructureDisplayContext {
 		if (ddmStructure != null) {
 			_script = BeanParamUtil.getString(
 				ddmStructure.getLatestStructureVersion(), _httpServletRequest,
-				"definition");
+				"definition", DDMStructureVersion::getDefinition);
 		}
 		else {
 			_script = ParamUtil.getString(_httpServletRequest, "definition");

@@ -100,7 +100,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 			</div>
 
 			<div class="col-6">
-				<aui:input data-qa-id="minStockQuantityInput" ignoreRequestValue="<%= true %>" label="low-stock-threshold" name="minStockQuantity" type="text" value='<%= BeanParamUtil.getDouble(cpConfigurationEntry, request, "minStockQuantity", BigDecimal.ONE.doubleValue()) %>'>
+				<aui:input data-qa-id="minStockQuantityInput" ignoreRequestValue="<%= true %>" label="low-stock-threshold" name="minStockQuantity" type="text" value='<%= BeanParamUtil.getBigDecimalAsDouble(cpConfigurationEntry, request, "minStockQuantity", CPConfigurationEntry::getMinStockQuantity, BigDecimal.ONE.doubleValue()) %>'>
 					<aui:validator errorMessage='<%= LanguageUtil.format(request, "please-enter-a-value-greater-than-or-equal-to-x", 0) %>' name="custom">
 						function(val) {
 						if (Number(val) >= 0) {
@@ -113,7 +113,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 			</div>
 
 			<div class="col-6">
-				<aui:input data-qa-id="minOrderQuantityInput" ignoreRequestValue="<%= true %>" name="minOrderQuantity" type="text" value='<%= BeanParamUtil.getDouble(cpConfigurationEntry, request, "minOrderQuantity", CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY.doubleValue()) %>'>
+				<aui:input data-qa-id="minOrderQuantityInput" ignoreRequestValue="<%= true %>" name="minOrderQuantity" type="text" value='<%= BeanParamUtil.getBigDecimalAsDouble(cpConfigurationEntry, request, "minOrderQuantity", CPConfigurationEntry::getMinOrderQuantity, CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY.doubleValue()) %>'>
 					<aui:validator name="required" />
 
 					<aui:validator errorMessage='<%= LanguageUtil.format(request, "please-enter-a-value-greater-than-or-equal-to-x", 0) %>' name="custom">
@@ -129,7 +129,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 			</div>
 
 			<div class="col-6">
-				<aui:input data-qa-id="maxOrderQuantityInput" ignoreRequestValue="<%= true %>" name="maxOrderQuantity" type="text" value='<%= BeanParamUtil.getDouble(cpConfigurationEntry, request, "maxOrderQuantity", CPDefinitionInventoryConstants.DEFAULT_MAX_ORDER_QUANTITY.doubleValue()) %>'>
+				<aui:input data-qa-id="maxOrderQuantityInput" ignoreRequestValue="<%= true %>" name="maxOrderQuantity" type="text" value='<%= BeanParamUtil.getBigDecimalAsDouble(cpConfigurationEntry, request, "maxOrderQuantity", CPConfigurationEntry::getMaxOrderQuantity, CPDefinitionInventoryConstants.DEFAULT_MAX_ORDER_QUANTITY.doubleValue()) %>'>
 					<aui:validator name="required" />
 
 					<aui:validator errorMessage='<%= LanguageUtil.format(request, "please-enter-a-value-greater-than-x", 0) %>' name="custom">
@@ -145,7 +145,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 			</div>
 
 			<div class="col-6">
-				<aui:input data-qa-id="multipleOrderQuantityInput" ignoreRequestValue="<%= true %>" name="multipleOrderQuantity" type="text" value='<%= BeanParamUtil.getDouble(cpConfigurationEntry, request, "multipleOrderQuantity", CPDefinitionInventoryConstants.DEFAULT_MULTIPLE_ORDER_QUANTITY.doubleValue()) %>'>
+				<aui:input data-qa-id="multipleOrderQuantityInput" ignoreRequestValue="<%= true %>" name="multipleOrderQuantity" type="text" value='<%= BeanParamUtil.getBigDecimalAsDouble(cpConfigurationEntry, request, "multipleOrderQuantity", CPConfigurationEntry::getMultipleOrderQuantity, CPDefinitionInventoryConstants.DEFAULT_MULTIPLE_ORDER_QUANTITY.doubleValue()) %>'>
 					<aui:validator name="required" />
 
 					<aui:validator errorMessage='<%= LanguageUtil.format(request, "please-enter-a-value-greater-than-x", 0) %>' name="custom">
@@ -205,19 +205,19 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 
 		<div class="<%= shippable ? StringPool.BLANK : "hide" %> row show-if-shippable">
 			<div class="col-6">
-				<aui:input data-qa-id="widthInput" name="width" suffix="<%= HtmlUtil.escape(cpConfigurationListDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_DIMENSION)) %>" value='<%= BeanParamUtil.getString(cpConfigurationEntry, request, "width") %>' />
+				<aui:input data-qa-id="widthInput" name="width" suffix="<%= HtmlUtil.escape(cpConfigurationListDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_DIMENSION)) %>" value='<%= BeanParamUtil.getString(cpConfigurationEntry, request, "width", curCPConfigurationEntry -> String.valueOf(curCPConfigurationEntry.getWidth())) %>' />
 			</div>
 
 			<div class="col-6">
-				<aui:input data-qa-id="heightInput" name="height" suffix="<%= HtmlUtil.escape(cpConfigurationListDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_DIMENSION)) %>" value='<%= BeanParamUtil.getString(cpConfigurationEntry, request, "height") %>' />
+				<aui:input data-qa-id="heightInput" name="height" suffix="<%= HtmlUtil.escape(cpConfigurationListDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_DIMENSION)) %>" value='<%= BeanParamUtil.getString(cpConfigurationEntry, request, "height", curCPConfigurationEntry -> String.valueOf(curCPConfigurationEntry.getHeight())) %>' />
 			</div>
 
 			<div class="col-6">
-				<aui:input data-qa-id="depthInput" name="depth" suffix="<%= HtmlUtil.escape(cpConfigurationListDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_DIMENSION)) %>" value='<%= BeanParamUtil.getString(cpConfigurationEntry, request, "depth") %>' />
+				<aui:input data-qa-id="depthInput" name="depth" suffix="<%= HtmlUtil.escape(cpConfigurationListDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_DIMENSION)) %>" value='<%= BeanParamUtil.getString(cpConfigurationEntry, request, "depth", curCPConfigurationEntry -> String.valueOf(curCPConfigurationEntry.getDepth())) %>' />
 			</div>
 
 			<div class="col-6">
-				<aui:input data-qa-id="weightInput" name="weight" suffix="<%= HtmlUtil.escape(cpConfigurationListDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_WEIGHT)) %>" value='<%= BeanParamUtil.getString(cpConfigurationEntry, request, "weight") %>' />
+				<aui:input data-qa-id="weightInput" name="weight" suffix="<%= HtmlUtil.escape(cpConfigurationListDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_WEIGHT)) %>" value='<%= BeanParamUtil.getString(cpConfigurationEntry, request, "weight", curCPConfigurationEntry -> String.valueOf(curCPConfigurationEntry.getWeight())) %>' />
 			</div>
 		</div>
 	</liferay-frontend:fieldset>

@@ -27,6 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.ToLongFunction;
 
 /**
  * @author Andrea Di Giorgi
@@ -125,6 +126,13 @@ public class BillingAddressCheckoutStepDisplayContext
 	@Override
 	public String getTitle() {
 		return "billing-address";
+	}
+
+	@Override
+	protected ToLongFunction<CommerceOrder>
+		getCommerceOrderAddressIdToLongFunction() {
+
+		return CommerceOrder::getBillingAddressId;
 	}
 
 }

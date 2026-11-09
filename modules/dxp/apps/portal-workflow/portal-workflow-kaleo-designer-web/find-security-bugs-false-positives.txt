@@ -1,5 +1,5 @@
 com/liferay/petra/string/StringBundler.toString():SAFE@com.liferay.portal.workflow.kaleo.designer.web.internal.upgrade.v1_0_2.UpgradeKaleoDefinition
-com/liferay/portal/kernel/bean/BeanParamUtil.getString(UNKNOWN,UNKNOWN,"version"):SAFE@org/apache/jsp/designer/edit_005fkaleo_005fdefinition_005fversion_jsp
+com/liferay/portal/kernel/bean/BeanParamUtil.getString(UNKNOWN,UNKNOWN,"version",UNKNOWN):SAFE@org/apache/jsp/designer/edit_005fkaleo_005fdefinition_005fversion_jsp
 com/liferay/portal/kernel/util/StringUtil.randomId()Ljava/lang/String;:SAFE
 com/liferay/portal/kernel/util/StringUtil.toLowerCase(Ljava/lang/String;)Ljava/lang/String;:0
 com/liferay/portal/workflow/kaleo/definition/exception/KaleoDefinitionValidationException$EmptyNotificationTemplate.getNode()Ljava/lang/String;:SAFE

@@ -19,6 +19,7 @@ page import="com.liferay.petra.string.StringUtil" %><%@
 page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
 page import="com.liferay.portal.kernel.exception.ContactNameException" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
+page import="com.liferay.portal.kernel.language.constants.LanguageConstants" %><%@
 page import="com.liferay.portal.kernel.model.Contact" %><%@
 page import="com.liferay.portal.kernel.model.ListType" %><%@
 page import="com.liferay.portal.kernel.model.User" %><%@
@@ -32,7 +33,8 @@ page import="com.liferay.portal.kernel.util.LocaleUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portlet.usersadmin.util.UsersAdminUtil" %>
 
-<%@ page import="java.util.Locale" %>
+<%@ page import="java.util.Locale" %><%@
+page import="java.util.function.ToLongFunction" %>
 
 <liferay-frontend:defineObjects />
 

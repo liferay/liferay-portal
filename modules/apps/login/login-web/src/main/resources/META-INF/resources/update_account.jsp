@@ -49,7 +49,7 @@ else if (selUser != null) {
 	calendar.setTime(selContact.getBirthday());
 }
 
-boolean male = BeanParamUtil.getBoolean(selUser, request, "male", true);
+boolean male = BeanParamUtil.getBoolean(selContact, request, "male", Contact::isMale, true);
 %>
 
 <div class="anonymous-account">

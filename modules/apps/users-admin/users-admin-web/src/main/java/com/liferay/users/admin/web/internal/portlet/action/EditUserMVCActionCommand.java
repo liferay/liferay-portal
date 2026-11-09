@@ -415,7 +415,7 @@ public class EditUserMVCActionCommand
 			contact, actionRequest, "suffixListTypeId",
 			Contact::getSuffixListTypeId);
 		boolean male = BeanParamUtil.getBoolean(
-			user, actionRequest, "male", true);
+			contact, actionRequest, "male", Contact::isMale, true);
 
 		Calendar calendar = CalendarFactoryUtil.getCalendar();
 

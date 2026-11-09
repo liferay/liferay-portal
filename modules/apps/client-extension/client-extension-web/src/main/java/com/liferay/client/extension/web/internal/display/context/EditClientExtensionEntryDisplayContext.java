@@ -80,7 +80,8 @@ public class EditClientExtensionEntryDisplayContext<T extends CET> {
 	}
 
 	public String getDescription() {
-		return BeanParamUtil.getString(_cet, _portletRequest, "description");
+		return BeanParamUtil.getString(
+			_cet, _portletRequest, "description", CET::getDescription);
 	}
 
 	public String getEditJSP() {
@@ -89,7 +90,8 @@ public class EditClientExtensionEntryDisplayContext<T extends CET> {
 
 	public String getExternalReferenceCode() {
 		return BeanParamUtil.getString(
-			_cet, _portletRequest, "externalReferenceCode");
+			_cet, _portletRequest, "externalReferenceCode",
+			CET::getExternalReferenceCode);
 	}
 
 	public String getHelpLabel() {
@@ -101,7 +103,8 @@ public class EditClientExtensionEntryDisplayContext<T extends CET> {
 	}
 
 	public String getName() {
-		return BeanParamUtil.getString(_cet, _portletRequest, "name");
+		return BeanParamUtil.getString(
+			_cet, _portletRequest, "name", CET::getName);
 	}
 
 	public List<SelectOption> getPortletCategoryNameSelectOptions(
@@ -180,7 +183,8 @@ public class EditClientExtensionEntryDisplayContext<T extends CET> {
 	}
 
 	public String getSourceCodeURL() {
-		return BeanParamUtil.getString(_cet, _portletRequest, "sourceCodeURL");
+		return BeanParamUtil.getString(
+			_cet, _portletRequest, "sourceCodeURL", CET::getSourceCodeURL);
 	}
 
 	public String[] getStrings(String urls) {
@@ -203,7 +207,8 @@ public class EditClientExtensionEntryDisplayContext<T extends CET> {
 	}
 
 	public String getType() {
-		return BeanParamUtil.getString(_cet, _portletRequest, "type");
+		return BeanParamUtil.getString(
+			_cet, _portletRequest, "type", CET::getType);
 	}
 
 	public String getTypeLabel() {

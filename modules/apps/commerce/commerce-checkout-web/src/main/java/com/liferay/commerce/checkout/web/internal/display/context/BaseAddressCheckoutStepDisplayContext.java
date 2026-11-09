@@ -45,6 +45,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.ToLongFunction;
 
 /**
  * @author Andrea Di Giorgi
@@ -108,7 +109,8 @@ public abstract class BaseAddressCheckoutStepDisplayContext {
 		}
 
 		long commerceAddressId = BeanParamUtil.getLong(
-			commerceOrder, httpServletRequest, getParamName());
+			commerceOrder, httpServletRequest, getParamName(),
+			getCommerceOrderAddressIdToLongFunction());
 
 		CommerceAddress orderCommerceAddress = getCommerceAddress(
 			commerceAddressId);
@@ -388,6 +390,9 @@ public abstract class BaseAddressCheckoutStepDisplayContext {
 
 		return false;
 	}
+
+	protected abstract ToLongFunction<CommerceOrder>
+		getCommerceOrderAddressIdToLongFunction();
 
 	protected final AccountEntryLocalService accountEntryLocalService;
 	protected final ModelResourcePermission<AccountEntry>

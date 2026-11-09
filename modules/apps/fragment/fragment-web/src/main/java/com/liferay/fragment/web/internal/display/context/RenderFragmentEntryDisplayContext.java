@@ -32,6 +32,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.File;
 
+import java.util.function.Function;
+
 /**
  * @author Jürgen Kappler
  */
@@ -61,9 +63,12 @@ public class RenderFragmentEntryDisplayContext {
 			(ThemeDisplay)_httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		String css = _readParameter(fragmentEntry, "css", uploadRequest);
-		String html = _readParameter(fragmentEntry, "html", uploadRequest);
-		String js = _readParameter(fragmentEntry, "js", uploadRequest);
+		String css = _readParameter(
+			fragmentEntry, FragmentEntry::getCss, "css", uploadRequest);
+		String html = _readParameter(
+			fragmentEntry, FragmentEntry::getHtml, "html", uploadRequest);
+		String js = _readParameter(
+			fragmentEntry, FragmentEntry::getJs, "js", uploadRequest);
 
 		String configuration = BeanParamUtil.getString(
 			fragmentEntry, _httpServletRequest, "configuration",
@@ -169,7 +174,8 @@ public class RenderFragmentEntryDisplayContext {
 	}
 
 	private String _readParameter(
-			FragmentEntry fragmentEntry, String parameterName,
+			FragmentEntry fragmentEntry,
+			Function<FragmentEntry, String> function, String parameterName,
 			UploadRequest uploadRequest)
 		throws Exception {
 
@@ -180,7 +186,7 @@ public class RenderFragmentEntryDisplayContext {
 		}
 
 		return BeanParamUtil.getString(
-			fragmentEntry, _httpServletRequest, parameterName);
+			fragmentEntry, _httpServletRequest, parameterName, function);
 	}
 
 	private final FragmentCollectionContributorRegistry
