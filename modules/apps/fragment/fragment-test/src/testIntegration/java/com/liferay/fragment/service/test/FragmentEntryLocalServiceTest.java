@@ -160,6 +160,20 @@ public class FragmentEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetDraft() throws Exception {
+		FragmentEntry fragmentEntry =
+			FragmentEntryTestUtil.addFragmentEntryByStatus(
+				_fragmentCollection.getFragmentCollectionId(),
+				WorkflowConstants.STATUS_APPROVED);
+
+		FragmentEntry draftFragmentEntry = _fragmentEntryLocalService.getDraft(
+			fragmentEntry);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, draftFragmentEntry.getStatus());
+	}
+
+	@Test
 	public void testGetFragmentEntries() throws Exception {
 		_testGetFragmentEntriesByFragmentCollectionId();
 		_testGetFragmentEntriesByGroupIdAndFragmentCollectionIdOrderByCreateDateComparator();
