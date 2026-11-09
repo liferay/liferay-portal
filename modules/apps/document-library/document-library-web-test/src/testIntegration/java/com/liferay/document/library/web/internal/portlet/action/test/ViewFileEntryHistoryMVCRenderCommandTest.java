@@ -44,6 +44,7 @@ public class ViewFileEntryHistoryMVCRenderCommandTest {
 			_viewFileEntryHistoryMVCRenderCommand.render(
 				mockLiferayPortletRenderRequest,
 				new MockLiferayPortletRenderResponse()));
+
 		Assert.assertTrue(
 			SessionErrors.contains(
 				mockLiferayPortletRenderRequest,

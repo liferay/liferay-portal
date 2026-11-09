@@ -44,6 +44,7 @@ public class SelectFileVersionMVCRenderCommandTest {
 			_selectFileVersionMVCRenderCommand.render(
 				mockLiferayPortletRenderRequest,
 				new MockLiferayPortletRenderResponse()));
+
 		Assert.assertTrue(
 			SessionErrors.contains(
 				mockLiferayPortletRenderRequest,

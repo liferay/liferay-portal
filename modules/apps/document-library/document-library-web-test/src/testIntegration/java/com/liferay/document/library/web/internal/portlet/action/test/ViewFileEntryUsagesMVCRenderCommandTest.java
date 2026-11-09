@@ -44,6 +44,7 @@ public class ViewFileEntryUsagesMVCRenderCommandTest {
 			_viewFileEntryUsagesMVCRenderCommand.render(
 				mockLiferayPortletRenderRequest,
 				new MockLiferayPortletRenderResponse()));
+
 		Assert.assertTrue(
 			SessionErrors.contains(
 				mockLiferayPortletRenderRequest,
