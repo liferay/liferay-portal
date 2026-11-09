@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -466,6 +467,13 @@ public abstract class BaseSamlTestCase {
 			peerSamlProviderConfiguration
 		);
 
+		Mockito.when(
+			peerSamlProviderConfigurationHelper.
+				getSamlProviderConfigurationProperties()
+		).thenReturn(
+			new HashMapDictionary<>()
+		);
+
 		ReflectionTestUtil.setFieldValue(
 			keyStoreCredentialResolver, "_samlProviderConfigurationHelper",
 			peerSamlProviderConfigurationHelper);
@@ -559,6 +567,13 @@ public abstract class BaseSamlTestCase {
 			samlProviderConfigurationHelper.getSamlProviderConfiguration()
 		).thenReturn(
 			samlProviderConfiguration
+		);
+
+		Mockito.when(
+			samlProviderConfigurationHelper.
+				getSamlProviderConfigurationProperties()
+		).thenReturn(
+			new HashMapDictionary<>()
 		);
 
 		Mockito.when(

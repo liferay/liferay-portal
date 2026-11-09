@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.saml.opensaml.integration.internal.BaseSamlTestCase;
 import com.liferay.saml.opensaml.integration.internal.util.KeyStoreUtil;
@@ -96,7 +97,9 @@ public class CredentialResolverTest extends BaseSamlTestCase {
 				KeyReference.Type.SECRET));
 
 		Mockito.when(
-			secretResolver.resolve(COMPANY_ID, keyReferenceString)
+			secretResolver.resolve(
+				Mockito.eq(COMPANY_ID), Mockito.any(SecretContext.class),
+				Mockito.eq(keyReferenceString))
 		).thenReturn(
 			keyStoreEncryptionCredentialPassword
 		);
