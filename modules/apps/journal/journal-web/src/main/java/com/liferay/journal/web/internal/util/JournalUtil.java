@@ -19,7 +19,6 @@ import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.journal.util.comparator.ArticleVersionComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -273,9 +272,11 @@ public class JournalUtil {
 			(PortletRequest)httpServletRequest.getAttribute(
 				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
-		long classNameId = BeanPropertiesUtil.getLong(
-			journalArticle, "classNameId",
-			JournalArticleConstants.CLASS_NAME_ID_DEFAULT);
+		long classNameId = JournalArticleConstants.CLASS_NAME_ID_DEFAULT;
+
+		if (journalArticle != null) {
+			classNameId = journalArticle.getClassNameId();
+		}
 
 		if (portletRequest != null) {
 			if (ParamUtil.getLong(portletRequest, "classNameId", classNameId) <=
