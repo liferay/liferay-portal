@@ -530,11 +530,16 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 				 PermissionThreadLocal.getPermissionChecker(), commerceOrder,
 				 ActionKeys.VIEW))) {
 
-			CookiesManagerUtil.deleteCookies(
-				CookiesManagerUtil.getDomain(httpServletRequest),
-				httpServletRequest, themeDisplay.getResponse(),
-				CommerceOrder.class.getName() + StringPool.POUND +
-					commerceOrder.getGroupId());
+			if (!_commerceOrderModelResourcePermission.contains(
+					PermissionThreadLocal.getPermissionChecker(), commerceOrder,
+					ActionKeys.VIEW)) {
+
+				CookiesManagerUtil.deleteCookies(
+					CookiesManagerUtil.getDomain(httpServletRequest),
+					httpServletRequest, themeDisplay.getResponse(),
+					CommerceOrder.class.getName() + StringPool.POUND +
+						commerceOrder.getGroupId());
+			}
 
 			httpSession.removeAttribute(
 				CommerceOrder.class.getName() + StringPool.POUND +

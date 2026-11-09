@@ -6,9 +6,13 @@
 import {openModal} from 'frontend-js-components-web';
 
 import ServiceProvider from '../../ServiceProvider/index';
+import CommerceCookie from '../../utilities/cookies';
 import {CURRENT_ORDER_UPDATED} from '../../utilities/eventsDefinitions';
+import {GUEST_COMMERCE_ORDER_COOKIE_IDENTIFIER} from './constants';
 
 const CartResource = ServiceProvider.DeliveryCartAPI('v1');
+
+const orderCookie = new CommerceCookie(GUEST_COMMERCE_ORDER_COOKIE_IDENTIFIER);
 
 export function formatCartItem(
 	cpInstance,
@@ -83,6 +87,20 @@ export async function addToCart(
 		});
 
 		newCart.currencyCode = currencyCode;
+
+		const {commerceChannelGroupId = 0} = Liferay.CommerceContext;
+
+		if (
+			commerceChannelGroupId &&
+			!themeDisplay.isSignedIn() &&
+			newCart.orderUUID &&
+			newCart.createDate
+		) {
+			orderCookie.setValue(
+				commerceChannelGroupId,
+				`${newCart.orderUUID}|${newCart.createDate}`
+			);
+		}
 
 		Liferay.fire(CURRENT_ORDER_UPDATED, {
 			order: newCart,

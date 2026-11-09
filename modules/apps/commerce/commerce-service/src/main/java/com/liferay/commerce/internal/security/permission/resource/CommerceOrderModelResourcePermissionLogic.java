@@ -660,18 +660,25 @@ public class CommerceOrderModelResourcePermissionLogic
 			return true;
 		}
 
+		CommerceOrderHttpHelper commerceOrderHttpHelper =
+			_commerceOrderHttpHelperSnapshot.get();
+
+		String cookieName = commerceOrderHttpHelper.getCookieName(
+			commerceOrder.getGroupId());
+
+		if (Objects.equals(
+				commerceOrder.getUuid(),
+				httpServletRequest.getAttribute(cookieName))) {
+
+			return true;
+		}
+
 		String commerceOrderUUID = httpServletRequest.getHeader(
 			"Commerce-Cart-UUID");
 
 		if (Validator.isNotNull(commerceOrderUUID)) {
 			return Objects.equals(commerceOrder.getUuid(), commerceOrderUUID);
 		}
-
-		CommerceOrderHttpHelper commerceOrderHttpHelper =
-			_commerceOrderHttpHelperSnapshot.get();
-
-		String cookieName = commerceOrderHttpHelper.getCookieName(
-			commerceOrder.getGroupId());
 
 		HttpServletRequest originalHttpServletRequest =
 			PortalUtil.getOriginalServletRequest(httpServletRequest);

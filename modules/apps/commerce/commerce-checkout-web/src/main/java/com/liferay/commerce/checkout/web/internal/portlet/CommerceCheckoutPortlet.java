@@ -7,6 +7,7 @@ package com.liferay.commerce.checkout.web.internal.portlet;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.commerce.checkout.web.internal.display.context.CheckoutDisplayContext;
+import com.liferay.commerce.checkout.web.internal.util.OrderConfirmationCommerceCheckoutStep;
 import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommercePortletKeys;
@@ -107,6 +108,7 @@ public class CommerceCheckoutPortlet extends MVCPortlet {
 
 		try {
 			CommerceOrder commerceOrder = _getCommerceOrder(renderRequest);
+			boolean deleteGuestCommerceOrderCookie = false;
 
 			if (commerceOrder != null) {
 				HttpServletResponse httpServletResponse =
@@ -132,9 +134,6 @@ public class CommerceCheckoutPortlet extends MVCPortlet {
 					return;
 				}
 
-				HttpServletRequest httpServletRequest =
-					_portal.getHttpServletRequest(renderRequest);
-
 				boolean continueAsGuest = ParamUtil.getBoolean(
 					renderRequest, "continueAsGuest",
 					Objects.equals(
@@ -144,7 +143,7 @@ public class CommerceCheckoutPortlet extends MVCPortlet {
 								CommerceOrder.class.getName() +
 									StringPool.POUND +
 										commerceOrder.getGroupId(),
-								httpServletRequest),
+								_portal.getHttpServletRequest(renderRequest)),
 							StringPool.PIPE)));
 
 				if (commerceOrder.isQuote() ||
@@ -173,11 +172,7 @@ public class CommerceCheckoutPortlet extends MVCPortlet {
 				else if (!commerceOrder.isOpen() &&
 						 (continueAsGuest || commerceOrder.isGuestOrder())) {
 
-					CookiesManagerUtil.deleteCookies(
-						CookiesManagerUtil.getDomain(httpServletRequest),
-						httpServletRequest, httpServletResponse,
-						CommerceOrder.class.getName() + StringPool.POUND +
-							commerceOrder.getGroupId());
+					deleteGuestCommerceOrderCookie = true;
 				}
 			}
 
@@ -191,6 +186,22 @@ public class CommerceCheckoutPortlet extends MVCPortlet {
 				WebKeys.PORTLET_DISPLAY_CONTEXT, checkoutDisplayContext);
 
 			super.render(renderRequest, renderResponse);
+
+			if (deleteGuestCommerceOrderCookie &&
+				Objects.equals(
+					checkoutDisplayContext.getCurrentCheckoutStepName(),
+					OrderConfirmationCommerceCheckoutStep.NAME)) {
+
+				HttpServletRequest httpServletRequest =
+					_portal.getHttpServletRequest(renderRequest);
+
+				CookiesManagerUtil.deleteCookies(
+					CookiesManagerUtil.getDomain(httpServletRequest),
+					httpServletRequest,
+					_portal.getHttpServletResponse(renderResponse),
+					CommerceOrder.class.getName() + StringPool.POUND +
+						commerceOrder.getGroupId());
+			}
 		}
 		catch (Exception exception) {
 			throw new PortletException(exception);

@@ -38,6 +38,7 @@ import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.CommerceOrderValidatorRegistry;
 import com.liferay.commerce.order.CommerceOrderValidatorResult;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
@@ -469,6 +470,13 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 		CommerceChannelConfigurationUtil.validateGuestCheckout(
 			commerceOrder.getCommerceOrderId());
+
+		if (commerceOrder.isGuestOrder()) {
+			contextHttpServletRequest.setAttribute(
+				_commerceOrderHttpHelper.getCookieName(
+					commerceOrder.getGroupId()),
+				commerceOrder.getUuid());
+		}
 
 		_updateOrder(commerceOrder, cart);
 
@@ -1521,6 +1529,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 	@Reference
 	private CommerceOrderEngine _commerceOrderEngine;
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderItemService _commerceOrderItemService;
