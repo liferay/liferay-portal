@@ -1866,6 +1866,35 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
+	public List<AcquisitionParameter> getCampaignAcquisitionParameters(
+			FaroProject faroProject, long channelId, String id, String rangeEnd,
+			Integer rangeKey, String rangeStart)
+		throws FaroEngineClientException {
+
+		Map<String, Object> uriVariables = getUriVariables(faroProject, id);
+
+		uriVariables.put("channelId", channelId);
+
+		if (Validator.isNotNull(rangeEnd)) {
+			uriVariables.put("rangeEnd", rangeEnd);
+		}
+
+		if (rangeKey != null) {
+			uriVariables.put("rangeKey", rangeKey);
+		}
+
+		if (Validator.isNotNull(rangeStart)) {
+			uriVariables.put("rangeStart", rangeStart);
+		}
+
+		return get(
+			faroProject, Rels.CAMPAIGN_ACQUISITION_PROPERTIES,
+			new ParameterizedTypeReference<List<AcquisitionParameter>>() {
+			},
+			uriVariables);
+	}
+
+	@Override
 	public Results<Individual> getCampaignIndividuals(
 			FaroProject faroProject, long channelId, String id, String query,
 			String rangeEnd, Integer rangeKey, String rangeStart,

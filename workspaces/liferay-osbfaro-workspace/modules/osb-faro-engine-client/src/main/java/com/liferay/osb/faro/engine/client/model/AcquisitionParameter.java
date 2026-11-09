@@ -26,6 +26,10 @@ public class AcquisitionParameter {
 		return _type;
 	}
 
+	public String getValue() {
+		return _value;
+	}
+
 	public void setFieldName(String fieldName) {
 		_fieldName = fieldName;
 	}
@@ -42,9 +46,14 @@ public class AcquisitionParameter {
 		_type = type;
 	}
 
+	public void setValue(String value) {
+		_value = value;
+	}
+
 	private String _fieldName;
 	private String _name;
 	private Boolean _standard;
 	private String _type;
+	private String _value;
 
 }

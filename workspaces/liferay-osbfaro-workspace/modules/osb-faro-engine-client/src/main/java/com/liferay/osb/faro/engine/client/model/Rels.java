@@ -98,6 +98,9 @@ public interface Rels {
 
 	public static final String CAMPAIGN_ACCOUNTS = "campaign-accounts";
 
+	public static final String CAMPAIGN_ACQUISITION_PROPERTIES =
+		"campaign-acquisition-properties";
+
 	public static final String CAMPAIGN_INDIVIDUALS = "campaign-individuals";
 
 	public static final String CAMPAIGNS = "campaigns";
