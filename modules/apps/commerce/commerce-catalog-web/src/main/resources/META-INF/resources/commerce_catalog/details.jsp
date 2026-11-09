@@ -17,7 +17,7 @@ FileEntry fileEntry = commerceCatalogDisplayContext.getDefaultFileEntry();
 CommercePriceList baseCommercePriceList = commerceCatalogDisplayContext.getBaseCommercePriceList(CommercePriceListConstants.TYPE_PRICE_LIST);
 CommercePriceList basePromotionCommercePriceList = commerceCatalogDisplayContext.getBaseCommercePriceList(CommercePriceListConstants.TYPE_PROMOTION);
 
-long fileEntryId = ParamUtil.getLong(request, "fileEntryId", GetterUtil.get(fileEntry, FileEntry::getFileEntryId, 0L));
+long fileEntryId = BeanParamUtil.getLong(fileEntry, request, "fileEntryId");
 
 boolean viewOnly = !commerceCatalogDisplayContext.hasModelResourcePermission(commerceCatalog.getCommerceCatalogId(), ActionKeys.UPDATE);
 %>
