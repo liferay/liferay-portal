@@ -110,9 +110,6 @@ public class StructureBuilderComponentSectionFragmentRendererTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		Group group = _groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
@@ -120,8 +117,13 @@ public class StructureBuilderComponentSectionFragmentRendererTest {
 		themeDisplay.setLocale(LocaleUtil.getDefault());
 		themeDisplay.setPathMain(_portal.getPathMain());
 		themeDisplay.setPortalURL(RandomTestUtil.randomString());
+
+		Group group = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
 		themeDisplay.setScopeGroupId(group.getGroupId());
 		themeDisplay.setSiteGroupId(group.getGroupId());
+
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		mockHttpServletRequest.setAttribute(
