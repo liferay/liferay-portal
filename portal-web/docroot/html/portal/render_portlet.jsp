@@ -619,8 +619,6 @@ if (!portletDisplay.isRestoreCurrentView()) {
 
 LiferayPortletURL urlMax = PortletURLFactoryUtil.create(request, portlet, lifecycle);
 
-urlMax.setEscapeXml(false);
-
 if (portletDisplay.isStateMax()) {
 	urlMax.setWindowState(WindowState.NORMAL);
 }
@@ -629,6 +627,8 @@ else {
 }
 
 urlMax.setWindowStateRestoreCurrentView(true);
+
+urlMax.setEscapeXml(false);
 
 if (lifecycle.equals(PortletRequest.RENDER_PHASE)) {
 	Map<String, String[]> renderParameters = RenderParametersPool.get(request, plid, portletDisplay.getId());
