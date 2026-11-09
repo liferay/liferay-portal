@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.web.internal.search.results.portlet.shared.search;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -16,6 +17,7 @@ import com.liferay.portal.search.internal.searcher.SearchRequestBuilderFactoryIm
 import com.liferay.portal.search.searcher.SearchRequest;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.web.internal.search.results.configuration.SearchResultsPortletInstanceConfiguration;
+import com.liferay.portal.search.web.internal.search.results.portlet.SearchResultsPortletPreferences;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -56,6 +58,80 @@ public class SearchResultsPortletSharedSearchContributorTest {
 		_testContribute(paginationDelta, String.valueOf(paginationDelta));
 	}
 
+	@FeatureFlag("LPD-114635")
+	@Test
+	public void testContributeMaximumSearchDepth() {
+		_testContributeMaximumSearchDepth(80, 10, 90, "5");
+		_testContributeMaximumSearchDepth(80, 10, 90, "7");
+		_testContributeMaximumSearchDepth(80, 20, 100, "5");
+		_testContributeMaximumSearchDepth(80, 20, 100, "6");
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-114635")
+	@Test
+	public void testContributeMaximumSearchDepthWhenFeatureFlagIsDisabled() {
+		_testContributeMaximumSearchDepth(100, 20, 100, "6");
+	}
+
+	@FeatureFlag("LPD-114635")
+	@Test
+	public void testContributeMaximumSearchDepthWithFederatedSearch() {
+		SearchRequestBuilder searchRequestBuilder =
+			_createSearchRequestBuilder();
+
+		_contribute(
+			false, 10,
+			_createPortletSharedSearchSettings("5", "4", searchRequestBuilder));
+
+		PortletSharedSearchSettings portletSharedSearchSettings =
+			_createPortletSharedSearchSettings("5", "4", searchRequestBuilder);
+
+		PortletPreferences portletPreferences = Mockito.mock(
+			PortletPreferences.class);
+		String federatedSearchKey = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			federatedSearchKey
+		).when(
+			portletPreferences
+		).getValue(
+			SearchResultsPortletPreferences.PREFERENCE_KEY_FEDERATED_SEARCH_KEY,
+			StringPool.BLANK
+		);
+
+		Mockito.doReturn(
+			portletPreferences
+		).when(
+			portletSharedSearchSettings
+		).getPortletPreferences();
+
+		_contribute(false, 20, portletSharedSearchSettings);
+
+		SearchRequest searchRequest = searchRequestBuilder.build();
+
+		Assert.assertEquals(Integer.valueOf(5), searchRequest.getFrom());
+		Assert.assertEquals(Integer.valueOf(5), searchRequest.getSize());
+
+		SearchRequestBuilder federatedSearchRequestBuilder =
+			searchRequestBuilder.getFederatedSearchRequestBuilder(
+				federatedSearchKey);
+
+		SearchRequest federatedSearchRequest =
+			federatedSearchRequestBuilder.build();
+
+		Assert.assertEquals(
+			Integer.valueOf(15), federatedSearchRequest.getFrom());
+		Assert.assertEquals(
+			Integer.valueOf(5), federatedSearchRequest.getSize());
+	}
+
+	@FeatureFlag("LPD-114635")
+	@Test
+	public void testContributeMaximumSearchDepthWithMultipleWidgets() {
+		_testContributeMaximumSearchDepthWithMultipleWidgets(40, 10, 100, 50);
+		_testContributeMaximumSearchDepthWithMultipleWidgets(40, 10, 50, 100);
+	}
+
 	@FeatureFlag("LPD-98858")
 	@Test
 	public void testContributeTrackTotalHitsLimit() {
@@ -71,7 +147,21 @@ public class SearchResultsPortletSharedSearchContributorTest {
 	}
 
 	private SearchRequest _buildSearchRequest(
-		boolean limitResultCountAccuracy,
+		boolean limitResultCountAccuracy, int maximumSearchDepth,
+		PortletSharedSearchSettings portletSharedSearchSettings) {
+
+		_contribute(
+			limitResultCountAccuracy, maximumSearchDepth,
+			portletSharedSearchSettings);
+
+		SearchRequestBuilder searchRequestBuilder =
+			portletSharedSearchSettings.getFederatedSearchRequestBuilder(null);
+
+		return searchRequestBuilder.build();
+	}
+
+	private void _contribute(
+		boolean limitResultCountAccuracy, int maximumSearchDepth,
 		PortletSharedSearchSettings portletSharedSearchSettings) {
 
 		SearchResultsPortletSharedSearchContributor
@@ -81,19 +171,15 @@ public class SearchResultsPortletSharedSearchContributorTest {
 		ReflectionTestUtil.setFieldValue(
 			searchResultsPortletSharedSearchContributor,
 			"_configurationProvider",
-			_createConfigurationProvider(limitResultCountAccuracy));
+			_createConfigurationProvider(
+				limitResultCountAccuracy, maximumSearchDepth));
 
 		searchResultsPortletSharedSearchContributor.contribute(
 			portletSharedSearchSettings);
-
-		SearchRequestBuilder searchRequestBuilder =
-			portletSharedSearchSettings.getFederatedSearchRequestBuilder(null);
-
-		return searchRequestBuilder.build();
 	}
 
 	private ConfigurationProvider _createConfigurationProvider(
-		boolean limitResultCountAccuracy) {
+		boolean limitResultCountAccuracy, int maximumSearchDepth) {
 
 		SearchResultsPortletInstanceConfiguration
 			searchResultsPortletInstanceConfiguration = Mockito.mock(
@@ -104,6 +190,12 @@ public class SearchResultsPortletSharedSearchContributorTest {
 		).when(
 			searchResultsPortletInstanceConfiguration
 		).limitResultCountAccuracy();
+
+		Mockito.doReturn(
+			maximumSearchDepth
+		).when(
+			searchResultsPortletInstanceConfiguration
+		).maximumSearchDepth();
 
 		ConfigurationProvider configurationProvider = Mockito.mock(
 			ConfigurationProvider.class);
@@ -126,16 +218,17 @@ public class SearchResultsPortletSharedSearchContributorTest {
 	}
 
 	private PortletSharedSearchSettings _createPortletSharedSearchSettings(
-		String paginationDeltaParameterValue) {
+		String paginationDeltaParameterValue,
+		String paginationStartParameterValue,
+		SearchRequestBuilder searchRequestBuilder) {
 
 		PortletSharedSearchSettings portletSharedSearchSettings = Mockito.mock(
 			PortletSharedSearchSettings.class);
 
-		SearchRequestBuilder searchRequestBuilder =
-			new SearchRequestBuilderImpl(new SearchRequestBuilderFactoryImpl());
-
-		Mockito.doReturn(
-			searchRequestBuilder
+		Mockito.doAnswer(
+			invocationOnMock ->
+				searchRequestBuilder.getFederatedSearchRequestBuilder(
+					invocationOnMock.getArgument(0))
 		).when(
 			portletSharedSearchSettings
 		).getFederatedSearchRequestBuilder(
@@ -148,6 +241,14 @@ public class SearchResultsPortletSharedSearchContributorTest {
 			portletSharedSearchSettings
 		).getParameter(
 			"delta"
+		);
+
+		Mockito.doReturn(
+			paginationStartParameterValue
+		).when(
+			portletSharedSearchSettings
+		).getParameter(
+			"start"
 		);
 
 		Mockito.doReturn(
@@ -171,14 +272,21 @@ public class SearchResultsPortletSharedSearchContributorTest {
 		return portletSharedSearchSettings;
 	}
 
+	private SearchRequestBuilder _createSearchRequestBuilder() {
+		return new SearchRequestBuilderImpl(
+			new SearchRequestBuilderFactoryImpl());
+	}
+
 	private void _testContribute(
 		int expectedPaginationDelta, String paginationDeltaParameterValue) {
 
 		PortletSharedSearchSettings portletSharedSearchSettings =
-			_createPortletSharedSearchSettings(paginationDeltaParameterValue);
+			_createPortletSharedSearchSettings(
+				paginationDeltaParameterValue, null,
+				_createSearchRequestBuilder());
 
 		SearchRequest searchRequest = _buildSearchRequest(
-			false, portletSharedSearchSettings);
+			false, Integer.MAX_VALUE, portletSharedSearchSettings);
 
 		Mockito.verify(
 			portletSharedSearchSettings
@@ -190,11 +298,61 @@ public class SearchResultsPortletSharedSearchContributorTest {
 			Integer.valueOf(expectedPaginationDelta), searchRequest.getSize());
 	}
 
+	private void _testContributeMaximumSearchDepth(
+		int expectedFrom, int expectedSize, int maximumSearchDepth,
+		String paginationStartParameterValue) {
+
+		PortletSharedSearchSettings portletSharedSearchSettings =
+			_createPortletSharedSearchSettings(
+				"20", paginationStartParameterValue,
+				_createSearchRequestBuilder());
+
+		SearchRequest searchRequest = _buildSearchRequest(
+			false, maximumSearchDepth, portletSharedSearchSettings);
+
+		Assert.assertEquals(
+			Integer.valueOf(expectedFrom), searchRequest.getFrom());
+		Assert.assertEquals(
+			Integer.valueOf(expectedSize), searchRequest.getSize());
+
+		Mockito.verify(
+			portletSharedSearchSettings
+		).setPaginationStart(
+			(expectedFrom / 20) + 1
+		);
+	}
+
+	private void _testContributeMaximumSearchDepthWithMultipleWidgets(
+		int expectedFrom, int expectedSize, int maximumSearchDepth1,
+		int maximumSearchDepth2) {
+
+		SearchRequestBuilder searchRequestBuilder =
+			_createSearchRequestBuilder();
+
+		_contribute(
+			false, maximumSearchDepth1,
+			_createPortletSharedSearchSettings(
+				"20", "3", searchRequestBuilder));
+		_contribute(
+			false, maximumSearchDepth2,
+			_createPortletSharedSearchSettings(
+				"20", "3", searchRequestBuilder));
+
+		SearchRequest searchRequest = searchRequestBuilder.build();
+
+		Assert.assertEquals(
+			Integer.valueOf(expectedFrom), searchRequest.getFrom());
+		Assert.assertEquals(
+			Integer.valueOf(expectedSize), searchRequest.getSize());
+	}
+
 	private void _testContributeTrackTotalHitsLimit(
 		boolean limitResultCountAccuracy, Integer expectedTrackTotalHitsLimit) {
 
 		SearchRequest searchRequest = _buildSearchRequest(
-			limitResultCountAccuracy, _createPortletSharedSearchSettings(null));
+			limitResultCountAccuracy, Integer.MAX_VALUE,
+			_createPortletSharedSearchSettings(
+				null, null, _createSearchRequestBuilder()));
 
 		Assert.assertEquals(
 			expectedTrackTotalHitsLimit,
