@@ -16,15 +16,15 @@ String portletResourceNamespace = ParamUtil.getString(request, "portletResourceN
 
 DDMTemplate template = (DDMTemplate)request.getAttribute(DDMWebKeys.DYNAMIC_DATA_MAPPING_TEMPLATE);
 
-long templateId = ParamUtil.getLong(request, "templateId", GetterUtil.get(template, DDMTemplate::getTemplateId, 0L));
+long templateId = BeanParamUtil.getLong(template, request, "templateId");
 
-long groupId = ParamUtil.getLong(request, "groupId", GetterUtil.get(template, DDMTemplate::getGroupId, PortalUtil.getScopeGroupId(request, refererPortletName)));
-long classNameId = ParamUtil.getLong(request, "classNameId", GetterUtil.get(template, DDMTemplate::getClassNameId, 0L));
-long classPK = ParamUtil.getLong(request, "classPK", GetterUtil.get(template, DDMTemplate::getClassPK, 0L));
-long resourceClassNameId = ParamUtil.getLong(request, "resourceClassNameId", GetterUtil.get(template, DDMTemplate::getResourceClassNameId, 0L));
+long groupId = BeanParamUtil.getLong(template, request, "groupId", PortalUtil.getScopeGroupId(request, refererPortletName));
+long classNameId = BeanParamUtil.getLong(template, request, "classNameId");
+long classPK = BeanParamUtil.getLong(template, request, "classPK");
+long resourceClassNameId = BeanParamUtil.getLong(template, request, "resourceClassNameId");
 
-boolean cacheable = ParamUtil.getBoolean(request, "cacheable", GetterUtil.get(template, DDMTemplate::isCacheable, true));
-boolean smallImage = ParamUtil.getBoolean(request, "smallImage", GetterUtil.get(template, DDMTemplate::isSmallImage, false));
+boolean cacheable = BeanParamUtil.getBoolean(template, request, "cacheable", true);
+boolean smallImage = BeanParamUtil.getBoolean(template, request, "smallImage");
 
 DDMStructure structure = (DDMStructure)request.getAttribute(DDMWebKeys.DYNAMIC_DATA_MAPPING_STRUCTURE);
 
@@ -32,10 +32,10 @@ if ((structure == null) && (template != null)) {
 	structure = ddmDisplayContext.fetchStructure(template);
 }
 
-String type = ParamUtil.getString(request, "type", GetterUtil.get(template, DDMTemplate::getType, DDMTemplateConstants.TEMPLATE_TYPE_FORM));
-String mode = ParamUtil.getString(request, "mode", GetterUtil.get(template, DDMTemplate::getMode, DDMTemplateConstants.TEMPLATE_MODE_CREATE));
-String language = ParamUtil.getString(request, "language", GetterUtil.get(template, DDMTemplate::getLanguage, ddmDisplay.getDefaultTemplateLanguage()));
-String script = ParamUtil.getString(request, "script", GetterUtil.get(template, DDMTemplate::getScript, StringPool.BLANK));
+String type = BeanParamUtil.getString(template, request, "type", DDMTemplateConstants.TEMPLATE_TYPE_FORM);
+String mode = BeanParamUtil.getString(template, request, "mode", DDMTemplateConstants.TEMPLATE_MODE_CREATE);
+String language = BeanParamUtil.getString(template, request, "language", ddmDisplay.getDefaultTemplateLanguage());
+String script = BeanParamUtil.getString(template, request, "script");
 
 if (Validator.isNull(script) && type.equals(DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY)) {
 	TemplateHandler templateHandler = TemplateHandlerRegistryUtil.getTemplateHandler(classNameId);
