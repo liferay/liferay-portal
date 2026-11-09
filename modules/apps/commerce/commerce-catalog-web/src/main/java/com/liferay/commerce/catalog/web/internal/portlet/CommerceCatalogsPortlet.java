@@ -15,6 +15,7 @@ import com.liferay.commerce.product.configuration.AttachmentsConfiguration;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CommerceCatalogService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -78,7 +79,7 @@ public class CommerceCatalogsPortlet extends MVCPortlet {
 				_commerceCatalogModelResourcePermission,
 				_commerceCurrencyLocalService, _commerceInventoryMethodRegistry,
 				_commercePriceListService, _configurationProvider,
-				_itemSelector, _portal);
+				_dlAppService, _itemSelector, _portal);
 
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT, commerceCatalogDisplayContext);
@@ -121,6 +122,9 @@ public class CommerceCatalogsPortlet extends MVCPortlet {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private DLAppService _dlAppService;
 
 	@Reference
 	private ItemSelector _itemSelector;
