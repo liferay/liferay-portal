@@ -5,8 +5,6 @@
 
 package com.liferay.portal.security.key.internal.configuration.persistence.listener;
 
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.definitions.ExtendedAttributeDefinition;
 import com.liferay.portal.configuration.metatype.definitions.ExtendedMetaTypeInformation;
 import com.liferay.portal.configuration.metatype.definitions.ExtendedMetaTypeService;
@@ -21,6 +19,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretManager;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.secret.exception.SecretException;
@@ -29,6 +28,7 @@ import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Dictionary;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -138,6 +138,7 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		_setUpKeyManagerProfileRegistry(_keyManagerProfile);
 
 		_testOnBeforeDeleteWhenPropertiesAreNull();
+		_testOnBeforeDeleteWhenReferenceIsAnotherConfiguration();
 		_testOnBeforeDeleteWhenReferenceIsNotAConfiguration();
 	}
 
@@ -172,7 +173,8 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 
 		Mockito.when(
 			_secretResolver.store(
-				Mockito.anyLong(), Mockito.anyString(), Mockito.eq(value))
+				Mockito.anyLong(), Mockito.any(SecretContext.class),
+				Mockito.eq(value))
 		).thenAnswer(
 			invocationOnMock -> {
 				throw secretException;
@@ -242,6 +244,19 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		return extendedAttributeDefinition;
 	}
 
+	private boolean _isCredentialConfigurationSecretContext(
+		SecretContext secretContext) {
+
+		if ((secretContext != null) &&
+			(secretContext.getType() == SecretContext.Type.CONFIGURATION) &&
+			Objects.equals(secretContext.getKey(), "credential")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _setUpKeyManagerProfileRegistry(
 		KeyManagerProfile keyManagerProfile) {
 
@@ -261,7 +276,7 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 
 	private void _testOnBeforeDelete() throws Exception {
 		KeyReference keyReference = new KeyReference(
-			"config/" + _PID + "/0/credential", "provider",
+			"config/" + _PID + "/system/0/credential", "provider",
 			KeyReference.Type.SECRET);
 
 		Mockito.when(
@@ -292,7 +307,7 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 
 	private void _testOnBeforeDeleteWhenDeleteFails() throws Exception {
 		KeyReference keyReference1 = new KeyReference(
-			"config/" + _PID + "/0/credential", "provider",
+			"config/" + _PID + "/system/0/credential", "provider",
 			KeyReference.Type.SECRET);
 
 		Mockito.doThrow(
@@ -304,7 +319,8 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		);
 
 		KeyReference keyReference2 = new KeyReference(
-			"config/" + _PID + "/0/host", "provider", KeyReference.Type.SECRET);
+			"config/" + _PID + "/system/0/host", "provider",
+			KeyReference.Type.SECRET);
 
 		Mockito.when(
 			_configuration.getProperties()
@@ -360,6 +376,30 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		Mockito.verifyNoInteractions(_secretManager);
 	}
 
+	private void _testOnBeforeDeleteWhenReferenceIsAnotherConfiguration()
+		throws Exception {
+
+		Mockito.when(
+			_configuration.getProperties()
+		).thenReturn(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"credential",
+				"${secretRef:provider:config/com.liferay.other/system/0" +
+					"/credential}"
+			).build()
+		);
+
+		Mockito.when(
+			_configurationAdmin.listConfigurations("(service.pid=" + _PID + ")")
+		).thenReturn(
+			new Configuration[] {_configuration}
+		);
+
+		_configurationSecretConfigurationModelListener.onBeforeDelete(_PID);
+
+		Mockito.verifyNoInteractions(_secretManager);
+	}
+
 	private void _testOnBeforeDeleteWhenReferenceIsNotAConfiguration()
 		throws Exception {
 
@@ -388,8 +428,9 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 
 		Mockito.when(
 			_secretResolver.store(
-				CompanyConstants.SYSTEM, "config/" + _PID + "/0/credential",
-				value)
+				Mockito.eq(CompanyConstants.SYSTEM),
+				Mockito.argThat(this::_isCredentialConfigurationSecretContext),
+				Mockito.eq(value))
 		).thenReturn(
 			storedValue
 		);
@@ -475,7 +516,8 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 
 	private void _testOnBeforeSaveWhenReferenceIsRejected() throws Exception {
 		_assertOnBeforeSaveFails(
-			"${secretRef:provider:config/com.liferay.other/0/credential}");
+			"${secretRef:provider:config/com.liferay.other/system/0" +
+				"/credential}");
 	}
 
 	private void _testOnBeforeSaveWhenScopeIsCompany() throws Exception {
@@ -483,7 +525,7 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		String value = RandomTestUtil.randomString();
 
 		_configurationSecretConfigurationModelListener.onBeforeSave(
-			_PID + ".scoped~" + _FACTORY_SUFFIX,
+			_PID + ".scoped~" + RandomTestUtil.randomString(),
 			HashMapDictionaryBuilder.<String, Object>put(
 				ConfigurationAdmin.SERVICE_FACTORYPID, _PID + ".scoped"
 			).put(
@@ -495,11 +537,9 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		Mockito.verify(
 			_secretResolver
 		).store(
-			companyId,
-			StringBundler.concat(
-				"config/", _PID, ".scoped/", _FACTORY_SUFFIX, StringPool.SLASH,
-				companyId, "/credential"),
-			value
+			Mockito.eq(companyId),
+			Mockito.argThat(this::_isCredentialConfigurationSecretContext),
+			Mockito.eq(value)
 		);
 	}
 
@@ -520,18 +560,15 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		Mockito.verify(
 			_secretResolver
 		).store(
-			companyId,
-			StringBundler.concat(
-				"config/", _PID, StringPool.SLASH, companyId, "/credential"),
-			value
+			Mockito.eq(companyId),
+			Mockito.argThat(this::_isCredentialConfigurationSecretContext),
+			Mockito.eq(value)
 		);
 	}
 
 	private void _testOnBeforeSaveWhenStoreFails() throws Exception {
 		_assertOnBeforeSaveFails(RandomTestUtil.randomString());
 	}
-
-	private static final String _FACTORY_SUFFIX = RandomTestUtil.randomString();
 
 	private static final String _PID = "com.liferay.test.Configuration";
 
