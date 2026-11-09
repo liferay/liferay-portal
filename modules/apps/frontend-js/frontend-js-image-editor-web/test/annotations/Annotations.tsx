@@ -350,11 +350,11 @@ describe('text annotations', () => {
 	it('selects on focus and clears the selection on a click elsewhere', () => {
 		const {container} = render(<AnnotationHarness start={withCaption} />);
 
-		fireEvent.focus(hit(container));
+		act(() => hit(container).focus());
 
 		expect(container.querySelector('.focus-ring-outer')).not.toBeNull();
 
-		fireEvent.blur(hit(container));
+		act(() => hit(container).blur());
 
 		expect(container.querySelector('.selection-ring')).not.toBeNull();
 
