@@ -35,7 +35,7 @@ public class TasksSectionCMSTableFDSViewTest
 	@Test
 	public void testGetFDSTableSchema() throws Exception {
 		assertFDSTableSchemaField(
-			"actionLinkWorkflowTask", "assetTitleTableCellRenderer",
+			"actionLinkWorkflowTask", "simpleActionLinkTableCellRenderer",
 			"asset-title", "embedded.objectReviewed.assetTitle");
 		assertFDSTableSchemaField(
 			null, null, "asset-type", "embedded.objectReviewed.assetType");
