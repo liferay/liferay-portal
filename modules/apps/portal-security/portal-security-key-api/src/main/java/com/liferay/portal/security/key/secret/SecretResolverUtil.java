@@ -13,6 +13,18 @@ import com.liferay.portal.security.key.KeyReferenceUtil;
  */
 public class SecretResolverUtil {
 
+	public static String resolve(
+		long companyId, SecretContext secretContext, String value) {
+
+		if (!KeyReferenceUtil.isKeyReference(value)) {
+			return value;
+		}
+
+		SecretResolver secretResolver = _getSecretResolver();
+
+		return secretResolver.resolve(companyId, secretContext, value);
+	}
+
 	public static String resolve(long companyId, String value) {
 		if (!KeyReferenceUtil.isKeyReference(value)) {
 			return value;

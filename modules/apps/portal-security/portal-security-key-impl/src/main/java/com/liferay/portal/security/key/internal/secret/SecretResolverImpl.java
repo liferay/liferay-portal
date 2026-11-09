@@ -13,20 +13,28 @@ import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
+import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.Secret;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretManager;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.secret.exception.SecretException;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfile;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.SequencedMap;
 
+import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -47,24 +55,51 @@ public class SecretResolverImpl implements SecretResolver {
 	}
 
 	@Override
+	public String resolve(
+		long companyId, SecretContext secretContext, String value) {
+
+		if (!KeyReferenceUtil.isKeyReference(value)) {
+			return value;
+		}
+
+		try {
+			KeyReference keyReference = _getKeyReference(value);
+
+			long scopeCompanyId = _getScopeCompanyId(
+				companyId, keyReference.getIdentifier(), "resolve",
+				_buildSecretIdScopeMap(secretContext));
+
+			String key = getKey(scopeCompanyId, value);
+
+			String resolvedValue = _portalCache.get(key);
+
+			if (resolvedValue != null) {
+				return resolvedValue;
+			}
+
+			try (Secret secret = _secretManager.getSecret(
+					scopeCompanyId, keyReference)) {
+
+				resolvedValue = new String(secret.getChars());
+			}
+
+			_portalCache.put(key, resolvedValue, 600);
+
+			return resolvedValue;
+		}
+		catch (SecretException secretException) {
+			return ReflectionUtil.throwException(secretException);
+		}
+	}
+
+	@Override
 	public String resolve(long companyId, String value) {
 		if (!KeyReferenceUtil.isKeyReference(value)) {
 			return value;
 		}
 
 		try {
-			KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
-				value);
-
-			if (keyReference == null) {
-				throw new SecretException("Unable to parse the key reference");
-			}
-
-			if (keyReference.getType() != KeyReference.Type.SECRET) {
-				throw new SecretException(
-					"Crypto key references are not supported by the secret " +
-						"resolver");
-			}
+			KeyReference keyReference = _getKeyReference(value);
 
 			if (companyId != CompanyConstants.SYSTEM) {
 				KeyManagerProfile keyManagerProfile =
@@ -113,6 +148,48 @@ public class SecretResolverImpl implements SecretResolver {
 		}
 
 		return resolve(companyId, value);
+	}
+
+	@Override
+	public String store(
+		long companyId, SecretContext secretContext, String value) {
+
+		if (!PropsValues.FIPS_ENABLED || Validator.isNull(value)) {
+			return value;
+		}
+
+		try {
+			SequencedMap<String, Long> secretIdScopeMap =
+				_buildSecretIdScopeMap(secretContext);
+
+			if (KeyReferenceUtil.isKeyReference(value)) {
+				KeyReference keyReference = _getKeyReference(value);
+
+				_getScopeCompanyId(
+					companyId, keyReference.getIdentifier(), "store",
+					secretIdScopeMap);
+
+				return value;
+			}
+
+			Map.Entry<String, Long> entry = secretIdScopeMap.firstEntry();
+
+			String identifier = entry.getKey();
+
+			long scopeCompanyId = _getScopeCompanyId(
+				companyId, identifier, "store", secretIdScopeMap);
+
+			try (Secret secret = new Secret(
+					new KeyReference(
+						identifier, StringPool.STAR, KeyReference.Type.SECRET),
+					value)) {
+
+				return _putSecret(scopeCompanyId, secret);
+			}
+		}
+		catch (SecretException secretException) {
+			return ReflectionUtil.throwException(secretException);
+		}
 	}
 
 	@Override
@@ -166,8 +243,7 @@ public class SecretResolverImpl implements SecretResolver {
 						identifier, StringPool.STAR, KeyReference.Type.SECRET),
 					value)) {
 
-				return KeyReferenceUtil.toKeyReferenceString(
-					_secretManager.putSecret(companyId, secret));
+				return _putSecret(companyId, secret);
 			}
 		}
 		catch (SecretException secretException) {
@@ -185,6 +261,86 @@ public class SecretResolverImpl implements SecretResolver {
 	protected void deactivate() {
 		PortalCacheHelperUtil.removePortalCache(
 			PortalCacheManagerNames.SINGLE_VM, PORTAL_CACHE_NAME);
+	}
+
+	private SequencedMap<String, Long> _buildSecretIdScopeMap(
+		SecretContext secretContext) {
+
+		SequencedMap<String, Long> secretIdScopeMap = new LinkedHashMap<>();
+
+		SecretContext.Type type = secretContext.getType();
+
+		if (type == SecretContext.Type.CONFIGURATION) {
+			Map<String, Object> properties = secretContext.getProperties();
+
+			String pid = GetterUtil.getString(
+				properties.get(Constants.SERVICE_PID));
+
+			secretIdScopeMap.put(
+				SecretIdentifierUtil.buildConfigurationIdentifier(
+					secretContext.getKey(), pid, properties::get),
+				SecretIdentifierUtil.getConfigurationCompanyId(
+					properties::get));
+		}
+
+		return secretIdScopeMap;
+	}
+
+	private KeyReference _getKeyReference(String keyReferenceString)
+		throws SecretException {
+
+		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
+			keyReferenceString);
+
+		if (keyReference == null) {
+			throw new SecretException("Unable to parse the key reference");
+		}
+
+		if (keyReference.getType() != KeyReference.Type.SECRET) {
+			throw new SecretException(
+				"Crypto key references are not supported by the secret " +
+					"resolver");
+		}
+
+		return keyReference;
+	}
+
+	private long _getScopeCompanyId(
+			long companyId, String identifier, String operation,
+			Map<String, Long> secretIdScopeMap)
+		throws SecretException {
+
+		Long scopeCompanyId = secretIdScopeMap.get(identifier);
+
+		if ((scopeCompanyId != null) &&
+			((scopeCompanyId == CompanyConstants.SYSTEM) ||
+			 (scopeCompanyId == companyId))) {
+
+			return scopeCompanyId;
+		}
+
+		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
+			"secret-reference-refused", FIPSAuditEvent.Severity.WARNING);
+
+		fipsAuditEvent.put("company-id", companyId);
+		fipsAuditEvent.put("identifier", identifier);
+		fipsAuditEvent.put("operation", operation);
+
+		FIPSAuditUtil.write(fipsAuditEvent);
+
+		throw new SecretException(
+			StringBundler.concat(
+				"Unable to ", operation, " the key reference \"", identifier,
+				"\" in this secret context"));
+	}
+
+	private String _putSecret(long companyId, Secret secret)
+		throws SecretException {
+
+		KeyReference keyReference = _secretManager.putSecret(
+			companyId, secret);
+
+		return KeyReferenceUtil.toKeyReferenceString(keyReference);
 	}
 
 	private static final String _IDENTIFIER_PREFIX_PREFERENCE = "preference/";

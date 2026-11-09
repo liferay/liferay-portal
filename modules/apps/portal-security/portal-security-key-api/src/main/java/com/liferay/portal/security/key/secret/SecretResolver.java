@@ -13,9 +13,15 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface SecretResolver {
 
+	public String resolve(
+		long companyId, SecretContext secretContext, String value);
+
 	public String resolve(long companyId, String value);
 
 	public String resolve(long companyId, String identifier, String value);
+
+	public String store(
+		long companyId, SecretContext secretContext, String value);
 
 	public String store(long companyId, String identifier, String value);
 
