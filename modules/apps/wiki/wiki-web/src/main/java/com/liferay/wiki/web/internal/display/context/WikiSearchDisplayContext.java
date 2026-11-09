@@ -5,6 +5,7 @@
 
 package com.liferay.wiki.web.internal.display.context;
 
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -19,7 +20,6 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.SearchResult;
 import com.liferay.portal.kernel.search.SearchResultUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -143,12 +143,9 @@ public class WikiSearchDisplayContext {
 			return _nodeId;
 		}
 
-		WikiNode node = (WikiNode)_httpServletRequest.getAttribute(
-			WikiWebKeys.WIKI_NODE);
-
-		_nodeId = ParamUtil.getLong(
-			_httpServletRequest, "nodeId",
-			GetterUtil.get(node, WikiNode::getNodeId, 0L));
+		_nodeId = BeanParamUtil.getLong(
+			(WikiNode)_httpServletRequest.getAttribute(WikiWebKeys.WIKI_NODE),
+			_httpServletRequest, "nodeId");
 
 		return _nodeId;
 	}

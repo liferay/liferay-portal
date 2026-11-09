@@ -14,7 +14,7 @@ String importProgressId = PortalUtil.generateRandomKey(request, "portlet_wiki_im
 
 WikiNode node = (WikiNode)request.getAttribute(WikiWebKeys.WIKI_NODE);
 
-long nodeId = ParamUtil.getLong(request, "nodeId", GetterUtil.get(node, WikiNode::getNodeId, 0L));
+long nodeId = BeanParamUtil.getLong(node, request, "nodeId");
 
 PortletURL portletURL = PortletURLBuilder.createRenderURL(
 	renderResponse
