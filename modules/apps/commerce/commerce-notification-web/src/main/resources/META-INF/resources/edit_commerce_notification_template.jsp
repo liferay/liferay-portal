@@ -13,14 +13,10 @@ CommerceNotificationTemplatesDisplayContext commerceNotificationTemplatesDisplay
 CommerceNotificationTemplate commerceNotificationTemplate = commerceNotificationTemplatesDisplayContext.getCommerceNotificationTemplate();
 
 String title = LanguageUtil.get(resourceBundle, "add-notification-template");
-
-if (commerceNotificationTemplate != null) {
-	title = LanguageUtil.format(request, "edit-x", commerceNotificationTemplate.getName(), false);
-}
-
 String type = StringPool.BLANK;
 
 if (commerceNotificationTemplate != null) {
+	title = LanguageUtil.format(request, "edit-x", commerceNotificationTemplate.getName(), false);
 	type = commerceNotificationTemplate.getType();
 }
 
