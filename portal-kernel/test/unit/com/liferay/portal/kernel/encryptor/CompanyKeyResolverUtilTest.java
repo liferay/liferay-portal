@@ -5,18 +5,31 @@
 
 package com.liferay.portal.kernel.encryptor;
 
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.CompanyKeyException;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 
 import java.security.Key;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -95,6 +108,107 @@ public class CompanyKeyResolverUtilTest {
 		Assert.assertTrue(
 			CompanyKeyResolverUtil.isWrappedKey(_WRAPPED_KEY_PREFIX));
 		Assert.assertFalse(CompanyKeyResolverUtil.isWrappedKey(null));
+	}
+
+	@Test
+	public void testRotateKey() throws Exception {
+		Encryptor encryptor = Mockito.mock(Encryptor.class);
+		Key key = Mockito.mock(Key.class);
+
+		Mockito.when(
+			encryptor.generateKey()
+		).thenReturn(
+			key
+		);
+
+		String keyString = RandomTestUtil.randomString();
+
+		Mockito.when(
+			encryptor.serializeKey(key)
+		).thenReturn(
+			keyString
+		);
+
+		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
+			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(null);
+			MockedStatic<FIPSApplicationStateMachineUtil>
+				fipsApplicationStateMachineUtilMockedStatic =
+					Mockito.mockStatic(FIPSApplicationStateMachineUtil.class);
+			SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			List<String> keyStrings = new ArrayList<>();
+
+			LogEntry logEntry = _rotateKey(
+				RandomTestUtil.randomString(), keyStrings::add,
+				RandomTestUtil.randomString());
+
+			Assert.assertEquals(
+				Collections.singletonList(_FIPS_KEY_PREFIX + keyString + "}"),
+				keyStrings);
+
+			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
+			Assert.assertEquals(
+				"Rotated the key for company " + _COMPANY_ID,
+				logEntry.getMessage());
+
+			logEntry = _rotateKey(
+				RandomTestUtil.randomString(), rotatedKeyString -> false,
+				RandomTestUtil.randomString());
+
+			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
+			Assert.assertEquals(
+				"Another node already rotated the key for company " +
+					_COMPANY_ID,
+				logEntry.getMessage());
+
+			Exception exception = new Exception();
+
+			logEntry = _rotateKey(
+				RandomTestUtil.randomString(),
+				rotatedKeyString -> {
+					throw exception;
+				},
+				RandomTestUtil.randomString());
+
+			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+			Assert.assertSame(exception, logEntry.getThrowable());
+
+			logEntry = _rotateKey(
+				_WRAPPED_KEY_PREFIX + RandomTestUtil.randomString(),
+				rotatedKeyString -> true, RandomTestUtil.randomString());
+
+			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(
+				CompanyKeyException.class, throwable.getClass());
+
+			fipsApplicationStateMachineUtilMockedStatic.verifyNoInteractions();
+
+			logEntry = _rotateKey(
+				RandomTestUtil.randomString(),
+				rotatedKeyString -> {
+					throw exception;
+				},
+				PropsValues.COMPANY_DEFAULT_WEB_ID);
+
+			Assert.assertSame(exception, logEntry.getThrowable());
+
+			ArgumentCaptor<Throwable> argumentCaptor = ArgumentCaptor.forClass(
+				Throwable.class);
+
+			fipsApplicationStateMachineUtilMockedStatic.verify(
+				() -> FIPSApplicationStateMachineUtil.error(
+					Mockito.eq("Default company key rotation"),
+					argumentCaptor.capture()));
+
+			throwable = argumentCaptor.getValue();
+
+			Assert.assertSame(exception, throwable.getCause());
+		}
 	}
 
 	@Test
@@ -228,6 +342,46 @@ public class CompanyKeyResolverUtilTest {
 
 			Assert.assertEquals(
 				keyString, CompanyKeyResolverUtil.wrapKey(_COMPANY_ID, key));
+		}
+	}
+
+	private LogEntry _rotateKey(
+		String keyString,
+		UnsafeFunction<String, Boolean, Throwable> unsafeFunction,
+		String webId) {
+
+		Company company = Mockito.mock(Company.class);
+
+		Mockito.when(
+			company.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		Mockito.when(
+			company.getKey()
+		).thenReturn(
+			keyString
+		);
+
+		Mockito.when(
+			company.getWebId()
+		).thenReturn(
+			webId
+		);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				CompanyKeyResolverUtil.class.getName(), LoggerTestUtil.WARN)) {
+
+			logCapture.resetPriority(LoggerTestUtil.INFO);
+
+			CompanyKeyResolverUtil.rotateKey(company, unsafeFunction);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			return logEntries.get(0);
 		}
 	}
 

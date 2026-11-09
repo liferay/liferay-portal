@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.db.partition.DBPartition;
 import com.liferay.portal.kernel.encryptor.CompanyKeyResolverUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorException;
-import com.liferay.portal.kernel.exception.CompanyKeyException;
 import com.liferay.portal.kernel.exception.CompanyMaxUsersException;
 import com.liferay.portal.kernel.exception.CompanyMxException;
 import com.liferay.portal.kernel.exception.CompanyNameException;
@@ -86,7 +85,6 @@ import com.liferay.portal.kernel.search.facet.faceted.searcher.FacetedSearcherMa
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.EmailAddressValidator;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -568,7 +566,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		if (PropsValues.FIPS_ENABLED &&
 			!CompanyKeyResolverUtil.isFIPSKey(key)) {
 
-			_rotateKey(company);
+			CompanyKeyResolverUtil.rotateKey(
+				company, keyString -> _updateKey(companyId, keyString));
 		}
 	}
 
@@ -2569,45 +2568,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		}
 	}
 
-	private void _rotateKey(Company company) {
-		long companyId = company.getCompanyId();
-
-		try {
-			String key = CompanyKeyResolverUtil.generateKey(companyId);
-
-			if (CompanyKeyResolverUtil.isWrappedKey(company.getKey()) &&
-				!CompanyKeyResolverUtil.isWrappedKey(key)) {
-
-				throw new CompanyKeyException(
-					StringBundler.concat(
-						"Unable to wrap the rotated key for company ",
-						companyId, " because its current key is wrapped and ",
-						"the key manager's company-kek-identifier is not ",
-						"available"));
-			}
-
-			_updateKey(companyId, key);
-		}
-		catch (Throwable throwable) {
-			if (Objects.equals(
-					company.getWebId(), PropsValues.COMPANY_DEFAULT_WEB_ID)) {
-
-				FIPSApplicationStateMachineUtil.error(
-					"Default company key rotation",
-					new CompanyKeyException(
-						"Unable to rotate the key of the default company " +
-							companyId,
-						throwable));
-			}
-
-			_log.error(
-				StringBundler.concat(
-					"Unable to rotate the key for company ", companyId,
-					". The key is refused until a later start rotates it."),
-				throwable);
-		}
-	}
-
 	private void _synchronizePortalInstances() {
 		ClusterRequest clusterRequest = ClusterRequest.createMulticastRequest(
 			_methodHandler, true);
@@ -2705,12 +2665,12 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		_groupLocalService.updateGroup(group);
 	}
 
-	private void _updateKey(long companyId, String key) throws Throwable {
+	private boolean _updateKey(long companyId, String key) throws Throwable {
 		int retries = PropsValues.RETRY_ADVICE_MAX_RETRIES;
 
 		while (true) {
 			try {
-				boolean rotated = TransactionInvokerUtil.invoke(
+				return TransactionInvokerUtil.invoke(
 					_transactionConfig,
 					() -> {
 						CompanyInfo companyInfo =
@@ -2734,19 +2694,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 						return true;
 					});
-
-				if (_log.isInfoEnabled()) {
-					if (rotated) {
-						_log.info("Rotated the key for company " + companyId);
-					}
-					else {
-						_log.info(
-							"Another node already rotated the key for " +
-								"company " + companyId);
-					}
-				}
-
-				return;
 			}
 			catch (Throwable throwable) {
 				if ((retries == 0) ||

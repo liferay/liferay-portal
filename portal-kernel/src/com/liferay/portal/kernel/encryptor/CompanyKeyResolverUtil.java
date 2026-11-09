@@ -5,13 +5,20 @@
 
 package com.liferay.portal.kernel.encryptor;
 
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.CompanyKeyException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 
 import java.security.Key;
+
+import java.util.Objects;
 
 /**
  * @author Christopher Kian
@@ -47,6 +54,55 @@ public class CompanyKeyResolverUtil {
 		}
 
 		return false;
+	}
+
+	public static void rotateKey(
+		Company company,
+		UnsafeFunction<String, Boolean, Throwable> unsafeFunction) {
+
+		long companyId = company.getCompanyId();
+
+		try {
+			String keyString = generateKey(companyId);
+
+			if (isWrappedKey(company.getKey()) && !isWrappedKey(keyString)) {
+				throw new CompanyKeyException(
+					StringBundler.concat(
+						"Unable to wrap the rotated key for company ",
+						companyId, " because its current key is wrapped and ",
+						"the key manager's company-kek-identifier is not ",
+						"available"));
+			}
+
+			if (unsafeFunction.apply(keyString)) {
+				if (_log.isInfoEnabled()) {
+					_log.info("Rotated the key for company " + companyId);
+				}
+			}
+			else if (_log.isInfoEnabled()) {
+				_log.info(
+					"Another node already rotated the key for company " +
+						companyId);
+			}
+		}
+		catch (Throwable throwable) {
+			if (Objects.equals(
+					company.getWebId(), PropsValues.COMPANY_DEFAULT_WEB_ID)) {
+
+				FIPSApplicationStateMachineUtil.error(
+					"Default company key rotation",
+					new CompanyKeyException(
+						"Unable to rotate the key of the default company " +
+							companyId,
+						throwable));
+			}
+
+			_log.error(
+				StringBundler.concat(
+					"Unable to rotate the key for company ", companyId,
+					". The key is refused until a later start rotates it."),
+				throwable);
+		}
 	}
 
 	public static Key unwrapKey(long companyId, String keyString) {
@@ -98,6 +154,9 @@ public class CompanyKeyResolverUtil {
 	}
 
 	private static final String _FIPS_KEY_PREFIX = "${fipsKey:";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CompanyKeyResolverUtil.class);
 
 	private static final Snapshot<CompanyKeyResolver>
 		_companyKeyResolverSnapshot = new Snapshot<>(
