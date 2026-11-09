@@ -94,6 +94,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>IMAGE_DESCRIPTION_LANGUAGE</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']/following-sibling::div[contains(@class,'form-group')]//input[contains(@name,'description')][@lang='${key_languageId}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>MARKER</td>
 	<td>//img[contains(@class,'marker-icon')]</td>
 	<td></td>

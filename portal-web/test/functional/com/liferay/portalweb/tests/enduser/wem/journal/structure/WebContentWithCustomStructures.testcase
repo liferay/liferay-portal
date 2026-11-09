@@ -1901,6 +1901,11 @@ definition {
 				locale = "es-ES",
 				translated = "true");
 
+			AssertElementPresent(
+				key_fieldFieldLabel = "Image",
+				key_languageId = "es_ES",
+				locator1 = "WCEditWebContent#IMAGE_DESCRIPTION_LANGUAGE");
+
 			PortletEntry.inputTitle(title = "Spanish (Spain) Title");
 
 			Type(
