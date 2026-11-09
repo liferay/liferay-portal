@@ -35,6 +35,7 @@ import com.liferay.commerce.util.comparator.CommerceAvailabilityEstimatePriority
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -187,9 +188,8 @@ public class CPDefinitionConfigurationDisplayContext
 			return true;
 		}
 
-		return ParamUtil.getBoolean(
-			httpServletRequest, "purchasable",
-			cpConfigurationEntry.isPurchasable());
+		return BeanParamUtil.getBoolean(
+			cpConfigurationEntry, httpServletRequest, "purchasable", true);
 	}
 
 	private CPDefinitionInventory _getCPDefinitionInventory()
