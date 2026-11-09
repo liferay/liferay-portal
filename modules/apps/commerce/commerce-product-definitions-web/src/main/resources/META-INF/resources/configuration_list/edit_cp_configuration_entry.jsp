@@ -48,13 +48,13 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
-			"cpConfigurationEntryId", cpConfigurationEntry.getCPConfigurationEntryId()
+			"cpConfigurationEntryId", (cpConfigurationEntry != null) ? cpConfigurationEntry.getCPConfigurationEntryId() : StringPool.BLANK
 		).put(
 			"cpConfigurationListId", cpConfigurationListDisplayContext.getCPConfigurationListId()
 		).put(
-			"entityId", cpConfigurationEntry.getClassPK()
+			"entityId", (cpConfigurationEntry != null) ? cpConfigurationEntry.getClassPK() : 0
 		).put(
-			"mode", (cpConfigurationEntry.getCPConfigurationListId() == cpConfigurationListDisplayContext.getCPConfigurationListId()) ? "edit" : "add"
+			"mode", ((cpConfigurationEntry != null) && (cpConfigurationEntry.getCPConfigurationListId() == cpConfigurationListDisplayContext.getCPConfigurationListId())) ? "edit" : "add"
 		).put(
 			"namespace", liferayPortletResponse.getNamespace()
 		).build()
