@@ -12,9 +12,9 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 DDMFormInstance formInstance = ddmFormAdminDisplayContext.getDDMFormInstance();
 
-long formInstanceId = ParamUtil.getLong(request, "formInstanceId", GetterUtil.get(formInstance, DDMFormInstance::getFormInstanceId, 0L));
-long groupId = ParamUtil.getLong(request, "groupId", GetterUtil.get(formInstance, DDMFormInstance::getGroupId, scopeGroupId));
-long ddmStructureId = ParamUtil.getLong(request, "structureId", GetterUtil.get(formInstance, DDMFormInstance::getStructureId, 0L));
+long formInstanceId = BeanParamUtil.getLong(formInstance, request, "formInstanceId");
+long groupId = BeanParamUtil.getLong(formInstance, request, "groupId", scopeGroupId);
+long ddmStructureId = BeanParamUtil.getLong(formInstance, request, "structureId");
 
 boolean disableCopyButton = false;
 
