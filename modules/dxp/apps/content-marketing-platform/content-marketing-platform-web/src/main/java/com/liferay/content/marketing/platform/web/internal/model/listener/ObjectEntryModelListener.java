@@ -176,8 +176,13 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throws ModelListenerException {
 
 		try {
-			_validateLinkedObjectEntrySpaceMembership(
-				objectEntry, PrincipalThreadLocal.getUserId());
+			long userId = PrincipalThreadLocal.getUserId();
+
+			if (userId == 0) {
+				userId = objectEntry.getUserId();
+			}
+
+			_validateLinkedObjectEntrySpaceMembership(objectEntry, userId);
 		}
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
