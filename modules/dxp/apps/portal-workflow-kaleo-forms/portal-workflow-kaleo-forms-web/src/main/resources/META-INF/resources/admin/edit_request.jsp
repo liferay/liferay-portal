@@ -14,9 +14,11 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 KaleoProcess kaleoProcess = (KaleoProcess)request.getAttribute(KaleoFormsWebKeys.KALEO_PROCESS);
 
-long kaleoProcessId = ParamUtil.getLong(request, "kaleoProcessId", kaleoProcess.getKaleoProcessId());
+long classPK = ParamUtil.getLong(request, "classPK");
 
-long groupId = ParamUtil.getLong(request, "groupId", kaleoProcess.getGroupId());
+long kaleoProcessId = ParamUtil.getLong(request, "kaleoProcessId", GetterUtil.get(kaleoProcess, KaleoProcess::getKaleoProcessId, classPK));
+
+long groupId = ParamUtil.getLong(request, "groupId", GetterUtil.get(kaleoProcess, KaleoProcess::getGroupId, scopeGroupId));
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
