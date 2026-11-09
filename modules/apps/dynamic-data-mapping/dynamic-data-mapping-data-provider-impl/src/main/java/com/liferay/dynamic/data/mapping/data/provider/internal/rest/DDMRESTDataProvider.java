@@ -19,6 +19,7 @@ import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderResponseSta
 import com.liferay.dynamic.data.mapping.data.provider.configuration.DDMDataProviderConfiguration;
 import com.liferay.dynamic.data.mapping.data.provider.settings.DDMDataProviderSettingsProvider;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
@@ -106,6 +107,10 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 					DDMDataProviderResponseStatus.SERVICE_UNAVAILABLE
 				).build();
 			}
+
+			ddmDataProviderInstance =
+				_ddmDataProviderInstanceLocalService.getDDMDataProviderInstance(
+					ddmDataProviderInstance.getDataProviderInstanceId());
 
 			DDMRESTDataProviderSettings ddmRESTDataProviderSettings =
 				_ddmDataProviderInstanceSettings.getSettings(
@@ -535,6 +540,10 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 	private static final Pattern _pattern = Pattern.compile("\\{(.+?)\\}");
 
 	private volatile DDMDataProviderConfiguration _ddmDataProviderConfiguration;
+
+	@Reference
+	private DDMDataProviderInstanceLocalService
+		_ddmDataProviderInstanceLocalService;
 
 	@Reference
 	private DDMDataProviderInstanceService _ddmDataProviderInstanceService;
