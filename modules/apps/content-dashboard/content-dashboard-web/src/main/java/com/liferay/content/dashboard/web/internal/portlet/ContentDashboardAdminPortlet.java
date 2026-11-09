@@ -90,7 +90,6 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			_portal.getLocale(renderRequest), getClass());
-
 		ContentDashboardSearchContextBuilder
 			contentDashboardSearchContextBuilder =
 				new ContentDashboardSearchContextBuilder(
