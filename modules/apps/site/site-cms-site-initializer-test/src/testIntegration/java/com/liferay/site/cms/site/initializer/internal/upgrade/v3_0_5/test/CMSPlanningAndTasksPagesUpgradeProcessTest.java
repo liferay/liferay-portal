@@ -32,12 +32,20 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+import com.liferay.site.navigation.menu.item.layout.constants.SiteNavigationMenuItemTypeConstants;
+import com.liferay.site.navigation.model.SiteNavigationMenu;
+import com.liferay.site.navigation.model.SiteNavigationMenuItem;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
+import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 
 import java.util.List;
 import java.util.Locale;
@@ -112,6 +120,11 @@ public class CMSPlanningAndTasksPagesUpgradeProcessTest {
 		_assertResourcePermissions(tasksLayout);
 		_assertTasksFragmentEntryLink(tasksLayout);
 
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, tasksLayout.getStatus());
+
+		_assertNavigationMenuItems(group, tasksLayout);
+
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
 				group.getGroupId(), "cms-master");
@@ -145,6 +158,49 @@ public class CMSPlanningAndTasksPagesUpgradeProcessTest {
 			Assert.assertEquals(
 				LanguageUtil.get(locale, key), nameMap.get(locale));
 		}
+	}
+
+	private void _assertNavigationMenuItems(Group group, Layout tasksLayout) {
+		SiteNavigationMenu siteNavigationMenu =
+			_siteNavigationMenuLocalService.
+				fetchSiteNavigationMenuByExternalReferenceCode(
+					"CMSPRIMARYNAVIGATION", group.getGroupId());
+
+		Assert.assertNotNull(siteNavigationMenu);
+
+		SiteNavigationMenuItem planningSiteNavigationMenuItem =
+			_siteNavigationMenuItemLocalService.
+				fetchSiteNavigationMenuItemByExternalReferenceCode(
+					"CMSPRIMARYNAVIGATION11", group.getGroupId());
+
+		Assert.assertNotNull(planningSiteNavigationMenuItem);
+		Assert.assertEquals(
+			SiteNavigationMenuItemTypeConstants.NODE,
+			planningSiteNavigationMenuItem.getType());
+		Assert.assertEquals(
+			0,
+			planningSiteNavigationMenuItem.getParentSiteNavigationMenuItemId());
+
+		SiteNavigationMenuItem tasksSiteNavigationMenuItem =
+			_siteNavigationMenuItemLocalService.
+				fetchSiteNavigationMenuItemByExternalReferenceCode(
+					"CMSPRIMARYNAVIGATION12", group.getGroupId());
+
+		Assert.assertNotNull(tasksSiteNavigationMenuItem);
+		Assert.assertEquals(
+			SiteNavigationMenuItemTypeConstants.LAYOUT,
+			tasksSiteNavigationMenuItem.getType());
+		Assert.assertEquals(
+			planningSiteNavigationMenuItem.getSiteNavigationMenuItemId(),
+			tasksSiteNavigationMenuItem.getParentSiteNavigationMenuItemId());
+
+		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.load(
+			tasksSiteNavigationMenuItem.getTypeSettings()
+		).build();
+
+		Assert.assertEquals(
+			tasksLayout.getExternalReferenceCode(),
+			unicodeProperties.getProperty("externalReferenceCode"));
 	}
 
 	private void _assertResourcePermissions(Layout layout) throws Exception {
@@ -260,6 +316,13 @@ public class CMSPlanningAndTasksPagesUpgradeProcessTest {
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
+
+	@Inject
+	private SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
+
+	@Inject
+	private SiteNavigationMenuLocalService _siteNavigationMenuLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.site.cms.site.initializer.internal.upgrade.registry.SiteCMSSiteInitializerUpgradeStepRegistrator"

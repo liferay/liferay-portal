@@ -33,6 +33,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:product-navigation:product-navigation-personal-menu-api")
 	testIntegrationImplementation project(":apps:segments:segments-api")
 	testIntegrationImplementation project(":apps:sharing:sharing-api")
+	testIntegrationImplementation project(":apps:site-navigation:site-navigation-api")
+	testIntegrationImplementation project(":apps:site-navigation:site-navigation-menu-item-api")
 	testIntegrationImplementation project(":apps:site:site-cms-site-initializer")
 	testIntegrationImplementation project(":apps:site:site-cms-site-initializer-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
