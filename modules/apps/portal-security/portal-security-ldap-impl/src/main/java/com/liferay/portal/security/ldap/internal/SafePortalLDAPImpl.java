@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.ldap.SafeLdapContext;
 import com.liferay.portal.security.ldap.SafeLdapFilter;
@@ -418,7 +419,12 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 			companyId, ldapServerConfiguration.baseProviderURL(),
 			ldapServerConfiguration.securityPrincipal(),
 			_secretResolver.resolve(
-				companyId, ldapServerConfiguration.securityCredential()));
+				companyId,
+				SecretContext.createConfigurationSecretContext(
+					"securityCredential",
+					_ldapServerConfigurationProvider.getConfigurationProperties(
+						companyId, ldapServerId)),
+				ldapServerConfiguration.securityCredential()));
 	}
 
 	@Override

@@ -6,7 +6,8 @@
 package com.liferay.sharepoint.rest.repository.internal.document.library.repository.authorization.oauth2;
 
 import com.liferay.document.library.repository.authorization.oauth2.Token;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.sharepoint.rest.repository.internal.configuration.SharepointRepositoryConfiguration;
 
@@ -27,6 +28,7 @@ import java.net.URL;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -37,8 +39,10 @@ import java.util.concurrent.ExecutionException;
 public class SharepointRepositoryTokenBroker {
 
 	public SharepointRepositoryTokenBroker(
+		Map<String, Object> properties,
 		SharepointRepositoryConfiguration sharepointRepositoryConfiguration) {
 
+		_properties = properties;
 		_sharepointRepositoryConfiguration = sharepointRepositoryConfiguration;
 	}
 
@@ -121,11 +125,15 @@ public class SharepointRepositoryTokenBroker {
 	private ConfidentialClientApplication _getConfidentialClientApplication()
 		throws MalformedURLException {
 
+		long companyId = GetterUtil.getLong(_properties.get("companyId"));
+
 		return ConfidentialClientApplication.builder(
 			_sharepointRepositoryConfiguration.clientId(),
 			ClientCredentialFactory.createFromSecret(
 				SecretResolverUtil.resolve(
-					CompanyThreadLocal.getCompanyId(),
+					companyId,
+					SecretContext.createConfigurationSecretContext(
+						"clientSecret", _properties),
 					_sharepointRepositoryConfiguration.clientSecret()))
 		).authority(
 			"https://login.microsoftonline.com/" +
@@ -147,6 +155,7 @@ public class SharepointRepositoryTokenBroker {
 		return iterator.next();
 	}
 
+	private final Map<String, Object> _properties;
 	private final SharepointRepositoryConfiguration
 		_sharepointRepositoryConfiguration;
 

@@ -63,6 +63,7 @@ import java.net.MalformedURLException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -71,11 +72,13 @@ import java.util.concurrent.ExecutionException;
 public class SharepointExtRepository implements ExtRepository {
 
 	public SharepointExtRepository(
-		TokenStore tokenStore,
-		SharepointRepositoryConfiguration sharepointRepositoryConfiguration) {
+		Map<String, Object> properties,
+		SharepointRepositoryConfiguration sharepointRepositoryConfiguration,
+		TokenStore tokenStore) {
 
-		_tokenStore = tokenStore;
+		_properties = properties;
 		_sharepointRepositoryConfiguration = sharepointRepositoryConfiguration;
+		_tokenStore = tokenStore;
 	}
 
 	@Override
@@ -706,7 +709,7 @@ public class SharepointExtRepository implements ExtRepository {
 		try {
 			SharepointRepositoryTokenBroker sharepointRepositoryTokenBroker =
 				SharepointRepositoryTokenBrokerFactoryUtil.create(
-					_sharepointRepositoryConfiguration);
+					_properties, _sharepointRepositoryConfiguration);
 
 			SharepointRepositoryAuthenticationResult
 				sharepointRepositoryAuthenticationResult =
@@ -928,6 +931,7 @@ public class SharepointExtRepository implements ExtRepository {
 		"8413cd39-2156-4e00-b54d-11efd9abdb89";
 
 	private String _libraryPath;
+	private final Map<String, Object> _properties;
 	private ExtRepositoryFolder _rootFolder;
 	private final SharepointRepositoryConfiguration
 		_sharepointRepositoryConfiguration;

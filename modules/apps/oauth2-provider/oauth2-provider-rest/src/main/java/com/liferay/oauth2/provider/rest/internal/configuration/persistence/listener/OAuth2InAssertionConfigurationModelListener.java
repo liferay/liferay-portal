@@ -13,6 +13,7 @@ import com.liferay.portal.configuration.persistence.listener.ConfigurationModelL
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.util.Dictionary;
@@ -46,7 +47,11 @@ public class OAuth2InAssertionConfigurationModelListener
 				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()),
 			CompanyConstants.SYSTEM);
 
-		jwks = _secretResolver.resolve(companyId, jwks);
+		jwks = _secretResolver.resolve(
+			companyId,
+			SecretContext.createConfigurationSecretContext(
+				"oauth2.in.assertion.signature.json.web.key.set", properties),
+			jwks);
 
 		try {
 			OAuth2JWKValidatorUtil.validateJWKS(jwks);

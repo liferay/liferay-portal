@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.translation.translator.google.cloud.internal.configuration.GoogleCloudTranslatorConfiguration;
 
@@ -49,7 +50,10 @@ public class GoogleCloudTranslatorConfigurationModelListener
 			CompanyConstants.SYSTEM);
 
 		serviceAccountPrivateKey = _secretResolver.resolve(
-			companyId, serviceAccountPrivateKey);
+			companyId,
+			SecretContext.createConfigurationSecretContext(
+				"serviceAccountPrivateKey", properties),
+			serviceAccountPrivateKey);
 
 		if (enabled && !_isValid(serviceAccountPrivateKey)) {
 			throw new ConfigurationModelListenerException(

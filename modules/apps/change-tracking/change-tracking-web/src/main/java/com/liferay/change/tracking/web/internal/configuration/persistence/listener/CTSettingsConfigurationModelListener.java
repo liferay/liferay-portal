@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.util.ArrayList;
@@ -275,7 +276,11 @@ public class CTSettingsConfigurationModelListener
 			properties.put("remoteClientSecret", clientSecret);
 		}
 
-		clientSecret = _secretResolver.resolve(companyId, clientSecret);
+		clientSecret = _secretResolver.resolve(
+			companyId,
+			SecretContext.createConfigurationSecretContext(
+				"remoteClientSecret", properties),
+			clientSecret);
 
 		_oAuth2ApplicationLocalService.addOAuth2Application(
 			companyId, user.getUserId(), user.getScreenName(),

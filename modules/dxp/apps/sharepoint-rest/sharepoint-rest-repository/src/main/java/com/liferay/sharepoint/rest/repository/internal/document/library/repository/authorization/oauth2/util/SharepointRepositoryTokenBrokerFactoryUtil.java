@@ -12,7 +12,10 @@ import com.liferay.sharepoint.rest.repository.internal.document.library.reposito
 
 import java.io.IOException;
 
+import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.osgi.framework.InvalidSyntaxException;
@@ -41,7 +44,14 @@ public class SharepointRepositoryTokenBrokerFactoryUtil {
 				String name = (String)properties.get("name");
 
 				if ((name != null) && name.equals(configurationPid)) {
+					Map<String, Object> propertiesMap = new HashMap<>();
+
+					for (String key : Collections.list(properties.keys())) {
+						propertiesMap.put(key, properties.get(key));
+					}
+
 					return create(
+						propertiesMap,
 						ConfigurableUtil.createConfigurable(
 							SharepointRepositoryConfiguration.class,
 							properties));
@@ -57,10 +67,11 @@ public class SharepointRepositoryTokenBrokerFactoryUtil {
 	}
 
 	public static SharepointRepositoryTokenBroker create(
+		Map<String, Object> properties,
 		SharepointRepositoryConfiguration sharepointRepositoryConfiguration) {
 
 		return new SharepointRepositoryTokenBroker(
-			sharepointRepositoryConfiguration);
+			properties, sharepointRepositoryConfiguration);
 	}
 
 }

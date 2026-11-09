@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.search.opensearch2.configuration.OpenSearchConnectionConfiguration;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.util.Collection;
@@ -101,6 +102,10 @@ public class OpenSearchConnectionsHolderImpl
 		OpenSearchConnection.Builder openSearchConnectionBuilder =
 			new OpenSearchConnection.Builder();
 
+		SecretContext passwordSecretContext =
+			SecretContext.createConfigurationSecretContext(
+				"password", properties);
+
 		addOpenSearchConnection(
 			openSearchConnectionBuilder.active(
 				openSearchConnectionConfiguration.active()
@@ -120,13 +125,15 @@ public class OpenSearchConnectionsHolderImpl
 				openSearchConnectionConfiguration.networkHostAddresses()
 			).password(
 				_secretResolver.resolve(
-					CompanyConstants.SYSTEM,
+					CompanyConstants.SYSTEM, passwordSecretContext,
 					openSearchConnectionConfiguration.password())
 			).proxyConfig(
-				createProxyConfig(openSearchConnectionConfiguration)
+				createProxyConfig(openSearchConnectionConfiguration, properties)
 			).truststorePassword(
 				_secretResolver.resolve(
 					CompanyConstants.SYSTEM,
+					SecretContext.createConfigurationSecretContext(
+						"truststorePassword", properties),
 					openSearchConnectionConfiguration.truststorePassword())
 			).truststorePath(
 				openSearchConnectionConfiguration.truststorePath()
@@ -138,7 +145,8 @@ public class OpenSearchConnectionsHolderImpl
 	}
 
 	protected ProxyConfig createProxyConfig(
-		OpenSearchConnectionConfiguration openSearchConnectionConfiguration) {
+		OpenSearchConnectionConfiguration openSearchConnectionConfiguration,
+		Map<String, Object> properties) {
 
 		ProxyConfig.Builder proxyConfigBuilder = ProxyConfig.builder(http);
 
@@ -149,6 +157,8 @@ public class OpenSearchConnectionsHolderImpl
 		).password(
 			_secretResolver.resolve(
 				CompanyConstants.SYSTEM,
+				SecretContext.createConfigurationSecretContext(
+					"proxyPassword", properties),
 				openSearchConnectionConfiguration.proxyPassword())
 		).port(
 			openSearchConnectionConfiguration.proxyPort()

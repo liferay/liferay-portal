@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -534,6 +535,9 @@ public class LiferayJWTBearerGrantHandler extends BaseAccessTokenGrantHandler {
 				JsonWebKeys jsonWebKeys = JwkUtils.readJwkSet(
 					_secretResolver.resolve(
 						companyId,
+						SecretContext.createConfigurationSecretContext(
+							"oauth2.in.assertion.signature.json.web.key.set",
+							properties),
 						oAuth2InAssertionConfiguration.
 							signatureJSONWebKeySet()));
 

@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.util.PortalInstances;
 
@@ -49,6 +50,8 @@ public class PortalInstancesConfigurationFactory {
 
 		String adminPassword = _secretResolver.resolve(
 			CompanyConstants.SYSTEM,
+			SecretContext.createConfigurationSecretContext(
+				"adminPassword", properties),
 			portalInstancesConfiguration.adminPassword());
 
 		DependencyManagerSyncUtil.registerSyncCallable(

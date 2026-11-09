@@ -9,6 +9,7 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConnectionConfiguration;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.util.Map;
@@ -37,6 +38,10 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 			new ElasticsearchConnection.Builder(
 				elasticsearchConnectionConfiguration::networkHostAddresses);
 
+		SecretContext passwordSecretContext =
+			SecretContext.createConfigurationSecretContext(
+				"password", properties);
+
 		builder.active(
 			elasticsearchConnectionConfiguration.active()
 		).authenticationEnabled(
@@ -53,13 +58,15 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 			elasticsearchConnectionConfiguration.maxConnectionsPerRoute()
 		).password(
 			_secretResolver.resolve(
-				CompanyConstants.SYSTEM,
+				CompanyConstants.SYSTEM, passwordSecretContext,
 				elasticsearchConnectionConfiguration.password())
 		).proxyConfig(
-			createProxyConfig(elasticsearchConnectionConfiguration)
+			createProxyConfig(elasticsearchConnectionConfiguration, properties)
 		).truststorePassword(
 			_secretResolver.resolve(
 				CompanyConstants.SYSTEM,
+				SecretContext.createConfigurationSecretContext(
+					"truststorePassword", properties),
 				elasticsearchConnectionConfiguration.truststorePassword())
 		).truststorePath(
 			elasticsearchConnectionConfiguration.truststorePath()
@@ -75,7 +82,8 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 
 	protected ProxyConfig createProxyConfig(
 		ElasticsearchConnectionConfiguration
-			elasticsearchConnectionConfiguration) {
+			elasticsearchConnectionConfiguration,
+		Map<String, Object> properties) {
 
 		ProxyConfig.Builder proxyConfigBuilder = ProxyConfig.builder(http);
 
@@ -86,6 +94,8 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 		).password(
 			_secretResolver.resolve(
 				CompanyConstants.SYSTEM,
+				SecretContext.createConfigurationSecretContext(
+					"proxyPassword", properties),
 				elasticsearchConnectionConfiguration.proxyPassword())
 		).port(
 			elasticsearchConnectionConfiguration.proxyPort()
