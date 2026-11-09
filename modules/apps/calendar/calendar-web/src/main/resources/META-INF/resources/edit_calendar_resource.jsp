@@ -61,7 +61,7 @@ if (calendarResource != null) {
 							</c:if>
 						</c:when>
 						<c:otherwise>
-							<aui:input name="code" type="resource" value='<%= ParamUtil.getString(request, "code", calendarResource.getCode()) %>' />
+							<aui:input name="code" type="resource" value='<%= ParamUtil.getString(request, "code", GetterUtil.get(calendarResource, CalendarResource::getCode, StringPool.BLANK)) %>' />
 						</c:otherwise>
 					</c:choose>
 
