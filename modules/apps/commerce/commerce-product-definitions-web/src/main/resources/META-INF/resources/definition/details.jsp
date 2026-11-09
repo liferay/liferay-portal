@@ -63,7 +63,7 @@ if (cpDefinition.getExpirationDate() != null) {
 					for (CommerceCatalog curCommerceCatalog : commerceCatalogs) {
 					%>
 
-						<aui:option label="<%= HtmlUtil.escape(curCommerceCatalog.getName()) %>" selected="<%= cpDefinitionsDisplayContext.isSelectedCatalog(curCommerceCatalog) %>" value="<%= curCommerceCatalog.getGroupId() %>" />
+						<aui:option data-languageId="<%= HtmlUtil.escapeAttribute(curCommerceCatalog.getCatalogDefaultLanguageId()) %>" label="<%= HtmlUtil.escape(curCommerceCatalog.getName()) %>" selected="<%= cpDefinitionsDisplayContext.isSelectedCatalog(curCommerceCatalog) %>" value="<%= curCommerceCatalog.getGroupId() %>" />
 
 					<%
 					}
@@ -201,3 +201,23 @@ if (cpDefinition.getExpirationDate() != null) {
 		</div>
 	</div>
 </aui:form>
+
+<c:if test="<%= cpDefinition == null %>">
+	<liferay-frontend:component
+		context='<%=
+			HashMapBuilder.<String, Object>put(
+				"namespace", liferayPortletResponse.getNamespace()
+			).build()
+		%>'
+		module="{debounceDetails} from commerce-product-definitions-web"
+	/>
+
+	<liferay-frontend:component
+		context='<%=
+			HashMapBuilder.<String, Object>put(
+				"portletNamespace", liferayPortletResponse.getNamespace()
+			).build()
+		%>'
+		module="{changeLocalizedInputs} from commerce-product-definitions-web"
+	/>
+</c:if>
