@@ -19,7 +19,7 @@ if ((corEntry != null) && (corEntry.getExpirationDate() != null)) {
 	neverExpire = false;
 }
 
-String type = ParamUtil.getString(renderRequest, "type", GetterUtil.get(corEntry, COREntry::getType, COREntryConstants.TYPE_MINIMUM_ORDER_AMOUNT));
+String type = BeanParamUtil.getString(corEntry, renderRequest, "type", COREntryConstants.TYPE_MINIMUM_ORDER_AMOUNT);
 %>
 
 <portlet:actionURL name="/cor_entry/edit_cor_entry" var="editCOREntryActionURL" />
