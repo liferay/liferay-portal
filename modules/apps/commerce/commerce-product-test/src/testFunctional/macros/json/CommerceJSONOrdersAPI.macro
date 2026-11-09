@@ -202,41 +202,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _addCommerceOrderItem(productSKU = null) {
-		var baseURL = ${baseURL};
-
-		if (!(isSet(baseURL))) {
-			var baseURL = JSONCompany.getPortalURL();
-		}
-
-		if (!(isSet(quantity))) {
-			var quantity = 1;
-		}
-
-		var skuId = CommerceJSONProductsAPI._getSKUId(productSKU = ${productSKU});
-		var orderId = CommerceJSONOrdersAPI._getCommerceOrder();
-
-		echo("SKU id: ${skuId}");
-
-		echo("Order id: ${orderId}");
-
-		var userLoginInfo = JSONUtil2.formatJSONUser();
-
-		var curl = '''
-			${baseURL}/o/headless-commerce-admin-order/v1.0/orders/${orderId}/orderItems \
-				-u ${userLoginInfo} \
-				-H 'accept: application/json' \
-				-H 'Content-Type: application/json' \
-				-d '{
-					"quantity": "${quantity}",
-					"skuId": "${skuId}"
-				}'
-		''';
-
-		com.liferay.poshi.runner.util.JSONCurlUtil.post(${curl});
-	}
-
-	@summary = "Default summary"
 	macro _addCommerceOrderNote(content = null) {
 		Variables.assertDefined(parameterList = ${content});
 

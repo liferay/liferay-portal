@@ -837,41 +837,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editPaymentMethod(eligiblePaymentMethods = null, notEligiblePaymentMethods = null, paymentMethod = null) {
-		Click(
-			key_titleName = "Payment Method",
-			locator1 = "CommerceOrders#ORDER_DETAILS_EDIT_BUTTON");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
-		if (isSet(eligiblePaymentMethods)) {
-			for (var eligiblePaymentMethod : list ${eligiblePaymentMethods}) {
-				AssertElementPresent(
-					key_radioOption = ${eligiblePaymentMethod},
-					locator1 = "CommerceEntry#RADIO_BUTTON_SPECIFIC");
-			}
-		}
-
-		if (isSet(notEligiblePaymentMethods)) {
-			for (var notEligiblePaymentMethod : list ${notEligiblePaymentMethods}) {
-				AssertElementNotPresent(
-					key_radioOption = ${notEligiblePaymentMethod},
-					locator1 = "CommerceEntry#RADIO_BUTTON_SPECIFIC");
-			}
-		}
-
-		Click.clickAtNotVisible(
-			key_radioOption = ${paymentMethod},
-			locator1 = "CommerceEntry#RADIO_BUTTON_SPECIFIC");
-
-		IFrame.selectTopFrame();
-
-		Click(
-			key_text = "Submit",
-			locator1 = "Modal#MODAL_FOOTER_BUTTON");
-	}
-
-	@summary = "Default summary"
 	macro editPaymentStatus(paymentStatus = null) {
 		Click(
 			key_titleName = "Payment Status",
