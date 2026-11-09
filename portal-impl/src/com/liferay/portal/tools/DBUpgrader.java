@@ -689,16 +689,8 @@ public class DBUpgrader {
 			company -> {
 				long companyId = company.getCompanyId();
 
-				String keyString = CompanyKeyResolverUtil.generateKey(
-					companyId);
-
-				if (CompanyKeyResolverUtil.isWrappedKey(company.getKey()) &&
-					!CompanyKeyResolverUtil.isWrappedKey(keyString)) {
-
-					throw new IllegalStateException(
-						"Unable to wrap the regenerated key for company " +
-							companyId);
-				}
+				String keyString = CompanyKeyResolverUtil.regenerateKey(
+					companyId, company.getKey());
 
 				try (Connection connection = DataAccess.getConnection();
 

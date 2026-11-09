@@ -553,9 +553,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	public void checkCompanyKey(long companyId) throws PortalException {
 		Company company = companyPersistence.findByPrimaryKey(companyId);
 
-		String key = company.getKey();
-
-		if (Validator.isNull(key)) {
+		if (Validator.isNull(company.getKey())) {
 			company.setKey(_generateKey(companyId));
 
 			_companyInfoPersistence.update(company.getCompanyInfo());
@@ -563,12 +561,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			return;
 		}
 
-		if (PropsValues.FIPS_ENABLED &&
-			!CompanyKeyResolverUtil.isFIPSKey(key)) {
-
-			CompanyKeyResolverUtil.rotateKey(
-				company, keyString -> _updateKey(companyId, keyString));
-		}
+		CompanyKeyResolverUtil.rotateKey(
+			company, key -> _updateKey(companyId, key));
 	}
 
 	@Override

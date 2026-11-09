@@ -56,23 +56,31 @@ public class CompanyKeyResolverUtil {
 		return false;
 	}
 
+	public static String regenerateKey(long companyId, String keyString)
+		throws EncryptorException {
+
+		String regeneratedKeyString = generateKey(companyId);
+
+		if (isWrappedKey(keyString) && !isWrappedKey(regeneratedKeyString)) {
+			throw new CompanyKeyException(
+				"Unable to wrap the regenerated key for company " + companyId);
+		}
+
+		return regeneratedKeyString;
+	}
+
 	public static void rotateKey(
 		Company company,
 		UnsafeFunction<String, Boolean, Throwable> unsafeFunction) {
 
+		if (!_isRefusedKey(company.getKey())) {
+			return;
+		}
+
 		long companyId = company.getCompanyId();
 
 		try {
-			String keyString = generateKey(companyId);
-
-			if (isWrappedKey(company.getKey()) && !isWrappedKey(keyString)) {
-				throw new CompanyKeyException(
-					StringBundler.concat(
-						"Unable to wrap the rotated key for company ",
-						companyId, " because its current key is wrapped and ",
-						"the key manager's company-kek-identifier is not ",
-						"available"));
-			}
+			String keyString = regenerateKey(companyId, company.getKey());
 
 			if (unsafeFunction.apply(keyString)) {
 				if (_log.isInfoEnabled()) {
@@ -106,7 +114,7 @@ public class CompanyKeyResolverUtil {
 	}
 
 	public static Key unwrapKey(long companyId, String keyString) {
-		if (PropsValues.FIPS_ENABLED && !isFIPSKey(keyString)) {
+		if (_isRefusedKey(keyString)) {
 			throw new CompanyKeyException(
 				StringBundler.concat(
 					"The key of company ", companyId,
@@ -151,6 +159,14 @@ public class CompanyKeyResolverUtil {
 
 		return keyString.substring(
 			_FIPS_KEY_PREFIX.length(), keyString.length() - 1);
+	}
+
+	private static boolean _isRefusedKey(String keyString) {
+		if (PropsValues.FIPS_ENABLED && !isFIPSKey(keyString)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final String _FIPS_KEY_PREFIX = "${fipsKey:";

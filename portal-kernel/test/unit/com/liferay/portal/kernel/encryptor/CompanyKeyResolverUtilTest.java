@@ -111,6 +111,77 @@ public class CompanyKeyResolverUtilTest {
 	}
 
 	@Test
+	public void testRegenerateKey() throws Exception {
+		Encryptor encryptor = Mockito.mock(Encryptor.class);
+		Key key = Mockito.mock(Key.class);
+
+		Mockito.when(
+			encryptor.generateKey()
+		).thenReturn(
+			key
+		);
+
+		String keyString = RandomTestUtil.randomString();
+
+		Mockito.when(
+			encryptor.serializeKey(key)
+		).thenReturn(
+			keyString
+		);
+
+		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
+			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(null)) {
+
+			Assert.assertEquals(
+				keyString,
+				CompanyKeyResolverUtil.regenerateKey(
+					_COMPANY_ID, RandomTestUtil.randomString()));
+
+			try {
+				CompanyKeyResolverUtil.regenerateKey(
+					_COMPANY_ID,
+					_WRAPPED_KEY_PREFIX + RandomTestUtil.randomString());
+
+				Assert.fail();
+			}
+			catch (CompanyKeyException companyKeyException) {
+				String message = companyKeyException.getMessage();
+
+				Assert.assertTrue(
+					message.contains(String.valueOf(_COMPANY_ID)));
+			}
+		}
+
+		CompanyKeyResolver companyKeyResolver = Mockito.mock(
+			CompanyKeyResolver.class);
+
+		Mockito.when(
+			companyKeyResolver.isEnabled(_COMPANY_ID)
+		).thenReturn(
+			true
+		);
+
+		keyString = _WRAPPED_KEY_PREFIX + RandomTestUtil.randomString();
+
+		Mockito.when(
+			companyKeyResolver.wrapKey(_COMPANY_ID, key)
+		).thenReturn(
+			keyString
+		);
+
+		try (AutoCloseable autoCloseable1 = _setEncryptor(encryptor);
+			AutoCloseable autoCloseable2 = _setCompanyKeyResolver(
+				companyKeyResolver)) {
+
+			Assert.assertEquals(
+				keyString,
+				CompanyKeyResolverUtil.regenerateKey(
+					_COMPANY_ID,
+					_WRAPPED_KEY_PREFIX + RandomTestUtil.randomString()));
+		}
+	}
+
+	@Test
 	public void testRotateKey() throws Exception {
 		Encryptor encryptor = Mockito.mock(Encryptor.class);
 		Key key = Mockito.mock(Key.class);
@@ -137,6 +208,21 @@ public class CompanyKeyResolverUtilTest {
 			SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
+
+			Assert.assertNull(
+				_rotateKey(
+					_FIPS_KEY_PREFIX + RandomTestUtil.randomString() + "}",
+					rotatedKeyString -> true, RandomTestUtil.randomString()));
+
+			try (SafeCloseable fipsSafeCloseable =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"FIPS_ENABLED", false)) {
+
+				Assert.assertNull(
+					_rotateKey(
+						RandomTestUtil.randomString(), rotatedKeyString -> true,
+						RandomTestUtil.randomString()));
+			}
 
 			List<String> keyStrings = new ArrayList<>();
 
@@ -379,7 +465,11 @@ public class CompanyKeyResolverUtilTest {
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+			Assert.assertTrue(logEntries.toString(), logEntries.size() <= 1);
+
+			if (logEntries.isEmpty()) {
+				return null;
+			}
 
 			return logEntries.get(0);
 		}
