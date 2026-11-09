@@ -92,8 +92,8 @@ public class UpdatePasswordMVCActionCommand extends BaseMVCActionCommand {
 				user, actionRequest, "reminderQueryQuestion");
 
 			if (reminderQueryQuestion.equals(UsersAdminUtil.CUSTOM_QUESTION)) {
-				reminderQueryQuestion = BeanParamUtil.getStringSilent(
-					user, actionRequest, "reminderQueryCustomQuestion");
+				reminderQueryQuestion = ParamUtil.getString(
+					actionRequest, "reminderQueryCustomQuestion");
 			}
 
 			String reminderQueryAnswer = BeanParamUtil.getString(
