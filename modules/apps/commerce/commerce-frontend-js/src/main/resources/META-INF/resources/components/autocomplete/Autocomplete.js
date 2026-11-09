@@ -134,6 +134,12 @@ function Autocomplete({onChange, onItemsUpdated, onValueUpdated, ...props}) {
 	}, [props.infiniteScrollMode, query]);
 
 	useEffect(() => {
+		if (props.disabled && props.infiniteScrollMode) {
+			setPage(1);
+		}
+	}, [props.disabled, props.infiniteScrollMode]);
+
+	useEffect(() => {
 		if (!props.autoload && (!query || query.trim().length <= 0)) {
 			return;
 		}
