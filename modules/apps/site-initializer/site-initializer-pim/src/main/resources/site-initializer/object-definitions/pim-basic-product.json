@@ -306,6 +306,26 @@
 							],
 							"priority": 1,
 							"type": "regular"
+						},
+						{
+							"collapsable": false,
+							"name": {
+								"en_US": "repeatable-group-images"
+							},
+							"objectLayoutRows": [
+							],
+							"priority": 2,
+							"type": "regular"
+						},
+						{
+							"collapsable": false,
+							"name": {
+								"en_US": "repeatable-group-attachments"
+							},
+							"objectLayoutRows": [
+							],
+							"priority": 3,
+							"type": "regular"
 						}
 					],
 					"priority": 0
@@ -372,6 +392,34 @@
 		}
 	],
 	"objectRelationships": [
+		{
+			"deletionType": "cascade",
+			"edge": true,
+			"externalReferenceCode": "L_PIM_BASIC_PRODUCT_TO_ATTACHMENTS",
+			"label": {
+				"en_US": "Attachments"
+			},
+			"name": "attachments",
+			"objectDefinitionExternalReferenceCode1": "L_PIM_BASIC_PRODUCT",
+			"objectDefinitionExternalReferenceCode2": "L_PIM_BASIC_PRODUCT_ATTACHMENT",
+			"reverse": false,
+			"system": true,
+			"type": "oneToMany"
+		},
+		{
+			"deletionType": "cascade",
+			"edge": true,
+			"externalReferenceCode": "L_PIM_BASIC_PRODUCT_TO_IMAGES",
+			"label": {
+				"en_US": "Images"
+			},
+			"name": "images",
+			"objectDefinitionExternalReferenceCode1": "L_PIM_BASIC_PRODUCT",
+			"objectDefinitionExternalReferenceCode2": "L_PIM_BASIC_PRODUCT_IMAGE",
+			"reverse": false,
+			"system": true,
+			"type": "oneToMany"
+		}
 	],
 	"panelCategoryKey": "",
 	"pluralLabel": {

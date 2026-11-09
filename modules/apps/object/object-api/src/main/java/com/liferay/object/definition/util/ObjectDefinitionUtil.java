@@ -269,6 +269,10 @@ public class ObjectDefinitionUtil {
 		).put(
 			"PIMBasicProduct", "/pim/basic-products"
 		).put(
+			"PIMBasicProductAttachment", "/pim/basic-product-attachments"
+		).put(
+			"PIMBasicProductImage", "/pim/basic-product-images"
+		).put(
 			"PIMCatalog", "/pim/catalogs"
 		).put(
 			"PIMConnector", "/pim/connectors"

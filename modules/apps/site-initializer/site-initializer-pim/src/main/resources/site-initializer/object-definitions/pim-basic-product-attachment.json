@@ -1,0 +1,93 @@
+{
+	"className": "com.liferay.object.model.ObjectDefinition#A7T1",
+	"enableCategorization": false,
+	"enableComments": false,
+	"enableFriendlyURLCustomization": false,
+	"enableIndexSearch": false,
+	"enableLocalization": true,
+	"enableObjectEntryDraft": true,
+	"enableObjectEntryHistory": true,
+	"enableObjectEntrySchedule": true,
+	"enableObjectEntrySubscription": false,
+	"enableObjectEntryVersioning": true,
+	"externalReferenceCode": "L_PIM_BASIC_PRODUCT_ATTACHMENT",
+	"label": {
+		"en_US": "Attachments"
+	},
+	"modifiable": true,
+	"name": "PIMBasicProductAttachment",
+	"objectActions": [
+	],
+	"objectDefinitionSettings": [
+		{
+			"name": "acceptAllGroups",
+			"value": "true"
+		},
+		{
+			"name": "allowStandaloneObjectEntry",
+			"value": "false"
+		}
+	],
+	"objectFields": [
+		{
+			"DBType": "Long",
+			"businessType": "Attachment",
+			"externalReferenceCode": "ATTACHMENT",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Attachment"
+			},
+			"name": "attachment",
+			"objectFieldSettings": [
+				{
+					"name": "acceptedFileExtensions",
+					"value": "doc, docx, pdf, xls, xlsx"
+				},
+				{
+					"name": "fileSource",
+					"value": "userComputerToCMSBasicDocument"
+				},
+				{
+					"name": "maximumFileSize",
+					"value": "100"
+				},
+				{
+					"name": "showFilesInLibrary",
+					"value": "false"
+				}
+			],
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "TITLE",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Title"
+			},
+			"localized": true,
+			"name": "title",
+			"required": false,
+			"system": true
+		}
+	],
+	"objectFolderExternalReferenceCode": "L_CMS_STRUCTURE_REPEATABLE_GROUPS",
+	"objectLayouts": [
+	],
+	"objectRelationships": [
+	],
+	"panelCategoryKey": "",
+	"pluralLabel": {
+		"en_US": "Attachments"
+	},
+	"scope": "depot",
+	"system": true,
+	"titleObjectFieldName": "title",
+	"updateStrategy": "UPDATE"
+}

@@ -1,0 +1,93 @@
+{
+	"className": "com.liferay.object.model.ObjectDefinition#I1M1",
+	"enableCategorization": false,
+	"enableComments": false,
+	"enableFriendlyURLCustomization": false,
+	"enableIndexSearch": false,
+	"enableLocalization": true,
+	"enableObjectEntryDraft": true,
+	"enableObjectEntryHistory": true,
+	"enableObjectEntrySchedule": true,
+	"enableObjectEntrySubscription": false,
+	"enableObjectEntryVersioning": true,
+	"externalReferenceCode": "L_PIM_BASIC_PRODUCT_IMAGE",
+	"label": {
+		"en_US": "Images"
+	},
+	"modifiable": true,
+	"name": "PIMBasicProductImage",
+	"objectActions": [
+	],
+	"objectDefinitionSettings": [
+		{
+			"name": "acceptAllGroups",
+			"value": "true"
+		},
+		{
+			"name": "allowStandaloneObjectEntry",
+			"value": "false"
+		}
+	],
+	"objectFields": [
+		{
+			"DBType": "Long",
+			"businessType": "Attachment",
+			"externalReferenceCode": "IMAGE",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Image"
+			},
+			"name": "image",
+			"objectFieldSettings": [
+				{
+					"name": "acceptedFileExtensions",
+					"value": "jpeg, jpg, png"
+				},
+				{
+					"name": "fileSource",
+					"value": "userComputerToCMSBasicDocument"
+				},
+				{
+					"name": "maximumFileSize",
+					"value": "15"
+				},
+				{
+					"name": "showFilesInLibrary",
+					"value": "false"
+				}
+			],
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "TITLE",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Title"
+			},
+			"localized": true,
+			"name": "title",
+			"required": false,
+			"system": true
+		}
+	],
+	"objectFolderExternalReferenceCode": "L_CMS_STRUCTURE_REPEATABLE_GROUPS",
+	"objectLayouts": [
+	],
+	"objectRelationships": [
+	],
+	"panelCategoryKey": "",
+	"pluralLabel": {
+		"en_US": "Images"
+	},
+	"scope": "depot",
+	"system": true,
+	"titleObjectFieldName": "title",
+	"updateStrategy": "UPDATE"
+}
