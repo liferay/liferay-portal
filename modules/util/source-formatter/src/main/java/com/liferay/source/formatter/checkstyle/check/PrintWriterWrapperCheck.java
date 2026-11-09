@@ -14,7 +14,6 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Shuyang Zhou
@@ -214,7 +213,7 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 				getAllChildTokens(
 					objBlockDetailAST, false, TokenTypes.VARIABLE_DEF)) {
 
-			if (Objects.equals(
+			if (StringUtil.equals(
 					detailAST.getText(),
 					getName(variableDefinitionDetailAST))) {
 
