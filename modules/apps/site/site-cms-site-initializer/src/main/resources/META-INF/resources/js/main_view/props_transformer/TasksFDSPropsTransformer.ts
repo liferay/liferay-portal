@@ -8,8 +8,8 @@ import {DateRenderer, IInternalRenderer} from '@liferay/frontend-data-set-web';
 import {openCMSModal} from '../../common/utils/openCMSModal';
 import AssignToModalContent from '../home/modal/AssignToModalContent';
 import UpdateDueDateModalContent from '../home/modal/UpdateDueDateModalContent';
-import AssetTitleActionLinkRenderer from './cell_renderers/AssetTitleActionLinkRenderer';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
+import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
 import TaskStatusRenderer from './cell_renderers/TaskStatusRenderer';
 
 export default function TasksFDSPropsTransformer({
@@ -23,11 +23,6 @@ export default function TasksFDSPropsTransformer({
 		customRenderers: {
 			tableCell: [
 				{
-					component: AssetTitleActionLinkRenderer,
-					name: 'assetTitleTableCellRenderer',
-					type: 'internal',
-				} as IInternalRenderer,
-				{
 					component: AuthorRenderer,
 					name: 'authorTableCellRenderer',
 					type: 'internal',
@@ -36,6 +31,15 @@ export default function TasksFDSPropsTransformer({
 					component: ({itemData}) =>
 						DateRenderer({value: itemData.embedded?.dateDue}),
 					name: 'dueDateTableCellRenderer',
+					type: 'internal',
+				} as IInternalRenderer,
+				{
+					component: (props: any) =>
+						SimpleActionLinkRenderer({
+							...props,
+							requiresUpdatePermission: false,
+						}),
+					name: 'simpleActionLinkTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 				{

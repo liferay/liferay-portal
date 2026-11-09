@@ -35,7 +35,7 @@ public class TasksSectionCMSTableFDSView extends BaseCMSTableFDSView {
 			fdsTableSchemaField -> fdsTableSchemaField.setActionId(
 				"actionLinkWorkflowTask"
 			).setContentRenderer(
-				"assetTitleTableCellRenderer"
+				"simpleActionLinkTableCellRenderer"
 			)
 		).add(
 			"embedded.objectReviewed.assetType", "asset-type"
