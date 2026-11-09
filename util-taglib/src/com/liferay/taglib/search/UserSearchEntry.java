@@ -5,6 +5,7 @@
 
 package com.liferay.taglib.search;
 
+import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 
@@ -21,6 +22,15 @@ import java.util.Date;
  * @author Eudaldo Alonso
  */
 public class UserSearchEntry extends TextSearchEntry {
+
+	@Override
+	public Object clone() {
+		UserSearchEntry userSearchEntry = new UserSearchEntry();
+
+		BeanPropertiesUtil.copyProperties(this, userSearchEntry);
+
+		return userSearchEntry;
+	}
 
 	public Date getDate() {
 		return _date;

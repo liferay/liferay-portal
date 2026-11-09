@@ -5,6 +5,7 @@
 
 package com.liferay.taglib.search;
 
+import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
@@ -24,6 +25,15 @@ public class IconSearchEntry extends TextSearchEntry {
 
 	public static String getPage() {
 		return _PAGE;
+	}
+
+	@Override
+	public Object clone() {
+		IconSearchEntry iconSearchEntry = new IconSearchEntry();
+
+		BeanPropertiesUtil.copyProperties(this, iconSearchEntry);
+
+		return iconSearchEntry;
 	}
 
 	@Override
