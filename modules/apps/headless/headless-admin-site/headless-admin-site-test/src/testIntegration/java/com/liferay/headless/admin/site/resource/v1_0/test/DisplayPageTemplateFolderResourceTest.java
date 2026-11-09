@@ -363,9 +363,8 @@ public class DisplayPageTemplateFolderResourceTest
 		_testPostSiteDisplayPageTemplateFolderWithInvalidKey(
 			postDisplayPageTemplateFolder.getKey(), "CONFLICT",
 			StringBundler.concat(
-				"Duplicate display page template folder for group ",
-				testGroup.getGroupId(), " with key ",
-				postDisplayPageTemplateFolder.getKey()));
+				"A display page template folder with the key \"",
+				postDisplayPageTemplateFolder.getKey(), "\" already exists"));
 
 		String key =
 			RandomTestUtil.randomString() + StringPool.AMPERSAND +
@@ -374,16 +373,31 @@ public class DisplayPageTemplateFolderResourceTest
 		_testPostSiteDisplayPageTemplateFolderWithInvalidKey(
 			key, "BAD_REQUEST",
 			StringBundler.concat(
-				"Key ", key,
-				" must contain only alphanumeric characters, dashes, and ",
-				"underscores"));
+				"The key \"", key,
+				"\" of the display page template folder must contain only ",
+				"alphanumeric characters, dashes, and underscores"));
 
 		key = RandomTestUtil.randomString(80);
 
 		_testPostSiteDisplayPageTemplateFolderWithInvalidKey(
 			key, "BAD_REQUEST",
 			StringBundler.concat(
-				"Key ", key, " must have fewer than 75 characters"));
+				"The key \"", key,
+				"\" of the display page template folder must not exceed 75 ",
+				"characters"));
+
+		_testPostSiteDisplayPageTemplateFolderWithInvalidName(
+			RandomTestUtil.randomString(300), "BAD_REQUEST",
+			"The name of the display page template folder must not exceed 75 " +
+				"characters");
+		_testPostSiteDisplayPageTemplateFolderWithInvalidName(
+			null, "BAD_REQUEST",
+			"A name is required for the display page template folder");
+		_testPostSiteDisplayPageTemplateFolderWithInvalidName(
+			postDisplayPageTemplateFolder.getName(), "CONFLICT",
+			StringBundler.concat(
+				"A display page template folder with the name \"",
+				postDisplayPageTemplateFolder.getName(), "\" already exists"));
 
 		DisplayPageTemplateFolder displayPageTemplateFolder =
 			randomDisplayPageTemplateFolder();
@@ -995,6 +1009,24 @@ public class DisplayPageTemplateFolderResourceTest
 		displayPageTemplateFolder.setKey(key);
 
 		ProblemExceptionTestUtil.assertProblemException(
+			status, title,
+			() ->
+				displayPageTemplateFolderResource.
+					postSiteDisplayPageTemplateFolder(
+						testGroup.getExternalReferenceCode(),
+						displayPageTemplateFolder));
+	}
+
+	private void _testPostSiteDisplayPageTemplateFolderWithInvalidName(
+			String name, String status, String title)
+		throws Exception {
+
+		DisplayPageTemplateFolder displayPageTemplateFolder =
+			randomDisplayPageTemplateFolder();
+
+		displayPageTemplateFolder.setName(name);
+
+		_assertProblemException(
 			status, title,
 			() ->
 				displayPageTemplateFolderResource.
