@@ -344,10 +344,14 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 								actionId, ActionKeys.ASSIGN_MEMBERS) &&
 							!Objects.equals(
 								subtype, DepotRolesConstants.SUBTYPE_PROJECT) &&
-							Objects.equals(
+							(Objects.equals(
 								DepotRoleNameUtil.getAdministratorRoleName(
 									getCompanyId(), subtype),
-								role.getName())) {
+								role.getName()) ||
+							 Objects.equals(
+								 DepotRoleNameUtil.getOwnerRoleName(
+									 getCompanyId(), subtype),
+								 role.getName()))) {
 
 							return null;
 						}
