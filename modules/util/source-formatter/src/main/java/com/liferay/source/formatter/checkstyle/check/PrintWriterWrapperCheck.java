@@ -150,7 +150,7 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 			}
 		}
 
-		log(literalNewDetailAST, _MSG_WRITE_DIRECTLY);
+		log(literalNewDetailAST, _MSG_AVOID_PRINT_WRITER_WRAPPER);
 	}
 
 	private void _checkAssignment(
@@ -181,7 +181,7 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 		if (typeName.equals("Writer") ||
 			_isPrintOnly(variableDefinitionDetailAST)) {
 
-			log(detailAST, _MSG_WRITE_DIRECTLY);
+			log(detailAST, _MSG_AVOID_PRINT_WRITER_WRAPPER);
 		}
 	}
 
@@ -289,6 +289,7 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 		return false;
 	}
 
-	private static final String _MSG_WRITE_DIRECTLY = "writer.write.directly";
+	private static final String _MSG_AVOID_PRINT_WRITER_WRAPPER =
+		"print.writer.wrapper.avoid";
 
 }

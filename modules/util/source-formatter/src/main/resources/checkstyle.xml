@@ -799,7 +799,7 @@
 		<module name="com.liferay.source.formatter.checkstyle.check.PrintWriterWrapperCheck">
 			<property name="category" value="Performance" />
 			<property name="description" value="Finds a `PrintWriter` or `UnsyncPrintWriter` that only wraps another writer or stream to print to it, which should write to the wrapped writer directly instead." />
-			<message key="writer.write.directly" value="Write to the wrapped &quot;Writer&quot; or the response writer directly, or use an &quot;OutputStreamWriter&quot; with an explicit charset for a stream, instead of a &quot;PrintWriter&quot; that only prints" />
+			<message key="print.writer.wrapper.avoid" value="Write to the wrapped &quot;Writer&quot; or the response writer directly, or use an &quot;OutputStreamWriter&quot; with an explicit charset for a stream, instead of a &quot;PrintWriter&quot; that only prints" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.RecordClassCheck">
 			<property name="category" value="Performance" />
