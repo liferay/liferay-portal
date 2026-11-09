@@ -10,7 +10,7 @@ CommercePriceList commercePriceList = commercePriceEntry.getCommercePriceList();
 
 CommerceCurrency commerceCurrency = commercePriceList.getCommerceCurrency();
 
-boolean priceOnApplication = ParamUtil.getBoolean(request, "priceOnApplication", commercePriceEntry.isPriceOnApplication());
+boolean priceOnApplication = BeanParamUtil.getBoolean(commercePriceEntry, request, "priceOnApplication", false);
 %>
 
 <commerce-ui:panel
@@ -48,7 +48,7 @@ boolean priceOnApplication = ParamUtil.getBoolean(request, "priceOnApplication",
 		</liferay-ui:error>
 
 		<%
-		boolean discountDiscovery = ParamUtil.getBoolean(request, "discountDiscovery", commercePriceEntry.isDiscountDiscovery());
+		boolean discountDiscovery = BeanParamUtil.getBoolean(commercePriceEntry, request, "discountDiscovery", true);
 		%>
 
 		<div class="row">
