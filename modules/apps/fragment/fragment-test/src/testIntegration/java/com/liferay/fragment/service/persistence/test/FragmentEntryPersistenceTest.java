@@ -373,7 +373,8 @@ public class FragmentEntryPersistenceTest {
 		Assert.assertEquals(
 			Time.getShortTimestamp(fragmentEntry.getLastPublishDate()),
 			Time.getShortTimestamp(draftFragmentEntry.getLastPublishDate()));
-		Assert.assertEquals(2, draftFragmentEntry.getStatus());
+		Assert.assertEquals(
+			fragmentEntry.getStatus(), draftFragmentEntry.getStatus());
 		Assert.assertEquals(
 			fragmentEntry.getStatusByUserId(),
 			draftFragmentEntry.getStatusByUserId());
@@ -1140,4 +1141,4 @@ public class FragmentEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1636049288
+// LIFERAY-SERVICE-BUILDER-HASH:1691531155
