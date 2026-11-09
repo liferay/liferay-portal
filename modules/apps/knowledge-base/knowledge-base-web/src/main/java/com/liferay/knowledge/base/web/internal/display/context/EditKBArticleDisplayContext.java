@@ -23,7 +23,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -83,6 +82,18 @@ public class EditKBArticleDisplayContext {
 						liferayPortletRequest, liferayPortletResponse))));
 		_themeDisplay = (ThemeDisplay)liferayPortletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		KBTemplate kbTemplate = (KBTemplate)liferayPortletRequest.getAttribute(
+			KBWebKeys.KNOWLEDGE_BASE_KB_TEMPLATE);
+
+		if (kbTemplate == null) {
+			_kbTemplateContent = StringPool.BLANK;
+			_kbTemplateTitle = StringPool.BLANK;
+		}
+		else {
+			_kbTemplateContent = kbTemplate.getContent();
+			_kbTemplateTitle = kbTemplate.getTitle();
+		}
 	}
 
 	public Map<String, String> getAvailableKBArticleSections()
@@ -136,8 +147,7 @@ public class EditKBArticleDisplayContext {
 	public String getContent() {
 		return BeanParamUtil.getString(
 			getKBArticle(), _liferayPortletRequest, "content",
-			KBArticle::getContent,
-			BeanPropertiesUtil.getString(_getKBTemplate(), "content"));
+			KBArticle::getContent, _kbTemplateContent);
 	}
 
 	public String getDatePickerFormattedDisplayDate() {
@@ -257,8 +267,7 @@ public class EditKBArticleDisplayContext {
 	public String getKBArticleTitle() {
 		return BeanParamUtil.getString(
 			getKBArticle(), _liferayPortletRequest, "title",
-			KBArticle::getTitle,
-			BeanPropertiesUtil.getString(_getKBTemplate(), "title"));
+			KBArticle::getTitle, _kbTemplateTitle);
 	}
 
 	public String getKBArticleURLTitle() {
@@ -547,12 +556,17 @@ public class EditKBArticleDisplayContext {
 			kbSectionPortletInstanceConfiguration =
 				_getKBSectionPortletInstanceConfiguration();
 
-		_sections = AdminUtil.unescapeSections(
-			BeanPropertiesUtil.getString(
-				getKBArticle(), "sections",
-				StringUtil.merge(
-					kbSectionPortletInstanceConfiguration.
-						adminKBArticleSectionsDefault())));
+		String sections = StringUtil.merge(
+			kbSectionPortletInstanceConfiguration.
+				adminKBArticleSectionsDefault());
+
+		KBArticle kbArticle = getKBArticle();
+
+		if (kbArticle != null) {
+			sections = kbArticle.getSections();
+		}
+
+		_sections = AdminUtil.unescapeSections(sections);
 
 		return _sections;
 	}
@@ -572,23 +586,13 @@ public class EditKBArticleDisplayContext {
 		return _kbSectionPortletInstanceConfiguration;
 	}
 
-	private KBTemplate _getKBTemplate() {
-		if (_kbTemplate != null) {
-			return _kbTemplate;
-		}
-
-		_kbTemplate = (KBTemplate)_liferayPortletRequest.getAttribute(
-			KBWebKeys.KNOWLEDGE_BASE_KB_TEMPLATE);
-
-		return _kbTemplate;
-	}
-
 	private final HttpServletRequest _httpServletRequest;
 	private KBArticle _kbArticle;
 	private final KBGroupServiceConfiguration _kbGroupServiceConfiguration;
 	private KBSectionPortletInstanceConfiguration
 		_kbSectionPortletInstanceConfiguration;
-	private KBTemplate _kbTemplate;
+	private final String _kbTemplateContent;
+	private final String _kbTemplateTitle;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private Boolean _neverExpire;
