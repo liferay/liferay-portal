@@ -44,3 +44,22 @@ boolean limitResultCountAccuracyAvailable = FeatureFlagManagerUtil.isEnabled("LP
 		</c:if>
 	</span>
 </div>
+
+<%
+boolean maximumSearchDepthEnabled = FeatureFlagManagerUtil.isEnabled("LPD-114635");
+%>
+
+<aui:input disabled="<%= !maximumSearchDepthEnabled %>" label="maximum-search-depth" name="maximumSearchDepth" type="number" value="<%= searchResultsPortletInstanceConfiguration.maximumSearchDepth() %>" wrapperCssClass="mb-0">
+	<aui:validator name="digits" />
+	<aui:validator name="min">1</aui:validator>
+</aui:input>
+
+<div class="form-feedback-group mb-4">
+	<span class="form-help-text">
+		<liferay-ui:message key="maximum-search-depth-help" />
+
+		<c:if test="<%= !maximumSearchDepthEnabled %>">
+			<liferay-ui:message arguments='<%= LanguageUtil.get(request, "feature.flag.LPD-114635.title") %>' key="instance-settings-enable-feature-flag-help" translateArguments="<%= false %>" />
+		</c:if>
+	</span>
+</div>
