@@ -10,6 +10,7 @@ import com.liferay.object.admin.rest.dto.v1_0.util.ObjectDefinitionUtil;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.product.navigation.personal.menu.util.PersonalApplicationURLUtil;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 
@@ -125,7 +127,7 @@ public class ViewHomeWorkflowTasksDisplayContext {
 							EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
 						"')) and (status/any(x:(x eq 0)))"),
 					Collections.emptyMap()),
-				null, null);
+				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null);
 
 		_objectDefinitions = new ArrayList<>(page.getItems());
 

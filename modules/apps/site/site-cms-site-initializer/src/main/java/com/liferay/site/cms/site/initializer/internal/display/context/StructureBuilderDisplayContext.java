@@ -20,6 +20,7 @@ import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -42,6 +43,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.cms.site.initializer.internal.util.DefaultLanguageLabelsUtil;
 
@@ -365,7 +367,7 @@ public class StructureBuilderDisplayContext {
 				null, null,
 				objectDefinitionResource.toFilter(
 					sb.toString(), Collections.emptyMap()),
-				null, null);
+				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null);
 
 		_objectDefinitions = new ArrayList<>(page.getItems());
 
