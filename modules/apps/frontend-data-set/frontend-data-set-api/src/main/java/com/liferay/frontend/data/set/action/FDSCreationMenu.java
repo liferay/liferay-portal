@@ -16,10 +16,29 @@ import jakarta.servlet.http.HttpServletRequest;
  * <p>
  * Creation menu items can be nested. An item of type {@code group} renders its
  * items as a section, and an item of type {@code contextual} renders them in a
- * submenu. Give every group a {@code data.id}, because importing the frontend
- * data set into Data Set Manager with the {@code ITEM_PROXY} policy only keeps
- * the top level items that have one, together with their nested items.
+ * submenu. A {@code data.permissionKey} on a group hides the group and all its
+ * items when the permission is not granted.
  * </p>
+ *
+ * <p>
+ * Importing the frontend data set into Data Set Manager handles nested items
+ * according to {@link #getFDSEntryItemImportPolicy()}:
+ * </p>
+ *
+ * <ul>
+ * <li>
+ * {@code ITEM_PROXY}, the default, keeps only the top level items that have a
+ * {@code data.id}, together with their nested items. A group without one is
+ * skipped along with all its nested items, and only a warning is logged, so
+ * give every group a {@code data.id}.
+ * </li>
+ * <li>
+ * {@code DETACHED} imports every nested item as a separate action and drops the
+ * groups. An item without a {@code data.permissionKey} takes the one of its
+ * closest group that has one. An item with its own permission key keeps only
+ * that one, so the permission key of its groups no longer applies to it.
+ * </li>
+ * </ul>
  *
  * @author Daniel Sanz
  */
