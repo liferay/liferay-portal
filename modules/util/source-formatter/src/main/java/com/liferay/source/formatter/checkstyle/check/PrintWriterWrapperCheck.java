@@ -7,6 +7,7 @@ package com.liferay.source.formatter.checkstyle.check;
 
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -112,15 +113,16 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 			return;
 		}
 
-		String methodName = firstChildDetailAST.getText();
-
 		DetailAST objBlockDetailAST = parentDetailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
 		List<DetailAST> methodDefinitionDetailASTs = ListUtil.filter(
 			getAllChildTokens(objBlockDetailAST, false, TokenTypes.METHOD_DEF),
 			methodDefinitionDetailAST -> {
-				if (!methodName.equals(getName(methodDefinitionDetailAST))) {
+				if (!StringUtil.equals(
+						firstChildDetailAST.getText(),
+						getName(methodDefinitionDetailAST))) {
+
 					return false;
 				}
 
