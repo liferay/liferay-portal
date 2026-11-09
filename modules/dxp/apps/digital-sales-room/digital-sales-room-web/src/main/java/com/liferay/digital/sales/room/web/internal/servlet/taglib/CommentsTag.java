@@ -141,25 +141,15 @@ public class CommentsTag extends IncludeTag {
 					URLEncoder.encode(
 						objectDefinition.getClassName(),
 						StandardCharsets.UTF_8),
-					"&classPK=", group.getClassPK());
+					"&classPK=", group.getClassPK(), "&p_l_id=",
+					themeDisplay.getPlid());
 			}
 
-			if (!readOnly &&
-				modelResourcePermission.contains(
-					permissionChecker, group.getClassPK(),
-					ActionKeys.DELETE_DISCUSSION)) {
-
+			if (!readOnly) {
 				deleteCommentURL = StringBundler.concat(
 					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 					GroupConstants.CMS_FRIENDLY_URL,
 					"/delete_content_item_comment");
-			}
-
-			if (!readOnly &&
-				modelResourcePermission.contains(
-					permissionChecker, group.getClassPK(),
-					ActionKeys.UPDATE_DISCUSSION)) {
-
 				editCommentURL = StringBundler.concat(
 					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 					GroupConstants.CMS_FRIENDLY_URL,

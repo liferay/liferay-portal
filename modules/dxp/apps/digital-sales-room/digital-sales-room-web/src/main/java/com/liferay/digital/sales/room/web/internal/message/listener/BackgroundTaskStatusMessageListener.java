@@ -5,14 +5,17 @@
 
 package com.liferay.digital.sales.room.web.internal.message.listener;
 
+import com.liferay.comment.configuration.CommentGroupServiceConfiguration;
 import com.liferay.digital.sales.room.constants.DSRFolderConstants;
 import com.liferay.digital.sales.room.constants.DSRRoleConstants;
+import com.liferay.digital.sales.room.util.DSRRoomUtil;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
@@ -33,6 +36,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.io.Serializable;
@@ -114,6 +118,15 @@ public class BackgroundTaskStatusMessageListener implements MessageListener {
 					new ServiceContext());
 			}
 
+			_configurationProvider.saveGroupConfiguration(
+				CommentGroupServiceConfiguration.class, companyId,
+				group.getGroupId(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"alwaysEditableByOwner",
+					(objectEntry != null) &&
+					!DSRRoomUtil.isArchived(objectEntry)
+				).build());
+
 			_setDLFolderResourcePermissions(companyId, group);
 
 			if (group.getDefaultPublicPlid() == 0) {
@@ -189,6 +202,9 @@ public class BackgroundTaskStatusMessageListener implements MessageListener {
 
 	@Reference
 	private BackgroundTaskManager _backgroundTaskManager;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private DLFolderLocalService _dlFolderLocalService;

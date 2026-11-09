@@ -6,6 +6,7 @@
 package com.liferay.digital.sales.room.web.internal.model.listener;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
+import com.liferay.comment.configuration.CommentGroupServiceConfiguration;
 import com.liferay.digital.sales.room.constants.DSRFolderConstants;
 import com.liferay.digital.sales.room.thread.local.DSRRoomThreadLocal;
 import com.liferay.digital.sales.room.util.DSRRoomUtil;
@@ -33,6 +34,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskContextMapConstants;
@@ -67,6 +69,7 @@ import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -732,6 +735,13 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			unicodeProperties.toString(), group.isManualMembership(),
 			group.getMembershipRestriction(), group.getFriendlyURL(),
 			group.isInheritContent(), !archived, serviceContext);
+
+		_configurationProvider.saveGroupConfiguration(
+			CommentGroupServiceConfiguration.class, objectEntry.getCompanyId(),
+			group.getGroupId(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"alwaysEditableByOwner", !archived
+			).build());
 	}
 
 	private static final String _RENDERER_KEY =
@@ -755,6 +765,9 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private DLAppService _dlAppService;
