@@ -59,39 +59,10 @@ public class FileShortcutStagedModelDataHandlerTest
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testFileEntryCheckedOut() throws Exception {
-		Map<String, List<StagedModel>> dependentStagedModelsMap =
-			addDependentStagedModelsMap(stagingGroup);
-
-		List<StagedModel> fileEntries = dependentStagedModelsMap.get(
-			DLFileEntry.class.getSimpleName());
-
-		FileEntry fileEntry = (FileEntry)fileEntries.get(0);
-
-		DLAppServiceUtil.checkOutFileEntry(
-			fileEntry.getFileEntryId(),
-			ServiceContextTestUtil.getServiceContext(
-				stagingGroup.getGroupId()));
-
-		FileShortcut fileShortcut = (FileShortcut)addStagedModel(
-			stagingGroup, dependentStagedModelsMap);
-
-		initExport();
-
-		StagedModelDataHandlerUtil.exportStagedModel(
-			portletDataContext, fileShortcut);
-
-		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
-			FileShortcut exportedFileShortcut =
-				(FileShortcut)readExportedStagedModel(fileShortcut);
-
-			Assert.assertNull(exportedFileShortcut);
-		}
-	}
-
-	@Test
 	@TestInfo("LPD-113633")
-	public void testExportImportStagedModelWhenFileEntryIsInAnotherGroup() throws Exception {
+	public void testExportImportStagedModelWhenFileEntryIsInAnotherGroup()
+		throws Exception {
+
 		Group group = GroupTestUtil.addGroup();
 
 		try {
@@ -122,6 +93,37 @@ public class FileShortcutStagedModelDataHandlerTest
 		}
 		finally {
 			GroupLocalServiceUtil.deleteGroup(group);
+		}
+	}
+
+	@Test
+	public void testFileEntryCheckedOut() throws Exception {
+		Map<String, List<StagedModel>> dependentStagedModelsMap =
+			addDependentStagedModelsMap(stagingGroup);
+
+		List<StagedModel> fileEntries = dependentStagedModelsMap.get(
+			DLFileEntry.class.getSimpleName());
+
+		FileEntry fileEntry = (FileEntry)fileEntries.get(0);
+
+		DLAppServiceUtil.checkOutFileEntry(
+			fileEntry.getFileEntryId(),
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId()));
+
+		FileShortcut fileShortcut = (FileShortcut)addStagedModel(
+			stagingGroup, dependentStagedModelsMap);
+
+		initExport();
+
+		StagedModelDataHandlerUtil.exportStagedModel(
+			portletDataContext, fileShortcut);
+
+		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
+			FileShortcut exportedFileShortcut =
+				(FileShortcut)readExportedStagedModel(fileShortcut);
+
+			Assert.assertNull(exportedFileShortcut);
 		}
 	}
 
