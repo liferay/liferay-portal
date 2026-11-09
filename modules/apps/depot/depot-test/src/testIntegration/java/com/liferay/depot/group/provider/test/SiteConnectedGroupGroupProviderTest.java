@@ -67,36 +67,30 @@ public class SiteConnectedGroupGroupProviderTest {
 	public void testGetCurrentAndAncestorSiteAndDepotGroupIds()
 		throws Exception {
 
-		long[] currentAndAncestorSiteAndDepotGroupIds =
+		long[] currentAndAncestorSiteAndDepotGroupIds1 =
 			_siteConnectedGroupGroupProvider.
 				getCurrentAndAncestorSiteAndDepotGroupIds(_group.getGroupId());
 
 		Assert.assertTrue(
 			ArrayUtil.contains(
-				currentAndAncestorSiteAndDepotGroupIds,
+				currentAndAncestorSiteAndDepotGroupIds1,
 				_depotEntry.getGroupId()));
 		Assert.assertTrue(
 			ArrayUtil.contains(
-				currentAndAncestorSiteAndDepotGroupIds, _group.getGroupId()));
-	}
+				currentAndAncestorSiteAndDepotGroupIds1, _group.getGroupId()));
 
-	@Test
-	@TestInfo("LPD-109885")
-	public void testGetCurrentAndAncestorSiteAndDepotGroupIdsWithDepotGroup()
-		throws Exception {
-
-		long[] currentAndAncestorSiteAndDepotGroupIds =
+		long[] currentAndAncestorSiteAndDepotGroupIds2 =
 			_siteConnectedGroupGroupProvider.
 				getCurrentAndAncestorSiteAndDepotGroupIds(
 					_depotEntry.getGroupId());
 
 		Assert.assertTrue(
 			ArrayUtil.contains(
-				currentAndAncestorSiteAndDepotGroupIds,
+				currentAndAncestorSiteAndDepotGroupIds2,
 				_depotEntry.getGroupId()));
 		Assert.assertFalse(
 			ArrayUtil.contains(
-				currentAndAncestorSiteAndDepotGroupIds, _group.getGroupId()));
+				currentAndAncestorSiteAndDepotGroupIds2, _group.getGroupId()));
 	}
 
 	@DeleteAfterTestRun
