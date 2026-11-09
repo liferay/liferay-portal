@@ -54,9 +54,7 @@ public class ViewWorkflowTasksSectionDisplayContextTest
 		Assert.assertEquals(
 			StringBundler.concat(
 				"/o/search/v1.0/search?emptySearch=true&entryClassNames=",
-				CLASS_NAME_KALEO_TASK_INSTANCE_TOKEN,
-				"&filter=cmpTaskObjectEntryIds/any(x:x gt 0)",
-				"&nestedFields=embedded"),
+				CLASS_NAME_KALEO_TASK_INSTANCE_TOKEN, "&nestedFields=embedded"),
 			getAPIURL(null));
 	}
 
@@ -116,8 +114,7 @@ public class ViewWorkflowTasksSectionDisplayContextTest
 		Map<String, Object> emptyState = getEmptyState(null);
 
 		Assert.assertEquals(
-			"There are no workflow tasks related to your projects.",
-			emptyState.get("description"));
+			"There are no tasks.", emptyState.get("description"));
 		Assert.assertEquals(
 			"/states/cmp_empty_state_tasks.svg", emptyState.get("image"));
 		Assert.assertEquals("No Tasks", emptyState.get("title"));
