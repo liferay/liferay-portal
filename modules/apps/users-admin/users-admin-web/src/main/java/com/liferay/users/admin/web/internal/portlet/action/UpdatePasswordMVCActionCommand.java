@@ -5,7 +5,6 @@
 
 package com.liferay.users.admin.web.internal.portlet.action;
 
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.model.Company;
@@ -88,18 +87,18 @@ public class UpdatePasswordMVCActionCommand extends BaseMVCActionCommand {
 				passwordReset = true;
 			}
 
-			String reminderQueryQuestion = BeanParamUtil.getString(
-				user, actionRequest, "reminderQueryQuestion",
-				User::getReminderQueryQuestion);
+			String reminderQueryQuestion = ParamUtil.getString(
+				actionRequest, "reminderQueryQuestion",
+				user.getReminderQueryQuestion());
 
 			if (reminderQueryQuestion.equals(UsersAdminUtil.CUSTOM_QUESTION)) {
 				reminderQueryQuestion = ParamUtil.getString(
 					actionRequest, "reminderQueryCustomQuestion");
 			}
 
-			String reminderQueryAnswer = BeanParamUtil.getString(
-				user, actionRequest, "reminderQueryAnswer",
-				User::getReminderQueryAnswer);
+			String reminderQueryAnswer = ParamUtil.getString(
+				actionRequest, "reminderQueryAnswer",
+				user.getReminderQueryAnswer());
 
 			boolean passwordModified = false;
 
