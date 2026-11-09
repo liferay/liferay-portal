@@ -36,19 +36,19 @@ public class MVCRenderCommandViewTemplateCheck extends BaseFileCheck {
 			return content;
 		}
 
-		Matcher classMatcher = _renderCommandClassPattern.matcher(content);
+		Matcher matcher = _renderCommandClassPattern.matcher(content);
 
-		if (!classMatcher.find()) {
+		if (!matcher.find()) {
 			return content;
 		}
 
-		Matcher renderMatcher = _constantRenderPattern.matcher(content);
+		matcher = _constantRenderPattern.matcher(content);
 
-		if (!renderMatcher.find()) {
+		if (!matcher.find()) {
 			return content;
 		}
 
-		String path = renderMatcher.group(1);
+		String path = matcher.group(1);
 
 		addMessage(
 			fileName,
