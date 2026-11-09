@@ -14,7 +14,7 @@ JournalEditDDMStructuresDisplayContext journalEditDDMStructuresDisplayContext = 
 
 DDMStructure ddmStructure = journalEditDDMStructuresDisplayContext.getDDMStructure();
 
-long groupId = ParamUtil.getLong(request, "groupId", GetterUtil.get(ddmStructure, DDMStructure::getGroupId, scopeGroupId));
+long groupId = BeanParamUtil.getLong(ddmStructure, request, "groupId", scopeGroupId);
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);

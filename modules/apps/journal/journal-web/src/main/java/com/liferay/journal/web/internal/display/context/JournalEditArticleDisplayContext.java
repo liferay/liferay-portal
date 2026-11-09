@@ -52,6 +52,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUt
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -455,9 +456,8 @@ public class JournalEditArticleDisplayContext {
 			return _classNameId;
 		}
 
-		_classNameId = ParamUtil.getLong(
-			_httpServletRequest, "classNameId",
-			GetterUtil.get(_article, JournalArticle::getClassNameId, 0L));
+		_classNameId = BeanParamUtil.getLong(
+			_article, _httpServletRequest, "classNameId");
 
 		return _classNameId;
 	}
@@ -467,9 +467,8 @@ public class JournalEditArticleDisplayContext {
 			return _classPK;
 		}
 
-		_classPK = ParamUtil.getLong(
-			_httpServletRequest, "classPK",
-			GetterUtil.get(_article, JournalArticle::getClassPK, 0L));
+		_classPK = BeanParamUtil.getLong(
+			_article, _httpServletRequest, "classPK");
 
 		return _classPK;
 	}
@@ -730,11 +729,9 @@ public class JournalEditArticleDisplayContext {
 			return _folderId;
 		}
 
-		_folderId = ParamUtil.getLong(
-			_httpServletRequest, "folderId",
-			GetterUtil.get(
-				_article, JournalArticle::getFolderId,
-				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+		_folderId = BeanParamUtil.getLong(
+			_article, _httpServletRequest, "folderId",
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return _folderId;
 	}
@@ -922,11 +919,9 @@ public class JournalEditArticleDisplayContext {
 			return _groupId;
 		}
 
-		_groupId = ParamUtil.getLong(
-			_httpServletRequest, "groupId",
-			GetterUtil.get(
-				_article, JournalArticle::getGroupId,
-				_themeDisplay.getScopeGroupId()));
+		_groupId = BeanParamUtil.getLong(
+			_article, _httpServletRequest, "groupId",
+			_themeDisplay.getScopeGroupId());
 
 		return _groupId;
 	}
@@ -1377,11 +1372,9 @@ public class JournalEditArticleDisplayContext {
 			return _version;
 		}
 
-		_version = ParamUtil.getDouble(
-			_httpServletRequest, "version",
-			GetterUtil.get(
-				_article, JournalArticle::getVersion,
-				JournalArticleConstants.VERSION_DEFAULT));
+		_version = BeanParamUtil.getDouble(
+			_article, _httpServletRequest, "version",
+			JournalArticleConstants.VERSION_DEFAULT);
 
 		return _version;
 	}
@@ -1646,9 +1639,8 @@ public class JournalEditArticleDisplayContext {
 	}
 
 	private String _getLayoutUuid() {
-		return ParamUtil.getString(
-			_httpServletRequest, "layoutUuid",
-			GetterUtil.get(_article, JournalArticle::getLayoutUuid, null));
+		return BeanParamUtil.getString(
+			_article, _httpServletRequest, "layoutUuid", null);
 	}
 
 	private String _getLocaleDisplayNames(Locale locale, Locale... locales) {

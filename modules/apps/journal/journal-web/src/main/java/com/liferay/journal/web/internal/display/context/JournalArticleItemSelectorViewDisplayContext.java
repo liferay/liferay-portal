@@ -36,6 +36,7 @@ import com.liferay.journal.web.internal.util.JournalSearcherUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -592,11 +593,9 @@ public class JournalArticleItemSelectorViewDisplayContext {
 			return _folderId;
 		}
 
-		_folderId = ParamUtil.getLong(
-			_httpServletRequest, "folderId",
-			GetterUtil.get(
-				_getFolder(), JournalFolder::getFolderId,
-				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+		_folderId = BeanParamUtil.getLong(
+			_getFolder(), _httpServletRequest, "folderId",
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return _folderId;
 	}

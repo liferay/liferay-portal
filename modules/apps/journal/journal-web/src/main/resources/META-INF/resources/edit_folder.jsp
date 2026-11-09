@@ -12,9 +12,9 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 JournalFolder folder = journalDisplayContext.getFolder();
 
-long folderId = ParamUtil.getLong(request, "folderId", GetterUtil.get(folder, JournalFolder::getFolderId, 0L));
+long folderId = BeanParamUtil.getLong(folder, request, "folderId");
 
-long parentFolderId = ParamUtil.getLong(request, "parentFolderId", GetterUtil.get(folder, JournalFolder::getParentFolderId, JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+long parentFolderId = BeanParamUtil.getLong(folder, request, "parentFolderId", JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 boolean rootFolder = ParamUtil.getBoolean(request, "rootFolder");
 

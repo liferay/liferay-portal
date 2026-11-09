@@ -61,6 +61,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.ResultRowSplitter;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -641,11 +642,9 @@ public class JournalDisplayContext {
 			return _folderId;
 		}
 
-		_folderId = ParamUtil.getLong(
-			_httpServletRequest, "folderId",
-			GetterUtil.get(
-				getFolder(), JournalFolder::getFolderId,
-				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+		_folderId = BeanParamUtil.getLong(
+			getFolder(), _httpServletRequest, "folderId",
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return _folderId;
 	}

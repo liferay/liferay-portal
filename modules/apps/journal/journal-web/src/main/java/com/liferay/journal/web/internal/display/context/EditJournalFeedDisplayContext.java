@@ -24,6 +24,7 @@ import com.liferay.journal.web.internal.portlet.action.ActionUtil;
 import com.liferay.journal.web.internal.security.permission.resource.JournalFeedPermission;
 import com.liferay.journal.web.internal.security.permission.resource.JournalPermission;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -34,7 +35,6 @@ import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -271,10 +271,8 @@ public class EditJournalFeedDisplayContext {
 			return _feedId;
 		}
 
-		_feedId = ParamUtil.getString(
-			_httpServletRequest, "feedId",
-			GetterUtil.get(
-				_journalFeed, JournalFeed::getFeedId, StringPool.BLANK));
+		_feedId = BeanParamUtil.getString(
+			_journalFeed, _httpServletRequest, "feedId");
 
 		return _feedId;
 	}
@@ -285,16 +283,12 @@ public class EditJournalFeedDisplayContext {
 		}
 
 		_feedType = RSSUtil.getFeedType(
-			ParamUtil.getString(
-				_httpServletRequest, "feedFormat",
-				GetterUtil.get(
-					_journalFeed, JournalFeed::getFeedFormat,
-					RSSUtil.FORMAT_DEFAULT)),
-			ParamUtil.getDouble(
-				_httpServletRequest, "feedVersion",
-				GetterUtil.get(
-					_journalFeed, JournalFeed::getFeedVersion,
-					RSSUtil.VERSION_DEFAULT)));
+			BeanParamUtil.getString(
+				_journalFeed, _httpServletRequest, "feedFormat",
+				RSSUtil.FORMAT_DEFAULT),
+			BeanParamUtil.getDouble(
+				_journalFeed, _httpServletRequest, "feedVersion",
+				RSSUtil.VERSION_DEFAULT));
 
 		return _feedType;
 	}
@@ -336,11 +330,9 @@ public class EditJournalFeedDisplayContext {
 			return _groupId;
 		}
 
-		_groupId = ParamUtil.getLong(
-			_httpServletRequest, "groupId",
-			GetterUtil.get(
-				_journalFeed, JournalFeed::getGroupId,
-				_themeDisplay.getScopeGroupId()));
+		_groupId = BeanParamUtil.getLong(
+			_journalFeed, _httpServletRequest, "groupId",
+			_themeDisplay.getScopeGroupId());
 
 		return _groupId;
 	}
