@@ -11,7 +11,6 @@ import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalServiceUtil;
 import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
-import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
@@ -29,6 +28,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -205,12 +205,9 @@ public class SelectAssetDisplayPageDisplayContext {
 	}
 
 	public String getLayoutUuid() {
-		AssetEntry assetEntry = AssetEntryLocalServiceUtil.fetchEntry(
-			_classNameId, _classPK);
-
-		return ParamUtil.getString(
-			_httpServletRequest, "layoutUuid",
-			GetterUtil.get(assetEntry, AssetEntry::getLayoutUuid, null));
+		return BeanParamUtil.getString(
+			AssetEntryLocalServiceUtil.fetchEntry(_classNameId, _classPK),
+			_httpServletRequest, "layoutUuid", null);
 	}
 
 	public String getSpecificAssetDisplayPageName() throws Exception {
