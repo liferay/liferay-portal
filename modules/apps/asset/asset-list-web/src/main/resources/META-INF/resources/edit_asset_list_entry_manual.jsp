@@ -144,7 +144,7 @@ AssetListEntry assetListEntry = assetListDisplayContext.getAssetListEntry();
 					<liferay-ui:search-container-row
 						className="com.liferay.asset.list.model.AssetListEntryAssetEntryRel"
 						escapedModel="<%= true %>"
-						keyProperty="entryId"
+						keyProperty="assetEntryId"
 						modelVar="assetListEntryAssetEntryRel"
 					>
 
