@@ -6,6 +6,7 @@
 package com.liferay.saml.opensaml.integration.internal.credential;
 
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.saml.opensaml.integration.internal.util.KeyStoreUtil;
 import com.liferay.saml.runtime.configuration.SamlProviderConfiguration;
@@ -67,15 +68,25 @@ public class KeyStoreCredentialResolver extends AbstractCredentialResolver {
 		String keyStoreCredentialPassword = null;
 
 		if (entityId.equals(samlProviderConfiguration.entityId())) {
+			long companyId = CompanyThreadLocal.getCompanyId();
+
 			if (usageType == UsageType.ENCRYPTION) {
 				keyStoreCredentialPassword = SecretResolverUtil.resolve(
-					CompanyThreadLocal.getCompanyId(),
+					companyId,
+					SecretContext.createConfigurationSecretContext(
+						"saml.keystore.encryption.credential.password",
+						_samlProviderConfigurationHelper.
+							getSamlProviderConfigurationProperties()),
 					samlProviderConfiguration.
 						keyStoreEncryptionCredentialPassword());
 			}
 			else {
 				keyStoreCredentialPassword = SecretResolverUtil.resolve(
-					CompanyThreadLocal.getCompanyId(),
+					companyId,
+					SecretContext.createConfigurationSecretContext(
+						"saml.keystore.credential.password",
+						_samlProviderConfigurationHelper.
+							getSamlProviderConfigurationProperties()),
 					samlProviderConfiguration.keyStoreCredentialPassword());
 			}
 		}

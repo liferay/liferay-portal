@@ -18,10 +18,12 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -108,7 +110,9 @@ public class SamlProviderResourceImpl extends BaseSamlProviderResourceImpl {
 
 		return _updateSamlProvider(
 			samlProvider,
-			_samlProviderConfigurationHelper.getSamlProviderConfiguration());
+			_samlProviderConfigurationHelper.getSamlProviderConfiguration(),
+			_samlProviderConfigurationHelper.
+				getSamlProviderConfigurationProperties());
 	}
 
 	@Override
@@ -118,7 +122,8 @@ public class SamlProviderResourceImpl extends BaseSamlProviderResourceImpl {
 		_checkPermission();
 
 		return _updateSamlProvider(
-			samlProvider, _defaultCompanySamlProviderConfiguration);
+			samlProvider, _defaultCompanySamlProviderConfiguration,
+			_defaultCompanySamlProviderConfigurationProperties);
 	}
 
 	@Override
@@ -384,7 +389,8 @@ public class SamlProviderResourceImpl extends BaseSamlProviderResourceImpl {
 
 	private SamlProvider _updateSamlProvider(
 			SamlProvider samlProvider,
-			SamlProviderConfiguration samlProviderConfiguration)
+			SamlProviderConfiguration samlProviderConfiguration,
+			Dictionary<String, ?> samlProviderConfigurationProperties)
 		throws Exception {
 
 		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.create(
@@ -414,6 +420,9 @@ public class SamlProviderResourceImpl extends BaseSamlProviderResourceImpl {
 					samlProvider.getKeyStoreCredentialPassword(),
 					SecretResolverUtil.resolve(
 						CompanyThreadLocal.getCompanyId(),
+						SecretContext.createConfigurationSecretContext(
+							"saml.keystore.credential.password",
+							samlProviderConfigurationProperties),
 						samlProviderConfiguration.
 							keyStoreCredentialPassword())),
 				LocalEntityManager.CertificateUsage.SIGNING, entityId);
@@ -465,6 +474,9 @@ public class SamlProviderResourceImpl extends BaseSamlProviderResourceImpl {
 		ConfigurableUtil.createConfigurable(
 			SamlProviderConfiguration.class, Collections.emptyMap());
 	private String _defaultCompanySamlProviderConfigurationPid;
+	private Dictionary<String, ?>
+		_defaultCompanySamlProviderConfigurationProperties =
+			new HashMapDictionary<>();
 
 	@Reference
 	private LocalEntityManager _localEntityManager;
@@ -487,6 +499,8 @@ public class SamlProviderResourceImpl extends BaseSamlProviderResourceImpl {
 						SamlProviderConfiguration.class,
 						Collections.emptyMap());
 				_defaultCompanySamlProviderConfigurationPid = null;
+				_defaultCompanySamlProviderConfigurationProperties =
+					new HashMapDictionary<>();
 			}
 		}
 
@@ -504,6 +518,7 @@ public class SamlProviderResourceImpl extends BaseSamlProviderResourceImpl {
 					ConfigurableUtil.createConfigurable(
 						SamlProviderConfiguration.class, properties);
 				_defaultCompanySamlProviderConfigurationPid = pid;
+				_defaultCompanySamlProviderConfigurationProperties = properties;
 			}
 		}
 

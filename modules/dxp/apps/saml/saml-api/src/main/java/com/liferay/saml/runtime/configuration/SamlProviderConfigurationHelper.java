@@ -7,12 +7,16 @@ package com.liferay.saml.runtime.configuration;
 
 import com.liferay.portal.kernel.util.UnicodeProperties;
 
+import java.util.Dictionary;
+
 /**
  * @author Mika Koivisto
  */
 public interface SamlProviderConfigurationHelper {
 
 	public SamlProviderConfiguration getSamlProviderConfiguration();
+
+	public Dictionary<String, ?> getSamlProviderConfigurationProperties();
 
 	public boolean isEnabled();
 

@@ -47,20 +47,24 @@ public class SamlProviderConfigurationHelperImpl
 
 	@Override
 	public SamlProviderConfiguration getSamlProviderConfiguration() {
-		ConfigurationHolder configurationHolder =
-			_configurationHolderByCompanyId.get(
-				CompanyThreadLocal.getCompanyId());
-
-		if (configurationHolder == null) {
-			configurationHolder = _configurationHolderByCompanyId.get(
-				CompanyConstants.SYSTEM);
-		}
+		ConfigurationHolder configurationHolder = _fetchConfigurationHolder();
 
 		if (configurationHolder != null) {
 			return configurationHolder.getSamlProviderConfiguration();
 		}
 
 		return _defaultSamlProviderConfiguration;
+	}
+
+	@Override
+	public Dictionary<String, ?> getSamlProviderConfigurationProperties() {
+		ConfigurationHolder configurationHolder = _fetchConfigurationHolder();
+
+		if (configurationHolder != null) {
+			return configurationHolder.getProperties();
+		}
+
+		return new HashMapDictionary<>();
 	}
 
 	@Override
@@ -179,6 +183,19 @@ public class SamlProviderConfigurationHelperImpl
 	protected static final String FACTORY_PID =
 		"com.liferay.saml.runtime.configuration.SamlProviderConfiguration";
 
+	private ConfigurationHolder _fetchConfigurationHolder() {
+		ConfigurationHolder configurationHolder =
+			_configurationHolderByCompanyId.get(
+				CompanyThreadLocal.getCompanyId());
+
+		if (configurationHolder == null) {
+			configurationHolder = _configurationHolderByCompanyId.get(
+				CompanyConstants.SYSTEM);
+		}
+
+		return configurationHolder;
+	}
+
 	private Dictionary<String, ?> _getSystemProperties() throws Exception {
 		ConfigurationHolder configurationHolder =
 			_configurationHolderByCompanyId.get(CompanyConstants.SYSTEM);
@@ -204,7 +221,7 @@ public class SamlProviderConfigurationHelperImpl
 				SamlProviderConfiguration.class, properties);
 
 		ConfigurationHolder configurationHolder = new ConfigurationHolder(
-			samlProviderConfiguration, pid);
+			pid, properties, samlProviderConfiguration);
 
 		_configurationHolderByCompanyId.put(companyId, configurationHolder);
 
@@ -240,14 +257,20 @@ public class SamlProviderConfigurationHelperImpl
 	private class ConfigurationHolder {
 
 		public ConfigurationHolder(
-			SamlProviderConfiguration samlProviderConfiguration, String pid) {
+			String pid, Dictionary<String, ?> properties,
+			SamlProviderConfiguration samlProviderConfiguration) {
 
-			_samlProviderConfiguration = samlProviderConfiguration;
 			_pid = pid;
+			_properties = properties;
+			_samlProviderConfiguration = samlProviderConfiguration;
 		}
 
 		public String getPid() {
 			return _pid;
+		}
+
+		public Dictionary<String, ?> getProperties() {
+			return _properties;
 		}
 
 		public SamlProviderConfiguration getSamlProviderConfiguration() {
@@ -255,6 +278,7 @@ public class SamlProviderConfigurationHelperImpl
 		}
 
 		private final String _pid;
+		private final Dictionary<String, ?> _properties;
 		private final SamlProviderConfiguration _samlProviderConfiguration;
 
 	}
