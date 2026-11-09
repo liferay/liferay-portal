@@ -33,6 +33,19 @@ function main() {
 				});
 			}
 		});
+
+		panel.addEventListener(
+			'invalid',
+			() => {
+				if (button.classList.contains('collapsed')) {
+					button.classList.remove('collapsed');
+					button.setAttribute('aria-expanded', true);
+
+					panel.style.maxHeight = 'fit-content';
+				}
+			},
+			true
+		);
 	}
 }
 

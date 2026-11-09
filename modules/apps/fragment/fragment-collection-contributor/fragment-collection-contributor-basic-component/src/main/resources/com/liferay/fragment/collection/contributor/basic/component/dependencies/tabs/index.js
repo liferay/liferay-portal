@@ -135,6 +135,40 @@ function openTabPanel(event, i) {
 	}
 }
 
+function openInvalidTabPanel(event) {
+	const field = event.target;
+
+	if (field.form) {
+		const firstInvalidField = Array.from(field.form.elements).find(
+			(element) => element.willValidate && !element.validity.valid
+		);
+
+		if (firstInvalidField !== field) {
+			return;
+		}
+	}
+
+	const index = tabPanelItems.findIndex((tabPanelItem) =>
+		tabPanelItem.contains(field)
+	);
+
+	if (index === -1 || !tabPanelItems[index].classList.contains('d-none')) {
+		return;
+	}
+
+	if (dropdown.classList.contains('show')) {
+		dropdown.classList.remove('show');
+		dropdownButton.setAttribute('aria-expanded', false);
+	}
+
+	activeTab(tabItems[index]);
+	activeTabPanel(tabPanelItems[index]);
+	handleDropdownButtonName(tabItems[index]);
+	persistedTab.setId(index);
+
+	Liferay.fire('tabsFragment:activePanel', {panel: tabPanelItems[index]});
+}
+
 function main() {
 	const tabItemId = tabItems[persistedTab.getId()] ? persistedTab.getId() : 0;
 
@@ -149,6 +183,10 @@ function main() {
 	dropdownButton.addEventListener('click', function (event) {
 		handleDropdown(event);
 	});
+
+	if (!editMode) {
+		fragmentElement.addEventListener('invalid', openInvalidTabPanel, true);
+	}
 
 	activeTab(tabItems[tabItemId]);
 	activeTabPanel(tabPanelItems[tabItemId]);
