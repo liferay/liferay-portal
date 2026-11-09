@@ -58,6 +58,8 @@ public class SearchResultsPortletInstanceConfigurationRenderer
 		).put(
 			"limitResultCountAccuracy",
 			_isLimitResultCountAccuracy(httpServletRequest)
+		).put(
+			"maximumSearchDepth", _getMaximumSearchDepth(httpServletRequest)
 		).build();
 	}
 
@@ -74,6 +76,28 @@ public class SearchResultsPortletInstanceConfigurationRenderer
 		_jspRenderer.renderJSP(
 			_servletContext, httpServletRequest, httpServletResponse,
 			"/search/results/portlet_instance_configuration.jsp");
+	}
+
+	private int _getMaximumSearchDepth(HttpServletRequest httpServletRequest) {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		SearchResultsPortletInstanceConfiguration
+			searchResultsPortletInstanceConfiguration =
+				_getSearchResultsPortletInstanceConfiguration(
+					httpServletRequest);
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-114635")) {
+
+			return searchResultsPortletInstanceConfiguration.
+				maximumSearchDepth();
+		}
+
+		return ParamUtil.getInteger(
+			httpServletRequest, "maximumSearchDepth",
+			searchResultsPortletInstanceConfiguration.maximumSearchDepth());
 	}
 
 	private SearchResultsPortletInstanceConfiguration

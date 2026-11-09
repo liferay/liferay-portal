@@ -25,6 +25,9 @@ public interface SearchResultsPortletPreferences {
 	public static final String PREFERENCE_KEY_LIMIT_RESULT_COUNT_ACCURACY =
 		"limitResultCountAccuracy";
 
+	public static final String PREFERENCE_KEY_MAXIMUM_SEARCH_DEPTH =
+		"maximumSearchDepth";
+
 	public static final String PREFERENCE_KEY_PAGINATION_DELTA =
 		"paginationDelta";
 

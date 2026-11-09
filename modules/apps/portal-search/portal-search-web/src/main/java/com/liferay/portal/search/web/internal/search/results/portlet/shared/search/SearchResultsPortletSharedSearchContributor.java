@@ -75,22 +75,18 @@ public class SearchResultsPortletSharedSearchContributor
 	@Reference
 	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
-	private boolean _isLimitResultCountAccuracy(
-		PortletSharedSearchSettings portletSharedSearchSettings) {
+	private SearchResultsPortletInstanceConfiguration
+		_getSearchResultsPortletInstanceConfiguration(
+			PortletSharedSearchSettings portletSharedSearchSettings) {
 
 		try {
 			ThemeDisplay themeDisplay =
 				portletSharedSearchSettings.getThemeDisplay();
 
-			SearchResultsPortletInstanceConfiguration
-				searchResultsPortletInstanceConfiguration =
-					_configurationProvider.getPortletInstanceConfiguration(
-						SearchResultsPortletInstanceConfiguration.class,
-						themeDisplay.getLayout(),
-						portletSharedSearchSettings.getPortletId());
-
-			return searchResultsPortletInstanceConfiguration.
-				limitResultCountAccuracy();
+			return _configurationProvider.getPortletInstanceConfiguration(
+				SearchResultsPortletInstanceConfiguration.class,
+				themeDisplay.getLayout(),
+				portletSharedSearchSettings.getPortletId());
 		}
 		catch (ConfigurationException configurationException) {
 			throw new RuntimeException(configurationException);
@@ -123,9 +119,15 @@ public class SearchResultsPortletSharedSearchContributor
 		SearchContext searchContext = searchRequestBuilder.withSearchContextGet(
 			Function.identity());
 
+		SearchResultsPortletInstanceConfiguration
+			searchResultsPortletInstanceConfiguration =
+				_getSearchResultsPortletInstanceConfiguration(
+					portletSharedSearchSettings);
+
 		if (FeatureFlagManagerUtil.isEnabled(
 				searchContext.getCompanyId(), "LPD-98858") &&
-			_isLimitResultCountAccuracy(portletSharedSearchSettings)) {
+			searchResultsPortletInstanceConfiguration.
+				limitResultCountAccuracy()) {
 
 			searchRequestBuilder.trackTotalHitsLimit(
 				RESULT_COUNT_ACCURACY_LIMIT + 1);
@@ -138,6 +140,28 @@ public class SearchResultsPortletSharedSearchContributor
 		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
 			paginationStart, paginationDelta);
 
+		if (FeatureFlagManagerUtil.isEnabled(
+				searchContext.getCompanyId(), "LPD-114635")) {
+
+			int maximumSearchDepth = Math.min(
+				GetterUtil.getInteger(
+					searchContext.getAttribute(
+						_ATTRIBUTE_KEY_MAXIMUM_SEARCH_DEPTH),
+					Integer.MAX_VALUE),
+				searchResultsPortletInstanceConfiguration.maximumSearchDepth());
+
+			searchContext.setAttribute(
+				_ATTRIBUTE_KEY_MAXIMUM_SEARCH_DEPTH, maximumSearchDepth);
+
+			if (startAndEnd[1] > maximumSearchDepth) {
+				startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
+					startAndEnd[0], startAndEnd[1], maximumSearchDepth);
+
+				paginationStart = Math.min(
+					paginationStart, (startAndEnd[0] / paginationDelta) + 1);
+			}
+		}
+
 		searchContext.setEnd(startAndEnd[1]);
 		searchContext.setStart(startAndEnd[0]);
 
@@ -145,6 +169,9 @@ public class SearchResultsPortletSharedSearchContributor
 			portletSharedSearchSettings.setPaginationStart(paginationStart);
 		}
 	}
+
+	private static final String _ATTRIBUTE_KEY_MAXIMUM_SEARCH_DEPTH =
+		"searchResults.maximumSearchDepth";
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;

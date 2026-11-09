@@ -58,6 +58,10 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 		return _keywords;
 	}
 
+	public int getMaximumSearchDepth() {
+		return _searchResultsPortletInstanceConfiguration.maximumSearchDepth();
+	}
+
 	public SearchContainer<Document> getSearchContainer() {
 		return _searchContainer;
 	}
@@ -100,6 +104,11 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 	public boolean isLimitResultCountAccuracyFeatureFlagEnabled() {
 		return FeatureFlagManagerUtil.isEnabled(
 			_themeDisplay.getCompanyId(), "LPD-98858");
+	}
+
+	public boolean isMaximumSearchDepthFeatureFlagEnabled() {
+		return FeatureFlagManagerUtil.isEnabled(
+			_themeDisplay.getCompanyId(), "LPD-114635");
 	}
 
 	public boolean isRenderNothing() {
