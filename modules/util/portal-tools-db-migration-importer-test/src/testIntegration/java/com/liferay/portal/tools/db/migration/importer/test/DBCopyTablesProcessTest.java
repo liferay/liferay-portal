@@ -165,6 +165,102 @@ public class DBCopyTablesProcessTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110216")
+	public void testAddCustomPrimaryKeysAndIndexes() throws Exception {
+		_sourceDB.runSQL(
+			"create table TestTable (id INTEGER not null primary key, " +
+				"charColumn VARCHAR(75), testColumn VARCHAR(75))");
+
+		_sourceDB.runSQL(
+			new String[] {
+				"create index IX_LEFT_MATCH on TestTable (id, testColumn)",
+				"create index TestTable on TestTable (charColumn)",
+				"create unique index IX_DUPLICATE on TestTable (testColumn)",
+				"create unique index IX_UNIQUE on TestTable (testColumn, id)"
+			});
+
+		DBType dbType = _sourceDB.getDBType();
+
+		if (dbType == DBType.MYSQL) {
+			_sourceDB.runSQL(
+				"create index IX_EXPRESSION on TestTable " +
+					"((upper(testColumn)))");
+		}
+		else if (dbType == DBType.ORACLE) {
+			_sourceDB.runSQL(
+				"create index IX_EXPRESSION on TestTable (upper(testColumn))");
+		}
+		else if (dbType == DBType.SQLSERVER) {
+			_sourceDB.runSQL(
+				"create index IX_INCLUDE on TestTable (testColumn, id) " +
+					"include (charColumn)");
+		}
+
+		String[] values = RandomTestUtil.randomStrings(_TABLE_SIZE);
+
+		_insertValues(values);
+
+		DBCopyTablesProcess dbCopyTablesProcess = new DBCopyTablesProcess(
+			_sourceDataSource, _targetDataSource);
+
+		dbCopyTablesProcess.run();
+
+		try (Connection connection = _targetDataSource.getConnection()) {
+			_targetDB.runSQL(
+				connection,
+				new String[] {
+					"create index ix_left_match on testtable (id, " +
+						"left(testcolumn, 676))",
+					StringBundler.concat(
+						"insert into testtable (id, testcolumn) values (",
+						_TABLE_SIZE + 1, ", '", values[0], "')")
+				});
+		}
+
+		dbCopyTablesProcess.addCustomPrimaryKeysAndIndexes();
+
+		try (Connection connection = _targetDataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select replace(indexdef, current_schema() || '.', '') as " +
+					"indexDefinition from pg_indexes where schemaname = " +
+						"current_schema() and tablename = ? order by " +
+							"indexname")) {
+
+			preparedStatement.setString(1, _targetTableName);
+
+			List<String> indexDefinitions = new ArrayList<>();
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					indexDefinitions.add(
+						resultSet.getString("indexDefinition"));
+				}
+			}
+
+			Assert.assertEquals(
+				Arrays.asList(
+					"CREATE INDEX ix_e1d669e2 ON testtable USING btree " +
+						"(charcolumn)",
+					"CREATE INDEX ix_left_match ON testtable USING btree " +
+						"(id, \"left\"((testcolumn)::text, 676))",
+					"CREATE UNIQUE INDEX ix_unique ON testtable USING btree " +
+						"(testcolumn, id)",
+					"CREATE UNIQUE INDEX testtable_pkey ON testtable USING " +
+						"btree (id)"),
+				indexDefinitions);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110216")
+	public void testAddCustomPrimaryKeysAndIndexesInPartition()
+		throws Exception {
+
+		_testInPartition(this::testAddCustomPrimaryKeysAndIndexes);
+	}
+
+	@Test
 	public void testBigDecimalColumn() throws Exception {
 		_testColumnTypeOf(
 			Function.identity(), GetterUtil::getDouble, "BIGDECIMAL",
