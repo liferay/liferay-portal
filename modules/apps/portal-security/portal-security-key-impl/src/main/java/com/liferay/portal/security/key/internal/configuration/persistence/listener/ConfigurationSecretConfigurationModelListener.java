@@ -6,25 +6,22 @@
 package com.liferay.portal.security.key.internal.configuration.persistence.listener;
 
 import com.liferay.configuration.admin.util.ConfigurationPidUtil;
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.metatype.definitions.ExtendedMetaTypeInformation;
 import com.liferay.portal.configuration.metatype.definitions.ExtendedMetaTypeService;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
 import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
+import com.liferay.portal.security.key.internal.secret.SecretIdentifierUtil;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretManager;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
@@ -77,11 +74,8 @@ public class ConfigurationSecretConfigurationModelListener
 					continue;
 				}
 
-				long companyId = GetterUtil.getLong(
-					properties.get(
-						ExtendedObjectClassDefinition.Scope.COMPANY.
-							getPropertyKey()),
-					CompanyConstants.SYSTEM);
+				long companyId = SecretIdentifierUtil.getConfigurationCompanyId(
+					properties::get);
 
 				Enumeration<String> enumeration = properties.keys();
 
@@ -99,9 +93,11 @@ public class ConfigurationSecretConfigurationModelListener
 						continue;
 					}
 
-					String identifier = keyReference.getIdentifier();
+					String identifier =
+						SecretIdentifierUtil.buildConfigurationIdentifier(
+							key, pid, properties::get);
 
-					if (!identifier.startsWith(_IDENTIFIER_PREFIX)) {
+					if (!identifier.equals(keyReference.getIdentifier())) {
 						continue;
 					}
 
@@ -134,10 +130,8 @@ public class ConfigurationSecretConfigurationModelListener
 			return;
 		}
 
-		long companyId = GetterUtil.getLong(
-			properties.get(
-				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()),
-			CompanyConstants.SYSTEM);
+		long companyId = SecretIdentifierUtil.getConfigurationCompanyId(
+			properties::get);
 
 		for (AttributeDefinition attributeDefinition :
 				objectClassDefinition.getAttributeDefinitions(
@@ -160,11 +154,8 @@ public class ConfigurationSecretConfigurationModelListener
 					id,
 					_secretResolver.store(
 						companyId,
-						StringBundler.concat(
-							_IDENTIFIER_PREFIX,
-							StringUtil.replace(
-								pid, CharPool.TILDE, CharPool.SLASH),
-							StringPool.SLASH, companyId, StringPool.SLASH, id),
+						SecretContext.createConfigurationSecretContext(
+							id, properties),
 						value));
 			}
 			catch (Exception exception) {
@@ -260,8 +251,6 @@ public class ConfigurationSecretConfigurationModelListener
 
 		return null;
 	}
-
-	private static final String _IDENTIFIER_PREFIX = "config/";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ConfigurationSecretConfigurationModelListener.class);
