@@ -7,8 +7,8 @@ import {Page, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
-import {liferayConfig} from '../../../../liferay.config';
 import getRandomString from '../../../../utils/getRandomString';
+import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {DepotStagingPage} from '../pages/DepotStagingPage';
 
 export type StagedDepotSite = {
@@ -19,11 +19,6 @@ export type StagedDepotSite = {
 	stage: (options?: {assetLibraries?: any[]}) => Promise<void>;
 	stagedPageURL: string;
 };
-
-const STAGING_TASK_EXECUTOR_CLASS_NAMES = [
-	'com.liferay.exportimport.internal.background.task.LayoutStagingBackgroundTaskExecutor',
-	'com.liferay.exportimport.internal.background.task.PortletStagingBackgroundTaskExecutor',
-];
 
 const ASSET_PUBLISHER_WIDGET =
 	'com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet';
@@ -102,33 +97,16 @@ const stagedDepotSiteTest = mergeTests(
 
 			stagedGroupFriendlyURLs.unshift(groupFriendlyURL);
 
-			const getBackgroundTasksCount = async (completed: boolean) => {
-				let count = 0;
-
-				for (const taskExecutorClassName of STAGING_TASK_EXECUTOR_CLASS_NAMES) {
-					count += Number(
-						await apiHelpers.post(
-							`${liferayConfig.environment.baseUrl}/api/jsonws/backgroundtask.backgroundtask/get-background-tasks-count`,
-							{
-								data: new URLSearchParams({
-									completed: String(completed),
-									groupId: String(groupId),
-									taskExecutorClassName,
-								}).toString(),
-								failOnStatusCode: true,
-								headers:
-									await apiHelpers.getJSONWebServicesHeaders(),
-							}
-						)
-					);
-				}
-
-				return count;
-			};
+			await page.goto(
+				`/group${groupFriendlyURL}-staging${PORTLET_URLS.staging}`
+			);
 
 			await expect(async () => {
-				expect(await getBackgroundTasksCount(false)).toBe(0);
-				expect(await getBackgroundTasksCount(true)).toBeGreaterThan(0);
+				await page.reload();
+
+				await expect(
+					page.getByText('Successful', {exact: true}).first()
+				).toBeVisible({timeout: 2000});
 			}).toPass({timeout: 120000});
 		};
 
