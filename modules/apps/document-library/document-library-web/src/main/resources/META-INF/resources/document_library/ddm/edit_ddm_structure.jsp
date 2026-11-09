@@ -15,27 +15,20 @@ DLEditDDMStructureDisplayContext dlEditDDMStructureDisplayContext = new DLEditDD
 com.liferay.dynamic.data.mapping.model.DDMStructure ddmStructure = dlEditDDMStructureDisplayContext.getDDMStructure();
 
 long ddmStructureId = 0;
-
 long groupId = scopeGroupId;
+String title = LanguageUtil.format(request, "new-x", LanguageUtil.get(resourceBundle, "metadata-set"), false);
 
 if (ddmStructure != null) {
 	ddmStructureId = ddmStructure.getStructureId();
-
 	groupId = ddmStructure.getGroupId();
+	title = LanguageUtil.format(request, "edit-x", ddmStructure.getName(locale), false);
 }
 
 ddmStructureId = ParamUtil.getLong(request, "structureId", ddmStructureId);
-
 groupId = ParamUtil.getLong(request, "groupId", groupId);
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
-
-String title = LanguageUtil.format(request, "new-x", LanguageUtil.get(resourceBundle, "metadata-set"), false);
-
-if (ddmStructure != null) {
-	title = LanguageUtil.format(request, "edit-x", ddmStructure.getName(locale), false);
-}
 
 renderResponse.setTitle(title);
 %>

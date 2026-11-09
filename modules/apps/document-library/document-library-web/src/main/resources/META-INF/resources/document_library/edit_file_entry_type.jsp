@@ -14,10 +14,14 @@ DLFileEntryType fileEntryType = (DLFileEntryType)request.getAttribute(WebKeys.DO
 
 long fileEntryTypeId = ParamUtil.getLong(request, "fileEntryTypeId");
 
+String cmd = Constants.ADD;
 long dataDefinitionId = 0;
+String title = LanguageUtil.get(request, "new-document-type");
 
 if (fileEntryType != null) {
+	cmd = Constants.UPDATE;
 	dataDefinitionId = fileEntryType.getDataDefinitionId();
+	title = fileEntryType.getName(locale);
 }
 
 dataDefinitionId = ParamUtil.getLong(request, "dataDefinitionId", dataDefinitionId);
@@ -35,12 +39,6 @@ String languageId = ParamUtil.getString(request, "languageId", defaultLanguageId
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
 
-String title = LanguageUtil.get(request, "new-document-type");
-
-if (fileEntryType != null) {
-	title = fileEntryType.getName(locale);
-}
-
 renderResponse.setTitle(title);
 %>
 
@@ -49,7 +47,7 @@ renderResponse.setTitle(title);
 </portlet:actionURL>
 
 <aui:form action="<%= editFileEntryTypeURL %>" cssClass="edit-metadata-type-form" method="post" name="fm" onSubmit="event.preventDefault(); ">
-	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (fileEntryType == null) ? Constants.ADD : Constants.UPDATE %>" />
+	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= cmd %>" />
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="fileEntryTypeId" type="hidden" value="<%= fileEntryTypeId %>" />
 	<aui:input name="dataDefinitionId" type="hidden" value="<%= dataDefinitionId %>" />
