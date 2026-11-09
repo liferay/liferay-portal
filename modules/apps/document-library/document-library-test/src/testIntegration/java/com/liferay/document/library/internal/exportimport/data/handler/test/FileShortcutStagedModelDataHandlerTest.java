@@ -91,7 +91,7 @@ public class FileShortcutStagedModelDataHandlerTest
 
 	@Test
 	@TestInfo("LPD-113633")
-	public void testFileEntryInAnotherGroup() throws Exception {
+	public void testExportImportStagedModelWhenFileEntryIsInAnotherGroup() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
 		try {

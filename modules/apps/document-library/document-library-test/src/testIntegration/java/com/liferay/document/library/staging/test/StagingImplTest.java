@@ -575,9 +575,9 @@ public class StagingImplTest {
 		FileEntry liveFileEntry = _dlAppLocalService.getFileEntry(
 			friendlyURLEntry.getClassPK());
 
-		Assert.assertEquals(fileEntry.getUuid(), liveFileEntry.getUuid());
 		Assert.assertArrayEquals(
 			bytes, FileUtil.getBytes(liveFileEntry.getContentStream()));
+		Assert.assertEquals(fileEntry.getUuid(), liveFileEntry.getUuid());
 	}
 
 	private void _testPublishFolderMovedToRecycleBin() throws Exception {
