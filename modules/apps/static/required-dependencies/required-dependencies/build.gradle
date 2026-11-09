@@ -49,7 +49,7 @@ dependencies {
 	compileOnly group: "org.apache.felix", name: "org.apache.felix.dependencymanager.shell", version: "4.0.8"
 	compileOnly group: "org.apache.felix", name: "org.apache.felix.gogo.command", version: "1.0.2"
 	compileOnly group: "org.apache.felix", name: "org.apache.felix.gogo.shell", version: "1.1.2"
-	compileOnly group: "org.apache.johnzon", name: "johnzon-core", version: "2.0.1"
+	compileOnly group: "org.apache.johnzon", name: "johnzon-core", version: "2.2.0"
 	compileOnly group: "org.jboss.classfilewriter", name: "jboss-classfilewriter", version: "1.3.1.Final"
 	compileOnly group: "org.jboss.logging", name: "jboss-logging", version: "3.6.1.Final"
 	compileOnly group: "org.jboss.weld", name: "weld-osgi-bundle", version: "5.1.4.Final"
