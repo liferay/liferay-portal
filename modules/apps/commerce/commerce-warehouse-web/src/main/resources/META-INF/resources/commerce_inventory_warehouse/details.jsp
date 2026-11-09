@@ -12,9 +12,9 @@ CommerceInventoryWarehousesDisplayContext cIWarehousesDisplayContext = (Commerce
 
 CommerceInventoryWarehouse commerceInventoryWarehouse = cIWarehousesDisplayContext.getCommerceInventoryWarehouse();
 
-String countryTwoLettersISOCode = ParamUtil.getString(request, "countryTwoLettersISOCode", GetterUtil.get(commerceInventoryWarehouse, CommerceInventoryWarehouse::getCountryTwoLettersISOCode, StringPool.BLANK));
+String countryTwoLettersISOCode = BeanParamUtil.getString(commerceInventoryWarehouse, request, "countryTwoLettersISOCode");
 
-String commerceRegionCode = ParamUtil.getString(request, "commerceRegionCode", GetterUtil.get(commerceInventoryWarehouse, CommerceInventoryWarehouse::getCommerceRegionCode, StringPool.BLANK));
+String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, request, "commerceRegionCode");
 %>
 
 <liferay-ui:error exception="<%= CommerceGeocoderException.class %>">
