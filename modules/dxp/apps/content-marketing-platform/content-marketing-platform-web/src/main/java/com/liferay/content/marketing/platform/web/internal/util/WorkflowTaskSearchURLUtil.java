@@ -5,7 +5,6 @@
 
 package com.liferay.content.marketing.platform.web.internal.util;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 
 /**
@@ -14,10 +13,8 @@ import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 public class WorkflowTaskSearchURLUtil {
 
 	public static String getSearchURL() {
-		return StringBundler.concat(
-			"/o/search/v1.0/search?emptySearch=true&entryClassNames=",
-			KaleoTaskInstanceToken.class.getName(),
-			"&filter=cmpTaskObjectEntryIds/any(x:x gt 0)");
+		return "/o/search/v1.0/search?emptySearch=true&entryClassNames=" +
+			KaleoTaskInstanceToken.class.getName();
 	}
 
 }

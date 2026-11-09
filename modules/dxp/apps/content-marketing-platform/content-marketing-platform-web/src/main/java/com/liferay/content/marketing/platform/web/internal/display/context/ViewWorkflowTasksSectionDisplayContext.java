@@ -116,9 +116,7 @@ public class ViewWorkflowTasksSectionDisplayContext
 	public Map<String, Object> getEmptyState() {
 		return HashMapBuilder.<String, Object>put(
 			"description",
-			LanguageUtil.get(
-				httpServletRequest,
-				"there-are-no-workflow-tasks-related-to-your-projects")
+			LanguageUtil.get(httpServletRequest, "there-are-no-tasks")
 		).put(
 			"image", "/states/cmp_empty_state_tasks.svg"
 		).put(
