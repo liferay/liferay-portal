@@ -12,7 +12,7 @@ CPOptionValueDisplayContext cpOptionValueDisplayContext = (CPOptionValueDisplayC
 
 CPOptionValue cpOptionValue = (CPOptionValue)request.getAttribute(CPWebKeys.CP_OPTION_VALUE);
 
-long cpOptionValueId = ParamUtil.getLong(request, "CPOptionValueId", GetterUtil.get(cpOptionValue, CPOptionValue::getCPOptionValueId, 0L));
+long cpOptionValueId = BeanParamUtil.getLong(cpOptionValue, request, "CPOptionValueId");
 
 long cpOptionId = ParamUtil.getLong(request, "cpOptionId");
 
