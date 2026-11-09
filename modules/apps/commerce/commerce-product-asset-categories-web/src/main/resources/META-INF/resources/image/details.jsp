@@ -13,14 +13,6 @@ CategoryCPAttachmentFileEntriesDisplayContext categoryCPAttachmentFileEntriesDis
 CPAttachmentFileEntry cpAttachmentFileEntry = categoryCPAttachmentFileEntriesDisplayContext.getCPAttachmentFileEntry();
 
 long categoryId = ParamUtil.getLong(request, "categoryId");
-
-long fileEntryId = 0;
-
-if (cpAttachmentFileEntry != null) {
-	fileEntryId = cpAttachmentFileEntry.getFileEntryId();
-}
-
-fileEntryId = ParamUtil.getLong(request, "fileEntryId", fileEntryId);
 %>
 
 <liferay-ui:error-marker
@@ -39,7 +31,7 @@ fileEntryId = ParamUtil.getLong(request, "fileEntryId", fileEntryId);
 <div class="lfr-attachment-cover-image-selector">
 	<liferay-item-selector:image-selector
 		draggableImage="vertical"
-		fileEntryId="<%= fileEntryId %>"
+		fileEntryId='<%= ParamUtil.getLong(request, "fileEntryId", GetterUtil.get(cpAttachmentFileEntry, CPAttachmentFileEntry::getFileEntryId, 0L)) %>'
 		itemSelectorEventName="addCategoryCPAttachmentFileEntry"
 		itemSelectorURL="<%= categoryCPAttachmentFileEntriesDisplayContext.getItemSelectorUrl() %>"
 		maxFileSize="<%= categoryCPAttachmentFileEntriesDisplayContext.getImageMaxSize() %>"
