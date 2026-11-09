@@ -25,7 +25,6 @@ import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.display.context.helper.CPRequestHelper;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CommerceCatalogService;
-import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.ItemSelectorReturnType;
@@ -44,7 +43,6 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -87,8 +85,8 @@ public class CommerceCatalogDisplayContext {
 		CommerceCurrencyLocalService commerceCurrencyLocalService,
 		CommerceInventoryMethodRegistry commerceInventoryMethodRegistry,
 		CommercePriceListService commercePriceListService,
-		ConfigurationProvider configurationProvider, DLAppService dlAppService,
-		ItemSelector itemSelector, Portal portal) {
+		ConfigurationProvider configurationProvider, ItemSelector itemSelector,
+		Portal portal) {
 
 		_accountEntryService = accountEntryService;
 		_attachmentsConfiguration = attachmentsConfiguration;
@@ -100,7 +98,6 @@ public class CommerceCatalogDisplayContext {
 		_commerceInventoryMethodRegistry = commerceInventoryMethodRegistry;
 		_commercePriceListService = commercePriceListService;
 		_configurationProvider = configurationProvider;
-		_dlAppService = dlAppService;
 		_itemSelector = itemSelector;
 		_portal = portal;
 
@@ -238,16 +235,6 @@ public class CommerceCatalogDisplayContext {
 			baseModelSearchResult.getBaseModels();
 
 		return accountEntries.get(0);
-	}
-
-	public FileEntry getDefaultFileEntry() throws PortalException {
-		long fileEntryId = getDefaultFileEntryId();
-
-		if (fileEntryId == 0) {
-			return null;
-		}
-
-		return _dlAppService.getFileEntry(fileEntryId);
 	}
 
 	public long getDefaultFileEntryId() throws PortalException {
@@ -462,7 +449,6 @@ public class CommerceCatalogDisplayContext {
 		_commerceInventoryMethodRegistry;
 	private final CommercePriceListService _commercePriceListService;
 	private final ConfigurationProvider _configurationProvider;
-	private final DLAppService _dlAppService;
 	private final ItemSelector _itemSelector;
 	private final Portal _portal;
 

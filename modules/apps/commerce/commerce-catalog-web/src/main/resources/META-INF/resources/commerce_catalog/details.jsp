@@ -12,12 +12,11 @@ CommerceCatalogDisplayContext commerceCatalogDisplayContext = (CommerceCatalogDi
 
 CommerceCatalog commerceCatalog = commerceCatalogDisplayContext.getCommerceCatalog();
 List<CommerceCurrency> commerceCurrencies = commerceCatalogDisplayContext.getCommerceCurrencies();
-FileEntry fileEntry = commerceCatalogDisplayContext.getDefaultFileEntry();
 
 CommercePriceList baseCommercePriceList = commerceCatalogDisplayContext.getBaseCommercePriceList(CommercePriceListConstants.TYPE_PRICE_LIST);
 CommercePriceList basePromotionCommercePriceList = commerceCatalogDisplayContext.getBaseCommercePriceList(CommercePriceListConstants.TYPE_PROMOTION);
 
-long fileEntryId = BeanParamUtil.getLong(fileEntry, request, "fileEntryId", FileEntry::getFileEntryId);
+long fileEntryId = ParamUtil.getLong(request, "fileEntryId", commerceCatalogDisplayContext.getDefaultFileEntryId());
 
 boolean viewOnly = !commerceCatalogDisplayContext.hasModelResourcePermission(commerceCatalog.getCommerceCatalogId(), ActionKeys.UPDATE);
 %>
@@ -198,8 +197,6 @@ boolean viewOnly = !commerceCatalogDisplayContext.hasModelResourcePermission(com
 			>
 				<div class="row">
 					<div class="col-12 h-100">
-						<aui:model-context bean="<%= fileEntry %>" model="<%= FileEntry.class %>" />
-
 						<div class="lfr-attachment-cover-image-selector">
 							<portlet:actionURL name="/commerce_catalogs/upload_commerce_media_default_image" var="uploadCommerceMediaDefaultImageActionURL" />
 
