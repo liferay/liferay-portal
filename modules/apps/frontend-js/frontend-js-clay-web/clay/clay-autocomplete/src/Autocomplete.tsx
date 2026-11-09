@@ -712,7 +712,7 @@ function AutocompleteInner<T extends Item>(
 
 									const matchedElement =
 										menuRef.current.querySelector(
-											`#${CSS.escape(String(matchedKey))}`
+											`[id="${CSS.escape(String(matchedKey))}"]`
 										) as HTMLElement | null;
 
 									matchedElement?.click();
