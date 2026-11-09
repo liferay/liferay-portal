@@ -617,6 +617,7 @@ module.exports = {
 		'^@react-dnd/invariant$':
 			'<rootDir>/src/main/js/test/__mocks__/@react-dnd/invariant.js',
 		'^assets(.*)$': '<rootDir>/src/main/js/assets$1',
+		'^campaigns(.*)$': '<rootDir>/src/main/js/campaigns$1',
 		'^cerebro-shared(.*)$': '<rootDir>/src/main/js/cerebro-shared$1',
 		'^contacts(.*)$': '<rootDir>/src/main/js/contacts$1',
 		'^dnd-core$': 'dnd-core/dist/cjs',

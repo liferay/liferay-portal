@@ -45,6 +45,11 @@ jest.mock('../../components/MembershipsCard', () => ({
 	default: () => <div data-testid="memberships-card" />,
 }));
 
+jest.mock('../../components/CampaignUtmParameters', () => ({
+	__esModule: true,
+	default: () => <div data-testid="campaign-utm-parameters" />,
+}));
+
 const fetchCampaign = API.campaigns.fetchCampaign as jest.Mock;
 
 const renderCampaignDetail = (initialEntry = '/') =>

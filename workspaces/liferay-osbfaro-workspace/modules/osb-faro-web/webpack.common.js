@@ -53,6 +53,7 @@ const config = {
 				resolve: {
 					alias: {
 						assets: resolveModule('assets'),
+						campaigns: resolveModule('campaigns'),
 						'cerebro-shared': resolveModule('cerebro-shared'),
 						contacts: resolveModule('contacts'),
 						'custom-types': resolveModule('custom-types'),
