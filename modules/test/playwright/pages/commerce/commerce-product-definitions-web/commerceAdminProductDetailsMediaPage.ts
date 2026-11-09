@@ -12,7 +12,9 @@ import {searchTableRowByValue} from '../commerceDNDTablePage';
 export class CommerceAdminProductDetailsMediaPage {
 	readonly addAttachmentButton: Locator;
 	readonly addImageButton: Locator;
+	readonly attachmentActionsButton: (title: string) => Locator;
 	readonly creationMenuNewButton: Locator;
+	readonly deleteMenuItem: Locator;
 	readonly mediaAttachmentsTable: Locator;
 	readonly mediaForm: Locator;
 	readonly mediaImagesTable: Locator;
@@ -21,14 +23,19 @@ export class CommerceAdminProductDetailsMediaPage {
 	readonly selectFileFrame: FrameLocator;
 	readonly selectFileIframe: Locator;
 	readonly sidePanelCustomFieldInput: (fieldName: string) => Locator;
+	readonly sidePanelDoneButton: Locator;
 	readonly sidePanelFrame: FrameLocator;
+	readonly sidePanelSaveAsDraftButton: Locator;
 	readonly sidePanelTag: (tagName: string) => Locator;
 	readonly sidePanelTagOption: (tagName: string) => Locator;
+	readonly sidePanelTagRemoveButton: (tagName: string) => Locator;
 	readonly sidePanelTagsClearAllButton: Locator;
 	readonly sidePanelTagsInput: Locator;
 	readonly sidePanelTagsSelectButton: Locator;
+	readonly sidePanelTagsSelectCheckbox: (tagName: string) => Locator;
 	readonly sidePanelTagsSelectFrame: FrameLocator;
 	readonly sidePanelTagsSelectIframe: Locator;
+	readonly sidePanelTitleInput: Locator;
 	readonly tableRow: (
 		tableName: Locator,
 		colPosition: number,
@@ -50,6 +57,12 @@ export class CommerceAdminProductDetailsMediaPage {
 			.locator('.fds table')
 			.nth(1);
 		this.mediaImagesTable = this.mediaForm.locator('table').nth(0);
+		this.attachmentActionsButton = (title: string) =>
+			this.mediaForm
+				.getByRole('row')
+				.filter({hasText: title})
+				.getByRole('button', {name: 'Actions'});
+		this.deleteMenuItem = page.getByRole('menuitem', {name: 'Delete'});
 		this.page = page;
 		this.sidePanelFrame = page.frameLocator('.is-visible iframe');
 		this.selectFileButton = this.sidePanelFrame.getByRole('button', {
@@ -64,6 +77,14 @@ export class CommerceAdminProductDetailsMediaPage {
 			this.sidePanelFrame.locator(
 				`input[name*="ExpandoAttribute--${fieldName}--"]`
 			);
+		this.sidePanelDoneButton = this.sidePanelFrame.getByRole('button', {
+			exact: true,
+			name: 'Done',
+		});
+		this.sidePanelSaveAsDraftButton = this.sidePanelFrame.getByRole(
+			'button',
+			{exact: true, name: 'Save as Draft'}
+		);
 		this.sidePanelTag = (tagName: string) =>
 			this.sidePanelFrame
 				.locator('.label')
@@ -73,6 +94,8 @@ export class CommerceAdminProductDetailsMediaPage {
 				exact: true,
 				name: tagName,
 			});
+		this.sidePanelTagRemoveButton = (tagName: string) =>
+			this.sidePanelTag(tagName).getByRole('button');
 		this.sidePanelTagsClearAllButton = this.sidePanelFrame.getByRole(
 			'button',
 			{name: 'Clear All'}
@@ -89,6 +112,12 @@ export class CommerceAdminProductDetailsMediaPage {
 		);
 		this.sidePanelTagsSelectFrame =
 			this.sidePanelTagsSelectIframe.contentFrame();
+		this.sidePanelTagsSelectCheckbox = (tagName: string) =>
+			this.sidePanelTagsSelectFrame
+				.getByRole('row')
+				.filter({hasText: tagName})
+				.getByRole('checkbox');
+		this.sidePanelTitleInput = this.sidePanelFrame.getByLabel('Title');
 		this.tableRow = async (
 			table: Locator,
 			colPosition: number,
@@ -117,13 +146,13 @@ export class CommerceAdminProductDetailsMediaPage {
 		await this.page.reload();
 
 		await clickAndExpectToBeVisible({
-			target: this.sidePanelFrame.getByLabel('Title'),
+			target: this.sidePanelTitleInput,
 			trigger: this.mediaForm.getByText(title, {exact: true}),
 		});
 	}
 
 	async publishAttachment() {
-		await this.sidePanelFrame.getByLabel('Title').click();
+		await this.sidePanelTitleInput.click();
 
 		await expect(this.sidePanelFrame.getByRole('listbox')).toBeHidden();
 

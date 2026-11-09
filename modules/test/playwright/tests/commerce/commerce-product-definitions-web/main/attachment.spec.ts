@@ -316,17 +316,15 @@ test(
 					title
 				);
 
-				await commerceAdminProductDetailsMediaPage.sidePanelFrame
-					.getByLabel('Title')
-					.fill(editedTitle);
+				await commerceAdminProductDetailsMediaPage.sidePanelTitleInput.fill(
+					editedTitle
+				);
 
 				await commerceAdminProductDetailsMediaPage
 					.sidePanelCustomFieldInput(customFieldName)
 					.fill('Test');
 
-				await commerceAdminProductDetailsMediaPage.sidePanelFrame
-					.getByRole('button', {exact: true, name: 'Save as Draft'})
-					.click();
+				await commerceAdminProductDetailsMediaPage.sidePanelSaveAsDraftButton.click();
 
 				await waitForAlert(
 					commerceAdminProductDetailsMediaPage.sidePanelFrame
@@ -422,8 +420,7 @@ test(
 
 		await test.step('Remove a tag', async () => {
 			await commerceAdminProductDetailsMediaPage
-				.sidePanelTag(newTagName)
-				.getByRole('button')
+				.sidePanelTagRemoveButton(newTagName)
 				.click();
 
 			await commerceAdminProductDetailsMediaPage.publishAttachment();
@@ -438,15 +435,11 @@ test(
 					commerceAdminProductDetailsMediaPage.sidePanelTagsSelectButton,
 			});
 
-			await commerceAdminProductDetailsMediaPage.sidePanelTagsSelectFrame
-				.getByRole('row')
-				.filter({hasText: newTagName})
-				.getByRole('checkbox')
+			await commerceAdminProductDetailsMediaPage
+				.sidePanelTagsSelectCheckbox(newTagName)
 				.check();
 
-			await commerceAdminProductDetailsMediaPage.sidePanelFrame
-				.getByRole('button', {exact: true, name: 'Done'})
-				.click();
+			await commerceAdminProductDetailsMediaPage.sidePanelDoneButton.click();
 
 			await commerceAdminProductDetailsMediaPage.publishAttachment();
 
@@ -516,15 +509,11 @@ test(
 			trigger: commerceAdminProductDetailsPage.productMediaLink,
 		});
 
-		await commerceAdminProductDetailsMediaPage.mediaForm
-			.getByRole('row')
-			.filter({hasText: title})
-			.getByRole('button', {name: 'Actions'})
+		await commerceAdminProductDetailsMediaPage
+			.attachmentActionsButton(title)
 			.click();
 
-		await commerceAdminProductDetailsMediaPage.page
-			.getByRole('menuitem', {name: 'Delete'})
-			.click();
+		await commerceAdminProductDetailsMediaPage.deleteMenuItem.click();
 
 		await waitForAlert(commerceAdminProductDetailsMediaPage.page);
 
