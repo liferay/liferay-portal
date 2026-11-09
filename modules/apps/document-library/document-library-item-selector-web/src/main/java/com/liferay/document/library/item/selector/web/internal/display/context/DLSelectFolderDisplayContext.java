@@ -12,6 +12,7 @@ import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppService;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -31,7 +32,6 @@ import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.service.RepositoryLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -124,11 +124,9 @@ public class DLSelectFolderDisplayContext {
 	}
 
 	public long getFolderId() {
-		return ParamUtil.getLong(
-			_httpServletRequest, "folderId",
-			GetterUtil.get(
-				_folder, Folder::getFolderId,
-				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+		return BeanParamUtil.getLong(
+			_folder, _httpServletRequest, "folderId",
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 	}
 
 	public String getFolderName() {
