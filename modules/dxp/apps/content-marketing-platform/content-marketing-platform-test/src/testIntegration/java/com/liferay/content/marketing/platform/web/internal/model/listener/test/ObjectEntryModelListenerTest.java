@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -497,6 +498,22 @@ public class ObjectEntryModelListenerTest {
 					_depotEntry.getGroupId(), " to link its assets"),
 				throwable.getMessage());
 		}
+
+		// With no principal, a link can be repointed to an asset in its owner's
+		// space
+
+		ObjectEntry cmsBasicWebContentObjectEntry =
+			CMPTestUtil.addCMSBasicWebContentObjectEntry(
+				_depotEntry, RandomTestUtil.randomString());
+
+		PrincipalThreadLocal.setName(null);
+
+		Assert.assertNotNull(
+			_updateCMPTaskLinkObjectEntry(
+				cmpTaskLinkObjectEntry, cmsBasicWebContentObjectEntry,
+				user1.getUserId()));
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
 	}
 
 	private void _assertCompletionRate(
