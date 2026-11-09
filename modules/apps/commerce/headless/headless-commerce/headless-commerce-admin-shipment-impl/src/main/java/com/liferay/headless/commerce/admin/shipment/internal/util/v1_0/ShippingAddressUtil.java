@@ -11,13 +11,15 @@ import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceShipmentService;
 import com.liferay.headless.commerce.admin.shipment.dto.v1_0.ShippingAddress;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.service.CountryService;
 import com.liferay.portal.kernel.service.RegionService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.function.Function;
 
 /**
  * @author Riccardo Alberti
@@ -43,34 +45,45 @@ public class ShippingAddressUtil {
 		return commerceShipmentService.updateAddress(
 			shippingAddress.getExternalReferenceCode(),
 			commerceShipment.getCommerceShipmentId(),
-			GetterUtil.get(
-				shippingAddress.getName(),
-				BeanPropertiesUtil.getString(commerceAddress, "name")),
-			GetterUtil.get(
-				shippingAddress.getDescription(),
-				BeanPropertiesUtil.getString(commerceAddress, "description")),
-			GetterUtil.get(
-				shippingAddress.getStreet1(),
-				BeanPropertiesUtil.getString(commerceAddress, "street1")),
-			GetterUtil.get(
-				shippingAddress.getStreet2(),
-				BeanPropertiesUtil.getString(commerceAddress, "street2")),
-			GetterUtil.get(
-				shippingAddress.getStreet3(),
-				BeanPropertiesUtil.getString(commerceAddress, "street3")),
-			GetterUtil.get(
-				shippingAddress.getCity(),
-				BeanPropertiesUtil.getString(commerceAddress, "city")),
-			GetterUtil.get(
-				shippingAddress.getZip(),
-				BeanPropertiesUtil.getString(commerceAddress, "zip")),
+			_get(
+				commerceAddress, CommerceAddress::getName,
+				shippingAddress.getName()),
+			_get(
+				commerceAddress, CommerceAddress::getDescription,
+				shippingAddress.getDescription()),
+			_get(
+				commerceAddress, CommerceAddress::getStreet1,
+				shippingAddress.getStreet1()),
+			_get(
+				commerceAddress, CommerceAddress::getStreet2,
+				shippingAddress.getStreet2()),
+			_get(
+				commerceAddress, CommerceAddress::getStreet3,
+				shippingAddress.getStreet3()),
+			_get(
+				commerceAddress, CommerceAddress::getCity,
+				shippingAddress.getCity()),
+			_get(
+				commerceAddress, CommerceAddress::getZip,
+				shippingAddress.getZip()),
 			_getRegionId(
 				commerceAddress, country, regionService, shippingAddress),
 			_getCountryId(commerceAddress, country, shippingAddress),
-			GetterUtil.get(
-				shippingAddress.getPhoneNumber(),
-				BeanPropertiesUtil.getString(commerceAddress, "phoneNumber")),
+			_get(
+				commerceAddress, CommerceAddress::getPhoneNumber,
+				shippingAddress.getPhoneNumber()),
 			serviceContextHelper.getServiceContext());
+	}
+
+	private static String _get(
+		CommerceAddress commerceAddress,
+		Function<CommerceAddress, String> function, String value) {
+
+		if (commerceAddress == null) {
+			return GetterUtil.get(value, StringPool.BLANK);
+		}
+
+		return GetterUtil.get(value, function.apply(commerceAddress));
 	}
 
 	private static long _getCountryId(
