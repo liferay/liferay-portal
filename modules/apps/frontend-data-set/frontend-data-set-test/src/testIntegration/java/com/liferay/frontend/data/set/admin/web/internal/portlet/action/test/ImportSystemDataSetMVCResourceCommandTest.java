@@ -154,9 +154,9 @@ public class ImportSystemDataSetMVCResourceCommandTest {
 				getObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_ACTION", TestPropsValues.getCompanyId());
 
-		_assertPermissionKey(StringPool.BLANK, "headless", objectDefinition);
 		_assertPermissionKey("delete", "own", objectDefinition);
 		_assertPermissionKey("update", "plain", objectDefinition);
+		_assertPermissionKey(StringPool.BLANK, "headless", objectDefinition);
 	}
 
 	private void _assertPermissionKey(
@@ -165,8 +165,6 @@ public class ImportSystemDataSetMVCResourceCommandTest {
 
 		ObjectEntry objectEntry = _fetchDataSetActionObjectEntry(
 			id, objectDefinition);
-
-		Assert.assertNotNull(objectEntry);
 
 		Map<String, Serializable> values = objectEntry.getValues();
 

@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCResourc
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -980,7 +981,7 @@ public class ImportSystemDataSetMVCResourceCommand
 			return null;
 		}
 
-		return String.valueOf(data.get("permissionKey"));
+		return GetterUtil.getString(data.get("permissionKey"));
 	}
 
 	private boolean _hasNestedDropdownItems(DropdownItem dropdownItem) {
