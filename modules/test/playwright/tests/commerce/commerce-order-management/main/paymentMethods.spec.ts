@@ -19,9 +19,12 @@ import {
 	performUserSwitch,
 } from '../../../../utils/performLogin';
 import {
+	activateChannelPaymentMethod,
+	assignUserToNewRole,
 	configureOperationsManagerUserForSite,
 	createAccountWithBuyerUser,
 	miniumSetUp,
+	restrictChannelPaymentMethodView,
 } from '../../utils/commerce';
 
 export const test = mergeTests(
@@ -30,6 +33,76 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	loginTest()
 );
+
+async function postOrderForOperationsManager(
+	apiHelpers: DataApiHelpers,
+	operationsManagerSite: Site,
+	{
+		orderItems,
+		paymentIntegrationKeys,
+		paymentMethod,
+	}: {
+		orderItems: Array<{quantity: number; skuId: string}>;
+		paymentIntegrationKeys: string[];
+		paymentMethod: string;
+	}
+) {
+	const company =
+		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+			'liferay.com'
+		);
+
+	const orderChannel =
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			name: getRandomString(),
+		});
+
+	const paymentMethodGroupRels: {
+		[paymentIntegrationKey: string]: Awaited<
+			ReturnType<typeof activateChannelPaymentMethod>
+		>;
+	} = {};
+
+	for (const paymentIntegrationKey of paymentIntegrationKeys) {
+		paymentMethodGroupRels[paymentIntegrationKey] =
+			await activateChannelPaymentMethod(
+				apiHelpers,
+				orderChannel.id,
+				paymentIntegrationKey
+			);
+	}
+
+	const account = await apiHelpers.headlessAdminUser.postAccount({
+		name: 'Commerce Account ' + getRandomString(),
+		type: 'business',
+	});
+
+	const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+		accountId: account.id,
+		channelId: orderChannel.id,
+		orderItems,
+		orderStatus: '1',
+		paymentMethod,
+		paymentStatus: '2',
+	});
+
+	const operationsManagerUser = await configureOperationsManagerUserForSite(
+		account,
+		apiHelpers,
+		String(company.companyId),
+		operationsManagerSite,
+		[
+			{
+				actionIds: ['MANAGE_COMMERCE_ORDER_PAYMENT_METHODS'],
+				primaryKey: String(company.companyId),
+				resourceName: 'com.liferay.commerce.order',
+				scope: 1,
+			},
+		]
+	);
+
+	return {operationsManagerUser, order, paymentMethodGroupRels};
+}
 
 let channel: {id: number; name: string};
 let setupData: Array<{id: number | string; type: string}>;
@@ -443,7 +516,7 @@ test(
 
 test(
 	'Multiple active payment methods are selectable at checkout',
-	{tag: ['@LPD-85008']},
+	{tag: ['@LPD-85008', '@LPD-108800', '@LPD-110849', '@LPD-113924']},
 	async ({
 		apiHelpers,
 		checkoutPage,
@@ -507,6 +580,15 @@ test(
 			checkoutPage.paymentMethodRadio(paymentMethodKey)
 		).toBeVisible();
 		await expect(checkoutPage.paymentMethodRadio('PayPal')).toBeVisible();
+
+		await checkoutPage.paymentMethodRadio('PayPal').check();
+		await checkoutPage.continueButton.click();
+
+		await page.waitForURL((url) => url.href.includes('order-summary'));
+
+		await expect(checkoutPage.orderSummaryPaymentMethod).toContainText(
+			'PayPal'
+		);
 	}
 );
 
@@ -638,6 +720,146 @@ test(
 				'Edit'
 			)
 		).toBeVisible();
+	}
+);
+
+test(
+	'Users with the manage payment methods permission can edit the payment method of an order',
+	{tag: ['@LPD-108800', '@LPD-110849', '@LPD-113924']},
+	async ({
+		apiHelpers,
+		commerceAdminOrderDetailsPage,
+		commerceAdminOrdersPage,
+		page,
+	}) => {
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+				'U-Joint'
+			);
+
+		const {operationsManagerUser, order} =
+			await postOrderForOperationsManager(apiHelpers, site, {
+				orderItems: [{quantity: 1, skuId: String(product.skus[0].id)}],
+				paymentIntegrationKeys: ['money-order', 'paypal-integration'],
+				paymentMethod: 'money-order',
+			});
+
+		await performUserSwitch(page, operationsManagerUser.alternateName);
+
+		await commerceAdminOrdersPage.gotoOrder(order.id);
+
+		await commerceAdminOrderDetailsPage.openPaymentMethodModal();
+
+		await commerceAdminOrderDetailsPage.changePaymentMethod('PayPal');
+
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodName
+		).toContainText('PayPal');
+	}
+);
+
+test(
+	'Users with the manage payment methods permission can edit the payment method of a placed order without items',
+	{tag: ['@COMMERCE-9979', '@LPD-108800', '@LPD-110849', '@LPD-113924']},
+	async ({
+		apiHelpers,
+		commerceAdminOrderDetailsPage,
+		commerceAdminOrdersPage,
+		page,
+	}) => {
+		const {operationsManagerUser, order} =
+			await postOrderForOperationsManager(apiHelpers, site, {
+				orderItems: [],
+				paymentIntegrationKeys: ['money-order', 'paypal-integration'],
+				paymentMethod: 'money-order',
+			});
+
+		await performUserSwitch(page, operationsManagerUser.alternateName);
+
+		await commerceAdminOrdersPage.gotoOrder(order.id);
+
+		await commerceAdminOrderDetailsPage.openPaymentMethodModal();
+
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodOption('Money Order')
+		).toBeVisible();
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodOption('PayPal')
+		).toBeVisible();
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodOption('Authorize.Net')
+		).toHaveCount(0);
+
+		await commerceAdminOrderDetailsPage.changePaymentMethod('PayPal');
+
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodName
+		).toContainText('PayPal');
+	}
+);
+
+test(
+	'Users can only change the payment method of an order to the payment methods they can view',
+	{tag: ['@COMMERCE-9505', '@LPD-108800', '@LPD-110849', '@LPD-113924']},
+	async ({
+		apiHelpers,
+		commerceAdminOrderDetailsPage,
+		commerceAdminOrdersPage,
+		page,
+	}) => {
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+				'U-Joint'
+			);
+
+		const {operationsManagerUser, order, paymentMethodGroupRels} =
+			await postOrderForOperationsManager(apiHelpers, site, {
+				orderItems: [{quantity: 1, skuId: String(product.skus[0].id)}],
+				paymentIntegrationKeys: [
+					'authorize-net',
+					'money-order',
+					'paypal-integration',
+				],
+				paymentMethod: 'paypal-integration',
+			});
+
+		const operationsManagerRole = await assignUserToNewRole(
+			apiHelpers,
+			operationsManagerUser.id
+		);
+
+		await restrictChannelPaymentMethodView(
+			apiHelpers,
+			paymentMethodGroupRels['money-order'],
+			[operationsManagerRole.id]
+		);
+		await restrictChannelPaymentMethodView(
+			apiHelpers,
+			paymentMethodGroupRels['paypal-integration'],
+			[]
+		);
+
+		await performUserSwitch(page, operationsManagerUser.alternateName);
+
+		await commerceAdminOrdersPage.gotoOrder(order.id);
+
+		await commerceAdminOrderDetailsPage.openPaymentMethodModal();
+
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodOption('Authorize.Net')
+		).toBeVisible();
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodOption('Money Order')
+		).toBeVisible();
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodOption('PayPal')
+		).toHaveCount(0);
+
+		await commerceAdminOrderDetailsPage.changePaymentMethod('Money Order');
+
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodName
+		).toContainText('Money Order');
 	}
 );
 
