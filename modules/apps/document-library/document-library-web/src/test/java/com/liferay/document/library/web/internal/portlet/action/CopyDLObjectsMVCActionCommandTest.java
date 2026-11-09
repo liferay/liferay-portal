@@ -102,7 +102,7 @@ public class CopyDLObjectsMVCActionCommandTest {
 	}
 
 	@Test
-	@TestInfo("LPD-113295")
+	@TestInfo({"LPD-109885", "LPD-113295"})
 	public void testCheckDestinationGroup() throws Exception {
 		long depotGroupId = RandomTestUtil.randomLong();
 
@@ -112,6 +112,9 @@ public class CopyDLObjectsMVCActionCommandTest {
 
 		_setUpSiteGroup(siteGroupId1, new long[] {siteGroupId1, depotGroupId});
 
+		_checkDestinationGroup(
+			Mockito.mock(Group.class), new long[] {siteGroupId1, depotGroupId},
+			depotGroupId);
 		_checkDestinationGroup(
 			depotGroup, new long[] {depotGroupId}, siteGroupId1);
 
@@ -131,42 +134,10 @@ public class CopyDLObjectsMVCActionCommandTest {
 					"are-not-connected",
 				exception.getMessage());
 		}
-	}
-
-	@Test
-	@TestInfo("LPD-109885")
-	public void testCheckDestinationGroupFromDepotToConnectedSite()
-		throws Exception {
-
-		long depotGroupId = RandomTestUtil.randomLong();
-
-		_setUpDepotGroup(depotGroupId);
-
-		long siteGroupId = RandomTestUtil.randomLong();
-
-		ReflectionTestUtil.invoke(
-			_copyDLObjectsMVCActionCommand, "_checkDestinationGroup",
-			new Class<?>[] {Group.class, long[].class, long.class},
-			Mockito.mock(Group.class), new long[] {siteGroupId, depotGroupId},
-			depotGroupId);
-	}
-
-	@Test
-	@TestInfo("LPD-109885")
-	public void testCheckDestinationGroupFromDepotToUnconnectedSite()
-		throws Exception {
-
-		long depotGroupId = RandomTestUtil.randomLong();
-
-		_setUpDepotGroup(depotGroupId);
 
 		try {
-			long siteGroupId = RandomTestUtil.randomLong();
-
-			ReflectionTestUtil.invoke(
-				_copyDLObjectsMVCActionCommand, "_checkDestinationGroup",
-				new Class<?>[] {Group.class, long[].class, long.class},
-				Mockito.mock(Group.class), new long[] {siteGroupId},
+			_checkDestinationGroup(
+				Mockito.mock(Group.class), new long[] {siteGroupId2},
 				depotGroupId);
 
 			Assert.fail();
