@@ -130,7 +130,6 @@ public class FeatureFlagsBagProviderImpl
 	protected void activate(BundleContext bundleContext) {
 		_featureFlagPreferencesManager = new FeatureFlagPreferencesManager(
 			_portalPreferencesLocalService);
-
 		_serviceRegistration = bundleContext.registerService(
 			IdentifiableOSGiService.class, this, null);
 
