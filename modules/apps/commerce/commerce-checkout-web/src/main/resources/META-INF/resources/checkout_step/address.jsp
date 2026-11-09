@@ -405,19 +405,6 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 		);
 	</aui:script>
 
-	<%
-	long countryId = 0;
-	long regionId = 0;
-
-	if (currentCommerceAddress != null) {
-		countryId = currentCommerceAddress.getCountryId();
-		regionId = currentCommerceAddress.getRegionId();
-	}
-
-	countryId = ParamUtil.getLong(request, "countryId", countryId);
-	regionId = ParamUtil.getLong(request, "regionId", regionId);
-	%>
-
 	<aui:script>
 		Liferay.component(
 			'<portlet:namespace />countrySelects',
@@ -456,7 +443,8 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 					selectId: 'countryId',
 					selectNullable: <%= false %>,
 					selectSort: '<%= true %>',
-					selectVal: '<%= countryId %>',
+					selectVal:
+						'<%= ParamUtil.getLong(request, "countryId", GetterUtil.get(currentCommerceAddress, CommerceAddress::getCountryId, 0L)) %>',
 				},
 				{
 					select: '<portlet:namespace />regionId',
@@ -490,7 +478,8 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 					selectDesc: 'name',
 					selectId: 'regionId',
 					selectNullable: <%= false %>,
-					selectVal: '<%= regionId %>',
+					selectVal:
+						'<%= ParamUtil.getLong(request, "regionId", GetterUtil.get(currentCommerceAddress, CommerceAddress::getRegionId, 0L)) %>',
 				},
 			])
 		);
