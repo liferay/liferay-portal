@@ -61,7 +61,23 @@ public class FragmentLinkUtilTest extends BaseUtilTestCase {
 
 	@BeforeClass
 	public static void setUpClass() {
-		_mockDTOConverterContextAttributes();
+		Mockito.when(
+			_dtoConverterContext.getAttribute(Mockito.anyString())
+		).thenAnswer(
+			invocationOnMock -> {
+				String name = invocationOnMock.getArgument(0, String.class);
+
+				if (Objects.equals(name, "layoutPlid")) {
+					return RandomTestUtil.randomLong();
+				}
+
+				if (Objects.equals(LayoutStructure.class.getName(), name)) {
+					return Mockito.mock(LayoutStructure.class);
+				}
+
+				return null;
+			}
+		);
 
 		_stagingGroupHelperUtilMockedStatic.when(
 			StagingGroupHelperUtil::getStagingGroupHelper
@@ -994,26 +1010,6 @@ public class FragmentLinkUtilTest extends BaseUtilTestCase {
 					null, Scope.of(ITEM_GROUP_ID, LocaleUtil.getDefault())),
 				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
-	}
-
-	private static void _mockDTOConverterContextAttributes() {
-		Mockito.when(
-			_dtoConverterContext.getAttribute(Mockito.anyString())
-		).thenAnswer(
-			invocationOnMock -> {
-				String name = invocationOnMock.getArgument(0, String.class);
-
-				if (Objects.equals(name, "layoutPlid")) {
-					return RandomTestUtil.randomLong();
-				}
-
-				if (Objects.equals(LayoutStructure.class.getName(), name)) {
-					return Mockito.mock(LayoutStructure.class);
-				}
-
-				return null;
-			}
-		);
 	}
 
 	private FragmentLink _getFragmentLink(
