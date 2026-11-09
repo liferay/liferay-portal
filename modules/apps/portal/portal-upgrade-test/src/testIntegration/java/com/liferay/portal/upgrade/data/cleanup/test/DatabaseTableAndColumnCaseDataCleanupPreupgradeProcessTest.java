@@ -87,33 +87,6 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 	}
 
 	@Test
-	public void testUpgradeServiceComponentTableColumnType() throws Exception {
-		_testUpgradeWithServiceComponentTable(
-			"VARCHAR(75)", "testCOLUMN", "testTABLE", "testColumn",
-			"TestTable");
-	}
-
-	@Test
-	public void testUpgradeWithLongServiceComponentTableName()
-		throws Exception {
-
-		DatabaseMetaData databaseMetaData = _connection.getMetaData();
-
-		String invalidColumnName = _getName(
-			"testCOLUMN", databaseMetaData.getMaxColumnNameLength());
-		String invalidTableName = _getName(
-			"testTABLE", databaseMetaData.getMaxTableNameLength());
-		String testColumnName = _getName(
-			"testColumn", databaseMetaData.getMaxColumnNameLength());
-		String testTableName = _getName(
-			"TestTable", databaseMetaData.getMaxTableNameLength());
-
-		_testUpgradeWithServiceComponentTable(
-			"LONG", invalidColumnName, invalidTableName, testColumnName,
-			testTableName);
-	}
-
-	@Test
 	public void testUpgradeWithObjectDefinitionDBTable() throws Exception {
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition();
@@ -193,6 +166,19 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 	public void testUpgradeWithServiceComponentTable() throws Exception {
 		_testUpgradeWithServiceComponentTable(
 			"LONG", "testCOLUMN", "testTABLE", "testColumn", "TestTable");
+
+		DatabaseMetaData databaseMetaData = _connection.getMetaData();
+
+		_testUpgradeWithServiceComponentTable(
+			"LONG",
+			_getName("testCOLUMN", databaseMetaData.getMaxColumnNameLength()),
+			_getName("testTABLE", databaseMetaData.getMaxTableNameLength()),
+			_getName("testColumn", databaseMetaData.getMaxColumnNameLength()),
+			_getName("TestTable", databaseMetaData.getMaxTableNameLength()));
+
+		_testUpgradeWithServiceComponentTable(
+			"VARCHAR(75)", "testCOLUMN", "testTABLE", "testColumn",
+			"TestTable");
 	}
 
 	@Test
@@ -219,117 +205,13 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 	}
 
 	@Test
-	public void testValidateColumnNamesCasingCompanyTableWithDatabasePartitionDisabled()
-		throws Exception {
+	public void testValidateColumnNamesCasing() throws Exception {
+		_testValidateColumnNamesCasingCompanyTable();
 
-		Assume.assumeFalse(PropsValues.DATABASE_PARTITION_ENABLED);
+		DBType dbType = _db.getDBType();
 
-		try (Connection connection = DataAccess.getConnection()) {
-			this.connection = connection;
-
-			String columnName = "testColumn";
-			String invalidColumnName = "testCOLUMN";
-			String tableName = "Company";
-
-			_testValidateColumnNameCasing(
-				columnName,
-				StringBundler.concat(
-					"Table ", tableName, ", column ", invalidColumnName,
-					" was renamed to ", columnName, " because it was ",
-					"incorrectly cased"),
-				invalidColumnName, tableName);
-		}
-		finally {
-			this.connection = null;
-		}
-	}
-
-	@Test
-	public void testValidateColumnNamesCasingCompanyTableWithDatabasePartitionEnabled()
-		throws Exception {
-
-		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
-
-		try (Connection connection = DataAccess.getConnection()) {
-			this.connection = connection;
-
-			String columnName = "testColumn";
-			String invalidColumnName = "testCOLUMN";
-			String tableName = "Company";
-
-			_testValidateColumnNameCasing(
-				columnName,
-				StringBundler.concat(
-					"Table ", tableName, ", column ", invalidColumnName,
-					" must be manually renamed to ", columnName, " because it ",
-					"is incorrectly cased"),
-				invalidColumnName, tableName);
-		}
-		finally {
-			this.connection = null;
-		}
-	}
-
-	@Test
-	public void testValidateColumnNamesCasingMysqlWithLowerCaseTableNamesTableConfiguration()
-		throws Exception {
-
-		Assume.assumeTrue(
-			(_db.getDBType() == DBType.MARIADB) ||
-			(_db.getDBType() == DBType.MYSQL));
-
-		String columnName = "testColumn";
-		String tableName = "TestTable";
-
-		try (Connection connection = DataAccess.getConnection();
-			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.class.
-					getName(),
-				LoggerTestUtil.INFO)) {
-
-			_createTestTable(columnName, "LONG", tableName);
-
-			// When mysql is configured with lower_case_table_names = 1
-			// DatabaseMetaData.storesLowerCaseIdentifiers returns true
-
-			DatabaseMetaData proxyDatabaseMetaData =
-				ProxyUtil.newDelegateProxyInstance(
-					DatabaseMetaData.class.getClassLoader(),
-					DatabaseMetaData.class,
-					new Object() {
-
-						public boolean storesLowerCaseIdentifiers() {
-							return true;
-						}
-
-					},
-					connection.getMetaData());
-
-			Connection proxyConnection = ProxyUtil.newDelegateProxyInstance(
-				Connection.class.getClassLoader(), Connection.class,
-				new Object() {
-
-					public DatabaseMetaData getMetaData() {
-						return proxyDatabaseMetaData;
-					}
-
-				},
-				connection);
-
-			this.connection = proxyConnection;
-
-			_testValidateColumnNamesCasing(columnName, columnName, tableName);
-
-			this.connection = null;
-
-			List<String> messages = logCapture.getMessages();
-
-			Assert.assertEquals(messages.toString(), 0, messages.size());
-		}
-		finally {
-			DBPartitionUtil.forEachCompanyId(
-				companyId -> _db.runSQL(
-					"DROP_TABLE_IF_EXISTS(" + tableName + ")"));
+		if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
+			_testValidateColumnNamesCasingWithLowerCaseTableNames();
 		}
 	}
 
@@ -627,37 +509,6 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 		}
 	}
 
-	private void _testValidateColumnNameCasing(
-			String columnName, String expectedLogMessage,
-			String invalidColumnName, String tableName)
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.class.
-					getName(),
-				LoggerTestUtil.INFO)) {
-
-			String columnType = "LONG";
-
-			alterTableAddColumn(tableName, invalidColumnName, columnType);
-
-			_testValidateColumnNamesCasing(
-				invalidColumnName, columnName, tableName);
-
-			List<String> messages = logCapture.getMessages();
-
-			Assert.assertEquals(messages.toString(), 1, messages.size());
-
-			String message = messages.get(0);
-
-			Assert.assertEquals(message, expectedLogMessage, message);
-		}
-		finally {
-			alterTableDropColumn(tableName, columnName);
-			alterTableDropColumn(tableName, invalidColumnName);
-		}
-	}
-
 	private void _testValidateColumnNamesCasing(
 			String existingColumnName, String expectedColumnName,
 			String tableName)
@@ -679,6 +530,112 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 			new DBInspector(connection),
 			Collections.singletonList(expectedColumnName),
 			databaseMetaData.getMaxColumnNameLength(), tableName);
+	}
+
+	private void _testValidateColumnNamesCasingCompanyTable() throws Exception {
+		String columnName = "testColumn";
+		String invalidColumnName = "testCOLUMN";
+		String tableName = "Company";
+
+		String expectedLogMessage = StringBundler.concat(
+			"Table ", tableName, ", column ", invalidColumnName,
+			" was renamed to ", columnName, " because it was incorrectly ",
+			"cased");
+
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+			expectedLogMessage = StringBundler.concat(
+				"Table ", tableName, ", column ", invalidColumnName,
+				" must be manually renamed to ", columnName, " because it is ",
+				"incorrectly cased");
+		}
+
+		try (Connection connection = DataAccess.getConnection()) {
+			this.connection = connection;
+
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.
+						class.getName(),
+					LoggerTestUtil.INFO)) {
+
+				alterTableAddColumn(tableName, invalidColumnName, "LONG");
+
+				_testValidateColumnNamesCasing(
+					invalidColumnName, columnName, tableName);
+
+				List<String> messages = logCapture.getMessages();
+
+				Assert.assertEquals(messages.toString(), 1, messages.size());
+
+				String message = messages.get(0);
+
+				Assert.assertEquals(message, expectedLogMessage, message);
+			}
+			finally {
+				alterTableDropColumn(tableName, columnName);
+				alterTableDropColumn(tableName, invalidColumnName);
+			}
+		}
+		finally {
+			this.connection = null;
+		}
+	}
+
+	private void _testValidateColumnNamesCasingWithLowerCaseTableNames()
+		throws Exception {
+
+		String columnName = "testColumn";
+		String tableName = "TestTable";
+
+		try (Connection connection = DataAccess.getConnection();
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				DatabaseTableAndColumnCaseDataCleanupPreupgradeProcess.class.
+					getName(),
+				LoggerTestUtil.INFO)) {
+
+			_createTestTable(columnName, "LONG", tableName);
+
+			// When mysql is configured with lower_case_table_names = 1
+			// DatabaseMetaData.storesLowerCaseIdentifiers returns true
+
+			DatabaseMetaData proxyDatabaseMetaData =
+				ProxyUtil.newDelegateProxyInstance(
+					DatabaseMetaData.class.getClassLoader(),
+					DatabaseMetaData.class,
+					new Object() {
+
+						public boolean storesLowerCaseIdentifiers() {
+							return true;
+						}
+
+					},
+					connection.getMetaData());
+
+			Connection proxyConnection = ProxyUtil.newDelegateProxyInstance(
+				Connection.class.getClassLoader(), Connection.class,
+				new Object() {
+
+					public DatabaseMetaData getMetaData() {
+						return proxyDatabaseMetaData;
+					}
+
+				},
+				connection);
+
+			this.connection = proxyConnection;
+
+			_testValidateColumnNamesCasing(columnName, columnName, tableName);
+
+			this.connection = null;
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertEquals(messages.toString(), 0, messages.size());
+		}
+		finally {
+			DBPartitionUtil.forEachCompanyId(
+				companyId -> _db.runSQL(
+					"DROP_TABLE_IF_EXISTS(" + tableName + ")"));
+		}
 	}
 
 	private static final String _TEMP_SUFFIX = "_temp";
