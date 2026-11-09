@@ -122,6 +122,7 @@ page import="com.liferay.petra.string.StringBundler" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil" %><%@
 page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
+page import="com.liferay.portal.kernel.bean.BeanPropertiesUtil" %><%@
 page import="com.liferay.portal.kernel.captcha.CaptchaConfigurationException" %><%@
 page import="com.liferay.portal.kernel.captcha.CaptchaException" %><%@
 page import="com.liferay.portal.kernel.captcha.CaptchaTextException" %><%@
