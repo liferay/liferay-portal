@@ -22,6 +22,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-string")
 	compileOnly project(":dxp:apps:search-experiences:search-experiences-api")
 	compileOnly project(":dxp:apps:search-experiences:search-experiences-rest-api")
-	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.12"
 	testImplementation project(":apps:portal-search:portal-search-test-util")
 }

@@ -18,8 +18,8 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
-	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.12"
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.12"
 	testImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testImplementation project(":apps:portal-odata:portal-odata-api")
 	testImplementation project(":apps:portal-vulcan:portal-vulcan-api")
