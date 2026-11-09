@@ -5,6 +5,7 @@
 
 package com.liferay.document.library.taglib.internal.frontend.taglib.clay.servlet;
 
+import com.liferay.document.library.kernel.model.DLFileShortcut;
 import com.liferay.document.library.taglib.internal.display.context.RepositoryBrowserTagDisplayContext;
 import com.liferay.document.library.util.DLURLHelperUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
@@ -12,7 +13,6 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
 import com.liferay.petra.reflect.ReflectionUtil;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -49,6 +49,13 @@ public class FileShortcutVerticalCard implements VerticalCard {
 			repositoryBrowserTagDisplayContext;
 
 		_fileVersion = fileShortcut.getFileVersion();
+
+		if (fileShortcut.getModel() instanceof DLFileShortcut dlFileShortcut) {
+			_status = dlFileShortcut.getStatus();
+		}
+		else {
+			_status = WorkflowConstants.STATUS_APPROVED;
+		}
 	}
 
 	@Override
@@ -102,10 +109,7 @@ public class FileShortcutVerticalCard implements VerticalCard {
 	@Override
 	public List<LabelItem> getLabels() {
 		return LabelItemListBuilder.add(
-			labelItem -> labelItem.setStatus(
-				BeanPropertiesUtil.getInteger(
-					_fileShortcut.getModel(), "status",
-					WorkflowConstants.STATUS_APPROVED))
+			labelItem -> labelItem.setStatus(_status)
 		).build();
 	}
 
@@ -146,5 +150,6 @@ public class FileShortcutVerticalCard implements VerticalCard {
 	private final HttpServletRequest _httpServletRequest;
 	private final RepositoryBrowserTagDisplayContext
 		_repositoryBrowserTagDisplayContext;
+	private final int _status;
 
 }
