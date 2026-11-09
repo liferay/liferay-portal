@@ -184,6 +184,15 @@ public class DepotPermissionCheckerWrapperTest {
 					permissionChecker.hasPermission(
 						0, Role.class.getName(), role.getRoleId(),
 						ActionKeys.UPDATE));
+
+				Role ownerRole = _roleLocalService.getRole(
+					TestPropsValues.getCompanyId(),
+					DepotRolesConstants.ASSET_LIBRARY_OWNER);
+
+				Assert.assertFalse(
+					permissionChecker.hasPermission(
+						depotEntry.getGroupId(), Role.class.getName(),
+						ownerRole.getRoleId(), ActionKeys.ASSIGN_MEMBERS));
 			});
 	}
 
