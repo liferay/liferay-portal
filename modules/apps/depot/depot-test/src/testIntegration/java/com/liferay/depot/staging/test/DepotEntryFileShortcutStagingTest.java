@@ -81,7 +81,7 @@ public class DepotEntryFileShortcutStagingTest {
 							stagingDepotEntry.getGroupId(),
 							DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 							RandomTestUtil.randomString(),
-							ContentTypes.IMAGE_JPEG,
+							ContentTypes.APPLICATION_OCTET_STREAM,
 							RandomTestUtil.randomBytes(), null, null, null,
 							ServiceContextTestUtil.getServiceContext(
 								stagingDepotEntry.getGroupId()));
