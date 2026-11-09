@@ -23,7 +23,7 @@ if (primaryCPMeasurementUnit == null) {
 	defaultPrimary = true;
 }
 
-boolean primary = ParamUtil.getBoolean(request, "primary", GetterUtil.get(cpMeasurementUnit, CPMeasurementUnit::isPrimary, defaultPrimary));
+boolean primary = BeanParamUtil.getBoolean(cpMeasurementUnit, request, "primary", defaultPrimary);
 %>
 
 <portlet:actionURL name="/cp_measurement_unit/edit_cp_measurement_unit" var="editCPMeasurementUnitActionURL" />
