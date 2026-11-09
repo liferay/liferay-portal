@@ -17,13 +17,11 @@ import com.liferay.fragment.service.FragmentCollectionLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadRequest;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
@@ -67,11 +65,8 @@ public class RenderFragmentEntryDisplayContext {
 		String html = _readParameter(fragmentEntry, "html", uploadRequest);
 		String js = _readParameter(fragmentEntry, "js", uploadRequest);
 
-		String configuration = ParamUtil.getString(
-			_httpServletRequest, "configuration",
-			GetterUtil.get(
-				fragmentEntry, FragmentEntry::getConfiguration,
-				StringPool.BLANK));
+		String configuration = BeanParamUtil.getString(
+			fragmentEntry, _httpServletRequest, "configuration");
 
 		FragmentEntryLink fragmentEntryLink =
 			FragmentEntryLinkLocalServiceUtil.createFragmentEntryLink(0);
