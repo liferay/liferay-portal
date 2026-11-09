@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConnectionConfiguration;
 import com.liferay.portal.search.elasticsearch8.internal.configuration.ElasticsearchConfigurationWrapper;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -58,9 +59,11 @@ public class ElasticsearchConnectionConfigurationActivationHandlerTest {
 		SecretResolver secretResolver = Mockito.mock(SecretResolver.class);
 
 		Mockito.when(
-			secretResolver.resolve(Mockito.anyLong(), Mockito.any())
+			secretResolver.resolve(
+				Mockito.anyLong(), Mockito.any(SecretContext.class),
+				Mockito.any())
 		).thenAnswer(
-			invocation -> invocation.getArgument(1)
+			invocation -> invocation.getArgument(2)
 		);
 
 		ReflectionTestUtil.setFieldValue(

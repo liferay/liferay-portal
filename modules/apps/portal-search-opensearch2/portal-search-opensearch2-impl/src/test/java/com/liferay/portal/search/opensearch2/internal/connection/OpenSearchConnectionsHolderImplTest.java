@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.search.opensearch2.configuration.OpenSearchConnectionConfiguration;
+import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -269,7 +270,9 @@ public class OpenSearchConnectionsHolderImplTest {
 		String resolvedValue = RandomTestUtil.randomString();
 
 		Mockito.when(
-			_secretResolver.resolve(CompanyConstants.SYSTEM, value)
+			_secretResolver.resolve(
+				Mockito.eq(CompanyConstants.SYSTEM),
+				Mockito.any(SecretContext.class), Mockito.eq(value))
 		).thenReturn(
 			resolvedValue
 		);
