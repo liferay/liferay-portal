@@ -31,9 +31,17 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewTasksJSPSectionFragmentRenderer;
+import com.liferay.site.navigation.menu.item.layout.constants.SiteNavigationMenuItemTypeConstants;
+import com.liferay.site.navigation.model.SiteNavigationMenu;
+import com.liferay.site.navigation.model.SiteNavigationMenuItem;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
+import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,6 +64,8 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		RoleLocalService roleLocalService,
 		SegmentsExperienceLocalService segmentsExperienceLocalService,
+		SiteNavigationMenuItemLocalService siteNavigationMenuItemLocalService,
+		SiteNavigationMenuLocalService siteNavigationMenuLocalService,
 		UserLocalService userLocalService) {
 
 		_companyLocalService = companyLocalService;
@@ -69,12 +79,47 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 		_resourcePermissionLocalService = resourcePermissionLocalService;
 		_roleLocalService = roleLocalService;
 		_segmentsExperienceLocalService = segmentsExperienceLocalService;
+		_siteNavigationMenuItemLocalService =
+			siteNavigationMenuItemLocalService;
+		_siteNavigationMenuLocalService = siteNavigationMenuLocalService;
 		_userLocalService = userLocalService;
 	}
 
 	@Override
 	protected void doUpgrade() throws Exception {
 		_companyLocalService.forEachCompanyId(this::_upgradeCompany);
+	}
+
+	private void _addOrUpdatePlanningNavigationMenuItems(
+			Group group, Layout tasksLayout, ServiceContext serviceContext)
+		throws Exception {
+
+		SiteNavigationMenu siteNavigationMenu =
+			_siteNavigationMenuLocalService.
+				fetchSiteNavigationMenuByExternalReferenceCode(
+					"CMSPRIMARYNAVIGATION", group.getGroupId());
+
+		if (siteNavigationMenu == null) {
+			return;
+		}
+
+		SiteNavigationMenuItem planningSiteNavigationMenuItem =
+			_siteNavigationMenuItemLocalService.
+				addOrUpdateSiteNavigationMenuItem(
+					"CMSPRIMARYNAVIGATION11", serviceContext.getUserId(),
+					group.getGroupId(),
+					siteNavigationMenu.getSiteNavigationMenuId(), 0,
+					SiteNavigationMenuItemTypeConstants.NODE,
+					_getNodeTypeSettings(
+						serviceContext.getCompanyId(), _getPlanningNameMap()),
+					serviceContext);
+
+		_siteNavigationMenuItemLocalService.addOrUpdateSiteNavigationMenuItem(
+			"CMSPRIMARYNAVIGATION12", serviceContext.getUserId(),
+			group.getGroupId(), siteNavigationMenu.getSiteNavigationMenuId(),
+			planningSiteNavigationMenuItem.getSiteNavigationMenuItemId(),
+			SiteNavigationMenuItemTypeConstants.LAYOUT,
+			_getLayoutTypeSettings(tasksLayout), serviceContext);
 	}
 
 	private void _addTasksFragmentEntryLink(Layout layout) throws Exception {
@@ -111,6 +156,36 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 				"type", "Fragment"
 			).toString(),
 			0, true, segmentsExperienceId);
+	}
+
+	private String _getLayoutTypeSettings(Layout layout) {
+		return UnicodePropertiesBuilder.put(
+			"displayIcon", "paste"
+		).put(
+			"externalReferenceCode", layout.getExternalReferenceCode()
+		).put(
+			"privateLayout", String.valueOf(layout.isPrivateLayout())
+		).buildString();
+	}
+
+	private String _getNodeTypeSettings(
+			long companyId, Map<Locale, String> nameMap)
+		throws Exception {
+
+		UnicodePropertiesBuilder.UnicodePropertiesWrapper
+			unicodePropertiesWrapper = UnicodePropertiesBuilder.put(
+				"defaultLanguageId",
+				UpgradeProcessUtil.getDefaultLanguageId(companyId));
+
+		for (Map.Entry<Locale, String> entry : nameMap.entrySet()) {
+			unicodePropertiesWrapper.put(
+				"name_" + LocaleUtil.toLanguageId(entry.getKey()),
+				entry.getValue());
+		}
+
+		return unicodePropertiesWrapper.put(
+			"title", StringPool.BLANK
+		).buildString();
 	}
 
 	private Layout _getOrAddPlanningLayout(
@@ -173,6 +248,13 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 		layout = _layoutLocalService.copyLayoutContent(draftLayout, layout);
 
 		_setMasterLayout(group, layout);
+
+		_layoutLocalService.updateStatus(
+			serviceContext.getUserId(), draftLayout.getPlid(),
+			WorkflowConstants.STATUS_APPROVED, serviceContext);
+		_layoutLocalService.updateStatus(
+			serviceContext.getUserId(), layout.getPlid(),
+			WorkflowConstants.STATUS_APPROVED, serviceContext);
 
 		return layout;
 	}
@@ -260,7 +342,11 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 			Layout planningLayout = _getOrAddPlanningLayout(
 				group, serviceContext);
 
-			_getOrAddTasksLayout(group, planningLayout, serviceContext);
+			Layout tasksLayout = _getOrAddTasksLayout(
+				group, planningLayout, serviceContext);
+
+			_addOrUpdatePlanningNavigationMenuItems(
+				group, tasksLayout, serviceContext);
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
@@ -280,6 +366,10 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 	private final RoleLocalService _roleLocalService;
 	private final SegmentsExperienceLocalService
 		_segmentsExperienceLocalService;
+	private final SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
+	private final SiteNavigationMenuLocalService
+		_siteNavigationMenuLocalService;
 	private final UserLocalService _userLocalService;
 
 }
