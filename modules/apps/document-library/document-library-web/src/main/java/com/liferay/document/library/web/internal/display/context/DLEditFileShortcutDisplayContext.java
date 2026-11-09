@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 /**
@@ -58,9 +59,7 @@ public class DLEditFileShortcutDisplayContext {
 	}
 
 	public long getFileShortcutId() {
-		return BeanParamUtil.getLong(
-			_getFileShortcut(), _liferayPortletRequest, "fileShortcutId",
-			FileShortcut::getFileShortcutId);
+		return ParamUtil.getLong(_liferayPortletRequest, "fileShortcutId");
 	}
 
 	public long getFolderId() {

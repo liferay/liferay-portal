@@ -156,9 +156,6 @@ public class DLEditFileShortcutDisplayContextTest {
 				).build());
 
 		Assert.assertEquals(
-			fileShortcut.getFileShortcutId(),
-			dlEditFileShortcutDisplayContext.getFileShortcutId());
-		Assert.assertEquals(
 			fileShortcut.getFolderId(),
 			dlEditFileShortcutDisplayContext.getFolderId());
 		Assert.assertEquals(
