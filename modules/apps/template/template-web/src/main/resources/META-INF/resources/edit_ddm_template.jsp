@@ -21,15 +21,6 @@ long classNameId = editDDMTemplateDisplayContext.getClassNameId();
 long classPK = 0;
 long resourceClassNameId = 0;
 
-if (ddmTemplate != null) {
-	classPK = ddmTemplate.getClassPK();
-	resourceClassNameId = ddmTemplate.getResourceClassNameId();
-}
-else {
-	classPK = ParamUtil.getLong(request, "classPK");
-	resourceClassNameId = ParamUtil.getLong(request, "resourceClassNameId");
-}
-
 long templateEntryId = ParamUtil.getLong(request, "templateEntryId");
 
 portletDisplay.setShowBackIcon(true);
@@ -37,9 +28,15 @@ portletDisplay.setURLBack(redirect);
 portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 
 if (ddmTemplate != null) {
+	classPK = ddmTemplate.getClassPK();
+	resourceClassNameId = ddmTemplate.getResourceClassNameId();
+
 	renderResponse.setTitle(LanguageUtil.format(request, "edit-x", HtmlUtil.escape(ddmTemplate.getName(locale))));
 }
 else {
+	classPK = ParamUtil.getLong(request, "classPK");
+	resourceClassNameId = ParamUtil.getLong(request, "resourceClassNameId");
+
 	renderResponse.setTitle(LanguageUtil.format(request, "add-x", HtmlUtil.escape(editDDMTemplateDisplayContext.getTemplateTypeLabel())));
 }
 %>

@@ -66,11 +66,11 @@ public class EditDDMTemplateDisplayContext {
 		_themeDisplay = (ThemeDisplay)liferayPortletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
+		DDMTemplate ddmTemplate = getDDMTemplate();
+
 		long classNameId = 0;
 		String script = StringPool.BLANK;
 		boolean smallImage = false;
-
-		DDMTemplate ddmTemplate = getDDMTemplate();
 
 		if (ddmTemplate != null) {
 			classNameId = ddmTemplate.getClassNameId();
