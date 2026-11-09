@@ -1640,7 +1640,7 @@ public class JournalEditArticleDisplayContext {
 
 	private String _getLayoutUuid() {
 		return BeanParamUtil.getString(
-			_article, _httpServletRequest, "layoutUuid", null);
+			_article, _httpServletRequest, "layoutUuid", (String)null);
 	}
 
 	private String _getLocaleDisplayNames(Locale locale, Locale... locales) {

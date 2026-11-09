@@ -207,7 +207,7 @@ public class SelectAssetDisplayPageDisplayContext {
 	public String getLayoutUuid() {
 		return BeanParamUtil.getString(
 			AssetEntryLocalServiceUtil.fetchEntry(_classNameId, _classPK),
-			_httpServletRequest, "layoutUuid", null);
+			_httpServletRequest, "layoutUuid", (String)null);
 	}
 
 	public String getSpecificAssetDisplayPageName() throws Exception {
