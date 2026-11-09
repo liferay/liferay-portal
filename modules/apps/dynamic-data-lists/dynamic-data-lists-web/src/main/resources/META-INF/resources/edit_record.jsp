@@ -14,9 +14,9 @@ String portletResource = ParamUtil.getString(request, "portletResource");
 
 DDLRecord record = (DDLRecord)request.getAttribute(DDLWebKeys.DYNAMIC_DATA_LISTS_RECORD);
 
-long recordId = ParamUtil.getLong(request, "recordId", GetterUtil.get(record, DDLRecord::getRecordId, 0L));
+long recordId = BeanParamUtil.getLong(record, request, "recordId");
 
-long recordSetId = ParamUtil.getLong(request, "recordSetId", GetterUtil.get(record, DDLRecord::getRecordSetId, 0L));
+long recordSetId = BeanParamUtil.getLong(record, request, "recordSetId");
 
 long formDDMTemplateId = ParamUtil.getLong(request, "formDDMTemplateId");
 

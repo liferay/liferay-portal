@@ -15,9 +15,9 @@ String portletResource = ParamUtil.getString(request, "portletResource");
 
 DDLRecordSet recordSet = (DDLRecordSet)request.getAttribute(DDLWebKeys.DYNAMIC_DATA_LISTS_RECORD_SET);
 
-long recordSetId = ParamUtil.getLong(request, "recordSetId", GetterUtil.get(recordSet, DDLRecordSet::getRecordSetId, 0L));
+long recordSetId = BeanParamUtil.getLong(recordSet, request, "recordSetId");
 
-long groupId = ParamUtil.getLong(request, "groupId", GetterUtil.get(recordSet, DDLRecordSet::getGroupId, scopeGroupId));
+long groupId = BeanParamUtil.getLong(recordSet, request, "groupId", scopeGroupId);
 
 Group scopeGroup = GroupLocalServiceUtil.getGroup(scopeGroupId);
 
