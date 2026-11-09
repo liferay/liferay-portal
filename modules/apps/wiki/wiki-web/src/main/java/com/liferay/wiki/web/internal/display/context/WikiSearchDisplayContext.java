@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.SearchResult;
 import com.liferay.portal.kernel.search.SearchResultUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -146,7 +147,8 @@ public class WikiSearchDisplayContext {
 			WikiWebKeys.WIKI_NODE);
 
 		_nodeId = ParamUtil.getLong(
-			_httpServletRequest, "nodeId", node.getNodeId());
+			_httpServletRequest, "nodeId",
+			GetterUtil.get(node, WikiNode::getNodeId, 0L));
 
 		return _nodeId;
 	}
@@ -156,7 +158,12 @@ public class WikiSearchDisplayContext {
 			return _nodeIds;
 		}
 
-		_nodeIds = new long[] {_getNodeId()};
+		WikiNode node = (WikiNode)_httpServletRequest.getAttribute(
+			WikiWebKeys.WIKI_NODE);
+
+		if (node != null) {
+			_nodeIds = new long[] {_getNodeId()};
+		}
 
 		return _nodeIds;
 	}
