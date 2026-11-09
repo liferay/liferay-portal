@@ -189,7 +189,7 @@ String randomNamespace = StringUtil.randomId() + StringPool.UNDERLINE;
 								disabled='<%= kaleoDesignerDisplayContext.isDefinitionInputDisabled((Objects.equals(state, WorkflowWebKeys.WORKFLOW_PREVIEW_BEFORE_RESTORE_STATE) || Objects.equals(state, "view")), kaleoDefinitionVersion, permissionChecker) %>'
 								name="title"
 								placeholder="untitled-workflow"
-								xml="<%= (kaleoDefinitionVersion == null) ? StringPool.BLANK : kaleoDefinitionVersion.getTitle() %>"
+								xml='<%= BeanPropertiesUtil.getString(kaleoDefinitionVersion, "title") %>'
 							/>
 						</aui:fieldset>
 
