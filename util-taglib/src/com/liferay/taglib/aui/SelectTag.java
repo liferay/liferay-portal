@@ -172,7 +172,7 @@ public class SelectTag extends BaseSelectTag implements BodyTag {
 		if (Validator.isNotNull(listType) &&
 			Validator.isNull(listTypeFieldName)) {
 
-			listTypeFieldName = "typeId";
+			listTypeFieldName = "listTypeId";
 		}
 
 		String title = getTitle();
