@@ -10,6 +10,7 @@ import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderInstanceSet
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderRequest;
 import com.liferay.dynamic.data.mapping.data.provider.configuration.DDMDataProviderConfiguration;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -108,6 +109,21 @@ public class DDMRESTDataProviderTest {
 		ReflectionTestUtil.setFieldValue(
 			_ddmrestDataProvider, "_ddmDataProviderInstanceService",
 			ddmDataProviderInstanceService);
+
+		DDMDataProviderInstanceLocalService
+			ddmDataProviderInstanceLocalService = Mockito.mock(
+				DDMDataProviderInstanceLocalService.class);
+
+		Mockito.when(
+			ddmDataProviderInstanceLocalService.getDDMDataProviderInstance(
+				dataProviderInstanceId)
+		).thenReturn(
+			ddmDataProviderInstance
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_ddmrestDataProvider, "_ddmDataProviderInstanceLocalService",
+			ddmDataProviderInstanceLocalService);
 
 		DDMDataProviderInstanceSettings ddmDataProviderInstanceSettings =
 			Mockito.mock(DDMDataProviderInstanceSettings.class);
