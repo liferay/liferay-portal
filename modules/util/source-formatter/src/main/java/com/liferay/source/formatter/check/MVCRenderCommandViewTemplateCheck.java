@@ -24,6 +24,12 @@ public class MVCRenderCommandViewTemplateCheck extends BaseFileCheck {
 	protected String doProcess(
 		String fileName, String absolutePath, String content) {
 
+		if (isExcludedPath(
+				"mvc.render.command.view.template.excludes", absolutePath)) {
+
+			return content;
+		}
+
 		int index = content.indexOf("\"mvc.command.name=/\"");
 
 		if (index == -1) {
@@ -38,10 +44,7 @@ public class MVCRenderCommandViewTemplateCheck extends BaseFileCheck {
 
 		Matcher renderMatcher = _constantRenderPattern.matcher(content);
 
-		if (!renderMatcher.find() ||
-			isExcludedPath(
-				"mvc.render.command.view.template.excludes", absolutePath)) {
-
+		if (!renderMatcher.find()) {
 			return content;
 		}
 
