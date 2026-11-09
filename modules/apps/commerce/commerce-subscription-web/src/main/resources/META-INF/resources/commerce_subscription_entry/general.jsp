@@ -18,12 +18,12 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 	"commerceSubscriptionEntryId", String.valueOf(commerceSubscriptionEntry.getCommerceSubscriptionEntryId())
 ).build();
 
-int subscriptionLength = ParamUtil.getInteger(request, "subscriptionLength", commerceSubscriptionEntry.getSubscriptionLength());
-String subscriptionType = ParamUtil.getString(request, "subscriptionType", commerceSubscriptionEntry.getSubscriptionType());
-long maxSubscriptionCycles = ParamUtil.getLong(request, "maxSubscriptionCycles", commerceSubscriptionEntry.getMaxSubscriptionCycles());
-int deliverySubscriptionLength = ParamUtil.getInteger(request, "deliverySubscriptionLength", commerceSubscriptionEntry.getDeliverySubscriptionLength());
-String deliverySubscriptionType = ParamUtil.getString(request, "deliverySubscriptionType", commerceSubscriptionEntry.getDeliverySubscriptionType());
-long deliveryMaxSubscriptionCycles = ParamUtil.getLong(request, "deliveryMaxSubscriptionCycles", commerceSubscriptionEntry.getDeliveryMaxSubscriptionCycles());
+int subscriptionLength = BeanParamUtil.getInteger(commerceSubscriptionEntry, request, "subscriptionLength", 1);
+String subscriptionType = BeanParamUtil.getString(commerceSubscriptionEntry, request, "subscriptionType");
+long maxSubscriptionCycles = BeanParamUtil.getLong(commerceSubscriptionEntry, request, "maxSubscriptionCycles");
+int deliverySubscriptionLength = BeanParamUtil.getInteger(commerceSubscriptionEntry, request, "deliverySubscriptionLength", 1);
+String deliverySubscriptionType = BeanParamUtil.getString(commerceSubscriptionEntry, request, "deliverySubscriptionType");
+long deliveryMaxSubscriptionCycles = BeanParamUtil.getLong(commerceSubscriptionEntry, request, "deliveryMaxSubscriptionCycles");
 
 String defaultCPSubscriptionTypeLabel = StringPool.BLANK;
 String defaultDeliveryCPSubscriptionTypeLabel = StringPool.BLANK;
