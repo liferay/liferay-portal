@@ -12,6 +12,7 @@ import {waitForAlert} from '../../utils/waitForAlert';
 export class EditDigitalSalesRoomPage {
 	readonly cancelButton: Locator;
 	readonly commentActionsButton: Locator;
+	readonly commentActionsButtonByComment: (comment: string) => Locator;
 	readonly commentDeleteButton: Locator;
 	readonly commentEditButton: Locator;
 	readonly commentEditSaveButton: Locator;
@@ -56,6 +57,10 @@ export class EditDigitalSalesRoomPage {
 			name: 'Cancel',
 		});
 		this.commentActionsButton = page.getByRole('button', {name: 'Actions'});
+		this.commentActionsButtonByComment = (comment: string) =>
+			page
+				.locator('article', {hasText: comment})
+				.getByRole('button', {name: 'Actions'});
 		this.commentDeleteButton = page.getByRole('menuitem', {name: 'Delete'});
 		this.commentEditButton = page.getByRole('menuitem', {name: 'Edit'});
 		this.commentEditSaveButton = page

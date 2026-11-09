@@ -8,6 +8,8 @@ package com.liferay.digital.sales.room.web.internal.message.listener.test;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.comment.configuration.CommentGroupServiceConfiguration;
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.digital.sales.room.constants.DSRFolderConstants;
 import com.liferay.digital.sales.room.constants.DSRRoleConstants;
 import com.liferay.digital.sales.room.test.util.DSRTestUtil;
@@ -34,11 +36,15 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.io.Serializable;
+
+import java.util.Arrays;
+import java.util.Dictionary;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,6 +52,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Tancredi Covioli
@@ -115,6 +124,8 @@ public class BackgroundTaskStatusMessageListenerTest {
 					_objectDefinition.getClassName()),
 				objectEntry.getObjectEntryId());
 
+			_assertAlwaysEditableByOwner(group);
+
 			Assert.assertFalse(
 				_resourcePermissionLocalService.hasResourcePermission(
 					TestPropsValues.getCompanyId(), Layout.class.getName(),
@@ -152,6 +163,23 @@ public class BackgroundTaskStatusMessageListenerTest {
 		}
 	}
 
+	private void _assertAlwaysEditableByOwner(Group group) throws Exception {
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				group.getCompanyId(), group.getGroupId(),
+				CommentGroupServiceConfiguration.class.getName(), null));
+
+		Assert.assertEquals(
+			Arrays.toString(configurations), 1, configurations.length);
+
+		Configuration configuration = configurations[0];
+
+		Dictionary<String, Object> properties = configuration.getProperties();
+
+		Assert.assertTrue(
+			GetterUtil.getBoolean(properties.get("alwaysEditableByOwner")));
+	}
+
 	private void _assertHasResourcePermission(
 			String actionId, boolean expected, String primKey, Role role)
 		throws Exception {
@@ -171,6 +199,9 @@ public class BackgroundTaskStatusMessageListenerTest {
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@Inject
+	private ConfigurationAdmin _configurationAdmin;
 
 	@Inject
 	private DLFolderLocalService _dlFolderLocalService;

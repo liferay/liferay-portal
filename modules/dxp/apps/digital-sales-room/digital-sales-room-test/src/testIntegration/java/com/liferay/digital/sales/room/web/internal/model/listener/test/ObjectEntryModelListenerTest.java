@@ -10,6 +10,8 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.comment.configuration.CommentGroupServiceConfiguration;
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.digital.sales.room.constants.DSRFolderConstants;
 import com.liferay.digital.sales.room.test.util.DSRLayoutTestUtil;
 import com.liferay.digital.sales.room.test.util.DSRTestUtil;
@@ -74,7 +76,9 @@ import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -91,6 +95,8 @@ import org.junit.runner.RunWith;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Stefano Motta
@@ -258,6 +264,24 @@ public class ObjectEntryModelListenerTest {
 				_accountEntry.getAccountEntryId()
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private void _assertAlwaysEditableByOwner(boolean expected, Group group)
+		throws Exception {
+
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				group.getCompanyId(), group.getGroupId(),
+				CommentGroupServiceConfiguration.class.getName(), null));
+
+		Assert.assertEquals(
+			Arrays.toString(configurations), 1, configurations.length);
+
+		Configuration configuration = configurations[0];
+
+		Dictionary<String, Object> properties = configuration.getProperties();
+
+		Assert.assertEquals(expected, properties.get("alwaysEditableByOwner"));
 	}
 
 	private void _assertHasResourcePermission(
@@ -549,6 +573,8 @@ public class ObjectEntryModelListenerTest {
 				_objectDefinition.getClassName()),
 			objectEntry.getObjectEntryId());
 
+		_assertAlwaysEditableByOwner(true, group);
+
 		_objectEntryLocalService.partialUpdateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
 			objectEntry.getObjectEntryFolderId(),
@@ -563,6 +589,8 @@ public class ObjectEntryModelListenerTest {
 		Assert.assertTrue(_groupLocalService.isMaintenanceMode(group));
 		Assert.assertFalse(_hasUserSitesGroup(group));
 
+		_assertAlwaysEditableByOwner(false, group);
+
 		_objectEntryLocalService.partialUpdateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
 			objectEntry.getObjectEntryFolderId(),
@@ -576,6 +604,8 @@ public class ObjectEntryModelListenerTest {
 		Assert.assertTrue(group.isActive());
 		Assert.assertFalse(_groupLocalService.isMaintenanceMode(group));
 		Assert.assertTrue(_hasUserSitesGroup(group));
+
+		_assertAlwaysEditableByOwner(true, group);
 	}
 
 	private void _testOnBeforeUpdate() throws Exception {
@@ -662,6 +692,9 @@ public class ObjectEntryModelListenerTest {
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@Inject
+	private ConfigurationAdmin _configurationAdmin;
 
 	@Inject
 	private DLFileEntryLocalService _dlFileEntryLocalService;
