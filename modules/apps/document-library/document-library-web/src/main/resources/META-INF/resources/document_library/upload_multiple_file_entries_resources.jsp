@@ -12,18 +12,20 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 DLAdminDisplayContext dlAdminDisplayContext = (DLAdminDisplayContext)request.getAttribute(DLAdminDisplayContext.class.getName());
 
-long groupId = ParamUtil.getLong(request, "groupId");
+FileEntry fileEntry = (FileEntry)request.getAttribute(WebKeys.DOCUMENT_LIBRARY_FILE_ENTRY);
 
-long repositoryId = ParamUtil.getLong(request, "repositoryId");
+long groupId = ParamUtil.getLong(request, "groupId", GetterUtil.get(fileEntry, FileEntry::getGroupId, 0L));
+
+long repositoryId = ParamUtil.getLong(request, "repositoryId", GetterUtil.get(fileEntry, FileEntry::getRepositoryId, 0L));
 
 if (repositoryId <= 0) {
 
 	// <liferay-ui:asset_add_button /> only passes in groupId
 
-	repositoryId = ParamUtil.getLong(request, "groupId");
+	repositoryId = ParamUtil.getLong(request, "groupId", GetterUtil.get(fileEntry, FileEntry::getGroupId, 0L));
 }
 
-long folderId = ParamUtil.getLong(request, "folderId");
+long folderId = ParamUtil.getLong(request, "folderId", GetterUtil.get(fileEntry, FileEntry::getFolderId, 0L));
 
 Folder folder = null;
 
@@ -49,6 +51,18 @@ long fileVersionId = 0;
 
 long fileEntryTypeId = ParamUtil.getLong(request, "fileEntryTypeId", -1);
 
+if (fileEntry != null) {
+	fileVersion = fileEntry.getLatestFileVersion();
+
+	fileVersionId = fileVersion.getFileVersionId();
+
+	if ((fileEntryTypeId == -1) && (fileVersion.getModel() instanceof DLFileVersion)) {
+		DLFileVersion dlFileVersion = (DLFileVersion)fileVersion.getModel();
+
+		fileEntryTypeId = dlFileVersion.getFileEntryTypeId();
+	}
+}
+
 DLFileEntryType fileEntryType = null;
 
 if ((fileEntryTypeId == -1) && !fileEntryTypes.isEmpty()) {
@@ -63,7 +77,14 @@ if (fileEntryTypeId > 0) {
 
 long assetClassPK = 0;
 
-DLEditFileEntryDisplayContext dlEditFileEntryDisplayContext = dlDisplayContextProvider.getDLEditFileEntryDisplayContext(request, response, fileEntryType);
+DLEditFileEntryDisplayContext dlEditFileEntryDisplayContext = null;
+
+if (fileEntry == null) {
+	dlEditFileEntryDisplayContext = dlDisplayContextProvider.getDLEditFileEntryDisplayContext(request, response, fileEntryType);
+}
+else {
+	dlEditFileEntryDisplayContext = dlDisplayContextProvider.getDLEditFileEntryDisplayContext(request, response, fileEntry);
+}
 %>
 
 <portlet:actionURL name="/document_library/upload_multiple_file_entries" var="uploadMultipleFileEntriesURL" />
@@ -179,6 +200,16 @@ DLEditFileEntryDisplayContext dlEditFileEntryDisplayContext = dlDisplayContextPr
 
 							<%
 							for (DDMStructure ddmStructure : ddmStructures) {
+								DDMFormValues ddmFormValues = null;
+
+								try {
+									DLFileEntryMetadata fileEntryMetadata = DLFileEntryMetadataLocalServiceUtil.getFileEntryMetadata(ddmStructure.getStructureId(), fileVersionId);
+
+									ddmFormValues = dlEditFileEntryDisplayContext.getDDMFormValues(fileEntryMetadata.getDDMStorageId());
+								}
+								catch (Exception e) {
+								}
+
 								if (groupId <= 0) {
 									groupId = ddmStructure.getGroupId();
 								}
@@ -188,10 +219,10 @@ DLEditFileEntryDisplayContext dlEditFileEntryDisplayContext = dlDisplayContextPr
 									<liferay-data-engine:data-layout-renderer
 										containerId='<%= liferayPortletResponse.getNamespace() + "dataEngineLayoutRenderer" + ddmStructure.getStructureId() %>'
 										dataDefinitionId="<%= ddmStructure.getStructureId() %>"
-										dataRecordValues="<%= DataRecordValuesUtil.getDataRecordValues(null, ddmStructure) %>"
+										dataRecordValues="<%= DataRecordValuesUtil.getDataRecordValues(ddmFormValues, ddmStructure) %>"
 										namespace="<%= liferayPortletResponse.getNamespace() + ddmStructure.getStructureId() + StringPool.UNDERLINE %>"
 										persistDefaultValues="<%= true %>"
-										persisted="<%= false %>"
+										persisted="<%= fileEntry != null %>"
 										submittable="<%= false %>"
 									/>
 								</div>
