@@ -1,1 +1,5 @@
 apply from: "../modules/build-portal.gradle"
+
+writeFindBugsProject {
+	classpath(file("../portal-kernel/classes"))
+}

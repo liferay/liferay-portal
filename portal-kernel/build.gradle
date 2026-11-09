@@ -1,1 +1,13 @@
 apply from: "../modules/build-portal.gradle"
+
+findSecurityBugs {
+	enabled = false
+}
+
+printFindSecurityBugsReport {
+	enabled = false
+}
+
+writeFindBugsProject {
+	enabled = false
+}
