@@ -70,6 +70,19 @@ export class ProductPage {
 		return getObjectFieldInput(objectFieldName, this.page);
 	}
 
+	getRepeatableGroup(label: string) {
+		return this.page
+			.locator('.component-accordion')
+			.filter({has: this.page.getByText(label, {exact: true})})
+			.last();
+	}
+
+	getRepeatableGroupEntries(label: string) {
+		return this.getRepeatableGroup(label).locator(
+			'[data-form-relationship-structure-item-content-id]'
+		);
+	}
+
 	getTab(name: string) {
 		return this.tabs.filter({hasText: name});
 	}
