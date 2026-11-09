@@ -416,6 +416,7 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	public void testPostChannelCart() throws Exception {
 		super.testPostChannelCart();
 
+		_testPostChannelCartByGuest();
 		_testPostChannelCartByGuestWithGuestBrowsingDisabled();
 		_testPostChannelCartByGuestWithGuestCheckoutDisabledOnB2BChannel();
 		_testPostChannelCartWithMoreExternalReferenceCodes();
@@ -1473,6 +1474,30 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		Assert.assertEquals(
 			serviceBuilderAddress.getExternalReferenceCode(),
 			postCart.getShippingAddressExternalReferenceCode());
+	}
+
+	private void _testPostChannelCartByGuest() throws Exception {
+		CartResource guestCartResource = _getCartResource(null, null);
+
+		Cart cart = guestCartResource.postChannelCart(
+			_commerceChannel.getCommerceChannelId(), _randomGuestCart());
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.getCommerceOrder(cart.getId());
+
+		_guestCommerceOrders.add(commerceOrder);
+
+		Assert.assertTrue(commerceOrder.isGuestOrder());
+		Assert.assertEquals(commerceOrder.getUuid(), cart.getOrderUUID());
+
+		CartResource cartResource = _getCartResource(commerceOrder, null);
+
+		Cart guestCart = cartResource.getCart(cart.getId());
+
+		Assert.assertEquals(cart.getOrderUUID(), guestCart.getOrderUUID());
+
+		_assertProblemException(
+			"NOT_FOUND", () -> guestCartResource.getCart(cart.getId()));
 	}
 
 	private void _testPostChannelCartByGuestWithGuestBrowsingDisabled()
