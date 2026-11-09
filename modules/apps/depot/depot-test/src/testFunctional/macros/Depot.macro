@@ -698,7 +698,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewApplication(depotName = null) {
+	macro viewApplication(applicationList = null, depotName = null, noApplication = null) {
 		LexiconEntry.changeDisplayStyle(displayStyle = "cards");
 
 		Click(
