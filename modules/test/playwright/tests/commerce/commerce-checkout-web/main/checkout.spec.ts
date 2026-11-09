@@ -37,7 +37,7 @@ import {
 	activateChannelPaymentMethod,
 	assignUserToNewRole,
 	checkoutStorefrontSetUp,
-	configureBuyerUserWithOrderPermissions,
+	configureBuyerUserWithoutOrderPermissions,
 	createAccountWithBuyerUser,
 	miniumSetUp,
 	restrictChannelPaymentMethodView,
@@ -3316,17 +3316,12 @@ test(
 			);
 		}
 
-		const buyerUser = await configureBuyerUserWithOrderPermissions(
+		const buyerUser = await configureBuyerUserWithoutOrderPermissions(
 			account,
 			apiHelpers,
 			[
-				'ADD_COMMERCE_ORDER',
-				'CHECKOUT_OPEN_COMMERCE_ORDERS',
-				'MANAGE_COMMERCE_ORDER_PAYMENT_METHODS',
-				'MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS',
-				'VIEW_BILLING_ADDRESS',
-				'VIEW_COMMERCE_ORDERS',
-				'VIEW_OPEN_COMMERCE_ORDERS',
+				'MANAGE_COMMERCE_ORDER_DELIVERY_TERMS',
+				'MANAGE_COMMERCE_ORDER_PAYMENT_TERMS',
 			],
 			site
 		);

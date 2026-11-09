@@ -56,6 +56,20 @@ type TUnitOfMeasure = {
 	promoPrice: number;
 };
 
+const BUYER_ORDER_ACTION_IDS = [
+	'ADD_COMMERCE_ORDER',
+	'ADD_COMMERCE_ORDER_ATTACHMENT',
+	'CHECKOUT_OPEN_COMMERCE_ORDERS',
+	'MANAGE_COMMERCE_ORDER_DELIVERY_TERMS',
+	'MANAGE_COMMERCE_ORDER_MULTISHIPPING',
+	'MANAGE_COMMERCE_ORDER_PAYMENT_METHODS',
+	'MANAGE_COMMERCE_ORDER_PAYMENT_TERMS',
+	'MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS',
+	'VIEW_BILLING_ADDRESS',
+	'VIEW_COMMERCE_ORDERS',
+	'VIEW_OPEN_COMMERCE_ORDERS',
+];
+
 const CHANNEL_PAYMENT_METHOD_NAMES: {[paymentIntegrationKey: string]: string} =
 	{
 		'authorize-net': 'Authorize.Net',
@@ -354,10 +368,10 @@ export async function configureBuyerUserForSite(
 	return user;
 }
 
-export async function configureBuyerUserWithOrderPermissions(
+export async function configureBuyerUserWithoutOrderPermissions(
 	account: TAccount,
 	apiHelpers: DataApiHelpers,
-	orderActionIds: string[],
+	excludedOrderActionIds: string[],
 	site: Site
 ) {
 	const company =
@@ -381,7 +395,9 @@ export async function configureBuyerUserWithOrderPermissions(
 				scope: 1,
 			},
 			{
-				actionIds: orderActionIds,
+				actionIds: BUYER_ORDER_ACTION_IDS.filter(
+					(actionId) => !excludedOrderActionIds.includes(actionId)
+				),
 				primaryKey: '0',
 				resourceName: 'com.liferay.commerce.order',
 				scope: 3,
