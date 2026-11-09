@@ -171,4 +171,12 @@ export class CommerceAdminOrdersPage extends CommerceDNDTablePage {
 	async goto() {
 		await this.globalMenuPage.goToCommerce('Orders');
 	}
+
+	async gotoOrder(orderId: number) {
+		await this.goto();
+
+		await (
+			await this.tableRowLink({colIndex: 1, rowValue: orderId})
+		).click();
+	}
 }

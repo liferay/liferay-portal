@@ -5,6 +5,7 @@
 
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {CommerceDNDTablePage} from '../commerceDNDTablePage';
 
 export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
@@ -242,6 +243,12 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 			.getByRole('button', {exact: true, name: 'Submit'});
 	}
 
+	async changePaymentMethod(paymentMethod: string) {
+		await (await this.paymentMethodRadioButton(paymentMethod)).click();
+
+		await this.submitPaymentMethod.click();
+	}
+
 	async editAddress(
 		city: string,
 		country: string,
@@ -263,5 +270,14 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 			await this.orderDetailsModalField('Region')
 		).selectOption(region);
 		await this.submitModalButton.click();
+	}
+
+	async openPaymentMethodModal() {
+		await (await this.orderDetailsTab('Payments')).click();
+
+		await clickAndExpectToBeVisible({
+			target: this.submitPaymentMethod,
+			trigger: await this.editEntryActionLink('Payment Method', 'Edit'),
+		});
 	}
 }
