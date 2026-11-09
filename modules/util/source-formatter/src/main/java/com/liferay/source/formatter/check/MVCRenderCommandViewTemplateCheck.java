@@ -42,7 +42,7 @@ public class MVCRenderCommandViewTemplateCheck extends BaseFileCheck {
 			return content;
 		}
 
-		matcher = _constantRenderPattern.matcher(content);
+		matcher = _renderMethodPattern.matcher(content);
 
 		if (!matcher.find()) {
 			return content;
@@ -61,11 +61,11 @@ public class MVCRenderCommandViewTemplateCheck extends BaseFileCheck {
 		return content;
 	}
 
-	private static final Pattern _constantRenderPattern = Pattern.compile(
+	private static final Pattern _renderCommandClassPattern = Pattern.compile(
+		"\\bimplements\\b[^{]*\\bMVCRenderCommand\\b");
+	private static final Pattern _renderMethodPattern = Pattern.compile(
 		"\\bString render\\(\\s*RenderRequest \\w+,\\s*RenderResponse \\w+" +
 			"\\)\\s*(?:throws PortletException\\s*)?\\{\\s*return " +
 				"\"([^\"]*)\";\\s*\\}");
-	private static final Pattern _renderCommandClassPattern = Pattern.compile(
-		"\\bimplements\\b[^{]*\\bMVCRenderCommand\\b");
 
 }
