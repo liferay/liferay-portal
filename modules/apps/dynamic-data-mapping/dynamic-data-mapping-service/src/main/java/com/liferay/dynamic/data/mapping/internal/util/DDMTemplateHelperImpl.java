@@ -12,6 +12,7 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.dynamic.data.mapping.util.DDMTemplateHelper;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -25,8 +26,6 @@ import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.kernel.template.TemplateVariableDefinition;
 import com.liferay.portal.kernel.template.TemplateVariableGroup;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.engine.TemplateContextHelper;
@@ -183,12 +182,10 @@ public class DDMTemplateHelperImpl implements DDMTemplateHelper {
 		DDMTemplate ddmTemplate = (DDMTemplate)httpServletRequest.getAttribute(
 			DDMWebKeys.DYNAMIC_DATA_MAPPING_TEMPLATE);
 
-		long classNameId = ParamUtil.getLong(
-			httpServletRequest, "classNameId",
-			GetterUtil.get(ddmTemplate, DDMTemplate::getClassNameId, 0L));
-		long classPK = ParamUtil.getLong(
-			httpServletRequest, "classPK",
-			GetterUtil.get(ddmTemplate, DDMTemplate::getClassPK, 0L));
+		long classPK = BeanParamUtil.getLong(
+			ddmTemplate, httpServletRequest, "classPK");
+		long classNameId = BeanParamUtil.getLong(
+			ddmTemplate, httpServletRequest, "classNameId");
 
 		if (classPK > 0) {
 			DDMStructure ddmStructure = _ddmStructureService.getStructure(
