@@ -5,7 +5,6 @@
 
 package com.liferay.wiki.web.internal.display.context;
 
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -50,6 +49,12 @@ public class WikiSearchDisplayContext {
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		WikiNode node = (WikiNode)httpServletRequest.getAttribute(
+			WikiWebKeys.WIKI_NODE);
+
+		_nodeId = ParamUtil.getLong(
+			httpServletRequest, "nodeId", node.getNodeId());
 	}
 
 	public Hits getHits() throws SearchException {
@@ -73,7 +78,7 @@ public class WikiSearchDisplayContext {
 		searchContext.setIncludeAttachments(true);
 		searchContext.setIncludeDiscussions(true);
 		searchContext.setKeywords(getKeywords());
-		searchContext.setNodeIds(_getNodeIds());
+		searchContext.setNodeIds(new long[] {_nodeId});
 		searchContext.setStart(_searchContainer.getStart());
 
 		_hits = indexer.search(searchContext);
@@ -119,7 +124,7 @@ public class WikiSearchDisplayContext {
 			).setKeywords(
 				getKeywords()
 			).setParameter(
-				"nodeId", _getNodeId()
+				"nodeId", _nodeId
 			).buildPortletURL(),
 			null,
 			LanguageUtil.format(
@@ -138,38 +143,10 @@ public class WikiSearchDisplayContext {
 		return _searchContainer;
 	}
 
-	private long _getNodeId() {
-		if (_nodeId != null) {
-			return _nodeId;
-		}
-
-		_nodeId = BeanParamUtil.getLong(
-			(WikiNode)_httpServletRequest.getAttribute(WikiWebKeys.WIKI_NODE),
-			_httpServletRequest, "nodeId", WikiNode::getNodeId);
-
-		return _nodeId;
-	}
-
-	private long[] _getNodeIds() {
-		if (_nodeIds != null) {
-			return _nodeIds;
-		}
-
-		WikiNode node = (WikiNode)_httpServletRequest.getAttribute(
-			WikiWebKeys.WIKI_NODE);
-
-		if (node != null) {
-			_nodeIds = new long[] {_getNodeId()};
-		}
-
-		return _nodeIds;
-	}
-
 	private Hits _hits;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
-	private Long _nodeId;
-	private long[] _nodeIds;
+	private final long _nodeId;
 	private String _redirect;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
