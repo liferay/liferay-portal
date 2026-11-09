@@ -76,9 +76,7 @@ test(
 					page.getByRole('menuitem', {name: 'Update Due Date'})
 				).toBeVisible();
 
-				await page
-					.getByRole('menuitem', {name: 'Assign to Me'})
-					.click();
+				await page.getByRole('menuitem', {name: 'Assign to Me'}).click();
 				await page.getByRole('button', {name: 'Save'}).click();
 
 				await waitForAlert(
