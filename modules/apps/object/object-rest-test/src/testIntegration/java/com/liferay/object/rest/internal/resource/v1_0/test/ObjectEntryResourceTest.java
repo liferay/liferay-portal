@@ -5499,6 +5499,51 @@ public class ObjectEntryResourceTest {
 	}
 
 	@Test
+	public void testFilterObjectEntriesByRelatedSystemObjectEntriesTaxonomyCategoryIds()
+		throws Exception {
+
+		// Many to many relationship
+
+		_objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			_objectDefinition1, _OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1);
+
+		_userAccountJSONObject = UserAccountTestUtil.addUserAccountJSONObject(
+			_systemObjectDefinitionManager, Collections.emptyMap());
+
+		TaxonomyCategory taxonomyCategory =
+			_postTaxonomyVocabularyTaxonomyCategory();
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			_objectDefinition1, _userSystemObjectDefinition,
+			_objectEntry1.getPrimaryKey(), _userAccountJSONObject.getLong("id"),
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		_testFilterObjectEntriesByRelatedSystemObjectEntriesFields(
+			_escape(
+				String.format(
+					"%s/taxonomyCategoryIds/any(t:t eq %s)",
+					_objectRelationship1.getName(), taxonomyCategory.getId())),
+			_objectDefinition1);
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			_objectRelationship1);
+
+		// One to many relationship
+
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			_userSystemObjectDefinition, _objectDefinition1,
+			_userAccountJSONObject.getLong("id"), _objectEntry1.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_testFilterObjectEntriesByRelatedSystemObjectEntriesFields(
+			_escape(
+				String.format(
+					"%s/taxonomyCategoryIds/any(t:t eq %s)",
+					_objectRelationship1.getName(), taxonomyCategory.getId())),
+			_objectDefinition1);
+	}
+
+	@Test
 	public void testGetCreatorExternalReferenceCode() throws Exception {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
