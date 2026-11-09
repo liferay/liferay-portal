@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 
 <suppressions>
+	<checkstyle>
+		<suppress checks="DatabaseMetaDataCheck" files="src/main/java/com/liferay/portal/tools/db/migration/importer/DBCopyTablesProcess\.java" />
+	</checkstyle>
 	<source-check>
 		<suppress checks="IllegalImportsCheck" files="src/main/java/com/liferay/portal/tools/db/migration/importer/jdbc/AutoBatchPreparedStatementUtil\.java" />
 	</source-check>
