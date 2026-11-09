@@ -189,7 +189,8 @@ public class CPDefinitionConfigurationDisplayContext
 		}
 
 		return BeanParamUtil.getBoolean(
-			cpConfigurationEntry, httpServletRequest, "purchasable", true);
+			cpConfigurationEntry, httpServletRequest, "purchasable",
+			CPConfigurationEntry::isPurchasable, true);
 	}
 
 	private CPDefinitionInventory _getCPDefinitionInventory()

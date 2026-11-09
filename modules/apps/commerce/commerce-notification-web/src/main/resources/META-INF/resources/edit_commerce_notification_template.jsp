@@ -12,14 +12,14 @@ CommerceNotificationTemplatesDisplayContext commerceNotificationTemplatesDisplay
 
 CommerceNotificationTemplate commerceNotificationTemplate = commerceNotificationTemplatesDisplayContext.getCommerceNotificationTemplate();
 
-String name = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "name");
-String description = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "description");
-String from = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "from");
-String fromName = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "fromName");
-String cc = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "cc");
-String bcc = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "bcc");
+String name = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "name", CommerceNotificationTemplate::getName);
+String description = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "description", CommerceNotificationTemplate::getDescription);
+String from = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "from", CommerceNotificationTemplate::getFrom);
+String fromName = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "fromName", CommerceNotificationTemplate::getFromName);
+String cc = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "cc", CommerceNotificationTemplate::getCc);
+String bcc = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "bcc", CommerceNotificationTemplate::getBcc);
 
-String type = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "type");
+String type = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "type", CommerceNotificationTemplate::getType);
 
 CommerceNotificationType commerceNotificationType = commerceNotificationTemplatesDisplayContext.getCommerceNotificationType(type);
 

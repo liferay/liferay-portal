@@ -55,9 +55,9 @@ public class EditDisplaySettingsMVCActionCommand extends BaseMVCActionCommand {
 			ActionKeys.UPDATE);
 
 		String timeZoneId = BeanParamUtil.getString(
-			user, actionRequest, "timeZoneId");
+			user, actionRequest, "timeZoneId", User::getTimeZoneId);
 		String greeting = BeanParamUtil.getString(
-			user, actionRequest, "greeting");
+			user, actionRequest, "greeting", User::getGreeting);
 
 		user.setTimeZoneId(timeZoneId);
 		user.setGreeting(greeting);

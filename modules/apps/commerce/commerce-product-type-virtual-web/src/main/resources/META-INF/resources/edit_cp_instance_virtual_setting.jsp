@@ -23,7 +23,7 @@ if (cpDefinitionVirtualSetting != null) {
 	classPK = cpDefinitionVirtualSetting.getClassPK();
 }
 
-boolean override = BeanParamUtil.getBoolean(cpDefinitionVirtualSetting, request, "override", false);
+boolean override = BeanParamUtil.getBoolean(cpDefinitionVirtualSetting, request, "override", CPDefinitionVirtualSetting::isOverride, false);
 %>
 
 <portlet:actionURL name="/cp_definitions/edit_cp_definition_virtual_setting" var="editProductDefinitionVirtualSettingActionURL" />
@@ -86,7 +86,7 @@ boolean override = BeanParamUtil.getBoolean(cpDefinitionVirtualSetting, request,
 					<%
 					FileEntry sampleFileEntry = cpDefinitionVirtualSettingDisplayContext.getSampleFileEntry();
 
-					long sampleFileEntryId = BeanParamUtil.getLong(cpDefinitionVirtualSetting, request, "sampleFileEntryId");
+					long sampleFileEntryId = BeanParamUtil.getLong(cpDefinitionVirtualSetting, request, "sampleFileEntryId", CPDefinitionVirtualSetting::getSampleFileEntryId);
 
 					String textCssClass = "text-default ";
 
@@ -107,7 +107,7 @@ boolean override = BeanParamUtil.getBoolean(cpDefinitionVirtualSetting, request,
 					<%
 					JournalArticle journalArticle = cpDefinitionVirtualSettingDisplayContext.getJournalArticle();
 
-					long termsOfUseJournalArticleResourcePrimKey = BeanParamUtil.getLong(cpDefinitionVirtualSetting, request, "termsOfUseJournalArticleResourcePrimKey");
+					long termsOfUseJournalArticleResourcePrimKey = BeanParamUtil.getLong(cpDefinitionVirtualSetting, request, "termsOfUseJournalArticleResourcePrimKey", CPDefinitionVirtualSetting::getTermsOfUseJournalArticleResourcePrimKey);
 
 					boolean useTermsOfUseJournal = false;
 

@@ -136,6 +136,7 @@ public class EditKBArticleDisplayContext {
 	public String getContent() {
 		return BeanParamUtil.getString(
 			getKBArticle(), _liferayPortletRequest, "content",
+			KBArticle::getContent,
 			BeanPropertiesUtil.getString(_getKBTemplate(), "content"));
 	}
 
@@ -256,12 +257,14 @@ public class EditKBArticleDisplayContext {
 	public String getKBArticleTitle() {
 		return BeanParamUtil.getString(
 			getKBArticle(), _liferayPortletRequest, "title",
+			KBArticle::getTitle,
 			BeanPropertiesUtil.getString(_getKBTemplate(), "title"));
 	}
 
 	public String getKBArticleURLTitle() {
 		return BeanParamUtil.getString(
-			getKBArticle(), _liferayPortletRequest, "urlTitle");
+			getKBArticle(), _liferayPortletRequest, "urlTitle",
+			KBArticle::getUrlTitle);
 	}
 
 	public String getKBArticleVersion() {
@@ -277,6 +280,7 @@ public class EditKBArticleDisplayContext {
 
 		_parentResourceClassNameId = BeanParamUtil.getLong(
 			getKBArticle(), _liferayPortletRequest, "parentResourceClassNameId",
+			KBArticle::getParentResourceClassNameId,
 			PortalUtil.getClassNameId(KBFolderConstants.getClassName()));
 
 		return _parentResourceClassNameId;
@@ -289,6 +293,7 @@ public class EditKBArticleDisplayContext {
 
 		_parentResourcePrimKey = BeanParamUtil.getLong(
 			getKBArticle(), _liferayPortletRequest, "parentResourcePrimKey",
+			KBArticle::getParentResourcePrimKey,
 			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return _parentResourcePrimKey;
@@ -315,7 +320,8 @@ public class EditKBArticleDisplayContext {
 		}
 
 		_resourcePrimKey = BeanParamUtil.getLong(
-			getKBArticle(), _liferayPortletRequest, "resourcePrimKey");
+			getKBArticle(), _liferayPortletRequest, "resourcePrimKey",
+			KBArticle::getResourcePrimKey);
 
 		return _resourcePrimKey;
 	}

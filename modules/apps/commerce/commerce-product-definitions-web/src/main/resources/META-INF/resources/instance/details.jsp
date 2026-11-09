@@ -21,7 +21,7 @@ if ((cpInstance != null) && (cpInstance.getExpirationDate() != null)) {
 	neverExpire = false;
 }
 
-boolean discontinued = BeanParamUtil.getBoolean(cpInstance, request, "discontinued");
+boolean discontinued = BeanParamUtil.getBoolean(cpInstance, request, "discontinued", CPInstance::isDiscontinued);
 %>
 
 <portlet:actionURL name="/cp_definitions/edit_cp_instance" var="editProductInstanceActionURL" />

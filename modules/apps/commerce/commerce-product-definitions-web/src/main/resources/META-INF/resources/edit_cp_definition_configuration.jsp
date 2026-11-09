@@ -16,7 +16,7 @@ long cpDefinitionId = cpDefinitionConfigurationDisplayContext.getCPDefinitionId(
 CPDefinitionInventory cpDefinitionInventory = cpDefinitionConfigurationDisplayContext.getCPDefinitionInventory();
 List<CPTaxCategory> cpTaxCategories = cpDefinitionConfigurationDisplayContext.getCPTaxCategories();
 
-boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable", true);
+boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable", CPDefinition::isShippable, true);
 %>
 
 <portlet:actionURL name="/cp_definitions/edit_cp_definition" var="editProductDefinitionConfigurationActionURL" />
@@ -210,9 +210,9 @@ boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable",
 				<aui:input checked="<%= shippable %>" disabled="<%= (cpDefinition != null) && StringUtil.equalsIgnoreCase(cpDefinition.getProductTypeName(), VirtualCPTypeConstants.NAME) %>" name="shippable" type="toggle-switch" value="<%= shippable %>" />
 
 				<div class="<%= shippable ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />shippableOptions">
-					<aui:input checked='<%= BeanParamUtil.getBoolean(cpDefinition, request, "freeShipping", false) %>' inlineField="<%= true %>" name="freeShipping" type="toggle-switch" />
+					<aui:input checked='<%= BeanParamUtil.getBoolean(cpDefinition, request, "freeShipping", CPDefinition::isFreeShipping, false) %>' inlineField="<%= true %>" name="freeShipping" type="toggle-switch" />
 
-					<aui:input checked='<%= BeanParamUtil.getBoolean(cpDefinition, request, "shipSeparately", false) %>' inlineField="<%= true %>" label="ship-separately" name="shipSeparately" type="toggle-switch" />
+					<aui:input checked='<%= BeanParamUtil.getBoolean(cpDefinition, request, "shipSeparately", CPDefinition::isShipSeparately, false) %>' inlineField="<%= true %>" label="ship-separately" name="shipSeparately" type="toggle-switch" />
 
 					<aui:input name="shippingExtraPrice" suffix="<%= HtmlUtil.escape(cpDefinitionConfigurationDisplayContext.getCommerceCurrencyCode()) %>" />
 

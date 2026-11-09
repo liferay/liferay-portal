@@ -26,7 +26,7 @@ if ((category == null) && (parentCategoryId > 0)) {
 	defaultDisplayStyle = parentCategory.getDisplayStyle();
 }
 
-String displayStyle = BeanParamUtil.getString(category, request, "displayStyle", defaultDisplayStyle);
+String displayStyle = BeanParamUtil.getString(category, request, "displayStyle", MBCategory::getDisplayStyle, defaultDisplayStyle);
 
 MBMailingList mailingList = null;
 
@@ -139,7 +139,7 @@ if (portletTitleBasedNavigation) {
 
 					<aui:input inlineLabel="right" label="active" labelCssClass="simple-toggle-switch" name="mailingListActive" type="toggle-switch" value='<%= ParamUtil.getBoolean(request, "mailingListActive", BeanPropertiesUtil.getBoolean(mailingList, "active")) %>' />
 
-					<aui:input inlineLabel="right" label="allow-anonymous-emails" labelCssClass="simple-toggle-switch" name="allowAnonymous" type="toggle-switch" value='<%= BeanParamUtil.getBoolean(mailingList, request, "allowAnonymous") %>' />
+					<aui:input inlineLabel="right" label="allow-anonymous-emails" labelCssClass="simple-toggle-switch" name="allowAnonymous" type="toggle-switch" value='<%= BeanParamUtil.getBoolean(mailingList, request, "allowAnonymous", MBMailingList::isAllowAnonymous) %>' />
 
 					<div id="<portlet:namespace />mailingListSettings">
 						<aui:input name="emailAddress" />
@@ -149,7 +149,7 @@ if (portletTitleBasedNavigation) {
 						<aui:fieldset label="incoming[mail]">
 
 							<%
-							String protocol = BeanParamUtil.getString(mailingList, request, "inProtocol", "pop3");
+							String protocol = BeanParamUtil.getString(mailingList, request, "inProtocol", MBMailingList::getInProtocol, "pop3");
 							%>
 
 							<aui:field-wrapper label="protocol">

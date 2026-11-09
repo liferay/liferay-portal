@@ -31,9 +31,9 @@ if (commerceTaxMethod != null) {
 	<liferay-ui:error exception="<%= CommerceTaxMethodNameException.class %>" message="please-enter-a-valid-name" />
 
 	<commerce-ui:panel>
-		<aui:input label="name" localized="<%= true %>" name="nameMapAsXML" required="<%= true %>" type="text" value='<%= BeanParamUtil.getString(commerceTaxMethod, request, "name", commerceTaxMethodsDisplayContext.getCommerceTaxMethodEngineName(locale)) %>' />
+		<aui:input label="name" localized="<%= true %>" name="nameMapAsXML" required="<%= true %>" type="text" value='<%= BeanParamUtil.getString(commerceTaxMethod, request, "name", CommerceTaxMethod::getName, commerceTaxMethodsDisplayContext.getCommerceTaxMethodEngineName(locale)) %>' />
 
-		<aui:input label="description" localized="<%= true %>" name="descriptionMapAsXML" type="text" value='<%= BeanParamUtil.getString(commerceTaxMethod, request, "description", commerceTaxMethodsDisplayContext.getCommerceTaxMethodEngineDescription(locale)) %>' />
+		<aui:input label="description" localized="<%= true %>" name="descriptionMapAsXML" type="text" value='<%= BeanParamUtil.getString(commerceTaxMethod, request, "description", CommerceTaxMethod::getDescription, commerceTaxMethodsDisplayContext.getCommerceTaxMethodEngineDescription(locale)) %>' />
 
 		<aui:model-context bean="<%= commerceTaxMethod %>" model="<%= CommerceTaxMethod.class %>" />
 

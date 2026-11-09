@@ -59,12 +59,14 @@ public class DLEditFileShortcutDisplayContext {
 
 	public long getFileShortcutId() {
 		return BeanParamUtil.getLong(
-			_getFileShortcut(), _liferayPortletRequest, "fileShortcutId");
+			_getFileShortcut(), _liferayPortletRequest, "fileShortcutId",
+			FileShortcut::getFileShortcutId);
 	}
 
 	public long getFolderId() {
 		return BeanParamUtil.getLong(
-			_getFileShortcut(), _liferayPortletRequest, "folderId");
+			_getFileShortcut(), _liferayPortletRequest, "folderId",
+			FileShortcut::getFolderId);
 	}
 
 	public String getItemSelectorURL() {
@@ -87,7 +89,8 @@ public class DLEditFileShortcutDisplayContext {
 
 	public long getRepositoryId() {
 		return BeanParamUtil.getLong(
-			_getFileShortcut(), _liferayPortletRequest, "repositoryId");
+			_getFileShortcut(), _liferayPortletRequest, "repositoryId",
+			FileShortcut::getRepositoryId);
 	}
 
 	public String getTitle() {
@@ -106,7 +109,8 @@ public class DLEditFileShortcutDisplayContext {
 
 	public long getToFileEntryId() {
 		return BeanParamUtil.getLong(
-			_getFileShortcut(), _liferayPortletRequest, "toFileEntryId");
+			_getFileShortcut(), _liferayPortletRequest, "toFileEntryId",
+			FileShortcut::getToFileEntryId);
 	}
 
 	public String getToFileEntryTitle() {

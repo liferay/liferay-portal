@@ -13,7 +13,7 @@ DDMStructure structure = (DDMStructure)request.getAttribute(DDMWebKeys.DYNAMIC_D
 DDMStructureVersion structureVersion = structure.getStructureVersion();
 
 long classNameId = PortalUtil.getClassNameId(DDMStructure.class);
-long classPK = BeanParamUtil.getLong(structure, request, "structureId");
+long classPK = BeanParamUtil.getLong(structure, request, "structureId", DDMStructure::getStructureId);
 %>
 
 <portlet:actionURL name="/dynamic_data_mapping/copy_structure" var="copyStructureURL">

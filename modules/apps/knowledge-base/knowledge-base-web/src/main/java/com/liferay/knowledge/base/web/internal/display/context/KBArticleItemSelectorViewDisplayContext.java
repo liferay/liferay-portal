@@ -508,6 +508,7 @@ public class KBArticleItemSelectorViewDisplayContext {
 
 		_kbFolderId = BeanParamUtil.getLong(
 			_getKBFolder(), _httpServletRequest, "kbFolderId",
+			KBFolder::getKbFolderId,
 			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return _kbFolderId;

@@ -14,7 +14,7 @@ CPDefinitionVirtualSetting cpDefinitionVirtualSetting = cpDefinitionVirtualSetti
 
 FileEntry sampleFileEntry = cpDefinitionVirtualSettingDisplayContext.getSampleFileEntry();
 
-long sampleFileEntryId = BeanParamUtil.getLong(cpDefinitionVirtualSetting, request, "sampleFileEntryId");
+long sampleFileEntryId = BeanParamUtil.getLong(cpDefinitionVirtualSetting, request, "sampleFileEntryId", CPDefinitionVirtualSetting::getSampleFileEntryId);
 
 String textCssClass = "text-default ";
 

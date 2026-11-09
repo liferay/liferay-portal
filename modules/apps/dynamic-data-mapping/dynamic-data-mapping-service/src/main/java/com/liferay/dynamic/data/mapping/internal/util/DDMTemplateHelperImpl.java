@@ -183,9 +183,11 @@ public class DDMTemplateHelperImpl implements DDMTemplateHelper {
 			DDMWebKeys.DYNAMIC_DATA_MAPPING_TEMPLATE);
 
 		long classPK = BeanParamUtil.getLong(
-			ddmTemplate, httpServletRequest, "classPK");
+			ddmTemplate, httpServletRequest, "classPK",
+			DDMTemplate::getClassPK);
 		long classNameId = BeanParamUtil.getLong(
-			ddmTemplate, httpServletRequest, "classNameId");
+			ddmTemplate, httpServletRequest, "classNameId",
+			DDMTemplate::getClassNameId);
 
 		if (classPK > 0) {
 			DDMStructure ddmStructure = _ddmStructureService.getStructure(

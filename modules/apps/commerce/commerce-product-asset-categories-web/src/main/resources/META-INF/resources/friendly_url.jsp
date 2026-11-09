@@ -18,7 +18,7 @@ String titleMapAsXML = (String)request.getAttribute(CPAssetCategoriesWebKeys.TIT
 String urlTitle = (String)request.getAttribute(CPAssetCategoriesWebKeys.URL_TITLE);
 long vocabularyId = ParamUtil.getLong(request, "vocabularyId");
 
-long parentCategoryId = BeanParamUtil.getLong(category, request, "parentCategoryId");
+long parentCategoryId = BeanParamUtil.getLong(category, request, "parentCategoryId", AssetCategory::getParentCategoryId);
 
 PortletURL categoryRedirectURL = PortletURLBuilder.createRenderURL(
 	renderResponse

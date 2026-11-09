@@ -14,7 +14,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 DDLRecord record = (DDLRecord)request.getAttribute(DDLWebKeys.DYNAMIC_DATA_LISTS_RECORD);
 
-long recordSetId = BeanParamUtil.getLong(record, request, "recordSetId");
+long recordSetId = BeanParamUtil.getLong(record, request, "recordSetId", DDLRecord::getRecordSetId);
 
 DDLRecordSet recordSet = DDLRecordSetServiceUtil.getRecordSet(recordSetId);
 

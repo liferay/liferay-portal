@@ -48,7 +48,7 @@ CPInstance cpInstance = cpInstanceCommerceTierPriceEntryDisplayContext.getCPInst
 
 				CommerceCurrency commerceCurrency = commercePriceList.getCommerceCurrency();
 
-				boolean discountDiscovery = BeanParamUtil.getBoolean(commerceTierPriceEntry, request, "discountDiscovery", true);
+				boolean discountDiscovery = BeanParamUtil.getBoolean(commerceTierPriceEntry, request, "discountDiscovery", CommerceTierPriceEntry::isDiscountDiscovery, true);
 
 				boolean neverExpire = ParamUtil.getBoolean(request, "neverExpire", true);
 

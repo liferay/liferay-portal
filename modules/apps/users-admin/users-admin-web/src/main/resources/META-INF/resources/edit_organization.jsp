@@ -16,7 +16,7 @@ long organizationId = ParamUtil.getLong(request, "organizationId");
 
 Organization organization = OrganizationServiceUtil.fetchOrganization(organizationId);
 
-String type = BeanParamUtil.getString(organization, request, "type");
+String type = BeanParamUtil.getString(organization, request, "type", Organization::getType);
 
 PortletURL portletURL = PortletURLBuilder.createRenderURL(
 	liferayPortletResponse

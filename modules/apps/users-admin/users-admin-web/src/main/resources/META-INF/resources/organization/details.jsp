@@ -14,10 +14,10 @@ Organization organization = OrganizationServiceUtil.fetchOrganization(organizati
 
 String[] organizationsTypes = OrganizationLocalServiceUtil.getTypes();
 
-String type = BeanParamUtil.getString(organization, request, "type", organizationsTypes[0]);
+String type = BeanParamUtil.getString(organization, request, "type", Organization::getType, organizationsTypes[0]);
 
-long regionId = BeanParamUtil.getLong(organization, request, "regionId");
-long countryId = BeanParamUtil.getLong(organization, request, "countryId");
+long regionId = BeanParamUtil.getLong(organization, request, "regionId", Organization::getRegionId);
+long countryId = BeanParamUtil.getLong(organization, request, "countryId", Organization::getCountryId);
 
 long groupId = 0;
 

@@ -18,7 +18,7 @@ CommercePriceList commercePriceList = commercePriceEntry.getCommercePriceList();
 
 CommerceCurrency commerceCurrency = commercePriceList.getCommerceCurrency();
 
-boolean priceOnApplication = BeanParamUtil.getBoolean(commercePriceEntry, request, "priceOnApplication", false);
+boolean priceOnApplication = BeanParamUtil.getBoolean(commercePriceEntry, request, "priceOnApplication", CommercePriceEntry::isPriceOnApplication, false);
 %>
 
 <portlet:actionURL name="/cp_definitions/edit_cp_instance_commerce_price_entry" var="editCommercePriceEntryActionURL" />
@@ -70,7 +70,7 @@ boolean priceOnApplication = BeanParamUtil.getBoolean(commercePriceEntry, reques
 					</liferay-ui:error>
 
 					<%
-					boolean discountDiscovery = BeanParamUtil.getBoolean(commercePriceEntry, request, "discountDiscovery", true);
+					boolean discountDiscovery = BeanParamUtil.getBoolean(commercePriceEntry, request, "discountDiscovery", CommercePriceEntry::isDiscountDiscovery, true);
 					%>
 
 					<div class="row">

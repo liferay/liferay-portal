@@ -18,12 +18,12 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 	"commerceSubscriptionEntryId", String.valueOf(commerceSubscriptionEntry.getCommerceSubscriptionEntryId())
 ).build();
 
-int subscriptionLength = BeanParamUtil.getInteger(commerceSubscriptionEntry, request, "subscriptionLength", 1);
-String subscriptionType = BeanParamUtil.getString(commerceSubscriptionEntry, request, "subscriptionType");
-long maxSubscriptionCycles = BeanParamUtil.getLong(commerceSubscriptionEntry, request, "maxSubscriptionCycles");
-int deliverySubscriptionLength = BeanParamUtil.getInteger(commerceSubscriptionEntry, request, "deliverySubscriptionLength", 1);
-String deliverySubscriptionType = BeanParamUtil.getString(commerceSubscriptionEntry, request, "deliverySubscriptionType");
-long deliveryMaxSubscriptionCycles = BeanParamUtil.getLong(commerceSubscriptionEntry, request, "deliveryMaxSubscriptionCycles");
+int subscriptionLength = BeanParamUtil.getInteger(commerceSubscriptionEntry, request, "subscriptionLength", CommerceSubscriptionEntry::getSubscriptionLength, 1);
+String subscriptionType = BeanParamUtil.getString(commerceSubscriptionEntry, request, "subscriptionType", CommerceSubscriptionEntry::getSubscriptionType);
+long maxSubscriptionCycles = BeanParamUtil.getLong(commerceSubscriptionEntry, request, "maxSubscriptionCycles", CommerceSubscriptionEntry::getMaxSubscriptionCycles);
+int deliverySubscriptionLength = BeanParamUtil.getInteger(commerceSubscriptionEntry, request, "deliverySubscriptionLength", CommerceSubscriptionEntry::getDeliverySubscriptionLength, 1);
+String deliverySubscriptionType = BeanParamUtil.getString(commerceSubscriptionEntry, request, "deliverySubscriptionType", CommerceSubscriptionEntry::getDeliverySubscriptionType);
+long deliveryMaxSubscriptionCycles = BeanParamUtil.getLong(commerceSubscriptionEntry, request, "deliveryMaxSubscriptionCycles", CommerceSubscriptionEntry::getDeliveryMaxSubscriptionCycles);
 
 String defaultCPSubscriptionTypeLabel = StringPool.BLANK;
 String defaultDeliveryCPSubscriptionTypeLabel = StringPool.BLANK;

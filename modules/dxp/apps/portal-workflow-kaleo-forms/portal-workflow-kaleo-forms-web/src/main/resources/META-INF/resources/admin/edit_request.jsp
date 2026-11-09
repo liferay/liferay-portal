@@ -16,9 +16,9 @@ KaleoProcess kaleoProcess = (KaleoProcess)request.getAttribute(KaleoFormsWebKeys
 
 long classPK = ParamUtil.getLong(request, "classPK");
 
-long kaleoProcessId = BeanParamUtil.getLong(kaleoProcess, request, "kaleoProcessId", classPK);
+long kaleoProcessId = BeanParamUtil.getLong(kaleoProcess, request, "kaleoProcessId", KaleoProcess::getKaleoProcessId, classPK);
 
-long groupId = BeanParamUtil.getLong(kaleoProcess, request, "groupId", scopeGroupId);
+long groupId = BeanParamUtil.getLong(kaleoProcess, request, "groupId", KaleoProcess::getGroupId, scopeGroupId);
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);

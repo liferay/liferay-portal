@@ -26,9 +26,9 @@ CommercePaymentMethodGroupRel commercePaymentMethodGroupRel = commercePaymentMet
 	<liferay-ui:error exception="<%= CommercePaymentMethodGroupRelNameException.class %>" message="please-enter-a-valid-name" />
 
 	<commerce-ui:panel>
-		<aui:input label="name" localized="<%= true %>" name="nameMapAsXML" required="<%= true %>" type="text" value='<%= BeanParamUtil.getString(commercePaymentMethodGroupRel, request, "name", commercePaymentMethodsDisplayContext.getCommercePaymentMethodEngineName(locale)) %>' />
+		<aui:input label="name" localized="<%= true %>" name="nameMapAsXML" required="<%= true %>" type="text" value='<%= BeanParamUtil.getString(commercePaymentMethodGroupRel, request, "name", CommercePaymentMethodGroupRel::getName, commercePaymentMethodsDisplayContext.getCommercePaymentMethodEngineName(locale)) %>' />
 
-		<aui:input label="description" localized="<%= true %>" name="descriptionMapAsXML" placeholder="<%= commercePaymentMethodsDisplayContext.getCommercePaymentMethodEngineDescription(locale) %>" type="text" value='<%= BeanParamUtil.getString(commercePaymentMethodGroupRel, request, "description", commercePaymentMethodsDisplayContext.getCommercePaymentMethodEngineDescription(locale)) %>' />
+		<aui:input label="description" localized="<%= true %>" name="descriptionMapAsXML" placeholder="<%= commercePaymentMethodsDisplayContext.getCommercePaymentMethodEngineDescription(locale) %>" type="text" value='<%= BeanParamUtil.getString(commercePaymentMethodGroupRel, request, "description", CommercePaymentMethodGroupRel::getDescription, commercePaymentMethodsDisplayContext.getCommercePaymentMethodEngineDescription(locale)) %>' />
 
 		<aui:model-context bean="<%= commercePaymentMethodGroupRel %>" model="<%= CommercePaymentMethodGroupRel.class %>" />
 

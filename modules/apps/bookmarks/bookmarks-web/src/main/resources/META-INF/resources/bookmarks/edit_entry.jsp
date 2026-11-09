@@ -15,9 +15,9 @@ String referringPortletResource = ParamUtil.getString(request, "referringPortlet
 
 BookmarksEntry entry = (BookmarksEntry)request.getAttribute(BookmarksWebKeys.BOOKMARKS_ENTRY);
 
-long entryId = BeanParamUtil.getLong(entry, request, "entryId");
+long entryId = BeanParamUtil.getLong(entry, request, "entryId", BookmarksEntry::getEntryId);
 
-long folderId = BeanParamUtil.getLong(entry, request, "folderId");
+long folderId = BeanParamUtil.getLong(entry, request, "folderId", BookmarksEntry::getFolderId);
 
 if (entry != null) {
 	BookmarksUtil.addPortletBreadcrumbEntries(entry, request, renderResponse);

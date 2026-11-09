@@ -12,7 +12,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 Company selCompany = (Company)request.getAttribute(WebKeys.SEL_COMPANY);
 
-long companyId = BeanParamUtil.getLong(selCompany, request, "companyId");
+long companyId = BeanParamUtil.getLong(selCompany, request, "companyId", Company::getCompanyId);
 
 VirtualHost virtualHost = VirtualHostLocalServiceUtil.fetchCompanyDefaultVirtualHost(companyId);
 

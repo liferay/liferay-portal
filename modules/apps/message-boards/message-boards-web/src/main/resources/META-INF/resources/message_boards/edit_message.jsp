@@ -12,13 +12,13 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 MBMessage message = (MBMessage)request.getAttribute(WebKeys.MESSAGE_BOARDS_MESSAGE);
 
-long messageId = BeanParamUtil.getLong(message, request, "messageId");
+long messageId = BeanParamUtil.getLong(message, request, "messageId", MBMessage::getMessageId);
 
 long categoryId = MBUtil.getCategoryId(request, message);
-long threadId = BeanParamUtil.getLong(message, request, "threadId");
-long parentMessageId = BeanParamUtil.getLong(message, request, "parentMessageId", MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID);
+long threadId = BeanParamUtil.getLong(message, request, "threadId", MBMessage::getThreadId);
+long parentMessageId = BeanParamUtil.getLong(message, request, "parentMessageId", MBMessage::getParentMessageId, MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID);
 
-String subject = BeanParamUtil.getString(message, request, "subject");
+String subject = BeanParamUtil.getString(message, request, "subject", MBMessage::getSubject);
 
 MBThread thread = null;
 
@@ -45,7 +45,7 @@ if (threadId > 0) {
 	}
 }
 
-String body = BeanParamUtil.getString(message, request, "body");
+String body = BeanParamUtil.getString(message, request, "body", MBMessage::getBody);
 boolean quote = ParamUtil.getBoolean(request, "quote");
 boolean splitThread = ParamUtil.getBoolean(request, "splitThread");
 
@@ -55,7 +55,7 @@ if (message != null) {
 	existingAttachmentsFileEntries = message.getAttachmentsFileEntries();
 }
 
-boolean allowPingbacks = PropsValues.MESSAGE_BOARDS_PINGBACK_ENABLED && BeanParamUtil.getBoolean(message, request, "allowPingbacks", true);
+boolean allowPingbacks = PropsValues.MESSAGE_BOARDS_PINGBACK_ENABLED && BeanParamUtil.getBoolean(message, request, "allowPingbacks", MBMessage::isAllowPingbacks, true);
 
 if (Validator.isNull(redirect)) {
 	redirect = PortletURLBuilder.createRenderURL(
@@ -352,7 +352,7 @@ if (portletTitleBasedNavigation) {
 					<c:if test="<%= (priorities.length > 0) && MBCategoryPermission.contains(permissionChecker, scopeGroupId, categoryId, ActionKeys.UPDATE_THREAD_PRIORITY) %>">
 
 						<%
-						double threadPriority = BeanParamUtil.getDouble(message, request, "priority");
+						double threadPriority = BeanParamUtil.getDouble(message, request, "priority", MBMessage::getPriority);
 						%>
 
 						<aui:select name="priority">

@@ -22,7 +22,7 @@ if (role != null) {
 	roleName = role.getName();
 }
 
-String subtype = BeanParamUtil.getString(role, request, "subtype");
+String subtype = BeanParamUtil.getString(role, request, "subtype", Role::getSubtype);
 
 RoleTypeContributor currentRoleTypeContributor = RoleTypeContributorRetrieverUtil.getCurrentRoleTypeContributor(request);
 

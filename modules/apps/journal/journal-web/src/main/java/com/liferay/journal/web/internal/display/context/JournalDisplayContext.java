@@ -644,6 +644,7 @@ public class JournalDisplayContext {
 
 		_folderId = BeanParamUtil.getLong(
 			getFolder(), _httpServletRequest, "folderId",
+			JournalFolder::getFolderId,
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return _folderId;

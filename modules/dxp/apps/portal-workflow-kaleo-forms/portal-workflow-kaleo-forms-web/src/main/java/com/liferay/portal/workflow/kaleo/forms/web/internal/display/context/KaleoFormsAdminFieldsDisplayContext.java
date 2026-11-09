@@ -156,7 +156,8 @@ public class KaleoFormsAdminFieldsDisplayContext {
 			BeanParamUtil.getLong(
 				(KaleoProcess)_httpServletRequest.getAttribute(
 					KaleoFormsWebKeys.KALEO_PROCESS),
-				_httpServletRequest, "kaleoProcessId")
+				_httpServletRequest, "kaleoProcessId",
+				KaleoProcess::getKaleoProcessId)
 		).buildPortletURL();
 
 		return _portletURL;

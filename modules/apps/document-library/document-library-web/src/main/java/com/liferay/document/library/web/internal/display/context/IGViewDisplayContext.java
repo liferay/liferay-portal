@@ -352,7 +352,8 @@ public class IGViewDisplayContext {
 			WebKeys.DOCUMENT_LIBRARY_FOLDER);
 
 		_folderId = BeanParamUtil.getLong(
-			_folder, _httpServletRequest, "folderId", getRootFolderId());
+			_folder, _httpServletRequest, "folderId", Folder::getFolderId,
+			getRootFolderId());
 
 		_defaultFolderView = false;
 

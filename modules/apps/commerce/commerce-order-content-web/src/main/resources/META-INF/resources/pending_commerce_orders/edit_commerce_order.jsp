@@ -10,8 +10,8 @@
 <%
 CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrder();
 
-long billingCommerceAddressId = BeanParamUtil.getLong(commerceOrder, request, "billingAddressId");
-long shippingCommerceAddressId = BeanParamUtil.getLong(commerceOrder, request, "shippingAddressId");
+long billingCommerceAddressId = BeanParamUtil.getLong(commerceOrder, request, "billingAddressId", CommerceOrder::getBillingAddressId);
+long shippingCommerceAddressId = BeanParamUtil.getLong(commerceOrder, request, "shippingAddressId", CommerceOrder::getShippingAddressId);
 
 CommerceAddress billingCommerceAddress = commerceOrder.getBillingAddress();
 CommerceAddress shippingCommerceAddress = commerceOrder.getShippingAddress();

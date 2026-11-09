@@ -13,9 +13,9 @@ CommerceCurrenciesDisplayContext commerceCurrenciesDisplayContext = (CommerceCur
 CommerceCurrency commerceCurrency = commerceCurrenciesDisplayContext.getCommerceCurrency();
 CommerceCurrency primaryCommerceCurrency = commerceCurrenciesDisplayContext.getPrimaryCommerceCurrency();
 
-String roundingMode = BeanParamUtil.getString(commerceCurrency, request, "roundingMode", commerceCurrenciesDisplayContext.getDefaultRoundingMode());
+String roundingMode = BeanParamUtil.getString(commerceCurrency, request, "roundingMode", CommerceCurrency::getRoundingMode, commerceCurrenciesDisplayContext.getDefaultRoundingMode());
 
-boolean primary = BeanParamUtil.getBoolean(commerceCurrency, request, "primary");
+boolean primary = BeanParamUtil.getBoolean(commerceCurrency, request, "primary", CommerceCurrency::isPrimary);
 %>
 
 <portlet:actionURL name="/commerce_currency/edit_commerce_currency" var="editCommerceCurrencyActionURL" />

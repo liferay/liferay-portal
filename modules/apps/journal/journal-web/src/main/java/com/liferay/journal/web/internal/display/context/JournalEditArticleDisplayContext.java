@@ -457,7 +457,8 @@ public class JournalEditArticleDisplayContext {
 		}
 
 		_classNameId = BeanParamUtil.getLong(
-			_article, _httpServletRequest, "classNameId");
+			_article, _httpServletRequest, "classNameId",
+			JournalArticle::getClassNameId);
 
 		return _classNameId;
 	}
@@ -468,7 +469,8 @@ public class JournalEditArticleDisplayContext {
 		}
 
 		_classPK = BeanParamUtil.getLong(
-			_article, _httpServletRequest, "classPK");
+			_article, _httpServletRequest, "classPK",
+			JournalArticle::getClassPK);
 
 		return _classPK;
 	}
@@ -731,6 +733,7 @@ public class JournalEditArticleDisplayContext {
 
 		_folderId = BeanParamUtil.getLong(
 			_article, _httpServletRequest, "folderId",
+			JournalArticle::getFolderId,
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return _folderId;
@@ -921,7 +924,7 @@ public class JournalEditArticleDisplayContext {
 
 		_groupId = BeanParamUtil.getLong(
 			_article, _httpServletRequest, "groupId",
-			_themeDisplay.getScopeGroupId());
+			JournalArticle::getGroupId, _themeDisplay.getScopeGroupId());
 
 		return _groupId;
 	}
@@ -1374,6 +1377,7 @@ public class JournalEditArticleDisplayContext {
 
 		_version = BeanParamUtil.getDouble(
 			_article, _httpServletRequest, "version",
+			JournalArticle::getVersion,
 			JournalArticleConstants.VERSION_DEFAULT);
 
 		return _version;
@@ -1640,7 +1644,8 @@ public class JournalEditArticleDisplayContext {
 
 	private String _getLayoutUuid() {
 		return BeanParamUtil.getString(
-			_article, _httpServletRequest, "layoutUuid", (String)null);
+			_article, _httpServletRequest, "layoutUuid",
+			JournalArticle::getLayoutUuid, (String)null);
 	}
 
 	private String _getLocaleDisplayNames(Locale locale, Locale... locales) {

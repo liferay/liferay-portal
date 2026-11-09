@@ -152,7 +152,7 @@ public class WikiPortletToolbarContributor
 		}
 
 		String name = BeanParamUtil.getString(
-			node, portletRequest, "name", initialNodeName);
+			node, portletRequest, "name", WikiNode::getName, initialNodeName);
 
 		if (Validator.isNotNull(name)) {
 			try {

@@ -21,7 +21,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 	>
 		<div class="row">
 			<div class="col-6">
-				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "purchasable", true) %>' data-qa-id="purchasableInput" inlineLabel="right" name="purchasable" type="toggle-switch" />
+				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "purchasable", CPConfigurationEntry::isPurchasable, true) %>' data-qa-id="purchasableInput" inlineLabel="right" name="purchasable" type="toggle-switch" />
 			</div>
 		</div>
 	</liferay-frontend:fieldset>
@@ -35,15 +35,15 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 
 		<div class="row">
 			<div class="col-6">
-				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "displayAvailability") %>' data-qa-id="displayAvailabilityInput" inlineLabel="right" name="displayAvailability" type="toggle-switch" />
+				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "displayAvailability", CPConfigurationEntry::isDisplayAvailability) %>' data-qa-id="displayAvailabilityInput" inlineLabel="right" name="displayAvailability" type="toggle-switch" />
 			</div>
 
 			<div class="col-6">
-				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "backOrders", true) %>' data-qa-id="backOrdersInput" inlineLabel="right" label="allow-back-orders" name="backOrders" type="toggle-switch" />
+				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "backOrders", CPConfigurationEntry::isBackOrders, true) %>' data-qa-id="backOrdersInput" inlineLabel="right" label="allow-back-orders" name="backOrders" type="toggle-switch" />
 			</div>
 
 			<div class="col-6">
-				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "displayStockQuantity") %>' data-qa-id="displayStockQuantityInput" inlineLabel="right" name="displayStockQuantity" type="toggle-switch" />
+				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "displayStockQuantity", CPConfigurationEntry::isDisplayStockQuantity) %>' data-qa-id="displayStockQuantityInput" inlineLabel="right" name="displayStockQuantity" type="toggle-switch" />
 			</div>
 		</div>
 
@@ -56,7 +56,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 						String cpDefinitionInventoryEngineKey = cpDefinitionInventoryEngine.getKey();
 					%>
 
-					<aui:option label="<%= HtmlUtil.escape(cpDefinitionInventoryEngine.getLabel(locale)) %>" selected='<%= cpDefinitionInventoryEngineKey.equals(BeanParamUtil.getString(cpConfigurationEntry, request, "CPDefinitionInventoryEngine")) %>' value="<%= HtmlUtil.escape(cpDefinitionInventoryEngineKey) %>" />
+					<aui:option label="<%= HtmlUtil.escape(cpDefinitionInventoryEngine.getLabel(locale)) %>" selected='<%= cpDefinitionInventoryEngineKey.equals(BeanParamUtil.getString(cpConfigurationEntry, request, "CPDefinitionInventoryEngine", CPConfigurationEntry::getCPDefinitionInventoryEngine)) %>' value="<%= HtmlUtil.escape(cpDefinitionInventoryEngineKey) %>" />
 
 					<%
 					}
@@ -74,7 +74,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 						String commerceLowStockActivityKey = commerceLowStockActivity.getKey();
 					%>
 
-					<aui:option label="<%= HtmlUtil.escape(commerceLowStockActivity.getLabel(locale)) %>" selected='<%= commerceLowStockActivityKey.equals(BeanParamUtil.getString(cpConfigurationEntry, request, "lowStockActivity")) %>' value="<%= HtmlUtil.escape(commerceLowStockActivityKey) %>" />
+					<aui:option label="<%= HtmlUtil.escape(commerceLowStockActivity.getLabel(locale)) %>" selected='<%= commerceLowStockActivityKey.equals(BeanParamUtil.getString(cpConfigurationEntry, request, "lowStockActivity", CPConfigurationEntry::getLowStockActivity)) %>' value="<%= HtmlUtil.escape(commerceLowStockActivityKey) %>" />
 
 					<%
 					}
@@ -90,7 +90,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 					for (CommerceAvailabilityEstimate commerceAvailabilityEstimate : cpConfigurationListDisplayContext.getCommerceAvailabilityEstimates()) {
 					%>
 
-					<aui:option label="<%= HtmlUtil.escape(commerceAvailabilityEstimate.getTitle(languageId)) %>" selected='<%= BeanParamUtil.getLong(cpConfigurationEntry, request, "commerceAvailabilityEstimateId") == commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId() %>' value="<%= commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId() %>" />
+					<aui:option label="<%= HtmlUtil.escape(commerceAvailabilityEstimate.getTitle(languageId)) %>" selected='<%= BeanParamUtil.getLong(cpConfigurationEntry, request, "commerceAvailabilityEstimateId", CPConfigurationEntry::getCommerceAvailabilityEstimateId) == commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId() %>' value="<%= commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId() %>" />
 
 					<%
 					}
@@ -166,7 +166,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 				String allowedOrderQuantitiesHelpMessage = LanguageUtil.format(request, "separate-values-with-a-space-following-the-x-format", "###,##0.00", false);
 				%>
 
-				<aui:input data-qa-id="allowedOrderQuantitiesInput" helpMessage="<%= allowedOrderQuantitiesHelpMessage %>" name="allowedOrderQuantities" value='<%= BeanParamUtil.getString(cpConfigurationEntry, request, "allowedOrderQuantities") %>'>
+				<aui:input data-qa-id="allowedOrderQuantitiesInput" helpMessage="<%= allowedOrderQuantitiesHelpMessage %>" name="allowedOrderQuantities" value='<%= BeanParamUtil.getString(cpConfigurationEntry, request, "allowedOrderQuantities", CPConfigurationEntry::getAllowedOrderQuantities) %>'>
 					<aui:validator errorMessage="<%= allowedOrderQuantitiesHelpMessage %>" name="custom">
 						function(val) {
 							const pattern = /^(\d{1,3}(,\d{3})*(\.\d{1,2})?)(\s\d{1,3}(,\d{3})*(\.\d{1,2})?)*$/;
@@ -186,7 +186,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 	>
 
 		<%
-		boolean shippable = BeanParamUtil.getBoolean(cpConfigurationEntry, request, "shippable", true);
+		boolean shippable = BeanParamUtil.getBoolean(cpConfigurationEntry, request, "shippable", CPConfigurationEntry::isShippable, true);
 		%>
 
 		<div class="row">
@@ -195,11 +195,11 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 			</div>
 
 			<div class="col-6 <%= shippable ? StringPool.BLANK : "hide" %> show-if-shippable">
-				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "freeShipping") %>' data-qa-id="freeShippingInput" inlineLabel="right" name="freeShipping" type="toggle-switch" />
+				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "freeShipping", CPConfigurationEntry::isFreeShipping) %>' data-qa-id="freeShippingInput" inlineLabel="right" name="freeShipping" type="toggle-switch" />
 			</div>
 
 			<div class="col-6 <%= shippable ? StringPool.BLANK : "hide" %> show-if-shippable">
-				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "shipSeparately") %>' data-qa-id="shipSeparatelyInput" inlineLabel="right" name="shipSeparately" type="toggle-switch" />
+				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "shipSeparately", CPConfigurationEntry::isShipSeparately) %>' data-qa-id="shipSeparatelyInput" inlineLabel="right" name="shipSeparately" type="toggle-switch" />
 			</div>
 		</div>
 
@@ -235,7 +235,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 					for (CPTaxCategory cpTaxCategory : cpConfigurationListDisplayContext.getCPTaxCategories()) {
 					%>
 
-					<aui:option label="<%= HtmlUtil.escape(cpTaxCategory.getName(locale)) %>" selected='<%= BeanParamUtil.getLong(cpConfigurationEntry, request, "CPTaxCategoryId") == cpTaxCategory.getCPTaxCategoryId() %>' value="<%= cpTaxCategory.getCPTaxCategoryId() %>" />
+					<aui:option label="<%= HtmlUtil.escape(cpTaxCategory.getName(locale)) %>" selected='<%= BeanParamUtil.getLong(cpConfigurationEntry, request, "CPTaxCategoryId", CPConfigurationEntry::getCPTaxCategoryId) == cpTaxCategory.getCPTaxCategoryId() %>' value="<%= cpTaxCategory.getCPTaxCategoryId() %>" />
 
 					<%
 					}
@@ -245,7 +245,7 @@ CPConfigurationEntry cpConfigurationEntry = cpConfigurationListDisplayContext.ge
 			</div>
 
 			<div class="col-12">
-				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "taxExempt") %>' data-qa-id="taxExemptInput" inlineLabel="right" name="taxExempt" type="toggle-switch" />
+				<aui:input checked='<%= BeanParamUtil.getBoolean(cpConfigurationEntry, request, "taxExempt", CPConfigurationEntry::isTaxExempt) %>' data-qa-id="taxExemptInput" inlineLabel="right" name="taxExempt" type="toggle-switch" />
 			</div>
 		</div>
 	</liferay-frontend:fieldset>

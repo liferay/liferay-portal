@@ -14,7 +14,7 @@ MBCategory category = (MBCategory)request.getAttribute(WebKeys.MESSAGE_BOARDS_CA
 
 long categoryId = MBUtil.getCategoryId(request, category);
 
-long parentCategoryId = BeanParamUtil.getLong(category, request, "parentCategoryId", MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);
+long parentCategoryId = BeanParamUtil.getLong(category, request, "parentCategoryId", MBCategory::getParentCategoryId, MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);
 
 boolean portletTitleBasedNavigation = GetterUtil.getBoolean(portletConfig.getInitParameter("portlet-title-based-navigation"));
 

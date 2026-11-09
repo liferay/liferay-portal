@@ -17,7 +17,7 @@
 <liferay-ui:error exception="<%= CPDefinitionVirtualSettingTermsOfUseException.class %>" message="please-select-an-existing-web-content-or-enter-terms-of-use-content" />
 
 <aui:fieldset>
-	<aui:input inlineLabel="right" label="enable-terms-of-use" labelCssClass="simple-toggle-switch" name="termsOfUseRequired" type="toggle-switch" value='<%= BeanParamUtil.getBoolean(cpDefinitionVirtualSetting, request, "termsOfUseRequired") %>' />
+	<aui:input inlineLabel="right" label="enable-terms-of-use" labelCssClass="simple-toggle-switch" name="termsOfUseRequired" type="toggle-switch" value='<%= BeanParamUtil.getBoolean(cpDefinitionVirtualSetting, request, "termsOfUseRequired", CPDefinitionVirtualSetting::isTermsOfUseRequired) %>' />
 </aui:fieldset>
 
 <div class="row" id="<portlet:namespace />termsOfUseSettings">

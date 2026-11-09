@@ -26,13 +26,13 @@ if (userId > 0) {
 	selContact = selUser.getContact();
 }
 
-String screenName = BeanParamUtil.getString(selUser, request, "screenName");
-String emailAddress = BeanParamUtil.getString(selUser, request, "emailAddress");
-String firstName = BeanParamUtil.getString(selUser, request, "firstName");
-String middleName = BeanParamUtil.getString(selUser, request, "middleName");
-String lastName = BeanParamUtil.getString(selUser, request, "lastName");
-long prefixListTypeId = BeanParamUtil.getLong(selContact, request, "prefixListTypeId");
-long suffixListTypeId = BeanParamUtil.getLong(selContact, request, "suffixListTypeId");
+String screenName = BeanParamUtil.getString(selUser, request, "screenName", User::getScreenName);
+String emailAddress = BeanParamUtil.getString(selUser, request, "emailAddress", User::getEmailAddress);
+String firstName = BeanParamUtil.getString(selUser, request, "firstName", User::getFirstName);
+String middleName = BeanParamUtil.getString(selUser, request, "middleName", User::getMiddleName);
+String lastName = BeanParamUtil.getString(selUser, request, "lastName", User::getLastName);
+long prefixListTypeId = BeanParamUtil.getLong(selContact, request, "prefixListTypeId", Contact::getPrefixListTypeId);
+long suffixListTypeId = BeanParamUtil.getLong(selContact, request, "suffixListTypeId", Contact::getSuffixListTypeId);
 
 Calendar calendar = CalendarFactoryUtil.getCalendar();
 
@@ -76,7 +76,7 @@ boolean male = BeanParamUtil.getBoolean(selUser, request, "male", true);
 		<aui:input name="birthdayDay" type="hidden" value="<%= String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) %>" />
 		<aui:input name="birthdayMonth" type="hidden" value="<%= String.valueOf(calendar.get(Calendar.MONTH)) %>" />
 		<aui:input name="birthdayYear" type="hidden" value="<%= String.valueOf(calendar.get(Calendar.YEAR)) %>" />
-		<aui:input name="jobTitle" type="hidden" value='<%= BeanParamUtil.getString(selUser, request, "jobTitle") %>' />
+		<aui:input name="jobTitle" type="hidden" value='<%= BeanParamUtil.getString(selUser, request, "jobTitle", User::getJobTitle) %>' />
 	</aui:form>
 
 	<div class="alert alert-warning">

@@ -123,7 +123,7 @@ public class DLEditFolderDisplayContext {
 		}
 
 		_folderId = BeanParamUtil.getLong(
-			getFolder(), _httpServletRequest, "folderId");
+			getFolder(), _httpServletRequest, "folderId", Folder::getFolderId);
 
 		return _folderId;
 	}
@@ -161,6 +161,7 @@ public class DLEditFolderDisplayContext {
 
 		_parentFolderId = BeanParamUtil.getLong(
 			getFolder(), _httpServletRequest, "parentFolderId",
+			Folder::getParentFolderId,
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return _parentFolderId;
@@ -192,7 +193,8 @@ public class DLEditFolderDisplayContext {
 		}
 
 		_repositoryId = BeanParamUtil.getLong(
-			getFolder(), _httpServletRequest, "repositoryId");
+			getFolder(), _httpServletRequest, "repositoryId",
+			Folder::getRepositoryId);
 
 		return _repositoryId;
 	}

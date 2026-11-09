@@ -47,7 +47,8 @@ public class MBEditMessageDisplayContext {
 
 	public Map<String, Object> getMBPortletComponentContext() throws Exception {
 		long messageId = BeanParamUtil.getLong(
-			_message, _liferayPortletRequest, "messageId");
+			_message, _liferayPortletRequest, "messageId",
+			MBMessage::getMessageId);
 
 		Map<String, Object> taglibContext = HashMapBuilder.<String, Object>put(
 			"constants",

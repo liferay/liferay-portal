@@ -219,7 +219,8 @@ public class BookmarksPortletToolbarContributor
 		}
 
 		long folderId = BeanParamUtil.getLong(
-			folder, portletRequest, "folderId", rootFolderId);
+			folder, portletRequest, "folderId", BookmarksFolder::getFolderId,
+			rootFolderId);
 
 		if (folderId != BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
 			try {

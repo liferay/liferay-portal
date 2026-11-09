@@ -595,6 +595,7 @@ public class JournalArticleItemSelectorViewDisplayContext {
 
 		_folderId = BeanParamUtil.getLong(
 			_getFolder(), _httpServletRequest, "folderId",
+			JournalFolder::getFolderId,
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
 		return _folderId;

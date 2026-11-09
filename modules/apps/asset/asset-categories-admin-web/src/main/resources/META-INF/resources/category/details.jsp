@@ -16,7 +16,7 @@ AssetCategory category = AssetCategoryLocalServiceUtil.fetchCategory(categoryId)
 
 long groupId = ParamUtil.getLong(request, "groupId", scopeGroupId);
 
-long parentCategoryId = BeanParamUtil.getLong(category, request, "parentCategoryId");
+long parentCategoryId = BeanParamUtil.getLong(category, request, "parentCategoryId", AssetCategory::getParentCategoryId);
 
 long vocabularyId = ParamUtil.getLong(request, "vocabularyId");
 

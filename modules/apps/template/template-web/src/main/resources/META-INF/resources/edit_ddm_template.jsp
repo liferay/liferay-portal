@@ -14,9 +14,9 @@ long ddmTemplateId = ParamUtil.getLong(request, "ddmTemplateId");
 
 DDMTemplate ddmTemplate = DDMTemplateLocalServiceUtil.fetchDDMTemplate(ddmTemplateId);
 
-long classNameId = BeanParamUtil.getLong(ddmTemplate, request, "classNameId");
-long classPK = BeanParamUtil.getLong(ddmTemplate, request, "classPK");
-long resourceClassNameId = BeanParamUtil.getLong(ddmTemplate, request, "resourceClassNameId");
+long classNameId = BeanParamUtil.getLong(ddmTemplate, request, "classNameId", DDMTemplate::getClassNameId);
+long classPK = BeanParamUtil.getLong(ddmTemplate, request, "classPK", DDMTemplate::getClassPK);
+long resourceClassNameId = BeanParamUtil.getLong(ddmTemplate, request, "resourceClassNameId", DDMTemplate::getResourceClassNameId);
 
 long templateEntryId = ParamUtil.getLong(request, "templateEntryId");
 

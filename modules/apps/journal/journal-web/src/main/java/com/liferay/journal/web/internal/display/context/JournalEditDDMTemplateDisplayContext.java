@@ -103,7 +103,8 @@ public class JournalEditDDMTemplateDisplayContext {
 		}
 
 		_classPK = BeanParamUtil.getLong(
-			getDDMTemplate(), _httpServletRequest, "classPK");
+			getDDMTemplate(), _httpServletRequest, "classPK",
+			DDMTemplate::getClassPK);
 
 		return _classPK;
 	}
@@ -208,7 +209,7 @@ public class JournalEditDDMTemplateDisplayContext {
 
 		_groupId = BeanParamUtil.getLong(
 			getDDMTemplate(), _httpServletRequest, "groupId",
-			themeDisplay.getScopeGroupId());
+			DDMTemplate::getGroupId, themeDisplay.getScopeGroupId());
 
 		return _groupId;
 	}
@@ -229,7 +230,8 @@ public class JournalEditDDMTemplateDisplayContext {
 		}
 
 		String script = BeanParamUtil.getString(
-			getDDMTemplate(), _httpServletRequest, "script");
+			getDDMTemplate(), _httpServletRequest, "script",
+			DDMTemplate::getScript);
 
 		if (Validator.isNotNull(script)) {
 			script = new String(Base64.decode(script));
@@ -417,7 +419,8 @@ public class JournalEditDDMTemplateDisplayContext {
 		}
 
 		_cacheable = BeanParamUtil.getBoolean(
-			getDDMTemplate(), _httpServletRequest, "cacheable", true);
+			getDDMTemplate(), _httpServletRequest, "cacheable",
+			DDMTemplate::isCacheable, true);
 
 		return _cacheable;
 	}
@@ -428,7 +431,8 @@ public class JournalEditDDMTemplateDisplayContext {
 		}
 
 		_smallImage = BeanParamUtil.getBoolean(
-			getDDMTemplate(), _httpServletRequest, "smallImage");
+			getDDMTemplate(), _httpServletRequest, "smallImage",
+			DDMTemplate::isSmallImage);
 
 		return _smallImage;
 	}

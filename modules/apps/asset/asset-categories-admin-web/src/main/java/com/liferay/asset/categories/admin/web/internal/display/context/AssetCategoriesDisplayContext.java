@@ -134,7 +134,8 @@ public class AssetCategoriesDisplayContext {
 			"parentCategoryId",
 			() -> {
 				long parentCategoryId = BeanParamUtil.getLong(
-					getCategory(), _httpServletRequest, "parentCategoryId");
+					getCategory(), _httpServletRequest, "parentCategoryId",
+					AssetCategory::getParentCategoryId);
 
 				if (parentCategoryId > 0) {
 					return parentCategoryId;
@@ -470,7 +471,8 @@ public class AssetCategoriesDisplayContext {
 			"categoryId",
 			() -> {
 				long parentCategoryId = BeanParamUtil.getLong(
-					getCategory(), _httpServletRequest, "parentCategoryId");
+					getCategory(), _httpServletRequest, "parentCategoryId",
+					AssetCategory::getParentCategoryId);
 
 				if (parentCategoryId > 0) {
 					return parentCategoryId;

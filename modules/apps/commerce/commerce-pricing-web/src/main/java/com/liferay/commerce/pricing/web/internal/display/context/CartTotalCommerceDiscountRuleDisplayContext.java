@@ -72,7 +72,8 @@ public class CartTotalCommerceDiscountRuleDisplayContext {
 		}
 
 		String type = BeanParamUtil.getString(
-			commerceDiscountRule, _httpServletRequest, "type");
+			commerceDiscountRule, _httpServletRequest, "type",
+			CommerceDiscountRule::getType);
 
 		String typeSettings = commerceDiscountRule.getSettingsProperty(type);
 

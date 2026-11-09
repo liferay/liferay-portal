@@ -78,7 +78,8 @@ public class EditDDMTemplateDisplayContext {
 		}
 
 		_classNameId = BeanParamUtil.getLong(
-			getDDMTemplate(), _liferayPortletRequest, "classNameId");
+			getDDMTemplate(), _liferayPortletRequest, "classNameId",
+			DDMTemplate::getClassNameId);
 
 		return _classNameId;
 	}
@@ -219,7 +220,8 @@ public class EditDDMTemplateDisplayContext {
 		}
 
 		_smallImage = BeanParamUtil.getBoolean(
-			getDDMTemplate(), _liferayPortletRequest, "smallImage");
+			getDDMTemplate(), _liferayPortletRequest, "smallImage",
+			DDMTemplate::isSmallImage);
 
 		return _smallImage;
 	}
@@ -281,7 +283,8 @@ public class EditDDMTemplateDisplayContext {
 		}
 
 		String script = BeanParamUtil.getString(
-			getDDMTemplate(), httpServletRequest, "script");
+			getDDMTemplate(), httpServletRequest, "script",
+			DDMTemplate::getScript);
 
 		if (Validator.isNull(script)) {
 			script = getDefaultScript();

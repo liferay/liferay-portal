@@ -12,7 +12,7 @@
 <%
 String backURL = ParamUtil.getString(request, "backURL");
 
-int instanceIndex = BeanParamUtil.getInteger(calendarBooking, request, "instanceIndex");
+int instanceIndex = BeanParamUtil.getInteger(calendarBooking, request, "instanceIndex", CalendarBooking::getInstanceIndex);
 
 calendarBooking = RecurrenceUtil.getCalendarBookingInstance(calendarBooking, instanceIndex);
 

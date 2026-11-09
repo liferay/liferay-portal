@@ -8,7 +8,7 @@
 <%
 CommercePriceEntry commercePriceEntry = commerceTierPriceEntryDisplayContext.getCommercePriceEntry();
 
-boolean discountDiscovery = BeanParamUtil.getBoolean(commerceTierPriceEntry, request, "discountDiscovery", true);
+boolean discountDiscovery = BeanParamUtil.getBoolean(commerceTierPriceEntry, request, "discountDiscovery", CommerceTierPriceEntry::isDiscountDiscovery, true);
 
 BigDecimal minQuantity = BigDecimal.ZERO;
 

@@ -444,7 +444,7 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 					selectNullable: <%= false %>,
 					selectSort: '<%= true %>',
 					selectVal:
-						'<%= BeanParamUtil.getLong(currentCommerceAddress, request, "countryId", 0) %>',
+						'<%= BeanParamUtil.getLong(currentCommerceAddress, request, "countryId", CommerceAddress::getCountryId, 0) %>',
 				},
 				{
 					select: '<portlet:namespace />regionId',
@@ -479,7 +479,7 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 					selectId: 'regionId',
 					selectNullable: <%= false %>,
 					selectVal:
-						'<%= BeanParamUtil.getLong(currentCommerceAddress, request, "regionId", 0) %>',
+						'<%= BeanParamUtil.getLong(currentCommerceAddress, request, "regionId", CommerceAddress::getRegionId, 0) %>',
 				},
 			])
 		);

@@ -1311,31 +1311,32 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		}
 
 		String comments = BeanParamUtil.getString(
-			user, actionRequest, "comments");
+			user, actionRequest, "comments", User::getComments);
 		String emailAddress = BeanParamUtil.getString(
-			user, actionRequest, "emailAddress");
+			user, actionRequest, "emailAddress", User::getEmailAddress);
 		String firstName = BeanParamUtil.getString(
-			user, actionRequest, "firstName");
+			user, actionRequest, "firstName", User::getFirstName);
 		String jobTitle = BeanParamUtil.getString(
-			user, actionRequest, "jobTitle");
+			user, actionRequest, "jobTitle", User::getJobTitle);
 		String lastName = BeanParamUtil.getString(
-			user, actionRequest, "lastName");
+			user, actionRequest, "lastName", User::getLastName);
 		String middleName = BeanParamUtil.getString(
-			user, actionRequest, "middleName");
+			user, actionRequest, "middleName", User::getMiddleName);
 		String screenName = BeanParamUtil.getString(
-			user, actionRequest, "screenName");
+			user, actionRequest, "screenName", User::getScreenName);
 
 		Contact contact = user.getContact();
 
 		String facebookSn = BeanParamUtil.getString(
-			contact, actionRequest, "facebookSn");
+			contact, actionRequest, "facebookSn", Contact::getFacebookSn);
 		String jabberSn = BeanParamUtil.getString(
-			contact, actionRequest, "jabberSn");
+			contact, actionRequest, "jabberSn", Contact::getJabberSn);
 		String skypeSn = BeanParamUtil.getString(
-			contact, actionRequest, "skypeSn");
-		String smsSn = BeanParamUtil.getString(contact, actionRequest, "smsSn");
+			contact, actionRequest, "skypeSn", Contact::getSkypeSn);
+		String smsSn = BeanParamUtil.getString(
+			contact, actionRequest, "smsSn", Contact::getSmsSn);
 		String twitterSn = BeanParamUtil.getString(
-			contact, actionRequest, "twitterSn");
+			contact, actionRequest, "twitterSn", Contact::getTwitterSn);
 
 		Calendar cal = CalendarFactoryUtil.getCalendar();
 

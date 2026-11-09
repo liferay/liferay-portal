@@ -15,12 +15,12 @@ WikiNode node = (WikiNode)request.getAttribute(WikiWebKeys.WIKI_NODE);
 
 WikiPage wikiPage = (WikiPage)request.getAttribute(WikiWebKeys.WIKI_PAGE);
 
-long nodeId = BeanParamUtil.getLong(wikiPage, request, "nodeId");
-String title = BeanParamUtil.getString(wikiPage, request, "title");
+long nodeId = BeanParamUtil.getLong(wikiPage, request, "nodeId", WikiPage::getNodeId);
+String title = BeanParamUtil.getString(wikiPage, request, "title", WikiPage::getTitle);
 
 boolean editTitle = ParamUtil.getBoolean(request, "editTitle");
 
-String selectedFormat = BeanParamUtil.getString(wikiPage, request, "format", siteWikiGroupServiceConfiguration.defaultFormat());
+String selectedFormat = BeanParamUtil.getString(wikiPage, request, "format", WikiPage::getFormat, siteWikiGroupServiceConfiguration.defaultFormat());
 
 Collection<String> formats = wikiEngineRenderer.getFormats();
 
@@ -32,7 +32,7 @@ if (!formats.contains(selectedFormat)) {
 	}
 }
 
-String parentTitle = BeanParamUtil.getString(wikiPage, request, "parentTitle");
+String parentTitle = BeanParamUtil.getString(wikiPage, request, "parentTitle", WikiPage::getParentTitle);
 
 boolean editable = false;
 

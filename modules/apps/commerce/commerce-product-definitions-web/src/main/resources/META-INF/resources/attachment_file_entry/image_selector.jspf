@@ -6,7 +6,7 @@
 --%>
 
 <%
-long fileEntryId = BeanParamUtil.getLong(cpAttachmentFileEntry, request, "fileEntryId");
+long fileEntryId = BeanParamUtil.getLong(cpAttachmentFileEntry, request, "fileEntryId", CPAttachmentFileEntry::getFileEntryId);
 %>
 
 <liferay-ui:error exception="<%= DuplicateCPAttachmentFileEntryException.class %>" message="that-attachment-is-already-in-use-on-this-product" />

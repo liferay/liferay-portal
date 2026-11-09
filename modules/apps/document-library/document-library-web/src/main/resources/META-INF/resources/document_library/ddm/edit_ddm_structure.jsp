@@ -14,9 +14,9 @@ DLEditDDMStructureDisplayContext dlEditDDMStructureDisplayContext = new DLEditDD
 
 com.liferay.dynamic.data.mapping.model.DDMStructure ddmStructure = dlEditDDMStructureDisplayContext.getDDMStructure();
 
-long ddmStructureId = BeanParamUtil.getLong(ddmStructure, request, "structureId");
+long ddmStructureId = BeanParamUtil.getLong(ddmStructure, request, "structureId", DDMStructure::getStructureId);
 
-long groupId = BeanParamUtil.getLong(ddmStructure, request, "groupId", scopeGroupId);
+long groupId = BeanParamUtil.getLong(ddmStructure, request, "groupId", DDMStructure::getGroupId, scopeGroupId);
 
 String title = LanguageUtil.format(request, "new-x", LanguageUtil.get(resourceBundle, "metadata-set"), false);
 

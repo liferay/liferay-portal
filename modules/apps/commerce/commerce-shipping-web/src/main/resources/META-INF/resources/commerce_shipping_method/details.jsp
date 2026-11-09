@@ -38,9 +38,9 @@ if (commerceShippingMethod != null) {
 	</c:if>
 
 	<commerce-ui:panel>
-		<aui:input label="name" localized="<%= true %>" name="nameMapAsXML" required="<%= true %>" type="text" value='<%= BeanParamUtil.getString(commerceShippingMethod, request, "name", commerceShippingMethodsDisplayContext.getCommerceShippingMethodEngineName(locale)) %>' />
+		<aui:input label="name" localized="<%= true %>" name="nameMapAsXML" required="<%= true %>" type="text" value='<%= BeanParamUtil.getString(commerceShippingMethod, request, "name", CommerceShippingMethod::getName, commerceShippingMethodsDisplayContext.getCommerceShippingMethodEngineName(locale)) %>' />
 
-		<aui:input label="description" localized="<%= true %>" name="descriptionMapAsXML" type="text" value='<%= BeanParamUtil.getString(commerceShippingMethod, request, "description", commerceShippingMethodsDisplayContext.getCommerceShippingMethodEngineDescription(locale)) %>' />
+		<aui:input label="description" localized="<%= true %>" name="descriptionMapAsXML" type="text" value='<%= BeanParamUtil.getString(commerceShippingMethod, request, "description", CommerceShippingMethod::getDescription, commerceShippingMethodsDisplayContext.getCommerceShippingMethodEngineDescription(locale)) %>' />
 
 		<aui:model-context bean="<%= commerceShippingMethod %>" model="<%= CommerceShippingMethod.class %>" />
 

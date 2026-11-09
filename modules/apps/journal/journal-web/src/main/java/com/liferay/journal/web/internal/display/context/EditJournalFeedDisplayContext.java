@@ -272,7 +272,8 @@ public class EditJournalFeedDisplayContext {
 		}
 
 		_feedId = BeanParamUtil.getString(
-			_journalFeed, _httpServletRequest, "feedId");
+			_journalFeed, _httpServletRequest, "feedId",
+			JournalFeed::getFeedId);
 
 		return _feedId;
 	}
@@ -285,10 +286,10 @@ public class EditJournalFeedDisplayContext {
 		_feedType = RSSUtil.getFeedType(
 			BeanParamUtil.getString(
 				_journalFeed, _httpServletRequest, "feedFormat",
-				RSSUtil.FORMAT_DEFAULT),
+				JournalFeed::getFeedFormat, RSSUtil.FORMAT_DEFAULT),
 			BeanParamUtil.getDouble(
 				_journalFeed, _httpServletRequest, "feedVersion",
-				RSSUtil.VERSION_DEFAULT));
+				JournalFeed::getFeedVersion, RSSUtil.VERSION_DEFAULT));
 
 		return _feedType;
 	}
@@ -332,7 +333,7 @@ public class EditJournalFeedDisplayContext {
 
 		_groupId = BeanParamUtil.getLong(
 			_journalFeed, _httpServletRequest, "groupId",
-			_themeDisplay.getScopeGroupId());
+			JournalFeed::getGroupId, _themeDisplay.getScopeGroupId());
 
 		return _groupId;
 	}

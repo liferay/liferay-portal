@@ -164,7 +164,8 @@ public class DDMDataProviderDisplayContext {
 			fetchDataProviderInstance();
 
 		String type = BeanParamUtil.getString(
-			ddmDataProviderInstance, _renderRequest, "type");
+			ddmDataProviderInstance, _renderRequest, "type",
+			DDMDataProviderInstance::getType);
 
 		DDMDataProvider ddmDataProvider =
 			_ddmDataProviderRegistry.getDDMDataProvider(type);

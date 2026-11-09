@@ -357,7 +357,7 @@ public class EditUserMVCActionCommand
 
 		String oldScreenName = user.getScreenName();
 		String screenName = BeanParamUtil.getString(
-			user, actionRequest, "screenName");
+			user, actionRequest, "screenName", User::getScreenName);
 
 		if (PrefsPropsUtil.getBoolean(
 				user.getCompanyId(),
@@ -368,7 +368,7 @@ public class EditUserMVCActionCommand
 
 		String oldEmailAddress = user.getEmailAddress();
 		String emailAddress = BeanParamUtil.getString(
-			user, actionRequest, "emailAddress");
+			user, actionRequest, "emailAddress", User::getEmailAddress);
 
 		Company company = portal.getCompany(actionRequest);
 
@@ -401,17 +401,19 @@ public class EditUserMVCActionCommand
 		}
 
 		String languageId = BeanParamUtil.getString(
-			user, actionRequest, "languageId");
+			user, actionRequest, "languageId", User::getLanguageId);
 		String firstName = BeanParamUtil.getString(
-			user, actionRequest, "firstName");
+			user, actionRequest, "firstName", User::getFirstName);
 		String middleName = BeanParamUtil.getString(
-			user, actionRequest, "middleName");
+			user, actionRequest, "middleName", User::getMiddleName);
 		String lastName = BeanParamUtil.getString(
-			user, actionRequest, "lastName");
+			user, actionRequest, "lastName", User::getLastName);
 		long prefixListTypeId = BeanParamUtil.getLong(
-			contact, actionRequest, "prefixListTypeId");
+			contact, actionRequest, "prefixListTypeId",
+			Contact::getPrefixListTypeId);
 		long suffixListTypeId = BeanParamUtil.getLong(
-			contact, actionRequest, "suffixListTypeId");
+			contact, actionRequest, "suffixListTypeId",
+			Contact::getSuffixListTypeId);
 		boolean male = BeanParamUtil.getBoolean(
 			user, actionRequest, "male", true);
 
@@ -427,9 +429,9 @@ public class EditUserMVCActionCommand
 			actionRequest, "birthdayYear", calendar.get(Calendar.YEAR));
 
 		String comments = BeanParamUtil.getString(
-			user, actionRequest, "comments");
+			user, actionRequest, "comments", User::getComments);
 		String jobTitle = BeanParamUtil.getString(
-			user, actionRequest, "jobTitle");
+			user, actionRequest, "jobTitle", User::getJobTitle);
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			User.class.getName(), actionRequest);

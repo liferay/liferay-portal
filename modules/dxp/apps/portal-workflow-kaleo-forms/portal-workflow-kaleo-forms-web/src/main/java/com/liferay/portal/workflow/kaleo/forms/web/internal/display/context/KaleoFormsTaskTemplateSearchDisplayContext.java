@@ -118,7 +118,8 @@ public class KaleoFormsTaskTemplateSearchDisplayContext {
 				KaleoFormsWebKeys.KALEO_PROCESS);
 
 		_kaleoProcessId = BeanParamUtil.getLong(
-			kaleoProcess, _httpServletRequest, "kaleoProcessId");
+			kaleoProcess, _httpServletRequest, "kaleoProcessId",
+			KaleoProcess::getKaleoProcessId);
 
 		return _kaleoProcessId;
 	}

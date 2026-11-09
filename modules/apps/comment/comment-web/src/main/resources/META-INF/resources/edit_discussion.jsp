@@ -18,7 +18,7 @@ if (Validator.isNull(redirect)) {
 
 Comment comment = (Comment)request.getAttribute(WebKeys.COMMENT);
 
-long commentId = BeanParamUtil.getLong(comment, request, "commentId");
+long commentId = BeanParamUtil.getLong(comment, request, "commentId", Comment::getCommentId);
 
 long parentCommentId = comment.getParentCommentId();
 

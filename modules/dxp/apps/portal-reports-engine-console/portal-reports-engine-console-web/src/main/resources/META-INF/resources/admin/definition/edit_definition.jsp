@@ -16,9 +16,9 @@ String backURL = ParamUtil.getString(request, "backURL", viewDefinitionsURL);
 
 Definition definition = (Definition)request.getAttribute(ReportsEngineWebKeys.DEFINITION);
 
-long definitionId = BeanParamUtil.getLong(definition, request, "definitionId");
+long definitionId = BeanParamUtil.getLong(definition, request, "definitionId", Definition::getDefinitionId);
 
-long sourceId = BeanParamUtil.getLong(definition, request, "sourceId");
+long sourceId = BeanParamUtil.getLong(definition, request, "sourceId", Definition::getSourceId);
 
 String reportName = StringPool.BLANK;
 

@@ -87,7 +87,7 @@ if ((commerceOrder != null) && Validator.isNull(cmd)) {
 				selectNullable: <%= false %>,
 				selectSort: '<%= true %>',
 				selectVal:
-					'<%= BeanParamUtil.getLong(shippingAddress, request, "countryId") %>',
+					'<%= BeanParamUtil.getLong(shippingAddress, request, "countryId", CommerceAddress::getCountryId) %>',
 			},
 			{
 				select: '<portlet:namespace />regionId',
@@ -122,7 +122,7 @@ if ((commerceOrder != null) && Validator.isNull(cmd)) {
 				selectId: 'regionId',
 				selectNullable: <%= false %>,
 				selectVal:
-					'<%= BeanParamUtil.getLong(shippingAddress, request, "regionId") %>',
+					'<%= BeanParamUtil.getLong(shippingAddress, request, "regionId", CommerceAddress::getRegionId) %>',
 			},
 		]);
 	</aui:script>

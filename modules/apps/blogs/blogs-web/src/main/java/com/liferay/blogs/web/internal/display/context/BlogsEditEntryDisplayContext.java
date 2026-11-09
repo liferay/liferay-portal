@@ -126,7 +126,8 @@ public class BlogsEditEntryDisplayContext {
 		}
 
 		_content = BeanParamUtil.getString(
-			getBlogsEntry(), _httpServletRequest, "content");
+			getBlogsEntry(), _httpServletRequest, "content",
+			BlogsEntry::getContent);
 
 		return _content;
 	}
@@ -138,6 +139,7 @@ public class BlogsEditEntryDisplayContext {
 
 		_coverImageCaption = BeanParamUtil.getString(
 			getBlogsEntry(), _httpServletRequest, "coverImageCaption",
+			BlogsEntry::getCoverImageCaption,
 			LanguageUtil.get(_httpServletRequest, "caption"));
 
 		return _coverImageCaption;
@@ -149,7 +151,8 @@ public class BlogsEditEntryDisplayContext {
 		}
 
 		_coverImageFileEntryId = BeanParamUtil.getLong(
-			getBlogsEntry(), _httpServletRequest, "coverImageFileEntryId");
+			getBlogsEntry(), _httpServletRequest, "coverImageFileEntryId",
+			BlogsEntry::getCoverImageFileEntryId);
 
 		return _coverImageFileEntryId;
 	}
@@ -185,7 +188,8 @@ public class BlogsEditEntryDisplayContext {
 		}
 
 		String description = BeanParamUtil.getString(
-			getBlogsEntry(), _httpServletRequest, "description");
+			getBlogsEntry(), _httpServletRequest, "description",
+			BlogsEntry::getDescription);
 
 		if (!isCustomAbstract()) {
 			description = StringUtil.shorten(
@@ -231,7 +235,8 @@ public class BlogsEditEntryDisplayContext {
 		}
 
 		_entryId = BeanParamUtil.getLong(
-			getBlogsEntry(), _httpServletRequest, "entryId");
+			getBlogsEntry(), _httpServletRequest, "entryId",
+			BlogsEntry::getEntryId);
 
 		return _entryId;
 	}
@@ -313,7 +318,8 @@ public class BlogsEditEntryDisplayContext {
 		}
 
 		_smallImageFileEntryId = BeanParamUtil.getLong(
-			getBlogsEntry(), _httpServletRequest, "smallImageFileEntryId");
+			getBlogsEntry(), _httpServletRequest, "smallImageFileEntryId",
+			BlogsEntry::getSmallImageFileEntryId);
 
 		return _smallImageFileEntryId;
 	}
@@ -382,7 +388,8 @@ public class BlogsEditEntryDisplayContext {
 				).put(
 					"subtitle",
 					BeanParamUtil.getString(
-						getBlogsEntry(), _httpServletRequest, "subtitle")
+						getBlogsEntry(), _httpServletRequest, "subtitle",
+						BlogsEntry::getSubtitle)
 				).put(
 					"title", getTitle()
 				).put(
@@ -398,7 +405,8 @@ public class BlogsEditEntryDisplayContext {
 		}
 
 		_title = BeanParamUtil.getString(
-			getBlogsEntry(), _httpServletRequest, "title");
+			getBlogsEntry(), _httpServletRequest, "title",
+			BlogsEntry::getTitle);
 
 		return _title;
 	}
@@ -409,7 +417,8 @@ public class BlogsEditEntryDisplayContext {
 		}
 
 		_urlTitle = BeanParamUtil.getString(
-			getBlogsEntry(), _httpServletRequest, "urlTitle");
+			getBlogsEntry(), _httpServletRequest, "urlTitle",
+			BlogsEntry::getUrlTitle);
 
 		return _urlTitle;
 	}
@@ -447,7 +456,8 @@ public class BlogsEditEntryDisplayContext {
 
 		if (PropsValues.BLOGS_PINGBACK_ENABLED &&
 			BeanParamUtil.getBoolean(
-				getBlogsEntry(), _httpServletRequest, "allowPingbacks", true)) {
+				getBlogsEntry(), _httpServletRequest, "allowPingbacks",
+				BlogsEntry::isAllowPingbacks, true)) {
 
 			_allowPingbacks = true;
 		}
@@ -466,7 +476,7 @@ public class BlogsEditEntryDisplayContext {
 		if (PropsValues.BLOGS_TRACKBACK_ENABLED &&
 			BeanParamUtil.getBoolean(
 				getBlogsEntry(), _httpServletRequest, "allowTrackbacks",
-				true)) {
+				BlogsEntry::isAllowTrackbacks, true)) {
 
 			_allowTrackbacks = true;
 		}

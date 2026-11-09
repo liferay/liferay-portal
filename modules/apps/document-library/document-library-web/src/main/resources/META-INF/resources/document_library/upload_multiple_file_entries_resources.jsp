@@ -14,18 +14,18 @@ DLAdminDisplayContext dlAdminDisplayContext = (DLAdminDisplayContext)request.get
 
 FileEntry fileEntry = (FileEntry)request.getAttribute(WebKeys.DOCUMENT_LIBRARY_FILE_ENTRY);
 
-long groupId = BeanParamUtil.getLong(fileEntry, request, "groupId");
+long groupId = BeanParamUtil.getLong(fileEntry, request, "groupId", FileEntry::getGroupId);
 
-long repositoryId = BeanParamUtil.getLong(fileEntry, request, "repositoryId");
+long repositoryId = BeanParamUtil.getLong(fileEntry, request, "repositoryId", FileEntry::getRepositoryId);
 
 if (repositoryId <= 0) {
 
 	// <liferay-ui:asset_add_button /> only passes in groupId
 
-	repositoryId = BeanParamUtil.getLong(fileEntry, request, "groupId");
+	repositoryId = BeanParamUtil.getLong(fileEntry, request, "groupId", FileEntry::getGroupId);
 }
 
-long folderId = BeanParamUtil.getLong(fileEntry, request, "folderId");
+long folderId = BeanParamUtil.getLong(fileEntry, request, "folderId", FileEntry::getFolderId);
 
 Folder folder = null;
 

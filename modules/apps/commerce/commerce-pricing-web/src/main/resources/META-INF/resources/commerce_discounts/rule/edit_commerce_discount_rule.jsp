@@ -12,7 +12,7 @@ CommerceDiscountRuleDisplayContext commerceDiscountRuleDisplayContext = (Commerc
 
 CommerceDiscountRule commerceDiscountRule = commerceDiscountRuleDisplayContext.getCommerceDiscountRule();
 
-String type = BeanParamUtil.getString(commerceDiscountRule, request, "type");
+String type = BeanParamUtil.getString(commerceDiscountRule, request, "type", CommerceDiscountRule::getType);
 %>
 
 <portlet:actionURL name="/commerce_discount/edit_commerce_discount_rule" var="editCommerceDiscountRuleActionURL" />

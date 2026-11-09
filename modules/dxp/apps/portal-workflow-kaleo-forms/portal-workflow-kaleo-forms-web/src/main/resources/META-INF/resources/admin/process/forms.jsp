@@ -10,7 +10,7 @@
 <%
 KaleoProcess kaleoProcess = (KaleoProcess)request.getAttribute(KaleoFormsWebKeys.KALEO_PROCESS);
 
-long kaleoProcessId = BeanParamUtil.getLong(kaleoProcess, request, "kaleoProcessId");
+long kaleoProcessId = BeanParamUtil.getLong(kaleoProcess, request, "kaleoProcessId", KaleoProcess::getKaleoProcessId);
 
 long ddmStructureId = KaleoFormsUtil.getKaleoProcessDDMStructureId(kaleoProcess, portletSession);
 

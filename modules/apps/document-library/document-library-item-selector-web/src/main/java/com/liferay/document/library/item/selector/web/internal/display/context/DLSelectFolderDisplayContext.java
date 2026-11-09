@@ -125,7 +125,7 @@ public class DLSelectFolderDisplayContext {
 
 	public long getFolderId() {
 		return BeanParamUtil.getLong(
-			_folder, _httpServletRequest, "folderId",
+			_folder, _httpServletRequest, "folderId", Folder::getFolderId,
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 	}
 

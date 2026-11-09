@@ -145,7 +145,7 @@ public class WikiSearchDisplayContext {
 
 		_nodeId = BeanParamUtil.getLong(
 			(WikiNode)_httpServletRequest.getAttribute(WikiWebKeys.WIKI_NODE),
-			_httpServletRequest, "nodeId");
+			_httpServletRequest, "nodeId", WikiNode::getNodeId);
 
 		return _nodeId;
 	}

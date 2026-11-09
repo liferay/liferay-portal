@@ -66,7 +66,8 @@ public class RenderFragmentEntryDisplayContext {
 		String js = _readParameter(fragmentEntry, "js", uploadRequest);
 
 		String configuration = BeanParamUtil.getString(
-			fragmentEntry, _httpServletRequest, "configuration");
+			fragmentEntry, _httpServletRequest, "configuration",
+			FragmentEntry::getConfiguration);
 
 		FragmentEntryLink fragmentEntryLink =
 			FragmentEntryLinkLocalServiceUtil.createFragmentEntryLink(0);

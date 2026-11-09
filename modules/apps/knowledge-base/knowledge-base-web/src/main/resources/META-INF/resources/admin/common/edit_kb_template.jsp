@@ -10,10 +10,10 @@
 <%
 KBTemplate kbTemplate = (KBTemplate)request.getAttribute(KBWebKeys.KNOWLEDGE_BASE_KB_TEMPLATE);
 
-long kbTemplateId = BeanParamUtil.getLong(kbTemplate, request, "kbTemplateId");
+long kbTemplateId = BeanParamUtil.getLong(kbTemplate, request, "kbTemplateId", KBTemplate::getKbTemplateId);
 
-String title = BeanParamUtil.getString(kbTemplate, request, "title");
-String content = BeanParamUtil.getString(kbTemplate, request, "content");
+String title = BeanParamUtil.getString(kbTemplate, request, "title", KBTemplate::getTitle);
+String content = BeanParamUtil.getString(kbTemplate, request, "content", KBTemplate::getContent);
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);

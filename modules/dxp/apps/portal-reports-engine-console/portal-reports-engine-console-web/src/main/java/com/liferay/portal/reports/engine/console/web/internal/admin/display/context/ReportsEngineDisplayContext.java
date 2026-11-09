@@ -196,7 +196,8 @@ public class ReportsEngineDisplayContext {
 			ReportsEngineWebKeys.DEFINITION);
 
 		String reportParameters = BeanParamUtil.getString(
-			definition, _httpServletRequest, "reportParameters");
+			definition, _httpServletRequest, "reportParameters",
+			Definition::getReportParameters);
 
 		if (!JSONUtil.isJSONArray(reportParameters)) {
 			return null;

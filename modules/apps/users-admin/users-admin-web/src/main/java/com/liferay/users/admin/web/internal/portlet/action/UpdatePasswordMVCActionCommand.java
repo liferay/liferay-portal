@@ -89,7 +89,8 @@ public class UpdatePasswordMVCActionCommand extends BaseMVCActionCommand {
 			}
 
 			String reminderQueryQuestion = BeanParamUtil.getString(
-				user, actionRequest, "reminderQueryQuestion");
+				user, actionRequest, "reminderQueryQuestion",
+				User::getReminderQueryQuestion);
 
 			if (reminderQueryQuestion.equals(UsersAdminUtil.CUSTOM_QUESTION)) {
 				reminderQueryQuestion = ParamUtil.getString(
@@ -97,7 +98,8 @@ public class UpdatePasswordMVCActionCommand extends BaseMVCActionCommand {
 			}
 
 			String reminderQueryAnswer = BeanParamUtil.getString(
-				user, actionRequest, "reminderQueryAnswer");
+				user, actionRequest, "reminderQueryAnswer",
+				User::getReminderQueryAnswer);
 
 			boolean passwordModified = false;
 

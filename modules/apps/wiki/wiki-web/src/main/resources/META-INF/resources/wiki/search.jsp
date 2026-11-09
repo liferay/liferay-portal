@@ -12,7 +12,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 WikiNode node = (WikiNode)request.getAttribute(WikiWebKeys.WIKI_NODE);
 
-long nodeId = BeanParamUtil.getLong(node, request, "nodeId");
+long nodeId = BeanParamUtil.getLong(node, request, "nodeId", WikiNode::getNodeId);
 
 long[] nodeIds = null;
 

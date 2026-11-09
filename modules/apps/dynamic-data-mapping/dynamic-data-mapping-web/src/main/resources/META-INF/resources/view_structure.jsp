@@ -18,7 +18,7 @@ DDMStructureVersion structureVersion = DDMStructureVersionServiceUtil.getStructu
 
 DDMStructure structure = structureVersion.getStructure();
 
-String script = BeanParamUtil.getString(structureVersion, request, "definition");
+String script = BeanParamUtil.getString(structureVersion, request, "definition", DDMStructureVersion::getDefinition);
 
 JSONArray fieldsJSONArray = DDMUtil.getDDMFormFieldsJSONArray(structureVersion, script);
 

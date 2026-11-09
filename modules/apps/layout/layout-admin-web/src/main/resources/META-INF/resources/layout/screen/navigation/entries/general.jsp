@@ -124,7 +124,7 @@ portletDisplay.setURLBackTitle(ParamUtil.getString(request, "backURLTitle"));
 			<%
 			LayoutTypeException lte = (LayoutTypeException)errorException;
 
-			String type = BeanParamUtil.getString(selLayout, request, "type");
+			String type = BeanParamUtil.getString(selLayout, request, "type", Layout::getType);
 			%>
 
 			<c:if test="<%= lte.getType() == LayoutTypeException.FIRST_LAYOUT %>">

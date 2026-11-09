@@ -14,7 +14,7 @@ CPDefinitionVirtualSetting cpDefinitionVirtualSetting = cpDefinitionVirtualSetti
 
 JournalArticle journalArticle = cpDefinitionVirtualSettingDisplayContext.getJournalArticle();
 
-long termsOfUseJournalArticleResourcePrimKey = BeanParamUtil.getLong(cpDefinitionVirtualSetting, request, "termsOfUseJournalArticleResourcePrimKey");
+long termsOfUseJournalArticleResourcePrimKey = BeanParamUtil.getLong(cpDefinitionVirtualSetting, request, "termsOfUseJournalArticleResourcePrimKey", CPDefinitionVirtualSetting::getTermsOfUseJournalArticleResourcePrimKey);
 
 boolean useTermsOfUseJournal = false;
 

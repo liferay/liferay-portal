@@ -44,7 +44,8 @@ public class JournalFormNavigatorContextProvider
 			httpServletRequest, "toLanguageId");
 
 		long classNameId = BeanParamUtil.getLong(
-			article, httpServletRequest, "classNameId");
+			article, httpServletRequest, "classNameId",
+			JournalArticle::getClassNameId);
 
 		if (Validator.isNotNull(toLanguageId)) {
 			return "translate";
