@@ -2030,6 +2030,164 @@ test.describe('Accordion Fragment', () => {
 });
 
 test(
+	'Submitting a form reveals the empty required field',
+	{tag: '@LPD-114549'},
+	async ({apiHelpers, page, site}) => {
+
+		// Create a form with a required field in an accordion and another one
+		// in the second tab of a tabs fragment
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+		const {className: objectDefinitionClassName} = (
+			await objectDefinitionAPIClient.getObjectDefinitionByExternalReferenceCode(
+				getObjectERC('Lemon')
+			)
+		).body;
+
+		const lemonSizeInputDefinition = getFragmentDefinition({
+			fragmentConfig: {
+				inputFieldId: 'ObjectField_lemonSize',
+				inputRequired: true,
+			},
+			id: getRandomString(),
+			key: 'INPUTS-text-input',
+		});
+
+		const accordionDefinition = getFragmentDefinition({
+			id: getRandomString(),
+			key: 'BASIC_COMPONENT-accordion',
+			pageElements: [
+				{
+					id: getRandomString(),
+					pageElements: [lemonSizeInputDefinition],
+					type: 'FragmentDropZone',
+				},
+			],
+		});
+
+		const headingDefinition = getFragmentDefinition({
+			id: getRandomString(),
+			key: 'BASIC_COMPONENT-heading',
+		});
+
+		const lemonHistoryTextareaDefinition = getFragmentDefinition({
+			fragmentConfig: {
+				inputFieldId: 'ObjectField_lemonHistory',
+				inputRequired: true,
+			},
+			id: getRandomString(),
+			key: 'INPUTS-textarea',
+		});
+
+		const tabsDefinition = getFragmentDefinition({
+			fragmentConfig: {
+				numberOfTabs: 2,
+			},
+			fragmentFields: [
+				{
+					id: 'title1',
+					value: {},
+				},
+				{
+					id: 'title2',
+					value: {},
+				},
+			],
+			id: getRandomString(),
+			key: 'BASIC_COMPONENT-tabs',
+			pageElements: [
+				{
+					id: getRandomString(),
+					pageElements: [headingDefinition],
+					type: 'FragmentDropZone',
+				},
+				{
+					id: getRandomString(),
+					pageElements: [lemonHistoryTextareaDefinition],
+					type: 'FragmentDropZone',
+				},
+			],
+		});
+
+		const submitButtonDefinition = getFragmentDefinition({
+			id: getRandomString(),
+			key: 'INPUTS-submit-button',
+		});
+
+		const formDefinition = getFormContainerDefinition({
+			id: getRandomString(),
+			objectDefinitionClassName,
+			pageElements: [
+				accordionDefinition,
+				tabsDefinition,
+				submitButtonDefinition,
+			],
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([formDefinition]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Go to view mode, collapse the accordion, and check that both
+		// required fields are hidden
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		const accordionButton = page.locator('.component-accordion button');
+
+		await accordionButton.click();
+
+		await expect(accordionButton).toHaveAttribute('aria-expanded', 'false');
+
+		const firstTab = page.getByRole('tab', {name: 'Tab 1'});
+
+		await expect(firstTab).toHaveAttribute('aria-selected', 'true');
+
+		const lemonHistoryTextarea = page.getByRole('textbox', {
+			name: 'Lemon History',
+		});
+
+		await expect(lemonHistoryTextarea).toBeHidden();
+
+		// Submit the form and check that the accordion expands on the first
+		// required field, while the tabs fragment keeps its selected tab
+
+		const submitButton = page.getByRole('button', {name: 'Submit'});
+
+		await submitButton.click();
+
+		await expect(accordionButton).toHaveAttribute('aria-expanded', 'true');
+
+		const lemonSizeInput = page.getByRole('textbox', {
+			name: 'Lemon Size',
+		});
+
+		await expect(lemonSizeInput).toBeFocused();
+		await expect(lemonSizeInput).toBeInViewport();
+
+		await expect(firstTab).toHaveAttribute('aria-selected', 'true');
+
+		// Fill the first required field, submit the form again, and check
+		// that the second tab opens on the other required field
+
+		await lemonSizeInput.fill(getRandomString());
+
+		await submitButton.click();
+
+		await expect(page.getByRole('tab', {name: 'Tab 2'})).toHaveAttribute(
+			'aria-selected',
+			'true'
+		);
+		await expect(lemonHistoryTextarea).toBeVisible();
+		await expect(lemonHistoryTextarea).toBeFocused();
+	}
+);
+
+test(
 	'Check multiple fragments can be duplicated after multiselecting them',
 	{tag: ['@LPD-47080']},
 	async ({apiHelpers, page, pageEditorPage, site}) => {
