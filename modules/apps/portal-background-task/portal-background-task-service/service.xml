@@ -3,7 +3,7 @@
 
 <service-builder auto-import-default-references="false" auto-namespace-tables="false" dependency-injector="ds" mvcc-enabled="true" package-path="com.liferay.portal.background.task">
 	<namespace>BackgroundTask</namespace>
-	<entity local-service="true" name="BackgroundTask" remote-service="true">
+	<entity local-service="true" name="BackgroundTask" remote-service="false">
 
 		<!-- PK fields -->
 
