@@ -868,10 +868,8 @@ public abstract class BaseProfile {
 
 		HttpPostBinding httpPostBinding = new HttpPostBinding(
 			parserPool, VelocityEngineFactory.getVelocityEngine());
-
 		HttpRedirectBinding httpRedirectBinding = new HttpRedirectBinding(
 			parserPool);
-
 		HttpSoap11Binding httpSoap11Binding = new HttpSoap11Binding(
 			parserPool, httpClientFactory.getHttpClient());
 
