@@ -6,6 +6,7 @@
 package com.liferay.message.boards.web.internal.display.context;
 
 import com.liferay.message.boards.model.MBMessage;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -13,9 +14,7 @@ import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.trash.TrashHelper;
@@ -47,9 +46,8 @@ public class MBEditMessageDisplayContext {
 	}
 
 	public Map<String, Object> getMBPortletComponentContext() throws Exception {
-		long messageId = ParamUtil.getLong(
-			_liferayPortletRequest, "messageId",
-			GetterUtil.get(_message, MBMessage::getMessageId, 0L));
+		long messageId = BeanParamUtil.getLong(
+			_message, _liferayPortletRequest, "messageId");
 
 		Map<String, Object> taglibContext = HashMapBuilder.<String, Object>put(
 			"constants",
