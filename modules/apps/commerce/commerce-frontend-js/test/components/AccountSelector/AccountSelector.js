@@ -82,9 +82,22 @@ describe('AccountSelector', () => {
 	});
 
 	describe('When no account is selected', () => {
+		const {IntersectionObserver: originalIntersectionObserver} = window;
+
+		let intersectionObserverCallback;
 		let renderedComponent;
 
 		beforeEach(() => {
+			window.IntersectionObserver = class {
+				constructor(callback) {
+					intersectionObserverCallback = callback;
+				}
+
+				disconnect() {}
+
+				observe() {}
+			};
+
 			renderedComponent = render(
 				<AccountSelector
 					createNewOrderURL="/order-link"
@@ -96,6 +109,8 @@ describe('AccountSelector', () => {
 
 		afterEach(() => {
 			cleanup();
+
+			window.IntersectionObserver = originalIntersectionObserver;
 		});
 
 		it('must display the accounts search autocomplete component"', () => {
@@ -223,6 +238,54 @@ describe('AccountSelector', () => {
 			});
 
 			expect(accountSelectorDropdownMenu).not.toHaveClass('show');
+		});
+
+		it('does not duplicate the accounts when the account list is reopened', async () => {
+			const accountSelectorButton =
+				renderedComponent.baseElement.querySelector(
+					'.btn-account-selector'
+				);
+
+			await act(async () => {
+				fireEvent.click(accountSelectorButton);
+			});
+
+			await waitFor(() =>
+				expect(
+					renderedComponent.baseElement.querySelectorAll(
+						'.accounts-list li'
+					).length
+				).toBe(11)
+			);
+
+			await act(async () => {
+				intersectionObserverCallback([{isIntersecting: true}]);
+			});
+
+			await waitFor(() =>
+				expect(
+					renderedComponent.baseElement.querySelectorAll(
+						'.accounts-list li'
+					).length
+				).toBeGreaterThan(11)
+			);
+
+			await act(async () => {
+				fireEvent.mouseDown(document.body);
+				fireEvent.mouseUp(document.body);
+			});
+
+			await act(async () => {
+				fireEvent.click(accountSelectorButton);
+			});
+
+			await waitFor(() =>
+				expect(
+					renderedComponent.baseElement.querySelectorAll(
+						'.accounts-list li'
+					).length
+				).toBe(11)
+			);
 		});
 
 		it('searches the accounts by the typed text', async () => {
