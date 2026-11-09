@@ -14,7 +14,7 @@ CPDefinition cpDefinition = csDiagramSettingDisplayContext.getCPDefinition();
 
 CSDiagramSetting csDiagramSetting = csDiagramSettingDisplayContext.fetchCSDiagramSetting();
 
-String type = ParamUtil.getString(renderRequest, "type", GetterUtil.get(csDiagramSetting, CSDiagramSetting::getType, DefaultCSDiagramType.KEY));
+String type = BeanParamUtil.getString(csDiagramSetting, renderRequest, "type", DefaultCSDiagramType.KEY);
 
 CSDiagramType csDiagramType = csDiagramSettingDisplayContext.getCSDiagramType(type);
 %>
@@ -73,7 +73,7 @@ CSDiagramType csDiagramType = csDiagramSettingDisplayContext.getCSDiagramType(ty
 
 					<liferay-item-selector:image-selector
 						draggableImage="vertical"
-						fileEntryId='<%= ParamUtil.getLong(request, "fileEntryId", GetterUtil.get(fileEntry, FileEntry::getFileEntryId, 0L)) %>'
+						fileEntryId='<%= BeanParamUtil.getLong(fileEntry, request, "fileEntryId") %>'
 						itemSelectorEventName="addFileEntry"
 						itemSelectorURL="<%= csDiagramSettingDisplayContext.getImageItemSelectorURL() %>"
 						maxFileSize="<%= csDiagramSettingDisplayContext.getImageMaxSize() %>"
