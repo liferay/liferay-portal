@@ -299,16 +299,10 @@ public class ViewSpacesSectionDisplayContextTest
 	private AssetLibrary _addPinnedByOtherUserAssetLibrary(User user)
 		throws Exception {
 
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null, DepotConstants.TYPE_SPACE,
-			new ServiceContext() {
-				{
-					setCompanyId(group.getCompanyId());
-					setUserId(user.getUserId());
-				}
-			});
+		AssetLibrary assetLibrary = _addAssetLibrary();
+
+		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
+			assetLibrary.getId());
 
 		AssetLibraryResource.Builder builder =
 			_assetLibraryResourceFactory.create();
