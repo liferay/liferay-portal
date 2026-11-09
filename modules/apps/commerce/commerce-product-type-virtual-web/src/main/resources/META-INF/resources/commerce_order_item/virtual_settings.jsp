@@ -14,7 +14,7 @@ CommerceOrder commerceOrder = commerceVirtualOrderItemEditDisplayContext.getComm
 
 CommerceVirtualOrderItem commerceVirtualOrderItem = commerceVirtualOrderItemEditDisplayContext.getCommerceVirtualOrderItem();
 
-long fileEntryId = BeanParamUtil.getLong(commerceVirtualOrderItem, request, "fileEntryId");
+long fileEntryId = ParamUtil.getLong(request, "fileEntryId");
 
 String textCssClass = "text-default ";
 
