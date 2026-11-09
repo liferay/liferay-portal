@@ -562,6 +562,9 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 			sb.append("export CI=true\n");
 		}
 
+		sb.append("export npm_config_fetch_retries=5\n");
+		sb.append("export npm_config_fetch_retry_maxtimeout=120000\n");
+		sb.append("export npm_config_fetch_retry_mintimeout=20000\n");
 		sb.append("export npm_config_package_lock=false\n");
 
 		if (environmentVariables != null) {
@@ -989,6 +992,10 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 	private void _loadPlaywrightJSONObjects() {
 		synchronized (_playwrightJSONObjectsLoaded) {
 			if (_playwrightJSONObjectsLoaded.get()) {
+				if (_playwrightJSONObjectRuntimeException != null) {
+					throw _playwrightJSONObjectRuntimeException;
+				}
+
 				return;
 			}
 
@@ -1017,7 +1024,7 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 
 			if (_hasRunPlaywrightGradleTask()) {
 				Retryable<JSONObject> retryable = new Retryable<JSONObject>(
-					false, 1, 5, true) {
+					true, 2, 60, true) {
 
 					@Override
 					public JSONObject execute() {
@@ -1027,12 +1034,17 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 
 				};
 
-				_playwrightJSONObject = retryable.executeWithRetries();
-
-				if (_playwrightJSONObject == null) {
+				try {
+					_playwrightJSONObject = retryable.executeWithRetries();
+				}
+				catch (RuntimeException runtimeException) {
 					_sendNotification("Unable to parse Playwright JSON object");
 
-					_playwrightJSONObject = new JSONObject();
+					_playwrightJSONObjectRuntimeException = runtimeException;
+
+					_playwrightJSONObjectsLoaded.set(true);
+
+					throw runtimeException;
 				}
 			}
 			else {
@@ -1297,6 +1309,7 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 	private static final Pattern _playwrightFileNamePattern = Pattern.compile(
 		"tests/(?<filePath>(?<projectName>.+)/[^/]*.spec.ts)");
 	private static JSONObject _playwrightJSONObject;
+	private static RuntimeException _playwrightJSONObjectRuntimeException;
 	private static final AtomicBoolean _playwrightJSONObjectsLoaded =
 		new AtomicBoolean();
 	private static final Pattern _runPlaywrightGradleTaskPattern =
