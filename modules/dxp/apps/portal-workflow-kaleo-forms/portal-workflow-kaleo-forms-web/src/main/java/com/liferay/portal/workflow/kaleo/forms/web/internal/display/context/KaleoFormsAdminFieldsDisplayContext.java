@@ -11,7 +11,6 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureServiceUtil;
 import com.liferay.dynamic.data.mapping.util.DDMDisplay;
 import com.liferay.dynamic.data.mapping.util.comparator.StructureModifiedDateComparator;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -153,11 +152,7 @@ public class KaleoFormsAdminFieldsDisplayContext {
 			"historyKey", "fields"
 		).setParameter(
 			"kaleoProcessId",
-			BeanParamUtil.getLong(
-				(KaleoProcess)_httpServletRequest.getAttribute(
-					KaleoFormsWebKeys.KALEO_PROCESS),
-				_httpServletRequest, "kaleoProcessId",
-				KaleoProcess::getKaleoProcessId)
+			ParamUtil.getLong(_httpServletRequest, "kaleoProcessId")
 		).buildPortletURL();
 
 		return _portletURL;
