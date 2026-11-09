@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
 import com.liferay.portal.kernel.exception.CompanyWebIdException;
 import com.liferay.portal.kernel.exception.LocaleException;
+import com.liferay.portal.kernel.exception.NoSuchCompanyInfoException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredCompanyException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -170,7 +171,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.hibernate.StaleStateException;
-import org.hibernate.exception.ConstraintViolationException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -2485,9 +2485,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		Throwable causeThrowable = throwable.getCause();
 
 		while (throwable != causeThrowable) {
-			if (throwable instanceof ConstraintViolationException ||
-				throwable instanceof StaleStateException) {
-
+			if (throwable instanceof StaleStateException) {
 				return true;
 			}
 
@@ -2708,58 +2706,56 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	}
 
 	private void _updateKey(long companyId, String key) throws Throwable {
-		boolean rotated = false;
+		int retries = PropsValues.RETRY_ADVICE_MAX_RETRIES;
 
-		try {
-			rotated = TransactionInvokerUtil.invoke(
-				_transactionConfig,
-				() -> {
-					CompanyInfo companyInfo =
-						_companyInfoPersistence.findByCompanyId(companyId);
+		while (true) {
+			try {
+				boolean rotated = TransactionInvokerUtil.invoke(
+					_transactionConfig,
+					() -> {
+						CompanyInfo companyInfo =
+							_companyInfoPersistence.fetchByCompanyId(
+								companyId, false);
 
-					if (CompanyKeyResolverUtil.isFIPSKey(
-							companyInfo.getKey())) {
+						if (companyInfo == null) {
+							throw new NoSuchCompanyInfoException(
+								"{companyId=" + companyId + "}");
+						}
 
-						return false;
+						if (CompanyKeyResolverUtil.isFIPSKey(
+								companyInfo.getKey())) {
+
+							return false;
+						}
+
+						companyInfo.setKey(key);
+
+						_companyInfoPersistence.update(companyInfo);
+
+						return true;
+					});
+
+				if (_log.isInfoEnabled()) {
+					if (rotated) {
+						_log.info("Rotated the key for company " + companyId);
 					}
+					else {
+						_log.info(
+							"Another node already rotated the key for " +
+								"company " + companyId);
+					}
+				}
 
-					companyInfo.setKey(key);
-
-					_companyInfoPersistence.update(companyInfo);
-
-					return true;
-				});
-		}
-		catch (Throwable throwable) {
-			if (!_isCausedByConcurrentModification(throwable)) {
-				throw throwable;
+				return;
 			}
+			catch (Throwable throwable) {
+				if ((retries == 0) ||
+					!_isCausedByConcurrentModification(throwable)) {
 
-			_companyInfoPersistence.clearCache();
+					throw throwable;
+				}
 
-			CompanyInfo companyInfo = TransactionInvokerUtil.invoke(
-				_transactionConfig,
-				() -> _companyInfoPersistence.fetchByCompanyId(
-					companyId, false));
-
-			if ((companyInfo == null) ||
-				!CompanyKeyResolverUtil.isFIPSKey(companyInfo.getKey())) {
-
-				throw new CompanyKeyException(
-					StringBundler.concat(
-						"Unable to store the rotated key for company ",
-						companyId, " because of a concurrent update"));
-			}
-		}
-
-		if (_log.isInfoEnabled()) {
-			if (rotated) {
-				_log.info("Rotated the key for company " + companyId);
-			}
-			else {
-				_log.info(
-					"Another node already rotated the key for company " +
-						companyId);
+				retries--;
 			}
 		}
 	}

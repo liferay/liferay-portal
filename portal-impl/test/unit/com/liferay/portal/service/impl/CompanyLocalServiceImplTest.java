@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import org.mockito.AdditionalAnswers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -89,25 +90,30 @@ public class CompanyLocalServiceImplTest {
 	public void testCheckCompanyKey() throws Exception {
 		Assert.assertNull(
 			_testCheckCompanyKey(
+				RandomTestUtil.randomString(),
+				new ORMException(
+					new StaleStateException(RandomTestUtil.randomString())),
+				1));
+		Assert.assertNull(
+			_testCheckCompanyKey(
 				_FIPS_KEY_PREFIX + RandomTestUtil.randomString() + "}",
 				new ORMException(
-					new StaleStateException(RandomTestUtil.randomString()))));
+					new StaleStateException(RandomTestUtil.randomString())),
+				1));
+
+		ORMException ormException = new ORMException(
+			new StaleStateException(RandomTestUtil.randomString()));
 
 		Throwable throwable = _testCheckCompanyKey(
-			RandomTestUtil.randomString(),
-			new ORMException(
-				new StaleStateException(RandomTestUtil.randomString())));
+			RandomTestUtil.randomString(), ormException, 0);
 
-		String message = throwable.getMessage();
+		Assert.assertSame(ormException, throwable.getCause());
 
-		Assert.assertTrue(
-			message, message.contains(String.valueOf(_COMPANY_ID)));
-
-		ORMException ormException = new ORMException();
+		ormException = new ORMException();
 
 		throwable = _testCheckCompanyKey(
 			_FIPS_KEY_PREFIX + RandomTestUtil.randomString() + "}",
-			ormException);
+			ormException, 1);
 
 		Assert.assertSame(ormException, throwable.getCause());
 	}
@@ -159,7 +165,7 @@ public class CompanyLocalServiceImplTest {
 	}
 
 	private Throwable _testCheckCompanyKey(
-			String concurrentKey, ORMException ormException)
+			String concurrentKey, ORMException ormException, int retries)
 		throws Exception {
 
 		CompanyLocalServiceImpl companyLocalServiceImpl =
@@ -204,18 +210,6 @@ public class CompanyLocalServiceImplTest {
 
 		companyInfo.setKey(RandomTestUtil.randomString());
 
-		Mockito.when(
-			companyInfoPersistence.findByCompanyId(_COMPANY_ID)
-		).thenReturn(
-			companyInfo
-		);
-
-		Mockito.when(
-			companyInfoPersistence.update(companyInfo)
-		).thenThrow(
-			ormException
-		);
-
 		CompanyInfo concurrentCompanyInfo = new CompanyInfoImpl();
 
 		concurrentCompanyInfo.setKey(concurrentKey);
@@ -223,7 +217,15 @@ public class CompanyLocalServiceImplTest {
 		Mockito.when(
 			companyInfoPersistence.fetchByCompanyId(_COMPANY_ID, false)
 		).thenReturn(
-			concurrentCompanyInfo
+			companyInfo, concurrentCompanyInfo
+		);
+
+		Mockito.when(
+			companyInfoPersistence.update(Mockito.any(CompanyInfo.class))
+		).thenThrow(
+			ormException
+		).thenAnswer(
+			AdditionalAnswers.returnsFirstArg()
 		);
 
 		ReflectionTestUtil.setFieldValue(
@@ -239,9 +241,11 @@ public class CompanyLocalServiceImplTest {
 			MockedStatic<TransactionInvokerUtil>
 				transactionInvokerUtilMockedStatic = Mockito.mockStatic(
 					TransactionInvokerUtil.class);
-			SafeCloseable safeCloseable =
+			SafeCloseable safeCloseable1 =
+				PropsValuesTestUtil.swapWithSafeCloseable("FIPS_ENABLED", true);
+			SafeCloseable safeCloseable2 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
-					"FIPS_ENABLED", true)) {
+					"RETRY_ADVICE_MAX_RETRIES", retries)) {
 
 			companyKeyResolverUtilMockedStatic.when(
 				() -> CompanyKeyResolverUtil.generateKey(_COMPANY_ID)
