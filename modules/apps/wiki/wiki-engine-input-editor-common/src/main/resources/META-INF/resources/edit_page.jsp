@@ -19,7 +19,7 @@ WikiPage wikiPage = BaseWikiEngine.getWikiPage(request);
 
 	<liferay-editor:editor
 		configParams="<%= configParams %>"
-		contents='<%= ParamUtil.getString(request, "content", GetterUtil.get(wikiPage, WikiPage::getContent, StringPool.BLANK)) %>'
+		contents='<%= BeanParamUtil.getString(wikiPage, request, "content") %>'
 		editorName="<%= baseWikiEngine.getEditorName() %>"
 		fileBrowserParams="<%= fileBrowserParams %>"
 		name="contentEditor"
