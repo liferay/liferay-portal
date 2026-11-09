@@ -7,8 +7,6 @@ package com.liferay.translation.web.internal.display.context;
 
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemFieldValues;
-import com.liferay.portal.bean.BeanPropertiesImpl;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.redirect.RedirectURLSettingsUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
@@ -66,7 +64,6 @@ public class TranslateDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		_setUpBeanPropertiesUtil();
 		_setUpLanguageUtil();
 		_setUpPortalUtil();
 		_setUpRedirectURLSettingsUtil();
@@ -144,12 +141,6 @@ public class TranslateDisplayContextTest {
 			new Class<?>[0]);
 
 		return infoFieldSetEntriesData.get("redirectURL");
-	}
-
-	private void _setUpBeanPropertiesUtil() {
-		BeanPropertiesUtil beanPropertiesUtil = new BeanPropertiesUtil();
-
-		beanPropertiesUtil.setBeanProperties(new BeanPropertiesImpl());
 	}
 
 	private void _setUpLanguageUtil() {

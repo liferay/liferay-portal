@@ -14,8 +14,6 @@ import com.liferay.journal.service.JournalArticleServiceUtil;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.journal.web.internal.configuration.JournalWebConfiguration;
-import com.liferay.portal.kernel.bean.BeanProperties;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -71,10 +69,6 @@ public class JournalEditArticleDisplayContextTest {
 		).thenReturn(
 			"false"
 		);
-
-		BeanPropertiesUtil beanPropertiesUtil = new BeanPropertiesUtil();
-
-		beanPropertiesUtil.setBeanProperties(_beanProperties);
 
 		LanguageUtil languageUtil = new LanguageUtil();
 
@@ -639,8 +633,6 @@ public class JournalEditArticleDisplayContextTest {
 	private static final String _UNEXPECTED_FOLDER_NAME_MESSAGE =
 		"Unexpected folder name";
 
-	private final BeanProperties _beanProperties = Mockito.mock(
-		BeanProperties.class);
 	private final MockedStatic<DDMStructureLocalServiceUtil>
 		_ddmStructureLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			DDMStructureLocalServiceUtil.class);

@@ -12,8 +12,6 @@ import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.journal.service.JournalFolderServiceUtil;
 import com.liferay.journal.web.internal.configuration.JournalWebConfiguration;
 import com.liferay.journal.web.internal.item.selector.JournalArticleItemSelectorView;
-import com.liferay.portal.kernel.bean.BeanProperties;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -81,7 +79,6 @@ public class JournalArticleItemSelectorViewDisplayContextTest {
 	@Before
 	public void setUp() throws Exception {
 		_setUpAncestorJournalFolder();
-		_setUpBeanProperties();
 		_setUpFrameworkUtil();
 		_setUpGroup();
 		_setUpGroupLocalServiceUtil(_group);
@@ -133,12 +130,6 @@ public class JournalArticleItemSelectorViewDisplayContextTest {
 		).thenReturn(
 			RandomTestUtil.randomString()
 		);
-	}
-
-	private void _setUpBeanProperties() {
-		BeanPropertiesUtil beanPropertiesUtil = new BeanPropertiesUtil();
-
-		beanPropertiesUtil.setBeanProperties(_beanProperties);
 	}
 
 	private void _setUpFrameworkUtil() {
@@ -483,8 +474,6 @@ public class JournalArticleItemSelectorViewDisplayContextTest {
 
 	private final JournalFolder _ancestorJournalFolder = Mockito.mock(
 		JournalFolder.class);
-	private final BeanProperties _beanProperties = Mockito.mock(
-		BeanProperties.class);
 	private MockedStatic<FrameworkUtil> _frameworkUtilMockedStatic;
 	private final Group _group = Mockito.mock(Group.class);
 	private MockedStatic<GroupLocalServiceUtil>

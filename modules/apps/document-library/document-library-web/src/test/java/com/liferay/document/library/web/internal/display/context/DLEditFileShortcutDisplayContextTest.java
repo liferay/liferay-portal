@@ -8,8 +8,6 @@ package com.liferay.document.library.web.internal.display.context;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.web.internal.display.context.util.MockHttpServletRequestBuilder;
 import com.liferay.item.selector.ItemSelector;
-import com.liferay.portal.bean.BeanPropertiesImpl;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
@@ -53,10 +51,6 @@ public class DLEditFileShortcutDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		BeanPropertiesUtil beanPropertiesUtil = new BeanPropertiesUtil();
-
-		beanPropertiesUtil.setBeanProperties(new BeanPropertiesImpl());
-
 		_dlAppService = Mockito.mock(DLAppService.class);
 
 		_itemSelector = Mockito.mock(ItemSelector.class);
