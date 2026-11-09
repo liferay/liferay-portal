@@ -26,17 +26,15 @@ KaleoProcess kaleoProcess = (KaleoProcess)request.getAttribute(KaleoFormsWebKeys
 
 long kaleoProcessId = ParamUtil.getLong(request, "kaleoProcessId");
 
+long groupId = ParamUtil.getLong(request, "groupId", GetterUtil.get(kaleoProcess, KaleoProcess::getGroupId, scopeGroupId));
+
 String kaleoProcessName = KaleoFormsUtil.getKaleoProcessName(kaleoProcess, portletSession, locale);
 
-long groupId = scopeGroupId;
 boolean kaleoProcessStarted = false;
 
 if (kaleoProcess != null) {
-	groupId = kaleoProcess.getGroupId();
 	kaleoProcessStarted = DDLRecordLocalServiceUtil.getRecordsCount(kaleoProcess.getDDLRecordSetId(), WorkflowConstants.STATUS_ANY) > 0;
 }
-
-groupId = ParamUtil.getLong(request, "groupId", groupId);
 
 portletDisplay.setShowBackIcon(true);
 
