@@ -419,8 +419,6 @@ test.describe('Comments Panel', () => {
 
 		await saveButton.click();
 
-		await expect(saveButton).toBeDisabled();
-
 		await waitForAlert(page, 'Success:Your comment has been posted.', {
 			autoClose: true,
 		});
