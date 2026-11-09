@@ -564,7 +564,9 @@ public class PortalRelease {
 
 		String product = matcher.group("product");
 
-		if (product.equals("dxp") || product.equals("portal")) {
+		if (product.endsWith("-portal") || product.equals("dxp") ||
+			product.equals("portal") || product.startsWith("dxp-")) {
+
 			return null;
 		}
 
