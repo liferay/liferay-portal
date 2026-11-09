@@ -12,14 +12,14 @@ CommerceNotificationTemplatesDisplayContext commerceNotificationTemplatesDisplay
 
 CommerceNotificationTemplate commerceNotificationTemplate = commerceNotificationTemplatesDisplayContext.getCommerceNotificationTemplate();
 
-String bcc = ParamUtil.getString(renderRequest, "bcc", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getBcc, StringPool.BLANK));
-String cc = ParamUtil.getString(renderRequest, "cc", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getCc, StringPool.BLANK));
-String description = ParamUtil.getString(renderRequest, "description", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getDescription, StringPool.BLANK));
-String from = ParamUtil.getString(renderRequest, "from", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getFrom, StringPool.BLANK));
-String fromName = ParamUtil.getString(renderRequest, "fromName", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getFromName, StringPool.BLANK));
-String name = ParamUtil.getString(renderRequest, "name", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getName, StringPool.BLANK));
+String name = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "name");
+String description = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "description");
+String from = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "from");
+String fromName = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "fromName");
+String cc = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "cc");
+String bcc = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "bcc");
 
-String type = ParamUtil.getString(renderRequest, "type", GetterUtil.get(commerceNotificationTemplate, CommerceNotificationTemplate::getType, StringPool.BLANK));
+String type = BeanParamUtil.getString(commerceNotificationTemplate, renderRequest, "type");
 
 CommerceNotificationType commerceNotificationType = commerceNotificationTemplatesDisplayContext.getCommerceNotificationType(type);
 
