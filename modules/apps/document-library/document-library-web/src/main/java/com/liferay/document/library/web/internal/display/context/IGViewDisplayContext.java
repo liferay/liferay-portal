@@ -16,6 +16,7 @@ import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.web.internal.display.context.helper.DLPortletInstanceSettingsHelper;
 import com.liferay.document.library.web.internal.display.context.helper.IGRequestHelper;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -26,7 +27,6 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -351,9 +351,8 @@ public class IGViewDisplayContext {
 		_folder = (Folder)_httpServletRequest.getAttribute(
 			WebKeys.DOCUMENT_LIBRARY_FOLDER);
 
-		_folderId = ParamUtil.getLong(
-			_httpServletRequest, "folderId",
-			GetterUtil.get(_folder, Folder::getFolderId, getRootFolderId()));
+		_folderId = BeanParamUtil.getLong(
+			_folder, _httpServletRequest, "folderId", getRootFolderId());
 
 		_defaultFolderView = false;
 
