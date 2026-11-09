@@ -6,6 +6,7 @@
 package com.liferay.source.formatter.checkstyle.check;
 
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -112,27 +113,31 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 		}
 
 		String methodName = firstChildDetailAST.getText();
-		boolean printOnly = false;
 
 		DetailAST objBlockDetailAST = parentDetailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
-		for (DetailAST methodDefinitionDetailAST :
-				getAllChildTokens(
-					objBlockDetailAST, false, TokenTypes.METHOD_DEF)) {
+		List<DetailAST> methodDefinitionDetailASTs = ListUtil.filter(
+			getAllChildTokens(objBlockDetailAST, false, TokenTypes.METHOD_DEF),
+			methodDefinitionDetailAST -> {
+				if (!methodName.equals(getName(methodDefinitionDetailAST))) {
+					return false;
+				}
 
-			if (!methodName.equals(getName(methodDefinitionDetailAST))) {
-				continue;
-			}
+				List<DetailAST> parameterDefinitionDetailASTs =
+					getParameterDefs(methodDefinitionDetailAST);
 
+				return parameterDefinitionDetailASTs.size() ==
+					parameterExprDetailASTs.size();
+			});
+
+		if (methodDefinitionDetailASTs.isEmpty()) {
+			return;
+		}
+
+		for (DetailAST methodDefinitionDetailAST : methodDefinitionDetailASTs) {
 			List<DetailAST> parameterDefinitionDetailASTs = getParameterDefs(
 				methodDefinitionDetailAST);
-
-			if (parameterDefinitionDetailASTs.size() !=
-					parameterExprDetailASTs.size()) {
-
-				continue;
-			}
 
 			DetailAST modifiersDetailAST =
 				methodDefinitionDetailAST.findFirstToken(TokenTypes.MODIFIERS);
@@ -143,13 +148,9 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 
 				return;
 			}
-
-			printOnly = true;
 		}
 
-		if (printOnly) {
-			log(literalNewDetailAST, _MSG_WRITE_DIRECTLY);
-		}
+		log(literalNewDetailAST, _MSG_WRITE_DIRECTLY);
 	}
 
 	private void _checkAssignment(
