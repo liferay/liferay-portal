@@ -6,7 +6,6 @@
 package com.liferay.taglib.search;
 
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -21,15 +20,6 @@ import java.util.Map;
  * @author Brian Wing Shun Chan
  */
 public class TextSearchEntry extends SearchEntry {
-
-	@Override
-	public Object clone() {
-		TextSearchEntry textSearchEntry = new TextSearchEntry();
-
-		BeanPropertiesUtil.copyProperties(this, textSearchEntry);
-
-		return textSearchEntry;
-	}
 
 	public Map<String, Object> getData() {
 		return _data;

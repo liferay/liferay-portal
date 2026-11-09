@@ -14,7 +14,7 @@ import java.io.Writer;
  * @author Brian Wing Shun Chan
  */
 public abstract class SearchEntry
-	implements Cloneable, com.liferay.portal.kernel.dao.search.SearchEntry {
+	implements com.liferay.portal.kernel.dao.search.SearchEntry {
 
 	@Override
 	public String getAlign() {
