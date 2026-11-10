@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -309,7 +310,9 @@ public class AssetEntriesCheckerHelper {
 			long[] segmentsEntryIds = {SegmentsEntryConstants.ID_DEFAULT};
 
 			try {
-				if (_segmentsConfigurationProvider.isSegmentationEnabled(
+				if (!FeatureFlagManagerUtil.isEnabled(
+						layout.getCompanyId(), "LPD-109242") &&
+					_segmentsConfigurationProvider.isSegmentationEnabled(
 						layout.getGroupId())) {
 
 					segmentsEntryIds = ArrayUtil.toLongArray(

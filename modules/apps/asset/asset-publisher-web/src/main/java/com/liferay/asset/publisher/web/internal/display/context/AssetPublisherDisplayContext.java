@@ -47,6 +47,7 @@ import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
 import com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.frontend.js.audiences.DetectedAudienceEntryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.info.collection.provider.CollectionQuery;
@@ -371,9 +372,20 @@ public class AssetPublisherDisplayContext {
 		AssetListEntry assetListEntry = fetchAssetListEntry();
 
 		if (isSelectionStyleAssetList() && (assetListEntry != null)) {
-			_assetEntryQuery = _assetListAssetEntryProvider.getAssetEntryQuery(
-				assetListEntry, _getSegmentsEntryIds(assetListEntry),
-				_getSegmentsAnonymousUserId());
+			if (FeatureFlagManagerUtil.isEnabled(
+					assetListEntry.getCompanyId(), "LPD-109242")) {
+
+				_assetEntryQuery =
+					_assetListAssetEntryProvider.getAssetEntryQuery(
+						assetListEntry, _getAudienceEntryERCs(),
+						_getSegmentsAnonymousUserId());
+			}
+			else {
+				_assetEntryQuery =
+					_assetListAssetEntryProvider.getAssetEntryQuery(
+						assetListEntry, _getSegmentsEntryIds(assetListEntry),
+						_getSegmentsAnonymousUserId());
+			}
 		}
 		else {
 			_assetEntryQuery = _assetPublisherHelper.getAssetEntryQuery(
@@ -2246,6 +2258,12 @@ public class AssetPublisherDisplayContext {
 		).buildString();
 	}
 
+	private String[] _getAudienceEntryERCs() {
+		return DetectedAudienceEntryUtil.getAudienceEntryERCs(
+			_portal.getOriginalServletRequest(
+				_portal.getHttpServletRequest(_portletRequest)));
+	}
+
 	private Comparator<ClassType> _getClassTypeComparator() {
 		if (_classTypeComparator != null) {
 			return _classTypeComparator;
@@ -2316,6 +2334,16 @@ public class AssetPublisherDisplayContext {
 
 			if (ArrayUtil.isNotEmpty(getAllAssetTagNames())) {
 				assetTagNames = new String[][] {getAllAssetTagNames()};
+			}
+
+			if (FeatureFlagManagerUtil.isEnabled(
+					assetListEntry.getCompanyId(), "LPD-109242")) {
+
+				return _assetListAssetEntryProvider.getAssetEntriesInfoPage(
+					assetCategoryIds, assetListEntry, assetTagNames,
+					_getAudienceEntryERCs(), searchContainer.getEnd(),
+					StringPool.BLANK, searchContainer.getStart(),
+					_getSegmentsAnonymousUserId());
 			}
 
 			return _assetListAssetEntryProvider.getAssetEntriesInfoPage(
