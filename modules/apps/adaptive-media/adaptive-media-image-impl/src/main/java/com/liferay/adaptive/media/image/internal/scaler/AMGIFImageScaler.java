@@ -35,6 +35,7 @@ import java.util.concurrent.Future;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
@@ -43,6 +44,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.adaptive.media.image.internal.configuration.AMImageConfiguration",
+	configurationPolicy = ConfigurationPolicy.REQUIRE,
 	property = "mimeTypes=image/gif", service = AMImageScaler.class
 )
 public class AMGIFImageScaler implements AMImageScaler {
