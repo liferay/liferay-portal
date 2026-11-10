@@ -67,11 +67,25 @@ public class PortalBundlePersistentResource
 	protected void populateDataJSONObject(JSONObject dataJSONObject) {
 		super.populateDataJSONObject(dataJSONObject);
 
+		if (getStatus() == Status.SUCCESS) {
+			dataJSONObject.put("completed_time", _getCompletedTime());
+		}
+
 		WorkspaceGitRepository workspaceGitRepository =
 			getBundleWorkspaceGitRepository();
 
 		dataJSONObject.put(
 			"portal_git_commit", workspaceGitRepository.getSenderBranchSHA());
+	}
+
+	private long _getCompletedTime() {
+		JSONObject dataJSONObject = getDataJSONObject();
+
+		if ((dataJSONObject != null) && dataJSONObject.has("completed_time")) {
+			return dataJSONObject.getLong("completed_time");
+		}
+
+		return JenkinsResultsParserUtil.getCurrentTimeMillis();
 	}
 
 	private PortalWorkspace _getPortalWorkspace() {

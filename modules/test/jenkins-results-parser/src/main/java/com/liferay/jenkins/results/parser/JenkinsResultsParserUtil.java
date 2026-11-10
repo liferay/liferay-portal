@@ -2793,9 +2793,16 @@ public class JenkinsResultsParserUtil {
 
 		Collections.sort(dataS3ObjectLines, Collections.reverseOrder());
 
-		for (String dataS3ObjectLine : dataS3ObjectLines) {
+		long latestCompletedTime = Long.MIN_VALUE;
+		String latestPortalBundleS3ObjectPath = null;
+
+		for (int i = 0; i < dataS3ObjectLines.size(); i++) {
+			if ((i >= 10) && (latestPortalBundleS3ObjectPath != null)) {
+				break;
+			}
+
 			Matcher matcher = _portalBundleDataS3ObjectPattern.matcher(
-				dataS3ObjectLine);
+				dataS3ObjectLines.get(i));
 
 			if (!matcher.matches()) {
 				continue;
@@ -2815,10 +2822,19 @@ public class JenkinsResultsParserUtil {
 				continue;
 			}
 
-			return portalBundleS3ObjectPath;
+			long completedTime = dataJSONObject.optLong("completed_time");
+
+			if ((latestPortalBundleS3ObjectPath != null) &&
+				(completedTime <= latestCompletedTime)) {
+
+				continue;
+			}
+
+			latestCompletedTime = completedTime;
+			latestPortalBundleS3ObjectPath = portalBundleS3ObjectPath;
 		}
 
-		return null;
+		return latestPortalBundleS3ObjectPath;
 	}
 
 	public static LocalDate getLocalDate(Date date) {
@@ -7476,7 +7492,9 @@ public class JenkinsResultsParserUtil {
 	private static final Pattern _portalBundleDataS3ObjectPattern =
 		Pattern.compile(
 			"\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} +\\d+ " +
-				"(?<s3ObjectKey>.+)/data\\.json\\.gz");
+				"(?<s3ObjectKey>.+/portal-bundle/[^/]+_" +
+					"(?<portalGitCommitShort>[0-9a-f]{7})_" +
+						"\\k<portalGitCommitShort>)/data\\.json\\.gz");
 	private static final Pattern _poshiFileNamePattern = Pattern.compile(
 		".*\\.(function|macro|path|prose|testcase)");
 	private static final Set<String> _redactTokens = new HashSet<>();
