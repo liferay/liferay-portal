@@ -7,7 +7,7 @@ import Button, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput, ClayToggle as Toggle} from '@clayui/form';
 import Icon from '@clayui/icon';
 import Layout from '@clayui/layout';
-import {useId} from '@clayui/shared';
+import {Keys, useId} from '@clayui/shared';
 import classNames from 'classnames';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 
@@ -40,6 +40,10 @@ function Header({
 	searchLabel,
 	searchTerm,
 }: HeaderProps) {
+	useEffect(() => {
+		inputRef.current?.focus({preventScroll: true});
+	}, []);
+
 	return (
 		<>
 			<div className="dropdown-subheader mb-0" id={nameId}>
@@ -62,6 +66,18 @@ function Header({
 							onChange={(event) =>
 								onSearchTermChange(event.target.value)
 							}
+							onKeyDown={(event) => {
+								if (event.key === Keys.Down) {
+									event.preventDefault();
+
+									event.currentTarget
+										.closest('.dropdown-menu')
+										?.querySelector<HTMLElement>(
+											'input[role="switch"]:not(:disabled)'
+										)
+										?.focus();
+								}
+							}}
 							placeholder={searchLabel}
 							ref={inputRef}
 							type="text"
@@ -190,6 +206,7 @@ export function Head<T extends Record<string, any>>(
 
 							<Menu
 								UNSAFE_focusableElements={[
+									'input[type="text"]',
 									'input[role="switch"]',
 								]}
 								alwaysClose={false}
