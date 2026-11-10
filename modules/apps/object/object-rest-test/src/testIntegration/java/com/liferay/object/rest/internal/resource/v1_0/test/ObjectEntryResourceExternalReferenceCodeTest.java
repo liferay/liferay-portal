@@ -356,20 +356,14 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 		throws Exception {
 
 		_testPatchPutCustomObjectEntryWithDuplicateExternalReferenceCode(
-			objectDefinition.getRESTContextPath(),
-			objectDefinition.getRESTContextPath() +
-				"/by-external-reference-code/",
-			httpMethod);
-
-		String endpoint = getEndpoint(siteScopedObjectDefinition, testGroupId);
-
+			getEndpoint(siteScopedObjectDefinition, testGroupId), httpMethod);
 		_testPatchPutCustomObjectEntryWithDuplicateExternalReferenceCode(
-			endpoint, endpoint + "/by-external-reference-code/", httpMethod);
+			objectDefinition.getRESTContextPath(), httpMethod);
 	}
 
 	private void
 			_testPatchPutCustomObjectEntryWithDuplicateExternalReferenceCode(
-				String endpoint1, String endpoint2, Http.Method httpMethod)
+				String endpoint, Http.Method httpMethod)
 		throws Exception {
 
 		String externalReferenceCode1 = RandomTestUtil.randomString();
@@ -383,7 +377,7 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 				).put(
 					"externalReferenceCode", externalReferenceCode1
 				).toString(),
-				endpoint1, Http.Method.POST));
+				endpoint, Http.Method.POST));
 		Assert.assertEquals(
 			200,
 			HTTPTestUtil.invokeToHttpCode(
@@ -392,14 +386,16 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 				).put(
 					"externalReferenceCode", externalReferenceCode2
 				).toString(),
-				endpoint1, Http.Method.POST));
+				endpoint, Http.Method.POST));
 		Assert.assertEquals(
 			400,
 			HTTPTestUtil.invokeToHttpCode(
 				JSONUtil.put(
 					"externalReferenceCode", externalReferenceCode2
 				).toString(),
-				endpoint2 + externalReferenceCode1, httpMethod));
+				endpoint + "/by-external-reference-code/" +
+					externalReferenceCode1,
+				httpMethod));
 	}
 
 	private void _testPostCustomObjectEntryWithDuplicateExternalReferenceCode(

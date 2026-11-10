@@ -569,6 +569,12 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				).toString(),
 				getEndpoint(objectDefinition, testGroupId), Http.Method.POST);
 
+			String pkObjectFieldName =
+				relatedObjectDefinition.getPKObjectFieldName();
+
+			String ercObjectFieldName = StringUtil.replaceLast(
+				pkObjectFieldName, "Id", "ERC");
+
 			jsonObject = HTTPTestUtil.invokeToJSONObject(
 				JSONUtil.put(
 					emptyObjectEntryObjectRelationship.getName(),
@@ -579,26 +585,22 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				).put(
 					StringBundler.concat(
 						"r_", zeroIdObjectRelationship.getName(), "_",
-						relatedObjectDefinition.getPKObjectFieldName()),
+						pkObjectFieldName),
 					0
 				).put(
 					StringBundler.concat(
 						"r_", nullIdObjectRelationship.getName(), "_",
-						relatedObjectDefinition.getPKObjectFieldName()),
+						pkObjectFieldName),
 					org.json.JSONObject.NULL
 				).put(
 					StringBundler.concat(
 						"r_", blankERCObjectRelationship.getName(), "_",
-						StringUtil.replaceLast(
-							relatedObjectDefinition.getPKObjectFieldName(),
-							"Id", "ERC")),
+						ercObjectFieldName),
 					""
 				).put(
 					StringBundler.concat(
 						"r_", nullERCObjectRelationship.getName(), "_",
-						StringUtil.replaceLast(
-							relatedObjectDefinition.getPKObjectFieldName(),
-							"Id", "ERC")),
+						ercObjectFieldName),
 					org.json.JSONObject.NULL
 				).toString(),
 				endpointUnsafeFunction.apply(jsonObject), method);
@@ -629,74 +631,62 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				JSONUtil.put(
 					StringBundler.concat(
 						"r_", emptyObjectEntryObjectRelationship.getName(), "_",
-						relatedObjectDefinition.getPKObjectFieldName()),
+						pkObjectFieldName),
 					0
 				).put(
 					StringBundler.concat(
 						"r_", emptyObjectEntryObjectRelationship.getName(), "_",
-						StringUtil.replaceLast(
-							relatedObjectDefinition.getPKObjectFieldName(),
-							"Id", "ERC")),
+						ercObjectFieldName),
 					""
 				).put(
 					StringBundler.concat(
 						"r_", nullObjectEntryObjectRelationship.getName(), "_",
-						relatedObjectDefinition.getPKObjectFieldName()),
+						pkObjectFieldName),
 					0
 				).put(
 					StringBundler.concat(
 						"r_", nullObjectEntryObjectRelationship.getName(), "_",
-						StringUtil.replaceLast(
-							relatedObjectDefinition.getPKObjectFieldName(),
-							"Id", "ERC")),
+						ercObjectFieldName),
 					""
 				).put(
 					StringBundler.concat(
 						"r_", zeroIdObjectRelationship.getName(), "_",
-						relatedObjectDefinition.getPKObjectFieldName()),
+						pkObjectFieldName),
 					0
 				).put(
 					StringBundler.concat(
 						"r_", zeroIdObjectRelationship.getName(), "_",
-						StringUtil.replaceLast(
-							relatedObjectDefinition.getPKObjectFieldName(),
-							"Id", "ERC")),
+						ercObjectFieldName),
 					""
 				).put(
 					StringBundler.concat(
 						"r_", nullIdObjectRelationship.getName(), "_",
-						relatedObjectDefinition.getPKObjectFieldName()),
+						pkObjectFieldName),
 					0
 				).put(
 					StringBundler.concat(
 						"r_", nullIdObjectRelationship.getName(), "_",
-						StringUtil.replaceLast(
-							relatedObjectDefinition.getPKObjectFieldName(),
-							"Id", "ERC")),
+						ercObjectFieldName),
 					""
 				).put(
 					StringBundler.concat(
 						"r_", blankERCObjectRelationship.getName(), "_",
-						relatedObjectDefinition.getPKObjectFieldName()),
+						pkObjectFieldName),
 					0
 				).put(
 					StringBundler.concat(
 						"r_", blankERCObjectRelationship.getName(), "_",
-						StringUtil.replaceLast(
-							relatedObjectDefinition.getPKObjectFieldName(),
-							"Id", "ERC")),
+						ercObjectFieldName),
 					""
 				).put(
 					StringBundler.concat(
 						"r_", nullERCObjectRelationship.getName(), "_",
-						relatedObjectDefinition.getPKObjectFieldName()),
+						pkObjectFieldName),
 					0
 				).put(
 					StringBundler.concat(
 						"r_", nullERCObjectRelationship.getName(), "_",
-						StringUtil.replaceLast(
-							relatedObjectDefinition.getPKObjectFieldName(),
-							"Id", "ERC")),
+						ercObjectFieldName),
 					""
 				).toString(),
 				jsonObject.toString(), JSONCompareMode.LENIENT);
@@ -938,10 +928,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
-			StringBundler.concat(
-				objectDefinition.getRESTContextPath(), StringPool.SLASH,
-				jsonObject.getString("id"), "?nestedFields=",
-				objectRelationship.getName()),
+			getNestedFieldsEndpoint(
+				jsonObject.getLong("id"), objectRelationship, objectDefinition),
 			Http.Method.GET);
 
 		nestedObjectEntriesJSONArray = jsonObject.getJSONArray(
@@ -1146,10 +1134,9 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
-			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
-				objectEntry.getPrimaryKey(), "?nestedFields=",
-				objectRelationship.getName()),
+			getNestedFieldsEndpoint(
+				objectEntry.getPrimaryKey(), objectRelationship,
+				getObjectDefinition1()),
 			Http.Method.GET);
 
 		nestedObjectEntriesJSONArray = jsonObject.getJSONArray(

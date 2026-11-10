@@ -683,10 +683,9 @@ public class ObjectEntryResourceNestedFieldsTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
-			StringBundler.concat(
-				getObjectDefinition4().getRESTContextPath(), "/",
-				objectEntry4.getObjectEntryId(), "?nestedFields=",
-				objectRelationship5.getName()),
+			getNestedFieldsEndpoint(
+				objectEntry4.getObjectEntryId(), objectRelationship5,
+				getObjectDefinition4()),
 			Http.Method.GET);
 
 		_assertNestedFieldsInRelationships(
@@ -826,18 +825,9 @@ public class ObjectEntryResourceNestedFieldsTest
 		Assert.assertNull(
 			objectEntryJSONObject.getJSONObject("systemProperties"));
 
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			getObjectDefinition1().getRESTContextPath() +
-				"?nestedFields=systemProperties.objectDefinitionBrief",
-			Http.Method.GET);
-
-		itemsJSONArray = jsonObject.getJSONArray("items");
-
-		Assert.assertEquals(
-			itemsJSONArray.toString(), 1, itemsJSONArray.length());
-
-		objectEntryJSONObject = itemsJSONArray.getJSONObject(0);
+		objectEntryJSONObject = getNestedFieldsObjectEntryJSONObject(
+			null, "systemProperties.objectDefinitionBrief",
+			getObjectDefinition1());
 
 		JSONObject systemPropertiesJSONObject =
 			objectEntryJSONObject.getJSONObject("systemProperties");

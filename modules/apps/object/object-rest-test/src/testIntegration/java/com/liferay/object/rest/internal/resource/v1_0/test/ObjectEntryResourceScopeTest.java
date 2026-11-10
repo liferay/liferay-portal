@@ -12,7 +12,6 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -252,12 +251,9 @@ public class ObjectEntryResourceScopeTest
 			Http.Method.DELETE);
 
 		assertNotFound(
-			HTTPTestUtil.invokeToJSONObject(
-				null,
-				StringBundler.concat(
-					getSiteScopedObjectDefinition1().getRESTContextPath(),
-					StringPool.SLASH, objectEntry.getObjectEntryId()),
-				Http.Method.GET));
+			getObjectEntryJSONObject(
+				getSiteScopedObjectDefinition1(),
+				String.valueOf(objectEntry.getObjectEntryId())));
 	}
 
 	private void _testGetScopeScopeKeyByExternalReferenceCode(Object scopeKey)

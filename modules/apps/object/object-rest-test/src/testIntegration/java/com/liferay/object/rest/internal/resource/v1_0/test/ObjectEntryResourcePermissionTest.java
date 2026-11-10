@@ -905,11 +905,9 @@ public class ObjectEntryResourcePermissionTest
 			user.getEmailAddress(), password
 		).apply(
 			() -> {
-				JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-					null,
-					objectDefinition.getRESTContextPath() + StringPool.SLASH +
-						objectEntry.getObjectEntryId(),
-					Http.Method.GET);
+				JSONObject jsonObject = getObjectEntryJSONObject(
+					objectDefinition,
+					String.valueOf(objectEntry.getObjectEntryId()));
 
 				atomicReference.set(jsonObject.getJSONObject("actions"));
 			}
@@ -1035,13 +1033,7 @@ public class ObjectEntryResourcePermissionTest
 			).build(),
 			false);
 
-		String endpoint = getEndpoint(objectDefinition, testGroupId);
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).toString(),
-			endpoint, Http.Method.POST);
+		JSONObject jsonObject = postObjectEntry(testGroupId, objectDefinition);
 
 		JSONObject actionsJSONObject = jsonObject.getJSONObject("actions");
 
@@ -1051,7 +1043,8 @@ public class ObjectEntryResourcePermissionTest
 		Assert.assertEquals(
 			StringBundler.concat(
 				"http://localhost:", PortalUtil.getPortalServerPort(false),
-				"/o", endpoint, "/by-external-reference-code/",
+				"/o", getEndpoint(objectDefinition, testGroupId),
+				"/by-external-reference-code/",
 				jsonObject.getString("externalReferenceCode"),
 				"/object-actions/", objectAction.getName()),
 			actionJSONObject.getString("href"));

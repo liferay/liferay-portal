@@ -174,10 +174,9 @@ public class ObjectEntryResourceRelationshipTest
 		JSONArray customFieldsJSONArray = JSONUtil.getValueAsJSONArray(
 			HTTPTestUtil.invokeToJSONObject(
 				null,
-				StringBundler.concat(
-					getObjectDefinition1().getRESTContextPath(),
-					StringPool.SLASH, jsonObject.getString("id"),
-					"?nestedFields=", objectRelationship1.getName()),
+				getNestedFieldsEndpoint(
+					jsonObject.getLong("id"), objectRelationship1,
+					getObjectDefinition1()),
 				Http.Method.GET),
 			"JSONObject/" + objectRelationship1.getName(),
 			"JSONArray/customFields");
@@ -637,10 +636,9 @@ public class ObjectEntryResourceRelationshipTest
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
 				null,
-				StringBundler.concat(
-					getObjectDefinition1().getRESTContextPath(),
-					StringPool.SLASH, jsonObject.get("id"), "?nestedFields=",
-					objectRelationship1.getName()),
+				getNestedFieldsEndpoint(
+					jsonObject.getLong("id"), objectRelationship1,
+					getObjectDefinition1()),
 				Http.Method.GET
 			).toString(),
 			JSONCompareMode.LENIENT);
