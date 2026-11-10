@@ -78,7 +78,7 @@ One sentence describing the outcome:
 
 - For `Bug in portal` and `Outdated test`, name the offending commit (short SHA and subject) and what it changed. When the test has no recorded last pass, name the cause found in **Fix Without a Suspect Range** instead.
 - For `No fix needed`, the literal string `Test passes locally`, or `Defect does not reproduce` when the run started from a Bug key.
-- For `Unresolved`, an honest handover summary listing hypotheses considered, attempts made, observed effects, and the most plausible remaining lead.
+- For `Unresolved`, an honest handover summary listing hypotheses considered, attempts made, observed effects, and the most plausible remaining lead. When an open pull request already covers the failure, name that pull request and the result of **Verify an Open Pull Request** instead.
 
 ### Resolution Time
 
@@ -168,11 +168,39 @@ Only when the failure identifier is a Bug key. The Bug replaces the Testray case
 
 	`--json files` returns at most 100 files per pull request. For a pull request whose `changedFiles` is over 100, list its files with `gh api repos/<fork>/pulls/<number>/files --jq '.[].filename' --paginate`. Pull requests opened from personal forks against other repositories are not found this way.
 
-	When an open pull request already changes the same code for this failure, exit with `Verdict: Unresolved` and that pull request's URL in the **Conclusion**, without creating a Task: a second fix for the same code conflicts with the first once both are merged.
+	When an open pull request already changes the same code for this failure, run **Verify an Open Pull Request** and exit without creating a Task.
 
 1. Invoke the `jira-task` skill with summary `<test-name>` and a description that names the case result ID, the source build, and the failure trace excerpt. Add the `claude-test-fix` label.
 
 1. Invoke the `start-work` skill on the new Task.
+
+### Verify an Open Pull Request
+
+Run this step when an open pull request already changes the code for this failure, instead of writing a second fix: a second fix for the same code conflicts with the first once both are merged. Verifying the pull request and reporting the result on it saves its owner a round trip.
+
+1. Apply the pull request's changes to the working tree as uncommitted changes, so the bundle keeps matching the commit it was built from:
+
+	```bash
+	gh pr diff <number> --repo <fork> | git apply
+	```
+
+	When the diff does not apply, check out the head of the pull request instead (`gh pr checkout <number> --detach --repo <fork>`) and follow [`references/local-environment.md`](references/local-environment.md) before trusting the result, because that head may be far from the commit the bundle was built from.
+
+1. Deploy each module the pull request changes and confirm the deployed artifacts contain the change.
+
+1. Run the failing test as in **Reproduce Locally**, with the same feature flags.
+
+1. Comment the result on the pull request: the test name, the case result and its build (or the Bug key), and whether the test passes with the change. For a failure, add the trace and how it differs from **errorTrace**. A failed verification is still reported; it tells the owner the fix does not cover this failure.
+
+	```bash
+	gh pr comment <number> \
+		--body "${COMMENT_BODY}" \
+		--repo <fork>
+	```
+
+1. Discard the applied changes (`git restore` on the touched files, and delete the files the pull request added), or check out the branch the run started on, then redeploy the same modules from the clean tree and run **Restore the Portal**.
+
+Exit with `Verdict: Unresolved`, and put the pull request's URL and the result of the verification in the **Conclusion**.
 
 ### Reproduce Locally
 
