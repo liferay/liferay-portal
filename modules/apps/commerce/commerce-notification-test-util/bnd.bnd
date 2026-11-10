@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Notification Test Utilities
 Bundle-SymbolicName: com.liferay.commerce.notification.test.util
-Bundle-Version: 4.1.1
+Bundle-Version: 4.2.0
 Export-Package: com.liferay.commerce.notification.test.util
