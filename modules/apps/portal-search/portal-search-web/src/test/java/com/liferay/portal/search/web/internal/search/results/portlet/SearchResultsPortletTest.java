@@ -9,6 +9,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.util.AssetRendererFactoryLookup;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.search.Document;
@@ -35,6 +36,7 @@ import com.liferay.portal.search.web.internal.display.context.PortletURLFactory;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchRequest;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchResponse;
 import com.liferay.portal.search.web.search.request.SearchSettings;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PortalImpl;
 
@@ -109,6 +111,48 @@ public class SearchResultsPortletTest {
 		render();
 
 		_assertDisplayContextDocuments(document);
+	}
+
+	@FeatureFlag("LPD-114635")
+	@Test
+	public void testGetCurWhenPastTotalHits() throws Exception {
+		Mockito.doReturn(
+			"5"
+		).when(
+			_portletSharedSearchResponse
+		).getParameter(
+			"delta", _renderRequest
+		);
+
+		Mockito.doReturn(
+			"6"
+		).when(
+			_portletSharedSearchResponse
+		).getParameter(
+			"start", _renderRequest
+		);
+
+		Mockito.doReturn(
+			15
+		).when(
+			_searchRequest
+		).getFrom();
+
+		Mockito.doReturn(
+			25
+		).when(
+			_searchResponse
+		).getTotalHits();
+
+		render();
+
+		SearchResultsPortletDisplayContext searchResultsPortletDisplayContext =
+			_getDisplayContext();
+
+		SearchContainer<Document> searchContainer =
+			searchResultsPortletDisplayContext.getSearchContainer();
+
+		Assert.assertEquals(4, searchContainer.getCur());
 	}
 
 	@Test
@@ -362,7 +406,7 @@ public class SearchResultsPortletTest {
 			PortalUtil.class, "_portal", new PortalImpl());
 	}
 
-	private void _setUpPortletSharedSearchResponse() {
+	private void _setUpPortletSharedSearchResponse() throws Exception {
 		Mockito.doReturn(
 			null
 		).when(
@@ -397,8 +441,12 @@ public class SearchResultsPortletTest {
 			_portletSharedSearchResponse
 		).getSearchSettings();
 
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(Mockito.mock(Company.class));
+
 		Mockito.doReturn(
-			new ThemeDisplay()
+			themeDisplay
 		).when(
 			_portletSharedSearchResponse
 		).getThemeDisplay(
