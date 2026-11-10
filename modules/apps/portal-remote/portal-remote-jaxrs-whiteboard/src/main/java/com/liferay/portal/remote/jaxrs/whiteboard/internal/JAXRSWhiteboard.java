@@ -51,11 +51,7 @@ public class JAXRSWhiteboard implements SafeCloseable {
 				bundleContext.registerService(
 					JaxrsServiceRuntime.class,
 					(JaxrsServiceRuntime)_runtimeField.get(whiteboard),
-					HashMapDictionaryBuilder.<String, Object>put(
-						Constants.SERVICE_RANKING, Integer.MIN_VALUE
-					).putAll(
-						configuration
-					).build());
+					configuration);
 
 			_runtimeReferenceField.set(
 				whiteboard,
