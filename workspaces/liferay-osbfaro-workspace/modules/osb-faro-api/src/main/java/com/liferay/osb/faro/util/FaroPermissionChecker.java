@@ -5,7 +5,9 @@
 
 package com.liferay.osb.faro.util;
 
+import com.liferay.osb.faro.constants.FaroChannelConstants;
 import com.liferay.osb.faro.constants.FaroUserConstants;
+import com.liferay.osb.faro.model.FaroChannel;
 import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.service.FaroUserLocalServiceUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -13,12 +15,32 @@ import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 /**
  * @author Matthew Kong
  */
 public class FaroPermissionChecker {
+
+	public static boolean hasFaroChannelAccessPermission(
+		FaroChannel faroChannel) {
+
+		if ((faroChannel.getPermissionType() ==
+				FaroChannelConstants.PERMISSION_ALL_USERS) ||
+			isGroupAdmin(faroChannel.getWorkspaceGroupId())) {
+
+			return true;
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		return ListUtil.isNotEmpty(
+			UserGroupRoleLocalServiceUtil.getUserGroupRoles(
+				permissionChecker.getUserId(), faroChannel.getGroupId()));
+	}
 
 	public static boolean isGroupAdmin(long groupId) {
 		return _hasPermission(

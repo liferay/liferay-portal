@@ -7,22 +7,27 @@ package com.liferay.osb.faro.rest.internal.resource.v1_0;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.model.Results;
+import com.liferay.osb.faro.model.FaroChannel;
+import com.liferay.osb.faro.model.FaroChannelTable;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegment;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.converter.FaroDTOConverterContext;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroPaginationUtil;
 import com.liferay.osb.faro.rest.internal.helper.IndividualSegmentHelper;
-import com.liferay.osb.faro.rest.internal.security.permission.WorkspacePermission;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualSegmentResource;
+import com.liferay.osb.faro.service.FaroChannelLocalService;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -79,9 +84,7 @@ public class IndividualSegmentResourceImpl
 		List<String> excludedChannelIds = Collections.emptyList();
 
 		if (Validator.isNull(channelId)) {
-			excludedChannelIds = _workspacePermission.getInaccessibleChannelIds(
-				faroProject.getGroupId(),
-				PermissionThreadLocal.getPermissionChecker());
+			excludedChannelIds = _getExcludedChannelIds(groupId);
 		}
 
 		Results<com.liferay.osb.faro.engine.client.model.IndividualSegment>
@@ -117,8 +120,36 @@ public class IndividualSegmentResourceImpl
 				individualSegmentId));
 	}
 
+	private List<String> _getExcludedChannelIds(long groupId) {
+		Set<String> accessibleChannelIds = new HashSet<>(
+			transform(
+				_faroChannelLocalService.search(
+					groupId, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+				FaroChannel::getChannelId));
+
+		return transform(
+			_faroChannelLocalService.<List<FaroChannel>>dslQuery(
+				DSLQueryFactoryUtil.select(
+					FaroChannelTable.INSTANCE
+				).from(
+					FaroChannelTable.INSTANCE
+				).where(
+					FaroChannelTable.INSTANCE.workspaceGroupId.eq(groupId)
+				)),
+			faroChannel -> {
+				if (accessibleChannelIds.contains(faroChannel.getChannelId())) {
+					return null;
+				}
+
+				return faroChannel.getChannelId();
+			});
+	}
+
 	@Reference
 	private ContactsEngineClient _contactsEngineClient;
+
+	@Reference
+	private FaroChannelLocalService _faroChannelLocalService;
 
 	@Reference
 	private FaroProjectLocalService _faroProjectLocalService;
@@ -132,9 +163,6 @@ public class IndividualSegmentResourceImpl
 
 	@Reference
 	private IndividualSegmentHelper _individualSegmentHelper;
-
-	@Reference
-	private WorkspacePermission _workspacePermission;
 
 }
 
