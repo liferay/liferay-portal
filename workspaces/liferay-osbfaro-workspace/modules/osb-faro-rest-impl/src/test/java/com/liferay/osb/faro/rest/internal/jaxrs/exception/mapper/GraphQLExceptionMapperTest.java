@@ -53,7 +53,7 @@ public class GraphQLExceptionMapperTest {
 		_assertResponse(
 			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",
 			_getGraphQLError(
-				"DataFetchingException", "invalid-preference", null));
+				"DataFetchingException", RandomTestUtil.randomString(), null));
 		_assertResponse(
 			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",
 			_getGraphQLError("DataFetchingException", null, null));

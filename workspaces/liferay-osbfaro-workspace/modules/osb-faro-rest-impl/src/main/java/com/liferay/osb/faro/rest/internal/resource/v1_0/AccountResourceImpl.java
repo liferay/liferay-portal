@@ -157,12 +157,12 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 				accountLifecycleStage.getExternalReferenceCode(), "'))");
 		}
 
+		List<AccountLifecycleStage> accountLifecycleStages =
+			accountLifecycle.getAccountLifecycleStages();
+
 		String message = StringBundler.concat(
 			"No account lifecycle stage was found with the name \"",
 			lifecycleStage, "\"");
-
-		List<AccountLifecycleStage> accountLifecycleStages =
-			accountLifecycle.getAccountLifecycleStages();
 
 		if (ListUtil.isEmpty(accountLifecycleStages)) {
 			throw new BadRequestException(message);

@@ -108,10 +108,6 @@ public class GraphQLExceptionMapper
 	}
 
 	private boolean _isNotFound(String messageKey) {
-
-		// Asah derives the message key of a "No ... was found with ID ..."
-		// exception from its message
-
 		if (messageKey == null) {
 			return false;
 		}
