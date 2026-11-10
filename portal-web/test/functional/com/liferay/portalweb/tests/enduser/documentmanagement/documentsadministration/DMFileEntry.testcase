@@ -207,35 +207,6 @@ definition {
 		LexiconEntry.viewEntryName(rowEntry = "Document_1");
 	}
 
-	@description = "This test covers LPS-124959. It ensures that a user can upload documents with a document type via multiple upload."
-	@priority = 4
-	@refactordone
-	test CanAddWithDocumentTypeViaMultipleUpload {
-		property portal.acceptance = "true";
-
-		DMNavigator.openDocumentTypesAdmin(siteURLKey = "guest");
-
-		DMDocumentType.add(
-			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeFieldNames = "Date",
-			dmDocumentTypeName = "DM Document Type Name");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.addMultipleCP(
-			dateValue = "01/01/2022",
-			dmDocumentFileList = "Document_1.doc,Document_2.jpg",
-			documentType = "DM Document Type Name");
-
-		for (var dmDocumentTitle : list "Document_1,Document_2") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-			DMNavigator.gotoDocumentCP(dmDocumentTitle = ${dmDocumentTitle});
-
-			DMDocument.viewDocumentTypePG(dateValue = "01/01/2022");
-		}
-	}
-
 	@description = "This test covers LPS-94657. It ensures that auto complete for edit categories."
 	@priority = 4
 	@refactordone
@@ -557,41 +528,6 @@ definition {
 		DMDocument.checkDocumentCheckboxCP(dmDocumentTitle = "Check in as major version");
 
 		DMDocument.viewDocumentVersionNumberCmdPG(dmDocumentVersionNumber = "2.0");
-	}
-
-	@description = "This test ensures that a user can check in a document as a minor version."
-	@priority = 5
-	@refactordone
-	test CanCheckInAsMinorVersion {
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Check in as minor version",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.checkoutCP(dmDocumentTitle = "Check in as minor version");
-
-		Refresh();
-
-		DMDocument.checkinCP(
-			dmDocumentTitle = "Check in as minor version",
-			revision = "Minor");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		AssertElementNotPresent(
-			key_dmDocumentTitle = "Check in as minor version",
-			locator1 = "DocumentsAndMedia#ICON_DOCUMENT_ICON_LOCKED");
-
-		DMDocument.checkDocumentCheckboxCP(dmDocumentTitle = "Check in as minor version");
-
-		DMDocument.viewDocumentVersionNumberCmdPG(dmDocumentVersionNumber = "1.1");
 	}
 
 	@description = "This test covers LPS-82306. It ensures that a user can check in a document through the Management toolbar."
@@ -1580,71 +1516,6 @@ definition {
 		AssertConsoleTextPresent(value1 = "Unable to process file version");
 	}
 
-	@description = "This test ensures that only the last two versions of a file are kept when the max version limit is set."
-	@priority = 5
-	@refactordone
-	test CanLimitMaximumAmountOfVersions {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		// Can research how to update file using JSON
-
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Edit this document two times",
-			groupName = "Guest");
-
-		DMDocument.updateMaximumVersions(fieldValue = 2);
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.editCP(
-			dmDocumentTitle = "Edit this document two times",
-			dmDocumentTitleEdit = "First edit");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.editCP(
-			dmDocumentTitle = "First edit",
-			dmDocumentTitleEdit = "Second edit");
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "Second edit",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		for (var versionNumber : list "1.2,1.1") {
-			AssertElementPresent(
-				key_dmDocumentVersionNumber = ${versionNumber},
-				locator1 = "DocumentsAndMedia#DOCUMENT_VERSION_ANY");
-		}
-
-		AssertElementNotPresent(
-			key_dmDocumentVersionNumber = "1.0",
-			locator1 = "DocumentsAndMedia#DOCUMENT_VERSION_ANY");
-	}
-
-	@priority = 5
-	@refactordone
-	test CanMoveDocumentToRecycleBin {
-		property portal.acceptance = "true";
-
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name",
-			mimeType = "text/plain",
-			sourceFileName = "Document_1.txt");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMDocument.moveToRecycleBinCP(
-			assetType = "Document",
-			dmDocumentTitle = "DM Document Title");
-	}
-
 	@description = "This ensures that the entry can be moved to another folder via drag and drop."
 	@priority = 4
 	test CanMoveEntryToFolderViaDragAndDrop {
@@ -1727,63 +1598,6 @@ definition {
 			dmDocumentTitle = "DM Document Title",
 			dmFolderName = "DM Folder2 Name",
 			locationFieldName = "true");
-	}
-
-	@priority = 4
-	@refactordone
-	test CannotAddDocumentWithDuplicateName {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.addPG(
-			dmDocument = "Duplicate",
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.doc",
-			dmDocumentTitle = "DM Document Title");
-	}
-
-	@priority = 4
-	@refactordone
-	test CannotAddSpecialCharacterToName {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Documents and Media Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Site Name",
-			layoutName = "Documents and Media Page",
-			widgetName = "Documents and Media");
-
-		Navigator.openSitePage(
-			pageName = "Documents and Media Page",
-			siteName = "Site Name");
-
-		DMFolder.addPG(
-			dmFolder = "Invalid",
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name?");
-
-		Navigator.openSitePage(
-			pageName = "Documents and Media Page",
-			siteName = "Site Name");
-
-		DMPortlet.viewDefaultPG();
 	}
 
 	@description = "This test ensures that an error is displayed when copying a duplicated file."
@@ -1886,50 +1700,6 @@ definition {
 		AssertAlertNotPresent();
 
 		DMDocument.assertFileNameFromTempFolder(fileName = "xss_test");
-	}
-
-	@priority = 4
-	@refactordone
-	test CannotMoveToFolderWithDuplicateTitle {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder1 Description",
-			dmFolderName = "DM Folder1 Name",
-			groupName = "Guest");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder2 Description",
-			dmFolderName = "DM Folder2 Name",
-			groupName = "Guest");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			folderName = "DM Folder1 Name",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			folderName = "DM Folder2 Name",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder1 Name");
-
-		DMDocument.moveToFolderPG(
-			dmDocumentTitle = "DM Document Title",
-			dmDuplicateDocument = "true",
-			dmFolderName = "DM Folder2 Name");
 	}
 
 	@description = "This test ensures that a user cannot set a previous expiration date."
@@ -2221,40 +1991,6 @@ definition {
 		DMDocument.viewCardTitle(dmDocumentTitle = "DM Document Title");
 	}
 
-	@description = "This test checks if file uploads can be restricted to .doc format."
-	@priority = 4
-	@refactordone
-	test CanRestrictFileExtensionToDoc {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		DMDocument.updateFileExtensions(fieldValue = ".doc");
-
-		SystemSettings.saveConfiguration();
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
-
-		for (var dmDocumentTitle : list "Document_1.docx,Document_1.jpeg") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-			DMDocument.addCP(
-				dmDocumentFile = ${dmDocumentTitle},
-				dmDocumentTitle = ${dmDocumentTitle},
-				validationError = "Please enter a file with a valid extension (.doc).");
-		}
-	}
-
 	@description = "This test ensures that the user can review a document when the date is changed."
 	@priority = 4
 	test CanReviewDocumentWhenDateIsChanged {
@@ -2491,54 +2227,6 @@ definition {
 			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
 
 		DMDocument.viewActionDetailsInKebabMenu(menuItem = "Download (13 KB),Edit,Edit Image,Checkout,View History,Move,Permissions,Delete");
-	}
-
-	@description = "This ensures that All the version entries are ordered by version with the latest version at the top in the version history page."
-	@priority = 4
-	test CanViewAllFileVersionsFromVersionsPage {
-		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
-
-		var documentId = JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document Version 1.0",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		for (var num : list "1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9") {
-			var response = DocumentAPI.updateDocumentByDocumentId(
-				documentId = ${documentId},
-				fileName = "Document_1.jpg",
-				title = "Document Version ${num}");
-		}
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoDocumentVersionsPage(dmDocumentTitle = "Document Version 1.9");
-
-		var fileVersionId = JSONDocument.getFileEntryVersionId(
-			dmDocumentTitle = "Document Version 1.9",
-			dmDocumentVersion = "1.9",
-			groupName = "Guest");
-
-		DMDocument.viewDocumentVersionInfoFromVersionsPage(
-			dmDocumentTitle = "Document Version 1.9",
-			dmDocumentVersionInfo = "${fileVersionId},Document Version 1.9,1.9,Approved,Seconds Ago,Test Test",
-			orderIndex = 1);
-
-		Pagination.changePagination(itemsPerPage = 8);
-
-		Click(locator1 = "Pagination#NEXT_LINK");
-
-		var fileVersionId = JSONDocument.getFileEntryVersionId(
-			dmDocumentTitle = "Document Version 1.9",
-			dmDocumentVersion = "1.0",
-			groupName = "Guest");
-
-		DMDocument.viewDocumentVersionInfoFromVersionsPage(
-			dmDocumentTitle = "Document Version 1.0",
-			dmDocumentVersionInfo = "${fileVersionId},Document Version 1.0,1.0,Approved,Seconds Ago,Test Test",
-			orderIndex = 2);
 	}
 
 	@description = "This ensures that the user can create a document with edited display page template."
@@ -2989,48 +2677,6 @@ definition {
 				key_dmDocumentTitle = "DM Document Title 2",
 				locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE");
 		}
-	}
-
-	@description = "This test ensures that files outside folder will not appear in filter results"
-	@priority = 4
-	test FilesOutsideFolderWillNotAppearInFilterResults {
-		JSONDocument.addFileWithUploadedFile(
-			assetTagNames = "tag1",
-			dmDocumentTitle = "DM Document Title 1",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Guest");
-
-		JSONDocument.addFileWithUploadedFile(
-			assetTagNames = "tag1",
-			dmDocumentTitle = "DM Document Title 2",
-			folderName = "DM Folder Name",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_2.doc");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
-
-		ManagementBar.setFilterAndOrder(filterBy = "Tags");
-
-		DMDocument.selectTags(tagName = "tag1");
-
-		DMDocument.viewFilterSummaryResults(
-			filterScope = "Tag: tag1",
-			searchResults = "1 Result");
-
-		DMDocument.viewDocumentTitleInListView(dmDocumentTitle = "DM Document Title 2");
-
-		AssertElementNotPresent(
-			key_dmDocumentTitle = "DM Document Title 1",
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE");
 	}
 
 	@description = "This ensures that the friendly URL of a document created on a site will be updated automatically if it duplicates the existing one on the site."
