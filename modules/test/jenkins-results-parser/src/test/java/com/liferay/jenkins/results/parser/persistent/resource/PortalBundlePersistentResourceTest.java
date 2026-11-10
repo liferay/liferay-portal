@@ -113,6 +113,12 @@ public class PortalBundlePersistentResourceTest
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			Mockito.mock(PortalWorkspaceGitRepository.class);
 
+		Mockito.doReturn(
+			portalWorkspaceGitRepository
+		).when(
+			portalWorkspace
+		).getPortalWorkspaceGitRepository();
+
 		String senderBranchSHA = RandomTestUtil.randomSHA();
 
 		Mockito.doReturn(
@@ -120,12 +126,6 @@ public class PortalBundlePersistentResourceTest
 		).when(
 			portalWorkspaceGitRepository
 		).getSenderBranchSHA();
-
-		Mockito.doReturn(
-			portalWorkspaceGitRepository
-		).when(
-			portalWorkspace
-		).getPortalWorkspaceGitRepository();
 
 		PortalBundlePersistentResource portalBundlePersistentResource =
 			_newPortalBundlePersistentResource(portalWorkspace);

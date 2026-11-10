@@ -164,8 +164,8 @@ public class CloudBucketUtilTest
 		).doExecute(
 			Mockito.argThat(
 				executionRequest -> hasCommand(
-					executionRequest, "aws s3 presign", s3ObjectPath,
-					"--expires-in 600"))
+					executionRequest, "--expires-in 600", "aws s3 presign",
+					s3ObjectPath))
 		);
 
 		String errorMessage = RandomTestUtil.randomString();
