@@ -5,6 +5,7 @@
 
 package com.liferay.portal.language.override.service;
 
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -265,6 +266,11 @@ public interface PLOEntryLocalService
 		long companyId, String keywords, int start, int end,
 		OrderByComparator<PLOEntry> orderByComparator);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PLOEntry> getPLOEntries(
+		long companyId, String keywords, Predicate predicate, int start,
+		int end, OrderByComparator<PLOEntry> orderByComparator);
+
 	/**
 	 * Returns the number of plo entries.
 	 *
@@ -278,6 +284,10 @@ public interface PLOEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPLOEntriesCount(long companyId, String keywords);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getPLOEntriesCount(
+		long companyId, String keywords, Predicate predicate);
 
 	/**
 	 * Returns the plo entry with the primary key.
@@ -318,4 +328,4 @@ public interface PLOEntryLocalService
 	public PLOEntry updatePLOEntry(PLOEntry ploEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2131432017
+// LIFERAY-SERVICE-BUILDER-HASH:1404533960

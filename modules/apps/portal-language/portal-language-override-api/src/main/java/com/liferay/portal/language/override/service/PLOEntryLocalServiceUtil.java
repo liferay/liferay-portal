@@ -307,6 +307,15 @@ public class PLOEntryLocalServiceUtil {
 			companyId, keywords, start, end, orderByComparator);
 	}
 
+	public static List<PLOEntry> getPLOEntries(
+		long companyId, String keywords,
+		com.liferay.petra.sql.dsl.expression.Predicate predicate, int start,
+		int end, OrderByComparator<PLOEntry> orderByComparator) {
+
+		return getService().getPLOEntries(
+			companyId, keywords, predicate, start, end, orderByComparator);
+	}
+
 	/**
 	 * Returns the number of plo entries.
 	 *
@@ -322,6 +331,13 @@ public class PLOEntryLocalServiceUtil {
 
 	public static int getPLOEntriesCount(long companyId, String keywords) {
 		return getService().getPLOEntriesCount(companyId, keywords);
+	}
+
+	public static int getPLOEntriesCount(
+		long companyId, String keywords,
+		com.liferay.petra.sql.dsl.expression.Predicate predicate) {
+
+		return getService().getPLOEntriesCount(companyId, keywords, predicate);
 	}
 
 	/**
@@ -383,4 +399,4 @@ public class PLOEntryLocalServiceUtil {
 			PLOEntryLocalServiceUtil.class, PLOEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-230616620
+// LIFERAY-SERVICE-BUILDER-HASH:-1566881524
