@@ -455,7 +455,7 @@ public class ObjectEntryResourcePermissionTest
 				_postCustomObjectEntryWithPermissions(true, null),
 				invalidPermissionsJSONArray));
 
-		// No permissions in the body request
+		// No permissions in the request body
 
 		JSONObject objectEntryJSONObject =
 			_postCustomObjectEntryWithPermissions(true, null);
