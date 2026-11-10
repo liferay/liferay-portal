@@ -36,8 +36,6 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.hibernate.dialect.Dialect;
-
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 
 /**
@@ -65,6 +63,9 @@ public class DBInitUtil {
 		if (_dataSource == null) {
 			throw new IllegalStateException("Data source is null");
 		}
+
+		DBManagerUtil.setDB(
+			DialectDetector.getDialect(_dataSource), _dataSource);
 
 		DBPartitionUtil.checkDatabasePartitionSchemaNamePrefix();
 
@@ -109,10 +110,8 @@ public class DBInitUtil {
 		return false;
 	}
 
-	private static void _checkSQLServer(DataSource dataSource) {
-		try (Connection connection = dataSource.getConnection();
-
-			PreparedStatement preparedStatement = connection.prepareStatement(
+	private static void _checkSQLServer(Connection connection) {
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"select name, is_read_committed_snapshot_on from " +
 					"sys.databases where name = db_name()");
 
@@ -159,6 +158,10 @@ public class DBInitUtil {
 	}
 
 	private static void _init(DB db, Connection connection) throws Exception {
+		if (db.getDBType() == DBType.SQLSERVER) {
+			_checkSQLServer(connection);
+		}
+
 		try {
 			DBPartitionUtil.setDefaultCompanyId(connection);
 		}
@@ -242,20 +245,7 @@ public class DBInitUtil {
 			return null;
 		}
 
-		DataSource dataSource = DataSourceFactoryUtil.initDataSource(
-			properties);
-
-		Dialect dialect = DialectDetector.getDialect(dataSource);
-
-		DBType dbType = DBManagerUtil.getDBType(dialect);
-
-		if (dbType == DBType.SQLSERVER) {
-			_checkSQLServer(dataSource);
-		}
-
-		DBManagerUtil.setDB(dialect, dataSource);
-
-		return dataSource;
+		return DataSourceFactoryUtil.initDataSource(properties);
 	}
 
 	private static void _runSQLFile(

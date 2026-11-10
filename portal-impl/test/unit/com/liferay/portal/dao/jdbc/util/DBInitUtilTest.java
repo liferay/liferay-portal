@@ -23,8 +23,6 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -66,14 +64,6 @@ public class DBInitUtilTest {
 	public void testCheckSQLServer() throws Exception {
 		Connection connection = Mockito.mock(Connection.class);
 
-		DataSource dataSource = Mockito.mock(DataSource.class);
-
-		Mockito.when(
-			dataSource.getConnection()
-		).thenReturn(
-			connection
-		);
-
 		PreparedStatement preparedStatement = Mockito.mock(
 			PreparedStatement.class);
 
@@ -114,7 +104,7 @@ public class DBInitUtilTest {
 
 			ReflectionTestUtil.invoke(
 				DBInitUtil.class, "_checkSQLServer",
-				new Class<?>[] {DataSource.class}, dataSource);
+				new Class<?>[] {Connection.class}, connection);
 
 			List<String> messages = logCapture.getMessages();
 
