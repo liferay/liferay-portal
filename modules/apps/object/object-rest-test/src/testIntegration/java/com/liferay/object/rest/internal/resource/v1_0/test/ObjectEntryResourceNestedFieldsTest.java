@@ -356,8 +356,8 @@ public class ObjectEntryResourceNestedFieldsTest
 		objectRelationship3 = addObjectRelationshipAndRelateObjectEntries(
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
-		String relationshipFieldName = String.format(
-			"r_%s_%s", objectRelationship3.getName(),
+		String relationshipFieldName = StringBundler.concat(
+			"r_", objectRelationship3.getName(), "_",
 			getObjectDefinition1().getPKObjectFieldName());
 
 		String relationshipFieldNameNestedFieldName = StringUtil.removeLast(
@@ -373,8 +373,7 @@ public class ObjectEntryResourceNestedFieldsTest
 			Type.MANY_TO_ONE);
 		_testGetNestedFieldDetailsInRelationships(
 			relationshipFieldNameNestedFieldName, null,
-			StringUtil.removeLast(relationshipFieldName, "Id"),
-			getObjectDefinition2(),
+			relationshipFieldNameNestedFieldName, getObjectDefinition2(),
 			new String[][] {
 				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)},
 				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)}
@@ -757,8 +756,8 @@ public class ObjectEntryResourceNestedFieldsTest
 
 		// Without fields, many to one relationship
 
-		String relationshipFieldName = String.format(
-			"r_%s_%s", objectRelationship5.getName(),
+		String relationshipFieldName = StringBundler.concat(
+			"r_", objectRelationship5.getName(), "_",
 			userSystemObjectDefinition.getPKObjectFieldName());
 
 		String relationshipFieldNameNestedFieldName = StringUtil.removeLast(
@@ -1872,7 +1871,7 @@ public class ObjectEntryResourceNestedFieldsTest
 			Assert.assertNotNull(
 				"Missing field " + nestedFieldName, nestedJSONObject);
 
-			return jsonObject.getJSONObject(nestedFieldName);
+			return nestedJSONObject;
 		}
 
 		JSONArray jsonArray = jsonObject.getJSONArray(nestedFieldName);

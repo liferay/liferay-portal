@@ -390,7 +390,8 @@ public class ObjectEntryResourceCategorizationTest
 			Assert.assertFalse(jsonObject.has("taxonomyCategoryBriefs"));
 
 			AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
-				getObjectDefinition1().getClassName(), jsonObject.getInt("id"));
+				getObjectDefinition1().getClassName(),
+				jsonObject.getLong("id"));
 
 			List<AssetTag> assetEntryAssetTags =
 				AssetTagLocalServiceUtil.getAssetEntryAssetTags(
@@ -402,7 +403,7 @@ public class ObjectEntryResourceCategorizationTest
 			List<AssetCategory> assetCategories =
 				AssetCategoryLocalServiceUtil.getCategories(
 					getObjectDefinition1().getClassName(),
-					jsonObject.getInt("id"));
+					jsonObject.getLong("id"));
 
 			Assert.assertEquals(
 				assetCategories.toString(), 0, assetCategories.size());
@@ -512,13 +513,10 @@ public class ObjectEntryResourceCategorizationTest
 			TaxonomyCategory... taxonomyCategories)
 		throws Exception {
 
-		JSONArray jsonArray2 = jsonFactory.createJSONArray();
-
-		for (TaxonomyCategory taxonomyCategory : taxonomyCategories) {
-			jsonArray2.put(
-				_toTaxonomyCategoryJSONObject(
-					groupId, taxonomyCategory, withEmbeddedTaxonomyCategory));
-		}
+		JSONArray jsonArray2 = JSONUtil.toJSONArray(
+			taxonomyCategories,
+			taxonomyCategory -> _toTaxonomyCategoryJSONObject(
+				groupId, taxonomyCategory, withEmbeddedTaxonomyCategory));
 
 		JSONAssert.assertEquals(
 			jsonArray2.toString(), jsonArray.toString(),
@@ -922,64 +920,44 @@ public class ObjectEntryResourceCategorizationTest
 
 		TaxonomyCategory embeddedTaxonomyCategory = taxonomyCategory.clone();
 
+		String href = StringBundler.concat(
+			"http://localhost:", PortalUtil.getPortalServerPort(false),
+			"/o/headless-admin-taxonomy/v1.0/taxonomy-categories/",
+			taxonomyCategory.getId());
+
 		embeddedTaxonomyCategory.setActions(
 			HashMapBuilder.<String, Map<String, String>>put(
 				"add-category",
 				HashMapBuilder.put(
-					"href",
-					StringBundler.concat(
-						"http://localhost:",
-						PortalUtil.getPortalServerPort(false),
-						"/o/headless-admin-taxonomy/v1.0/taxonomy-categories/",
-						taxonomyCategory.getId(), "/taxonomy-categories")
+					"href", href + "/taxonomy-categories"
 				).put(
 					"method", "POST"
 				).build()
 			).put(
 				"delete",
 				HashMapBuilder.put(
-					"href",
-					StringBundler.concat(
-						"http://localhost:",
-						PortalUtil.getPortalServerPort(false),
-						"/o/headless-admin-taxonomy/v1.0/taxonomy-categories/",
-						taxonomyCategory.getId())
+					"href", href
 				).put(
 					"method", "DELETE"
 				).build()
 			).put(
 				"get",
 				HashMapBuilder.put(
-					"href",
-					StringBundler.concat(
-						"http://localhost:",
-						PortalUtil.getPortalServerPort(false),
-						"/o/headless-admin-taxonomy/v1.0/taxonomy-categories/",
-						taxonomyCategory.getId())
+					"href", href
 				).put(
 					"method", "GET"
 				).build()
 			).put(
 				"replace",
 				HashMapBuilder.put(
-					"href",
-					StringBundler.concat(
-						"http://localhost:",
-						PortalUtil.getPortalServerPort(false),
-						"/o/headless-admin-taxonomy/v1.0/taxonomy-categories/",
-						taxonomyCategory.getId())
+					"href", href
 				).put(
 					"method", "PUT"
 				).build()
 			).put(
 				"update",
 				HashMapBuilder.put(
-					"href",
-					StringBundler.concat(
-						"http://localhost:",
-						PortalUtil.getPortalServerPort(false),
-						"/o/headless-admin-taxonomy/v1.0/taxonomy-categories/",
-						taxonomyCategory.getId())
+					"href", href
 				).put(
 					"method", "PATCH"
 				).build()

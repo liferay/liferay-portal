@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroupRole;
@@ -266,8 +265,9 @@ public class ObjectEntryResourcePermissionTest
 						getPermissionsJSONObject(new String[0], role.getName())
 					).toString(),
 					StringBundler.concat(
-						getEndpoint(getObjectDefinition1(), testGroupId), "/",
-						jsonObject.getString("id"), "/permissions"),
+						getEndpoint(getObjectDefinition1(), testGroupId),
+						StringPool.SLASH, jsonObject.getString("id"),
+						"/permissions"),
 					Http.Method.PUT);
 
 				Assert.assertNotEquals(
@@ -503,7 +503,7 @@ public class ObjectEntryResourcePermissionTest
 		).toString();
 
 		_assertCustomObjectEntryWithPermissions(
-			jsonFactory.createJSONArray(),
+			JSONFactoryUtil.createJSONArray(),
 			HTTPTestUtil.invokeToJSONObject(
 				objectEntryJSON,
 				getObjectDefinition1().getRESTContextPath() +
@@ -517,12 +517,12 @@ public class ObjectEntryResourcePermissionTest
 			"?nestedFields=permissions");
 
 		_assertCustomObjectEntryWithPermissions(
-			jsonFactory.createJSONArray(),
+			JSONFactoryUtil.createJSONArray(),
 			HTTPTestUtil.invokeToJSONObject(
 				objectEntryJSON, byExternalReferenceCodeEndpoint,
 				Http.Method.PATCH));
 		_assertCustomObjectEntryWithPermissions(
-			jsonFactory.createJSONArray(),
+			JSONFactoryUtil.createJSONArray(),
 			HTTPTestUtil.invokeToJSONObject(
 				objectEntryJSON, byExternalReferenceCodeEndpoint,
 				Http.Method.PUT));
@@ -532,11 +532,11 @@ public class ObjectEntryResourcePermissionTest
 			objectEntryJSONObject.getLong("id"), "?nestedFields=permissions");
 
 		_assertCustomObjectEntryWithPermissions(
-			jsonFactory.createJSONArray(),
+			JSONFactoryUtil.createJSONArray(),
 			HTTPTestUtil.invokeToJSONObject(
 				objectEntryJSON, endpoint, Http.Method.PATCH));
 		_assertCustomObjectEntryWithPermissions(
-			jsonFactory.createJSONArray(),
+			JSONFactoryUtil.createJSONArray(),
 			HTTPTestUtil.invokeToJSONObject(
 				objectEntryJSON, endpoint, Http.Method.PUT));
 
@@ -555,12 +555,8 @@ public class ObjectEntryResourcePermissionTest
 
 		Role role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
-		resourcePermissionLocalService.addResourcePermission(
-			TestPropsValues.getCompanyId(),
-			getObjectDefinition1().getClassName(),
-			ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(TestPropsValues.getCompanyId()), role1.getRoleId(),
-			ActionKeys.DELETE);
+		addResourcePermission(
+			ActionKeys.DELETE, getObjectDefinition1().getClassName(), role1);
 
 		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -647,27 +643,27 @@ public class ObjectEntryResourcePermissionTest
 		_assertCustomObjectEntryWithPermissions(
 			companyPermissionsJSONArray,
 			_postCustomObjectEntryWithPermissions(
-				true, jsonFactory.createJSONArray()));
+				true, JSONFactoryUtil.createJSONArray()));
 		_assertCustomObjectEntryWithPermissions(
 			companyPermissionsJSONArray,
 			_patchPutByExternalReferenceCodeCustomObjectEntryWithPermissions(
 				Http.Method.PATCH, true, objectEntryJSONObject,
-				jsonFactory.createJSONArray()));
+				JSONFactoryUtil.createJSONArray()));
 		_assertCustomObjectEntryWithPermissions(
 			companyPermissionsJSONArray,
 			_patchPutByExternalReferenceCodeCustomObjectEntryWithPermissions(
 				Http.Method.PUT, true, objectEntryJSONObject,
-				jsonFactory.createJSONArray()));
+				JSONFactoryUtil.createJSONArray()));
 		_assertCustomObjectEntryWithPermissions(
 			companyPermissionsJSONArray,
 			_patchPutCustomObjectEntryWithPermissions(
 				Http.Method.PATCH, true, objectEntryJSONObject,
-				jsonFactory.createJSONArray()));
+				JSONFactoryUtil.createJSONArray()));
 		_assertCustomObjectEntryWithPermissions(
 			companyPermissionsJSONArray,
 			_patchPutCustomObjectEntryWithPermissions(
 				Http.Method.PUT, true, objectEntryJSONObject,
-				jsonFactory.createJSONArray()));
+				JSONFactoryUtil.createJSONArray()));
 
 		// Permissions without nested fields
 
@@ -720,12 +716,8 @@ public class ObjectEntryResourcePermissionTest
 
 		Role role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
-		resourcePermissionLocalService.addResourcePermission(
-			TestPropsValues.getCompanyId(),
-			getObjectDefinition1().getClassName(),
-			ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(TestPropsValues.getCompanyId()), role1.getRoleId(),
-			ActionKeys.DELETE);
+		addResourcePermission(
+			ActionKeys.DELETE, getObjectDefinition1().getClassName(), role1);
 
 		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -776,7 +768,7 @@ public class ObjectEntryResourcePermissionTest
 			companyPermissionsJSONArray,
 			_putCustomObjectEntryPermissionsPage(
 				objectEntryJSONObject.getLong("id"),
-				jsonFactory.createJSONArray()));
+				JSONFactoryUtil.createJSONArray()));
 	}
 
 	private ObjectAction _addObjectAction(ObjectDefinition objectDefinition)

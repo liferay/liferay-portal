@@ -880,9 +880,9 @@ public class ObjectEntryResourceRelationshipTest
 				getObjectDefinition1().getRESTContextPath(),
 				"/by-external-reference-code/", ERC_VALUE_1),
 			Http.Method.GET
-		).get(
+		).getString(
 			"id"
-		).toString();
+		);
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(

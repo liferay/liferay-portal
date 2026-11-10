@@ -57,7 +57,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.NoSuchCompanyException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -98,7 +97,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
-import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
@@ -513,15 +512,13 @@ public abstract class BaseObjectEntryResourceTestCase {
 			TestPropsValues.getUserId(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
-		String objectRelationship2IdObjectFieldName =
+		String objectRelationship2IdObjectFieldName = StringUtil.replace(
 			ObjectFieldSettingUtil.getValue(
 				ObjectFieldSettingConstants.
 					NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
 				objectFieldLocalService.getObjectField(
-					objectRelationship2.getObjectFieldId2())
-			).replace(
-				"ERC", "Id"
-			);
+					objectRelationship2.getObjectFieldId2())),
+			"ERC", "Id");
 
 		BigDecimal randomBigDecimal = BigDecimal.valueOf(
 			RandomTestUtil.randomDouble()
@@ -677,7 +674,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 		// Date field
 
-		Date date = new Date(randomDate1.getTime() + (24 * 3600 * 1000));
+		Date date = new Date(randomDate1.getTime() + Time.DAY);
 
 		expectedJSONObject = _cloneJSONObject(
 			expectedJSONObject, OBJECT_FIELD_NAME_DATE,
@@ -1104,28 +1101,21 @@ public abstract class BaseObjectEntryResourceTestCase {
 	}
 
 	protected JSONArray createObjectEntriesJSONArray(
-			String[] externalReferenceCodes, String objectFieldName,
-			String[] objectFieldValues)
-		throws Exception {
+		String[] externalReferenceCodes, String objectFieldName,
+		String[] objectFieldValues) {
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
 		for (int i = 0; i < objectFieldValues.length; i++) {
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			jsonArray.put(
 				JSONUtil.put(
 					objectFieldName, objectFieldValues[i]
 				).put(
 					"externalReferenceCode", externalReferenceCodes[i]
-				).toString());
-
-			jsonArray.put(jsonObject);
+				));
 		}
 
 		return jsonArray;
-	}
-
-	protected String escape(String string) {
-		return URLCodec.encodeURL(string);
 	}
 
 	protected Company getCompanyByWebId() throws Exception {
@@ -1859,9 +1849,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 	@Inject
 	protected GroupLocalService groupLocalService;
-
-	@Inject
-	protected JSONFactory jsonFactory;
 
 	protected ListTypeDefinition listTypeDefinition;
 

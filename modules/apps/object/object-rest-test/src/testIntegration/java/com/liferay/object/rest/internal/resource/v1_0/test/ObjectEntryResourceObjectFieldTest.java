@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
@@ -667,7 +666,7 @@ public class ObjectEntryResourceObjectFieldTest
 				jsonObject.getJSONObject("location"));
 
 			objectValidationRuleLocalService.addObjectValidationRule(
-				StringUtil.randomString(), TestPropsValues.getUserId(),
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId(), true,
 				ObjectValidationRuleConstants.ENGINE_TYPE_DDM,
 				LocalizedMapUtil.getLocalizedMap("Field must not be empty"),
@@ -676,7 +675,7 @@ public class ObjectEntryResourceObjectFieldTest
 				"not(isEmpty(location))", false, Collections.emptyList());
 
 			jsonObject = HTTPTestUtil.invokeToJSONObject(
-				String.valueOf(jsonFactory.createJSONObject()),
+				JSONFactoryUtil.getNullJSON(),
 				objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 			assertLocationJSONObject(

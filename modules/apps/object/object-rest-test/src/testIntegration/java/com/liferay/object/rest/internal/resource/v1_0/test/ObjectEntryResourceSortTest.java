@@ -229,11 +229,10 @@ public class ObjectEntryResourceSortTest
 
 			_testSortByFieldName(
 				endpoint, jsonObject1, jsonObject2,
-				StringUtil.replaceLast(objectField.getName(), "Id", "ERC"));
+				StringUtil.replaceLast(objectFieldName, "Id", "ERC"));
 			_testSortByFieldName(
 				endpoint, jsonObject1, jsonObject2,
-				StringUtil.extractLast(
-					objectField.getName(), StringPool.UNDERLINE));
+				StringUtil.extractLast(objectFieldName, StringPool.UNDERLINE));
 
 			// Sort by several fields
 

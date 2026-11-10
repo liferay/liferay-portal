@@ -509,9 +509,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			jsonObject.getJSONObject(
 				StringBundler.concat(
 					"r_", objectRelationship1.getName(), "_",
-					StringUtil.replaceLast(
-						getObjectDefinition1().getPKObjectFieldName(), "Id",
-						""))),
+					StringUtil.removeLast(
+						getObjectDefinition1().getPKObjectFieldName(), "Id"))),
 			OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_1);
 
 		String objectEntryId = jsonObject.getString("id");
@@ -568,9 +567,9 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			jsonObject.getJSONObject(
 				StringBundler.concat(
 					"r_", objectRelationship6.getName(), "_",
-					StringUtil.replaceLast(
+					StringUtil.removeLast(
 						getSiteScopedObjectDefinition1().getPKObjectFieldName(),
-						"Id", ""))),
+						"Id"))),
 			OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_1);
 
 		objectEntryId = jsonObject.getString("id");
@@ -908,8 +907,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 		Assert.assertEquals(1, nestedObjectEntriesJSONArray.length());
 
 		_assertObjectEntryField(
-			(JSONObject)nestedObjectEntriesJSONArray.get(0),
-			OBJECT_FIELD_NAME_2, NEW_OBJECT_FIELD_VALUE_1);
+			nestedObjectEntriesJSONArray.getJSONObject(0), OBJECT_FIELD_NAME_2,
+			NEW_OBJECT_FIELD_VALUE_1);
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
@@ -925,8 +924,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 		Assert.assertEquals(1, nestedObjectEntriesJSONArray.length());
 
 		_assertObjectEntryField(
-			(JSONObject)nestedObjectEntriesJSONArray.get(0),
-			OBJECT_FIELD_NAME_2, NEW_OBJECT_FIELD_VALUE_1);
+			nestedObjectEntriesJSONArray.getJSONObject(0), OBJECT_FIELD_NAME_2,
+			NEW_OBJECT_FIELD_VALUE_1);
 	}
 
 	@Test
@@ -981,9 +980,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			jsonObject.getJSONObject(
 				StringBundler.concat(
 					"r_", objectRelationship1.getName(), "_",
-					StringUtil.replaceLast(
-						getObjectDefinition1().getPKObjectFieldName(), "Id",
-						""))),
+					StringUtil.removeLast(
+						getObjectDefinition1().getPKObjectFieldName(), "Id"))),
 			OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_1);
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -1057,8 +1055,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 		Assert.assertEquals(1, nestedObjectEntriesJSONArray.length());
 
 		_assertObjectEntryField(
-			(JSONObject)nestedObjectEntriesJSONArray.get(0),
-			OBJECT_FIELD_NAME_2, NEW_OBJECT_FIELD_VALUE_1);
+			nestedObjectEntriesJSONArray.getJSONObject(0), OBJECT_FIELD_NAME_2,
+			NEW_OBJECT_FIELD_VALUE_1);
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
@@ -1074,8 +1072,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 		Assert.assertEquals(1, nestedObjectEntriesJSONArray.length());
 
 		_assertObjectEntryField(
-			(JSONObject)nestedObjectEntriesJSONArray.get(0),
-			OBJECT_FIELD_NAME_2, NEW_OBJECT_FIELD_VALUE_1);
+			nestedObjectEntriesJSONArray.getJSONObject(0), OBJECT_FIELD_NAME_2,
+			NEW_OBJECT_FIELD_VALUE_1);
 	}
 
 	@Test
@@ -1605,9 +1603,9 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				jsonObject.getJSONObject(
 					StringBundler.concat(
 						"r_", objectRelationship1.getName(), "_",
-						StringUtil.replaceLast(
-							getObjectDefinition2().getPKObjectFieldName(), "Id",
-							""))),
+						StringUtil.removeLast(
+							getObjectDefinition2().getPKObjectFieldName(),
+							"Id"))),
 				OBJECT_FIELD_NAME_2, NEW_OBJECT_FIELD_VALUE_1);
 		}
 		else {
@@ -1617,7 +1615,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			Assert.assertEquals(1, nestedObjectEntriesJSONArray.length());
 
 			_assertObjectEntryField(
-				(JSONObject)nestedObjectEntriesJSONArray.get(0),
+				nestedObjectEntriesJSONArray.getJSONObject(0),
 				OBJECT_FIELD_NAME_2, NEW_OBJECT_FIELD_VALUE_1);
 		}
 	}
