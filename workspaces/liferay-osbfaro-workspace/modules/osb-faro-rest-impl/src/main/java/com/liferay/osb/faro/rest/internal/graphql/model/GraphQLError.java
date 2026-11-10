@@ -85,7 +85,7 @@ public class GraphQLError {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler();
+		StringBundler sb = new StringBundler(7);
 
 		sb.append("{message=");
 		sb.append(_message);
