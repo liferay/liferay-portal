@@ -240,49 +240,44 @@ public class ScheduledPublishProcessResourceTest
 	}
 
 	private void _assertPostSiteScheduledPublishProcessProblem(
-			String key, String scheduledPublishProcessCronExpression,
-			String type)
+			String key, Locale locale,
+			String scheduledPublishProcessCronExpression, String type)
 		throws Exception {
 
 		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
-		for (Locale locale :
-				new Locale[] {LocaleUtil.getDefault(), LocaleUtil.SPAIN}) {
+		ScheduledPublishProcessResource scheduledPublishProcessResource =
+			ScheduledPublishProcessResource.builder(
+			).authentication(
+				user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				locale
+			).build();
 
-			ScheduledPublishProcessResource scheduledPublishProcessResource =
-				ScheduledPublishProcessResource.builder(
-				).authentication(
-					user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
-				).endpoint(
-					testCompany.getVirtualHostname(),
-					PortalUtil.getPortalServerPort(false), "http"
-				).locale(
-					locale
-				).build();
+		HttpInvoker.HttpResponse httpResponse =
+			scheduledPublishProcessResource.
+				postSiteScheduledPublishProcessHttpResponse(
+					testGroup.getExternalReferenceCode(),
+					new ScheduledPublishProcessRequest() {
+						{
+							cronExpression =
+								scheduledPublishProcessCronExpression;
+							publishProcessRequest = _toPublishProcessRequest(
+								RandomTestUtil.randomString());
+						}
+					});
 
-			HttpInvoker.HttpResponse httpResponse =
-				scheduledPublishProcessResource.
-					postSiteScheduledPublishProcessHttpResponse(
-						testGroup.getExternalReferenceCode(),
-						new ScheduledPublishProcessRequest() {
-							{
-								cronExpression =
-									scheduledPublishProcessCronExpression;
-								publishProcessRequest =
-									_toPublishProcessRequest(
-										RandomTestUtil.randomString());
-							}
-						});
+		assertHttpResponseStatusCode(400, httpResponse);
 
-			assertHttpResponseStatusCode(400, httpResponse);
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			httpResponse.getContent());
 
-			JSONObject jsonObject = _jsonFactory.createJSONObject(
-				httpResponse.getContent());
-
-			Assert.assertEquals(
-				LanguageUtil.get(locale, key), jsonObject.getString("title"));
-			Assert.assertEquals(type, jsonObject.getString("type"));
-		}
+		Assert.assertEquals(
+			LanguageUtil.get(locale, key), jsonObject.getString("title"));
+		Assert.assertEquals(type, jsonObject.getString("type"));
 	}
 
 	private void _assertScheduledPublishProcess(
@@ -465,15 +460,29 @@ public class ScheduledPublishProcessResourceTest
 		throws Exception {
 
 		_assertPostSiteScheduledPublishProcessProblem(
-			"please-enter-a-valid-cron-expression",
+			"please-enter-a-valid-cron-expression", LocaleUtil.SPAIN,
 			RandomTestUtil.randomString(),
-			"ScheduledPublishProcessException.MustBeValid");
+			"ScheduledPublishProcessScheduleException.MustBeValid");
 		_assertPostSiteScheduledPublishProcessProblem(
-			"the-scheduled-process-will-never-run", "0 0 12 31 2 ? *",
-			"ScheduledPublishProcessException.MustRunAtLeastOnce");
+			"please-enter-a-valid-cron-expression", LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(),
+			"ScheduledPublishProcessScheduleException.MustBeValid");
 		_assertPostSiteScheduledPublishProcessProblem(
-			"the-scheduled-process-will-never-run", "0 30 9 22 8 ? 2020",
-			"ScheduledPublishProcessException.MustRunAtLeastOnce");
+			"the-scheduled-process-will-never-run", LocaleUtil.SPAIN,
+			"0 0 12 31 2 ? *",
+			"ScheduledPublishProcessScheduleException.MustRunAtLeastOnce");
+		_assertPostSiteScheduledPublishProcessProblem(
+			"the-scheduled-process-will-never-run", LocaleUtil.SPAIN,
+			"0 30 9 22 8 ? 2020",
+			"ScheduledPublishProcessScheduleException.MustRunAtLeastOnce");
+		_assertPostSiteScheduledPublishProcessProblem(
+			"the-scheduled-process-will-never-run", LocaleUtil.getDefault(),
+			"0 0 12 31 2 ? *",
+			"ScheduledPublishProcessScheduleException.MustRunAtLeastOnce");
+		_assertPostSiteScheduledPublishProcessProblem(
+			"the-scheduled-process-will-never-run", LocaleUtil.getDefault(),
+			"0 30 9 22 8 ? 2020",
+			"ScheduledPublishProcessScheduleException.MustRunAtLeastOnce");
 	}
 
 	private void _testPostSiteScheduledPublishProcessWithInvalidDateRange()
