@@ -19,6 +19,7 @@ import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroProjectUsageLocalService;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageMetricDisplay;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
@@ -279,25 +280,22 @@ public class ProjectUsageHelperTest {
 	private void _mockProjectUsageMetrics(
 		Date date, FaroProject... faroProjects) {
 
-		ProjectUsageMetric[] projectUsageMetrics =
-			new ProjectUsageMetric[faroProjects.length];
+		List<ProjectUsageMetric> projectUsageMetrics = TransformUtil.transform(
+			Arrays.asList(faroProjects),
+			faroProject -> {
+				ProjectUsageMetric projectUsageMetric =
+					new ProjectUsageMetric();
 
-		for (int i = 0; i < faroProjects.length; i++) {
-			ProjectUsageMetric projectUsageMetric = new ProjectUsageMetric();
+				projectUsageMetric.setProjectId(faroProject.getProjectId());
 
-			FaroProject faroProject = faroProjects[i];
-
-			projectUsageMetric.setProjectId(faroProject.getProjectId());
-
-			projectUsageMetrics[i] = projectUsageMetric;
-		}
+				return projectUsageMetric;
+			});
 
 		Mockito.when(
 			_contactsEngineClient.getProjectUsageMetrics(
 				Mockito.any(FaroProject.class), Mockito.eq(date))
 		).thenReturn(
-			new Results<>(
-				Arrays.asList(projectUsageMetrics), projectUsageMetrics.length)
+			new Results<>(projectUsageMetrics, projectUsageMetrics.size())
 		);
 	}
 
