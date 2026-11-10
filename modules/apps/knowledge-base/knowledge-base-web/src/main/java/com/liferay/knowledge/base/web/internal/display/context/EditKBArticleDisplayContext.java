@@ -74,14 +74,6 @@ public class EditKBArticleDisplayContext {
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(
 			liferayPortletRequest);
-		_redirect = PortalUtil.escapeRedirect(
-			ParamUtil.getString(
-				liferayPortletRequest.getHttpServletRequest(), "redirect",
-				String.valueOf(
-					PortletURLUtil.getCurrent(
-						liferayPortletRequest, liferayPortletResponse))));
-		_themeDisplay = (ThemeDisplay)liferayPortletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
 
 		KBTemplate kbTemplate = (KBTemplate)liferayPortletRequest.getAttribute(
 			KBWebKeys.KNOWLEDGE_BASE_KB_TEMPLATE);
@@ -94,6 +86,15 @@ public class EditKBArticleDisplayContext {
 			_kbTemplateContent = kbTemplate.getContent();
 			_kbTemplateTitle = kbTemplate.getTitle();
 		}
+
+		_redirect = PortalUtil.escapeRedirect(
+			ParamUtil.getString(
+				liferayPortletRequest.getHttpServletRequest(), "redirect",
+				String.valueOf(
+					PortletURLUtil.getCurrent(
+						liferayPortletRequest, liferayPortletResponse))));
+		_themeDisplay = (ThemeDisplay)liferayPortletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	public Map<String, String> getAvailableKBArticleSections()
