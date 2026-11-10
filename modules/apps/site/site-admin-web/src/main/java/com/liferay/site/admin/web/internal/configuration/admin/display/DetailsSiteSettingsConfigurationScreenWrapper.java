@@ -8,7 +8,14 @@ package com.liferay.site.admin.web.internal.configuration.admin.display;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenFactory;
 
@@ -16,6 +23,9 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serializable;
+
+import java.util.Dictionary;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -35,6 +45,9 @@ public class DetailsSiteSettingsConfigurationScreenWrapper
 	}
 
 	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
 	private ItemSelector _itemSelector;
 
 	@Reference
@@ -49,6 +62,27 @@ public class DetailsSiteSettingsConfigurationScreenWrapper
 
 	private class DetailsSiteSettingsConfigurationScreenContributor
 		implements SiteSettingsConfigurationScreenContributor {
+
+		@Override
+		public Dictionary<String, Object> exportProperties(
+			Serializable scopePK) {
+
+			return HashMapDictionaryBuilder.<String, Object>put(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+				() -> {
+					Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+					if (group.isCompany() || group.isGuest() ||
+						!FeatureFlagManagerUtil.isEnabled(
+							group.getCompanyId(), "LPD-82960")) {
+
+						return null;
+					}
+
+					return group.isMaintenanceMode();
+				}
+			).build();
+		}
 
 		@Override
 		public String getCategoryKey() {
@@ -78,6 +112,47 @@ public class DetailsSiteSettingsConfigurationScreenWrapper
 		@Override
 		public ServletContext getServletContext() {
 			return _servletContext;
+		}
+
+		@Override
+		public void importProperties(
+				Dictionary<String, Object> properties, Serializable scopePK)
+			throws Exception {
+
+			Object maintenanceMode = properties.get(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE);
+
+			if (maintenanceMode == null) {
+				return;
+			}
+
+			Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+			if (group.isCompany() || group.isGuest() ||
+				!FeatureFlagManagerUtil.isEnabled(
+					group.getCompanyId(), "LPD-82960")) {
+
+				return;
+			}
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				group.getTypeSettingsProperties();
+
+			if (GetterUtil.getBoolean(maintenanceMode)) {
+				typeSettingsUnicodeProperties.setProperty(
+					GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+					Boolean.TRUE.toString());
+
+				group.setActive(false);
+			}
+			else {
+				typeSettingsUnicodeProperties.remove(
+					GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE);
+			}
+
+			group.setTypeSettingsProperties(typeSettingsUnicodeProperties);
+
+			_groupLocalService.updateGroup(group);
 		}
 
 		@Override
