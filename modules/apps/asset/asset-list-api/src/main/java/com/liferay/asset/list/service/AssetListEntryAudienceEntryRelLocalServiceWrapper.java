@@ -461,6 +461,15 @@ public class AssetListEntryAudienceEntryRelLocalServiceWrapper
 	}
 
 	@Override
+	public int getAssetListEntryAudienceEntryRelsCountByAudienceEntryERC(
+		long companyId, String audienceEntryERC) {
+
+		return _assetListEntryAudienceEntryRelLocalService.
+			getAssetListEntryAudienceEntryRelsCountByAudienceEntryERC(
+				companyId, audienceEntryERC);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -583,4 +592,4 @@ public class AssetListEntryAudienceEntryRelLocalServiceWrapper
 		_assetListEntryAudienceEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1769050348
+// LIFERAY-SERVICE-BUILDER-HASH:337904325

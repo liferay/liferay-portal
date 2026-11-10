@@ -340,6 +340,10 @@ public interface AssetListEntryAudienceEntryRelLocalService
 	public int getAssetListEntryAudienceEntryRelsCount(long assetListEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getAssetListEntryAudienceEntryRelsCountByAudienceEntryERC(
+		long companyId, String audienceEntryERC);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -400,4 +404,4 @@ public interface AssetListEntryAudienceEntryRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1908827231
+// LIFERAY-SERVICE-BUILDER-HASH:-1461382722
