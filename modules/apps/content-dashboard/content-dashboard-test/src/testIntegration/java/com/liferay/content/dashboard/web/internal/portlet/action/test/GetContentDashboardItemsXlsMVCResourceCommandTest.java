@@ -12,8 +12,10 @@ import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -28,6 +30,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -83,6 +86,7 @@ public class GetContentDashboardItemsXlsMVCResourceCommandTest {
 	@Test
 	public void testServeResource() throws Exception {
 		_testServeResourceWithFileEntry();
+		_testServeResourceWithFullLastPage();
 		_testServeResourceWithJournalArticle();
 	}
 
@@ -141,6 +145,7 @@ public class GetContentDashboardItemsXlsMVCResourceCommandTest {
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
+		mockHttpServletRequest.setParameter("groupId", String.valueOf(groupId));
 		mockHttpServletRequest.setParameter("scopeId", String.valueOf(groupId));
 
 		serviceContext.setRequest(mockHttpServletRequest);
@@ -194,6 +199,33 @@ public class GetContentDashboardItemsXlsMVCResourceCommandTest {
 				new ByteArrayInputStream(byteArrayOutputStream.toByteArray())));
 
 		DLAppLocalServiceUtil.deleteFileEntry(fileEntry.getFileEntryId());
+	}
+
+	private void _testServeResourceWithFullLastPage() throws Exception {
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.portal.search.configuration." +
+						"DefaultSearchResultPermissionFilterConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"searchQueryResultWindowLimit", 1
+					).build())) {
+
+			ByteArrayOutputStream byteArrayOutputStream = _serveResource(
+				_group.getGroupId());
+
+			Workbook workbook = new HSSFWorkbook(
+				new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+
+			Sheet sheet = workbook.getSheetAt(0);
+
+			Assert.assertEquals(1, sheet.getLastRowNum());
+		}
+
+		JournalArticleLocalServiceUtil.deleteArticle(journalArticle);
 	}
 
 	private void _testServeResourceWithJournalArticle() throws Exception {
