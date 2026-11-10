@@ -97,6 +97,74 @@ public class TransactionTestUtilTest {
 		}
 	}
 
+	@Test
+	public void testInvokeUnsafeFunction() throws Exception {
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		Collection<ServiceReference<SessionFactory>> serviceReferences =
+			bundleContext.getServiceReferences(
+				SessionFactory.class,
+				"(origin.bundle.symbolic.name=com.liferay.portal.language." +
+					"override.service)");
+
+		Assert.assertEquals(
+			serviceReferences.toString(), 1, serviceReferences.size());
+
+		Iterator<ServiceReference<SessionFactory>> iterator =
+			serviceReferences.iterator();
+
+		ServiceReference<SessionFactory> serviceReference = iterator.next();
+
+		SessionFactory sessionFactory = bundleContext.getService(
+			serviceReference);
+
+		ServiceReference<?> ploEntryPersistenceServiceReference =
+			bundleContext.getServiceReference(
+				"com.liferay.portal.language.override.service.persistence." +
+					"PLOEntryPersistence");
+
+		Object ploEntryPersistence = bundleContext.getService(
+			ploEntryPersistenceServiceReference);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				VerifySessionFactoryWrapper.class.getName(),
+				LoggerTestUtil.ERROR)) {
+
+			Assert.assertSame(
+				ploEntryPersistence,
+				TransactionTestUtil.invoke(
+					ploEntryPersistence,
+					curPLOEntryPersistence -> {
+						_openSession(sessionFactory);
+
+						return curPLOEntryPersistence;
+					}));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+
+			Error error = new Error();
+
+			try {
+				TransactionTestUtil.invoke(
+					ploEntryPersistence,
+					curPLOEntryPersistence -> {
+						throw error;
+					});
+
+				Assert.fail();
+			}
+			catch (Exception exception) {
+				Assert.assertSame(error, exception.getCause());
+			}
+		}
+		finally {
+			bundleContext.ungetService(ploEntryPersistenceServiceReference);
+			bundleContext.ungetService(serviceReference);
+		}
+	}
+
 	private Object _openSession(SessionFactory sessionFactory) {
 		Session session = sessionFactory.openSession();
 
