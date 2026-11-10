@@ -159,9 +159,9 @@ public class ProjectUsageHelperTest {
 			Mockito.eq(faroProject), Mockito.any(Date.class)
 		);
 
-		_verifyGetProjectUsageMetrics(faroProject, LocalDate.of(2026, 2, 27));
+		_verifyGetProjectUsageMetrics(faroProject, startLocalDate);
 		_verifyGetProjectUsageMetrics(faroProject, LocalDate.of(2026, 2, 28));
-		_verifyGetProjectUsageMetrics(faroProject, LocalDate.of(2026, 3, 1));
+		_verifyGetProjectUsageMetrics(faroProject, endLocalDate);
 	}
 
 	@Test
