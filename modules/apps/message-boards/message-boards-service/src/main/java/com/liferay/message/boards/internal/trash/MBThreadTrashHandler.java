@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ContainerModel;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.TrashedModel;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
@@ -155,7 +156,7 @@ public class MBThreadTrashHandler extends BaseTrashHandler {
 		MBThreadTrashRenderer mbThreadTrashRenderer = new MBThreadTrashRenderer(
 			_mbThreadLocalService.getThread(classPK), _assetHelper);
 
-		mbThreadTrashRenderer.setServletContext(_servletContext);
+		mbThreadTrashRenderer.setServletContext(_servletContextSnapshot.get());
 
 		return mbThreadTrashRenderer;
 	}
@@ -296,6 +297,11 @@ public class MBThreadTrashHandler extends BaseTrashHandler {
 			permissionChecker, thread.getRootMessageId(), actionId);
 	}
 
+	private static final Snapshot<ServletContext> _servletContextSnapshot =
+		new Snapshot<>(
+			MBThreadTrashHandler.class, ServletContext.class,
+			"(osgi.web.symbolicname=com.liferay.message.boards.web)", true);
+
 	@Reference
 	private AssetHelper _assetHelper;
 
@@ -318,11 +324,6 @@ public class MBThreadTrashHandler extends BaseTrashHandler {
 
 	@Reference
 	private Portal _portal;
-
-	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.message.boards.web)"
-	)
-	private ServletContext _servletContext;
 
 	@Reference
 	private TrashHelper _trashHelper;
