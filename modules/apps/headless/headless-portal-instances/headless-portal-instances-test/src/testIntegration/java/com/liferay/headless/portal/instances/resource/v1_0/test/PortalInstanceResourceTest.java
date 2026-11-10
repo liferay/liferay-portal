@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -181,6 +182,9 @@ public class PortalInstanceResourceTest
 		_testPostPortalInstanceWithAdminCredentials();
 		_testPostPortalInstanceWithAdminWithoutRequiredFields();
 		_testPostPortalInstanceWithExistingCompanyId();
+		_testPostPortalInstanceWithInvalidAdminPassword();
+		_testPostPortalInstanceWithInvalidAdminScreenName();
+		_testPostPortalInstanceWithInvalidMaxUsers();
 		_testPostPortalInstanceWithoutOmniadminPermission();
 	}
 
@@ -1014,6 +1018,63 @@ public class PortalInstanceResourceTest
 		}
 		finally {
 			_deletePortalInstance(postPortalInstance);
+		}
+	}
+
+	private void _testPostPortalInstanceWithInvalidAdminPassword()
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"PASSWORDS_DEFAULT_POLICY_CHECK_SYNTAX", true)) {
+
+			_assertPostPortalInstanceProblemTitle(
+				JSONUtil.put(
+					"emailAddress",
+					RandomTestUtil.randomString() + "@liferay.com"
+				).put(
+					"familyName", RandomTestUtil.randomString()
+				).put(
+					"givenName", RandomTestUtil.randomString()
+				).put(
+					"password", "12345"
+				),
+				"Please enter a valid password.");
+		}
+	}
+
+	private void _testPostPortalInstanceWithInvalidAdminScreenName()
+		throws Exception {
+
+		_assertPostPortalInstanceProblemTitle(
+			JSONUtil.put(
+				"emailAddress", RandomTestUtil.randomString() + "@liferay.com"
+			).put(
+				"familyName", RandomTestUtil.randomString()
+			).put(
+				"givenName", RandomTestUtil.randomString()
+			).put(
+				"screenName", "bad name!"
+			),
+			"Please enter a valid screen name.");
+	}
+
+	private void _testPostPortalInstanceWithInvalidMaxUsers() throws Exception {
+		PortalInstance randomPortalInstance = randomPortalInstance();
+
+		randomPortalInstance.setMaxUsers(-1);
+
+		try {
+			portalInstanceResource.postPortalInstance(randomPortalInstance);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"Max users must be greater or equal to 0.", problem.getTitle());
 		}
 	}
 
