@@ -38,7 +38,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
  * @author Veronica Gonzalez
  */
 @RunWith(Arquillian.class)
-public class AICreatorOpenAIConfigurationScreenWrapperTest {
+public class AICreatorOpenAISiteSettingsConfigurationScreenWrapperTest {
 
 	@ClassRule
 	@Rule
@@ -50,7 +50,7 @@ public class AICreatorOpenAIConfigurationScreenWrapperTest {
 		_group = GroupTestUtil.addGroup();
 
 		Bundle bundle = FrameworkUtil.getBundle(
-			AICreatorOpenAIConfigurationScreenWrapperTest.class);
+			AICreatorOpenAISiteSettingsConfigurationScreenWrapperTest.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
@@ -69,21 +69,19 @@ public class AICreatorOpenAIConfigurationScreenWrapperTest {
 		_serviceTrackerMap.close();
 	}
 
+	@FeatureFlag("LPD-93786")
+	@Test
+	public void testIsVisible() throws Exception {
+		Assert.assertTrue(_isVisible());
+	}
+
 	@FeatureFlag(enable = false, value = "LPD-93786")
 	@Test
 	public void testIsVisibleWhenFeatureFlagIsDisabled() throws Exception {
-		Assert.assertFalse(_isCompanyConfigurationScreenVisible());
-		Assert.assertFalse(_isGroupConfigurationScreenVisible());
+		Assert.assertFalse(_isVisible());
 	}
 
-	private boolean _isCompanyConfigurationScreenVisible() {
-		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
-			"ai-creator-openai-company-configuration");
-
-		return configurationScreen.isVisible();
-	}
-
-	private boolean _isGroupConfigurationScreenVisible() {
+	private boolean _isVisible() {
 		ServiceContext serviceContext = new ServiceContext();
 
 		MockHttpServletRequest mockHttpServletRequest =
