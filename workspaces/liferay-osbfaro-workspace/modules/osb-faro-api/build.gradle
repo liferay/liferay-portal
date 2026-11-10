@@ -1,3 +1,6 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
+	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
+	testImplementation group: "junit", name: "junit", version: "4.13.1"
+	testImplementation group: "org.mockito", name: "mockito-core", version: "5.14.2"
 }

@@ -14,17 +14,15 @@ import com.liferay.osb.faro.engine.client.model.IndividualSegment;
 import com.liferay.osb.faro.model.FaroChannel;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
-import com.liferay.osb.faro.rest.internal.security.permission.WorkspacePermission;
 import com.liferay.osb.faro.service.FaroChannelLocalService;
-import com.liferay.osb.faro.service.FaroUserLocalService;
-import com.liferay.petra.string.StringBundler;
+import com.liferay.osb.faro.service.FaroUserLocalServiceUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
@@ -34,7 +32,6 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -42,6 +39,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -57,32 +55,12 @@ public class IndividualSegmentHelperTest {
 			_GROUP_ID_WORKSPACE
 		);
 
-		Mockito.when(
-			_userGroupRoleLocalService.getUserGroupRoles(
-				Mockito.anyLong(), Mockito.eq(_GROUP_ID_CHANNEL))
-		).thenReturn(
-			Collections.emptyList()
-		);
-
-		WorkspacePermission workspacePermission = new WorkspacePermission();
-
 		ReflectionTestUtil.setFieldValue(
 			_individualSegmentHelper, "_contactsEngineClient",
 			_contactsEngineClient);
 		ReflectionTestUtil.setFieldValue(
 			_individualSegmentHelper, "_faroChannelLocalService",
 			_faroChannelLocalService);
-		ReflectionTestUtil.setFieldValue(
-			_individualSegmentHelper, "_workspacePermission",
-			workspacePermission);
-		ReflectionTestUtil.setFieldValue(
-			workspacePermission, "_faroUserLocalService",
-			_faroUserLocalService);
-		ReflectionTestUtil.setFieldValue(
-			workspacePermission, "_roleLocalService", _roleLocalService);
-		ReflectionTestUtil.setFieldValue(
-			workspacePermission, "_userGroupRoleLocalService",
-			_userGroupRoleLocalService);
 
 		_mockFaroChannel(
 			_CHANNEL_ID_ALL_USERS, FaroChannelConstants.PERMISSION_ALL_USERS);
@@ -95,7 +73,7 @@ public class IndividualSegmentHelperTest {
 
 		_mockIndividualSegment(
 			RandomTestUtil.randomString(),
-			_INDIVIDUAL_SEGMENT_ID_UNKNOWN_CHANNEL);
+			_INDIVIDUAL_SEGMENT_ID_MISSING_FARO_CHANNEL);
 		_mockIndividualSegment(
 			_CHANNEL_ID_ALL_USERS, _INDIVIDUAL_SEGMENT_ID_ALL_USERS);
 		_mockIndividualSegment(
@@ -108,6 +86,10 @@ public class IndividualSegmentHelperTest {
 	@After
 	public void tearDown() {
 		PermissionThreadLocal.setPermissionChecker(_permissionChecker);
+
+		_faroUserLocalServiceUtilMockedStatic.close();
+		_roleLocalServiceUtilMockedStatic.close();
+		_userGroupRoleLocalServiceUtilMockedStatic.close();
 	}
 
 	@Test
@@ -119,7 +101,7 @@ public class IndividualSegmentHelperTest {
 	}
 
 	@Test
-	public void testGetIndividualSegmentWithEngineException() {
+	public void testGetIndividualSegmentWithFaroEngineClientException() {
 		Mockito.when(
 			_contactsEngineClient.getIndividualSegment(
 				_faroProject, _INDIVIDUAL_SEGMENT_ID_BAD_REQUEST, false)
@@ -161,7 +143,14 @@ public class IndividualSegmentHelperTest {
 	}
 
 	@Test
-	public void testGetIndividualSegmentWithSelectUsersChannel() {
+	public void testGetIndividualSegmentWithMissingFaroChannel() {
+		_setPermissionChecker(_USER_ID_OMNIADMIN);
+
+		_assertNotFoundException(_INDIVIDUAL_SEGMENT_ID_MISSING_FARO_CHANNEL);
+	}
+
+	@Test
+	public void testGetIndividualSegmentWithSelectUsersFaroChannel() {
 		_setPermissionChecker(_USER_ID_ADMINISTRATOR);
 
 		_assertGetIndividualSegment(_INDIVIDUAL_SEGMENT_ID_SELECT_USERS);
@@ -175,11 +164,9 @@ public class IndividualSegmentHelperTest {
 			Assert.fail();
 		}
 		catch (ForbiddenException forbiddenException) {
-			String expectedTitle = StringBundler.concat(
-				"Unable to access the individual segment with ID ",
-				_INDIVIDUAL_SEGMENT_ID_SELECT_USERS,
-				". Call \"getWorkspaceGroupChannelIndividualSegmentsPage\" to ",
-				"list the individual segments you can use.");
+			String expectedTitle =
+				"Unable to access the individual segment with ID " +
+					_INDIVIDUAL_SEGMENT_ID_SELECT_USERS;
 
 			Assert.assertEquals(expectedTitle, forbiddenException.getMessage());
 
@@ -202,8 +189,8 @@ public class IndividualSegmentHelperTest {
 
 		_assertGetIndividualSegment(_INDIVIDUAL_SEGMENT_ID_SELECT_USERS);
 
-		Mockito.when(
-			_userGroupRoleLocalService.getUserGroupRoles(
+		_userGroupRoleLocalServiceUtilMockedStatic.when(
+			() -> UserGroupRoleLocalServiceUtil.getUserGroupRoles(
 				_USER_ID_MEMBER, _GROUP_ID_CHANNEL)
 		).thenReturn(
 			List.of(Mockito.mock(UserGroupRole.class))
@@ -212,13 +199,6 @@ public class IndividualSegmentHelperTest {
 		_setPermissionChecker(_USER_ID_MEMBER);
 
 		_assertGetIndividualSegment(_INDIVIDUAL_SEGMENT_ID_SELECT_USERS);
-	}
-
-	@Test
-	public void testGetIndividualSegmentWithUnknownChannel() {
-		_setPermissionChecker(_USER_ID_OMNIADMIN);
-
-		_assertNotFoundException(_INDIVIDUAL_SEGMENT_ID_UNKNOWN_CHANNEL);
 	}
 
 	private void _assertGetIndividualSegment(String individualSegmentId) {
@@ -253,7 +233,7 @@ public class IndividualSegmentHelperTest {
 		}
 	}
 
-	private void _mockFaroChannel(String channelId, int permissionType) {
+	private FaroChannel _mockFaroChannel(String channelId, int permissionType) {
 		FaroChannel faroChannel = Mockito.mock(FaroChannel.class);
 
 		Mockito.when(
@@ -280,9 +260,11 @@ public class IndividualSegmentHelperTest {
 		).thenReturn(
 			faroChannel
 		);
+
+		return faroChannel;
 	}
 
-	private void _mockFaroUser(String roleName, long userId) {
+	private FaroUser _mockFaroUser(String roleName, long userId) {
 		FaroUser faroUser = Mockito.mock(FaroUser.class);
 
 		Mockito.when(
@@ -297,8 +279,9 @@ public class IndividualSegmentHelperTest {
 			FaroUserConstants.STATUS_APPROVED
 		);
 
-		Mockito.when(
-			_faroUserLocalService.fetchFaroUser(_GROUP_ID_WORKSPACE, userId)
+		_faroUserLocalServiceUtilMockedStatic.when(
+			() -> FaroUserLocalServiceUtil.fetchFaroUser(
+				_GROUP_ID_WORKSPACE, userId)
 		).thenReturn(
 			faroUser
 		);
@@ -311,14 +294,16 @@ public class IndividualSegmentHelperTest {
 			roleName
 		);
 
-		Mockito.when(
-			_roleLocalService.fetchRole(userId)
+		_roleLocalServiceUtilMockedStatic.when(
+			() -> RoleLocalServiceUtil.fetchRole(userId)
 		).thenReturn(
 			role
 		);
+
+		return faroUser;
 	}
 
-	private void _mockIndividualSegment(
+	private IndividualSegment _mockIndividualSegment(
 		String channelId, String individualSegmentId) {
 
 		IndividualSegment individualSegment = new IndividualSegment();
@@ -332,6 +317,8 @@ public class IndividualSegmentHelperTest {
 		).thenReturn(
 			individualSegment
 		);
+
+		return individualSegment;
 	}
 
 	private void _setPermissionChecker(long userId) {
@@ -375,6 +362,9 @@ public class IndividualSegmentHelperTest {
 	private static final String _INDIVIDUAL_SEGMENT_ID_BAD_REQUEST =
 		RandomTestUtil.randomString();
 
+	private static final String _INDIVIDUAL_SEGMENT_ID_MISSING_FARO_CHANNEL =
+		RandomTestUtil.randomString();
+
 	private static final String _INDIVIDUAL_SEGMENT_ID_NO_CHANNEL =
 		RandomTestUtil.randomString();
 
@@ -385,9 +375,6 @@ public class IndividualSegmentHelperTest {
 		RandomTestUtil.randomString();
 
 	private static final String _INDIVIDUAL_SEGMENT_ID_SERVER_ERROR =
-		RandomTestUtil.randomString();
-
-	private static final String _INDIVIDUAL_SEGMENT_ID_UNKNOWN_CHANNEL =
 		RandomTestUtil.randomString();
 
 	private static final long _USER_ID_ADMINISTRATOR =
@@ -402,14 +389,17 @@ public class IndividualSegmentHelperTest {
 	private final FaroChannelLocalService _faroChannelLocalService =
 		Mockito.mock(FaroChannelLocalService.class);
 	private final FaroProject _faroProject = Mockito.mock(FaroProject.class);
-	private final FaroUserLocalService _faroUserLocalService = Mockito.mock(
-		FaroUserLocalService.class);
+	private final MockedStatic<FaroUserLocalServiceUtil>
+		_faroUserLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			FaroUserLocalServiceUtil.class);
 	private final IndividualSegmentHelper _individualSegmentHelper =
 		new IndividualSegmentHelper();
 	private PermissionChecker _permissionChecker;
-	private final RoleLocalService _roleLocalService = Mockito.mock(
-		RoleLocalService.class);
-	private final UserGroupRoleLocalService _userGroupRoleLocalService =
-		Mockito.mock(UserGroupRoleLocalService.class);
+	private final MockedStatic<RoleLocalServiceUtil>
+		_roleLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			RoleLocalServiceUtil.class);
+	private final MockedStatic<UserGroupRoleLocalServiceUtil>
+		_userGroupRoleLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			UserGroupRoleLocalServiceUtil.class);
 
 }
