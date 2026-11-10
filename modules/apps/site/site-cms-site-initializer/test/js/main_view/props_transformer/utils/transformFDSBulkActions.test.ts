@@ -122,6 +122,35 @@ describe('transformFDSBulkActions', () => {
 				})
 			).toBe(false);
 		});
+
+		it('shows the download action for a folder the user can view', () => {
+			const isVisible = isVisibleFor('download');
+
+			expect(
+				isVisible({selectedItems: [folderItemWith({get: {}})]})
+			).toBe(true);
+		});
+
+		it('hides the download action for a folder the user cannot view', () => {
+			const isVisible = isVisibleFor('download');
+
+			expect(isVisible({selectedItems: [folderItemWith({})]})).toBe(
+				false
+			);
+		});
+
+		it('shows the download action for a file mixed with a viewable folder', () => {
+			const isVisible = isVisibleFor('download');
+
+			expect(
+				isVisible({
+					selectedItems: [
+						fileItemWithLink(),
+						folderItemWith({get: {}}),
+					],
+				})
+			).toBe(true);
+		});
 	});
 
 	describe('isVisible (allItemsSelectedActive=true)', () => {
