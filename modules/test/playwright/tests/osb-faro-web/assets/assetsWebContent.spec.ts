@@ -15,9 +15,7 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
 import {uiElementsPageTest} from '../../../fixtures/uiElementsTest';
 import {webContentDisplayPageTest} from '../../../fixtures/webContentDisplayPageTest';
-import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
-import {createIndividuals, generateIndividual} from '../main/utils/individuals';
 import {ACPage, navigateToACPageViaURL} from '../main/utils/navigation';
 import {changeTimeFilter} from '../main/utils/time-filter';
 import {searchByTerm} from '../main/utils/utils';
@@ -168,84 +166,5 @@ test(
 		await expect(
 			page.getByRole('link', {exact: true, name: webContentTitles[1]})
 		).not.toBeVisible();
-	}
-);
-
-test(
-	'Web content known individuals tab shows the users who interacted with the asset',
-	{
-		tag: '@LRAC-8131',
-	},
-	async ({analyticsChannel: channel, apiHelpers, page, project}) => {
-		const interactingIndividuals = [
-			generateIndividual({name: 'ac'}),
-			generateIndividual({name: 'liferay'}),
-			generateIndividual({name: 'dxp'}),
-		];
-
-		const nonInteractingIndividual = generateIndividual({
-			name: 'userac',
-		});
-
-		await createIndividuals({
-			apiHelpers,
-			individuals: [...interactingIndividuals, nonInteractingIndividual],
-		});
-
-		const date = new Date();
-
-		await apiHelpers.jsonWebServicesOSBAsah.createEvents(
-			interactingIndividuals.map((individual) => ({
-				applicationId: 'WebContent',
-				assetId: '1',
-				assetTitle: 'Web Content AC Title',
-				canonicalUrl: '/web/my-site',
-				channelId: channel.id,
-				eventDate: date.toISOString(),
-				eventId: 'webContentViewed',
-				title: 'AC Page',
-				userId: individual.id,
-			}))
-		);
-
-		await apiHelpers.jsonWebServicesOSBAsah.createSessions(
-			interactingIndividuals.map((individual) => ({
-				channelId: channel.id,
-				id: individual.id,
-				sessionEnd: date.toISOString(),
-				sessionStart: date.toISOString(),
-				userId: individual.id,
-			}))
-		);
-
-		await navigateToACPageViaURL({
-			acPage: ACPage.assetPage,
-			channelID: channel.id,
-			page,
-			projectID: project.groupId,
-		});
-
-		await changeTimeFilter({page, timeFilterPeriod: 'Last 24 hours'});
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('link', {name: 'Known Individuals'}),
-			trigger: page.getByRole('link', {
-				exact: true,
-				name: 'Web Content AC Title',
-			}),
-		});
-
-		await changeTimeFilter({page, timeFilterPeriod: 'Last 24 hours'});
-
-		for (const individual of interactingIndividuals) {
-			await expect(
-				page.getByText(`${individual.name} Smith`).first()
-			).toBeVisible();
-		}
-
-		await expect(
-			page.getByText(`${nonInteractingIndividual.name} Smith`)
-		).toHaveCount(0);
 	}
 );

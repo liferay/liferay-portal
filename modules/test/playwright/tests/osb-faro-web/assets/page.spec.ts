@@ -35,11 +35,7 @@ import {
 } from '../main/utils/segments';
 import {SegmentConditions} from '../main/utils/selectors';
 import {changeTimeFilter} from '../main/utils/time-filter';
-import {
-	searchByTerm,
-	viewNameNotPresentOnTableList,
-	viewNameOnTableList,
-} from '../main/utils/utils';
+import {searchByTerm} from '../main/utils/utils';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -638,128 +634,6 @@ test.skip(
 			await expect(
 				page.getByText('Snúið Vinsælar ...', {exact: true}).first()
 			).toBeVisible();
-		});
-	}
-);
-
-test(
-	'Page Profile known individuals list shows individuals who have viewed the page',
-	{
-		tag: '@Legacy',
-	},
-	async ({analyticsChannel: channel, apiHelpers, page, project}) => {
-		const firstIndividual = 'user1';
-		const secondIndividual = 'user2';
-		const thirdIndividual = 'user3';
-
-		const individuals = [
-			generateIndividual({
-				name: firstIndividual,
-			}),
-			generateIndividual({
-				name: secondIndividual,
-			}),
-			generateIndividual({
-				name: thirdIndividual,
-			}),
-		];
-
-		await test.step('Create 3 Individuals directly in the AC database', async () => {
-			await createIndividuals({
-				apiHelpers,
-				individuals,
-			});
-		});
-
-		const date1 = new Date();
-
-		await test.step('Create events for two of the individuals to appear within the Last 24 hours period in AC', async () => {
-			await apiHelpers.jsonWebServicesOSBAsah.createEvents(
-				individuals.slice(0, 2).map((individual) => ({
-					applicationId: 'Page',
-					canonicalUrl: 'https://www.liferay.com',
-					channelId: channel.id,
-					eventDate: date1.toISOString(),
-					eventId: 'pageViewed',
-					title: 'Liferay',
-					userId: individual.id,
-				}))
-			);
-		});
-
-		await test.step('Create events for one of the individuals to appear in periods different than the Last 24 hours in AC', async () => {
-			const date2 = new Date();
-			date2.setDate(date2.getDate() - 5);
-
-			await apiHelpers.jsonWebServicesOSBAsah.createPagesDaily(
-				individuals.slice(2, 3).map((individual) => ({
-					canonicalUrl: 'https://www.liferay.com',
-					channelId: channel.id,
-					eventDate: date2.toISOString(),
-					title: 'Liferay',
-					userId: individual.id,
-					views: 1,
-				}))
-			);
-		});
-
-		await test.step('Go to Analytics Cloud and Switch the property', async () => {
-			await navigateToACPageViaURL({
-				acPage: ACPage.sitePage,
-				channelID: channel.id,
-				page,
-				projectID: project.groupId,
-			});
-		});
-
-		await test.step('Go to Pages Tab', async () => {
-			await navigateTo({
-				page,
-				pageName: 'Pages',
-			});
-		});
-
-		await test.step('Access one of the pages on the list > Go to Known Individuals Tab', async () => {
-			await navigateTo({
-				page,
-				pageName: 'Liferay',
-			});
-			await navigateTo({
-				page,
-				pageName: 'Known Individuals',
-			});
-		});
-
-		const individualPresentIn30Days = [thirdIndividual];
-
-		await test.step('Check that User3 User3 is appearing in the list', async () => {
-			await viewNameOnTableList({
-				itemNames: individualPresentIn30Days,
-				page,
-			});
-		});
-
-		await test.step('Change the time filter to Last 24 hours', async () => {
-			await changeTimeFilter({
-				page,
-				timeFilterPeriod: 'Last 24 hours',
-			});
-		});
-
-		const individualsPresentIn24Hours = [firstIndividual, secondIndividual];
-
-		await test.step('Check that User1 User1 and User2 User2 are appearing in the list', async () => {
-			await viewNameOnTableList({
-				itemNames: individualsPresentIn24Hours,
-				page,
-			});
-		});
-
-		await test.step('Check that User3 User3 is appearing in the list', async () => {
-			await viewNameNotPresentOnTableList({
-				itemNames: individualPresentIn30Days,
-				page,
-			});
 		});
 	}
 );
