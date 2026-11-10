@@ -1230,18 +1230,6 @@ public class ObjectEntryResourceAttachmentTest
 	}
 
 	private DLFolder _getDLFolder(
-			long groupId, ObjectDefinition objectDefinition)
-		throws Exception {
-
-		Repository repository = _portletFileRepository.getPortletRepository(
-			groupId, objectDefinition.getPortletId());
-
-		return _dlFolderLocalService.getFolder(
-			repository.getGroupId(), repository.getDlFolderId(),
-			String.valueOf(TestPropsValues.getUserId()));
-	}
-
-	private DLFolder _getDLFolder(
 			ObjectDefinition objectDefinition, boolean showInDocsAndMedia)
 		throws Exception {
 
@@ -1267,7 +1255,12 @@ public class ObjectEntryResourceAttachmentTest
 				objectDefinition.getShortName());
 		}
 
-		return _getDLFolder(groupId, objectDefinition);
+		Repository repository = _portletFileRepository.getPortletRepository(
+			groupId, objectDefinition.getPortletId());
+
+		return _dlFolderLocalService.getFolder(
+			repository.getGroupId(), repository.getDlFolderId(),
+			String.valueOf(TestPropsValues.getUserId()));
 	}
 
 	private JSONObject _getFileEntryJSONObject(
@@ -1446,21 +1439,24 @@ public class ObjectEntryResourceAttachmentTest
 		return jsonObject;
 	}
 
-	private JSONObject _getFileEntryJSONObject(
-			DLFolder dlFolder,
-			com.liferay.object.rest.dto.v1_0.FileEntry fileEntry,
-			ObjectDefinition objectDefinition, String objectFieldName,
-			String thumbnailSrc)
+	private CompanyConfigurationTemporarySwapper _swapObjectConfiguration(
+			String[] attachmentFileURLHostsAllowed,
+			boolean attachmentFileURLLocalNetworkAccessEnabled)
 		throws Exception {
 
-		JSONObject jsonObject = _getFileEntryJSONObject(
-			dlFolder, fileEntry, objectDefinition, objectFieldName);
-
-		return jsonObject.put("thumbnailURL", thumbnailSrc);
+		return new CompanyConfigurationTemporarySwapper(
+			TestPropsValues.getCompanyId(), ObjectConfiguration.class.getName(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"attachmentFileURLHostsAllowed", attachmentFileURLHostsAllowed
+			).put(
+				"attachmentFileURLLocalNetworkAccessEnabled",
+				attachmentFileURLLocalNetworkAccessEnabled
+			).build());
 	}
 
-	private JSONObject _getObjectEntryFileMetadataJSONObject(
-			FileEntry fileEntry)
+	private void _testGetObjectEntryWithAttachmentObjectFieldImageMetadata(
+			FileEntry fileEntry, String expectedAspectRatio,
+			String expectedResolution)
 		throws Exception {
 
 		JSONObject objectEntryJSONObject = HTTPTestUtil.invokeToJSONObject(
@@ -1486,31 +1482,8 @@ public class ObjectEntryResourceAttachmentTest
 		JSONObject attachmentJSONObject = objectEntryJSONObject.getJSONObject(
 			OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1);
 
-		return attachmentJSONObject.getJSONObject("metadata");
-	}
-
-	private CompanyConfigurationTemporarySwapper _swapObjectConfiguration(
-			String[] attachmentFileURLHostsAllowed,
-			boolean attachmentFileURLLocalNetworkAccessEnabled)
-		throws Exception {
-
-		return new CompanyConfigurationTemporarySwapper(
-			TestPropsValues.getCompanyId(), ObjectConfiguration.class.getName(),
-			HashMapDictionaryBuilder.<String, Object>put(
-				"attachmentFileURLHostsAllowed", attachmentFileURLHostsAllowed
-			).put(
-				"attachmentFileURLLocalNetworkAccessEnabled",
-				attachmentFileURLLocalNetworkAccessEnabled
-			).build());
-	}
-
-	private void _testGetObjectEntryWithAttachmentObjectFieldImageMetadata(
-			FileEntry fileEntry, String expectedAspectRatio,
-			String expectedResolution)
-		throws Exception {
-
-		JSONObject metadataJSONObject = _getObjectEntryFileMetadataJSONObject(
-			fileEntry);
+		JSONObject metadataJSONObject = attachmentJSONObject.getJSONObject(
+			"metadata");
 
 		if (expectedAspectRatio != null) {
 			Assert.assertEquals(
@@ -2635,14 +2608,20 @@ public class ObjectEntryResourceAttachmentTest
 		_testPostCustomObjectEntryWithAttachmentObjectField(
 			fileEntry -> JSONUtil.put(
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
-				_getFileEntryJSONObject(
-					dlFolder3, fileEntry, objectDefinition,
-					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
-					thumbnailSrc)),
-			_toFileEntry(
-				customFileEntry2.getFileName(),
-				customFileEntry2.getFileEntryId(),
-				customFileEntry2.getMimeType()),
+				() -> {
+					JSONObject jsonObject = _getFileEntryJSONObject(
+						dlFolder3, fileEntry, objectDefinition,
+						OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
+
+					return jsonObject.put("thumbnailURL", thumbnailSrc);
+				}),
+			new com.liferay.object.rest.dto.v1_0.FileEntry() {
+				{
+					id = customFileEntry2.getFileEntryId();
+					mimeType = customFileEntry2.getMimeType();
+					name = customFileEntry2.getFileName();
+				}
+			},
 			"thumbnailURL", objectDefinition,
 			OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
 
@@ -3216,19 +3195,6 @@ public class ObjectEntryResourceAttachmentTest
 
 			fileEntry.setFolder(folder);
 		}
-
-		return fileEntry;
-	}
-
-	private com.liferay.object.rest.dto.v1_0.FileEntry _toFileEntry(
-		String fileName, Long id, String mimeType) {
-
-		com.liferay.object.rest.dto.v1_0.FileEntry fileEntry =
-			new com.liferay.object.rest.dto.v1_0.FileEntry();
-
-		fileEntry.setId(id);
-		fileEntry.setMimeType(mimeType);
-		fileEntry.setName(fileName);
 
 		return fileEntry;
 	}
