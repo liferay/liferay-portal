@@ -18,6 +18,10 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.PermissionService;
@@ -25,6 +29,7 @@ import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
@@ -333,19 +338,45 @@ public class OAuthClientASLocalMetadataResourceImpl
 			serviceBuilderOAuthClientASLocalMetadata.
 				getOAuthClientASLocalMetadataId());
 
-		_resourcePermissionLocalService.updateResourcePermissions(
-			serviceBuilderOAuthClientASLocalMetadata.getCompanyId(), 0,
-			className,
-			String.valueOf(
-				serviceBuilderOAuthClientASLocalMetadata.
-					getOAuthClientASLocalMetadataId()),
+		ModelPermissions modelPermissions =
 			ModelPermissionsUtil.toModelPermissions(
 				serviceBuilderOAuthClientASLocalMetadata.getCompanyId(),
 				oAuthClientASLocalMetadata.getPermissions(),
 				serviceBuilderOAuthClientASLocalMetadata.
 					getOAuthClientASLocalMetadataId(),
 				className, _resourceActionLocalService,
-				_resourcePermissionLocalService, _roleLocalService));
+				_resourcePermissionLocalService, _roleLocalService);
+
+		String primKey = String.valueOf(
+			serviceBuilderOAuthClientASLocalMetadata.
+				getOAuthClientASLocalMetadataId());
+		List<ResourceAction> resourceActions =
+			_resourceActionLocalService.getResourceActions(className);
+		Collection<String> roleNames = modelPermissions.getRoleNames();
+
+		for (ResourcePermission resourcePermission :
+				_resourcePermissionLocalService.getResourcePermissions(
+					serviceBuilderOAuthClientASLocalMetadata.getCompanyId(),
+					className, ResourceConstants.SCOPE_INDIVIDUAL, primKey)) {
+
+			Role role = _roleLocalService.fetchRole(
+				resourcePermission.getRoleId());
+
+			if ((role == null) || roleNames.contains(role.getName())) {
+				continue;
+			}
+
+			for (ResourceAction resourceAction : resourceActions) {
+				_resourcePermissionLocalService.removeResourcePermission(
+					serviceBuilderOAuthClientASLocalMetadata.getCompanyId(),
+					className, ResourceConstants.SCOPE_INDIVIDUAL, primKey,
+					role.getRoleId(), resourceAction.getActionId());
+			}
+		}
+
+		_resourcePermissionLocalService.updateResourcePermissions(
+			serviceBuilderOAuthClientASLocalMetadata.getCompanyId(), 0,
+			className, primKey, modelPermissions);
 	}
 
 	@Reference
