@@ -22,6 +22,8 @@
 			).put(
 				"getCommentsURL", getCommentsURL
 			).put(
+				"getMentionUsersURL", getMentionUsersURL
+			).put(
 				"readOnly", readOnly
 			).build()
 		%>'
