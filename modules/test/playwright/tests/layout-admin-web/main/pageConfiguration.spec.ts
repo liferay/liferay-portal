@@ -1640,6 +1640,60 @@ test.describe('SEO configuration', () => {
 			).toHaveValue(title);
 		}
 	);
+
+	test(
+		'Shows the sitemap URL and the search engine tool links',
+		{
+			tag: '@LPD-75629',
+		},
+		async ({page, pagesAdminPage, site}) => {
+
+			// Go to the pages SEO configuration
+
+			await pagesAdminPage.gotoPagesConfiguration(site.friendlyUrlPath);
+
+			await pagesAdminPage.clickOnTab('SEO');
+
+			// Check the sitemap URL
+
+			await expect(page.getByLabel('Sitemap URL')).toHaveValue(
+				new RegExp(
+					`/sitemap\\.xml\\?groupId=${site.id}&privateLayout=false$`
+				)
+			);
+
+			// Check the search engine tool links
+
+			await expect(
+				page.getByRole('link', {name: 'Bing Webmaster Tools'})
+			).toHaveAttribute('href', 'https://www.bing.com/webmasters');
+
+			await expect(
+				page.getByRole('link', {name: 'Google Search Console'})
+			).toHaveAttribute('href', 'https://search.google.com/search-console');
+
+			await expect(
+				page.getByRole('link', {name: 'Yahoo! Webmaster'})
+			).toHaveAttribute(
+				'href',
+				'https://help.yahoo.com/kb/search-for-desktop/SLN2217.html'
+			);
+
+			// Check the deprecated sitemap ping links are gone
+
+			await expect(
+				page.locator(
+					'a[href*="/webmasters/sitemaps/ping"], a[href*="siteexplorer.search.yahoo.com"]'
+				)
+			).toHaveCount(0);
+
+			// Copy the sitemap URL
+
+			await page.getByRole('button', {name: 'Copy Link'}).click();
+
+			await waitForAlert(page, 'Success:Copied link to the clipboard.');
+		}
+	);
 });
 
 test.describe('Page types configuration', () => {
