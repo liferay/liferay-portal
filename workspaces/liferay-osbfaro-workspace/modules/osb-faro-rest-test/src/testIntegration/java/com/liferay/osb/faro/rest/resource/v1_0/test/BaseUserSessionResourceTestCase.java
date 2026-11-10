@@ -1530,4 +1530,4 @@ public abstract class BaseUserSessionResourceTestCase {
 		_userSessionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:29143094
+// LIFERAY-REST-BUILDER-HASH:-2048801938

@@ -76,7 +76,7 @@ public abstract class BaseIndividualSegmentResourceImpl
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Page size, from 1 to 500. Larger values are rejected.",
+				description = "Page size, from 1 to 100. Larger values are rejected.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
@@ -159,7 +159,7 @@ public abstract class BaseIndividualSegmentResourceImpl
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Page size, from 1 to 500. Larger values are rejected.",
+				description = "Page size, from 1 to 100. Larger values are rejected.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
@@ -703,4 +703,4 @@ public abstract class BaseIndividualSegmentResourceImpl
 		LogFactoryUtil.getLog(BaseIndividualSegmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2099757852
+// LIFERAY-REST-BUILDER-HASH:20204508

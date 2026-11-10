@@ -26,27 +26,6 @@ public class IndividualSegmentMembershipChangeMetric
 		return IndividualSegmentMembershipChangeMetricSerDes.toDTO(json);
 	}
 
-	public Metric getAddedIndividuals() {
-		return addedIndividuals;
-	}
-
-	public void setAddedIndividuals(Metric addedIndividuals) {
-		this.addedIndividuals = addedIndividuals;
-	}
-
-	public void setAddedIndividuals(
-		UnsafeSupplier<Metric, Exception> addedIndividualsUnsafeSupplier) {
-
-		try {
-			addedIndividuals = addedIndividualsUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Metric addedIndividuals;
-
 	public Metric getIndividuals() {
 		return individuals;
 	}
@@ -89,27 +68,6 @@ public class IndividualSegmentMembershipChangeMetric
 
 	protected Metric knownIndividuals;
 
-	public Metric getRemovedIndividuals() {
-		return removedIndividuals;
-	}
-
-	public void setRemovedIndividuals(Metric removedIndividuals) {
-		this.removedIndividuals = removedIndividuals;
-	}
-
-	public void setRemovedIndividuals(
-		UnsafeSupplier<Metric, Exception> removedIndividualsUnsafeSupplier) {
-
-		try {
-			removedIndividuals = removedIndividualsUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Metric removedIndividuals;
-
 	@Override
 	public IndividualSegmentMembershipChangeMetric clone()
 		throws CloneNotSupportedException {
@@ -147,4 +105,4 @@ public class IndividualSegmentMembershipChangeMetric
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:948225403
+// LIFERAY-REST-BUILDER-HASH:1924034171

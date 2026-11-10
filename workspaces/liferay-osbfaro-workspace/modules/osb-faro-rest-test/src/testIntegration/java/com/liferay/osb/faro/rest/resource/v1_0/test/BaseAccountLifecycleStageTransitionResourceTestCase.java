@@ -1527,4 +1527,4 @@ public abstract class BaseAccountLifecycleStageTransitionResourceTestCase {
 			_accountLifecycleStageTransitionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-668450143
+// LIFERAY-REST-BUILDER-HASH:2001991857

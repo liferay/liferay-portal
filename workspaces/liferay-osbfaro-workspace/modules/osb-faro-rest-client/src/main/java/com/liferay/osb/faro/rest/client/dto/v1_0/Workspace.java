@@ -25,16 +25,16 @@ public class Workspace implements Cloneable, Serializable {
 		return WorkspaceSerDes.toDTO(json);
 	}
 
-	public Long getGroupId() {
+	public String getGroupId() {
 		return groupId;
 	}
 
-	public void setGroupId(Long groupId) {
+	public void setGroupId(String groupId) {
 		this.groupId = groupId;
 	}
 
 	public void setGroupId(
-		UnsafeSupplier<Long, Exception> groupIdUnsafeSupplier) {
+		UnsafeSupplier<String, Exception> groupIdUnsafeSupplier) {
 
 		try {
 			groupId = groupIdUnsafeSupplier.get();
@@ -44,7 +44,7 @@ public class Workspace implements Cloneable, Serializable {
 		}
 	}
 
-	protected Long groupId;
+	protected String groupId;
 
 	public String getName() {
 		return name;
@@ -97,4 +97,4 @@ public class Workspace implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-434676626
+// LIFERAY-REST-BUILDER-HASH:-453328028

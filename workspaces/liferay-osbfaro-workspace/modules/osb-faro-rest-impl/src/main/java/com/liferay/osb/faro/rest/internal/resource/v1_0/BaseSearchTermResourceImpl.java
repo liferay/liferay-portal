@@ -50,7 +50,7 @@ public abstract class BaseSearchTermResourceImpl implements SearchTermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/search-terms'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List search terms used on pages tracked by the LDP workspace for a date range in a single channel (also known as property). Results are ordered in descending order of number of times terms have been searched. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'most searched words' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List search terms used on pages tracked by the LDP workspace for a date range in a single channel (also known as property). Results are ordered in descending order of number of times terms have been searched. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'most searched words' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -70,7 +70,7 @@ public abstract class BaseSearchTermResourceImpl implements SearchTermResource {
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Page size, from 1 to 500. Larger values are rejected.",
+				description = "Page size, from 1 to 100. Larger values are rejected.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
@@ -570,4 +570,4 @@ public abstract class BaseSearchTermResourceImpl implements SearchTermResource {
 		LogFactoryUtil.getLog(BaseSearchTermResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1307045373
+// LIFERAY-REST-BUILDER-HASH:-1351948674

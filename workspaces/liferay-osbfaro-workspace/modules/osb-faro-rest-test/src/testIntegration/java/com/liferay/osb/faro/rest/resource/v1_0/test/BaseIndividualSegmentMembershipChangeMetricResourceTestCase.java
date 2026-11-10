@@ -199,20 +199,6 @@ public abstract class
 		Assert.assertTrue(false);
 	}
 
-	@Test
-	public void testGraphQLGetWorkspaceGroupIndividualSegmentMembershipChangeMetric()
-		throws Exception {
-
-		Assert.assertTrue(false);
-	}
-
-	@Test
-	public void testGraphQLGetWorkspaceGroupIndividualSegmentMembershipChangeMetricNotFound()
-		throws Exception {
-
-		Assert.assertTrue(true);
-	}
-
 	protected void assertContains(
 		IndividualSegmentMembershipChangeMetric
 			individualSegmentMembershipChangeMetric,
@@ -333,16 +319,6 @@ public abstract class
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
-			if (Objects.equals("addedIndividuals", additionalAssertFieldName)) {
-				if (individualSegmentMembershipChangeMetric.
-						getAddedIndividuals() == null) {
-
-					valid = false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("individuals", additionalAssertFieldName)) {
 				if (individualSegmentMembershipChangeMetric.getIndividuals() ==
 						null) {
@@ -356,18 +332,6 @@ public abstract class
 			if (Objects.equals("knownIndividuals", additionalAssertFieldName)) {
 				if (individualSegmentMembershipChangeMetric.
 						getKnownIndividuals() == null) {
-
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"removedIndividuals", additionalAssertFieldName)) {
-
-				if (individualSegmentMembershipChangeMetric.
-						getRemovedIndividuals() == null) {
 
 					valid = false;
 				}
@@ -502,19 +466,6 @@ public abstract class
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
-			if (Objects.equals("addedIndividuals", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						individualSegmentMembershipChangeMetric1.
-							getAddedIndividuals(),
-						individualSegmentMembershipChangeMetric2.
-							getAddedIndividuals())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("individuals", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						individualSegmentMembershipChangeMetric1.
@@ -534,21 +485,6 @@ public abstract class
 							getKnownIndividuals(),
 						individualSegmentMembershipChangeMetric2.
 							getKnownIndividuals())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"removedIndividuals", additionalAssertFieldName)) {
-
-				if (!Objects.deepEquals(
-						individualSegmentMembershipChangeMetric1.
-							getRemovedIndividuals(),
-						individualSegmentMembershipChangeMetric2.
-							getRemovedIndividuals())) {
 
 					return false;
 				}
@@ -668,22 +604,12 @@ public abstract class
 		sb.append(operator);
 		sb.append(" ");
 
-		if (entityFieldName.equals("addedIndividuals")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
 		if (entityFieldName.equals("individuals")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("knownIndividuals")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
-		if (entityFieldName.equals("removedIndividuals")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -973,4 +899,4 @@ public abstract class
 			_individualSegmentMembershipChangeMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-322449649
+// LIFERAY-REST-BUILDER-HASH:12098824

@@ -56,21 +56,6 @@ public class IndividualSegmentMembershipChangeMetricSerDes {
 
 		sb.append("{");
 
-		if (individualSegmentMembershipChangeMetric.getAddedIndividuals() !=
-				null) {
-
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"addedIndividuals\": ");
-
-			sb.append(
-				String.valueOf(
-					individualSegmentMembershipChangeMetric.
-						getAddedIndividuals()));
-		}
-
 		if (individualSegmentMembershipChangeMetric.getIndividuals() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -98,21 +83,6 @@ public class IndividualSegmentMembershipChangeMetricSerDes {
 						getKnownIndividuals()));
 		}
 
-		if (individualSegmentMembershipChangeMetric.getRemovedIndividuals() !=
-				null) {
-
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"removedIndividuals\": ");
-
-			sb.append(
-				String.valueOf(
-					individualSegmentMembershipChangeMetric.
-						getRemovedIndividuals()));
-		}
-
 		sb.append("}");
 
 		return sb.toString();
@@ -137,19 +107,6 @@ public class IndividualSegmentMembershipChangeMetricSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (individualSegmentMembershipChangeMetric.getAddedIndividuals() ==
-				null) {
-
-			map.put("addedIndividuals", null);
-		}
-		else {
-			map.put(
-				"addedIndividuals",
-				String.valueOf(
-					individualSegmentMembershipChangeMetric.
-						getAddedIndividuals()));
-		}
-
 		if (individualSegmentMembershipChangeMetric.getIndividuals() == null) {
 			map.put("individuals", null);
 		}
@@ -173,19 +130,6 @@ public class IndividualSegmentMembershipChangeMetricSerDes {
 						getKnownIndividuals()));
 		}
 
-		if (individualSegmentMembershipChangeMetric.getRemovedIndividuals() ==
-				null) {
-
-			map.put("removedIndividuals", null);
-		}
-		else {
-			map.put(
-				"removedIndividuals",
-				String.valueOf(
-					individualSegmentMembershipChangeMetric.
-						getRemovedIndividuals()));
-		}
-
 		return map;
 	}
 
@@ -206,18 +150,10 @@ public class IndividualSegmentMembershipChangeMetricSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "addedIndividuals")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "individuals")) {
+			if (Objects.equals(jsonParserFieldName, "individuals")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "knownIndividuals")) {
-				return false;
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "removedIndividuals")) {
-
 				return false;
 			}
 
@@ -230,13 +166,7 @@ public class IndividualSegmentMembershipChangeMetricSerDes {
 				individualSegmentMembershipChangeMetric,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "addedIndividuals")) {
-				if (jsonParserFieldValue != null) {
-					individualSegmentMembershipChangeMetric.setAddedIndividuals(
-						MetricSerDes.toDTO((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "individuals")) {
+			if (Objects.equals(jsonParserFieldName, "individuals")) {
 				if (jsonParserFieldValue != null) {
 					individualSegmentMembershipChangeMetric.setIndividuals(
 						MetricSerDes.toDTO((String)jsonParserFieldValue));
@@ -246,15 +176,6 @@ public class IndividualSegmentMembershipChangeMetricSerDes {
 				if (jsonParserFieldValue != null) {
 					individualSegmentMembershipChangeMetric.setKnownIndividuals(
 						MetricSerDes.toDTO((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "removedIndividuals")) {
-
-				if (jsonParserFieldValue != null) {
-					individualSegmentMembershipChangeMetric.
-						setRemovedIndividuals(
-							MetricSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -344,4 +265,4 @@ public class IndividualSegmentMembershipChangeMetricSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1404318568
+// LIFERAY-REST-BUILDER-HASH:-1336403718

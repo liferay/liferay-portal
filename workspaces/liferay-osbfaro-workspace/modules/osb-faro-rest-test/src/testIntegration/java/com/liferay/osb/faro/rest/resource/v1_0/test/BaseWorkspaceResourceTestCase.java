@@ -167,6 +167,7 @@ public abstract class BaseWorkspaceResourceTestCase {
 
 		Workspace workspace = randomWorkspace();
 
+		workspace.setGroupId(regex);
 		workspace.setName(regex);
 
 		String json = WorkspaceSerDes.toJSON(workspace);
@@ -175,6 +176,7 @@ public abstract class BaseWorkspaceResourceTestCase {
 
 		workspace = WorkspaceSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, workspace.getGroupId());
 		Assert.assertEquals(regex, workspace.getName());
 	}
 
@@ -546,8 +548,49 @@ public abstract class BaseWorkspaceResourceTestCase {
 		sb.append(" ");
 
 		if (entityFieldName.equals("groupId")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
+			Object object = workspace.getGroupId();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("name")) {
@@ -643,7 +686,7 @@ public abstract class BaseWorkspaceResourceTestCase {
 	protected Workspace randomWorkspace() throws Exception {
 		return new Workspace() {
 			{
-				groupId = RandomTestUtil.randomLong();
+				groupId = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
@@ -869,4 +912,4 @@ public abstract class BaseWorkspaceResourceTestCase {
 		_workspaceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:166483486
+// LIFERAY-REST-BUILDER-HASH:-937285870

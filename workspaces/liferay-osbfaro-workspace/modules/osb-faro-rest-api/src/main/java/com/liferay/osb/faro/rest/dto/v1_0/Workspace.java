@@ -58,7 +58,7 @@ public class Workspace implements Serializable {
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "ID of the Liferay site that owns the LDP workspace. Use this with other endpoints to scope requests to this workspace."
 	)
-	public Long getGroupId() {
+	public String getGroupId() {
 		if (_groupIdSupplier != null) {
 			groupId = _groupIdSupplier.get();
 
@@ -68,7 +68,7 @@ public class Workspace implements Serializable {
 		return groupId;
 	}
 
-	public void setGroupId(Long groupId) {
+	public void setGroupId(String groupId) {
 		this.groupId = groupId;
 
 		_groupIdSupplier = null;
@@ -76,7 +76,7 @@ public class Workspace implements Serializable {
 
 	@JsonIgnore
 	public void setGroupId(
-		UnsafeSupplier<Long, Exception> groupIdUnsafeSupplier) {
+		UnsafeSupplier<String, Exception> groupIdUnsafeSupplier) {
 
 		_groupIdSupplier = () -> {
 			try {
@@ -95,10 +95,10 @@ public class Workspace implements Serializable {
 		description = "ID of the Liferay site that owns the LDP workspace. Use this with other endpoints to scope requests to this workspace."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected Long groupId;
+	protected String groupId;
 
 	@JsonIgnore
-	private Supplier<Long> _groupIdSupplier;
+	private Supplier<String> _groupIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Display name of the workspace."
@@ -168,7 +168,7 @@ public class Workspace implements Serializable {
 
 		sb.append("{");
 
-		Long groupId = getGroupId();
+		String groupId = getGroupId();
 
 		if (groupId != null) {
 			if (sb.length() > 1) {
@@ -177,7 +177,11 @@ public class Workspace implements Serializable {
 
 			sb.append("\"groupId\": ");
 
-			sb.append(groupId);
+			sb.append("\"");
+
+			sb.append(_escape(groupId));
+
+			sb.append("\"");
 		}
 
 		String name = getName();
@@ -318,4 +322,4 @@ public class Workspace implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-269593647
+// LIFERAY-REST-BUILDER-HASH:-832268145

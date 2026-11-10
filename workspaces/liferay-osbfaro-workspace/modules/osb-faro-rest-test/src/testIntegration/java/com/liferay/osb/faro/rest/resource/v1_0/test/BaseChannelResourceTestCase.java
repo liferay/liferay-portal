@@ -204,118 +204,6 @@ public abstract class BaseChannelResourceTestCase {
 	}
 
 	@Test
-	public void testGraphQLGetWorkspaceGroupChannel() throws Exception {
-		Channel channel = testGraphQLGetWorkspaceGroupChannel_addChannel();
-
-		// No namespace
-
-		Assert.assertTrue(
-			equals(
-				channel,
-				ChannelSerDes.toDTO(
-					JSONUtil.getValueAsString(
-						invokeGraphQLQuery(
-							new GraphQLField(
-								"workspaceGroupChannel",
-								new HashMap<String, Object>() {
-									{
-										put(
-											"groupId",
-											testGraphQLGetWorkspaceGroupChannel_getGroupId());
-										put(
-											"channelId",
-											"\"" + channel.getId() + "\"");
-									}
-								},
-								getGraphQLFields())),
-						"JSONObject/data", "Object/workspaceGroupChannel"))));
-
-		// Using the namespace faro_v1_0
-
-		Assert.assertTrue(
-			equals(
-				channel,
-				ChannelSerDes.toDTO(
-					JSONUtil.getValueAsString(
-						invokeGraphQLQuery(
-							new GraphQLField(
-								"faro_v1_0",
-								new GraphQLField(
-									"workspaceGroupChannel",
-									new HashMap<String, Object>() {
-										{
-											put(
-												"groupId",
-												testGraphQLGetWorkspaceGroupChannel_getGroupId());
-											put(
-												"channelId",
-												"\"" + channel.getId() + "\"");
-										}
-									},
-									getGraphQLFields()))),
-						"JSONObject/data", "JSONObject/faro_v1_0",
-						"Object/workspaceGroupChannel"))));
-	}
-
-	protected Long testGraphQLGetWorkspaceGroupChannel_getGroupId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testGraphQLGetWorkspaceGroupChannelNotFound() throws Exception {
-		Long irrelevantGroupId = RandomTestUtil.randomLong();
-		String irrelevantChannelId =
-			"\"" + RandomTestUtil.randomString() + "\"";
-
-		// No namespace
-
-		Assert.assertEquals(
-			"Not Found",
-			JSONUtil.getValueAsString(
-				invokeGraphQLQuery(
-					new GraphQLField(
-						"workspaceGroupChannel",
-						new HashMap<String, Object>() {
-							{
-								put("groupId", irrelevantGroupId);
-								put("channelId", irrelevantChannelId);
-							}
-						},
-						getGraphQLFields())),
-				"JSONArray/errors", "Object/0", "JSONObject/extensions",
-				"Object/code"));
-
-		// Using the namespace faro_v1_0
-
-		Assert.assertEquals(
-			"Not Found",
-			JSONUtil.getValueAsString(
-				invokeGraphQLQuery(
-					new GraphQLField(
-						"faro_v1_0",
-						new GraphQLField(
-							"workspaceGroupChannel",
-							new HashMap<String, Object>() {
-								{
-									put("groupId", irrelevantGroupId);
-									put("channelId", irrelevantChannelId);
-								}
-							},
-							getGraphQLFields()))),
-				"JSONArray/errors", "Object/0", "JSONObject/extensions",
-				"Object/code"));
-	}
-
-	protected Channel testGraphQLGetWorkspaceGroupChannel_addChannel()
-		throws Exception {
-
-		return testGraphQLChannel_addChannel();
-	}
-
-	@Test
 	public void testGetWorkspaceGroupChannelsPage() throws Exception {
 		Long groupId = testGetWorkspaceGroupChannelsPage_getGroupId();
 		Long irrelevantGroupId =
@@ -388,11 +276,6 @@ public abstract class BaseChannelResourceTestCase {
 		throws Exception {
 
 		return null;
-	}
-
-	protected Channel testGraphQLChannel_addChannel() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
 	}
 
 	protected void assertContains(Channel channel, List<Channel> channels) {
@@ -1082,4 +965,4 @@ public abstract class BaseChannelResourceTestCase {
 		_channelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1135652886
+// LIFERAY-REST-BUILDER-HASH:-1772785029

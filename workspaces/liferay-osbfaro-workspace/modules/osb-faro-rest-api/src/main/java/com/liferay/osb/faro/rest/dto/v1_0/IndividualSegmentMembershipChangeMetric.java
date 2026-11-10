@@ -39,11 +39,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "How an individual segment's membership changed over the selected date range, bucketed by day. `individuals` and `knownIndividuals` are the segment's size: `value` is the size at the end of the range and `previousValue` the size at the end of the preceding range of the same length. `addedIndividuals` and `removedIndividuals` are how much the segment grew and shrank, summed over the range. Those two are derived from the change in size between consecutive days, so on any one day only one of them can be non-zero: a day on which 10 individuals joined and 10 left reports zero for both, and a day on which 12 joined and 10 left reports 2 added and 0 removed. Read them as net movement, not as counts of individuals entering and leaving. For the current member list use `getWorkspaceGroupIndividualSegmentMembershipsPage`.",
+	description = "How an individual segment's membership changed over the selected date range, bucketed by day. `individuals` and `knownIndividuals` are the segment's size: `value` is the size at the end of the range and `previousValue` the size at the end of the preceding range of the same length. For the current member list use `getWorkspaceGroupIndividualSegmentMembershipsPage`.",
 	value = "IndividualSegmentMembershipChangeMetric"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "How an individual segment's membership changed over the selected date range, bucketed by day. `individuals` and `knownIndividuals` are the segment's size: `value` is the size at the end of the range and `previousValue` the size at the end of the preceding range of the same length. `addedIndividuals` and `removedIndividuals` are how much the segment grew and shrank, summed over the range. Those two are derived from the change in size between consecutive days, so on any one day only one of them can be non-zero: a day on which 10 individuals joined and 10 left reports zero for both, and a day on which 12 joined and 10 left reports 2 added and 0 removed. Read them as net movement, not as counts of individuals entering and leaving. For the current member list use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+	description = "How an individual segment's membership changed over the selected date range, bucketed by day. `individuals` and `knownIndividuals` are the segment's size: `value` is the size at the end of the range and `previousValue` the size at the end of the preceding range of the same length. For the current member list use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "IndividualSegmentMembershipChangeMetric")
@@ -60,48 +60,6 @@ public class IndividualSegmentMembershipChangeMetric implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(
 			IndividualSegmentMembershipChangeMetric.class, json);
 	}
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	@Valid
-	public Metric getAddedIndividuals() {
-		if (_addedIndividualsSupplier != null) {
-			addedIndividuals = _addedIndividualsSupplier.get();
-
-			_addedIndividualsSupplier = null;
-		}
-
-		return addedIndividuals;
-	}
-
-	public void setAddedIndividuals(Metric addedIndividuals) {
-		this.addedIndividuals = addedIndividuals;
-
-		_addedIndividualsSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setAddedIndividuals(
-		UnsafeSupplier<Metric, Exception> addedIndividualsUnsafeSupplier) {
-
-		_addedIndividualsSupplier = () -> {
-			try {
-				return addedIndividualsUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Metric addedIndividuals;
-
-	@JsonIgnore
-	private Supplier<Metric> _addedIndividualsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
@@ -187,48 +145,6 @@ public class IndividualSegmentMembershipChangeMetric implements Serializable {
 	@JsonIgnore
 	private Supplier<Metric> _knownIndividualsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	@Valid
-	public Metric getRemovedIndividuals() {
-		if (_removedIndividualsSupplier != null) {
-			removedIndividuals = _removedIndividualsSupplier.get();
-
-			_removedIndividualsSupplier = null;
-		}
-
-		return removedIndividuals;
-	}
-
-	public void setRemovedIndividuals(Metric removedIndividuals) {
-		this.removedIndividuals = removedIndividuals;
-
-		_removedIndividualsSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setRemovedIndividuals(
-		UnsafeSupplier<Metric, Exception> removedIndividualsUnsafeSupplier) {
-
-		_removedIndividualsSupplier = () -> {
-			try {
-				return removedIndividualsUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Metric removedIndividuals;
-
-	@JsonIgnore
-	private Supplier<Metric> _removedIndividualsSupplier;
-
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -259,18 +175,6 @@ public class IndividualSegmentMembershipChangeMetric implements Serializable {
 
 		sb.append("{");
 
-		Metric addedIndividuals = getAddedIndividuals();
-
-		if (addedIndividuals != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"addedIndividuals\": ");
-
-			sb.append(String.valueOf(addedIndividuals));
-		}
-
 		Metric individuals = getIndividuals();
 
 		if (individuals != null) {
@@ -293,18 +197,6 @@ public class IndividualSegmentMembershipChangeMetric implements Serializable {
 			sb.append("\"knownIndividuals\": ");
 
 			sb.append(String.valueOf(knownIndividuals));
-		}
-
-		Metric removedIndividuals = getRemovedIndividuals();
-
-		if (removedIndividuals != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"removedIndividuals\": ");
-
-			sb.append(String.valueOf(removedIndividuals));
 		}
 
 		sb.append("}");
@@ -429,4 +321,4 @@ public class IndividualSegmentMembershipChangeMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1775168678
+// LIFERAY-REST-BUILDER-HASH:-434525886

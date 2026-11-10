@@ -51,7 +51,7 @@ public abstract class BaseUserSessionResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/accounts/{accountId}/user-sessions'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List the browsing sessions of the individuals associated with an account over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List the browsing sessions of the individuals associated with an account over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Only `items` and `page` are reliable. The analytics engine does not return a session count: pages are cut by page group (all the events of a session on the same page URL), so a page can hold fewer than `pageSize` sessions, a long session can continue on the next page, and `totalCount` and `lastPage` are not session counts. To read every session, keep requesting the next page until it returns no items. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -76,7 +76,7 @@ public abstract class BaseUserSessionResourceImpl
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Page size, from 1 to 500. Larger values are rejected.",
+				description = "Page size, from 1 to 100. Larger values are rejected.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
@@ -149,7 +149,7 @@ public abstract class BaseUserSessionResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/individuals/{individualId}/user-sessions'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List the browsing sessions of a single individual over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List the browsing sessions of a single individual over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Only `items` and `page` are reliable. The analytics engine does not return a session count: pages are cut by page group (all the events of a session on the same page URL), so a page can hold fewer than `pageSize` sessions, a long session can continue on the next page, and `totalCount` and `lastPage` are not session counts. To read every session, keep requesting the next page until it returns no items. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window of at most 180 days; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -174,7 +174,7 @@ public abstract class BaseUserSessionResourceImpl
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Page size, from 1 to 500. Larger values are rejected.",
+				description = "Page size, from 1 to 100. Larger values are rejected.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
@@ -686,4 +686,4 @@ public abstract class BaseUserSessionResourceImpl
 		LogFactoryUtil.getLog(BaseUserSessionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:629621534
+// LIFERAY-REST-BUILDER-HASH:1361379430

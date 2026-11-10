@@ -1738,4 +1738,4 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceTestCase {
 			_individualSegmentMembershipChangeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:8330519
+// LIFERAY-REST-BUILDER-HASH:839625531

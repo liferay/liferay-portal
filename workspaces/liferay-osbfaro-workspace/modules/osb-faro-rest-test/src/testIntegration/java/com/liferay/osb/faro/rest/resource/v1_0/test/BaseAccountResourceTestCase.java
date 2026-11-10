@@ -218,118 +218,6 @@ public abstract class BaseAccountResourceTestCase {
 	}
 
 	@Test
-	public void testGraphQLGetWorkspaceGroupAccount() throws Exception {
-		Account account = testGraphQLGetWorkspaceGroupAccount_addAccount();
-
-		// No namespace
-
-		Assert.assertTrue(
-			equals(
-				account,
-				AccountSerDes.toDTO(
-					JSONUtil.getValueAsString(
-						invokeGraphQLQuery(
-							new GraphQLField(
-								"workspaceGroupAccount",
-								new HashMap<String, Object>() {
-									{
-										put(
-											"groupId",
-											testGraphQLGetWorkspaceGroupAccount_getGroupId());
-										put(
-											"accountId",
-											"\"" + account.getId() + "\"");
-									}
-								},
-								getGraphQLFields())),
-						"JSONObject/data", "Object/workspaceGroupAccount"))));
-
-		// Using the namespace faro_v1_0
-
-		Assert.assertTrue(
-			equals(
-				account,
-				AccountSerDes.toDTO(
-					JSONUtil.getValueAsString(
-						invokeGraphQLQuery(
-							new GraphQLField(
-								"faro_v1_0",
-								new GraphQLField(
-									"workspaceGroupAccount",
-									new HashMap<String, Object>() {
-										{
-											put(
-												"groupId",
-												testGraphQLGetWorkspaceGroupAccount_getGroupId());
-											put(
-												"accountId",
-												"\"" + account.getId() + "\"");
-										}
-									},
-									getGraphQLFields()))),
-						"JSONObject/data", "JSONObject/faro_v1_0",
-						"Object/workspaceGroupAccount"))));
-	}
-
-	protected Long testGraphQLGetWorkspaceGroupAccount_getGroupId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testGraphQLGetWorkspaceGroupAccountNotFound() throws Exception {
-		Long irrelevantGroupId = RandomTestUtil.randomLong();
-		String irrelevantAccountId =
-			"\"" + RandomTestUtil.randomString() + "\"";
-
-		// No namespace
-
-		Assert.assertEquals(
-			"Not Found",
-			JSONUtil.getValueAsString(
-				invokeGraphQLQuery(
-					new GraphQLField(
-						"workspaceGroupAccount",
-						new HashMap<String, Object>() {
-							{
-								put("groupId", irrelevantGroupId);
-								put("accountId", irrelevantAccountId);
-							}
-						},
-						getGraphQLFields())),
-				"JSONArray/errors", "Object/0", "JSONObject/extensions",
-				"Object/code"));
-
-		// Using the namespace faro_v1_0
-
-		Assert.assertEquals(
-			"Not Found",
-			JSONUtil.getValueAsString(
-				invokeGraphQLQuery(
-					new GraphQLField(
-						"faro_v1_0",
-						new GraphQLField(
-							"workspaceGroupAccount",
-							new HashMap<String, Object>() {
-								{
-									put("groupId", irrelevantGroupId);
-									put("accountId", irrelevantAccountId);
-								}
-							},
-							getGraphQLFields()))),
-				"JSONArray/errors", "Object/0", "JSONObject/extensions",
-				"Object/code"));
-	}
-
-	protected Account testGraphQLGetWorkspaceGroupAccount_addAccount()
-		throws Exception {
-
-		return testGraphQLAccount_addAccount();
-	}
-
-	@Test
 	public void testGetWorkspaceGroupChannelAccountsPage() throws Exception {
 		Long groupId = testGetWorkspaceGroupChannelAccountsPage_getGroupId();
 		Long irrelevantGroupId =
@@ -670,11 +558,6 @@ public abstract class BaseAccountResourceTestCase {
 		throws Exception {
 
 		return null;
-	}
-
-	protected Account testGraphQLAccount_addAccount() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
 	}
 
 	protected void assertContains(Account account, List<Account> accounts) {
@@ -1922,4 +1805,4 @@ public abstract class BaseAccountResourceTestCase {
 		_accountResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1202683741
+// LIFERAY-REST-BUILDER-HASH:-888639888

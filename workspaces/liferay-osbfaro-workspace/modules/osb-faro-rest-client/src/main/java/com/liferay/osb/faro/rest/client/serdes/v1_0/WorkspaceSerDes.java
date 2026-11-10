@@ -52,7 +52,11 @@ public class WorkspaceSerDes {
 
 			sb.append("\"groupId\": ");
 
-			sb.append(workspace.getGroupId());
+			sb.append("\"");
+
+			sb.append(_escape(workspace.getGroupId()));
+
+			sb.append("\"");
 		}
 
 		if (workspace.getName() != null) {
@@ -135,8 +139,7 @@ public class WorkspaceSerDes {
 
 			if (Objects.equals(jsonParserFieldName, "groupId")) {
 				if (jsonParserFieldValue != null) {
-					workspace.setGroupId(
-						Long.valueOf((String)jsonParserFieldValue));
+					workspace.setGroupId((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "name")) {
@@ -231,4 +234,4 @@ public class WorkspaceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:112436677
+// LIFERAY-REST-BUILDER-HASH:13134358

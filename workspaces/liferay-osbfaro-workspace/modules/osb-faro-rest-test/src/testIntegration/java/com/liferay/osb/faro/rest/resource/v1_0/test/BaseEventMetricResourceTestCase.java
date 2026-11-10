@@ -181,38 +181,10 @@ public abstract class BaseEventMetricResourceTestCase {
 	}
 
 	@Test
-	public void testGraphQLGetWorkspaceGroupChannelAccountEventMetric()
-		throws Exception {
-
-		Assert.assertTrue(false);
-	}
-
-	@Test
-	public void testGraphQLGetWorkspaceGroupChannelAccountEventMetricNotFound()
-		throws Exception {
-
-		Assert.assertTrue(true);
-	}
-
-	@Test
 	public void testGetWorkspaceGroupChannelIndividualEventMetric()
 		throws Exception {
 
 		Assert.assertTrue(false);
-	}
-
-	@Test
-	public void testGraphQLGetWorkspaceGroupChannelIndividualEventMetric()
-		throws Exception {
-
-		Assert.assertTrue(false);
-	}
-
-	@Test
-	public void testGraphQLGetWorkspaceGroupChannelIndividualEventMetricNotFound()
-		throws Exception {
-
-		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(
@@ -832,4 +804,4 @@ public abstract class BaseEventMetricResourceTestCase {
 		_eventMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1467080885
+// LIFERAY-REST-BUILDER-HASH:-495613007
