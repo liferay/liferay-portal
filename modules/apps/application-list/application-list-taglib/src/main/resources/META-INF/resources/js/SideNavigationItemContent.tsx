@@ -23,7 +23,7 @@ function SideNavigationItemContent({item}: {item: SideNavigationItem}) {
 			{item.label}
 
 			{item.parentLabel && (
-				<span className="side-navigation-section-item-context">
+				<span className="unified-sidebar-section-item-context">
 					{sub(Liferay.Language.get('in-x'), item.parentLabel)}
 				</span>
 			)}

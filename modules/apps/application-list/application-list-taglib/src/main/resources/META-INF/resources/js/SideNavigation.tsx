@@ -209,8 +209,8 @@ function SideNavigation({
 			</UnifiedSidebar.Top>
 
 			<div
-				className={classNames('side-navigation-scroll', {
-					'side-navigation-scroll-stuck': stuck,
+				className={classNames('unified-sidebar-scroll', {
+					'unified-sidebar-scroll-stuck': stuck,
 				})}
 				ref={scrollRef}
 			>
@@ -258,7 +258,7 @@ function SideNavigation({
 												item.scope,
 											[`side-navigation-scope-zone-${item.scope}`]:
 												item.scope,
-											'side-navigation-section-item':
+											'unified-sidebar-section-item':
 												item.parentLabel,
 										})}
 										data-canonical-name={item.canonicalName}
@@ -286,7 +286,7 @@ function SideNavigation({
 					)}
 				</UnifiedSidebar.Body>
 
-				<div className="side-navigation-scroll-shadow" />
+				<div className="unified-sidebar-scroll-shadow" />
 			</div>
 		</UnifiedSidebar>
 	);

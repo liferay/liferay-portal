@@ -293,8 +293,8 @@ describe('SideNavigation', () => {
 		const {container} = renderComponent({items: ITEMS_WITH_SCOPES});
 
 		expect(
-			container.querySelector('.side-navigation-scroll')
-		).not.toHaveClass('side-navigation-scroll-stuck');
+			container.querySelector('.unified-sidebar-scroll')
+		).not.toHaveClass('unified-sidebar-scroll-stuck');
 	});
 
 	it('shadows the scroll area once a scope item is pinned', async () => {
@@ -309,8 +309,8 @@ describe('SideNavigation', () => {
 
 		await waitFor(() =>
 			expect(
-				container.querySelector('.side-navigation-scroll')
-			).toHaveClass('side-navigation-scroll-stuck')
+				container.querySelector('.unified-sidebar-scroll')
+			).toHaveClass('unified-sidebar-scroll-stuck')
 		);
 	});
 
@@ -326,8 +326,8 @@ describe('SideNavigation', () => {
 
 		await waitFor(() =>
 			expect(
-				container.querySelector('.side-navigation-scroll')
-			).not.toHaveClass('side-navigation-scroll-stuck')
+				container.querySelector('.unified-sidebar-scroll')
+			).not.toHaveClass('unified-sidebar-scroll-stuck')
 		);
 	});
 

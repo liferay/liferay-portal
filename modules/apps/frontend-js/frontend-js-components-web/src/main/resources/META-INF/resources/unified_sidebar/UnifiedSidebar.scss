@@ -1,20 +1,194 @@
 @import 'cadmin-variables';
 
+@mixin unified-sidebar-shimmer {
+	overflow: hidden;
+	position: relative;
+
+	&::after {
+		animation: unified-sidebar-shimmer 1.6s infinite;
+		background: linear-gradient(
+			90deg,
+			rgb(from var(--skeleton-shimmer-color) r g b / 0) 0%,
+			rgb(from var(--skeleton-shimmer-color) r g b / 0.6) 50%,
+			rgb(from var(--skeleton-shimmer-color) r g b / 0) 100%
+		);
+		content: '';
+		inset: 0;
+		position: absolute;
+		transform: translateX(-100%);
+	}
+}
+
 html#{$cadmin-selector} {
-	.unified-sidebar-header {
-		.unified-sidebar-close-button {
-			margin-bottom: auto;
-			margin-top: auto;
+	&[data-color-scheme='dark'] .unified-sidebar input:not(:focus-within) {
+		background-image: clay-icon(search, #a2a2b9);
+	}
 
-			@include media-breakpoint-up(lg) {
-				@include sr-only();
-				@include sr-only-focusable();
+	// Outrank the cadmin rules, which add a shadow, stop the body from
+	// scrolling, pad the rows more and keep the hidden close button at its
+	// full size when the sidebar renders inside a .cadmin host.
 
-				&:active,
-				&:focus {
-					position: absolute;
+	.c-slideout .sidebar.unified-sidebar.sidebar-light {
+		background-color: $cadmin-light-l1;
+		border-right: 0.5px solid $cadmin-secondary-l0;
+		box-shadow: none;
+		overflow: hidden;
+
+		.menubar-primary .nav-link {
+			padding-bottom: 0.5rem;
+			padding-top: 0.5rem;
+		}
+
+		.menubar-primary .unified-sidebar-section-item > .nav-link {
+			padding-bottom: 4px;
+			padding-top: 4px;
+		}
+
+		.sidebar-body {
+			flex: 1;
+			min-height: 0;
+			overflow: auto;
+			padding-top: 0;
+		}
+
+		.unified-sidebar-header.sidebar-header {
+			background-color: transparent;
+
+			.unified-sidebar-close-button {
+				margin-bottom: auto;
+				margin-top: auto;
+
+				@include media-breakpoint-up(lg) {
+					@include sr-only();
+					@include sr-only-focusable();
+
+					&:active,
+					&:focus {
+						position: absolute;
+					}
 				}
 			}
 		}
+	}
+
+	.unified-sidebar {
+		--skeleton-shimmer-color: #{$cadmin-light-l1};
+
+		a.nav-link {
+			--menubar-primary-collapse-icon-font-size: 0.875rem;
+			--menubar-primary-collapse-icon-font-weight: 400;
+			--menubar-primary-collapse-icon-text-transform: none;
+
+			.collapse-icon-closed,
+			.collapse-icon-open {
+				display: none;
+			}
+		}
+
+		a.nav-link + .nav .nav-link {
+			padding-left: 2rem;
+		}
+
+		input::-webkit-search-cancel-button {
+			display: none;
+		}
+
+		input:not(:focus-within) {
+			background-image: clay-icon(search, #6b6c7e);
+			background-position: 15px;
+			background-repeat: no-repeat;
+			background-size: 16px;
+			padding-left: 40px;
+		}
+
+		.menubar-primary a.nav-link {
+			&.active {
+				background-color: var(
+					--menubar-primary-nav-link-active-class-background-color,
+					#{$cadmin-blue-l5}
+				);
+
+				&::before {
+					background-color: var(
+						--menubar-primary-nav-link-active-class-highlight-background-color,
+						#{$cadmin-blue-d1}
+					);
+				}
+			}
+		}
+
+		.menubar-primary .unified-sidebar-section-item > a.nav-link {
+			align-items: flex-start;
+			display: flex;
+			flex-direction: column;
+			line-height: 1rem;
+		}
+
+		.unified-sidebar-results-skeleton {
+			@include unified-sidebar-shimmer;
+
+			svg {
+				aspect-ratio: 320 / 530;
+				color: $cadmin-secondary-l3;
+				width: 100%;
+			}
+		}
+
+		.unified-sidebar-scroll {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			min-height: 0;
+			position: relative;
+		}
+
+		.unified-sidebar-scroll-shadow {
+			background-image: linear-gradient(
+				rgb(from #{$cadmin-black} r g b / 0.08),
+				rgb(from #{$cadmin-black} r g b / 0)
+			);
+			height: 1.5rem;
+			left: 0;
+			opacity: 0;
+			pointer-events: none;
+			position: absolute;
+			right: 0;
+			top: var(--unified-sidebar-shadow-offset, 0px);
+			transition: opacity 0.15s ease-out;
+			z-index: 2;
+
+			&::before {
+				background-color: $cadmin-light-l1;
+				bottom: 100%;
+				content: '';
+				height: var(--unified-sidebar-shadow-offset, 0px);
+				position: absolute;
+				right: 0;
+				width: $cadmin-scrollbar-size;
+			}
+		}
+
+		.unified-sidebar-scroll-stuck .unified-sidebar-scroll-shadow {
+			opacity: 1;
+		}
+
+		.unified-sidebar-section-item-context {
+			color: $cadmin-secondary;
+			font-size: 0.75rem;
+			line-height: 0.75rem;
+			margin-top: 4px;
+		}
+	}
+
+	.unified-sidebar-header .sticker img {
+		height: 20px;
+		object-fit: contain;
+		width: 20px;
+	}
+}
+
+@keyframes unified-sidebar-shimmer {
+	100% {
+		transform: translateX(100%);
 	}
 }

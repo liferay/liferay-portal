@@ -72,6 +72,7 @@ export default function UnifiedSidebar({
 	return (
 		<SidePanel
 			aria-label={sub(Liferay.Language.get('x-menu'), label)}
+			className="unified-sidebar"
 			closeOnEscape={false}
 			containerRef={containerRef}
 			data-canonical-name={canonicalName}
