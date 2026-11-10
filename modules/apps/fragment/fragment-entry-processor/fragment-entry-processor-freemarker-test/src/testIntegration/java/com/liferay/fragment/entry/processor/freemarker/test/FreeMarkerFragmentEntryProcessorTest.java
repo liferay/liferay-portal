@@ -862,6 +862,83 @@ public class FreeMarkerFragmentEntryProcessorTest {
 	}
 
 	@Test
+	@TestInfo("LPD-111585")
+	public void testProcessFragmentEntryLinkHTMLWithContextInfoItemReferenceAndItemType()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		DefaultFragmentEntryProcessorContext
+			defaultFragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					_serviceContext.getCompanyId(),
+					_serviceContext.getRequest(), new MockHttpServletResponse(),
+					null, null, _serviceContext.getScopeGroupId());
+
+		defaultFragmentEntryProcessorContext.setContextInfoItemReference(
+			new InfoItemReference(
+				JournalArticle.class.getName(),
+				journalArticle.getResourcePrimKey()));
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
+
+		fragmentEntryLink.setHtml(
+			"<div class=\"fragment_name\">[#if itemSelector1Object??]" +
+				"${itemSelector1Object}[/#if]</div>");
+		fragmentEntryLink.setConfiguration(
+			JSONUtil.put(
+				"fieldSets",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"fields",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"name", "itemSelector1"
+							).put(
+								"type", "itemSelector"
+							).put(
+								"typeOptions",
+								JSONUtil.put(
+									"itemType", JournalArticle.class.getName())
+							))))
+			).toString());
+
+		_assertContainsJournalArticleInfo(
+			_getProcessedHTML(
+				fragmentEntryLink, JSONFactoryUtil.createJSONObject(),
+				defaultFragmentEntryProcessorContext),
+			journalArticle);
+
+		fragmentEntryLink.setConfiguration(
+			JSONUtil.put(
+				"fieldSets",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"fields",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"name", "itemSelector1"
+							).put(
+								"type", "itemSelector"
+							).put(
+								"typeOptions",
+								JSONUtil.put(
+									"itemType", FileEntry.class.getName())
+							))))
+			).toString());
+
+		String html = _getProcessedHTML(
+			fragmentEntryLink, JSONFactoryUtil.createJSONObject(),
+			defaultFragmentEntryProcessorContext);
+
+		Assert.assertFalse(
+			html.contains(journalArticle.getExternalReferenceCode()));
+	}
+
+	@Test
 	@TestInfo("LPD-107496")
 	public void testProcessFragmentEntryLinkHTMLWithDisablePortletRender()
 		throws Exception {
