@@ -269,12 +269,6 @@ public interface CommerceInventoryWarehouseItemLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceInventoryWarehouseItem getCommerceInventoryWarehouseItem(
-			long commerceInventoryWarehouseId, String sku,
-			String unitOfMeasureKey)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceInventoryWarehouseItem
 			getCommerceInventoryWarehouseItemByExternalReferenceCode(
 				String externalReferenceCode, long companyId)
@@ -316,11 +310,6 @@ public interface CommerceInventoryWarehouseItemLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceInventoryWarehouseItem>
-		getCommerceInventoryWarehouseItemsByCompanyId(
-			long companyId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceInventoryWarehouseItem>
 		getCommerceInventoryWarehouseItemsByCompanyIdSkuAndUnitOfMeasureKey(
 			long companyId, String sku, String unitOfMeasureKey, int start,
 			int end, boolean replacePermissionCheck);
@@ -340,10 +329,6 @@ public interface CommerceInventoryWarehouseItemLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceInventoryWarehouseItemsCount(
-		long commerceInventoryWarehouseId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceInventoryWarehouseItemsCount(
 		long companyId, long accountEntryId, long groupId, String sku,
 		String unitOfMeasureKey);
 
@@ -351,10 +336,6 @@ public interface CommerceInventoryWarehouseItemLocalService
 	public int getCommerceInventoryWarehouseItemsCount(
 		long companyId, String sku, String unitOfMeasureKey,
 		boolean replacePermissionCheck);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceInventoryWarehouseItemsCountByCompanyId(
-		long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceInventoryWarehouseItemsCountByModifiedDate(
@@ -433,4 +414,4 @@ public interface CommerceInventoryWarehouseItemLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:576862875
+// LIFERAY-SERVICE-BUILDER-HASH:1020683036

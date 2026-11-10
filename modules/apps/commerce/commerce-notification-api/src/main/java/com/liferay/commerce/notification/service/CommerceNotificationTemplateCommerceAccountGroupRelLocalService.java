@@ -217,11 +217,6 @@ public interface CommerceNotificationTemplateCommerceAccountGroupRelLocalService
 			long commerceNotificationTemplateCommerceAccountGroupRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceNotificationTemplateCommerceAccountGroupRel
-		fetchCommerceNotificationTemplateCommerceAccountGroupRel(
-			long commerceNotificationTemplateId, long commerceAccountGroupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -252,14 +247,6 @@ public interface CommerceNotificationTemplateCommerceAccountGroupRelLocalService
 	public List<CommerceNotificationTemplateCommerceAccountGroupRel>
 		getCommerceNotificationTemplateCommerceAccountGroupRels(
 			int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceNotificationTemplateCommerceAccountGroupRel>
-		getCommerceNotificationTemplateCommerceAccountGroupRels(
-			long commerceNotificationTemplateId, int start, int end,
-			OrderByComparator
-				<CommerceNotificationTemplateCommerceAccountGroupRel>
-					orderByComparator);
 
 	/**
 	 * Returns the number of commerce notification template commerce account group rels.
@@ -304,4 +291,4 @@ public interface CommerceNotificationTemplateCommerceAccountGroupRelLocalService
 				commerceNotificationTemplateCommerceAccountGroupRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:267971395
+// LIFERAY-SERVICE-BUILDER-HASH:1538694841

@@ -218,29 +218,7 @@ public interface CommerceMLForecastAlertEntryLocalService
 			String uuid, long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceMLForecastAlertEntry>
-		getAboveThresholdCommerceMLForecastAlertEntries(
-			long companyId, long[] commerceAccountIds, double relativeChange,
-			int status, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getAboveThresholdCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, double relativeChange,
-		int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceMLForecastAlertEntry>
-		getBelowThresholdCommerceMLForecastAlertEntries(
-			long companyId, long[] commerceAccountIds, double relativeChange,
-			int status, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getBelowThresholdCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, double relativeChange,
-		int status);
 
 	/**
 	 * Returns a range of all the commerce ml forecast alert entries.
@@ -257,11 +235,6 @@ public interface CommerceMLForecastAlertEntryLocalService
 	public List<CommerceMLForecastAlertEntry> getCommerceMLForecastAlertEntries(
 		int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceMLForecastAlertEntry> getCommerceMLForecastAlertEntries(
-		long companyId, long[] commerceAccountIds, int status, int start,
-		int end);
-
 	/**
 	 * Returns the number of commerce ml forecast alert entries.
 	 *
@@ -269,10 +242,6 @@ public interface CommerceMLForecastAlertEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceMLForecastAlertEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, int status);
 
 	/**
 	 * Returns the commerce ml forecast alert entry with the primary key.
@@ -341,4 +310,4 @@ public interface CommerceMLForecastAlertEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:74061062
+// LIFERAY-SERVICE-BUILDER-HASH:-341095925

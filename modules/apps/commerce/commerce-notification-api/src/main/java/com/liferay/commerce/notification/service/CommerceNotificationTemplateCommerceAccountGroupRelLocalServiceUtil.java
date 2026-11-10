@@ -252,15 +252,6 @@ public class
 				commerceNotificationTemplateCommerceAccountGroupRelId);
 	}
 
-	public static CommerceNotificationTemplateCommerceAccountGroupRel
-		fetchCommerceNotificationTemplateCommerceAccountGroupRel(
-			long commerceNotificationTemplateId, long commerceAccountGroupId) {
-
-		return getService().
-			fetchCommerceNotificationTemplateCommerceAccountGroupRel(
-				commerceNotificationTemplateId, commerceAccountGroupId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -301,18 +292,6 @@ public class
 
 		return getService().
 			getCommerceNotificationTemplateCommerceAccountGroupRels(start, end);
-	}
-
-	public static List<CommerceNotificationTemplateCommerceAccountGroupRel>
-		getCommerceNotificationTemplateCommerceAccountGroupRels(
-			long commerceNotificationTemplateId, int start, int end,
-			OrderByComparator
-				<CommerceNotificationTemplateCommerceAccountGroupRel>
-					orderByComparator) {
-
-		return getService().
-			getCommerceNotificationTemplateCommerceAccountGroupRels(
-				commerceNotificationTemplateId, start, end, orderByComparator);
 	}
 
 	/**
@@ -387,4 +366,4 @@ public class
 					class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1225436763
+// LIFERAY-SERVICE-BUILDER-HASH:-1198733372

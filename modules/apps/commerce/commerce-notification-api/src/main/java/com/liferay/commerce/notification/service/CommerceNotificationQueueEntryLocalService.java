@@ -256,13 +256,6 @@ public interface CommerceNotificationQueueEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceNotificationQueueEntry>
 		getCommerceNotificationQueueEntries(
-			long groupId, int start, int end,
-			OrderByComparator<CommerceNotificationQueueEntry>
-				orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceNotificationQueueEntry>
-		getCommerceNotificationQueueEntries(
 			long groupId, String className, long classPK, boolean sent,
 			int start, int end,
 			OrderByComparator<CommerceNotificationQueueEntry>
@@ -275,9 +268,6 @@ public interface CommerceNotificationQueueEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceNotificationQueueEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceNotificationQueueEntriesCount(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceNotificationQueueEntriesCount(
@@ -342,4 +332,4 @@ public interface CommerceNotificationQueueEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-122325422
+// LIFERAY-SERVICE-BUILDER-HASH:-365169516

@@ -291,18 +291,6 @@ public class
 	}
 
 	@Override
-	public com.liferay.commerce.notification.model.
-		CommerceNotificationTemplateCommerceAccountGroupRel
-			fetchCommerceNotificationTemplateCommerceAccountGroupRel(
-				long commerceNotificationTemplateId,
-				long commerceAccountGroupId) {
-
-		return _commerceNotificationTemplateCommerceAccountGroupRelLocalService.
-			fetchCommerceNotificationTemplateCommerceAccountGroupRel(
-				commerceNotificationTemplateId, commerceAccountGroupId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -349,22 +337,6 @@ public class
 
 		return _commerceNotificationTemplateCommerceAccountGroupRelLocalService.
 			getCommerceNotificationTemplateCommerceAccountGroupRels(start, end);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.notification.model.
-			CommerceNotificationTemplateCommerceAccountGroupRel>
-				getCommerceNotificationTemplateCommerceAccountGroupRels(
-					long commerceNotificationTemplateId, int start, int end,
-					com.liferay.portal.kernel.util.OrderByComparator
-						<com.liferay.commerce.notification.model.
-							CommerceNotificationTemplateCommerceAccountGroupRel>
-								orderByComparator) {
-
-		return _commerceNotificationTemplateCommerceAccountGroupRelLocalService.
-			getCommerceNotificationTemplateCommerceAccountGroupRels(
-				commerceNotificationTemplateId, start, end, orderByComparator);
 	}
 
 	/**
@@ -458,4 +430,4 @@ public class
 		_commerceNotificationTemplateCommerceAccountGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1357430355
+// LIFERAY-SERVICE-BUILDER-HASH:1012912460

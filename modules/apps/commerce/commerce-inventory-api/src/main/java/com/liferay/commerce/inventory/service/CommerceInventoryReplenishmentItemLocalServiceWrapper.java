@@ -421,18 +421,6 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 	public java.util.List
 		<com.liferay.commerce.inventory.model.
 			CommerceInventoryReplenishmentItem>
-				getCommerceInventoryReplenishmentItemsByCommerceInventoryWarehouseId(
-					long commerceInventoryWarehouseId, int start, int end) {
-
-		return _commerceInventoryReplenishmentItemLocalService.
-			getCommerceInventoryReplenishmentItemsByCommerceInventoryWarehouseId(
-				commerceInventoryWarehouseId, start, end);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.inventory.model.
-			CommerceInventoryReplenishmentItem>
 				getCommerceInventoryReplenishmentItemsByCompanyIdSkuAndUnitOfMeasureKey(
 					long companyId, String sku, String unitOfMeasureKey,
 					int start, int end, boolean replacePermissionCheck) {
@@ -462,26 +450,6 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 		return _commerceInventoryReplenishmentItemLocalService.
 			getCommerceInventoryReplenishmentItemsCount(
 				commerceInventoryWarehouseId, sku, unitOfMeasureKey);
-	}
-
-	@Override
-	public int
-		getCommerceInventoryReplenishmentItemsCountByCommerceInventoryWarehouseId(
-			long commerceInventoryWarehouseId) {
-
-		return _commerceInventoryReplenishmentItemLocalService.
-			getCommerceInventoryReplenishmentItemsCountByCommerceInventoryWarehouseId(
-				commerceInventoryWarehouseId);
-	}
-
-	@Override
-	public int
-		getCommerceInventoryReplenishmentItemsCountByCompanyIdSkuAndUnitOfMeasureKey(
-			long companyId, String sku, String unitOfMeasureKey) {
-
-		return _commerceInventoryReplenishmentItemLocalService.
-			getCommerceInventoryReplenishmentItemsCountByCompanyIdSkuAndUnitOfMeasureKey(
-				companyId, sku, unitOfMeasureKey);
 	}
 
 	@Override
@@ -596,4 +564,4 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 		_commerceInventoryReplenishmentItemLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1365321228
+// LIFERAY-SERVICE-BUILDER-HASH:-646388281

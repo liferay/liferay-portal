@@ -364,15 +364,6 @@ public class CommerceInventoryBookedQuantityLocalServiceWrapper
 
 	@Override
 	public int getCommerceInventoryBookedQuantitiesCount(
-		long companyId, String sku, String unitOfMeasureKey) {
-
-		return _commerceInventoryBookedQuantityLocalService.
-			getCommerceInventoryBookedQuantitiesCount(
-				companyId, sku, unitOfMeasureKey);
-	}
-
-	@Override
-	public int getCommerceInventoryBookedQuantitiesCount(
 			long companyId, String keywords, String sku,
 			String unitOfMeasureKey)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -557,4 +548,4 @@ public class CommerceInventoryBookedQuantityLocalServiceWrapper
 		_commerceInventoryBookedQuantityLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-58347870
+// LIFERAY-SERVICE-BUILDER-HASH:-1846744277

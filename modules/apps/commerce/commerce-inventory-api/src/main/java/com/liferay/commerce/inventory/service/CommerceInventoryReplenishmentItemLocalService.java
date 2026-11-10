@@ -298,11 +298,6 @@ public interface CommerceInventoryReplenishmentItemLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceInventoryReplenishmentItem>
-		getCommerceInventoryReplenishmentItemsByCommerceInventoryWarehouseId(
-			long commerceInventoryWarehouseId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceInventoryReplenishmentItem>
 		getCommerceInventoryReplenishmentItemsByCompanyIdSkuAndUnitOfMeasureKey(
 			long companyId, String sku, String unitOfMeasureKey, int start,
 			int end, boolean replacePermissionCheck);
@@ -318,16 +313,6 @@ public interface CommerceInventoryReplenishmentItemLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BigDecimal getCommerceInventoryReplenishmentItemsCount(
 		long commerceInventoryWarehouseId, String sku, String unitOfMeasureKey);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int
-		getCommerceInventoryReplenishmentItemsCountByCommerceInventoryWarehouseId(
-			long commerceInventoryWarehouseId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int
-		getCommerceInventoryReplenishmentItemsCountByCompanyIdSkuAndUnitOfMeasureKey(
-			long companyId, String sku, String unitOfMeasureKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Long> getCommerceInventoryWarehouseIds(
@@ -379,4 +364,4 @@ public interface CommerceInventoryReplenishmentItemLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1927759404
+// LIFERAY-SERVICE-BUILDER-HASH:-448904167

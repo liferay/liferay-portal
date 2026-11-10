@@ -350,21 +350,6 @@ public class CommerceNotificationAttachmentLocalServiceWrapper
 			getCommerceNotificationAttachments(start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.notification.model.CommerceNotificationAttachment>
-			getCommerceNotificationAttachments(
-				long commerceNotificationQueueEntryId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.notification.model.
-						CommerceNotificationAttachment> orderByComparator) {
-
-		return _commerceNotificationAttachmentLocalService.
-			getCommerceNotificationAttachments(
-				commerceNotificationQueueEntryId, start, end,
-				orderByComparator);
-	}
-
 	/**
 	 * Returns all the commerce notification attachments matching the UUID and company.
 	 *
@@ -505,4 +490,4 @@ public class CommerceNotificationAttachmentLocalServiceWrapper
 		_commerceNotificationAttachmentLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-838630905
+// LIFERAY-SERVICE-BUILDER-HASH:-1103688283

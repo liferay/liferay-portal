@@ -341,16 +341,6 @@ public class CommerceInventoryWarehouseItemLocalServiceUtil {
 	}
 
 	public static CommerceInventoryWarehouseItem
-			getCommerceInventoryWarehouseItem(
-				long commerceInventoryWarehouseId, String sku,
-				String unitOfMeasureKey)
-		throws PortalException {
-
-		return getService().getCommerceInventoryWarehouseItem(
-			commerceInventoryWarehouseId, sku, unitOfMeasureKey);
-	}
-
-	public static CommerceInventoryWarehouseItem
 			getCommerceInventoryWarehouseItemByExternalReferenceCode(
 				String externalReferenceCode, long companyId)
 		throws PortalException {
@@ -403,14 +393,6 @@ public class CommerceInventoryWarehouseItemLocalServiceUtil {
 	}
 
 	public static List<CommerceInventoryWarehouseItem>
-		getCommerceInventoryWarehouseItemsByCompanyId(
-			long companyId, int start, int end) {
-
-		return getService().getCommerceInventoryWarehouseItemsByCompanyId(
-			companyId, start, end);
-	}
-
-	public static List<CommerceInventoryWarehouseItem>
 		getCommerceInventoryWarehouseItemsByCompanyIdSkuAndUnitOfMeasureKey(
 			long companyId, String sku, String unitOfMeasureKey, int start,
 			int end, boolean replacePermissionCheck) {
@@ -440,13 +422,6 @@ public class CommerceInventoryWarehouseItemLocalServiceUtil {
 	}
 
 	public static int getCommerceInventoryWarehouseItemsCount(
-		long commerceInventoryWarehouseId) {
-
-		return getService().getCommerceInventoryWarehouseItemsCount(
-			commerceInventoryWarehouseId);
-	}
-
-	public static int getCommerceInventoryWarehouseItemsCount(
 		long companyId, long accountEntryId, long groupId, String sku,
 		String unitOfMeasureKey) {
 
@@ -460,13 +435,6 @@ public class CommerceInventoryWarehouseItemLocalServiceUtil {
 
 		return getService().getCommerceInventoryWarehouseItemsCount(
 			companyId, sku, unitOfMeasureKey, replacePermissionCheck);
-	}
-
-	public static int getCommerceInventoryWarehouseItemsCountByCompanyId(
-		long companyId) {
-
-		return getService().getCommerceInventoryWarehouseItemsCountByCompanyId(
-			companyId);
 	}
 
 	public static int getCommerceInventoryWarehouseItemsCountByModifiedDate(
@@ -595,4 +563,4 @@ public class CommerceInventoryWarehouseItemLocalServiceUtil {
 			CommerceInventoryWarehouseItemLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1896607626
+// LIFERAY-SERVICE-BUILDER-HASH:14017774

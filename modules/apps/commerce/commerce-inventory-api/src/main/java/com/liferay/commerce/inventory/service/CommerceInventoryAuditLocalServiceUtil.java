@@ -264,14 +264,6 @@ public class CommerceInventoryAuditLocalServiceUtil {
 		return getService().getCommerceInventoryAudits(start, end);
 	}
 
-	public static List<CommerceInventoryAudit> getCommerceInventoryAudits(
-		long companyId, String sku, String unitOfMeasureKey, int start,
-		int end) {
-
-		return getService().getCommerceInventoryAudits(
-			companyId, sku, unitOfMeasureKey, start, end);
-	}
-
 	/**
 	 * Returns the number of commerce inventory audits.
 	 *
@@ -279,13 +271,6 @@ public class CommerceInventoryAuditLocalServiceUtil {
 	 */
 	public static int getCommerceInventoryAuditsCount() {
 		return getService().getCommerceInventoryAuditsCount();
-	}
-
-	public static int getCommerceInventoryAuditsCount(
-		long companyId, String sku, String unitOfMeasureKey) {
-
-		return getService().getCommerceInventoryAuditsCount(
-			companyId, sku, unitOfMeasureKey);
 	}
 
 	public static
@@ -340,4 +325,4 @@ public class CommerceInventoryAuditLocalServiceUtil {
 			CommerceInventoryAuditLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-919537260
+// LIFERAY-SERVICE-BUILDER-HASH:-1126155668

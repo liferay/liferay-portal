@@ -340,26 +340,6 @@ public class CommerceInventoryWarehouseLocalServiceUtil {
 
 	public static List<CommerceInventoryWarehouse>
 		getCommerceInventoryWarehouses(
-			long companyId, boolean active, int start, int end,
-			OrderByComparator<CommerceInventoryWarehouse> orderByComparator) {
-
-		return getService().getCommerceInventoryWarehouses(
-			companyId, active, start, end, orderByComparator);
-	}
-
-	public static List<CommerceInventoryWarehouse>
-		getCommerceInventoryWarehouses(
-			long companyId, boolean active, String commerceCountryCode,
-			int start, int end,
-			OrderByComparator<CommerceInventoryWarehouse> orderByComparator) {
-
-		return getService().getCommerceInventoryWarehouses(
-			companyId, active, commerceCountryCode, start, end,
-			orderByComparator);
-	}
-
-	public static List<CommerceInventoryWarehouse>
-		getCommerceInventoryWarehouses(
 			long companyId, int start, int end,
 			OrderByComparator<CommerceInventoryWarehouse> orderByComparator) {
 
@@ -390,17 +370,6 @@ public class CommerceInventoryWarehouseLocalServiceUtil {
 	 */
 	public static int getCommerceInventoryWarehousesCount() {
 		return getService().getCommerceInventoryWarehousesCount();
-	}
-
-	public static int getCommerceInventoryWarehousesCount(long companyId) {
-		return getService().getCommerceInventoryWarehousesCount(companyId);
-	}
-
-	public static int getCommerceInventoryWarehousesCount(
-		long companyId, boolean active) {
-
-		return getService().getCommerceInventoryWarehousesCount(
-			companyId, active);
 	}
 
 	public static int getCommerceInventoryWarehousesCount(
@@ -523,4 +492,4 @@ public class CommerceInventoryWarehouseLocalServiceUtil {
 			CommerceInventoryWarehouseLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1397266835
+// LIFERAY-SERVICE-BUILDER-HASH:-711762952

@@ -389,18 +389,6 @@ public class CommerceInventoryWarehouseItemLocalServiceWrapper
 
 	@Override
 	public com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem
-			getCommerceInventoryWarehouseItem(
-				long commerceInventoryWarehouseId, String sku,
-				String unitOfMeasureKey)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceInventoryWarehouseItemLocalService.
-			getCommerceInventoryWarehouseItem(
-				commerceInventoryWarehouseId, sku, unitOfMeasureKey);
-	}
-
-	@Override
-	public com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem
 			getCommerceInventoryWarehouseItemByExternalReferenceCode(
 				String externalReferenceCode, long companyId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -463,17 +451,6 @@ public class CommerceInventoryWarehouseItemLocalServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem>
-			getCommerceInventoryWarehouseItemsByCompanyId(
-				long companyId, int start, int end) {
-
-		return _commerceInventoryWarehouseItemLocalService.
-			getCommerceInventoryWarehouseItemsByCompanyId(
-				companyId, start, end);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem>
 			getCommerceInventoryWarehouseItemsByCompanyIdSkuAndUnitOfMeasureKey(
 				long companyId, String sku, String unitOfMeasureKey, int start,
 				int end, boolean replacePermissionCheck) {
@@ -509,15 +486,6 @@ public class CommerceInventoryWarehouseItemLocalServiceWrapper
 
 	@Override
 	public int getCommerceInventoryWarehouseItemsCount(
-		long commerceInventoryWarehouseId) {
-
-		return _commerceInventoryWarehouseItemLocalService.
-			getCommerceInventoryWarehouseItemsCount(
-				commerceInventoryWarehouseId);
-	}
-
-	@Override
-	public int getCommerceInventoryWarehouseItemsCount(
 		long companyId, long accountEntryId, long groupId, String sku,
 		String unitOfMeasureKey) {
 
@@ -534,14 +502,6 @@ public class CommerceInventoryWarehouseItemLocalServiceWrapper
 		return _commerceInventoryWarehouseItemLocalService.
 			getCommerceInventoryWarehouseItemsCount(
 				companyId, sku, unitOfMeasureKey, replacePermissionCheck);
-	}
-
-	@Override
-	public int getCommerceInventoryWarehouseItemsCountByCompanyId(
-		long companyId) {
-
-		return _commerceInventoryWarehouseItemLocalService.
-			getCommerceInventoryWarehouseItemsCountByCompanyId(companyId);
 	}
 
 	@Override
@@ -706,4 +666,4 @@ public class CommerceInventoryWarehouseItemLocalServiceWrapper
 		_commerceInventoryWarehouseItemLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1479256261
+// LIFERAY-SERVICE-BUILDER-HASH:447624509

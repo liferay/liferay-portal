@@ -312,13 +312,6 @@ public class CommerceInventoryBookedQuantityLocalServiceUtil {
 	}
 
 	public static int getCommerceInventoryBookedQuantitiesCount(
-		long companyId, String sku, String unitOfMeasureKey) {
-
-		return getService().getCommerceInventoryBookedQuantitiesCount(
-			companyId, sku, unitOfMeasureKey);
-	}
-
-	public static int getCommerceInventoryBookedQuantitiesCount(
 			long companyId, String keywords, String sku,
 			String unitOfMeasureKey)
 		throws PortalException {
@@ -465,4 +458,4 @@ public class CommerceInventoryBookedQuantityLocalServiceUtil {
 			CommerceInventoryBookedQuantityLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:718652775
+// LIFERAY-SERVICE-BUILDER-HASH:1233616534

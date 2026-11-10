@@ -387,36 +387,6 @@ public class CommerceInventoryWarehouseLocalServiceWrapper
 	public java.util.List
 		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouse>
 			getCommerceInventoryWarehouses(
-				long companyId, boolean active, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.inventory.model.
-						CommerceInventoryWarehouse> orderByComparator) {
-
-		return _commerceInventoryWarehouseLocalService.
-			getCommerceInventoryWarehouses(
-				companyId, active, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouse>
-			getCommerceInventoryWarehouses(
-				long companyId, boolean active, String commerceCountryCode,
-				int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.inventory.model.
-						CommerceInventoryWarehouse> orderByComparator) {
-
-		return _commerceInventoryWarehouseLocalService.
-			getCommerceInventoryWarehouses(
-				companyId, active, commerceCountryCode, start, end,
-				orderByComparator);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouse>
-			getCommerceInventoryWarehouses(
 				long companyId, int start, int end,
 				com.liferay.portal.kernel.util.OrderByComparator
 					<com.liferay.commerce.inventory.model.
@@ -458,20 +428,6 @@ public class CommerceInventoryWarehouseLocalServiceWrapper
 	public int getCommerceInventoryWarehousesCount() {
 		return _commerceInventoryWarehouseLocalService.
 			getCommerceInventoryWarehousesCount();
-	}
-
-	@Override
-	public int getCommerceInventoryWarehousesCount(long companyId) {
-		return _commerceInventoryWarehouseLocalService.
-			getCommerceInventoryWarehousesCount(companyId);
-	}
-
-	@Override
-	public int getCommerceInventoryWarehousesCount(
-		long companyId, boolean active) {
-
-		return _commerceInventoryWarehouseLocalService.
-			getCommerceInventoryWarehousesCount(companyId, active);
 	}
 
 	@Override
@@ -632,4 +588,4 @@ public class CommerceInventoryWarehouseLocalServiceWrapper
 		_commerceInventoryWarehouseLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:279012280
+// LIFERAY-SERVICE-BUILDER-HASH:-1443348979

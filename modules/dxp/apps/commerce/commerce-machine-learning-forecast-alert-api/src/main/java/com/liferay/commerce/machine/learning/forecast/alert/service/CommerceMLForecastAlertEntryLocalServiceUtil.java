@@ -245,46 +245,10 @@ public class CommerceMLForecastAlertEntryLocalServiceUtil {
 			uuid, companyId);
 	}
 
-	public static List<CommerceMLForecastAlertEntry>
-		getAboveThresholdCommerceMLForecastAlertEntries(
-			long companyId, long[] commerceAccountIds, double relativeChange,
-			int status, int start, int end) {
-
-		return getService().getAboveThresholdCommerceMLForecastAlertEntries(
-			companyId, commerceAccountIds, relativeChange, status, start, end);
-	}
-
-	public static int getAboveThresholdCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, double relativeChange,
-		int status) {
-
-		return getService().
-			getAboveThresholdCommerceMLForecastAlertEntriesCount(
-				companyId, commerceAccountIds, relativeChange, status);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
 		return getService().getActionableDynamicQuery();
-	}
-
-	public static List<CommerceMLForecastAlertEntry>
-		getBelowThresholdCommerceMLForecastAlertEntries(
-			long companyId, long[] commerceAccountIds, double relativeChange,
-			int status, int start, int end) {
-
-		return getService().getBelowThresholdCommerceMLForecastAlertEntries(
-			companyId, commerceAccountIds, relativeChange, status, start, end);
-	}
-
-	public static int getBelowThresholdCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, double relativeChange,
-		int status) {
-
-		return getService().
-			getBelowThresholdCommerceMLForecastAlertEntriesCount(
-				companyId, commerceAccountIds, relativeChange, status);
 	}
 
 	/**
@@ -304,15 +268,6 @@ public class CommerceMLForecastAlertEntryLocalServiceUtil {
 		return getService().getCommerceMLForecastAlertEntries(start, end);
 	}
 
-	public static List<CommerceMLForecastAlertEntry>
-		getCommerceMLForecastAlertEntries(
-			long companyId, long[] commerceAccountIds, int status, int start,
-			int end) {
-
-		return getService().getCommerceMLForecastAlertEntries(
-			companyId, commerceAccountIds, status, start, end);
-	}
-
 	/**
 	 * Returns the number of commerce ml forecast alert entries.
 	 *
@@ -320,13 +275,6 @@ public class CommerceMLForecastAlertEntryLocalServiceUtil {
 	 */
 	public static int getCommerceMLForecastAlertEntriesCount() {
 		return getService().getCommerceMLForecastAlertEntriesCount();
-	}
-
-	public static int getCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, int status) {
-
-		return getService().getCommerceMLForecastAlertEntriesCount(
-			companyId, commerceAccountIds, status);
 	}
 
 	/**
@@ -430,4 +378,4 @@ public class CommerceMLForecastAlertEntryLocalServiceUtil {
 			CommerceMLForecastAlertEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-673883458
+// LIFERAY-SERVICE-BUILDER-HASH:320114441

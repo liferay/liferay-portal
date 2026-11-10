@@ -268,10 +268,6 @@ public interface CommerceInventoryBookedQuantityLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceInventoryBookedQuantitiesCount(
-		long companyId, String sku, String unitOfMeasureKey);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceInventoryBookedQuantitiesCount(
 			long companyId, String keywords, String sku,
 			String unitOfMeasureKey)
 		throws PortalException;
@@ -361,4 +357,4 @@ public interface CommerceInventoryBookedQuantityLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:23544000
+// LIFERAY-SERVICE-BUILDER-HASH:392693913

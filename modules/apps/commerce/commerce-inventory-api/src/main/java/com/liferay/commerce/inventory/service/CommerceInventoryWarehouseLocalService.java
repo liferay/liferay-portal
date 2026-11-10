@@ -295,17 +295,6 @@ public interface CommerceInventoryWarehouseLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceInventoryWarehouse> getCommerceInventoryWarehouses(
-		long companyId, boolean active, int start, int end,
-		OrderByComparator<CommerceInventoryWarehouse> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceInventoryWarehouse> getCommerceInventoryWarehouses(
-		long companyId, boolean active, String commerceCountryCode, int start,
-		int end,
-		OrderByComparator<CommerceInventoryWarehouse> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceInventoryWarehouse> getCommerceInventoryWarehouses(
 		long companyId, int start, int end,
 		OrderByComparator<CommerceInventoryWarehouse> orderByComparator);
 
@@ -324,13 +313,6 @@ public interface CommerceInventoryWarehouseLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceInventoryWarehousesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceInventoryWarehousesCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceInventoryWarehousesCount(
-		long companyId, boolean active);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceInventoryWarehousesCount(
@@ -406,4 +388,4 @@ public interface CommerceInventoryWarehouseLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1882979610
+// LIFERAY-SERVICE-BUILDER-HASH:-75231825

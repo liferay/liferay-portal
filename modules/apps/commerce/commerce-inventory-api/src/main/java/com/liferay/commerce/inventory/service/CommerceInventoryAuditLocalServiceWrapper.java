@@ -300,17 +300,6 @@ public class CommerceInventoryAuditLocalServiceWrapper
 			start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.inventory.model.CommerceInventoryAudit>
-			getCommerceInventoryAudits(
-				long companyId, String sku, String unitOfMeasureKey, int start,
-				int end) {
-
-		return _commerceInventoryAuditLocalService.getCommerceInventoryAudits(
-			companyId, sku, unitOfMeasureKey, start, end);
-	}
-
 	/**
 	 * Returns the number of commerce inventory audits.
 	 *
@@ -320,14 +309,6 @@ public class CommerceInventoryAuditLocalServiceWrapper
 	public int getCommerceInventoryAuditsCount() {
 		return _commerceInventoryAuditLocalService.
 			getCommerceInventoryAuditsCount();
-	}
-
-	@Override
-	public int getCommerceInventoryAuditsCount(
-		long companyId, String sku, String unitOfMeasureKey) {
-
-		return _commerceInventoryAuditLocalService.
-			getCommerceInventoryAuditsCount(companyId, sku, unitOfMeasureKey);
 	}
 
 	@Override
@@ -402,4 +383,4 @@ public class CommerceInventoryAuditLocalServiceWrapper
 		_commerceInventoryAuditLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1298876049
+// LIFERAY-SERVICE-BUILDER-HASH:-1592015579

@@ -259,13 +259,6 @@ public interface CommerceNotificationAttachmentLocalService
 	public List<CommerceNotificationAttachment>
 		getCommerceNotificationAttachments(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceNotificationAttachment>
-		getCommerceNotificationAttachments(
-			long commerceNotificationQueueEntryId, int start, int end,
-			OrderByComparator<CommerceNotificationAttachment>
-				orderByComparator);
-
 	/**
 	 * Returns all the commerce notification attachments matching the UUID and company.
 	 *
@@ -340,4 +333,4 @@ public interface CommerceNotificationAttachmentLocalService
 		CommerceNotificationAttachment commerceNotificationAttachment);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:828999755
+// LIFERAY-SERVICE-BUILDER-HASH:2080386247

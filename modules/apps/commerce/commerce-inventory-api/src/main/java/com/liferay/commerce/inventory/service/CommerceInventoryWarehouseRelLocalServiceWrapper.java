@@ -282,16 +282,6 @@ public class CommerceInventoryWarehouseRelLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.inventory.model.CommerceInventoryWarehouseRel
-		fetchCommerceInventoryWarehouseRel(
-			String className, long classPK, long commerceInventoryWarehouseId) {
-
-		return _commerceInventoryWarehouseRelLocalService.
-			fetchCommerceInventoryWarehouseRel(
-				className, classPK, commerceInventoryWarehouseId);
-	}
-
-	@Override
 	public java.util.List
 		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouseRel>
 			getAccountEntryCommerceInventoryWarehouseRels(
@@ -382,51 +372,11 @@ public class CommerceInventoryWarehouseRelLocalServiceWrapper
 	public java.util.List
 		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouseRel>
 			getCommerceInventoryWarehouseRels(
-				long commerceInventoryWarehouseId) {
-
-		return _commerceInventoryWarehouseRelLocalService.
-			getCommerceInventoryWarehouseRels(commerceInventoryWarehouseId);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouseRel>
-			getCommerceInventoryWarehouseRels(
-				long commerceInventoryWarehouseId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.inventory.model.
-						CommerceInventoryWarehouseRel> orderByComparator) {
-
-		return _commerceInventoryWarehouseRelLocalService.
-			getCommerceInventoryWarehouseRels(
-				commerceInventoryWarehouseId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouseRel>
-			getCommerceInventoryWarehouseRels(
 				String className, long commerceInventoryWarehouseId) {
 
 		return _commerceInventoryWarehouseRelLocalService.
 			getCommerceInventoryWarehouseRels(
 				className, commerceInventoryWarehouseId);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouseRel>
-			getCommerceInventoryWarehouseRels(
-				String className, long commerceInventoryWarehouseId, int start,
-				int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.inventory.model.
-						CommerceInventoryWarehouseRel> orderByComparator) {
-
-		return _commerceInventoryWarehouseRelLocalService.
-			getCommerceInventoryWarehouseRels(
-				className, commerceInventoryWarehouseId, start, end,
-				orderByComparator);
 	}
 
 	/**
@@ -438,24 +388,6 @@ public class CommerceInventoryWarehouseRelLocalServiceWrapper
 	public int getCommerceInventoryWarehouseRelsCount() {
 		return _commerceInventoryWarehouseRelLocalService.
 			getCommerceInventoryWarehouseRelsCount();
-	}
-
-	@Override
-	public int getCommerceInventoryWarehouseRelsCount(
-		long commerceInventoryWarehouseId) {
-
-		return _commerceInventoryWarehouseRelLocalService.
-			getCommerceInventoryWarehouseRelsCount(
-				commerceInventoryWarehouseId);
-	}
-
-	@Override
-	public int getCommerceInventoryWarehouseRelsCount(
-		String className, long commerceInventoryWarehouseId) {
-
-		return _commerceInventoryWarehouseRelLocalService.
-			getCommerceInventoryWarehouseRelsCount(
-				className, commerceInventoryWarehouseId);
 	}
 
 	@Override
@@ -553,4 +485,4 @@ public class CommerceInventoryWarehouseRelLocalServiceWrapper
 		_commerceInventoryWarehouseRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-573298322
+// LIFERAY-SERVICE-BUILDER-HASH:916231167

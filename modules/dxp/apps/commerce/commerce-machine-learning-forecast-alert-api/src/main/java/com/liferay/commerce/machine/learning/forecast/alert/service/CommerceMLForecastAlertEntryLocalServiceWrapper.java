@@ -279,59 +279,11 @@ public class CommerceMLForecastAlertEntryLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List
-		<com.liferay.commerce.machine.learning.forecast.alert.model.
-			CommerceMLForecastAlertEntry>
-				getAboveThresholdCommerceMLForecastAlertEntries(
-					long companyId, long[] commerceAccountIds,
-					double relativeChange, int status, int start, int end) {
-
-		return _commerceMLForecastAlertEntryLocalService.
-			getAboveThresholdCommerceMLForecastAlertEntries(
-				companyId, commerceAccountIds, relativeChange, status, start,
-				end);
-	}
-
-	@Override
-	public int getAboveThresholdCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, double relativeChange,
-		int status) {
-
-		return _commerceMLForecastAlertEntryLocalService.
-			getAboveThresholdCommerceMLForecastAlertEntriesCount(
-				companyId, commerceAccountIds, relativeChange, status);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
 		return _commerceMLForecastAlertEntryLocalService.
 			getActionableDynamicQuery();
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.machine.learning.forecast.alert.model.
-			CommerceMLForecastAlertEntry>
-				getBelowThresholdCommerceMLForecastAlertEntries(
-					long companyId, long[] commerceAccountIds,
-					double relativeChange, int status, int start, int end) {
-
-		return _commerceMLForecastAlertEntryLocalService.
-			getBelowThresholdCommerceMLForecastAlertEntries(
-				companyId, commerceAccountIds, relativeChange, status, start,
-				end);
-	}
-
-	@Override
-	public int getBelowThresholdCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, double relativeChange,
-		int status) {
-
-		return _commerceMLForecastAlertEntryLocalService.
-			getBelowThresholdCommerceMLForecastAlertEntriesCount(
-				companyId, commerceAccountIds, relativeChange, status);
 	}
 
 	/**
@@ -355,18 +307,6 @@ public class CommerceMLForecastAlertEntryLocalServiceWrapper
 			getCommerceMLForecastAlertEntries(start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.machine.learning.forecast.alert.model.
-			CommerceMLForecastAlertEntry> getCommerceMLForecastAlertEntries(
-				long companyId, long[] commerceAccountIds, int status,
-				int start, int end) {
-
-		return _commerceMLForecastAlertEntryLocalService.
-			getCommerceMLForecastAlertEntries(
-				companyId, commerceAccountIds, status, start, end);
-	}
-
 	/**
 	 * Returns the number of commerce ml forecast alert entries.
 	 *
@@ -376,15 +316,6 @@ public class CommerceMLForecastAlertEntryLocalServiceWrapper
 	public int getCommerceMLForecastAlertEntriesCount() {
 		return _commerceMLForecastAlertEntryLocalService.
 			getCommerceMLForecastAlertEntriesCount();
-	}
-
-	@Override
-	public int getCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, int status) {
-
-		return _commerceMLForecastAlertEntryLocalService.
-			getCommerceMLForecastAlertEntriesCount(
-				companyId, commerceAccountIds, status);
 	}
 
 	/**
@@ -517,4 +448,4 @@ public class CommerceMLForecastAlertEntryLocalServiceWrapper
 		_commerceMLForecastAlertEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1359346605
+// LIFERAY-SERVICE-BUILDER-HASH:-135402568
