@@ -71,7 +71,7 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 
 		if (commerceChannel == null) {
 			throw new NoSuchChannelException(
-				"Unable to find product with external reference code " +
+				"Unable to find channel with external reference code " +
 					externalReferenceCode);
 		}
 
@@ -114,7 +114,7 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 
 		if (commerceChannel == null) {
 			throw new NoSuchChannelException(
-				"Unable to find product with external reference code " +
+				"Unable to find channel with external reference code " +
 					externalReferenceCode);
 		}
 
@@ -196,7 +196,7 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 
 		if (commerceChannel == null) {
 			throw new NoSuchChannelException(
-				"Unable to find product with external reference code " +
+				"Unable to find channel with external reference code " +
 					externalReferenceCode);
 		}
 
