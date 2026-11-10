@@ -25,6 +25,7 @@ import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.exception.ObjectEntryCountException;
+import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.builder.PicklistObjectFieldBuilder;
 import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
@@ -47,7 +48,6 @@ import com.liferay.object.tree.Node;
 import com.liferay.object.tree.Tree;
 import com.liferay.object.tree.constants.TreeConstants;
 import com.liferay.petra.function.UnsafeBiFunction;
-import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -183,7 +183,36 @@ public class ObjectEntryServiceTest {
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 					ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
-					"Last Name", "lastName", false)),
+					"Last Name", "lastName", false),
+				new AttachmentObjectFieldBuilder(
+				).labelMap(
+					RandomTestUtil.randomLocaleStringMap()
+				).localized(
+					true
+				).name(
+					"localizedFile"
+				).objectFieldSettings(
+					Arrays.asList(
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.
+								NAME_ACCEPTED_FILE_EXTENSIONS
+						).value(
+							"png"
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_FILE_SOURCE
+						).value(
+							ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+						).value(
+							"100"
+						).build())
+				).build()),
 			ObjectDefinitionConstants.SCOPE_SITE, TestPropsValues.getUserId());
 
 		_originalPermissionChecker =
@@ -449,109 +478,85 @@ public class ObjectEntryServiceTest {
 	@Test
 	@TestInfo("LPD-110139")
 	public void testAddObjectEntryWithAttachmentObjectField() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), _adminUser.getUserId());
-
-		serviceContext.setAddGroupPermissions(false);
-		serviceContext.setAddGuestPermissions(false);
-
-		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
-			null, _adminUser.getUserId(), _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
-			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
-
 		_setResourcePermissions(
 			_objectDefinition.getResourceName(),
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()), RoleConstants.USER,
 			new String[] {ObjectActionKeys.ADD_OBJECT_ENTRY});
 
-		ObjectEntry objectEntry = _addObjectEntry(_user);
+		FileEntry fileEntry1 = _addFileEntry();
 
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
+		_setUser(_user);
 
-			// Cannot reference a file entry without view permission
-
-			Map<String, Serializable> values =
-				HashMapBuilder.<String, Serializable>put(
-					"file", fileEntry.getFileEntryId()
-				).build();
-
-			_assertFailureWithoutViewPermission(
-				() -> _objectEntryService.addObjectEntry(
-					_group.getGroupId(),
-					_objectDefinition.getObjectDefinitionId(),
-					ObjectEntryFolderConstants.
-						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-					null, values,
-					ServiceContextTestUtil.getServiceContext(
-						_group.getGroupId(), _user.getUserId())));
-			_assertFailureWithoutViewPermission(
-				() -> _objectEntryService.partialUpdateObjectEntry(
-					objectEntry.getObjectEntryId(),
-					ObjectEntryFolderConstants.
-						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-					values,
-					ServiceContextTestUtil.getServiceContext(
-						_group.getGroupId(), _user.getUserId())));
-			_assertFailureWithoutViewPermission(
-				() -> _objectEntryService.updateObjectEntry(
-					objectEntry.getObjectEntryId(),
-					ObjectEntryFolderConstants.
-						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-					values,
-					ServiceContextTestUtil.getServiceContext(
-						_group.getGroupId(), _user.getUserId())));
-
-			// Can reference a file entry with view permission
-
-			_setResourcePermissions(
-				DLFileEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(fileEntry.getFileEntryId()), RoleConstants.USER,
-				new String[] {ActionKeys.VIEW});
-
-			ObjectEntry updatedObjectEntry =
-				_objectEntryService.updateObjectEntry(
-					objectEntry.getObjectEntryId(),
-					ObjectEntryFolderConstants.
-						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-					values,
-					ServiceContextTestUtil.getServiceContext(
-						_group.getGroupId(), _user.getUserId()));
-
-			Assert.assertEquals(
-				fileEntry.getFileEntryId(),
-				MapUtil.getLong(updatedObjectEntry.getValues(), "file"));
-
-			// Can keep a referenced file entry after losing view permission
-
-			_removeResourcePermission(
-				DLFileEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(fileEntry.getFileEntryId()), RoleConstants.USER,
-				ActionKeys.VIEW);
-
-			_objectEntryService.updateObjectEntry(
-				objectEntry.getObjectEntryId(),
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
+				" permission for ", DLFileEntry.class.getName(),
+				StringPool.SPACE, fileEntry1.getFileEntryId()),
+			() -> _objectEntryService.addObjectEntry(
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
 				HashMapBuilder.<String, Serializable>put(
-					"file", fileEntry.getFileEntryId()
-				).put(
-					"firstName", RandomTestUtil.randomString()
+					"file", fileEntry1.getFileEntryId()
 				).build(),
 				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), _user.getUserId()));
-		}
-		finally {
-			_removeResourcePermission(
-				_objectDefinition.getResourceName(),
-				ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(TestPropsValues.getCompanyId()),
-				RoleConstants.USER, ObjectActionKeys.ADD_OBJECT_ENTRY);
-		}
+					_group.getGroupId(), _user.getUserId())));
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
+				" permission for ", DLFileEntry.class.getName(),
+				StringPool.SPACE, fileEntry1.getFileEntryId()),
+			() -> _objectEntryService.addObjectEntry(
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					"localizedFile_i18n",
+					(Serializable)HashMapBuilder.<String, Serializable>put(
+						LocaleUtil.toLanguageId(LocaleUtil.US),
+						fileEntry1.getFileEntryId()
+					).build()
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId())));
+
+		FileEntry fileEntry2 = _addFileEntry();
+
+		_setResourcePermissions(
+			DLFileEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(fileEntry2.getFileEntryId()), RoleConstants.USER,
+			new String[] {ActionKeys.VIEW});
+
+		ObjectEntry objectEntry = _objectEntryService.addObjectEntry(
+			_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"file", fileEntry2.getFileEntryId()
+			).put(
+				"localizedFile_i18n",
+				(Serializable)HashMapBuilder.<String, Serializable>put(
+					LocaleUtil.toLanguageId(LocaleUtil.US),
+					fileEntry2.getFileEntryId()
+				).build()
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId()));
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Assert.assertEquals(
+			fileEntry2.getFileEntryId(), MapUtil.getLong(values, "file"));
+		Assert.assertEquals(
+			fileEntry2.getFileEntryId(),
+			MapUtil.getLong(
+				(Map<String, Serializable>)values.get("localizedFile_i18n"),
+				LocaleUtil.toLanguageId(LocaleUtil.US)));
 	}
 
 	@Test
@@ -606,6 +611,86 @@ public class ObjectEntryServiceTest {
 				).build(),
 				new ServiceContext());
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-110139")
+	public void testAddOrUpdateObjectEntryWithAttachmentObjectField()
+		throws Exception {
+
+		_setResourcePermissions(
+			_objectDefinition.getResourceName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), RoleConstants.USER,
+			new String[] {ObjectActionKeys.ADD_OBJECT_ENTRY});
+
+		FileEntry fileEntry = _addFileEntry();
+
+		_setUser(_user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
+				" permission for ", DLFileEntry.class.getName(),
+				StringPool.SPACE, fileEntry.getFileEntryId()),
+			() -> _objectEntryService.addOrUpdateObjectEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				_objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"file", fileEntry.getFileEntryId()
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId())));
+
+		ObjectEntry objectEntry = _addObjectEntry(_user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
+				" permission for ", DLFileEntry.class.getName(),
+				StringPool.SPACE, fileEntry.getFileEntryId()),
+			() -> _objectEntryService.addOrUpdateObjectEntry(
+				objectEntry.getExternalReferenceCode(), _group.getGroupId(),
+				_objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"file", fileEntry.getFileEntryId()
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId())));
+	}
+
+	@Test
+	@TestInfo("LPD-110139")
+	public void testCopyObjectEntryWithAttachmentObjectField()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		ObjectEntry objectEntry = _addObjectEntry(_user);
+
+		_setUser(_user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
+				" permission for ", DLFileEntry.class.getName(),
+				StringPool.SPACE, fileEntry.getFileEntryId()),
+			() -> _objectEntryService.copyObjectEntry(
+				objectEntry.getObjectEntryId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"file", fileEntry.getFileEntryId()
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId())));
 	}
 
 	@Test
@@ -1404,6 +1489,62 @@ public class ObjectEntryServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110139")
+	public void testMoveObjectEntryWithAttachmentObjectField()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		ObjectEntry objectEntry = _addObjectEntry(_user);
+
+		_setUser(_user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
+				" permission for ", DLFileEntry.class.getName(),
+				StringPool.SPACE, fileEntry.getFileEntryId()),
+			() -> _objectEntryService.moveObjectEntry(
+				objectEntry.getObjectEntryId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"file", fileEntry.getFileEntryId()
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId())));
+	}
+
+	@Test
+	@TestInfo("LPD-110139")
+	public void testPartialUpdateObjectEntryWithAttachmentObjectField()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		ObjectEntry objectEntry = _addObjectEntry(_user);
+
+		_setUser(_user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
+				" permission for ", DLFileEntry.class.getName(),
+				StringPool.SPACE, fileEntry.getFileEntryId()),
+			() -> _objectEntryService.partialUpdateObjectEntry(
+				objectEntry.getObjectEntryId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"file", fileEntry.getFileEntryId()
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId())));
+	}
+
+	@Test
 	public void testRestoreObjectEntryFromTrash() throws Exception {
 		try {
 			_testRestoreObjectEntryFromTrash(_adminUser, _user);
@@ -1508,6 +1649,60 @@ public class ObjectEntryServiceTest {
 				" permission for ", _objectDefinition.getClassName(),
 				StringPool.SPACE, objectEntry3.getObjectEntryId()),
 			() -> _testUpdateObjectEntry(objectEntry3, _user));
+	}
+
+	@Test
+	@TestInfo("LPD-110139")
+	public void testUpdateObjectEntryWithAttachmentObjectField()
+		throws Exception {
+
+		FileEntry fileEntry1 = _addFileEntry();
+
+		ObjectEntry objectEntry1 = _addObjectEntry(_user);
+
+		_setUser(_user);
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have ", ActionKeys.VIEW,
+				" permission for ", DLFileEntry.class.getName(),
+				StringPool.SPACE, fileEntry1.getFileEntryId()),
+			() -> _objectEntryService.updateObjectEntry(
+				objectEntry1.getObjectEntryId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"file", fileEntry1.getFileEntryId()
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), _user.getUserId())));
+
+		FileEntry fileEntry2 = _addFileEntry();
+
+		ObjectEntry objectEntry2 = _objectEntryLocalService.addObjectEntry(
+			_group.getGroupId(), _user.getUserId(),
+			_objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"file", fileEntry2.getFileEntryId()
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId()));
+
+		objectEntry2 = _objectEntryService.updateObjectEntry(
+			objectEntry2.getObjectEntryId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			HashMapBuilder.<String, Serializable>put(
+				"file", fileEntry2.getFileEntryId()
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId()));
+
+		Assert.assertEquals(
+			fileEntry2.getFileEntryId(),
+			MapUtil.getLong(objectEntry2.getValues(), "file"));
 	}
 
 	@Test
@@ -1700,6 +1895,21 @@ public class ObjectEntryServiceTest {
 		}
 	}
 
+	private FileEntry _addFileEntry() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _adminUser.getUserId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		return _dlAppLocalService.addFileEntry(
+			null, _adminUser.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
+	}
+
 	private ObjectEntry _addObjectEntry(User user) throws Exception {
 		return _objectEntryLocalService.addObjectEntry(
 			_group.getGroupId(), user.getUserId(),
@@ -1724,18 +1934,6 @@ public class ObjectEntryServiceTest {
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()),
 			guestRole.getRoleId(), ObjectActionKeys.ADD_OBJECT_ENTRY);
-	}
-
-	private void _assertFailureWithoutViewPermission(
-		UnsafeRunnable<Exception> unsafeRunnable) {
-
-		PrincipalException.MustHavePermission mustHavePermission =
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				unsafeRunnable::run);
-
-		Assert.assertArrayEquals(
-			new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
 	}
 
 	private void _assertObjectEntriesCount(int count, int status) {
