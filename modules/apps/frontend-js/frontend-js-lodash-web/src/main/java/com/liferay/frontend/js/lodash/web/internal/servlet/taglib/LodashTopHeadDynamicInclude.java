@@ -24,6 +24,7 @@ import java.util.Map;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
@@ -32,6 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.frontend.js.lodash.web.internal.configuration.JSLodashConfiguration",
+	configurationPolicy = ConfigurationPolicy.REQUIRE,
 	property = "dynamic.include.key=/html/common/themes/top_head.jsp#pre",
 	service = DynamicInclude.class
 )
