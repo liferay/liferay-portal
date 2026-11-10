@@ -1680,13 +1680,10 @@ public class DisplayPageTemplateResourceTest
 			_getDisplayPageTemplateResource("thumbnailURLReference");
 
 		DisplayPageTemplate postDisplayPageTemplate =
-			URLFetchSecurityCompanyConfigurationUtil.
-				swapURLLocalNetworkAccessEnabled(
-					true,
-					() ->
-						displayPageTemplateResource.postSiteDisplayPageTemplate(
-							testGroup.getExternalReferenceCode(),
-							displayPageTemplate));
+			URLFetchSecurityCompanyConfigurationUtil.swap(
+				true,
+				() -> displayPageTemplateResource.postSiteDisplayPageTemplate(
+					testGroup.getExternalReferenceCode(), displayPageTemplate));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -1716,14 +1713,12 @@ public class DisplayPageTemplateResourceTest
 			_getDisplayPageTemplateResource("thumbnailURLReference");
 
 		DisplayPageTemplate putDisplayPageTemplate =
-			URLFetchSecurityCompanyConfigurationUtil.
-				swapURLLocalNetworkAccessEnabled(
-					true,
-					() ->
-						displayPageTemplateResource.putSiteDisplayPageTemplate(
-							testGroup.getExternalReferenceCode(),
-							displayPageTemplate.getExternalReferenceCode(),
-							displayPageTemplate));
+			URLFetchSecurityCompanyConfigurationUtil.swap(
+				true,
+				() -> displayPageTemplateResource.putSiteDisplayPageTemplate(
+					testGroup.getExternalReferenceCode(),
+					displayPageTemplate.getExternalReferenceCode(),
+					displayPageTemplate));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =

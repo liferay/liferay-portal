@@ -1216,11 +1216,10 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
 		MasterPage postMasterPage =
-			URLFetchSecurityCompanyConfigurationUtil.
-				swapURLLocalNetworkAccessEnabled(
-					true,
-					() -> masterPageResource.postSiteMasterPage(
-						testGroup.getExternalReferenceCode(), masterPage));
+			URLFetchSecurityCompanyConfigurationUtil.swap(
+				true,
+				() -> masterPageResource.postSiteMasterPage(
+					testGroup.getExternalReferenceCode(), masterPage));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -1246,12 +1245,11 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
 		MasterPage putMasterPage =
-			URLFetchSecurityCompanyConfigurationUtil.
-				swapURLLocalNetworkAccessEnabled(
-					true,
-					() -> masterPageResource.putSiteMasterPage(
-						testGroup.getExternalReferenceCode(),
-						masterPage.getExternalReferenceCode(), masterPage));
+			URLFetchSecurityCompanyConfigurationUtil.swap(
+				true,
+				() -> masterPageResource.putSiteMasterPage(
+					testGroup.getExternalReferenceCode(),
+					masterPage.getExternalReferenceCode(), masterPage));
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =

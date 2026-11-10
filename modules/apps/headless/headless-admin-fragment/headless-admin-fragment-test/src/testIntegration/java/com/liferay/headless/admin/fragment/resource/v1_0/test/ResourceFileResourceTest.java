@@ -802,11 +802,10 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		resourceFile.setFileURLReference(fileURLReference);
 
 		ResourceFile postResourceFile =
-			URLFetchSecurityCompanyConfigurationUtil.
-				swapURLLocalNetworkAccessEnabled(
-					() -> resourceFileResource.postSiteResourceFile(
-						testGroup.getExternalReferenceCode(), resourceFile),
-					true);
+			URLFetchSecurityCompanyConfigurationUtil.swap(
+				() -> resourceFileResource.postSiteResourceFile(
+					testGroup.getExternalReferenceCode(), resourceFile),
+				true);
 
 		_assertContent(
 			expectedBytes, postResourceFile.getExternalReferenceCode(),
@@ -1764,15 +1763,14 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		String url = "http://127.0.0.1:1/" + RandomTestUtil.randomString();
 
-		URLFetchSecurityCompanyConfigurationUtil.
-			swapURLLocalNetworkAccessEnabled(
-				() -> {
-					_testPostSiteResourceFileFileURLReferenceProblemException(
-						"Unable to download file from " + url, url);
+		URLFetchSecurityCompanyConfigurationUtil.swap(
+			() -> {
+				_testPostSiteResourceFileFileURLReferenceProblemException(
+					"Unable to download file from " + url, url);
 
-					return null;
-				},
-				true);
+				return null;
+			},
+			true);
 	}
 
 	private void _testPostSiteResourceFileFileURLReferenceURLUnsupportedProtocolProblemException()
@@ -2304,13 +2302,12 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		updatedResourceFile.setFileURLReference(fileURLReference);
 
-		URLFetchSecurityCompanyConfigurationUtil.
-			swapURLLocalNetworkAccessEnabled(
-				() -> resourceFileResource.putSiteResourceFile(
-					testGroup.getExternalReferenceCode(),
-					postResourceFile.getExternalReferenceCode(),
-					updatedResourceFile),
-				true);
+		URLFetchSecurityCompanyConfigurationUtil.swap(
+			() -> resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				postResourceFile.getExternalReferenceCode(),
+				updatedResourceFile),
+			true);
 
 		_assertContent(
 			_content2Bytes, postResourceFile.getExternalReferenceCode(),

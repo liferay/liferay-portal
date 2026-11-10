@@ -1264,11 +1264,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 		fragment.setThumbnailURLReference(thumbnailURLReference);
 
-		Fragment postFragment =
-			URLFetchSecurityCompanyConfigurationUtil.
-				swapURLLocalNetworkAccessEnabled(
-					() -> _postSiteFragment(fragment, "thumbnailURLReference"),
-					true);
+		Fragment postFragment = URLFetchSecurityCompanyConfigurationUtil.swap(
+			() -> _postSiteFragment(fragment, "thumbnailURLReference"), true);
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -1319,13 +1316,11 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 		fragment.setThumbnailURLReference(thumbnailURLReference);
 
-		Fragment putFragment =
-			URLFetchSecurityCompanyConfigurationUtil.
-				swapURLLocalNetworkAccessEnabled(
-					() -> _putSiteFragment(
-						fragment.getExternalReferenceCode(), fragment,
-						"thumbnailURLReference"),
-					true);
+		Fragment putFragment = URLFetchSecurityCompanyConfigurationUtil.swap(
+			() -> _putSiteFragment(
+				fragment.getExternalReferenceCode(), fragment,
+				"thumbnailURLReference"),
+			true);
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =
