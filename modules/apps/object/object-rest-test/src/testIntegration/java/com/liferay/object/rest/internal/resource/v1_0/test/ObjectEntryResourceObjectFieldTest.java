@@ -665,7 +665,7 @@ public class ObjectEntryResourceObjectFieldTest
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId(), true,
 				ObjectValidationRuleConstants.ENGINE_TYPE_DDM,
-				LocalizedMapUtil.getLocalizedMap("Field must not be empty"),
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectValidationRuleConstants.OUTPUT_TYPE_FULL_VALIDATION,
 				"not(isEmpty(location))", false, Collections.emptyList());

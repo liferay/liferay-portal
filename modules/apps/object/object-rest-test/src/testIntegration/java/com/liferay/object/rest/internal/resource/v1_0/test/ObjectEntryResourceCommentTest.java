@@ -251,7 +251,7 @@ public class ObjectEntryResourceCommentTest
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 						ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-						"comments", "comments", false)),
+						RandomTestUtil.randomString(), "comments", false)),
 				ObjectDefinitionConstants.SCOPE_COMPANY);
 
 		_enableComments(objectDefinition);

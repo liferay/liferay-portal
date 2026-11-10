@@ -136,7 +136,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value1"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
 				fileEntry.getFileEntryId()
@@ -167,7 +167,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value2"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
 				fileEntry.getFileEntryId()
@@ -220,7 +220,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value1"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 				dlFileEntry.getFileEntryId()
@@ -270,7 +270,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value1"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 				dlFileEntry.getFileEntryId()
@@ -286,7 +286,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value1"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 				dlFileEntry.getFileEntryId()
@@ -315,7 +315,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value1"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 				pdfDLFileEntry.getFileEntryId()

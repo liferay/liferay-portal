@@ -1084,7 +1084,7 @@ public class ObjectEntryResourcePermissionTest
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).toString(),
 			getEndpoint(objectDefinition, testGroupId), Http.Method.POST);
 

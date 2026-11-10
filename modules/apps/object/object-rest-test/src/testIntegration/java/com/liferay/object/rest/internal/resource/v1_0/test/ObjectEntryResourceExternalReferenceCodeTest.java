@@ -83,7 +83,7 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
 						ObjectFieldConstants.DB_TYPE_BOOLEAN, true, false, null,
-						"Test Field", "testField", true)),
+						RandomTestUtil.randomString(), "testField", true)),
 				Collections.emptyList(), new ServiceContext());
 
 		objectDefinitionLocalService.publishCustomObjectDefinition(

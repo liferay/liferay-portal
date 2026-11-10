@@ -422,7 +422,9 @@ public class ObjectEntryResourceValidationTest
 					0, objectDefinition.getObjectDefinitionId(),
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 					ObjectFieldConstants.DB_TYPE_STRING, null, true, false,
-					null, LocalizedMapUtil.getLocalizedMap("Name Required"),
+					null,
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString()),
 					false, "nameRequired", null, null, true, false,
 					Arrays.asList(
 						new ObjectFieldSettingBuilder(

@@ -94,7 +94,7 @@ public class ObjectEntryResourceCategorizationTest
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"keywords", JSONUtil.putAll(tagName1, tagName2)
 			).toString(),
@@ -246,7 +246,7 @@ public class ObjectEntryResourceCategorizationTest
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"taxonomyCategoryIds",
 				JSONUtil.putAll(
@@ -279,7 +279,7 @@ public class ObjectEntryResourceCategorizationTest
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"keywords", JSONUtil.putAll(tagName1, tagName2)
 			).toString(),
@@ -327,7 +327,7 @@ public class ObjectEntryResourceCategorizationTest
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"taxonomyCategoryIds",
 				JSONUtil.putAll(
@@ -547,7 +547,7 @@ public class ObjectEntryResourceCategorizationTest
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, "value"
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"taxonomyCategoryIds",
 				JSONUtil.toJSONArray(

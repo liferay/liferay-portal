@@ -1124,25 +1124,25 @@ public class ObjectEntryResourceNestedFieldsTest
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
 						ObjectFieldConstants.DB_TYPE_BOOLEAN, true, false, null,
-						"Author of Gospel", "authorOfGospel", false),
+						RandomTestUtil.randomString(), "authorOfGospel", false),
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 						ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-						"Email Address", "emailAddress", false),
+						RandomTestUtil.randomString(), "emailAddress", false),
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
 						ObjectFieldConstants.DB_TYPE_DOUBLE, true, false, null,
-						"Height", "height", false),
+						RandomTestUtil.randomString(), "height", false),
 					ObjectFieldUtil.createObjectField(
 						listTypeDefinition.getListTypeDefinitionId(),
 						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST, null,
 						ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
-						"List Type Entry Key", "listTypeEntryKey", false,
-						false),
+						RandomTestUtil.randomString(), "listTypeEntryKey",
+						false, false),
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
 						ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-						"Upload", "upload",
+						RandomTestUtil.randomString(), "upload",
 						Arrays.asList(
 							new ObjectFieldSettingBuilder(
 							).name(
