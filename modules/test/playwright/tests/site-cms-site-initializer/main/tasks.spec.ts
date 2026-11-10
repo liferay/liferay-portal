@@ -329,3 +329,48 @@ test(
 		});
 	}
 );
+
+test(
+	'Shows the Content Marketing Platform banner until the user dismisses it',
+	{tag: '@LPD-113939'},
+	async ({page, viewTasksPage}) => {
+		const banner = page.getByRole('region', {
+			name: 'Run Smarter Campaigns With Liferay Content Marketing Platform',
+		});
+
+		function resetBanner() {
+			return page.evaluate(() =>
+				Liferay.Util.Session.set(
+					'com_liferay_site_cms_site_initializer_cmpMarketplaceBannerDismissed',
+					'false'
+				)
+			);
+		}
+
+		await viewTasksPage.goto();
+		await resetBanner();
+		await viewTasksPage.goto();
+
+		await expect(banner).toBeVisible();
+
+		const marketplaceLink = banner.getByRole('link', {
+			name: 'Explore Marketplace (Opens a new window)',
+		});
+
+		await expect(marketplaceLink).toHaveAttribute(
+			'href',
+			'https://marketplace.liferay.com/p/content-marketing-platform?utm_medium=referral&utm_source=ft-cms&utm_content=cmp&utm_cid=701VO00001AIWBFYA5'
+		);
+		await expect(marketplaceLink).toHaveAttribute('target', '_blank');
+
+		await banner.getByRole('button', {name: 'Close'}).click();
+
+		await expect(banner).toBeHidden();
+
+		await viewTasksPage.goto();
+
+		await expect(banner).toBeHidden();
+
+		await resetBanner();
+	}
+);
