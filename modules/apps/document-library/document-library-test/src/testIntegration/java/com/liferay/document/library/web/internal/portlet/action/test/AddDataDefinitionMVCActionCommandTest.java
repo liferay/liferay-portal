@@ -68,6 +68,8 @@ public class AddDataDefinitionMVCActionCommandTest {
 			new MockLiferayPortletActionRequest();
 
 		mockLiferayPortletActionRequest.addParameter(
+			ActionRequest.ACTION_NAME, "/document_library/add_data_definition");
+		mockLiferayPortletActionRequest.addParameter(
 			"dataDefinition", dataDefinition.toString());
 		mockLiferayPortletActionRequest.addParameter(
 			"dataLayout",
@@ -76,8 +78,6 @@ public class AddDataDefinitionMVCActionCommandTest {
 			"groupId", String.valueOf(_group.getGroupId()));
 		mockLiferayPortletActionRequest.addParameter(
 			"redirect", "/" + RandomTestUtil.randomString());
-		mockLiferayPortletActionRequest.addParameter(
-			ActionRequest.ACTION_NAME, "/document_library/add_data_definition");
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
