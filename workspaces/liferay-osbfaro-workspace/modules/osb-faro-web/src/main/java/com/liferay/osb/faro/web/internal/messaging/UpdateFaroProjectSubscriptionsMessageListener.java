@@ -7,10 +7,7 @@ package com.liferay.osb.faro.web.internal.messaging;
 
 import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
-import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
-import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroProject;
-import com.liferay.osb.faro.model.FaroProjectUsage;
 import com.liferay.osb.faro.provisioning.client.ProvisioningClient;
 import com.liferay.osb.faro.provisioning.client.constants.ProductConstants;
 import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntry;
@@ -18,9 +15,9 @@ import com.liferay.osb.faro.provisioning.client.model.OSBOfferingEntry;
 import com.liferay.osb.faro.provisioning.client.model.display.main.FaroSubscriptionDisplay;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroProjectUsageLocalService;
-import com.liferay.osb.faro.util.DateUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.constants.FaroMessageDestinationNames;
+import com.liferay.osb.faro.web.internal.helper.ProjectUsageHelper;
 import com.liferay.osb.faro.web.internal.messaging.destination.creator.DestinationCreator;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.osb.faro.web.internal.util.OSBAccountEntryUtil;
@@ -44,8 +41,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 
 import org.osgi.framework.BundleContext;
@@ -125,23 +121,13 @@ public class UpdateFaroProjectSubscriptionsMessageListener
 
 		date = calendar.getTime();
 
-		Map<String, Map<String, ProjectUsageMetric>> projectUsageMetricsMap =
-			new HashMap<>();
+		List<FaroProject> faroProjects =
+			_faroProjectLocalService.getFaroProjects(
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
-		for (FaroProject faroProject :
-				_faroProjectLocalService.getFaroProjects(
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+		_projectUsageHelper.addOrUpdateFaroProjectUsages(date, faroProjects);
 
-			try {
-				_addOrUpdateFaroProjectUsage(
-					date, faroProject, projectUsageMetricsMap);
-			}
-			catch (Exception exception) {
-				_log.error(
-					"Unable to add Faro project usage for " + faroProject,
-					exception);
-			}
-
+		for (FaroProject faroProject : faroProjects) {
 			try {
 				OSBAccountEntry osbAccountEntry = _getOSBAccountEntry(
 					faroProject);
@@ -188,78 +174,6 @@ public class UpdateFaroProjectSubscriptionsMessageListener
 					FaroProjectConstants.STATE_UNAVAILABLE);
 			}
 		}
-	}
-
-	private void _addOrUpdateFaroProjectUsage(
-			Date date, FaroProject faroProject,
-			Map<String, Map<String, ProjectUsageMetric>> projectUsageMetricsMap)
-		throws Exception {
-
-		Map<String, ProjectUsageMetric> projectUsageMetrics =
-			projectUsageMetricsMap.get(faroProject.getServerLocation());
-
-		if (projectUsageMetrics == null) {
-			projectUsageMetrics = new HashMap<>();
-
-			Results<ProjectUsageMetric> results =
-				_contactsEngineClient.getProjectUsageMetrics(faroProject, date);
-
-			for (ProjectUsageMetric projectUsageMetric : results.getItems()) {
-				projectUsageMetrics.put(
-					projectUsageMetric.getProjectId(), projectUsageMetric);
-			}
-
-			projectUsageMetricsMap.put(
-				faroProject.getServerLocation(), projectUsageMetrics);
-		}
-
-		ProjectUsageMetric projectUsageMetric = projectUsageMetrics.get(
-			faroProject.getProjectId());
-
-		if (projectUsageMetric == null) {
-			return;
-		}
-
-		FaroProjectUsage faroProjectUsage =
-			_faroProjectUsageLocalService.fetchFaroProjectUsage(
-				faroProject.getFaroProjectId(), date);
-
-		if (faroProjectUsage == null) {
-			_faroProjectUsageLocalService.addFaroProjectUsage(
-				faroProject.getCompanyId(), 0,
-				projectUsageMetric.getActiveLogicalBytes(),
-				projectUsageMetric.getAnonymousIndividualsCount(),
-				projectUsageMetric.getEventsCount(),
-				faroProject.getFaroProjectId(),
-				projectUsageMetric.getKnownIndividualsCount(),
-				projectUsageMetric.getLongTermLogicalBytes(),
-				_getMonthDateKey(date),
-				projectUsageMetric.getOnDemandBytesBilled(),
-				projectUsageMetric.getPageViewsCount(),
-				projectUsageMetric.getReservationSlotMs(), date);
-		}
-		else {
-			_faroProjectUsageLocalService.updateFaroProjectUsage(
-				faroProjectUsage.getFaroProjectUsageId(),
-				projectUsageMetric.getActiveLogicalBytes(),
-				projectUsageMetric.getAnonymousIndividualsCount(),
-				projectUsageMetric.getEventsCount(),
-				projectUsageMetric.getKnownIndividualsCount(),
-				projectUsageMetric.getLongTermLogicalBytes(),
-				projectUsageMetric.getOnDemandBytesBilled(),
-				projectUsageMetric.getPageViewsCount(),
-				projectUsageMetric.getReservationSlotMs());
-		}
-	}
-
-	private String _getMonthDateKey(Date date) {
-		Calendar calendar = Calendar.getInstance();
-
-		calendar.setTime(date);
-
-		calendar.set(Calendar.DAY_OF_MONTH, 1);
-
-		return DateUtil.formatDate(calendar.getTime(), DateUtil.PATTERN_DATE);
 	}
 
 	private OSBAccountEntry _getOSBAccountEntry(FaroProject faroProject)
@@ -356,6 +270,9 @@ public class UpdateFaroProjectSubscriptionsMessageListener
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private ProjectUsageHelper _projectUsageHelper;
 
 	@Reference(
 		policy = ReferencePolicy.DYNAMIC,

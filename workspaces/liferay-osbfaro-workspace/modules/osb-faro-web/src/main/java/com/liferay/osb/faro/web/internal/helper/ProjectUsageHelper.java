@@ -12,12 +12,15 @@ import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.model.ApiUsage;
 import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
 import com.liferay.osb.faro.engine.client.model.ProjectMetric;
+import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroDataSourceUsage;
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.model.FaroProjectUsage;
 import com.liferay.osb.faro.provisioning.client.model.display.main.FaroSubscriptionDisplay;
 import com.liferay.osb.faro.service.FaroDataSourceUsageLocalService;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
+import com.liferay.osb.faro.service.FaroProjectUsageLocalService;
 import com.liferay.osb.faro.util.DateUtil;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ApiUsageMetricDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsage;
@@ -37,6 +40,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -51,6 +55,35 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = ProjectUsageHelper.class)
 public class ProjectUsageHelper {
+
+	public void addOrUpdateFaroProjectUsages(
+		Date date, List<FaroProject> faroProjects) {
+
+		Map<String, Map<String, ProjectUsageMetric>> projectUsageMetricsMap =
+			_getProjectUsageMetricsMap(date, faroProjects);
+
+		for (FaroProject faroProject : faroProjects) {
+			Map<String, ProjectUsageMetric> projectUsageMetricMap =
+				projectUsageMetricsMap.get(faroProject.getServerLocation());
+
+			ProjectUsageMetric projectUsageMetric = projectUsageMetricMap.get(
+				faroProject.getProjectId());
+
+			if (projectUsageMetric == null) {
+				continue;
+			}
+
+			try {
+				_addOrUpdateFaroProjectUsage(
+					date, faroProject, projectUsageMetric);
+			}
+			catch (Exception exception) {
+				_log.error(
+					"Unable to add Faro project usage for " + faroProject,
+					exception);
+			}
+		}
+	}
 
 	public Page<DataSourceUsageMetricDisplay> getDataSourceUsageMetricDisplays(
 			String endDateString, int page, int pageSize,
@@ -93,6 +126,43 @@ public class ProjectUsageHelper {
 		return Page.of(
 			dataSourceUsageMetricDisplays, Pagination.of(page, pageSize),
 			_faroProjectLocalService.getFaroProjectsCount());
+	}
+
+	private void _addOrUpdateFaroProjectUsage(
+			Date date, FaroProject faroProject,
+			ProjectUsageMetric projectUsageMetric)
+		throws Exception {
+
+		FaroProjectUsage faroProjectUsage =
+			_faroProjectUsageLocalService.fetchFaroProjectUsage(
+				faroProject.getFaroProjectId(), date);
+
+		if (faroProjectUsage == null) {
+			_faroProjectUsageLocalService.addFaroProjectUsage(
+				faroProject.getCompanyId(), 0,
+				projectUsageMetric.getActiveLogicalBytes(),
+				projectUsageMetric.getAnonymousIndividualsCount(),
+				projectUsageMetric.getEventsCount(),
+				faroProject.getFaroProjectId(),
+				projectUsageMetric.getKnownIndividualsCount(),
+				projectUsageMetric.getLongTermLogicalBytes(),
+				_getMonthDateKey(date),
+				projectUsageMetric.getOnDemandBytesBilled(),
+				projectUsageMetric.getPageViewsCount(),
+				projectUsageMetric.getReservationSlotMs(), date);
+		}
+		else {
+			_faroProjectUsageLocalService.updateFaroProjectUsage(
+				faroProjectUsage.getFaroProjectUsageId(),
+				projectUsageMetric.getActiveLogicalBytes(),
+				projectUsageMetric.getAnonymousIndividualsCount(),
+				projectUsageMetric.getEventsCount(),
+				projectUsageMetric.getKnownIndividualsCount(),
+				projectUsageMetric.getLongTermLogicalBytes(),
+				projectUsageMetric.getOnDemandBytesBilled(),
+				projectUsageMetric.getPageViewsCount(),
+				projectUsageMetric.getReservationSlotMs());
+		}
 	}
 
 	private String _formatUTCDate(long time) {
@@ -246,6 +316,16 @@ public class ProjectUsageHelper {
 			faroProject.getSalesforceAccountId(), faroProject.getWeDeployKey());
 	}
 
+	private String _getMonthDateKey(Date date) {
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.setTime(date);
+
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+
+		return DateUtil.formatDate(calendar.getTime(), DateUtil.PATTERN_DATE);
+	}
+
 	private Map<String, Map<String, ProjectMetric>> _getProjectMetricsMap(
 		List<FaroProject> faroProjects) {
 
@@ -283,6 +363,47 @@ public class ProjectUsageHelper {
 		return projectMetricsMap;
 	}
 
+	private Map<String, Map<String, ProjectUsageMetric>>
+		_getProjectUsageMetricsMap(Date date, List<FaroProject> faroProjects) {
+
+		Map<String, Map<String, ProjectUsageMetric>> projectUsageMetricsMap =
+			new HashMap<>();
+
+		for (FaroProject faroProject : faroProjects) {
+			String serverLocation = faroProject.getServerLocation();
+
+			if (projectUsageMetricsMap.containsKey(serverLocation)) {
+				continue;
+			}
+
+			Map<String, ProjectUsageMetric> projectUsageMetricMap =
+				new HashMap<>();
+
+			try {
+				Results<ProjectUsageMetric> results =
+					_contactsEngineClient.getProjectUsageMetrics(
+						faroProject, date);
+
+				for (ProjectUsageMetric projectUsageMetric :
+						results.getItems()) {
+
+					projectUsageMetricMap.put(
+						projectUsageMetric.getProjectId(), projectUsageMetric);
+				}
+			}
+			catch (Exception exception) {
+				_log.error(
+					"Unable to fetch project usage metrics for project " +
+						faroProject.getProjectId(),
+					exception);
+			}
+
+			projectUsageMetricsMap.put(serverLocation, projectUsageMetricMap);
+		}
+
+		return projectUsageMetricsMap;
+	}
+
 	private Date _parseUTCDate(String dateString) {
 		LocalDate localDate = LocalDate.now(ZoneOffset.UTC);
 
@@ -311,5 +432,8 @@ public class ProjectUsageHelper {
 
 	@Reference
 	private FaroProjectLocalService _faroProjectLocalService;
+
+	@Reference
+	private FaroProjectUsageLocalService _faroProjectUsageLocalService;
 
 }

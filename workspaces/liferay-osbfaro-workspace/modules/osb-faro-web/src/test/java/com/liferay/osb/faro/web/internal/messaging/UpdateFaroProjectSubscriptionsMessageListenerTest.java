@@ -15,6 +15,7 @@ import com.liferay.osb.faro.provisioning.client.ProvisioningClient;
 import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntry;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroProjectUsageLocalService;
+import com.liferay.osb.faro.web.internal.helper.ProjectUsageHelper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -45,6 +46,12 @@ public class UpdateFaroProjectSubscriptionsMessageListenerTest {
 		);
 
 		ReflectionTestUtils.setField(
+			_projectUsageHelper, "_contactsEngineClient",
+			_contactsEngineClient);
+		ReflectionTestUtils.setField(
+			_projectUsageHelper, "_faroProjectUsageLocalService",
+			_faroProjectUsageLocalService);
+		ReflectionTestUtils.setField(
 			_updateFaroProjectSubscriptionsMessageListener,
 			"_contactsEngineClient", _contactsEngineClient);
 		ReflectionTestUtils.setField(
@@ -53,6 +60,9 @@ public class UpdateFaroProjectSubscriptionsMessageListenerTest {
 		ReflectionTestUtils.setField(
 			_updateFaroProjectSubscriptionsMessageListener,
 			"_faroProjectUsageLocalService", _faroProjectUsageLocalService);
+		ReflectionTestUtils.setField(
+			_updateFaroProjectSubscriptionsMessageListener,
+			"_projectUsageHelper", _projectUsageHelper);
 		ReflectionTestUtils.setField(
 			_updateFaroProjectSubscriptionsMessageListener,
 			"_provisioningClient", _provisioningClient);
@@ -315,6 +325,8 @@ public class UpdateFaroProjectSubscriptionsMessageListenerTest {
 		Mockito.mock(FaroProjectLocalService.class);
 	private final FaroProjectUsageLocalService _faroProjectUsageLocalService =
 		Mockito.mock(FaroProjectUsageLocalService.class);
+	private final ProjectUsageHelper _projectUsageHelper =
+		new ProjectUsageHelper();
 	private final ProvisioningClient _provisioningClient = Mockito.mock(
 		ProvisioningClient.class);
 	private final UpdateFaroProjectSubscriptionsMessageListener
