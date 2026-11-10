@@ -37,6 +37,13 @@ export interface Launch {
 }
 
 const WORKFLOW_STATUS_APPROVED = 0;
+const WORKFLOW_STATUS_DRAFT = 2;
+
+export function isInProgress(launch: Launch): boolean {
+	return (
+		!launch.scheduledDate && launch.status?.code === WORKFLOW_STATUS_DRAFT
+	);
+}
 
 export function isPublished(launch: Launch): boolean {
 	return launch.status?.code === WORKFLOW_STATUS_APPROVED;
