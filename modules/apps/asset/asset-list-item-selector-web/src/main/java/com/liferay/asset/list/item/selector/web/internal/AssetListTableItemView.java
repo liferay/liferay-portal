@@ -111,7 +111,7 @@ public class AssetListTableItemView implements TableItemView {
 		variationsTextSearchEntry.setName(
 			String.valueOf(
 				_assetListEntryItemSelectorDisplayContext.
-					getAssetListEntrySegmentsEntryRelsCount(_assetListEntry)));
+					getAssetListEntryVariationsCount(_assetListEntry)));
 
 		searchEntries.add(variationsTextSearchEntry);
 
