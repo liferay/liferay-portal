@@ -123,7 +123,7 @@ export default function TasksQuickFilters({apiURL}: {apiURL: string}) {
 			className="c-pb-4 c-pt-2 c-px-4"
 			size={false}
 		>
-			<ClayLayout.Row>
+			<ClayLayout.Row className="c-mx-n2">
 				{quickFilters.map(({displayType, icon, label, type}) => (
 					<ClayLayout.Col className="c-px-2" key={type} size={4}>
 						<QuickFilterButton
