@@ -18,6 +18,7 @@ import com.liferay.petra.sql.dsl.expression.Expression;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.exception.NoSuchRoleException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Groups_RolesTable;
 import com.liferay.portal.kernel.model.Layout;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.model.Users_RolesTable;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayActionRequest;
 import com.liferay.portal.kernel.portlet.LiferayStateAwareResponse;
+import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -42,6 +44,8 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -57,6 +61,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.ActionRequestFactory;
+import com.liferay.portlet.test.MockLiferayPortletContext;
 import com.liferay.roles.admin.constants.RolesAdminPortletKeys;
 
 import jakarta.portlet.ActionRequest;
@@ -223,6 +228,40 @@ public class RolesAdminPortletTest {
 				CTConstants.CT_COLLECTION_ID_PRODUCTION));
 
 		Assert.assertEquals(results.toString(), 0, results.size());
+	}
+
+	@Test
+	public void testRender() throws Exception {
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			new MockLiferayPortletRenderRequest();
+
+		mockLiferayPortletRenderRequest.setAttribute(
+			MVCRenderConstants.
+				PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX +
+					"/error.jsp",
+			new MockLiferayPortletContext("/error.jsp"));
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setPermissionChecker(
+			PermissionThreadLocal.getPermissionChecker());
+
+		mockLiferayPortletRenderRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"mvcPath", "/edit_role.jsp");
+		mockLiferayPortletRenderRequest.setParameter(
+			"roleId", String.valueOf(RandomTestUtil.randomLong()));
+
+		_portlet.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		Assert.assertTrue(
+			SessionErrors.contains(
+				mockLiferayPortletRenderRequest,
+				NoSuchRoleException.class.getName()));
 	}
 
 	private void _assertNoCTEntry() throws Exception {
