@@ -84,10 +84,11 @@ public class DocumentLibraryTypeContentUpgradeProcessTest {
 	public void testConvertContentWithImageGalleryTypeAndMissingFileEntry()
 		throws Exception {
 
-		String url = _getImageGalleryURL(RandomTestUtil.randomString());
+		String missingFileEntryURL = _getImageGalleryURL(
+			RandomTestUtil.randomString());
 
 		Element dynamicElementElement = _convertContentWithMissingFileEntry(
-			url, "image_gallery", url);
+			missingFileEntryURL, "image_gallery", missingFileEntryURL);
 
 		Assert.assertEquals(
 			"document_library", dynamicElementElement.attributeValue("type"));
@@ -103,11 +104,12 @@ public class DocumentLibraryTypeContentUpgradeProcessTest {
 	public void testConvertContentWithImageGalleryTypeAndSomeMissingFileEntries()
 		throws Exception {
 
-		String url = _getImageGalleryURL(RandomTestUtil.randomString());
+		String missingFileEntryURL = _getImageGalleryURL(
+			RandomTestUtil.randomString());
 
 		Element dynamicElementElement = _convertContentWithMissingFileEntry(
-			url, "image_gallery", _getImageGalleryURL(_fileEntry.getUuid()),
-			url);
+			missingFileEntryURL, "image_gallery",
+			_getImageGalleryURL(_fileEntry.getUuid()), missingFileEntryURL);
 
 		Assert.assertEquals(
 			"document_library", dynamicElementElement.attributeValue("type"));
