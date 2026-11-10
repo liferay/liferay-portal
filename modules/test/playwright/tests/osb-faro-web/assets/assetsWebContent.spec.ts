@@ -82,7 +82,7 @@ test(
 			await page.getByRole('link', {name: 'Web Content Title'}).click();
 
 			await expect(
-				page.getByRole('button', {name: 'Views'})
+				page.getByRole('button', {exact: true, name: 'Views'})
 			).toBeVisible();
 			await expect(page.getByText('Asset Appears On')).toBeVisible();
 			await expect(
