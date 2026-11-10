@@ -100,11 +100,11 @@ public class SyncPreviewResourceTest extends BaseSyncPreviewResourceTestCase {
 	@Override
 	@Test
 	public void testGetSiteTemplateSyncPreview() throws Exception {
-		_testGetSiteTemplateSyncPreviewWithLookAndFeel();
-		_testGetSiteTemplateSyncPreviewWithPrivateLayouts();
 		_testGetSiteTemplateSyncPreviewWithFeatureFlagDisabled();
+		_testGetSiteTemplateSyncPreviewWithLookAndFeel();
 		_testGetSiteTemplateSyncPreviewWithoutPermission();
 		_testGetSiteTemplateSyncPreviewWithPermission();
+		_testGetSiteTemplateSyncPreviewWithPrivateLayouts();
 	}
 
 	private Choice _getChoice(

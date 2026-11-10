@@ -126,9 +126,9 @@ public class SyncProcessResourceTest extends BaseSyncProcessResourceTestCase {
 
 		_waitForMerge(layout);
 
-		_testPostSiteTemplateSyncProcessWithLayoutSelection();
 		_testPostSiteTemplateSyncProcessWithFeatureFlagDisabled();
 		_testPostSiteTemplateSyncProcessWithInactiveLayoutSetPrototype();
+		_testPostSiteTemplateSyncProcessWithLayoutSelection();
 		_testPostSiteTemplateSyncProcessWithoutPermission();
 		_testPostSiteTemplateSyncProcessWithoutPortletDataHandlers();
 	}
