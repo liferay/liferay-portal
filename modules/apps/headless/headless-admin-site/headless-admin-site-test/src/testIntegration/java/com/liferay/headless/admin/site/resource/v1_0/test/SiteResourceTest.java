@@ -6,6 +6,12 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
@@ -276,6 +282,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 		_testPutSiteBatch();
 		_testPutSiteBatchWithParentSiteExternalReferenceCode();
+		_testPutSitePreservesAssetCategoriesAndAssetTags();
 		_testPutSiteSystemSite();
 		_testPutSiteWithCreatorWithoutUpdatePermissionOnImport();
 		_testPutSiteWithExcludedTypeSettings();
@@ -2078,6 +2085,45 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		}
 	}
 
+	private void _testPutSitePreservesAssetCategoriesAndAssetTags()
+		throws Exception {
+
+		Site postSite = testPutSite_addSite();
+
+		Group group = _groupLocalService.getGroupByExternalReferenceCode(
+			postSite.getExternalReferenceCode(),
+			TestPropsValues.getCompanyId());
+
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			group.getGroupId(), PortalUtil.getClassNameId(Group.class),
+			AssetCategoryConstants.ALL_CLASS_TYPE_PK, true);
+
+		AssetCategory assetCategory = AssetTestUtil.addCategory(
+			group.getGroupId(), assetVocabulary.getVocabularyId());
+
+		String[] assetTagNames = {RandomTestUtil.randomString()};
+
+		_groupLocalService.updateAsset(
+			TestPropsValues.getUserId(), group,
+			new long[] {assetCategory.getCategoryId()}, assetTagNames);
+
+		Site randomSite = randomSite();
+
+		randomSite.setExternalReferenceCode(
+			postSite.getExternalReferenceCode());
+
+		siteResource.putSite(randomSite.getExternalReferenceCode(), randomSite);
+
+		Assert.assertArrayEquals(
+			new long[] {assetCategory.getCategoryId()},
+			_assetCategoryLocalService.getCategoryIds(
+				Group.class.getName(), group.getGroupId()));
+		Assert.assertArrayEquals(
+			assetTagNames,
+			_assetTagLocalService.getTagNames(
+				Group.class.getName(), group.getGroupId()));
+	}
+
 	private void _testPutSiteSiteInitializerPreservesFriendlyUrlPath()
 		throws Exception {
 
@@ -2512,6 +2558,12 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	private static final String _CLASS_NAME_EXCEPTION_MAPPER =
 		"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
 			"ExceptionMapper";
+
+	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetTagLocalService _assetTagLocalService;
 
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry;
