@@ -20,6 +20,7 @@ import com.liferay.info.collection.provider.CollectionQuery;
 import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.pagination.InfoPage;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.search.test.util.IdempotentRetryAssert;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -40,7 +42,9 @@ import com.liferay.portal.test.rule.Inject;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -49,6 +53,20 @@ import org.springframework.mock.web.MockHttpServletRequest;
  * @author Riccardo Ferrari
  */
 public abstract class BaseItemCollectionProviderTestCase {
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_configurationTemporarySwapper = new ConfigurationTemporarySwapper(
+			"com.liferay.commerce.machine.learning.internal.recommendation." +
+				"configuration." +
+					"CommerceMLRecommendationsCollectionProviderConfiguration",
+			new HashMapDictionary<>());
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		_configurationTemporarySwapper.close();
+	}
 
 	@Test
 	public void testGetRelatedItemsInfoPage() throws Exception {
@@ -189,6 +207,8 @@ public abstract class BaseItemCollectionProviderTestCase {
 		Assert.assertEquals(
 			pageItems.toString(), RECOMMENDATION_COUNT, pageItems.size());
 	}
+
+	private static ConfigurationTemporarySwapper _configurationTemporarySwapper;
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
