@@ -4808,12 +4808,13 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tools.db.migration.importer.jar!mariadb-java-client.jar</file-name>
-				<version>3.5.10</version>
+				<version>3.5.11</version>
 				<project-name>mariadb-java-client</project-name>
 				<project-url>https://mariadb.com/kb/en/mariadb/about-mariadb-connector-j/</project-url>
 				<licenses>
 					<license>
 						<license-name>LGPL-2.1-or-later</license-name>
+						<license-url>https://spdx.org/licenses/LGPL-2.1-or-later.html</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -8519,7 +8520,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/mariadb.jar</file-name>
-				<version>3.5.10</version>
+				<version>3.5.11</version>
 				<project-name>MariaDB Connector/J</project-name>
 				<project-url>https://downloads.mariadb.org/connector-java</project-url>
 				<licenses>
