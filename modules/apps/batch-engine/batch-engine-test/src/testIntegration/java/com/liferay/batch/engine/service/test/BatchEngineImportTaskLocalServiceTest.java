@@ -5,13 +5,20 @@
 
 package com.liferay.batch.engine.service.test;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.io.JsonEOFException;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.batch.engine.BaseBatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry.BatchEngineTaskItemDelegateSafeCloseable;
 import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.constants.BatchEngineImportTaskConstants;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
+import com.liferay.batch.engine.pagination.Page;
+import com.liferay.batch.engine.pagination.Pagination;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.lang.SafeCloseable;
@@ -25,6 +32,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -40,7 +49,10 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.io.InputStream;
+import java.io.Serializable;
 
 import java.nio.charset.StandardCharsets;
 
@@ -49,6 +61,7 @@ import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -75,6 +88,7 @@ public class BatchEngineImportTaskLocalServiceTest {
 	@Test
 	public void testAddBatchEngineImportTask() throws Exception {
 		_testAddBatchEngineImportTaskWithEncryptionKey();
+		_testAddBatchEngineImportTaskWithUnregisteredTaskItemDelegate();
 		_testAddBatchEngineImportTaskWithoutTaskItemDelegate();
 	}
 
@@ -92,10 +106,62 @@ public class BatchEngineImportTaskLocalServiceTest {
 			BatchEngineTaskExecuteStatus.COMPLETED);
 		_testUpdateBatchEngineImportTaskWithMalformedContent(
 			BatchEngineTaskExecuteStatus.FAILED);
+		_testUpdateBatchEngineImportTaskWithUnregisteredTaskItemDelegate(
+			BatchEngineTaskExecuteStatus.COMPLETED);
+		_testUpdateBatchEngineImportTaskWithUnregisteredTaskItemDelegate(
+			BatchEngineTaskExecuteStatus.FAILED);
 		_testUpdateBatchEngineImportTaskWithoutPasswordFields(
 			BatchEngineTaskExecuteStatus.COMPLETED);
 		_testUpdateBatchEngineImportTaskWithoutPasswordFields(
 			BatchEngineTaskExecuteStatus.FAILED);
+	}
+
+	@Schema
+	public static class TestItem {
+
+		public String getName() {
+			return _name;
+		}
+
+		public String getPassword() {
+			return _password;
+		}
+
+		public void setName(String name) {
+			_name = name;
+		}
+
+		public void setPassword(String password) {
+			_password = password;
+		}
+
+		@JsonProperty("name")
+		private String _name;
+
+		@JsonProperty("password")
+		@Schema(format = "password")
+		private String _password;
+
+	}
+
+	private BatchEngineImportTask _addBatchEngineImportTask(
+			BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate,
+			String json)
+		throws Exception {
+
+		BatchEngineImportTask batchEngineImportTask =
+			_batchEngineImportTaskLocalService.addBatchEngineImportTask(
+				null, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), 10, null, TestItem.class.getName(),
+				_getContent(json), "JSON",
+				BatchEngineTaskExecuteStatus.INITIAL.name(), null,
+				BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL,
+				BatchEngineTaskOperation.CREATE.name(), new HashMap<>(), null,
+				batchEngineTaskItemDelegate);
+
+		_batchEngineImportTasks.add(batchEngineImportTask);
+
+		return batchEngineImportTask;
 	}
 
 	private BatchEngineImportTask _addBatchEngineImportTask(
@@ -223,6 +289,48 @@ public class BatchEngineImportTaskLocalServiceTest {
 			jsonObject = jsonArray.getJSONObject(1);
 
 			Assert.assertFalse(jsonObject.has("password"));
+		}
+	}
+
+	private void _testAddBatchEngineImportTaskWithUnregisteredTaskItemDelegate()
+		throws Exception {
+
+		KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+
+		Key key = keyGenerator.generateKey();
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"BATCH_ENGINE_ENCRYPTION_KEY",
+					Base64.encode(key.getEncoded()))) {
+
+			String name = RandomTestUtil.randomString();
+			String password = RandomTestUtil.randomString();
+
+			BatchEngineImportTask batchEngineImportTask =
+				_addBatchEngineImportTask(
+					new TestBatchEngineTaskItemDelegate(),
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"name", name
+						).put(
+							"password", password
+						)
+					).toString());
+
+			String content = _readContent(batchEngineImportTask);
+
+			Assert.assertFalse(content, content.contains(password));
+
+			JSONArray jsonArray = JSONFactoryUtil.createJSONArray(content);
+
+			JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+			Assert.assertEquals(name, jsonObject.getString("name"));
+			Assert.assertEquals(
+				password,
+				EncryptorUtil.decryptAuthenticated(
+					key, jsonObject.getString("password")));
 		}
 	}
 
@@ -424,6 +532,44 @@ public class BatchEngineImportTaskLocalServiceTest {
 		}
 	}
 
+	private void
+			_testUpdateBatchEngineImportTaskWithUnregisteredTaskItemDelegate(
+				BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus)
+		throws Exception {
+
+		String name = RandomTestUtil.randomString();
+		String password = RandomTestUtil.randomString();
+
+		TestBatchEngineTaskItemDelegate testBatchEngineTaskItemDelegate =
+			new TestBatchEngineTaskItemDelegate();
+
+		BatchEngineImportTask batchEngineImportTask = _addBatchEngineImportTask(
+			testBatchEngineTaskItemDelegate,
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"name", name
+				).put(
+					"password", password
+				)
+			).toString());
+
+		String content = _readContent(batchEngineImportTask);
+
+		Assert.assertTrue(content, content.contains(password));
+
+		batchEngineImportTask.setExecuteStatus(
+			batchEngineTaskExecuteStatus.name());
+
+		batchEngineImportTask =
+			_batchEngineImportTaskLocalService.updateBatchEngineImportTask(
+				batchEngineImportTask, testBatchEngineTaskItemDelegate);
+
+		content = _readContent(batchEngineImportTask);
+
+		Assert.assertTrue(content, content.contains(name));
+		Assert.assertFalse(content, content.contains(password));
+	}
+
 	private void _testUpdateBatchEngineImportTaskWithoutPasswordFields(
 			BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus)
 		throws Exception {
@@ -459,8 +605,20 @@ public class BatchEngineImportTaskLocalServiceTest {
 		batchEngineImportTask.setExecuteStatus(
 			batchEngineTaskExecuteStatus.name());
 
-		return _batchEngineImportTaskLocalService.updateBatchEngineImportTask(
-			batchEngineImportTask);
+		try (BatchEngineTaskItemDelegateSafeCloseable
+				batchEngineTaskItemDelegateSafeCloseable =
+					_batchEngineTaskItemDelegateRegistry.
+						getBatchEngineTaskItemDelegateWithSafeCloseable(
+							batchEngineImportTask.getCompanyId(),
+							batchEngineImportTask.getClassName(),
+							batchEngineImportTask.getTaskItemDelegateName())) {
+
+			return _batchEngineImportTaskLocalService.
+				updateBatchEngineImportTask(
+					batchEngineImportTask,
+					batchEngineTaskItemDelegateSafeCloseable.
+						getBatchEngineTaskItemDelegate());
+		}
 	}
 
 	private static final String _CLASS_NAME_USER_ACCOUNT =
@@ -473,5 +631,22 @@ public class BatchEngineImportTaskLocalServiceTest {
 	@DeleteAfterTestRun
 	private final List<BatchEngineImportTask> _batchEngineImportTasks =
 		new ArrayList<>();
+
+	@Inject
+	private BatchEngineTaskItemDelegateRegistry
+		_batchEngineTaskItemDelegateRegistry;
+
+	private static class TestBatchEngineTaskItemDelegate
+		extends BaseBatchEngineTaskItemDelegate<TestItem> {
+
+		@Override
+		public Page<TestItem> read(
+			Filter filter, Pagination pagination, Sort[] sorts,
+			Map<String, Serializable> parameters, String search) {
+
+			return null;
+		}
+
+	}
 
 }

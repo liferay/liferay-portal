@@ -4,6 +4,7 @@ dependencies {
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.12"
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	testIntegrationImplementation group: "io.swagger.core.v3", name: "swagger-annotations-jakarta", version: "2.2.28"
 	testIntegrationImplementation group: "org.apache.poi", name: "poi", version: "5.4.1"
 	testIntegrationImplementation group: "org.apache.poi", name: "poi-ooxml", version: "5.4.1"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
