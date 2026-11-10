@@ -460,11 +460,11 @@ public class StagingImplTest {
 			DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT,
 			liveDLFileEntry.getFileEntryTypeId());
 
-		String name = RandomTestUtil.randomString();
+		String dlFileEntryTypeName = RandomTestUtil.randomString();
 
 		_dlFileEntryTypeLocalService.updateFileEntryType(
 			dlFileEntryType.getFileEntryTypeId(),
-			Collections.singletonMap(LocaleUtil.US, name),
+			Collections.singletonMap(LocaleUtil.US, dlFileEntryTypeName),
 			dlFileEntryType.getDescriptionMap());
 
 		DDMForm ddmForm = metadataSetDDMStructure.getDDMForm();
@@ -499,7 +499,8 @@ public class StagingImplTest {
 		DLFileEntryType liveDLFileEntryType = _getDLFileEntryType(
 			liveFileEntry);
 
-		Assert.assertEquals(name, liveDLFileEntryType.getName(LocaleUtil.US));
+		Assert.assertEquals(
+			dlFileEntryTypeName, liveDLFileEntryType.getName(LocaleUtil.US));
 		Assert.assertEquals(
 			dlFileEntryType.getUuid(), liveDLFileEntryType.getUuid());
 
@@ -638,9 +639,10 @@ public class StagingImplTest {
 		ServiceContext serviceContext = _getServiceContext(
 			dlFileEntryType, RandomTestUtil.randomString());
 
-		String tagName = StringUtil.toLowerCase(RandomTestUtil.randomString());
+		String assetTagName = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
-		serviceContext.setAssetTagNames(new String[] {tagName});
+		serviceContext.setAssetTagNames(new String[] {assetTagName});
 
 		String urlTitle = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
@@ -668,7 +670,7 @@ public class StagingImplTest {
 
 		serviceContext = _getServiceContext(dlFileEntryType, value);
 
-		serviceContext.setAssetTagNames(new String[] {tagName});
+		serviceContext.setAssetTagNames(new String[] {assetTagName});
 
 		_dlAppLocalService.updateFileEntry(
 			TestPropsValues.getUserId(), fileEntry.getFileEntryId(), fileName,
@@ -698,7 +700,7 @@ public class StagingImplTest {
 		_assertDDMFormValues(liveFileEntry, value);
 
 		Assert.assertArrayEquals(
-			new String[] {tagName},
+			new String[] {assetTagName},
 			_assetTagLocalService.getTagNames(
 				DLFileEntry.class.getName(), liveFileEntry.getFileEntryId()));
 
