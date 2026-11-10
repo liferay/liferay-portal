@@ -119,6 +119,21 @@ public class ObjectEntryResourceCommentTest
 
 	@FeatureFlag("LPD-43996")
 	@Test
+	public void testPatchPostPutObjectEntryWithMissingParentCommentReference()
+		throws Exception {
+
+		_enableComments(getObjectDefinition1());
+
+		_testPatchPostPutObjectEntryWithMissingParentCommentReference(
+			Http.Method.PATCH);
+		_testPatchPostPutObjectEntryWithMissingParentCommentReference(
+			Http.Method.POST);
+		_testPatchPostPutObjectEntryWithMissingParentCommentReference(
+			Http.Method.PUT);
+	}
+
+	@FeatureFlag("LPD-43996")
+	@Test
 	public void testPatchPutObjectEntryWithComments() throws Exception {
 
 		// Company scope
@@ -150,19 +165,6 @@ public class ObjectEntryResourceCommentTest
 
 	@FeatureFlag("LPD-43996")
 	@Test
-	public void testPatchPutObjectEntryWithMissingParentCommentReference()
-		throws Exception {
-
-		_enableComments(getObjectDefinition1());
-
-		_testPatchPutObjectEntryWithMissingParentCommentReference(
-			Http.Method.PATCH);
-		_testPatchPutObjectEntryWithMissingParentCommentReference(
-			Http.Method.PUT);
-	}
-
-	@FeatureFlag("LPD-43996")
-	@Test
 	public void testPostObjectEntriesWithComments() throws Exception {
 
 		// Company scope
@@ -180,66 +182,6 @@ public class ObjectEntryResourceCommentTest
 		finally {
 			PropsUtil.set("feature.flag.LPD-43996", "true");
 		}
-	}
-
-	@FeatureFlag("LPD-43996")
-	@Test
-	public void testPostObjectEntriesWithMissingParentCommentReference()
-		throws Exception {
-
-		_enableComments(getObjectDefinition1());
-
-		Company company = companyLocalService.getCompany(
-			TestPropsValues.getCompanyId());
-		String parentExternalReferenceCode = RandomTestUtil.randomString();
-
-		Assert.assertNull(
-			_commentManager.fetchComment(
-				company.getGroupId(), parentExternalReferenceCode));
-
-		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
-			new com.liferay.object.rest.dto.v1_0.ObjectEntry() {
-				{
-					systemProperties = new SystemProperties() {
-						{
-							comments = new Comment[] {
-								new Comment() {
-									{
-										externalReferenceCode =
-											RandomTestUtil.randomString();
-										parentCommentExternalReferenceCode =
-											parentExternalReferenceCode;
-										text = RandomTestUtil.randomString();
-									}
-								}
-							};
-						}
-					};
-				}
-			};
-
-		ObjectEntryResource objectEntryResource = getObjectEntryResource(
-			getObjectDefinition1(), TestPropsValues.getUser());
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
-
-			objectEntryResource.postObjectEntry(objectEntry);
-		}
-
-		com.liferay.portal.kernel.comment.Comment serviceBuilderComment =
-			_commentManager.getComment(
-				company.getGroupId(), parentExternalReferenceCode);
-
-		Assert.assertTrue(serviceBuilderComment instanceof WorkflowableComment);
-
-		WorkflowableComment workflowableComment =
-			(WorkflowableComment)serviceBuilderComment;
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EMPTY, workflowableComment.getStatus());
-
-		_commentManager.deleteComment(serviceBuilderComment.getCommentId());
 	}
 
 	@FeatureFlag("LPD-43996")
@@ -468,6 +410,88 @@ public class ObjectEntryResourceCommentTest
 			JSONCompareMode.LENIENT);
 	}
 
+	private void _testPatchPostPutObjectEntryWithMissingParentCommentReference(
+			Http.Method httpMethod)
+		throws Exception {
+
+		ObjectEntry serviceBuilderObjectEntry =
+			objectEntryLocalService.addObjectEntry(
+				0, TestPropsValues.getUserId(),
+				getObjectDefinition1().getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+		Company company = companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+		String parentExternalReferenceCode = RandomTestUtil.randomString();
+
+		Assert.assertNull(
+			_commentManager.fetchComment(
+				company.getGroupId(), parentExternalReferenceCode));
+
+		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
+			new com.liferay.object.rest.dto.v1_0.ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+					).build();
+					systemProperties = new SystemProperties() {
+						{
+							comments = new Comment[] {
+								new Comment() {
+									{
+										externalReferenceCode =
+											RandomTestUtil.randomString();
+										parentCommentExternalReferenceCode =
+											parentExternalReferenceCode;
+										text = RandomTestUtil.randomString();
+									}
+								}
+							};
+						}
+					};
+				}
+			};
+
+		ObjectEntryResource objectEntryResource = getObjectEntryResource(
+			getObjectDefinition1(), TestPropsValues.getUser());
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			if (httpMethod == Http.Method.PATCH) {
+				objectEntryResource.patchObjectEntry(
+					serviceBuilderObjectEntry.getObjectEntryId(), objectEntry);
+			}
+			else if (httpMethod == Http.Method.POST) {
+				objectEntryResource.postObjectEntry(objectEntry);
+			}
+			else if (httpMethod == Http.Method.PUT) {
+				objectEntryResource.putObjectEntry(
+					serviceBuilderObjectEntry.getObjectEntryId(), objectEntry);
+			}
+		}
+
+		com.liferay.portal.kernel.comment.Comment serviceBuilderComment =
+			_commentManager.getComment(
+				company.getGroupId(), parentExternalReferenceCode);
+
+		Assert.assertTrue(serviceBuilderComment instanceof WorkflowableComment);
+
+		WorkflowableComment workflowableComment =
+			(WorkflowableComment)serviceBuilderComment;
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, workflowableComment.getStatus());
+
+		_commentManager.deleteComment(serviceBuilderComment.getCommentId());
+	}
+
 	private void _testPatchPutObjectEntryWithComments(
 			long groupId, Http.Method httpMethod,
 			ObjectDefinition objectDefinition)
@@ -530,85 +554,6 @@ public class ObjectEntryResourceCommentTest
 				objectEntryJSONObject
 			).toString(),
 			JSONCompareMode.LENIENT);
-	}
-
-	private void _testPatchPutObjectEntryWithMissingParentCommentReference(
-			Http.Method httpMethod)
-		throws Exception {
-
-		ObjectEntry serviceBuilderObjectEntry =
-			objectEntryLocalService.addObjectEntry(
-				0, TestPropsValues.getUserId(),
-				getObjectDefinition1().getObjectDefinitionId(),
-				ObjectEntryFolderConstants.
-					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				null,
-				HashMapBuilder.<String, Serializable>put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
-
-		Company company = companyLocalService.getCompany(
-			TestPropsValues.getCompanyId());
-		String parentExternalReferenceCode = RandomTestUtil.randomString();
-
-		Assert.assertNull(
-			_commentManager.fetchComment(
-				company.getGroupId(), parentExternalReferenceCode));
-
-		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
-			new com.liferay.object.rest.dto.v1_0.ObjectEntry() {
-				{
-					properties = HashMapBuilder.<String, Object>put(
-						OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-					).build();
-					systemProperties = new SystemProperties() {
-						{
-							comments = new Comment[] {
-								new Comment() {
-									{
-										externalReferenceCode =
-											RandomTestUtil.randomString();
-										parentCommentExternalReferenceCode =
-											parentExternalReferenceCode;
-										text = RandomTestUtil.randomString();
-									}
-								}
-							};
-						}
-					};
-				}
-			};
-
-		ObjectEntryResource objectEntryResource = getObjectEntryResource(
-			getObjectDefinition1(), TestPropsValues.getUser());
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
-
-			if (httpMethod == Http.Method.PATCH) {
-				objectEntryResource.patchObjectEntry(
-					serviceBuilderObjectEntry.getObjectEntryId(), objectEntry);
-			}
-			else if (httpMethod == Http.Method.PUT) {
-				objectEntryResource.putObjectEntry(
-					serviceBuilderObjectEntry.getObjectEntryId(), objectEntry);
-			}
-		}
-
-		com.liferay.portal.kernel.comment.Comment serviceBuilderComment =
-			_commentManager.getComment(
-				company.getGroupId(), parentExternalReferenceCode);
-
-		Assert.assertTrue(serviceBuilderComment instanceof WorkflowableComment);
-
-		WorkflowableComment workflowableComment =
-			(WorkflowableComment)serviceBuilderComment;
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EMPTY, workflowableComment.getStatus());
-
-		_commentManager.deleteComment(serviceBuilderComment.getCommentId());
 	}
 
 	private void _testPostObjectEntriesWithComments(

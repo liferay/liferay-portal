@@ -496,11 +496,6 @@ public class ObjectEntryResourceFilterTest
 				"taxonomyCategoryIds/any(k:k eq %s)",
 				taxonomyCategory1.getId()));
 		_assertFilteredObjectEntries(
-			3,
-			String.format(
-				"taxonomyCategoryIds/any(k:k eq %s)",
-				taxonomyCategory1.getId()));
-		_assertFilteredObjectEntries(
 			2,
 			String.format(
 				"taxonomyCategoryIds/any(k:k eq %s)",

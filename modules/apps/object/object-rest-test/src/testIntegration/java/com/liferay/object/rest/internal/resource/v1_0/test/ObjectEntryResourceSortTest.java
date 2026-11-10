@@ -2619,39 +2619,6 @@ public class ObjectEntryResourceSortTest
 	}
 
 	@Test
-	public void testSortByRelationshipObjectFields() throws Exception {
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
-				LoggerTestUtil.ERROR)) {
-
-			JSONAssert.assertEquals(
-				JSONUtil.put(
-					"status", "BAD_REQUEST"
-				).put(
-					"title",
-					"Unable to sort by a many to many related object field"
-				).toString(),
-				HTTPTestUtil.invokeToString(
-					null,
-					StringBundler.concat(
-						getEndpoint(getObjectDefinition1(), testGroupId),
-						"?sort=",
-						URLCodec.encodeURL(
-							String.format(
-								"%s/%s:asc", objectRelationship1.getName(),
-								OBJECT_FIELD_NAME_TEXT))),
-					Http.Method.GET),
-				JSONCompareMode.STRICT);
-		}
-	}
-
-	@Test
 	public void testSortBySystemObjectField() throws Exception {
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 

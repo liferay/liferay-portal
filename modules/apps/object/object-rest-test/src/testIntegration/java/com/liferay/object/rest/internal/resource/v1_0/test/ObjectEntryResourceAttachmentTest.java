@@ -597,31 +597,25 @@ public class ObjectEntryResourceAttachmentTest
 	}
 
 	@Test
-	public void testPatchPutCustomObjectEntryByExternalReferenceCodeWithAttachmentObjectField()
-		throws Exception {
-
-		_testPatchPutCustomObjectEntryWithAttachmentField(
-			Http.Method.PATCH, getObjectDefinition1(), true);
-		_testPatchPutCustomObjectEntryWithAttachmentField(
-			Http.Method.PUT, getObjectDefinition1(), true);
-		_testPatchPutCustomObjectEntryWithAttachmentField(
-			Http.Method.PATCH, getSiteScopedObjectDefinition1(), true);
-		_testPatchPutCustomObjectEntryWithAttachmentField(
-			Http.Method.PUT, getSiteScopedObjectDefinition1(), true);
-	}
-
-	@Test
 	public void testPatchPutCustomObjectEntryWithAttachmentObjectField()
 		throws Exception {
 
 		_testPatchPutCustomObjectEntryWithAttachmentField(
 			Http.Method.PATCH, getObjectDefinition1(), false);
 		_testPatchPutCustomObjectEntryWithAttachmentField(
-			Http.Method.PUT, getObjectDefinition1(), false);
+			Http.Method.PATCH, getObjectDefinition1(), true);
 		_testPatchPutCustomObjectEntryWithAttachmentField(
 			Http.Method.PATCH, getSiteScopedObjectDefinition1(), false);
 		_testPatchPutCustomObjectEntryWithAttachmentField(
+			Http.Method.PATCH, getSiteScopedObjectDefinition1(), true);
+		_testPatchPutCustomObjectEntryWithAttachmentField(
+			Http.Method.PUT, getObjectDefinition1(), false);
+		_testPatchPutCustomObjectEntryWithAttachmentField(
+			Http.Method.PUT, getObjectDefinition1(), true);
+		_testPatchPutCustomObjectEntryWithAttachmentField(
 			Http.Method.PUT, getSiteScopedObjectDefinition1(), false);
+		_testPatchPutCustomObjectEntryWithAttachmentField(
+			Http.Method.PUT, getSiteScopedObjectDefinition1(), true);
 	}
 
 	@Test

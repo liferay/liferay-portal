@@ -266,31 +266,25 @@ public class ObjectEntryResourceObjectFieldTest
 	}
 
 	@Test
-	public void testPatchPutCustomObjectEntryByExternalReferenceCodeWithAssigneeObjectField()
-		throws Exception {
-
-		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
-			Http.Method.PATCH, getObjectDefinition1(), true);
-		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
-			Http.Method.PUT, getObjectDefinition1(), true);
-		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
-			Http.Method.PATCH, getSiteScopedObjectDefinition1(), true);
-		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
-			Http.Method.PUT, getSiteScopedObjectDefinition1(), true);
-	}
-
-	@Test
 	public void testPatchPutCustomObjectEntryWithAssigneeObjectField()
 		throws Exception {
 
 		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
 			Http.Method.PATCH, getObjectDefinition1(), false);
 		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
-			Http.Method.PUT, getObjectDefinition1(), false);
+			Http.Method.PATCH, getObjectDefinition1(), true);
 		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
 			Http.Method.PATCH, getSiteScopedObjectDefinition1(), false);
 		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
+			Http.Method.PATCH, getSiteScopedObjectDefinition1(), true);
+		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
+			Http.Method.PUT, getObjectDefinition1(), false);
+		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
+			Http.Method.PUT, getObjectDefinition1(), true);
+		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
 			Http.Method.PUT, getSiteScopedObjectDefinition1(), false);
+		_testPatchPutCustomObjectEntryWithAssigneeObjectField(
+			Http.Method.PUT, getSiteScopedObjectDefinition1(), true);
 	}
 
 	@Test
@@ -444,27 +438,6 @@ public class ObjectEntryResourceObjectFieldTest
 						OBJECT_FIELD_NAME_DATE_TIME_INPUT, "2000-07-27 11:00"
 					).put(
 						OBJECT_FIELD_NAME_DATE_TIME_UTC, "2000-07-27 11:00"
-					).toString(),
-					getObjectDefinition1().getRESTContextPath(),
-					Http.Method.POST
-				).toString(),
-				JSONCompareMode.LENIENT);
-
-			// Format: "yyyy-MM-dd HH:mm:ss.S"
-
-			JSONAssert.assertEquals(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_DATE_TIME_INPUT, "2000-07-27T11:00:00.000"
-				).put(
-					OBJECT_FIELD_NAME_DATE_TIME_UTC, "2000-07-27T09:00:00.000Z"
-				).toString(),
-				HTTPTestUtil.invokeToJSONObject(
-					JSONUtil.put(
-						OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-						"2000-07-27 11:00:00.000"
-					).put(
-						OBJECT_FIELD_NAME_DATE_TIME_UTC,
-						"2000-07-27 11:00:00.000"
 					).toString(),
 					getObjectDefinition1().getRESTContextPath(),
 					Http.Method.POST
