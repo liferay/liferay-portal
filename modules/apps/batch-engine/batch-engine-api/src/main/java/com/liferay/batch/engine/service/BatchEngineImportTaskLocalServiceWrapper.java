@@ -471,6 +471,18 @@ public class BatchEngineImportTaskLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.batch.engine.model.BatchEngineImportTask
+		updateBatchEngineImportTask(
+			com.liferay.batch.engine.model.BatchEngineImportTask
+				batchEngineImportTask,
+			com.liferay.batch.engine.BatchEngineTaskItemDelegate<?>
+				batchEngineTaskItemDelegate) {
+
+		return _batchEngineImportTaskLocalService.updateBatchEngineImportTask(
+			batchEngineImportTask, batchEngineTaskItemDelegate);
+	}
+
+	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _batchEngineImportTaskLocalService.getBasePersistence();
 	}
@@ -491,4 +503,4 @@ public class BatchEngineImportTaskLocalServiceWrapper
 		_batchEngineImportTaskLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1314011566
+// LIFERAY-SERVICE-BUILDER-HASH:-227991555

@@ -410,6 +410,15 @@ public class BatchEngineImportTaskLocalServiceUtil {
 		return getService().updateBatchEngineImportTask(batchEngineImportTask);
 	}
 
+	public static BatchEngineImportTask updateBatchEngineImportTask(
+		BatchEngineImportTask batchEngineImportTask,
+		com.liferay.batch.engine.BatchEngineTaskItemDelegate<?>
+			batchEngineTaskItemDelegate) {
+
+		return getService().updateBatchEngineImportTask(
+			batchEngineImportTask, batchEngineTaskItemDelegate);
+	}
+
 	public static BatchEngineImportTaskLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -420,4 +429,4 @@ public class BatchEngineImportTaskLocalServiceUtil {
 			BatchEngineImportTaskLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1585085194
+// LIFERAY-SERVICE-BUILDER-HASH:317049917

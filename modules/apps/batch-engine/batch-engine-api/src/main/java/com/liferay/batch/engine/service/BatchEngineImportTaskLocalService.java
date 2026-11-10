@@ -344,5 +344,10 @@ public interface BatchEngineImportTaskLocalService
 	public BatchEngineImportTask updateBatchEngineImportTask(
 		BatchEngineImportTask batchEngineImportTask);
 
+	@Transactional(propagation = Propagation.NESTED)
+	public BatchEngineImportTask updateBatchEngineImportTask(
+		BatchEngineImportTask batchEngineImportTask,
+		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate);
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-36789696
+// LIFERAY-SERVICE-BUILDER-HASH:-1482073317
