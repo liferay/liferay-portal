@@ -2,7 +2,7 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 dependencies {
-	api group: "com.google.guava", name: "guava", version: "32.0.1-jre"
+	api group: "com.google.guava", name: "guava", version: "33.8.0-jre"
 	api group: "commons-io", name: "commons-io", version: "2.19.0"
 	api group: "commons-lang", name: "commons-lang", version: "2.6"
 	api group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"

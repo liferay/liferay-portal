@@ -121,7 +121,7 @@ copyWorkspacesSamples {
 }
 
 dependencies {
-	gradleTestDependencies group: "com.google.guava", name: "guava", version: "32.0.1-jre"
+	gradleTestDependencies group: "com.google.guava", name: "guava", version: "33.8.0-jre"
 }
 
 downloadBundle {

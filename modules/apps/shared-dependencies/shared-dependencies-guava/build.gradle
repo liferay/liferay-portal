@@ -1,7 +1,7 @@
 dependencies {
 	compileInclude group: "com.google.errorprone", name: "error_prone_annotations", version: "2.18.0"
 	compileInclude group: "com.google.guava", name: "failureaccess", version: "1.0.1"
-	compileInclude group: "com.google.guava", name: "guava", version: "32.0.1-jre"
+	compileInclude group: "com.google.guava", name: "guava", version: "33.8.0-jre"
 	compileInclude group: "com.google.guava", name: "listenablefuture", version: "9999.0-empty-to-avoid-conflict-with-guava"
 	compileInclude group: "com.google.j2objc", name: "j2objc-annotations", version: "2.8"
 	compileInclude group: "org.checkerframework", name: "checker-qual", version: "3.33.0"

@@ -9,7 +9,7 @@ dependencies {
 	compileInclude group: "org.bouncycastle", name: "bcutil-fips", version: "2.1.8"
 	compileInclude group: "org.codehaus.woodstox", name: "stax2-api", version: "3.1.4"
 	compileInclude group: "xml-resolver", name: "xml-resolver", version: "1.2"
-	compileOnly group: "com.google.guava", name: "guava", version: "32.0.1-jre"
+	compileOnly group: "com.google.guava", name: "guava", version: "33.8.0-jre"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.opensaml.impl", version: "3.3.0.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.opensaml.messaging", version: "3.3.0.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1"
