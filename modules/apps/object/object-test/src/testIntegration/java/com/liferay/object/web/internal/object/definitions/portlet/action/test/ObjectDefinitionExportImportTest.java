@@ -585,7 +585,14 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 			String fileName, String externalReferenceCode, String name)
 		throws Exception {
 
-		String json = read(fileName);
+		JSONObject exportJSONObject = jsonFactory.createJSONObject(
+			getExportJSON(name));
+		JSONObject jsonObject = jsonFactory.createJSONObject(read(fileName));
+
+		String json = jsonObject.put(
+			"objectRelationships",
+			exportJSONObject.getJSONArray("objectRelationships")
+		).toString();
 
 		MockLiferayPortletActionResponse mockLiferayPortletActionResponse =
 			importJSON(externalReferenceCode, json, name);
@@ -606,8 +613,7 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 
 		expectedJSONObject.remove("objectRelationships");
 
-		JSONObject exportJSONObject = jsonFactory.createJSONObject(
-			getExportJSON(name));
+		exportJSONObject = jsonFactory.createJSONObject(getExportJSON(name));
 
 		exportJSONObject.remove("objectRelationships");
 
