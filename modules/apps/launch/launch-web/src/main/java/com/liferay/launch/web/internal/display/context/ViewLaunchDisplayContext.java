@@ -13,11 +13,13 @@ import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.launch.entry.manager.LaunchEntryManagerRegistry;
 import com.liferay.launch.web.internal.constants.LaunchFDSNames;
 import com.liferay.launch.web.internal.constants.LaunchPortletKeys;
+import com.liferay.launch.web.internal.util.LaunchTimeZoneUtil;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
@@ -42,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * @author Alejandro Tardín
@@ -227,6 +230,21 @@ public class ViewLaunchDisplayContext {
 		Instant instant = scheduledDate.toInstant();
 
 		return instant.toString();
+	}
+
+	public String getTimeZoneId() {
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
+		TimeZone timeZone = themeDisplay.getTimeZone();
+
+		return timeZone.getID();
+	}
+
+	public JSONArray getTimeZonesJSONArray() {
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
+		return LaunchTimeZoneUtil.getTimeZonesJSONArray(
+			themeDisplay.getLocale());
 	}
 
 	public String getUnscheduleLaunchURL() {

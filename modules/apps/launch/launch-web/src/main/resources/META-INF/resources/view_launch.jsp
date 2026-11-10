@@ -49,11 +49,17 @@ String scheduledDate = viewLaunchDisplayContext.getScheduledDate();
 				module="{LaunchScheduleButton} from launch-web"
 				props='<%=
 					HashMapBuilder.<String, Object>put(
+						"launchName", launchSetName
+					).put(
 						"published", viewLaunchDisplayContext.isPublished()
 					).put(
 						"scheduledDate", scheduledDate
 					).put(
 						"scheduleLaunchURL", viewLaunchDisplayContext.getScheduleLaunchURL()
+					).put(
+						"timeZoneId", viewLaunchDisplayContext.getTimeZoneId()
+					).put(
+						"timeZones", viewLaunchDisplayContext.getTimeZonesJSONArray()
 					).build()
 				%>'
 			/>
