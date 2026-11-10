@@ -14,6 +14,8 @@ import com.liferay.jenkins.results.parser.WorkspaceGitRepository;
 
 import java.io.IOException;
 
+import org.json.JSONObject;
+
 /**
  * @author Michael Hashimoto
  */
@@ -59,6 +61,17 @@ public class PortalBundlePersistentResource
 		PortalWorkspace portalWorkspace = _getPortalWorkspace();
 
 		return portalWorkspace.getPortalWorkspaceGitRepository();
+	}
+
+	@Override
+	protected void populateDataJSONObject(JSONObject dataJSONObject) {
+		super.populateDataJSONObject(dataJSONObject);
+
+		WorkspaceGitRepository workspaceGitRepository =
+			getBundleWorkspaceGitRepository();
+
+		dataJSONObject.put(
+			"portal_git_commit", workspaceGitRepository.getSenderBranchSHA());
 	}
 
 	private PortalWorkspace _getPortalWorkspace() {

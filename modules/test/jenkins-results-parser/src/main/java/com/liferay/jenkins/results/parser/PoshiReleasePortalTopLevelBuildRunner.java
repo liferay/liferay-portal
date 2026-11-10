@@ -301,8 +301,7 @@ public class PoshiReleasePortalTopLevelBuildRunner
 					"JENKINS_JOB_VARIANT", _getCITestSuite(upstreamBranchName));
 				invocationParameters.put(
 					"PORTAL_BUNDLES_DIST_URL",
-					JenkinsResultsParserUtil.getDistPortalBundlesBuildURL(
-						upstreamBranchName));
+					_getPortalBundlesDistURL(upstreamBranchName));
 			}
 
 			for (Map.Entry<String, String> invocationParameter :
@@ -351,12 +350,18 @@ public class PoshiReleasePortalTopLevelBuildRunner
 		String distPortalBundlesBuildURL = null;
 
 		try {
-			distPortalBundlesBuildURL =
-				JenkinsResultsParserUtil.getDistPortalBundlesBuildURL(
-					upstreamBranchName);
+			distPortalBundlesBuildURL = _getPortalBundlesDistURL(
+				upstreamBranchName);
 		}
 		catch (Exception exception) {
 			System.out.println("WARNING: Unable to get a dist portal bundle");
+		}
+
+		if ((distPortalBundlesBuildURL != null) &&
+			distPortalBundlesBuildURL.startsWith("s3://")) {
+
+			return JenkinsResultsParserUtil.getPortalBundleGitCommit(
+				distPortalBundlesBuildURL);
 		}
 
 		if (!JenkinsResultsParserUtil.isURL(distPortalBundlesBuildURL)) {
@@ -471,6 +476,19 @@ public class PoshiReleasePortalTopLevelBuildRunner
 		}
 
 		return Collections.emptyList();
+	}
+
+	private String _getPortalBundlesDistURL(String upstreamBranchName) {
+		String portalBundleS3ObjectPath =
+			JenkinsResultsParserUtil.getLatestPortalBundleS3ObjectPath(
+				upstreamBranchName);
+
+		if (portalBundleS3ObjectPath != null) {
+			return portalBundleS3ObjectPath;
+		}
+
+		return JenkinsResultsParserUtil.getDistPortalBundlesBuildURL(
+			upstreamBranchName);
 	}
 
 	private String _getPortalGitHubURL() {

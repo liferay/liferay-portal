@@ -607,6 +607,11 @@ public class PullRequestPortalTopLevelBuild
 			return null;
 		}
 
+		if (portalBundlesDistURL.startsWith("s3://")) {
+			return JenkinsResultsParserUtil.getPortalBundleGitCommit(
+				portalBundlesDistURL);
+		}
+
 		try {
 			URL portalBundlesGitHashURL = new URL(
 				JenkinsResultsParserUtil.getLocalURL(portalBundlesDistURL) +

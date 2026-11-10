@@ -285,6 +285,36 @@ public class CloudBucketUtil {
 		}
 	}
 
+	public static String getPresignedS3URL(
+			String s3ObjectPath, int expiresInSeconds)
+		throws IOException, TimeoutException {
+
+		_validateS3ObjectPath(s3ObjectPath);
+
+		Process process = JenkinsResultsParserUtil.executeBashCommands(
+			true,
+			JenkinsResultsParserUtil.combine(
+				"aws s3 presign \"", _replaceS3ObjectPath(s3ObjectPath),
+				"\" --expires-in ", String.valueOf(expiresInSeconds)));
+
+		if (process.exitValue() != 0) {
+			String errorMessage = JenkinsResultsParserUtil.readInputStream(
+				process.getErrorStream());
+
+			throw new IOException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to presign ", s3ObjectPath, "\n", errorMessage));
+		}
+
+		String presignedS3URL = JenkinsResultsParserUtil.readInputStream(
+			process.getInputStream());
+
+		presignedS3URL = presignedS3URL.replace(
+			"Finished executing Bash commands.", "");
+
+		return presignedS3URL.trim();
+	}
+
 	public static String getSignedURL(int duration, String file, String url)
 		throws IOException, TimeoutException {
 
