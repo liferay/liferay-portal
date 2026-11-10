@@ -11,6 +11,8 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
@@ -46,10 +48,14 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
+import com.liferay.segments.constants.SegmentsEntryConstants;
+import com.liferay.segments.model.SegmentsEntry;
+import com.liferay.segments.test.util.SegmentsTestUtil;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -110,6 +116,44 @@ public class AssetEntriesCheckerHelperTest {
 
 		_assertAssetEntries(
 			Arrays.asList(assetEntry1, assetEntry2),
+			ReflectionTestUtil.invoke(
+				_assetEntriesCheckerHelper, "_getAssetEntries",
+				new Class<?>[] {PortletPreferences.class, Layout.class},
+				LayoutTestUtil.getPortletPreferences(_layout, _portletId),
+				_layout));
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-109242")
+	@Test
+	public void testGetAssetEntriesFromAssetListSelectionAssetPublisherWithVariationsWhenFeatureFlagIsDisabled()
+		throws Exception {
+
+		AssetEntry assetEntry = _addAssetEntry();
+
+		_setAssetListSelectionStylePreference(
+			_addAssetEntry(), _addAssetEntry(), assetEntry);
+
+		_assertAssetEntries(
+			Arrays.asList(assetEntry),
+			ReflectionTestUtil.invoke(
+				_assetEntriesCheckerHelper, "_getAssetEntries",
+				new Class<?>[] {PortletPreferences.class, Layout.class},
+				LayoutTestUtil.getPortletPreferences(_layout, _portletId),
+				_layout));
+	}
+
+	@FeatureFlag("LPD-109242")
+	@Test
+	public void testGetAssetEntriesFromAssetListSelectionAssetPublisherWithVariationsWhenFeatureFlagIsEnabled()
+		throws Exception {
+
+		AssetEntry assetEntry = _addAssetEntry();
+
+		_setAssetListSelectionStylePreference(
+			assetEntry, _addAssetEntry(), _addAssetEntry());
+
+		_assertAssetEntries(
+			Arrays.asList(assetEntry),
 			ReflectionTestUtil.invoke(
 				_assetEntriesCheckerHelper, "_getAssetEntries",
 				new Class<?>[] {PortletPreferences.class, Layout.class},
@@ -299,6 +343,77 @@ public class AssetEntriesCheckerHelperTest {
 		portletPreferences.store();
 	}
 
+	private void _setAssetListSelectionStylePreference(
+			AssetEntry assetEntry, AssetEntry audienceAssetEntry,
+			AssetEntry segmentsAssetEntry)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_MANUAL, serviceContext);
+
+		_assetListEntryLocalService.addAssetEntrySelection(
+			assetListEntry.getAssetListEntryId(), assetEntry.getEntryId(),
+			SegmentsEntryConstants.ID_DEFAULT, serviceContext);
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				assetListEntry.getAssetListEntryId(), audienceEntryERC, 0, null,
+				serviceContext);
+
+		_assetListEntryLocalService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {audienceAssetEntry.getEntryId()}, audienceEntryERC,
+			serviceContext);
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			_group.getGroupId());
+
+		_assetListEntryLocalService.addAssetEntrySelection(
+			assetListEntry.getAssetListEntryId(),
+			segmentsAssetEntry.getEntryId(), segmentsEntry.getSegmentsEntryId(),
+			serviceContext);
+
+		AssetListEntrySegmentsEntryRel assetListEntrySegmentsEntryRel =
+			_assetListEntrySegmentsEntryRelLocalService.
+				fetchAssetListEntrySegmentsEntryRel(
+					assetListEntry.getAssetListEntryId(),
+					segmentsEntry.getSegmentsEntryId());
+
+		AssetListEntrySegmentsEntryRel defaultAssetListEntrySegmentsEntryRel =
+			_assetListEntrySegmentsEntryRelLocalService.
+				fetchAssetListEntrySegmentsEntryRel(
+					assetListEntry.getAssetListEntryId(),
+					SegmentsEntryConstants.ID_DEFAULT);
+
+		_assetListEntrySegmentsEntryRelLocalService.updateVariationsPriority(
+			new long[] {
+				assetListEntrySegmentsEntryRel.
+					getAssetListEntrySegmentsEntryRelId(),
+				defaultAssetListEntrySegmentsEntryRel.
+					getAssetListEntrySegmentsEntryRelId()
+			});
+
+		PortletPreferences portletPreferences =
+			LayoutTestUtil.getPortletPreferences(_layout, _portletId);
+
+		portletPreferences.setValue(
+			"assetListEntryExternalReferenceCode",
+			assetListEntry.getExternalReferenceCode());
+		portletPreferences.setValue("selectionStyle", "asset-list");
+
+		portletPreferences.store();
+	}
+
 	private void _setDynamicSelectionStylePreference() throws Exception {
 		PortletPreferences portletPreferences =
 			LayoutTestUtil.getPortletPreferences(_layout, _portletId);
@@ -404,6 +519,10 @@ public class AssetEntriesCheckerHelperTest {
 
 	@Inject
 	private AssetListAssetEntryProvider _assetListAssetEntryProvider;
+
+	@Inject
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
 
 	@Inject
 	private AssetListEntryLocalService _assetListEntryLocalService;

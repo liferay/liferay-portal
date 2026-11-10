@@ -546,6 +546,60 @@ public class AssetListAssetEntryProviderTest {
 	}
 
 	@Test
+	public void testGetAssetEntryQueryWithAudienceEntryPrioritized()
+		throws Exception {
+
+		String keyword1 = RandomTestUtil.randomString();
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC,
+				_getTypeSettings(keyword1), _serviceContext);
+
+		String audienceEntryERC1 = RandomTestUtil.randomString();
+		String keyword2 = RandomTestUtil.randomString();
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				assetListEntry.getAssetListEntryId(), audienceEntryERC1, 0,
+				_getTypeSettings(keyword2), _serviceContext);
+
+		String audienceEntryERC2 = RandomTestUtil.randomString();
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				assetListEntry.getAssetListEntryId(), audienceEntryERC2, 1,
+				_getTypeSettings(RandomTestUtil.randomString()),
+				_serviceContext);
+
+		AssetEntryQuery assetEntryQuery =
+			_assetListAssetEntryProvider.getAssetEntryQuery(
+				assetListEntry, new String[] {RandomTestUtil.randomString()},
+				String.valueOf(TestPropsValues.getUserId()));
+
+		Assert.assertArrayEquals(
+			new String[] {keyword1}, assetEntryQuery.getAnyKeywords());
+
+		assetEntryQuery = _assetListAssetEntryProvider.getAssetEntryQuery(
+			assetListEntry, new String[] {audienceEntryERC2, audienceEntryERC1},
+			String.valueOf(TestPropsValues.getUserId()));
+
+		Assert.assertArrayEquals(
+			new String[] {keyword2}, assetEntryQuery.getAnyKeywords());
+
+		assetEntryQuery = _assetListAssetEntryProvider.getAssetEntryQuery(
+			assetListEntry, (String[])null,
+			String.valueOf(TestPropsValues.getUserId()));
+
+		Assert.assertArrayEquals(
+			new String[] {keyword1}, assetEntryQuery.getAnyKeywords());
+	}
+
+	@Test
 	public void testGetAssetQueryWithMostRelevantLocale() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 

@@ -11,11 +11,17 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
+import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
+import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
+import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.publisher.test.util.AssetPublisherTestUtil;
 import com.liferay.asset.publisher.util.AssetEntryResult;
 import com.liferay.asset.publisher.util.AssetPublisherHelper;
 import com.liferay.asset.publisher.util.AssetQueryRule;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.blogs.model.BlogsEntry;
+import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.info.pagination.InfoPage;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
@@ -30,6 +36,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -50,15 +57,20 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.view.count.ViewCountManager;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.ratings.test.util.RatingsTestUtil;
+import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
 
 import jakarta.portlet.PortletPreferences;
+
+import jakarta.servlet.http.Cookie;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,6 +87,8 @@ import org.junit.runner.RunWith;
 
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Eudaldo Alonso
@@ -297,6 +311,45 @@ public class AssetPublisherHelperTest {
 
 		Assert.assertEquals(
 			Arrays.toString(assetCategoryIds), 0, assetCategoryIds.length);
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-109242")
+	@Test
+	public void testGetAssetEntriesForManualCollectionWithAudienceEntryWhenFeatureFlagIsDisabled()
+		throws Exception {
+
+		AssetEntry assetEntry = _addAssetEntry();
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+
+		PortletPreferences portletPreferences = _getPortletPreferences(
+			assetEntry, _addAssetEntry(), audienceEntryERC);
+
+		Assert.assertEquals(
+			Collections.singletonList(assetEntry),
+			_getAssetEntries(audienceEntryERC, portletPreferences));
+	}
+
+	@FeatureFlag("LPD-109242")
+	@Test
+	public void testGetAssetEntriesForManualCollectionWithAudienceEntryWhenFeatureFlagIsEnabled()
+		throws Exception {
+
+		AssetEntry assetEntry1 = _addAssetEntry();
+		AssetEntry assetEntry2 = _addAssetEntry();
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+
+		PortletPreferences portletPreferences = _getPortletPreferences(
+			assetEntry1, assetEntry2, audienceEntryERC);
+
+		Assert.assertEquals(
+			Collections.singletonList(assetEntry1),
+			_getAssetEntries(
+				RandomTestUtil.randomString(), portletPreferences));
+		Assert.assertEquals(
+			Collections.singletonList(assetEntry2),
+			_getAssetEntries(audienceEntryERC, portletPreferences));
 	}
 
 	@Test
@@ -789,6 +842,17 @@ public class AssetPublisherHelperTest {
 		return portletPreferences;
 	}
 
+	private AssetEntry _addAssetEntry() throws Exception {
+		BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			StringPool.BLANK, StringPool.BLANK, RandomTestUtil.randomString(),
+			1, 1, 1965, 0, 0, true, true, null, StringPool.BLANK, null, null,
+			ServiceContextTestUtil.getServiceContext(_group1.getGroupId()));
+
+		return _assetEntryLocalService.getEntry(
+			BlogsEntry.class.getName(), blogsEntry.getEntryId());
+	}
+
 	private void _checkAssetEntryResults(
 		List<AssetEntryResult> assetEntryResults, long[] classPKs) {
 
@@ -805,6 +869,74 @@ public class AssetPublisherHelperTest {
 		Assert.assertEquals(assetEntry2.getClassPK(), classPKs[1]);
 	}
 
+	private List<AssetEntry> _getAssetEntries(
+			String audienceEntryERC, PortletPreferences portletPreferences)
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			ContentLayoutTestUtil.getMockLiferayPortletActionRequest(
+				_companyLocalService.getCompany(TestPropsValues.getCompanyId()),
+				_group1,
+				LayoutTestUtil.addTypePortletLayout(_group1.getGroupId()));
+
+		MockHttpServletRequest mockHttpServletRequest =
+			(MockHttpServletRequest)_portal.getHttpServletRequest(
+				mockLiferayPortletActionRequest);
+
+		mockHttpServletRequest.setCookies(
+			new Cookie(
+				"com.liferay.frontend.js.audiences",
+				URLCodec.encodeURL(
+					JSONUtil.putAll(
+						audienceEntryERC
+					).toString())));
+
+		return _assetPublisherHelper.getAssetEntries(
+			mockLiferayPortletActionRequest, portletPreferences,
+			PermissionThreadLocal.getPermissionChecker(),
+			new long[] {_group1.getGroupId()}, null, null, false, false);
+	}
+
+	private PortletPreferences _getPortletPreferences(
+			AssetEntry assetEntry, AssetEntry audienceAssetEntry,
+			String audienceEntryERC)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group1.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				null, TestPropsValues.getUserId(), _group1.getGroupId(),
+				RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_MANUAL, serviceContext);
+
+		_assetListEntryLocalService.addAssetEntrySelection(
+			assetListEntry.getAssetListEntryId(), assetEntry.getEntryId(),
+			SegmentsEntryConstants.ID_DEFAULT, serviceContext);
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), _group1.getGroupId(),
+				assetListEntry.getAssetListEntryId(), audienceEntryERC, 0, null,
+				serviceContext);
+
+		_assetListEntryLocalService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {audienceAssetEntry.getEntryId()}, audienceEntryERC,
+			serviceContext);
+
+		PortletPreferences portletPreferences = new MockPortletPreferences();
+
+		portletPreferences.setValue(
+			"assetListEntryExternalReferenceCode",
+			assetListEntry.getExternalReferenceCode());
+		portletPreferences.setValue("selectionStyle", "asset-list");
+
+		return portletPreferences;
+	}
+
 	private static Configuration _assetPublisherWebConfiguration;
 
 	@Inject
@@ -814,7 +946,17 @@ public class AssetPublisherHelperTest {
 	private AssetEntryLocalService _assetEntryLocalService;
 
 	@Inject
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
+
+	@Inject
+	private AssetListEntryLocalService _assetListEntryLocalService;
+
+	@Inject
 	private AssetPublisherHelper _assetPublisherHelper;
+
+	@Inject
+	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
