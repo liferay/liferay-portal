@@ -48,20 +48,32 @@ public class DBInitUtil {
 	}
 
 	public static void init() throws Exception {
-		_readDataSource = _initDataSource("jdbc.read.");
+		Properties readDataSourceProperties = PropsUtil.getProperties(
+			"jdbc.read.", true);
+		Properties writeDataSourceProperties = PropsUtil.getProperties(
+			"jdbc.write.", true);
 
-		_writeDataSource = _initDataSource("jdbc.write.");
+		if (!readDataSourceProperties.isEmpty() &&
+			!writeDataSourceProperties.isEmpty()) {
 
-		if (isReadWriteDataSource()) {
+			_readDataSource = DataSourceFactoryUtil.initDataSource(
+				readDataSourceProperties);
+			_writeDataSource = DataSourceFactoryUtil.initDataSource(
+				writeDataSourceProperties);
+
 			_dataSource = new DynamicDataSource(
 				_readDataSource, _writeDataSource);
 		}
 		else {
-			_dataSource = _initDataSource("jdbc.default.");
-		}
+			Properties defaultDataSourceProperties = PropsUtil.getProperties(
+				"jdbc.default.", true);
 
-		if (_dataSource == null) {
-			throw new IllegalStateException("Data source is null");
+			if (defaultDataSourceProperties.isEmpty()) {
+				throw new IllegalStateException("Data source is null");
+			}
+
+			_dataSource = DataSourceFactoryUtil.initDataSource(
+				defaultDataSourceProperties);
 		}
 
 		DBManagerUtil.setDB(
@@ -236,16 +248,6 @@ public class DBInitUtil {
 
 			DBPartitionUtil.setDefaultCompanyId(connection);
 		}
-	}
-
-	private static DataSource _initDataSource(String prefix) throws Exception {
-		Properties properties = PropsUtil.getProperties(prefix, true);
-
-		if (properties.isEmpty()) {
-			return null;
-		}
-
-		return DataSourceFactoryUtil.initDataSource(properties);
 	}
 
 	private static void _runSQLFile(
