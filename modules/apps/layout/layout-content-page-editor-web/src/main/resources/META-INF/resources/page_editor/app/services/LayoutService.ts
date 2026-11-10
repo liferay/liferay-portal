@@ -69,9 +69,11 @@ export default {
 
 	changeMasterLayout({
 		masterLayoutPageTemplateEntryERC,
+		masterLayoutPageTemplateEntryScopeERC,
 		onNetworkStatus,
 	}: {
 		masterLayoutPageTemplateEntryERC: string;
+		masterLayoutPageTemplateEntryScopeERC?: string;
 		onNetworkStatus: OnNetworkStatus;
 	}) {
 		return draftServiceFetch<
@@ -82,7 +84,13 @@ export default {
 			| undefined
 		>(
 			config.changeMasterLayoutURL,
-			{body: {masterLayoutPageTemplateEntryERC}},
+			{
+				body: {
+					masterLayoutPageTemplateEntryERC,
+					masterLayoutPageTemplateEntryScopeERC:
+						masterLayoutPageTemplateEntryScopeERC || '',
+				},
+			},
 			onNetworkStatus
 		);
 	},

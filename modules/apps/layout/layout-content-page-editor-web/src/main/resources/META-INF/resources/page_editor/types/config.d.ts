@@ -200,7 +200,9 @@ export interface Config {
 	masterLayouts: Array<{
 		imagePreviewURL: string;
 		masterLayoutPageTemplateEntryERC: string;
+		masterLayoutPageTemplateEntryScopeERC?: string;
 		name: string;
+		subtitle?: string;
 	}>;
 	masterUsed: boolean;
 	moveItemsURL: string;

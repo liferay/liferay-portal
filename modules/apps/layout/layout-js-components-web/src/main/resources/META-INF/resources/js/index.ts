@@ -13,6 +13,7 @@ export {
 	default as ColorPicker,
 	DEFAULT_TOKEN_LABEL,
 } from './components/color_picker/ColorPicker';
+export {default as DesignLibraryNameLabel} from './components/design_library_name_label/DesignLibraryNameLabel';
 export {default as DragPreview} from './components/drag_preview/DragPreview';
 export {default as ExperienceSelector} from './components/experience_selector/ExperienceSelector';
 export {default as Import} from './components/import/Import';

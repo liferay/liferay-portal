@@ -5,19 +5,20 @@
 
 import changeMasterLayout from '../../../app/thunks/changeMasterLayout';
 import {config} from '../../config/index';
+import isSameMasterLayout from '../../utils/isSameMasterLayout';
 
 function undoAction({action}) {
 	return changeMasterLayout({
 		masterLayoutPageTemplateEntryERC:
 			action.masterLayoutPageTemplateEntryERC,
+		masterLayoutPageTemplateEntryScopeERC:
+			action.masterLayoutPageTemplateEntryScopeERC,
 	});
 }
 
 function getDerivedStateForUndo({action, state}) {
-	const masterLayoutExists = config.masterLayouts.some(
-		(masterLayout) =>
-			masterLayout.masterLayoutPageTemplateEntryERC ===
-			state.masterLayout.masterLayoutPageTemplateEntryERC
+	const masterLayoutExists = config.masterLayouts.some((masterLayout) =>
+		isSameMasterLayout(masterLayout, state.masterLayout)
 	);
 
 	if (!masterLayoutExists) {
@@ -27,8 +28,12 @@ function getDerivedStateForUndo({action, state}) {
 	return {
 		masterLayoutPageTemplateEntryERC:
 			state.masterLayout.masterLayoutPageTemplateEntryERC,
+		masterLayoutPageTemplateEntryScopeERC:
+			state.masterLayout.masterLayoutPageTemplateEntryScopeERC,
 		nextMasterLayoutPageTemplateEntryERC:
 			action.masterLayoutPageTemplateEntryERC,
+		nextMasterLayoutPageTemplateEntryScopeERC:
+			action.masterLayoutPageTemplateEntryScopeERC,
 	};
 }
 

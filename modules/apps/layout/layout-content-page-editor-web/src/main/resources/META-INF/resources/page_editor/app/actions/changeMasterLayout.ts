@@ -16,11 +16,16 @@ export default function changeMasterLayout({
 	fragmentEntryLinks = {},
 	masterLayoutData = null,
 	masterLayoutPageTemplateEntryERC = '',
-}: MasterLayoutOptions & {fragmentEntryLinks: FragmentEntryLinkMap}) {
+	masterLayoutPageTemplateEntryScopeERC = '',
+}: MasterLayoutOptions & {
+	fragmentEntryLinks: FragmentEntryLinkMap;
+	masterLayoutPageTemplateEntryScopeERC?: string;
+}) {
 	return {
 		fragmentEntryLinks,
 		masterLayoutData,
 		masterLayoutPageTemplateEntryERC,
+		masterLayoutPageTemplateEntryScopeERC,
 		type: CHANGE_MASTER_LAYOUT,
 	} as const;
 }

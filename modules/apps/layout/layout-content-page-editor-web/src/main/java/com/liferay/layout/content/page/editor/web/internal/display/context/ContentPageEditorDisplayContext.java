@@ -100,6 +100,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
@@ -1917,6 +1918,13 @@ public class ContentPageEditorDisplayContext {
 
 				return layout.getMasterLayoutPageTemplateEntryERC();
 			}
+		).put(
+			"masterLayoutPageTemplateEntryScopeERC",
+			() -> {
+				Layout layout = themeDisplay.getLayout();
+
+				return layout.getMasterLayoutPageTemplateEntryScopeERC();
+			}
 		);
 	}
 
@@ -1947,7 +1955,7 @@ public class ContentPageEditorDisplayContext {
 		return _masterLayoutStructure;
 	}
 
-	private List<Map<String, Object>> _getMasterLayouts() {
+	private List<Map<String, Object>> _getMasterLayouts() throws Exception {
 		ArrayList<Map<String, Object>> masterLayouts = new ArrayList<>();
 
 		masterLayouts.add(
@@ -1976,11 +1984,56 @@ public class ContentPageEditorDisplayContext {
 					layoutPageTemplateEntry.getImagePreviewURL(themeDisplay)
 				).put(
 					"masterLayoutPageTemplateEntryERC",
-					String.valueOf(
-						layoutPageTemplateEntry.getExternalReferenceCode())
+					layoutPageTemplateEntry.getExternalReferenceCode()
 				).put(
 					"name", layoutPageTemplateEntry.getName()
 				).build());
+		}
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-81022")) {
+
+			return masterLayouts;
+		}
+
+		for (long designLibraryGroupId :
+				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+					themeDisplay.getScopeGroupId())) {
+
+			List<LayoutPageTemplateEntry>
+				designLibraryLayoutPageTemplateEntries =
+					_layoutPageTemplateEntryService.
+						getLayoutPageTemplateEntries(
+							designLibraryGroupId,
+							LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+							WorkflowConstants.STATUS_APPROVED,
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+							LayoutPageTemplateEntryNameComparator.getInstance(
+								true));
+			Group group = GroupLocalServiceUtil.getGroup(designLibraryGroupId);
+
+			String subtitle = group.getDescriptiveName(
+				themeDisplay.getLocale());
+
+			for (LayoutPageTemplateEntry layoutPageTemplateEntry :
+					designLibraryLayoutPageTemplateEntries) {
+
+				masterLayouts.add(
+					HashMapBuilder.<String, Object>put(
+						"imagePreviewURL",
+						layoutPageTemplateEntry.getImagePreviewURL(themeDisplay)
+					).put(
+						"masterLayoutPageTemplateEntryERC",
+						layoutPageTemplateEntry.getExternalReferenceCode()
+					).put(
+						"masterLayoutPageTemplateEntryScopeERC",
+						group.getExternalReferenceCode()
+					).put(
+						"name", layoutPageTemplateEntry.getName()
+					).put(
+						"subtitle", subtitle
+					).build());
+			}
 		}
 
 		return masterLayouts;
