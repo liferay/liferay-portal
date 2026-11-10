@@ -18,6 +18,7 @@ interface FormFieldProps {
 	label: string;
 	name: string;
 	onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+	prefix?: React.ReactNode;
 	required?: boolean;
 	validate?: FieldValidator;
 }
@@ -30,6 +31,7 @@ export function FormField({
 	label,
 	name,
 	onChange,
+	prefix,
 	required: isRequired,
 	validate,
 }: FormFieldProps) {
@@ -47,6 +49,8 @@ export function FormField({
 			label={label}
 			required={isRequired}
 		>
+			{prefix}
+
 			<ClayInput
 				{...field}
 				aria-describedby={`${id}fieldFeedback`}

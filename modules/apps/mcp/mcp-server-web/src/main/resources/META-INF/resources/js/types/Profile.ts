@@ -9,9 +9,9 @@ export type Profile = {
 	dateModified?: string;
 	description: string;
 	externalReferenceCode?: string;
-	friendlyUrlPath?: string;
 	id?: number;
 	name: string;
+	profilePath: string;
 	profileStatus?: MCPStatusPicklistValue;
 };
 
@@ -24,10 +24,12 @@ export type ProfileFormValues = {
 	active: boolean;
 	description: string;
 	name: string;
+	profilePath: string;
 };
 
 export type ProfilePayload = {
 	description: string;
 	name: string;
+	profilePath: string;
 	profileStatus: {key: MCPStatusKey};
 };

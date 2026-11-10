@@ -5,11 +5,12 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
+import {Text} from '@clayui/core';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {Form, FormikProvider, useFormik} from 'formik';
 import {navigate, sub} from 'frontend-js-web';
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {FormField} from '../../../components/forms/FormField';
 import {FormSection} from '../../../components/forms/FormSection';
@@ -22,6 +23,8 @@ import {
 	ProfileFormValues,
 	ProfilePayload,
 } from '../../../types/Profile';
+import required from '../../../utils/required';
+import toIdentifier from '../../../utils/toIdentifier';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
 
 interface EditProfileInfoProps {
@@ -69,6 +72,27 @@ export default function EditProfileInfo({
 	);
 }
 
+function toProfilePath(value: string): string {
+	return value
+		.toLowerCase()
+		.replace(/\s+/g, '-')
+		.replace(/[^a-z0-9-]/g, '');
+}
+
+function validateProfilePath(value: string): string | undefined {
+	const requiredError = required(value);
+
+	if (requiredError) {
+		return requiredError;
+	}
+
+	return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value)
+		? undefined
+		: Liferay.Language.get(
+				'please-enter-a-valid-profile-path-lowercase-letters-and-numbers-separated-by-single-hyphens'
+			);
+}
+
 interface ProfileFormProps {
 	backURL: string;
 	editProfileURL: string;
@@ -82,7 +106,11 @@ function ProfileForm({
 	portletNamespace,
 	profile,
 }: ProfileFormProps) {
+	const isDefaultProfile =
+		profile?.externalReferenceCode === 'L_MCP_SERVER_DEFAULT_PROFILE';
 	const isNew = !profile?.externalReferenceCode;
+
+	const [profilePathChanged, setProfilePathChanged] = useState(false);
 
 	const formRef = useRef<HTMLFormElement>(null);
 
@@ -91,11 +119,13 @@ function ProfileForm({
 			active: profile?.profileStatus?.key === 'active',
 			description: profile?.description ?? '',
 			name: profile?.name ?? '',
+			profilePath: profile?.profilePath ?? '',
 		},
 		onSubmit: async (values) => {
 			const payload: ProfilePayload = {
 				description: values.description,
 				name: values.name,
+				profilePath: values.profilePath,
 				profileStatus: {key: values.active ? 'active' : 'inactive'},
 			};
 
@@ -139,6 +169,14 @@ function ProfileForm({
 
 	useFocusFirstInvalidField(formRef, formik);
 
+	const {setFieldValue, values} = formik;
+
+	useEffect(() => {
+		if (isNew && !profilePathChanged) {
+			setFieldValue('profilePath', toIdentifier(values.name));
+		}
+	}, [isNew, profilePathChanged, setFieldValue, values.name]);
+
 	return (
 		<FormikProvider value={formik}>
 			<Form className="profile-form" noValidate ref={formRef}>
@@ -178,6 +216,38 @@ function ProfileForm({
 						label={Liferay.Language.get('title')}
 						name="name"
 						required
+					/>
+
+					<FormField
+						disabled={isDefaultProfile}
+						helpMessage={
+							isDefaultProfile
+								? Liferay.Language.get(
+										'the-default-profile-has-no-profile-path'
+									)
+								: Liferay.Language.get(
+										'the-url-can-be-modified'
+									)
+						}
+						id="profilePath"
+						label={Liferay.Language.get('url')}
+						name="profilePath"
+						onChange={({target: {value}}) => {
+							setProfilePathChanged(true);
+
+							setFieldValue('profilePath', toProfilePath(value));
+						}}
+						prefix={
+							<Text as="p" size={2} weight="semi-bold">
+								{isDefaultProfile
+									? `${window.location.origin}/o/mcp`
+									: `${window.location.origin}/o/mcp/`}
+							</Text>
+						}
+						required={!isDefaultProfile}
+						validate={
+							isDefaultProfile ? undefined : validateProfilePath
+						}
 					/>
 
 					<FormField

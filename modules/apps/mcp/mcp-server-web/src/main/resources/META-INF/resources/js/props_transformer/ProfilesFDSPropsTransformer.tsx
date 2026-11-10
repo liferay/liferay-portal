@@ -8,6 +8,7 @@ import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 import {Profile} from '../types/Profile';
 import confirmAndDeleteProfileAction from './actions/confirmAndDeleteProfileAction';
 import MCPStatusRenderer from './cell_renderers/MCPStatusRenderer';
+import ProfilePathRenderer from './cell_renderers/ProfilePathRenderer';
 
 interface ItemsAction {
 	data?: {id?: string};
@@ -27,6 +28,11 @@ export default function ProfilesFDSPropsTransformer(
 				{
 					component: MCPStatusRenderer,
 					name: 'mcpStatusRenderer',
+					type: 'internal',
+				} as IInternalRenderer,
+				{
+					component: ProfilePathRenderer,
+					name: 'profilePathRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 			],
