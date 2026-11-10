@@ -13,6 +13,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -25,14 +26,17 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Collection;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,6 +52,19 @@ public class AMGIFImageScalerTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_configurationTemporarySwapper = new ConfigurationTemporarySwapper(
+			"com.liferay.adaptive.media.image.internal.configuration." +
+				"AMImageConfiguration",
+			new HashMapDictionary<>());
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		_configurationTemporarySwapper.close();
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -108,6 +125,8 @@ public class AMGIFImageScalerTest {
 				"max-width", "100"
 			).build());
 	}
+
+	private static ConfigurationTemporarySwapper _configurationTemporarySwapper;
 
 	private AMImageConfigurationEntry _amImageConfigurationEntry;
 
