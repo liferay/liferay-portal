@@ -81,7 +81,6 @@ public class JournalEditArticleDisplayContextTest {
 	@Before
 	public void setUp() throws Exception {
 		_group1 = GroupTestUtil.addGroup();
-		_group2 = GroupTestUtil.addGroup();
 		_user = TestPropsValues.getUser();
 	}
 
@@ -140,8 +139,8 @@ public class JournalEditArticleDisplayContextTest {
 	@Test
 	@TestInfo("LPS-172561")
 	public void testGetFriendlyURLDuplicatedWarningMessage() throws Exception {
-		_assertGetFriendlyURLDuplicatedWarningMessage(
-			StringPool.BLANK, _group2.getGroupId());
+		_group2 = GroupTestUtil.addGroup();
+
 		_assertGetFriendlyURLDuplicatedWarningMessage(
 			"The URL used in English (United States) already exists in other " +
 				"sites or asset libraries.",
@@ -164,6 +163,8 @@ public class JournalEditArticleDisplayContextTest {
 					"other sites or asset libraries.",
 			_group2.getGroupId(), LocaleUtil.CHINA, LocaleUtil.GERMANY,
 			LocaleUtil.JAPAN, LocaleUtil.SPAIN, LocaleUtil.US);
+		_assertGetFriendlyURLDuplicatedWarningMessage(
+			StringPool.BLANK, _group2.getGroupId());
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(
@@ -225,25 +226,24 @@ public class JournalEditArticleDisplayContextTest {
 			long groupId, Map<Locale, String> friendlyURLMap)
 		throws Exception {
 
-		Map<Locale, String> titleMap = HashMapBuilder.put(
-			LocaleUtil.CHINA, RandomTestUtil.randomString()
-		).put(
-			LocaleUtil.GERMANY, RandomTestUtil.randomString()
-		).put(
-			LocaleUtil.JAPAN, RandomTestUtil.randomString()
-		).put(
-			LocaleUtil.SPAIN, RandomTestUtil.randomString()
-		).put(
-			LocaleUtil.US, RandomTestUtil.randomString()
-		).build();
-
 		Map<Locale, String> contentMap = HashMapBuilder.put(
 			LocaleUtil.US, RandomTestUtil.randomString()
 		).build();
 
 		return JournalTestUtil.addArticle(
 			null, groupId, JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, null, true, titleMap,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, null, true,
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.GERMANY, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.JAPAN, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.SPAIN, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
 			contentMap, friendlyURLMap, contentMap, null, LocaleUtil.US, null,
 			null, false, true,
 			ServiceContextTestUtil.getServiceContext(groupId));
