@@ -17,6 +17,8 @@ NavigableMap<String, String> virtualHostnames = layoutSet.getVirtualHostnames();
 if (!virtualHostnames.containsKey(PortalUtil.getHost(request))) {
 	sitemapUrl += "?groupId=" + layoutsAdminDisplayContext.getLiveGroupId() + "&privateLayout=" + layoutsAdminDisplayContext.isPrivateLayout();
 }
+
+String sitemapURLInputId = liferayPortletResponse.getNamespace() + "sitemapURLInput";
 %>
 
 <liferay-ui:error-marker
@@ -24,46 +26,63 @@ if (!virtualHostnames.containsKey(PortalUtil.getHost(request))) {
 	value="siteMap"
 />
 
-<liferay-util:buffer
-	var="linkContent"
->
-	<a href="http://www.sitemaps.org" target="_blank">
-		http://www.sitemaps.org
-	</a>
-</liferay-util:buffer>
+<p class="text-secondary">
+	<liferay-ui:message key="sitemap-help" /> <a class="text-decoration-underline" href="https://www.sitemaps.org" target="_blank"><liferay-ui:message arguments="https://www.sitemaps.org" key="visit-x-for-more-information" /></a>
+</p>
 
-<div class="text-secondary">
-	<p>
-		<liferay-ui:message key="the-sitemap-protocol-notifies-search-engines-of-the-structure-of-the-website" /> <liferay-ui:message arguments="<%= linkContent %>" key="see-x-for-more-information" translateArguments="<%= false %>" />
-	</p>
+<div class="form-group">
+	<label for="<%= sitemapURLInputId %>"><liferay-ui:message key="sitemap-url" /></label>
 
-	<%
-	String sitemapUrlLink = "<a target=\"_blank\" href=\"" + HtmlUtil.escapeAttribute(sitemapUrl) + "\">";
-	%>
+	<div class="input-group">
+		<div class="input-group-item input-group-prepend">
+			<input class="form-control" id="<%= sitemapURLInputId %>" readonly value="<%= HtmlUtil.escapeAttribute(sitemapUrl) %>" />
+		</div>
 
-	<p>
-		<liferay-ui:message arguments='<%= new Object[] {sitemapUrlLink, "</a>"} %>' key="send-sitemap-information-to-preview" translateArguments="<%= false %>" />
-	</p>
-
-	<ul class="list-unstyled">
-		<li>
-			<clay:link
-				href='<%= "http://www.google.com/webmasters/sitemaps/ping?sitemap=" + HtmlUtil.escapeURL(sitemapUrl) %>'
-				label="Google"
-				target="_blank"
+		<span class="input-group-append input-group-item input-group-item-shrink">
+			<clay:button
+				cssClass="lfr-portal-tooltip"
+				data-clipboard-target='<%= "#" + sitemapURLInputId %>'
+				displayType="secondary"
+				icon="paste"
+				id='<%= liferayPortletResponse.getNamespace() + "copySitemapURLButton" %>'
+				title="copy-link"
 			/>
-		</li>
-		<li>
-			<div class="d-flex">
-				<clay:link
-					cssClass="c-mr-2"
-					href='<%= "https://siteexplorer.search.yahoo.com/submit/ping?sitemap=" + HtmlUtil.escapeURL(sitemapUrl) %>'
-					label="Yahoo!"
-					target="_blank"
-				/>
-
-				<liferay-ui:message key="requires-log-in" />
-			</div>
-		</li>
-	</ul>
+		</span>
+	</div>
 </div>
+
+<p class="font-weight-semi-bold mb-2 text-3"><liferay-ui:message key="search-engine-tools" /></p>
+
+<ul class="list-unstyled">
+	<li class="mb-2">
+		<clay:link
+			decoration="underline"
+			href="https://search.google.com/search-console"
+			iconAfter="shortcut"
+			label="google-search-console"
+			target="_blank"
+		/>
+	</li>
+	<li class="mb-2">
+		<clay:link
+			decoration="underline"
+			href="https://www.bing.com/webmasters"
+			iconAfter="shortcut"
+			label="bing-webmaster-tools"
+			target="_blank"
+		/>
+	</li>
+	<li>
+		<clay:link
+			decoration="underline"
+			href="https://help.yahoo.com/kb/search-for-desktop/SLN2217.html"
+			iconAfter="shortcut"
+			label="yahoo-webmaster"
+			target="_blank"
+		/>
+	</li>
+</ul>
+
+<liferay-frontend:component
+	module="{CopySitemapURL} from layout-admin-web"
+/>
