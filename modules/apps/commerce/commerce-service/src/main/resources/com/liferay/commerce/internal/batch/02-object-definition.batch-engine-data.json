@@ -5,7 +5,6 @@
 		"parameters": {
 			"containsHeaders": "true",
 			"createStrategy": "UPSERT",
-			"featureFlag": "LPD-10562",
 			"importStrategy": "ON_ERROR_FAIL",
 			"updateStrategy": "UPDATE"
 		},
@@ -111,10 +110,10 @@
 			"status": {
 				"code": 0
 			},
+			"system": true,
 			"titleObjectFieldName": "name"
 		},
 		{
-			"enableFormContainer": false,
 			"externalReferenceCode": "L_COMMERCE_ORDER",
 			"objectRelationships": [
 				{
@@ -168,10 +167,10 @@
 			"status": {
 				"code": 0
 			},
+			"system": true,
 			"titleObjectFieldName": "id"
 		},
 		{
-			"enableFormContainer": false,
 			"externalReferenceCode": "L_COMMERCE_ORDER_ITEM",
 			"objectRelationships": [
 				{
@@ -224,6 +223,7 @@
 			"status": {
 				"code": 0
 			},
+			"system": true,
 			"titleObjectFieldName": "id"
 		},
 		{

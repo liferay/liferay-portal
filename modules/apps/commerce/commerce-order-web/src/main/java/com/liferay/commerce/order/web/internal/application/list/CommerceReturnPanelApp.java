@@ -10,7 +10,6 @@ import com.liferay.application.list.PanelApp;
 import com.liferay.commerce.application.list.constants.CommercePanelCategoryKeys;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -48,12 +47,6 @@ public class CommerceReturnPanelApp extends BasePanelApp {
 	@Override
 	public boolean isShow(PermissionChecker permissionChecker, Group group)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-10562")) {
-
-			return false;
-		}
 
 		return super.isShow(permissionChecker, group);
 	}

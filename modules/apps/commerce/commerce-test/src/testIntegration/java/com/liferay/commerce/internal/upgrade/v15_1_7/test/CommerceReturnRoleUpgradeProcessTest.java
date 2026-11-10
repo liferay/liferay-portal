@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -35,7 +34,6 @@ import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,10 +55,6 @@ public class CommerceReturnRoleUpgradeProcessTest {
 
 	@Test
 	public void testUpgrade() throws Exception {
-		Assume.assumeTrue(
-			FeatureFlagManagerUtil.isEnabled(
-				TestPropsValues.getCompanyId(), "LPD-10562"));
-
 		long companyId = TestPropsValues.getCompanyId();
 
 		ObjectDefinition commerceReturnObjectDefinition =

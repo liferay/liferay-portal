@@ -45,7 +45,6 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
@@ -100,32 +99,22 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 		_checkRole(
 			AccountRoleConstants.ROLE_NAME_ORDER_ADMINISTRATOR,
 			RoleConstants.TYPE_REGULAR, serviceContext);
-
-		if (FeatureFlagManagerUtil.isEnabled(
-				serviceContext.getCompanyId(), "LPD-10562")) {
-
-			_checkRole(
-				AccountRoleConstants.ROLE_NAME_RETURNS_MANAGER,
-				RoleConstants.TYPE_REGULAR, serviceContext);
-			_checkRole(
-				RoleConstants.USER, RoleConstants.TYPE_REGULAR, serviceContext);
-		}
-
+		_checkRole(
+			AccountRoleConstants.ROLE_NAME_RETURNS_MANAGER,
+			RoleConstants.TYPE_REGULAR, serviceContext);
 		_checkRole(
 			AccountRoleConstants.ROLE_NAME_SUPPLIER, RoleConstants.TYPE_REGULAR,
 			serviceContext);
+		_checkRole(
+			RoleConstants.USER, RoleConstants.TYPE_REGULAR, serviceContext);
 	}
 
 	@Override
 	public void checkCommerceUserRoles(ServiceContext serviceContext)
 		throws PortalException {
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				serviceContext.getCompanyId(), "LPD-10562")) {
-
-			_checkRole(
-				RoleConstants.USER, RoleConstants.TYPE_REGULAR, serviceContext);
-		}
+		_checkRole(
+			RoleConstants.USER, RoleConstants.TYPE_REGULAR, serviceContext);
 	}
 
 	@Override

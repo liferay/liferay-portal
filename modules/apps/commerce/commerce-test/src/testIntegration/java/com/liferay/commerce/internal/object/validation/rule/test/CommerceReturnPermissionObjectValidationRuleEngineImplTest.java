@@ -24,7 +24,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.validation.rule.ObjectValidationRuleEngine;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -42,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -66,8 +64,6 @@ public class CommerceReturnPermissionObjectValidationRuleEngineImplTest
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		Assume.assumeTrue(FeatureFlagManagerUtil.isEnabled("LPD-10562"));
-
 		super.setUp();
 
 		CommerceShipment commerceShipment =

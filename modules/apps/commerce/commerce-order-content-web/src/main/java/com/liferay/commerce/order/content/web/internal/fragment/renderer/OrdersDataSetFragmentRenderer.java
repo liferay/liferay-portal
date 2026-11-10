@@ -26,7 +26,6 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -175,19 +174,14 @@ public class OrdersDataSetFragmentRenderer implements FragmentRenderer {
 				"{OrderDataSetPropsTransformer} from " +
 					"commerce-order-content-web");
 
-			if (FeatureFlagManagerUtil.isEnabled(
-					_portal.getCompanyId(httpServletRequest), "LPD-10562")) {
-
-				httpServletRequest.setAttribute(
-					"liferay-commerce:order-data-set:" +
-						"returnableOrderItemsContextParams",
-					_getReturnableOrderItemsContextParams(
-						commerceChannel, httpServletRequest));
-				httpServletRequest.setAttribute(
-					"liferay-commerce:order-data-set:" +
-						"viewReturnableOrderItemsURL",
-					_getViewReturnableOrderItemsURL(httpServletRequest));
-			}
+			httpServletRequest.setAttribute(
+				"liferay-commerce:order-data-set:" +
+					"returnableOrderItemsContextParams",
+				_getReturnableOrderItemsContextParams(
+					commerceChannel, httpServletRequest));
+			httpServletRequest.setAttribute(
+				"liferay-commerce:order-data-set:viewReturnableOrderItemsURL",
+				_getViewReturnableOrderItemsURL(httpServletRequest));
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
@@ -289,16 +283,11 @@ public class OrdersDataSetFragmentRenderer implements FragmentRenderer {
 					StringPool.BLANK, "reset", "reorder",
 					_language.get(httpServletRequest, "reorder"), null, null,
 					"link"));
-
-			if (FeatureFlagManagerUtil.isEnabled(
-					_portal.getCompanyId(httpServletRequest), "LPD-10562")) {
-
-				fdsActionDropdownItems.add(
-					new FDSActionDropdownItem(
-						StringPool.BLANK, "undo", "return",
-						_language.get(httpServletRequest, "make-a-return"),
-						null, null, "link"));
-			}
+			fdsActionDropdownItems.add(
+				new FDSActionDropdownItem(
+					StringPool.BLANK, "undo", "return",
+					_language.get(httpServletRequest, "make-a-return"), null,
+					null, "link"));
 
 			return fdsActionDropdownItems;
 		}

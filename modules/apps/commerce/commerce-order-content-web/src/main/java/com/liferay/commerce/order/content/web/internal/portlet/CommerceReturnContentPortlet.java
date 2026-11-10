@@ -19,7 +19,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.util.Portal;
@@ -68,36 +67,28 @@ public class CommerceReturnContentPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_portal.getCompanyId(renderRequest), "LPD-10562")) {
+		try {
+			CommerceReturnContentDisplayContext
+				commerceReturnContentDisplayContext =
+					new CommerceReturnContentDisplayContext(
+						_accountEntryLocalService, _commerceOrderItemService,
+						_commerceOrderService,
+						_commercePaymentMethodGroupRelLocalService,
+						_commercePriceFormatter, _commerceQuantityFormatter,
+						_discussionPermission, _language,
+						_listTypeDefinitionService, _listTypeEntryService,
+						_objectDefinitionLocalService, _objectEntryLocalService,
+						_objectRelationshipLocalService,
+						_portal.getHttpServletRequest(renderRequest));
 
-			include("/returns/error.jsp", renderRequest, renderResponse);
+			renderRequest.setAttribute(
+				WebKeys.PORTLET_DISPLAY_CONTEXT,
+				commerceReturnContentDisplayContext);
+
+			super.render(renderRequest, renderResponse);
 		}
-		else {
-			try {
-				CommerceReturnContentDisplayContext
-					commerceReturnContentDisplayContext =
-						new CommerceReturnContentDisplayContext(
-							_accountEntryLocalService,
-							_commerceOrderItemService, _commerceOrderService,
-							_commercePaymentMethodGroupRelLocalService,
-							_commercePriceFormatter, _commerceQuantityFormatter,
-							_discussionPermission, _language,
-							_listTypeDefinitionService, _listTypeEntryService,
-							_objectDefinitionLocalService,
-							_objectEntryLocalService,
-							_objectRelationshipLocalService,
-							_portal.getHttpServletRequest(renderRequest));
-
-				renderRequest.setAttribute(
-					WebKeys.PORTLET_DISPLAY_CONTEXT,
-					commerceReturnContentDisplayContext);
-
-				super.render(renderRequest, renderResponse);
-			}
-			catch (Exception exception) {
-				throw new PortletException(exception);
-			}
+		catch (Exception exception) {
+			throw new PortletException(exception);
 		}
 	}
 

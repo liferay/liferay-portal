@@ -9,7 +9,6 @@ import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {displayPageTemplatesPagesTest} from '../../../../fixtures/displayPageTemplatesPagesTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import getRandomString from '../../../../utils/getRandomString';
@@ -29,9 +28,6 @@ export const test = mergeTests(
 	commercePagesTest,
 	dataApiHelpersTest,
 	displayPageTemplatesPagesTest,
-	featureFlagsTest({
-		'LPD-10562': {enabled: true},
-	}),
 	loginTest(),
 	pageEditorPagesTest
 );

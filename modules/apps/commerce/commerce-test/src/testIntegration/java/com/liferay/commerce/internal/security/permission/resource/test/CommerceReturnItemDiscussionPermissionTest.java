@@ -27,7 +27,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -49,7 +48,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -71,10 +69,6 @@ public class CommerceReturnItemDiscussionPermissionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Assume.assumeTrue(
-			FeatureFlagManagerUtil.isEnabled(
-				TestPropsValues.getCompanyId(), "LPD-10562"));
-
 		_group = GroupTestUtil.addGroup();
 
 		CommerceCurrency commerceCurrency =

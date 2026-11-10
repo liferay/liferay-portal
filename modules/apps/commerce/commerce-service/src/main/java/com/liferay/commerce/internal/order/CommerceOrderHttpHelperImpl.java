@@ -54,7 +54,6 @@ import com.liferay.portal.kernel.cookies.CookiesManagerUtil;
 import com.liferay.portal.kernel.cookies.constants.CookiesConstants;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -639,12 +638,6 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 	@Override
 	public boolean hasCommerceOrderReturns(
 		HttpServletRequest httpServletRequest) {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_portal.getCompanyId(httpServletRequest), "LPD-10562")) {
-
-			return false;
-		}
 
 		CommerceOrder commerceOrder =
 			CommerceOrderInfoItemUtil.getCommerceOrder(

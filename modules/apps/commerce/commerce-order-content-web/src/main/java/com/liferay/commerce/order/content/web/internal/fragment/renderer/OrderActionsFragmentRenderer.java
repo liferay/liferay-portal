@@ -33,7 +33,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -233,10 +232,8 @@ public class OrderActionsFragmentRenderer implements FragmentRenderer {
 					CommerceOrderActionKeys.
 						MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES));
 
-			if (FeatureFlagManagerUtil.isEnabled(
-					_portal.getCompanyId(httpServletRequest), "LPD-10562") &&
-				(commerceOrder.getOrderStatus() ==
-					CommerceOrderConstants.ORDER_STATUS_COMPLETED)) {
+			if (commerceOrder.getOrderStatus() ==
+					CommerceOrderConstants.ORDER_STATUS_COMPLETED) {
 
 				httpServletRequest.setAttribute(
 					"liferay-commerce:order-actions:" +
