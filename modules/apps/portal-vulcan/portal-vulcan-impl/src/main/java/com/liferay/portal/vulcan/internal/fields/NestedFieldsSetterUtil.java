@@ -360,6 +360,14 @@ public class NestedFieldsSetterUtil {
 					nestedField.value(), parentClass,
 					_getAPIVersion(resourceClass.getSuperclass()));
 
+				Map.Entry<String, Class<?>>[] resourceMethodArgNameTypeEntries =
+					_getResourceMethodArgNameTypeEntries(
+						resourceClass, resourceMethod);
+
+				String[] resourceMethodPathParamNames =
+					_getResourceMethodPathParamNames(
+						resourceClass, resourceMethod);
+
 				ServiceObjects<Object> serviceObjects =
 					_bundleContext.getServiceObjects(serviceReference);
 
@@ -370,12 +378,8 @@ public class NestedFieldsSetterUtil {
 						_getNestedFieldValue(
 							fieldName, item, nestedFieldsContext,
 							nestedFieldsSetterCustomizer, parentPathParameters,
-							resourceMethod,
-							_getResourceMethodArgNameTypeEntries(
-								resourceClass, resourceMethod),
-							_getResourceMethodPathParamNames(
-								resourceClass, resourceMethod),
-							serviceObjects));
+							resourceMethod, resourceMethodArgNameTypeEntries,
+							resourceMethodPathParamNames, serviceObjects));
 			}
 
 			if (nestedFieldGetters.isEmpty()) {
