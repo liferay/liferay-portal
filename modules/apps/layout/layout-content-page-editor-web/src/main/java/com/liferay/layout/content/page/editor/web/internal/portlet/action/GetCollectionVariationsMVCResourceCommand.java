@@ -5,10 +5,15 @@
 
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
+import com.liferay.asset.list.model.AssetListEntryAudienceEntryRel;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
+import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -54,6 +59,56 @@ public class GetCollectionVariationsMVCResourceCommand
 			_getCollectionVariationsJSONArray(resourceRequest));
 	}
 
+	private JSONArray _getAudienceVariationsJSONArray(
+		long assetListEntryId, ThemeDisplay themeDisplay) {
+
+		List<AssetListEntryAudienceEntryRel> assetListEntryAudienceEntryRels =
+			_assetListEntryAudienceEntryRelLocalService.
+				getAssetListEntryAudienceEntryRels(
+					assetListEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		if (assetListEntryAudienceEntryRels.isEmpty()) {
+			return _jsonFactory.createJSONArray();
+		}
+
+		assetListEntryAudienceEntryRels = ListUtil.sort(
+			assetListEntryAudienceEntryRels,
+			Comparator.comparingInt(
+				AssetListEntryAudienceEntryRel::getPriority));
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		for (AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel :
+				assetListEntryAudienceEntryRels) {
+
+			jsonArray.put(
+				_getAudiencesEntryName(
+					assetListEntryAudienceEntryRel.getAudienceEntryERC(),
+					themeDisplay.getCompanyId()));
+		}
+
+		jsonArray.put(
+			SegmentsEntryConstants.getDefaultSegmentsEntryName(
+				themeDisplay.getLocale()));
+
+		return jsonArray;
+	}
+
+	private String _getAudiencesEntryName(
+		String audienceEntryERC, long companyId) {
+
+		AudiencesEntry audiencesEntry =
+			_audiencesEntryLocalService.
+				fetchAudiencesEntryByExternalReferenceCode(
+					audienceEntryERC, companyId);
+
+		if (audiencesEntry == null) {
+			return audienceEntryERC;
+		}
+
+		return audiencesEntry.getName();
+	}
+
 	private JSONArray _getCollectionVariationsJSONArray(
 			ResourceRequest resourceRequest)
 		throws Exception {
@@ -62,6 +117,16 @@ public class GetCollectionVariationsMVCResourceCommand
 
 		if (assetListEntryId <= 0) {
 			return _jsonFactory.createJSONArray();
+		}
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-109242")) {
+
+			return _getAudienceVariationsJSONArray(
+				assetListEntryId, themeDisplay);
 		}
 
 		List<AssetListEntrySegmentsEntryRel> assetListEntrySegmentsEntryRels =
@@ -74,9 +139,6 @@ public class GetCollectionVariationsMVCResourceCommand
 		}
 
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
 
 		assetListEntrySegmentsEntryRels = ListUtil.sort(
 			assetListEntrySegmentsEntryRels,
@@ -107,8 +169,15 @@ public class GetCollectionVariationsMVCResourceCommand
 	}
 
 	@Reference
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
+
+	@Reference
 	private AssetListEntrySegmentsEntryRelLocalService
 		_assetListEntrySegmentsEntryRelLocalService;
+
+	@Reference
+	private AudiencesEntryLocalService _audiencesEntryLocalService;
 
 	@Reference
 	private JSONFactory _jsonFactory;
