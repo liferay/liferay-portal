@@ -176,6 +176,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -871,13 +874,13 @@ public class JournalArticleLocalServiceTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId(),
-				_portal.getClassNameId(JournalArticle.class.getName()),
+				_portal.getClassNameId(JournalArticle.class),
 				journalArticle.getDDMStructureKey(), false,
 				WorkflowConstants.STATUS_APPROVED);
 
 		_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
 			journalArticle.getUserId(), _group.getGroupId(),
-			_portal.getClassNameId(JournalArticle.class.getName()),
+			_portal.getClassNameId(JournalArticle.class),
 			journalArticle.getResourcePrimKey(),
 			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
 			AssetDisplayPageConstants.TYPE_SPECIFIC,
@@ -3126,6 +3129,68 @@ public class JournalArticleLocalServiceTest {
 			journalArticle.getContent(), true, true, serviceContext);
 	}
 
+	@Test
+	@TestInfo("LPS-162071")
+	public void testUpdateArticleWithJournalArticleField() throws Exception {
+		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			JournalArticle.class.getName(),
+			journalArticle1.getResourcePrimKey());
+
+		JSONObject valueJSONObject = JSONUtil.put(
+			"assetEntryId", assetEntry.getEntryId()
+		).put(
+			"className", JournalArticle.class.getName()
+		).put(
+			"classNameId", _portal.getClassNameId(JournalArticle.class)
+		).put(
+			"classPK", journalArticle1.getResourcePrimKey()
+		).put(
+			"title", journalArticle1.getTitle(LocaleUtil.US)
+		).put(
+			"type", "Web Content Article"
+		);
+
+		DataDefinition dataDefinition =
+			DataDefinitionTestUtil.addDataDefinition(
+				"journal", _dataDefinitionResourceFactory, _group.getGroupId(),
+				_readFileToString("ddm_form_with_journal_article.json"),
+				TestPropsValues.getUser());
+
+		JournalArticle journalArticle2 =
+			JournalTestUtil.addArticleWithXMLContent(
+				_group.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+				StringUtil.replace(
+					_readFileToString(
+						"journal_article_content_with_journal_article.xml"),
+					"[$JOURNAL_ARTICLE_JSON$]", valueJSONObject.toString()),
+				dataDefinition.getDataDefinitionKey(), null, LocaleUtil.US);
+
+		journalArticle2 = JournalTestUtil.updateArticle(
+			journalArticle2, RandomTestUtil.randomString());
+
+		DDMFormValues ddmFormValues = journalArticle2.getDDMFormValues();
+
+		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
+			ddmFormValues.getDDMFormFieldValuesMap(true);
+
+		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
+			"WebContent31406873");
+
+		DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(0);
+
+		Value value = ddmFormFieldValue.getValue();
+
+		JSONAssert.assertEquals(
+			valueJSONObject.toString(), value.getString(LocaleUtil.US),
+			JSONCompareMode.STRICT);
+	}
+
 	@Test(expected = ArticleExpirationDateException.class)
 	public void testUpdateArticleWithPastExpirationDate() throws Exception {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
@@ -3139,8 +3204,7 @@ public class JournalArticleLocalServiceTest {
 
 		User user = TestPropsValues.getUser();
 
-		Calendar calendar = CalendarFactoryUtil.getCalendar(
-			user.getTimeZone());
+		Calendar calendar = CalendarFactoryUtil.getCalendar(user.getTimeZone());
 
 		calendar.setTime(journalArticle.getExpirationDate());
 
@@ -3678,22 +3742,22 @@ public class JournalArticleLocalServiceTest {
 			journalArticle.getUrlTitle() + urlTitleSuffix,
 			journalArticle1.getUrlTitle());
 
-		AssetDisplayPageEntry assetDisplayPageEntry =
-			_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
-				journalArticle.getGroupId(),
-				_portal.getClassNameId(JournalArticle.class.getName()),
-				journalArticle.getResourcePrimKey());
 		AssetDisplayPageEntry assetDisplayPageEntry1 =
 			_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
+				journalArticle.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class),
+				journalArticle.getResourcePrimKey());
+		AssetDisplayPageEntry assetDisplayPageEntry2 =
+			_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
 				journalArticle1.getGroupId(),
-				_portal.getClassNameId(JournalArticle.class.getName()),
+				_portal.getClassNameId(JournalArticle.class),
 				journalArticle1.getResourcePrimKey());
 
 		Assert.assertEquals(
-			assetDisplayPageEntry.getLayoutPageTemplateEntryId(),
-			assetDisplayPageEntry1.getLayoutPageTemplateEntryId());
+			assetDisplayPageEntry1.getLayoutPageTemplateEntryId(),
+			assetDisplayPageEntry2.getLayoutPageTemplateEntryId());
 		Assert.assertEquals(
-			assetDisplayPageEntry.getType(), assetDisplayPageEntry1.getType());
+			assetDisplayPageEntry1.getType(), assetDisplayPageEntry2.getType());
 
 		List<ResourcePermission> oldResourcePermissions =
 			_resourcePermissionLocalService.getResourcePermissions(
