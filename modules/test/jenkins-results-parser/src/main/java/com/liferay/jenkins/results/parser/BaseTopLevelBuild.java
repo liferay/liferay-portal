@@ -1204,27 +1204,9 @@ public abstract class BaseTopLevelBuild
 		if (allCurrentBuildFailureElements.isEmpty() &&
 			!upstreamBuildFailureElements.isEmpty()) {
 
-			String uniqueFailureMessage =
-				"This pull contains no unique failures.";
-
-			if (this instanceof PullRequestPortalTopLevelBuild) {
-				PullRequestPortalTopLevelBuild pullRequestPortalTopLevelBuild =
-					(PullRequestPortalTopLevelBuild)this;
-
-				String stableJobResult =
-					pullRequestPortalTopLevelBuild.getStableJobResult();
-
-				if ((stableJobResult != null) &&
-					!stableJobResult.equals("SUCCESS")) {
-
-					uniqueFailureMessage = JenkinsResultsParserUtil.combine(
-						"This pull contains no unique failures. However, the ",
-						"stable suite failed.");
-				}
-			}
-
 			buildFailureElements.add(
-				Dom4JUtil.getNewElement("h4", null, uniqueFailureMessage));
+				Dom4JUtil.getNewElement(
+					"h4", null, "This pull contains no unique failures."));
 		}
 		else {
 			String failureTitle = "Failures unique to this pull:";
