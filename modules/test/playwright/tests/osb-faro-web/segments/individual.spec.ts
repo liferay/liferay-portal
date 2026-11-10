@@ -89,7 +89,7 @@ test(
 
 		oldDate.setDate(oldDate.getDate() - 10);
 
-		await apiHelpers.jsonWebServicesOSBAsah.createEvents([
+		const events = [
 			{
 				applicationId: 'Page',
 				canonicalUrl: 'https://www.liferay.com',
@@ -104,11 +104,14 @@ test(
 				title: 'My Page',
 				userId: individual.id,
 			},
-		]);
+		];
+
+		await apiHelpers.jsonWebServicesOSBAsah.createEvents(events);
 
 		await apiHelpers.jsonWebServicesOSBAsah.createSessions([
 			{
 				channelId: channel.id,
+				events,
 				id: individual.id,
 				sessionEnd: oldDate.toISOString(),
 				sessionStart: oldDate.toISOString(),
@@ -138,16 +141,14 @@ test(
 			projectID: project.groupId,
 		});
 
-		await expect(
-			page.getByRole('button', {name: 'pageViewed'})
-		).toBeVisible();
+		await expect(page.getByRole('button', {name: 'My Page'})).toBeVisible();
 
 		// Switch the Individual Events card time filter to Last 24 hours to exclude the seeded event
 
 		await changeTimeFilter({page, timeFilterPeriod: 'Last 24 hours'});
 
 		await expect(
-			page.getByText('There are no events found.').first()
+			page.getByText('There is no data for individual activities.')
 		).toBeVisible();
 	}
 );
@@ -187,32 +188,33 @@ test(
 
 		const date = new Date();
 
-		await apiHelpers.jsonWebServicesOSBAsah.createEvents([
-			{
-				applicationId: 'Custom',
-				canonicalUrl: 'https://www.liferay.com',
-				channelId: channel.id,
-				dataSourceId,
-				eventDate: date.toISOString(),
-				eventId: customEventA,
-				title: customEventA,
-				userId: individualA.id,
-			},
-			{
-				applicationId: 'Custom',
-				canonicalUrl: 'https://www.liferay.com',
-				channelId: channel.id,
-				dataSourceId,
-				eventDate: date.toISOString(),
-				eventId: customEventB,
-				title: customEventB,
-				userId: individualB.id,
-			},
-		]);
+		const eventA = {
+			applicationId: 'Custom',
+			canonicalUrl: 'https://www.liferay.com',
+			channelId: channel.id,
+			dataSourceId,
+			eventDate: date.toISOString(),
+			eventId: customEventA,
+			title: customEventA,
+			userId: individualA.id,
+		};
+		const eventB = {
+			applicationId: 'Custom',
+			canonicalUrl: 'https://www.liferay.com',
+			channelId: channel.id,
+			dataSourceId,
+			eventDate: date.toISOString(),
+			eventId: customEventB,
+			title: customEventB,
+			userId: individualB.id,
+		};
+
+		await apiHelpers.jsonWebServicesOSBAsah.createEvents([eventA, eventB]);
 
 		await apiHelpers.jsonWebServicesOSBAsah.createSessions([
 			{
 				channelId: channel.id,
+				events: [eventA],
 				id: individualA.id,
 				sessionEnd: date.toISOString(),
 				sessionStart: date.toISOString(),
@@ -220,6 +222,7 @@ test(
 			},
 			{
 				channelId: channel.id,
+				events: [eventB],
 				id: individualB.id,
 				sessionEnd: date.toISOString(),
 				sessionStart: date.toISOString(),
@@ -304,26 +307,27 @@ test(
 		// Seed several activities for today so they fall inside the Last 24
 		// hours window
 
-		await apiHelpers.jsonWebServicesOSBAsah.createEvents(
-			['a', 'b', 'c'].map((suffix) => ({
-				applicationId: 'Document',
-				canonicalUrl: 'https://www.liferay.com',
-				channelId: channel.id,
-				dataSourceId,
-				emailAddressHashed: createHash('sha256')
-					.update(`${individual.name}@liferay.com`)
-					.digest('hex'),
-				eventDate: date.toISOString(),
-				eventId: 'documentPreviewed',
-				sessionId: individual.id,
-				title: `documentPreviewed-${suffix}`,
-				userId: individual.id,
-			}))
-		);
+		const events = ['a', 'b', 'c'].map((suffix) => ({
+			applicationId: 'Document',
+			canonicalUrl: 'https://www.liferay.com',
+			channelId: channel.id,
+			dataSourceId,
+			emailAddressHashed: createHash('sha256')
+				.update(`${individual.name}@liferay.com`)
+				.digest('hex'),
+			eventDate: date.toISOString(),
+			eventId: 'documentPreviewed',
+			sessionId: individual.id,
+			title: `documentPreviewed-${suffix}`,
+			userId: individual.id,
+		}));
+
+		await apiHelpers.jsonWebServicesOSBAsah.createEvents(events);
 
 		await apiHelpers.jsonWebServicesOSBAsah.createSessions([
 			{
 				channelId: channel.id,
+				events,
 				id: individual.id,
 				sessionEnd: date.toISOString(),
 				sessionStart: date.toISOString(),
@@ -366,18 +370,19 @@ test(
 
 		await changeTimeFilter({page, timeFilterPeriod: 'Last 24 hours'});
 
-		// The seeded events show up in the individual activities feed
+		// The seeded events show up under their page in the individual
+		// activities feed
 
-		await expect(
-			page.getByRole('button', {name: 'documentPreviewed'})
-		).toHaveCount(3);
+		await page.getByRole('button', {name: 'documentPreviewed-a'}).click();
+
+		await expect(page.locator('.event-row')).toHaveCount(3);
 
 		// The activities chart still renders bars for todays seeded events
 
 		await expect(
 			page
 				.locator(
-					'.individuals-activities-chart .recharts-bar-rectangle'
+					'.individual-profile-card-root .recharts-bar-rectangle'
 				)
 				.first()
 		).toBeAttached();
@@ -398,10 +403,9 @@ test(
 	}) => {
 		const {dataSourceId} = dxpSyncedAnalyticsChannel;
 
-		const totalIndividuals = page
-			.locator('.trend-item-root')
-			.filter({hasText: 'Total Individuals'})
-			.locator('.total');
+		const totalIndividuals = page.locator('.card').filter({
+			has: page.getByText('Total Individuals', {exact: true}),
+		});
 
 		await navigateToACPageViaURL({
 			acPage: ACPage.individualPage,
@@ -412,7 +416,7 @@ test(
 
 		// The freshly synced channel has no ingested individuals yet
 
-		await expect(totalIndividuals).toHaveText('0');
+		await expect(totalIndividuals).toContainText('0 Individuals');
 
 		// Ingest a single known individual with activity
 
@@ -452,13 +456,15 @@ test(
 
 		await apiHelpers.jsonWebServicesOSBAsah.closeSessions();
 
-		// The Total Individuals trend counts the individual once the closed
+		// The Total Individuals card counts the individual once the closed
 		// session is processed
 
 		await expect(async () => {
 			await page.reload();
 
-			await expect(totalIndividuals).toHaveText('1', {timeout: 5000});
+			await expect(totalIndividuals).toContainText('1 Individual', {
+				timeout: 5000,
+			});
 		}).toPass({timeout: 60000});
 	}
 );
@@ -476,22 +482,14 @@ test(
 			projectID: project.groupId,
 		});
 
-		// The Total Individuals, Known and Anonymous trend summaries
-
-		for (const trendName of ['Total Individuals', 'Known', 'Anonymous']) {
-			await expect(
-				page.locator('.trend-item-root').filter({hasText: trendName})
-			).toBeVisible();
-		}
-
-		// The remaining overview cards
-
 		for (const cardTitle of [
-			'Enriched Profiles',
-			'Active Individuals',
-			'Top Interests',
+			'Total Individuals',
+			'Known Individuals',
+			'Anonymous Individuals',
 		]) {
-			await expect(page.getByText(cardTitle).first()).toBeVisible();
+			await expect(
+				page.locator('.card-title').getByText(cardTitle, {exact: true})
+			).toBeVisible();
 		}
 	}
 );
@@ -881,13 +879,9 @@ test(
 
 		const date = new Date();
 
-		const pastDate = new Date(date);
-
-		pastDate.setDate(pastDate.getDate() - 1);
-
 		await createIndividuals({apiHelpers, individuals: [individual]});
 
-		await apiHelpers.jsonWebServicesOSBAsah.createEvents([
+		const events = [
 			{
 				applicationId: 'Page',
 				canonicalUrl: 'https://www.liferay.com',
@@ -896,17 +890,20 @@ test(
 				emailAddressHashed: createHash('sha256')
 					.update(`${individual.name}@liferay.com`)
 					.digest('hex'),
-				eventDate: pastDate.toISOString(),
+				eventDate: date.toISOString(),
 				eventId: 'pageViewed',
 				sessionId: individual.id,
-				title: 'pageViewed',
+				title: 'My Page',
 				userId: individual.id,
 			},
-		]);
+		];
+
+		await apiHelpers.jsonWebServicesOSBAsah.createEvents(events);
 
 		await apiHelpers.jsonWebServicesOSBAsah.createSessions([
 			{
 				channelId: channel.id,
+				events,
 				id: individual.id,
 				sessionEnd: date.toISOString(),
 				sessionStart: date.toISOString(),
@@ -942,7 +939,14 @@ test(
 
 		await changeTimeFilter({page, timeFilterPeriod: 'Last 24 hours'});
 
-		await page.getByText('pageViewed').first().click();
+		await page.getByRole('button', {name: 'My Page'}).click();
+
+		await page
+			.locator('.event-row')
+			.getByRole('button', {name: 'Show Payload'})
+			.click();
+
+		await page.getByRole('button', {exact: true, name: 'Code'}).click();
 
 		await expect(page.getByText('"applicationId": "Page"')).toBeVisible();
 		await expect(page.getByText('"eventId": "pageViewed"')).toBeVisible();
