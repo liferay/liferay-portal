@@ -770,7 +770,7 @@ public class TestrayFactory {
 	}
 
 	public static TestrayRun newTestrayRun(
-		TestrayBuild testrayBuild, AxisTestClassGroup axisTestClassGroup) {
+		AxisTestClassGroup axisTestClassGroup, TestrayBuild testrayBuild) {
 
 		synchronized (_testrayRuns) {
 			Job job = axisTestClassGroup.getJob();
