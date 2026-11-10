@@ -204,7 +204,7 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 
 		if ((sortableFieldNames != null) && (sortableFieldNames.length == 0)) {
 			throw new BadRequestException(
-				"\"sort\" is not supported by this tool");
+				"\"sort\" is not supported by this endpoint");
 		}
 
 		String[] sortStrings = StringUtil.split(sort);
@@ -215,7 +215,7 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 				"getWorkspaceGroupChannelIndividualsPage")) {
 
 			throw new BadRequestException(
-				"\"sort\" accepts only one column on this tool");
+				"\"sort\" accepts only one column on this endpoint");
 		}
 
 		for (String sortString : sortStrings) {
