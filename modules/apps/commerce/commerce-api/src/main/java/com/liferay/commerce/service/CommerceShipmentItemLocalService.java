@@ -321,10 +321,6 @@ public interface CommerceShipmentItemLocalService
 		long commerceShipmentId, int start, int end,
 		OrderByComparator<CommerceShipmentItem> orderByComparator);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShipmentItem>
-		getCommerceShipmentItemsByCommerceOrderItemId(long commerceOrderItemId);
-
 	/**
 	 * Returns all the commerce shipment items matching the UUID and company.
 	 *
@@ -364,10 +360,6 @@ public interface CommerceShipmentItemLocalService
 	public int getCommerceShipmentItemsCount(long commerceShipmentId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceShipmentItemsCountByCommerceOrderItemId(
-		long commerceOrderItemId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BigDecimal getCommerceShipmentOrderItemsQuantity(
 		long commerceShipmentId, long commerceOrderItemId);
 
@@ -392,9 +384,6 @@ public interface CommerceShipmentItemLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getValidCommerceShipmentItemsCount(long commerceShipmentId);
 
 	/**
 	 * Updates the commerce shipment item in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -422,4 +411,4 @@ public interface CommerceShipmentItemLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:872198803
+// LIFERAY-SERVICE-BUILDER-HASH:495712851

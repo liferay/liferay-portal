@@ -344,10 +344,6 @@ public class CommerceAvailabilityEstimateLocalServiceUtil {
 		return getService().getCommerceAvailabilityEstimatesCount();
 	}
 
-	public static int getCommerceAvailabilityEstimatesCount(long companyId) {
-		return getService().getCommerceAvailabilityEstimatesCount(companyId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -432,4 +428,4 @@ public class CommerceAvailabilityEstimateLocalServiceUtil {
 			CommerceAvailabilityEstimateLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1321825367
+// LIFERAY-SERVICE-BUILDER-HASH:1753683088

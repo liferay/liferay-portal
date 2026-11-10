@@ -91,8 +91,6 @@ public interface CommerceOrderItemLocalService
 			CommerceContext commerceContext, ServiceContext serviceContext)
 		throws PortalException;
 
-	public int countSubscriptionCommerceOrderItems(long commerceOrderId);
-
 	/**
 	 * Creates a new commerce order item with the primary key. Does not add the commerce order item to the database.
 	 *
@@ -624,4 +622,4 @@ public interface CommerceOrderItemLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1105793827
+// LIFERAY-SERVICE-BUILDER-HASH:-1631956139

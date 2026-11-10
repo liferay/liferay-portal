@@ -81,13 +81,6 @@ public class CommerceOrderItemLocalServiceUtil {
 			commerceContext, serviceContext);
 	}
 
-	public static int countSubscriptionCommerceOrderItems(
-		long commerceOrderId) {
-
-		return getService().countSubscriptionCommerceOrderItems(
-			commerceOrderId);
-	}
-
 	/**
 	 * Creates a new commerce order item with the primary key. Does not add the commerce order item to the database.
 	 *
@@ -901,4 +894,4 @@ public class CommerceOrderItemLocalServiceUtil {
 			CommerceOrderItemLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1197827285
+// LIFERAY-SERVICE-BUILDER-HASH:-1520578016

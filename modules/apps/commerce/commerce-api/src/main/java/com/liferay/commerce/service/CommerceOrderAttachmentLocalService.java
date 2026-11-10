@@ -323,13 +323,6 @@ public interface CommerceOrderAttachmentLocalService
 	public int getCommerceOrderAttachmentsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceOrderAttachmentsCount(long commerceOrderId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceOrderAttachmentsCount(
-		long commerceOrderId, boolean restricted);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -372,4 +365,4 @@ public interface CommerceOrderAttachmentLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:891752493
+// LIFERAY-SERVICE-BUILDER-HASH:1558053577

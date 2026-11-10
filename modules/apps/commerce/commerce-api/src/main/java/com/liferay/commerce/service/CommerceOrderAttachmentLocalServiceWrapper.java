@@ -436,20 +436,6 @@ public class CommerceOrderAttachmentLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommerceOrderAttachmentsCount(long commerceOrderId) {
-		return _commerceOrderAttachmentLocalService.
-			getCommerceOrderAttachmentsCount(commerceOrderId);
-	}
-
-	@Override
-	public int getCommerceOrderAttachmentsCount(
-		long commerceOrderId, boolean restricted) {
-
-		return _commerceOrderAttachmentLocalService.
-			getCommerceOrderAttachmentsCount(commerceOrderId, restricted);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -544,4 +530,4 @@ public class CommerceOrderAttachmentLocalServiceWrapper
 		_commerceOrderAttachmentLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1113459377
+// LIFERAY-SERVICE-BUILDER-HASH:1271752911

@@ -279,15 +279,6 @@ public class CommerceAddressRestrictionLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.model.CommerceAddressRestriction
-		fetchCommerceAddressRestriction(
-			String className, long classPK, long countryId) {
-
-		return _commerceAddressRestrictionLocalService.
-			fetchCommerceAddressRestriction(className, classPK, countryId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -453,4 +444,4 @@ public class CommerceAddressRestrictionLocalServiceWrapper
 		_commerceAddressRestrictionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:863093706
+// LIFERAY-SERVICE-BUILDER-HASH:1090489536

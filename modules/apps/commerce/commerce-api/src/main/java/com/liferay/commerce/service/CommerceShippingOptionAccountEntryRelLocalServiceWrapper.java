@@ -296,16 +296,6 @@ public class CommerceShippingOptionAccountEntryRelLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.model.CommerceShippingOptionAccountEntryRel
-		fetchCommerceShippingOptionAccountEntryRel(
-			long accountEntryId, long commerceChannelId) {
-
-		return _commerceShippingOptionAccountEntryRelLocalService.
-			fetchCommerceShippingOptionAccountEntryRel(
-				accountEntryId, commerceChannelId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -351,15 +341,6 @@ public class CommerceShippingOptionAccountEntryRelLocalServiceWrapper
 			getCommerceShippingOptionAccountEntryRels(start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.model.CommerceShippingOptionAccountEntryRel>
-			getCommerceShippingOptionAccountEntryRels(long accountEntryId) {
-
-		return _commerceShippingOptionAccountEntryRelLocalService.
-			getCommerceShippingOptionAccountEntryRels(accountEntryId);
-	}
-
 	/**
 	 * Returns the number of commerce shipping option account entry rels.
 	 *
@@ -369,14 +350,6 @@ public class CommerceShippingOptionAccountEntryRelLocalServiceWrapper
 	public int getCommerceShippingOptionAccountEntryRelsCount() {
 		return _commerceShippingOptionAccountEntryRelLocalService.
 			getCommerceShippingOptionAccountEntryRelsCount();
-	}
-
-	@Override
-	public int getCommerceShippingOptionAccountEntryRelsCount(
-		long accountEntryId) {
-
-		return _commerceShippingOptionAccountEntryRelLocalService.
-			getCommerceShippingOptionAccountEntryRelsCount(accountEntryId);
 	}
 
 	@Override
@@ -471,4 +444,4 @@ public class CommerceShippingOptionAccountEntryRelLocalServiceWrapper
 		_commerceShippingOptionAccountEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1173208302
+// LIFERAY-SERVICE-BUILDER-HASH:1398596061

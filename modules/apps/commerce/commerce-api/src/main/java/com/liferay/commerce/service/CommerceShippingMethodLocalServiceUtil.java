@@ -286,24 +286,6 @@ public class CommerceShippingMethodLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static List<com.liferay.commerce.model.CommerceAddressRestriction>
-		getCommerceAddressRestrictions(
-			long commerceShippingMethodId, int start, int end,
-			OrderByComparator
-				<com.liferay.commerce.model.CommerceAddressRestriction>
-					orderByComparator) {
-
-		return getService().getCommerceAddressRestrictions(
-			commerceShippingMethodId, start, end, orderByComparator);
-	}
-
-	public static int getCommerceAddressRestrictionsCount(
-		long commerceShippingMethodId) {
-
-		return getService().getCommerceAddressRestrictionsCount(
-			commerceShippingMethodId);
-	}
-
 	/**
 	 * Returns the commerce shipping method with the primary key.
 	 *
@@ -374,10 +356,6 @@ public class CommerceShippingMethodLocalServiceUtil {
 	 */
 	public static int getCommerceShippingMethodsCount() {
 		return getService().getCommerceShippingMethodsCount();
-	}
-
-	public static int getCommerceShippingMethodsCount(long groupId) {
-		return getService().getCommerceShippingMethodsCount(groupId);
 	}
 
 	public static int getCommerceShippingMethodsCount(
@@ -457,4 +435,4 @@ public class CommerceShippingMethodLocalServiceUtil {
 			CommerceShippingMethodLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-581278433
+// LIFERAY-SERVICE-BUILDER-HASH:2030541338

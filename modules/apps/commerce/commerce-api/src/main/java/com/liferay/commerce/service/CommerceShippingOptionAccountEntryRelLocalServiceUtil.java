@@ -261,14 +261,6 @@ public class CommerceShippingOptionAccountEntryRelLocalServiceUtil {
 			CommerceShippingOptionAccountEntryRelId);
 	}
 
-	public static CommerceShippingOptionAccountEntryRel
-		fetchCommerceShippingOptionAccountEntryRel(
-			long accountEntryId, long commerceChannelId) {
-
-		return getService().fetchCommerceShippingOptionAccountEntryRel(
-			accountEntryId, commerceChannelId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -309,13 +301,6 @@ public class CommerceShippingOptionAccountEntryRelLocalServiceUtil {
 			start, end);
 	}
 
-	public static List<CommerceShippingOptionAccountEntryRel>
-		getCommerceShippingOptionAccountEntryRels(long accountEntryId) {
-
-		return getService().getCommerceShippingOptionAccountEntryRels(
-			accountEntryId);
-	}
-
 	/**
 	 * Returns the number of commerce shipping option account entry rels.
 	 *
@@ -323,13 +308,6 @@ public class CommerceShippingOptionAccountEntryRelLocalServiceUtil {
 	 */
 	public static int getCommerceShippingOptionAccountEntryRelsCount() {
 		return getService().getCommerceShippingOptionAccountEntryRelsCount();
-	}
-
-	public static int getCommerceShippingOptionAccountEntryRelsCount(
-		long accountEntryId) {
-
-		return getService().getCommerceShippingOptionAccountEntryRelsCount(
-			accountEntryId);
 	}
 
 	public static
@@ -401,4 +379,4 @@ public class CommerceShippingOptionAccountEntryRelLocalServiceUtil {
 				CommerceShippingOptionAccountEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1002657821
+// LIFERAY-SERVICE-BUILDER-HASH:-12795038

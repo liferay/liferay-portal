@@ -220,11 +220,6 @@ public interface CommerceShippingOptionAccountEntryRelLocalService
 			long CommerceShippingOptionAccountEntryRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceShippingOptionAccountEntryRel
-		fetchCommerceShippingOptionAccountEntryRel(
-			long accountEntryId, long commerceChannelId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -255,10 +250,6 @@ public interface CommerceShippingOptionAccountEntryRelLocalService
 	public List<CommerceShippingOptionAccountEntryRel>
 		getCommerceShippingOptionAccountEntryRels(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShippingOptionAccountEntryRel>
-		getCommerceShippingOptionAccountEntryRels(long accountEntryId);
-
 	/**
 	 * Returns the number of commerce shipping option account entry rels.
 	 *
@@ -266,10 +257,6 @@ public interface CommerceShippingOptionAccountEntryRelLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShippingOptionAccountEntryRelsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceShippingOptionAccountEntryRelsCount(
-		long accountEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -313,4 +300,4 @@ public interface CommerceShippingOptionAccountEntryRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:738270651
+// LIFERAY-SERVICE-BUILDER-HASH:2101413377

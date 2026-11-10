@@ -245,15 +245,6 @@ public interface CommerceShippingMethodLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceAddressRestriction> getCommerceAddressRestrictions(
-		long commerceShippingMethodId, int start, int end,
-		OrderByComparator<CommerceAddressRestriction> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceAddressRestrictionsCount(
-		long commerceShippingMethodId);
-
 	/**
 	 * Returns the commerce shipping method with the primary key.
 	 *
@@ -310,9 +301,6 @@ public interface CommerceShippingMethodLocalService
 	public int getCommerceShippingMethodsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceShippingMethodsCount(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShippingMethodsCount(long groupId, boolean active);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -358,4 +346,4 @@ public interface CommerceShippingMethodLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2049756569
+// LIFERAY-SERVICE-BUILDER-HASH:194163994

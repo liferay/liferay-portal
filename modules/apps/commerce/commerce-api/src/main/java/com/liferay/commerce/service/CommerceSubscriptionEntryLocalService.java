@@ -327,10 +327,6 @@ public interface CommerceSubscriptionEntryLocalService
 	public int getCommerceSubscriptionEntriesCount(long companyId, long userId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceSubscriptionEntriesCount(
-		long companyId, long groupId, long userId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceSubscriptionEntry>
 		getCommerceSubscriptionEntriesToRenew();
 
@@ -477,4 +473,4 @@ public interface CommerceSubscriptionEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:627301769
+// LIFERAY-SERVICE-BUILDER-HASH:137422657

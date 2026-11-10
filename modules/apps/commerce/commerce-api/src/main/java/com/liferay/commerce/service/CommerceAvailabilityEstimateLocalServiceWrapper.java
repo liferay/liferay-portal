@@ -395,12 +395,6 @@ public class CommerceAvailabilityEstimateLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommerceAvailabilityEstimatesCount(long companyId) {
-		return _commerceAvailabilityEstimateLocalService.
-			getCommerceAvailabilityEstimatesCount(companyId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -512,4 +506,4 @@ public class CommerceAvailabilityEstimateLocalServiceWrapper
 		_commerceAvailabilityEstimateLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-707728172
+// LIFERAY-SERVICE-BUILDER-HASH:868479185

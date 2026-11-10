@@ -295,9 +295,6 @@ public interface CommerceAvailabilityEstimateLocalService
 	public int getCommerceAvailabilityEstimatesCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceAvailabilityEstimatesCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -347,4 +344,4 @@ public interface CommerceAvailabilityEstimateLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1615138873
+// LIFERAY-SERVICE-BUILDER-HASH:268575048

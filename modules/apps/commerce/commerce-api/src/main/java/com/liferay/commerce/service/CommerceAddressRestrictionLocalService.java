@@ -215,10 +215,6 @@ public interface CommerceAddressRestrictionLocalService
 		long commerceAddressRestrictionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceAddressRestriction fetchCommerceAddressRestriction(
-		String className, long classPK, long countryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -306,4 +302,4 @@ public interface CommerceAddressRestrictionLocalService
 		CommerceAddressRestriction commerceAddressRestriction);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1466342325
+// LIFERAY-SERVICE-BUILDER-HASH:2043225384

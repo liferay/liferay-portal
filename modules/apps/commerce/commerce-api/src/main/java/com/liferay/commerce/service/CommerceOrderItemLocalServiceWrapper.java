@@ -79,12 +79,6 @@ public class CommerceOrderItemLocalServiceWrapper
 			commerceContext, serviceContext);
 	}
 
-	@Override
-	public int countSubscriptionCommerceOrderItems(long commerceOrderId) {
-		return _commerceOrderItemLocalService.
-			countSubscriptionCommerceOrderItems(commerceOrderId);
-	}
-
 	/**
 	 * Creates a new commerce order item with the primary key. Does not add the commerce order item to the database.
 	 *
@@ -1058,4 +1052,4 @@ public class CommerceOrderItemLocalServiceWrapper
 	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:483502132
+// LIFERAY-SERVICE-BUILDER-HASH:-470932583

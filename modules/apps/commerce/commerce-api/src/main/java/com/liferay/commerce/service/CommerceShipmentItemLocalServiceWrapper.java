@@ -444,15 +444,6 @@ public class CommerceShipmentItemLocalServiceWrapper
 			commerceShipmentId, start, end, orderByComparator);
 	}
 
-	@Override
-	public java.util.List<com.liferay.commerce.model.CommerceShipmentItem>
-		getCommerceShipmentItemsByCommerceOrderItemId(
-			long commerceOrderItemId) {
-
-		return _commerceShipmentItemLocalService.
-			getCommerceShipmentItemsByCommerceOrderItemId(commerceOrderItemId);
-	}
-
 	/**
 	 * Returns all the commerce shipment items matching the UUID and company.
 	 *
@@ -510,15 +501,6 @@ public class CommerceShipmentItemLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommerceShipmentItemsCountByCommerceOrderItemId(
-		long commerceOrderItemId) {
-
-		return _commerceShipmentItemLocalService.
-			getCommerceShipmentItemsCountByCommerceOrderItemId(
-				commerceOrderItemId);
-	}
-
-	@Override
 	public java.math.BigDecimal getCommerceShipmentOrderItemsQuantity(
 		long commerceShipmentId, long commerceOrderItemId) {
 
@@ -565,12 +547,6 @@ public class CommerceShipmentItemLocalServiceWrapper
 
 		return _commerceShipmentItemLocalService.getPersistedModel(
 			primaryKeyObj);
-	}
-
-	@Override
-	public int getValidCommerceShipmentItemsCount(long commerceShipmentId) {
-		return _commerceShipmentItemLocalService.
-			getValidCommerceShipmentItemsCount(commerceShipmentId);
 	}
 
 	/**
@@ -635,4 +611,4 @@ public class CommerceShipmentItemLocalServiceWrapper
 	private CommerceShipmentItemLocalService _commerceShipmentItemLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1766985420
+// LIFERAY-SERVICE-BUILDER-HASH:-701594845

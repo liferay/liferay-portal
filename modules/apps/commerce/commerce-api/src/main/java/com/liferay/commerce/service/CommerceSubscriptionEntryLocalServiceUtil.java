@@ -392,13 +392,6 @@ public class CommerceSubscriptionEntryLocalServiceUtil {
 			companyId, userId);
 	}
 
-	public static int getCommerceSubscriptionEntriesCount(
-		long companyId, long groupId, long userId) {
-
-		return getService().getCommerceSubscriptionEntriesCount(
-			companyId, groupId, userId);
-	}
-
 	public static List<CommerceSubscriptionEntry>
 		getCommerceSubscriptionEntriesToRenew() {
 
@@ -629,4 +622,4 @@ public class CommerceSubscriptionEntryLocalServiceUtil {
 			CommerceSubscriptionEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-993845869
+// LIFERAY-SERVICE-BUILDER-HASH:-337708368
