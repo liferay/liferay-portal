@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -50,9 +49,7 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 public class ClientExtensionConfigBundleTracker {
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		if (UpgradeProcessUtil.isUpgradeClient()) {
 			return;
 		}

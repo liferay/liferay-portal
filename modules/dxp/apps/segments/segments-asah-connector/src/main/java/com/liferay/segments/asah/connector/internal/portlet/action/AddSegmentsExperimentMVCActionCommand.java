@@ -52,7 +52,6 @@ import jakarta.portlet.ActionResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.osgi.service.component.annotations.Activate;
@@ -74,7 +73,7 @@ public class AddSegmentsExperimentMVCActionCommand
 	extends BaseMVCActionCommand {
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate() {
 		_asahFaroBackendClient = new AsahFaroBackendClientImpl(
 			_analyticsSettingsManager, _http);
 	}

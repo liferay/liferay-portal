@@ -48,7 +48,6 @@ import jakarta.portlet.PortletURL;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -395,9 +394,7 @@ public class DLURLHelperImpl implements DLURLHelper {
 	}
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, DLFileVersionURLProvider.class, null,
 			(serviceReference, emitter) -> {

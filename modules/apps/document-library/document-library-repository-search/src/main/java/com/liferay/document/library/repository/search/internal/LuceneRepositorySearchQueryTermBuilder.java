@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Map;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.TokenStream;
@@ -82,7 +80,7 @@ public class LuceneRepositorySearchQueryTermBuilder
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate() {
 		_analyzer = new RepositoryAnalyzer();
 	}
 

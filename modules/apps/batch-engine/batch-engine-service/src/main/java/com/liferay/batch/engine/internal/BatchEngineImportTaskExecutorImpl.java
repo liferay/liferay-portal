@@ -224,9 +224,7 @@ public class BatchEngineImportTaskExecutorImpl
 	}
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		_batchEngineImportTaskExceptionHandlers =
 			ServiceTrackerListFactory.open(
 				bundleContext, BatchEngineImportTaskExceptionHandler.class);

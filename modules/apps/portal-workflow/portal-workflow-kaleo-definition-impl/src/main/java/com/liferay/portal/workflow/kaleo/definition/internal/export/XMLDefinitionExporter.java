@@ -29,7 +29,6 @@ import com.liferay.portal.workflow.kaleo.definition.export.builder.DefinitionBui
 import java.io.IOException;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -71,9 +70,7 @@ public class XMLDefinitionExporter implements DefinitionExporter {
 	}
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		_namespace = "urn:liferay.com:liferay-workflow_" + _version;
 		_schemaVersion = StringUtil.replace(
 			_version, CharPool.PERIOD, CharPool.UNDERLINE);

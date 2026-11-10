@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.List;
-import java.util.Map;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -39,9 +38,7 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 public class BatchEngineBundleTracker {
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		_bundleTracker = new BundleTracker<>(
 			bundleContext, Bundle.ACTIVE,
 			new BatchEngineBundleTrackerCustomizer());

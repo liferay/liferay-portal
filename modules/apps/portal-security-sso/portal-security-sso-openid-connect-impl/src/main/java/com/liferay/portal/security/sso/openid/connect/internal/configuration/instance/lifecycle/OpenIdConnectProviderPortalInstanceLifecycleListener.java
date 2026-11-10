@@ -90,9 +90,7 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 	}
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		_serviceRegistration = bundleContext.registerService(
 			ManagedServiceFactory.class,
 			new OpenIdConnectProviderManagedServiceFactory(),

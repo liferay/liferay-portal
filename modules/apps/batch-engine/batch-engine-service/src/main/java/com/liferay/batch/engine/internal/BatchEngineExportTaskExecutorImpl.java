@@ -230,9 +230,7 @@ public class BatchEngineExportTaskExecutorImpl
 	}
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		_exportTaskPostActions = ServiceTrackerListFactory.open(
 			bundleContext, ExportTaskPostAction.class);
 	}

@@ -194,7 +194,7 @@ public class KaleoFormsAdminPortlet extends MVCPortlet {
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate() {
 		for (Locale availableLocale : _language.getAvailableLocales()) {
 			_parameterNames.add(
 				"description" + LocaleUtil.toLanguageId(availableLocale));

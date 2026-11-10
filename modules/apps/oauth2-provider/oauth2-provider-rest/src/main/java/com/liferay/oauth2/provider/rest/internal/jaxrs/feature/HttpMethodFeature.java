@@ -67,9 +67,7 @@ public class HttpMethodFeature implements Feature {
 	}
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 	}
 

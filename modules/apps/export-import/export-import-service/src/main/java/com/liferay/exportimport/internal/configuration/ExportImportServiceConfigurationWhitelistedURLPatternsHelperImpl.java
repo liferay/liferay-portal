@@ -151,7 +151,7 @@ public class ExportImportServiceConfigurationWhitelistedURLPatternsHelperImpl
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate() {
 		removeURLPatternMappers();
 	}
 

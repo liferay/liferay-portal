@@ -327,7 +327,7 @@ public class ElasticsearchSearchEngine
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate() {
 		_indexFactory = new IndexFactory(
 			_companyIndexHelper, _companyLocalService,
 			_elasticsearchConfigurationWrapper,

@@ -141,7 +141,7 @@ public class LDAPAuth implements Authenticator {
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate() {
 		_authPipelineEnableLiferayCheck = GetterUtil.getBoolean(
 			PropsUtil.get(PropsKeys.AUTH_PIPELINE_ENABLE_LIFERAY_CHECK));
 	}

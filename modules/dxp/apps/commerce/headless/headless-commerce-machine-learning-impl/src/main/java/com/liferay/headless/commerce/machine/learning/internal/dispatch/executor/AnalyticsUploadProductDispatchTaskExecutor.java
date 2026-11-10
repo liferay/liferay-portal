@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -122,7 +121,7 @@ public class AnalyticsUploadProductDispatchTaskExecutor
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate() {
 		_commerceChannelClassNameIdSupplier =
 			_classNameLocalService.getClassNameIdSupplier(
 				"com.liferay.commerce.product.model.CommerceChannel");

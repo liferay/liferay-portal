@@ -198,7 +198,7 @@ public class LayoutSetPrototypeMergeBackgroundTaskExecutor
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate() {
 		setBackgroundTaskStatusMessageTranslator(
 			new LayoutExportImportBackgroundTaskStatusMessageTranslator());
 

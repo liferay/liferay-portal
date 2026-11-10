@@ -409,7 +409,7 @@ public class BaseCmisSearchQueryBuilderTest {
 
 		return new LuceneRepositorySearchQueryTermBuilder() {
 			{
-				activate(null);
+				activate();
 			}
 		};
 	}

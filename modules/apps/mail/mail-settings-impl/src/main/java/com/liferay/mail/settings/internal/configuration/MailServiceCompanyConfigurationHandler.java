@@ -7,8 +7,6 @@ package com.liferay.mail.settings.internal.configuration;
 
 import com.liferay.mail.kernel.service.MailService;
 
-import java.util.Map;
-
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -25,7 +23,7 @@ public class MailServiceCompanyConfigurationHandler {
 
 	@Activate
 	@Modified
-	protected void activate(Map<String, Object> properties) {
+	protected void activate() {
 		_mailService.clearSession();
 	}
 

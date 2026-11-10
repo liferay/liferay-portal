@@ -16,8 +16,6 @@ import com.liferay.upload.UploadResponseHandler;
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 
-import java.util.Map;
-
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -35,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
 public class UploadGenerationsMVCActionCommand extends BaseMVCActionCommand {
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate() {
 		_aiCreatorOpenAIFileEntryHandler =
 			new AICreatorOpenAIUploadFileEntryHandler(_dlAppService);
 	}

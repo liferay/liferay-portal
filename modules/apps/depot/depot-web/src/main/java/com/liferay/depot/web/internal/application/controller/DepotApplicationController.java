@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.osgi.framework.BundleContext;
@@ -146,9 +145,7 @@ public class DepotApplicationController {
 	}
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, DepotApplication.class, null,
 			(serviceReference, emitter) -> {

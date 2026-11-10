@@ -20,7 +20,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 import org.osgi.service.component.ComponentContext;
@@ -67,9 +66,7 @@ public class MockOSBAsahPublisherApplication extends Application {
 	}
 
 	@Activate
-	protected void activate(
-		ComponentContext componentContext, Map<String, Object> properties) {
-
+	protected void activate(ComponentContext componentContext) {
 		if (GetterUtil.getBoolean(
 				PropsUtil.get(PropsKeys.ANALYTICS_CLOUD_MOCK_ENABLED))) {
 
