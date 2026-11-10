@@ -292,25 +292,6 @@ public class BatchEngineImportTaskLocalServiceTest {
 		}
 	}
 
-	private void _testAddBatchEngineImportTaskWithoutTaskItemDelegate()
-		throws Exception {
-
-		String className = RandomTestUtil.randomString();
-
-		AssertUtils.assertFailure(
-			IllegalStateException.class,
-			StringBundler.concat(
-				"No batch engine task item delegate is available for class ",
-				"name ", className, " and task item delegate name null"),
-			() -> _batchEngineImportTaskLocalService.addBatchEngineImportTask(
-				null, TestPropsValues.getCompanyId(),
-				TestPropsValues.getUserId(), 10, null, className,
-				_getContent("[]"), "JSON",
-				BatchEngineTaskExecuteStatus.INITIAL.name(), null,
-				BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL,
-				BatchEngineTaskOperation.CREATE.name(), new HashMap<>(), null));
-	}
-
 	private void _testAddBatchEngineImportTaskWithUnregisteredTaskItemDelegate()
 		throws Exception {
 
@@ -351,6 +332,25 @@ public class BatchEngineImportTaskLocalServiceTest {
 				EncryptorUtil.decryptAuthenticated(
 					key, jsonObject.getString("password")));
 		}
+	}
+
+	private void _testAddBatchEngineImportTaskWithoutTaskItemDelegate()
+		throws Exception {
+
+		String className = RandomTestUtil.randomString();
+
+		AssertUtils.assertFailure(
+			IllegalStateException.class,
+			StringBundler.concat(
+				"No batch engine task item delegate is available for class ",
+				"name ", className, " and task item delegate name null"),
+			() -> _batchEngineImportTaskLocalService.addBatchEngineImportTask(
+				null, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), 10, null, className,
+				_getContent("[]"), "JSON",
+				BatchEngineTaskExecuteStatus.INITIAL.name(), null,
+				BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL,
+				BatchEngineTaskOperation.CREATE.name(), new HashMap<>(), null));
 	}
 
 	private void _testUpdateBatchEngineImportTask(
@@ -532,34 +532,6 @@ public class BatchEngineImportTaskLocalServiceTest {
 		}
 	}
 
-	private void _testUpdateBatchEngineImportTaskWithoutPasswordFields(
-			BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus)
-		throws Exception {
-
-		String headline = RandomTestUtil.randomString();
-
-		BatchEngineImportTask batchEngineImportTask = _addBatchEngineImportTask(
-			"com.liferay.headless.delivery.dto.v1_0.BlogPosting",
-			JSONUtil.putAll(
-				JSONUtil.put("headline", headline)
-			).toString());
-
-		batchEngineImportTask =
-			_batchEngineImportTaskLocalService.getBatchEngineImportTask(
-				batchEngineImportTask.getBatchEngineImportTaskId());
-
-		_updateExecuteStatus(
-			batchEngineImportTask, batchEngineTaskExecuteStatus);
-
-		Assert.assertNull(
-			ReflectionTestUtil.getFieldValue(
-				batchEngineImportTask, "_contentBlobModel"));
-
-		String content = _readContent(batchEngineImportTask);
-
-		Assert.assertTrue(content, content.contains(headline));
-	}
-
 	private void
 			_testUpdateBatchEngineImportTaskWithUnregisteredTaskItemDelegate(
 				BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus)
@@ -596,6 +568,34 @@ public class BatchEngineImportTaskLocalServiceTest {
 
 		Assert.assertTrue(content.contains(name));
 		Assert.assertFalse(content.contains(password));
+	}
+
+	private void _testUpdateBatchEngineImportTaskWithoutPasswordFields(
+			BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus)
+		throws Exception {
+
+		String headline = RandomTestUtil.randomString();
+
+		BatchEngineImportTask batchEngineImportTask = _addBatchEngineImportTask(
+			"com.liferay.headless.delivery.dto.v1_0.BlogPosting",
+			JSONUtil.putAll(
+				JSONUtil.put("headline", headline)
+			).toString());
+
+		batchEngineImportTask =
+			_batchEngineImportTaskLocalService.getBatchEngineImportTask(
+				batchEngineImportTask.getBatchEngineImportTaskId());
+
+		_updateExecuteStatus(
+			batchEngineImportTask, batchEngineTaskExecuteStatus);
+
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				batchEngineImportTask, "_contentBlobModel"));
+
+		String content = _readContent(batchEngineImportTask);
+
+		Assert.assertTrue(content, content.contains(headline));
 	}
 
 	private BatchEngineImportTask _updateExecuteStatus(
