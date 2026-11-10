@@ -33,6 +33,16 @@ public interface PanelApp extends PanelEntry {
 	public String getIcon();
 
 	/**
+	 * Returns the URL of the panel app's icon image, or <code>null</code> to
+	 * use {@link #getIcon()} instead. The URL may be a data URI.
+	 *
+	 * @return the URL of the panel app's icon image
+	 */
+	public default String getIconURL() {
+		return null;
+	}
+
+	/**
 	 * Returns the number of notifications for the user.
 	 *
 	 * @param  user the user from which notifications are retrieved

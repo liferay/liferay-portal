@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Mario Leandro
@@ -126,6 +128,17 @@ public class HomeDisplayContext {
 						_httpServletRequest
 					).toString()
 				).put(
+					"iconURL",
+					() -> {
+						String iconURL = panelApp.getIconURL();
+
+						if (_isValidIconURL(iconURL)) {
+							return iconURL;
+						}
+
+						return null;
+					}
+				).put(
 					"id", panelApp.getPortletId()
 				).put(
 					"label", panelApp.getLabel(_themeDisplay.getLocale())
@@ -136,6 +149,29 @@ public class HomeDisplayContext {
 
 		return propsItems;
 	}
+
+	private boolean _isValidIconURL(String iconURL) {
+		if (iconURL == null) {
+			return false;
+		}
+
+		Matcher matcher = _dataURIPattern.matcher(iconURL);
+
+		if (matcher.lookingAt()) {
+			return true;
+		}
+
+		matcher = _imageURLPattern.matcher(iconURL);
+
+		return matcher.matches();
+	}
+
+	private static final Pattern _dataURIPattern = Pattern.compile(
+		"^data:image/(?:gif|jpeg|png|svg\\+xml|webp)(?:;charset=[-\\w]+)?" +
+			"(?:;base64)?,");
+	private static final Pattern _imageURLPattern = Pattern.compile(
+		"^(?:https?://|/)[-;/?:@&=+$,_.!~*'()%0-9a-z]{1,2048}$",
+		Pattern.CASE_INSENSITIVE);
 
 	private final HttpServletRequest _httpServletRequest;
 	private final PanelAppRegistry _panelAppRegistry;
