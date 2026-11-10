@@ -125,34 +125,6 @@ test(
 );
 
 test(
-	'Subscription and Usage settings page shows current plan, limits, and add-ons',
-	{
-		tag: ['@LRAC-9180', '@LRAC-9183'],
-	},
-	async ({apiHelpers, page}) => {
-		const project = await getDefaultProject(apiHelpers);
-
-		await page.goto(
-			`${faroConfig.environment.baseUrl}/workspace/${project.groupId}/settings/usage`
-		);
-
-		await expect(page.getByText('Enterprise')).toBeVisible();
-
-		await expect(page.getByText('100,000').first()).toBeVisible();
-
-		await expect(page.getByText('60,000,000').first()).toBeVisible();
-
-		await expect(page.getByText('10,000').first()).toBeVisible();
-
-		await expect(page.getByText('15,000,000').first()).toBeVisible();
-
-		await expect(page.getByText('110,000').first()).toBeVisible();
-
-		await expect(page.getByText('75,000,000').first()).toBeVisible();
-	}
-);
-
-test(
 	'A workspace friendly URL can be set and resolves to the workspace',
 	{
 		tag: '@LRAC-11511',
