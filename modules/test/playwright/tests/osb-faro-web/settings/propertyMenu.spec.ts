@@ -57,8 +57,8 @@ test(
 			);
 
 			await expect(
-				page.locator('button.channels-menu .channels-menu-label')
-			).toHaveText(propertyName);
+				page.getByRole('combobox', {name: 'Property'})
+			).toContainText(propertyName);
 
 			// Delete the property and assert the sidebar menu no longer lists it
 
@@ -72,14 +72,12 @@ test(
 			);
 
 			await clickAndExpectToBeVisible({
-				target: page.locator('.channels-menu-dropdown-body'),
-				trigger: page.locator('button.channels-menu'),
+				target: page.getByPlaceholder('Search'),
+				trigger: page.getByRole('combobox', {name: 'Property'}),
 			});
 
 			await expect(
-				page
-					.locator('.channels-menu-dropdown-body')
-					.getByRole('link', {name: propertyName})
+				page.getByRole('option', {name: propertyName})
 			).not.toBeVisible();
 		}
 		finally {
@@ -94,16 +92,18 @@ test(
 test(
 	'Property menu search shows no rows for a non-existent name',
 	{tag: '@LRAC-9230'},
-	async ({page}) => {
+	async ({page, project}) => {
+		await page.goto(
+			`${faroConfig.environment.baseUrl}/workspace/${project.groupId}`
+		);
+
 		await clickAndExpectToBeVisible({
-			target: page.getByPlaceholder('search'),
-			trigger: page.locator('button.channels-menu'),
+			target: page.getByPlaceholder('Search'),
+			trigger: page.getByRole('combobox', {name: 'Property'}),
 		});
 
-		await page.getByPlaceholder('search').fill('Non Existent Property');
+		await page.getByPlaceholder('Search').fill('Non Existent Property');
 
-		await expect(
-			page.locator('.channels-menu-dropdown-body .sites-dropdown-item')
-		).toHaveCount(0);
+		await expect(page.getByRole('option')).toHaveCount(0);
 	}
 );
