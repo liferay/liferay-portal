@@ -111,6 +111,9 @@ public class CommerceChannelIndexer extends BaseIndexer<CommerceChannel> {
 		document.addKeyword(
 			CPField.COMMERCE_CHANNEL_GROUP_ID, group.getGroupId());
 
+		document.addKeyword(
+			CPField.EXTERNAL_REFERENCE_CODE,
+			commerceChannel.getExternalReferenceCode(), true);
 		document.addKeyword(Field.NAME, commerceChannel.getName(), true);
 		document.addKeyword(
 			Field.SCOPE_GROUP_ID, commerceChannel.getSiteGroupId());
