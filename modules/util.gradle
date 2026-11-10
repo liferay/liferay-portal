@@ -22,6 +22,7 @@ buildscript {
 
 apply plugin: "com.liferay.source.formatter"
 apply plugin: "com.liferay.source.formatter.defaults"
+apply plugin: "jvm-ecosystem"
 
 task appendHotfixQualifier
 task formatSourceCurrentBranch(type: FormatSourceTask)
@@ -375,10 +376,6 @@ private void _createSetUpPortalToolTasks() {
 		File portalToolDir = ivyXmlFile.parentFile
 
 		CopyIvyDependenciesTask copyIvyDependenciesTask = tasks.create(name: "setUp" + _camelCase(portalToolDir.name), type: CopyIvyDependenciesTask) {
-			configuration.attributes {
-				attribute TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE, objects.named(TargetJvmEnvironment, TargetJvmEnvironment.STANDARD_JVM)
-			}
-
 			configuration.exclude group: "com.liferay.portal"
 
 			dependencyTransformClosure = {
