@@ -51,6 +51,7 @@ import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.ModelListenerException;
@@ -120,7 +121,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -457,7 +457,27 @@ public abstract class BaseObjectEntryResourceTestCase {
 	}
 
 	protected void assertPatchCustomObjectEntry(
-			Function<JSONObject, String> endpointFunction,
+			String endpoint, JSONObject expectedJSONObject, String fieldName,
+			Object fieldValue)
+		throws Exception {
+
+		JSONAssert.assertEquals(
+			expectedJSONObject.toString(),
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					fieldName, fieldValue
+				).put(
+					"externalReferenceCode",
+					expectedJSONObject.get("externalReferenceCode")
+				).toString(),
+				endpoint, Http.Method.PATCH
+			).toString(),
+			JSONCompareMode.LENIENT);
+	}
+
+	protected void assertPatchCustomObjectEntry(
+			UnsafeFunction<JSONObject, String, Exception>
+				endpointUnsafeFunction,
 			ObjectDefinition childObjectDefinition,
 			ObjectDefinition parentObjectDefinition, Object scopeKey)
 		throws Exception {
@@ -625,7 +645,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 			"status", JSONUtil.put("code", WorkflowConstants.STATUS_DRAFT)
 		);
 
-		String endpoint = endpointFunction.apply(jsonObject);
+		String endpoint = endpointUnsafeFunction.apply(jsonObject);
 
 		JSONAssert.assertEquals(
 			expectedJSONObject.toString(),
@@ -812,27 +832,9 @@ public abstract class BaseObjectEntryResourceTestCase {
 			"b" + randomString3);
 	}
 
-	protected void assertPatchCustomObjectEntry(
-			String endpoint, JSONObject expectedJSONObject, String fieldName,
-			Object fieldValue)
-		throws Exception {
-
-		JSONAssert.assertEquals(
-			expectedJSONObject.toString(),
-			HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					fieldName, fieldValue
-				).put(
-					"externalReferenceCode",
-					expectedJSONObject.get("externalReferenceCode")
-				).toString(),
-				endpoint, Http.Method.PATCH
-			).toString(),
-			JSONCompareMode.LENIENT);
-	}
-
 	protected void assertPutCustomObjectEntry(
-			Function<JSONObject, String> endpointFunction,
+			UnsafeFunction<JSONObject, String, Exception>
+				endpointUnsafeFunction,
 			ObjectDefinition childObjectDefinition,
 			ObjectDefinition parentObjectDefinition, Object scopeKey)
 		throws Exception {
@@ -938,7 +940,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 			).toString(),
 			getEndpoint(childObjectDefinition, scopeKey), Http.Method.POST);
 
-		String endpoint = endpointFunction.apply(jsonObject);
+		String endpoint = endpointUnsafeFunction.apply(jsonObject);
 
 		HTTPTestUtil.invokeToJSONObject(
 			JSONFactoryUtil.getNullJSON(), endpoint, Http.Method.PUT);

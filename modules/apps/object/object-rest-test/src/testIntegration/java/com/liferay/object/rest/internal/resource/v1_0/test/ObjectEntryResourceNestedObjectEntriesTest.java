@@ -12,6 +12,7 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.rest.test.util.ObjectRelationshipTestUtil;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -32,8 +33,6 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-
-import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -68,23 +67,18 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Many to many
 
-		ObjectDefinition objectDefinition1 = getObjectDefinition1();
-
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() + "/" +
+				getObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PATCH, objectDefinition1, getObjectDefinition2(),
+			Http.Method.PATCH, getObjectDefinition1(), getObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
-		ObjectDefinition siteScopedObjectDefinition1 =
-			getSiteScopedObjectDefinition1();
-
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				siteScopedObjectDefinition1.getRESTContextPath() + "/" +
+				getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PATCH, siteScopedObjectDefinition1,
+			Http.Method.PATCH, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
@@ -92,29 +86,29 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() + "/" +
+				getObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PATCH, objectDefinition1, getObjectDefinition2());
+			Http.Method.PATCH, getObjectDefinition1(), getObjectDefinition2());
 		_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 			jsonObject ->
-				siteScopedObjectDefinition1.getRESTContextPath() + "/" +
+				getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PATCH, siteScopedObjectDefinition1,
+			Http.Method.PATCH, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2());
 
 		// One to many
 
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() + "/" +
+				getObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PATCH, objectDefinition1, getObjectDefinition2(),
+			Http.Method.PATCH, getObjectDefinition1(), getObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				siteScopedObjectDefinition1.getRESTContextPath() + "/" +
+				getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PATCH, siteScopedObjectDefinition1,
+			Http.Method.PATCH, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
@@ -126,27 +120,22 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Many to many
 
-		ObjectDefinition objectDefinition1 = getObjectDefinition1();
-
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() +
+				getObjectDefinition1().getRESTContextPath() +
 					"/by-external-reference-code/" +
 						jsonObject.getString("externalReferenceCode"),
-			Http.Method.PATCH, objectDefinition1, getObjectDefinition2(),
+			Http.Method.PATCH, getObjectDefinition1(), getObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
-		ObjectDefinition siteScopedObjectDefinition1 =
-			getSiteScopedObjectDefinition1();
-
 		String externalReferenceCodeEndpoint = getEndpoint(
-			siteScopedObjectDefinition1, testGroupId);
+			getSiteScopedObjectDefinition1(), testGroupId);
 
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
 				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
-			Http.Method.PATCH, siteScopedObjectDefinition1,
+			Http.Method.PATCH, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
@@ -154,31 +143,31 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() +
+				getObjectDefinition1().getRESTContextPath() +
 					"/by-external-reference-code/" +
 						jsonObject.getString("externalReferenceCode"),
-			Http.Method.PATCH, objectDefinition1, getObjectDefinition2());
+			Http.Method.PATCH, getObjectDefinition1(), getObjectDefinition2());
 		_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 			jsonObject ->
 				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
-			Http.Method.PATCH, siteScopedObjectDefinition1,
+			Http.Method.PATCH, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2());
 
 		// One to many
 
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() +
+				getObjectDefinition1().getRESTContextPath() +
 					"/by-external-reference-code/" +
 						jsonObject.getString("externalReferenceCode"),
-			Http.Method.PATCH, objectDefinition1, getObjectDefinition2(),
+			Http.Method.PATCH, getObjectDefinition1(), getObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
 				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
-			Http.Method.PATCH, siteScopedObjectDefinition1,
+			Http.Method.PATCH, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
@@ -722,23 +711,18 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Many to many
 
-		ObjectDefinition objectDefinition1 = getObjectDefinition1();
-
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() + "/" +
+				getObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PUT, objectDefinition1, getObjectDefinition2(),
+			Http.Method.PUT, getObjectDefinition1(), getObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
-		ObjectDefinition siteScopedObjectDefinition1 =
-			getSiteScopedObjectDefinition1();
-
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				siteScopedObjectDefinition1.getRESTContextPath() + "/" +
+				getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PUT, siteScopedObjectDefinition1,
+			Http.Method.PUT, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
@@ -746,29 +730,29 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() + "/" +
+				getObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PUT, objectDefinition1, getObjectDefinition2());
+			Http.Method.PUT, getObjectDefinition1(), getObjectDefinition2());
 		_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 			jsonObject ->
-				siteScopedObjectDefinition1.getRESTContextPath() + "/" +
+				getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PUT, siteScopedObjectDefinition1,
+			Http.Method.PUT, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2());
 
 		// One to many
 
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() + "/" +
+				getObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PUT, objectDefinition1, getObjectDefinition2(),
+			Http.Method.PUT, getObjectDefinition1(), getObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				siteScopedObjectDefinition1.getRESTContextPath() + "/" +
+				getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			Http.Method.PUT, siteScopedObjectDefinition1,
+			Http.Method.PUT, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
@@ -780,27 +764,22 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Many to many
 
-		ObjectDefinition objectDefinition1 = getObjectDefinition1();
-
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() +
+				getObjectDefinition1().getRESTContextPath() +
 					"/by-external-reference-code/" +
 						jsonObject.getString("externalReferenceCode"),
-			Http.Method.PUT, objectDefinition1, getObjectDefinition2(),
+			Http.Method.PUT, getObjectDefinition1(), getObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
-		ObjectDefinition siteScopedObjectDefinition1 =
-			getSiteScopedObjectDefinition1();
-
 		String externalReferenceCodeEndpoint = getEndpoint(
-			siteScopedObjectDefinition1, testGroupId);
+			getSiteScopedObjectDefinition1(), testGroupId);
 
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
 				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
-			Http.Method.PUT, siteScopedObjectDefinition1,
+			Http.Method.PUT, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
@@ -808,31 +787,31 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() +
+				getObjectDefinition1().getRESTContextPath() +
 					"/by-external-reference-code/" +
 						jsonObject.getString("externalReferenceCode"),
-			Http.Method.PUT, objectDefinition1, getObjectDefinition2());
+			Http.Method.PUT, getObjectDefinition1(), getObjectDefinition2());
 		_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 			jsonObject ->
 				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
-			Http.Method.PUT, siteScopedObjectDefinition1,
+			Http.Method.PUT, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2());
 
 		// One to many
 
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				objectDefinition1.getRESTContextPath() +
+				getObjectDefinition1().getRESTContextPath() +
 					"/by-external-reference-code/" +
 						jsonObject.getString("externalReferenceCode"),
-			Http.Method.PUT, objectDefinition1, getObjectDefinition2(),
+			Http.Method.PUT, getObjectDefinition1(), getObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
 				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
-			Http.Method.PUT, siteScopedObjectDefinition1,
+			Http.Method.PUT, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
@@ -1181,7 +1160,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 	private void
 			_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
-				Function<JSONObject, String> endpointFunction,
+				UnsafeFunction<JSONObject, String, Exception>
+					endpointUnsafeFunction,
 				Http.Method method, ObjectDefinition objectDefinition1,
 				ObjectDefinition objectDefinition2)
 		throws Exception {
@@ -1289,7 +1269,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 							"ERC")),
 					org.json.JSONObject.NULL
 				).toString(),
-				endpointFunction.apply(jsonObject), method);
+				endpointUnsafeFunction.apply(jsonObject), method);
 
 			Assert.assertEquals(
 				0,
@@ -1405,7 +1385,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 	private void
 			_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
-				Function<JSONObject, String> endpointFunction,
+				UnsafeFunction<JSONObject, String, Exception>
+					endpointUnsafeFunction,
 				Http.Method method, ObjectDefinition objectDefinition1,
 				ObjectDefinition objectDefinition2, String type)
 		throws Exception {
@@ -1449,7 +1430,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				).put(
 					objectRelationship2.getName(), org.json.JSONObject.NULL
 				).toString(),
-				endpointFunction.apply(jsonObject), method);
+				endpointUnsafeFunction.apply(jsonObject), method);
 
 			Assert.assertEquals(
 				0,
