@@ -972,6 +972,7 @@ public class TestrayFactory {
 		batchNames.addAll(_getBatchNames("test.batch.names.smoke", job));
 
 		Properties jobProperties = job.getJobProperties();
+
 		Set<String> runIdStrings = new HashSet<>();
 
 		suffixedBatchNames = new HashSet<>();
