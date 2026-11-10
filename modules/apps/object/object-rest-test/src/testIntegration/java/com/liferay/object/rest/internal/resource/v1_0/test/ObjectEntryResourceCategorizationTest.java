@@ -177,8 +177,19 @@ public class ObjectEntryResourceCategorizationTest
 				companyTaxonomyCategory1.getTaxonomyVocabularyId());
 
 		_testGetObjectEntryWithTaxonomyCategories(
-			0, getObjectDefinition1(), companyTaxonomyCategory1,
+			0, getObjectDefinition1(), false, companyTaxonomyCategory1,
 			companyTaxonomyCategory2);
+
+		TaxonomyCategory companyTaxonomyCategory3 =
+			postTaxonomyVocabularyTaxonomyCategory(
+				company.getGroupId(), companyAssetVocabulary.getVocabularyId());
+		TaxonomyCategory companyTaxonomyCategory4 =
+			postTaxonomyVocabularyTaxonomyCategory(
+				company.getGroupId(), companyAssetVocabulary.getVocabularyId());
+
+		_testGetObjectEntryWithTaxonomyCategories(
+			0, getObjectDefinition1(), true, companyTaxonomyCategory3,
+			companyTaxonomyCategory4);
 
 		// Depot scope
 
@@ -204,7 +215,7 @@ public class ObjectEntryResourceCategorizationTest
 				depotTaxonomyCategory1.getTaxonomyVocabularyId());
 
 		_testGetObjectEntryWithTaxonomyCategories(
-			depotEntry.getGroupId(), addDepotScopedObjectDefinition(),
+			depotEntry.getGroupId(), addDepotScopedObjectDefinition(), false,
 			depotTaxonomyCategory1, depotTaxonomyCategory2);
 
 		// Site scope
@@ -219,53 +230,8 @@ public class ObjectEntryResourceCategorizationTest
 				siteTaxonomyCategory1.getTaxonomyVocabularyId());
 
 		_testGetObjectEntryWithTaxonomyCategories(
-			testGroupId, getSiteScopedObjectDefinition1(),
+			testGroupId, getSiteScopedObjectDefinition1(), false,
 			siteTaxonomyCategory1, siteTaxonomyCategory2);
-	}
-
-	@Test
-	public void testGetObjectEntryWithTaxonomyCategoriesAndEmbeddedTaxonomyCategory()
-		throws Exception {
-
-		Company company = companyLocalService.getCompany(
-			TestPropsValues.getCompanyId());
-
-		AssetVocabulary companyAssetVocabulary =
-			assetVocabularyLocalService.addVocabulary(
-				TestPropsValues.getUserId(), company.getGroupId(),
-				RandomTestUtil.randomString(), new ServiceContext());
-
-		TaxonomyCategory taxonomyCategory1 =
-			postTaxonomyVocabularyTaxonomyCategory(
-				companyAssetVocabulary.getGroupId(),
-				companyAssetVocabulary.getVocabularyId());
-		TaxonomyCategory taxonomyCategory2 =
-			postTaxonomyVocabularyTaxonomyCategory(
-				companyAssetVocabulary.getGroupId(),
-				companyAssetVocabulary.getVocabularyId());
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).put(
-				"taxonomyCategoryIds",
-				JSONUtil.putAll(
-					taxonomyCategory1.getId(), taxonomyCategory2.getId())
-			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
-				jsonObject.getString("id"),
-				"?nestedFields=embeddedTaxonomyCategory"),
-			Http.Method.GET);
-
-		_assertTaxonomyCategories(
-			jsonObject.getLong("scopeId"),
-			jsonObject.getJSONArray("taxonomyCategoryBriefs"), true,
-			taxonomyCategory1, taxonomyCategory2);
 	}
 
 	@Test
@@ -542,6 +508,7 @@ public class ObjectEntryResourceCategorizationTest
 
 	private void _testGetObjectEntryWithTaxonomyCategories(
 			long groupId, ObjectDefinition objectDefinition,
+			boolean withEmbeddedTaxonomyCategory,
 			TaxonomyCategory... taxonomyCategories)
 		throws Exception {
 
@@ -555,16 +522,21 @@ public class ObjectEntryResourceCategorizationTest
 			).toString(),
 			getEndpoint(objectDefinition, groupId), Http.Method.POST);
 
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
+		String endpoint =
 			objectDefinition.getRESTContextPath() + StringPool.SLASH +
-				jsonObject.getString("id"),
-			Http.Method.GET);
+				jsonObject.getString("id");
+
+		if (withEmbeddedTaxonomyCategory) {
+			endpoint += "?nestedFields=embeddedTaxonomyCategory";
+		}
+
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, endpoint, Http.Method.GET);
 
 		_assertTaxonomyCategories(
 			jsonObject.getLong("scopeId"),
-			jsonObject.getJSONArray("taxonomyCategoryBriefs"), false,
-			taxonomyCategories);
+			jsonObject.getJSONArray("taxonomyCategoryBriefs"),
+			withEmbeddedTaxonomyCategory, taxonomyCategories);
 	}
 
 	private void _testPostObjectEntryWithCrossSiteTaxonomyCategories()

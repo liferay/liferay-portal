@@ -146,8 +146,15 @@ public class ObjectEntryResourceNestedFieldsTest
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testCustomizeNestedFieldsContextWithRootModelHierarchy()
-		throws Exception {
+	public void testCustomizeNestedFieldsContext() throws Exception {
+		_testCustomizeNestedFieldsContext(
+			getObjectDefinition1(), Collections.emptySet(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+		_testCustomizeNestedFieldsContext(
+			getObjectDefinition1(), Collections.emptySet(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), "rootModelHierarchy");
 
 		Tree objectDefinitionTree = TreeTestUtil.createObjectDefinitionTree(
 			objectDefinitionLocalService, objectRelationshipLocalService, true,
@@ -165,85 +172,17 @@ public class ObjectEntryResourceNestedFieldsTest
 
 		Node objectDefinitionRootNode = objectDefinitionTree.getRootNode();
 
-		NestedFieldsContextResource nestedFieldsContextResource =
-			(NestedFieldsContextResource)getObjectEntryResource(
-				objectDefinitionLocalService.getObjectDefinition(
-					objectDefinitionRootNode.getPrimaryKey()),
-				TestPropsValues.getUser());
-
-		String nestedField1 = RandomTestUtil.randomString();
-		String nestedField2 = RandomTestUtil.randomString();
-		String nestedField3 = RandomTestUtil.randomString();
-
-		List<String> nestedFields = Arrays.asList(
-			nestedField1, nestedField2, nestedField3, "rootModelHierarchy");
-
-		NestedFieldsContext nestedFieldsContext =
-			nestedFieldsContextResource.customizeNestedFieldsContext(
-				new NestedFieldsContext(1, nestedFields));
-
-		Set<String> expectedNestedFields = new HashSet<>(nestedFields);
-
-		expectedNestedFields.addAll(
-			_getObjectRelationshipNames(objectDefinitionRootNode));
-
-		Assert.assertEquals(
-			expectedNestedFields,
-			new HashSet<>(nestedFieldsContext.getNestedFields()));
+		_testCustomizeNestedFieldsContext(
+			objectDefinitionLocalService.getObjectDefinition(
+				objectDefinitionRootNode.getPrimaryKey()),
+			_getObjectRelationshipNames(objectDefinitionRootNode),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), "rootModelHierarchy");
 
 		TreeTestUtil.deleteObjectDefinitionHierarchy(
 			objectDefinitionLocalService,
 			new String[] {"C_A", "C_AA", "C_AB", "C_AAA", "C_AAB"},
 			objectEntryLocalService, objectRelationshipLocalService);
-	}
-
-	@Test
-	public void testCustomizeNestedFieldsContextWithRootModelHierarchyNoHierarchy()
-		throws Exception {
-
-		String nestedField1 = RandomTestUtil.randomString();
-		String nestedField2 = RandomTestUtil.randomString();
-		String nestedField3 = RandomTestUtil.randomString();
-
-		NestedFieldsContextResource nestedFieldsContextResource =
-			(NestedFieldsContextResource)getObjectEntryResource(
-				getObjectDefinition1(), TestPropsValues.getUser());
-
-		NestedFieldsContext nestedFieldsContext =
-			nestedFieldsContextResource.customizeNestedFieldsContext(
-				new NestedFieldsContext(
-					1,
-					Arrays.asList(
-						nestedField1, nestedField2, nestedField3,
-						"rootModelHierarchy")));
-
-		Assert.assertEquals(
-			SetUtil.fromArray(
-				nestedField1, nestedField2, nestedField3, "rootModelHierarchy"),
-			new HashSet<>(nestedFieldsContext.getNestedFields()));
-	}
-
-	@Test
-	public void testCustomizeNestedFieldsContextWithoutRootModelHierarchy()
-		throws Exception {
-
-		String nestedField1 = RandomTestUtil.randomString();
-		String nestedField2 = RandomTestUtil.randomString();
-		String nestedField3 = RandomTestUtil.randomString();
-
-		NestedFieldsContextResource nestedFieldsContextResource =
-			(NestedFieldsContextResource)getObjectEntryResource(
-				getObjectDefinition1(), TestPropsValues.getUser());
-
-		NestedFieldsContext nestedFieldsContext =
-			nestedFieldsContextResource.customizeNestedFieldsContext(
-				new NestedFieldsContext(
-					1,
-					Arrays.asList(nestedField1, nestedField2, nestedField3)));
-
-		Assert.assertEquals(
-			SetUtil.fromArray(nestedField1, nestedField2, nestedField3),
-			new HashSet<>(nestedFieldsContext.getNestedFields()));
 	}
 
 	@Test
@@ -466,18 +405,6 @@ public class ObjectEntryResourceNestedFieldsTest
 			Type.ONE_TO_MANY);
 		_testGetNestedFieldDetailsInRelationships(
 			objectRelationship1.getName(), 5, objectRelationship1.getName(),
-			getObjectDefinition1(),
-			new String[][] {
-				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)},
-				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)},
-				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)},
-				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)},
-				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)},
-				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)}
-			},
-			Type.ONE_TO_MANY);
-		_testGetNestedFieldDetailsInRelationships(
-			objectRelationship1.getName(), 6, objectRelationship1.getName(),
 			getObjectDefinition1(),
 			new String[][] {
 				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)},
@@ -1921,6 +1848,28 @@ public class ObjectEntryResourceNestedFieldsTest
 			});
 
 		objectEntry.setProperties(properties);
+	}
+
+	private void _testCustomizeNestedFieldsContext(
+			ObjectDefinition objectDefinition,
+			Set<String> objectRelationshipNames, String... nestedFields)
+		throws Exception {
+
+		NestedFieldsContextResource nestedFieldsContextResource =
+			(NestedFieldsContextResource)getObjectEntryResource(
+				objectDefinition, TestPropsValues.getUser());
+
+		NestedFieldsContext nestedFieldsContext =
+			nestedFieldsContextResource.customizeNestedFieldsContext(
+				new NestedFieldsContext(1, Arrays.asList(nestedFields)));
+
+		Set<String> expectedNestedFields = SetUtil.fromArray(nestedFields);
+
+		expectedNestedFields.addAll(objectRelationshipNames);
+
+		Assert.assertEquals(
+			expectedNestedFields,
+			new HashSet<>(nestedFieldsContext.getNestedFields()));
 	}
 
 	private void _testGetNestedFieldDetailsInRelationships(

@@ -168,8 +168,8 @@ public class ObjectEntryResourcePermissionTest
 
 	@Test
 	@TestInfo("LPD-62553")
-	public void testGetObjectEntryActionsWithCompanySharingDisabled()
-		throws Exception {
+	public void testGetObjectEntryActions() throws Exception {
+		_testGetObjectEntryActions(true);
 
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
@@ -183,12 +183,6 @@ public class ObjectEntryResourcePermissionTest
 
 			_testGetObjectEntryActions(false);
 		}
-	}
-
-	@Test
-	@TestInfo("LPD-62553")
-	public void testGetObjectEntryActionsWithGroupSharingDisabled()
-		throws Exception {
 
 		UnicodeProperties typeSettingsUnicodeProperties =
 			group.getTypeSettingsProperties();
@@ -208,18 +202,6 @@ public class ObjectEntryResourcePermissionTest
 			groupLocalService.updateGroup(
 				group.getGroupId(), typeSettingsUnicodeProperties.toString());
 		}
-	}
-
-	@Test
-	@TestInfo("LPD-62553")
-	public void testGetObjectEntryActionsWithSharingEnabled() throws Exception {
-		_testGetObjectEntryActions(true);
-	}
-
-	@Test
-	@TestInfo("LPD-62553")
-	public void testGetObjectEntryActionsWithSystemSharingDisabled()
-		throws Exception {
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
