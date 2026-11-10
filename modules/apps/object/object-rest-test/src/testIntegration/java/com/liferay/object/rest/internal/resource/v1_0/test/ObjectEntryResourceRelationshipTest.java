@@ -192,20 +192,10 @@ public class ObjectEntryResourceRelationshipTest
 		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), "?nestedFields=",
-				objectRelationship1.getName()),
-			Http.Method.GET);
+		JSONObject jsonObject = getObjectEntryJSONObject(
+			null, objectRelationship1.getName(), getObjectDefinition1());
 
-		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
-
-		Assert.assertEquals(1, itemsJSONArray.length());
-
-		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
-
-		JSONArray relatedObjectEntriesJSONArray = itemJSONObject.getJSONArray(
+		JSONArray relatedObjectEntriesJSONArray = jsonObject.getJSONArray(
 			objectRelationship1.getName());
 
 		Assert.assertEquals(1, relatedObjectEntriesJSONArray.length());
@@ -288,9 +278,6 @@ public class ObjectEntryResourceRelationshipTest
 			TestPropsValues.getUserId(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
-		ObjectField objectField = objectFieldLocalService.fetchObjectField(
-			objectRelationship1.getObjectFieldId2());
-
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
@@ -310,58 +297,14 @@ public class ObjectEntryResourceRelationshipTest
 				"code"
 			));
 
-		long randomObjectEntryId = RandomTestUtil.randomLong();
-
-		JSONAssert.assertEquals(
-			JSONUtil.put(
-				"status", "NOT_FOUND"
-			).put(
-				"title",
-				String.format(
-					"The value for %s does not exist.", objectField.getName())
-			).toString(),
-			HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
-				).put(
-					StringBundler.concat(
-						"r_", objectRelationship1.getName(), "_",
-						getObjectDefinition1().getPKObjectFieldName()),
-					randomObjectEntryId
-				).toString(),
-				getObjectDefinition2().getRESTContextPath(), Http.Method.POST
-			).toString(),
-			JSONCompareMode.STRICT);
-
-		ObjectRelationship objectRelationship =
+		_testPostCustomObjectEntryWithNonexistentRelatedCustomObjectEntryId(
+			getObjectDefinition1(), objectRelationship1);
+		_testPostCustomObjectEntryWithNonexistentRelatedCustomObjectEntryId(
+			userSystemObjectDefinition,
 			ObjectRelationshipTestUtil.addObjectRelationship(
 				userSystemObjectDefinition, getObjectDefinition2(),
 				TestPropsValues.getUserId(),
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		objectField = objectFieldLocalService.fetchObjectField(
-			objectRelationship.getObjectFieldId2());
-
-		JSONAssert.assertEquals(
-			JSONUtil.put(
-				"status", "NOT_FOUND"
-			).put(
-				"title",
-				String.format(
-					"The value for %s does not exist.", objectField.getName())
-			).toString(),
-			HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
-				).put(
-					StringBundler.concat(
-						"r_", objectRelationship.getName(), "_",
-						userSystemObjectDefinition.getPKObjectFieldName()),
-					randomObjectEntryId
-				).toString(),
-				getObjectDefinition2().getRESTContextPath(), Http.Method.POST
-			).toString(),
-			JSONCompareMode.STRICT);
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY));
 	}
 
 	@Test
@@ -1212,6 +1155,37 @@ public class ObjectEntryResourceRelationshipTest
 				).toString(),
 				JSONCompareMode.LENIENT);
 		}
+	}
+
+	private void
+			_testPostCustomObjectEntryWithNonexistentRelatedCustomObjectEntryId(
+				ObjectDefinition objectDefinition,
+				ObjectRelationship objectRelationship)
+		throws Exception {
+
+		ObjectField objectField = objectFieldLocalService.fetchObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"status", "NOT_FOUND"
+			).put(
+				"title",
+				String.format(
+					"The value for %s does not exist.", objectField.getName())
+			).toString(),
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
+				).put(
+					StringBundler.concat(
+						"r_", objectRelationship.getName(), "_",
+						objectDefinition.getPKObjectFieldName()),
+					RandomTestUtil.randomLong()
+				).toString(),
+				getObjectDefinition2().getRESTContextPath(), Http.Method.POST
+			).toString(),
+			JSONCompareMode.STRICT);
 	}
 
 	private static final String _NEW_OBJECT_FIELD_VALUE_3 =

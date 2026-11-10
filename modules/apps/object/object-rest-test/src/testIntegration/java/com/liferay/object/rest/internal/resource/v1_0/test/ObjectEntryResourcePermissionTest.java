@@ -19,7 +19,6 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
-import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
@@ -258,15 +257,11 @@ public class ObjectEntryResourcePermissionTest
 					getEndpoint(getObjectDefinition1(), testGroupId),
 					Http.Method.POST);
 
-				jsonObject = HTTPTestUtil.invokeToJSONObject(
+				jsonObject = _putCustomObjectEntryPermissionsPage(
+					jsonObject.getLong("id"),
 					JSONUtil.putAll(
-						getPermissionsJSONObject(new String[0], role.getName())
-					).toString(),
-					StringBundler.concat(
-						getEndpoint(getObjectDefinition1(), testGroupId),
-						StringPool.SLASH, jsonObject.getString("id"),
-						"/permissions"),
-					Http.Method.PUT);
+						getPermissionsJSONObject(
+							new String[0], role.getName())));
 
 				Assert.assertNotEquals(
 					jsonObject.getString("status"), "FORBIDDEN",
@@ -395,28 +390,8 @@ public class ObjectEntryResourcePermissionTest
 
 	@Test
 	public void testGetObjectEntryWithObjectActions() throws Exception {
-		_testGetObjectEntryWithObjectActions(
-			_addObjectAction(getObjectDefinition1()), getObjectDefinition1(),
-			(actionJSONObject, jsonObject, objectAction) -> Assert.assertEquals(
-				StringBundler.concat(
-					"http://localhost:", PortalUtil.getPortalServerPort(false),
-					"/o", getObjectDefinition1().getRESTContextPath(),
-					"/by-external-reference-code/",
-					jsonObject.getString("externalReferenceCode"),
-					"/object-actions/", objectAction.getName()),
-				actionJSONObject.getString("href")));
-
-		_testGetObjectEntryWithObjectActions(
-			_addObjectAction(getSiteScopedObjectDefinition1()),
-			getSiteScopedObjectDefinition1(),
-			(actionJSONObject, jsonObject, objectAction) -> Assert.assertEquals(
-				StringBundler.concat(
-					"http://localhost:", PortalUtil.getPortalServerPort(false),
-					"/o", getSiteScopedObjectDefinition1().getRESTContextPath(),
-					"/scopes/", testGroupId, "/by-external-reference-code/",
-					jsonObject.getString("externalReferenceCode"),
-					"/object-actions/", objectAction.getName()),
-				actionJSONObject.getString("href")));
+		_testGetObjectEntryWithObjectActions(getObjectDefinition1());
+		_testGetObjectEntryWithObjectActions(getSiteScopedObjectDefinition1());
 	}
 
 	@Test
@@ -769,26 +744,6 @@ public class ObjectEntryResourcePermissionTest
 				JSONFactoryUtil.createJSONArray()));
 	}
 
-	private ObjectAction _addObjectAction(ObjectDefinition objectDefinition)
-		throws Exception {
-
-		return _objectActionLocalService.addObjectAction(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			RandomTestUtil.randomString(),
-			ObjectActionExecutorConstants.KEY_WEBHOOK,
-			ObjectActionTriggerConstants.KEY_STANDALONE,
-			UnicodePropertiesBuilder.put(
-				"secret", "standalone"
-			).put(
-				"url", "https://standalone.com"
-			).build(),
-			false);
-	}
-
 	private ObjectEntry _addObjectEntry(
 			DepotEntry depotEntry, ObjectDefinition objectDefinition,
 			ObjectEntryFolder objectEntryFolder, ServiceContext serviceContext,
@@ -1077,25 +1032,46 @@ public class ObjectEntryResourcePermissionTest
 	}
 
 	private void _testGetObjectEntryWithObjectActions(
-			ObjectAction objectAction, ObjectDefinition objectDefinition,
-			UnsafeTriConsumer<JSONObject, JSONObject, ObjectAction, Exception>
-				unsafeTriConsumer)
+			ObjectDefinition objectDefinition)
 		throws Exception {
+
+		ObjectAction objectAction = _objectActionLocalService.addObjectAction(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			RandomTestUtil.randomString(),
+			ObjectActionExecutorConstants.KEY_WEBHOOK,
+			ObjectActionTriggerConstants.KEY_STANDALONE,
+			UnicodePropertiesBuilder.put(
+				"secret", "standalone"
+			).put(
+				"url", "https://standalone.com"
+			).build(),
+			false);
+
+		String endpoint = getEndpoint(objectDefinition, testGroupId);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).toString(),
-			getEndpoint(objectDefinition, testGroupId), Http.Method.POST);
+			endpoint, Http.Method.POST);
 
 		JSONObject actionsJSONObject = jsonObject.getJSONObject("actions");
 
 		JSONObject actionJSONObject = actionsJSONObject.getJSONObject(
 			objectAction.getName());
 
+		Assert.assertEquals(
+			StringBundler.concat(
+				"http://localhost:", PortalUtil.getPortalServerPort(false),
+				"/o", endpoint, "/by-external-reference-code/",
+				jsonObject.getString("externalReferenceCode"),
+				"/object-actions/", objectAction.getName()),
+			actionJSONObject.getString("href"));
 		Assert.assertEquals("PUT", actionJSONObject.getString("method"));
-
-		unsafeTriConsumer.accept(actionJSONObject, jsonObject, objectAction);
 	}
 
 	@Inject

@@ -35,6 +35,7 @@ import com.liferay.object.rest.dto.v1_0.Link;
 import com.liferay.object.rest.test.util.ObjectFieldTestUtil;
 import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
@@ -780,17 +781,8 @@ public class ObjectEntryResourceAttachmentTest
 
 					Assert.assertEquals(
 						"NOT_FOUND", jsonObject.getString("status"));
-				}
-			);
 
-			HTTPTestUtil.customize(
-			).withBaseURL(
-				"http://www.able.com:" + PortalUtil.getPortalServerPort(false)
-			).withCredentials(
-				"test@www.able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
-			).apply(
-				() -> {
-					JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+					jsonObject = HTTPTestUtil.invokeToJSONObject(
 						JSONUtil.put(
 							OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 							JSONUtil.put("id", RandomTestUtil.randomLong())
@@ -800,17 +792,8 @@ public class ObjectEntryResourceAttachmentTest
 
 					Assert.assertEquals(
 						"BAD_REQUEST", jsonObject.getString("status"));
-				}
-			);
 
-			HTTPTestUtil.customize(
-			).withBaseURL(
-				"http://www.able.com:" + PortalUtil.getPortalServerPort(false)
-			).withCredentials(
-				"test@www.able.com", PropsValues.DEFAULT_ADMIN_PASSWORD
-			).apply(
-				() -> {
-					JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+					jsonObject = HTTPTestUtil.invokeToJSONObject(
 						JSONUtil.put(
 							OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 							JSONUtil.put("id", fileEntry.getId())
@@ -1978,75 +1961,12 @@ public class ObjectEntryResourceAttachmentTest
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 				useExternalReferenceCode);
 
-			// Documents and media source, file from URL and host down
-
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					"com.liferay.object.rest.internal.manager.v1_0." +
-						"DefaultObjectEntryManagerImpl",
-					LoggerTestUtil.ERROR)) {
-
-				String hostDownFileURL = StringBundler.concat(
-					"http://", company.getVirtualHostname(), ":",
-					PortalUtil.getPortalServerPort(false) + 1);
-
-				_testPatchPutCustomObjectEntryWithInvalidFileURL(
-					"Unable to download file from " + hostDownFileURL,
-					hostDownFileURL, httpMethod, objectDefinition,
-					useExternalReferenceCode);
-			}
-
-			// Documents and media source, file from URL malformed
-
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					"com.liferay.object.rest.internal.manager.v1_0." +
-						"DefaultObjectEntryManagerImpl",
-					LoggerTestUtil.ERROR)) {
-
-				String malformedFileURL = StringBundler.concat(
-					"http//", company.getVirtualHostname(), ":",
-					PortalUtil.getPortalServerPort(false), "/",
-					RandomTestUtil.randomString());
-
-				_testPatchPutCustomObjectEntryWithInvalidFileURL(
-					"Unable to download file from " + malformedFileURL,
-					malformedFileURL, httpMethod, objectDefinition,
-					useExternalReferenceCode);
-			}
-
-			// Documents and media source, file from URL not found
-
-			String notFoundPath = "/" + RandomTestUtil.randomString();
-
-			String resourceNotFoundFileURL = StringBundler.concat(
-				"http://", company.getVirtualHostname(), ":",
-				PortalUtil.getPortalServerPort(false), notFoundPath);
-
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					"portal_web.docroot.errors.code_jsp",
-					LoggerTestUtil.WARN)) {
-
-				_testPatchPutCustomObjectEntryWithInvalidFileURL(
-					"Unable to download file from " + resourceNotFoundFileURL +
-						" because of unexpected HTTP response code 404",
-					resourceNotFoundFileURL, httpMethod, objectDefinition,
-					useExternalReferenceCode);
-
-				List<LogEntry> logEntries = logCapture.getLogEntries();
-
-				Assert.assertEquals(
-					logEntries.toString(), 1, logEntries.size());
-
-				LogEntry logEntry = logEntries.get(0);
-
-				Assert.assertEquals(
-					LoggerTestUtil.WARN, logEntry.getPriority());
-
-				String message = logEntry.getMessage();
-
-				Assert.assertTrue(message, message.contains("code=\"404\""));
-				Assert.assertTrue(
-					message, message.contains("uri=" + notFoundPath));
-			}
+			_testUnreachableFileURLs(
+				company,
+				(expectedTitle, fileURL) ->
+					_testPatchPutCustomObjectEntryWithInvalidFileURL(
+						expectedTitle, fileURL, httpMethod, objectDefinition,
+						useExternalReferenceCode));
 		}
 
 		// Documents and media source, file from URL with host not allowed
@@ -2802,72 +2722,11 @@ public class ObjectEntryResourceAttachmentTest
 				null, objectDefinition,
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
 
-			// Documents and media source, file from URL and host down
-
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					"com.liferay.object.rest.internal.manager.v1_0." +
-						"DefaultObjectEntryManagerImpl",
-					LoggerTestUtil.ERROR)) {
-
-				String hostDownFileURL = StringBundler.concat(
-					"http://", company.getVirtualHostname(), ":",
-					PortalUtil.getPortalServerPort(false) + 1);
-
-				_testPostCustomObjectEntryWithInvalidFileURL(
-					"Unable to download file from " + hostDownFileURL,
-					hostDownFileURL, objectDefinition);
-			}
-
-			// Documents and media source, file from URL malformed
-
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					"com.liferay.object.rest.internal.manager.v1_0." +
-						"DefaultObjectEntryManagerImpl",
-					LoggerTestUtil.ERROR)) {
-
-				String malformedFileURL = StringBundler.concat(
-					"http//", company.getVirtualHostname(), ":",
-					PortalUtil.getPortalServerPort(false), "/",
-					RandomTestUtil.randomString());
-
-				_testPostCustomObjectEntryWithInvalidFileURL(
-					"Unable to download file from " + malformedFileURL,
-					malformedFileURL, objectDefinition);
-			}
-
-			// Documents and media source, file from URL not found
-
-			String notFoundPath = "/" + RandomTestUtil.randomString();
-
-			String resourceNotFoundFileURL = StringBundler.concat(
-				"http://", company.getVirtualHostname(), ":",
-				PortalUtil.getPortalServerPort(false), notFoundPath);
-
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					"portal_web.docroot.errors.code_jsp",
-					LoggerTestUtil.WARN)) {
-
-				_testPostCustomObjectEntryWithInvalidFileURL(
-					"Unable to download file from " + resourceNotFoundFileURL +
-						" because of unexpected HTTP response code 404",
-					resourceNotFoundFileURL, objectDefinition);
-
-				List<LogEntry> logEntries = logCapture.getLogEntries();
-
-				Assert.assertEquals(
-					logEntries.toString(), 1, logEntries.size());
-
-				LogEntry logEntry = logEntries.get(0);
-
-				Assert.assertEquals(
-					LoggerTestUtil.WARN, logEntry.getPriority());
-
-				String message = logEntry.getMessage();
-
-				Assert.assertTrue(message, message.contains("code=\"404\""));
-				Assert.assertTrue(
-					message, message.contains("uri=" + notFoundPath));
-			}
+			_testUnreachableFileURLs(
+				company,
+				(expectedTitle, fileURL) ->
+					_testPostCustomObjectEntryWithInvalidFileURL(
+						expectedTitle, fileURL, objectDefinition));
 		}
 
 		// Documents and media source, file from URL with host not allowed
@@ -3266,6 +3125,75 @@ public class ObjectEntryResourceAttachmentTest
 				group.getGroupId(), ContentTypes.TEXT_PLAIN),
 			null, objectDefinition,
 			OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
+	}
+
+	private void _testUnreachableFileURLs(
+			Company company,
+			UnsafeBiConsumer<String, String, Exception> unsafeBiConsumer)
+		throws Exception {
+
+		// Documents and media source, file from URL and host down
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.object.rest.internal.manager.v1_0." +
+					"DefaultObjectEntryManagerImpl",
+				LoggerTestUtil.ERROR)) {
+
+			String hostDownFileURL = StringBundler.concat(
+				"http://", company.getVirtualHostname(), ":",
+				PortalUtil.getPortalServerPort(false) + 1);
+
+			unsafeBiConsumer.accept(
+				"Unable to download file from " + hostDownFileURL,
+				hostDownFileURL);
+		}
+
+		// Documents and media source, file from URL malformed
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.object.rest.internal.manager.v1_0." +
+					"DefaultObjectEntryManagerImpl",
+				LoggerTestUtil.ERROR)) {
+
+			String malformedFileURL = StringBundler.concat(
+				"http//", company.getVirtualHostname(), ":",
+				PortalUtil.getPortalServerPort(false), "/",
+				RandomTestUtil.randomString());
+
+			unsafeBiConsumer.accept(
+				"Unable to download file from " + malformedFileURL,
+				malformedFileURL);
+		}
+
+		// Documents and media source, file from URL not found
+
+		String notFoundPath = "/" + RandomTestUtil.randomString();
+
+		String resourceNotFoundFileURL = StringBundler.concat(
+			"http://", company.getVirtualHostname(), ":",
+			PortalUtil.getPortalServerPort(false), notFoundPath);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
+
+			unsafeBiConsumer.accept(
+				"Unable to download file from " + resourceNotFoundFileURL +
+					" because of unexpected HTTP response code 404",
+				resourceNotFoundFileURL);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(LoggerTestUtil.WARN, logEntry.getPriority());
+
+			String message = logEntry.getMessage();
+
+			Assert.assertTrue(message.contains("code=\"404\""));
+			Assert.assertTrue(message.contains("uri=" + notFoundPath));
+		}
 	}
 
 	private com.liferay.object.rest.dto.v1_0.FileEntry _toFileEntry(

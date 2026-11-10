@@ -296,45 +296,10 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 	public void testPostCustomObjectEntryWithDuplicateExternalReferenceCode()
 		throws Exception {
 
-		Assert.assertEquals(
-			200,
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).put(
-					"externalReferenceCode", ERC_VALUE_1
-				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
-		Assert.assertEquals(
-			400,
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).put(
-					"externalReferenceCode", ERC_VALUE_1
-				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
-
-		Assert.assertEquals(
-			200,
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).put(
-					"externalReferenceCode", ERC_VALUE_1
-				).toString(),
-				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
-				Http.Method.POST));
-		Assert.assertEquals(
-			400,
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).put(
-					"externalReferenceCode", ERC_VALUE_1
-				).toString(),
-				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
-				Http.Method.POST));
+		_testPostCustomObjectEntryWithDuplicateExternalReferenceCode(
+			getEndpoint(getSiteScopedObjectDefinition1(), testGroupId));
+		_testPostCustomObjectEntryWithDuplicateExternalReferenceCode(
+			getObjectDefinition1().getRESTContextPath());
 	}
 
 	@Test
@@ -433,6 +398,30 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 					"externalReferenceCode", externalReferenceCode2
 				).toString(),
 				endpoint2 + externalReferenceCode1, httpMethod));
+	}
+
+	private void _testPostCustomObjectEntryWithDuplicateExternalReferenceCode(
+			String endpoint)
+		throws Exception {
+
+		Assert.assertEquals(
+			200,
+			HTTPTestUtil.invokeToHttpCode(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+				).put(
+					"externalReferenceCode", ERC_VALUE_1
+				).toString(),
+				endpoint, Http.Method.POST));
+		Assert.assertEquals(
+			400,
+			HTTPTestUtil.invokeToHttpCode(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+				).put(
+					"externalReferenceCode", ERC_VALUE_1
+				).toString(),
+				endpoint, Http.Method.POST));
 	}
 
 }

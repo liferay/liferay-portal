@@ -56,11 +56,8 @@ public class ObjectEntryResourceFriendlyURLTest
 			).toString(),
 			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
-				jsonObject.getString("id"),
-			Http.Method.GET);
+		jsonObject = getObjectEntryJSONObject(
+			getObjectDefinition1(), jsonObject.getString("id"));
 
 		Assert.assertEquals(
 			jsonObject.getString("externalReferenceCode"),
@@ -72,11 +69,8 @@ public class ObjectEntryResourceFriendlyURLTest
 			).toString(),
 			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
-				jsonObject.getString("id"),
-			Http.Method.GET);
+		jsonObject = getObjectEntryJSONObject(
+			getObjectDefinition1(), jsonObject.getString("id"));
 
 		Assert.assertEquals(
 			jsonObject.getString("externalReferenceCode"),
@@ -157,11 +151,8 @@ public class ObjectEntryResourceFriendlyURLTest
 			).toString(),
 			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
-				jsonObject.getString("id"),
-			Http.Method.GET);
+		jsonObject = getObjectEntryJSONObject(
+			getObjectDefinition1(), jsonObject.getString("id"));
 
 		Assert.assertEquals(
 			expectedFriendlyUrlPath, jsonObject.getString("friendlyUrlPath"));

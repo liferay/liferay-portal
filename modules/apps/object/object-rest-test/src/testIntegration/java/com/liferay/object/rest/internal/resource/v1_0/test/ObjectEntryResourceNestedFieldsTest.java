@@ -1837,11 +1837,7 @@ public class ObjectEntryResourceNestedFieldsTest
 		Edge edge = node.getEdge();
 
 		if (edge != null) {
-			ObjectRelationship objectRelationship =
-				objectRelationshipLocalService.getObjectRelationship(
-					edge.getObjectRelationshipId());
-
-			objectRelationshipNames.add(objectRelationship.getName());
+			objectRelationshipNames.add(_getObjectRelationshipName(edge));
 		}
 
 		for (Node childNode : node.getChildNodes()) {

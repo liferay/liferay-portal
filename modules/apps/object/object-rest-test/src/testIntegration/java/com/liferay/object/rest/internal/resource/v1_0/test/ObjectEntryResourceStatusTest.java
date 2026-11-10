@@ -115,68 +115,9 @@ public class ObjectEntryResourceStatusTest
 
 	@Test
 	public void testPostByExternalReferenceCodeExpire() throws Exception {
-
-		// Company scope
-
-		ObjectEntry companyObjectEntry = objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			getObjectDefinition1().getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, companyObjectEntry.getStatus());
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			StringBundler.concat(
-				getEndpoint(getObjectDefinition1(), 0),
-				"/by-external-reference-code/",
-				companyObjectEntry.getExternalReferenceCode(), "/expire"),
-			Http.Method.POST);
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EXPIRED,
-			jsonObject.getJSONObject(
-				"status"
-			).get(
-				"code"
-			));
-
-		// Site scope
-
-		ObjectEntry siteObjectEntry = objectEntryLocalService.addObjectEntry(
-			testGroupId, TestPropsValues.getUserId(),
-			getSiteScopedObjectDefinition1().getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, siteObjectEntry.getStatus());
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			StringBundler.concat(
-				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
-				"/by-external-reference-code/",
-				siteObjectEntry.getExternalReferenceCode(), "/expire"),
-			Http.Method.POST);
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EXPIRED,
-			jsonObject.getJSONObject(
-				"status"
-			).get(
-				"code"
-			));
+		_testPostByExternalReferenceCodeExpire(0, getObjectDefinition1());
+		_testPostByExternalReferenceCodeExpire(
+			testGroupId, getSiteScopedObjectDefinition1());
 	}
 
 	@Test
@@ -251,6 +192,40 @@ public class ObjectEntryResourceStatusTest
 				Http.Method.PUT
 			).toString(),
 			JSONCompareMode.LENIENT);
+	}
+
+	private void _testPostByExternalReferenceCodeExpire(
+			long groupId, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		ObjectEntry objectEntry = objectEntryLocalService.addObjectEntry(
+			groupId, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, objectEntry.getStatus());
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			StringBundler.concat(
+				getEndpoint(objectDefinition, groupId),
+				"/by-external-reference-code/",
+				objectEntry.getExternalReferenceCode(), "/expire"),
+			Http.Method.POST);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EXPIRED,
+			jsonObject.getJSONObject(
+				"status"
+			).get(
+				"code"
+			));
 	}
 
 	private String _toDateString(Date date) {

@@ -12,6 +12,7 @@ import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.rest.test.util.ObjectRelationshipTestUtil;
 import com.liferay.petra.string.StringBundler;
@@ -28,7 +29,6 @@ import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -246,15 +246,7 @@ public class ObjectEntryResourceSortTest
 				OBJECT_FIELD_NAME_TEXT, objectFieldName);
 		}
 		finally {
-			if (jsonObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject1.getLong("id"));
-			}
-
-			if (jsonObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject2.getLong("id"));
-			}
+			_deleteObjectEntries(jsonObject1, jsonObject2);
 		}
 	}
 
@@ -483,61 +475,27 @@ public class ObjectEntryResourceSortTest
 		JSONObject jsonObject4 = HTTPTestUtil.invokeToJSONObject(
 			JSONFactoryUtil.getNullJSON(), endpoint1, Http.Method.POST);
 
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject1.getLong("id"),
-				objectRelationship1.getName(), jsonObject1.getLong("id")),
-			Http.Method.PUT);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject1, objectRelationship1, jsonObject1);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject1, objectRelationship1, jsonObject2);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject2, objectRelationship1, jsonObject3);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject2, objectRelationship1, jsonObject4);
 
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject1.getLong("id"),
-				objectRelationship1.getName(), jsonObject2.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject2.getLong("id"),
-				objectRelationship1.getName(), jsonObject3.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject2.getLong("id"),
-				objectRelationship1.getName(), jsonObject4.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject1.getLong("id"),
-				objectRelationship2.getName(), depth2JSONObject1.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject1.getLong("id"),
-				objectRelationship2.getName(), depth2JSONObject2.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject2.getLong("id"),
-				objectRelationship2.getName(), depth2JSONObject3.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject2.getLong("id"),
-				objectRelationship2.getName(), depth2JSONObject4.getLong("id")),
-			Http.Method.PUT);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject1, objectRelationship2,
+			depth2JSONObject1);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject1, objectRelationship2,
+			depth2JSONObject2);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject2, objectRelationship2,
+			depth2JSONObject3);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject2, objectRelationship2,
+			depth2JSONObject4);
 
 		try {
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
@@ -668,55 +626,10 @@ public class ObjectEntryResourceSortTest
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_TEXT));
 		}
 		finally {
-			if (jsonObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject1.getLong("id"));
-			}
-
-			if (jsonObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject2.getLong("id"));
-			}
-
-			if (jsonObject3 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject3.getLong("id"));
-			}
-
-			if (jsonObject4 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject4.getLong("id"));
-			}
-
-			if (depth2JSONObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth2JSONObject1.getLong("id"));
-			}
-
-			if (depth2JSONObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth2JSONObject2.getLong("id"));
-			}
-
-			if (depth2JSONObject3 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth2JSONObject3.getLong("id"));
-			}
-
-			if (depth2JSONObject4 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth2JSONObject4.getLong("id"));
-			}
-
-			if (depth1JSONObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth1JSONObject1.getLong("id"));
-			}
-
-			if (depth1JSONObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth1JSONObject2.getLong("id"));
-			}
+			_deleteObjectEntries(
+				jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
+				depth2JSONObject4, depth1JSONObject1, depth1JSONObject2);
 		}
 	}
 
@@ -881,47 +794,21 @@ public class ObjectEntryResourceSortTest
 		JSONObject jsonObject4 = HTTPTestUtil.invokeToJSONObject(
 			JSONFactoryUtil.getNullJSON(), endpoint1, Http.Method.POST);
 
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject1.getLong("id"),
-				objectRelationship1.getName(), jsonObject1.getLong("id")),
-			Http.Method.PUT);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject1, objectRelationship1, jsonObject1);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject1, objectRelationship1, jsonObject2);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject2, objectRelationship1, jsonObject3);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject2, objectRelationship1, jsonObject4);
 
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject1.getLong("id"),
-				objectRelationship1.getName(), jsonObject2.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject2.getLong("id"),
-				objectRelationship1.getName(), jsonObject3.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject2.getLong("id"),
-				objectRelationship1.getName(), jsonObject4.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint3, depth2JSONObject1.getLong("id"),
-				objectRelationship2.getName(), depth1JSONObject1.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint3, depth2JSONObject2.getLong("id"),
-				objectRelationship2.getName(), depth1JSONObject2.getLong("id")),
-			Http.Method.PUT);
+		_relateObjectEntries(
+			endpoint3, depth2JSONObject1, objectRelationship2,
+			depth1JSONObject1);
+		_relateObjectEntries(
+			endpoint3, depth2JSONObject2, objectRelationship2,
+			depth1JSONObject2);
 
 		try {
 
@@ -1149,45 +1036,10 @@ public class ObjectEntryResourceSortTest
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_TEXT));
 		}
 		finally {
-			if (jsonObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject1.getLong("id"));
-			}
-
-			if (jsonObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject2.getLong("id"));
-			}
-
-			if (jsonObject3 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject3.getLong("id"));
-			}
-
-			if (jsonObject4 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject4.getLong("id"));
-			}
-
-			if (depth1JSONObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth1JSONObject1.getLong("id"));
-			}
-
-			if (depth1JSONObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth1JSONObject2.getLong("id"));
-			}
-
-			if (depth2JSONObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth2JSONObject1.getLong("id"));
-			}
-
-			if (depth2JSONObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth2JSONObject2.getLong("id"));
-			}
+			_deleteObjectEntries(
+				jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				depth1JSONObject1, depth1JSONObject2, depth2JSONObject1,
+				depth2JSONObject2);
 		}
 	}
 
@@ -1312,55 +1164,25 @@ public class ObjectEntryResourceSortTest
 		JSONObject jsonObject4 = HTTPTestUtil.invokeToJSONObject(
 			JSONFactoryUtil.getNullJSON(), endpoint1, Http.Method.POST);
 
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2,
-				manyToOneDepth1JSONObjects[0].getLong("id"),
-				objectRelationship1.getName(), jsonObject1.getLong("id")),
-			Http.Method.PUT);
+		_relateObjectEntries(
+			endpoint2, manyToOneDepth1JSONObjects[0], objectRelationship1,
+			jsonObject1);
+		_relateObjectEntries(
+			endpoint2, manyToOneDepth1JSONObjects[0], objectRelationship1,
+			jsonObject2);
+		_relateObjectEntries(
+			endpoint2, manyToOneDepth1JSONObjects[1], objectRelationship1,
+			jsonObject3);
+		_relateObjectEntries(
+			endpoint2, manyToOneDepth1JSONObjects[1], objectRelationship1,
+			jsonObject4);
 
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2,
-				manyToOneDepth1JSONObjects[0].getLong("id"),
-				objectRelationship1.getName(), jsonObject2.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2,
-				manyToOneDepth1JSONObjects[1].getLong("id"),
-				objectRelationship1.getName(), jsonObject3.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2,
-				manyToOneDepth1JSONObjects[1].getLong("id"),
-				objectRelationship1.getName(), jsonObject4.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint3,
-				manyToOneDepth2JSONObjects[0].getLong("id"),
-				objectRelationship2.getName(),
-				manyToOneDepth1JSONObjects[0].getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint3,
-				manyToOneDepth2JSONObjects[1].getLong("id"),
-				objectRelationship2.getName(),
-				manyToOneDepth1JSONObjects[1].getLong("id")),
-			Http.Method.PUT);
+		_relateObjectEntries(
+			endpoint3, manyToOneDepth2JSONObjects[0], objectRelationship2,
+			manyToOneDepth1JSONObjects[0]);
+		_relateObjectEntries(
+			endpoint3, manyToOneDepth2JSONObjects[1], objectRelationship2,
+			manyToOneDepth1JSONObjects[1]);
 
 		HTTPTestUtil.customize(
 		).withCredentials(
@@ -1522,38 +1344,10 @@ public class ObjectEntryResourceSortTest
 					objectRelationship2.getName()));
 		}
 		finally {
-			if (jsonObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject1.getLong("id"));
-			}
-
-			if (jsonObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject2.getLong("id"));
-			}
-
-			if (jsonObject3 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject3.getLong("id"));
-			}
-
-			if (jsonObject4 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject4.getLong("id"));
-			}
-
-			for (JSONObject jsonObject :
-					ArrayUtil.append(
-						manyToOneDepth1JSONObjects,
-						manyToOneDepth2JSONObjects)) {
-
-				if (jsonObject == null) {
-					continue;
-				}
-
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject.getLong("id"));
-			}
+			_deleteObjectEntries(
+				jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				manyToOneDepth1JSONObjects[0], manyToOneDepth1JSONObjects[1],
+				manyToOneDepth2JSONObjects[0], manyToOneDepth2JSONObjects[1]);
 		}
 	}
 
@@ -1840,61 +1634,27 @@ public class ObjectEntryResourceSortTest
 		JSONObject jsonObject2 = HTTPTestUtil.invokeToJSONObject(
 			JSONFactoryUtil.getNullJSON(), endpoint1, Http.Method.POST);
 
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint1, jsonObject1.getLong("id"),
-				objectRelationship1.getName(), depth1JSONObject1.getLong("id")),
-			Http.Method.PUT);
+		_relateObjectEntries(
+			endpoint1, jsonObject1, objectRelationship1, depth1JSONObject1);
+		_relateObjectEntries(
+			endpoint1, jsonObject1, objectRelationship1, depth1JSONObject2);
+		_relateObjectEntries(
+			endpoint1, jsonObject2, objectRelationship1, depth1JSONObject3);
+		_relateObjectEntries(
+			endpoint1, jsonObject2, objectRelationship1, depth1JSONObject4);
 
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint1, jsonObject1.getLong("id"),
-				objectRelationship1.getName(), depth1JSONObject2.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint1, jsonObject2.getLong("id"),
-				objectRelationship1.getName(), depth1JSONObject3.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint1, jsonObject2.getLong("id"),
-				objectRelationship1.getName(), depth1JSONObject4.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject1.getLong("id"),
-				objectRelationship2.getName(), depth2JSONObject1.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject2.getLong("id"),
-				objectRelationship2.getName(), depth2JSONObject2.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject3.getLong("id"),
-				objectRelationship2.getName(), depth2JSONObject3.getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2, depth1JSONObject4.getLong("id"),
-				objectRelationship2.getName(), depth2JSONObject4.getLong("id")),
-			Http.Method.PUT);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject1, objectRelationship2,
+			depth2JSONObject1);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject2, objectRelationship2,
+			depth2JSONObject2);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject3, objectRelationship2,
+			depth2JSONObject3);
+		_relateObjectEntries(
+			endpoint2, depth1JSONObject4, objectRelationship2,
+			depth2JSONObject4);
 
 		try {
 
@@ -2146,55 +1906,10 @@ public class ObjectEntryResourceSortTest
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_TEXT));
 		}
 		finally {
-			if (depth2JSONObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth2JSONObject1.getLong("id"));
-			}
-
-			if (depth2JSONObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth2JSONObject2.getLong("id"));
-			}
-
-			if (depth2JSONObject3 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth2JSONObject3.getLong("id"));
-			}
-
-			if (depth2JSONObject4 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth2JSONObject4.getLong("id"));
-			}
-
-			if (depth1JSONObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth1JSONObject1.getLong("id"));
-			}
-
-			if (depth1JSONObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth1JSONObject2.getLong("id"));
-			}
-
-			if (depth1JSONObject3 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth1JSONObject3.getLong("id"));
-			}
-
-			if (depth1JSONObject4 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					depth1JSONObject4.getLong("id"));
-			}
-
-			if (jsonObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject1.getLong("id"));
-			}
-
-			if (jsonObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject2.getLong("id"));
-			}
+			_deleteObjectEntries(
+				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
+				depth2JSONObject4, depth1JSONObject1, depth1JSONObject2,
+				depth1JSONObject3, depth1JSONObject4, jsonObject1, jsonObject2);
 		}
 	}
 
@@ -2365,73 +2080,31 @@ public class ObjectEntryResourceSortTest
 		JSONObject jsonObject2 = HTTPTestUtil.invokeToJSONObject(
 			JSONFactoryUtil.getNullJSON(), endpoint1, Http.Method.POST);
 
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint1, jsonObject1.getLong("id"),
-				objectRelationship1.getName(),
-				oneToManyDepth1JSONObjects[0].getLong("id")),
-			Http.Method.PUT);
+		_relateObjectEntries(
+			endpoint1, jsonObject1, objectRelationship1,
+			oneToManyDepth1JSONObjects[0]);
+		_relateObjectEntries(
+			endpoint1, jsonObject1, objectRelationship1,
+			oneToManyDepth1JSONObjects[1]);
+		_relateObjectEntries(
+			endpoint1, jsonObject2, objectRelationship1,
+			oneToManyDepth1JSONObjects[2]);
+		_relateObjectEntries(
+			endpoint1, jsonObject2, objectRelationship1,
+			oneToManyDepth1JSONObjects[3]);
 
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint1, jsonObject1.getLong("id"),
-				objectRelationship1.getName(),
-				oneToManyDepth1JSONObjects[1].getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint1, jsonObject2.getLong("id"),
-				objectRelationship1.getName(),
-				oneToManyDepth1JSONObjects[2].getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint1, jsonObject2.getLong("id"),
-				objectRelationship1.getName(),
-				oneToManyDepth1JSONObjects[3].getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2,
-				oneToManyDepth1JSONObjects[0].getLong("id"),
-				objectRelationship2.getName(),
-				oneToManyDepth2JSONObjects[0].getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2,
-				oneToManyDepth1JSONObjects[1].getLong("id"),
-				objectRelationship2.getName(),
-				oneToManyDepth2JSONObjects[1].getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2,
-				oneToManyDepth1JSONObjects[2].getLong("id"),
-				objectRelationship2.getName(),
-				oneToManyDepth2JSONObjects[2].getLong("id")),
-			Http.Method.PUT);
-
-		HTTPTestUtil.invokeToJSONObject(
-			null,
-			String.format(
-				"%s/%d/%s/%d", endpoint2,
-				oneToManyDepth1JSONObjects[3].getLong("id"),
-				objectRelationship2.getName(),
-				oneToManyDepth2JSONObjects[3].getLong("id")),
-			Http.Method.PUT);
+		_relateObjectEntries(
+			endpoint2, oneToManyDepth1JSONObjects[0], objectRelationship2,
+			oneToManyDepth2JSONObjects[0]);
+		_relateObjectEntries(
+			endpoint2, oneToManyDepth1JSONObjects[1], objectRelationship2,
+			oneToManyDepth2JSONObjects[1]);
+		_relateObjectEntries(
+			endpoint2, oneToManyDepth1JSONObjects[2], objectRelationship2,
+			oneToManyDepth2JSONObjects[2]);
+		_relateObjectEntries(
+			endpoint2, oneToManyDepth1JSONObjects[3], objectRelationship2,
+			oneToManyDepth2JSONObjects[3]);
 
 		HTTPTestUtil.customize(
 		).withCredentials(
@@ -2593,28 +2266,12 @@ public class ObjectEntryResourceSortTest
 					objectRelationship2.getName()));
 		}
 		finally {
-			for (JSONObject jsonObject :
-					ArrayUtil.append(
-						oneToManyDepth2JSONObjects,
-						oneToManyDepth1JSONObjects)) {
-
-				if (jsonObject == null) {
-					continue;
-				}
-
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject.getLong("id"));
-			}
-
-			if (jsonObject1 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject1.getLong("id"));
-			}
-
-			if (jsonObject2 != null) {
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject2.getLong("id"));
-			}
+			_deleteObjectEntries(
+				oneToManyDepth2JSONObjects[0], oneToManyDepth2JSONObjects[1],
+				oneToManyDepth2JSONObjects[2], oneToManyDepth2JSONObjects[3],
+				oneToManyDepth1JSONObjects[0], oneToManyDepth1JSONObjects[1],
+				oneToManyDepth1JSONObjects[2], oneToManyDepth1JSONObjects[3],
+				jsonObject1, jsonObject2);
 		}
 	}
 
@@ -2722,14 +2379,7 @@ public class ObjectEntryResourceSortTest
 				"dateModified", "externalReferenceCode");
 		}
 		finally {
-			for (JSONObject jsonObject : jsonObjects) {
-				if (jsonObject == null) {
-					continue;
-				}
-
-				objectEntryLocalService.deleteObjectEntry(
-					jsonObject.getLong("id"));
-			}
+			_deleteObjectEntries(jsonObjects);
 		}
 	}
 
@@ -2753,6 +2403,27 @@ public class ObjectEntryResourceSortTest
 		_testSortByUnsupportedObjectField(
 			"Unable to sort by property: siteId",
 			getSiteScopedObjectDefinition1(), "siteId");
+	}
+
+	private void _deleteObjectEntries(JSONObject... jsonObjects)
+		throws Exception {
+
+		for (JSONObject jsonObject : jsonObjects) {
+			objectEntryLocalService.deleteObjectEntry(jsonObject.getLong("id"));
+		}
+	}
+
+	private void _relateObjectEntries(
+			String endpoint, JSONObject jsonObject,
+			ObjectRelationship objectRelationship, JSONObject relatedJSONObject)
+		throws Exception {
+
+		HTTPTestUtil.invokeToJSONObject(
+			null,
+			String.format(
+				"%s/%d/%s/%d", endpoint, jsonObject.getLong("id"),
+				objectRelationship.getName(), relatedJSONObject.getLong("id")),
+			Http.Method.PUT);
 	}
 
 	private void _testSortByCustomObjectField(

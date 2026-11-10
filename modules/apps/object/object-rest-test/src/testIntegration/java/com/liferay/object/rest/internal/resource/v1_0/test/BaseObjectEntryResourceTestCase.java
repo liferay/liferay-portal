@@ -93,6 +93,7 @@ import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -543,35 +544,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 		String randomString3 = RandomTestUtil.randomString();
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				_OBJECT_FIELD_NAME_RICH_TEXT, randomString2
-			).put(
-				OBJECT_FIELD_NAME_BOOLEAN, randomBoolean
-			).put(
-				OBJECT_FIELD_NAME_DATE, dateFormat.format(randomDate1)
-			).put(
-				OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-				dateTimeDateFormat.format(randomDate2)
-			).put(
-				OBJECT_FIELD_NAME_DATE_TIME_UTC,
-				dateTimeDateFormat.format(randomDate3)
-			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat
-			).put(
-				OBJECT_FIELD_NAME_INTEGER, randomInt
-			).put(
-				OBJECT_FIELD_NAME_LONG_INTEGER, randomLong
-			).put(
-				OBJECT_FIELD_NAME_LONG_TEXT, randomString1
-			).put(
-				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-				JSONUtil.putAll(LIST_TYPE_ENTRY_KEY_1, LIST_TYPE_ENTRY_KEY_2)
-			).put(
-				OBJECT_FIELD_NAME_PICKLIST, LIST_TYPE_ENTRY_KEY_3
-			).put(
-				OBJECT_FIELD_NAME_PRECISION_DECIMAL, randomBigDecimal
-			).put(
-				OBJECT_FIELD_NAME_TEXT, randomString3
+			_createObjectEntryJSONObject(
+				randomBigDecimal, randomBoolean, randomDate1, randomDate2,
+				randomDate3, randomFloat, randomInt, randomLong, randomString1,
+				randomString2, randomString3
 			).put(
 				objectRelationship1ERCObjectFieldName,
 				objectEntry2.getExternalReferenceCode()
@@ -585,51 +561,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 			).toString(),
 			getEndpoint(childObjectDefinition, scopeKey), Http.Method.POST);
 
-		JSONObject expectedJSONObject = JSONUtil.put(
-			_OBJECT_FIELD_NAME_RICH_TEXT, randomString2
-		).put(
-			OBJECT_FIELD_NAME_BOOLEAN, randomBoolean
-		).put(
-			OBJECT_FIELD_NAME_DATE,
-			dateFormat.format(randomDate1) + "T00:00:00.000Z"
-		).put(
-			OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-			StringUtil.removeLast(dateTimeDateFormat.format(randomDate2), "Z")
-		).put(
-			OBJECT_FIELD_NAME_DATE_TIME_UTC,
-			dateTimeDateFormat.format(randomDate3)
-		).put(
-			OBJECT_FIELD_NAME_DECIMAL, randomFloat
-		).put(
-			OBJECT_FIELD_NAME_INTEGER, randomInt
-		).put(
-			OBJECT_FIELD_NAME_LONG_INTEGER, (double)randomLong
-		).put(
-			OBJECT_FIELD_NAME_LONG_TEXT, randomString1
-		).put(
-			OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-			JSONUtil.putAll(
-				JSONUtil.put(
-					"key", LIST_TYPE_ENTRY_KEY_1
-				).put(
-					"name", _listTypeEntry1.getName(LocaleUtil.getDefault())
-				),
-				JSONUtil.put(
-					"key", LIST_TYPE_ENTRY_KEY_2
-				).put(
-					"name", _listTypeEntry2.getName(LocaleUtil.getDefault())
-				))
-		).put(
-			OBJECT_FIELD_NAME_PICKLIST,
-			JSONUtil.put(
-				"key", LIST_TYPE_ENTRY_KEY_3
-			).put(
-				"name", _listTypeEntry3.getName(LocaleUtil.getDefault())
-			)
-		).put(
-			OBJECT_FIELD_NAME_PRECISION_DECIMAL, randomBigDecimal
-		).put(
-			OBJECT_FIELD_NAME_TEXT, randomString3
+		JSONObject expectedJSONObject = _createExpectedObjectEntryJSONObject(
+			randomBigDecimal, randomBoolean, randomDate1, randomDate2,
+			randomDate3, randomFloat, randomInt, randomLong, randomString1,
+			randomString2, randomString3
 		).put(
 			objectRelationship1ERCObjectFieldName,
 			objectEntry2.getExternalReferenceCode()
@@ -749,16 +684,8 @@ public abstract class BaseObjectEntryResourceTestCase {
 		expectedJSONObject = _cloneJSONObject(
 			expectedJSONObject, OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 			JSONUtil.putAll(
-				JSONUtil.put(
-					"key", LIST_TYPE_ENTRY_KEY_2
-				).put(
-					"name", _listTypeEntry2.getName(LocaleUtil.getDefault())
-				),
-				JSONUtil.put(
-					"key", LIST_TYPE_ENTRY_KEY_3
-				).put(
-					"name", _listTypeEntry3.getName(LocaleUtil.getDefault())
-				)));
+				_toListTypeEntryJSONObject(_listTypeEntry2),
+				_toListTypeEntryJSONObject(_listTypeEntry3)));
 
 		assertPatchCustomObjectEntry(
 			endpoint, expectedJSONObject,
@@ -769,11 +696,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 		expectedJSONObject = _cloneJSONObject(
 			expectedJSONObject, OBJECT_FIELD_NAME_PICKLIST,
-			JSONUtil.put(
-				"key", LIST_TYPE_ENTRY_KEY_1
-			).put(
-				"name", _listTypeEntry1.getName(LocaleUtil.getDefault())
-			));
+			_toListTypeEntryJSONObject(_listTypeEntry1));
 
 		assertPatchCustomObjectEntry(
 			endpoint, expectedJSONObject, OBJECT_FIELD_NAME_PICKLIST,
@@ -893,35 +816,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 		String randomString3 = RandomTestUtil.randomString();
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				_OBJECT_FIELD_NAME_RICH_TEXT, randomString2
-			).put(
-				OBJECT_FIELD_NAME_BOOLEAN, randomBoolean
-			).put(
-				OBJECT_FIELD_NAME_DATE, dateFormat.format(randomDate1)
-			).put(
-				OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-				dateTimeDateFormat.format(randomDate2)
-			).put(
-				OBJECT_FIELD_NAME_DATE_TIME_UTC,
-				dateTimeDateFormat.format(randomDate3)
-			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat
-			).put(
-				OBJECT_FIELD_NAME_INTEGER, randomInt
-			).put(
-				OBJECT_FIELD_NAME_LONG_INTEGER, randomLong
-			).put(
-				OBJECT_FIELD_NAME_LONG_TEXT, randomString1
-			).put(
-				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-				JSONUtil.putAll(LIST_TYPE_ENTRY_KEY_1, LIST_TYPE_ENTRY_KEY_2)
-			).put(
-				OBJECT_FIELD_NAME_PICKLIST, LIST_TYPE_ENTRY_KEY_3
-			).put(
-				OBJECT_FIELD_NAME_PRECISION_DECIMAL, randomBigDecimal
-			).put(
-				OBJECT_FIELD_NAME_TEXT, randomString3
+			_createObjectEntryJSONObject(
+				randomBigDecimal, randomBoolean, randomDate1, randomDate2,
+				randomDate3, randomFloat, randomInt, randomLong, randomString1,
+				randomString2, randomString3
 			).put(
 				objectRelationship1ERCObjectFieldName,
 				objectEntry2.getExternalReferenceCode()
@@ -993,52 +891,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 			JSONCompareMode.LENIENT);
 
 		JSONAssert.assertEquals(
-			JSONUtil.put(
-				_OBJECT_FIELD_NAME_RICH_TEXT, randomString2
-			).put(
-				OBJECT_FIELD_NAME_BOOLEAN, randomBoolean
-			).put(
-				OBJECT_FIELD_NAME_DATE,
-				dateFormat.format(randomDate1) + "T00:00:00.000Z"
-			).put(
-				OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-				StringUtil.removeLast(
-					dateTimeDateFormat.format(randomDate2), "Z")
-			).put(
-				OBJECT_FIELD_NAME_DATE_TIME_UTC,
-				dateTimeDateFormat.format(randomDate3)
-			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat
-			).put(
-				OBJECT_FIELD_NAME_INTEGER, randomInt
-			).put(
-				OBJECT_FIELD_NAME_LONG_INTEGER, (double)randomLong
-			).put(
-				OBJECT_FIELD_NAME_LONG_TEXT, randomString1
-			).put(
-				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-				JSONUtil.putAll(
-					JSONUtil.put(
-						"key", LIST_TYPE_ENTRY_KEY_1
-					).put(
-						"name", _listTypeEntry1.getName(LocaleUtil.getDefault())
-					),
-					JSONUtil.put(
-						"key", LIST_TYPE_ENTRY_KEY_2
-					).put(
-						"name", _listTypeEntry2.getName(LocaleUtil.getDefault())
-					))
-			).put(
-				OBJECT_FIELD_NAME_PICKLIST,
-				JSONUtil.put(
-					"key", LIST_TYPE_ENTRY_KEY_3
-				).put(
-					"name", _listTypeEntry3.getName(LocaleUtil.getDefault())
-				)
-			).put(
-				OBJECT_FIELD_NAME_PRECISION_DECIMAL, randomBigDecimal
-			).put(
-				OBJECT_FIELD_NAME_TEXT, randomString3
+			_createExpectedObjectEntryJSONObject(
+				randomBigDecimal, randomBoolean, randomDate1, randomDate2,
+				randomDate3, randomFloat, randomInt, randomLong, randomString1,
+				randomString2, randomString3
 			).put(
 				objectRelationship1ERCObjectFieldName,
 				objectEntry2.getExternalReferenceCode()
@@ -1055,36 +911,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 				"externalReferenceCode", randomExternalReferenceCode
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					_OBJECT_FIELD_NAME_RICH_TEXT, randomString2
-				).put(
-					OBJECT_FIELD_NAME_BOOLEAN, randomBoolean
-				).put(
-					OBJECT_FIELD_NAME_DATE, dateFormat.format(randomDate1)
-				).put(
-					OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-					dateTimeDateFormat.format(randomDate2)
-				).put(
-					OBJECT_FIELD_NAME_DATE_TIME_UTC,
-					dateTimeDateFormat.format(randomDate3)
-				).put(
-					OBJECT_FIELD_NAME_DECIMAL, randomFloat
-				).put(
-					OBJECT_FIELD_NAME_INTEGER, randomInt
-				).put(
-					OBJECT_FIELD_NAME_LONG_INTEGER, randomLong
-				).put(
-					OBJECT_FIELD_NAME_LONG_TEXT, randomString1
-				).put(
-					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-					JSONUtil.putAll(
-						LIST_TYPE_ENTRY_KEY_1, LIST_TYPE_ENTRY_KEY_2)
-				).put(
-					OBJECT_FIELD_NAME_PICKLIST, LIST_TYPE_ENTRY_KEY_3
-				).put(
-					OBJECT_FIELD_NAME_PRECISION_DECIMAL, randomBigDecimal
-				).put(
-					OBJECT_FIELD_NAME_TEXT, randomString3
+				_createObjectEntryJSONObject(
+					randomBigDecimal, randomBoolean, randomDate1, randomDate2,
+					randomDate3, randomFloat, randomInt, randomLong,
+					randomString1, randomString2, randomString3
 				).put(
 					objectRelationship1ERCObjectFieldName,
 					objectEntry3.getExternalReferenceCode()
@@ -1175,93 +1005,15 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 		objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition(
 			ObjectDefinitionTestUtil.getRandomName(),
-			Arrays.asList(
-				_createAttachmentObjectField(
-					"pdf", ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA,
-					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
-					ObjectFieldConstants.DB_TYPE_BOOLEAN, true, false, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_BOOLEAN,
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_DATE,
-					ObjectFieldConstants.DB_TYPE_DATE,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_DATE,
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
-					ObjectFieldConstants.DB_TYPE_DATE_TIME, true, true, null,
-					RandomTestUtil.randomString(),
-					OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-					Collections.singletonList(
-						new ObjectFieldSettingBuilder(
-						).name(
-							ObjectFieldSettingConstants.NAME_TIME_STORAGE
-						).value(
-							ObjectFieldSettingConstants.
-								VALUE_USE_INPUT_AS_ENTERED
-						).build()),
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
-					ObjectFieldConstants.DB_TYPE_DATE_TIME, true, true, null,
-					RandomTestUtil.randomString(),
-					OBJECT_FIELD_NAME_DATE_TIME_UTC,
-					Collections.singletonList(
-						new ObjectFieldSettingBuilder(
-						).name(
-							ObjectFieldSettingConstants.NAME_TIME_STORAGE
-						).value(
-							ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC
-						).build()),
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
-					ObjectFieldConstants.DB_TYPE_DOUBLE, true, false, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_DECIMAL,
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
-					ObjectFieldConstants.DB_TYPE_INTEGER, true, true, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_INTEGER,
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
-					ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-					RandomTestUtil.randomString(),
-					OBJECT_FIELD_NAME_LONG_INTEGER, false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT,
-					ObjectFieldConstants.DB_TYPE_CLOB, false, false, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_LONG_TEXT,
-					false),
-				ObjectFieldUtil.createObjectField(
-					_listTypeDefinition.getListTypeDefinitionId(),
-					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST,
-					null, ObjectFieldConstants.DB_TYPE_STRING, true, false,
-					null, RandomTestUtil.randomString(),
-					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, false, false),
-				ObjectFieldUtil.createObjectField(
-					_listTypeDefinition.getListTypeDefinitionId(),
-					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST, null,
-					ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_PICKLIST,
-					false, false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL,
-					ObjectFieldConstants.DB_TYPE_BIG_DECIMAL, true, false, null,
-					RandomTestUtil.randomString(),
-					OBJECT_FIELD_NAME_PRECISION_DECIMAL, false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_TEXT,
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_2, false)),
+			ListUtil.concat(
+				Collections.singletonList(
+					_createAttachmentObjectField(
+						"pdf", ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA,
+						OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE)),
+				_createObjectFields(),
+				Arrays.asList(
+					_createTextObjectField(OBJECT_FIELD_NAME_TEXT),
+					_createTextObjectField(OBJECT_FIELD_NAME_2))),
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
 		return objectDefinition2;
@@ -1274,90 +1026,11 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 		objectDefinition3 = ObjectDefinitionTestUtil.publishObjectDefinition(
 			ObjectDefinitionTestUtil.getRandomName(),
-			Arrays.asList(
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
-					ObjectFieldConstants.DB_TYPE_BOOLEAN, true, false, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_BOOLEAN,
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_DATE,
-					ObjectFieldConstants.DB_TYPE_DATE,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_DATE,
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
-					ObjectFieldConstants.DB_TYPE_DATE_TIME, true, true, null,
-					RandomTestUtil.randomString(),
-					OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-					Collections.singletonList(
-						new ObjectFieldSettingBuilder(
-						).name(
-							ObjectFieldSettingConstants.NAME_TIME_STORAGE
-						).value(
-							ObjectFieldSettingConstants.
-								VALUE_USE_INPUT_AS_ENTERED
-						).build()),
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
-					ObjectFieldConstants.DB_TYPE_DATE_TIME, true, true, null,
-					RandomTestUtil.randomString(),
-					OBJECT_FIELD_NAME_DATE_TIME_UTC,
-					Collections.singletonList(
-						new ObjectFieldSettingBuilder(
-						).name(
-							ObjectFieldSettingConstants.NAME_TIME_STORAGE
-						).value(
-							ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC
-						).build()),
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
-					ObjectFieldConstants.DB_TYPE_DOUBLE, true, false, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_DECIMAL,
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
-					ObjectFieldConstants.DB_TYPE_INTEGER, true, true, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_INTEGER,
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
-					ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-					RandomTestUtil.randomString(),
-					OBJECT_FIELD_NAME_LONG_INTEGER, false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT,
-					ObjectFieldConstants.DB_TYPE_CLOB, false, false, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_LONG_TEXT,
-					false),
-				ObjectFieldUtil.createObjectField(
-					_listTypeDefinition.getListTypeDefinitionId(),
-					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST,
-					null, ObjectFieldConstants.DB_TYPE_STRING, true, false,
-					null, RandomTestUtil.randomString(),
-					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, false, false),
-				ObjectFieldUtil.createObjectField(
-					_listTypeDefinition.getListTypeDefinitionId(),
-					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST, null,
-					ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_PICKLIST,
-					false, false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL,
-					ObjectFieldConstants.DB_TYPE_BIG_DECIMAL, true, false, null,
-					RandomTestUtil.randomString(),
-					OBJECT_FIELD_NAME_PRECISION_DECIMAL, false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_TEXT,
-					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_3, false)),
+			ListUtil.concat(
+				_createObjectFields(),
+				Arrays.asList(
+					_createTextObjectField(OBJECT_FIELD_NAME_TEXT),
+					_createTextObjectField(OBJECT_FIELD_NAME_3))),
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
 		return objectDefinition3;
@@ -1425,11 +1098,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 					ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
 					RandomTestUtil.randomString(), _OBJECT_FIELD_NAME_RICH_TEXT,
 					false),
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-					RandomTestUtil.randomString(), OBJECT_FIELD_NAME_TEXT,
-					false)),
+				_createTextObjectField(OBJECT_FIELD_NAME_TEXT)),
 			ObjectDefinitionConstants.SCOPE_COMPANY,
 			TestPropsValues.getUserId());
 
@@ -1614,12 +1283,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 		_siteScopedObjectDefinition2 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
-				Arrays.asList(
-					ObjectFieldUtil.createObjectField(
-						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-						ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-						RandomTestUtil.randomString(), OBJECT_FIELD_NAME_2,
-						false)),
+				Arrays.asList(_createTextObjectField(OBJECT_FIELD_NAME_2)),
 				ObjectDefinitionConstants.SCOPE_SITE);
 
 		return _siteScopedObjectDefinition2;
@@ -1993,64 +1657,88 @@ public abstract class BaseObjectEntryResourceTestCase {
 			false);
 	}
 
-	private List<ObjectField> _createObjectFields(String objectDefinitionName) {
+	private JSONObject _createExpectedObjectEntryJSONObject(
+		BigDecimal randomBigDecimal, boolean randomBoolean, Date randomDate1,
+		Date randomDate2, Date randomDate3, float randomFloat, int randomInt,
+		long randomLong, String randomString1, String randomString2,
+		String randomString3) {
+
+		return JSONUtil.put(
+			_OBJECT_FIELD_NAME_RICH_TEXT, randomString2
+		).put(
+			OBJECT_FIELD_NAME_BOOLEAN, randomBoolean
+		).put(
+			OBJECT_FIELD_NAME_DATE,
+			dateFormat.format(randomDate1) + "T00:00:00.000Z"
+		).put(
+			OBJECT_FIELD_NAME_DATE_TIME_INPUT,
+			StringUtil.removeLast(dateTimeDateFormat.format(randomDate2), "Z")
+		).put(
+			OBJECT_FIELD_NAME_DATE_TIME_UTC,
+			dateTimeDateFormat.format(randomDate3)
+		).put(
+			OBJECT_FIELD_NAME_DECIMAL, randomFloat
+		).put(
+			OBJECT_FIELD_NAME_INTEGER, randomInt
+		).put(
+			OBJECT_FIELD_NAME_LONG_INTEGER, (double)randomLong
+		).put(
+			OBJECT_FIELD_NAME_LONG_TEXT, randomString1
+		).put(
+			OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+			JSONUtil.putAll(
+				_toListTypeEntryJSONObject(_listTypeEntry1),
+				_toListTypeEntryJSONObject(_listTypeEntry2))
+		).put(
+			OBJECT_FIELD_NAME_PICKLIST,
+			_toListTypeEntryJSONObject(_listTypeEntry3)
+		).put(
+			OBJECT_FIELD_NAME_PRECISION_DECIMAL, randomBigDecimal
+		).put(
+			OBJECT_FIELD_NAME_TEXT, randomString3
+		);
+	}
+
+	private JSONObject _createObjectEntryJSONObject(
+		BigDecimal randomBigDecimal, boolean randomBoolean, Date randomDate1,
+		Date randomDate2, Date randomDate3, float randomFloat, int randomInt,
+		long randomLong, String randomString1, String randomString2,
+		String randomString3) {
+
+		return JSONUtil.put(
+			_OBJECT_FIELD_NAME_RICH_TEXT, randomString2
+		).put(
+			OBJECT_FIELD_NAME_BOOLEAN, randomBoolean
+		).put(
+			OBJECT_FIELD_NAME_DATE, dateFormat.format(randomDate1)
+		).put(
+			OBJECT_FIELD_NAME_DATE_TIME_INPUT,
+			dateTimeDateFormat.format(randomDate2)
+		).put(
+			OBJECT_FIELD_NAME_DATE_TIME_UTC,
+			dateTimeDateFormat.format(randomDate3)
+		).put(
+			OBJECT_FIELD_NAME_DECIMAL, randomFloat
+		).put(
+			OBJECT_FIELD_NAME_INTEGER, randomInt
+		).put(
+			OBJECT_FIELD_NAME_LONG_INTEGER, randomLong
+		).put(
+			OBJECT_FIELD_NAME_LONG_TEXT, randomString1
+		).put(
+			OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+			JSONUtil.putAll(LIST_TYPE_ENTRY_KEY_1, LIST_TYPE_ENTRY_KEY_2)
+		).put(
+			OBJECT_FIELD_NAME_PICKLIST, LIST_TYPE_ENTRY_KEY_3
+		).put(
+			OBJECT_FIELD_NAME_PRECISION_DECIMAL, randomBigDecimal
+		).put(
+			OBJECT_FIELD_NAME_TEXT, randomString3
+		);
+	}
+
+	private List<ObjectField> _createObjectFields() {
 		return Arrays.asList(
-			_createAttachmentObjectField(
-				"jpg, txt",
-				ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT,
-				OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE),
-			_createAttachmentObjectField(
-				"jpg, txt", ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA,
-				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE),
-			_createAttachmentObjectField(
-				"jpg, txt",
-				ObjectFieldSettingConstants.
-					VALUE_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT,
-				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT_SOURCE),
-			_createAttachmentObjectField(
-				"jpg, txt",
-				ObjectFieldSettingConstants.
-					VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA,
-				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1),
-			ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
-				ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_2,
-				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_2,
-				Arrays.asList(
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.
-							NAME_ACCEPTED_FILE_EXTENSIONS
-					).value(
-						"txt"
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_FILE_SOURCE
-					).value(
-						ObjectFieldSettingConstants.
-							VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
-					).value(
-						String.valueOf(MAX_FILE_SIZE_VALUE)
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_SHOW_FILES_IN_LIBRARY
-					).value(
-						Boolean.TRUE.toString()
-					).build(),
-					new ObjectFieldSettingBuilder(
-					).name(
-						ObjectFieldSettingConstants.NAME_STORAGE_DL_FOLDER_PATH
-					).value(
-						StringPool.SLASH + objectDefinitionName
-					).build()),
-				false),
 			ObjectFieldUtil.createObjectField(
 				ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
 				ObjectFieldConstants.DB_TYPE_BOOLEAN, true, false, null,
@@ -2121,20 +1809,95 @@ public abstract class BaseObjectEntryResourceTestCase {
 				ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL,
 				ObjectFieldConstants.DB_TYPE_BIG_DECIMAL, true, false, null,
 				RandomTestUtil.randomString(),
-				OBJECT_FIELD_NAME_PRECISION_DECIMAL, false),
-			ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT,
-				ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-				RandomTestUtil.randomString(), _OBJECT_FIELD_NAME_RICH_TEXT,
-				false),
-			ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-				ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-				RandomTestUtil.randomString(), OBJECT_FIELD_NAME_TEXT, false),
-			ObjectFieldUtil.createObjectField(
-				ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-				ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
-				RandomTestUtil.randomString(), OBJECT_FIELD_NAME_1, false));
+				OBJECT_FIELD_NAME_PRECISION_DECIMAL, false));
+	}
+
+	private List<ObjectField> _createObjectFields(String objectDefinitionName) {
+		return ListUtil.concat(
+			Arrays.asList(
+				_createAttachmentObjectField(
+					"jpg, txt",
+					ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT,
+					OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE),
+				_createAttachmentObjectField(
+					"jpg, txt",
+					ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA,
+					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE),
+				_createAttachmentObjectField(
+					"jpg, txt",
+					ObjectFieldSettingConstants.
+						VALUE_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT,
+					OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT_SOURCE),
+				_createAttachmentObjectField(
+					"jpg, txt",
+					ObjectFieldSettingConstants.
+						VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA,
+					OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1),
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
+					ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
+					OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_2,
+					OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_2,
+					Arrays.asList(
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.
+								NAME_ACCEPTED_FILE_EXTENSIONS
+						).value(
+							"txt"
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_FILE_SOURCE
+						).value(
+							ObjectFieldSettingConstants.
+								VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+						).value(
+							String.valueOf(MAX_FILE_SIZE_VALUE)
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.
+								NAME_SHOW_FILES_IN_LIBRARY
+						).value(
+							Boolean.TRUE.toString()
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.
+								NAME_STORAGE_DL_FOLDER_PATH
+						).value(
+							StringPool.SLASH + objectDefinitionName
+						).build()),
+					false)),
+			_createObjectFields(),
+			Arrays.asList(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
+					RandomTestUtil.randomString(), _OBJECT_FIELD_NAME_RICH_TEXT,
+					false),
+				_createTextObjectField(OBJECT_FIELD_NAME_TEXT),
+				_createTextObjectField(OBJECT_FIELD_NAME_1)));
+	}
+
+	private ObjectField _createTextObjectField(String objectFieldName) {
+		return ObjectFieldUtil.createObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
+			RandomTestUtil.randomString(), objectFieldName, false);
+	}
+
+	private JSONObject _toListTypeEntryJSONObject(ListTypeEntry listTypeEntry) {
+		return JSONUtil.put(
+			"key", listTypeEntry.getKey()
+		).put(
+			"name", listTypeEntry.getName(LocaleUtil.getDefault())
+		);
 	}
 
 	private static final String _OBJECT_FIELD_NAME_RICH_TEXT =

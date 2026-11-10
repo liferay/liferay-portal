@@ -124,18 +124,17 @@ public class ObjectEntryResourceValidationTest
 					String.valueOf(textObjectField.getObjectFieldId())
 				).build()));
 
-		Integer randomInteger = RandomTestUtil.randomInt();
-		String randomString = RandomTestUtil.randomString();
+		String objectEntryJSON = JSONUtil.put(
+			OBJECT_FIELD_NAME_INTEGER, RandomTestUtil.randomInt()
+		).put(
+			OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
+		).toString();
 
 		Assert.assertEquals(
 			200,
 			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_INTEGER, randomInteger
-				).put(
-					OBJECT_FIELD_NAME_TEXT, randomString
-				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
+				objectEntryJSON, getObjectDefinition1().getRESTContextPath(),
+				Http.Method.POST));
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -146,12 +145,8 @@ public class ObjectEntryResourceValidationTest
 				"type", "ObjectValidationRuleEngineException"
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_INTEGER, randomInteger
-				).put(
-					OBJECT_FIELD_NAME_TEXT, randomString
-				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST
+				objectEntryJSON, getObjectDefinition1().getRESTContextPath(),
+				Http.Method.POST
 			).toString(),
 			JSONCompareMode.LENIENT);
 	}
@@ -203,27 +198,20 @@ public class ObjectEntryResourceValidationTest
 
 	@Test
 	public void testPostScopeScopeKeyValidate() throws Exception {
+		ObjectField objectField = objectFieldLocalService.getObjectField(
+			getSiteScopedObjectDefinition1().getObjectDefinitionId(),
+			OBJECT_FIELD_NAME_1);
 		Group testGroup = groupLocalService.fetchGroup(testGroupId);
 
 		_testPostValidate(
-			testGroup.getExternalReferenceCode(),
-			getSiteScopedObjectDefinition1(),
-			objectFieldLocalService.getObjectField(
-				getSiteScopedObjectDefinition1().getObjectDefinitionId(),
-				OBJECT_FIELD_NAME_1));
-
-		_testPostValidate(
 			String.valueOf(testGroup.getGroupId()),
-			getSiteScopedObjectDefinition1(),
-			objectFieldLocalService.getObjectField(
-				getSiteScopedObjectDefinition1().getObjectDefinitionId(),
-				OBJECT_FIELD_NAME_1));
-
+			getSiteScopedObjectDefinition1(), objectField);
+		_testPostValidate(
+			testGroup.getExternalReferenceCode(),
+			getSiteScopedObjectDefinition1(), objectField);
 		_testPostValidate(
 			testGroup.getGroupKey(), getSiteScopedObjectDefinition1(),
-			objectFieldLocalService.getObjectField(
-				getSiteScopedObjectDefinition1().getObjectDefinitionId(),
-				OBJECT_FIELD_NAME_1));
+			objectField);
 	}
 
 	@Test

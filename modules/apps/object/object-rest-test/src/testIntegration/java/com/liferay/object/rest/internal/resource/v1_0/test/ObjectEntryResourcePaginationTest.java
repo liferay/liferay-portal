@@ -43,47 +43,25 @@ public class ObjectEntryResourcePaginationTest
 
 	@Test
 	public void testGetObjectEntriesWithPagination() throws Exception {
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
+		_addObjectEntries(7);
 
 		_assertPagination(7, getObjectDefinition1());
 
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
+		_addObjectEntries(2);
 
 		_assertPagination(9, getObjectDefinition1());
 
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
-		ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
+		_addObjectEntries(2);
 
 		_assertPagination(11, getObjectDefinition1());
+	}
+
+	private void _addObjectEntries(int count) throws Exception {
+		for (int i = 0; i < count; i++) {
+			ObjectEntryTestUtil.addObjectEntry(
+				getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
+				NEW_OBJECT_FIELD_VALUE_1);
+		}
 	}
 
 	private void _assertPagination(
