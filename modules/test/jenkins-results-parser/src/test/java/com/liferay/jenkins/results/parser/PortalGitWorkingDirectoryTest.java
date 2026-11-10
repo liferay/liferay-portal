@@ -138,18 +138,18 @@ public class PortalGitWorkingDirectoryTest
 		).getUntrackedSDKFilePaths();
 
 		Mockito.doReturn(
+			portalDir
+		).when(
+			portalGitWorkingDirectory
+		).getWorkingDirectory();
+
+		Mockito.doReturn(
 			Arrays.asList("tools/sdk/dependencies/foo/lib/")
 		).when(
 			portalGitWorkingDirectory
 		).getUntrackedFilePaths(
 			"tools/sdk"
 		);
-
-		Mockito.doReturn(
-			portalDir
-		).when(
-			portalGitWorkingDirectory
-		).getWorkingDirectory();
 
 		testEquals(
 			Arrays.asList("tools/sdk/dependencies/foo/lib/"),
