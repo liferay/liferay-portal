@@ -228,10 +228,48 @@ public class OpenIdConnectAuthenticationHandlerImplTest {
 			openIdConnectAuthenticationHandlerImpl =
 				new OpenIdConnectAuthenticationHandlerImpl();
 
-		HttpServletRequest httpServletRequest = Mockito.mock(
-			HttpServletRequest.class);
-		HttpSession authenticationHttpSession = Mockito.mock(HttpSession.class);
+		AuthorizationServerMetadataResolver
+			authorizationServerMetadataResolver = Mockito.mock(
+				AuthorizationServerMetadataResolver.class);
 
+		Mockito.when(
+			authorizationServerMetadataResolver.resolveOIDCProviderMetadata(
+				Mockito.any(), Mockito.anyLong(), Mockito.anyInt(),
+				Mockito.anyLong())
+		).thenReturn(
+			Mockito.mock(OIDCProviderMetadata.class)
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			openIdConnectAuthenticationHandlerImpl,
+			"_authorizationServerMetadataResolver",
+			authorizationServerMetadataResolver);
+
+		OAuthClientEntryLocalService oAuthClientEntryLocalService =
+			Mockito.mock(OAuthClientEntryLocalService.class);
+
+		Mockito.when(
+			oAuthClientEntryLocalService.getOAuthClientEntry(Mockito.anyLong())
+		).thenReturn(
+			Mockito.mock(OAuthClientEntry.class)
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			openIdConnectAuthenticationHandlerImpl,
+			"_oAuthClientEntryLocalService", oAuthClientEntryLocalService);
+
+		ReflectionTestUtil.setFieldValue(
+			openIdConnectAuthenticationHandlerImpl,
+			"_offlineOpenIdConnectSessionManager",
+			offlineOpenIdConnectSessionManager);
+		ReflectionTestUtil.setFieldValue(
+			openIdConnectAuthenticationHandlerImpl, "_oidcUserInfoProcessor",
+			Mockito.mock(OIDCUserInfoProcessor.class));
+		ReflectionTestUtil.setFieldValue(
+			openIdConnectAuthenticationHandlerImpl, "_portal",
+			Mockito.mock(Portal.class));
+
+		HttpSession authenticationHttpSession = Mockito.mock(HttpSession.class);
 		State state = new State();
 
 		Mockito.when(
@@ -241,6 +279,9 @@ public class OpenIdConnectAuthenticationHandlerImplTest {
 				new CodeVerifier(), new Nonce(), RandomTestUtil.randomLong(),
 				state)
 		);
+
+		HttpServletRequest httpServletRequest = Mockito.mock(
+			HttpServletRequest.class);
 
 		Mockito.when(
 			httpServletRequest.getQueryString()
@@ -261,47 +302,6 @@ public class OpenIdConnectAuthenticationHandlerImplTest {
 		).thenReturn(
 			authenticationHttpSession, httpSession
 		);
-
-		OAuthClientEntryLocalService oAuthClientEntryLocalService =
-			Mockito.mock(OAuthClientEntryLocalService.class);
-
-		Mockito.when(
-			oAuthClientEntryLocalService.getOAuthClientEntry(Mockito.anyLong())
-		).thenReturn(
-			Mockito.mock(OAuthClientEntry.class)
-		);
-
-		ReflectionTestUtil.setFieldValue(
-			openIdConnectAuthenticationHandlerImpl,
-			"_oAuthClientEntryLocalService", oAuthClientEntryLocalService);
-
-		AuthorizationServerMetadataResolver
-			authorizationServerMetadataResolver = Mockito.mock(
-				AuthorizationServerMetadataResolver.class);
-
-		Mockito.when(
-			authorizationServerMetadataResolver.resolveOIDCProviderMetadata(
-				Mockito.any(), Mockito.anyLong(), Mockito.anyInt(),
-				Mockito.anyLong())
-		).thenReturn(
-			Mockito.mock(OIDCProviderMetadata.class)
-		);
-
-		ReflectionTestUtil.setFieldValue(
-			openIdConnectAuthenticationHandlerImpl,
-			"_authorizationServerMetadataResolver",
-			authorizationServerMetadataResolver);
-
-		ReflectionTestUtil.setFieldValue(
-			openIdConnectAuthenticationHandlerImpl,
-			"_offlineOpenIdConnectSessionManager",
-			offlineOpenIdConnectSessionManager);
-		ReflectionTestUtil.setFieldValue(
-			openIdConnectAuthenticationHandlerImpl, "_oidcUserInfoProcessor",
-			Mockito.mock(OIDCUserInfoProcessor.class));
-		ReflectionTestUtil.setFieldValue(
-			openIdConnectAuthenticationHandlerImpl, "_portal",
-			Mockito.mock(Portal.class));
 
 		try (MockedStatic<OpenIdConnectClientInformationUtil>
 				openIdConnectClientInformationUtilMockedStatic =
