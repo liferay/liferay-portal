@@ -2796,13 +2796,13 @@ public class JenkinsResultsParserUtil {
 		long latestCompletedTime = Long.MIN_VALUE;
 		String latestPortalBundleS3ObjectPath = null;
 
-		for (int i = 0; i < dataS3ObjectLines.size(); i++) {
-			if ((i >= 10) && (latestPortalBundleS3ObjectPath != null)) {
+		for (int index = 0; index < dataS3ObjectLines.size(); index++) {
+			if ((index >= 10) && (latestPortalBundleS3ObjectPath != null)) {
 				break;
 			}
 
 			Matcher matcher = _portalBundleDataS3ObjectPattern.matcher(
-				dataS3ObjectLines.get(i));
+				dataS3ObjectLines.get(index));
 
 			if (!matcher.matches()) {
 				continue;

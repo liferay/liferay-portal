@@ -89,7 +89,9 @@ public class PortalBundlePersistentResource
 			}
 		}
 		catch (RuntimeException runtimeException) {
-			print("Unable to read the completed time\n" + runtimeException);
+			print(
+				"WARNING: Unable to read the completed time\n" +
+					runtimeException);
 		}
 
 		return JenkinsResultsParserUtil.getCurrentTimeMillis();

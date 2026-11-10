@@ -304,7 +304,6 @@ public class JenkinsResultsParserUtilTest
 			portalBranchName);
 		String noGitCommitS3ObjectKey = _randomPortalBundleS3ObjectKey(
 			portalBranchName);
-
 		String successS3ObjectKey = _randomPortalBundleS3ObjectKey(
 			portalBranchName);
 
@@ -313,7 +312,7 @@ public class JenkinsResultsParserUtilTest
 			_randomPortalGitCommitShort(), "_", _randomPortalGitCommitShort());
 
 		String pullRequestS3ObjectKey = JenkinsResultsParserUtil.combine(
-			"persistent-resources/portal-bundle/", portalBranchName, "_",
+			"persistent-resources/portal-bundle", "/", portalBranchName, "_",
 			_randomPortalGitCommitShort(), "_", _randomPortalGitCommitShort());
 
 		String reusedS3ObjectKey = _randomPortalBundleS3ObjectKey(
@@ -419,7 +418,7 @@ public class JenkinsResultsParserUtilTest
 				executionRequest -> hasCommand(
 					executionRequest, "aws s3 ls --recursive",
 					JenkinsResultsParserUtil.combine(
-						s3BucketPath, "/persistent-resources/portal-bundle/",
+						s3BucketPath, "/persistent-resources/portal-bundle", "/",
 						portalBranchName, "_")))
 		);
 
@@ -428,7 +427,7 @@ public class JenkinsResultsParserUtilTest
 		List<String> s3ObjectKeys = new ArrayList<>();
 		List<String> s3FilesOutputLines = new ArrayList<>();
 
-		for (int i = 0; i < 11; i++) {
+		for (int index = 0; index < 11; index++) {
 			String s3ObjectKey = _randomPortalBundleS3ObjectKey(
 				portalBranchName);
 
@@ -436,7 +435,8 @@ public class JenkinsResultsParserUtilTest
 				s3BucketPath + "/" + s3ObjectKey,
 				new JSONObject(
 				).put(
-					"completed_time", reusedCompletedTime + Math.max(0, i - 8)
+					"completed_time",
+					reusedCompletedTime + Math.max(0, index - 8)
 				).put(
 					"portal_git_commit", RandomTestUtil.randomSHA()
 				).put(
@@ -447,8 +447,8 @@ public class JenkinsResultsParserUtilTest
 
 			s3FilesOutputLines.add(
 				JenkinsResultsParserUtil.combine(
-					"2026-11-", String.valueOf(20 - i), " 10:00:00       123 ",
-					s3ObjectKey, "/data.json.gz"));
+					"2026-11-", String.valueOf(20 - index),
+					" 10:00:00       123 ", s3ObjectKey, "/data.json.gz"));
 		}
 
 		setShellCommandOutput(
@@ -582,17 +582,17 @@ public class JenkinsResultsParserUtilTest
 				_mockCloudBucketUtil(dataJSONObjects)) {
 
 			testEquals(
-				portalGitCommit,
+				null,
 				JenkinsResultsParserUtil.getPortalBundleGitCommit(
-					portalBundleS3ObjectPath));
+					"s3://" + RandomTestUtil.randomString()));
 			testEquals(
 				null,
 				JenkinsResultsParserUtil.getPortalBundleGitCommit(
 					noGitCommitPortalBundleS3ObjectPath));
 			testEquals(
-				null,
+				portalGitCommit,
 				JenkinsResultsParserUtil.getPortalBundleGitCommit(
-					"s3://" + RandomTestUtil.randomString()));
+					portalBundleS3ObjectPath));
 		}
 	}
 
@@ -608,17 +608,15 @@ public class JenkinsResultsParserUtilTest
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
-		Map<String, JSONObject> dataJSONObjects = new HashMap<>();
-
 		String portalBranchName = RandomTestUtil.randomString();
-
 		String portalGitCommit = RandomTestUtil.randomSHA();
-
 		String portalGitCommitShort = portalGitCommit.substring(0, 7);
 
 		String portalBundleS3ObjectPath = JenkinsResultsParserUtil.combine(
-			archivesPath, "/portal-bundle/", portalBranchName, "_",
+			archivesPath, "/portal-bundle", "/", portalBranchName, "_",
 			portalGitCommitShort, "_", portalGitCommitShort);
+
+		Map<String, JSONObject> dataJSONObjects = new HashMap<>();
 
 		try (MockedStatic<CloudBucketUtil> cloudBucketUtilMockedStatic =
 				_mockCloudBucketUtil(dataJSONObjects)) {
@@ -1770,7 +1768,7 @@ public class JenkinsResultsParserUtilTest
 		String portalGitCommitShort = _randomPortalGitCommitShort();
 
 		return JenkinsResultsParserUtil.combine(
-			"persistent-resources/portal-bundle/", portalBranchName, "_",
+			"persistent-resources/portal-bundle", "/", portalBranchName, "_",
 			portalGitCommitShort, "_", portalGitCommitShort);
 	}
 
