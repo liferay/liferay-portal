@@ -11,9 +11,9 @@ import {
 	StructureChild,
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
 import {Uuid} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Uuid';
-import canContainRepeatableGroup from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/canContainRepeatableGroup';
 import getPlacementErrorMessage from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getPlacementErrorMessage';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
+import {canContainRepeatableGroup} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/repeatableGroups';
 
 const REFERENCED_STRUCTURES_MESSAGE =
 	'referenced-structures-and-related-content-can-only-be-placed-at-the-first-level';
