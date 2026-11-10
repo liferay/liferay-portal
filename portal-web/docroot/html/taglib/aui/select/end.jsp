@@ -43,7 +43,7 @@
 			<c:if test="<%= Validator.isNotNull(listType) %>">
 
 				<%
-				long listTypeId = ParamUtil.getLong(request, name, BeanParamUtil.getLong(bean, request, listTypeFieldName));
+				long listTypeId = ParamUtil.getLong(request, name, BeanParamUtil.getLong(bean, request, listTypeFieldName, AUIUtil.getBeanPropertyToLongFunction(listTypeFieldName)));
 
 				List<ListType> listTypeModels = ListTypeServiceUtil.getListTypes(themeDisplay.getCompanyId(), listType);
 
