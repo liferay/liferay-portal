@@ -40,13 +40,13 @@ public class SyncPreviewResourceImpl extends BaseSyncPreviewResourceImpl {
 	public SyncPreview getSiteTemplateSyncPreview(Long siteTemplateId)
 		throws Exception {
 
-		LayoutSetPrototype layoutSetPrototype =
-			_layoutSetPrototypeLocalService.getLayoutSetPrototype(
-				siteTemplateId);
-
 		LayoutSetPrototypePermissionUtil.check(
 			PermissionThreadLocal.getPermissionChecker(), siteTemplateId,
 			ActionKeys.UPDATE);
+
+		LayoutSetPrototype layoutSetPrototype =
+			_layoutSetPrototypeLocalService.getLayoutSetPrototype(
+				siteTemplateId);
 
 		Group group = layoutSetPrototype.getGroup();
 

@@ -48,10 +48,6 @@ public class SyncProcessResourceImpl extends BaseSyncProcessResourceImpl {
 			Long siteTemplateId, SyncProcessRequest syncProcessRequest)
 		throws Exception {
 
-		LayoutSetPrototype layoutSetPrototype =
-			_layoutSetPrototypeLocalService.getLayoutSetPrototype(
-				siteTemplateId);
-
 		LayoutSetPrototypePermissionUtil.check(
 			PermissionThreadLocal.getPermissionChecker(), siteTemplateId,
 			ActionKeys.UPDATE);
@@ -66,6 +62,10 @@ public class SyncProcessResourceImpl extends BaseSyncProcessResourceImpl {
 			throw new BadRequestException(
 				"At least one portlet data handler must be selected");
 		}
+
+		LayoutSetPrototype layoutSetPrototype =
+			_layoutSetPrototypeLocalService.getLayoutSetPrototype(
+				siteTemplateId);
 
 		Group group = layoutSetPrototype.getGroup();
 
