@@ -304,6 +304,7 @@ public class JenkinsResultsParserUtilTest
 			portalBranchName);
 		String noGitCommitS3ObjectKey = _randomPortalBundleS3ObjectKey(
 			portalBranchName);
+
 		String successS3ObjectKey = _randomPortalBundleS3ObjectKey(
 			portalBranchName);
 
@@ -608,6 +609,7 @@ public class JenkinsResultsParserUtilTest
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
 		String portalBranchName = RandomTestUtil.randomString();
+
 		String portalGitCommit = RandomTestUtil.randomSHA();
 
 		String portalGitCommitShort = portalGitCommit.substring(0, 7);
