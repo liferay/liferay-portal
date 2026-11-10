@@ -1,6 +1,6 @@
 # BeanParamUtil Getter
 
-Flags a `BeanParamUtil` call that the branch adds without a getter: a `*Silent` method, a call with three arguments, or a call whose fourth argument is not a getter. `BeanParamUtil` takes the getter of the bean as a method reference, such as `BeanParamUtil.getLong(folder, request, "folderId", BookmarksFolder::getFolderId)`, so the compiler checks the property and no reflective lookup runs on each call.
+Flags a `BeanParamUtil` call that the branch adds without a getter: a call to a `*Silent` method, a call with three arguments, or a call whose fourth argument is not a getter. `BeanParamUtil` takes the getter of the bean as a method reference, such as `BeanParamUtil.getLong(folder, request, "folderId", BookmarksFolder::getFolderId)`, so the compiler checks the property and no reflective lookup runs on each call.
 
 ## Source Formatter Candidate
 
@@ -16,9 +16,9 @@ This validation stands in for a Source Formatter check. Source Formatter catches
 
 ## Command
 
-This check is static and needs no build. It walks each changed file that mentions `BeanParamUtil.`, skips generated files and `BeanParamUtil.java` itself, and reads every `BeanParamUtil.getBoolean`, `getDouble`, `getInteger`, `getLong` and `getString` call, with or without the `Silent` suffix, to its closing parenthesis, counting the arguments at the top level and skipping string and character literals. A call is reported when its method ends in `Silent`, when it has fewer than four arguments, or when its fourth argument holds neither `::` nor `->` and is neither a name nor a method call whose name ends in `Function` or `function`. The finding is reported at the line where the call starts, and only when that line is one the branch adds. The check uses `command grep` so each file and its added lines are searched by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults. Each finding prints as `<path>:<line>: calls "BeanParamUtil.<method>" without a getter, pass the getter of the bean as a method reference`.
+This check is static and needs no build. It walks each changed file that mentions `BeanParamUtil.`, skips generated files and `BeanParamUtil.java` itself, and reads every `BeanParamUtil.getBoolean`, `getDouble`, `getInteger`, `getLong`, and `getString` call, with or without the `Silent` suffix, to its closing parenthesis, counting the arguments at the top level and skipping string and character literals. A call is reported when its method ends in `Silent`, when it has fewer than four arguments, or when its fourth argument holds neither `::` nor `->` and is neither a name that ends in `Function` or `function` nor a call to a method whose name does. The finding is reported at the line where the call starts, and only when the branch adds that line. The check uses `command grep` so each file and its added lines are searched by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults. Each finding prints as `<path>:<line>: calls "BeanParamUtil.<method>" without a getter, pass the getter of the bean as a method reference`.
 
-A generated file carries the `@generated` Javadoc marker that Service Builder and the other code generators stamp on every file they produce. The scan ignores case in that match, so the `@Generated` annotation on REST Builder output is covered too, and any file carrying it is excluded before the scan.
+A generated file carries the `@generated` Javadoc marker that Service Builder and the other code generators stamp on every file they produce. The match ignores case, so it also covers the `@Generated` annotation on REST Builder output. Any file that carries either marker is excluded before the call scan.
 
 ```bash
 REFLECTIVE_CALLS='
@@ -181,7 +181,7 @@ When `${FINDINGS}` is empty, the branch adds no `BeanParamUtil` call without a g
 Otherwise, the validation fails. Report the message below to the developer with one row for each finding, giving the path and the line as the finding prints them, and return it as the failure note.
 
 ```markdown
-**A `BeanParamUtil` call reads the bean without a getter.** Each line below calls `BeanParamUtil` with the property name alone, which no longer looks the property up by reflection. Pass the getter of the bean as a method reference after the parameter name, such as `BookmarksFolder::getFolderId`. When the bean has no such getter, read the request parameter with `ParamUtil` instead.
+**A `BeanParamUtil` call reads the bean without a getter.** Each line below calls a `BeanParamUtil` method that read the property by name through reflection. Those methods were removed, so the call no longer compiles. Pass the getter of the bean as a method reference after the parameter name, such as `BookmarksFolder::getFolderId`. When the bean has no such getter, read the request parameter with `ParamUtil` instead.
 
 | File | Line |
 | --- | --- |
