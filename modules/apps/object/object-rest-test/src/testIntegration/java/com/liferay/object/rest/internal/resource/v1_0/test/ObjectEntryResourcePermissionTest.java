@@ -251,11 +251,9 @@ public class ObjectEntryResourcePermissionTest
 			"test1@liferay.com", "test1"
 		).apply(
 			() -> {
-				String externalReferenceCode = RandomTestUtil.randomString();
-
 				JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
-						"externalReferenceCode", externalReferenceCode
+						"externalReferenceCode", RandomTestUtil.randomString()
 					).toString(),
 					getEndpoint(getObjectDefinition1(), testGroupId),
 					Http.Method.POST);

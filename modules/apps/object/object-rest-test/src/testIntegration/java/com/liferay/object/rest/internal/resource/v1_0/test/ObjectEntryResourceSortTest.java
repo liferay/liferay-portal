@@ -933,7 +933,6 @@ public class ObjectEntryResourceSortTest
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_BOOLEAN));
-
 			_testSortByManyToOneRelationshipCustomObjectFields(
 				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
 				jsonObject4, depth1JSONObject1, depth1JSONObject2,
@@ -1003,7 +1002,6 @@ public class ObjectEntryResourceSortTest
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_BOOLEAN));
-
 			_testSortByManyToOneRelationshipCustomObjectFields(
 				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
 				jsonObject4, depth2JSONObject1, depth2JSONObject2,
@@ -2627,8 +2625,6 @@ public class ObjectEntryResourceSortTest
 			TestPropsValues.getUserId(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
-		String endpoint = getEndpoint(getObjectDefinition1(), testGroupId);
-
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
 					"WebApplicationExceptionMapper",
@@ -2644,7 +2640,8 @@ public class ObjectEntryResourceSortTest
 				HTTPTestUtil.invokeToString(
 					null,
 					StringBundler.concat(
-						endpoint, "?sort=",
+						getEndpoint(getObjectDefinition1(), testGroupId),
+						"?sort=",
 						URLCodec.encodeURL(
 							String.format(
 								"%s/%s:asc", objectRelationship1.getName(),
@@ -3114,8 +3111,6 @@ public class ObjectEntryResourceSortTest
 					"WebApplicationExceptionMapper",
 				LoggerTestUtil.ERROR)) {
 
-			String endpoint = getEndpoint(objectDefinition, testGroupId);
-
 			JSONAssert.assertEquals(
 				JSONUtil.put(
 					"status", "BAD_REQUEST"
@@ -3123,7 +3118,9 @@ public class ObjectEntryResourceSortTest
 					"title", expectedTitle
 				).toString(),
 				HTTPTestUtil.invokeToString(
-					null, endpoint + "?sort=" + URLCodec.encodeURL(sortString),
+					null,
+					getEndpoint(objectDefinition, testGroupId) + "?sort=" +
+						URLCodec.encodeURL(sortString),
 					Http.Method.GET),
 				JSONCompareMode.STRICT);
 		}

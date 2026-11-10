@@ -296,17 +296,15 @@ public class ObjectEntryResourceLocalizationTest
 		int tempFilesCount = _getTempFilesCount();
 
 		try (InputStream inputStream = HTTPTestUtil.invokeToInputStream(
-				null, endpoint, headers, Http.Method.GET)) {
+				null, endpoint, headers, Http.Method.GET);
+
+			ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
 
 			Assert.assertNotNull(inputStream);
 
-			try (ZipInputStream zipInputStream = new ZipInputStream(
-					inputStream)) {
+			zipInputStream.getNextEntry();
 
-				zipInputStream.getNextEntry();
-
-				Assert.assertNotNull(StringUtil.read(zipInputStream));
-			}
+			Assert.assertNotNull(StringUtil.read(zipInputStream));
 		}
 
 		Assert.assertEquals(tempFilesCount, _getTempFilesCount());

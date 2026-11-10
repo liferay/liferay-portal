@@ -203,11 +203,8 @@ public class ObjectEntryResourceCategorizationTest
 				depotEntry.getGroupId(), depotTaxonomyCategory1.getId(),
 				depotTaxonomyCategory1.getTaxonomyVocabularyId());
 
-		ObjectDefinition depotScopedObjectDefinition =
-			addDepotScopedObjectDefinition();
-
 		_testGetObjectEntryWithTaxonomyCategories(
-			depotEntry.getGroupId(), depotScopedObjectDefinition,
+			depotEntry.getGroupId(), addDepotScopedObjectDefinition(),
 			depotTaxonomyCategory1, depotTaxonomyCategory2);
 
 		// Site scope
@@ -513,14 +510,13 @@ public class ObjectEntryResourceCategorizationTest
 			TaxonomyCategory... taxonomyCategories)
 		throws Exception {
 
-		JSONArray jsonArray2 = JSONUtil.toJSONArray(
-			taxonomyCategories,
-			taxonomyCategory -> _toTaxonomyCategoryJSONObject(
-				groupId, taxonomyCategory, withEmbeddedTaxonomyCategory));
-
 		JSONAssert.assertEquals(
-			jsonArray2.toString(), jsonArray.toString(),
-			JSONCompareMode.NON_EXTENSIBLE);
+			JSONUtil.toJSONArray(
+				taxonomyCategories,
+				taxonomyCategory -> _toTaxonomyCategoryJSONObject(
+					groupId, taxonomyCategory, withEmbeddedTaxonomyCategory)
+			).toString(),
+			jsonArray.toString(), JSONCompareMode.NON_EXTENSIBLE);
 	}
 
 	private Map<String, Integer> _getAssetCounts(long assetEntryId) {

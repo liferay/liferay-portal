@@ -40,7 +40,6 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 				getObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
 			getObjectDefinition1(), getObjectDefinition2(), testGroupId);
-
 		assertPatchCustomObjectEntry(
 			jsonObject ->
 				getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +
@@ -57,7 +56,6 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 				getObjectDefinition1().getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
 			getObjectDefinition1(), getObjectDefinition2(), testGroupId);
-
 		assertPutCustomObjectEntry(
 			jsonObject ->
 				getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +

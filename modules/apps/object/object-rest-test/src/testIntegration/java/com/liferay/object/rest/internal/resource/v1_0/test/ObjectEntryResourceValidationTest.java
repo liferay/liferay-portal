@@ -90,6 +90,8 @@ public class ObjectEntryResourceValidationTest
 
 	@Test
 	public void testGetObjectEntryWithObjectValidationRule() throws Exception {
+		String errorMessage = RandomTestUtil.randomString();
+
 		ObjectField integerObjectField = objectFieldLocalService.getObjectField(
 			getObjectDefinition1().getObjectDefinitionId(),
 			OBJECT_FIELD_NAME_INTEGER);
@@ -97,8 +99,6 @@ public class ObjectEntryResourceValidationTest
 		ObjectField textObjectField = objectFieldLocalService.getObjectField(
 			getObjectDefinition1().getObjectDefinitionId(),
 			OBJECT_FIELD_NAME_TEXT);
-
-		String errorMessage = RandomTestUtil.randomString();
 
 		objectValidationRuleLocalService.addObjectValidationRule(
 			StringPool.BLANK, TestPropsValues.getUserId(),
@@ -301,9 +301,9 @@ public class ObjectEntryResourceValidationTest
 						String.valueOf(objectField1.getObjectFieldId())
 					).build()));
 
+		String originalName = PrincipalThreadLocal.getName();
 		PermissionChecker originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
-		String originalName = PrincipalThreadLocal.getName();
 
 		try {
 			User user = addUser("test1", "test1");
@@ -457,7 +457,6 @@ public class ObjectEntryResourceValidationTest
 
 			Assert.assertEquals(
 				errorMessage1, validationErrors[0].getErrorMessage());
-
 			Assert.assertEquals(
 				"No value was provided for required object field " +
 					"\"nameRequired\"",

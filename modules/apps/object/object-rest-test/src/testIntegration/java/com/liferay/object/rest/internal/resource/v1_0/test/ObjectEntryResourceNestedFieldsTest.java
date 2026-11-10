@@ -616,19 +616,22 @@ public class ObjectEntryResourceNestedFieldsTest
 
 		int nestedFieldDepth = 5;
 
-		String endpoint = StringBundler.concat(
-			getObjectDefinition1().getRESTContextPath(), "?fields=",
-			objectRelationship1.getName(), ".", objectRelationship2.getName(),
-			".", objectRelationship3.getName(), ".",
-			objectRelationship4.getName(), ".", objectRelationship5.getName(),
-			".", OBJECT_FIELD_NAME_TEXT, "&nestedFields=",
-			objectRelationship1.getName(), ",", objectRelationship2.getName(),
-			",", objectRelationship3.getName(), ",",
-			objectRelationship4.getName(), ",", objectRelationship5.getName(),
-			"&nestedFieldsDepth=", nestedFieldDepth);
-
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, endpoint, Http.Method.GET);
+			null,
+			StringBundler.concat(
+				getObjectDefinition1().getRESTContextPath(), "?fields=",
+				objectRelationship1.getName(), ".",
+				objectRelationship2.getName(), ".",
+				objectRelationship3.getName(), ".",
+				objectRelationship4.getName(), ".",
+				objectRelationship5.getName(), ".", OBJECT_FIELD_NAME_TEXT,
+				"&nestedFields=", objectRelationship1.getName(), ",",
+				objectRelationship2.getName(), ",",
+				objectRelationship3.getName(), ",",
+				objectRelationship4.getName(), ",",
+				objectRelationship5.getName(), "&nestedFieldsDepth=",
+				nestedFieldDepth),
+			Http.Method.GET);
 
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
 
@@ -957,18 +960,14 @@ public class ObjectEntryResourceNestedFieldsTest
 					featureContext.register(
 						(ContainerResponseFilter)
 							(containerRequestContext,
-							 containerResponseContext) -> {
-
-								com.liferay.object.rest.dto.v1_0.ObjectEntry
-									objectEntry =
-										(com.liferay.object.rest.dto.v1_0.
-											ObjectEntry)
-												containerResponseContext.
-													getEntity();
-
+							 containerResponseContext) ->
 								_registerUnsafeSupplierInvocations(
-									invocations, objectEntry, null);
-							},
+									invocations,
+									(com.liferay.object.rest.dto.v1_0.
+										ObjectEntry)
+											containerResponseContext.
+												getEntity(),
+									null),
 						Priorities.USER + 999);
 
 					return false;
@@ -1094,7 +1093,7 @@ public class ObjectEntryResourceNestedFieldsTest
 
 	@Test
 	public void testGetObjectEntryWithAuditEvents() throws Exception {
-		ListTypeDefinition picklistListTypeDefinition =
+		ListTypeDefinition listTypeDefinition =
 			listTypeDefinitionLocalService.addListTypeDefinition(
 				null, TestPropsValues.getUserId(),
 				Collections.singletonMap(
@@ -1135,7 +1134,7 @@ public class ObjectEntryResourceNestedFieldsTest
 						ObjectFieldConstants.DB_TYPE_DOUBLE, true, false, null,
 						"Height", "height", false),
 					ObjectFieldUtil.createObjectField(
-						picklistListTypeDefinition.getListTypeDefinitionId(),
+						listTypeDefinition.getListTypeDefinitionId(),
 						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST, null,
 						ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
 						"List Type Entry Key", "listTypeEntryKey", false,
@@ -1176,11 +1175,11 @@ public class ObjectEntryResourceNestedFieldsTest
 			TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId());
 
+		String originalName = PrincipalThreadLocal.getName();
 		NestedFieldsContext originalNestedFieldsContext =
 			NestedFieldsContextThreadLocal.getNestedFieldsContext();
 		PermissionChecker originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
-		String originalName = PrincipalThreadLocal.getName();
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
@@ -1413,7 +1412,7 @@ public class ObjectEntryResourceNestedFieldsTest
 		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 
 		listTypeDefinitionLocalService.deleteListTypeDefinition(
-			picklistListTypeDefinition);
+			listTypeDefinition);
 	}
 
 	@Test

@@ -189,7 +189,13 @@ public class ObjectEntryResourceCommentTest
 
 		_enableComments(getObjectDefinition1());
 
+		Company company = companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
 		String parentExternalReferenceCode = RandomTestUtil.randomString();
+
+		Assert.assertNull(
+			_commentManager.fetchComment(
+				company.getGroupId(), parentExternalReferenceCode));
 
 		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
 			new com.liferay.object.rest.dto.v1_0.ObjectEntry() {
@@ -211,13 +217,6 @@ public class ObjectEntryResourceCommentTest
 					};
 				}
 			};
-
-		Company company = companyLocalService.getCompany(
-			TestPropsValues.getCompanyId());
-
-		Assert.assertNull(
-			_commentManager.fetchComment(
-				company.getGroupId(), parentExternalReferenceCode));
 
 		ObjectEntryResource objectEntryResource = getObjectEntryResource(
 			getObjectDefinition1(), TestPropsValues.getUser());
@@ -325,15 +324,13 @@ public class ObjectEntryResourceCommentTest
 		String endpoint = _getDeletePatchPutEndpoint(
 			groupId, objectDefinition, objectEntryJSONObject);
 
-		endpoint = endpoint + "?nestedFields=systemProperties.comments";
-
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"systemProperties", JSONUtil.put("comments", commentsJSONArray)
 			).toString(),
-			endpoint, httpMethod);
+			endpoint + "?nestedFields=systemProperties.comments", httpMethod);
 
 		JSONObject systemPropertiesJSONObject = jsonObject.getJSONObject(
 			"systemProperties");
@@ -345,8 +342,6 @@ public class ObjectEntryResourceCommentTest
 			JSONArray commentsJSONArray, long groupId, boolean nestedFields,
 			ObjectDefinition objectDefinition)
 		throws Exception {
-
-		JSONArray jsonArray = null;
 
 		String endpoint = getEndpoint(objectDefinition, groupId);
 
@@ -364,6 +359,8 @@ public class ObjectEntryResourceCommentTest
 
 		JSONObject systemPropertiesJSONObject = jsonObject.getJSONObject(
 			"systemProperties");
+
+		JSONArray jsonArray = null;
 
 		if (systemPropertiesJSONObject != null) {
 			jsonArray = systemPropertiesJSONObject.getJSONArray("comments");
@@ -398,15 +395,14 @@ public class ObjectEntryResourceCommentTest
 				"text", RandomTestUtil.randomString()
 			));
 
-		String endpoint = getEndpoint(objectDefinition, groupId);
-
 		JSONObject objectEntryJSONObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"systemProperties", JSONUtil.put("comments", commentsJSONArray)
 			).toString(),
-			endpoint + "?nestedFields=systemProperties.comments",
+			getEndpoint(objectDefinition, groupId) +
+				"?nestedFields=systemProperties.comments",
 			Http.Method.POST);
 
 		long objectEntryId = objectEntryJSONObject.getLong("id");
@@ -419,10 +415,11 @@ public class ObjectEntryResourceCommentTest
 
 		Assert.assertFalse(serviceBuilderComments.isEmpty());
 
-		endpoint = _getDeletePatchPutEndpoint(
-			groupId, objectDefinition, objectEntryJSONObject);
-
-		HTTPTestUtil.invokeToJSONObject(null, endpoint, Http.Method.DELETE);
+		HTTPTestUtil.invokeToJSONObject(
+			null,
+			_getDeletePatchPutEndpoint(
+				groupId, objectDefinition, objectEntryJSONObject),
+			Http.Method.DELETE);
 
 		serviceBuilderComments = _commentManager.getComments(
 			objectDefinition.getClassName(), objectEntryId,
@@ -476,9 +473,6 @@ public class ObjectEntryResourceCommentTest
 			ObjectDefinition objectDefinition)
 		throws Exception {
 
-		JSONObject objectEntryJSONObject = postObjectEntry(
-			groupId, objectDefinition);
-
 		String externalReferenceCode = RandomTestUtil.randomString();
 
 		JSONArray commentsJSONArray = JSONUtil.putAll(
@@ -494,6 +488,9 @@ public class ObjectEntryResourceCommentTest
 			).put(
 				"text", RandomTestUtil.randomString()
 			));
+
+		JSONObject objectEntryJSONObject = postObjectEntry(
+			groupId, objectDefinition);
 
 		JSONAssert.assertEquals(
 			_toExpectedCommentsJSONArray(
@@ -551,7 +548,13 @@ public class ObjectEntryResourceCommentTest
 				).build(),
 				ServiceContextTestUtil.getServiceContext());
 
+		Company company = companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
 		String parentExternalReferenceCode = RandomTestUtil.randomString();
+
+		Assert.assertNull(
+			_commentManager.fetchComment(
+				company.getGroupId(), parentExternalReferenceCode));
 
 		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
 			new com.liferay.object.rest.dto.v1_0.ObjectEntry() {
@@ -576,13 +579,6 @@ public class ObjectEntryResourceCommentTest
 					};
 				}
 			};
-
-		Company company = companyLocalService.getCompany(
-			TestPropsValues.getCompanyId());
-
-		Assert.assertNull(
-			_commentManager.fetchComment(
-				company.getGroupId(), parentExternalReferenceCode));
 
 		ObjectEntryResource objectEntryResource = getObjectEntryResource(
 			getObjectDefinition1(), TestPropsValues.getUser());

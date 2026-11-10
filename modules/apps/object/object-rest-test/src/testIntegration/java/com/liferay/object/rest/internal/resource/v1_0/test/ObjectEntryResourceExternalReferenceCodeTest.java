@@ -103,13 +103,12 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 				).build(),
 				ServiceContextTestUtil.getServiceContext());
 
-		long objectEntryId = serviceBuilderObjectEntry.getObjectEntryId();
-
 		ObjectEntryResource objectEntryResource = getObjectEntryResource(
 			objectDefinition, TestPropsValues.getUser());
 
 		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
-			objectEntryResource.getObjectEntry(objectEntryId);
+			objectEntryResource.getObjectEntry(
+				serviceBuilderObjectEntry.getObjectEntryId());
 
 		Creator creator = objectEntry.getCreator();
 
@@ -306,7 +305,6 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 					"externalReferenceCode", ERC_VALUE_1
 				).toString(),
 				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
-
 		Assert.assertEquals(
 			400,
 			HTTPTestUtil.invokeToHttpCode(
@@ -327,7 +325,6 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 				).toString(),
 				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
 				Http.Method.POST));
-
 		Assert.assertEquals(
 			400,
 			HTTPTestUtil.invokeToHttpCode(

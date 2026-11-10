@@ -219,7 +219,6 @@ public class ObjectEntryResourceObjectFieldTest
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
 
 		Assert.assertEquals(2, itemsJSONArray.length());
-
 		Assert.assertEquals(
 			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_MANAGER,
 			JSONUtil.getValue(
@@ -243,7 +242,6 @@ public class ObjectEntryResourceObjectFieldTest
 		itemsJSONArray = jsonObject.getJSONArray("items");
 
 		Assert.assertEquals(2, itemsJSONArray.length());
-
 		Assert.assertEquals(
 			"Regular Role",
 			JSONUtil.getValue(
@@ -387,9 +385,7 @@ public class ObjectEntryResourceObjectFieldTest
 		String timeZoneId = user.getTimeZoneId();
 
 		try {
-			String testTimeZoneId = "Europe/Madrid";
-
-			user.setTimeZoneId(testTimeZoneId);
+			user.setTimeZoneId("Europe/Madrid");
 
 			user = userLocalService.updateUser(user);
 

@@ -66,7 +66,7 @@ public class ObjectEntryResourceScopeTest
 
 		Group testGroup = groupLocalService.fetchGroup(testGroupId);
 
-		_siteScopedObjectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			getSiteScopedObjectDefinition1(), OBJECT_FIELD_NAME_1,
 			OBJECT_FIELD_VALUE_1);
 
@@ -77,7 +77,7 @@ public class ObjectEntryResourceScopeTest
 					getSiteScopedObjectDefinition1(),
 					testGroup.getExternalReferenceCode()),
 				"/by-external-reference-code/",
-				_siteScopedObjectEntry1.getExternalReferenceCode()),
+				objectEntry.getExternalReferenceCode()),
 			Http.Method.DELETE);
 
 		assertNotFound(
@@ -85,13 +85,12 @@ public class ObjectEntryResourceScopeTest
 				null,
 				StringBundler.concat(
 					getSiteScopedObjectDefinition1().getRESTContextPath(),
-					StringPool.SLASH,
-					_siteScopedObjectEntry1.getObjectEntryId()),
+					StringPool.SLASH, objectEntry.getObjectEntryId()),
 				Http.Method.GET));
 
 		// Site scope group ID
 
-		_siteScopedObjectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			getSiteScopedObjectDefinition1(), OBJECT_FIELD_NAME_1,
 			OBJECT_FIELD_VALUE_1);
 
@@ -101,7 +100,7 @@ public class ObjectEntryResourceScopeTest
 				getEndpoint(
 					getSiteScopedObjectDefinition1(), testGroup.getGroupId()),
 				"/by-external-reference-code/",
-				_siteScopedObjectEntry1.getExternalReferenceCode()),
+				objectEntry.getExternalReferenceCode()),
 			Http.Method.DELETE);
 
 		assertNotFound(
@@ -109,13 +108,12 @@ public class ObjectEntryResourceScopeTest
 				null,
 				StringBundler.concat(
 					getSiteScopedObjectDefinition1().getRESTContextPath(),
-					StringPool.SLASH,
-					_siteScopedObjectEntry1.getObjectEntryId()),
+					StringPool.SLASH, objectEntry.getObjectEntryId()),
 				Http.Method.GET));
 
 		// Site scope group key
 
-		_siteScopedObjectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			getSiteScopedObjectDefinition1(), OBJECT_FIELD_NAME_1,
 			OBJECT_FIELD_VALUE_1);
 
@@ -125,7 +123,7 @@ public class ObjectEntryResourceScopeTest
 				getEndpoint(
 					getSiteScopedObjectDefinition1(), testGroup.getGroupKey()),
 				"/by-external-reference-code/",
-				_siteScopedObjectEntry1.getExternalReferenceCode()),
+				objectEntry.getExternalReferenceCode()),
 			Http.Method.DELETE);
 
 		assertNotFound(
@@ -133,8 +131,7 @@ public class ObjectEntryResourceScopeTest
 				null,
 				StringBundler.concat(
 					getSiteScopedObjectDefinition1().getRESTContextPath(),
-					StringPool.SLASH,
-					_siteScopedObjectEntry1.getObjectEntryId()),
+					StringPool.SLASH, objectEntry.getObjectEntryId()),
 				Http.Method.GET));
 	}
 
@@ -147,7 +144,7 @@ public class ObjectEntryResourceScopeTest
 
 		String objectFieldValue = RandomTestUtil.randomString();
 
-		_siteScopedObjectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			getSiteScopedObjectDefinition1(), OBJECT_FIELD_NAME_1,
 			objectFieldValue);
 
@@ -161,7 +158,7 @@ public class ObjectEntryResourceScopeTest
 							getSiteScopedObjectDefinition1(),
 							testGroup.getExternalReferenceCode()),
 						"/by-external-reference-code/",
-						_siteScopedObjectEntry1.getExternalReferenceCode()),
+						objectEntry.getExternalReferenceCode()),
 					Http.Method.GET),
 				"Object/" + OBJECT_FIELD_NAME_1));
 
@@ -177,7 +174,7 @@ public class ObjectEntryResourceScopeTest
 							getSiteScopedObjectDefinition1(),
 							testGroup.getGroupId()),
 						"/by-external-reference-code/",
-						_siteScopedObjectEntry1.getExternalReferenceCode()),
+						objectEntry.getExternalReferenceCode()),
 					Http.Method.GET),
 				"Object/" + OBJECT_FIELD_NAME_1));
 
@@ -193,7 +190,7 @@ public class ObjectEntryResourceScopeTest
 							getSiteScopedObjectDefinition1(),
 							testGroup.getGroupKey()),
 						"/by-external-reference-code/",
-						_siteScopedObjectEntry1.getExternalReferenceCode()),
+						objectEntry.getExternalReferenceCode()),
 					Http.Method.GET),
 				"Object/" + OBJECT_FIELD_NAME_1));
 	}
@@ -254,7 +251,7 @@ public class ObjectEntryResourceScopeTest
 					Http.Method.GET));
 		}
 
-		_siteScopedObjectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntryTestUtil.addObjectEntry(
 			getSiteScopedObjectDefinition1(), OBJECT_FIELD_NAME_1,
 			OBJECT_FIELD_VALUE_1);
 
@@ -442,7 +439,5 @@ public class ObjectEntryResourceScopeTest
 
 		Assert.assertEquals(0, itemsJSONArray.length());
 	}
-
-	private ObjectEntry _siteScopedObjectEntry1;
 
 }
