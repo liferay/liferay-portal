@@ -594,8 +594,8 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 
 			_createTestTable(columnName, "LONG", tableName);
 
-			// When mysql is configured with lower_case_table_names = 1
-			// DatabaseMetaData.storesLowerCaseIdentifiers returns true
+			// When Mysql is configured with lower_case_table_names = 1
+			// DatabaseMetaData#storesLowerCaseIdentifiers returns true
 
 			DatabaseMetaData proxyDatabaseMetaData =
 				ProxyUtil.newDelegateProxyInstance(
