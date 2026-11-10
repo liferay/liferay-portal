@@ -18,10 +18,13 @@ import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectEntryTestUtil;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -42,6 +45,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -90,6 +94,7 @@ public class GetContentItemMentionUsersStrutsActionTest {
 	public void testExecute() throws Exception {
 		_testExecute();
 		_testExecuteWithClassNameId();
+		_testExecuteWithCompanyScopedObjectDefinition();
 		_testExecuteWithKeywords();
 		_testExecuteWithManyUsers();
 		_testExecuteWithoutAddDiscussionPermission();
@@ -387,6 +392,51 @@ public class GetContentItemMentionUsersStrutsActionTest {
 		_objectEntryLocalService.deleteObjectEntry(objectEntry);
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry);
+	}
+
+	private void _testExecuteWithCompanyScopedObjectDefinition()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition);
+
+		Group group = GroupTestUtil.addGroup();
+
+		group.setClassNameId(
+			PortalUtil.getClassNameId(objectDefinition.getClassName()));
+		group.setClassPK(objectEntry.getObjectEntryId());
+
+		group = _groupLocalService.updateGroup(group);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CMS));
+
+		User user1 = UserTestUtil.addUser(group.getGroupId());
+		User user2 = UserTestUtil.addUser();
+
+		Role role = _addViewRole(objectEntry, user1, user2);
+
+		JSONArray usersJSONArray = _execute(
+			null, layout, objectEntry, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			usersJSONArray.toString(), 1, usersJSONArray.length());
+
+		JSONObject userJSONObject = usersJSONArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			user1.getExternalReferenceCode(), userJSONObject.getString("id"));
+
+		_groupLocalService.deleteGroup(group);
+		_layoutLocalService.deleteLayout(layout);
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+		_roleLocalService.deleteRole(role);
+		_userLocalService.deleteUser(user1);
+		_userLocalService.deleteUser(user2);
 	}
 
 	private void _testExecuteWithKeywords() throws Exception {
