@@ -50,6 +50,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -222,6 +223,27 @@ public class DBCopyTablesProcess {
 			Statement statement = targetConnection.createStatement()) {
 
 			DatabaseMetaData databaseMetaData = targetConnection.getMetaData();
+
+			Set<String> longColumnNames = new HashSet<>();
+
+			try (ResultSet resultSet = databaseMetaData.getColumns(
+					targetConnection.getCatalog(), targetConnection.getSchema(),
+					null, null)) {
+
+				while (resultSet.next()) {
+					if ((resultSet.getInt("DATA_TYPE") != Types.VARCHAR) ||
+						(resultSet.getInt("COLUMN_SIZE") <=
+							_POSTGRESQL_STRING_INDEX_MAX_LENGTH)) {
+
+						continue;
+					}
+
+					longColumnNames.add(
+						resultSet.getString("TABLE_NAME") + "." +
+							resultSet.getString("COLUMN_NAME"));
+				}
+			}
+
 			Set<String> targetNames = new HashSet<>();
 
 			try (ResultSet resultSet = databaseMetaData.getTables(
@@ -232,6 +254,8 @@ public class DBCopyTablesProcess {
 					targetNames.add(resultSet.getString("TABLE_NAME"));
 				}
 			}
+
+			Map<String, String> indexTypes = _getIndexTypes(sourceConnection);
 
 			for (Map.Entry<String, List<String>> entry :
 					_sourceColumnNamesMap.entrySet()) {
@@ -283,11 +307,10 @@ public class DBCopyTablesProcess {
 						continue;
 					}
 
-					String[] indexColumnNames = indexMetadata.getColumnNames();
+					List<String> indexColumnNames = ListUtil.fromArray(
+						indexMetadata.getColumnNames());
 
-					if (!columnNames.containsAll(
-							ListUtil.fromArray(indexColumnNames))) {
-
+					if (!columnNames.containsAll(indexColumnNames)) {
 						System.out.println(
 							StringBundler.concat(
 								"Unable to create index ", indexName,
@@ -305,7 +328,8 @@ public class DBCopyTablesProcess {
 
 						targetIndexName = StringUtil.toLowerCase(
 							IndexMetadataFactoryUtil.createIndexName(
-								targetTableName, indexColumnNames));
+								targetTableName,
+								indexMetadata.getColumnNames()));
 
 						System.out.println(
 							StringBundler.concat(
@@ -318,18 +342,42 @@ public class DBCopyTablesProcess {
 								"already exists"));
 					}
 
-					IndexMetadata targetIndexMetadata = new IndexMetadata(
-						_getQuotedName(targetIndexName),
-						_getQuotedName(targetTableName),
-						indexMetadata.isUnique(),
-						ArrayUtil.toStringArray(
-							ListUtil.toList(
-								ListUtil.fromArray(indexColumnNames),
-								this::_getQuotedName)));
+					String indexColumnsSQL = StringUtil.merge(
+						ListUtil.toList(
+							indexColumnNames,
+							indexColumnName -> {
+								if (!longColumnNames.contains(
+										targetTableName + "." +
+											indexColumnName)) {
+
+									return _getQuotedName(indexColumnName);
+								}
+
+								return StringBundler.concat(
+									"left(", _getQuotedName(indexColumnName),
+									", ", _POSTGRESQL_STRING_INDEX_MAX_LENGTH,
+									")");
+							}),
+						", ");
+
+					String indexType = indexTypes.get(
+						tableName + "." + indexName);
+
+					String uniqueSQL = StringPool.BLANK;
+
+					if (indexMetadata.isUnique() &&
+						!Objects.equals(indexType, "filtered")) {
+
+						uniqueSQL = "unique ";
+					}
 
 					try {
 						statement.executeUpdate(
-							targetIndexMetadata.getCreateSQL(null));
+							StringBundler.concat(
+								"create ", uniqueSQL, "index ",
+								_getQuotedName(targetIndexName), " on ",
+								_getQuotedName(targetTableName), " (",
+								indexColumnsSQL, ")"));
 					}
 					catch (SQLException sqlException) {
 						System.out.println(
@@ -339,6 +387,18 @@ public class DBCopyTablesProcess {
 								": ", sqlException.getMessage()));
 
 						continue;
+					}
+
+					if ((indexType != null) ||
+						indexColumnsSQL.contains("left(")) {
+
+						System.out.println(
+							StringBundler.concat(
+								"Created ",
+								(indexType == null) ? "" : indexType + " ",
+								"index ", indexName, " on table ", tableName,
+								_partitionMessage, " as a ", uniqueSQL,
+								"btree index on (", indexColumnsSQL, ")"));
 					}
 
 					targetIndexMetadatas.add(indexMetadata);
@@ -860,6 +920,63 @@ public class DBCopyTablesProcess {
 		return indexMetadatas;
 	}
 
+	private Map<String, String> _getIndexTypes(Connection connection)
+		throws SQLException {
+
+		DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+		String databaseProductName = databaseMetaData.getDatabaseProductName();
+
+		String schemaName = null;
+		String sql = null;
+
+		if (databaseProductName.equals("MariaDB") ||
+			databaseProductName.equals("MySQL")) {
+
+			schemaName = connection.getCatalog();
+			sql =
+				"select distinct table_name, index_name, index_type from " +
+					"information_schema.statistics where table_schema = ? " +
+						"and index_type not in ('BTREE', 'HASH')";
+		}
+		else if (databaseProductName.equals("Microsoft SQL Server")) {
+			schemaName = connection.getSchema();
+			sql =
+				"select object_name(object_id), name, 'filtered' from " +
+					"sys.indexes where has_filter = 1 and " +
+						"object_schema_name(object_id) = ?";
+		}
+		else if (databaseProductName.equals("Oracle")) {
+			schemaName = connection.getSchema();
+			sql =
+				"select table_name, index_name, ityp_owner || '.' || " +
+					"ityp_name from all_indexes where owner = ? and " +
+						"index_type = 'DOMAIN'";
+		}
+		else {
+			return Collections.emptyMap();
+		}
+
+		Map<String, String> indexTypes = new TreeMap<>(
+			String.CASE_INSENSITIVE_ORDER);
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				sql)) {
+
+			preparedStatement.setString(1, schemaName);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					indexTypes.put(
+						resultSet.getString(1) + "." + resultSet.getString(2),
+						resultSet.getString(3));
+				}
+			}
+		}
+
+		return indexTypes;
+	}
+
 	private String _getPostgreSQLColumnType(
 		int columnSize, int dataType, int decimalDigits) {
 
@@ -1167,6 +1284,8 @@ public class DBCopyTablesProcess {
 	}
 
 	private static final int _POSTGRESQL_NAME_MAX_LENGTH = 63;
+
+	private static final int _POSTGRESQL_STRING_INDEX_MAX_LENGTH = 676;
 
 	private static final int _SQL_TYPE_ORACLE_BINARY_DOUBLE = 101;
 
