@@ -32,6 +32,12 @@ type TChannel = {
 	type?: string;
 };
 
+type TChannelAccount = {
+	accountId?: number;
+	channelAccountId?: number;
+	channelId?: number;
+};
+
 export class HeadlessCommerceAdminChannelApiHelper {
 	readonly apiHelpers: ApiHelpers | DataApiHelpers;
 	readonly basePath: string;
@@ -115,6 +121,21 @@ export class HeadlessCommerceAdminChannelApiHelper {
 		}
 
 		return channel;
+	}
+
+	async postChannelAccount(
+		accountId: number,
+		channelId: number
+	): Promise<TChannelAccount> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/channels/${channelId}/channel-accounts`,
+			{
+				data: {
+					accountId,
+					channelId,
+				},
+			}
+		);
 	}
 
 	async postDefaultProductDisplayPage(
