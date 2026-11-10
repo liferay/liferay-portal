@@ -418,8 +418,8 @@ public class JenkinsResultsParserUtilTest
 				executionRequest -> hasCommand(
 					executionRequest, "aws s3 ls --recursive",
 					JenkinsResultsParserUtil.combine(
-						s3BucketPath, "/persistent-resources/portal-bundle", "/",
-						portalBranchName, "_")))
+						s3BucketPath, "/persistent-resources/portal-bundle",
+						"/", portalBranchName, "_")))
 		);
 
 		dataJSONObjects.clear();
@@ -609,6 +609,7 @@ public class JenkinsResultsParserUtilTest
 
 		String portalBranchName = RandomTestUtil.randomString();
 		String portalGitCommit = RandomTestUtil.randomSHA();
+
 		String portalGitCommitShort = portalGitCommit.substring(0, 7);
 
 		String portalBundleS3ObjectPath = JenkinsResultsParserUtil.combine(
