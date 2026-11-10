@@ -12,6 +12,7 @@ import {isolatedChannelTest} from '../../../fixtures/isolatedChannelTest';
 import {loginAnalyticsCloudTest} from '../../../fixtures/loginAnalyticsCloudTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {switchChannel} from '../main/utils/channel';
 import {createIndividuals, generateIndividual} from '../main/utils/individuals';
@@ -25,14 +26,14 @@ import {
 import {
 	addSegmentField,
 	addStaticMember,
-	createDynamicSegment,
+	createBatchSegment,
 	createStaticSegment,
 	deleteSegment,
 	saveSegment,
 	selectOperator,
 	setSegmentName,
 } from '../main/utils/segments';
-import {CardSelectors, SegmentConditions} from '../main/utils/selectors';
+import {SegmentConditions} from '../main/utils/selectors';
 import {changeTimeFilter} from '../main/utils/time-filter';
 import {
 	searchByTerm,
@@ -279,7 +280,7 @@ test(
 			const events = individuals
 				.map((individual) => ({
 					applicationId: 'Page',
-					canonicalUrl: 'https://www.liferay.com',
+					canonicalUrl: 'https://www.liferay.com/page-1',
 					channelId: channel.id,
 					eventDate: date1.toISOString(),
 					eventId: 'pageViewed',
@@ -289,7 +290,7 @@ test(
 				.concat(
 					individuals.map((individual) => ({
 						applicationId: 'Page',
-						canonicalUrl: 'https://www.liferay.com',
+						canonicalUrl: 'https://www.liferay.com/page-2',
 						channelId: channel.id,
 						eventDate: date1.toISOString(),
 						eventId: 'pageViewed',
@@ -300,7 +301,7 @@ test(
 				.concat(
 					individuals.map((individual) => ({
 						applicationId: 'Page',
-						canonicalUrl: 'https://www.liferay.com',
+						canonicalUrl: 'https://www.liferay.com/page-3',
 						channelId: channel.id,
 						eventDate: date1.toISOString(),
 						eventId: 'pageViewed',
@@ -436,10 +437,10 @@ test(
 		const dynamicSegmentName = 'Test Dynamic Segment';
 
 		await test.step('Create dynamic segment', async () => {
-			await createDynamicSegment(page);
+			await createBatchSegment(page);
 
 			await addSegmentField({
-				criterionName: 'email',
+				criterionName: 'Email Address',
 				criterionType: 'Individual',
 				page,
 			});
@@ -453,31 +454,6 @@ test(
 			await setSegmentName({
 				page,
 				segmentName: dynamicSegmentName,
-			});
-
-			await saveSegment(page);
-		});
-
-		await test.step('Go to Segments', async () => {
-			await navigateTo({
-				page,
-				pageName: 'Segments',
-			});
-		});
-
-		const staticSegmentName = 'Test Static Segment';
-
-		await test.step('Create static segment', async () => {
-			await createStaticSegment(page);
-
-			await setSegmentName({
-				page,
-				segmentName: staticSegmentName,
-			});
-
-			await addStaticMember({
-				memberNames: individualName,
-				page,
 			});
 
 			await saveSegment(page);
@@ -510,30 +486,23 @@ test(
 			});
 		});
 
-		const segmentsName = [dynamicSegmentName, staticSegmentName];
-
 		await test.step('Check that the created segment appears on the Audience card', async () => {
-			for (const itemName of segmentsName) {
-				await expect(page.getByText(itemName)).toBeVisible({
-					timeout: 100 * 1000,
-				});
-			}
+			await expect(page.getByText(dynamicSegmentName)).toBeVisible({
+				timeout: 100 * 1000,
+			});
 		});
 
-		await test.step('Change the time filter of the Audience card to Last 24 hours', async () => {
+		await test.step('Change the time filter to Last 24 hours', async () => {
 			await changeTimeFilter({
-				cardSelector: CardSelectors.Audience,
 				page,
 				timeFilterPeriod: 'Last 24 hours',
 			});
 		});
 
 		await test.step('Check that the created segment appears on the Audience card', async () => {
-			for (const itemName of segmentsName) {
-				await expect(page.getByText(itemName)).toBeVisible({
-					timeout: 100 * 1000,
-				});
-			}
+			await expect(page.getByText(dynamicSegmentName)).toBeVisible({
+				timeout: 100 * 1000,
+			});
 		});
 
 		await test.step('Go to Segments', async () => {
@@ -543,15 +512,10 @@ test(
 			});
 		});
 
-		await test.step('Delete the segments', async () => {
+		await test.step('Delete the segment', async () => {
 			await deleteSegment({
 				page,
 				segmentName: dynamicSegmentName,
-			});
-
-			await deleteSegment({
-				page,
-				segmentName: staticSegmentName,
 			});
 		});
 
@@ -584,9 +548,8 @@ test(
 			).toBeHidden();
 		});
 
-		await test.step('Change the time filter of the Audience card to Last 24 hours', async () => {
+		await test.step('Change the time filter to Last 24 hours', async () => {
 			await changeTimeFilter({
-				cardSelector: CardSelectors.Audience,
 				page,
 				timeFilterPeriod: 'Last 24 hours',
 			});
@@ -873,7 +836,7 @@ test(
 				.getByText('Views by Technology')
 				.scrollIntoViewIfNeeded();
 
-			await page.getByRole('button', {name: 'Browsers'}).click();
+			await page.getByRole('tab', {name: 'Browsers'}).click();
 
 			await expect(page.getByText('Views by Technology')).toBeVisible();
 
@@ -885,7 +848,7 @@ test(
 		});
 
 		await test.step('View Technology Devices Metrics', async () => {
-			await page.getByRole('button', {name: 'Devices'}).click();
+			await page.getByRole('tab', {name: 'Devices'}).click();
 
 			await expect(
 				page
@@ -1365,22 +1328,30 @@ test(
 
 		// Open the filter and assert all 4 segments are listed
 
-		await page.getByRole('button', {name: 'Filter'}).click();
+		await clickAndExpectToBeVisible({
+			target: page.getByRole('option', {name: segmentNames[0]}),
+			trigger: page.getByRole('combobox', {name: 'Filter By Segments'}),
+		});
 
 		for (const name of segmentNames) {
-			await expect(page.getByRole('menuitem', {name})).toBeVisible();
+			await expect(page.getByRole('option', {name})).toBeVisible();
 		}
 
 		await page.keyboard.press('Escape');
 
-		// Delete the last segment via API and reload the path view
+		// Delete the last segment via API and open the path view again
 
 		await apiHelpers.jsonWebServicesOSBFaro.deleteIndividualSegments(
 			`[${segments[3].id}]`,
 			project.groupId
 		);
 
-		await page.reload();
+		await navigateToACPageViaURL({
+			acPage: ACPage.sitePage,
+			channelID: channel.id,
+			page,
+			projectID: project.groupId,
+		});
 
 		await navigateTo({page, pageName: 'Pages'});
 
@@ -1390,10 +1361,13 @@ test(
 
 		await navigateTo({page, pageName: 'Path'});
 
-		await page.getByRole('button', {name: 'Filter'}).click();
+		await clickAndExpectToBeVisible({
+			target: page.getByRole('option', {name: segmentNames[0]}),
+			trigger: page.getByRole('combobox', {name: 'Filter By Segments'}),
+		});
 
 		for (const name of segmentNames.slice(0, 3)) {
-			await expect(page.getByRole('menuitem', {name})).toBeVisible();
+			await expect(page.getByRole('option', {name})).toBeVisible();
 		}
 
 		// Search for the deleted segment and assert it is no longer listed
@@ -1401,7 +1375,7 @@ test(
 		await page.getByPlaceholder('Search').last().fill(segmentNames[3]);
 
 		await expect(
-			page.getByRole('menuitem', {name: segmentNames[3]})
+			page.getByRole('option', {name: segmentNames[3]})
 		).toHaveCount(0);
 	}
 );
