@@ -92,7 +92,7 @@ test(
 	},
 	async ({analyticsChannel: channel, apiHelpers, page, project}) => {
 
-		// Seed two known individuals and one anonymous identity so the audience card splits 2 known / 1 anonymous (66.67% / 33.33%)
+		// Seed two known individuals and one anonymous identity so the audience card splits 2 known / 1 anonymous (66.7% / 33.3%)
 
 		const knownIndividualA = generateIndividual({name: 'ac'});
 		const knownIndividualB = generateIndividual({name: 'liferay'});
@@ -254,10 +254,10 @@ test(
 			})
 		).toBeVisible();
 
-		// Audience card first donut splits 66.67% known / 33.33% anonymous
+		// Audience card first donut splits 66.7% known / 33.3% anonymous
 
-		await expect(page.getByText('66.67%')).toBeVisible();
-		await expect(page.getByText('33.33%')).toBeVisible();
+		await expect(page.getByText('66.7%')).toBeVisible();
+		await expect(page.getByText('33.3%')).toBeVisible();
 
 		// Audience card second donut splits 50% segmented / 50% unsegmented
 
