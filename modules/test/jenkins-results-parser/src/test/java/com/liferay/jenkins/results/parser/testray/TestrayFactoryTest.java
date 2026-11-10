@@ -367,8 +367,8 @@ public class TestrayFactoryTest
 		Job job, TestrayBuild testrayBuild) {
 
 		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
-			testrayBuild,
-			_mockAxisTestClassGroup(batchName, enhancedBatchName, job));
+			_mockAxisTestClassGroup(batchName, enhancedBatchName, job),
+			testrayBuild);
 
 		testEquals(expectedRunIdString, testrayRun.getRunIdString());
 	}
