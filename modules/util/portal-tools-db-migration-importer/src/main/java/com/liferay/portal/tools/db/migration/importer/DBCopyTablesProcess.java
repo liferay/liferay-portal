@@ -249,13 +249,36 @@ public class DBCopyTablesProcess {
 				for (IndexMetadata indexMetadata :
 						_getIndexMetadatas(sourceConnection, tableName)) {
 
-					if (ListUtil.exists(
+					String indexName = indexMetadata.getIndexName();
+
+					List<IndexMetadata> matchingIndexMetadatas =
+						ListUtil.filter(
 							targetIndexMetadatas,
 							targetIndexMetadata ->
-								StringUtil.equalsIgnoreCase(
+								targetIndexMetadata.equals(indexMetadata) ||
+								(StringUtil.equalsIgnoreCase(
 									targetIndexMetadata.getIndexName(),
-									indexMetadata.getIndexName()) ||
-								targetIndexMetadata.equals(indexMetadata))) {
+									indexName) &&
+								 !columnNames.containsAll(
+									 ListUtil.fromArray(
+										 targetIndexMetadata.
+											 getColumnNames()))));
+
+					if (!matchingIndexMetadatas.isEmpty()) {
+						IndexMetadata matchingIndexMetadata =
+							matchingIndexMetadatas.get(0);
+
+						if (indexMetadata.isUnique() &&
+							!matchingIndexMetadata.isUnique()) {
+
+							System.out.println(
+								StringBundler.concat(
+									"Unable to create unique index ", indexName,
+									" on table ", tableName, _partitionMessage,
+									" because index ",
+									matchingIndexMetadata.getIndexName(),
+									" already exists on the same columns"));
+						}
 
 						continue;
 					}
@@ -267,29 +290,31 @@ public class DBCopyTablesProcess {
 
 						System.out.println(
 							StringBundler.concat(
-								"Unable to create index ",
-								indexMetadata.getIndexName(), " on table ",
-								tableName, _partitionMessage,
+								"Unable to create index ", indexName,
+								" on table ", tableName, _partitionMessage,
 								" because one of its columns is an ",
 								"expression"));
 
 						continue;
 					}
 
-					String targetIndexName = StringUtil.toLowerCase(
-						indexMetadata.getIndexName());
+					String targetIndexName = StringUtil.toLowerCase(indexName);
 
-					if (targetNames.contains(targetIndexName)) {
+					if (_isLongName(targetIndexName) ||
+						targetNames.contains(targetIndexName)) {
+
 						targetIndexName = StringUtil.toLowerCase(
 							IndexMetadataFactoryUtil.createIndexName(
 								targetTableName, indexColumnNames));
 
 						System.out.println(
 							StringBundler.concat(
-								"Renaming index ", indexMetadata.getIndexName(),
-								" on table ", tableName, _partitionMessage,
-								" to ", targetIndexName,
-								" because a relation with the same name ",
+								"Renaming index ", indexName, " on table ",
+								tableName, _partitionMessage, " to ",
+								targetIndexName,
+								" because its name is longer than ",
+								_POSTGRESQL_NAME_MAX_LENGTH,
+								" bytes or a relation with the same name ",
 								"already exists"));
 					}
 
@@ -309,10 +334,9 @@ public class DBCopyTablesProcess {
 					catch (SQLException sqlException) {
 						System.out.println(
 							StringBundler.concat(
-								"Unable to create index ",
-								indexMetadata.getIndexName(), " on table ",
-								tableName, _partitionMessage, ": ",
-								sqlException.getMessage()));
+								"Unable to create index ", indexName,
+								" on table ", tableName, _partitionMessage,
+								": ", sqlException.getMessage()));
 
 						continue;
 					}
@@ -353,14 +377,24 @@ public class DBCopyTablesProcess {
 					continue;
 				}
 
-				statement.executeUpdate(
-					StringBundler.concat(
-						"alter table ",
-						_getQuotedName(StringUtil.toLowerCase(customTableName)),
-						" add primary key (",
-						StringUtil.merge(
-							primaryKeyColumnNamesMap.values(), ", "),
-						")"));
+				try {
+					statement.executeUpdate(
+						StringBundler.concat(
+							"alter table ",
+							_getQuotedName(
+								StringUtil.toLowerCase(customTableName)),
+							" add primary key (",
+							StringUtil.merge(
+								primaryKeyColumnNamesMap.values(), ", "),
+							")"));
+				}
+				catch (SQLException sqlException) {
+					System.out.println(
+						StringBundler.concat(
+							"Unable to add primary key to table ",
+							customTableName, _partitionMessage, ": ",
+							sqlException.getMessage()));
+				}
 			}
 		}
 	}
