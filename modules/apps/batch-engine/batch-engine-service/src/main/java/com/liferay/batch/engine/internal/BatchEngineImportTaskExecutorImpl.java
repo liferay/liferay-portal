@@ -148,7 +148,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 			_updateBatchEngineImportTask(
 				BatchEngineTaskExecuteStatus.FAILED, batchEngineImportTask,
-				throwable);
+				batchEngineTaskItemDelegate, throwable);
 
 			return;
 		}
@@ -192,7 +192,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 			_updateBatchEngineImportTask(
 				BatchEngineTaskExecuteStatus.COMPLETED, batchEngineImportTask,
-				null);
+				batchEngineTaskItemDelegate, null);
 		}
 		catch (Throwable throwable) {
 			_log.error(
@@ -202,7 +202,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 			_updateBatchEngineImportTask(
 				BatchEngineTaskExecuteStatus.FAILED, batchEngineImportTask,
-				throwable);
+				batchEngineTaskItemDelegate, throwable);
 		}
 		finally {
 			file.delete();
@@ -752,7 +752,9 @@ public class BatchEngineImportTaskExecutorImpl
 
 	private void _updateBatchEngineImportTask(
 		BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus,
-		BatchEngineImportTask batchEngineImportTask, Throwable throwable) {
+		BatchEngineImportTask batchEngineImportTask,
+		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate,
+		Throwable throwable) {
 
 		batchEngineImportTask.setEndTime(new Date());
 		batchEngineImportTask.setErrorMessage(
@@ -763,7 +765,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 		batchEngineImportTask =
 			_batchEngineImportTaskLocalService.updateBatchEngineImportTask(
-				batchEngineImportTask);
+				batchEngineImportTask, batchEngineTaskItemDelegate);
 
 		BatchEngineTaskCallbackUtil.sendCallback(
 			batchEngineImportTask.getCallbackURL(),
