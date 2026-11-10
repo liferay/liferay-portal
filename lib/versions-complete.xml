@@ -746,7 +746,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.google.docs.jar!org.freemarker.jar</file-name>
-				<version>2.3.33.LIFERAY-PATCHED-4</version>
+				<version>2.3.33.LIFERAY-PATCHED-6</version>
 				<project-name>org.freemarker.freemarker</project-name>
 				<licenses>
 					<license>
@@ -2556,6 +2556,30 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>com.liferay.portal.remote.jaxrs.whiteboard.jar!org.apache.aries.component.dsl.jar</file-name>
+				<version>1.2.2.LIFERAY-PATCHED-1</version>
+				<project-name>org.apache.aries.component-dsl.component-dsl</project-name>
+				<project-url>https://www.apache.org/org.apache.aries.component-dsl.parent/org.apache.aries.component-dsl.component-dsl/</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.remote.jaxrs.whiteboard.jar!org.apache.aries.jax.rs.whiteboard.jar</file-name>
+				<version>2.0.0.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1</version>
+				<project-name>Apache Aries JAX-RS Whiteboard Jakarta</project-name>
+				<project-url>https://www.apache.org/org.apache.aries.jax.rs/org.apache.aries.jax.rs.whiteboard/</project-url>
+				<licenses>
+					<license>
+						<license-name>LGPL 2.1</license-name>
+						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>com.liferay.portal.remote.jaxrs.whiteboard.jar!wsdl4j.jar</file-name>
 				<version>1.6.3</version>
 				<project-name>WSDL4J</project-name>
@@ -3356,6 +3380,30 @@
 				<version>2.6</version>
 				<project-name>Apache XML Graphics Commons</project-name>
 				<project-url>http://xmlgraphics.apache.org/commons/</project-url>
+				<licenses>
+					<license>
+						<license-name>The Apache Software License, Version 2.0</license-name>
+						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.security.audit.test.util.jar!json.jar</file-name>
+				<version>20231013</version>
+				<project-name>JSON in Java</project-name>
+				<project-url>https://github.com/douglascrockford/JSON-java</project-url>
+				<licenses>
+					<license>
+						<license-name>Public Domain</license-name>
+						<license-url>https://github.com/stleary/JSON-java/blob/master/LICENSE</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.security.audit.test.util.jar!jsonassert.jar</file-name>
+				<version>1.2.3</version>
+				<project-name>JSONassert</project-name>
+				<project-url>http://github.com/skyscreamer/yoga</project-url>
 				<licenses>
 					<license>
 						<license-name>The Apache Software License, Version 2.0</license-name>
@@ -4238,7 +4286,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.template.freemarker.jar!org.freemarker.jar</file-name>
-				<version>2.3.33.LIFERAY-PATCHED-4</version>
+				<version>2.3.33.LIFERAY-PATCHED-6</version>
 				<project-name>org.freemarker.freemarker</project-name>
 				<licenses>
 					<license>
@@ -6525,7 +6573,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.minidev.jar!accessors-smart.jar</file-name>
-				<version>2.4.9</version>
+				<version>2.6.1</version>
 				<project-name>ASM based accessors helper used by json-smart</project-name>
 				<project-url>https://urielch.github.io/</project-url>
 				<licenses>
@@ -6537,7 +6585,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.minidev.jar!json-smart.jar</file-name>
-				<version>2.4.10</version>
+				<version>2.6.1</version>
 				<project-name>JSON Small and Fast Parser</project-name>
 				<project-url>https://urielch.github.io/</project-url>
 				<licenses>
@@ -8193,7 +8241,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/freemarker.jar</file-name>
-				<version>2.3.33.LIFERAY-PATCHED-4</version>
+				<version>2.3.33.LIFERAY-PATCHED-6</version>
 				<project-name>FreeMarker</project-name>
 				<project-url>http://www.freemarker.org</project-url>
 				<licenses>
@@ -9316,7 +9364,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/spring-tx.jar</file-name>
-				<version>6.2.19.LIFERAY-PATCHED-1</version>
+				<version>6.2.19.LIFERAY-PATCHED-2</version>
 				<project-name>Spring</project-name>
 				<project-url>http://www.springframework.org</project-url>
 				<licenses>
