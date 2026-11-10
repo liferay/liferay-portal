@@ -138,6 +138,7 @@ type Property = {
 
 type Session = {
 	channelId: string;
+	events?: Event[];
 	id: string;
 	sessionEnd: string;
 	sessionStart: string;
@@ -291,11 +292,24 @@ export class JSONWebServicesOSBAsahApiHelper {
 		);
 	}
 
-	async createSessions(session: Session[]): Promise<any> {
+	async createSessions(sessions: Session[]): Promise<any> {
 		return this.apiHelpers.post(
 			`${asahConfig.environment.backendUrl}${this.basePath}/bq-sessions`,
 			{
-				data: session,
+				data: sessions.map(({events = [], ...session}) => ({
+					...session,
+					bqevents: events.map((event) => ({
+						context: JSON.stringify({
+							devicePixelRatio: '1',
+							screenHeight: '1080',
+							screenWidth: '1920',
+							userAgent: 'Mozilla/5.0',
+						}),
+						createDate: event.eventDate,
+						deviceType: 'Desktop',
+						...event,
+					})),
+				})),
 				failOnStatusCode: true,
 				headers: this.getHeaders(),
 			}
