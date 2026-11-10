@@ -4,15 +4,65 @@ A local run is only evidence when the bundle matches what CI ran. Each item belo
 
 ## The Bundle
 
-- **Do not deploy single modules into an old bundle.** A targeted `deploy` into a bundle that is days behind can break OSGi resolution without any error. Rebuild instead.
+- **Do not deploy single modules into an old bundle.** A targeted `deploy` into a bundle that is behind in `portal-kernel` or in an `*-api` module can break OSGi resolution without any error. **The Commit Under Test** decides when redeploying modules is enough and when to rebuild.
 
 - **One Liferay home per checkout.** Sibling checkouts resolve the stock `app.server.parent.dir` to the same `bundles` directory, so they share `osgi`, `data`, `deploy`, and `portal-ext.properties` even when their Tomcat folders differ. Point each checkout or worktree at its own directory in its gitignored `app.server.${USER}.properties`, then delete the cached `.gradle/gradle.properties` so Gradle stops using the old path. The `worktree-status` skill shows each worktree's ports and database.
 
 - **Product changes get their own bundle.** While a product fix is being tried, test side runs must not share that bundle. Use a separate worktree and bundle, or schedule the two so they never overlap.
 
-- **The bundle must contain the commit under test.** A bundle older than the commit that broke the test reports the opposite of CI. Compare jar dates with the commit date, and after a deploy confirm the change is in the deployed artifact (for example `javap -c` on the class inside the jar under `webapps/ROOT/WEB-INF/shielded-container-lib` or `osgi`).
+- **The bundle must contain the commit under test.** A bundle built from another commit than the one CI tested reports the opposite of CI, or does not compile the test at all. Jar dates do not show this: every jar can be built today, from another branch. Follow **The Commit Under Test** before the first run, and after a deploy confirm the change is in the deployed artifact (for example `javap -c` on the class inside the jar under `webapps/ROOT/WEB-INF/shielded-container-lib` or `osgi`).
 
 - **Use JDK 21 for master.** Export `JAVA_HOME` for Ant, Gradle, and `shutdown.sh`. Under an older default JDK the source formatter fails with what looks like a violation, and `shutdown.sh` does nothing.
+
+## The Commit Under Test
+
+The branch, the bundle, and the CI build can be three different commits. Find out how far apart they are before the first run, and rebuild only when the difference reaches the test.
+
+### Detect
+
+1. Fetch the upstream so **buildSha** is available locally.
+
+1. Read the commit of the last full build from the manifest of `portal-impl.jar`. Its `Git-SHA` header is the bundle SHA, and a `Git-Descriptor` that ends in `-dirty` means the build included uncommitted changes:
+
+	```bash
+	unzip -p <tomcat>/webapps/ROOT/WEB-INF/shielded-container-lib/portal-impl.jar META-INF/MANIFEST.MF | grep "Git-"
+	```
+
+1. Module jars carry no `Git-SHA`, so a module deployed later from another branch does not show up there: a bundle can report the right SHA and still run a stray module. List the modules deployed since the full build, before this run deploys anything:
+
+	```bash
+	find <bundles>/osgi/modules -name "*.jar" -newer <tomcat>/webapps/ROOT/WEB-INF/shielded-container-lib/portal-impl.jar
+	```
+
+	Redeploy from the bundle SHA every module listed that the test depends on, or ask the user where it came from.
+
+1. Compare the bundle SHA with **buildSha** and with `HEAD`. When all three match and no stray module is listed, there is nothing else to do.
+
+### Assess
+
+List the commits between the bundle and the CI build that touch what the test depends on. When the bundle is ahead of the build, swap the two SHAs:
+
+```bash
+git log --oneline <bundleSha>..<buildSha> -- <paths>
+```
+
+The paths are:
+
+- `portal-kernel`, and every `*-api` module those modules depend on.
+
+- The product modules the test exercises.
+
+- The test's own module.
+
+- The test utilities it extends or calls, transitively. A base class in another module's `*-test-util` (for example `BaseStagedModelDataHandlerTestCase`) breaks the compilation as surely as the test's own module.
+
+### Decide
+
+- **No commits, or commits in test side files only** → move the branch to the bundle SHA and run from there. Rebase onto the base branch before the pull request.
+
+- **Commits in product modules** → redeploy those modules from **buildSha**.
+
+- **Commits in `portal-kernel` or in an `*-api` module** → rebuild the bundle from the fetched base (`ant all` from the repository root) and bounce Tomcat as `.claude/rules/tomcat.md` describes. Every consumer compiled against the old API is stale, and deploying single modules into that bundle is ruled out above. Before starting, report the commits found, the paths they matched, and the expected cost, so the user can choose to run from the bundle SHA instead.
 
 ## Matching CI
 

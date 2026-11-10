@@ -230,7 +230,7 @@ Inspect the test source to discover which feature flags it depends on. Mirror th
 
 #### Run the Test
 
-Before trusting a local result, make the bundle match how CI ran the test by following [`references/local-environment.md`](references/local-environment.md). Virtual instances, leftover data from earlier runs, and stale or shared bundles have each produced a local result that was the mirror image of CI. Check them again before concluding `No fix needed` from a local pass.
+Before trusting a local result, make the bundle match how CI ran the test by following [`references/local-environment.md`](references/local-environment.md). Start with **The Commit Under Test**: the branch, the bundle, and **buildSha** can be three different commits, and the jar dates do not show it. Virtual instances, leftover data from earlier runs, and stale or shared bundles have each produced a local result that was the mirror image of CI. Check them again before concluding `No fix needed` from a local pass.
 
 Run the test, deploying first when the type requires it. For `Java Semantic Versioning`, the "test" is `<gradlew> baseline` from the failing module — strictly an API contract check, not a behavioral test. For test types that exercise the runtime (`Java Integration`, `Playwright`, `Poshi`), also read the server log after the run; it captures portal-side exceptions, deployment errors, and stack traces that never reach **errorTrace**, and frequently names the real failure. Then compare the local outcome with **errorTrace**:
 
