@@ -159,7 +159,6 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		List<AccountLifecycleStage> accountLifecycleStages =
 			accountLifecycle.getAccountLifecycleStages();
-
 		String message = StringBundler.concat(
 			"No account lifecycle stage was found with the name \"",
 			lifecycleStage, "\"");
