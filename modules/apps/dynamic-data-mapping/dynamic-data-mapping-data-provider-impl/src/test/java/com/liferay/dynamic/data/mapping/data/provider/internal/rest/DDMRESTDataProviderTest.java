@@ -75,9 +75,6 @@ public class DDMRESTDataProviderTest {
 
 	@Test
 	public void testGetData() throws Exception {
-		DDMDataProviderInstanceService ddmDataProviderInstanceService =
-			Mockito.mock(DDMDataProviderInstanceService.class);
-
 		DDMDataProviderInstance ddmDataProviderInstance = Mockito.mock(
 			DDMDataProviderInstance.class);
 
@@ -96,6 +93,9 @@ public class DDMRESTDataProviderTest {
 		).thenReturn(
 			dataProviderInstanceId
 		);
+
+		DDMDataProviderInstanceService ddmDataProviderInstanceService =
+			Mockito.mock(DDMDataProviderInstanceService.class);
 
 		String ddmDataProviderId = RandomTestUtil.randomString();
 
