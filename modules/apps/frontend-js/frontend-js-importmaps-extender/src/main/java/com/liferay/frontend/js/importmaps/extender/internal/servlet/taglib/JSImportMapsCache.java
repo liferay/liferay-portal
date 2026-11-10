@@ -105,7 +105,6 @@ public class JSImportMapsCache {
 		StringBundler sb = unsyncStringWriter.getStringBundler();
 
 		_appendStaticImports(_getGlobalImportMapsValues(COMPANY_ID_ALL), sb);
-
 		_appendStaticImports(_getGlobalImportMapsValues(companyId), sb);
 
 		Map<Long, DynamicJSImportMapsContributor>
@@ -131,13 +130,11 @@ public class JSImportMapsCache {
 		sb.setIndex(0);
 
 		_appendStaticScopes(_getScopedImportMapsValues(COMPANY_ID_ALL), sb);
-
 		_appendStaticScopes(_getScopedImportMapsValues(companyId), sb);
 
 		_appendDynamicScopes(
 			dynamicJSImportMapsContributors1, httpServletRequest,
 			unsyncStringWriter);
-
 		_appendDynamicScopes(
 			dynamicJSImportMapsContributors2, httpServletRequest,
 			unsyncStringWriter);
