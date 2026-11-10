@@ -50,7 +50,7 @@ public class FaroEngineClientExceptionMapper
 
 			return new Problem(
 				Response.Status.BAD_REQUEST,
-				"Check the parameter values against the tool description");
+				"One or more parameter values are invalid");
 		}
 
 		_log.error(faroEngineClientException);

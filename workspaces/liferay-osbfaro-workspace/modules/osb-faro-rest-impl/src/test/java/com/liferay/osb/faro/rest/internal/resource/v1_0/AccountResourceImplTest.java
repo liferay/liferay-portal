@@ -119,10 +119,8 @@ public class AccountResourceImplTest {
 			Assert.fail();
 		}
 		catch (NotFoundException notFoundException) {
-			String expectedMessage = StringBundler.concat(
-				"No account was found with ID ", accountId,
-				". Call \"getWorkspaceGroupChannelAccountsPage\" to find ",
-				"account IDs.");
+			String expectedMessage =
+				"No account was found with ID " + accountId;
 
 			Assert.assertEquals(
 				expectedMessage, notFoundException.getMessage());

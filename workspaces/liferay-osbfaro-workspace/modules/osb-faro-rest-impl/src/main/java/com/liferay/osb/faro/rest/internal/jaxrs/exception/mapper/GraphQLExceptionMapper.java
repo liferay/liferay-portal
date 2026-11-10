@@ -66,7 +66,7 @@ public class GraphQLExceptionMapper
 
 				return new Problem(
 					Response.Status.BAD_REQUEST,
-					"Check the parameter values against the tool description");
+					"One or more parameter values are invalid");
 			}
 		}
 
@@ -88,7 +88,7 @@ public class GraphQLExceptionMapper
 
 				return new Problem(
 					Response.Status.BAD_REQUEST,
-					"Check the parameter values against the tool description");
+					"One or more parameter values are invalid");
 			}
 		}
 

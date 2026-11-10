@@ -14,7 +14,6 @@ import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroPaginationUtil;
 import com.liferay.osb.faro.rest.internal.jaxrs.util.ProblemUtil;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualResource;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Sort;
@@ -91,10 +90,7 @@ public class IndividualResourceImpl extends BaseIndividualResourceImpl {
 
 		if ((individual == null) || Validator.isNull(individual.getId())) {
 			throw ProblemUtil.getNotFoundException(
-				StringBundler.concat(
-					"No individual was found with ID ", individualId,
-					". Call \"getWorkspaceGroupChannelIndividualsPage\" to ",
-					"find individual IDs."));
+				"No individual was found with ID " + individualId);
 		}
 
 		return _individualDTOConverter.toDTO(

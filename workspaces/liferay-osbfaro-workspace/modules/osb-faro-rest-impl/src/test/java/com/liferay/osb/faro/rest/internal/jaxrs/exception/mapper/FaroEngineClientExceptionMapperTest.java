@@ -45,11 +45,11 @@ public class FaroEngineClientExceptionMapperTest {
 	public void testToResponse() {
 		_assertResponse(
 			Response.Status.BAD_REQUEST,
-			"Check the parameter values against the tool description",
+			"One or more parameter values are invalid",
 			new FaroEngineClientException(RandomTestUtil.randomString(), 400));
 		_assertResponse(
 			Response.Status.BAD_REQUEST,
-			"Check the parameter values against the tool description",
+			"One or more parameter values are invalid",
 			new InvalidFilterException(RandomTestUtil.randomString()));
 		_assertResponse(
 			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",

@@ -67,10 +67,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		if ((account == null) || Validator.isNull(account.getId())) {
 			throw ProblemUtil.getNotFoundException(
-				StringBundler.concat(
-					"No account was found with ID ", accountId,
-					". Call \"getWorkspaceGroupChannelAccountsPage\" to find ",
-					"account IDs."));
+				"No account was found with ID " + accountId);
 		}
 
 		return _accountDTOConverter.toDTO(

@@ -9,7 +9,6 @@ import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.exception.NoSuchEntryException;
 import com.liferay.osb.faro.engine.client.model.Individual;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
@@ -75,10 +74,8 @@ public class IndividualResourceImplTest {
 			Assert.fail();
 		}
 		catch (NotFoundException notFoundException) {
-			String expectedMessage = StringBundler.concat(
-				"No individual was found with ID ", individualId,
-				". Call \"getWorkspaceGroupChannelIndividualsPage\" to find ",
-				"individual IDs.");
+			String expectedMessage =
+				"No individual was found with ID " + individualId;
 
 			Assert.assertEquals(
 				expectedMessage, notFoundException.getMessage());
