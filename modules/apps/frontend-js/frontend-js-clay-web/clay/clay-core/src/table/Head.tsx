@@ -194,41 +194,33 @@ export function Head<T extends Record<string, any>>(
 									<>
 										<Header
 											clearSearchLabel={
-												messages[
-													'columnsVisibilityClearSearch'
-												] ?? 'Clear Search'
+												messages.columnsVisibilityClearSearch
 											}
 											description={
-												messages[
-													'columnsVisibilityDescription'
-												]!
+												messages.columnsVisibilityDescription
 											}
 											descriptionId={
 												columnsVisibilityDescriptionId
 											}
 											inputRef={searchInputRef}
 											name={
-												messages[
-													'columnsVisibilityHeader'
-												]!
+												messages.columnsVisibilityHeader
 											}
 											nameId={columnsVisibilityHeaderId}
 											onSearchTermChange={
 												onSearchTermChange
 											}
 											searchLabel={
-												messages[
-													'columnsVisibilitySearch'
-												] ?? 'Search'
+												messages.columnsVisibilitySearch
 											}
 											searchTerm={searchTerm}
 										/>
 
 										{!columnsVisibilityItems.length && (
 											<div className="dropdown-section text-secondary">
-												{messages[
-													'columnsVisibilityNoResults'
-												] ?? 'No Results Found'}
+												{
+													messages.columnsVisibilityNoResults
+												}
 											</div>
 										)}
 									</>

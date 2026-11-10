@@ -10,13 +10,27 @@ export type Sorting = {
 	direction: 'ascending' | 'descending';
 };
 
+export type Messages = {
+	columnsVisibility: string;
+	columnsVisibilityCell?: string;
+	columnsVisibilityClearSearch: string;
+	columnsVisibilityDescription: string;
+	columnsVisibilityHeader: string;
+	columnsVisibilityNoResults: string;
+	columnsVisibilitySearch: string;
+	expandable: string;
+	sortColumn: string;
+	sortDescription: string;
+	sorting: string;
+};
+
 type Context = {
 	alwaysVisibleColumns: Set<React.Key>;
 	columnsVisibility: boolean;
 	expandedKeys: Set<React.Key>;
 	headCellsCount: number;
 	itemIdKey: string;
-	messages: Record<string, string>;
+	messages: Messages;
 	nestedKey?: string;
 	onExpandedChange: (keys: Set<React.Key>) => void;
 	onHeadCellsChange: (value: number) => void;
