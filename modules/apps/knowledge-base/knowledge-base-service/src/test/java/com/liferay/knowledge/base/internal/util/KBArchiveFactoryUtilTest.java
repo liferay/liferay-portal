@@ -184,7 +184,9 @@ public class KBArchiveFactoryUtilTest {
 		Mockito.when(
 			_zipReader.getEntries()
 		).thenReturn(
-			Arrays.asList("/x/00-intro.md", "/x/01-a.md", "/y/intro.markdown")
+			Arrays.asList(
+				"/x/00-intro.md", "/x/01-a.md", "/x/intro.markdown",
+				"/y/intro.markdown")
 		);
 
 		KBArchive kbArchive = KBArchiveFactoryUtil.createKBArchive(
@@ -206,7 +208,17 @@ public class KBArchiveFactoryUtilTest {
 
 		Collection<KBArchive.File> files0 = folder0.getFiles();
 
-		Assert.assertEquals(files0.toString(), 1, files0.size());
+		Assert.assertEquals(files0.toString(), 2, files0.size());
+
+		Iterator<KBArchive.File> fileIterator = files0.iterator();
+
+		KBArchive.File file0 = fileIterator.next();
+
+		Assert.assertEquals("/x/01-a.md", file0.getName());
+
+		KBArchive.File file1 = fileIterator.next();
+
+		Assert.assertEquals("/x/intro.markdown", file1.getName());
 
 		KBArchive.Folder folder1 = folderIterator.next();
 
