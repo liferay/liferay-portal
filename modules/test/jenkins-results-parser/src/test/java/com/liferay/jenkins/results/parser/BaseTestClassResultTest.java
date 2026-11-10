@@ -23,12 +23,6 @@ public class BaseTestClassResultTest
 		Build build = Mockito.mock(Build.class);
 
 		Mockito.when(
-			build.getBuildURL()
-		).thenReturn(
-			"https://test-1-1.liferay.com/job/test%20portal(master)/12/"
-		);
-
-		Mockito.when(
 			baseTestClassResult.getBuild()
 		).thenReturn(
 			build
@@ -50,6 +44,12 @@ public class BaseTestClassResultTest
 		).when(
 			baseTestClassResult
 		).getTestClassReportURL();
+
+		Mockito.when(
+			build.getBuildURL()
+		).thenReturn(
+			"https://test-1-1.liferay.com/job/test%20portal(master)/12/"
+		);
 
 		testEquals(
 			"https://test-1-1.liferay.com/job/test%20portal(master)/12" +
