@@ -129,7 +129,7 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 
 		int start = 0;
 
-		while (users.size() < _MAX_USERS) {
+		while ((users.size() < _MAX_USERS) && (start < _MAX_SEARCHED_USERS)) {
 			List<User> groupUsers = _userLocalService.search(
 				themeDisplay.getCompanyId(), keywords,
 				WorkflowConstants.STATUS_APPROVED,
@@ -233,6 +233,8 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 
 		return true;
 	}
+
+	private static final int _MAX_SEARCHED_USERS = 100;
 
 	private static final int _MAX_USERS = 20;
 
