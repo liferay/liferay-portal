@@ -81,7 +81,7 @@ public class AccountResourceImplTest {
 			_contactsEngineClient.getAccountLifecycle(
 				Mockito.any(), Mockito.eq(accountLifecycleId))
 		).thenReturn(
-			_getAccountLifecycle("Lead", "Pipeline", "Customer")
+			_getAccountLifecycle("Customer", "Lead", "Pipeline")
 		);
 
 		String emptyAccountLifecycleId = RandomTestUtil.randomString();
@@ -99,7 +99,7 @@ public class AccountResourceImplTest {
 			accountLifecycleId,
 			StringBundler.concat(
 				"No account lifecycle stage was found with the name \"",
-				lifecycleStage, "\". Valid stages: Lead, Pipeline, Customer."),
+				lifecycleStage, "\". Valid stages: Customer, Lead, Pipeline."),
 			lifecycleStage);
 		_assertGetWorkspaceGroupChannelAccountsPage(
 			emptyAccountLifecycleId,
