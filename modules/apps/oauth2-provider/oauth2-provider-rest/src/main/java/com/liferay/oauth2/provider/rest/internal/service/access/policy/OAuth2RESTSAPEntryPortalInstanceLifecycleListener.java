@@ -23,7 +23,6 @@ import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalSe
 import java.util.Locale;
 import java.util.Map;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -59,10 +58,7 @@ public class OAuth2RESTSAPEntryPortalInstanceLifecycleListener
 	}
 
 	@Activate
-	protected void activate(
-			BundleContext bundleContext, Map<String, Object> properties)
-		throws Exception {
-
+	protected void activate(Map<String, Object> properties) throws Exception {
 		_createSapEntriesOnStartup = MapUtil.getBoolean(
 			properties, "oauth2.create.oauth2.sap.entries.on.startup", true);
 

@@ -257,7 +257,7 @@ public class DefaultLPKGDeployer implements LPKGDeployer {
 	}
 
 	@Deactivate
-	protected void deactivate(BundleContext bundleContext) {
+	protected void deactivate() {
 		_lpkgBundleTracker.close();
 
 		_wabBundleTracker.close();

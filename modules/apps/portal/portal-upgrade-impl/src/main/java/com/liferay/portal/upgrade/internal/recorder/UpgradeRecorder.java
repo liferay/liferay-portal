@@ -213,7 +213,7 @@ public class UpgradeRecorder {
 	}
 
 	@Deactivate
-	protected void deactivate(BundleContext bundleContext) {
+	protected void deactivate() {
 		_serviceTracker.close();
 	}
 

@@ -159,9 +159,7 @@ public class LiferayTemplateClassResolver implements TemplateClassResolver {
 	}
 
 	@Modified
-	protected void modified(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void modified(Map<String, Object> properties) {
 		_freeMarkerEngineConfiguration = ConfigurableUtil.createConfigurable(
 			FreeMarkerEngineConfiguration.class, properties);
 

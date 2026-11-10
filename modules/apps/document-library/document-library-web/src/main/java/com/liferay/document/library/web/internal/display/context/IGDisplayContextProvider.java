@@ -104,7 +104,7 @@ public class IGDisplayContextProvider {
 	}
 
 	@Deactivate
-	protected void deactivate(BundleContext bundleContext) {
+	protected void deactivate() {
 		_igDisplayContextFactories.close();
 	}
 

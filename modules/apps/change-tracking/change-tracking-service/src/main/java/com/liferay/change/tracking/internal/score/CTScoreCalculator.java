@@ -36,7 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -133,7 +132,7 @@ public class CTScoreCalculator {
 	}
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate() {
 		_portalCache = (PortalCache<Long, Integer>)_singleVMPool.getPortalCache(
 			CTScoreCalculator.class.getName());
 	}

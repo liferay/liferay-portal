@@ -568,7 +568,7 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate() {
 		_maximumEntries = MAXIMUM_ENTRIES;
 
 		Map<String, Long> assetTypeClassNameIds = new HashMap<>();

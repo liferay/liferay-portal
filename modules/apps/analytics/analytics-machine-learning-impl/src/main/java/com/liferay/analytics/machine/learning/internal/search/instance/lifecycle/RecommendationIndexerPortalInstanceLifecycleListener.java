@@ -19,7 +19,6 @@ import com.liferay.portal.search.index.IndexNameBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -67,7 +66,7 @@ public class RecommendationIndexerPortalInstanceLifecycleListener
 	}
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate() {
 		_recommendationIndexers.add(
 			new RecommendationIndexer(
 				RecommendationIndexNames.MOST_VIEWED_CONTENT_RECOMMENDATION,

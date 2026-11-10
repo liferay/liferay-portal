@@ -8,7 +8,6 @@ package com.liferay.portal.compound.session.id.internal.component.enabler;
 import com.liferay.portal.compound.session.id.internal.CompoundSessionIdFilter;
 import com.liferay.portal.kernel.servlet.filters.compoundsessionid.CompoundSessionIdSplitterUtil;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -20,9 +19,7 @@ import org.osgi.service.component.annotations.Component;
 public class ComponentEnabler {
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, ComponentContext componentContext) {
-
+	protected void activate(ComponentContext componentContext) {
 		if (CompoundSessionIdSplitterUtil.hasSessionDelimiter()) {
 			componentContext.enableComponent(
 				CompoundSessionIdFilter.class.getName());

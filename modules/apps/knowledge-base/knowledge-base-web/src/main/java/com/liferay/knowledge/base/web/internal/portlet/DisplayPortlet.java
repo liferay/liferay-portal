@@ -52,7 +52,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -89,7 +88,7 @@ import org.osgi.service.component.annotations.Reference;
 public class DisplayPortlet extends BaseKBPortlet {
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate() {
 		_kbArticleSelectors.put(
 			KBArticle.class.getName(),
 			new KBArticleKBArticleSelector(_kbArticleService));

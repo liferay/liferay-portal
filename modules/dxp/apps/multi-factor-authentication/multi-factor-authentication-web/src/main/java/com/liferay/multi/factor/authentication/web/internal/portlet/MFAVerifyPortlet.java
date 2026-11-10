@@ -13,7 +13,6 @@ import com.liferay.portal.security.auth.InterruptedPortletRequestWhitelistUtil;
 
 import jakarta.portlet.Portlet;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -43,7 +42,7 @@ import org.osgi.service.component.annotations.Deactivate;
 public class MFAVerifyPortlet extends MVCPortlet {
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate() {
 		PropsValues.PORTLET_INTERRUPTED_REQUEST_WHITELIST = ArrayUtil.append(
 			PropsValues.PORTLET_INTERRUPTED_REQUEST_WHITELIST,
 			MFAPortletKeys.MFA_VERIFY);

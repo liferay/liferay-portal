@@ -41,7 +41,6 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -337,7 +336,7 @@ public class AMImageConfigurationHelperImpl
 	}
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate() {
 		_portalCache =
 			(PortalCache<Long, Serializable>)_multiVMPool.getPortalCache(
 				AMImageConfigurationHelperImpl.class.getName());

@@ -13,7 +13,6 @@ import com.liferay.portal.osgi.debug.spring.extender.internal.configuration.Unav
 
 import java.util.Map;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -29,9 +28,7 @@ import org.osgi.service.component.annotations.Deactivate;
 public class UnavailableComponentScanner {
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(Map<String, Object> properties) {
 		UnavailableComponentScannerConfiguration
 			unavailableComponentScannerConfiguration =
 				ConfigurableUtil.createConfigurable(
@@ -51,9 +48,7 @@ public class UnavailableComponentScanner {
 	}
 
 	@Deactivate
-	protected void deactivate(BundleContext bundleContext)
-		throws InterruptedException {
-
+	protected void deactivate() throws InterruptedException {
 		if (_unavailableComponentScanningThread != null) {
 			_unavailableComponentScanningThread.interrupt();
 

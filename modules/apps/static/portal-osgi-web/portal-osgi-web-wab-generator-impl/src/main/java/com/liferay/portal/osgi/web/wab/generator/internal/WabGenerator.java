@@ -160,7 +160,7 @@ public class WabGenerator
 	}
 
 	@Deactivate
-	protected void deactivate(BundleContext bundleContext) throws Exception {
+	protected void deactivate() throws Exception {
 		_serviceRegistration.unregister();
 
 		_serviceRegistration = null;

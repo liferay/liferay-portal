@@ -21,7 +21,6 @@ import com.liferay.portal.search.index.IndexNameBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -67,7 +66,7 @@ public class CommerceMLIndexerPortalInstanceLifecycleListener
 	}
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate() {
 		_commerceMLIndexers.add(
 			new CommerceMLIndexer(
 				IndexMappingFileNames.FORECAST, IndexNamePatterns.FORECAST));

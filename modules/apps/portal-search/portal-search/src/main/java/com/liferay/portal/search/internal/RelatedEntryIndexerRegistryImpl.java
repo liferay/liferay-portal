@@ -60,7 +60,7 @@ public class RelatedEntryIndexerRegistryImpl
 	}
 
 	@Deactivate
-	protected void deactivate(BundleContext bundleContext) {
+	protected void deactivate() {
 		serviceTrackerMap.close();
 	}
 

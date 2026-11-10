@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -24,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
 public class TranslationResourceActionsActivator {
 
 	@Activate
-	protected void activate(BundleContext bundleContext) throws Exception {
+	protected void activate() throws Exception {
 		String xml = StringUtil.read(
 			TranslationResourceActionsActivator.class.getClassLoader(),
 			"/com/liferay/translation/internal/security/permission" +

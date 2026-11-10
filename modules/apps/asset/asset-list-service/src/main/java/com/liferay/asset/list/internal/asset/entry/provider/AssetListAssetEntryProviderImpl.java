@@ -86,7 +86,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -232,8 +231,7 @@ public class AssetListAssetEntryProviderImpl
 
 	@Activate
 	@Modified
-	protected void activate(
-			BundleContext bundleContext, Map<String, Object> properties)
+	protected void activate(Map<String, Object> properties)
 		throws ConfigurationException {
 
 		_assetListConfiguration = ConfigurableUtil.createConfigurable(

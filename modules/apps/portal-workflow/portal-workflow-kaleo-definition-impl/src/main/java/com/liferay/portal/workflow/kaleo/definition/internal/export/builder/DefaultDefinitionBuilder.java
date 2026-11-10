@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -66,7 +65,7 @@ public class DefaultDefinitionBuilder implements DefinitionBuilder {
 	}
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate() {
 		_addNodeBuilder(new ConditionNodeBuilder(_kaleoConditionLocalService));
 		_addNodeBuilder(new ForkNodeBuilder());
 		_addNodeBuilder(new JoinNodeBuilder());

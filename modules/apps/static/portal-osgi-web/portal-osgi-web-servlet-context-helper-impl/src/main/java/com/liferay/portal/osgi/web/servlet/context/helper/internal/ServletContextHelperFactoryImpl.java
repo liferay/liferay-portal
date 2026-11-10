@@ -70,7 +70,7 @@ public class ServletContextHelperFactoryImpl
 	}
 
 	@Deactivate
-	protected void deactivate(BundleContext bundleContext) throws Exception {
+	protected void deactivate() throws Exception {
 		_serviceRegistration.unregister();
 
 		_executorService.shutdownNow();

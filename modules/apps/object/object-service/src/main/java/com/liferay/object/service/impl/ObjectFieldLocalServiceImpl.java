@@ -127,7 +127,6 @@ import java.util.Set;
 
 import javax.crypto.spec.SecretKeySpec;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -918,7 +917,7 @@ public class ObjectFieldLocalServiceImpl
 	}
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate() {
 		_defaultObjectFieldSettingContributor =
 			new DefaultObjectFieldSettingContributor(
 				_objectFieldSettingLocalService);
