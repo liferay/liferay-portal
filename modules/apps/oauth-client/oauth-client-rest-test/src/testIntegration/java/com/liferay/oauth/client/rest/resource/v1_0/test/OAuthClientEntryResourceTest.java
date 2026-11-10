@@ -193,7 +193,6 @@ public class OAuthClientEntryResourceTest
 			new String[] {ActionKeys.VIEW});
 
 		OAuthClientEntry randomOAuthClientEntry = randomOAuthClientEntry();
-
 		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		randomOAuthClientEntry.setPermissions(

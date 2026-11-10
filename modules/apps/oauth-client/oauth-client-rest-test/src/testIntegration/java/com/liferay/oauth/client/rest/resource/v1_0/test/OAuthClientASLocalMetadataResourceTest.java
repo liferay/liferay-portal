@@ -156,7 +156,6 @@ public class OAuthClientASLocalMetadataResourceTest
 
 		OAuthClientASLocalMetadata randomOAuthClientASLocalMetadata =
 			randomOAuthClientASLocalMetadata();
-
 		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		randomOAuthClientASLocalMetadata.setPermissions(
