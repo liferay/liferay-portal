@@ -1,0 +1,80 @@
+import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerRemoveContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
+import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
+
+buildscript {
+	dependencies {
+		classpath fileTree(dir: pluginClasspathDir, include: "*.jar")
+	}
+}
+
+apply plugin: "com.liferay.workspace"
+
+String registryContainerName = "client_extension_publish_registry"
+String registryImage = "registry:2"
+
+gradle.projectsEvaluated {
+	Project rootProject = gradle.rootProject
+
+	rootProject.tasks.register("removeStaleRegistry", DockerRemoveContainer) {
+		force = true
+		onError {
+		}
+		targetContainerId registryContainerName
+	}
+
+	rootProject.tasks.register("pullRegistryImage", DockerPullImage) {
+		image = registryImage
+	}
+
+	rootProject.tasks.register("createRegistry", DockerCreateContainer) {
+		dependsOn "pullRegistryImage", "removeStaleRegistry"
+
+		containerName = registryContainerName
+		exposePorts "tcp", [5000]
+		hostConfig.portBindings = ["5000:5000"]
+		targetImageId registryImage
+	}
+
+	rootProject.tasks.register("removeRegistry", DockerRemoveContainer) {
+		force = true
+		mustRunAfter ":runGradleTest"
+		targetContainerId registryContainerName
+	}
+
+	rootProject.tasks.register("startRegistry", DockerStartContainer) {
+		dependsOn "createRegistry"
+
+		doLast {
+			URL url = new URL("http://localhost:5000/v2/")
+
+			for (int i = 0; i < 60; i++) {
+				try {
+					HttpURLConnection httpURLConnection = url.openConnection()
+
+					if (httpURLConnection.responseCode == 200) {
+						return
+					}
+				}
+				catch (IOException ioException) {
+				}
+
+				sleep 500
+			}
+
+			throw new GradleException("Registry did not start on localhost:5000")
+		}
+
+		finalizedBy "removeRegistry"
+		targetContainerId registryContainerName
+	}
+
+	rootProject.subprojects {
+		tasks.matching {
+			it.name == "publishClientExtension"
+		}.configureEach {
+			dependsOn rootProject.tasks.named("startRegistry")
+		}
+	}
+}

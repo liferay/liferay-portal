@@ -1,0 +1,12 @@
+able-oauth-application-user-agent:
+    .serviceAddress: localhost:58081
+    .serviceScheme: http
+    name: Able OAuth Application User Agent
+    scopes:
+        -   Liferay.Headless.Admin.Workflow.everything
+    type: oAuthApplicationUserAgent
+able-object-action:
+    name: Able Object Action
+    oAuth2ApplicationExternalReferenceCode: able-oauth-application-user-agent
+    resourcePath: /object/action
+    type: objectAction

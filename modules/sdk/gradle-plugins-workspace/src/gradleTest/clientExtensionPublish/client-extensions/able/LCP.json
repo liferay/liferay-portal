@@ -1,0 +1,6 @@
+{
+	"kind": "Deployment",
+	"loadBalancer": {
+		"targetPort": 58081
+	}
+}
