@@ -19,6 +19,15 @@ ViewTasksDisplayContext viewTasksDisplayContext = (ViewTasksDisplayContext)reque
 		/>
 	</div>
 
+	<c:if test="<%= viewTasksDisplayContext.isCMPMarketplaceBannerVisible() %>">
+		<div>
+			<react:component
+				module="{CMPMarketplaceBanner} from site-cms-site-initializer"
+				props="<%= viewTasksDisplayContext.getCMPMarketplaceBannerProps() %>"
+			/>
+		</div>
+	</c:if>
+
 	<div>
 		<react:component
 			module="{TasksQuickFilters} from site-cms-site-initializer"
