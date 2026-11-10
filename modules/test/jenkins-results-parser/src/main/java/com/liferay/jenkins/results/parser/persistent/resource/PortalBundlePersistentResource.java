@@ -79,10 +79,17 @@ public class PortalBundlePersistentResource
 	}
 
 	private long _getCompletedTime() {
-		JSONObject dataJSONObject = getDataJSONObject();
+		try {
+			JSONObject dataJSONObject = getDataJSONObject();
 
-		if ((dataJSONObject != null) && dataJSONObject.has("completed_time")) {
-			return dataJSONObject.getLong("completed_time");
+			if ((dataJSONObject != null) &&
+				dataJSONObject.has("completed_time")) {
+
+				return dataJSONObject.getLong("completed_time");
+			}
+		}
+		catch (RuntimeException runtimeException) {
+			print("Unable to read the completed time\n" + runtimeException);
 		}
 
 		return JenkinsResultsParserUtil.getCurrentTimeMillis();
