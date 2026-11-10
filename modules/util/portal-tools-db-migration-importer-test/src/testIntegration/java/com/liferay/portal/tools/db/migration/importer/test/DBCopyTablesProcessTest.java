@@ -174,14 +174,15 @@ public class DBCopyTablesProcessTest {
 	public void testAddCustomPrimaryKeysAndIndexes() throws Exception {
 		_sourceDB.runSQL(
 			"create table TestTable (id INTEGER not null primary key, " +
-				"charColumn VARCHAR(75), testColumn VARCHAR(75), textColumn " +
-					"VARCHAR(75))");
+				"charColumn VARCHAR(75), longColumn VARCHAR(700), testColumn " +
+					"VARCHAR(75), textColumn VARCHAR(75))");
 
 		_sourceDB.runSQL(
 			new String[] {
 				"create index IX_" + RandomTestUtil.randomString(61) +
 					" on TestTable (textColumn, charColumn)",
 				"create index IX_LEFT_MATCH on TestTable (id, testColumn)",
+				"create index IX_LONG_COLUMN on TestTable (longColumn)",
 				"create index TestTable on TestTable (charColumn)",
 				"create unique index IX_DUPLICATE on TestTable (testColumn)",
 				"create unique index IX_UNIQUE on TestTable (testColumn, id)",
@@ -195,32 +196,60 @@ public class DBCopyTablesProcessTest {
 			"CREATE INDEX ix_e1d669e2 ON testtable USING btree (charcolumn)",
 			"CREATE INDEX ix_left_match ON testtable USING btree (id, " +
 				"\"left\"((testcolumn)::text, 676))",
+			"CREATE INDEX ix_long_column ON testtable USING btree " +
+				"(\"left\"((longcolumn)::text, 676))",
 			"CREATE INDEX ix_unique_mismatch ON testtable USING btree " +
 				"(charcolumn, id)",
 			"CREATE UNIQUE INDEX ix_unique ON testtable USING btree " +
 				"(testcolumn, id)",
 			"CREATE UNIQUE INDEX testtable_pkey ON testtable USING btree (id)");
 		List<String> expectedMessages = ListUtil.fromArray(
+			"created index ix_long_column on table testtable in the default " +
+				"schema as a btree index on (left(\"longcolumn\", 676))",
 			"unable to create unique index ix_unique_mismatch on table " +
 				"testtable in the default schema because index " +
 					"ix_unique_mismatch already exists on the same columns");
 
 		DBType dbType = _sourceDB.getDBType();
 
-		if (dbType == DBType.MYSQL) {
+		if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
 			_sourceDB.runSQL(
-				"create index IX_EXPRESSION on TestTable " +
-					"((upper(testColumn)))");
+				"create fulltext index IX_TYPED on TestTable (charColumn, " +
+					"longColumn)");
 
+			if (dbType == DBType.MYSQL) {
+				_sourceDB.runSQL(
+					"create index IX_EXPRESSION on TestTable " +
+						"((upper(testColumn)))");
+
+				expectedMessages.add(
+					"unable to create index ix_expression on table testtable " +
+						"in the default schema because one of its columns is " +
+							"an expression");
+			}
+
+			expectedIndexDefinitions.add(
+				"CREATE INDEX ix_typed ON testtable USING btree (charcolumn, " +
+					"\"left\"((longcolumn)::text, 676))");
 			expectedMessages.add(
-				"unable to create index ix_expression on table testtable in " +
-					"the default schema because one of its columns is an " +
-						"expression");
+				"created fulltext index ix_typed on table testtable in the " +
+					"default schema as a btree index on (\"charcolumn\", " +
+						"left(\"longcolumn\", 676))");
 		}
 		else if (dbType == DBType.ORACLE) {
 			_sourceDB.runSQL(
-				"create index IX_EXPRESSION on TestTable (upper(testColumn))");
+				new String[] {
+					"create index IX_EXPRESSION on TestTable " +
+						"(upper(testColumn))",
+					"create index IX_TYPED on TestTable (textColumn) " +
+						"indextype is ctxsys.context"
+				});
 
+			expectedIndexDefinitions.add(
+				"CREATE INDEX ix_typed ON testtable USING btree (textcolumn)");
+			expectedMessages.add(
+				"created ctxsys.context index ix_typed on table testtable in " +
+					"the default schema as a btree index on (\"textcolumn\")");
 			expectedMessages.add(
 				"unable to create index ix_expression on table testtable in " +
 					"the default schema because one of its columns is an " +
@@ -228,8 +257,14 @@ public class DBCopyTablesProcessTest {
 		}
 		else if (dbType == DBType.SQLSERVER) {
 			_sourceDB.runSQL(
-				"create index IX_INCLUDE on TestTable (testColumn, id) " +
-					"include (charColumn)");
+				"create unique index IX_TYPED on TestTable (textColumn) " +
+					"where textColumn is not null");
+
+			expectedIndexDefinitions.add(
+				"CREATE INDEX ix_typed ON testtable USING btree (textcolumn)");
+			expectedMessages.add(
+				"created filtered index ix_typed on table testtable in the " +
+					"default schema as a btree index on (\"textcolumn\")");
 		}
 
 		String[] values = RandomTestUtil.randomStrings(_TABLE_SIZE);
