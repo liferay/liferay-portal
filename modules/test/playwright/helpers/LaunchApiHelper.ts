@@ -28,6 +28,12 @@ export class LaunchApiHelper {
 		this.apiHelpers = apiHelpers;
 	}
 
+	async createLaunchSet(name: string): Promise<LaunchSet> {
+		return this.apiHelpers.post(`${this.apiHelpers.baseUrl}launch-sets`, {
+			data: {description: '', name, status: {code: 2}},
+		});
+	}
+
 	async deleteLaunchSet(launchSetId: number) {
 		await this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}launch-sets/${launchSetId}`
