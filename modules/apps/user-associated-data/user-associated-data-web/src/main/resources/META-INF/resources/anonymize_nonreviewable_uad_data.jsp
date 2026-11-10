@@ -75,7 +75,7 @@ renderResponse.setTitle(StringBundler.concat(selectedUser.getFullName(), " - ", 
 							<liferay-ui:search-container-row
 								className="com.liferay.user.associated.data.web.internal.display.UADApplicationSummaryDisplay"
 								escapedModel="<%= true %>"
-								keyProperty="key"
+								keyProperty="applicationKey"
 								modelVar="uadApplicationSummaryDisplay"
 							>
 								<liferay-ui:search-container-column-text
