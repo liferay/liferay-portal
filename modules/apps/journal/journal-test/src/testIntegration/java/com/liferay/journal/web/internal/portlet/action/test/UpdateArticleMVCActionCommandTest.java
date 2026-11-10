@@ -9,9 +9,11 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.journal.constants.JournalContentPortletKeys;
+import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
+import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -24,7 +26,9 @@ import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -81,23 +85,24 @@ public class UpdateArticleMVCActionCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = GroupTestUtil.addGroup();
+		_group1 = GroupTestUtil.addGroup();
 	}
 
 	@Test
+	@TestInfo("LPS-172561")
 	public void testProcessAction() throws Exception {
 		_processAction(_getMockLiferayPortletActionRequest());
 
 		JournalArticle journalArticle1 =
 			_journalArticleLocalService.fetchArticleByUrlTitle(
-				_group.getGroupId(), "title");
+				_group1.getGroupId(), "title");
 
 		Assert.assertNotNull(journalArticle1.getDisplayDate());
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, journalArticle1.getStatus());
 		Assert.assertEquals(1.0, journalArticle1.getVersion(), 0.01);
 
-		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group1);
 
 		String portletResource = LayoutTestUtil.addPortletToLayout(
 			layout, JournalContentPortletKeys.JOURNAL_CONTENT,
@@ -105,7 +110,7 @@ public class UpdateArticleMVCActionCommandTest {
 				"groupExternalReferenceCode",
 				() -> {
 					Company company = _companyLocalService.getCompany(
-						_group.getCompanyId());
+						_group1.getCompanyId());
 
 					Group companyGroup = company.getGroup();
 
@@ -129,7 +134,7 @@ public class UpdateArticleMVCActionCommandTest {
 
 		JournalArticle journalArticle2 =
 			_journalArticleLocalService.fetchArticleByUrlTitle(
-				_group.getGroupId(), "title");
+				_group1.getGroupId(), "title");
 
 		Assert.assertEquals(
 			journalArticle1.getDisplayDate(), journalArticle2.getDisplayDate());
@@ -146,6 +151,31 @@ public class UpdateArticleMVCActionCommandTest {
 			portletPreferences.getValue("articleExternalReferenceCode", null));
 		Assert.assertNull(
 			portletPreferences.getValue("groupExternalReferenceCode", null));
+
+		_group2 = GroupTestUtil.addGroup();
+
+		JournalArticle journalArticle3 = JournalTestUtil.addArticle(
+			_group2.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		mockLiferayPortletActionRequest = _getMockLiferayPortletActionRequest(
+			journalArticle2.getArticleId(),
+			HashMapBuilder.put(
+				LocaleUtil.US, journalArticle3.getUrlTitle()
+			).build());
+
+		mockLiferayPortletActionRequest.setParameter(
+			"version", String.valueOf(journalArticle2.getVersion()));
+
+		_processAction(mockLiferayPortletActionRequest);
+
+		Assert.assertEquals(
+			"The content has been published but might cause errors. The URL " +
+				"used in English (United States) already exists in other " +
+					"sites or asset libraries.",
+			SessionMessages.get(
+				mockLiferayPortletActionRequest.getHttpServletRequest(),
+				"friendlyURLDuplicated_requestProcessedWarning"));
 	}
 
 	@Test
@@ -154,7 +184,7 @@ public class UpdateArticleMVCActionCommandTest {
 
 		JournalArticle journalArticle =
 			_journalArticleLocalService.fetchArticleByUrlTitle(
-				_group.getGroupId(), "title");
+				_group1.getGroupId(), "title");
 
 		Assert.assertNotNull(journalArticle);
 
@@ -214,7 +244,7 @@ public class UpdateArticleMVCActionCommandTest {
 			"autoArticleId", StringPool.TRUE);
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.fetchStructure(
-			_group.getGroupId(), _portal.getClassNameId(JournalArticle.class),
+			_group1.getGroupId(), _portal.getClassNameId(JournalArticle.class),
 			"BASIC-WEB-CONTENT", true);
 
 		mockLiferayPortletActionRequest.setParameter(
@@ -225,7 +255,7 @@ public class UpdateArticleMVCActionCommandTest {
 		mockLiferayPortletActionRequest.setParameter(
 			"descriptionMapAsXML_en_US", "description");
 		mockLiferayPortletActionRequest.setParameter(
-			"groupId", String.valueOf(_group.getGroupId()));
+			"groupId", String.valueOf(_group1.getGroupId()));
 		mockLiferayPortletActionRequest.setParameter(
 			"titleMapAsXML_en_US", "title");
 		mockLiferayPortletActionRequest.setParameter(
@@ -267,17 +297,17 @@ public class UpdateArticleMVCActionCommandTest {
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		themeDisplay.setCompany(
-			_companyLocalService.getCompany(_group.getCompanyId()));
+			_companyLocalService.getCompany(_group1.getCompanyId()));
 
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group1);
 
 		themeDisplay.setLayout(layout);
 		themeDisplay.setLayoutSet(layout.getLayoutSet());
 
 		themeDisplay.setLocale(LocaleUtil.US);
 		themeDisplay.setRequest(mockMultipartHttpServletRequest);
-		themeDisplay.setScopeGroupId(_group.getGroupId());
-		themeDisplay.setSiteGroupId(_group.getGroupId());
+		themeDisplay.setScopeGroupId(_group1.getGroupId());
+		themeDisplay.setSiteGroupId(_group1.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		return themeDisplay;
@@ -340,7 +370,10 @@ public class UpdateArticleMVCActionCommandTest {
 	private DDMStructureLocalService _ddmStructureLocalService;
 
 	@DeleteAfterTestRun
-	private Group _group;
+	private Group _group1;
+
+	@DeleteAfterTestRun
+	private Group _group2;
 
 	@Inject
 	private JournalArticleLocalService _journalArticleLocalService;
