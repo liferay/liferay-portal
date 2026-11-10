@@ -7,14 +7,22 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import React, {useEffect, useMemo, useState} from 'react';
 
 interface Props {
+	navigationId: string;
+	stateChangedEventName: string;
+	stateRequestedEventName: string;
 	visible: boolean;
 }
 
-function SideNavigationToggler({visible: initialVisible}: Props) {
+function UnifiedSidebarToggler({
+	navigationId,
+	stateChangedEventName,
+	stateRequestedEventName,
+	visible: initialVisible,
+}: Props) {
 	const [visible, setVisible] = useState(initialVisible);
 
 	async function toggle() {
-		Liferay.fire('sideNavigationStateRequested', {visible: !visible});
+		Liferay.fire(stateRequestedEventName, {visible: !visible});
 	}
 
 	useEffect(() => {
@@ -22,11 +30,20 @@ function SideNavigationToggler({visible: initialVisible}: Props) {
 			setVisible(visible);
 		}
 
-		Liferay.on('sideNavigationStateChanged', handleStateChanged);
+		Liferay.on(stateChangedEventName, handleStateChanged);
 
-		return () =>
-			Liferay.detach('sideNavigationStateChanged', handleStateChanged);
-	}, []);
+		// The navigation can change its state on load, for example when it
+		// starts closed on a narrow screen or a page editor closes it, before
+		// this toggler subscribes, so read its current state as well.
+
+		const navigation = document.getElementById(navigationId);
+
+		if (navigation) {
+			setVisible(navigation.classList.contains('c-slideout-show'));
+		}
+
+		return () => Liferay.detach(stateChangedEventName, handleStateChanged);
+	}, [navigationId, stateChangedEventName]);
 
 	const title = useMemo(
 		() =>
@@ -38,7 +55,7 @@ function SideNavigationToggler({visible: initialVisible}: Props) {
 
 	return (
 		<ClayButtonWithIcon
-			aria-controls="com_liferay_application_list_taglib_side_navigation"
+			aria-controls={navigationId}
 			aria-expanded={visible}
 			aria-label={title}
 			className="control-menu-nav-link"
@@ -54,4 +71,4 @@ function SideNavigationToggler({visible: initialVisible}: Props) {
 	);
 }
 
-export default SideNavigationToggler;
+export default UnifiedSidebarToggler;

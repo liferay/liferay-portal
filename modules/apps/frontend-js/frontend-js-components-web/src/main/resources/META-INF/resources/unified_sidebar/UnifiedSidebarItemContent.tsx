@@ -7,9 +7,9 @@ import ClayIcon from '@clayui/icon';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
-import {SideNavigationItem} from './types/SideNavigation';
+import {UnifiedSidebarItem} from './types';
 
-function SideNavigationItemContent({item}: {item: SideNavigationItem}) {
+function UnifiedSidebarItemContent({item}: {item: UnifiedSidebarItem}) {
 	return (
 		<>
 			{item.leadingIcon && (
@@ -31,4 +31,4 @@ function SideNavigationItemContent({item}: {item: SideNavigationItem}) {
 	);
 }
 
-export default SideNavigationItemContent;
+export default UnifiedSidebarItemContent;

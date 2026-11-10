@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-function SideNavigationResultsSkeleton() {
+function UnifiedSidebarResultsSkeleton() {
 	return (
 		<div
 			aria-label={Liferay.Language.get('loading')}
@@ -23,4 +23,4 @@ function SideNavigationResultsSkeleton() {
 	);
 }
 
-export default SideNavigationResultsSkeleton;
+export default UnifiedSidebarResultsSkeleton;

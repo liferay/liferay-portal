@@ -6,33 +6,30 @@
 import {fetch} from 'frontend-js-web';
 import {useCallback, useMemo, useRef, useState} from 'react';
 
-import {
-	SideNavigationItem,
-	SideNavigationItemsMap,
-} from './types/SideNavigation';
+import {UnifiedSidebarItem, UnifiedSidebarItemsMap} from './types';
 
 const REQUEST_TIMEOUT = 10000;
 
 function mergeNavigationItems(
-	items: Array<SideNavigationItem>,
-	sideNavigationItemsMap: SideNavigationItemsMap
-): Array<SideNavigationItem> {
+	items: Array<UnifiedSidebarItem>,
+	unifiedSidebarItemsMap: UnifiedSidebarItemsMap
+): Array<UnifiedSidebarItem> {
 	const mergedItems = items.map((item) => {
-		const sideNavigationItems = Object.hasOwn(
-			sideNavigationItemsMap,
+		const unifiedSidebarItems = Object.hasOwn(
+			unifiedSidebarItemsMap,
 			item.id
 		)
-			? sideNavigationItemsMap[item.id]
+			? unifiedSidebarItemsMap[item.id]
 			: undefined;
 
 		const mergedChildItems = item.items
-			? mergeNavigationItems(item.items, sideNavigationItemsMap)
+			? mergeNavigationItems(item.items, unifiedSidebarItemsMap)
 			: undefined;
 
-		if (sideNavigationItems?.length) {
-			const filterOnlyItems = sideNavigationItems.map(
-				(sideNavigationItem) => ({
-					...sideNavigationItem,
+		if (unifiedSidebarItems?.length) {
+			const filterOnlyItems = unifiedSidebarItems.map(
+				(unifiedSidebarItem) => ({
+					...unifiedSidebarItem,
 					filterOnly: true,
 				})
 			);
@@ -59,13 +56,13 @@ function mergeNavigationItems(
 	return mergedItems;
 }
 
-export function useSideNavigationItems(
-	items: Array<SideNavigationItem>,
+export function useUnifiedSidebarItems<Item extends UnifiedSidebarItem>(
+	items: Array<Item>,
 	navigationItemsURL: string
 ) {
 	const [loading, setLoading] = useState(false);
-	const [sideNavigationItemsMap, setSideNavigationItemsMap] =
-		useState<SideNavigationItemsMap>();
+	const [unifiedSidebarItemsMap, setUnifiedSidebarItemsMap] =
+		useState<UnifiedSidebarItemsMap>();
 
 	const promiseRef = useRef<Promise<void>>();
 
@@ -96,7 +93,7 @@ export function useSideNavigationItems(
 				return response.json();
 			})
 			.then((responseJSON) =>
-				setSideNavigationItemsMap(responseJSON.navigationItems ?? {})
+				setUnifiedSidebarItemsMap(responseJSON.navigationItems ?? {})
 			)
 			.catch((error) => {
 				promiseRef.current = undefined;
@@ -113,10 +110,13 @@ export function useSideNavigationItems(
 
 	const mergedItems = useMemo(
 		() =>
-			sideNavigationItemsMap
-				? mergeNavigationItems(items, sideNavigationItemsMap)
+			unifiedSidebarItemsMap
+				? (mergeNavigationItems(
+						items,
+						unifiedSidebarItemsMap
+					) as Array<Item>)
 				: items,
-		[items, sideNavigationItemsMap]
+		[items, unifiedSidebarItemsMap]
 	);
 
 	return {items: mergedItems, loading, prefetchFilterOnlyItems};

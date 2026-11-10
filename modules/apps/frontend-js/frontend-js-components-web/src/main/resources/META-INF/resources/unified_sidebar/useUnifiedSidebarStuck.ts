@@ -5,14 +5,14 @@
 
 import {useEffect, useState} from 'react';
 
-import {SideNavigationItem} from './types/SideNavigation';
+import {UnifiedSidebarItem} from './types';
 
-const SCOPE_ITEM_SELECTOR = '.side-navigation-scope-item';
 const SCROLLER_SELECTOR = '.sidebar-body';
 
-export function useSideNavigationStuck(
+export function useUnifiedSidebarStuck(
 	ref: React.RefObject<HTMLElement | null>,
-	items: Array<SideNavigationItem>
+	items: Array<UnifiedSidebarItem>,
+	anchorSelector?: string
 ) {
 	const [stuck, setStuck] = useState(false);
 
@@ -24,15 +24,19 @@ export function useSideNavigationStuck(
 			return;
 		}
 
-		const scopeItem =
-			scroller.querySelector<HTMLElement>(SCOPE_ITEM_SELECTOR);
+		// Place the sentinel before the anchor item when there is one, so the
+		// list counts as stuck once that item sticks to the top.
 
-		const sentinel = document.createElement(scopeItem ? 'li' : 'div');
+		const anchorItem = anchorSelector
+			? scroller.querySelector<HTMLElement>(anchorSelector)
+			: null;
+
+		const sentinel = document.createElement(anchorItem ? 'li' : 'div');
 
 		sentinel.setAttribute('role', 'none');
 
-		if (scopeItem) {
-			scopeItem.before(sentinel);
+		if (anchorItem) {
+			anchorItem.before(sentinel);
 		}
 		else {
 			scroller.prepend(sentinel);
@@ -50,7 +54,7 @@ export function useSideNavigationStuck(
 
 			sentinel.remove();
 		};
-	}, [items, ref]);
+	}, [anchorSelector, items, ref]);
 
 	return stuck;
 }

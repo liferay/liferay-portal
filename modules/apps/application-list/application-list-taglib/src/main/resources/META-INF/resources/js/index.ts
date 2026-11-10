@@ -6,4 +6,3 @@
 export {default as PanelKeyboardHandler} from './PanelKeyboardHandler';
 export {default as ScopeDropdown} from './ScopeDropdown';
 export {default as SideNavigation} from './SideNavigation';
-export {default as SideNavigationToggler} from './SideNavigationToggler';

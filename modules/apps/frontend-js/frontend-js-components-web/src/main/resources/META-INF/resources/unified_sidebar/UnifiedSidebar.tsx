@@ -4,6 +4,7 @@
  */
 
 import {SidePanel} from '@clayui/core';
+import {IPortalBaseProps} from '@clayui/shared';
 import ClaySticker from '@clayui/sticker';
 import {sub} from 'frontend-js-web';
 import React, {useRef} from 'react';
@@ -18,6 +19,8 @@ export type HeaderMessages = {
 };
 
 export interface UnifiedSidebarProps {
+	backdrop?: boolean;
+	backdropContainerProps?: IPortalBaseProps;
 	canonicalName?: string;
 	categoryImageUrl: string;
 	children?: React.ReactNode;
@@ -38,6 +41,8 @@ function UnifiedSidebarTop({children}: {children?: React.ReactNode}) {
 }
 
 export default function UnifiedSidebar({
+	backdrop,
+	backdropContainerProps,
 	canonicalName,
 	categoryImageUrl,
 	children,
@@ -72,6 +77,8 @@ export default function UnifiedSidebar({
 	return (
 		<SidePanel
 			aria-label={sub(Liferay.Language.get('x-menu'), label)}
+			backdrop={backdrop}
+			backdropContainerProps={backdropContainerProps}
 			className="unified-sidebar"
 			closeOnEscape={false}
 			containerRef={containerRef}
@@ -80,6 +87,7 @@ export default function UnifiedSidebar({
 			data-testid={testId}
 			direction="left"
 			displayType="light"
+			fullHeight
 			id={navigationId}
 			onOpenChange={onOpenChange}
 			open={open}
@@ -102,8 +110,9 @@ export default function UnifiedSidebar({
 					</ClaySticker>
 
 					<span
-						className="c-ml-2 text-5"
+						className="c-ml-2 text-5 text-truncate"
 						data-qa-id="unifiedSidebarLabel"
+						title={label}
 					>
 						{label}
 					</span>

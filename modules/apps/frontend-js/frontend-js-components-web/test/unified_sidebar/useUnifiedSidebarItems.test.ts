@@ -6,8 +6,11 @@
 import {act, renderHook} from '@testing-library/react';
 import {fetch} from 'frontend-js-web';
 
-import {SideNavigationItemsMap} from '../../src/main/resources/META-INF/resources/js/types/SideNavigation';
-import {useSideNavigationItems} from '../../src/main/resources/META-INF/resources/js/useSideNavigationItems';
+import {
+	UnifiedSidebarItem,
+	UnifiedSidebarItemsMap,
+} from '../../src/main/resources/META-INF/resources/unified_sidebar/types';
+import {useUnifiedSidebarItems} from '../../src/main/resources/META-INF/resources/unified_sidebar/useUnifiedSidebarItems';
 
 jest.mock('frontend-js-web', () => ({
 	...(jest.requireActual('frontend-js-web') as any),
@@ -21,7 +24,7 @@ describe('Navigation items merging', () => {
 		label: 'Dashboard',
 	};
 
-	const categoryItems = [
+	const categoryItems: Array<UnifiedSidebarItem> = [
 		{
 			id: 'content',
 			items: [
@@ -34,12 +37,12 @@ describe('Navigation items merging', () => {
 
 	function renderNavigationItems() {
 		return renderHook(() =>
-			useSideNavigationItems(categoryItems, 'navigationItemsURL')
+			useUnifiedSidebarItems(categoryItems, 'navigationItemsURL')
 		);
 	}
 
 	async function mergeNavigationItems(
-		navigationItems: SideNavigationItemsMap
+		navigationItems: UnifiedSidebarItemsMap
 	) {
 		(fetch as jest.Mock).mockResolvedValue({
 			json: () => Promise.resolve({navigationItems}),

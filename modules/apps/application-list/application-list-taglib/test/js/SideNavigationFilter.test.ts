@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {filterSideNavigationItems} from '../../src/main/resources/META-INF/resources/js/filterSideNavigationItems';
 import {SideNavigationItem} from '../../src/main/resources/META-INF/resources/js/types/SideNavigation';
-import {filterItemsByQuery} from '../../src/main/resources/META-INF/resources/js/useSideNavigationFilter';
 
 describe('Single layer items filtering', () => {
 	const singleLayerItems = [
@@ -15,36 +15,42 @@ describe('Single layer items filtering', () => {
 	];
 
 	it('returns all items when query is empty', () => {
-		const result = filterItemsByQuery(singleLayerItems, '');
+		const result = filterSideNavigationItems(singleLayerItems, '');
 
 		expect(result.items).toHaveLength(singleLayerItems.length);
 		expect(result.items).toBe(singleLayerItems);
 	});
 
 	it('returns matching leaf items', () => {
-		const result = filterItemsByQuery(singleLayerItems, 'blo');
+		const result = filterSideNavigationItems(singleLayerItems, 'blo');
 
 		expect(result.items).toHaveLength(1);
 		expect(result.items[0].label).toBe('Blogs');
 	});
 
 	it('returns empty when nothing matches', () => {
-		const result = filterItemsByQuery(singleLayerItems, 'calendar');
+		const result = filterSideNavigationItems(singleLayerItems, 'calendar');
 
 		expect(result.items).toHaveLength(0);
 	});
 
 	it('is case-sensitive (expects query to be lower case and trimmed)', () => {
-		const lowerCaseResult = filterItemsByQuery(singleLayerItems, 'wiki');
+		const lowerCaseResult = filterSideNavigationItems(
+			singleLayerItems,
+			'wiki'
+		);
 
 		expect(lowerCaseResult.items).toHaveLength(1);
 		expect(lowerCaseResult.items[0].label).toBe('Wiki');
 
-		const upperCaseResult = filterItemsByQuery(singleLayerItems, 'WIKI');
+		const upperCaseResult = filterSideNavigationItems(
+			singleLayerItems,
+			'WIKI'
+		);
 
 		expect(upperCaseResult.items).toHaveLength(0);
 
-		const leadingTrailingSpacesResult = filterItemsByQuery(
+		const leadingTrailingSpacesResult = filterSideNavigationItems(
 			singleLayerItems,
 			' wiki '
 		);
@@ -53,7 +59,7 @@ describe('Single layer items filtering', () => {
 	});
 
 	it('returns all items when query is a common substring', () => {
-		const result = filterItemsByQuery(singleLayerItems, 'content');
+		const result = filterSideNavigationItems(singleLayerItems, 'content');
 
 		expect(result.items).toHaveLength(2);
 	});
@@ -80,14 +86,14 @@ describe('Multi layer items filtering', () => {
 	];
 
 	it('returns all items when query is empty', () => {
-		const result = filterItemsByQuery(multiLayerItems, '');
+		const result = filterSideNavigationItems(multiLayerItems, '');
 
 		expect(result.items).toBe(multiLayerItems);
 		expect(result.expandedKeys).toBeUndefined();
 	});
 
 	it('returns empty when nothing matches', () => {
-		const result = filterItemsByQuery(multiLayerItems, 'calendar');
+		const result = filterSideNavigationItems(multiLayerItems, 'calendar');
 
 		expect(result.items).toHaveLength(0);
 		expect(result.expandedKeys).toBeDefined();
@@ -95,7 +101,7 @@ describe('Multi layer items filtering', () => {
 	});
 
 	it('filters nested items and expands parent', () => {
-		const result = filterItemsByQuery(multiLayerItems, 'blog');
+		const result = filterSideNavigationItems(multiLayerItems, 'blog');
 
 		expect(result.items).toHaveLength(1);
 		expect(result.items[0].id).toBe('parent1');
@@ -106,7 +112,7 @@ describe('Multi layer items filtering', () => {
 	});
 
 	it('matches the whole parent item if the query matches the parent label', () => {
-		const result = filterItemsByQuery(multiLayerItems, 'assets');
+		const result = filterSideNavigationItems(multiLayerItems, 'assets');
 
 		expect(result.items).toHaveLength(1);
 		expect(result.items[0].id).toBe('parent2');
@@ -151,7 +157,7 @@ describe('Filter-only items filtering', () => {
 	];
 
 	it('hides filter-only items when the query is empty', () => {
-		const result = filterItemsByQuery(filterOnlyItems, '');
+		const result = filterSideNavigationItems(filterOnlyItems, '');
 
 		expect(result.items).toHaveLength(1);
 		expect(result.items[0].items).toHaveLength(2);
@@ -159,7 +165,10 @@ describe('Filter-only items filtering', () => {
 	});
 
 	it('shows a matching filter-only item with its parent', () => {
-		const result = filterItemsByQuery(filterOnlyItems, 'organizations');
+		const result = filterSideNavigationItems(
+			filterOnlyItems,
+			'organizations'
+		);
 
 		expect(result.items).toHaveLength(1);
 		expect(result.items[0].id).toBe('users');
@@ -172,7 +181,7 @@ describe('Filter-only items filtering', () => {
 	});
 
 	it('keeps filter-only items hidden when only the parent label matches', () => {
-		const result = filterItemsByQuery(filterOnlyItems, 'users and');
+		const result = filterSideNavigationItems(filterOnlyItems, 'users and');
 
 		expect(result.items).toHaveLength(1);
 		expect(result.items[0].id).toBe('users');
@@ -182,7 +191,7 @@ describe('Filter-only items filtering', () => {
 	});
 
 	it('shows a matching filter-only item when its parent also matches', () => {
-		const result = filterItemsByQuery(filterOnlyItems, 'users');
+		const result = filterSideNavigationItems(filterOnlyItems, 'users');
 
 		expect(result.items[0].items).toHaveLength(1);
 		expect(result.items[0].items![0].items).toHaveLength(1);
@@ -192,8 +201,8 @@ describe('Filter-only items filtering', () => {
 	it('handles items without children', () => {
 		const items = [{href: 'rolesHref', id: 'roles', label: 'Roles'}];
 
-		expect(filterItemsByQuery(items, '').items).toBe(items);
-		expect(filterItemsByQuery(items, 'roles').items).toHaveLength(1);
+		expect(filterSideNavigationItems(items, '').items).toBe(items);
+		expect(filterSideNavigationItems(items, 'roles').items).toHaveLength(1);
 	});
 
 	it('keeps the branches without filter-only items identical', () => {
@@ -203,7 +212,7 @@ describe('Filter-only items filtering', () => {
 			label: 'Roles',
 		};
 
-		const result = filterItemsByQuery(
+		const result = filterSideNavigationItems(
 			[
 				untouchedItem,
 				{
@@ -265,7 +274,7 @@ describe('Section items filtering', () => {
 	];
 
 	it('shows a matching section with its own parent as context', () => {
-		const result = filterItemsByQuery(sectionItems, 'beta');
+		const result = filterSideNavigationItems(sectionItems, 'beta');
 
 		expect(result.items).toHaveLength(1);
 		expect(result.items[0].items).toHaveLength(1);
@@ -280,7 +289,7 @@ describe('Section items filtering', () => {
 	});
 
 	it('leaves the sections hidden when only their own parent matches', () => {
-		const result = filterItemsByQuery(sectionItems, 'feature flags');
+		const result = filterSideNavigationItems(sectionItems, 'feature flags');
 
 		const items = result.items[0].items![0].items;
 
@@ -290,16 +299,17 @@ describe('Section items filtering', () => {
 	});
 
 	it('counts the matching items without their context ancestors', () => {
-		expect(filterItemsByQuery(sectionItems, 'beta').numberOfMatches).toBe(
-			1
-		);
 		expect(
-			filterItemsByQuery(sectionItems, 'feature flags').numberOfMatches
+			filterSideNavigationItems(sectionItems, 'beta').numberOfMatches
+		).toBe(1);
+		expect(
+			filterSideNavigationItems(sectionItems, 'feature flags')
+				.numberOfMatches
 		).toBe(1);
 	});
 
 	it('hides the sections when the query is empty', () => {
-		const result = filterItemsByQuery(sectionItems, '');
+		const result = filterSideNavigationItems(sectionItems, '');
 
 		expect(result.items[0].items![0].items).toBeUndefined();
 	});
@@ -312,14 +322,14 @@ describe('Scope items filtering', () => {
 	];
 
 	it('does not match a scope item by its label', () => {
-		const result = filterItemsByQuery(scopeItems, 'system');
+		const result = filterSideNavigationItems(scopeItems, 'system');
 
 		expect(result.items).toHaveLength(0);
 		expect(result.numberOfMatches).toBe(0);
 	});
 
 	it('puts the scope item back above the matches of its scope', () => {
-		const result = filterItemsByQuery(
+		const result = filterSideNavigationItems(
 			[
 				...scopeItems,
 				{id: 'settings', label: 'Settings', scope: 'system'},
@@ -344,7 +354,7 @@ describe('Scope items filtering', () => {
 	});
 
 	it('puts the scope item back once above a category whose children match', () => {
-		const result = filterItemsByQuery(
+		const result = filterSideNavigationItems(
 			[
 				...scopeItems,
 				{
@@ -371,7 +381,33 @@ describe('Scope items filtering', () => {
 		expect(result.numberOfMatches).toBe(2);
 	});
 
+	it('does not match a nested scope item by its label', () => {
+		const result = filterSideNavigationItems(
+			[
+				{
+					id: 'configuration',
+					items: [
+						{
+							id: 'system',
+							label: 'System',
+							scope: 'system',
+							scopeMarker: true,
+						},
+						{id: 'settings', label: 'Settings', scope: 'system'},
+					],
+					label: 'Configuration',
+				},
+			],
+			'system'
+		);
+
+		expect(result.items).toHaveLength(0);
+		expect(result.numberOfMatches).toBe(0);
+	});
+
 	it('keeps a scope item when the query is empty', () => {
-		expect(filterItemsByQuery(scopeItems, '').items).toBe(scopeItems);
+		expect(filterSideNavigationItems(scopeItems, '').items).toBe(
+			scopeItems
+		);
 	});
 });

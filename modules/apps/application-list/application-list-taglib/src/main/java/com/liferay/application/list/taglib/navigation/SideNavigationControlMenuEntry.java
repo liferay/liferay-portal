@@ -103,9 +103,16 @@ public class SideNavigationControlMenuEntry
 
 			_reactRenderer.renderReact(
 				new ComponentDescriptor(
-					"{SideNavigationToggler} from application-list-taglib",
+					"{UnifiedSidebarToggler} from frontend-js-components-web",
 					null, null, true),
 				HashMapBuilder.<String, Object>put(
+					"navigationId",
+					"com_liferay_application_list_taglib_side_navigation"
+				).put(
+					"stateChangedEventName", "sideNavigationStateChanged"
+				).put(
+					"stateRequestedEventName", "sideNavigationStateRequested"
+				).put(
 					"visible", sideNavigationDisplayContext.isVisible()
 				).build(),
 				httpServletRequest, printWriter);

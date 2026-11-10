@@ -121,4 +121,19 @@ export type {
 	UnifiedSidebarProps,
 } from './unified_sidebar/UnifiedSidebar';
 export {default as UnifiedSidebarColorSchemeButton} from './unified_sidebar/UnifiedSidebarColorSchemeButton';
+export {default as UnifiedSidebarItemContent} from './unified_sidebar/UnifiedSidebarItemContent';
+export {default as UnifiedSidebarResultsSkeleton} from './unified_sidebar/UnifiedSidebarResultsSkeleton';
+export {default as UnifiedSidebarSearchInput} from './unified_sidebar/UnifiedSidebarSearchInput';
 export {default as UnifiedSidebarSiteSelector} from './unified_sidebar/UnifiedSidebarSiteSelector';
+export {default as UnifiedSidebarToggler} from './unified_sidebar/UnifiedSidebarToggler';
+export type {
+	UnifiedSidebarItem,
+	UnifiedSidebarItemsMap,
+} from './unified_sidebar/types';
+export type {UnifiedSidebarFilter} from './unified_sidebar/useUnifiedSidebarFilter';
+export {
+	filterUnifiedSidebarItems,
+	useUnifiedSidebarFilter,
+} from './unified_sidebar/useUnifiedSidebarFilter';
+export {useUnifiedSidebarItems} from './unified_sidebar/useUnifiedSidebarItems';
+export {useUnifiedSidebarStuck} from './unified_sidebar/useUnifiedSidebarStuck';

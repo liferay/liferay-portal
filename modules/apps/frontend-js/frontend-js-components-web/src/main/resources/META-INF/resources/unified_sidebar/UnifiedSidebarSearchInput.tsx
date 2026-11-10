@@ -8,7 +8,7 @@ import Form, {ClayInput} from '@clayui/form';
 import {InternalDispatch, useDebounce, useIsFirstRender} from '@clayui/shared';
 import React, {useEffect, useRef, useState} from 'react';
 
-function SideNavigationSearchInput({
+function UnifiedSidebarSearchInput({
 	onChange,
 	onFocus,
 }: {
@@ -72,4 +72,4 @@ function SideNavigationSearchInput({
 	);
 }
 
-export default SideNavigationSearchInput;
+export default UnifiedSidebarSearchInput;
