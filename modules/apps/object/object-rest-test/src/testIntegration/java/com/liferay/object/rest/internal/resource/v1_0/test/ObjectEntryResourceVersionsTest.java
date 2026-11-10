@@ -125,7 +125,8 @@ public class ObjectEntryResourceVersionsTest
 
 		Version version = systemProperties.getVersion();
 
-		Assert.assertEquals(versionNumber, (int)version.getNumber());
+		Assert.assertEquals(
+			Integer.valueOf(versionNumber), version.getNumber());
 	}
 
 }

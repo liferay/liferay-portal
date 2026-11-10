@@ -300,8 +300,6 @@ public class ObjectEntryResourceLocalizationTest
 
 			ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
 
-			Assert.assertNotNull(inputStream);
-
 			zipInputStream.getNextEntry();
 
 			Assert.assertNotNull(StringUtil.read(zipInputStream));

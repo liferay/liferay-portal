@@ -1681,15 +1681,15 @@ public class ObjectEntryResourceNestedFieldsTest
 
 		if (invoked) {
 			Assert.assertEquals(
-				name + " should have been computed once", 1,
-				(long)invocations.getOrDefault(name, 1L));
+				name + " should have been computed once", Long.valueOf(1),
+				invocations.getOrDefault(name, 1L));
 
 			invocations.put(name, 0L);
 		}
 		else {
 			Assert.assertEquals(
-				name + " should not have been computed", 0,
-				(long)invocations.getOrDefault(name, 0L));
+				name + " should not have been computed", Long.valueOf(0),
+				invocations.getOrDefault(name, 0L));
 		}
 	}
 
@@ -1874,8 +1874,6 @@ public class ObjectEntryResourceNestedFieldsTest
 		}
 
 		JSONArray jsonArray = jsonObject.getJSONArray(nestedFieldName);
-
-		Assert.assertNotNull("Missing field " + nestedFieldName, jsonArray);
 
 		Assert.assertEquals(1, jsonArray.length());
 

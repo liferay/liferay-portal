@@ -3383,8 +3383,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			objectEntry1.getExternalReferenceCode();
 
 		Assert.assertEquals(
-			itemJSONObject.getString(objectRelationshipERCObjectFieldName),
-			objectEntry1ExternalReferenceCode);
+			objectEntry1ExternalReferenceCode,
+			itemJSONObject.getString(objectRelationshipERCObjectFieldName));
 
 		// Comparison operators
 
@@ -4221,7 +4221,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			itemJSONObject.getLong("id"), objectEntry.getObjectEntryId());
+			objectEntry.getObjectEntryId(), itemJSONObject.getLong("id"));
 	}
 
 	private void _testFilterObjectEntriesByRelatedSystemObjectEntriesFields(

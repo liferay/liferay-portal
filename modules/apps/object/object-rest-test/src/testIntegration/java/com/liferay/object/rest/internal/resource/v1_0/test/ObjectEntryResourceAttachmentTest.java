@@ -571,7 +571,7 @@ public class ObjectEntryResourceAttachmentTest
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+			Assert.assertTrue(logEntries.isEmpty());
 
 			Assert.assertNotNull(
 				patchedJSONObject.get(
@@ -854,7 +854,7 @@ public class ObjectEntryResourceAttachmentTest
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+			Assert.assertTrue(logEntries.isEmpty());
 
 			Assert.assertNull(
 				jsonObject.get(
@@ -961,12 +961,9 @@ public class ObjectEntryResourceAttachmentTest
 		JSONObject localizedAttachmentI18nJSONObject = jsonObject.getJSONObject(
 			"localizedAttachment_i18n");
 
-		Assert.assertNotNull(localizedAttachmentI18nJSONObject);
-
 		JSONObject defaultLanguageJSONObject =
 			localizedAttachmentI18nJSONObject.getJSONObject("en_US");
 
-		Assert.assertNotNull(defaultLanguageJSONObject);
 		Assert.assertEquals(
 			Base64.encode(fileContent),
 			defaultLanguageJSONObject.getString("fileBase64"));
@@ -1591,7 +1588,7 @@ public class ObjectEntryResourceAttachmentTest
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+			Assert.assertTrue(logEntries.isEmpty());
 
 			JSONObject patchedAttachmentJSONObject =
 				patchedJSONObject.getJSONObject(

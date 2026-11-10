@@ -176,8 +176,8 @@ public class ObjectEntryResourceRelationshipTest
 		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			itemJSONObject.getString(objectRelationship1.getName() + "ERC"),
-			objectEntry1.getExternalReferenceCode());
+			objectEntry1.getExternalReferenceCode(),
+			itemJSONObject.getString(objectRelationship1.getName() + "ERC"));
 	}
 
 	@Test
@@ -214,9 +214,9 @@ public class ObjectEntryResourceRelationshipTest
 			relatedObjectEntriesJSONArray.getJSONObject(0);
 
 		Assert.assertEquals(
+			objectEntry1.getExternalReferenceCode(),
 			relatedObjectEntryJSONObject.getString(
-				objectRelationship1.getName() + "ERC"),
-			objectEntry1.getExternalReferenceCode());
+				objectRelationship1.getName() + "ERC"));
 	}
 
 	@Test
