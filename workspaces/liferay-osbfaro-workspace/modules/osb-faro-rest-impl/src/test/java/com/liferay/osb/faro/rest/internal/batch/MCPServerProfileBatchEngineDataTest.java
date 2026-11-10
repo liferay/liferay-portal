@@ -38,7 +38,6 @@ public class MCPServerProfileBatchEngineDataTest {
 					_MCP_SERVER_PROFILE_EXTERNAL_REFERENCE_CODE + "\""));
 		Assert.assertTrue(json.contains("\"instructions\": \""));
 		Assert.assertTrue(json.contains("\"name\": \"ldp\""));
-
 		Assert.assertFalse(json.contains("profileStatus"));
 		Assert.assertTrue(
 			json.contains("\"updateStrategy\": \"PARTIAL_UPDATE\""));
