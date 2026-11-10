@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
@@ -483,7 +484,7 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 	public void testGetLanguageOverridesPage() throws Exception {
 		Page<LanguageOverride> page =
 			languageOverrideResource.getLanguageOverridesPage(
-				null, Pagination.of(1, 10), null);
+				null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -496,7 +497,7 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 				randomLanguageOverride());
 
 		page = languageOverrideResource.getLanguageOverridesPage(
-			null, Pagination.of(1, (int)totalCount + 2), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -517,9 +518,101 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 	}
 
 	@Test
+	public void testGetLanguageOverridesPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		LanguageOverride languageOverride1 = randomLanguageOverride();
+
+		languageOverride1 = testGetLanguageOverridesPage_addLanguageOverride(
+			languageOverride1);
+
+		for (EntityField entityField : entityFields) {
+			Page<LanguageOverride> page =
+				languageOverrideResource.getLanguageOverridesPage(
+					null,
+					getFilterString(entityField, "between", languageOverride1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(languageOverride1),
+				(List<LanguageOverride>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetLanguageOverridesPageWithFilterDoubleEquals()
+		throws Exception {
+
+		testGetLanguageOverridesPageWithFilter("eq", EntityField.Type.DOUBLE);
+	}
+
+	@Test
+	public void testGetLanguageOverridesPageWithFilterStringContains()
+		throws Exception {
+
+		testGetLanguageOverridesPageWithFilter(
+			"contains", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetLanguageOverridesPageWithFilterStringEquals()
+		throws Exception {
+
+		testGetLanguageOverridesPageWithFilter("eq", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetLanguageOverridesPageWithFilterStringStartsWith()
+		throws Exception {
+
+		testGetLanguageOverridesPageWithFilter(
+			"startswith", EntityField.Type.STRING);
+	}
+
+	protected void testGetLanguageOverridesPageWithFilter(
+			String operator, EntityField.Type type)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		LanguageOverride languageOverride1 =
+			testGetLanguageOverridesPage_addLanguageOverride(
+				randomLanguageOverride());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		LanguageOverride languageOverride2 =
+			testGetLanguageOverridesPage_addLanguageOverride(
+				randomLanguageOverride());
+
+		for (EntityField entityField : entityFields) {
+			Page<LanguageOverride> page =
+				languageOverrideResource.getLanguageOverridesPage(
+					null,
+					getFilterString(entityField, operator, languageOverride1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(languageOverride1),
+				(List<LanguageOverride>)page.getItems());
+		}
+	}
+
+	@Test
 	public void testGetLanguageOverridesPageWithPagination() throws Exception {
 		Page<LanguageOverride> languageOverridesPage =
-			languageOverrideResource.getLanguageOverridesPage(null, null, null);
+			languageOverrideResource.getLanguageOverridesPage(
+				null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			languageOverridesPage.getTotalCount());
@@ -543,7 +636,7 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<LanguageOverride> page1 =
 				languageOverrideResource.getLanguageOverridesPage(
-					null,
+					null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -556,7 +649,7 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 
 			Page<LanguageOverride> page2 =
 				languageOverrideResource.getLanguageOverridesPage(
-					null,
+					null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -567,7 +660,7 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 
 			Page<LanguageOverride> page3 =
 				languageOverrideResource.getLanguageOverridesPage(
-					null,
+					null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -579,7 +672,7 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 		else {
 			Page<LanguageOverride> page1 =
 				languageOverrideResource.getLanguageOverridesPage(
-					null, Pagination.of(1, totalCount + 2), null);
+					null, null, Pagination.of(1, totalCount + 2), null);
 
 			List<LanguageOverride> languageOverrides1 =
 				(List<LanguageOverride>)page1.getItems();
@@ -590,7 +683,7 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 
 			Page<LanguageOverride> page2 =
 				languageOverrideResource.getLanguageOverridesPage(
-					null, Pagination.of(2, totalCount + 2), null);
+					null, null, Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -602,7 +695,7 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 
 			Page<LanguageOverride> page3 =
 				languageOverrideResource.getLanguageOverridesPage(
-					null, Pagination.of(1, (int)totalCount + 3), null);
+					null, null, Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(
 				languageOverride1, (List<LanguageOverride>)page3.getItems());
@@ -729,12 +822,13 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 			languageOverride2);
 
 		Page<LanguageOverride> page =
-			languageOverrideResource.getLanguageOverridesPage(null, null, null);
+			languageOverrideResource.getLanguageOverridesPage(
+				null, null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<LanguageOverride> ascPage =
 				languageOverrideResource.getLanguageOverridesPage(
-					null, Pagination.of(1, (int)page.getTotalCount() + 1),
+					null, null, Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
 			assertContains(
@@ -744,7 +838,7 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 
 			Page<LanguageOverride> descPage =
 				languageOverrideResource.getLanguageOverridesPage(
-					null, Pagination.of(1, (int)page.getTotalCount() + 1),
+					null, null, Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
 			assertContains(
@@ -983,6 +1077,9 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 		}
 	}
+
+	@Rule
+	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	protected LanguageOverride testGraphQLLanguageOverride_addLanguageOverride()
 		throws Exception {
@@ -2125,4 +2222,4 @@ public abstract class BaseLanguageOverrideResourceTestCase {
 		LanguageOverrideResource _languageOverrideResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2026385472
+// LIFERAY-REST-BUILDER-HASH:1496612149

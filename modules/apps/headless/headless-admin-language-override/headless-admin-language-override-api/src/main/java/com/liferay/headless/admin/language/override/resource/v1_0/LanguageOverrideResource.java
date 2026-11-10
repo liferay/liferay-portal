@@ -55,7 +55,9 @@ public interface LanguageOverrideResource {
 		throws Exception;
 
 	public Page<LanguageOverride> getLanguageOverridesPage(
-			String search, Pagination pagination,
+			String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
@@ -67,8 +69,10 @@ public interface LanguageOverrideResource {
 		throws Exception;
 
 	public Response postLanguageOverridesPageExportBatch(
-			String search, com.liferay.portal.kernel.search.Sort[] sorts,
-			String callbackURL, String contentType, String fieldNames)
+			String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public LanguageOverride putLanguageOverrideByExternalReferenceCode(
@@ -171,4 +175,4 @@ public interface LanguageOverrideResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-733962849
+// LIFERAY-REST-BUILDER-HASH:-1587097425

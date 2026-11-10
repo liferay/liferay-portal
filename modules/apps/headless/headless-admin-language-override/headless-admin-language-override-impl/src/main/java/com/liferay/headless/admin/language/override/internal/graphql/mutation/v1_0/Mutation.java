@@ -91,6 +91,7 @@ public class Mutation {
 	@GraphQLField
 	public Response createLanguageOverridesPageExportBatch(
 			@GraphQLName("search") String search,
+			@GraphQLName("filter") String filterString,
 			@GraphQLName("sort") String sortsString,
 			@GraphQLName("callbackURL") String callbackURL,
 			@GraphQLName("contentType") String contentType,
@@ -103,6 +104,8 @@ public class Mutation {
 			languageOverrideResource ->
 				languageOverrideResource.postLanguageOverridesPageExportBatch(
 					search,
+					_filterBiFunction.apply(
+						languageOverrideResource, filterString),
 					_sortsBiFunction.apply(
 						languageOverrideResource, sortsString),
 					callbackURL, contentType, fieldNames));
@@ -188,6 +191,9 @@ public class Mutation {
 
 	private AcceptLanguage _acceptLanguage;
 	private com.liferay.portal.kernel.model.Company _company;
+	private BiFunction
+		<Object, String, com.liferay.portal.kernel.search.filter.Filter>
+			_filterBiFunction;
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
@@ -202,4 +208,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1914111419
+// LIFERAY-REST-BUILDER-HASH:1675426777

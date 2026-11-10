@@ -148,6 +148,10 @@ public abstract class BaseLanguageOverrideResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "filter"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -177,6 +181,8 @@ public abstract class BaseLanguageOverrideResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
+			@jakarta.ws.rs.core.Context
+				com.liferay.portal.kernel.search.filter.Filter filter,
 			@jakarta.ws.rs.core.Context Pagination pagination,
 			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts)
@@ -262,6 +268,10 @@ public abstract class BaseLanguageOverrideResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "filter"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -296,6 +306,8 @@ public abstract class BaseLanguageOverrideResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
+			@jakarta.ws.rs.core.Context
+				com.liferay.portal.kernel.search.filter.Filter filter,
 			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
@@ -521,7 +533,7 @@ public abstract class BaseLanguageOverrideResourceImpl
 			throw new NotFoundException();
 		}
 
-		return getLanguageOverridesPage(search, pagination, sorts);
+		return getLanguageOverridesPage(search, filter, pagination, sorts);
 	}
 
 	@Override
@@ -1128,4 +1140,4 @@ public abstract class BaseLanguageOverrideResourceImpl
 		LogFactoryUtil.getLog(BaseLanguageOverrideResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1053770644
+// LIFERAY-REST-BUILDER-HASH:-1387689189
