@@ -5,7 +5,6 @@
 
 package com.liferay.fragment.entry.processor.freemarker;
 
-import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.entry.processor.freemarker.internal.configuration.FreeMarkerFragmentEntryProcessorConfiguration;
 import com.liferay.fragment.entry.processor.freemarker.internal.template.DummyRESTClient;
 import com.liferay.fragment.exception.FragmentEntryContentException;
@@ -15,13 +14,7 @@ import com.liferay.fragment.input.template.parser.InputTemplateNode;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.FragmentEntryProcessor;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
-import com.liferay.fragment.util.configuration.FragmentConfigurationField;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
-import com.liferay.info.exception.NoSuchInfoItemException;
-import com.liferay.info.item.InfoItemIdentifier;
-import com.liferay.info.item.InfoItemReference;
-import com.liferay.info.item.InfoItemServiceRegistry;
-import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -39,13 +32,11 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Locale;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -166,9 +157,12 @@ public class FreeMarkerFragmentEntryProcessor
 				_getLayoutMode(
 					fragmentEntryProcessorContext.getHttpServletRequest())
 			).putAll(
-				_getContextObjects(
-					configurationJSONObject, configurationValuesJSONObject,
-					editableValuesJSONObject, fragmentEntryProcessorContext)
+				_fragmentEntryConfigurationParser.getContextObjects(
+					configurationValuesJSONObject, configurationJSONObject,
+					editableValuesJSONObject,
+					fragmentEntryProcessorContext.getContextInfoItem(),
+					fragmentEntryProcessorContext.getContextInfoItemReference(),
+					fragmentEntryProcessorContext.getSegmentsEntryIds())
 			).build());
 
 		if (fragmentEntryLink.isTypeInput()) {
@@ -217,96 +211,6 @@ public class FreeMarkerFragmentEntryProcessor
 		return unsyncStringWriter.toString();
 	}
 
-	private Map<String, Object> _getContextObjects(
-		JSONObject configurationJSONObject,
-		JSONObject configurationValuesJSONObject,
-		JSONObject editableValuesJSONObject,
-		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
-
-		Map<String, Object> contextObjects =
-			_fragmentEntryConfigurationParser.getContextObjects(
-				configurationValuesJSONObject, configurationJSONObject,
-				fragmentEntryProcessorContext.getContextInfoItem(),
-				fragmentEntryProcessorContext.getSegmentsEntryIds());
-
-		if ((contextObjects == null) ||
-			(fragmentEntryProcessorContext.getContextInfoItem() != null)) {
-
-			return contextObjects;
-		}
-
-		JSONObject freeMarkerEditableValuesJSONObject =
-			editableValuesJSONObject.getJSONObject(
-				FragmentEntryProcessorConstants.
-					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
-
-		Object infoItem = null;
-
-		for (FragmentConfigurationField fragmentConfigurationField :
-				_fragmentEntryConfigurationParser.
-					getFragmentConfigurationFields(configurationJSONObject)) {
-
-			if (!StringUtil.equalsIgnoreCase(
-					fragmentConfigurationField.getType(), "itemSelector")) {
-
-				continue;
-			}
-
-			String name = fragmentConfigurationField.getName();
-
-			if (contextObjects.containsKey(name + _CONTEXT_OBJECT_SUFFIX) &&
-				(freeMarkerEditableValuesJSONObject != null) &&
-				(freeMarkerEditableValuesJSONObject.get(name) != null)) {
-
-				continue;
-			}
-
-			if (infoItem == null) {
-				infoItem = _getInfoItem(fragmentEntryProcessorContext);
-
-				if (infoItem == null) {
-					break;
-				}
-			}
-
-			contextObjects.put(name + _CONTEXT_OBJECT_SUFFIX, infoItem);
-		}
-
-		return contextObjects;
-	}
-
-	private Object _getInfoItem(
-		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
-
-		InfoItemReference infoItemReference =
-			fragmentEntryProcessorContext.getContextInfoItemReference();
-
-		if (infoItemReference == null) {
-			return null;
-		}
-
-		InfoItemIdentifier infoItemIdentifier =
-			infoItemReference.getInfoItemIdentifier();
-
-		InfoItemObjectProvider<Object> infoItemObjectProvider =
-			_infoItemServiceRegistry.getFirstInfoItemService(
-				InfoItemObjectProvider.class, infoItemReference.getClassName(),
-				infoItemIdentifier.getInfoItemServiceFilter());
-
-		try {
-			return infoItemObjectProvider.getInfoItem(
-				fragmentEntryProcessorContext.getScopeGroupId(),
-				infoItemIdentifier);
-		}
-		catch (NoSuchInfoItemException noSuchInfoItemException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchInfoItemException);
-			}
-		}
-
-		return null;
-	}
-
 	private String _getLayoutMode(HttpServletRequest httpServletRequest) {
 		return ParamUtil.getString(
 			_portal.getOriginalServletRequest(httpServletRequest), "p_l_mode",
@@ -340,8 +244,6 @@ public class FreeMarkerFragmentEntryProcessor
 			"liferay_portlet = liferay_portlet + {\"runtime\": __noop}]" + html;
 	}
 
-	private static final String _CONTEXT_OBJECT_SUFFIX = "Object";
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		FreeMarkerFragmentEntryProcessor.class);
 
@@ -357,9 +259,6 @@ public class FreeMarkerFragmentEntryProcessor
 
 	@Reference
 	private FragmentEntryLinkHelper _fragmentEntryLinkHelper;
-
-	@Reference
-	private InfoItemServiceRegistry _infoItemServiceRegistry;
 
 	@Reference
 	private Language _language;

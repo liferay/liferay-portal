@@ -6,6 +6,7 @@
 package com.liferay.fragment.util.configuration;
 
 import com.liferay.fragment.constants.FragmentConfigurationFieldDataType;
+import com.liferay.info.item.InfoItemReference;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONObject;
 
@@ -33,6 +34,12 @@ public interface FragmentEntryConfigurationParser {
 			JSONObject configurationJSONObject,
 			JSONObject editableValuesJSONObject, Locale locale)
 		throws JSONException;
+
+	public Map<String, Object> getContextObjects(
+		JSONObject configurationValuesJSONObject,
+		JSONObject configurationJSONObject, JSONObject editableValuesJSONObject,
+		Object displayObject, InfoItemReference fallbackInfoItemReference,
+		long[] segmentsEntryIds);
 
 	public Map<String, Object> getContextObjects(
 		JSONObject configurationValuesJSONObject,
