@@ -6,19 +6,18 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.headless.admin.site.client.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.client.dto.v1_0.ThumbnailURLReference;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.resource.v1_0.StyleBookResource;
 import com.liferay.headless.admin.site.client.scope.Scope;
-import com.liferay.headless.admin.site.resource.v1_0.test.util.DesignLibraryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.FileEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ProblemExceptionTestUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.test.util.DesignLibraryTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
@@ -41,6 +40,7 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -69,6 +69,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -88,6 +89,15 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+	}
 
 	@Override
 	@Test
@@ -363,16 +373,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		return _getDesignLibraryExternalReferenceCode();
 	}
 
-	private Group _addConnectedDesignLibraryGroup() throws Exception {
-		Group group = DesignLibraryTestUtil.addDesignLibraryGroup(
-			testGroup.getGroupId());
-
-		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-			group.getClassPK(), testGroup.getGroupId());
-
-		return group;
-	}
-
 	private Group _addStagedGroup() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
@@ -471,7 +471,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	private String _getDesignLibraryExternalReferenceCode() throws Exception {
 		if (_designLibraryGroup == null) {
 			_designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
-				testGroup.getGroupId());
+				testGroup.getGroupId(), false);
 		}
 
 		return _designLibraryGroup.getExternalReferenceCode();
@@ -483,7 +483,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		if (_irrelevantDesignLibraryGroup == null) {
 			_irrelevantDesignLibraryGroup =
 				DesignLibraryTestUtil.addDesignLibraryGroup(
-					testGroup.getGroupId());
+					testGroup.getGroupId(), false);
 		}
 
 		return _irrelevantDesignLibraryGroup.getExternalReferenceCode();
@@ -657,7 +657,8 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		StyleBookEntry siteStyleBookEntry = _addStyleBookEntry(
 			testGroup.getGroupId(), themeId, "Site Style Book");
 
-		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+		Group designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
+			testGroup.getGroupId(), true);
 
 		StyleBookEntry designLibraryStyleBookEntry = _addStyleBookEntry(
 			designLibraryGroup.getGroupId(), themeId,
@@ -744,7 +745,8 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	private void _testGetSitePageSpecificationStyleBooksPageWithLayoutTypes()
 		throws Exception {
 
-		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+		Group designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
+			testGroup.getGroupId(), true);
 
 		String themeId = _getPageSpecificationThemeId();
 
@@ -1856,9 +1858,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		Assert.assertTrue(
 			Validator.isNull(putStyleBook.getFrontendTokenDefinition()));
 	}
-
-	@Inject
-	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
 
 	private Group _designLibraryGroup;
 	private Group _irrelevantDesignLibraryGroup;

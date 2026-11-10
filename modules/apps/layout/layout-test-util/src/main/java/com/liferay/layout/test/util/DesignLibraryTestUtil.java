@@ -13,6 +13,10 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 
+import java.util.Map;
+
+import org.junit.Assert;
+
 /**
  * @author Georgel Pop
  */
@@ -33,6 +37,22 @@ public class DesignLibraryTestUtil {
 		}
 
 		return depotEntry.getGroup();
+	}
+
+	public static void assertDesignLibraryPermissionActionHrefs(
+		Map<String, Map<String, String>> actions) {
+
+		Map<String, String> getAction = actions.get("get");
+
+		String getHref = getAction.get("href");
+
+		Assert.assertTrue(getHref.contains("/design-libraries/"));
+
+		Map<String, String> replaceAction = actions.get("replace");
+
+		String replaceHref = replaceAction.get("href");
+
+		Assert.assertTrue(replaceHref.contains("/design-libraries/"));
 	}
 
 }

@@ -24,7 +24,6 @@ import com.liferay.headless.admin.site.client.permission.Permission;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.MasterPageResource;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.AssetTestUtil;
-import com.liferay.headless.admin.site.resource.v1_0.test.util.DesignLibraryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.FileEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageElementsTestUtil;
@@ -38,6 +37,7 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.URLFetchSecurityC
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.test.util.DesignLibraryTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.StreamUtil;
@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -101,6 +102,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Ignore;
@@ -144,6 +146,15 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		if (_thumbnailHttpServer != null) {
 			_thumbnailHttpServer.stop();
 		}
+	}
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
 	}
 
 	@Ignore
@@ -918,7 +929,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		if (_irrelevantDesignLibraryGroup == null) {
 			_irrelevantDesignLibraryGroup =
 				DesignLibraryTestUtil.addDesignLibraryGroup(
-					testGroup.getGroupId());
+					testGroup.getGroupId(), false);
 		}
 
 		return _irrelevantDesignLibraryGroup.getExternalReferenceCode();
@@ -1237,7 +1248,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 	private String _getDesignLibraryExternalReferenceCode() throws Exception {
 		if (_designLibraryGroup == null) {
 			_designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
-				testGroup.getGroupId());
+				testGroup.getGroupId(), false);
 		}
 
 		return _designLibraryGroup.getExternalReferenceCode();
