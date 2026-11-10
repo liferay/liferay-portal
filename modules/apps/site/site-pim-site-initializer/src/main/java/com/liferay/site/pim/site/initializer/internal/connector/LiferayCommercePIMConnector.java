@@ -167,7 +167,8 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				jsonArray);
 
 			return JSONUtil.put(
-				"batchId", jsonObject.getString("externalReferenceCode")
+				"batchExternalReferenceCode",
+				jsonObject.getString("externalReferenceCode")
 			).put(
 				"log", liferayCommercePIMClient.getLogJSONArray()
 			).put(
@@ -347,9 +348,15 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 					return null;
 				}
 
-				String valueKey = _getValueKey(
-					objectDefinition, pimFieldMappingObjectEntry, value,
-					values);
+				String valueKey = _friendlyURLNormalizer.normalize(value);
+
+				ListTypeEntry listTypeEntry =
+					PIMConnectorFieldMappingsUtil.fetchListTypeEntry(
+						objectDefinition, pimFieldMappingObjectEntry, values);
+
+				if (listTypeEntry != null) {
+					valueKey = listTypeEntry.getKey();
+				}
 
 				if (!valueKeys.add(valueKey)) {
 					return null;
@@ -545,24 +552,18 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			"key", sourceFieldName
 		).put(
 			"value",
-			_getValueKey(
-				objectDefinition, pimFieldMappingObjectEntry, value, values)
+			() -> {
+				ListTypeEntry listTypeEntry =
+					PIMConnectorFieldMappingsUtil.fetchListTypeEntry(
+						objectDefinition, pimFieldMappingObjectEntry, values);
+
+				if (listTypeEntry != null) {
+					return listTypeEntry.getKey();
+				}
+
+				return _friendlyURLNormalizer.normalize(value);
+			}
 		);
-	}
-
-	private String _getValueKey(
-		ObjectDefinition objectDefinition, ObjectEntry objectEntry,
-		String value, Map<String, Serializable> values) {
-
-		ListTypeEntry listTypeEntry =
-			PIMConnectorFieldMappingsUtil.fetchListTypeEntry(
-				objectDefinition, objectEntry, values);
-
-		if (listTypeEntry != null) {
-			return listTypeEntry.getKey();
-		}
-
-		return _friendlyURLNormalizer.normalize(value);
 	}
 
 	private JSONArray _toJSONArray(
