@@ -7,7 +7,7 @@
 	},
 	"settings": {
 		"masterPage": {
-			"key": "ldp-settings-master"
+			"key": "liferay-data-platform-settings-master"
 		}
 	},
 	"version": 1.1

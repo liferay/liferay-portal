@@ -20,7 +20,7 @@
 	},
 	"settings": {
 		"masterPage": {
-			"key": "ldp-master"
+			"key": "liferay-data-platform-master"
 		}
 	},
 	"version": 1.1
