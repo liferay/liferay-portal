@@ -48,7 +48,7 @@ writeFindBugsProject {
 		}
 
 		if (classesFileTree.empty) {
-			throw new GradleException("No classes to scan in ${classpath.files}, build them with Ant first")
+			throw new GradleException("No classes were found to scan in ${classpath.files}, build them with Ant first")
 		}
 	}
 }

@@ -727,7 +727,7 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 		<antcall target="compile" />
 
 		<if>
-			<contains string="${find.security.bugs.projects}" substring="portal-web" />
+			<contains string=",${find.security.bugs.projects}," substring=",portal-web," />
 			<then>
 				<for list="util-java,util-taglib,portal-kernel,portal-impl" param="find.security.bugs.jar.project">
 					<sequential>
