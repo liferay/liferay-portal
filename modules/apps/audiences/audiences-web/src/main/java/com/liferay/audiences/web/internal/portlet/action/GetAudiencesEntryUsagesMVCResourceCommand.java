@@ -5,6 +5,7 @@
 
 package com.liferay.audiences.web.internal.portlet.action;
 
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.audiences.constants.AudiencesPortletKeys;
 import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.audiences.service.AudiencesEntryService;
@@ -46,12 +47,23 @@ public class GetAudiencesEntryUsagesMVCResourceCommand
 		JSONPortletResponseUtil.writeJSON(
 			resourceRequest, resourceResponse,
 			JSONUtil.put(
+				"collectionVariationsCount",
+				_assetListEntryAudienceEntryRelLocalService.
+					getAssetListEntryAudienceEntryRelsCountByAudienceEntryERC(
+						audiencesEntry.getCompanyId(),
+						audiencesEntry.getExternalReferenceCode())
+			).put(
 				"elementVariationsCount",
 				_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 					getLayoutPageTemplateStructureRelElementVariationAudienceEntryRelsCountByAudienceEntryERC(
 						audiencesEntry.getCompanyId(),
-						audiencesEntry.getExternalReferenceCode())));
+						audiencesEntry.getExternalReferenceCode())
+			));
 	}
+
+	@Reference
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
 
 	@Reference
 	private AudiencesEntryService _audiencesEntryService;

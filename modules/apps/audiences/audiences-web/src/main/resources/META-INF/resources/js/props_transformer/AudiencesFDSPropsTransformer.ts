@@ -13,7 +13,27 @@ interface DeleteActionData {
 	id: string;
 }
 
-function getConfirmationMessage(elementVariationsCount: number) {
+interface Usages {
+	collectionVariationsCount: number;
+	elementVariationsCount: number;
+}
+
+function getConfirmationMessage({
+	collectionVariationsCount,
+	elementVariationsCount,
+}: Usages) {
+	if (collectionVariationsCount && elementVariationsCount) {
+		return Liferay.Language.get(
+			'this-audience-is-used-in-element-variations-and-collection-variations.-deleting-it-will-remove-it-from-the-element-variations-and-delete-the-collection-variations.-are-you-sure-you-want-to-delete-it'
+		);
+	}
+
+	if (collectionVariationsCount) {
+		return Liferay.Language.get(
+			'this-audience-is-used-in-one-or-more-collection-variations.-deleting-it-will-delete-those-variations.-are-you-sure-you-want-to-delete-it'
+		);
+	}
+
 	if (elementVariationsCount === 1) {
 		return Liferay.Language.get(
 			'this-audience-is-used-in-one-element-variation.-deleting-it-will-remove-it-from-that-variation.-are-you-sure-you-want-to-delete-it'
@@ -36,7 +56,7 @@ async function deleteAudiencesEntry({
 	deleteURL,
 	getAudiencesEntryUsagesURL,
 }: DeleteActionData) {
-	let elementVariationsCount: number;
+	let usages: Usages;
 
 	try {
 		const response = await fetch(getAudiencesEntryUsagesURL);
@@ -45,9 +65,7 @@ async function deleteAudiencesEntry({
 			throw new Error(response.statusText);
 		}
 
-		const json = await response.json();
-
-		elementVariationsCount = json.elementVariationsCount;
+		usages = await response.json();
 	}
 	catch (error) {
 		openToast({
@@ -59,13 +77,16 @@ async function deleteAudiencesEntry({
 	}
 
 	openConfirmModal({
-		message: getConfirmationMessage(elementVariationsCount),
+		message: getConfirmationMessage(usages),
 		onConfirm: (isConfirmed) => {
 			if (isConfirmed) {
 				navigate(deleteURL);
 			}
 		},
-		status: elementVariationsCount ? 'warning' : undefined,
+		status:
+			usages.collectionVariationsCount || usages.elementVariationsCount
+				? 'warning'
+				: undefined,
 	});
 }
 

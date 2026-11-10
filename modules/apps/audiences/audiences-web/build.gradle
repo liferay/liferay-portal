@@ -5,6 +5,7 @@ dependencies {
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:application-list:application-list-api")
+	compileOnly project(":apps:asset:asset-list-api")
 	compileOnly project(":apps:audiences:audiences-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-taglib")
