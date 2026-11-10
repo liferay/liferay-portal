@@ -18,10 +18,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import java.util.Map;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -58,11 +54,6 @@ public class MFAFilter extends BaseFilter implements TryFilter {
 	@Override
 	public boolean isFilterEnabled() {
 		return true;
-	}
-
-	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
 	}
 
 	@Override
