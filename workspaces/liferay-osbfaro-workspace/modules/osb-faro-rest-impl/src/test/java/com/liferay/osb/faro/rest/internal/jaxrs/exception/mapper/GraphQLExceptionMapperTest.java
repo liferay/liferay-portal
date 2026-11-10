@@ -49,20 +49,6 @@ public class GraphQLExceptionMapperTest {
 			"Check the parameter values against the tool description",
 			_getGraphQLError("ValidationError", null, null));
 		_assertResponse(
-			Response.Status.BAD_REQUEST, "Date range is too large",
-			_getGraphQLError(
-				"DataFetchingException", "date-range-limit-exceeded", null));
-		_assertResponse(
-			Response.Status.BAD_REQUEST, "Page size is too large",
-			_getGraphQLError(
-				"DataFetchingException", null, "page-size-limit-exceeded"));
-		_assertResponse(
-			Response.Status.GATEWAY_TIMEOUT,
-			"Request took too long, narrow it with a shorter date range or a " +
-				"smaller page size",
-			_getGraphQLError(
-				"DataFetchingException", "query-timeout-exceeded", null));
-		_assertResponse(
 			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error");
 		_assertResponse(
 			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",
@@ -73,19 +59,15 @@ public class GraphQLExceptionMapperTest {
 			_getGraphQLError("DataFetchingException", null, null));
 		_assertResponse(
 			Response.Status.NOT_FOUND, "Not Found",
+			_getGraphQLError(
+				"DataFetchingException", null,
+				"no-account-was-found-with-id-1"));
+		_assertResponse(
+			Response.Status.NOT_FOUND, "Not Found",
 			_getGraphQLError("ValidationError", null, null),
 			_getGraphQLError(
 				"DataFetchingException", "no-account-was-found-with-id-1",
 				null));
-		_assertResponse(
-			Response.Status.SERVICE_UNAVAILABLE,
-			"Query is still running, repeat the same request with the same " +
-				"parameters later",
-			_getGraphQLError(
-				"DataFetchingException", "no-account-was-found-with-id-1",
-				null),
-			_getGraphQLError(
-				"DataFetchingException", "query-in-progress", null));
 	}
 
 	@Test

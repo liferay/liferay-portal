@@ -47,17 +47,6 @@ public class GraphQLExceptionMapper
 		}
 
 		for (GraphQLError graphQLError : graphQLErrors) {
-			String messageKey = graphQLError.getMessageKey();
-
-			if (HeadlessRequestRejectedExceptionMapper.isMessageKey(
-					messageKey)) {
-
-				return HeadlessRequestRejectedExceptionMapper.getProblem(
-					null, messageKey, null);
-			}
-		}
-
-		for (GraphQLError graphQLError : graphQLErrors) {
 			Integer httpStatus = graphQLError.getHTTPStatus();
 
 			if (httpStatus == null) {
