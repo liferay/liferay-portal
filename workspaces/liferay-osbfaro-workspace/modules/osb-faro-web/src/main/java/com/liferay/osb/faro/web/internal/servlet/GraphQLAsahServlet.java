@@ -12,7 +12,6 @@ import com.liferay.osb.faro.service.FaroChannelLocalService;
 import com.liferay.osb.faro.util.FaroPermissionChecker;
 import com.liferay.osb.faro.web.internal.util.FaroProjectThreadLocal;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
@@ -34,7 +33,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -149,24 +147,22 @@ public class GraphQLAsahServlet extends BaseAsahServlet {
 		}
 	}
 
-	private boolean _hasChannelPermission(
+	private boolean _hasFaroChannelAccessPermission(
 		FaroProject faroProject, String channelId) {
 
-		if ((channelId != null) && !channelId.isEmpty()) {
-			List<FaroChannel> faroChannels = _faroChannelLocalService.search(
-				faroProject.getGroupId(), null, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
+		if ((channelId == null) || channelId.isEmpty()) {
+			return true;
+		}
 
-			for (FaroChannel faroChannel : faroChannels) {
-				if (Objects.equals(faroChannel.getChannelId(), channelId)) {
-					return true;
-				}
-			}
+		FaroChannel faroChannel = _faroChannelLocalService.fetchFaroChannel(
+			channelId, faroProject.getGroupId());
 
+		if (faroChannel == null) {
 			return false;
 		}
 
-		return true;
+		return FaroPermissionChecker.hasFaroChannelAccessPermission(
+			faroChannel);
 	}
 
 	private boolean _hasPermission(String body) {
@@ -181,7 +177,7 @@ public class GraphQLAsahServlet extends BaseAsahServlet {
 			if (variablesMap != null) {
 				String channelId = MapUtil.getString(variablesMap, "channelId");
 
-				if (!_hasChannelPermission(faroProject, channelId)) {
+				if (!_hasFaroChannelAccessPermission(faroProject, channelId)) {
 					return false;
 				}
 			}
@@ -193,7 +189,7 @@ public class GraphQLAsahServlet extends BaseAsahServlet {
 			if (matcher.find()) {
 				String channelId = matcher.group(_CHANNEL_ID_INDEX);
 
-				if (!_hasChannelPermission(faroProject, channelId)) {
+				if (!_hasFaroChannelAccessPermission(faroProject, channelId)) {
 					return false;
 				}
 			}
