@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
@@ -31,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.portal.search.learning.to.rank.configuration.LearningToRankConfiguration",
-	enabled = false,
+	configurationPolicy = ConfigurationPolicy.REQUIRE, enabled = false,
 	property = "search.request.contributor.id=com.liferay.portal.search.learning.to.rank",
 	service = SearchRequestContributor.class
 )
