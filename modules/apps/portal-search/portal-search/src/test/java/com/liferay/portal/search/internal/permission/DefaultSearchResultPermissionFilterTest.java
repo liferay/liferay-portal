@@ -129,6 +129,23 @@ public class DefaultSearchResultPermissionFilterTest {
 	}
 
 	@Test
+	public void testSearchPreservesStartAndEnd() {
+		_groupAdmin = false;
+		_permissionFilteredSearchResultAccurateCountThreshold = 20;
+
+		DefaultSearchResultPermissionFilter
+			defaultSearchResultPermissionFilter =
+				_getDefaultSearchResultPermissionFilter();
+
+		SearchContext searchContext = _getSearchContext(2, 6);
+
+		defaultSearchResultPermissionFilter.search(searchContext);
+
+		Assert.assertEquals(6, searchContext.getEnd());
+		Assert.assertEquals(2, searchContext.getStart());
+	}
+
+	@Test
 	public void testSearchPreservesTotalHitsRelation() {
 		_groupAdmin = false;
 		_permissionFilteredSearchResultAccurateCountThreshold = 0;
