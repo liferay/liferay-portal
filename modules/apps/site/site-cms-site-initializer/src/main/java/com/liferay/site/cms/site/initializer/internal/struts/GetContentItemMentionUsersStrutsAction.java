@@ -112,9 +112,9 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 
 			if (comment.isRoot() || (user == null) ||
 				!_isMatch(keywords, user) || !userIds.add(user.getUserId()) ||
-				!_isMentionable(
-					className1, classPK, objectEntry.getGroupId(), themeDisplay,
-					user)) {
+				!_groupLocalService.hasUserGroup(
+					user.getUserId(), objectEntry.getGroupId(), true) ||
+				!_isMentionable(className1, classPK, themeDisplay, user)) {
 
 				continue;
 			}
@@ -144,8 +144,7 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 			for (User groupUser : groupUsers) {
 				if (!userIds.add(groupUser.getUserId()) ||
 					!_isMentionable(
-						className1, classPK, objectEntry.getGroupId(),
-						themeDisplay, groupUser)) {
+						className1, classPK, themeDisplay, groupUser)) {
 
 					continue;
 				}
@@ -219,12 +218,11 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 	}
 
 	private boolean _isMentionable(
-			String className, long classPK, long groupId,
-			ThemeDisplay themeDisplay, User user)
+			String className, long classPK, ThemeDisplay themeDisplay,
+			User user)
 		throws Exception {
 
 		if ((user.getUserId() == themeDisplay.getUserId()) ||
-			!_groupLocalService.hasUserGroup(user.getUserId(), groupId, true) ||
 			!_discussionPermission.hasViewPermission(
 				_permissionCheckerFactory.create(user),
 				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
