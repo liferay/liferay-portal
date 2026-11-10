@@ -12,7 +12,6 @@ import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.model.BackgroundTaskModel;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.User;
@@ -51,7 +50,6 @@ import java.util.function.Function;
  * @see BackgroundTaskImpl
  * @generated
  */
-@JSON(strict = true)
 public class BackgroundTaskModelImpl
 	extends BaseModelImpl<BackgroundTask> implements BackgroundTaskModel {
 
@@ -387,7 +385,6 @@ public class BackgroundTaskModelImpl
 
 	}
 
-	@JSON
 	@Override
 	public long getMvccVersion() {
 		return _mvccVersion;
@@ -402,7 +399,6 @@ public class BackgroundTaskModelImpl
 		_mvccVersion = mvccVersion;
 	}
 
-	@JSON
 	@Override
 	public long getBackgroundTaskId() {
 		return _backgroundTaskId;
@@ -417,7 +413,6 @@ public class BackgroundTaskModelImpl
 		_backgroundTaskId = backgroundTaskId;
 	}
 
-	@JSON
 	@Override
 	public long getGroupId() {
 		return _groupId;
@@ -441,7 +436,6 @@ public class BackgroundTaskModelImpl
 		return GetterUtil.getLong(this.<Long>getColumnOriginalValue("groupId"));
 	}
 
-	@JSON
 	@Override
 	public long getCompanyId() {
 		return _companyId;
@@ -466,7 +460,6 @@ public class BackgroundTaskModelImpl
 			this.<Long>getColumnOriginalValue("companyId"));
 	}
 
-	@JSON
 	@Override
 	public long getUserId() {
 		return _userId;
@@ -497,7 +490,6 @@ public class BackgroundTaskModelImpl
 	public void setUserUuid(String userUuid) {
 	}
 
-	@JSON
 	@Override
 	public String getUserName() {
 		if (_userName == null) {
@@ -517,7 +509,6 @@ public class BackgroundTaskModelImpl
 		_userName = userName;
 	}
 
-	@JSON
 	@Override
 	public Date getCreateDate() {
 		return _createDate;
@@ -532,7 +523,6 @@ public class BackgroundTaskModelImpl
 		_createDate = createDate;
 	}
 
-	@JSON
 	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
@@ -553,7 +543,6 @@ public class BackgroundTaskModelImpl
 		_modifiedDate = modifiedDate;
 	}
 
-	@JSON
 	@Override
 	public String getName() {
 		if (_name == null) {
@@ -582,7 +571,6 @@ public class BackgroundTaskModelImpl
 		return getColumnOriginalValue("name");
 	}
 
-	@JSON
 	@Override
 	public String getServletContextNames() {
 		if (_servletContextNames == null) {
@@ -602,7 +590,6 @@ public class BackgroundTaskModelImpl
 		_servletContextNames = servletContextNames;
 	}
 
-	@JSON
 	@Override
 	public String getTaskExecutorClassName() {
 		if (_taskExecutorClassName == null) {
@@ -631,7 +618,6 @@ public class BackgroundTaskModelImpl
 		return getColumnOriginalValue("taskExecutorClassName");
 	}
 
-	@JSON
 	@Override
 	public Map<String, Serializable> getTaskContextMap() {
 		return _taskContextMap;
@@ -646,13 +632,11 @@ public class BackgroundTaskModelImpl
 		_taskContextMap = taskContextMap;
 	}
 
-	@JSON
 	@Override
 	public boolean getCompleted() {
 		return _completed;
 	}
 
-	@JSON
 	@Override
 	public boolean isCompleted() {
 		return _completed;
@@ -677,7 +661,6 @@ public class BackgroundTaskModelImpl
 			this.<Boolean>getColumnOriginalValue("completed"));
 	}
 
-	@JSON
 	@Override
 	public Date getCompletionDate() {
 		return _completionDate;
@@ -692,7 +675,6 @@ public class BackgroundTaskModelImpl
 		_completionDate = completionDate;
 	}
 
-	@JSON
 	@Override
 	public String getErrorStackTrace() {
 		if (_errorStackTrace == null) {
@@ -712,7 +694,6 @@ public class BackgroundTaskModelImpl
 		_errorStackTrace = errorStackTrace;
 	}
 
-	@JSON
 	@Override
 	public int getStatus() {
 		return _status;
@@ -737,7 +718,6 @@ public class BackgroundTaskModelImpl
 			this.<Integer>getColumnOriginalValue("status"));
 	}
 
-	@JSON
 	@Override
 	public String getStatusMessage() {
 		if (_statusMessage == null) {
@@ -1228,4 +1208,4 @@ public class BackgroundTaskModelImpl
 	private BackgroundTask _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-211463602
+// LIFERAY-SERVICE-BUILDER-HASH:1912883309
