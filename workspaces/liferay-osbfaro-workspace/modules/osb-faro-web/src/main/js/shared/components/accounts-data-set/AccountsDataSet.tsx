@@ -205,11 +205,9 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 									entityFieldType: 'string',
 									id: 'lifecycleStatus',
 									items: lifecycleStageItems,
-									label: allLifecycles
-										? Liferay.Language.get(
-												'lifecycle-stage'
-											)
-										: Liferay.Language.get('status'),
+									label: Liferay.Language.get(
+										'lifecycle-stage'
+									),
 									multiple: true,
 									name: 'status',
 									preloadedData: buildSelectionPreloadedData(

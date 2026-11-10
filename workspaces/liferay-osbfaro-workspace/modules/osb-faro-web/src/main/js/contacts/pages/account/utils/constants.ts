@@ -1,10 +1,12 @@
+// The API identifies a stage by its name, not by a type key.
+
 export enum LifecycleStages {
-	AT_RISK = 'AT_RISK',
-	AWARE = 'AWARE',
-	ENGAGED = 'ENGAGED',
-	ESTABLISHED = 'ESTABLISHED',
-	ONBOARDING = 'ONBOARDING',
-	PIPELINE = 'PIPELINE',
+	AT_RISK = 'At Risk',
+	AWARE = 'Aware',
+	ENGAGED = 'Engaged',
+	ESTABLISHED = 'Established',
+	ONBOARDING = 'Onboarding',
+	PIPELINE = 'Pipeline',
 }
 
 export type DisplayType =

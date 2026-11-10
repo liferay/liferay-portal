@@ -29,6 +29,7 @@ const getLifecycleStageLabel = (
 	}
 
 	return (
+		name ??
 		stageName ??
 		(stageType && lifecycleStagesLabelMap[stageType]?.label) ??
 		externalReferenceCode
