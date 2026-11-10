@@ -77,8 +77,7 @@ public class GraphQLExceptionMapperTest {
 			"Check the parameter values against the tool description",
 			_getGraphQLError(400));
 		_assertResponse(
-			Response.Status.BAD_REQUEST,
-			"Check the parameter values against the tool description",
+			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",
 			_getGraphQLError(403));
 		_assertResponse(
 			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",

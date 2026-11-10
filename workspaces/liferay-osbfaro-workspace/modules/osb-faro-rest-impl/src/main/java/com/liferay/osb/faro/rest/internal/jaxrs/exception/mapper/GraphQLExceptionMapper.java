@@ -59,9 +59,7 @@ public class GraphQLExceptionMapper
 					Response.Status.NOT_FOUND.getReasonPhrase());
 			}
 
-			if ((httpStatus >= HttpServletResponse.SC_BAD_REQUEST) &&
-				(httpStatus < HttpServletResponse.SC_INTERNAL_SERVER_ERROR)) {
-
+			if (httpStatus == HttpServletResponse.SC_BAD_REQUEST) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(graphQLException);
 				}

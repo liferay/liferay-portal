@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.rest.internal.jaxrs.exception.mapper;
 
 import com.liferay.osb.faro.engine.client.exception.FaroEngineClientException;
+import com.liferay.osb.faro.engine.client.exception.InvalidFilterException;
 import com.liferay.osb.faro.engine.client.exception.NoSuchEntryException;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -46,6 +47,13 @@ public class FaroEngineClientExceptionMapperTest {
 			Response.Status.BAD_REQUEST,
 			"Check the parameter values against the tool description",
 			new FaroEngineClientException(RandomTestUtil.randomString(), 400));
+		_assertResponse(
+			Response.Status.BAD_REQUEST,
+			"Check the parameter values against the tool description",
+			new InvalidFilterException(RandomTestUtil.randomString()));
+		_assertResponse(
+			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",
+			new FaroEngineClientException(RandomTestUtil.randomString(), 403));
 		_assertResponse(
 			Response.Status.INTERNAL_SERVER_ERROR, "Internal Server Error",
 			new FaroEngineClientException(RandomTestUtil.randomString(), 500));
