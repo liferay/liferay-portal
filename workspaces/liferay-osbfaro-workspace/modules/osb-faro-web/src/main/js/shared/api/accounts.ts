@@ -5,12 +5,79 @@ import {buildOrderByFields, buildSortString} from 'shared/util/pagination';
 import {ENABLE_LIFECYCLE_STAGES_MOCK_DATA} from 'shared/util/feature-flags';
 import {escapeSingleQuotes} from 'segment/segment-editor/dynamic/utils/odata';
 import {getMockLifecycleStageFieldValues} from 'lifecycle/utils/lifecycleMock';
+import {OrderedMap} from 'immutable';
+import {OrderParams} from 'shared/util/records';
 
 const {
 	pagination: {cur: DEFAULT_PAGE, delta: DEFAULT_DELTA},
 } = FaroConstants;
 
-export function fetch({accountId, channelId, groupId}) {
+interface IAccountParams {
+	accountId?: string;
+	channelId?: string;
+	groupId?: string;
+}
+
+interface IFetchFieldValuesParams {
+	channelId?: string;
+	delta?: number;
+	fieldMappingFieldName?: string;
+	groupId?: string;
+	page?: number;
+	query?: string;
+}
+
+interface IFetchLifecycleStageFieldValuesParams {
+	accountLifecycleId?: string;
+	channelId?: string;
+	groupId?: string;
+}
+
+interface IFetchLifecycleStatusParams {
+	accountId?: string;
+	accountLifecycleId: string;
+	groupId?: string;
+}
+
+interface IFetchMetricsParams {
+	campaignId?: string;
+	channelId?: string;
+	groupId?: string;
+}
+
+interface ISearchParams {
+	[key: string]: any;
+	channelId?: string;
+	delta?: number;
+	groupId?: string;
+	orderIOMap: OrderedMap<string, OrderParams>;
+	page?: number;
+	query?: string;
+}
+
+interface ISearchAccountsParams {
+	assetId?: string | null;
+	assetTitle?: string;
+	assetType?: string | null;
+	channelId?: string;
+	groupId?: string;
+	page?: number;
+	pageSize?: number;
+	query?: string;
+}
+
+interface ISearchByFilterParams {
+	channelId?: string;
+	filter?: string;
+	groupId?: string;
+	includeAnonymousUsers?: boolean;
+	orderIOMap?: OrderedMap<string, OrderParams>;
+	page?: number;
+	pageSize?: number;
+	query?: string;
+}
+
+export function fetch({accountId, channelId, groupId}: IAccountParams) {
 	return sendRequest({
 		data: {channelId},
 		method: 'GET',
@@ -18,7 +85,11 @@ export function fetch({accountId, channelId, groupId}) {
 	});
 }
 
-export function fetchAccountIndividualMetrics({accountId, channelId, groupId}) {
+export function fetchAccountIndividualMetrics({
+	accountId,
+	channelId,
+	groupId,
+}: IAccountParams) {
 	return sendRequest({
 		data: {channelId},
 		method: 'GET',
@@ -26,7 +97,7 @@ export function fetchAccountIndividualMetrics({accountId, channelId, groupId}) {
 	});
 }
 
-export function fetchDetails({accountId, channelId, groupId}) {
+export function fetchDetails({accountId, channelId, groupId}: IAccountParams) {
 	return sendRequest({
 		data: {channelId},
 		method: 'GET',
@@ -41,7 +112,7 @@ export function fetchFieldValues({
 	groupId,
 	page = DEFAULT_PAGE,
 	query = '',
-}) {
+}: IFetchFieldValuesParams) {
 	return sendRequest({
 		data: {
 			channelId,
@@ -59,7 +130,7 @@ export async function fetchLifecycleStageFieldValues({
 	accountLifecycleId,
 	channelId,
 	groupId,
-}) {
+}: IFetchLifecycleStageFieldValuesParams) {
 	if (ENABLE_LIFECYCLE_STAGES_MOCK_DATA) {
 		return getMockLifecycleStageFieldValues();
 	}
@@ -79,19 +150,20 @@ export async function fetchLifecycleStatus({
 	accountId,
 	accountLifecycleId,
 	groupId,
-}) {
+}: IFetchLifecycleStatusParams) {
 	return sendRequest({
 		method: 'GET',
 		path: `contacts/${groupId}/account/${accountId}/account-lifecycles/${accountLifecycleId}`,
 	});
 }
 
-/**
- * @param {{campaignId?: string, channelId?: string, groupId: string}} params
- */
-export function fetchMetrics({campaignId, channelId, groupId}) {
+export function fetchMetrics({
+	campaignId,
+	channelId,
+	groupId,
+}: IFetchMetricsParams) {
 	return sendRequest({
-		data: {campaignIds: campaignId, channelId},
+		data: {campaignId, channelId},
 		method: 'GET',
 		path: `contacts/${groupId}/account/metrics`,
 	});
@@ -105,7 +177,7 @@ export function search({
 	page = DEFAULT_PAGE,
 	query = '',
 	...otherParams
-}) {
+}: ISearchParams) {
 	const orderParams = orderIOMap.first();
 
 	const orderByFields = buildOrderByFields(orderParams, ACCOUNTS);
@@ -133,7 +205,7 @@ export function searchAccounts({
 	page = 0,
 	pageSize = DEFAULT_DELTA,
 	query = '',
-}) {
+}: ISearchAccountsParams) {
 	return sendRequest({
 		data: {
 			assetId,
@@ -158,7 +230,7 @@ export function searchByFilter({
 	page = 0,
 	pageSize = 0,
 	query = '',
-}) {
+}: ISearchByFilterParams) {
 	return sendRequest({
 		data: {
 			channelId,
