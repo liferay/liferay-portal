@@ -96,9 +96,16 @@ definition {
 		task ("Add a custom table to the default schema and to the www.able.com partition") {
 			var companyId = JSONCompany.getCompanyId(portalInstanceName = "www.able.com");
 
+			var sqlStatement = '''
+				create table CustomTable (id bigint not null, name varchar(75));
+				insert into CustomTable values (1, 'Default');
+				create table lpartition_${companyId}.CustomTable (id bigint not null, name varchar(75));
+				insert into lpartition_${companyId}.CustomTable values (1, 'Able');
+			''';
+
 			SQL.executeSettingAutoCommitSQLStatement(
 				autoCommit = "true",
-				sqlStatement = "create table CustomTable (id bigint not null, name varchar(75)); insert into CustomTable values (1, 'Default'); create table lpartition_${companyId}.CustomTable (id bigint not null, name varchar(75)); insert into lpartition_${companyId}.CustomTable values (1, 'Able');");
+				sqlStatement = ${sqlStatement});
 		}
 
 		task ("Export origin database schema definition") {
