@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.OrganizationConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -34,12 +35,16 @@ import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -397,28 +402,10 @@ public class AssetTagLocalServiceTest {
 	}
 
 	@Test
-	public void testSearchTagsWithCaseInsensitive() throws PortalException {
-		String[] tagNames = {"tag1", "Tag1", "TAG1"};
-
-		_addAssetTags(tagNames);
-
-		for (String tagName : tagNames) {
-			BaseModelSearchResult<AssetTag> baseModelSearchResult =
-				_assetTagLocalService.searchTags(
-					new long[] {_group.getGroupId()}, tagName,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-			Assert.assertNotNull(baseModelSearchResult);
-
-			Assert.assertEquals(3, baseModelSearchResult.getLength());
-
-			Assert.assertTrue(
-				ArrayUtil.containsAll(
-					TransformUtil.transformToArray(
-						baseModelSearchResult.getBaseModels(),
-						AssetTag::getName, String.class),
-					tagNames));
-		}
+	@TestInfo("LPD-114691")
+	public void testSearchTags() throws Exception {
+		_testSearchTagsWithCaseInsensitive();
+		_testSearchTagsWithGroupAdminUser();
 	}
 
 	@Test
@@ -526,6 +513,51 @@ public class AssetTagLocalServiceTest {
 		}
 	}
 
+	private void _testSearchTagsWithCaseInsensitive() throws Exception {
+		String[] assetTagNames = {"tag1", "Tag1", "TAG1"};
+
+		_addAssetTags(assetTagNames);
+
+		for (String assetTagName : assetTagNames) {
+			BaseModelSearchResult<AssetTag> baseModelSearchResult =
+				_assetTagLocalService.searchTags(
+					new long[] {_group.getGroupId()}, assetTagName,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+			Assert.assertEquals(3, baseModelSearchResult.getLength());
+
+			Assert.assertTrue(
+				ArrayUtil.containsAll(
+					TransformUtil.transformToArray(
+						baseModelSearchResult.getBaseModels(),
+						AssetTag::getName, String.class),
+					assetTagNames));
+		}
+	}
+
+	private void _testSearchTagsWithGroupAdminUser() throws Exception {
+		User user = UserTestUtil.addGroupAdminUser(_group);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			List<AssetTag> assetTags = _addAssetTags(
+				new String[] {RandomTestUtil.randomString()});
+
+			AssetTag assetTag = assetTags.get(0);
+
+			BaseModelSearchResult<AssetTag> baseModelSearchResult =
+				_assetTagLocalService.searchTags(
+					new long[] {_group.getGroupId()}, assetTag.getName(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+			Assert.assertEquals(
+				assetTags, baseModelSearchResult.getBaseModels());
+		}
+
+		_userLocalService.deleteUser(user);
+	}
+
 	@Inject
 	private AssetEntryLocalService _assetEntryLocalService;
 
@@ -545,5 +577,8 @@ public class AssetTagLocalServiceTest {
 	private Organization _organization;
 
 	private ServiceContext _serviceContext;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
