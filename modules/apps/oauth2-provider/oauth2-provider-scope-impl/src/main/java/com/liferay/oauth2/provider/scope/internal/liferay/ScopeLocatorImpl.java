@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.NamedThreadFactory;
 import com.liferay.portal.remote.jaxrs.whiteboard.lifecycle.JAXRSLifecycle;
 
 import java.util.ArrayList;
@@ -40,6 +41,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -298,6 +302,27 @@ public class ScopeLocatorImpl implements ScopeLocator {
 	}
 
 	@Override
+	public Map<Long, Set<String>> getWaitingScopeAliases() {
+		Map<Long, Set<String>> waitingScopeAliases = new HashMap<>();
+
+		for (Map.Entry<Long, Set<String>> entry :
+				_runnableScopeAliases.values()) {
+
+			Set<String> scopeAliases = waitingScopeAliases.computeIfAbsent(
+				entry.getKey(), companyId -> new HashSet<>());
+
+			scopeAliases.addAll(entry.getValue());
+		}
+
+		return waitingScopeAliases;
+	}
+
+	@Override
+	public void recheckWaitingScopeAliases() {
+		_notify(null);
+	}
+
+	@Override
 	public void stopWaitingForScopeAliases(Runnable runnable) {
 		_runnableScopeAliases.remove(runnable);
 	}
@@ -399,10 +424,21 @@ public class ScopeLocatorImpl implements ScopeLocator {
 					}),
 				new ScopeFinderServiceTupleServiceTrackerCustomizer(
 					bundleContext)));
+
+		_scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
+			new NamedThreadFactory(
+				ScopeLocatorImpl.class.getSimpleName(), Thread.NORM_PRIORITY,
+				ScopeLocatorImpl.class.getClassLoader()));
+
+		_scheduledExecutorService.scheduleWithFixedDelay(
+			this::recheckWaitingScopeAliases, _RECHECK_INTERVAL,
+			_RECHECK_INTERVAL, TimeUnit.MINUTES);
 	}
 
 	@Deactivate
 	protected void deactivate() {
+		_scheduledExecutorService.shutdownNow();
+
 		_scopeFinderByNameServiceTrackerMap.close();
 		_prefixHandlerFactoriesScopedServiceTrackerMap.close();
 		_scopeFindersScopedServiceTrackerMap.close();
@@ -574,6 +610,8 @@ public class ScopeLocatorImpl implements ScopeLocator {
 		return scopeMatcher.match(scope);
 	}
 
+	private static final long _RECHECK_INTERVAL = 5;
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		ScopeLocatorImpl.class);
 
@@ -598,6 +636,7 @@ public class ScopeLocatorImpl implements ScopeLocator {
 		_prefixHandlerFactoriesScopedServiceTrackerMap;
 	private final Map<Runnable, Map.Entry<Long, Set<String>>>
 		_runnableScopeAliases = new ConcurrentHashMap<>();
+	private ScheduledExecutorService _scheduledExecutorService;
 	private ServiceTrackerMap
 		<String, ServiceReferenceServiceTuple<?, ScopeFinder>>
 			_scopeFinderByNameServiceTrackerMap;

@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.util.Portal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.Set;
 
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.annotations.Component;
@@ -25,7 +27,10 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"osgi.command.function=listScopes", "osgi.command.scope=oauth2"
+		"osgi.command.function=listScopes",
+		"osgi.command.function=listWaitingScopeAliases",
+		"osgi.command.function=recheckWaitingScopeAliases",
+		"osgi.command.scope=oauth2"
 	},
 	service = OSGiCommands.class
 )
@@ -61,6 +66,32 @@ public class OAuth2OSGiCommands implements OSGiCommands {
 		}
 
 		System.out.println();
+	}
+
+	public void listWaitingScopeAliases() {
+		Map<Long, Set<String>> waitingScopeAliases =
+			_scopeLocator.getWaitingScopeAliases();
+
+		for (Map.Entry<Long, Set<String>> entry :
+				ListUtil.sort(
+					new ArrayList<>(waitingScopeAliases.entrySet()),
+					Map.Entry.comparingByKey())) {
+
+			System.out.println();
+			System.out.println(entry.getKey());
+
+			for (String scopeAlias :
+					ListUtil.sort(new ArrayList<>(entry.getValue()))) {
+
+				System.out.println("    " + scopeAlias);
+			}
+		}
+
+		System.out.println();
+	}
+
+	public void recheckWaitingScopeAliases() {
+		_scopeLocator.recheckWaitingScopeAliases();
 	}
 
 	@Reference

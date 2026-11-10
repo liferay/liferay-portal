@@ -95,6 +95,49 @@ public class ScopeLocatorImplTest {
 	}
 
 	@Test
+	public void testGetWaitingScopeAliases() throws Exception {
+		Set<String> scopes = new HashSet<>();
+
+		Builder builder = new Builder();
+
+		ScopeLocatorImpl scopeLocatorImpl = builder.withScopeFinders(
+			registrator -> registrator.register(
+				_COMPANY_ID, _APPLICATION_NAME, () -> scopes)
+		).build();
+
+		ServiceTrackerMap<String, ServiceReferenceServiceTuple<?, ScopeFinder>>
+			scopeFinderByNameServiceTrackerMap =
+				ReflectionTestUtil.getFieldValue(
+					scopeLocatorImpl, "_scopeFinderByNameServiceTrackerMap");
+
+		Mockito.when(
+			scopeFinderByNameServiceTrackerMap.keySet()
+		).thenReturn(
+			Collections.singleton(_APPLICATION_NAME)
+		);
+
+		Assert.assertEquals(
+			Collections.emptyMap(), scopeLocatorImpl.getWaitingScopeAliases());
+
+		scopeLocatorImpl.waitForScopeAliases(
+			_COMPANY_ID, Collections.singleton("everything"),
+			() -> {
+			});
+
+		Assert.assertEquals(
+			Collections.singletonMap(
+				_COMPANY_ID, Collections.singleton("everything")),
+			scopeLocatorImpl.getWaitingScopeAliases());
+
+		scopes.add("everything");
+
+		scopeLocatorImpl.recheckWaitingScopeAliases();
+
+		Assert.assertEquals(
+			Collections.emptyMap(), scopeLocatorImpl.getWaitingScopeAliases());
+	}
+
+	@Test
 	public void testPrefixHandlerFactoryByNameAndCompany() throws Exception {
 		String applicationName2 = "com.liferay.test2";
 
@@ -172,6 +215,51 @@ public class ScopeLocatorImplTest {
 				application2ScopeAliases,
 				CoreMatchers.hasItem(companyPrefixHandler.addPrefix(scope)));
 		}
+	}
+
+	@Test
+	public void testRecheckWaitingScopeAliases() throws Exception {
+		Set<String> scopes = new HashSet<>();
+
+		Builder builder = new Builder();
+
+		ScopeLocatorImpl scopeLocatorImpl = builder.withScopeFinders(
+			registrator -> registrator.register(
+				_COMPANY_ID, _APPLICATION_NAME, () -> scopes)
+		).build();
+
+		ServiceTrackerMap<String, ServiceReferenceServiceTuple<?, ScopeFinder>>
+			scopeFinderByNameServiceTrackerMap =
+				ReflectionTestUtil.getFieldValue(
+					scopeLocatorImpl, "_scopeFinderByNameServiceTrackerMap");
+
+		Mockito.when(
+			scopeFinderByNameServiceTrackerMap.keySet()
+		).thenReturn(
+			Collections.singleton(_APPLICATION_NAME)
+		);
+
+		AtomicInteger atomicInteger = new AtomicInteger();
+
+		Assert.assertEquals(
+			Collections.emptySet(),
+			scopeLocatorImpl.waitForScopeAliases(
+				_COMPANY_ID, Collections.singleton("everything"),
+				atomicInteger::incrementAndGet));
+
+		scopeLocatorImpl.recheckWaitingScopeAliases();
+
+		Assert.assertEquals(0, atomicInteger.get());
+
+		scopes.add("everything");
+
+		scopeLocatorImpl.recheckWaitingScopeAliases();
+
+		Assert.assertEquals(1, atomicInteger.get());
+
+		scopeLocatorImpl.recheckWaitingScopeAliases();
+
+		Assert.assertEquals(1, atomicInteger.get());
 	}
 
 	@Test
