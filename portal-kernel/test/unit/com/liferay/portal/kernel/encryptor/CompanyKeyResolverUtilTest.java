@@ -5,12 +5,15 @@
 
 package com.liferay.portal.kernel.encryptor;
 
-import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.CompanyKeyException;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyInfo;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
+import com.liferay.portal.kernel.service.persistence.CompanyInfoPersistence;
+import com.liferay.portal.kernel.service.persistence.CompanyInfoUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -21,8 +24,6 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 
 import java.security.Key;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -210,60 +211,51 @@ public class CompanyKeyResolverUtilTest {
 					"FIPS_ENABLED", true)) {
 
 			Assert.assertNull(
-				_rotateKey(
+				_testRotateKey(
+					null,
 					_FIPS_KEY_PREFIX + RandomTestUtil.randomString() + "}",
-					rotatedKeyString -> true, RandomTestUtil.randomString()));
+					null, RandomTestUtil.randomString()));
 
 			try (SafeCloseable fipsSafeCloseable =
 					PropsValuesTestUtil.swapWithSafeCloseable(
 						"FIPS_ENABLED", false)) {
 
 				Assert.assertNull(
-					_rotateKey(
-						RandomTestUtil.randomString(), rotatedKeyString -> true,
+					_testRotateKey(
+						null, RandomTestUtil.randomString(), null,
 						RandomTestUtil.randomString()));
 			}
 
-			List<String> keyStrings = new ArrayList<>();
+			CompanyInfo companyInfo = Mockito.mock(CompanyInfo.class);
 
-			LogEntry logEntry = _rotateKey(
-				RandomTestUtil.randomString(), keyStrings::add,
+			LogEntry logEntry = _testRotateKey(
+				companyInfo, RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString());
 
-			Assert.assertEquals(
-				Collections.singletonList(_FIPS_KEY_PREFIX + keyString + "}"),
-				keyStrings);
+			Mockito.verify(
+				companyInfo
+			).setKey(
+				_FIPS_KEY_PREFIX + keyString + "}"
+			);
 
 			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
 			Assert.assertEquals(
 				"Rotated the key for company " + _COMPANY_ID,
 				logEntry.getMessage());
 
-			logEntry = _rotateKey(
-				RandomTestUtil.randomString(), rotatedKeyString -> false,
-				RandomTestUtil.randomString());
+			ORMException ormException = new ORMException();
 
-			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
-			Assert.assertEquals(
-				"Another node already rotated the key for company " +
-					_COMPANY_ID,
-				logEntry.getMessage());
-
-			Exception exception = new Exception();
-
-			logEntry = _rotateKey(
-				RandomTestUtil.randomString(),
-				rotatedKeyString -> {
-					throw exception;
-				},
+			logEntry = _testRotateKey(
+				companyInfo, RandomTestUtil.randomString(), ormException,
 				RandomTestUtil.randomString());
 
 			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
-			Assert.assertSame(exception, logEntry.getThrowable());
+			Assert.assertSame(ormException, logEntry.getThrowable());
 
-			logEntry = _rotateKey(
-				_WRAPPED_KEY_PREFIX + RandomTestUtil.randomString(),
-				rotatedKeyString -> true, RandomTestUtil.randomString());
+			logEntry = _testRotateKey(
+				companyInfo,
+				_WRAPPED_KEY_PREFIX + RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString());
 
 			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
 
@@ -274,14 +266,11 @@ public class CompanyKeyResolverUtilTest {
 
 			fipsApplicationStateMachineUtilMockedStatic.verifyNoInteractions();
 
-			logEntry = _rotateKey(
-				RandomTestUtil.randomString(),
-				rotatedKeyString -> {
-					throw exception;
-				},
+			logEntry = _testRotateKey(
+				companyInfo, RandomTestUtil.randomString(), ormException,
 				PropsValues.COMPANY_DEFAULT_WEB_ID);
 
-			Assert.assertSame(exception, logEntry.getThrowable());
+			Assert.assertSame(ormException, logEntry.getThrowable());
 
 			ArgumentCaptor<Throwable> argumentCaptor = ArgumentCaptor.forClass(
 				Throwable.class);
@@ -293,7 +282,7 @@ public class CompanyKeyResolverUtilTest {
 
 			throwable = argumentCaptor.getValue();
 
-			Assert.assertSame(exception, throwable.getCause());
+			Assert.assertSame(ormException, throwable.getCause());
 		}
 	}
 
@@ -431,50 +420,6 @@ public class CompanyKeyResolverUtilTest {
 		}
 	}
 
-	private LogEntry _rotateKey(
-		String keyString,
-		UnsafeFunction<String, Boolean, Throwable> unsafeFunction,
-		String webId) {
-
-		Company company = Mockito.mock(Company.class);
-
-		Mockito.when(
-			company.getCompanyId()
-		).thenReturn(
-			_COMPANY_ID
-		);
-
-		Mockito.when(
-			company.getKey()
-		).thenReturn(
-			keyString
-		);
-
-		Mockito.when(
-			company.getWebId()
-		).thenReturn(
-			webId
-		);
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				CompanyKeyResolverUtil.class.getName(), LoggerTestUtil.WARN)) {
-
-			logCapture.resetPriority(LoggerTestUtil.INFO);
-
-			CompanyKeyResolverUtil.rotateKey(company, unsafeFunction);
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertTrue(logEntries.toString(), logEntries.size() <= 1);
-
-			if (logEntries.isEmpty()) {
-				return null;
-			}
-
-			return logEntries.get(0);
-		}
-	}
-
 	private AutoCloseable _setCompanyKeyResolver(
 		CompanyKeyResolver companyKeyResolver) {
 
@@ -502,6 +447,71 @@ public class CompanyKeyResolverUtilTest {
 
 		return ReflectionTestUtil.setFieldValueWithAutoCloseable(
 			EncryptorUtil.class, "_encryptorSnapshot", snapshot);
+	}
+
+	private LogEntry _testRotateKey(
+			CompanyInfo companyInfo, String keyString, Throwable throwable,
+			String webId)
+		throws Exception {
+
+		Company company = Mockito.mock(Company.class);
+
+		Mockito.when(
+			company.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		Mockito.when(
+			company.getKey()
+		).thenReturn(
+			keyString
+		);
+
+		Mockito.when(
+			company.getWebId()
+		).thenReturn(
+			webId
+		);
+
+		CompanyInfoPersistence companyInfoPersistence = Mockito.mock(
+			CompanyInfoPersistence.class);
+
+		Mockito.when(
+			companyInfoPersistence.fetchByCompanyId(_COMPANY_ID, false)
+		).thenReturn(
+			companyInfo
+		);
+
+		if (throwable != null) {
+			Mockito.when(
+				companyInfoPersistence.update(companyInfo)
+			).thenThrow(
+				throwable
+			);
+		}
+
+		try (AutoCloseable autoCloseable =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					CompanyInfoUtil.class, "_persistence",
+					companyInfoPersistence);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				CompanyKeyResolverUtil.class.getName(), LoggerTestUtil.WARN)) {
+
+			logCapture.resetPriority(LoggerTestUtil.INFO);
+
+			CompanyKeyResolverUtil.rotateKey(company);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.size() <= 1);
+
+			if (logEntries.isEmpty()) {
+				return null;
+			}
+
+			return logEntries.get(0);
+		}
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();

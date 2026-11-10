@@ -5,15 +5,16 @@
 
 package com.liferay.portal.kernel.encryptor;
 
-import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.CompanyKeyException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyInfo;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
+import com.liferay.portal.kernel.service.persistence.CompanyInfoUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 
 import java.security.Key;
@@ -69,10 +70,7 @@ public class CompanyKeyResolverUtil {
 		return regeneratedKeyString;
 	}
 
-	public static void rotateKey(
-		Company company,
-		UnsafeFunction<String, Boolean, Throwable> unsafeFunction) {
-
+	public static void rotateKey(Company company) {
 		if (!_isRefusedKey(company.getKey())) {
 			return;
 		}
@@ -80,17 +78,15 @@ public class CompanyKeyResolverUtil {
 		long companyId = company.getCompanyId();
 
 		try {
-			String keyString = regenerateKey(companyId, company.getKey());
+			CompanyInfo companyInfo = CompanyInfoUtil.fetchByCompanyId(
+				companyId, false);
 
-			if (unsafeFunction.apply(keyString)) {
-				if (_log.isInfoEnabled()) {
-					_log.info("Rotated the key for company " + companyId);
-				}
-			}
-			else if (_log.isInfoEnabled()) {
-				_log.info(
-					"Another node already rotated the key for company " +
-						companyId);
+			companyInfo.setKey(regenerateKey(companyId, company.getKey()));
+
+			CompanyInfoUtil.update(companyInfo);
+
+			if (_log.isInfoEnabled()) {
+				_log.info("Rotated the key for company " + companyId);
 			}
 		}
 		catch (Throwable throwable) {

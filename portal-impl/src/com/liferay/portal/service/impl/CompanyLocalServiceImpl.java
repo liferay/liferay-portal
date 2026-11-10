@@ -40,7 +40,6 @@ import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
 import com.liferay.portal.kernel.exception.CompanyWebIdException;
 import com.liferay.portal.kernel.exception.LocaleException;
-import com.liferay.portal.kernel.exception.NoSuchCompanyInfoException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredCompanyException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -167,8 +166,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadLocalRandom;
-
-import org.hibernate.StaleStateException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -561,8 +558,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			return;
 		}
 
-		CompanyKeyResolverUtil.rotateKey(
-			company, key -> _updateKey(companyId, key));
+		CompanyKeyResolverUtil.rotateKey(company);
 	}
 
 	@Override
@@ -2474,26 +2470,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		return nextLong;
 	}
 
-	private boolean _isCausedByConcurrentModification(Throwable throwable) {
-		Throwable causeThrowable = throwable.getCause();
-
-		while (throwable != causeThrowable) {
-			if (throwable instanceof StaleStateException) {
-				return true;
-			}
-
-			if (causeThrowable == null) {
-				return false;
-			}
-
-			throwable = causeThrowable;
-
-			causeThrowable = throwable.getCause();
-		}
-
-		return false;
-	}
-
 	private String _normalizeVirtualHostname(String virtualHostname)
 		throws CompanyVirtualHostException {
 
@@ -2657,48 +2633,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			PropsKeys.LOCALES, newLanguageIds);
 
 		_groupLocalService.updateGroup(group);
-	}
-
-	private boolean _updateKey(long companyId, String key) throws Throwable {
-		int retries = PropsValues.RETRY_ADVICE_MAX_RETRIES;
-
-		while (true) {
-			try {
-				return TransactionInvokerUtil.invoke(
-					_transactionConfig,
-					() -> {
-						CompanyInfo companyInfo =
-							_companyInfoPersistence.fetchByCompanyId(
-								companyId, false);
-
-						if (companyInfo == null) {
-							throw new NoSuchCompanyInfoException(
-								"{companyId=" + companyId + "}");
-						}
-
-						if (CompanyKeyResolverUtil.isFIPSKey(
-								companyInfo.getKey())) {
-
-							return false;
-						}
-
-						companyInfo.setKey(key);
-
-						_companyInfoPersistence.update(companyInfo);
-
-						return true;
-					});
-			}
-			catch (Throwable throwable) {
-				if ((retries == 0) ||
-					!_isCausedByConcurrentModification(throwable)) {
-
-					throw throwable;
-				}
-
-				retries--;
-			}
-		}
 	}
 
 	private void _validateMaxLengths(
