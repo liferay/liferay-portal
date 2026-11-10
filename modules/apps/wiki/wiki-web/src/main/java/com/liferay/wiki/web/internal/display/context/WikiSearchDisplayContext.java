@@ -47,14 +47,14 @@ public class WikiSearchDisplayContext {
 		_renderResponse = renderResponse;
 		_wikiPortletInstanceSettingsHelper = wikiPortletInstanceSettingsHelper;
 
-		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		WikiNode node = (WikiNode)httpServletRequest.getAttribute(
 			WikiWebKeys.WIKI_NODE);
 
 		_nodeId = ParamUtil.getLong(
 			httpServletRequest, "nodeId", node.getNodeId());
+
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	public Hits getHits() throws SearchException {
