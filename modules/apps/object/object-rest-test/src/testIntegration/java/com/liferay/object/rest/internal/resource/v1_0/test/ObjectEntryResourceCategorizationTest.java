@@ -906,8 +906,8 @@ public class ObjectEntryResourceCategorizationTest
 				fetchAssetCategoryByExternalReferenceCode(
 					externalReferenceCode, group.getGroupId()));
 
-		assetVocabularyLocalService.deleteVocabulary(siteAssetVocabulary);
 		assetVocabularyLocalService.deleteVocabulary(depotAssetVocabulary);
+		assetVocabularyLocalService.deleteVocabulary(siteAssetVocabulary);
 	}
 
 	private JSONObject _toEmbeddedTaxonomyCategoryJSONObject(

@@ -1265,19 +1265,19 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 					"code"
 				));
 			Assert.assertNull(
+				jsonObject.getJSONObject(blankERCObjectRelationship.getName()));
+			Assert.assertNull(
 				jsonObject.getJSONObject(
 					emptyObjectEntryObjectRelationship.getName()));
+			Assert.assertNull(
+				jsonObject.getJSONObject(nullERCObjectRelationship.getName()));
+			Assert.assertNull(
+				jsonObject.getJSONObject(nullIdObjectRelationship.getName()));
 			Assert.assertNull(
 				jsonObject.getJSONObject(
 					nullObjectEntryObjectRelationship.getName()));
 			Assert.assertNull(
 				jsonObject.getJSONObject(zeroIdObjectRelationship.getName()));
-			Assert.assertNull(
-				jsonObject.getJSONObject(nullIdObjectRelationship.getName()));
-			Assert.assertNull(
-				jsonObject.getJSONObject(blankERCObjectRelationship.getName()));
-			Assert.assertNull(
-				jsonObject.getJSONObject(nullERCObjectRelationship.getName()));
 
 			JSONAssert.assertEquals(
 				JSONUtil.put(

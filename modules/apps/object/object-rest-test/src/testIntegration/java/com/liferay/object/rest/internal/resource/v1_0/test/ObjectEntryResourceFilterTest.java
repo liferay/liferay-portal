@@ -254,12 +254,6 @@ public class ObjectEntryResourceFilterTest
 			3,
 			String.format("%s/any()", OBJECT_FIELD_NAME_MULTISELECT_PICKLIST));
 		_assertFilteredObjectEntries(
-			0,
-			String.format(
-				"%s/any(k:contains(k,'%s'))",
-				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-				RandomTestUtil.randomString()));
-		_assertFilteredObjectEntries(
 			3,
 			String.format(
 				"%s/any(k:contains(k,'%s'))",
@@ -280,7 +274,8 @@ public class ObjectEntryResourceFilterTest
 		_assertFilteredObjectEntries(
 			0,
 			String.format(
-				"%s/any(k:k eq '%s')", OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+				"%s/any(k:contains(k,'%s'))",
+				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 				RandomTestUtil.randomString()));
 		_assertFilteredObjectEntries(
 			3,
@@ -315,9 +310,8 @@ public class ObjectEntryResourceFilterTest
 		_assertFilteredObjectEntries(
 			0,
 			String.format(
-				"%s/any(k:k in ('%s', '%s'))",
-				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
+				"%s/any(k:k eq '%s')", OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+				RandomTestUtil.randomString()));
 		_assertFilteredObjectEntries(
 			3,
 			String.format(
@@ -331,10 +325,11 @@ public class ObjectEntryResourceFilterTest
 				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, LIST_TYPE_ENTRY_KEY_2,
 				LIST_TYPE_ENTRY_KEY_3));
 		_assertFilteredObjectEntries(
-			3,
+			0,
 			String.format(
-				"%s/any(k:k ne '%s')", OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-				RandomTestUtil.randomString()));
+				"%s/any(k:k in ('%s', '%s'))",
+				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
 		_assertFilteredObjectEntries(
 			2,
 			String.format(
@@ -351,10 +346,9 @@ public class ObjectEntryResourceFilterTest
 				"%s/any(k:k ne '%s')", OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 				LIST_TYPE_ENTRY_KEY_3));
 		_assertFilteredObjectEntries(
-			0,
+			3,
 			String.format(
-				"%s/any(k:startswith(k,'%s'))",
-				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+				"%s/any(k:k ne '%s')", OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 				RandomTestUtil.randomString()));
 		_assertFilteredObjectEntries(
 			3,
@@ -390,17 +384,21 @@ public class ObjectEntryResourceFilterTest
 				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 				LIST_TYPE_ENTRY_KEY_3.substring(0, 2)));
 		_assertFilteredObjectEntries(
+			0,
+			String.format(
+				"%s/any(k:startswith(k,'%s'))",
+				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+				RandomTestUtil.randomString()));
+		_assertFilteredObjectEntries(
+			1,
+			String.format(
+				"not %s/any()", OBJECT_FIELD_NAME_MULTISELECT_PICKLIST));
+		_assertFilteredObjectEntries(
 			2,
 			String.format(
 				"not (%s/any(k:(k eq '%s') or (k eq '%s')))",
 				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, LIST_TYPE_ENTRY_KEY_2,
 				LIST_TYPE_ENTRY_KEY_3));
-		_assertFilteredObjectEntries(
-			4,
-			String.format(
-				"not (%s/any(k:k eq '%s'))",
-				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-				RandomTestUtil.randomString()));
 		_assertFilteredObjectEntries(
 			1,
 			String.format(
@@ -417,15 +415,17 @@ public class ObjectEntryResourceFilterTest
 				"not (%s/any(k:k eq '%s'))",
 				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, LIST_TYPE_ENTRY_KEY_3));
 		_assertFilteredObjectEntries(
+			4,
+			String.format(
+				"not (%s/any(k:k eq '%s'))",
+				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
+				RandomTestUtil.randomString()));
+		_assertFilteredObjectEntries(
 			2,
 			String.format(
 				"not (%s/any(k:k in ('%s', '%s')))",
 				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, LIST_TYPE_ENTRY_KEY_2,
 				LIST_TYPE_ENTRY_KEY_3));
-		_assertFilteredObjectEntries(
-			1,
-			String.format(
-				"not %s/any()", OBJECT_FIELD_NAME_MULTISELECT_PICKLIST));
 	}
 
 	@Test
@@ -606,6 +606,7 @@ public class ObjectEntryResourceFilterTest
 
 		_assertFilteredObjectEntries(
 			4, "not (taxonomyCategoryIds/any(k:k eq 1234))");
+		_assertFilteredObjectEntries(1, "not taxonomyCategoryIds/any()");
 		_assertFilteredObjectEntries(
 			1,
 			String.format(
@@ -626,7 +627,6 @@ public class ObjectEntryResourceFilterTest
 			String.format(
 				"not (taxonomyCategoryIds/any(k:k in (%s, %s)))",
 				taxonomyCategory2.getId(), taxonomyCategory3.getId()));
-		_assertFilteredObjectEntries(1, "not taxonomyCategoryIds/any()");
 	}
 
 	private void _assertFilteredObjectEntries(
@@ -679,19 +679,19 @@ public class ObjectEntryResourceFilterTest
 
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
-			URLCodec.encodeURL(fieldName + " eq 2023-09-20T10:00:00Z"),
-			getObjectDefinition1());
-		assertFilterString(
-			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(fieldName + " eq 2023-09-20T10:00:00.999Z"),
 			getObjectDefinition1());
 		assertFilterString(
-			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2,
-			URLCodec.encodeURL(fieldName + " eq 2023-09-20T10:05:00Z"),
+			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
+			URLCodec.encodeURL(fieldName + " eq 2023-09-20T10:00:00Z"),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(fieldName + " eq 2023-09-20T10:05:00.999Z"),
+			getObjectDefinition1());
+		assertFilterString(
+			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2,
+			URLCodec.encodeURL(fieldName + " eq 2023-09-20T10:05:00Z"),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_3,
@@ -699,9 +699,9 @@ public class ObjectEntryResourceFilterTest
 
 		// ge
 
-		_assertFilteredObjectEntries(2, fieldName + " ge 2023-09-20T10:00:00Z");
 		_assertFilteredObjectEntries(
 			2, fieldName + " ge 2023-09-20T10:00:00.999Z");
+		_assertFilteredObjectEntries(2, fieldName + " ge 2023-09-20T10:00:00Z");
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(fieldName + " ge 2023-09-20T10:00:01Z"),
@@ -711,11 +711,11 @@ public class ObjectEntryResourceFilterTest
 
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2,
-			URLCodec.encodeURL(fieldName + " gt 2023-09-20T10:00:00Z"),
+			URLCodec.encodeURL(fieldName + " gt 2023-09-20T10:00:00.999Z"),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2,
-			URLCodec.encodeURL(fieldName + " gt 2023-09-20T10:00:00.999Z"),
+			URLCodec.encodeURL(fieldName + " gt 2023-09-20T10:00:00Z"),
 			getObjectDefinition1());
 
 		// in
@@ -725,34 +725,34 @@ public class ObjectEntryResourceFilterTest
 
 		// le
 
-		_assertFilteredObjectEntries(2, fieldName + " le 2023-09-20T10:05:00Z");
-		_assertFilteredObjectEntries(
-			2, fieldName + " le 2023-09-20T10:05:00.999Z");
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(fieldName + " le 2023-09-20T10:04:00.999Z"),
 			getObjectDefinition1());
+		_assertFilteredObjectEntries(
+			2, fieldName + " le 2023-09-20T10:05:00.999Z");
+		_assertFilteredObjectEntries(2, fieldName + " le 2023-09-20T10:05:00Z");
 
 		// lt
 
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
-			URLCodec.encodeURL(fieldName + " lt 2023-09-20T10:05:00Z"),
+			URLCodec.encodeURL(fieldName + " lt 2023-09-20T10:05:00.999Z"),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
-			URLCodec.encodeURL(fieldName + " lt 2023-09-20T10:05:00.999Z"),
+			URLCodec.encodeURL(fieldName + " lt 2023-09-20T10:05:00Z"),
 			getObjectDefinition1());
 
 		// ne
 
 		assertFilterString(
-			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
-			URLCodec.encodeURL(fieldName + " ne 2023-09-20T10:05:00Z"),
-			getObjectDefinition1());
-		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(fieldName + " ne 2023-09-20T10:00:00Z"),
+			getObjectDefinition1());
+		assertFilterString(
+			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
+			URLCodec.encodeURL(fieldName + " ne 2023-09-20T10:05:00Z"),
 			getObjectDefinition1());
 		_assertFilteredObjectEntries(2, fieldName + " ne null");
 	}

@@ -729,34 +729,6 @@ public class ObjectEntryResourceNestedFieldsTest
 			},
 			Type.MANY_TO_MANY);
 
-		// Without fields, one to many relationship
-
-		_testGetNestedFieldDetailsInRelationships(
-			objectRelationship1.getName(), null, objectRelationship1.getName(),
-			getObjectDefinition1(),
-			new String[][] {
-				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)},
-				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)}
-			},
-			Type.ONE_TO_MANY);
-
-		// Without fields, one to many relationship with permissions
-
-		_testGetNestedFieldDetailsInRelationships(
-			objectRelationship1.getName(), null, objectRelationship1.getName(),
-			getObjectDefinition1(),
-			new String[][] {
-				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)},
-				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)}
-			},
-			new JSONArray[] {
-				_getPermissionsJSONArray(
-					new String[] {ActionKeys.DELETE, ActionKeys.PERMISSIONS},
-					getObjectDefinition1(), role1),
-				(JSONArray)userAccountJSONObject.get("permissions")
-			},
-			Type.MANY_TO_MANY);
-
 		// Without fields, many to one relationship
 
 		String relationshipFieldName = StringBundler.concat(
@@ -791,19 +763,47 @@ public class ObjectEntryResourceNestedFieldsTest
 			Http.Method.GET);
 
 		_assertNestedFieldsInRelationships(
-			0, 1, jsonObject, relationshipFieldNameNestedFieldName,
-			new String[][] {
-				{OBJECT_FIELD_NAME_TEXT, String.valueOf(OBJECT_FIELD_VALUE_4)},
-				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)}
-			},
-			null, Type.MANY_TO_ONE);
-		_assertNestedFieldsInRelationships(
 			0, 1, jsonObject, objectRelationship5.getName(),
 			new String[][] {
 				{OBJECT_FIELD_NAME_TEXT, String.valueOf(OBJECT_FIELD_VALUE_4)},
 				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)}
 			},
 			null, Type.MANY_TO_ONE);
+		_assertNestedFieldsInRelationships(
+			0, 1, jsonObject, relationshipFieldNameNestedFieldName,
+			new String[][] {
+				{OBJECT_FIELD_NAME_TEXT, String.valueOf(OBJECT_FIELD_VALUE_4)},
+				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)}
+			},
+			null, Type.MANY_TO_ONE);
+
+		// Without fields, one to many relationship
+
+		_testGetNestedFieldDetailsInRelationships(
+			objectRelationship1.getName(), null, objectRelationship1.getName(),
+			getObjectDefinition1(),
+			new String[][] {
+				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)},
+				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)}
+			},
+			Type.ONE_TO_MANY);
+
+		// Without fields, one to many relationship with permissions
+
+		_testGetNestedFieldDetailsInRelationships(
+			objectRelationship1.getName(), null, objectRelationship1.getName(),
+			getObjectDefinition1(),
+			new String[][] {
+				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)},
+				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)}
+			},
+			new JSONArray[] {
+				_getPermissionsJSONArray(
+					new String[] {ActionKeys.DELETE, ActionKeys.PERMISSIONS},
+					getObjectDefinition1(), role1),
+				(JSONArray)userAccountJSONObject.get("permissions")
+			},
+			Type.MANY_TO_MANY);
 	}
 
 	@Test

@@ -1022,7 +1022,7 @@ public class ObjectEntryResourceRelationshipTest
 
 		User user = UserTestUtil.getAdminUser(companyId);
 
-		ObjectDefinition parentObjectDefinition =
+		ObjectDefinition childObjectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(
 					new TextObjectFieldBuilder(
@@ -1033,7 +1033,7 @@ public class ObjectEntryResourceRelationshipTest
 						OBJECT_FIELD_NAME_TEXT
 					).build()),
 				ObjectDefinitionConstants.SCOPE_COMPANY, user.getUserId());
-		ObjectDefinition childObjectDefinition =
+		ObjectDefinition parentObjectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(
 					new TextObjectFieldBuilder(

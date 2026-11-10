@@ -118,10 +118,10 @@ public class ObjectEntryResourcePermissionTest
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		addResourcePermission(
+			ActionKeys.VIEW, getObjectDefinition4().getClassName(), role);
+		addResourcePermission(
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
 			getObjectDefinition4().getResourceName(), role);
-		addResourcePermission(
-			ActionKeys.VIEW, getObjectDefinition4().getClassName(), role);
 
 		String userName = RandomTestUtil.randomString();
 
