@@ -51,7 +51,7 @@ import isField from '../utils/isField';
 import isLocked from '../utils/isLocked';
 import isReferenced from '../utils/isReferenced';
 import isRenamable from '../utils/isRenamable';
-import isRepeatableGroup from '../utils/isRepeatableGroup';
+import {isRepeatableGroup} from '../utils/repeatableGroups';
 import AddChildDropdown from './AddChildDropdown';
 
 type TreeItem = {

@@ -15,9 +15,10 @@ import {
 	buildRepeatableGroup,
 	getSpaces,
 } from '../buildStructure';
+import getOwnChildren from '../getOwnChildren';
 import getOwnFields from '../getOwnFields';
 import isCustomObjectField from '../isCustomObjectField';
-import isRepeatableGroup from '../isRepeatableGroup';
+import {isRepeatableGroup} from '../repeatableGroups';
 import sortChildren from './sortChildren';
 
 export default function refreshReferencedStructures({
@@ -164,7 +165,9 @@ export default function refreshReferencedStructures({
 	// If we are inside referenced structure or repeatable group, insert new elements
 
 	if (objectDefinition && !isPlainGroup(root)) {
-		const childrenNames = getOwnChildNames(root.children);
+		const childrenNames = getOwnChildren(root.children).map(
+			({name}) => name
+		);
 
 		const childrenERCs = getOwnFields(root.children).map(({erc}) => erc);
 
@@ -247,20 +250,4 @@ export default function refreshReferencedStructures({
 
 function isPlainGroup(root: ReferencedStructure | Group | Structure): boolean {
 	return root.type === 'group' && !root.isRepeatable;
-}
-
-function getOwnChildNames(
-	children: (ReferencedStructure | Group | Structure)['children']
-): Array<string | undefined> {
-	const names: Array<string | undefined> = [];
-
-	for (const child of children.values()) {
-		names.push(child.name);
-
-		if (child.type === 'group' && !child.isRepeatable) {
-			names.push(...getOwnChildNames(child.children));
-		}
-	}
-
-	return names;
 }

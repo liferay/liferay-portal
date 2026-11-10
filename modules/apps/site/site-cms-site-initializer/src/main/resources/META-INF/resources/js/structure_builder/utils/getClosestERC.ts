@@ -6,7 +6,7 @@
 import {Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import findChild from './findChild';
-import isRepeatableGroup from './isRepeatableGroup';
+import {isRepeatableGroup} from './repeatableGroups';
 
 // A group that is not repeatable only exists in the object layout, so the
 // closest ancestor that the server knows about is the nearest repeatable group,

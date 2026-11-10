@@ -8,7 +8,7 @@ import {Structure} from '../../types/Structure';
 import {Uuid} from '../../types/Uuid';
 import findChild from '../findChild';
 import getClosestERC from '../getClosestERC';
-import isRepeatableGroup from '../isRepeatableGroup';
+import {isRepeatableGroup} from '../repeatableGroups';
 
 export default function updateHistory({
 	deletedChildrenUuids,

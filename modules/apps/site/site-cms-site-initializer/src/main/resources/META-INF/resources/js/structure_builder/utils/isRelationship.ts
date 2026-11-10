@@ -4,7 +4,7 @@
  */
 
 import {StructureChild} from '../types/Structure';
-import isRepeatableGroup from './isRepeatableGroup';
+import {isRepeatableGroup} from './repeatableGroups';
 
 export default function isRelationship(child: StructureChild): boolean {
 	return (

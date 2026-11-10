@@ -7,7 +7,7 @@ import {ObjectDefinition} from '../../common/types/ObjectDefinition';
 import {State} from '../contexts/StateContext';
 import {RepeatableGroup, Structure} from '../types/Structure';
 import buildObjectDefinition from './buildObjectDefinition';
-import getRepeatableGroups from './getRepeatableGroups';
+import {getRepeatableGroups} from './repeatableGroups';
 
 export default function buildGroupObjectDefinitions({
 	children,

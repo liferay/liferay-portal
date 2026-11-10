@@ -5,7 +5,7 @@
 
 import {ObjectRelationship} from '../../common/types/ObjectDefinition';
 import {RelatedContent, RepeatableGroup, Structure} from '../types/Structure';
-import isRepeatableGroup from './isRepeatableGroup';
+import {isRepeatableGroup} from './repeatableGroups';
 
 export default function buildObjectRelationships({
 	children,

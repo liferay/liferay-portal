@@ -9,10 +9,12 @@ import {Dispatch} from 'react';
 
 import {Action, State} from '../contexts/StateContext';
 import {Group, Structure} from '../types/Structure';
-import canContainRepeatableGroup from './canContainRepeatableGroup';
 import {getChildrenUuids} from './getChildrenUuids';
-import {hasRepeatableGroups} from './getRepeatableGroups';
 import isLocked from './isLocked';
+import {
+	canContainRepeatableGroup,
+	hasRepeatableGroups,
+} from './repeatableGroups';
 
 export default async function handleUpdateGroup({
 	dispatch,

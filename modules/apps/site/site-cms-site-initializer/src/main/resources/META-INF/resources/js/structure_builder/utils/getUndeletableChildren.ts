@@ -9,7 +9,7 @@ import findChild from './findChild';
 import isField from './isField';
 import isLocked from './isLocked';
 import isReferenced from './isReferenced';
-import isRepeatableGroup from './isRepeatableGroup';
+import {isRepeatableGroup} from './repeatableGroups';
 
 export type UndeletableReason =
 	| 'is-locked'

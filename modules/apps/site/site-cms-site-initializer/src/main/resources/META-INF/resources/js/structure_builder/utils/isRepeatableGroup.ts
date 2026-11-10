@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {RepeatableGroup, StructureChild} from '../types/Structure';
+import {isRepeatableGroup} from './repeatableGroups';
 
-export default function isRepeatableGroup(
-	child: StructureChild
-): child is RepeatableGroup {
-	return child.type === 'group' && child.isRepeatable;
-}
+export default isRepeatableGroup;

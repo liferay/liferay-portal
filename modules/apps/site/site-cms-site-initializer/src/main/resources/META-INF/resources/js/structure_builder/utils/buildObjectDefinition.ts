@@ -23,13 +23,15 @@ import {
 	StructureChild,
 } from '../types/Structure';
 import {FIELD_TYPE_TO_DB_TYPE, Field, getFieldBusinessType} from './field';
+import getOwnChildren from './getOwnChildren';
 import getOwnFields from './getOwnFields';
-import getRepeatableGroups from './getRepeatableGroups';
 import isField from './isField';
 import {isFieldTextSearchable} from './isFieldTextSearchable';
-import isRepeatableGroup from './isRepeatableGroup';
-
-export const REPEATABLE_GROUP_BOX_NAME_PREFIX = 'repeatable-group-';
+import {
+	REPEATABLE_GROUP_BOX_NAME_PREFIX,
+	getRepeatableGroups,
+	isRepeatableGroup,
+} from './repeatableGroups';
 
 export default function buildObjectDefinition({
 	children = new Map(),
@@ -262,21 +264,6 @@ function getDirectFields(children: Structure['children']): Field[] {
 
 function isPlainGroup(child: StructureChild): child is NonRepeatableGroup {
 	return child.type === 'group' && !child.isRepeatable;
-}
-
-function getOwnChildren(children: Structure['children']): StructureChild[] {
-	const ownChildren: StructureChild[] = [];
-
-	for (const child of children.values()) {
-		if (isPlainGroup(child)) {
-			ownChildren.push(...getOwnChildren(child.children));
-		}
-		else {
-			ownChildren.push(child);
-		}
-	}
-
-	return ownChildren;
 }
 
 function getRelatedContents(children: Structure['children']): RelatedContent[] {

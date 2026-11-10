@@ -5,9 +5,7 @@
 
 import {Structure, StructureChild} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
-import {canPlaceRepeatableGroups} from './canContainRepeatableGroup';
-import isRelationship from './isRelationship';
-import isRepeatableGroup from './isRepeatableGroup';
+import {canPlaceRepeatableGroups} from './repeatableGroups';
 
 export default function getPlacementErrorMessage({
 	items,
@@ -21,7 +19,11 @@ export default function getPlacementErrorMessage({
 	if (
 		Liferay.FeatureFlags['LPD-96666'] &&
 		targetUuid !== structure.uuid &&
-		items.some((item) => isRelationship(item) && !isRepeatableGroup(item))
+		items.some(
+			(item) =>
+				item.type === 'referenced-structure' ||
+				item.type === 'related-content'
+		)
 	) {
 		return Liferay.Language.get(
 			'referenced-structures-and-related-content-can-only-be-placed-at-the-first-level'

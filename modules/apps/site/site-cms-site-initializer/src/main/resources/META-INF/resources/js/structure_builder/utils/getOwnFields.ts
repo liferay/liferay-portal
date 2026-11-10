@@ -5,19 +5,9 @@
 
 import {Group} from '../types/Structure';
 import {Field} from './field';
+import getOwnChildren from './getOwnChildren';
 import isField from './isField';
 
 export default function getOwnFields(children: Group['children']): Field[] {
-	const fields: Field[] = [];
-
-	for (const child of children.values()) {
-		if (isField(child)) {
-			fields.push(child);
-		}
-		else if (child.type === 'group' && !child.isRepeatable) {
-			fields.push(...getOwnFields(child.children));
-		}
-	}
-
-	return fields;
+	return getOwnChildren(children).filter(isField);
 }

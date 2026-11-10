@@ -3,11 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Structure, StructureChild} from '../types/Structure';
+import {
+	Group,
+	RepeatableGroup,
+	Structure,
+	StructureChild,
+} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import findChild from './findChild';
-import {hasRepeatableGroups} from './getRepeatableGroups';
-import isRepeatableGroup from './isRepeatableGroup';
+
+export const REPEATABLE_GROUP_BOX_NAME_PREFIX = 'repeatable-group-';
 
 /**
  * The structure and each repeatable group are saved as object definitions with
@@ -17,7 +22,7 @@ import isRepeatableGroup from './isRepeatableGroup';
  * be nested, so a repeatable group can only be placed at the first level of an
  * object definition or in a plain group at that level.
  */
-export default function canContainRepeatableGroup({
+export function canContainRepeatableGroup({
 	structure,
 	uuid,
 }: {
@@ -85,4 +90,42 @@ function isObjectDefinitionRoot({
 	const child = findChild({root: structure, uuid});
 
 	return !!child && isRepeatableGroup(child);
+}
+
+export function getRepeatableGroups(
+	children: Group['children'] | Structure['children']
+): RepeatableGroup[] {
+	const repeatableGroups: RepeatableGroup[] = [];
+
+	for (const child of children.values()) {
+		if (isRepeatableGroup(child)) {
+			repeatableGroups.push(child);
+		}
+		else if (child.type === 'group') {
+			repeatableGroups.push(...getRepeatableGroups(child.children));
+		}
+	}
+
+	return repeatableGroups;
+}
+
+export function hasRepeatableGroups(
+	children: Group['children'] | Structure['children']
+): boolean {
+	for (const child of children.values()) {
+		if (
+			isRepeatableGroup(child) ||
+			(child.type === 'group' && hasRepeatableGroups(child.children))
+		) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+export function isRepeatableGroup(
+	child: StructureChild
+): child is RepeatableGroup {
+	return child.type === 'group' && child.isRepeatable;
 }

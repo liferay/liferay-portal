@@ -22,13 +22,15 @@ import {
 } from '../types/Structure';
 import {SystemFieldNames} from '../types/SystemFieldNames';
 import {Uuid} from '../types/Uuid';
-import {REPEATABLE_GROUP_BOX_NAME_PREFIX} from './buildObjectDefinition';
 import {Field, FieldType, SelectFromListField} from './field';
 import getUuid from './getUuid';
 import isCustomObjectField from './isCustomObjectField';
 import isField from './isField';
-import isRepeatableGroupChild from './isRepeatableGroup';
 import isSystemFieldName from './isSystemFieldName';
+import {
+	REPEATABLE_GROUP_BOX_NAME_PREFIX,
+	isRepeatableGroup,
+} from './repeatableGroups';
 import sortChildren from './state/sortChildren';
 
 export default function buildStructure({
@@ -127,7 +129,9 @@ export function buildChildren({
 
 			children.set(relatedContent.uuid, relatedContent);
 		}
-		else if (isRepeatableGroup(objectRelationship, objectDefinitions)) {
+		else if (
+			isRepeatableGroupRelationship(objectRelationship, objectDefinitions)
+		) {
 			const repeatableGroup = buildRepeatableGroup({
 				ancestors: [
 					...ancestors,
@@ -211,7 +215,7 @@ function applyLayout({
 
 	const repeatableGroups = new Map(
 		Array.from(children.values())
-			.filter(isRepeatableGroupChild)
+			.filter(isRepeatableGroup)
 			.map((repeatableGroup) => [
 				repeatableGroup.relationshipName,
 				repeatableGroup,
@@ -219,11 +223,10 @@ function applyLayout({
 	);
 
 	const getRepeatableGroup = (objectLayoutBox: ObjectLayoutBox) => {
-		const name = Object.values(objectLayoutBox.name ?? {}).find((value) =>
-			value?.startsWith(REPEATABLE_GROUP_BOX_NAME_PREFIX)
-		);
+		const name =
+			objectLayoutBox.name?.[Liferay.ThemeDisplay.getDefaultLanguageId()];
 
-		if (!name) {
+		if (!name?.startsWith(REPEATABLE_GROUP_BOX_NAME_PREFIX)) {
 			return undefined;
 		}
 
@@ -632,7 +635,7 @@ export function getWorkflows(objectDefinition: ObjectDefinition) {
 	return workflows;
 }
 
-function isRepeatableGroup(
+function isRepeatableGroupRelationship(
 	objectRelationship: ObjectRelationship,
 	objectDefinitions: ObjectDefinitions
 ) {
@@ -675,7 +678,10 @@ function getRelatedContentObjectRelationships(
 				!(
 					objectDefinition.externalReferenceCode ===
 						mainObjectDefinition.externalReferenceCode &&
-					isRepeatableGroup(objectRelationship, objectDefinitions)
+					isRepeatableGroupRelationship(
+						objectRelationship,
+						objectDefinitions
+					)
 				)
 			) {
 				relationships.push(objectRelationship);
