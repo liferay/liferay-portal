@@ -164,7 +164,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 							<Loading spacer />
 						) : (
 							<AccountsDataSet
-								accountLifecycleId={accountLifecycleId}
+								allLifecycles
 								apiURL={setUriQueryValues(
 									{accountLifecycleId, channelId},
 									`/o/faro/contacts/${groupId}/account/search`

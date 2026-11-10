@@ -8,16 +8,41 @@ import {useRequest} from 'shared/hooks/useRequest';
 export interface ILifecycleStageFieldValue {
 	externalReferenceCode: string;
 	id: string;
+	lifecycleName?: string;
+	name?: string;
 	stageName?: string;
 	stageType?: LifecycleStages;
 }
 
+const getLifecycleStageLabel = (
+	{
+		externalReferenceCode,
+		lifecycleName,
+		name,
+		stageName,
+		stageType,
+	}: ILifecycleStageFieldValue,
+	allLifecycles: boolean
+) => {
+	if (allLifecycles) {
+		return `${lifecycleName}: ${name}`;
+	}
+
+	return (
+		stageName ??
+		(stageType && lifecycleStagesLabelMap[stageType]?.label) ??
+		externalReferenceCode
+	);
+};
+
 export const useLifecycleStageFilterItems = ({
 	accountLifecycleId,
+	allLifecycles = false,
 	channelId,
 	groupId,
 }: {
 	accountLifecycleId?: string;
+	allLifecycles?: boolean;
 	channelId: string;
 	groupId: string;
 }): {
@@ -27,7 +52,7 @@ export const useLifecycleStageFilterItems = ({
 } => {
 	const {data, loading} = useRequest({
 		dataSourceFn: API.accounts.fetchLifecycleStageFieldValues,
-		skipRequest: !accountLifecycleId,
+		skipRequest: !accountLifecycleId && !allLifecycles,
 		variables: {
 			accountLifecycleId,
 			channelId,
@@ -37,17 +62,10 @@ export const useLifecycleStageFilterItems = ({
 
 	const lifecycleStages: ILifecycleStageFieldValue[] = data?.items ?? [];
 
-	return {
-		items: lifecycleStages.map(
-			({externalReferenceCode, stageName, stageType}) => ({
-				label:
-					stageName ??
-					(stageType && lifecycleStagesLabelMap[stageType]?.label) ??
-					externalReferenceCode,
-				value: externalReferenceCode,
-			})
-		),
-		lifecycleStages,
-		loading,
-	};
+	const items = lifecycleStages.map((lifecycleStage) => ({
+		label: getLifecycleStageLabel(lifecycleStage, allLifecycles),
+		value: lifecycleStage.externalReferenceCode,
+	}));
+
+	return {items, lifecycleStages, loading};
 };
