@@ -11,6 +11,8 @@ import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 interface IStageItem {
 	externalReferenceCode: string;
 	id: string;
+	lifecycleName?: string;
+	name?: string;
 	stageName?: string;
 	stageType?: LifecycleStages;
 }
@@ -140,6 +142,13 @@ type FakeCustomDataRenderers = {
 		value: string;
 	}) => React.ReactElement;
 	accountLifecycleStageRenderer: (props: {
+		itemData?: {
+			lifecycleStages?: Array<{
+				lifecycleName: string;
+				name: string;
+				stageExternalReferenceCode: string;
+			}>;
+		};
 		value?: string;
 	}) => React.ReactElement;
 	activitiesCountRenderer: (props: {value?: number}) => React.ReactElement;
@@ -413,6 +422,107 @@ describe('AccountsDataSet', () => {
 
 		expect(lifecycleStatusFilter?.preloadedData).toBeUndefined();
 	});
+
+	it('should list the stages of every lifecycle in the Lifecycle Stage filter', async () => {
+		mockStages([
+			{
+				externalReferenceCode: 'erc-stage-1',
+				id: '1',
+				lifecycleName: 'Account Lifecycle',
+				name: 'Aware',
+			},
+			{
+				externalReferenceCode: 'erc-stage-2',
+				id: '2',
+				lifecycleName: 'Customer',
+				name: 'Established',
+			},
+		]);
+
+		await renderAccountsDataSet(
+			<AccountsDataSet
+				allLifecycles
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+			/>
+		);
+
+		const lifecycleStatusFilter = lastFilters?.find(
+			(f) => f.id === 'lifecycleStatus'
+		);
+
+		expect(lifecycleStatusFilter).toEqual(
+			expect.objectContaining({
+				items: [
+					{label: 'Account Lifecycle: Aware', value: 'erc-stage-1'},
+					{label: 'Customer: Established', value: 'erc-stage-2'},
+				],
+				label: 'Lifecycle Stage',
+			})
+		);
+	});
+
+	it('should render the stage of the account in every lifecycle', async () => {
+		await renderAccountsDataSet(
+			<AccountsDataSet
+				allLifecycles
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+			/>
+		);
+
+		render(
+			lastCustomDataRenderers!.accountLifecycleStageRenderer({
+				itemData: {
+					lifecycleStages: [
+						{
+							lifecycleName: 'Account Lifecycle',
+							name: 'Aware',
+							stageExternalReferenceCode: 'erc-stage-1',
+						},
+						{
+							lifecycleName: 'Customer',
+							name: 'Established',
+							stageExternalReferenceCode: 'erc-stage-2',
+						},
+					],
+				},
+				value: 'Aware',
+			})
+		);
+
+		expect(
+			screen.getByText('Account Lifecycle: Aware')
+		).toBeInTheDocument();
+		expect(screen.getByText('Customer: Established')).toBeInTheDocument();
+	});
+
+	it.each([
+		['missing', undefined],
+		['empty', []],
+	])(
+		'should render the no data value when the lifecycle stages of the account are %s',
+		async (_, lifecycleStages) => {
+			await renderAccountsDataSet(
+				<AccountsDataSet
+					allLifecycles
+					apiURL="fake-url"
+					channelId="123"
+					groupId="23"
+				/>
+			);
+
+			render(
+				lastCustomDataRenderers!.accountLifecycleStageRenderer({
+					itemData: {lifecycleStages},
+				})
+			);
+
+			expect(screen.getByText('–')).toBeInTheDocument();
+		}
+	);
 
 	it('should render the account name link with channelId in the href', async () => {
 		await renderAccountsDataSet(
