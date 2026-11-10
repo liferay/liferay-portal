@@ -9,12 +9,14 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 /**
  * @author Riccardo Ferrari
  */
 @Component(
 	configurationPid = "com.liferay.commerce.machine.learning.internal.recommendation.configuration.CommerceMLRecommendationsCollectionProviderConfiguration",
+	configurationPolicy = ConfigurationPolicy.REQUIRE,
 	service = RelatedInfoItemCollectionProvider.class
 )
 public class UserCommerceMLRecommendationRelatedInfoItemCollectionProvider
