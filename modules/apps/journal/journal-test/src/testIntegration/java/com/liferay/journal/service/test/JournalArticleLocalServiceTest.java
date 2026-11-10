@@ -52,6 +52,7 @@ import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.friendly.url.exception.FriendlyURLLocalizationUrlTitleException;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.exception.ArticleExpirationDateException;
 import com.liferay.journal.exception.ArticleFriendlyURLException;
 import com.liferay.journal.exception.DuplicateArticleExternalReferenceCodeException;
 import com.liferay.journal.exception.DuplicateArticleIdException;
@@ -3100,6 +3101,40 @@ public class JournalArticleLocalServiceTest {
 		JournalTestUtil.updateArticle(
 			journalArticle, RandomTestUtil.randomString(),
 			journalArticle.getContent(), true, true, serviceContext);
+	}
+
+	@Test(expected = ArticleExpirationDateException.class)
+	public void testUpdateArticleWithPastExpirationDate() throws Exception {
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		journalArticle = _journalArticleLocalService.expireArticle(
+			journalArticle.getUserId(), journalArticle.getGroupId(),
+			journalArticle.getArticleId(), journalArticle.getVersion(), null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		User user = TestPropsValues.getUser();
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar(
+			user.getTimeZone());
+
+		calendar.setTime(journalArticle.getExpirationDate());
+
+		_journalArticleLocalService.updateArticle(
+			journalArticle.getUserId(), journalArticle.getGroupId(),
+			journalArticle.getFolderId(), journalArticle.getArticleId(),
+			journalArticle.getVersion(), journalArticle.getTitleMap(),
+			journalArticle.getDescriptionMap(), null,
+			journalArticle.getContent(), journalArticle.getDDMTemplateKey(),
+			journalArticle.getLayoutUuid(), 0, 0, 0, 0, 0,
+			calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE),
+			calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
+			calendar.get(Calendar.MINUTE), false, 0, 0, 0, 0, 0, true,
+			journalArticle.isIndexable(), journalArticle.isSmallImage(), 0,
+			journalArticle.getSmallImageSource(),
+			journalArticle.getSmallImageURL(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	@Test

@@ -412,48 +412,6 @@ definition {
 		}
 	}
 
-	@description = "The user cannot republish an expired web content."
-	@priority = 4
-	test CannotRepublishExpiredWebContent {
-		task ("Add a web content") {
-			JSONWebcontent.addWebContent(
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("Expire the web content") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.viewTitle(webContentTitle = "Web Content Title");
-
-			WebContent.expireCP(webContentTitleList = "Web Content Title");
-		}
-
-		task ("View web content has expired status") {
-			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
-
-			WebContent.viewStatus(
-				webContentContent = "Web Content Content",
-				webContentStatus = "Expired",
-				webContentTitle = "Web Content Title");
-		}
-
-		task ("View cannot republish expired web content") {
-			WebContent.publishExistingWCArticleWithPermissions();
-
-			Alert.viewRequestFailedToComplete();
-		}
-
-		task ("View expired message in Schedule panel") {
-			ScrollWebElementIntoView(
-				key_panel = "Schedule",
-				locator1 = "Panel#PANEL");
-
-			Alert.viewExpireContentFailedMessage();
-		}
-	}
-
 	@description = "The user can compare the web content history in web content admin."
 	@priority = 4
 	test CompareWebContentVersionsHistory {
