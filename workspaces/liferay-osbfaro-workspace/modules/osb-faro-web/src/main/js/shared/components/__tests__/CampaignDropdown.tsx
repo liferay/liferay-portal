@@ -74,7 +74,7 @@ describe('CampaignDropdown', () => {
 				expect.objectContaining({
 					channelId: '456',
 					groupId: '123',
-					page: 0,
+					page: 1,
 				})
 			)
 		);

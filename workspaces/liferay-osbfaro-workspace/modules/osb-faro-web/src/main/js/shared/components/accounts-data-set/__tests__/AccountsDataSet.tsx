@@ -320,7 +320,7 @@ describe('AccountsDataSet', () => {
 		expect(industryFilter?.preloadedData).toBeUndefined();
 	});
 
-	it('should omit the campaign filter unless showCampaignFilter is set', async () => {
+	it('should omit the campaign filter unless a campaign is selected', async () => {
 		await renderAccountsDataSet(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
@@ -336,7 +336,6 @@ describe('AccountsDataSet', () => {
 				campaignName="Spring Sale"
 				channelId="123"
 				groupId="23"
-				showCampaignFilter
 			/>
 		);
 
@@ -353,12 +352,7 @@ describe('AccountsDataSet', () => {
 
 	it('should remount the data set when the campaign changes', async () => {
 		const {rerender} = await renderAccountsDataSet(
-			<AccountsDataSet
-				apiURL="fake-url"
-				channelId="123"
-				groupId="23"
-				showCampaignFilter
-			/>
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
 		);
 
 		expect(mountCount).toBe(1);
@@ -369,7 +363,6 @@ describe('AccountsDataSet', () => {
 				campaignId="7"
 				channelId="123"
 				groupId="23"
-				showCampaignFilter
 			/>
 		);
 
