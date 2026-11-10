@@ -47,8 +47,8 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 
 	@Override
 	public void publish(long launchSetId) throws PortalException {
-		ObjectEntry launchSetObjectEntry =
-			_objectEntryLocalService.getObjectEntry(launchSetId);
+		ObjectEntry launchSetObjectEntry = _getLaunchSetObjectEntry(
+			launchSetId);
 
 		if (launchSetObjectEntry.getStatus() ==
 				WorkflowConstants.STATUS_APPROVED) {

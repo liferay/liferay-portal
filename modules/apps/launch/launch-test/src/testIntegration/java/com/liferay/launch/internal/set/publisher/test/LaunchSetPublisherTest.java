@@ -104,6 +104,11 @@ public class LaunchSetPublisherTest {
 			JournalArticle.class.getName(), journalArticle.getResourcePrimKey(),
 			String.valueOf(journalArticle.getVersion()));
 
+		Assert.assertThrows(
+			PortalException.class,
+			() -> _launchSetPublisher.publish(
+				launchEntryObjectEntry.getObjectEntryId()));
+
 		String title = RandomTestUtil.randomString();
 
 		long draftId = _updateLaunchDraft(launchEntryObjectEntry, title);
