@@ -148,13 +148,22 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 		long companyId, String keywords, int start, int end,
 		OrderByComparator<PLOEntry> orderByComparator) {
 
+		return getPLOEntries(
+			companyId, keywords, null, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<PLOEntry> getPLOEntries(
+		long companyId, String keywords, Predicate predicate, int start,
+		int end, OrderByComparator<PLOEntry> orderByComparator) {
+
 		return ploEntryPersistence.dslQuery(
 			DSLQueryFactoryUtil.select(
 				PLOEntryTable.INSTANCE
 			).from(
 				PLOEntryTable.INSTANCE
 			).where(
-				_getPredicate(companyId, keywords)
+				_getPredicate(companyId, keywords, predicate)
 			).orderBy(
 				orderByStep -> {
 					if (orderByComparator == null) {
@@ -177,12 +186,19 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 
 	@Override
 	public int getPLOEntriesCount(long companyId, String keywords) {
+		return getPLOEntriesCount(companyId, keywords, null);
+	}
+
+	@Override
+	public int getPLOEntriesCount(
+		long companyId, String keywords, Predicate predicate) {
+
 		return ploEntryPersistence.dslQueryCount(
 			DSLQueryFactoryUtil.count(
 			).from(
 				PLOEntryTable.INSTANCE
 			).where(
-				_getPredicate(companyId, keywords)
+				_getPredicate(companyId, keywords, predicate)
 			));
 	}
 
@@ -347,7 +363,9 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 		return availableLanguageIds.toArray(new String[0]);
 	}
 
-	private Predicate _getPredicate(long companyId, String keywords) {
+	private Predicate _getPredicate(
+		long companyId, String keywords, Predicate predicate) {
+
 		return PLOEntryTable.INSTANCE.companyId.eq(
 			companyId
 		).and(
@@ -370,6 +388,14 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 								DSLFunctionFactoryUtil.castClobText(
 									PLOEntryTable.INSTANCE.value)),
 							keywordsArray)));
+			}
+		).and(
+			() -> {
+				if (predicate == null) {
+					return null;
+				}
+
+				return Predicate.withParentheses(predicate);
 			}
 		);
 	}
