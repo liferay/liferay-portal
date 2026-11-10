@@ -34,8 +34,7 @@ public class MCPServerProfileBatchEngineDataTest {
 
 		Assert.assertTrue(
 			json.contains(
-				"\"externalReferenceCode\": \"" +
-					_MCP_SERVER_PROFILE_EXTERNAL_REFERENCE_CODE + "\""));
+				"\"externalReferenceCode\": \"LDP_MCP_SERVER_PROFILE\""));
 		Assert.assertTrue(json.contains("\"instructions\": \""));
 		Assert.assertTrue(json.contains("\"name\": \"ldp\""));
 		Assert.assertFalse(json.contains("profileStatus"));
@@ -46,8 +45,7 @@ public class MCPServerProfileBatchEngineDataTest {
 
 		Assert.assertTrue(
 			json.contains(
-				"\"externalReferenceCode\": \"" +
-					_MCP_SERVER_PROFILE_EXTERNAL_REFERENCE_CODE + "\""));
+				"\"externalReferenceCode\": \"LDP_MCP_SERVER_PROFILE\""));
 		Assert.assertTrue(json.contains("\"profileStatus\": \"active\""));
 		Assert.assertTrue(
 			json.contains("\"updateStrategy\": \"PARTIAL_UPDATE\""));
@@ -64,8 +62,7 @@ public class MCPServerProfileBatchEngineDataTest {
 				toolNames, toolName -> "LDP_MCP_TOOL_" + toolName),
 			_getValues(json, "externalReferenceCode"));
 		Assert.assertEquals(
-			Collections.nCopies(
-				toolNames.size(), _MCP_SERVER_PROFILE_EXTERNAL_REFERENCE_CODE),
+			Collections.nCopies(toolNames.size(), "LDP_MCP_SERVER_PROFILE"),
 			_getValues(
 				json, "r_mcpServerProfileToTools_l_mcpServerProfileERC"));
 		Assert.assertEquals(
@@ -109,8 +106,5 @@ public class MCPServerProfileBatchEngineDataTest {
 			return StringUtil.read(inputStream);
 		}
 	}
-
-	private static final String _MCP_SERVER_PROFILE_EXTERNAL_REFERENCE_CODE =
-		"LDP_MCP_SERVER_PROFILE";
 
 }
