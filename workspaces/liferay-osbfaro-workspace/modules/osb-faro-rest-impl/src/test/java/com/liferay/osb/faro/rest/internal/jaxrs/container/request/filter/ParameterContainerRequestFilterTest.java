@@ -66,6 +66,9 @@ public class ParameterContainerRequestFilterTest {
 		Assert.assertNull(_filter(null, null));
 
 		_assertTitle(
+			"Date range must be at most 180 days",
+			_filter(_getRangeQueryParameters("2026-10-02", "2026-04-05")));
+		_assertTitle(
 			"\"bogusColumn\" is not a sortable column. Sortable columns: " +
 				"accountId, accountName, fromAccountLifecycleStageId, " +
 					"toAccountLifecycleStageId, transitionDate",
@@ -88,9 +91,6 @@ public class ParameterContainerRequestFilterTest {
 			"\"sort\" must be a comma separated list of \"column:asc\" or " +
 				"\"column:desc\" expressions",
 			_filter("sort", "accountName:sideways"));
-		_assertTitle(
-			"Date range must be at most 180 days",
-			_filter(_getRangeQueryParameters("2026-10-02", "2026-04-05")));
 	}
 
 	private void _assertTitle(String expectedTitle, Response response) {

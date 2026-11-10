@@ -31,6 +31,29 @@ public class WorkspaceResourceImplTest {
 
 	@Test
 	public void testGetWorkspacesPage() throws Exception {
+		User user = Mockito.mock(User.class);
+
+		Mockito.when(
+			user.getUserId()
+		).thenReturn(
+			_USER_ID
+		);
+
+		FaroUser faroUser = Mockito.mock(FaroUser.class);
+
+		Mockito.when(
+			faroUser.getGroupId()
+		).thenReturn(
+			_GROUP_ID
+		);
+
+		Mockito.when(
+			_faroUserLocalService.getFaroUsersByLiveUserId(
+				_USER_ID, FaroUserConstants.STATUS_APPROVED)
+		).thenReturn(
+			Collections.singletonList(faroUser)
+		);
+
 		FaroProject faroProject = Mockito.mock(FaroProject.class);
 
 		Mockito.when(
@@ -53,29 +76,6 @@ public class WorkspaceResourceImplTest {
 			faroProject
 		);
 
-		FaroUser faroUser = Mockito.mock(FaroUser.class);
-
-		Mockito.when(
-			faroUser.getGroupId()
-		).thenReturn(
-			_GROUP_ID
-		);
-
-		Mockito.when(
-			_faroUserLocalService.getFaroUsersByLiveUserId(
-				_USER_ID, FaroUserConstants.STATUS_APPROVED)
-		).thenReturn(
-			Collections.singletonList(faroUser)
-		);
-
-		User user = Mockito.mock(User.class);
-
-		Mockito.when(
-			user.getUserId()
-		).thenReturn(
-			_USER_ID
-		);
-
 		_workspaceResourceImpl.setContextUser(user);
 
 		ReflectionTestUtil.setFieldValue(
@@ -85,9 +85,10 @@ public class WorkspaceResourceImplTest {
 			_workspaceResourceImpl, "_faroUserLocalService",
 			_faroUserLocalService);
 
-		Page<Workspace> page = _workspaceResourceImpl.getWorkspacesPage();
+		Page<Workspace> workspacesPage =
+			_workspaceResourceImpl.getWorkspacesPage();
 
-		List<Workspace> workspaces = (List<Workspace>)page.getItems();
+		List<Workspace> workspaces = (List<Workspace>)workspacesPage.getItems();
 
 		Assert.assertEquals(workspaces.toString(), 1, workspaces.size());
 

@@ -10,6 +10,7 @@ import com.liferay.osb.faro.constants.FaroUserConstants;
 import com.liferay.osb.faro.model.FaroChannel;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
+import com.liferay.osb.faro.rest.internal.jaxrs.util.ProblemUtil;
 import com.liferay.osb.faro.service.FaroChannelLocalService;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.service.FaroUserLocalService;
@@ -24,7 +25,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
 import jakarta.annotation.Priority;
 
@@ -34,7 +34,6 @@ import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -152,13 +151,7 @@ public class WorkspaceContainerRequestFilter implements ContainerRequestFilter {
 		String title) {
 
 		containerRequestContext.abortWith(
-			Response.status(
-				status
-			).entity(
-				new Problem(status, title)
-			).type(
-				MediaType.APPLICATION_JSON
-			).build());
+			ProblemUtil.toResponse(status, title));
 	}
 
 	private boolean _hasChannelPermission(
