@@ -571,13 +571,10 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 			for (Map.Entry<String, String> entry :
 					environmentVariables.entrySet()) {
 
-				String key = entry.getKey();
-				String value = entry.getValue();
-
 				sb.append("export ");
-				sb.append(key);
+				sb.append(entry.getKey());
 				sb.append("=");
-				sb.append(value);
+				sb.append(entry.getValue());
 				sb.append("\n");
 			}
 		}
