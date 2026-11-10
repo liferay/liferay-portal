@@ -148,7 +148,13 @@ public class DefaultSearchResultPermissionFilter
 		SlidingWindowSearcher slidingWindowSearcher =
 			new SlidingWindowSearcher();
 
-		return slidingWindowSearcher.search(start, end, searchContext);
+		try {
+			return slidingWindowSearcher.search(start, end, searchContext);
+		}
+		finally {
+			searchContext.setEnd(end);
+			searchContext.setStart(start);
+		}
 	}
 
 	private int _filterHits(
