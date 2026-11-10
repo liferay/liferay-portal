@@ -552,7 +552,8 @@ public class LayoutLocalServiceTest {
 			_layoutLocalService.fetchDraftLayout(
 				layout.getPlid(), launchSetId));
 
-		Layout launchDraftLayout = _addLaunchDraftLayout(launchSetId, layout);
+		Layout launchDraftLayout = LayoutTestUtil.addLaunchDraftLayout(
+			launchSetId, layout);
 
 		Assert.assertEquals(
 			launchDraftLayout,
@@ -573,13 +574,6 @@ public class LayoutLocalServiceTest {
 	@Test
 	@TestInfo("LPD-112154")
 	public void testGetClassPKsByLaunchSetId() throws Exception {
-		Layout layout1 = LayoutTestUtil.addTypeContentPublishedLayout(
-			_group, RandomTestUtil.randomString(),
-			WorkflowConstants.STATUS_APPROVED);
-		Layout layout2 = LayoutTestUtil.addTypeContentPublishedLayout(
-			_group, RandomTestUtil.randomString(),
-			WorkflowConstants.STATUS_APPROVED);
-
 		long launchSetId = RandomTestUtil.randomLong();
 
 		long[] classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
@@ -587,7 +581,11 @@ public class LayoutLocalServiceTest {
 
 		Assert.assertEquals(Arrays.toString(classPKs), 0, classPKs.length);
 
-		_addLaunchDraftLayout(launchSetId, layout1);
+		Layout layout1 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+
+		LayoutTestUtil.addLaunchDraftLayout(launchSetId, layout1);
 
 		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
 			_group.getGroupId(), launchSetId);
@@ -595,7 +593,11 @@ public class LayoutLocalServiceTest {
 		Assert.assertEquals(layout1.getPlid(), classPKs[0]);
 		Assert.assertEquals(Arrays.toString(classPKs), 1, classPKs.length);
 
-		_addLaunchDraftLayout(launchSetId, layout2);
+		Layout layout2 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+
+		LayoutTestUtil.addLaunchDraftLayout(launchSetId, layout2);
 
 		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
 			_group.getGroupId(), launchSetId);
@@ -947,7 +949,7 @@ public class LayoutLocalServiceTest {
 
 		long launchSetId = RandomTestUtil.randomLong();
 
-		_addLaunchDraftLayout(launchSetId, layout);
+		LayoutTestUtil.addLaunchDraftLayout(launchSetId, layout);
 
 		Assert.assertEquals(
 			0,
@@ -1427,26 +1429,6 @@ public class LayoutLocalServiceTest {
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				_group.getGroupId(), false);
 		}
-	}
-
-	private Layout _addLaunchDraftLayout(long launchSetId, Layout layout)
-		throws Exception {
-
-		Layout launchDraftLayout = _layoutLocalService.addLayout(
-			StringBundler.concat(
-				layout.getExternalReferenceCode(), "-launch-", launchSetId),
-			TestPropsValues.getUserId(), layout.getGroupId(),
-			layout.isPrivateLayout(), layout.getParentLayoutId(),
-			_portal.getClassNameId(Layout.class), layout.getPlid(),
-			layout.getNameMap(), layout.getTitleMap(),
-			layout.getDescriptionMap(), layout.getKeywordsMap(),
-			layout.getRobotsMap(), layout.getType(), layout.getTypeSettings(),
-			true, true, Collections.emptyMap(),
-			layout.getMasterLayoutPageTemplateEntryERC(), _serviceContext);
-
-		launchDraftLayout.setLaunchSetId(launchSetId);
-
-		return _layoutLocalService.updateLayout(launchDraftLayout);
 	}
 
 	private void _assertExternalReferenceCodes(
