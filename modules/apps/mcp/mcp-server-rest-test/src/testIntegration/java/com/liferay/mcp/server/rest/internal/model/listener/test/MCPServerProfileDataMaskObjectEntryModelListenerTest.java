@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -53,6 +54,7 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =
@@ -89,6 +91,7 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =

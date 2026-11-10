@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
 import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.exception.ObjectValidationRuleEngineException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -66,7 +68,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 	@Test
 	public void testOnAfterCreate() throws Exception {
 		ObjectEntry mcpServerProfileObjectEntry =
-			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("default");
+			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("Default");
 
 		Assert.assertEquals(
 			_SYSTEM_DATA_MASK_EXTERNAL_REFERENCE_CODES.length,
@@ -80,6 +82,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		List<ObjectEntry> mcpServerProfileDataMaskObjectEntries =
@@ -108,14 +111,32 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 	@Test
 	public void testOnBeforeCreate() throws Exception {
 		_assertNoAssociatedToolsFailure(
-			() -> _addMCPServerProfileObjectEntry());
+			() -> _addMCPServerProfileObjectEntry(
+				StringUtil.toLowerCase(RandomTestUtil.randomString())));
 
 		BatchEngineUnitThreadLocal.setFileName(
 			"com.liferay.mcp.server.rest.impl_1.0.0 [1]");
 
 		try {
+			_assertInvalidProfilePathFailure("-leading-hyphen");
+			_assertInvalidProfilePathFailure("UPPERCASE");
+			_assertInvalidProfilePathFailure("double--hyphen");
+			_assertInvalidProfilePathFailure("trailing-hyphen-");
+			_assertInvalidProfilePathFailure("with space");
+			_assertInvalidProfilePathFailure("with/slash");
+			_assertInvalidProfilePathFailure("with_underscore");
+
+			AssertUtils.assertFailure(
+				ModelListenerException.class,
+				StringBundler.concat(
+					"com.liferay.object.exception.ObjectEntryValuesException$",
+					"Required: No value was provided for required object ",
+					"field \"profilePath\""),
+				() -> _addMCPServerProfileObjectEntry(null));
+
 			ObjectEntry mcpServerProfileObjectEntry =
-				_addMCPServerProfileObjectEntry();
+				_addMCPServerProfileObjectEntry(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()));
 
 			Assert.assertEquals(
 				"active",
@@ -133,6 +154,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		String mcpServerProfileObjectEntryExternalReferenceCode =
@@ -195,7 +217,8 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString());
+				RandomTestUtil.randomString(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()));
 
 		Assert.assertEquals(
 			"inactive",
@@ -205,9 +228,32 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 		_assertNoAssociatedToolsFailure(
 			() -> MCPServerTestUtil.updateMCPServerProfileStatus(
 				mcpServerProfileObjectEntry, "active"));
+
+		ObjectEntry defaultMCPServerProfileObjectEntry =
+			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("Default");
+
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			StringBundler.concat(
+				"com.liferay.object.exception.ObjectEntryValuesException$",
+				"InvalidObjectField: The default MCP server profile has no ",
+				"profile path"),
+			() -> _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(),
+				defaultMCPServerProfileObjectEntry.getObjectEntryId(),
+				defaultMCPServerProfileObjectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>putAll(
+					defaultMCPServerProfileObjectEntry.getValues()
+				).put(
+					"profilePath",
+					StringUtil.toLowerCase(RandomTestUtil.randomString())
+				).build(),
+				ServiceContextTestUtil.getServiceContext()));
 	}
 
-	private ObjectEntry _addMCPServerProfileObjectEntry() throws Exception {
+	private ObjectEntry _addMCPServerProfileObjectEntry(String profilePath)
+		throws Exception {
+
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
@@ -223,9 +269,26 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 			).put(
 				"name", RandomTestUtil.randomString()
 			).put(
+				"profilePath", profilePath
+			).put(
 				"profileStatus", "active"
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private void _assertInvalidProfilePathFailure(String profilePath)
+		throws Exception {
+
+		try {
+			_addMCPServerProfileObjectEntry(profilePath);
+
+			Assert.fail(profilePath);
+		}
+		catch (ModelListenerException modelListenerException) {
+			Assert.assertTrue(
+				modelListenerException.getCause() instanceof
+					ObjectValidationRuleEngineException);
+		}
 	}
 
 	private void _assertNoAssociatedToolsFailure(

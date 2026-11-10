@@ -15,26 +15,26 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.upgrade.UpgradeStep;
+import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
+import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -45,6 +45,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Jose Luis Navarro
  */
+@DataGuard(scope = DataGuard.Scope.NONE)
 @FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
 public class MCPProfileStatusUpgradeProcessTest {
@@ -52,49 +53,98 @@ public class MCPProfileStatusUpgradeProcessTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
+		MCPServerTestUtil.deleteObjectDefinition("L_MCP_SERVER_PROFILE");
+		MCPServerTestUtil.deleteObjectDefinition("L_MCP_SERVER_PROFILE_TOOL");
+
+		MCPServerTestUtil.processBatchEngineUnits("tool");
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		for (ObjectEntry objectEntry :
+				new ObjectEntry[] {
+					_activeMCPServerProfileObjectEntry,
+					_activeMCPServerProfileWithoutToolsObjectEntry,
+					_inactiveMCPServerProfileObjectEntry
+				}) {
+
+			if (objectEntry == null) {
+				continue;
+			}
+
+			_objectEntryLocalService.deleteObjectEntry(
+				objectEntry.getObjectEntryId());
+		}
+
 		MCPServerTestUtil.processBatchEngineUnits();
 	}
 
 	@Test
 	public void testUpgrade() throws Exception {
-		_activeMCPServerProfileObjectEntry =
-			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString(),
-				"mcp-server-profiles getMCPServerProfilesPage");
+		_activeMCPServerProfileObjectEntry = _addMCPServerProfileObjectEntry(
+			RandomTestUtil.randomString(), "active");
+
+		_addObjectEntry(
+			"L_MCP_SERVER_PROFILE_TOOL",
+			HashMapBuilder.<String, Serializable>put(
+				"r_mcpServerProfileToTools_l_mcpServerProfileId",
+				_activeMCPServerProfileObjectEntry.getObjectEntryId()
+			).put(
+				"toolName", "getMCPServerProfilesPage"
+			).put(
+				"toolSetName", "mcp-server-profiles"
+			).build());
+
 		_activeMCPServerProfileWithoutToolsObjectEntry =
-			_addActiveMCPServerProfileWithoutToolsObjectEntry();
-		_inactiveMCPServerProfileObjectEntry =
-			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString());
+			_addMCPServerProfileObjectEntry("My Profile", "active");
+		_inactiveMCPServerProfileObjectEntry = _addMCPServerProfileObjectEntry(
+			RandomTestUtil.randomString(), "inactive");
 
-		Assert.assertEquals(
-			"active",
-			_getProfileStatus(_activeMCPServerProfileWithoutToolsObjectEntry));
+		MCPServerTestUtil.processBatchEngineUnits();
 
-		UpgradeStep upgradeStep = _getUpgradeStep();
+		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
+			_upgradeStepRegistrator,
+			"com.liferay.mcp.server.rest.internal.upgrade." +
+				"MCPProfileStatusUpgradeProcess");
 
-		upgradeStep.upgrade();
+		upgradeProcess.upgrade();
 
 		_assertUpgrade();
 
-		upgradeStep.upgrade();
+		upgradeProcess.upgrade();
 
 		_assertUpgrade();
 	}
 
-	private ObjectEntry _addActiveMCPServerProfileWithoutToolsObjectEntry()
+	private ObjectEntry _addMCPServerProfileObjectEntry(
+			String name, String profileStatus)
+		throws Exception {
+
+		return _addObjectEntry(
+			"L_MCP_SERVER_PROFILE",
+			HashMapBuilder.<String, Serializable>put(
+				"description", RandomTestUtil.randomString()
+			).put(
+				"name", name
+			).put(
+				"profileStatus", profileStatus
+			).build());
+	}
+
+	private ObjectEntry _addObjectEntry(
+			String externalReferenceCode, Map<String, Serializable> values)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_MCP_SERVER_PROFILE", TestPropsValues.getCompanyId());
+				getObjectDefinitionByExternalReferenceCode(
+					externalReferenceCode, TestPropsValues.getCompanyId());
 
 		BatchEngineUnitThreadLocal.setFileName(
 			"com.liferay.mcp.server.rest.impl_1.0.0 [1]");
@@ -105,15 +155,7 @@ public class MCPProfileStatusUpgradeProcessTest {
 				objectDefinition.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				null,
-				HashMapBuilder.<String, Serializable>put(
-					"description", RandomTestUtil.randomString()
-				).put(
-					"name", RandomTestUtil.randomString()
-				).put(
-					"profileStatus", "active"
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
+				null, values, ServiceContextTestUtil.getServiceContext());
 		}
 		finally {
 			BatchEngineUnitThreadLocal.setFileName(StringPool.BLANK);
@@ -123,9 +165,13 @@ public class MCPProfileStatusUpgradeProcessTest {
 	private void _assertUpgrade() throws Exception {
 		Assert.assertEquals(
 			"active", _getProfileStatus(_activeMCPServerProfileObjectEntry));
-		Assert.assertEquals(
-			"inactive",
-			_getProfileStatus(_activeMCPServerProfileWithoutToolsObjectEntry));
+
+		Map<String, Serializable> values = _objectEntryLocalService.getValues(
+			_activeMCPServerProfileWithoutToolsObjectEntry.getObjectEntryId());
+
+		Assert.assertEquals("my-profile", values.get("profilePath"));
+		Assert.assertEquals("inactive", values.get("profileStatus"));
+
 		Assert.assertEquals(
 			"inactive",
 			_getProfileStatus(_inactiveMCPServerProfileObjectEntry));
@@ -140,41 +186,8 @@ public class MCPProfileStatusUpgradeProcessTest {
 		return MapUtil.getString(objectEntry.getValues(), "profileStatus");
 	}
 
-	private UpgradeStep _getUpgradeStep() {
-		List<UpgradeStep> versionedUpgradeSteps = new ArrayList<>();
-
-		_upgradeStepRegistrator.register(
-			new UpgradeStepRegistrator.Registry() {
-
-				@Override
-				public void register(
-					String fromSchemaVersionString,
-					String toSchemaVersionString, UpgradeStep... upgradeSteps) {
-
-					if (Objects.equals(fromSchemaVersionString, "1.3.0") &&
-						Objects.equals(toSchemaVersionString, "1.4.0")) {
-
-						Collections.addAll(versionedUpgradeSteps, upgradeSteps);
-					}
-				}
-
-				@Override
-				public void registerReleaseCreationUpgradeSteps(
-					UpgradeStep... upgradeSteps) {
-				}
-
-			});
-
-		return versionedUpgradeSteps.get(0);
-	}
-
-	@DeleteAfterTestRun
 	private ObjectEntry _activeMCPServerProfileObjectEntry;
-
-	@DeleteAfterTestRun
 	private ObjectEntry _activeMCPServerProfileWithoutToolsObjectEntry;
-
-	@DeleteAfterTestRun
 	private ObjectEntry _inactiveMCPServerProfileObjectEntry;
 
 	@Inject

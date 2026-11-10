@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -52,7 +53,7 @@ public class DataMaskObjectEntryModelListenerTest {
 	@Test
 	public void testOnAfterCreate() throws Exception {
 		ObjectEntry defaultMCPServerProfileObjectEntry =
-			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("default");
+			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("Default");
 
 		String defaultMCPServerProfileExternalReferenceCode =
 			defaultMCPServerProfileObjectEntry.getExternalReferenceCode();
@@ -104,6 +105,7 @@ public class DataMaskObjectEntryModelListenerTest {
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =

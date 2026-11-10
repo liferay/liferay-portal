@@ -8,16 +8,18 @@ package com.liferay.mcp.server.rest.internal.upgrade.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import java.io.Serializable;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -45,11 +48,21 @@ public class MCPProfileDataMaskUpgradeProcessTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
 	public void setUp() {
 		MCPServerTestUtil.processBatchEngineUnits();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		if (_mcpServerProfileObjectEntry != null) {
+			_objectEntryLocalService.deleteObjectEntry(
+				_mcpServerProfileObjectEntry.getObjectEntryId());
+		}
 	}
 
 	@Test
@@ -58,6 +71,7 @@ public class MCPProfileDataMaskUpgradeProcessTest {
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		String mcpServerProfileExternalReferenceCode =
@@ -76,7 +90,7 @@ public class MCPProfileDataMaskUpgradeProcessTest {
 			mcpServerProfileDataMaskObjectEntries.size());
 
 		ObjectEntry defaultMCPServerProfileObjectEntry =
-			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("default");
+			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("Default");
 
 		UpgradeStep upgradeStep = _getUpgradeStep();
 
@@ -210,8 +224,10 @@ public class MCPProfileDataMaskUpgradeProcessTest {
 		"L_DATA_MASK_NATIONAL_ID_SSN", "L_DATA_MASK_PHONE_NUMBER"
 	};
 
-	@DeleteAfterTestRun
 	private ObjectEntry _mcpServerProfileObjectEntry;
+
+	@Inject
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.mcp.server.rest.internal.upgrade.registry.MCPServerRestUpgradeStepRegistrator"

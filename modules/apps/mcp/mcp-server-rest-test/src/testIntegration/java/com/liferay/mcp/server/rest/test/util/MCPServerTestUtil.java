@@ -6,6 +6,8 @@
 package com.liferay.mcp.server.rest.test.util;
 
 import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
+import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
+import com.liferay.batch.engine.unit.BatchEngineUnitReader;
 import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -18,21 +20,34 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.zip.ZipWriter;
+import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.service.AuditEventLocalServiceUtil;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 
+import java.net.URL;
+
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Jose Luis Navarro
@@ -97,7 +112,7 @@ public class MCPServerTestUtil {
 
 	public static ObjectEntry addMCPServerProfileObjectEntry(
 			String description, String instructions, String name,
-			String... tools)
+			String profilePath, String... tools)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
@@ -118,6 +133,8 @@ public class MCPServerTestUtil {
 					"instructions", instructions
 				).put(
 					"name", name
+				).put(
+					"profilePath", profilePath
 				).put(
 					"profileStatus", "inactive"
 				).build(),
@@ -270,6 +287,20 @@ public class MCPServerTestUtil {
 
 		ObjectEntryLocalServiceUtil.deleteObjectEntry(
 			objectEntry.getObjectEntryId());
+	}
+
+	public static void deleteObjectDefinition(String externalReferenceCode)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					externalReferenceCode, TestPropsValues.getCompanyId());
+
+		if (objectDefinition != null) {
+			ObjectDefinitionLocalServiceUtil.deleteObjectDefinition(
+				objectDefinition);
+		}
 	}
 
 	public static void deleteSystemDataMaskObjectEntry(ObjectEntry objectEntry)
@@ -449,6 +480,25 @@ public class MCPServerTestUtil {
 			});
 	}
 
+	public static void processBatchEngineUnits(String dirName)
+		throws Exception {
+
+		Bundle bundle = _installBundle(dirName);
+
+		try {
+			BatchEngineUnitProcessor batchEngineUnitProcessor =
+				_batchEngineUnitProcessorSnapshot.get();
+			BatchEngineUnitReader batchEngineUnitReader =
+				_batchEngineUnitReaderSnapshot.get();
+
+			batchEngineUnitProcessor.processBatchEngineUnits(
+				batchEngineUnitReader.getBatchEngineUnits(bundle));
+		}
+		finally {
+			bundle.uninstall();
+		}
+	}
+
 	public static ObjectEntry updateMCPServerProfileStatus(
 			ObjectEntry mcpServerProfileObjectEntry, String profileStatus)
 		throws Exception {
@@ -521,7 +571,58 @@ public class MCPServerTestUtil {
 		return null;
 	}
 
+	private static Bundle _installBundle(String dirName) throws Exception {
+		Bundle bundle = FrameworkUtil.getBundle(MCPServerTestUtil.class);
+
+		String path =
+			"com/liferay/mcp/server/rest/internal/upgrade/test/dependencies/" +
+				dirName + "/";
+
+		Enumeration<URL> enumeration = bundle.findEntries(path, "*", true);
+
+		ZipWriterFactory zipWriterFactory = _zipWriterFactorySnapshot.get();
+
+		ZipWriter zipWriter = zipWriterFactory.getZipWriter();
+
+		if (enumeration != null) {
+			while (enumeration.hasMoreElements()) {
+				URL url = enumeration.nextElement();
+
+				String urlString = url.getPath();
+
+				if (urlString.endsWith(StringPool.SLASH)) {
+					continue;
+				}
+
+				String name = urlString.substring(path.length());
+
+				if (name.startsWith(StringPool.SLASH)) {
+					name = name.substring(1);
+				}
+
+				try (InputStream inputStream = url.openStream()) {
+					zipWriter.addEntry(name, inputStream);
+				}
+			}
+		}
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		return bundleContext.installBundle(
+			RandomTestUtil.randomString(),
+			new FileInputStream(zipWriter.getFile()));
+	}
+
 	private static final String _DATA_MASK_BATCH_FILE_NAME =
 		"com.liferay.headless.data.mask.impl_test";
+
+	private static final Snapshot<BatchEngineUnitProcessor>
+		_batchEngineUnitProcessorSnapshot = new Snapshot<>(
+			MCPServerTestUtil.class, BatchEngineUnitProcessor.class);
+	private static final Snapshot<BatchEngineUnitReader>
+		_batchEngineUnitReaderSnapshot = new Snapshot<>(
+			MCPServerTestUtil.class, BatchEngineUnitReader.class);
+	private static final Snapshot<ZipWriterFactory> _zipWriterFactorySnapshot =
+		new Snapshot<>(MCPServerTestUtil.class, ZipWriterFactory.class);
 
 }

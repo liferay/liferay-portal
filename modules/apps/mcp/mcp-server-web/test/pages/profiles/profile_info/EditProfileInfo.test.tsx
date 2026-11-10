@@ -31,6 +31,109 @@ describe('EditProfileInfo', () => {
 		jest.clearAllMocks();
 	});
 
+	it('generates the profile path from the title until it is edited by hand', async () => {
+		renderEditProfileInfo();
+
+		const profilePathInput = screen.getByRole('textbox', {
+			name: /^url/,
+		});
+
+		await userEvent.type(
+			screen.getByRole('textbox', {name: /^title/}),
+			'My Team / Docs'
+		);
+
+		expect(profilePathInput).toHaveValue('my-team-docs');
+		expect(
+			screen.getByText(`${window.location.origin}/o/mcp/`)
+		).toBeInTheDocument();
+
+		await userEvent.clear(profilePathInput);
+		await userEvent.type(profilePathInput, 'docs');
+		await userEvent.type(
+			screen.getByRole('textbox', {name: /^title/}),
+			' Changed'
+		);
+
+		expect(profilePathInput).toHaveValue('docs');
+	});
+
+	it('keeps the profile path of an existing profile when the title changes', async () => {
+		fetch.mockResponseOnce(
+			JSON.stringify({
+				description: 'Description',
+				externalReferenceCode: 'PROFILE_ERC',
+				name: 'Docs',
+				profilePath: 'docs',
+				profileStatus: {key: 'inactive'},
+			})
+		);
+
+		renderEditProfileInfo('PROFILE_ERC');
+
+		const titleInput = await screen.findByRole('textbox', {
+			name: /^title/,
+		});
+
+		await userEvent.type(titleInput, ' Changed');
+
+		expect(screen.getByRole('textbox', {name: /^url/})).toHaveValue('docs');
+	});
+
+	it('serves the default profile at the base URL without a profile path', async () => {
+		fetch.mockResponseOnce(
+			JSON.stringify({
+				description: 'Description',
+				externalReferenceCode: 'L_MCP_SERVER_DEFAULT_PROFILE',
+				name: 'Default',
+				profilePath: '',
+				profileStatus: {key: 'active'},
+			})
+		);
+
+		renderEditProfileInfo('L_MCP_SERVER_DEFAULT_PROFILE');
+
+		const profilePathInput = await screen.findByRole('textbox', {
+			name: /^url/,
+		});
+
+		expect(profilePathInput).toBeDisabled();
+		expect(profilePathInput).toHaveValue('');
+		expect(
+			screen.getByText(`${window.location.origin}/o/mcp`)
+		).toBeInTheDocument();
+		expect(
+			screen.getByText('the-default-profile-has-no-profile-path')
+		).toBeInTheDocument();
+	});
+
+	it('keeps only valid characters in the profile path while typing', async () => {
+		renderEditProfileInfo();
+
+		const profilePathInput = screen.getByRole('textbox', {
+			name: /^url/,
+		});
+
+		await userEvent.type(profilePathInput, 'My Docs/V2_');
+
+		expect(profilePathInput).toHaveValue('my-docsv2');
+	});
+
+	it('shows a format error for an invalid profile path', async () => {
+		renderEditProfileInfo();
+
+		const profilePathInput = screen.getByRole('textbox', {
+			name: /^url/,
+		});
+
+		await userEvent.type(profilePathInput, 'invalid--path-');
+		await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+		expect(profilePathInput).toHaveAccessibleDescription(
+			/please-enter-a-valid-profile-path/
+		);
+	});
+
 	it('moves the focus to the first invalid field when saving', async () => {
 		renderEditProfileInfo();
 

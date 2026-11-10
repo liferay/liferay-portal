@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -55,7 +56,8 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString());
+				RandomTestUtil.randomString(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()));
 
 		_mcpServerProfileExternalReferenceCode =
 			mcpServerProfileObjectEntry.getExternalReferenceCode();
@@ -118,7 +120,8 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString());
+				RandomTestUtil.randomString(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()));
 
 		MCPServerTestUtil.addMCPServerProfileToolObjectEntry(
 			mcpServerProfileObjectEntry.getExternalReferenceCode(), null,
@@ -148,6 +151,7 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
 				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
 				"mcp-server-profiles getMCPServerProfilesPage",
 				"mcp-server-v1.0 getToolSetsPage");
 

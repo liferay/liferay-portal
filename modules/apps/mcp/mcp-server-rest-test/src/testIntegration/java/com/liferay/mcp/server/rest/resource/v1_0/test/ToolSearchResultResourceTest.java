@@ -230,7 +230,7 @@ public class ToolSearchResultResourceTest
 		throws Exception {
 
 		ObjectEntry mcpServerProfileObjectEntry =
-			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("default");
+			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("Default");
 
 		List<String> toolNames = MCPServerTestUtil.getMCPServerProfileToolNames(
 			mcpServerProfileObjectEntry);
@@ -239,7 +239,7 @@ public class ToolSearchResultResourceTest
 			toolNames.contains("getToolSearchToolSearchResultsPage"));
 
 		mcpServerProfileObjectEntry =
-			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("tool-search");
+			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("Tool Search");
 
 		toolNames = MCPServerTestUtil.getMCPServerProfileToolNames(
 			mcpServerProfileObjectEntry);

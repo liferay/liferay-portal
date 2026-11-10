@@ -239,6 +239,7 @@ public class MCPServerServletTest {
 				_testServiceWithModifiedProfile(authorization);
 				_testServiceWithNoContentResponse(authorization);
 				_testServiceWithProfile(authorization);
+				_testServiceWithProfilePath(authorization);
 				_testServiceWithRestrictFields(authorization);
 				_testServiceWithToolSearch(authorization);
 				_testServiceWithToolSearchAndToolInvoke(authorization);
@@ -266,11 +267,12 @@ public class MCPServerServletTest {
 			null, null);
 	}
 
-	private ObjectEntry _addObjectEntry(String name, String... tools)
+	private ObjectEntry _addObjectEntry(String profilePath, String... tools)
 		throws Exception {
 
 		return MCPServerTestUtil.addMCPServerProfileObjectEntry(
-			RandomTestUtil.randomString(), null, name, tools);
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			profilePath, tools);
 	}
 
 	private void _assertAllowedQueryParameters(
@@ -690,8 +692,9 @@ public class MCPServerServletTest {
 				"JSONObject/items", "JSONArray/enum"));
 	}
 
-	private String _getInstructions(String authorization, String name) {
-		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+	private String _getInstructions(String authorization, String profilePath) {
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(
+			authorization, profilePath);
 
 		try {
 			McpSchema.InitializeResult initializeResult =
@@ -750,7 +753,7 @@ public class MCPServerServletTest {
 	}
 
 	private McpSyncClient _getMcpSyncClient(
-		String authorization, String profileName) {
+		String authorization, String profilePath) {
 
 		return McpClient.sync(
 			HttpClientStreamableHttpTransport.builder(
@@ -759,7 +762,7 @@ public class MCPServerServletTest {
 			).customizeRequest(
 				builder -> builder.header("Authorization", authorization)
 			).endpoint(
-				(profileName != null) ? "mcp/" + profileName : "mcp"
+				(profilePath != null) ? "mcp/" + profilePath : "mcp"
 			).build()
 		).capabilities(
 			McpSchema.ClientCapabilities.builder(
@@ -791,7 +794,7 @@ public class MCPServerServletTest {
 		return options.getResponse();
 	}
 
-	private int _getResponseCode(String authorization, String profileName)
+	private int _getResponseCode(String authorization, String profilePath)
 		throws Exception {
 
 		Http.Options options = new Http.Options();
@@ -808,7 +811,7 @@ public class MCPServerServletTest {
 				"method", "ping"
 			).toString(),
 			ContentTypes.APPLICATION_JSON, StringPool.UTF8);
-		options.setLocation(_getMCPURL() + StringPool.SLASH + profileName);
+		options.setLocation(_getMCPURL() + StringPool.SLASH + profilePath);
 		options.setPost(true);
 
 		_http.URLtoString(options);
@@ -847,15 +850,16 @@ public class MCPServerServletTest {
 	private void _testServiceWithDataMasks(String authorization)
 		throws Exception {
 
-		String profileName = RandomTestUtil.randomString();
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				_TEST_EMAIL_ADDRESS, null, profileName,
-				"mcp-server-profiles getMCPServerProfilesPage");
+				_TEST_EMAIL_ADDRESS, null, RandomTestUtil.randomString(),
+				profilePath, "mcp-server-profiles getMCPServerProfilesPage");
 
 		McpSyncClient mcpSyncClient = _getMcpSyncClient(
-			authorization, profileName);
+			authorization, profilePath);
 
 		mcpSyncClient.initialize();
 
@@ -906,18 +910,22 @@ public class MCPServerServletTest {
 		throws Exception {
 
 		String name = RandomTestUtil.randomString();
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
-		ObjectEntry objectEntry = _addObjectEntry(
-			name, "mcp-server-profiles getMCPServerProfilesPage");
+		ObjectEntry objectEntry =
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
+				RandomTestUtil.randomString(), null, name, profilePath,
+				"mcp-server-profiles getMCPServerProfilesPage");
 
-		Assert.assertEquals(200, _getResponseCode(authorization, name));
+		Assert.assertEquals(200, _getResponseCode(authorization, profilePath));
 
 		MCPServerTestUtil.updateMCPServerProfileStatus(objectEntry, "inactive");
 
 		Http.Options options = new Http.Options();
 
 		options.addHeader("Authorization", authorization);
-		options.setLocation(_getMCPURL() + StringPool.SLASH + name);
+		options.setLocation(_getMCPURL() + StringPool.SLASH + profilePath);
 
 		String responseContent = _http.URLtoString(options);
 
@@ -937,45 +945,50 @@ public class MCPServerServletTest {
 
 		MCPServerTestUtil.updateMCPServerProfileStatus(objectEntry, "active");
 
-		Assert.assertEquals(200, _getResponseCode(authorization, name));
+		Assert.assertEquals(200, _getResponseCode(authorization, profilePath));
 	}
 
 	private void _testServiceWithInstructions(String authorization)
 		throws Exception {
 
-		String name = RandomTestUtil.randomString();
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
-		_addObjectEntry(name, "mcp-server-profiles getMCPServerProfilesPage");
+		_addObjectEntry(
+			profilePath, "mcp-server-profiles getMCPServerProfilesPage");
 
 		Assert.assertEquals(
-			StringPool.BLANK, _getInstructions(authorization, name));
+			StringPool.BLANK, _getInstructions(authorization, profilePath));
 
 		String instructions = RandomTestUtil.randomString();
 
-		name = RandomTestUtil.randomString();
+		profilePath = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		MCPServerTestUtil.addMCPServerProfileObjectEntry(
-			RandomTestUtil.randomString(), instructions, name,
+			RandomTestUtil.randomString(), instructions,
+			RandomTestUtil.randomString(), profilePath,
 			"mcp-server-profiles getMCPServerProfilesPage");
 
 		Assert.assertEquals(
-			instructions, _getInstructions(authorization, name));
+			instructions, _getInstructions(authorization, profilePath));
 	}
 
 	private void _testServiceWithModifiedProfile(String authorization)
 		throws Exception {
 
-		String name = RandomTestUtil.randomString();
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
 		ObjectEntry objectEntry = _addObjectEntry(
-			name, "mcp-server-profiles getMCPServerProfilesPage");
+			profilePath, "mcp-server-profiles getMCPServerProfilesPage");
 
 		ObjectEntry mcpServerProfileToolObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileToolObjectEntry(
 				objectEntry.getExternalReferenceCode(), "postMCPServerProfile",
 				"mcp-server-profiles");
 
-		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(
+			authorization, profilePath);
 
 		mcpSyncClient.initialize();
 
@@ -997,7 +1010,7 @@ public class MCPServerServletTest {
 		_objectEntryLocalService.deleteObjectEntry(
 			mcpServerProfileToolObjectEntry.getObjectEntryId());
 
-		mcpSyncClient = _getMcpSyncClient(authorization, name);
+		mcpSyncClient = _getMcpSyncClient(authorization, profilePath);
 
 		mcpSyncClient.initialize();
 
@@ -1030,7 +1043,8 @@ public class MCPServerServletTest {
 						"mCPServerProfileId",
 						String.valueOf(
 							_addObjectEntry(
-								RandomTestUtil.randomString(),
+								StringUtil.toLowerCase(
+									RandomTestUtil.randomString()),
 								"mcp-server-profiles getMCPServerProfilesPage"
 							).getObjectEntryId())
 					).build()
@@ -1054,13 +1068,15 @@ public class MCPServerServletTest {
 	private void _testServiceWithProfile(String authorization)
 		throws Exception {
 
-		String name = RandomTestUtil.randomString();
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
 		_addObjectEntry(
-			name, "mcp-server-profiles getMCPServerProfilesPage",
+			profilePath, "mcp-server-profiles getMCPServerProfilesPage",
 			"mcp-server-profiles postMCPServerProfile");
 
-		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(
+			authorization, profilePath);
 
 		mcpSyncClient.initialize();
 
@@ -1088,6 +1104,8 @@ public class MCPServerServletTest {
 						"description", RandomTestUtil.randomString()
 					).put(
 						"name", entryName
+					).put(
+						"profilePath", StringUtil.toLowerCase(entryName)
 					).build()
 				).build()));
 
@@ -1134,15 +1152,35 @@ public class MCPServerServletTest {
 		mcpSyncClient.closeGracefully();
 	}
 
+	private void _testServiceWithProfilePath(String authorization)
+		throws Exception {
+
+		String name = StringBundler.concat(
+			RandomTestUtil.randomString(), " / ",
+			RandomTestUtil.randomString());
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		MCPServerTestUtil.addMCPServerProfileObjectEntry(
+			RandomTestUtil.randomString(), null, name, profilePath,
+			"mcp-server-profiles getMCPServerProfilesPage");
+
+		Assert.assertEquals(200, _getResponseCode(authorization, profilePath));
+
+		Assert.assertEquals(404, _getResponseCode(authorization, "default"));
+	}
+
 	private void _testServiceWithRestrictFields(String authorization)
 		throws Exception {
 
 		String description = RandomTestUtil.randomString();
 		String profileName = RandomTestUtil.randomString();
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				description, null, profileName);
+				description, null, profileName, profilePath);
 
 		String mcpServerProfileExternalReferenceCode =
 			mcpServerProfileObjectEntry.getExternalReferenceCode();
@@ -1161,7 +1199,7 @@ public class MCPServerServletTest {
 			mcpServerProfileObjectEntry, "active");
 
 		McpSyncClient mcpSyncClient = _getMcpSyncClient(
-			authorization, profileName);
+			authorization, profilePath);
 
 		mcpSyncClient.initialize();
 
@@ -1246,6 +1284,8 @@ public class MCPServerServletTest {
 						"description", RandomTestUtil.randomString()
 					).put(
 						"name", entryName
+					).put(
+						"profilePath", StringUtil.toLowerCase(entryName)
 					).build()
 				).build()));
 
@@ -1306,12 +1346,14 @@ public class MCPServerServletTest {
 	private void _testServiceWithToolSearch(String authorization)
 		throws Exception {
 
-		String name = RandomTestUtil.randomString();
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
 		_addObjectEntry(
-			name, "mcp-server-v1.0 getToolSearchToolSearchResultsPage");
+			profilePath, "mcp-server-v1.0 getToolSearchToolSearchResultsPage");
 
-		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(
+			authorization, profilePath);
 
 		mcpSyncClient.initialize();
 
@@ -1330,14 +1372,16 @@ public class MCPServerServletTest {
 	private void _testServiceWithToolSearchAndToolInvoke(String authorization)
 		throws Exception {
 
-		String name = RandomTestUtil.randomString();
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
 		_addObjectEntry(
-			name, "headless-delivery-v1.0 postSiteBlogPosting",
+			profilePath, "headless-delivery-v1.0 postSiteBlogPosting",
 			"mcp-server-v1.0 getToolSearchToolSearchResultsPage",
 			"mcp-server-v1.0 postToolSetToolSetNameToolInvoke");
 
-		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(
+			authorization, profilePath);
 
 		mcpSyncClient.initialize();
 
@@ -1357,14 +1401,16 @@ public class MCPServerServletTest {
 			String authorization)
 		throws Exception {
 
-		String name = RandomTestUtil.randomString();
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
 		_addObjectEntry(
-			name, "headless-delivery-v1.0 getSiteBlogPostingsPage",
+			profilePath, "headless-delivery-v1.0 getSiteBlogPostingsPage",
 			"headless-delivery-v1.0 postSiteBlogPosting",
 			"mcp-server-v1.0 getToolSearchToolSearchResultsPage");
 
-		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(
+			authorization, profilePath);
 
 		mcpSyncClient.initialize();
 
@@ -1445,11 +1491,14 @@ public class MCPServerServletTest {
 	private void _testServiceWithoutAuthTokenCheck(String authorization)
 		throws Exception {
 
-		String name = RandomTestUtil.randomString();
+		String profilePath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
-		_addObjectEntry(name, "mcp-server-profiles getMCPServerProfilesPage");
+		_addObjectEntry(
+			profilePath, "mcp-server-profiles getMCPServerProfilesPage");
 
-		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(
+			authorization, profilePath);
 
 		mcpSyncClient.initialize();
 
@@ -1603,6 +1652,8 @@ public class MCPServerServletTest {
 							"description", RandomTestUtil.randomString()
 						).put(
 							"name", entryName
+						).put(
+							"profilePath", StringUtil.toLowerCase(entryName)
 						).build()
 					).build()
 				).put(

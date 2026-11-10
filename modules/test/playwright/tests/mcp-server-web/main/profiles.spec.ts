@@ -55,12 +55,14 @@ function profileName() {
 
 async function createProfile(
 	apiHelpers: DataApiHelpers,
-	name: string
+	name: string,
+	profilePath: string = name
 ): Promise<ObjectEntry> {
 	return apiHelpers.objectEntry.postObjectEntry(
 		{
 			description: `Created by Playwright ${name}`,
 			name,
+			profilePath,
 		},
 		PROFILES_API
 	);
@@ -256,17 +258,19 @@ test.describe('Profiles - List View', () => {
 	);
 
 	test(
-		'Shows the path derived from the profile title',
-		{tag: '@LPD-99230'},
+		'Shows the profile path of the profile',
+		{tag: ['@LPD-99230', '@LPD-114729']},
 		async ({apiHelpers, profilesPage}) => {
 			const name = profileName();
-			const profile = await createProfile(apiHelpers, name);
+			const profilePath = `pwpath-${getRandomString()}`;
+
+			await createProfile(apiHelpers, name, profilePath);
 
 			await profilesPage.goto();
 			await profilesPage.search(name);
 
 			await expect(profilesPage.row(name)).toContainText(
-				profile.friendlyUrlPath ?? name
+				`/${profilePath}`
 			);
 		}
 	);
@@ -365,6 +369,7 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 			await expect(profilesPage.dataMasksTabLink).toBeVisible();
 
 			expect(profile.name).toBe(name);
+			expect(profile.profilePath).toBe(name);
 
 			await profilesPage.goto();
 			await profilesPage.search(name);
