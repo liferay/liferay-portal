@@ -76,7 +76,7 @@ One of:
 
 One sentence describing the outcome:
 
-- For `Bug in portal` and `Outdated test`, name the offending commit (short SHA and subject) and what it changed. When the test has no recorded last pass, name the cause found in **Fix Without a Suspect Range** instead.
+- For `Bug in portal` and `Outdated test`, name the offending commit (short SHA and subject) and what it changed. When the test has no recorded last pass, name the cause found in **Fix Without a Suspect Range** instead. When **Run the Cluster** ran, add which of the other tests pass with the fix and which still fail.
 - For `No fix needed`, the literal string `Test passes locally`, or `Defect does not reproduce` when the run started from a Bug key.
 - For `Unresolved`, an honest handover summary listing hypotheses considered, attempts made, observed effects, and the most plausible remaining lead. When an open pull request already covers the failure, name that pull request and the result of **Verify an Open Pull Request** instead.
 
@@ -198,7 +198,7 @@ Run this step when an open pull request already changes the code for this failur
 		--repo <fork>
 	```
 
-1. Discard the applied changes (`git restore` on the touched files, and delete the files the pull request added), or check out the branch the run started on, then redeploy the same modules from the clean tree and run **Restore the Portal**.
+1. Discard the applied changes (`git restore` on the touched files, and delete the files the pull request added), or check out the branch the run started on, then run **Restore the Portal**, which redeploys the same modules from the base.
 
 Exit with `Verdict: Unresolved`, and put the pull request's URL and the result of the verification in the **Conclusion**.
 
@@ -274,12 +274,22 @@ When `lastPassSha` is `null`, there is no window to search: the test has always 
 
 Stop after **three attempts** without a green run and exit `Unresolved`, as in **Iterate Through Suspects**. Lock the verdict only after a green local run, and record the cause in one sentence in place of the offending commit, for the **Conclusion** and the pull request's Root Cause section.
 
+### Run the Cluster
+
+Only when the verdict is `Bug in portal` or `Outdated test` and the `--evidence` file lists other tests in the same cluster. Run each of them now, while the fix is still deployed; **Restore the Portal** removes it from the bundle. Name the ones that pass and the ones that still fail in the **Conclusion**. A test that still fails has a different cause; do not widen the fix for it.
+
 ### Restore the Portal
 
-This step is idempotent: the portal must end the run in the same state it started — Tomcat running with the original `portal-ext.properties` loaded.
+This step runs on every exit and is idempotent: the portal must end the run in the same state it started — Tomcat running with the original `portal-ext.properties` loaded, and the bundle holding the code of the base the run branched from.
 
 When **Set Feature Flags** changed `<bundles>/portal-ext.properties`, restore the snapshot and bounce Tomcat to pick the original properties back up.
 
 When **Set Feature Flags** was skipped because the test does not need flag changes, Tomcat keeps running untouched and there is nothing to do.
 
-When the run ends without a commit (`Unresolved`), discard the uncommitted candidate changes (`git restore` on the touched files) and redeploy each module they touched from the clean tree, so the next run starts from the code under test.
+When the run deployed anything (a candidate fix, the final fix, or another team's change in **Verify an Open Pull Request**), redeploy each module it touched from the base, whatever the verdict. A fix left in the bundle makes the next run pass for the wrong reason: one defect often fails several tests in the same build, the next run branches from a base that does not contain the fix, and its local pass closes its Task as `No fix needed`.
+
+- When the run ends with a commit (`Bug in portal` or `Outdated test`), wait until the pull request is opened, check out the base the run branched from (`git checkout --detach <base>`), redeploy each module the fix touched, and check out the fix branch again.
+
+- When the run ends without a commit (`Unresolved`), discard the uncommitted candidate changes (`git restore` on the touched files) and redeploy each module they touched from the clean tree.
+
+Deploy `portal-kernel` and `portal-impl` the way the project `CLAUDE.md` describes for portal modules, and bounce Tomcat afterwards. Confirm the deployed artifacts no longer contain the change, with the same check that confirmed they did, so the next run starts from the code under test.

@@ -129,7 +129,7 @@ Route a failure to `Environment` only when the CI evidence alone settles it, wit
 
 Route every other failure to `test-fix`, one run per cluster, starting with the most deterministic member. Write the failure's row, the CI evidence read above, the other tests in its cluster, the routine name, the owning team's `.github/CODEOWNERS` handle (ask the user when the routine does not map to one), and any Bug found in **Map to Existing Work** to a file in the same directory as the triage table (outside the repository), then invoke the `test-fix` skill as `<caseResultId> --evidence <file>`.
 
-When the verdict is `Bug in portal` or `Outdated test`, rerun the other members of the cluster against the fixed bundle. Those that still fail are a different cause: route them on their own. When the verdict is `Unresolved` naming an open pull request, the failure is `Already tracked` by that pull request.
+When the verdict is `Bug in portal` or `Outdated test`, `test-fix` has already rerun the other members of the cluster while its fix was deployed, and its **Conclusion** names the ones that still fail. Do not rerun them here: `test-fix` redeploys from the base before it exits, so the bundle no longer holds the fix. Those that still fail are a different cause: route them on their own. When the verdict is `Unresolved` naming an open pull request, the failure is `Already tracked` by that pull request.
 
 ### Report
 
