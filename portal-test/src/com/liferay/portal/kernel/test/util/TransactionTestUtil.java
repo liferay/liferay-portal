@@ -8,8 +8,11 @@ package com.liferay.portal.kernel.test.util;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
@@ -67,6 +70,23 @@ public class TransactionTestUtil {
 		}
 	}
 
+	public static <T, R> R invoke(
+			T target, UnsafeFunction<T, R, Exception> unsafeFunction)
+		throws Exception {
+
+		try {
+			return invoke(
+				target.getClass(), _transactionConfig,
+				() -> unsafeFunction.apply(target));
+		}
+		catch (Throwable throwable) {
+			return ReflectionUtil.throwException(throwable);
+		}
+	}
+
+	private static final TransactionConfig _transactionConfig =
+		TransactionConfig.Factory.create(
+			Propagation.SUPPORTS, new Class<?>[] {Exception.class});
 	private static final ThreadLocal<Deque<Object>> _transactionExecutorDeque;
 	private static final ServiceTrackerMap<String, Object>
 		_transactionExecutorServiceTrackerMap =
