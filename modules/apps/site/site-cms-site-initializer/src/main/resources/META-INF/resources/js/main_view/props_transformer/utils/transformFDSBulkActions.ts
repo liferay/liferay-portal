@@ -60,7 +60,10 @@ export default function transformFDSBulkActions(
 				if (key === 'download') {
 					return (
 						selectedItems?.every((item: any) =>
-							Boolean(item?.embedded?.file?.link?.href)
+							item?.entryClassName ===
+							OBJECT_ENTRY_FOLDER_CLASS_NAME
+								? Boolean(item?.actions?.get)
+								: Boolean(item?.embedded?.file?.link?.href)
 						) ?? false
 					);
 				}

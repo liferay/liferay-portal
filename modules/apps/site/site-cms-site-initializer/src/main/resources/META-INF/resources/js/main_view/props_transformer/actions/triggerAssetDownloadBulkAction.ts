@@ -12,6 +12,7 @@ import {
 	IBulkActionTaskStarterDTO,
 	IBulkActionType,
 } from '../../../common/types/BulkActionTask';
+import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from '../../../common/utils/constants';
 import {downloadBlob} from '../../../common/utils/downloadBlob';
 import {displayErrorToast} from '../../../common/utils/toastUtil';
 import {BulkActionTaskStarter} from '../../bulk_actions_monitor/services/BulkActionTaskStarter';
@@ -23,13 +24,14 @@ export async function triggerAssetDownloadBulkAction(
 		...dto,
 	});
 
-	const files = bulkAction.payload.bulkActionItems.filter(
+	const downloadableItems = bulkAction.payload.bulkActionItems.filter(
 		(bulkActionItem: IBulkActionFDSDataItemTransformed) =>
-			bulkActionItem.file
+			bulkActionItem.file ||
+			bulkActionItem.className === OBJECT_ENTRY_FOLDER_CLASS_NAME
 	);
 
 	if (!dto.selectedData.selectAll) {
-		if (!files.length) {
+		if (!downloadableItems.length) {
 			displayErrorToast(
 				Liferay.Language.get(
 					'unable-to-process-the-bulk-download.-please-check-your-selection-and-try-again'
@@ -39,7 +41,10 @@ export async function triggerAssetDownloadBulkAction(
 			return;
 		}
 
-		if (files.length !== bulkAction.payload.bulkActionItems.length) {
+		if (
+			downloadableItems.length !==
+			bulkAction.payload.bulkActionItems.length
+		) {
 			openToast({
 				message: Liferay.Language.get(
 					'you-have-selected-both-content-and-file-assets.-only-file-assets-can-be-downloaded.-content-assets-will-be-skipped'
@@ -54,18 +59,18 @@ export async function triggerAssetDownloadBulkAction(
 			? Liferay.Language.get(
 					'the-download-of-all-selected-files-is-being-prepared.-please-do-not-close-this-window-or-navigate-to-another-section'
 				)
-			: files.length === 1
+			: downloadableItems.length === 1
 				? sub(
 						Liferay.Language.get(
 							'the-download-of-one-file-is-being-prepared.-please-do-not-close-this-window-or-navigate-to-another-section'
 						),
-						[files.length]
+						[downloadableItems.length]
 					)
 				: sub(
 						Liferay.Language.get(
 							'the-download-of-x-files-is-being-prepared.-please-do-not-close-this-window-or-navigate-to-another-section'
 						),
-						[files.length]
+						[downloadableItems.length]
 					),
 		type: 'warning',
 	});
