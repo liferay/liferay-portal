@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import java.util.Map;
 
 import org.osgi.framework.Constants;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 import org.osgi.service.component.annotations.Activate;
@@ -30,10 +29,7 @@ import org.osgi.service.component.annotations.Reference;
 public class FunctionObjectValidationRuleEngineImplFactory {
 
 	@Activate
-	protected void activate(
-			ComponentContext componentContext, Map<String, Object> properties)
-		throws Exception {
-
+	protected void activate(Map<String, Object> properties) throws Exception {
 		String externalReferenceCode =
 			ConfigurationFactoryUtil.getExternalReferenceCode(properties);
 

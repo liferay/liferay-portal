@@ -22,7 +22,6 @@ import java.io.PrintWriter;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -73,8 +72,7 @@ public class LodashTopHeadDynamicInclude extends BaseDynamicInclude {
 	@Activate
 	@Modified
 	protected void activate(
-			BundleContext bundleContext, ComponentContext componentContext,
-			Map<String, Object> properties)
+			BundleContext bundleContext, Map<String, Object> properties)
 		throws Exception {
 
 		_bundleContext = bundleContext;
