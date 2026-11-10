@@ -265,7 +265,7 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 	private static final MentionsMatcher _defaultMentionsMatcher =
 		new DefaultMentionsMatcher();
 	private static final Pattern _mentionUserPattern = Pattern.compile(
-		"<span class=\"mention mention-user-([^\"\\s]+)\">[^<]*</span>");
+		"<span\\s+class=\"mention mention-user-([^\"\\s]+)\">[^<]*</span>");
 
 	@Reference
 	private DiscussionPermission _discussionPermission;
