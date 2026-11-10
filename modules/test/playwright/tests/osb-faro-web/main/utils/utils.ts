@@ -7,28 +7,6 @@ import {Page, expect} from '@playwright/test';
 
 import {waitForLoading} from './loading';
 
-export async function addBreakdownByIndividualAttribute({
-	breakdownName,
-	individualAttribure,
-	page,
-}: {
-	breakdownName: string;
-	individualAttribure: string;
-	page: Page;
-}) {
-	await page
-		.locator('[id="container\\.report\\.distributionBreakdownCard"]')
-		.scrollIntoViewIfNeeded();
-
-	await page.getByPlaceholder('Select Field').click();
-
-	await page.getByRole('menuitem', {name: individualAttribure}).click();
-
-	await page.getByLabel('Breakdown Name').fill(breakdownName);
-
-	await page.getByRole('button', {exact: true, name: 'Save'}).click();
-}
-
 export async function createPageWithHTMLFragment({
 	htmlContent,
 	page,
