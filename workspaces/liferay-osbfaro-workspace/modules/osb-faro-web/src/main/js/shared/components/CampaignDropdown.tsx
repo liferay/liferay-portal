@@ -36,8 +36,6 @@ const CampaignDropdown: React.FC<ICampaignDropdownProps> = ({
 		[initialCampaignId, initialCampaignName]
 	);
 
-	// `campaign-names` pages from zero and reports its total as `totalCount`.
-
 	const paginatedDataSourceFn = ({
 		page,
 		pageSize,
@@ -47,7 +45,7 @@ const CampaignDropdown: React.FC<ICampaignDropdownProps> = ({
 			.searchCampaignNames({
 				channelId,
 				groupId: groupId as string,
-				page: page - 1,
+				page,
 				pageSize,
 				query,
 			})

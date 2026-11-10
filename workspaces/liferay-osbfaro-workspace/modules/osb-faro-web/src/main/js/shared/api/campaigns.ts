@@ -128,14 +128,13 @@ interface ISearchCampaignNames {
 }
 
 /**
- * Feeds the campaign picker. Modeled on `account-names`: it pages from zero,
- * filters by `keywords` and reports its total as `totalCount`. The backend
- * decides whether the names come from UTM or Salesforce.
+ * Feeds the campaign picker. The backend decides whether the names come from
+ * UTM or Salesforce.
  */
 export async function searchCampaignNames({
 	channelId = '',
 	groupId,
-	page = 0,
+	page = 1,
 	pageSize = DEFAULT_DELTA,
 	query = '',
 }: ISearchCampaignNames): Promise<{
@@ -143,7 +142,7 @@ export async function searchCampaignNames({
 	totalCount: number;
 }> {
 	return sendRequest({
-		data: {channelId, keywords: query, page, pageSize},
+		data: {channelId, page, pageSize, search: query},
 		method: 'GET',
 		path: `contacts/${groupId}/campaigns/campaign-names`,
 	});
