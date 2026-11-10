@@ -6,20 +6,13 @@
 package com.liferay.portal.remote.jaxrs.whiteboard.lifecycle;
 
 import com.liferay.petra.concurrent.DCLSingleton;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.util.HashMapDictionary;
-import com.liferay.portal.kernel.util.MapUtil;
-
-import jakarta.ws.rs.ext.RuntimeDelegate;
+import com.liferay.portal.remote.jaxrs.whiteboard.internal.JAXRSWhiteboard;
 
 import java.util.Dictionary;
 import java.util.Map;
 
-import org.apache.aries.jax.rs.whiteboard.internal.Whiteboard;
-import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
-
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -35,7 +28,7 @@ import org.osgi.service.component.annotations.Deactivate;
 public class JAXRSLifecycle {
 
 	public void ensureReady() {
-		_safeCloseableDCLSingleton.getSingleton(
+		_jaxrsWhiteboardDCLSingleton.getSingleton(
 			() -> {
 				if (_jaxrsReady) {
 					return null;
@@ -43,7 +36,7 @@ public class JAXRSLifecycle {
 
 				_jaxrsReady = true;
 
-				return _start();
+				return new JAXRSWhiteboard(_bundleContext, _configuration);
 			});
 	}
 
@@ -68,36 +61,14 @@ public class JAXRSLifecycle {
 	protected void deactivate() {
 		_jaxrsReady = true;
 
-		_safeCloseableDCLSingleton.destroy(SafeCloseable::close);
-	}
-
-	private SafeCloseable _start() {
-		RuntimeDelegate.setInstance(new RuntimeDelegateImpl());
-
-		Whiteboard whiteboard = Whiteboard.createWhiteboard(_configuration);
-
-		whiteboard.start(_bundleContext);
-
-		ServiceRegistration<?> serviceRegistration =
-			_bundleContext.registerService(
-				Object.class, new Object(),
-				MapUtil.singletonDictionary(
-					"liferay.jaxrs.whiteboard.ready", true));
-
-		return () -> {
-			serviceRegistration.unregister();
-
-			whiteboard.stop();
-
-			RuntimeDelegate.setInstance(null);
-		};
+		_jaxrsWhiteboardDCLSingleton.destroy(JAXRSWhiteboard::close);
 	}
 
 	private BundleContext _bundleContext;
 	private final Dictionary<String, Object> _configuration =
 		new HashMapDictionary<>();
 	private boolean _jaxrsReady;
-	private final DCLSingleton<SafeCloseable> _safeCloseableDCLSingleton =
+	private final DCLSingleton<JAXRSWhiteboard> _jaxrsWhiteboardDCLSingleton =
 		new DCLSingleton<>();
 
 }
