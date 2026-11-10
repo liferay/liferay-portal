@@ -276,23 +276,23 @@ public class JournalEditArticleDisplayContextTest {
 			HashMapBuilder.put(
 				LocaleUtil.CHINA,
 				_getFriendlyURL(
-					duplicatedLocales, friendlyURL + "-zh", LocaleUtil.CHINA)
+					friendlyURL + "-zh", duplicatedLocales, LocaleUtil.CHINA)
 			).put(
 				LocaleUtil.GERMANY,
 				_getFriendlyURL(
-					duplicatedLocales, friendlyURL + "-de", LocaleUtil.GERMANY)
+					friendlyURL + "-de", duplicatedLocales, LocaleUtil.GERMANY)
 			).put(
 				LocaleUtil.JAPAN,
 				_getFriendlyURL(
-					duplicatedLocales, friendlyURL + "-ja", LocaleUtil.JAPAN)
+					friendlyURL + "-ja", duplicatedLocales, LocaleUtil.JAPAN)
 			).put(
 				LocaleUtil.SPAIN,
 				_getFriendlyURL(
-					duplicatedLocales, friendlyURL + "-es", LocaleUtil.SPAIN)
+					friendlyURL + "-es", duplicatedLocales, LocaleUtil.SPAIN)
 			).put(
 				LocaleUtil.US,
 				_getFriendlyURL(
-					duplicatedLocales, friendlyURL + "-en", LocaleUtil.US)
+					friendlyURL + "-en", duplicatedLocales, LocaleUtil.US)
 			).build());
 
 		Assert.assertEquals(
@@ -317,7 +317,7 @@ public class JournalEditArticleDisplayContextTest {
 	}
 
 	private String _getFriendlyURL(
-		Locale[] duplicatedLocales, String duplicatedFriendlyURL,
+		String duplicatedFriendlyURL, Locale[] duplicatedLocales,
 		Locale locale) {
 
 		if (ArrayUtil.contains(duplicatedLocales, locale)) {
