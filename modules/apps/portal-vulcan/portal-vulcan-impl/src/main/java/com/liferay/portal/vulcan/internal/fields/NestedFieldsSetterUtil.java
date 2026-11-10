@@ -363,7 +363,6 @@ public class NestedFieldsSetterUtil {
 				Map.Entry<String, Class<?>>[] resourceMethodArgNameTypeEntries =
 					_getResourceMethodArgNameTypeEntries(
 						resourceClass, resourceMethod);
-
 				String[] resourceMethodPathParamNames =
 					_getResourceMethodPathParamNames(
 						resourceClass, resourceMethod);
