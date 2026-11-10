@@ -263,21 +263,21 @@ public class BaseDBProcessTest extends BaseDBProcess {
 
 			alterColumnName(
 				_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");
+			alterColumnName(
+				_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");
 
 			List<String> messages = logCapture.getMessages();
 
-			Assert.assertEquals(messages.toString(), 1, messages.size());
+			Assert.assertEquals(messages.toString(), 2, messages.size());
 
-			Assert.assertEquals(
-				StringBundler.concat(
-					"Ignoring column definition \"typeVarcharTest VARCHAR(75) ",
-					"null\" passed as the new name of ", _TABLE_NAME,
-					".typeVarchar"),
-				messages.get(0));
+			String message = StringBundler.concat(
+				"Ignoring column definition \"typeVarcharTest VARCHAR(75) ",
+				"null\" passed as the new name of ", _TABLE_NAME,
+				".typeVarchar");
+
+			Assert.assertEquals(message, messages.get(0));
+			Assert.assertEquals(message, messages.get(1));
 		}
-
-		alterColumnName(
-			_TABLE_NAME, "typeVarchar", "typeVarcharTest VARCHAR(75) null");
 
 		Assert.assertFalse(_dbInspector.hasColumn(_TABLE_NAME, "typeVarchar"));
 
