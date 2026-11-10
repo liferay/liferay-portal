@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.asset.categories.thread.local.AssetVocabularyThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
@@ -1337,15 +1338,24 @@ public class SiteResourceImpl
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
+		boolean skipRequiredCategoryValidation =
+			AssetVocabularyThreadLocal.isSkipRequiredCategoryValidation();
+
 		try (AutoCloseable autoCloseable =
 				_layoutServiceContextHelper.getServiceContextAutoCloseable(
 					contextCompany, permissionChecker.getUser())) {
 
 			ServiceContext serviceContext = _getServiceContext();
 
+			serviceContext.setAssetCategoryIds(null);
+			serviceContext.setAssetTagNames(null);
+
 			ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 			try {
+				AssetVocabularyThreadLocal.setSkipRequiredCategoryValidation(
+					true);
+
 				Group updatedGroup = _groupService.updateGroup(
 					group.getGroupId(),
 					_getParentGroupId(
@@ -1366,6 +1376,9 @@ public class SiteResourceImpl
 				return updatedGroup;
 			}
 			finally {
+				AssetVocabularyThreadLocal.setSkipRequiredCategoryValidation(
+					skipRequiredCategoryValidation);
+
 				ServiceContextThreadLocal.popServiceContext();
 			}
 		}
