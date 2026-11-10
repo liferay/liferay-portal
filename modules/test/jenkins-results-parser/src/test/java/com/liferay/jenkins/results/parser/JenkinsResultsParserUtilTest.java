@@ -444,7 +444,6 @@ public class JenkinsResultsParserUtilTest
 				));
 
 			s3ObjectKeys.add(s3ObjectKey);
-
 			s3FilesOutputLines.add(
 				JenkinsResultsParserUtil.combine(
 					"2026-11-", String.valueOf(20 - index),
