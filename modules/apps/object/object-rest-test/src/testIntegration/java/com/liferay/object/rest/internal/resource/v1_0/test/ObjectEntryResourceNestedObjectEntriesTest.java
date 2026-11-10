@@ -548,13 +548,13 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Site scope
 
-		objectRelationship7 = ObjectRelationshipTestUtil.addObjectRelationship(
+		objectRelationship6 = ObjectRelationshipTestUtil.addObjectRelationship(
 			getSiteScopedObjectDefinition1(), getSiteScopedObjectDefinition2(),
 			TestPropsValues.getUserId(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		objectEntryJSONObject = JSONUtil.put(
-			objectRelationship7.getName(),
+			objectRelationship6.getName(),
 			JSONFactoryUtil.createJSONObject(
 				JSONUtil.put(
 					OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_1
@@ -578,7 +578,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 		_assertObjectEntryField(
 			jsonObject.getJSONObject(
 				StringBundler.concat(
-					"r_", objectRelationship7.getName(), "_",
+					"r_", objectRelationship6.getName(), "_",
 					StringUtil.replaceLast(
 						getSiteScopedObjectDefinition1().getPKObjectFieldName(),
 						"Id", ""))),
@@ -592,7 +592,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				getSiteScopedObjectDefinition2().getRESTContextPath(),
 				StringPool.SLASH, objectEntryId, "?nestedFields=",
 				StringBundler.concat(
-					"r_", objectRelationship7.getName(), "_",
+					"r_", objectRelationship6.getName(), "_",
 					StringUtil.removeLast(
 						getSiteScopedObjectDefinition1().getPKObjectFieldName(),
 						"Id"))),
@@ -601,7 +601,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 		_assertObjectEntryField(
 			jsonObject.getJSONObject(
 				StringBundler.concat(
-					"r_", objectRelationship7.getName(), "_",
+					"r_", objectRelationship6.getName(), "_",
 					StringUtil.removeLast(
 						getSiteScopedObjectDefinition1().getPKObjectFieldName(),
 						"Id"))),
@@ -664,13 +664,13 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Site scope
 
-		objectRelationship7 = ObjectRelationshipTestUtil.addObjectRelationship(
+		objectRelationship6 = ObjectRelationshipTestUtil.addObjectRelationship(
 			getSiteScopedObjectDefinition1(), getSiteScopedObjectDefinition2(),
 			TestPropsValues.getUserId(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		objectEntryJSONObject = JSONUtil.put(
-			objectRelationship7.getName(),
+			objectRelationship6.getName(),
 			createObjectEntriesJSONArray(
 				new String[] {ERC_VALUE_1, ERC_VALUE_2}, OBJECT_FIELD_NAME_2,
 				new String[] {
@@ -691,7 +691,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			));
 
 		nestedObjectEntriesJSONArray = jsonObject.getJSONArray(
-			objectRelationship7.getName());
+			objectRelationship6.getName());
 
 		Assert.assertEquals(2, nestedObjectEntriesJSONArray.length());
 
@@ -704,11 +704,11 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			StringBundler.concat(
 				getSiteScopedObjectDefinition1().getRESTContextPath(),
 				StringPool.SLASH, objectEntryId, "?nestedFields=",
-				objectRelationship7.getName()),
+				objectRelationship6.getName()),
 			Http.Method.GET);
 
 		nestedObjectEntriesJSONArray = jsonObject.getJSONArray(
-			objectRelationship7.getName());
+			objectRelationship6.getName());
 
 		Assert.assertEquals(2, nestedObjectEntriesJSONArray.length());
 
