@@ -82,41 +82,9 @@ public class ObjectEntryResourceObjectFieldTest
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testGetObjectEntriesPageWithDeletedObjectField()
+	public void testGetObjectEntriesPageWithAssigneeObjectField()
 		throws Exception {
 
-		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.publishObjectDefinition(
-				Collections.singletonList(
-					ObjectFieldUtil.createObjectField(
-						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-						ObjectFieldConstants.DB_TYPE_STRING,
-						OBJECT_FIELD_NAME_1, OBJECT_FIELD_NAME_1)));
-
-		ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition, "able", RandomTestUtil.randomString());
-
-		HTTPTestUtil.invokeToJSONObject(
-			null, objectDefinition.getRESTContextPath(), Http.Method.GET);
-
-		objectFieldLocalService.deleteObjectField(
-			objectFieldLocalService.getObjectField(
-				objectDefinition.getObjectDefinitionId(), OBJECT_FIELD_NAME_1));
-
-		ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition, "able", RandomTestUtil.randomString());
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, objectDefinition.getRESTContextPath(), Http.Method.GET);
-
-		Assert.assertEquals(
-			jsonObject.toString(), 2, jsonObject.getInt("totalCount"));
-
-		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
-	}
-
-	@Test
-	public void testGetObjectEntriesWithAssigneeObjectField() throws Exception {
 		ObjectFieldUtil.addCustomObjectField(
 			new AssigneeObjectFieldBuilder(
 			).labelMap(
@@ -263,6 +231,40 @@ public class ObjectEntryResourceObjectFieldTest
 		itemsJSONArray = jsonObject.getJSONArray("items");
 
 		Assert.assertEquals(0, itemsJSONArray.length());
+	}
+
+	@Test
+	public void testGetObjectEntriesPageWithDeletedObjectField()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						OBJECT_FIELD_NAME_1, OBJECT_FIELD_NAME_1)));
+
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, "able", RandomTestUtil.randomString());
+
+		HTTPTestUtil.invokeToJSONObject(
+			null, objectDefinition.getRESTContextPath(), Http.Method.GET);
+
+		objectFieldLocalService.deleteObjectField(
+			objectFieldLocalService.getObjectField(
+				objectDefinition.getObjectDefinitionId(), OBJECT_FIELD_NAME_1));
+
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, "able", RandomTestUtil.randomString());
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, objectDefinition.getRESTContextPath(), Http.Method.GET);
+
+		Assert.assertEquals(
+			jsonObject.toString(), 2, jsonObject.getInt("totalCount"));
+
+		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	@Test

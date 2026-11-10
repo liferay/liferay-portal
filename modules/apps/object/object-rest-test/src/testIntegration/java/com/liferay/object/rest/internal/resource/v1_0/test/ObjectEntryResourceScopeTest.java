@@ -87,7 +87,7 @@ public class ObjectEntryResourceScopeTest
 		// Depot scope group ID
 
 		ObjectDefinition depotScopedObjectDefinition =
-			addDepotScopedObjectDefinition();
+			publishDepotScopedObjectDefinition();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
@@ -199,9 +199,7 @@ public class ObjectEntryResourceScopeTest
 	}
 
 	@Test
-	public void testPostSiteScopedCustomObjectEntryInUserGroup()
-		throws Exception {
-
+	public void testPostScopeScopeKeyWithUserGroup() throws Exception {
 		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(

@@ -84,6 +84,48 @@ public class ObjectEntryResourceRelationshipTest
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
+	public void testGetObjectEntriesPageWithObjectRelationshipERCObjectFieldInOneToManyRelationship()
+		throws Exception {
+
+		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
+		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
+
+		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, getObjectDefinition2().getRESTContextPath(), Http.Method.GET);
+
+		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
+
+		Assert.assertEquals(1, itemsJSONArray.length());
+
+		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			objectEntry1.getExternalReferenceCode(),
+			itemJSONObject.getString(objectRelationship1.getName() + "ERC"));
+
+		jsonObject = getNestedFieldsObjectEntryJSONObject(
+			null, objectRelationship1.getName(), getObjectDefinition1());
+
+		JSONArray relatedObjectEntriesJSONArray = jsonObject.getJSONArray(
+			objectRelationship1.getName());
+
+		Assert.assertEquals(1, relatedObjectEntriesJSONArray.length());
+
+		JSONObject relatedObjectEntryJSONObject =
+			relatedObjectEntriesJSONArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			objectEntry1.getExternalReferenceCode(),
+			relatedObjectEntryJSONObject.getString(
+				objectRelationship1.getName() + "ERC"));
+	}
+
+	@Test
 	@TestInfo("LPD-66174")
 	public void testGetObjectEntryWithSystemObjectCustomFieldsInOneToManyRelationship()
 		throws Exception {
@@ -155,48 +197,6 @@ public class ObjectEntryResourceRelationshipTest
 	}
 
 	@Test
-	public void testGetObjectRelationshipERCFieldNameInOneToManyRelationship()
-		throws Exception {
-
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
-
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, getObjectDefinition2().getRESTContextPath(), Http.Method.GET);
-
-		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
-
-		Assert.assertEquals(1, itemsJSONArray.length());
-
-		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
-
-		Assert.assertEquals(
-			objectEntry1.getExternalReferenceCode(),
-			itemJSONObject.getString(objectRelationship1.getName() + "ERC"));
-
-		jsonObject = getObjectEntryJSONObject(
-			null, objectRelationship1.getName(), getObjectDefinition1());
-
-		JSONArray relatedObjectEntriesJSONArray = jsonObject.getJSONArray(
-			objectRelationship1.getName());
-
-		Assert.assertEquals(1, relatedObjectEntriesJSONArray.length());
-
-		JSONObject relatedObjectEntryJSONObject =
-			relatedObjectEntriesJSONArray.getJSONObject(0);
-
-		Assert.assertEquals(
-			objectEntry1.getExternalReferenceCode(),
-			relatedObjectEntryJSONObject.getString(
-				objectRelationship1.getName() + "ERC"));
-	}
-
-	@Test
 	public void testPostCustomObjectEntryWithManyToOneRelationshipPriorities()
 		throws Exception {
 
@@ -257,7 +257,7 @@ public class ObjectEntryResourceRelationshipTest
 	}
 
 	@Test
-	public void testPostCustomObjectEntryWithNonexistentRelatedCustomObjectEntryId()
+	public void testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId()
 		throws Exception {
 
 		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
@@ -284,9 +284,9 @@ public class ObjectEntryResourceRelationshipTest
 				"code"
 			));
 
-		_testPostCustomObjectEntryWithNonexistentRelatedCustomObjectEntryId(
+		_testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId(
 			getObjectDefinition1(), objectRelationship1);
-		_testPostCustomObjectEntryWithNonexistentRelatedCustomObjectEntryId(
+		_testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId(
 			userSystemObjectDefinition,
 			ObjectRelationshipTestUtil.addObjectRelationship(
 				userSystemObjectDefinition, getObjectDefinition2(),
@@ -295,7 +295,7 @@ public class ObjectEntryResourceRelationshipTest
 	}
 
 	@Test
-	public void testPostRelatedObjectEntryInDifferentCompany()
+	public void testPostCustomObjectEntryWithRelatedObjectEntryInDifferentCompany()
 		throws Exception {
 
 		ObjectRelationship objectRelationship = _addObjectRelationship(
@@ -1129,10 +1129,9 @@ public class ObjectEntryResourceRelationshipTest
 		}
 	}
 
-	private void
-			_testPostCustomObjectEntryWithNonexistentRelatedCustomObjectEntryId(
-				ObjectDefinition objectDefinition,
-				ObjectRelationship objectRelationship)
+	private void _testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId(
+			ObjectDefinition objectDefinition,
+			ObjectRelationship objectRelationship)
 		throws Exception {
 
 		ObjectField objectField = objectFieldLocalService.fetchObjectField(

@@ -88,7 +88,54 @@ public class ObjectEntryResourceValidationTest
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testGetObjectEntryWithObjectValidationRule() throws Exception {
+	public void testPatchObjectEntryWithRequiredObjectFields()
+		throws Exception {
+
+		ObjectField objectField1 = objectFieldLocalService.getObjectField(
+			getObjectDefinition1().getObjectDefinitionId(),
+			OBJECT_FIELD_NAME_1);
+
+		objectFieldLocalService.updateRequired(
+			objectField1.getObjectFieldId(), true);
+
+		ObjectField objectField2 = objectFieldLocalService.getObjectField(
+			getObjectDefinition1().getObjectDefinitionId(),
+			OBJECT_FIELD_NAME_TEXT);
+
+		objectFieldLocalService.updateRequired(
+			objectField2.getObjectFieldId(), true);
+
+		String objectFieldValue1 = RandomTestUtil.randomString();
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				OBJECT_FIELD_NAME_1, objectFieldValue1
+			).put(
+				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
+			).toString(),
+			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+
+		String objectFieldValue2 = RandomTestUtil.randomString();
+
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				OBJECT_FIELD_NAME_TEXT, objectFieldValue2
+			).toString(),
+			StringBundler.concat(
+				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
+				jsonObject.get("id")),
+			Http.Method.PATCH);
+
+		Assert.assertEquals(
+			objectFieldValue1, jsonObject.getString(OBJECT_FIELD_NAME_1));
+		Assert.assertEquals(
+			objectFieldValue2, jsonObject.getString(OBJECT_FIELD_NAME_TEXT));
+	}
+
+	@Test
+	public void testPostObjectEntryWithCompositeKeyObjectValidationRule()
+		throws Exception {
+
 		String errorMessage = RandomTestUtil.randomString();
 
 		ObjectField integerObjectField = objectFieldLocalService.getObjectField(
@@ -151,51 +198,6 @@ public class ObjectEntryResourceValidationTest
 	}
 
 	@Test
-	public void testPatchObjectEntryWithRequiredObjectFields()
-		throws Exception {
-
-		ObjectField objectField1 = objectFieldLocalService.getObjectField(
-			getObjectDefinition1().getObjectDefinitionId(),
-			OBJECT_FIELD_NAME_1);
-
-		objectFieldLocalService.updateRequired(
-			objectField1.getObjectFieldId(), true);
-
-		ObjectField objectField2 = objectFieldLocalService.getObjectField(
-			getObjectDefinition1().getObjectDefinitionId(),
-			OBJECT_FIELD_NAME_TEXT);
-
-		objectFieldLocalService.updateRequired(
-			objectField2.getObjectFieldId(), true);
-
-		String objectFieldValue1 = RandomTestUtil.randomString();
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, objectFieldValue1
-			).put(
-				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
-			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
-
-		String objectFieldValue2 = RandomTestUtil.randomString();
-
-		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_TEXT, objectFieldValue2
-			).toString(),
-			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
-				jsonObject.get("id")),
-			Http.Method.PATCH);
-
-		Assert.assertEquals(
-			objectFieldValue1, jsonObject.getString(OBJECT_FIELD_NAME_1));
-		Assert.assertEquals(
-			objectFieldValue2, jsonObject.getString(OBJECT_FIELD_NAME_TEXT));
-	}
-
-	@Test
 	public void testPostScopeScopeKeyValidate() throws Exception {
 		ObjectField objectField = objectFieldLocalService.getObjectField(
 			getSiteScopedObjectDefinition1().getObjectDefinitionId(),
@@ -223,13 +225,13 @@ public class ObjectEntryResourceValidationTest
 	}
 
 	private ValidationRequest _getValidationRequest(
-		Map<String, Object> values,
+		Map<String, Object> properties,
 		String... objectValidationRuleExternalReferenceCodes) {
 
 		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
 			new com.liferay.object.rest.dto.v1_0.ObjectEntry();
 
-		objectEntry.setProperties(values);
+		objectEntry.setProperties(properties);
 
 		String[] finalObjectValidationRuleExternalReferenceCodes =
 			objectValidationRuleExternalReferenceCodes;
@@ -301,7 +303,7 @@ public class ObjectEntryResourceValidationTest
 			resourcePermissionLocalService.removeResourcePermission(
 				TestPropsValues.getCompanyId(), ObjectEntry.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(getObjectEntry5().getObjectEntryId()),
+				String.valueOf(getLocalizedObjectEntry().getObjectEntryId()),
 				user.getRoleIds()[0], ActionKeys.ADD_ENTRY);
 
 			_setUpPermissionThreadLocal(user);

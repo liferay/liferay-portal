@@ -68,58 +68,6 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testGetCreatorExternalReferenceCode() throws Exception {
-		ObjectDefinition objectDefinition =
-			objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, null, true, false,
-				true, false, true, false, false, false, false, null,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				ObjectDefinitionTestUtil.getRandomName(), null, null,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				true, ObjectDefinitionConstants.SCOPE_COMPANY,
-				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
-				Collections.emptyList(),
-				Arrays.asList(
-					ObjectFieldUtil.createObjectField(
-						ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
-						ObjectFieldConstants.DB_TYPE_BOOLEAN, true, false, null,
-						RandomTestUtil.randomString(), "testField", true)),
-				Collections.emptyList(), new ServiceContext());
-
-		objectDefinitionLocalService.publishCustomObjectDefinition(
-			TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId());
-
-		User user = UserTestUtil.addUser(group.getGroupId());
-
-		ObjectEntry serviceBuilderObjectEntry =
-			objectEntryLocalService.addObjectEntry(
-				0, user.getUserId(), objectDefinition.getObjectDefinitionId(),
-				ObjectEntryFolderConstants.
-					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				null,
-				HashMapBuilder.<String, Serializable>put(
-					"testField", true
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
-
-		ObjectEntryResource objectEntryResource = getObjectEntryResource(
-			objectDefinition, TestPropsValues.getUser());
-
-		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
-			objectEntryResource.getObjectEntry(
-				serviceBuilderObjectEntry.getObjectEntryId());
-
-		Creator creator = objectEntry.getCreator();
-
-		Assert.assertEquals(
-			user.getExternalReferenceCode(),
-			creator.getExternalReferenceCode());
-
-		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
-	}
-
-	@Test
 	public void testGetObjectEntryByExternalReferenceCodeWithSlash()
 		throws Exception {
 
@@ -250,6 +198,60 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 	}
 
 	@Test
+	public void testGetObjectEntryCreatorExternalReferenceCode()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			objectDefinitionLocalService.addCustomObjectDefinition(
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, false, true, false, false, false, false, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionTestUtil.getRandomName(), null, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				true, ObjectDefinitionConstants.SCOPE_COMPANY,
+				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+				Collections.emptyList(),
+				Arrays.asList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
+						ObjectFieldConstants.DB_TYPE_BOOLEAN, true, false, null,
+						RandomTestUtil.randomString(), "testField", true)),
+				Collections.emptyList(), new ServiceContext());
+
+		objectDefinitionLocalService.publishCustomObjectDefinition(
+			TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId());
+
+		User user = UserTestUtil.addUser(group.getGroupId());
+
+		ObjectEntry serviceBuilderObjectEntry =
+			objectEntryLocalService.addObjectEntry(
+				0, user.getUserId(), objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					"testField", true
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+		ObjectEntryResource objectEntryResource = getObjectEntryResource(
+			objectDefinition, TestPropsValues.getUser());
+
+		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
+			objectEntryResource.getObjectEntry(
+				serviceBuilderObjectEntry.getObjectEntryId());
+
+		Creator creator = objectEntry.getCreator();
+
+		Assert.assertEquals(
+			user.getExternalReferenceCode(),
+			creator.getExternalReferenceCode());
+
+		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
 	@TestInfo("LPD-53245")
 	public void testPatchByExternalReferenceCodeCustomObjectEntry()
 		throws Exception {
@@ -315,23 +317,7 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			getObjectDefinition1(), getObjectDefinition2(), testGroupId);
 	}
 
-	private void _testPatchPutCustomObjectEntryExternalReferenceCode(
-			Http.Method httpMethod, long objectEntryId)
-		throws Exception {
-
-		_testPatchPutCustomObjectEntryExternalReferenceCode(
-			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
-				objectEntryId),
-			ERC_VALUE_2, httpMethod);
-		_testPatchPutCustomObjectEntryExternalReferenceCode(
-			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(),
-				"/by-external-reference-code/", ERC_VALUE_2),
-			ERC_VALUE_3, httpMethod);
-	}
-
-	private void _testPatchPutCustomObjectEntryExternalReferenceCode(
+	private void _assertPatchPutCustomObjectEntryExternalReferenceCode(
 			String endpoint, String externalReferenceCode,
 			Http.Method httpMethod)
 		throws Exception {
@@ -345,6 +331,22 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 		Assert.assertEquals(
 			externalReferenceCode,
 			jsonObject.getString("externalReferenceCode"));
+	}
+
+	private void _testPatchPutCustomObjectEntryExternalReferenceCode(
+			Http.Method httpMethod, long objectEntryId)
+		throws Exception {
+
+		_assertPatchPutCustomObjectEntryExternalReferenceCode(
+			StringBundler.concat(
+				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
+				objectEntryId),
+			ERC_VALUE_2, httpMethod);
+		_assertPatchPutCustomObjectEntryExternalReferenceCode(
+			StringBundler.concat(
+				getObjectDefinition1().getRESTContextPath(),
+				"/by-external-reference-code/", ERC_VALUE_2),
+			ERC_VALUE_3, httpMethod);
 	}
 
 	private void

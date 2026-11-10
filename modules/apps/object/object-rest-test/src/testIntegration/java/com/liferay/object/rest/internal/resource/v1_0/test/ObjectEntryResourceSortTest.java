@@ -227,10 +227,10 @@ public class ObjectEntryResourceSortTest
 			_testSortByCustomObjectField(
 				endpoint, jsonObject1, jsonObject2, objectFieldName);
 
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObject1, jsonObject2,
 				StringUtil.extractLast(objectFieldName, StringPool.UNDERLINE));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObject1, jsonObject2,
 				StringUtil.replaceLast(objectFieldName, "Id", "ERC"));
 
@@ -499,83 +499,83 @@ public class ObjectEntryResourceSortTest
 
 		try {
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_BOOLEAN));
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_DATE));
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_DATE_TIME_INPUT));
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_DECIMAL));
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_INTEGER));
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_LONG_INTEGER));
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_LONG_TEXT));
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST));
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_PICKLIST));
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_PRECISION_DECIMAL));
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
@@ -584,8 +584,8 @@ public class ObjectEntryResourceSortTest
 			// Sort by several fields
 
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				depth2JSONObject3, depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
@@ -815,68 +815,68 @@ public class ObjectEntryResourceSortTest
 			// Depth 1
 
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_BOOLEAN));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_DATE));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_DATE_TIME_INPUT));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_DECIMAL));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_INTEGER));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_LONG_INTEGER));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_LONG_TEXT));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_PICKLIST));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_PRECISION_DECIMAL));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_TEXT));
@@ -884,73 +884,73 @@ public class ObjectEntryResourceSortTest
 			// Depth 2
 
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_BOOLEAN));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_DATE));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_DATE_TIME_INPUT));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_DECIMAL));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_INTEGER));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_LONG_INTEGER));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_LONG_TEXT));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_PICKLIST));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_PRECISION_DECIMAL));
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_TEXT));
@@ -958,8 +958,8 @@ public class ObjectEntryResourceSortTest
 			// Sort by several fields
 
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth1JSONObject1, depth1JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint2, depth1JSONObject1, depth1JSONObject2,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_BOOLEAN),
@@ -995,8 +995,8 @@ public class ObjectEntryResourceSortTest
 					OBJECT_FIELD_NAME_TEXT));
 
 			_testSortByManyToOneRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2, jsonObject3,
-				jsonObject4, depth2JSONObject1, depth2JSONObject2,
+				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
+				endpoint3, depth2JSONObject1, depth2JSONObject2,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_BOOLEAN),
@@ -1094,14 +1094,14 @@ public class ObjectEntryResourceSortTest
 		String endpoint2 = getEndpoint(getObjectDefinition2(), testGroupId);
 		String endpoint3 = getEndpoint(getObjectDefinition3(), testGroupId);
 
-		JSONObject[] manyToOneDepth1JSONObjects = new JSONObject[2];
+		JSONObject[] depth1JSONObjects = new JSONObject[2];
 
 		HTTPTestUtil.customize(
 		).withCredentials(
 			"test3@liferay.com", "test3"
 		).apply(
 			() ->
-				manyToOneDepth1JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
+				depth1JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC2_1"
 					).put(
@@ -1116,21 +1116,21 @@ public class ObjectEntryResourceSortTest
 			"test2@liferay.com", "test2"
 		).apply(
 			() ->
-				manyToOneDepth1JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
+				depth1JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC1_1"
 					).toString(),
 					endpoint2, Http.Method.POST)
 		);
 
-		JSONObject[] manyToOneDepth2JSONObjects = new JSONObject[2];
+		JSONObject[] depth2JSONObjects = new JSONObject[2];
 
 		HTTPTestUtil.customize(
 		).withCredentials(
 			"test2@liferay.com", "test2"
 		).apply(
 			() ->
-				manyToOneDepth2JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
+				depth2JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC2_2"
 					).put(
@@ -1145,7 +1145,7 @@ public class ObjectEntryResourceSortTest
 			"test1@liferay.com", "test1"
 		).apply(
 			() ->
-				manyToOneDepth2JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
+				depth2JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC1_2"
 					).toString(),
@@ -1165,31 +1165,27 @@ public class ObjectEntryResourceSortTest
 			JSONFactoryUtil.getNullJSON(), endpoint1, Http.Method.POST);
 
 		_relateObjectEntries(
-			endpoint2, manyToOneDepth1JSONObjects[0], objectRelationship1,
-			jsonObject1);
+			endpoint2, depth1JSONObjects[0], objectRelationship1, jsonObject1);
 		_relateObjectEntries(
-			endpoint2, manyToOneDepth1JSONObjects[0], objectRelationship1,
-			jsonObject2);
+			endpoint2, depth1JSONObjects[0], objectRelationship1, jsonObject2);
 		_relateObjectEntries(
-			endpoint2, manyToOneDepth1JSONObjects[1], objectRelationship1,
-			jsonObject3);
+			endpoint2, depth1JSONObjects[1], objectRelationship1, jsonObject3);
 		_relateObjectEntries(
-			endpoint2, manyToOneDepth1JSONObjects[1], objectRelationship1,
-			jsonObject4);
+			endpoint2, depth1JSONObjects[1], objectRelationship1, jsonObject4);
 
 		_relateObjectEntries(
-			endpoint3, manyToOneDepth2JSONObjects[0], objectRelationship2,
-			manyToOneDepth1JSONObjects[0]);
+			endpoint3, depth2JSONObjects[0], objectRelationship2,
+			depth1JSONObjects[0]);
 		_relateObjectEntries(
-			endpoint3, manyToOneDepth2JSONObjects[1], objectRelationship2,
-			manyToOneDepth1JSONObjects[1]);
+			endpoint3, depth2JSONObjects[1], objectRelationship2,
+			depth1JSONObjects[1]);
 
 		HTTPTestUtil.customize(
 		).withCredentials(
 			"test3@liferay.com", "test3"
 		).apply(
 			() ->
-				manyToOneDepth1JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
+				depth1JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 					).toString(),
@@ -1202,7 +1198,7 @@ public class ObjectEntryResourceSortTest
 			"test2@liferay.com", "test2"
 		).apply(
 			() ->
-				manyToOneDepth1JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
+				depth1JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 					).toString(),
@@ -1215,7 +1211,7 @@ public class ObjectEntryResourceSortTest
 			"test2@liferay.com", "test2"
 		).apply(
 			() ->
-				manyToOneDepth2JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
+				depth2JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_3, RandomTestUtil.randomString()
 					).toString(),
@@ -1228,7 +1224,7 @@ public class ObjectEntryResourceSortTest
 			"test1@liferay.com", "test1"
 		).apply(
 			() ->
-				manyToOneDepth2JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
+				depth2JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_3, RandomTestUtil.randomString()
 					).toString(),
@@ -1240,75 +1236,75 @@ public class ObjectEntryResourceSortTest
 
 			// Depth 1
 
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
 				String.format("%s/dateCreated", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
 				String.format(
 					"%s/dateModified", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
 				String.format("%s/id", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject3, jsonObject4, jsonObject1, jsonObject2,
 				String.format("%s/creator", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject3, jsonObject4, jsonObject1, jsonObject2,
 				String.format("%s/creatorId", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject3, jsonObject4, jsonObject1, jsonObject2,
 				String.format(
 					"%s/externalReferenceCode", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject3, jsonObject4, jsonObject1, jsonObject2,
 				String.format("%s/status", objectRelationship1.getName()));
 
 			// Depth 2
 
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
 				String.format(
 					"%s/%s/dateCreated", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
 				String.format(
 					"%s/%s/dateModified", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
 				String.format(
 					"%s/%s/id", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject3, jsonObject4, jsonObject1, jsonObject2,
 				String.format(
 					"%s/%s/creator", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject3, jsonObject4, jsonObject1, jsonObject2,
 				String.format(
 					"%s/%s/creatorId", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject3, jsonObject4, jsonObject1, jsonObject2,
 				String.format(
 					"%s/%s/externalReferenceCode",
 					objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject3, jsonObject4, jsonObject1, jsonObject2,
 				String.format(
 					"%s/%s/status", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject3, jsonObject4, jsonObject1, jsonObject2,
 				String.format("%s/userId", objectRelationship1.getName()));
 
 			// Sort by several fields
 
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject1, jsonObject2, jsonObject3, jsonObject4,
 				String.format("%s/dateCreated", objectRelationship1.getName()),
 				String.format("%s/id", objectRelationship1.getName()),
@@ -1318,7 +1314,7 @@ public class ObjectEntryResourceSortTest
 				String.format(
 					"%s/%s/id", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNamesAndId(
 				endpoint1, jsonObject3, jsonObject4, jsonObject1, jsonObject2,
 				String.format("%s/creator", objectRelationship1.getName()),
 				String.format("%s/creatorId", objectRelationship1.getName()),
@@ -1346,8 +1342,8 @@ public class ObjectEntryResourceSortTest
 		finally {
 			_deleteObjectEntries(
 				jsonObject1, jsonObject2, jsonObject3, jsonObject4,
-				manyToOneDepth1JSONObjects[0], manyToOneDepth1JSONObjects[1],
-				manyToOneDepth2JSONObjects[0], manyToOneDepth2JSONObjects[1]);
+				depth1JSONObjects[0], depth1JSONObjects[1],
+				depth2JSONObjects[0], depth2JSONObjects[1]);
 		}
 	}
 
@@ -1661,77 +1657,77 @@ public class ObjectEntryResourceSortTest
 			// Depth 1
 
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_BOOLEAN));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_DATE));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_DATE_TIME_INPUT));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_DECIMAL));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_INTEGER));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_LONG_INTEGER));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_LONG_TEXT));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_PICKLIST));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
 					"%s/%s", objectRelationship1.getName(),
 					OBJECT_FIELD_NAME_PRECISION_DECIMAL));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
@@ -1741,21 +1737,21 @@ public class ObjectEntryResourceSortTest
 			// Depth 2
 
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_BOOLEAN));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_DATE));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
@@ -1763,21 +1759,21 @@ public class ObjectEntryResourceSortTest
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_DATE_TIME_INPUT));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_DECIMAL));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_INTEGER));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
@@ -1785,7 +1781,7 @@ public class ObjectEntryResourceSortTest
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_LONG_INTEGER));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
@@ -1793,7 +1789,7 @@ public class ObjectEntryResourceSortTest
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_LONG_TEXT));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
@@ -1801,14 +1797,14 @@ public class ObjectEntryResourceSortTest
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
 					"%s/%s/%s", objectRelationship1.getName(),
 					objectRelationship2.getName(), OBJECT_FIELD_NAME_PICKLIST));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
@@ -1816,7 +1812,7 @@ public class ObjectEntryResourceSortTest
 					objectRelationship2.getName(),
 					OBJECT_FIELD_NAME_PRECISION_DECIMAL));
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
@@ -1826,7 +1822,7 @@ public class ObjectEntryResourceSortTest
 			// Sort by several fields
 
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint2, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint2,
 				depth1JSONObject1, depth1JSONObject2, depth1JSONObject3,
 				depth1JSONObject4,
 				String.format(
@@ -1864,7 +1860,7 @@ public class ObjectEntryResourceSortTest
 					OBJECT_FIELD_NAME_TEXT));
 
 			_testSortByOneToManyRelationshipCustomObjectFields(
-				endpoint1, endpoint3, jsonObject1, jsonObject2,
+				endpoint1, jsonObject1, jsonObject2, endpoint3,
 				depth2JSONObject1, depth2JSONObject2, depth2JSONObject3,
 				depth2JSONObject4,
 				String.format(
@@ -1962,14 +1958,14 @@ public class ObjectEntryResourceSortTest
 		String endpoint2 = getEndpoint(getObjectDefinition2(), testGroupId);
 		String endpoint3 = getEndpoint(getObjectDefinition3(), testGroupId);
 
-		JSONObject[] oneToManyDepth1JSONObjects = new JSONObject[4];
+		JSONObject[] depth1JSONObjects = new JSONObject[4];
 
 		HTTPTestUtil.customize(
 		).withCredentials(
 			"test3@liferay.com", "test3"
 		).apply(
 			() ->
-				oneToManyDepth1JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
+				depth1JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC4"
 					).put(
@@ -1984,7 +1980,7 @@ public class ObjectEntryResourceSortTest
 			"test2@liferay.com", "test2"
 		).apply(
 			() ->
-				oneToManyDepth1JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
+				depth1JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC2"
 					).put(
@@ -1999,7 +1995,7 @@ public class ObjectEntryResourceSortTest
 			"test2@liferay.com", "test2"
 		).apply(
 			() ->
-				oneToManyDepth1JSONObjects[2] = HTTPTestUtil.invokeToJSONObject(
+				depth1JSONObjects[2] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC3"
 					).toString(),
@@ -2011,21 +2007,21 @@ public class ObjectEntryResourceSortTest
 			"test1@liferay.com", "test1"
 		).apply(
 			() ->
-				oneToManyDepth1JSONObjects[3] = HTTPTestUtil.invokeToJSONObject(
+				depth1JSONObjects[3] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC1"
 					).toString(),
 					endpoint2, Http.Method.POST)
 		);
 
-		JSONObject[] oneToManyDepth2JSONObjects = new JSONObject[4];
+		JSONObject[] depth2JSONObjects = new JSONObject[4];
 
 		HTTPTestUtil.customize(
 		).withCredentials(
 			"test3@liferay.com", "test3"
 		).apply(
 			() ->
-				oneToManyDepth2JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
+				depth2JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC4_2"
 					).put(
@@ -2040,7 +2036,7 @@ public class ObjectEntryResourceSortTest
 			"test2@liferay.com", "test2"
 		).apply(
 			() ->
-				oneToManyDepth2JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
+				depth2JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC2_2"
 					).put(
@@ -2055,7 +2051,7 @@ public class ObjectEntryResourceSortTest
 			"test2@liferay.com", "test2"
 		).apply(
 			() ->
-				oneToManyDepth2JSONObjects[2] = HTTPTestUtil.invokeToJSONObject(
+				depth2JSONObjects[2] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC3_2"
 					).toString(),
@@ -2067,7 +2063,7 @@ public class ObjectEntryResourceSortTest
 			"test1@liferay.com", "test1"
 		).apply(
 			() ->
-				oneToManyDepth2JSONObjects[3] = HTTPTestUtil.invokeToJSONObject(
+				depth2JSONObjects[3] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						"externalReferenceCode", "ERC1_2"
 					).toString(),
@@ -2081,37 +2077,33 @@ public class ObjectEntryResourceSortTest
 			JSONFactoryUtil.getNullJSON(), endpoint1, Http.Method.POST);
 
 		_relateObjectEntries(
-			endpoint1, jsonObject1, objectRelationship1,
-			oneToManyDepth1JSONObjects[0]);
+			endpoint1, jsonObject1, objectRelationship1, depth1JSONObjects[0]);
 		_relateObjectEntries(
-			endpoint1, jsonObject1, objectRelationship1,
-			oneToManyDepth1JSONObjects[1]);
+			endpoint1, jsonObject1, objectRelationship1, depth1JSONObjects[1]);
 		_relateObjectEntries(
-			endpoint1, jsonObject2, objectRelationship1,
-			oneToManyDepth1JSONObjects[2]);
+			endpoint1, jsonObject2, objectRelationship1, depth1JSONObjects[2]);
 		_relateObjectEntries(
-			endpoint1, jsonObject2, objectRelationship1,
-			oneToManyDepth1JSONObjects[3]);
+			endpoint1, jsonObject2, objectRelationship1, depth1JSONObjects[3]);
 
 		_relateObjectEntries(
-			endpoint2, oneToManyDepth1JSONObjects[0], objectRelationship2,
-			oneToManyDepth2JSONObjects[0]);
+			endpoint2, depth1JSONObjects[0], objectRelationship2,
+			depth2JSONObjects[0]);
 		_relateObjectEntries(
-			endpoint2, oneToManyDepth1JSONObjects[1], objectRelationship2,
-			oneToManyDepth2JSONObjects[1]);
+			endpoint2, depth1JSONObjects[1], objectRelationship2,
+			depth2JSONObjects[1]);
 		_relateObjectEntries(
-			endpoint2, oneToManyDepth1JSONObjects[2], objectRelationship2,
-			oneToManyDepth2JSONObjects[2]);
+			endpoint2, depth1JSONObjects[2], objectRelationship2,
+			depth2JSONObjects[2]);
 		_relateObjectEntries(
-			endpoint2, oneToManyDepth1JSONObjects[3], objectRelationship2,
-			oneToManyDepth2JSONObjects[3]);
+			endpoint2, depth1JSONObjects[3], objectRelationship2,
+			depth2JSONObjects[3]);
 
 		HTTPTestUtil.customize(
 		).withCredentials(
 			"test3@liferay.com", "test3"
 		).apply(
 			() ->
-				oneToManyDepth1JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
+				depth1JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 					).toString(),
@@ -2124,7 +2116,7 @@ public class ObjectEntryResourceSortTest
 			"test2@liferay.com", "test2"
 		).apply(
 			() ->
-				oneToManyDepth1JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
+				depth1JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 					).toString(),
@@ -2137,7 +2129,7 @@ public class ObjectEntryResourceSortTest
 			"test3@liferay.com", "test3"
 		).apply(
 			() ->
-				oneToManyDepth2JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
+				depth2JSONObjects[0] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_3, RandomTestUtil.randomString()
 					).toString(),
@@ -2150,7 +2142,7 @@ public class ObjectEntryResourceSortTest
 			"test2@liferay.com", "test2"
 		).apply(
 			() ->
-				oneToManyDepth2JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
+				depth2JSONObjects[1] = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_3, RandomTestUtil.randomString()
 					).toString(),
@@ -2162,75 +2154,75 @@ public class ObjectEntryResourceSortTest
 
 			// Depth 1
 
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject1, jsonObject2,
 				String.format("%s/dateCreated", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject1, jsonObject2,
 				String.format("%s/id", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format("%s/creator", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format("%s/creatorId", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format(
 					"%s/dateModified", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format(
 					"%s/externalReferenceCode", objectRelationship1.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format("%s/status", objectRelationship1.getName()));
 
 			// Depth 2
 
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject1, jsonObject2,
 				String.format(
 					"%s/%s/dateCreated", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject1, jsonObject2,
 				String.format(
 					"%s/%s/id", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format(
 					"%s/%s/creator", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format(
 					"%s/%s/creatorId", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format(
 					"%s/%s/dateModified", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format(
 					"%s/%s/externalReferenceCode",
 					objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format(
 					"%s/%s/status", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format("%s/userId", objectRelationship1.getName()));
 
 			// Sort by several fields
 
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject1, jsonObject2,
 				String.format("%s/dateCreated", objectRelationship1.getName()),
 				String.format("%s/id", objectRelationship1.getName()),
@@ -2240,7 +2232,7 @@ public class ObjectEntryResourceSortTest
 				String.format(
 					"%s/%s/id", objectRelationship1.getName(),
 					objectRelationship2.getName()));
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint1, jsonObject2, jsonObject1,
 				String.format("%s/creator", objectRelationship1.getName()),
 				String.format("%s/creatorId", objectRelationship1.getName()),
@@ -2267,11 +2259,11 @@ public class ObjectEntryResourceSortTest
 		}
 		finally {
 			_deleteObjectEntries(
-				oneToManyDepth2JSONObjects[0], oneToManyDepth2JSONObjects[1],
-				oneToManyDepth2JSONObjects[2], oneToManyDepth2JSONObjects[3],
-				oneToManyDepth1JSONObjects[0], oneToManyDepth1JSONObjects[1],
-				oneToManyDepth1JSONObjects[2], oneToManyDepth1JSONObjects[3],
-				jsonObject1, jsonObject2);
+				depth2JSONObjects[0], depth2JSONObjects[1],
+				depth2JSONObjects[2], depth2JSONObjects[3],
+				depth1JSONObjects[0], depth1JSONObjects[1],
+				depth1JSONObjects[2], depth1JSONObjects[3], jsonObject1,
+				jsonObject2);
 		}
 	}
 
@@ -2352,29 +2344,29 @@ public class ObjectEntryResourceSortTest
 		);
 
 		try {
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObjects[0], jsonObjects[1], "dateCreated");
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObjects[0], jsonObjects[1], "id");
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObjects[1], jsonObjects[0], "creator");
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObjects[1], jsonObjects[0], "creatorId");
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObjects[1], jsonObjects[0], "dateModified");
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObjects[1], jsonObjects[0],
 				"externalReferenceCode");
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObjects[1], jsonObjects[0], "status");
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObjects[1], jsonObjects[0], "userId");
 
 			// Sort by several fields
 
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObjects[0], jsonObjects[1], "dateCreated", "id");
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObjects[1], jsonObjects[0], "creator",
 				"dateModified", "externalReferenceCode");
 		}
@@ -2431,7 +2423,7 @@ public class ObjectEntryResourceSortTest
 			JSONObject expectedJSONObject2, String... fieldNames)
 		throws Exception {
 
-		_testSortByFieldName(
+		_testSortByFieldNames(
 			endpoint, expectedJSONObject1, expectedJSONObject2, fieldNames);
 
 		JSONObject valuesJSONObject1 = JSONFactoryUtil.createJSONObject();
@@ -2455,7 +2447,7 @@ public class ObjectEntryResourceSortTest
 				endpoint + "/" + expectedJSONObject2.getLong("id"),
 				Http.Method.PATCH);
 
-			_testSortByFieldName(
+			_testSortByFieldNames(
 				endpoint, jsonObject2, jsonObject1, fieldNames);
 		}
 		finally {
@@ -2471,7 +2463,35 @@ public class ObjectEntryResourceSortTest
 		}
 	}
 
-	private void _testSortByFieldName(
+	private void _testSortByFieldNames(
+			String endpoint, JSONObject expectedJSONObject1,
+			JSONObject expectedJSONObject2, String... fieldNames)
+		throws Exception {
+
+		JSONObject pageJSONObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			StringBundler.concat(
+				endpoint, "?sort=",
+				URLCodec.encodeURL(
+					StringUtil.merge(fieldNames, ":asc,") + ":asc")),
+			Http.Method.GET);
+
+		assertItem(0, pageJSONObject, "id", expectedJSONObject1.getLong("id"));
+		assertItem(1, pageJSONObject, "id", expectedJSONObject2.getLong("id"));
+
+		pageJSONObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			StringBundler.concat(
+				endpoint, "?sort=",
+				URLCodec.encodeURL(
+					StringUtil.merge(fieldNames, ":desc,") + ":desc")),
+			Http.Method.GET);
+
+		assertItem(0, pageJSONObject, "id", expectedJSONObject2.getLong("id"));
+		assertItem(1, pageJSONObject, "id", expectedJSONObject1.getLong("id"));
+	}
+
+	private void _testSortByFieldNamesAndId(
 			String endpoint, JSONObject expectedJSONObject1,
 			JSONObject expectedJSONObject2, JSONObject expectedJSONObject3,
 			JSONObject expectedJSONObject4, String... fieldNames)
@@ -2504,46 +2524,18 @@ public class ObjectEntryResourceSortTest
 		assertItem(3, pageJSONObject, "id", expectedJSONObject1.getLong("id"));
 	}
 
-	private void _testSortByFieldName(
-			String endpoint, JSONObject expectedJSONObject1,
-			JSONObject expectedJSONObject2, String... fieldNames)
-		throws Exception {
-
-		JSONObject pageJSONObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			StringBundler.concat(
-				endpoint, "?sort=",
-				URLCodec.encodeURL(
-					StringUtil.merge(fieldNames, ":asc,") + ":asc")),
-			Http.Method.GET);
-
-		assertItem(0, pageJSONObject, "id", expectedJSONObject1.getLong("id"));
-		assertItem(1, pageJSONObject, "id", expectedJSONObject2.getLong("id"));
-
-		pageJSONObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			StringBundler.concat(
-				endpoint, "?sort=",
-				URLCodec.encodeURL(
-					StringUtil.merge(fieldNames, ":desc,") + ":desc")),
-			Http.Method.GET);
-
-		assertItem(0, pageJSONObject, "id", expectedJSONObject2.getLong("id"));
-		assertItem(1, pageJSONObject, "id", expectedJSONObject1.getLong("id"));
-	}
-
 	private void
 			_testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields(
-				String endpoint1, String endpoint2,
-				JSONObject expectedJSONObject1, JSONObject expectedJSONObject2,
-				JSONObject expectedJSONObject3, JSONObject expectedJSONObject4,
+				String endpoint, JSONObject expectedJSONObject1,
+				JSONObject expectedJSONObject2, JSONObject expectedJSONObject3,
+				JSONObject expectedJSONObject4, String relatedEndpoint,
 				JSONObject relatedJSONObject1, JSONObject relatedJSONObject2,
 				JSONObject relatedJSONObject3, JSONObject relatedJSONObject4,
 				String... fieldNames)
 		throws Exception {
 
-		_testSortByFieldName(
-			endpoint1, expectedJSONObject1, expectedJSONObject2,
+		_testSortByFieldNamesAndId(
+			endpoint, expectedJSONObject1, expectedJSONObject2,
 			expectedJSONObject3, expectedJSONObject4, fieldNames);
 
 		JSONObject valuesJSONObject1 = JSONFactoryUtil.createJSONObject();
@@ -2567,60 +2559,61 @@ public class ObjectEntryResourceSortTest
 		try {
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject3.toString(),
-				endpoint2 + "/" + relatedJSONObject1.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject1.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject4.toString(),
-				endpoint2 + "/" + relatedJSONObject2.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject2.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject1.toString(),
-				endpoint2 + "/" + relatedJSONObject3.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject3.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject2.toString(),
-				endpoint2 + "/" + relatedJSONObject4.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject4.getLong("id"),
 				Http.Method.PATCH);
 
-			_testSortByFieldName(
-				endpoint1, expectedJSONObject3, expectedJSONObject4,
+			_testSortByFieldNamesAndId(
+				endpoint, expectedJSONObject3, expectedJSONObject4,
 				expectedJSONObject1, expectedJSONObject2, fieldNames);
 		}
 		finally {
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject1.toString(),
-				endpoint2 + "/" + relatedJSONObject1.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject1.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject2.toString(),
-				endpoint2 + "/" + relatedJSONObject2.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject2.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject3.toString(),
-				endpoint2 + "/" + relatedJSONObject3.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject3.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject4.toString(),
-				endpoint2 + "/" + relatedJSONObject4.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject4.getLong("id"),
 				Http.Method.PATCH);
 		}
 	}
 
 	private void _testSortByManyToOneRelationshipCustomObjectFields(
-			String endpoint1, String endpoint2, JSONObject expectedJSONObject1,
+			String endpoint, JSONObject expectedJSONObject1,
 			JSONObject expectedJSONObject2, JSONObject expectedJSONObject3,
-			JSONObject expectedJSONObject4, JSONObject relatedJSONObject1,
-			JSONObject relatedJSONObject2, String... fieldNames)
+			JSONObject expectedJSONObject4, String relatedEndpoint,
+			JSONObject relatedJSONObject1, JSONObject relatedJSONObject2,
+			String... fieldNames)
 		throws Exception {
 
-		_testSortByFieldName(
-			endpoint1, expectedJSONObject1, expectedJSONObject2,
+		_testSortByFieldNamesAndId(
+			endpoint, expectedJSONObject1, expectedJSONObject2,
 			expectedJSONObject3, expectedJSONObject4, fieldNames);
 
 		JSONObject valuesJSONObject1 = JSONFactoryUtil.createJSONObject();
@@ -2638,40 +2631,41 @@ public class ObjectEntryResourceSortTest
 		try {
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject2.toString(),
-				endpoint2 + "/" + relatedJSONObject1.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject1.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject1.toString(),
-				endpoint2 + "/" + relatedJSONObject2.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject2.getLong("id"),
 				Http.Method.PATCH);
 
-			_testSortByFieldName(
-				endpoint1, expectedJSONObject3, expectedJSONObject4,
+			_testSortByFieldNamesAndId(
+				endpoint, expectedJSONObject3, expectedJSONObject4,
 				expectedJSONObject1, expectedJSONObject2, fieldNames);
 		}
 		finally {
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject1.toString(),
-				endpoint2 + "/" + relatedJSONObject1.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject1.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject2.toString(),
-				endpoint2 + "/" + relatedJSONObject2.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject2.getLong("id"),
 				Http.Method.PATCH);
 		}
 	}
 
 	private void _testSortByOneToManyRelationshipCustomObjectFields(
-			String endpoint1, String endpoint2, JSONObject expectedJSONObject1,
-			JSONObject expectedJSONObject2, JSONObject relatedJSONObject1,
-			JSONObject relatedJSONObject2, JSONObject relatedJSONObject3,
-			JSONObject relatedJSONObject4, String... fieldNames)
+			String endpoint, JSONObject expectedJSONObject1,
+			JSONObject expectedJSONObject2, String relatedEndpoint,
+			JSONObject relatedJSONObject1, JSONObject relatedJSONObject2,
+			JSONObject relatedJSONObject3, JSONObject relatedJSONObject4,
+			String... fieldNames)
 		throws Exception {
 
-		_testSortByFieldName(
-			endpoint1, expectedJSONObject1, expectedJSONObject2, fieldNames);
+		_testSortByFieldNames(
+			endpoint, expectedJSONObject1, expectedJSONObject2, fieldNames);
 
 		JSONObject valuesJSONObject1 = JSONFactoryUtil.createJSONObject();
 		JSONObject valuesJSONObject2 = JSONFactoryUtil.createJSONObject();
@@ -2694,47 +2688,46 @@ public class ObjectEntryResourceSortTest
 		try {
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject3.toString(),
-				endpoint2 + "/" + relatedJSONObject1.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject1.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject4.toString(),
-				endpoint2 + "/" + relatedJSONObject2.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject2.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject1.toString(),
-				endpoint2 + "/" + relatedJSONObject3.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject3.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject2.toString(),
-				endpoint2 + "/" + relatedJSONObject4.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject4.getLong("id"),
 				Http.Method.PATCH);
 
-			_testSortByFieldName(
-				endpoint1, expectedJSONObject2, expectedJSONObject1,
-				fieldNames);
+			_testSortByFieldNames(
+				endpoint, expectedJSONObject2, expectedJSONObject1, fieldNames);
 		}
 		finally {
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject1.toString(),
-				endpoint2 + "/" + relatedJSONObject1.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject1.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject2.toString(),
-				endpoint2 + "/" + relatedJSONObject2.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject2.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject3.toString(),
-				endpoint2 + "/" + relatedJSONObject3.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject3.getLong("id"),
 				Http.Method.PATCH);
 
 			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject4.toString(),
-				endpoint2 + "/" + relatedJSONObject4.getLong("id"),
+				relatedEndpoint + "/" + relatedJSONObject4.getLong("id"),
 				Http.Method.PATCH);
 		}
 	}

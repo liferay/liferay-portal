@@ -86,56 +86,7 @@ public class ObjectEntryResourceFilterTest
 	}
 
 	@Test
-	public void testGetObjectEntriesFilteredBySystemDate() throws Exception {
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-
-		objectEntry1.setCreateDate(
-			dateTimeDateFormat.parse("2023-09-20T10:00:00.150Z"));
-		objectEntry1.setModifiedDate(
-			dateTimeDateFormat.parse("2023-09-20T10:00:00.150Z"));
-
-		objectEntryLocalService.updateObjectEntry(objectEntry1);
-
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2);
-
-		objectEntry2.setCreateDate(
-			dateTimeDateFormat.parse("2023-09-20T10:05:00.450Z"));
-		objectEntry2.setModifiedDate(
-			dateTimeDateFormat.parse("2023-09-20T10:05:00.450Z"));
-
-		objectEntryLocalService.updateObjectEntry(objectEntry2);
-
-		objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_3);
-
-		objectEntry3.setCreateDate(null);
-		objectEntry3.setModifiedDate(null);
-
-		objectEntryLocalService.updateObjectEntry(objectEntry3);
-
-		_testGetObjectEntriesFilteredBySystemDate("dateCreated");
-		_testGetObjectEntriesFilteredBySystemDate("dateModified");
-
-		Locale locale = LocaleUtil.getDefault();
-
-		try {
-			LocaleUtil.setDefault(
-				LocaleUtil.SPAIN.getLanguage(), LocaleUtil.SPAIN.getCountry(),
-				LocaleUtil.SPAIN.getVariant());
-
-			_testGetObjectEntriesFilteredBySystemDate("dateCreated");
-			_testGetObjectEntriesFilteredBySystemDate("dateModified");
-		}
-		finally {
-			LocaleUtil.setDefault(
-				locale.getLanguage(), locale.getCountry(), locale.getVariant());
-		}
-	}
-
-	@Test
-	public void testGetObjectEntryFilteredByKeywords() throws Exception {
+	public void testGetObjectEntriesFilteredByKeywords() throws Exception {
 		_postObjectEntryWithKeywords();
 		_postObjectEntryWithKeywords("tag1");
 		_postObjectEntryWithKeywords("TAG1");
@@ -211,7 +162,7 @@ public class ObjectEntryResourceFilterTest
 	}
 
 	@Test
-	public void testGetObjectEntryFilteredByMultiselectPicklistObjectField()
+	public void testGetObjectEntriesFilteredByMultiselectPicklistObjectField()
 		throws Exception {
 
 		ObjectEntryTestUtil.addObjectEntry(
@@ -429,7 +380,7 @@ public class ObjectEntryResourceFilterTest
 	}
 
 	@Test
-	public void testGetObjectEntryFilteredByStatus() throws Exception {
+	public void testGetObjectEntriesFilteredByStatus() throws Exception {
 		getObjectDefinition1().setEnableObjectEntryDraft(true);
 
 		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
@@ -460,7 +411,56 @@ public class ObjectEntryResourceFilterTest
 	}
 
 	@Test
-	public void testGetObjectEntryFilteredByTaxonomyCategories()
+	public void testGetObjectEntriesFilteredBySystemDate() throws Exception {
+		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
+
+		objectEntry1.setCreateDate(
+			dateTimeDateFormat.parse("2023-09-20T10:00:00.150Z"));
+		objectEntry1.setModifiedDate(
+			dateTimeDateFormat.parse("2023-09-20T10:00:00.150Z"));
+
+		objectEntryLocalService.updateObjectEntry(objectEntry1);
+
+		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2);
+
+		objectEntry2.setCreateDate(
+			dateTimeDateFormat.parse("2023-09-20T10:05:00.450Z"));
+		objectEntry2.setModifiedDate(
+			dateTimeDateFormat.parse("2023-09-20T10:05:00.450Z"));
+
+		objectEntryLocalService.updateObjectEntry(objectEntry2);
+
+		objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
+			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_3);
+
+		objectEntry3.setCreateDate(null);
+		objectEntry3.setModifiedDate(null);
+
+		objectEntryLocalService.updateObjectEntry(objectEntry3);
+
+		_testGetObjectEntriesFilteredBySystemDate("dateCreated");
+		_testGetObjectEntriesFilteredBySystemDate("dateModified");
+
+		Locale locale = LocaleUtil.getDefault();
+
+		try {
+			LocaleUtil.setDefault(
+				LocaleUtil.SPAIN.getLanguage(), LocaleUtil.SPAIN.getCountry(),
+				LocaleUtil.SPAIN.getVariant());
+
+			_testGetObjectEntriesFilteredBySystemDate("dateCreated");
+			_testGetObjectEntriesFilteredBySystemDate("dateModified");
+		}
+		finally {
+			LocaleUtil.setDefault(
+				locale.getLanguage(), locale.getCountry(), locale.getVariant());
+		}
+	}
+
+	@Test
+	public void testGetObjectEntriesFilteredByTaxonomyCategories()
 		throws Exception {
 
 		Company company = companyLocalService.getCompany(

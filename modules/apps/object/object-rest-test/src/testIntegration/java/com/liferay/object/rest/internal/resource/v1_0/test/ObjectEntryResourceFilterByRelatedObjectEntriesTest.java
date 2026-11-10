@@ -494,12 +494,12 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				String.format(
 					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1),
-				"en-US", localizedObjectDefinition2, localizedObjectEntry2);
+				localizedObjectDefinition2, localizedObjectEntry2, "en-US");
 			_testFilterObjectEntriesByRelatedLocalizedObjectEntries(
 				String.format(
 					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2),
-				"es-ES", localizedObjectDefinition2, localizedObjectEntry2);
+				localizedObjectDefinition2, localizedObjectEntry2, "es-ES");
 
 			// One to many relationship
 
@@ -507,12 +507,12 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				String.format(
 					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_3),
-				"en-US", localizedObjectDefinition1, localizedObjectEntry1);
+				localizedObjectDefinition1, localizedObjectEntry1, "en-US");
 			_testFilterObjectEntriesByRelatedLocalizedObjectEntries(
 				String.format(
 					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_4),
-				"es-ES", localizedObjectDefinition1, localizedObjectEntry1);
+				localizedObjectDefinition1, localizedObjectEntry1, "es-ES");
 		}
 		finally {
 			objectRelationshipLocalService.deleteObjectRelationship(
@@ -2545,8 +2545,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	}
 
 	private void _testFilterObjectEntriesByRelatedLocalizedObjectEntries(
-			String filterString, String languageId,
-			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
+			String filterString, ObjectDefinition objectDefinition,
+			ObjectEntry objectEntry, String w3cLanguageId)
 		throws Exception {
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -2554,7 +2554,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			objectDefinition.getRESTContextPath() + "?filter=" +
 				URLCodec.encodeURL(filterString),
 			HashMapBuilder.put(
-				"Accept-Language", languageId
+				"Accept-Language", w3cLanguageId
 			).build(),
 			Http.Method.GET);
 

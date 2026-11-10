@@ -41,7 +41,7 @@ public class ObjectEntryResourcePaginationTest
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testGetObjectEntriesWithPagination() throws Exception {
+	public void testGetObjectEntriesPageWithPagination() throws Exception {
 		_addObjectEntries(7);
 
 		_assertPagination(7);

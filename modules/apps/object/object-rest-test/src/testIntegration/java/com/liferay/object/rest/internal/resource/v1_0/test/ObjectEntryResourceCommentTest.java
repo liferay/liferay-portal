@@ -165,18 +165,18 @@ public class ObjectEntryResourceCommentTest
 
 	@FeatureFlag("LPD-43996")
 	@Test
-	public void testPostObjectEntriesWithComments() throws Exception {
+	public void testPostObjectEntryWithComments() throws Exception {
 
 		// Company scope
 
-		_testPostObjectEntriesWithComments(0, getObjectDefinition1());
+		_testPostObjectEntryWithComments(0, getObjectDefinition1());
 
 		// Site scope
 
 		PropsUtil.set("feature.flag.LPD-43996", "false");
 
 		try {
-			_testPostObjectEntriesWithComments(
+			_testPostObjectEntryWithComments(
 				testGroupId, getSiteScopedObjectDefinition1());
 		}
 		finally {
@@ -238,7 +238,7 @@ public class ObjectEntryResourceCommentTest
 		return systemPropertiesJSONObject.getJSONArray("comments");
 	}
 
-	private String _getDeletePatchPutEndpoint(
+	private String _getObjectEntryEndpoint(
 		long groupId, ObjectDefinition objectDefinition,
 		JSONObject objectEntryJSONObject) {
 
@@ -263,7 +263,7 @@ public class ObjectEntryResourceCommentTest
 			ObjectDefinition objectDefinition, JSONObject objectEntryJSONObject)
 		throws Exception {
 
-		String endpoint = _getDeletePatchPutEndpoint(
+		String endpoint = _getObjectEntryEndpoint(
 			groupId, objectDefinition, objectEntryJSONObject);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -359,7 +359,7 @@ public class ObjectEntryResourceCommentTest
 
 		HTTPTestUtil.invokeToJSONObject(
 			null,
-			_getDeletePatchPutEndpoint(
+			_getObjectEntryEndpoint(
 				groupId, objectDefinition, objectEntryJSONObject),
 			Http.Method.DELETE);
 
@@ -556,7 +556,7 @@ public class ObjectEntryResourceCommentTest
 			JSONCompareMode.LENIENT);
 	}
 
-	private void _testPostObjectEntriesWithComments(
+	private void _testPostObjectEntryWithComments(
 			long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
 
