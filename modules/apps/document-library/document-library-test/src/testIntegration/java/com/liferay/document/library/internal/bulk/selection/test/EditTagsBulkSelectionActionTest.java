@@ -67,12 +67,13 @@ public class EditTagsBulkSelectionActionTest {
 	public void testExecute() throws Exception {
 		FileEntry fileEntry1 = _addFileEntry("tagone");
 		FileEntry fileEntry2 = _addFileEntry("tagone");
-		FileEntry fileEntry3 = _addFileEntry();
 
 		_execute(true, new String[] {"tagtwo"}, new String[0], fileEntry1);
 
 		_assertAssetTagNames(fileEntry1, "tagone", "tagtwo");
 		_assertAssetTagNames(fileEntry2, "tagone");
+
+		FileEntry fileEntry3 = _addFileEntry();
 
 		_execute(
 			true, new String[] {"tagthree"}, new String[] {"tagone"},
