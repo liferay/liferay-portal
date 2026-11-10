@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.PasswordPolicy;
+import com.liferay.portal.kernel.model.RememberMeToken;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -67,6 +68,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
 import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
+import com.liferay.portal.kernel.service.RememberMeTokenLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -1065,16 +1067,8 @@ public class UserLocalServiceTest {
 
 	@Test
 	public void testDeleteUser() throws Exception {
-		User user = UserTestUtil.addUser();
-		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
-
-		_userLocalService.addUserGroupUser(userGroup.getUserGroupId(), user);
-
-		_assertSearchUserGroup(true, user, userGroup);
-
-		_userLocalService.deleteUser(user);
-
-		_assertSearchUserGroup(false, user, userGroup);
+		_testDeleteUser();
+		_testDeleteUserDeletesRememberMeTokens();
 	}
 
 	@Test
@@ -3057,6 +3051,36 @@ public class UserLocalServiceTest {
 		}
 	}
 
+	private void _testDeleteUser() throws Exception {
+		User user = UserTestUtil.addUser();
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userLocalService.addUserGroupUser(userGroup.getUserGroupId(), user);
+
+		_assertSearchUserGroup(true, user, userGroup);
+
+		_userLocalService.deleteUser(user);
+
+		_assertSearchUserGroup(false, user, userGroup);
+	}
+
+	private void _testDeleteUserDeletesRememberMeTokens() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		RememberMeToken rememberMeToken =
+			_rememberMeTokenLocalService.addRememberMeToken(
+				user.getCompanyId(), user.getUserId(),
+				RandomTestUtil.nextDate(),
+				value -> {
+				});
+
+		_userLocalService.deleteUser(user);
+
+		Assert.assertNull(
+			_rememberMeTokenLocalService.fetchRememberMeToken(
+				rememberMeToken.getRememberMeTokenId()));
+	}
+
 	private void _testSearchBySocialWithGroup() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 		User user = UserTestUtil.addUser();
@@ -3412,6 +3436,9 @@ public class UserLocalServiceTest {
 
 	@Inject
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
+
+	@Inject
+	private RememberMeTokenLocalService _rememberMeTokenLocalService;
 
 	@Inject
 	private RoleLocalService _roleLocalService;

@@ -136,6 +136,7 @@ import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.RecentLayoutBranchLocalService;
 import com.liferay.portal.kernel.service.RecentLayoutRevisionLocalService;
 import com.liferay.portal.kernel.service.RecentLayoutSetBranchLocalService;
+import com.liferay.portal.kernel.service.RememberMeTokenLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -2447,6 +2448,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		_recentLayoutRevisionLocalService.deleteUserRecentLayoutRevisions(
 			user.getUserId());
 		_recentLayoutSetBranchLocalService.deleteUserRecentLayoutSetBranches(
+			user.getUserId());
+
+		_rememberMeTokenLocalService.deleteUserRememberMeTokens(
 			user.getUserId());
 
 		// Resources
@@ -8196,6 +8200,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	@BeanReference(type = RecentLayoutSetBranchLocalService.class)
 	private RecentLayoutSetBranchLocalService
 		_recentLayoutSetBranchLocalService;
+
+	@BeanReference(type = RememberMeTokenLocalService.class)
+	private RememberMeTokenLocalService _rememberMeTokenLocalService;
 
 	@BeanReference(type = ResourceLocalService.class)
 	private ResourceLocalService _resourceLocalService;
