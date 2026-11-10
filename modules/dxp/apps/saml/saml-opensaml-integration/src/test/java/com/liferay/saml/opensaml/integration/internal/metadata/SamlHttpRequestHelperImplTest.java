@@ -6,6 +6,7 @@
 package com.liferay.saml.opensaml.integration.internal.metadata;
 
 import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.saml.opensaml.integration.internal.BaseSamlTestCase;
 import com.liferay.saml.opensaml.integration.internal.helper.SamlHttpRequestHelperImpl;
@@ -38,32 +39,29 @@ public class SamlHttpRequestHelperImplTest extends BaseSamlTestCase {
 	public void testGetRequestPath() {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest(
-				HttpMethods.GET,
-				"/c/portal/login;jsessionid=ACD311312312323BF.worker1");
+				HttpMethods.GET, "/c/portal/x/./../login");
+
+		mockHttpServletRequest.setPathInfo("/portal/login");
+		mockHttpServletRequest.setServletPath("/c");
 
 		Assert.assertEquals(
 			"/c/portal/login",
 			_samlHttpRequestHelperImpl.getRequestPath(mockHttpServletRequest));
-	}
 
-	@Test
-	public void testGetRequestPathWithContext() {
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest(
-				HttpMethods.GET,
-				"/portal/c/portal/login;jsessionid=ACD311312312323BF.worker1");
+		mockHttpServletRequest = new MockHttpServletRequest(
+			HttpMethods.GET, RandomTestUtil.randomString());
 
-		mockHttpServletRequest.setContextPath("/portal");
+		mockHttpServletRequest.setPathInfo("/portal/login/");
+		mockHttpServletRequest.setServletPath("/c");
 
 		Assert.assertEquals(
 			"/c/portal/login",
 			_samlHttpRequestHelperImpl.getRequestPath(mockHttpServletRequest));
-	}
 
-	@Test
-	public void testGetRequestPathWithoutJsessionId() {
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest(HttpMethods.GET, "/c/portal/login");
+		mockHttpServletRequest = new MockHttpServletRequest(
+			HttpMethods.GET, RandomTestUtil.randomString());
+
+		mockHttpServletRequest.setServletPath("/c/portal/login");
 
 		Assert.assertEquals(
 			"/c/portal/login",

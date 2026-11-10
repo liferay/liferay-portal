@@ -6,8 +6,6 @@
 package com.liferay.saml.opensaml.integration.internal.helper;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.saml.helper.SamlHttpRequestHelper;
 import com.liferay.saml.opensaml.integration.internal.metadata.MetadataManagerUtil;
 import com.liferay.saml.opensaml.integration.internal.util.OpenSamlUtil;
@@ -46,17 +44,21 @@ public class SamlHttpRequestHelperImpl implements SamlHttpRequestHelper {
 
 	@Override
 	public String getRequestPath(HttpServletRequest httpServletRequest) {
-		String requestURI = httpServletRequest.getRequestURI();
+		String requestPath = httpServletRequest.getServletPath();
 
-		String contextPath = httpServletRequest.getContextPath();
+		String pathInfo = httpServletRequest.getPathInfo();
 
-		if (Validator.isNotNull(contextPath) &&
-			!contextPath.equals(StringPool.SLASH)) {
-
-			requestURI = requestURI.substring(contextPath.length());
+		if (pathInfo != null) {
+			requestPath += pathInfo;
 		}
 
-		return HttpComponentsUtil.removePathParameters(requestURI);
+		if ((requestPath.length() > 1) &&
+			requestPath.endsWith(StringPool.SLASH)) {
+
+			requestPath = requestPath.substring(0, requestPath.length() - 1);
+		}
+
+		return requestPath;
 	}
 
 	@Reference
