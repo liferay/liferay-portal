@@ -449,6 +449,12 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        User who created the channel. Read only; embedded through the `creator` nested field.
+                    readOnly: true
                 currencyCode:
                     description:
                         ISO 4217 currency code applied to every monetary amount handled by this channel; required on create and must match a currency configured for the company. On PATCH an unrecognized code is ignored and the channel's current currency is preserved; on PUT the code must resolve to an existing currency or the request fails with 404.
@@ -466,6 +472,20 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                dateCreated:
+                    description:
+                        The creation timestamp in ISO 8601 (UTC) of the channel. It is read only and set when the channel is first persisted. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        The last modification timestamp in ISO 8601 (UTC) of the channel. It is read only and updated on each save. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
                 externalReferenceCode:
                     description:
                         Idempotency key for create and update; must be unique per channel within the company.
@@ -483,6 +503,10 @@ components:
                         Non-localized display name of the channel; required on create and sanitized server-side.
                     example: EU Storefront
                     type: string
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 siteGroupId:
                     description:
                         Reference to the Liferay site that backs this channel (FK identifier); drives content scoping, theme, and language settings. 0 means the channel has no site; any other value must match an existing site of the instance, or the write is rejected with 400.
@@ -582,6 +606,68 @@ components:
                     description:
                         Name of the site in the request locale; matched by the search query parameter; read only.
                     example: Guest
+                    readOnly: true
+                    type: string
+            type: object
+        Creator:
+            description:
+                User account that created the entity. Properties follow the [creator](https://schema.org/creator) specification; the batch engine uses `externalReferenceCode` and `id` to keep the original creator on import.
+            properties:
+                additionalName:
+                    description:
+                        The user's additional name, which can be used as a middle name. Read only; taken from the user's middle name.
+                    example: Paul
+                    readOnly: true
+                    type: string
+                contentType:
+                    description:
+                        The type of the referenced content. Read only; always UserAccount, because the creator is always a user.
+                    example: UserAccount
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    description:
+                        The user's external reference code. Read only; the batch engine matches the creator by this code on import.
+                    example: AB-34098-789-N
+                    readOnly: true
+                    type: string
+                familyName:
+                    description:
+                        The user's surname (last name).
+                    example: Smith
+                    readOnly: true
+                    type: string
+                givenName:
+                    description:
+                        The user's first name.
+                    example: John
+                    readOnly: true
+                    type: string
+                id:
+                    description:
+                        The user's ID. Read only; the batch engine falls back to this identifier when the external reference code does not match a user on import.
+                    example: 20132
+                    format: int64
+                    readOnly: true
+                    type: integer
+                image:
+                    description:
+                        A relative URL to the user's profile image. Read only; omitted when the user has no portrait.
+                    example: /image/user_portrait?screenName=john.smith
+                    format: uri
+                    readOnly: true
+                    type: string
+                name:
+                    description:
+                        The user's full name.
+                    example: John Smith
+                    readOnly: true
+                    type: string
+                profileURL:
+                    description:
+                        A relative URL to the user's profile. Read only; resolved from the user's personal site.
+                    example: /web/john.smith
+                    format: uri
                     readOnly: true
                     type: string
             type: object
@@ -2214,7 +2300,7 @@ paths:
     /channels:
         get:
             description:
-                Lists every commerce channel visible to the caller. Calls SearchUtil.search (index CommerceChannel). Validation -- None (returns empty page when no matches). List query support — filterable fields -- name, siteGroupId; sortable fields -- name, siteGroupId.
+                Lists every commerce channel visible to the caller. Calls SearchUtil.search (index CommerceChannel). Validation -- None (returns empty page when no matches). List query support — filterable fields -- dateCreated, dateModified, externalReferenceCode, name, siteGroupId; sortable fields -- dateCreated, dateModified, externalReferenceCode, name, siteGroupId.
             parameters:
                 -   $ref: "#/components/parameters/filterQueryParam"
                 -   $ref: "#/components/parameters/pageQueryParam"
@@ -3795,6 +3881,55 @@ paths:
             summary: Gets a list of the sites that can be linked to the channel.
             tags:
                 -   ChannelSite
+    /channels/{channelId}/permissions:
+        get:
+            description:
+                Lists the role permissions granted on the channel identified by ID. Requires the PERMISSIONS action on the channel.
+            operationId: getChannelPermissionsPage
+            parameters:
+                -   $ref: "#/components/parameters/channelIdPathParam"
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The role permissions of the channel.
+            summary: Lists the permissions of a channel by ID.
+            tags:
+                -   Channel
+        put:
+            description:
+                Replaces the role permissions granted on the channel identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the channel.
+            operationId: putChannelPermissionsPage
+            parameters:
+                -   $ref: "#/components/parameters/channelIdPathParam"
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The updated role permissions of the channel.
+            summary: Replaces the permissions of a channel by ID.
+            tags:
+                -   Channel
     /channels/{channelId}/shipping-methods:
         get:
             description:

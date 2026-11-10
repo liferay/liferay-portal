@@ -9,5 +9,6 @@ clientDir: ../headless-commerce-admin-channel-client/src/main/java
 compatibilityVersion: 16
 forcePredictableOperationId: false
 forcePredictableSchemaPropertyName: false
+generatePermissions: true
 javaEEPackage: jakarta
 testDir: ../headless-commerce-admin-channel-test/src/testIntegration/java
