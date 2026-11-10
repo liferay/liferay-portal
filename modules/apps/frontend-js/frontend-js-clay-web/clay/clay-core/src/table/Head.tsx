@@ -151,6 +151,8 @@ export function Head<T extends Record<string, any>>(
 		setSearchTerm(searchTerm);
 	};
 
+	const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+
 	const columnsVisibilityItems = collection
 		.getItems()
 		.filter(
@@ -158,7 +160,7 @@ export function Head<T extends Record<string, any>>(
 				!alwaysVisibleColumns.has(item) &&
 				String(collection.getItem(item).value)
 					.toLowerCase()
-					.includes(searchTerm.trim().toLowerCase())
+					.includes(normalizedSearchTerm)
 		);
 
 	useIsomorphicEffect(() => {
