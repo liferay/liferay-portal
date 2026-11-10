@@ -1162,9 +1162,13 @@ public class DBCopyTablesProcess {
 				sql = "select name from sys.tables where is_ms_shipped = 1";
 			}
 			else if (databaseProductName.equals("Oracle")) {
-				sql =
-					"select job_name from user_datapump_jobs union select " +
-						"log_table from user_mview_logs";
+				sql = StringBundler.concat(
+					"select job_name from user_datapump_jobs union select ",
+					"log_table from user_mview_logs union select ",
+					"user_tables.table_name from user_tables inner join ",
+					"user_indexes on user_tables.table_name like 'DR$' || ",
+					"user_indexes.index_name || '$%' where ",
+					"user_indexes.index_type = 'DOMAIN'");
 			}
 
 			if (sql != null) {
