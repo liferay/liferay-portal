@@ -66,11 +66,11 @@ public class EditCategoriesBulkSelectionActionTest {
 		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
 			_group.getGroupId());
 
-		_category1 = AssetTestUtil.addCategory(
+		_assetCategory1 = AssetTestUtil.addCategory(
 			_group.getGroupId(), assetVocabulary.getVocabularyId());
-		_category2 = AssetTestUtil.addCategory(
+		_assetCategory2 = AssetTestUtil.addCategory(
 			_group.getGroupId(), assetVocabulary.getVocabularyId());
-		_category3 = AssetTestUtil.addCategory(
+		_assetCategory3 = AssetTestUtil.addCategory(
 			_group.getGroupId(), assetVocabulary.getVocabularyId());
 	}
 
@@ -81,30 +81,30 @@ public class EditCategoriesBulkSelectionActionTest {
 		FileEntry fileEntry2 = _addFileEntry();
 
 		_execute(
-			true, new long[] {_category1.getCategoryId()}, new long[0],
+			true, new long[] {_assetCategory1.getCategoryId()}, new long[0],
 			fileEntry1, fileEntry2);
 
-		_assertCategoryIds(fileEntry1, _category1.getCategoryId());
-		_assertCategoryIds(fileEntry2, _category1.getCategoryId());
+		_assertAssetCategoryIds(fileEntry1, _assetCategory1.getCategoryId());
+		_assertAssetCategoryIds(fileEntry2, _assetCategory1.getCategoryId());
 
 		FileEntry fileEntry3 = _addFileEntry(
-			_category1.getCategoryId(), _category2.getCategoryId());
+			_assetCategory1.getCategoryId(), _assetCategory2.getCategoryId());
 		FileEntry fileEntry4 = _addFileEntry(
-			_category1.getCategoryId(), _category3.getCategoryId());
+			_assetCategory1.getCategoryId(), _assetCategory3.getCategoryId());
 
 		_execute(
-			true, new long[0], new long[] {_category1.getCategoryId()},
+			true, new long[0], new long[] {_assetCategory1.getCategoryId()},
 			fileEntry3, fileEntry4);
 
-		_assertCategoryIds(fileEntry3, _category2.getCategoryId());
-		_assertCategoryIds(fileEntry4, _category3.getCategoryId());
+		_assertAssetCategoryIds(fileEntry3, _assetCategory2.getCategoryId());
+		_assertAssetCategoryIds(fileEntry4, _assetCategory3.getCategoryId());
 	}
 
-	private FileEntry _addFileEntry(long... categoryIds) throws Exception {
+	private FileEntry _addFileEntry(long... assetCategoryIds) throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
-		serviceContext.setAssetCategoryIds(categoryIds);
+		serviceContext.setAssetCategoryIds(assetCategoryIds);
 
 		return _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
@@ -115,19 +115,20 @@ public class EditCategoriesBulkSelectionActionTest {
 			serviceContext);
 	}
 
-	private void _assertCategoryIds(FileEntry fileEntry, long... categoryIds)
+	private void _assertAssetCategoryIds(
+			FileEntry fileEntry, long... assetCategoryIds)
 		throws Exception {
 
 		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
 			DLFileEntry.class.getName(), fileEntry.getFileEntryId());
 
-		long[] actualCategoryIds = assetEntry.getCategoryIds();
+		long[] actualAssetCategoryIds = assetEntry.getCategoryIds();
 
-		Arrays.sort(actualCategoryIds);
+		Arrays.sort(actualAssetCategoryIds);
 
-		Arrays.sort(categoryIds);
+		Arrays.sort(assetCategoryIds);
 
-		Assert.assertArrayEquals(categoryIds, actualCategoryIds);
+		Assert.assertArrayEquals(assetCategoryIds, actualAssetCategoryIds);
 	}
 
 	private void _execute(
@@ -158,6 +159,10 @@ public class EditCategoriesBulkSelectionActionTest {
 			).build());
 	}
 
+	private AssetCategory _assetCategory1;
+	private AssetCategory _assetCategory2;
+	private AssetCategory _assetCategory3;
+
 	@Inject
 	private AssetEntryLocalService _assetEntryLocalService;
 
@@ -168,10 +173,6 @@ public class EditCategoriesBulkSelectionActionTest {
 		filter = "model.class.name=com.liferay.document.library.kernel.model.DLFileEntry"
 	)
 	private BulkSelectionFactory<FileEntry> _bulkSelectionFactory;
-
-	private AssetCategory _category1;
-	private AssetCategory _category2;
-	private AssetCategory _category3;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;

@@ -71,16 +71,16 @@ public class EditTagsBulkSelectionActionTest {
 
 		_execute(true, new String[] {"tagtwo"}, new String[0], fileEntry1);
 
-		_assertTagNames(fileEntry1, "tagone", "tagtwo");
-		_assertTagNames(fileEntry2, "tagone");
+		_assertAssetTagNames(fileEntry1, "tagone", "tagtwo");
+		_assertAssetTagNames(fileEntry2, "tagone");
 
 		_execute(
 			true, new String[] {"tagthree"}, new String[] {"tagone"},
 			fileEntry1, fileEntry2, fileEntry3);
 
-		_assertTagNames(fileEntry1, "tagthree", "tagtwo");
-		_assertTagNames(fileEntry2, "tagthree");
-		_assertTagNames(fileEntry3, "tagthree");
+		_assertAssetTagNames(fileEntry1, "tagthree", "tagtwo");
+		_assertAssetTagNames(fileEntry2, "tagthree");
+		_assertAssetTagNames(fileEntry3, "tagthree");
 
 		FileEntry fileEntry4 = _addFileEntry();
 		FileEntry fileEntry5 = _addFileEntry();
@@ -97,8 +97,8 @@ public class EditTagsBulkSelectionActionTest {
 			true, new String[] {"tagone"}, new String[0], fileEntry4,
 			fileEntry5);
 
-		_assertTagNames(fileEntry4, "tagone");
-		_assertTagNames(fileEntry5, "tagone");
+		_assertAssetTagNames(fileEntry4, "tagone");
+		_assertAssetTagNames(fileEntry5, "tagone");
 
 		FileEntry fileEntry6 = _addFileEntry("tag1");
 		FileEntry fileEntry7 = _addFileEntry("tag2");
@@ -108,24 +108,24 @@ public class EditTagsBulkSelectionActionTest {
 			false, new String[] {"newtag"}, new String[] {"tag1", "tag3"},
 			fileEntry6, fileEntry8);
 
-		_assertTagNames(fileEntry6, "newtag");
-		_assertTagNames(fileEntry7, "tag2");
-		_assertTagNames(fileEntry8, "newtag");
+		_assertAssetTagNames(fileEntry6, "newtag");
+		_assertAssetTagNames(fileEntry7, "tag2");
+		_assertAssetTagNames(fileEntry8, "newtag");
 
 		_execute(
 			false, new String[0], new String[] {"newtag", "tag2"}, fileEntry6,
 			fileEntry7);
 
-		_assertTagNames(fileEntry6);
-		_assertTagNames(fileEntry7);
-		_assertTagNames(fileEntry8, "newtag");
+		_assertAssetTagNames(fileEntry6);
+		_assertAssetTagNames(fileEntry7);
+		_assertAssetTagNames(fileEntry8, "newtag");
 	}
 
-	private FileEntry _addFileEntry(String... tagNames) throws Exception {
+	private FileEntry _addFileEntry(String... assetTagNames) throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
-		serviceContext.setAssetTagNames(tagNames);
+		serviceContext.setAssetTagNames(assetTagNames);
 
 		return _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
@@ -136,7 +136,8 @@ public class EditTagsBulkSelectionActionTest {
 			serviceContext);
 	}
 
-	private void _assertTagNames(FileEntry fileEntry, String... tagNames)
+	private void _assertAssetTagNames(
+			FileEntry fileEntry, String... assetTagNames)
 		throws Exception {
 
 		fileEntry = _dlAppLocalService.getFileEntry(fileEntry.getFileEntryId());
@@ -146,13 +147,13 @@ public class EditTagsBulkSelectionActionTest {
 			_dlAssetHelper.getAssetClassPK(
 				fileEntry, fileEntry.getLatestFileVersion()));
 
-		String[] actualTagNames = assetEntry.getTagNames();
+		String[] actualAssetTagNames = assetEntry.getTagNames();
 
-		Arrays.sort(actualTagNames);
+		Arrays.sort(actualAssetTagNames);
 
-		Arrays.sort(tagNames);
+		Arrays.sort(assetTagNames);
 
-		Assert.assertArrayEquals(tagNames, actualTagNames);
+		Assert.assertArrayEquals(assetTagNames, actualAssetTagNames);
 	}
 
 	private void _execute(
