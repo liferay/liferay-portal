@@ -208,59 +208,63 @@ const IndividualsList: React.FC<IIndividualsListProps> = ({
 			paginationParams.filterBy.get('individualTypes')?.toArray() || [],
 	};
 
-	const renderNoResults = () =>
-		campaignId ? (
+	const renderNoResults = () => {
+		if (campaignId) {
+			return (
+				<NoResultsDisplay
+					description={Liferay.Language.get(
+						'review-your-filters-and-try-again'
+					)}
+					icon={{
+						border: false,
+						size: Sizes.XXXLarge,
+						symbol: 'search',
+					}}
+					spacer
+					title={Liferay.Language.get('no-results-found')}
+				>
+					<ClayButton
+						displayType="secondary"
+						onClick={onClearFilters}
+					>
+						{Liferay.Language.get('clear-filters')}
+					</ClayButton>
+				</NoResultsDisplay>
+			);
+		}
+
+		return (
 			<NoResultsDisplay
-				description={Liferay.Language.get(
-					'review-your-filters-and-try-again'
-				)}
+				description={
+					<>
+						{Liferay.Language.get(
+							'connect-a-data-source-with-people-data'
+						)}
+
+						<ClayLink
+							className="d-block mb-3"
+							href={URLConstants.DataSourceConnection}
+							key="DOCUMENTATION"
+							target="_blank"
+						>
+							{Liferay.Language.get(
+								'access-our-documentation-to-learn-more'
+							)}
+						</ClayLink>
+					</>
+				}
 				icon={{
 					border: false,
 					size: Sizes.XXXLarge,
-					symbol: 'search',
+					symbol: 'ac_satellite',
 				}}
 				spacer
-				title={Liferay.Language.get('no-results-found')}
-			>
-				<ClayButton displayType="secondary" onClick={onClearFilters}>
-					{Liferay.Language.get('clear-filters')}
-				</ClayButton>
-			</NoResultsDisplay>
-		) : (
-			renderNoDataSources()
+				title={Liferay.Language.get(
+					'no-individuals-have-been-synced-from-data-sources'
+				)}
+			/>
 		);
-
-	const renderNoDataSources = () => (
-		<NoResultsDisplay
-			description={
-				<>
-					{Liferay.Language.get(
-						'connect-a-data-source-with-people-data'
-					)}
-
-					<ClayLink
-						className="d-block mb-3"
-						href={URLConstants.DataSourceConnection}
-						key="DOCUMENTATION"
-						target="_blank"
-					>
-						{Liferay.Language.get(
-							'access-our-documentation-to-learn-more'
-						)}
-					</ClayLink>
-				</>
-			}
-			icon={{
-				border: false,
-				size: Sizes.XXXLarge,
-				symbol: 'ac_satellite',
-			}}
-			spacer
-			title={Liferay.Language.get(
-				'no-individuals-have-been-synced-from-data-sources'
-			)}
-		/>
-	);
+	};
 
 	return (
 		<Card>
