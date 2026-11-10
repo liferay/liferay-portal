@@ -28,7 +28,7 @@ List<CPCatalogEntry> catalogEntries = cpPublisherConfigurationDisplayContext.get
 	<liferay-ui:search-container-row
 		className="com.liferay.commerce.product.catalog.CPCatalogEntry"
 		escapedModel="<%= true %>"
-		keyProperty="cpDefinitionId"
+		keyProperty="CPDefinitionId"
 		modelVar="cpCatalogEntry"
 	>
 
