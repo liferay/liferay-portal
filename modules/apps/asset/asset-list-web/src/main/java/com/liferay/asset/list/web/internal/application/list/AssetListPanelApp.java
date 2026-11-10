@@ -30,6 +30,11 @@ import org.osgi.service.component.annotations.Reference;
 public class AssetListPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "analytics";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
