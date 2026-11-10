@@ -65,35 +65,31 @@ public class FileShortcutStagedModelDataHandlerTest
 
 		Group group = GroupTestUtil.addGroup();
 
-		try {
-			FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
-				null, TestPropsValues.getUserId(), group.getGroupId(),
-				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
-				RandomTestUtil.randomBytes(), null, null, null,
-				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomBytes(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 
-			FileShortcut fileShortcut = DLAppLocalServiceUtil.addFileShortcut(
-				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				fileEntry.getFileEntryId(),
-				ServiceContextTestUtil.getServiceContext(
-					stagingGroup.getGroupId(), TestPropsValues.getUserId()));
+		FileShortcut fileShortcut = DLAppLocalServiceUtil.addFileShortcut(
+			null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			fileEntry.getFileEntryId(),
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId(), TestPropsValues.getUserId()));
 
-			exportImportStagedModel(fileShortcut);
+		exportImportStagedModel(fileShortcut);
 
-			DLFileShortcut importedDLFileShortcut =
-				DLFileShortcutLocalServiceUtil.
-					getDLFileShortcutByUuidAndGroupId(
-						fileShortcut.getUuid(), liveGroup.getGroupId());
+		DLFileShortcut importedDLFileShortcut =
+			DLFileShortcutLocalServiceUtil.getDLFileShortcutByUuidAndGroupId(
+				fileShortcut.getUuid(), liveGroup.getGroupId());
 
-			Assert.assertEquals(
-				fileEntry.getFileEntryId(),
-				importedDLFileShortcut.getToFileEntryId());
-		}
-		finally {
-			GroupLocalServiceUtil.deleteGroup(group);
-		}
+		Assert.assertEquals(
+			fileEntry.getFileEntryId(),
+			importedDLFileShortcut.getToFileEntryId());
+
+		GroupLocalServiceUtil.deleteGroup(group);
 	}
 
 	@Test

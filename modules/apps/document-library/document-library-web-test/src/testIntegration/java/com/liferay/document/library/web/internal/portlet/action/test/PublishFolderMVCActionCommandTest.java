@@ -86,14 +86,14 @@ public class PublishFolderMVCActionCommandTest {
 			primaryKeyObjs.add(stagedModel.getPrimaryKeyObj());
 		}
 
-		Assert.assertEquals(
-			primaryKeyObjs.toString(), 3, primaryKeyObjs.size());
 		Assert.assertFalse(
 			primaryKeyObjs.contains(draftFileEntry.getFileEntryId()));
 		Assert.assertTrue(primaryKeyObjs.contains(fileEntry.getFileEntryId()));
 		Assert.assertTrue(primaryKeyObjs.contains(subfolder.getFolderId()));
 		Assert.assertTrue(
 			primaryKeyObjs.contains(subfolderFileEntry.getFileEntryId()));
+		Assert.assertEquals(
+			primaryKeyObjs.toString(), 3, primaryKeyObjs.size());
 	}
 
 	private FileEntry _addFileEntry(long folderId, int workflowAction)
