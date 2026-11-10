@@ -14,6 +14,6 @@ public interface MCPServerCacheManager {
 
 	public void clearServletCache(long companyId);
 
-	public void clearServletCache(long companyId, String mcpServerProfileName);
+	public void clearServletCache(long companyId, String mcpServerProfilePath);
 
 }

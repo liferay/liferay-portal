@@ -146,7 +146,8 @@ public class MCPServerProfileToolObjectEntryModelListener
 
 		_mcpServerCacheManager.clearServletCache(
 			objectEntry.getCompanyId(),
-			MapUtil.getString(mcpServerProfileObjectEntry.getValues(), "name"));
+			MapUtil.getString(
+				mcpServerProfileObjectEntry.getValues(), "profilePath"));
 	}
 
 	private void _deactivateMCPServerProfile(

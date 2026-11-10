@@ -237,7 +237,7 @@ public class MCPServerProfileObjectEntryModelListener
 	private void _clearServletCache(ObjectEntry objectEntry) {
 		_mcpServerCacheManager.clearServletCache(
 			objectEntry.getCompanyId(),
-			MapUtil.getString(objectEntry.getValues(), "name"));
+			MapUtil.getString(objectEntry.getValues(), "profilePath"));
 	}
 
 	private boolean _isBatchEngineBundle() {

@@ -39,10 +39,10 @@ public class MCPServerCacheManagerImpl
 
 	@Clusterable
 	@Override
-	public void clearServletCache(long companyId, String mcpServerProfileName) {
+	public void clearServletCache(long companyId, String mcpServerProfilePath) {
 		MCPServerServlet mcpServerServlet = (MCPServerServlet)_servlet;
 
-		mcpServerServlet.clearServletCache(companyId, mcpServerProfileName);
+		mcpServerServlet.clearServletCache(companyId, mcpServerProfilePath);
 	}
 
 	@Override

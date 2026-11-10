@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -106,9 +105,9 @@ public class MCPServerServlet extends HttpServlet {
 		}
 	}
 
-	public void clearServletCache(long companyId, String mcpServerProfileName) {
+	public void clearServletCache(long companyId, String mcpServerProfilePath) {
 		synchronized (this) {
-			_destroy(_getServletKey(companyId, mcpServerProfileName));
+			_destroy(_getServletKey(companyId, mcpServerProfilePath));
 		}
 	}
 
@@ -173,10 +172,7 @@ public class MCPServerServlet extends HttpServlet {
 		Map<String, Serializable> values =
 			mcpServerProfileObjectEntry.getValues();
 
-		String mcpServerProfileName = (String)values.get("name");
-
-		String mcpServerProfileExternalReferenceCode =
-			mcpServerProfileObjectEntry.getExternalReferenceCode();
+		String mcpServerProfilePath = (String)values.get("profilePath");
 
 		HttpServletStatelessServerTransport
 			httpServletStatelessServerTransport =
@@ -187,8 +183,8 @@ public class MCPServerServlet extends HttpServlet {
 							"httpServletRequest", request
 						).build())
 				).messageEndpoint(
-					(!Objects.equals(mcpServerProfileName, "default")) ?
-						"/mcp/" + mcpServerProfileName : "/mcp"
+					Validator.isNotNull(mcpServerProfilePath) ?
+						"/mcp/" + mcpServerProfilePath : "/mcp"
 				).build();
 
 		List<ObjectEntry> mcpServerProfileToolObjectEntries =
@@ -221,7 +217,8 @@ public class MCPServerServlet extends HttpServlet {
 									mcpTransportContext,
 									callToolRequest.arguments(),
 									allowedToolKeys, companyId,
-									mcpServerProfileExternalReferenceCode,
+									mcpServerProfileObjectEntry.
+										getExternalReferenceCode(),
 									restrictFieldsMap, toolName, toolSetName));
 					}
 					catch (Exception exception) {
@@ -422,30 +419,6 @@ public class MCPServerServlet extends HttpServlet {
 		).build();
 	}
 
-	private String _getMCPServerProfileName(
-		HttpServletRequest httpServletRequest) {
-
-		String pathInfo = httpServletRequest.getPathInfo();
-
-		if (Validator.isNull(pathInfo) || pathInfo.equals("/")) {
-			return null;
-		}
-
-		String mcpServerProfileName = pathInfo.substring(1);
-
-		int index = mcpServerProfileName.indexOf('/');
-
-		if (index > 0) {
-			mcpServerProfileName = mcpServerProfileName.substring(0, index);
-		}
-
-		if (mcpServerProfileName.isEmpty()) {
-			return null;
-		}
-
-		return mcpServerProfileName;
-	}
-
 	private ObjectEntry _getMCPServerProfileObjectEntry(
 		long companyId, HttpServletRequest httpServletRequest) {
 
@@ -460,8 +433,15 @@ public class MCPServerServlet extends HttpServlet {
 			return null;
 		}
 
-		String mcpServerProfileName = GetterUtil.getString(
-			_getMCPServerProfileName(httpServletRequest), "default");
+		String mcpServerProfilePath = _getMCPServerProfilePath(
+			httpServletRequest);
+
+		if (mcpServerProfilePath == null) {
+			return _objectEntryLocalService.fetchObjectEntry(
+				MCPServerConstants.
+					EXTERNAL_REFERENCE_CODE_MCP_SERVER_DEFAULT_PROFILE,
+				0, objectDefinition.getObjectDefinitionId());
+		}
 
 		for (ObjectEntry objectEntry :
 				_objectEntryLocalService.getObjectEntries(
@@ -470,12 +450,36 @@ public class MCPServerServlet extends HttpServlet {
 
 			Map<String, Serializable> values = objectEntry.getValues();
 
-			if (mcpServerProfileName.equals(values.get("name"))) {
+			if (mcpServerProfilePath.equals(values.get("profilePath"))) {
 				return objectEntry;
 			}
 		}
 
 		return null;
+	}
+
+	private String _getMCPServerProfilePath(
+		HttpServletRequest httpServletRequest) {
+
+		String pathInfo = httpServletRequest.getPathInfo();
+
+		if (Validator.isNull(pathInfo) || pathInfo.equals("/")) {
+			return null;
+		}
+
+		String mcpServerProfilePath = pathInfo.substring(1);
+
+		int index = mcpServerProfilePath.indexOf('/');
+
+		if (index > 0) {
+			mcpServerProfilePath = mcpServerProfilePath.substring(0, index);
+		}
+
+		if (mcpServerProfilePath.isEmpty()) {
+			return null;
+		}
+
+		return mcpServerProfilePath;
 	}
 
 	private List<ObjectEntry> _getMCPServerProfileToolObjectEntries(
@@ -528,20 +532,20 @@ public class MCPServerServlet extends HttpServlet {
 		HttpServletRequest httpServletRequest, long companyId,
 		ObjectEntry mcpServerProfileObjectEntry) {
 
-		String mcpServerProfileName = MapUtil.getString(
-			mcpServerProfileObjectEntry.getValues(), "name");
+		String mcpServerProfilePath = MapUtil.getString(
+			mcpServerProfileObjectEntry.getValues(), "profilePath");
 
 		synchronized (this) {
 			return _servlets.computeIfAbsent(
-				_getServletKey(companyId, mcpServerProfileName),
+				_getServletKey(companyId, mcpServerProfilePath),
 				servletKey -> _buildServlet(
 					httpServletRequest, companyId,
 					mcpServerProfileObjectEntry));
 		}
 	}
 
-	private String _getServletKey(long companyId, String mcpServerProfileName) {
-		return companyId + StringPool.UNDERLINE + mcpServerProfileName;
+	private String _getServletKey(long companyId, String mcpServerProfilePath) {
+		return companyId + StringPool.UNDERLINE + mcpServerProfilePath;
 	}
 
 	private List<McpStatelessServerFeatures.SyncPromptSpecification>
