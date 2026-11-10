@@ -8,18 +8,29 @@ package com.liferay.oauth.client.rest.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth.client.persistence.configuration.OAuthClientCompanyConfiguration;
 import com.liferay.oauth.client.persistence.constants.OAuthClientEntryConstants;
+import com.liferay.oauth.client.persistence.service.OAuthClientEntryLocalService;
 import com.liferay.oauth.client.rest.client.dto.v1_0.OAuthClientEntry;
+import com.liferay.oauth.client.rest.client.permission.Permission;
 import com.liferay.oauth.client.test.util.OpenIdConnectProviderHttpServer;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
+import com.liferay.portal.test.rule.Inject;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -55,6 +66,16 @@ public class OAuthClientEntryResourceTest
 		if (_openIdConnectProviderHttpServer != null) {
 			_openIdConnectProviderHttpServer.close();
 		}
+	}
+
+	@Override
+	@Test
+	public void testPutOAuthClientEntryByExternalReferenceCode()
+		throws Exception {
+
+		super.testPutOAuthClientEntryByExternalReferenceCode();
+
+		_testPutOAuthClientEntryByExternalReferenceCodeWithPermissions();
 	}
 
 	@Override
@@ -147,9 +168,69 @@ public class OAuthClientEntryResourceTest
 			randomOAuthClientEntry());
 	}
 
+	private void _testPutOAuthClientEntryByExternalReferenceCodeWithPermissions()
+		throws Exception {
+
+		OAuthClientEntry postOAuthClientEntry =
+			testPutOAuthClientEntryByExternalReferenceCode_addOAuthClientEntry();
+
+		com.liferay.oauth.client.persistence.model.OAuthClientEntry
+			serviceBuilderOAuthClientEntry =
+				_oAuthClientEntryLocalService.
+					getOAuthClientEntryByExternalReferenceCode(
+						postOAuthClientEntry.getExternalReferenceCode(),
+						testCompany.getCompanyId());
+
+		String className = serviceBuilderOAuthClientEntry.getModelClassName();
+		String primKey = String.valueOf(
+			serviceBuilderOAuthClientEntry.getOAuthClientEntryId());
+
+		Role role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			testCompany.getCompanyId(), className,
+			ResourceConstants.SCOPE_INDIVIDUAL, primKey, role1.getRoleId(),
+			new String[] {ActionKeys.VIEW});
+
+		OAuthClientEntry randomOAuthClientEntry = randomOAuthClientEntry();
+
+		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		randomOAuthClientEntry.setPermissions(
+			new Permission[] {
+				new Permission() {
+					{
+						setActionIds(new String[] {ActionKeys.VIEW});
+						setRoleName(role2.getName());
+					}
+				}
+			});
+
+		oAuthClientEntryResource.putOAuthClientEntryByExternalReferenceCode(
+			postOAuthClientEntry.getExternalReferenceCode(),
+			randomOAuthClientEntry);
+
+		Assert.assertFalse(
+			_resourcePermissionLocalService.hasResourcePermission(
+				testCompany.getCompanyId(), className,
+				ResourceConstants.SCOPE_INDIVIDUAL, primKey, role1.getRoleId(),
+				ActionKeys.VIEW));
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				testCompany.getCompanyId(), className,
+				ResourceConstants.SCOPE_INDIVIDUAL, primKey, role2.getRoleId(),
+				ActionKeys.VIEW));
+	}
+
 	private static CompanyConfigurationTemporarySwapper
 		_companyConfigurationTemporarySwapper;
 	private static OpenIdConnectProviderHttpServer
 		_openIdConnectProviderHttpServer;
+
+	@Inject
+	private OAuthClientEntryLocalService _oAuthClientEntryLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 }
