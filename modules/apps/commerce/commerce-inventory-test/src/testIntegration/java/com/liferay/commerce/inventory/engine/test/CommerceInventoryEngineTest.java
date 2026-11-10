@@ -728,7 +728,7 @@ public class CommerceInventoryEngineTest {
 				_commerceChannel.getCommerceChannelId(), BigDecimal.valueOf(3),
 				_cpInstance1.getSku(), StringPool.BLANK, _serviceContext);
 
-		int auditCountBefore = TransactionTestUtil.invoke(
+		int auditsCountBefore = TransactionTestUtil.invoke(
 			CommerceInventoryAuditUtil.getPersistence(),
 			commerceInventoryAuditPersistence ->
 				commerceInventoryAuditPersistence.countByC_S_U(
@@ -748,8 +748,8 @@ public class CommerceInventoryEngineTest {
 				commerceInventoryAuditPersistence ->
 					commerceInventoryAuditPersistence.findByC_S_U(
 						_group.getCompanyId(), _cpInstance1.getSku(),
-						StringPool.BLANK, auditCountBefore,
-						auditCountBefore + 10));
+						StringPool.BLANK, auditsCountBefore,
+						auditsCountBefore + 10));
 
 		CommerceInventoryAudit orderDeletionCommerceInventoryAudit = null;
 
