@@ -116,22 +116,6 @@ public class PLOEntryServiceImpl extends PLOEntryServiceBaseImpl {
 	}
 
 	@Override
-	public List<PLOEntry> getPLOEntries(
-			String keywords, int start, int end,
-			OrderByComparator<PLOEntry> orderByComparator)
-		throws PortalException {
-
-		PermissionChecker permissionChecker = getPermissionChecker();
-
-		PortalPermissionUtil.check(
-			permissionChecker, PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
-
-		return ploEntryLocalService.getPLOEntries(
-			permissionChecker.getCompanyId(), keywords, start, end,
-			orderByComparator);
-	}
-
-	@Override
 	public int getPLOEntriesCount() throws PortalException {
 		PermissionChecker permissionChecker = getPermissionChecker();
 
@@ -140,17 +124,6 @@ public class PLOEntryServiceImpl extends PLOEntryServiceBaseImpl {
 
 		return ploEntryPersistence.countByCompanyId(
 			permissionChecker.getCompanyId());
-	}
-
-	@Override
-	public int getPLOEntriesCount(String keywords) throws PortalException {
-		PermissionChecker permissionChecker = getPermissionChecker();
-
-		PortalPermissionUtil.check(
-			permissionChecker, PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
-
-		return ploEntryLocalService.getPLOEntriesCount(
-			permissionChecker.getCompanyId(), keywords);
 	}
 
 	@Override
