@@ -61,19 +61,6 @@
 	<td></td>
 </tr>
 
-<!--ENTRY_CARDS-->
-
-<tr>
-	<td>ENTRY_CARDS_THUMBNAIL</td>
-	<td>//*[contains(@data-title,'${key_webContentTitle}')]//div[contains(@class,'card')]//a[contains(.,'${key_webContentTitle}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td></td>
-	<td></td>
-	<td></td>
-</tr>
-
 <!--ENTRY_LIST-->
 
 <tr>

@@ -70,14 +70,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewExpireContentFailedMessage() {
-		AssertTextEquals.assertPartialText(
-			key_alertMessage = "Please enter a valid expiration date.",
-			locator1 = "Message#ERROR_ENTER_A_VALID_VALUE",
-			value1 = "Please enter a valid expiration date.");
-	}
-
-	@summary = "Default summary"
 	macro viewFieldErrorMessage(fieldLabel = null, errorMessage = null) {
 		AssertTextEquals(
 			fieldLabel = ${fieldLabel},

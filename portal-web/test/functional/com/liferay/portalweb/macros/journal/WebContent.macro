@@ -2251,33 +2251,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewDisplayStyleCP(webContentTitle = null) {
-		LexiconEntry.changeDisplayStyle(displayStyle = "cards");
-
-		LexiconEntry.viewActiveDisplayStyle(displayStyle = "cards");
-
-		AssertElementPresent(
-			key_webContentTitle = ${webContentTitle},
-			locator1 = "WC#ENTRY_CARDS_THUMBNAIL");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		LexiconEntry.viewActiveDisplayStyle(displayStyle = "list");
-
-		AssertElementPresent(
-			key_webContentTitle = ${webContentTitle},
-			locator1 = "WC#ENTRY_LIST_THUMBNAIL");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "table");
-
-		LexiconEntry.viewActiveDisplayStyle(displayStyle = "table");
-
-		AssertElementPresent(
-			key_webContentTitle = ${webContentTitle},
-			locator1 = "WC#ENTRY_TABLE_TITLE");
-	}
-
-	@summary = "Default summary"
 	macro viewDuplicatedField(fieldLabel = null, totalPortletCount = null) {
 		var i = 0;
 
