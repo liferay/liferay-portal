@@ -53,6 +53,11 @@ public class RememberMeTokenLocalServiceImpl
 	}
 
 	@Override
+	public void deleteUserRememberMeTokens(long userId) {
+		rememberMeTokenPersistence.removeByUserId(userId);
+	}
+
+	@Override
 	public RememberMeToken fetchRememberMeToken(
 			long rememberMeTokenId, String value)
 		throws PwdEncryptorException {

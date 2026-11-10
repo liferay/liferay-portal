@@ -1906,6 +1906,9 @@
 
 		<!-- Finder methods -->
 
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
 		<finder name="LteExpirationDate" return-type="Collection">
 			<finder-column comparator="&lt;=" name="expirationDate" />
 		</finder>
