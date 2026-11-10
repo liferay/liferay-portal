@@ -494,10 +494,10 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 		File baseDir, String command, Map<String, String> environmentVariables,
 		long timeout) {
 
-		Process process = _executeGradleCommand(
-			baseDir, command, environmentVariables, timeout);
-
 		try {
+			Process process = _executeGradleCommand(
+				baseDir, command, environmentVariables, timeout);
+
 			return JenkinsResultsParserUtil.readInputStream(
 				process.getInputStream());
 		}
@@ -568,13 +568,16 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 		sb.append("export npm_config_package_lock=false\n");
 
 		if (environmentVariables != null) {
-			for (Map.Entry<String, String> environmentVariable :
+			for (Map.Entry<String, String> entry :
 					environmentVariables.entrySet()) {
 
+				String key = entry.getKey();
+				String value = entry.getValue();
+
 				sb.append("export ");
-				sb.append(environmentVariable.getKey());
+				sb.append(key);
 				sb.append("=");
-				sb.append(environmentVariable.getValue());
+				sb.append(value);
 				sb.append("\n");
 			}
 		}
