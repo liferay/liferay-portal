@@ -20,7 +20,6 @@ import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -32,6 +31,8 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -41,9 +42,10 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -51,7 +53,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.util.comparator.GroupNameComparator;
 import com.liferay.portal.kernel.webserver.WebServerServletToken;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -103,6 +104,27 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 			resourceRequest, resourceResponse,
 			_getApplicationsMenuContextJSONObject(
 				resourceRequest, resourceResponse));
+	}
+
+	private void _addMySiteGroups(
+			List<Group> groups, List<Group> mySiteGroups,
+			List<Group> recentGroups, ResourceRequest resourceRequest,
+			ThemeDisplay themeDisplay)
+		throws Exception {
+
+		for (Group group : groups) {
+			if (mySiteGroups.size() > _MAX_SITES) {
+				return;
+			}
+
+			if (recentGroups.contains(group) ||
+				!_hasGroupURL(group, resourceRequest, themeDisplay)) {
+
+				continue;
+			}
+
+			mySiteGroups.add(group);
+		}
 	}
 
 	private JSONObject _getApplicationsMenuContextJSONObject(
@@ -322,6 +344,50 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 				StringUtil.toLowerCase(GroupConstants.DSR), "/rooms"));
 	}
 
+	private List<Group> _getMySiteGroups(
+			List<Group> recentGroups, ResourceRequest resourceRequest,
+			ThemeDisplay themeDisplay)
+		throws Exception {
+
+		List<Group> mySiteGroups = new ArrayList<>();
+
+		if (!_isShowAllSites(themeDisplay.getPermissionChecker())) {
+			User user = themeDisplay.getUser();
+
+			_addMySiteGroups(
+				user.getMySiteGroups(
+					new String[] {
+						Company.class.getName(), Group.class.getName(),
+						Organization.class.getName()
+					},
+					QueryUtil.ALL_POS),
+				mySiteGroups, recentGroups, resourceRequest, themeDisplay);
+
+			return mySiteGroups;
+		}
+
+		int size = recentGroups.size() + _MAX_SITES + 1;
+		int start = 0;
+
+		while (true) {
+			List<Group> groups = _groupLocalService.getActiveGroups(
+				themeDisplay.getCompanyId(), true, true, start, start + size,
+				null);
+
+			_addMySiteGroups(
+				groups, mySiteGroups, recentGroups, resourceRequest,
+				themeDisplay);
+
+			if ((mySiteGroups.size() > _MAX_SITES) || (groups.size() < size)) {
+				break;
+			}
+
+			start += size;
+		}
+
+		return mySiteGroups;
+	}
+
 	private String _getNewSpaceCreationURL(
 			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)
 		throws Exception {
@@ -408,35 +474,8 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		List<Group> recentGroups = _recentGroupManager.getRecentGroups(
 			httpServletRequest);
 
-		List<Group> mySiteGroups = null;
-
-		if (_isShowAllSites(themeDisplay.getPermissionChecker())) {
-			recentGroups = ListUtil.filter(recentGroups, Group::isSite);
-
-			mySiteGroups = _groupLocalService.search(
-				themeDisplay.getCompanyId(),
-				TransformUtil.transformToLongArray(
-					_CLASS_NAMES, _portal::getClassNameId),
-				null,
-				LinkedHashMapBuilder.<String, Object>put(
-					"active", Boolean.TRUE
-				).put(
-					"site", Boolean.TRUE
-				).build(),
-				0, recentGroups.size() + _MAX_SITES + 1,
-				new GroupNameComparator(true, themeDisplay.getLocale()));
-		}
-		else {
-			User user = themeDisplay.getUser();
-
-			mySiteGroups = user.getMySiteGroups(
-				_CLASS_NAMES, QueryUtil.ALL_POS);
-
-			recentGroups = ListUtil.filter(
-				recentGroups, mySiteGroups::contains);
-		}
-
-		mySiteGroups = ListUtil.remove(mySiteGroups, recentGroups);
+		List<Group> mySiteGroups = _getMySiteGroups(
+			recentGroups, resourceRequest, themeDisplay);
 
 		int count = recentGroups.size() + mySiteGroups.size();
 
@@ -488,6 +527,35 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 				siteItemSelectorCriterion));
 	}
 
+	private boolean _hasGroupURL(
+			Group group, ResourceRequest resourceRequest,
+			ThemeDisplay themeDisplay)
+		throws Exception {
+
+		Layout layout = _layoutLocalService.fetchFirstLayout(
+			group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+
+		if (layout != null) {
+			return Validator.isNotNull(
+				_groupURLProvider.getGroupURL(group, resourceRequest));
+		}
+
+		Layout privateLayout = _layoutLocalService.fetchFirstLayout(
+			group.getGroupId(), true, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+
+		if ((privateLayout != null) &&
+			!LayoutPermissionUtil.contains(
+				themeDisplay.getPermissionChecker(), privateLayout, true,
+				ActionKeys.VIEW)) {
+
+			return false;
+		}
+
+		return Validator.isNotNull(
+			_groupURLProvider.getGroupURL(group, resourceRequest));
+	}
+
 	private boolean _isApplicationMenuApp(ResourceRequest resourceRequest) {
 		String selectedPortletId = ParamUtil.getString(
 			resourceRequest, "selectedPortletId");
@@ -514,9 +582,7 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		return false;
 	}
 
-	private boolean _isShowAllSites(PermissionChecker permissionChecker)
-		throws Exception {
-
+	private boolean _isShowAllSites(PermissionChecker permissionChecker) {
 		if (permissionChecker.isCompanyAdmin() ||
 			GroupPermissionUtil.contains(permissionChecker, ActionKeys.VIEW)) {
 
@@ -559,11 +625,6 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		}
 	}
 
-	private static final String[] _CLASS_NAMES = {
-		Company.class.getName(), Group.class.getName(),
-		Organization.class.getName()
-	};
-
 	private static final int _MAX_SITES = 3;
 
 	@Reference
@@ -580,6 +641,9 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private PanelAppRegistry _panelAppRegistry;
