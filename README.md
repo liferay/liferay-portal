@@ -1,7 +1,5 @@
 # Liferay DXP
 
-> 🚀 **See what's next and meet the team behind it at** &nbsp; [![Devcon London, November 2026 — event details and registration](https://img.shields.io/badge/Devcon%20London%20%C2%B7%20November%202026-E500BD)](https://events.liferay.com/5NAl2R?utm_source=Github&utm_campaign=Github-Devcon26&utm_medium=organic&RefId=Github)
-
 This `liferay-portal` repository contains the source code for [Liferay DXP](https://www.liferay.com/products/dxp), Liferay's Java-based digital experience platform. Liferay Portal and Liferay DXP are now a single product. Building this repository produces a Liferay DXP bundle. The platform is maintained by Liferay engineering and a global community of contributors.
 
 ## Getting Liferay DXP
