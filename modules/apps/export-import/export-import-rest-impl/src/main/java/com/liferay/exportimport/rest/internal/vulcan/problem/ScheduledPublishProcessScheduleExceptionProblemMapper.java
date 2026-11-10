@@ -5,7 +5,7 @@
 
 package com.liferay.exportimport.rest.internal.vulcan.problem;
 
-import com.liferay.exportimport.rest.internal.resource.exception.ScheduledPublishProcessException;
+import com.liferay.exportimport.rest.internal.resource.exception.ScheduledPublishProcessScheduleException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
@@ -19,29 +19,31 @@ import org.osgi.service.component.annotations.Reference;
  * @author Magdalena Jedraszak
  */
 @Component(service = ProblemMapper.class)
-public class ScheduledPublishProcessExceptionProblemMapper
-	implements ProblemMapper<ScheduledPublishProcessException> {
+public class ScheduledPublishProcessScheduleExceptionProblemMapper
+	implements ProblemMapper<ScheduledPublishProcessScheduleException> {
 
 	@Override
 	public Problem getProblem(
-		ScheduledPublishProcessException scheduledPublishProcessException) {
+		ScheduledPublishProcessScheduleException
+			scheduledPublishProcessScheduleException) {
 
-		if (scheduledPublishProcessException instanceof
-				ScheduledPublishProcessException.MustRunAtLeastOnce) {
+		if (scheduledPublishProcessScheduleException instanceof
+				ScheduledPublishProcessScheduleException.MustRunAtLeastOnce) {
 
 			return _getProblem(
 				"the-scheduled-process-will-never-run",
-				scheduledPublishProcessException);
+				scheduledPublishProcessScheduleException);
 		}
 
 		return _getProblem(
 			"please-enter-a-valid-cron-expression",
-			scheduledPublishProcessException);
+			scheduledPublishProcessScheduleException);
 	}
 
 	private Problem _getProblem(
 		String key,
-		ScheduledPublishProcessException scheduledPublishProcessException) {
+		ScheduledPublishProcessScheduleException
+			scheduledPublishProcessScheduleException) {
 
 		return new Problem() {
 
@@ -62,7 +64,8 @@ public class ScheduledPublishProcessExceptionProblemMapper
 
 			@Override
 			public String getType() {
-				Class<?> clazz = scheduledPublishProcessException.getClass();
+				Class<?> clazz =
+					scheduledPublishProcessScheduleException.getClass();
 
 				return clazz.getName();
 			}

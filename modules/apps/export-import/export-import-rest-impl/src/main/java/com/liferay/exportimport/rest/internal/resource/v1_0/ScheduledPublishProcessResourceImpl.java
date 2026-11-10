@@ -18,7 +18,7 @@ import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.PublishProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.ScheduledPublishProcess;
 import com.liferay.exportimport.rest.dto.v1_0.ScheduledPublishProcessRequest;
-import com.liferay.exportimport.rest.internal.resource.exception.ScheduledPublishProcessException;
+import com.liferay.exportimport.rest.internal.resource.exception.ScheduledPublishProcessScheduleException;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.LayoutUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
@@ -431,11 +431,12 @@ public class ScheduledPublishProcessResourceImpl
 				_log.debug(exception);
 			}
 
-			throw new ScheduledPublishProcessException.MustBeValid();
+			throw new ScheduledPublishProcessScheduleException.MustBeValid();
 		}
 
 		if (trigger.getFireDateAfter(new Date(0)) == null) {
-			throw new ScheduledPublishProcessException.MustRunAtLeastOnce();
+			throw new ScheduledPublishProcessScheduleException.
+				MustRunAtLeastOnce();
 		}
 
 		return trigger;
