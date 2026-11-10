@@ -124,12 +124,12 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 	public void testGetObjectEntryByExternalReferenceCodeWithSlash()
 		throws Exception {
 
-		ObjectField textObjectField = objectFieldLocalService.getObjectField(
+		ObjectField objectField = objectFieldLocalService.getObjectField(
 			getObjectDefinition1().getObjectDefinitionId(),
 			OBJECT_FIELD_NAME_1);
 
 		getObjectDefinition1().setTitleObjectFieldId(
-			textObjectField.getObjectFieldId());
+			objectField.getObjectFieldId());
 
 		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition1());
@@ -197,7 +197,7 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			).toString(),
 			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
-		try (LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
 					"WebApplicationExceptionMapper",
 				LoggerTestUtil.ERROR)) {

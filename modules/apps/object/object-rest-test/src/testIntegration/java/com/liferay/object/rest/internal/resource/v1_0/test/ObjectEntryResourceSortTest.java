@@ -88,7 +88,7 @@ public class ObjectEntryResourceSortTest
 			RandomTestUtil.randomDouble());
 		Date randomDate1 = RandomTestUtil.nextDate();
 		Date randomDate2 = RandomTestUtil.nextDate();
-		float randomFloat1 = RandomTestUtil.randomFloat();
+		float randomFloat = RandomTestUtil.randomFloat();
 		int randomInt = RandomTestUtil.randomInt();
 		long randomLong = RandomTestUtil.randomLong(
 			ObjectFieldValidationConstants.BUSINESS_TYPE_LONG_VALUE_MIN,
@@ -106,7 +106,7 @@ public class ObjectEntryResourceSortTest
 				OBJECT_FIELD_NAME_DATE_TIME_INPUT,
 				dateTimeDateFormat.format(randomDate2)
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt
 			).put(
@@ -155,7 +155,7 @@ public class ObjectEntryResourceSortTest
 						randomDate2.getTime() +
 							(RandomTestUtil.randomInt(1, 60) * 1000)))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 1
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 1
 			).put(
@@ -280,7 +280,7 @@ public class ObjectEntryResourceSortTest
 			RandomTestUtil.randomDouble());
 		Date randomDate1 = RandomTestUtil.nextDate();
 		Date randomDate2 = RandomTestUtil.nextDate();
-		float randomFloat1 = RandomTestUtil.randomFloat();
+		float randomFloat = RandomTestUtil.randomFloat();
 		int randomInt = RandomTestUtil.randomInt();
 		long randomLong = RandomTestUtil.randomLong(
 			ObjectFieldValidationConstants.BUSINESS_TYPE_LONG_VALUE_MIN,
@@ -297,7 +297,7 @@ public class ObjectEntryResourceSortTest
 				OBJECT_FIELD_NAME_DATE_TIME_INPUT,
 				dateTimeDateFormat.format(randomDate2)
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt
 			).put(
@@ -328,7 +328,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 2000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 2
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 2
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 2
 			).put(
@@ -357,7 +357,7 @@ public class ObjectEntryResourceSortTest
 				OBJECT_FIELD_NAME_DATE_TIME_INPUT,
 				dateTimeDateFormat.format(randomDate2)
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt
 			).put(
@@ -388,7 +388,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 2000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 2
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 2
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 2
 			).put(
@@ -420,7 +420,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 1000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 1
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 1
 			).put(
@@ -452,7 +452,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 3000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 3
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 3
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 3
 			).put(
@@ -742,7 +742,7 @@ public class ObjectEntryResourceSortTest
 			RandomTestUtil.randomDouble());
 		Date randomDate1 = RandomTestUtil.nextDate();
 		Date randomDate2 = RandomTestUtil.nextDate();
-		float randomFloat1 = RandomTestUtil.randomFloat();
+		float randomFloat = RandomTestUtil.randomFloat();
 		int randomInt = RandomTestUtil.randomInt();
 		long randomLong = RandomTestUtil.randomLong(
 			ObjectFieldValidationConstants.BUSINESS_TYPE_LONG_VALUE_MIN,
@@ -759,7 +759,7 @@ public class ObjectEntryResourceSortTest
 				OBJECT_FIELD_NAME_DATE_TIME_INPUT,
 				dateTimeDateFormat.format(randomDate2)
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt
 			).put(
@@ -790,7 +790,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 2000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 2
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 2
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 2
 			).put(
@@ -819,7 +819,7 @@ public class ObjectEntryResourceSortTest
 				OBJECT_FIELD_NAME_DATE_TIME_INPUT,
 				dateTimeDateFormat.format(randomDate2)
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt
 			).put(
@@ -850,7 +850,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 2000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 2
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 2
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 2
 			).put(
@@ -1581,7 +1581,7 @@ public class ObjectEntryResourceSortTest
 			RandomTestUtil.randomDouble());
 		Date randomDate1 = RandomTestUtil.nextDate();
 		Date randomDate2 = RandomTestUtil.nextDate();
-		float randomFloat1 = RandomTestUtil.randomFloat();
+		float randomFloat = RandomTestUtil.randomFloat();
 		int randomInt = RandomTestUtil.randomInt();
 		long randomLong = RandomTestUtil.randomLong(
 			ObjectFieldValidationConstants.BUSINESS_TYPE_LONG_VALUE_MIN,
@@ -1598,7 +1598,7 @@ public class ObjectEntryResourceSortTest
 				OBJECT_FIELD_NAME_DATE_TIME_INPUT,
 				dateTimeDateFormat.format(randomDate2)
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt
 			).put(
@@ -1629,7 +1629,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 2000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 2
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 2
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 2
 			).put(
@@ -1661,7 +1661,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 1000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 1
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 1
 			).put(
@@ -1693,7 +1693,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 3000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 3
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 3
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 3
 			).put(
@@ -1722,7 +1722,7 @@ public class ObjectEntryResourceSortTest
 				OBJECT_FIELD_NAME_DATE_TIME_INPUT,
 				dateTimeDateFormat.format(randomDate2)
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt
 			).put(
@@ -1753,7 +1753,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 2000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 2
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 2
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 2
 			).put(
@@ -1785,7 +1785,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 1000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 1
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 1
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 1
 			).put(
@@ -1817,7 +1817,7 @@ public class ObjectEntryResourceSortTest
 				dateTimeDateFormat.format(
 					new Date(randomDate2.getTime() + 3000))
 			).put(
-				OBJECT_FIELD_NAME_DECIMAL, randomFloat1 + 3
+				OBJECT_FIELD_NAME_DECIMAL, randomFloat + 3
 			).put(
 				OBJECT_FIELD_NAME_INTEGER, randomInt + 3
 			).put(

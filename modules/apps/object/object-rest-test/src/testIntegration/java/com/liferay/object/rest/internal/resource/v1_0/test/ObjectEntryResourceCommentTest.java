@@ -257,15 +257,15 @@ public class ObjectEntryResourceCommentTest
 
 		_enableComments(objectDefinition);
 
-		String value = RandomTestUtil.randomString();
+		String comments = RandomTestUtil.randomString();
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				"comments", value
+				"comments", comments
 			).toString(),
 			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
-		Assert.assertEquals(value, jsonObject.getString("comments"));
+		Assert.assertEquals(comments, jsonObject.getString("comments"));
 
 		objectDefinitionLocalService.deleteObjectDefinition(
 			objectDefinition.getObjectDefinitionId());
@@ -411,24 +411,24 @@ public class ObjectEntryResourceCommentTest
 
 		long objectEntryId = objectEntryJSONObject.getLong("id");
 
-		List<com.liferay.portal.kernel.comment.Comment> serviceBuilderComment =
+		List<com.liferay.portal.kernel.comment.Comment> serviceBuilderComments =
 			_commentManager.getComments(
 				objectDefinition.getClassName(), objectEntryId,
 				WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS);
 
-		Assert.assertFalse(serviceBuilderComment.isEmpty());
+		Assert.assertFalse(serviceBuilderComments.isEmpty());
 
 		endpoint = _getDeletePatchPutEndpoint(
 			groupId, objectDefinition, objectEntryJSONObject);
 
 		HTTPTestUtil.invokeToJSONObject(null, endpoint, Http.Method.DELETE);
 
-		serviceBuilderComment = _commentManager.getComments(
+		serviceBuilderComments = _commentManager.getComments(
 			objectDefinition.getClassName(), objectEntryId,
 			WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
-		Assert.assertTrue(serviceBuilderComment.isEmpty());
+		Assert.assertTrue(serviceBuilderComments.isEmpty());
 	}
 
 	private void _testGetObjectEntriesPageWithComments(

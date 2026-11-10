@@ -13,7 +13,6 @@ import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
@@ -150,10 +149,8 @@ public class ObjectEntryResourceStatusTest
 
 		// Site scope
 
-		Group group = groupLocalService.fetchGroup(testGroupId);
-
 		ObjectEntry siteObjectEntry = objectEntryLocalService.addObjectEntry(
-			group.getGroupId(), TestPropsValues.getUserId(),
+			testGroupId, TestPropsValues.getUserId(),
 			getSiteScopedObjectDefinition1().getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
@@ -168,8 +165,7 @@ public class ObjectEntryResourceStatusTest
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
 			StringBundler.concat(
-				getEndpoint(
-					getSiteScopedObjectDefinition1(), group.getGroupId()),
+				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
 				"/by-external-reference-code/",
 				siteObjectEntry.getExternalReferenceCode(), "/expire"),
 			Http.Method.POST);

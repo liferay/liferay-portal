@@ -192,13 +192,13 @@ public class ObjectEntryResourcePermissionTest
 	public void testGetObjectEntryActionsWithGroupSharingDisabled()
 		throws Exception {
 
-		UnicodeProperties originalUnicodeProperties =
+		UnicodeProperties typeSettingsUnicodeProperties =
 			group.getTypeSettingsProperties();
 
 		groupLocalService.updateGroup(
 			group.getGroupId(),
 			UnicodePropertiesBuilder.create(
-				originalUnicodeProperties, true
+				typeSettingsUnicodeProperties, true
 			).put(
 				"sharingEnabled", false
 			).buildString());
@@ -208,7 +208,7 @@ public class ObjectEntryResourcePermissionTest
 		}
 		finally {
 			groupLocalService.updateGroup(
-				group.getGroupId(), originalUnicodeProperties.toString());
+				group.getGroupId(), typeSettingsUnicodeProperties.toString());
 		}
 	}
 
@@ -302,7 +302,7 @@ public class ObjectEntryResourcePermissionTest
 		ObjectEntryFolder objectEntryFolder = _addObjectEntryFolder(
 			depotEntry, serviceContext, depotEntry.getUserId());
 
-		ObjectEntry objectEntry1 = _addObjectEntry(
+		ObjectEntry objectEntry = _addObjectEntry(
 			depotEntry, objectDefinition, objectEntryFolder, serviceContext,
 			depotEntry.getUserId());
 
@@ -318,10 +318,10 @@ public class ObjectEntryResourcePermissionTest
 			userGroupRoleLocalService.addUserGroupRole(
 				user.getUserId(), depotEntry.getGroupId(), role.getRoleId());
 
-		JSONObject jsonObject = _getActionsJSONObject(
-			objectDefinition, objectEntry1, user, password);
+		JSONObject actionsJSONObject = _getActionsJSONObject(
+			objectDefinition, objectEntry, user, password);
 
-		Assert.assertTrue(jsonObject.has("share"));
+		Assert.assertTrue(actionsJSONObject.has("share"));
 
 		userGroupRoleLocalService.deleteUserGroupRole(userGroupRole);
 
@@ -334,29 +334,29 @@ public class ObjectEntryResourcePermissionTest
 		userGroupRole = userGroupRoleLocalService.addUserGroupRole(
 			user.getUserId(), depotEntry.getGroupId(), role.getRoleId());
 
-		jsonObject = _getActionsJSONObject(
-			objectDefinition, objectEntry1, user, password);
+		actionsJSONObject = _getActionsJSONObject(
+			objectDefinition, objectEntry, user, password);
 
-		Assert.assertFalse(jsonObject.has("share"));
+		Assert.assertFalse(actionsJSONObject.has("share"));
 
 		// With asset library content reviewer role and shared object entry
 
 		SharingEntry sharingEntry = _sharingEntryLocalService.addSharingEntry(
 			null, TestPropsValues.getUserId(), 0, 0, user.getUserId(),
 			classNameLocalService.getClassNameId(
-				objectEntry1.getModelClassName()),
-			objectEntry1.getObjectEntryId(), depotEntry.getGroupId(), true,
+				objectEntry.getModelClassName()),
+			objectEntry.getObjectEntryId(), depotEntry.getGroupId(), true,
 			List.of(SharingEntryAction.VIEW), null,
 			ServiceContextTestUtil.getServiceContext(
 				depotEntry.getGroupId(), TestPropsValues.getUserId()));
 
-		jsonObject = _getActionsJSONObject(
-			objectDefinition, objectEntry1, user, password);
+		actionsJSONObject = _getActionsJSONObject(
+			objectDefinition, objectEntry, user, password);
 
 		_sharingEntryLocalService.deleteSharingEntry(
 			sharingEntry.getSharingEntryId());
 
-		Assert.assertTrue(jsonObject.has("share"));
+		Assert.assertTrue(actionsJSONObject.has("share"));
 
 		userGroupRoleLocalService.deleteUserGroupRole(userGroupRole);
 
@@ -367,32 +367,32 @@ public class ObjectEntryResourcePermissionTest
 
 		roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
 
-		jsonObject = _getActionsJSONObject(
-			objectDefinition, objectEntry1, user, password);
+		actionsJSONObject = _getActionsJSONObject(
+			objectDefinition, objectEntry, user, password);
 
-		Assert.assertTrue(jsonObject.has("share"));
+		Assert.assertTrue(actionsJSONObject.has("share"));
 
 		roleLocalService.deleteUserRole(user.getUserId(), role.getRoleId());
 
 		// With user as creator
 
-		ObjectEntry objectEntry2 = _addObjectEntry(
+		ObjectEntry userObjectEntry = _addObjectEntry(
 			depotEntry, objectDefinition, objectEntryFolder,
 			ServiceContextTestUtil.getServiceContext(
 				depotEntry.getGroupId(), user.getUserId()),
 			user.getUserId());
 
-		jsonObject = _getActionsJSONObject(
-			objectDefinition, objectEntry2, user, password);
+		actionsJSONObject = _getActionsJSONObject(
+			objectDefinition, userObjectEntry, user, password);
 
-		Assert.assertTrue(jsonObject.has("share"));
+		Assert.assertTrue(actionsJSONObject.has("share"));
 
 		// Without role
 
-		jsonObject = _getActionsJSONObject(
-			objectDefinition, objectEntry1, user, password);
+		actionsJSONObject = _getActionsJSONObject(
+			objectDefinition, objectEntry, user, password);
 
-		Assert.assertFalse(jsonObject.has("share"));
+		Assert.assertFalse(actionsJSONObject.has("share"));
 	}
 
 	@Test
@@ -707,16 +707,14 @@ public class ObjectEntryResourcePermissionTest
 		JSONObject objectEntryJSONObject =
 			_postCustomObjectEntryWithPermissions(true, null);
 
-		JSONObject invalidPermissionJSONObject =
-			_putCustomObjectEntryPermissionsPage(
-				objectEntryJSONObject.getLong("id"),
-				JSONUtil.putAll(
-					getPermissionsJSONObject(
-						new String[] {ActionKeys.DELETE},
-						RandomTestUtil.randomString())));
+		JSONObject jsonObject = _putCustomObjectEntryPermissionsPage(
+			objectEntryJSONObject.getLong("id"),
+			JSONUtil.putAll(
+				getPermissionsJSONObject(
+					new String[] {ActionKeys.DELETE},
+					RandomTestUtil.randomString())));
 
-		Assert.assertEquals(
-			"NOT_FOUND", invalidPermissionJSONObject.getString("status"));
+		Assert.assertEquals("NOT_FOUND", jsonObject.getString("status"));
 
 		// Permissions with different roles
 
@@ -824,7 +822,7 @@ public class ObjectEntryResourcePermissionTest
 			DepotEntry depotEntry, ServiceContext serviceContext, long userId)
 		throws Exception {
 
-		ObjectEntryFolder objectEntryFolder =
+		ObjectEntryFolder parentObjectEntryFolder =
 			_objectEntryFolderLocalService.
 				getObjectEntryFolderByExternalReferenceCode(
 					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
@@ -832,7 +830,7 @@ public class ObjectEntryResourcePermissionTest
 
 		return _objectEntryFolderLocalService.addObjectEntryFolder(
 			null, depotEntry.getGroupId(), userId,
-			objectEntryFolder.getObjectEntryFolderId(),
+			parentObjectEntryFolder.getObjectEntryFolderId(),
 			RandomTestUtil.randomString(),
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
@@ -868,16 +866,14 @@ public class ObjectEntryResourcePermissionTest
 	private JSONObject _getActionsJSONObject(ObjectDefinition objectDefinition)
 		throws Exception {
 
-		JSONObject responseJSONObject = HTTPTestUtil.invokeToJSONObject(
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null, objectDefinition.getRESTContextPath(), Http.Method.GET);
 
-		if ((responseJSONObject == null) ||
-			!responseJSONObject.has("actions")) {
-
+		if ((jsonObject == null) || !jsonObject.has("actions")) {
 			return JSONFactoryUtil.createJSONObject();
 		}
 
-		return responseJSONObject.getJSONObject("actions");
+		return jsonObject.getJSONObject("actions");
 	}
 
 	private JSONObject _getActionsJSONObject(
@@ -892,14 +888,13 @@ public class ObjectEntryResourcePermissionTest
 			user.getEmailAddress(), password
 		).apply(
 			() -> {
-				JSONObject responseJSONObject = HTTPTestUtil.invokeToJSONObject(
+				JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 					null,
 					objectDefinition.getRESTContextPath() + StringPool.SLASH +
 						objectEntry.getObjectEntryId(),
 					Http.Method.GET);
 
-				atomicReference.set(
-					responseJSONObject.getJSONObject("actions"));
+				atomicReference.set(jsonObject.getJSONObject("actions"));
 			}
 		);
 
@@ -1060,14 +1055,14 @@ public class ObjectEntryResourcePermissionTest
 	}
 
 	private JSONObject _putCustomObjectEntryPermissionsPage(
-			long id, JSONArray permissionsJSONArray)
+			long objectEntryId, JSONArray permissionsJSONArray)
 		throws Exception {
 
 		return HTTPTestUtil.invokeToJSONObject(
 			permissionsJSONArray.toString(),
 			StringBundler.concat(
 				getEndpoint(getObjectDefinition1(), testGroupId),
-				StringPool.SLASH, id, "/permissions"),
+				StringPool.SLASH, objectEntryId, "/permissions"),
 			Http.Method.PUT);
 	}
 

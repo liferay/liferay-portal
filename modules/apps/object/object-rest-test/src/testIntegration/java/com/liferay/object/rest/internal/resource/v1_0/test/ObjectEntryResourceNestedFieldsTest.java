@@ -1095,7 +1095,7 @@ public class ObjectEntryResourceNestedFieldsTest
 
 	@Test
 	public void testGetObjectEntryWithAuditEvents() throws Exception {
-		ListTypeDefinition listTypeDefinition =
+		ListTypeDefinition picklistListTypeDefinition =
 			listTypeDefinitionLocalService.addListTypeDefinition(
 				null, TestPropsValues.getUserId(),
 				Collections.singletonMap(
@@ -1136,7 +1136,7 @@ public class ObjectEntryResourceNestedFieldsTest
 						ObjectFieldConstants.DB_TYPE_DOUBLE, true, false, null,
 						"Height", "height", false),
 					ObjectFieldUtil.createObjectField(
-						listTypeDefinition.getListTypeDefinitionId(),
+						picklistListTypeDefinition.getListTypeDefinitionId(),
 						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST, null,
 						ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
 						"List Type Entry Key", "listTypeEntryKey", false,
@@ -1414,7 +1414,7 @@ public class ObjectEntryResourceNestedFieldsTest
 		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 
 		listTypeDefinitionLocalService.deleteListTypeDefinition(
-			listTypeDefinition);
+			picklistListTypeDefinition);
 	}
 
 	@Test
@@ -1424,13 +1424,13 @@ public class ObjectEntryResourceNestedFieldsTest
 
 		// Company scope
 
-		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry companyObjectEntry = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1,
 			RandomTestUtil.randomString());
 
 		Group siteGroup1 = GroupTestUtil.addGroup();
 
-		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry siteObjectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			siteGroup1.getGroupId(), getSiteScopedObjectDefinition1(),
 			HashMapBuilder.<String, Serializable>put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
@@ -1438,38 +1438,41 @@ public class ObjectEntryResourceNestedFieldsTest
 
 		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
 			getObjectDefinition1(), getSiteScopedObjectDefinition1(),
-			objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+			companyObjectEntry.getPrimaryKey(),
+			siteObjectEntry1.getPrimaryKey(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		Group siteGroup2 = GroupTestUtil.addGroup();
 
-		ObjectEntry objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry siteObjectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			siteGroup2.getGroupId(), getSiteScopedObjectDefinition1(),
 			HashMapBuilder.<String, Serializable>put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).build());
 
 		ObjectRelationshipTestUtil.relateObjectEntries(
-			objectEntry1.getPrimaryKey(), objectEntry3.getPrimaryKey(),
-			objectRelationship1, TestPropsValues.getUserId());
+			companyObjectEntry.getPrimaryKey(),
+			siteObjectEntry2.getPrimaryKey(), objectRelationship1,
+			TestPropsValues.getUserId());
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
-				"externalReferenceCode", objectEntry1.getExternalReferenceCode()
+				"externalReferenceCode",
+				companyObjectEntry.getExternalReferenceCode()
 			).put(
 				objectRelationship1.getName(),
 				JSONUtil.putAll(
 					JSONUtil.put(
 						"externalReferenceCode",
-						objectEntry2.getExternalReferenceCode()),
+						siteObjectEntry1.getExternalReferenceCode()),
 					JSONUtil.put(
 						"externalReferenceCode",
-						objectEntry3.getExternalReferenceCode()))
+						siteObjectEntry2.getExternalReferenceCode()))
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
 				null,
 				getEndpoint(
-					objectEntry1.getObjectEntryId(), objectRelationship1,
+					companyObjectEntry.getObjectEntryId(), objectRelationship1,
 					getObjectDefinition1()),
 				Http.Method.GET
 			).toString(),
@@ -1477,38 +1480,40 @@ public class ObjectEntryResourceNestedFieldsTest
 
 		// Site scope
 
-		ObjectEntry objectEntry4 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry childObjectEntry = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2,
 			RandomTestUtil.randomString());
 
 		objectRelationship2 = addObjectRelationshipAndRelateObjectEntries(
 			getObjectDefinition1(), getObjectDefinition2(),
-			objectEntry1.getPrimaryKey(), objectEntry4.getPrimaryKey(),
+			companyObjectEntry.getPrimaryKey(),
+			childObjectEntry.getPrimaryKey(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
-				"externalReferenceCode", objectEntry2.getExternalReferenceCode()
+				"externalReferenceCode",
+				siteObjectEntry1.getExternalReferenceCode()
 			).put(
 				objectRelationship1.getName(),
 				JSONUtil.putAll(
 					JSONUtil.put(
 						"externalReferenceCode",
-						objectEntry1.getExternalReferenceCode()
+						companyObjectEntry.getExternalReferenceCode()
 					).put(
 						objectRelationship2.getName(),
 						JSONUtil.putAll(
 							JSONUtil.put(
 								"externalReferenceCode",
-								objectEntry4.getExternalReferenceCode()))
+								childObjectEntry.getExternalReferenceCode()))
 					))
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
 				null,
 				StringBundler.concat(
 					getEndpoint(
-						objectEntry2.getObjectEntryId(), objectRelationship1,
-						getSiteScopedObjectDefinition1()),
+						siteObjectEntry1.getObjectEntryId(),
+						objectRelationship1, getSiteScopedObjectDefinition1()),
 					",", objectRelationship2.getName(), "&nestedFieldsDepth=2"),
 				Http.Method.GET
 			).toString(),
@@ -1699,24 +1704,23 @@ public class ObjectEntryResourceNestedFieldsTest
 			Assert.assertNull(jsonObject);
 		}
 		else {
-			String notPresent;
+			String present;
 
 			if (objectFieldNamesAndObjectFieldValues[currentDepth][1].equals(
 					jsonObject.getString(
 						objectFieldNamesAndObjectFieldValues[currentDepth]
 							[0]))) {
 
-				notPresent = "true";
+				present = "true";
 			}
 			else {
-				notPresent = "false";
+				present = "false";
 			}
 
 			Assert.assertEquals(
 				"Incorrect presence of field " +
 					objectFieldNamesAndObjectFieldValues[currentDepth][0],
-				objectFieldNamesAndObjectFieldValues[currentDepth][2],
-				notPresent);
+				objectFieldNamesAndObjectFieldValues[currentDepth][2], present);
 		}
 
 		if ((currentDepth == depth) ||
@@ -1894,7 +1898,7 @@ public class ObjectEntryResourceNestedFieldsTest
 	private void _registerUnsafeSupplierInvocations(
 		Map<String, Long> invocations,
 		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry,
-		String relationshipName) {
+		String objectRelationshipName) {
 
 		Map<String, Object> properties = objectEntry.getProperties();
 
@@ -1902,8 +1906,8 @@ public class ObjectEntryResourceNestedFieldsTest
 			(name, value) -> (UnsafeSupplier<Object, Exception>)() -> {
 				String key = name;
 
-				if (relationshipName != null) {
-					key = relationshipName + "." + name;
+				if (objectRelationshipName != null) {
+					key = objectRelationshipName + "." + name;
 				}
 
 				invocations.compute(

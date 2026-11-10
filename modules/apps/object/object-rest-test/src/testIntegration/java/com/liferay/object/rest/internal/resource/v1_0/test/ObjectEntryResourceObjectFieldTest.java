@@ -150,12 +150,13 @@ public class ObjectEntryResourceObjectFieldTest
 							user1.getUserId(),
 							organization.getOrganizationId());
 
-						Group group = groupLocalService.getOrganizationGroup(
-							TestPropsValues.getCompanyId(),
-							organization.getOrganizationId());
+						Group organizationGroup =
+							groupLocalService.getOrganizationGroup(
+								TestPropsValues.getCompanyId(),
+								organization.getOrganizationId());
 
 						userGroupRoleLocalService.addUserGroupRole(
-							user1.getUserId(), group.getGroupId(),
+							user1.getUserId(), organizationGroup.getGroupId(),
 							role.getRoleId());
 
 						return role.getExternalReferenceCode();

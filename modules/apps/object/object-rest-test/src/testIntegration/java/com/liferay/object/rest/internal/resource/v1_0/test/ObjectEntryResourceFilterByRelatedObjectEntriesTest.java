@@ -3346,12 +3346,12 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			).put(
 				"externalReferenceCode",
 				() -> {
-					StringBuilder sb = new StringBuilder(
+					StringBuilder stringBuilder = new StringBuilder(
 						RandomTestUtil.randomString());
 
-					sb.setCharAt(4, 'a');
+					stringBuilder.setCharAt(4, 'a');
 
-					return sb.toString();
+					return stringBuilder.toString();
 				}
 			).build());
 
@@ -3926,21 +3926,21 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterObjectEntriesByRelatedLocalizedObjectEntries()
 		throws Exception {
 
-		ObjectDefinition objectDefinition1 = publishLocalizedObjectDefinition(
-			OBJECT_FIELD_NAME_1);
+		ObjectDefinition localizedObjectDefinition1 =
+			publishLocalizedObjectDefinition(OBJECT_FIELD_NAME_1);
 
-		ObjectEntry objectEntry1 = _addLocalizedObjectEntry(
-			objectDefinition1, OBJECT_FIELD_NAME_1,
+		ObjectEntry localizedObjectEntry1 = _addLocalizedObjectEntry(
+			localizedObjectDefinition1, OBJECT_FIELD_NAME_1,
 			new String[] {
 				String.valueOf(OBJECT_FIELD_VALUE_1),
 				String.valueOf(OBJECT_FIELD_VALUE_2)
 			});
 
-		ObjectDefinition objectDefinition2 = publishLocalizedObjectDefinition(
-			OBJECT_FIELD_NAME_2);
+		ObjectDefinition localizedObjectDefinition2 =
+			publishLocalizedObjectDefinition(OBJECT_FIELD_NAME_2);
 
-		ObjectEntry objectEntry2 = _addLocalizedObjectEntry(
-			objectDefinition2, OBJECT_FIELD_NAME_2,
+		ObjectEntry localizedObjectEntry2 = _addLocalizedObjectEntry(
+			localizedObjectDefinition2, OBJECT_FIELD_NAME_2,
 			new String[] {
 				String.valueOf(OBJECT_FIELD_VALUE_3),
 				String.valueOf(OBJECT_FIELD_VALUE_4)
@@ -3948,8 +3948,9 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 
 		ObjectRelationship objectRelationship =
 			addObjectRelationshipAndRelateObjectEntries(
-				objectDefinition1, objectDefinition2,
-				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				localizedObjectDefinition1, localizedObjectDefinition2,
+				localizedObjectEntry1.getPrimaryKey(),
+				localizedObjectEntry2.getPrimaryKey(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		try {
@@ -3960,13 +3961,13 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				String.format(
 					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1),
-				"en-US", objectDefinition2, objectEntry2);
+				"en-US", localizedObjectDefinition2, localizedObjectEntry2);
 
 			_testFilterObjectEntriesByRelatedLocalizedObjectEntries(
 				String.format(
 					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2),
-				"es-ES", objectDefinition2, objectEntry2);
+				"es-ES", localizedObjectDefinition2, localizedObjectEntry2);
 
 			// One to many relationship
 
@@ -3974,22 +3975,22 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				String.format(
 					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_3),
-				"en-US", objectDefinition1, objectEntry1);
+				"en-US", localizedObjectDefinition1, localizedObjectEntry1);
 
 			_testFilterObjectEntriesByRelatedLocalizedObjectEntries(
 				String.format(
 					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_4),
-				"es-ES", objectDefinition1, objectEntry1);
+				"es-ES", localizedObjectDefinition1, localizedObjectEntry1);
 		}
 		finally {
 			objectRelationshipLocalService.deleteObjectRelationship(
 				objectRelationship);
 
 			objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition1);
+				localizedObjectDefinition1);
 			objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition2);
+				localizedObjectDefinition2);
 		}
 	}
 
@@ -4102,55 +4103,57 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testGetObjectEntriesPageWithFilterOnManyToManyRelatedLocalizedObjectField()
 		throws Exception {
 
-		ObjectDefinition objectDefinition1 = publishLocalizedObjectDefinition(
-			OBJECT_FIELD_NAME_TEXT);
-		String objectEntryValue1 = RandomTestUtil.randomString();
+		ObjectDefinition localizedObjectDefinition1 =
+			publishLocalizedObjectDefinition(OBJECT_FIELD_NAME_TEXT);
+		String objectFieldValue1 = RandomTestUtil.randomString();
 
-		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition1,
+		ObjectEntry localizedObjectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			localizedObjectDefinition1,
 			HashMapBuilder.<String, Serializable>put(
-				OBJECT_FIELD_NAME_TEXT, objectEntryValue1
+				OBJECT_FIELD_NAME_TEXT, objectFieldValue1
 			).put(
 				OBJECT_FIELD_NAME_TEXT + "_i18n",
 				HashMapBuilder.<String, Serializable>put(
-					"en_US", objectEntryValue1
+					"en_US", objectFieldValue1
 				).build()
 			).build());
 
-		ObjectDefinition objectDefinition2 = publishLocalizedObjectDefinition(
-			OBJECT_FIELD_NAME_TEXT);
-		String objectEntryValue2 = RandomTestUtil.randomString();
+		ObjectDefinition localizedObjectDefinition2 =
+			publishLocalizedObjectDefinition(OBJECT_FIELD_NAME_TEXT);
+		String objectFieldValue2 = RandomTestUtil.randomString();
 
-		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition2,
+		ObjectEntry localizedObjectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+			localizedObjectDefinition2,
 			HashMapBuilder.<String, Serializable>put(
-				OBJECT_FIELD_NAME_TEXT, objectEntryValue2
+				OBJECT_FIELD_NAME_TEXT, objectFieldValue2
 			).put(
 				OBJECT_FIELD_NAME_TEXT + "_i18n",
 				HashMapBuilder.<String, Serializable>put(
-					"en_US", objectEntryValue2
+					"en_US", objectFieldValue2
 				).build()
 			).build());
 
 		ObjectRelationship objectRelationship =
 			addObjectRelationshipAndRelateObjectEntries(
-				objectDefinition1, objectDefinition2,
-				objectEntry1.getObjectEntryId(),
-				objectEntry2.getObjectEntryId(),
+				localizedObjectDefinition1, localizedObjectDefinition2,
+				localizedObjectEntry1.getObjectEntryId(),
+				localizedObjectEntry2.getObjectEntryId(),
 				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_assertObjectEntriesPageWithFilterOnRelatedLocalizedObjectField(
-			objectEntryValue1, objectDefinition1, objectRelationship,
-			objectEntryValue2);
+			objectFieldValue1, localizedObjectDefinition1, objectRelationship,
+			objectFieldValue2);
 		_assertObjectEntriesPageWithFilterOnRelatedLocalizedObjectField(
-			objectEntryValue2, objectDefinition2, objectRelationship,
-			objectEntryValue1);
+			objectFieldValue2, localizedObjectDefinition2, objectRelationship,
+			objectFieldValue1);
 
 		objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship);
 
-		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition1);
-		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition2);
+		objectDefinitionLocalService.deleteObjectDefinition(
+			localizedObjectDefinition1);
+		objectDefinitionLocalService.deleteObjectDefinition(
+			localizedObjectDefinition2);
 	}
 
 	private ObjectEntry _addLocalizedObjectEntry(

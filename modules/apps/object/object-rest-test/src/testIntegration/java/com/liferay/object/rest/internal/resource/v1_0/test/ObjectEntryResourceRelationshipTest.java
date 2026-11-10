@@ -208,13 +208,13 @@ public class ObjectEntryResourceRelationshipTest
 
 		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
 
-		JSONArray relationshipJSONArray = itemJSONObject.getJSONArray(
+		JSONArray relatedObjectEntriesJSONArray = itemJSONObject.getJSONArray(
 			objectRelationship1.getName());
 
-		Assert.assertEquals(1, relationshipJSONArray.length());
+		Assert.assertEquals(1, relatedObjectEntriesJSONArray.length());
 
 		JSONObject relatedObjectEntryJSONObject =
-			relationshipJSONArray.getJSONObject(0);
+			relatedObjectEntriesJSONArray.getJSONObject(0);
 
 		Assert.assertEquals(
 			relatedObjectEntryJSONObject.getString(
@@ -377,17 +377,17 @@ public class ObjectEntryResourceRelationshipTest
 	public void testPostRelatedObjectEntryInDifferentCompany()
 		throws Exception {
 
-		ObjectRelationship objectRelationship1 = _addObjectRelationship(
+		ObjectRelationship objectRelationship = _addObjectRelationship(
 			TestPropsValues.getCompanyId());
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			objectDefinitionLocalService.getObjectDefinition(
-				objectRelationship1.getObjectDefinitionId1()),
+				objectRelationship.getObjectDefinitionId1()),
 			OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString());
 
 		Company company = getCompanyByWebId();
 
-		ObjectRelationship objectRelationship2 = _addObjectRelationship(
+		ObjectRelationship companyObjectRelationship = _addObjectRelationship(
 			company.getCompanyId());
 
 		HTTPTestUtil.customize(
@@ -399,11 +399,11 @@ public class ObjectEntryResourceRelationshipTest
 			() -> {
 				ObjectDefinition objectDefinition =
 					objectDefinitionLocalService.getObjectDefinition(
-						objectRelationship2.getObjectDefinitionId2());
+						companyObjectRelationship.getObjectDefinitionId2());
 
 				ObjectField objectField =
 					objectFieldLocalService.getObjectField(
-						objectRelationship2.getObjectFieldId2());
+						companyObjectRelationship.getObjectFieldId2());
 
 				Assert.assertEquals(
 					400,
@@ -1037,7 +1037,7 @@ public class ObjectEntryResourceRelationshipTest
 
 		User user = UserTestUtil.getAdminUser(companyId);
 
-		ObjectDefinition objectDefinition1 =
+		ObjectDefinition parentObjectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(
 					new TextObjectFieldBuilder(
@@ -1048,7 +1048,7 @@ public class ObjectEntryResourceRelationshipTest
 						OBJECT_FIELD_NAME_TEXT
 					).build()),
 				ObjectDefinitionConstants.SCOPE_COMPANY, user.getUserId());
-		ObjectDefinition objectDefinition2 =
+		ObjectDefinition childObjectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(
 					new TextObjectFieldBuilder(
@@ -1061,7 +1061,7 @@ public class ObjectEntryResourceRelationshipTest
 				ObjectDefinitionConstants.SCOPE_COMPANY, user.getUserId());
 
 		return ObjectRelationshipTestUtil.addObjectRelationship(
-			objectDefinition1, objectDefinition2, user.getUserId(),
+			parentObjectDefinition, childObjectDefinition, user.getUserId(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 

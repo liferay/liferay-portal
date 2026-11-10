@@ -233,19 +233,19 @@ public class ObjectEntryResourceCategorizationTest
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
 
-		AssetVocabulary assetVocabulary =
+		AssetVocabulary companyAssetVocabulary =
 			assetVocabularyLocalService.addVocabulary(
 				TestPropsValues.getUserId(), company.getGroupId(),
 				RandomTestUtil.randomString(), new ServiceContext());
 
 		TaxonomyCategory taxonomyCategory1 =
 			postTaxonomyVocabularyTaxonomyCategory(
-				assetVocabulary.getGroupId(),
-				assetVocabulary.getVocabularyId());
+				companyAssetVocabulary.getGroupId(),
+				companyAssetVocabulary.getVocabularyId());
 		TaxonomyCategory taxonomyCategory2 =
 			postTaxonomyVocabularyTaxonomyCategory(
-				assetVocabulary.getGroupId(),
-				assetVocabulary.getVocabularyId());
+				companyAssetVocabulary.getGroupId(),
+				companyAssetVocabulary.getVocabularyId());
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -314,19 +314,19 @@ public class ObjectEntryResourceCategorizationTest
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
 
-		AssetVocabulary assetVocabulary =
+		AssetVocabulary companyAssetVocabulary =
 			assetVocabularyLocalService.addVocabulary(
 				TestPropsValues.getUserId(), company.getGroupId(),
 				RandomTestUtil.randomString(), new ServiceContext());
 
 		TaxonomyCategory taxonomyCategory1 =
 			postTaxonomyVocabularyTaxonomyCategory(
-				assetVocabulary.getGroupId(),
-				assetVocabulary.getVocabularyId());
+				companyAssetVocabulary.getGroupId(),
+				companyAssetVocabulary.getVocabularyId());
 		TaxonomyCategory taxonomyCategory2 =
 			postTaxonomyVocabularyTaxonomyCategory(
-				assetVocabulary.getGroupId(),
-				assetVocabulary.getVocabularyId());
+				companyAssetVocabulary.getGroupId(),
+				companyAssetVocabulary.getVocabularyId());
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -340,8 +340,8 @@ public class ObjectEntryResourceCategorizationTest
 
 		TaxonomyCategory taxonomyCategory3 =
 			postTaxonomyVocabularyTaxonomyCategory(
-				assetVocabulary.getGroupId(),
-				assetVocabulary.getVocabularyId());
+				companyAssetVocabulary.getGroupId(),
+				companyAssetVocabulary.getVocabularyId());
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -421,7 +421,7 @@ public class ObjectEntryResourceCategorizationTest
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
 
-		AssetVocabulary assetVocabulary =
+		AssetVocabulary companyAssetVocabulary =
 			assetVocabularyLocalService.addVocabulary(
 				TestPropsValues.getUserId(), company.getGroupId(),
 				RandomTestUtil.randomString(), new ServiceContext());
@@ -429,13 +429,14 @@ public class ObjectEntryResourceCategorizationTest
 		long classNameId = classNameLocalService.getClassNameId(
 			getObjectDefinition1().getClassName());
 
-		assetVocabulary.setSettings(
+		companyAssetVocabulary.setSettings(
 			StringBundler.concat(
 				"multiValued=false\nrequiredClassNameIds=", classNameId,
 				":0\nselectedClassNameIds=", classNameId, ":0"));
 
-		assetVocabulary = assetVocabularyLocalService.updateAssetVocabulary(
-			assetVocabulary);
+		companyAssetVocabulary =
+			assetVocabularyLocalService.updateAssetVocabulary(
+				companyAssetVocabulary);
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -444,7 +445,7 @@ public class ObjectEntryResourceCategorizationTest
 				"title",
 				String.format(
 					"Please select at least one category for <em>%s</em>.",
-					assetVocabulary.getName())
+					companyAssetVocabulary.getName())
 			).put(
 				"type", "AssetCategoryException"
 			).toString(),
@@ -458,12 +459,12 @@ public class ObjectEntryResourceCategorizationTest
 
 		TaxonomyCategory taxonomyCategory1 =
 			postTaxonomyVocabularyTaxonomyCategory(
-				assetVocabulary.getGroupId(),
-				assetVocabulary.getVocabularyId());
+				companyAssetVocabulary.getGroupId(),
+				companyAssetVocabulary.getVocabularyId());
 		TaxonomyCategory taxonomyCategory2 =
 			postTaxonomyVocabularyTaxonomyCategory(
-				assetVocabulary.getGroupId(),
-				assetVocabulary.getVocabularyId());
+				companyAssetVocabulary.getGroupId(),
+				companyAssetVocabulary.getVocabularyId());
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -472,7 +473,7 @@ public class ObjectEntryResourceCategorizationTest
 				"title",
 				String.format(
 					"You cannot select more than one category for <em>%s</em>.",
-					assetVocabulary.getName())
+					companyAssetVocabulary.getName())
 			).put(
 				"type", "AssetCategoryException"
 			).toString(),
@@ -500,13 +501,13 @@ public class ObjectEntryResourceCategorizationTest
 		Assert.assertNotNull(
 			objectEntryLocalService.fetchObjectEntry(jsonObject.getLong("id")));
 
-		assetVocabularyLocalService.deleteVocabulary(assetVocabulary);
+		assetVocabularyLocalService.deleteVocabulary(companyAssetVocabulary);
 
 		_testPostObjectEntryWithCrossSiteTaxonomyCategories();
 	}
 
 	private void _assertTaxonomyCategories(
-			long groupId, JSONArray jsonArray1,
+			long groupId, JSONArray jsonArray,
 			boolean withEmbeddedTaxonomyCategory,
 			TaxonomyCategory... taxonomyCategories)
 		throws Exception {
@@ -520,7 +521,7 @@ public class ObjectEntryResourceCategorizationTest
 		}
 
 		JSONAssert.assertEquals(
-			jsonArray2.toString(), jsonArray1.toString(),
+			jsonArray2.toString(), jsonArray.toString(),
 			JSONCompareMode.NON_EXTENSIBLE);
 	}
 
@@ -616,14 +617,14 @@ public class ObjectEntryResourceCategorizationTest
 
 		// Can add a category from a parent site
 
-		AssetVocabulary assetVocabulary =
+		AssetVocabulary siteAssetVocabulary =
 			assetVocabularyLocalService.addVocabulary(
 				TestPropsValues.getUserId(), group.getGroupId(),
 				RandomTestUtil.randomString(), new ServiceContext());
 
-		TaxonomyCategory taxonomyCategory =
+		TaxonomyCategory siteTaxonomyCategory =
 			postTaxonomyVocabularyTaxonomyCategory(
-				group.getGroupId(), assetVocabulary.getVocabularyId());
+				group.getGroupId(), siteAssetVocabulary.getVocabularyId());
 
 		Group childGroup = GroupTestUtil.addGroup(group.getGroupId());
 
@@ -633,7 +634,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryIds",
-					JSONUtil.put(taxonomyCategory.getId())
+					JSONUtil.put(siteTaxonomyCategory.getId())
 				).toString(),
 				getEndpoint(
 					getSiteScopedObjectDefinition1(), childGroup.getGroupId()),
@@ -838,7 +839,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryIds",
-					JSONUtil.put(taxonomyCategory.getId())
+					JSONUtil.put(siteTaxonomyCategory.getId())
 				).toString(),
 				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
 
@@ -851,7 +852,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryIds",
-					JSONUtil.put(taxonomyCategory.getId())
+					JSONUtil.put(siteTaxonomyCategory.getId())
 				).toString(),
 				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
 				Http.Method.POST));
@@ -865,7 +866,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryIds",
-					JSONUtil.put(taxonomyCategory.getId())
+					JSONUtil.put(siteTaxonomyCategory.getId())
 				).toString(),
 				StringBundler.concat(
 					getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
@@ -911,7 +912,7 @@ public class ObjectEntryResourceCategorizationTest
 				fetchAssetCategoryByExternalReferenceCode(
 					externalReferenceCode, group.getGroupId()));
 
-		assetVocabularyLocalService.deleteVocabulary(assetVocabulary);
+		assetVocabularyLocalService.deleteVocabulary(siteAssetVocabulary);
 		assetVocabularyLocalService.deleteVocabulary(depotAssetVocabulary);
 	}
 

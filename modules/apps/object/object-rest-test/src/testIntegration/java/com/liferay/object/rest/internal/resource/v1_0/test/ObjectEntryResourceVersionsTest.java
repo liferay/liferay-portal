@@ -82,21 +82,21 @@ public class ObjectEntryResourceVersionsTest
 		ObjectEntryResource objectEntryResource1 = getObjectEntryResource(
 			getObjectDefinition1(), TestPropsValues.getUser());
 
-		Page<com.liferay.object.rest.dto.v1_0.ObjectEntry> objectEntryPage =
+		Page<com.liferay.object.rest.dto.v1_0.ObjectEntry> objectEntriesPage =
 			objectEntryResource1.getByExternalReferenceCodeVersionsPage(
 				objectEntry.getExternalReferenceCode(),
 				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null);
 
-		Assert.assertEquals(2, objectEntryPage.getTotalCount());
+		Assert.assertEquals(2, objectEntriesPage.getTotalCount());
 
-		objectEntryPage =
+		objectEntriesPage =
 			objectEntryResource1.getByExternalReferenceCodeVersionsPage(
 				objectEntry.getExternalReferenceCode(),
 				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS),
 				new Sort[] {new Sort("version", Sort.INT_TYPE, true)});
 
 		List<com.liferay.object.rest.dto.v1_0.ObjectEntry> objectEntries =
-			new ArrayList<>(objectEntryPage.getItems());
+			new ArrayList<>(objectEntriesPage.getItems());
 
 		_assertObjectEntryVersionNumber(objectEntries.get(0), 2);
 		_assertObjectEntryVersionNumber(objectEntries.get(1), 1);

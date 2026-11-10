@@ -466,20 +466,20 @@ public class ObjectEntryResourceFilterTest
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
 
-		AssetVocabulary assetVocabulary =
+		AssetVocabulary companyAssetVocabulary =
 			assetVocabularyLocalService.addVocabulary(
 				TestPropsValues.getUserId(), company.getGroupId(),
 				RandomTestUtil.randomString(), new ServiceContext());
 
 		TaxonomyCategory taxonomyCategory1 =
 			postTaxonomyVocabularyTaxonomyCategory(
-				company.getGroupId(), assetVocabulary.getVocabularyId());
+				company.getGroupId(), companyAssetVocabulary.getVocabularyId());
 		TaxonomyCategory taxonomyCategory2 =
 			postTaxonomyVocabularyTaxonomyCategory(
-				company.getGroupId(), assetVocabulary.getVocabularyId());
+				company.getGroupId(), companyAssetVocabulary.getVocabularyId());
 		TaxonomyCategory taxonomyCategory3 =
 			postTaxonomyVocabularyTaxonomyCategory(
-				company.getGroupId(), assetVocabulary.getVocabularyId());
+				company.getGroupId(), companyAssetVocabulary.getVocabularyId());
 
 		_postObjectEntryWithTaxonomyCategories();
 		_postObjectEntryWithTaxonomyCategories(taxonomyCategory1);
@@ -630,7 +630,7 @@ public class ObjectEntryResourceFilterTest
 	}
 
 	private void _assertFilteredObjectEntries(
-			int expectedObjectEntryCount, String filterString)
+			int expectedObjectEntriesCount, String filterString)
 		throws Exception {
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -641,7 +641,8 @@ public class ObjectEntryResourceFilterTest
 
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
 
-		Assert.assertEquals(expectedObjectEntryCount, itemsJSONArray.length());
+		Assert.assertEquals(
+			expectedObjectEntriesCount, itemsJSONArray.length());
 	}
 
 	private void _postObjectEntryWithKeywords(String... keywords)

@@ -128,12 +128,12 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			Http.Method.PATCH, getObjectDefinition1(), getObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
-		String externalReferenceCodeEndpoint = getEndpoint(
+		String endpoint = getEndpoint(
 			getSiteScopedObjectDefinition1(), testGroupId);
 
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
+				endpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
 			Http.Method.PATCH, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
@@ -149,7 +149,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			Http.Method.PATCH, getObjectDefinition1(), getObjectDefinition2());
 		_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 			jsonObject ->
-				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
+				endpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
 			Http.Method.PATCH, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2());
@@ -165,7 +165,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
+				endpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
 			Http.Method.PATCH, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
@@ -301,7 +301,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		objectEntryJSONObject = JSONUtil.put(
 			objectRelationship2.getName(),
-			_withScopeKey(
+			_putScopeKey(
 				createObjectEntriesJSONArray(
 					new String[] {ERC_VALUE_1, ERC_VALUE_2},
 					OBJECT_FIELD_NAME_2,
@@ -349,7 +349,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		objectEntryJSONObject = JSONUtil.put(
 			objectRelationship2.getName(),
-			_withScopeKey(
+			_putScopeKey(
 				createObjectEntriesJSONArray(
 					new String[] {ERC_VALUE_1, ERC_VALUE_2},
 					OBJECT_FIELD_NAME_2,
@@ -374,7 +374,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		objectEntryJSONObject = JSONUtil.put(
 			objectRelationship2.getName(),
-			_withScopeKey(
+			_putScopeKey(
 				createObjectEntriesJSONArray(
 					new String[] {ERC_VALUE_1, ERC_VALUE_2},
 					OBJECT_FIELD_NAME_2,
@@ -772,12 +772,12 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			Http.Method.PUT, getObjectDefinition1(), getObjectDefinition2(),
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
-		String externalReferenceCodeEndpoint = getEndpoint(
+		String endpoint = getEndpoint(
 			getSiteScopedObjectDefinition1(), testGroupId);
 
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
+				endpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
 			Http.Method.PUT, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
@@ -793,7 +793,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			Http.Method.PUT, getObjectDefinition1(), getObjectDefinition2());
 		_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 			jsonObject ->
-				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
+				endpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
 			Http.Method.PUT, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2());
@@ -809,7 +809,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 		_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 			jsonObject ->
-				externalReferenceCodeEndpoint + "/by-external-reference-code/" +
+				endpoint + "/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
 			Http.Method.PUT, getSiteScopedObjectDefinition1(),
 			getSiteScopedObjectDefinition2(),
@@ -1158,115 +1158,126 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			objectFieldValue);
 	}
 
+	private JSONArray _putScopeKey(JSONArray jsonArray, String scopeKey) {
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+			jsonObject.put("scopeKey", scopeKey);
+		}
+
+		return jsonArray;
+	}
+
 	private void
 			_testPatchPutCustomObjectEntryUnlinkManyToOneNestedCustomObjectEntries(
 				UnsafeFunction<JSONObject, String, Exception>
 					endpointUnsafeFunction,
-				Http.Method method, ObjectDefinition objectDefinition1,
-				ObjectDefinition objectDefinition2)
+				Http.Method method, ObjectDefinition objectDefinition,
+				ObjectDefinition relatedObjectDefinition)
 		throws Exception {
 
-		ObjectRelationship objectRelationship1 =
+		ObjectRelationship emptyObjectEntryObjectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				objectDefinition2, objectDefinition1,
+				relatedObjectDefinition, objectDefinition,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		ObjectRelationship objectRelationship2 =
+		ObjectRelationship nullObjectEntryObjectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				objectDefinition2, objectDefinition1,
+				relatedObjectDefinition, objectDefinition,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		ObjectRelationship objectRelationship3 =
+		ObjectRelationship zeroIdObjectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				objectDefinition2, objectDefinition1,
+				relatedObjectDefinition, objectDefinition,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		ObjectRelationship objectRelationship4 =
+		ObjectRelationship nullIdObjectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				objectDefinition2, objectDefinition1,
+				relatedObjectDefinition, objectDefinition,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		ObjectRelationship objectRelationship5 =
+		ObjectRelationship blankERCObjectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				objectDefinition2, objectDefinition1,
+				relatedObjectDefinition, objectDefinition,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		ObjectRelationship objectRelationship6 =
+		ObjectRelationship nullERCObjectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				objectDefinition2, objectDefinition1,
+				relatedObjectDefinition, objectDefinition,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		try {
 			JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 				JSONUtil.put(
-					objectRelationship1.getName(),
+					emptyObjectEntryObjectRelationship.getName(),
 					JSONFactoryUtil.createJSONObject(
 						JSONUtil.put(
 							OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 						).toString())
 				).put(
-					objectRelationship2.getName(),
+					nullObjectEntryObjectRelationship.getName(),
 					JSONFactoryUtil.createJSONObject(
 						JSONUtil.put(
 							OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 						).toString())
 				).put(
-					objectRelationship3.getName(),
+					zeroIdObjectRelationship.getName(),
 					JSONFactoryUtil.createJSONObject(
 						JSONUtil.put(
 							OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 						).toString())
 				).put(
-					objectRelationship4.getName(),
+					nullIdObjectRelationship.getName(),
 					JSONFactoryUtil.createJSONObject(
 						JSONUtil.put(
 							OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 						).toString())
 				).put(
-					objectRelationship5.getName(),
+					blankERCObjectRelationship.getName(),
 					JSONFactoryUtil.createJSONObject(
 						JSONUtil.put(
 							OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 						).toString())
 				).put(
-					objectRelationship6.getName(),
+					nullERCObjectRelationship.getName(),
 					JSONFactoryUtil.createJSONObject(
 						JSONUtil.put(
 							OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 						).toString())
 				).toString(),
-				getEndpoint(objectDefinition1, testGroupId), Http.Method.POST);
+				getEndpoint(objectDefinition, testGroupId), Http.Method.POST);
 
 			jsonObject = HTTPTestUtil.invokeToJSONObject(
 				JSONUtil.put(
-					objectRelationship1.getName(),
+					emptyObjectEntryObjectRelationship.getName(),
 					JSONFactoryUtil.createJSONObject()
 				).put(
-					objectRelationship2.getName(), org.json.JSONObject.NULL
-				).put(
-					StringBundler.concat(
-						"r_", objectRelationship3.getName(), "_",
-						objectDefinition2.getPKObjectFieldName()),
-					0
-				).put(
-					StringBundler.concat(
-						"r_", objectRelationship4.getName(), "_",
-						objectDefinition2.getPKObjectFieldName()),
+					nullObjectEntryObjectRelationship.getName(),
 					org.json.JSONObject.NULL
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship5.getName(), "_",
+						"r_", zeroIdObjectRelationship.getName(), "_",
+						relatedObjectDefinition.getPKObjectFieldName()),
+					0
+				).put(
+					StringBundler.concat(
+						"r_", nullIdObjectRelationship.getName(), "_",
+						relatedObjectDefinition.getPKObjectFieldName()),
+					org.json.JSONObject.NULL
+				).put(
+					StringBundler.concat(
+						"r_", blankERCObjectRelationship.getName(), "_",
 						StringUtil.replaceLast(
-							objectDefinition2.getPKObjectFieldName(), "Id",
-							"ERC")),
+							relatedObjectDefinition.getPKObjectFieldName(),
+							"Id", "ERC")),
 					""
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship6.getName(), "_",
+						"r_", nullERCObjectRelationship.getName(), "_",
 						StringUtil.replaceLast(
-							objectDefinition2.getPKObjectFieldName(), "Id",
-							"ERC")),
+							relatedObjectDefinition.getPKObjectFieldName(),
+							"Id", "ERC")),
 					org.json.JSONObject.NULL
 				).toString(),
 				endpointUnsafeFunction.apply(jsonObject), method);
@@ -1279,107 +1290,109 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 					"code"
 				));
 			Assert.assertNull(
-				jsonObject.getJSONObject(objectRelationship1.getName()));
+				jsonObject.getJSONObject(
+					emptyObjectEntryObjectRelationship.getName()));
 			Assert.assertNull(
-				jsonObject.getJSONObject(objectRelationship2.getName()));
+				jsonObject.getJSONObject(
+					nullObjectEntryObjectRelationship.getName()));
 			Assert.assertNull(
-				jsonObject.getJSONObject(objectRelationship3.getName()));
+				jsonObject.getJSONObject(zeroIdObjectRelationship.getName()));
 			Assert.assertNull(
-				jsonObject.getJSONObject(objectRelationship4.getName()));
+				jsonObject.getJSONObject(nullIdObjectRelationship.getName()));
 			Assert.assertNull(
-				jsonObject.getJSONObject(objectRelationship5.getName()));
+				jsonObject.getJSONObject(blankERCObjectRelationship.getName()));
 			Assert.assertNull(
-				jsonObject.getJSONObject(objectRelationship6.getName()));
+				jsonObject.getJSONObject(nullERCObjectRelationship.getName()));
 
 			JSONAssert.assertEquals(
 				JSONUtil.put(
 					StringBundler.concat(
-						"r_", objectRelationship1.getName(), "_",
-						objectDefinition2.getPKObjectFieldName()),
+						"r_", emptyObjectEntryObjectRelationship.getName(), "_",
+						relatedObjectDefinition.getPKObjectFieldName()),
 					0
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship1.getName(), "_",
+						"r_", emptyObjectEntryObjectRelationship.getName(), "_",
 						StringUtil.replaceLast(
-							objectDefinition2.getPKObjectFieldName(), "Id",
-							"ERC")),
+							relatedObjectDefinition.getPKObjectFieldName(),
+							"Id", "ERC")),
 					""
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship2.getName(), "_",
-						objectDefinition2.getPKObjectFieldName()),
+						"r_", nullObjectEntryObjectRelationship.getName(), "_",
+						relatedObjectDefinition.getPKObjectFieldName()),
 					0
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship2.getName(), "_",
+						"r_", nullObjectEntryObjectRelationship.getName(), "_",
 						StringUtil.replaceLast(
-							objectDefinition2.getPKObjectFieldName(), "Id",
-							"ERC")),
+							relatedObjectDefinition.getPKObjectFieldName(),
+							"Id", "ERC")),
 					""
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship3.getName(), "_",
-						objectDefinition2.getPKObjectFieldName()),
+						"r_", zeroIdObjectRelationship.getName(), "_",
+						relatedObjectDefinition.getPKObjectFieldName()),
 					0
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship3.getName(), "_",
+						"r_", zeroIdObjectRelationship.getName(), "_",
 						StringUtil.replaceLast(
-							objectDefinition2.getPKObjectFieldName(), "Id",
-							"ERC")),
+							relatedObjectDefinition.getPKObjectFieldName(),
+							"Id", "ERC")),
 					""
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship4.getName(), "_",
-						objectDefinition2.getPKObjectFieldName()),
+						"r_", nullIdObjectRelationship.getName(), "_",
+						relatedObjectDefinition.getPKObjectFieldName()),
 					0
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship4.getName(), "_",
+						"r_", nullIdObjectRelationship.getName(), "_",
 						StringUtil.replaceLast(
-							objectDefinition2.getPKObjectFieldName(), "Id",
-							"ERC")),
+							relatedObjectDefinition.getPKObjectFieldName(),
+							"Id", "ERC")),
 					""
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship5.getName(), "_",
-						objectDefinition2.getPKObjectFieldName()),
+						"r_", blankERCObjectRelationship.getName(), "_",
+						relatedObjectDefinition.getPKObjectFieldName()),
 					0
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship5.getName(), "_",
+						"r_", blankERCObjectRelationship.getName(), "_",
 						StringUtil.replaceLast(
-							objectDefinition2.getPKObjectFieldName(), "Id",
-							"ERC")),
+							relatedObjectDefinition.getPKObjectFieldName(),
+							"Id", "ERC")),
 					""
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship6.getName(), "_",
-						objectDefinition2.getPKObjectFieldName()),
+						"r_", nullERCObjectRelationship.getName(), "_",
+						relatedObjectDefinition.getPKObjectFieldName()),
 					0
 				).put(
 					StringBundler.concat(
-						"r_", objectRelationship6.getName(), "_",
+						"r_", nullERCObjectRelationship.getName(), "_",
 						StringUtil.replaceLast(
-							objectDefinition2.getPKObjectFieldName(), "Id",
-							"ERC")),
+							relatedObjectDefinition.getPKObjectFieldName(),
+							"Id", "ERC")),
 					""
 				).toString(),
 				jsonObject.toString(), JSONCompareMode.LENIENT);
 		}
 		finally {
 			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship1);
+				emptyObjectEntryObjectRelationship);
 			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship2);
+				nullObjectEntryObjectRelationship);
 			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship3);
+				zeroIdObjectRelationship);
 			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship4);
+				nullIdObjectRelationship);
 			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship5);
+				blankERCObjectRelationship);
 			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship6);
+				nullERCObjectRelationship);
 		}
 	}
 
@@ -1387,23 +1400,23 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			_testPatchPutCustomObjectEntryUnlinkXToManyNestedCustomObjectEntries(
 				UnsafeFunction<JSONObject, String, Exception>
 					endpointUnsafeFunction,
-				Http.Method method, ObjectDefinition objectDefinition1,
-				ObjectDefinition objectDefinition2, String type)
+				Http.Method method, ObjectDefinition objectDefinition,
+				ObjectDefinition relatedObjectDefinition, String type)
 		throws Exception {
 
-		ObjectRelationship objectRelationship1 =
+		ObjectRelationship emptyObjectEntriesObjectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				objectDefinition1, objectDefinition2,
+				objectDefinition, relatedObjectDefinition,
 				TestPropsValues.getUserId(), type);
-		ObjectRelationship objectRelationship2 =
+		ObjectRelationship nullObjectEntriesObjectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				objectDefinition1, objectDefinition2,
+				objectDefinition, relatedObjectDefinition,
 				TestPropsValues.getUserId(), type);
 
 		try {
 			JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 				JSONUtil.put(
-					objectRelationship1.getName(),
+					emptyObjectEntriesObjectRelationship.getName(),
 					createObjectEntriesJSONArray(
 						new String[] {ERC_VALUE_1, ERC_VALUE_2},
 						OBJECT_FIELD_NAME_2,
@@ -1412,7 +1425,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 							RandomTestUtil.randomString()
 						})
 				).put(
-					objectRelationship2.getName(),
+					nullObjectEntriesObjectRelationship.getName(),
 					createObjectEntriesJSONArray(
 						new String[] {ERC_VALUE_1, ERC_VALUE_2},
 						OBJECT_FIELD_NAME_2,
@@ -1421,14 +1434,15 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 							RandomTestUtil.randomString()
 						})
 				).toString(),
-				getEndpoint(objectDefinition1, testGroupId), Http.Method.POST);
+				getEndpoint(objectDefinition, testGroupId), Http.Method.POST);
 
 			jsonObject = HTTPTestUtil.invokeToJSONObject(
 				JSONUtil.put(
-					objectRelationship1.getName(),
+					emptyObjectEntriesObjectRelationship.getName(),
 					JSONFactoryUtil.createJSONArray()
 				).put(
-					objectRelationship2.getName(), org.json.JSONObject.NULL
+					nullObjectEntriesObjectRelationship.getName(),
+					org.json.JSONObject.NULL
 				).toString(),
 				endpointUnsafeFunction.apply(jsonObject), method);
 
@@ -1441,20 +1455,20 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				));
 
 			JSONArray nestedObjectEntriesJSONArray1 = jsonObject.getJSONArray(
-				objectRelationship1.getName());
+				emptyObjectEntriesObjectRelationship.getName());
 
 			Assert.assertEquals(0, nestedObjectEntriesJSONArray1.length());
 
 			JSONArray nestedObjectEntriesJSONArray2 = jsonObject.getJSONArray(
-				objectRelationship2.getName());
+				nullObjectEntriesObjectRelationship.getName());
 
 			Assert.assertEquals(0, nestedObjectEntriesJSONArray2.length());
 		}
 		finally {
 			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship1);
+				emptyObjectEntriesObjectRelationship);
 			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship2);
+				nullObjectEntriesObjectRelationship);
 		}
 	}
 
@@ -1606,16 +1620,6 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 				(JSONObject)nestedObjectEntriesJSONArray.get(0),
 				OBJECT_FIELD_NAME_2, NEW_OBJECT_FIELD_VALUE_1);
 		}
-	}
-
-	private JSONArray _withScopeKey(JSONArray jsonArray, String scopeKey) {
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-			jsonObject.put("scopeKey", scopeKey);
-		}
-
-		return jsonArray;
 	}
 
 }
