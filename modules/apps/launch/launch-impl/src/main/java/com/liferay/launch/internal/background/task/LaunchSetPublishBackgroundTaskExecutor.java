@@ -38,13 +38,13 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jose Luis Navarro
  */
 @Component(
-	property = "background.task.executor.class.name=com.liferay.launch.internal.background.task.LaunchSetScheduledPublishBackgroundTaskExecutor",
+	property = "background.task.executor.class.name=com.liferay.launch.internal.background.task.LaunchSetPublishBackgroundTaskExecutor",
 	service = BackgroundTaskExecutor.class
 )
-public class LaunchSetScheduledPublishBackgroundTaskExecutor
+public class LaunchSetPublishBackgroundTaskExecutor
 	extends BaseBackgroundTaskExecutor {
 
-	public LaunchSetScheduledPublishBackgroundTaskExecutor() {
+	public LaunchSetPublishBackgroundTaskExecutor() {
 		setIsolationLevel(BackgroundTaskConstants.ISOLATION_LEVEL_COMPANY);
 	}
 
@@ -133,7 +133,7 @@ public class LaunchSetScheduledPublishBackgroundTaskExecutor
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		LaunchSetScheduledPublishBackgroundTaskExecutor.class);
+		LaunchSetPublishBackgroundTaskExecutor.class);
 
 	private static final TransactionConfig _transactionConfig;
 
