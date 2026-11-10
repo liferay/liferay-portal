@@ -13,9 +13,12 @@ import com.liferay.object.rest.dto.v1_0.Status;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryService;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -24,6 +27,8 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,11 +55,38 @@ public class AddTaskStrutsAction implements StrutsAction {
 			return null;
 		}
 
+		long parentId = ParamUtil.getLong(httpServletRequest, "parentId");
+		String projectGroupId = ParamUtil.getString(
+			httpServletRequest, "projectGroupId");
+		Map<String, Object> values = HashMapBuilder.<String, Object>put(
+			"r_cmpProjectToCMPTasks_c_cmpProjectId",
+			ParamUtil.getLong(httpServletRequest, "projectId")
+		).build();
+
+		if ((parentId > 0) &&
+			FeatureFlagManagerUtil.isEnabled(
+				objectDefinition.getCompanyId(), "LPD-107678")) {
+
+			com.liferay.object.model.ObjectEntry
+				parentServiceBuilderObjectEntry =
+					_objectEntryService.getObjectEntry(parentId);
+
+			values.put(
+				"r_cmpProjectToCMPTasks_c_cmpProjectId",
+				MapUtil.getLong(
+					parentServiceBuilderObjectEntry.getValues(),
+					"r_cmpProjectToCMPTasks_c_cmpProjectId"));
+
+			projectGroupId = String.valueOf(
+				parentServiceBuilderObjectEntry.getGroupId());
+
+			values.put("r_cmpTaskToCMPTasks_c_cmpTaskId", parentId);
+		}
+
 		ObjectEntryManager objectEntryManager =
 			_objectEntryManagerRegistry.getObjectEntryManager(
 				objectDefinition.getCompanyId(),
 				objectDefinition.getStorageType());
-
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -71,11 +103,7 @@ public class AddTaskStrutsAction implements StrutsAction {
 						() -> ParamUtil.getString(
 							httpServletRequest,
 							"objectEntryFolderExternalReferenceCode"));
-					setProperties(
-						() -> HashMapBuilder.<String, Object>put(
-							"r_cmpProjectToCMPTasks_c_cmpProjectId",
-							ParamUtil.getLong(httpServletRequest, "projectId")
-						).build());
+					setProperties(() -> values);
 					setStatus(
 						() -> new Status() {
 							{
@@ -84,7 +112,7 @@ public class AddTaskStrutsAction implements StrutsAction {
 						});
 				}
 			},
-			ParamUtil.getString(httpServletRequest, "projectGroupId"));
+			projectGroupId);
 
 		String editTaskURL =
 			ActionUtil.getBaseEditTaskURL(objectDefinition, themeDisplay) +
@@ -105,5 +133,8 @@ public class AddTaskStrutsAction implements StrutsAction {
 
 	@Reference
 	private ObjectEntryManagerRegistry _objectEntryManagerRegistry;
+
+	@Reference
+	private ObjectEntryService _objectEntryService;
 
 }
