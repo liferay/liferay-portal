@@ -1350,7 +1350,6 @@ public class SiteResourceImpl
 		"defaultTeamIds", "googleMapsAPIKey"
 	};
 
-
 	@Reference
 	private GroupLocalService _groupLocalService;
 
