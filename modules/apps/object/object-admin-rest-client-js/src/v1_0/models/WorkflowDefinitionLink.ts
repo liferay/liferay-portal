@@ -11,6 +11,7 @@
 
 	export class WorkflowDefinitionLink {
 			"groupExternalReferenceCode"?: string;
+			"workflowDefinitionExternalReferenceCode"?: string;
 			"workflowDefinitionName"?: string;
 
 		static "discriminator": string | undefined = undefined;
@@ -23,6 +24,11 @@
 		{
 			baseName: "groupExternalReferenceCode",
 			name: "groupExternalReferenceCode",
+			type: "string",
+		},
+		{
+			baseName: "workflowDefinitionExternalReferenceCode",
+			name: "workflowDefinitionExternalReferenceCode",
 			type: "string",
 		},
 		{

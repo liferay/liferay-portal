@@ -50,6 +50,32 @@ public class WorkflowDefinitionLink implements Cloneable, Serializable {
 
 	protected String groupExternalReferenceCode;
 
+	public String getWorkflowDefinitionExternalReferenceCode() {
+		return workflowDefinitionExternalReferenceCode;
+	}
+
+	public void setWorkflowDefinitionExternalReferenceCode(
+		String workflowDefinitionExternalReferenceCode) {
+
+		this.workflowDefinitionExternalReferenceCode =
+			workflowDefinitionExternalReferenceCode;
+	}
+
+	public void setWorkflowDefinitionExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			workflowDefinitionExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			workflowDefinitionExternalReferenceCode =
+				workflowDefinitionExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String workflowDefinitionExternalReferenceCode;
+
 	public String getWorkflowDefinitionName() {
 		return workflowDefinitionName;
 	}
@@ -105,4 +131,4 @@ public class WorkflowDefinitionLink implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1558701239
+// LIFERAY-REST-BUILDER-HASH:-937006151

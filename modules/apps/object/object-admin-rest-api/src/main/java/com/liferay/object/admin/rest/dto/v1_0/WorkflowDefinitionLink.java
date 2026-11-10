@@ -96,6 +96,53 @@ public class WorkflowDefinitionLink implements Serializable {
 	private Supplier<String> _groupExternalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public String getWorkflowDefinitionExternalReferenceCode() {
+		if (_workflowDefinitionExternalReferenceCodeSupplier != null) {
+			workflowDefinitionExternalReferenceCode =
+				_workflowDefinitionExternalReferenceCodeSupplier.get();
+
+			_workflowDefinitionExternalReferenceCodeSupplier = null;
+		}
+
+		return workflowDefinitionExternalReferenceCode;
+	}
+
+	public void setWorkflowDefinitionExternalReferenceCode(
+		String workflowDefinitionExternalReferenceCode) {
+
+		this.workflowDefinitionExternalReferenceCode =
+			workflowDefinitionExternalReferenceCode;
+
+		_workflowDefinitionExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setWorkflowDefinitionExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			workflowDefinitionExternalReferenceCodeUnsafeSupplier) {
+
+		_workflowDefinitionExternalReferenceCodeSupplier = () -> {
+			try {
+				return workflowDefinitionExternalReferenceCodeUnsafeSupplier.
+					get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String workflowDefinitionExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _workflowDefinitionExternalReferenceCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public String getWorkflowDefinitionName() {
 		if (_workflowDefinitionNameSupplier != null) {
 			workflowDefinitionName = _workflowDefinitionNameSupplier.get();
@@ -177,6 +224,23 @@ public class WorkflowDefinitionLink implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(groupExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
+		String workflowDefinitionExternalReferenceCode =
+			getWorkflowDefinitionExternalReferenceCode();
+
+		if (workflowDefinitionExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"workflowDefinitionExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(workflowDefinitionExternalReferenceCode));
 
 			sb.append("\"");
 		}
@@ -319,4 +383,4 @@ public class WorkflowDefinitionLink implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1558378991
+// LIFERAY-REST-BUILDER-HASH:1493874201
