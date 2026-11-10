@@ -9,6 +9,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.BatchEngineImportTaskExecutor;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry;
+import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry.BatchEngineTaskItemDelegateSafeCloseable;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.batch.engine.unit.BatchEngineUnitConfiguration;
@@ -225,13 +227,14 @@ public class BatchEngineBundleTrackerTest {
 	}
 
 	private void _completeBatchEngineImportTask(
-		BatchEngineImportTask batchEngineImportTask) {
+		BatchEngineImportTask batchEngineImportTask,
+		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate) {
 
 		batchEngineImportTask.setExecuteStatus(
 			BatchEngineTaskExecuteStatus.COMPLETED.toString());
 
 		_batchEngineImportTaskLocalService.updateBatchEngineImportTask(
-			batchEngineImportTask);
+			batchEngineImportTask, batchEngineTaskItemDelegate);
 	}
 
 	private String _getDataFileName(
@@ -306,7 +309,22 @@ public class BatchEngineBundleTrackerTest {
 							processedDataFileNames.add(dataFileName);
 						}
 
-						_completeBatchEngineImportTask(batchEngineImportTask);
+						try (BatchEngineTaskItemDelegateSafeCloseable
+								batchEngineTaskItemDelegateSafeCloseable =
+									_batchEngineTaskItemDelegateRegistry.
+										getBatchEngineTaskItemDelegateWithSafeCloseable(
+											batchEngineImportTask.
+												getCompanyId(),
+											batchEngineImportTask.
+												getClassName(),
+											batchEngineImportTask.
+												getTaskItemDelegateName())) {
+
+							_completeBatchEngineImportTask(
+								batchEngineImportTask,
+								batchEngineTaskItemDelegateSafeCloseable.
+									getBatchEngineTaskItemDelegate());
+						}
 					}
 
 					@Override
@@ -327,7 +345,8 @@ public class BatchEngineBundleTrackerTest {
 							processedDataFileNames.add(dataFileName);
 						}
 
-						_completeBatchEngineImportTask(batchEngineImportTask);
+						_completeBatchEngineImportTask(
+							batchEngineImportTask, batchEngineTaskItemDelegate);
 					}
 
 				},
@@ -409,6 +428,10 @@ public class BatchEngineBundleTrackerTest {
 	@Inject
 	private BatchEngineImportTaskLocalService
 		_batchEngineImportTaskLocalService;
+
+	@Inject
+	private BatchEngineTaskItemDelegateRegistry
+		_batchEngineTaskItemDelegateRegistry;
 
 	@Inject
 	private BatchEngineUnitReader _batchEngineUnitReader;

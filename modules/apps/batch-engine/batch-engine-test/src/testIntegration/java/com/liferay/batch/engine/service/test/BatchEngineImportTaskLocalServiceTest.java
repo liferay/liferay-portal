@@ -88,8 +88,8 @@ public class BatchEngineImportTaskLocalServiceTest {
 	@Test
 	public void testAddBatchEngineImportTask() throws Exception {
 		_testAddBatchEngineImportTaskWithEncryptionKey();
-		_testAddBatchEngineImportTaskWithoutTaskItemDelegate();
 		_testAddBatchEngineImportTaskWithUnregisteredTaskItemDelegate();
+		_testAddBatchEngineImportTaskWithoutTaskItemDelegate();
 	}
 
 	@Test
@@ -106,13 +106,17 @@ public class BatchEngineImportTaskLocalServiceTest {
 			BatchEngineTaskExecuteStatus.COMPLETED);
 		_testUpdateBatchEngineImportTaskWithMalformedContent(
 			BatchEngineTaskExecuteStatus.FAILED);
-		_testUpdateBatchEngineImportTaskWithoutPasswordFields(
+		_testUpdateBatchEngineImportTaskWithRegisteredTaskItemDelegate(
 			BatchEngineTaskExecuteStatus.COMPLETED);
-		_testUpdateBatchEngineImportTaskWithoutPasswordFields(
+		_testUpdateBatchEngineImportTaskWithRegisteredTaskItemDelegate(
 			BatchEngineTaskExecuteStatus.FAILED);
 		_testUpdateBatchEngineImportTaskWithUnregisteredTaskItemDelegate(
 			BatchEngineTaskExecuteStatus.COMPLETED);
 		_testUpdateBatchEngineImportTaskWithUnregisteredTaskItemDelegate(
+			BatchEngineTaskExecuteStatus.FAILED);
+		_testUpdateBatchEngineImportTaskWithoutPasswordFields(
+			BatchEngineTaskExecuteStatus.COMPLETED);
+		_testUpdateBatchEngineImportTaskWithoutPasswordFields(
 			BatchEngineTaskExecuteStatus.FAILED);
 	}
 
@@ -530,6 +534,36 @@ public class BatchEngineImportTaskLocalServiceTest {
 
 			Assert.assertEquals(StringPool.BLANK, StringUtil.read(inputStream));
 		}
+	}
+
+	private void _testUpdateBatchEngineImportTaskWithRegisteredTaskItemDelegate(
+			BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus)
+		throws Exception {
+
+		String emailAddress = RandomTestUtil.randomString() + "@liferay.com";
+		String password = RandomTestUtil.randomString();
+
+		BatchEngineImportTask batchEngineImportTask = _addBatchEngineImportTask(
+			_CLASS_NAME_USER_ACCOUNT,
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"emailAddress", emailAddress
+				).put(
+					"password", password
+				)
+			).toString());
+
+		batchEngineImportTask.setExecuteStatus(
+			batchEngineTaskExecuteStatus.name());
+
+		batchEngineImportTask =
+			_batchEngineImportTaskLocalService.updateBatchEngineImportTask(
+				batchEngineImportTask);
+
+		String content = _readContent(batchEngineImportTask);
+
+		Assert.assertTrue(content.contains(emailAddress));
+		Assert.assertFalse(content.contains(password));
 	}
 
 	private void
