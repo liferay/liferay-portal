@@ -227,6 +227,46 @@ public class TestrayAttachmentRecorder {
 		return liferayLogMaxSizeInMB * 1024 * 1024;
 	}
 
+	private File _getPortalDir() {
+		String portalUpstreamBranchName = _startProperties.getProperty(
+			"PORTAL_UPSTREAM_BRANCH_NAME");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(portalUpstreamBranchName)) {
+			return null;
+		}
+
+		try {
+			String portalBaseBranchName =
+				JenkinsResultsParserUtil.getBuildProperty(
+					JenkinsResultsParserUtil.combine(
+						"portal.base.branch.name[", portalUpstreamBranchName,
+						"]"));
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(portalBaseBranchName)) {
+				portalBaseBranchName = portalUpstreamBranchName;
+			}
+
+			String portalDirPath = JenkinsResultsParserUtil.getBuildProperty(
+				JenkinsResultsParserUtil.combine(
+					"portal.dir[", portalBaseBranchName, "]"));
+
+			File portalDir = new File(portalDirPath);
+
+			if (!portalDir.exists()) {
+				System.out.println(
+					"Unable to record portal attachments from missing " +
+						"directory " + portalDir);
+
+				return null;
+			}
+
+			return portalDir;
+		}
+		catch (IOException ioException) {
+			return null;
+		}
+	}
+
 	private List<String> _getPortalLogWarnings() {
 		List<String> portalLogWarnings = new ArrayList<>();
 
@@ -259,34 +299,20 @@ public class TestrayAttachmentRecorder {
 			return _portalWorkspaceGitRepository;
 		}
 
-		String portalUpstreamBranchName = _startProperties.getProperty(
-			"PORTAL_UPSTREAM_BRANCH_NAME");
+		File portalDir = _getPortalDir();
 
-		if (JenkinsResultsParserUtil.isNullOrEmpty(portalUpstreamBranchName)) {
+		if (portalDir == null) {
 			return null;
 		}
 
-		try {
-			String portalDirPath = JenkinsResultsParserUtil.getBuildProperty(
-				JenkinsResultsParserUtil.combine(
-					"portal.dir[", portalUpstreamBranchName, "]"));
+		System.out.println("Recording Testray attachments from " + portalDir);
 
-			File portalDir = new File(portalDirPath);
+		_portalWorkspaceGitRepository =
+			(PortalWorkspaceGitRepository)
+				GitRepositoryFactory.getWorkspaceGitRepository(
+					portalDir.getName());
 
-			if (!portalDir.exists()) {
-				return null;
-			}
-
-			_portalWorkspaceGitRepository =
-				(PortalWorkspaceGitRepository)
-					GitRepositoryFactory.getWorkspaceGitRepository(
-						portalDir.getName());
-
-			return _portalWorkspaceGitRepository;
-		}
-		catch (IOException ioException) {
-			return null;
-		}
+		return _portalWorkspaceGitRepository;
 	}
 
 	private List<String> _getPoshiWarnings() {
@@ -572,6 +598,10 @@ public class TestrayAttachmentRecorder {
 	private void _recordGradlePluginsFiles() {
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			_getPortalWorkspaceGitRepository();
+
+		if (portalWorkspaceGitRepository == null) {
+			return;
+		}
 
 		File gradlePluginsFile = new File(
 			portalWorkspaceGitRepository.getDirectory(),
