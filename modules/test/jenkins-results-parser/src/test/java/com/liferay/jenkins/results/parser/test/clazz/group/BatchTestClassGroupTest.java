@@ -336,6 +336,7 @@ public class BatchTestClassGroupTest
 		JobPropertyFactory.clear();
 
 		Properties jobProperties = new Properties();
+
 		long targetAxisDuration = Math.abs(RandomTestUtil.randomInt());
 
 		jobProperties.setProperty(
@@ -364,7 +365,6 @@ public class BatchTestClassGroupTest
 			portalGitWorkingDirectory
 		).getUpstreamBranchName();
 
-		String batchName = batchTestClassGroup.getBatchName();
 		JobHistory jobHistory = portalTestClassJob.getJobHistory();
 
 		Mockito.doReturn(
@@ -372,7 +372,7 @@ public class BatchTestClassGroupTest
 		).when(
 			jobHistory
 		).getBatchHistory(
-			batchName
+			batchTestClassGroup.getBatchName()
 		);
 
 		if (targetAxisDurationExpected) {
