@@ -159,13 +159,7 @@ public class AssetListAssetEntryProviderImpl
 
 		return _getDynamicAssetEntries(
 			assetCategoryIds,
-			_createAssetEntryQuery(
-				assetListEntry,
-				UnicodePropertiesBuilder.create(
-					true
-				).fastLoad(
-					assetListEntryAudienceEntryRel.getTypeSettings()
-				).build()),
+			_getAssetEntryQuery(assetListEntry, assetListEntryAudienceEntryRel),
 			assetListEntry, assetTagNames, end, keywords, start);
 	}
 
@@ -176,6 +170,25 @@ public class AssetListAssetEntryProviderImpl
 		return getAssetEntryQuery(
 			assetListEntry,
 			_getFirstSegmentsEntryId(assetListEntry, segmentsEntryIds), userId);
+	}
+
+	@Override
+	public AssetEntryQuery getAssetEntryQuery(
+		AssetListEntry assetListEntry, String[] audienceEntryERCs,
+		String userId) {
+
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
+			_assetListEntryAudienceEntryRelLocalService.
+				fetchAssetListEntryAudienceEntryRel(
+					assetListEntry.getAssetListEntryId(), audienceEntryERCs);
+
+		if (assetListEntryAudienceEntryRel == null) {
+			return getAssetEntryQuery(
+				assetListEntry, SegmentsEntryConstants.ID_DEFAULT, userId);
+		}
+
+		return _getAssetEntryQuery(
+			assetListEntry, assetListEntryAudienceEntryRel);
 	}
 
 	@Override
@@ -459,6 +472,19 @@ public class AssetListAssetEntryProviderImpl
 		return new BooleanClause[] {
 			new BooleanClause<>(booleanQuery, BooleanClauseOccur.MUST)
 		};
+	}
+
+	private AssetEntryQuery _getAssetEntryQuery(
+		AssetListEntry assetListEntry,
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel) {
+
+		return _createAssetEntryQuery(
+			assetListEntry,
+			UnicodePropertiesBuilder.create(
+				true
+			).fastLoad(
+				assetListEntryAudienceEntryRel.getTypeSettings()
+			).build());
 	}
 
 	private long[] _getAssetEntryQueryGroupIds(

@@ -29,6 +29,10 @@ public interface AssetListAssetEntryProvider {
 	public AssetEntryQuery getAssetEntryQuery(
 		AssetListEntry assetListEntry, long[] segmentsEntryIds, String userId);
 
+	public AssetEntryQuery getAssetEntryQuery(
+		AssetListEntry assetListEntry, String[] audienceEntryERCs,
+		String userId);
+
 	public BooleanQuery getBooleanQuery(
 			AssetEntryQuery assetEntryQuery, AssetListEntry assetListEntry,
 			long segmentsEntryId)
