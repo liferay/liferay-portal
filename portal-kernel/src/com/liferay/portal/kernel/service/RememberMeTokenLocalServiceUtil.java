@@ -131,6 +131,10 @@ public class RememberMeTokenLocalServiceUtil {
 		return getService().deleteRememberMeToken(rememberMeToken);
 	}
 
+	public static void deleteUserRememberMeTokens(long userId) {
+		getService().deleteUserRememberMeTokens(userId);
+	}
+
 	public static <T> T dslQuery(DSLQuery dslQuery) {
 		return getService().dslQuery(dslQuery);
 	}
@@ -324,4 +328,4 @@ public class RememberMeTokenLocalServiceUtil {
 	private static volatile RememberMeTokenLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1685794925
+// LIFERAY-SERVICE-BUILDER-HASH:55642396

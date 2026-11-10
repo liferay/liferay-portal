@@ -138,6 +138,11 @@ public class RememberMeTokenLocalServiceWrapper
 	}
 
 	@Override
+	public void deleteUserRememberMeTokens(long userId) {
+		_rememberMeTokenLocalService.deleteUserRememberMeTokens(userId);
+	}
+
+	@Override
 	public <T> T dslQuery(com.liferay.petra.sql.dsl.query.DSLQuery dslQuery) {
 		return _rememberMeTokenLocalService.dslQuery(dslQuery);
 	}
@@ -376,4 +381,4 @@ public class RememberMeTokenLocalServiceWrapper
 	private RememberMeTokenLocalService _rememberMeTokenLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:168792569
+// LIFERAY-SERVICE-BUILDER-HASH:314721270

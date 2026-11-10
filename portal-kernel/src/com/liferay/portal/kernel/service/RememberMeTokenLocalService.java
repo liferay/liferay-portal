@@ -130,6 +130,8 @@ public interface RememberMeTokenLocalService
 	public RememberMeToken deleteRememberMeToken(
 		RememberMeToken rememberMeToken);
 
+	public void deleteUserRememberMeTokens(long userId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public <T> T dslQuery(DSLQuery dslQuery);
 
@@ -279,4 +281,4 @@ public interface RememberMeTokenLocalService
 		RememberMeToken rememberMeToken);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1963334370
+// LIFERAY-SERVICE-BUILDER-HASH:1207052567
