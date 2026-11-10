@@ -35,6 +35,7 @@ ViewTasksDisplayContext viewTasksDisplayContext = (ViewTasksDisplayContext)reque
 			id="<%= CMSSiteInitializerFDSNames.TASKS_SECTION %>"
 			itemsPerPage="<%= 20 %>"
 			propsTransformer="{TasksFDSPropsTransformer} from site-cms-site-initializer"
+			uniformActionsDisplay="<%= true %>"
 		/>
 	</div>
 </div>
