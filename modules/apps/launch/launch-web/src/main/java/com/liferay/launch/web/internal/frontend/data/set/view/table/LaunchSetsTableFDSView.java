@@ -5,8 +5,10 @@
 
 package com.liferay.launch.web.internal.frontend.data.set.view.table;
 
+import com.liferay.frontend.data.set.constants.FDSTimeZoneBehaviorConstants;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
+import com.liferay.frontend.data.set.view.table.DateTimeFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
@@ -41,21 +43,40 @@ public class LaunchSetsTableFDSView extends BaseTableFDSView {
 		).add(
 			"description", "description"
 		).add(
-			"dateModified", "last-modified",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"dateTime"
-			).setSortable(
-				true
-			)
+			_getDateTimeFDSTableSchemaField(
+				"dateModified", "last-modified", true)
 		).add(
-			"scheduledDate", "scheduled-date",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"dateTime")
+			_getDateTimeFDSTableSchemaField(
+				"scheduledDate", "scheduled-date", false)
 		).add(
 			"status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"launchStatus")
 		).build();
+	}
+
+	private DateTimeFDSTableSchemaField _getDateTimeFDSTableSchemaField(
+		String fieldName, String label, boolean sortable) {
+
+		DateTimeFDSTableSchemaField dateTimeFDSTableSchemaField =
+			new DateTimeFDSTableSchemaField();
+
+		dateTimeFDSTableSchemaField.setContentRenderer(
+			"dateTime"
+		).setFieldName(
+			fieldName
+		).setLabel(
+			label
+		).setLocalizeLabel(
+			true
+		).setSortable(
+			sortable
+		);
+
+		dateTimeFDSTableSchemaField.setTimeZoneBehavior(
+			FDSTimeZoneBehaviorConstants.APPLY_THEME_DISPLAY_TIME_ZONE);
+
+		return dateTimeFDSTableSchemaField;
 	}
 
 	@Reference
