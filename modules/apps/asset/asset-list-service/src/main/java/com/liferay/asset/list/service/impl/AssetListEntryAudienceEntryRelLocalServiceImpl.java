@@ -174,6 +174,14 @@ public class AssetListEntryAudienceEntryRelLocalServiceImpl
 	}
 
 	@Override
+	public int getAssetListEntryAudienceEntryRelsCountByAudienceEntryERC(
+		long companyId, String audienceEntryERC) {
+
+		return assetListEntryAudienceEntryRelPersistence.countByC_AEERC(
+			companyId, audienceEntryERC);
+	}
+
+	@Override
 	public AssetListEntryAudienceEntryRel
 			updateAssetListEntryAudienceEntryRelTypeSettings(
 				long assetListEntryId, String audienceEntryERC,
