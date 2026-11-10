@@ -29,18 +29,18 @@ describe('getAccountInfoDisplayValues', () => {
 	describe('lifecycle stage', () => {
 		it('should resolve a mapped stage to its label and display type', () => {
 			expect(
-				getAccountInfoDisplayValues({lifecycleStage: 'ENGAGED'})
+				getAccountInfoDisplayValues({lifecycleStage: 'Engaged'})
 					.lifecycleStage
 			).toEqual({displayType: 'warning', label: 'Engaged'});
 		});
 
 		it('should resolve every mapped stage', () => {
 			expect(
-				getAccountInfoDisplayValues({lifecycleStage: 'AT_RISK'})
+				getAccountInfoDisplayValues({lifecycleStage: 'At Risk'})
 					.lifecycleStage
 			).toEqual({displayType: 'danger', label: 'At Risk'});
 			expect(
-				getAccountInfoDisplayValues({lifecycleStage: 'ESTABLISHED'})
+				getAccountInfoDisplayValues({lifecycleStage: 'Established'})
 					.lifecycleStage
 			).toEqual({displayType: 'success', label: 'Established'});
 		});

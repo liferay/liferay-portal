@@ -81,7 +81,7 @@ const mockAccount = {
 	country: 'United States',
 	id: 'acc-1',
 	industry: 'Business Services',
-	lifecycleStage: 'ENGAGED',
+	lifecycleStage: 'Engaged',
 };
 
 const renderOverview = (props = {}) =>

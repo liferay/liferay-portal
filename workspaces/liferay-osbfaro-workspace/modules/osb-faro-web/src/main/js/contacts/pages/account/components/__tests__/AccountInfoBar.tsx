@@ -10,7 +10,7 @@ const mockAccount = {
 	annualRevenue: 120000000,
 	country: 'Australia',
 	industry: 'Health Sector',
-	lifecycleStage: 'ENGAGED',
+	lifecycleStage: 'Engaged',
 };
 
 describe('AccountInfoBar', () => {
@@ -52,7 +52,7 @@ describe('AccountInfoBar', () => {
 		});
 
 		it('should color every mapped lifecycle stage', () => {
-			render(<AccountInfoBar lifecycleStage="AT_RISK" />);
+			render(<AccountInfoBar lifecycleStage="At Risk" />);
 
 			expect(
 				screen.getByText('Lifecycle: At Risk').closest('.label')

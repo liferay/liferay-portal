@@ -179,7 +179,7 @@ describe('AccountsTouchedDataSet', () => {
 
 		const {container} = render(
 			lastFDSProps.customDataRenderers.lifecycleStageRenderer({
-				value: 'AT_RISK',
+				value: 'At Risk',
 			})
 		);
 

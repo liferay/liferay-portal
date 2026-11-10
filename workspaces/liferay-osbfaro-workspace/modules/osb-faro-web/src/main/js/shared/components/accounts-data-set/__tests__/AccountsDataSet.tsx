@@ -130,6 +130,7 @@ type FakeFilter = {
 	apiURL?: string;
 	id: string;
 	items?: Array<{label: string; value: string}>;
+	label?: string;
 	preloadedData?: {
 		exclude: boolean;
 		selectedItems: Array<{label?: string; value: string}>;
@@ -421,6 +422,100 @@ describe('AccountsDataSet', () => {
 		);
 
 		expect(lifecycleStatusFilter?.preloadedData).toBeUndefined();
+	});
+
+	it('should name the lifecycleStatus filter Lifecycle Stage', async () => {
+		await renderAccountsDataSet(
+			<AccountsDataSet
+				accountLifecycleId="al-1"
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+			/>
+		);
+
+		expect(
+			lastFilters?.find((f) => f.id === 'lifecycleStatus')?.label
+		).toBe('Lifecycle Stage');
+	});
+
+	it('should label the lifecycleStatus filter items with the stage name the API returns', async () => {
+		mockStages([
+			{
+				externalReferenceCode: 'erc-stage-1',
+				id: '1',
+				name: 'Aware',
+			},
+			{
+				externalReferenceCode: 'erc-stage-2',
+				id: '2',
+				name: 'At Risk',
+			},
+		]);
+
+		await renderAccountsDataSet(
+			<AccountsDataSet
+				accountLifecycleId="al-1"
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+			/>
+		);
+
+		expect(
+			lastFilters?.find((f) => f.id === 'lifecycleStatus')?.items
+		).toEqual([
+			{label: 'Aware', value: 'erc-stage-1'},
+			{label: 'At Risk', value: 'erc-stage-2'},
+		]);
+	});
+
+	it.each([
+		['Aware', 'secondary'],
+		['Engaged', 'warning'],
+		['Pipeline', 'info'],
+		['Onboarding', 'secondary'],
+		['Established', 'success'],
+		['At Risk', 'danger'],
+	])(
+		'should render the %s lifecycle stage with the %s label',
+		async (stage, displayType) => {
+			await renderAccountsDataSet(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					groupId="23"
+				/>
+			);
+
+			const {container} = render(
+				lastCustomDataRenderers!.accountLifecycleStageRenderer({
+					value: stage,
+				})
+			);
+
+			expect(container).toHaveTextContent(stage);
+			expect(
+				container.querySelector(`.label-inverse-${displayType}`)
+			).toBeTruthy();
+		}
+	);
+
+	it('should render a custom lifecycle stage name as a secondary label', async () => {
+		await renderAccountsDataSet(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const {container} = render(
+			lastCustomDataRenderers!.accountLifecycleStageRenderer({
+				value: 'Key Customer',
+			})
+		);
+
+		expect(container).toHaveTextContent('Key Customer');
+		expect(
+			container.querySelector('.label-inverse-secondary')
+		).toBeTruthy();
 	});
 
 	it('should list the stages of every lifecycle in the Lifecycle Stage filter', async () => {
