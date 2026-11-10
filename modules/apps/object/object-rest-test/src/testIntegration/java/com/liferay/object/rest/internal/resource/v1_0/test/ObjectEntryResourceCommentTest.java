@@ -218,20 +218,6 @@ public class ObjectEntryResourceCommentTest
 		objectDefinitionLocalService.updateObjectDefinition(objectDefinition);
 	}
 
-	private JSONArray _getCommentsJSONArray(
-			long groupId, ObjectDefinition objectDefinition)
-		throws Exception {
-
-		return JSONUtil.getValueAsJSONArray(
-			HTTPTestUtil.invokeToJSONObject(
-				null,
-				getEndpoint(objectDefinition, groupId) +
-					"?nestedFields=systemProperties.comments",
-				Http.Method.GET),
-			"JSONArray/items", "JSONObject/0", "JSONObject/systemProperties",
-			"JSONArray/comments");
-	}
-
 	private String _getObjectEntryEndpoint(
 		long groupId, ObjectDefinition objectDefinition,
 		JSONObject objectEntryJSONObject) {
@@ -391,8 +377,14 @@ public class ObjectEntryResourceCommentTest
 			_toExpectedCommentsJSONArray(
 				commentsJSONArray
 			).toString(),
-			_getCommentsJSONArray(
-				groupId, objectDefinition
+			JSONUtil.getValueAsJSONArray(
+				HTTPTestUtil.invokeToJSONObject(
+					null,
+					getEndpoint(objectDefinition, groupId) +
+						"?nestedFields=systemProperties.comments",
+					Http.Method.GET),
+				"JSONArray/items", "JSONObject/0",
+				"JSONObject/systemProperties", "JSONArray/comments"
 			).toString(),
 			JSONCompareMode.LENIENT);
 	}

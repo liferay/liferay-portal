@@ -60,12 +60,12 @@ public class ObjectEntryResourceVersionsTest
 	public void testGetByExternalReferenceCodeVersionsPage() throws Exception {
 		getObjectDefinition1().setEnableObjectEntryVersioning(true);
 
-		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition1());
 
 		getObjectDefinition2().setEnableObjectEntryVersioning(true);
 
-		objectDefinition2 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition2());
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(

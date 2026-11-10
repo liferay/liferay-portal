@@ -86,20 +86,23 @@ public class ObjectEntryResourceRelationshipTest
 	public void testGetObjectEntriesPageWithObjectRelationshipERCObjectFieldInOneToManyRelationship()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
 				"items",
 				JSONUtil.putAll(
 					JSONUtil.put(
-						objectRelationship1.getName() + "ERC",
+						objectRelationship.getName() + "ERC",
 						objectEntry1.getExternalReferenceCode()))
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
@@ -109,16 +112,16 @@ public class ObjectEntryResourceRelationshipTest
 			JSONCompareMode.LENIENT);
 
 		JSONObject jsonObject = getNestedFieldsObjectEntryJSONObject(
-			null, objectRelationship1.getName(), getObjectDefinition1());
+			null, objectRelationship.getName(), getObjectDefinition1());
 
 		JSONAssert.assertEquals(
 			JSONUtil.putAll(
 				JSONUtil.put(
-					objectRelationship1.getName() + "ERC",
+					objectRelationship.getName() + "ERC",
 					objectEntry1.getExternalReferenceCode())
 			).toString(),
 			String.valueOf(
-				jsonObject.getJSONArray(objectRelationship1.getName())),
+				jsonObject.getJSONArray(objectRelationship.getName())),
 			JSONCompareMode.LENIENT);
 	}
 
@@ -153,17 +156,18 @@ public class ObjectEntryResourceRelationshipTest
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			new long[0], serviceContext);
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			userSystemObjectDefinition, getObjectDefinition1(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				userSystemObjectDefinition, getObjectDefinition1(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_1
 			).put(
 				StringBundler.concat(
-					"r_", objectRelationship1.getName(), "_userERC"),
+					"r_", objectRelationship.getName(), "_userERC"),
 				user.getExternalReferenceCode()
 			).toString(),
 			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
@@ -183,10 +187,10 @@ public class ObjectEntryResourceRelationshipTest
 					HTTPTestUtil.invokeToJSONObject(
 						null,
 						getNestedFieldsEndpoint(
-							jsonObject.getLong("id"), objectRelationship1,
+							jsonObject.getLong("id"), objectRelationship,
 							getObjectDefinition1()),
 						Http.Method.GET),
-					"JSONObject/" + objectRelationship1.getName(),
+					"JSONObject/" + objectRelationship.getName(),
 					"JSONArray/customFields")),
 			JSONCompareMode.STRICT);
 	}
@@ -213,10 +217,11 @@ public class ObjectEntryResourceRelationshipTest
 				"?fields=id,externalReferenceCode," + OBJECT_FIELD_NAME_1,
 			Http.Method.POST);
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_testPostCustomObjectEntryWithManyToOneRelationshipPriorities(
 			customObjectJSONObject1, customObjectJSONObject2,
@@ -238,10 +243,11 @@ public class ObjectEntryResourceRelationshipTest
 					OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 				).build());
 
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			userSystemObjectDefinition, getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				userSystemObjectDefinition, getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_testPostCustomObjectEntryWithManyToOneRelationshipPriorities(
 			systemObjectJSONObject1, systemObjectJSONObject2,
@@ -255,17 +261,18 @@ public class ObjectEntryResourceRelationshipTest
 	public void testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
 			).put(
 				StringBundler.concat(
-					"r_", objectRelationship1.getName(), "_",
+					"r_", objectRelationship.getName(), "_",
 					getObjectDefinition1().getPKObjectFieldName()),
 				StringPool.BLANK
 			).toString(),
@@ -280,7 +287,7 @@ public class ObjectEntryResourceRelationshipTest
 			));
 
 		_testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId(
-			getObjectDefinition1(), objectRelationship1);
+			getObjectDefinition1(), objectRelationship);
 		_testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId(
 			userSystemObjectDefinition,
 			ObjectRelationshipTestUtil.addObjectRelationship(
@@ -337,15 +344,16 @@ public class ObjectEntryResourceRelationshipTest
 	public void testPutByExternalReferenceCodeCurrentExternalReferenceCodeObjectRelationshipNameRelatedExternalReferenceCode()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
@@ -353,7 +361,7 @@ public class ObjectEntryResourceRelationshipTest
 				getObjectDefinition1().getRESTContextPath(),
 				"/by-external-reference-code/",
 				objectEntry1.getExternalReferenceCode(), StringPool.SLASH,
-				objectRelationship1.getName(), StringPool.SLASH,
+				objectRelationship.getName(), StringPool.SLASH,
 				objectEntry2.getExternalReferenceCode()),
 			Http.Method.PUT);
 
@@ -369,7 +377,7 @@ public class ObjectEntryResourceRelationshipTest
 				getObjectDefinition2().getRESTContextPath(),
 				"/by-external-reference-code/",
 				objectEntry2.getExternalReferenceCode(), StringPool.SLASH,
-				objectRelationship1.getName(), StringPool.SLASH,
+				objectRelationship.getName(), StringPool.SLASH,
 				objectEntry1.getExternalReferenceCode()),
 			Http.Method.PUT);
 
@@ -385,7 +393,7 @@ public class ObjectEntryResourceRelationshipTest
 				getObjectDefinition2().getRESTContextPath(),
 				"/by-external-reference-code/",
 				objectEntry2.getExternalReferenceCode(), StringPool.SLASH,
-				objectRelationship1.getName(), StringPool.SLASH,
+				objectRelationship.getName(), StringPool.SLASH,
 				RandomTestUtil.randomString()),
 			Http.Method.PUT);
 
@@ -434,7 +442,7 @@ public class ObjectEntryResourceRelationshipTest
 					StringBundler.concat(
 						getObjectDefinition1().getRESTContextPath(),
 						"/by-external-reference-code/a/b/",
-						objectRelationship1.getName(), "/c"),
+						objectRelationship.getName(), "/c"),
 					Http.Method.PUT));
 		}
 
@@ -445,7 +453,7 @@ public class ObjectEntryResourceRelationshipTest
 				StringBundler.concat(
 					getObjectDefinition1().getRESTContextPath(),
 					"/by-external-reference-code/a%252Fb/",
-					objectRelationship1.getName(), "/c"),
+					objectRelationship.getName(), "/c"),
 				Http.Method.PUT));
 
 		// Slash on the right side
@@ -462,7 +470,7 @@ public class ObjectEntryResourceRelationshipTest
 					StringBundler.concat(
 						getObjectDefinition1().getRESTContextPath(),
 						"/by-external-reference-code/a/",
-						objectRelationship1.getName(), "/c/d"),
+						objectRelationship.getName(), "/c/d"),
 					Http.Method.PUT));
 		}
 
@@ -473,7 +481,7 @@ public class ObjectEntryResourceRelationshipTest
 				StringBundler.concat(
 					getObjectDefinition1().getRESTContextPath(),
 					"/by-external-reference-code/a/",
-					objectRelationship1.getName(), "/c%252Fd"),
+					objectRelationship.getName(), "/c%252Fd"),
 				Http.Method.PUT));
 
 		// Slash on both sides
@@ -490,7 +498,7 @@ public class ObjectEntryResourceRelationshipTest
 					StringBundler.concat(
 						getObjectDefinition1().getRESTContextPath(),
 						"/by-external-reference-code/a/b/",
-						objectRelationship1.getName(), "/c/d"),
+						objectRelationship.getName(), "/c/d"),
 					Http.Method.PUT));
 		}
 
@@ -501,7 +509,7 @@ public class ObjectEntryResourceRelationshipTest
 				StringBundler.concat(
 					getObjectDefinition1().getRESTContextPath(),
 					"/by-external-reference-code/a%252Fb/",
-					objectRelationship1.getName(), "/c%252Fd"),
+					objectRelationship.getName(), "/c%252Fd"),
 				Http.Method.PUT));
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -516,7 +524,7 @@ public class ObjectEntryResourceRelationshipTest
 					StringBundler.concat(
 						getObjectDefinition1().getRESTContextPath(),
 						"/by-external-reference-code/a%252Fb/",
-						objectRelationship1.getName(), "/c/d"),
+						objectRelationship.getName(), "/c/d"),
 					Http.Method.PUT));
 			Assert.assertEquals(
 				404,
@@ -525,7 +533,7 @@ public class ObjectEntryResourceRelationshipTest
 					StringBundler.concat(
 						getObjectDefinition1().getRESTContextPath(),
 						"/by-external-reference-code/a/b/",
-						objectRelationship1.getName(), "/c%252Fd"),
+						objectRelationship.getName(), "/c%252Fd"),
 					Http.Method.PUT));
 		}
 	}
@@ -534,10 +542,11 @@ public class ObjectEntryResourceRelationshipTest
 	public void testPutByExternalReferenceCodeManyToManyRelationshipWithSelf()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition1(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition1(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		String objectFieldValue1 = RandomTestUtil.randomString();
 		String objectFieldValue2 = RandomTestUtil.randomString();
@@ -546,7 +555,7 @@ public class ObjectEntryResourceRelationshipTest
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				JSONUtil.putAll(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_1, objectFieldValue1
@@ -586,7 +595,7 @@ public class ObjectEntryResourceRelationshipTest
 				StringBundler.concat(
 					getObjectDefinition1().getRESTContextPath(),
 					StringPool.SLASH, jsonObject.get("id"), StringPool.SLASH,
-					objectRelationship1.getName()),
+					objectRelationship.getName()),
 				Http.Method.GET
 			).toString(),
 			JSONCompareMode.LENIENT);
@@ -595,7 +604,7 @@ public class ObjectEntryResourceRelationshipTest
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_1
 			).put(
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				JSONUtil.putAll(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_2
@@ -617,7 +626,7 @@ public class ObjectEntryResourceRelationshipTest
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_1
 			).put(
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				JSONUtil.putAll(
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_2
@@ -633,7 +642,7 @@ public class ObjectEntryResourceRelationshipTest
 			HTTPTestUtil.invokeToJSONObject(
 				null,
 				getNestedFieldsEndpoint(
-					jsonObject.getLong("id"), objectRelationship1,
+					jsonObject.getLong("id"), objectRelationship,
 					getObjectDefinition1()),
 				Http.Method.GET
 			).toString(),
@@ -644,14 +653,16 @@ public class ObjectEntryResourceRelationshipTest
 	public void testPutByExternalReferenceCodeMultipleManyToManyRelationships()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition3(), getObjectDefinition1(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition3(), getObjectDefinition1(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		Assert.assertEquals(
 			200,
@@ -720,14 +731,16 @@ public class ObjectEntryResourceRelationshipTest
 	public void testPutByExternalReferenceCodeMultipleOneToManyRelationships()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition2(), getObjectDefinition3(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition2(), getObjectDefinition3(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -886,10 +899,11 @@ public class ObjectEntryResourceRelationshipTest
 	public void testPutByExternalReferenceCodeWithNonexistentValueOneToManyRelationship()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		Assert.assertEquals(
 			200,
@@ -897,7 +911,7 @@ public class ObjectEntryResourceRelationshipTest
 				JSONUtil.put(
 					OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_1
 				).put(
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					createObjectEntriesJSONArray(
 						new String[] {ERC_VALUE_2}, OBJECT_FIELD_NAME_2,
 						new String[] {NEW_OBJECT_FIELD_VALUE_2})
@@ -911,7 +925,7 @@ public class ObjectEntryResourceRelationshipTest
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, NEW_OBJECT_FIELD_VALUE_1
 			).put(
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				JSONUtil.putAll(
 					JSONUtil.put("externalReferenceCode", ERC_VALUE_2))
 			).toString(),
@@ -920,7 +934,7 @@ public class ObjectEntryResourceRelationshipTest
 				StringBundler.concat(
 					getObjectDefinition1().getRESTContextPath(),
 					"/by-external-reference-code/", ERC_VALUE_1,
-					"?nestedFields=", objectRelationship1.getName()),
+					"?nestedFields=", objectRelationship.getName()),
 				Http.Method.GET
 			).toString(),
 			JSONCompareMode.LENIENT);

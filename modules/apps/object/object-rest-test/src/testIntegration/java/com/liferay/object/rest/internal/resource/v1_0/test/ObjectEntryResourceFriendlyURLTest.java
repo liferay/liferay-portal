@@ -47,7 +47,7 @@ public class ObjectEntryResourceFriendlyURLTest
 	public void testGetObjectEntryWithFriendlyURL() throws Exception {
 		getObjectDefinition1().setEnableFriendlyURLCustomization(true);
 
-		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition1());
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -89,7 +89,7 @@ public class ObjectEntryResourceFriendlyURLTest
 
 		getObjectDefinition1().setEnableFriendlyURLCustomization(true);
 
-		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition1());
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(

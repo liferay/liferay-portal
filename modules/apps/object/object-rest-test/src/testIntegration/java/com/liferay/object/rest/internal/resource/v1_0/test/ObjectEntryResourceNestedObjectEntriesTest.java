@@ -119,14 +119,15 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 	public void testPostCustomObjectEntryWithEmptyNestedCustomObjectEntriesInOneToManyRelationship()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				objectRelationship1.getName(), JSONFactoryUtil.createJSONArray()
+				objectRelationship.getName(), JSONFactoryUtil.createJSONArray()
 			).toString(),
 			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
@@ -139,7 +140,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			));
 
 		JSONArray jsonArray = jsonObject.getJSONArray(
-			objectRelationship1.getName());
+			objectRelationship.getName());
 
 		Assert.assertEquals(0, jsonArray.length());
 	}
@@ -153,26 +154,26 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 					"WebApplicationExceptionMapper",
 				LoggerTestUtil.WARN)) {
 
-			objectRelationship1 =
+			ObjectRelationship objectRelationship =
 				ObjectRelationshipTestUtil.addObjectRelationship(
 					getObjectDefinition1(), getObjectDefinition2(),
 					TestPropsValues.getUserId(),
 					ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 			_testPostCustomObjectEntryWithInvalidNestedCustomObjectEntriesInXToManyRelationship(
-				objectRelationship1);
+				objectRelationship);
 
-			objectRelationship1 =
+			objectRelationship =
 				ObjectRelationshipTestUtil.addObjectRelationship(
 					getObjectDefinition1(), getObjectDefinition2(),
 					TestPropsValues.getUserId(),
 					ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 			_testPostCustomObjectEntryWithInvalidNestedCustomObjectEntriesInManyToOneRelationship(
-				objectRelationship1);
+				objectRelationship);
 
 			_testPostCustomObjectEntryWithInvalidNestedCustomObjectEntriesInXToManyRelationship(
-				objectRelationship1);
+				objectRelationship);
 		}
 	}
 
@@ -183,10 +184,11 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Company scope
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_testPostCustomObjectEntryWithNestedCustomObjectEntriesInXToManyRelationship(
 			getObjectDefinition1(),
@@ -199,10 +201,11 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Company to site scope: with 'scopeKey'
 
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getSiteScopedObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getSiteScopedObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_testPostCustomObjectEntryWithNestedCustomObjectEntriesInXToManyRelationship(
 			getObjectDefinition1(),
@@ -291,10 +294,11 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Site scope
 
-		objectRelationship3 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getSiteScopedObjectDefinition1(), getSiteScopedObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship3 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getSiteScopedObjectDefinition1(),
+				getSiteScopedObjectDefinition2(), TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_testPostCustomObjectEntryWithNestedCustomObjectEntriesInXToManyRelationship(
 			getSiteScopedObjectDefinition1(),
@@ -312,10 +316,11 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Company scope
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_testPostCustomObjectEntryWithNestedCustomObjectEntriesInXToManyRelationship(
 			getObjectDefinition1(),
@@ -331,10 +336,11 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Site scope
 
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getSiteScopedObjectDefinition1(), getSiteScopedObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getSiteScopedObjectDefinition1(),
+				getSiteScopedObjectDefinition2(), TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_testPostCustomObjectEntryWithNestedCustomObjectEntriesInXToManyRelationship(
 			getSiteScopedObjectDefinition1(),
@@ -353,18 +359,20 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 	public void testPutCustomObjectEntryWithNestedCustomObjectEntries()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_testPutCustomObjectEntryWithNestedCustomObjectEntriesInXToManyRelationship(
 			objectRelationship1);
 
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_testPutCustomObjectEntryWithNestedCustomObjectEntriesInManyToOneRelationship(
 			objectRelationship2);
@@ -378,53 +386,55 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		// Many to many
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_testPutCustomObjectEntryWithNestedCustomObjectEntriesByExternalReferenceCode(
-			false);
+			false, objectRelationship);
 
 		objectRelationshipLocalService.deleteObjectRelationship(
-			objectRelationship1);
+			objectRelationship);
 
 		// Many to one
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
+		objectRelationship = ObjectRelationshipTestUtil.addObjectRelationship(
 			getObjectDefinition2(), getObjectDefinition1(),
 			TestPropsValues.getUserId(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_testPutCustomObjectEntryWithNestedCustomObjectEntriesByExternalReferenceCode(
-			true);
+			true, objectRelationship);
 
 		objectRelationshipLocalService.deleteObjectRelationship(
-			objectRelationship1);
+			objectRelationship);
 
 		// One to many
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
+		objectRelationship = ObjectRelationshipTestUtil.addObjectRelationship(
 			getObjectDefinition1(), getObjectDefinition2(),
 			TestPropsValues.getUserId(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_testPutCustomObjectEntryWithNestedCustomObjectEntriesByExternalReferenceCode(
-			false);
+			false, objectRelationship);
 	}
 
 	@Test
 	public void testPutSiteScopedCustomObjectEntryWithNestedCustomObjectEntries()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getSiteScopedObjectDefinition1(), getSiteScopedObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getSiteScopedObjectDefinition1(),
+				getSiteScopedObjectDefinition2(), TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		JSONObject postJSONObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				createObjectEntriesJSONArray(
 					new String[] {ERC_VALUE_1, ERC_VALUE_2},
 					OBJECT_FIELD_NAME_1,
@@ -439,7 +449,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1
 			).put(
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				createObjectEntriesJSONArray(
 					new String[] {ERC_VALUE_3}, OBJECT_FIELD_NAME_2,
 					new String[] {NEW_OBJECT_FIELD_VALUE_2})
@@ -451,7 +461,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 		Assert.assertEquals(
 			ERC_VALUE_3,
 			putJSONObject.getJSONArray(
-				objectRelationship1.getName()
+				objectRelationship.getName()
 			).getJSONObject(
 				0
 			).getString(
@@ -934,12 +944,12 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 	private void
 			_testPutCustomObjectEntryWithNestedCustomObjectEntriesByExternalReferenceCode(
-				boolean manyToOne)
+				boolean manyToOne, ObjectRelationship objectRelationship)
 		throws Exception {
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				() -> {
 					if (manyToOne) {
 						return JSONUtil.put(
@@ -962,7 +972,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				() -> {
 					if (manyToOne) {
 						return JSONUtil.put(
@@ -995,7 +1005,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			_assertObjectEntryField(
 				jsonObject.getJSONObject(
 					StringBundler.concat(
-						"r_", objectRelationship1.getName(), "_",
+						"r_", objectRelationship.getName(), "_",
 						StringUtil.removeLast(
 							getObjectDefinition2().getPKObjectFieldName(),
 							"Id"))),
@@ -1003,7 +1013,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 		}
 		else {
 			JSONArray nestedObjectEntriesJSONArray = jsonObject.getJSONArray(
-				objectRelationship1.getName());
+				objectRelationship.getName());
 
 			Assert.assertEquals(1, nestedObjectEntriesJSONArray.length());
 

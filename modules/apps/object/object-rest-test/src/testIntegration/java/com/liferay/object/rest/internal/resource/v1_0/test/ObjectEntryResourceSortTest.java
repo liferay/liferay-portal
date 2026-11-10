@@ -76,13 +76,14 @@ public class ObjectEntryResourceSortTest
 	public void testSortByCustomObjectField() throws Exception {
 		String endpoint = getEndpoint(getObjectDefinition1(), testGroupId);
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition2(), getObjectDefinition1(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition2(), getObjectDefinition1(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		ObjectField objectField = objectFieldLocalService.getObjectField(
-			objectRelationship1.getObjectFieldId2());
+			objectRelationship.getObjectFieldId2());
 
 		BigDecimal randomBigDecimal = new BigDecimal(
 			RandomTestUtil.randomDouble());
@@ -254,14 +255,16 @@ public class ObjectEntryResourceSortTest
 	public void testSortByManyToOneAndOneToManyRelationshipsCustomObjectFields()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition2(), getObjectDefinition1(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition2(), getObjectDefinition3(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition2(), getObjectDefinition1(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition2(), getObjectDefinition3(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		String endpoint1 = getEndpoint(getObjectDefinition1(), testGroupId);
 		String endpoint2 = getEndpoint(getObjectDefinition2(), testGroupId);
@@ -637,14 +640,16 @@ public class ObjectEntryResourceSortTest
 	public void testSortByManyToOneRelationshipCustomObjectFields()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition2(), getObjectDefinition1(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition3(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition2(), getObjectDefinition1(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition3(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		String endpoint1 = getEndpoint(getObjectDefinition1(), testGroupId);
 		String endpoint2 = getEndpoint(getObjectDefinition2(), testGroupId);
@@ -1047,14 +1052,16 @@ public class ObjectEntryResourceSortTest
 	public void testSortByManyToOneRelationshipSystemObjectFields()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition2(), getObjectDefinition1(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition3(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition2(), getObjectDefinition1(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition3(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -1083,11 +1090,11 @@ public class ObjectEntryResourceSortTest
 
 		getObjectDefinition3().setEnableObjectEntryDraft(true);
 
-		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition1());
-		objectDefinition2 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition2());
-		objectDefinition3 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition3());
 
 		String endpoint1 = getEndpoint(getObjectDefinition1(), testGroupId);
@@ -1351,14 +1358,16 @@ public class ObjectEntryResourceSortTest
 	public void testSortByOneToManyRelationshipCustomObjectFields()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition2(), getObjectDefinition3(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition2(), getObjectDefinition3(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		String endpoint1 = getEndpoint(getObjectDefinition1(), testGroupId);
 		String endpoint2 = getEndpoint(getObjectDefinition2(), testGroupId);
@@ -1913,14 +1922,16 @@ public class ObjectEntryResourceSortTest
 	public void testSortByOneToManyRelationshipSystemObjectFields()
 		throws Exception {
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition2(), getObjectDefinition3(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition2(), getObjectDefinition3(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -1947,11 +1958,11 @@ public class ObjectEntryResourceSortTest
 
 		getObjectDefinition3().setEnableObjectEntryDraft(true);
 
-		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition1());
-		objectDefinition2 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition2());
-		objectDefinition3 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition3());
 
 		String endpoint1 = getEndpoint(getObjectDefinition1(), testGroupId);
@@ -2283,7 +2294,7 @@ public class ObjectEntryResourceSortTest
 
 		getObjectDefinition1().setEnableObjectEntryDraft(true);
 
-		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition1());
 
 		String endpoint = getEndpoint(getObjectDefinition1(), testGroupId);
@@ -2377,16 +2388,17 @@ public class ObjectEntryResourceSortTest
 
 	@Test
 	public void testSortByUnsupportedObjectFields() throws Exception {
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			getObjectDefinition1(), getObjectDefinition2(),
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				getObjectDefinition1(), getObjectDefinition2(),
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_testSortByUnsupportedObjectField(
 			"Unable to sort by a many to many related object field",
 			getObjectDefinition1(),
 			String.format(
-				"%s/%s:asc", objectRelationship1.getName(),
+				"%s/%s:asc", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_TEXT));
 
 		_testSortByUnsupportedObjectField(

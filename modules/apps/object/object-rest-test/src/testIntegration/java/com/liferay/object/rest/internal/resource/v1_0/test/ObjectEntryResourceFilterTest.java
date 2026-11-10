@@ -8,6 +8,7 @@ package com.liferay.object.rest.internal.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.TaxonomyCategory;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -383,7 +384,7 @@ public class ObjectEntryResourceFilterTest
 	public void testGetObjectEntriesFilteredByStatus() throws Exception {
 		getObjectDefinition1().setEnableObjectEntryDraft(true);
 
-		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
+		objectDefinitionLocalService.updateObjectDefinition(
 			getObjectDefinition1());
 
 		HTTPTestUtil.invokeToJSONObject(
@@ -412,7 +413,7 @@ public class ObjectEntryResourceFilterTest
 
 	@Test
 	public void testGetObjectEntriesFilteredBySystemDate() throws Exception {
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
 
 		objectEntry1.setCreateDate(
@@ -422,7 +423,7 @@ public class ObjectEntryResourceFilterTest
 
 		objectEntryLocalService.updateObjectEntry(objectEntry1);
 
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2);
 
 		objectEntry2.setCreateDate(
@@ -432,7 +433,7 @@ public class ObjectEntryResourceFilterTest
 
 		objectEntryLocalService.updateObjectEntry(objectEntry2);
 
-		objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_3);
 
 		objectEntry3.setCreateDate(null);

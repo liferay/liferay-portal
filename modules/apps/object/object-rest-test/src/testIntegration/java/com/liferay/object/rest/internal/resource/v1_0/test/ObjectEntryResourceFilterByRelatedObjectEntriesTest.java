@@ -63,14 +63,16 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByComparisonOperatorsObjectEntriesByRelatedObjectEntriesFields()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
 
 		_testFilterByComparisonOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testFilterByComparisonOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
@@ -78,20 +80,43 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByComparisonOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
-		objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition3(), OBJECT_FIELD_NAME_3, OBJECT_FIELD_VALUE_3);
-		objectEntry4 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry4 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition4(), OBJECT_FIELD_NAME_TEXT,
 			OBJECT_FIELD_VALUE_4);
 
+		ObjectRelationship objectRelationship1 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition2(), getObjectDefinition3(),
+				objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
 		_testFilterByComparisonOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
-		_testFilterByComparisonOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
+			objectEntry1, objectEntry3, objectRelationship1,
+			objectRelationship2);
+
+		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+			getObjectDefinition1(), getObjectDefinition2(),
+			objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		objectRelationship2 = addObjectRelationshipAndRelateObjectEntries(
+			getObjectDefinition2(), getObjectDefinition3(),
+			objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_testFilterByComparisonOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
+			objectEntry1, objectEntry3, objectRelationship1,
+			objectRelationship2);
 
 		objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship1);
@@ -108,14 +133,16 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			getObjectDefinition2(), getObjectDefinition3(),
 			objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		objectRelationship3 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition3(), getObjectDefinition4(),
-			objectEntry3.getPrimaryKey(), objectEntry4.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
-		objectRelationship4 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition2(), getObjectDefinition3(),
-			objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship3 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition3(), getObjectDefinition4(),
+				objectEntry3.getPrimaryKey(), objectEntry4.getPrimaryKey(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship4 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition2(), getObjectDefinition3(),
+				objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
@@ -141,14 +168,16 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByGroupingOperatorsObjectEntriesByRelatedObjectEntriesFields()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
 
 		_testFilterByGroupingOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testFilterByGroupingOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
@@ -156,16 +185,18 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByGroupingOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
-		objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition3(), OBJECT_FIELD_NAME_3, OBJECT_FIELD_VALUE_3);
 
 		_testFilterByGroupingOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
+			objectEntry1, objectEntry2, objectEntry3,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testFilterByGroupingOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
+			objectEntry1, objectEntry2, objectEntry3,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
@@ -173,7 +204,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByLambdaOperatorsObjectEntriesByRelatedObjectEntriesFields()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(),
 			HashMapBuilder.<String, Serializable>put(
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1
@@ -183,7 +214,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 					LIST_TYPE_ENTRY_KEY_1, LIST_TYPE_ENTRY_KEY_2)
 			).build(),
 			TAG_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(),
 			HashMapBuilder.<String, Serializable>put(
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
@@ -195,8 +226,10 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			_TAG_2);
 
 		_testFilterByLambdaOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testFilterByLambdaOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
@@ -204,7 +237,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByLambdaOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(),
 			HashMapBuilder.<String, Serializable>put(
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1
@@ -212,7 +245,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, LIST_TYPE_ENTRY_KEY_1
 			).build(),
 			TAG_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(),
 			HashMapBuilder.<String, Serializable>put(
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
@@ -220,7 +253,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, LIST_TYPE_ENTRY_KEY_2
 			).build(),
 			_TAG_2);
-		objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition3(),
 			HashMapBuilder.<String, Serializable>put(
 				OBJECT_FIELD_NAME_3, OBJECT_FIELD_VALUE_3
@@ -230,8 +263,10 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			_TAG_3);
 
 		_testFilterByLambdaOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
+			objectEntry1, objectEntry2, objectEntry3,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testFilterByLambdaOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
+			objectEntry1, objectEntry2, objectEntry3,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
@@ -239,14 +274,16 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByListOperatorsObjectEntriesByRelatedObjectEntriesFields()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
 
 		_testFilterByListOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testFilterByListOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
@@ -254,14 +291,16 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByLogicalOperatorsObjectEntriesByRelatedObjectEntriesFields()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
 
 		_testFilterByLogicalOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testFilterByLogicalOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
@@ -269,16 +308,18 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByLogicalOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
-		objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition3(), OBJECT_FIELD_NAME_3, OBJECT_FIELD_VALUE_3);
 
 		_testFilterByLogicalOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
+			objectEntry1, objectEntry2, objectEntry3,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testFilterByLogicalOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
+			objectEntry1, objectEntry2, objectEntry3,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
@@ -286,7 +327,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByObjectRelationshipERCObjectFieldNameInOneToManyRelationship()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(),
 			HashMapBuilder.<String, Serializable>put(
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1
@@ -295,22 +336,25 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				RandomTestUtil.randomString(4) + "a" +
 					RandomTestUtil.randomString(3)
 			).build());
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		String objectRelationshipERCObjectFieldName =
 			ObjectFieldSettingUtil.getValue(
 				ObjectFieldSettingConstants.
 					NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
 				objectFieldLocalService.getObjectField(
-					objectRelationship1.getObjectFieldId2()));
+					objectRelationship.getObjectFieldId2()));
 
 		Assert.assertEquals(
 			StringBundler.concat(
-				"r_", objectRelationship1.getName(), "_",
+				"r_", objectRelationship.getName(), "_",
 				StringUtil.replaceLast(
 					getObjectDefinition1().getPKObjectFieldName(), "Id",
 					"ERC")),
@@ -340,7 +384,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s eq '%s'", objectRelationship1.getName(),
+					"%s/%s eq '%s'", objectRelationship.getName(),
 					objectRelationshipERCObjectFieldName,
 					objectEntry1ExternalReferenceCode)),
 			getObjectDefinition1());
@@ -348,7 +392,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s ge '%s'", objectRelationship1.getName(),
+					"%s/%s ge '%s'", objectRelationship.getName(),
 					objectRelationshipERCObjectFieldName,
 					objectEntry1ExternalReferenceCode)),
 			getObjectDefinition1());
@@ -357,14 +401,14 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s gt '%s'", objectRelationship1.getName(),
+					"%s/%s gt '%s'", objectRelationship.getName(),
 					objectRelationshipERCObjectFieldName, substring + "0000")),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s le '%s'", objectRelationship1.getName(),
+					"%s/%s le '%s'", objectRelationship.getName(),
 					objectRelationshipERCObjectFieldName,
 					objectEntry1ExternalReferenceCode)),
 			getObjectDefinition1());
@@ -372,14 +416,14 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s lt '%s'", objectRelationship1.getName(),
+					"%s/%s lt '%s'", objectRelationship.getName(),
 					objectRelationshipERCObjectFieldName, substring + "zzzz")),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s ne '%s'", objectRelationship1.getName(),
+					"%s/%s ne '%s'", objectRelationship.getName(),
 					objectRelationshipERCObjectFieldName,
 					RandomTestUtil.randomInt())),
 			getObjectDefinition1());
@@ -390,7 +434,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s in ('%s', '%s')", objectRelationship1.getName(),
+					"%s/%s in ('%s', '%s')", objectRelationship.getName(),
 					objectRelationshipERCObjectFieldName,
 					objectEntry1ExternalReferenceCode,
 					RandomTestUtil.randomInt())),
@@ -401,13 +445,13 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
-				"contains(%s/%s,'%s')", objectRelationship1.getName(),
+				"contains(%s/%s,'%s')", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName, substring),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
-				"startswith(%s/%s,'%s')", objectRelationship1.getName(),
+				"startswith(%s/%s,'%s')", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName, substring),
 			getObjectDefinition1());
 	}
@@ -416,16 +460,18 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByStringOperatorsObjectEntriesByRelatedObjectEntriesFields()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1,
 			String.valueOf(OBJECT_FIELD_VALUE_1));
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2,
 			String.valueOf(OBJECT_FIELD_VALUE_2));
 
 		_testFilterByStringOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testFilterByStringOperatorsObjectEntriesByRelatedObjectEntriesFields(
+			objectEntry1, objectEntry2,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
@@ -433,19 +479,21 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByStringOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships()
 		throws Exception {
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1,
 			String.valueOf(OBJECT_FIELD_VALUE_1));
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_2,
 			String.valueOf(OBJECT_FIELD_VALUE_2));
-		objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition3(), OBJECT_FIELD_NAME_3,
 			String.valueOf(OBJECT_FIELD_VALUE_3));
 
 		_testFilterByStringOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
+			objectEntry1, objectEntry2, objectEntry3,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 		_testFilterByStringOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
+			objectEntry1, objectEntry2, objectEntry3,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 	}
 
@@ -525,7 +573,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 
 		// Many to many relationship
 
-		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
 
 		userAccountJSONObject = UserAccountTestUtil.addUserAccountJSONObject(
@@ -534,31 +582,33 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)
 			).build());
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition1(), userSystemObjectDefinition,
-			objectEntry1.getPrimaryKey(), userAccountJSONObject.getLong("id"),
-			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		ObjectRelationship objectRelationship =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), userSystemObjectDefinition,
+				objectEntry.getPrimaryKey(),
+				userAccountJSONObject.getLong("id"),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		_testFilterObjectEntriesByRelatedSystemObjectEntriesFields(
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s eq '%s'", objectRelationship1.getName(),
+					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2)));
 
 		objectRelationshipLocalService.deleteObjectRelationship(
-			objectRelationship1);
+			objectRelationship);
 
 		// One to many relationship
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
 			userSystemObjectDefinition, getObjectDefinition1(),
-			userAccountJSONObject.getLong("id"), objectEntry1.getPrimaryKey(),
+			userAccountJSONObject.getLong("id"), objectEntry.getPrimaryKey(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_testFilterObjectEntriesByRelatedSystemObjectEntriesFields(
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s eq '%s'", objectRelationship1.getName(),
+					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2)));
 
 		String objectRelationshipERCObjectFieldName =
@@ -566,7 +616,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				ObjectFieldSettingConstants.
 					NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
 				objectFieldLocalService.getObjectField(
-					objectRelationship1.getObjectFieldId2()));
+					objectRelationship.getObjectFieldId2()));
 
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
@@ -734,10 +784,14 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 
 	private void
 			_testFilterByComparisonOperatorsObjectEntriesByRelatedObjectEntriesFields(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry2, String type)
 		throws Exception {
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(type);
+		ObjectRelationship objectRelationship =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				type);
 
 		// Custom object field
 
@@ -745,42 +799,42 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s eq '%s'", objectRelationship1.getName(),
+					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s ge '%s'", objectRelationship1.getName(),
+					"%s/%s ge '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s gt '%s'", objectRelationship1.getName(),
+					"%s/%s gt '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s le '%s'", objectRelationship1.getName(),
+					"%s/%s le '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s lt '%s'", objectRelationship1.getName(),
+					"%s/%s lt '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2 + 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s ne '%s'", objectRelationship1.getName(),
+					"%s/%s ne '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2 - 1)),
 			getObjectDefinition1());
 
@@ -791,7 +845,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 				URLCodec.encodeURL(
 					String.format(
-						"%s/%s eq '%s'", objectRelationship1.getName(),
+						"%s/%s eq '%s'", objectRelationship.getName(),
 						StringUtil.removeFirst(
 							getObjectDefinition1().getPKObjectFieldName(),
 							"c_"),
@@ -805,42 +859,42 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s eq '%s'", objectRelationship1.getName(),
+					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s ge '%s'", objectRelationship1.getName(),
+					"%s/%s ge '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s gt '%s'", objectRelationship1.getName(),
+					"%s/%s gt '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s le '%s'", objectRelationship1.getName(),
+					"%s/%s le '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s lt '%s'", objectRelationship1.getName(),
+					"%s/%s lt '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 + 1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s ne '%s'", objectRelationship1.getName(),
+					"%s/%s ne '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition2());
 
@@ -850,42 +904,42 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id eq '%s'", objectRelationship1.getName(),
+					"%s/id eq '%s'", objectRelationship.getName(),
 					objectEntry1.getObjectEntryId())),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id ge '%s'", objectRelationship1.getName(),
+					"%s/id ge '%s'", objectRelationship.getName(),
 					objectEntry1.getObjectEntryId())),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id gt '%s'", objectRelationship1.getName(),
+					"%s/id gt '%s'", objectRelationship.getName(),
 					objectEntry1.getObjectEntryId() - 1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id le '%s'", objectRelationship1.getName(),
+					"%s/id le '%s'", objectRelationship.getName(),
 					objectEntry1.getObjectEntryId())),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id lt '%s'", objectRelationship1.getName(),
+					"%s/id lt '%s'", objectRelationship.getName(),
 					objectEntry1.getObjectEntryId() + 1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id ne '%s'", objectRelationship1.getName(),
+					"%s/id ne '%s'", objectRelationship.getName(),
 					objectEntry1.getObjectEntryId() - 1)),
 			getObjectDefinition2());
 
@@ -895,51 +949,51 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id eq '%s'", objectRelationship1.getName(),
+					"%s/id eq '%s'", objectRelationship.getName(),
 					objectEntry2.getObjectEntryId())),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id ge '%s'", objectRelationship1.getName(),
+					"%s/id ge '%s'", objectRelationship.getName(),
 					objectEntry2.getObjectEntryId())),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id gt '%s'", objectRelationship1.getName(),
+					"%s/id gt '%s'", objectRelationship.getName(),
 					objectEntry2.getObjectEntryId() - 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id le '%s'", objectRelationship1.getName(),
+					"%s/id le '%s'", objectRelationship.getName(),
 					objectEntry2.getObjectEntryId())),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id lt '%s'", objectRelationship1.getName(),
+					"%s/id lt '%s'", objectRelationship.getName(),
 					objectEntry2.getObjectEntryId() + 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id ne '%s'", objectRelationship1.getName(),
+					"%s/id ne '%s'", objectRelationship.getName(),
 					objectEntry2.getObjectEntryId() - 1)),
 			getObjectDefinition1());
 
 		objectRelationshipLocalService.deleteObjectRelationship(
-			objectRelationship1);
+			objectRelationship);
 
 		// Self relationship, custom object field
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
 			getObjectDefinition1(), getObjectDefinition1(),
 			objectEntry1.getPrimaryKey(), objectEntry1.getPrimaryKey(), type);
 
@@ -947,105 +1001,100 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s eq '%s'", objectRelationship1.getName(),
+					"%s/%s eq '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s ge '%s'", objectRelationship1.getName(),
+					"%s/%s ge '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s gt '%s'", objectRelationship1.getName(),
+					"%s/%s gt '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s le '%s'", objectRelationship1.getName(),
+					"%s/%s le '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s lt '%s'", objectRelationship1.getName(),
+					"%s/%s lt '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 + 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s ne '%s'", objectRelationship1.getName(),
+					"%s/%s ne '%s'", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/%s eq '%s'", objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
+					"%s/%s/%s eq '%s'", objectRelationship.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 					OBJECT_FIELD_VALUE_1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/%s ge '%s'", objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
+					"%s/%s/%s ge '%s'", objectRelationship.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 					OBJECT_FIELD_VALUE_1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/%s gt '%s'", objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
+					"%s/%s/%s gt '%s'", objectRelationship.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 					OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/%s le '%s'", objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
+					"%s/%s/%s le '%s'", objectRelationship.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 					OBJECT_FIELD_VALUE_1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/%s lt '%s'", objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
+					"%s/%s/%s lt '%s'", objectRelationship.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 					OBJECT_FIELD_VALUE_1 + 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/%s ne '%s'", objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
+					"%s/%s/%s ne '%s'", objectRelationship.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 					OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition1());
 	}
 
 	private void
 			_testFilterByComparisonOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry3,
+				ObjectRelationship objectRelationship1,
+				ObjectRelationship objectRelationship2)
 		throws Exception {
-
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition1(), getObjectDefinition2(),
-			objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(), type);
-		objectRelationship2 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition2(), getObjectDefinition3(),
-			objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(), type);
 
 		// Custom object field
 
@@ -1254,10 +1303,14 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 
 	private void
 			_testFilterByGroupingOperatorsObjectEntriesByRelatedObjectEntriesFields(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry2, String type)
 		throws Exception {
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(type);
+		ObjectRelationship objectRelationship =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				type);
 
 		// Custom object field
 
@@ -1266,8 +1319,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"(%s/%s le '%s') and (%s/%s gt '%s')",
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_2,
-					OBJECT_FIELD_VALUE_2, objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_2,
+					OBJECT_FIELD_VALUE_2, objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2 - 1)),
 			getObjectDefinition1());
 
@@ -1278,8 +1331,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"(%s/%s le '%s') and (%s/%s gt '%s')",
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1, objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
+					OBJECT_FIELD_VALUE_1, objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition2());
 
@@ -1290,9 +1343,9 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"(%s/id le '%s') and (%s/id gt '%s')",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					objectEntry1.getObjectEntryId(),
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					objectEntry1.getObjectEntryId() - 1)),
 			getObjectDefinition2());
 
@@ -1303,18 +1356,18 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"(%s/id le '%s') and (%s/id gt '%s')",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					objectEntry2.getObjectEntryId(),
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					objectEntry2.getObjectEntryId() - 1)),
 			getObjectDefinition1());
 
 		objectRelationshipLocalService.deleteObjectRelationship(
-			objectRelationship1);
+			objectRelationship);
 
 		// Self relationship, custom object field
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
 			getObjectDefinition1(), getObjectDefinition1(),
 			objectEntry1.getPrimaryKey(), objectEntry1.getPrimaryKey(), type);
 
@@ -1323,8 +1376,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"(%s/%s le '%s') and (%s/%s gt '%s')",
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1, objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
+					OBJECT_FIELD_VALUE_1, objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
@@ -1332,25 +1385,29 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"(%s/%s/%s le '%s') and (%s/%s/%s gt '%s')",
-					objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1, objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1 - 1)),
+					objectRelationship.getName(), objectRelationship.getName(),
+					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
+					objectRelationship.getName(), objectRelationship.getName(),
+					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition1());
 	}
 
 	private void
 			_testFilterByGroupingOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry2,
+				ObjectEntry objectEntry3, String type)
 		throws Exception {
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition1(), getObjectDefinition2(),
-			objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(), type);
-		objectRelationship2 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition2(), getObjectDefinition3(),
-			objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(), type);
+		ObjectRelationship objectRelationship1 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				type);
+		ObjectRelationship objectRelationship2 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition2(), getObjectDefinition3(),
+				objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(),
+				type);
 
 		// Custom object field
 
@@ -1413,10 +1470,14 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 
 	private void
 			_testFilterByLambdaOperatorsObjectEntriesByRelatedObjectEntriesFields(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry2, String type)
 		throws Exception {
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(type);
+		ObjectRelationship objectRelationship =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				type);
 
 		// Custom object field
 
@@ -1425,7 +1486,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/any(k:contains(k,'%s'))",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1433,7 +1494,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/any(k:k eq '%s')", objectRelationship1.getName(),
+					"%s/%s/any(k:k eq '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1442,7 +1503,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/any(k:k in ('%s', '%s'))",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1, RandomTestUtil.randomString())),
 			getObjectDefinition1());
@@ -1450,7 +1511,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/any(k:k ne '%s')", objectRelationship1.getName(),
+					"%s/%s/any(k:k ne '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1459,7 +1520,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/any(k:startswith(k,'%s'))",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1471,7 +1532,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/any(k:contains(k,'%s'))",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition2());
@@ -1479,7 +1540,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/any(k:k eq '%s')", objectRelationship1.getName(),
+					"%s/%s/any(k:k eq '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition2());
@@ -1488,7 +1549,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/any(k:k in ('%s', '%s'))",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1, RandomTestUtil.randomString())),
 			getObjectDefinition2());
@@ -1496,7 +1557,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/any(k:k ne '%s')", objectRelationship1.getName(),
+					"%s/%s/any(k:k ne '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition2());
@@ -1505,7 +1566,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/any(k:startswith(k,'%s'))",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition2());
@@ -1517,21 +1578,21 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/keywords/any(k:contains(k,'%s'))",
-					objectRelationship1.getName(), TAG_1.substring(1))),
+					objectRelationship.getName(), TAG_1.substring(1))),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
 					"%s/keywords/any(k:k eq '%s')",
-					objectRelationship1.getName(), TAG_1)),
+					objectRelationship.getName(), TAG_1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
 					"%s/keywords/any(k:k in ('%s', '%s'))",
-					objectRelationship1.getName(), TAG_1,
+					objectRelationship.getName(), TAG_1,
 					RandomTestUtil.randomString())),
 			getObjectDefinition2());
 		assertFilterString(
@@ -1539,14 +1600,14 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/keywords/any(k:k ne '%s')",
-					objectRelationship1.getName(), _TAG_2)),
+					objectRelationship.getName(), _TAG_2)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
 					"%s/keywords/any(k:startswith(k,'%s'))",
-					objectRelationship1.getName(), TAG_1.substring(0, 2))),
+					objectRelationship.getName(), TAG_1.substring(0, 2))),
 			getObjectDefinition2());
 
 		// System object field
@@ -1556,21 +1617,21 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/keywords/any(k:contains(k,'%s'))",
-					objectRelationship1.getName(), _TAG_2.substring(1))),
+					objectRelationship.getName(), _TAG_2.substring(1))),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
 					"%s/keywords/any(k:k eq '%s')",
-					objectRelationship1.getName(), _TAG_2)),
+					objectRelationship.getName(), _TAG_2)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
 					"%s/keywords/any(k:k in ('%s', '%s'))",
-					objectRelationship1.getName(), _TAG_2,
+					objectRelationship.getName(), _TAG_2,
 					RandomTestUtil.randomString())),
 			getObjectDefinition1());
 		assertFilterString(
@@ -1578,22 +1639,22 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/keywords/any(k:k ne '%s')",
-					objectRelationship1.getName(), TAG_1)),
+					objectRelationship.getName(), TAG_1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
 					"%s/keywords/any(k:startswith(k,'%s'))",
-					objectRelationship1.getName(), _TAG_2.substring(0, 2))),
+					objectRelationship.getName(), _TAG_2.substring(0, 2))),
 			getObjectDefinition1());
 
 		objectRelationshipLocalService.deleteObjectRelationship(
-			objectRelationship1);
+			objectRelationship);
 
 		// Self relationship, custom object field
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
 			getObjectDefinition1(), getObjectDefinition1(),
 			objectEntry1.getPrimaryKey(), objectEntry1.getPrimaryKey(), type);
 
@@ -1602,8 +1663,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/%s/any(k:contains(k,'%s'))",
-					objectRelationship1.getName(),
-					objectRelationship1.getName(),
+					objectRelationship.getName(), objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1611,8 +1671,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/%s/any(k:k eq '%s')", objectRelationship1.getName(),
-					objectRelationship1.getName(),
+					"%s/%s/%s/any(k:k eq '%s')", objectRelationship.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1621,8 +1681,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/%s/any(k:k in ('%s', '%s'))",
-					objectRelationship1.getName(),
-					objectRelationship1.getName(),
+					objectRelationship.getName(), objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1, RandomTestUtil.randomString())),
 			getObjectDefinition1());
@@ -1630,8 +1689,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/%s/any(k:k ne '%s')", objectRelationship1.getName(),
-					objectRelationship1.getName(),
+					"%s/%s/%s/any(k:k ne '%s')", objectRelationship.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1640,8 +1699,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/%s/any(k:startswith(k,'%s'))",
-					objectRelationship1.getName(),
-					objectRelationship1.getName(),
+					objectRelationship.getName(), objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1650,7 +1708,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/any(k:contains(k,'%s'))",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1658,7 +1716,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/any(k:k eq '%s')", objectRelationship1.getName(),
+					"%s/%s/any(k:k eq '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1667,7 +1725,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/any(k:k in ('%s', '%s'))",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1, RandomTestUtil.randomString())),
 			getObjectDefinition1());
@@ -1675,7 +1733,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/any(k:k ne '%s')", objectRelationship1.getName(),
+					"%s/%s/any(k:k ne '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1684,7 +1742,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/any(k:startswith(k,'%s'))",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 					LIST_TYPE_ENTRY_KEY_1)),
 			getObjectDefinition1());
@@ -1692,15 +1750,20 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 
 	private void
 			_testFilterByLambdaOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry2,
+				ObjectEntry objectEntry3, String type)
 		throws Exception {
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition1(), getObjectDefinition2(),
-			objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(), type);
-		objectRelationship2 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition2(), getObjectDefinition3(),
-			objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(), type);
+		ObjectRelationship objectRelationship1 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				type);
+		ObjectRelationship objectRelationship2 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition2(), getObjectDefinition3(),
+				objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(),
+				type);
 
 		// Custom object field
 
@@ -1904,10 +1967,14 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 
 	private void
 			_testFilterByListOperatorsObjectEntriesByRelatedObjectEntriesFields(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry2, String type)
 		throws Exception {
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(type);
+		ObjectRelationship objectRelationship =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				type);
 
 		// Custom object field
 
@@ -1915,7 +1982,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s in ('%s', '%s')", objectRelationship1.getName(),
+					"%s/%s in ('%s', '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 					RandomTestUtil.randomInt())),
 			getObjectDefinition1());
@@ -1926,7 +1993,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s in ('%s', '%s')", objectRelationship1.getName(),
+					"%s/%s in ('%s', '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 					RandomTestUtil.randomInt())),
 			getObjectDefinition2());
@@ -1937,7 +2004,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id in ('%s', '%s')", objectRelationship1.getName(),
+					"%s/id in ('%s', '%s')", objectRelationship.getName(),
 					objectEntry1.getObjectEntryId(),
 					RandomTestUtil.randomInt())),
 			getObjectDefinition2());
@@ -1948,17 +2015,17 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/id in ('%s', '%s')", objectRelationship1.getName(),
+					"%s/id in ('%s', '%s')", objectRelationship.getName(),
 					objectEntry2.getObjectEntryId(),
 					RandomTestUtil.randomInt())),
 			getObjectDefinition1());
 
 		objectRelationshipLocalService.deleteObjectRelationship(
-			objectRelationship1);
+			objectRelationship);
 
 		// Self relationship, custom object field
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
 			getObjectDefinition1(), getObjectDefinition1(),
 			objectEntry1.getPrimaryKey(), objectEntry1.getPrimaryKey(), type);
 
@@ -1966,7 +2033,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s in ('%s', '%s')", objectRelationship1.getName(),
+					"%s/%s in ('%s', '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 					RandomTestUtil.randomInt())),
 			getObjectDefinition1());
@@ -1974,18 +2041,22 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"%s/%s/%s in ('%s', '%s')", objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
+					"%s/%s/%s in ('%s', '%s')", objectRelationship.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 					OBJECT_FIELD_VALUE_1, RandomTestUtil.randomInt())),
 			getObjectDefinition1());
 	}
 
 	private void
 			_testFilterByLogicalOperatorsObjectEntriesByRelatedObjectEntriesFields(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry2, String type)
 		throws Exception {
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(type);
+		ObjectRelationship objectRelationship =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				type);
 
 		// Custom object field
 
@@ -1994,8 +2065,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s le '%s' and %s/%s gt '%s'",
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_2,
-					OBJECT_FIELD_VALUE_2, objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_2,
+					OBJECT_FIELD_VALUE_2, objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
@@ -2003,15 +2074,15 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s le '%s' or %s/%s gt '%s'",
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_2,
-					OBJECT_FIELD_VALUE_2, objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_2,
+					OBJECT_FIELD_VALUE_2, objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"not (%s/%s ge '%s')", objectRelationship1.getName(),
+					"not (%s/%s ge '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2 + 1)),
 			getObjectDefinition1());
 
@@ -2022,8 +2093,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s le '%s' and %s/%s gt '%s'",
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1, objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
+					OBJECT_FIELD_VALUE_1, objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition2());
 		assertFilterString(
@@ -2031,15 +2102,15 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s le '%s' or %s/%s gt '%s'",
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1, objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
+					OBJECT_FIELD_VALUE_1, objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"not (%s/%s ge '%s')", objectRelationship1.getName(),
+					"not (%s/%s ge '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 + 1)),
 			getObjectDefinition2());
 
@@ -2050,9 +2121,9 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/id le '%s' and %s/id gt '%s'",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					objectEntry1.getObjectEntryId(),
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					objectEntry1.getObjectEntryId() - 1)),
 			getObjectDefinition2());
 		assertFilterString(
@@ -2060,15 +2131,15 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/id le '%s' or %s/id gt '%s'",
-					objectRelationship1.getName(), OBJECT_FIELD_VALUE_1,
-					objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_VALUE_1,
+					objectRelationship.getName(),
 					objectEntry1.getObjectEntryId() - 1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			URLCodec.encodeURL(
 				String.format(
-					"not (%s/id ge '%s')", objectRelationship1.getName(),
+					"not (%s/id ge '%s')", objectRelationship.getName(),
 					objectEntry1.getObjectEntryId() + 1)),
 			getObjectDefinition2());
 
@@ -2079,9 +2150,9 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/id le '%s' and %s/id gt '%s'",
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					objectEntry2.getObjectEntryId(),
-					objectRelationship1.getName(),
+					objectRelationship.getName(),
 					objectEntry2.getObjectEntryId() - 1)),
 			getObjectDefinition1());
 		assertFilterString(
@@ -2089,24 +2160,24 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/id le '%s' or %s/id gt '%s'",
-					objectRelationship1.getName(), OBJECT_FIELD_VALUE_2,
-					objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_VALUE_2,
+					objectRelationship.getName(),
 					objectEntry2.getObjectEntryId() - 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"not (%s/id ge '%s')", objectRelationship1.getName(),
+					"not (%s/id ge '%s')", objectRelationship.getName(),
 					objectEntry2.getObjectEntryId() + 1)),
 			getObjectDefinition1());
 
 		objectRelationshipLocalService.deleteObjectRelationship(
-			objectRelationship1);
+			objectRelationship);
 
 		// Self relationship, custom object field
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
 			getObjectDefinition1(), getObjectDefinition1(),
 			objectEntry1.getPrimaryKey(), objectEntry1.getPrimaryKey(), type);
 
@@ -2115,8 +2186,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s le '%s' and %s/%s gt '%s'",
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1, objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
+					OBJECT_FIELD_VALUE_1, objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
@@ -2124,8 +2195,8 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s le '%s' or %s/%s gt '%s'",
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1, objectRelationship1.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
+					OBJECT_FIELD_VALUE_1, objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
@@ -2133,51 +2204,54 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/%s le '%s' and %s/%s/%s gt '%s'",
-					objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1, objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1 - 1)),
+					objectRelationship.getName(), objectRelationship.getName(),
+					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
+					objectRelationship.getName(), objectRelationship.getName(),
+					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s/%s le '%s' or %s/%s/%s gt '%s'",
-					objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1, objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
-					OBJECT_FIELD_VALUE_1 - 1)),
+					objectRelationship.getName(), objectRelationship.getName(),
+					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
+					objectRelationship.getName(), objectRelationship.getName(),
+					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"not (%s/%s ge '%s')", objectRelationship1.getName(),
+					"not (%s/%s ge '%s')", objectRelationship.getName(),
 					OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 + 1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			URLCodec.encodeURL(
 				String.format(
-					"not (%s/%s/%s ge '%s')", objectRelationship1.getName(),
-					objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
+					"not (%s/%s/%s ge '%s')", objectRelationship.getName(),
+					objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 					OBJECT_FIELD_VALUE_1 + 1)),
 			getObjectDefinition1());
 	}
 
 	private void
 			_testFilterByLogicalOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry2,
+				ObjectEntry objectEntry3, String type)
 		throws Exception {
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition1(), getObjectDefinition2(),
-			objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(), type);
-		objectRelationship2 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition2(), getObjectDefinition3(),
-			objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(), type);
+		ObjectRelationship objectRelationship1 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				type);
+		ObjectRelationship objectRelationship2 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition2(), getObjectDefinition3(),
+				objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(),
+				type);
 
 		// Custom object field
 
@@ -2318,10 +2392,14 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 
 	private void
 			_testFilterByStringOperatorsObjectEntriesByRelatedObjectEntriesFields(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry2, String type)
 		throws Exception {
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(type);
+		ObjectRelationship objectRelationship =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				type);
 
 		// Custom object field
 
@@ -2330,13 +2408,13 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
-				"contains(%s/%s,'%s')", objectRelationship1.getName(),
+				"contains(%s/%s,'%s')", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_2, objectFieldValue2.substring(1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
-				"startswith(%s/%s,'%s')", objectRelationship1.getName(),
+				"startswith(%s/%s,'%s')", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_2, objectFieldValue2.substring(0, 2)),
 			getObjectDefinition1());
 
@@ -2347,13 +2425,13 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			String.format(
-				"contains(%s/%s,'%s')", objectRelationship1.getName(),
+				"contains(%s/%s,'%s')", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_1, objectFieldValue1.substring(1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			String.format(
-				"startswith(%s/%s,'%s')", objectRelationship1.getName(),
+				"startswith(%s/%s,'%s')", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_1, objectFieldValue1.substring(0, 2)),
 			getObjectDefinition2());
 
@@ -2366,14 +2444,14 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			String.format(
 				"contains(%s/externalReferenceCode,'%s')",
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				objectEntry1ExternalReferenceCode.substring(1)),
 			getObjectDefinition2());
 		assertFilterString(
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			String.format(
 				"startswith(%s/externalReferenceCode,'%s')",
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				objectEntry1ExternalReferenceCode.substring(0, 2)),
 			getObjectDefinition2());
 
@@ -2386,65 +2464,70 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"contains(%s/externalReferenceCode,'%s')",
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				objectEntry2ExternalReferenceCode.substring(1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"startswith(%s/externalReferenceCode,'%s')",
-				objectRelationship1.getName(),
+				objectRelationship.getName(),
 				objectEntry2ExternalReferenceCode.substring(0, 2)),
 			getObjectDefinition1());
 
 		objectRelationshipLocalService.deleteObjectRelationship(
-			objectRelationship1);
+			objectRelationship);
 
 		// Self relationship, custom object field
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
 			getObjectDefinition1(), getObjectDefinition1(),
 			objectEntry1.getPrimaryKey(), objectEntry1.getPrimaryKey(), type);
 
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
-				"contains(%s/%s,'%s')", objectRelationship1.getName(),
+				"contains(%s/%s,'%s')", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_1, objectFieldValue1.substring(1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
-				"contains(%s/%s/%s,'%s')", objectRelationship1.getName(),
-				objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
+				"contains(%s/%s/%s,'%s')", objectRelationship.getName(),
+				objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 				objectFieldValue1.substring(1)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
-				"startswith(%s/%s,'%s')", objectRelationship1.getName(),
+				"startswith(%s/%s,'%s')", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_1, objectFieldValue1.substring(0, 2)),
 			getObjectDefinition1());
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
-				"startswith(%s/%s/%s,'%s')", objectRelationship1.getName(),
-				objectRelationship1.getName(), OBJECT_FIELD_NAME_1,
+				"startswith(%s/%s/%s,'%s')", objectRelationship.getName(),
+				objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 				objectFieldValue1.substring(0, 2)),
 			getObjectDefinition1());
 	}
 
 	private void
 			_testFilterByStringOperatorsObjectEntriesByRelatedObjectEntriesFieldsThroughMultipleRelationships(
-				String type)
+				ObjectEntry objectEntry1, ObjectEntry objectEntry2,
+				ObjectEntry objectEntry3, String type)
 		throws Exception {
 
-		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition1(), getObjectDefinition2(),
-			objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(), type);
-		objectRelationship2 = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition2(), getObjectDefinition3(),
-			objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(), type);
+		ObjectRelationship objectRelationship1 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition1(), getObjectDefinition2(),
+				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
+				type);
+		ObjectRelationship objectRelationship2 =
+			addObjectRelationshipAndRelateObjectEntries(
+				getObjectDefinition2(), getObjectDefinition3(),
+				objectEntry2.getPrimaryKey(), objectEntry3.getPrimaryKey(),
+				type);
 
 		// Custom object field
 

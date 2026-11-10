@@ -232,64 +232,34 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
-		if (objectRelationship1 != null) {
-			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship1);
-		}
-
-		if (objectRelationship2 != null) {
-			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship2);
-		}
-
-		if (objectRelationship3 != null) {
-			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship3);
-		}
-
-		if (objectRelationship4 != null) {
-			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship4);
-		}
-
-		if (objectRelationship5 != null) {
-			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship5);
-		}
-
-		if (objectRelationship6 != null) {
-			objectRelationshipLocalService.deleteObjectRelationship(
-				objectRelationship6);
-		}
-
-		if (objectDefinition1 != null) {
+		if (_objectDefinition1 != null) {
 			objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition1);
+				_objectDefinition1.getObjectDefinitionId());
 		}
 
-		if (objectDefinition2 != null) {
+		if (_objectDefinition2 != null) {
 			objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition2);
+				_objectDefinition2.getObjectDefinitionId());
 		}
 
-		if (objectDefinition3 != null) {
+		if (_objectDefinition3 != null) {
 			objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition3);
+				_objectDefinition3.getObjectDefinitionId());
 		}
 
 		if (_objectDefinition4 != null) {
 			objectDefinitionLocalService.deleteObjectDefinition(
-				_objectDefinition4);
+				_objectDefinition4.getObjectDefinitionId());
 		}
 
 		if (_siteScopedObjectDefinition1 != null) {
 			objectDefinitionLocalService.deleteObjectDefinition(
-				_siteScopedObjectDefinition1);
+				_siteScopedObjectDefinition1.getObjectDefinitionId());
 		}
 
 		if (_siteScopedObjectDefinition2 != null) {
 			objectDefinitionLocalService.deleteObjectDefinition(
-				_siteScopedObjectDefinition2);
+				_siteScopedObjectDefinition2.getObjectDefinitionId());
 		}
 
 		listTypeDefinitionLocalService.deleteListTypeDefinition(
@@ -307,15 +277,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 		return addObjectRelationshipAndRelateObjectEntries(
 			ObjectRelationshipConstants.DELETION_TYPE_PREVENT, objectDefinition,
 			relatedObjectDefinition, primaryKey1, primaryKey2, type);
-	}
-
-	protected ObjectRelationship addObjectRelationshipAndRelateObjectEntries(
-			String type)
-		throws Exception {
-
-		return addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition1(), getObjectDefinition2(),
-			objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(), type);
 	}
 
 	protected ObjectRelationship addObjectRelationshipAndRelateObjectEntries(
@@ -452,15 +413,16 @@ public abstract class BaseObjectEntryResourceTestCase {
 			objectDefinitionLocalService.updateObjectDefinition(
 				childObjectDefinition);
 
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry parentObjectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			parentObjectDefinition, OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
-		objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry parentObjectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			parentObjectDefinition, OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			parentObjectDefinition, childObjectDefinition,
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				parentObjectDefinition, childObjectDefinition,
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		String objectRelationship1ERCObjectFieldName =
 			ObjectFieldSettingUtil.getValue(
@@ -469,10 +431,11 @@ public abstract class BaseObjectEntryResourceTestCase {
 				objectFieldLocalService.getObjectField(
 					objectRelationship1.getObjectFieldId2()));
 
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			parentObjectDefinition, childObjectDefinition,
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				parentObjectDefinition, childObjectDefinition,
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		ObjectField objectRelationship2ObjectField =
 			objectFieldLocalService.getObjectField(
@@ -504,10 +467,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 				randomLong, randomLongText, randomRichText, randomText
 			).put(
 				objectRelationship1ERCObjectFieldName,
-				objectEntry2.getExternalReferenceCode()
+				parentObjectEntry1.getExternalReferenceCode()
 			).put(
 				objectRelationship2ObjectField.getName(),
-				objectEntry2.getObjectEntryId()
+				parentObjectEntry1.getObjectEntryId()
 			).put(
 				"externalReferenceCode", randomExternalReferenceCode
 			).put(
@@ -521,10 +484,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 			randomLongText, randomRichText, randomText
 		).put(
 			objectRelationship1ERCObjectFieldName,
-			objectEntry2.getExternalReferenceCode()
+			parentObjectEntry1.getExternalReferenceCode()
 		).put(
 			objectRelationship2ObjectField.getName(),
-			(int)objectEntry2.getObjectEntryId()
+			(int)parentObjectEntry1.getObjectEntryId()
 		).put(
 			"externalReferenceCode", randomExternalReferenceCode
 		).put(
@@ -657,22 +620,22 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 		expectedJSONObject = _cloneJSONObject(
 			expectedJSONObject, objectRelationship1ERCObjectFieldName,
-			objectEntry3.getExternalReferenceCode());
+			parentObjectEntry2.getExternalReferenceCode());
 
 		_assertPatchObjectField(
 			endpoint, expectedJSONObject, objectRelationship1ERCObjectFieldName,
-			objectEntry3.getExternalReferenceCode());
+			parentObjectEntry2.getExternalReferenceCode());
 
 		// Relationship ID field
 
 		expectedJSONObject = _cloneJSONObject(
 			expectedJSONObject, objectRelationship2ObjectField.getName(),
-			objectEntry3.getObjectEntryId());
+			parentObjectEntry2.getObjectEntryId());
 
 		_assertPatchObjectField(
 			endpoint, expectedJSONObject,
 			objectRelationship2ObjectField.getName(),
-			objectEntry3.getObjectEntryId());
+			parentObjectEntry2.getObjectEntryId());
 
 		// Precision decimal field
 
@@ -713,15 +676,16 @@ public abstract class BaseObjectEntryResourceTestCase {
 			ObjectDefinition parentObjectDefinition, Object scopeKey)
 		throws Exception {
 
-		objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry parentObjectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			parentObjectDefinition, OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
-		objectEntry3 = ObjectEntryTestUtil.addObjectEntry(
+		ObjectEntry parentObjectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			parentObjectDefinition, OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
 
-		objectRelationship1 = ObjectRelationshipTestUtil.addObjectRelationship(
-			parentObjectDefinition, childObjectDefinition,
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				parentObjectDefinition, childObjectDefinition,
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		ObjectField objectRelationship1ObjectField =
 			objectFieldLocalService.getObjectField(
@@ -733,10 +697,11 @@ public abstract class BaseObjectEntryResourceTestCase {
 					NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
 				objectRelationship1ObjectField);
 
-		objectRelationship2 = ObjectRelationshipTestUtil.addObjectRelationship(
-			parentObjectDefinition, childObjectDefinition,
-			TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		ObjectRelationship objectRelationship2 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				parentObjectDefinition, childObjectDefinition,
+				TestPropsValues.getUserId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		ObjectField objectRelationship2ObjectField =
 			objectFieldLocalService.getObjectField(
@@ -774,16 +739,16 @@ public abstract class BaseObjectEntryResourceTestCase {
 				randomLong, randomLongText, randomRichText, randomText
 			).put(
 				objectRelationship1ERCObjectFieldName,
-				objectEntry2.getExternalReferenceCode()
+				parentObjectEntry1.getExternalReferenceCode()
 			).put(
 				objectRelationship1ObjectField.getName(),
-				objectEntry3.getObjectEntryId()
+				parentObjectEntry2.getObjectEntryId()
 			).put(
 				objectRelationship2ERCObjectFieldName,
-				objectEntry3.getExternalReferenceCode()
+				parentObjectEntry2.getExternalReferenceCode()
 			).put(
 				objectRelationship2ObjectField.getName(),
-				objectEntry2.getObjectEntryId()
+				parentObjectEntry1.getObjectEntryId()
 			).put(
 				"externalReferenceCode", randomExternalReferenceCode
 			).toString(),
@@ -824,16 +789,16 @@ public abstract class BaseObjectEntryResourceTestCase {
 				OBJECT_FIELD_NAME_TEXT, ""
 			).put(
 				objectRelationship1ERCObjectFieldName,
-				objectEntry3.getExternalReferenceCode()
+				parentObjectEntry2.getExternalReferenceCode()
 			).put(
 				objectRelationship1ObjectField.getName(),
-				(int)objectEntry3.getObjectEntryId()
+				(int)parentObjectEntry2.getObjectEntryId()
 			).put(
 				objectRelationship2ERCObjectFieldName,
-				objectEntry2.getExternalReferenceCode()
+				parentObjectEntry1.getExternalReferenceCode()
 			).put(
 				objectRelationship2ObjectField.getName(),
-				(int)objectEntry2.getObjectEntryId()
+				(int)parentObjectEntry1.getObjectEntryId()
 			).put(
 				"externalReferenceCode", randomExternalReferenceCode
 			).toString(),
@@ -849,16 +814,16 @@ public abstract class BaseObjectEntryResourceTestCase {
 				randomLong, randomLongText, randomRichText, randomText
 			).put(
 				objectRelationship1ERCObjectFieldName,
-				objectEntry2.getExternalReferenceCode()
+				parentObjectEntry1.getExternalReferenceCode()
 			).put(
 				objectRelationship1ObjectField.getName(),
-				(int)objectEntry2.getObjectEntryId()
+				(int)parentObjectEntry1.getObjectEntryId()
 			).put(
 				objectRelationship2ERCObjectFieldName,
-				objectEntry3.getExternalReferenceCode()
+				parentObjectEntry2.getExternalReferenceCode()
 			).put(
 				objectRelationship2ObjectField.getName(),
-				(int)objectEntry3.getObjectEntryId()
+				(int)parentObjectEntry2.getObjectEntryId()
 			).put(
 				"externalReferenceCode", randomExternalReferenceCode
 			).toString(),
@@ -870,16 +835,16 @@ public abstract class BaseObjectEntryResourceTestCase {
 					randomText
 				).put(
 					objectRelationship1ERCObjectFieldName,
-					objectEntry3.getExternalReferenceCode()
+					parentObjectEntry2.getExternalReferenceCode()
 				).put(
 					objectRelationship1ObjectField.getName(),
-					objectEntry2.getObjectEntryId()
+					parentObjectEntry1.getObjectEntryId()
 				).put(
 					objectRelationship2ERCObjectFieldName,
-					objectEntry2.getExternalReferenceCode()
+					parentObjectEntry1.getExternalReferenceCode()
 				).put(
 					objectRelationship2ObjectField.getName(),
-					objectEntry3.getObjectEntryId()
+					parentObjectEntry2.getObjectEntryId()
 				).toString(),
 				endpoint, Http.Method.PUT
 			).toString(),
@@ -967,26 +932,26 @@ public abstract class BaseObjectEntryResourceTestCase {
 	}
 
 	protected ObjectDefinition getObjectDefinition1() throws Exception {
-		if (objectDefinition1 != null) {
-			return objectDefinition1;
+		if (_objectDefinition1 != null) {
+			return _objectDefinition1;
 		}
 
 		String objectDefinitionName = ObjectDefinitionTestUtil.getRandomName();
 
-		objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition(
+		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition(
 			objectDefinitionName,
 			_createObjectDefinition1ObjectFields(objectDefinitionName),
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
-		return objectDefinition1;
+		return _objectDefinition1;
 	}
 
 	protected ObjectDefinition getObjectDefinition2() throws Exception {
-		if (objectDefinition2 != null) {
-			return objectDefinition2;
+		if (_objectDefinition2 != null) {
+			return _objectDefinition2;
 		}
 
-		objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition(
+		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition(
 			ListUtil.concat(
 				Collections.singletonList(
 					_createAttachmentObjectField(
@@ -998,15 +963,15 @@ public abstract class BaseObjectEntryResourceTestCase {
 					_createTextObjectField(OBJECT_FIELD_NAME_2))),
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
-		return objectDefinition2;
+		return _objectDefinition2;
 	}
 
 	protected ObjectDefinition getObjectDefinition3() throws Exception {
-		if (objectDefinition3 != null) {
-			return objectDefinition3;
+		if (_objectDefinition3 != null) {
+			return _objectDefinition3;
 		}
 
-		objectDefinition3 = ObjectDefinitionTestUtil.publishObjectDefinition(
+		_objectDefinition3 = ObjectDefinitionTestUtil.publishObjectDefinition(
 			ListUtil.concat(
 				_createBusinessTypeObjectFields(),
 				Arrays.asList(
@@ -1014,7 +979,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 					_createTextObjectField(OBJECT_FIELD_NAME_3))),
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
-		return objectDefinition3;
+		return _objectDefinition3;
 	}
 
 	protected ObjectDefinition getObjectDefinition4() throws Exception {
@@ -1492,17 +1457,8 @@ public abstract class BaseObjectEntryResourceTestCase {
 	@Inject
 	protected ListTypeDefinitionLocalService listTypeDefinitionLocalService;
 
-	protected ObjectDefinition objectDefinition1;
-	protected ObjectDefinition objectDefinition2;
-	protected ObjectDefinition objectDefinition3;
-
 	@Inject
 	protected ObjectDefinitionLocalService objectDefinitionLocalService;
-
-	protected ObjectEntry objectEntry1;
-	protected ObjectEntry objectEntry2;
-	protected ObjectEntry objectEntry3;
-	protected ObjectEntry objectEntry4;
 
 	@Inject
 	protected ObjectEntryLocalService objectEntryLocalService;
@@ -1512,13 +1468,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 	@Inject
 	protected ObjectFieldLocalService objectFieldLocalService;
-
-	protected ObjectRelationship objectRelationship1;
-	protected ObjectRelationship objectRelationship2;
-	protected ObjectRelationship objectRelationship3;
-	protected ObjectRelationship objectRelationship4;
-	protected ObjectRelationship objectRelationship5;
-	protected ObjectRelationship objectRelationship6;
 
 	@Inject
 	protected ObjectRelationshipLocalService objectRelationshipLocalService;
@@ -1914,6 +1863,9 @@ public abstract class BaseObjectEntryResourceTestCase {
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 	private ObjectEntry _localizedObjectEntry;
+	private ObjectDefinition _objectDefinition1;
+	private ObjectDefinition _objectDefinition2;
+	private ObjectDefinition _objectDefinition3;
 	private ObjectDefinition _objectDefinition4;
 
 	@Inject
