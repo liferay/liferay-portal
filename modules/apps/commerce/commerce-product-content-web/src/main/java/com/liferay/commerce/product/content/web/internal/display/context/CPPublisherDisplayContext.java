@@ -31,6 +31,7 @@ import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.CPTypeRegistry;
 import com.liferay.commerce.product.url.CPFriendlyURL;
+import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
@@ -309,18 +310,21 @@ public class CPPublisherDisplayContext extends BaseCPPublisherDisplayContext {
 			HttpServletRequest httpServletRequest, int start, int end)
 		throws Exception {
 
+		CommerceContext commerceContext =
+			(CommerceContext)httpServletRequest.getAttribute(
+				CommerceWebKeys.COMMERCE_CONTEXT);
+
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setAttributes(
 			HashMapBuilder.<String, Serializable>put(
 				Field.STATUS, WorkflowConstants.STATUS_APPROVED
 			).put(
+				"accountEntryId",
+				CommerceUtil.getCommerceAccountId(commerceContext)
+			).put(
 				"commerceAccountGroupIds",
 				() -> {
-					CommerceContext commerceContext =
-						(CommerceContext)httpServletRequest.getAttribute(
-							CommerceWebKeys.COMMERCE_CONTEXT);
-
 					if (commerceContext == null) {
 						return null;
 					}

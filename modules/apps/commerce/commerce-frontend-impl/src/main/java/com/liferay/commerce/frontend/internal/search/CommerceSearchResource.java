@@ -545,23 +545,23 @@ public class CommerceSearchResource {
 
 		long accountEntryId = 0;
 
-		AccountEntry accountEntry =
-			_commerceAccountHelper.getCurrentAccountEntry(
-				commerceChannel.getGroupId(), themeDisplay.getRequest());
-
-		if (accountEntry != null) {
-			accountEntryId = accountEntry.getAccountEntryId();
-		}
-
 		if (commerceChannel != null) {
 			attributes.put(
 				"commerceChannelGroupId", commerceChannel.getGroupId());
-		}
 
-		if (accountEntry != null) {
-			attributes.put(
-				"commerceAccountGroupIds",
-				_accountGroupLocalService.getAccountGroupIds(accountEntryId));
+			AccountEntry accountEntry =
+				_commerceAccountHelper.getCurrentAccountEntry(
+					commerceChannel.getGroupId(), themeDisplay.getRequest());
+
+			if (accountEntry != null) {
+				accountEntryId = accountEntry.getAccountEntryId();
+
+				attributes.put("accountEntryId", accountEntryId);
+				attributes.put(
+					"commerceAccountGroupIds",
+					_accountGroupLocalService.getAccountGroupIds(
+						accountEntryId));
+			}
 		}
 
 		searchContext.setAttributes(attributes);

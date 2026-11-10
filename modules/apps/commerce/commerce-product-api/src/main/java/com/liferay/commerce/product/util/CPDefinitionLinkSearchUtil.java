@@ -30,6 +30,15 @@ public class CPDefinitionLinkSearchUtil {
 			HashMapBuilder.<String, Serializable>put(
 				Field.STATUS, WorkflowConstants.STATUS_APPROVED
 			).put(
+				"accountEntryId",
+				() -> {
+					if (accountEntry == null) {
+						return null;
+					}
+
+					return accountEntry.getAccountEntryId();
+				}
+			).put(
 				"commerceAccountGroupIds",
 				() -> {
 					if (accountEntry == null) {

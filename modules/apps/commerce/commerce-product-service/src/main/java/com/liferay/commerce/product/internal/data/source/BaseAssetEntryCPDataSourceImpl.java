@@ -5,12 +5,15 @@
 
 package com.liferay.commerce.product.internal.data.source;
 
+import com.liferay.commerce.constants.CommerceWebKeys;
+import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPQuery;
 import com.liferay.commerce.product.constants.CPWebKeys;
 import com.liferay.commerce.product.data.source.CPDataSource;
 import com.liferay.commerce.product.data.source.CPDataSourceResult;
 import com.liferay.commerce.product.helper.CPDefinitionHelper;
+import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -47,11 +50,27 @@ public abstract class BaseAssetEntryCPDataSourceImpl implements CPDataSource {
 			return new CPDataSourceResult(new ArrayList<>(), 0);
 		}
 
+		CommerceContext commerceContext =
+			(CommerceContext)httpServletRequest.getAttribute(
+				CommerceWebKeys.COMMERCE_CONTEXT);
+
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setAttributes(
 			HashMapBuilder.<String, Serializable>put(
 				Field.STATUS, WorkflowConstants.STATUS_APPROVED
+			).put(
+				"accountEntryId",
+				CommerceUtil.getCommerceAccountId(commerceContext)
+			).put(
+				"commerceAccountGroupIds",
+				() -> {
+					if (commerceContext == null) {
+						return null;
+					}
+
+					return commerceContext.getCommerceAccountGroupIds();
+				}
 			).put(
 				"excludedCPDefinitionId", cpCatalogEntry.getCPDefinitionId()
 			).build());
