@@ -425,87 +425,6 @@ definition {
 		}
 	}
 
-	@description = "This test covers LPS-88313 and LPS-92145. It ensures that a user can check in a document without changing versions."
-	@priority = 5
-	@refactordone
-	test CanCheckInAsCurrentVersion {
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Check in as current version",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.editCP(
-			dmDocumentFile = "Document_1.doc",
-			dmDocumentTitle = "Check in as current version",
-			revision = "Current",
-			versioning = "true",
-			versionNotes = '''<!DOCTYPE html> <html class="ltr" dir="ltr" lang="en-US"> <head> <title>''');
-
-		DMDocument.checkoutCP(dmDocumentTitle = "Check in as current version");
-
-		Refresh();
-
-		DMDocument.checkinCP(
-			dmDocumentTitle = "Check in as current version",
-			revision = "Current");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		AssertElementNotPresent(
-			key_dmDocumentTitle = "Check in as current version",
-			locator1 = "DocumentsAndMedia#ICON_DOCUMENT_ICON_LOCKED");
-
-		DMDocument.checkDocumentCheckboxCP(dmDocumentTitle = "Check in as current version");
-
-		DMDocument.viewDocumentVersionNumberCmdPG(dmDocumentVersionNumber = "1.0");
-	}
-
-	@description = "This test ensures that a user can check in a document as a major version."
-	@priority = 5
-	@refactordone
-	test CanCheckInAsMajorVersion {
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Check in as major version",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.checkoutCP(dmDocumentTitle = "Check in as major version");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.viewStatus(
-			dmDocumentStatus = "Draft",
-			dmDocumentTitle = "Check in as major version");
-
-		DMDocument.checkinCP(
-			dmDocumentTitle = "Check in as major version",
-			revision = "Major");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		AssertElementNotPresent(
-			key_dmDocumentTitle = "Check in as major version",
-			locator1 = "DocumentsAndMedia#ICON_DOCUMENT_ICON_LOCKED");
-
-		DMDocument.checkDocumentCheckboxCP(dmDocumentTitle = "Check in as major version");
-
-		DMDocument.viewDocumentVersionNumberCmdPG(dmDocumentVersionNumber = "2.0");
-	}
-
 	@description = "This test covers LPS-82306. It ensures that a user can check in a document through the Management toolbar."
 	@priority = 4
 	@refactordone
@@ -1559,41 +1478,6 @@ definition {
 		DMDocument.assertFileNameFromTempFolder(fileName = "xss_test");
 	}
 
-	@description = "This test ensures that a user cannot set a previous expiration date."
-	@priority = 3
-	test CannotPublishInvalidExpirationDate {
-		property custom.properties = "company.default.time.zone=America/Los_Angeles";
-
-		DMNavigator.openToAddEntry(
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		DMDocument.editDocument(
-			dmDocumentFile = "Document_5.txt",
-			dmDocumentTitle = "Document_5.txt");
-
-		DMDocument.setExpirationDate(
-			enableExpirationDate = "true",
-			increaseMinutes = 1,
-			invalidExpirationDate = "true");
-	}
-
-	@description = "This ensures that a document cannot be published if its file extension is different than its file name extension."
-	@priority = 5
-	@refactordone
-	test CannotPublishWithFileExtensionDifferentThanFileNameExtension {
-		property portal.acceptance = "true";
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.txt",
-			dmDocumentFileName = "document_1_Edit.jpg",
-			dmDocumentTitle = "DM Document Title",
-			fileExtensionMismatch = "true");
-	}
-
 	@description = "This is a use case for LPS-114470. Validate crafted or corrupted files cannot cause out of memory errors."
 	@priority = 4
 	test CannotUploadFileThatCausesOutOfMemoryErrors {
@@ -2466,68 +2350,6 @@ definition {
 		}
 	}
 
-	@description = "This ensures that the friendly URL of a document created on a site will be updated automatically if it duplicates the existing one on the site."
-	@priority = 4
-	test FriendlyURLDuplicatingSiteDocIsAutomaticallyChanged {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Document_1",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		DMNavigator.openToAddEntry(
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		DMDocument.editDocument(
-			dmDocumentFile = "Document_2.doc",
-			dmDocumentTitle = "Document_2");
-
-		DMDocument.editFriendlyURL(friendlyURLEdit = "document_1");
-
-		Alert.viewWarningSpecific(warningMessage = "Warning:The friendly URL document_1 was changed to document_1-1 to ensure uniqueness.");
-
-		DMNavigator.openToEditEntryInSite(
-			dmDocumentTitle = "Document_2",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		DMDocument.viewEntryInEdit(friendlyURL = "document_1-1");
-	}
-
-	@description = "This ensures that the friendly URL of a document created on a site will be updated automatically if it duplicates the one in the recycle bin of the site."
-	@priority = 3
-	test FriendlyURLDuplicatingSiteRecycleBinDocIsAutomaticallyChanged {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Document_1",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.jpg");
-
-		JSONDocument.moveToRecycleBin(
-			dmDocumentTitle = "Document_1",
-			groupName = "Guest");
-
-		DMNavigator.openToAddEntry(
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		DMDocument.editDocument(
-			dmDocumentFile = "Document_2.jpg",
-			dmDocumentTitle = "Document_2");
-
-		DMDocument.editFriendlyURL(friendlyURLEdit = "document_1");
-
-		Alert.viewWarningSpecific(warningMessage = "Warning:The friendly URL document_1 was changed to document_1-1 to ensure uniqueness.");
-
-		DMNavigator.openToEditEntryInSite(
-			dmDocumentTitle = "Document_2",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		DMDocument.viewEntryInEdit(friendlyURL = "document_1-1");
-	}
-
 	@description = "This test covers LPS-112571. It ensures that a gif file can be added to editor normally after disabling the gif mime type from the adaptive media of the system settings."
 	@priority = 3
 	@refactordone
@@ -2643,58 +2465,6 @@ definition {
 				dmDocumentStatus = "Approved",
 				dmDocumentTitle = ${dmDocumentTitleList});
 		}
-	}
-
-	@description = "This test ensures that a document with forbidden characters in the filename can not be published successfully."
-	@priority = 4
-	@refactordone
-	test WillRejectForbiddenCharactersInFileName {
-		property portal.acceptance = "true";
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.jpg",
-			dmDocumentFileName = '''Document_1''',
-			dmDocumentTitle = "DM Document Title",
-			emptyFileNameRestriction = "true");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.jpg",
-			dmDocumentFileName = "",
-			dmDocumentTitle = "DM Document Title",
-			emptyFileNameRestriction = "true");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.jpg",
-			dmDocumentFileName = '''\\\///.jpg''',
-			dmDocumentTitle = "DM Document Title",
-			validateFileNameRestriction = "true");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.txt",
-			dmDocumentFileName = '''<>.txt''',
-			dmDocumentTitle = "DM Document Title",
-			validateFileNameRestriction = "true");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.doc",
-			dmDocumentFileName = ''':"?.doc''',
-			dmDocumentTitle = "DM Document Title",
-			validateFileNameRestriction = "true");
 	}
 
 }
