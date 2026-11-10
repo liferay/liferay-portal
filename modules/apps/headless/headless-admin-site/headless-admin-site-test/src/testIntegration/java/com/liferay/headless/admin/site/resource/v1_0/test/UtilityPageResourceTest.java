@@ -752,9 +752,9 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 		UtilityPage postUtilityPage =
 			URLFetchSecurityCompanyConfigurationUtil.swap(
-				true,
 				() -> utilityPageResource.postSiteUtilityPage(
-					testGroup.getExternalReferenceCode(), utilityPage));
+					testGroup.getExternalReferenceCode(), utilityPage),
+				true);
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -782,10 +782,10 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 
 		UtilityPage putUtilityPage =
 			URLFetchSecurityCompanyConfigurationUtil.swap(
-				true,
 				() -> utilityPageResource.putSiteUtilityPage(
 					testGroup.getExternalReferenceCode(),
-					utilityPage.getExternalReferenceCode(), utilityPage));
+					utilityPage.getExternalReferenceCode(), utilityPage),
+				true);
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =

@@ -16,8 +16,8 @@ import com.liferay.portal.security.configuration.URLFetchSecurityCompanyConfigur
 public class URLFetchSecurityCompanyConfigurationUtil {
 
 	public static <T> T swap(
-			boolean urlLocalNetworkAccessEnabled,
-			UnsafeSupplier<T, Exception> unsafeSupplier)
+			UnsafeSupplier<T, Exception> unsafeSupplier,
+			boolean urlLocalNetworkAccessEnabled)
 		throws Exception {
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
@@ -33,8 +33,8 @@ public class URLFetchSecurityCompanyConfigurationUtil {
 	}
 
 	public static <T> T swap(
-			String[] urlHostsAllowed, boolean urlLocalNetworkAccessEnabled,
-			UnsafeSupplier<T, Exception> unsafeSupplier)
+			UnsafeSupplier<T, Exception> unsafeSupplier,
+			String[] urlHostsAllowed, boolean urlLocalNetworkAccessEnabled)
 		throws Exception {
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =

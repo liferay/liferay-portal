@@ -1172,9 +1172,9 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 		PageTemplate postPageTemplate =
 			URLFetchSecurityCompanyConfigurationUtil.swap(
-				true,
 				() -> pageTemplateResource.postSitePageTemplate(
-					testGroup.getExternalReferenceCode(), pageTemplate));
+					testGroup.getExternalReferenceCode(), pageTemplate),
+				true);
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -1215,10 +1215,10 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 
 		PageTemplate putPageTemplate =
 			URLFetchSecurityCompanyConfigurationUtil.swap(
-				true,
 				() -> pageTemplateResource.putSitePageTemplate(
 					testGroup.getExternalReferenceCode(),
-					pageTemplate.getExternalReferenceCode(), pageTemplate));
+					pageTemplate.getExternalReferenceCode(), pageTemplate),
+				true);
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =

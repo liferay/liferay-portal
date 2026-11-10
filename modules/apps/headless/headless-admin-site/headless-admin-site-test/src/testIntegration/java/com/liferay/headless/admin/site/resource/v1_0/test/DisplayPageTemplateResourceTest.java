@@ -1681,9 +1681,9 @@ public class DisplayPageTemplateResourceTest
 
 		DisplayPageTemplate postDisplayPageTemplate =
 			URLFetchSecurityCompanyConfigurationUtil.swap(
-				true,
 				() -> displayPageTemplateResource.postSiteDisplayPageTemplate(
-					testGroup.getExternalReferenceCode(), displayPageTemplate));
+					testGroup.getExternalReferenceCode(), displayPageTemplate),
+				true);
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference postThumbnailURLReference =
@@ -1714,11 +1714,11 @@ public class DisplayPageTemplateResourceTest
 
 		DisplayPageTemplate putDisplayPageTemplate =
 			URLFetchSecurityCompanyConfigurationUtil.swap(
-				true,
 				() -> displayPageTemplateResource.putSiteDisplayPageTemplate(
 					testGroup.getExternalReferenceCode(),
 					displayPageTemplate.getExternalReferenceCode(),
-					displayPageTemplate));
+					displayPageTemplate),
+				true);
 
 		if (expectedExternalReferenceCode == null) {
 			ThumbnailURLReference putThumbnailURLReference =

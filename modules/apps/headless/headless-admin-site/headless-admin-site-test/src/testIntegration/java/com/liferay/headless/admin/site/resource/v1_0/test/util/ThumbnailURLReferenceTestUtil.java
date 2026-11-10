@@ -74,14 +74,14 @@ public class ThumbnailURLReferenceTestUtil {
 		throws Exception {
 
 		URLFetchSecurityCompanyConfigurationUtil.swap(
-			urlHostsAllowed, urlLocalNetworkAccessEnabled,
 			() -> {
 				assertUnsafeBiConsumer.accept(
 					thumbnailURLReferenceUnsafeFunction.apply(t),
 					unsafeFunction.apply(t));
 
 				return null;
-			});
+			},
+			urlHostsAllowed, urlLocalNetworkAccessEnabled);
 	}
 
 	private static <T> void _assertRestrictedHost(
@@ -92,7 +92,6 @@ public class ThumbnailURLReferenceTestUtil {
 		throws Exception {
 
 		URLFetchSecurityCompanyConfigurationUtil.swap(
-			urlHostsAllowed, urlLocalNetworkAccessEnabled,
 			() -> {
 				try {
 					unsafeFunction.apply(t);
@@ -115,7 +114,8 @@ public class ThumbnailURLReferenceTestUtil {
 				}
 
 				return null;
-			});
+			},
+			urlHostsAllowed, urlLocalNetworkAccessEnabled);
 	}
 
 }
