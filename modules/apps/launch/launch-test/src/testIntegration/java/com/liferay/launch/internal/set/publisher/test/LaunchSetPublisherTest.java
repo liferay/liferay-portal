@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -486,17 +487,17 @@ public class LaunchSetPublisherTest {
 				TestPropsValues.getUserId()));
 
 		Assert.assertThrows(
-			PortalException.class,
+			SchedulerException.class,
 			() -> _launchSetPublisher.schedulePublish(
 				new Date(System.currentTimeMillis() - Time.MINUTE), launchSetId,
 				TestPropsValues.getUserId()));
 		Assert.assertThrows(
-			PortalException.class,
+			SchedulerException.class,
 			() -> _launchSetPublisher.schedulePublish(
 				null, launchSetId, TestPropsValues.getUserId()));
 
 		Assert.assertThrows(
-			PortalException.class,
+			SchedulerException.class,
 			() -> _launchSetPublisher.schedulePublish(
 				new Date(System.currentTimeMillis() + (Time.SECOND * 30)),
 				launchSetId, TestPropsValues.getUserId()));
