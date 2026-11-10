@@ -253,18 +253,20 @@ public class BatchEngineExportTaskExecutorImpl
 		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
 			new UnsyncByteArrayOutputStream();
 
-		try (BatchEngineExportTaskItemWriter batchEngineExportTaskItemWriter =
-				_getBatchEngineExportTaskItemWriter(
-					batchEngineExportTask, parameters, settings,
-					unsyncByteArrayOutputStream);
-
-			BatchEngineTaskItemDelegateSafeCloseable
+		try (BatchEngineTaskItemDelegateSafeCloseable
 				batchEngineTaskItemDelegateSafeCloseable =
 					_batchEngineTaskItemDelegateRegistry.
 						getBatchEngineTaskItemDelegateWithSafeCloseable(
 							batchEngineExportTask.getCompanyId(),
 							batchEngineExportTask.getClassName(),
 							batchEngineExportTask.getTaskItemDelegateName());
+
+			BatchEngineExportTaskItemWriter batchEngineExportTaskItemWriter =
+				_getBatchEngineExportTaskItemWriter(
+					batchEngineExportTask,
+					batchEngineTaskItemDelegateSafeCloseable.
+						getBatchEngineTaskItemDelegate(),
+					parameters, settings, unsyncByteArrayOutputStream);
 
 			SafeCloseable safeCloseable = _getNestedFieldsContextSafeCloseable(
 				batchEngineTaskItemDelegateSafeCloseable, parameters)) {
@@ -396,6 +398,7 @@ public class BatchEngineExportTaskExecutorImpl
 
 	private BatchEngineExportTaskItemWriter _getBatchEngineExportTaskItemWriter(
 			BatchEngineExportTask batchEngineExportTask,
+			BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate,
 			Map<String, Serializable> parameters, Settings settings,
 			UnsyncByteArrayOutputStream unsyncByteArrayOutputStream)
 		throws Exception {
@@ -430,8 +433,7 @@ public class BatchEngineExportTaskExecutorImpl
 			).fieldNames(
 				batchEngineExportTask.getFieldNamesList()
 			).itemClass(
-				_itemClassRegistry.getItemClass(
-					batchEngineExportTask.getClassName())
+				_itemClassRegistry.getItemClass(batchEngineTaskItemDelegate)
 			).outputStream(
 				outputStream
 			).parameters(
