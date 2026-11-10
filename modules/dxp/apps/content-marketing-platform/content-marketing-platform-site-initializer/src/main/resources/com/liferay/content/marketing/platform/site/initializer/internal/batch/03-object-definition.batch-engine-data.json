@@ -1271,6 +1271,51 @@
 					"reverse": false,
 					"system": true,
 					"type": "oneToMany"
+				},
+				{
+					"deletionType": "cascade",
+					"edge": false,
+					"externalReferenceCode": "L_CMP_TASK_TO_L_CMP_TASKS",
+					"label": {
+						"en_US": "CMP Task to CMP Tasks"
+					},
+					"name": "cmpTaskToCMPTasks",
+					"objectDefinitionExternalReferenceCode1": "L_CMP_TASK",
+					"objectDefinitionExternalReferenceCode2": "L_CMP_TASK",
+					"objectDefinitionModifiable2": true,
+					"objectDefinitionName2": "CMPTask",
+					"objectDefinitionScope2": "depot",
+					"objectDefinitionSystem2": true,
+					"objectField": {
+						"DBType": "Long",
+						"businessType": "Relationship",
+						"externalReferenceCode": "CMP_TASK_TO_CMP_TASKS",
+						"indexed": true,
+						"indexedAsKeyword": false,
+						"label": {
+							"en_US": "CMP Task to CMP Tasks"
+						},
+						"name": "r_cmpTaskToCMPTasks_c_cmpTaskId",
+						"objectFieldSettings": [
+							{
+								"name": "objectDefinition1ShortName",
+								"value": "CMPTask"
+							},
+							{
+								"name": "objectRelationshipERCObjectFieldName",
+								"value": "r_cmpTaskToCMPTasks_c_cmpTaskERC"
+							}
+						],
+						"relationshipType": "oneToMany",
+						"required": false,
+						"system": true,
+						"type": "Long"
+					},
+					"parameterObjectFieldId": 0,
+					"parameterObjectFieldName": "",
+					"reverse": false,
+					"system": true,
+					"type": "oneToMany"
 				}
 			],
 			"panelCategoryKey": "",
