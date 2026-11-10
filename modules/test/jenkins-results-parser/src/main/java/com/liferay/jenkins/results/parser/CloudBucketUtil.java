@@ -286,7 +286,7 @@ public class CloudBucketUtil {
 	}
 
 	public static String getPresignedS3URL(
-			String s3ObjectPath, int expiresInSeconds)
+			int expiresInSeconds, String s3ObjectPath)
 		throws IOException, TimeoutException {
 
 		_validateS3ObjectPath(s3ObjectPath);

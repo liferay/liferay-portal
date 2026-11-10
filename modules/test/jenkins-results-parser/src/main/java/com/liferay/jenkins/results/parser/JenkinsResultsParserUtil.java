@@ -3119,7 +3119,8 @@ public class JenkinsResultsParserUtil {
 	}
 
 	public static String getPortalBundleS3ObjectPath(
-		String portalBranchName, String portalGitCommit) {
+			String portalBranchName, String portalGitCommit)
+		throws IOException {
 
 		if (isNullOrEmpty(portalGitCommit) || (portalGitCommit.length() < 7)) {
 			return null;
@@ -6950,16 +6951,11 @@ public class JenkinsResultsParserUtil {
 		}
 	}
 
-	private static String _getPortalBundlesS3ObjectPath() {
-		try {
-			return combine(
-				getBuildProperty(
-					"cloud.ci.s3.bucket.persistent.resources.archives.path"),
-				"/portal-bundle");
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
+	private static String _getPortalBundlesS3ObjectPath() throws IOException {
+		return combine(
+			getBuildProperty(
+				"cloud.ci.s3.bucket.persistent.resources.archives.path"),
+			"/portal-bundle");
 	}
 
 	private static Properties _getProperties(File basePropertiesFile) {
