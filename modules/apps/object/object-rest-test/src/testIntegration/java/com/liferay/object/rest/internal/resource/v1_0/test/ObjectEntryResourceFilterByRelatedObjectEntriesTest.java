@@ -549,8 +549,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s eq '%s'", objectRelationship1.getName(),
-					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2)),
-			getObjectDefinition1());
+					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2)));
 
 		objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship1);
@@ -566,8 +565,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			URLCodec.encodeURL(
 				String.format(
 					"%s/%s eq '%s'", objectRelationship1.getName(),
-					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2)),
-			getObjectDefinition1());
+					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2)));
 
 		String objectRelationshipERCObjectFieldName =
 			ObjectFieldSettingUtil.getValue(
@@ -2571,12 +2569,13 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	}
 
 	private void _testFilterObjectEntriesByRelatedSystemObjectEntriesFields(
-			String filterString, ObjectDefinition objectDefinition)
+			String filterString)
 		throws Exception {
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
-			objectDefinition.getRESTContextPath() + "?filter=" + filterString,
+			getObjectDefinition1().getRESTContextPath() + "?filter=" +
+				filterString,
 			Http.Method.GET);
 
 		Assert.assertEquals("BAD_REQUEST", jsonObject.getString("status"));

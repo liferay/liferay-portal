@@ -160,7 +160,6 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 					ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 			_testPostCustomObjectEntryWithInvalidNestedCustomObjectEntriesInXToManyRelationship(
-				getObjectDefinition1().getRESTContextPath(),
 				objectRelationship1);
 
 			objectRelationship1 =
@@ -170,11 +169,9 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 					ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 			_testPostCustomObjectEntryWithInvalidNestedCustomObjectEntriesInManyToOneRelationship(
-				getObjectDefinition2().getRESTContextPath(),
 				objectRelationship1);
 
 			_testPostCustomObjectEntryWithInvalidNestedCustomObjectEntriesInXToManyRelationship(
-				getObjectDefinition1().getRESTContextPath(),
 				objectRelationship1);
 		}
 	}
@@ -837,7 +834,6 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 	private void
 			_testPostCustomObjectEntryWithInvalidNestedCustomObjectEntriesInManyToOneRelationship(
-				String objectDefinitionRESTContextPath,
 				ObjectRelationship objectRelationship)
 		throws Exception {
 
@@ -852,14 +848,13 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 						RandomTestUtil.randomString()
 					})
 			).toString(),
-			objectDefinitionRESTContextPath, Http.Method.POST);
+			getObjectDefinition2().getRESTContextPath(), Http.Method.POST);
 
 		Assert.assertEquals("BAD_REQUEST", jsonObject.get("status"));
 	}
 
 	private void
 			_testPostCustomObjectEntryWithInvalidNestedCustomObjectEntriesInXToManyRelationship(
-				String objectDefinitionRESTContextPath,
 				ObjectRelationship objectRelationship)
 		throws Exception {
 
@@ -873,7 +868,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 						"externalReferenceCode", ERC_VALUE_2
 					).toString())
 			).toString(),
-			objectDefinitionRESTContextPath, Http.Method.POST);
+			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
 		Assert.assertEquals("BAD_REQUEST", jsonObject.get("status"));
 	}

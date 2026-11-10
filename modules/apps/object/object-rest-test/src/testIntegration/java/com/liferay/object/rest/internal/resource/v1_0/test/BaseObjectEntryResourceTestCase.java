@@ -575,10 +575,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 		JSONAssert.assertEquals(
 			expectedJSONObject.toString(),
 			HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					"externalReferenceCode", randomExternalReferenceCode
-				).toString(),
-				endpoint, Http.Method.GET
+				null, endpoint, Http.Method.GET
 			).toString(),
 			JSONCompareMode.LENIENT);
 

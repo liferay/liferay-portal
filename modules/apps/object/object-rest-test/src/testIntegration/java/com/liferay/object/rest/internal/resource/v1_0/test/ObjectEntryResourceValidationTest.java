@@ -59,7 +59,6 @@ import jakarta.ws.rs.BadRequestException;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -230,7 +229,7 @@ public class ObjectEntryResourceValidationTest
 		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
 			new com.liferay.object.rest.dto.v1_0.ObjectEntry();
 
-		objectEntry.setProperties((values != null) ? values : new HashMap<>());
+		objectEntry.setProperties(values);
 
 		String[] finalObjectValidationRuleExternalReferenceCodes =
 			objectValidationRuleExternalReferenceCodes;

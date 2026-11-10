@@ -92,8 +92,7 @@ public class ObjectEntryResourcePermissionTest
 
 	@Test
 	public void testGetObjectEntriesPageWithObjectActions() throws Exception {
-		JSONObject actionsJSONObject1 = _getActionsJSONObject(
-			getObjectDefinition4());
+		JSONObject actionsJSONObject1 = _getActionsJSONObject();
 
 		Assert.assertFalse(actionsJSONObject1.isNull("create"));
 		Assert.assertFalse(actionsJSONObject1.isNull("createBatch"));
@@ -105,8 +104,7 @@ public class ObjectEntryResourcePermissionTest
 		).withGuest(
 		).apply(
 			() -> {
-				JSONObject actionsJSONObject2 = _getActionsJSONObject(
-					getObjectDefinition4());
+				JSONObject actionsJSONObject2 = _getActionsJSONObject();
 
 				Assert.assertTrue(
 					actionsJSONObject2.keySet(
@@ -133,8 +131,7 @@ public class ObjectEntryResourcePermissionTest
 			userName + "@liferay.com", "test1"
 		).apply(
 			() -> {
-				JSONObject actionsJSONObject3 = _getActionsJSONObject(
-					getObjectDefinition4());
+				JSONObject actionsJSONObject3 = _getActionsJSONObject();
 
 				Assert.assertFalse(actionsJSONObject3.isNull("create"));
 				Assert.assertFalse(actionsJSONObject3.isNull("createBatch"));
@@ -154,8 +151,7 @@ public class ObjectEntryResourcePermissionTest
 			userName + "@liferay.com", "test1"
 		).apply(
 			() -> {
-				JSONObject actionsJSONObject4 = _getActionsJSONObject(
-					getObjectDefinition4());
+				JSONObject actionsJSONObject4 = _getActionsJSONObject();
 
 				Assert.assertFalse(actionsJSONObject4.isNull("create"));
 				Assert.assertFalse(actionsJSONObject4.isNull("createBatch"));
@@ -275,7 +271,7 @@ public class ObjectEntryResourcePermissionTest
 			"friendlyUrlMap", new HashMap<String, String>());
 
 		ObjectEntryFolder objectEntryFolder = _addObjectEntryFolder(
-			depotEntry, serviceContext, depotEntry.getUserId());
+			depotEntry, serviceContext);
 
 		ObjectEntry objectEntry = _addObjectEntry(
 			depotEntry, objectDefinition, objectEntryFolder, serviceContext,
@@ -746,7 +742,7 @@ public class ObjectEntryResourcePermissionTest
 	}
 
 	private ObjectEntryFolder _addObjectEntryFolder(
-			DepotEntry depotEntry, ServiceContext serviceContext, long userId)
+			DepotEntry depotEntry, ServiceContext serviceContext)
 		throws Exception {
 
 		ObjectEntryFolder parentObjectEntryFolder =
@@ -756,7 +752,7 @@ public class ObjectEntryResourcePermissionTest
 					depotEntry.getGroupId(), depotEntry.getCompanyId());
 
 		return _objectEntryFolderLocalService.addObjectEntryFolder(
-			null, depotEntry.getGroupId(), userId,
+			null, depotEntry.getGroupId(), depotEntry.getUserId(),
 			parentObjectEntryFolder.getObjectEntryFolderId(),
 			RandomTestUtil.randomString(),
 			HashMapBuilder.put(
@@ -790,13 +786,11 @@ public class ObjectEntryResourcePermissionTest
 		).build();
 	}
 
-	private JSONObject _getActionsJSONObject(ObjectDefinition objectDefinition)
-		throws Exception {
-
+	private JSONObject _getActionsJSONObject() throws Exception {
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, objectDefinition.getRESTContextPath(), Http.Method.GET);
+			null, getObjectDefinition4().getRESTContextPath(), Http.Method.GET);
 
-		if ((jsonObject == null) || !jsonObject.has("actions")) {
+		if (!jsonObject.has("actions")) {
 			return JSONFactoryUtil.createJSONObject();
 		}
 
@@ -829,17 +823,17 @@ public class ObjectEntryResourcePermissionTest
 	}
 
 	private Map<String, Map<String, String>> _getExpectedActions(
-		String externalReferenceCode, ObjectDefinition objectDefinition,
-		String objectEntryFolderId, String objectEntryId,
-		boolean sharingEnabled) {
+			String externalReferenceCode, String objectEntryFolderId,
+			String objectEntryId, boolean sharingEnabled)
+		throws Exception {
 
 		String href = StringBundler.concat(
 			"http://localhost:", PortalUtil.getPortalServerPort(false), "/o",
-			objectDefinition.getRESTContextPath(), StringPool.SLASH,
-			objectEntryId);
+			getSiteScopedObjectDefinition1().getRESTContextPath(),
+			StringPool.SLASH, objectEntryId);
 		String scopedEndpoint = StringBundler.concat(
 			"http://localhost:", PortalUtil.getPortalServerPort(false), "/o",
-			objectDefinition.getRESTContextPath(), "/scopes/",
+			getSiteScopedObjectDefinition1().getRESTContextPath(), "/scopes/",
 			group.getGroupId());
 
 		return HashMapBuilder.<String, Map<String, String>>put(
@@ -1007,7 +1001,6 @@ public class ObjectEntryResourcePermissionTest
 		Assert.assertEquals(
 			_getExpectedActions(
 				jsonObject.getString("externalReferenceCode"),
-				getSiteScopedObjectDefinition1(),
 				jsonObject.getString("objectEntryFolderId"),
 				jsonObject.getString("id"), sharingEnabled),
 			actionsJSONObject.toMap());

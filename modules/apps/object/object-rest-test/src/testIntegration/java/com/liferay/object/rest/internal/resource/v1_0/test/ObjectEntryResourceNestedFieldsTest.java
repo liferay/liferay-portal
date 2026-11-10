@@ -1625,28 +1625,22 @@ public class ObjectEntryResourceNestedFieldsTest
 		String[] nestedFieldNames,
 		String[][] objectFieldNamesAndObjectFieldValues, Type[] types) {
 
-		if (objectFieldNamesAndObjectFieldValues[currentDepth][0] == null) {
-			Assert.assertNull(jsonObject);
+		String present;
+
+		if (objectFieldNamesAndObjectFieldValues[currentDepth][1].equals(
+				jsonObject.getString(
+					objectFieldNamesAndObjectFieldValues[currentDepth][0]))) {
+
+			present = "true";
 		}
 		else {
-			String present;
-
-			if (objectFieldNamesAndObjectFieldValues[currentDepth][1].equals(
-					jsonObject.getString(
-						objectFieldNamesAndObjectFieldValues[currentDepth]
-							[0]))) {
-
-				present = "true";
-			}
-			else {
-				present = "false";
-			}
-
-			Assert.assertEquals(
-				"Incorrect presence of field " +
-					objectFieldNamesAndObjectFieldValues[currentDepth][0],
-				objectFieldNamesAndObjectFieldValues[currentDepth][2], present);
+			present = "false";
 		}
+
+		Assert.assertEquals(
+			"Incorrect presence of field " +
+				objectFieldNamesAndObjectFieldValues[currentDepth][0],
+			objectFieldNamesAndObjectFieldValues[currentDepth][2], present);
 
 		if ((currentDepth == depth) ||
 			(currentDepth ==
@@ -1672,15 +1666,10 @@ public class ObjectEntryResourceNestedFieldsTest
 		String nestedFieldName, String[][] objectFieldNamesAndObjectFieldValues,
 		JSONArray[] permissionsJSONArrays, Type type) {
 
-		if (objectFieldNamesAndObjectFieldValues[currentDepth][0] == null) {
-			Assert.assertNull(jsonObject);
-		}
-		else {
-			Assert.assertEquals(
-				objectFieldNamesAndObjectFieldValues[currentDepth][1],
-				jsonObject.getString(
-					objectFieldNamesAndObjectFieldValues[currentDepth][0]));
-		}
+		Assert.assertEquals(
+			objectFieldNamesAndObjectFieldValues[currentDepth][1],
+			jsonObject.getString(
+				objectFieldNamesAndObjectFieldValues[currentDepth][0]));
 
 		if ((permissionsJSONArrays == null) ||
 			(permissionsJSONArrays[currentDepth] == null)) {
