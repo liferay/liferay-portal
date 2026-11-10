@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.product.navigation.control.menu.manager.ProductNavigationControlMenuManager;
 import com.liferay.product.navigation.product.menu.constants.ProductNavigationProductMenuPortletKeys;
+import com.liferay.product.navigation.product.menu.helper.ProductNavigationProductMenuHelper;
 import com.liferay.product.navigation.product.menu.web.internal.display.context.LayoutsTreeDisplayContext;
 import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
@@ -68,6 +69,8 @@ public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 			renderRequest);
 
 		if (!_productNavigationControlMenuManager.isShowControlMenu(
+				httpServletRequest) ||
+			!_productNavigationProductMenuHelper.isShowProductMenu(
 				httpServletRequest)) {
 
 			return;
@@ -116,6 +119,10 @@ public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 	@Reference
 	private ProductNavigationControlMenuManager
 		_productNavigationControlMenuManager;
+
+	@Reference
+	private ProductNavigationProductMenuHelper
+		_productNavigationProductMenuHelper;
 
 	@Reference
 	private SiteNavigationMenuItemLocalService

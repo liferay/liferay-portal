@@ -10,6 +10,8 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.application.list.util.PanelCategoryRegistryUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
@@ -38,6 +40,47 @@ public class ProductNavigationProductMenuHelperImpl
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		String attributeName = StringBundler.concat(
+			ProductNavigationProductMenuHelperImpl.class.getName(),
+			"#SHOW_PRODUCT_MENU#", themeDisplay.getScopeGroupId(),
+			StringPool.POUND, themeDisplay.getPpid());
+
+		Boolean showProductMenu = (Boolean)httpServletRequest.getAttribute(
+			attributeName);
+
+		if (showProductMenu == null) {
+			showProductMenu = _isShowProductMenu(themeDisplay);
+
+			httpServletRequest.setAttribute(attributeName, showProductMenu);
+		}
+
+		return showProductMenu;
+	}
+
+	private boolean _isApplicationsMenuApp(ThemeDisplay themeDisplay) {
+		if (Validator.isNull(themeDisplay.getPpid())) {
+			return false;
+		}
+
+		PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(
+			_panelAppRegistry);
+
+		if (!panelCategoryHelper.isApplicationsMenuApp(
+				themeDisplay.getPpid())) {
+
+			return false;
+		}
+
+		Layout layout = themeDisplay.getLayout();
+
+		if ((layout != null) && !layout.isTypeControlPanel()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean _isShowProductMenu(ThemeDisplay themeDisplay) {
 		if (!themeDisplay.isSignedIn()) {
 			return false;
 		}
@@ -62,29 +105,6 @@ public class ProductNavigationProductMenuHelperImpl
 				themeDisplay.getScopeGroup());
 
 		return !childPanelCategories.isEmpty();
-	}
-
-	private boolean _isApplicationsMenuApp(ThemeDisplay themeDisplay) {
-		if (Validator.isNull(themeDisplay.getPpid())) {
-			return false;
-		}
-
-		PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(
-			_panelAppRegistry);
-
-		if (!panelCategoryHelper.isApplicationsMenuApp(
-				themeDisplay.getPpid())) {
-
-			return false;
-		}
-
-		Layout layout = themeDisplay.getLayout();
-
-		if ((layout != null) && !layout.isTypeControlPanel()) {
-			return false;
-		}
-
-		return true;
 	}
 
 	@Reference
