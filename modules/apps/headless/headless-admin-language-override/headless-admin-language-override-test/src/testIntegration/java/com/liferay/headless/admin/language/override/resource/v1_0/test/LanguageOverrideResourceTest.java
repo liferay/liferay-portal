@@ -9,18 +9,23 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.language.override.client.dto.v1_0.LanguageOverride;
 import com.liferay.headless.admin.language.override.client.pagination.Page;
 import com.liferay.headless.admin.language.override.client.pagination.Pagination;
+import com.liferay.headless.admin.language.override.client.problem.Problem;
 import com.liferay.headless.admin.language.override.client.resource.v1_0.LanguageOverrideResource;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -89,8 +94,44 @@ public class LanguageOverrideResourceTest
 	public void testGetLanguageOverridesPage() throws Exception {
 		super.testGetLanguageOverridesPage();
 
+		_testGetLanguageOverridesPageWithInFilter();
+		_testGetLanguageOverridesPageWithInvalidFilter();
+		_testGetLanguageOverridesPageWithOrFilter();
+		_testGetLanguageOverridesPageWithoutPermission();
 		_testGetLanguageOverridesPageWithSearch();
 		_testGetLanguageOverridesPageWithSearchAndSort();
+	}
+
+	@Override
+	@Test
+	public void testGetLanguageOverridesPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		LanguageOverride languageOverride =
+			testGetLanguageOverridesPage_addLanguageOverride(
+				randomLanguageOverride());
+
+		LanguageOverride pastLanguageOverride = _getPastLanguageOverride(
+			languageOverride);
+
+		for (EntityField entityField :
+				getEntityFields(EntityField.Type.DATE_TIME)) {
+
+			Page<LanguageOverride> page =
+				languageOverrideResource.getLanguageOverridesPage(
+					languageOverride.getKey(),
+					getFilterString(entityField, "between", languageOverride),
+					null, null);
+
+			Assert.assertEquals(1, page.getTotalCount());
+
+			page = languageOverrideResource.getLanguageOverridesPage(
+				languageOverride.getKey(),
+				getFilterString(entityField, "between", pastLanguageOverride),
+				null, null);
+
+			Assert.assertEquals(0, page.getTotalCount());
+		}
 	}
 
 	@Test
@@ -202,6 +243,91 @@ public class LanguageOverrideResourceTest
 		_addLanguageOverride(languageOverride);
 	}
 
+	private LanguageOverride _getPastLanguageOverride(
+			LanguageOverride languageOverride)
+		throws Exception {
+
+		LanguageOverride pastLanguageOverride = randomLanguageOverride();
+
+		Date dateCreated = languageOverride.getDateCreated();
+
+		pastLanguageOverride.setDateCreated(
+			new Date(dateCreated.getTime() - Time.HOUR));
+
+		Date dateModified = languageOverride.getDateModified();
+
+		pastLanguageOverride.setDateModified(
+			new Date(dateModified.getTime() - Time.HOUR));
+
+		return pastLanguageOverride;
+	}
+
+	private void _testGetLanguageOverridesPageWithInFilter() throws Exception {
+		LanguageOverride languageOverride = _addLanguageOverride(
+			randomLanguageOverride());
+
+		for (EntityField entityField :
+				getEntityFields(EntityField.Type.DATE_TIME)) {
+
+			Page<LanguageOverride> page =
+				languageOverrideResource.getLanguageOverridesPage(
+					null,
+					StringBundler.concat(
+						getFilterString(
+							entityField, "between", languageOverride),
+						" and externalReferenceCode in ('', '",
+						languageOverride.getExternalReferenceCode(), "')"),
+					null, null);
+
+			Assert.assertEquals(
+				Arrays.asList(languageOverride.getKey()), _toKeys(page));
+		}
+	}
+
+	private void _testGetLanguageOverridesPageWithInvalidFilter()
+		throws Exception {
+
+		try {
+			languageOverrideResource.getLanguageOverridesPage(
+				null, "dateModified le now()", null, null);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+		}
+	}
+
+	private void _testGetLanguageOverridesPageWithOrFilter() throws Exception {
+		LanguageOverride languageOverride = _addLanguageOverride(
+			randomLanguageOverride());
+
+		_addLanguageOverride(randomLanguageOverride());
+
+		LanguageOverride pastLanguageOverride = _getPastLanguageOverride(
+			languageOverride);
+
+		for (EntityField entityField :
+				getEntityFields(EntityField.Type.DATE_TIME)) {
+
+			Page<LanguageOverride> page =
+				languageOverrideResource.getLanguageOverridesPage(
+					languageOverride.getKey(),
+					StringBundler.concat(
+						getFilterString(
+							entityField, "between", pastLanguageOverride),
+						" or ",
+						getFilterString(
+							entityField, "between", languageOverride)),
+					null, null);
+
+			Assert.assertEquals(
+				Arrays.asList(languageOverride.getKey()), _toKeys(page));
+		}
+	}
+
 	private void _testGetLanguageOverridesPageWithSearch() throws Exception {
 		String externalReferenceCode = RandomTestUtil.randomString();
 
@@ -212,7 +338,8 @@ public class LanguageOverrideResourceTest
 			_toLanguageOverride(key, RandomTestUtil.randomString()));
 
 		Page<LanguageOverride> page =
-			languageOverrideResource.getLanguageOverridesPage(key, null, null);
+			languageOverrideResource.getLanguageOverridesPage(
+				key, null, null, null);
 
 		Assert.assertEquals(1, page.getTotalCount());
 
@@ -234,16 +361,53 @@ public class LanguageOverrideResourceTest
 
 		Page<LanguageOverride> page =
 			languageOverrideResource.getLanguageOverridesPage(
-				keyPrefix, Pagination.of(1, 10), "key:asc");
+				keyPrefix, null, Pagination.of(1, 10), "key:asc");
 
 		Assert.assertEquals(
 			Arrays.asList(keyPrefix + "-a", keyPrefix + "-b"), _toKeys(page));
 
 		page = languageOverrideResource.getLanguageOverridesPage(
-			keyPrefix, Pagination.of(1, 10), "key:desc");
+			keyPrefix, null, Pagination.of(1, 10), "key:desc");
 
 		Assert.assertEquals(
 			Arrays.asList(keyPrefix + "-b", keyPrefix + "-a"), _toKeys(page));
+	}
+
+	private void _testGetLanguageOverridesPageWithoutPermission()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		LanguageOverrideResource userLanguageOverrideResource =
+			LanguageOverrideResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		try {
+			userLanguageOverrideResource.getLanguageOverridesPage(
+				null,
+				getFilterString(
+					entityFields.get(0), "between", randomLanguageOverride()),
+				null, null);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
 	}
 
 	private List<String> _toKeys(Page<LanguageOverride> page) {
