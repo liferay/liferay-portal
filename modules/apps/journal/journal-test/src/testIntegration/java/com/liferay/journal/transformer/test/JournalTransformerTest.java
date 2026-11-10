@@ -326,6 +326,10 @@ public class JournalTransformerTest {
 			JournalStructureConstants.RESERVED_ARTICLE_SMALL_IMAGE_URL,
 			journalReservedTemplateVariableGroup, transformerListeners);
 		_assertReservedVariable(
+			StringPool.BLANK, "tags", languageId,
+			JournalStructureConstants.RESERVED_ARTICLE_ASSET_TAG_NAMES,
+			journalReservedTemplateVariableGroup, transformerListeners);
+		_assertReservedVariable(
 			_journalArticle.getTitle(languageId), "title", languageId,
 			JournalStructureConstants.RESERVED_ARTICLE_TITLE,
 			journalReservedTemplateVariableGroup, transformerListeners);

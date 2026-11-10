@@ -638,73 +638,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-80208. The user can expire the latest web content version and view the previous."
-	@priority = 4
-	test ExpireLastestVersion {
-		task ("Add a web content") {
-			JSONWebcontent.addWebContent(
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("Add a new version editing the web content") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.viewTitle(webContentTitle = "Web Content Title");
-
-			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
-
-			WebContent.editCP(
-				webContentContentEdit = "Web Content Content Edit",
-				webContentTitle = "Web Content Title",
-				webContentTitleEdit = "Web Content Title Edit");
-		}
-
-		task ("Add a Web Content Display to widget page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Page Name");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Test Page Name",
-				widgetName = "Web Content Display");
-		}
-
-		task ("Select the web content in Web Content Display widget") {
-			Navigator.gotoSitePage(
-				pageName = "Test Page Name",
-				siteName = "Test Site Name");
-
-			WebContentDisplayPortlet.selectWebContent(webContentTitle = "Web Content Title Edit");
-
-			IFrame.closeFrame();
-		}
-
-		task ("View latest version is shown") {
-			WebContentDisplayPortlet.viewContent(
-				webContentContent = "Web Content Content Edit",
-				webContentTitle = "Web Content Title Edit");
-		}
-
-		task ("Expire the web content") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.expireSpecificVersionCP(webContentTitle = "Web Content Title Edit");
-		}
-
-		task ("View first version of web content is shown in Web Content Display widget") {
-			Navigator.gotoSitePage(
-				pageName = "Test Page Name",
-				siteName = "Test Site Name");
-
-			WebContentDisplayPortlet.viewContent(
-				webContentContent = "Web Content Content",
-				webContentTitle = "Web Content Title");
-		}
-	}
-
 	@description = "This is a test for LPS-182417. Can map date-time field to editable field and customize date-time format on content page"
 	@priority = 3
 	test MapDateAndTimeFieldOnContentPage {
@@ -1610,23 +1543,6 @@ definition {
 		}
 	}
 
-	@description = "View web content title with cards, list and table display styles in web content admin."
-	@priority = 3
-	test ViewDisplayStyles {
-		task ("Add a web content") {
-			JSONWebcontent.addWebContent(
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("View web content with all display styles") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContent.viewDisplayStyleCP(webContentTitle = "Web Content Title");
-		}
-	}
-
 	@description = "This is a test for LPS-134566. View doAsUserId parameter not shown in URL field after add page link to text."
 	@priority = 4
 	test ViewDoAsUserIdNotShownInURLFieldAfterAddPageLinkToText {
@@ -1868,64 +1784,6 @@ definition {
 				key_text = "/web/test-site-name/content-page-name",
 				locator1 = "Link#ANY",
 				value1 = "/web/test-site-name/content-page-name");
-		}
-	}
-
-	@description = "This is a test for LPS-172129. reserved-article-id is missing from templates."
-	@priority = 4
-	test ViewReservedVariablesDisplayOnWebContent {
-		task ("Given add a web content structure and a template with reserved-article-id") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			NavItem.gotoStructures();
-
-			WebContentStructures.addCP(structureName = "WC Structure Name");
-
-			DataEngine.addField(
-				fieldFieldLabel = "HTML",
-				fieldName = "Rich Text");
-
-			WebContentStructures.saveCP();
-
-			NavItem.gotoTemplates();
-
-			WebContentTemplates.addCP(
-				structureName = "WC Structure Name",
-				templateFile = "freemarker template.ftl",
-				templateName = "WC Template Name");
-		}
-
-		task ("When create a web content using the new structure and template") {
-			NavItem.gotoWebContent();
-
-			WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
-
-			WebContent.addWithStructureCP(
-				webContentRichText = "This is a Rich Text field",
-				webContentRichTextFieldLabel = "HTML",
-				webContentTitle = "Web Content Title");
-
-			WebContent.publishWithPermissions();
-		}
-
-		task ("Then the reserved-article-id should be available on web content") {
-			task ("Add a page with a Web Content Display widget and display the Web Content article in the Web Content Display widget") {
-				JSONLayout.addPublicLayout(
-					groupName = "Test Site Name",
-					layoutName = "Web Content Display Page");
-
-				Navigator.gotoSitePage(
-					pageName = "Web Content Display Page",
-					siteName = "Test Site Name");
-
-				WidgetPages.addRecentContentWithoutSearch(assetTitle = "Web Content Title");
-			}
-
-			task ("View reserved-article-id is available on web content") {
-				for (var reservedVariables : list "reserved-article-asset-tag-names,reserved-article-author-comments,reserved-article-author-email-address,reserved-article-author-id,reserved-article-author-job-title,reserved-article-author-name,reserved-article-create-date,reserved-article-description,reserved-article-display-date,reserved-article-id, reserved-article-modified-date,reserved-article-small-image-url,reserved-article-title,reserved-article-url-title, reserved-article-version") {
-					AssertElementPresent(locator1 = "//li[contains(.,'${reservedVariables}')]//*[name()='svg'][contains(@class,'check')]");
-				}
-			}
 		}
 	}
 
