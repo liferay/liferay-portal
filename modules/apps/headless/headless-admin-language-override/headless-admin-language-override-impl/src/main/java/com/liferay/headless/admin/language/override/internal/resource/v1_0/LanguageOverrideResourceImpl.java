@@ -10,17 +10,30 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.language.override.dto.v1_0.LanguageOverride;
 import com.liferay.headless.admin.language.override.internal.odata.entity.v1_0.LanguageOverrideEntityModel;
+import com.liferay.headless.admin.language.override.internal.odata.filter.expression.PredicateExpressionVisitorImpl;
 import com.liferay.headless.admin.language.override.resource.v1_0.LanguageOverrideResource;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.language.override.constants.PLOActionKeys;
 import com.liferay.portal.language.override.constants.PLOPortletKeys;
 import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.model.PLOEntryTable;
+import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.language.override.service.PLOEntryService;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.odata.filter.FilterParser;
+import com.liferay.portal.odata.filter.FilterParserProvider;
+import com.liferay.portal.odata.filter.InvalidFilterException;
+import com.liferay.portal.odata.filter.expression.Expression;
+import com.liferay.portal.odata.filter.expression.ExpressionVisitException;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -121,16 +134,25 @@ public class LanguageOverrideResourceImpl
 
 	@Override
 	public Page<LanguageOverride> getLanguageOverridesPage(
-			String search, Pagination pagination, Sort[] sorts)
+			String search, Filter filter, Pagination pagination, Sort[] sorts)
 		throws Exception {
+
+		PortalPermissionUtil.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
+
+		Predicate predicate = _getPredicate(filter);
 
 		return Page.of(
 			transform(
-				_ploEntryService.getPLOEntries(
-					search, pagination.getStartPosition(),
-					pagination.getEndPosition(), _toOrderByComparator(sorts)),
+				_ploEntryLocalService.getPLOEntries(
+					contextCompany.getCompanyId(), search, predicate,
+					pagination.getStartPosition(), pagination.getEndPosition(),
+					_toOrderByComparator(sorts)),
 				this::_toLanguageOverride),
-			pagination, _ploEntryService.getPLOEntriesCount(search));
+			pagination,
+			_ploEntryLocalService.getPLOEntriesCount(
+				contextCompany.getCompanyId(), search, predicate));
 	}
 
 	@Override
@@ -154,6 +176,41 @@ public class LanguageOverrideResourceImpl
 			_ploEntryService.addOrUpdatePLOEntry(
 				externalReferenceCode, languageOverride.getKey(),
 				languageOverride.getLanguageId(), languageOverride.getValue()));
+	}
+
+	private Predicate _getPredicate(Filter filter) {
+		String filterString = null;
+
+		if (contextUriInfo != null) {
+			MultivaluedMap<String, String> queryParameters =
+				contextUriInfo.getQueryParameters();
+
+			filterString = queryParameters.getFirst("filter");
+		}
+
+		if (Validator.isNull(filterString)) {
+			if (filter != null) {
+				throw new InvalidFilterException(
+					"Language overrides can only be filtered with the filter " +
+						"query parameter");
+			}
+
+			return null;
+		}
+
+		FilterParser filterParser = _filterParserProvider.provide(_entityModel);
+
+		try {
+			Expression expression = filterParser.parse(filterString);
+
+			return (Predicate)expression.accept(
+				new PredicateExpressionVisitorImpl(_entityModel));
+		}
+		catch (ExpressionVisitException expressionVisitException) {
+			throw new InvalidFilterException(
+				expressionVisitException.getMessage(),
+				expressionVisitException);
+		}
 	}
 
 	private LanguageOverride _toLanguageOverride(PLOEntry ploEntry)
@@ -184,11 +241,17 @@ public class LanguageOverrideResourceImpl
 	private static final EntityModel _entityModel =
 		new LanguageOverrideEntityModel();
 
+	@Reference
+	private FilterParserProvider _filterParserProvider;
+
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.language.override.internal.dto.v1_0.converter.LanguageOverrideDTOConverter)"
 	)
 	private DTOConverter<PLOEntry, LanguageOverride>
 		_languageOverrideDTOConverter;
+
+	@Reference
+	private PLOEntryLocalService _ploEntryLocalService;
 
 	@Reference
 	private PLOEntryService _ploEntryService;
