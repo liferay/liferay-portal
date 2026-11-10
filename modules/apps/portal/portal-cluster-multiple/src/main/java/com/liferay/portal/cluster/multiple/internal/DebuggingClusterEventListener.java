@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 
 /**
@@ -28,7 +29,8 @@ import org.osgi.service.component.annotations.Modified;
  */
 @Component(
 	configurationPid = "com.liferay.portal.cluster.multiple.configuration.ClusterExecutorConfiguration",
-	enabled = false, service = ClusterEventListener.class
+	configurationPolicy = ConfigurationPolicy.REQUIRE, enabled = false,
+	service = ClusterEventListener.class
 )
 public class DebuggingClusterEventListener implements ClusterEventListener {
 
