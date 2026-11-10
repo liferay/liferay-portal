@@ -247,10 +247,10 @@ public class ApplicationsMenuPanelAppsMVCResourceCommandTest {
 		JSONObject jsonObject = _getSitesJSONObject();
 
 		_assertGroupKeys(
-			_groups.subList(0, 2), jsonObject.getJSONArray("mySites"));
-		_assertGroupKeys(
 			Collections.singletonList(group),
 			jsonObject.getJSONArray("recentSites"));
+		_assertGroupKeys(
+			_groups.subList(0, 2), jsonObject.getJSONArray("mySites"));
 
 		Assert.assertFalse(jsonObject.has("viewAllURL"));
 	}
