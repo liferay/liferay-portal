@@ -503,7 +503,7 @@ public class LaunchSetPublisherTest {
 
 		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
 
-		Date date = new Date(System.currentTimeMillis() + Time.DAY);
+		Date date = new Date(System.currentTimeMillis() + (Time.MINUTE * 2));
 
 		_launchSetPublisher.schedulePublish(
 			date, launchSetId, TestPropsValues.getUserId());

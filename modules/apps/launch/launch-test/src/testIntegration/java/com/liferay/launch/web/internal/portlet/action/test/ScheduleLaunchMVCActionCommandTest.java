@@ -194,7 +194,7 @@ public class ScheduleLaunchMVCActionCommandTest {
 
 		// Future date
 
-		long publishTime = System.currentTimeMillis() + Time.DAY;
+		long publishTime = System.currentTimeMillis() + (Time.MINUTE * 2);
 
 		jsonObject = _processAction(publishTime, TestPropsValues.getUser());
 
