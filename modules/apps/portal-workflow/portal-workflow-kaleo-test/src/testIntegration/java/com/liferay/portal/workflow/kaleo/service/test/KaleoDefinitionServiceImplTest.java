@@ -779,6 +779,9 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private void _testUpdateKaleoDefinition() throws Exception {
+
+		// A user with the "checkPermission" attribute set to false
+
 		_setCompanyAdministratorCanPublish(true);
 
 		_setUpPermissionThreadLocal(_company1AdminUser);
@@ -789,8 +792,6 @@ public class KaleoDefinitionServiceImplTest {
 			WorkflowDefinitionConstants.SCOPE_ALL, serviceContext1);
 
 		_setCompanyAdministratorCanPublish(false);
-
-		// A user with the "checkPermission" attribute set to false
 
 		User user = _addUser();
 
