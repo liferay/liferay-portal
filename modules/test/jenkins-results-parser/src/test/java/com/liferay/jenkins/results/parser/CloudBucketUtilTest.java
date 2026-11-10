@@ -157,7 +157,7 @@ public class CloudBucketUtilTest
 
 		testEquals(
 			presignedS3URL,
-			CloudBucketUtil.getPresignedS3URL(s3ObjectPath, 600));
+			CloudBucketUtil.getPresignedS3URL(600, s3ObjectPath));
 
 		Mockito.verify(
 			shell
@@ -182,7 +182,8 @@ public class CloudBucketUtilTest
 
 		IOException ioException = Assert.assertThrows(
 			IOException.class,
-			() -> CloudBucketUtil.getPresignedS3URL(s3ObjectPath, 600));
+			() -> CloudBucketUtil.getPresignedS3URL(
+				RandomTestUtil.randomInt(), s3ObjectPath));
 
 		testEquals(
 			JenkinsResultsParserUtil.combine(
@@ -193,7 +194,8 @@ public class CloudBucketUtilTest
 
 		RuntimeException runtimeException = Assert.assertThrows(
 			RuntimeException.class,
-			() -> CloudBucketUtil.getPresignedS3URL(invalidS3ObjectPath, 600));
+			() -> CloudBucketUtil.getPresignedS3URL(
+				RandomTestUtil.randomInt(), invalidS3ObjectPath));
 
 		testEquals(
 			"Invalid S3 object path: " + invalidS3ObjectPath,

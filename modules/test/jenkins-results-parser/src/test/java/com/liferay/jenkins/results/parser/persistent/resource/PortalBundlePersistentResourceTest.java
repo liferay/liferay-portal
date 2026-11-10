@@ -141,10 +141,10 @@ public class PortalBundlePersistentResourceTest
 
 		portalBundlePersistentResource.populateDataJSONObject(dataJSONObject);
 
-		testEquals(false, dataJSONObject.has("completed_time"));
+		testEquals(0, dataJSONObject.getInt("redispatch_attempts"));
 		testEquals(
 			senderBranchSHA, dataJSONObject.getString("portal_git_commit"));
-		testEquals(0, dataJSONObject.getInt("redispatch_attempts"));
+		testEquals(false, dataJSONObject.has("completed_time"));
 
 		Mockito.doReturn(
 			PersistentResource.Status.SUCCESS
@@ -186,6 +186,18 @@ public class PortalBundlePersistentResourceTest
 				dataJSONObject);
 
 			testEquals(completedTime, dataJSONObject.getLong("completed_time"));
+
+			Mockito.doThrow(
+				new RuntimeException(RandomTestUtil.randomString())
+			).when(
+				portalBundlePersistentResource
+			).getDataJSONObject();
+
+			portalBundlePersistentResource.populateDataJSONObject(
+				dataJSONObject);
+
+			testEquals(
+				currentTimeMillis, dataJSONObject.getLong("completed_time"));
 		}
 	}
 
