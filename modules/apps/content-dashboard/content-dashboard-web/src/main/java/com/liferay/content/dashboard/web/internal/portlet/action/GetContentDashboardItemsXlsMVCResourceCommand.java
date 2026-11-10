@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.configuration.DefaultSearchResultPermissionFilterConfiguration;
+import com.liferay.portal.search.constants.SearchContextAttributes;
 import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
@@ -312,6 +313,10 @@ public class GetContentDashboardItemsXlsMVCResourceCommand
 		).withStart(
 			start
 		).build();
+
+		searchContext.setAttribute(
+			SearchContextAttributes.ATTRIBUTE_KEY_FALLBACK_TO_LAST_PAGE,
+			Boolean.FALSE);
 
 		return _searcher.search(
 			ContentDashboardSearchRequestBuilderUtil.builder(
