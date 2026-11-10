@@ -17,6 +17,7 @@ import com.liferay.bulk.selection.BulkSelectionFactory;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -136,15 +137,13 @@ public class EditCategoriesBulkSelectionActionTest {
 			FileEntry... fileEntries)
 		throws Exception {
 
-		String[] fileEntryIds = new String[fileEntries.length];
-
-		for (int i = 0; i < fileEntries.length; i++) {
-			fileEntryIds[i] = String.valueOf(fileEntries[i].getFileEntryId());
-		}
-
 		BulkSelection<FileEntry> bulkSelection = _bulkSelectionFactory.create(
 			HashMapBuilder.put(
-				"rowIdsFileEntry", fileEntryIds
+				"rowIdsFileEntry",
+				TransformUtil.transform(
+					fileEntries,
+					fileEntry -> String.valueOf(fileEntry.getFileEntryId()),
+					String.class)
 			).build());
 
 		_bulkSelectionAction.execute(
