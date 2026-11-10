@@ -267,22 +267,6 @@ public class MCPServerServlet extends HttpServlet {
 					ServletResponse servletResponse)
 				throws IOException, ServletException {
 
-				HttpServletRequest httpServletRequest =
-					(HttpServletRequest)servletRequest;
-
-				if (Objects.equals(httpServletRequest.getMethod(), "GET")) {
-					HttpServletResponse httpServletResponse =
-						(HttpServletResponse)servletResponse;
-
-					httpServletResponse.setContentType("text/event-stream");
-					httpServletResponse.setHeader("Cache-Control", "no-cache");
-					httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-
-					httpServletResponse.flushBuffer();
-
-					return;
-				}
-
 				httpServletStatelessServerTransport.service(
 					servletRequest, servletResponse);
 			}

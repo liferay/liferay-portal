@@ -1618,6 +1618,7 @@ public class MCPServerServletTest {
 
 		Http.Options options = new Http.Options();
 
+		options.addHeader("Accept", "text/event-stream");
 		options.addHeader("Authorization", authorization);
 		options.setLocation(url);
 
@@ -1625,8 +1626,7 @@ public class MCPServerServletTest {
 
 		Http.Response response = options.getResponse();
 
-		Assert.assertEquals("text/event-stream", response.getContentType());
-		Assert.assertEquals(200, response.getResponseCode());
+		Assert.assertEquals(405, response.getResponseCode());
 
 		options = new Http.Options();
 
