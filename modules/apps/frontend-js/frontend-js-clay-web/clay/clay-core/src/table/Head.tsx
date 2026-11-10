@@ -21,7 +21,7 @@ type HeaderProps = {
 	clearSearchLabel: string;
 	description: string;
 	descriptionId: string;
-	inputRef: React.Ref<HTMLInputElement>;
+	inputRef: React.RefObject<HTMLInputElement>;
 	name: string;
 	nameId: string;
 	onSearchTermChange: (searchTerm: string) => void;
@@ -74,7 +74,11 @@ function Header({
 									aria-label={clearSearchLabel}
 									displayType="unstyled"
 									monospaced
-									onClick={() => onSearchTermChange('')}
+									onClick={() => {
+										onSearchTermChange('');
+
+										inputRef.current?.focus();
+									}}
 									symbol="times"
 									title={clearSearchLabel}
 								/>
