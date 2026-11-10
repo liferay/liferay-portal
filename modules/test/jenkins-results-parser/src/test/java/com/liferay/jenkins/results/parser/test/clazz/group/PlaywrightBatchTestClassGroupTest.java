@@ -742,7 +742,6 @@ public class PlaywrightBatchTestClassGroupTest
 			String[] commands = executionRequest.getCommands();
 
 			Assert.assertTrue(
-				commands[0],
 				commands[0].contains(
 					JenkinsResultsParserUtil.combine(
 						"export npm_config_fetch_retries=5\n",
@@ -785,8 +784,7 @@ public class PlaywrightBatchTestClassGroupTest
 			return;
 		}
 
-		Assert.assertTrue(
-			runtimeExceptions.toString(), runtimeExceptions.isEmpty());
+		Assert.assertTrue(runtimeExceptions.isEmpty());
 
 		JSONObject playwrightJSONObject = ReflectionTestUtil.getFieldValue(
 			PlaywrightBatchTestClassGroup.class, "_playwrightJSONObject");
