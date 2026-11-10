@@ -145,6 +145,62 @@ public class CloudBucketUtilTest
 	}
 
 	@Test
+	public void testGetPresignedS3URL() throws Exception {
+		Shell shell = mockShell();
+
+		String presignedS3URL = "https://" + RandomTestUtil.randomString();
+
+		setShellCommandOutput(
+			"aws s3 presign", shell, " " + presignedS3URL + "\n");
+
+		String s3ObjectPath = _randomS3ObjectPath();
+
+		testEquals(
+			presignedS3URL,
+			CloudBucketUtil.getPresignedS3URL(s3ObjectPath, 600));
+
+		Mockito.verify(
+			shell
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(
+					executionRequest, "aws s3 presign", s3ObjectPath,
+					"--expires-in 600"))
+		);
+
+		String errorMessage = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			new Shell.ExecutionResult(1, errorMessage, "")
+		).when(
+			shell
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(
+					executionRequest, "aws s3 presign"))
+		);
+
+		IOException ioException = Assert.assertThrows(
+			IOException.class,
+			() -> CloudBucketUtil.getPresignedS3URL(s3ObjectPath, 600));
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"Unable to presign ", s3ObjectPath, "\n", errorMessage),
+			ioException.getMessage());
+
+		String invalidS3ObjectPath = RandomTestUtil.randomString();
+
+		RuntimeException runtimeException = Assert.assertThrows(
+			RuntimeException.class,
+			() -> CloudBucketUtil.getPresignedS3URL(invalidS3ObjectPath, 600));
+
+		testEquals(
+			"Invalid S3 object path: " + invalidS3ObjectPath,
+			runtimeException.getMessage());
+	}
+
+	@Test
 	public void testIsS3ObjectOlderThan() throws Exception {
 		String s3ObjectPath = _randomS3ObjectPath();
 

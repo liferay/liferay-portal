@@ -14,6 +14,8 @@ import com.liferay.jenkins.results.parser.Workspace;
 
 import java.util.Properties;
 
+import org.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -101,6 +103,46 @@ public class PortalBundlePersistentResourceTest
 		_testGetBundleWorkspaceGitRepositoryThrows(
 			Mockito.mock(Workspace.class));
 		_testGetBundleWorkspaceGitRepositoryThrows(null);
+	}
+
+	@Test
+	public void testPopulateDataJSONObject() {
+		PortalWorkspace portalWorkspace = Mockito.mock(PortalWorkspace.class);
+
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			Mockito.mock(PortalWorkspaceGitRepository.class);
+
+		String senderBranchSHA = RandomTestUtil.randomSHA();
+
+		Mockito.doReturn(
+			senderBranchSHA
+		).when(
+			portalWorkspaceGitRepository
+		).getSenderBranchSHA();
+
+		Mockito.doReturn(
+			portalWorkspaceGitRepository
+		).when(
+			portalWorkspace
+		).getPortalWorkspaceGitRepository();
+
+		PortalBundlePersistentResource portalBundlePersistentResource =
+			_newPortalBundlePersistentResource(portalWorkspace);
+
+		JSONObject dataJSONObject = new JSONObject();
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalBundlePersistentResource
+		).populateDataJSONObject(
+			dataJSONObject
+		);
+
+		portalBundlePersistentResource.populateDataJSONObject(dataJSONObject);
+
+		testEquals(
+			senderBranchSHA, dataJSONObject.getString("portal_git_commit"));
+		testEquals(0, dataJSONObject.getInt("redispatch_attempts"));
 	}
 
 	private PortalBundlePersistentResource _newPortalBundlePersistentResource(
