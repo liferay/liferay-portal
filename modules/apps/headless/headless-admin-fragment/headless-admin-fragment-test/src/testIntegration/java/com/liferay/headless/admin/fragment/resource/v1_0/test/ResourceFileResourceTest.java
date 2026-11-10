@@ -1596,8 +1596,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertFalse(logEntries.toString(), logEntries.isEmpty());
-
 			LogEntry logEntry = logEntries.get(0);
 
 			Throwable throwable = logEntry.getThrowable();
@@ -1732,22 +1730,24 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_assertAllowedHost(
 			_content2Bytes, _content2URL, new String[] {"127.0.0.1"}, true);
 		_assertRestrictedHost(
-			"10.0.0.1", "http://10.0.0.1/", new String[0], false);
+			"10.0.0.1", "http://10.0.0.1", new String[0], false);
 		_assertRestrictedHost("127.0.0.1", _content1URL, new String[0], false);
 		_assertRestrictedHost(
 			"127.0.0.1", _content1URL, new String[] {"127.0.0.1"}, false);
 		_assertRestrictedHost(
-			"127.0.0.1", _content1URL, new String[] {"example.test"}, false);
+			"127.0.0.1", _content1URL,
+			new String[] {RandomTestUtil.randomString()}, false);
 		_assertRestrictedHost(
-			"127.0.0.1", _content1URL, new String[] {"example.test"}, true);
+			"127.0.0.1", _content1URL,
+			new String[] {RandomTestUtil.randomString()}, true);
 		_assertRestrictedHost(
-			"169.254.169.254", "http://169.254.169.254/latest/meta-data/",
+			"169.254.169.254", "http://169.254.169.254/latest/meta-data",
 			new String[0], false);
-		_assertRestrictedHost(
-			"localhost", _localhostContent1URL, new String[0], false);
 		_assertRestrictedHost(
 			"localhost", _localhostContent1URL, _redirectURL,
 			new String[] {"127.0.0.1"}, true);
+		_assertRestrictedHost(
+			"localhost", _localhostContent1URL, new String[0], false);
 	}
 
 	private void _testPostSiteResourceFileFileURLReferenceURLLARProblemException()
