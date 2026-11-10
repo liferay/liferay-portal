@@ -52,6 +52,26 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 		createYarnCache(fileName);
 
+		List<String> untrackedSDKFilePaths = getUntrackedSDKFilePaths();
+
+		if (untrackedSDKFilePaths.isEmpty()) {
+			return archiveFile;
+		}
+
+		GitUtil.ExecutionResult executionResult = executeBashCommands(
+			3, GitUtil.MILLIS_RETRY_DELAY, 1000 * 60 * 10,
+			JenkinsResultsParserUtil.combine(
+				"zip -q -r -y ", fileName, " ",
+				JenkinsResultsParserUtil.join(" ", untrackedSDKFilePaths)));
+
+		if (executionResult.getExitValue() != 0) {
+			throw new GitWorkingDirectoryRuntimeException(
+				this,
+				JenkinsResultsParserUtil.combine(
+					"Unable to add the SDK to the Git archive ", fileName, "\n",
+					executionResult.getStandardError()));
+		}
+
 		return archiveFile;
 	}
 
@@ -656,6 +676,47 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		}
 
 		return filteredEnv;
+	}
+
+	protected List<String> getUntrackedFilePaths(String dirPath) {
+		GitUtil.ExecutionResult executionResult = executeBashCommands(
+			3, GitUtil.MILLIS_RETRY_DELAY, 1000 * 60 * 10,
+			"git ls-files --directory --no-empty-directory --others -- " +
+				dirPath);
+
+		if (executionResult.getExitValue() != 0) {
+			throw new GitWorkingDirectoryRuntimeException(
+				this,
+				JenkinsResultsParserUtil.combine(
+					"Unable to get untracked files in ", dirPath, "\n",
+					executionResult.getStandardError()));
+		}
+
+		List<String> untrackedFilePaths = new ArrayList<>();
+
+		String standardOut = executionResult.getStandardOut();
+
+		for (String line : standardOut.split("\n")) {
+			String untrackedFilePath = line.trim();
+
+			if (untrackedFilePath.isEmpty()) {
+				continue;
+			}
+
+			untrackedFilePaths.add(untrackedFilePath);
+		}
+
+		return untrackedFilePaths;
+	}
+
+	protected List<String> getUntrackedSDKFilePaths() {
+		File sdkDir = new File(getWorkingDirectory(), "tools/sdk");
+
+		if (!sdkDir.exists()) {
+			return new ArrayList<>();
+		}
+
+		return getUntrackedFilePaths("tools/sdk");
 	}
 
 	protected List<String> getYarnCacheFilePaths() {

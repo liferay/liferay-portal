@@ -123,6 +123,46 @@ public class PortalGitWorkingDirectoryTest
 	}
 
 	@Test
+	public void testGetUntrackedSDKFilePaths() throws Exception {
+		File portalDir = temporaryFolder.newFolder("portal");
+
+		_writeFile(portalDir, "tools/sdk/dependencies/foo/ivy.xml");
+		_writeFile(portalDir, "tools/sdk/dependencies/foo/lib/foo.jar");
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
+			PortalGitWorkingDirectory.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalGitWorkingDirectory
+		).getUntrackedSDKFilePaths();
+
+		Mockito.doReturn(
+			Arrays.asList("tools/sdk/dependencies/foo/lib/")
+		).when(
+			portalGitWorkingDirectory
+		).getUntrackedFilePaths(
+			"tools/sdk"
+		);
+
+		Mockito.doReturn(
+			portalDir
+		).when(
+			portalGitWorkingDirectory
+		).getWorkingDirectory();
+
+		testEquals(
+			Arrays.asList("tools/sdk/dependencies/foo/lib/"),
+			portalGitWorkingDirectory.getUntrackedSDKFilePaths());
+
+		JenkinsResultsParserUtil.delete(new File(portalDir, "tools"));
+
+		testEquals(
+			Collections.emptyList(),
+			portalGitWorkingDirectory.getUntrackedSDKFilePaths());
+	}
+
+	@Test
 	public void testGetYarnCacheFilePaths() throws Exception {
 		File portalDir = temporaryFolder.newFolder("portal");
 
@@ -156,6 +196,17 @@ public class PortalGitWorkingDirectoryTest
 		).when(
 			portalGitWorkingDirectory
 		).getYarnCacheFilePaths();
+
+		Mockito.doReturn(
+			Arrays.asList(
+				"tools/sdk/dependencies/bar/lib/",
+				"tools/sdk/dependencies/foo/ivy.xml.MD5",
+				"tools/sdk/dependencies/foo/lib/")
+		).when(
+			portalGitWorkingDirectory
+		).getUntrackedFilePaths(
+			"tools/sdk"
+		);
 
 		Mockito.doReturn(
 			portalDir
