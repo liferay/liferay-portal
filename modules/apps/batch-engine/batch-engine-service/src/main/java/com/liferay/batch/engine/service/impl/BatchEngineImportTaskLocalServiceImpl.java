@@ -137,7 +137,9 @@ public class BatchEngineImportTaskLocalServiceImpl
 		batchEngineImportTask.setTaskItemDelegateName(taskItemDelegateName);
 
 		return _updateBatchEngineImportTask(
-			batchEngineImportTask, _getBlob(batchEngineImportTask, content));
+			batchEngineImportTask,
+			_getBlob(
+				batchEngineImportTask, batchEngineTaskItemDelegate, content));
 	}
 
 	@Override
@@ -164,6 +166,15 @@ public class BatchEngineImportTaskLocalServiceImpl
 	public BatchEngineImportTask updateBatchEngineImportTask(
 		BatchEngineImportTask batchEngineImportTask) {
 
+		return super.updateBatchEngineImportTask(batchEngineImportTask);
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.NESTED)
+	public BatchEngineImportTask updateBatchEngineImportTask(
+		BatchEngineImportTask batchEngineImportTask,
+		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate) {
+
 		if (!StringUtil.equals(
 				batchEngineImportTask.getExecuteStatus(),
 				BatchEngineTaskExecuteStatus.COMPLETED.toString()) &&
@@ -178,7 +189,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 
 		try {
 			blob = _getBatchEngineImportTaskSanitizedContentBlob(
-				batchEngineImportTask,
+				batchEngineImportTask, batchEngineTaskItemDelegate,
 				() -> openContentInputStream(
 					batchEngineImportTask.getBatchEngineImportTaskId()),
 				value -> null);
@@ -205,6 +216,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 
 	private Blob _getBatchEngineImportTaskSanitizedContentBlob(
 			BatchEngineImportTask batchEngineImportTask,
+			BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate,
 			UnsafeSupplier<InputStream, Exception> inputStreamUnsafeSupplier,
 			UnsafeFunction<String, String, Exception>
 				passwordFieldValueUnsafeFunction)
@@ -212,8 +224,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 
 		Set<String> passwordFieldNames =
 			PasswordFieldUtil.getPasswordFieldNames(
-				_itemClassRegistry.getItemClass(
-					batchEngineImportTask.getClassName()));
+				_itemClassRegistry.getItemClass(batchEngineTaskItemDelegate));
 
 		if (passwordFieldNames.isEmpty()) {
 			return null;
@@ -242,7 +253,9 @@ public class BatchEngineImportTaskLocalServiceImpl
 	}
 
 	private Blob _getBlob(
-			BatchEngineImportTask batchEngineImportTask, byte[] content)
+			BatchEngineImportTask batchEngineImportTask,
+			BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate,
+			byte[] content)
 		throws PortalException {
 
 		if (Validator.isNull(PropsValues.BATCH_ENGINE_ENCRYPTION_KEY)) {
@@ -252,7 +265,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 
 		try {
 			Blob blob = _getBatchEngineImportTaskSanitizedContentBlob(
-				batchEngineImportTask,
+				batchEngineImportTask, batchEngineTaskItemDelegate,
 				() -> new UnsyncByteArrayInputStream(content),
 				PasswordFieldUtil::encrypt);
 
