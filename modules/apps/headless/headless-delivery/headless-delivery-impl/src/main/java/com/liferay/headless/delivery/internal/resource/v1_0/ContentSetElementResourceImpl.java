@@ -10,6 +10,7 @@ import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
 import com.liferay.asset.list.exception.NoSuchEntryException;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryService;
+import com.liferay.frontend.js.audiences.DetectedAudienceEntryUtil;
 import com.liferay.headless.delivery.dto.v1_0.ContentSetElement;
 import com.liferay.headless.delivery.resource.v1_0.ContentSetElementResource;
 import com.liferay.info.collection.provider.CollectionQuery;
@@ -19,10 +20,13 @@ import com.liferay.info.pagination.InfoPage;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -56,52 +60,60 @@ public class ContentSetElementResourceImpl
 	@Override
 	public Page<ContentSetElement>
 			getAssetLibraryContentSetByKeyContentSetElementsPage(
-				Long assetLibraryId, String key, Pagination pagination)
+				Long assetLibraryId, String key,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception {
 
 		return getSiteContentSetByKeyContentSetElementsPage(
-			assetLibraryId, key, pagination);
+			assetLibraryId, key, audienceExternalReferenceCodes, pagination);
 	}
 
 	@Override
 	public Page<ContentSetElement>
 			getAssetLibraryContentSetByUuidContentSetElementsPage(
-				Long assetLibraryId, String uuid, Pagination pagination)
+				Long assetLibraryId, String uuid,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception {
 
 		return getSiteContentSetByUuidContentSetElementsPage(
-			assetLibraryId, uuid, pagination);
+			assetLibraryId, uuid, audienceExternalReferenceCodes, pagination);
 	}
 
 	@Override
 	public Page<ContentSetElement> getContentSetContentSetElementsPage(
-			Long contentSetId, Pagination pagination)
+			Long contentSetId, String[] audienceExternalReferenceCodes,
+			Pagination pagination)
 		throws Exception {
 
 		return _getContentSetContentSetElementsPage(
-			_assetListEntryService.getAssetListEntry(contentSetId), pagination);
+			_assetListEntryService.getAssetListEntry(contentSetId),
+			audienceExternalReferenceCodes, pagination);
 	}
 
 	@Override
 	public Page<ContentSetElement> getSiteContentSetByKeyContentSetElementsPage(
-			Long siteId, String key, Pagination pagination)
+			Long siteId, String key, String[] audienceExternalReferenceCodes,
+			Pagination pagination)
 		throws Exception {
 
 		return _getContentSetContentSetElementsPage(
-			_assetListEntryService.getAssetListEntry(siteId, key), pagination);
+			_assetListEntryService.getAssetListEntry(siteId, key),
+			audienceExternalReferenceCodes, pagination);
 	}
 
 	@Override
 	public Page<ContentSetElement>
 			getSiteContentSetByUuidContentSetElementsPage(
-				Long siteId, String uuid, Pagination pagination)
+				Long siteId, String uuid,
+				String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception {
 
 		AssetListEntry assetListEntry =
 			_assetListEntryService.getAssetListEntryByUuidAndGroupId(
 				uuid, siteId);
 
-		return _getContentSetContentSetElementsPage(assetListEntry, pagination);
+		return _getContentSetContentSetElementsPage(
+			assetListEntry, audienceExternalReferenceCodes, pagination);
 	}
 
 	@Override
@@ -151,23 +163,55 @@ public class ContentSetElementResourceImpl
 		}
 	}
 
+	private String[] _getAudienceEntryERCs(
+		String[] audienceExternalReferenceCodes) {
+
+		if (ArrayUtil.isNotEmpty(audienceExternalReferenceCodes)) {
+			return audienceExternalReferenceCodes;
+		}
+
+		return DetectedAudienceEntryUtil.getAudienceEntryERCs(
+			contextHttpServletRequest);
+	}
+
 	private Page<ContentSetElement> _getContentSetContentSetElementsPage(
-			AssetListEntry assetListEntry, Pagination pagination)
+			AssetListEntry assetListEntry,
+			String[] audienceExternalReferenceCodes, Pagination pagination)
 		throws Exception {
+
+		InfoPage<AssetEntry> infoPage = _getInfoPage(
+			assetListEntry, audienceExternalReferenceCodes, pagination);
+
+		return Page.of(
+			transform(infoPage.getPageItems(), this::_toContentSetElement),
+			pagination, infoPage.getTotalCount());
+	}
+
+	private InfoPage<AssetEntry> _getInfoPage(
+			AssetListEntry assetListEntry,
+			String[] audienceExternalReferenceCodes, Pagination pagination)
+		throws Exception {
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				assetListEntry.getCompanyId(), "LPD-109242") &&
+			!FeatureFlagManagerUtil.isEnabled(
+				CompanyConstants.SYSTEM, "LPD-78863")) {
+
+			return _assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				null, assetListEntry, null,
+				_getAudienceEntryERCs(audienceExternalReferenceCodes),
+				pagination.getEndPosition(), StringPool.BLANK,
+				pagination.getStartPosition(), StringPool.BLANK);
+		}
 
 		long[] segmentsEntryIds = _segmentsEntryRetriever.getSegmentsEntryIds(
 			assetListEntry.getGroupId(), contextUser.getUserId(),
 			_requestContextMapper.map(contextHttpServletRequest));
 
-		InfoPage<AssetEntry> infoPage =
-			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
-				assetListEntry, segmentsEntryIds, null, null, StringPool.BLANK,
-				StringPool.BLANK, pagination.getStartPosition(),
-				pagination.getEndPosition());
-
-		return Page.of(
-			transform(infoPage.getPageItems(), this::_toContentSetElement),
-			pagination, infoPage.getTotalCount());
+		return _assetListAssetEntryProvider.getAssetEntriesInfoPage(
+			assetListEntry, segmentsEntryIds, null, null, StringPool.BLANK,
+			StringPool.BLANK, pagination.getStartPosition(),
+			pagination.getEndPosition());
 	}
 
 	private ServiceContext _getServiceContext(Long siteId) throws Exception {
