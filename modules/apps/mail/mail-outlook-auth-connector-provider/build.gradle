@@ -5,7 +5,7 @@ dependencies {
 	compileOnly group: "com.nimbusds", name: "content-type", version: "2.3"
 	compileOnly group: "com.nimbusds", name: "nimbus-jose-jwt", version: "10.4"
 	compileOnly group: "com.nimbusds", name: "oauth2-oidc-sdk", version: "11.13"
-	compileOnly group: "net.minidev", name: "json-smart", version: "2.4.10"
+	compileOnly group: "net.minidev", name: "json-smart", version: "2.6.1"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-security:portal-security-key-api")

@@ -1,4 +1,4 @@
 dependencies {
-	compileInclude group: "net.minidev", name: "accessors-smart", version: "2.4.9"
-	compileInclude group: "net.minidev", name: "json-smart", version: "2.4.10"
+	compileInclude group: "net.minidev", name: "accessors-smart", version: "2.6.1"
+	compileInclude group: "net.minidev", name: "json-smart", version: "2.6.1"
 }
