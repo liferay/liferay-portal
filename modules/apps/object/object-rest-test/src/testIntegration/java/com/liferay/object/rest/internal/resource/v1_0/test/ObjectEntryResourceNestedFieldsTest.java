@@ -648,11 +648,11 @@ public class ObjectEntryResourceNestedFieldsTest
 				_getPermissionsJSONArray(
 					new String[] {ActionKeys.UPDATE, ActionKeys.VIEW},
 					getObjectDefinition3(), role2),
-				(JSONArray)userAccountJSONObject.get("permissions"),
+				userAccountJSONObject.getJSONArray("permissions"),
 				_getPermissionsJSONArray(
 					new String[] {ActionKeys.UPDATE, ActionKeys.VIEW},
 					getObjectDefinition3(), role2),
-				(JSONArray)userAccountJSONObject.get("permissions")
+				userAccountJSONObject.getJSONArray("permissions")
 			},
 			Type.MANY_TO_MANY);
 
@@ -728,7 +728,7 @@ public class ObjectEntryResourceNestedFieldsTest
 				_getPermissionsJSONArray(
 					new String[] {ActionKeys.DELETE, ActionKeys.PERMISSIONS},
 					getObjectDefinition1(), role1),
-				(JSONArray)userAccountJSONObject.get("permissions")
+				userAccountJSONObject.getJSONArray("permissions")
 			},
 			Type.MANY_TO_MANY);
 	}
@@ -1312,10 +1312,8 @@ public class ObjectEntryResourceNestedFieldsTest
 						"eventType", "UPDATE"
 					)
 				).toString(),
-				String.valueOf(
-					JSONFactoryUtil.createJSONArray(
-						JSONFactoryUtil.looseSerializeDeep(
-							objectEntry.getAuditEvents()))),
+				JSONFactoryUtil.looseSerializeDeep(
+					objectEntry.getAuditEvents()),
 				false);
 
 			// Get object entry without object entry history permission
@@ -1734,8 +1732,7 @@ public class ObjectEntryResourceNestedFieldsTest
 
 	private NestedFieldsContext _getNestedFieldsContext(String nestedFields) {
 		return new NestedFieldsContext(
-			1, null, ListUtil.fromString(nestedFields, StringPool.COMMA), null,
-			null, null);
+			1, ListUtil.fromString(nestedFields, StringPool.COMMA));
 	}
 
 	private String _getObjectRelationshipName(Edge edge) throws Exception {

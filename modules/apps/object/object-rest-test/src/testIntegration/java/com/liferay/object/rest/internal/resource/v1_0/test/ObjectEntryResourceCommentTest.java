@@ -222,20 +222,14 @@ public class ObjectEntryResourceCommentTest
 			long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
 
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			getEndpoint(objectDefinition, groupId) +
-				"?nestedFields=systemProperties.comments",
-			Http.Method.GET);
-
-		JSONArray jsonArray = jsonObject.getJSONArray("items");
-
-		jsonObject = jsonArray.getJSONObject(0);
-
-		JSONObject systemPropertiesJSONObject = jsonObject.getJSONObject(
-			"systemProperties");
-
-		return systemPropertiesJSONObject.getJSONArray("comments");
+		return JSONUtil.getValueAsJSONArray(
+			HTTPTestUtil.invokeToJSONObject(
+				null,
+				getEndpoint(objectDefinition, groupId) +
+					"?nestedFields=systemProperties.comments",
+				Http.Method.GET),
+			"JSONArray/items", "JSONObject/0", "JSONObject/systemProperties",
+			"JSONArray/comments");
 	}
 
 	private String _getObjectEntryEndpoint(
@@ -266,18 +260,17 @@ public class ObjectEntryResourceCommentTest
 		String endpoint = _getObjectEntryEndpoint(
 			groupId, objectDefinition, objectEntryJSONObject);
 
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).put(
-				"systemProperties", JSONUtil.put("comments", commentsJSONArray)
-			).toString(),
-			endpoint + "?nestedFields=systemProperties.comments", httpMethod);
-
-		JSONObject systemPropertiesJSONObject = jsonObject.getJSONObject(
-			"systemProperties");
-
-		return systemPropertiesJSONObject.getJSONArray("comments");
+		return JSONUtil.getValueAsJSONArray(
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+				).put(
+					"systemProperties",
+					JSONUtil.put("comments", commentsJSONArray)
+				).toString(),
+				endpoint + "?nestedFields=systemProperties.comments",
+				httpMethod),
+			"JSONObject/systemProperties", "JSONArray/comments");
 	}
 
 	private JSONArray _postObjectEntryWithComments(
@@ -291,22 +284,16 @@ public class ObjectEntryResourceCommentTest
 			endpoint = endpoint + "?nestedFields=systemProperties.comments";
 		}
 
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).put(
-				"systemProperties", JSONUtil.put("comments", commentsJSONArray)
-			).toString(),
-			endpoint, Http.Method.POST);
-
-		JSONObject systemPropertiesJSONObject = jsonObject.getJSONObject(
-			"systemProperties");
-
-		JSONArray jsonArray = null;
-
-		if (systemPropertiesJSONObject != null) {
-			jsonArray = systemPropertiesJSONObject.getJSONArray("comments");
-		}
+		JSONArray jsonArray = JSONUtil.getValueAsJSONArray(
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+				).put(
+					"systemProperties",
+					JSONUtil.put("comments", commentsJSONArray)
+				).toString(),
+				endpoint, Http.Method.POST),
+			"JSONObject/systemProperties", "JSONArray/comments");
 
 		if (jsonArray == null) {
 			return JSONFactoryUtil.createJSONArray();
@@ -560,7 +547,7 @@ public class ObjectEntryResourceCommentTest
 			long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
 
-		JSONArray commentsJSONArray = JSONUtil.put(
+		JSONArray commentsJSONArray = JSONUtil.putAll(
 			JSONUtil.put(
 				"externalReferenceCode", RandomTestUtil.randomString()
 			).put(

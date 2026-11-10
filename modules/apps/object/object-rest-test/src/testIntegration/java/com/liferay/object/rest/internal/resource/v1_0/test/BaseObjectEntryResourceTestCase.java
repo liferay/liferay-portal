@@ -474,13 +474,9 @@ public abstract class BaseObjectEntryResourceTestCase {
 			TestPropsValues.getUserId(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
-		String objectRelationship2IdObjectFieldName = StringUtil.replace(
-			ObjectFieldSettingUtil.getValue(
-				ObjectFieldSettingConstants.
-					NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
-				objectFieldLocalService.getObjectField(
-					objectRelationship2.getObjectFieldId2())),
-			"ERC", "Id");
+		ObjectField objectRelationship2ObjectField =
+			objectFieldLocalService.getObjectField(
+				objectRelationship2.getObjectFieldId2());
 
 		BigDecimal randomBigDecimal = BigDecimal.valueOf(
 			RandomTestUtil.randomDouble()
@@ -510,7 +506,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 				objectRelationship1ERCObjectFieldName,
 				objectEntry2.getExternalReferenceCode()
 			).put(
-				objectRelationship2IdObjectFieldName,
+				objectRelationship2ObjectField.getName(),
 				objectEntry2.getObjectEntryId()
 			).put(
 				"externalReferenceCode", randomExternalReferenceCode
@@ -527,7 +523,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 			objectRelationship1ERCObjectFieldName,
 			objectEntry2.getExternalReferenceCode()
 		).put(
-			objectRelationship2IdObjectFieldName,
+			objectRelationship2ObjectField.getName(),
 			(int)objectEntry2.getObjectEntryId()
 		).put(
 			"externalReferenceCode", randomExternalReferenceCode
@@ -670,11 +666,12 @@ public abstract class BaseObjectEntryResourceTestCase {
 		// Relationship ID field
 
 		expectedJSONObject = _cloneJSONObject(
-			expectedJSONObject, objectRelationship2IdObjectFieldName,
+			expectedJSONObject, objectRelationship2ObjectField.getName(),
 			objectEntry3.getObjectEntryId());
 
 		_assertPatchObjectField(
-			endpoint, expectedJSONObject, objectRelationship2IdObjectFieldName,
+			endpoint, expectedJSONObject,
+			objectRelationship2ObjectField.getName(),
 			objectEntry3.getObjectEntryId());
 
 		// Precision decimal field
@@ -990,7 +987,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 		}
 
 		objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition(
-			ObjectDefinitionTestUtil.getRandomName(),
 			ListUtil.concat(
 				Collections.singletonList(
 					_createAttachmentObjectField(
@@ -1011,7 +1007,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 		}
 
 		objectDefinition3 = ObjectDefinitionTestUtil.publishObjectDefinition(
-			ObjectDefinitionTestUtil.getRandomName(),
 			ListUtil.concat(
 				_createBusinessTypeObjectFields(),
 				Arrays.asList(
@@ -1028,7 +1023,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 		}
 
 		_objectDefinition4 = ObjectDefinitionTestUtil.publishObjectDefinition(
-			ObjectDefinitionTestUtil.getRandomName(),
 			Arrays.asList(
 				new LongTextObjectFieldBuilder(
 				).indexed(
@@ -1085,8 +1079,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 					RandomTestUtil.randomString(), _OBJECT_FIELD_NAME_RICH_TEXT,
 					false),
 				_createTextObjectField(OBJECT_FIELD_NAME_TEXT)),
-			ObjectDefinitionConstants.SCOPE_COMPANY,
-			TestPropsValues.getUserId());
+			ObjectDefinitionConstants.SCOPE_COMPANY);
 
 		_localizedObjectEntry = ObjectEntryTestUtil.addObjectEntry(
 			_objectDefinition4,
@@ -1302,7 +1295,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 		throws Exception {
 
 		return ObjectDefinitionTestUtil.publishObjectDefinition(
-			ObjectDefinitionTestUtil.getRandomName(),
 			Collections.singletonList(
 				new TextObjectFieldBuilder(
 				).labelMap(
@@ -1313,8 +1305,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 				).name(
 					objectFieldName
 				).build()),
-			ObjectDefinitionConstants.SCOPE_COMPANY,
-			TestPropsValues.getUserId());
+			ObjectDefinitionConstants.SCOPE_COMPANY);
 	}
 
 	protected TaxonomyCategory randomTaxonomyCategory(

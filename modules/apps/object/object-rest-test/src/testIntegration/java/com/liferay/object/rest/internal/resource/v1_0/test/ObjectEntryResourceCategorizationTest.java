@@ -172,9 +172,7 @@ public class ObjectEntryResourceCategorizationTest
 				company.getGroupId(), companyAssetVocabulary.getVocabularyId());
 
 		TaxonomyCategory companyTaxonomyCategory2 =
-			_postTaxonomyCategoryTaxonomyCategory(
-				company.getGroupId(), companyTaxonomyCategory1.getId(),
-				companyTaxonomyCategory1.getTaxonomyVocabularyId());
+			_postTaxonomyCategoryTaxonomyCategory(companyTaxonomyCategory1);
 
 		_testGetObjectEntryWithTaxonomyCategories(
 			0, getObjectDefinition1(), false, companyTaxonomyCategory1,
@@ -210,9 +208,7 @@ public class ObjectEntryResourceCategorizationTest
 				depotAssetVocabulary.getVocabularyId());
 
 		TaxonomyCategory depotTaxonomyCategory2 =
-			_postTaxonomyCategoryTaxonomyCategory(
-				depotEntry.getGroupId(), depotTaxonomyCategory1.getId(),
-				depotTaxonomyCategory1.getTaxonomyVocabularyId());
+			_postTaxonomyCategoryTaxonomyCategory(depotTaxonomyCategory1);
 
 		_testGetObjectEntryWithTaxonomyCategories(
 			depotEntry.getGroupId(), publishDepotScopedObjectDefinition(),
@@ -225,9 +221,7 @@ public class ObjectEntryResourceCategorizationTest
 				testGroupId, assetVocabulary.getVocabularyId());
 
 		TaxonomyCategory siteTaxonomyCategory2 =
-			_postTaxonomyCategoryTaxonomyCategory(
-				testGroupId, siteTaxonomyCategory1.getId(),
-				siteTaxonomyCategory1.getTaxonomyVocabularyId());
+			_postTaxonomyCategoryTaxonomyCategory(siteTaxonomyCategory1);
 
 		_testGetObjectEntryWithTaxonomyCategories(
 			testGroupId, getSiteScopedObjectDefinition1(), false,
@@ -498,12 +492,14 @@ public class ObjectEntryResourceCategorizationTest
 	}
 
 	private TaxonomyCategory _postTaxonomyCategoryTaxonomyCategory(
-			long groupId, String taxonomyCategoryId, long taxonomyVocabularyId)
+			TaxonomyCategory parentTaxonomyCategory)
 		throws Exception {
 
 		return taxonomyCategoryResource.postTaxonomyCategoryTaxonomyCategory(
-			taxonomyCategoryId,
-			randomTaxonomyCategory(groupId, taxonomyVocabularyId));
+			parentTaxonomyCategory.getId(),
+			randomTaxonomyCategory(
+				parentTaxonomyCategory.getSiteId(),
+				parentTaxonomyCategory.getTaxonomyVocabularyId()));
 	}
 
 	private void _testGetObjectEntryWithTaxonomyCategories(
@@ -570,7 +566,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryIds",
-					JSONUtil.put(depotTaxonomyCategory.getId())
+					JSONUtil.putAll(depotTaxonomyCategory.getId())
 				).toString(),
 				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
 				Http.Method.POST
@@ -600,7 +596,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryIds",
-					JSONUtil.put(siteTaxonomyCategory.getId())
+					JSONUtil.putAll(siteTaxonomyCategory.getId())
 				).toString(),
 				getEndpoint(
 					getSiteScopedObjectDefinition1(), childGroup.getGroupId()),
@@ -634,7 +630,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryIds",
-					JSONUtil.put(allSpacesTaxonomyCategory.getId())
+					JSONUtil.putAll(allSpacesTaxonomyCategory.getId())
 				).toString(),
 				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
 				Http.Method.POST
@@ -805,7 +801,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryIds",
-					JSONUtil.put(siteTaxonomyCategory.getId())
+					JSONUtil.putAll(siteTaxonomyCategory.getId())
 				).toString(),
 				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
 
@@ -818,7 +814,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryIds",
-					JSONUtil.put(siteTaxonomyCategory.getId())
+					JSONUtil.putAll(siteTaxonomyCategory.getId())
 				).toString(),
 				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
 				Http.Method.POST));
@@ -832,7 +828,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryIds",
-					JSONUtil.put(siteTaxonomyCategory.getId())
+					JSONUtil.putAll(siteTaxonomyCategory.getId())
 				).toString(),
 				StringBundler.concat(
 					getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
@@ -856,7 +852,7 @@ public class ObjectEntryResourceCategorizationTest
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).put(
 					"taxonomyCategoryBriefs",
-					JSONUtil.put(
+					JSONUtil.putAll(
 						JSONUtil.put(
 							"scope",
 							JSONUtil.put(
