@@ -1670,7 +1670,10 @@ test.describe('SEO configuration', () => {
 
 			await expect(
 				page.getByRole('link', {name: 'Google Search Console'})
-			).toHaveAttribute('href', 'https://search.google.com/search-console');
+			).toHaveAttribute(
+				'href',
+				'https://search.google.com/search-console'
+			);
 
 			await expect(
 				page.getByRole('link', {name: 'Yahoo! Webmaster'})
