@@ -10,9 +10,12 @@ import com.liferay.knowledge.base.constants.KBConstants;
 import com.liferay.knowledge.base.exception.KBArticleImportException;
 import com.liferay.knowledge.base.internal.importer.KBArchive;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -89,15 +92,32 @@ public class KBArchiveFactoryUtil {
 						markdownImporterArticleIntroWithoutExtension +
 							articleExtension))) {
 
-				kbArchiveState.setCurrentFolderIntroFile(entryPath);
+				KBArchive.File currentFolderIntroFile =
+					kbArchiveState.getCurrentFolderIntroFile();
+
+				if (currentFolderIntroFile == null) {
+					kbArchiveState.setCurrentFolderIntroFile(entryPath);
+
+					continue;
+				}
+
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Importing ", entry, " as an article because ",
+							currentFolderIntroFile.getName(),
+							" is already the intro file of its folder"));
+				}
 			}
-			else {
-				kbArchiveState.addCurrentFolderFile(entryPath);
-			}
+
+			kbArchiveState.addCurrentFolderFile(entryPath);
 		}
 
 		return new KBArchiveImpl(kbArchiveState.getFolders());
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		KBArchiveFactoryUtil.class);
 
 	private static final class FileImpl implements KBArchive.File {
 
@@ -189,6 +209,10 @@ public class KBArchiveFactoryUtil {
 
 		public void addCurrentFolderFile(Path path) {
 			_currentFolderFiles.add(new FileImpl(path.toString(), _zipReader));
+		}
+
+		public KBArchive.File getCurrentFolderIntroFile() {
+			return _currentFolderIntroFile;
 		}
 
 		public Collection<KBArchive.Folder> getFolders() {
