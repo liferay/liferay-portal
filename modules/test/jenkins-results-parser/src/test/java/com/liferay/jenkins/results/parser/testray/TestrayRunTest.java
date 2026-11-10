@@ -60,17 +60,17 @@ public class TestrayRunTest extends com.liferay.jenkins.results.parser.Test {
 		try (MockedStatic<TestrayFactory> testrayFactoryMockedStatic =
 				Mockito.mockStatic(TestrayFactory.class)) {
 
-			TestrayRun testrayRun = new TestrayRun(
-				testrayBuild,
-				TestrayRun.getBatchRunIdString(
-					RandomTestUtil.randomString(), "MySQL 8.0|Tomcat 10.1"));
-
 			testrayFactoryMockedStatic.when(
 				() -> TestrayFactory.newTestrayFactorOption(
 					Mockito.anyString(), Mockito.any(TestrayServer.class))
 			).thenReturn(
 				Mockito.mock(TestrayFactor.Option.class)
 			);
+
+			TestrayRun testrayRun = new TestrayRun(
+				testrayBuild,
+				TestrayRun.getBatchRunIdString(
+					RandomTestUtil.randomString(), "MySQL 8.0|Tomcat 10.1"));
 
 			testEquals(Collections.emptyList(), testrayRun.getTestrayFactors());
 
