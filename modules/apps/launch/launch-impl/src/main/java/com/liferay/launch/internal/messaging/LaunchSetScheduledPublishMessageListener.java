@@ -5,23 +5,18 @@
 
 package com.liferay.launch.internal.messaging;
 
-import com.liferay.launch.internal.background.task.LaunchSetPublishBackgroundTaskExecutor;
 import com.liferay.launch.internal.constants.LaunchDestinationNames;
+import com.liferay.launch.set.publisher.LaunchSetPublisher;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
-import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationConfiguration;
 import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-
-import java.io.Serializable;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -71,21 +66,15 @@ public class LaunchSetScheduledPublishMessageListener
 			return;
 		}
 
-		_backgroundTaskManager.addBackgroundTask(
-			message.getLong("userId"), BackgroundTaskConstants.GROUP_ID_DEFAULT,
-			String.valueOf(launchSetObjectEntry.getObjectEntryId()), null,
-			LaunchSetPublishBackgroundTaskExecutor.class,
-			HashMapBuilder.<String, Serializable>put(
-				"launchSetId", launchSetObjectEntry.getObjectEntryId()
-			).build(),
-			null);
+		_launchSetPublisher.publish(
+			launchSetObjectEntry.getObjectEntryId(), message.getLong("userId"));
 	}
 
 	@Reference
-	private BackgroundTaskManager _backgroundTaskManager;
+	private DestinationFactory _destinationFactory;
 
 	@Reference
-	private DestinationFactory _destinationFactory;
+	private LaunchSetPublisher _launchSetPublisher;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
