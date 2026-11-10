@@ -6,6 +6,7 @@
 package com.liferay.mcp.server.rest.internal.upgrade;
 
 import com.liferay.mcp.server.rest.internal.constants.MCPServerConstants;
+import com.liferay.mcp.server.rest.internal.upgrade.util.MCPServerProfileUpgradeProcessUtil;
 import com.liferay.mcp.server.rest.internal.util.MCPServerProfileUtil;
 import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.model.ObjectDefinition;
@@ -13,6 +14,7 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -37,11 +39,13 @@ public class MCPProfileStatusUpgradeProcess extends UpgradeProcess {
 		CompanyLocalService companyLocalService,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectEntryLocalService objectEntryLocalService,
+		ObjectFieldLocalService objectFieldLocalService,
 		ObjectRelationshipLocalService objectRelationshipLocalService) {
 
 		_companyLocalService = companyLocalService;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectEntryLocalService = objectEntryLocalService;
+		_objectFieldLocalService = objectFieldLocalService;
 		_objectRelationshipLocalService = objectRelationshipLocalService;
 	}
 
@@ -106,6 +110,11 @@ public class MCPProfileStatusUpgradeProcess extends UpgradeProcess {
 
 				values.put("profileStatus", "inactive");
 
+				MCPServerProfileUpgradeProcessUtil.putProfilePath(
+					objectEntry.getExternalReferenceCode(),
+					objectDefinition.getObjectDefinitionId(),
+					_objectFieldLocalService, values);
+
 				_objectEntryLocalService.updateObjectEntry(
 					objectEntry.getUserId(), objectEntry.getObjectEntryId(),
 					objectEntry.getObjectEntryFolderId(), values,
@@ -120,6 +129,7 @@ public class MCPProfileStatusUpgradeProcess extends UpgradeProcess {
 	private final CompanyLocalService _companyLocalService;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final ObjectEntryLocalService _objectEntryLocalService;
+	private final ObjectFieldLocalService _objectFieldLocalService;
 	private final ObjectRelationshipLocalService
 		_objectRelationshipLocalService;
 

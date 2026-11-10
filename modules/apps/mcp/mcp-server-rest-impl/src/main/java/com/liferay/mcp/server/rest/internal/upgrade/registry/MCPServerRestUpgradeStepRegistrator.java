@@ -8,6 +8,7 @@ package com.liferay.mcp.server.rest.internal.upgrade.registry;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.mcp.server.rest.internal.constants.MCPServerConstants;
 import com.liferay.mcp.server.rest.internal.upgrade.MCPProfileDataMaskUpgradeProcess;
+import com.liferay.mcp.server.rest.internal.upgrade.MCPProfilePathUpgradeProcess;
 import com.liferay.mcp.server.rest.internal.upgrade.MCPProfileStatusUpgradeProcess;
 import com.liferay.mcp.server.rest.internal.upgrade.MCPProfileToolUpgradeProcess;
 import com.liferay.mcp.server.rest.internal.upgrade.MCPProfileUpgradeProcess;
@@ -73,7 +74,8 @@ public class MCPServerRestUpgradeStepRegistrator
 			"1.3.0", "1.4.0",
 			new MCPProfileStatusUpgradeProcess(
 				_companyLocalService, _objectDefinitionLocalService,
-				_objectEntryLocalService, _objectRelationshipLocalService));
+				_objectEntryLocalService, _objectFieldLocalService,
+				_objectRelationshipLocalService));
 
 		registry.register(
 			"1.4.0", "1.5.0",
@@ -93,6 +95,14 @@ public class MCPServerRestUpgradeStepRegistrator
 					MCPServerConstants.
 						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROMPT,
 					"')")));
+
+		registry.register(
+			"1.5.0", "1.6.0",
+			new MCPProfilePathUpgradeProcess(
+				_companyLocalService, _objectDefinitionLocalService,
+				_objectEntryLocalService, _objectFieldLocalService,
+				_objectFieldSettingLocalService,
+				_objectValidationRuleLocalService));
 	}
 
 	@Reference

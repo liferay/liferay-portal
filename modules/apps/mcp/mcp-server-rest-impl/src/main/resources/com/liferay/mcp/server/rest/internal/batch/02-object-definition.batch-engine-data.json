@@ -77,6 +77,28 @@
 				},
 				{
 					"DBType": "String",
+					"businessType": "Text",
+					"defaultValue": "null",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Profile Path"
+					},
+					"name": "profilePath",
+					"objectFieldSettings": [
+						{
+							"name": "uniqueValues",
+							"value": true
+						}
+					],
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
 					"businessType": "Picklist",
 					"defaultValue": "inactive",
 					"indexed": true,
@@ -115,6 +137,23 @@
 					"reverse": false,
 					"system": true,
 					"type": "oneToMany"
+				}
+			],
+			"objectValidationRules": [
+				{
+					"active": true,
+					"engine": "ddm",
+					"engineLabel": "Expression Builder",
+					"errorLabel": {
+						"en_US": "Please enter a valid profile path (lowercase letters and numbers separated by single hyphens)."
+					},
+					"externalReferenceCode": "L_MCP_SERVER_PROFILE_VALID_PROFILE_PATH",
+					"name": {
+						"en_US": "Valid Profile Path"
+					},
+					"objectDefinitionExternalReferenceCode": "L_MCP_SERVER_PROFILE",
+					"script": "isEmpty(profilePath) OR match(profilePath, '^[a-z0-9]+(-[a-z0-9]+)*$')",
+					"system": true
 				}
 			],
 			"panelCategoryKey": "",

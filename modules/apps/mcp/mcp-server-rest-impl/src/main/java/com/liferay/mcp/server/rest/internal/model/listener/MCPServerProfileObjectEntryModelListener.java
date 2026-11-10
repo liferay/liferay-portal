@@ -13,9 +13,11 @@ import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -27,6 +29,7 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
@@ -77,6 +80,7 @@ public class MCPServerProfileObjectEntryModelListener
 	public void onBeforeCreate(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
+		_validateProfilePath(objectEntry);
 		_validateTools(objectEntry);
 	}
 
@@ -150,6 +154,8 @@ public class MCPServerProfileObjectEntryModelListener
 	public void onBeforeUpdate(
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws ModelListenerException {
+
+		_validateProfilePath(objectEntry);
 
 		if (MCPServerProfileUtil.isActive(originalObjectEntry)) {
 			return;
@@ -240,6 +246,40 @@ public class MCPServerProfileObjectEntryModelListener
 		return fileName.startsWith("com.liferay.mcp.server.rest.impl_");
 	}
 
+	private void _validateProfilePath(ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+			objectEntry.getObjectDefinitionId(), "profilePath");
+
+		if (objectField == null) {
+			return;
+		}
+
+		String profilePath = MapUtil.getString(
+			objectEntry.getValues(), "profilePath");
+
+		if (!Objects.equals(
+				objectEntry.getExternalReferenceCode(),
+				MCPServerConstants.
+					EXTERNAL_REFERENCE_CODE_MCP_SERVER_DEFAULT_PROFILE)) {
+
+			if (Validator.isNull(profilePath)) {
+				throw new ModelListenerException(
+					new ObjectEntryValuesException.Required("profilePath"));
+			}
+
+			return;
+		}
+
+		if (Validator.isNotNull(profilePath)) {
+			throw new ModelListenerException(
+				new ObjectEntryValuesException.InvalidObjectField(
+					null, "The default MCP server profile has no profile path",
+					"the-default-profile-has-no-profile-path"));
+		}
+	}
+
 	private void _validateTools(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
@@ -281,6 +321,9 @@ public class MCPServerProfileObjectEntryModelListener
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;

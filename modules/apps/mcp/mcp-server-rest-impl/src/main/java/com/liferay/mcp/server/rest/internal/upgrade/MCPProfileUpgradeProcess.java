@@ -10,6 +10,7 @@ import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.mcp.server.rest.internal.constants.MCPServerConstants;
+import com.liferay.mcp.server.rest.internal.upgrade.util.MCPServerProfileUpgradeProcessUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
@@ -538,6 +539,11 @@ public class MCPProfileUpgradeProcess extends UpgradeProcess {
 			else {
 				values.put("profileStatus", "inactive");
 			}
+
+			MCPServerProfileUpgradeProcessUtil.putProfilePath(
+				objectEntry.getExternalReferenceCode(),
+				objectDefinition.getObjectDefinitionId(),
+				_objectFieldLocalService, values);
 
 			_objectEntryLocalService.updateObjectEntry(
 				objectEntry.getUserId(), objectEntry.getObjectEntryId(),
