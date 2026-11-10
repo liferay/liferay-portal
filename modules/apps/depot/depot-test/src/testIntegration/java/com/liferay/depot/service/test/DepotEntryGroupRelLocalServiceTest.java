@@ -125,13 +125,13 @@ public class DepotEntryGroupRelLocalServiceTest {
 	@FeatureFlag("LPD-57283")
 	@Test
 	public void testAddDepotEntryGroupRelWithDesignLibrary() throws Exception {
+		DepotEntry assetLibraryDepotEntry = _addDepotEntry(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
 		DepotEntry designLibraryDepotEntry = _addDepotEntry(
 			DepotConstants.TYPE_DESIGN_LIBRARY);
 
 		Group designLibraryGroup = designLibraryDepotEntry.getGroup();
-
-		DepotEntry assetLibraryDepotEntry = _addDepotEntry(
-			DepotConstants.TYPE_ASSET_LIBRARY);
 
 		DepotEntryGroupRel depotEntryGroupRel1 =
 			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
@@ -254,12 +254,12 @@ public class DepotEntryGroupRelLocalServiceTest {
 	public void testAddDepotEntryGroupRelWithUnacceptedDepotEntryTypeWithFeatureFlagDisabled()
 		throws Exception {
 
+		DepotEntry assetLibraryDepotEntry = _addDepotEntry(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
 		DepotEntry spaceDepotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
 
 		Group spaceGroup = spaceDepotEntry.getGroup();
-
-		DepotEntry assetLibraryDepotEntry = _addDepotEntry(
-			DepotConstants.TYPE_ASSET_LIBRARY);
 
 		DepotEntryGroupRel depotEntryGroupRel =
 			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(

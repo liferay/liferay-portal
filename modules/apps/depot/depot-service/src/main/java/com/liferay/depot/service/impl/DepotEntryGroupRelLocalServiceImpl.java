@@ -210,10 +210,10 @@ public class DepotEntryGroupRelLocalServiceImpl
 			return;
 		}
 
-		if ((toGroupDepotEntry.getType() ==
-				DepotConstants.TYPE_DESIGN_LIBRARY) &&
-			((depotEntry.getType() == DepotConstants.TYPE_ASSET_LIBRARY) ||
-			 (depotEntry.getType() == DepotConstants.TYPE_SPACE))) {
+		if (((depotEntry.getType() == DepotConstants.TYPE_ASSET_LIBRARY) ||
+			 (depotEntry.getType() == DepotConstants.TYPE_SPACE)) &&
+			(toGroupDepotEntry.getType() ==
+				DepotConstants.TYPE_DESIGN_LIBRARY)) {
 
 			return;
 		}
