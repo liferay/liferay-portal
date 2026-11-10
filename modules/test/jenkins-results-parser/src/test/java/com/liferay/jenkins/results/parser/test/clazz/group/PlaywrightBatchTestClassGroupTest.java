@@ -75,23 +75,17 @@ public class PlaywrightBatchTestClassGroupTest
 
 	@Test
 	public void testGetPlaywrightJSONObjectMissingReport() throws Exception {
-		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
-			PortalGitWorkingDirectory.class);
-
-		Mockito.doReturn(
-			temporaryFolder.newFolder()
-		).when(
-			portalGitWorkingDirectory
-		).getWorkingDirectory();
-
 		PlaywrightBatchTestClassGroup playwrightBatchTestClassGroup =
 			Mockito.mock(PlaywrightBatchTestClassGroup.class);
 
 		ReflectionTestUtil.setFieldValue(
 			playwrightBatchTestClassGroup, "portalGitWorkingDirectory",
-			portalGitWorkingDirectory);
+			Mockito.mock(PortalGitWorkingDirectory.class));
 
-		String standardError = RandomTestUtil.randomString();
+		String standardErrorTail = StringUtils.repeat("1", 5000);
+
+		String standardError =
+			RandomTestUtil.randomString() + standardErrorTail;
 
 		String standardOutTail = StringUtils.repeat("0", 5000);
 
@@ -109,7 +103,7 @@ public class PlaywrightBatchTestClassGroupTest
 			ReflectionTestUtil.invoke(
 				playwrightBatchTestClassGroup, "_getPlaywrightJSONObject",
 				new Class<?>[] {String.class, File.class}, playwrightArgs,
-				temporaryFolder.newFolder());
+				null);
 
 			Assert.fail();
 		}
@@ -124,7 +118,7 @@ public class PlaywrightBatchTestClassGroupTest
 					"Playwright test listing \"", playwrightArgs,
 					"\" did not write a JSON report (exit code 1)\n",
 					"Standard output:\n", standardOutTail,
-					"\nStandard error:\n", standardError),
+					"\nStandard error:\n", standardErrorTail),
 				throwable.getMessage());
 		}
 	}
