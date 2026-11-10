@@ -193,7 +193,6 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 								fieldCatalog={fieldCatalogData?.items}
 								groupId={groupId}
 								rangeKeyFilter={RangeKeyTimeRanges.Last30Days}
-								showCampaignFilter
 							/>
 						)}
 					</>
