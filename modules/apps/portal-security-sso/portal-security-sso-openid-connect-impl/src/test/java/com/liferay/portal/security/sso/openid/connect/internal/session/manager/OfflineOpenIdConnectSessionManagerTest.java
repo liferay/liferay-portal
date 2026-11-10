@@ -950,6 +950,9 @@ public class OfflineOpenIdConnectSessionManagerTest {
 		OpenIdConnectSessionLocalService openIdConnectSessionLocalService =
 			Mockito.mock(OpenIdConnectSessionLocalService.class);
 
+		OpenIdConnectSession openIdConnectSession = Mockito.mock(
+			OpenIdConnectSession.class);
+
 		OpenIdConnectSession currentOpenIdConnectSession = Mockito.mock(
 			OpenIdConnectSession.class);
 		long currentOpenIdConnectSessionId = RandomTestUtil.randomLong();
@@ -959,9 +962,6 @@ public class OfflineOpenIdConnectSessionManagerTest {
 		).thenReturn(
 			currentOpenIdConnectSessionId
 		);
-
-		OpenIdConnectSession openIdConnectSession = Mockito.mock(
-			OpenIdConnectSession.class);
 
 		Mockito.when(
 			openIdConnectSessionLocalService.fetchOpenIdConnectSession(
