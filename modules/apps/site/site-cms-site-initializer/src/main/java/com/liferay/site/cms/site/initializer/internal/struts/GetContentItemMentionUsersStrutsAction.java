@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ClassName;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -101,6 +102,18 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
 			classPK);
 
+		long groupId = objectEntry.getGroupId();
+
+		if (groupId == 0) {
+			Group group = _groupLocalService.fetchGroup(
+				themeDisplay.getCompanyId(),
+				_classNameLocalService.getClassNameId(className1), classPK);
+
+			if (group != null) {
+				groupId = group.getGroupId();
+			}
+		}
+
 		String keywords = ParamUtil.getString(httpServletRequest, "keywords");
 
 		Set<Long> recentUserIds = new HashSet<>();
@@ -113,7 +126,7 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 			if (comment.isRoot() || (user == null) ||
 				!_isMatch(keywords, user) || !userIds.add(user.getUserId()) ||
 				!_groupLocalService.hasUserGroup(
-					user.getUserId(), objectEntry.getGroupId(), true) ||
+					user.getUserId(), groupId, true) ||
 				!_isMentionable(className1, classPK, themeDisplay, user)) {
 
 				continue;
@@ -136,7 +149,7 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 				LinkedHashMapBuilder.<String, Object>put(
 					"inherit", Boolean.TRUE
 				).put(
-					"usersGroups", objectEntry.getGroupId()
+					"usersGroups", groupId
 				).build(),
 				start, start + _MAX_USERS,
 				UserFirstNameComparator.getInstance(true));
