@@ -28,6 +28,7 @@ import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageM
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageMetricDisplay;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -81,6 +82,29 @@ public class ProjectUsageHelper {
 				_log.error(
 					"Unable to add Faro project usage for " + faroProject,
 					exception);
+			}
+		}
+	}
+
+	public void backfillFaroProjectUsages(
+		LocalDate endLocalDate, LocalDate startLocalDate) {
+
+		List<FaroProject> faroProjects =
+			_faroProjectLocalService.getFaroProjects(
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		for (LocalDate localDate = startLocalDate;
+			 !localDate.isAfter(endLocalDate);
+			 localDate = localDate.plusDays(1)) {
+
+			ZonedDateTime zonedDateTime = localDate.atStartOfDay(
+				ZoneOffset.UTC);
+
+			addOrUpdateFaroProjectUsages(
+				Date.from(zonedDateTime.toInstant()), faroProjects);
+
+			if (_log.isInfoEnabled()) {
+				_log.info("Backfilled the Faro project usages of " + localDate);
 			}
 		}
 	}

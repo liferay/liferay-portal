@@ -58,6 +58,7 @@ import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
@@ -100,6 +101,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -185,6 +189,39 @@ public class ProjectFaroController extends BaseFaroController {
 			JSONUtil.writeValueAsString(ipAddressesFaroParam.getValue()));
 
 		_faroProjectLocalService.updateFaroProject(faroProject);
+	}
+
+	@Path("/usage/backfill")
+	@POST
+	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
+	public void backfillProjectUsageMetrics(
+		@QueryParam("endDateString") String endDateString,
+		@QueryParam("startDateString") String startDateString) {
+
+		LocalDate endLocalDate = _getEndLocalDate(endDateString);
+
+		LocalDate startLocalDate = _getStartLocalDate(
+			endLocalDate, startDateString);
+
+		ExecutorService executorService =
+			_portalExecutorManager.getPortalExecutor(
+				ProjectFaroController.class.getName());
+
+		executorService.submit(
+			new CompanyInheritableThreadLocalCallable<>(
+				() -> {
+					_projectUsageHelper.backfillFaroProjectUsages(
+						endLocalDate, startLocalDate);
+
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							StringBundler.concat(
+								"Usage backfill finished successfully from ",
+								startLocalDate, " to ", endLocalDate));
+					}
+
+					return null;
+				}));
 	}
 
 	@Path("/{groupId}/configure")
@@ -1449,6 +1486,16 @@ public class ProjectFaroController extends BaseFaroController {
 			StringUtil.merge(invalidEmailAddressDomains));
 	}
 
+	private LocalDate _getEndLocalDate(String endDateString) {
+		if (endDateString != null) {
+			return LocalDate.parse(endDateString);
+		}
+
+		LocalDate localDate = LocalDate.now(ZoneOffset.UTC);
+
+		return localDate.minusDays(1);
+	}
+
 	private String _getFriendlyURLErrorMessage(int type) {
 		User user = getUser();
 
@@ -1766,6 +1813,18 @@ public class ProjectFaroController extends BaseFaroController {
 		}
 
 		return corpProjectUuid;
+	}
+
+	private LocalDate _getStartLocalDate(
+		LocalDate endLocalDate, String startDateString) {
+
+		if (startDateString != null) {
+			return LocalDate.parse(startDateString);
+		}
+
+		LocalDate localDate = endLocalDate.minusYears(1);
+
+		return localDate.plusDays(1);
 	}
 
 	private String _getTimeZoneIdErrorMessage(User user) {
