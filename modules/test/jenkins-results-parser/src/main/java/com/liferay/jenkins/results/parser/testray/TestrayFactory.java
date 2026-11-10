@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -786,7 +785,7 @@ public class TestrayFactory {
 			}
 
 			Set<String> suffixedBatchNames = _getSuffixedBatchNames(
-				testrayBuild, job);
+				job, testrayBuild);
 
 			String batchName = axisTestClassGroup.getBatchName();
 
@@ -947,7 +946,7 @@ public class TestrayFactory {
 	}
 
 	private static Set<String> _getSuffixedBatchNames(
-		TestrayBuild testrayBuild, Job job) {
+		Job job, TestrayBuild testrayBuild) {
 
 		String key = JenkinsResultsParserUtil.combine(
 			String.valueOf(testrayBuild.getId()), "__", job.getJobName(), "__",
@@ -959,51 +958,33 @@ public class TestrayFactory {
 			return suffixedBatchNames;
 		}
 
-		Set<String> batchNames = new TreeSet<>();
+		Set<String> batchNames = new TreeSet<>(
+			(batchName1, batchName2) -> {
+				if (batchName1.length() != batchName2.length()) {
+					return Integer.compare(
+						batchName1.length(), batchName2.length());
+				}
+
+				return batchName1.compareTo(batchName2);
+			});
 
 		batchNames.addAll(_getBatchNames("test.batch.names", job));
 		batchNames.addAll(_getBatchNames("test.batch.names.smoke", job));
 
-		Map<String, String> factorRunIdStrings = new HashMap<>();
-
 		Properties jobProperties = job.getJobProperties();
-
-		for (String batchName : batchNames) {
-			String factorRunIdString = TestrayRun.getRunIdString(
-				batchName, job.getTestSuiteName(), jobProperties);
-
-			if (factorRunIdString == null) {
-				continue;
-			}
-
-			factorRunIdStrings.put(batchName, factorRunIdString);
-		}
+		Set<String> runIdStrings = new HashSet<>();
 
 		suffixedBatchNames = new HashSet<>();
 
-		for (Map.Entry<String, String> entry : factorRunIdStrings.entrySet()) {
-			String batchName = entry.getKey();
+		for (String batchName : batchNames) {
+			String runIdString = TestrayRun.getRunIdString(
+				batchName, job.getTestSuiteName(), jobProperties);
 
-			for (Map.Entry<String, String> otherEntry :
-					factorRunIdStrings.entrySet()) {
-
-				String otherBatchName = otherEntry.getKey();
-
-				if (otherBatchName.equals(batchName) ||
-					!Objects.equals(entry.getValue(), otherEntry.getValue())) {
-
-					continue;
-				}
-
-				if ((otherBatchName.length() < batchName.length()) ||
-					((otherBatchName.length() == batchName.length()) &&
-					 (otherBatchName.compareTo(batchName) < 0))) {
-
-					suffixedBatchNames.add(batchName);
-
-					break;
-				}
+			if ((runIdString == null) || runIdStrings.add(runIdString)) {
+				continue;
 			}
+
+			suffixedBatchNames.add(batchName);
 		}
 
 		_suffixedBatchNames.put(key, suffixedBatchNames);

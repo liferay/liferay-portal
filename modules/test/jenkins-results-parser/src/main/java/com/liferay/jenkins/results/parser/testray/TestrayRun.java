@@ -39,7 +39,8 @@ public class TestrayRun {
 	public static String getBatchRunIdString(
 		String batchName, String runIdString) {
 
-		return runIdString + _BATCH_NAME_DELIMITER + batchName;
+		return JenkinsResultsParserUtil.combine(
+			runIdString, _BATCH_NAME_DELIMITER, batchName);
 	}
 
 	public static String getDefaultRunIdString() {
