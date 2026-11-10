@@ -619,7 +619,8 @@ public class LiferayCommercePIMConnectorTest {
 							).build()))
 				).build()));
 
-		Assert.assertEquals("BATCH-1", jsonObject.getString("batchId"));
+		Assert.assertEquals(
+			"BATCH-1", jsonObject.getString("batchExternalReferenceCode"));
 		Assert.assertEquals("INITIAL", jsonObject.getString("status"));
 
 		Http.Options options = _getOptions("/o/oauth2/token");
