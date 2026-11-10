@@ -566,12 +566,6 @@ public class CommerceTierPriceEntryLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommerceTierPriceEntriesCount(long commercePriceEntryId) {
-		return _commerceTierPriceEntryLocalService.
-			getCommerceTierPriceEntriesCount(commercePriceEntryId);
-	}
-
-	@Override
 	public int getCommerceTierPriceEntriesCountByCompanyId(long companyId) {
 		return _commerceTierPriceEntryLocalService.
 			getCommerceTierPriceEntriesCountByCompanyId(companyId);
@@ -837,4 +831,4 @@ public class CommerceTierPriceEntryLocalServiceWrapper
 		_commerceTierPriceEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1853376462
+// LIFERAY-SERVICE-BUILDER-HASH:1430756467

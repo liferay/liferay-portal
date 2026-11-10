@@ -220,10 +220,6 @@ public interface CommerceDiscountAccountRelLocalService
 	public CommerceDiscountAccountRel fetchCommerceDiscountAccountRel(
 		long commerceDiscountAccountRelId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceDiscountAccountRel fetchCommerceDiscountAccountRel(
-		long commerceAccountId, long commerceDiscountId);
-
 	/**
 	 * Returns the commerce discount account rel with the matching UUID and company.
 	 *
@@ -294,9 +290,6 @@ public interface CommerceDiscountAccountRelLocalService
 	public int getCommerceDiscountAccountRelsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceDiscountAccountRelsCount(long commerceDiscountId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -333,4 +326,4 @@ public interface CommerceDiscountAccountRelLocalService
 		CommerceDiscountAccountRel commerceDiscountAccountRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1569774766
+// LIFERAY-SERVICE-BUILDER-HASH:-1729810963

@@ -212,10 +212,6 @@ public interface CommerceDiscountOrderTypeRelLocalService
 	public CommerceDiscountOrderTypeRel fetchCommerceDiscountOrderTypeRel(
 		long commerceDiscountOrderTypeRelId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceDiscountOrderTypeRel fetchCommerceDiscountOrderTypeRel(
-		long commerceDiscountId, long commerceOrderTypeId);
-
 	/**
 	 * Returns the commerce discount order type rel with the matching UUID and company.
 	 *
@@ -336,4 +332,4 @@ public interface CommerceDiscountOrderTypeRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1591740480
+// LIFERAY-SERVICE-BUILDER-HASH:366556832

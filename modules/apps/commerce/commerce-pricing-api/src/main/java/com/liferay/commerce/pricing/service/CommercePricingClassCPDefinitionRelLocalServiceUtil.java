@@ -242,14 +242,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceUtil {
 			CommercePricingClassCPDefinitionRelId);
 	}
 
-	public static CommercePricingClassCPDefinitionRel
-		fetchCommercePricingClassCPDefinitionRel(
-			long commercePricingClassId, long cpDefinitionId) {
-
-		return getService().fetchCommercePricingClassCPDefinitionRel(
-			commercePricingClassId, cpDefinitionId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -296,23 +288,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceUtil {
 		return getService().getCommercePricingClassCPDefinitionRels(start, end);
 	}
 
-	public static List<CommercePricingClassCPDefinitionRel>
-		getCommercePricingClassCPDefinitionRels(long commercePricingClassId) {
-
-		return getService().getCommercePricingClassCPDefinitionRels(
-			commercePricingClassId);
-	}
-
-	public static List<CommercePricingClassCPDefinitionRel>
-		getCommercePricingClassCPDefinitionRels(
-			long commercePricingClassId, int start, int end,
-			OrderByComparator<CommercePricingClassCPDefinitionRel>
-				orderByComparator) {
-
-		return getService().getCommercePricingClassCPDefinitionRels(
-			commercePricingClassId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce pricing class cp definition rels.
 	 *
@@ -320,13 +295,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceUtil {
 	 */
 	public static int getCommercePricingClassCPDefinitionRelsCount() {
 		return getService().getCommercePricingClassCPDefinitionRelsCount();
-	}
-
-	public static int getCommercePricingClassCPDefinitionRelsCount(
-		long commercePricingClassId) {
-
-		return getService().getCommercePricingClassCPDefinitionRelsCount(
-			commercePricingClassId);
 	}
 
 	public static long[] getCPDefinitionIds(long commercePricingClassId) {
@@ -388,4 +356,4 @@ public class CommercePricingClassCPDefinitionRelLocalServiceUtil {
 				CommercePricingClassCPDefinitionRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1940719708
+// LIFERAY-SERVICE-BUILDER-HASH:2146136442

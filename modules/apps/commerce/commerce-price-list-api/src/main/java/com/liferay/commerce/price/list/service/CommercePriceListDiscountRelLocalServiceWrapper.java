@@ -265,15 +265,6 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 			fetchCommercePriceListDiscountRel(commercePriceListDiscountRelId);
 	}
 
-	@Override
-	public CommercePriceListDiscountRel fetchCommercePriceListDiscountRel(
-		long commerceDiscountId, long commercePriceListId) {
-
-		return _commercePriceListDiscountRelLocalService.
-			fetchCommercePriceListDiscountRel(
-				commerceDiscountId, commercePriceListId);
-	}
-
 	/**
 	 * Returns the commerce price list discount rel with the matching UUID and company.
 	 *
@@ -360,18 +351,6 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 			getCommercePriceListDiscountRels(commercePriceListId);
 	}
 
-	@Override
-	public java.util.List<CommercePriceListDiscountRel>
-		getCommercePriceListDiscountRels(
-			long commercePriceListId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<CommercePriceListDiscountRel> orderByComparator) {
-
-		return _commercePriceListDiscountRelLocalService.
-			getCommercePriceListDiscountRels(
-				commercePriceListId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce price list discount rels.
 	 *
@@ -381,12 +360,6 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 	public int getCommercePriceListDiscountRelsCount() {
 		return _commercePriceListDiscountRelLocalService.
 			getCommercePriceListDiscountRelsCount();
-	}
-
-	@Override
-	public int getCommercePriceListDiscountRelsCount(long commercePriceListId) {
-		return _commercePriceListDiscountRelLocalService.
-			getCommercePriceListDiscountRelsCount(commercePriceListId);
 	}
 
 	@Override
@@ -491,4 +464,4 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 		_commercePriceListDiscountRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1450766829
+// LIFERAY-SERVICE-BUILDER-HASH:-1843207873

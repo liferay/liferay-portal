@@ -426,15 +426,6 @@ public class CommercePriceListCommerceAccountGroupRelLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommercePriceListCommerceAccountGroupRelsCount(
-		long commercePriceListId) {
-
-		return _commercePriceListCommerceAccountGroupRelLocalService.
-			getCommercePriceListCommerceAccountGroupRelsCount(
-				commercePriceListId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -560,4 +551,4 @@ public class CommercePriceListCommerceAccountGroupRelLocalServiceWrapper
 		_commercePriceListCommerceAccountGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:966699989
+// LIFERAY-SERVICE-BUILDER-HASH:-2028771634

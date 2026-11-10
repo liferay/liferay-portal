@@ -510,13 +510,6 @@ public class CommerceTierPriceEntryLocalServiceUtil {
 		return getService().getCommerceTierPriceEntriesCount();
 	}
 
-	public static int getCommerceTierPriceEntriesCount(
-		long commercePriceEntryId) {
-
-		return getService().getCommerceTierPriceEntriesCount(
-			commercePriceEntryId);
-	}
-
 	public static int getCommerceTierPriceEntriesCountByCompanyId(
 		long companyId) {
 
@@ -730,4 +723,4 @@ public class CommerceTierPriceEntryLocalServiceUtil {
 			CommerceTierPriceEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1201245883
+// LIFERAY-SERVICE-BUILDER-HASH:-954736868

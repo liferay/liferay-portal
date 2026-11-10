@@ -243,13 +243,6 @@ public class CommercePriceListAccountRelLocalServiceUtil {
 			commercePriceListAccountRelId);
 	}
 
-	public static CommercePriceListAccountRel fetchCommercePriceListAccountRel(
-		long commerceAccountId, long commercePriceListId) {
-
-		return getService().fetchCommercePriceListAccountRel(
-			commerceAccountId, commercePriceListId);
-	}
-
 	/**
 	 * Returns the commerce price list account rel with the matching UUID and company.
 	 *
@@ -353,13 +346,6 @@ public class CommercePriceListAccountRelLocalServiceUtil {
 		return getService().getCommercePriceListAccountRelsCount();
 	}
 
-	public static int getCommercePriceListAccountRelsCount(
-		long commercePriceListId) {
-
-		return getService().getCommercePriceListAccountRelsCount(
-			commercePriceListId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -420,4 +406,4 @@ public class CommercePriceListAccountRelLocalServiceUtil {
 			CommercePriceListAccountRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-315564782
+// LIFERAY-SERVICE-BUILDER-HASH:753402863

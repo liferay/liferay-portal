@@ -230,11 +230,6 @@ public interface CommerceDiscountCommerceAccountGroupRelLocalService
 			long commerceDiscountCommerceAccountGroupRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceDiscountCommerceAccountGroupRel
-		fetchCommerceDiscountCommerceAccountGroupRel(
-			long commerceDiscountId, long commerceAccountGroupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -281,10 +276,6 @@ public interface CommerceDiscountCommerceAccountGroupRelLocalService
 	public int getCommerceDiscountCommerceAccountGroupRelsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceDiscountCommerceAccountGroupRelsCount(
-		long commerceDiscountId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -319,4 +310,4 @@ public interface CommerceDiscountCommerceAccountGroupRelLocalService
 				commerceDiscountCommerceAccountGroupRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1982935628
+// LIFERAY-SERVICE-BUILDER-HASH:-1909024504

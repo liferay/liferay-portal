@@ -269,16 +269,6 @@ public class CommerceDiscountOrderTypeRelLocalServiceWrapper
 			fetchCommerceDiscountOrderTypeRel(commerceDiscountOrderTypeRelId);
 	}
 
-	@Override
-	public com.liferay.commerce.discount.model.CommerceDiscountOrderTypeRel
-		fetchCommerceDiscountOrderTypeRel(
-			long commerceDiscountId, long commerceOrderTypeId) {
-
-		return _commerceDiscountOrderTypeRelLocalService.
-			fetchCommerceDiscountOrderTypeRel(
-				commerceDiscountId, commerceOrderTypeId);
-	}
-
 	/**
 	 * Returns the commerce discount order type rel with the matching UUID and company.
 	 *
@@ -495,4 +485,4 @@ public class CommerceDiscountOrderTypeRelLocalServiceWrapper
 		_commerceDiscountOrderTypeRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1030808042
+// LIFERAY-SERVICE-BUILDER-HASH:886134094

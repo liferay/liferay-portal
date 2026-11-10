@@ -260,11 +260,6 @@ public interface CommercePriceModifierRelLocalService
 	public List<CommercePriceModifierRel> getCommercePriceModifierRels(
 		long commercePriceModifierId, String className);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePriceModifierRel> getCommercePriceModifierRels(
-		long commercePriceModifierId, String className, int start, int end,
-		OrderByComparator<CommercePriceModifierRel> orderByComparator);
-
 	/**
 	 * Returns the number of commerce price modifier rels.
 	 *
@@ -272,10 +267,6 @@ public interface CommercePriceModifierRelLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePriceModifierRelsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String className);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePriceModifierRel> getCommercePriceModifiersRels(
@@ -329,4 +320,4 @@ public interface CommercePriceModifierRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1809518521
+// LIFERAY-SERVICE-BUILDER-HASH:-1978720499

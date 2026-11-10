@@ -279,16 +279,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceWrapper
 	}
 
 	@Override
-	public CommercePricingClassCPDefinitionRel
-		fetchCommercePricingClassCPDefinitionRel(
-			long commercePricingClassId, long cpDefinitionId) {
-
-		return _commercePricingClassCPDefinitionRelLocalService.
-			fetchCommercePricingClassCPDefinitionRel(
-				commercePricingClassId, cpDefinitionId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -341,26 +331,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceWrapper
 			getCommercePricingClassCPDefinitionRels(start, end);
 	}
 
-	@Override
-	public java.util.List<CommercePricingClassCPDefinitionRel>
-		getCommercePricingClassCPDefinitionRels(long commercePricingClassId) {
-
-		return _commercePricingClassCPDefinitionRelLocalService.
-			getCommercePricingClassCPDefinitionRels(commercePricingClassId);
-	}
-
-	@Override
-	public java.util.List<CommercePricingClassCPDefinitionRel>
-		getCommercePricingClassCPDefinitionRels(
-			long commercePricingClassId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<CommercePricingClassCPDefinitionRel> orderByComparator) {
-
-		return _commercePricingClassCPDefinitionRelLocalService.
-			getCommercePricingClassCPDefinitionRels(
-				commercePricingClassId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce pricing class cp definition rels.
 	 *
@@ -370,15 +340,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceWrapper
 	public int getCommercePricingClassCPDefinitionRelsCount() {
 		return _commercePricingClassCPDefinitionRelLocalService.
 			getCommercePricingClassCPDefinitionRelsCount();
-	}
-
-	@Override
-	public int getCommercePricingClassCPDefinitionRelsCount(
-		long commercePricingClassId) {
-
-		return _commercePricingClassCPDefinitionRelLocalService.
-			getCommercePricingClassCPDefinitionRelsCount(
-				commercePricingClassId);
 	}
 
 	@Override
@@ -487,4 +448,4 @@ public class CommercePricingClassCPDefinitionRelLocalServiceWrapper
 		_commercePricingClassCPDefinitionRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:239822637
+// LIFERAY-SERVICE-BUILDER-HASH:2032634863

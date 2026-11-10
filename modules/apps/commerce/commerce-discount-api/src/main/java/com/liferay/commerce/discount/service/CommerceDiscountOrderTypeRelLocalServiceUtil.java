@@ -238,14 +238,6 @@ public class CommerceDiscountOrderTypeRelLocalServiceUtil {
 			commerceDiscountOrderTypeRelId);
 	}
 
-	public static CommerceDiscountOrderTypeRel
-		fetchCommerceDiscountOrderTypeRel(
-			long commerceDiscountId, long commerceOrderTypeId) {
-
-		return getService().fetchCommerceDiscountOrderTypeRel(
-			commerceDiscountId, commerceOrderTypeId);
-	}
-
 	/**
 	 * Returns the commerce discount order type rel with the matching UUID and company.
 	 *
@@ -420,4 +412,4 @@ public class CommerceDiscountOrderTypeRelLocalServiceUtil {
 			CommerceDiscountOrderTypeRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1426226473
+// LIFERAY-SERVICE-BUILDER-HASH:-1674081734

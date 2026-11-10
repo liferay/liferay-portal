@@ -396,9 +396,6 @@ public interface CommerceTierPriceEntryLocalService
 	public int getCommerceTierPriceEntriesCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceTierPriceEntriesCount(long commercePriceEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceTierPriceEntriesCountByCompanyId(long companyId);
 
 	/**
@@ -545,4 +542,4 @@ public interface CommerceTierPriceEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1484091179
+// LIFERAY-SERVICE-BUILDER-HASH:1695361206

@@ -298,14 +298,6 @@ public class CommercePriceModifierRelLocalServiceUtil {
 			commercePriceModifierId, className);
 	}
 
-	public static List<CommercePriceModifierRel> getCommercePriceModifierRels(
-		long commercePriceModifierId, String className, int start, int end,
-		OrderByComparator<CommercePriceModifierRel> orderByComparator) {
-
-		return getService().getCommercePriceModifierRels(
-			commercePriceModifierId, className, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce price modifier rels.
 	 *
@@ -313,13 +305,6 @@ public class CommercePriceModifierRelLocalServiceUtil {
 	 */
 	public static int getCommercePriceModifierRelsCount() {
 		return getService().getCommercePriceModifierRelsCount();
-	}
-
-	public static int getCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String className) {
-
-		return getService().getCommercePriceModifierRelsCount(
-			commercePriceModifierId, className);
 	}
 
 	public static List<CommercePriceModifierRel> getCommercePriceModifiersRels(
@@ -380,4 +365,4 @@ public class CommercePriceModifierRelLocalServiceUtil {
 			CommercePriceModifierRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:462834807
+// LIFERAY-SERVICE-BUILDER-HASH:1592518001

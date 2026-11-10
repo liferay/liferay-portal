@@ -259,14 +259,6 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceUtil {
 			commerceDiscountCommerceAccountGroupRelId);
 	}
 
-	public static CommerceDiscountCommerceAccountGroupRel
-		fetchCommerceDiscountCommerceAccountGroupRel(
-			long commerceDiscountId, long commerceAccountGroupId) {
-
-		return getService().fetchCommerceDiscountCommerceAccountGroupRel(
-			commerceDiscountId, commerceAccountGroupId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -326,13 +318,6 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceUtil {
 		return getService().getCommerceDiscountCommerceAccountGroupRelsCount();
 	}
 
-	public static int getCommerceDiscountCommerceAccountGroupRelsCount(
-		long commerceDiscountId) {
-
-		return getService().getCommerceDiscountCommerceAccountGroupRelsCount(
-			commerceDiscountId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -390,4 +375,4 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceUtil {
 				CommerceDiscountCommerceAccountGroupRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1895733331
+// LIFERAY-SERVICE-BUILDER-HASH:-1564569258
