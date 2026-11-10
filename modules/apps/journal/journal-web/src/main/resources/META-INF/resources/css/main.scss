@@ -13,7 +13,7 @@ $sidebarWidth: 398px;
 $sidebarWidthClosed: 40px;
 
 $productMenuTransitionDuration: 0.5s;
-$productMenuWidth: 320px;
+$productMenuWidth: var(--product-menu-width, 320px);
 
 .portlet-journal {
 	.article-content-content {
@@ -214,7 +214,7 @@ $productMenuWidth: 320px;
 			overflow-y: scroll;
 			padding-top: 0;
 			position: fixed;
-			width: $productMenuWidth;
+			width: 320px;
 			z-index: 5;
 
 			@include media-breakpoint-down(xs) {

@@ -49,7 +49,7 @@ html {
 		.minium-frame__sidebar,
 		.minium-frame__toolbar,
 		.minium-frame__topbar {
-			left: 320px;
+			left: var(--product-menu-width, 320px);
 		}
 	}
 

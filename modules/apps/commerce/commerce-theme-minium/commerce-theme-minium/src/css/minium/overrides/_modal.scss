@@ -7,7 +7,7 @@
 	}
 
 	body.product-menu-open & {
-		left: 320px + $frame-size;
+		left: calc(var(--product-menu-width, 320px) + #{$frame-size});
 	}
 }
 

@@ -14,7 +14,7 @@
 	z-index: 988;
 
 	body.product-menu-open & {
-		margin-left: $liferay-sidebars-width;
+		margin-left: var(--product-menu-width, #{$liferay-sidebars-width});
 	}
 
 	body.open-admin-panel & {

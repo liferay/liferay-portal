@@ -35,6 +35,14 @@ html#{$cadmin-selector} {
 	}
 
 	body.product-menu-unified-sidebar {
+		--product-menu-width: 0px;
+
+		// Below lg the sidebar opens over the page, so nothing makes room for it.
+
+		@include media-breakpoint-up(lg, $cadmin-grid-breakpoints) {
+			--product-menu-width: #{$product-menu-unified-sidebar-width};
+		}
+
 		&.product-menu-open {
 			#wrapper,
 			.cadmin.control-menu-container {

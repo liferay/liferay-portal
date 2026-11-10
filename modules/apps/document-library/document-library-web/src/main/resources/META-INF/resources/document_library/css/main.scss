@@ -22,7 +22,7 @@ $toolbarHeight: 110px;
 $toolbarZIndex: 971;
 
 $productMenuTransitionDuration: 0.5s;
-$productMenuWidth: 320px;
+$productMenuWidth: var(--product-menu-width, 320px);
 
 .portlet-document-library,
 .portlet-document-library-display {

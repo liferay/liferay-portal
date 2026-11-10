@@ -1,7 +1,7 @@
 $average-label-width: 120px;
 $base-dropdown-padding: 24px;
 $experiences-dropdown-width: 808px;
-$product-menu-width: 320px;
+$product-menu-width: var(--product-menu-width, 320px);
 
 html#{$cadmin-selector} {
 	.cadmin {

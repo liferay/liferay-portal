@@ -3,7 +3,7 @@
 @import 'atlas-variables';
 
 $productMenuTransitionDuration: 0.5s;
-$productMenuWidth: 320px;
+$productMenuWidth: var(--product-menu-width, 320px);
 $toolbarDesktopHeight: 4rem;
 $toolbarHeight: 6.875rem;
 $toolbarZIndex: 971;
