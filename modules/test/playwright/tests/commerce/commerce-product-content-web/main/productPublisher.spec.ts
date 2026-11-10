@@ -14,8 +14,18 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import getRandomString from '../../../../utils/getRandomString';
+import {
+	performLoginViaApi,
+	performLogout,
+	performUserSwitch,
+} from '../../../../utils/performLogin';
+import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {templatesPageTest} from '../../../template-web/main/fixtures/templatesPageTest';
-import {classicCommerceSetUp} from '../../utils/commerce';
+import {
+	classicCommerceSetUp,
+	createAccountWithBuyerUser,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -269,5 +279,166 @@ test(
 				name: product.name['en_US'],
 			})
 		).toBeVisible();
+	}
+);
+
+test(
+	'The Product Publisher shows the products of a channel restricted to accounts only to the eligible accounts',
+	{tag: '@LPD-114721'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		productPublisherPage,
+		site,
+	}) => {
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const {account: account1, buyerUser: buyerUser1} =
+			await createAccountWithBuyerUser(apiHelpers, site.id);
+
+		const accountGroup =
+			await apiHelpers.headlessAdminUser.postAccountGroup({
+				name: getRandomString(),
+			});
+
+		apiHelpers.data.push({id: accountGroup.id, type: 'accountGroup'});
+
+		await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
+			account1.externalReferenceCode,
+			accountGroup.externalReferenceCode
+		);
+
+		const {buyerUser: buyerUser2} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+				productAccountGroupFilter: true,
+				productAccountGroups: [
+					{accountGroupId: accountGroup.id, id: 0},
+				],
+			});
+		const product2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+				productChannelFilter: true,
+				productChannels: [
+					{
+						channelId: channel.id,
+						currencyCode: channel.currencyCode,
+						name: channel.name,
+						type: channel.type,
+					},
+				],
+			});
+		const product3 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_product_content_web_internal_portlet_CPPublisherPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const layoutURL = `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
+
+		await test.step('Guests see the products of an unrestricted channel', async () => {
+			await performLogout(page);
+
+			await page.goto(layoutURL);
+
+			await expect(
+				productPublisherPage.productCard(product1.name.en_US)
+			).toHaveCount(0);
+			await expect(
+				productPublisherPage.productCard(product2.name.en_US)
+			).toBeVisible();
+			await expect(
+				productPublisherPage.productCard(product3.name.en_US)
+			).toBeVisible();
+		});
+
+		await performLoginViaApi({page, screenName: 'test'});
+
+		await apiHelpers.headlessCommerceAdminChannel.postChannelAccount(
+			account1.id,
+			channel.id
+		);
+
+		await test.step('The eligible account sees the restricted products', async () => {
+			await performUserSwitch(page, buyerUser1.alternateName);
+
+			await page.goto(layoutURL);
+
+			await expect(
+				productPublisherPage.productCard(product1.name.en_US)
+			).toBeVisible();
+			await expect(
+				productPublisherPage.productCard(product2.name.en_US)
+			).toBeVisible();
+			await expect(
+				productPublisherPage.productCard(product3.name.en_US)
+			).toBeVisible();
+		});
+
+		await test.step('An ineligible account does not see the restricted products', async () => {
+			await performUserSwitch(page, buyerUser2.alternateName);
+
+			await page.goto(layoutURL);
+
+			await expect(
+				productPublisherPage.productCard(product1.name.en_US)
+			).toHaveCount(0);
+			await expect(
+				productPublisherPage.productCard(product2.name.en_US)
+			).toHaveCount(0);
+			await expect(
+				productPublisherPage.productCard(product3.name.en_US)
+			).toBeVisible();
+		});
+
+		await test.step('Guests do not see the restricted products', async () => {
+			await performLogout(page);
+
+			await page.goto(layoutURL);
+
+			await expect(
+				productPublisherPage.productCard(product1.name.en_US)
+			).toHaveCount(0);
+			await expect(
+				productPublisherPage.productCard(product2.name.en_US)
+			).toHaveCount(0);
+			await expect(
+				productPublisherPage.productCard(product3.name.en_US)
+			).toBeVisible();
+		});
+
+		await performLoginViaApi({page, screenName: 'test'});
 	}
 );
