@@ -5,10 +5,15 @@
 
 package com.liferay.asset.list.item.selector.web.internal.display.context;
 
+import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalServiceUtil;
+import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalServiceUtil;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -23,6 +28,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -34,6 +40,112 @@ public class AssetListEntryItemSelectorDisplayContextTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Test
+	public void testGetAssetListEntryVariationsCount() {
+		AssetListEntry assetListEntry = Mockito.mock(AssetListEntry.class);
+
+		Mockito.when(
+			assetListEntry.getAssetListEntryId()
+		).thenReturn(
+			_ASSET_LIST_ENTRY_ID
+		);
+
+		Mockito.when(
+			assetListEntry.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		AssetListEntryItemSelectorDisplayContext
+			assetListEntryItemSelectorDisplayContext =
+				new AssetListEntryItemSelectorDisplayContext(
+					Mockito.mock(HttpServletRequest.class), null, null, null,
+					null, null);
+
+		try (MockedStatic<AssetListEntryAudienceEntryRelLocalServiceUtil>
+				assetListEntryAudienceEntryRelLocalServiceUtilMockedStatic =
+					Mockito.mockStatic(
+						AssetListEntryAudienceEntryRelLocalServiceUtil.class);
+			MockedStatic<AssetListEntrySegmentsEntryRelLocalServiceUtil>
+				assetListEntrySegmentsEntryRelLocalServiceUtilMockedStatic =
+					Mockito.mockStatic(
+						AssetListEntrySegmentsEntryRelLocalServiceUtil.class);
+			MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					_COMPANY_ID, "LPD-109242")
+			).thenReturn(
+				false
+			);
+
+			assetListEntrySegmentsEntryRelLocalServiceUtilMockedStatic.when(
+				() ->
+					AssetListEntrySegmentsEntryRelLocalServiceUtil.
+						getAssetListEntrySegmentsEntryRelsCount(
+							_ASSET_LIST_ENTRY_ID)
+			).thenReturn(
+				1
+			);
+
+			Assert.assertEquals(
+				0,
+				assetListEntryItemSelectorDisplayContext.
+					getAssetListEntryVariationsCount(assetListEntry));
+
+			assetListEntrySegmentsEntryRelLocalServiceUtilMockedStatic.when(
+				() ->
+					AssetListEntrySegmentsEntryRelLocalServiceUtil.
+						getAssetListEntrySegmentsEntryRelsCount(
+							_ASSET_LIST_ENTRY_ID)
+			).thenReturn(
+				3
+			);
+
+			Assert.assertEquals(
+				3,
+				assetListEntryItemSelectorDisplayContext.
+					getAssetListEntryVariationsCount(assetListEntry));
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					_COMPANY_ID, "LPD-109242")
+			).thenReturn(
+				true
+			);
+
+			assetListEntryAudienceEntryRelLocalServiceUtilMockedStatic.when(
+				() ->
+					AssetListEntryAudienceEntryRelLocalServiceUtil.
+						getAssetListEntryAudienceEntryRelsCount(
+							_ASSET_LIST_ENTRY_ID)
+			).thenReturn(
+				0
+			);
+
+			Assert.assertEquals(
+				0,
+				assetListEntryItemSelectorDisplayContext.
+					getAssetListEntryVariationsCount(assetListEntry));
+
+			assetListEntryAudienceEntryRelLocalServiceUtilMockedStatic.when(
+				() ->
+					AssetListEntryAudienceEntryRelLocalServiceUtil.
+						getAssetListEntryAudienceEntryRelsCount(
+							_ASSET_LIST_ENTRY_ID)
+			).thenReturn(
+				2
+			);
+
+			Assert.assertEquals(
+				3,
+				assetListEntryItemSelectorDisplayContext.
+					getAssetListEntryVariationsCount(assetListEntry));
+		}
+	}
 
 	@Test
 	public void testGetInfoItemClassNames() {
@@ -91,5 +203,10 @@ public class AssetListEntryItemSelectorDisplayContextTest {
 		Assert.assertTrue(
 			ArrayUtil.contains(infoItemClassNames, "searchClassName1"));
 	}
+
+	private static final long _ASSET_LIST_ENTRY_ID =
+		RandomTestUtil.randomLong();
+
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 }
