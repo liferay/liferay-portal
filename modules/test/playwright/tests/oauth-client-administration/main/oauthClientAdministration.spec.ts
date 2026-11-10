@@ -110,6 +110,11 @@ test.describe('Enable Configuration of oauth-authorization-server Well-Known URI
 					name: wellKnownURI,
 				})
 			).toBeVisible();
+			await expect(
+				authServerLocalMetadatasPage.page
+					.getByRole('row', {name: wellKnownURI})
+					.getByRole('checkbox')
+			).toHaveValue(wellKnownURI);
 
 			await authServerLocalMetadatasPage.openIdConfigurationTab.click();
 
