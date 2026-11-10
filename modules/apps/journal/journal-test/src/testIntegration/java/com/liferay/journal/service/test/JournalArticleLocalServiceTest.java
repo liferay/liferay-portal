@@ -7,6 +7,7 @@ package com.liferay.journal.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
+import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
 import com.liferay.asset.kernel.exception.AssetCategoryException;
 import com.liferay.asset.kernel.model.AssetCategory;
@@ -859,6 +860,28 @@ public class JournalArticleLocalServiceTest {
 			_group.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID, "Test-1",
 			RandomTestUtil.randomString());
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		journalArticle.setLayoutUuid(layout.getUuid());
+
+		journalArticle = _journalArticleLocalService.updateJournalArticle(
+			journalArticle);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				journalArticle.getDDMStructureKey(), false,
+				WorkflowConstants.STATUS_APPROVED);
+
+		_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
+			journalArticle.getUserId(), _group.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			journalArticle.getResourcePrimKey(),
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+			AssetDisplayPageConstants.TYPE_SPECIFIC,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		_testCopyArticle(journalArticle, " (Copy)", "-copy-");
 		_testCopyArticle(journalArticle, " (Copy 1)", "-copy-1-");
@@ -3647,11 +3670,30 @@ public class JournalArticleLocalServiceTest {
 
 		Assert.assertNotEquals(journalArticle, journalArticle1);
 		Assert.assertEquals(
+			journalArticle.getLayoutUuid(), journalArticle1.getLayoutUuid());
+		Assert.assertEquals(
 			journalArticle.getTitle() + titleSuffix,
 			journalArticle1.getTitle());
 		Assert.assertEquals(
 			journalArticle.getUrlTitle() + urlTitleSuffix,
 			journalArticle1.getUrlTitle());
+
+		AssetDisplayPageEntry assetDisplayPageEntry =
+			_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
+				journalArticle.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				journalArticle.getResourcePrimKey());
+		AssetDisplayPageEntry assetDisplayPageEntry1 =
+			_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
+				journalArticle1.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				journalArticle1.getResourcePrimKey());
+
+		Assert.assertEquals(
+			assetDisplayPageEntry.getLayoutPageTemplateEntryId(),
+			assetDisplayPageEntry1.getLayoutPageTemplateEntryId());
+		Assert.assertEquals(
+			assetDisplayPageEntry.getType(), assetDisplayPageEntry1.getType());
 
 		List<ResourcePermission> oldResourcePermissions =
 			_resourcePermissionLocalService.getResourcePermissions(
