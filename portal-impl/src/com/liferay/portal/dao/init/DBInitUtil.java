@@ -241,7 +241,7 @@ public class DBInitUtil {
 	private static DataSource _initDataSource(String prefix) throws Exception {
 		Properties properties = PropsUtil.getProperties(prefix, true);
 
-		if ((properties == null) || properties.isEmpty()) {
+		if (properties.isEmpty()) {
 			return null;
 		}
 
