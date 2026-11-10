@@ -58,6 +58,7 @@ public class AssetListEntryAssetEntryRelStagedModelRepository
 			addAssetListEntryAssetEntryRel(
 				assetListEntryAssetEntryRel.getAssetListEntryId(),
 				assetEntry.getEntryId(),
+				assetListEntryAssetEntryRel.getAudienceEntryERC(),
 				assetListEntryAssetEntryRel.getSegmentsEntryId(),
 				assetListEntryAssetEntryRel.getPosition(), serviceContext);
 	}
@@ -151,6 +152,7 @@ public class AssetListEntryAssetEntryRelStagedModelRepository
 				assetListEntryAssetEntryRel.getAssetListEntryAssetEntryRelId(),
 				assetListEntryAssetEntryRel.getAssetListEntryId(),
 				assetListEntryAssetEntryRel.getAssetEntryId(),
+				assetListEntryAssetEntryRel.getAudienceEntryERC(),
 				assetListEntryAssetEntryRel.getSegmentsEntryId(),
 				assetListEntryAssetEntryRel.getPosition());
 	}

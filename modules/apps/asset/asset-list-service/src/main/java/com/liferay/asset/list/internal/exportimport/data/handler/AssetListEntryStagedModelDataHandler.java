@@ -12,8 +12,10 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
+import com.liferay.asset.list.model.AssetListEntryAudienceEntryRel;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
@@ -94,6 +96,8 @@ public class AssetListEntryStagedModelDataHandler
 			assetListEntry);
 
 		_exportAssetListEntryAssetEntryRels(portletDataContext, assetListEntry);
+		_exportAssetListEntryAudienceEntryRels(
+			portletDataContext, assetListEntry);
 		_exportAssetListEntrySegmentsEntryRels(
 			portletDataContext, assetListEntry);
 		_exportAssetObjects(portletDataContext, assetListEntry);
@@ -160,6 +164,10 @@ public class AssetListEntryStagedModelDataHandler
 				deleteAssetListEntryAssetEntryRelByAssetListEntryId(
 					existingAssetListEntry.getAssetListEntryId());
 
+			_assetListEntryAudienceEntryRelLocalService.
+				deleteAssetListEntryAudienceEntryRelByAssetListEntryId(
+					existingAssetListEntry.getAssetListEntryId());
+
 			_assetListEntrySegmentsEntryRelLocalService.
 				deleteAssetListEntrySegmentsEntryRelByAssetListEntryId(
 					existingAssetListEntry.getAssetListEntryId());
@@ -171,6 +179,9 @@ public class AssetListEntryStagedModelDataHandler
 			portletDataContext, assetListEntry);
 
 		_importAssetEntryListAssetEntryRelElements(
+			portletDataContext, assetListEntry);
+
+		_importAssetListEntryAudienceEntryRelElements(
 			portletDataContext, assetListEntry);
 
 		importedAssetListEntry.setModifiedDate(
@@ -207,6 +218,27 @@ public class AssetListEntryStagedModelDataHandler
 
 			StagedModelDataHandlerUtil.exportReferenceStagedModel(
 				portletDataContext, assetListEntry, assetListEntryAssetEntryRel,
+				PortletDataContext.REFERENCE_TYPE_CHILD);
+		}
+	}
+
+	private void _exportAssetListEntryAudienceEntryRels(
+			PortletDataContext portletDataContext,
+			AssetListEntry assetListEntry)
+		throws Exception {
+
+		List<AssetListEntryAudienceEntryRel> assetListEntryAudienceEntryRels =
+			_assetListEntryAudienceEntryRelLocalService.
+				getAssetListEntryAudienceEntryRels(
+					assetListEntry.getAssetListEntryId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+		for (AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel :
+				assetListEntryAudienceEntryRels) {
+
+			StagedModelDataHandlerUtil.exportReferenceStagedModel(
+				portletDataContext, assetListEntry,
+				assetListEntryAudienceEntryRel,
 				PortletDataContext.REFERENCE_TYPE_CHILD);
 		}
 	}
@@ -397,6 +429,24 @@ public class AssetListEntryStagedModelDataHandler
 		}
 	}
 
+	private void _importAssetListEntryAudienceEntryRelElements(
+			PortletDataContext portletDataContext,
+			AssetListEntry assetListEntry)
+		throws Exception {
+
+		List<Element> assetListEntryAudienceEntryRelElements =
+			portletDataContext.getReferenceDataElements(
+				assetListEntry, AssetListEntryAudienceEntryRel.class,
+				PortletDataContext.REFERENCE_TYPE_CHILD);
+
+		for (Element assetListEntryAudienceEntryRelElement :
+				assetListEntryAudienceEntryRelElements) {
+
+			StagedModelDataHandlerUtil.importStagedModel(
+				portletDataContext, assetListEntryAudienceEntryRelElement);
+		}
+	}
+
 	private void _importAssetObjects(PortletDataContext portletDataContext)
 		throws Exception {
 
@@ -427,6 +477,10 @@ public class AssetListEntryStagedModelDataHandler
 	@Reference
 	private AssetListEntryAssetEntryRelLocalService
 		_assetListEntryAssetEntryRelLocalService;
+
+	@Reference
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
 
 	@Reference
 	private AssetListEntryLocalService _assetListEntryLocalService;

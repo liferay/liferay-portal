@@ -5,9 +5,11 @@
 
 package com.liferay.asset.list.service.impl;
 
+import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryAudienceEntryRel;
 import com.liferay.asset.list.service.base.AssetListEntryAudienceEntryRelLocalServiceBaseImpl;
 import com.liferay.asset.list.service.persistence.AssetListEntryAssetEntryRelPersistence;
+import com.liferay.asset.list.service.persistence.AssetListEntryPersistence;
 import com.liferay.asset.list.util.comparator.AssetListEntryAudienceEntryRelPriorityComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -18,7 +20,10 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -94,6 +99,8 @@ public class AssetListEntryAudienceEntryRelLocalServiceImpl
 	public void deleteAssetListEntryAudienceEntryRel(
 			long assetListEntryId, String audienceEntryERC)
 		throws PortalException {
+
+		_updateAssetListEntryModifiedDate(assetListEntryId);
 
 		assetListEntryAudienceEntryRelLocalService.
 			deleteAssetListEntryAudienceEntryRel(
@@ -202,6 +209,8 @@ public class AssetListEntryAudienceEntryRelLocalServiceImpl
 	public void updatePriorities(long[] assetListEntryAudienceEntryRelIds)
 		throws PortalException {
 
+		Set<Long> assetListEntryIds = new HashSet<>();
+
 		for (int priority = 0;
 			 priority < assetListEntryAudienceEntryRelIds.length; priority++) {
 
@@ -211,14 +220,36 @@ public class AssetListEntryAudienceEntryRelLocalServiceImpl
 
 			assetListEntryAudienceEntryRel.setPriority(priority);
 
-			assetListEntryAudienceEntryRelPersistence.update(
-				assetListEntryAudienceEntryRel);
+			assetListEntryAudienceEntryRel =
+				assetListEntryAudienceEntryRelPersistence.update(
+					assetListEntryAudienceEntryRel);
+
+			assetListEntryIds.add(
+				assetListEntryAudienceEntryRel.getAssetListEntryId());
 		}
+
+		for (long assetListEntryId : assetListEntryIds) {
+			_updateAssetListEntryModifiedDate(assetListEntryId);
+		}
+	}
+
+	private void _updateAssetListEntryModifiedDate(long assetListEntryId)
+		throws PortalException {
+
+		AssetListEntry assetListEntry =
+			_assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
+
+		assetListEntry.setModifiedDate(new Date());
+
+		_assetListEntryPersistence.update(assetListEntry);
 	}
 
 	@Reference
 	private AssetListEntryAssetEntryRelPersistence
 		_assetListEntryAssetEntryRelPersistence;
+
+	@Reference
+	private AssetListEntryPersistence _assetListEntryPersistence;
 
 	@Reference
 	private UserLocalService _userLocalService;
