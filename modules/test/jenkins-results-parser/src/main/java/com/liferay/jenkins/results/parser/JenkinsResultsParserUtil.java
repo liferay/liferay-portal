@@ -2773,7 +2773,9 @@ public class JenkinsResultsParserUtil {
 		}
 		catch (IOException | TimeoutException exception) {
 			System.out.println(
-				"WARNING: Unable to list portal bundles\n" + exception);
+				combine(
+					"WARNING: Unable to list portal bundles\n",
+					String.valueOf(exception)));
 
 			return null;
 		}

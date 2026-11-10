@@ -424,8 +424,8 @@ public class JenkinsResultsParserUtilTest
 
 		dataJSONObjects.clear();
 
-		List<String> s3ObjectKeys = new ArrayList<>();
 		List<String> s3FilesOutputLines = new ArrayList<>();
+		List<String> s3ObjectKeys = new ArrayList<>();
 
 		for (int index = 0; index < 11; index++) {
 			String s3ObjectKey = _randomPortalBundleS3ObjectKey(

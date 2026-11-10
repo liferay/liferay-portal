@@ -479,12 +479,12 @@ public class PoshiReleasePortalTopLevelBuildRunner
 	}
 
 	private String _getPortalBundlesDistURL(String upstreamBranchName) {
-		String portalBundleS3ObjectPath =
+		String latestPortalBundleS3ObjectPath =
 			JenkinsResultsParserUtil.getLatestPortalBundleS3ObjectPath(
 				upstreamBranchName);
 
-		if (portalBundleS3ObjectPath != null) {
-			return portalBundleS3ObjectPath;
+		if (latestPortalBundleS3ObjectPath != null) {
+			return latestPortalBundleS3ObjectPath;
 		}
 
 		return JenkinsResultsParserUtil.getDistPortalBundlesBuildURL(
