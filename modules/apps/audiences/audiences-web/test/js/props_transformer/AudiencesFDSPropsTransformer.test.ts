@@ -52,8 +52,13 @@ describe('AudiencesFDSPropsTransformer', () => {
 		jest.clearAllMocks();
 	});
 
-	it('asks for the regular confirmation when no element variation uses the audience', async () => {
-		fetchMock.mockResponseOnce(JSON.stringify({elementVariationsCount: 0}));
+	it('asks for the regular confirmation when no variation uses the audience', async () => {
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				collectionVariationsCount: 0,
+				elementVariationsCount: 0,
+			})
+		);
 
 		clickDelete();
 
@@ -67,7 +72,12 @@ describe('AudiencesFDSPropsTransformer', () => {
 	});
 
 	it('warns that deleting the audience removes it from one element variation', async () => {
-		fetchMock.mockResponseOnce(JSON.stringify({elementVariationsCount: 1}));
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				collectionVariationsCount: 0,
+				elementVariationsCount: 1,
+			})
+		);
 
 		clickDelete();
 
@@ -80,7 +90,12 @@ describe('AudiencesFDSPropsTransformer', () => {
 	});
 
 	it('warns that deleting the audience removes it from several element variations', async () => {
-		fetchMock.mockResponseOnce(JSON.stringify({elementVariationsCount: 3}));
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				collectionVariationsCount: 0,
+				elementVariationsCount: 3,
+			})
+		);
 
 		clickDelete();
 
@@ -92,8 +107,49 @@ describe('AudiencesFDSPropsTransformer', () => {
 		expect(status).toBe('warning');
 	});
 
+	it('warns that the audience is used in both collection and element variations', async () => {
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				collectionVariationsCount: 1,
+				elementVariationsCount: 1,
+			})
+		);
+
+		clickDelete();
+
+		const {message, status} = await getConfirmModalProps();
+
+		expect(message).toBe(
+			'this-audience-is-used-in-element-variations-and-collection-variations.-deleting-it-will-remove-it-from-the-element-variations-and-delete-the-collection-variations.-are-you-sure-you-want-to-delete-it'
+		);
+		expect(status).toBe('warning');
+	});
+
+	it('warns that deleting the audience deletes the collection variations that use it', async () => {
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				collectionVariationsCount: 2,
+				elementVariationsCount: 0,
+			})
+		);
+
+		clickDelete();
+
+		const {message, status} = await getConfirmModalProps();
+
+		expect(message).toBe(
+			'this-audience-is-used-in-one-or-more-collection-variations.-deleting-it-will-delete-those-variations.-are-you-sure-you-want-to-delete-it'
+		);
+		expect(status).toBe('warning');
+	});
+
 	it('deletes the audience only when the deletion is confirmed', async () => {
-		fetchMock.mockResponseOnce(JSON.stringify({elementVariationsCount: 2}));
+		fetchMock.mockResponseOnce(
+			JSON.stringify({
+				collectionVariationsCount: 0,
+				elementVariationsCount: 2,
+			})
+		);
 
 		clickDelete();
 

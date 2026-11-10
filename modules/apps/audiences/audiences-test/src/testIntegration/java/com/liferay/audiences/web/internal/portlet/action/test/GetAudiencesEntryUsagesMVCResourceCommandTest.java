@@ -6,6 +6,10 @@
 package com.liferay.audiences.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
+import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
+import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
@@ -50,10 +54,11 @@ public class GetAudiencesEntryUsagesMVCResourceCommandTest {
 	public void testServeResource() throws Exception {
 		AudiencesEntry audiencesEntry1 = _addAudiencesEntry();
 
-		_assertElementVariationsCount(audiencesEntry1, 0);
+		_assertVariationsCounts(audiencesEntry1, 0, 0);
 
 		AudiencesEntry audiencesEntry2 = _addAudiencesEntry();
 
+		_addAssetListEntryAudienceEntryRel(audiencesEntry1);
 		_addLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
 			audiencesEntry1);
 		_addLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
@@ -61,8 +66,30 @@ public class GetAudiencesEntryUsagesMVCResourceCommandTest {
 		_addLayoutPageTemplateStructureRelElementVariationAudienceEntryRel(
 			audiencesEntry2);
 
-		_assertElementVariationsCount(audiencesEntry1, 2);
-		_assertElementVariationsCount(audiencesEntry2, 1);
+		_assertVariationsCounts(audiencesEntry1, 1, 2);
+		_assertVariationsCounts(audiencesEntry2, 0, 1);
+	}
+
+	private void _addAssetListEntryAudienceEntryRel(
+			AudiencesEntry audiencesEntry)
+		throws Exception {
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				TestPropsValues.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_MANUAL,
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId()));
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
+				assetListEntry.getAssetListEntryId(),
+				audiencesEntry.getExternalReferenceCode(),
+				RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId()));
 	}
 
 	private AudiencesEntry _addAudiencesEntry() throws Exception {
@@ -98,8 +125,10 @@ public class GetAudiencesEntryUsagesMVCResourceCommandTest {
 					TestPropsValues.getGroupId()));
 	}
 
-	private void _assertElementVariationsCount(
-			AudiencesEntry audiencesEntry, int expectedElementVariationsCount)
+	private void _assertVariationsCounts(
+			AudiencesEntry audiencesEntry,
+			int expectedCollectionVariationsCount,
+			int expectedElementVariationsCount)
 		throws Exception {
 
 		MockLiferayResourceRequest mockLiferayResourceRequest =
@@ -123,9 +152,19 @@ public class GetAudiencesEntryUsagesMVCResourceCommandTest {
 			byteArrayOutputStream.toString());
 
 		Assert.assertEquals(
+			expectedCollectionVariationsCount,
+			jsonObject.getInt("collectionVariationsCount"));
+		Assert.assertEquals(
 			expectedElementVariationsCount,
 			jsonObject.getInt("elementVariationsCount"));
 	}
+
+	@Inject
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
+
+	@Inject
+	private AssetListEntryLocalService _assetListEntryLocalService;
 
 	@Inject
 	private AudiencesEntryLocalService _audiencesEntryLocalService;

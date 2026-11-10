@@ -275,6 +275,33 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	}
 
 	@Test
+	public void testGetAssetListEntryAudienceEntryRelsCountByAudienceEntryERC()
+		throws Exception {
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			0,
+			_assetListEntryAudienceEntryRelLocalService.
+				getAssetListEntryAudienceEntryRelsCountByAudienceEntryERC(
+					_group.getCompanyId(), audienceEntryERC));
+
+		_addAssetListEntryAudienceEntryRel(
+			AssetListTestUtil.addAssetListEntry(_group.getGroupId()),
+			audienceEntryERC);
+
+		_addAssetListEntryAudienceEntryRel(
+			_assetListEntry, RandomTestUtil.randomString());
+		_addAssetListEntryAudienceEntryRel(_assetListEntry, audienceEntryERC);
+
+		Assert.assertEquals(
+			2,
+			_assetListEntryAudienceEntryRelLocalService.
+				getAssetListEntryAudienceEntryRelsCountByAudienceEntryERC(
+					_group.getCompanyId(), audienceEntryERC));
+	}
+
+	@Test
 	public void testUpdateAssetListEntryAudienceEntryRelTypeSettings()
 		throws Exception {
 
