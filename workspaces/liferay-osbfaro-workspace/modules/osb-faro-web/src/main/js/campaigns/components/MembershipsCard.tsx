@@ -56,7 +56,10 @@ const MembershipsCard: React.FC<IMembershipsCardProps> = ({
 			</ClayTabs>
 
 			<ClayTabs.Content activeIndex={activeIndex}>
-				<ClayTabs.TabPane id="accounts-touched-tabpanel">
+				<ClayTabs.TabPane
+					className="p-0"
+					id="accounts-touched-tabpanel"
+				>
 					<AccountsTouchedDataSet
 						campaignId={campaignId}
 						channelId={channelId}
@@ -66,7 +69,10 @@ const MembershipsCard: React.FC<IMembershipsCardProps> = ({
 					/>
 				</ClayTabs.TabPane>
 
-				<ClayTabs.TabPane id="individuals-touched-tabpanel">
+				<ClayTabs.TabPane
+					className="p-0"
+					id="individuals-touched-tabpanel"
+				>
 					<IndividualsTouchedDataSet
 						campaignId={campaignId}
 						channelId={channelId}
