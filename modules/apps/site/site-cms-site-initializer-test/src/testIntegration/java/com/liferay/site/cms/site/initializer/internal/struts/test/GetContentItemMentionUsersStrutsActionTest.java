@@ -60,6 +60,9 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -88,6 +91,7 @@ public class GetContentItemMentionUsersStrutsActionTest {
 		_testExecute();
 		_testExecuteWithClassNameId();
 		_testExecuteWithKeywords();
+		_testExecuteWithManyUsers();
 		_testExecuteWithoutAddDiscussionPermission();
 	}
 
@@ -295,6 +299,7 @@ public class GetContentItemMentionUsersStrutsActionTest {
 
 		_addComment(objectEntry, TestPropsValues.getUser());
 		_addComment(objectEntry, user2);
+		_addComment(objectEntry, user3);
 		_addComment(objectEntry, user4);
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(
@@ -434,6 +439,71 @@ public class GetContentItemMentionUsersStrutsActionTest {
 		_userLocalService.deleteUser(user1);
 		_userLocalService.deleteUser(user2);
 		_userLocalService.deleteUser(user3);
+
+		_roleLocalService.deleteRole(role);
+
+		_layoutLocalService.deleteLayout(layout);
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+
+		_depotEntryLocalService.deleteDepotEntry(depotEntry);
+	}
+
+	private void _testExecuteWithManyUsers() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry();
+
+		ObjectEntry objectEntry = _addObjectEntry(depotEntry);
+
+		List<User> users1 = new ArrayList<>();
+
+		for (int i = 0; i < 100; i++) {
+			users1.add(
+				UserTestUtil.addUser(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()),
+					LocaleUtil.getDefault(),
+					"a" + RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					new long[] {depotEntry.getGroupId()}));
+		}
+
+		String lastName = RandomTestUtil.randomString();
+
+		List<User> users2 = new ArrayList<>();
+
+		for (int i = 0; i < 21; i++) {
+			users2.add(
+				UserTestUtil.addUser(
+					StringUtil.toLowerCase(RandomTestUtil.randomString()),
+					LocaleUtil.getDefault(),
+					"z" + RandomTestUtil.randomString(), lastName,
+					new long[] {depotEntry.getGroupId()}));
+		}
+
+		Role role = _addViewRole(objectEntry, users2.toArray(new User[0]));
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CMS));
+
+		JSONArray usersJSONArray = _execute(
+			null, layout, objectEntry, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			usersJSONArray.toString(), 0, usersJSONArray.length());
+
+		usersJSONArray = _execute(
+			lastName, layout, objectEntry, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			usersJSONArray.toString(), 20, usersJSONArray.length());
+
+		for (User user : users1) {
+			_userLocalService.deleteUser(user);
+		}
+
+		for (User user : users2) {
+			_userLocalService.deleteUser(user);
+		}
 
 		_roleLocalService.deleteRole(role);
 
