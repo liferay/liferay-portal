@@ -6,9 +6,11 @@
 package com.liferay.product.navigation.product.menu.web.internal.product.navigation.control.menu;
 
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
@@ -21,6 +23,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.template.react.renderer.ComponentDescriptor;
+import com.liferay.portal.template.react.renderer.ReactRenderer;
 import com.liferay.product.navigation.control.menu.BaseProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuCategoryKeys;
@@ -87,11 +91,69 @@ public class ProductMenuProductNavigationControlMenuEntry
 			openIconTag.setCssClass("icon-monospaced icon-product-menu-open");
 			openIconTag.setImage("product-menu-open");
 
+			boolean unifiedSidebar = FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-88120");
+
 			String productMenuState = SessionClicks.get(
 				httpServletRequest,
 				"com.liferay.product.navigation.product.menu." +
 					"web_productMenuState",
-				"closed");
+				unifiedSidebar ? "open" : "closed");
+
+			if (unifiedSidebar) {
+				boolean open = Objects.equals(productMenuState, "open");
+
+				writer.write(
+					"<li class=\"control-menu-nav-item product-menu-toggle");
+
+				if (open) {
+					writer.write(" active");
+				}
+
+				writer.write(
+					StringBundler.concat(
+						"\"><div role=\"tablist\"><button class=\"btn ",
+						"btn-monospaced btn-sm control-menu-nav-link ",
+						"lfr-portal-tooltip product-menu-toast-toggle\">"));
+
+				if (open) {
+					writer.write(
+						openIconTag.doTagAsString(
+							httpServletRequest, httpServletResponse));
+				}
+				else {
+					writer.write(
+						closedIconTag.doTagAsString(
+							httpServletRequest, httpServletResponse));
+				}
+
+				writer.write("</button>");
+
+				_reactRenderer.renderReact(
+					new ComponentDescriptor(
+						"{UnifiedSidebarToggler} from " +
+							"frontend-js-components-web",
+						null, null, true),
+					HashMapBuilder.<String, Object>put(
+						"navigationId",
+						"com_liferay_product_navigation_product_menu_web_" +
+							"sidebar"
+					).put(
+						"stateChangedEventName",
+						"productMenuSidebarStateChanged"
+					).put(
+						"stateRequestedEventName",
+						"productMenuSidebarStateRequested"
+					).put(
+						"visible", open
+					).build(),
+					httpServletRequest, writer);
+
+				writer.write("</div></li>");
+
+				return true;
+			}
+
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
@@ -216,5 +278,8 @@ public class ProductMenuProductNavigationControlMenuEntry
 	@Reference
 	private ProductNavigationProductMenuHelper
 		_productNavigationProductMenuHelper;
+
+	@Reference
+	private ReactRenderer _reactRenderer;
 
 }

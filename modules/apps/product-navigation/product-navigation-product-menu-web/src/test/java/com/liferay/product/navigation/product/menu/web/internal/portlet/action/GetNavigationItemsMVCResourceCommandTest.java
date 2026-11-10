@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.product.navigation.product.menu.helper.ProductNavigationProductMenuHelper;
 
 import jakarta.portlet.ResourceRequest;
 
@@ -62,6 +63,10 @@ public class GetNavigationItemsMVCResourceCommandTest {
 			_panelCategoryHelper);
 		ReflectionTestUtil.setFieldValue(
 			_getNavigationItemsMVCResourceCommand, "_portal", _portal);
+		ReflectionTestUtil.setFieldValue(
+			_getNavigationItemsMVCResourceCommand,
+			"_productNavigationProductMenuHelper",
+			_productNavigationProductMenuHelper);
 
 		Mockito.when(
 			_portal.getHttpServletRequest(_resourceRequest)
@@ -116,6 +121,17 @@ public class GetNavigationItemsMVCResourceCommandTest {
 	}
 
 	@Test
+	public void testGetNavigationItemsJSONObjectIgnoresTheProductMenuForTheApplicationsMenu()
+		throws Exception {
+
+		_setUpActivePanelCategory();
+
+		_getNavigationItemsJSONObject();
+
+		Mockito.verifyNoInteractions(_productNavigationProductMenuHelper);
+	}
+
+	@Test
 	public void testGetNavigationItemsJSONObjectIsEmptyWithoutAnActiveCategory()
 		throws Exception {
 
@@ -163,6 +179,65 @@ public class GetNavigationItemsMVCResourceCommandTest {
 	}
 
 	@Test
+	public void testGetNavigationItemsJSONObjectReadsTheSiteAdministrationApplications()
+		throws Exception {
+
+		Mockito.when(
+			_resourceRequest.getParameter("rootPanelCategoryKey")
+		).thenReturn(
+			PanelCategoryKeys.SITE_ADMINISTRATION
+		);
+
+		Mockito.when(
+			_productNavigationProductMenuHelper.isShowProductMenu(
+				_httpServletRequest)
+		).thenReturn(
+			true
+		);
+
+		PanelCategory panelCategory = Mockito.mock(PanelCategory.class);
+
+		Mockito.when(
+			panelCategory.getKey()
+		).thenReturn(
+			_PANEL_CATEGORY_KEY
+		);
+
+		Mockito.when(
+			_panelCategoryHelper.getChildPanelCategories(
+				PanelCategoryKeys.SITE_ADMINISTRATION, _themeDisplay)
+		).thenReturn(
+			List.of(panelCategory)
+		);
+
+		PanelApp panelApp = _createPanelApp(
+			List.of(
+				new PanelAppNavigationItem(
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString())),
+			"portletId");
+
+		Mockito.when(
+			_panelAppRegistry.getPanelApps(
+				_PANEL_CATEGORY_KEY, _permissionChecker, _group)
+		).thenReturn(
+			List.of(panelApp)
+		);
+
+		JSONObject navigationItemsJSONObject = _getNavigationItemsJSONObject();
+
+		Assert.assertNotNull(navigationItemsJSONObject.get("portletId"));
+
+		Mockito.verify(
+			_panelCategoryHelper, Mockito.never()
+		).getActivePanelCategory(
+			Mockito.anyString(), Mockito.anyString(),
+			Mockito.any(ThemeDisplay.class)
+		);
+	}
+
+	@Test
 	public void testGetNavigationItemsJSONObjectSetsTheItemIds()
 		throws Exception {
 
@@ -200,6 +275,27 @@ public class GetNavigationItemsMVCResourceCommandTest {
 			"portletId_1",
 			JSONUtil.getValue(
 				navigationItemsJSONArray, "JSONObject/1", "Object/id"));
+	}
+
+	@Test
+	public void testGetNavigationItemsJSONObjectWhenProductMenuIsHidden()
+		throws Exception {
+
+		Mockito.when(
+			_resourceRequest.getParameter("rootPanelCategoryKey")
+		).thenReturn(
+			PanelCategoryKeys.SITE_ADMINISTRATION
+		);
+
+		JSONObject navigationItemsJSONObject = _getNavigationItemsJSONObject();
+
+		Assert.assertEquals(0, navigationItemsJSONObject.length());
+
+		Mockito.verify(
+			_panelCategoryHelper, Mockito.never()
+		).getChildPanelCategories(
+			Mockito.anyString(), Mockito.any(ThemeDisplay.class)
+		);
 	}
 
 	private PanelApp _createPanelApp(
@@ -275,6 +371,9 @@ public class GetNavigationItemsMVCResourceCommandTest {
 	private final PermissionChecker _permissionChecker = Mockito.mock(
 		PermissionChecker.class);
 	private final Portal _portal = Mockito.mock(Portal.class);
+	private final ProductNavigationProductMenuHelper
+		_productNavigationProductMenuHelper = Mockito.mock(
+			ProductNavigationProductMenuHelper.class);
 	private final ResourceRequest _resourceRequest = Mockito.mock(
 		ResourceRequest.class);
 	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);

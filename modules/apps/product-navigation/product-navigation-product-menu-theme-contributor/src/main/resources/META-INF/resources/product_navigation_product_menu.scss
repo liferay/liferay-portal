@@ -34,6 +34,28 @@ html#{$cadmin-selector} {
 		}
 	}
 
+	body.product-menu-unified-sidebar {
+		&.product-menu-open {
+			#wrapper,
+			.cadmin.control-menu-container {
+				@include media-breakpoint-up(lg, $cadmin-grid-breakpoints) {
+					padding-left: $product-menu-unified-sidebar-width;
+				}
+			}
+		}
+
+		&.sidenav-transition:not(.c-prefers-reduced-motion) {
+			#wrapper,
+			.cadmin.control-menu-container {
+				@include media-breakpoint-up(sm, $cadmin-grid-breakpoints) {
+					@media (prefers-reduced-motion: no-preference) {
+						transition: $product-menu-unified-sidebar-transition;
+					}
+				}
+			}
+		}
+	}
+
 	nav.cadmin {
 		&.lfr-product-menu-panel.sidenav-menu-slider {
 			z-index: $product-menu-zindex;

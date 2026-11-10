@@ -7,6 +7,10 @@
 
 <%@ include file="/portlet/init.jsp" %>
 
+<%
+ProductMenuDisplayContext productMenuDisplayContext = new ProductMenuDisplayContext(liferayPortletRequest);
+%>
+
 <c:if test="<%= productMenuDisplayContext.isShowProductMenu() %>">
 
 	<%

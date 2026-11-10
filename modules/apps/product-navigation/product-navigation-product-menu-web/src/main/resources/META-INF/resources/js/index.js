@@ -4,3 +4,4 @@
  */
 
 export {default as ProductMenuTree} from './ProductMenuTree';
+export {default as ProductMenuSidebar} from './product_menu_sidebar/ProductMenuSidebar';

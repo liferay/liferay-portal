@@ -1,0 +1,71 @@
+@mixin product-menu-sidebar-shimmer {
+	overflow: hidden;
+	position: relative;
+
+	&::after {
+		animation: product-menu-sidebar-shimmer 1.6s infinite;
+		background: linear-gradient(
+			90deg,
+			rgb(from var(--skeleton-shimmer-color) r g b / 0) 0%,
+			rgb(from var(--skeleton-shimmer-color) r g b / 0.6) 50%,
+			rgb(from var(--skeleton-shimmer-color) r g b / 0) 100%
+		);
+		content: '';
+		inset: 0;
+		position: absolute;
+		transform: translateX(-100%);
+	}
+}
+
+html#{$cadmin-selector} {
+	.cadmin.product-menu-sidebar {
+		--cadmin-c-slideout-sidebar-width: 280px;
+		--cadmin-c-slideout-transition-in: all 0.14s ease-out;
+		--cadmin-c-slideout-transition-out: all 0.14s ease-out;
+		--skeleton-shimmer-color: #{$cadmin-light-l1};
+
+		.c-slideout-start .sidebar-light.skeleton {
+			@include product-menu-sidebar-shimmer;
+
+			background-color: $cadmin-light-l1;
+			border-right: 0.5px solid $cadmin-secondary-l0;
+			box-shadow: none;
+
+			.product-menu-sidebar-skeleton {
+				aspect-ratio: 320 / 650;
+				color: $cadmin-secondary-l3;
+				flex-shrink: 0;
+				width: 100%;
+			}
+		}
+
+		.c-slideout:has(> .skeleton) {
+			@include media-breakpoint-down(md, $cadmin-grid-breakpoints) {
+				display: none;
+			}
+		}
+
+		.nav[role='menu'] > li {
+			margin-top: 0.25rem;
+		}
+
+		.nav[role='menubar'] {
+			$row: 'li:not(:empty)';
+
+			> #{$row} + #{$row} {
+				margin-top: 0.25rem;
+			}
+
+			> #{$row} + #{$row}:has(> .collapse-icon),
+			> #{$row}:has(> .collapse-icon) + #{$row} {
+				margin-top: 0.5rem;
+			}
+		}
+	}
+}
+
+@keyframes product-menu-sidebar-shimmer {
+	100% {
+		transform: translateX(100%);
+	}
+}

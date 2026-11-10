@@ -3,10 +3,12 @@
 		"@clayui/button": "^3.167.0",
 		"@clayui/core": "^3.167.0",
 		"@clayui/drop-down": "^3.167.0",
+		"@clayui/empty-state": "^3.167.0",
 		"@clayui/icon": "^3.167.0",
 		"@clayui/label": "^3.167.0",
 		"@clayui/link": "^3.167.0",
 		"@clayui/loading-indicator": "^3.167.0",
+		"@clayui/nav": "^3.167.0",
 		"@liferay/layout-js-components-web": "*",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
@@ -19,7 +21,8 @@
 	"scripts": {
 		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check",
-		"format": "node-scripts format"
+		"format": "node-scripts format",
+		"test": "node-scripts test"
 	},
 	"version": "6.0.145"
 }
