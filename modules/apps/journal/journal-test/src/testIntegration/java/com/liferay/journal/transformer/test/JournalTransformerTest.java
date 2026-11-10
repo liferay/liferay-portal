@@ -267,6 +267,10 @@ public class JournalTransformerTest {
 			_serviceTrackerList.toList(), TransformerListener::isEnabled);
 
 		_assertReservedVariable(
+			StringPool.BLANK, "tags", languageId,
+			JournalStructureConstants.RESERVED_ARTICLE_ASSET_TAG_NAMES,
+			journalReservedTemplateVariableGroup, transformerListeners);
+		_assertReservedVariable(
 			user.getComments(), "comments", languageId,
 			JournalStructureConstants.RESERVED_ARTICLE_AUTHOR_COMMENTS,
 			journalReservedTemplateVariableGroup, transformerListeners);
@@ -324,10 +328,6 @@ public class JournalTransformerTest {
 		_assertReservedVariable(
 			StringPool.BLANK, "small-image-url", languageId,
 			JournalStructureConstants.RESERVED_ARTICLE_SMALL_IMAGE_URL,
-			journalReservedTemplateVariableGroup, transformerListeners);
-		_assertReservedVariable(
-			StringPool.BLANK, "tags", languageId,
-			JournalStructureConstants.RESERVED_ARTICLE_ASSET_TAG_NAMES,
 			journalReservedTemplateVariableGroup, transformerListeners);
 		_assertReservedVariable(
 			_journalArticle.getTitle(languageId), "title", languageId,
