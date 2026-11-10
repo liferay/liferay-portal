@@ -699,7 +699,6 @@ public class LiferayCommercePIMConnectorTest {
 				requiredObjectEntries,
 				Collections.<String, ObjectEntry>emptyMap(),
 				pimProductObjectEntriesMap));
-
 		_assertPIMConnectorException(
 			"enter-a-valid-url",
 			() -> _execute(
@@ -709,7 +708,6 @@ public class LiferayCommercePIMConnectorTest {
 				requiredObjectEntries,
 				Collections.<String, ObjectEntry>emptyMap(),
 				pimProductObjectEntriesMap));
-
 		_assertPIMConnectorException(
 			"enter-a-valid-url",
 			() -> _execute(
@@ -719,7 +717,6 @@ public class LiferayCommercePIMConnectorTest {
 				requiredObjectEntries,
 				Collections.<String, ObjectEntry>emptyMap(),
 				pimProductObjectEntriesMap));
-
 		_assertPIMConnectorException(
 			"enter-a-valid-url",
 			() -> _execute(
