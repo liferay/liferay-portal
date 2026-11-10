@@ -13,6 +13,7 @@
 		"@liferay/frontend-js-react-web": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
+		"jest-fetch-mock": "3.0.3",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},
