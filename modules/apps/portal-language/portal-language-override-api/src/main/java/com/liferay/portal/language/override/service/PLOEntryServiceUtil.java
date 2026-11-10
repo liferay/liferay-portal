@@ -79,23 +79,8 @@ public class PLOEntryServiceUtil {
 		return getService().getPLOEntries(start, end, orderByComparator);
 	}
 
-	public static List<PLOEntry> getPLOEntries(
-			String keywords, int start, int end,
-			OrderByComparator<PLOEntry> orderByComparator)
-		throws PortalException {
-
-		return getService().getPLOEntries(
-			keywords, start, end, orderByComparator);
-	}
-
 	public static int getPLOEntriesCount() throws PortalException {
 		return getService().getPLOEntriesCount();
-	}
-
-	public static int getPLOEntriesCount(String keywords)
-		throws PortalException {
-
-		return getService().getPLOEntriesCount(keywords);
 	}
 
 	public static PLOEntry getPLOEntryByExternalReferenceCode(
@@ -128,4 +113,4 @@ public class PLOEntryServiceUtil {
 		new Snapshot<>(PLOEntryServiceUtil.class, PLOEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:641191932
+// LIFERAY-SERVICE-BUILDER-HASH:831299344

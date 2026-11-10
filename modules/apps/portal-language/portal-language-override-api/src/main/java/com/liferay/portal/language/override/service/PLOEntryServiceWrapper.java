@@ -91,30 +91,10 @@ public class PLOEntryServiceWrapper
 	}
 
 	@Override
-	public java.util.List<com.liferay.portal.language.override.model.PLOEntry>
-			getPLOEntries(
-				String keywords, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.portal.language.override.model.PLOEntry>
-						orderByComparator)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ploEntryService.getPLOEntries(
-			keywords, start, end, orderByComparator);
-	}
-
-	@Override
 	public int getPLOEntriesCount()
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _ploEntryService.getPLOEntriesCount();
-	}
-
-	@Override
-	public int getPLOEntriesCount(String keywords)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ploEntryService.getPLOEntriesCount(keywords);
 	}
 
 	@Override
@@ -156,4 +136,4 @@ public class PLOEntryServiceWrapper
 	private PLOEntryService _ploEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1221374787
+// LIFERAY-SERVICE-BUILDER-HASH:-710552655

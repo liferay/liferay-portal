@@ -78,16 +78,7 @@ public interface PLOEntryService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<PLOEntry> getPLOEntries(
-			String keywords, int start, int end,
-			OrderByComparator<PLOEntry> orderByComparator)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPLOEntriesCount() throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getPLOEntriesCount(String keywords) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PLOEntry getPLOEntryByExternalReferenceCode(
@@ -101,4 +92,4 @@ public interface PLOEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-585008555
+// LIFERAY-SERVICE-BUILDER-HASH:-909966885
