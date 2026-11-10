@@ -102,9 +102,9 @@ public class IndividualSegmentMembershipChangeResourceTest
 		_assertBadRequest(
 			individualSegmentMembershipChangeResource.
 				getWorkspaceGroupIndividualSegmentMembershipChangesPageHttpResponse(
-					testGroup.getGroupId(), RandomTestUtil.randomString(),
-					"2026-01-31", null, null, null, Pagination.of(1, 10),
-					null));
+					testGroup.getGroupId(),
+					String.valueOf(RandomTestUtil.randomLong()), "2026-01-31",
+					null, null, null, Pagination.of(1, 10), null));
 	}
 
 	private void _testGetWorkspaceGroupIndividualSegmentMembershipChangesPageWithRangeStart()
@@ -113,8 +113,9 @@ public class IndividualSegmentMembershipChangeResourceTest
 		_assertBadRequest(
 			individualSegmentMembershipChangeResource.
 				getWorkspaceGroupIndividualSegmentMembershipChangesPageHttpResponse(
-					testGroup.getGroupId(), RandomTestUtil.randomString(), null,
-					null, "2026-01-01", null, Pagination.of(1, 10), null));
+					testGroup.getGroupId(),
+					String.valueOf(RandomTestUtil.randomLong()), null, null,
+					"2026-01-01", null, Pagination.of(1, 10), null));
 	}
 
 }
