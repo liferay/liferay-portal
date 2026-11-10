@@ -6434,6 +6434,14 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The external reference codes of the audiences the user matches, as detected in the browser. When present, they replace the audiences read from the com.liferay.frontend.js.audiences cookie.
+                    name: audienceExternalReferenceCodes
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
                     name: fields
                     schema:
                         type: string
@@ -6478,6 +6486,14 @@ paths:
                     required: true
                     schema:
                         type: string
+                -   in: query
+                    description:
+                        The external reference codes of the audiences the user matches, as detected in the browser. When present, they replace the audiences read from the com.liferay.frontend.js.audiences cookie.
+                    name: audienceExternalReferenceCodes
+                    schema:
+                        items:
+                            type: string
+                        type: array
                 -   in: query
                     name: fields
                     schema:
@@ -8620,6 +8636,14 @@ paths:
                     schema:
                         format: int64
                         type: integer
+                -   in: query
+                    description:
+                        The external reference codes of the audiences the user matches, as detected in the browser. When present, they replace the audiences read from the com.liferay.frontend.js.audiences cookie.
+                    name: audienceExternalReferenceCodes
+                    schema:
+                        items:
+                            type: string
+                        type: array
                 -   in: query
                     name: fields
                     schema:
@@ -13143,6 +13167,14 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    description:
+                        The external reference codes of the audiences the user matches, as detected in the browser. When present, they replace the audiences read from the com.liferay.frontend.js.audiences cookie.
+                    name: audienceExternalReferenceCodes
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
                     name: fields
                     schema:
                         type: string
@@ -13189,6 +13221,14 @@ paths:
                     required: true
                     schema:
                         type: string
+                -   in: query
+                    description:
+                        The external reference codes of the audiences the user matches, as detected in the browser. When present, they replace the audiences read from the com.liferay.frontend.js.audiences cookie.
+                    name: audienceExternalReferenceCodes
+                    schema:
+                        items:
+                            type: string
+                        type: array
                 -   in: query
                     name: fields
                     schema:
