@@ -104,14 +104,14 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 		String keywords = ParamUtil.getString(httpServletRequest, "keywords");
 
 		Set<Long> recentUserIds = new HashSet<>();
+		Set<Long> userIds = new HashSet<>();
 		Map<Long, User> users = new LinkedHashMap<>();
 
 		for (Comment comment : comments) {
 			User user = comment.getUser();
 
 			if (comment.isRoot() || (user == null) ||
-				users.containsKey(user.getUserId()) ||
-				!_isMatch(keywords, user) ||
+				!_isMatch(keywords, user) || !userIds.add(user.getUserId()) ||
 				!_isMentionable(
 					className1, classPK, objectEntry.getGroupId(), themeDisplay,
 					user)) {
@@ -142,7 +142,7 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 				UserFirstNameComparator.getInstance(true));
 
 			for (User groupUser : groupUsers) {
-				if (users.containsKey(groupUser.getUserId()) ||
+				if (!userIds.add(groupUser.getUserId()) ||
 					!_isMentionable(
 						className1, classPK, objectEntry.getGroupId(),
 						themeDisplay, groupUser)) {
