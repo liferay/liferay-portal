@@ -8,6 +8,7 @@ import {ClayInput, ClayToggle as Toggle} from '@clayui/form';
 import Icon from '@clayui/icon';
 import Layout from '@clayui/layout';
 import {useId} from '@clayui/shared';
+import classNames from 'classnames';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 
 import {ChildrenFunction, Collection, useCollection} from '../collection';
@@ -218,13 +219,16 @@ export function Head<T extends Record<string, any>>(
 											searchTerm={searchTerm}
 										/>
 
-										{!columnsVisibilityItems.length && (
-											<div className="dropdown-section text-secondary">
-												{
-													messages.columnsVisibilityNoResults
-												}
-											</div>
-										)}
+										<div
+											className={classNames({
+												'dropdown-section text-secondary':
+													!columnsVisibilityItems.length,
+											})}
+											role="status"
+										>
+											{!columnsVisibilityItems.length &&
+												messages.columnsVisibilityNoResults}
+										</div>
 									</>
 								}
 								items={columnsVisibilityItems}
