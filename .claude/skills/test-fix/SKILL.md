@@ -168,6 +168,16 @@ Only when the failure identifier is a Bug key. The Bug replaces the Testray case
 
 	`--json files` returns at most 100 files per pull request. For a pull request whose `changedFiles` is over 100, list its files with `gh api repos/<fork>/pulls/<number>/files --jq '.[].filename' --paginate`. Pull requests opened from personal forks against other repositories are not found this way.
 
+	When the `--evidence` file names a Bug for this failure, or the failure identifier is a Bug key, also search the same forks for open pull requests that carry the key:
+
+	```bash
+	gh search prs "<Bug key>" \
+		--repo <fork> \
+		--state open
+	```
+
+	This search only covers the test side. A product fix in review is found later, once the product files at fault are known (see **Iterate Through Suspects** and **Fix Without a Suspect Range**).
+
 	When an open pull request already changes the same code for this failure, run **Verify an Open Pull Request** and exit without creating a Task.
 
 1. Invoke the `jira-task` skill with summary `<test-name>` and a description that names the case result ID, the source build, and the failure trace excerpt. Add the `claude-test-fix` label.
@@ -246,6 +256,8 @@ Apply candidate fixes as uncommitted changes; the **Pull Request** step commits 
 
 	Look for explicit references to the failing test or asserted behavior, and for any sign that the change deliberately drops the contract the assertion was checking.
 
+1. Search open pull requests that change the product files of the suspect's hunks, with the `gh pr list` filter from **Claim the Failure**, in the fork of the team that owns each file and in `brianchandotcom/liferay-portal`. When one already changes the same code for this failure, run **Verify an Open Pull Request** and exit instead of writing a second fix.
+
 1. Apply a fix that touches the suspect's hunks. The fix must live inside the diff between `${LAST_PASS_SHA}` and `${FIRST_FAIL_SHA}` — that is the only place the regression can live, and a fix outside that range means the diagnosis is wrong. Never escalate the scope of the fix to force convergence. Adapt the test (`Outdated test`) — including removing, weakening, or `@Ignore`-ing an assertion — only when the offending commit's documentation (subject, linked Jira ticket, or PR body) explicitly states the contract change the assertion was checking; without that documented justification, the assertion is correct and the regression lives in product code (`Bug in portal`).
 
 1. Run the test again.
@@ -267,6 +279,8 @@ When `lastPassSha` is `null`, there is no window to search: the test has always 
 1. Treat the test's expected values as the specification. Adapt the test (`Outdated test`) only when a commit's documentation (subject, linked Jira ticket, or PR body) explicitly states the contract change the assertion was checking; without it, the defect lives in product code (`Bug in portal`).
 
 1. For a `Bug in portal` on a test that exercises the runtime, reproduce the defect without the test, by hand or with a minimal probe, and record the "before" evidence (screenshot, log excerpt, HTTP response). When it does not reproduce without the test, the product is not proven wrong; look at the test side again.
+
+1. Before writing a product fix, search open pull requests that change the product files at fault, as in **Iterate Through Suspects**. When one already changes the same code for this failure, run **Verify an Open Pull Request** and exit.
 
 1. Apply the smallest fix that addresses the root cause, deploy it, and confirm the deployed artifact contains it. For a `Bug in portal`, repeat the reproduction without the test first, then add a regression test at the lowest level that shows the defect (unit, then integration, then Playwright) and show it fails without the fix.
 
