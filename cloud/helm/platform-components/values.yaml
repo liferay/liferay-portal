@@ -131,7 +131,7 @@ operatorApplications:
         name: argo-workflows
         namespace: argo-workflows-system
         repoURL: https://argoproj.github.io/argo-helm
-        targetRevision: 2.0.3
+        targetRevision: 2.0.15
         values:
             controller:
                 resources:
@@ -149,7 +149,7 @@ operatorApplications:
                                 type: RuntimeDefault
             executor:
                 image:
-                    tag: v4.1.2-nonroot
+                    nonroot: true
                 securityContext:
                     allowPrivilegeEscalation: false
                     capabilities:
@@ -233,7 +233,7 @@ operatorApplications:
                         memory: 512Mi
                 serviceAccountName: provider-kubernetes
         repoURL: https://charts.crossplane.io/stable
-        targetRevision: 2.1.3
+        targetRevision: 2.4.3
         values:
             podSecurityContextCrossplane:
                 runAsNonRoot: true
@@ -293,7 +293,7 @@ operatorApplications:
         namespaceLabels:
             pod-security.kubernetes.io/enforce: restricted
         repoURL: https://helm.elastic.co
-        targetRevision: 3.2.0
+        targetRevision: 3.5.0
         values:
             installCRDs: true
             podSecurityContext:
@@ -322,7 +322,7 @@ operatorApplications:
         name: envoy-gateway
         namespace: envoy-gateway-system
         repoURL: oci://docker.io/envoyproxy/gateway-helm
-        targetRevision: 1.6.3
+        targetRevision: 1.9.3
         values:
             config:
                 envoyGateway:
@@ -338,7 +338,7 @@ operatorApplications:
         name: external-secrets
         namespace: external-secrets-system
         repoURL: https://charts.external-secrets.io
-        targetRevision: 2.9.0
+        targetRevision: 2.14.0
         values:
             certController:
                 resources:
@@ -369,7 +369,7 @@ operatorApplications:
         name: keda
         namespace: keda-system
         repoURL: https://kedacore.github.io/charts
-        targetRevision: 2.19.0
+        targetRevision: 2.21.0
         values:
             resources:
                 metricServer:
