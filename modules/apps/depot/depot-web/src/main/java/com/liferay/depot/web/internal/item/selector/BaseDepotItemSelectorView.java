@@ -17,6 +17,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -72,6 +73,10 @@ public abstract class BaseDepotItemSelectorView
 	public boolean isVisible(
 		T groupItemSelectorCriterion, ThemeDisplay themeDisplay) {
 
+		if (_siteItemSelectorViewRendererSnapshot.get() == null) {
+			return false;
+		}
+
 		if (groupItemSelectorCriterion == null) {
 			return true;
 		}
@@ -98,6 +103,9 @@ public abstract class BaseDepotItemSelectorView
 					(HttpServletRequest)servletRequest, itemSelectedEventName,
 					portletURL, groupItemSelectorCriterion);
 
+		SiteItemSelectorViewRenderer siteItemSelectorViewRenderer =
+			_siteItemSelectorViewRendererSnapshot.get();
+
 		siteItemSelectorViewRenderer.renderHTML(
 			depotSitesItemSelectorViewDisplayContext);
 	}
@@ -114,11 +122,12 @@ public abstract class BaseDepotItemSelectorView
 	protected DepotPanelAppController depotPanelAppController;
 
 	@Reference
-	protected SiteItemSelectorViewRenderer siteItemSelectorViewRenderer;
-
-	@Reference
 	protected StagingGroupHelper stagingGroupHelper;
 
+	private static final Snapshot<SiteItemSelectorViewRenderer>
+		_siteItemSelectorViewRendererSnapshot = new Snapshot<>(
+			BaseDepotItemSelectorView.class, SiteItemSelectorViewRenderer.class,
+			null, true);
 	private static final List<ItemSelectorReturnType>
 		_supportedItemSelectorReturnTypes = Collections.unmodifiableList(
 			ListUtil.fromArray(

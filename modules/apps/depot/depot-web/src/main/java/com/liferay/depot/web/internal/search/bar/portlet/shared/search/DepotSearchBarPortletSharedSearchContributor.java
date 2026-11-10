@@ -5,12 +5,13 @@
 
 package com.liferay.depot.web.internal.search.bar.portlet.shared.search;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.search.web.constants.SearchBarPortletKeys;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchContributor;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alejandro Tardín
@@ -29,14 +30,29 @@ public class DepotSearchBarPortletSharedSearchContributor
 	public void contribute(
 		PortletSharedSearchSettings portletSharedSearchSettings) {
 
-		_defaultSearchBarPortletSharedSearchContributor.contribute(
+		PortletSharedSearchContributor
+			defaultSearchBarPortletSharedSearchContributor =
+				_defaultSearchBarPortletSharedSearchContributorSnapshot.get();
+
+		if (defaultSearchBarPortletSharedSearchContributor == null) {
+			return;
+		}
+
+		defaultSearchBarPortletSharedSearchContributor.contribute(
 			portletSharedSearchSettings);
 	}
 
-	@Reference(
-		target = "(&(jakarta.portlet.name=" + SearchBarPortletKeys.SEARCH_BAR + ")(!(component.name=com.liferay.depot.web.internal.search.bar.portlet.shared.search.DepotSearchBarPortletSharedSearchContributor)))"
-	)
-	private PortletSharedSearchContributor
-		_defaultSearchBarPortletSharedSearchContributor;
+	private static final Snapshot<PortletSharedSearchContributor>
+		_defaultSearchBarPortletSharedSearchContributorSnapshot =
+			new Snapshot<>(
+				DepotSearchBarPortletSharedSearchContributor.class,
+				PortletSharedSearchContributor.class,
+				StringBundler.concat(
+					"(&(jakarta.portlet.name=", SearchBarPortletKeys.SEARCH_BAR,
+					")(!(component.name=",
+					DepotSearchBarPortletSharedSearchContributor.class.
+						getName(),
+					")))"),
+				true);
 
 }
