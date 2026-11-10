@@ -7,6 +7,8 @@ package com.liferay.osb.faro.rest.internal.graphql.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.liferay.petra.string.StringBundler;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -83,7 +85,7 @@ public class GraphQLError {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		StringBundler sb = new StringBundler();
 
 		sb.append("{message=");
 		sb.append(_message);

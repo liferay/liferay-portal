@@ -107,7 +107,7 @@ public class GraphQLExceptionMapperTest {
 
 		graphQLError.setExtensions(
 			HashMapBuilder.<String, Object>put(
-				"classification", "DataFetchingException"
+				"classification", RandomTestUtil.randomString()
 			).put(
 				"errorId", RandomTestUtil.randomString()
 			).put(
