@@ -148,7 +148,7 @@ const IndividualsOverviewCDP = () => {
 	const {data, loading} = useQuery(IndividualMetricsQuery, {
 		fetchPolicy: 'network-only',
 		variables: {
-			campaignIds: campaignId,
+			campaignId,
 			channelId,
 			interval: INTERVAL_KEY_MAP.week,
 			rangeKey: 30,
