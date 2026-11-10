@@ -1,7 +1,7 @@
 ---
 
 allowed-tools: [Bash, Edit, Glob, Grep, Read, Skill, Write]
-argument-hint: '<caseResultId | testName | testrayBuildUrl> [--evidence <file>]'
+argument-hint: '<bugKey | caseResultId | testName | testrayBuildUrl> [--evidence <file>]'
 description: Resolve a single Liferay test failure end-to-end.
 name: test-fix
 
@@ -18,6 +18,10 @@ Resolve a single test failure end-to-end.
 ## Input
 
 The failure identifier is everything in `${ARGUMENTS}` before the first `--` option.
+
+### Bug Key
+
+When the failure identifier is a Jira Bug key (`LPD-<number>`) or its browse URL, the run starts from an already filed Bug instead of a Testray case result. Read the Bug through the Jira REST API (`.claude/rules/jira.md`): its description, comments, links, component, and assignee, the tests it names, and its steps to reproduce. Nothing is fetched from Testray. **Start From a Bug** lists what changes in the workflow.
 
 ### Case Result ID
 
@@ -47,6 +51,8 @@ Fetched at the start of the run by following [`references/testray.md`](reference
 - **name** — test name (class, spec, or method).
 - **type** — one of `Java Integration`, `Java Semantic Versioning`, `Java Unit`, `JavaScript`, `Playwright`, `Poshi`.
 
+For a Bug key, derive the fields from the ticket instead. **name** is the test the Bug names, or the Bug summary when it names none. **type** follows from that test, or is `Unknown` when there is none. **errorTrace** is the trace or the observed result quoted in the ticket. **buildSha**, **failureDate**, **firstFailSha**, and **lastPassSha** are `null`.
+
 ## Expected Output
 
 ### Name
@@ -71,7 +77,7 @@ One of:
 One sentence describing the outcome:
 
 - For `Bug in portal` and `Outdated test`, name the offending commit (short SHA and subject) and what it changed. When the test has no recorded last pass, name the cause found in **Fix Without a Suspect Range** instead.
-- For `No fix needed`, the literal string `Test passes locally`.
+- For `No fix needed`, the literal string `Test passes locally`, or `Defect does not reproduce` when the run started from a Bug key.
 - For `Unresolved`, an honest handover summary listing hypotheses considered, attempts made, observed effects, and the most plausible remaining lead.
 
 ### Resolution Time
@@ -89,6 +95,8 @@ The Task created in **Claim the Failure** is the persistent ticket of record for
 - **No fix needed** — close the Task as `Won't Do` with a comment containing the literal `Test passes locally`. No PR is opened.
 
 - **Unresolved** — leave the Task in **In Progress**, append the handover summary as a comment, and return its URL so the human picking it up has a single landing page.
+
+When the run started from a Bug key, there is no Task: the Bug is the ticket of record. Comment the outcome on it for every verdict and return its URL. Never close it as `Won't Do`. For `No fix needed`, comment the steps tried and the observed result, and leave the Bug open for its reporter.
 
 ### Pull Request
 
@@ -124,6 +132,16 @@ Commit `<short-sha>` ("<subject>") <one or two sentences>.
 ```
 
 ## Workflow
+
+### Start From a Bug
+
+Only when the failure identifier is a Bug key. The Bug replaces the Testray case result, and the steps below change as follows:
+
+- **Claim the Failure** — the Bug is the ticket of record, so skip the duplicate-ticket check and do not create a Task. When the Bug is assigned to someone else or already in progress, or a commit on the base branch already carries its key, stop and report who has it. Otherwise, run the open pull request search over the tests the Bug names. Do not invoke the `start-work` skill yet.
+
+- **Reproduce Locally** — reproduce what the ticket describes, by following its steps by hand or with a minimal probe, on a bundle that matches the conditions it names (database, virtual instance, feature flags), and run every test the Bug names. Record the steps and the observed result. When neither the steps nor the named tests show the defect, exit with `Verdict: No fix needed`. Once the defect reproduces, invoke the `start-work` skill on the Bug so the branch and commits carry its key. Doing this only now keeps a Bug that does not reproduce unassigned.
+
+- **Identify Suspect Commits** and **Iterate Through Suspects** — skipped. There is no window between a last pass and a first failure to search, so continue to **Fix Without a Suspect Range**. Run every test the Bug names before locking the verdict. One that still fails is a second defect or a different cause; name it in the **Conclusion** rather than widening the fix.
 
 ### Claim the Failure
 
