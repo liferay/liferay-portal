@@ -30,7 +30,13 @@ const DXP_LANG_PATH = path.resolve(
 	'Language.properties'
 );
 
+const keysByLangPath = {};
+
 function getKeys(langPath) {
+	if (keysByLangPath[langPath]) {
+		return keysByLangPath[langPath];
+	}
+
 	let keys = {};
 
 	try {
@@ -43,6 +49,8 @@ function getKeys(langPath) {
 		// eslint-disable-next-line no-console
 		console.error(`Failed to read lang key file: ${langPath}`);
 	}
+
+	keysByLangPath[langPath] = keys;
 
 	return keys;
 }
