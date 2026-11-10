@@ -130,28 +130,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro gotoDocumentVersionsPage(dmDocumentTitle = null) {
-		if (isSet(navigateByViewHistory)) {
-			LexiconEntry.gotoEntryMenuItem(
-				menuItem = "View History",
-				rowEntry = ${dmDocumentTitle});
-		}
-		else {
-			LexiconCard.checkCardCheckbox(card = ${dmDocumentTitle});
-
-			DMDocument.expandInfo();
-
-			Navigator.gotoNavTab(navTab = "Versions");
-
-			Button.click(button = "View More");
-		}
-
-		AssertVisible(
-			key_text = "Versions",
-			locator1 = "Button#ANY");
-	}
-
-	@summary = "Default summary"
 	macro gotoEditDocumentPG(dmDocumentTitle = null) {
 		var key_dmDocumentTitle = ${dmDocumentTitle};
 

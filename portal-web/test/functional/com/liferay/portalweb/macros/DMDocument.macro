@@ -2309,29 +2309,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro moveToRecycleBinCP(dmDocumentTitle = null) {
-		var key_dmDocumentTitle = ${dmDocumentTitle};
-
-		AssertElementPresent(locator1 = "DocumentsAndMedia#ICON_DOCUMENT");
-
-		DMDocument.viewCardTitle(dmDocumentTitle = ${dmDocumentTitle});
-
-		MouseOver(locator1 = "DocumentsAndMedia#ICON_DOCUMENT");
-
-		LexiconCard.checkCardCheckbox(card = ${dmDocumentTitle});
-
-		Click(locator1 = "Icon#MOVE_TO_RECYCLE_BIN");
-
-		VerifyElementPresent(locator1 = "Message#SUCCESS");
-
-		if (IsElementNotPresent(locator1 = "DocumentsAndMedia#ICON_DOCUMENT_GENERIC")) {
-			AssertTextEquals.assertPartialText(
-				locator1 = "Message#EMPTY_INFO",
-				value1 = "There are no documents or media files in this folder.");
-		}
-	}
-
-	@summary = "Default summary"
 	macro moveToSubFolderCP(dmSubFolderName = null, dmDocumentTitle = null) {
 		var key_dmDocumentTitle = ${dmDocumentTitle};
 
@@ -2981,18 +2958,6 @@ definition {
 		Type(
 			key_fieldLabel = "Maximum File Upload Size",
 			locator1 = "TextInput#GENERIC_NUMBER_INPUT",
-			value1 = ${fieldValue});
-
-		SystemSettings.saveConfiguration();
-	}
-
-	@summary = "Default summary"
-	macro updateMaximumVersions(fieldValue = null) {
-		DMNavigator.openToConfigInSystemSettings(portlet = "Service");
-
-		Type(
-			key_fieldLabel = "Maximum Number Of Versions",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
 			value1 = ${fieldValue});
 
 		SystemSettings.saveConfiguration();
@@ -3690,33 +3655,6 @@ definition {
 				locator1 = "DocumentsAndMediaDocument#METADATA_PANEL_DATE",
 				value1 = "value",
 				value2 = ${dateValue});
-		}
-	}
-
-	@summary = "Default summary"
-	macro viewDocumentVersionInfoFromVersionsPage(dmDocumentTitle = null, orderIndex = null) {
-		AssertVisible(
-			index = ${orderIndex},
-			key_tableEntry = ${dmDocumentTitle},
-			locator1 = "LexiconTable#TABLE_ENTRY_TITLE_INDEXED");
-
-		var list1 = ListUtil.newListFromString("id,title,version,status,modified-date,author");
-		var list2 = ListUtil.newListFromString(${dmDocumentVersionInfo});
-		var size = ListUtil.size(${list1});
-		var i = 0;
-
-		while (${i} != ${size}) {
-			var tableTitle = ListUtil.get(${list1}, ${i});
-			var dmDocumentVersionInfo = ListUtil.get(${list2}, ${i});
-
-			AssertVisible(
-				key_columnName = ${tableTitle},
-				key_tableEntry = ${dmDocumentVersionInfo},
-				locator1 = "LexiconTable#TABLE_ENTRY_INFO");
-
-			var i = ${i} + 1;
-
-			var i = StringUtil.valueOf(${i});
 		}
 	}
 
