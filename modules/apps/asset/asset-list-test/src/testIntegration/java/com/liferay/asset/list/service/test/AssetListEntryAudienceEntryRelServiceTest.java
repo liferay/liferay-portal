@@ -12,6 +12,7 @@ import com.liferay.asset.list.model.AssetListEntryAudienceEntryRel;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelService;
+import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.asset.test.util.asset.renderer.factory.TestAssetRendererFactory;
@@ -34,6 +35,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -164,6 +166,37 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 						getAssetListEntryAudienceEntryRelId()));
 	}
 
+	@Test
+	public void testDeleteAssetListEntryAudienceEntryRelWithAudienceEntryERC()
+		throws Exception {
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+
+		_addAssetListEntryAudienceEntryRel(_assetListEntry, audienceEntryERC);
+
+		Date modifiedDate = new Date(0);
+
+		_assetListEntry.setModifiedDate(modifiedDate);
+
+		_assetListEntry = _assetListEntryLocalService.updateAssetListEntry(
+			_assetListEntry);
+
+		_assetListEntryAudienceEntryRelLocalService.
+			deleteAssetListEntryAudienceEntryRel(
+				_assetListEntry.getAssetListEntryId(), audienceEntryERC);
+
+		Assert.assertNull(
+			_assetListEntryAudienceEntryRelLocalService.
+				fetchAssetListEntryAudienceEntryRel(
+					_assetListEntry.getAssetListEntryId(), audienceEntryERC));
+
+		_assetListEntry = _assetListEntryLocalService.getAssetListEntry(
+			_assetListEntry.getAssetListEntryId());
+
+		Assert.assertTrue(
+			modifiedDate.before(_assetListEntry.getModifiedDate()));
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testDeleteAssetListEntryAudienceEntryRelWithoutPermission()
 		throws Exception {
@@ -287,10 +320,10 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 					_group.getCompanyId(), audienceEntryERC));
 
 		_addAssetListEntryAudienceEntryRel(
+			_assetListEntry, RandomTestUtil.randomString());
+		_addAssetListEntryAudienceEntryRel(
 			AssetListTestUtil.addAssetListEntry(_group.getGroupId()),
 			audienceEntryERC);
-		_addAssetListEntryAudienceEntryRel(
-			_assetListEntry, RandomTestUtil.randomString());
 		_addAssetListEntryAudienceEntryRel(_assetListEntry, audienceEntryERC);
 
 		Assert.assertEquals(
@@ -335,6 +368,13 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 			_addAssetListEntryAudienceEntryRel(
 				_assetListEntry, RandomTestUtil.randomString());
 
+		Date modifiedDate = new Date(0);
+
+		_assetListEntry.setModifiedDate(modifiedDate);
+
+		_assetListEntry = _assetListEntryLocalService.updateAssetListEntry(
+			_assetListEntry);
+
 		_assetListEntryAudienceEntryRelLocalService.updatePriorities(
 			new long[] {
 				assetListEntryAudienceEntryRel2.
@@ -352,6 +392,12 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 						assetListEntryAudienceEntryRel1.getAudienceEntryERC(),
 						assetListEntryAudienceEntryRel2.getAudienceEntryERC()
 					}));
+
+		_assetListEntry = _assetListEntryLocalService.getAssetListEntry(
+			_assetListEntry.getAssetListEntryId());
+
+		Assert.assertTrue(
+			modifiedDate.before(_assetListEntry.getModifiedDate()));
 	}
 
 	@Test(expected = PrincipalException.MustHavePermission.class)
@@ -407,6 +453,9 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	@Inject
 	private AssetListEntryAudienceEntryRelService
 		_assetListEntryAudienceEntryRelService;
+
+	@Inject
+	private AssetListEntryLocalService _assetListEntryLocalService;
 
 	private Group _group;
 	private ServiceContext _serviceContext;

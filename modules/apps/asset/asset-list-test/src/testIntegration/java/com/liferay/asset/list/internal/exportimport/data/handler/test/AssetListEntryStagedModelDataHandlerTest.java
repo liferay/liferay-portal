@@ -10,10 +10,16 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.list.constants.AssetListConstants;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
+import com.liferay.asset.list.constants.AssetListPortletKeys;
 import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
+import com.liferay.asset.list.model.AssetListEntryAudienceEntryRel;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
+import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
@@ -23,8 +29,11 @@ import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.test.util.lar.BaseStagedModelDataHandlerTestCase;
+import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -79,12 +88,14 @@ public class AssetListEntryStagedModelDataHandlerTest
 	@TestInfo(
 		{
 			"LPD-86116", "LPD-86506", "LPD-102486", "LPD-103053", "LPD-106171",
-			"LPD-106967"
+			"LPD-106967", "LPD-109902"
 		}
 	)
 	public void testExportImportAssetListEntry() throws Exception {
 		_testExportImportAssetListEntryWithAnyClassType();
 		_testExportImportAssetListEntryWithAssetCategoryFilters();
+		_testExportImportAssetListEntryWithAudienceVariationAssetEntries();
+		_testExportImportAssetListEntryWithAudienceVariations();
 		_testExportImportAssetListEntryWithLegacyQueryRules();
 		_testExportImportAssetListEntryWithNonexistentClassName();
 		_testExportImportAssetListEntryWithNonexistentClassNames();
@@ -110,6 +121,8 @@ public class AssetListEntryStagedModelDataHandlerTest
 	@Override
 	protected void exportStagedModel(StagedModel stagedModel) throws Exception {
 		initExport();
+
+		portletDataContext.setPortletId(AssetListPortletKeys.ASSET_LIST);
 
 		try {
 			ExportImportThreadLocal.setPortletExportInProcess(true);
@@ -180,6 +193,29 @@ public class AssetListEntryStagedModelDataHandlerTest
 
 		return SegmentsTestUtil.addSegmentsEntry(
 			groupId, CriteriaSerializer.serialize(criteria));
+	}
+
+	private void _assertAssetListEntryAudienceEntryRel(
+		String anyAssetType, AssetListEntry assetListEntry,
+		String audienceEntryERC, int priority) {
+
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
+			_assetListEntryAudienceEntryRelLocalService.
+				fetchAssetListEntryAudienceEntryRel(
+					assetListEntry.getAssetListEntryId(), audienceEntryERC);
+
+		Assert.assertEquals(
+			liveGroup.getGroupId(),
+			assetListEntryAudienceEntryRel.getGroupId());
+		Assert.assertEquals(
+			priority, assetListEntryAudienceEntryRel.getPriority());
+
+		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.load(
+			assetListEntryAudienceEntryRel.getTypeSettings()
+		).build();
+
+		Assert.assertEquals(
+			anyAssetType, unicodeProperties.getProperty("anyAssetType"));
 	}
 
 	private void _assertEquals(
@@ -336,6 +372,140 @@ public class AssetListEntryStagedModelDataHandlerTest
 			JSONUtil.getValueAsString(
 				filtersJSONArray, "JSONObject/0", "JSONArray/value",
 				"JSONObject/0", "Object/value"));
+	}
+
+	private void _testExportImportAssetListEntryWithAudienceVariationAssetEntries()
+		throws Exception {
+
+		AssetListEntry assetListEntry = AssetListTestUtil.addAssetListEntry(
+			stagingGroup.getGroupId());
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(stagingGroup.getGroupId());
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				assetListEntry.getAssetListEntryId(), audienceEntryERC, null,
+				serviceContext);
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			stagingGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			JournalArticle.class.getName(),
+			journalArticle.getResourcePrimKey());
+
+		_assetListEntryLocalService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry.getEntryId()}, audienceEntryERC,
+			serviceContext);
+
+		exportImportStagedModel(assetListEntry);
+
+		AssetListEntry importedAssetListEntry = (AssetListEntry)getStagedModel(
+			assetListEntry.getUuid(), liveGroup);
+
+		Assert.assertEquals(
+			1,
+			_assetListEntryAssetEntryRelLocalService.
+				getAssetListEntryAssetEntryRelsCount(
+					importedAssetListEntry.getAssetListEntryId()));
+
+		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels =
+			_assetListEntryAssetEntryRelLocalService.
+				getAssetListEntryAssetEntryRels(
+					importedAssetListEntry.getAssetListEntryId(),
+					audienceEntryERC, SegmentsEntryConstants.ID_DEFAULT,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			assetListEntryAssetEntryRels.toString(), 1,
+			assetListEntryAssetEntryRels.size());
+
+		AssetListEntryAssetEntryRel assetListEntryAssetEntryRel =
+			assetListEntryAssetEntryRels.get(0);
+
+		AssetEntry importedAssetEntry = _assetEntryLocalService.getEntry(
+			assetListEntryAssetEntryRel.getAssetEntryId());
+
+		Assert.assertEquals(
+			assetEntry.getClassUuid(), importedAssetEntry.getClassUuid());
+		Assert.assertEquals(
+			liveGroup.getGroupId(), importedAssetEntry.getGroupId());
+	}
+
+	private void _testExportImportAssetListEntryWithAudienceVariations()
+		throws Exception {
+
+		AssetListEntry assetListEntry = (AssetListEntry)addStagedModel(
+			stagingGroup, Collections.emptyMap());
+
+		String audienceEntryERC1 = RandomTestUtil.randomString();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(stagingGroup.getGroupId());
+
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel1 =
+			_assetListEntryAudienceEntryRelLocalService.
+				addAssetListEntryAudienceEntryRel(
+					TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+					assetListEntry.getAssetListEntryId(), audienceEntryERC1, 0,
+					UnicodePropertiesBuilder.put(
+						"anyAssetType", Boolean.FALSE.toString()
+					).buildString(),
+					serviceContext);
+
+		String audienceEntryERC2 = RandomTestUtil.randomString();
+		long journalArticleClassNameId = _classNameLocalService.getClassNameId(
+			JournalArticle.class.getName());
+
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel2 =
+			_assetListEntryAudienceEntryRelLocalService.
+				addAssetListEntryAudienceEntryRel(
+					TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+					assetListEntry.getAssetListEntryId(), audienceEntryERC2, 1,
+					UnicodePropertiesBuilder.put(
+						"anyAssetType",
+						String.valueOf(journalArticleClassNameId)
+					).buildString(),
+					serviceContext);
+
+		exportImportStagedModel(assetListEntry);
+
+		AssetListEntry importedAssetListEntry = (AssetListEntry)getStagedModel(
+			assetListEntry.getUuid(), liveGroup);
+
+		_assertAssetListEntryAudienceEntryRel(
+			Boolean.FALSE.toString(), importedAssetListEntry, audienceEntryERC1,
+			0);
+		_assertAssetListEntryAudienceEntryRel(
+			String.valueOf(journalArticleClassNameId), importedAssetListEntry,
+			audienceEntryERC2, 1);
+
+		_assetListEntryAudienceEntryRelLocalService.updatePriorities(
+			new long[] {
+				assetListEntryAudienceEntryRel2.
+					getAssetListEntryAudienceEntryRelId(),
+				assetListEntryAudienceEntryRel1.
+					getAssetListEntryAudienceEntryRelId()
+			});
+
+		exportImportStagedModel(assetListEntry);
+
+		Assert.assertEquals(
+			2,
+			_assetListEntryAudienceEntryRelLocalService.
+				getAssetListEntryAudienceEntryRelsCount(
+					importedAssetListEntry.getAssetListEntryId()));
+
+		_assertAssetListEntryAudienceEntryRel(
+			Boolean.FALSE.toString(), importedAssetListEntry, audienceEntryERC1,
+			1);
+		_assertAssetListEntryAudienceEntryRel(
+			String.valueOf(journalArticleClassNameId), importedAssetListEntry,
+			audienceEntryERC2, 0);
 	}
 
 	private void _testExportImportAssetListEntryWithLegacyQueryRules()
@@ -517,6 +687,17 @@ public class AssetListEntryStagedModelDataHandlerTest
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
+
+	@Inject
+	private AssetListEntryAssetEntryRelLocalService
+		_assetListEntryAssetEntryRelLocalService;
+
+	@Inject
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
 
 	@Inject
 	private AssetListEntryLocalService _assetListEntryLocalService;
