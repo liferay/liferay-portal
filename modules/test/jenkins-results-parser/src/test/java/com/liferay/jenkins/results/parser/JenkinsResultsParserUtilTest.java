@@ -302,7 +302,19 @@ public class JenkinsResultsParserUtilTest
 			portalBranchName);
 		String noGitCommitS3ObjectKey = _randomPortalBundleS3ObjectKey(
 			portalBranchName);
+
 		String successS3ObjectKey = _randomPortalBundleS3ObjectKey(
+			portalBranchName);
+
+		String privateS3ObjectKey = JenkinsResultsParserUtil.combine(
+			successS3ObjectKey, "/", RandomTestUtil.randomString(), "_",
+			_randomPortalGitCommitShort(), "_", _randomPortalGitCommitShort());
+
+		String pullRequestS3ObjectKey = JenkinsResultsParserUtil.combine(
+			"persistent-resources/portal-bundle/", portalBranchName, "_",
+			_randomPortalGitCommitShort(), "_", _randomPortalGitCommitShort());
+
+		String reusedS3ObjectKey = _randomPortalBundleS3ObjectKey(
 			portalBranchName);
 
 		Shell shell = mockShell();
@@ -316,6 +328,12 @@ public class JenkinsResultsParserUtilTest
 				"2026-11-03 10:00:00       123 " + failedS3ObjectKey +
 					"/data.json.gz",
 				"2026-11-02 10:00:00       123 " + noGitCommitS3ObjectKey +
+					"/data.json.gz",
+				"2026-11-05 10:00:00       123 " + privateS3ObjectKey +
+					"/data.json.gz",
+				"2026-11-06 10:00:00       123 " + pullRequestS3ObjectKey +
+					"/data.json.gz",
+				"2026-11-07 10:00:00       123 " + reusedS3ObjectKey +
 					"/data.json.gz",
 				"2026-11-04 10:00:00  99999999 " + successS3ObjectKey +
 					"/liferay-portal-bundle-tomcat.tar.gz"));
@@ -337,8 +355,39 @@ public class JenkinsResultsParserUtilTest
 				"status", "SUCCESS"
 			));
 		dataJSONObjects.put(
+			s3BucketPath + "/" + privateS3ObjectKey,
+			new JSONObject(
+			).put(
+				"portal_git_commit", RandomTestUtil.randomSHA()
+			).put(
+				"status", "SUCCESS"
+			));
+		dataJSONObjects.put(
+			s3BucketPath + "/" + pullRequestS3ObjectKey,
+			new JSONObject(
+			).put(
+				"portal_git_commit", RandomTestUtil.randomSHA()
+			).put(
+				"status", "SUCCESS"
+			));
+
+		long reusedCompletedTime = RandomTestUtil.randomInt();
+
+		dataJSONObjects.put(
+			s3BucketPath + "/" + reusedS3ObjectKey,
+			new JSONObject(
+			).put(
+				"completed_time", reusedCompletedTime
+			).put(
+				"portal_git_commit", RandomTestUtil.randomSHA()
+			).put(
+				"status", "SUCCESS"
+			));
+		dataJSONObjects.put(
 			s3BucketPath + "/" + successS3ObjectKey,
 			new JSONObject(
+			).put(
+				"completed_time", reusedCompletedTime + 1
 			).put(
 				"portal_git_commit", RandomTestUtil.randomSHA()
 			).put(
@@ -1672,13 +1721,17 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	private String _randomPortalBundleS3ObjectKey(String portalBranchName) {
-		String portalGitCommit = RandomTestUtil.randomSHA();
-
-		String portalGitCommitShort = portalGitCommit.substring(0, 7);
+		String portalGitCommitShort = _randomPortalGitCommitShort();
 
 		return JenkinsResultsParserUtil.combine(
 			"persistent-resources/portal-bundle/", portalBranchName, "_",
 			portalGitCommitShort, "_", portalGitCommitShort);
+	}
+
+	private String _randomPortalGitCommitShort() {
+		String portalGitCommit = RandomTestUtil.randomSHA();
+
+		return portalGitCommit.substring(0, 7);
 	}
 
 	private void _testFetchBuildURL(
