@@ -9,6 +9,7 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import {DateRenderer} from '@liferay/frontend-data-set-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
+import {StateLabel} from '@liferay/site-cms-site-initializer';
 import classNames from 'classnames';
 import React, {
 	forwardRef,
@@ -22,7 +23,6 @@ import {getEmptyImage} from 'react-dnd-html5-backend';
 
 import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import {ITask} from '../../../../../utils/types';
-import StateLabel from '../../../../StateLabel';
 import {KanbanViewContext} from '../context';
 import {ItemTypes} from './Column';
 

@@ -7,12 +7,12 @@ import '@testing-library/jest-dom';
 import {render} from '@testing-library/react';
 import React from 'react';
 
-import WorkflowStateRenderer from '../../js/components/props_transformer/cell_renderers/WorkflowStateRenderer';
+import WorkflowStateRenderer from '../../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/cell_renderers/WorkflowStateRenderer';
 
 describe('WorkflowStateRenderer', () => {
 	it('renders the Completed label when embedded.completed is true', () => {
 		const {getByText} = render(
-			<WorkflowStateRenderer embedded={{completed: true}} />
+			<WorkflowStateRenderer itemData={{embedded: {completed: true}}} />
 		);
 
 		expect(getByText('completed')).toBeInTheDocument();
@@ -20,7 +20,7 @@ describe('WorkflowStateRenderer', () => {
 
 	it('renders the Pending label when embedded.completed is false', () => {
 		const {getByText} = render(
-			<WorkflowStateRenderer embedded={{completed: false}} />
+			<WorkflowStateRenderer itemData={{embedded: {completed: false}}} />
 		);
 
 		expect(getByText('pending')).toBeInTheDocument();

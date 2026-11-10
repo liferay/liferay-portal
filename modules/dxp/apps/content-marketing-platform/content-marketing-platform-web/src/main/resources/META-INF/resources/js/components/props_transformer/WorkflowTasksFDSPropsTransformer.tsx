@@ -10,7 +10,10 @@ import {
 	IView,
 	getItemActionURL,
 } from '@liferay/frontend-data-set-web';
-import {addOnClickToCreationMenuItems} from '@liferay/site-cms-site-initializer';
+import {
+	WorkflowStateRenderer,
+	addOnClickToCreationMenuItems,
+} from '@liferay/site-cms-site-initializer';
 import React from 'react';
 
 import {styleActions} from '../../utils/actionStyles';
@@ -28,7 +31,6 @@ import BulkEditWorkflowDueDateModalContent from '../modal/BulkEditWorkflowDueDat
 import BulkUpdateWorkflowStateModalContent from '../modal/BulkUpdateWorkflowStateModalContent';
 import ACTIONS from './actions/creationMenuActions';
 import {cmpWorkflowTasksFDSAtom} from './atoms';
-import WorkflowStateRenderer from './cell_renderers/WorkflowStateRenderer';
 import WorkflowTaskActionLinkRenderer from './cell_renderers/WorkflowTaskActionLinkRenderer';
 
 type BulkModalProps = {
@@ -150,9 +152,7 @@ export default function WorkflowTasksFDSPropsTransformer({
 					type: 'internal',
 				} as IInternalRenderer,
 				{
-					component: ({itemData}) => (
-						<WorkflowStateRenderer embedded={itemData.embedded} />
-					),
+					component: WorkflowStateRenderer,
 					name: 'workflowStateTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,

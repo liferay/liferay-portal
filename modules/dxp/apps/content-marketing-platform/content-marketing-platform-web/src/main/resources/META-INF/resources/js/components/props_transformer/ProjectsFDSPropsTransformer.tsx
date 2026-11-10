@@ -8,13 +8,13 @@ import {DateRenderer, IInternalRenderer} from '@liferay/frontend-data-set-web';
 import {
 	AdditionalProps,
 	SimpleActionLinkRenderer,
+	StateLabel,
 	addOnClickToCreationMenuItems,
 	deleteItemAction,
 } from '@liferay/site-cms-site-initializer';
 import {fetch, sub} from 'frontend-js-web';
 
 import {getFormattedLabel} from '../../utils/getFormattedText';
-import StateLabel from '../StateLabel';
 import ACTIONS from './actions/creationMenuActions';
 import manageMembersAction from './actions/manageMembersAction';
 import AssigneeRenderer from './cell_renderers/AssigneeRenderer';

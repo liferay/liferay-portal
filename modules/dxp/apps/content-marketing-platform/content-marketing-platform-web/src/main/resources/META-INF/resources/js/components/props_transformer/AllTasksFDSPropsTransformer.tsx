@@ -11,6 +11,8 @@ import {
 } from '@liferay/frontend-data-set-web';
 import {
 	SimpleActionLinkRenderer,
+	StateLabel,
+	WorkflowStateRenderer,
 	addOnClickToCreationMenuItems,
 	deleteAssetEntriesBulkAction,
 	deleteItemAction,
@@ -34,7 +36,6 @@ import {
 	WorkflowTaskItemData,
 } from '../../utils/types';
 import WORKFLOW_TASK_MODALS from '../../utils/workflowTaskModals';
-import StateLabel from '../StateLabel';
 import BulkEditAssigneeModalContent from '../modal/BulkEditAssigneeModalContent';
 import BulkEditDueDateModalContent from '../modal/BulkEditDueDateModalContent';
 import BulkEditStateModalContent from '../modal/BulkEditStateModalContent';
@@ -43,7 +44,6 @@ import BulkEditWorkflowDueDateModalContent from '../modal/BulkEditWorkflowDueDat
 import EditAssigneeModalContent from '../modal/EditAssigneeModalContent';
 import ACTIONS from './actions/creationMenuActions';
 import AssigneeRenderer from './cell_renderers/AssigneeRenderer';
-import WorkflowStateRenderer from './cell_renderers/WorkflowStateRenderer';
 import WorkflowTaskActionLinkRenderer from './cell_renderers/WorkflowTaskActionLinkRenderer';
 
 const _CLASS_NAME_KALEO_TASK_INSTANCE_TOKEN =
@@ -261,9 +261,7 @@ export default function AllTasksFDSPropsTransformer({
 				{
 					component: ({itemData}) =>
 						isWorkflowTask(itemData) ? (
-							<WorkflowStateRenderer
-								embedded={itemData.embedded}
-							/>
+							<WorkflowStateRenderer itemData={itemData} />
 						) : (
 							StateLabel({
 								dueDate: itemData.embedded?.dueDate,

@@ -18,6 +18,7 @@ import {
 	getItemActionURL,
 } from '@liferay/frontend-data-set-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
+import {StateLabel} from '@liferay/site-cms-site-initializer';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import {TASK_DRAGGING_CLASS_NAME} from '../../../../../utils/constants';
@@ -26,7 +27,6 @@ import {
 	ITaskItemsActionsTask,
 	ITaskObjectEntry,
 } from '../../../../../utils/types';
-import StateLabel from '../../../../StateLabel';
 import sortTasksByPriority from '../utils/sortTasksByPriority';
 
 import './UnscheduledTasksPanel.scss';

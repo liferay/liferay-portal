@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 import {render} from '@testing-library/react';
 import React from 'react';
 
-import StateLabel from '../../js/components/StateLabel';
+import StateLabel from '../../../../src/main/resources/META-INF/resources/js/common/components/StateLabel';
 
 const dueDate = '2026-02-04T00:00:00Z';
 const mockedSystemDate = '2026-02-05T00:00:00Z';

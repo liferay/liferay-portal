@@ -11,6 +11,7 @@ import {
 } from '@liferay/frontend-data-set-web';
 import {
 	SimpleActionLinkRenderer,
+	StateLabel,
 	addOnClickToCreationMenuItems,
 	deleteAssetEntriesBulkAction,
 	deleteItemAction,
@@ -28,7 +29,6 @@ import {getFormattedLabel} from '../../utils/getFormattedText';
 import {openCMPModal} from '../../utils/openCMPModal';
 import {transformFDSBulkActions} from '../../utils/transformFDSBulkActions';
 import {ProjectTaskItemData, TaskAction} from '../../utils/types';
-import StateLabel from '../StateLabel';
 import BulkEditAssigneeModalContent from '../modal/BulkEditAssigneeModalContent';
 import BulkEditDueDateModalContent from '../modal/BulkEditDueDateModalContent';
 import BulkEditStateModalContent from '../modal/BulkEditStateModalContent';

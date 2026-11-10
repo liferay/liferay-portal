@@ -11,7 +11,7 @@ import UpdateDueDateModalContent from '../home/modal/UpdateDueDateModalContent';
 import {tasksFDSAtom} from '../tasks/atoms';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
 import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
-import TaskStatusRenderer from './cell_renderers/TaskStatusRenderer';
+import WorkflowStateRenderer from './cell_renderers/WorkflowStateRenderer';
 
 export default function TasksFDSPropsTransformer({
 	...otherProps
@@ -39,8 +39,8 @@ export default function TasksFDSPropsTransformer({
 					type: 'internal',
 				} as IInternalRenderer,
 				{
-					component: TaskStatusRenderer,
-					name: 'taskStatusTableCellRenderer',
+					component: WorkflowStateRenderer,
+					name: 'workflowStateTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 			],

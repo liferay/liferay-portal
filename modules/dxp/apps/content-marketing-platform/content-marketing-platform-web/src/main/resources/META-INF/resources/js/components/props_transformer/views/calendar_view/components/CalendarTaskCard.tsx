@@ -8,18 +8,17 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import {IItemsActions, getItemActionURL} from '@liferay/frontend-data-set-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
+import {StateLabel, isOverdue} from '@liferay/site-cms-site-initializer';
 import classNames from 'classnames';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
 
 import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import isActionsMenuEvent from '../../../../../utils/isActionsMenuEvent';
-import isOverdue from '../../../../../utils/isOverdue';
 import {
 	ITaskItemsActionsTask,
 	ITaskObjectEntry,
 } from '../../../../../utils/types';
-import StateLabel from '../../../../StateLabel';
 
 import './CalendarTaskCard.scss';
 

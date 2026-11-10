@@ -9,6 +9,7 @@ import React from 'react';
 
 import {CMPProject} from '../services/ProjectLinkService';
 import dateFormat from '../utils/dateFormat';
+import isOverdue from '../utils/isOverdue';
 
 import '../../../css/components/LinkedProjects.scss';
 
@@ -39,12 +40,7 @@ const STATE_DISPLAY_TYPE: {
  * it is computed from the due date whenever the project is not yet done.
  */
 function getStatus(project: CMPProject): {key: string; name: string} | null {
-	const isOverdue =
-		Boolean(project.dueDate) &&
-		project.state?.key !== 'done' &&
-		project.dueDate!.slice(0, 10) < new Date().toISOString().slice(0, 10);
-
-	if (isOverdue) {
+	if (isOverdue({dueDate: project.dueDate, state: project.state})) {
 		return {key: 'overdue', name: Liferay.Language.get('overdue')};
 	}
 

@@ -6,12 +6,12 @@
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import {Col} from '@clayui/layout';
+import {StateLabel} from '@liferay/site-cms-site-initializer';
 import React, {useContext} from 'react';
 import {useDrop} from 'react-dnd';
 
 import {openCMPModal} from '../../../../../utils/openCMPModal';
 import {IColumn} from '../../../../../utils/types';
-import StateLabel from '../../../../StateLabel';
 import CreateTaskModal from '../../../../modal/CreateTaskModal';
 import {KanbanViewContext} from '../context';
 import Task, {ITaskDragItem} from './Task';

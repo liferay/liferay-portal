@@ -13,12 +13,11 @@ import {
 import {IItemsActions, getItemActionURL} from '@liferay/frontend-data-set-web';
 import {Immutable} from '@liferay/frontend-js-state-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
+import {StateLabel, isOverdue} from '@liferay/site-cms-site-initializer';
 import {navigate} from 'frontend-js-web';
 import React, {useEffect, useMemo, useRef} from 'react';
 
-import isOverdue from '../../../../../utils/isOverdue';
 import {ITaskObjectEntry} from '../../../../../utils/types';
-import StateLabel from '../../../../StateLabel';
 import sortTasksByPriority from '../utils/sortTasksByPriority';
 
 import './CalendarMoreLinkPopover.scss';

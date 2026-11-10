@@ -9,6 +9,7 @@ export {default as EnterpriseOnlyPlaceholder} from './common/components/Enterpri
 export {default as EnterpriseProductMenuBanner} from './common/components/EnterpriseProductMenuBanner';
 export {default as SpaceSelector} from './common/components/SpaceSelector';
 export {default as SpaceSticker} from './common/components/SpaceSticker';
+export {default as StateLabel} from './common/components/StateLabel';
 export {default as StatusLabel} from './common/components/StatusLabel';
 export {default as Toolbar} from './common/components/Toolbar';
 export {default as VerticalNavLayout} from './common/components/VerticalNavLayout';
@@ -28,6 +29,7 @@ export {ObjectField, StateFlowValue} from './common/types/ObjectDefinition';
 export {type Space} from './common/types/Space';
 export {getFormattedLabel} from './common/utils/getFormattedText';
 export {getScopeExternalReferenceCode} from './common/utils/getScopeExternalReferenceCode';
+export {default as isOverdue} from './common/utils/isOverdue';
 export {
 	displayCreateSuccessToast,
 	displayCreateTaskErrorToast,
@@ -109,6 +111,7 @@ export {triggerAssetBulkAction} from './main_view/props_transformer/actions/trig
 export {default as AuthorRenderer} from './main_view/props_transformer/cell_renderers/AuthorRenderer';
 export {default as SimpleActionLinkRenderer} from './main_view/props_transformer/cell_renderers/SimpleActionLinkRenderer';
 export {default as SpaceRendererWithCache} from './main_view/props_transformer/cell_renderers/SpaceRendererWithCache';
+export {default as WorkflowStateRenderer} from './main_view/props_transformer/cell_renderers/WorkflowStateRenderer';
 export {default as addOnClickToCreationMenuItems} from './main_view/props_transformer/utils/addOnClickToCreationMenuItems';
 export {default as styleDeleteAction} from './main_view/props_transformer/utils/styleDeleteAction';
 export {default as transformFDSBulkActions} from './main_view/props_transformer/utils/transformFDSBulkActions';

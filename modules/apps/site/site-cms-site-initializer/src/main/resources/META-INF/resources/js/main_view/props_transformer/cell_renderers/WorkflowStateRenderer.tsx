@@ -3,11 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import StateLabel from '../../StateLabel';
+import StateLabel from '../../../common/components/StateLabel';
 
-const WorkflowStateRenderer = ({embedded}: {embedded: any}) => {
+const WorkflowStateRenderer = ({
+	itemData,
+}: {
+	itemData: {embedded?: {completed?: boolean}};
+}) => {
 	return StateLabel({
-		state: embedded?.completed
+		state: itemData.embedded?.completed
 			? {
 					key: 'completed',
 					name: Liferay.Language.get('completed'),

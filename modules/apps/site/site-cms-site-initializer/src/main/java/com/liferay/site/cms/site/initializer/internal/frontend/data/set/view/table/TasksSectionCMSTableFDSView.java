@@ -54,7 +54,7 @@ public class TasksSectionCMSTableFDSView extends BaseCMSTableFDSView {
 		).add(
 			"completed", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"taskStatusTableCellRenderer")
+				"workflowStateTableCellRenderer")
 		).add(
 			addDateFDSTableSchemaField("dateModified", "last-activity-date")
 		).build();
