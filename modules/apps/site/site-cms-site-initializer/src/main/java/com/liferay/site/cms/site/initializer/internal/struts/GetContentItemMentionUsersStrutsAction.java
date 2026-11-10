@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -226,7 +226,7 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 		if ((user.getUserId() == themeDisplay.getUserId()) ||
 			!_groupLocalService.hasUserGroup(user.getUserId(), groupId, true) ||
 			!_discussionPermission.hasViewPermission(
-				PermissionCheckerFactoryUtil.create(user),
+				_permissionCheckerFactory.create(user),
 				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
 				className, classPK)) {
 
@@ -252,6 +252,9 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private PermissionCheckerFactory _permissionCheckerFactory;
 
 	@Reference
 	private UserLocalService _userLocalService;
