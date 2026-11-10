@@ -10,15 +10,18 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 
+import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import java.util.Dictionary;
 
 import org.apache.aries.component.dsl.OSGi;
 import org.apache.aries.component.dsl.OSGiResult;
+import org.apache.aries.jax.rs.whiteboard.internal.DefaultApplication;
 import org.apache.aries.jax.rs.whiteboard.internal.Registry;
 import org.apache.aries.jax.rs.whiteboard.internal.Whiteboard;
 import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
@@ -27,6 +30,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jaxrs.runtime.JaxrsServiceRuntime;
+import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 /**
  * @author Shuyang Zhou
@@ -62,7 +66,12 @@ public class JAXRSWhiteboard implements SafeCloseable {
 				_serviceRegistrationChangeCounterConstructor.newInstance(
 					_jaxrsServiceRuntimeServiceRegistration));
 
-			OSGi<?> osgi = (OSGi<?>)_programField.get(whiteboard);
+			_defaultApplicationServiceRegistration =
+				bundleContext.registerService(
+					Application.class, new DefaultApplication(),
+					_getDefaultApplicationProperties(configuration));
+
+			OSGi<?> osgi = (OSGi<?>)_getAllServicesMethod.invoke(whiteboard);
 
 			_osgiResult = osgi.run(bundleContext);
 
@@ -85,6 +94,8 @@ public class JAXRSWhiteboard implements SafeCloseable {
 
 		_osgiResult.close();
 
+		_defaultApplicationServiceRegistration.unregister();
+
 		_jaxrsServiceRuntimeServiceRegistration.unregister();
 
 		_registry.close();
@@ -92,10 +103,37 @@ public class JAXRSWhiteboard implements SafeCloseable {
 		RuntimeDelegate.setInstance(null);
 	}
 
+	private Dictionary<String, Object> _getDefaultApplicationProperties(
+		Dictionary<String, Object> configuration) {
+
+		return HashMapDictionaryBuilder.<String, Object>putAll(
+			configuration
+		).put(
+			Constants.SERVICE_RANKING, Integer.MIN_VALUE
+		).put(
+			JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE,
+			() -> {
+				Object defaultApplicationBase = configuration.get(
+					"default.application.base");
+
+				if (defaultApplicationBase instanceof String) {
+					return defaultApplicationBase;
+				}
+
+				return "/";
+			}
+		).put(
+			JaxrsWhiteboardConstants.JAX_RS_NAME, ".default"
+		).put(
+			JaxrsWhiteboardConstants.JAX_RS_WHITEBOARD_TARGET,
+			"(service.pid=" + configuration.get(Constants.SERVICE_PID) + ")"
+		).build();
+	}
+
 	private static final Field _applicationRegistryField;
 	private static final Field _bundleContextField;
 	private static final Field _counterField;
-	private static final Field _programField;
+	private static final Method _getAllServicesMethod;
 	private static final Field _runtimeField;
 	private static final Field _runtimeReferenceField;
 	private static final Constructor<?>
@@ -109,8 +147,8 @@ public class JAXRSWhiteboard implements SafeCloseable {
 				Whiteboard.class, "_bundleContext");
 			_counterField = ReflectionUtil.getDeclaredField(
 				Whiteboard.class, "_counter");
-			_programField = ReflectionUtil.getDeclaredField(
-				Whiteboard.class, "_program");
+			_getAllServicesMethod = ReflectionUtil.getDeclaredMethod(
+				Whiteboard.class, "getAllServices");
 			_runtimeField = ReflectionUtil.getDeclaredField(
 				Whiteboard.class, "_runtime");
 			_runtimeReferenceField = ReflectionUtil.getDeclaredField(
@@ -130,6 +168,8 @@ public class JAXRSWhiteboard implements SafeCloseable {
 		}
 	}
 
+	private final ServiceRegistration<Application>
+		_defaultApplicationServiceRegistration;
 	private final ServiceRegistration<JaxrsServiceRuntime>
 		_jaxrsServiceRuntimeServiceRegistration;
 	private final OSGiResult _osgiResult;
