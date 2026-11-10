@@ -12,219 +12,340 @@
 	},
 	"items": [
 		{
-			"externalReferenceCode": "L_ACCOUNT",
-			"objectRelationships": [
+			"accountEntryRestricted": true,
+			"accountEntryRestrictedObjectFieldName": "r_accountToCommerceReturnItems_accountEntryId",
+			"className": "com.liferay.object.model.ObjectDefinition#C2R2",
+			"enableCategorization": true,
+			"enableComments": true,
+			"externalReferenceCode": "L_COMMERCE_RETURN_ITEM",
+			"label": {
+				"en_US": "Commerce Return Item"
+			},
+			"name": "CommerceReturnItem",
+			"objectDefinitionSettings": [
 				{
-					"deletionType": "prevent",
-					"edge": false,
-					"externalReferenceCode": "L_ACCOUNT_TO_L_COMMERCE_RETURN",
+					"name": "visible",
+					"value": "true"
+				}
+			],
+			"objectFields": [
+				{
+					"DBType": "BigDecimal",
+					"businessType": "PrecisionDecimal",
+					"externalReferenceCode": "AMOUNT",
+					"indexed": true,
+					"indexedAsKeyword": false,
 					"label": {
-						"en_US": "Account to Commerce Returns"
+						"en_US": "Amount"
 					},
-					"name": "accountToCommerceReturns",
-					"objectDefinitionExternalReferenceCode1": "L_ACCOUNT",
-					"objectDefinitionExternalReferenceCode2": "L_COMMERCE_RETURN",
-					"objectDefinitionModifiable2": true,
-					"objectDefinitionName2": "CommerceReturn",
-					"objectDefinitionSystem2": true,
-					"objectField": {
-						"DBType": "Long",
-						"businessType": "Relationship",
-						"externalReferenceCode": "ACCOUNT_TO_COMMERCE_RETURN",
-						"indexed": true,
-						"indexedAsKeyword": false,
-						"label": {
-							"en_US": "Account to Commerce Returns"
-						},
-						"localized": false,
-						"name": "r_accountToCommerceReturns_accountEntryId",
-						"objectFieldSettings": [
-							{
-								"name": "objectDefinition1ShortName",
-								"value": "AccountEntry"
-							},
-							{
-								"name": "objectRelationshipERCObjectFieldName",
-								"value": "r_accountToCommerceReturns_accountEntryERC"
-							}
-						],
-						"relationshipType": "oneToMany",
-						"required": true,
-						"state": false,
-						"system": false,
-						"type": "Long"
-					},
-					"parameterObjectFieldId": 0,
-					"parameterObjectFieldName": "",
-					"reverse": false,
-					"system": false,
-					"type": "oneToMany"
+					"name": "amount",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "BigDecimal"
 				},
 				{
-					"deletionType": "prevent",
-					"edge": false,
-					"externalReferenceCode": "L_ACCOUNT_TO_L_COMMERCE_RETURN_ITEM",
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"externalReferenceCode": "AUTHORIZE_RETURN_WITHOUT_RETURNING_PRODUCTS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Authorize Return Without Returning Products"
+					},
+					"name": "authorizeReturnWithoutReturningProducts",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Boolean"
+				},
+				{
+					"DBType": "BigDecimal",
+					"businessType": "PrecisionDecimal",
+					"externalReferenceCode": "AUTHORIZED",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Authorized"
+					},
+					"name": "authorized",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "BigDecimal"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "CURRENCY_CODE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Currency Code"
+					},
+					"name": "currencyCode",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "CURRENCY_SYMBOL",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Currency Symbol"
+					},
+					"name": "currencySymbol",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "BigDecimal",
+					"businessType": "PrecisionDecimal",
+					"externalReferenceCode": "QUANTITY",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Quantity"
+					},
+					"name": "quantity",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "BigDecimal"
+				},
+				{
+					"DBType": "BigDecimal",
+					"businessType": "PrecisionDecimal",
+					"externalReferenceCode": "RECEIVED",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Received"
+					},
+					"name": "received",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "BigDecimal"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"defaultValue": "awaitingAuthorization",
+					"externalReferenceCode": "RETURN_ITEM_STATUS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Return Item Status"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM_STATUSES",
+					"name": "returnItemStatus",
+					"required": true,
+					"state": true,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"defaultValue": "changeOfMind",
+					"externalReferenceCode": "RETURN_REASONS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Return Reason"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_REASONS",
+					"name": "returnReason",
+					"required": true,
+					"state": true,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"externalReferenceCode": "RETURN_RESOLUTION_METHODS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Return Resolution Method"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_RESOLUTION_METHODS",
+					"name": "returnResolutionMethod",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "Relationship",
+					"externalReferenceCode": "ACCOUNT_TO_COMMERCE_RETURN_ITEM",
+					"indexed": true,
+					"indexedAsKeyword": false,
 					"label": {
 						"en_US": "Account to Commerce Return Items"
 					},
-					"name": "accountToCommerceReturnItems",
+					"localized": false,
+					"name": "r_accountToCommerceReturnItems_accountEntryId",
 					"objectDefinitionExternalReferenceCode1": "L_ACCOUNT",
-					"objectDefinitionExternalReferenceCode2": "L_COMMERCE_RETURN_ITEM",
-					"objectDefinitionModifiable2": true,
-					"objectDefinitionName2": "CommerceReturnItem",
-					"objectDefinitionSystem2": true,
-					"objectField": {
-						"DBType": "Long",
-						"businessType": "Relationship",
-						"externalReferenceCode": "ACCOUNT_TO_COMMERCE_RETURN_ITEM",
-						"indexed": true,
-						"indexedAsKeyword": false,
-						"label": {
-							"en_US": "Account to Commerce Return Items"
+					"objectFieldSettings": [
+						{
+							"name": "objectDefinition1ShortName",
+							"value": "AccountEntry"
 						},
-						"localized": false,
-						"name": "r_accountToCommerceReturnItems_accountEntryId",
-						"objectFieldSettings": [
-							{
-								"name": "objectDefinition1ShortName",
-								"value": "AccountEntry"
-							},
-							{
-								"name": "objectRelationshipERCObjectFieldName",
-								"value": "r_accountToCommerceReturnItems_accountEntryERC"
-							}
-						],
-						"relationshipType": "oneToMany",
-						"required": true,
-						"state": false,
-						"system": false,
-						"type": "Long"
-					},
-					"parameterObjectFieldId": 0,
-					"parameterObjectFieldName": "",
-					"reverse": false,
-					"system": false,
-					"type": "oneToMany"
-				}
-			],
-			"status": {
-				"code": 0
-			},
-			"system": true,
-			"titleObjectFieldName": "name"
-		},
-		{
-			"externalReferenceCode": "L_COMMERCE_ORDER",
-			"objectRelationships": [
+						{
+							"name": "objectRelationshipERCObjectFieldName",
+							"value": "r_accountToCommerceReturnItems_accountEntryERC"
+						}
+					],
+					"objectRelationshipExternalReferenceCode": "L_ACCOUNT_TO_L_COMMERCE_RETURN_ITEM",
+					"relationshipType": "oneToMany",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "Long"
+				},
 				{
-					"deletionType": "prevent",
-					"edge": false,
-					"externalReferenceCode": "L_COMMERCE_ORDER_TO_L_COMMERCE_RETURNS",
-					"label": {
-						"en_US": "Commerce Order to Commerce Returns"
-					},
-					"name": "commerceOrderToCommerceReturns",
-					"objectDefinitionExternalReferenceCode1": "L_COMMERCE_ORDER",
-					"objectDefinitionExternalReferenceCode2": "L_COMMERCE_RETURN",
-					"objectDefinitionModifiable2": true,
-					"objectDefinitionName2": "CommerceReturn",
-					"objectDefinitionSystem2": true,
-					"objectField": {
-						"DBType": "Long",
-						"businessType": "Relationship",
-						"externalReferenceCode": "COMMERCE_ORDER_TO_COMMERCE_RETURNS",
-						"indexed": true,
-						"indexedAsKeyword": false,
-						"indexedLanguageId": "",
-						"label": {
-							"en_US": "Commerce Order to Commerce Returns"
-						},
-						"localized": false,
-						"name": "r_commerceOrderToCommerceReturns_commerceOrderId",
-						"objectFieldSettings": [
-							{
-								"name": "objectDefinition1ShortName",
-								"value": "CommerceOrder"
-							},
-							{
-								"name": "objectRelationshipERCObjectFieldName",
-								"value": "r_commerceOrderToCommerceReturns_commerceOrderERC"
-							}
-						],
-						"relationshipType": "oneToMany",
-						"required": true,
-						"state": false,
-						"system": false,
-						"type": "Long"
-					},
-					"parameterObjectFieldId": 0,
-					"parameterObjectFieldName": "",
-					"reverse": false,
-					"system": false,
-					"type": "oneToMany"
-				}
-			],
-			"status": {
-				"code": 0
-			},
-			"system": true,
-			"titleObjectFieldName": "id"
-		},
-		{
-			"externalReferenceCode": "L_COMMERCE_ORDER_ITEM",
-			"objectRelationships": [
-				{
-					"deletionType": "prevent",
-					"edge": false,
-					"externalReferenceCode": "L_COMMERCE_ORDER_ITEM_TO_L_COMMERCE_RETURN_ITEMS",
+					"DBType": "Long",
+					"businessType": "Relationship",
+					"externalReferenceCode": "COMMERCE_ORDER_ITEM_TO_COMMERCE_RETURN_ITEMS",
+					"indexed": true,
+					"indexedAsKeyword": false,
 					"label": {
 						"en_US": "Commerce Order Item to Commerce Return Items"
 					},
-					"name": "commerceOrderItemToCommerceReturnItems",
+					"localized": false,
+					"name": "r_commerceOrderItemToCommerceReturnItems_commerceOrderItemId",
 					"objectDefinitionExternalReferenceCode1": "L_COMMERCE_ORDER_ITEM",
-					"objectDefinitionExternalReferenceCode2": "L_COMMERCE_RETURN_ITEM",
-					"objectDefinitionModifiable2": true,
-					"objectDefinitionName2": "CommerceReturnItem",
-					"objectDefinitionSystem2": true,
-					"objectField": {
-						"DBType": "Long",
-						"businessType": "Relationship",
-						"externalReferenceCode": "COMMERCE_ORDER_ITEM_TO_COMMERCE_RETURN_ITEMS",
-						"indexed": true,
-						"indexedAsKeyword": false,
-						"label": {
-							"en_US": "Commerce Order Item to Commerce Return Items"
+					"objectFieldSettings": [
+						{
+							"name": "objectDefinition1ShortName",
+							"value": "CommerceOrderItem"
 						},
-						"localized": false,
-						"name": "r_commerceOrderItemToCommerceReturnItems_commerceOrderItemId",
-						"objectFieldSettings": [
-							{
-								"name": "objectDefinition1ShortName",
-								"value": "CommerceOrderItem"
-							},
-							{
-								"name": "objectRelationshipERCObjectFieldName",
-								"value": "r_commerceOrderItemToCommerceReturnItems_commerceOrderItemERC"
-							}
-						],
-						"relationshipType": "oneToMany",
-						"required": true,
-						"state": false,
-						"system": false,
-						"type": "Long"
-					},
-					"parameterObjectFieldId": 0,
-					"parameterObjectFieldName": "",
-					"reverse": false,
-					"system": false,
-					"type": "oneToMany"
+						{
+							"name": "objectRelationshipERCObjectFieldName",
+							"value": "r_commerceOrderItemToCommerceReturnItems_commerceOrderItemERC"
+						}
+					],
+					"objectRelationshipExternalReferenceCode": "L_COMMERCE_ORDER_ITEM_TO_L_COMMERCE_RETURN_ITEMS",
+					"relationshipType": "oneToMany",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "Long"
 				}
 			],
+			"objectValidationRules": [
+				{
+					"active": true,
+					"engine": "javaDelegate#CommerceReturnItem#accountEntryId",
+					"engineLabel": "Commerce Return Item Account Entry ID",
+					"errorLabel": {
+						"en_US": "The account entry ID is invalid."
+					},
+					"externalReferenceCode": "COMMERCE_RETURN_ITEM_ACCOUNT_ENTRY_ID",
+					"name": {
+						"en_US": "Account Entry ID"
+					},
+					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
+					"outputType": "fullValidation",
+					"system": true
+				},
+				{
+					"active": true,
+					"engine": "javaDelegate#CommerceReturnItem#authorized",
+					"engineLabel": "Commerce Return Item Authorized",
+					"errorLabel": {
+						"en_US": "The authorized is invalid."
+					},
+					"externalReferenceCode": "COMMERCE_RETURN_ITEM_AUTHORIZED",
+					"name": {
+						"en_US": "Authorized"
+					},
+					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
+					"outputType": "fullValidation",
+					"system": true
+				},
+				{
+					"active": true,
+					"engine": "javaDelegate#CommerceReturnItem#commerceOrderItemId",
+					"engineLabel": "Commerce Return Item Commerce Order Item ID",
+					"errorLabel": {
+						"en_US": "The commerce order item ID is invalid."
+					},
+					"externalReferenceCode": "COMMERCE_RETURN_ITEM_COMMERCE_ORDER_ITEM_ID",
+					"name": {
+						"en_US": "Commerce Order Item ID"
+					},
+					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
+					"outputType": "fullValidation",
+					"system": true
+				},
+				{
+					"active": true,
+					"engine": "javaDelegate#CommerceReturnItem#permission",
+					"engineLabel": "Commerce Return Item Permission",
+					"errorLabel": {
+						"en_US": "You do not have permission to edit this item."
+					},
+					"externalReferenceCode": "COMMERCE_RETURN_ITEM_PERMISSION",
+					"name": {
+						"en_US": "Permission"
+					},
+					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
+					"outputType": "fullValidation",
+					"system": true
+				},
+				{
+					"active": true,
+					"engine": "javaDelegate#CommerceReturnItem#quantity",
+					"engineLabel": "Commerce Return Item Quantity",
+					"errorLabel": {
+						"en_US": "The quantity is invalid."
+					},
+					"externalReferenceCode": "COMMERCE_RETURN_ITEM_QUANTITY",
+					"name": {
+						"en_US": "Quantity"
+					},
+					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
+					"outputType": "fullValidation",
+					"system": true
+				},
+				{
+					"active": true,
+					"engine": "javaDelegate#CommerceReturnItem#received",
+					"engineLabel": "Commerce Return Item Received",
+					"errorLabel": {
+						"en_US": "The received is invalid."
+					},
+					"externalReferenceCode": "COMMERCE_RETURN_ITEM_RECEIVED",
+					"name": {
+						"en_US": "Received"
+					},
+					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
+					"outputType": "fullValidation",
+					"system": true
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Commerce Return Items"
+			},
+			"portlet": false,
+			"scope": "company",
 			"status": {
 				"code": 0
 			},
-			"system": true,
-			"titleObjectFieldName": "id"
+			"system": true
 		},
 		{
 			"accountEntryRestricted": true,
@@ -466,6 +587,65 @@
 					"state": false,
 					"system": true,
 					"type": "String"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "Relationship",
+					"externalReferenceCode": "ACCOUNT_TO_COMMERCE_RETURN",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Account to Commerce Returns"
+					},
+					"localized": false,
+					"name": "r_accountToCommerceReturns_accountEntryId",
+					"objectDefinitionExternalReferenceCode1": "L_ACCOUNT",
+					"objectFieldSettings": [
+						{
+							"name": "objectDefinition1ShortName",
+							"value": "AccountEntry"
+						},
+						{
+							"name": "objectRelationshipERCObjectFieldName",
+							"value": "r_accountToCommerceReturns_accountEntryERC"
+						}
+					],
+					"objectRelationshipExternalReferenceCode": "L_ACCOUNT_TO_L_COMMERCE_RETURN",
+					"relationshipType": "oneToMany",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "Long"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "Relationship",
+					"externalReferenceCode": "COMMERCE_ORDER_TO_COMMERCE_RETURNS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "",
+					"label": {
+						"en_US": "Commerce Order to Commerce Returns"
+					},
+					"localized": false,
+					"name": "r_commerceOrderToCommerceReturns_commerceOrderId",
+					"objectDefinitionExternalReferenceCode1": "L_COMMERCE_ORDER",
+					"objectFieldSettings": [
+						{
+							"name": "objectDefinition1ShortName",
+							"value": "CommerceOrder"
+						},
+						{
+							"name": "objectRelationshipERCObjectFieldName",
+							"value": "r_commerceOrderToCommerceReturns_commerceOrderERC"
+						}
+					],
+					"objectRelationshipExternalReferenceCode": "L_COMMERCE_ORDER_TO_L_COMMERCE_RETURNS",
+					"relationshipType": "oneToMany",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "Long"
 				}
 			],
 			"objectRelationships": [
@@ -605,284 +785,6 @@
 			},
 			"system": true,
 			"titleObjectFieldName": "id"
-		},
-		{
-			"accountEntryRestricted": true,
-			"accountEntryRestrictedObjectFieldName": "r_accountToCommerceReturnItems_accountEntryId",
-			"className": "com.liferay.object.model.ObjectDefinition#C2R2",
-			"enableCategorization": true,
-			"enableComments": true,
-			"externalReferenceCode": "L_COMMERCE_RETURN_ITEM",
-			"label": {
-				"en_US": "Commerce Return Item"
-			},
-			"name": "CommerceReturnItem",
-			"objectDefinitionSettings": [
-				{
-					"name": "visible",
-					"value": "true"
-				}
-			],
-			"objectFields": [
-				{
-					"DBType": "BigDecimal",
-					"businessType": "PrecisionDecimal",
-					"externalReferenceCode": "AMOUNT",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Amount"
-					},
-					"name": "amount",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "BigDecimal"
-				},
-				{
-					"DBType": "Boolean",
-					"businessType": "Boolean",
-					"externalReferenceCode": "AUTHORIZE_RETURN_WITHOUT_RETURNING_PRODUCTS",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Authorize Return Without Returning Products"
-					},
-					"name": "authorizeReturnWithoutReturningProducts",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "Boolean"
-				},
-				{
-					"DBType": "BigDecimal",
-					"businessType": "PrecisionDecimal",
-					"externalReferenceCode": "AUTHORIZED",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Authorized"
-					},
-					"name": "authorized",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "BigDecimal"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "CURRENCY_CODE",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Currency Code"
-					},
-					"name": "currencyCode",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "CURRENCY_SYMBOL",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Currency Symbol"
-					},
-					"name": "currencySymbol",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String"
-				},
-				{
-					"DBType": "BigDecimal",
-					"businessType": "PrecisionDecimal",
-					"externalReferenceCode": "QUANTITY",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Quantity"
-					},
-					"name": "quantity",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "BigDecimal"
-				},
-				{
-					"DBType": "BigDecimal",
-					"businessType": "PrecisionDecimal",
-					"externalReferenceCode": "RECEIVED",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Received"
-					},
-					"name": "received",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "BigDecimal"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Picklist",
-					"defaultValue": "awaitingAuthorization",
-					"externalReferenceCode": "RETURN_ITEM_STATUS",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Return Item Status"
-					},
-					"listTypeDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM_STATUSES",
-					"name": "returnItemStatus",
-					"required": true,
-					"state": true,
-					"system": true,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Picklist",
-					"defaultValue": "changeOfMind",
-					"externalReferenceCode": "RETURN_REASONS",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Return Reason"
-					},
-					"listTypeDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_REASONS",
-					"name": "returnReason",
-					"required": true,
-					"state": true,
-					"system": true,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Picklist",
-					"externalReferenceCode": "RETURN_RESOLUTION_METHODS",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Return Resolution Method"
-					},
-					"listTypeDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_RESOLUTION_METHODS",
-					"name": "returnResolutionMethod",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String"
-				}
-			],
-			"objectValidationRules": [
-				{
-					"active": true,
-					"engine": "javaDelegate#CommerceReturnItem#accountEntryId",
-					"engineLabel": "Commerce Return Item Account Entry ID",
-					"errorLabel": {
-						"en_US": "The account entry ID is invalid."
-					},
-					"externalReferenceCode": "COMMERCE_RETURN_ITEM_ACCOUNT_ENTRY_ID",
-					"name": {
-						"en_US": "Account Entry ID"
-					},
-					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
-					"outputType": "fullValidation",
-					"system": true
-				},
-				{
-					"active": true,
-					"engine": "javaDelegate#CommerceReturnItem#authorized",
-					"engineLabel": "Commerce Return Item Authorized",
-					"errorLabel": {
-						"en_US": "The authorized is invalid."
-					},
-					"externalReferenceCode": "COMMERCE_RETURN_ITEM_AUTHORIZED",
-					"name": {
-						"en_US": "Authorized"
-					},
-					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
-					"outputType": "fullValidation",
-					"system": true
-				},
-				{
-					"active": true,
-					"engine": "javaDelegate#CommerceReturnItem#commerceOrderItemId",
-					"engineLabel": "Commerce Return Item Commerce Order Item ID",
-					"errorLabel": {
-						"en_US": "The commerce order item ID is invalid."
-					},
-					"externalReferenceCode": "COMMERCE_RETURN_ITEM_COMMERCE_ORDER_ITEM_ID",
-					"name": {
-						"en_US": "Commerce Order Item ID"
-					},
-					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
-					"outputType": "fullValidation",
-					"system": true
-				},
-				{
-					"active": true,
-					"engine": "javaDelegate#CommerceReturnItem#permission",
-					"engineLabel": "Commerce Return Item Permission",
-					"errorLabel": {
-						"en_US": "You do not have permission to edit this item."
-					},
-					"externalReferenceCode": "COMMERCE_RETURN_ITEM_PERMISSION",
-					"name": {
-						"en_US": "Permission"
-					},
-					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
-					"outputType": "fullValidation",
-					"system": true
-				},
-				{
-					"active": true,
-					"engine": "javaDelegate#CommerceReturnItem#quantity",
-					"engineLabel": "Commerce Return Item Quantity",
-					"errorLabel": {
-						"en_US": "The quantity is invalid."
-					},
-					"externalReferenceCode": "COMMERCE_RETURN_ITEM_QUANTITY",
-					"name": {
-						"en_US": "Quantity"
-					},
-					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
-					"outputType": "fullValidation",
-					"system": true
-				},
-				{
-					"active": true,
-					"engine": "javaDelegate#CommerceReturnItem#received",
-					"engineLabel": "Commerce Return Item Received",
-					"errorLabel": {
-						"en_US": "The received is invalid."
-					},
-					"externalReferenceCode": "COMMERCE_RETURN_ITEM_RECEIVED",
-					"name": {
-						"en_US": "Received"
-					},
-					"objectDefinitionExternalReferenceCode": "L_COMMERCE_RETURN_ITEM",
-					"outputType": "fullValidation",
-					"system": true
-				}
-			],
-			"panelCategoryKey": "",
-			"parameterRequired": false,
-			"pluralLabel": {
-				"en_US": "Commerce Return Items"
-			},
-			"portlet": false,
-			"scope": "company",
-			"status": {
-				"code": 0
-			},
-			"system": true
 		}
 	]
 }
