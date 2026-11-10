@@ -638,40 +638,26 @@ public class JournalTransformerTest {
 
 		ThemeDisplay themeDisplay = _getThemeDisplay(layout);
 
-		_assertTransformLinkToLayout(dataDefinition, layout, themeDisplay);
-
 		_assertTransformLinkToLayout(
 			dataDefinition, LayoutTestUtil.addTypeContentLayout(_group),
 			themeDisplay);
-
 		_assertTransformLinkToLayout(
 			dataDefinition,
 			LayoutTestUtil.addTypeEmbeddedLayout(_group.getGroupId()),
 			themeDisplay);
-
 		_assertTransformLinkToLayout(
 			dataDefinition,
 			LayoutTestUtil.addTypeFullPageApplicationLayout(
 				_group.getGroupId()),
 			themeDisplay);
-
 		_assertTransformLinkToLayout(
 			dataDefinition,
 			LayoutTestUtil.addTypeLinkToLayoutLayout(
 				_group.getGroupId(), layout.getLayoutId()),
 			themeDisplay);
-
 		_assertTransformLinkToLayout(
 			dataDefinition,
 			LayoutTestUtil.addTypePanelLayout(_group.getGroupId()),
-			themeDisplay);
-
-		Layout nodeLayout = LayoutTestUtil.addTypeNodeLayout(
-			_group.getGroupId(), false);
-
-		_assertTransformLinkToLayout(
-			dataDefinition,
-			LayoutTestUtil.addTypePortletLayout(_group, nodeLayout.getPlid()),
 			themeDisplay);
 
 		Layout childLayout = LayoutTestUtil.addTypePortletLayout(
@@ -685,6 +671,16 @@ public class JournalTransformerTest {
 			LayoutTestUtil.addTypePortletLayout(
 				_group, grandchildLayout.getPlid()),
 			themeDisplay);
+
+		Layout nodeLayout = LayoutTestUtil.addTypeNodeLayout(
+			_group.getGroupId(), false);
+
+		_assertTransformLinkToLayout(
+			dataDefinition,
+			LayoutTestUtil.addTypePortletLayout(_group, nodeLayout.getPlid()),
+			themeDisplay);
+
+		_assertTransformLinkToLayout(dataDefinition, layout, themeDisplay);
 
 		String url = "https://www.liferay.com/" + RandomTestUtil.randomString();
 

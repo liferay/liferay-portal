@@ -155,24 +155,6 @@ public class JournalDisplayContextTest {
 
 		_serviceContext.setUserId(_user.getUserId());
 
-		JournalArticle journalArticle = _addJournalArticle(
-			RandomTestUtil.randomString());
-
-		_assertArticleActionDropdownItemLabels(
-			journalArticle, "Edit", "Preview", "Translate", "Expire",
-			"Subscribe", "View History", "View Usages", "Make a Copy",
-			"Export for Translation", "Import Translation", "Move",
-			"Permissions", "Delete");
-
-		JournalTestUtil.updateArticle(
-			journalArticle, RandomTestUtil.randomString());
-
-		_assertArticleActionDropdownItemLabels(
-			journalArticle, "Edit Latest Version", "Preview", "Translate",
-			"Expire", "Subscribe", "View History", "View Usages", "Make a Copy",
-			"Export for Translation", "Import Translation", "Move",
-			"Permissions", "Delete");
-
 		_assertArticleActionDropdownItemLabels(
 			JournalTestUtil.addArticle(
 				_group.getGroupId(),
@@ -186,15 +168,34 @@ public class JournalDisplayContextTest {
 			"View Usages", "Make a Copy", "Export for Translation",
 			"Import Translation", "Move", "Permissions", "Delete");
 
-		journalArticle = _addJournalArticle(RandomTestUtil.randomString());
+		JournalArticle journalArticle2 = _addJournalArticle(
+			RandomTestUtil.randomString());
 
 		_assertArticleActionDropdownItemLabels(
 			JournalTestUtil.expireArticle(
-				_group.getGroupId(), journalArticle,
-				journalArticle.getVersion()),
+				_group.getGroupId(), journalArticle2,
+				journalArticle2.getVersion()),
 			"Edit", "Preview", "Translate", "Subscribe", "View History",
 			"View Usages", "Make a Copy", "Export for Translation",
 			"Import Translation", "Move", "Permissions", "Delete");
+
+		JournalArticle journalArticle1 = _addJournalArticle(
+			RandomTestUtil.randomString());
+
+		_assertArticleActionDropdownItemLabels(
+			journalArticle1, "Edit", "Preview", "Translate", "Expire",
+			"Subscribe", "View History", "View Usages", "Make a Copy",
+			"Export for Translation", "Import Translation", "Move",
+			"Permissions", "Delete");
+
+		JournalTestUtil.updateArticle(
+			journalArticle1, RandomTestUtil.randomString());
+
+		_assertArticleActionDropdownItemLabels(
+			journalArticle1, "Edit Latest Version", "Preview", "Translate",
+			"Expire", "Subscribe", "View History", "View Usages", "Make a Copy",
+			"Export for Translation", "Import Translation", "Move",
+			"Permissions", "Delete");
 	}
 
 	@Test

@@ -75,15 +75,14 @@ test(
 
 		const rows = page.locator('[data-qa-id="row"]');
 
-		await expect(rows.filter({hasText: folderName})).toBeVisible();
-		await expect(rows.filter({hasText: titles[0]})).toBeHidden();
-
-		await expect(journalPage.getArticleStatus(titles[2])).toHaveText(
-			'Approved'
-		);
 		await expect(journalPage.getArticleStatus(draftTitle)).toHaveText(
 			'Draft'
 		);
+		await expect(journalPage.getArticleStatus(titles[2])).toHaveText(
+			'Approved'
+		);
+		await expect(rows.filter({hasText: folderName})).toBeVisible();
+		await expect(rows.filter({hasText: titles[0]})).toBeHidden();
 
 		for (const view of ['Cards', 'Table', 'List']) {
 			await changeManagementToolbarView(page, view);
