@@ -167,10 +167,10 @@ public class FragmentEntryConfigurationParserImpl
 
 		HashMap<String, Object> contextObjects = new HashMap<>();
 
-		Object fallbackDisplayObject = null;
-
 		List<FragmentConfigurationField> fragmentConfigurationFields =
 			getFragmentConfigurationFields(configurationJSONObject);
+
+		Object fallbackInfoItem = null;
 
 		for (FragmentConfigurationField fragmentConfigurationField :
 				fragmentConfigurationFields) {
@@ -196,13 +196,13 @@ public class FragmentEntryConfigurationParserImpl
 							fallbackInfoItemReference.getClassName(),
 							fragmentConfigurationField)) {
 
-						if (fallbackDisplayObject == null) {
-							fallbackDisplayObject = _getInfoItem(
+						if (fallbackInfoItem == null) {
+							fallbackInfoItem = _getInfoItem(
 								fallbackInfoItemReference);
 						}
 
-						if (fallbackDisplayObject != null) {
-							contextObject = fallbackDisplayObject;
+						if (fallbackInfoItem != null) {
+							contextObject = fallbackInfoItem;
 						}
 					}
 				}
@@ -775,10 +775,10 @@ public class FragmentEntryConfigurationParserImpl
 			return null;
 		}
 
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
 		try {
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
 			if (serviceContext == null) {
 				return infoItemObjectProvider.getInfoItem(infoItemIdentifier);
 			}
