@@ -50,6 +50,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
+import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -469,7 +470,8 @@ public class ObjectFolderResourceImpl extends BaseObjectFolderResourceImpl {
 							serviceBuilderObjectDefinition,
 							_systemObjectDefinitionManagerRegistry, contextUser,
 							_userLocalService,
-							_workflowDefinitionLinkLocalService);
+							_workflowDefinitionLinkLocalService,
+							_workflowDefinitionManager);
 					});
 				setObjectDefinitionExternalReferenceCode(
 					serviceBuilderObjectDefinition::getExternalReferenceCode);
@@ -563,5 +565,8 @@ public class ObjectFolderResourceImpl extends BaseObjectFolderResourceImpl {
 	@Reference
 	private WorkflowDefinitionLinkLocalService
 		_workflowDefinitionLinkLocalService;
+
+	@Reference
+	private WorkflowDefinitionManager _workflowDefinitionManager;
 
 }

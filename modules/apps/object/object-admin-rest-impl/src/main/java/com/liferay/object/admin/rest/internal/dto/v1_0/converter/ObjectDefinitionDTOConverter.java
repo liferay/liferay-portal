@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -77,7 +78,8 @@ public class ObjectDefinitionDTOConverter
 				_resourceActionLocalService, serviceBuilderObjectDefinition,
 				_systemObjectDefinitionManagerRegistry,
 				dtoConverterContext.getUser(), _userLocalService,
-				_workflowDefinitionLinkLocalService);
+				_workflowDefinitionLinkLocalService,
+				_workflowDefinitionManager);
 
 		objectDefinition.setActions(dtoConverterContext::getActions);
 
@@ -151,5 +153,8 @@ public class ObjectDefinitionDTOConverter
 	@Reference
 	private WorkflowDefinitionLinkLocalService
 		_workflowDefinitionLinkLocalService;
+
+	@Reference
+	private WorkflowDefinitionManager _workflowDefinitionManager;
 
 }
