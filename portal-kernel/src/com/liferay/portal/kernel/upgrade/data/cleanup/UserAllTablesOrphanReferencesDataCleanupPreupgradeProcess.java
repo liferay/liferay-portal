@@ -246,8 +246,8 @@ public class UserAllTablesOrphanReferencesDataCleanupPreupgradeProcess
 					"MFAEmailOTPEntry", "MFAFIDO2CredentialEntry",
 					"MFATimeBasedOTPEntry", "OAuth2Authorization",
 					"OpenIdConnectSession", "OpenIdConnectUser",
-					"SamlIdpSpSession", "SamlIdpSsoSession", "SamlPeerBinding",
-					"SamlSpSession"));
+					"RememberMeToken", "SamlIdpSpSession", "SamlIdpSsoSession",
+					"SamlPeerBinding", "SamlSpSession"));
 		}
 	};
 

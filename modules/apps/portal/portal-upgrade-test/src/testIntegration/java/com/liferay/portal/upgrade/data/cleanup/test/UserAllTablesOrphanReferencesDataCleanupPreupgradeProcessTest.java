@@ -98,6 +98,13 @@ public class UserAllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 			db.runSQL(
 				connection,
 				StringBundler.concat(
+					"insert into RememberMeToken (mvccVersion, ",
+					"rememberMeTokenId, companyId, userId) values (0, ",
+					RandomTestUtil.nextLong(), ", ", _companyId, ", ", _userId,
+					")"));
+			db.runSQL(
+				connection,
+				StringBundler.concat(
 					"insert into SamlIdpSpConnection (samlIdpSpConnectionId, ",
 					"companyId, userId) values (", RandomTestUtil.nextLong(),
 					", ", _companyId, ", 0)"));
@@ -156,6 +163,16 @@ public class UserAllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 					StringBundler.concat(
 						"Table ",
 						dbInspector.normalizeName("OpenIdConnectUser"),
+						", 1 row deleted because ",
+						dbInspector.normalizeName("userId"), StringPool.SPACE,
+						_userId, " was not found in column ",
+						dbInspector.normalizeName("userId"), " from table ",
+						dbInspector.normalizeName("User_"))));
+			Assert.assertTrue(
+				message,
+				message.contains(
+					StringBundler.concat(
+						"Table ", dbInspector.normalizeName("RememberMeToken"),
 						", 1 row deleted because ",
 						dbInspector.normalizeName("userId"), StringPool.SPACE,
 						_userId, " was not found in column ",
