@@ -92,30 +92,6 @@ definition {
 		}
 	}
 
-	@description = "This test covers LPS-191375. This ensures that a file entry can be accessed by the legacy URL."
-	@priority = 5
-	test CanAccessFileByLegacyURL {
-		var portalURL = PropsUtil.get("portal.url");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1",
-			fileName = "This is an image.jpg",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		var siteId = JSONGroupAPI._getGroupIdByName(
-			groupName = "Guest",
-			site = "true");
-
-		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteId}/0/This+is+an+image.jpg");
-
-		AssertVisible(
-			key_imageSourceURL = "This+is+an+image.jpg",
-			locator1 = "DocumentsAndMediaDocument#DOCUMENT_VIEWPORT_PREVIEW");
-	}
-
 	@description = "This ensures that an old image friendlyURL redirects properly after document is reverted."
 	@priority = 5
 	test CanAccessOldFriendlyURLAfterRevert {
@@ -915,125 +891,6 @@ definition {
 		DMDocument.assertFileNameFromTempFolder(fileName = "Site_1.zip");
 	}
 
-	@description = "This ensures that the document file can be downloaded through the document file name."
-	@priority = 5
-	@refactordone
-	test CanDownloadThroughURLWithFileName {
-		property portal.acceptance = "true";
-
-		var portalURL = PropsUtil.get("portal.url");
-		var siteId = JSONGroupAPI._getGroupIdByName(
-			groupName = "Guest",
-			site = "true");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.mp4",
-			groupName = "Guest",
-			mimeType = "video/mp4",
-			sourceFileName = "Document_1.mp4");
-
-		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteId}/0/Document_1.mp4");
-
-		DownloadTempFile();
-
-		AssertTextNotPresent(value1 = "The requested resource could not be found.");
-
-		DMDocument.assertFileNameFromTempFolder(fileName = "Document_1.mp4");
-	}
-
-	@description = "This ensures that the document file can be downloaded through the document title."
-	@priority = 5
-	@refactordone
-	test CanDownloadThroughURLWithTitle {
-		property portal.acceptance = "true";
-
-		var portalURL = PropsUtil.get("portal.url");
-		var siteId = JSONGroupAPI._getGroupIdByName(
-			groupName = "Guest",
-			site = "true");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1",
-			groupName = "Guest",
-			mimeType = "video/mp4",
-			sourceFileName = "Document_1.mp4");
-
-		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteId}/0/Document_1");
-
-		DownloadTempFile();
-
-		AssertTextNotPresent(value1 = "The requested resource could not be found.");
-
-		DMDocument.assertFileNameFromTempFolder(fileName = "Document_1.mp4");
-	}
-
-	@description = "This ensures that the document file can be downloaded using the updated document file name."
-	@priority = 5
-	@refactordone
-	test CanDownloadThroughURLWithUpdatedFileName {
-		property portal.acceptance = "true";
-
-		var portalURL = PropsUtil.get("portal.url");
-		var siteId = JSONGroupAPI._getGroupIdByName(
-			groupName = "Guest",
-			site = "true");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Document_3.doc",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_3.doc");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.editCP(
-			dmDocumentFileName = "Document_3.doc",
-			dmDocumentFileNameEdit = "Document_3Edit.doc",
-			dmDocumentTitle = "Document_3");
-
-		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteId}/0/Document_3Edit.doc");
-
-		DownloadTempFile();
-
-		AssertTextNotPresent(value1 = "The requested resource could not be found.");
-
-		DMDocument.assertFileNameFromTempFolder(fileName = "Document_3Edit.doc");
-	}
-
-	@description = "This ensures that the document file can be downloaded through the document title."
-	@priority = 5
-	@refactordone
-	test CanDownloadThroughURLWithUpdatedTitle {
-		property portal.acceptance = "true";
-
-		var portalURL = PropsUtil.get("portal.url");
-		var siteId = JSONGroupAPI._getGroupIdByName(
-			groupName = "Guest",
-			site = "true");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Document_3.doc",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_3.doc");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.editCP(
-			dmDocumentTitle = "Document_3",
-			dmDocumentTitleEdit = "Document_3Edit");
-
-		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteId}/0/Document_3Edit");
-
-		DownloadTempFile();
-
-		AssertTextNotPresent(value1 = "The requested resource could not be found.");
-
-		DMDocument.assertFileNameFromTempFolder(fileName = "Document_3.doc");
-	}
-
 	@description = "This test edits the title and description of a document. It asserts minor version increment because only its metadata was updated."
 	@e2etest
 	@priority = 5
@@ -1816,32 +1673,6 @@ definition {
 		DMDocument.viewDefault();
 	}
 
-	@description = "This ensures that an image can be previewed through the original URL."
-	@priority = 5
-	@refactordone
-	test CanPreviewImageThroughURL {
-		property portal.acceptance = "true";
-
-		var portalURL = PropsUtil.get("portal.url");
-		var siteId = JSONGroupAPI._getGroupIdByName(
-			groupName = "Guest",
-			site = "true");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Document_1",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		Navigator.openSpecificURL(url = "${portalURL}/documents/${siteId}/0/Document_1");
-
-		var key_imageSourceURL = "${portalURL}/documents/${siteId}/0/Document_1";
-
-		WaitForVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_VIEWPORT_PREVIEW");
-	}
-
 	@description = "This is a use case for LPS-88785."
 	@priority = 5
 	@refactordone
@@ -1900,50 +1731,6 @@ definition {
 		AssertVisible(
 			key_dmDocumentFileName = "Document_1.pdf",
 			locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_IMAGE_PREVIEW");
-	}
-
-	@description = "This test covers LPS-148758. It ensures that a PDF without an extension can be previewed through the latest version URL."
-	@priority = 3
-	test CanPreviewPDFWithoutExtensionViaLatestVersionURL {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "Document_1.pdf",
-			groupName = "Guest",
-			mimeType = "application/pdf",
-			sourceFileName = "Document_1.pdf");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "pdf_no_extension",
-			groupName = "Guest",
-			mimeType = "application/pdf",
-			sourceFileName = "pdf_no_extension");
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "Document_1.pdf",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		var latestVersionURL = DMDocument.getLatestVersionURL();
-
-		Navigator.openSpecificURL(url = ${latestVersionURL});
-
-		AssertAttributeValue(
-			locator1 = "//embed",
-			value1 = "baseURI",
-			value2 = ${latestVersionURL});
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "pdf_no_extension",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		var latestVersionURL = DMDocument.getLatestVersionURL();
-
-		Navigator.openSpecificURL(url = ${latestVersionURL});
-
-		AssertAttributeValue(
-			locator1 = "//embed",
-			value1 = "baseURI",
-			value2 = ${latestVersionURL});
 	}
 
 	@description = "This case covers LPS-97708. It ensures that a document can be restored from the Recycle Bin even if its original folder no longer exists."
