@@ -40,7 +40,7 @@ if (journalArticle != null) {
 	itemSelectorReturnTypeResolver="<%= journalItemSelectorViewDisplayContext.getItemSelectorReturnTypeResolver() %>"
 	maxFileSize="<%= DLValidatorUtil.getMaxAllowableSize(themeDisplay.getScopeGroupId(), null) %>"
 	mimeTypeRestriction="<%= journalItemSelectorViewDisplayContext.getMimeTypeRestriction() %>"
-	portletURL="<%= journalItemSelectorViewDisplayContext.getPortletURL(request, liferayPortletResponse) %>"
+	portletURL="<%= journalItemSelectorViewDisplayContext.getPortletURL(liferayPortletResponse) %>"
 	repositoryEntries="<%= portletFileEntries %>"
 	repositoryEntriesCount="<%= portletFileEntriesCount %>"
 	showSearch="<%= false %>"

@@ -106,7 +106,6 @@ public class JournalItemSelectorViewDisplayContext {
 	}
 
 	public PortletURL getPortletURL(
-			HttpServletRequest httpServletRequest,
 			LiferayPortletResponse liferayPortletResponse)
 		throws PortletException {
 
