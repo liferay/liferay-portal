@@ -27,10 +27,14 @@ import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.comment.Comment;
+import com.liferay.portal.kernel.comment.CommentManager;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -38,9 +42,13 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
+import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
@@ -49,6 +57,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -204,6 +214,120 @@ public class FragmentEntryLinkStagingTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110566")
+	public void testPublishFragmentEntryLinkComments() throws Exception {
+		_stagingGroup = FragmentStagingTestUtil.enableLocalStaging(_liveGroup);
+
+		Layout stagingLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
+			_layout.getUuid(), _stagingGroup.getGroupId(), false);
+
+		Layout draftStagingLayout = stagingLayout.fetchDraftLayout();
+
+		FragmentEntry fragmentEntry =
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"BASIC_COMPONENT-heading");
+
+		FragmentEntryLink stagingFragmentEntryLink =
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				null, fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
+				fragmentEntry.getExternalReferenceCode(),
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(),
+					draftStagingLayout.getGroupId()),
+				fragmentEntry.getHtml(), fragmentEntry.getJs(),
+				draftStagingLayout, fragmentEntry.getFragmentEntryKey(),
+				fragmentEntry.getType(), null, 0,
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(
+						draftStagingLayout.getPlid()));
+
+		String body = RandomTestUtil.randomString();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_stagingGroup.getGroupId());
+		User user = TestPropsValues.getUser();
+
+		long commentId = _commentManager.addComment(
+			null, user.getUserId(), _stagingGroup.getGroupId(),
+			FragmentEntryLink.class.getName(),
+			stagingFragmentEntryLink.getFragmentEntryLinkId(),
+			user.getFullName(), null, body, className -> serviceContext);
+
+		Comment addedComment = _commentManager.fetchComment(commentId);
+
+		Date createDate = addedComment.getCreateDate();
+
+		ServiceContext updateServiceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_stagingGroup.getGroupId());
+
+		updateServiceContext.setModifiedDate(
+			new Date(createDate.getTime() + Time.HOUR));
+
+		_commentManager.updateComment(
+			user.getUserId(), FragmentEntryLink.class.getName(),
+			stagingFragmentEntryLink.getFragmentEntryLinkId(), commentId, null,
+			body, className -> updateServiceContext);
+
+		Comment stagingRootComment = _commentManager.fetchComment(commentId);
+
+		Assert.assertNotEquals(
+			stagingRootComment.getCreateDate(),
+			stagingRootComment.getModifiedDate());
+
+		String childBody = RandomTestUtil.randomString();
+
+		_commentManager.addComment(
+			null, user.getUserId(), FragmentEntryLink.class.getName(),
+			stagingFragmentEntryLink.getFragmentEntryLinkId(),
+			user.getFullName(), commentId, null, childBody,
+			className -> serviceContext);
+
+		ContentLayoutTestUtil.publishLayout(draftStagingLayout, stagingLayout);
+
+		FragmentStagingTestUtil.publishLayouts(_stagingGroup, _liveGroup);
+		FragmentStagingTestUtil.publishLayouts(_stagingGroup, _liveGroup);
+
+		_stagingLocalService.disableStaging(_liveGroup, new ServiceContext());
+
+		FragmentEntryLink liveFragmentEntryLink =
+			_fragmentEntryLinkLocalService.getFragmentEntryLinkByUuidAndGroupId(
+				stagingFragmentEntryLink.getUuid(), _liveGroup.getGroupId());
+
+		Assert.assertEquals(
+			2,
+			_commentManager.getCommentsCount(
+				FragmentEntryLink.class.getName(),
+				liveFragmentEntryLink.getFragmentEntryLinkId()));
+
+		List<Comment> rootComments = _commentManager.getRootComments(
+			FragmentEntryLink.class.getName(),
+			liveFragmentEntryLink.getFragmentEntryLinkId(),
+			WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(rootComments.toString(), 1, rootComments.size());
+
+		Comment rootComment = rootComments.get(0);
+
+		Assert.assertEquals(body, rootComment.getBody());
+		Assert.assertEquals(
+			stagingRootComment.getCreateDate(), rootComment.getCreateDate());
+		Assert.assertEquals(
+			stagingRootComment.getModifiedDate(),
+			rootComment.getModifiedDate());
+
+		List<Comment> childComments = _commentManager.getChildComments(
+			rootComment.getCommentId(), WorkflowConstants.STATUS_ANY,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(childComments.toString(), 1, childComments.size());
+
+		Comment childComment = childComments.get(0);
+
+		Assert.assertEquals(childBody, childComment.getBody());
+	}
+
+	@Test
 	@TestInfo("LPS-128305")
 	public void testPublishFragmentEntryLinkWithDLReference() throws Exception {
 		_stagingGroup = FragmentStagingTestUtil.enableLocalStaging(_liveGroup);
@@ -347,6 +471,9 @@ public class FragmentEntryLinkStagingTest {
 					fragmentEntryLink.getFragmentEntryScopeERC(),
 					fragmentEntryLink.getGroupId())));
 	}
+
+	@Inject
+	private CommentManager _commentManager;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
