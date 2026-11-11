@@ -138,6 +138,7 @@ import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -162,6 +163,7 @@ import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -185,6 +187,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -221,6 +224,7 @@ import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.site.configuration.manager.MenuAccessConfigurationManager;
+import com.liferay.site.exception.InitializationException;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerFactory;
 import com.liferay.site.initializer.SiteInitializerRegistry;
@@ -578,6 +582,60 @@ public class BundleSiteInitializerTest {
 			Assert.assertEquals("CMS", publicTheme.getName());
 		}
 		finally {
+			FileUtil.deltree(tempDir);
+		}
+	}
+
+	@Test
+	public void testInitializeWithNonexistentUser() throws Exception {
+		String name = PrincipalThreadLocal.getName();
+
+		PrincipalThreadLocal.setName(RandomTestUtil.nextLong());
+
+		File tempDir = FileUtil.createTempFolder();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.site.initializer.extender.internal." +
+					"BundleSiteInitializer",
+				LoggerTestUtil.ERROR)) {
+
+			File siteInitializerDir = new File(tempDir, "site-initializer");
+
+			siteInitializerDir.mkdirs();
+
+			SiteInitializer siteInitializer = _siteInitializerFactory.create(
+				siteInitializerDir, null);
+
+			try {
+				siteInitializer.initialize(_group.getGroupId());
+
+				Assert.fail();
+			}
+			catch (InitializationException initializationException) {
+				Throwable throwable = initializationException.getCause();
+
+				Assert.assertTrue(throwable instanceof NoSuchUserException);
+
+				List<LogEntry> logEntries = logCapture.getLogEntries();
+
+				Assert.assertEquals(
+					logEntries.toString(), 1, logEntries.size());
+
+				LogEntry logEntry = logEntries.get(0);
+
+				Assert.assertEquals(
+					throwable.getMessage(), logEntry.getMessage());
+				Assert.assertEquals(
+					LoggerTestUtil.ERROR, logEntry.getPriority());
+				Assert.assertSame(throwable, logEntry.getThrowable());
+			}
+
+			Assert.assertSame(
+				_serviceContext, ServiceContextThreadLocal.getServiceContext());
+		}
+		finally {
+			PrincipalThreadLocal.setName(name);
+
 			FileUtil.deltree(tempDir);
 		}
 	}
