@@ -51,7 +51,7 @@ definition {
 			unpublish = "true",
 			videoSourceURL = "https://youtu.be/IxNczRyywXYtest");
 
-		ItemSelector.previewEmbeddedVideo(invalidURL = "https://www.youtube.com");
+		ItemSelector.previewEmbeddedVideo(invalidURL = "https://www.youtube.com/embed/IxNczRyywXYtest?rel=0");
 
 		ItemSelector.addVideoFromURL(
 			invalidURL = "true",
@@ -59,7 +59,7 @@ definition {
 			unpublish = "true",
 			videoSourceURL = "https://www.youtube.com/watch?v=test");
 
-		ItemSelector.previewEmbeddedVideo(invalidURL = "https://www.youtube.com");
+		ItemSelector.previewEmbeddedVideo(invalidURL = "https://www.youtube.com/embed/test?rel=0");
 
 		ItemSelector.addVideoFromURL(
 			invalidURL = "true",

@@ -311,13 +311,12 @@ definition {
 
 		if (isSet(invalidURL)) {
 			if (contains(${invalidURL}, "youtube")) {
-				SelectFrame.selectFrameNoLoading(locator1 = "IFrame#EXTERNAL_VIDEO_IFRAME");
+				AssertAttributeValue(
+					locator1 = "IFrame#EXTERNAL_VIDEO_IFRAME",
+					value1 = "src",
+					value2 = ${invalidURL});
 
-				Click(locator1 = "Button#YOUTUBE_PLAY");
-
-				AssertTextEquals.assertPartialText(
-					locator1 = "Message#ERROR_INVALID_YOUTUBE_VIDEO",
-					value1 = "An error occurred. Please try again later.");
+				AssertElementNotPresent(locator1 = "Message#INFO_EXTERNAL_VIDEO_PREVIEW");
 			}
 			else if (contains(${invalidURL}, "facebook")) {
 				SelectFrame.selectFrameNoLoading(locator1 = "IFrame#EXTERNAL_VIDEO_IFRAME");

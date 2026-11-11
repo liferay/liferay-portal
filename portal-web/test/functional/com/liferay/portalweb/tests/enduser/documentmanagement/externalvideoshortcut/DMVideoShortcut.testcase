@@ -988,7 +988,7 @@ definition {
 
 		VideoShortcut.validateURL(
 			invalidURL = "https://www.youtube.com/watch?v=test",
-			youtube = "true");
+			youtubeEmbedURL = "https://www.youtube.com/embed/test?rel=0");
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
@@ -996,7 +996,7 @@ definition {
 
 		VideoShortcut.validateURL(
 			invalidURL = "https://youtu.be/IxNczRyywXYtest",
-			youtube = "true");
+			youtubeEmbedURL = "https://www.youtube.com/embed/IxNczRyywXYtest?rel=0");
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 

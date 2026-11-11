@@ -286,11 +286,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>ERROR_INVALID_YOUTUBE_VIDEO</td>
-	<td>//div[contains(@class,'ytp-error-content-wrap')]//span</td>
-	<td></td>
-</tr>
-<tr>
 	<td>ERROR_PUBLISH_UNSUCCESSFUL_EXTENSION</td>
 	<td>//div[contains(@class,'alert-danger') and contains(.,'The source file does not have the same extension as the original file')]</td>
 	<td></td>

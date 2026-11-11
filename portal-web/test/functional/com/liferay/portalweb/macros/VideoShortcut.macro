@@ -187,7 +187,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro validateURL(invalidURL = null) {
+	macro validateURL(invalidURL = null, youtubeEmbedURL = null) {
 		Type(
 			key_text = "Video URL",
 			locator1 = "TextInput#ANY",
@@ -198,14 +198,13 @@ definition {
 			locator1 = "TextInput#ANY",
 			value1 = ${invalidURL});
 
-		if (isSet(youtube)) {
-			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#EXTERNAL_VIDEO_IFRAME");
+		if (isSet(youtubeEmbedURL)) {
+			AssertAttributeValue(
+				locator1 = "IFrame#EXTERNAL_VIDEO_IFRAME",
+				value1 = "src",
+				value2 = ${youtubeEmbedURL});
 
-			Click(locator1 = "Button#YOUTUBE_PLAY");
-
-			AssertTextEquals.assertPartialText(
-				locator1 = "Message#ERROR_INVALID_YOUTUBE_VIDEO",
-				value1 = "An error occurred. Please try again later.");
+			AssertElementNotPresent(locator1 = "Message#INFO_EXTERNAL_VIDEO_PREVIEW");
 		}
 		else if (isSet(facebook)) {
 			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#EXTERNAL_VIDEO_IFRAME");
