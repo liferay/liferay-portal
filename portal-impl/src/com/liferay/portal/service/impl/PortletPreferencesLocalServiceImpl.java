@@ -431,8 +431,7 @@ public class PortletPreferencesLocalServiceImpl
 
 	@Override
 	public List<PortletPreferences> getPortletPreferences(
-			long companyId, long ownerId, int ownerType, String portletId)
-		throws PortalException {
+		long companyId, long ownerId, int ownerType, String portletId) {
 
 		return portletPreferencesPersistence.findByC_O_O_LikeP(
 			companyId, ownerId, ownerType, portletId);
