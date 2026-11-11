@@ -7,8 +7,6 @@ package com.liferay.bulk.selection;
 
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 
 import java.io.Serializable;
 
@@ -25,18 +23,6 @@ public abstract class BaseSingleEntryBulkSelection<T>
 
 		_entryId = entryId;
 		_parameterMap = parameterMap;
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 *             #BaseSingleEntryBulkSelection(long, Map)}
-	 */
-	@Deprecated
-	public BaseSingleEntryBulkSelection(
-		long entryId, Map<String, String[]> parameterMap,
-		ResourceBundleLoader resourceBundleLoader, Language language) {
-
-		this(entryId, parameterMap);
 	}
 
 	@Override
