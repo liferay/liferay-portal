@@ -38,6 +38,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:friendly-url:friendly-url-test-util")
 	testIntegrationImplementation project(":apps:frontend-taglib:frontend-taglib-form-navigator")
 	testIntegrationImplementation project(":apps:info:info-api")
+	testIntegrationImplementation project(":apps:journal:journal-taglib")
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-admin-api")
 	testIntegrationImplementation project(":apps:layout:layout-api")
