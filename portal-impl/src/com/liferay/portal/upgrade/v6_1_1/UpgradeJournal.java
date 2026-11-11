@@ -62,7 +62,7 @@ public class UpgradeJournal extends UpgradeProcess {
 		}
 	}
 
-	private String _upgradeContent(long id, String content) throws Exception {
+	private String _upgradeContent(long id, String content) {
 
 		// LPS-23332 and LPS-26009
 

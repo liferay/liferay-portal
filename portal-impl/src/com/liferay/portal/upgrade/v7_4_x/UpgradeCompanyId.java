@@ -154,7 +154,7 @@ public class UpgradeCompanyId extends BaseCompanyIdUpgradeProcess {
 		private String _getUpdateSQL(
 				String foreignTableName, String foreignColumnName,
 				String columnName, int ownerType)
-			throws IOException, SQLException {
+			throws SQLException {
 
 			return StringBundler.concat(
 				getUpdateSQL(

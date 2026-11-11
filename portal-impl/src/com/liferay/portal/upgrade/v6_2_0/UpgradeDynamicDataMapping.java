@@ -83,8 +83,7 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 	}
 
 	protected void updateStructure(
-			long structureId, String structureKey, String xsd)
-		throws Exception {
+		long structureId, String structureKey, String xsd) {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"update DDMStructure set structureKey = ?, xsd = ? where " +
@@ -129,7 +128,7 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 		}
 	}
 
-	protected void updateStructuresClassNameId() throws Exception {
+	protected void updateStructuresClassNameId() {
 		try (LoggingTimer loggingTimer = new LoggingTimer();
 			PreparedStatement preparedStatement = connection.prepareStatement(
 				"update DDMStructure set classNameId = ? where classNameId = " +

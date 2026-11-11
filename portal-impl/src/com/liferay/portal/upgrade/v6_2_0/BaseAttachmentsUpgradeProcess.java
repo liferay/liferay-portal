@@ -49,11 +49,10 @@ import org.osgi.framework.ServiceRegistration;
 public abstract class BaseAttachmentsUpgradeProcess extends UpgradeProcess {
 
 	protected long addDLFileEntry(
-			long groupId, long companyId, long userId, String className,
-			long classPK, String userName, Timestamp createDate,
-			long repositoryId, long folderId, String name, String extension,
-			String mimeType, String title, long size)
-		throws Exception {
+		long groupId, long companyId, long userId, String className,
+		long classPK, String userName, Timestamp createDate, long repositoryId,
+		long folderId, String name, String extension, String mimeType,
+		String title, long size) {
 
 		long fileEntryId = increment();
 
@@ -124,11 +123,10 @@ public abstract class BaseAttachmentsUpgradeProcess extends UpgradeProcess {
 	}
 
 	protected void addDLFileVersion(
-			long fileVersionId, long groupId, long companyId, long userId,
-			String userName, Timestamp createDate, long repositoryId,
-			long folderId, long fileEntryId, String extension, String mimeType,
-			String title, long size)
-		throws Exception {
+		long fileVersionId, long groupId, long companyId, long userId,
+		String userName, Timestamp createDate, long repositoryId, long folderId,
+		long fileEntryId, String extension, String mimeType, String title,
+		long size) {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
@@ -178,11 +176,9 @@ public abstract class BaseAttachmentsUpgradeProcess extends UpgradeProcess {
 	}
 
 	protected long addDLFolder(
-			long folderId, long groupId, long companyId, long userId,
-			String userName, Timestamp createDate, long repositoryId,
-			boolean mountPoint, long parentFolderId, String name,
-			boolean hidden)
-		throws Exception {
+		long folderId, long groupId, long companyId, long userId,
+		String userName, Timestamp createDate, long repositoryId,
+		boolean mountPoint, long parentFolderId, String name, boolean hidden) {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
@@ -255,9 +251,8 @@ public abstract class BaseAttachmentsUpgradeProcess extends UpgradeProcess {
 	}
 
 	protected long addRepository(
-			long groupId, long companyId, long userId, String userName,
-			Timestamp createDate, long classNameId, String portletId)
-		throws Exception {
+		long groupId, long companyId, long userId, String userName,
+		Timestamp createDate, long classNameId, String portletId) {
 
 		long repositoryId = increment();
 
@@ -309,9 +304,8 @@ public abstract class BaseAttachmentsUpgradeProcess extends UpgradeProcess {
 	}
 
 	protected void addResourcePermission(
-			long companyId, String className, long primKey, long roleId,
-			long actionIds)
-		throws Exception {
+		long companyId, String className, long primKey, long roleId,
+		long actionIds) {
 
 		long resourcePermissionId = increment(
 			ResourcePermission.class.getName());

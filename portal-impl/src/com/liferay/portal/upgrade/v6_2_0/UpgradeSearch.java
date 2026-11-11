@@ -23,9 +23,7 @@ public class UpgradeSearch extends BaseUpgradePortletPreferences {
 		return new String[] {"3"};
 	}
 
-	protected JSONObject upgradeDataJSONObject(JSONObject dataJSONObject)
-		throws Exception {
-
+	protected JSONObject upgradeDataJSONObject(JSONObject dataJSONObject) {
 		JSONArray valuesJSONArray = dataJSONObject.getJSONArray("values");
 
 		boolean hasBookmarksEntry = false;
