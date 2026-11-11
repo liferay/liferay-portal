@@ -292,6 +292,8 @@ export class SpaceSummaryPage {
 		await this.page.getByLabel('Connections').getByText(siteName).waitFor();
 
 		await this.closeButton.click();
+
+		await this.page.getByRole('dialog').waitFor({state: 'detached'});
 	}
 
 	async connectSiteTemplate(siteTemplateName: string) {
