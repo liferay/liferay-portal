@@ -46,7 +46,7 @@ import java.util.Map;
  */
 public class VerifyPermission extends VerifyProcess {
 
-	protected void checkPermissions() throws Exception {
+	protected void checkPermissions() {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			List<String> modelNames = ResourceActionsUtil.getModelNames();
 

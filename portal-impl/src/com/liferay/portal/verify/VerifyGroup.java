@@ -159,8 +159,8 @@ public class VerifyGroup extends VerifyProcess {
 		}
 	}
 
-	protected void verifyStagingGroupOrganizationMembership(Group stagingGroup)
-		throws Exception {
+	protected void verifyStagingGroupOrganizationMembership(
+		Group stagingGroup) {
 
 		List<Organization> stagingOrganizations =
 			OrganizationLocalServiceUtil.getGroupOrganizations(

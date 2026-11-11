@@ -211,10 +211,9 @@ public class VerifyAuditedModel extends VerifyProcess {
 	}
 
 	protected void verifyAuditedModel(
-			Connection connection, PreparedStatement preparedStatement,
-			String tableName, long primKey, Object[] auditedModelArray,
-			boolean updateDates)
-		throws Exception {
+		Connection connection, PreparedStatement preparedStatement,
+		String tableName, long primKey, Object[] auditedModelArray,
+		boolean updateDates) {
 
 		try {
 			long companyId = (Long)auditedModelArray[0];

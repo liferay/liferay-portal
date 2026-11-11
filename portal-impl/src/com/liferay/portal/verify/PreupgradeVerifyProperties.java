@@ -88,9 +88,8 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 	}
 
 	protected static void verifyMigratedPortalProperty(
-			Properties portalProperties, String oldKey, String newKey,
-			List<String> unmigratedKeys)
-		throws Exception {
+		Properties portalProperties, String oldKey, String newKey,
+		List<String> unmigratedKeys) {
 
 		if (portalProperties.containsKey(oldKey)) {
 			_log.error(
@@ -103,8 +102,7 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 	}
 
 	protected static void verifyMigratedSystemProperty(
-			String oldKey, String newKey)
-		throws Exception {
+		String oldKey, String newKey) {
 
 		String value = SystemProperties.get(oldKey);
 
@@ -117,9 +115,8 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 	}
 
 	protected static void verifyModularizedPortalProperty(
-			Properties portalProperties, String oldKey, String newKey,
-			String moduleName)
-		throws Exception {
+		Properties portalProperties, String oldKey, String newKey,
+		String moduleName) {
 
 		if (portalProperties.containsKey(oldKey)) {
 			_log.error(
@@ -130,9 +127,8 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 	}
 
 	protected static void verifyModularizedSystemProperty(
-			Set<String> systemPropertyNames, String oldKey, String newKey,
-			String moduleName)
-		throws Exception {
+		Set<String> systemPropertyNames, String oldKey, String newKey,
+		String moduleName) {
 
 		if (systemPropertyNames.contains(oldKey)) {
 			_log.error(
@@ -143,17 +139,14 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 	}
 
 	protected static void verifyObsoletePortalProperty(
-			Properties portalProperties, String key)
-		throws Exception {
+		Properties portalProperties, String key) {
 
 		if (portalProperties.containsKey(key)) {
 			_log.error("Portal property \"" + key + "\" is obsolete");
 		}
 	}
 
-	protected static void verifyObsoleteSystemProperty(String key)
-		throws Exception {
-
+	protected static void verifyObsoleteSystemProperty(String key) {
 		String value = SystemProperties.get(key);
 
 		if (value != null) {
@@ -161,7 +154,7 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 		}
 	}
 
-	protected static List<String> verifyPortalProperties() throws Exception {
+	protected static List<String> verifyPortalProperties() {
 		List<String> unmigratedKeys = new LinkedList<>();
 
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
@@ -200,8 +193,7 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 	}
 
 	protected static void verifyRenamedPortalProperty(
-			Properties portalProperties, String oldKey, String newKey)
-		throws Exception {
+		Properties portalProperties, String oldKey, String newKey) {
 
 		if (portalProperties.containsKey(oldKey)) {
 			_log.error(
@@ -212,8 +204,7 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 	}
 
 	protected static void verifyRenamedSystemProperty(
-			String oldKey, String newKey)
-		throws Exception {
+		String oldKey, String newKey) {
 
 		String value = SystemProperties.get(oldKey);
 
@@ -225,7 +216,7 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 		}
 	}
 
-	protected static void verifySystemProperties() throws Exception {
+	protected static void verifySystemProperties() {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			for (String[] keys : _MIGRATED_SYSTEM_KEYS) {
 				String oldKey = keys[0];
