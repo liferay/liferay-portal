@@ -19,6 +19,7 @@ import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -31,9 +32,12 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.io.Serializable;
 
 import java.util.Map;
 
@@ -87,6 +91,14 @@ public abstract class BaseComponentSectionFragmentRendererTestCase {
 
 		mockHttpServletRequest = getMockHttpServletRequest(
 			cmpProjectObjectDefinition, cmpProjectObjectEntry);
+	}
+
+	protected ObjectEntry addCMPTaskObjectEntry(
+			Map<String, Serializable> values)
+		throws Exception {
+
+		return CMPTestUtil.addCMPTaskObjectEntry(
+			cmpProjectObjectEntry, values, WorkflowConstants.ACTION_SAVE_DRAFT);
 	}
 
 	protected abstract FragmentRenderer getFragmentRenderer();
@@ -170,6 +182,9 @@ public abstract class BaseComponentSectionFragmentRendererTestCase {
 
 	@Inject
 	protected ObjectDefinitionLocalService objectDefinitionLocalService;
+
+	@Inject
+	protected ObjectEntryLocalService objectEntryLocalService;
 
 	protected ThemeDisplay themeDisplay;
 

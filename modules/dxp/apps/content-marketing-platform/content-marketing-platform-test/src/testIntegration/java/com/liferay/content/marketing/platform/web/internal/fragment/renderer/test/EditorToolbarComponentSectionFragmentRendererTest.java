@@ -8,19 +8,23 @@ package com.liferay.content.marketing.platform.web.internal.fragment.renderer.te
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.io.Serializable;
+
 import java.util.Collections;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -42,6 +46,7 @@ public class EditorToolbarComponentSectionFragmentRendererTest
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@FeatureFlag("LPD-107678")
 	@Test
 	public void testGetProps() throws Exception {
 		Assert.assertEquals(
@@ -123,6 +128,102 @@ public class EditorToolbarComponentSectionFragmentRendererTest
 		Assert.assertEquals("", MapUtil.getString(getProps(), "discardURL"));
 		Assert.assertEquals(
 			"Edit Task", MapUtil.getString(getProps(), "title"));
+
+		ObjectEntry cmpTaskObjectEntry2 = addCMPTaskObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"r_cmpTaskToCMPTasks_c_cmpTaskId",
+				cmpTaskObjectEntry.getObjectEntryId()
+			).build());
+
+		mockHttpServletRequest = getMockHttpServletRequest(
+			cmpTaskObjectDefinition, cmpTaskObjectEntry2);
+
+		Map<String, Object> props = getProps();
+
+		Assert.assertEquals(
+			HashMapBuilder.<String, Object>put(
+				"isDone", false
+			).put(
+				"saveAndAddAnotherURL",
+				StringBundler.concat(
+					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
+					GroupConstants.CMS_FRIENDLY_URL,
+					"/add_task?objectDefinitionId=",
+					cmpTaskObjectDefinition.getObjectDefinitionId(), "&plid=",
+					themeDisplay.getPlid(), "&projectGroupId=",
+					cmpTaskObjectEntry2.getGroupId(), "&projectId=",
+					cmpProjectObjectEntry.getObjectEntryId(),
+					"&redirect=/redirect-url&parentId=",
+					cmpTaskObjectEntry.getObjectEntryId())
+			).put(
+				"title",
+				MapUtil.getString(cmpTaskObjectEntry.getValues(), "title")
+			).build(),
+			props.get("parentCMPTask"));
+
+		Assert.assertEquals("New Subtask", MapUtil.getString(props, "title"));
+		Assert.assertEquals(
+			StringBundler.concat(
+				themeDisplay.getPathFriendlyURLPublic(),
+				GroupConstants.CMS_FRIENDLY_URL, "/e/task/",
+				PortalUtil.getClassNameId(
+					cmpTaskObjectDefinition.getClassName()),
+				StringPool.SLASH, cmpTaskObjectEntry2.getObjectEntryId()),
+			MapUtil.getString(props, "viewURL"));
+
+		ObjectEntry cmpTaskObjectEntry3 = addCMPTaskObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"state", "done"
+			).build());
+
+		mockHttpServletRequest = getMockHttpServletRequest(
+			cmpTaskObjectDefinition,
+			_partialUpdateObjectEntry(
+				addCMPTaskObjectEntry(
+					HashMapBuilder.<String, Serializable>put(
+						"r_cmpTaskToCMPTasks_c_cmpTaskId",
+						cmpTaskObjectEntry3.getObjectEntryId()
+					).build())));
+
+		props = getProps();
+
+		Assert.assertEquals(
+			HashMapBuilder.<String, Object>put(
+				"isDone", true
+			).put(
+				"title",
+				MapUtil.getString(cmpTaskObjectEntry3.getValues(), "title")
+			).build(),
+			props.get("parentCMPTask"));
+
+		Assert.assertEquals("Edit Subtask", MapUtil.getString(props, "title"));
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-107678")
+	@Test
+	public void testGetPropsWhenFeatureFlagIsDisabled() throws Exception {
+		ObjectEntry cmpTaskObjectEntry2 = addCMPTaskObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"r_cmpTaskToCMPTasks_c_cmpTaskId",
+				cmpTaskObjectEntry.getObjectEntryId()
+			).build());
+
+		mockHttpServletRequest = getMockHttpServletRequest(
+			cmpTaskObjectDefinition, cmpTaskObjectEntry2);
+
+		Map<String, Object> props = getProps();
+
+		Assert.assertNull(props.get("parentCMPTask"));
+		Assert.assertEquals("New Task", MapUtil.getString(props, "title"));
+
+		mockHttpServletRequest = getMockHttpServletRequest(
+			cmpTaskObjectDefinition,
+			_partialUpdateObjectEntry(cmpTaskObjectEntry2));
+
+		props = getProps();
+
+		Assert.assertNull(props.get("parentCMPTask"));
+		Assert.assertEquals("Edit Task", MapUtil.getString(props, "title"));
 	}
 
 	@Override
@@ -133,7 +234,7 @@ public class EditorToolbarComponentSectionFragmentRendererTest
 	private ObjectEntry _partialUpdateObjectEntry(ObjectEntry objectEntry)
 		throws Exception {
 
-		return _objectEntryLocalService.partialUpdateObjectEntry(
+		return objectEntryLocalService.partialUpdateObjectEntry(
 			objectEntry.getUserId(), objectEntry.getObjectEntryId(),
 			objectEntry.getObjectEntryFolderId(), Collections.emptyMap(),
 			ServiceContextTestUtil.getServiceContext());
@@ -143,8 +244,5 @@ public class EditorToolbarComponentSectionFragmentRendererTest
 		filter = "component.name=com.liferay.content.marketing.platform.web.internal.fragment.renderer.EditorToolbarComponentSectionFragmentRenderer"
 	)
 	private FragmentRenderer _fragmentRenderer;
-
-	@Inject
-	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
