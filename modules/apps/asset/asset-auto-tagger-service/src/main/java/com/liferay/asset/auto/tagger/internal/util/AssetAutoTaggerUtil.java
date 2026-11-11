@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -53,10 +52,6 @@ public class AssetAutoTaggerUtil {
 		getAssetEntryAssetAutoTagProviders() {
 
 		return _serviceTrackerMap.getService(AssetEntry.class.getName());
-	}
-
-	public static Set<String> getClassNames() {
-		return _serviceTrackerMap.keySet();
 	}
 
 	public static boolean isAutoTaggable(

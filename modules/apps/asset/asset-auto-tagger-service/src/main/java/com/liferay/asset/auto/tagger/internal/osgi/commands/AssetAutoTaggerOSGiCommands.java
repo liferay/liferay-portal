@@ -8,7 +8,6 @@ package com.liferay.asset.auto.tagger.internal.osgi.commands;
 import com.liferay.asset.auto.tagger.AssetAutoTagger;
 import com.liferay.asset.auto.tagger.configuration.AssetAutoTaggerConfiguration;
 import com.liferay.asset.auto.tagger.configuration.AssetAutoTaggerConfigurationFactory;
-import com.liferay.asset.auto.tagger.internal.util.AssetAutoTaggerUtil;
 import com.liferay.asset.auto.tagger.model.AssetAutoTaggerEntry;
 import com.liferay.asset.auto.tagger.service.AssetAutoTaggerEntryLocalService;
 import com.liferay.asset.kernel.model.AssetEntry;
@@ -21,12 +20,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -44,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class AssetAutoTaggerOSGiCommands implements OSGiCommands {
 
-	public void commitAutoTags(String companyId, String... classNames) {
+	public void commitAutoTags(String companyId) {
 		_forEachAssetEntry(
 			companyId,
 			assetEntry -> {
@@ -69,7 +65,7 @@ public class AssetAutoTaggerOSGiCommands implements OSGiCommands {
 			});
 	}
 
-	public void tagAllUntagged(String companyId, String... classNames) {
+	public void tagAllUntagged(String companyId) {
 		AssetAutoTaggerConfiguration assetAutoTaggerConfiguration =
 			_assetAutoTaggerConfigurationFactory.
 				getSystemAssetAutoTaggerConfiguration();
@@ -78,15 +74,6 @@ public class AssetAutoTaggerOSGiCommands implements OSGiCommands {
 			System.out.println("Asset auto tagger is disabled");
 
 			return;
-		}
-
-		if (ArrayUtil.isEmpty(classNames)) {
-			Set<String> newClassNames = new HashSet<>(
-				AssetAutoTaggerUtil.getClassNames());
-
-			newClassNames.remove("*");
-
-			classNames = newClassNames.toArray(new String[0]);
 		}
 
 		_forEachAssetEntry(
@@ -112,7 +99,7 @@ public class AssetAutoTaggerOSGiCommands implements OSGiCommands {
 			});
 	}
 
-	public void untagAll(String companyId, String... classNames) {
+	public void untagAll(String companyId) {
 		_forEachAssetEntry(
 			companyId,
 			assetEntry -> {
