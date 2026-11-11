@@ -121,8 +121,7 @@ public class DLPortletToolbarContributor extends BasePortletToolbarContributor {
 
 		_add(
 			menuItems,
-			_menuItemProvider.getAICreatorMenuItem(
-				folder, themeDisplay, portletRequest));
+			_menuItemProvider.getAICreatorMenuItem(folder, themeDisplay));
 
 		MenuItem lastExtensionMenuItem = null;
 

@@ -60,8 +60,7 @@ import org.osgi.service.component.annotations.Reference;
 public class MenuItemProvider {
 
 	public MenuItem getAICreatorMenuItem(
-		Folder folder, ThemeDisplay themeDisplay,
-		PortletRequest portletRequest) {
+		Folder folder, ThemeDisplay themeDisplay) {
 
 		long folderId = _getFolderId(folder);
 
