@@ -51,7 +51,7 @@ public class TaxonomyCategoryIdsFieldPredicateProvider
 	@Override
 	public Predicate getContainsPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, Object fieldValue) {
+		String fieldName, long objectDefinitionId, Object fieldValue) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getContainsPredicate for taxonomyCategoryIds");
@@ -60,10 +60,10 @@ public class TaxonomyCategoryIdsFieldPredicateProvider
 	@Override
 	public Predicate getInPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Object left, List<Object> rights) {
+		Object left, long objectDefinitionId, List<Object> rights) {
 
 		return _getTaxonomyCategoryIdsPredicate(
-			objectDefinitionColumnSupplier, 0,
+			objectDefinitionColumnSupplier, objectDefinitionId,
 			AssetEntryAssetCategoryRelTable.INSTANCE.assetCategoryId.in(
 				TransformUtil.transformToArray(
 					rights, assetCategoryId -> (Long)assetCategoryId,
@@ -72,27 +72,17 @@ public class TaxonomyCategoryIdsFieldPredicateProvider
 
 	@Override
 	public Predicate getIsNotEmptyPredicate(
-		String fieldName,
+		String fieldName, long objectDefinitionId,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier) {
 
-		Column<?, ?> column = objectDefinitionColumnSupplier.apply("id");
-
-		return column.in(
-			DSLQueryFactoryUtil.select(
-				AssetEntryTable.INSTANCE.classPK
-			).from(
-				AssetEntryTable.INSTANCE
-			).innerJoinON(
-				AssetEntryAssetCategoryRelTable.INSTANCE,
-				AssetEntryTable.INSTANCE.entryId.eq(
-					AssetEntryAssetCategoryRelTable.INSTANCE.assetEntryId)
-			));
+		return _getTaxonomyCategoryIdsPredicate(
+			objectDefinitionColumnSupplier, objectDefinitionId, null);
 	}
 
 	@Override
 	public Predicate getStartsWithPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, Object fieldValue) {
+		String fieldName, long objectDefinitionId, Object fieldValue) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getStartsWithPredicate for " +
@@ -100,10 +90,6 @@ public class TaxonomyCategoryIdsFieldPredicateProvider
 	}
 
 	private Predicate _getClassNameIdPredicate(long objectDefinitionId) {
-		if (objectDefinitionId <= 0) {
-			return null;
-		}
-
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinition(
 				objectDefinitionId);

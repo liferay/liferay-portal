@@ -426,6 +426,7 @@ public class PredicateExpressionVisitorImpl
 			return fieldPredicateProvider.getContainsPredicate(
 				name -> _getColumn(name, objectDefinition),
 				String.valueOf(fieldName),
+				objectDefinition.getObjectDefinitionId(),
 				_getValue(fieldName, objectDefinition, fieldValue));
 		}
 
@@ -562,6 +563,7 @@ public class PredicateExpressionVisitorImpl
 		if (fieldPredicateProvider != null) {
 			return fieldPredicateProvider.getInPredicate(
 				name -> _getColumn(name, objectDefinition), left,
+				objectDefinition.getObjectDefinitionId(),
 				TransformUtil.transform(
 					rights, right -> _getValue(left, objectDefinition, right)));
 		}
@@ -861,7 +863,8 @@ public class PredicateExpressionVisitorImpl
 		if (fieldPredicateProvider != null) {
 			return fieldPredicateProvider.getStartsWithPredicate(
 				name -> _getColumn(name, objectDefinition),
-				String.valueOf(fieldName), fieldValue);
+				String.valueOf(fieldName),
+				objectDefinition.getObjectDefinitionId(), fieldValue);
 		}
 
 		return _startsWith(
@@ -884,6 +887,7 @@ public class PredicateExpressionVisitorImpl
 
 			return fieldPredicateProvider.getIsNotEmptyPredicate(
 				collectionPropertyExpression.getName(),
+				objectDefinition.getObjectDefinitionId(),
 				name -> _getColumn(name, objectDefinition));
 		}
 

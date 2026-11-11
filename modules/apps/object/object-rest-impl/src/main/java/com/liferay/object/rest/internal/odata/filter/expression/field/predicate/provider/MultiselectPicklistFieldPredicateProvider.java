@@ -61,7 +61,7 @@ public class MultiselectPicklistFieldPredicateProvider
 	@Override
 	public Predicate getContainsPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, Object fieldValue) {
+		String fieldName, long objectDefinitionId, Object fieldValue) {
 
 		return objectDefinitionColumnSupplier.apply(
 			fieldName
@@ -74,7 +74,7 @@ public class MultiselectPicklistFieldPredicateProvider
 	@Override
 	public Predicate getInPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Object left, List<Object> rights) {
+		Object left, long objectDefinitionId, List<Object> rights) {
 
 		if (ListUtil.isEmpty(rights)) {
 			return null;
@@ -85,14 +85,15 @@ public class MultiselectPicklistFieldPredicateProvider
 		for (Object right : rights) {
 			if (predicate == null) {
 				predicate = getBinaryExpressionPredicate(
-					objectDefinitionColumnSupplier, left, 0,
+					objectDefinitionColumnSupplier, left, objectDefinitionId,
 					BinaryExpression.Operation.EQ, right);
 			}
 			else {
 				predicate = predicate.or(
 					getBinaryExpressionPredicate(
-						objectDefinitionColumnSupplier, left, 0,
-						BinaryExpression.Operation.EQ, right));
+						objectDefinitionColumnSupplier, left,
+						objectDefinitionId, BinaryExpression.Operation.EQ,
+						right));
 			}
 		}
 
@@ -101,7 +102,7 @@ public class MultiselectPicklistFieldPredicateProvider
 
 	@Override
 	public Predicate getIsNotEmptyPredicate(
-		String fieldName,
+		String fieldName, long objectDefinitionId,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier) {
 
 		return objectDefinitionColumnSupplier.apply(
@@ -112,7 +113,7 @@ public class MultiselectPicklistFieldPredicateProvider
 	@Override
 	public Predicate getStartsWithPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, Object fieldValue) {
+		String fieldName, long objectDefinitionId, Object fieldValue) {
 
 		return _getDelimitedLikePredicate(
 			(Expression<String>)objectDefinitionColumnSupplier.apply(fieldName),

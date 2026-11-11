@@ -29,22 +29,22 @@ public interface FieldPredicateProvider {
 
 	public Predicate getContainsPredicate(
 			Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-			String fieldName, Object fieldValue)
+			String fieldName, long objectDefinitionId, Object fieldValue)
 		throws ExpressionVisitException;
 
 	public Predicate getInPredicate(
 			Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-			Object left, List<Object> rights)
+			Object left, long objectDefinitionId, List<Object> rights)
 		throws ExpressionVisitException;
 
 	public Predicate getIsNotEmptyPredicate(
-			String fieldName,
+			String fieldName, long objectDefinitionId,
 			Function<String, Column<?, ?>> objectDefinitionColumnSupplier)
 		throws ExpressionVisitException;
 
 	public Predicate getStartsWithPredicate(
 			Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-			String fieldName, Object fieldValue)
+			String fieldName, long objectDefinitionId, Object fieldValue)
 		throws ExpressionVisitException;
 
 }

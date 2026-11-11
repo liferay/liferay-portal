@@ -54,10 +54,10 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 	@Override
 	public Predicate getContainsPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, Object fieldValue) {
+		String fieldName, long objectDefinitionId, Object fieldValue) {
 
 		return _getKeywordsPredicate(
-			objectDefinitionColumnSupplier, 0,
+			objectDefinitionColumnSupplier, objectDefinitionId,
 			DSLFunctionFactoryUtil.lower(
 				AssetTagTable.INSTANCE.name
 			).like(
@@ -69,10 +69,10 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 	@Override
 	public Predicate getInPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Object left, List<Object> rights) {
+		Object left, long objectDefinitionId, List<Object> rights) {
 
 		return _getKeywordsPredicate(
-			objectDefinitionColumnSupplier, 0,
+			objectDefinitionColumnSupplier, objectDefinitionId,
 			DSLFunctionFactoryUtil.lower(
 				AssetTagTable.INSTANCE.name
 			).in(
@@ -85,34 +85,20 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 
 	@Override
 	public Predicate getIsNotEmptyPredicate(
-		String fieldName,
+		String fieldName, long objectDefinitionId,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier) {
 
-		Column<?, ?> column = objectDefinitionColumnSupplier.apply("id");
-
-		return column.in(
-			DSLQueryFactoryUtil.select(
-				AssetEntryTable.INSTANCE.classPK
-			).from(
-				AssetEntryTable.INSTANCE
-			).innerJoinON(
-				AssetEntries_AssetTagsTable.INSTANCE,
-				AssetEntryTable.INSTANCE.entryId.eq(
-					AssetEntries_AssetTagsTable.INSTANCE.entryId)
-			).innerJoinON(
-				AssetTagTable.INSTANCE,
-				AssetTagTable.INSTANCE.tagId.eq(
-					AssetEntries_AssetTagsTable.INSTANCE.tagId)
-			));
+		return _getKeywordsPredicate(
+			objectDefinitionColumnSupplier, objectDefinitionId, null);
 	}
 
 	@Override
 	public Predicate getStartsWithPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, Object fieldValue) {
+		String fieldName, long objectDefinitionId, Object fieldValue) {
 
 		return _getKeywordsPredicate(
-			objectDefinitionColumnSupplier, 0,
+			objectDefinitionColumnSupplier, objectDefinitionId,
 			DSLFunctionFactoryUtil.lower(
 				AssetTagTable.INSTANCE.name
 			).like(
@@ -121,10 +107,6 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 	}
 
 	private Predicate _getClassNameIdPredicate(long objectDefinitionId) {
-		if (objectDefinitionId <= 0) {
-			return null;
-		}
-
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinition(
 				objectDefinitionId);

@@ -60,7 +60,7 @@ public class SystemDateFieldPredicateProvider
 	@Override
 	public Predicate getContainsPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, Object fieldValue) {
+		String fieldName, long objectDefinitionId, Object fieldValue) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getContainsPredicate for " +
@@ -70,14 +70,14 @@ public class SystemDateFieldPredicateProvider
 	@Override
 	public Predicate getInPredicate(
 			Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-			Object left, List<Object> rights)
+			Object left, long objectDefinitionId, List<Object> rights)
 		throws ExpressionVisitException {
 
 		Predicate predicate = null;
 
 		for (Object right : rights) {
 			Predicate binaryExpressionPredicate = getBinaryExpressionPredicate(
-				objectDefinitionColumnSupplier, left, 0L,
+				objectDefinitionColumnSupplier, left, objectDefinitionId,
 				BinaryExpression.Operation.EQ, right);
 
 			if (predicate == null) {
@@ -94,7 +94,7 @@ public class SystemDateFieldPredicateProvider
 
 	@Override
 	public Predicate getIsNotEmptyPredicate(
-		String fieldName,
+		String fieldName, long objectDefinitionId,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier) {
 
 		throw new UnsupportedOperationException(
@@ -105,7 +105,7 @@ public class SystemDateFieldPredicateProvider
 	@Override
 	public Predicate getStartsWithPredicate(
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, Object fieldValue) {
+		String fieldName, long objectDefinitionId, Object fieldValue) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getStartsWithPredicate for " +
