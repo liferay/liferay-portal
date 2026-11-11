@@ -119,7 +119,7 @@ test(
 
 test(
 	'Article friendly URLs can be customized and must be unique',
-	{tag: ['@LPD-110921', '@LPS-137116', '@LPS-154208']},
+	{tag: ['@LPD-110921', '@LPD-114985', '@LPS-137116', '@LPS-154208']},
 	async ({
 		apiHelpers,
 		knowledgeBaseEditArticlePage,
@@ -128,6 +128,33 @@ test(
 		site,
 	}) => {
 		const friendlyURLInput = page.getByLabel('Friendly URL');
+
+		async function fillNewArticleWithExistingTitle(title: string) {
+			await apiHelpers.headlessDelivery.postSiteKnowledgeBaseArticle({
+				articleBody: getRandomString(),
+				siteId: site.id,
+				title,
+			});
+
+			await knowledgeBaseEditArticlePage.goto(site.friendlyUrlPath);
+
+			await expect(async () => {
+				await knowledgeBaseEditArticlePage.titlePlaceholder.fill(
+					title,
+					{
+						timeout: 1000,
+					}
+				);
+
+				await expect(friendlyURLInput).toHaveValue(title, {
+					timeout: 1000,
+				});
+			}).toPass();
+
+			await knowledgeBaseEditArticlePage.contentTextBox.fill(
+				getRandomString()
+			);
+		}
 
 		await test.step('CanAddArticleWithCustomFriendlyURL', async () => {
 			const friendlyURL = getRandomString();
@@ -164,30 +191,7 @@ test(
 		await test.step('CannotAddArticleWithDuplicateURL', async () => {
 			const title = getRandomString();
 
-			await apiHelpers.headlessDelivery.postSiteKnowledgeBaseArticle({
-				articleBody: getRandomString(),
-				siteId: site.id,
-				title,
-			});
-
-			await knowledgeBaseEditArticlePage.goto(site.friendlyUrlPath);
-
-			await expect(async () => {
-				await knowledgeBaseEditArticlePage.titlePlaceholder.fill(
-					title,
-					{
-						timeout: 1000,
-					}
-				);
-
-				await expect(friendlyURLInput).toHaveValue(title, {
-					timeout: 1000,
-				});
-			}).toPass();
-
-			await knowledgeBaseEditArticlePage.contentTextBox.fill(
-				getRandomString()
-			);
+			await fillNewArticleWithExistingTitle(title);
 
 			await knowledgeBaseEditArticlePage.publish();
 
@@ -223,6 +227,49 @@ test(
 			await expect(
 				page.getByText('Your request failed to complete.')
 			).toBeVisible();
+		});
+
+		await test.step('CanSaveArticleWithDuplicateURLAsDraft', async () => {
+			const title = getRandomString();
+
+			await fillNewArticleWithExistingTitle(title);
+
+			await knowledgeBaseEditArticlePage.saveAsDraftButton.click();
+
+			await waitForAlert(
+				page,
+				`Success:${title} was successfully saved as a draft.`
+			);
+
+			await knowledgeBaseEditArticlePage.expandPanel('Configuration');
+
+			await expect(friendlyURLInput).toHaveValue(`${title}-1`);
+		});
+
+		await test.step('KeepsFriendlyURLWhenValidationFails', async () => {
+			const title = getRandomString();
+
+			await knowledgeBaseEditArticlePage.goto(site.friendlyUrlPath);
+
+			await expect(async () => {
+				await knowledgeBaseEditArticlePage.titlePlaceholder.fill(
+					title,
+					{
+						timeout: 1000,
+					}
+				);
+
+				await expect(friendlyURLInput).toHaveValue(title, {
+					timeout: 1000,
+				});
+			}).toPass();
+
+			await knowledgeBaseEditArticlePage.saveAsDraftButton.click();
+
+			await expect(
+				page.getByText('The Content field is required.')
+			).toBeVisible();
+			await expect(friendlyURLInput).toHaveValue(title);
 		});
 	}
 );
