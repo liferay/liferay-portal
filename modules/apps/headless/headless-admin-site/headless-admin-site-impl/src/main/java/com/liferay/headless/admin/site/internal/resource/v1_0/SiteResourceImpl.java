@@ -1067,6 +1067,15 @@ public class SiteResourceImpl
 				String.valueOf(site.getInheritLocales()));
 		}
 
+		if (GetterUtil.getBoolean(site.getMaintenanceMode()) &&
+			FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-82960")) {
+
+			unicodeProperties.put(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+				Boolean.TRUE.toString());
+		}
+
 		unicodeProperties.put(
 			"MAP_PROVIDER_KEY", site.getMapProviderKeyAsString());
 		unicodeProperties.put(
@@ -1271,6 +1280,17 @@ public class SiteResourceImpl
 						};
 
 						return group.getLogoURL(themeDisplay, true);
+					});
+				setMaintenanceMode(
+					() -> {
+						if (group.isMaintenanceMode() &&
+							FeatureFlagManagerUtil.isEnabled(
+								contextCompany.getCompanyId(), "LPD-82960")) {
+
+							return true;
+						}
+
+						return null;
 					});
 				setManualMembership(group::getManualMembership);
 				setMapProviderKey(
