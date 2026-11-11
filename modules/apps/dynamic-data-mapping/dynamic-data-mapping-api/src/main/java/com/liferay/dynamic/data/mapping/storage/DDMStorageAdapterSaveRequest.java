@@ -32,14 +32,6 @@ public final class DDMStorageAdapterSaveRequest {
 		return _primaryKey;
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
-	 */
-	@Deprecated
-	public long getScopeGroupId() {
-		return 0;
-	}
-
 	public long getStructureId() {
 		return _structureId;
 	}
@@ -64,16 +56,6 @@ public final class DDMStorageAdapterSaveRequest {
 
 		public static Builder newBuilder(
 			long userId, DDMFormValues ddmFormValues) {
-
-			return new Builder(userId, ddmFormValues);
-		}
-
-		/**
-		 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #newBuilder(long, DDMFormValues)}
-		 */
-		@Deprecated
-		public static Builder newBuilder(
-			long userId, long scopeGroupId, DDMFormValues ddmFormValues) {
 
 			return new Builder(userId, ddmFormValues);
 		}
