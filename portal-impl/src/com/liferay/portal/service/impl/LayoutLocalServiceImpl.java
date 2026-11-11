@@ -4055,8 +4055,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	protected LayoutLocalServiceHelper layoutLocalServiceHelper;
 
 	private List<Layout> _addChildUserGroupLayouts(
-			Group group, List<Layout> layouts)
-		throws PortalException {
+		Group group, List<Layout> layouts) {
 
 		List<Layout> childLayouts = new ArrayList<>(layouts.size());
 
