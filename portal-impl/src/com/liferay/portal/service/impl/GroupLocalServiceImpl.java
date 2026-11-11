@@ -4076,6 +4076,13 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			}
 		}
 
+		if (!active &&
+			(group.isCompany() || group.isControlPanel() || group.isGuest())) {
+
+			throw new RequiredGroupException.MustNotDeactivateSystemGroup(
+				group.getExternalReferenceCode());
+		}
+
 		if (group.isActive() != active) {
 			group.setActive(active);
 
