@@ -47,12 +47,34 @@ public class QueuedBuildDurationMonitor extends BaseMonitor {
 		long currentTimeMillis =
 			JenkinsResultsParserUtil.getCurrentTimeMillis();
 
-		List<JenkinsMaster> jenkinsMasters = _getJenkinsMasters();
+		List<JenkinsMaster> cohortJenkinsMasters = _getJenkinsMasters();
 
-		if (jenkinsMasters.isEmpty()) {
+		if (cohortJenkinsMasters.isEmpty()) {
 			return new MonitorResult(
 				"Unable to find a master in cohort " + _cohortName, null,
 				MonitorResult.Status.CRITICAL, currentTimeMillis);
+		}
+
+		List<JenkinsMaster> jenkinsMasters = new ArrayList<>();
+
+		for (JenkinsMaster cohortJenkinsMaster : cohortJenkinsMasters) {
+			if (cohortJenkinsMaster.isBlacklisted()) {
+				continue;
+			}
+
+			jenkinsMasters.add(cohortJenkinsMaster);
+		}
+
+		if (jenkinsMasters.isEmpty()) {
+			Map<String, String> metrics = new LinkedHashMap<>();
+
+			metrics.put("queued.builds.count", "0");
+			metrics.put("stuck.queued.builds.count", "0");
+
+			return new MonitorResult(
+				JenkinsResultsParserUtil.combine(
+					"Every master in cohort ", _cohortName, " is blacklisted"),
+				metrics, MonitorResult.Status.OK, currentTimeMillis);
 		}
 
 		Map<String, String> queueExceptionMessages = new ConcurrentHashMap<>();
@@ -75,14 +97,6 @@ public class QueuedBuildDurationMonitor extends BaseMonitor {
 			JenkinsMaster jenkinsMaster = jenkinsMasters.get(i);
 
 			List<JenkinsMaster.QueueItem> queueItems = queueItemsList.get(i);
-			List<JenkinsMaster.RunningBuild> runningBuilds =
-				runningBuildsList.get(i);
-
-			if (((queueItems == null) || (runningBuilds == null)) &&
-				jenkinsMaster.isBlacklisted()) {
-
-				continue;
-			}
 
 			if (queueItems == null) {
 				messages.add(
@@ -93,6 +107,9 @@ public class QueuedBuildDurationMonitor extends BaseMonitor {
 
 				statuses.add(MonitorResult.Status.CRITICAL);
 			}
+
+			List<JenkinsMaster.RunningBuild> runningBuilds =
+				runningBuildsList.get(i);
 
 			if (runningBuilds == null) {
 				messages.add(
