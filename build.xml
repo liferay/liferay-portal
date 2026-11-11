@@ -741,7 +741,10 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 
 		<for list="${find.security.bugs.projects}" param="find.security.bugs.project">
 			<sequential>
-				<gradle-execute dir="${project.dir}/@{find.security.bugs.project}" forcedcacheenabled="false" stacktrace="false" task="findSecurityBugs" />
+				<gradle-execute dir="${project.dir}/@{find.security.bugs.project}" forcedcacheenabled="false" stacktrace="false" task="findSecurityBugs">
+					<arg if:set="findSecurityBugs.Xms" value="-DfindSecurityBugs.Xms=${findSecurityBugs.Xms}" />
+					<arg if:set="findSecurityBugs.Xmx" value="-DfindSecurityBugs.Xmx=${findSecurityBugs.Xmx}" />
+				</gradle-execute>
 			</sequential>
 		</for>
 	</target>
