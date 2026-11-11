@@ -163,53 +163,6 @@ public class BlogsUtil {
 		).build();
 	}
 
-	public static Map<String, String> getEmailFromDefinitionTerms(
-		PortletRequest portletRequest, String emailFromAddress,
-		String emailFromName) {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		return LinkedHashMapBuilder.put(
-			"[$BLOGS_ENTRY_USER_ADDRESS$]",
-			LanguageUtil.get(
-				themeDisplay.getLocale(),
-				"the-email-address-of-the-user-who-added-the-blog-entry")
-		).put(
-			"[$BLOGS_ENTRY_USER_NAME$]",
-			LanguageUtil.get(
-				themeDisplay.getLocale(), "the-user-who-added-the-blog-entry")
-		).put(
-			"[$COMPANY_ID$]",
-			LanguageUtil.get(
-				themeDisplay.getLocale(),
-				"the-company-id-associated-with-the-blog")
-		).put(
-			"[$COMPANY_MX$]",
-			LanguageUtil.get(
-				themeDisplay.getLocale(),
-				"the-company-mx-associated-with-the-blog")
-		).put(
-			"[$COMPANY_NAME$]",
-			LanguageUtil.get(
-				themeDisplay.getLocale(),
-				"the-company-name-associated-with-the-blog")
-		).put(
-			"[$PORTLET_NAME$]",
-			() -> {
-				PortletDisplay portletDisplay =
-					themeDisplay.getPortletDisplay();
-
-				return HtmlUtil.escape(portletDisplay.getTitle());
-			}
-		).put(
-			"[$SITE_NAME$]",
-			LanguageUtil.get(
-				themeDisplay.getLocale(),
-				"the-site-name-associated-with-the-blog")
-		).build();
-	}
-
 	public static OrderByComparator<BlogsEntry> getOrderByComparator(
 		String orderByCol, String orderByType) {
 
