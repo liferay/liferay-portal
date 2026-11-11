@@ -5,15 +5,12 @@
 
 package com.liferay.portal.kernel.util;
 
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
-
-import java.io.IOException;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -89,26 +86,10 @@ public class UnicodePropertiesTest {
 	@Test
 	public void testLoad() {
 		_testLoad(
-			(props, unicodeProperties) -> {
-				try {
-					unicodeProperties.load(props);
-				}
-				catch (IOException ioException) {
-					ReflectionUtil.throwException(ioException);
-				}
-			},
-			false);
+			(props, unicodeProperties) -> unicodeProperties.load(props), false);
 
 		_testLoad(
-			(props, unicodeProperties) -> {
-				try {
-					unicodeProperties.load(props);
-				}
-				catch (IOException ioException) {
-					ReflectionUtil.throwException(ioException);
-				}
-			},
-			true);
+			(props, unicodeProperties) -> unicodeProperties.load(props), true);
 	}
 
 	@Test

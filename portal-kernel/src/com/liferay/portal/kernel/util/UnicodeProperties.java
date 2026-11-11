@@ -11,8 +11,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
-import java.io.IOException;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,7 +85,7 @@ public class UnicodeProperties extends HashMap<String, String> {
 		return _safe;
 	}
 
-	public void load(String props) throws IOException {
+	public void load(String props) {
 		if (Validator.isNull(props)) {
 			return;
 		}

@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
@@ -24,8 +25,6 @@ import com.liferay.segments.model.SegmentsExperiment;
 import com.liferay.segments.service.SegmentsEntryLocalServiceUtil;
 import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
 import com.liferay.segments.service.SegmentsExperimentLocalServiceUtil;
-
-import java.io.IOException;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -68,14 +67,11 @@ public class SegmentsExperienceImpl extends SegmentsExperienceBaseImpl {
 	@Override
 	public UnicodeProperties getTypeSettingsUnicodeProperties() {
 		if (_typeSettingsUnicodeProperties == null) {
-			_typeSettingsUnicodeProperties = new UnicodeProperties(true);
-
-			try {
-				_typeSettingsUnicodeProperties.load(super.getTypeSettings());
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
+			_typeSettingsUnicodeProperties = UnicodePropertiesBuilder.create(
+				true
+			).load(
+				super.getTypeSettings()
+			).build();
 		}
 
 		return _typeSettingsUnicodeProperties;

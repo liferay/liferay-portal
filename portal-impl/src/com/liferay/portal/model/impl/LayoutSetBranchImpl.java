@@ -21,9 +21,8 @@ import com.liferay.portal.kernel.service.ThemeLocalServiceUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.io.IOException;
 
 /**
  * @author Raymond Augé
@@ -109,14 +108,11 @@ public class LayoutSetBranchImpl extends LayoutSetBranchBaseImpl {
 	@Override
 	public UnicodeProperties getSettingsProperties() {
 		if (_settingsUnicodeProperties == null) {
-			_settingsUnicodeProperties = new UnicodeProperties(true);
-
-			try {
-				_settingsUnicodeProperties.load(super.getSettings());
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
+			_settingsUnicodeProperties = UnicodePropertiesBuilder.create(
+				true
+			).load(
+				super.getSettings()
+			).build();
 		}
 
 		return _settingsUnicodeProperties;

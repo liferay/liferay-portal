@@ -6,15 +6,12 @@
 package com.liferay.portal.model.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-
-import java.io.IOException;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 
 /**
  * @author Brian Wing Shun Chan
@@ -44,14 +41,11 @@ public class LayoutSetPrototypeImpl extends LayoutSetPrototypeBaseImpl {
 	@Override
 	public UnicodeProperties getSettingsProperties() {
 		if (_settingsUnicodeProperties == null) {
-			_settingsUnicodeProperties = new UnicodeProperties(true);
-
-			try {
-				_settingsUnicodeProperties.load(super.getSettings());
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
+			_settingsUnicodeProperties = UnicodePropertiesBuilder.create(
+				true
+			).load(
+				super.getSettings()
+			).build();
 		}
 
 		return _settingsUnicodeProperties;
@@ -84,9 +78,6 @@ public class LayoutSetPrototypeImpl extends LayoutSetPrototypeBaseImpl {
 
 		super.setSettings(settingsUnicodeProperties.toString());
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutSetPrototypeImpl.class);
 
 	private UnicodeProperties _settingsUnicodeProperties;
 

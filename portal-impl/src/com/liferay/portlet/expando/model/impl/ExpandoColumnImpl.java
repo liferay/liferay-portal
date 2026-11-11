@@ -12,8 +12,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.Locale;
@@ -131,14 +131,11 @@ public class ExpandoColumnImpl extends ExpandoColumnBaseImpl {
 	@Override
 	public UnicodeProperties getTypeSettingsProperties() {
 		if (_typeSettingsUnicodeProperties == null) {
-			_typeSettingsUnicodeProperties = new UnicodeProperties(true);
-
-			try {
-				_typeSettingsUnicodeProperties.load(super.getTypeSettings());
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
+			_typeSettingsUnicodeProperties = UnicodePropertiesBuilder.create(
+				true
+			).load(
+				super.getTypeSettings()
+			).build();
 		}
 
 		return _typeSettingsUnicodeProperties;

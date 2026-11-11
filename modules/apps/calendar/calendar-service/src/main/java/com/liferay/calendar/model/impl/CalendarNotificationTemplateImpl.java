@@ -5,11 +5,8 @@
 
 package com.liferay.calendar.model.impl;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-
-import java.io.IOException;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 
 /**
  * @author Adam Brandizzi
@@ -29,16 +26,12 @@ public class CalendarNotificationTemplateImpl
 	@Override
 	public UnicodeProperties getNotificationTypeSettingsProperties() {
 		if (_notificationTypeSettingsUnicodeProperties == null) {
-			_notificationTypeSettingsUnicodeProperties = new UnicodeProperties(
-				true);
-
-			try {
-				_notificationTypeSettingsUnicodeProperties.load(
-					super.getNotificationTypeSettings());
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
+			_notificationTypeSettingsUnicodeProperties =
+				UnicodePropertiesBuilder.create(
+					true
+				).load(
+					super.getNotificationTypeSettings()
+				).build();
 		}
 
 		return _notificationTypeSettingsUnicodeProperties;
@@ -61,9 +54,6 @@ public class CalendarNotificationTemplateImpl
 		super.setNotificationTypeSettings(
 			_notificationTypeSettingsUnicodeProperties.toString());
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CalendarNotificationTemplateImpl.class);
 
 	private UnicodeProperties _notificationTypeSettingsUnicodeProperties;
 

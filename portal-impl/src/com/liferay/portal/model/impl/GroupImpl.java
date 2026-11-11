@@ -60,11 +60,10 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
 import com.liferay.sites.kernel.util.Sites;
-
-import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -775,14 +774,11 @@ public class GroupImpl extends GroupBaseImpl {
 	@Override
 	public UnicodeProperties getTypeSettingsProperties() {
 		if (_typeSettingsUnicodeProperties == null) {
-			_typeSettingsUnicodeProperties = new UnicodeProperties(true);
-
-			try {
-				_typeSettingsUnicodeProperties.load(super.getTypeSettings());
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
+			_typeSettingsUnicodeProperties = UnicodePropertiesBuilder.create(
+				true
+			).load(
+				super.getTypeSettings()
+			).build();
 		}
 
 		return _typeSettingsUnicodeProperties;

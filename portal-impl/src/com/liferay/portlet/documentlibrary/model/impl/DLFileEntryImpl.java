@@ -45,10 +45,10 @@ import com.liferay.portal.kernel.service.RepositoryLocalServiceUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.view.count.ViewCountManagerUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.HashMap;
@@ -161,14 +161,11 @@ public class DLFileEntryImpl extends DLFileEntryBaseImpl {
 	@Override
 	public UnicodeProperties getExtraSettingsProperties() {
 		if (_extraSettingsUnicodeProperties == null) {
-			_extraSettingsUnicodeProperties = new UnicodeProperties(true);
-
-			try {
-				_extraSettingsUnicodeProperties.load(super.getExtraSettings());
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
+			_extraSettingsUnicodeProperties = UnicodePropertiesBuilder.create(
+				true
+			).load(
+				super.getExtraSettings()
+			).build();
 		}
 
 		return _extraSettingsUnicodeProperties;

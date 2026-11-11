@@ -5,11 +5,8 @@
 
 package com.liferay.commerce.discount.model.impl;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-
-import java.io.IOException;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 
 /**
  * @author Marco Leo
@@ -20,14 +17,11 @@ public class CommerceDiscountRuleImpl extends CommerceDiscountRuleBaseImpl {
 	@Override
 	public UnicodeProperties getSettingsProperties() {
 		if (_unicodeProperties == null) {
-			_unicodeProperties = new UnicodeProperties(true);
-
-			try {
-				_unicodeProperties.load(super.getTypeSettings());
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
+			_unicodeProperties = UnicodePropertiesBuilder.create(
+				true
+			).load(
+				super.getTypeSettings()
+			).build();
 		}
 
 		return _unicodeProperties;
@@ -53,9 +47,6 @@ public class CommerceDiscountRuleImpl extends CommerceDiscountRuleBaseImpl {
 
 		super.setTypeSettings(settings);
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CommerceDiscountRuleImpl.class);
 
 	private UnicodeProperties _unicodeProperties;
 

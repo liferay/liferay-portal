@@ -5,8 +5,6 @@
 
 package com.liferay.portal.kernel.util;
 
-import java.io.IOException;
-
 import java.util.Map;
 
 /**
@@ -153,12 +151,7 @@ public class UnicodePropertiesBuilder extends BaseMapBuilder {
 		}
 
 		public UnicodePropertiesWrapper load(String props) {
-			try {
-				_unicodeProperties.load(props);
-			}
-			catch (IOException ioException) {
-				throw new RuntimeException(ioException);
-			}
+			_unicodeProperties.load(props);
 
 			return this;
 		}

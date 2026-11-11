@@ -18,12 +18,10 @@ import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.List;
@@ -95,14 +93,11 @@ public class DLFileVersionImpl extends DLFileVersionBaseImpl {
 	@Override
 	public UnicodeProperties getExtraSettingsProperties() {
 		if (_extraSettingsUnicodeProperties == null) {
-			_extraSettingsUnicodeProperties = new UnicodeProperties(true);
-
-			try {
-				_extraSettingsUnicodeProperties.load(super.getExtraSettings());
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
+			_extraSettingsUnicodeProperties = UnicodePropertiesBuilder.create(
+				true
+			).load(
+				super.getExtraSettings()
+			).build();
 		}
 
 		return _extraSettingsUnicodeProperties;
@@ -151,9 +146,6 @@ public class DLFileVersionImpl extends DLFileVersionBaseImpl {
 
 		super.setExtraSettings(_extraSettingsUnicodeProperties.toString());
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DLFileVersionImpl.class);
 
 	private transient ExpandoBridge _expandoBridge;
 	private UnicodeProperties _extraSettingsUnicodeProperties;

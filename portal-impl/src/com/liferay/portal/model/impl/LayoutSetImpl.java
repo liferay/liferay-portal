@@ -35,9 +35,8 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.io.IOException;
 
 import java.util.Collections;
 import java.util.List;
@@ -242,14 +241,11 @@ public class LayoutSetImpl extends LayoutSetBaseImpl {
 	@Override
 	public UnicodeProperties getSettingsProperties() {
 		if (_settingsUnicodeProperties == null) {
-			_settingsUnicodeProperties = new UnicodeProperties(true);
-
-			try {
-				_settingsUnicodeProperties.load(super.getSettings());
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
+			_settingsUnicodeProperties = UnicodePropertiesBuilder.create(
+				true
+			).load(
+				super.getSettings()
+			).build();
 		}
 
 		return _settingsUnicodeProperties;
