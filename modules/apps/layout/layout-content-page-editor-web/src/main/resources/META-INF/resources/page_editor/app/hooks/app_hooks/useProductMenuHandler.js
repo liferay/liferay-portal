@@ -64,9 +64,22 @@ export default function useProductMenuHandler() {
 			() => onProductMenuChange({open: true})
 		);
 
+		const onProductMenuSidebarStateChanged = ({visible}) =>
+			onProductMenuChange({open: visible});
+
+		Liferay.on(
+			'productMenuSidebarStateChanged',
+			onProductMenuSidebarStateChanged
+		);
+
 		return () => {
 			closeSideNavigationListener?.removeListener();
 			openSideNavigationListener?.removeListener();
+
+			Liferay.detach(
+				'productMenuSidebarStateChanged',
+				onProductMenuSidebarStateChanged
+			);
 		};
 	}, [dispatch, sidebarOpen, sidebarHidden]);
 }
