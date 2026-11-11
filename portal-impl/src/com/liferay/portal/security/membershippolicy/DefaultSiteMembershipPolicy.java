@@ -158,9 +158,7 @@ public class DefaultSiteMembershipPolicy extends BaseSiteMembershipPolicy {
 		}
 	}
 
-	protected List<Group> getLimitedChildrenGroups(Group group)
-		throws PortalException {
-
+	protected List<Group> getLimitedChildrenGroups(Group group) {
 		List<Group> childrenGroups = GroupLocalServiceUtil.search(
 			group.getCompanyId(), null, StringPool.BLANK,
 			LinkedHashMapBuilder.<String, Object>put(
