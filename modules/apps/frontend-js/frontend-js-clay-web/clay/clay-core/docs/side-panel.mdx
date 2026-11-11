@@ -164,6 +164,22 @@ The SidePanel is designed to use either `absolute` or `fixed` positioning.
 <SidePanel position="fixed" />
 ```
 
+## Backdrop
+
+When the SidePanel covers the page content, for example on small screens, set the `backdrop` property to render a backdrop behind it while it is open. The backdrop is appended to the end of the body element, like the Modal backdrop, and closes the SidePanel when clicked. While the backdrop is shown, the SidePanel behaves like a dialog: it runs the full height above the backdrop, Escape closes it and focus stays inside it. Use `backdropContainerProps` to add a class name or id to the element that holds the backdrop.
+
+```jsx
+<SidePanel backdrop position="fixed" />
+```
+
+## Full Height
+
+A fixed SidePanel starts below its container and stacks below fixed or sticky navigation, such as a sticky header. Set the `fullHeight` property to run it the full height of the page instead, from the top and above that navigation. It adds the `c-slideout-height-full` class.
+
+```jsx
+<SidePanel fullHeight position="fixed" />
+```
+
 ## Fluid Width
 
 The SidePanel is designed to adapt fluidly to the screen size, with its width automatically set as a percentage of the container. It does not rely on a fixed width and integrates seamlessly across different resolutions.

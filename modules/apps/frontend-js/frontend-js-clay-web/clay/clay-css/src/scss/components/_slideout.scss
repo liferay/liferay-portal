@@ -10,6 +10,10 @@
 	@include clay-css($c-slideout-fixed);
 }
 
+.c-slideout-backdrop {
+	@include clay-css($c-slideout-backdrop);
+}
+
 .c-slideout-absolute {
 	@include clay-css($c-slideout-absolute);
 }

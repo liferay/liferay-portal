@@ -51,6 +51,20 @@ $cadmin-c-slideout-fixed: map-merge(
 	$cadmin-c-slideout-fixed
 );
 
+// C Slideout Backdrop
+
+$cadmin-c-slideout-backdrop: () !default;
+$cadmin-c-slideout-backdrop: map-merge(
+	(
+		background-color: $cadmin-modal-backdrop-bg,
+		inset: 0,
+		opacity: $cadmin-modal-backdrop-opacity,
+		position: fixed,
+		z-index: $cadmin-zindex-c-slideout-backdrop,
+	),
+	$cadmin-c-slideout-backdrop
+);
+
 $cadmin-c-slideout-container: () !default;
 $cadmin-c-slideout-container: map-deep-merge(
 	(

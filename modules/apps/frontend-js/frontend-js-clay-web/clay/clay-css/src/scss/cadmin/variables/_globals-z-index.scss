@@ -50,3 +50,7 @@ $cadmin-zindex-c-slideout: $cadmin-zindex-sidenav !default; // 975
 $cadmin-zindex-c-slideout-height-full: calc(
 	#{$cadmin-zindex-fixed} + 5
 ) !default; // 1035
+
+$cadmin-zindex-c-slideout-backdrop: calc(
+	#{$cadmin-zindex-c-slideout-height-full} - 1
+) !default; // 1034

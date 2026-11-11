@@ -18,15 +18,25 @@ import {SidePanel} from '../SidePanel';
 // unmount the trap and restore focus to the trigger element. Mocking
 // FocusTrap prevents false negatives in tests caused by JSDOM's limitations.
 
-jest.mock('../../focus-trap/FocusTrap', () => {
-	const MockFocusTrap = ({children}: any) => <>{children}</>;
+const mockFocusTrap = jest.fn(({children}: any) => <>{children}</>);
 
-	return {
-		FocusTrap: MockFocusTrap,
-	};
-});
+jest.mock('../../focus-trap/FocusTrap', () => ({
+	FocusTrap: (props: any) => mockFocusTrap(props),
+}));
 
-function Example({defaultOpen = false}: {defaultOpen?: boolean}) {
+function Example({
+	backdrop = false,
+	closeOnEscape,
+	defaultOpen = false,
+	fullHeight = false,
+	position,
+}: {
+	backdrop?: boolean;
+	closeOnEscape?: boolean;
+	defaultOpen?: boolean;
+	fullHeight?: boolean;
+	position?: 'absolute' | 'fixed';
+}) {
 	const [open, setOpen] = useState(defaultOpen);
 
 	const ref = useRef(null);
@@ -44,10 +54,14 @@ function Example({defaultOpen = false}: {defaultOpen?: boolean}) {
 			<div ref={ref}>
 				<SidePanel
 					as="aside"
+					backdrop={backdrop}
+					closeOnEscape={closeOnEscape}
 					containerRef={ref}
+					fullHeight={fullHeight}
 					id="sidepanel"
 					onOpenChange={setOpen}
 					open={open}
+					position={position}
 				>
 					<SidePanel.Header
 						messages={{
@@ -134,5 +148,73 @@ describe('SidePanel incremental interactions', () => {
 
 		expect(button).toHaveFocus();
 		expect(panel).toHaveAttribute('inert');
+	});
+
+	it('appends the backdrop to the body and closes when clicking it', async () => {
+		const {getAllByRole, getByRole} = render(<Example backdrop />);
+
+		const [button] = getAllByRole('button');
+		const panel = getByRole('complementary');
+
+		expect(document.querySelector('.c-slideout-backdrop')).toBeNull();
+
+		userEvent.click(button!);
+
+		const backdrop = document.querySelector('.c-slideout-backdrop');
+
+		expect(backdrop?.parentElement?.parentElement).toBe(document.body);
+
+		userEvent.click(backdrop!);
+
+		await waitFor(() => {
+			expect(document.querySelector('.c-slideout-backdrop')).toBeNull();
+			expect(panel).toHaveAttribute('inert');
+		});
+	});
+
+	it('closes on ESC and traps focus while the backdrop is shown', async () => {
+		const {getAllByRole, getByRole} = render(
+			<Example backdrop closeOnEscape={false} />
+		);
+
+		const [button] = getAllByRole('button');
+		const panel = getByRole('complementary');
+
+		userEvent.click(button!);
+
+		await waitFor(() => {
+			expect(panel).not.toHaveAttribute('inert');
+		});
+
+		expect(mockFocusTrap).toHaveBeenLastCalledWith(
+			expect.objectContaining({active: true})
+		);
+		expect(panel.closest('.c-slideout')).toHaveClass(
+			'c-slideout-height-full'
+		);
+
+		userEvent.keyboard('{Escape}');
+
+		await waitFor(() => {
+			expect(panel).toHaveAttribute('inert');
+		});
+	});
+
+	it('runs the full height from the top', () => {
+		const {container} = render(<Example fullHeight position="fixed" />);
+
+		const slideout = container.querySelector('.c-slideout');
+
+		expect(slideout).toHaveClass('c-slideout-height-full');
+		expect(slideout).toHaveStyle({top: '0px'});
+	});
+
+	it('runs the full height from the top with a backdrop', () => {
+		const {container} = render(<Example backdrop position="fixed" />);
+
+		const slideout = container.querySelector('.c-slideout');
+
+		expect(slideout).toHaveClass('c-slideout-height-full');
+		expect(slideout).toHaveStyle({top: '0px'});
 	});
 });

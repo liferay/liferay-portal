@@ -48,6 +48,20 @@ $c-slideout-fixed: map-merge(
 	$c-slideout-fixed
 );
 
+// C Slideout Backdrop
+
+$c-slideout-backdrop: () !default;
+$c-slideout-backdrop: map-merge(
+	(
+		background-color: $modal-backdrop-bg,
+		inset: 0,
+		opacity: $modal-backdrop-opacity,
+		position: fixed,
+		z-index: $zindex-c-slideout-backdrop,
+	),
+	$c-slideout-backdrop
+);
+
 $c-slideout-container: () !default;
 $c-slideout-container: map-deep-merge(
 	(
