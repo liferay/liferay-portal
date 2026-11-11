@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {expect} from '@playwright/test';
+
 import {getRandomInt} from '../utils/getRandomInt';
 import {ApiHelpers} from './ApiHelpers';
 
@@ -63,6 +65,28 @@ export class NotificationApiHelper {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/notification-queue-entries?search=${search}`
 		);
+	}
+
+	async getNotificationTemplateByName(
+		name: string
+	): Promise<TNotificationTemplate> {
+		let notificationTemplate: TNotificationTemplate;
+
+		await expect
+			.poll(async () => {
+				const {items} = await this.apiHelpers.get(
+					`${this.apiHelpers.baseUrl}${this.basePath}/notification-templates?search=${encodeURIComponent(name)}`
+				);
+
+				notificationTemplate = items.find(
+					(item: TNotificationTemplate) => item.name === name
+				);
+
+				return notificationTemplate;
+			})
+			.toBeDefined();
+
+		return notificationTemplate;
 	}
 
 	async postNotificationTemplate(

@@ -27,6 +27,7 @@ export const test = mergeTests(
 
 test.describe('User notification template', () => {
 	test('can be created and saved correctly', async ({
+		apiHelpers,
 		page,
 		userNotificationTemplatePage,
 	}) => {
@@ -52,6 +53,16 @@ test.describe('User notification template', () => {
 		);
 
 		await userNotificationTemplatePage.saveButton.click();
+
+		const notificationTemplate =
+			await apiHelpers.notification.getNotificationTemplateByName(
+				notificationTemplateName
+			);
+
+		apiHelpers.data.push({
+			id: notificationTemplate.id,
+			type: 'notificationTemplate',
+		});
 
 		await page.getByRole('link', {name: notificationTemplateName}).click();
 
@@ -150,6 +161,16 @@ test.describe('User notification template', () => {
 			);
 
 			await userNotificationTemplatePage.saveButton.click();
+
+			const notificationTemplate =
+				await apiHelpers.notification.getNotificationTemplateByName(
+					notificationTemplateName
+				);
+
+			apiHelpers.data.push({
+				id: notificationTemplate.id,
+				type: 'notificationTemplate',
+			});
 
 			await page
 				.getByRole('link', {name: notificationTemplateName})

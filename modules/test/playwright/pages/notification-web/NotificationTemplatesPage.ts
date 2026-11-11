@@ -9,7 +9,6 @@ import {PORTLET_URLS} from '../../utils/portletUrls';
 
 export class NotificationTemplatesPage {
 	readonly emailNotificationDropdownItem: Locator;
-	readonly frontEndDatasetItemAction: Locator;
 	readonly frontEndDatasetItemActionDelete: Locator;
 	readonly newNotificationTemplateButton: Locator;
 	readonly page: Page;
@@ -19,9 +18,6 @@ export class NotificationTemplatesPage {
 		this.emailNotificationDropdownItem = page
 			.getByRole('menuitem')
 			.filter({hasText: 'Email'});
-		this.frontEndDatasetItemAction = page.getByRole('button', {
-			name: 'Actions',
-		});
 		this.frontEndDatasetItemActionDelete = page.getByRole('menuitem', {
 			name: 'Delete',
 		});

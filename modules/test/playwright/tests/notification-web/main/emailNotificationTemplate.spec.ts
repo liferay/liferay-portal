@@ -56,37 +56,11 @@ test.beforeEach(async ({apiHelpers}) => {
 	});
 });
 
-test.afterEach(async ({apiHelpers, notificationTemplatesPage, page}) => {
+test.afterEach(async ({apiHelpers}) => {
 	const objectDefinitionAPIClient =
 		await apiHelpers.buildRestClient(ObjectDefinitionAPI);
 
 	await objectDefinitionAPIClient.deleteObjectDefinition(objectDefinition.id);
-
-	await notificationTemplatesPage.goto();
-
-	const frontEndDatasetItemActions =
-		await notificationTemplatesPage.frontEndDatasetItemAction.all();
-
-	for (let i = 0; i < frontEndDatasetItemActions.length; i++) {
-		try {
-			const actionButton = page
-				.getByRole('button', {name: 'Actions'})
-				.first();
-			if (actionButton) {
-				await actionButton.click();
-				const deleteButton =
-					notificationTemplatesPage.frontEndDatasetItemActionDelete;
-
-				if (deleteButton) {
-					await deleteButton.click();
-					await waitForAlert(page);
-				}
-			}
-		}
-		catch (error) {
-			throw new Error(error);
-		}
-	}
 
 	if (userGroups !== undefined) {
 		for (const userGroup of userGroups) {
@@ -187,6 +161,16 @@ test.describe('Email notification template', () => {
 
 			await emailNotificationTemplatePage.saveButton.click();
 
+			const notificationTemplate =
+				await apiHelpers.notification.getNotificationTemplateByName(
+					templateName
+				);
+
+			apiHelpers.data.push({
+				id: notificationTemplate.id,
+				type: 'notificationTemplate',
+			});
+
 			await expect(
 				page.getByRole('link', {name: templateName})
 			).toBeVisible();
@@ -194,6 +178,7 @@ test.describe('Email notification template', () => {
 	);
 
 	test('can be created and saved correctly', async ({
+		apiHelpers,
 		emailNotificationTemplatePage,
 		notificationTemplatesPage,
 	}) => {
@@ -208,6 +193,16 @@ test.describe('Email notification template', () => {
 		);
 
 		await emailNotificationTemplatePage.saveButton.click();
+
+		const notificationTemplate =
+			await apiHelpers.notification.getNotificationTemplateByName(
+				notificationTemplateName
+			);
+
+		apiHelpers.data.push({
+			id: notificationTemplate.id,
+			type: 'notificationTemplate',
+		});
 
 		await notificationTemplatesPage
 			.getFrontEndDatasetItemLocator(notificationTemplateName)
@@ -520,6 +515,7 @@ test.describe('Email notification template', () => {
 	});
 
 	test('can have rich text source code verifying that the source code is persisted', async ({
+		apiHelpers,
 		emailNotificationTemplatePage,
 		notificationTemplatesPage,
 		page,
@@ -556,6 +552,16 @@ test.describe('Email notification template', () => {
 		await emailNotificationTemplatePage.richTextSourceButton.click();
 
 		await emailNotificationTemplatePage.saveButton.click();
+
+		const notificationTemplate =
+			await apiHelpers.notification.getNotificationTemplateByName(
+				notificationTemplateName
+			);
+
+		apiHelpers.data.push({
+			id: notificationTemplate.id,
+			type: 'notificationTemplate',
+		});
 
 		await notificationTemplatesPage
 			.getFrontEndDatasetItemLocator(notificationTemplateName)
@@ -620,6 +626,7 @@ test.describe('Email notification template', () => {
 	);
 
 	test('can save recipients roles', async ({
+		apiHelpers,
 		emailNotificationTemplatePage,
 		notificationTemplatesPage,
 		page,
@@ -709,6 +716,16 @@ test.describe('Email notification template', () => {
 
 		await emailNotificationTemplatePage.saveButton.click();
 
+		const notificationTemplate =
+			await apiHelpers.notification.getNotificationTemplateByName(
+				notificationTemplateName
+			);
+
+		apiHelpers.data.push({
+			id: notificationTemplate.id,
+			type: 'notificationTemplate',
+		});
+
 		await notificationTemplatesPage
 			.getFrontEndDatasetItemLocator(notificationTemplateName)
 			.click();
@@ -768,6 +785,11 @@ test.describe('Email notification template', () => {
 				type: 'email',
 			});
 
+		apiHelpers.data.push({
+			id: notificationTemplate.id,
+			type: 'notificationTemplate',
+		});
+
 		await notificationTemplatesPage.goto();
 
 		await notificationTemplatesPage.openNotificationTemplate(
@@ -783,6 +805,7 @@ test.describe('Email notification template', () => {
 	});
 
 	test('can use notification terms and freeMarker variables', async ({
+		apiHelpers,
 		emailNotificationTemplatePage,
 		notificationTemplatesPage,
 		page,
@@ -867,6 +890,16 @@ test.describe('Email notification template', () => {
 		}
 
 		await emailNotificationTemplatePage.saveButton.click();
+
+		const notificationTemplate =
+			await apiHelpers.notification.getNotificationTemplateByName(
+				notificationTemplateName
+			);
+
+		apiHelpers.data.push({
+			id: notificationTemplate.id,
+			type: 'notificationTemplate',
+		});
 
 		await page.getByRole('link', {name: notificationTemplateName}).click();
 
@@ -1074,6 +1107,16 @@ test.describe('Email notification template', () => {
 
 				await emailNotificationTemplatePage.saveButton.click();
 
+				const notificationTemplate =
+					await apiHelpers.notification.getNotificationTemplateByName(
+						notificationTemplateName
+					);
+
+				apiHelpers.data.push({
+					id: notificationTemplate.id,
+					type: 'notificationTemplate',
+				});
+
 				await notificationTemplatesPage
 					.getFrontEndDatasetItemLocator(notificationTemplateName)
 					.click();
@@ -1103,6 +1146,7 @@ ckEditor5Test.describe('Content template with CKEditor5', () => {
 		'can be created and saved correctly',
 		{tag: ['@LPD-66958']},
 		async ({
+			apiHelpers,
 			emailNotificationTemplatePage,
 			notificationTemplatesPage,
 			page,
@@ -1139,6 +1183,16 @@ ckEditor5Test.describe('Content template with CKEditor5', () => {
 			);
 
 			await emailNotificationTemplatePage.saveButton.click();
+
+			const notificationTemplate =
+				await apiHelpers.notification.getNotificationTemplateByName(
+					notificationTemplateName
+				);
+
+			apiHelpers.data.push({
+				id: notificationTemplate.id,
+				type: 'notificationTemplate',
+			});
 
 			await notificationTemplatesPage
 				.getFrontEndDatasetItemLocator(notificationTemplateName)
