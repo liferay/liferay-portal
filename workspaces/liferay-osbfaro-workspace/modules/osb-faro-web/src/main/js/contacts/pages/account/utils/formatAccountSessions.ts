@@ -1,6 +1,7 @@
 import {AccountUserSession} from 'shared/queries/AccountUserSessionQuery';
 import {EventDashboardContext} from 'shared/util/getEventDashboardUrl';
 import {
+	getSessionAttributes,
 	groupBy,
 	groupEventsByPage,
 	groupSessionsByDay,
@@ -65,16 +66,7 @@ const toSessionItem = (
 
 	return {
 		applicationId: events[0]?.applicationId ?? '',
-		attributes: {
-			contentLanguageId: session.contentLanguageId,
-			devicePixelRatio: session.devicePixelRatio,
-			header: Liferay.Language.get('session-attributes'),
-			languageId: session.languageId,
-			screenHeight: session.screenHeight,
-			screenWidth: session.screenWidth,
-			timezoneOffset: session.timezoneOffset,
-			userAgent: session.userAgent,
-		},
+		attributes: getSessionAttributes(session),
 		browserName: session.browserName,
 		device: session.deviceType,
 		endTime: session.completeDate,
@@ -94,9 +86,6 @@ const toSessionItem = (
  * each session the events are grouped by the page they happened on (see
  * `groupEventsByPage`), so the stream reads as a list of visited pages rather
  * than a list of raw events.
- *
- * Unlike the individual timeline's shared `formatSessions`, this reads the
- * correct session field names, so account session attributes populate.
  */
 export const formatAccountSessions = (
 	sessions: AccountUserSession[] = [],

@@ -17,6 +17,7 @@ export interface UserSessionEvent {
 	name: string;
 	pageDescription: string;
 	pageGroupId?: string | null;
+	pageKeywords?: string;
 	pageTitle: string;
 	properties: Array<{name: string; value: string}>;
 	referrer: string;
@@ -27,14 +28,12 @@ export interface UserSession {
 	becameKnown: boolean;
 	browserName: string;
 	completeDate: Date;
-	contentLanguageID: string;
+	contentLanguageId: string;
 	createDate: string;
-	description: string;
-	devicePixelRatioz: number;
+	devicePixelRatio: number;
 	deviceType: string;
-	events: Event[];
-	keywords: string;
-	languageID: string;
+	events: UserSessionEvent[] | null;
+	languageId: string;
 	screenHeight: number;
 	screenWidth: number;
 	timezoneOffset: string;
