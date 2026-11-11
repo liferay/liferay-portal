@@ -13,14 +13,19 @@ import com.liferay.portal.kernel.util.MapUtil;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.ext.RuntimeDelegate;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
+import org.apache.aries.component.dsl.CachingServiceReference;
 import org.apache.aries.component.dsl.OSGi;
 import org.apache.aries.component.dsl.OSGiResult;
+import org.apache.aries.jax.rs.whiteboard.internal.AriesJaxrsServiceRuntime;
 import org.apache.aries.jax.rs.whiteboard.internal.DefaultApplication;
 import org.apache.aries.jax.rs.whiteboard.internal.Registry;
 import org.apache.aries.jax.rs.whiteboard.internal.Whiteboard;
@@ -47,29 +52,31 @@ public class JAXRSWhiteboard implements SafeCloseable {
 
 			_bundleContextField.set(whiteboard, bundleContext);
 
+			AriesJaxrsServiceRuntime ariesJaxrsServiceRuntime =
+				(AriesJaxrsServiceRuntime)_runtimeField.get(whiteboard);
+
 			_jaxrsServiceRuntimeServiceRegistration =
 				bundleContext.registerService(
-					JaxrsServiceRuntime.class,
-					(JaxrsServiceRuntime)_runtimeField.get(whiteboard),
+					JaxrsServiceRuntime.class, ariesJaxrsServiceRuntime,
 					configuration);
 
 			_runtimeReferenceField.set(
 				whiteboard,
 				_jaxrsServiceRuntimeServiceRegistration.getReference());
 
-			_counterField.set(
-				whiteboard,
-				_serviceRegistrationChangeCounterConstructor.newInstance(
-					_jaxrsServiceRuntimeServiceRegistration));
-
 			_defaultApplicationServiceRegistration =
 				bundleContext.registerService(
 					Application.class, new DefaultApplication(),
 					_getDefaultApplicationProperties(configuration));
 
-			OSGi<?> osgi = (OSGi<?>)_getAllServicesMethod.invoke(whiteboard);
-
-			_osgiResult = osgi.run(bundleContext);
+			_jaxrsServiceTracker = new JAXRSServiceTracker(
+				_runPipeline(bundleContext, _applicationsMethod, whiteboard),
+				ariesJaxrsServiceRuntime, bundleContext,
+				_runPipeline(
+					bundleContext, _applicationExtensionsMethod, whiteboard),
+				_jaxrsServiceRuntimeServiceRegistration,
+				_runPipeline(
+					bundleContext, _applicationResourcesMethod, whiteboard));
 
 			_registry = (Registry<?>)_applicationRegistryField.get(whiteboard);
 		}
@@ -88,7 +95,11 @@ public class JAXRSWhiteboard implements SafeCloseable {
 	public void close() {
 		_readyServiceRegistration.unregister();
 
-		_osgiResult.close();
+		_jaxrsServiceTracker.close();
+
+		for (OSGiResult osgiResult : _osgiResults) {
+			osgiResult.close();
+		}
 
 		_defaultApplicationServiceRegistration.unregister();
 
@@ -126,38 +137,52 @@ public class JAXRSWhiteboard implements SafeCloseable {
 		).build();
 	}
 
+	private Function<CachingServiceReference<Object>, Runnable> _runPipeline(
+			BundleContext bundleContext, Method method, Whiteboard whiteboard)
+		throws ReflectiveOperationException {
+
+		AtomicReference<Function<CachingServiceReference<Object>, Runnable>>
+			functionReference = new AtomicReference<>();
+
+		OSGi<?> osgi = (OSGi<?>)method.invoke(
+			whiteboard,
+			OSGi.fromOsgiRunnable(
+				(curBundleContext, publisher) -> {
+					functionReference.set(publisher::publish);
+
+					return () -> {
+					};
+				}));
+
+		_osgiResults.add(osgi.run(bundleContext));
+
+		return functionReference.get();
+	}
+
+	private static final Method _applicationExtensionsMethod;
 	private static final Field _applicationRegistryField;
+	private static final Method _applicationResourcesMethod;
+	private static final Method _applicationsMethod;
 	private static final Field _bundleContextField;
-	private static final Field _counterField;
-	private static final Method _getAllServicesMethod;
 	private static final Field _runtimeField;
 	private static final Field _runtimeReferenceField;
-	private static final Constructor<?>
-		_serviceRegistrationChangeCounterConstructor;
 
 	static {
 		try {
+			_applicationExtensionsMethod = ReflectionUtil.getDeclaredMethod(
+				Whiteboard.class, "applicationExtensions", OSGi.class);
 			_applicationRegistryField = ReflectionUtil.getDeclaredField(
 				Whiteboard.class, "_applicationRegistry");
+			_applicationResourcesMethod = ReflectionUtil.getDeclaredMethod(
+				Whiteboard.class, "applicationResources", OSGi.class);
+			_applicationsMethod = ReflectionUtil.getDeclaredMethod(
+				Whiteboard.class, "applications", OSGi.class);
 			_bundleContextField = ReflectionUtil.getDeclaredField(
 				Whiteboard.class, "_bundleContext");
-			_counterField = ReflectionUtil.getDeclaredField(
-				Whiteboard.class, "_counter");
-			_getAllServicesMethod = ReflectionUtil.getDeclaredMethod(
-				Whiteboard.class, "getAllServices");
 			_runtimeField = ReflectionUtil.getDeclaredField(
 				Whiteboard.class, "_runtime");
 			_runtimeReferenceField = ReflectionUtil.getDeclaredField(
 				Whiteboard.class, "_runtimeReference");
-
-			Class<?> serviceRegistrationChangeCounterClass =
-				_counterField.getType();
-
-			_serviceRegistrationChangeCounterConstructor =
-				serviceRegistrationChangeCounterClass.getDeclaredConstructor(
-					ServiceRegistration.class);
-
-			_serviceRegistrationChangeCounterConstructor.setAccessible(true);
 		}
 		catch (Exception exception) {
 			throw new ExceptionInInitializerError(exception);
@@ -168,7 +193,8 @@ public class JAXRSWhiteboard implements SafeCloseable {
 		_defaultApplicationServiceRegistration;
 	private final ServiceRegistration<JaxrsServiceRuntime>
 		_jaxrsServiceRuntimeServiceRegistration;
-	private final OSGiResult _osgiResult;
+	private final JAXRSServiceTracker _jaxrsServiceTracker;
+	private final List<OSGiResult> _osgiResults = new ArrayList<>();
 	private final ServiceRegistration<?> _readyServiceRegistration;
 	private final Registry<?> _registry;
 
