@@ -3,12 +3,9 @@ import classNames from 'classnames';
 import IndividualsDataSet from './IndividualsDataSet';
 import React from 'react';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
-import {pickBy} from 'lodash';
-import {RangeSelectors} from 'shared/types';
-import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
 import {Text} from '@clayui/core';
-import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {useRangeSelectorChange} from 'shared/hooks/useRangeSelectorChange';
 
 interface IAccountIndividualsProps {
 	className?: string;
@@ -17,30 +14,9 @@ interface IAccountIndividualsProps {
 const AccountIndividuals: React.FC<IAccountIndividualsProps> = ({
 	className,
 }) => {
-	const history = useHistoryAdapter();
-
 	const rangeSelectors = useQueryRangeSelectors();
 
-	const handleRangeSelectorChange = ({
-		rangeEnd,
-		rangeKey,
-		rangeStart,
-	}: RangeSelectors) => {
-
-		// The bounds belong to a custom range only, so drop the previous ones
-		// before writing rather than leaving them behind to narrow a preset.
-
-		history.push(
-			setUriQueryValues(
-				pickBy({rangeEnd, rangeKey, rangeStart}),
-				removeUriQueryParam(
-					window.location.href,
-					'rangeEnd',
-					'rangeStart'
-				)
-			)
-		);
-	};
+	const handleRangeSelectorChange = useRangeSelectorChange();
 
 	return (
 		<Card className={classNames(className)} minHeight={300}>

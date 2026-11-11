@@ -7,18 +7,15 @@ import React, {useContext} from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
 import {pickBy} from 'lodash';
-import {RangeSelectors} from 'shared/types';
-import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
 import {useAccountFilter} from 'shared/hooks/useAccountFilter';
-import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {useRangeSelectorChange} from 'shared/hooks/useRangeSelectorChange';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const CampaignDetail: React.FC = () => {
 	const {accountId, accountName, accountQueryValues, setAccount} =
 		useAccountFilter();
-	const history = useHistoryAdapter();
 	const {selectedChannel} = useContext(ChannelContext);
 
 	const {channelId, groupId, id} = useParams();
@@ -30,26 +27,7 @@ const CampaignDetail: React.FC = () => {
 		variables: {channelId: channelId!, groupId: groupId!, id: id!},
 	});
 
-	const handleRangeSelectorChange = ({
-		rangeEnd,
-		rangeKey,
-		rangeStart,
-	}: RangeSelectors) => {
-
-		// The bounds belong to a custom range only, so drop the previous ones
-		// before writing rather than leaving them behind to narrow a preset.
-
-		history.push(
-			setUriQueryValues(
-				pickBy({rangeEnd, rangeKey, rangeStart}),
-				removeUriQueryParam(
-					window.location.href,
-					'rangeEnd',
-					'rangeStart'
-				)
-			)
-		);
-	};
+	const handleRangeSelectorChange = useRangeSelectorChange();
 
 	// Empty until the campaign arrives. The title doubles as the last
 	// breadcrumb, so a placeholder would show up twice on the way in.

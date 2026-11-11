@@ -9,22 +9,18 @@ import OverviewSection from '../components/OverviewSection';
 import React, {useContext} from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
-import {pickBy} from 'lodash';
-import {RangeSelectors} from 'shared/types';
-import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
-import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
 import {useRangeQueryValues} from 'shared/hooks/useRangeQueryValues';
+import {useRangeSelectorChange} from 'shared/hooks/useRangeSelectorChange';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const Campaigns: React.FC = () => {
 	const {accountId, accountName, setAccount} = useAccountFilter();
 	const currentUser = useCurrentUser();
-	const history = useHistoryAdapter();
 	const {selectedChannel} = useContext(ChannelContext);
 
 	const {channelId, groupId} = useParams();
@@ -45,26 +41,7 @@ const Campaigns: React.FC = () => {
 		},
 	});
 
-	const handleRangeSelectorChange = ({
-		rangeEnd,
-		rangeKey,
-		rangeStart,
-	}: RangeSelectors) => {
-
-		// The bounds belong to a custom range only, so drop the previous ones
-		// before writing rather than leaving them behind to narrow a preset.
-
-		history.push(
-			setUriQueryValues(
-				pickBy({rangeEnd, rangeKey, rangeStart}),
-				removeUriQueryParam(
-					window.location.href,
-					'rangeEnd',
-					'rangeStart'
-				)
-			)
-		);
-	};
+	const handleRangeSelectorChange = useRangeSelectorChange();
 
 	const authorized = currentUser.isAdmin();
 
