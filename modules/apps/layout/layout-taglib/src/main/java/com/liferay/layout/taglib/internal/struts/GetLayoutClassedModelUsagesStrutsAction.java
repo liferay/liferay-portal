@@ -5,7 +5,6 @@
 
 package com.liferay.layout.taglib.internal.struts;
 
-import com.liferay.info.exception.InfoItemPermissionException;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemPermissionProvider;
@@ -13,6 +12,7 @@ import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.taglib.internal.helper.LayoutClassedModelUsagesHelper;
 import com.liferay.layout.util.comparator.LayoutClassedModelUsageModifiedDateComparator;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -157,22 +159,31 @@ public class GetLayoutClassedModelUsagesStrutsAction implements StrutsAction {
 	private boolean _hasViewPermission(
 		String className, long classPK, PermissionChecker permissionChecker) {
 
-		InfoItemPermissionProvider<?> infoItemPermissionProvider =
-			_infoItemServiceRegistry.getFirstInfoItemService(
-				InfoItemPermissionProvider.class, className);
-
-		if (infoItemPermissionProvider == null) {
-			return false;
-		}
-
 		try {
-			return infoItemPermissionProvider.hasPermission(
-				permissionChecker, new InfoItemReference(className, classPK),
-				ActionKeys.VIEW);
+			InfoItemPermissionProvider<?> infoItemPermissionProvider =
+				_infoItemServiceRegistry.getFirstInfoItemService(
+					InfoItemPermissionProvider.class, className);
+
+			if (infoItemPermissionProvider != null) {
+				return infoItemPermissionProvider.hasPermission(
+					permissionChecker,
+					new InfoItemReference(className, classPK), ActionKeys.VIEW);
+			}
+
+			ModelResourcePermission<?> modelResourcePermission =
+				ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+					className);
+
+			if (modelResourcePermission == null) {
+				return false;
+			}
+
+			return modelResourcePermission.contains(
+				permissionChecker, classPK, ActionKeys.VIEW);
 		}
-		catch (InfoItemPermissionException infoItemPermissionException) {
+		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
-				_log.debug(infoItemPermissionException);
+				_log.debug(portalException);
 			}
 
 			return false;
