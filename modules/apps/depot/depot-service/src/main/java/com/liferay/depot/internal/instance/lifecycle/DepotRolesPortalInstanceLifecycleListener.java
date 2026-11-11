@@ -6,7 +6,7 @@
 package com.liferay.depot.internal.instance.lifecycle;
 
 import com.liferay.depot.constants.DepotRolesConstants;
-import com.liferay.depot.internal.roles.DepotDesignLibraryRolesHelper;
+import com.liferay.depot.internal.roles.DepotDesignLibraryRolesUtil;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.security.permission.contributor.DepotRolePermissionsContributor;
 import com.liferay.depot.util.DepotRoleUtil;
@@ -107,17 +107,14 @@ public class DepotRolesPortalInstanceLifecycleListener
 		if (FeatureFlagManagerUtil.isEnabled(
 				company.getCompanyId(), "LPD-57283")) {
 
-			DepotDesignLibraryRolesHelper depotDesignLibraryRolesHelper =
-				new DepotDesignLibraryRolesHelper(
-					_language, _resourceLocalService,
-					_resourcePermissionLocalService, _roleLocalService,
-					_userLocalService);
+			DepotDesignLibraryRolesUtil.setUpDesignLibraryRoles(
+				company.getCompanyId(), _language, _resourceLocalService,
+				_resourcePermissionLocalService, _roleLocalService,
+				_userLocalService);
 
-			depotDesignLibraryRolesHelper.setUpDesignLibraryRoles(
-				company.getCompanyId());
-
-			depotDesignLibraryRolesHelper.setUpResourcePermissions(
-				company.getCompanyId(), _depotRolePermissionsContributors);
+			DepotDesignLibraryRolesUtil.setUpResourcePermissions(
+				company.getCompanyId(), _depotRolePermissionsContributors,
+				_resourcePermissionLocalService, _roleLocalService);
 		}
 	}
 

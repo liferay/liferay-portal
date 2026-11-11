@@ -5,7 +5,7 @@
 
 package com.liferay.depot.internal.feature.flag;
 
-import com.liferay.depot.internal.roles.DepotDesignLibraryRolesHelper;
+import com.liferay.depot.internal.roles.DepotDesignLibraryRolesUtil;
 import com.liferay.depot.security.permission.contributor.DepotRolePermissionsContributor;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
@@ -47,16 +47,14 @@ public class DesignLibraryFeatureFlagListener implements FeatureFlagListener {
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
 
-			DepotDesignLibraryRolesHelper depotDesignLibraryRolesHelper =
-				new DepotDesignLibraryRolesHelper(
-					_language, _resourceLocalService,
-					_resourcePermissionLocalService, _roleLocalService,
-					_userLocalService);
+			DepotDesignLibraryRolesUtil.setUpDesignLibraryRoles(
+				companyId, _language, _resourceLocalService,
+				_resourcePermissionLocalService, _roleLocalService,
+				_userLocalService);
 
-			depotDesignLibraryRolesHelper.setUpDesignLibraryRoles(companyId);
-
-			depotDesignLibraryRolesHelper.setUpResourcePermissions(
-				companyId, _depotRolePermissionsContributors);
+			DepotDesignLibraryRolesUtil.setUpResourcePermissions(
+				companyId, _depotRolePermissionsContributors,
+				_resourcePermissionLocalService, _roleLocalService);
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);

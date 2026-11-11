@@ -29,64 +29,65 @@ import java.util.List;
 /**
  * @author Gabriel Prates
  */
-public class DepotDesignLibraryRolesHelper {
+public class DepotDesignLibraryRolesUtil {
 
-	public DepotDesignLibraryRolesHelper(
-		Language language, ResourceLocalService resourceLocalService,
-		ResourcePermissionLocalService resourcePermissionLocalService,
-		RoleLocalService roleLocalService, UserLocalService userLocalService) {
+	public static void setUpDesignLibraryRoles(
+			long companyId, Language language,
+			ResourceLocalService resourceLocalService,
+			ResourcePermissionLocalService resourcePermissionLocalService,
+			RoleLocalService roleLocalService,
+			UserLocalService userLocalService)
+		throws PortalException {
 
-		_language = language;
-		_resourceLocalService = resourceLocalService;
-		_resourcePermissionLocalService = resourcePermissionLocalService;
-		_roleLocalService = roleLocalService;
-		_userLocalService = userLocalService;
-	}
-
-	public void setUpDesignLibraryRoles(long companyId) throws PortalException {
 		Role administratorRole = _getOrCreateRole(
-			companyId, DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
+			companyId, language,
+			DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR, roleLocalService,
+			userLocalService);
 
 		List<String> administratorResourceActions =
 			ResourceActionsUtil.getResourceActions(DepotEntry.class.getName());
 
 		administratorResourceActions.remove(ActionKeys.ASSIGN_USER_ROLES);
 
-		_resourcePermissionLocalService.setResourcePermissions(
+		resourcePermissionLocalService.setResourcePermissions(
 			companyId, DepotEntry.class.getName(),
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			administratorRole.getRoleId(),
 			administratorResourceActions.toArray(new String[0]));
 
-		_resourcePermissionLocalService.addResourcePermission(
+		resourcePermissionLocalService.addResourcePermission(
 			companyId, "com.liferay.asset.tags",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			administratorRole.getRoleId(), ActionKeys.MANAGE_TAG);
 
 		Role contentReviewerRole = _getOrCreateRole(
-			companyId, DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER);
+			companyId, language,
+			DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+			roleLocalService, userLocalService);
 
-		_resourcePermissionLocalService.addResourcePermission(
+		resourcePermissionLocalService.addResourcePermission(
 			companyId, "com.liferay.asset.tags",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			contentReviewerRole.getRoleId(), ActionKeys.MANAGE_TAG);
 
 		Role memberRole = _getOrCreateRole(
-			companyId, DepotRolesConstants.DESIGN_LIBRARY_MEMBER);
+			companyId, language, DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
+			roleLocalService, userLocalService);
 
-		_resourcePermissionLocalService.addResourcePermission(
+		resourcePermissionLocalService.addResourcePermission(
 			companyId, DepotEntry.class.getName(),
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			memberRole.getRoleId(), ActionKeys.VIEW);
 
 		for (String name : DepotRolesConstants.DESIGN_LIBRARY_ROLE_NAMES) {
-			Role role = _getOrCreateRole(companyId, name);
+			Role role = _getOrCreateRole(
+				companyId, language, name, roleLocalService, userLocalService);
 
-			_resourceLocalService.addResources(
+			resourceLocalService.addResources(
 				companyId, 0, 0, Role.class.getName(), role.getRoleId(), false,
 				false, false);
 
-			_resourcePermissionLocalService.setResourcePermissions(
+			resourcePermissionLocalService.setResourcePermissions(
 				companyId, Role.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(role.getRoleId()), administratorRole.getRoleId(),
@@ -94,10 +95,12 @@ public class DepotDesignLibraryRolesHelper {
 		}
 	}
 
-	public void setUpResourcePermissions(
+	public static void setUpResourcePermissions(
 			long companyId,
 			List<DepotRolePermissionsContributor>
-				depotRolePermissionsContributors)
+				depotRolePermissionsContributors,
+			ResourcePermissionLocalService resourcePermissionLocalService,
+			RoleLocalService roleLocalService)
 		throws PortalException {
 
 		for (DepotRolePermissionsContributor depotRolePermissionsContributor :
@@ -106,7 +109,7 @@ public class DepotDesignLibraryRolesHelper {
 			for (DepotRolePermission depotRolePermission :
 					depotRolePermissionsContributor.getDepotRolePermissions()) {
 
-				Role role = _roleLocalService.fetchRole(
+				Role role = roleLocalService.fetchRole(
 					companyId, depotRolePermission.getRoleName());
 
 				if (role == null) {
@@ -114,7 +117,7 @@ public class DepotDesignLibraryRolesHelper {
 				}
 
 				for (String actionKey : depotRolePermission.getActionKeys()) {
-					_resourcePermissionLocalService.addResourcePermission(
+					resourcePermissionLocalService.addResourcePermission(
 						companyId, depotRolePermission.getResourceName(),
 						ResourceConstants.SCOPE_COMPANY,
 						String.valueOf(companyId), role.getRoleId(), actionKey);
@@ -123,10 +126,13 @@ public class DepotDesignLibraryRolesHelper {
 		}
 	}
 
-	private Role _getOrCreateRole(long companyId, String name)
+	private static Role _getOrCreateRole(
+			long companyId, Language language, String name,
+			RoleLocalService roleLocalService,
+			UserLocalService userLocalService)
 		throws PortalException {
 
-		Role role = _roleLocalService.fetchRole(companyId, name);
+		Role role = roleLocalService.fetchRole(companyId, name);
 
 		if (role != null) {
 			return role;
@@ -137,13 +143,13 @@ public class DepotDesignLibraryRolesHelper {
 		try {
 			PermissionThreadLocal.setAddResource(false);
 
-			User user = _userLocalService.getGuestUser(companyId);
+			User user = userLocalService.getGuestUser(companyId);
 
-			return _roleLocalService.addRole(
+			return roleLocalService.addRole(
 				RoleConstants.toSystemRoleExternalReferenceCode(name),
 				user.getUserId(), null, 0, name,
-				DepotRoleUtil.getTitleMap(_language, name),
-				DepotRoleUtil.getDescriptionMap(_language, name),
+				DepotRoleUtil.getTitleMap(language, name),
+				DepotRoleUtil.getDescriptionMap(language, name),
 				RoleConstants.TYPE_DEPOT,
 				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY, null);
 		}
@@ -151,12 +157,5 @@ public class DepotDesignLibraryRolesHelper {
 			PermissionThreadLocal.setAddResource(addResource);
 		}
 	}
-
-	private final Language _language;
-	private final ResourceLocalService _resourceLocalService;
-	private final ResourcePermissionLocalService
-		_resourcePermissionLocalService;
-	private final RoleLocalService _roleLocalService;
-	private final UserLocalService _userLocalService;
 
 }
