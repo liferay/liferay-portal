@@ -347,7 +347,7 @@ public class PortalRequestProcessor {
 	private void _internalModuleRelativeForward(
 			String uri, HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
-		throws IOException, ServletException {
+		throws ServletException {
 
 		Definition definition = _definitions.get(uri);
 
@@ -426,7 +426,7 @@ public class PortalRequestProcessor {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse,
 			ActionMapping actionMapping)
-		throws IOException, ServletException {
+		throws ServletException {
 
 		String forward = actionMapping.getForward();
 
@@ -711,7 +711,7 @@ public class PortalRequestProcessor {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse,
 			ActionMapping actionMapping)
-		throws IOException, ServletException {
+		throws ServletException {
 
 		String path = actionMapping.getPath();
 
