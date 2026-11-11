@@ -6,9 +6,10 @@
 package com.liferay.document.library.internal;
 
 import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -30,11 +31,11 @@ public class DLAssetDisplayPageUtil {
 				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT);
 
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				LayoutPageTemplateEntryServiceUtil.
-					fetchDefaultLayoutPageTemplateEntry(
-						serviceContext.getScopeGroupId(),
-						PortalUtil.getClassNameId(FileEntry.class),
-						fileEntryTypeId);
+				LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
+					PortalUtil.getClassNameId(FileEntry.class), fileEntryTypeId,
+					DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+						serviceContext.getScopeGroupId()),
+					serviceContext.getScopeGroupId());
 
 			if (layoutPageTemplateEntry == null) {
 				return false;
