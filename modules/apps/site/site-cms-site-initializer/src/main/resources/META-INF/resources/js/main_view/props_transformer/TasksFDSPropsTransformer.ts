@@ -9,7 +9,7 @@ import {openCMSModal} from '../../common/utils/openCMSModal';
 import AssignToModalContent from '../home/modal/AssignToModalContent';
 import UpdateDueDateModalContent from '../home/modal/UpdateDueDateModalContent';
 import {tasksFDSAtom} from '../tasks/atoms';
-import AuthorRenderer from './cell_renderers/AuthorRenderer';
+import AssigneeRenderer from './cell_renderers/AssigneeRenderer';
 import DueDateRenderer from './cell_renderers/DueDateRenderer';
 import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
 import WorkflowStateRenderer from './cell_renderers/WorkflowStateRenderer';
@@ -26,8 +26,8 @@ export default function TasksFDSPropsTransformer({
 		customRenderers: {
 			tableCell: [
 				{
-					component: AuthorRenderer,
-					name: 'authorTableCellRenderer',
+					component: AssigneeRenderer,
+					name: 'assigneeTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 				{

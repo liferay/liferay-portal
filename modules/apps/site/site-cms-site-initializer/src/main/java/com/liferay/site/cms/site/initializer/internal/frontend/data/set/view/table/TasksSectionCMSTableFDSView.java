@@ -42,11 +42,11 @@ public class TasksSectionCMSTableFDSView extends BaseCMSTableFDSView {
 		).add(
 			"embedded.objectReviewed.assetType", "asset-type"
 		).add(
-			"embedded.creator.name", "author",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"authorTableCellRenderer")
-		).add(
 			"embedded.label", "task"
+		).add(
+			"embedded.assigneePerson.name", "assignee",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"assigneeTableCellRenderer")
 		).add(
 			_getDueDateFDSTableSchemaField()
 		).add(

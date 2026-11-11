@@ -271,6 +271,11 @@ test(
 			).toBeVisible();
 		});
 
+		await test.step('Show the assignee', async () => {
+			await expect(overdueRow).toContainText(userAccount.name);
+			await expect(pendingRow).toContainText('Administrator');
+		});
+
 		await test.step('Filter by the Pending card', async () => {
 			await getQuickFilterButton(page, 'Pending').click();
 
