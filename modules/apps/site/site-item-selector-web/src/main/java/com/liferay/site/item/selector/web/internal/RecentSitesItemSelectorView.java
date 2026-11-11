@@ -80,7 +80,7 @@ public class RecentSitesItemSelectorView
 
 		_recentGroupItemSelectorViewRenderer.renderHTML(
 			servletRequest, servletResponse, siteItemSelectorCriterion,
-			portletURL, itemSelectedEventName, search);
+			portletURL, itemSelectedEventName);
 	}
 
 	@Activate

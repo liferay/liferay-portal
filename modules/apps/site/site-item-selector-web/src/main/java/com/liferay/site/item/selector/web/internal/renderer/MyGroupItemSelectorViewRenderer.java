@@ -37,7 +37,7 @@ public class MyGroupItemSelectorViewRenderer {
 	public void renderHTML(
 			ServletRequest servletRequest, ServletResponse servletResponse,
 			GroupItemSelectorCriterion t, PortletURL portletURL,
-			String itemSelectedEventName, boolean search)
+			String itemSelectedEventName)
 		throws IOException, ServletException {
 
 		servletRequest.setAttribute(

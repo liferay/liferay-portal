@@ -79,7 +79,7 @@ public class MyGroupItemSelectorView
 
 		_myGroupItemSelectorViewRenderer.renderHTML(
 			servletRequest, servletResponse, groupItemSelectorCriterion,
-			portletURL, itemSelectedEventName, search);
+			portletURL, itemSelectedEventName);
 	}
 
 	@Activate

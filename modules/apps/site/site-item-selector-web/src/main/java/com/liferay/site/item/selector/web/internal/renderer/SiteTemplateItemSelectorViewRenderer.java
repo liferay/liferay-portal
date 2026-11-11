@@ -37,7 +37,7 @@ public class SiteTemplateItemSelectorViewRenderer {
 	public void renderHTML(
 			ServletRequest servletRequest, ServletResponse servletResponse,
 			SiteItemSelectorCriterion t, PortletURL portletURL,
-			String itemSelectedEventName, boolean search)
+			String itemSelectedEventName)
 		throws IOException, ServletException {
 
 		RequestDispatcher requestDispatcher =

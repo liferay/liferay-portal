@@ -85,7 +85,7 @@ public class MySitesItemSelectorView
 
 		_myGroupItemSelectorViewRenderer.renderHTML(
 			servletRequest, servletResponse, siteItemSelectorCriterion,
-			portletURL, itemSelectedEventName, search);
+			portletURL, itemSelectedEventName);
 	}
 
 	@Activate

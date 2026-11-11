@@ -79,7 +79,7 @@ public class SiteTemplateItemSelectorView
 
 		_siteTemplateItemSelectorViewRenderer.renderHTML(
 			servletRequest, servletResponse, siteItemSelectorCriterion,
-			portletURL, itemSelectedEventName, search);
+			portletURL, itemSelectedEventName);
 	}
 
 	@Activate

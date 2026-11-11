@@ -40,7 +40,7 @@ public class RecentGroupItemSelectorViewRenderer {
 	public void renderHTML(
 			ServletRequest servletRequest, ServletResponse servletResponse,
 			GroupItemSelectorCriterion groupItemSelectorCriterion,
-			PortletURL portletURL, String itemSelectedEventName, boolean search)
+			PortletURL portletURL, String itemSelectedEventName)
 		throws IOException, ServletException {
 
 		servletRequest.setAttribute(
