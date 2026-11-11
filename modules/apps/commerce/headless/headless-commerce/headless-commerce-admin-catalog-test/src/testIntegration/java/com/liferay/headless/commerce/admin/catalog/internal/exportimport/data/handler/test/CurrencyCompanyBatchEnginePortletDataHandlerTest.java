@@ -17,8 +17,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -49,11 +48,10 @@ public class CurrencyCompanyBatchEnginePortletDataHandlerTest
 		_commerceCurrencyLocalService.addCommerceCurrency(
 			externalReferenceCode, TestPropsValues.getUserId(),
 			RandomTestUtil.randomString(),
-			RandomTestUtil.randomLocaleStringMap(), StringPool.DOLLAR,
-			BigDecimal.ONE,
-			HashMapBuilder.put(
-				LocaleUtil.US, CommerceCurrencyConstants.DECIMAL_FORMAT_PATTERN
-			).build(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomString(3), BigDecimal.ONE,
+			LocalizationUtil.getLocalizationMap(
+				CommerceCurrencyConstants.DECIMAL_FORMAT_PATTERN),
 			2, 2, StringPool.BLANK, false, RandomTestUtil.randomDouble(), true);
 	}
 
@@ -62,15 +60,17 @@ public class CurrencyCompanyBatchEnginePortletDataHandlerTest
 		throws Exception {
 
 		_commerceCurrencyLocalService.deleteCommerceCurrency(
-			_getCommerceCurrency(externalReferenceCode, groupId));
+			_getCommerceCurrencyByExternalReferenceCode(
+				externalReferenceCode, groupId));
 	}
 
 	@Override
 	protected long getCreatorUserId(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		CommerceCurrency commerceCurrency = _getCommerceCurrency(
-			externalReferenceCode, groupId);
+		CommerceCurrency commerceCurrency =
+			_getCommerceCurrencyByExternalReferenceCode(
+				externalReferenceCode, groupId);
 
 		return commerceCurrency.getUserId();
 	}
@@ -84,8 +84,9 @@ public class CurrencyCompanyBatchEnginePortletDataHandlerTest
 	protected long getPrimaryKey(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		CommerceCurrency commerceCurrency = _getCommerceCurrency(
-			externalReferenceCode, groupId);
+		CommerceCurrency commerceCurrency =
+			_getCommerceCurrencyByExternalReferenceCode(
+				externalReferenceCode, groupId);
 
 		return commerceCurrency.getCommerceCurrencyId();
 	}
@@ -130,8 +131,9 @@ public class CurrencyCompanyBatchEnginePortletDataHandlerTest
 			String externalReferenceCode, long groupId, long userId)
 		throws Exception {
 
-		CommerceCurrency commerceCurrency = _getCommerceCurrency(
-			externalReferenceCode, groupId);
+		CommerceCurrency commerceCurrency =
+			_getCommerceCurrencyByExternalReferenceCode(
+				externalReferenceCode, groupId);
 
 		commerceCurrency.setUserId(userId);
 
@@ -142,8 +144,9 @@ public class CurrencyCompanyBatchEnginePortletDataHandlerTest
 	protected void updateEntry(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		CommerceCurrency commerceCurrency = _getCommerceCurrency(
-			externalReferenceCode, groupId);
+		CommerceCurrency commerceCurrency =
+			_getCommerceCurrencyByExternalReferenceCode(
+				externalReferenceCode, groupId);
 
 		commerceCurrency.setSymbol(RandomTestUtil.randomString());
 
@@ -155,15 +158,16 @@ public class CurrencyCompanyBatchEnginePortletDataHandlerTest
 			String externalReferenceCode, long groupId, Date modifiedDate)
 		throws Exception {
 
-		CommerceCurrency commerceCurrency = _getCommerceCurrency(
-			externalReferenceCode, groupId);
+		CommerceCurrency commerceCurrency =
+			_getCommerceCurrencyByExternalReferenceCode(
+				externalReferenceCode, groupId);
 
 		commerceCurrency.setModifiedDate(modifiedDate);
 
 		_commerceCurrencyLocalService.updateCommerceCurrency(commerceCurrency);
 	}
 
-	private CommerceCurrency _getCommerceCurrency(
+	private CommerceCurrency _getCommerceCurrencyByExternalReferenceCode(
 			String externalReferenceCode, long groupId)
 		throws Exception {
 
