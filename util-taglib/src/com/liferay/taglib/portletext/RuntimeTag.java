@@ -461,9 +461,7 @@ public class RuntimeTag extends TagSupport implements DirectTag {
 	public void setSettingsScope(String settingsScope) {
 	}
 
-	private static Portlet _getPortlet(long companyId, String portletId)
-		throws Exception {
-
+	private static Portlet _getPortlet(long companyId, String portletId) {
 		Portlet portlet = PortletLocalServiceUtil.getPortletById(
 			companyId, portletId);
 
