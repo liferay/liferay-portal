@@ -1838,8 +1838,7 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 	}
 
 	protected List<Layout> filterLayouts(
-			List<Layout> layouts, int start, int end)
-		throws PortalException {
+		List<Layout> layouts, int start, int end) {
 
 		List<Layout> filteredLayouts = filterLayouts(layouts);
 
