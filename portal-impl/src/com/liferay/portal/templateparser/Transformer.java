@@ -219,8 +219,8 @@ public class Transformer {
 			StringPool.SLASH, groupId, StringPool.SLASH, classNameId);
 	}
 
-	protected void prepareTemplate(ThemeDisplay themeDisplay, Template template)
-		throws Exception {
+	protected void prepareTemplate(
+		ThemeDisplay themeDisplay, Template template) {
 
 		if (themeDisplay == null) {
 			return;
