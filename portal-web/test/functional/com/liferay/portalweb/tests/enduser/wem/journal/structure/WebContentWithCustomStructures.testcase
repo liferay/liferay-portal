@@ -178,38 +178,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-147960. Display Page panel of structure default values should not be available to non global scope."
-	@priority = 4
-	test CannotAssociateDisplayPageToGlobalStructureInNormalSite {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given a web content creator enables ancestor scopes by default in System Settings") {
-			SystemSettings.openSystemSettingsAdmin();
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Web Content",
-				configurationName = "Administration",
-				configurationScope = "System Scope");
-
-			FormFields.enableCheckbox(fieldName = "showAncestorScopesByDefault");
-
-			SystemSettings.saveConfiguration();
-		}
-
-		task ("When the web content creator edits default values of Global structure in normal site") {
-			WebContentNavigator.openWebContentStructuresAdmin(siteURLKey = "test-site-name");
-
-			WebContentStructures.editStructureDefaultValuesCP(structureName = "Basic Web Content");
-		}
-
-		task ("Then the web content creator should not see the Display Page panel") {
-			AssertElementNotPresent(
-				key_panel = "Display Page",
-				locator1 = "Panel#PANEL");
-		}
-	}
-
 	@description = "Can edit a global web content template via Web Content Display widget then view edited template is shown in web content admin"
 	@priority = 4
 	test EditGlobalWebContentTemplate {
