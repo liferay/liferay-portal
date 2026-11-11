@@ -107,9 +107,7 @@ import java.util.zip.ZipFile;
  */
 public class WabProcessor {
 
-	public WabProcessor(
-		ClassLoader classLoader, File file, Map<String, String[]> parameters) {
-
+	public WabProcessor(File file, Map<String, String[]> parameters) {
 		_file = file;
 		_parameters = parameters;
 	}

@@ -709,7 +709,7 @@ public class WabProcessorTest {
 		}
 
 		private TestWabProcessor(File file, Map<String, String[]> parameters) {
-			super(TestWabProcessor.class.getClassLoader(), file, parameters);
+			super(file, parameters);
 
 			_file = file;
 		}

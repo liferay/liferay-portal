@@ -67,8 +67,7 @@ public class WabGenerator
 			Map<String, String[]> parameters)
 		throws IOException {
 
-		WabProcessor wabProcessor = new WabProcessor(
-			classLoader, file, parameters);
+		WabProcessor wabProcessor = new WabProcessor(file, parameters);
 
 		return wabProcessor.getProcessedFile();
 	}
