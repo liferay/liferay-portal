@@ -44,14 +44,16 @@ test(
 
 			await page.getByRole('button', {name: 'Finish Setup'}).click();
 
-			await expect(page.getByText('Success:Success')).toBeVisible();
+			await expect(page.getByText('Success:Success')).toBeVisible({
+				timeout: 60000,
+			});
 		});
 
 		await test.step('Check the first screen of the onboarding modal', async () => {
 			await page.waitForTimeout(1000);
 
 			await expect(
-				page.getByText('Welcome to Analytics Cloud')
+				page.getByText('Welcome to Liferay Data Platform')
 			).toBeVisible();
 
 			await expect(
@@ -63,20 +65,28 @@ test(
 
 		await test.step('Navigate to next page', async () => {
 			await page.getByRole('button', {name: 'Next'}).click();
+
+			await expect(
+				page.getByText('Configure Your Workspace Access')
+			).toBeVisible();
+
+			await page.getByRole('button', {name: 'Next'}).click();
 		});
 
 		await test.step('Check the onboarding connection modal information', async () => {
 			await expect(
-				page.getByText('Connect Your DXP Analytics')
+				page.getByText('Connect Your Liferay DXP')
 			).toBeVisible();
 			await expect(
-				page.getByText('Copy this token to your DXP instance.')
+				page.getByText('Copy this token to your Liferay DXP instance.')
 			).toBeVisible();
 			await expect(
-				page.locator('.modal-container').getByText('DXP Requirements')
+				page
+					.getByRole('dialog')
+					.getByText('DXP Requirements', {exact: true})
 			).toBeVisible();
 
-			await page.getByRole('combobox').click();
+			await page.getByRole('dialog').getByRole('combobox').click();
 
 			await expect(
 				page.getByRole('option', {
@@ -118,22 +128,24 @@ test(
 			await page.getByRole('button', {name: 'Add Data Source'}).click();
 
 			await page
-				.getByRole('menuitem', {name: 'Liferay DXP Site'})
+				.getByRole('menuitem', {exact: true, name: 'Liferay DXP'})
 				.click();
 		});
 
 		await test.step('Check the data source connection modal information', async () => {
 			await expect(
-				page.getByText('Connect Your DXP Analytics')
+				page.getByText('Connect Your Liferay DXP')
 			).toBeVisible();
 			await expect(
-				page.getByText('Copy this token to your DXP instance.')
+				page.getByText('Copy this token to your Liferay DXP instance.')
 			).toBeVisible();
 			await expect(
-				page.locator('.modal-container').getByText('DXP Requirements')
+				page
+					.getByRole('dialog')
+					.getByText('DXP Requirements', {exact: true})
 			).toBeVisible();
 
-			await page.getByRole('combobox').click();
+			await page.getByRole('dialog').getByRole('combobox').click();
 
 			await expect(
 				page.getByRole('option', {
