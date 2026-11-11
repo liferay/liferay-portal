@@ -146,10 +146,7 @@ describe('VerticalTimeline', () => {
 	describe('session row', () => {
 		const SESSION_ITEM = {
 			applicationId: 'Page',
-			attributes: {
-				header: 'Session Attributes',
-				userAgent: 'Mozilla/5.0'
-			},
+			attributes: {userAgent: 'Mozilla/5.0'},
 			browserName: 'Firefox',
 			device: 'Desktop',
 			endTime: '2026-07-16T11:00:00.000Z',
@@ -237,7 +234,7 @@ describe('VerticalTimeline', () => {
 			).toBeInTheDocument();
 		});
 
-		it('reveals its own raw attributes when expanded', () => {
+		it('reveals its own attributes under the session attributes title when expanded', () => {
 			const {container} = renderTimeline({items: [SESSION_ITEM]});
 
 			expect(
@@ -249,21 +246,11 @@ describe('VerticalTimeline', () => {
 			);
 
 			expect(
-				container.querySelector('.attributes-payload')
-			).toHaveTextContent('Session Attributes');
-		});
-
-		it('titles the attributes table with the header, instead of listing it as an attribute', () => {
-			const {container} = renderTimeline({items: [SESSION_ITEM]});
-
-			fireEvent.click(
-				container.querySelector('.session-row .payload-button')
-			);
-
-			expect(
 				container.querySelector('.payload-table-title')
 			).toHaveTextContent('Session Attributes');
-			expect(screen.queryByText('header')).not.toBeInTheDocument();
+			expect(
+				container.querySelector('.attributes-payload')
+			).toHaveTextContent('Mozilla/5.0');
 		});
 
 		it('does not expand when the row itself is clicked', () => {

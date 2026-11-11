@@ -30,24 +30,6 @@ describe('formatPayloadTables', () => {
 		);
 	});
 
-	it('titles the main table with the header the payload carries', () => {
-		const [{title}] = formatPayloadTables(
-			{header: 'Session Attributes', languageID: 'en_US'},
-			LAYOUT
-		);
-
-		expect(title).toBe('Session Attributes');
-	});
-
-	it('leaves the header out of the rows it titles', () => {
-		const [{rows}] = formatPayloadTables(
-			{header: 'Session Attributes', languageID: 'en_US'},
-			LAYOUT
-		);
-
-		expect(rows).toEqual([{property: 'languageID', value: 'en_US'}]);
-	});
-
 	it('flattens a group without a title into the main table', () => {
 		const [{rows}] = formatPayloadTables(
 			{extra: {color: 'blue'}, id: '42'},

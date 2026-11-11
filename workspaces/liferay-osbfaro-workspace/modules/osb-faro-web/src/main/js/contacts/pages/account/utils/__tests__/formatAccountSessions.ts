@@ -295,6 +295,22 @@ describe('formatAccountSessions', () => {
 		});
 	});
 
+	it.each([
+		['an anonymous session leaves out', null, undefined],
+		['a known session keeps', 'ind-1', 'Grace Hopper'],
+	])(
+		"%s the tracked userName in its attributes, matching its individual's row",
+		(_, individualId, expected) => {
+			const [session] = sessionsOf(
+				formatAccountSessions([
+					buildSession({individualId, userName: 'Grace Hopper'}),
+				])
+			);
+
+			expect(session.attributes.userName).toBe(expected);
+		}
+	);
+
 	it('marks the session, sets its total events and passes through the device fields', () => {
 		const [session] = sessionsOf(
 			formatAccountSessions([
