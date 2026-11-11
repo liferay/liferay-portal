@@ -863,3 +863,117 @@ test.describe('URL Parameters Are Sorted', () => {
 		});
 	});
 });
+
+for (const reactPaginatorEnabled of [false, true]) {
+	const maximumSearchDepthTest = mergeTests(
+		test,
+		featureFlagsTest({
+			'LPD-98858': {enabled: reactPaginatorEnabled},
+			'LPD-114635': {enabled: true},
+		})
+	);
+
+	maximumSearchDepthTest.describe(
+		`Maximum Search Depth (React paginator ${reactPaginatorEnabled ? 'on' : 'off'})`,
+		() => {
+			maximumSearchDepthTest(
+				'Shows the reachable page and displayed range when the maximum search depth applies',
+				{tag: '@LPD-114866'},
+				async ({apiHelpers, page, searchPage, site}) => {
+					const keyword = getRandomString();
+
+					const basicWebContentStructureId =
+						await getBasicWebContentStructureId(apiHelpers);
+
+					for (let count = 0; count < 25; count++) {
+						await apiHelpers.jsonWebServicesJournal.addWebContent({
+							ddmStructureId: basicWebContentStructureId,
+							groupId: site.id,
+							titleMap: {en_US: `${keyword} ${count}`},
+						});
+					}
+
+					const siteLayout =
+						await apiHelpers.jsonWebServicesLayout.addLayout({
+							groupId: site.id,
+							options: {type: 'portlet'},
+							title: getRandomString(),
+						});
+
+					const layoutURL = `/web${site.friendlyUrlPath}${siteLayout.friendlyURL}`;
+
+					await page.goto(layoutURL);
+
+					await searchPage.addPortlet('Search Bar', 'Search');
+
+					await searchPage.addPortlet('Search Results', 'Search');
+
+					async function configureSearchResults(
+						options: {label: string; value: string}[]
+					) {
+						await searchPage.openSearchPortletConfiguration(
+							'Search Results'
+						);
+
+						await searchPage.fillPortletConfigurationsInput(
+							options
+						);
+
+						await searchPage.savePortletConfiguration();
+					}
+
+					await test.step('Redirect a page beyond the maximum search depth to the last reachable page', async () => {
+						await configureSearchResults([
+							{label: 'Maximum Search Depth', value: '20'},
+						]);
+
+						await page.goto(
+							`${layoutURL}?delta=5&q=${keyword}&start=6`
+						);
+
+						await expect(page).toHaveURL(/[?&]start=4(&|$)/);
+
+						await expect(
+							searchPage.searchResultsPaginationDescription
+						).toHaveText(/Showing 16 to 20 of 25 entries./);
+					});
+
+					await test.step('Redirect using the widget pagination start parameter', async () => {
+						await configureSearchResults([
+							{
+								label: 'Pagination Start Parameter',
+								value: 'start1',
+							},
+						]);
+
+						await page.goto(
+							`${layoutURL}?delta=5&q=${keyword}&start1=6`
+						);
+
+						await expect(page).toHaveURL(/[?&]start1=4(&|$)/);
+
+						await expect(
+							searchPage.searchResultsPaginationDescription
+						).toHaveText(/Showing 16 to 20 of 25 entries./);
+					});
+
+					await test.step('End the displayed range at the maximum search depth', async () => {
+						await configureSearchResults([
+							{label: 'Maximum Search Depth', value: '5'},
+						]);
+
+						await page.goto(`${layoutURL}?delta=20&q=${keyword}`);
+
+						await expect(searchPage.searchResultsItems).toHaveCount(
+							5
+						);
+
+						await expect(
+							searchPage.searchResultsPaginationDescription
+						).toHaveText(/Showing 1 to 5 of 25 entries./);
+					});
+				}
+			);
+		}
+	);
+}
