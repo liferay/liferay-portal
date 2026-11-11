@@ -85,7 +85,7 @@ export async function disconnectDataSourceFromAC(page: Page) {
 		trigger: page.getByRole('button', {name: 'Disconnect Data Source'}),
 	});
 
-	await waitForAlert(page, 'Success:Data source disconnected.', {
+	await waitForAlert(page, 'Success:Data Source Disconnected', {
 		autoClose: false,
 	});
 }
