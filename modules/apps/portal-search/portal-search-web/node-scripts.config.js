@@ -8,5 +8,7 @@ module.exports = {
 	submodules: {
 		'search-bar':
 			'./src/main/resources/META-INF/resources/js/searchBarSubmodule.js',
+		'search-insights':
+			'./src/main/resources/META-INF/resources/js/searchInsightsSubmodule.js',
 	},
 };
