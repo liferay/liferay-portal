@@ -853,9 +853,9 @@ public class ProjectFaroController extends BaseFaroController {
 
 			_sendTimeZoneNotification(groupId);
 
-			cerebroEngineClient.updateTimeZone(faroProject);
-
 			faroProject.setTimeZoneId(timeZoneId);
+
+			cerebroEngineClient.updateTimeZone(faroProject);
 		}
 
 		faroProjectLocalService.updateFaroProject(faroProject);
