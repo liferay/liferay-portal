@@ -429,7 +429,9 @@ public abstract class BaseEngineClient {
 
 		restTemplate.setMessageConverters(httpMessageConverters);
 
-		if (FaroThreadLocal.getOrigin() != null) {
+		if ((FaroThreadLocal.getFaroRequestAudit() != null) ||
+			(FaroThreadLocal.getOrigin() != null)) {
+
 			restTemplate.setRequestFactory(
 				_httpComponentsClientHttpRequestFactory);
 		}
