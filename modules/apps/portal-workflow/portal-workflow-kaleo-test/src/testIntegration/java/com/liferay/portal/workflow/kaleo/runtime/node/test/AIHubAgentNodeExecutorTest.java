@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.WorkflowInstanceLink;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
@@ -133,8 +132,6 @@ public class AIHubAgentNodeExecutorTest {
 	@After
 	public void tearDown() {
 		_serviceRegistration.unregister();
-
-		ServiceContextThreadLocal.popServiceContext();
 	}
 
 	@Test
