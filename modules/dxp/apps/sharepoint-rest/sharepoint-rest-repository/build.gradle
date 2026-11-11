@@ -24,4 +24,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 	compileOnly project(":dxp:apps:sharepoint-rest:sharepoint-rest-oauth2-api")
+	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 }
