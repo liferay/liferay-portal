@@ -63,13 +63,13 @@ public class ConnectedSiteResourceTest
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		super.setUp();
-
 		FeatureFlagTestUtil.invokeFeatureFlagListeners(
 			TestPropsValues.getCompanyId(),
 			FeatureFlagManagerUtil.isEnabled(
 				TestPropsValues.getCompanyId(), "LPD-57283"),
 			"LPD-57283");
+
+		super.setUp();
 
 		_testConnectedSite = _addConnectedSite();
 	}
