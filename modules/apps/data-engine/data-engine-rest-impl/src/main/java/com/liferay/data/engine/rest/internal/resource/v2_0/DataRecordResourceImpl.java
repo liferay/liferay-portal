@@ -7,11 +7,13 @@ package com.liferay.data.engine.rest.internal.resource.v2_0;
 
 import com.liferay.data.engine.constants.DataActionKeys;
 import com.liferay.data.engine.model.DEDataListView;
+import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.dto.v2_0.DataRecord;
+import com.liferay.data.engine.rest.internal.dto.v2_0.util.DataDefinitionUtil;
 import com.liferay.data.engine.rest.internal.odata.entity.v2_0.DataRecordEntityModel;
 import com.liferay.data.engine.rest.internal.security.permission.resource.util.DataRecordCollectionPermissionUtil;
 import com.liferay.data.engine.rest.internal.security.permission.resource.util.DataRecordPermissionUtil;
-import com.liferay.data.engine.rest.internal.storage.DataRecordExporter;
+import com.liferay.data.engine.rest.internal.storage.util.DataStorageUtil;
 import com.liferay.data.engine.rest.resource.v2_0.DataRecordResource;
 import com.liferay.data.engine.service.DEDataListViewLocalService;
 import com.liferay.data.engine.storage.DataStorage;
@@ -39,6 +41,8 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Field;
@@ -49,6 +53,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -66,6 +71,7 @@ import jakarta.validation.ValidationException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -141,12 +147,7 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 			_ddlRecordSetLocalService.getDDLRecordSet(dataRecordCollectionId),
 			DataActionKeys.EXPORT_DATA_RECORDS);
 
-		DataRecordExporter dataRecordExporter = new DataRecordExporter(
-			_ddlRecordSetLocalService, _ddmFormFieldTypeServicesRegistry,
-			_ddmStructureLayoutLocalService, _ddmStructureLocalService,
-			_spiDDMFormRuleConverter);
-
-		return dataRecordExporter.export(
+		return _export(
 			transform(
 				_ddlRecordLocalService.getRecords(
 					dataRecordCollectionId, pagination.getStartPosition(),
@@ -389,6 +390,30 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 			});
 	}
 
+	private String _export(List<DataRecord> dataRecords) throws Exception {
+		if (ListUtil.isEmpty(dataRecords)) {
+			return StringPool.BLANK;
+		}
+
+		DataRecord dataRecord = dataRecords.get(0);
+
+		DDLRecordSet ddlRecordSet = _ddlRecordSetLocalService.getRecordSet(
+			dataRecord.getDataRecordCollectionId());
+
+		DataDefinition dataDefinition = DataDefinitionUtil.toDataDefinition(
+			_ddmFormFieldTypeServicesRegistry, ddlRecordSet.getDDMStructure(),
+			_ddmStructureLayoutLocalService, _ddmStructureLocalService, null,
+			_spiDDMFormRuleConverter);
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		for (DataRecord record : dataRecords) {
+			jsonArray.put(_toJSON(dataDefinition, record));
+		}
+
+		return jsonArray.toString();
+	}
+
 	private BooleanFilter _getBooleanFilter(
 			Long dataListViewId, DDLRecordSet ddlRecordSet)
 		throws Exception {
@@ -515,6 +540,25 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 			}
 		};
 	}
+
+	private String _toJSON(
+		DataDefinition dataDefinition, DataRecord dataRecord) {
+
+		try {
+			return DataStorageUtil.toJSON(
+				dataDefinition, dataRecord.getDataRecordValues());
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return StringPool.BLANK;
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DataRecordResourceImpl.class);
 
 	@Reference
 	private DDLRecordLocalService _ddlRecordLocalService;
