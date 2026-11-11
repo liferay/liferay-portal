@@ -4,7 +4,7 @@
  */
 
 import {openConfirmModal, openModal} from 'frontend-js-components-web';
-import {fetch, sub} from 'frontend-js-web';
+import {escapeHTML, fetch, sub} from 'frontend-js-web';
 
 const RECENTLY_REMOVED_ATTACHMENTS = {
 	multiple: Liferay.Language.get('x-recently-removed-attachments'),
@@ -295,7 +295,7 @@ class MBPortlet {
 								) {
 									searchContainer.addRow(
 										[
-											attachment.title,
+											escapeHTML(attachment.title),
 											attachment.size,
 											`<a class="delete-attachment" data-rowId="${
 												attachment.id
