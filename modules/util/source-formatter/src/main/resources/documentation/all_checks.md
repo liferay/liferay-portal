@@ -579,7 +579,7 @@ UnnecessaryTypeCastCheck | [Performance](performance_checks.md#performance-check
 UnparameterizedClassCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds `Class` instantiation without generic type. |
 UnprocessedExceptionCheck | [Performance](performance_checks.md#performance-checks) | .java | Finds cases where an `Exception` is swallowed without being processed. |
 UnusedMethodCheck | [Performance](performance_checks.md#performance-checks) | .java | Finds private methods that are not used. |
-UnusedParameterCheck | [Performance](performance_checks.md#performance-checks) | .java | Finds parameters in private methods that are not used. |
+UnusedParameterCheck | [Performance](performance_checks.md#performance-checks) | .java | Finds parameters in private methods and DS lifecycle methods that are not used. |
 UnusedVariableCheck | [Performance](performance_checks.md#performance-checks) | .java | Finds variables that are declared, but not used. |
 UnwrappedVariableInfoCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds cases where the variable should be wrapped into an inner class in order to defer array elements initialization. |
 UpgradeBNDDeclarativeServicesCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | .bnd, .ftl, .gradle, .java, .json, .jsp, .jspf, .scss, or .vm | Adds `-dsannotations-options: inherit` to `bnd.bnd` if it does not yet exist. |

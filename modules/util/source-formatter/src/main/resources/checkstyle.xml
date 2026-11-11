@@ -1138,7 +1138,7 @@
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.UnusedParameterCheck">
 			<property name="category" value="Performance" />
-			<property name="description" value="Finds parameters in private methods that are not used." />
+			<property name="description" value="Finds parameters in private methods and DS lifecycle methods that are not used." />
 			<message key="parameter.unused" value="Parameter &quot;{0}&quot; is unused" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.UnusedVariableCheck">

@@ -545,6 +545,8 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 				"IncorrectInitialRequestPortalInstanceLifecycleListener2." +
 					"testjava"
 			).addExpectedMessage(
+				"Parameter \"bundleContext\" is unused", 22
+			).addExpectedMessage(
 				"The \"activate\" method is missing the \"@Override\" " +
 					"annotation",
 				22

@@ -50,7 +50,7 @@ UnnecessaryTypeCastCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds
 [UnnecessaryVariableDeclarationCheck](check/unnecessary_variable_declaration_check.md#unnecessaryvariabledeclarationcheck) | .java | Finds unnecessary variable declarations (when it is either reassigned or returned right after). |
 UnprocessedExceptionCheck | .java | Finds cases where an `Exception` is swallowed without being processed. |
 UnusedMethodCheck | .java | Finds private methods that are not used. |
-UnusedParameterCheck | .java | Finds parameters in private methods that are not used. |
+UnusedParameterCheck | .java | Finds parameters in private methods and DS lifecycle methods that are not used. |
 UnusedVariableCheck | .java | Finds variables that are declared, but not used. |
 [UpgradeProcessCheck](check/upgrade_process_check.md#upgradeprocesscheck) | .java | Performs several checks on `*UpgradeProcess` classes. |
 [ValidatorEqualsCheck](check/validator_equals_check.md#validatorequalscheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that there are no calls to `Validator.equals(Object, Object)`. |

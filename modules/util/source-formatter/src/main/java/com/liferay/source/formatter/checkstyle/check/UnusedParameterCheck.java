@@ -7,6 +7,7 @@ package com.liferay.source.formatter.checkstyle.check;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.AnnotationUtil;
 
 import java.util.List;
 
@@ -44,7 +45,9 @@ public class UnusedParameterCheck extends BaseCheck {
 		DetailAST modifiersDetailAST =
 			constructorOrMethodDetailAST.findFirstToken(TokenTypes.MODIFIERS);
 
-		if (!modifiersDetailAST.branchContains(TokenTypes.LITERAL_PRIVATE)) {
+		if (!modifiersDetailAST.branchContains(TokenTypes.LITERAL_PRIVATE) &&
+			!_isDSLifecycleMethod(constructorOrMethodDetailAST)) {
+
 			return;
 		}
 
@@ -68,10 +71,14 @@ public class UnusedParameterCheck extends BaseCheck {
 
 		List<String> names = getNames(statementsDetailAST, true);
 
-		for (String parameterName :
-				getParameterNames(constructorOrMethodDetailAST)) {
+		for (DetailAST parameterDefinitionDetailAST :
+				getParameterDefs(constructorOrMethodDetailAST)) {
+
+			String parameterName = getName(parameterDefinitionDetailAST);
 
 			if (names.contains(parameterName) ||
+				AnnotationUtil.containsAnnotation(
+					parameterDefinitionDetailAST, "Reference") ||
 				_isReferencedMethod(
 					classDetailAST, constructorOrMethodDetailAST)) {
 
@@ -82,6 +89,22 @@ public class UnusedParameterCheck extends BaseCheck {
 				constructorOrMethodDetailAST, _MSG_UNUSED_PARAMETER,
 				parameterName);
 		}
+	}
+
+	private boolean _isDSLifecycleMethod(
+		DetailAST constructorOrMethodDetailAST) {
+
+		if (AnnotationUtil.containsAnnotation(
+				constructorOrMethodDetailAST, "Activate") ||
+			AnnotationUtil.containsAnnotation(
+				constructorOrMethodDetailAST, "Deactivate") ||
+			AnnotationUtil.containsAnnotation(
+				constructorOrMethodDetailAST, "Modified")) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _isReferencedMethod(
