@@ -206,7 +206,7 @@ public abstract class BaseAuthFilter extends BasePortalFilter {
 		return httpServletRequest;
 	}
 
-	protected void initThreadLocals(User user) throws Exception {
+	protected void initThreadLocals(User user) {
 		PrincipalThreadLocal.setName(user.getUserId());
 
 		if (!_usePermissionChecker) {
@@ -332,9 +332,8 @@ public abstract class BaseAuthFilter extends BasePortalFilter {
 	}
 
 	protected HttpServletRequest setCredentials(
-			HttpServletRequest httpServletRequest, HttpSession httpSession,
-			User user, String authType)
-		throws Exception {
+		HttpServletRequest httpServletRequest, HttpSession httpSession,
+		User user, String authType) {
 
 		httpServletRequest = new ProtectedServletRequest(
 			httpServletRequest, String.valueOf(user.getUserId()), authType);
