@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.UUID;
 
@@ -21,10 +20,7 @@ import java.util.UUID;
  */
 public class DefaultMBHomeDisplayContext implements MBHomeDisplayContext {
 
-	public DefaultMBHomeDisplayContext(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse) {
-
+	public DefaultMBHomeDisplayContext(HttpServletRequest httpServletRequest) {
 		_mbRequestHelper = new MBRequestHelper(httpServletRequest);
 	}
 

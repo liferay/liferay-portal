@@ -33,7 +33,7 @@ public class MBDisplayContextUtil {
 
 		MBAdminListDisplayContext mbAdminListDisplayContext =
 			new DefaultMBAdminListDisplayContext(
-				httpServletRequest, httpServletResponse, categoryId);
+				httpServletRequest, categoryId);
 
 		for (MBDisplayContextFactory mbDisplayContextFactory :
 				_serviceTrackerList) {
@@ -52,8 +52,7 @@ public class MBDisplayContextUtil {
 		HttpServletResponse httpServletResponse) {
 
 		MBHomeDisplayContext mbHomeDisplayContext =
-			new DefaultMBHomeDisplayContext(
-				httpServletRequest, httpServletResponse);
+			new DefaultMBHomeDisplayContext(httpServletRequest);
 
 		for (MBDisplayContextFactory mbDisplayContextFactory :
 				_serviceTrackerList) {
@@ -74,8 +73,7 @@ public class MBDisplayContextUtil {
 
 		MBListDisplayContext mbListDisplayContext =
 			new DefaultMBListDisplayContext(
-				httpServletRequest, httpServletResponse, categoryId,
-				mvcRenderCommandName);
+				httpServletRequest, categoryId, mvcRenderCommandName);
 
 		for (MBDisplayContextFactory mbDisplayContextFactory :
 				_serviceTrackerList) {

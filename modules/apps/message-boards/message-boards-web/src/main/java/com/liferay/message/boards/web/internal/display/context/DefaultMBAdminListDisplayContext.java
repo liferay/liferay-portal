@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +46,7 @@ public class DefaultMBAdminListDisplayContext
 	implements MBAdminListDisplayContext {
 
 	public DefaultMBAdminListDisplayContext(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse, long categoryId) {
+		HttpServletRequest httpServletRequest, long categoryId) {
 
 		_httpServletRequest = httpServletRequest;
 		_categoryId = categoryId;

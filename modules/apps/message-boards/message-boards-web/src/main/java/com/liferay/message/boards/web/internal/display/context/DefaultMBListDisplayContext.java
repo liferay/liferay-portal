@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,8 +46,7 @@ import java.util.UUID;
 public class DefaultMBListDisplayContext implements MBListDisplayContext {
 
 	public DefaultMBListDisplayContext(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse, long categoryId,
+		HttpServletRequest httpServletRequest, long categoryId,
 		String mvcRenderCommandName) {
 
 		_httpServletRequest = httpServletRequest;

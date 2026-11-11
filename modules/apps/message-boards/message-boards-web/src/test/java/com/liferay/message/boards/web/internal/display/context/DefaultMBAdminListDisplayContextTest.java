@@ -13,7 +13,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Roberto Díaz
@@ -29,7 +28,7 @@ public class DefaultMBAdminListDisplayContextTest {
 	public void testGetEmptyResultsMessage() throws Exception {
 		DefaultMBAdminListDisplayContext defaultMBAdminListDisplayContext =
 			new DefaultMBAdminListDisplayContext(
-				new MockHttpServletRequest(), new MockHttpServletResponse(), 0);
+				new MockHttpServletRequest(), 0);
 
 		Assert.assertEquals(
 			"there-are-no-threads-or-categories",
@@ -41,7 +40,7 @@ public class DefaultMBAdminListDisplayContextTest {
 		mockHttpServletRequest.setParameter("keywords", "test");
 
 		defaultMBAdminListDisplayContext = new DefaultMBAdminListDisplayContext(
-			mockHttpServletRequest, new MockHttpServletResponse(), 0);
+			mockHttpServletRequest, 0);
 
 		Assert.assertEquals(
 			"there-are-no-threads",
