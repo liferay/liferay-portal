@@ -484,10 +484,10 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 			},
 			orderByOptions: [{label: countColumn.label, value: COUNT}],
 			rowIdentifier: 'id',
-			submitMessage: Liferay.Language.get('select'),
+			submitMessage: Liferay.Language.get('add'),
 			title: isPage
-				? Liferay.Language.get('select-page')
-				: Liferay.Language.get('select-asset'),
+				? Liferay.Language.get('add-page')
+				: Liferay.Language.get('add-asset'),
 		};
 	};
 
@@ -622,7 +622,11 @@ const SelectPageAssetInput: React.FC<ISelectPageAssetInputProps> = ({
 							displayType="secondary"
 							onClick={handleOpenModal}
 						>
-							{Liferay.Language.get('select')}
+							{`+ ${
+								isPage
+									? Liferay.Language.get('add-page')
+									: Liferay.Language.get('add-asset')
+							}`}
 						</ClayButton>
 					</Form.GroupItem>
 				</>

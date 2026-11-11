@@ -81,8 +81,8 @@ const SelectCategoryFromModal: React.FC<ISelectCategoryFromModalProps> = ({
 			categoriesModal.onOpenChange(false);
 		},
 		rowIdentifier: 'id',
-		submitMessage: Liferay.Language.get('select'),
-		title: Liferay.Language.get('select-category'),
+		submitMessage: Liferay.Language.get('add'),
+		title: Liferay.Language.get('add-category'),
 	});
 
 	const handleOpenModal = () => categoriesModal.onOpenChange(true);
@@ -164,7 +164,7 @@ const SelectCategoryFromModal: React.FC<ISelectCategoryFromModalProps> = ({
 
 			<Form.GroupItem shrink>
 				<ClayButton displayType="secondary" onClick={handleOpenModal}>
-					{Liferay.Language.get('select')}
+					{`+ ${Liferay.Language.get('add-category')}`}
 				</ClayButton>
 			</Form.GroupItem>
 		</>
