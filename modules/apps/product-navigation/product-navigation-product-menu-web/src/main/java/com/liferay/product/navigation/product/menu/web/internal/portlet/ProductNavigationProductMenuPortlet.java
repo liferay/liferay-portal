@@ -89,7 +89,7 @@ public class ProductNavigationProductMenuPortlet extends MVCPortlet {
 			LayoutsTreeDisplayContext.class.getName(),
 			new LayoutsTreeDisplayContext(
 				httpServletRequest, _language, _layoutLocalService,
-				_layoutService, _layoutsTree, renderRequest, renderResponse,
+				_layoutService, _layoutsTree, renderResponse, renderRequest,
 				_siteNavigationMenuItemLocalService,
 				_siteNavigationMenuItemTypeRegistry,
 				_siteNavigationMenuLocalService));

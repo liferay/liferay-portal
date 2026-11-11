@@ -14,30 +14,45 @@ import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.application.list.util.PanelCategoryRegistryUtil;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.portlet.ControlPanelEntry;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.product.navigation.product.menu.constants.ProductNavigationProductMenuPortletKeys;
 import com.liferay.site.item.selector.SiteItemSelectorCriterion;
 import com.liferay.site.manager.RecentGroupManager;
 
+import jakarta.portlet.ResourceURL;
+
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +128,9 @@ public class ProductMenuSidebarDisplayContext {
 				return navigationItemsURL.toString();
 			}
 		).put(
-			"selectedPortletId", _themeDisplay.getPpid()
+			"pageTree", this::_getPageTree
+		).put(
+			"selectedPortletId", _getSelectedPortletId()
 		).put(
 			"siteItemSelectedEventName", itemSelectedEventName
 		).put(
@@ -132,6 +149,16 @@ public class ProductMenuSidebarDisplayContext {
 						RequestBackedPortletURLFactoryUtil.create(
 							_httpServletRequest),
 						itemSelectedEventName, siteItemSelectorCriterion));
+			}
+		).put(
+			"staging",
+			() -> {
+				ProductMenuSidebarStagingDisplayContext
+					productMenuSidebarStagingDisplayContext =
+						new ProductMenuSidebarStagingDisplayContext(
+							_httpServletRequest);
+
+				return productMenuSidebarStagingDisplayContext.getProps();
 			}
 		).put(
 			"visible", isVisible()
@@ -157,6 +184,39 @@ public class ProductMenuSidebarDisplayContext {
 
 		return TransformUtil.transform(
 			_getRootChildPanelCategories(), PanelCategory::getKey);
+	}
+
+	private String _getGroupDisplayURL(Group group) {
+		String groupDisplayURL = group.getDisplayURL(_themeDisplay, false);
+
+		if (Validator.isNull(groupDisplayURL)) {
+			groupDisplayURL = group.getDisplayURL(_themeDisplay, true);
+		}
+
+		if (Validator.isNull(groupDisplayURL)) {
+			return StringPool.BLANK;
+		}
+
+		return HttpComponentsUtil.removeParameter(groupDisplayURL, "p_p_id");
+	}
+
+	private Map<String, Object> _getHomePropsItem() {
+		String groupDisplayURL = _getGroupDisplayURL(
+			_themeDisplay.getScopeGroup());
+
+		if (Validator.isNull(groupDisplayURL)) {
+			return null;
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"href", groupDisplayURL
+		).put(
+			"id", "home"
+		).put(
+			"label", LanguageUtil.get(_httpServletRequest, "home[page]")
+		).put(
+			"leadingIcon", "home"
+		).build();
 	}
 
 	private String _getImageURL() {
@@ -188,6 +248,60 @@ public class ProductMenuSidebarDisplayContext {
 			_themeDisplay.getLocale(), "x-site", user.getFullName());
 	}
 
+	private Map<String, Object> _getPageTree() throws Exception {
+		if (!_isShowPageTree()) {
+			return null;
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"stateSessionKey", _SESSION_KEY_PAGE_TREE_GROUP_ID
+		).put(
+			"url",
+			() -> {
+				RequestBackedPortletURLFactory requestBackedPortletURLFactory =
+					RequestBackedPortletURLFactoryUtil.create(
+						_httpServletRequest);
+
+				return ResourceURLBuilder.createResourceURL(
+					(ResourceURL)
+						requestBackedPortletURLFactory.createResourceURL(
+							ProductNavigationProductMenuPortletKeys.
+								PRODUCT_NAVIGATION_PRODUCT_MENU)
+				).setRedirect(
+					_themeDisplay.getURLCurrent()
+				).setBackURL(
+					_themeDisplay.getURLCurrent()
+				).setParameter(
+					"p_v_l_s_g_id", _themeDisplay.getScopeGroupId()
+				).setParameter(
+					"selPpid", _themeDisplay.getPpid()
+				).setResourceID(
+					"/product_navigation_product_menu/get_page_tree"
+				).buildString();
+			}
+		).put(
+			"visible", _isPageTreeVisible()
+		).build();
+	}
+
+	private Map<String, Object> _getPageTreePropsItem() throws Exception {
+		if (!_isShowPageTree()) {
+			return null;
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"disabled", _isPageTreeDisabled()
+		).put(
+			"id", "pageTree"
+		).put(
+			"label", LanguageUtil.get(_httpServletRequest, "page-tree")
+		).put(
+			"leadingIcon", "pages-tree"
+		).put(
+			"pageTree", true
+		).build();
+	}
+
 	private List<Map<String, Object>> _getPanelAppPropsItems(
 			PanelCategory panelCategory)
 		throws Exception {
@@ -213,8 +327,21 @@ public class ProductMenuSidebarDisplayContext {
 	}
 
 	private List<Map<String, Object>> _getPropsItems() throws Exception {
-		List<Map<String, Object>> propsItems = _getPanelAppPropsItems(
-			_panelCategory);
+		List<Map<String, Object>> propsItems = new ArrayList<>();
+
+		Map<String, Object> homePropsItem = _getHomePropsItem();
+
+		if (homePropsItem != null) {
+			propsItems.add(homePropsItem);
+		}
+
+		Map<String, Object> pageTreePropsItem = _getPageTreePropsItem();
+
+		if (pageTreePropsItem != null) {
+			propsItems.add(pageTreePropsItem);
+		}
+
+		propsItems.addAll(_getPanelAppPropsItems(_panelCategory));
 
 		propsItems.addAll(
 			TransformUtil.transform(
@@ -252,6 +379,102 @@ public class ProductMenuSidebarDisplayContext {
 		return _rootChildPanelCategories;
 	}
 
+	private String _getSelectedPortletId() {
+		Layout layout = _themeDisplay.getLayout();
+
+		if ((layout == null) || layout.isTypeControlPanel()) {
+			return _themeDisplay.getPpid();
+		}
+
+		Group group = _themeDisplay.getScopeGroup();
+
+		boolean homePrivateLayout = Validator.isNull(
+			group.getDisplayURL(_themeDisplay, false));
+
+		if (layout.isPrivateLayout() != homePrivateLayout) {
+			return _themeDisplay.getPpid();
+		}
+
+		Layout firstLayout = LayoutLocalServiceUtil.fetchFirstLayout(
+			layout.getGroupId(), homePrivateLayout,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false);
+
+		if ((firstLayout != null) &&
+			(firstLayout.getPlid() == layout.getPlid())) {
+
+			return "home";
+		}
+
+		return _themeDisplay.getPpid();
+	}
+
+	private boolean _isPageTreeDisabled() {
+		if (!Objects.equals(
+				_themeDisplay.getPpid(), LayoutAdminPortletKeys.GROUP_PAGES)) {
+
+			return false;
+		}
+
+		String groupPagesPortletNamespace = PortalUtil.getPortletNamespace(
+			LayoutAdminPortletKeys.GROUP_PAGES);
+		HttpServletRequest originalHttpServletRequest =
+			PortalUtil.getOriginalServletRequest(_httpServletRequest);
+
+		if (Validator.isNotNull(
+				ParamUtil.getString(
+					originalHttpServletRequest,
+					groupPagesPortletNamespace + "mvcRenderCommandName")) ||
+			Validator.isNotNull(
+				ParamUtil.getString(originalHttpServletRequest, "mvcPath"))) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean _isPageTreeVisible() {
+		if (_isPageTreeDisabled()) {
+			return false;
+		}
+
+		String pageTreeGroupId = SessionClicks.get(
+			_httpServletRequest, _SESSION_KEY_PAGE_TREE_GROUP_ID,
+			StringPool.BLANK);
+
+		return pageTreeGroupId.equals(
+			String.valueOf(_themeDisplay.getScopeGroupId()));
+	}
+
+	private boolean _isShowPageTree() throws Exception {
+		if (_showPageTree != null) {
+			return _showPageTree;
+		}
+
+		_showPageTree = false;
+
+		Group group = _themeDisplay.getScopeGroup();
+
+		if ((group == null) || group.isCompany() || group.isDepot()) {
+			return _showPageTree;
+		}
+
+		Portlet portlet = PortletLocalServiceUtil.getPortletById(
+			_themeDisplay.getCompanyId(), LayoutAdminPortletKeys.GROUP_PAGES);
+
+		if (portlet == null) {
+			return _showPageTree;
+		}
+
+		ControlPanelEntry controlPanelEntry =
+			portlet.getControlPanelEntryInstance();
+
+		_showPageTree = controlPanelEntry.hasAccessPermission(
+			_themeDisplay.getPermissionChecker(), group, portlet);
+
+		return _showPageTree;
+	}
+
 	private void _updateLatentGroup() {
 		GroupProvider groupProvider = _groupProviderSnapshot.get();
 
@@ -273,6 +496,9 @@ public class ProductMenuSidebarDisplayContext {
 	private static final String _SESSION_KEY_EXPANDED_KEYS =
 		"com.liferay.product.navigation.product.menu.web_sidebarExpandedKeys";
 
+	private static final String _SESSION_KEY_PAGE_TREE_GROUP_ID =
+		"com.liferay.product.navigation.product.menu.web_sidebarPageTree";
+
 	private static final String _SESSION_KEY_VISIBLE =
 		"com.liferay.product.navigation.product.menu.web_productMenuState";
 
@@ -291,6 +517,7 @@ public class ProductMenuSidebarDisplayContext {
 	private final PanelCategory _panelCategory;
 	private final PanelCategoryHelper _panelCategoryHelper;
 	private List<PanelCategory> _rootChildPanelCategories;
+	private Boolean _showPageTree;
 	private final ThemeDisplay _themeDisplay;
 
 }

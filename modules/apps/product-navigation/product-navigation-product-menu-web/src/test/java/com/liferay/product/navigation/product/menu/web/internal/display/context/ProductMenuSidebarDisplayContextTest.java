@@ -10,17 +10,23 @@ import com.liferay.application.list.PanelAppRegistry;
 import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -68,6 +74,8 @@ public class ProductMenuSidebarDisplayContextTest {
 		ReflectionTestUtil.setFieldValue(
 			_productMenuSidebarDisplayContext, "_panelCategoryHelper",
 			_panelCategoryHelper);
+		ReflectionTestUtil.setFieldValue(
+			_productMenuSidebarDisplayContext, "_showPageTree", false);
 
 		_themeDisplay.setLocale(LocaleUtil.US);
 
@@ -278,6 +286,65 @@ public class ProductMenuSidebarDisplayContextTest {
 	}
 
 	@Test
+	public void testGetPropsItemsListsHomeAndThePageTreeFirst()
+		throws Exception {
+
+		ReflectionTestUtil.setFieldValue(
+			_productMenuSidebarDisplayContext, "_showPageTree", true);
+
+		Mockito.when(
+			_group.getDisplayURL(_themeDisplay, false)
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Language language = Mockito.mock(Language.class);
+
+		Mockito.when(
+			language.get(
+				Mockito.any(HttpServletRequest.class), Mockito.anyString())
+		).thenAnswer(
+			invocationOnMock -> invocationOnMock.getArgument(1)
+		);
+
+		_setUpLanguage(language);
+
+		PanelApp panelApp = _createPanelApp("blogs");
+
+		Mockito.when(
+			_panelAppRegistry.getPanelApps(
+				Mockito.eq(PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT),
+				Mockito.nullable(PermissionChecker.class), Mockito.eq(_group))
+		).thenReturn(
+			List.of(panelApp)
+		);
+
+		_setUpRootChildPanelCategories(
+			_createPanelCategory(
+				PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT));
+
+		List<Map<String, Object>> propsItems = _getPropsItems();
+
+		Assert.assertEquals(propsItems.toString(), 3, propsItems.size());
+
+		Map<String, Object> homePropsItem = propsItems.get(0);
+
+		Assert.assertEquals("home", homePropsItem.get("id"));
+
+		Map<String, Object> pageTreePropsItem = propsItems.get(1);
+
+		Assert.assertEquals(Boolean.FALSE, pageTreePropsItem.get("disabled"));
+		Assert.assertEquals("pageTree", pageTreePropsItem.get("id"));
+		Assert.assertEquals(Boolean.TRUE, pageTreePropsItem.get("pageTree"));
+
+		Map<String, Object> categoryPropsItem = propsItems.get(2);
+
+		Assert.assertEquals(
+			PanelCategoryKeys.SITE_ADMINISTRATION_CONTENT,
+			categoryPropsItem.get("id"));
+	}
+
+	@Test
 	public void testGetPropsItemsOmitsACategoryWithoutApplications() {
 		_setUpRootChildPanelCategories(
 			_createPanelCategory(
@@ -286,6 +353,129 @@ public class ProductMenuSidebarDisplayContextTest {
 		List<Map<String, Object>> propsItems = _getPropsItems();
 
 		Assert.assertTrue(propsItems.isEmpty());
+	}
+
+	@Test
+	public void testGetSelectedPortletIdKeepsThePortletOnAnotherPageSet() {
+		String portletId = RandomTestUtil.randomString();
+
+		_themeDisplay.setPpid(portletId);
+
+		Layout layout = Mockito.mock(Layout.class);
+
+		Mockito.when(
+			layout.isPrivateLayout()
+		).thenReturn(
+			true
+		);
+
+		ReflectionTestUtil.setFieldValue(_themeDisplay, "_layout", layout);
+
+		Mockito.when(
+			_group.getDisplayURL(_themeDisplay, false)
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Assert.assertEquals(portletId, _getSelectedPortletId());
+	}
+
+	@Test
+	public void testGetSelectedPortletIdReturnsHomeOnTheFirstPage() {
+		Layout layout = Mockito.mock(Layout.class);
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			layout.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
+		long plid = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			layout.getPlid()
+		).thenReturn(
+			plid
+		);
+
+		ReflectionTestUtil.setFieldValue(_themeDisplay, "_layout", layout);
+
+		Mockito.when(
+			_group.getDisplayURL(_themeDisplay, false)
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		try (MockedStatic<LayoutLocalServiceUtil>
+				layoutLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					LayoutLocalServiceUtil.class)) {
+
+			layoutLocalServiceUtilMockedStatic.when(
+				() -> LayoutLocalServiceUtil.fetchFirstLayout(
+					groupId, false, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+					false)
+			).thenReturn(
+				layout
+			);
+
+			Assert.assertEquals("home", _getSelectedPortletId());
+		}
+	}
+
+	@Test
+	public void testIsPageTreeVisibleIgnoresTheStateOfAnotherSite() {
+		ReflectionTestUtil.setFieldValue(
+			_themeDisplay, "_scopeGroupId", RandomTestUtil.randomLong());
+
+		try (MockedStatic<SessionClicks> sessionClicksMockedStatic =
+				Mockito.mockStatic(SessionClicks.class)) {
+
+			sessionClicksMockedStatic.when(
+				() -> SessionClicks.get(
+					Mockito.any(HttpServletRequest.class), Mockito.anyString(),
+					Mockito.eq(StringPool.BLANK))
+			).thenReturn(
+				String.valueOf(RandomTestUtil.randomLong())
+			);
+
+			Assert.assertFalse(
+				ReflectionTestUtil.invoke(
+					_productMenuSidebarDisplayContext, "_isPageTreeVisible",
+					new Class<?>[0]));
+
+			sessionClicksMockedStatic.verify(
+				() -> SessionClicks.put(
+					Mockito.any(HttpServletRequest.class), Mockito.anyString(),
+					Mockito.anyString()),
+				Mockito.never());
+		}
+	}
+
+	@Test
+	public void testIsPageTreeVisibleKeepsTheStateOnThePagesAdministration() {
+		_themeDisplay.setPpid(LayoutAdminPortletKeys.GROUP_PAGES);
+
+		try (MockedStatic<PortalUtil> portalUtilMockedStatic =
+				Mockito.mockStatic(PortalUtil.class);
+			MockedStatic<SessionClicks> sessionClicksMockedStatic =
+				Mockito.mockStatic(SessionClicks.class)) {
+
+			portalUtilMockedStatic.when(
+				() -> PortalUtil.getOriginalServletRequest(
+					Mockito.any(HttpServletRequest.class))
+			).thenReturn(
+				Mockito.mock(HttpServletRequest.class)
+			);
+
+			Assert.assertFalse(
+				ReflectionTestUtil.invoke(
+					_productMenuSidebarDisplayContext, "_isPageTreeVisible",
+					new Class<?>[0]));
+
+			sessionClicksMockedStatic.verifyNoInteractions();
+		}
 	}
 
 	@Test
@@ -374,6 +564,12 @@ public class ProductMenuSidebarDisplayContextTest {
 	private List<Map<String, Object>> _getPropsItems() {
 		return ReflectionTestUtil.invoke(
 			_productMenuSidebarDisplayContext, "_getPropsItems",
+			new Class<?>[0]);
+	}
+
+	private String _getSelectedPortletId() {
+		return ReflectionTestUtil.invoke(
+			_productMenuSidebarDisplayContext, "_getSelectedPortletId",
 			new Class<?>[0]);
 	}
 

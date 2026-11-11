@@ -60,9 +60,9 @@ import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
 
+import jakarta.portlet.MimeResponse;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.RenderRequest;
-import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -80,8 +80,8 @@ public class LayoutsTreeDisplayContext {
 	public LayoutsTreeDisplayContext(
 		HttpServletRequest httpServletRequest, Language language,
 		LayoutLocalService layoutLocalService, LayoutService layoutService,
-		LayoutsTree layoutsTree, RenderRequest renderRequest,
-		RenderResponse renderResponse,
+		LayoutsTree layoutsTree, MimeResponse mimeResponse,
+		PortletRequest portletRequest,
 		SiteNavigationMenuItemLocalService siteNavigationMenuItemLocalService,
 		SiteNavigationMenuItemTypeRegistry siteNavigationMenuItemTypeRegistry,
 		SiteNavigationMenuLocalService siteNavigationMenuLocalService) {
@@ -91,8 +91,8 @@ public class LayoutsTreeDisplayContext {
 		_layoutLocalService = layoutLocalService;
 		_layoutService = layoutService;
 		_layoutsTree = layoutsTree;
-		_renderRequest = renderRequest;
-		_renderResponse = renderResponse;
+		_mimeResponse = mimeResponse;
+		_portletRequest = portletRequest;
 		_siteNavigationMenuItemLocalService =
 			siteNavigationMenuItemLocalService;
 		_siteNavigationMenuItemTypeRegistry =
@@ -100,7 +100,7 @@ public class LayoutsTreeDisplayContext {
 		_siteNavigationMenuLocalService = siteNavigationMenuLocalService;
 
 		_liferayPortletRequest = PortalUtil.getLiferayPortletRequest(
-			renderRequest);
+			portletRequest);
 
 		_groupProvider = (GroupProvider)_liferayPortletRequest.getAttribute(
 			ApplicationListWebKeys.GROUP_PROVIDER);
@@ -199,7 +199,7 @@ public class LayoutsTreeDisplayContext {
 			return _backURL;
 		}
 
-		String backURL = ParamUtil.getString(_renderRequest, "backURL");
+		String backURL = ParamUtil.getString(_portletRequest, "backURL");
 
 		if (Validator.isNull(backURL)) {
 			backURL = ParamUtil.getString(
@@ -281,7 +281,7 @@ public class LayoutsTreeDisplayContext {
 				() -> {
 					LiferayPortletURL liferayPortletURL =
 						(LiferayPortletURL)ResourceURLBuilder.createResourceURL(
-							_renderResponse
+							_mimeResponse
 						).setResourceID(
 							"/product_navigation_product_menu/get_layouts"
 						).buildResourceURL();
@@ -547,7 +547,7 @@ public class LayoutsTreeDisplayContext {
 			return _redirect;
 		}
 
-		String redirect = ParamUtil.getString(_renderRequest, "redirect");
+		String redirect = ParamUtil.getString(_portletRequest, "redirect");
 
 		if (Validator.isNull(redirect)) {
 			redirect = PortalUtil.escapeRedirect(_getBackURL());
@@ -932,13 +932,13 @@ public class LayoutsTreeDisplayContext {
 	private final LayoutService _layoutService;
 	private final LayoutsTree _layoutsTree;
 	private final LiferayPortletRequest _liferayPortletRequest;
+	private final MimeResponse _mimeResponse;
 	private final String _namespace;
 	private Boolean _pageHierarchySelectedOption;
 	private String _pageTypeSelectedOption;
+	private final PortletRequest _portletRequest;
 	private Boolean _privateLayoutsEnabled;
 	private String _redirect;
-	private final RenderRequest _renderRequest;
-	private final RenderResponse _renderResponse;
 	private Long _selectedSiteNavigationMenuItemId;
 	private Long _siteNavigationMenuId;
 	private final SiteNavigationMenuItemLocalService

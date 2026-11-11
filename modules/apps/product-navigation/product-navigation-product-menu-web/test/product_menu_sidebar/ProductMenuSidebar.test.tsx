@@ -42,7 +42,9 @@ const ITEMS: Array<UnifiedSidebarItem> = [
 	},
 ];
 
-const renderComponent = () =>
+const renderComponent = (
+	props: Partial<React.ComponentProps<typeof ProductMenuSidebar>> = {}
+) =>
 	render(
 		<ProductMenuSidebar
 			canonicalName="siteAdministrationCanonicalName"
@@ -57,6 +59,7 @@ const renderComponent = () =>
 			siteItemSelectorURL="siteItemSelectorURL"
 			visible
 			visibleSessionKey="visibleSessionKey"
+			{...props}
 		/>
 	);
 
@@ -208,5 +211,222 @@ describe('ProductMenuSidebar', () => {
 		});
 
 		expect(document.body).not.toHaveClass('sidenav-transition');
+	});
+
+	it('links to the other environment from the staging toggle', () => {
+		renderComponent({
+			staging: {
+				current: 'staging',
+				liveURL: 'liveURL',
+				remote: false,
+				stagingURL: '',
+			},
+		});
+
+		expect(screen.getByRole('link', {name: 'live'})).toHaveAttribute(
+			'href',
+			'liveURL'
+		);
+		expect(screen.getByText('staging')).toHaveAttribute(
+			'aria-current',
+			'page'
+		);
+	});
+
+	describe('with the Page Tree', () => {
+		const PAGE_TREE_DATA = {
+			config: {
+				administrationPortletNamespace: 'administrationNamespace_',
+				administrationPortletURL: 'administrationPortletURL',
+				findLayoutsURL: 'http://localhost/findLayoutsURL',
+				loadMoreItemsURL: 'loadMoreItemsURL',
+				maxPageSize: 20,
+				moveItemURL: 'moveItemURL',
+				stagingEnabled: false,
+			},
+			hasAdministrationPortletPermission: true,
+			isPrivateLayoutsTree: false,
+			isSiteNavigationMenu: false,
+			items: [],
+			pageTypeOptions: [
+				{
+					items: [
+						{label: 'Public Pages', value: 'public-layout'},
+						{label: 'Private Pages', value: 'private-layout'},
+					],
+					label: 'Pages',
+				},
+			],
+			pageTypeSelectedOption: 'public-layout',
+			portletNamespace: 'productMenuNamespace_',
+			selectedLayoutId: 0,
+			selectedLayoutPath: [],
+			showAddIcon: false,
+		};
+
+		const PAGE_TREE_ITEM = {
+			id: 'pageTree',
+			label: 'Page Tree',
+			leadingIcon: 'pages-tree',
+			pageTree: true,
+		};
+
+		let pageTreeRequests = 0;
+
+		const renderPageTree = (visible: boolean, disabled = false) =>
+			renderComponent({
+				items: [{...PAGE_TREE_ITEM, disabled}, ...ITEMS],
+				navigationItemsURL: 'http://localhost/navigationItemsURL',
+				pageTree: {
+					stateSessionKey: 'pageTreeStateSessionKey',
+					url: 'http://localhost/pageTreeURL',
+					visible,
+				},
+			});
+
+		beforeEach(() => {
+			pageTreeRequests = 0;
+
+			(fetch as any).mockResponse((request: Request) => {
+				if (request.url.endsWith('/findLayoutsURL')) {
+					return Promise.resolve(
+						JSON.stringify({
+							layouts: [
+								{
+									name: 'Home',
+									path: ['Welcome'],
+									target: '_self',
+									url: 'homeURL',
+								},
+							],
+							totalCount: 1,
+						})
+					);
+				}
+
+				if (request.url.endsWith('/pageTreeURL')) {
+					pageTreeRequests++;
+
+					return Promise.resolve(JSON.stringify(PAGE_TREE_DATA));
+				}
+
+				return Promise.resolve(JSON.stringify({navigationItems: {}}));
+			});
+		});
+
+		it('comes back from the Page Tree with an empty search', async () => {
+			renderPageTree(false);
+
+			await userEvent.type(
+				screen.getByTestId('sideNavigationSearchInput'),
+				'page'
+			);
+
+			await waitFor(() =>
+				expect(
+					screen.queryByText('Web Content')
+				).not.toBeInTheDocument()
+			);
+
+			await userEvent.click(
+				await screen.findByRole('menuitem', {name: 'Page Tree'})
+			);
+
+			expect(Liferay.Util.Session.set).toHaveBeenCalledWith(
+				'pageTreeStateSessionKey',
+				expect.any(String)
+			);
+
+			await userEvent.click(screen.getByLabelText('go-back'));
+
+			expect(screen.getByTestId('sideNavigationSearchInput')).toHaveValue(
+				''
+			);
+			expect(screen.getByText('Web Content')).toBeInTheDocument();
+			expect(Liferay.Util.Session.set).toHaveBeenLastCalledWith(
+				'pageTreeStateSessionKey',
+				''
+			);
+		});
+
+		it('disables the Page Tree item when asked to', async () => {
+			renderPageTree(false, true);
+
+			const pageTreeItem = screen.getByRole('menuitem', {
+				name: 'Page Tree',
+			});
+
+			expect(pageTreeItem).toBeDisabled();
+
+			await userEvent.click(pageTreeItem);
+
+			expect(screen.queryByLabelText('go-back')).not.toBeInTheDocument();
+			expect(pageTreeRequests).toBe(0);
+		});
+
+		it('finds pages by keyword', async () => {
+			renderPageTree(true);
+
+			await screen.findByText('go-to-pages-administration');
+
+			await userEvent.type(
+				screen.getByTestId('sideNavigationSearchInput'),
+				'home'
+			);
+
+			expect(
+				await screen.findByRole('link', {name: /Home/})
+			).toHaveAttribute('href', 'homeURL');
+			expect(
+				screen.queryByLabelText('pages-type')
+			).not.toBeInTheDocument();
+		});
+
+		it('reloads the Page Tree when the page type changes', async () => {
+			renderPageTree(true);
+
+			await userEvent.click(await screen.findByLabelText('pages-type'));
+
+			await userEvent.click(
+				screen.getByRole('option', {name: 'Private Pages'})
+			);
+
+			expect(Liferay.Util.Session.set).toHaveBeenCalledWith(
+				'productMenuNamespace_PAGE_TYPE_SELECTED_OPTION',
+				'private-layout'
+			);
+
+			await waitFor(() => expect(pageTreeRequests).toBe(2));
+		});
+
+		it('shows the last Page Tree right away when it mounts again', async () => {
+			const {unmount} = renderPageTree(true);
+
+			await screen.findByText('go-to-pages-administration');
+
+			unmount();
+
+			renderPageTree(true);
+
+			expect(
+				screen.getByText('go-to-pages-administration')
+			).toBeInTheDocument();
+
+			await waitFor(() => expect(pageTreeRequests).toBe(2));
+		});
+
+		it('shows the Page Tree with the site selector hidden', async () => {
+			renderPageTree(true);
+
+			expect(
+				await screen.findByRole('link', {
+					name: 'go-to-pages-administration',
+				})
+			).toHaveAttribute('href', 'administrationPortletURL');
+			expect(screen.getByText('page-tree')).toBeInTheDocument();
+			expect(
+				screen.queryByLabelText('go-to-other-site')
+			).not.toBeInTheDocument();
+		});
 	});
 });
