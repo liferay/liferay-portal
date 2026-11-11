@@ -41,16 +41,7 @@ public class SamlSpSessionDestroyAction extends SessionAction {
 			return;
 		}
 
-		long userCompanyId = 0;
-
-		try {
-			userCompanyId = _companyLocalService.getCompanyIdByUserId(userId);
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
+		long userCompanyId = _companyLocalService.getCompanyIdByUserId(userId);
 
 		if (userCompanyId == 0) {
 			return;

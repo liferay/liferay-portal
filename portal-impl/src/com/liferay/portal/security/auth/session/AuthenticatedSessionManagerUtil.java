@@ -356,7 +356,7 @@ public class AuthenticatedSessionManagerUtil {
 		return httpSession;
 	}
 
-	public static void signOutSimultaneousLogins(long userId) throws Exception {
+	public static void signOutSimultaneousLogins(long userId) {
 		long companyId = CompanyLocalServiceUtil.getCompanyIdByUserId(userId);
 
 		Map<String, UserTracker> sessionUsers = LiveUsers.getSessionUsers(
