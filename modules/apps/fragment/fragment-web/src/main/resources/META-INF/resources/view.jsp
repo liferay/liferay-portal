@@ -164,7 +164,7 @@ ImportDisplayContext importDisplayContext = new ImportDisplayContext(request, re
 						<liferay-frontend:empty-result-message
 							actionDropdownItems="<%= FragmentPermission.contains(permissionChecker, scopeGroupId, FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES) ? fragmentDisplayContext.getActionDropdownItems() : null %>"
 							additionalProps="<%= fragmentDisplayContext.getFragmentCollectionsViewContext() %>"
-							animationType="<%= EmptyResultMessageKeys.AnimationType.NONE %>"
+							animationType="<%= AnimationType.NONE %>"
 							buttonPropsTransformer="{FragmentCollectionViewButtonPropsTransformer} from fragment-web"
 							description='<%= LanguageUtil.get(request, "fragment-sets-are-needed-to-create-fragments") %>'
 							elementType='<%= LanguageUtil.get(request, "fragment-sets") %>'

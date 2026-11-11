@@ -53,7 +53,7 @@ ExtendedObjectClassDefinition.Scope scope = configurationScopeDisplayContext.get
 
 	<c:if test="<%= configurationCategorySectionDisplays.isEmpty() %>">
 		<liferay-frontend:empty-result-message
-			animationType="<%= EmptyResultMessageKeys.AnimationType.SEARCH %>"
+			animationType="<%= AnimationType.SEARCH %>"
 			title='<%= LanguageUtil.get(resourceBundle, "no-configurations-were-found") %>'
 		/>
 	</c:if>

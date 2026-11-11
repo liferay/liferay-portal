@@ -133,7 +133,7 @@ KBAdminManagementToolbarDisplayContext kbAdminManagementToolbarDisplayContext = 
 					<c:otherwise>
 						<liferay-frontend:empty-result-message
 							actionDropdownItems="<%= kbAdminManagementToolbarDisplayContext.getEmptyStateActionDropdownItems() %>"
-							animationType="<%= EmptyResultMessageKeys.AnimationType.EMPTY %>"
+							animationType="<%= AnimationType.EMPTY %>"
 							buttonCssClass="secondary"
 							title='<%= (parentResourcePrimKey == KBFolderConstants.DEFAULT_PARENT_FOLDER_ID) ? LanguageUtil.get(request, "knowledge-base-is-empty") : LanguageUtil.get(request, "this-folder-is-empty") %>'
 						/>

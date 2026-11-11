@@ -7,7 +7,7 @@ package com.liferay.frontend.taglib.servlet.taglib;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.internal.servlet.ServletContextUtil;
-import com.liferay.frontend.taglib.servlet.taglib.util.EmptyResultMessageKeys;
+import com.liferay.frontend.taglib.servlet.taglib.util.AnimationType;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.taglib.util.IncludeTag;
@@ -32,7 +32,7 @@ public class EmptyResultMessageTag extends IncludeTag {
 		return _additionalProps;
 	}
 
-	public EmptyResultMessageKeys.AnimationType getAnimationType() {
+	public AnimationType getAnimationType() {
 		return _animationType;
 	}
 
@@ -76,9 +76,7 @@ public class EmptyResultMessageTag extends IncludeTag {
 		_additionalProps = additionalProps;
 	}
 
-	public void setAnimationType(
-		EmptyResultMessageKeys.AnimationType animationType) {
-
+	public void setAnimationType(AnimationType animationType) {
 		_animationType = animationType;
 	}
 
@@ -133,7 +131,7 @@ public class EmptyResultMessageTag extends IncludeTag {
 
 		_actionDropdownItems = null;
 		_additionalProps = null;
-		_animationType = EmptyResultMessageKeys.AnimationType.EMPTY;
+		_animationType = AnimationType.EMPTY;
 		_buttonCssClass = "primary";
 		_buttonPropsTransformer = null;
 		_componentId = null;
@@ -168,7 +166,7 @@ public class EmptyResultMessageTag extends IncludeTag {
 			_additionalProps);
 		httpServletRequest.setAttribute(
 			"liferay-frontend:empty-result-message:animationTypeSymbol",
-			EmptyResultMessageKeys.getAnimationTypeSymbol(_animationType));
+			_animationType.getSymbol());
 		httpServletRequest.setAttribute(
 			"liferay-frontend:empty-result-message:buttonCssClass",
 			_buttonCssClass);
@@ -205,8 +203,7 @@ public class EmptyResultMessageTag extends IncludeTag {
 
 	private List<DropdownItem> _actionDropdownItems;
 	private Map<String, Object> _additionalProps;
-	private EmptyResultMessageKeys.AnimationType _animationType =
-		EmptyResultMessageKeys.AnimationType.EMPTY;
+	private AnimationType _animationType = AnimationType.EMPTY;
 	private String _buttonCssClass = "primary";
 	private String _buttonPropsTransformer;
 	private String _componentId;

@@ -56,7 +56,7 @@ List<Address> addresses = AddressServiceUtil.getAddresses(className, classPK);
 <c:if test="<%= addresses.isEmpty() %>">
 	<div class="contact-information-empty-results-message-wrapper">
 		<liferay-frontend:empty-result-message
-			animationType="<%= EmptyResultMessageKeys.AnimationType.EMPTY %>"
+			animationType="<%= AnimationType.EMPTY %>"
 			title="<%= LanguageUtil.get(resourceBundle, emptyResultsMessage) %>"
 		/>
 	</div>

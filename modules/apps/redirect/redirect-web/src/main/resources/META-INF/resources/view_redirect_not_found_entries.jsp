@@ -81,7 +81,7 @@ RedirectNotFoundEntriesDisplayContext redirectNotFoundEntriesDisplayContext = (R
 		</c:when>
 		<c:otherwise>
 			<liferay-frontend:empty-result-message
-				animationType="<%= EmptyResultMessageKeys.AnimationType.SEARCH %>"
+				animationType="<%= AnimationType.SEARCH %>"
 				description="<%= LanguageUtil.get(request, redirectNotFoundEntriesDisplayContext.getEmptyResultsMessage()) %>"
 				title='<%= LanguageUtil.get(request, "all-is-in-order") %>'
 			/>

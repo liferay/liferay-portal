@@ -81,7 +81,7 @@ portletDisplay.setURLBack(ParamUtil.getString(request, "backURL", String.valueOf
 		<c:if test="<%= addresses.isEmpty() %>">
 			<div class="contact-information-empty-results-message-wrapper">
 				<liferay-frontend:empty-result-message
-					animationType="<%= EmptyResultMessageKeys.AnimationType.EMPTY %>"
+					animationType="<%= AnimationType.EMPTY %>"
 					title='<%= LanguageUtil.get(resourceBundle, "this-account-does-not-have-any-addresses") %>'
 				/>
 			</div>

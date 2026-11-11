@@ -103,7 +103,7 @@ List<LayoutPageTemplateCollection> layoutPageTemplateCollections = layoutPageTem
 
 						<liferay-frontend:empty-result-message
 							actionDropdownItems="<%= layoutPageTemplateDisplayContext.isShowAddButton(LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION) ? layoutPageTemplateDisplayContext.getActionDropdownItems() : null %>"
-							animationType="<%= EmptyResultMessageKeys.AnimationType.NONE %>"
+							animationType="<%= AnimationType.NONE %>"
 							description='<%= LanguageUtil.get(request, "page-template-sets-are-needed-to-create-page-templates") %>'
 							elementType='<%= LanguageUtil.get(request, "page-template-sets") %>'
 						/>
@@ -162,7 +162,7 @@ List<LayoutPageTemplateCollection> layoutPageTemplateCollections = layoutPageTem
 				<c:when test="<%= layoutPageTemplateDisplayContext.isHideCollectionsPanel() %>">
 					<liferay-frontend:empty-result-message
 						actionDropdownItems="<%= layoutPageTemplateDisplayContext.isShowAddButton(LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION) ? layoutPageTemplateDisplayContext.getActionDropdownItems() : null %>"
-						animationType="<%= EmptyResultMessageKeys.AnimationType.NONE %>"
+						animationType="<%= AnimationType.NONE %>"
 						description='<%= LanguageUtil.get(request, "page-template-sets-are-needed-to-create-page-templates") %>'
 						elementType='<%= LanguageUtil.get(request, "page-template-sets") %>'
 					/>

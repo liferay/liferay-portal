@@ -104,7 +104,7 @@
 
 					<liferay-frontend:empty-result-message
 						actionDropdownItems="<%= assetCategoriesDisplayContext.getVocabularyActionDropdownItems() %>"
-						animationType="<%= EmptyResultMessageKeys.AnimationType.NONE %>"
+						animationType="<%= AnimationType.NONE %>"
 						componentId='<%= liferayPortletResponse.getNamespace() + "emptyResultMessageComponent" %>'
 						description='<%= LanguageUtil.get(request, "vocabularies-are-needed-to-create-categories") %>'
 						elementType='<%= LanguageUtil.get(request, "vocabularies") %>'

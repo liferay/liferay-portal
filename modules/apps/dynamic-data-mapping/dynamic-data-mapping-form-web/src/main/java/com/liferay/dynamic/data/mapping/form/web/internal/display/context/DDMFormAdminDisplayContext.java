@@ -67,7 +67,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
-import com.liferay.frontend.taglib.servlet.taglib.util.EmptyResultMessageKeys;
+import com.liferay.frontend.taglib.servlet.taglib.util.AnimationType;
 import com.liferay.journal.article.dynamic.data.mapping.form.field.type.constants.JournalArticleDDMFormFieldTypeConstants;
 import com.liferay.layout.dynamic.data.mapping.form.field.type.constants.LayoutDDMFormFieldTypeConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -624,14 +624,12 @@ public class DDMFormAdminDisplayContext {
 		).build();
 	}
 
-	public EmptyResultMessageKeys.AnimationType
-		getEmptyResultMessageAnimationType() {
-
+	public AnimationType getEmptyResultMessageAnimationType() {
 		if (isSearch()) {
-			return EmptyResultMessageKeys.AnimationType.SUCCESS;
+			return AnimationType.SUCCESS;
 		}
 
-		return EmptyResultMessageKeys.AnimationType.EMPTY;
+		return AnimationType.EMPTY;
 	}
 
 	public String getEmptyResultMessageDescription() {

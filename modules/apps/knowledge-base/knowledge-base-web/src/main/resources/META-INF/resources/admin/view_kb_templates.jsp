@@ -82,7 +82,7 @@ ViewKBTemplatesDisplayContext viewKBTemplatesDisplayContext = (ViewKBTemplatesDi
 				<c:otherwise>
 					<liferay-frontend:empty-result-message
 						actionDropdownItems="<%= viewKBTemplatesDisplayContext.getEmptyStateActionDropdownItems() %>"
-						animationType="<%= EmptyResultMessageKeys.AnimationType.EMPTY %>"
+						animationType="<%= AnimationType.EMPTY %>"
 						buttonCssClass="secondary"
 						title='<%= LanguageUtil.get(request, "there-are-no-article-templates") %>'
 					/>
