@@ -453,9 +453,8 @@ public class JSONServiceAction extends JSONAction {
 	}
 
 	protected Object[] getMethodAndParameterTypes(
-			Class<?> clazz, String methodName, String[] parameters,
-			String[] parameterTypes)
-		throws Exception {
+		Class<?> clazz, String methodName, String[] parameters,
+		String[] parameterTypes) {
 
 		StringBundler sb = new StringBundler(5);
 
@@ -564,7 +563,7 @@ public class JSONServiceAction extends JSONAction {
 		return _REROUTE_PATH;
 	}
 
-	protected String getReturnValue(Object returnObject) throws Exception {
+	protected String getReturnValue(Object returnObject) {
 		if (returnObject instanceof JSONSerializable) {
 			JSONSerializable jsonSerializable = (JSONSerializable)returnObject;
 
