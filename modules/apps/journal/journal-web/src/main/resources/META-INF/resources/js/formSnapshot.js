@@ -63,7 +63,7 @@ export function useFormChanges(namespace) {
 	}, [namespace]);
 
 	const hasFormChanges = useCallback(
-		() => formChangesRef.current?.hasChanges() ?? true,
+		(snapshot) => formChangesRef.current?.hasChanges(snapshot) ?? true,
 		[]
 	);
 
@@ -71,7 +71,12 @@ export function useFormChanges(namespace) {
 		formChangesRef.current?.markSaved();
 	}, []);
 
-	return {hasFormChanges, markFormSaved};
+	const takeFormSnapshot = useCallback(
+		() => formChangesRef.current?.takeSnapshot(),
+		[]
+	);
+
+	return {hasFormChanges, markFormSaved, takeFormSnapshot};
 }
 
 function trackFormChanges(form, namespace) {
@@ -120,15 +125,16 @@ function trackFormChanges(form, namespace) {
 		detach() {
 			mutationObserver.disconnect();
 		},
-		hasChanges() {
+		hasChanges(snapshot = savedSnapshot) {
 			if (hasNewFields(mutationObserver.takeRecords())) {
 				addRenderedFields();
 			}
 
-			return isFormSnapshotDifferent(getSnapshot(), savedSnapshot);
+			return isFormSnapshotDifferent(getSnapshot(), snapshot);
 		},
 		markSaved() {
 			savedSnapshot = getSnapshot();
 		},
+		takeSnapshot: getSnapshot,
 	};
 }

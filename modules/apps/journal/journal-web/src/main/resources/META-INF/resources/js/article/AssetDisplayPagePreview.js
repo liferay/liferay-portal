@@ -29,7 +29,8 @@ export default function AssetDisplayPagePreview({
 	const [active, setActive] = useState(false);
 	const [assetDisplayPageSelected, setAssetDisplayPageSelected] = useState();
 
-	const {hasFormChanges, markFormSaved} = useFormChanges(namespace);
+	const {hasFormChanges, markFormSaved, takeFormSnapshot} =
+		useFormChanges(namespace);
 
 	const siteInputId = `${namespace}siteInput`;
 	const siteLabelId = `${namespace}siteLabel`;
@@ -158,6 +159,7 @@ export default function AssetDisplayPagePreview({
 				namespace={namespace}
 				newArticle={newArticle}
 				saveAsDraftURL={saveAsDraftURL}
+				takeFormSnapshot={takeFormSnapshot}
 			/>
 		</>
 	);

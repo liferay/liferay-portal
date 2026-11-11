@@ -57,7 +57,8 @@ export default function SelectAssetDisplayPage({
 		}
 	);
 
-	const {hasFormChanges, markFormSaved} = useFormChanges(namespace);
+	const {hasFormChanges, markFormSaved, takeFormSnapshot} =
+		useFormChanges(namespace);
 
 	const ITEMS = [
 		{
@@ -166,6 +167,7 @@ export default function SelectAssetDisplayPage({
 					namespace={namespace}
 					newArticle={newArticle}
 					saveAsDraftURL={saveAsDraftURL}
+					takeFormSnapshot={takeFormSnapshot}
 				/>
 			)}
 		</>

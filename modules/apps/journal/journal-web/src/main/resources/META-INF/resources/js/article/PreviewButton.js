@@ -15,6 +15,7 @@ export default function PreviewButton({
 	namespace,
 	newArticle,
 	saveAsDraftURL,
+	takeFormSnapshot,
 }) {
 	const [articleId, setArticleId] = useState(
 		document.getElementById(`${namespace}articleId`).value
@@ -69,6 +70,7 @@ export default function PreviewButton({
 				const form = document.getElementById(`${namespace}fm1`);
 
 				const formData = new FormData(form);
+				const formSnapshot = takeFormSnapshot();
 
 				let cmd = 'update';
 
@@ -100,6 +102,9 @@ export default function PreviewButton({
 							});
 						}
 						else {
+							const formChangedWhileSaving =
+								hasFormChanges(formSnapshot);
+
 							updateJournalInput({
 								name: 'formDate',
 								namespace,
@@ -128,7 +133,9 @@ export default function PreviewButton({
 								}
 							);
 
-							markFormSaved();
+							if (!formChangedWhileSaving) {
+								markFormSaved();
+							}
 
 							openModal({
 								title: Liferay.Language.get('preview'),
