@@ -5,7 +5,6 @@
 
 package com.liferay.portal.plugin;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.plugin.PluginPackage;
@@ -61,9 +60,7 @@ public class LocalPluginPackageRepository {
 		}
 	}
 
-	public void removePluginPackage(PluginPackage pluginPackage)
-		throws PortalException {
-
+	public void removePluginPackage(PluginPackage pluginPackage) {
 		_pluginPackages.remove(pluginPackage.getContext());
 	}
 

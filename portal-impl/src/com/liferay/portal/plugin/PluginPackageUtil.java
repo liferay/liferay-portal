@@ -8,7 +8,6 @@ package com.liferay.portal.plugin;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Plugin;
@@ -277,15 +276,13 @@ public class PluginPackageUtil {
 	}
 
 	public static void registerInstalledPluginPackage(
-			PluginPackage pluginPackage)
-		throws PortalException {
+		PluginPackage pluginPackage) {
 
 		_installedPluginPackages.addPluginPackage(pluginPackage);
 	}
 
 	public static void unregisterInstalledPluginPackage(
-			PluginPackage pluginPackage)
-		throws PortalException {
+		PluginPackage pluginPackage) {
 
 		_installedPluginPackages.removePluginPackage(pluginPackage);
 	}
