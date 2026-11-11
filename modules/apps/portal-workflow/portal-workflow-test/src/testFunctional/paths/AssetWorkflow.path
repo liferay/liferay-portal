@@ -27,7 +27,7 @@
 </tr>
 <tr>
 	<td>WORKFLOW_STATUS</td>
-	<td>//span[contains(@class,'text-uppercase')] | //span[contains(@class,'workflow-value') and contains(@class,'status')] | //span[contains(text(), '${kfStatus}')]</td>
+	<td>//span[contains(@class,'text-uppercase')][not(ancestor::*[contains(@class,'control-menu')])] | //span[contains(@class,'workflow-value') and contains(@class,'status')] | //span[contains(text(), '${kfStatus}')]</td>
 	<td></td>
 </tr>
 <tr>
