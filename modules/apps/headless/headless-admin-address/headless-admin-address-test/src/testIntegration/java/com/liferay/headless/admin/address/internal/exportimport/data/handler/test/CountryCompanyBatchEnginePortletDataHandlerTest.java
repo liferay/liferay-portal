@@ -10,13 +10,14 @@ import com.liferay.exportimport.test.util.exportimport.data.handler.BaseCompanyB
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Region;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.index.IndexStatusManager;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -46,7 +47,7 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_regionIndexReadOnly = _indexStatusManager.isIndexReadOnly(
+		_originalIndexReadOnly = _indexStatusManager.isIndexReadOnly(
 			Region.class.getName());
 
 		_indexStatusManager.setIndexReadOnly(Region.class.getName(), true);
@@ -55,7 +56,7 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 	@After
 	public void tearDown() {
 		_indexStatusManager.setIndexReadOnly(
-			Region.class.getName(), _regionIndexReadOnly);
+			Region.class.getName(), _originalIndexReadOnly);
 	}
 
 	@Override
@@ -64,13 +65,8 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 
 		Group group = _groupLocalService.getGroup(groupId);
 
-		_countryLocalService.addCountry(
-			externalReferenceCode, _getRandomA2(group.getCompanyId()),
-			_getRandomA3(group.getCompanyId()), true, true,
-			String.valueOf(RandomTestUtil.randomInt(100, 999)),
-			RandomTestUtil.randomString(),
-			String.valueOf(RandomTestUtil.nextInt()),
-			RandomTestUtil.randomDouble(), true, true, true,
+		CountryTestUtil.addCountry(
+			externalReferenceCode,
 			ServiceContextTestUtil.getServiceContext(
 				group.getCompanyId(), groupId, TestPropsValues.getUserId()));
 	}
@@ -80,14 +76,20 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 		throws Exception {
 
 		_countryLocalService.deleteCountry(
-			_getCountry(externalReferenceCode, groupId));
+			_getCountryByExternalReferenceCode(externalReferenceCode, groupId));
+	}
+
+	@Override
+	protected String getActionId() {
+		return ActionKeys.UPDATE;
 	}
 
 	@Override
 	protected long getCreatorUserId(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		Country country = _getCountry(externalReferenceCode, groupId);
+		Country country = _getCountryByExternalReferenceCode(
+			externalReferenceCode, groupId);
 
 		return country.getUserId();
 	}
@@ -102,7 +104,8 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 	protected long getPrimaryKey(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		Country country = _getCountry(externalReferenceCode, groupId);
+		Country country = _getCountryByExternalReferenceCode(
+			externalReferenceCode, groupId);
 
 		return country.getCountryId();
 	}
@@ -146,7 +149,8 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 			String externalReferenceCode, long groupId, long userId)
 		throws Exception {
 
-		Country country = _getCountry(externalReferenceCode, groupId);
+		Country country = _getCountryByExternalReferenceCode(
+			externalReferenceCode, groupId);
 
 		country.setUserId(userId);
 
@@ -157,7 +161,8 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 	protected void updateEntry(String externalReferenceCode, long groupId)
 		throws Exception {
 
-		Country country = _getCountry(externalReferenceCode, groupId);
+		Country country = _getCountryByExternalReferenceCode(
+			externalReferenceCode, groupId);
 
 		_countryLocalService.updateCountry(
 			country.getExternalReferenceCode(), country.getCountryId(),
@@ -173,44 +178,22 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 			String externalReferenceCode, long groupId, Date modifiedDate)
 		throws Exception {
 
-		Country country = _getCountry(externalReferenceCode, groupId);
+		Country country = _getCountryByExternalReferenceCode(
+			externalReferenceCode, groupId);
 
 		country.setModifiedDate(modifiedDate);
 
 		_countryLocalService.updateCountry(country);
 	}
 
-	private Country _getCountry(String externalReferenceCode, long groupId)
+	private Country _getCountryByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
 		throws Exception {
 
 		Group group = _groupLocalService.getGroup(groupId);
 
 		return _countryLocalService.getCountryByExternalReferenceCode(
 			externalReferenceCode, group.getCompanyId());
-	}
-
-	private String _getRandomA2(long companyId) {
-		return StringUtil.toUpperCase(
-			RandomTestUtil.randomString(
-				2,
-				randomString -> {
-					Country country = _countryLocalService.fetchCountryByA2(
-						companyId, StringUtil.toUpperCase(randomString));
-
-					return country == null;
-				}));
-	}
-
-	private String _getRandomA3(long companyId) {
-		return StringUtil.toUpperCase(
-			RandomTestUtil.randomString(
-				3,
-				randomString -> {
-					Country country = _countryLocalService.fetchCountryByA3(
-						companyId, StringUtil.toUpperCase(randomString));
-
-					return country == null;
-				}));
 	}
 
 	@Inject
@@ -222,6 +205,6 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 	@Inject
 	private IndexStatusManager _indexStatusManager;
 
-	private boolean _regionIndexReadOnly;
+	private boolean _originalIndexReadOnly;
 
 }
