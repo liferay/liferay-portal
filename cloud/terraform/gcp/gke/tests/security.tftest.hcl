@@ -67,6 +67,7 @@ run "should_open_envoy_ingress_ports" {
 	command=plan
 }
 variables {
+	database_engine="postgresql"
 	deployment_name="liferay-test"
 	project_id="liferay-test-project"
 	region="us-central1"

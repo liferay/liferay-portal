@@ -1,6 +1,9 @@
 release:
     name: my-release
     namespace: crossplane-system
+set:
+    database:
+        engine: postgresql
 suite: Providers
 templates:
     -   templates/providers.yaml

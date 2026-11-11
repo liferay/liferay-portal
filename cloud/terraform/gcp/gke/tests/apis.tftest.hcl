@@ -53,6 +53,7 @@ run "should_grant_storage_transfer_agent_roles" {
 	command=plan
 }
 variables {
+	database_engine="postgresql"
 	deployment_name="liferay-test"
 	project_id="liferay-test-project"
 	region="us-central1"

@@ -1,6 +1,9 @@
 release:
     name: my-release
     namespace: crossplane-system
+set:
+    database:
+        engine: postgresql
 suite: Backup Restore ClusterWorkflowTemplate
 templates:
     -   charts/liferay-subchart-backup-restore/templates/clusterworkflowtemplate.yaml

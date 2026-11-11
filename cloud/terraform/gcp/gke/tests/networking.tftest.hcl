@@ -76,6 +76,7 @@ run "should_name_secondary_ip_ranges_from_deployment_name" {
 	command=plan
 }
 variables {
+	database_engine="postgresql"
 	deployment_name="liferay-test"
 	project_id="liferay-test-project"
 	region="us-central1"

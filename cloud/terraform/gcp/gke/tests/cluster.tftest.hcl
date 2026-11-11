@@ -143,6 +143,7 @@ run "should_set_node_autoscaling_bounds" {
 	}
 }
 variables {
+	database_engine="postgresql"
 	deployment_name="liferay-test"
 	project_id="liferay-test-project"
 	region="us-central1"

@@ -2,6 +2,8 @@ release:
     name: my-release
     namespace: crossplane-system
 set:
+    database:
+        engine: postgresql
     deploymentContext:
         deploymentName: liferay-test
         projectId: liferay-test-project
@@ -16,6 +18,7 @@ tests:
             -   equal:
                     path: data
                     value:
+                        databaseEngine: postgresql
                         deploymentName: liferay-test
                         projectId: liferay-test-project
                         projectNumber: "000000000000"

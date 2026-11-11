@@ -1,3 +1,5 @@
+database:
+    engine: postgresql
 deploymentContext:
     deploymentName: liferay-example
     projectId: liferay-example-project
