@@ -327,8 +327,7 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 
 	@Override
 	public void copyModelResources(
-			long companyId, String name, long sourcePrimKey, long targetPrimKey)
-		throws PortalException {
+		long companyId, String name, long sourcePrimKey, long targetPrimKey) {
 
 		_resourcePermissionLocalService.copyModelResourcePermissions(
 			companyId, name, sourcePrimKey, targetPrimKey);
