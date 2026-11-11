@@ -72,10 +72,9 @@ public class AccountEntryOrganizationRelModelListenerTest {
 
 		// Add account entry with object entries to organization
 
-		ObjectDefinition objectDefinition1 =
-			_addAccountEntryRestrictedObjectDefinition(
-				ObjectDefinitionTestUtil.addCustomObjectDefinition(
-					"A" + RandomTestUtil.randomString()));
+		ObjectDefinition objectDefinition1 = _enableAccountEntryRestricted(
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+				"A" + RandomTestUtil.randomString()));
 
 		objectDefinition1 =
 			_objectDefinitionLocalService.publishCustomObjectDefinition(
@@ -84,16 +83,14 @@ public class AccountEntryOrganizationRelModelListenerTest {
 
 		_objectDefinitions.add(objectDefinition1);
 
-		ObjectDefinition objectDefinition2 =
-			_addAccountEntryRestrictedObjectDefinition(
-				ObjectDefinitionTestUtil.publishObjectDefinition(
-					Collections.emptyList()));
+		ObjectDefinition objectDefinition2 = _enableAccountEntryRestricted(
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.emptyList()));
 
 		_objectDefinitions.add(objectDefinition2);
 
-		ObjectDefinition objectDefinition3 =
-			_addAccountEntryRestrictedObjectDefinition(
-				_publishSiteObjectDefinition());
+		ObjectDefinition objectDefinition3 = _enableAccountEntryRestricted(
+			_publishSiteObjectDefinition());
 
 		_objectDefinitions.add(objectDefinition3);
 
@@ -122,7 +119,6 @@ public class AccountEntryOrganizationRelModelListenerTest {
 			objectDefinition4.getObjectDefinitionId(), Collections.emptyMap());
 
 		Set<Long> objectEntryIds = new ConcurrentSkipListSet<>();
-
 		ServiceTrackerMap<String, IndexerDocumentBuilder>
 			originalServiceTrackerMap = ReflectionTestUtil.getFieldValue(
 				_accountEntryOrganizationRelModelListener,
@@ -238,7 +234,21 @@ public class AccountEntryOrganizationRelModelListenerTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	private ObjectDefinition _addAccountEntryRestrictedObjectDefinition(
+	private ObjectEntry _addObjectEntry(
+			AccountEntry accountEntry, long groupId,
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectDefinition.getAccountEntryRestrictedObjectFieldId());
+
+		return ObjectEntryTestUtil.addObjectEntry(
+			groupId, objectDefinition.getObjectDefinitionId(),
+			Collections.singletonMap(
+				objectField.getName(), accountEntry.getAccountEntryId()));
+	}
+
+	private ObjectDefinition _enableAccountEntryRestricted(
 			ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -255,20 +265,6 @@ public class AccountEntryOrganizationRelModelListenerTest {
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				StringUtil.randomId(), false,
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null));
-	}
-
-	private ObjectEntry _addObjectEntry(
-			AccountEntry accountEntry, long groupId,
-			ObjectDefinition objectDefinition)
-		throws Exception {
-
-		ObjectField objectField = _objectFieldLocalService.getObjectField(
-			objectDefinition.getAccountEntryRestrictedObjectFieldId());
-
-		return ObjectEntryTestUtil.addObjectEntry(
-			groupId, objectDefinition.getObjectDefinitionId(),
-			Collections.singletonMap(
-				objectField.getName(), accountEntry.getAccountEntryId()));
 	}
 
 	private ObjectDefinition _publishSiteObjectDefinition() throws Exception {
