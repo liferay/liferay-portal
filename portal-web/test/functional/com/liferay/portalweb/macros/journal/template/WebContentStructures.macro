@@ -85,19 +85,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addNullCP() {
-		LexiconEntry.gotoAdd();
-
-		AssertElementNotPresent(locator1 = "TextInput#REQUIRED_ALERT");
-
-		Button.clickSave();
-
-		AssertElementPresent(locator1 = "TextInput#REQUIRED_ALERT");
-
-		SelectFrame(value1 = "relative=top");
-	}
-
-	@summary = "Default summary"
 	macro addTranslations(localizedManageTranslations = null, localizedDone = null, localeList = null) {
 		if (isSet(localizedManageTranslations)) {
 			var manageTranslations = ${localizedManageTranslations};

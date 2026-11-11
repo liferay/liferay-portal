@@ -56,11 +56,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>NESTED_INPUT</td>
-	<td>//div[contains(@class,'nested-separator')][//following-sibling::div[1][//label[normalize-space(text())='${key_fieldName}']]]//following-sibling::div[2]//label[normalize-space(text())='${key_nestedFieldName}']//..//input</td>
-	<td></td>
-</tr>
-<tr>
 	<td>RADIO</td>
 	<td>//div[@data-fieldname='${key_fieldName}']//label[contains(.,'${key_radioValue}')]</td>
 	<td></td>

@@ -109,21 +109,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addNullCP() {
-		LexiconEntry.gotoAdd();
-
-		WaitForVisible(locator1 = "Sidebar#PANEL_OPEN");
-
-		AssertElementNotPresent(locator1 = "TextInput#REQUIRED_ALERT");
-
-		Button.clickSave();
-
-		AssertElementPresent(locator1 = "TextInput#REQUIRED_ALERT");
-
-		SelectFrame(value1 = "relative=top");
-	}
-
-	@summary = "Default summary"
 	macro addRoleViewPermissions(templateName = null, roles = null) {
 		WebContentTemplates.gotoTemplateEllipsisItem(
 			item = "Permissions",

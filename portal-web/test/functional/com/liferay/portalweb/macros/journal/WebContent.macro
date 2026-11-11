@@ -2638,16 +2638,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewStructureViaAddMenuCP(structureName = null) {
-		LexiconEntry.gotoAdd();
-
-		AssertTextEquals(
-			key_menuItem = ${structureName},
-			locator1 = "MenuItem#ANY_MENU_ITEM",
-			value1 = ${structureName});
-	}
-
-	@summary = "Default summary"
 	macro viewStructureWithWorkflowPendingCP(webContentTitle = null) {
 		WebContentNavigator.gotoViewStatus(
 			webContentStatus = "PENDING",

@@ -2065,15 +2065,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewNestedField(fieldName = null, nestedField = null, nestedFieldData = null) {
-		AssertTextEquals.assertValue(
-			key_fieldName = ${fieldName},
-			key_nestedFieldName = ${nestedField},
-			locator1 = "DDMField#NESTED_INPUT",
-			value1 = ${nestedFieldData});
-	}
-
-	@summary = "Default summary"
 	macro viewNumericType(fieldLabel = null, fieldNumericType = null) {
 		if (!(isSet(index))) {
 			var index = 1;
