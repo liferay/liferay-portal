@@ -941,7 +941,7 @@ public class FileImpl implements com.liferay.portal.kernel.util.File {
 		write(new File(pathName, fileName), s, lazy, append);
 	}
 
-	protected void mkdirsParentFile(File file) throws IOException {
+	protected void mkdirsParentFile(File file) {
 		File parentFile = file.getParentFile();
 
 		if (parentFile == null) {
