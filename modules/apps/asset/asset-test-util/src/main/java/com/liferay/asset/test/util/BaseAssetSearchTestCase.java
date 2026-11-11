@@ -1014,14 +1014,6 @@ public abstract class BaseAssetSearchTestCase {
 		return addBaseModel(parentBaseModel, keywords, serviceContext);
 	}
 
-	protected BaseModel<?> addBaseModelWithWorkflow(
-			BaseModel<?> parentBaseModel, String keywords, boolean approved,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		return addBaseModel(parentBaseModel, keywords, serviceContext);
-	}
-
 	protected List<BaseModel<?>> addBaseModels(
 			Group[] groups, String keywords, ServiceContext serviceContext)
 		throws Exception {
