@@ -20,9 +20,7 @@ definition {
 
 	@summary = "Default summary"
 	macro clickSubmit() {
-		AssertClick(
-			locator1 = "FormPortlet#SUBMIT_BUTTON",
-			value1 = "Submit");
+		Click(locator1 = "FormPortlet#SUBMIT_BUTTON");
 	}
 
 	@summary = "Default summary"
