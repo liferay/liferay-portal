@@ -21,13 +21,11 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -143,14 +141,10 @@ public class AccountEntryDisplaySearchContainerFactory {
 
 		params.put("status", _getStatus(navigation));
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)liferayPortletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		String[] types = GetterUtil.getStringValues(
 			liferayPortletRequest.getAttribute(
 				AccountWebKeys.ACCOUNT_ENTRY_ALLOWED_TYPES),
-			AccountConstants.getAccountEntryTypes(themeDisplay.getCompanyId()));
+			AccountConstants.ACCOUNT_ENTRY_TYPES);
 
 		String type = ParamUtil.getString(liferayPortletRequest, "type");
 

@@ -196,7 +196,7 @@ public class AccountEntryLocalServiceImpl
 		accountEntry.setRestrictMembership(true);
 		accountEntry.setTaxIdNumber(taxIdNumber);
 
-		_validateType(user.getCompanyId(), type);
+		_validateType(type);
 
 		accountEntry.setType(type);
 		accountEntry.setStatus(WorkflowConstants.STATUS_DRAFT);
@@ -1320,18 +1320,13 @@ public class AccountEntryLocalServiceImpl
 		}
 	}
 
-	private void _validateType(long companyId, String type)
-		throws PortalException {
-
-		if (!ArrayUtil.contains(
-				AccountConstants.getAccountEntryTypes(companyId), type)) {
-
+	private void _validateType(String type) throws PortalException {
+		if (!ArrayUtil.contains(AccountConstants.ACCOUNT_ENTRY_TYPES, type)) {
 			throw new AccountEntryTypeException(
 				StringBundler.concat(
 					"Type \"", type, "\" is not among allowed types: ",
 					StringUtil.merge(
-						AccountConstants.getAccountEntryTypes(companyId),
-						", ")));
+						AccountConstants.ACCOUNT_ENTRY_TYPES, ", ")));
 		}
 	}
 

@@ -311,14 +311,10 @@ public class ViewAccountEntriesManagementToolbarDisplayContext
 	}
 
 	private String[] _getFilterByTypeKeys() {
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)liferayPortletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		return GetterUtil.getStringValues(
 			liferayPortletRequest.getAttribute(
 				AccountWebKeys.ACCOUNT_ENTRY_ALLOWED_TYPES),
-			AccountConstants.getAccountEntryTypes(themeDisplay.getCompanyId()));
+			AccountConstants.ACCOUNT_ENTRY_TYPES);
 	}
 
 	private String _getType() {
