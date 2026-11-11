@@ -19,11 +19,13 @@ import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionList;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.util.CSVUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Time;
 
 import jakarta.portlet.ResourceRequest;
@@ -32,6 +34,11 @@ import jakarta.portlet.ResourceResponse;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,13 +68,22 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 
 		sb.append(
 			StringBundler.concat(
-				"Workspace,Project ID,Owner,Subscription,Location,Events,",
-				"Billable Events,A/B Testing Events,Anonymous Individuals,",
-				"Query Cost (USD),Storage Cost (USD),Total Cost (USD)\n"));
+				"Workspace,Project ID,Customer ID,Customer Name,Owner,",
+				"Subscription,Location,Events,Billable Events,",
+				"A/B Testing Events,Page Views,Anonymous Individuals,",
+				"Known Individuals,Query Cost (USD),Query Cost Data Since,",
+				"Storage Cost (USD),Storage Cost Data Since,Total Cost (USD)\n"));
+
+		long startTime = System.currentTimeMillis() - Time.YEAR;
+
+		Map<Long, Long> queryUsageTimes = _getFirstUsageTimes(
+			"onDemandBytesBilled", "reservationSlotMs", startTime);
+		Map<Long, Long> storageUsageTimes = _getFirstUsageTimes(
+			"activeLogicalBytes", "longTermLogicalBytes", startTime);
 
 		Map<String, BigQueryPrice> bigQueryPrices = new HashMap<>();
 
-		for (Object[] values : _getFaroProjectUsageTotals()) {
+		for (Object[] values : _getFaroProjectUsageTotals(startTime)) {
 			FaroProject faroProject = _faroProjectLocalService.fetchFaroProject(
 				(Long)values[0]);
 
@@ -75,14 +91,24 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 				continue;
 			}
 
-			sb.append(CSVUtil.encode(faroProject.getName()));
+			Map<String, Long> totals = new HashMap<>();
+
+			for (int i = 0; i < _PROPERTY_NAMES.length; i++) {
+				totals.put(_PROPERTY_NAMES[i], GetterUtil.getLong(values[i + 1]));
+			}
+
+			sb.append(_encode(faroProject.getName()));
 			sb.append(StringPool.COMMA);
-			sb.append(CSVUtil.encode(faroProject.getProjectId()));
+			sb.append(_encode(faroProject.getProjectId()));
+			sb.append(StringPool.COMMA);
+			sb.append(_encode(faroProject.getCorpProjectUuid()));
+			sb.append(StringPool.COMMA);
+			sb.append(_encode(faroProject.getCorpProjectName()));
 			sb.append(StringPool.COMMA);
 			sb.append(
-				CSVUtil.encode(FaroProjectOwnerUtil.fetchOwner(faroProject)));
+				_encode(FaroProjectOwnerUtil.fetchOwner(faroProject)));
 			sb.append(StringPool.COMMA);
-			sb.append(CSVUtil.encode(faroProject.getShortSubscriptionName()));
+			sb.append(_encode(faroProject.getShortSubscriptionName()));
 			sb.append(StringPool.COMMA);
 
 			BigQueryPrice bigQueryPrice = bigQueryPrices.computeIfAbsent(
@@ -90,23 +116,27 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 				serverLocation -> _contactsEngineClient.getBigQueryPrice(
 					faroProject));
 
-			sb.append(CSVUtil.encode(bigQueryPrice.getLocation()));
+			sb.append(_encode(bigQueryPrice.getLocation()));
 
 			sb.append(StringPool.COMMA);
-			sb.append(values[4]);
+			sb.append(totals.get("eventsCount"));
 			sb.append(StringPool.COMMA);
-			sb.append(values[3]);
+			sb.append(totals.get("billableEventsCount"));
 			sb.append(StringPool.COMMA);
-			sb.append(values[5]);
+			sb.append(totals.get("experimentEventsCount"));
 			sb.append(StringPool.COMMA);
-			sb.append(values[2]);
+			sb.append(totals.get("pageViewsCount"));
+			sb.append(StringPool.COMMA);
+			sb.append(totals.get("anonymousIndividualsCount"));
+			sb.append(StringPool.COMMA);
+			sb.append(totals.get("knownIndividualsCount"));
 			sb.append(StringPool.COMMA);
 
 			BigDecimal onDemandCost = _getCost(
-				(Long)values[7], _BYTES_PER_TIB,
+				totals.get("onDemandBytesBilled"), _BYTES_PER_TIB,
 				bigQueryPrice.getOnDemandPricePerTiB());
 			BigDecimal reservationCost = _getCost(
-				(Long)values[8], _MILLISECONDS_PER_HOUR,
+				totals.get("reservationSlotMs"), _MILLISECONDS_PER_HOUR,
 				bigQueryPrice.getReservationPricePerSlotHour());
 
 			BigDecimal queryCost = onDemandCost.add(reservationCost);
@@ -114,12 +144,16 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 			sb.append(_toString(queryCost));
 
 			sb.append(StringPool.COMMA);
+			sb.append(
+				_formatUsageTime(
+					queryUsageTimes.get(faroProject.getFaroProjectId())));
+			sb.append(StringPool.COMMA);
 
 			BigDecimal activeLogicalStorageCost = _getCost(
-				(Long)values[1], _BYTE_DAYS_PER_GIB_MONTH,
+				totals.get("activeLogicalBytes"), _BYTE_DAYS_PER_GIB_MONTH,
 				bigQueryPrice.getActiveLogicalStoragePricePerGiBMonth());
 			BigDecimal longTermLogicalStorageCost = _getCost(
-				(Long)values[6], _BYTE_DAYS_PER_GIB_MONTH,
+				totals.get("longTermLogicalBytes"), _BYTE_DAYS_PER_GIB_MONTH,
 				bigQueryPrice.getLongTermLogicalStoragePricePerGiBMonth());
 
 			BigDecimal storageCost = activeLogicalStorageCost.add(
@@ -127,6 +161,10 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 
 			sb.append(_toString(storageCost));
 
+			sb.append(StringPool.COMMA);
+			sb.append(
+				_formatUsageTime(
+					storageUsageTimes.get(faroProject.getFaroProjectId())));
 			sb.append(StringPool.COMMA);
 			sb.append(_toString(queryCost.add(storageCost)));
 			sb.append(StringPool.NEW_LINE);
@@ -137,6 +175,28 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 		PortletResponseUtil.sendFile(
 			resourceRequest, resourceResponse, "cost-report.csv",
 			csv.getBytes(StringPool.UTF8), ContentTypes.TEXT_CSV_UTF8);
+	}
+
+	private String _encode(String value) {
+		if (value == null) {
+			return StringPool.BLANK;
+		}
+
+		return CSVUtil.encode(value);
+	}
+
+	private String _formatUsageTime(Long usageTime) {
+		if (usageTime == null) {
+			return StringPool.BLANK;
+		}
+
+		Instant instant = Instant.ofEpochMilli(usageTime);
+
+		ZonedDateTime zonedDateTime = instant.atZone(ZoneOffset.UTC);
+
+		LocalDate localDate = zonedDateTime.toLocalDate();
+
+		return localDate.toString();
 	}
 
 	private BigDecimal _getCost(
@@ -150,31 +210,68 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 		return quantityBigDecimal.multiply(price);
 	}
 
-	private List<Object[]> _getFaroProjectUsageTotals() {
+	private List<Object[]> _getFaroProjectUsageTotals(long startTime) {
 		DynamicQuery dynamicQuery =
 			_faroProjectUsageLocalService.dynamicQuery();
 
 		Property property = PropertyFactoryUtil.forName("usageTime");
 
-		dynamicQuery.add(property.ge(System.currentTimeMillis() - Time.YEAR));
+		dynamicQuery.add(property.ge(startTime));
 
 		ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
 
 		projectionList.add(
 			ProjectionFactoryUtil.groupProperty("faroProjectId"));
-		projectionList.add(ProjectionFactoryUtil.sum("activeLogicalBytes"));
-		projectionList.add(
-			ProjectionFactoryUtil.sum("anonymousIndividualsCount"));
-		projectionList.add(ProjectionFactoryUtil.sum("billableEventsCount"));
-		projectionList.add(ProjectionFactoryUtil.sum("eventsCount"));
-		projectionList.add(ProjectionFactoryUtil.sum("experimentEventsCount"));
-		projectionList.add(ProjectionFactoryUtil.sum("longTermLogicalBytes"));
-		projectionList.add(ProjectionFactoryUtil.sum("onDemandBytesBilled"));
-		projectionList.add(ProjectionFactoryUtil.sum("reservationSlotMs"));
+
+		for (String propertyName : _PROPERTY_NAMES) {
+			projectionList.add(ProjectionFactoryUtil.sum(propertyName));
+		}
 
 		dynamicQuery.setProjection(projectionList);
 
 		return _faroProjectUsageLocalService.dynamicQuery(dynamicQuery);
+	}
+
+	/**
+	 * Returns the first usage time in the report window with a nonzero value
+	 * for either property, per Faro project. Compute usage can only be
+	 * backfilled for about 180 days and storage usage starts at the Asah
+	 * deploy, so the cost of a workspace may cover less than 12 months.
+	 */
+	private Map<Long, Long> _getFirstUsageTimes(
+		String propertyName1, String propertyName2, long startTime) {
+
+		DynamicQuery dynamicQuery =
+			_faroProjectUsageLocalService.dynamicQuery();
+
+		Property property1 = PropertyFactoryUtil.forName(propertyName1);
+		Property property2 = PropertyFactoryUtil.forName(propertyName2);
+
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.or(property1.gt(0L), property2.gt(0L)));
+
+		Property usageTimeProperty = PropertyFactoryUtil.forName("usageTime");
+
+		dynamicQuery.add(usageTimeProperty.ge(startTime));
+
+		ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
+
+		projectionList.add(
+			ProjectionFactoryUtil.groupProperty("faroProjectId"));
+		projectionList.add(ProjectionFactoryUtil.min("usageTime"));
+
+		dynamicQuery.setProjection(projectionList);
+
+		Map<Long, Long> usageTimes = new HashMap<>();
+
+		for (Object[] values :
+				_faroProjectUsageLocalService.<Object[]>dynamicQuery(
+					dynamicQuery)) {
+
+			usageTimes.put((Long)values[0], (Long)values[1]);
+		}
+
+		return usageTimes;
 	}
 
 	private String _toString(BigDecimal bigDecimal) {
@@ -195,6 +292,13 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 
 	private static final BigDecimal _MILLISECONDS_PER_HOUR = BigDecimal.valueOf(
 		Time.HOUR);
+
+	private static final String[] _PROPERTY_NAMES = {
+		"activeLogicalBytes", "anonymousIndividualsCount",
+		"billableEventsCount", "eventsCount", "experimentEventsCount",
+		"knownIndividualsCount", "longTermLogicalBytes", "onDemandBytesBilled",
+		"pageViewsCount", "reservationSlotMs"
+	};
 
 	static {
 		BigDecimal byteDaysPerGiBYear = BigDecimal.valueOf((1L << 30) * 365);
