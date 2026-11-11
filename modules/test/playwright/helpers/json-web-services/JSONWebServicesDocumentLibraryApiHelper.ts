@@ -20,6 +20,7 @@ export enum DLFILE_STATUS {
 
 type TDLFileEntry = {
 	fileEntryId?: string;
+	title?: string;
 };
 
 type TDLFileVersion = {
@@ -88,6 +89,43 @@ export class JSONWebServicesDocumentLibraryApiHelper {
 
 		return this.apiHelpers.post(
 			`${liferayConfig.environment.baseUrl}${this.baseFileEntryPath}/update-status`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
+	async updateFileEntryTitle({
+		fileEntryId,
+		mimeType,
+		sourceFileName,
+		title,
+	}: {
+		fileEntryId: number | string;
+		mimeType: string;
+		sourceFileName: string;
+		title: string;
+	}): Promise<TDLFileEntry> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('fileEntryId', String(fileEntryId));
+		urlSearchParams.append('sourceFileName', sourceFileName);
+		urlSearchParams.append('mimeType', mimeType);
+		urlSearchParams.append('title', title);
+		urlSearchParams.append('urlTitle', '');
+		urlSearchParams.append('description', '');
+		urlSearchParams.append('changeLog', '');
+		urlSearchParams.append('dlVersionNumberIncrease', 'NONE');
+		urlSearchParams.append('-bytes', '');
+		urlSearchParams.append('-displayDate', '');
+		urlSearchParams.append('-expirationDate', '');
+		urlSearchParams.append('-reviewDate', '');
+		urlSearchParams.append('serviceContext', '{}');
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.baseAppPath}/update-file-entry`,
 			{
 				data: urlSearchParams.toString(),
 				failOnStatusCode: true,

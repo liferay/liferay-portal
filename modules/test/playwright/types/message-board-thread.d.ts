@@ -7,5 +7,6 @@ type MessageBoardThread = {
 	articleBody: string;
 	headline: string;
 	id: string;
+	messageBoardRootMessageId?: number;
 	status?: string;
 };

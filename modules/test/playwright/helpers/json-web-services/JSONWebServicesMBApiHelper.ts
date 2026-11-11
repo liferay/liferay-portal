@@ -76,6 +76,25 @@ export class JSONWebServicesMBApiHelper {
 		);
 	}
 
+	async moveMessageAttachmentToTrash(
+		messageId: number | string,
+		fileName: string
+	): Promise<void> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('messageId', String(messageId));
+		urlSearchParams.append('fileName', fileName);
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/move-message-attachment-to-trash`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
 	async unlockThread(threadId: string): Promise<void> {
 		const urlSearchParams = new URLSearchParams();
 

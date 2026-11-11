@@ -10,6 +10,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {messageBoardsPagesTest} from '../../../fixtures/messageBoardsTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 
 const test = mergeTests(
@@ -198,3 +199,105 @@ test('JavaScript in a user name is not executed when viewing a thread', async ({
 
 	expect(dialogs).toHaveLength(0);
 });
+
+test(
+	'Restoring a removed attachment refreshes the attachment table',
+	{tag: '@LPD-115032'},
+	async ({
+		apiHelpers,
+		messageBoardsEditThreadPage,
+		messageBoardsPage,
+		page,
+		site,
+	}) => {
+		const thread = await apiHelpers.headlessDelivery.postMessageBoardThread(
+			{
+				articleBody: getRandomString(),
+				headline: getRandomString(),
+				siteId: site.id,
+			}
+		);
+
+		const fileName = `${getRandomString()}.txt`;
+
+		const attachment =
+			await apiHelpers.headlessDelivery.postMessageBoardThreadMessageBoardAttachment(
+				thread.id,
+				{
+					buffer: Buffer.from(getRandomString()),
+					mimeType: 'text/plain',
+					name: fileName,
+				}
+			);
+
+		// Rename the attachment and remove it
+
+		const title = `<b>${getRandomString()}</b>`;
+
+		await apiHelpers.jsonWebServicesDocumentLibrary.updateFileEntryTitle({
+			fileEntryId: attachment.id,
+			mimeType: 'text/plain',
+			sourceFileName: fileName,
+			title,
+		});
+
+		await apiHelpers.jsonWebServicesMBApiHelper.moveMessageAttachmentToTrash(
+			thread.messageBoardRootMessageId,
+			title
+		);
+
+		// Restore the attachment from the edit page
+
+		await messageBoardsPage.goto(site.friendlyUrlPath);
+
+		await page.waitForURL(/MBAdminPortlet/);
+
+		const url = new URL(page.url());
+
+		const portletId = url.searchParams.get('p_p_id');
+
+		url.searchParams.set(
+			`_${portletId}_mvcRenderCommandName`,
+			'/message_boards/edit_message'
+		);
+		url.searchParams.set(
+			`_${portletId}_messageId`,
+			String(thread.messageBoardRootMessageId)
+		);
+
+		await page.goto(url.toString());
+
+		const isExpanded =
+			await messageBoardsEditThreadPage.attachmentCollapse.evaluate(
+				(element) => element.getAttribute('aria-expanded') === 'true'
+			);
+
+		if (!isExpanded) {
+			await messageBoardsEditThreadPage.attachmentCollapse.click();
+		}
+
+		await page.getByText('1 Recently Removed Attachment').click();
+
+		const removedAttachmentsFrame = page.frameLocator('.modal iframe');
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: removedAttachmentsFrame.getByText('Restore', {exact: true}),
+			trigger: removedAttachmentsFrame.getByRole('button', {
+				name: 'Actions',
+			}),
+		});
+
+		await page.getByRole('button', {name: 'close'}).click();
+
+		// Check the restored attachment row
+
+		const fileAttachments = page.locator(`#_${portletId}_fileAttachments`);
+
+		await expect(
+			fileAttachments.getByRole('cell', {exact: true, name: title})
+		).toBeVisible();
+
+		await expect(fileAttachments.locator('b')).toHaveCount(0);
+	}
+);
