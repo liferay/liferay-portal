@@ -1478,10 +1478,9 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	}
 
 	private void _addPreFilters(
-			BooleanFilter queryBooleanFilter,
-			Map<String, Indexer<?>> entryClassNameIndexerMap,
-			SearchContext searchContext)
-		throws Exception {
+		BooleanFilter queryBooleanFilter,
+		Map<String, Indexer<?>> entryClassNameIndexerMap,
+		SearchContext searchContext) {
 
 		PreFilterContributor preFilterContributor =
 			_preFilterContributorSnapshot.get();
@@ -1546,9 +1545,8 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	}
 
 	private void _postProcessSearchQuery(
-			BooleanQuery booleanQuery, BooleanFilter booleanFilter,
-			Collection<Indexer<?>> indexers, SearchContext searchContext)
-		throws Exception {
+		BooleanQuery booleanQuery, BooleanFilter booleanFilter,
+		Collection<Indexer<?>> indexers, SearchContext searchContext) {
 
 		PostProcessSearchQueryContributor postProcessSearchQueryContributor =
 			_postProcessSearchQueryContributorSnapshot.get();
