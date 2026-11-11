@@ -590,8 +590,7 @@ public class ServicePreAction extends Action {
 	}
 
 	private LayoutComposite _getDefaultVirtualHostLayoutComposite(
-			HttpServletRequest httpServletRequest)
-		throws Exception {
+		HttpServletRequest httpServletRequest) {
 
 		Layout layout = null;
 		List<Layout> layouts = null;
