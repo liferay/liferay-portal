@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
-import com.liferay.portal.kernel.service.CountryService;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -91,8 +90,7 @@ public class CommercePaymentMethodGroupRelQualifiersScreenNavigationEntry
 					_commercePaymentMethodGroupRelService,
 					_commercePaymentMethodGroupRelQualifierService,
 					_commercePaymentMethodRegistry,
-					_commercePaymentIntegrationRegistry, _countryService,
-					httpServletRequest);
+					_commercePaymentIntegrationRegistry, httpServletRequest);
 
 		httpServletRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -129,9 +127,6 @@ public class CommercePaymentMethodGroupRelQualifiersScreenNavigationEntry
 
 	@Reference
 	private CommercePaymentMethodRegistry _commercePaymentMethodRegistry;
-
-	@Reference
-	private CountryService _countryService;
 
 	@Reference
 	private JSPRenderer _jspRenderer;
