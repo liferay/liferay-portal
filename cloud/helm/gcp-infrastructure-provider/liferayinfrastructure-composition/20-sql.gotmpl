@@ -149,6 +149,7 @@ metadata:
         app: liferay
         component: database-instance
         dataPlane: {{ $dataPlane }}
+        databaseEngine: {{ $env.databaseEngine }}
     name: {{ $databaseInstanceNamePrefix }}{{ $dataPlane }}
 spec:
     forProvider:

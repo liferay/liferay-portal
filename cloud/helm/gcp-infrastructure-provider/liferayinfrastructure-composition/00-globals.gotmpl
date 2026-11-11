@@ -11,6 +11,16 @@
 {{- fail "GCP restores through the backup-restore workflow, so \"database.restore\" must be unset" -}}
 {{- end -}}
 
+{{- if not $env.databaseEngine -}}
+{{- fail "Property \"database.engine\" must be set" -}}
+{{- end -}}
+
+{{- $observedDatabaseEngine := coalesce (dig "database-primary-blue" "resource" "metadata" "labels" "databaseEngine" "" $observedResources) (dig "database-primary-green" "resource" "metadata" "labels" "databaseEngine" "" $observedResources) -}}
+
+{{- if and $observedDatabaseEngine (ne $observedDatabaseEngine $env.databaseEngine) -}}
+{{- fail (printf "Unable to change the database engine of the environment from %q to %q. Create a new deployment to use another database engine." $observedDatabaseEngine $env.databaseEngine) -}}
+{{- end -}}
+
 {{- $cmkEnabled := $xr.spec.cmk.enabled -}}
 {{- $cmkKeyId := dig "liferay-cryptokey" "resource" "status" "atProvider" "id" "" $observedResources -}}
 {{- $databaseBootstrapEmail := dig "database-bootstrap-gsa" "resource" "status" "atProvider" "email" "" $observedResources -}}
