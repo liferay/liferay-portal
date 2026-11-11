@@ -46,6 +46,7 @@ import com.liferay.knowledge.base.markdown.converter.factory.MarkdownConverterFa
 import com.liferay.knowledge.base.model.KBArticle;
 import com.liferay.knowledge.base.model.KBArticleTable;
 import com.liferay.knowledge.base.model.KBFolder;
+import com.liferay.knowledge.base.model.KBFolderTable;
 import com.liferay.knowledge.base.service.base.KBArticleLocalServiceBaseImpl;
 import com.liferay.knowledge.base.service.persistence.KBCommentPersistence;
 import com.liferay.knowledge.base.service.persistence.KBFolderPersistence;
@@ -2430,6 +2431,35 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 			));
 	}
 
+	private int _getKBArticlesCount(
+		long groupId, String kbFolderUrlTitle, String urlTitle) {
+
+		return kbArticlePersistence.dslQueryCount(
+			DSLQueryFactoryUtil.count(
+			).from(
+				KBArticleTable.INSTANCE
+			).innerJoinON(
+				KBFolderTable.INSTANCE,
+				KBFolderTable.INSTANCE.kbFolderId.eq(
+					KBArticleTable.INSTANCE.kbFolderId
+				).and(
+					KBFolderTable.INSTANCE.groupId.eq(
+						KBArticleTable.INSTANCE.groupId)
+				)
+			).where(
+				KBArticleTable.INSTANCE.groupId.eq(
+					groupId
+				).and(
+					KBArticleTable.INSTANCE.urlTitle.eq(urlTitle)
+				).and(
+					KBArticleTable.INSTANCE.status.neq(
+						WorkflowConstants.STATUS_IN_TRASH)
+				).and(
+					KBFolderTable.INSTANCE.urlTitle.eq(kbFolderUrlTitle)
+				)
+			));
+	}
+
 	private KBGroupServiceConfiguration _getKBGroupServiceConfiguration(
 			long groupId)
 		throws ConfigurationException {
@@ -2545,14 +2575,16 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		String uniqueUrlTitle = urlTitle;
 
 		if (kbFolderId == KBFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
-			int kbArticlesCount = kbArticlePersistence.countByG_KBFI_UT_S(
-				groupId, kbFolderId, uniqueUrlTitle, _STATUSES);
+			int kbArticlesCount = kbArticlePersistence.countByG_KBFI_UT_NotS(
+				groupId, kbFolderId, uniqueUrlTitle,
+				WorkflowConstants.STATUS_IN_TRASH);
 
 			for (int i = 1; kbArticlesCount > 0; i++) {
 				uniqueUrlTitle = _getUniqueUrlTitle(urlTitle, i);
 
-				kbArticlesCount = kbArticlePersistence.countByG_KBFI_UT_S(
-					groupId, kbFolderId, uniqueUrlTitle, _STATUSES);
+				kbArticlesCount = kbArticlePersistence.countByG_KBFI_UT_NotS(
+					groupId, kbFolderId, uniqueUrlTitle,
+					WorkflowConstants.STATUS_IN_TRASH);
 			}
 
 			return uniqueUrlTitle;
@@ -2560,14 +2592,14 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 
 		KBFolder kbFolder = _kbFolderPersistence.findByPrimaryKey(kbFolderId);
 
-		int kbArticlesCount = kbArticleFinder.countByUrlTitle(
-			groupId, kbFolder.getUrlTitle(), uniqueUrlTitle, _STATUSES);
+		int kbArticlesCount = _getKBArticlesCount(
+			groupId, kbFolder.getUrlTitle(), uniqueUrlTitle);
 
 		for (int i = 1; kbArticlesCount > 0; i++) {
 			uniqueUrlTitle = _getUniqueUrlTitle(urlTitle, i);
 
-			kbArticlesCount = kbArticleFinder.countByUrlTitle(
-				groupId, kbFolder.getUrlTitle(), uniqueUrlTitle, _STATUSES);
+			kbArticlesCount = _getKBArticlesCount(
+				groupId, kbFolder.getUrlTitle(), uniqueUrlTitle);
 		}
 
 		return uniqueUrlTitle;

@@ -52,6 +52,18 @@ export default function EditKBArticle({
 		event.currentTarget.dataset.customUrl = urlTitleInput.value !== '';
 	};
 
+	const urlTitleOnSubmitForm = (event) => {
+		if (event.form.getDOM() !== form) {
+			return;
+		}
+
+		const customUrl = urlTitleInput.dataset.customUrl;
+
+		if (customUrl === 'false') {
+			urlTitleInput.value = '';
+		}
+	};
+
 	const openScheduleModal = () => {
 		Liferay.componentReady(`${namespace}ScheduleKBArticleComponent`).then(
 			(component) => {
@@ -124,14 +136,6 @@ export default function EditKBArticle({
 			workflowActionInput.value = publishAction;
 		}
 
-		if (!kbArticle) {
-			const customUrl = urlTitleInput.dataset.customUrl;
-
-			if (customUrl === 'false') {
-				urlTitleInput.value = '';
-			}
-		}
-
 		if (schedulerEnabled) {
 			beforeSubmit();
 			submitForm(form);
@@ -167,6 +171,8 @@ export default function EditKBArticle({
 		eventHandlers.push(
 			attachListener(urlTitleInput, 'input', urlTitleOnInputEvent)
 		);
+
+		eventHandlers.push(Liferay.on('submitForm', urlTitleOnSubmitForm));
 	}
 
 	return {
