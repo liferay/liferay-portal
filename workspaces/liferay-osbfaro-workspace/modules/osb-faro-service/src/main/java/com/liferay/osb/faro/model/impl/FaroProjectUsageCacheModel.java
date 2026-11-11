@@ -67,7 +67,7 @@ public class FaroProjectUsageCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -85,8 +85,12 @@ public class FaroProjectUsageCacheModel
 		sb.append(activeLogicalBytes);
 		sb.append(", anonymousIndividualsCount=");
 		sb.append(anonymousIndividualsCount);
+		sb.append(", billableEventsCount=");
+		sb.append(billableEventsCount);
 		sb.append(", eventsCount=");
 		sb.append(eventsCount);
+		sb.append(", experimentEventsCount=");
+		sb.append(experimentEventsCount);
 		sb.append(", faroProjectId=");
 		sb.append(faroProjectId);
 		sb.append(", knownIndividualsCount=");
@@ -121,7 +125,9 @@ public class FaroProjectUsageCacheModel
 		faroProjectUsageImpl.setActiveLogicalBytes(activeLogicalBytes);
 		faroProjectUsageImpl.setAnonymousIndividualsCount(
 			anonymousIndividualsCount);
+		faroProjectUsageImpl.setBillableEventsCount(billableEventsCount);
 		faroProjectUsageImpl.setEventsCount(eventsCount);
+		faroProjectUsageImpl.setExperimentEventsCount(experimentEventsCount);
 		faroProjectUsageImpl.setFaroProjectId(faroProjectId);
 		faroProjectUsageImpl.setKnownIndividualsCount(knownIndividualsCount);
 		faroProjectUsageImpl.setLongTermLogicalBytes(longTermLogicalBytes);
@@ -161,7 +167,11 @@ public class FaroProjectUsageCacheModel
 
 		anonymousIndividualsCount = objectInput.readLong();
 
+		billableEventsCount = objectInput.readLong();
+
 		eventsCount = objectInput.readLong();
+
+		experimentEventsCount = objectInput.readLong();
 
 		faroProjectId = objectInput.readLong();
 
@@ -197,7 +207,11 @@ public class FaroProjectUsageCacheModel
 
 		objectOutput.writeLong(anonymousIndividualsCount);
 
+		objectOutput.writeLong(billableEventsCount);
+
 		objectOutput.writeLong(eventsCount);
+
+		objectOutput.writeLong(experimentEventsCount);
 
 		objectOutput.writeLong(faroProjectId);
 
@@ -229,7 +243,9 @@ public class FaroProjectUsageCacheModel
 	public long modifiedTime;
 	public long activeLogicalBytes;
 	public long anonymousIndividualsCount;
+	public long billableEventsCount;
 	public long eventsCount;
+	public long experimentEventsCount;
 	public long faroProjectId;
 	public long knownIndividualsCount;
 	public long longTermLogicalBytes;
@@ -240,4 +256,4 @@ public class FaroProjectUsageCacheModel
 	public long usageTime;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:156895086
+// LIFERAY-SERVICE-BUILDER-HASH:-1164606022

@@ -41,7 +41,9 @@ public class FaroProjectUsageWrapper
 		attributes.put("activeLogicalBytes", getActiveLogicalBytes());
 		attributes.put(
 			"anonymousIndividualsCount", getAnonymousIndividualsCount());
+		attributes.put("billableEventsCount", getBillableEventsCount());
 		attributes.put("eventsCount", getEventsCount());
+		attributes.put("experimentEventsCount", getExperimentEventsCount());
 		attributes.put("faroProjectId", getFaroProjectId());
 		attributes.put("knownIndividualsCount", getKnownIndividualsCount());
 		attributes.put("longTermLogicalBytes", getLongTermLogicalBytes());
@@ -105,10 +107,23 @@ public class FaroProjectUsageWrapper
 			setAnonymousIndividualsCount(anonymousIndividualsCount);
 		}
 
+		Long billableEventsCount = (Long)attributes.get("billableEventsCount");
+
+		if (billableEventsCount != null) {
+			setBillableEventsCount(billableEventsCount);
+		}
+
 		Long eventsCount = (Long)attributes.get("eventsCount");
 
 		if (eventsCount != null) {
 			setEventsCount(eventsCount);
+		}
+
+		Long experimentEventsCount = (Long)attributes.get(
+			"experimentEventsCount");
+
+		if (experimentEventsCount != null) {
+			setExperimentEventsCount(experimentEventsCount);
 		}
 
 		Long faroProjectId = (Long)attributes.get("faroProjectId");
@@ -188,6 +203,16 @@ public class FaroProjectUsageWrapper
 	}
 
 	/**
+	 * Returns the billable events count of this faro project usage.
+	 *
+	 * @return the billable events count of this faro project usage
+	 */
+	@Override
+	public long getBillableEventsCount() {
+		return model.getBillableEventsCount();
+	}
+
+	/**
 	 * Returns the company ID of this faro project usage.
 	 *
 	 * @return the company ID of this faro project usage
@@ -215,6 +240,16 @@ public class FaroProjectUsageWrapper
 	@Override
 	public long getEventsCount() {
 		return model.getEventsCount();
+	}
+
+	/**
+	 * Returns the experiment events count of this faro project usage.
+	 *
+	 * @return the experiment events count of this faro project usage
+	 */
+	@Override
+	public long getExperimentEventsCount() {
+		return model.getExperimentEventsCount();
 	}
 
 	/**
@@ -383,6 +418,16 @@ public class FaroProjectUsageWrapper
 	}
 
 	/**
+	 * Sets the billable events count of this faro project usage.
+	 *
+	 * @param billableEventsCount the billable events count of this faro project usage
+	 */
+	@Override
+	public void setBillableEventsCount(long billableEventsCount) {
+		model.setBillableEventsCount(billableEventsCount);
+	}
+
+	/**
 	 * Sets the company ID of this faro project usage.
 	 *
 	 * @param companyId the company ID of this faro project usage
@@ -410,6 +455,16 @@ public class FaroProjectUsageWrapper
 	@Override
 	public void setEventsCount(long eventsCount) {
 		model.setEventsCount(eventsCount);
+	}
+
+	/**
+	 * Sets the experiment events count of this faro project usage.
+	 *
+	 * @param experimentEventsCount the experiment events count of this faro project usage
+	 */
+	@Override
+	public void setExperimentEventsCount(long experimentEventsCount) {
+		model.setExperimentEventsCount(experimentEventsCount);
 	}
 
 	/**
@@ -563,4 +618,4 @@ public class FaroProjectUsageWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1916331889
+// LIFERAY-SERVICE-BUILDER-HASH:1772443855

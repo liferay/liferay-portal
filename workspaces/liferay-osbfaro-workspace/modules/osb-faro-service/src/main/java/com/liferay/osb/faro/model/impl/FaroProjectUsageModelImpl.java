@@ -65,7 +65,9 @@ public class FaroProjectUsageModelImpl
 		{"createTime", Types.BIGINT}, {"modifiedTime", Types.BIGINT},
 		{"activeLogicalBytes", Types.BIGINT},
 		{"anonymousIndividualsCount", Types.BIGINT},
-		{"eventsCount", Types.BIGINT}, {"faroProjectId", Types.BIGINT},
+		{"billableEventsCount", Types.BIGINT}, {"eventsCount", Types.BIGINT},
+		{"experimentEventsCount", Types.BIGINT},
+		{"faroProjectId", Types.BIGINT},
 		{"knownIndividualsCount", Types.BIGINT},
 		{"longTermLogicalBytes", Types.BIGINT}, {"monthDateKey", Types.VARCHAR},
 		{"onDemandBytesBilled", Types.BIGINT}, {"pageViewsCount", Types.BIGINT},
@@ -84,7 +86,9 @@ public class FaroProjectUsageModelImpl
 		TABLE_COLUMNS_MAP.put("modifiedTime", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("activeLogicalBytes", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("anonymousIndividualsCount", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("billableEventsCount", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("eventsCount", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("experimentEventsCount", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("faroProjectId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("knownIndividualsCount", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("longTermLogicalBytes", Types.BIGINT);
@@ -96,7 +100,7 @@ public class FaroProjectUsageModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table OSBFaro_FaroProjectUsage (mvccVersion LONG default 0 not null,faroProjectUsageId LONG not null primary key,companyId LONG,userId LONG,createTime LONG,modifiedTime LONG,activeLogicalBytes LONG,anonymousIndividualsCount LONG,eventsCount LONG,faroProjectId LONG,knownIndividualsCount LONG,longTermLogicalBytes LONG,monthDateKey VARCHAR(75) null,onDemandBytesBilled LONG,pageViewsCount LONG,reservationSlotMs LONG,usageTime LONG)";
+		"create table OSBFaro_FaroProjectUsage (mvccVersion LONG default 0 not null,faroProjectUsageId LONG not null primary key,companyId LONG,userId LONG,createTime LONG,modifiedTime LONG,activeLogicalBytes LONG,anonymousIndividualsCount LONG,billableEventsCount LONG,eventsCount LONG,experimentEventsCount LONG,faroProjectId LONG,knownIndividualsCount LONG,longTermLogicalBytes LONG,monthDateKey VARCHAR(75) null,onDemandBytesBilled LONG,pageViewsCount LONG,reservationSlotMs LONG,usageTime LONG)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table OSBFaro_FaroProjectUsage";
@@ -261,7 +265,13 @@ public class FaroProjectUsageModelImpl
 				"anonymousIndividualsCount",
 				FaroProjectUsage::getAnonymousIndividualsCount);
 			attributeGetterFunctions.put(
+				"billableEventsCount",
+				FaroProjectUsage::getBillableEventsCount);
+			attributeGetterFunctions.put(
 				"eventsCount", FaroProjectUsage::getEventsCount);
+			attributeGetterFunctions.put(
+				"experimentEventsCount",
+				FaroProjectUsage::getExperimentEventsCount);
 			attributeGetterFunctions.put(
 				"faroProjectId", FaroProjectUsage::getFaroProjectId);
 			attributeGetterFunctions.put(
@@ -332,9 +342,17 @@ public class FaroProjectUsageModelImpl
 				(BiConsumer<FaroProjectUsage, Long>)
 					FaroProjectUsage::setAnonymousIndividualsCount);
 			attributeSetterBiConsumers.put(
+				"billableEventsCount",
+				(BiConsumer<FaroProjectUsage, Long>)
+					FaroProjectUsage::setBillableEventsCount);
+			attributeSetterBiConsumers.put(
 				"eventsCount",
 				(BiConsumer<FaroProjectUsage, Long>)
 					FaroProjectUsage::setEventsCount);
+			attributeSetterBiConsumers.put(
+				"experimentEventsCount",
+				(BiConsumer<FaroProjectUsage, Long>)
+					FaroProjectUsage::setExperimentEventsCount);
 			attributeSetterBiConsumers.put(
 				"faroProjectId",
 				(BiConsumer<FaroProjectUsage, Long>)
@@ -503,6 +521,20 @@ public class FaroProjectUsageModelImpl
 	}
 
 	@Override
+	public long getBillableEventsCount() {
+		return _billableEventsCount;
+	}
+
+	@Override
+	public void setBillableEventsCount(long billableEventsCount) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_billableEventsCount = billableEventsCount;
+	}
+
+	@Override
 	public long getEventsCount() {
 		return _eventsCount;
 	}
@@ -514,6 +546,20 @@ public class FaroProjectUsageModelImpl
 		}
 
 		_eventsCount = eventsCount;
+	}
+
+	@Override
+	public long getExperimentEventsCount() {
+		return _experimentEventsCount;
+	}
+
+	@Override
+	public void setExperimentEventsCount(long experimentEventsCount) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_experimentEventsCount = experimentEventsCount;
 	}
 
 	@Override
@@ -718,7 +764,10 @@ public class FaroProjectUsageModelImpl
 		faroProjectUsageImpl.setActiveLogicalBytes(getActiveLogicalBytes());
 		faroProjectUsageImpl.setAnonymousIndividualsCount(
 			getAnonymousIndividualsCount());
+		faroProjectUsageImpl.setBillableEventsCount(getBillableEventsCount());
 		faroProjectUsageImpl.setEventsCount(getEventsCount());
+		faroProjectUsageImpl.setExperimentEventsCount(
+			getExperimentEventsCount());
 		faroProjectUsageImpl.setFaroProjectId(getFaroProjectId());
 		faroProjectUsageImpl.setKnownIndividualsCount(
 			getKnownIndividualsCount());
@@ -754,8 +803,12 @@ public class FaroProjectUsageModelImpl
 			this.<Long>getColumnOriginalValue("activeLogicalBytes"));
 		faroProjectUsageImpl.setAnonymousIndividualsCount(
 			this.<Long>getColumnOriginalValue("anonymousIndividualsCount"));
+		faroProjectUsageImpl.setBillableEventsCount(
+			this.<Long>getColumnOriginalValue("billableEventsCount"));
 		faroProjectUsageImpl.setEventsCount(
 			this.<Long>getColumnOriginalValue("eventsCount"));
+		faroProjectUsageImpl.setExperimentEventsCount(
+			this.<Long>getColumnOriginalValue("experimentEventsCount"));
 		faroProjectUsageImpl.setFaroProjectId(
 			this.<Long>getColumnOriginalValue("faroProjectId"));
 		faroProjectUsageImpl.setKnownIndividualsCount(
@@ -865,7 +918,13 @@ public class FaroProjectUsageModelImpl
 		faroProjectUsageCacheModel.anonymousIndividualsCount =
 			getAnonymousIndividualsCount();
 
+		faroProjectUsageCacheModel.billableEventsCount =
+			getBillableEventsCount();
+
 		faroProjectUsageCacheModel.eventsCount = getEventsCount();
+
+		faroProjectUsageCacheModel.experimentEventsCount =
+			getExperimentEventsCount();
 
 		faroProjectUsageCacheModel.faroProjectId = getFaroProjectId();
 
@@ -962,7 +1021,9 @@ public class FaroProjectUsageModelImpl
 	private long _modifiedTime;
 	private long _activeLogicalBytes;
 	private long _anonymousIndividualsCount;
+	private long _billableEventsCount;
 	private long _eventsCount;
+	private long _experimentEventsCount;
 	private long _faroProjectId;
 	private long _knownIndividualsCount;
 	private long _longTermLogicalBytes;
@@ -1009,7 +1070,10 @@ public class FaroProjectUsageModelImpl
 		_columnOriginalValues.put("activeLogicalBytes", _activeLogicalBytes);
 		_columnOriginalValues.put(
 			"anonymousIndividualsCount", _anonymousIndividualsCount);
+		_columnOriginalValues.put("billableEventsCount", _billableEventsCount);
 		_columnOriginalValues.put("eventsCount", _eventsCount);
+		_columnOriginalValues.put(
+			"experimentEventsCount", _experimentEventsCount);
 		_columnOriginalValues.put("faroProjectId", _faroProjectId);
 		_columnOriginalValues.put(
 			"knownIndividualsCount", _knownIndividualsCount);
@@ -1049,23 +1113,27 @@ public class FaroProjectUsageModelImpl
 
 		columnBitmasks.put("anonymousIndividualsCount", 128L);
 
-		columnBitmasks.put("eventsCount", 256L);
+		columnBitmasks.put("billableEventsCount", 256L);
 
-		columnBitmasks.put("faroProjectId", 512L);
+		columnBitmasks.put("eventsCount", 512L);
 
-		columnBitmasks.put("knownIndividualsCount", 1024L);
+		columnBitmasks.put("experimentEventsCount", 1024L);
 
-		columnBitmasks.put("longTermLogicalBytes", 2048L);
+		columnBitmasks.put("faroProjectId", 2048L);
 
-		columnBitmasks.put("monthDateKey", 4096L);
+		columnBitmasks.put("knownIndividualsCount", 4096L);
 
-		columnBitmasks.put("onDemandBytesBilled", 8192L);
+		columnBitmasks.put("longTermLogicalBytes", 8192L);
 
-		columnBitmasks.put("pageViewsCount", 16384L);
+		columnBitmasks.put("monthDateKey", 16384L);
 
-		columnBitmasks.put("reservationSlotMs", 32768L);
+		columnBitmasks.put("onDemandBytesBilled", 32768L);
 
-		columnBitmasks.put("usageTime", 65536L);
+		columnBitmasks.put("pageViewsCount", 65536L);
+
+		columnBitmasks.put("reservationSlotMs", 131072L);
+
+		columnBitmasks.put("usageTime", 262144L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1074,4 +1142,4 @@ public class FaroProjectUsageModelImpl
 	private FaroProjectUsage _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:108189174
+// LIFERAY-SERVICE-BUILDER-HASH:1923312693

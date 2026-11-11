@@ -50,16 +50,18 @@ public class FaroProjectUsageLocalServiceWrapper
 	@Override
 	public com.liferay.osb.faro.model.FaroProjectUsage addFaroProjectUsage(
 		long companyId, long userId, long activeLogicalBytes,
-		long anonymousIndividualsCount, long eventsCount, long faroProjectId,
+		long anonymousIndividualsCount, long billableEventsCount,
+		long eventsCount, long experimentEventsCount, long faroProjectId,
 		long knownIndividualsCount, long longTermLogicalBytes,
 		String monthDateKey, long onDemandBytesBilled, long pageViewsCount,
 		long reservationSlotMs, java.util.Date usageDate) {
 
 		return _faroProjectUsageLocalService.addFaroProjectUsage(
 			companyId, userId, activeLogicalBytes, anonymousIndividualsCount,
-			eventsCount, faroProjectId, knownIndividualsCount,
-			longTermLogicalBytes, monthDateKey, onDemandBytesBilled,
-			pageViewsCount, reservationSlotMs, usageDate);
+			billableEventsCount, eventsCount, experimentEventsCount,
+			faroProjectId, knownIndividualsCount, longTermLogicalBytes,
+			monthDateKey, onDemandBytesBilled, pageViewsCount,
+			reservationSlotMs, usageDate);
 	}
 
 	/**
@@ -363,7 +365,8 @@ public class FaroProjectUsageLocalServiceWrapper
 	@Override
 	public com.liferay.osb.faro.model.FaroProjectUsage updateFaroProjectUsage(
 			long faroProjectUsageId, long activeLogicalBytes,
-			long anonymousIndividualsCount, long eventsCount,
+			long anonymousIndividualsCount, long billableEventsCount,
+			long eventsCount, long experimentEventsCount,
 			long knownIndividualsCount, long longTermLogicalBytes,
 			long onDemandBytesBilled, long pageViewsCount,
 			long reservationSlotMs)
@@ -371,8 +374,9 @@ public class FaroProjectUsageLocalServiceWrapper
 
 		return _faroProjectUsageLocalService.updateFaroProjectUsage(
 			faroProjectUsageId, activeLogicalBytes, anonymousIndividualsCount,
-			eventsCount, knownIndividualsCount, longTermLogicalBytes,
-			onDemandBytesBilled, pageViewsCount, reservationSlotMs);
+			billableEventsCount, eventsCount, experimentEventsCount,
+			knownIndividualsCount, longTermLogicalBytes, onDemandBytesBilled,
+			pageViewsCount, reservationSlotMs);
 	}
 
 	@Override
@@ -395,4 +399,4 @@ public class FaroProjectUsageLocalServiceWrapper
 	private FaroProjectUsageLocalService _faroProjectUsageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:786839004
+// LIFERAY-SERVICE-BUILDER-HASH:1576443800

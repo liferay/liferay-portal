@@ -111,7 +111,9 @@
 		<field name="modifiedTime" type="long" />
 		<field name="activeLogicalBytes" type="long" />
 		<field name="anonymousIndividualsCount" type="long" />
+		<field name="billableEventsCount" type="long" />
 		<field name="eventsCount" type="long" />
+		<field name="experimentEventsCount" type="long" />
 		<field name="faroProjectId" type="long" />
 		<field name="knownIndividualsCount" type="long" />
 		<field name="longTermLogicalBytes" type="long" />

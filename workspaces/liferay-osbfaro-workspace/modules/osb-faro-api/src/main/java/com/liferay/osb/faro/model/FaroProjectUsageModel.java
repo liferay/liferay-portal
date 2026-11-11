@@ -178,6 +178,20 @@ public interface FaroProjectUsageModel
 	public void setAnonymousIndividualsCount(long anonymousIndividualsCount);
 
 	/**
+	 * Returns the billable events count of this faro project usage.
+	 *
+	 * @return the billable events count of this faro project usage
+	 */
+	public long getBillableEventsCount();
+
+	/**
+	 * Sets the billable events count of this faro project usage.
+	 *
+	 * @param billableEventsCount the billable events count of this faro project usage
+	 */
+	public void setBillableEventsCount(long billableEventsCount);
+
+	/**
 	 * Returns the events count of this faro project usage.
 	 *
 	 * @return the events count of this faro project usage
@@ -190,6 +204,20 @@ public interface FaroProjectUsageModel
 	 * @param eventsCount the events count of this faro project usage
 	 */
 	public void setEventsCount(long eventsCount);
+
+	/**
+	 * Returns the experiment events count of this faro project usage.
+	 *
+	 * @return the experiment events count of this faro project usage
+	 */
+	public long getExperimentEventsCount();
+
+	/**
+	 * Sets the experiment events count of this faro project usage.
+	 *
+	 * @param experimentEventsCount the experiment events count of this faro project usage
+	 */
+	public void setExperimentEventsCount(long experimentEventsCount);
 
 	/**
 	 * Returns the faro project ID of this faro project usage.
@@ -312,4 +340,4 @@ public interface FaroProjectUsageModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:454494512
+// LIFERAY-SERVICE-BUILDER-HASH:-1866393880

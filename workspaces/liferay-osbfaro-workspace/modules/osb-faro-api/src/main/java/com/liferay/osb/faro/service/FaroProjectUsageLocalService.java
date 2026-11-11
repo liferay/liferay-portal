@@ -70,7 +70,8 @@ public interface FaroProjectUsageLocalService
 
 	public FaroProjectUsage addFaroProjectUsage(
 		long companyId, long userId, long activeLogicalBytes,
-		long anonymousIndividualsCount, long eventsCount, long faroProjectId,
+		long anonymousIndividualsCount, long billableEventsCount,
+		long eventsCount, long experimentEventsCount, long faroProjectId,
 		long knownIndividualsCount, long longTermLogicalBytes,
 		String monthDateKey, long onDemandBytesBilled, long pageViewsCount,
 		long reservationSlotMs, Date usageDate);
@@ -277,11 +278,12 @@ public interface FaroProjectUsageLocalService
 
 	public FaroProjectUsage updateFaroProjectUsage(
 			long faroProjectUsageId, long activeLogicalBytes,
-			long anonymousIndividualsCount, long eventsCount,
+			long anonymousIndividualsCount, long billableEventsCount,
+			long eventsCount, long experimentEventsCount,
 			long knownIndividualsCount, long longTermLogicalBytes,
 			long onDemandBytesBilled, long pageViewsCount,
 			long reservationSlotMs)
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-958948630
+// LIFERAY-SERVICE-BUILDER-HASH:-474600722

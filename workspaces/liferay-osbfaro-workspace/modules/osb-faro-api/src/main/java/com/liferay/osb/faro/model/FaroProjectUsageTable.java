@@ -45,8 +45,16 @@ public class FaroProjectUsageTable extends BaseTable<FaroProjectUsageTable> {
 		createColumn(
 			"anonymousIndividualsCount", Long.class, Types.BIGINT,
 			Column.FLAG_DEFAULT);
+	public final Column<FaroProjectUsageTable, Long> billableEventsCount =
+		createColumn(
+			"billableEventsCount", Long.class, Types.BIGINT,
+			Column.FLAG_DEFAULT);
 	public final Column<FaroProjectUsageTable, Long> eventsCount = createColumn(
 		"eventsCount", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<FaroProjectUsageTable, Long> experimentEventsCount =
+		createColumn(
+			"experimentEventsCount", Long.class, Types.BIGINT,
+			Column.FLAG_DEFAULT);
 	public final Column<FaroProjectUsageTable, Long> faroProjectId =
 		createColumn(
 			"faroProjectId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
@@ -79,4 +87,4 @@ public class FaroProjectUsageTable extends BaseTable<FaroProjectUsageTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-795123421
+// LIFERAY-SERVICE-BUILDER-HASH:-53825945

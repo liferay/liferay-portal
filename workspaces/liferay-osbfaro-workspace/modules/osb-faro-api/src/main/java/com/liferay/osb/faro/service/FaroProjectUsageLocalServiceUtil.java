@@ -55,16 +55,18 @@ public class FaroProjectUsageLocalServiceUtil {
 
 	public static FaroProjectUsage addFaroProjectUsage(
 		long companyId, long userId, long activeLogicalBytes,
-		long anonymousIndividualsCount, long eventsCount, long faroProjectId,
+		long anonymousIndividualsCount, long billableEventsCount,
+		long eventsCount, long experimentEventsCount, long faroProjectId,
 		long knownIndividualsCount, long longTermLogicalBytes,
 		String monthDateKey, long onDemandBytesBilled, long pageViewsCount,
 		long reservationSlotMs, java.util.Date usageDate) {
 
 		return getService().addFaroProjectUsage(
 			companyId, userId, activeLogicalBytes, anonymousIndividualsCount,
-			eventsCount, faroProjectId, knownIndividualsCount,
-			longTermLogicalBytes, monthDateKey, onDemandBytesBilled,
-			pageViewsCount, reservationSlotMs, usageDate);
+			billableEventsCount, eventsCount, experimentEventsCount,
+			faroProjectId, knownIndividualsCount, longTermLogicalBytes,
+			monthDateKey, onDemandBytesBilled, pageViewsCount,
+			reservationSlotMs, usageDate);
 	}
 
 	/**
@@ -322,7 +324,8 @@ public class FaroProjectUsageLocalServiceUtil {
 
 	public static FaroProjectUsage updateFaroProjectUsage(
 			long faroProjectUsageId, long activeLogicalBytes,
-			long anonymousIndividualsCount, long eventsCount,
+			long anonymousIndividualsCount, long billableEventsCount,
+			long eventsCount, long experimentEventsCount,
 			long knownIndividualsCount, long longTermLogicalBytes,
 			long onDemandBytesBilled, long pageViewsCount,
 			long reservationSlotMs)
@@ -330,8 +333,9 @@ public class FaroProjectUsageLocalServiceUtil {
 
 		return getService().updateFaroProjectUsage(
 			faroProjectUsageId, activeLogicalBytes, anonymousIndividualsCount,
-			eventsCount, knownIndividualsCount, longTermLogicalBytes,
-			onDemandBytesBilled, pageViewsCount, reservationSlotMs);
+			billableEventsCount, eventsCount, experimentEventsCount,
+			knownIndividualsCount, longTermLogicalBytes, onDemandBytesBilled,
+			pageViewsCount, reservationSlotMs);
 	}
 
 	public static FaroProjectUsageLocalService getService() {
@@ -344,4 +348,4 @@ public class FaroProjectUsageLocalServiceUtil {
 			FaroProjectUsageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1214945084
+// LIFERAY-SERVICE-BUILDER-HASH:-1816625032
