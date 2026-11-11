@@ -998,8 +998,7 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 	}
 
 	protected void removeLayoutSetBranchIdFromExportImportConfigurations(
-			long groupId, boolean remote, boolean privateLayout)
-		throws PortalException {
+		long groupId, boolean remote, boolean privateLayout) {
 
 		int configurationType =
 			ExportImportConfigurationConstants.TYPE_PUBLISH_LAYOUT_LOCAL;
@@ -1048,8 +1047,7 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 	}
 
 	protected Layout updateLayoutWithLayoutRevision(
-			LayoutRevision layoutRevision)
-		throws PortalException {
+		LayoutRevision layoutRevision) {
 
 		// Suppress the usage of the advice to get the latest layout to prevent
 		// a StaleObjectStateException
