@@ -65,7 +65,6 @@ import java.io.InputStream;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 import java.util.Collection;
 import java.util.Date;
@@ -294,9 +293,7 @@ public class DBUpgrader {
 		}
 	}
 
-	public static void updatePortalServiceComponent()
-		throws PortalException, SQLException {
-
+	public static void updatePortalServiceComponent() throws PortalException {
 		ServiceComponentConfiguration portalServiceComponentConfiguration =
 			new ServiceComponentConfiguration() {
 
