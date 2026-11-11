@@ -95,6 +95,23 @@ public class ProjectUsageHelperTest {
 	}
 
 	@Test
+	public void testAddOrUpdateFaroProjectUsagesWithoutProjectUsageMetric() {
+		FaroProject faroProject = _mockFaroProject(
+			RandomTestUtil.randomString());
+
+		_projectUsageHelper.addOrUpdateFaroProjectUsages(
+			new Date(), Collections.singletonList(faroProject));
+
+		_verifyAddFaroProjectUsage(faroProject, Mockito.never());
+
+		Mockito.verify(
+			_faroProjectUsageLocalService, Mockito.never()
+		).fetchFaroProjectUsage(
+			Mockito.anyLong(), Mockito.any(Date.class)
+		);
+	}
+
+	@Test
 	public void testAddOrUpdateFaroProjectUsagesWithUnavailableServerLocation() {
 		FaroProject faroProject1 = _mockFaroProject(
 			RandomTestUtil.randomString());
@@ -116,23 +133,6 @@ public class ProjectUsageHelperTest {
 
 		_verifyAddFaroProjectUsage(faroProject1, Mockito.never());
 		_verifyAddFaroProjectUsage(faroProject2, Mockito.times(1));
-	}
-
-	@Test
-	public void testAddOrUpdateFaroProjectUsagesWithoutProjectUsageMetric() {
-		FaroProject faroProject = _mockFaroProject(
-			RandomTestUtil.randomString());
-
-		_projectUsageHelper.addOrUpdateFaroProjectUsages(
-			new Date(), Collections.singletonList(faroProject));
-
-		_verifyAddFaroProjectUsage(faroProject, Mockito.never());
-
-		Mockito.verify(
-			_faroProjectUsageLocalService, Mockito.never()
-		).fetchFaroProjectUsage(
-			Mockito.anyLong(), Mockito.any(Date.class)
-		);
 	}
 
 	@Test
@@ -159,9 +159,9 @@ public class ProjectUsageHelperTest {
 			Mockito.eq(faroProject), Mockito.any(Date.class)
 		);
 
-		_verifyGetProjectUsageMetrics(faroProject, startLocalDate);
 		_verifyGetProjectUsageMetrics(faroProject, LocalDate.of(2026, 2, 28));
 		_verifyGetProjectUsageMetrics(faroProject, endLocalDate);
+		_verifyGetProjectUsageMetrics(faroProject, startLocalDate);
 	}
 
 	@Test
