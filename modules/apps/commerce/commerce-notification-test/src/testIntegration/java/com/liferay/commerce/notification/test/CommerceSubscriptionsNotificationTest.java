@@ -109,7 +109,7 @@ public class CommerceSubscriptionsNotificationTest {
 			null, _serviceContext);
 
 		CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-			_group.getCompanyId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
 			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
 			_accountEntry.getAccountEntryId(), _serviceContext);
 

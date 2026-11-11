@@ -116,7 +116,7 @@ public class CommerceMediaResolverTest {
 			"business", 1, _serviceContext);
 
 		CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-			_user.getCompanyId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
 			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
 			_accountEntry.getAccountEntryId(), _serviceContext);
 
@@ -345,7 +345,7 @@ public class CommerceMediaResolverTest {
 
 		AccountGroup accountGroup =
 			CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-				_group.getCompanyId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(),
 				AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
 				_accountEntry.getAccountEntryId(), _serviceContext);
 

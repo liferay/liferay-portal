@@ -33,8 +33,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 public class CommerceAccountTestUtil {
 
 	public static void addAccountEntryOrganizationRels(
-			long accountEntryId, long[] organizationIds,
-			ServiceContext serviceContext)
+			long accountEntryId, long[] organizationIds)
 		throws PortalException {
 
 		AccountEntryOrganizationRelLocalServiceUtil.
@@ -78,8 +77,8 @@ public class CommerceAccountTestUtil {
 	}
 
 	public static AccountGroup addAccountGroup(
-			long companyId, String name, String type,
-			String externalReferenceCode, ServiceContext serviceContext)
+			String name, String type, String externalReferenceCode,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		if (Validator.isBlank(externalReferenceCode)) {
@@ -100,13 +99,12 @@ public class CommerceAccountTestUtil {
 	}
 
 	public static AccountGroup addAccountGroupAndAccountRel(
-			long companyId, String name, String type, long accountEntryId,
+			String name, String type, long accountEntryId,
 			ServiceContext serviceContext)
 		throws PortalException {
 
 		AccountGroup accountGroup = addAccountGroup(
-			companyId, name, type, RandomTestUtil.randomString(),
-			serviceContext);
+			name, type, RandomTestUtil.randomString(), serviceContext);
 
 		AccountGroupRelLocalServiceUtil.addAccountGroupRel(
 			accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
@@ -161,7 +159,7 @@ public class CommerceAccountTestUtil {
 			accountEntry.getAccountEntryId(), userIds, serviceContext);
 
 		addAccountEntryOrganizationRels(
-			accountEntry.getAccountEntryId(), organizationIds, serviceContext);
+			accountEntry.getAccountEntryId(), organizationIds);
 
 		return accountEntry;
 	}

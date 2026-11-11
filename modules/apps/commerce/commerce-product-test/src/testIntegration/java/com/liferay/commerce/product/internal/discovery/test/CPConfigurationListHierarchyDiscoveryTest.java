@@ -82,7 +82,7 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 			_serviceContext);
 
 		_accountGroup = CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-			_group.getCompanyId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
 			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
 			_accountEntry2.getAccountEntryId(), _serviceContext);
 

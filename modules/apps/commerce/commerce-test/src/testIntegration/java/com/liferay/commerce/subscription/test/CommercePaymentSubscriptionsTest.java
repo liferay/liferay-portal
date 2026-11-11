@@ -87,7 +87,7 @@ public class CommercePaymentSubscriptionsTest {
 			RandomTestUtil.randomString(), serviceContext);
 
 		CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-			_user.getCompanyId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
 			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
 			_accountEntry.getAccountEntryId(), serviceContext);
 

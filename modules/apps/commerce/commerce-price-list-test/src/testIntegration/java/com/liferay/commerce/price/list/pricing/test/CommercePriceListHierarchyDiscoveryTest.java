@@ -82,7 +82,7 @@ public class CommercePriceListHierarchyDiscoveryTest {
 			_user.getUserId());
 
 		CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-			_group.getCompanyId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
 			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
 			_accountEntry1.getAccountEntryId(), _serviceContext);
 
@@ -127,11 +127,11 @@ public class CommercePriceListHierarchyDiscoveryTest {
 			_serviceContext);
 
 		CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-			_group.getCompanyId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
 			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
 			_accountEntry4.getAccountEntryId(), _serviceContext);
 		CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-			_group.getCompanyId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
 			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
 			_accountEntry5.getAccountEntryId(), _serviceContext);
 

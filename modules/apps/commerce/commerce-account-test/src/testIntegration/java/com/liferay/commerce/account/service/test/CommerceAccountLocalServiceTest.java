@@ -509,19 +509,16 @@ public class CommerceAccountLocalServiceTest {
 
 		CommerceAccountTestUtil.addAccountEntryOrganizationRels(
 			accountEntry2.getAccountEntryId(),
-			new long[] {italyOrganization.getOrganizationId()}, serviceContext);
+			new long[] {italyOrganization.getOrganizationId()});
 		CommerceAccountTestUtil.addAccountEntryOrganizationRels(
 			accountEntry3.getAccountEntryId(),
-			new long[] {chicagoOrganization.getOrganizationId()},
-			serviceContext);
+			new long[] {chicagoOrganization.getOrganizationId()});
 		CommerceAccountTestUtil.addAccountEntryOrganizationRels(
 			accountEntry4.getAccountEntryId(),
-			new long[] {losAngelesOrganization.getOrganizationId()},
-			serviceContext);
+			new long[] {losAngelesOrganization.getOrganizationId()});
 		CommerceAccountTestUtil.addAccountEntryOrganizationRels(
 			accountEntry5.getAccountEntryId(),
-			new long[] {losAngelesOrganization.getOrganizationId()},
-			serviceContext);
+			new long[] {losAngelesOrganization.getOrganizationId()});
 
 		List<AccountEntry> userAccountEntries1 =
 			_accountEntryLocalService.getUserAccountEntries(
