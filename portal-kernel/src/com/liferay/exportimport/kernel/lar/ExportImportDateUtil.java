@@ -211,9 +211,8 @@ public class ExportImportDateUtil {
 	}
 
 	public static Date getLastPublishDate(
-			PortletDataContext portletDataContext,
-			PortletPreferences jxPortletPreferences)
-		throws PortalException {
+		PortletDataContext portletDataContext,
+		PortletPreferences jxPortletPreferences) {
 
 		String range = MapUtil.getString(
 			portletDataContext.getParameterMap(), RANGE);

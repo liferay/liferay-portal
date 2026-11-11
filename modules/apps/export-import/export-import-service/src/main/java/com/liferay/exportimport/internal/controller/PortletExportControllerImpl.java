@@ -1311,9 +1311,8 @@ public class PortletExportControllerImpl implements PortletExportController {
 	}
 
 	private Date _getPortletLastPublishDate(
-			jakarta.portlet.PortletPreferences jxPortletPreferences,
-			PortletDataContext portletDataContext)
-		throws Exception {
+		jakarta.portlet.PortletPreferences jxPortletPreferences,
+		PortletDataContext portletDataContext) {
 
 		if (ExportImportDateUtil.isRangeFromLastPublishDate(
 				portletDataContext)) {

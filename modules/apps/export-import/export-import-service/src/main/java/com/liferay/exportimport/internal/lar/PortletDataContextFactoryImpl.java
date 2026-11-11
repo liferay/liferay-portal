@@ -16,11 +16,8 @@ import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.UserIdStrategy;
 import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.lock.LockManager;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
@@ -366,27 +363,22 @@ public class PortletDataContextFactoryImpl
 				String.valueOf(changesetCollection.getChangesetCollectionId())
 			});
 
-		try {
-			PortletPreferences portletPreferences =
-				PortletPreferencesFactoryUtil.getStrictPortletSetup(
-					portletDataContext.getCompanyId(),
-					portletDataContext.getScopeGroupId(),
-					ChangesetPortletKeys.CHANGESET);
+		PortletPreferences portletPreferences =
+			PortletPreferencesFactoryUtil.getStrictPortletSetup(
+				portletDataContext.getCompanyId(),
+				portletDataContext.getScopeGroupId(),
+				ChangesetPortletKeys.CHANGESET);
 
-			Date lastPublishDate = ExportImportDateUtil.getLastPublishDate(
-				portletDataContext, portletPreferences);
+		Date lastPublishDate = ExportImportDateUtil.getLastPublishDate(
+			portletDataContext, portletPreferences);
 
-			if (lastPublishDate == null) {
-				return;
-			}
-
-			parameterMap.put(
-				"changesetLastPublishDate",
-				new String[] {String.valueOf(lastPublishDate.getTime())});
+		if (lastPublishDate == null) {
+			return;
 		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-		}
+
+		parameterMap.put(
+			"changesetLastPublishDate",
+			new String[] {String.valueOf(lastPublishDate.getTime())});
 	}
 
 	private void _validateDateRange(Date startDate, Date endDate)
@@ -420,9 +412,6 @@ public class PortletDataContextFactoryImpl
 			}
 		}
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		PortletDataContextFactoryImpl.class);
 
 	@Reference
 	private ChangesetCollectionLocalService _changesetCollectionLocalService;
