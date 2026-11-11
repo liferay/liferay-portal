@@ -20,6 +20,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-collection-item-selector-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
+	testIntegrationImplementation project(":apps:fragment:fragment-item-selector-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-service")
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:info:info-list-provider-item-selector-api")
