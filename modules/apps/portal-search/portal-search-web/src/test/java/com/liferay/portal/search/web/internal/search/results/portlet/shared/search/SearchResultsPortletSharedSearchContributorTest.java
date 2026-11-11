@@ -20,6 +20,7 @@ import com.liferay.portal.search.web.internal.search.results.configuration.Searc
 import com.liferay.portal.search.web.internal.search.results.portlet.SearchResultsPortletPreferences;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.PortletPreferences;
@@ -132,18 +133,49 @@ public class SearchResultsPortletSharedSearchContributorTest {
 		_testContributeMaximumSearchDepthWithMultipleWidgets(40, 10, 50, 100);
 	}
 
-	@FeatureFlag("LPD-98858")
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag(enable = false, value = "LPD-114635"),
+			@FeatureFlag("LPD-98858")
+		}
+	)
 	@Test
 	public void testContributeTrackTotalHitsLimit() {
-		_testContributeTrackTotalHitsLimit(false, null);
-		_testContributeTrackTotalHitsLimit(true, 10001);
+		_testContributeTrackTotalHitsLimit(
+			10001, true, RandomTestUtil.randomInt());
+		_testContributeTrackTotalHitsLimit(
+			null, false, RandomTestUtil.randomInt());
 	}
 
 	@FeatureFlag(enable = false, value = "LPD-98858")
 	@Test
 	public void testContributeTrackTotalHitsLimitWhenFeatureFlagIsDisabled() {
-		_testContributeTrackTotalHitsLimit(false, null);
-		_testContributeTrackTotalHitsLimit(true, null);
+		_testContributeTrackTotalHitsLimit(
+			null, false, RandomTestUtil.randomInt());
+		_testContributeTrackTotalHitsLimit(
+			null, true, RandomTestUtil.randomInt());
+	}
+
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag("LPD-114635"), @FeatureFlag("LPD-98858")
+		}
+	)
+	@Test
+	public void testContributeTrackTotalHitsLimitWithMaximumSearchDepth() {
+		_testContributeTrackTotalHitsLimit(101, true, 100);
+		_testContributeTrackTotalHitsLimit(null, false, 100);
+	}
+
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag("LPD-114635"), @FeatureFlag("LPD-98858")
+		}
+	)
+	@Test
+	public void testContributeTrackTotalHitsLimitWithMultipleWidgets() {
+		_testContributeTrackTotalHitsLimitWithMultipleWidgets(100, 200);
+		_testContributeTrackTotalHitsLimitWithMultipleWidgets(200, 100);
 	}
 
 	private SearchRequest _buildSearchRequest(
@@ -347,16 +379,38 @@ public class SearchResultsPortletSharedSearchContributorTest {
 	}
 
 	private void _testContributeTrackTotalHitsLimit(
-		boolean limitResultCountAccuracy, Integer expectedTrackTotalHitsLimit) {
+		Integer expectedTrackTotalHitsLimit, boolean limitResultCountAccuracy,
+		int maximumSearchDepth) {
 
 		SearchRequest searchRequest = _buildSearchRequest(
-			limitResultCountAccuracy, Integer.MAX_VALUE,
+			limitResultCountAccuracy, maximumSearchDepth,
 			_createPortletSharedSearchSettings(
 				null, null, _createSearchRequestBuilder()));
 
 		Assert.assertEquals(
 			expectedTrackTotalHitsLimit,
 			searchRequest.getTrackTotalHitsLimit());
+	}
+
+	private void _testContributeTrackTotalHitsLimitWithMultipleWidgets(
+		int maximumSearchDepth1, int maximumSearchDepth2) {
+
+		SearchRequestBuilder searchRequestBuilder =
+			_createSearchRequestBuilder();
+
+		_contribute(
+			true, maximumSearchDepth1,
+			_createPortletSharedSearchSettings(
+				null, null, searchRequestBuilder));
+		_contribute(
+			true, maximumSearchDepth2,
+			_createPortletSharedSearchSettings(
+				null, null, searchRequestBuilder));
+
+		SearchRequest searchRequest = searchRequestBuilder.build();
+
+		Assert.assertEquals(
+			Integer.valueOf(101), searchRequest.getTrackTotalHitsLimit());
 	}
 
 	private static final String _PORTLET_ID = RandomTestUtil.randomString();
