@@ -135,8 +135,8 @@ public class ExportCostReportMVCResourceCommandTest {
 		_mockDynamicQuery(
 			_totalsDynamicQuery,
 			new Object[] {
-				RandomTestUtil.randomLong(), 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L,
-				1L, 1L
+				RandomTestUtil.randomLong(), 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L,
+				1L
 			},
 			new Object[] {
 				faroProjectId, null, null, null, null, null, null, null, null,
@@ -272,7 +272,8 @@ public class ExportCostReportMVCResourceCommandTest {
 			portletResponseUtilMockedStatic.verify(
 				() -> PortletResponseUtil.sendFile(
 					Mockito.eq(resourceRequest), Mockito.eq(resourceResponse),
-					Mockito.eq("cost-report.csv"), bytesArgumentCaptor.capture(),
+					Mockito.eq("cost-report.csv"),
+					bytesArgumentCaptor.capture(),
 					Mockito.eq(ContentTypes.TEXT_CSV_UTF8)));
 		}
 

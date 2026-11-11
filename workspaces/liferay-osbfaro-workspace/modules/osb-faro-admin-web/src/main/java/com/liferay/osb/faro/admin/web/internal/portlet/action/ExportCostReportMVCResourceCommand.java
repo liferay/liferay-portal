@@ -72,7 +72,8 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 				"Subscription,Location,Events,Billable Events,",
 				"A/B Testing Events,Page Views,Anonymous Individuals,",
 				"Known Individuals,Query Cost (USD),Query Cost Data Since,",
-				"Storage Cost (USD),Storage Cost Data Since,Total Cost (USD)\n"));
+				"Storage Cost (USD),Storage Cost Data Since,",
+				"Total Cost (USD)\n"));
 
 		long startTime = System.currentTimeMillis() - Time.YEAR;
 
@@ -94,7 +95,8 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 			Map<String, Long> totals = new HashMap<>();
 
 			for (int i = 0; i < _PROPERTY_NAMES.length; i++) {
-				totals.put(_PROPERTY_NAMES[i], GetterUtil.getLong(values[i + 1]));
+				totals.put(
+					_PROPERTY_NAMES[i], GetterUtil.getLong(values[i + 1]));
 			}
 
 			sb.append(_encode(faroProject.getName()));
@@ -105,8 +107,7 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 			sb.append(StringPool.COMMA);
 			sb.append(_encode(faroProject.getCorpProjectName()));
 			sb.append(StringPool.COMMA);
-			sb.append(
-				_encode(FaroProjectOwnerUtil.fetchOwner(faroProject)));
+			sb.append(_encode(FaroProjectOwnerUtil.fetchOwner(faroProject)));
 			sb.append(StringPool.COMMA);
 			sb.append(_encode(faroProject.getShortSubscriptionName()));
 			sb.append(StringPool.COMMA);
