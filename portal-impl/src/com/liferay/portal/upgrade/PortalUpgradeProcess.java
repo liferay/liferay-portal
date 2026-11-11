@@ -95,9 +95,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
-	public static java.util.Date getCurrentBuildDate(Connection connection)
-		throws SQLException {
-
+	public static java.util.Date getCurrentBuildDate(Connection connection) {
 		PortalReleaseDTO portalReleaseDTO = _getCurrentPortalReleaseDTO(
 			connection);
 
@@ -108,9 +106,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		return portalReleaseDTO._buildDate;
 	}
 
-	public static int getCurrentBuildNumber(Connection connection)
-		throws SQLException {
-
+	public static int getCurrentBuildNumber(Connection connection) {
 		PortalReleaseDTO portalReleaseDTO = _getCurrentPortalReleaseDTO(
 			connection);
 
@@ -121,9 +117,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		return portalReleaseDTO._buildNumber;
 	}
 
-	public static Version getCurrentSchemaVersion(Connection connection)
-		throws SQLException {
-
+	public static Version getCurrentSchemaVersion(Connection connection) {
 		PortalReleaseDTO portalReleaseDTO = _getCurrentPortalReleaseDTO(
 			connection);
 
@@ -134,9 +128,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		return portalReleaseDTO._schemaVersion;
 	}
 
-	public static int getCurrentState(Connection connection)
-		throws SQLException {
-
+	public static int getCurrentState(Connection connection) {
 		PortalReleaseDTO portalReleaseDTO = _getCurrentPortalReleaseDTO(
 			connection);
 
@@ -149,9 +141,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		return portalReleaseDTO._state;
 	}
 
-	public static String getCurrentTestString(Connection connection)
-		throws SQLException {
-
+	public static String getCurrentTestString(Connection connection) {
 		PortalReleaseDTO portalReleaseDTO = _getCurrentPortalReleaseDTO(
 			connection);
 
@@ -162,9 +152,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		return portalReleaseDTO._testString;
 	}
 
-	public static String getCurrentVersionDisplayName(Connection connection)
-		throws SQLException {
-
+	public static String getCurrentVersionDisplayName(Connection connection) {
 		PortalReleaseDTO portalReleaseDTO = _getCurrentPortalReleaseDTO(
 			connection);
 
@@ -216,9 +204,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		return requiredSchemaVersion;
 	}
 
-	public static boolean hasPortalRelease(Connection connection)
-		throws SQLException {
-
+	public static boolean hasPortalRelease(Connection connection) {
 		PortalReleaseDTO portalReleaseDTO = _getCurrentPortalReleaseDTO(
 			connection);
 
@@ -229,9 +215,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		return true;
 	}
 
-	public static boolean isInCompatibleSchemaVersion(Connection connection)
-		throws SQLException {
-
+	public static boolean isInCompatibleSchemaVersion(Connection connection) {
 		Version currentSchemaVersion = getCurrentSchemaVersion(connection);
 		Version latestSchemaVersion = getLatestSchemaVersion();
 
@@ -248,9 +232,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		return false;
 	}
 
-	public static boolean isInRequiredSchemaVersion(Connection connection)
-		throws SQLException {
-
+	public static boolean isInRequiredSchemaVersion(Connection connection) {
 		Version currentSchemaVersion = getCurrentSchemaVersion(connection);
 
 		Version requiredSchemaVersion = getRequiredSchemaVersion();
@@ -269,8 +251,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 	}
 
 	public static boolean isSupportsStringCaseSensitiveQuery(
-			Connection connection)
-		throws SQLException {
+		Connection connection) {
 
 		PortalReleaseDTO portalReleaseDTO = _getCurrentPortalReleaseDTO(
 			connection);
@@ -441,8 +422,7 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 	}
 
 	private static PortalReleaseDTO _getCurrentPortalReleaseDTO(
-			Connection connection)
-		throws SQLException {
+		Connection connection) {
 
 		return _currentPortalReleaseDTODCLSingleton.getSingleton(
 			() -> {
