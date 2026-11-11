@@ -70,6 +70,30 @@ public class HeadlessRequestRejectedExceptionMapper
 					"Date range must be at most %d days"));
 		}
 
+		if (Objects.equals(messageKey, "mcp-cancelled-by-operator")) {
+			return new Problem(
+				Response.Status.SERVICE_UNAVAILABLE,
+				_getRetryTitle(
+					headlessRequestRejectedException.getRetryAfterSeconds(),
+					"The query was cancelled by an operator, retry %s"));
+		}
+
+		if (Objects.equals(messageKey, "mcp-disabled")) {
+			return new Problem(
+				Response.Status.SERVICE_UNAVAILABLE,
+				_getRetryTitle(
+					headlessRequestRejectedException.getRetryAfterSeconds(),
+					"MCP is temporarily unavailable, retry %s"));
+		}
+
+		if (Objects.equals(messageKey, "mcp-tool-disabled")) {
+			return new Problem(
+				Response.Status.SERVICE_UNAVAILABLE,
+				_getRetryTitle(
+					headlessRequestRejectedException.getRetryAfterSeconds(),
+					"This tool is temporarily unavailable, retry %s"));
+		}
+
 		if (Objects.equals(messageKey, "page-size-limit-exceeded")) {
 			return new Problem(
 				Response.Status.BAD_REQUEST,

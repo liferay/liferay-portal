@@ -12,7 +12,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.Context;
+
+import java.lang.reflect.Method;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -37,14 +40,22 @@ public class OriginContainerRequestFilter implements ContainerRequestFilter {
 					"com.liferay.portal.vulcan.internal.http." +
 						"VulcanRequestForwarderHttpServletRequestWrapper"))) {
 
+			Method method = _resourceInfo.getResourceMethod();
+
+			FaroThreadLocal.setOperationId(method.getName());
+
 			FaroThreadLocal.setOrigin("mcp");
 		}
 		else {
+			FaroThreadLocal.setOperationId(null);
 			FaroThreadLocal.setOrigin("rest-client");
 		}
 	}
 
 	@Context
 	private HttpServletRequest _httpServletRequest;
+
+	@Context
+	private ResourceInfo _resourceInfo;
 
 }

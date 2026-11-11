@@ -20,6 +20,10 @@ public class FaroThreadLocal {
 		return _faroRequestAudit.get();
 	}
 
+	public static String getOperationId() {
+		return _operationId.get();
+	}
+
 	public static String getOrigin() {
 		return _origin.get();
 	}
@@ -46,6 +50,10 @@ public class FaroThreadLocal {
 		_faroRequestAudit.set(faroRequestAudit);
 	}
 
+	public static void setOperationId(String operationId) {
+		_operationId.set(operationId);
+	}
+
 	public static void setOrigin(String origin) {
 		_origin.set(origin);
 	}
@@ -57,6 +65,8 @@ public class FaroThreadLocal {
 	private static final ThreadLocal<FaroRequestAudit> _faroRequestAudit =
 		new CentralizedThreadLocal<>(
 			FaroThreadLocal.class + "._faroRequestAudit");
+	private static final ThreadLocal<String> _operationId =
+		new CentralizedThreadLocal<>(FaroThreadLocal.class + "._operationId");
 	private static final ThreadLocal<String> _origin =
 		new CentralizedThreadLocal<>(FaroThreadLocal.class + "._origin");
 
