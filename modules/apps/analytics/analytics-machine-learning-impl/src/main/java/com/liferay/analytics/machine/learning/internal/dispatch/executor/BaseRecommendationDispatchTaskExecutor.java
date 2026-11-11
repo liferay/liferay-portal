@@ -6,6 +6,7 @@
 package com.liferay.analytics.machine.learning.internal.dispatch.executor;
 
 import com.liferay.analytics.batch.exportimport.manager.AnalyticsBatchExportImportManager;
+import com.liferay.analytics.machine.learning.internal.recommendation.search.RecommendationIndexer;
 import com.liferay.dispatch.executor.BaseDispatchTaskExecutor;
 import com.liferay.dispatch.executor.DispatchTaskExecutorOutput;
 import com.liferay.dispatch.executor.DispatchTaskStatus;
@@ -15,12 +16,16 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.search.capabilities.SearchCapabilities;
+import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
+import com.liferay.portal.search.index.IndexNameBuilder;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -34,8 +39,23 @@ public abstract class BaseRecommendationDispatchTaskExecutor
 		return !FeatureFlagManagerUtil.isEnabled("LRAC-14771");
 	}
 
-	protected Date getLatestSuccessfulDispatchLogEndDate(
-		long dispatchTriggerId) {
+	@Activate
+	protected void activate() {
+		_recommendationIndexer = new RecommendationIndexer(
+			getRecommendationIndexName(), indexNameBuilder, searchCapabilities,
+			searchEngineAdapter);
+	}
+
+	protected abstract String getRecommendationIndexName();
+
+	protected Date getResourceLastModifiedDate(
+		long companyId, long dispatchTriggerId) {
+
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LRAC-14771") &&
+			_recommendationIndexer.isEmpty(companyId)) {
+
+			return null;
+		}
 
 		DispatchLog dispatchLog =
 			dispatchLogLocalService.fetchLatestDispatchLog(
@@ -80,7 +100,18 @@ public abstract class BaseRecommendationDispatchTaskExecutor
 	@Reference
 	protected DispatchLogLocalService dispatchLogLocalService;
 
+	@Reference
+	protected IndexNameBuilder indexNameBuilder;
+
+	@Reference
+	protected SearchCapabilities searchCapabilities;
+
+	@Reference
+	protected SearchEngineAdapter searchEngineAdapter;
+
 	private static final DateFormat _dateFormat = new SimpleDateFormat(
 		"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+	private RecommendationIndexer _recommendationIndexer;
 
 }

@@ -6,14 +6,13 @@
 package com.liferay.analytics.machine.learning.internal.dispatch.executor;
 
 import com.liferay.analytics.dxp.entity.rest.dto.v1_0.AnalyticsUserContentRecommendation;
+import com.liferay.analytics.machine.learning.internal.recommendation.constants.RecommendationIndexNames;
 import com.liferay.dispatch.executor.DispatchTaskExecutor;
 import com.liferay.dispatch.executor.DispatchTaskExecutorOutput;
 import com.liferay.dispatch.executor.DispatchTaskStatus;
 import com.liferay.dispatch.model.DispatchLog;
 import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-
-import java.util.Date;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -44,9 +43,6 @@ public class AnalyticsDownloadUserContentRecommendationDispatchTaskExecutor
 				dispatchTrigger.getDispatchTriggerId(),
 				DispatchTaskStatus.IN_PROGRESS);
 
-		Date resourceLastModifiedDate = getLatestSuccessfulDispatchLogEndDate(
-			dispatchTrigger.getDispatchTriggerId());
-
 		analyticsBatchExportImportManager.importFromAnalyticsCloud(
 			null, dispatchLog.getCompanyId(),
 			HashMapBuilder.put(
@@ -65,7 +61,9 @@ public class AnalyticsDownloadUserContentRecommendationDispatchTaskExecutor
 			message -> updateDispatchLog(
 				dispatchLog.getDispatchLogId(), dispatchTaskExecutorOutput,
 				message),
-			resourceLastModifiedDate,
+			getResourceLastModifiedDate(
+				dispatchLog.getCompanyId(),
+				dispatchTrigger.getDispatchTriggerId()),
 			AnalyticsUserContentRecommendation.class.getName(),
 			dispatchLog.getUserId());
 	}
@@ -73,6 +71,11 @@ public class AnalyticsDownloadUserContentRecommendationDispatchTaskExecutor
 	@Override
 	public String getName() {
 		return KEY;
+	}
+
+	@Override
+	protected String getRecommendationIndexName() {
+		return RecommendationIndexNames.USER_CONTENT_RECOMMENDATION;
 	}
 
 }
