@@ -27,8 +27,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.toolbar.contributor.PortletToolbarContributor;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -76,8 +74,6 @@ public class ItemSelectorRepositoryEntryManagementToolbarDisplayContext {
 
 		_currentURLObj = PortletURLUtil.getCurrent(
 			liferayPortletRequest, liferayPortletResponse);
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			liferayPortletRequest);
 	}
 
 	public String getClearResultsURL() {
@@ -282,7 +278,7 @@ public class ItemSelectorRepositoryEntryManagementToolbarDisplayContext {
 		}
 
 		_orderByType = RepositoryEntryBrowserTagUtil.getOrderByType(
-			_httpServletRequest, _portalPreferences);
+			_httpServletRequest);
 
 		return _orderByType;
 	}
@@ -420,7 +416,7 @@ public class ItemSelectorRepositoryEntryManagementToolbarDisplayContext {
 		}
 
 		_orderByCol = RepositoryEntryBrowserTagUtil.getOrderByCol(
-			_httpServletRequest, _portalPreferences);
+			_httpServletRequest);
 
 		return _orderByCol;
 	}
@@ -496,7 +492,6 @@ public class ItemSelectorRepositoryEntryManagementToolbarDisplayContext {
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private String _orderByCol;
 	private String _orderByType;
-	private final PortalPreferences _portalPreferences;
 	private final RepositoryEntryBrowserDisplayContext
 		_repositoryEntryBrowserDisplayContext;
 	private Boolean _showScopeFilter;

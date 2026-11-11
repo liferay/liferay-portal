@@ -14,8 +14,6 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -61,9 +59,6 @@ public class WikiAttachmentItemSelectorViewDisplayContext {
 		_wikiAttachmentItemSelectorCriterion =
 			wikiAttachmentItemSelectorCriterion;
 		_wikiAttachmentItemSelectorView = wikiAttachmentItemSelectorView;
-
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			httpServletRequest);
 	}
 
 	public Set<String> getAllowedCreationMenuUIItemKeys() {
@@ -114,10 +109,8 @@ public class WikiAttachmentItemSelectorViewDisplayContext {
 
 	public OrderByComparator<FileEntry> getOrderByComparator() {
 		return DLUtil.getRepositoryModelOrderByComparator(
-			RepositoryEntryBrowserTagUtil.getOrderByCol(
-				_httpServletRequest, _portalPreferences),
-			RepositoryEntryBrowserTagUtil.getOrderByType(
-				_httpServletRequest, _portalPreferences));
+			RepositoryEntryBrowserTagUtil.getOrderByCol(_httpServletRequest),
+			RepositoryEntryBrowserTagUtil.getOrderByType(_httpServletRequest));
 	}
 
 	public PortletURL getPortletURL(
@@ -205,7 +198,6 @@ public class WikiAttachmentItemSelectorViewDisplayContext {
 	private final String _itemSelectedEventName;
 	private final ItemSelectorReturnTypeResolverHandler
 		_itemSelectorReturnTypeResolverHandler;
-	private final PortalPreferences _portalPreferences;
 	private final PortletURL _portletURL;
 	private final boolean _search;
 	private String _selectedTab;

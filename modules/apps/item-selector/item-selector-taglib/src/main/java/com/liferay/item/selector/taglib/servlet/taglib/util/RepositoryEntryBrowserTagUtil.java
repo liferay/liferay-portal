@@ -5,7 +5,6 @@
 
 package com.liferay.item.selector.taglib.servlet.taglib.util;
 
-import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,19 +14,13 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class RepositoryEntryBrowserTagUtil {
 
-	public static String getOrderByCol(
-		HttpServletRequest httpServletRequest,
-		PortalPreferences portalPreferences) {
-
+	public static String getOrderByCol(HttpServletRequest httpServletRequest) {
 		return SearchOrderByUtil.getOrderByCol(
 			httpServletRequest,
 			_TAGLIB_UI_REPOSITORY_ENTRY_BROWSER_PAGE_NAMESPACE, "title");
 	}
 
-	public static String getOrderByType(
-		HttpServletRequest httpServletRequest,
-		PortalPreferences portalPreferences) {
-
+	public static String getOrderByType(HttpServletRequest httpServletRequest) {
 		return SearchOrderByUtil.getOrderByType(
 			httpServletRequest,
 			_TAGLIB_UI_REPOSITORY_ENTRY_BROWSER_PAGE_NAMESPACE, "asc");

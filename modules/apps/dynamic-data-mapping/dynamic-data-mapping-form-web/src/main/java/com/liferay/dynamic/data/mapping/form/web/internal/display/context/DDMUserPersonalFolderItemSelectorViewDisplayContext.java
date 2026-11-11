@@ -17,8 +17,6 @@ import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.dao.search.SearchPaginationUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -60,9 +58,6 @@ public class DDMUserPersonalFolderItemSelectorViewDisplayContext {
 			ddmUserPersonalFolderItemSelectorView;
 		_portletURL = portletURL;
 		_search = search;
-
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			httpServletRequest);
 	}
 
 	public PortletURL getEditImageURL(
@@ -177,10 +172,8 @@ public class DDMUserPersonalFolderItemSelectorViewDisplayContext {
 
 	private OrderByComparator<FileEntry> _getOrderByComparator() {
 		return DLUtil.getRepositoryModelOrderByComparator(
-			RepositoryEntryBrowserTagUtil.getOrderByCol(
-				_httpServletRequest, _portalPreferences),
-			RepositoryEntryBrowserTagUtil.getOrderByType(
-				_httpServletRequest, _portalPreferences));
+			RepositoryEntryBrowserTagUtil.getOrderByCol(_httpServletRequest),
+			RepositoryEntryBrowserTagUtil.getOrderByType(_httpServletRequest));
 	}
 
 	private final DDMUserPersonalFolderItemSelectorCriterion
@@ -191,7 +184,6 @@ public class DDMUserPersonalFolderItemSelectorViewDisplayContext {
 	private final String _itemSelectedEventName;
 	private final ItemSelectorReturnTypeResolverHandler
 		_itemSelectorReturnTypeResolverHandler;
-	private final PortalPreferences _portalPreferences;
 	private final PortletURL _portletURL;
 	private final boolean _search;
 

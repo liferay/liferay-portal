@@ -16,8 +16,6 @@ import com.liferay.knowledge.base.model.KBArticle;
 import com.liferay.knowledge.base.service.KBArticleLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -53,9 +51,6 @@ public class KBAttachmentItemSelectorViewDisplayContext {
 		_kbAttachmentItemSelectorView = kbAttachmentItemSelectorView;
 		_portletURL = portletURL;
 		_search = search;
-
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			httpServletRequest);
 	}
 
 	public long getAttachmentsFolderId() throws PortalException {
@@ -87,10 +82,8 @@ public class KBAttachmentItemSelectorViewDisplayContext {
 
 	public OrderByComparator<FileEntry> getOrderByComparator() {
 		return DLUtil.getRepositoryModelOrderByComparator(
-			RepositoryEntryBrowserTagUtil.getOrderByCol(
-				_httpServletRequest, _portalPreferences),
-			RepositoryEntryBrowserTagUtil.getOrderByType(
-				_httpServletRequest, _portalPreferences));
+			RepositoryEntryBrowserTagUtil.getOrderByCol(_httpServletRequest),
+			RepositoryEntryBrowserTagUtil.getOrderByType(_httpServletRequest));
 	}
 
 	public PortletURL getPortletURL(
@@ -142,7 +135,6 @@ public class KBAttachmentItemSelectorViewDisplayContext {
 	private final KBAttachmentItemSelectorCriterion
 		_kbAttachmentItemSelectorCriterion;
 	private final KBAttachmentItemSelectorView _kbAttachmentItemSelectorView;
-	private final PortalPreferences _portalPreferences;
 	private final PortletURL _portletURL;
 	private final boolean _search;
 	private String _selectedTab;

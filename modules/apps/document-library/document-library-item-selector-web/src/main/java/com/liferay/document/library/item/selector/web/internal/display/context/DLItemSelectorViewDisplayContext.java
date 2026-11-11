@@ -38,8 +38,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.Repository;
@@ -111,8 +109,6 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 		_search = search;
 		_stagingGroupHelper = stagingGroupHelper;
 
-		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			httpServletRequest);
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}
@@ -251,9 +247,9 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 		OrderByComparator<Object> repositoryModelOrderByComparator =
 			DLUtil.getRepositoryModelOrderByComparator(
 				RepositoryEntryBrowserTagUtil.getOrderByCol(
-					_httpServletRequest, _portalPreferences),
+					_httpServletRequest),
 				RepositoryEntryBrowserTagUtil.getOrderByType(
-					_httpServletRequest, _portalPreferences),
+					_httpServletRequest),
 				true);
 
 		int[] startAndEnd = _getStartAndEnd();
@@ -721,7 +717,6 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 	private final ItemSelectorReturnTypeResolverHandler
 		_itemSelectorReturnTypeResolverHandler;
 	private String[] _mimeTypes;
-	private final PortalPreferences _portalPreferences;
 	private final PortletURL _portletURL;
 	private Repository _repository;
 	private final boolean _search;
