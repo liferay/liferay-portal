@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.site.cms.site.initializer.internal.instance.lifecycle;
+package com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_6;
 
 import com.liferay.layout.importer.LayoutsImporter;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -11,26 +11,31 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
-import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -49,54 +54,51 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Jan Brychta
  */
-@Component(service = PortalInstanceLifecycleListener.class)
-public class
-	CMSPlanningAndTasksPagesInitialRequestPortalInstanceLifecycleListener
-		extends InitialRequestPortalInstanceLifecycleListener {
+public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 
-	@Activate
-	@Override
-	protected void activate(BundleContext bundleContext) {
-		super.activate(bundleContext);
+	public CMSPlanningAndTasksPagesUpgradeProcess(
+		CompanyLocalService companyLocalService,
+		GroupLocalService groupLocalService,
+		LayoutLocalService layoutLocalService,
+		LayoutPageTemplateEntryLocalService layoutPageTemplateEntryLocalService,
+		LayoutPageTemplateStructureLocalService
+			layoutPageTemplateStructureLocalService,
+		LayoutsImporter layoutsImporter,
+		ResourcePermissionLocalService resourcePermissionLocalService,
+		RoleLocalService roleLocalService,
+		SegmentsExperienceLocalService segmentsExperienceLocalService,
+		SiteNavigationMenuItemLocalService siteNavigationMenuItemLocalService,
+		SiteNavigationMenuLocalService siteNavigationMenuLocalService,
+		UserLocalService userLocalService) {
+
+		_companyLocalService = companyLocalService;
+		_groupLocalService = groupLocalService;
+		_layoutLocalService = layoutLocalService;
+		_layoutPageTemplateEntryLocalService =
+			layoutPageTemplateEntryLocalService;
+		_layoutPageTemplateStructureLocalService =
+			layoutPageTemplateStructureLocalService;
+		_layoutsImporter = layoutsImporter;
+		_resourcePermissionLocalService = resourcePermissionLocalService;
+		_roleLocalService = roleLocalService;
+		_segmentsExperienceLocalService = segmentsExperienceLocalService;
+		_siteNavigationMenuItemLocalService =
+			siteNavigationMenuItemLocalService;
+		_siteNavigationMenuLocalService = siteNavigationMenuLocalService;
+		_userLocalService = userLocalService;
 	}
 
 	@Override
-	protected void doPortalInstanceRegistered(long companyId) throws Exception {
-		Group group = _groupLocalService.fetchGroup(
-			companyId, GroupConstants.CMS);
+	protected void doUpgrade() throws Exception {
+		_waitForLayoutLocalServiceWrapper();
 
-		if (group == null) {
-			return;
-		}
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setCompanyId(companyId);
-		serviceContext.setScopeGroupId(group.getGroupId());
-		serviceContext.setUserId(_userLocalService.getGuestUserId(companyId));
-
-		ServiceContextThreadLocal.pushServiceContext(serviceContext);
-
-		try {
-			Layout planningLayout = _getOrAddPlanningLayout(
-				group, serviceContext);
-
-			Layout tasksLayout = _getOrAddTasksLayout(
-				group, planningLayout, serviceContext);
-
-			_addOrUpdatePlanningNavigationMenuItems(
-				group, tasksLayout, serviceContext);
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
-		}
+		_companyLocalService.forEachCompanyId(this::_upgradeCompany);
 	}
 
 	private void _addOrUpdatePlanningNavigationMenuItems(
@@ -155,9 +157,9 @@ public class
 						"key",
 						ViewTasksJSPSectionFragmentRenderer.class.getName())
 				).put(
-					"fragmentConfig", _jsonFactory.createJSONObject()
+					"fragmentConfig", JSONFactoryUtil.createJSONObject()
 				).put(
-					"fragmentFields", _jsonFactory.createJSONArray()
+					"fragmentFields", JSONFactoryUtil.createJSONArray()
 				).put(
 					"indexed", true
 				)
@@ -331,43 +333,96 @@ public class
 			new String[] {"VIEW"});
 	}
 
-	@Reference
-	private GroupLocalService _groupLocalService;
+	private void _upgradeCompany(long companyId) throws Exception {
+		Group group = _groupLocalService.fetchGroup(
+			companyId, GroupConstants.CMS);
 
-	@Reference
-	private JSONFactory _jsonFactory;
+		if (group == null) {
+			return;
+		}
 
-	@Reference
-	private LayoutLocalService _layoutLocalService;
+		ServiceContext serviceContext = new ServiceContext();
 
-	@Reference
-	private LayoutPageTemplateEntryLocalService
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setScopeGroupId(group.getGroupId());
+		serviceContext.setUserId(_userLocalService.getGuestUserId(companyId));
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			Layout planningLayout = _getOrAddPlanningLayout(
+				group, serviceContext);
+
+			Layout tasksLayout = _getOrAddTasksLayout(
+				group, planningLayout, serviceContext);
+
+			_addOrUpdatePlanningNavigationMenuItems(
+				group, tasksLayout, serviceContext);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	private void _waitForLayoutLocalServiceWrapper() throws Exception {
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		ServiceTracker<ServiceWrapper<?>, ServiceWrapper<?>> serviceTracker =
+			new ServiceTracker<>(
+				bundleContext,
+				FrameworkUtil.createFilter(
+					StringBundler.concat(
+						"(&(component.name=",
+						_CLASS_NAME_LAYOUT_LOCAL_SERVICE_WRAPPER,
+						")(objectClass=", ServiceWrapper.class.getName(),
+						"))")),
+				null);
+
+		serviceTracker.open();
+
+		try {
+			ServiceWrapper<?> serviceWrapper = serviceTracker.waitForService(
+				_LAYOUT_LOCAL_SERVICE_WRAPPER_TIMEOUT);
+
+			if ((serviceWrapper == null) && _log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						_CLASS_NAME_LAYOUT_LOCAL_SERVICE_WRAPPER,
+						" did not activate within ",
+						_LAYOUT_LOCAL_SERVICE_WRAPPER_TIMEOUT,
+						" ms, copying the tasks layout content may fail"));
+			}
+		}
+		finally {
+			serviceTracker.close();
+		}
+	}
+
+	private static final String _CLASS_NAME_LAYOUT_LOCAL_SERVICE_WRAPPER =
+		"com.liferay.layout.internal.service.LayoutLocalServiceWrapper";
+
+	private static final long _LAYOUT_LOCAL_SERVICE_WRAPPER_TIMEOUT = 60000;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CMSPlanningAndTasksPagesUpgradeProcess.class);
+
+	private final CompanyLocalService _companyLocalService;
+	private final GroupLocalService _groupLocalService;
+	private final LayoutLocalService _layoutLocalService;
+	private final LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
-
-	@Reference
-	private LayoutPageTemplateStructureLocalService
+	private final LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
-
-	@Reference
-	private LayoutsImporter _layoutsImporter;
-
-	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
-
-	@Reference
-	private RoleLocalService _roleLocalService;
-
-	@Reference
-	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
-
-	@Reference
-	private SiteNavigationMenuItemLocalService
+	private final LayoutsImporter _layoutsImporter;
+	private final ResourcePermissionLocalService
+		_resourcePermissionLocalService;
+	private final RoleLocalService _roleLocalService;
+	private final SegmentsExperienceLocalService
+		_segmentsExperienceLocalService;
+	private final SiteNavigationMenuItemLocalService
 		_siteNavigationMenuItemLocalService;
-
-	@Reference
-	private SiteNavigationMenuLocalService _siteNavigationMenuLocalService;
-
-	@Reference
-	private UserLocalService _userLocalService;
+	private final SiteNavigationMenuLocalService
+		_siteNavigationMenuLocalService;
+	private final UserLocalService _userLocalService;
 
 }
