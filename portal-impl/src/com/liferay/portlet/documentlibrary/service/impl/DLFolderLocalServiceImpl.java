@@ -903,9 +903,7 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 		incrementClass = DateOverrideIncrement.class
 	)
 	@Override
-	public void updateLastPostDate(long folderId, Date lastPostDate)
-		throws PortalException {
-
+	public void updateLastPostDate(long folderId, Date lastPostDate) {
 		if (ExportImportThreadLocal.isImportInProcess() ||
 			(folderId == DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) ||
 			(lastPostDate == null)) {
