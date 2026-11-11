@@ -1217,8 +1217,7 @@ public class UserImpl extends UserBaseImpl {
 	}
 
 	private List<Organization> _getParentOrganizations(
-			List<Organization> organizations)
-		throws PortalException {
+		List<Organization> organizations) {
 
 		return TransformUtil.transform(
 			organizations,
