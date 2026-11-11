@@ -1688,6 +1688,13 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testUnusedParameterDSLifecycleMethods() throws Exception {
+		test(
+			"UnusedParameterDSLifecycleMethods.testjava",
+			"Parameter \"bundleContext\" is unused", 33);
+	}
+
+	@Test
 	public void testUnusedVariable() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(

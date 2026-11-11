@@ -1,0 +1,49 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.portal.kernel.language.Language;
+
+import java.util.Map;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Shuyang Zhou
+ */
+@Component(service = UnusedParameterDSLifecycleMethods.class)
+public class UnusedParameterDSLifecycleMethods {
+
+	@Activate
+	public UnusedParameterDSLifecycleMethods(@Reference Language language) {
+	}
+
+	public String getName(String defaultName) {
+		return _name;
+	}
+
+	@Activate
+	@Modified
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
+		_name = (String)properties.get("name");
+	}
+
+	@Deactivate
+	protected void deactivate(int reason) {
+		_reason = reason;
+	}
+
+	private String _name;
+	private int _reason;
+
+}
