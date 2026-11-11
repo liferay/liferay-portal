@@ -43,18 +43,14 @@ public class ImpersonationAction extends Action {
 		throws ActionException {
 
 		try {
-			doRun(httpServletRequest, httpServletResponse);
+			_run(httpServletRequest);
 		}
 		catch (Exception exception) {
 			throw new ActionException(exception);
 		}
 	}
 
-	protected void doRun(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
-		throws Exception {
-
+	private void _run(HttpServletRequest httpServletRequest) throws Exception {
 		long plid = ParamUtil.getLong(httpServletRequest, "p_l_id");
 
 		if (plid <= 0) {
