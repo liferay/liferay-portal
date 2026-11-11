@@ -790,12 +790,12 @@ public class ObjectEntryResourceAttachmentTest
 		String randomString = RandomTestUtil.randomString(
 			UniqueStringRandomizerBumper.INSTANCE);
 
-		String attachmentFieldName = "x" + randomString;
+		String objectFieldName = "x" + randomString;
 
 		ObjectField objectField = ObjectFieldUtil.createObjectField(
 			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
 			ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-			attachmentFieldName, attachmentFieldName,
+			objectFieldName, objectFieldName,
 			Arrays.asList(
 				new ObjectFieldSettingBuilder(
 				).name(
@@ -834,7 +834,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				attachmentFieldName,
+				objectFieldName,
 				JSONUtil.put(
 					"fileBase64", fileBase64
 				).put(
@@ -843,13 +843,13 @@ public class ObjectEntryResourceAttachmentTest
 			).toString(),
 			StringBundler.concat(
 				getObjectDefinition1().getRESTContextPath(), "?nestedFields=",
-				attachmentFieldName, ".fileBase64"),
+				objectFieldName, ".fileBase64"),
 			Http.Method.POST);
 
 		_assertAttachmentJSONObject(
 			_dlFileEntryLocalService.getDLFileEntry(
 				_testDLFileEntryModelListener.getLastFileEntryId()),
-			fileBase64, jsonObject.getJSONObject(attachmentFieldName),
+			fileBase64, jsonObject.getJSONObject(objectFieldName),
 			JSONUtil.put(
 				"externalReferenceCode", "L_GLOBAL"
 			).put(
@@ -882,12 +882,12 @@ public class ObjectEntryResourceAttachmentTest
 		JSONObject localizedAttachmentI18nJSONObject = jsonObject.getJSONObject(
 			"localizedAttachment_i18n");
 
-		JSONObject defaultLanguageJSONObject =
+		JSONObject fileEntryJSONObject =
 			localizedAttachmentI18nJSONObject.getJSONObject("en_US");
 
 		Assert.assertEquals(
 			fileEntry.getFileBase64(),
-			defaultLanguageJSONObject.getString("fileBase64"));
+			fileEntryJSONObject.getString("fileBase64"));
 
 		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}

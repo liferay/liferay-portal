@@ -304,11 +304,11 @@ public class ObjectEntryResourceNestedFieldsTest
 			"r_", objectRelationship2.getName(), "_",
 			getObjectDefinition1().getPKObjectFieldName());
 
-		String relationshipFieldNameNestedFieldName = StringUtil.removeLast(
+		String nestedFieldName = StringUtil.removeLast(
 			relationshipFieldName, "Id");
 
 		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName, null, relationshipFieldName,
+			nestedFieldName, null, relationshipFieldName,
 			getObjectDefinition2(),
 			new String[][] {
 				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)},
@@ -316,8 +316,7 @@ public class ObjectEntryResourceNestedFieldsTest
 			},
 			Type.MANY_TO_ONE);
 		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName, null,
-			relationshipFieldNameNestedFieldName, getObjectDefinition2(),
+			nestedFieldName, null, nestedFieldName, getObjectDefinition2(),
 			new String[][] {
 				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)},
 				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)}
@@ -330,15 +329,15 @@ public class ObjectEntryResourceNestedFieldsTest
 			"c_");
 
 		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName, null,
-			relatedObjectDefinitionName, getObjectDefinition2(),
+			nestedFieldName, null, relatedObjectDefinitionName,
+			getObjectDefinition2(),
 			new String[][] {
 				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)},
 				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)}
 			},
 			Type.MANY_TO_ONE);
 		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName, null,
+			nestedFieldName, null,
 			RandomTestUtil.randomString() + relatedObjectDefinitionName,
 			getObjectDefinition2(),
 			new String[][] {
@@ -348,8 +347,8 @@ public class ObjectEntryResourceNestedFieldsTest
 			Type.MANY_TO_ONE);
 
 		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName, null,
-			objectRelationship2.getName(), getObjectDefinition2(),
+			nestedFieldName, null, objectRelationship2.getName(),
+			getObjectDefinition2(),
 			new String[][] {
 				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)},
 				{OBJECT_FIELD_NAME_1, String.valueOf(OBJECT_FIELD_VALUE_1)}
@@ -367,7 +366,7 @@ public class ObjectEntryResourceNestedFieldsTest
 		// Many to one relationship with permissions
 
 		_testGetNestedFieldDetailsInRelationships(
-			relationshipFieldNameNestedFieldName, null, relationshipFieldName,
+			nestedFieldName, null, relationshipFieldName,
 			getObjectDefinition2(),
 			new String[][] {
 				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)},
@@ -673,7 +672,7 @@ public class ObjectEntryResourceNestedFieldsTest
 			"r_", objectRelationship5.getName(), "_",
 			getUserSystemObjectDefinition().getPKObjectFieldName());
 
-		String relationshipFieldNameNestedFieldName = StringUtil.removeLast(
+		String nestedFieldName = StringUtil.removeLast(
 			relationshipFieldName, "Id");
 
 		_assertNestedFieldsInRelationships(
@@ -685,7 +684,7 @@ public class ObjectEntryResourceNestedFieldsTest
 					objectEntry4.getObjectEntryId(), "?nestedFields=",
 					relationshipFieldName),
 				Http.Method.GET),
-			relationshipFieldNameNestedFieldName,
+			nestedFieldName,
 			new String[][] {
 				{OBJECT_FIELD_NAME_TEXT, String.valueOf(OBJECT_FIELD_VALUE_4)},
 				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)}
@@ -707,7 +706,7 @@ public class ObjectEntryResourceNestedFieldsTest
 			},
 			null, Type.MANY_TO_ONE);
 		_assertNestedFieldsInRelationships(
-			0, 1, jsonObject, relationshipFieldNameNestedFieldName,
+			0, 1, jsonObject, nestedFieldName,
 			new String[][] {
 				{OBJECT_FIELD_NAME_TEXT, String.valueOf(OBJECT_FIELD_VALUE_4)},
 				{OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)}
