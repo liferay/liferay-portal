@@ -65,6 +65,15 @@ describe('[CMS Asset Lists] createAssetListFDSPropsBuilder', () => {
 		jest.restoreAllMocks();
 	});
 
+	it('keeps the API URL parameters of the data set', () => {
+		expect(
+			getAssetListFDSProps({
+				additionalAPIURLParameters: 'assetLibraryId=1',
+				additionalProps: {},
+			}).additionalAPIURLParameters
+		).toBe('assetLibraryId=1');
+	});
+
 	it('appends the view action after the actions of the list', () => {
 		expect(getItemsActions()).toEqual([
 			EDIT_ACTION,

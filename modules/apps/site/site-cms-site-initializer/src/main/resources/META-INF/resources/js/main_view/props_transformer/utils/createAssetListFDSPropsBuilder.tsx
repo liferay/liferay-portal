@@ -27,6 +27,7 @@ export interface AdditionalProps {
 }
 
 export interface AssetListFDSProps {
+	additionalAPIURLParameters?: string;
 	additionalProps: AdditionalProps;
 	apiURL?: string;
 	id?: string;
@@ -146,17 +147,13 @@ export function createAssetListFDSPropsBuilder<T extends IAssetListItem>({
 	}
 
 	return function getAssetListFDSProps({
-		additionalProps,
+		additionalProps = {},
 		itemsActions = [],
 		...otherProps
 	}: AssetListFDSProps) {
-		const {additionalAPIURLParameters, ...remainingAdditionalProps} =
-			additionalProps || {};
-
 		return {
 			...otherProps,
-			additionalAPIURLParameters,
-			additionalProps: remainingAdditionalProps,
+			additionalProps,
 			customRenderers: {
 				listSection: [
 					{
@@ -167,10 +164,7 @@ export function createAssetListFDSPropsBuilder<T extends IAssetListItem>({
 				],
 			},
 			hideManagementBarInEmptyState: true,
-			itemsActions: [
-				...itemsActions,
-				getViewItemAction(remainingAdditionalProps),
-			],
+			itemsActions: [...itemsActions, getViewItemAction(additionalProps)],
 			searchAsYouType: otherProps.searchAsYouType ?? true,
 			searchSuggestionsEnabled:
 				otherProps.searchSuggestionsEnabled ?? true,
@@ -200,16 +194,15 @@ export function createAssetListFDSPropsBuilder<T extends IAssetListItem>({
 							sticker: {
 								className:
 									getFileMimeTypeObjectDefinitionStickerValue(
-										remainingAdditionalProps.fileMimeTypeCssClasses,
-										remainingAdditionalProps.objectDefinitionCssClasses ??
+										additionalProps.fileMimeTypeCssClasses,
+										additionalProps.objectDefinitionCssClasses ??
 											{},
 										item
 									),
 							},
 							symbol: getFileMimeTypeObjectDefinitionStickerValue(
-								remainingAdditionalProps.fileMimeTypeIcons,
-								remainingAdditionalProps.objectDefinitionIcons ??
-									{},
+								additionalProps.fileMimeTypeIcons,
+								additionalProps.objectDefinitionIcons ?? {},
 								item
 							),
 						},
