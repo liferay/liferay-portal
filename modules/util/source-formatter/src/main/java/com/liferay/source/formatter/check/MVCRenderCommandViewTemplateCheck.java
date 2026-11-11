@@ -24,10 +24,12 @@ public class MVCRenderCommandViewTemplateCheck extends BaseFileCheck {
 	protected String doProcess(
 		String fileName, String absolutePath, String content) {
 
-		if (isExcludedPath(
-				"mvc.render.command.view.template.excludes", absolutePath)) {
+		for (String allowedFileName :
+				getAttributeValues(_ALLOWED_FILE_NAMES_KEY, absolutePath)) {
 
-			return content;
+			if (absolutePath.endsWith(allowedFileName)) {
+				return content;
+			}
 		}
 
 		int index = content.indexOf("\"mvc.command.name=/\"");
@@ -60,6 +62,8 @@ public class MVCRenderCommandViewTemplateCheck extends BaseFileCheck {
 
 		return content;
 	}
+
+	private static final String _ALLOWED_FILE_NAMES_KEY = "allowedFileNames";
 
 	private static final Pattern _renderCommandClassPattern = Pattern.compile(
 		"\\bimplements\\b[^{]*\\bMVCRenderCommand\\b");

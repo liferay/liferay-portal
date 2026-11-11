@@ -42,11 +42,11 @@ public class FooPortlet extends MVCPortlet {
 }
 ```
 
-### Exclusions
+### Allowed Files
 
-A command that has to stay can be excluded in the nearest `source-formatter.properties`. Explain the reason in the commit message.
+A command that has to stay can be allowed in the nearest `source-formatter.properties`. Explain the reason in the commit message.
 
 ```
-mvc.render.command.view.template.excludes=\
+source.check.MVCRenderCommandViewTemplateCheck.allowedFileNames=\
     modules/apps/foo/foo-web/src/main/java/com/liferay/foo/web/internal/portlet/action/ViewMVCRenderCommand.java
 ```
