@@ -89,7 +89,7 @@ if (wikiPage.getAttachmentsFolderId() != DLFolderConstants.DEFAULT_PARENT_FOLDER
 	itemSelectedEventName="<%= wikiAttachmentItemSelectorViewDisplayContext.getItemSelectedEventName() %>"
 	itemSelectorReturnTypeResolver="<%= wikiAttachmentItemSelectorViewDisplayContext.getItemSelectorReturnTypeResolver() %>"
 	maxFileSize="<%= wikiAttachmentItemSelectorViewDisplayContext.getWikiAttachmentMaxSize() %>"
-	portletURL="<%= wikiAttachmentItemSelectorViewDisplayContext.getPortletURL(request, liferayPortletResponse) %>"
+	portletURL="<%= wikiAttachmentItemSelectorViewDisplayContext.getPortletURL(liferayPortletResponse) %>"
 	repositoryEntries="<%= portletFileEntries %>"
 	repositoryEntriesCount="<%= portletFileEntriesCount %>"
 	showDragAndDropZone="<%= false %>"

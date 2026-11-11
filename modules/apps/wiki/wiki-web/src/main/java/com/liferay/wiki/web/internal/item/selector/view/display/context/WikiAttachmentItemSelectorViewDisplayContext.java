@@ -121,7 +121,6 @@ public class WikiAttachmentItemSelectorViewDisplayContext {
 	}
 
 	public PortletURL getPortletURL(
-			HttpServletRequest httpServletRequest,
 			LiferayPortletResponse liferayPortletResponse)
 		throws PortletException {
 
