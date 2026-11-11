@@ -3602,7 +3602,7 @@ public class ContactsEngineClientImpl
 			OutputStream outputStream)
 		throws Exception {
 
-		RestTemplate restTemplate = getRestTemplate(faroProject);
+		RestTemplate restTemplate = getBackgroundRestTemplate(faroProject);
 
 		RequestCallback requestCallback = clientHttpRequest -> {
 			HttpHeaders httpHeaders = clientHttpRequest.getHeaders();
