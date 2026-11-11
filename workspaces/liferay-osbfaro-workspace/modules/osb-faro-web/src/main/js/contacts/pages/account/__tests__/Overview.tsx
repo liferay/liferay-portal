@@ -399,4 +399,22 @@ describe('Overview', () => {
 			).toBeTruthy();
 		});
 	});
+
+	it('should order the engagement summary cards', () => {
+		const {container} = renderOverview({account: mockAccount});
+
+		const sections = [
+			screen.getByText('ENGAGEMENT SUMMARY').closest('div')!,
+			screen.getByTestId('most-engaged-individuals'),
+			screen.getByTestId('top-campaigns'),
+			container.querySelector('.top-pages-card-root')!,
+		];
+
+		sections.slice(1).forEach((section, index) => {
+			expect(
+				sections[index].compareDocumentPosition(section) &
+					Node.DOCUMENT_POSITION_FOLLOWING
+			).toBeTruthy();
+		});
+	});
 });
