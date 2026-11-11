@@ -679,15 +679,13 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 				if (Validator.isNotNull(viewURL) &&
 					!Objects.equals(viewURL, noSuchEntryRedirect)) {
 
-					String redirect = ParamUtil.getString(
-						liferayPortletRequest, "redirect");
+					String redirect = AssetPublisherUtil.getRedirect(
+						liferayPortletRequest);
 
-					if (Validator.isNull(redirect)) {
-						redirect = _portal.getCurrentURL(liferayPortletRequest);
+					if (Validator.isNotNull(redirect)) {
+						viewURL = HttpComponentsUtil.setParameter(
+							viewURL, "redirect", redirect);
 					}
-
-					viewURL = HttpComponentsUtil.setParameter(
-						viewURL, "redirect", redirect);
 				}
 			}
 			catch (Exception exception) {

@@ -1093,11 +1093,7 @@ public class AssetPublisherDisplayContext {
 			FeatureFlagManagerUtil.isEnabled(
 				_themeDisplay.getCompanyId(), "LPD-89171")) {
 
-			String redirect = ParamUtil.getString(_portletRequest, "redirect");
-
-			if (Validator.isNull(redirect)) {
-				redirect = _portal.getCurrentURL(_portletRequest);
-			}
+			String redirect = AssetPublisherUtil.getRedirect(_portletRequest);
 
 			if (Validator.isNotNull(redirect)) {
 				portletURL.setParameter("redirect", redirect);
