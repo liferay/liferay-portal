@@ -59,7 +59,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
@@ -1310,18 +1309,11 @@ public class ObjectEntryResourceAttachmentTest
 		).put(
 			"externalReferenceCode", dlFileEntry.getExternalReferenceCode()
 		).put(
-			"id", _testDLFileEntryModelListener.getLastFileEntryId()
+			"id", Long.valueOf(dlFileEntry.getFileEntryId())
 		).put(
 			"link",
 			() -> {
 				Link link = new Link();
-
-				FileEntry serviceBuilderFileEntry =
-					_dlAppLocalService.getFileEntry(
-						_testDLFileEntryModelListener.getLastFileEntryId());
-
-				FileVersion fileVersion =
-					serviceBuilderFileEntry.getFileVersion();
 
 				long folderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
 				long repositoryId = 0;
@@ -1371,7 +1363,7 @@ public class ObjectEntryResourceAttachmentTest
 					repositoryId = dlFolder.getRepositoryId();
 				}
 
-				Date modifiedDate = fileVersion.getModifiedDate();
+				Date modifiedDate = dlFileVersion.getModifiedDate();
 
 				String groupExternalReferenceCode = StringPool.BLANK;
 
@@ -1390,8 +1382,9 @@ public class ObjectEntryResourceAttachmentTest
 					StringBundler.concat(
 						"/documents/", repositoryId, "/", folderId, "/",
 						URLCodec.encodeURL(fileEntry.getName()), "/",
-						serviceBuilderFileEntry.getUuid(), "?version=",
-						fileVersion.getVersion(), "&t=", modifiedDate.getTime(),
+						dlFileEntry.getUuid(), "?version=",
+						dlFileVersion.getVersion(), "&t=",
+						modifiedDate.getTime(),
 						"&download=true&groupExternalReferenceCode=",
 						groupExternalReferenceCode,
 						"&objectDefinitionExternalReferenceCode=",
@@ -1526,12 +1519,9 @@ public class ObjectEntryResourceAttachmentTest
 		throws Exception {
 
 		com.liferay.object.rest.dto.v1_0.FileEntry fileEntry =
-			new com.liferay.object.rest.dto.v1_0.FileEntry();
-
-		fileEntry.setFileBase64(
-			Base64.encode(DLTestUtil.randomTextFileBytes()));
-		fileEntry.setMimeType(ContentTypes.TEXT_PLAIN);
-		fileEntry.setName(RandomTestUtil.randomString() + ".txt");
+			_toFileEntryWithFileBase64(
+				Base64.encode(DLTestUtil.randomTextFileBytes()),
+				RandomTestUtil.randomString() + ".txt", null, null);
 
 		if (StringUtil.equals(
 				objectFieldName,

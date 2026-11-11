@@ -95,6 +95,7 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
@@ -303,7 +304,8 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
-			objectDefinition.getRESTContextPath() + "?filter=" + filterString,
+			objectDefinition.getRESTContextPath() + "?filter=" +
+				URLCodec.encodeURL(filterString),
 			Http.Method.GET);
 
 		Assert.assertNull(jsonObject.get("status"));
@@ -827,20 +829,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 		return jsonArray;
 	}
 
-	protected AssetVocabulary getAssetVocabulary() throws Exception {
-		if (_assetVocabulary != null) {
-			return _assetVocabulary;
-		}
-
-		_assetVocabulary = assetVocabularyLocalService.addVocabulary(
-			userLocalService.getGuestUserId(TestPropsValues.getCompanyId()),
-			testGroupId,
-			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
-			new ServiceContext());
-
-		return _assetVocabulary;
-	}
-
 	protected Company getCompanyByWebId() throws Exception {
 		try {
 			return companyLocalService.getCompanyByWebId("www.able.com");
@@ -1232,7 +1220,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 		throws Exception {
 
 		return postTaxonomyVocabularyTaxonomyCategory(
-			testGroupId, getAssetVocabulary().getVocabularyId());
+			testGroupId, _getAssetVocabulary().getVocabularyId());
 	}
 
 	protected TaxonomyCategory postTaxonomyVocabularyTaxonomyCategory(
@@ -1837,6 +1825,20 @@ public abstract class BaseObjectEntryResourceTestCase {
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 			ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
 			RandomTestUtil.randomString(), objectFieldName, false);
+	}
+
+	private AssetVocabulary _getAssetVocabulary() throws Exception {
+		if (_assetVocabulary != null) {
+			return _assetVocabulary;
+		}
+
+		_assetVocabulary = assetVocabularyLocalService.addVocabulary(
+			userLocalService.getGuestUserId(TestPropsValues.getCompanyId()),
+			testGroupId,
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
+			new ServiceContext());
+
+		return _assetVocabulary;
 	}
 
 	private JSONObject _toListTypeEntryJSONObject(ListTypeEntry listTypeEntry) {

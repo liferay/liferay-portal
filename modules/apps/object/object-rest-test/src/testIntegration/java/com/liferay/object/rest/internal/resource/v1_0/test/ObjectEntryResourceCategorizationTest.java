@@ -220,8 +220,7 @@ public class ObjectEntryResourceCategorizationTest
 		// Site scope
 
 		TaxonomyCategory siteTaxonomyCategory1 =
-			postTaxonomyVocabularyTaxonomyCategory(
-				testGroupId, getAssetVocabulary().getVocabularyId());
+			postTaxonomyVocabularyTaxonomyCategory();
 
 		TaxonomyCategory siteTaxonomyCategory2 =
 			_postTaxonomyCategoryTaxonomyCategory(siteTaxonomyCategory1);
