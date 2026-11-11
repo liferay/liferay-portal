@@ -40,7 +40,7 @@ const DateRangeFields = ({
 
 	return (
 		<>
-			<ClayLayout.Col md={3}>
+			<ClayLayout.Col md>
 				<FieldDatePicker
 					defaultTime="00:00"
 					errorMessage={
@@ -66,7 +66,7 @@ const DateRangeFields = ({
 				/>
 			</ClayLayout.Col>
 
-			<ClayLayout.Col md={3}>
+			<ClayLayout.Col md>
 				<FieldDatePicker
 					defaultTime={(date) => getEndDefaultTime(date, timeZoneId)}
 					errorMessage={

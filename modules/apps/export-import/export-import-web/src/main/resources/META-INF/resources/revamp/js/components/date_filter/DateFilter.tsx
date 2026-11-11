@@ -5,6 +5,7 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
+import ClayForm from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import {sub} from 'frontend-js-web';
 import React, {useMemo, useState} from 'react';
@@ -94,7 +95,7 @@ export default function DateFilter({
 	return (
 		<>
 			<ClayLayout.Row>
-				<ClayLayout.Col md={4}>
+				<ClayLayout.Col md="auto">
 					<FieldSelectWithOption
 						formGroupProps={{className: 'mb-0'}}
 						id="range"
@@ -126,20 +127,29 @@ export default function DateFilter({
 					/>
 				)}
 
-				<ClayLayout.Col className="align-items-end d-flex" md="auto">
-					{!(
-						editing.range === Range.All &&
-						appliedValue.range === Range.All
-					) && (
-						<ClayButton
-							disabled={isDirty ? !validation.isValid : true}
-							displayType="secondary"
-							onClick={handleShowResults}
-							size="sm"
-						>
-							{Liferay.Language.get('show-results')}
-						</ClayButton>
-					)}
+				<ClayLayout.Col md="auto">
+					<ClayForm.Group className="mb-0">
+						<label aria-hidden="true" className="invisible">
+							&nbsp;
+						</label>
+
+						<div className="d-flex">
+							{!(
+								editing.range === Range.All &&
+								appliedValue.range === Range.All
+							) && (
+								<ClayButton
+									disabled={
+										isDirty ? !validation.isValid : true
+									}
+									displayType="secondary"
+									onClick={handleShowResults}
+								>
+									{Liferay.Language.get('show-results')}
+								</ClayButton>
+							)}
+						</div>
+					</ClayForm.Group>
 				</ClayLayout.Col>
 			</ClayLayout.Row>
 

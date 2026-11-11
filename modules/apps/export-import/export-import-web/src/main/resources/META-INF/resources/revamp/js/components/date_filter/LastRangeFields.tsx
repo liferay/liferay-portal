@@ -16,7 +16,7 @@ type Props = {
 };
 
 const LastRangeFields = ({handleUpdateFilter, value}: Props) => (
-	<ClayLayout.Col md={4}>
+	<ClayLayout.Col md="auto">
 		<FieldSelectWithOption
 			formGroupProps={{className: 'mb-0'}}
 			id="last"
