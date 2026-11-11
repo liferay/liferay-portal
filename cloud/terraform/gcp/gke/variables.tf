@@ -6,6 +6,9 @@ variable "control_plane_logging_config" {
 		}
 	)
 }
+variable "database_engine" {
+	type=string
+}
 variable "deployment_name" {
 	type=string
 	validation {
