@@ -38,13 +38,12 @@ public class CPAttachmentFileEntryFinderImpl
 		Date expirationDate,
 		QueryDefinition<CPAttachmentFileEntry> queryDefinition) {
 
-		return doFindByExpirationDate(expirationDate, queryDefinition, false);
+		return doFindByExpirationDate(expirationDate, queryDefinition);
 	}
 
 	protected List<CPAttachmentFileEntry> doFindByExpirationDate(
 		Date expirationDate,
-		QueryDefinition<CPAttachmentFileEntry> queryDefinition,
-		boolean inlineSQLHelper) {
+		QueryDefinition<CPAttachmentFileEntry> queryDefinition) {
 
 		Session session = null;
 
