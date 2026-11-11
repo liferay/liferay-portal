@@ -1134,9 +1134,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	 * @return the team roles in the company
 	 */
 	@Override
-	public List<Role> getTeamsRoles(long companyId, long[] teamIds)
-		throws PortalException {
-
+	public List<Role> getTeamsRoles(long companyId, long[] teamIds) {
 		return rolePersistence.findByC_C_C(
 			companyId, _classNameLocalService.getClassNameId(Team.class),
 			teamIds);
@@ -1941,8 +1939,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 
 	@Override
 	public Role updateExternalReferenceCode(
-			Role role, String externalReferenceCode)
-		throws PortalException {
+		Role role, String externalReferenceCode) {
 
 		role.setExternalReferenceCode(externalReferenceCode);
 
