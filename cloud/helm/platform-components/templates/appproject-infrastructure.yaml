@@ -1,3 +1,4 @@
+{{- if .Values.appProjects.infrastructure.enabled -}}
 {{- $repoURLs := list
     (include "liferay-platform.infrastructureRepositoryURL" .)
     .Values.infrastructure.repoURL
@@ -33,3 +34,4 @@ spec:
             server: https://kubernetes.default.svc
     sourceRepos:
         {{- include "liferay-platform.sourceRepos" $repoURLs | nindent 8 }}
+{{- end -}}

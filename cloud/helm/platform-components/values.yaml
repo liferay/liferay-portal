@@ -1,6 +1,11 @@
 accessControl:
     allowedCIDRs: []
     enabled: false
+appProjects:
+    application:
+        enabled: true
+    infrastructure:
+        enabled: true
 argoWorkflows:
     gateway:
         clientTrafficPolicySpec: {}

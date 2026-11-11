@@ -273,6 +273,16 @@ tests:
     -   asserts:
             -   hasDocuments:
                     count: 0
+                template: templates/appproject-application.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/appproject-infrastructure.yaml
+        it: Omits the application AppProject when it is disabled
+        set:
+            appProjects.application.enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
                 template: templates/application-infrastructure-provider.yaml
             -   hasDocuments:
                     count: 0
@@ -288,6 +298,16 @@ tests:
             infrastructure.enabled: false
             infrastructureProvider.enabled: false
             liferay.enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/appproject-application.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/appproject-infrastructure.yaml
+        it: Omits the infrastructure AppProject when it is disabled
+        set:
+            appProjects.infrastructure.enabled: false
     -   asserts:
             -   isEmpty:
                     path: spec.sourceRepos
@@ -385,6 +405,54 @@ tests:
         it: Reflects a repository URL override in the operator AppProject source repositories
         set:
             operatorApplications.keda.repoURL: https://charts.example.com
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/application-infrastructure-provider.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/application-observability.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/applicationset-infrastructure.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/applicationset-liferay.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/applicationset-resources.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/appproject-application.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/appproject-infrastructure.yaml
+            -   equal:
+                    path: metadata.name
+                    value: liferay-operator
+                template: templates/appproject-operator.yaml
+            -   equal:
+                    path: metadata.namespace
+                    value: argocd-system
+                template: templates/appproject-operator.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/appproject-operator.yaml
+        it: Renders only the operator AppProject when every component is off
+        set:
+            appProjects.application.enabled: false
+            appProjects.infrastructure.enabled: false
+            infrastructure.enabled: false
+            infrastructureProvider.enabled: false
+            liferay.enabled: false
+            observability.enabled: false
+            operatorApplications.argoWorkflows.enabled: false
+            operatorApplications.crossplane.enabled: false
+            operatorApplications.dxpOperator.enabled: false
+            operatorApplications.eckOperator.enabled: false
+            operatorApplications.envoyGateway.enabled: false
+            operatorApplications.externalSecrets.enabled: false
+            operatorApplications.keda.enabled: false
     -   asserts:
             -   hasDocuments:
                     count: 1
