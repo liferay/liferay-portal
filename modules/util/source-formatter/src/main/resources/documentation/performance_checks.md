@@ -24,6 +24,7 @@ JavaSessionCheck | .java | Finds unnecessary calls to `Session.flush()` (calls t
 JavaStringBundlerInitialCapacityCheck | .java | Checks the initial capacity of new instances of `StringBundler`. |
 LocalPatternCheck | .java | Checks that a `java.util.Pattern` variable is declared globally, so that it is initiated only once. |
 LocalVariableTypeInferenceCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds usage of `var` in local variable declaration. |
+[MVCRenderCommandViewTemplateCheck](check/mvc_render_command_view_template_check.md#mvcrendercommandviewtemplatecheck) | .java | Finds MVC render commands that only map `/` to a constant path that the portlet can declare as `view-template`. |
 [MapIterationCheck](check/map_iteration_check.md#mapiterationcheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that there are no unnecessary map iterations. |
 ParsePrimitiveTypeCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Verifies that `GetterUtil.parse*` is used to parse primitive types, when possible. |
 PatternMatchingForSwitchCheck | .java | Finds usage of pattern matching for `switch`. |
