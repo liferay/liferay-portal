@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
@@ -108,6 +109,8 @@ public class JournalContentTest {
 	public void testClearCache() throws Exception {
 		_testClearCache(new Locale[] {LocaleUtil.SPAIN, LocaleUtil.US});
 		_testClearCache(new Locale[] {LocaleUtil.US});
+		_testClearCacheWithCustomDDMTemplate();
+		_testClearCacheWithLowercaseArticleId();
 	}
 
 	@Test
@@ -360,10 +363,6 @@ public class JournalContentTest {
 			journalArticle.getGroupId(), journalArticle.getArticleId(),
 			journalArticle.getVersion(), spanishLanguageId);
 
-		_journalContent.clearCache(
-			journalArticle.getGroupId(), journalArticle.getArticleId(),
-			journalArticle.getDDMTemplateKey());
-
 		englishArticleDisplay = _journalContent.getDisplay(
 			journalArticle.getGroupId(), journalArticle.getArticleId(),
 			Constants.VIEW, englishLanguageId, _portletRequestModel);
@@ -376,6 +375,100 @@ public class JournalContentTest {
 
 		Assert.assertNotEquals(
 			spanishContent, spanishArticleDisplay.getContent());
+	}
+
+	private void _testClearCacheWithCustomDDMTemplate() throws Exception {
+		String spanishContent = RandomTestUtil.randomString();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(), 0,
+			_portal.getClassNameId(JournalArticle.class),
+			_getLocalizedMap(new Locale[] {LocaleUtil.SPAIN, LocaleUtil.US}),
+			_getLocalizedMap(new Locale[] {LocaleUtil.SPAIN, LocaleUtil.US}),
+			HashMapBuilder.put(
+				LocaleUtil.SPAIN, spanishContent
+			).put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			LocaleUtil.getSiteDefault(), false, true, _serviceContext);
+
+		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
+			_group.getGroupId(), journalArticle.getDDMStructureId(),
+			_portal.getClassNameId(JournalArticle.class),
+			TemplateConstants.LANG_TYPE_FTL,
+			JournalTestUtil.getSampleTemplateFTL(),
+			LocaleUtil.getSiteDefault());
+
+		ddmTemplate.setCacheable(true);
+
+		ddmTemplate = _ddmTemplateLocalService.updateDDMTemplate(ddmTemplate);
+
+		String spanishLanguageId = LocaleUtil.toLanguageId(LocaleUtil.SPAIN);
+
+		JournalArticleDisplay spanishArticleDisplay =
+			_journalContent.getDisplay(
+				journalArticle.getGroupId(), journalArticle.getArticleId(),
+				ddmTemplate.getTemplateKey(), Constants.VIEW, spanishLanguageId,
+				_portletRequestModel);
+
+		Assert.assertEquals(spanishContent, spanishArticleDisplay.getContent());
+
+		_journalArticleLocalService.removeArticleLocale(
+			journalArticle.getGroupId(), journalArticle.getArticleId(),
+			journalArticle.getVersion(), spanishLanguageId);
+
+		spanishArticleDisplay = _journalContent.getDisplay(
+			journalArticle.getGroupId(), journalArticle.getArticleId(),
+			ddmTemplate.getTemplateKey(), Constants.VIEW, spanishLanguageId,
+			_portletRequestModel);
+
+		Assert.assertNotEquals(
+			spanishContent, spanishArticleDisplay.getContent());
+	}
+
+	private void _testClearCacheWithLowercaseArticleId() throws Exception {
+		Map<Locale, String> titleMap = HashMapBuilder.put(
+			LocaleUtil.US, RandomTestUtil.randomString()
+		).build();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			null, _group.getGroupId(), 0,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			StringUtil.toLowerCase(RandomTestUtil.randomString()), false,
+			titleMap, titleMap, titleMap, null, LocaleUtil.US, null, null,
+			false, true, _serviceContext);
+
+		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
+			_group.getGroupId(), journalArticle.getDDMStructureId(),
+			_portal.getClassNameId(JournalArticle.class),
+			TemplateConstants.LANG_TYPE_FTL, "${randomNamespace}",
+			LocaleUtil.US);
+
+		ddmTemplate.setCacheable(true);
+
+		ddmTemplate = _ddmTemplateLocalService.updateDDMTemplate(ddmTemplate);
+
+		String languageId = LocaleUtil.toLanguageId(LocaleUtil.US);
+
+		JournalArticleDisplay journalArticleDisplay1 =
+			_journalContent.getDisplay(
+				journalArticle.getGroupId(), journalArticle.getArticleId(),
+				ddmTemplate.getTemplateKey(), Constants.VIEW, languageId,
+				_portletRequestModel);
+
+		_journalContent.clearCache(
+			journalArticle.getGroupId(),
+			StringUtil.toLowerCase(journalArticle.getArticleId()));
+
+		JournalArticleDisplay journalArticleDisplay2 =
+			_journalContent.getDisplay(
+				journalArticle.getGroupId(), journalArticle.getArticleId(),
+				ddmTemplate.getTemplateKey(), Constants.VIEW, languageId,
+				_portletRequestModel);
+
+		Assert.assertNotEquals(
+			journalArticleDisplay1.getContent(),
+			journalArticleDisplay2.getContent());
 	}
 
 	private void _testGetDisplay() throws Exception {
