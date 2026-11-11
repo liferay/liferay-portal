@@ -19,6 +19,7 @@ if (Validator.isNull(id) && (searchContainer != null)) {
 }
 
 String markupView = (String)request.getAttribute("liferay-ui:search:markupView");
+int resultEnd = GetterUtil.getInteger((String)request.getAttribute("liferay-ui:search:resultEnd"));
 String type = (String)request.getAttribute("liferay-ui:search:type");
 
 PortletURL iteratorURL = searchContainer.getIteratorURL();
@@ -40,6 +41,7 @@ if (iteratorURL != null) {
 		markupView="<%= markupView %>"
 		maxPages="<%= PropsValues.SEARCH_CONTAINER_PAGE_ITERATOR_MAX_PAGES %>"
 		portletURL="<%= iteratorURL %>"
+		resultEnd="<%= resultEnd %>"
 		total="<%= searchContainer.getTotal() %>"
 		type="<%= type %>"
 	/>
