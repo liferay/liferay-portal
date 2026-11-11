@@ -167,7 +167,7 @@ public class HtmlBBCodeTranslatorImpl implements BBCodeTranslator {
 			int type = bbCodeItem.getType();
 
 			if (type == BBCodeParser.TYPE_DATA) {
-				handleData(sb, bbCodeItems, tags, marker, bbCodeItem);
+				handleData(sb, bbCodeItems, marker, bbCodeItem);
 			}
 			else if (type == BBCodeParser.TYPE_TAG_END) {
 				handleTagEnd(sb, tags);
@@ -181,8 +181,8 @@ public class HtmlBBCodeTranslatorImpl implements BBCodeTranslator {
 	}
 
 	protected void handleData(
-		StringBundler sb, List<BBCodeItem> bbCodeItems, Stack<String> tags,
-		IntegerWrapper marker, BBCodeItem bbCodeItem) {
+		StringBundler sb, List<BBCodeItem> bbCodeItems, IntegerWrapper marker,
+		BBCodeItem bbCodeItem) {
 
 		String value = HtmlUtil.escape(bbCodeItem.getValue());
 
