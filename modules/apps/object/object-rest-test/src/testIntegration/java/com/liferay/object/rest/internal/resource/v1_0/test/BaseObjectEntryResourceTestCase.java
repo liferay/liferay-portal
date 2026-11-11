@@ -105,8 +105,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import java.sql.Timestamp;
-
 import java.text.Format;
 
 import java.util.ArrayList;
@@ -712,17 +710,14 @@ public abstract class BaseObjectEntryResourceTestCase {
 		HTTPTestUtil.invokeToJSONObject(
 			JSONFactoryUtil.getNullJSON(), endpoint, Http.Method.PUT);
 
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, endpoint, Http.Method.GET);
+
 		JSONAssert.assertEquals(
 			JSONUtil.put(
 				_OBJECT_FIELD_NAME_RICH_TEXT, ""
 			).put(
 				OBJECT_FIELD_NAME_BOOLEAN, false
-			).put(
-				OBJECT_FIELD_NAME_DATE, (Timestamp)null
-			).put(
-				OBJECT_FIELD_NAME_DATE_TIME_INPUT, (Timestamp)null
-			).put(
-				OBJECT_FIELD_NAME_DATE_TIME_UTC, (Timestamp)null
 			).put(
 				OBJECT_FIELD_NAME_DECIMAL, 0
 			).put(
@@ -755,10 +750,11 @@ public abstract class BaseObjectEntryResourceTestCase {
 			).put(
 				"externalReferenceCode", randomExternalReferenceCode
 			).toString(),
-			HTTPTestUtil.invokeToJSONObject(
-				null, endpoint, Http.Method.GET
-			).toString(),
-			JSONCompareMode.LENIENT);
+			jsonObject.toString(), JSONCompareMode.LENIENT);
+
+		Assert.assertFalse(jsonObject.has(OBJECT_FIELD_NAME_DATE));
+		Assert.assertFalse(jsonObject.has(OBJECT_FIELD_NAME_DATE_TIME_INPUT));
+		Assert.assertFalse(jsonObject.has(OBJECT_FIELD_NAME_DATE_TIME_UTC));
 
 		JSONAssert.assertEquals(
 			_createExpectedObjectEntryJSONObject(
