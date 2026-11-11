@@ -77,10 +77,10 @@ public class DesignLibraryFragmentEntryItemSelectorViewTest {
 		FeatureFlagTestUtil.invokeFeatureFlagListeners(
 			TestPropsValues.getCompanyId(), true, "LPD-57283");
 
-		_group = GroupTestUtil.addGroup();
-
 		_fragmentEntryItemSelectorCriterion.setInputTypes(
 			SetUtil.fromArray("text"));
+
+		_group = GroupTestUtil.addGroup();
 
 		_themeDisplay.setCompany(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));

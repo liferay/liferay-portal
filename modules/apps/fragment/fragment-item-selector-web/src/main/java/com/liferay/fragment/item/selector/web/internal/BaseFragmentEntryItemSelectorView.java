@@ -56,10 +56,15 @@ public abstract class BaseFragmentEntryItemSelectorView
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)servletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
+		ServletContext servletContext = getServletContext();
+
+		RequestDispatcher requestDispatcher =
+			servletContext.getRequestDispatcher(
+				"/select_fragment_collection.jsp");
 
 		Portal portal = getPortal();
+		ThemeDisplay themeDisplay = (ThemeDisplay)servletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 
 		servletRequest.setAttribute(
 			FragmentEntriesDisplayContext.class.getName(),
@@ -70,12 +75,6 @@ public abstract class BaseFragmentEntryItemSelectorView
 					(PortletRequest)servletRequest.getAttribute(
 						JavaConstants.JAKARTA_PORTLET_REQUEST)),
 				portletURL));
-
-		ServletContext servletContext = getServletContext();
-
-		RequestDispatcher requestDispatcher =
-			servletContext.getRequestDispatcher(
-				"/select_fragment_collection.jsp");
 
 		requestDispatcher.include(servletRequest, servletResponse);
 	}
