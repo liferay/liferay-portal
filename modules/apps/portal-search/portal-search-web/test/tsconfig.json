@@ -1,5 +1,5 @@
 {
-	"@generated": "b6de909fb4b2494ddec360a2e206bd405e4bbcf1",
+	"@generated": "fc91ce7c5cc6a1c0664ed243375f5a7223e1b0e7",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -28,6 +28,9 @@
 			],
 			"portal-search-web/search-bar": [
 				"./../src/main/resources/META-INF/resources/js/searchBarSubmodule.js"
+			],
+			"portal-search-web/search-insights": [
+				"./../src/main/resources/META-INF/resources/js/searchInsightsSubmodule.js"
 			]
 		},
 		"rootDir": "../../../..",

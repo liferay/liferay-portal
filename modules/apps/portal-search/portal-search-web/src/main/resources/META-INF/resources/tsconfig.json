@@ -1,5 +1,5 @@
 {
-	"@generated": "b43aa7cc0627110662ec0efd43e80fc17fa34cbc",
+	"@generated": "4a5a15022a67ddd4f25ef994aad5dc061d10a631",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -28,6 +28,9 @@
 			],
 			"portal-search-web/search-bar": [
 				"./js/searchBarSubmodule.js"
+			],
+			"portal-search-web/search-insights": [
+				"./js/searchInsightsSubmodule.js"
 			]
 		},
 		"rootDir": "../../../../../../../..",

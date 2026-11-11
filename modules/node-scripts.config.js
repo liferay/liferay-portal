@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '60cc29fcee729fdfb371a4d888b6196f7a4c1933b9c7fd97069a371bf6f9da16',
+	hash: '8e2b7584fab0655ede70995a931487115f0bab1fe8a94d27ef95e20b3f3c890f',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -470,7 +470,7 @@ module.exports = {
 		'portal-search-admin-web': [],
 		'portal-search-ranking-web': [],
 		'portal-search-synonyms-web': [],
-		'portal-search-web': ['./search-bar'],
+		'portal-search-web': ['./search-bar', './search-insights'],
 		'portal-template-react-renderer-impl': [],
 		'portal-workflow-kaleo-designer-web': [],
 		'portal-workflow-kaleo-forms-web': [],
