@@ -8,11 +8,9 @@ import {
 	FrontendDataSet,
 	pagination,
 } from 'shared/components/FrontendDataSet';
-import {omit, pickBy} from 'lodash';
-import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes, setUriQueryValues} from 'shared/util/router';
 import {useAccountFilter} from 'shared/hooks/useAccountFilter';
-import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {useRangeQueryValues} from 'shared/hooks/useRangeQueryValues';
 
 interface ICampaignsDataSetProps {
 	channelId: string;
@@ -57,27 +55,13 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 	groupId,
 }) => {
 	const {accountId, accountName, accountQueryValues} = useAccountFilter();
-	const rangeSelectors = useQueryRangeSelectors();
-
-	const rangeQueryValues = pickBy(rangeSelectors);
-
-	// The link carries the range, `CUSTOM` included, and the account.
-
-	const linkQueryValues = {...rangeQueryValues, ...accountQueryValues};
-
-	// `CUSTOM` is a client side sentinel the API answers with a 500, so a
-	// custom range travels as its bounds alone.
-
-	const apiRangeQueryValues =
-		rangeQueryValues.rangeKey === RangeKeyTimeRanges.CustomRange
-			? omit(rangeQueryValues, 'rangeKey')
-			: rangeQueryValues;
+	const {apiRangeParams, routeRangeParams} = useRangeQueryValues();
 
 	return (
 		<Card minHeight={300}>
 			<FrontendDataSet
 				apiURL={setUriQueryValues(
-					{channelId, ...apiRangeQueryValues},
+					{channelId, ...apiRangeParams},
 					`/o/faro/contacts/${groupId}/campaigns`
 				)}
 				customDataRenderers={{
@@ -92,7 +76,10 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 							channelId,
 							groupId,
 							itemData,
-							queryValues: linkQueryValues,
+							queryValues: {
+								...routeRangeParams,
+								...accountQueryValues,
+							},
 							route: Routes.CAMPAIGNS_DETAIL,
 							value,
 						}),

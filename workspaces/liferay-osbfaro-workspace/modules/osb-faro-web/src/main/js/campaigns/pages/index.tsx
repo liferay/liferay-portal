@@ -9,8 +9,7 @@ import OverviewSection from '../components/OverviewSection';
 import React, {useContext} from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
-import {omit, pickBy} from 'lodash';
-import {RangeKeyTimeRanges} from 'shared/util/constants';
+import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
 import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
@@ -19,7 +18,7 @@ import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
-import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {useRangeQueryValues} from 'shared/hooks/useRangeQueryValues';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const Campaigns: React.FC = () => {
@@ -33,12 +32,7 @@ const Campaigns: React.FC = () => {
 	const {empty: noDataSources, loading: dataSourcesLoading} =
 		useDataSources();
 
-	const rangeSelectors = useQueryRangeSelectors();
-
-	const rangeQueryValues = pickBy(rangeSelectors);
-
-	// `CUSTOM` is a client side sentinel the API answers with a 500, so a
-	// custom range travels as its bounds alone.
+	const {apiRangeParams, rangeSelectors} = useRangeQueryValues();
 
 	const {data: metrics, loading} = useRequest({
 		dataSourceFn: API.campaigns.fetchCampaignMetrics,
@@ -47,10 +41,7 @@ const Campaigns: React.FC = () => {
 			accountId,
 			channelId: channelId!,
 			groupId: groupId!,
-			rangeQueryValues:
-				rangeQueryValues.rangeKey === RangeKeyTimeRanges.CustomRange
-					? omit(rangeQueryValues, 'rangeKey')
-					: rangeQueryValues,
+			rangeQueryValues: apiRangeParams,
 		},
 	});
 

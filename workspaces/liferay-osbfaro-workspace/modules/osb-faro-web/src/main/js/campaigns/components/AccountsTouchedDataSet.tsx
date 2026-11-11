@@ -10,12 +10,11 @@ import {
 	isLifecycleStage,
 	lifecycleStagesLabelMap,
 } from 'contacts/pages/account/utils/constants';
-import {omit, pickBy} from 'lodash';
-import {RangeKeyTimeRanges} from 'shared/util/constants';
+import {pickBy} from 'lodash';
 import {Routes, setUriQueryValues} from 'shared/util/router';
 import {toThousands} from 'shared/util/numbers';
 import {useAccountFilter} from 'shared/hooks/useAccountFilter';
-import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {useRangeQueryValues} from 'shared/hooks/useRangeQueryValues';
 import {ILifecycleDetail} from 'shared/api/lifecycle';
 
 interface IAccountsTouchedDataSetProps {
@@ -73,12 +72,7 @@ const AccountsTouchedDataSet: React.FC<IAccountsTouchedDataSetProps> = ({
 	loading,
 }) => {
 	const {accountId} = useAccountFilter();
-	const rangeQueryValues = pickBy(useQueryRangeSelectors());
-
-	const apiRangeQueryValues =
-		rangeQueryValues.rangeKey === RangeKeyTimeRanges.CustomRange
-			? omit(rangeQueryValues, 'rangeKey')
-			: rangeQueryValues;
+	const {apiRangeParams} = useRangeQueryValues();
 
 	if (loading) {
 		return <Loading spacer />;
@@ -91,7 +85,7 @@ const AccountsTouchedDataSet: React.FC<IAccountsTouchedDataSetProps> = ({
 					accountIds: accountId,
 					accountLifecycleId: lifecycles?.[0]?.id,
 					channelId,
-					...apiRangeQueryValues,
+					...apiRangeParams,
 				}),
 				`/o/faro/contacts/${groupId}/campaigns/${campaignId}/accounts`
 			)}

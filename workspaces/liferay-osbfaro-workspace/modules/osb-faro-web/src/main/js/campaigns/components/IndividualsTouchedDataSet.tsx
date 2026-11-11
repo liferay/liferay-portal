@@ -7,10 +7,8 @@ import {
 	pagination,
 } from 'shared/components/FrontendDataSet';
 import {getVisitorType} from 'contacts/pages/account/components/IndividualsDataSet';
-import {omit, pickBy} from 'lodash';
-import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes, setUriQueryValues} from 'shared/util/router';
-import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {useRangeQueryValues} from 'shared/hooks/useRangeQueryValues';
 
 interface IIndividualsTouchedDataSetProps {
 	campaignId: string;
@@ -62,17 +60,12 @@ const IndividualsTouchedDataSet: React.FC<IIndividualsTouchedDataSetProps> = ({
 	channelId,
 	groupId,
 }) => {
-	const rangeQueryValues = pickBy(useQueryRangeSelectors());
-
-	const apiRangeQueryValues =
-		rangeQueryValues.rangeKey === RangeKeyTimeRanges.CustomRange
-			? omit(rangeQueryValues, 'rangeKey')
-			: rangeQueryValues;
+	const {apiRangeParams, routeRangeParams} = useRangeQueryValues();
 
 	return (
 		<FrontendDataSet
 			apiURL={setUriQueryValues(
-				{channelId, ...apiRangeQueryValues},
+				{channelId, ...apiRangeParams},
 				`/o/faro/contacts/${groupId}/campaigns/${campaignId}/individuals`
 			)}
 			customDataRenderers={{
@@ -87,7 +80,7 @@ const IndividualsTouchedDataSet: React.FC<IIndividualsTouchedDataSetProps> = ({
 						channelId,
 						groupId,
 						itemData,
-						queryValues: rangeQueryValues,
+						queryValues: routeRangeParams,
 						route: Routes.CONTACTS_INDIVIDUAL,
 						value,
 					}),
