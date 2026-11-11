@@ -25,10 +25,10 @@ public class PageTemplateSetExceptionProblemMapper
 		DuplicateLayoutPageTemplateCollectionException
 			duplicateLayoutPageTemplateCollectionException) {
 
-		String name =
-			duplicateLayoutPageTemplateCollectionException.getMessage();
 		String message =
 			"A page template set with the same name already exists";
+		String name =
+			duplicateLayoutPageTemplateCollectionException.getMessage();
 
 		if (Validator.isNotNull(name)) {
 			message = StringBundler.concat(
