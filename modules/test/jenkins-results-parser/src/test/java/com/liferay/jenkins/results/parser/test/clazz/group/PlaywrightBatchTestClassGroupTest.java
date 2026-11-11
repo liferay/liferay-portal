@@ -834,9 +834,9 @@ public class PlaywrightBatchTestClassGroupTest
 			}
 			else {
 				Assert.assertEquals(
-					"Playwright test listing \"test --list " +
-						"--reporter=json\" did not write a JSON report (exit " +
-							"code 0)\nStandard output:\n\nStandard error:\n",
+					"Playwright test listing \"test --list --reporter=json\" " +
+						"did not write a JSON report (exit code 0)\nStandard " +
+							"output:\n\nStandard error:\n",
 					runtimeException.getMessage());
 			}
 
