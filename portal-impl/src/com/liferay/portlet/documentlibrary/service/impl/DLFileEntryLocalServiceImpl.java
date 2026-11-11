@@ -1764,9 +1764,7 @@ public class DLFileEntryLocalServiceImpl
 	}
 
 	@Override
-	public void setTreePaths(long folderId, String treePath, boolean reindex)
-		throws PortalException {
-
+	public void setTreePaths(long folderId, String treePath, boolean reindex) {
 		if (treePath == null) {
 			throw new IllegalArgumentException("Tree path is null");
 		}
