@@ -9,9 +9,11 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleDisplay;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.journal.taglib.internal.servlet.ServletContextUtil;
+import com.liferay.journal.util.JournalContent;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.PortletRequestModel;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
@@ -73,12 +75,26 @@ public class JournalArticleTag extends IncludeTag {
 				_groupId, _articleId, WorkflowConstants.STATUS_APPROVED);
 		}
 
+		_articleDisplay = null;
+
 		try {
-			_articleDisplay = JournalArticleLocalServiceUtil.getArticleDisplay(
-				_article, _ddmTemplateKey,
-				ParamUtil.getString(
-					httpServletRequest, "p_l_mode", Constants.VIEW),
-				getLanguageId(), 1, portletRequestModel, themeDisplay);
+			String viewMode = ParamUtil.getString(
+				httpServletRequest, "p_l_mode", Constants.VIEW);
+
+			if (_article.isApproved()) {
+				JournalContent journalContent = _journalContentSnapshot.get();
+
+				_articleDisplay = journalContent.getDisplay(
+					_article, _ddmTemplateKey, viewMode, getLanguageId(), 1,
+					portletRequestModel, themeDisplay);
+			}
+
+			if (_articleDisplay == null) {
+				_articleDisplay =
+					JournalArticleLocalServiceUtil.getArticleDisplay(
+						_article, _ddmTemplateKey, viewMode, getLanguageId(), 1,
+						portletRequestModel, themeDisplay);
+			}
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -238,6 +254,9 @@ public class JournalArticleTag extends IncludeTag {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		JournalArticleTag.class);
+
+	private static final Snapshot<JournalContent> _journalContentSnapshot =
+		new Snapshot<>(JournalArticleTag.class, JournalContent.class);
 
 	private JournalArticle _article;
 	private JournalArticleDisplay _articleDisplay;
