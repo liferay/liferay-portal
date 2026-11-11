@@ -575,7 +575,7 @@ public class ObjectEntryResourceAttachmentTest
 				_randomFileEntryJSONObject(
 					null, OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE)
 			).toString(),
-			getEndpoint(getObjectDefinition1(), testGroupId), Http.Method.POST);
+			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				ObjectMapperUtil.class.getName(), LoggerTestUtil.WARN)) {
@@ -677,12 +677,10 @@ public class ObjectEntryResourceAttachmentTest
 		String randomString = RandomTestUtil.randomString(
 			UniqueStringRandomizerBumper.INSTANCE);
 
-		String objectDefinitionName = "A" + randomString;
-
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
-				objectDefinitionName,
-				Arrays.asList(
+				"A" + randomString,
+				Collections.singletonList(
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
 						ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
@@ -707,74 +705,6 @@ public class ObjectEntryResourceAttachmentTest
 								ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
 							).value(
 								String.valueOf(MAX_FILE_SIZE_VALUE)
-							).build()),
-						false),
-					ObjectFieldUtil.createObjectField(
-						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
-						ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-						OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
-						OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
-						Arrays.asList(
-							new ObjectFieldSettingBuilder(
-							).name(
-								ObjectFieldSettingConstants.
-									NAME_ACCEPTED_FILE_EXTENSIONS
-							).value(
-								"txt"
-							).build(),
-							new ObjectFieldSettingBuilder(
-							).name(
-								ObjectFieldSettingConstants.NAME_FILE_SOURCE
-							).value(
-								ObjectFieldSettingConstants.
-									VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
-							).build(),
-							new ObjectFieldSettingBuilder(
-							).name(
-								ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
-							).value(
-								String.valueOf(MAX_FILE_SIZE_VALUE)
-							).build()),
-						false),
-					ObjectFieldUtil.createObjectField(
-						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
-						ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-						OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_2,
-						OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_2,
-						Arrays.asList(
-							new ObjectFieldSettingBuilder(
-							).name(
-								ObjectFieldSettingConstants.
-									NAME_ACCEPTED_FILE_EXTENSIONS
-							).value(
-								"txt"
-							).build(),
-							new ObjectFieldSettingBuilder(
-							).name(
-								ObjectFieldSettingConstants.NAME_FILE_SOURCE
-							).value(
-								ObjectFieldSettingConstants.
-									VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
-							).build(),
-							new ObjectFieldSettingBuilder(
-							).name(
-								ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
-							).value(
-								String.valueOf(MAX_FILE_SIZE_VALUE)
-							).build(),
-							new ObjectFieldSettingBuilder(
-							).name(
-								ObjectFieldSettingConstants.
-									NAME_SHOW_FILES_IN_LIBRARY
-							).value(
-								StringPool.TRUE
-							).build(),
-							new ObjectFieldSettingBuilder(
-							).name(
-								ObjectFieldSettingConstants.
-									NAME_STORAGE_DL_FOLDER_PATH
-							).value(
-								StringPool.SLASH + objectDefinitionName
 							).build()),
 						false)),
 				ObjectDefinitionConstants.SCOPE_COMPANY, adminUser.getUserId());
@@ -843,8 +773,7 @@ public class ObjectEntryResourceAttachmentTest
 					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 					StringPool.BLANK
 				).toString(),
-				getEndpoint(getObjectDefinition1(), testGroupId),
-				Http.Method.POST);
+				getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
@@ -1689,7 +1618,7 @@ public class ObjectEntryResourceAttachmentTest
 				_randomFileEntryJSONObject(
 					null, OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE)
 			).toString(),
-			getEndpoint(getObjectDefinition1(), testGroupId), Http.Method.POST);
+			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				ObjectMapperUtil.class.getName(), LoggerTestUtil.WARN)) {

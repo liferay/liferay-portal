@@ -186,7 +186,7 @@ public class ObjectEntryResourceStatusTest
 			HTTPTestUtil.invokeToJSONObject(
 				null,
 				StringBundler.concat(
-					getEndpoint(getObjectDefinition1(), 0),
+					getObjectDefinition1().getRESTContextPath(),
 					"/by-external-reference-code/",
 					objectEntry.getExternalReferenceCode(), "/restore"),
 				Http.Method.PUT

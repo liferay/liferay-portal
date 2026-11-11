@@ -2450,18 +2450,18 @@ public class ObjectEntryResourceSortTest
 		}
 
 		try {
-			JSONObject jsonObject1 = HTTPTestUtil.invokeToJSONObject(
+			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject2.toString(),
 				endpoint + "/" + expectedJSONObject1.getLong("id"),
 				Http.Method.PATCH);
 
-			JSONObject jsonObject2 = HTTPTestUtil.invokeToJSONObject(
+			HTTPTestUtil.invokeToJSONObject(
 				valuesJSONObject1.toString(),
 				endpoint + "/" + expectedJSONObject2.getLong("id"),
 				Http.Method.PATCH);
 
 			_testSortByFieldNames(
-				endpoint, jsonObject2, jsonObject1, fieldNames);
+				endpoint, expectedJSONObject2, expectedJSONObject1, fieldNames);
 		}
 		finally {
 			HTTPTestUtil.invokeToJSONObject(

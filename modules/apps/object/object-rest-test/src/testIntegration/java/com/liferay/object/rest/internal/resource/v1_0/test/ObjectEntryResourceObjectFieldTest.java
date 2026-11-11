@@ -324,7 +324,7 @@ public class ObjectEntryResourceObjectFieldTest
 							).build()))),
 				false);
 
-		String endpoint = getEndpoint(objectDefinition, testGroupId);
+		String endpoint = objectDefinition.getRESTContextPath();
 
 		HTTPTestUtil.invokeToJSONObject(
 			JSONFactoryUtil.getNullJSON(), endpoint, Http.Method.POST);

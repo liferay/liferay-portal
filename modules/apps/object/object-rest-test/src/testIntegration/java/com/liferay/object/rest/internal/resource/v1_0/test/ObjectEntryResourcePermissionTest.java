@@ -722,7 +722,7 @@ public class ObjectEntryResourcePermissionTest
 					JSONUtil.put(
 						"externalReferenceCode", RandomTestUtil.randomString()
 					).toString(),
-					getEndpoint(getObjectDefinition1(), testGroupId),
+					getObjectDefinition1().getRESTContextPath(),
 					Http.Method.POST);
 
 				jsonObject = _putCustomObjectEntryPermissionsPage(
@@ -997,8 +997,8 @@ public class ObjectEntryResourcePermissionTest
 		return HTTPTestUtil.invokeToJSONObject(
 			permissionsJSONArray.toString(),
 			StringBundler.concat(
-				getEndpoint(getObjectDefinition1(), testGroupId),
-				StringPool.SLASH, objectEntryId, "/permissions"),
+				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
+				objectEntryId, "/permissions"),
 			Http.Method.PUT);
 	}
 

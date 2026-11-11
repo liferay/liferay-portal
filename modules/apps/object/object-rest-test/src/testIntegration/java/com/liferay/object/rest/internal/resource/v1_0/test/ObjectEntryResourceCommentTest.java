@@ -229,7 +229,7 @@ public class ObjectEntryResourceCommentTest
 			objectScopeProviderRegistry.getObjectScopeProvider(
 				objectDefinition.getScope());
 
-		if (objectScopeProvider.isGroupAware() && (groupId != 0)) {
+		if (objectScopeProvider.isGroupAware()) {
 			return StringBundler.concat(
 				endpoint, "/by-external-reference-code/",
 				objectEntryJSONObject.getString("externalReferenceCode"));
