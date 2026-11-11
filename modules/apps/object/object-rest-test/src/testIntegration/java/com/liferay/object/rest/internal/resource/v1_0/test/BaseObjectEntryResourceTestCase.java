@@ -8,9 +8,7 @@ package com.liferay.object.rest.internal.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.TaxonomyCategory;
 import com.liferay.headless.admin.taxonomy.client.resource.v1_0.TaxonomyCategoryResource;
 import com.liferay.list.type.model.ListTypeDefinition;
@@ -54,16 +52,13 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.NoSuchCompanyException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -79,6 +74,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -89,7 +85,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
@@ -113,7 +109,7 @@ import java.math.RoundingMode;
 
 import java.sql.Timestamp;
 
-import java.text.DateFormat;
+import java.text.Format;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,16 +119,12 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceRegistration;
 
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -145,24 +137,9 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 @RunWith(Arquillian.class)
 public abstract class BaseObjectEntryResourceTestCase {
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		testGroupId = TestPropsValues.getGroupId();
-
-		assetVocabulary = AssetVocabularyLocalServiceUtil.addVocabulary(
-			UserLocalServiceUtil.getGuestUserId(TestPropsValues.getCompanyId()),
-			testGroupId, RandomTestUtil.randomString(), new ServiceContext());
-
-		Bundle bundle = FrameworkUtil.getBundle(
-			BaseObjectEntryResourceTestCase.class);
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		_serviceRegistrations = Arrays.asList(
-			bundleContext.registerService(
-				ModelListener.class, testDLFileEntryModelListener, null),
-			bundleContext.registerService(
-				ModelListener.class, testObjectEntryModelListener, null));
 
 		TaxonomyCategoryResource.Builder builder =
 			TaxonomyCategoryResource.builder();
@@ -172,17 +149,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
-	}
 
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-		AssetVocabularyLocalServiceUtil.deleteVocabulary(assetVocabulary);
-
-		_serviceRegistrations.forEach(ServiceRegistration::unregister);
-	}
-
-	@Before
-	public void setUp() throws Exception {
 		group = GroupTestUtil.addGroup();
 
 		_listTypeDefinition =
@@ -213,21 +180,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 			Collections.singletonMap(
 				LocaleUtil.US, RandomTestUtil.randomString()),
 			_listTypeDefinition.isSystem());
-
-		systemObjectDefinitionManager =
-			_systemObjectDefinitionManagerRegistry.
-				getSystemObjectDefinitionManager("User");
-
-		userSystemObjectDefinition =
-			objectDefinitionLocalService.fetchSystemObjectDefinition(
-				TestPropsValues.getCompanyId(),
-				systemObjectDefinitionManager.getName());
-
-		_userSystemObjectField = ObjectFieldTestUtil.addCustomObjectField(
-			TestPropsValues.getUserId(),
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, userSystemObjectDefinition,
-			OBJECT_FIELD_NAME_2);
 	}
 
 	@After
@@ -262,10 +214,12 @@ public abstract class BaseObjectEntryResourceTestCase {
 				_siteScopedObjectDefinition2.getObjectDefinitionId());
 		}
 
+		if (_assetVocabulary != null) {
+			assetVocabularyLocalService.deleteVocabulary(_assetVocabulary);
+		}
+
 		listTypeDefinitionLocalService.deleteListTypeDefinition(
 			_listTypeDefinition);
-
-		groupLocalService.deleteGroup(group);
 	}
 
 	protected ObjectRelationship addObjectRelationshipAndRelateObjectEntries(
@@ -334,7 +288,11 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 		user.setEmailAddressVerified(true);
 
-		return UserLocalServiceUtil.updateUser(user);
+		user = UserLocalServiceUtil.updateUser(user);
+
+		_users.add(user);
+
+		return user;
 	}
 
 	protected void assertFilterString(
@@ -540,21 +498,21 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 		expectedJSONObject = _cloneJSONObject(
 			expectedJSONObject, OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-			StringUtil.removeLast(dateTimeDateFormat.format(date), "Z"));
+			StringUtil.removeLast(dateTimeFormat.format(date), "Z"));
 
 		_assertPatchObjectField(
 			endpoint, expectedJSONObject, OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-			dateTimeDateFormat.format(date));
+			dateTimeFormat.format(date));
 
 		// Date time field ('UTC' type)
 
 		expectedJSONObject = _cloneJSONObject(
 			expectedJSONObject, OBJECT_FIELD_NAME_DATE_TIME_UTC,
-			dateTimeDateFormat.format(date));
+			dateTimeFormat.format(date));
 
 		_assertPatchObjectField(
 			endpoint, expectedJSONObject, OBJECT_FIELD_NAME_DATE_TIME_UTC,
-			dateTimeDateFormat.format(date));
+			dateTimeFormat.format(date));
 
 		// Decimal field
 
@@ -869,6 +827,20 @@ public abstract class BaseObjectEntryResourceTestCase {
 		return jsonArray;
 	}
 
+	protected AssetVocabulary getAssetVocabulary() throws Exception {
+		if (_assetVocabulary != null) {
+			return _assetVocabulary;
+		}
+
+		_assetVocabulary = assetVocabularyLocalService.addVocabulary(
+			userLocalService.getGuestUserId(TestPropsValues.getCompanyId()),
+			testGroupId,
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
+			new ServiceContext());
+
+		return _assetVocabulary;
+	}
+
 	protected Company getCompanyByWebId() throws Exception {
 		try {
 			return companyLocalService.getCompanyByWebId("www.able.com");
@@ -936,7 +908,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 			return _objectDefinition1;
 		}
 
-		String objectDefinitionName = ObjectDefinitionTestUtil.getRandomName();
+		String randomString = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
+
+		String objectDefinitionName = "A" + randomString;
 
 		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition(
 			objectDefinitionName,
@@ -1179,7 +1154,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 			return _siteScopedObjectDefinition1;
 		}
 
-		String objectDefinitionName = ObjectDefinitionTestUtil.getRandomName();
+		String randomString = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
+
+		String objectDefinitionName = "A" + randomString;
 
 		_siteScopedObjectDefinition1 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
@@ -1205,6 +1183,40 @@ public abstract class BaseObjectEntryResourceTestCase {
 		return _siteScopedObjectDefinition2;
 	}
 
+	protected ObjectDefinition getUserSystemObjectDefinition()
+		throws Exception {
+
+		if (_userSystemObjectDefinition != null) {
+			return _userSystemObjectDefinition;
+		}
+
+		_userSystemObjectDefinitionManager =
+			_systemObjectDefinitionManagerRegistry.
+				getSystemObjectDefinitionManager("User");
+
+		_userSystemObjectDefinition =
+			objectDefinitionLocalService.fetchSystemObjectDefinition(
+				TestPropsValues.getCompanyId(),
+				_userSystemObjectDefinitionManager.getName());
+
+		_userSystemObjectField = ObjectFieldTestUtil.addCustomObjectField(
+			TestPropsValues.getUserId(),
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, _userSystemObjectDefinition,
+			OBJECT_FIELD_NAME_2);
+
+		return _userSystemObjectDefinition;
+	}
+
+	protected SystemObjectDefinitionManager
+			getUserSystemObjectDefinitionManager()
+		throws Exception {
+
+		getUserSystemObjectDefinition();
+
+		return _userSystemObjectDefinitionManager;
+	}
+
 	protected JSONObject postObjectEntry(
 			long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
@@ -1220,7 +1232,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 		throws Exception {
 
 		return postTaxonomyVocabularyTaxonomyCategory(
-			testGroupId, assetVocabulary.getVocabularyId());
+			testGroupId, getAssetVocabulary().getVocabularyId());
 	}
 
 	protected TaxonomyCategory postTaxonomyVocabularyTaxonomyCategory(
@@ -1283,9 +1295,12 @@ public abstract class BaseObjectEntryResourceTestCase {
 				description = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				externalReferenceCode = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
+					RandomTestUtil.randomString(
+						UniqueStringRandomizerBumper.INSTANCE));
 				id = StringUtil.toLowerCase(RandomTestUtil.randomString());
-				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				name = StringUtil.toLowerCase(
+					RandomTestUtil.randomString(
+						UniqueStringRandomizerBumper.INSTANCE));
 				numberOfTaxonomyCategories = RandomTestUtil.randomInt();
 				siteId = groupId;
 				taxonomyCategoryUsageCount = RandomTestUtil.randomInt();
@@ -1309,22 +1324,28 @@ public abstract class BaseObjectEntryResourceTestCase {
 	}
 
 	protected static final String ERC_VALUE_1 =
-		"a" + RandomTestUtil.randomString();
+		"a" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String ERC_VALUE_2 =
-		"b" + RandomTestUtil.randomString();
+		"b" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String ERC_VALUE_3 =
-		"c" + RandomTestUtil.randomString();
+		"c" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String LIST_TYPE_ENTRY_KEY_1 =
-		"a" + RandomTestUtil.randomString();
+		"a" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String LIST_TYPE_ENTRY_KEY_2 =
-		"b" + RandomTestUtil.randomString();
+		"b" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String LIST_TYPE_ENTRY_KEY_3 =
-		"c" + RandomTestUtil.randomString();
+		"c" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final int MAX_FILE_SIZE_VALUE = 1;
 
@@ -1335,78 +1356,106 @@ public abstract class BaseObjectEntryResourceTestCase {
 		RandomTestUtil.randomString();
 
 	protected static final String OBJECT_FIELD_NAME_1 =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_2 =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_3 =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String
 		OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE =
-			"x" + RandomTestUtil.randomString();
+			"x" +
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String
 		OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE =
-			"x" + RandomTestUtil.randomString();
+			"x" +
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String
 		OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT_SOURCE =
-			"x" + RandomTestUtil.randomString();
+			"x" +
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String
 		OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1 =
-			"x" + RandomTestUtil.randomString();
+			"x" +
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String
 		OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_2 =
-			"x" + RandomTestUtil.randomString();
+			"x" +
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_BOOLEAN =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_DATE =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_DATE_TIME_INPUT =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_DATE_TIME_UTC =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_DECIMAL =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_INTEGER =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_LOCALIZED_LONG_TEXT =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_LOCALIZED_RICH_TEXT =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_LOCALIZED_TEXT =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_LONG_INTEGER =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_LONG_TEXT =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_MULTISELECT_PICKLIST =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_PICKLIST =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_PRECISION_DECIMAL =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final String OBJECT_FIELD_NAME_TEXT =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
 	protected static final int OBJECT_FIELD_VALUE_1 =
 		RandomTestUtil.randomInt();
@@ -1421,20 +1470,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 		RandomTestUtil.randomInt();
 
 	protected static final String TAG_1 = StringUtil.toLowerCase(
-		RandomTestUtil.randomString());
-
-	protected static AssetVocabulary assetVocabulary;
-	protected static final DateFormat dateFormat =
-		DateFormatFactoryUtil.getSimpleDateFormat("yyyy-MM-dd");
-	protected static final DateFormat dateTimeDateFormat =
-		DateFormatFactoryUtil.getSimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-	protected static TaxonomyCategoryResource taxonomyCategoryResource;
-	protected static final TestDLFileEntryModelListener
-		testDLFileEntryModelListener = new TestDLFileEntryModelListener();
-	protected static long testGroupId;
-	protected static final TestObjectEntryModelListener
-		testObjectEntryModelListener = new TestObjectEntryModelListener();
+		RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE));
 
 	@Inject
 	protected AssetVocabularyLocalService assetVocabularyLocalService;
@@ -1444,6 +1480,12 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 	@Inject
 	protected CompanyLocalService companyLocalService;
+
+	protected final Format dateFormat =
+		FastDateFormatFactoryUtil.getSimpleDateFormat("yyyy-MM-dd");
+	protected final Format dateTimeFormat =
+		FastDateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 	@Inject
 	protected DepotEntryLocalService depotEntryLocalService;
@@ -1484,52 +1526,14 @@ public abstract class BaseObjectEntryResourceTestCase {
 	@Inject
 	protected RoleLocalService roleLocalService;
 
-	protected SystemObjectDefinitionManager systemObjectDefinitionManager;
-	protected JSONObject userAccountJSONObject;
+	protected TaxonomyCategoryResource taxonomyCategoryResource;
+	protected long testGroupId;
 
 	@Inject
 	protected UserGroupRoleLocalService userGroupRoleLocalService;
 
 	@Inject
 	protected UserLocalService userLocalService;
-
-	protected ObjectDefinition userSystemObjectDefinition;
-
-	protected static class TestDLFileEntryModelListener
-		extends BaseModelListener<DLFileEntry> {
-
-		public Long getLastFileEntryId() {
-			return _fileEntryIds.get(_fileEntryIds.size() - 1);
-		}
-
-		@Override
-		public void onAfterCreate(DLFileEntry dlFileEntry)
-			throws ModelListenerException {
-
-			_fileEntryIds.add(dlFileEntry.getFileEntryId());
-		}
-
-		private List<Long> _fileEntryIds = new ArrayList<>();
-
-	}
-
-	protected static class TestObjectEntryModelListener
-		extends BaseModelListener<ObjectEntry> {
-
-		public Long getLastObjectEntryId() {
-			return _objectEntryIds.get(_objectEntryIds.size() - 1);
-		}
-
-		@Override
-		public void onAfterCreate(ObjectEntry objectEntry)
-			throws ModelListenerException {
-
-			_objectEntryIds.add(objectEntry.getObjectEntryId());
-		}
-
-		private List<Long> _objectEntryIds = new ArrayList<>();
-
-	}
 
 	protected enum Type {
 
@@ -1688,10 +1692,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 		).put(
 			OBJECT_FIELD_NAME_DATE_TIME_INPUT,
 			StringUtil.removeLast(
-				dateTimeDateFormat.format(randomDateTimeInput), "Z")
+				dateTimeFormat.format(randomDateTimeInput), "Z")
 		).put(
 			OBJECT_FIELD_NAME_DATE_TIME_UTC,
-			dateTimeDateFormat.format(randomDateTimeUTC)
+			dateTimeFormat.format(randomDateTimeUTC)
 		).put(
 			OBJECT_FIELD_NAME_DECIMAL, randomFloat
 		).put(
@@ -1804,10 +1808,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 			OBJECT_FIELD_NAME_DATE, dateFormat.format(randomDate)
 		).put(
 			OBJECT_FIELD_NAME_DATE_TIME_INPUT,
-			dateTimeDateFormat.format(randomDateTimeInput)
+			dateTimeFormat.format(randomDateTimeInput)
 		).put(
 			OBJECT_FIELD_NAME_DATE_TIME_UTC,
-			dateTimeDateFormat.format(randomDateTimeUTC)
+			dateTimeFormat.format(randomDateTimeUTC)
 		).put(
 			OBJECT_FIELD_NAME_DECIMAL, randomFloat
 		).put(
@@ -1844,19 +1848,13 @@ public abstract class BaseObjectEntryResourceTestCase {
 	}
 
 	private static final String _OBJECT_FIELD_NAME_RICH_TEXT =
-		"x" + RandomTestUtil.randomString();
+		"x" +
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE);
 
-	private static List<ServiceRegistration<?>> _serviceRegistrations;
-
+	private AssetVocabulary _assetVocabulary;
 	private ListTypeDefinition _listTypeDefinition;
-
-	@DeleteAfterTestRun
 	private ListTypeEntry _listTypeEntry1;
-
-	@DeleteAfterTestRun
 	private ListTypeEntry _listTypeEntry2;
-
-	@DeleteAfterTestRun
 	private ListTypeEntry _listTypeEntry3;
 
 	@Inject
@@ -1879,7 +1877,13 @@ public abstract class BaseObjectEntryResourceTestCase {
 	private SystemObjectDefinitionManagerRegistry
 		_systemObjectDefinitionManagerRegistry;
 
+	private ObjectDefinition _userSystemObjectDefinition;
+	private SystemObjectDefinitionManager _userSystemObjectDefinitionManager;
+
 	@DeleteAfterTestRun
 	private ObjectField _userSystemObjectField;
+
+	@DeleteAfterTestRun
+	private final List<User> _users = new ArrayList<>();
 
 }

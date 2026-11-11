@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -295,7 +296,10 @@ public class ObjectEntryResourceValidationTest
 			PermissionThreadLocal.getPermissionChecker();
 
 		try {
-			User user = addUser("test1", "test1");
+			User user = addUser(
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE),
+				RandomTestUtil.randomString());
 
 			ObjectEntryResource objectEntryResource = getObjectEntryResource(
 				objectDefinition, TestPropsValues.getUser());

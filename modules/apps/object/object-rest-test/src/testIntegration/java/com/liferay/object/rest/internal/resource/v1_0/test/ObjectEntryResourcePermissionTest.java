@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -122,15 +123,17 @@ public class ObjectEntryResourcePermissionTest
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
 			getObjectDefinition4().getResourceName(), role);
 
-		String userName = RandomTestUtil.randomString();
+		String password = RandomTestUtil.randomString();
 
-		User user = addUser(userName, "test1");
+		User user = addUser(
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
+			password);
 
 		roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
 
 		HTTPTestUtil.customize(
 		).withCredentials(
-			userName + "@liferay.com", "test1"
+			user.getEmailAddress(), password
 		).apply(
 			() -> {
 				JSONObject actionsJSONObject3 =
@@ -151,7 +154,7 @@ public class ObjectEntryResourcePermissionTest
 
 		HTTPTestUtil.customize(
 		).withCredentials(
-			userName + "@liferay.com", "test1"
+			user.getEmailAddress(), password
 		).apply(
 			() -> {
 				JSONObject actionsJSONObject4 =
@@ -246,7 +249,9 @@ public class ObjectEntryResourcePermissionTest
 
 		String password = RandomTestUtil.randomString();
 
-		User user = addUser(RandomTestUtil.randomString(), password);
+		User user = addUser(
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
+			password);
 
 		Role role = roleLocalService.fetchRole(
 			TestPropsValues.getCompanyId(),
@@ -700,13 +705,17 @@ public class ObjectEntryResourcePermissionTest
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
 			getObjectDefinition1().getResourceName(), role);
 
-		User user = addUser("test1", "test1");
+		String password = RandomTestUtil.randomString();
+
+		User user = addUser(
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
+			password);
 
 		roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
 
 		HTTPTestUtil.customize(
 		).withCredentials(
-			"test1@liferay.com", "test1"
+			user.getEmailAddress(), password
 		).apply(
 			() -> {
 				JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(

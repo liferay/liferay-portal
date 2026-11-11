@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -187,14 +186,13 @@ public class ObjectEntryResourceScopeTest
 
 	@Test
 	public void testPostScopeScopeKey() throws Exception {
-		Group group1 = groupLocalService.fetchGroup(testGroupId);
-		Group group2 = GroupTestUtil.addGroup();
+		Group testGroup = groupLocalService.fetchGroup(testGroupId);
 
 		_testPostScopeScopeKey(
-			group1.getExternalReferenceCode(),
-			group2.getExternalReferenceCode());
-		_testPostScopeScopeKey(group1.getGroupId(), group2.getGroupId());
-		_testPostScopeScopeKey(group1.getGroupKey(), group2.getGroupKey());
+			testGroup.getExternalReferenceCode(),
+			group.getExternalReferenceCode());
+		_testPostScopeScopeKey(testGroup.getGroupId(), group.getGroupId());
+		_testPostScopeScopeKey(testGroup.getGroupKey(), group.getGroupKey());
 	}
 
 	@Test

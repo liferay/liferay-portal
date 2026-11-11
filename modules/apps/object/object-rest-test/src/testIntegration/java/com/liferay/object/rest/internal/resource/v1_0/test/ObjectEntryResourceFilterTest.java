@@ -16,10 +16,12 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -32,6 +34,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.Serializable;
+
+import java.text.DateFormat;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -64,8 +68,10 @@ public class ObjectEntryResourceFilterTest
 
 	@Test
 	public void testFilterByUnknownObjectField() throws Exception {
-		String filterString =
-			"x" + RandomTestUtil.randomString() + " eq 'value'";
+		String randomString = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
+
+		String filterString = "x" + randomString + " eq 'value'";
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
@@ -416,10 +422,13 @@ public class ObjectEntryResourceFilterTest
 		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
 
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
 		objectEntry1.setCreateDate(
-			dateTimeDateFormat.parse("2023-09-20T10:00:00.150Z"));
+			dateFormat.parse("2023-09-20T10:00:00.150Z"));
 		objectEntry1.setModifiedDate(
-			dateTimeDateFormat.parse("2023-09-20T10:00:00.150Z"));
+			dateFormat.parse("2023-09-20T10:00:00.150Z"));
 
 		objectEntryLocalService.updateObjectEntry(objectEntry1);
 
@@ -427,9 +436,9 @@ public class ObjectEntryResourceFilterTest
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_2);
 
 		objectEntry2.setCreateDate(
-			dateTimeDateFormat.parse("2023-09-20T10:05:00.450Z"));
+			dateFormat.parse("2023-09-20T10:05:00.450Z"));
 		objectEntry2.setModifiedDate(
-			dateTimeDateFormat.parse("2023-09-20T10:05:00.450Z"));
+			dateFormat.parse("2023-09-20T10:05:00.450Z"));
 
 		objectEntryLocalService.updateObjectEntry(objectEntry2);
 
@@ -470,7 +479,9 @@ public class ObjectEntryResourceFilterTest
 		AssetVocabulary companyAssetVocabulary =
 			assetVocabularyLocalService.addVocabulary(
 				TestPropsValues.getUserId(), company.getGroupId(),
-				RandomTestUtil.randomString(), new ServiceContext());
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE),
+				new ServiceContext());
 
 		TaxonomyCategory taxonomyCategory1 =
 			postTaxonomyVocabularyTaxonomyCategory(

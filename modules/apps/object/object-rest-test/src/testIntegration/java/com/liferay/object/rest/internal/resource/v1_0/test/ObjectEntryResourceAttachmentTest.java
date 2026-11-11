@@ -41,14 +41,17 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -59,6 +62,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
@@ -96,6 +100,7 @@ import com.liferay.portlet.documentlibrary.constants.DLConstants;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -103,11 +108,18 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -128,6 +140,31 @@ public class ObjectEntryResourceAttachmentTest
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		Bundle bundle = FrameworkUtil.getBundle(
+			ObjectEntryResourceAttachmentTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		_serviceRegistrations = Arrays.asList(
+			bundleContext.registerService(
+				ModelListener.class, _testDLFileEntryModelListener, null),
+			bundleContext.registerService(
+				ModelListener.class, _testObjectEntryModelListener, null));
+
+		super.setUp();
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		_serviceRegistrations.forEach(ServiceRegistration::unregister);
+
+		super.tearDown();
+	}
 
 	@Test
 	public void testGetObjectEntryWithAttachmentObjectField() throws Exception {
@@ -300,8 +337,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		FileEntry pdfFileEntry = _addFileEntry(
 			FileUtil.getBytes(getClass(), "dependencies/document.pdf"),
-			ContentTypes.APPLICATION_PDF,
-			RandomTestUtil.randomString() + ".pdf");
+			ContentTypes.APPLICATION_PDF, "pdf");
 
 		DLFileEntry pdfDLFileEntry = _dlFileEntryLocalService.getFileEntry(
 			pdfFileEntry.getFileEntryId());
@@ -360,27 +396,23 @@ public class ObjectEntryResourceAttachmentTest
 				FileUtil.getBytes(
 					getClass(),
 					"dependencies/sample_large_square_1500x1500.jpg"),
-				ContentTypes.IMAGE_JPEG,
-				RandomTestUtil.randomString() + ".jpg"),
+				ContentTypes.IMAGE_JPEG, "jpg"),
 			"Square", "Large (Bigger Than 1024)");
 		_testGetObjectEntryWithAttachmentObjectFieldImageMetadata(
 			_addFileEntry(
 				FileUtil.getBytes(
 					getClass(), "dependencies/sample_medium_tall_600x800.jpg"),
-				ContentTypes.IMAGE_JPEG,
-				RandomTestUtil.randomString() + ".jpg"),
+				ContentTypes.IMAGE_JPEG, "jpg"),
 			"Tall", "Medium (Up to 1024x768)");
 		_testGetObjectEntryWithAttachmentObjectFieldImageMetadata(
 			_addFileEntry(
 				FileUtil.getBytes(
 					getClass(), "dependencies/sample_small_wide_400x300.jpg"),
-				ContentTypes.IMAGE_JPEG,
-				RandomTestUtil.randomString() + ".jpg"),
+				ContentTypes.IMAGE_JPEG, "jpg"),
 			"Wide", "Small (Up to 400x300)");
 		_testGetObjectEntryWithAttachmentObjectFieldImageMetadata(
 			_addFileEntry(
-				RandomTestUtil.randomBytes(), ContentTypes.TEXT_PLAIN,
-				RandomTestUtil.randomString() + ".txt"),
+				RandomTestUtil.randomBytes(), ContentTypes.TEXT_PLAIN, "txt"),
 			null, null);
 	}
 
@@ -394,7 +426,8 @@ public class ObjectEntryResourceAttachmentTest
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
 			getObjectDefinition1().getResourceName(), role);
 
-		String userName = RandomTestUtil.randomString();
+		String userName = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
 		String userPassword = RandomTestUtil.randomString();
 
 		User user = addUser(userName, userPassword);
@@ -427,7 +460,8 @@ public class ObjectEntryResourceAttachmentTest
 						RandomTestUtil.randomString() + ".txt", null, null);
 
 				fileEntry1.setExternalReferenceCode(
-					RandomTestUtil.randomString());
+					RandomTestUtil.randomString(
+						UniqueStringRandomizerBumper.INSTANCE));
 
 				HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
@@ -460,7 +494,8 @@ public class ObjectEntryResourceAttachmentTest
 						RandomTestUtil.randomString() + ".txt", null, null);
 
 				fileEntry2.setExternalReferenceCode(
-					RandomTestUtil.randomString());
+					RandomTestUtil.randomString(
+						UniqueStringRandomizerBumper.INSTANCE));
 				fileEntry2.setScope(scope);
 
 				JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -495,7 +530,8 @@ public class ObjectEntryResourceAttachmentTest
 						RandomTestUtil.randomString() + ".txt", null, null);
 
 				fileEntry3.setExternalReferenceCode(
-					RandomTestUtil.randomString());
+					RandomTestUtil.randomString(
+						UniqueStringRandomizerBumper.INSTANCE));
 				fileEntry3.setScope(scope);
 
 				jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -638,7 +674,10 @@ public class ObjectEntryResourceAttachmentTest
 
 		User adminUser = UserTestUtil.getAdminUser(company.getCompanyId());
 
-		String objectDefinitionName = ObjectDefinitionTestUtil.getRandomName();
+		String randomString = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
+
+		String objectDefinitionName = "A" + randomString;
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
@@ -821,7 +860,10 @@ public class ObjectEntryResourceAttachmentTest
 	public void testPostCustomObjectEntryWithLargeAttachmentObjectField()
 		throws Exception {
 
-		String attachmentFieldName = "x" + RandomTestUtil.randomString();
+		String randomString = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
+
+		String attachmentFieldName = "x" + randomString;
 
 		ObjectField objectField = ObjectFieldUtil.createObjectField(
 			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
@@ -879,7 +921,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		_assertAttachmentJSONObject(
 			_dlFileEntryLocalService.getDLFileEntry(
-				testDLFileEntryModelListener.getLastFileEntryId()),
+				_testDLFileEntryModelListener.getLastFileEntryId()),
 			fileBase64, jsonObject.getJSONObject(attachmentFieldName),
 			JSONUtil.put(
 				"externalReferenceCode", "L_GLOBAL"
@@ -941,7 +983,8 @@ public class ObjectEntryResourceAttachmentTest
 				Base64.encode(DLTestUtil.randomTextFileBytes()),
 				RandomTestUtil.randomString() + ".txt", null, null);
 
-		fileEntry1.setExternalReferenceCode(RandomTestUtil.randomString());
+		fileEntry1.setExternalReferenceCode(
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE));
 
 		Scope scope = Scope.of(group, LocaleUtil.getDefault());
 
@@ -952,7 +995,8 @@ public class ObjectEntryResourceAttachmentTest
 				Base64.encode(DLTestUtil.randomTextFileBytes()),
 				RandomTestUtil.randomString() + ".txt", null, null);
 
-		fileEntry2.setExternalReferenceCode(RandomTestUtil.randomString());
+		fileEntry2.setExternalReferenceCode(
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE));
 		fileEntry2.setScope(scope);
 
 		String endpoint = StringBundler.concat(
@@ -1062,7 +1106,8 @@ public class ObjectEntryResourceAttachmentTest
 			null, TestPropsValues.getUserId(), group.getGroupId(), folderId,
 			TempFileEntryUtil.getTempFileName(
 				RandomTestUtil.randomString() + ".txt"),
-			ContentTypes.TEXT_PLAIN, RandomTestUtil.randomString(),
+			ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 			new ByteArrayInputStream(content), 0, null, null, null,
 			ServiceContextTestUtil.getServiceContext());
@@ -1072,15 +1117,20 @@ public class ObjectEntryResourceAttachmentTest
 	}
 
 	private FileEntry _addFileEntry(
-			byte[] content, String contentType, String fileName)
+			byte[] content, String contentType, String extension)
 		throws Exception {
 
 		return _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName, contentType,
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringBundler.concat(
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE),
+				StringPool.PERIOD, extension),
+			contentType,
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			content, null, null, null,
+			RandomTestUtil.randomString(), content, null, null, null,
 			ServiceContextTestUtil.getServiceContext());
 	}
 
@@ -1314,12 +1364,12 @@ public class ObjectEntryResourceAttachmentTest
 		throws Exception {
 
 		DLFileEntry dlFileEntry = _dlFileEntryLocalService.getDLFileEntry(
-			testDLFileEntryModelListener.getLastFileEntryId());
+			_testDLFileEntryModelListener.getLastFileEntryId());
 
 		DLFileVersion dlFileVersion = dlFileEntry.getFileVersion();
 
 		ObjectEntry objectEntry = objectEntryLocalService.getObjectEntry(
-			testObjectEntryModelListener.getLastObjectEntryId());
+			_testObjectEntryModelListener.getLastObjectEntryId());
 
 		ObjectField objectField = objectFieldLocalService.getObjectField(
 			objectDefinition.getObjectDefinitionId(), objectFieldName);
@@ -1331,7 +1381,7 @@ public class ObjectEntryResourceAttachmentTest
 		).put(
 			"externalReferenceCode", dlFileEntry.getExternalReferenceCode()
 		).put(
-			"id", testDLFileEntryModelListener.getLastFileEntryId()
+			"id", _testDLFileEntryModelListener.getLastFileEntryId()
 		).put(
 			"link",
 			() -> {
@@ -1339,7 +1389,7 @@ public class ObjectEntryResourceAttachmentTest
 
 				FileEntry serviceBuilderFileEntry =
 					_dlAppLocalService.getFileEntry(
-						testDLFileEntryModelListener.getLastFileEntryId());
+						_testDLFileEntryModelListener.getLastFileEntryId());
 
 				FileVersion fileVersion =
 					serviceBuilderFileEntry.getFileVersion();
@@ -1487,7 +1537,10 @@ public class ObjectEntryResourceAttachmentTest
 			_publishObjectDefinitionWithLocalizedAttachmentObjectField()
 		throws Exception {
 
-		String objectDefinitionName = ObjectDefinitionTestUtil.getRandomName();
+		String randomString = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
+
+		String objectDefinitionName = "A" + randomString;
 
 		return ObjectDefinitionTestUtil.publishObjectDefinition(
 			objectDefinitionName,
@@ -1792,7 +1845,9 @@ public class ObjectEntryResourceAttachmentTest
 			_dlAppLocalService.addFolder(
 				null, TestPropsValues.getUserId(), group.getGroupId(),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE),
+				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext());
 		byte[] fileContent = DLTestUtil.randomTextFileBytes();
 
@@ -1851,7 +1906,7 @@ public class ObjectEntryResourceAttachmentTest
 			useExternalReferenceCode);
 
 		FileEntry serviceBuilderFileEntry = _dlAppLocalService.getFileEntry(
-			testDLFileEntryModelListener.getLastFileEntryId());
+			_testDLFileEntryModelListener.getLastFileEntryId());
 
 		Assert.assertEquals(
 			externalReferenceCode2,
@@ -1899,7 +1954,8 @@ public class ObjectEntryResourceAttachmentTest
 		// Documents and media source, file from Base64 without add document
 		// permission
 
-		String userName = RandomTestUtil.randomString();
+		String userName = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
 		String userPassword = RandomTestUtil.randomString();
 
 		HTTPTestUtil.customize(
@@ -2430,7 +2486,9 @@ public class ObjectEntryResourceAttachmentTest
 			_dlAppLocalService.addFolder(
 				null, TestPropsValues.getUserId(), group.getGroupId(),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE),
+				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext());
 		byte[] fileContent = DLTestUtil.randomTextFileBytes();
 
@@ -2487,7 +2545,7 @@ public class ObjectEntryResourceAttachmentTest
 			OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
 
 		FileEntry serviceBuilderFileEntry = _dlAppLocalService.getFileEntry(
-			testDLFileEntryModelListener.getLastFileEntryId());
+			_testDLFileEntryModelListener.getLastFileEntryId());
 
 		Assert.assertEquals(
 			externalReferenceCode2,
@@ -2534,7 +2592,8 @@ public class ObjectEntryResourceAttachmentTest
 		// Documents and media source, file from Base64 without add document
 		// permission
 
-		String userName = RandomTestUtil.randomString();
+		String userName = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
 		String userPassword = RandomTestUtil.randomString();
 
 		HTTPTestUtil.customize(
@@ -2985,7 +3044,7 @@ public class ObjectEntryResourceAttachmentTest
 			OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_2);
 
 		serviceBuilderFileEntry = _dlAppLocalService.getFileEntry(
-			testDLFileEntryModelListener.getLastFileEntryId());
+			_testDLFileEntryModelListener.getLastFileEntryId());
 
 		Assert.assertEquals(
 			externalReferenceCode4,
@@ -3154,5 +3213,47 @@ public class ObjectEntryResourceAttachmentTest
 
 	@Inject
 	private PortletFileRepository _portletFileRepository;
+
+	private List<ServiceRegistration<?>> _serviceRegistrations;
+	private final TestDLFileEntryModelListener _testDLFileEntryModelListener =
+		new TestDLFileEntryModelListener();
+	private final TestObjectEntryModelListener _testObjectEntryModelListener =
+		new TestObjectEntryModelListener();
+
+	private static class TestDLFileEntryModelListener
+		extends BaseModelListener<DLFileEntry> {
+
+		public Long getLastFileEntryId() {
+			return _fileEntryIds.get(_fileEntryIds.size() - 1);
+		}
+
+		@Override
+		public void onAfterCreate(DLFileEntry dlFileEntry)
+			throws ModelListenerException {
+
+			_fileEntryIds.add(dlFileEntry.getFileEntryId());
+		}
+
+		private List<Long> _fileEntryIds = new ArrayList<>();
+
+	}
+
+	private static class TestObjectEntryModelListener
+		extends BaseModelListener<ObjectEntry> {
+
+		public Long getLastObjectEntryId() {
+			return _objectEntryIds.get(_objectEntryIds.size() - 1);
+		}
+
+		@Override
+		public void onAfterCreate(ObjectEntry objectEntry)
+			throws ModelListenerException {
+
+			_objectEntryIds.add(objectEntry.getObjectEntryId());
+		}
+
+		private List<Long> _objectEntryIds = new ArrayList<>();
+
+	}
 
 }

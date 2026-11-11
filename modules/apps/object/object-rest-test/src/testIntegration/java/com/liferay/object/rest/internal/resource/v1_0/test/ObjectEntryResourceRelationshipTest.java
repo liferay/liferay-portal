@@ -6,7 +6,6 @@
 package com.liferay.object.rest.internal.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.expando.test.util.ExpandoTestUtil;
@@ -33,6 +32,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -130,35 +130,33 @@ public class ObjectEntryResourceRelationshipTest
 	public void testGetObjectEntryWithSystemObjectCustomFieldsInOneToManyRelationship()
 		throws Exception {
 
-		String expandoFieldName = RandomTestUtil.randomString();
+		String expandoFieldName = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
 		String expandoFieldValue = RandomTestUtil.randomString();
+
+		ExpandoTestUtil.addColumn(
+			ExpandoTestUtil.addTable(
+				PortalUtil.getClassNameId(User.class),
+				ExpandoTableConstants.DEFAULT_TABLE_NAME),
+			expandoFieldName, ExpandoColumnConstants.STRING);
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext();
 
 		serviceContext.setExpandoBridgeAttributes(
 			HashMapBuilder.<String, Serializable>put(
-				() -> {
-					ExpandoColumn expandoColumn = ExpandoTestUtil.addColumn(
-						ExpandoTestUtil.addTable(
-							PortalUtil.getClassNameId(User.class),
-							ExpandoTableConstants.DEFAULT_TABLE_NAME),
-						expandoFieldName, ExpandoColumnConstants.STRING);
-
-					return expandoColumn.getName();
-				},
-				expandoFieldValue
+				expandoFieldName, expandoFieldValue
 			).build());
 
 		User user = UserTestUtil.addUser(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			new long[0], serviceContext);
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
+			LocaleUtil.getDefault(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), new long[0], serviceContext);
 
 		ObjectRelationship objectRelationship =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				userSystemObjectDefinition, getObjectDefinition1(),
+				getUserSystemObjectDefinition(), getObjectDefinition1(),
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
@@ -231,21 +229,21 @@ public class ObjectEntryResourceRelationshipTest
 
 		JSONObject systemObjectJSONObject1 =
 			UserAccountTestUtil.addUserAccountJSONObject(
-				systemObjectDefinitionManager,
+				getUserSystemObjectDefinitionManager(),
 				HashMapBuilder.<String, Serializable>put(
 					OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_1)
 				).build());
 
 		JSONObject systemObjectJSONObject2 =
 			UserAccountTestUtil.addUserAccountJSONObject(
-				systemObjectDefinitionManager,
+				getUserSystemObjectDefinitionManager(),
 				HashMapBuilder.<String, Serializable>put(
 					OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 				).build());
 
 		ObjectRelationship objectRelationship2 =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				userSystemObjectDefinition, getObjectDefinition2(),
+				getUserSystemObjectDefinition(), getObjectDefinition2(),
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
@@ -289,9 +287,9 @@ public class ObjectEntryResourceRelationshipTest
 		_testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId(
 			getObjectDefinition1(), objectRelationship);
 		_testPostCustomObjectEntryWithNonexistentRelatedObjectEntryId(
-			userSystemObjectDefinition,
+			getUserSystemObjectDefinition(),
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				userSystemObjectDefinition, getObjectDefinition2(),
+				getUserSystemObjectDefinition(), getObjectDefinition2(),
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY));
 	}
@@ -674,7 +672,10 @@ public class ObjectEntryResourceRelationshipTest
 				).put(
 					objectRelationship1.getName(),
 					createObjectEntriesJSONArray(
-						new String[] {RandomTestUtil.randomString()},
+						new String[] {
+							RandomTestUtil.randomString(
+								UniqueStringRandomizerBumper.INSTANCE)
+						},
 						OBJECT_FIELD_NAME_2,
 						new String[] {RandomTestUtil.randomString()})
 				).put(
@@ -765,7 +766,9 @@ public class ObjectEntryResourceRelationshipTest
 					JSONUtil.put(
 						OBJECT_FIELD_NAME_3, RandomTestUtil.randomString()
 					).put(
-						"externalReferenceCode", RandomTestUtil.randomString()
+						"externalReferenceCode",
+						RandomTestUtil.randomString(
+							UniqueStringRandomizerBumper.INSTANCE)
 					))
 			).toString(),
 			getObjectDefinition2().getRESTContextPath(), Http.Method.POST);

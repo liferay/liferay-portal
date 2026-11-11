@@ -19,6 +19,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -576,15 +577,16 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
 
-		userAccountJSONObject = UserAccountTestUtil.addUserAccountJSONObject(
-			systemObjectDefinitionManager,
-			HashMapBuilder.<String, Serializable>put(
-				OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)
-			).build());
+		JSONObject userAccountJSONObject =
+			UserAccountTestUtil.addUserAccountJSONObject(
+				getUserSystemObjectDefinitionManager(),
+				HashMapBuilder.<String, Serializable>put(
+					OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)
+				).build());
 
 		ObjectRelationship objectRelationship =
 			addObjectRelationshipAndRelateObjectEntries(
-				getObjectDefinition1(), userSystemObjectDefinition,
+				getObjectDefinition1(), getUserSystemObjectDefinition(),
 				objectEntry.getPrimaryKey(),
 				userAccountJSONObject.getLong("id"),
 				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
@@ -601,7 +603,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 		// One to many relationship
 
 		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
-			userSystemObjectDefinition, getObjectDefinition1(),
+			getUserSystemObjectDefinition(), getObjectDefinition1(),
 			userAccountJSONObject.getLong("id"), objectEntry.getPrimaryKey(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
@@ -2661,9 +2663,9 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	}
 
 	private static final String _TAG_2 = StringUtil.toLowerCase(
-		RandomTestUtil.randomString());
+		RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE));
 
 	private static final String _TAG_3 = StringUtil.toLowerCase(
-		RandomTestUtil.randomString());
+		RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE));
 
 }

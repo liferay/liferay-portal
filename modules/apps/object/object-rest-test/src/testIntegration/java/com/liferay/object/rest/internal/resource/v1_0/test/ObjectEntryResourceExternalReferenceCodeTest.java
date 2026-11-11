@@ -15,7 +15,6 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.resource.v1_0.ObjectEntryResource;
-import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -23,6 +22,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -201,12 +201,15 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 	public void testGetObjectEntryCreatorExternalReferenceCode()
 		throws Exception {
 
+		String randomString = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
+
 		ObjectDefinition objectDefinition =
 			objectDefinitionLocalService.addCustomObjectDefinition(
 				null, TestPropsValues.getUserId(), 0, null, null, true, false,
 				true, false, true, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				ObjectDefinitionTestUtil.getRandomName(), null, null,
+				"A" + randomString, null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				true, ObjectDefinitionConstants.SCOPE_COMPANY,
 				ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
@@ -366,8 +369,10 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 				String endpoint, Http.Method httpMethod)
 		throws Exception {
 
-		String externalReferenceCode1 = RandomTestUtil.randomString();
-		String externalReferenceCode2 = RandomTestUtil.randomString();
+		String externalReferenceCode1 = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
+		String externalReferenceCode2 = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
 
 		Assert.assertEquals(
 			200,

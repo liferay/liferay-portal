@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -294,7 +295,8 @@ public class ObjectEntryResourceCommentTest
 
 		_enableComments(objectDefinition);
 
-		String externalReferenceCode = RandomTestUtil.randomString();
+		String externalReferenceCode = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
 
 		JSONArray commentsJSONArray = JSONUtil.putAll(
 			JSONUtil.put(
@@ -303,7 +305,9 @@ public class ObjectEntryResourceCommentTest
 				"text", RandomTestUtil.randomString()
 			),
 			JSONUtil.put(
-				"externalReferenceCode", RandomTestUtil.randomString()
+				"externalReferenceCode",
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE)
 			).put(
 				"parentCommentExternalReferenceCode", externalReferenceCode
 			).put(
@@ -349,7 +353,8 @@ public class ObjectEntryResourceCommentTest
 
 		_enableComments(objectDefinition);
 
-		String externalReferenceCode = RandomTestUtil.randomString();
+		String externalReferenceCode = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
 
 		JSONArray commentsJSONArray = JSONUtil.putAll(
 			JSONUtil.put(
@@ -358,14 +363,18 @@ public class ObjectEntryResourceCommentTest
 				"text", RandomTestUtil.randomString()
 			),
 			JSONUtil.put(
-				"externalReferenceCode", RandomTestUtil.randomString()
+				"externalReferenceCode",
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE)
 			).put(
 				"parentCommentExternalReferenceCode", externalReferenceCode
 			).put(
 				"text", RandomTestUtil.randomString()
 			),
 			JSONUtil.put(
-				"externalReferenceCode", RandomTestUtil.randomString()
+				"externalReferenceCode",
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE)
 			).put(
 				"text", RandomTestUtil.randomString()
 			));
@@ -407,7 +416,8 @@ public class ObjectEntryResourceCommentTest
 
 		Company company = companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
-		String parentExternalReferenceCode = RandomTestUtil.randomString();
+		String parentExternalReferenceCode = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
 
 		Assert.assertNull(
 			_commentManager.fetchComment(
@@ -425,7 +435,9 @@ public class ObjectEntryResourceCommentTest
 								new Comment() {
 									{
 										externalReferenceCode =
-											RandomTestUtil.randomString();
+											RandomTestUtil.randomString(
+												UniqueStringRandomizerBumper.
+													INSTANCE);
 										parentCommentExternalReferenceCode =
 											parentExternalReferenceCode;
 										text = RandomTestUtil.randomString();
@@ -476,7 +488,8 @@ public class ObjectEntryResourceCommentTest
 			ObjectDefinition objectDefinition)
 		throws Exception {
 
-		String externalReferenceCode = RandomTestUtil.randomString();
+		String externalReferenceCode = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
 
 		JSONArray commentsJSONArray = JSONUtil.putAll(
 			JSONUtil.put(
@@ -485,7 +498,9 @@ public class ObjectEntryResourceCommentTest
 				"text", RandomTestUtil.randomString()
 			),
 			JSONUtil.put(
-				"externalReferenceCode", RandomTestUtil.randomString()
+				"externalReferenceCode",
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE)
 			).put(
 				"parentCommentExternalReferenceCode", externalReferenceCode
 			).put(
@@ -512,14 +527,18 @@ public class ObjectEntryResourceCommentTest
 				"text", RandomTestUtil.randomString()
 			),
 			JSONUtil.put(
-				"externalReferenceCode", RandomTestUtil.randomString()
+				"externalReferenceCode",
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE)
 			).put(
 				"parentCommentExternalReferenceCode", externalReferenceCode
 			).put(
 				"text", RandomTestUtil.randomString()
 			),
 			JSONUtil.put(
-				"externalReferenceCode", RandomTestUtil.randomString()
+				"externalReferenceCode",
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE)
 			).put(
 				"text", RandomTestUtil.randomString()
 			));
@@ -541,7 +560,9 @@ public class ObjectEntryResourceCommentTest
 
 		JSONArray commentsJSONArray = JSONUtil.putAll(
 			JSONUtil.put(
-				"externalReferenceCode", RandomTestUtil.randomString()
+				"externalReferenceCode",
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE)
 			).put(
 				"text", RandomTestUtil.randomString()
 			));
@@ -563,7 +584,8 @@ public class ObjectEntryResourceCommentTest
 			).toString(),
 			JSONCompareMode.LENIENT);
 
-		String externalReferenceCode = RandomTestUtil.randomString();
+		String externalReferenceCode = RandomTestUtil.randomString(
+			UniqueStringRandomizerBumper.INSTANCE);
 
 		commentsJSONArray = JSONUtil.putAll(
 			JSONUtil.put(
@@ -572,7 +594,9 @@ public class ObjectEntryResourceCommentTest
 				"text", RandomTestUtil.randomString()
 			),
 			JSONUtil.put(
-				"externalReferenceCode", RandomTestUtil.randomString()
+				"externalReferenceCode",
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE)
 			).put(
 				"parentCommentExternalReferenceCode", externalReferenceCode
 			).put(
