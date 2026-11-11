@@ -51,6 +51,9 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapperFa
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -205,7 +208,26 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 				continue;
 			}
 
-			infoItemCapability.verify(curInfoItemClassDetails.getClassName());
+			try {
+				infoItemCapability.verify(
+					curInfoItemClassDetails.getClassName());
+			}
+			catch (CapabilityVerificationException
+						capabilityVerificationException) {
+
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Skipping item class name ",
+							curInfoItemClassDetails.getClassName(),
+							" because its capability ",
+							infoItemCapability.getKey(),
+							" failed verification"),
+						capabilityVerificationException);
+				}
+
+				continue;
+			}
 
 			infoItemClassDetailsList.add(curInfoItemClassDetails);
 		}
@@ -431,6 +453,9 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 
 		return infoItemServiceTrackerMap.getService(itemClassName);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		InfoItemServiceRegistryImpl.class);
 
 	private static final Set<Class<?>> _validInfoClasses = new HashSet<>(
 		Arrays.asList(
