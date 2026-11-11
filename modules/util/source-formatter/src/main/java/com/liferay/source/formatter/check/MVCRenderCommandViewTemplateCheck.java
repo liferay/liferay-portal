@@ -69,7 +69,7 @@ public class MVCRenderCommandViewTemplateCheck extends BaseFileCheck {
 		"\\bimplements\\b[^{]*\\bMVCRenderCommand\\b");
 	private static final Pattern _renderMethodPattern = Pattern.compile(
 		"\\bString render\\(\\s*RenderRequest \\w+,\\s*RenderResponse \\w+" +
-			"\\)\\s*(?:throws PortletException\\s*)?\\{\\s*return " +
-				"\"([^\"]*)\";\\s*\\}");
+			"\\)\\s*(?:throws PortletException\\s*)?\\{\\s*return \"([^\"]*)" +
+				"\";\\s*\\}");
 
 }
