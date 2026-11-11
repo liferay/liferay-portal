@@ -4,5 +4,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:configuration-admin:configuration-admin-api")
 	testIntegrationImplementation project(":apps:mentions:mentions-api")
 	testIntegrationImplementation project(":apps:message-boards:message-boards-api")
+	testIntegrationImplementation project(":apps:object:object-api")
+	testIntegrationImplementation project(":apps:object:object-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
