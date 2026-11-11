@@ -137,25 +137,11 @@ export async function gotoLatestLiferayDXPDataSource(page, project) {
 
 export async function renameDataSource({
 	newDataSourceName,
-	oldDataSourceName,
 	page,
 }: {
 	newDataSourceName: string;
-	oldDataSourceName: string;
 	page: Page;
 }) {
-	const dataSource = await findDataSource({
-		dataSourceName: oldDataSourceName,
-		page,
-	});
-
-	if (dataSource) {
-		await dataSource.click();
-	}
-	else {
-		return;
-	}
-
 	await page.getByRole('button', {name: 'Edit'}).click();
 
 	await page.locator('#dataSourceName').click();
@@ -169,6 +155,6 @@ export async function renameDataSource({
 	await page.getByRole('button', {name: 'Submit'}).click();
 
 	await expect(
-		page.getByRole('heading', {exact: true, name: newDataSourceName})
+		page.getByText(newDataSourceName, {exact: true}).first()
 	).toBeVisible();
 }

@@ -19,6 +19,7 @@ import {
 	checkDataSourceStatus,
 	createDataSource,
 	findDataSource,
+	gotoLatestLiferayDXPDataSource,
 	renameDataSource,
 } from '../main/utils/data-source';
 import {waitForLoading} from '../main/utils/loading';
@@ -63,15 +64,10 @@ test(
 		});
 
 		await test.step('Go back to Analytics Cloud settings and rename Data Source previously added', async () => {
-			await navigateToACSettingsViaURL({
-				acPage: ACPage.dataSourcePage,
-				page,
-				projectID: project.groupId,
-			});
+			await gotoLatestLiferayDXPDataSource(page, project);
 
 			await renameDataSource({
 				newDataSourceName: 'TEST_DS',
-				oldDataSourceName: 'Liferay DXP',
 				page,
 			});
 		});
