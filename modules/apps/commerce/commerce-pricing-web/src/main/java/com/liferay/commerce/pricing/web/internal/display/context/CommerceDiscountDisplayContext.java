@@ -130,9 +130,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 		return _commerceDiscount;
 	}
 
-	public String getCommerceDiscountAmount(Locale locale)
-		throws PortalException {
-
+	public String getCommerceDiscountAmount() throws PortalException {
 		CommerceDiscount commerceDiscount = getCommerceDiscount();
 
 		if (commerceDiscount == null) {

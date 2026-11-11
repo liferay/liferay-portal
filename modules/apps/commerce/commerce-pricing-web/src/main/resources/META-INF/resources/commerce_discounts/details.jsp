@@ -113,7 +113,7 @@ boolean hasPermission = commerceDiscountDisplayContext.hasPermission(ActionKeys.
 
 				<div class="row">
 					<div class="<%= colCssClass %>">
-						<aui:input ignoreRequestValue="<%= true %>" name="amount" suffix="<%= amountSuffix %>" type="currency" value="<%= commerceDiscountDisplayContext.getCommerceDiscountAmount(locale) %>">
+						<aui:input ignoreRequestValue="<%= true %>" name="amount" suffix="<%= amountSuffix %>" type="currency" value="<%= commerceDiscountDisplayContext.getCommerceDiscountAmount() %>">
 							<aui:validator name="min"><%= CommercePriceConstants.PRICE_VALUE_MIN %></aui:validator>
 							<aui:validator name="max"><%= CommercePriceConstants.PRICE_VALUE_MAX %></aui:validator>
 							<aui:validator name="number" />
