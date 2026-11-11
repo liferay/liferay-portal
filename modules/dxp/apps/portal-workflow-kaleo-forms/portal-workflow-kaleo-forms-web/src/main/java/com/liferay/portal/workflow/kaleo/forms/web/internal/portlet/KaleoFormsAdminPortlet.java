@@ -61,7 +61,6 @@ import java.util.Objects;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -196,7 +195,6 @@ public class KaleoFormsAdminPortlet extends MVCPortlet {
 	}
 
 	@Activate
-	@Modified
 	protected void activate(Map<String, Object> properties) {
 		for (Locale availableLocale : _language.getAvailableLocales()) {
 			_parameterNames.add(

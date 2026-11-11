@@ -106,7 +106,6 @@ import java.util.Objects;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -474,7 +473,6 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 	}
 
 	@Activate
-	@Modified
 	protected void activate() {
 		_infoRequestFieldValuesProviderHelper =
 			new InfoRequestFieldValuesProviderHelper(_infoItemServiceRegistry);

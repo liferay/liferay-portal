@@ -17,7 +17,6 @@ import com.liferay.segments.model.SegmentsExperience;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -40,7 +39,6 @@ public class LayoutSegmentsExperienceInfoItemFormProvider
 	}
 
 	@Activate
-	@Modified
 	protected void activate() {
 		_layoutInfoItemFormProviderHelper =
 			new LayoutInfoItemFormProviderHelper(_fragmentRendererController);

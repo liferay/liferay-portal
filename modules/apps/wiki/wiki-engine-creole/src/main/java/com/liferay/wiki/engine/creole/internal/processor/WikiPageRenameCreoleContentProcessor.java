@@ -10,7 +10,6 @@ import com.liferay.wiki.processor.WikiPageRenameContentProcessor;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 
 /**
  * @author Roberto Díaz
@@ -24,7 +23,6 @@ public class WikiPageRenameCreoleContentProcessor
 	extends BaseWikiPageRenameContentProcessor {
 
 	@Activate
-	@Modified
 	protected void activate() {
 		regexps.put("\\{\\{@old_title@/", "{{@new_title@/");
 	}

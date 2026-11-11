@@ -17,7 +17,6 @@ import com.liferay.translation.info.item.provider.InfoItemLanguagesProvider;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -44,7 +43,6 @@ public class LayoutSegmentsExperienceInfoItemLanguagesProvider
 	}
 
 	@Activate
-	@Modified
 	protected void activate() {
 		_layoutInfoItemLanguagesProviderHelper =
 			new LayoutInfoItemLanguagesProviderHelper(

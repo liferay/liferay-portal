@@ -39,7 +39,6 @@ import java.util.Objects;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -123,7 +122,6 @@ public class ProductMenuBodyTopDynamicInclude extends BaseDynamicInclude {
 	}
 
 	@Activate
-	@Modified
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 	}

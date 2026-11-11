@@ -24,7 +24,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -77,7 +76,6 @@ public class ProductNavigationControlMenuTopHeadDynamicInclude
 	}
 
 	@Activate
-	@Modified
 	protected void activate(BundleContext bundleContext) {
 		_bundle = bundleContext.getBundle();
 	}
