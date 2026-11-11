@@ -198,7 +198,7 @@ describe('SelectPageAssetInput', () => {
 			});
 		});
 
-		it('should open the modal with the select-page config', () => {
+		it('should open the modal with the add-page config', () => {
 			const {getByRole, getByText} = render(
 				<DefaultComponent action='view' />
 			);
@@ -211,9 +211,9 @@ describe('SelectPageAssetInput', () => {
 
 			const config = getModalProps();
 
-			expect(config.title).toBe('Select Page');
+			expect(config.title).toBe('Add Page');
 			expect(config.rowIdentifier).toBe('id');
-			expect(config.submitMessage).toBe('Select');
+			expect(config.submitMessage).toBe('Add');
 			expect(typeof config.dataSourceFn).toBe('function');
 		});
 	});
@@ -248,7 +248,7 @@ describe('SelectPageAssetInput', () => {
 			});
 		});
 
-		it('should open the modal with the select-asset config', async () => {
+		it('should open the modal with the add-asset config', async () => {
 			const {getByRole, getByText} = render(
 				<DefaultComponent action='view' />
 			);
@@ -268,9 +268,9 @@ describe('SelectPageAssetInput', () => {
 
 			const config = getModalProps();
 
-			expect(config.title).toBe('Select Asset');
+			expect(config.title).toBe('Add Asset');
 			expect(config.rowIdentifier).toBe('id');
-			expect(config.submitMessage).toBe('Select');
+			expect(config.submitMessage).toBe('Add');
 			expect(typeof config.dataSourceFn).toBe('function');
 			expect(config.columns.length).toBeGreaterThan(0);
 		});
@@ -290,6 +290,31 @@ describe('SelectPageAssetInput', () => {
 
 			expect(getByText('Home')).toBeTruthy();
 			expect(getByText('About')).toBeTruthy();
+		});
+
+		it('should keep the add asset copy on the button once assets are selected', () => {
+			const {getByRole} = render(
+				<DefaultComponent
+					action='download'
+					selectedItems={[{id: 'a-1', name: 'Asset'}]}
+				/>
+			);
+
+			expect(getByRole('button', {name: '+ Add Asset'})).toBeTruthy();
+		});
+
+		it('should keep the add page copy on the button once pages are selected', () => {
+			const {getByRole, getByText} = render(
+				<DefaultComponent
+					action='view'
+					selectedItems={[{id: 'p-1', name: 'Home'}]}
+				/>
+			);
+
+			openPicker(getByRole, 'Page or Asset Type');
+			fireEvent.click(getByText('Page'));
+
+			expect(getByRole('button', {name: '+ Add Page'})).toBeTruthy();
 		});
 
 		it('should emit every selected item as a selection on modal submit', async () => {

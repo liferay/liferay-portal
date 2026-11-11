@@ -70,12 +70,12 @@ describe('SelectCategoryFromModal', () => {
 			expect(getByText('Category Two')).toBeTruthy();
 		});
 
-		it('should render a select button and a clear button', () => {
+		it('should render an add category button and a clear button', () => {
 			const {getByLabelText, getByText} = render(
 				<DefaultComponent selectedCategories={selectedCategories} />
 			);
 
-			expect(getByText(/select/i)).toBeTruthy();
+			expect(getByText(/add category/i)).toBeTruthy();
 			expect(getByLabelText(/clear/i)).toBeTruthy();
 		});
 	});
@@ -91,14 +91,14 @@ describe('SelectCategoryFromModal', () => {
 			expect(isModalOpen()).toBe(true);
 		});
 
-		it('should open the modal when clicking select from non-empty state', () => {
+		it('should open the modal when clicking add category from non-empty state', () => {
 			const {getByText} = render(
 				<DefaultComponent
 					selectedCategories={[{id: 'cat-1', name: 'Cat 1'}]}
 				/>
 			);
 
-			fireEvent.click(getByText(/select/i));
+			fireEvent.click(getByText(/add category/i));
 
 			expect(isModalOpen()).toBe(true);
 		});
@@ -110,7 +110,7 @@ describe('SelectCategoryFromModal', () => {
 				<DefaultComponent selectedCategories={selectedCategories} />
 			);
 
-			fireEvent.click(getByText(/select/i));
+			fireEvent.click(getByText(/add category/i));
 
 			expect(getModalProps().initialSelectedItems).toEqual(
 				selectedCategories

@@ -130,7 +130,7 @@ exports[`BehaviorInput should render 1`] = `
           class="btn btn-secondary"
           type="button"
         >
-          Select
+          + Add Asset
         </button>
       </div>
     </div>
@@ -360,7 +360,7 @@ exports[`BehaviorInput should render w/ data 1`] = `
           class="btn btn-secondary"
           type="button"
         >
-          Select
+          + Add Asset
         </button>
       </div>
     </div>
