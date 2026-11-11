@@ -8,8 +8,8 @@ package com.liferay.portal.workflow.instance.tracker.url.provider.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.UnicodeLanguageUtil;
+import com.liferay.portal.kernel.model.LayoutRevisionWrapper;
 import com.liferay.portal.kernel.model.WorkflowInstanceLink;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -84,18 +84,23 @@ public class WorkflowInstanceTrackerURLProviderTest {
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
-		Object object = new Object() {
+		long companyId = TestPropsValues.getCompanyId();
 
-			public long getCompanyId() throws PortalException {
-				return TestPropsValues.getCompanyId();
+		Object object = new LayoutRevisionWrapper(null) {
+
+			@Override
+			public long getCompanyId() {
+				return companyId;
 			}
 
+			@Override
 			public long getGroupId() {
 				return 0;
 			}
 
-			public long getPrimaryKey() {
-				return 1;
+			@Override
+			public Serializable getPrimaryKeyObj() {
+				return 1L;
 			}
 
 		};
