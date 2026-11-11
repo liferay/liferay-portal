@@ -33,6 +33,7 @@ import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -57,6 +58,7 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
@@ -407,6 +409,8 @@ public class AssetPublisherDisplayContextTest {
 		String portletURLString = _getPortletURLString();
 
 		Assert.assertTrue(portletURLString.contains("redirect"));
+
+		_testGetPortletURLWithNestedRedirect();
 	}
 
 	@Test
@@ -756,6 +760,34 @@ public class AssetPublisherDisplayContextTest {
 				expectedAssetEntries.get(assetEntries.size() - 1 - i),
 				assetEntries.get(i));
 		}
+	}
+
+	private void _testGetPortletURLWithNestedRedirect() throws Exception {
+		PortletPreferences portletPreferences = new PortletPreferencesImpl();
+
+		portletPreferences.setValue("paginationType", "regular");
+
+		Object assetPublisherDisplayContext = _getAssetPublisherDisplayContext(
+			LayoutTestUtil.addTypePortletLayout(_group), portletPreferences);
+
+		String currentURL =
+			"/web/" + RandomTestUtil.randomString() + "?param=value";
+		String previousRedirect = URLCodec.encodeURL(
+			StringBundler.concat(
+				"/web/", RandomTestUtil.randomString(), "?redirect=",
+				URLCodec.encodeURL("/web/" + RandomTestUtil.randomString())));
+
+		_mockLiferayPortletRenderRequest.setAttribute(
+			WebKeys.CURRENT_URL,
+			StringBundler.concat(
+				currentURL, "&redirect=", previousRedirect, "&_",
+				RandomTestUtil.randomString(), "_redirect=", previousRedirect));
+
+		MockLiferayPortletURL mockLiferayPortletURL = ReflectionTestUtil.invoke(
+			assetPublisherDisplayContext, "getPortletURL", new Class<?>[0]);
+
+		Assert.assertEquals(
+			currentURL, mockLiferayPortletURL.getParameter("redirect"));
 	}
 
 	private static Configuration _assetPublisherWebConfiguration;
