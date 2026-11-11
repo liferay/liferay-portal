@@ -386,9 +386,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		}
 	}
 
-	protected void addTeamRoles(long userId, Group group, Set<Long> roleIds)
-		throws Exception {
-
+	protected void addTeamRoles(long userId, Group group, Set<Long> roleIds) {
 		int count = TeamLocalServiceUtil.getGroupTeamsCount(group.getGroupId());
 
 		List<Role> roles = null;
@@ -583,9 +581,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	}
 
 	protected List<Resource> fixMissingResources(
-			long companyId, long groupId, String name, String primKey,
-			String actionId, List<Resource> resources)
-		throws Exception {
+		long companyId, long groupId, String name, String primKey,
+		String actionId, List<Resource> resources) {
 
 		int count =
 			ResourcePermissionLocalServiceUtil.getResourcePermissionsCount(
@@ -693,9 +690,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	 * @throws Exception if an exception occurred
 	 */
 	protected List<Resource> getResources(
-			long companyId, long groupId, String name, String primKey,
-			String actionId)
-		throws Exception {
+		long companyId, long groupId, String name, String primKey,
+		String actionId) {
 
 		// Individual
 
