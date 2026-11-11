@@ -69,7 +69,7 @@ export async function createDataSource(page) {
 
 	const input = page.locator('#value');
 
-	await expect(input).not.toHaveValue('');
+	await expect(input).not.toHaveValue('Loading');
 
 	const token = await input.inputValue();
 
