@@ -135,10 +135,10 @@ test(
 			infoPanel.getByRole('heading', {name: titles[10]})
 		).toBeVisible();
 		await expect(
-			infoPanel.getByText('Version 2.0', {exact: true}).first()
+			infoPanel.getByText('Approved', {exact: true}).first()
 		).toBeVisible();
 		await expect(
-			infoPanel.getByText('Approved', {exact: true}).first()
+			infoPanel.getByText('Version 2.0', {exact: true}).first()
 		).toBeVisible();
 
 		// Check the versions tab
@@ -339,11 +339,11 @@ test(
 			.click();
 
 		await expect(
-			page.getByRole('link', {exact: true, name: 'Guild Charter'})
-		).toBeVisible();
-		await expect(
 			page.getByRole('link', {exact: true, name: 'APAC Guild'})
 		).toBeHidden();
+		await expect(
+			page.getByRole('link', {exact: true, name: 'Guild Charter'})
+		).toBeVisible();
 
 		await journalPage.goto(site.friendlyUrlPath);
 
@@ -643,8 +643,8 @@ test(
 			.getByRole('button', {exact: true, name: 'Select'})
 			.click();
 
-		await expect(titleLink(taggedTitle)).toBeVisible();
 		await expect(titleLink(categorizedTitle)).toBeHidden();
+		await expect(titleLink(taggedTitle)).toBeVisible();
 	}
 );
 
@@ -719,10 +719,10 @@ test(
 		await searchInComments();
 
 		await expect(page.getByText('2 Results Found for "DXP"')).toBeVisible();
-		await expect(page.getByText('Welcome to Liferay DXP')).toBeVisible();
 		await expect(
 			page.getByText('Enjoy using the best DXP on Earth!')
 		).toBeVisible();
+		await expect(page.getByText('Welcome to Liferay DXP')).toBeVisible();
 	}
 );
 
@@ -911,8 +911,8 @@ test(
 
 		await journalPage.search('Liferay');
 
-		await expect(titleLink('Liferay LXC')).toBeVisible();
 		await expect(titleLink('Liferay DXP')).toBeHidden();
+		await expect(titleLink('Liferay LXC')).toBeVisible();
 	}
 );
 
@@ -936,17 +936,16 @@ test(
 		);
 
 		await apiHelpers.jsonWebServicesJournal.addWebContent({
-			ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
-			groupId: assetLibrary.siteId,
-			titleMap: {en_US: 'EMEA Guild'},
-		});
-
-		await apiHelpers.jsonWebServicesJournal.addWebContent({
 			contentFields: [{name: 'Text', value: getRandomString()}],
 			ddmStructureId: structure.id,
 			ddmTemplateKey: '',
 			groupId: assetLibrary.siteId,
 			titleMap: {en_US: 'LXC'},
+		});
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
+			groupId: assetLibrary.siteId,
+			titleMap: {en_US: 'EMEA Guild'},
 		});
 
 		const assetLibraryURL = `/asset-library-${assetLibrary.id}`;
@@ -972,11 +971,11 @@ test(
 			.click();
 
 		await expect(
-			page.getByRole('link', {exact: true, name: 'LXC'})
-		).toBeVisible();
-		await expect(
 			page.getByRole('link', {exact: true, name: 'EMEA Guild'})
 		).toBeHidden();
+		await expect(
+			page.getByRole('link', {exact: true, name: 'LXC'})
+		).toBeVisible();
 
 		// Check the structures available in the connected site
 
