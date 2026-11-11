@@ -130,12 +130,21 @@ public class PublishProcessesDisplayContext {
 			LanguageUtil.get(
 				_httpServletRequest, "are-you-sure-you-want-to-delete-this"));
 
-		return ListUtil.fromArray(
+		FDSActionDropdownItem relaunchFDSActionDropdownItem =
 			new FDSActionDropdownItem(
 				ScopeUtil.getAPIURL("/publish-processes/{id}/relaunch"),
 				"reload", "relaunch",
 				LanguageUtil.get(_httpServletRequest, "relaunch"), "post", null,
-				"async"),
+				"async");
+
+		if (_liveGroup.isStagedRemotely()) {
+			return ListUtil.fromArray(
+				relaunchFDSActionDropdownItem, deleteFDSActionDropdownItem,
+				clearFDSActionDropdownItem);
+		}
+
+		return ListUtil.fromArray(
+			relaunchFDSActionDropdownItem,
 			new FDSActionDropdownItem(
 				PortletURLBuilder.create(
 					PortletURLFactoryUtil.create(

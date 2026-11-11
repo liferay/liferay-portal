@@ -65,6 +65,8 @@ renderResponse.setTitle(publishProcessDisplayContext.getTitle(scheduledPublishPr
 			).put(
 				"publishProcessAPIURL", publishProcessDisplayContext.getPublishProcessAPIURL()
 			).put(
+				"remoteConnection", publishProcessDisplayContext.getRemoteConnectionJSONObject()
+			).put(
 				"scheduledBackURL", HttpComponentsUtil.setParameter(backURL, liferayPortletResponse.getNamespace() + "tabs1", "scheduled")
 			).put(
 				"scheduledPublishProcessAPIURL", publishProcessDisplayContext.getScheduledPublishProcessAPIURL()

@@ -11,15 +11,23 @@ import React, {useEffect, useRef, useState} from 'react';
 import DataSelection from '../../components/DataSelection';
 import Footer from '../../components/Footer';
 import {PageTreeModalConfiguration} from '../../components/PageTreeModal';
+import SectionHeader from '../../components/SectionHeader';
 import Setup from '../../components/Setup';
 import {DateFilterValues, Range} from '../../components/date_filter';
 import {ContentSelection} from '../../components/forms/content_selector/ContentSelector';
+import {
+	FormikFieldCheckbox,
+	FormikFieldText,
+} from '../../components/forms/formik';
 import {usePreview} from '../../hooks/usePreview';
 import {deleteScheduledPublishProcess} from '../../services/deleteScheduledPublishProcess';
 import {getScheduledPublishProcess} from '../../services/getScheduledPublishProcess';
 import {postPublishProcess} from '../../services/postPublishProcess';
 import {postScheduledPublishProcess} from '../../services/postScheduledPublishProcess';
-import {PublishProcessRequest} from '../../types/exportImportProcess';
+import {
+	PublishProcessRequest,
+	RemoteConnection,
+} from '../../types/exportImportProcess';
 import {
 	getSelectedDeletionCount,
 	getSelectedItemsCount,
@@ -51,8 +59,21 @@ type PublishFormValues = {
 	deletions: boolean;
 	name: string;
 	permissions: boolean;
+	remoteConnection: RemoteConnection | undefined;
 	scheduleValues: ScheduleValues;
 };
+
+function getActionButtonLabel(remote: boolean, scheduled: boolean) {
+	if (remote) {
+		return scheduled
+			? Liferay.Language.get('schedule-publication-to-remote-live')
+			: Liferay.Language.get('publish-to-remote-live');
+	}
+
+	return scheduled
+		? Liferay.Language.get('schedule-publication-to-live')
+		: Liferay.Language.get('publish-to-live');
+}
 
 export function NewPublish({
 	backURL,
@@ -63,6 +84,7 @@ export function NewPublish({
 	processesBackURL,
 	publishPreviewAPIURL,
 	publishProcessAPIURL,
+	remoteConnection,
 	scheduledBackURL,
 	scheduledPublishProcessAPIURL,
 	scheduledPublishProcessId,
@@ -77,6 +99,7 @@ export function NewPublish({
 	processesBackURL: string;
 	publishPreviewAPIURL: string;
 	publishProcessAPIURL: string;
+	remoteConnection?: RemoteConnection;
 	scheduledBackURL: string;
 	scheduledPublishProcessAPIURL: string;
 	scheduledPublishProcessId?: number;
@@ -98,6 +121,7 @@ export function NewPublish({
 			deletions: false,
 			name: '',
 			permissions: false,
+			remoteConnection,
 			scheduleValues: getInitialScheduleValues(
 				timeZoneId,
 				defaultScheduled
@@ -163,6 +187,9 @@ export function NewPublish({
 				deletions: !!publishProcessRequest.deletions,
 				name: scheduledPublishProcess.name ?? '',
 				permissions: !!publishProcessRequest.permissions,
+				remoteConnection:
+					publishProcessRequest.remoteConnection ??
+					currentInitialFormValues.remoteConnection,
 				scheduleValues: {
 					...currentInitialFormValues.scheduleValues,
 					enabled: true,
@@ -233,6 +260,7 @@ export function NewPublish({
 						portletDataHandlerSections,
 						values.contentSelection
 					),
+					remoteConnection: values.remoteConnection,
 				};
 
 				const result = scheduled
@@ -336,6 +364,54 @@ export function NewPublish({
 							timeZones={timeZones}
 						/>
 
+						{remoteConnection && (
+							<>
+								<SectionHeader
+									title={Liferay.Language.get(
+										'where-to-publish'
+									)}
+								/>
+
+								<FormikFieldText
+									label={Liferay.Language.get(
+										'remote-host-ip'
+									)}
+									name="remoteConnection.address"
+									required
+								/>
+
+								<FormikFieldText
+									label={Liferay.Language.get('remote-port')}
+									name="remoteConnection.port"
+									required
+									type="number"
+								/>
+
+								<FormikFieldText
+									label={Liferay.Language.get(
+										'remote-path-context'
+									)}
+									name="remoteConnection.pathContext"
+								/>
+
+								<FormikFieldText
+									label={Liferay.Language.get(
+										'remote-site-id'
+									)}
+									name="remoteConnection.siteId"
+									required
+									type="number"
+								/>
+
+								<FormikFieldCheckbox
+									label={Liferay.Language.get(
+										'use-a-secure-network-connection'
+									)}
+									name="remoteConnection.secureConnection"
+								/>
+							</>
+						)}
+
 						<DataSelection
 							commentsAndRatingsEnabled={
 								commentsAndRatingsEnabled
@@ -381,13 +457,10 @@ export function NewPublish({
 						/>
 
 						<Footer
-							actionButtonLabel={
+							actionButtonLabel={getActionButtonLabel(
+								Boolean(remoteConnection),
 								formik.values.scheduleValues.enabled
-									? Liferay.Language.get(
-											'schedule-publication-to-live'
-										)
-									: Liferay.Language.get('publish-to-live')
-							}
+							)}
 							actionButtonSymbol="change"
 							backURL={backURL}
 						/>

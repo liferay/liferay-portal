@@ -6,6 +6,8 @@
 import {FieldValidator} from 'formik';
 
 const required: FieldValidator = (value) =>
-	!value?.trim() ? Liferay.Language.get('this-field-is-required') : undefined;
+	!String(value ?? '').trim()
+		? Liferay.Language.get('this-field-is-required')
+		: undefined;
 
 export {required};

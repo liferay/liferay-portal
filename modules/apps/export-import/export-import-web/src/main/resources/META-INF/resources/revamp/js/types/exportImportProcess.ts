@@ -92,6 +92,15 @@ export interface PublishProcessRequest {
 	permissions?: boolean;
 	portletDataHandlers?: PortletDataHandler[];
 	ratings?: boolean;
+	remoteConnection?: RemoteConnection;
+}
+
+export interface RemoteConnection {
+	address?: string;
+	pathContext?: string;
+	port?: number;
+	secureConnection?: boolean;
+	siteId?: number;
 }
 
 export interface ScheduledPublishProcess {

@@ -4,7 +4,7 @@
  */
 
 import ClayForm from '@clayui/form';
-import {FormikValues, useFormikContext} from 'formik';
+import {FormikValues, getIn, useFormikContext} from 'formik';
 import React from 'react';
 
 import {FieldCheckbox} from '../FieldCheckbox';
@@ -28,7 +28,7 @@ export function FormikFieldCheckbox({
 		<ClayForm.Group>
 			<FieldCheckbox
 				bordered={false}
-				checked={Boolean(values[name])}
+				checked={Boolean(getIn(values, name))}
 				description={description}
 				id={id}
 				label={label}

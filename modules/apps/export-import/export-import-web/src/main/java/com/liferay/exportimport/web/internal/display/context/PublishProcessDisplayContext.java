@@ -9,6 +9,7 @@ import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.TimeZoneComparator;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -73,6 +75,37 @@ public class PublishProcessDisplayContext {
 		return ScopeUtil.getAPIURL(_liveGroup, "/publish-processes");
 	}
 
+	public JSONObject getRemoteConnectionJSONObject() {
+		if (!_liveGroup.isStagedRemotely()) {
+			return null;
+		}
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			_liveGroup.getTypeSettingsProperties();
+
+		return JSONUtil.put(
+			"address",
+			GetterUtil.getString(
+				typeSettingsUnicodeProperties.getProperty("remoteAddress"))
+		).put(
+			"pathContext",
+			GetterUtil.getString(
+				typeSettingsUnicodeProperties.getProperty("remotePathContext"))
+		).put(
+			"port",
+			GetterUtil.getInteger(
+				typeSettingsUnicodeProperties.getProperty("remotePort"))
+		).put(
+			"secureConnection",
+			GetterUtil.getBoolean(
+				typeSettingsUnicodeProperties.getProperty("secureConnection"))
+		).put(
+			"siteId",
+			GetterUtil.getLong(
+				typeSettingsUnicodeProperties.getProperty("remoteGroupId"))
+		);
+	}
+
 	public String getScheduledPublishProcessAPIURL() {
 		return ScopeUtil.getAPIURL(_liveGroup, "/scheduled-publish-processes");
 	}
@@ -100,11 +133,16 @@ public class PublishProcessDisplayContext {
 		}
 
 		try {
+			String destinationName = DestinationNames.LAYOUTS_LOCAL_PUBLISHER;
+
+			if (_liveGroup.isStagedRemotely()) {
+				destinationName = DestinationNames.LAYOUTS_REMOTE_PUBLISHER;
+			}
+
 			for (SchedulerResponse schedulerResponse :
 					SchedulerEngineHelperUtil.getScheduledJobs(
 						StagingUtil.getSchedulerGroupName(
-							DestinationNames.LAYOUTS_LOCAL_PUBLISHER,
-							_liveGroup.getGroupId()),
+							destinationName, _liveGroup.getGroupId()),
 						StorageType.PERSISTED)) {
 
 				Message message = schedulerResponse.getMessage();

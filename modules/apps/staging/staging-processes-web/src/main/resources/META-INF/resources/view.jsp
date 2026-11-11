@@ -36,7 +36,7 @@ boolean showStagingConfiguration = ParamUtil.getBoolean(request, "showStagingCon
 			portletName="<%= StagingConfigurationPortletKeys.STAGING_CONFIGURATION %>"
 		/>
 	</c:when>
-	<c:when test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-96689") && (liveGroup != null) && !liveGroup.isStagedRemotely() %>'>
+	<c:when test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-96689") && (liveGroup != null) %>'>
 
 		<%
 		PublishProcessesDisplayContext publishProcessesDisplayContext = new PublishProcessesDisplayContext(request, liferayPortletResponse, liveGroup);
