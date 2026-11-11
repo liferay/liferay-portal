@@ -484,6 +484,7 @@ public class DisplayPageTemplateFolderResourceTest
 
 		_assertNoParentDisplayPageTemplateFolder(displayPageTemplateFolder);
 
+		_testPutSiteDisplayPageTemplateFolderWithMismatchedParentDisplayPageTemplateFolder();
 		_testPutSiteDisplayPageTemplateFolderWithParentDisplayPageTemplateFolder();
 
 		DisplayPageTemplateFolder liveGroupDisplayPageTemplateFolder =
@@ -1073,11 +1074,38 @@ public class DisplayPageTemplateFolderResourceTest
 		return putDisplayPageTemplateFolder;
 	}
 
-	private void _testPutSiteDisplayPageTemplateFolderWithParentDisplayPageTemplateFolder()
+	private void _testPutSiteDisplayPageTemplateFolderWithMismatchedParentDisplayPageTemplateFolder()
 		throws Exception {
 
-		String invalidParentExternalReferenceCode =
-			RandomTestUtil.randomString();
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			DisplayPageTemplateFolder displayPageTemplateFolder =
+				randomDisplayPageTemplateFolder();
+
+			displayPageTemplateFolder.setParentDisplayPageTemplateFolder(
+				randomDisplayPageTemplateFolder());
+			displayPageTemplateFolder.
+				setParentDisplayPageTemplateFolderExternalReferenceCode(
+					RandomTestUtil.randomString());
+
+			ProblemExceptionTestUtil.assertProblemException(
+				"BAD_REQUEST",
+				"The provided external reference code does not point to the " +
+					"parent display page template folder",
+				() ->
+					displayPageTemplateFolderResource.
+						putSiteDisplayPageTemplateFolder(
+							testGroup.getExternalReferenceCode(),
+							displayPageTemplateFolder.
+								getExternalReferenceCode(),
+							displayPageTemplateFolder));
+		}
+	}
+
+	private void _testPutSiteDisplayPageTemplateFolderWithParentDisplayPageTemplateFolder()
+		throws Exception {
 
 		ProblemExceptionTestUtil.assertProblemException(
 			"BAD_REQUEST",
@@ -1085,7 +1113,7 @@ public class DisplayPageTemplateFolderResourceTest
 				"display page type",
 			() -> _testPutSiteDisplayPageTemplateFolder(
 				randomDisplayPageTemplateFolder(),
-				invalidParentExternalReferenceCode));
+				RandomTestUtil.randomString()));
 
 		DisplayPageTemplateFolder parentDisplayPageTemplateFolder =
 			testPostSiteDisplayPageTemplateFolder_addDisplayPageTemplateFolder(
@@ -1110,13 +1138,9 @@ public class DisplayPageTemplateFolderResourceTest
 
 		putDisplayPageTemplateFolder.setParentDisplayPageTemplateFolder(
 			parentDisplayPageTemplateFolder);
-
-		String deeplyNestedParentExternalReferenceCode =
-			parentDisplayPageTemplateFolder.getExternalReferenceCode();
-
 		putDisplayPageTemplateFolder.
 			setParentDisplayPageTemplateFolderExternalReferenceCode(
-				deeplyNestedParentExternalReferenceCode);
+				parentDisplayPageTemplateFolder.getExternalReferenceCode());
 
 		ProblemExceptionTestUtil.assertProblemException(
 			"BAD_REQUEST",
@@ -1160,33 +1184,6 @@ public class DisplayPageTemplateFolderResourceTest
 						putDisplayPageTemplateFolder.getExternalReferenceCode(),
 						testGroup.getGroupId()),
 				parentLayoutPageTemplateCollections);
-		}
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
-					true)) {
-
-			DisplayPageTemplateFolder mismatchedDisplayPageTemplateFolder =
-				randomDisplayPageTemplateFolder();
-
-			mismatchedDisplayPageTemplateFolder.
-				setParentDisplayPageTemplateFolder(
-					randomDisplayPageTemplateFolder());
-			mismatchedDisplayPageTemplateFolder.
-				setParentDisplayPageTemplateFolderExternalReferenceCode(
-					RandomTestUtil.randomString());
-
-			ProblemExceptionTestUtil.assertProblemException(
-				"BAD_REQUEST",
-				"The provided external reference code does not point to the " +
-					"parent display page template folder",
-				() ->
-					displayPageTemplateFolderResource.
-						putSiteDisplayPageTemplateFolder(
-							testGroup.getExternalReferenceCode(),
-							mismatchedDisplayPageTemplateFolder.
-								getExternalReferenceCode(),
-							mismatchedDisplayPageTemplateFolder));
 		}
 	}
 

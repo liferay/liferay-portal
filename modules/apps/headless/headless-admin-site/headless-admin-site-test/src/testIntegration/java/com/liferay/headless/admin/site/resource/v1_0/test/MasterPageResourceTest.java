@@ -563,6 +563,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		_testPostSiteMasterPageWithDropZonePageElement();
 		_testPostSiteMasterPageWithInvalidPageSpecifications();
+		_testPostSiteMasterPageWithMismatchedPageSpecifications();
 		_testPostSiteMasterPageWithPageSpecifications();
 		_testPostSiteMasterPageWithSiteTemplatePageSpecification();
 		_testPostSiteMasterPageWithThumbnail();
@@ -2102,10 +2103,16 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			"BAD_REQUEST", "Exactly two page specifications are required",
 			() -> masterPageResource.postSiteMasterPage(
 				testGroup.getExternalReferenceCode(), masterPage));
+	}
 
-		MasterPage mismatchedMasterPage = randomMasterPage();
+	private void _testPostSiteMasterPageWithMismatchedPageSpecifications()
+		throws Exception {
 
-		mismatchedMasterPage.setPageSpecifications(
+		MasterPageResource masterPageResource = _getMasterPageResource();
+
+		MasterPage masterPage = randomMasterPage();
+
+		masterPage.setPageSpecifications(
 			() -> new PageSpecification[] {
 				PageSpecificationsTestUtil.getContentPageSpecification(
 					RandomTestUtil.randomString(), testGroup.getGroupId(),
@@ -2121,7 +2128,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 				"match the published page specification's draft external " +
 					"reference code",
 			() -> masterPageResource.postSiteMasterPage(
-				testGroup.getExternalReferenceCode(), mismatchedMasterPage));
+				testGroup.getExternalReferenceCode(), masterPage));
 	}
 
 	private void _testPostSiteMasterPageWithPageSpecifications()

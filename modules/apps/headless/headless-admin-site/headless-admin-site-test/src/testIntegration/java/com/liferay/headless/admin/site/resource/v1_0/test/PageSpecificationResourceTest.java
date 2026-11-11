@@ -412,7 +412,8 @@ public class PageSpecificationResourceTest
 			LayoutPageTemplateEntryTestUtil.
 				getMasterLayoutPageTemplateEntryLayout(serviceContext),
 			serviceContext);
-		_testPatchSitePageSpecificationWithMismatchedType(serviceContext);
+		_testPatchSitePageSpecificationWithMismatchedPageSpecification(
+			serviceContext);
 
 		String externalReferenceCode = RandomTestUtil.randomString();
 
@@ -1470,7 +1471,7 @@ public class PageSpecificationResourceTest
 				contentPageSpecification));
 	}
 
-	private void _testPatchSitePageSpecificationWithMismatchedType(
+	private void _testPatchSitePageSpecificationWithMismatchedPageSpecification(
 			ServiceContext serviceContext)
 		throws Exception {
 
