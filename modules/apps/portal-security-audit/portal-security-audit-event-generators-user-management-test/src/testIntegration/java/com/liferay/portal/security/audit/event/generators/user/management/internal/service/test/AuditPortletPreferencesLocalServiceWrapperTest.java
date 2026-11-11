@@ -84,7 +84,11 @@ public class AuditPortletPreferencesLocalServiceWrapperTest
 			JSONCompareMode.NON_EXTENSIBLE);
 
 		Assert.assertFalse(
-			String.valueOf(auditMessage.toJSONObject()).contains(clientSecret));
+			String.valueOf(
+				auditMessage.toJSONObject()
+			).contains(
+				clientSecret
+			));
 
 		portletPreferencesSettings.store();
 
