@@ -1449,21 +1449,21 @@ public abstract class BaseDB implements DB {
 
 		String indexesSQLLowerCase = StringUtil.toLowerCase(indexesSQL);
 
-		String[] lines = StringUtil.splitLines(indexesSQL);
-
 		Set<String> indexNames = new HashSet<>();
 
-		for (String line : lines) {
-			if (Validator.isNull(line)) {
-				continue;
-			}
+		com.liferay.petra.string.StringUtil.forEachLine(
+			indexesSQL.trim(),
+			line -> {
+				if (Validator.isNull(line)) {
+					return;
+				}
 
-			IndexMetadata indexMetadata =
-				IndexMetadataFactoryUtil.createIndexMetadata(line);
+				IndexMetadata indexMetadata =
+					IndexMetadataFactoryUtil.createIndexMetadata(line);
 
-			indexNames.add(
-				StringUtil.toLowerCase(indexMetadata.getIndexName()));
-		}
+				indexNames.add(
+					StringUtil.toLowerCase(indexMetadata.getIndexName()));
+			});
 
 		for (Index index : indexes) {
 			String indexNameUpperCase = StringUtil.toUpperCase(
@@ -1708,16 +1708,13 @@ public abstract class BaseDB implements DB {
 			_log.debug("Adding indexes");
 		}
 
-		try (UnsyncBufferedReader unsyncBufferedReader =
-				new UnsyncBufferedReader(new UnsyncStringReader(indexesSQL))) {
+		ThrowableCollector throwableCollector = new ThrowableCollector();
 
-			String sql = null;
-
-			ThrowableCollector throwableCollector = new ThrowableCollector();
-
-			while ((sql = unsyncBufferedReader.readLine()) != null) {
+		com.liferay.petra.string.StringUtil.forEachLine(
+			indexesSQL,
+			sql -> {
 				if (Validator.isNull(sql)) {
-					continue;
+					return;
 				}
 
 				int y = sql.indexOf(" on ");
@@ -1727,7 +1724,7 @@ public abstract class BaseDB implements DB {
 				String indexName = sql.substring(x + 1, y);
 
 				if (validIndexNames.contains(indexName)) {
-					continue;
+					return;
 				}
 
 				if (_log.isInfoEnabled()) {
@@ -1749,10 +1746,9 @@ public abstract class BaseDB implements DB {
 						_log.warn(exception.getMessage() + ": " + sql);
 					}
 				}
-			}
+			});
 
-			throwableCollector.rethrow();
-		}
+		throwableCollector.rethrow();
 	}
 
 	private String _applyMaxStringIndexLengthLimitation(String template) {

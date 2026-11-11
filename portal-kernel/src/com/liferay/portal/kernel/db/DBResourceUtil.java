@@ -497,20 +497,22 @@ public class DBResourceUtil {
 			return indexMetadatasMap;
 		}
 
-		for (String line : StringUtil.splitLines(sql)) {
-			if (Validator.isNull(line)) {
-				continue;
-			}
+		com.liferay.petra.string.StringUtil.forEachLine(
+			sql.trim(),
+			line -> {
+				if (Validator.isNull(line)) {
+					return;
+				}
 
-			IndexMetadata indexMetadata =
-				IndexMetadataFactoryUtil.createIndexMetadata(line);
+				IndexMetadata indexMetadata =
+					IndexMetadataFactoryUtil.createIndexMetadata(line);
 
-			List<IndexMetadata> indexMetadatas =
-				indexMetadatasMap.computeIfAbsent(
-					indexMetadata.getTableName(), key -> new ArrayList<>());
+				List<IndexMetadata> indexMetadatas =
+					indexMetadatasMap.computeIfAbsent(
+						indexMetadata.getTableName(), key -> new ArrayList<>());
 
-			indexMetadatas.add(indexMetadata);
-		}
+				indexMetadatas.add(indexMetadata);
+			});
 
 		return indexMetadatasMap;
 	}
