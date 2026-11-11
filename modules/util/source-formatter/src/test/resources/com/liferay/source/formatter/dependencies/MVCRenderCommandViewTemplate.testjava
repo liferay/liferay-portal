@@ -17,17 +17,18 @@ import org.osgi.service.component.annotations.Component;
  * @author Shuyang Zhou
  */
 @Component(
-	property = {"jakarta.portlet.name=foo", "mvc.command.name=/"},
+	property = {
+		"jakarta.portlet.name=foo", "mvc.command.name=/",
+		"mvc.command.name=/foo/view"
+	},
 	service = MVCRenderCommand.class
 )
-public class MVCViewRootWithWork implements MVCRenderCommand {
+public class MVCRenderCommandViewTemplate implements MVCRenderCommand {
 
 	@Override
 	public String render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
-
-		renderRequest.setAttribute("foo", "bar");
 
 		return "/view.jsp";
 	}
