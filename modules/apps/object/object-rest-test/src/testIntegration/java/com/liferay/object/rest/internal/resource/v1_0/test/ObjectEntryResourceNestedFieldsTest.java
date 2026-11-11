@@ -1615,7 +1615,7 @@ public class ObjectEntryResourceNestedFieldsTest
 		finally {
 			TreeTestUtil.deleteObjectDefinitionHierarchy(
 				objectDefinitionLocalService,
-				new String[] {"C_A", "C_AA", "C_AB", "C_AAAA", "C_AAB"},
+				new String[] {"C_A", "C_AA", "C_AB", "C_AAA", "C_AAB"},
 				objectEntryLocalService, objectRelationshipLocalService);
 		}
 	}
