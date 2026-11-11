@@ -5,33 +5,27 @@
 
 package com.liferay.osb.faro.engine.client.internal;
 
+import com.liferay.osb.faro.engine.client.BaseEngineClient;
 import com.liferay.osb.faro.engine.client.CerebroEngineClient;
-import com.liferay.osb.faro.engine.client.http.client.AuthenticationClientHttpRequestInterceptor;
-import com.liferay.osb.faro.engine.client.http.client.AuthorClientHttpRequestInterceptor;
 import com.liferay.osb.faro.engine.client.model.GraphQLRequest;
-import com.liferay.osb.faro.engine.client.util.EngineServiceURLUtil;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Marcellus Tavares
  */
 @Component(service = CerebroEngineClient.class)
-public class CerebroEngineClientImpl implements CerebroEngineClient {
+public class CerebroEngineClientImpl
+	extends BaseEngineClient implements CerebroEngineClient {
 
 	@Override
 	public String getSiteMetrics(
@@ -67,11 +61,11 @@ public class CerebroEngineClientImpl implements CerebroEngineClient {
 				"rangeKey", rangeKey
 			).build());
 
-		ResponseEntity<String> responseEntity = _getResponseEntity(
-			faroProject, graphQLRequest);
-
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			responseEntity.getBody());
+			post(
+				faroProject, Collections.emptyMap(), "/graphql",
+				Collections.emptyMap(), graphQLRequest, Map.class,
+				Collections.emptyMap()));
 
 		JSONObject dataJSONObject = jsonObject.getJSONObject("data");
 
@@ -88,11 +82,11 @@ public class CerebroEngineClientImpl implements CerebroEngineClient {
 
 		graphQLRequest.setQuery("{customEventLimitReached}");
 
-		ResponseEntity<String> responseEntity = _getResponseEntity(
-			faroProject, graphQLRequest);
-
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			responseEntity.getBody());
+			post(
+				faroProject, Collections.emptyMap(), "/graphql",
+				Collections.emptyMap(), graphQLRequest, Map.class,
+				Collections.emptyMap()));
 
 		JSONObject dataJSONObject = jsonObject.getJSONObject("data");
 
@@ -101,25 +95,11 @@ public class CerebroEngineClientImpl implements CerebroEngineClient {
 
 	@Override
 	public void updateTimeZone(FaroProject faroProject) throws Exception {
-		_getResponseEntity(
-			faroProject,
-			_getTimeZoneGraphQLRequestHttpEntity(faroProject.getTimeZoneId()));
-	}
-
-	private ResponseEntity<String> _getResponseEntity(
-			FaroProject faroProject, GraphQLRequest graphQLRequest)
-		throws Exception {
-
-		RestTemplate restTemplate = new RestTemplate();
-
-		restTemplate.setInterceptors(
-			Arrays.asList(
-				new AuthenticationClientHttpRequestInterceptor(faroProject),
-				new AuthorClientHttpRequestInterceptor()));
-
-		return restTemplate.exchange(
-			EngineServiceURLUtil.getBackendURL(faroProject, "/graphql"),
-			HttpMethod.POST, new HttpEntity<>(graphQLRequest), String.class);
+		post(
+			faroProject, Collections.emptyMap(), "/graphql",
+			Collections.emptyMap(),
+			_getTimeZoneGraphQLRequestHttpEntity(faroProject.getTimeZoneId()),
+			Void.class, Collections.emptyMap());
 	}
 
 	private GraphQLRequest _getTimeZoneGraphQLRequestHttpEntity(String value) {
