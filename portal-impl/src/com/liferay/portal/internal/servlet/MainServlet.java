@@ -675,7 +675,7 @@ public class MainServlet extends HttpServlet {
 		PropsValues.SESSION_TIMEOUT = timeout;
 	}
 
-	private void _destroyCompanies() throws Exception {
+	private void _destroyCompanies() {
 		CompanyLocalServiceUtil.forEachCompanyId(
 			companyId -> _destroyCompany(companyId));
 	}
@@ -696,7 +696,7 @@ public class MainServlet extends HttpServlet {
 		}
 	}
 
-	private void _destroyPortlets(List<Portlet> portlets) throws Exception {
+	private void _destroyPortlets(List<Portlet> portlets) {
 		for (Portlet portlet : portlets) {
 			PortletInstanceFactoryUtil.destroy(portlet);
 
