@@ -24,9 +24,11 @@ function main {
 
 	configuration_json_file=$(resolve_config_json "${1}")
 
-	_validate_setup_values "${configuration_json_file}"
+	validate_setup_values "azure" "${configuration_json_file}"
 
-	export_database_engine "${configuration_json_file}"
+	TF_VAR_database_engine=$(get_terraform_database_engine "${configuration_json_file}")
+
+	export TF_VAR_database_engine
 
 	prepare_terraform_stacks "azure" "aks" "${configuration_json_file}"
 
@@ -212,26 +214,6 @@ function _has_tfstate_access {
 		--num-results 1 \
 		--output none \
 		&> /dev/null
-}
-
-function _validate_setup_values {
-	local configuration_json_file="${1}"
-
-	local chart_registry
-
-	chart_registry=$(jq --raw-output '.artifacts.charts."liferay-azure-infrastructure-provider".registry // error("artifacts.charts.liferay-azure-infrastructure-provider.registry is missing")' "${configuration_json_file}")
-
-	local chart_version
-
-	chart_version=$(jq --raw-output '.artifacts.charts."liferay-azure-infrastructure-provider".version // error("artifacts.charts.liferay-azure-infrastructure-provider.version is missing")' "${configuration_json_file}")
-
-	helm \
-		template \
-		--values <(jq '.setup | ."liferay-subchart-backup-restore".database.engine = .database.engine' "${configuration_json_file}") \
-		--version "${chart_version}" \
-		liferay-azure-infrastructure-provider \
-		"oci://${chart_registry}/liferay-azure-infrastructure-provider" \
-		> /dev/null
 }
 
 main "${@}"

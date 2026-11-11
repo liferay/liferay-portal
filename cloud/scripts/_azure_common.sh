@@ -2,14 +2,6 @@
 
 source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
 
-function export_database_engine {
-	local configuration_json_file="${1}"
-
-	TF_VAR_database_engine=$(jq --raw-output '.setup.database.engine // error("setup.database.engine is missing")' "${configuration_json_file}")
-
-	export TF_VAR_database_engine
-}
-
 function get_remote_backend {
 	local configuration_json_file="${1}"
 

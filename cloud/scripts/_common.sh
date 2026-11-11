@@ -62,6 +62,10 @@ function confirm_teardown {
 	fi
 }
 
+function get_terraform_database_engine {
+	jq --raw-output '.setup.database.engine // empty' "${1}"
+}
+
 function get_tfstate_prefix {
 	jq --raw-output 'if .tfstate then "\(.deployment_name)/\(.region)/" else "" end' "${1}"
 }
@@ -190,6 +194,39 @@ function tear_down {
 	run_terraform "${cloud}" "${cluster_terraform_stack}" destroy
 
 	echo "Kubernetes cluster teardown complete."
+}
+
+function validate_setup_values {
+	local cloud="${1}"
+	local configuration_json_file="${2}"
+
+	local chart_name="liferay-${cloud}-infrastructure-provider"
+
+	local chart_registry
+
+	chart_registry=$( \
+		jq \
+			--arg chart_name "${chart_name}" \
+			--raw-output \
+			'.artifacts.charts[$chart_name].registry // error("artifacts.charts.\($chart_name).registry is missing")' \
+			"${configuration_json_file}")
+
+	local chart_version
+
+	chart_version=$( \
+		jq \
+			--arg chart_name "${chart_name}" \
+			--raw-output \
+			'.artifacts.charts[$chart_name].version // error("artifacts.charts.\($chart_name).version is missing")' \
+			"${configuration_json_file}")
+
+	helm \
+		template \
+		--values <(jq '.setup | ."liferay-subchart-backup-restore".database.engine = .database.engine' "${configuration_json_file}") \
+		--version "${chart_version}" \
+		"${chart_name}" \
+		"oci://${chart_registry}/${chart_name}" \
+		> /dev/null
 }
 
 function _connect_to_cluster {
