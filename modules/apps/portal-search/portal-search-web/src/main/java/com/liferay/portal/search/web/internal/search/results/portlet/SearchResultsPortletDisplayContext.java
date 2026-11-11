@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.hits.TotalHitsRelation;
 import com.liferay.portal.search.web.internal.result.display.context.SearchResultSummaryDisplayContext;
@@ -60,6 +61,22 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 
 	public int getMaximumSearchDepth() {
 		return _searchResultsPortletInstanceConfiguration.maximumSearchDepth();
+	}
+
+	public int getPaginationResultEnd() {
+		if (!isMaximumSearchDepthFeatureFlagEnabled()) {
+			return 0;
+		}
+
+		List<Document> results = _searchContainer.getResults();
+
+		return _searchContainer.getStart() + results.size();
+	}
+
+	public String getPaginationStartURL() {
+		return HttpComponentsUtil.setParameter(
+			_themeDisplay.getURLCurrent(), _searchContainer.getCurParam(),
+			_searchContainer.getCur());
 	}
 
 	public SearchContainer<Document> getSearchContainer() {
@@ -111,6 +128,10 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 			_themeDisplay.getCompanyId(), "LPD-114635");
 	}
 
+	public boolean isPaginationStartAdjusted() {
+		return _paginationStartAdjusted;
+	}
+
 	public boolean isRenderNothing() {
 		return _renderNothing;
 	}
@@ -137,6 +158,10 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 
 	public void setKeywords(String keywords) {
 		_keywords = keywords;
+	}
+
+	public void setPaginationStartAdjusted(boolean paginationStartAdjusted) {
+		_paginationStartAdjusted = paginationStartAdjusted;
 	}
 
 	public void setRenderNothing(boolean renderNothing) {
@@ -188,6 +213,7 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 
 	private List<Document> _documents;
 	private String _keywords;
+	private boolean _paginationStartAdjusted;
 	private boolean _renderNothing;
 	private SearchContainer<Document> _searchContainer;
 	private List<SearchResultSummaryDisplayContext>
