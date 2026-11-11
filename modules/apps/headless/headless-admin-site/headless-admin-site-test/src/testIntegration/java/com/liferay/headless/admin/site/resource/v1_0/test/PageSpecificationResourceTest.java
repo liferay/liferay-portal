@@ -1742,35 +1742,16 @@ public class PageSpecificationResourceTest
 
 		pageSpecification.setStatus(PageSpecification.Status.DRAFT);
 
+		String key = RandomTestUtil.randomString();
+
 		settings.setThemeSettings(
-			Collections.singletonMap(
-				"sitemap-changefreq", RandomTestUtil.randomString()));
+			Collections.singletonMap(key, RandomTestUtil.randomString()));
 
 		ProblemExceptionTestUtil.assertProblemException(
 			"BAD_REQUEST",
-			"The \"sitemap-changefreq\" setting must be \"always\", " +
-				"\"hourly\", \"daily\", \"weekly\", \"monthly\", \"yearly\", " +
-					"or \"never\"",
-			() -> pageSpecificationResource.putSitePageSpecification(
-				testGroup.getExternalReferenceCode(),
-				draftLayout.getExternalReferenceCode(), pageSpecification));
-
-		settings.setThemeSettings(
-			Collections.singletonMap(
-				"sitemap-include", RandomTestUtil.randomString()));
-
-		ProblemExceptionTestUtil.assertProblemException(
-			"BAD_REQUEST", "The \"sitemap-include\" setting must be 0 or 1",
-			() -> pageSpecificationResource.putSitePageSpecification(
-				testGroup.getExternalReferenceCode(),
-				draftLayout.getExternalReferenceCode(), pageSpecification));
-
-		settings.setThemeSettings(
-			Collections.singletonMap("sitemap-priority", "5"));
-
-		ProblemExceptionTestUtil.assertProblemException(
-			"BAD_REQUEST",
-			"The \"sitemap-priority\" setting must be a number between 0 and 1",
+			StringBundler.concat(
+				"The theme setting \"", key,
+				"\" must start with \"lfr-theme:\""),
 			() -> pageSpecificationResource.putSitePageSpecification(
 				testGroup.getExternalReferenceCode(),
 				draftLayout.getExternalReferenceCode(), pageSpecification));

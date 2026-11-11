@@ -428,6 +428,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPostSiteSitePageWithPageElements();
 		_testPostSiteSitePageWithPageSpecifications();
 		_testPostSiteSitePageWithContentPageSpecification();
+		_testPostSiteSitePageWithInvalidSitemapPagePriority();
 		_testPostSiteSitePageWithWidgetPageSettings();
 		_testPostSiteSitePageWithWidgetPageSettingsWithWidgetPageTemplate();
 		_testPostSiteSitePageWithWidgetPageTypeIsDeprecated();
@@ -3780,6 +3781,26 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			true, draftContentPageSpecification,
 			draftContentPageSpecificationExternalReferenceCode, true,
 			sitePageExternalReferenceCode, status);
+	}
+
+	private void _testPostSiteSitePageWithInvalidSitemapPagePriority()
+		throws Exception {
+
+		SitePage sitePage = _getRandomSitePage(SitePage.Type.CONTENT_PAGE);
+
+		ContentPageSettings contentPageSettings =
+			(ContentPageSettings)sitePage.getPageSettings();
+
+		SEOSettings seoSettings = contentPageSettings.getSeoSettings();
+
+		SitemapSettings sitemapSettings = seoSettings.getSitemapSettings();
+
+		sitemapSettings.setPagePriority(RandomTestUtil.randomDouble() + 1);
+
+		_assertProblemException(
+			"The sitemap page priority must be between 0 and 1",
+			() -> sitePageResource.postSiteSitePage(
+				testGroup.getExternalReferenceCode(), false, sitePage));
 	}
 
 	private void _testPostSiteSitePageWithPageElements() throws Exception {
