@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -86,57 +87,8 @@ public class EditContentItemCommentStrutsActionTest {
 
 	@Test
 	public void testExecute() throws Exception {
-		DepotEntry depotEntry = _addDepotEntry();
-
-		ObjectEntry objectEntry = _addObjectEntry(depotEntry);
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(
-			_groupLocalService.getGroup(
-				TestPropsValues.getCompanyId(), GroupConstants.CMS));
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.getObjectDefinition(
-				objectEntry.getObjectDefinitionId());
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext();
-
-		long commentId = _commentManager.addComment(
-			null, TestPropsValues.getUserId(), layout.getGroupId(),
-			objectDefinition.getClassName(), objectEntry.getObjectEntryId(),
-			StringPool.BLANK, null, RandomTestUtil.randomString(),
-			className -> serviceContext);
-
-		User user1 = UserTestUtil.addUser();
-
-		Role role = _addViewRole(objectEntry, user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		String text = RandomTestUtil.randomString();
-
-		JSONObject jsonObject = _execute(
-			StringBundler.concat(
-				"<p>", text, StringPool.SPACE, _getMentionHTML(user1),
-				StringPool.SPACE, _getMentionHTML(user2), "</p>"),
-			commentId, layout, objectEntry, TestPropsValues.getUser());
-
-		String expectedBody = StringBundler.concat(
-			"<p>", text, StringPool.SPACE, _getMentionHTML(user1), " @",
-			user2.getFullName(), "</p>");
-
-		Assert.assertEquals(expectedBody, jsonObject.getString("body"));
-
-		Comment comment = _commentManager.fetchComment(commentId);
-
-		Assert.assertEquals(expectedBody, comment.getBody());
-
-		_depotEntryLocalService.deleteDepotEntry(depotEntry);
-		_layoutLocalService.deleteLayout(layout);
-		_objectEntryLocalService.deleteObjectEntry(objectEntry);
-		_roleLocalService.deleteRole(role);
-		_userLocalService.deleteUser(user1);
-		_userLocalService.deleteUser(user2);
+		_testExecuteWithMentionedUserWithoutViewPermission();
+		_testExecuteWithMentionedUsers();
 	}
 
 	private DepotEntry _addDepotEntry() throws Exception {
@@ -283,6 +235,158 @@ public class EditContentItemCommentStrutsActionTest {
 			new String[0]);
 	}
 
+	private void _testExecuteWithMentionedUserWithoutViewPermission()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry();
+
+		ObjectEntry objectEntry = _addObjectEntry(depotEntry);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CMS));
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				objectEntry.getObjectDefinitionId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		long commentId = _commentManager.addComment(
+			null, TestPropsValues.getUserId(), layout.getGroupId(),
+			objectDefinition.getClassName(), objectEntry.getObjectEntryId(),
+			StringPool.BLANK, null, RandomTestUtil.randomString(),
+			className -> serviceContext);
+
+		User user1 = UserTestUtil.addUser();
+
+		Role role = _addViewRole(objectEntry, user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		String text = RandomTestUtil.randomString();
+
+		JSONObject jsonObject = _execute(
+			StringBundler.concat(
+				"<p>", text, StringPool.SPACE, _getMentionHTML(user1),
+				StringPool.SPACE, _getMentionHTML(user2), "</p>"),
+			commentId, layout, objectEntry, TestPropsValues.getUser());
+
+		String expectedBody = StringBundler.concat(
+			"<p>", text, StringPool.SPACE, _getMentionHTML(user1), " @",
+			user2.getFullName(), "</p>");
+
+		Assert.assertEquals(expectedBody, jsonObject.getString("body"));
+
+		Comment comment = _commentManager.fetchComment(commentId);
+
+		Assert.assertEquals(expectedBody, comment.getBody());
+
+		_depotEntryLocalService.deleteDepotEntry(depotEntry);
+		_layoutLocalService.deleteLayout(layout);
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+		_roleLocalService.deleteRole(role);
+		_userLocalService.deleteUser(user1);
+		_userLocalService.deleteUser(user2);
+	}
+
+	private void _testExecuteWithMentionedUsers() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry();
+
+		ObjectEntry objectEntry = _addObjectEntry(depotEntry);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CMS));
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				objectEntry.getObjectDefinitionId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		long commentId = _commentManager.addComment(
+			null, TestPropsValues.getUserId(), layout.getGroupId(),
+			objectDefinition.getClassName(), objectEntry.getObjectEntryId(),
+			StringPool.BLANK, null, RandomTestUtil.randomString(),
+			className -> serviceContext);
+
+		User user1 = UserTestUtil.addUser();
+
+		Role role = _addViewRole(objectEntry, user1);
+
+		_execute(
+			StringBundler.concat(
+				"<p>", RandomTestUtil.randomString(), StringPool.SPACE,
+				_getMentionHTML(user1), "</p>"),
+			commentId, layout, objectEntry, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			1,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user1.getUserId()));
+
+		User user2 = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUser(role.getRoleId(), user2);
+
+		_execute(
+			StringBundler.concat(
+				"<p>", RandomTestUtil.randomString(), StringPool.SPACE,
+				_getMentionHTML(user1), StringPool.SPACE,
+				_getMentionHTML(user2), "</p>"),
+			commentId, layout, objectEntry, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			1,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user1.getUserId()));
+		Assert.assertEquals(
+			1,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user2.getUserId()));
+
+		_execute(
+			StringBundler.concat(
+				"<p>", RandomTestUtil.randomString(), StringPool.SPACE,
+				_getMentionHTML(user1), "</p>"),
+			commentId, layout, objectEntry, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			1,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user1.getUserId()));
+		Assert.assertEquals(
+			1,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user2.getUserId()));
+
+		_execute(
+			StringBundler.concat(
+				"<p>", RandomTestUtil.randomString(), StringPool.SPACE,
+				_getMentionHTML(user1), StringPool.SPACE,
+				_getMentionHTML(user2), "</p>"),
+			commentId, layout, objectEntry, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			1,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user1.getUserId()));
+		Assert.assertEquals(
+			2,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user2.getUserId()));
+
+		_depotEntryLocalService.deleteDepotEntry(depotEntry);
+		_layoutLocalService.deleteLayout(layout);
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+		_roleLocalService.deleteRole(role);
+		_userLocalService.deleteUser(user1);
+		_userLocalService.deleteUser(user2);
+	}
+
 	@Inject
 	private CommentManager _commentManager;
 
@@ -321,5 +425,9 @@ public class EditContentItemCommentStrutsActionTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
+
+	@Inject
+	private UserNotificationEventLocalService
+		_userNotificationEventLocalService;
 
 }
