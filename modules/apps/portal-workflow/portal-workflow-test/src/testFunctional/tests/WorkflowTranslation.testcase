@@ -166,9 +166,8 @@ definition {
 			locator1 = "Button#TRANSLATIONS_LOCALIZATION");
 
 		AssertTextEquals(
-			key_localizedLanguage = "pt-BR",
-			key_portlet = "JournalPortlet",
-			locator1 = "Translation#TRANSLATION_STATUS_TITLE",
+			key_localizedLanguage = "pt_BR",
+			locator1 = "Translation#TRANSLATION_STATUS_LABEL_TRANSLATED",
 			value1 = "Not Translated");
 
 		Navigator.gotoBack();
@@ -201,9 +200,8 @@ definition {
 			locator1 = "Button#TRANSLATIONS_LOCALIZATION");
 
 		AssertTextEquals(
-			key_localizedLanguage = "pt-BR",
-			key_portlet = "JournalPortlet",
-			locator1 = "Translation#TRANSLATION_STATUS_TITLE",
+			key_localizedLanguage = "pt_BR",
+			locator1 = "Translation#TRANSLATION_STATUS_LABEL_TRANSLATED",
 			value1 = "Translated");
 	}
 
@@ -243,9 +241,8 @@ definition {
 			locator1 = "Button#TRANSLATIONS_LOCALIZATION");
 
 		AssertTextEquals(
-			key_localizedLanguage = "pt-BR",
-			key_portlet = "JournalPortlet",
-			locator1 = "Translation#TRANSLATION_STATUS_TITLE",
+			key_localizedLanguage = "pt_BR",
+			locator1 = "Translation#TRANSLATION_STATUS_LABEL_TRANSLATED",
 			value1 = "Not Translated");
 
 		Navigator.gotoBack();
@@ -271,9 +268,8 @@ definition {
 			locator1 = "Button#TRANSLATIONS_LOCALIZATION");
 
 		AssertTextEquals(
-			key_localizedLanguage = "pt-BR",
-			key_portlet = "JournalPortlet",
-			locator1 = "Translation#TRANSLATION_STATUS_TITLE",
+			key_localizedLanguage = "pt_BR",
+			locator1 = "Translation#TRANSLATION_STATUS_LABEL_TRANSLATED",
 			value1 = "Not Translated");
 	}
 

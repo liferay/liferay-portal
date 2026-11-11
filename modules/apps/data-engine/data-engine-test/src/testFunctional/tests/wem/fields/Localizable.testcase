@@ -480,8 +480,6 @@ definition {
 			webContentNumeric = 123,
 			webContentText = "This is a text field");
 
-		PortletEntry.changeLocale(locale = "pt-BR");
-
 		PortletEntry.changeLocale(
 			locale = "pt-BR",
 			translated = "true");

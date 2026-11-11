@@ -443,9 +443,8 @@ definition {
 			locator1 = "MenuItem#ANY_ICON");
 
 		AssertTextEquals(
-			key_localizedLanguage = "en-US",
-			key_portlet = "JournalPortlet",
-			locator1 = "Translation#TRANSLATION_STATUS_TITLE",
+			key_localizedLanguage = "en_US",
+			locator1 = "Translation#TRANSLATION_STATUS_LABEL_TRANSLATED",
 			value1 = "Default");
 	}
 
@@ -535,7 +534,9 @@ definition {
 			webContentText = "Este é um campo de texto",
 			webContentTitle = "Título do conteúdo da web");
 
-		PortletEntry.changeLocale(locale = "en-US");
+		PortletEntry.changeLocale(
+			locale = "en-US",
+			translated = "true");
 
 		WebContent.addWithStructureCP(
 			webContentDate = "01/01/2021",
