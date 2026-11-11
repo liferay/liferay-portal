@@ -121,8 +121,6 @@ public class AccountEntryOrganizationRelModelListenerTest {
 			TestPropsValues.getGroupId(),
 			objectDefinition4.getObjectDefinitionId(), Collections.emptyMap());
 
-		Organization organization = OrganizationTestUtil.addOrganization();
-
 		Set<Long> objectEntryIds = new ConcurrentSkipListSet<>();
 
 		ServiceTrackerMap<String, IndexerDocumentBuilder>
@@ -138,14 +136,14 @@ public class AccountEntryOrganizationRelModelListenerTest {
 						ServiceTrackerMap.class.getClassLoader(),
 						new Class<?>[] {ServiceTrackerMap.class},
 						(proxy, method, args) -> {
-							Object result = method.invoke(
+							Object service = method.invoke(
 								originalServiceTrackerMap, args);
 
 							if (!Objects.equals(
 									method.getName(), "getService") ||
-								(result == null)) {
+								(service == null)) {
 
-								return result;
+								return service;
 							}
 
 							return ProxyUtil.newProxyInstance(
@@ -168,9 +166,11 @@ public class AccountEntryOrganizationRelModelListenerTest {
 									}
 
 									return documentBuilderMethod.invoke(
-										result, documentBuilderArgs);
+										service, documentBuilderArgs);
 								});
 						}))) {
+
+			Organization organization = OrganizationTestUtil.addOrganization();
 
 			AccountEntryOrganizationRel accountEntryOrganizationRel1 =
 				_accountEntryOrganizationRelLocalService.
@@ -230,7 +230,7 @@ public class AccountEntryOrganizationRelModelListenerTest {
 
 	private AccountEntry _addAccountEntry() throws Exception {
 		return _accountEntryLocalService.addAccountEntry(
-			StringPool.BLANK, TestPropsValues.getUserId(), 0L,
+			StringPool.BLANK, TestPropsValues.getUserId(), 0,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
 			null, null, RandomTestUtil.randomString(),
 			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
@@ -242,12 +242,14 @@ public class AccountEntryOrganizationRelModelListenerTest {
 			ObjectDefinition objectDefinition)
 		throws Exception {
 
+		ObjectDefinition accountEntryObjectDefinition =
+			_objectDefinitionLocalService.fetchSystemObjectDefinition(
+				TestPropsValues.getCompanyId(), "AccountEntry");
+
 		return _objectDefinitionLocalService.enableAccountEntryRestricted(
 			_objectRelationshipLocalService.addObjectRelationship(
 				null, TestPropsValues.getUserId(),
-				_objectDefinitionLocalService.fetchSystemObjectDefinition(
-					TestPropsValues.getCompanyId(), "AccountEntry"
-				).getObjectDefinitionId(),
+				accountEntryObjectDefinition.getObjectDefinitionId(),
 				objectDefinition.getObjectDefinitionId(), 0,
 				ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null, false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
