@@ -56,7 +56,7 @@ public class DuplicateWorkflowDefinitionMVCActionCommand
 		Map<Locale, String> titleMap = localization.getLocalizationMap(
 			actionRequest, randomNamespace + "title");
 
-		validateTitle(actionRequest, titleMap);
+		validateTitle(titleMap);
 
 		String name = ParamUtil.getString(actionRequest, "name");
 		String content = ParamUtil.getString(actionRequest, "content");
