@@ -110,8 +110,7 @@ public abstract class BaseKaleoDesignerMVCActionCommand
 			getResourceBundle(actionRequest), "workflow-updated-successfully");
 	}
 
-	protected String getTitle(
-			ActionRequest actionRequest, Map<Locale, String> titleMap)
+	protected String getTitle(Map<Locale, String> titleMap)
 		throws WorkflowException {
 
 		if (titleMap == null) {
