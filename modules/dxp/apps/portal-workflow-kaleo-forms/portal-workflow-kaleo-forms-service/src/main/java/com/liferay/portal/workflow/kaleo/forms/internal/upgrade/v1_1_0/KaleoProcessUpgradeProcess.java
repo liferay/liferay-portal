@@ -189,8 +189,7 @@ public class KaleoProcessUpgradeProcess extends UpgradeProcess {
 	}
 
 	private ModelPermissions _getResourceModelPermissions(
-			long companyId, String resourceName, long primKey)
-		throws PortalException {
+		long companyId, String resourceName, long primKey) {
 
 		ModelPermissions modelPermissions = ModelPermissionsFactory.create(
 			resourceName);

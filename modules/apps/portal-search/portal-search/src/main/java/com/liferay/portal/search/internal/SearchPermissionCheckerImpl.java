@@ -12,7 +12,6 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.exception.NoSuchResourceException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -128,11 +127,6 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 				companyId, groupId, className, GetterUtil.getLong(classPK),
 				viewActionId, document);
 		}
-		catch (NoSuchResourceException noSuchResourceException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchResourceException);
-			}
-		}
 		catch (Exception exception) {
 			_log.error(exception);
 		}
@@ -209,9 +203,8 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 	}
 
 	private void _addPermissionFields(
-			long companyId, long groupId, String className, long classPK,
-			String viewActionId, Document document)
-		throws Exception {
+		long companyId, long groupId, String className, long classPK,
+		String viewActionId, Document document) {
 
 		for (SearchPermissionFieldContributor searchPermissionFieldContributor :
 				SearchPermissionFieldContributorRegistryUtil.
