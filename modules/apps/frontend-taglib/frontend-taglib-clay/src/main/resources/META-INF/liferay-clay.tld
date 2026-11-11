@@ -1838,12 +1838,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
-			<name>extractData</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
 			<description></description>
 			<name>helpText</name>
 			<required>false</required>

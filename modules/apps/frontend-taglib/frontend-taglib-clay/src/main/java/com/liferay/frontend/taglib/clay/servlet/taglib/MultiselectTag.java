@@ -99,13 +99,6 @@ public class MultiselectTag extends BaseContainerTag {
 		_disabledClearAll = disabledClearAll;
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
-	 */
-	@Deprecated
-	public void setExtractData(Object extractData) {
-	}
-
 	public void setHelpText(String helpText) {
 		_helpText = helpText;
 	}
