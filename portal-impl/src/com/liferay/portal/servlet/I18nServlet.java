@@ -231,7 +231,7 @@ public class I18nServlet extends HttpServlet {
 			i18nPath, i18nLanguageCode, i18nLanguageId, redirect);
 	}
 
-	protected I18nData getI18nData(Locale locale) throws PortalException {
+	protected I18nData getI18nData(Locale locale) {
 		String languageId = LocaleUtil.toLanguageId(locale);
 
 		String i18nPath = StringPool.SLASH + locale.toLanguageTag();

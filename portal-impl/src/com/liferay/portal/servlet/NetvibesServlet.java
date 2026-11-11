@@ -68,9 +68,7 @@ public class NetvibesServlet extends HttpServlet {
 		}
 	}
 
-	protected String getContent(HttpServletRequest httpServletRequest)
-		throws Exception {
-
+	protected String getContent(HttpServletRequest httpServletRequest) {
 		String path = GetterUtil.getString(httpServletRequest.getPathInfo());
 
 		if (Validator.isNull(path)) {

@@ -361,9 +361,8 @@ public class ComboServlet extends HttpServlet {
 	}
 
 	protected RequestDispatcher getResourceRequestDispatcher(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse, String modulePath)
-		throws Exception {
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse, String modulePath) {
 
 		String portletId = getModulePortletId(modulePath);
 
@@ -395,9 +394,7 @@ public class ComboServlet extends HttpServlet {
 		return servletContext.getRequestDispatcher(resourcePath);
 	}
 
-	protected boolean validateModuleExtension(String moduleName)
-		throws Exception {
-
+	protected boolean validateModuleExtension(String moduleName) {
 		moduleName = getResourcePath(moduleName);
 
 		int index = moduleName.indexOf(CharPool.QUESTION);
