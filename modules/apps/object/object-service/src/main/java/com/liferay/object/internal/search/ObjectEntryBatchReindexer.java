@@ -9,7 +9,6 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.search.indexer.IndexerDocumentBuilder;
@@ -21,27 +20,17 @@ import com.liferay.portal.search.indexer.IndexerDocumentBuilder;
 public class ObjectEntryBatchReindexer {
 
 	public ObjectEntryBatchReindexer(
-		ObjectEntryLocalService objectEntryLocalService,
+		ObjectField accountEntryRestrictedObjectField,
 		ObjectDefinition objectDefinition,
-		ObjectField accountEntryRestrictedObjectField) {
+		ObjectEntryLocalService objectEntryLocalService) {
 
-		_objectEntryLocalService = objectEntryLocalService;
-		_objectDefinition = objectDefinition;
 		_accountEntryRestrictedObjectField = accountEntryRestrictedObjectField;
+		_objectDefinition = objectDefinition;
+		_objectEntryLocalService = objectEntryLocalService;
 	}
 
 	public String getClassName() {
 		return _objectDefinition.getClassName();
-	}
-
-	public long getObjectEntriesCount(long accountEntryId, long companyId) {
-		DynamicQuery dynamicQuery = _objectEntryLocalService.dynamicQuery();
-
-		dynamicQuery.add(RestrictionsFactoryUtil.eq("companyId", companyId));
-
-		_addCriteria(accountEntryId, dynamicQuery);
-
-		return _objectEntryLocalService.dynamicQueryCount(dynamicQuery);
 	}
 
 	public void reindex(
@@ -52,31 +41,31 @@ public class ObjectEntryBatchReindexer {
 			_objectEntryLocalService.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setAddCriteriaMethod(
-			dynamicQuery -> _addCriteria(accountEntryId, dynamicQuery));
+			dynamicQuery -> {
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.eq(
+						"objectDefinitionId",
+						_objectDefinition.getObjectDefinitionId()));
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.eqProperty(
+						"objectEntryId", "headObjectEntryId"));
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.sqlRestriction(
+						StringBundler.concat(
+							"this_.objectEntryId in (select ",
+							_objectDefinition.getPKObjectFieldDBColumnName(),
+							" from ",
+							_accountEntryRestrictedObjectField.getDBTableName(),
+							" where ",
+							_accountEntryRestrictedObjectField.
+								getDBColumnName(),
+							" = ", accountEntryId, ")")));
+			});
 		indexableActionableDynamicQuery.setCompanyId(companyId);
 		indexableActionableDynamicQuery.setPerformActionMethod(
 			indexerDocumentBuilder::getDocument);
 
 		indexableActionableDynamicQuery.performActions();
-	}
-
-	private void _addCriteria(long accountEntryId, DynamicQuery dynamicQuery) {
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"objectDefinitionId",
-				_objectDefinition.getObjectDefinitionId()));
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.eqProperty(
-				"objectEntryId", "headObjectEntryId"));
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.sqlRestriction(
-				StringBundler.concat(
-					"this_.objectEntryId in (select ",
-					_objectDefinition.getPKObjectFieldDBColumnName(), " from ",
-					_accountEntryRestrictedObjectField.getDBTableName(),
-					" where ",
-					_accountEntryRestrictedObjectField.getDBColumnName(), " = ",
-					accountEntryId, ")")));
 	}
 
 	private final ObjectField _accountEntryRestrictedObjectField;

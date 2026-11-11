@@ -94,15 +94,7 @@ public class AccountEntryOrganizationRelModelListener
 
 			ObjectEntryBatchReindexer objectEntryBatchReindexer =
 				new ObjectEntryBatchReindexer(
-					_objectEntryLocalService, objectDefinition, objectField);
-
-			long count = objectEntryBatchReindexer.getObjectEntriesCount(
-				accountEntryOrganizationRel.getAccountEntryId(),
-				accountEntryOrganizationRel.getCompanyId());
-
-			if (count <= 0) {
-				continue;
-			}
+					objectField, objectDefinition, _objectEntryLocalService);
 
 			IndexerDocumentBuilder indexerDocumentBuilder =
 				_serviceTrackerMap.getService(
