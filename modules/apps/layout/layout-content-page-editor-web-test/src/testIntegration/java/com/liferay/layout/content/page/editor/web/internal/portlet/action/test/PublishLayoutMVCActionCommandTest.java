@@ -490,6 +490,27 @@ public class PublishLayoutMVCActionCommandTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110723")
+	public void testPublishedLaunchDraftLayout() throws Exception {
+		Layout launchDraftLayout = LayoutTestUtil.addLaunchDraftLayout(
+			RandomTestUtil.randomLong(), _layout);
+
+		ContentLayoutTestUtil.publishLayout(launchDraftLayout, _layout);
+
+		launchDraftLayout = _layoutLocalService.getLayout(
+			launchDraftLayout.getPlid());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_READY_TO_PUBLISH,
+			launchDraftLayout.getStatus());
+
+		Layout layout = _layoutLocalService.getLayout(_layout.getPlid());
+
+		Assert.assertEquals(
+			_layout.getModifiedDate(), layout.getModifiedDate());
+	}
+
+	@Test
 	@TestInfo({"LPD-39213", "LPS-202932"})
 	public void testPublishedLayoutFragmentEntryLinkWithFreeMarkerEmbeddedPortlet()
 		throws Exception {
