@@ -138,9 +138,11 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 				"Unable to render Liferay global object", portalException);
 		}
 
-		printWriter.println(
-			StringUtil.replace(
-				_TPL_LIFERAY_JS, "[$DEFINITION$]", sb.toString()));
+		printWriter.print(_TPL_LIFERAY_JS[0]);
+
+		sb.writeTo(printWriter);
+
+		printWriter.println(_TPL_LIFERAY_JS[1]);
 
 		printWriter.println("</script>");
 	}
@@ -157,6 +159,25 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private static String[] _split(String name, String... placeholders) {
+		String template = _read(name);
+
+		String[] pieces = new String[placeholders.length + 1];
+		int start = 0;
+
+		for (int i = 0; i < placeholders.length; i++) {
+			int index = template.indexOf(placeholders[i], start);
+
+			pieces[i] = template.substring(start, index);
+
+			start = index + placeholders[i].length();
+		}
+
+		pieces[placeholders.length] = template.substring(start);
+
+		return pieces;
 	}
 
 	private String _getDateFormatPattern(Locale locale) {
@@ -457,19 +478,20 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 	}
 
 	private void _renderLiferayLanguage(StringBundler sb) {
-		StringBundler availableSB = new StringBundler();
+		sb.append(_TPL_LANGUAGE_JS[0]);
+
 		StringBundler directionSB = new StringBundler();
 
 		for (Locale locale : _language.getAvailableLocales()) {
 			String languageId = LocaleUtil.toLanguageId(locale);
 
-			availableSB.append(StringPool.APOSTROPHE);
-			availableSB.append(languageId);
-			availableSB.append("': '");
-			availableSB.append(
+			sb.append(StringPool.APOSTROPHE);
+			sb.append(languageId);
+			sb.append("': '");
+			sb.append(
 				_displayNames.computeIfAbsent(
 					locale, key -> HtmlUtil.escapeJS(key.getDisplayName(key))));
-			availableSB.append("',\n");
+			sb.append("',\n");
 
 			directionSB.append(StringPool.APOSTROPHE);
 			directionSB.append(languageId);
@@ -478,11 +500,9 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			directionSB.append("',\n");
 		}
 
-		sb.append(
-			StringUtil.replace(
-				_TPL_LANGUAGE_JS,
-				new String[] {"[$AVAILABLE$]", "[$DIRECTION$]"},
-				new Object[] {availableSB, directionSB}));
+		sb.append(_TPL_LANGUAGE_JS[1]);
+		sb.append(directionSB);
+		sb.append(_TPL_LANGUAGE_JS[2]);
 		sb.append(StringPool.NEW_LINE);
 	}
 
@@ -787,9 +807,9 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		CharPool.DASH, CharPool.FORWARD_SLASH, CharPool.PERIOD
 	};
 
-	private static final String _TPL_LANGUAGE_JS;
+	private static final String[] _TPL_LANGUAGE_JS;
 
-	private static final String _TPL_LIFERAY_JS;
+	private static final String[] _TPL_LIFERAY_JS;
 
 	private static final String _TPL_WINDOW_JS;
 
@@ -800,8 +820,9 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		new ConcurrentHashMap<>();
 
 	static {
-		_TPL_LANGUAGE_JS = _read("language.js.tpl");
-		_TPL_LIFERAY_JS = _read("liferay.js.tpl");
+		_TPL_LANGUAGE_JS = _split(
+			"language.js.tpl", "[$AVAILABLE$]", "[$DIRECTION$]");
+		_TPL_LIFERAY_JS = _split("liferay.js.tpl", "[$DEFINITION$]");
 		_TPL_WINDOW_JS = _read("window.js.tpl");
 	}
 
