@@ -75,10 +75,6 @@ public class AccountEntryPermission {
 		return false;
 	}
 
-	protected void unsetModelResourcePermission(
-		ModelResourcePermission<AccountEntry> modelResourcePermission) {
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		AccountEntryPermission.class);
 
