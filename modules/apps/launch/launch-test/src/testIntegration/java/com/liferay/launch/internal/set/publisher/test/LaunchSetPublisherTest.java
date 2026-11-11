@@ -401,6 +401,52 @@ public class LaunchSetPublisherTest {
 			launchSetId, BackgroundTaskConstants.STATUS_FAILED,
 			BackgroundTaskConstants.STATUS_SUCCESSFUL);
 
+		// Background task that runs after its launch set was already published
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_TASK_EXECUTOR_CLASS_NAME, LoggerTestUtil.ERROR)) {
+
+			_backgroundTaskManager.addBackgroundTask(
+				TestPropsValues.getUserId(),
+				BackgroundTaskConstants.GROUP_ID_DEFAULT,
+				String.valueOf(launchSetId), _TASK_EXECUTOR_CLASS_NAME,
+				HashMapBuilder.<String, Serializable>put(
+					"launchSetId", launchSetId
+				).build(),
+				_serviceContext);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			String message =
+				"Launch set " + launchSetId + " was already published";
+
+			Assert.assertEquals(message, logEntry.getMessage());
+
+			_assertBackgroundTaskStatuses(
+				launchSetId, BackgroundTaskConstants.STATUS_FAILED,
+				BackgroundTaskConstants.STATUS_SUCCESSFUL,
+				BackgroundTaskConstants.STATUS_FAILED);
+
+			List<BackgroundTask> backgroundTasks = ListUtil.sort(
+				_getBackgroundTasks(launchSetId),
+				Comparator.comparingLong(BackgroundTask::getBackgroundTaskId));
+
+			BackgroundTask backgroundTask = backgroundTasks.get(2);
+
+			Assert.assertEquals(message, backgroundTask.getStatusMessage());
+		}
+
+		launchSetObjectEntry = _objectEntryLocalService.getObjectEntry(
+			launchSetId);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED,
+			launchSetObjectEntry.getStatus());
+
 		// Object entry that is not a launch set
 
 		Assert.assertThrows(
