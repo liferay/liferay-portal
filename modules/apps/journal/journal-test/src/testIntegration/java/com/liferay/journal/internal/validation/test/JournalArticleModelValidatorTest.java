@@ -62,12 +62,11 @@ public class JournalArticleModelValidatorTest {
 		ReflectionTestUtil.invoke(
 			_journalArticleModelValidator, "validateReferences",
 			new Class<?>[] {
-				long.class, long.class, long.class, String.class, String.class,
-				boolean.class, String.class, byte[].class, long.class,
-				int.class, String.class
+				long.class, long.class, long.class, String.class, boolean.class,
+				String.class, byte[].class, long.class, int.class, String.class
 			},
 			_group.getGroupId(), 0, _ddmStructure.getStructureId(),
-			_ddmTemplate.getTemplateKey(), null, false, null, null, 0, 0,
+			_ddmTemplate.getTemplateKey(), false, null, null, 0, 0,
 			StringPool.BLANK);
 	}
 
@@ -78,12 +77,11 @@ public class JournalArticleModelValidatorTest {
 		ReflectionTestUtil.invoke(
 			_journalArticleModelValidator, "validateReferences",
 			new Class<?>[] {
-				long.class, long.class, long.class, String.class, String.class,
-				boolean.class, String.class, byte[].class, long.class,
-				int.class, String.class
+				long.class, long.class, long.class, String.class, boolean.class,
+				String.class, byte[].class, long.class, int.class, String.class
 			},
-			_group.getGroupId(), 0, -1, _ddmTemplate.getTemplateKey(), null,
-			false, null, null, 0, 0, StringPool.BLANK);
+			_group.getGroupId(), 0, -1, _ddmTemplate.getTemplateKey(), false,
+			null, null, 0, 0, StringPool.BLANK);
 	}
 
 	@Test(expected = NoSuchFolderException.class)
@@ -91,12 +89,11 @@ public class JournalArticleModelValidatorTest {
 		ReflectionTestUtil.invoke(
 			_journalArticleModelValidator, "validateReferences",
 			new Class<?>[] {
-				long.class, long.class, long.class, String.class, String.class,
-				boolean.class, String.class, byte[].class, long.class,
-				int.class, String.class
+				long.class, long.class, long.class, String.class, boolean.class,
+				String.class, byte[].class, long.class, int.class, String.class
 			},
 			_group.getGroupId(), -1, _ddmStructure.getStructureId(),
-			_ddmTemplate.getTemplateKey(), null, false, null, null, 0, 0,
+			_ddmTemplate.getTemplateKey(), false, null, null, 0, 0,
 			StringPool.BLANK);
 	}
 
@@ -121,13 +118,11 @@ public class JournalArticleModelValidatorTest {
 		ReflectionTestUtil.invoke(
 			_journalArticleModelValidator, "validateReferences",
 			new Class<?>[] {
-				long.class, long.class, long.class, String.class, String.class,
-				boolean.class, String.class, byte[].class, long.class,
-				int.class, String.class
+				long.class, long.class, long.class, String.class, boolean.class,
+				String.class, byte[].class, long.class, int.class, String.class
 			},
 			_group.getGroupId(), 0, _ddmStructure.getStructureId(),
-			_ddmTemplate.getTemplateKey(), null, false, null, null, 0, 0,
-			content);
+			_ddmTemplate.getTemplateKey(), false, null, null, 0, 0, content);
 	}
 
 	private DDMStructure _ddmStructure;
