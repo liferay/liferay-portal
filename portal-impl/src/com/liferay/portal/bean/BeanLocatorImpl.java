@@ -99,11 +99,11 @@ public class BeanLocatorImpl implements BeanLocator {
 	/**
 	 * This method ensures the calls stack is the proper length.
 	 */
-	protected <T> Map<String, T> doLocate(Class<T> clazz) throws Exception {
+	protected <T> Map<String, T> doLocate(Class<T> clazz) {
 		return _applicationContext.getBeansOfType(clazz);
 	}
 
-	protected Object doLocate(String name) throws Exception {
+	protected Object doLocate(String name) {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Locating " + name);
 		}
