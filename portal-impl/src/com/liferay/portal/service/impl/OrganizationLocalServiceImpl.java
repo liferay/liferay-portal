@@ -160,12 +160,7 @@ public class OrganizationLocalServiceImpl
 			return false;
 		}
 
-		try {
-			reindexUsers(organization);
-		}
-		catch (PortalException portalException) {
-			throw new SystemException(portalException);
-		}
+		reindexUsers(organization);
 
 		return true;
 	}
@@ -185,12 +180,7 @@ public class OrganizationLocalServiceImpl
 			return false;
 		}
 
-		try {
-			reindexUsers(organizations);
-		}
-		catch (PortalException portalException) {
-			throw new SystemException(portalException);
-		}
+		reindexUsers(organizations);
 
 		return true;
 	}
@@ -2514,17 +2504,13 @@ public class OrganizationLocalServiceImpl
 		return MapUtil.isNotEmpty(params);
 	}
 
-	protected void reindex(long companyId, long[] userIds)
-		throws PortalException {
-
+	protected void reindex(long companyId, long[] userIds) {
 		ReindexerBridge reindexerBridge = _reindexerBridgeSnapshot.get();
 
 		reindexerBridge.reindex(companyId, User.class.getName(), userIds);
 	}
 
-	protected void reindexUsers(List<Organization> organizations)
-		throws PortalException {
-
+	protected void reindexUsers(List<Organization> organizations) {
 		for (Organization organization : organizations) {
 			reindexUsers(organization);
 		}
@@ -2540,9 +2526,7 @@ public class OrganizationLocalServiceImpl
 		}
 	}
 
-	protected void reindexUsers(Organization organization)
-		throws PortalException {
-
+	protected void reindexUsers(Organization organization) {
 		long[] userIds = getUserPrimaryKeys(organization.getOrganizationId());
 
 		if (ArrayUtil.isNotEmpty(userIds)) {
