@@ -111,7 +111,6 @@ import java.io.InputStream;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import java.text.DateFormat;
@@ -1990,22 +1989,8 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 
 		protected Locale getDefaultLocale(Element dynamicElementElement) {
 			if (dynamicElementElement == null) {
-				String locale = null;
-
-				try {
-					locale = UpgradeProcessUtil.getDefaultLanguageId(
-						_companyId);
-				}
-				catch (SQLException sqlException) {
-					_log.error(
-						"Unable to get default locale for company " +
-							_companyId,
-						sqlException);
-
-					throw new RuntimeException(sqlException);
-				}
-
-				return LocaleUtil.fromLanguageId(locale);
+				return LocaleUtil.fromLanguageId(
+					UpgradeProcessUtil.getDefaultLanguageId(_companyId));
 			}
 
 			String defaultLanguageId = dynamicElementElement.attributeValue(

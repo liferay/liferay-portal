@@ -18,8 +18,6 @@ import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -30,7 +28,6 @@ import com.liferay.portal.workflow.kaleo.forms.model.KaleoProcess;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import java.util.Locale;
@@ -102,20 +99,8 @@ public class KaleoProcessUpgradeProcess extends UpgradeProcess {
 	}
 
 	private Locale _getDefaultLocale(long companyId) {
-		String locale = null;
-
-		try {
-			locale = UpgradeProcessUtil.getDefaultLanguageId(companyId);
-		}
-		catch (SQLException sqlException) {
-			_log.error(
-				"Unable to get default locale for company " + companyId,
-				sqlException);
-
-			throw new RuntimeException(sqlException);
-		}
-
-		return LocaleUtil.fromLanguageId(locale);
+		return LocaleUtil.fromLanguageId(
+			UpgradeProcessUtil.getDefaultLanguageId(companyId));
 	}
 
 	private void _updateAssetEntry(
@@ -146,9 +131,6 @@ public class KaleoProcessUpgradeProcess extends UpgradeProcess {
 
 		actionableDynamicQuery.performActions();
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		KaleoProcessUpgradeProcess.class);
 
 	private final AssetEntryLocalService _assetEntryLocalService;
 	private final DDLRecordLocalService _ddlRecordLocalService;

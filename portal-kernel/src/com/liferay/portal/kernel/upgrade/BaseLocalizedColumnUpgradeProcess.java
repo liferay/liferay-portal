@@ -61,9 +61,8 @@ public abstract class BaseLocalizedColumnUpgradeProcess extends UpgradeProcess {
 	}
 
 	private String _getLocalizationXML(
-			String localizationMapKey, String localizationXMLKey,
-			long companyId, ResourceBundleLoader resourceBundleLoader)
-		throws SQLException {
+		String localizationMapKey, String localizationXMLKey, long companyId,
+		ResourceBundleLoader resourceBundleLoader) {
 
 		return LocalizationUtil.updateLocalization(
 			ResourceBundleUtil.getLocalizationMap(
@@ -73,11 +72,9 @@ public abstract class BaseLocalizedColumnUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _upgrade(
-			ResourceBundleLoader resourceBundleLoader, String tableName,
-			String columnName, String originalContent,
-			String localizationMapKey, String localizationXMLKey,
-			long companyId)
-		throws SQLException {
+		ResourceBundleLoader resourceBundleLoader, String tableName,
+		String columnName, String originalContent, String localizationMapKey,
+		String localizationXMLKey, long companyId) {
 
 		String localizationXML = _getLocalizationXML(
 			localizationMapKey, localizationXMLKey, companyId,

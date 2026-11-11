@@ -91,9 +91,7 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 		}
 	}
 
-	protected String localize(long companyId, String content, String key)
-		throws Exception {
-
+	protected String localize(long companyId, String content, String key) {
 		String languageId = UpgradeProcessUtil.getDefaultLanguageId(companyId);
 
 		return LocalizationUtil.updateLocalization(

@@ -17,8 +17,6 @@ import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
-import java.sql.SQLException;
-
 import java.util.Locale;
 import java.util.Objects;
 
@@ -56,36 +54,29 @@ public class DLFileEntryTypeNameUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _upgradeGoogleDocsDLFileEntryType(
-			DLFileEntryType dlFileEntryType)
-		throws UpgradeException {
+		DLFileEntryType dlFileEntryType) {
 
-		try {
-			Locale locale = LocaleUtil.fromLanguageId(
-				UpgradeProcessUtil.getDefaultLanguageId(
-					dlFileEntryType.getCompanyId()));
+		Locale locale = LocaleUtil.fromLanguageId(
+			UpgradeProcessUtil.getDefaultLanguageId(
+				dlFileEntryType.getCompanyId()));
 
-			boolean hasDefaultName = Objects.equals(
-				dlFileEntryType.getName(locale), "Google Docs");
+		boolean hasDefaultName = Objects.equals(
+			dlFileEntryType.getName(locale), "Google Docs");
 
-			if (hasDefaultName) {
-				dlFileEntryType.setName(
-					GoogleDocsConstants.DL_FILE_ENTRY_TYPE_NAME, locale);
-			}
-
-			boolean hasDefaultDescription = Objects.equals(
-				dlFileEntryType.getDescription(locale), "Google Docs");
-
-			if (hasDefaultDescription) {
-				dlFileEntryType.setDescription(StringPool.BLANK, locale);
-			}
-
-			if (hasDefaultName || hasDefaultDescription) {
-				_dlFileEntryTypeLocalService.updateDLFileEntryType(
-					dlFileEntryType);
-			}
+		if (hasDefaultName) {
+			dlFileEntryType.setName(
+				GoogleDocsConstants.DL_FILE_ENTRY_TYPE_NAME, locale);
 		}
-		catch (SQLException sqlException) {
-			throw new UpgradeException(sqlException);
+
+		boolean hasDefaultDescription = Objects.equals(
+			dlFileEntryType.getDescription(locale), "Google Docs");
+
+		if (hasDefaultDescription) {
+			dlFileEntryType.setDescription(StringPool.BLANK, locale);
+		}
+
+		if (hasDefaultName || hasDefaultDescription) {
+			_dlFileEntryTypeLocalService.updateDLFileEntryType(dlFileEntryType);
 		}
 	}
 

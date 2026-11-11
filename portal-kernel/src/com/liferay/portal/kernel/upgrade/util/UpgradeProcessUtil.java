@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.version.Version;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,9 +31,7 @@ import java.util.Map;
  */
 public class UpgradeProcessUtil {
 
-	public static String getDefaultLanguageId(long companyId)
-		throws SQLException {
-
+	public static String getDefaultLanguageId(long companyId) {
 		String languageId = _languageIds.get(companyId);
 
 		if (languageId != null) {
