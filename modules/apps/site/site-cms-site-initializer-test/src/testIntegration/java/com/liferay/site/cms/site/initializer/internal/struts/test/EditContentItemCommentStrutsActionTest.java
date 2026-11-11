@@ -379,6 +379,27 @@ public class EditContentItemCommentStrutsActionTest {
 			_userNotificationEventLocalService.getUserNotificationEventsCount(
 				user2.getUserId()));
 
+		_userLocalService.deleteRoleUser(role.getRoleId(), user1);
+
+		String text = RandomTestUtil.randomString();
+
+		JSONObject jsonObject = _execute(
+			StringBundler.concat(
+				"<p>", text, StringPool.SPACE, _getMentionHTML(user1),
+				StringPool.SPACE, _getMentionHTML(user2), "</p>"),
+			commentId, layout, objectEntry, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<p>", text, " @", user1.getFullName(), StringPool.SPACE,
+				_getMentionHTML(user2), "</p>"),
+			jsonObject.getString("body"));
+
+		Assert.assertEquals(
+			1,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user1.getUserId()));
+
 		_depotEntryLocalService.deleteDepotEntry(depotEntry);
 		_layoutLocalService.deleteLayout(layout);
 		_objectEntryLocalService.deleteObjectEntry(objectEntry);
