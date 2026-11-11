@@ -11,7 +11,6 @@ import com.liferay.fragment.item.selector.web.internal.display.context.FragmentE
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.Portal;
@@ -91,9 +90,9 @@ public class GlobalFragmentEntryItemSelectorView
 		servletRequest.setAttribute(
 			FragmentEntriesDisplayContext.class.getName(),
 			new FragmentEntriesDisplayContext(
-				(HttpServletRequest)servletRequest,
 				fragmentEntryItemSelectorCriterion,
-				_groupLocalService.fetchGroup(themeDisplay.getCompanyGroupId()),
+				new long[] {themeDisplay.getCompanyGroupId()},
+				(HttpServletRequest)servletRequest,
 				_portal.getLiferayPortletRequest(
 					(PortletRequest)servletRequest.getAttribute(
 						JavaConstants.JAKARTA_PORTLET_REQUEST)),
@@ -105,9 +104,6 @@ public class GlobalFragmentEntryItemSelectorView
 	private static final List<ItemSelectorReturnType>
 		_supportedItemSelectorReturnTypes = Collections.singletonList(
 			new FragmentEntryItemSelectorReturnType());
-
-	@Reference
-	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Language _language;

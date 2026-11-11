@@ -98,9 +98,9 @@ public class CurrentSiteFragmentEntryItemSelectorView
 		servletRequest.setAttribute(
 			FragmentEntriesDisplayContext.class.getName(),
 			new FragmentEntriesDisplayContext(
-				(HttpServletRequest)servletRequest,
 				fragmentEntryItemSelectorCriterion,
-				themeDisplay.getScopeGroup(),
+				new long[] {themeDisplay.getScopeGroupId()},
+				(HttpServletRequest)servletRequest,
 				_portal.getLiferayPortletRequest(
 					(PortletRequest)servletRequest.getAttribute(
 						JavaConstants.JAKARTA_PORTLET_REQUEST)),

@@ -14,9 +14,11 @@ import com.liferay.fragment.service.FragmentCollectionLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.fragment.util.comparator.FragmentEntryCreateDateComparator;
 import com.liferay.fragment.util.comparator.FragmentEntryNameComparator;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -28,8 +30,11 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.CollatorUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -43,6 +48,8 @@ import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.text.Collator;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -54,15 +61,14 @@ import java.util.Set;
 public class FragmentEntriesDisplayContext {
 
 	public FragmentEntriesDisplayContext(
-		HttpServletRequest httpServletRequest,
 		FragmentEntryItemSelectorCriterion fragmentEntryItemSelectorCriterion,
-		Group group, LiferayPortletRequest liferayPortletRequest,
-		PortletURL portletURL) {
+		long[] groupIds, HttpServletRequest httpServletRequest,
+		LiferayPortletRequest liferayPortletRequest, PortletURL portletURL) {
 
-		_httpServletRequest = httpServletRequest;
 		_fragmentEntryItemSelectorCriterion =
 			fragmentEntryItemSelectorCriterion;
-		_group = group;
+		_groupIds = groupIds;
+		_httpServletRequest = httpServletRequest;
 		_liferayPortletRequest = liferayPortletRequest;
 		_portletURL = portletURL;
 
@@ -72,20 +78,38 @@ public class FragmentEntriesDisplayContext {
 
 	public List<BreadcrumbEntry> getBreadcrumbEntries() {
 		return BreadcrumbEntryListBuilder.add(
+			() -> _groupIds.length > 1,
 			breadcrumbEntry -> {
-				if (getFragmentCollectionId() > 0) {
+				if (getGroupId() > 0) {
 					breadcrumbEntry.setBrowsable(false);
 				}
 
 				breadcrumbEntry.setTitle(
-					LanguageUtil.get(
-						_httpServletRequest,
-						_group.getDescriptiveName(_themeDisplay.getLocale())));
+					LanguageUtil.get(_httpServletRequest, "design-libraries"));
 				breadcrumbEntry.setURL(
 					PortletURLBuilder.create(
 						_portletURL
 					).setParameter(
 						"fragmentCollectionId", StringPool.BLANK
+					).setParameter(
+						"selectedGroupId", StringPool.BLANK
+					).buildString());
+			}
+		).add(
+			() -> getGroupId() > 0,
+			breadcrumbEntry -> {
+				if (getFragmentCollectionId() > 0) {
+					breadcrumbEntry.setBrowsable(false);
+				}
+
+				breadcrumbEntry.setTitle(getDescriptiveName(_getGroup()));
+				breadcrumbEntry.setURL(
+					PortletURLBuilder.create(
+						_portletURL
+					).setParameter(
+						"fragmentCollectionId", StringPool.BLANK
+					).setParameter(
+						"selectedGroupId", getGroupId()
 					).buildString());
 			}
 		).add(
@@ -98,6 +122,17 @@ public class FragmentEntriesDisplayContext {
 				breadcrumbEntry.setTitle(fragmentCollection.getName());
 			}
 		).build();
+	}
+
+	public String getDescriptiveName(Group group) {
+		try {
+			return group.getDescriptiveName(_themeDisplay.getLocale());
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return group.getName(_themeDisplay.getLocale());
+		}
 	}
 
 	public long getFragmentCollectionId() {
@@ -126,7 +161,7 @@ public class FragmentEntriesDisplayContext {
 		searchContainer.setId("fragmentCollections");
 
 		searchContainer.setResultsAndTotal(
-			_getFragmentCollections(_group.getGroupId()));
+			_getFragmentCollections(getGroupId()));
 
 		_fragmentCollectionSearchContainer = searchContainer;
 
@@ -151,13 +186,13 @@ public class FragmentEntriesDisplayContext {
 
 		if (isSearch()) {
 			fragmentEntries = FragmentEntryLocalServiceUtil.getFragmentEntries(
-				_group.getGroupId(), getFragmentCollectionId(), _getKeywords(),
+				getGroupId(), getFragmentCollectionId(), _getKeywords(),
 				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, searchContainer.getOrderByComparator());
 		}
 		else {
 			fragmentEntries = FragmentEntryLocalServiceUtil.getFragmentEntries(
-				_group.getGroupId(), getFragmentCollectionId(),
+				getGroupId(), getFragmentCollectionId(),
 				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, searchContainer.getOrderByComparator());
 		}
@@ -178,11 +213,63 @@ public class FragmentEntriesDisplayContext {
 	}
 
 	public long getGroupId() {
-		return _group.getGroupId();
+		if (_groupId != null) {
+			return _groupId;
+		}
+
+		if (_groupIds.length == 1) {
+			_groupId = _groupIds[0];
+		}
+		else {
+			_groupId = ParamUtil.getLong(
+				_httpServletRequest, "selectedGroupId");
+
+			if (!ArrayUtil.contains(_groupIds, _groupId)) {
+				_groupId = 0L;
+			}
+		}
+
+		return _groupId;
 	}
 
 	public String getGroupKey() {
-		return _group.getGroupKey();
+		Group group = _getGroup();
+
+		return group.getGroupKey();
+	}
+
+	public SearchContainer<Group> getGroupsSearchContainer() {
+		if (_groupsSearchContainer != null) {
+			return _groupsSearchContainer;
+		}
+
+		SearchContainer<Group> searchContainer = new SearchContainer<>(
+			_liferayPortletRequest, _portletURL, null,
+			"no-design-libraries-were-found");
+
+		searchContainer.setId("groups");
+
+		List<Group> groups = TransformUtil.transformToList(
+			_groupIds,
+			groupId -> {
+				if (ListUtil.isEmpty(_getFragmentCollections(groupId))) {
+					return null;
+				}
+
+				return GroupLocalServiceUtil.fetchGroup(groupId);
+			});
+
+		Collator collator = CollatorUtil.getInstance(_themeDisplay.getLocale());
+
+		searchContainer.setResultsAndTotal(
+			ListUtil.sort(
+				groups,
+				(group1, group2) -> collator.compare(
+					getDescriptiveName(group1), getDescriptiveName(group2))));
+
+		_groupsSearchContainer = searchContainer;
+
+		return _groupsSearchContainer;
 	}
 
 	public boolean isSearch() {
@@ -269,6 +356,10 @@ public class FragmentEntriesDisplayContext {
 			});
 	}
 
+	private Group _getGroup() {
+		return GroupLocalServiceUtil.fetchGroup(getGroupId());
+	}
+
 	private String _getKeywords() {
 		if (_keywords != null) {
 			return _keywords;
@@ -312,7 +403,9 @@ public class FragmentEntriesDisplayContext {
 	private final FragmentEntryItemSelectorCriterion
 		_fragmentEntryItemSelectorCriterion;
 	private SearchContainer<FragmentEntry> _fragmentsSearchContainer;
-	private final Group _group;
+	private Long _groupId;
+	private final long[] _groupIds;
+	private SearchContainer<Group> _groupsSearchContainer;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
 	private final LiferayPortletRequest _liferayPortletRequest;
