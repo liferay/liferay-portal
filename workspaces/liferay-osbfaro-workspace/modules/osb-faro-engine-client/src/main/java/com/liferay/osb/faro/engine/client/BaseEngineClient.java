@@ -346,6 +346,15 @@ public abstract class BaseEngineClient {
 		return responseEntity.getBody();
 	}
 
+	protected RestTemplate getBackgroundRestTemplate(FaroProject faroProject) {
+		RestTemplate restTemplate = getRestTemplate(faroProject);
+
+		restTemplate.setRequestFactory(
+			_backgroundHttpComponentsClientHttpRequestFactory);
+
+		return restTemplate;
+	}
+
 	protected Cache getCache() {
 		if (!FaroThreadLocal.isCacheEnabled()) {
 			return null;
