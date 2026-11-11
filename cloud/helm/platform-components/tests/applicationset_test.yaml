@@ -273,16 +273,6 @@ tests:
     -   asserts:
             -   hasDocuments:
                     count: 0
-                template: templates/appproject-application.yaml
-            -   hasDocuments:
-                    count: 1
-                template: templates/appproject-infrastructure.yaml
-        it: Omits the application AppProject when it is disabled
-        set:
-            appProjects.application.enabled: false
-    -   asserts:
-            -   hasDocuments:
-                    count: 0
                 template: templates/application-infrastructure-provider.yaml
             -   hasDocuments:
                     count: 0
@@ -298,6 +288,16 @@ tests:
             infrastructure.enabled: false
             infrastructureProvider.enabled: false
             liferay.enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/appproject-application.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/appproject-infrastructure.yaml
+        it: Omits the application AppProject when it is disabled
+        set:
+            appProjects.application.enabled: false
     -   asserts:
             -   hasDocuments:
                     count: 1
