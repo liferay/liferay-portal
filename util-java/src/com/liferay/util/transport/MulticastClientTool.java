@@ -70,7 +70,7 @@ public class MulticastClientTool {
 		}
 	}
 
-	private Map<String, Object> _getArgsMap(String[] args) throws Exception {
+	private Map<String, Object> _getArgsMap(String[] args) {
 		Map<String, Object> argsMap = new HashMap<>();
 
 		for (int i = 0; i < args.length; i++) {
