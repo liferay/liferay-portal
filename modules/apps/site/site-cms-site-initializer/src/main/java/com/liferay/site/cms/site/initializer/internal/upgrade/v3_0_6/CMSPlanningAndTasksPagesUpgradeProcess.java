@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -296,29 +297,29 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 		long companyId = layout.getCompanyId();
 		String primKey = String.valueOf(layout.getPlid());
 
-		_resourcePermissionLocalService.setResourcePermissions(
-			companyId, Layout.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL, primKey,
-			_roleLocalService.getRole(
-				companyId, RoleConstants.CMS_ADMINISTRATOR
-			).getRoleId(),
-			new String[] {"VIEW"});
+		Role cmsAdministratorRole = _roleLocalService.getRole(
+			companyId, RoleConstants.CMS_ADMINISTRATOR);
 
 		_resourcePermissionLocalService.setResourcePermissions(
 			companyId, Layout.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL, primKey,
-			_roleLocalService.getRole(
-				companyId, RoleConstants.GUEST
-			).getRoleId(),
+			cmsAdministratorRole.getRoleId(), new String[] {"VIEW"});
+
+		Role guestRole = _roleLocalService.getRole(
+			companyId, RoleConstants.GUEST);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			companyId, Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, primKey, guestRole.getRoleId(),
 			new String[0]);
 
+		Role siteMemberRole = _roleLocalService.getRole(
+			companyId, RoleConstants.SITE_MEMBER);
+
 		_resourcePermissionLocalService.setResourcePermissions(
 			companyId, Layout.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL, primKey,
-			_roleLocalService.getRole(
-				companyId, RoleConstants.SITE_MEMBER
-			).getRoleId(),
-			new String[] {"VIEW"});
+			siteMemberRole.getRoleId(), new String[] {"VIEW"});
 	}
 
 	private void _upgradeCompany(long companyId) throws Exception {
