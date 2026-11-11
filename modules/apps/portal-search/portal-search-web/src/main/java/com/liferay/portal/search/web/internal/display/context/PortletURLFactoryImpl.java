@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.web.internal.portlet.shared.search.NullPortletURL;
 
-import jakarta.portlet.MimeResponse;
 import jakarta.portlet.PortletException;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
@@ -23,9 +22,7 @@ import java.util.Map;
  */
 public class PortletURLFactoryImpl implements PortletURLFactory {
 
-	public PortletURLFactoryImpl(
-		PortletRequest portletRequest, MimeResponse mimeResponse) {
-
+	public PortletURLFactoryImpl(PortletRequest portletRequest) {
 		_portletRequest = portletRequest;
 	}
 

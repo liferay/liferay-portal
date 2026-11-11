@@ -137,9 +137,9 @@ public class SearchResultsPortlet extends MVCPortlet {
 	}
 
 	protected PortletURLFactory getPortletURLFactory(
-		RenderRequest renderRequest, RenderResponse renderResponse) {
+		RenderRequest renderRequest) {
 
-		return new PortletURLFactoryImpl(renderRequest, renderResponse);
+		return new PortletURLFactoryImpl(renderRequest);
 	}
 
 	protected boolean isRenderNothing(
@@ -402,7 +402,7 @@ public class SearchResultsPortlet extends MVCPortlet {
 			new SearchResultsSummariesHolder(documents.size());
 
 		PortletURLFactory portletURLFactory = getPortletURLFactory(
-			renderRequest, renderResponse);
+			renderRequest);
 
 		SearchResultPreferences searchResultPreferences =
 			new SearchResultPreferencesImpl(

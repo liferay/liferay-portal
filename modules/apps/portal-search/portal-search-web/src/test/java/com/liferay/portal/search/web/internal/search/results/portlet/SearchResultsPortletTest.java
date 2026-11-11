@@ -310,7 +310,7 @@ public class SearchResultsPortletTest {
 
 			@Override
 			protected PortletURLFactory getPortletURLFactory(
-				RenderRequest renderRequest, RenderResponse renderResponse) {
+				RenderRequest renderRequest) {
 
 				return _portletURLFactory;
 			}
