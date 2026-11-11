@@ -26,6 +26,7 @@ import com.liferay.exportimport.rest.internal.util.LayoutUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
+import com.liferay.exportimport.rest.internal.util.RemoteStagingUtil;
 import com.liferay.exportimport.rest.resource.v1_0.PublishProcessResource;
 import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.string.StringPool;
@@ -38,6 +39,7 @@ import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -47,6 +49,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.staging.StagingGroupHelper;
+
+import jakarta.ws.rs.BadRequestException;
 
 import java.io.Serializable;
 
@@ -162,6 +166,27 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 							backgroundTask.getTaskContextMap(),
 							"exportImportConfigurationId")));
 
+		if (StringUtil.equals(
+				backgroundTask.getTaskExecutorClassName(),
+				BackgroundTaskExecutorNames.
+					LAYOUT_REMOTE_STAGING_BACKGROUND_TASK_EXECUTOR)) {
+
+			Map<String, Serializable> settingsMap =
+				exportImportConfiguration.getSettingsMap();
+
+			_groupLocalService.validateRemote(
+				exportImportConfiguration.getGroupId(),
+				MapUtil.getString(settingsMap, "remoteAddress"),
+				MapUtil.getInteger(settingsMap, "remotePort"),
+				MapUtil.getString(settingsMap, "remotePathContext"),
+				MapUtil.getBoolean(settingsMap, "secureConnection"),
+				MapUtil.getLong(settingsMap, "targetGroupId"));
+
+			return _toPublishProcess(
+				_backgroundTaskLocalService.getBackgroundTask(
+					_staging.copyRemoteLayouts(exportImportConfiguration)));
+		}
+
 		return _toPublishProcess(
 			_backgroundTaskLocalService.getBackgroundTask(
 				_staging.publishLayouts(
@@ -200,6 +225,30 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		parameterMap =
 			_exportImportConfigurationParameterMapFactory.buildParameterMap(
 				parameterMap);
+
+		if (stagingGroup.isStagedRemotely()) {
+			ExportImportConfiguration exportImportConfiguration =
+				_exportImportConfigurationLocalService.
+					addDraftExportImportConfiguration(
+						contextUser.getUserId(),
+						publishProcessRequest.getName(),
+						ExportImportConfigurationConstants.
+							TYPE_PUBLISH_LAYOUT_REMOTE,
+						RemoteStagingUtil.buildPublishLayoutRemoteSettingsMap(
+							parameterMap,
+							publishProcessRequest.getRemoteConnection(),
+							stagingGroup, contextUser));
+
+			return _toPublishProcess(
+				_backgroundTaskLocalService.getBackgroundTask(
+					_staging.copyRemoteLayouts(exportImportConfiguration)));
+		}
+
+		if (publishProcessRequest.getRemoteConnection() != null) {
+			throw new BadRequestException(
+				"Remote staging is not enabled for site \"" +
+					siteExternalReferenceCode + "\"");
+		}
 
 		parameterMap.put(
 			PortletDataHandlerKeys.PERFORM_DIRECT_BINARY_IMPORT,
@@ -259,10 +308,8 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 				"companyId", contextCompany.getCompanyId()));
 		dynamicQuery.add(RestrictionsFactoryUtil.in("groupId", groupIds));
 		dynamicQuery.add(
-			RestrictionsFactoryUtil.eq(
-				"taskExecutorClassName",
-				BackgroundTaskExecutorNames.
-					LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR));
+			RestrictionsFactoryUtil.in(
+				"taskExecutorClassName", _CLASS_NAMES_TASK_EXECUTOR));
 
 		if (!Validator.isBlank(search)) {
 			dynamicQuery.add(
@@ -378,6 +425,8 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 	}
 
 	private static final String[] _CLASS_NAMES_TASK_EXECUTOR = {
+		BackgroundTaskExecutorNames.
+			LAYOUT_REMOTE_STAGING_BACKGROUND_TASK_EXECUTOR,
 		BackgroundTaskExecutorNames.LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR
 	};
 
@@ -401,6 +450,9 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 
 	@Reference
 	private ExportImportHelper _exportImportHelper;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Language _language;

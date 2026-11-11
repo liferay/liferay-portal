@@ -130,7 +130,9 @@ public class GroupUtil {
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();
 
-		if (stagingGroupHelper.isLocalStagingGroup(group)) {
+		if (stagingGroupHelper.isLocalStagingGroup(group) ||
+			stagingGroupHelper.isRemoteStagingGroup(group)) {
+
 			return group;
 		}
 
@@ -138,7 +140,7 @@ public class GroupUtil {
 
 		if (stagingGroup == null) {
 			throw new BadRequestException(
-				"Local staging is not enabled for site \"" +
+				"Staging is not enabled for site \"" +
 					group.getExternalReferenceCode() + "\"");
 		}
 
