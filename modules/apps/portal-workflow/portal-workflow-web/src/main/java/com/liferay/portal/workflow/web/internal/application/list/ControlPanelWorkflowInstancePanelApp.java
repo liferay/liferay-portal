@@ -11,6 +11,8 @@ import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
 
+import jakarta.servlet.ServletContext;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -32,6 +34,12 @@ public class ControlPanelWorkflowInstancePanelApp extends BasePanelApp {
 	}
 
 	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/submissions/app_icon.svg";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
@@ -45,5 +53,10 @@ public class ControlPanelWorkflowInstancePanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW_INSTANCE + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.portal.workflow.web)"
+	)
+	private ServletContext _servletContext;
 
 }

@@ -15,6 +15,8 @@ import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.portal.search.tuning.rankings.web.internal.constants.ResultRankingsPortletKeys;
 import com.liferay.portal.search.web.application.list.constants.SearchPanelCategoryKeys;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -35,6 +37,12 @@ public class ResultRankingsPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "medal";
+	}
+
+	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/result_rankings/app_icon.svg";
 	}
 
 	@Override
@@ -65,5 +73,10 @@ public class ResultRankingsPanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + ResultRankingsPortletKeys.RESULT_RANKINGS + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.portal.search.tuning.rankings.web)"
+	)
+	private ServletContext _servletContext;
 
 }

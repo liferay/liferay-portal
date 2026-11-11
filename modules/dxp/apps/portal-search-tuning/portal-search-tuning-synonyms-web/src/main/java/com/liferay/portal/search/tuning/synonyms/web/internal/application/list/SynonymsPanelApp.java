@@ -15,6 +15,8 @@ import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.portal.search.tuning.synonyms.web.internal.constants.SynonymsPortletKeys;
 import com.liferay.portal.search.web.application.list.constants.SearchPanelCategoryKeys;
 
+import jakarta.servlet.ServletContext;
+
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -35,6 +37,12 @@ public class SynonymsPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "synonyms";
+	}
+
+	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/synonyms/app_icon.svg";
 	}
 
 	@Override
@@ -65,5 +73,10 @@ public class SynonymsPanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + SynonymsPortletKeys.SYNONYMS + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.portal.search.tuning.synonyms.web)"
+	)
+	private ServletContext _servletContext;
 
 }

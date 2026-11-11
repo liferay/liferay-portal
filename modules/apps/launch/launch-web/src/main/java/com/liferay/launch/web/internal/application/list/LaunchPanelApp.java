@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
+import jakarta.servlet.ServletContext;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -33,6 +35,12 @@ public class LaunchPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "rocket";
+	}
+
+	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/launches/app_icon.svg";
 	}
 
 	@Override
@@ -62,5 +70,8 @@ public class LaunchPanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + LaunchPortletKeys.LAUNCH + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(target = "(osgi.web.symbolicname=com.liferay.launch.web)")
+	private ServletContext _servletContext;
 
 }

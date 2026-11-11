@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
+import jakarta.servlet.ServletContext;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -33,6 +35,12 @@ public class DesignLibraryAdminPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "books-brush";
+	}
+
+	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/design_libraries/app_icon.svg";
 	}
 
 	@Override
@@ -62,5 +70,10 @@ public class DesignLibraryAdminPanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + DesignLibraryAdminPortletKeys.DESIGN_LIBRARY_ADMIN + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.design.library.web)"
+	)
+	private ServletContext _servletContext;
 
 }

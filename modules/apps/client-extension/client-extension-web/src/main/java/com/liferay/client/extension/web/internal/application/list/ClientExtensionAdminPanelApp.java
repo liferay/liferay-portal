@@ -11,6 +11,8 @@ import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.client.extension.web.internal.constants.ClientExtensionAdminPortletKeys;
 import com.liferay.portal.kernel.model.Portlet;
 
+import jakarta.servlet.ServletContext;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -32,6 +34,12 @@ public class ClientExtensionAdminPanelApp extends BasePanelApp {
 	}
 
 	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/client_extensions/app_icon.svg";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
@@ -45,5 +53,10 @@ public class ClientExtensionAdminPanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + ClientExtensionAdminPortletKeys.CLIENT_EXTENSION_ADMIN + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.client.extension.web)"
+	)
+	private ServletContext _servletContext;
 
 }

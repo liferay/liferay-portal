@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
@@ -40,6 +41,12 @@ public class AnnouncementsPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "megaphone";
+	}
+
+	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/announcements/app_icon.svg";
 	}
 
 	@Override
@@ -87,5 +94,8 @@ public class AnnouncementsPanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + AnnouncementsPortletKeys.ANNOUNCEMENTS_ADMIN + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(target = "(osgi.web.symbolicname=com.liferay.announcements.web)")
+	private ServletContext _servletContext;
 
 }

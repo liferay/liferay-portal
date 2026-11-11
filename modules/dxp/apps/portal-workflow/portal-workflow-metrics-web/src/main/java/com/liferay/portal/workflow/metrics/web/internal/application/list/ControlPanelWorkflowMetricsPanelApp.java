@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.search.capabilities.SearchCapabilities;
 import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
 
+import jakarta.servlet.ServletContext;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -33,6 +35,12 @@ public class ControlPanelWorkflowMetricsPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "polls";
+	}
+
+	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/workflow_metrics/app_icon.svg";
 	}
 
 	@Override
@@ -63,5 +71,10 @@ public class ControlPanelWorkflowMetricsPanelApp extends BasePanelApp {
 
 	@Reference
 	private SearchCapabilities _searchCapabilities;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.portal.workflow.metrics.web)"
+	)
+	private ServletContext _servletContext;
 
 }

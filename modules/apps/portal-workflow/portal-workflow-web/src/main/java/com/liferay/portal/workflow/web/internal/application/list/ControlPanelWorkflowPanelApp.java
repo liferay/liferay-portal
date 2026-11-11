@@ -25,6 +25,7 @@ import com.liferay.portal.workflow.constants.WorkflowWebKeys;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
@@ -48,6 +49,12 @@ public class ControlPanelWorkflowPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "process-builder";
+	}
+
+	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/process_builder/app_icon.svg";
 	}
 
 	@Override
@@ -109,5 +116,10 @@ public class ControlPanelWorkflowPanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + WorkflowPortletKeys.CONTROL_PANEL_WORKFLOW + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.portal.workflow.web)"
+	)
+	private ServletContext _servletContext;
 
 }

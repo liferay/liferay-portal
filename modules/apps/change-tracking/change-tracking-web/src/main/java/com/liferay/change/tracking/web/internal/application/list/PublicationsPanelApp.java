@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletURL;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
@@ -50,6 +51,12 @@ public class PublicationsPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "publications";
+	}
+
+	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/publications/app_icon.svg";
 	}
 
 	@Override
@@ -163,5 +170,10 @@ public class PublicationsPanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + CTPortletKeys.PUBLICATIONS + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.change.tracking.web)"
+	)
+	private ServletContext _servletContext;
 
 }

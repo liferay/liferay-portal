@@ -21,6 +21,7 @@ import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.portal.search.web.application.list.constants.SearchPanelCategoryKeys;
 import com.liferay.search.experiences.constants.SXPPortletKeys;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
@@ -45,6 +46,12 @@ public class SXPBlueprintAdminPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "blue-print";
+	}
+
+	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/blueprints/app_icon.svg";
 	}
 
 	@Override
@@ -110,5 +117,10 @@ public class SXPBlueprintAdminPanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_ADMIN + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.search.experiences.web)"
+	)
+	private ServletContext _servletContext;
 
 }

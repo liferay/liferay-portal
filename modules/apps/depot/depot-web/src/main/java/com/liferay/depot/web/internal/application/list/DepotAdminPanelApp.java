@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
@@ -38,6 +39,12 @@ public class DepotAdminPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "books";
+	}
+
+	@Override
+	public String getIconURL() {
+		return _servletContext.getContextPath() +
+			"/images/asset_libraries/app_icon.svg";
 	}
 
 	@Override
@@ -73,5 +80,8 @@ public class DepotAdminPanelApp extends BasePanelApp {
 		target = "(jakarta.portlet.name=" + DepotPortletKeys.DEPOT_ADMIN + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference(target = "(osgi.web.symbolicname=com.liferay.depot.web)")
+	private ServletContext _servletContext;
 
 }
