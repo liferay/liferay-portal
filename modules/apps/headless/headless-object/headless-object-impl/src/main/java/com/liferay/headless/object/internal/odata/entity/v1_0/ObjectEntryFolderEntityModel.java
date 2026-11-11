@@ -14,7 +14,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.IntegerEntityField;
 import com.liferay.portal.odata.entity.StringEntityField;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,7 +21,7 @@ import java.util.Map;
  */
 public class ObjectEntryFolderEntityModel implements EntityModel {
 
-	public ObjectEntryFolderEntityModel(List<EntityField> entityFields) {
+	public ObjectEntryFolderEntityModel() {
 		_entityFieldsMap = EntityFieldsMapFactory.create(
 			new DateTimeEntityField(
 				"dateCreated",

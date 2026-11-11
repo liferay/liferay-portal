@@ -7,12 +7,9 @@ package com.liferay.headless.object.internal.resource.v1_0;
 
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
-import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
-import com.liferay.headless.common.spi.odata.entity.EntityFieldsUtil;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.headless.object.dto.v1_0.ObjectEntryFolder;
 import com.liferay.headless.object.internal.odata.entity.v1_0.ObjectEntryFolderEntityModel;
@@ -44,7 +41,6 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -178,12 +174,7 @@ public class ObjectEntryFolderResourceImpl
 
 	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
-		return new ObjectEntryFolderEntityModel(
-			EntityFieldsUtil.getEntityFields(
-				_portal.getClassNameId(
-					com.liferay.object.model.ObjectEntryFolder.class.getName()),
-				contextCompany.getCompanyId(), _expandoColumnLocalService,
-				_expandoTableLocalService));
+		return new ObjectEntryFolderEntityModel();
 	}
 
 	@Override
@@ -937,12 +928,6 @@ public class ObjectEntryFolderResourceImpl
 	private DTOConverterRegistry _dtoConverterRegistry;
 
 	@Reference
-	private ExpandoColumnLocalService _expandoColumnLocalService;
-
-	@Reference
-	private ExpandoTableLocalService _expandoTableLocalService;
-
-	@Reference
 	private GroupLocalService _groupLocalService;
 
 	@Reference(
@@ -967,9 +952,6 @@ public class ObjectEntryFolderResourceImpl
 
 	@Reference
 	private ObjectEntryFolderService _objectEntryFolderService;
-
-	@Reference
-	private Portal _portal;
 
 	@Reference
 	private SharingConfigurationFactory _sharingConfigurationFactory;
