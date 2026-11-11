@@ -22,6 +22,10 @@ public class SearchPaginatorTag<R> extends SearchFormTag<R> {
 		return _markupView;
 	}
 
+	public int getResultEnd() {
+		return _resultEnd;
+	}
+
 	public String getType() {
 		return _type;
 	}
@@ -34,6 +38,10 @@ public class SearchPaginatorTag<R> extends SearchFormTag<R> {
 		_markupView = markupView;
 	}
 
+	public void setResultEnd(int resultEnd) {
+		_resultEnd = resultEnd;
+	}
+
 	public void setType(String type) {
 		_type = type;
 	}
@@ -44,6 +52,7 @@ public class SearchPaginatorTag<R> extends SearchFormTag<R> {
 
 		_id = null;
 		_markupView = StringPool.BLANK;
+		_resultEnd = 0;
 		_type = "regular";
 	}
 
@@ -59,11 +68,14 @@ public class SearchPaginatorTag<R> extends SearchFormTag<R> {
 		httpServletRequest.setAttribute("liferay-ui:search:id", _id);
 		httpServletRequest.setAttribute(
 			"liferay-ui:search:markupView", _markupView);
+		httpServletRequest.setAttribute(
+			"liferay-ui:search:resultEnd", String.valueOf(_resultEnd));
 		httpServletRequest.setAttribute("liferay-ui:search:type", _type);
 	}
 
 	private String _id;
 	private String _markupView = StringPool.BLANK;
+	private int _resultEnd;
 	private String _type = "regular";
 
 }
