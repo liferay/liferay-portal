@@ -320,8 +320,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 
 	@Override
 	public Address updateExternalReferenceCode(
-			Address address, String externalReferenceCode)
-		throws PortalException {
+		Address address, String externalReferenceCode) {
 
 		address.setExternalReferenceCode(externalReferenceCode);
 
