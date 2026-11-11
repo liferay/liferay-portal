@@ -7,7 +7,6 @@ package com.liferay.portal.spring.extender.internal;
 
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.concurrent.DefaultNoticeableFuture;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.hibernate.SessionFactoryImpl;
 import com.liferay.portal.dao.orm.hibernate.VerifySessionFactoryWrapper;
@@ -29,8 +28,6 @@ import com.liferay.portal.spring.transaction.DefaultTransactionExecutor;
 import com.liferay.portal.spring.transaction.TransactionExecutor;
 import com.liferay.portal.spring.transaction.TransactionManagerFactory;
 import com.liferay.portal.upgrade.release.SchemaCreator;
-
-import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -181,13 +178,7 @@ public class LiferayServiceExtender
 									new PortletHibernateConfiguration(
 										classLoader, _dataSource);
 
-							try {
-								portletHibernateConfiguration.
-									afterPropertiesSet();
-							}
-							catch (IOException ioException) {
-								ReflectionUtil.throwException(ioException);
-							}
+							portletHibernateConfiguration.afterPropertiesSet();
 
 							return (SessionFactoryImplementor)
 								portletHibernateConfiguration.getObject();

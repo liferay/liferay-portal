@@ -29,7 +29,6 @@ import jakarta.persistence.PersistenceException;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -81,7 +80,7 @@ import org.springframework.dao.support.PersistenceExceptionTranslator;
 public class PortalHibernateConfiguration
 	implements FactoryBean<SessionFactory>, PersistenceExceptionTranslator {
 
-	public void afterPropertiesSet() throws IOException {
+	public void afterPropertiesSet() {
 		Dialect dialect = DialectDetector.getDialect(_dataSource);
 
 		Properties properties = PropsUtil.getProperties();

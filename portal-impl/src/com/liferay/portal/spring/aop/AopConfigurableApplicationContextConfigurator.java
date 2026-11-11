@@ -5,7 +5,6 @@
 
 package com.liferay.portal.spring.aop;
 
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.dao.orm.hibernate.SessionFactoryImpl;
 import com.liferay.portal.dao.orm.hibernate.VerifySessionFactoryWrapper;
 import com.liferay.portal.kernel.aop.SkipAop;
@@ -158,16 +157,11 @@ public class AopConfigurableApplicationContextConfigurator
 					new PortletHibernateConfiguration(
 						_classLoader, liferayDataSource);
 
-				try {
-					portletHibernateConfiguration.afterPropertiesSet();
+				portletHibernateConfiguration.afterPropertiesSet();
 
-					liferayHibernateSessionFactory =
-						(SessionFactoryImplementor)
-							portletHibernateConfiguration.getObject();
-				}
-				catch (Exception exception) {
-					return ReflectionUtil.throwException(exception);
-				}
+				liferayHibernateSessionFactory =
+					(SessionFactoryImplementor)
+						portletHibernateConfiguration.getObject();
 
 				defaultSingletonBeanRegistry.registerDisposableBean(
 					"liferayHibernateSessionFactoryDestroyer",
