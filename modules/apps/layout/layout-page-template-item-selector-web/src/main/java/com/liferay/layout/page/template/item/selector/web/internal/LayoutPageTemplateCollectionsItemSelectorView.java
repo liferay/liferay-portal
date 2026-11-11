@@ -104,7 +104,6 @@ public class LayoutPageTemplateCollectionsItemSelectorView
 		implements ItemSelectorViewDescriptor.ItemDescriptor {
 
 		public LayoutPageTemplateCollectionItemDescriptor(
-			HttpServletRequest httpServletRequest,
 			LayoutPageTemplateCollection layoutPageTemplateCollection) {
 
 			_layoutPageTemplateCollection = layoutPageTemplateCollection;
@@ -184,7 +183,7 @@ public class LayoutPageTemplateCollectionsItemSelectorView
 			LayoutPageTemplateCollection layoutPageTemplateCollection) {
 
 			return new LayoutPageTemplateCollectionItemDescriptor(
-				_httpServletRequest, layoutPageTemplateCollection);
+				layoutPageTemplateCollection);
 		}
 
 		@Override
