@@ -19,9 +19,8 @@ import java.util.List;
 public class CustomAttributesUtil {
 
 	public static boolean hasCustomAttributes(
-			long companyId, String className, long classPK,
-			String ignoreAttributeNames)
-		throws Exception {
+		long companyId, String className, long classPK,
+		String ignoreAttributeNames) {
 
 		ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(
 			companyId, className, classPK);

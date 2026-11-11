@@ -413,7 +413,7 @@ public class CPConfigurationListDisplayContext {
 		return cpConfigurationList.getTemplateCPConfigurationEntryId();
 	}
 
-	public boolean hasCustomAttributesAvailable() throws Exception {
+	public boolean hasCustomAttributesAvailable() {
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);

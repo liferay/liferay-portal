@@ -397,8 +397,8 @@ public class CommercePriceListDisplayContext
 		return creationMenu;
 	}
 
-	public boolean hasCustomAttributesAvailable(String className, long classPK)
-		throws Exception {
+	public boolean hasCustomAttributesAvailable(
+		String className, long classPK) {
 
 		return CustomAttributesUtil.hasCustomAttributes(
 			commercePricingRequestHelper.getCompanyId(), className, classPK,
