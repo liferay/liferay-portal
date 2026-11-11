@@ -92,13 +92,6 @@ public class NPMResolverUtil {
 	 * @deprecated As of Mueller (7.2.x), with no direct replacement
 	 */
 	@Deprecated
-	public static void set(Bundle bundle, NPMResolver npmResolver) {
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x), with no direct replacement
-	 */
-	@Deprecated
 	public JSPackage getJSPackage(Bundle bundle) {
 		NPMResolver npmResolver = _getNPMResolver(bundle);
 
