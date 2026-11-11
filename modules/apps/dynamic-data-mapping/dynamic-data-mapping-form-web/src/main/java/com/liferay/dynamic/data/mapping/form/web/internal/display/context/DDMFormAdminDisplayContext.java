@@ -587,8 +587,7 @@ public class DDMFormAdminDisplayContext {
 
 	public String getDisplayStyle() {
 		if (_displayStyle == null) {
-			_displayStyle = getDisplayStyle(
-				renderRequest, _ddmFormWebConfiguration, getDisplayViews());
+			_displayStyle = getDisplayStyle(renderRequest, getDisplayViews());
 		}
 
 		return _displayStyle;
@@ -1441,9 +1440,7 @@ public class DDMFormAdminDisplayContext {
 	}
 
 	protected String getDisplayStyle(
-		PortletRequest portletRequest,
-		DDMFormWebConfiguration ddmFormWebConfiguration,
-		String[] displayViews) {
+		PortletRequest portletRequest, String[] displayViews) {
 
 		PortalPreferences portalPreferences =
 			PortletPreferencesFactoryUtil.getPortalPreferences(portletRequest);
