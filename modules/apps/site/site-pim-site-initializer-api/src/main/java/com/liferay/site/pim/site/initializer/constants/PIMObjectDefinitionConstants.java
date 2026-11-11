@@ -13,6 +13,13 @@ public class PIMObjectDefinitionConstants {
 	public static final String EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT =
 		"L_PIM_BASIC_PRODUCT";
 
+	public static final String
+		EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_ATTACHMENT =
+			"L_PIM_BASIC_PRODUCT_ATTACHMENT";
+
+	public static final String EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_IMAGE =
+		"L_PIM_BASIC_PRODUCT_IMAGE";
+
 	public static final String EXTERNAL_REFERENCE_CODE_CONNECTOR =
 		"L_PIM_CONNECTOR";
 

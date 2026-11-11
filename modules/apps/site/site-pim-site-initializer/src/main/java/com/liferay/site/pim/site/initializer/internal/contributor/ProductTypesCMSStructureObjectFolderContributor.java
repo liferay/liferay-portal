@@ -88,7 +88,16 @@ public class ProductTypesCMSStructureObjectFolderContributor
 
 		Map<String, List<String>> systemObjectFieldNamesMap = new HashMap<>();
 
-		for (String externalReferenceCode : _EXTERNAL_REFERENCE_CODES) {
+		for (String externalReferenceCode :
+				new String[] {
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_ATTACHMENT,
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT_IMAGE
+				}) {
+
 			List<String> systemObjectFieldNames = _getSystemObjectFieldNames(
 				companyId, externalReferenceCode);
 
@@ -136,11 +145,6 @@ public class ProductTypesCMSStructureObjectFolderContributor
 				return null;
 			});
 	}
-
-	private static final String[] _EXTERNAL_REFERENCE_CODES = {
-		PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_BASIC_PRODUCT,
-		"L_PIM_BASIC_PRODUCT_ATTACHMENT", "L_PIM_BASIC_PRODUCT_IMAGE"
-	};
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
