@@ -25,6 +25,11 @@ public class ProjectUsageMetric {
 		return _anonymousIndividualsCount;
 	}
 
+	@JsonProperty("billableEvents")
+	public long getBillableEventsCount() {
+		return _billableEventsCount;
+	}
+
 	public Date getCreateDate() {
 		return _createDate;
 	}
@@ -37,6 +42,11 @@ public class ProjectUsageMetric {
 	@JsonProperty("events")
 	public long getEventsCount() {
 		return _eventsCount;
+	}
+
+	@JsonProperty("experimentEvents")
+	public long getExperimentEventsCount() {
+		return _experimentEventsCount;
 	}
 
 	@JsonProperty("knownIndividuals")
@@ -73,6 +83,10 @@ public class ProjectUsageMetric {
 		_anonymousIndividualsCount = anonymousIndividualsCount;
 	}
 
+	public void setBillableEventsCount(long billableEventsCount) {
+		_billableEventsCount = billableEventsCount;
+	}
+
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
@@ -83,6 +97,10 @@ public class ProjectUsageMetric {
 
 	public void setEventsCount(long eventsCount) {
 		_eventsCount = eventsCount;
+	}
+
+	public void setExperimentEventsCount(long experimentEventsCount) {
+		_experimentEventsCount = experimentEventsCount;
 	}
 
 	public void setKnownIndividualsCount(long knownIndividualsCount) {
@@ -111,9 +129,11 @@ public class ProjectUsageMetric {
 
 	private long _activeLogicalBytes;
 	private long _anonymousIndividualsCount;
+	private long _billableEventsCount;
 	private Date _createDate;
 	private Map<String, Object> _embeddedResources = new HashMap<>();
 	private long _eventsCount;
+	private long _experimentEventsCount;
 	private long _knownIndividualsCount;
 	private long _longTermLogicalBytes;
 	private long _onDemandBytesBilled;
