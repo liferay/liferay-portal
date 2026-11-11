@@ -11,8 +11,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
-import java.sql.SQLException;
-
 /**
  * @author Brian Wing Shun Chan
  * @author Bruno Farache
@@ -88,7 +86,7 @@ public class CustomSQLUtil {
 		return _customSQLUtil._customSQL.keywords(keywordsArray, lowerCase);
 	}
 
-	public static void reloadCustomSQL() throws SQLException {
+	public static void reloadCustomSQL() {
 		_customSQLUtil._customSQL.reloadCustomSQL();
 	}
 

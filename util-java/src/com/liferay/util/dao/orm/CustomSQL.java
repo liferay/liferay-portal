@@ -36,7 +36,6 @@ import java.io.InputStream;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,7 +68,7 @@ public class CustomSQL {
 
 	public static final String MYSQL_FUNCTION_IS_NULL = "IFNULL(?, '1') = '1'";
 
-	public CustomSQL() throws SQLException {
+	public CustomSQL() {
 		reloadCustomSQL();
 	}
 
@@ -335,7 +334,7 @@ public class CustomSQL {
 		return keywordsArray;
 	}
 
-	public void reloadCustomSQL() throws SQLException {
+	public void reloadCustomSQL() {
 		String functionIsNull = PortalUtil.getCustomSQLFunctionIsNull();
 		String functionIsNotNull = PortalUtil.getCustomSQLFunctionIsNotNull();
 
