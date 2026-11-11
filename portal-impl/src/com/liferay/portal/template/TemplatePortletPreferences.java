@@ -14,8 +14,6 @@ import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portlet.PortletPreferencesImpl;
 import com.liferay.portlet.PreferencesValueUtil;
 
-import jakarta.portlet.ReadOnlyException;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -26,9 +24,7 @@ import java.util.Map;
  */
 public class TemplatePortletPreferences {
 
-	public String getPreferences(Map<String, Object> preferences)
-		throws ReadOnlyException {
-
+	public String getPreferences(Map<String, Object> preferences) {
 		StringBundler sb = new StringBundler();
 
 		sb.append("<portlet-preferences>");
@@ -79,9 +75,7 @@ public class TemplatePortletPreferences {
 		return sb.toString();
 	}
 
-	public String getPreferences(String key, String value)
-		throws ReadOnlyException {
-
+	public String getPreferences(String key, String value) {
 		return getPreferences(Collections.singletonMap(key, value));
 	}
 
