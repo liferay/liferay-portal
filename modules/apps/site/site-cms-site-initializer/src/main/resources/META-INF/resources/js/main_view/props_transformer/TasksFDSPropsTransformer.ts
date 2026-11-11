@@ -10,6 +10,7 @@ import AssignToModalContent from '../home/modal/AssignToModalContent';
 import UpdateDueDateModalContent from '../home/modal/UpdateDueDateModalContent';
 import {tasksFDSAtom} from '../tasks/atoms';
 import AuthorRenderer from './cell_renderers/AuthorRenderer';
+import DueDateRenderer from './cell_renderers/DueDateRenderer';
 import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer';
 import WorkflowStateRenderer from './cell_renderers/WorkflowStateRenderer';
 
@@ -36,6 +37,11 @@ export default function TasksFDSPropsTransformer({
 							requiresUpdatePermission: false,
 						}),
 					name: 'simpleActionLinkTableCellRenderer',
+					type: 'internal',
+				} as IInternalRenderer,
+				{
+					component: DueDateRenderer,
+					name: 'dueDateTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 				{

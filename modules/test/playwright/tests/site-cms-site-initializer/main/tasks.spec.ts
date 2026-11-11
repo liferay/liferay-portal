@@ -265,6 +265,12 @@ test(
 			await expect(overdueRow).toContainText(/\d{1,2}:\d{2}/);
 		});
 
+		await test.step('Show a dash for tasks without due date', async () => {
+			await expect(
+				pendingRow.getByRole('cell', {exact: true, name: '--'})
+			).toBeVisible();
+		});
+
 		await test.step('Filter by the Pending card', async () => {
 			await getQuickFilterButton(page, 'Pending').click();
 

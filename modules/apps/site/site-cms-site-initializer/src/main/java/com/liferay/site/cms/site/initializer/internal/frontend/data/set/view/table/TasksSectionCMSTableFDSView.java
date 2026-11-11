@@ -5,7 +5,9 @@
 
 package com.liferay.site.cms.site.initializer.internal.frontend.data.set.view.table;
 
+import com.liferay.frontend.data.set.constants.FDSTimeZoneBehaviorConstants;
 import com.liferay.frontend.data.set.view.FDSView;
+import com.liferay.frontend.data.set.view.table.BaseDateFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
@@ -46,11 +48,7 @@ public class TasksSectionCMSTableFDSView extends BaseCMSTableFDSView {
 		).add(
 			"embedded.label", "task"
 		).add(
-			addDateFDSTableSchemaField(
-				"embedded.dateDue", "due-date"
-			).setSortable(
-				false
-			)
+			_getDueDateFDSTableSchemaField()
 		).add(
 			"completed", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
@@ -62,5 +60,25 @@ public class TasksSectionCMSTableFDSView extends BaseCMSTableFDSView {
 
 	@Reference
 	protected FDSTableSchemaBuilderFactory fdsTableSchemaBuilderFactory;
+
+	private BaseDateFDSTableSchemaField _getDueDateFDSTableSchemaField() {
+		BaseDateFDSTableSchemaField baseDateFDSTableSchemaField =
+			new BaseDateFDSTableSchemaField();
+
+		baseDateFDSTableSchemaField.setContentRenderer(
+			"dueDateTableCellRenderer"
+		).setFieldName(
+			"embedded.dateDue"
+		).setLabel(
+			"due-date"
+		).setLocalizeLabel(
+			true
+		);
+
+		baseDateFDSTableSchemaField.setTimeZoneBehavior(
+			FDSTimeZoneBehaviorConstants.APPLY_THEME_DISPLAY_TIME_ZONE);
+
+		return baseDateFDSTableSchemaField;
+	}
 
 }
