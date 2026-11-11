@@ -52,13 +52,13 @@ import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 public class DBInitUtil {
 
 	public static void init() throws Exception {
-		DataSource dataSource = null;
-		boolean readWriteDataSource = false;
-
 		Properties readDataSourceProperties = PropsUtil.getProperties(
 			"jdbc.read.", true);
 		Properties writeDataSourceProperties = PropsUtil.getProperties(
 			"jdbc.write.", true);
+
+		DataSource dataSource = null;
+		boolean readWriteDataSource = false;
 
 		if (!readDataSourceProperties.isEmpty() &&
 			!writeDataSourceProperties.isEmpty()) {
