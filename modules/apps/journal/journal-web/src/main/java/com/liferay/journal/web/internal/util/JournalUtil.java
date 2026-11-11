@@ -372,7 +372,7 @@ public class JournalUtil {
 	}
 
 	public static boolean isSubscribedToStructure(
-		long companyId, long groupId, long userId, long ddmStructureId) {
+		long companyId, long userId, long ddmStructureId) {
 
 		return SubscriptionLocalServiceUtil.isSubscribed(
 			companyId, userId, DDMStructure.class.getName(), ddmStructureId);

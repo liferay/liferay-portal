@@ -31,7 +31,7 @@ String unsubscribeActionName = StringPool.BLANK;
 		boolean unsubscribable = true;
 
 		if (ddmStructureId > 0) {
-			subscribed = JournalUtil.isSubscribedToStructure(themeDisplay.getCompanyId(), scopeGroupId, user.getUserId(), ddmStructureId);
+			subscribed = JournalUtil.isSubscribedToStructure(themeDisplay.getCompanyId(), user.getUserId(), ddmStructureId);
 
 			subscribeActionName = "/journal/subscribe_ddm_structure";
 			unsubscribeActionName = "/journal/unsubscribe_ddm_structure";
