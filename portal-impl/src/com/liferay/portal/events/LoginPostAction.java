@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
 import com.liferay.portal.kernel.cluster.ClusterNode;
 import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -140,9 +139,8 @@ public class LoginPostAction extends Action {
 	}
 
 	private void _setPasswordExpirationMessage(
-			HttpServletRequest httpServletRequest,
-			PasswordPolicy passwordPolicy, User user)
-		throws PortalException {
+		HttpServletRequest httpServletRequest, PasswordPolicy passwordPolicy,
+		User user) {
 
 		Date date = new Date();
 
