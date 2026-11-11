@@ -212,11 +212,11 @@ public class Table {
 		return _columns;
 	}
 
-	public String getCreateSQL() throws Exception {
+	public String getCreateSQL() {
 		return _createSQL;
 	}
 
-	public String getDeleteSQL() throws Exception {
+	public String getDeleteSQL() {
 		return "DELETE FROM " + _tableName;
 	}
 
@@ -240,7 +240,7 @@ public class Table {
 		return sb.toString();
 	}
 
-	public String getInsertSQL() throws Exception {
+	public String getInsertSQL() {
 		String sql = "INSERT INTO " + getInsertTableName() + " (";
 
 		for (int i = 0; i < _order.length; i++) {
@@ -270,7 +270,7 @@ public class Table {
 		return sql;
 	}
 
-	public String getInsertTableName() throws Exception {
+	public String getInsertTableName() {
 		String createSQL = getCreateSQL();
 
 		if (Validator.isNotNull(createSQL)) {
@@ -302,7 +302,7 @@ public class Table {
 		return connection.prepareStatement(getSelectSQL());
 	}
 
-	public String getSelectSQL() throws Exception {
+	public String getSelectSQL() {
 		if (_selectSQL == null) {
 			/*String sql = "select ";
 
@@ -659,7 +659,7 @@ public class Table {
 		_createSQL = createSQL;
 	}
 
-	public void setSelectSQL(String selectSQL) throws Exception {
+	public void setSelectSQL(String selectSQL) {
 		_selectSQL = selectSQL;
 	}
 
