@@ -41,7 +41,11 @@ function Header({
 	searchTerm,
 }: HeaderProps) {
 	useEffect(() => {
-		inputRef.current?.focus({preventScroll: true});
+		const timeoutId = setTimeout(() =>
+			inputRef.current?.focus({preventScroll: true})
+		);
+
+		return () => clearTimeout(timeoutId);
 	}, []);
 
 	return (
