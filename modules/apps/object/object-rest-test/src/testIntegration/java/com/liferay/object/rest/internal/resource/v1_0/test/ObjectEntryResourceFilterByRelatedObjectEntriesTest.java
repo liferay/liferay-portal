@@ -1927,7 +1927,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2,
 			String.format(
 				"%s/id le '%s' or %s/id gt '%s'", objectRelationship.getName(),
-				OBJECT_FIELD_VALUE_1, objectRelationship.getName(),
+				objectEntry1.getObjectEntryId(), objectRelationship.getName(),
 				objectEntry1.getObjectEntryId() - 1),
 			getObjectDefinition2());
 		assertFilterString(
@@ -1950,7 +1950,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/id le '%s' or %s/id gt '%s'", objectRelationship.getName(),
-				OBJECT_FIELD_VALUE_2, objectRelationship.getName(),
+				objectEntry2.getObjectEntryId(), objectRelationship.getName(),
 				objectEntry2.getObjectEntryId() - 1),
 			getObjectDefinition1());
 		assertFilterString(
