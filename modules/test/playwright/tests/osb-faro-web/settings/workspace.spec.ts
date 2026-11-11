@@ -10,6 +10,7 @@ import {loginAnalyticsCloudTest} from '../../../fixtures/loginAnalyticsCloudTest
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {faroConfig} from '../main/faro.config';
 import {getDefaultProject} from '../main/utils/project';
 
@@ -176,7 +177,7 @@ test(
 			).toBeVisible();
 
 			await clickAndExpectToBeVisible({
-				target: page.getByText('Welcome to Analytics Cloud'),
+				target: page.getByText('Welcome to Liferay Data Platform'),
 				trigger: page.getByRole('link', {name: projectName}),
 			});
 
@@ -190,11 +191,7 @@ test(
 
 			await page.getByRole('button', {name: 'Next'}).click();
 
-			await clickAndExpectToBeVisible({
-				autoClick: true,
-				target: dialog.getByRole('button', {name: 'Skip'}),
-				trigger: dialog.getByRole('button', {name: 'Next'}),
-			});
+			await waitForAlert(page, 'Workspace Settings Saved');
 
 			// The friendly URL resolves to the workspace once the saved friendly
 			// URL has propagated
@@ -204,7 +201,10 @@ test(
 			);
 
 			await expect(
-				page.locator('span').filter({hasText: 'Workspace Settings'})
+				page.getByRole('heading', {
+					level: 3,
+					name: 'Workspace Settings',
+				})
 			).toBeVisible();
 		}
 		finally {
