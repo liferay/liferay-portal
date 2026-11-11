@@ -43,7 +43,6 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
@@ -343,18 +342,11 @@ public class PageTemplateResourceImpl
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
+				getLayoutPageTemplateEntryByExternalReferenceCode(
 					pageTemplateExternalReferenceCode,
 					GroupUtil.getGroupId(
 						true, true, contextCompany.getCompanyId(),
 						siteExternalReferenceCode));
-
-		if (layoutPageTemplateEntry == null) {
-			throw new NotFoundException(
-				StringBundler.concat(
-					"No page template exists with the external reference code ",
-					"\"", pageTemplateExternalReferenceCode, "\""));
-		}
 
 		if (!Objects.equals(
 				LayoutPageTemplateEntryTypeConstants.BASIC,
@@ -505,16 +497,9 @@ public class PageTemplateResourceImpl
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
+				getLayoutPageTemplateEntryByExternalReferenceCode(
 					externalReferenceCode,
 					getPermissionCheckerGroupId(groupExternalReferenceCode));
-
-		if (layoutPageTemplateEntry == null) {
-			throw new NotFoundException(
-				StringBundler.concat(
-					"No page template exists with the external reference code ",
-					"\"", externalReferenceCode, "\""));
-		}
 
 		return layoutPageTemplateEntry.getPrimaryKey();
 	}

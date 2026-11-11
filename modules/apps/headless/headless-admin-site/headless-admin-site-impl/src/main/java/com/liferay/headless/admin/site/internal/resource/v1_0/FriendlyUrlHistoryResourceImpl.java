@@ -23,7 +23,6 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryService;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -37,7 +36,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
 
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.osgi.service.component.annotations.Component;
@@ -67,17 +65,9 @@ public class FriendlyUrlHistoryResourceImpl
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
+				getLayoutPageTemplateEntryByExternalReferenceCode(
 					displayPageTemplateExternalReferenceCode,
 					_getGroupId(siteExternalReferenceCode));
-
-		if (layoutPageTemplateEntry == null) {
-			throw new NotFoundException(
-				StringBundler.concat(
-					"No display page template exists with the external ",
-					"reference code \"",
-					displayPageTemplateExternalReferenceCode, "\""));
-		}
 
 		if (layoutPageTemplateEntry.getType() !=
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE) {
@@ -135,18 +125,11 @@ public class FriendlyUrlHistoryResourceImpl
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
 			_layoutUtilityPageEntryService.
-				fetchLayoutUtilityPageEntryByExternalReferenceCode(
+				getLayoutUtilityPageEntryByExternalReferenceCode(
 					utilityPageExternalReferenceCode,
 					GroupUtil.getGroupId(
 						true, contextCompany.getCompanyId(),
 						siteExternalReferenceCode));
-
-		if (layoutUtilityPageEntry == null) {
-			throw new NotFoundException(
-				StringBundler.concat(
-					"No utility page exists with the external reference code ",
-					"\"", utilityPageExternalReferenceCode, "\""));
-		}
 
 		return _toFriendlyUrlHistory(
 			_layoutLocalService.getLayout(layoutUtilityPageEntry.getPlid()));

@@ -33,7 +33,6 @@ import com.liferay.layout.page.template.exception.RequiredLayoutPageTemplateEntr
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.petra.function.UnsafeFunction;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -459,8 +458,7 @@ public class MasterPageResourceImpl
 			return _addMasterPage(groupId, masterPage);
 		}
 
-		_validateMasterPage(
-			masterPageExternalReferenceCode, layoutPageTemplateEntry);
+		_validateMasterPage(layoutPageTemplateEntry);
 
 		ServiceContext serviceContext = _getServiceContext(groupId, masterPage);
 
@@ -675,10 +673,10 @@ public class MasterPageResourceImpl
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
+				getLayoutPageTemplateEntryByExternalReferenceCode(
 					externalReferenceCode, groupId);
 
-		_validateMasterPage(externalReferenceCode, layoutPageTemplateEntry);
+		_validateMasterPage(layoutPageTemplateEntry);
 
 		return layoutPageTemplateEntry;
 	}
@@ -781,15 +779,7 @@ public class MasterPageResourceImpl
 	}
 
 	private void _validateMasterPage(
-		String externalReferenceCode,
 		LayoutPageTemplateEntry layoutPageTemplateEntry) {
-
-		if (layoutPageTemplateEntry == null) {
-			throw new NotFoundException(
-				StringBundler.concat(
-					"No master page exists with the external reference code \"",
-					externalReferenceCode, "\""));
-		}
 
 		if (!Objects.equals(
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
