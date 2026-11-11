@@ -25,6 +25,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.net.URLDecoder;
 
+import java.nio.charset.StandardCharsets;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -143,9 +145,7 @@ public class DynamicCSSUtil {
 		return sb.toString();
 	}
 
-	private static Theme _getTheme(HttpServletRequest httpServletRequest)
-		throws Exception {
-
+	private static Theme _getTheme(HttpServletRequest httpServletRequest) {
 		long companyId = PortalUtil.getCompanyId(httpServletRequest);
 
 		String themeId = ParamUtil.getString(httpServletRequest, "themeId");
@@ -160,7 +160,7 @@ public class DynamicCSSUtil {
 		}
 
 		String requestURI = URLDecoder.decode(
-			httpServletRequest.getRequestURI(), StringPool.UTF8);
+			httpServletRequest.getRequestURI(), StandardCharsets.UTF_8);
 
 		Matcher portalThemeMatcher = _portalThemePattern.matcher(requestURI);
 
