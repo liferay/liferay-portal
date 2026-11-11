@@ -75,9 +75,8 @@ public class ExportImportConfigurationUtil {
 	}
 
 	public static String[] getExportImportConfigurationParameter(
-			ExportImportConfiguration exportImportConfiguration,
-			String parameterName)
-		throws PortalException {
+		ExportImportConfiguration exportImportConfiguration,
+		String parameterName) {
 
 		Map<String, Serializable> settingsMap =
 			exportImportConfiguration.getSettingsMap();
