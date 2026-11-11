@@ -455,6 +455,24 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION;
 		}
 
+		if (FeatureFlagManagerUtil.isEnabled(
+				user.getCompanyId(), "LPD-82960")) {
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				UnicodePropertiesBuilder.create(
+					true
+				).fastLoad(
+					typeSettings
+				).build();
+
+			if (GetterUtil.getBoolean(
+					typeSettingsUnicodeProperties.getProperty(
+						GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE))) {
+
+				active = false;
+			}
+		}
+
 		if (className.equals(Group.class.getName())) {
 			if (!site && (liveGroupId == 0) &&
 				!(StringUtil.startsWith(groupKey, GroupConstants.APP) ||
