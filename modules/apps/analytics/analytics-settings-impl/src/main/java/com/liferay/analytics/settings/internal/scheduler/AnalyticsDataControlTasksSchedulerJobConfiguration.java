@@ -8,18 +8,25 @@ package com.liferay.analytics.settings.internal.scheduler;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.configuration.AnalyticsConfigurationRegistry;
 import com.liferay.analytics.settings.data.control.tasks.UsersDataControlTasks;
-import com.liferay.analytics.settings.internal.client.AnalyticsCloudClient;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
+
+import java.net.HttpURLConnection;
 
 import java.util.Map;
 import java.util.Set;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -52,7 +59,7 @@ public class AnalyticsDataControlTasksSchedulerJobConfiguration
 
 				_usersDataControlTasks.clean(entry.getKey());
 
-				_analyticsCloudClient.createDataControlTasks(
+				_createDataControlTasks(
 					entry.getValue(), entry.getKey(), emailAddresses,
 					SetUtil.fromArray(new String[] {"DELETE", "SUPPRESS"}));
 			}
@@ -65,12 +72,62 @@ public class AnalyticsDataControlTasksSchedulerJobConfiguration
 			1, TimeUnit.MINUTE);
 	}
 
-	@Activate
-	protected void activate() {
-		_analyticsCloudClient = new AnalyticsCloudClient(_http);
+	private void _createDataControlTasks(
+			AnalyticsConfiguration analyticsConfiguration, long companyId,
+			Set<String> emailAddresses, Set<String> types)
+		throws Exception {
+
+		Http.Options options = _getOptions(analyticsConfiguration, companyId);
+
+		options.addHeader("Content-Type", ContentTypes.APPLICATION_JSON);
+		options.setBody(
+			JSONUtil.put(
+				"emailAddresses", emailAddresses
+			).put(
+				"types", types
+			).toString(),
+			ContentTypes.APPLICATION_JSON, StringPool.UTF8);
+		options.setLocation(
+			analyticsConfiguration.liferayAnalyticsFaroBackendURL() +
+				"/api/1.0/data-control-tasks");
+		options.setPost(true);
+
+		_http.URLtoString(options);
+
+		Http.Response response = options.getResponse();
+
+		if (response.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT) {
+			return;
+		}
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("Response code " + response.getResponseCode());
+		}
+
+		throw new PortalException("Unable to add data control tasks");
 	}
 
-	private AnalyticsCloudClient _analyticsCloudClient;
+	private Http.Options _getOptions(
+			AnalyticsConfiguration analyticsConfiguration, long companyId)
+		throws Exception {
+
+		Http.Options options = new Http.Options();
+
+		options.addHeader(
+			"OSB-Asah-Faro-Backend-Security-Signature",
+			SecretResolverUtil.resolve(
+				companyId,
+				analyticsConfiguration.
+					liferayAnalyticsFaroBackendSecuritySignature()));
+		options.addHeader(
+			"OSB-Asah-Project-ID",
+			analyticsConfiguration.liferayAnalyticsProjectId());
+
+		return options;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AnalyticsDataControlTasksSchedulerJobConfiguration.class);
 
 	@Reference
 	private AnalyticsConfigurationRegistry _analyticsConfigurationRegistry;
