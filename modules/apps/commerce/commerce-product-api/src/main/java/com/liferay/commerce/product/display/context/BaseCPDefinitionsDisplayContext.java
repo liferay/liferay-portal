@@ -17,8 +17,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -44,9 +42,6 @@ public abstract class BaseCPDefinitionsDisplayContext {
 
 		this.actionHelper = actionHelper;
 		this.httpServletRequest = httpServletRequest;
-
-		portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			this.httpServletRequest);
 
 		cpRequestHelper = new CPRequestHelper(httpServletRequest);
 
@@ -200,7 +195,6 @@ public abstract class BaseCPDefinitionsDisplayContext {
 	protected final HttpServletRequest httpServletRequest;
 	protected final LiferayPortletRequest liferayPortletRequest;
 	protected final LiferayPortletResponse liferayPortletResponse;
-	protected final PortalPreferences portalPreferences;
 
 	private CommerceCatalog _commerceCatalog;
 	private CPDefinition _cpDefinition;
