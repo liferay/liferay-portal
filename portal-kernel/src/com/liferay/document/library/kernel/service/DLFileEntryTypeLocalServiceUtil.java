@@ -373,10 +373,7 @@ public class DLFileEntryTypeLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static DLFileEntryType getBasicDocumentDLFileEntryType()
-		throws com.liferay.document.library.kernel.exception.
-			NoSuchFileEntryTypeException {
-
+	public static DLFileEntryType getBasicDocumentDLFileEntryType() {
 		return getService().getBasicDocumentDLFileEntryType();
 	}
 
@@ -680,4 +677,4 @@ public class DLFileEntryTypeLocalServiceUtil {
 	private static volatile DLFileEntryTypeLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1543139688
+// LIFERAY-SERVICE-BUILDER-HASH:-1211123406

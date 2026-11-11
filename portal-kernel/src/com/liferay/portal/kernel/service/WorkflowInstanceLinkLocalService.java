@@ -145,8 +145,7 @@ public interface WorkflowInstanceLinkLocalService
 		throws PortalException;
 
 	public void deleteWorkflowInstanceLinkByWorkflowInstanceId(
-			long workflowInstanceId)
-		throws PortalException;
+		long workflowInstanceId);
 
 	public void deleteWorkflowInstanceLinks(
 			long companyId, long groupId, String className, long classPK)
@@ -361,4 +360,4 @@ public interface WorkflowInstanceLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1383708270
+// LIFERAY-SERVICE-BUILDER-HASH:1046929510

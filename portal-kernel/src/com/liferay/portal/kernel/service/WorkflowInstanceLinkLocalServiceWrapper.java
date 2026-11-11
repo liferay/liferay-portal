@@ -148,8 +148,7 @@ public class WorkflowInstanceLinkLocalServiceWrapper
 
 	@Override
 	public void deleteWorkflowInstanceLinkByWorkflowInstanceId(
-			long workflowInstanceId)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		long workflowInstanceId) {
 
 		_workflowInstanceLinkLocalService.
 			deleteWorkflowInstanceLinkByWorkflowInstanceId(workflowInstanceId);
@@ -510,4 +509,4 @@ public class WorkflowInstanceLinkLocalServiceWrapper
 	private WorkflowInstanceLinkLocalService _workflowInstanceLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:867788264
+// LIFERAY-SERVICE-BUILDER-HASH:921561046

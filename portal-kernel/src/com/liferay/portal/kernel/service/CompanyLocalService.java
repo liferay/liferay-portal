@@ -351,7 +351,7 @@ public interface CompanyLocalService
 	 * @throws Exception if a user with the primary key could not be found
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public long getCompanyIdByUserId(long userId) throws Exception;
+	public long getCompanyIdByUserId(long userId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -579,4 +579,4 @@ public interface CompanyLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1560764492
+// LIFERAY-SERVICE-BUILDER-HASH:-1012762733

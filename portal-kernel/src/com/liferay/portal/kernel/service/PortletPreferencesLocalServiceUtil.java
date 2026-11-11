@@ -352,8 +352,7 @@ public class PortletPreferencesLocalServiceUtil {
 	}
 
 	public static List<PortletPreferences> getPortletPreferences(
-			long companyId, long ownerId, int ownerType, String portletId)
-		throws PortalException {
+		long companyId, long ownerId, int ownerType, String portletId) {
 
 		return getService().getPortletPreferences(
 			companyId, ownerId, ownerType, portletId);
@@ -542,4 +541,4 @@ public class PortletPreferencesLocalServiceUtil {
 	private static volatile PortletPreferencesLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:793609999
+// LIFERAY-SERVICE-BUILDER-HASH:622263229

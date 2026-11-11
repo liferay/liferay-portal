@@ -1443,8 +1443,7 @@ public interface UserLocalService
 		OrderByComparator<User> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<User> getUsersByRoleId(long roleId, int start, int end)
-		throws PortalException;
+	public List<User> getUsersByRoleId(long roleId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<User> getUsersByRoleName(
@@ -2088,8 +2087,7 @@ public interface UserLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public User updateExternalReferenceCode(
-			User user, String externalReferenceCode)
-		throws PortalException;
+		User user, String externalReferenceCode);
 
 	/**
 	 * Sets the groups the user is in, removing and adding groups as necessary.
@@ -2184,8 +2182,7 @@ public interface UserLocalService
 		type = IndexableType.REINDEX
 	)
 	@Transactional(enabled = false)
-	public User updateLastLogin(User user, String loginIP)
-		throws PortalException;
+	public User updateLastLogin(User user, String loginIP);
 
 	/**
 	 * Updates whether the user is locked out from logging in.
@@ -2473,4 +2470,4 @@ public interface UserLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:852625057
+// LIFERAY-SERVICE-BUILDER-HASH:-1367805923

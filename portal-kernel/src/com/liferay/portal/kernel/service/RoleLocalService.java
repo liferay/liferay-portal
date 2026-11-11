@@ -610,8 +610,7 @@ public interface RoleLocalService
 	 * @return the team roles in the company
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Role> getTeamsRoles(long companyId, long[] teamIds)
-		throws PortalException;
+	public List<Role> getTeamsRoles(long companyId, long[] teamIds);
 
 	/**
 	 * Returns all the roles of the type.
@@ -995,8 +994,7 @@ public interface RoleLocalService
 		throws PortalException;
 
 	public Role updateExternalReferenceCode(
-			Role role, String externalReferenceCode)
-		throws PortalException;
+		Role role, String externalReferenceCode);
 
 	/**
 	 * Updates the role in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -1050,4 +1048,4 @@ public interface RoleLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:523811624
+// LIFERAY-SERVICE-BUILDER-HASH:2075590016

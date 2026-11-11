@@ -601,8 +601,7 @@ public interface DLFolderLocalService
 		configuration = "DLFolderEntry",
 		incrementClass = DateOverrideIncrement.class
 	)
-	public void updateLastPostDate(long folderId, Date lastPostDate)
-		throws PortalException;
+	public void updateLastPostDate(long folderId, Date lastPostDate);
 
 	public DLFolder updateStatus(
 			long userId, long folderId, int status,
@@ -628,4 +627,4 @@ public interface DLFolderLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-32862767
+// LIFERAY-SERVICE-BUILDER-HASH:1503105149

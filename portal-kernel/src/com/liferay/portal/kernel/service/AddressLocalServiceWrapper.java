@@ -467,8 +467,7 @@ public class AddressLocalServiceWrapper
 
 	@Override
 	public Address updateExternalReferenceCode(
-			Address address, String externalReferenceCode)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		Address address, String externalReferenceCode) {
 
 		return _addressLocalService.updateExternalReferenceCode(
 			address, externalReferenceCode);
@@ -520,4 +519,4 @@ public class AddressLocalServiceWrapper
 	private AddressLocalService _addressLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1502267961
+// LIFERAY-SERVICE-BUILDER-HASH:-1891909941

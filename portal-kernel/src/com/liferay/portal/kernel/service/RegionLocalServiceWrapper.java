@@ -398,9 +398,7 @@ public class RegionLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<Region> getRegions(long countryId, boolean active)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public java.util.List<Region> getRegions(long countryId, boolean active) {
 		return _regionLocalService.getRegions(countryId, active);
 	}
 
@@ -535,4 +533,4 @@ public class RegionLocalServiceWrapper
 	private RegionLocalService _regionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:872997732
+// LIFERAY-SERVICE-BUILDER-HASH:-853251914

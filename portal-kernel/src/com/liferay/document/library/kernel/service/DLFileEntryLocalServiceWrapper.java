@@ -924,9 +924,7 @@ public class DLFileEntryLocalServiceWrapper
 	}
 
 	@Override
-	public void setTreePaths(long folderId, String treePath, boolean reindex)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public void setTreePaths(long folderId, String treePath, boolean reindex) {
 		_dlFileEntryLocalService.setTreePaths(folderId, treePath, reindex);
 	}
 
@@ -1076,4 +1074,4 @@ public class DLFileEntryLocalServiceWrapper
 	private DLFileEntryLocalService _dlFileEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:299562544
+// LIFERAY-SERVICE-BUILDER-HASH:-1526703038

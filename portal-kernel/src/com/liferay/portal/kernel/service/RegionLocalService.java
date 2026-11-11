@@ -319,8 +319,7 @@ public interface RegionLocalService
 	public List<Region> getRegions(int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Region> getRegions(long countryId, boolean active)
-		throws PortalException;
+	public List<Region> getRegions(long countryId, boolean active);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Region> getRegions(
@@ -392,4 +391,4 @@ public interface RegionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:327344305
+// LIFERAY-SERVICE-BUILDER-HASH:1744864861

@@ -814,8 +814,7 @@ public class DLFileEntryLocalServiceUtil {
 	}
 
 	public static void setTreePaths(
-			long folderId, String treePath, boolean reindex)
-		throws PortalException {
+		long folderId, String treePath, boolean reindex) {
 
 		getService().setTreePaths(folderId, treePath, reindex);
 	}
@@ -926,4 +925,4 @@ public class DLFileEntryLocalServiceUtil {
 	private static volatile DLFileEntryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1618013346
+// LIFERAY-SERVICE-BUILDER-HASH:-1808553200

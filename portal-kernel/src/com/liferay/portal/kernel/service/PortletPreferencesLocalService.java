@@ -302,8 +302,7 @@ public interface PortletPreferencesLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PortletPreferences> getPortletPreferences(
-			long companyId, long ownerId, int ownerType, String portletId)
-		throws PortalException;
+		long companyId, long ownerId, int ownerType, String portletId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PortletPreferences> getPortletPreferences(
@@ -460,4 +459,4 @@ public interface PortletPreferencesLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1178138459
+// LIFERAY-SERVICE-BUILDER-HASH:-1901909753

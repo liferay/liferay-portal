@@ -138,8 +138,7 @@ public class WorkflowInstanceLinkLocalServiceUtil {
 	}
 
 	public static void deleteWorkflowInstanceLinkByWorkflowInstanceId(
-			long workflowInstanceId)
-		throws PortalException {
+		long workflowInstanceId) {
 
 		getService().deleteWorkflowInstanceLinkByWorkflowInstanceId(
 			workflowInstanceId);
@@ -420,4 +419,4 @@ public class WorkflowInstanceLinkLocalServiceUtil {
 	private static volatile WorkflowInstanceLinkLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2115204500
+// LIFERAY-SERVICE-BUILDER-HASH:1698515198

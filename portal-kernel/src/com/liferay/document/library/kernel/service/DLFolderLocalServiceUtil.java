@@ -794,8 +794,7 @@ public class DLFolderLocalServiceUtil {
 	}
 
 	public static void updateLastPostDate(
-			long folderId, java.util.Date lastPostDate)
-		throws PortalException {
+		long folderId, java.util.Date lastPostDate) {
 
 		getService().updateLastPostDate(folderId, lastPostDate);
 	}
@@ -827,4 +826,4 @@ public class DLFolderLocalServiceUtil {
 	private static volatile DLFolderLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1306778429
+// LIFERAY-SERVICE-BUILDER-HASH:367725483

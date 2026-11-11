@@ -607,8 +607,7 @@ public interface DLFileEntryLocalService
 			String[] mimeTypes, int status, int start, int end)
 		throws PortalException;
 
-	public void setTreePaths(long folderId, String treePath, boolean reindex)
-		throws PortalException;
+	public void setTreePaths(long folderId, String treePath, boolean reindex);
 
 	public void unlockFileEntry(long fileEntryId);
 
@@ -678,4 +677,4 @@ public interface DLFileEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-398306605
+// LIFERAY-SERVICE-BUILDER-HASH:-1498606681

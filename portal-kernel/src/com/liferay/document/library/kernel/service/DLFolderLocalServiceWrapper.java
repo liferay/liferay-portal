@@ -918,9 +918,7 @@ public class DLFolderLocalServiceWrapper
 	}
 
 	@Override
-	public void updateLastPostDate(long folderId, java.util.Date lastPostDate)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public void updateLastPostDate(long folderId, java.util.Date lastPostDate) {
 		_dlFolderLocalService.updateLastPostDate(folderId, lastPostDate);
 	}
 
@@ -979,4 +977,4 @@ public class DLFolderLocalServiceWrapper
 	private DLFolderLocalService _dlFolderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1813033381
+// LIFERAY-SERVICE-BUILDER-HASH:2101285357

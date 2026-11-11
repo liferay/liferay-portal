@@ -383,8 +383,7 @@ public interface GroupLocalService
 	 * @throws PortalException if a portal exception occurred
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Group fetchUserPersonalSiteGroup(long companyId)
-		throws PortalException;
+	public Group fetchUserPersonalSiteGroup(long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -1055,8 +1054,7 @@ public interface GroupLocalService
 	 * @throws PortalException if a portal exception occurred
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Group> getUserGroupsGroups(List<UserGroup> userGroups)
-		throws PortalException;
+	public List<Group> getUserGroupsGroups(List<UserGroup> userGroups);
 
 	/**
 	 * Returns all the groups related to the user groups.
@@ -2112,4 +2110,4 @@ public interface GroupLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:348231825
+// LIFERAY-SERVICE-BUILDER-HASH:1821390865

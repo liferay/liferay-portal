@@ -406,8 +406,7 @@ public class PortletPreferencesLocalServiceWrapper
 
 	@Override
 	public java.util.List<PortletPreferences> getPortletPreferences(
-			long companyId, long ownerId, int ownerType, String portletId)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		long companyId, long ownerId, int ownerType, String portletId) {
 
 		return _portletPreferencesLocalService.getPortletPreferences(
 			companyId, ownerId, ownerType, portletId);
@@ -654,4 +653,4 @@ public class PortletPreferencesLocalServiceWrapper
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:925825021
+// LIFERAY-SERVICE-BUILDER-HASH:-98663473

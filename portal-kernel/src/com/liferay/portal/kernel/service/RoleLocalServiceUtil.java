@@ -735,9 +735,7 @@ public class RoleLocalServiceUtil {
 	 * @param teamIds the primary keys of the teams
 	 * @return the team roles in the company
 	 */
-	public static List<Role> getTeamsRoles(long companyId, long[] teamIds)
-		throws PortalException {
-
+	public static List<Role> getTeamsRoles(long companyId, long[] teamIds) {
 		return getService().getTeamsRoles(companyId, teamIds);
 	}
 
@@ -1185,8 +1183,7 @@ public class RoleLocalServiceUtil {
 	}
 
 	public static Role updateExternalReferenceCode(
-			Role role, String externalReferenceCode)
-		throws PortalException {
+		Role role, String externalReferenceCode) {
 
 		return getService().updateExternalReferenceCode(
 			role, externalReferenceCode);
@@ -1248,4 +1245,4 @@ public class RoleLocalServiceUtil {
 	private static volatile RoleLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-74004397
+// LIFERAY-SERVICE-BUILDER-HASH:309412691

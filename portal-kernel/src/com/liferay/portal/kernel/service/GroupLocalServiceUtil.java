@@ -512,9 +512,7 @@ public class GroupLocalServiceUtil {
 	 matching group could not be found
 	 * @throws PortalException if a portal exception occurred
 	 */
-	public static Group fetchUserPersonalSiteGroup(long companyId)
-		throws PortalException {
-
+	public static Group fetchUserPersonalSiteGroup(long companyId) {
 		return getService().fetchUserPersonalSiteGroup(companyId);
 	}
 
@@ -1330,8 +1328,7 @@ public class GroupLocalServiceUtil {
 	 * @throws PortalException if a portal exception occurred
 	 */
 	public static List<Group> getUserGroupsGroups(
-			List<com.liferay.portal.kernel.model.UserGroup> userGroups)
-		throws PortalException {
+		List<com.liferay.portal.kernel.model.UserGroup> userGroups) {
 
 		return getService().getUserGroupsGroups(userGroups);
 	}
@@ -2538,4 +2535,4 @@ public class GroupLocalServiceUtil {
 	private static volatile GroupLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:146366545
+// LIFERAY-SERVICE-BUILDER-HASH:-384579219

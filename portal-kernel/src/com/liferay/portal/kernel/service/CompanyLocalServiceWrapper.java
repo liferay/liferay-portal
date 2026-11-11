@@ -460,7 +460,7 @@ public class CompanyLocalServiceWrapper
 	 * @throws Exception if a user with the primary key could not be found
 	 */
 	@Override
-	public long getCompanyIdByUserId(long userId) throws Exception {
+	public long getCompanyIdByUserId(long userId) {
 		return _companyLocalService.getCompanyIdByUserId(userId);
 	}
 
@@ -795,4 +795,4 @@ public class CompanyLocalServiceWrapper
 	private CompanyLocalService _companyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2051222514
+// LIFERAY-SERVICE-BUILDER-HASH:-1467924909

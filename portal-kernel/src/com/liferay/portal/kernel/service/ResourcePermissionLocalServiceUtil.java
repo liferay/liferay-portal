@@ -206,8 +206,7 @@ public class ResourcePermissionLocalServiceUtil {
 	}
 
 	public static void copyModelResourcePermissions(
-			long companyId, String name, long sourcePrimKey, long targetPrimKey)
-		throws PortalException {
+		long companyId, String name, long sourcePrimKey, long targetPrimKey) {
 
 		getService().copyModelResourcePermissions(
 			companyId, name, sourcePrimKey, targetPrimKey);
@@ -280,8 +279,7 @@ public class ResourcePermissionLocalServiceUtil {
 	}
 
 	public static void deleteResourcePermissions(
-			long companyId, String name, int scope)
-		throws PortalException {
+		long companyId, String name, int scope) {
 
 		getService().deleteResourcePermissions(companyId, name, scope);
 	}
@@ -660,9 +658,8 @@ public class ResourcePermissionLocalServiceUtil {
 	}
 
 	public static List<com.liferay.portal.kernel.model.Role> getRoles(
-			long companyId, String name, int scope, String primKey,
-			String actionId)
-		throws PortalException {
+		long companyId, String name, int scope, String primKey,
+		String actionId) {
 
 		return getService().getRoles(companyId, name, scope, primKey, actionId);
 	}
@@ -1107,4 +1104,4 @@ public class ResourcePermissionLocalServiceUtil {
 	private static volatile ResourcePermissionLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1507835299
+// LIFERAY-SERVICE-BUILDER-HASH:-418465419

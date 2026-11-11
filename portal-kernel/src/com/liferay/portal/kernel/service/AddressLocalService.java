@@ -364,8 +364,7 @@ public interface AddressLocalService
 		throws PortalException;
 
 	public Address updateExternalReferenceCode(
-			Address address, String externalReferenceCode)
-		throws PortalException;
+		Address address, String externalReferenceCode);
 
 	public Address updateExternalReferenceCode(
 			long addressId, String externalReferenceCode)
@@ -386,4 +385,4 @@ public interface AddressLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-483785648
+// LIFERAY-SERVICE-BUILDER-HASH:-653820932

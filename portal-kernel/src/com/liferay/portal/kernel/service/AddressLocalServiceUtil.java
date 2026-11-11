@@ -421,8 +421,7 @@ public class AddressLocalServiceUtil {
 	}
 
 	public static Address updateExternalReferenceCode(
-			Address address, String externalReferenceCode)
-		throws PortalException {
+		Address address, String externalReferenceCode) {
 
 		return getService().updateExternalReferenceCode(
 			address, externalReferenceCode);
@@ -447,4 +446,4 @@ public class AddressLocalServiceUtil {
 	private static volatile AddressLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2068497387
+// LIFERAY-SERVICE-BUILDER-HASH:1634309251

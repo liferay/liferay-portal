@@ -333,13 +333,11 @@ public interface WorkflowDefinitionLinkLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
-			long companyId, long groupId, long classPK)
-		throws PortalException;
+		long companyId, long groupId, long classPK);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
-			long companyId, long groupId, String className, long classPK)
-		throws PortalException;
+		long companyId, long groupId, String className, long classPK);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
@@ -347,9 +345,8 @@ public interface WorkflowDefinitionLinkLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
-			long companyId, String workflowDefinitionName,
-			int workflowDefinitionVersion)
-		throws PortalException;
+		long companyId, String workflowDefinitionName,
+		int workflowDefinitionVersion);
 
 	/**
 	 * Returns all the workflow definition links matching the UUID and company.
@@ -462,4 +459,4 @@ public interface WorkflowDefinitionLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-335444463
+// LIFERAY-SERVICE-BUILDER-HASH:1324201021

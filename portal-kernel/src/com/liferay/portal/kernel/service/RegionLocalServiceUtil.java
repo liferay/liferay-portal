@@ -359,9 +359,7 @@ public class RegionLocalServiceUtil {
 		return getService().getRegions(start, end);
 	}
 
-	public static List<Region> getRegions(long countryId, boolean active)
-		throws PortalException {
-
+	public static List<Region> getRegions(long countryId, boolean active) {
 		return getService().getRegions(countryId, active);
 	}
 
@@ -457,4 +455,4 @@ public class RegionLocalServiceUtil {
 	private static volatile RegionLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:806530438
+// LIFERAY-SERVICE-BUILDER-HASH:-2085718220

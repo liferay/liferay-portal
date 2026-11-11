@@ -403,7 +403,7 @@ public class CompanyLocalServiceUtil {
 	 otherwise
 	 * @throws Exception if a user with the primary key could not be found
 	 */
-	public static long getCompanyIdByUserId(long userId) throws Exception {
+	public static long getCompanyIdByUserId(long userId) {
 		return getService().getCompanyIdByUserId(userId);
 	}
 
@@ -704,4 +704,4 @@ public class CompanyLocalServiceUtil {
 	private static volatile CompanyLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-313236327
+// LIFERAY-SERVICE-BUILDER-HASH:-2103954124

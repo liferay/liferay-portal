@@ -1984,8 +1984,7 @@ public class UserLocalServiceWrapper
 
 	@Override
 	public java.util.List<User> getUsersByRoleId(
-			long roleId, int start, int end)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		long roleId, int start, int end) {
 
 		return _userLocalService.getUsersByRoleId(roleId, start, end);
 	}
@@ -2885,8 +2884,7 @@ public class UserLocalServiceWrapper
 
 	@Override
 	public User updateExternalReferenceCode(
-			User user, String externalReferenceCode)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		User user, String externalReferenceCode) {
 
 		return _userLocalService.updateExternalReferenceCode(
 			user, externalReferenceCode);
@@ -2999,9 +2997,7 @@ public class UserLocalServiceWrapper
 	}
 
 	@Override
-	public User updateLastLogin(User user, String loginIP)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public User updateLastLogin(User user, String loginIP) {
 		return _userLocalService.updateLastLogin(user, loginIP);
 	}
 
@@ -3398,4 +3394,4 @@ public class UserLocalServiceWrapper
 	private UserLocalService _userLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1730365100
+// LIFERAY-SERVICE-BUILDER-HASH:883440578

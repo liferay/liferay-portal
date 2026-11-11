@@ -833,9 +833,7 @@ public class RoleLocalServiceWrapper
 	 * @return the team roles in the company
 	 */
 	@Override
-	public java.util.List<Role> getTeamsRoles(long companyId, long[] teamIds)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public java.util.List<Role> getTeamsRoles(long companyId, long[] teamIds) {
 		return _roleLocalService.getTeamsRoles(companyId, teamIds);
 	}
 
@@ -1333,8 +1331,7 @@ public class RoleLocalServiceWrapper
 
 	@Override
 	public Role updateExternalReferenceCode(
-			Role role, String externalReferenceCode)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		Role role, String externalReferenceCode) {
 
 		return _roleLocalService.updateExternalReferenceCode(
 			role, externalReferenceCode);
@@ -1426,4 +1423,4 @@ public class RoleLocalServiceWrapper
 	private RoleLocalService _roleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-115585899
+// LIFERAY-SERVICE-BUILDER-HASH:26020757

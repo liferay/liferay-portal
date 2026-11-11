@@ -564,9 +564,7 @@ public class GroupLocalServiceWrapper
 	 * @throws PortalException if a portal exception occurred
 	 */
 	@Override
-	public Group fetchUserPersonalSiteGroup(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public Group fetchUserPersonalSiteGroup(long companyId) {
 		return _groupLocalService.fetchUserPersonalSiteGroup(companyId);
 	}
 
@@ -1475,9 +1473,7 @@ public class GroupLocalServiceWrapper
 	 */
 	@Override
 	public java.util.List<Group> getUserGroupsGroups(
-			java.util.List<com.liferay.portal.kernel.model.UserGroup>
-				userGroups)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		java.util.List<com.liferay.portal.kernel.model.UserGroup> userGroups) {
 
 		return _groupLocalService.getUserGroupsGroups(userGroups);
 	}
@@ -2778,4 +2774,4 @@ public class GroupLocalServiceWrapper
 	private GroupLocalService _groupLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:529409475
+// LIFERAY-SERVICE-BUILDER-HASH:-1231855357

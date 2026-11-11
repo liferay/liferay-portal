@@ -1784,9 +1784,7 @@ public class UserLocalServiceUtil {
 			companyId, status, start, end, orderByComparator);
 	}
 
-	public static List<User> getUsersByRoleId(long roleId, int start, int end)
-		throws PortalException {
-
+	public static List<User> getUsersByRoleId(long roleId, int start, int end) {
 		return getService().getUsersByRoleId(roleId, start, end);
 	}
 
@@ -2614,8 +2612,7 @@ public class UserLocalServiceUtil {
 	}
 
 	public static User updateExternalReferenceCode(
-			User user, String externalReferenceCode)
-		throws PortalException {
+		User user, String externalReferenceCode) {
 
 		return getService().updateExternalReferenceCode(
 			user, externalReferenceCode);
@@ -2722,9 +2719,7 @@ public class UserLocalServiceUtil {
 		return getService().updateLastLogin(userId, loginIP);
 	}
 
-	public static User updateLastLogin(User user, String loginIP)
-		throws PortalException {
-
+	public static User updateLastLogin(User user, String loginIP) {
 		return getService().updateLastLogin(user, loginIP);
 	}
 
@@ -3076,4 +3071,4 @@ public class UserLocalServiceUtil {
 	private static volatile UserLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2058953445
+// LIFERAY-SERVICE-BUILDER-HASH:1255438637

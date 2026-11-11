@@ -211,8 +211,7 @@ public class ResourcePermissionLocalServiceWrapper
 
 	@Override
 	public void copyModelResourcePermissions(
-			long companyId, String name, long sourcePrimKey, long targetPrimKey)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		long companyId, String name, long sourcePrimKey, long targetPrimKey) {
 
 		_resourcePermissionLocalService.copyModelResourcePermissions(
 			companyId, name, sourcePrimKey, targetPrimKey);
@@ -296,8 +295,7 @@ public class ResourcePermissionLocalServiceWrapper
 
 	@Override
 	public void deleteResourcePermissions(
-			long companyId, String name, int scope)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		long companyId, String name, int scope) {
 
 		_resourcePermissionLocalService.deleteResourcePermissions(
 			companyId, name, scope);
@@ -729,9 +727,8 @@ public class ResourcePermissionLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.portal.kernel.model.Role> getRoles(
-			long companyId, String name, int scope, String primKey,
-			String actionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		long companyId, String name, int scope, String primKey,
+		String actionId) {
 
 		return _resourcePermissionLocalService.getRoles(
 			companyId, name, scope, primKey, actionId);
@@ -1231,4 +1228,4 @@ public class ResourcePermissionLocalServiceWrapper
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:575532694
+// LIFERAY-SERVICE-BUILDER-HASH:11624452

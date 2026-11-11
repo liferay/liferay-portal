@@ -216,8 +216,7 @@ public interface ResourcePermissionLocalService
 		long resourceActionBitwiseValue);
 
 	public void copyModelResourcePermissions(
-			long companyId, String name, long sourcePrimKey, long targetPrimKey)
-		throws PortalException;
+		long companyId, String name, long sourcePrimKey, long targetPrimKey);
 
 	/**
 	 * @throws PortalException
@@ -273,8 +272,7 @@ public interface ResourcePermissionLocalService
 		ResourcePermission resourcePermission);
 
 	public void deleteResourcePermissions(
-			long companyId, String name, int scope)
-		throws PortalException;
+		long companyId, String name, int scope);
 
 	/**
 	 * Deletes all resource permissions at the scope to resources of the type.
@@ -580,9 +578,8 @@ public interface ResourcePermissionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Role> getRoles(
-			long companyId, String name, int scope, String primKey,
-			String actionId)
-		throws PortalException;
+		long companyId, String name, int scope, String primKey,
+		String actionId);
 
 	/**
 	 * Returns all the resource permissions where scope = any &#63;.
@@ -977,4 +974,4 @@ public interface ResourcePermissionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1920514629
+// LIFERAY-SERVICE-BUILDER-HASH:-489198577
