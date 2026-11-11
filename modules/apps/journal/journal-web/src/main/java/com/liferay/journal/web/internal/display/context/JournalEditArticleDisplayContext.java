@@ -12,6 +12,7 @@ import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalServiceU
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.form.renderer.constants.DDMFormRendererConstants;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
@@ -48,7 +49,7 @@ import com.liferay.journal.web.internal.util.RecentGroupManagerUtil;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -1619,11 +1620,12 @@ public class JournalEditArticleDisplayContext {
 		}
 
 		_defaultLayoutPageTemplateEntry =
-			LayoutPageTemplateEntryServiceUtil.
-				fetchDefaultLayoutPageTemplateEntry(
-					getGroupId(),
-					PortalUtil.getClassNameId(JournalArticle.class),
-					getDDMStructureId());
+			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
+				PortalUtil.getClassNameId(JournalArticle.class),
+				getDDMStructureId(),
+				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+					getGroupId()),
+				getGroupId());
 
 		return _defaultLayoutPageTemplateEntry;
 	}

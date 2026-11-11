@@ -24,6 +24,7 @@ dependencies {
 	compileOnly project(":apps:data-engine:data-engine-rest-api")
 	compileOnly project(":apps:data-engine:data-engine-taglib")
 	compileOnly project(":apps:depot:depot-api")
+	compileOnly project(":apps:design-library:design-library-api")
 	compileOnly project(":apps:diff:diff-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:dynamic-data-lists:dynamic-data-lists-api")
