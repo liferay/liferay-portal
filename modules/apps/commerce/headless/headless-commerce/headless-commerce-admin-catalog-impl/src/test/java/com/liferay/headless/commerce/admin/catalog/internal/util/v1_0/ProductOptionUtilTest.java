@@ -31,16 +31,15 @@ public class ProductOptionUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testAddOrUpdateCPDefinitionOptionRelWhenOptionIdIsNull()
-		throws Exception {
-
-		CPDefinitionOptionRel cpDefinitionOptionRel = Mockito.mock(
-			CPDefinitionOptionRel.class);
-		CPDefinitionOptionRelService cpDefinitionOptionRelService =
-			Mockito.mock(CPDefinitionOptionRelService.class);
-		CPOption cpOption = Mockito.mock(CPOption.class);
+	public void testAddOrUpdateCPDefinitionOptionRel() throws Exception {
 		CPOptionService cpOptionService = Mockito.mock(CPOptionService.class);
+		String externalReferenceCode = RandomTestUtil.randomString();
 
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(RandomTestUtil.randomLong());
+
+		CPOption cpOption = Mockito.mock(CPOption.class);
 		long cpOptionId = RandomTestUtil.randomLong();
 
 		Mockito.when(
@@ -49,19 +48,20 @@ public class ProductOptionUtilTest {
 			cpOptionId
 		);
 
-		String optionExternalReferenceCode = RandomTestUtil.randomString();
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setCompanyId(RandomTestUtil.randomLong());
-
 		Mockito.when(
 			cpOptionService.fetchCPOptionByExternalReferenceCode(
-				optionExternalReferenceCode, serviceContext.getCompanyId())
+				externalReferenceCode, serviceContext.getCompanyId())
 		).thenReturn(
 			cpOption
 		);
 
+		CPDefinitionOptionRelService cpDefinitionOptionRelService =
+			Mockito.mock(CPDefinitionOptionRelService.class);
+
+		long cpDefinitionId = RandomTestUtil.randomLong();
+
+		CPDefinitionOptionRel cpDefinitionOptionRel = Mockito.mock(
+			CPDefinitionOptionRel.class);
 		long cpDefinitionOptionRelId = RandomTestUtil.randomLong();
 
 		Mockito.when(
@@ -69,8 +69,6 @@ public class ProductOptionUtilTest {
 		).thenReturn(
 			cpDefinitionOptionRelId
 		);
-
-		long cpDefinitionId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			cpDefinitionOptionRelService.fetchCPDefinitionOptionRel(
@@ -81,8 +79,7 @@ public class ProductOptionUtilTest {
 
 		ProductOption productOption = new ProductOption();
 
-		productOption.setOptionExternalReferenceCode(
-			optionExternalReferenceCode);
+		productOption.setOptionExternalReferenceCode(externalReferenceCode);
 
 		ProductOptionUtil.addOrUpdateCPDefinitionOptionRel(
 			cpDefinitionOptionRelService, cpOptionService, productOption,
