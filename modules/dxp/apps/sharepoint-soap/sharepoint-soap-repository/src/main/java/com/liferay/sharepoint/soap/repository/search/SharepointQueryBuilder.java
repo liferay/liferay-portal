@@ -8,6 +8,7 @@ package com.liferay.sharepoint.soap.repository.search;
 import com.liferay.document.library.repository.external.ExtRepositoryObjectType;
 import com.liferay.document.library.repository.external.search.ExtRepositoryQueryMapper;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -377,7 +378,7 @@ public class SharepointQueryBuilder {
 			return;
 		}
 
-		_log.debug("Liferay query: " + _liferayQueryExplainer.explain(query));
+		_log.debug("Liferay query: " + _explain(query));
 		_log.debug("Sharepoint query: " + _query);
 		_log.debug("Sharepoint query options list: " + _queryOptionsList);
 	}
@@ -645,14 +646,89 @@ public class SharepointQueryBuilder {
 			SharepointQueryOperator.LIKE);
 	}
 
+	private String _explain(Query query) {
+		StringBundler sb = new StringBundler();
+
+		_explain(sb, query);
+
+		return sb.toString();
+	}
+
+	private void _explain(StringBundler sb, BooleanQuery booleanQuery) {
+		for (BooleanClause<Query> booleanClause : booleanQuery.clauses()) {
+			BooleanClauseOccur booleanClauseOccur =
+				booleanClause.getBooleanClauseOccur();
+
+			Query query = booleanClause.getClause();
+
+			sb.append("<");
+			sb.append(booleanClauseOccur.name());
+			sb.append(">");
+
+			_explain(sb, query);
+
+			sb.append("</");
+			sb.append(booleanClauseOccur.name());
+			sb.append(">");
+		}
+	}
+
+	private void _explain(StringBundler sb, Query query) {
+		if (query instanceof BooleanQuery) {
+			_explain(sb, (BooleanQuery)query);
+		}
+		else if (query instanceof TermQuery) {
+			_explain(sb, (TermQuery)query);
+		}
+		else if (query instanceof TermRangeQuery) {
+			_explain(sb, (TermRangeQuery)query);
+		}
+		else if (query instanceof WildcardQuery) {
+			_explain(sb, (WildcardQuery)query);
+		}
+	}
+
+	private void _explain(StringBundler sb, QueryTerm queryTerm) {
+		sb.append(queryTerm.getField());
+		sb.append(" == \"");
+		sb.append(queryTerm.getValue());
+		sb.append("\"");
+	}
+
+	private void _explain(StringBundler sb, TermQuery termQuery) {
+		_explain(sb, termQuery.getQueryTerm());
+	}
+
+	private void _explain(StringBundler sb, TermRangeQuery termRangeQuery) {
+		String lowerTerm = termRangeQuery.getLowerTerm();
+
+		String upperTerm = termRangeQuery.getUpperTerm();
+
+		String openInterval = termRangeQuery.includesLower() ? "[" : "(";
+
+		String closeInterval = termRangeQuery.includesUpper() ? "]" : ")";
+
+		sb.append(termRangeQuery.getField());
+		sb.append(" ∈ ");
+		sb.append(openInterval);
+		sb.append("\"");
+		sb.append(lowerTerm);
+		sb.append("\", \"");
+		sb.append(upperTerm);
+		sb.append("\"");
+		sb.append(closeInterval);
+	}
+
+	private void _explain(StringBundler sb, WildcardQuery wildcardQuery) {
+		_explain(sb, wildcardQuery.getQueryTerm());
+	}
+
 	private static final String _SHAREPOINT_DATE_FORMAT_PATTERN =
 		"yyyy-MM-dd' 'HH:mm:ss";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SharepointQueryBuilder.class);
 
-	private static final LiferayQueryExplainer _liferayQueryExplainer =
-		new LiferayQueryExplainer();
 	private static final Map<String, String> _sharepointFields =
 		HashMapBuilder.put(
 			Field.CREATE_DATE, SharepointField.CREATE_DATE
