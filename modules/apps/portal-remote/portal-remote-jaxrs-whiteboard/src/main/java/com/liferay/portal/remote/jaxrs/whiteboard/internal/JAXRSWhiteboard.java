@@ -131,9 +131,6 @@ public class JAXRSWhiteboard implements SafeCloseable {
 			}
 		).put(
 			JaxrsWhiteboardConstants.JAX_RS_NAME, ".default"
-		).put(
-			JaxrsWhiteboardConstants.JAX_RS_WHITEBOARD_TARGET,
-			"(service.pid=" + configuration.get(Constants.SERVICE_PID) + ")"
 		).build();
 	}
 

@@ -6,8 +6,6 @@
 package com.liferay.portal.remote.jaxrs.whiteboard.internal;
 
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -28,9 +26,6 @@ import org.apache.aries.jax.rs.whiteboard.internal.AriesJaxrsServiceRuntime;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.framework.Filter;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.jaxrs.runtime.JaxrsServiceRuntime;
@@ -134,10 +129,6 @@ public class JAXRSServiceTracker
 	private void _add(TrackedService trackedService) {
 		CachingServiceReference<Object> cachingServiceReference =
 			trackedService._cachingServiceReference;
-
-		if (!_isWhiteboardMatch(cachingServiceReference)) {
-			return;
-		}
 
 		PriorityQueue<TrackedService> priorityQueue =
 			_priorityQueues.computeIfAbsent(
@@ -252,32 +243,6 @@ public class JAXRSServiceTracker
 		return false;
 	}
 
-	private boolean _isWhiteboardMatch(
-		CachingServiceReference<Object> cachingServiceReference) {
-
-		String target = (String)cachingServiceReference.getProperty(
-			JaxrsWhiteboardConstants.JAX_RS_WHITEBOARD_TARGET);
-
-		if (target == null) {
-			return true;
-		}
-
-		try {
-			Filter filter = FrameworkUtil.createFilter(target);
-
-			return filter.match(
-				_jaxrsServiceRuntimeServiceRegistration.getReference());
-		}
-		catch (InvalidSyntaxException invalidSyntaxException) {
-			_log.error(
-				"Invalid osgi.jaxrs.whiteboard.target filter syntax in " +
-					cachingServiceReference,
-				invalidSyntaxException);
-
-			return false;
-		}
-	}
-
 	private void _publish(TrackedService trackedService) {
 		CachingServiceReference<Object> cachingServiceReference =
 			trackedService._cachingServiceReference;
@@ -309,12 +274,6 @@ public class JAXRSServiceTracker
 			cachingServiceReference::getProperty);
 
 		PriorityQueue<TrackedService> priorityQueue = _priorityQueues.get(name);
-
-		if ((priorityQueue == null) ||
-			!priorityQueue.contains(trackedService)) {
-
-			return;
-		}
 
 		TrackedService previousTrackedService = priorityQueue.peek();
 
@@ -371,9 +330,6 @@ public class JAXRSServiceTracker
 		_ariesJaxrsServiceRuntime.removedServiceForName(
 			trackedService._cachingServiceReference);
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		JAXRSServiceTracker.class);
 
 	private static final Comparator<TrackedService> _comparator =
 		Comparator.comparing(
