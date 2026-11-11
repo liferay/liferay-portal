@@ -7,7 +7,6 @@ package com.liferay.portlet.documentlibrary.service.impl;
 
 import com.liferay.document.library.kernel.exception.DuplicateDLFileEntryTypeExternalReferenceCodeException;
 import com.liferay.document.library.kernel.exception.DuplicateFileEntryTypeException;
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryTypeException;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.exception.NoSuchMetadataSetException;
 import com.liferay.document.library.kernel.exception.RequiredFileEntryTypeException;
@@ -322,9 +321,7 @@ public class DLFileEntryTypeLocalServiceImpl
 	}
 
 	@Override
-	public DLFileEntryType getBasicDocumentDLFileEntryType()
-		throws NoSuchFileEntryTypeException {
-
+	public DLFileEntryType getBasicDocumentDLFileEntryType() {
 		DLFileEntryType dlFileEntryType =
 			dlFileEntryTypePersistence.fetchByPrimaryKey(
 				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT);
