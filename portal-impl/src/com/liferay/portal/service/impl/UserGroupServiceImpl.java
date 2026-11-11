@@ -571,9 +571,7 @@ public class UserGroupServiceImpl extends UserGroupServiceBaseImpl {
 			description, serviceContext);
 	}
 
-	protected List<UserGroup> filterUserGroups(List<UserGroup> userGroups)
-		throws PortalException {
-
+	protected List<UserGroup> filterUserGroups(List<UserGroup> userGroups) {
 		return TransformUtil.transform(
 			userGroups,
 			userGroup -> {
