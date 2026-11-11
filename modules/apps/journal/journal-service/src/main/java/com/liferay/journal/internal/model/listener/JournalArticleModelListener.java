@@ -55,8 +55,7 @@ public class JournalArticleModelListener
 		// Journal content
 
 		_journalContent.clearCache(
-			journalArticle.getGroupId(), journalArticle.getArticleId(),
-			journalArticle.getDDMTemplateKey());
+			journalArticle.getGroupId(), journalArticle.getArticleId());
 	}
 
 	@Reference

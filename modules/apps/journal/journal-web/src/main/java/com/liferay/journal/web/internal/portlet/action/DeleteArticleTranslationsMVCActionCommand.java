@@ -58,8 +58,7 @@ public class DeleteArticleTranslationsMVCActionCommand
 		}
 
 		_journalContent.clearCache(
-			article.getGroupId(), article.getArticleId(),
-			article.getDDMTemplateKey());
+			article.getGroupId(), article.getArticleId());
 	}
 
 	@Reference
