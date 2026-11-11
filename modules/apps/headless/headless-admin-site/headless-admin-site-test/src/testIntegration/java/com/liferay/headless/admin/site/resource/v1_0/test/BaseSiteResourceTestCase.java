@@ -904,6 +904,14 @@ public abstract class BaseSiteResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("inheritContent", additionalAssertFieldName)) {
+				if (site.getInheritContent() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("inheritLocales", additionalAssertFieldName)) {
 				if (site.getInheritLocales() == null) {
 					valid = false;
@@ -930,6 +938,14 @@ public abstract class BaseSiteResourceTestCase {
 
 			if (Objects.equals("logo", additionalAssertFieldName)) {
 				if (site.getLogo() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("maintenanceMode", additionalAssertFieldName)) {
+				if (site.getMaintenanceMode() == null) {
 					valid = false;
 				}
 
@@ -1350,6 +1366,16 @@ public abstract class BaseSiteResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("inheritContent", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						site1.getInheritContent(), site2.getInheritContent())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("inheritLocales", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						site1.getInheritLocales(), site2.getInheritLocales())) {
@@ -1380,6 +1406,17 @@ public abstract class BaseSiteResourceTestCase {
 
 			if (Objects.equals("logo", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(site1.getLogo(), site2.getLogo())) {
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("maintenanceMode", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						site1.getMaintenanceMode(),
+						site2.getMaintenanceMode())) {
+
 					return false;
 				}
 
@@ -1928,6 +1965,11 @@ public abstract class BaseSiteResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("inheritContent")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("inheritLocales")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2028,6 +2070,11 @@ public abstract class BaseSiteResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("maintenanceMode")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("manualMembership")) {
@@ -2298,9 +2345,11 @@ public abstract class BaseSiteResourceTestCase {
 				friendlyUrlPath = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
+				inheritContent = RandomTestUtil.randomBoolean();
 				inheritLocales = RandomTestUtil.randomBoolean();
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				logo = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				maintenanceMode = RandomTestUtil.randomBoolean();
 				manualMembership = RandomTestUtil.randomBoolean();
 				membershipRestriction = RandomTestUtil.randomInt();
 				mentionsEnabled = RandomTestUtil.randomBoolean();
@@ -2579,4 +2628,4 @@ public abstract class BaseSiteResourceTestCase {
 		_siteResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:462363404
+// LIFERAY-REST-BUILDER-HASH:795249256

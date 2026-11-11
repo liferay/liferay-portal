@@ -665,6 +665,51 @@ public class Site implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Whether the site shows content from its parent site."
+	)
+	public Boolean getInheritContent() {
+		if (_inheritContentSupplier != null) {
+			inheritContent = _inheritContentSupplier.get();
+
+			_inheritContentSupplier = null;
+		}
+
+		return inheritContent;
+	}
+
+	public void setInheritContent(Boolean inheritContent) {
+		this.inheritContent = inheritContent;
+
+		_inheritContentSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setInheritContent(
+		UnsafeSupplier<Boolean, Exception> inheritContentUnsafeSupplier) {
+
+		_inheritContentSupplier = () -> {
+			try {
+				return inheritContentUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Whether the site shows content from its parent site."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean inheritContent;
+
+	@JsonIgnore
+	private Supplier<Boolean> _inheritContentSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Whether to use the default language set by defaultLanguageId."
 	)
 	public Boolean getInheritLocales() {
@@ -833,6 +878,51 @@ public class Site implements Serializable {
 
 	@JsonIgnore
 	private Supplier<String> _logoSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Whether users without administrator access see a maintenance page while the site is inactive."
+	)
+	public Boolean getMaintenanceMode() {
+		if (_maintenanceModeSupplier != null) {
+			maintenanceMode = _maintenanceModeSupplier.get();
+
+			_maintenanceModeSupplier = null;
+		}
+
+		return maintenanceMode;
+	}
+
+	public void setMaintenanceMode(Boolean maintenanceMode) {
+		this.maintenanceMode = maintenanceMode;
+
+		_maintenanceModeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setMaintenanceMode(
+		UnsafeSupplier<Boolean, Exception> maintenanceModeUnsafeSupplier) {
+
+		_maintenanceModeSupplier = () -> {
+			try {
+				return maintenanceModeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Whether users without administrator access see a maintenance page while the site is inactive."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean maintenanceMode;
+
+	@JsonIgnore
+	private Supplier<Boolean> _maintenanceModeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getManualMembership() {
@@ -1740,6 +1830,18 @@ public class Site implements Serializable {
 			sb.append(id);
 		}
 
+		Boolean inheritContent = getInheritContent();
+
+		if (inheritContent != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"inheritContent\": ");
+
+			sb.append(inheritContent);
+		}
+
 		Boolean inheritLocales = getInheritLocales();
 
 		if (inheritLocales != null) {
@@ -1808,6 +1910,18 @@ public class Site implements Serializable {
 			sb.append(_escape(logo));
 
 			sb.append("\"");
+		}
+
+		Boolean maintenanceMode = getMaintenanceMode();
+
+		if (maintenanceMode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"maintenanceMode\": ");
+
+			sb.append(maintenanceMode);
 		}
 
 		Boolean manualMembership = getManualMembership();
@@ -2256,4 +2370,4 @@ public class Site implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:827646572
+// LIFERAY-REST-BUILDER-HASH:-529338094

@@ -334,6 +334,27 @@ public class Site implements Cloneable, Serializable {
 
 	protected Long id;
 
+	public Boolean getInheritContent() {
+		return inheritContent;
+	}
+
+	public void setInheritContent(Boolean inheritContent) {
+		this.inheritContent = inheritContent;
+	}
+
+	public void setInheritContent(
+		UnsafeSupplier<Boolean, Exception> inheritContentUnsafeSupplier) {
+
+		try {
+			inheritContent = inheritContentUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean inheritContent;
+
 	public Boolean getInheritLocales() {
 		return inheritLocales;
 	}
@@ -413,6 +434,27 @@ public class Site implements Cloneable, Serializable {
 	}
 
 	protected String logo;
+
+	public Boolean getMaintenanceMode() {
+		return maintenanceMode;
+	}
+
+	public void setMaintenanceMode(Boolean maintenanceMode) {
+		this.maintenanceMode = maintenanceMode;
+	}
+
+	public void setMaintenanceMode(
+		UnsafeSupplier<Boolean, Exception> maintenanceModeUnsafeSupplier) {
+
+		try {
+			maintenanceMode = maintenanceModeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean maintenanceMode;
 
 	public Boolean getManualMembership() {
 		return manualMembership;
@@ -898,4 +940,4 @@ public class Site implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1131312237
+// LIFERAY-REST-BUILDER-HASH:-1232264999
