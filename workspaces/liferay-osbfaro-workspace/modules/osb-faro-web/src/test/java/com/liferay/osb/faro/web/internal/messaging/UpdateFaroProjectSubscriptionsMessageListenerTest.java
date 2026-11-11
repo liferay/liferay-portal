@@ -147,7 +147,9 @@ public class UpdateFaroProjectSubscriptionsMessageListenerTest {
 			faroProjectUsage.getFaroProjectUsageId(),
 			projectUsageMetric.getActiveLogicalBytes(),
 			projectUsageMetric.getAnonymousIndividualsCount(),
+			projectUsageMetric.getBillableEventsCount(),
 			projectUsageMetric.getEventsCount(),
+			projectUsageMetric.getExperimentEventsCount(),
 			projectUsageMetric.getKnownIndividualsCount(),
 			projectUsageMetric.getLongTermLogicalBytes(),
 			projectUsageMetric.getOnDemandBytesBilled(),
@@ -176,7 +178,9 @@ public class UpdateFaroProjectSubscriptionsMessageListenerTest {
 			Mockito.eq(companyId), Mockito.eq(0L),
 			Mockito.eq(projectUsageMetric.getActiveLogicalBytes()),
 			Mockito.eq(projectUsageMetric.getAnonymousIndividualsCount()),
+			Mockito.eq(projectUsageMetric.getBillableEventsCount()),
 			Mockito.eq(projectUsageMetric.getEventsCount()),
+			Mockito.eq(projectUsageMetric.getExperimentEventsCount()),
 			Mockito.eq(faroProjectId),
 			Mockito.eq(projectUsageMetric.getKnownIndividualsCount()),
 			Mockito.eq(projectUsageMetric.getLongTermLogicalBytes()),
@@ -287,7 +291,10 @@ public class UpdateFaroProjectSubscriptionsMessageListenerTest {
 		projectUsageMetric.setActiveLogicalBytes(RandomTestUtil.randomLong());
 		projectUsageMetric.setAnonymousIndividualsCount(
 			RandomTestUtil.randomLong());
+		projectUsageMetric.setBillableEventsCount(RandomTestUtil.randomLong());
 		projectUsageMetric.setEventsCount(RandomTestUtil.randomLong());
+		projectUsageMetric.setExperimentEventsCount(
+			RandomTestUtil.randomLong());
 		projectUsageMetric.setKnownIndividualsCount(
 			RandomTestUtil.randomLong());
 		projectUsageMetric.setLongTermLogicalBytes(RandomTestUtil.randomLong());

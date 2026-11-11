@@ -309,10 +309,10 @@ public class ProjectUsageHelperTest {
 			_faroProjectUsageLocalService, verificationMode
 		).addFaroProjectUsage(
 			Mockito.eq(companyId), Mockito.eq(0L), Mockito.anyLong(),
-			Mockito.anyLong(), Mockito.anyLong(), Mockito.eq(faroProjectId),
-			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyString(),
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(),
-			Mockito.any(Date.class)
+			Mockito.anyLong(), Mockito.eq(faroProjectId), Mockito.anyLong(),
+			Mockito.anyLong(), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.any(Date.class)
 		);
 	}
 
