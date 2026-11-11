@@ -154,12 +154,12 @@ public class PortalBundlePersistentResourceTest
 
 		long currentTimeMillis = RandomTestUtil.randomLong();
 
-		try (MockedStatic<JenkinsResultsParserUtil> mockedStatic =
-				Mockito.mockStatic(
+		try (MockedStatic<JenkinsResultsParserUtil>
+				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
 					JenkinsResultsParserUtil.class,
 					Mockito.CALLS_REAL_METHODS)) {
 
-			mockedStatic.when(
+			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::getCurrentTimeMillis
 			).thenReturn(
 				currentTimeMillis

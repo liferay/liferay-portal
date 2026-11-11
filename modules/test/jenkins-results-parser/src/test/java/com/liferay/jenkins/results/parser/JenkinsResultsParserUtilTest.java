@@ -300,24 +300,26 @@ public class JenkinsResultsParserUtilTest
 
 		String portalBranchName = RandomTestUtil.randomString();
 
-		String failedS3ObjectKey = _randomPortalBundleS3ObjectKey(
+		String failedS3ObjectKey = _getRandomPortalBundleS3ObjectKey(
 			portalBranchName);
-		String noGitCommitS3ObjectKey = _randomPortalBundleS3ObjectKey(
+		String noGitCommitS3ObjectKey = _getRandomPortalBundleS3ObjectKey(
 			portalBranchName);
 
 		String pullRequestS3ObjectKey = JenkinsResultsParserUtil.combine(
 			"persistent-resources/portal-bundle", "/", portalBranchName, "_",
-			_randomPortalGitCommitShort(), "_", _randomPortalGitCommitShort());
+			_getRandomPortalGitCommitShort(), "_",
+			_getRandomPortalGitCommitShort());
 
-		String reusedS3ObjectKey = _randomPortalBundleS3ObjectKey(
+		String reusedS3ObjectKey = _getRandomPortalBundleS3ObjectKey(
 			portalBranchName);
 
-		String successS3ObjectKey = _randomPortalBundleS3ObjectKey(
+		String successS3ObjectKey = _getRandomPortalBundleS3ObjectKey(
 			portalBranchName);
 
 		String privateS3ObjectKey = JenkinsResultsParserUtil.combine(
 			successS3ObjectKey, "/", RandomTestUtil.randomString(), "_",
-			_randomPortalGitCommitShort(), "_", _randomPortalGitCommitShort());
+			_getRandomPortalGitCommitShort(), "_",
+			_getRandomPortalGitCommitShort());
 
 		Shell shell = mockShell();
 
@@ -429,7 +431,7 @@ public class JenkinsResultsParserUtilTest
 		List<String> s3ObjectKeys = new ArrayList<>();
 
 		for (int index = 0; index < 11; index++) {
-			String s3ObjectKey = _randomPortalBundleS3ObjectKey(
+			String s3ObjectKey = _getRandomPortalBundleS3ObjectKey(
 				portalBranchName);
 
 			dataJSONObjects.put(
@@ -1697,6 +1699,20 @@ public class JenkinsResultsParserUtilTest
 		return JenkinsResultsParserUtil.getProperties(buildAwsPropertiesFile);
 	}
 
+	private String _getRandomPortalBundleS3ObjectKey(String portalBranchName) {
+		String portalGitCommitShort = _getRandomPortalGitCommitShort();
+
+		return JenkinsResultsParserUtil.combine(
+			"persistent-resources/portal-bundle", "/", portalBranchName, "_",
+			portalGitCommitShort, "_", portalGitCommitShort);
+	}
+
+	private String _getRandomPortalGitCommitShort() {
+		String portalGitCommit = RandomTestUtil.randomSHA();
+
+		return portalGitCommit.substring(0, 7);
+	}
+
 	private String _getThreadDumpEntry(String threadDump, String threadName) {
 		StringBuilder sb = new StringBuilder();
 
@@ -1763,20 +1779,6 @@ public class JenkinsResultsParserUtilTest
 		}
 
 		return parameters;
-	}
-
-	private String _randomPortalBundleS3ObjectKey(String portalBranchName) {
-		String portalGitCommitShort = _randomPortalGitCommitShort();
-
-		return JenkinsResultsParserUtil.combine(
-			"persistent-resources/portal-bundle", "/", portalBranchName, "_",
-			portalGitCommitShort, "_", portalGitCommitShort);
-	}
-
-	private String _randomPortalGitCommitShort() {
-		String portalGitCommit = RandomTestUtil.randomSHA();
-
-		return portalGitCommit.substring(0, 7);
 	}
 
 	private void _testFetchBuildURL(
