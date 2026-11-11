@@ -6,17 +6,31 @@
 package com.liferay.info.item.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.info.exception.CapabilityVerificationException;
+import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.info.item.capability.InfoItemCapability;
+import com.liferay.info.item.provider.InfoItemCapabilitiesProvider;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.info.item.provider.filter.PropertyInfoItemServiceFilter;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.Collections;
 import java.util.Dictionary;
+import java.util.List;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -166,6 +180,97 @@ public class InfoItemServiceRegistryTest {
 			serviceRegistration2.unregister();
 			serviceRegistration3.unregister();
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-114970")
+	public void testGetInfoItemClassDetailsWithFailingVerification()
+		throws Exception {
+
+		String itemClassName1 = RandomTestUtil.randomString();
+		String itemClassName2 = RandomTestUtil.randomString();
+
+		InfoItemCapability infoItemCapability = new InfoItemCapability() {
+
+			@Override
+			public String getKey() {
+				return _key;
+			}
+
+			@Override
+			public String getLabel(Locale locale) {
+				return _key;
+			}
+
+			@Override
+			public void verify(String itemClassName)
+				throws CapabilityVerificationException {
+
+				if (itemClassName.equals(itemClassName1)) {
+					throw new CapabilityVerificationException(
+						this, itemClassName, Collections.<Class<?>>emptyList());
+				}
+			}
+
+			private final String _key = RandomTestUtil.randomString();
+
+		};
+
+		List<InfoItemCapability> infoItemCapabilities =
+			Collections.singletonList(infoItemCapability);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.info.internal.item.InfoItemServiceRegistryImpl",
+				LoggerTestUtil.WARN);
+			SafeCloseable safeCloseable1 =
+				_registerInfoItemCapabilitiesProviderWithSafeCloseable(
+					() -> infoItemCapabilities, itemClassName1);
+			SafeCloseable safeCloseable2 =
+				_registerInfoItemCapabilitiesProviderWithSafeCloseable(
+					() -> infoItemCapabilities, itemClassName2)) {
+
+			List<String> itemClassNames = TransformUtil.transform(
+				_infoItemServiceRegistry.getInfoItemClassDetails(
+					infoItemCapability),
+				InfoItemClassDetails::getClassName);
+
+			Assert.assertFalse(itemClassNames.contains(itemClassName1));
+			Assert.assertTrue(itemClassNames.contains(itemClassName2));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Skipping item class name ", itemClassName1,
+					" because its capability ", infoItemCapability.getKey(),
+					" failed verification"),
+				logEntry.getMessage());
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+		}
+	}
+
+	private SafeCloseable
+		_registerInfoItemCapabilitiesProviderWithSafeCloseable(
+			InfoItemCapabilitiesProvider<?> infoItemCapabilitiesProvider,
+			String itemClassName) {
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			InfoItemServiceRegistryTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		ServiceRegistration<?> serviceRegistration =
+			bundleContext.registerService(
+				InfoItemCapabilitiesProvider.class,
+				infoItemCapabilitiesProvider,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"item.class.name", itemClassName
+				).build());
+
+		return serviceRegistration::unregister;
 	}
 
 	private ServiceRegistration<?> _registerInfoItemFieldValuesProvider(
