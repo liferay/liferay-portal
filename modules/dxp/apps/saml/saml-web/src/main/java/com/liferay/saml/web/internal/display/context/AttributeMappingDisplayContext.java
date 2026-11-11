@@ -18,7 +18,6 @@ import com.liferay.saml.opensaml.integration.field.expression.handler.UserFieldE
 import com.liferay.saml.opensaml.integration.field.expression.handler.registry.UserFieldExpressionHandlerRegistry;
 import com.liferay.saml.persistence.model.SamlSpIdpConnection;
 import com.liferay.saml.web.internal.exception.UserAttributeMappingException;
-import com.liferay.saml.web.internal.exception.UserIdentifierExpressionException;
 
 import jakarta.portlet.PortletRequest;
 
@@ -163,18 +162,6 @@ public class AttributeMappingDisplayContext {
 		return new String[] {
 			userFieldExpressionHandler.getSectionLabel(_locale), message
 		};
-	}
-
-	public String getMessageKey(
-		UserAttributeMappingException userAttributeMappingException) {
-
-		return "x-colon-y";
-	}
-
-	public String getMessageKey(
-		UserIdentifierExpressionException userIdentifierExpressionException) {
-
-		return "no-attribute-mapping-selected-for-user-matching";
 	}
 
 	public List<Map.Entry<String, UserFieldExpressionHandler>>
