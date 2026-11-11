@@ -124,13 +124,32 @@ public class SearchResultsPortletSharedSearchContributor
 				_getSearchResultsPortletInstanceConfiguration(
 					portletSharedSearchSettings);
 
+		int maximumSearchDepth = Integer.MAX_VALUE;
+		int resultCountAccuracyLimit = RESULT_COUNT_ACCURACY_LIMIT;
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				searchContext.getCompanyId(), "LPD-114635")) {
+
+			maximumSearchDepth = Math.min(
+				GetterUtil.getInteger(
+					searchContext.getAttribute(
+						_ATTRIBUTE_KEY_MAXIMUM_SEARCH_DEPTH),
+					Integer.MAX_VALUE),
+				searchResultsPortletInstanceConfiguration.maximumSearchDepth());
+
+			resultCountAccuracyLimit = maximumSearchDepth;
+
+			searchContext.setAttribute(
+				_ATTRIBUTE_KEY_MAXIMUM_SEARCH_DEPTH, maximumSearchDepth);
+		}
+
 		if (FeatureFlagManagerUtil.isEnabled(
 				searchContext.getCompanyId(), "LPD-98858") &&
 			searchResultsPortletInstanceConfiguration.
 				limitResultCountAccuracy()) {
 
 			searchRequestBuilder.trackTotalHitsLimit(
-				RESULT_COUNT_ACCURACY_LIMIT + 1);
+				resultCountAccuracyLimit + 1);
 		}
 
 		int paginationStart = GetterUtil.getInteger(
@@ -140,26 +159,12 @@ public class SearchResultsPortletSharedSearchContributor
 		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
 			paginationStart, paginationDelta);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				searchContext.getCompanyId(), "LPD-114635")) {
+		if (startAndEnd[1] > maximumSearchDepth) {
+			startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
+				startAndEnd[0], startAndEnd[1], maximumSearchDepth);
 
-			int maximumSearchDepth = Math.min(
-				GetterUtil.getInteger(
-					searchContext.getAttribute(
-						_ATTRIBUTE_KEY_MAXIMUM_SEARCH_DEPTH),
-					Integer.MAX_VALUE),
-				searchResultsPortletInstanceConfiguration.maximumSearchDepth());
-
-			searchContext.setAttribute(
-				_ATTRIBUTE_KEY_MAXIMUM_SEARCH_DEPTH, maximumSearchDepth);
-
-			if (startAndEnd[1] > maximumSearchDepth) {
-				startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
-					startAndEnd[0], startAndEnd[1], maximumSearchDepth);
-
-				paginationStart = Math.min(
-					paginationStart, (startAndEnd[0] / paginationDelta) + 1);
-			}
+			paginationStart = Math.min(
+				paginationStart, (startAndEnd[0] / paginationDelta) + 1);
 		}
 
 		searchContext.setEnd(startAndEnd[1]);
