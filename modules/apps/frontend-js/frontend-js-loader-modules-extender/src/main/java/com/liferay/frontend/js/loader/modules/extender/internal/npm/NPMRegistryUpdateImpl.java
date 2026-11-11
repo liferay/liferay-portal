@@ -28,7 +28,7 @@ public class NPMRegistryUpdateImpl implements NPMRegistryUpdate {
 
 		_finished = true;
 
-		_npmRegistryImpl.finishUpdate(this);
+		_npmRegistryImpl.finishUpdate();
 	}
 
 	@Override

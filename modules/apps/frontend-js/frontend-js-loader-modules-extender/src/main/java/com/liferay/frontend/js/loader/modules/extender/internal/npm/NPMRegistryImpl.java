@@ -86,7 +86,7 @@ public class NPMRegistryImpl implements NPMRegistry {
 	public void addJSBundleTracker(JSBundleTracker jsBundleTracker) {
 	}
 
-	public void finishUpdate(NPMRegistryUpdate npmRegistryUpdate) {
+	public void finishUpdate() {
 		_setDataBagSupplier(() -> _createDataBag(null));
 
 		_notifyNPMRegistryUpdatesListeners();
