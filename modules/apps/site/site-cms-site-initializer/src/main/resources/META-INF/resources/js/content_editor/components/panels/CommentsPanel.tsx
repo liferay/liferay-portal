@@ -229,7 +229,7 @@ export default function CommentsPanel({
 		<>
 			{addCommentURL && (
 				<div
-					className={classNames('pb-2', {
+					className={classNames('p-3', {
 						'border-bottom': comments.length,
 					})}
 				>
