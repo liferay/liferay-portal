@@ -31,8 +31,7 @@ import jakarta.portlet.PortletRequest;
 public class DLPortletToolbarContributorUtil {
 
 	public static Folder getFolder(
-		DLAppLocalService dlAppLocalService, ThemeDisplay themeDisplay,
-		PortletRequest portletRequest) {
+		DLAppLocalService dlAppLocalService, PortletRequest portletRequest) {
 
 		Folder folder = (Folder)portletRequest.getAttribute(
 			WebKeys.DOCUMENT_LIBRARY_FOLDER);

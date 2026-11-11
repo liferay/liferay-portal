@@ -52,7 +52,7 @@ public class IGPortletToolbarContributor extends BasePortletToolbarContributor {
 		}
 
 		Folder folder = DLPortletToolbarContributorUtil.getFolder(
-			_dlAppLocalService, themeDisplay, portletRequest);
+			_dlAppLocalService, portletRequest);
 
 		List<MenuItem> menuItems = new ArrayList<>();
 
