@@ -8,7 +8,6 @@ package com.liferay.message.boards.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.message.boards.constants.MBPortletKeys;
-import com.liferay.message.boards.model.MBBan;
 import com.liferay.message.boards.web.internal.security.permission.MBResourcePermission;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -73,7 +72,7 @@ public class MBBannedUsersManagementToolbarDisplayContext {
 		).build();
 	}
 
-	public List<String> getAvailableActions(MBBan ban) throws PortalException {
+	public List<String> getAvailableActions() throws PortalException {
 		List<String> availableActions = new ArrayList<>();
 
 		if (MBResourcePermission.contains(
