@@ -96,9 +96,8 @@ public abstract class BaseSharepointStorageImpl implements SharepointStorage {
 	}
 
 	protected void addDocumentElement(
-			Element element, String documentName, Date createDate,
-			Date modifiedDate, String userName)
-		throws Exception {
+		Element element, String documentName, Date createDate,
+		Date modifiedDate, String userName) {
 
 		element.addNamespace("z", "#RowsetSchema");
 
