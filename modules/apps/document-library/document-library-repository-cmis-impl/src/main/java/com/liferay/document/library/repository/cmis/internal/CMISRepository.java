@@ -536,9 +536,7 @@ public class CMISRepository extends BaseCmisRepository {
 
 	@Override
 	public int getFileEntriesCount(long folderId, long fileEntryTypeId) {
-		List<FileEntry> fileEntries = getFileEntries(folderId, fileEntryTypeId);
-
-		return fileEntries.size();
+		return 0;
 	}
 
 	@Override
@@ -1549,10 +1547,6 @@ public class CMISRepository extends BaseCmisRepository {
 		_cacheFoldersAndFileEntries(folderId);
 
 		return _cmisModelCache.getFileEntries(folderId);
-	}
-
-	protected List<FileEntry> getFileEntries(long folderId, long repositoryId) {
-		return new ArrayList<>();
 	}
 
 	protected FileVersion getFileVersion(
