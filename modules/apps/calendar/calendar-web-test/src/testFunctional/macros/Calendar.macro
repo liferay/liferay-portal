@@ -363,9 +363,16 @@ definition {
 				locator1 = "CalendarEditCalendar#NOTIFICATION_TEMPLATES_SUBJECT_FIELD",
 				value1 = "[$PORTLET_NAME$]: Edited Event Notification for [$EVENT_TITLE$]");
 
-			Type.typeEditorWaitForEditor(
-				locator1 = "CKEditor#BODY_FIELD",
-				value1 = "[$TO_NAME$],      This is an edited event invite email.      Sincerely,     [$FROM_NAME$]     [$FROM_ADDRESS$]     [$PORTAL_URL$]");
+			if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
+				Type.typeEditorWaitForEditor(
+					locator1 = "CKEditor#BODY_FIELD",
+					value1 = "[$TO_NAME$],      This is an edited event invite email.      Sincerely,     [$FROM_NAME$]     [$FROM_ADDRESS$]     [$PORTAL_URL$]");
+			}
+			else {
+				Type(
+					locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
+					value1 = "[$TO_NAME$],      This is an edited event invite email.      Sincerely,     [$FROM_NAME$]     [$FROM_ADDRESS$]     [$PORTAL_URL$]");
+			}
 		}
 
 		if (${reminderEmail} == "true") {
@@ -373,9 +380,16 @@ definition {
 				locator1 = "CalendarEditCalendar#NOTIFICATION_TEMPLATES_SUBJECT_FIELD",
 				value1 = "[$PORTLET_NAME$]: Edited Event Reminder for [$EVENT_TITLE$]");
 
-			Type.typeEditorWaitForEditor(
-				locator1 = "CKEditor#BODY_FIELD",
-				value1 = "[$TO_NAME$],      This is an edited event reminder email.      Sincerely,     [$FROM_NAME$]     [$FROM_ADDRESS$]     [$PORTAL_URL$]");
+			if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
+				Type.typeEditorWaitForEditor(
+					locator1 = "CKEditor#BODY_FIELD",
+					value1 = "[$TO_NAME$],      This is an edited event reminder email.      Sincerely,     [$FROM_NAME$]     [$FROM_ADDRESS$]     [$PORTAL_URL$]");
+			}
+			else {
+				Type(
+					locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
+					value1 = "[$TO_NAME$],      This is an edited event reminder email.      Sincerely,     [$FROM_NAME$]     [$FROM_ADDRESS$]     [$PORTAL_URL$]");
+			}
 		}
 
 		Button.clickSave();

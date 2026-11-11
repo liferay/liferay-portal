@@ -268,10 +268,17 @@ definition {
 	macro addDescription(eventTitle = null, fieldName = null, fieldValue = null) {
 		CalendarNavigator.gotoEditEvent(eventTitle = ${eventTitle});
 
-		Type(
-			key_fieldName = ${fieldName},
-			locator1 = "CKEditor#BODY_FIELD_IFRAME",
-			value1 = ${fieldValue});
+		if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
+			Type(
+				key_fieldName = ${fieldName},
+				locator1 = "CKEditor#BODY_FIELD_IFRAME",
+				value1 = ${fieldValue});
+		}
+		else {
+			Type(
+				locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
+				value1 = ${fieldValue});
+		}
 	}
 
 	@summary = "Default summary"
