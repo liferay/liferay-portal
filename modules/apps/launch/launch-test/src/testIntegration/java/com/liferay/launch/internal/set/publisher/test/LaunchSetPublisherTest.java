@@ -153,8 +153,7 @@ public class LaunchSetPublisherTest {
 
 			Throwable throwable = logEntry.getThrowable();
 
-			Assert.assertTrue(
-				throwable instanceof NoSuchObjectEntryException);
+			Assert.assertTrue(throwable instanceof NoSuchObjectEntryException);
 
 			String message = StringBundler.concat(
 				"Unable to publish launch set ", deletedLaunchSetId, ": ",
@@ -551,6 +550,16 @@ public class LaunchSetPublisherTest {
 		}
 	}
 
+	private void _assertPublishFails(long launchSetId, String messageSuffix) {
+		PortalException portalException = Assert.assertThrows(
+			PortalException.class,
+			() -> _launchSetPublisher.publish(
+				launchSetId, TestPropsValues.getUserId()));
+
+		Assert.assertTrue(
+			StringUtil.endsWith(portalException.getMessage(), messageSuffix));
+	}
+
 	private void _assertPublished(
 			long draftId, ObjectEntry launchEntryObjectEntry,
 			LaunchEntryManager launchEntryManager,
@@ -567,16 +576,6 @@ public class LaunchSetPublisherTest {
 		Assert.assertNull(
 			launchEntryManager.fetchDraft(
 				MapUtil.getLong(values, "classPK"), draftId));
-	}
-
-	private void _assertPublishFails(long launchSetId, String messageSuffix) {
-		PortalException portalException = Assert.assertThrows(
-			PortalException.class,
-			() -> _launchSetPublisher.publish(
-				launchSetId, TestPropsValues.getUserId()));
-
-		Assert.assertTrue(
-			StringUtil.endsWith(portalException.getMessage(), messageSuffix));
 	}
 
 	private void _assertScheduledDateAndStatus(
