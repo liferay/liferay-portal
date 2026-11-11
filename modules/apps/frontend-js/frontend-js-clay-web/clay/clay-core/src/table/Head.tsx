@@ -25,6 +25,7 @@ type HeaderProps = {
 	name: string;
 	nameId: string;
 	onSearchTermChange: (searchTerm: string) => void;
+	onTabBack: () => void;
 	searchLabel: string;
 	searchTerm: string;
 };
@@ -37,6 +38,7 @@ function Header({
 	name,
 	nameId,
 	onSearchTermChange,
+	onTabBack,
 	searchLabel,
 	searchTerm,
 }: HeaderProps) {
@@ -80,6 +82,14 @@ function Header({
 											'input[role="switch"]:not(:disabled)'
 										)
 										?.focus();
+								}
+								else if (
+									event.key === Keys.Tab &&
+									event.shiftKey
+								) {
+									event.preventDefault();
+
+									onTabBack();
 								}
 							}}
 							placeholder={searchLabel}
@@ -161,7 +171,9 @@ export function Head<T extends Record<string, any>>(
 	const columnsVisibilityHeaderId = useId();
 
 	const searchInputRef = useRef<HTMLInputElement>(null);
+	const triggerRef = useRef<HTMLButtonElement | null>(null);
 
+	const [active, setActive] = useState(false);
 	const [menuHeight, setMenuHeight] = useState<number>();
 	const [searchTerm, setSearchTerm] = useState('');
 
@@ -174,6 +186,15 @@ export function Head<T extends Record<string, any>>(
 		}
 
 		setSearchTerm(searchTerm);
+	};
+
+	const onActiveChange = (active: boolean) => {
+		setActive(active);
+
+		if (!active) {
+			setMenuHeight(undefined);
+			setSearchTerm('');
+		}
 	};
 
 	const normalizedSearchTerm = searchTerm.trim().toLowerCase();
@@ -213,6 +234,7 @@ export function Head<T extends Record<string, any>>(
 									'input[type="text"]',
 									'input[role="switch"]',
 								]}
+								active={active}
 								alwaysClose={false}
 								aria-describedby={
 									columnsVisibilityDescriptionId
@@ -238,6 +260,11 @@ export function Head<T extends Record<string, any>>(
 											onSearchTermChange={
 												onSearchTermChange
 											}
+											onTabBack={() => {
+												triggerRef.current?.focus();
+
+												onActiveChange(false);
+											}}
 											searchLabel={
 												messages.columnsVisibilitySearch
 											}
@@ -257,12 +284,7 @@ export function Head<T extends Record<string, any>>(
 									</>
 								}
 								items={columnsVisibilityItems}
-								onActiveChange={(active: boolean) => {
-									if (!active) {
-										setMenuHeight(undefined);
-										setSearchTerm('');
-									}
-								}}
+								onActiveChange={onActiveChange}
 								style={{
 									maxWidth: '210px',
 									minHeight: menuHeight,
@@ -276,6 +298,11 @@ export function Head<T extends Record<string, any>>(
 										borderless
 										displayType="secondary"
 										monospaced
+										ref={(
+											node: HTMLButtonElement | null
+										) => {
+											triggerRef.current = node;
+										}}
 										size="sm"
 										title={messages['columnsVisibility']}
 									>
