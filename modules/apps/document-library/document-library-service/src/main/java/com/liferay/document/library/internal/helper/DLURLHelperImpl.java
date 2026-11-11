@@ -75,6 +75,17 @@ public class DLURLHelperImpl implements DLURLHelper {
 		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
 		String queryString, boolean appendVersion, boolean absoluteURL) {
 
+		return getDownloadURL(
+			fileEntry, fileVersion, themeDisplay, queryString, absoluteURL,
+			false, appendVersion);
+	}
+
+	@Override
+	public String getDownloadURL(
+		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
+		String queryString, boolean absoluteURL, boolean appendModifiedDate,
+		boolean appendVersion) {
+
 		String url = _getDLFileVersionURLProviderURL(
 			fileVersion, themeDisplay, DLFileVersionURLProvider.Type.DOWNLOAD);
 
@@ -83,9 +94,9 @@ public class DLURLHelperImpl implements DLURLHelper {
 		}
 
 		return HttpComponentsUtil.addParameter(
-			getPreviewURL(
+			_getPreviewURL(
 				fileEntry, fileVersion, themeDisplay, queryString,
-				appendVersion, absoluteURL),
+				absoluteURL, appendModifiedDate, appendVersion),
 			"download", true);
 	}
 
@@ -211,41 +222,9 @@ public class DLURLHelperImpl implements DLURLHelper {
 		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
 		String queryString, boolean appendVersion, boolean absoluteURL) {
 
-		String previewURLPrefix = _getPreviewURLPrefix(
-			themeDisplay, absoluteURL);
-
-		if (fileVersion.getCtCollectionId() !=
-				CTConstants.CT_COLLECTION_ID_PRODUCTION) {
-
-			queryString = StringBundler.concat(
-				"&previewCTCollectionId=", fileVersion.getCtCollectionId(),
-				queryString);
-		}
-
-		String previewURL = _getFriendlyURL(
-			fileEntry, previewURLPrefix, queryString, appendVersion);
-
-		if (Validator.isNull(previewURL)) {
-			previewURL = _getPreviewUuidURL(
-				fileEntry, fileVersion, previewURLPrefix, queryString,
-				appendVersion);
-		}
-
-		if (themeDisplay == null) {
-			return previewURL;
-		}
-
-		if (themeDisplay.isAddSessionIdToURL()) {
-			previewURL = _portal.getURLWithSessionId(
-				previewURL, themeDisplay.getSessionId());
-		}
-
-		if (Validator.isNotNull(themeDisplay.getDoAsUserId())) {
-			previewURL = _portal.addPreservedParameters(
-				themeDisplay, previewURL);
-		}
-
-		return previewURL;
+		return _getPreviewURL(
+			fileEntry, fileVersion, themeDisplay, queryString, absoluteURL,
+			false, appendVersion);
 	}
 
 	@Override
@@ -504,6 +483,54 @@ public class DLURLHelperImpl implements DLURLHelper {
 		}
 
 		return thumbnailSrc;
+	}
+
+	private String _getPreviewURL(
+		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
+		String queryString, boolean absoluteURL, boolean appendModifiedDate,
+		boolean appendVersion) {
+
+		String previewURLPrefix = _getPreviewURLPrefix(
+			themeDisplay, absoluteURL);
+
+		if (fileVersion.getCtCollectionId() !=
+				CTConstants.CT_COLLECTION_ID_PRODUCTION) {
+
+			queryString = StringBundler.concat(
+				"&previewCTCollectionId=", fileVersion.getCtCollectionId(),
+				queryString);
+		}
+
+		String previewURL = _getFriendlyURL(
+			fileEntry, previewURLPrefix, queryString, appendVersion);
+
+		if (Validator.isNull(previewURL)) {
+			previewURL = _getPreviewUuidURL(
+				fileEntry, fileVersion, previewURLPrefix, queryString,
+				appendVersion);
+		}
+		else if (appendModifiedDate) {
+			Date modifiedDate = fileEntry.getModifiedDate();
+
+			previewURL = HttpComponentsUtil.addParameter(
+				previewURL, "t", modifiedDate.getTime());
+		}
+
+		if (themeDisplay == null) {
+			return previewURL;
+		}
+
+		if (themeDisplay.isAddSessionIdToURL()) {
+			previewURL = _portal.getURLWithSessionId(
+				previewURL, themeDisplay.getSessionId());
+		}
+
+		if (Validator.isNotNull(themeDisplay.getDoAsUserId())) {
+			previewURL = _portal.addPreservedParameters(
+				themeDisplay, previewURL);
+		}
+
+		return previewURL;
 	}
 
 	private String _getPreviewURLPrefix(

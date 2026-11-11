@@ -26,6 +26,16 @@ public interface DLURLHelper {
 		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
 		String queryString, boolean appendVersion, boolean absoluteURL);
 
+	public default String getDownloadURL(
+		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
+		String queryString, boolean absoluteURL, boolean appendModifiedDate,
+		boolean appendVersion) {
+
+		return getDownloadURL(
+			fileEntry, fileVersion, themeDisplay, queryString, appendVersion,
+			absoluteURL);
+	}
+
 	public String getFileEntryControlPanelLink(
 			PortletRequest portletRequest, long fileEntryId)
 		throws PortalException;
