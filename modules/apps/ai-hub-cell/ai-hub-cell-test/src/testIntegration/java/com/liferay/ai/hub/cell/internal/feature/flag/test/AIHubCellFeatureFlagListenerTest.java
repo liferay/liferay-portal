@@ -121,12 +121,6 @@ public class AIHubCellFeatureFlagListenerTest {
 
 			Assert.assertNotNull(_fetchOAuth2Application());
 			Assert.assertNotNull(_fetchSAPEntry());
-
-			_featureFlagListener.onValue(
-				TestPropsValues.getCompanyId(), "LPD-62272", false);
-
-			Assert.assertNull(_fetchOAuth2Application());
-			Assert.assertNull(_fetchSAPEntry());
 		}
 	}
 

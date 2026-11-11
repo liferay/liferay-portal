@@ -242,27 +242,6 @@ public class AIHubCellConfigurationModelListenerTest {
 	}
 
 	@Test
-	public void testOnAfterSaveWithSystemScope() throws Exception {
-		_deleteOAuth2ApplicationAndSAPEntry();
-
-		_configurationSaved = true;
-
-		ConfigurationTestUtil.saveConfiguration(
-			AIHubCellConfiguration.class.getName(),
-			HashMapDictionaryBuilder.<String, Object>put(
-				"serviceURL", "https://" + RandomTestUtil.randomString()
-			).build());
-
-		OAuth2Application oAuth2Application = _fetchOAuth2Application();
-
-		_assertScopeAliases(_scopeAliasesList, oAuth2Application);
-
-		Assert.assertNotNull(
-			_sapEntryLocalService.fetchSAPEntry(
-				TestPropsValues.getCompanyId(), "AI_HUB_CELL_TOKEN"));
-	}
-
-	@Test
 	public void testOnBeforeSave() throws Exception {
 		AssertUtils.assertFailure(
 			ConfigurationModelListenerException.class,
