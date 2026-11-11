@@ -304,12 +304,10 @@ public class JenkinsResultsParserUtilTest
 			portalBranchName);
 		String noGitCommitS3ObjectKey = _getRandomPortalBundleS3ObjectKey(
 			portalBranchName);
-
 		String pullRequestS3ObjectKey = JenkinsResultsParserUtil.combine(
 			"persistent-resources/portal-bundle", "/", portalBranchName, "_",
 			_getRandomPortalGitCommitShort(), "_",
 			_getRandomPortalGitCommitShort());
-
 		String reusedS3ObjectKey = _getRandomPortalBundleS3ObjectKey(
 			portalBranchName);
 
