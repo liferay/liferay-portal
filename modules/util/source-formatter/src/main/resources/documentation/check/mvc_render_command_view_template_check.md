@@ -10,33 +10,33 @@ Incorrect:
 
 ```java
 @Component(
-	property = {
-		"jakarta.portlet.name=" + FooPortletKeys.FOO,
-		"mvc.command.name=/"
-	},
-	service = MVCRenderCommand.class
+    property = {
+        "jakarta.portlet.name=" + FooPortletKeys.FOO,
+        "mvc.command.name=/"
+    },
+    service = MVCRenderCommand.class
 )
 public class ViewMVCRenderCommand implements MVCRenderCommand {
 
-	@Override
-	public String render(
-		RenderRequest renderRequest, RenderResponse renderResponse) {
+    @Override
+    public String render(
+        RenderRequest renderRequest, RenderResponse renderResponse) {
 
-		return "/view.jsp";
-	}
+        return "/view.jsp";
+    }
 
 }
 ```
 
-Correct: delete the command and add the init parameter to the portlet.
+Correct, after deleting the command and adding the init parameter to the portlet:
 
 ```java
 @Component(
-	property = {
-		"jakarta.portlet.name=" + FooPortletKeys.FOO,
-		"jakarta.portlet.init-param.view-template=/view.jsp"
-	},
-	service = Portlet.class
+    property = {
+        "jakarta.portlet.name=" + FooPortletKeys.FOO,
+        "jakarta.portlet.init-param.view-template=/view.jsp"
+    },
+    service = Portlet.class
 )
 public class FooPortlet extends MVCPortlet {
 }
@@ -48,5 +48,5 @@ A command that has to stay can be excluded in the nearest `source-formatter.prop
 
 ```
 mvc.render.command.view.template.excludes=\
-	modules/apps/foo/foo-web/src/main/java/com/liferay/foo/web/internal/portlet/action/ViewMVCRenderCommand.java
+    modules/apps/foo/foo-web/src/main/java/com/liferay/foo/web/internal/portlet/action/ViewMVCRenderCommand.java
 ```
