@@ -14,14 +14,21 @@ import com.liferay.message.boards.service.MBMessageLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.notifications.BaseModelUserNotificationHandler;
 import com.liferay.portal.kernel.notifications.UserNotificationHandler;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.trash.TrashHandler;
+import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -46,6 +53,47 @@ public class MentionsUserNotificationHandler
 
 	public MentionsUserNotificationHandler() {
 		setPortletId(MentionsPortletKeys.MENTIONS);
+	}
+
+	@Override
+	public boolean isApplicable(
+		UserNotificationEvent userNotificationEvent,
+		ServiceContext serviceContext) {
+
+		try {
+			JSONObject jsonObject = _jsonFactory.createJSONObject(
+				userNotificationEvent.getPayload());
+
+			String discussionClassName = jsonObject.getString(
+				"discussionClassName");
+
+			if (Validator.isNull(discussionClassName)) {
+				return true;
+			}
+
+			long discussionClassPK = jsonObject.getLong("discussionClassPK");
+
+			if (_isInTrash(discussionClassName, discussionClassPK)) {
+				return false;
+			}
+
+			AssetRenderer<?> assetRenderer = getAssetRenderer(
+				discussionClassName, discussionClassPK);
+
+			if ((assetRenderer == null) ||
+				!assetRenderer.hasViewPermission(
+					PermissionThreadLocal.getPermissionChecker())) {
+
+				return false;
+			}
+
+			return true;
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return false;
+		}
 	}
 
 	@Override
@@ -155,6 +203,25 @@ public class MentionsUserNotificationHandler
 
 		return false;
 	}
+
+	private boolean _isInTrash(String className, long classPK)
+		throws PortalException {
+
+		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
+			className);
+
+		if (trashHandler == null) {
+			return false;
+		}
+
+		return trashHandler.isInTrash(classPK);
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		MentionsUserNotificationHandler.class);
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Language _language;
