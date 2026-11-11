@@ -20,11 +20,13 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.notifications.BaseModelUserNotificationHandler;
 import com.liferay.portal.kernel.notifications.UserNotificationHandler;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ResourceBundle;
 
@@ -48,6 +50,14 @@ public class MentionsUserNotificationHandler
 
 	@Override
 	protected AssetRenderer<?> getAssetRenderer(JSONObject jsonObject) {
+		String discussionClassName = jsonObject.getString(
+			"discussionClassName");
+
+		if (Validator.isNotNull(discussionClassName)) {
+			return getAssetRenderer(
+				discussionClassName, jsonObject.getLong("discussionClassPK"));
+		}
+
 		MBMessage mbMessage = _mbMessageLocalService.fetchMBMessage(
 			jsonObject.getLong("classPK"));
 
@@ -62,10 +72,7 @@ public class MentionsUserNotificationHandler
 
 	@Override
 	protected String getBodyContent(JSONObject jsonObject) {
-		MBMessage mbMessage = _mbMessageLocalService.fetchMBMessage(
-			jsonObject.getLong("classPK"));
-
-		if (_isCMSDiscussion(mbMessage)) {
+		if (_isCMSDiscussion(jsonObject)) {
 			return StringPool.BLANK;
 		}
 
@@ -78,13 +85,10 @@ public class MentionsUserNotificationHandler
 		UserNotificationEvent userNotificationEvent,
 		ServiceContext serviceContext) {
 
-		MBMessage mbMessage = _mbMessageLocalService.fetchMBMessage(
-			jsonObject.getLong("classPK"));
-
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			"content.Language", serviceContext.getLocale(), getClass());
 
-		if (_isCMSDiscussion(mbMessage)) {
+		if (_isCMSDiscussion(jsonObject)) {
 			return _language.format(
 				resourceBundle, "x-mentioned-you-in-a-comment-on-x",
 				new String[] {
@@ -103,6 +107,9 @@ public class MentionsUserNotificationHandler
 
 		String typeName = assetRendererFactory.getTypeName(
 			serviceContext.getLocale());
+
+		MBMessage mbMessage = _mbMessageLocalService.fetchMBMessage(
+			jsonObject.getLong("classPK"));
 
 		if ((mbMessage != null) && mbMessage.isDiscussion()) {
 			return _language.format(
@@ -127,17 +134,20 @@ public class MentionsUserNotificationHandler
 			false);
 	}
 
-	private boolean _isCMSDiscussion(MBMessage mbMessage) {
-		if ((mbMessage == null) || !mbMessage.isDiscussion() ||
+	private boolean _isCMSDiscussion(JSONObject jsonObject) {
+		String discussionClassName = jsonObject.getString(
+			"discussionClassName");
+
+		if (Validator.isNull(discussionClassName) ||
 			!FeatureFlagManagerUtil.isEnabled(
-				mbMessage.getCompanyId(), "LPD-104086")) {
+				CompanyThreadLocal.getCompanyId(), "LPD-104086")) {
 
 			return false;
 		}
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
-				mbMessage.getCompanyId(), mbMessage.getClassName());
+				CompanyThreadLocal.getCompanyId(), discussionClassName);
 
 		if ((objectDefinition != null) && objectDefinition.isCMS()) {
 			return true;

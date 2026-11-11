@@ -69,7 +69,8 @@ public class AddContentItemCommentStrutsAction implements StrutsAction {
 		User user = themeDisplay.getUser();
 
 		Function<String, ServiceContext> serviceContextFunction =
-			CommentUtil.getServiceContextFunction(classPK, httpServletRequest);
+			CommentUtil.getServiceContextFunction(
+				className1, classPK, httpServletRequest);
 
 		String body = CommentUtil.getSanitizedBody(
 			ParamUtil.getString(httpServletRequest, "body"), className1,

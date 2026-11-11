@@ -32,11 +32,11 @@ import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.SubscriptionSender;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.social.kernel.util.SocialInteractionsConfiguration;
 import com.liferay.social.kernel.util.SocialInteractionsConfigurationUtil;
@@ -99,31 +99,38 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 		String fromAddress = PrefsPropsUtil.getString(
 			user.getCompanyId(), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
 
-		SubscriptionSender subscriptionSender = new SubscriptionSender();
+		MentionsSubscriptionSender mentionsSubscriptionSender =
+			new MentionsSubscriptionSender();
 
-		subscriptionSender.setLocalizedBodyMap(
+		mentionsSubscriptionSender.setLocalizedBodyMap(
 			_localization.getMap(bodyLocalizedValuesMap));
-		subscriptionSender.setClassName(className);
-		subscriptionSender.setClassPK(classPK);
-		subscriptionSender.setContextAttribute("[$CONTENT$]", content, false);
-		subscriptionSender.setContextAttributes(
+		mentionsSubscriptionSender.setClassName(className);
+		mentionsSubscriptionSender.setClassPK(classPK);
+		mentionsSubscriptionSender.setContextAttribute(
+			"[$CONTENT$]", content, false);
+		mentionsSubscriptionSender.setContextAttributes(
 			"[$USER_ADDRESS$]", messageUserEmailAddress, "[$USER_NAME$]",
 			messageUserName, "[$CONTENT_URL$]", contentURL);
-		subscriptionSender.setCurrentUserId(userId);
-		subscriptionSender.setEntryTitle(title);
-		subscriptionSender.setEntryURL(contentURL);
-		subscriptionSender.setFrom(fromAddress, fromName);
-		subscriptionSender.setHtmlFormat(true);
-		subscriptionSender.setLocalizedContextAttributeWithFunction(
+		mentionsSubscriptionSender.setCurrentUserId(userId);
+		mentionsSubscriptionSender.setDiscussionClassName(
+			(String)serviceContext.getAttribute("discussionClassName"));
+		mentionsSubscriptionSender.setDiscussionClassPK(
+			GetterUtil.getLong(
+				serviceContext.getAttribute("discussionClassPK")));
+		mentionsSubscriptionSender.setEntryTitle(title);
+		mentionsSubscriptionSender.setEntryURL(contentURL);
+		mentionsSubscriptionSender.setFrom(fromAddress, fromName);
+		mentionsSubscriptionSender.setHtmlFormat(true);
+		mentionsSubscriptionSender.setLocalizedContextAttributeWithFunction(
 			"[$ASSET_ENTRY_NAME$]",
 			locale -> _getAssetEntryName(className, locale));
-		subscriptionSender.setMailId("mb_discussion", classPK);
-		subscriptionSender.setNotificationType(
+		mentionsSubscriptionSender.setMailId("mb_discussion", classPK);
+		mentionsSubscriptionSender.setNotificationType(
 			MentionsConstants.NOTIFICATION_TYPE_MENTION);
-		subscriptionSender.setPortletId(MentionsPortletKeys.MENTIONS);
-		subscriptionSender.setScopeGroupId(groupId);
-		subscriptionSender.setServiceContext(serviceContext);
-		subscriptionSender.setLocalizedSubjectMap(
+		mentionsSubscriptionSender.setPortletId(MentionsPortletKeys.MENTIONS);
+		mentionsSubscriptionSender.setScopeGroupId(groupId);
+		mentionsSubscriptionSender.setServiceContext(serviceContext);
+		mentionsSubscriptionSender.setLocalizedSubjectMap(
 			_localization.getMap(subjectLocalizedValuesMap));
 
 		for (String mentionedUserScreenName : mentionedUsersScreenNames) {
@@ -165,11 +172,11 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 				}
 			}
 
-			subscriptionSender.addRuntimeSubscribers(
+			mentionsSubscriptionSender.addRuntimeSubscribers(
 				mentionedUser.getEmailAddress(), mentionedUser.getFullName());
 		}
 
-		subscriptionSender.flushNotificationsAsync();
+		mentionsSubscriptionSender.flushNotificationsAsync();
 	}
 
 	@Activate

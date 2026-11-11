@@ -224,7 +224,7 @@ public class CommentUtil {
 	}
 
 	public static Function<String, ServiceContext> getServiceContextFunction(
-		long classPK, HttpServletRequest httpServletRequest) {
+		String className, long classPK, HttpServletRequest httpServletRequest) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -244,6 +244,8 @@ public class CommentUtil {
 		return serviceContextFunction.andThen(
 			serviceContext -> {
 				serviceContext.setAttribute("contentURL", contentURL);
+				serviceContext.setAttribute("discussionClassName", className);
+				serviceContext.setAttribute("discussionClassPK", classPK);
 				serviceContext.setAttribute("namespace", StringPool.BLANK);
 
 				return serviceContext;

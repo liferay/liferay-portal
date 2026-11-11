@@ -81,7 +81,7 @@ public class EditContentItemCommentStrutsAction implements StrutsAction {
 				themeDisplay.getUserId(), className1, classPK, commentId, null,
 				body,
 				CommentUtil.getServiceContextFunction(
-					classPK, httpServletRequest));
+					className1, classPK, httpServletRequest));
 
 			comment = _commentManager.fetchComment(commentId);
 
