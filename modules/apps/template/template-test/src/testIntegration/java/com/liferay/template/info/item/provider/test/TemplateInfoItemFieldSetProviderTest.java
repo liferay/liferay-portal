@@ -137,7 +137,6 @@ public class TemplateInfoItemFieldSetProviderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_originalServiceContext = ServiceContextThreadLocal.getServiceContext();
 		_originalSiteDefaultLocale = LocaleThreadLocal.getSiteDefaultLocale();
 		_originalThemeDisplayLocale = LocaleThreadLocal.getThemeDisplayLocale();
 
@@ -176,7 +175,7 @@ public class TemplateInfoItemFieldSetProviderTest {
 			_company.getCompanyId(), _originalCompanyLanguageIds,
 			LocaleUtil.US);
 
-		ServiceContextThreadLocal.pushServiceContext(_originalServiceContext);
+		ServiceContextThreadLocal.popServiceContext();
 		LocaleThreadLocal.setSiteDefaultLocale(_originalSiteDefaultLocale);
 		LocaleThreadLocal.setThemeDisplayLocale(_originalThemeDisplayLocale);
 
@@ -1428,7 +1427,6 @@ public class TemplateInfoItemFieldSetProviderTest {
 	private MVCRenderCommand _mvcRenderCommand;
 
 	private Set<Locale> _originalCompanyLanguageIds;
-	private ServiceContext _originalServiceContext;
 	private Locale _originalSiteDefaultLocale;
 	private Locale _originalThemeDisplayLocale;
 

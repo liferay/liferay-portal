@@ -70,8 +70,6 @@ public class FragmentCollectionContributorTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_originalServiceContext = ServiceContextThreadLocal.getServiceContext();
-
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			_group.getGroupId());
 
@@ -80,7 +78,7 @@ public class FragmentCollectionContributorTest {
 
 	@After
 	public void tearDown() throws Exception {
-		ServiceContextThreadLocal.pushServiceContext(_originalServiceContext);
+		ServiceContextThreadLocal.popServiceContext();
 	}
 
 	@Test
@@ -315,8 +313,6 @@ public class FragmentCollectionContributorTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	private ServiceContext _originalServiceContext;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
