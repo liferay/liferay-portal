@@ -55,7 +55,7 @@ public class DeployWorkflowDefinitionMVCActionCommand
 		Map<Locale, String> titleMap = localization.getLocalizationMap(
 			actionRequest, "title");
 
-		validateTitle(actionRequest, titleMap);
+		validateTitle(titleMap);
 
 		String content = ParamUtil.getString(actionRequest, "content");
 
@@ -124,8 +124,7 @@ public class DeployWorkflowDefinitionMVCActionCommand
 		return language.get(resourceBundle, "workflow-updated-successfully");
 	}
 
-	protected void validateTitle(
-			ActionRequest actionRequest, Map<Locale, String> titleMap)
+	protected void validateTitle(Map<Locale, String> titleMap)
 		throws WorkflowDefinitionTitleException {
 
 		String title = titleMap.get(LocaleUtil.getDefault());
