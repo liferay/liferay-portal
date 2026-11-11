@@ -75,9 +75,14 @@ SearchResultsPortletPreferences searchResultsPortletPreferences = new SearchResu
 
 			<%
 			boolean limitResultCountAccuracyFeatureFlagEnabled = searchResultsPortletDisplayContext.isLimitResultCountAccuracyFeatureFlagEnabled();
+			boolean maximumSearchDepthFeatureFlagEnabled = searchResultsPortletDisplayContext.isMaximumSearchDepthFeatureFlagEnabled();
 
 			String limitResultCountAccuracyHelpMessage = LanguageUtil.format(request, "limit-result-count-accuracy-help", SearchResultsPortletSharedSearchContributor.RESULT_COUNT_ACCURACY_LIMIT, false);
 			String limitResultCountAccuracyInputName = SearchResultsPortletPreferences.PREFERENCE_KEY_LIMIT_RESULT_COUNT_ACCURACY;
+
+			if (maximumSearchDepthFeatureFlagEnabled) {
+				limitResultCountAccuracyHelpMessage = LanguageUtil.get(request, "limit-result-count-accuracy-maximum-search-depth-help");
+			}
 
 			if (limitResultCountAccuracyFeatureFlagEnabled) {
 				limitResultCountAccuracyInputName = PortletPreferencesJspUtil.getInputName(limitResultCountAccuracyInputName);
@@ -90,7 +95,6 @@ SearchResultsPortletPreferences searchResultsPortletPreferences = new SearchResu
 			<aui:input disabled="<%= !limitResultCountAccuracyFeatureFlagEnabled %>" helpMessage="<%= limitResultCountAccuracyHelpMessage %>" label="limit-result-count-accuracy" name="<%= limitResultCountAccuracyInputName %>" type="checkbox" value="<%= searchResultsPortletDisplayContext.isLimitResultCountAccuracy() %>" />
 
 			<%
-			boolean maximumSearchDepthFeatureFlagEnabled = searchResultsPortletDisplayContext.isMaximumSearchDepthFeatureFlagEnabled();
 			String maximumSearchDepthHelpMessage = LanguageUtil.get(request, "maximum-search-depth-help");
 			String maximumSearchDepthInputName = SearchResultsPortletPreferences.PREFERENCE_KEY_MAXIMUM_SEARCH_DEPTH;
 

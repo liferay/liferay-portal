@@ -19,6 +19,7 @@ page import="com.liferay.portal.search.web.internal.search.results.portlet.share
 SearchResultsPortletInstanceConfiguration searchResultsPortletInstanceConfiguration = (SearchResultsPortletInstanceConfiguration)request.getAttribute(SearchResultsPortletInstanceConfiguration.class.getName());
 
 boolean limitResultCountAccuracyAvailable = FeatureFlagManagerUtil.isEnabled("LPD-98858");
+boolean maximumSearchDepthEnabled = FeatureFlagManagerUtil.isEnabled("LPD-114635");
 %>
 
 <aui:input name="displayStyle" type="textarea" value="<%= searchResultsPortletInstanceConfiguration.displayStyle() %>" />
@@ -37,17 +38,20 @@ boolean limitResultCountAccuracyAvailable = FeatureFlagManagerUtil.isEnabled("LP
 
 <div class="form-feedback-group mb-4">
 	<span class="form-help-text">
-		<liferay-ui:message arguments="<%= SearchResultsPortletSharedSearchContributor.RESULT_COUNT_ACCURACY_LIMIT %>" key="limit-result-count-accuracy-help" translateArguments="<%= false %>" />
+		<c:choose>
+			<c:when test="<%= maximumSearchDepthEnabled %>">
+				<liferay-ui:message key="limit-result-count-accuracy-maximum-search-depth-help" />
+			</c:when>
+			<c:otherwise>
+				<liferay-ui:message arguments="<%= SearchResultsPortletSharedSearchContributor.RESULT_COUNT_ACCURACY_LIMIT %>" key="limit-result-count-accuracy-help" translateArguments="<%= false %>" />
+			</c:otherwise>
+		</c:choose>
 
 		<c:if test="<%= !limitResultCountAccuracyAvailable %>">
 			<liferay-ui:message arguments='<%= LanguageUtil.get(request, "feature.flag.LPD-98858.title") %>' key="instance-settings-enable-feature-flag-help" translateArguments="<%= false %>" />
 		</c:if>
 	</span>
 </div>
-
-<%
-boolean maximumSearchDepthEnabled = FeatureFlagManagerUtil.isEnabled("LPD-114635");
-%>
 
 <aui:input disabled="<%= !maximumSearchDepthEnabled %>" label="maximum-search-depth" name="maximumSearchDepth" type="number" value="<%= searchResultsPortletInstanceConfiguration.maximumSearchDepth() %>" wrapperCssClass="mb-0">
 	<aui:validator name="digits" />
