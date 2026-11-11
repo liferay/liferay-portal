@@ -485,7 +485,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			"LPD-72013", "LPD-74331", "LPD-75450", "LPD-77124", "LPD-77505",
 			"LPD-77576", "LPD-77852", "LPD-78667", "LPD-79415", "LPD-80061",
 			"LPD-81793", "LPD-83094", "LPD-97454", "LPD-101044", "LPD-101791",
-			"LPD-103694", "LPD-110626", "LPD-113027"
+			"LPD-103694", "LPD-110626", "LPD-113027", "LPD-114784"
 		}
 	)
 	public void testPutSiteSitePage() throws Exception {
@@ -5538,6 +5538,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		_testPutSiteSitePageWithStagingImportByAnotherUser(serviceContext);
 		_testPutSiteSitePageWithStagingImportWithLastImportUser(serviceContext);
+		_testPutSiteSitePageWithStagingImportWithLayoutUUID();
 	}
 
 	private void _testPutSiteSitePageWithStagingImport(
@@ -5696,6 +5697,49 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertEquals(
 			lastImportUser.getUuid(),
 			layout.getTypeSettingsProperty("last-import-user-uuid"));
+	}
+
+	private void _testPutSiteSitePageWithStagingImportWithLayoutUUID()
+		throws Exception {
+
+		Layout stagingLayout = LayoutTestUtil.addTypePortletLayout(
+			irrelevantGroup);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId());
+
+		serviceContext.setUuid(stagingLayout.getUuid());
+
+		Layout liveLayout = _layoutLocalService.addLayout(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			testGroup.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, 0, 0,
+			stagingLayout.getNameMap(), Collections.emptyMap(),
+			Collections.emptyMap(), Collections.emptyMap(),
+			Collections.emptyMap(), LayoutConstants.TYPE_PORTLET, null, false,
+			false, stagingLayout.getFriendlyURLMap(), null, serviceContext);
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			irrelevantGroup.getExternalReferenceCode(),
+			stagingLayout.getExternalReferenceCode());
+
+		try (SafeCloseable safeCloseable1 =
+				_setExportImportThreadLocalWithSafeCloseable(
+					"_layoutImportInProcess", true);
+			SafeCloseable safeCloseable2 =
+				_setExportImportThreadLocalWithSafeCloseable(
+					"_layoutStagingInProcess", true)) {
+
+			sitePageResource.putSiteSitePage(
+				testGroup.getExternalReferenceCode(),
+				sitePage.getExternalReferenceCode(), false, sitePage);
+		}
+
+		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+			stagingLayout.getExternalReferenceCode(), testGroup.getGroupId());
+
+		Assert.assertEquals(liveLayout.getPlid(), layout.getPlid());
 	}
 
 	private void _testPutSiteSitePageWithWidgetPageSettings() throws Exception {
