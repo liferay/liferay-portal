@@ -1037,6 +1037,61 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			layoutClassedModelUsages.size());
 	}
 
+	@Test
+	@TestInfo("LPD-111466")
+	public void testExportImportLayoutClassedModelUsageWithLocalStaging()
+		throws Exception {
+
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), group, false, false,
+			new ServiceContext());
+
+		Group stagingGroup = group.getStagingGroup();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			stagingGroup.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		Layout stagingLayout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			layout.getUuid(), stagingGroup.getGroupId(),
+			layout.isPrivateLayout());
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			stagingLayout, getPortletId(),
+			HashMapBuilder.put(
+				"assetEntryXml",
+				getAssetEntriesXmls(
+					Collections.singletonList(getAssetEntry(journalArticle)))
+			).put(
+				"selectionStyle", new String[] {"manual"}
+			).build());
+
+		_publishLayouts(stagingGroup);
+
+		JournalArticle liveJournalArticle =
+			_journalArticleLocalService.getJournalArticleByUuidAndGroupId(
+				journalArticle.getUuid(), group.getGroupId());
+
+		List<LayoutClassedModelUsage> layoutClassedModelUsages =
+			_layoutClassedModelUsageLocalService.getLayoutClassedModelUsages(
+				_portal.getClassNameId(JournalArticle.class),
+				liveJournalArticle.getResourcePrimKey());
+
+		LayoutClassedModelUsage layoutClassedModelUsage =
+			layoutClassedModelUsages.get(0);
+
+		Assert.assertEquals(
+			portletId, layoutClassedModelUsage.getContainerKey());
+		Assert.assertEquals(
+			group.getGroupId(), layoutClassedModelUsage.getGroupId());
+		Assert.assertEquals(
+			layout.getPlid(), layoutClassedModelUsage.getPlid());
+
+		Assert.assertEquals(
+			layoutClassedModelUsages.toString(), 1,
+			layoutClassedModelUsages.size());
+	}
+
 	@Ignore
 	@Test
 	public void testExportImportLayoutScopedAssetEntries() throws Exception {
