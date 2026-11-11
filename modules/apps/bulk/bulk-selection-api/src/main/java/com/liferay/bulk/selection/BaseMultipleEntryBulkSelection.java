@@ -9,8 +9,6 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 
 import java.io.Serializable;
 
@@ -27,18 +25,6 @@ public abstract class BaseMultipleEntryBulkSelection<T>
 
 		_entryIds = entryIds;
 		_parameterMap = parameterMap;
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 *             #BaseMultipleEntryBulkSelection(long[], Map)}
-	 */
-	@Deprecated
-	public BaseMultipleEntryBulkSelection(
-		long[] entryIds, Map<String, String[]> parameterMap,
-		ResourceBundleLoader resourceBundleLoader, Language language) {
-
-		this(entryIds, parameterMap);
 	}
 
 	@Override
