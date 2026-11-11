@@ -36,13 +36,17 @@ public final class UpgradeQueryMonitor {
 			return;
 		}
 
-		_scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
-			new NamedThreadFactory(
-				"Liferay Upgrade Query Monitor", Thread.NORM_PRIORITY, null));
+		ScheduledExecutorService scheduledExecutorService =
+			Executors.newSingleThreadScheduledExecutor(
+				new NamedThreadFactory(
+					"Liferay Upgrade Query Monitor", Thread.NORM_PRIORITY,
+					null));
 
-		_scheduledExecutorService.scheduleWithFixedDelay(
-			UpgradeQueryMonitor::_poll, _POLLING_INTERVAL_SECONDS,
+		scheduledExecutorService.scheduleWithFixedDelay(
+			() -> _poll(scheduledExecutorService), _POLLING_INTERVAL_SECONDS,
 			_POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+
+		_scheduledExecutorService = scheduledExecutorService;
 	}
 
 	public static synchronized void stop() {
@@ -50,7 +54,7 @@ public final class UpgradeQueryMonitor {
 			return;
 		}
 
-		_scheduledExecutorService.shutdownNow();
+		_scheduledExecutorService.shutdown();
 
 		try {
 			if (!_scheduledExecutorService.awaitTermination(
@@ -87,7 +91,9 @@ public final class UpgradeQueryMonitor {
 		return StringBundler.concat(" in schema \"", schema, "\"");
 	}
 
-	private static void _poll() {
+	private static void _poll(
+		ScheduledExecutorService scheduledExecutorService) {
+
 		DataSource dataSource = InfrastructureUtil.getDataSource();
 
 		if (dataSource == null) {
@@ -143,9 +149,7 @@ public final class UpgradeQueryMonitor {
 			}
 		}
 		catch (Exception exception) {
-			Thread currentThread = Thread.currentThread();
-
-			if (currentThread.isInterrupted()) {
+			if (scheduledExecutorService.isShutdown()) {
 				return;
 			}
 
