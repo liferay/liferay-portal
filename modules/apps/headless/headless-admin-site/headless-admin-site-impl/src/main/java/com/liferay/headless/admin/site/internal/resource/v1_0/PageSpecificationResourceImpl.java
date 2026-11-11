@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -346,23 +345,16 @@ public class PageSpecificationResourceImpl
 
 		_validateLayoutType(layout);
 
-		if ((layout.isTypeAssetDisplay() || layout.isTypeContent()) &&
-			!(pageSpecification instanceof ContentPageSpecification)) {
+		Class<? extends PageSpecification> clazz =
+			ContentPageSpecification.class;
 
-			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"The ", _getTypeName(pageSpecification),
-					" type does not match the content page specification ",
-					"type"));
+		if (!layout.isTypeAssetDisplay() && !layout.isTypeContent()) {
+			clazz = WidgetPageSpecification.class;
 		}
 
-		if (!(layout.isTypeAssetDisplay() || layout.isTypeContent()) &&
-			!(pageSpecification instanceof WidgetPageSpecification)) {
-
+		if (!clazz.isInstance(pageSpecification)) {
 			throw new IllegalArgumentException(
-				StringBundler.concat(
-					"The ", _getTypeName(pageSpecification),
-					" type does not match the widget page specification type"));
+				"The page specification type does not match the page type");
 		}
 
 		return super.patchSitePageSpecification(
@@ -535,15 +527,6 @@ public class PageSpecificationResourceImpl
 
 		return _layoutService.getLayoutByExternalReferenceCode(
 			pageSpecificationExternalReferenceCode, groupId);
-	}
-
-	private String _getTypeName(PageSpecification pageSpecification) {
-		Class<? extends PageSpecification> clazz = pageSpecification.getClass();
-
-		String simpleName = clazz.getSimpleName();
-
-		return StringUtil.toLowerCase(
-			simpleName.replaceAll("(?<=[a-z])(?=[A-Z])", " "));
 	}
 
 	private void _preparePatch(
