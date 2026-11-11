@@ -1488,8 +1488,7 @@ public class PageSpecificationResourceTest
 
 		ProblemExceptionTestUtil.assertProblemException(
 			"BAD_REQUEST",
-			"The widget page specification type does not match the content " +
-				"page specification type",
+			"The page specification type does not match the page type",
 			() -> pageSpecificationResource.patchSitePageSpecification(
 				testGroup.getExternalReferenceCode(),
 				draftLayout.getExternalReferenceCode(),
