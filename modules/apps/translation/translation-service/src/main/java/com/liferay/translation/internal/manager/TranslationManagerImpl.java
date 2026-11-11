@@ -10,10 +10,12 @@ import com.liferay.info.exception.InfoItemPermissionException;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemFieldValues;
+import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -27,6 +29,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -34,10 +37,11 @@ import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
+import com.liferay.segments.model.SegmentsExperience;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.translation.exception.XLIFFFileException;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporter;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
-import com.liferay.translation.internal.helper.InfoItemHelper;
 import com.liferay.translation.manager.Translation;
 import com.liferay.translation.manager.TranslationManager;
 import com.liferay.translation.service.TranslationEntryService;
@@ -69,10 +73,39 @@ public class TranslationManagerImpl implements TranslationManager {
 
 	@Override
 	public String getTitle(String className, long classPK, Locale locale) {
-		InfoItemHelper infoItemHelper = new InfoItemHelper(
-			className, _infoItemServiceRegistry);
+		try {
+			ObjectValuePair<InfoItemReference, String>
+				infoItemReferenceSuffixObjectValuePair =
+					_getInfoItemReferenceSuffixObjectValuePair(
+						className, classPK, locale);
 
-		return infoItemHelper.getInfoItemTitle(classPK, locale);
+			InfoItemReference infoItemReference =
+				infoItemReferenceSuffixObjectValuePair.getKey();
+
+			InfoItemIdentifier infoItemIdentifier =
+				infoItemReference.getInfoItemIdentifier();
+
+			InfoItemObjectProvider<Object> infoItemObjectProvider =
+				_infoItemServiceRegistry.getFirstInfoItemService(
+					InfoItemObjectProvider.class,
+					infoItemReference.getClassName(),
+					infoItemIdentifier.getInfoItemServiceFilter());
+
+			Object object = infoItemObjectProvider.getInfoItem(
+				infoItemIdentifier);
+
+			if (object == null) {
+				return null;
+			}
+
+			return _getTitle(infoItemReference.getClassName(), object, locale) +
+				infoItemReferenceSuffixObjectValuePair.getValue();
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+
+			return null;
+		}
 	}
 
 	@Override
@@ -213,6 +246,32 @@ public class TranslationManagerImpl implements TranslationManager {
 		return new InfoItemReference(className, classPK);
 	}
 
+	private ObjectValuePair<InfoItemReference, String>
+		_getInfoItemReferenceSuffixObjectValuePair(
+			String className, long classPK, Locale locale) {
+
+		if (!Objects.equals(className, SegmentsExperience.class.getName())) {
+			return new ObjectValuePair<>(
+				new InfoItemReference(className, classPK), StringPool.BLANK);
+		}
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(classPK);
+
+		if (segmentsExperience == null) {
+			return new ObjectValuePair<>(
+				new InfoItemReference(className, classPK), StringPool.BLANK);
+		}
+
+		return new ObjectValuePair<>(
+			new InfoItemReference(
+				Layout.class.getName(), segmentsExperience.getPlid()),
+			StringBundler.concat(
+				StringPool.SPACE, StringPool.OPEN_PARENTHESIS,
+				segmentsExperience.getName(locale),
+				StringPool.CLOSE_PARENTHESIS));
+	}
+
 	private String _getPrefixName(
 		String className, long[] classPKs, Locale locale) {
 
@@ -232,6 +291,59 @@ public class TranslationManagerImpl implements TranslationManager {
 		title = _language.get(locale, "model.resource." + className);
 
 		return title + StringPool.SPACE + classPKs[0];
+	}
+
+	private String _getStringValue(
+		InfoFieldValue<Object> infoFieldValue, Locale locale) {
+
+		Object value = infoFieldValue.getValue();
+
+		if (value instanceof InfoLocalizedValue) {
+			InfoLocalizedValue<Object> infoLocalizedValue =
+				(InfoLocalizedValue<Object>)value;
+
+			String stringValue = (String)infoLocalizedValue.getValue(locale);
+
+			if (Validator.isNotNull(stringValue)) {
+				return stringValue;
+			}
+
+			Locale defaultLocale = infoLocalizedValue.getDefaultLocale();
+
+			if (defaultLocale == null) {
+				return null;
+			}
+
+			return (String)infoLocalizedValue.getValue(defaultLocale);
+		}
+
+		return (String)value;
+	}
+
+	private String _getTitle(String className, Object object, Locale locale) {
+		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemFieldValuesProvider.class, className);
+
+		InfoFieldValue<Object> titleInfoFieldValue =
+			infoItemFieldValuesProvider.getInfoFieldValue(object, "title");
+
+		if (titleInfoFieldValue != null) {
+			String value = _getStringValue(titleInfoFieldValue, locale);
+
+			if (Validator.isNotNull(value)) {
+				return value;
+			}
+		}
+
+		InfoFieldValue<Object> nameInfoFieldValue =
+			infoItemFieldValuesProvider.getInfoFieldValue(object, "name");
+
+		if (nameInfoFieldValue != null) {
+			return _getStringValue(nameInfoFieldValue, locale);
+		}
+
+		return null;
 	}
 
 	private String _getXLIFFFileName(
@@ -413,6 +525,9 @@ public class TranslationManagerImpl implements TranslationManager {
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	@Reference
 	private TranslationEntryService _translationEntryService;
