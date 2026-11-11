@@ -86,7 +86,7 @@ renderResponse.setTitle(title);
 				</c:if>
 
 				<liferay-data-engine:data-layout-builder
-					additionalPanels="<%= dlEditDDMStructureDisplayContext.getAdditionalPanels(npmResolvedPackageName) %>"
+					additionalPanels="<%= dlEditDDMStructureDisplayContext.getAdditionalPanels() %>"
 					componentId='<%= liferayPortletResponse.getNamespace() + "dataLayoutBuilder" %>'
 					contentType="document-library"
 					dataDefinitionId="<%= ddmStructureId %>"

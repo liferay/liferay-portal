@@ -83,7 +83,7 @@ renderResponse.setTitle((fileEntryType == null) ? LanguageUtil.get(request, "new
 			%>
 
 			<liferay-data-engine:data-layout-builder
-				additionalPanels="<%= dlEditFileEntryTypeDataEngineDisplayContext.getAdditionalPanels(npmResolvedPackageName) %>"
+				additionalPanels="<%= dlEditFileEntryTypeDataEngineDisplayContext.getAdditionalPanels() %>"
 				componentId='<%= liferayPortletResponse.getNamespace() + "dataLayoutBuilder" %>'
 				contentType="document-library"
 				dataDefinitionId="<%= dataDefinitionId %>"

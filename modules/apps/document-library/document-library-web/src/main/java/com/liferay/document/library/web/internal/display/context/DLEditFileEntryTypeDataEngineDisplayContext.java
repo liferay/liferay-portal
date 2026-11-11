@@ -43,9 +43,7 @@ public class DLEditFileEntryTypeDataEngineDisplayContext {
 			liferayPortletRequest);
 	}
 
-	public List<Map<String, Object>> getAdditionalPanels(
-		String npmResolvedPackageName) {
-
+	public List<Map<String, Object>> getAdditionalPanels() {
 		List<Map<String, Object>> additionalPanels = new ArrayList<>();
 
 		additionalPanels.add(

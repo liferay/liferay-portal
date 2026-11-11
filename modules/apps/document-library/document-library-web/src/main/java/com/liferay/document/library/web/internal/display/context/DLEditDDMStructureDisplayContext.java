@@ -48,9 +48,7 @@ public class DLEditDDMStructureDisplayContext {
 		_liferayPortletResponse = liferayPortletResponse;
 	}
 
-	public List<Map<String, Object>> getAdditionalPanels(
-		String npmResolvedPackageName) {
-
+	public List<Map<String, Object>> getAdditionalPanels() {
 		return ListUtil.fromArray(
 			HashMapBuilder.<String, Object>put(
 				"icon", "cog"
