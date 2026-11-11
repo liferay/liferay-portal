@@ -40,6 +40,7 @@ renderResponse.setTitle(LanguageUtil.format(request, "view-x", kaleoProcess.getN
 				modelClass="<%= KaleoProcess.class %>"
 				showInstanceTracker="<%= true %>"
 				showStatusLabel="<%= false %>"
+				status="<%= ddlRecord.getStatus() %>"
 				version="<%= ddlRecordVersion.getVersion() %>"
 			/>
 		</div>
