@@ -971,7 +971,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	 * @throws Exception if a user with the primary key could not be found
 	 */
 	@Override
-	public long getCompanyIdByUserId(long userId) throws Exception {
+	public long getCompanyIdByUserId(long userId) {
 		long[] companyIds = PortalInstancePool.getCompanyIds();
 
 		long companyId = 0;
