@@ -831,6 +831,7 @@ public class DBPartitionUtil {
 		try {
 			_copySchema(
 				connection, sourcePartitionName, targetPartitionName,
+				"Audit_AuditEvent", "Audit_AuditEventPseudonymField",
 				"OA2Auths_OA2ScopeGrants", "OAuth2Authorization",
 				"OpenIdConnectSession", "RememberMeToken", "SamlIbSloMessage",
 				"SamlIdpSpSession", "SamlIdpSsoSession", "SamlSpAuthRequest",

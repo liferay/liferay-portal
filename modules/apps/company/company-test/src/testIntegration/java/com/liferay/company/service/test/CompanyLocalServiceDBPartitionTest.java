@@ -26,6 +26,7 @@ import com.liferay.portal.db.partition.db.DBPartitionDB;
 import com.liferay.portal.db.partition.test.util.BaseDBPartitionTestCase;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
+import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.db.partition.DBPartition;
@@ -87,6 +88,10 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.repository.liferayrepository.LiferayRepository;
 import com.liferay.portal.repository.registry.RepositoryClassDefinition;
 import com.liferay.portal.repository.registry.RepositoryClassDefinitionCatalogUtil;
+import com.liferay.portal.security.audit.storage.model.AuditEvent;
+import com.liferay.portal.security.audit.storage.model.AuditEventPseudonymField;
+import com.liferay.portal.security.audit.storage.service.AuditEventLocalService;
+import com.liferay.portal.security.audit.storage.service.AuditEventPseudonymFieldLocalService;
 import com.liferay.portal.service.impl.ClassNameLocalServiceImpl;
 import com.liferay.portal.service.impl.CompanyLocalServiceImpl;
 import com.liferay.portal.service.impl.ResourceActionLocalServiceImpl;
@@ -817,6 +822,8 @@ public class CompanyLocalServiceDBPartitionTest
 		String indexNameNext = company.getIndexNameNext();
 		String key = company.getKey();
 
+		AuditEvent auditEvent = null;
+		AuditEventPseudonymField auditEventPseudonymField = null;
 		Company copiedCompany = null;
 		RememberMeToken rememberMeToken = null;
 		Ticket ticket = null;
@@ -841,6 +848,17 @@ public class CompanyLocalServiceDBPartitionTest
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 					TestPropsValues.getCompanyId())) {
 
+			auditEvent = _auditEventLocalService.addAuditEvent(
+				new AuditMessage(
+					company.getCompanyId(), TestPropsValues.getUserId(),
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString()));
+			auditEventPseudonymField =
+				_auditEventPseudonymFieldLocalService.
+					addAuditEventPseudonymField(
+						company.getCompanyId(), RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString());
 			rememberMeToken = _rememberMeTokenLocalService.addRememberMeToken(
 				company.getCompanyId(), TestPropsValues.getUserId(),
 				new Date(System.currentTimeMillis() + Time.DAY),
@@ -930,6 +948,14 @@ public class CompanyLocalServiceDBPartitionTest
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 						copiedCompanyId)) {
 
+				Assert.assertNull(
+					_auditEventLocalService.fetchAuditEvent(
+						auditEvent.getAuditEventId()));
+				Assert.assertNull(
+					_auditEventPseudonymFieldLocalService.
+						fetchAuditEventPseudonymField(
+							auditEventPseudonymField.
+								getAuditEventPseudonymFieldId()));
 				Assert.assertNull(
 					_sharingEntryLocalService.fetchSharingEntry(
 						sharingEntry.getSharingEntryId()));
@@ -1051,6 +1077,16 @@ public class CompanyLocalServiceDBPartitionTest
 					companyLocalService.updateIndexNames(
 						company.getCompanyId(), indexNameCurrent,
 						indexNameNext);
+
+					if (auditEvent != null) {
+						_auditEventLocalService.deleteAuditEvent(auditEvent);
+					}
+
+					if (auditEventPseudonymField != null) {
+						_auditEventPseudonymFieldLocalService.
+							deleteAuditEventPseudonymField(
+								auditEventPseudonymField);
+					}
 
 					if (rememberMeToken != null) {
 						_rememberMeTokenLocalService.deleteRememberMeToken(
@@ -1964,6 +2000,13 @@ public class CompanyLocalServiceDBPartitionTest
 	private static BundleContext _bundleContext;
 	private static long _defaultCompanyId;
 	private static SafeCloseable _safeCloseable;
+
+	@Inject
+	private AuditEventLocalService _auditEventLocalService;
+
+	@Inject
+	private AuditEventPseudonymFieldLocalService
+		_auditEventPseudonymFieldLocalService;
 
 	private ClassName _className1;
 	private ClassName _className2;
