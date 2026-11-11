@@ -6,6 +6,7 @@ import ClayLayout from '@clayui/layout';
 import MostEngagedIndividuals from './components/MostEngagedIndividuals';
 import React from 'react';
 import TopAssets from './components/TopAssets';
+import TopCampaigns from './components/TopCampaigns';
 import TopCategoriesAndTags from './components/TopCategoriesAndTags';
 import TopPagesCard from './components/TopPagesCard';
 import {
@@ -154,17 +155,23 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 				</ClayLayout.Col>
 			</ClayLayout.Row>
 
+			<SectionHeader
+				className="mb-3 mt-4"
+				icon="display-content"
+				title={Liferay.Language.get('engagement-summary')}
+			/>
+
 			<ClayLayout.Row>
 				<ClayLayout.Col size={12}>
 					<MostEngagedIndividuals />
 				</ClayLayout.Col>
 			</ClayLayout.Row>
 
-			<SectionHeader
-				className="mb-3 mt-2"
-				icon="display-content"
-				title={Liferay.Language.get('engagement-summary')}
-			/>
+			<ClayLayout.Row>
+				<ClayLayout.Col size={12}>
+					<TopCampaigns accountName={account?.accountName} />
+				</ClayLayout.Col>
+			</ClayLayout.Row>
 
 			<ClayLayout.Row>
 				<ClayLayout.Col size={12}>
