@@ -3377,8 +3377,7 @@ public class DefaultObjectEntryManagerImpl
 		}
 
 		Set<String> allowedFileSources =
-			ObjectFieldSettingUtil.getAllowedFileSources(
-				objectField.getCompanyId());
+			ObjectFieldSettingUtil.getAllowedFileSources();
 		String fileSource = ObjectFieldSettingUtil.getValue(
 			ObjectFieldSettingConstants.NAME_FILE_SOURCE, objectField);
 

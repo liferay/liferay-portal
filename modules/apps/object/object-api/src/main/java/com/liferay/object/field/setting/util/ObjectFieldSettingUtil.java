@@ -45,7 +45,7 @@ import java.util.Set;
  */
 public class ObjectFieldSettingUtil {
 
-	public static Set<String> getAllowedFileSources(long companyId) {
+	public static Set<String> getAllowedFileSources() {
 		return SetUtil.fromArray(
 			ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT,
 			ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA,
