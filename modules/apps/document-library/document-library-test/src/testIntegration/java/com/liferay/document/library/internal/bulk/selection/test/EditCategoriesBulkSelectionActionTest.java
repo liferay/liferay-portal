@@ -14,6 +14,7 @@ import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.bulk.selection.BulkSelection;
 import com.liferay.bulk.selection.BulkSelectionAction;
 import com.liferay.bulk.selection.BulkSelectionFactory;
+import com.liferay.document.library.helper.DLAssetHelper;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
@@ -120,8 +121,12 @@ public class EditCategoriesBulkSelectionActionTest {
 			FileEntry fileEntry, long... assetCategoryIds)
 		throws Exception {
 
+		fileEntry = _dlAppLocalService.getFileEntry(fileEntry.getFileEntryId());
+
 		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
-			DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+			DLFileEntry.class.getName(),
+			_dlAssetHelper.getAssetClassPK(
+				fileEntry, fileEntry.getLatestFileVersion()));
 
 		long[] actualAssetCategoryIds = assetEntry.getCategoryIds();
 
@@ -175,6 +180,9 @@ public class EditCategoriesBulkSelectionActionTest {
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
+	private DLAssetHelper _dlAssetHelper;
 
 	@DeleteAfterTestRun
 	private Group _group;

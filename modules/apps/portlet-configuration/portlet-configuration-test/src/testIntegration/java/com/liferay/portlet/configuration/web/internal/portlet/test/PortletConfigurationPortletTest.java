@@ -81,6 +81,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -321,11 +322,9 @@ public class PortletConfigurationPortletTest {
 		Role guestRole = _roleLocalService.getRole(
 			_company.getCompanyId(), RoleConstants.GUEST);
 
-		_resourcePermissionLocalService.removeResourcePermission(
-			_company.getCompanyId(), DLFileEntry.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(fileEntry1.getFileEntryId()), guestRole.getRoleId(),
-			ActionKeys.VIEW);
+		_removeViewPermission(
+			DLFileEntry.class.getName(), fileEntry1.getFileEntryId(),
+			guestRole);
 
 		List<String> resourcePrimKeys = Arrays.asList(
 			String.valueOf(fileEntry1.getFileEntryId()),
@@ -355,8 +354,8 @@ public class PortletConfigurationPortletTest {
 		}
 
 		_updateRolePermissions(
-			new HashMap<>(), DLFileEntry.class.getName(), resourcePrimKeys,
-			Arrays.asList(guestRole.getRoleId()));
+			Collections.emptyMap(), DLFileEntry.class.getName(),
+			resourcePrimKeys, Arrays.asList(guestRole.getRoleId()));
 
 		for (String resourcePrimKey : resourcePrimKeys) {
 			_assertHasResourcePermission(
@@ -374,7 +373,8 @@ public class PortletConfigurationPortletTest {
 
 		Folder folder2 = _addFolder();
 
-		_removeViewPermission(folder2, guestRole);
+		_removeViewPermission(
+			DLFolder.class.getName(), folder2.getFolderId(), guestRole);
 
 		resourcePrimKeys = Arrays.asList(
 			String.valueOf(folder1.getFolderId()),
@@ -393,7 +393,8 @@ public class PortletConfigurationPortletTest {
 				resourcePrimKey, guestRole.getRoleId());
 		}
 
-		_removeViewPermission(folder2, guestRole);
+		_removeViewPermission(
+			DLFolder.class.getName(), folder2.getFolderId(), guestRole);
 
 		_updateRolePermissions(
 			HashMapBuilder.put(
@@ -404,10 +405,10 @@ public class PortletConfigurationPortletTest {
 
 		_assertHasResourcePermission(
 			ActionKeys.VIEW, true, DLFolder.class.getName(),
-			resourcePrimKeys.get(0), guestRole.getRoleId());
+			String.valueOf(folder1.getFolderId()), guestRole.getRoleId());
 		_assertHasResourcePermission(
 			ActionKeys.VIEW, false, DLFolder.class.getName(),
-			resourcePrimKeys.get(1), guestRole.getRoleId());
+			String.valueOf(folder2.getFolderId()), guestRole.getRoleId());
 
 		Role userRole = _roleLocalService.getRole(
 			_company.getCompanyId(), RoleConstants.USER);
@@ -788,14 +789,14 @@ public class PortletConfigurationPortletTest {
 			mockActionRequest, new MockActionResponse());
 	}
 
-	private void _removeViewPermission(Folder folder, Role role)
+	private void _removeViewPermission(
+			String className, long classPK, Role role)
 		throws Exception {
 
 		_resourcePermissionLocalService.removeResourcePermission(
-			_company.getCompanyId(), DLFolder.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(folder.getFolderId()), role.getRoleId(),
-			ActionKeys.VIEW);
+			_company.getCompanyId(), className,
+			ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(classPK),
+			role.getRoleId(), ActionKeys.VIEW);
 	}
 
 	private void _testCheckPermissionsIsNotOverridden() throws Exception {

@@ -66,23 +66,23 @@ public class EditTagsBulkSelectionActionTest {
 	@Test
 	@TestInfo({"LPD-113588", "LPS-91586", "LPS-91749"})
 	public void testExecute() throws Exception {
-		FileEntry fileEntry1 = _addFileEntry("tagone");
-		FileEntry fileEntry2 = _addFileEntry("tagone");
+		FileEntry fileEntry1 = _addFileEntry("tag1");
+		FileEntry fileEntry2 = _addFileEntry("tag1");
 
-		_execute(true, new String[] {"tagtwo"}, new String[0], fileEntry1);
+		_execute(true, new String[] {"tag2"}, new String[0], fileEntry1);
 
-		_assertAssetTagNames(fileEntry1, "tagone", "tagtwo");
-		_assertAssetTagNames(fileEntry2, "tagone");
+		_assertAssetTagNames(fileEntry1, "tag1", "tag2");
+		_assertAssetTagNames(fileEntry2, "tag1");
 
 		FileEntry fileEntry3 = _addFileEntry();
 
 		_execute(
-			true, new String[] {"tagthree"}, new String[] {"tagone"},
-			fileEntry1, fileEntry2, fileEntry3);
+			true, new String[] {"tag3"}, new String[] {"tag1"}, fileEntry1,
+			fileEntry2, fileEntry3);
 
-		_assertAssetTagNames(fileEntry1, "tagthree", "tagtwo");
-		_assertAssetTagNames(fileEntry2, "tagthree");
-		_assertAssetTagNames(fileEntry3, "tagthree");
+		_assertAssetTagNames(fileEntry1, "tag2", "tag3");
+		_assertAssetTagNames(fileEntry2, "tag3");
+		_assertAssetTagNames(fileEntry3, "tag3");
 
 		FileEntry fileEntry4 = _addFileEntry();
 		FileEntry fileEntry5 = _addFileEntry();
@@ -96,31 +96,30 @@ public class EditTagsBulkSelectionActionTest {
 			fileEntry5.getFileEntryId(), serviceContext);
 
 		_execute(
-			true, new String[] {"tagone"}, new String[0], fileEntry4,
-			fileEntry5);
+			true, new String[] {"tag1"}, new String[0], fileEntry4, fileEntry5);
 
-		_assertAssetTagNames(fileEntry4, "tagone");
-		_assertAssetTagNames(fileEntry5, "tagone");
+		_assertAssetTagNames(fileEntry4, "tag1");
+		_assertAssetTagNames(fileEntry5, "tag1");
 
-		FileEntry fileEntry6 = _addFileEntry("tag1");
-		FileEntry fileEntry7 = _addFileEntry("tag2");
-		FileEntry fileEntry8 = _addFileEntry("tag3");
+		FileEntry fileEntry6 = _addFileEntry("tag4");
+		FileEntry fileEntry7 = _addFileEntry("tag5");
+		FileEntry fileEntry8 = _addFileEntry("tag6");
 
 		_execute(
-			false, new String[] {"newtag"}, new String[] {"tag1", "tag3"},
+			false, new String[] {"tag7"}, new String[] {"tag4", "tag6"},
 			fileEntry6, fileEntry8);
 
-		_assertAssetTagNames(fileEntry6, "newtag");
-		_assertAssetTagNames(fileEntry7, "tag2");
-		_assertAssetTagNames(fileEntry8, "newtag");
+		_assertAssetTagNames(fileEntry6, "tag7");
+		_assertAssetTagNames(fileEntry7, "tag5");
+		_assertAssetTagNames(fileEntry8, "tag7");
 
 		_execute(
-			false, new String[0], new String[] {"newtag", "tag2"}, fileEntry6,
+			false, new String[0], new String[] {"tag5", "tag7"}, fileEntry6,
 			fileEntry7);
 
 		_assertAssetTagNames(fileEntry6);
 		_assertAssetTagNames(fileEntry7);
-		_assertAssetTagNames(fileEntry8, "newtag");
+		_assertAssetTagNames(fileEntry8, "tag7");
 	}
 
 	private FileEntry _addFileEntry(String... assetTagNames) throws Exception {
