@@ -273,8 +273,8 @@ public class PDFPreviewableDLProcessor
 						sourceFileVersion, i + 1, PREVIEW_TYPE);
 
 					addFileToStore(
-						destinationFileVersion.getCompanyId(), PREVIEW_PATH,
-						previewFilePath, inputStream);
+						destinationFileVersion.getCompanyId(), previewFilePath,
+						inputStream);
 				}
 			}
 		}
@@ -675,7 +675,7 @@ public class PDFPreviewableDLProcessor
 
 				try {
 					addFileToStore(
-						fileVersion.getCompanyId(), PREVIEW_PATH,
+						fileVersion.getCompanyId(),
 						getPreviewFilePath(fileVersion, i + 1),
 						previewTempFile);
 
@@ -904,7 +904,7 @@ public class PDFPreviewableDLProcessor
 
 				for (File previewFile : previewFiles) {
 					addFileToStore(
-						fileVersion.getCompanyId(), PREVIEW_PATH,
+						fileVersion.getCompanyId(),
 						getPreviewFilePath(fileVersion, index + 1),
 						previewFile);
 

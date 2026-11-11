@@ -323,7 +323,7 @@ public class AudioPreviewableDLProcessor
 		}
 
 		addFileToStore(
-			fileVersion.getCompanyId(), PREVIEW_PATH,
+			fileVersion.getCompanyId(),
 			getPreviewFilePath(fileVersion, containerType), destFile);
 
 		if (_log.isInfoEnabled()) {

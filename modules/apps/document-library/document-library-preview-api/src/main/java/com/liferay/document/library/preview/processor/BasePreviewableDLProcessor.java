@@ -170,8 +170,7 @@ public abstract class BasePreviewableDLProcessor implements DLProcessor {
 		}
 	}
 
-	protected void addFileToStore(
-			long companyId, String dirName, String filePath, File srcFile)
+	protected void addFileToStore(long companyId, String filePath, File srcFile)
 		throws PortalException {
 
 		try (InputStream inputStream = new FileInputStream(srcFile)) {
@@ -185,8 +184,7 @@ public abstract class BasePreviewableDLProcessor implements DLProcessor {
 	}
 
 	protected void addFileToStore(
-			long companyId, String dirName, String filePath,
-			InputStream inputStream)
+			long companyId, String filePath, InputStream inputStream)
 		throws PortalException {
 
 		store.addFile(
@@ -214,8 +212,8 @@ public abstract class BasePreviewableDLProcessor implements DLProcessor {
 					sourceFileVersion, previewType);
 
 				addFileToStore(
-					destinationFileVersion.getCompanyId(), PREVIEW_PATH,
-					previewFilePath, inputStream);
+					destinationFileVersion.getCompanyId(), previewFilePath,
+					inputStream);
 			}
 		}
 		catch (Exception exception) {
@@ -240,8 +238,8 @@ public abstract class BasePreviewableDLProcessor implements DLProcessor {
 					getThumbnailType(destinationFileVersion), index);
 
 				addFileToStore(
-					destinationFileVersion.getCompanyId(), THUMBNAIL_PATH,
-					thumbnailFilePath, inputStream);
+					destinationFileVersion.getCompanyId(), thumbnailFilePath,
+					inputStream);
 			}
 		}
 		catch (Exception exception) {
@@ -983,8 +981,8 @@ public abstract class BasePreviewableDLProcessor implements DLProcessor {
 					fileVersion, fileIndex, previewType)) {
 
 				addFileToStore(
-					portletDataContext.getCompanyId(), PREVIEW_PATH,
-					previewFilePath, inputStream);
+					portletDataContext.getCompanyId(), previewFilePath,
+					inputStream);
 			}
 		}
 	}
@@ -1029,8 +1027,8 @@ public abstract class BasePreviewableDLProcessor implements DLProcessor {
 			}
 
 			addFileToStore(
-				portletDataContext.getCompanyId(), PREVIEW_PATH,
-				previewFilePath, inputStream);
+				portletDataContext.getCompanyId(), previewFilePath,
+				inputStream);
 		}
 	}
 
@@ -1063,7 +1061,7 @@ public abstract class BasePreviewableDLProcessor implements DLProcessor {
 					importedFileEntry.getFileVersion();
 
 				addFileToStore(
-					portletDataContext.getCompanyId(), THUMBNAIL_PATH,
+					portletDataContext.getCompanyId(),
 					getThumbnailFilePath(
 						importedFileVersion,
 						getThumbnailType(importedFileVersion), index),
@@ -1089,7 +1087,7 @@ public abstract class BasePreviewableDLProcessor implements DLProcessor {
 			}
 
 			addFileToStore(
-				portletDataContext.getCompanyId(), THUMBNAIL_PATH,
+				portletDataContext.getCompanyId(),
 				getThumbnailFilePath(
 					fileVersion, getThumbnailType(fileVersion), index),
 				inputStream);
@@ -1197,7 +1195,7 @@ public abstract class BasePreviewableDLProcessor implements DLProcessor {
 			file = FileUtil.createTempFile(bytes);
 
 			addFileToStore(
-				fileVersion.getCompanyId(), THUMBNAIL_PATH,
+				fileVersion.getCompanyId(),
 				getThumbnailFilePath(fileVersion, type, index), file);
 		}
 		finally {

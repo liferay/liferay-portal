@@ -330,7 +330,7 @@ public class VideoPreviewableDLProcessor
 
 		if (!hasThumbnail(fileVersion, THUMBNAIL_INDEX_DEFAULT)) {
 			addFileToStore(
-				fileVersion.getCompanyId(), THUMBNAIL_PATH,
+				fileVersion.getCompanyId(),
 				getThumbnailFilePath(fileVersion, THUMBNAIL_INDEX_DEFAULT),
 				file);
 		}
@@ -439,7 +439,7 @@ public class VideoPreviewableDLProcessor
 		}
 
 		addFileToStore(
-			fileVersion.getCompanyId(), PREVIEW_PATH,
+			fileVersion.getCompanyId(),
 			getPreviewFilePath(fileVersion, containerType), destinationFile);
 
 		if (_log.isInfoEnabled()) {
