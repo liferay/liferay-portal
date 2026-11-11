@@ -605,6 +605,8 @@ definition {
 	@description = "LPS-130218 - Verify that once the order/sorting is made by the user, this definition should be preserved when the user change pagination number"
 	@priority = 3
 	test CreatedBySortIsPreservedWhenChangesPagination {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
+
 		Site.openSiteSettingsAdmin(siteURLKey = "guest");
 
 		Site.manageMembershipOptions(allowManualMembershipManagement = "true");

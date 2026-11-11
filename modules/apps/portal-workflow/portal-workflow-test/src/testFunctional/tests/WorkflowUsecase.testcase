@@ -1009,6 +1009,8 @@ definition {
 
 	@priority = 3
 	test ViewTaskCount {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
+
 		Workflow.openWorkflowProcessBuilderConfiguration();
 
 		Workflow.configureWorkflow(

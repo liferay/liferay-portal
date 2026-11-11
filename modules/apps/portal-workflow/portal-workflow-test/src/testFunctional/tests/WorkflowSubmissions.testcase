@@ -443,6 +443,8 @@ definition {
 	@description = "Verify that when having 5 tasks on the screen, a pagination bar is displayed"
 	@priority = 3
 	test PaginationBarIsDisplayed {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
+
 		Workflow.openWorkflowListView();
 
 		Navigator.gotoNavItem(navItem = "Configuration");

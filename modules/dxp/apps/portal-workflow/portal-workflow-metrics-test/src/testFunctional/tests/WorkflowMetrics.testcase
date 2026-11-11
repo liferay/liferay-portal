@@ -54,6 +54,7 @@ definition {
 	@description = "LRQA-55606 Automate LPS-106225: [Dashboard] Apply pagination on bulk reassign workflow instances"
 	@priority = 5
 	test ApplyPaginationOnBulkReassign {
+		property custom.properties = "search.container.page.delta.values=4,8,20,40,60";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
