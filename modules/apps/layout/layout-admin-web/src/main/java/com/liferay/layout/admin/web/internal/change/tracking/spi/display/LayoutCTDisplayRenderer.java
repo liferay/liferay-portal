@@ -442,25 +442,32 @@ public class LayoutCTDisplayRenderer extends BaseCTDisplayRenderer<Layout> {
 
 			ServiceContextThreadLocal.pushServiceContext(clonedServiceContext);
 
-			previewLayout.includeLayoutContent(
-				httpServletRequest, displayContext.getHttpServletResponse());
+			try {
+				previewLayout.includeLayoutContent(
+					httpServletRequest,
+					displayContext.getHttpServletResponse());
 
-			StringBundler sb = (StringBundler)httpServletRequest.getAttribute(
-				WebKeys.LAYOUT_CONTENT);
+				StringBundler sb =
+					(StringBundler)httpServletRequest.getAttribute(
+						WebKeys.LAYOUT_CONTENT);
 
-			if (sb == null) {
-				return null;
+				if (sb == null) {
+					return null;
+				}
+
+				String themeHtml = ThemeUtil.include(
+					ServletContextPool.get(_portal.getServletContextName()),
+					httpServletRequest, displayContext.getHttpServletResponse(),
+					"portal_normal.ftl", previewLayout.getTheme(), false);
+
+				httpServletRequest.setAttribute(
+					_STYLES_CONTENT, _extractHeadStyles(themeHtml));
+
+				return _normalizePreview(sb.toString());
 			}
-
-			String themeHtml = ThemeUtil.include(
-				ServletContextPool.get(_portal.getServletContextName()),
-				httpServletRequest, displayContext.getHttpServletResponse(),
-				"portal_normal.ftl", previewLayout.getTheme(), false);
-
-			httpServletRequest.setAttribute(
-				_STYLES_CONTENT, _extractHeadStyles(themeHtml));
-
-			return _normalizePreview(sb.toString());
+			finally {
+				ServiceContextThreadLocal.popServiceContext();
+			}
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
@@ -483,8 +490,6 @@ public class LayoutCTDisplayRenderer extends BaseCTDisplayRenderer<Layout> {
 				WebKeys.PORTLET_DECORATE, currentPortletDecorate);
 			httpServletRequest.setAttribute(
 				WebKeys.THEME_DISPLAY, currentThemeDisplay);
-
-			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 

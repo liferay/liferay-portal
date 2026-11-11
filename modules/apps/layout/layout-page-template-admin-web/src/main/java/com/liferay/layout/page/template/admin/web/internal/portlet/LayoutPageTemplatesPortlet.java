@@ -108,6 +108,9 @@ public class LayoutPageTemplatesPortlet extends MVCPortlet {
 			throw new PortletException();
 		}
 
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
 		try {
 			List<LayoutPrototype> layoutPrototypes =
 				_layoutPrototypeLocalService.getLayoutPrototypes(
@@ -127,10 +130,7 @@ public class LayoutPageTemplatesPortlet extends MVCPortlet {
 					addGlobalLayoutPageTemplateEntry(layoutPrototype);
 			}
 
-			ServiceContext serviceContext = ServiceContextFactory.getInstance(
-				renderRequest);
-
-			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+			serviceContext = ServiceContextFactory.getInstance(renderRequest);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
@@ -138,36 +138,44 @@ public class LayoutPageTemplatesPortlet extends MVCPortlet {
 			}
 		}
 
-		renderRequest.setAttribute(
-			DisplayPageDisplayContext.class.getName(),
-			new DisplayPageDisplayContext(
-				_portal.getHttpServletRequest(renderRequest),
-				_infoItemServiceRegistry,
-				_portal.getLiferayPortletRequest(renderRequest),
-				_portal.getLiferayPortletResponse(renderResponse)));
-		renderRequest.setAttribute(
-			InfoItemServiceRegistry.class.getName(), _infoItemServiceRegistry);
-		renderRequest.setAttribute(
-			LayoutPageTemplateAdminWebKeys.
-				ASSET_DISPLAY_PAGE_USAGES_DISPLAY_CONTEXT,
-			new AssetDisplayPageUsagesDisplayContext(
-				_assetDisplayPageEntryService, _assetEntryService,
-				_portal.getHttpServletRequest(renderRequest),
-				_infoSearchClassMapperRegistry, _infoItemServiceRegistry,
-				_portal, renderRequest, renderResponse));
-		renderRequest.setAttribute(
-			LayoutPageTemplateAdminWebConfiguration.class.getName(),
-			_layoutPageTemplateAdminWebConfiguration);
-		renderRequest.setAttribute(
-			LayoutPageTemplateAdminWebKeys.ITEM_SELECTOR, _itemSelector);
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
-		if ((scopeGroup != null) && scopeGroup.isCompany()) {
-			renderResponse.setTitle(
-				_language.get(
-					themeDisplay.getLocale(), "widget-page-templates"));
+		try {
+			renderRequest.setAttribute(
+				DisplayPageDisplayContext.class.getName(),
+				new DisplayPageDisplayContext(
+					_portal.getHttpServletRequest(renderRequest),
+					_infoItemServiceRegistry,
+					_portal.getLiferayPortletRequest(renderRequest),
+					_portal.getLiferayPortletResponse(renderResponse)));
+			renderRequest.setAttribute(
+				InfoItemServiceRegistry.class.getName(),
+				_infoItemServiceRegistry);
+			renderRequest.setAttribute(
+				LayoutPageTemplateAdminWebKeys.
+					ASSET_DISPLAY_PAGE_USAGES_DISPLAY_CONTEXT,
+				new AssetDisplayPageUsagesDisplayContext(
+					_assetDisplayPageEntryService, _assetEntryService,
+					_portal.getHttpServletRequest(renderRequest),
+					_infoSearchClassMapperRegistry, _infoItemServiceRegistry,
+					_portal, renderRequest, renderResponse));
+			renderRequest.setAttribute(
+				LayoutPageTemplateAdminWebConfiguration.class.getName(),
+				_layoutPageTemplateAdminWebConfiguration);
+			renderRequest.setAttribute(
+				LayoutPageTemplateAdminWebKeys.ITEM_SELECTOR, _itemSelector);
+
+			if ((scopeGroup != null) && scopeGroup.isCompany()) {
+				renderResponse.setTitle(
+					_language.get(
+						themeDisplay.getLocale(), "widget-page-templates"));
+			}
+
+			super.doDispatch(renderRequest, renderResponse);
 		}
-
-		super.doDispatch(renderRequest, renderResponse);
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

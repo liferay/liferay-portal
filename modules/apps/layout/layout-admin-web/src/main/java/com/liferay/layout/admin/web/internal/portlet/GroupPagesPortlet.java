@@ -163,6 +163,9 @@ public class GroupPagesPortlet extends MVCPortlet {
 			include("/error.jsp", renderRequest, renderResponse);
 		}
 		else {
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
 			try {
 				List<LayoutPrototype> layoutPrototypes =
 					_layoutPrototypeLocalService.getLayoutPrototypes(
@@ -188,10 +191,8 @@ public class GroupPagesPortlet extends MVCPortlet {
 					}
 				}
 
-				ServiceContext serviceContext =
-					ServiceContextFactory.getInstance(renderRequest);
-
-				ServiceContextThreadLocal.pushServiceContext(serviceContext);
+				serviceContext = ServiceContextFactory.getInstance(
+					renderRequest);
 			}
 			catch (Exception exception) {
 				if (_log.isWarnEnabled()) {
@@ -199,58 +200,68 @@ public class GroupPagesPortlet extends MVCPortlet {
 				}
 			}
 
-			renderRequest.setAttribute(CETManager.class.getName(), _cetManager);
-			renderRequest.setAttribute(
-				ItemSelector.class.getName(), _itemSelector);
-			renderRequest.setAttribute(
-				LayoutUtilityPageThumbnailConfiguration.class.getName(),
-				_layoutUtilityPageThumbnailConfiguration);
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+			try {
+				renderRequest.setAttribute(
+					CETManager.class.getName(), _cetManager);
+				renderRequest.setAttribute(
+					ItemSelector.class.getName(), _itemSelector);
+				renderRequest.setAttribute(
+					LayoutUtilityPageThumbnailConfiguration.class.getName(),
+					_layoutUtilityPageThumbnailConfiguration);
 
-			LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-				_layoutConverterRegistry, _portletRegistry, themeDisplay,
-				_translationPermission);
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)renderRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
 
-			LayoutsAdminDisplayContext layoutsAdminDisplayContext =
-				new LayoutsAdminDisplayContext(
-					_itemSelector, layoutActionsHelper, _layoutService,
-					_layoutSetPrototypeHelper, _layoutSetSEORobotsProvider,
-					_portal.getLiferayPortletRequest(renderRequest),
-					_portal.getLiferayPortletResponse(renderResponse),
-					_siteConnectedGroupGroupProvider);
+				LayoutActionsHelper layoutActionsHelper =
+					new LayoutActionsHelper(
+						_layoutConverterRegistry, _portletRegistry,
+						themeDisplay, _translationPermission);
 
-			LayoutActionDropdownItemsProvider
-				layoutActionDropdownItemsProvider =
-					new LayoutActionDropdownItemsProvider(
-						_portal.getHttpServletRequest(renderRequest),
-						layoutActionsHelper, layoutsAdminDisplayContext,
+				LayoutsAdminDisplayContext layoutsAdminDisplayContext =
+					new LayoutsAdminDisplayContext(
+						_itemSelector, layoutActionsHelper, _layoutService,
+						_layoutSetPrototypeHelper, _layoutSetSEORobotsProvider,
+						_portal.getLiferayPortletRequest(renderRequest),
 						_portal.getLiferayPortletResponse(renderResponse),
-						_translationURLProvider);
+						_siteConnectedGroupGroupProvider);
 
-			renderRequest.setAttribute(
-				LayoutAdminWebKeys.LAYOUT_ACTION_DROPDOWN_ITEMS_PROVIDER,
-				layoutActionDropdownItemsProvider);
+				LayoutActionDropdownItemsProvider
+					layoutActionDropdownItemsProvider =
+						new LayoutActionDropdownItemsProvider(
+							_portal.getHttpServletRequest(renderRequest),
+							layoutActionsHelper, layoutsAdminDisplayContext,
+							_portal.getLiferayPortletResponse(renderResponse),
+							_translationURLProvider);
 
-			renderRequest.setAttribute(
-				LayoutAdminWebKeys.LAYOUT_PAGE_LAYOUT_ADMIN_DISPLAY_CONTEXT,
-				layoutsAdminDisplayContext);
-			renderRequest.setAttribute(
-				LayoutAdminWebKeys.MILLER_COLUMNS_DISPLAY_CONTEXT,
-				new MillerColumnsDisplayContext(
-					_layoutSetPrototypeHelper, layoutsAdminDisplayContext,
-					_portal.getLiferayPortletRequest(renderRequest),
-					_portal.getLiferayPortletResponse(renderResponse)));
-			renderRequest.setAttribute(
-				LayoutUtilityPageEntryDisplayContext.class.getName(),
-				new LayoutUtilityPageEntryDisplayContext(
-					renderRequest, renderResponse));
-			renderRequest.setAttribute(
-				TranslationURLProvider.class.getName(),
-				_translationURLProvider);
+				renderRequest.setAttribute(
+					LayoutAdminWebKeys.LAYOUT_ACTION_DROPDOWN_ITEMS_PROVIDER,
+					layoutActionDropdownItemsProvider);
 
-			super.doDispatch(renderRequest, renderResponse);
+				renderRequest.setAttribute(
+					LayoutAdminWebKeys.LAYOUT_PAGE_LAYOUT_ADMIN_DISPLAY_CONTEXT,
+					layoutsAdminDisplayContext);
+				renderRequest.setAttribute(
+					LayoutAdminWebKeys.MILLER_COLUMNS_DISPLAY_CONTEXT,
+					new MillerColumnsDisplayContext(
+						_layoutSetPrototypeHelper, layoutsAdminDisplayContext,
+						_portal.getLiferayPortletRequest(renderRequest),
+						_portal.getLiferayPortletResponse(renderResponse)));
+				renderRequest.setAttribute(
+					LayoutUtilityPageEntryDisplayContext.class.getName(),
+					new LayoutUtilityPageEntryDisplayContext(
+						renderRequest, renderResponse));
+				renderRequest.setAttribute(
+					TranslationURLProvider.class.getName(),
+					_translationURLProvider);
+
+				super.doDispatch(renderRequest, renderResponse);
+			}
+			finally {
+				ServiceContextThreadLocal.popServiceContext();
+			}
 		}
 	}
 
