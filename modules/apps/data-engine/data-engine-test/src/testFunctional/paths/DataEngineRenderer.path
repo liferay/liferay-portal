@@ -77,12 +77,12 @@
 </tr>
 <tr>
 	<td>TOOLBAR_BOLD_BUTTON</td>
-	<td>//a[contains(@class,'cke_button') and contains(@class,'bold')]</td>
+	<td>//a[contains(@class,'cke_button') and contains(@class,'bold')] | //button[contains(@class,'ck-button') and contains(@data-cke-tooltip-text,'Bold')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TOOLBAR_BOLD_BUTTON_ON</td>
-	<td>//a[contains(@class,'cke_button_on') and contains(@class,'bold')]</td>
+	<td>//a[contains(@class,'cke_button_on') and contains(@class,'bold')] | //button[contains(@class,'ck-on') and contains(@data-cke-tooltip-text,'Bold')]</td>
 	<td></td>
 </tr>
 <tr>

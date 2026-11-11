@@ -131,13 +131,9 @@ definition {
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
 
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Rich Text",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-		AssertTextEquals(
-			locator1 = "CKEditor#BODY",
-			value1 = "Hello");
+		CKEditor.assertContentInWebContent(
+			content = "Hello",
+			fieldLabel = "Rich Text");
 	}
 
 	@description = "This test verifies that a user can localize the field data."

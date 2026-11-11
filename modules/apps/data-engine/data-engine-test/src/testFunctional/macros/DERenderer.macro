@@ -9,9 +9,18 @@ definition {
 	macro addSourceContentonRichText(content = null) {
 		Click(locator1 = "CKEditor#TOOLBAR_SOURCE_BUTTON");
 
-		Type.typeCodeMirrorEditorNoError(
-			locator1 = "CKEditor#BODY_FIELD_SOURCE_ON",
-			value1 = ${content});
+		WaitForVisible(locator1 = "CKEditor#BODY_FIELD_SOURCE_EITHER_EDITOR");
+
+		if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_SOURCE_ON")) {
+			Type.typeCodeMirrorEditorNoError(
+				locator1 = "CKEditor#BODY_FIELD_SOURCE_ON",
+				value1 = ${content});
+		}
+		else {
+			Type(
+				locator1 = "CKEditor#BODY_FIELD_SOURCE_TEXTAREA",
+				value1 = ${content});
+		}
 	}
 
 	@summary = "Default summary"

@@ -1352,13 +1352,9 @@ definition {
 			locator1 = "TextInput#TITLE",
 			value1 = "测试");
 
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "富文本",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-		AssertTextEquals(
-			locator1 = "CKEditor#BODY",
-			value1 = "这是一个富文本字段");
+		CKEditor.assertContentInWebContent(
+			content = "这是一个富文本字段",
+			fieldLabel = "富文本");
 	}
 
 	@description = "Verify that is possible to translate input data on the Text Field"

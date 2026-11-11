@@ -61,13 +61,9 @@ definition {
 			menuItem = "Edit",
 			rowEntry = "DM Document Type");
 
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Rich Text",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME");
-
-		AssertTextEquals(
-			locator1 = "CKEditor#BODY",
-			value1 = "Inserting a new Text");
+		CKEditor.assertContentInWebContent(
+			content = "Inserting a new Text",
+			fieldLabel = "Rich Text");
 	}
 
 	@description = "This is a test for LPS-98076. Verify that a user Can localize the field data"
