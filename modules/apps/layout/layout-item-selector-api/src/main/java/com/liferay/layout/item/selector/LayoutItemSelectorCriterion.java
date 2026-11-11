@@ -26,6 +26,10 @@ public class LayoutItemSelectorCriterion extends BaseItemSelectorCriterion {
 		return _enableCurrentPage;
 	}
 
+	public boolean isIncludeDraftLayouts() {
+		return _includeDraftLayouts;
+	}
+
 	public boolean isMultiSelection() {
 		return _multiSelection;
 	}
@@ -50,6 +54,10 @@ public class LayoutItemSelectorCriterion extends BaseItemSelectorCriterion {
 		_enableCurrentPage = enableCurrentPage;
 	}
 
+	public void setIncludeDraftLayouts(boolean includeDraftLayouts) {
+		_includeDraftLayouts = includeDraftLayouts;
+	}
+
 	public void setMultiSelection(boolean multiSelection) {
 		_multiSelection = multiSelection;
 	}
@@ -68,6 +76,7 @@ public class LayoutItemSelectorCriterion extends BaseItemSelectorCriterion {
 
 	private boolean _checkDisplayPage;
 	private boolean _enableCurrentPage;
+	private boolean _includeDraftLayouts;
 	private boolean _multiSelection;
 	private boolean _showBreadcrumb;
 	private boolean _showPrivatePages;
