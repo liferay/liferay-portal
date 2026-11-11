@@ -3585,6 +3585,10 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                inheritContent:
+                    description:
+                        Whether the site shows content from its parent site.
+                    type: boolean
                 inheritLocales:
                     description:
                         Whether to use the default language set by defaultLanguageId.
@@ -3603,6 +3607,10 @@ components:
                         The site's logo URL.
                     readOnly: true
                     type: string
+                maintenanceMode:
+                    description:
+                        Whether users without administrator access see a maintenance page while the site is inactive.
+                    type: boolean
                 manualMembership:
                     type: boolean
                 mapProviderKey:
