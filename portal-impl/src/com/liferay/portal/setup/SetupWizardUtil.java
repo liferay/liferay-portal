@@ -238,9 +238,8 @@ public class SetupWizardUtil {
 	}
 
 	private static void _processDatabaseProperties(
-			HttpServletRequest httpServletRequest,
-			UnicodeProperties unicodeProperties, boolean databaseConfigured)
-		throws Exception {
+		HttpServletRequest httpServletRequest,
+		UnicodeProperties unicodeProperties, boolean databaseConfigured) {
 
 		boolean defaultDatabase = ParamUtil.getBoolean(
 			httpServletRequest, "defaultDatabase", true);
@@ -254,9 +253,8 @@ public class SetupWizardUtil {
 	}
 
 	private static void _processOtherProperties(
-			HttpServletRequest httpServletRequest,
-			UnicodeProperties unicodeProperties)
-		throws Exception {
+		HttpServletRequest httpServletRequest,
+		UnicodeProperties unicodeProperties) {
 
 		_processProperty(
 			httpServletRequest, unicodeProperties, "adminFirstName",
@@ -272,10 +270,9 @@ public class SetupWizardUtil {
 	}
 
 	private static void _processProperty(
-			HttpServletRequest httpServletRequest,
-			UnicodeProperties unicodeProperties, String parameterName,
-			String propertyKey, String defaultValue)
-		throws Exception {
+		HttpServletRequest httpServletRequest,
+		UnicodeProperties unicodeProperties, String parameterName,
+		String propertyKey, String defaultValue) {
 
 		String value = ParamUtil.getString(
 			httpServletRequest, parameterName, defaultValue);
