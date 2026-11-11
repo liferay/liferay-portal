@@ -47,7 +47,6 @@ import com.liferay.portal.kernel.exception.NoSuchOrganizationException;
 import com.liferay.portal.kernel.exception.NoSuchTicketException;
 import com.liferay.portal.kernel.exception.PasswordExpiredException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.PwdEncryptorException;
 import com.liferay.portal.kernel.exception.RequiredRoleException;
 import com.liferay.portal.kernel.exception.RequiredUserException;
 import com.liferay.portal.kernel.exception.SendPasswordException;
@@ -1121,12 +1120,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return false;
 		}
 
-		try {
-			reindex(users);
-		}
-		catch (PortalException portalException) {
-			throw new SystemException(portalException);
-		}
+		reindex(users);
 
 		_reindexUserGroups(new long[] {userGroupId});
 
@@ -2517,12 +2511,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	public void deleteUserGroupUsers(long userGroupId, List<User> users) {
 		super.deleteUserGroupUsers(userGroupId, users);
 
-		try {
-			reindex(users);
-		}
-		catch (PortalException portalException) {
-			throw new SystemException(portalException);
-		}
+		reindex(users);
 
 		_reindexUserGroups(new long[] {userGroupId});
 	}
@@ -6895,9 +6884,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		return false;
 	}
 
-	protected boolean isUserAllowedToAuthenticate(User user)
-		throws PortalException {
-
+	protected boolean isUserAllowedToAuthenticate(User user) {
 		if (user.isGuestUser()) {
 			if (_log.isInfoEnabled()) {
 				_log.info("Authentication is disabled for the default user");
@@ -7059,7 +7046,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		}
 	}
 
-	protected void reindex(List<User> users) throws SearchException {
+	protected void reindex(List<User> users) {
 		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			User.class);
 
@@ -7235,9 +7222,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	protected void setEmailAddress(
-			User user, String password, String firstName, String middleName,
-			String lastName, String emailAddress)
-		throws PortalException {
+		User user, String password, String firstName, String middleName,
+		String lastName, String emailAddress) {
 
 		if (StringUtil.equalsIgnoreCase(emailAddress, user.getEmailAddress())) {
 			return;
@@ -7856,8 +7842,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	private boolean _isPasswordUnchanged(
-			User user, String newPlaintextPwd, String newEncPwd)
-		throws PwdEncryptorException {
+		User user, String newPlaintextPwd, String newEncPwd) {
 
 		if (!user.isPasswordEncrypted()) {
 			return newPlaintextPwd.equals(user.getPassword());
@@ -8049,7 +8034,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		}
 	}
 
-	private void _updateLastLogin(List<User> users) throws SQLException {
+	private void _updateLastLogin(List<User> users) {
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			Map<Long, List<User>> companyUsersMap = new HashMap<>();
 
