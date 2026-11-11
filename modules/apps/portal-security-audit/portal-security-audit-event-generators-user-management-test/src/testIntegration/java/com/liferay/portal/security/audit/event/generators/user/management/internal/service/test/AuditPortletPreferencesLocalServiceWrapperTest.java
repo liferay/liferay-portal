@@ -36,14 +36,14 @@ public class AuditPortletPreferencesLocalServiceWrapperTest
 
 	@Test
 	public void testUpdatePreferences() throws Exception {
-		String settingsId = RandomTestUtil.randomString();
+		String portletId = RandomTestUtil.randomString();
 
 		PortletPreferencesSettings portletPreferencesSettings =
 			new PortletPreferencesSettings(
 				_portletPreferencesLocalService.getStrictPreferences(
 					TestPropsValues.getCompanyId(),
 					TestPropsValues.getCompanyId(),
-					PortletKeys.PREFS_OWNER_TYPE_COMPANY, 0, settingsId));
+					PortletKeys.PREFS_OWNER_TYPE_COMPANY, 0, portletId));
 
 		String clientSecret = RandomTestUtil.randomString();
 
@@ -54,7 +54,7 @@ public class AuditPortletPreferencesLocalServiceWrapperTest
 		_portletPreferences =
 			_portletPreferencesLocalService.fetchPortletPreferences(
 				TestPropsValues.getCompanyId(),
-				PortletKeys.PREFS_OWNER_TYPE_COMPANY, 0, settingsId);
+				PortletKeys.PREFS_OWNER_TYPE_COMPANY, 0, portletId);
 
 		Assert.assertEquals(auditMessages.toString(), 1, auditMessages.size());
 
@@ -75,7 +75,7 @@ public class AuditPortletPreferencesLocalServiceWrapperTest
 					"oldValue", ""
 				))
 		).put(
-			"portletId", settingsId
+			"portletId", portletId
 		).toString();
 
 		JSONAssert.assertEquals(
@@ -83,9 +83,8 @@ public class AuditPortletPreferencesLocalServiceWrapperTest
 			String.valueOf(auditMessage.getAdditionalInfo()),
 			JSONCompareMode.NON_EXTENSIBLE);
 
-		String json = String.valueOf(auditMessage.toJSONObject());
-
-		Assert.assertFalse(json, json.contains(clientSecret));
+		Assert.assertFalse(
+			String.valueOf(auditMessage.toJSONObject()).contains(clientSecret));
 
 		portletPreferencesSettings.store();
 
@@ -98,7 +97,7 @@ public class AuditPortletPreferencesLocalServiceWrapperTest
 
 		_portletPreferencesLocalService.updatePreferences(
 			TestPropsValues.getCompanyId(),
-			PortletKeys.PREFS_OWNER_TYPE_COMPANY, 0, settingsId, xml);
+			PortletKeys.PREFS_OWNER_TYPE_COMPANY, 0, portletId, xml);
 
 		Assert.assertEquals(auditMessages.toString(), 2, auditMessages.size());
 
@@ -111,7 +110,7 @@ public class AuditPortletPreferencesLocalServiceWrapperTest
 
 		_portletPreferencesLocalService.deletePortletPreferences(
 			TestPropsValues.getCompanyId(),
-			PortletKeys.PREFS_OWNER_TYPE_COMPANY, 0, settingsId);
+			PortletKeys.PREFS_OWNER_TYPE_COMPANY, 0, portletId);
 
 		Assert.assertEquals(auditMessages.toString(), 3, auditMessages.size());
 
@@ -124,11 +123,11 @@ public class AuditPortletPreferencesLocalServiceWrapperTest
 
 		_portletPreferencesLocalService.updatePreferences(
 			TestPropsValues.getGroupId(), PortletKeys.PREFS_OWNER_TYPE_GROUP,
-			PortletKeys.PREFS_PLID_SHARED, settingsId, xml);
+			PortletKeys.PREFS_PLID_SHARED, portletId, xml);
 
 		_portletPreferencesLocalService.deletePortletPreferences(
 			TestPropsValues.getGroupId(), PortletKeys.PREFS_OWNER_TYPE_GROUP,
-			PortletKeys.PREFS_PLID_SHARED, settingsId);
+			PortletKeys.PREFS_PLID_SHARED, portletId);
 
 		Assert.assertEquals(auditMessages.toString(), 3, auditMessages.size());
 	}

@@ -5,6 +5,7 @@
 
 package com.liferay.portal.security.audit.event.generators.user.management.internal.service;
 
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.audit.AuditMessage;
@@ -65,21 +66,21 @@ public class AuditPortalPreferencesLocalServiceWrapper
 
 		keys.addAll(oldValuesMap.keySet());
 
-		List<Attribute> attributes = new ArrayList<>();
+		List<Attribute> attributes = TransformUtil.transform(
+			keys,
+			key -> {
+				List<String> defaultValues = Collections.singletonList(
+					PropsUtil.get(key));
 
-		for (String key : keys) {
-			List<String> defaultValues = Collections.singletonList(
-				PropsUtil.get(key));
+				if (Objects.equals(
+						newValuesMap.getOrDefault(key, defaultValues),
+						oldValuesMap.getOrDefault(key, defaultValues))) {
 
-			if (Objects.equals(
-					newValuesMap.getOrDefault(key, defaultValues),
-					oldValuesMap.getOrDefault(key, defaultValues))) {
+					return null;
+				}
 
-				continue;
-			}
-
-			attributes.add(new Attribute(key));
-		}
+				return new Attribute(key);
+			});
 
 		if (attributes.isEmpty()) {
 			return modelPortalPreferences;
@@ -109,8 +110,6 @@ public class AuditPortalPreferencesLocalServiceWrapper
 			return Collections.emptyMap();
 		}
 
-		Map<String, List<String>> valuesMap = new HashMap<>();
-
 		List<PortalPreferenceValue> portalPreferenceValues =
 			_portalPreferenceValueLocalService.dslQuery(
 				DSLQueryFactoryUtil.select(
@@ -124,6 +123,8 @@ public class AuditPortalPreferencesLocalServiceWrapper
 					PortalPreferenceValueTable.INSTANCE.index.ascending()
 				));
 
+		Map<String, List<String>> valuesMap = new HashMap<>();
+
 		for (PortalPreferenceValue portalPreferenceValue :
 				portalPreferenceValues) {
 
@@ -136,7 +137,7 @@ public class AuditPortalPreferencesLocalServiceWrapper
 			}
 
 			List<String> values = valuesMap.computeIfAbsent(
-				key, curKey -> new ArrayList<>());
+				key, portalPreferenceKey -> new ArrayList<>());
 
 			values.add(portalPreferenceValue.getValue());
 		}

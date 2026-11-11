@@ -50,11 +50,11 @@ public class AuditPortalPreferencesLocalServiceWrapperTest
 
 		boolean strangers = company.isStrangers();
 
+		String key = RandomTestUtil.randomString();
+		String namespace = RandomTestUtil.randomString();
 		com.liferay.portal.kernel.portlet.PortalPreferences portalPreferences =
 			PortletPreferencesFactoryUtil.getPortalPreferences(
 				TestPropsValues.getUserId(), true);
-		String namespace = RandomTestUtil.randomString();
-		String key = RandomTestUtil.randomString();
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(

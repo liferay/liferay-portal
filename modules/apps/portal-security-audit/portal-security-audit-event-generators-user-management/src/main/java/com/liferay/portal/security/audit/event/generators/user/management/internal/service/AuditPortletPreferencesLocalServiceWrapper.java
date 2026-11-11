@@ -5,6 +5,7 @@
 
 package com.liferay.portal.security.audit.event.generators.user.management.internal.service;
 
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
@@ -94,8 +95,6 @@ public class AuditPortletPreferencesLocalServiceWrapper
 			return Collections.emptyMap();
 		}
 
-		Map<String, List<String>> valuesMap = new HashMap<>();
-
 		List<PortletPreferenceValue> portletPreferenceValues =
 			_portletPreferenceValueLocalService.dslQuery(
 				DSLQueryFactoryUtil.select(
@@ -108,6 +107,8 @@ public class AuditPortletPreferencesLocalServiceWrapper
 				).orderBy(
 					PortletPreferenceValueTable.INSTANCE.index.ascending()
 				));
+
+		Map<String, List<String>> valuesMap = new HashMap<>();
 
 		for (PortletPreferenceValue portletPreferenceValue :
 				portletPreferenceValues) {
@@ -130,15 +131,17 @@ public class AuditPortletPreferencesLocalServiceWrapper
 
 		keys.addAll(oldValuesMap.keySet());
 
-		List<Attribute> attributes = new ArrayList<>();
+		List<Attribute> attributes = TransformUtil.transform(
+			keys,
+			key -> {
+				if (Objects.equals(
+						newValuesMap.get(key), oldValuesMap.get(key))) {
 
-		for (String key : keys) {
-			if (Objects.equals(newValuesMap.get(key), oldValuesMap.get(key))) {
-				continue;
-			}
+					return null;
+				}
 
-			attributes.add(new Attribute(key));
-		}
+				return new Attribute(key);
+			});
 
 		if (attributes.isEmpty()) {
 			return;
