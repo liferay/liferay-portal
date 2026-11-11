@@ -4996,9 +4996,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		return false;
 	}
 
-	protected void reindex(long companyId, long[] userIds)
-		throws PortalException {
-
+	protected void reindex(long companyId, long[] userIds) {
 		ReindexerBridge reindexerBridge = _reindexerBridgeSnapshot.get();
 
 		reindexerBridge.reindex(companyId, User.class.getName(), userIds);
@@ -5682,8 +5680,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	private List<Group> _getUserGroups(
-			long companyId, long userId, boolean inherit, int start, int end)
-		throws PortalException {
+		long companyId, long userId, boolean inherit, int start, int end) {
 
 		if (inherit) {
 			return search(
