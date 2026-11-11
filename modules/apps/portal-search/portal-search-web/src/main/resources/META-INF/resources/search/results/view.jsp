@@ -97,11 +97,22 @@ SearchContainer<Document> searchContainer = searchResultsPortletDisplayContext.g
 						<liferay-ui:search-paginator
 							id="<%= liferayPortletResponse.getNamespace() %>"
 							markupView="lexicon"
+							resultEnd="<%= searchResultsPortletDisplayContext.getPaginationResultEnd() %>"
 							searchContainer="<%= searchContainer %>"
 						/>
 					</aui:form>
 				</c:otherwise>
 			</c:choose>
+		</c:if>
+
+		<c:if test="<%= searchResultsPortletDisplayContext.isPaginationStartAdjusted() %>">
+			<aui:script>
+				window.history.replaceState(
+					window.history.state,
+					'',
+					'<%= HtmlUtil.escapeJS(searchResultsPortletDisplayContext.getPaginationStartURL()) %>'
+				);
+			</aui:script>
 		</c:if>
 	</c:otherwise>
 </c:choose>
