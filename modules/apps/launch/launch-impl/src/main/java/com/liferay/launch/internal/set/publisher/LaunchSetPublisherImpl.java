@@ -56,11 +56,11 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 
 		String name = String.valueOf(launchSetId);
 
-		int count = _backgroundTaskManager.getBackgroundTasksCount(
+		int backgroundTasksCount = _backgroundTaskManager.getBackgroundTasksCount(
 			BackgroundTaskConstants.GROUP_ID_DEFAULT, name,
 			LaunchSetPublishBackgroundTaskExecutor.class.getName(), false);
 
-		if (count > 0) {
+		if (backgroundTasksCount > 0) {
 			throw new PortalException(
 				"Launch set " + launchSetId + " is already being published");
 		}

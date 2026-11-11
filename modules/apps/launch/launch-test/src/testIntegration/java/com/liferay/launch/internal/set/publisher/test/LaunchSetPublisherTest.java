@@ -154,7 +154,6 @@ public class LaunchSetPublisherTest {
 			Throwable throwable = logEntry.getThrowable();
 
 			Assert.assertTrue(
-				throwable.toString(),
 				throwable instanceof NoSuchObjectEntryException);
 
 			String message = StringBundler.concat(
@@ -264,7 +263,6 @@ public class LaunchSetPublisherTest {
 
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
-
 		mockLiferayPortletActionRequest.setParameter(
 			"launchSetId",
 			String.valueOf(_launchSetObjectEntry.getObjectEntryId()));
@@ -272,9 +270,7 @@ public class LaunchSetPublisherTest {
 			"redirect", "/" + RandomTestUtil.randomString());
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.launch.internal.background.task." +
-					"LaunchSetPublishBackgroundTaskExecutor",
-				LoggerTestUtil.ERROR)) {
+				_TASK_EXECUTOR_CLASS_NAME, LoggerTestUtil.ERROR)) {
 
 			_mvcActionCommand.processAction(
 				mockLiferayPortletActionRequest, new MockActionResponse());
@@ -555,17 +551,6 @@ public class LaunchSetPublisherTest {
 		}
 	}
 
-	private void _assertPublishFails(long launchSetId, String messageSuffix) {
-		PortalException portalException = Assert.assertThrows(
-			PortalException.class,
-			() -> _launchSetPublisher.publish(
-				launchSetId, TestPropsValues.getUserId()));
-
-		Assert.assertTrue(
-			portalException.getMessage(),
-			StringUtil.endsWith(portalException.getMessage(), messageSuffix));
-	}
-
 	private void _assertPublished(
 			long draftId, ObjectEntry launchEntryObjectEntry,
 			LaunchEntryManager launchEntryManager,
@@ -582,6 +567,16 @@ public class LaunchSetPublisherTest {
 		Assert.assertNull(
 			launchEntryManager.fetchDraft(
 				MapUtil.getLong(values, "classPK"), draftId));
+	}
+
+	private void _assertPublishFails(long launchSetId, String messageSuffix) {
+		PortalException portalException = Assert.assertThrows(
+			PortalException.class,
+			() -> _launchSetPublisher.publish(
+				launchSetId, TestPropsValues.getUserId()));
+
+		Assert.assertTrue(
+			StringUtil.endsWith(portalException.getMessage(), messageSuffix));
 	}
 
 	private void _assertScheduledDateAndStatus(
