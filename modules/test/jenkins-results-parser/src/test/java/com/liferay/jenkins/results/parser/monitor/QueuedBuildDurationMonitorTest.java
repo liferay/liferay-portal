@@ -122,6 +122,54 @@ public class QueuedBuildDurationMonitorTest
 	}
 
 	@Test
+	public void testExecuteBlacklistedJenkinsMasters() throws Exception {
+		_setQueueAPIJSONObject(
+			_MASTER_NAME_2,
+			_newQueueItemJSONObject(
+				"hudson.model.Queue$BuildableItem", _SECONDS_STUCK,
+				RandomTestUtil.randomString()));
+
+		ReflectionTestUtil.setFieldValue(
+			JenkinsMaster.getInstance(_MASTER_NAME_2), "_blacklisted", true);
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[excluded.master.names]", _MASTER_NAME_1);
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(_getBlacklistedMessage(), monitorResult.getMessage());
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[excluded.master.names]",
+			JenkinsResultsParserUtil.combine(
+				_MASTER_NAME_1, ",", _MASTER_NAME_2));
+
+		monitorResult = _execute(monitorProperties);
+
+		testEquals(
+			"Unable to find a master in cohort " + _COHORT_NAME,
+			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+
+		ReflectionTestUtil.setFieldValue(
+			JenkinsMaster.getInstance(_MASTER_NAME_1), "_blacklisted", true);
+
+		_testExecute(_getBlacklistedMessage(), 0, MonitorResult.Status.OK, 0);
+
+		verifyURLReaderAttemptsCount(
+			0,
+			JenkinsResultsParserUtil.combine(
+				"http://", _MASTER_NAME_1, "/queue/api/json"));
+		verifyURLReaderAttemptsCount(
+			0,
+			JenkinsResultsParserUtil.combine(
+				"http://", _MASTER_NAME_2, "/queue/api/json"));
+	}
+
+	@Test
 	public void testExecuteBuildStartGap() throws Exception {
 		String taskName = RandomTestUtil.randomString();
 
@@ -229,12 +277,11 @@ public class QueuedBuildDurationMonitorTest
 
 	@Test
 	public void testExecuteJenkinsMasters() throws Exception {
-		String taskName = RandomTestUtil.randomString();
-
 		_setQueueAPIJSONObject(
 			_MASTER_NAME_2,
 			_newQueueItemJSONObject(
-				"hudson.model.Queue$BuildableItem", _SECONDS_STUCK, taskName));
+				"hudson.model.Queue$BuildableItem", _SECONDS_STUCK,
+				RandomTestUtil.randomString()));
 
 		ReflectionTestUtil.setFieldValue(
 			JenkinsMaster.getInstance(_MASTER_NAME_2), "_blacklisted", true);
@@ -246,13 +293,10 @@ public class QueuedBuildDurationMonitorTest
 		Assert.assertFalse(
 			jenkinsMasters.contains(JenkinsMaster.getInstance(_MASTER_NAME_2)));
 
-		String expectedMessage = _getStuckMessage(
-			1, _getStuckQueueItemMessage(_MASTER_NAME_2, taskName));
-
-		_testExecute(expectedMessage, 1, MonitorResult.Status.CRITICAL, 1);
+		_testExecute(_getOKMessage(), 0, MonitorResult.Status.OK, 0);
 
 		verifyURLReaderAttemptsCount(
-			1,
+			0,
 			JenkinsResultsParserUtil.combine(
 				"http://", _MASTER_NAME_2, "/queue/api/json"));
 
@@ -266,7 +310,8 @@ public class QueuedBuildDurationMonitorTest
 		_setQueueAPIJSONObject(
 			_MASTER_NAME_2,
 			_newQueueItemJSONObject(
-				"hudson.model.Queue$BuildableItem", _SECONDS_STUCK, taskName));
+				"hudson.model.Queue$BuildableItem", _SECONDS_STUCK,
+				RandomTestUtil.randomString()));
 
 		jenkinsCohort = JenkinsCohort.getInstance(_COHORT_NAME);
 
@@ -278,10 +323,10 @@ public class QueuedBuildDurationMonitorTest
 		ReflectionTestUtil.setFieldValue(
 			JenkinsMaster.getInstance(_MASTER_NAME_2), "_blacklisted", true);
 
-		_testExecute(expectedMessage, 1, MonitorResult.Status.CRITICAL, 1);
+		_testExecute(_getOKMessage(), 0, MonitorResult.Status.OK, 0);
 
 		verifyURLReaderAttemptsCount(
-			1,
+			0,
 			JenkinsResultsParserUtil.combine(
 				"http://", _MASTER_NAME_2, "/queue/api/json"));
 	}
@@ -398,30 +443,6 @@ public class QueuedBuildDurationMonitorTest
 	}
 
 	@Test
-	public void testExecuteUnreadableBlacklistedJenkinsMaster()
-		throws Exception {
-
-		ReflectionTestUtil.setFieldValue(
-			JenkinsMaster.getInstance(_MASTER_NAME_2), "_blacklisted", true);
-
-		setURLReaderException(
-			new IOException(RandomTestUtil.randomString()),
-			JenkinsResultsParserUtil.combine(
-				"http://", _MASTER_NAME_2, "/queue/api/json"));
-
-		_testExecute(_getOKMessage(), 0, MonitorResult.Status.OK, 0);
-
-		_setQueueAPIJSONObject(_MASTER_NAME_2);
-
-		setURLReaderException(
-			new IOException(RandomTestUtil.randomString()),
-			JenkinsResultsParserUtil.combine(
-				"http://", _MASTER_NAME_2, "/computer/api/json"));
-
-		_testExecute(_getOKMessage(), 0, MonitorResult.Status.OK, 0);
-	}
-
-	@Test
 	public void testExecuteUnreadableJenkinsMaster() throws Exception {
 		String exceptionMessage = RandomTestUtil.randomString();
 
@@ -528,6 +549,11 @@ public class QueuedBuildDurationMonitorTest
 
 			return queuedBuildDurationMonitor.execute();
 		}
+	}
+
+	private String _getBlacklistedMessage() {
+		return JenkinsResultsParserUtil.combine(
+			"Every master in cohort ", _COHORT_NAME, " is blacklisted");
 	}
 
 	private String _getOKMessage() {
