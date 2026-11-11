@@ -14,19 +14,24 @@ import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.Map;
@@ -87,6 +92,9 @@ public class EditorToolbarComponentSectionFragmentRenderer
 
 		String externalReferenceCode =
 			objectDefinition.getExternalReferenceCode();
+
+		ObjectEntry parentCMPTaskObjectEntry = _getParentCMPTaskObjectEntry(
+			externalReferenceCode, objectEntry);
 
 		return HashMapBuilder.<String, Object>put(
 			"backURL", ParamUtil.getString(httpServletRequest, "redirect")
@@ -163,6 +171,42 @@ public class EditorToolbarComponentSectionFragmentRenderer
 		).put(
 			"isNew", objectEntry.isDraft()
 		).put(
+			"parentCMPTask",
+			() -> {
+				if (parentCMPTaskObjectEntry == null) {
+					return null;
+				}
+
+				Map<String, Serializable> values =
+					parentCMPTaskObjectEntry.getValues();
+
+				return HashMapBuilder.<String, Object>put(
+					"isDone",
+					Objects.equals(MapUtil.getString(values, "state"), "done")
+				).put(
+					"saveAndAddAnotherURL",
+					() -> {
+						if (!objectEntry.isDraft()) {
+							return null;
+						}
+
+						return StringBundler.concat(
+							ActionUtil.getAddTaskURL(
+								objectEntry.getGroupId(), objectDefinition,
+								MapUtil.getLong(
+									values,
+									"r_cmpProjectToCMPTasks_c_cmpProjectId"),
+								ParamUtil.getString(
+									httpServletRequest, "redirect"),
+								themeDisplay),
+							"&parentId=",
+							parentCMPTaskObjectEntry.getObjectEntryId());
+					}
+				).put(
+					"title", MapUtil.getString(values, "title")
+				).build();
+			}
+		).put(
 			"title",
 			() -> {
 				if (Objects.equals(externalReferenceCode, "L_CMP_PROJECT")) {
@@ -171,9 +215,27 @@ public class EditorToolbarComponentSectionFragmentRenderer
 						objectEntry.isDraft() ? "new-project" : "edit-project");
 				}
 
+				if (parentCMPTaskObjectEntry != null) {
+					return LanguageUtil.get(
+						themeDisplay.getLocale(),
+						objectEntry.isDraft() ? "new-subtask" : "edit-subtask");
+				}
+
 				return LanguageUtil.get(
 					themeDisplay.getLocale(),
 					objectEntry.isDraft() ? "new-task" : "edit-task");
+			}
+		).put(
+			"viewURL",
+			() -> {
+				if (parentCMPTaskObjectEntry == null) {
+					return null;
+				}
+
+				String baseViewTaskURL = ActionUtil.getBaseViewTaskURL(
+					objectDefinition, themeDisplay);
+
+				return baseViewTaskURL + objectEntry.getObjectEntryId();
 			}
 		).build();
 	}
@@ -197,7 +259,25 @@ public class EditorToolbarComponentSectionFragmentRenderer
 		return (ObjectEntry)displayObject;
 	}
 
+	private ObjectEntry _getParentCMPTaskObjectEntry(
+		String externalReferenceCode, ObjectEntry objectEntry) {
+
+		if (!Objects.equals(externalReferenceCode, "L_CMP_TASK") ||
+			!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-107678")) {
+
+			return null;
+		}
+
+		return _objectEntryLocalService.fetchObjectEntry(
+			MapUtil.getLong(
+				objectEntry.getValues(), "r_cmpTaskToCMPTasks_c_cmpTaskId"));
+	}
+
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 }

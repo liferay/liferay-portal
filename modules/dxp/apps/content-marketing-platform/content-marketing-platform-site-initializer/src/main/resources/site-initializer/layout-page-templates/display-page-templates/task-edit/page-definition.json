@@ -344,6 +344,19 @@
 															"indexed": true
 														},
 														"type": "Fragment"
+													},
+													{
+														"definition": {
+															"fragment": {
+																"key": "com.liferay.content.marketing.platform.web.internal.fragment.renderer.DueDateAlertComponentSectionFragmentRenderer"
+															},
+															"fragmentConfig": {
+															},
+															"fragmentFields": [
+															],
+															"indexed": true
+														},
+														"type": "Fragment"
 													}
 												],
 												"type": "Column"
