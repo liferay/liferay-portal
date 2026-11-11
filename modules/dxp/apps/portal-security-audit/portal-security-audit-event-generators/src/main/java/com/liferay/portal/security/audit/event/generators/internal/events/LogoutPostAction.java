@@ -35,18 +35,14 @@ public class LogoutPostAction extends Action {
 		throws ActionException {
 
 		try {
-			doRun(httpServletRequest, httpServletResponse);
+			_run(httpServletRequest);
 		}
 		catch (Exception exception) {
 			throw new ActionException(exception);
 		}
 	}
 
-	protected void doRun(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
-		throws Exception {
-
+	private void _run(HttpServletRequest httpServletRequest) throws Exception {
 		User user = _portal.getUser(httpServletRequest);
 
 		if (user == null) {
