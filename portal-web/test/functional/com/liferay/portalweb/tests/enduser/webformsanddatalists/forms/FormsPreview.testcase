@@ -1095,7 +1095,9 @@ definition {
 
 		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
 
-		FormFields.viewRichTextValue(fieldValue = "Test");
+		FormFields.viewRichTextValue(
+			fieldName = "Rich Text",
+			fieldValue = "Test");
 	}
 
 	@description = "Verify that a Select From List Field can be previewed"

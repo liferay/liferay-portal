@@ -1238,9 +1238,11 @@ definition {
 	macro viewRichTextPublished(text = null) {
 		SelectFrameTop();
 
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Rich Text",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
+		if (IsElementPresent(key_fieldLabel = "Rich Text", locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE")) {
+			SelectFrame.selectFrameNoLoading(
+				key_fieldLabel = "Rich Text",
+				locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
+		}
 
 		AssertTextEquals(
 			key_richText = ${text},

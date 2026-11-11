@@ -30,15 +30,9 @@ definition {
 
 	@summary = "Default summary"
 	macro addRichTextContent(fieldLabel = null, content = null) {
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = ${fieldLabel},
-			locator1 = "FormFields#RICH_TEXT_CONTENT");
-
-		Type(
-			locator1 = "FormFields#PREDEFINED_VALUE_BODY",
-			value1 = ${content});
-
-		SelectFrame(value1 = "relative=top");
+		CKEditor.addContentInWebContent(
+			content = ${content},
+			fieldLabel = ${fieldLabel});
 	}
 
 	@summary = "Default summary"
@@ -345,15 +339,9 @@ definition {
 
 	@summary = "Default summary"
 	macro editFrameField(fielName = null, fieldLabel = null) {
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = ${fieldLabel},
-			locator1 = "Form#BODY_FIELD_FORM_IFRAME");
-
-		Type(
-			locator1 = "Form#BODY",
-			value1 = ${fielName});
-
-		SelectFrame(value1 = "relative=top");
+		FormFields.addRichTextContent(
+			content = ${fielName},
+			fieldLabel = ${fieldLabel});
 	}
 
 	@summary = "Default summary"
@@ -2112,30 +2100,24 @@ definition {
 
 	@summary = "Default summary"
 	macro viewRichTextPredefinedValue(fieldValue = null) {
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Rich Text",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-		AssertTextEquals(
-			key_fieldName = "Rich Text",
-			locator1 = "CKEditor#BODY",
-			value1 = ${fieldValue});
-
-		SelectFrame(value1 = "relative=top");
+		CKEditor.assertContentInWebContent(
+			content = ${fieldValue},
+			fieldLabel = "Rich Text");
 	}
 
 	@summary = "Default summary"
 	macro viewRichTextValue(fieldName = null, fieldValue = null) {
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Rich Text",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-		AssertTextEquals(
-			key_fieldName = ${fieldName},
-			locator1 = "CKEditor#BODY",
-			value1 = ${fieldValue});
-
-		SelectFrame(value1 = "relative=top");
+		if (IsElementPresent(key_fieldLabel = ${fieldName}, locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE")) {
+			CKEditor.assertContentInWebContent(
+				content = ${fieldValue},
+				fieldLabel = ${fieldName});
+		}
+		else {
+			AssertTextEquals(
+				key_fieldLabel = ${fieldName},
+				locator1 = "FormFields#RICH_TEXT_EDITABLE_EXACT_LABEL",
+				value1 = ${fieldValue});
+		}
 	}
 
 	@summary = "Default summary"

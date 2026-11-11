@@ -574,6 +574,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>RICH_TEXT_EDITABLE_EXACT_LABEL</td>
+	<td>//label[normalize-space(.)='${key_fieldLabel}'][not(contains(@class,'ck-voice-label'))]//following-sibling::div//div[contains(@class,'ck-editor__editable_inline')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PREDEFINED_VALUE_IFRAME</td>
 	<td>//label[contains(.,'Predefined Value')]//following-sibling::div//div[contains(@id,'cke')]/iframe</td>
 	<td></td>

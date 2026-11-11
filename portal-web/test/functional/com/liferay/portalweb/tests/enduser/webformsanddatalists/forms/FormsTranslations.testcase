@@ -1472,16 +1472,9 @@ definition {
 			fieldLabel = "Texto Rico",
 			fieldName = "Texto Rico");
 
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Texto Rico",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-		AssertTextEquals(
-			key_fieldName = "Texto Rico",
-			locator1 = "CKEditor#BODY",
-			value1 = "Valor Predefinido");
-
-		SelectFrame(value1 = "relative=top");
+		CKEditor.assertContentInWebContent(
+			content = "Valor Predefinido",
+			fieldLabel = "Texto Rico");
 
 		FormFields.viewFieldHelpText(
 			fieldHelpText = "Texto de Ayuda",

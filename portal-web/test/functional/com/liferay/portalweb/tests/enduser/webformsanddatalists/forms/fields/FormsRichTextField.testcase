@@ -112,15 +112,9 @@ definition {
 
 		Form.gotoAdvancedTab();
 
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Predefined Value",
-			locator1 = "FormFields#PREDEFINED_VALUE_IFRAME");
-
-		Type(
-			locator1 = "FormFields#PREDEFINED_VALUE_BODY",
-			value1 = "R");
-
-		SelectFrame(value1 = "relative=top");
+		FormFields.addRichTextContent(
+			content = "R",
+			fieldLabel = "Predefined Value");
 
 		FormFields.duplicateField();
 
@@ -133,11 +127,11 @@ definition {
 			fieldName = "Copy of Rich Text");
 
 		FormFields.viewRichTextValue(
-			fieldName = "Predefined Value",
+			fieldName = "Rich Text",
 			fieldValue = "R");
 
 		FormFields.viewRichTextValue(
-			fieldName = "Field",
+			fieldName = "Copy of Rich Text",
 			fieldValue = "R");
 
 		FormFields.viewFieldHelpText(
@@ -252,16 +246,10 @@ definition {
 			content = "Test",
 			fieldLabel = "Rich Text");
 
-		SelectFrame.selectFrameNoLoading(
-			index = 2,
-			key_fieldLabel = "Rich Text",
-			locator1 = "CKEditor#ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-		Type(
-			locator1 = "CKEditor#BODY",
-			value1 = "Test");
-
-		SelectFrame(value1 = "relative=top");
+		CKEditor.addContentInRepeatableWebContent(
+			content = "Test",
+			fieldLabel = "Rich Text",
+			index = 2);
 
 		FormPortlet.submitSuccessfullyAndViewSuccessPage();
 	}
@@ -334,13 +322,7 @@ definition {
 
 		FormsAdminNavigator.gotoPublishedForm();
 
-		Click(locator1 = "Form#SOURCE_FORM_BUTTON");
-
-		Type.typeCodeMirrorEditorNoError(
-			locator1 = "Form#SOURCE_FORM_EDITOR",
-			value1 = "<strong> Test </strong>");
-
-		Click(locator1 = "Form#SOURCE_FORM_BUTTON");
+		CKEditor.addSourceContent(content = "<strong> Test </strong>");
 
 		Form.viewRichTextPublished(text = "Test");
 	}
