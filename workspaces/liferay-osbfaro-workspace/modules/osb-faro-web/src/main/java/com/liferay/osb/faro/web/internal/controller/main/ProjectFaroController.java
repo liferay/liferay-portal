@@ -959,7 +959,9 @@ public class ProjectFaroController extends BaseFaroController {
 								projectUsageMetric.getActiveLogicalBytes(),
 								projectUsageMetric.
 									getAnonymousIndividualsCount(),
+								projectUsageMetric.getBillableEventsCount(),
 								projectUsageMetric.getEventsCount(),
+								projectUsageMetric.getExperimentEventsCount(),
 								faroProject.getFaroProjectId(),
 								projectUsageMetric.getKnownIndividualsCount(),
 								projectUsageMetric.getLongTermLogicalBytes(),
