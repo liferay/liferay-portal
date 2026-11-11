@@ -123,7 +123,7 @@ public class AssetUsageResourceImpl extends BaseAssetUsageResourceImpl {
 		return _entityModel;
 	}
 
-	private ThemeDisplay _createThemeDisplay(Layout layout) throws Exception {
+	private ThemeDisplay _createThemeDisplay(Layout layout) {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(contextCompany);

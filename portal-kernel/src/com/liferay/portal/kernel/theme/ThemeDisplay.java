@@ -482,7 +482,7 @@ public class ThemeDisplay
 		return _getFriendlyURL(layout);
 	}
 
-	public Group getLayoutGroup(Layout layout) throws PortalException {
+	public Group getLayoutGroup(Layout layout) {
 		if ((_siteGroup != null) &&
 			(_siteGroup.getGroupId() == layout.getGroupId())) {
 
@@ -1381,7 +1381,7 @@ public class ThemeDisplay
 		_clayCSSURL = clayCSSURL;
 	}
 
-	public void setCompany(Company company) throws PortalException {
+	public void setCompany(Company company) {
 		_company = company;
 		_companyGroupId = company.getGroupId();
 	}

@@ -231,9 +231,7 @@ public class SuggestionResourceImpl extends BaseSuggestionResourceImpl {
 		return searchContext;
 	}
 
-	private ThemeDisplay _createThemeDisplay(String currentURL, Layout layout)
-		throws Exception {
-
+	private ThemeDisplay _createThemeDisplay(String currentURL, Layout layout) {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(contextCompany);
