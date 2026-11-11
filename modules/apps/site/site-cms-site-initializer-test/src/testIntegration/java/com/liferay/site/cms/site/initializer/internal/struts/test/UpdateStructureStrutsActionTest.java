@@ -13,6 +13,7 @@ import com.liferay.object.admin.rest.dto.v1_0.Status;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.exception.NoSuchObjectDefinitionException;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -43,12 +45,16 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -229,8 +235,9 @@ public class UpdateStructureStrutsActionTest {
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
-		_updateStructureStrutsAction.execute(
-			mockHttpServletRequest, mockHttpServletResponse);
+		_execute(
+			NoSuchObjectDefinitionException.class, mockHttpServletRequest,
+			mockHttpServletResponse);
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			mockHttpServletResponse.getContentAsString());
@@ -277,8 +284,9 @@ public class UpdateStructureStrutsActionTest {
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
-		_updateStructureStrutsAction.execute(
-			mockHttpServletRequest, mockHttpServletResponse);
+		_execute(
+			NoSuchObjectDefinitionException.class, mockHttpServletRequest,
+			mockHttpServletResponse);
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			mockHttpServletResponse.getContentAsString());
@@ -563,7 +571,8 @@ public class UpdateStructureStrutsActionTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
 
-			_updateStructureStrutsAction.execute(
+			_execute(
+				PrincipalException.MustHavePermission.class,
 				mockHttpServletRequest, mockHttpServletResponse);
 		}
 
@@ -691,6 +700,34 @@ public class UpdateStructureStrutsActionTest {
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			updatedServiceBuilderObjectRelationship);
+	}
+
+	private void _execute(
+			Class<?> exceptionClass,
+			MockHttpServletRequest mockHttpServletRequest,
+			MockHttpServletResponse mockHttpServletResponse)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.site.cms.site.initializer.internal.struts." +
+					"UpdateStructureStrutsAction",
+				LoggerTestUtil.ERROR)) {
+
+			_updateStructureStrutsAction.execute(
+				mockHttpServletRequest, mockHttpServletResponse);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(exceptionClass, throwable.getClass());
+		}
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
