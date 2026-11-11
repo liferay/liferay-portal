@@ -8,12 +8,6 @@ import {NO_DATA_VALUE} from 'shared/util/constants';
 const EMPTY_VALUE = NO_DATA_VALUE;
 
 /**
- * The payload key a caller uses to title the main table instead of leaving the
- * layout's title. It names the table, so it never becomes a row of its own.
- */
-const HEADER_KEY = 'header';
-
-/**
  * A group of attributes the payload nests one level down, under `key`. A group
  * with a `title` gets a table of its own; one without joins the main table, so
  * which table a property lands in is the payload's own classification rather
@@ -110,10 +104,7 @@ export const formatPayloadTables = (
 	Object.entries(payload).forEach(([key, value]) => {
 		const group = groupsByKey.get(key);
 
-		if (key === HEADER_KEY) {
-			mainTable.title = String(value);
-		}
-		else if (!group) {
+		if (!group) {
 			mainTable.rows.push(toRow(key, value));
 		}
 		else if (isNestedGroup(value)) {

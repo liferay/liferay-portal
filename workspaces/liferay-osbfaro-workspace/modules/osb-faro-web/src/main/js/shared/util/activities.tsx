@@ -206,7 +206,7 @@ const toAttributeMap = (
  * nested values (an event's properties and acquisition parameters get tables of
  * their own) are left out.
  */
-const getDisplayableFields = (
+export const getDisplayableFields = (
 	source: object
 ): Record<string, unknown> => {
 	const isApolloMetadata = (key: string) => key.startsWith('__');
@@ -222,15 +222,13 @@ const getDisplayableFields = (
 };
 
 /**
- * The attributes a session expands into, shared by the individual and the
- * account timelines.
+ * How the timeline lays out a session's attributes when its row is expanded:
+ * a single table of every field the session carries.
  */
-export const getSessionAttributes = (
-	session: object
-): Record<string, unknown> => ({
-	header: Liferay.Language.get('session-attributes'),
-	...getDisplayableFields(session),
-});
+export const SESSION_PAYLOAD_LAYOUT: PayloadLayout = {
+	groups: [],
+	title: Liferay.Language.get('session-attributes'),
+};
 
 /**
  * How the timeline lays out the payload `formatEvents` builds when a row is
@@ -685,7 +683,7 @@ export const formatSessions = (
 
 				items.push({
 					applicationId: events[0]?.applicationId ?? '',
-					attributes: getSessionAttributes(session),
+					attributes: getDisplayableFields(session),
 					becameKnown: session.becameKnown,
 					browserName: session.browserName,
 					device: session.deviceType,

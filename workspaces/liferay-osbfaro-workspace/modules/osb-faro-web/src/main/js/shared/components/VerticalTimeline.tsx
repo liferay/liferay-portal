@@ -19,10 +19,12 @@ import {formatDateToTimeZone, TIME_FORMAT} from 'shared/util/date';
 import {
 	formatPayloadTables,
 	PayloadTable as IPayloadTable,
+	PayloadLayout,
 } from 'shared/util/payloadTables';
 import {
 	ACTIVITY_PAYLOAD_LAYOUT,
 	isWebhookUserAgent,
+	SESSION_PAYLOAD_LAYOUT,
 	SessionEvent,
 	VerticalTimelineIndividual,
 	VerticalTimelineItem,
@@ -295,7 +297,10 @@ const PayloadViewSelector: FC<{
  * component, which the timeline instantiates once per row, so switching one
  * row to the raw payload leaves every other row on the tables.
  */
-const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => {
+const RowAttributes: FC<{
+	layout: PayloadLayout;
+	payload: Record<string, unknown>;
+}> = ({layout, payload}) => {
 	const [view, setView] = useState<PayloadView>('table');
 
 	return (
@@ -309,9 +314,9 @@ const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => {
 			</div>
 
 			{view === 'table' ? (
-				formatPayloadTables(payload, ACTIVITY_PAYLOAD_LAYOUT).map(
-					(table) => <PayloadTable key={table.title} table={table} />
-				)
+				formatPayloadTables(payload, layout).map((table) => (
+					<PayloadTable key={table.title} table={table} />
+				))
 			) : (
 				<PayloadCode payload={payload} />
 			)}
@@ -461,7 +466,12 @@ const SessionRow: FC<IRowProps<VerticalTimelineSession>> = ({
 				</div>
 			</RowMain>
 
-			{expanded && <RowAttributes payload={attributes} />}
+			{expanded && (
+				<RowAttributes
+					layout={SESSION_PAYLOAD_LAYOUT}
+					payload={attributes}
+				/>
+			)}
 
 			{!!nestedItems.length && (
 				<VerticalTimeline
@@ -666,7 +676,12 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 				</div>
 			</RowMain>
 
-			{expanded && <RowAttributes payload={attributes} />}
+			{expanded && (
+				<RowAttributes
+					layout={ACTIVITY_PAYLOAD_LAYOUT}
+					payload={attributes}
+				/>
+			)}
 		</li>
 	);
 };

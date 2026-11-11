@@ -1,7 +1,7 @@
 import {AccountUserSession} from 'shared/queries/AccountUserSessionQuery';
 import {EventDashboardContext} from 'shared/util/getEventDashboardUrl';
 import {
-	getSessionAttributes,
+	getDisplayableFields,
 	groupBy,
 	groupEventsByPage,
 	groupSessionsByDay,
@@ -66,7 +66,7 @@ const toSessionItem = (
 
 	return {
 		applicationId: events[0]?.applicationId ?? '',
-		attributes: getSessionAttributes(session),
+		attributes: getDisplayableFields(session),
 		browserName: session.browserName,
 		device: session.deviceType,
 		endTime: session.completeDate,
