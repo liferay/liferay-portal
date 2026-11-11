@@ -483,7 +483,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				groupId, user.getCompanyId(), groupKey, type, site);
 		}
 
-		validateInheritContent(parentGroupId, inheritContent);
+		validateInheritContent(
+			user.getCompanyId(), groupId, inheritContent, parentGroupId);
 
 		friendlyURL = getValidatedFriendlyURL(
 			user.getCompanyId(), groupId, classNameId, classPK, friendlyURL);
@@ -4027,6 +4028,10 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		validateParentGroup(group.getGroupId(), parentGroupId);
 
+		validateInheritContent(
+			group.getCompanyId(), group.getGroupId(), inheritContent,
+			parentGroupId);
+
 		group.setParentGroupId(parentGroupId);
 		group.setTreePath(group.buildTreePath());
 		group.setGroupKey(groupKey);
@@ -5294,7 +5299,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	protected void validateInheritContent(
-			long parentGroupId, boolean inheritContent)
+			long companyId, long groupId, boolean inheritContent,
+			long parentGroupId)
 		throws GroupInheritContentException {
 
 		if (!inheritContent) {
@@ -5308,6 +5314,13 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		Group parentGroup = groupPersistence.fetchByPrimaryKey(parentGroupId);
 
 		if (parentGroup.isInheritContent()) {
+			throw new GroupInheritContentException();
+		}
+
+		int count = groupPersistence.countByC_P_S_I(
+			companyId, groupId, true, true);
+
+		if (count > 0) {
 			throw new GroupInheritContentException();
 		}
 	}
