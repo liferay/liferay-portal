@@ -5,8 +5,6 @@
 
 package com.liferay.portal.kernel.util;
 
-import com.liferay.petra.io.unsync.UnsyncBufferedReader;
-import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -94,15 +92,7 @@ public class UnicodeProperties extends HashMap<String, String> {
 			return;
 		}
 
-		try (UnsyncBufferedReader unsyncBufferedReader =
-				new UnsyncBufferedReader(new UnsyncStringReader(props))) {
-
-			String line = null;
-
-			while ((line = unsyncBufferedReader.readLine()) != null) {
-				put(line);
-			}
-		}
+		com.liferay.petra.string.StringUtil.forEachLine(props, this::put);
 	}
 
 	public void put(String line) {
