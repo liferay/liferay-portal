@@ -10,6 +10,7 @@ import {isolatedChannelTest} from '../../../fixtures/isolatedChannelTest';
 import {loginAnalyticsCloudTest} from '../../../fixtures/loginAnalyticsCloudTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {faroConfig} from '../main/faro.config';
 import {ACPage, navigateToACSettingsViaURL} from '../main/utils/navigation';
 import {signInToAnalyticsCloud} from '../main/utils/signInToAnalyticsCloud';
@@ -336,6 +337,8 @@ test(
 					)
 				).toBeVisible();
 
+				await expect(page.getByRole('dialog')).toBeHidden();
+
 				for (const row of rows) {
 					await expect(
 						row.getByText(newRole, {exact: true})
@@ -345,15 +348,14 @@ test(
 		}
 		finally {
 			for (const row of rows) {
-				await clickAndExpectToBeVisible({
-					autoClick: true,
-					target: page.getByRole('button', {name: 'Continue'}),
-					trigger: row.getByLabel('Delete'),
-				});
+				await row.getByLabel('Delete').click();
 
-				await expect(
-					page.getByText('Success:1 user has been deleted.')
-				).toBeVisible();
+				await page
+					.getByRole('dialog')
+					.getByRole('button', {name: 'Continue'})
+					.click();
+
+				await waitForAlert(page, 'Success:1 user has been deleted.');
 			}
 		}
 	}
