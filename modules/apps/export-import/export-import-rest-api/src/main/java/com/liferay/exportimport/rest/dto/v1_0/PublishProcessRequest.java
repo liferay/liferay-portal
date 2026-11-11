@@ -353,6 +353,53 @@ public class PublishProcessRequest implements Serializable {
 	@JsonIgnore
 	private Supplier<Boolean> _ratingsSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The connection to the remote live site, accepted only for a site staged remotely. Defaults to the site's remote staging settings."
+	)
+	@Valid
+	public RemoteConnection getRemoteConnection() {
+		if (_remoteConnectionSupplier != null) {
+			remoteConnection = _remoteConnectionSupplier.get();
+
+			_remoteConnectionSupplier = null;
+		}
+
+		return remoteConnection;
+	}
+
+	public void setRemoteConnection(RemoteConnection remoteConnection) {
+		this.remoteConnection = remoteConnection;
+
+		_remoteConnectionSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setRemoteConnection(
+		UnsafeSupplier<RemoteConnection, Exception>
+			remoteConnectionUnsafeSupplier) {
+
+		_remoteConnectionSupplier = () -> {
+			try {
+				return remoteConnectionUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The connection to the remote live site, accepted only for a site staged remotely. Defaults to the site's remote staging settings."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected RemoteConnection remoteConnection;
+
+	@JsonIgnore
+	private Supplier<RemoteConnection> _remoteConnectionSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -479,6 +526,18 @@ public class PublishProcessRequest implements Serializable {
 			sb.append(ratings);
 		}
 
+		RemoteConnection remoteConnection = getRemoteConnection();
+
+		if (remoteConnection != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"remoteConnection\": ");
+
+			sb.append(String.valueOf(remoteConnection));
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -601,4 +660,4 @@ public class PublishProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-877541511
+// LIFERAY-REST-BUILDER-HASH:-1388143814

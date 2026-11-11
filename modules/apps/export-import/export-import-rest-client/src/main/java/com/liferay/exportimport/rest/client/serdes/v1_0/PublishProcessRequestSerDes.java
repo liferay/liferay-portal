@@ -139,6 +139,17 @@ public class PublishProcessRequestSerDes {
 			sb.append(publishProcessRequest.getRatings());
 		}
 
+		if (publishProcessRequest.getRemoteConnection() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"remoteConnection\": ");
+
+			sb.append(
+				String.valueOf(publishProcessRequest.getRemoteConnection()));
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -220,6 +231,15 @@ public class PublishProcessRequestSerDes {
 				"ratings", String.valueOf(publishProcessRequest.getRatings()));
 		}
 
+		if (publishProcessRequest.getRemoteConnection() == null) {
+			map.put("remoteConnection", null);
+		}
+		else {
+			map.put(
+				"remoteConnection",
+				String.valueOf(publishProcessRequest.getRemoteConnection()));
+		}
+
 		return map;
 	}
 
@@ -259,6 +279,9 @@ public class PublishProcessRequestSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "ratings")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "remoteConnection")) {
 				return false;
 			}
 
@@ -323,6 +346,13 @@ public class PublishProcessRequestSerDes {
 				if (jsonParserFieldValue != null) {
 					publishProcessRequest.setRatings(
 						(Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "remoteConnection")) {
+				if (jsonParserFieldValue != null) {
+					publishProcessRequest.setRemoteConnection(
+						RemoteConnectionSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -412,4 +442,4 @@ public class PublishProcessRequestSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:349872025
+// LIFERAY-REST-BUILDER-HASH:-619823955
