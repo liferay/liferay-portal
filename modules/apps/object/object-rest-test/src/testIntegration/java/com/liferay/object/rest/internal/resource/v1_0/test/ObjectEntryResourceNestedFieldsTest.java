@@ -1641,7 +1641,7 @@ public class ObjectEntryResourceNestedFieldsTest
 		if (invoked) {
 			Assert.assertEquals(
 				name + " should have been computed once", Long.valueOf(1),
-				invocations.getOrDefault(name, 1L));
+				invocations.get(name));
 
 			invocations.put(name, 0L);
 		}
