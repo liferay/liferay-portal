@@ -87,6 +87,18 @@ public class LaunchSetPublishBackgroundTaskExecutor
 				BackgroundTaskConstants.STATUS_FAILED, message);
 		}
 
+		if (launchSetObjectEntry.getStatus() ==
+				WorkflowConstants.STATUS_APPROVED) {
+
+			String message =
+				"Launch set " + launchSetId + " was already published";
+
+			_log.error(message);
+
+			return new BackgroundTaskResult(
+				BackgroundTaskConstants.STATUS_FAILED, message);
+		}
+
 		if (MapUtil.getBoolean(
 				backgroundTask.getTaskContextMap(), "scheduled") &&
 			(launchSetObjectEntry.getStatus() !=
