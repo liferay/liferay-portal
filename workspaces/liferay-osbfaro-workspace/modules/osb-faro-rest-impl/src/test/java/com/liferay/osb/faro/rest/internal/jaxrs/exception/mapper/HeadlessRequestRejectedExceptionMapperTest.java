@@ -58,6 +58,21 @@ public class HeadlessRequestRejectedExceptionMapperTest {
 		long retryAfterSeconds = RandomTestUtil.randomLong();
 
 		_testToResponse(
+			null, "mcp-cancelled-by-operator", retryAfterSeconds,
+			Response.Status.SERVICE_UNAVAILABLE,
+			"The query was cancelled by an operator, retry after " +
+				retryAfterSeconds + " seconds");
+		_testToResponse(
+			null, "mcp-disabled", retryAfterSeconds,
+			Response.Status.SERVICE_UNAVAILABLE,
+			"MCP is temporarily unavailable, retry after " + retryAfterSeconds +
+				" seconds");
+		_testToResponse(
+			null, "mcp-tool-disabled", retryAfterSeconds,
+			Response.Status.SERVICE_UNAVAILABLE,
+			"This tool is temporarily unavailable, retry after " +
+				retryAfterSeconds + " seconds");
+		_testToResponse(
 			null, "query-in-progress", retryAfterSeconds,
 			Response.Status.SERVICE_UNAVAILABLE,
 			"Query is still running, repeat the same request with the same " +
@@ -73,6 +88,9 @@ public class HeadlessRequestRejectedExceptionMapperTest {
 			"Unable to process the request right now, retry after " +
 				retryAfterSeconds + " seconds");
 
+		_testToResponse(
+			null, "mcp-disabled", null, Response.Status.SERVICE_UNAVAILABLE,
+			"MCP is temporarily unavailable, retry later");
 		_testToResponse(
 			null, "page-size-limit-exceeded", null, Response.Status.BAD_REQUEST,
 			"Page size is too large");

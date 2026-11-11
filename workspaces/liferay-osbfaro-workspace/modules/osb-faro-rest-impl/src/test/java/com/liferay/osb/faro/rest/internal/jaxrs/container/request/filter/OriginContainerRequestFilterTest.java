@@ -16,6 +16,9 @@ import com.liferay.portal.vulcan.internal.http.VulcanRequestForwarderHttpServlet
 import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ResourceInfo;
+
+import java.lang.reflect.Method;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -30,6 +33,7 @@ public class OriginContainerRequestFilterTest {
 
 	@After
 	public void tearDown() {
+		FaroThreadLocal.setOperationId(null);
 		FaroThreadLocal.setOrigin(null);
 
 		PortalUtil portalUtil = new PortalUtil();
@@ -38,7 +42,7 @@ public class OriginContainerRequestFilterTest {
 	}
 
 	@Test
-	public void testFilterWithForwardedRequest() {
+	public void testFilterWithForwardedRequest() throws Exception {
 		PortalUtil portalUtil = new PortalUtil();
 
 		Portal portal = Mockito.mock(Portal.class);
@@ -58,8 +62,20 @@ public class OriginContainerRequestFilterTest {
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				null));
 
+		Method method = Object.class.getMethod("toString");
+
+		Mockito.when(
+			_resourceInfo.getResourceMethod()
+		).thenReturn(
+			method
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_originContainerRequestFilter, "_resourceInfo", _resourceInfo);
+
 		_originContainerRequestFilter.filter(_containerRequestContext);
 
+		Assert.assertEquals("toString", FaroThreadLocal.getOperationId());
 		Assert.assertEquals("mcp", FaroThreadLocal.getOrigin());
 	}
 
@@ -69,8 +85,11 @@ public class OriginContainerRequestFilterTest {
 			_originContainerRequestFilter, "_httpServletRequest",
 			_httpServletRequest);
 
+		FaroThreadLocal.setOperationId(RandomTestUtil.randomString());
+
 		_originContainerRequestFilter.filter(_containerRequestContext);
 
+		Assert.assertNull(FaroThreadLocal.getOperationId());
 		Assert.assertEquals("rest-client", FaroThreadLocal.getOrigin());
 	}
 
@@ -80,5 +99,6 @@ public class OriginContainerRequestFilterTest {
 		HttpServletRequest.class);
 	private final OriginContainerRequestFilter _originContainerRequestFilter =
 		new OriginContainerRequestFilter();
+	private final ResourceInfo _resourceInfo = Mockito.mock(ResourceInfo.class);
 
 }

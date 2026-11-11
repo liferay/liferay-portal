@@ -26,7 +26,21 @@ public class OriginClientHttpRequestInterceptorTest {
 
 	@After
 	public void tearDown() {
+		FaroThreadLocal.setOperationId(null);
 		FaroThreadLocal.setOrigin(null);
+	}
+
+	@Test
+	public void testInterceptWithOperationId() throws Exception {
+		String operationId = RandomTestUtil.randomString();
+
+		FaroThreadLocal.setOperationId(operationId);
+
+		HttpHeaders httpHeaders = _intercept();
+
+		Assert.assertEquals(
+			operationId,
+			httpHeaders.getFirst(OSBAsahHeaderConstants.OPERATION_ID));
 	}
 
 	@Test
@@ -45,6 +59,8 @@ public class OriginClientHttpRequestInterceptorTest {
 	public void testInterceptWithoutOrigin() throws Exception {
 		HttpHeaders httpHeaders = _intercept();
 
+		Assert.assertFalse(
+			httpHeaders.containsHeader(OSBAsahHeaderConstants.OPERATION_ID));
 		Assert.assertFalse(
 			httpHeaders.containsHeader(OSBAsahHeaderConstants.ORIGIN));
 	}
