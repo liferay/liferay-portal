@@ -5567,8 +5567,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			boolean passwordReset, boolean silentUpdate)
 		throws PortalException {
 
-		User user = userPersistence.findByPrimaryKey(userId);
-
 		if (!silentUpdate) {
 			validatePassword(userId, password1, password2);
 		}
@@ -5576,6 +5574,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			throw new UserPasswordException.MustBeLonger(
 				userId, FIPSModeValidator.PASSWORDS_MIN_LENGTH);
 		}
+
+		User user = userPersistence.findByPrimaryKey(userId);
 
 		String newEncPwd = null;
 

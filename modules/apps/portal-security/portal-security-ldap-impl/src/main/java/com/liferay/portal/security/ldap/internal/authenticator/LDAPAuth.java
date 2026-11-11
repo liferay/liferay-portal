@@ -674,7 +674,7 @@ public class LDAPAuth implements Authenticator {
 
 		if (!ldapImportConfiguration.importUserPasswordEnabled()) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Import user password disabled");
+				_log.debug("Import user password is disabled");
 			}
 
 			return Authenticator.SKIP_LIFERAY_CHECK;
@@ -692,7 +692,7 @@ public class LDAPAuth implements Authenticator {
 		}
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Import user password enabled");
+			_log.debug("Import user password is enabled");
 		}
 
 		return SUCCESS;

@@ -616,8 +616,8 @@ public class FIPSModeValidatorTest {
 						RandomTestUtil.randomString(13))) {
 
 				_assertSecurityException(
-					"The property \"" + PropsKeys.DEFAULT_ADMIN_PASSWORD +
-						"\" must be at least",
+					"FIPS mode requires the property \"" +
+						PropsKeys.DEFAULT_ADMIN_PASSWORD + "\" to be at least",
 					"_validatePasswordsMinLength", new Class<?>[0]);
 			}
 
@@ -626,9 +626,9 @@ public class FIPSModeValidatorTest {
 						"PASSWORDS_DEFAULT_POLICY_MIN_LENGTH", 13)) {
 
 				_assertSecurityException(
-					"The property \"" +
+					"FIPS mode requires the property \"" +
 						PropsKeys.PASSWORDS_DEFAULT_POLICY_MIN_LENGTH +
-							"\" must be at least",
+							"\" to be at least",
 					"_validatePasswordsMinLength", new Class<?>[0]);
 			}
 		}
