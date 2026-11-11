@@ -14,6 +14,7 @@ import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.language.LanguageResources;
 
 import java.util.ArrayList;
@@ -58,7 +59,10 @@ public class AssetListEntryAssetEntryRelConstraintResolver
 
 	@Override
 	public String[] getUniqueIndexColumnNames() {
-		return new String[] {"assetListEntryId", "segmentsEntryId", "position"};
+		return new String[] {
+			"assetListEntryId", "audienceEntryERC", "segmentsEntryId",
+			"position"
+		};
 	}
 
 	@Override
@@ -77,6 +81,8 @@ public class AssetListEntryAssetEntryRelConstraintResolver
 
 		long assetListEntryId =
 			assetListEntryAssetEntryRel.getAssetListEntryId();
+		String audienceEntryERC =
+			assetListEntryAssetEntryRel.getAudienceEntryERC();
 		long segmentsEntryId = assetListEntryAssetEntryRel.getSegmentsEntryId();
 
 		List<AssetListEntryAssetEntryRel> sourceAssetListEntryAssetEntryRels =
@@ -85,8 +91,8 @@ public class AssetListEntryAssetEntryRelConstraintResolver
 		for (AssetListEntryAssetEntryRel curAssetListEntryAssetEntryRel :
 				_assetListEntryAssetEntryRelLocalService.
 					getAssetListEntryAssetEntryRels(
-						assetListEntryId, segmentsEntryId, QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS)) {
+						assetListEntryId, audienceEntryERC, segmentsEntryId,
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
 			if (!constraintResolverContext.isSourceCTModel(
 					curAssetListEntryAssetEntryRel)) {
@@ -99,7 +105,8 @@ public class AssetListEntryAssetEntryRelConstraintResolver
 		}
 
 		Set<Integer> targetPositions = _getTargetPositions(
-			assetListEntryId, constraintResolverContext, segmentsEntryId);
+			assetListEntryId, audienceEntryERC, constraintResolverContext,
+			segmentsEntryId);
 
 		List<AssetListEntryAssetEntryRel> movedAssetListEntryAssetEntryRels =
 			new ArrayList<>();
@@ -171,7 +178,7 @@ public class AssetListEntryAssetEntryRelConstraintResolver
 	}
 
 	private Set<Integer> _getTargetPositions(
-		long assetListEntryId,
+		long assetListEntryId, String audienceEntryERC,
 		ConstraintResolverContext<AssetListEntryAssetEntryRel>
 			constraintResolverContext,
 		long segmentsEntryId) {
@@ -190,6 +197,17 @@ public class AssetListEntryAssetEntryRelConstraintResolver
 					AssetListEntryAssetEntryRelTable.INSTANCE.assetListEntryId.
 						eq(
 							assetListEntryId
+						).and(
+							() -> {
+								if (Validator.isNull(audienceEntryERC)) {
+									return AssetListEntryAssetEntryRelTable.
+										INSTANCE.audienceEntryERC.isNull();
+								}
+
+								return AssetListEntryAssetEntryRelTable.
+									INSTANCE.audienceEntryERC.eq(
+										audienceEntryERC);
+							}
 						).and(
 							AssetListEntryAssetEntryRelTable.INSTANCE.
 								segmentsEntryId.eq(segmentsEntryId)
