@@ -95,16 +95,33 @@ function trackFormChanges(form, namespace) {
 		}
 	};
 
-	const mutationObserver = new MutationObserver(addRenderedFields);
+	const hasNewFields = (mutationRecords) =>
+		mutationRecords.some(
+			({addedNodes, type}) =>
+				type === 'attributes' ||
+				Array.from(addedNodes).some(
+					(node) => node.name || node.querySelector?.('[name]')
+				)
+		);
 
-	mutationObserver.observe(form, {childList: true, subtree: true});
+	const mutationObserver = new MutationObserver((mutationRecords) => {
+		if (hasNewFields(mutationRecords)) {
+			addRenderedFields();
+		}
+	});
+
+	mutationObserver.observe(form, {
+		attributeFilter: ['name'],
+		childList: true,
+		subtree: true,
+	});
 
 	return {
 		detach() {
 			mutationObserver.disconnect();
 		},
 		hasChanges() {
-			if (mutationObserver.takeRecords().length) {
+			if (hasNewFields(mutationObserver.takeRecords())) {
 				addRenderedFields();
 			}
 
