@@ -45,10 +45,7 @@ public class OpenSearchCCRRequestExecutor implements CCRRequestExecutor {
 	public UnfollowCCRResponse executeCCRRequest(
 		UnfollowCCRRequest unfollowCCRRequest) {
 
-		return _unfollowCCRRequestExecutor.execute(unfollowCCRRequest);
+		throw new UnsupportedOperationException();
 	}
-
-	private final UnfollowCCRRequestExecutor _unfollowCCRRequestExecutor =
-		new UnfollowCCRRequestExecutor();
 
 }
