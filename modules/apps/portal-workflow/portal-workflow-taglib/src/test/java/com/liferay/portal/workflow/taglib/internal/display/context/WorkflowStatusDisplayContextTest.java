@@ -6,7 +6,9 @@
 package com.liferay.portal.workflow.taglib.internal.display.context;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.comment.WorkflowableComment;
 import com.liferay.portal.kernel.model.LayoutRevisionWrapper;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.workflow.taglib.internal.constants.WorkflowStatusConstants;
@@ -49,6 +51,23 @@ public class WorkflowStatusDisplayContextTest {
 
 		Assert.assertEquals(
 			Integer.valueOf(2),
+			_workflowStatusDisplayContext.getStatus(mockHttpServletRequest));
+
+		_setAttribute(
+			"bean", mockHttpServletRequest,
+			ProxyUtil.newProxyInstance(
+				WorkflowableComment.class.getClassLoader(),
+				new Class<?>[] {WorkflowableComment.class},
+				(proxy, method, arguments) -> 3));
+
+		Assert.assertEquals(
+			Integer.valueOf(3),
+			_workflowStatusDisplayContext.getStatus(mockHttpServletRequest));
+
+		_setAttribute("bean", mockHttpServletRequest, new Object());
+
+		Assert.assertEquals(
+			Integer.valueOf(1),
 			_workflowStatusDisplayContext.getStatus(mockHttpServletRequest));
 
 		_setAttribute("bean", mockHttpServletRequest, null);
