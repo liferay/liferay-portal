@@ -207,6 +207,7 @@ public class PlaywrightBatchTestClassGroupTest
 	public void testLoadPlaywrightJSONObjectsFailure() throws Exception {
 		_testLoadPlaywrightJSONObjects(
 			3, null, null, RandomTestUtil.randomString(), "");
+		_testLoadPlaywrightJSONObjects(3, null, null, null, null);
 	}
 
 	@Test
@@ -827,11 +828,18 @@ public class PlaywrightBatchTestClassGroupTest
 
 			RuntimeException runtimeException = runtimeExceptions.get(0);
 
-			Assert.assertEquals(
-				"Playwright test listing \"test --list --reporter=json\" did " +
-					"not write a JSON report (exit code 0)\nStandard " +
-						"output:\n\nStandard error:\n",
-				runtimeException.getMessage());
+			if (reports[reports.length - 1] == null) {
+				Assert.assertTrue(
+					runtimeException.getCause() instanceof TimeoutException);
+			}
+			else {
+				Assert.assertEquals(
+					"Playwright test listing \"test --list " +
+						"--reporter=json\" did not write a JSON report (exit " +
+							"code 0)\nStandard output:\n\nStandard error:\n",
+					runtimeException.getMessage());
+			}
+
 			Assert.assertSame(runtimeException, runtimeExceptions.get(1));
 
 			return;
