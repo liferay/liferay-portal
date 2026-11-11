@@ -19,6 +19,7 @@ import {CacheKey} from '../contexts/CacheContext';
 import {Action, State} from '../contexts/StateContext';
 import selectHistory from '../selectors/selectHistory';
 import selectPublishedChildren from '../selectors/selectPublishedChildren';
+import selectStructure from '../selectors/selectStructure';
 import selectStructureChildren from '../selectors/selectStructureChildren';
 import selectStructureERC from '../selectors/selectStructureERC';
 import selectStructureId from '../selectors/selectStructureId';
@@ -35,6 +36,8 @@ import selectStructureUuid from '../selectors/selectStructureUuid';
 import selectStructureWorkflows from '../selectors/selectStructureWorkflows';
 import DisplayPageService from '../services/DisplayPageService';
 import buildStructureErrorAction from './buildStructureErrorAction';
+import getNestingDepthError from './getNestingDepthError';
+import openNestingDepthErrorModal from './openNestingDepthErrorModal';
 import {ServerError} from './validation';
 
 type Props = {
@@ -61,6 +64,20 @@ export default async function handlePublishStructure({
 	const valid = validate();
 
 	if (!valid) {
+		return;
+	}
+
+	const depthError = getNestingDepthError({
+		objectDefinitions,
+		structure: selectStructure(state),
+	});
+
+	if (depthError) {
+		await openNestingDepthErrorModal({
+			error: depthError,
+			operation: 'publish',
+		});
+
 		return;
 	}
 
