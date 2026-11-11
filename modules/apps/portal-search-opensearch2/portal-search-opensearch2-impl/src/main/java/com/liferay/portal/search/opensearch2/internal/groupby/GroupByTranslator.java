@@ -17,7 +17,6 @@ import com.liferay.portal.search.opensearch2.internal.legacy.sort.SortTranslator
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,7 +46,7 @@ public class GroupByTranslator {
 		GroupByRequest groupByRequest, boolean highlightEnabled,
 		String[] highlightFieldNames, int highlightFragmentSize,
 		boolean highlightRequireFieldMatch, int highlightSnippetSize,
-		Locale locale, SearchRequest.Builder searchRequestBuilder,
+		SearchRequest.Builder searchRequestBuilder,
 		String[] selectedFieldNames) {
 
 		Aggregation.Builder aggregationBuilder = new Aggregation.Builder();
