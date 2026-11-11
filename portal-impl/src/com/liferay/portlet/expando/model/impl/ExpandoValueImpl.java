@@ -222,6 +222,9 @@ public class ExpandoValueImpl extends ExpandoValueBaseImpl {
 		else if (type == ExpandoColumnConstants.FLOAT_ARRAY) {
 			return getFloatArray();
 		}
+		else if (type == ExpandoColumnConstants.GEOLOCATION) {
+			return getGeolocationJSONObject();
+		}
 		else if (type == ExpandoColumnConstants.INTEGER) {
 			return getInteger();
 		}
