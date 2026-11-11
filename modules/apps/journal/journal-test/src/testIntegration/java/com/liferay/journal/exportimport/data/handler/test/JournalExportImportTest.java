@@ -202,12 +202,17 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			DDMFormTestUtil.createDDMFormField(
 				"link2", "link2", DDMFormFieldTypeConstants.LINK_TO_LAYOUT,
 				"string", false, false, false));
+		ddmForm.addDDMFormField(
+			DDMFormTestUtil.createDDMFormField(
+				"link3", "link3", DDMFormFieldTypeConstants.LINK_TO_LAYOUT,
+				"string", false, false, false));
 
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
 			_liveGroup.getGroupId(), JournalArticle.class.getName(), ddmForm);
 
 		Layout layout1 = LayoutTestUtil.addTypePortletLayout(_liveGroup);
 		Layout layout2 = LayoutTestUtil.addTypePortletLayout(_liveGroup);
+		Layout layout3 = LayoutTestUtil.addTypePortletLayout(_liveGroup, true);
 
 		JournalArticle article = JournalTestUtil.addArticleWithXMLContent(
 			_liveGroup.getGroupId(),
@@ -216,6 +221,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 				"default-locale=\"en_US\">",
 				_buildLegacyLinkToLayoutDynamicElementXML("link1", layout1),
 				_buildLegacyLinkToLayoutDynamicElementXML("link2", layout2),
+				_buildLegacyLinkToLayoutDynamicElementXML("link3", layout3),
 				"</root>"),
 			ddmStructure.getStructureKey(), null);
 
@@ -243,10 +249,9 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
 			ddmFormValues.getDDMFormFieldValuesMap(false);
 
-		_assertLinkToLayoutLayoutId(
-			layout1.getLayoutId(), ddmFormFieldValuesMap.get("link1"));
-		_assertLinkToLayoutLayoutId(
-			layout2.getLayoutId(), ddmFormFieldValuesMap.get("link2"));
+		_assertLinkToLayout(ddmFormFieldValuesMap.get("link1"), layout1);
+		_assertLinkToLayout(ddmFormFieldValuesMap.get("link2"), layout2);
+		_assertLinkToLayout(ddmFormFieldValuesMap.get("link3"), layout3);
 	}
 
 	@Test
@@ -2085,8 +2090,8 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		}
 	}
 
-	private void _assertLinkToLayoutLayoutId(
-			long expectedLayoutId, List<DDMFormFieldValue> ddmFormFieldValues)
+	private void _assertLinkToLayout(
+			List<DDMFormFieldValue> ddmFormFieldValues, Layout expectedLayout)
 		throws Exception {
 
 		DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(0);
@@ -2097,8 +2102,14 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			value.getString(LocaleUtil.US));
 
 		Assert.assertEquals(
-			jsonObject.toString(), expectedLayoutId,
+			jsonObject.toString(), expectedLayout.getUuid(),
+			jsonObject.getString("id"));
+		Assert.assertEquals(
+			jsonObject.toString(), expectedLayout.getLayoutId(),
 			jsonObject.getLong("layoutId"));
+		Assert.assertEquals(
+			jsonObject.toString(), expectedLayout.isPrivateLayout(),
+			jsonObject.getBoolean("privateLayout"));
 	}
 
 	private String _buildImageDynamicElementXML(FileEntry fileEntry) {
@@ -2125,8 +2136,8 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			"\" type=\"link_to_layout\"><dynamic-content language-id=",
 			"\"en_US\"><![CDATA[{\"groupId\": ", layout.getGroupId(),
 			", \"layoutId\": \"", layout.getLayoutId(),
-			"\", \"privateLayout\": false}]]></dynamic-content>",
-			"</dynamic-element>");
+			"\", \"privateLayout\": ", layout.isPrivateLayout(),
+			"}]]></dynamic-content></dynamic-element>");
 	}
 
 	private String _buildXMLContent(String referenceJSON) {
