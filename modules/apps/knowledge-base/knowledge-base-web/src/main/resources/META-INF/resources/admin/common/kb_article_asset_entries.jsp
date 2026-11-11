@@ -54,7 +54,7 @@ KBArticle kbArticle = (KBArticle)request.getAttribute(KBWebKeys.KNOWLEDGE_BASE_K
 										label="<%= true %>"
 										markupView="lexicon"
 										message="<%= HtmlUtil.escape(assetRenderer.getTitle(locale)) %>"
-										url="<%= KBArticleAssetEntriesUtil.getURL(request, themeDisplay, assetRendererFactory, assetRenderer) %>"
+										url="<%= KBArticleAssetEntriesUtil.getURL(request, assetRendererFactory, assetRenderer) %>"
 									/>
 
 									<span class="kb-info"><%= dateFormat.format(assetEntry.getModifiedDate()) %></span>
@@ -87,7 +87,7 @@ KBArticle kbArticle = (KBArticle)request.getAttribute(KBWebKeys.KNOWLEDGE_BASE_K
 										label="<%= true %>"
 										markupView="lexicon"
 										message="<%= HtmlUtil.escape(assetRenderer.getTitle(locale)) %>"
-										url="<%= KBArticleAssetEntriesUtil.getURL(request, themeDisplay, assetRendererFactory, assetRenderer) %>"
+										url="<%= KBArticleAssetEntriesUtil.getURL(request, assetRendererFactory, assetRenderer) %>"
 									/>
 
 									<span class="kb-info">

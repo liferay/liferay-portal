@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -121,7 +120,7 @@ public class KBArticleAssetEntriesUtil {
 	}
 
 	public static String getURL(
-			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay,
+			HttpServletRequest httpServletRequest,
 			AssetRendererFactory<?> assetRendererFactory,
 			AssetRenderer<?> assetRenderer)
 		throws Exception {
