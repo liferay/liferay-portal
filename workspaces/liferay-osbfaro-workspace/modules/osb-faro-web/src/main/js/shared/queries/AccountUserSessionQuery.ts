@@ -1,44 +1,10 @@
+import {BaseUserSession} from 'shared/queries/UserSessionQuery';
 import {gql} from '@apollo/client';
 import {SessionEntityTypes} from 'shared/util/constants';
 
-export interface AccountUserSessionEvent {
-	acquisitionProperties: Array<{name: string; value: string}>;
-	applicationId: string;
-	assetTitle: string;
-	campaignEntityId: string | null;
-	campaignId: string | null;
-	campaignName: string | null;
-	canonicalUrl: string;
-	createDate: string;
-	eventDate: string;
-	eventId: string;
-	experienceId?: string | null;
-	experienceName?: string | null;
-	name: string;
-	pageDescription: string;
-	pageGroupId?: string | null;
-	pageKeywords: string;
-	pageTitle: string;
-	properties: Array<{name: string; value: string}>;
-	referrer: string;
-	url: string;
-}
-
-export interface AccountUserSession {
-	browserName: string;
-	completeDate: string | null;
-	contentLanguageId: string;
-	createDate: string;
-	devicePixelRatio: number;
-	deviceType: string;
-	events: AccountUserSessionEvent[];
+export interface AccountUserSession extends BaseUserSession {
 	individualId: string | null;
 	jobTitle?: string | null;
-	languageId: string;
-	screenHeight: number;
-	screenWidth: number;
-	timezoneOffset: string;
-	userAgent: string;
 	userId: string | null;
 	userName: string | null;
 }

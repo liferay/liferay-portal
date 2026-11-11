@@ -17,17 +17,16 @@ export interface UserSessionEvent {
 	name: string;
 	pageDescription: string;
 	pageGroupId?: string | null;
-	pageKeywords?: string;
+	pageKeywords: string;
 	pageTitle: string;
 	properties: Array<{name: string; value: string}>;
 	referrer: string;
 	url: string;
 }
 
-export interface UserSession {
-	becameKnown: boolean;
+export interface BaseUserSession {
 	browserName: string;
-	completeDate: Date;
+	completeDate: string | null;
 	contentLanguageId: string;
 	createDate: string;
 	devicePixelRatio: number;
@@ -38,6 +37,10 @@ export interface UserSession {
 	screenWidth: number;
 	timezoneOffset: string;
 	userAgent: string;
+}
+
+export interface UserSession extends BaseUserSession {
+	becameKnown: boolean;
 }
 
 export interface UserSessionData {
