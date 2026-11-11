@@ -107,7 +107,7 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapperTest {
 		return _dlAppLocalService.addFileEntry(
 			externalReferenceCode, TestPropsValues.getUserId(), groupId,
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
 			RandomTestUtil.randomBytes(), null, null, null,
 			ServiceContextTestUtil.getServiceContext(groupId));
 	}
