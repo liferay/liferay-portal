@@ -93,7 +93,7 @@ public class PasswordPolicyToolkit extends BasicToolkit {
 		if (PropsValues.PASSWORDS_PASSWORDPOLICYTOOLKIT_GENERATOR.equals(
 				"static")) {
 
-			return generateStatic(passwordPolicy);
+			return PropsValues.PASSWORDS_PASSWORDPOLICYTOOLKIT_STATIC;
 		}
 
 		return generateDynamic(passwordPolicy);
@@ -272,10 +272,6 @@ public class PasswordPolicyToolkit extends BasicToolkit {
 		}
 
 		return RandomUtil.shuffle(new SecureRandom(), sb.toString());
-	}
-
-	protected String generateStatic(PasswordPolicy passwordPolicy) {
-		return PropsValues.PASSWORDS_PASSWORDPOLICYTOOLKIT_STATIC;
 	}
 
 	protected String getRandomString(int count, char[] chars) {
