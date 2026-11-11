@@ -438,7 +438,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 					new String[] {ERC_VALUE_1, ERC_VALUE_2},
 					OBJECT_FIELD_NAME_1,
 					new String[] {
-						NEW_OBJECT_FIELD_VALUE_1, NEW_OBJECT_FIELD_VALUE_2
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString()
 					})
 			).toString(),
 			getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
@@ -446,12 +447,12 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 
 		JSONObject putJSONObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1
+				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				objectRelationship.getName(),
 				createObjectEntriesJSONArray(
 					new String[] {ERC_VALUE_3}, OBJECT_FIELD_NAME_2,
-					new String[] {NEW_OBJECT_FIELD_VALUE_2})
+					new String[] {RandomTestUtil.randomString()})
 			).toString(),
 			getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +
 				postJSONObject.getLong("id"),
@@ -850,7 +851,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			JSONUtil.put(
 				objectRelationship.getName(),
 				JSONUtil.put(
-					OBJECT_FIELD_NAME_2, NEW_OBJECT_FIELD_VALUE_2
+					OBJECT_FIELD_NAME_2, RandomTestUtil.randomString()
 				).put(
 					"externalReferenceCode", ERC_VALUE_2
 				)
@@ -1102,7 +1103,8 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
+			getObjectDefinition1(), OBJECT_FIELD_NAME_1,
+			RandomTestUtil.randomString());
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(

@@ -238,7 +238,7 @@ public class ObjectEntryResourceScopeTest
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			getSiteScopedObjectDefinition1(), OBJECT_FIELD_NAME_1,
-			OBJECT_FIELD_VALUE_1);
+			RandomTestUtil.randomString());
 
 		HTTPTestUtil.invokeToJSONObject(
 			null,

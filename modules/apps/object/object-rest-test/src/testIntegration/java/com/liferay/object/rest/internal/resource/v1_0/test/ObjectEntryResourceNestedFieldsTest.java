@@ -750,7 +750,8 @@ public class ObjectEntryResourceNestedFieldsTest
 		// Many to many relationship, custom and system object definitions
 
 		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
+			getObjectDefinition1(), OBJECT_FIELD_NAME_1,
+			RandomTestUtil.randomString());
 		JSONObject userAccountJSONObject =
 			UserAccountTestUtil.addUserAccountJSONObject(
 				getUserSystemObjectDefinitionManager(), Collections.emptyMap());
@@ -769,7 +770,8 @@ public class ObjectEntryResourceNestedFieldsTest
 		// Many to many relationship, custom object definitions
 
 		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
+			getObjectDefinition2(), OBJECT_FIELD_NAME_2,
+			RandomTestUtil.randomString());
 
 		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
 			ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
@@ -829,7 +831,7 @@ public class ObjectEntryResourceNestedFieldsTest
 	public void testGetObjectEntriesSystemProperties() throws Exception {
 		ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-			NEW_OBJECT_FIELD_VALUE_1);
+			RandomTestUtil.randomString());
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null, getObjectDefinition1().getRESTContextPath(), Http.Method.GET);
@@ -1461,7 +1463,8 @@ public class ObjectEntryResourceNestedFieldsTest
 	@Test
 	public void testGetObjectEntryWithExcludedNestedFields() throws Exception {
 		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
+			getObjectDefinition1(), OBJECT_FIELD_NAME_1,
+			RandomTestUtil.randomString());
 		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
 			getObjectDefinition2(), OBJECT_FIELD_NAME_TEXT,
 			RandomTestUtil.randomString());

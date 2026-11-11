@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
@@ -59,7 +60,7 @@ public class ObjectEntryResourcePaginationTest
 		for (int i = 0; i < count; i++) {
 			ObjectEntryTestUtil.addObjectEntry(
 				getObjectDefinition1(), OBJECT_FIELD_NAME_TEXT,
-				NEW_OBJECT_FIELD_VALUE_1);
+				RandomTestUtil.randomString());
 		}
 	}
 

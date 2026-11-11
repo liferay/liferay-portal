@@ -341,7 +341,7 @@ public class ObjectEntryResourceCategorizationTest
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
-				"keywords", JSONUtil.putAll("tag")
+				"keywords", JSONUtil.putAll(RandomTestUtil.randomString())
 			).put(
 				"taxonomyCategoryIds", JSONUtil.putAll(taxonomyCategory.getId())
 			).toString(),
