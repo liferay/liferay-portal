@@ -424,15 +424,11 @@ public class ObjectEntryResourceRelationshipTest
 			objectDefinition1.getRESTContextPath(), Http.Method.POST);
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).put(
 				"externalReferenceCode", "c"
 			).toString(),
 			objectDefinition2.getRESTContextPath(), Http.Method.POST);
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).put(
 				"externalReferenceCode", "c/d"
 			).toString(),
 			objectDefinition2.getRESTContextPath(), Http.Method.POST);

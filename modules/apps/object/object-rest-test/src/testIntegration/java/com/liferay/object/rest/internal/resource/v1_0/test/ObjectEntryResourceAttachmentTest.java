@@ -346,8 +346,6 @@ public class ObjectEntryResourceAttachmentTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).put(
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 				pdfDLFileEntry.getFileEntryId()
 			).toString(),

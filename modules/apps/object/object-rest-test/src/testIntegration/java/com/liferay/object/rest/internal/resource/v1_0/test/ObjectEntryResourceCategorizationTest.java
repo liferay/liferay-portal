@@ -100,8 +100,6 @@ public class ObjectEntryResourceCategorizationTest
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
-				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-			).put(
 				"keywords", JSONUtil.putAll(tagName1, tagName2)
 			).toString(),
 			objectDefinition.getRESTContextPath(), Http.Method.POST);
