@@ -363,8 +363,8 @@ public class NestedFieldsSetterUtil {
 				Map.Entry<String, Class<?>>[] resourceMethodArgNameTypeEntries =
 					_getResourceMethodArgNameTypeEntries(
 						resourceClass, resourceMethod);
-				String[] resourceMethodPathParamNames =
-					_getResourceMethodPathParamNames(
+				String[] resourceMethodPathParameterNames =
+					_getResourceMethodPathParameterNames(
 						resourceClass, resourceMethod);
 
 				ServiceObjects<Object> serviceObjects =
@@ -378,7 +378,7 @@ public class NestedFieldsSetterUtil {
 							fieldName, item, nestedFieldsContext,
 							nestedFieldsSetterCustomizer, parentPathParameters,
 							resourceMethod, resourceMethodArgNameTypeEntries,
-							resourceMethodPathParamNames, serviceObjects));
+							resourceMethodPathParameterNames, serviceObjects));
 			}
 
 			if (nestedFieldGetters.isEmpty()) {
@@ -553,7 +553,7 @@ public class NestedFieldsSetterUtil {
 				NestedFieldsSetterCustomizer nestedFieldsSetterCustomizer,
 				Map<String, Object> parentPathParameters, Method resourceMethod,
 				Map.Entry<String, Class<?>>[] resourceMethodArgNameTypeEntries,
-				String[] resourceMethodPathParamNames,
+				String[] resourceMethodPathParameterNames,
 				ServiceObjects<Object> serviceObjects)
 			throws Exception {
 
@@ -585,14 +585,14 @@ public class NestedFieldsSetterUtil {
 					parentPathParameters);
 
 				for (int i = 0; i < args.length; i++) {
-					if ((resourceMethodPathParamNames[i] == null) ||
+					if ((resourceMethodPathParameterNames[i] == null) ||
 						(args[i] == null)) {
 
 						continue;
 					}
 
 					childPathParameters.put(
-						resourceMethodPathParamNames[i], args[i]);
+						resourceMethodPathParameterNames[i], args[i]);
 				}
 
 				return new NestedFieldValue(
@@ -683,13 +683,13 @@ public class NestedFieldsSetterUtil {
 			return resourceMethodArgNameTypeEntries;
 		}
 
-		private String[] _getResourceMethodPathParamNames(
+		private String[] _getResourceMethodPathParameterNames(
 			Class<?> resourceClass, Method resourceMethod) {
 
 			Parameter[] resourceMethodParameters =
 				resourceMethod.getParameters();
 
-			String[] resourceMethodPathParamNames =
+			String[] resourceMethodPathParameterNames =
 				new String[resourceMethodParameters.length];
 
 			Parameter[] parentParameters = _getParentParameters(
@@ -704,10 +704,10 @@ public class NestedFieldsSetterUtil {
 					continue;
 				}
 
-				resourceMethodPathParamNames[i] = pathParam.value();
+				resourceMethodPathParameterNames[i] = pathParam.value();
 			}
 
-			return resourceMethodPathParamNames;
+			return resourceMethodPathParameterNames;
 		}
 
 		private static final ObjectMapper _objectMapper = new ObjectMapper();
