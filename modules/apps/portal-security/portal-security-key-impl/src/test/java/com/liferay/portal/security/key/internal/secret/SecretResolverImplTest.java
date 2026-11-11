@@ -26,7 +26,6 @@ import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -404,16 +403,10 @@ public class SecretResolverImplTest {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			KeyReference.Type.SECRET);
 
-		AtomicReference<Secret> atomicReference = new AtomicReference<>();
-
 		Mockito.when(
 			_secretManager.putSecret(Mockito.eq(companyId), Mockito.any())
-		).thenAnswer(
-			invocationOnMock -> {
-				atomicReference.set(invocationOnMock.getArgument(1));
-
-				return keyReference;
-			}
+		).thenReturn(
+			keyReference
 		);
 
 		Assert.assertEquals(
@@ -421,7 +414,16 @@ public class SecretResolverImplTest {
 			_secretResolverImpl.store(
 				companyId, secretContext, RandomTestUtil.randomString()));
 
-		Secret secret = atomicReference.get();
+		ArgumentCaptor<Secret> argumentCaptor = ArgumentCaptor.forClass(
+			Secret.class);
+
+		Mockito.verify(
+			_secretManager
+		).putSecret(
+			Mockito.eq(companyId), argumentCaptor.capture()
+		);
+
+		Secret secret = argumentCaptor.getValue();
 
 		KeyReference secretKeyReference = secret.getKeyReference();
 
@@ -439,16 +441,10 @@ public class SecretResolverImplTest {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			KeyReference.Type.SECRET);
 
-		AtomicReference<Secret> atomicReference = new AtomicReference<>();
-
 		Mockito.when(
 			_secretManager.putSecret(Mockito.eq(companyId), Mockito.any())
-		).thenAnswer(
-			invocationOnMock -> {
-				atomicReference.set(invocationOnMock.getArgument(1));
-
-				return keyReference;
-			}
+		).thenReturn(
+			keyReference
 		);
 
 		Assert.assertEquals(
@@ -456,7 +452,16 @@ public class SecretResolverImplTest {
 			_secretResolverImpl.store(
 				companyId, identifier, RandomTestUtil.randomString()));
 
-		Secret secret = atomicReference.get();
+		ArgumentCaptor<Secret> argumentCaptor = ArgumentCaptor.forClass(
+			Secret.class);
+
+		Mockito.verify(
+			_secretManager
+		).putSecret(
+			Mockito.eq(companyId), argumentCaptor.capture()
+		);
+
+		Secret secret = argumentCaptor.getValue();
 
 		KeyReference secretKeyReference = secret.getKeyReference();
 
