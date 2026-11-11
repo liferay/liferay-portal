@@ -282,25 +282,32 @@ public class FragmentEntryLinkModelListenerTest {
 
 		String text = RandomTestUtil.randomString();
 
-		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-			_fragmentCollectionContributorRegistry.getFragmentEntry(
-				"BASIC_COMPONENT-paragraph"),
-			_createEditableValues(
-				"element-text",
-				StringBundler.concat(
-					"<p><a href=\"tel:1123445566\">", text,
-					"</a><a href=\"sms:+34600000000\">", text,
-					"</a><a href=\"javascript:alert(1)\">", text, "</a></p>")),
-			_serviceContext);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.security.antisamy.internal." +
+					"AntiSamySanitizerImpl",
+				LoggerTestUtil.WARN)) {
 
-		Assert.assertEquals(
-			_createEditableValues(
-				"element-text",
-				StringBundler.concat(
-					"<p><a href=\"tel:1123445566\">", text,
-					"</a><a href=\"sms:+34600000000\">", text, "</a><a>", text,
-					"</a></p>")),
-			fragmentEntryLink.getEditableValues());
+			FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+				_fragmentCollectionContributorRegistry.getFragmentEntry(
+					"BASIC_COMPONENT-paragraph"),
+				_createEditableValues(
+					"element-text",
+					StringBundler.concat(
+						"<p><a href=\"tel:1123445566\">", text,
+						"</a><a href=\"sms:+34600000000\">", text,
+						"</a><a href=\"javascript:alert(1)\">", text,
+						"</a></p>")),
+				_serviceContext);
+
+			Assert.assertEquals(
+				_createEditableValues(
+					"element-text",
+					StringBundler.concat(
+						"<p><a href=\"tel:1123445566\">", text,
+						"</a><a href=\"sms:+34600000000\">", text, "</a><a>",
+						text, "</a></p>")),
+				fragmentEntryLink.getEditableValues());
+		}
 	}
 
 	private void _testAddFragmentEntryLinkPreservesSVGAccessibilityAttributes()
@@ -590,23 +597,30 @@ public class FragmentEntryLinkModelListenerTest {
 
 		String text = RandomTestUtil.randomString();
 
-		FragmentEntryLink fragmentEntryLink = _updateFragmentEntryLink(
-			"BASIC_COMPONENT-paragraph",
-			_createEditableValues(
-				"element-text",
-				StringBundler.concat(
-					"<p><a href=\"tel:1123445566\">", text,
-					"</a><a href=\"sms:+34600000000\">", text,
-					"</a><a href=\"javascript:alert(1)\">", text, "</a></p>")));
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.security.antisamy.internal." +
+					"AntiSamySanitizerImpl",
+				LoggerTestUtil.WARN)) {
 
-		Assert.assertEquals(
-			_createEditableValues(
-				"element-text",
-				StringBundler.concat(
-					"<p><a href=\"tel:1123445566\">", text,
-					"</a><a href=\"sms:+34600000000\">", text, "</a><a>", text,
-					"</a></p>")),
-			fragmentEntryLink.getEditableValues());
+			FragmentEntryLink fragmentEntryLink = _updateFragmentEntryLink(
+				"BASIC_COMPONENT-paragraph",
+				_createEditableValues(
+					"element-text",
+					StringBundler.concat(
+						"<p><a href=\"tel:1123445566\">", text,
+						"</a><a href=\"sms:+34600000000\">", text,
+						"</a><a href=\"javascript:alert(1)\">", text,
+						"</a></p>")));
+
+			Assert.assertEquals(
+				_createEditableValues(
+					"element-text",
+					StringBundler.concat(
+						"<p><a href=\"tel:1123445566\">", text,
+						"</a><a href=\"sms:+34600000000\">", text, "</a><a>",
+						text, "</a></p>")),
+				fragmentEntryLink.getEditableValues());
+		}
 	}
 
 	private void _testUpdateFragmentEntryLinkWithHTMLField() throws Exception {
