@@ -44,9 +44,7 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class LinkbackProducerUtil {
 
-	public static void sendPingback(String sourceUri, String targetUri)
-		throws Exception {
-
+	public static void sendPingback(String sourceUri, String targetUri) {
 		_pingbackQueue.add(new Tuple(new Date(), sourceUri, targetUri));
 	}
 

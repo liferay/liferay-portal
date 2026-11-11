@@ -2704,13 +2704,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 				continue;
 			}
 
-			try {
-				LinkbackProducerUtil.sendPingback(sourceUri, targetUri);
-			}
-			catch (Exception exception) {
-				_log.error(
-					"Error while sending pingback " + targetUri, exception);
-			}
+			LinkbackProducerUtil.sendPingback(sourceUri, targetUri);
 		}
 	}
 
