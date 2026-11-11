@@ -34,13 +34,12 @@ public class ProductOptionUtilTest {
 	public void testAddOrUpdateCPDefinitionOptionRelWhenOptionIdIsNull()
 		throws Exception {
 
-		CPDefinitionOptionRelService cpDefinitionOptionRelService =
-			Mockito.mock(CPDefinitionOptionRelService.class);
 		CPDefinitionOptionRel cpDefinitionOptionRel = Mockito.mock(
 			CPDefinitionOptionRel.class);
-		CPOptionService cpOptionService = Mockito.mock(CPOptionService.class);
-
+		CPDefinitionOptionRelService cpDefinitionOptionRelService =
+			Mockito.mock(CPDefinitionOptionRelService.class);
 		CPOption cpOption = Mockito.mock(CPOption.class);
+		CPOptionService cpOptionService = Mockito.mock(CPOptionService.class);
 
 		long cpOptionId = RandomTestUtil.randomLong();
 
