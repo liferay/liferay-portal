@@ -1,3 +1,28 @@
+@mixin product-menu-sidebar-link-hover {
+	background-color: var(
+		--menubar-primary-nav-link-hover-background-color,
+		#{$cadmin-primary-l3}
+	);
+
+	&:not(:focus-visible) {
+		border-color: transparent;
+		box-shadow: none;
+	}
+
+	&::before {
+		background-color: var(
+			--menubar-primary-nav-link-hover-highlight-background-color,
+			#{$cadmin-secondary-l0}
+		);
+		bottom: 0;
+		content: '';
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: var(--menubar-primary-nav-link-hover-highlight-width, 0.125rem);
+	}
+}
+
 @mixin product-menu-sidebar-shimmer {
 	overflow: hidden;
 	position: relative;
@@ -60,6 +85,138 @@ html#{$cadmin-selector} {
 			> #{$row}:has(> .collapse-icon) + #{$row} {
 				margin-top: 0.5rem;
 			}
+		}
+
+		button.nav-link {
+			text-align: start;
+			width: 100%;
+		}
+
+		.pages-administration-link {
+			border-top: 1px solid $cadmin-secondary-l3;
+			padding: 0.25rem 0;
+
+			a {
+				color: var(
+					--menubar-primary-nav-link-color,
+					#{$cadmin-gray-900}
+				);
+				display: block;
+				margin-left: 0 !important;
+				padding: var(--menubar-primary-nav-link-padding, 0.5rem 1rem);
+				position: relative;
+				text-decoration: none;
+
+				&:hover {
+					@include product-menu-sidebar-link-hover;
+				}
+			}
+		}
+
+		.product-menu-sidebar-page-tree {
+			.pages-tree {
+				margin: 0 !important;
+			}
+
+			.pages-tree .treeview > .treeview-item > .treeview-link {
+				font-size: 0.75rem;
+				font-weight: 600;
+				text-transform: uppercase;
+
+				.autofit-row {
+					flex-direction: row-reverse;
+					padding: 0 0.5rem;
+				}
+			}
+
+			.treeview-link {
+				border-color: transparent;
+				border-radius: 0;
+				color: var(
+					--menubar-primary-nav-link-color,
+					#{$cadmin-gray-900}
+				);
+				padding-bottom: 0.4375rem;
+				padding-top: 0.4375rem;
+				position: relative;
+
+				a {
+					color: inherit;
+				}
+
+				.c-inner {
+					padding-bottom: 0;
+					padding-top: 0;
+				}
+
+				&:hover {
+					@include product-menu-sidebar-link-hover;
+				}
+
+				&.active {
+					background-color: var(
+						--menubar-primary-nav-link-active-class-background-color,
+						#{$cadmin-blue-l5}
+					);
+					font-weight: $cadmin-font-weight-semi-bold;
+
+					&:not(:focus-visible) {
+						border-color: transparent;
+						box-shadow: none;
+					}
+
+					&::before {
+						background-color: var(
+							--menubar-primary-nav-link-active-class-highlight-background-color,
+							#{$cadmin-blue-d1}
+						);
+						bottom: 0;
+						content: '';
+						left: 0;
+						position: absolute;
+						top: 0;
+						width: var(
+							--menubar-primary-nav-link-active-class-highlight-width,
+							0.375rem
+						);
+					}
+				}
+			}
+		}
+
+		.product-menu-sidebar-page-tree-result-path {
+			font-size: 0.75rem;
+			line-height: 1rem;
+		}
+
+		.product-menu-sidebar-page-tree-results .nav-link {
+			color: var(--menubar-primary-nav-link-color, #{$cadmin-gray-900});
+			padding: var(--menubar-primary-nav-link-padding, 0.5rem 1rem);
+			position: relative;
+
+			&:hover {
+				@include product-menu-sidebar-link-hover;
+			}
+		}
+
+		.product-menu-sidebar-page-tree-toolbar {
+			padding-bottom: 0.5rem;
+		}
+
+		.product-menu-sidebar-staging .btn.active {
+			background-color: var(
+				--menubar-primary-nav-link-active-class-background-color,
+				#{$cadmin-blue-l5}
+			);
+			border-color: var(
+				--menubar-primary-nav-link-active-class-highlight-background-color,
+				#{$cadmin-blue-d1}
+			);
+			color: var(
+				--menubar-primary-nav-link-active-class-color,
+				#{$cadmin-gray-900}
+			);
+			font-weight: $cadmin-font-weight-semi-bold;
 		}
 	}
 }
