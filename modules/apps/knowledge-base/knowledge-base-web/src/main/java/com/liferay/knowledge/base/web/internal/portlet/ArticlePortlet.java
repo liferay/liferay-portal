@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -32,10 +33,15 @@ import jakarta.portlet.ActionResponse;
 import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletException;
 import jakarta.portlet.PortletPreferences;
+import jakarta.portlet.PortletRequest;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import java.io.IOException;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -71,6 +77,27 @@ import org.osgi.service.component.annotations.Reference;
 	service = Portlet.class
 )
 public class ArticlePortlet extends BaseKBPortlet {
+
+	@Override
+	public void serveResource(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws IOException, PortletException {
+
+		KBArticle kbArticle = _kbArticleLocalService.fetchLatestKBArticle(
+			ParamUtil.getLong(resourceRequest, "resourcePrimKey"),
+			WorkflowConstants.STATUS_ANY);
+
+		if (kbArticle != null) {
+			try {
+				_checkGroupId(kbArticle, resourceRequest);
+			}
+			catch (NoSuchArticleException noSuchArticleException) {
+				throw new PortletException(noSuchArticleException);
+			}
+		}
+
+		super.serveResource(resourceRequest, resourceResponse);
+	}
 
 	@Override
 	protected void addSuccessMessage(
@@ -123,6 +150,8 @@ public class ArticlePortlet extends BaseKBPortlet {
 			if (resourcePrimKey > 0) {
 				kbArticle = kbArticleService.getLatestKBArticle(
 					resourcePrimKey, status);
+
+				_checkGroupId(kbArticle, renderRequest);
 			}
 
 			renderRequest.setAttribute(
@@ -185,6 +214,32 @@ public class ArticlePortlet extends BaseKBPortlet {
 		}
 
 		return defaultValue;
+	}
+
+	private void _checkGroupId(
+			KBArticle kbArticle, PortletRequest portletRequest)
+		throws NoSuchArticleException {
+
+		if (!Objects.equals(
+				portal.getPortletId(portletRequest),
+				KBPortletKeys.KNOWLEDGE_BASE_ARTICLE_DEFAULT_INSTANCE)) {
+
+			return;
+		}
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
+			KBWebKeys.THEME_DISPLAY);
+
+		if (ArrayUtil.contains(
+				portal.getCurrentAndAncestorSiteGroupIds(
+					themeDisplay.getScopeGroupId()),
+				kbArticle.getGroupId())) {
+
+			return;
+		}
+
+		throw new NoSuchArticleException(
+			"{resourcePrimKey=" + kbArticle.getResourcePrimKey() + "}");
 	}
 
 	private long _getResourcePrimKeyFromUrlTitle(RenderRequest renderRequest)
