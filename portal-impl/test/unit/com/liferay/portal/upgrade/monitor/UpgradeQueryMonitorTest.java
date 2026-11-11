@@ -24,6 +24,9 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.sql.DataSource;
@@ -86,6 +89,8 @@ public class UpgradeQueryMonitorTest {
 				_testPollWithOneLockedQuery(connection, db, logCapture);
 				_testPollWithMultipleLockedQueries(connection, db, logCapture);
 				_testPollWithSQLException(connection, db, logCapture);
+				_testPollWithSQLExceptionWhileStopping(
+					connection, db, logCapture);
 			}
 			finally {
 				InfrastructureUtil.setDataSource(originalDataSource);
@@ -188,16 +193,38 @@ public class UpgradeQueryMonitorTest {
 
 			UpgradeQueryMonitor.start();
 
-			Assert.assertNotNull(
+			ScheduledExecutorService scheduledExecutorService =
 				ReflectionTestUtil.getFieldValue(
-					UpgradeQueryMonitor.class, _SCHEDULED_EXECUTOR_SERVICE));
+					UpgradeQueryMonitor.class, _SCHEDULED_EXECUTOR_SERVICE);
+
+			CountDownLatch countDownLatch = new CountDownLatch(1);
+
+			Future<Boolean> future = scheduledExecutorService.submit(
+				() -> {
+					countDownLatch.countDown();
+
+					Thread.sleep(1000);
+
+					return Thread.interrupted();
+				});
+
+			countDownLatch.await();
 
 			UpgradeQueryMonitor.stop();
 
+			Assert.assertFalse(future.get());
 			Assert.assertNull(
 				ReflectionTestUtil.getFieldValue(
 					UpgradeQueryMonitor.class, _SCHEDULED_EXECUTOR_SERVICE));
+			Assert.assertTrue(scheduledExecutorService.isTerminated());
 		}
+	}
+
+	private void _poll(ScheduledExecutorService scheduledExecutorService) {
+		ReflectionTestUtil.invoke(
+			UpgradeQueryMonitor.class, "_poll",
+			new Class<?>[] {ScheduledExecutorService.class},
+			scheduledExecutorService);
 	}
 
 	private void _testPollLongRunningWithMultipleQueries(
@@ -231,15 +258,13 @@ public class UpgradeQueryMonitorTest {
 
 		List<LogEntry> logEntries = logCapture.getLogEntries();
 
-		int sizeBeforePoll = logEntries.size();
+		logEntries.clear();
 
-		ReflectionTestUtil.invoke(
-			UpgradeQueryMonitor.class, "_poll", new Class<?>[0]);
+		_poll(_scheduledExecutorService);
 
-		Assert.assertEquals(
-			logEntries.toString(), sizeBeforePoll + 3, logEntries.size());
+		Assert.assertEquals(logEntries.toString(), 3, logEntries.size());
 
-		LogEntry logEntry1 = logEntries.get(sizeBeforePoll);
+		LogEntry logEntry1 = logEntries.get(0);
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -248,7 +273,7 @@ public class UpgradeQueryMonitorTest {
 				"\" has been running for 630 seconds"),
 			logEntry1.getMessage());
 
-		LogEntry logEntry2 = logEntries.get(sizeBeforePoll + 1);
+		LogEntry logEntry2 = logEntries.get(1);
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -257,7 +282,7 @@ public class UpgradeQueryMonitorTest {
 				"\" has been running for 720 seconds"),
 			logEntry2.getMessage());
 
-		LogEntry logEntry3 = logEntries.get(sizeBeforePoll + 2);
+		LogEntry logEntry3 = logEntries.get(2);
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -279,13 +304,11 @@ public class UpgradeQueryMonitorTest {
 
 		List<LogEntry> logEntries = logCapture.getLogEntries();
 
-		int sizeBeforePoll = logEntries.size();
+		logEntries.clear();
 
-		ReflectionTestUtil.invoke(
-			UpgradeQueryMonitor.class, "_poll", new Class<?>[0]);
+		_poll(_scheduledExecutorService);
 
-		Assert.assertEquals(
-			logEntries.toString(), sizeBeforePoll, logEntries.size());
+		Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
 	}
 
 	private void _testPollLongRunningWithOneQuery(
@@ -306,15 +329,13 @@ public class UpgradeQueryMonitorTest {
 
 		List<LogEntry> logEntries = logCapture.getLogEntries();
 
-		int sizeBeforePoll = logEntries.size();
+		logEntries.clear();
 
-		ReflectionTestUtil.invoke(
-			UpgradeQueryMonitor.class, "_poll", new Class<?>[0]);
+		_poll(_scheduledExecutorService);
 
-		Assert.assertEquals(
-			logEntries.toString(), sizeBeforePoll + 1, logEntries.size());
+		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
 
-		LogEntry logEntry = logEntries.get(sizeBeforePoll);
+		LogEntry logEntry = logEntries.get(0);
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -353,14 +374,15 @@ public class UpgradeQueryMonitorTest {
 					RandomTestUtil.randomString()))
 		);
 
-		ReflectionTestUtil.invoke(
-			UpgradeQueryMonitor.class, "_poll", new Class<?>[0]);
-
 		List<LogEntry> logEntries = logCapture.getLogEntries();
 
-		Assert.assertEquals(logEntries.toString(), 4, logEntries.size());
+		logEntries.clear();
 
-		LogEntry logEntry1 = logEntries.get(1);
+		_poll(_scheduledExecutorService);
+
+		Assert.assertEquals(logEntries.toString(), 3, logEntries.size());
+
+		LogEntry logEntry1 = logEntries.get(0);
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -368,7 +390,7 @@ public class UpgradeQueryMonitorTest {
 				schema1, "\" has been running for 300 seconds"),
 			logEntry1.getMessage());
 
-		LogEntry logEntry2 = logEntries.get(2);
+		LogEntry logEntry2 = logEntries.get(1);
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -376,7 +398,7 @@ public class UpgradeQueryMonitorTest {
 				schema2, "\" has been running for 600 seconds"),
 			logEntry2.getMessage());
 
-		LogEntry logEntry3 = logEntries.get(3);
+		LogEntry logEntry3 = logEntries.get(2);
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -395,12 +417,13 @@ public class UpgradeQueryMonitorTest {
 			Collections.emptyList()
 		);
 
-		ReflectionTestUtil.invoke(
-			UpgradeQueryMonitor.class, "_poll", new Class<?>[0]);
-
 		List<LogEntry> logEntries = logCapture.getLogEntries();
 
-		Assert.assertTrue(logEntries.isEmpty());
+		logEntries.clear();
+
+		_poll(_scheduledExecutorService);
+
+		Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
 	}
 
 	private void _testPollWithOneLockedQuery(
@@ -419,10 +442,11 @@ public class UpgradeQueryMonitorTest {
 					30000, id, query, schema, RandomTestUtil.randomString()))
 		);
 
-		ReflectionTestUtil.invoke(
-			UpgradeQueryMonitor.class, "_poll", new Class<?>[0]);
-
 		List<LogEntry> logEntries = logCapture.getLogEntries();
+
+		logEntries.clear();
+
+		_poll(_scheduledExecutorService);
 
 		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
 
@@ -448,23 +472,52 @@ public class UpgradeQueryMonitorTest {
 			new SQLException(message)
 		);
 
-		Assert.assertThrows(
-			SQLException.class,
-			() -> ReflectionTestUtil.invoke(
-				UpgradeQueryMonitor.class, "_poll", new Class<?>[0]));
-
 		List<LogEntry> logEntries = logCapture.getLogEntries();
 
-		Assert.assertEquals(logEntries.toString(), 5, logEntries.size());
+		logEntries.clear();
 
-		LogEntry logEntry = logEntries.get(4);
+		Assert.assertThrows(
+			SQLException.class, () -> _poll(_scheduledExecutorService));
+
+		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+		LogEntry logEntry = logEntries.get(0);
 
 		Assert.assertEquals(
 			"Upgrade query monitoring is disabled: " + message,
 			logEntry.getMessage());
 	}
 
+	private void _testPollWithSQLExceptionWhileStopping(
+			Connection connection, DB db, LogCapture logCapture)
+		throws Exception {
+
+		Mockito.doThrow(
+			new SQLException(RandomTestUtil.randomString())
+		).when(
+			db
+		).getLockedQueryInfos(
+			connection
+		);
+
+		ScheduledExecutorService scheduledExecutorService =
+			Executors.newSingleThreadScheduledExecutor();
+
+		scheduledExecutorService.shutdown();
+
+		List<LogEntry> logEntries = logCapture.getLogEntries();
+
+		logEntries.clear();
+
+		_poll(scheduledExecutorService);
+
+		Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+	}
+
 	private static final String _SCHEDULED_EXECUTOR_SERVICE =
 		"_scheduledExecutorService";
+
+	private final ScheduledExecutorService _scheduledExecutorService =
+		Mockito.mock(ScheduledExecutorService.class);
 
 }
