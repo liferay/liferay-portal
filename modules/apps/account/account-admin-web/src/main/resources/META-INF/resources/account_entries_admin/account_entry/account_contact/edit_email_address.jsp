@@ -10,7 +10,7 @@
 <%
 EditContactInformationDisplayContext editContactInformationDisplayContext = new EditContactInformationDisplayContext("email-address", request, renderResponse);
 
-editContactInformationDisplayContext.setPortletDisplay(portletDisplay, portletName);
+editContactInformationDisplayContext.setPortletDisplay(portletDisplay);
 
 EmailAddress emailAddress = null;
 

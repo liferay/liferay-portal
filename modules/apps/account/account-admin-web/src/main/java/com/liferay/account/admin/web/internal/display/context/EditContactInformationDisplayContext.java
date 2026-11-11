@@ -65,8 +65,7 @@ public class EditContactInformationDisplayContext {
 		return _sheetTitle;
 	}
 
-	public void setPortletDisplay(
-			PortletDisplay portletDisplay, String portletName)
+	public void setPortletDisplay(PortletDisplay portletDisplay)
 		throws PortalException {
 
 		portletDisplay.setShowBackIcon(true);
