@@ -174,7 +174,7 @@ public class UploadFileEntryMVCActionCommand extends BaseMVCActionCommand {
 					file, fileName,
 					ParamUtil.getLong(uploadPortletRequest, "formInstanceId"),
 					ParamUtil.getLong(uploadPortletRequest, "groupId"),
-					mimeType, themeDisplay, uploadPortletRequest);
+					mimeType, themeDisplay);
 			}
 			finally {
 				FileUtil.delete(file);
@@ -183,8 +183,7 @@ public class UploadFileEntryMVCActionCommand extends BaseMVCActionCommand {
 
 		protected FileEntry addFileEntry(
 				File file, String fileName, long formInstanceId, long groupId,
-				String mimeType, ThemeDisplay themeDisplay,
-				UploadPortletRequest uploadPortletRequest)
+				String mimeType, ThemeDisplay themeDisplay)
 			throws PortalException {
 
 			if (!DDMFormInstancePermission.contains(
