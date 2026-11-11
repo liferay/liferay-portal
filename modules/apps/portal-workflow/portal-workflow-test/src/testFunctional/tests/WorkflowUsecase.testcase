@@ -13,6 +13,10 @@ definition {
 		User.firstLoginPG();
 
 		WikiPortlet.enableWiki();
+
+		task ("Enable widget pages") {
+			PagesAdmin.enableWidgetPages();
+		}
 	}
 
 	tearDown {

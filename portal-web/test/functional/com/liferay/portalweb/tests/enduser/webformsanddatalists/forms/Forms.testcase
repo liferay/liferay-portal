@@ -51,6 +51,10 @@ definition {
 			PagesAdmin.enablePrivatePages();
 		}
 
+		task ("Enable widget pages") {
+			PagesAdmin.enableWidgetPages();
+		}
+
 		Navigator.openURL();
 
 		PageTemplatesAdmin.openPageTemplatesAdmin(siteURLKey = "global");
@@ -134,6 +138,10 @@ definition {
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
+
+		task ("Enable widget pages") {
+			PagesAdmin.enableWidgetPages();
+		}
 
 		User.openUsersAdmin();
 

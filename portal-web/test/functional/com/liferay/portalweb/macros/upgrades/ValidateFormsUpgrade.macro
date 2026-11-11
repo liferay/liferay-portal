@@ -35,6 +35,8 @@ definition {
 			formDescription = "Form Description",
 			formName = "Form Name");
 
+		PagesAdmin.enableWidgetPages();
+
 		ProductMenu.gotoPortlet(
 			category = "Site Builder",
 			portlet = "Pages");
