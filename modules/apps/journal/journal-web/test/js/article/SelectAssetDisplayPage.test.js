@@ -99,6 +99,14 @@ describe('SelectAssetDisplayPage', () => {
 	describe('preview', () => {
 		const {fetch: initialUtilFetch} = Liferay.Util;
 
+		const previewResponse = JSON.stringify({
+			articleId: '123',
+			classPK: 1,
+			friendlyUrlMap: {},
+			previewURL: 'http://localhost/preview',
+			version: 1.1,
+		});
+
 		beforeEach(() => {
 			Liferay.componentReady = jest.fn(() =>
 				Promise.resolve({
@@ -109,15 +117,7 @@ describe('SelectAssetDisplayPage', () => {
 			);
 			Liferay.Util.fetch = global.fetch;
 
-			fetch.mockResponseOnce(
-				JSON.stringify({
-					articleId: '123',
-					classPK: 1,
-					friendlyUrlMap: {},
-					previewURL: 'http://localhost/preview',
-					version: 1.1,
-				})
-			);
+			fetch.mockResponseOnce(previewResponse);
 		});
 
 		afterEach(() => {
@@ -151,6 +151,80 @@ describe('SelectAssetDisplayPage', () => {
 			await waitFor(() => expect(openModal).toHaveBeenCalled());
 
 			expect(getCmd()).toBe('preview');
+		});
+
+		it('previews the saved version when a field renders inside an element added after the form loads', async () => {
+			await renderComponentInForm();
+
+			document
+				.getElementById(`${DEFAULT_PROPS.portletNamespace}fm1`)
+				.insertAdjacentHTML(
+					'beforeend',
+					`<div><input name="${DEFAULT_PROPS.portletNamespace}content" value="content" /></div>`
+				);
+
+			await userEvent.click(
+				screen.getByRole('button', {name: /preview/})
+			);
+
+			await waitFor(() => expect(openModal).toHaveBeenCalled());
+
+			expect(getCmd()).toBe('preview');
+		});
+
+		it('previews the saved version when a field is named after it renders', async () => {
+			await renderComponentInForm();
+
+			const input = document.createElement('input');
+
+			document
+				.getElementById(`${DEFAULT_PROPS.portletNamespace}fm1`)
+				.appendChild(input);
+
+			await act(() => Promise.resolve());
+
+			input.name = `${DEFAULT_PROPS.portletNamespace}content_es_ES`;
+
+			await userEvent.click(
+				screen.getByRole('button', {name: /preview/})
+			);
+
+			await waitFor(() => expect(openModal).toHaveBeenCalled());
+
+			expect(getCmd()).toBe('preview');
+		});
+
+		it('saves a draft on the next preview when the form changes while a preview loads', async () => {
+			await renderComponentInForm();
+
+			fetch.resetMocks();
+
+			fetch.mockResponseOnce(() => {
+				screen.getByLabelText('title').value = 'title updated';
+
+				return Promise.resolve(previewResponse);
+			});
+			fetch.mockResponseOnce(previewResponse);
+
+			const previewButton = screen.getByRole('button', {name: /preview/});
+
+			await userEvent.click(previewButton);
+
+			await waitFor(() => expect(openModal).toHaveBeenCalledTimes(1));
+
+			await userEvent.click(previewButton);
+
+			await waitFor(() => expect(openModal).toHaveBeenCalledTimes(2));
+
+			const [[, {body: firstBody}], [, {body: secondBody}]] =
+				fetch.mock.calls;
+
+			expect(firstBody.get(`${DEFAULT_PROPS.portletNamespace}cmd`)).toBe(
+				'preview'
+			);
+			expect(secondBody.get(`${DEFAULT_PROPS.portletNamespace}cmd`)).toBe(
+				'update'
+			);
 		});
 
 		it('saves a draft before previewing a display page change', async () => {
