@@ -513,9 +513,7 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 		}
 	}
 
-	private void _destroyPortlet(Portlet portlet, Set<String> portletIds)
-		throws Exception {
-
+	private void _destroyPortlet(Portlet portlet, Set<String> portletIds) {
 		portlet.unsetReady();
 
 		PortletApp portletApp = portlet.getPortletApp();
