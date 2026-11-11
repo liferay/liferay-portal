@@ -12,6 +12,7 @@ dependencies {
 	compileOnly project(":apps:asset:asset-link-api")
 	compileOnly project(":apps:asset:asset-tags-item-selector-api")
 	compileOnly project(":apps:depot:depot-api")
+	compileOnly project(":apps:design-library:design-library-api")
 	compileOnly project(":apps:frontend-js:frontend-js-loader-modules-extender-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")

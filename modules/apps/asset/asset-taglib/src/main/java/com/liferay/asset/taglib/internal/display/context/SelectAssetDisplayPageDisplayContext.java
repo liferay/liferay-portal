@@ -17,6 +17,7 @@ import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 import com.liferay.asset.taglib.internal.info.display.contributor.LayoutDisplayPageProviderRegistryUtil;
 import com.liferay.asset.taglib.internal.item.selector.ItemSelectorUtil;
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.ItemSelectorCriterion;
@@ -27,7 +28,7 @@ import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -432,9 +433,10 @@ public class SelectAssetDisplayPageDisplayContext {
 		}
 
 		_defaultLayoutPageTemplateEntry =
-			LayoutPageTemplateEntryServiceUtil.
-				fetchDefaultLayoutPageTemplateEntry(
-					_groupId, _classNameId, _classTypeId);
+			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
+				_classNameId, _classTypeId,
+				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(_groupId),
+				_groupId);
 
 		return _defaultLayoutPageTemplateEntry;
 	}
