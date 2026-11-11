@@ -316,8 +316,7 @@ public class AuthenticatedSessionManagerUtil {
 	}
 
 	public static HttpSession renewSession(
-			HttpServletRequest httpServletRequest, HttpSession httpSession)
-		throws Exception {
+		HttpServletRequest httpServletRequest, HttpSession httpSession) {
 
 		// Invalidate the previous session to prevent session fixation attacks
 
