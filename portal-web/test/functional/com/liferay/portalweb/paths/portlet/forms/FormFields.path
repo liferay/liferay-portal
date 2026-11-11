@@ -87,7 +87,7 @@
 </tr>
 <tr>
 	<td>FIELD_ADD_SPECIFIC</td>
-	<td>//div[contains(@class,'lfr-ddm-form-container')]//div[contains(@data-field-name,'${key_fieldName}')][${key_repeatableFieldNumber}]//div[contains(@class,'lfr-ddm-form-field-repeatable-toolbar')]//button[contains(@class,'btn') and contains(@title,'Duplicate')] | //div[@class="ddm-field"]//label[text()='${key_fieldName}'][${key_repeatableFieldNumber}]/../..//button[contains(@class,'btn') and contains(@title,'Duplicate')]</td>
+	<td>//div[contains(@class,'lfr-ddm-form-container')]//div[contains(@data-field-name,'${key_fieldName}')][${key_repeatableFieldNumber}]//div[contains(@class,'lfr-ddm-form-field-repeatable-toolbar')]//button[contains(@class,'btn') and contains(@title,'Duplicate')] | //div[@class="ddm-field"]//label[text()='${key_fieldName}'][${key_repeatableFieldNumber}]/../..//button[contains(@class,'btn') and contains(@title,'Duplicate')] | ((//label[normalize-space(text())='${key_fieldName}']/ancestor::div[@class='ddm-field'][1] | //div[@class='ddm-field'][contains(@data-field-name,'${key_fieldName}')])[.//*[contains(@class,'ddm-form-field-repeatable-delete-button')]])[${key_repeatableFieldNumber}]//button[contains(@class,'ddm-form-field-repeatable-add-button')][ancestor::div[@class='ddm-field'][1][contains(@data-field-name,'${key_fieldName}') or .//label[normalize-space(text())='${key_fieldName}']]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -222,7 +222,7 @@
 </tr>
 <tr>
 	<td>PUBLISHED_FORM_FIELD_SEPARATOR_BY_INDEX</td>
-	<td>//div[contains(concat(' ',normalize-space(@class),' '),'ddm-field-container')]/div[${key_index}]//label[contains(text(),'Separator')]//.//../hr[contains(@class, 'separator')]</td>
+	<td>//div[contains(concat(' ',normalize-space(@class),' '),'ddm-field-container')]/div[${key_index}]//label[contains(text(),'Separator')]/..//hr[contains(@class, 'separator')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -296,7 +296,7 @@
 </tr>
 <tr>
 	<td>COLOR_FROM_COLOR_PICKER_BY_ROW</td>
-	<td>//div[contains(@class,'ddm-field-container')]//div[@class='ddm-field'][${key_rowNumber}]//label[normalize-space(text())='${key_fieldLabel}']/following-sibling::div[contains(@class,'color-picker')]//button[contains(@class,'clay-color-btn') and @title='${key_colorValue}']</td>
+	<td>//div[contains(@class,'ddm-field-container')]//div[@class='ddm-field'][${key_rowNumber}]//label[normalize-space(text())='${key_fieldLabel}']/following-sibling::div//div[contains(@class,'color-picker')]//button[contains(@class,'clay-color-btn') and @title='${key_colorValue}']</td>
 	<td></td>
 </tr>
 <tr>
@@ -306,7 +306,7 @@
 </tr>
 <tr>
 	<td>COLOR_PICKER_BY_ROW</td>
-	<td>//div[contains(@class,'ddm-field-container')]//div[@class='ddm-field'][${key_rowNumber}]//label[normalize-space(text())='${key_fieldLabel}']/following-sibling::div[contains(@class,'color-picker')]//button[contains(@class,'clay-color-btn')]</td>
+	<td>//div[contains(@class,'ddm-field-container')]//div[@class='ddm-field'][${key_rowNumber}]//label[normalize-space(text())='${key_fieldLabel}']/following-sibling::div//div[contains(@class,'color-picker')]//button[contains(@class,'clay-color-btn')]</td>
 	<td></td>
 </tr>
 <tr>

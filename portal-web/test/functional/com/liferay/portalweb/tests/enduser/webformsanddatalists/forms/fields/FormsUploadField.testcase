@@ -380,7 +380,7 @@ definition {
 
 		FormFields.viewFieldRepeatableButton(
 			fieldName = "Upload",
-			key_repeatableFieldsNumber = "1,2");
+			key_repeatableFieldsNumber = 2);
 
 		ItemSelector.gotoItemSelectorViaSelectButton();
 
