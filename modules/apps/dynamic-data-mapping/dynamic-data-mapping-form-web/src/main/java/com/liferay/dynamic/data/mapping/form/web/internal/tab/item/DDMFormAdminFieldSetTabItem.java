@@ -38,7 +38,7 @@ public class DDMFormAdminFieldSetTabItem extends DDMFormAdminTabItem {
 		throws Exception {
 
 		return PortletURLBuilder.create(
-			getPortletURL(liferayPortletRequest, liferayPortletResponse)
+			getPortletURL(liferayPortletRequest)
 		).setParameter(
 			"currentTab", "element-set"
 		).buildString();

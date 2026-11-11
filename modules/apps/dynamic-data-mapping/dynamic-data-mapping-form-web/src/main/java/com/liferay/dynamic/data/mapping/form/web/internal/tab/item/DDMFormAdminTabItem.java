@@ -46,15 +46,14 @@ public class DDMFormAdminTabItem implements DDMDisplayTabItem {
 		throws Exception {
 
 		return PortletURLBuilder.create(
-			getPortletURL(liferayPortletRequest, liferayPortletResponse)
+			getPortletURL(liferayPortletRequest)
 		).setParameter(
 			"currentTab", "forms"
 		).buildString();
 	}
 
 	protected PortletURL getPortletURL(
-		LiferayPortletRequest liferayPortletRequest,
-		LiferayPortletResponse liferayPortletResponse) {
+		LiferayPortletRequest liferayPortletRequest) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)liferayPortletRequest.getAttribute(
