@@ -12,7 +12,6 @@ import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.dynamic.data.mapping.constants.DDMFormConstants;
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
 import com.liferay.dynamic.data.mapping.exception.FormInstanceSubmissionLimitException;
-import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
@@ -265,15 +264,7 @@ public class DDMFormInstanceRecordLocalServiceTest
 
 		User user = TestPropsValues.getUser();
 
-		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
-			DDMFormValuesTestUtil.createAvailableLocales(LocaleUtil.US),
-			LocaleUtil.US);
-
-		DDMFormTestUtil.addDocumentLibraryDDMFormField(ddmForm, "upload");
-
-		DDMFormInstance ddmFormInstance = _addDDMFormInstance(
-			ddmForm, DDMFormInstanceTestUtil.createSettingsDDMFormValues(),
-			user);
+		DDMFormInstance ddmFormInstance = _addDDMFormInstance(user);
 
 		FileEntry tempFileEntry = _addTempFileEntry();
 
@@ -282,7 +273,7 @@ public class DDMFormInstanceRecordLocalServiceTest
 				user.getUserId(), group.getGroupId(),
 				ddmFormInstance.getFormInstanceId(),
 				_createDDMFormValues(
-					ddmForm,
+					ddmFormInstance.getDDMForm(),
 					HashMapBuilder.put(
 						"upload", tempFileEntry
 					).build()),
@@ -384,14 +375,14 @@ public class DDMFormInstanceRecordLocalServiceTest
 			String.valueOf(user.getCompanyId()), role.getRoleId(),
 			ObjectActionKeys.ADD_OBJECT_ENTRY);
 
-		ddmForm = DDMFormTestUtil.createDDMForm(
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
 			DDMFormValuesTestUtil.createAvailableLocales(LocaleUtil.US),
 			LocaleUtil.US);
 
-		ddmForm.addDDMFormField(
-			_createDDMFormField("upload1", "attachmentObjectFieldName1"));
-		ddmForm.addDDMFormField(
-			_createDDMFormField("upload2", "attachmentObjectFieldName2"));
+		_addDocumentLibraryDDMFormField(
+			ddmForm, "upload1", "attachmentObjectFieldName1");
+		_addDocumentLibraryDDMFormField(
+			ddmForm, "upload2", "attachmentObjectFieldName2");
 
 		DDMFormValues settingsDDMFormValues =
 			DDMFormInstanceTestUtil.createSettingsDDMFormValues();
@@ -419,7 +410,7 @@ public class DDMFormInstanceRecordLocalServiceTest
 					user.getUserId(), group.getGroupId(),
 					ddmFormInstance.getFormInstanceId(),
 					_createDDMFormValues(
-						ddmForm,
+						ddmFormInstance.getDDMForm(),
 						HashMapBuilder.put(
 							"upload1", _addTempFileEntry()
 						).put(
@@ -607,15 +598,9 @@ public class DDMFormInstanceRecordLocalServiceTest
 	public void testUpdateFormInstanceRecordWithFileEntry() throws Exception {
 		User user = TestPropsValues.getUser();
 
-		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
-			DDMFormValuesTestUtil.createAvailableLocales(LocaleUtil.US),
-			LocaleUtil.US);
+		DDMFormInstance ddmFormInstance = _addDDMFormInstance(user);
 
-		DDMFormTestUtil.addDocumentLibraryDDMFormField(ddmForm, "upload");
-
-		DDMFormInstance ddmFormInstance = _addDDMFormInstance(
-			ddmForm, DDMFormInstanceTestUtil.createSettingsDDMFormValues(),
-			user);
+		DDMForm ddmForm = ddmFormInstance.getDDMForm();
 
 		DDMFormInstanceRecord ddmFormInstanceRecord =
 			_ddmFormInstanceRecordLocalService.addFormInstanceRecord(
@@ -690,6 +675,31 @@ public class DDMFormInstanceRecordLocalServiceTest
 
 		return DDMFormInstanceTestUtil.addDDMFormInstance(
 			ddmForm, group, settingsDDMFormValues, user.getUserId());
+	}
+
+	private DDMFormInstance _addDDMFormInstance(User user) throws Exception {
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
+			DDMFormValuesTestUtil.createAvailableLocales(LocaleUtil.US),
+			LocaleUtil.US);
+
+		DDMFormTestUtil.addDocumentLibraryDDMFormField(ddmForm, "upload");
+
+		return _addDDMFormInstance(
+			ddmForm, DDMFormInstanceTestUtil.createSettingsDDMFormValues(),
+			user);
+	}
+
+	private void _addDocumentLibraryDDMFormField(
+		DDMForm ddmForm, String name, String objectFieldName) {
+
+		DDMFormField ddmFormField =
+			DDMFormTestUtil.addDocumentLibraryDDMFormField(ddmForm, name);
+
+		ddmFormField.setProperty(
+			"objectFieldName",
+			JSONUtil.putAll(
+				objectFieldName
+			).toString());
 	}
 
 	private void _addFormInstanceRecords(
@@ -826,23 +836,6 @@ public class DDMFormInstanceRecordLocalServiceTest
 						role.getRoleId(),
 						_resourceActions.getModelResourceActions(
 							DLFileEntry.class.getName()))));
-	}
-
-	private DDMFormField _createDDMFormField(
-		String name, String objectFieldName) {
-
-		DDMFormField ddmFormField = DDMFormTestUtil.createDDMFormField(
-			name, RandomTestUtil.randomString(),
-			DDMFormFieldTypeConstants.DOCUMENT_LIBRARY, "document-library",
-			true, false, false);
-
-		ddmFormField.setProperty(
-			"objectFieldName",
-			JSONUtil.putAll(
-				objectFieldName
-			).toString());
-
-		return ddmFormField;
 	}
 
 	private DDMFormValues _createDDMFormValues(
