@@ -24,6 +24,12 @@ function main {
 
 	configuration_json_file=$(resolve_config_json "${1}")
 
+	validate_setup_values "gcp" "${configuration_json_file}"
+
+	TF_VAR_database_engine=$(get_terraform_database_engine "${configuration_json_file}")
+
+	export TF_VAR_database_engine
+
 	prepare_terraform_stacks "gcp" "gke" "${configuration_json_file}"
 
 	log_in "${configuration_json_file}"

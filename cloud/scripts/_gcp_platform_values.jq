@@ -161,3 +161,12 @@ $configuration[0] as $configuration
 	}
 }
 | platform_values($configuration; "liferay-gcp-infrastructure-provider"; "liferay-gcp")
+* {
+	platformComponents: {
+		values: {
+			database: {
+				engine: $configuration.setup.database.engine
+			}
+		}
+	}
+}
