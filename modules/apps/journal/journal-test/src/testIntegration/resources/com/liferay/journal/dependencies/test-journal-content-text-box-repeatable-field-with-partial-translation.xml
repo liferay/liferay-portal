@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US,pt_BR" default-locale="en_US">
+	<dynamic-element index-type="text" instance-id="ND057krU" name="text_box" type="text_box">
+		<dynamic-content language-id="en_US"><![CDATA[one]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[um]]></dynamic-content>
+	</dynamic-element>
+	<dynamic-element index-type="text" instance-id="HvemvQgl" name="text_box" type="text_box">
+		<dynamic-content language-id="en_US"><![CDATA[two]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[two]]></dynamic-content>
+	</dynamic-element>
+	<dynamic-element index-type="text" instance-id="enAnbvq6" name="text_box" type="text_box">
+		<dynamic-content language-id="en_US"><![CDATA[three]]></dynamic-content>
+		<dynamic-content language-id="pt_BR"><![CDATA[three]]></dynamic-content>
+	</dynamic-element>
+</root>

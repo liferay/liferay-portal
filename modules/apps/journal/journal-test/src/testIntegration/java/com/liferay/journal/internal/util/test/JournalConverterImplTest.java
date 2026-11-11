@@ -28,6 +28,7 @@ import com.liferay.journal.util.JournalConverter;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -225,6 +226,35 @@ public class JournalConverterImplTest {
 			_ddmStructure, fields, _ddmStructure.getGroupId());
 
 		assertEquals(expectedContent, actualContent);
+	}
+
+	@Test
+	@TestInfo("LPS-102795")
+	public void testGetContentFromTextBoxFieldWithPartialTranslation()
+		throws Exception {
+
+		Fields fields = new Fields();
+
+		_addField(
+			_ddmStructure.getStructureId(), null, fields, "text_box",
+			HashMapBuilder.<Locale, List<Serializable>>put(
+				_enLocale, Arrays.asList("one", "two", "three")
+			).put(
+				_ptLocale, Collections.singletonList("um")
+			).build());
+
+		fields.put(
+			getFieldsDisplayField(
+				_ddmStructure.getStructureId(),
+				"text_box_INSTANCE_ND057krU,text_box_INSTANCE_HvemvQgl," +
+					"text_box_INSTANCE_enAnbvq6"));
+
+		assertEquals(
+			read(
+				"test-journal-content-text-box-repeatable-field-with-partial-" +
+					"translation.xml"),
+			_journalConverter.getContent(
+				_ddmStructure, fields, _ddmStructure.getGroupId()));
 	}
 
 	@Test
