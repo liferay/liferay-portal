@@ -111,11 +111,13 @@ public class ObjectEntryResourcePermissionTest
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
+		ObjectDefinition objectDefinition = getObjectDefinition4();
+
 		addResourcePermission(
-			ActionKeys.VIEW, getObjectDefinition4().getClassName(), role);
+			ActionKeys.VIEW, objectDefinition.getClassName(), role);
 		addResourcePermission(
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
-			getObjectDefinition4().getResourceName(), role);
+			objectDefinition.getResourceName(), role);
 
 		String password = RandomTestUtil.randomString();
 
@@ -142,9 +144,9 @@ public class ObjectEntryResourcePermissionTest
 		);
 
 		addResourcePermission(
-			ActionKeys.DELETE, getObjectDefinition4().getClassName(), role);
+			ActionKeys.DELETE, objectDefinition.getClassName(), role);
 		addResourcePermission(
-			ActionKeys.UPDATE, getObjectDefinition4().getClassName(), role);
+			ActionKeys.UPDATE, objectDefinition.getClassName(), role);
 
 		HTTPTestUtil.customize(
 		).withCredentials(
@@ -373,28 +375,25 @@ public class ObjectEntryResourcePermissionTest
 		JSONObject objectEntryJSONObject =
 			_postCustomObjectEntryWithPermissions(true, null);
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		_assertPermissions(
-			JSONUtil.putAll(
-				getOwnerPermissionsJSONObject(getObjectDefinition1())),
+			JSONUtil.putAll(getOwnerPermissionsJSONObject(objectDefinition)),
 			objectEntryJSONObject);
 		_assertPermissions(
-			JSONUtil.putAll(
-				getOwnerPermissionsJSONObject(getObjectDefinition1())),
+			JSONUtil.putAll(getOwnerPermissionsJSONObject(objectDefinition)),
 			_patchPutByExternalReferenceCodeCustomObjectEntryWithPermissions(
 				Http.Method.PATCH, true, objectEntryJSONObject, null));
 		_assertPermissions(
-			JSONUtil.putAll(
-				getOwnerPermissionsJSONObject(getObjectDefinition1())),
+			JSONUtil.putAll(getOwnerPermissionsJSONObject(objectDefinition)),
 			_patchPutByExternalReferenceCodeCustomObjectEntryWithPermissions(
 				Http.Method.PUT, true, objectEntryJSONObject, null));
 		_assertPermissions(
-			JSONUtil.putAll(
-				getOwnerPermissionsJSONObject(getObjectDefinition1())),
+			JSONUtil.putAll(getOwnerPermissionsJSONObject(objectDefinition)),
 			_patchPutCustomObjectEntryWithPermissions(
 				Http.Method.PATCH, true, objectEntryJSONObject, null));
 		_assertPermissions(
-			JSONUtil.putAll(
-				getOwnerPermissionsJSONObject(getObjectDefinition1())),
+			JSONUtil.putAll(getOwnerPermissionsJSONObject(objectDefinition)),
 			_patchPutCustomObjectEntryWithPermissions(
 				Http.Method.PUT, true, objectEntryJSONObject, null));
 
@@ -417,12 +416,12 @@ public class ObjectEntryResourcePermissionTest
 			JSONFactoryUtil.createJSONArray(),
 			HTTPTestUtil.invokeToJSONObject(
 				objectEntryJSON,
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition.getRESTContextPath() +
 					"?nestedFields=permissions",
 				Http.Method.POST));
 
 		String byExternalReferenceCodeEndpoint = StringBundler.concat(
-			getObjectDefinition1().getRESTContextPath(),
+			objectDefinition.getRESTContextPath(),
 			"/by-external-reference-code/",
 			objectEntryJSONObject.getString("externalReferenceCode"),
 			"?nestedFields=permissions");
@@ -439,7 +438,7 @@ public class ObjectEntryResourcePermissionTest
 				Http.Method.PUT));
 
 		String endpoint = StringBundler.concat(
-			getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
+			objectDefinition.getRESTContextPath(), StringPool.SLASH,
 			objectEntryJSONObject.getLong("id"), "?nestedFields=permissions");
 
 		_assertPermissions(
@@ -452,13 +451,12 @@ public class ObjectEntryResourcePermissionTest
 				objectEntryJSON, endpoint, Http.Method.PUT));
 
 		_assertPermissions(
-			JSONUtil.putAll(
-				getOwnerPermissionsJSONObject(getObjectDefinition1())),
+			JSONUtil.putAll(getOwnerPermissionsJSONObject(objectDefinition)),
 			HTTPTestUtil.invokeToJSONObject(
 				null,
 				StringBundler.concat(
-					getObjectDefinition1().getRESTContextPath(),
-					StringPool.SLASH, otherObjectEntryJSONObject.getLong("id"),
+					objectDefinition.getRESTContextPath(), StringPool.SLASH,
+					otherObjectEntryJSONObject.getLong("id"),
 					"?nestedFields=permissions"),
 				Http.Method.GET));
 
@@ -467,7 +465,7 @@ public class ObjectEntryResourcePermissionTest
 		Role role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		addResourcePermission(
-			ActionKeys.DELETE, getObjectDefinition1().getClassName(), role1);
+			ActionKeys.DELETE, objectDefinition.getClassName(), role1);
 
 		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -634,8 +632,10 @@ public class ObjectEntryResourcePermissionTest
 
 		Role role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		addResourcePermission(
-			ActionKeys.DELETE, getObjectDefinition1().getClassName(), role1);
+			ActionKeys.DELETE, objectDefinition.getClassName(), role1);
 
 		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -695,9 +695,11 @@ public class ObjectEntryResourcePermissionTest
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		addResourcePermission(
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
-			getObjectDefinition1().getResourceName(), role);
+			objectDefinition.getResourceName(), role);
 
 		String password = RandomTestUtil.randomString();
 
@@ -716,8 +718,7 @@ public class ObjectEntryResourcePermissionTest
 					JSONUtil.put(
 						"externalReferenceCode", RandomTestUtil.randomString()
 					).toString(),
-					getObjectDefinition1().getRESTContextPath(),
-					Http.Method.POST);
+					objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 				jsonObject = _putCustomObjectEntryPermissionsPage(
 					jsonObject.getLong("id"),
@@ -800,13 +801,16 @@ public class ObjectEntryResourcePermissionTest
 			String objectEntryId, boolean sharingEnabled)
 		throws Exception {
 
+		ObjectDefinition siteScopedObjectDefinition =
+			getSiteScopedObjectDefinition1();
+
 		String href = StringBundler.concat(
 			"http://localhost:", PortalUtil.getPortalServerPort(false), "/o",
-			getSiteScopedObjectDefinition1().getRESTContextPath(),
-			StringPool.SLASH, objectEntryId);
+			siteScopedObjectDefinition.getRESTContextPath(), StringPool.SLASH,
+			objectEntryId);
 		String scopedEndpoint = StringBundler.concat(
 			"http://localhost:", PortalUtil.getPortalServerPort(false), "/o",
-			getSiteScopedObjectDefinition1().getRESTContextPath(), "/scopes/",
+			siteScopedObjectDefinition.getRESTContextPath(), "/scopes/",
 			group.getGroupId());
 
 		return HashMapBuilder.<String, Map<String, String>>put(
@@ -885,8 +889,10 @@ public class ObjectEntryResourcePermissionTest
 	private JSONObject _getObjectEntriesPageActionsJSONObject()
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition4();
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, getObjectDefinition4().getRESTContextPath(), Http.Method.GET);
+			null, objectDefinition.getRESTContextPath(), Http.Method.GET);
 
 		return jsonObject.getJSONObject("actions");
 	}
@@ -921,8 +927,10 @@ public class ObjectEntryResourcePermissionTest
 				JSONArray permissionsJSONArray)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		String endpoint =
-			getObjectDefinition1().getRESTContextPath() +
+			objectDefinition.getRESTContextPath() +
 				"/by-external-reference-code/" +
 					objectEntryJSONObject.getString("externalReferenceCode");
 
@@ -944,8 +952,10 @@ public class ObjectEntryResourcePermissionTest
 			JSONObject objectEntryJSONObject, JSONArray permissionsJSONArray)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		String endpoint =
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
+			objectDefinition.getRESTContextPath() + StringPool.SLASH +
 				objectEntryJSONObject.getLong("id");
 
 		if (nestedFields) {
@@ -965,7 +975,9 @@ public class ObjectEntryResourcePermissionTest
 			boolean nestedFields, JSONArray permissionsJSONArray)
 		throws Exception {
 
-		String endpoint = getObjectDefinition1().getRESTContextPath();
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
+		String endpoint = objectDefinition.getRESTContextPath();
 
 		if (nestedFields) {
 			endpoint += "?nestedFields=permissions";
@@ -984,10 +996,12 @@ public class ObjectEntryResourcePermissionTest
 			long objectEntryId, JSONArray permissionsJSONArray)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		return HTTPTestUtil.invokeToJSONObject(
 			permissionsJSONArray.toString(),
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
+				objectDefinition.getRESTContextPath(), StringPool.SLASH,
 				objectEntryId, "/permissions"),
 			Http.Method.PUT);
 	}

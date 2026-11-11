@@ -1208,8 +1208,10 @@ public abstract class BaseObjectEntryResourceTestCase {
 	protected TaxonomyCategory postTaxonomyVocabularyTaxonomyCategory()
 		throws Exception {
 
+		AssetVocabulary assetVocabulary = _getAssetVocabulary();
+
 		return postTaxonomyVocabularyTaxonomyCategory(
-			testGroupId, _getAssetVocabulary().getVocabularyId());
+			testGroupId, assetVocabulary.getVocabularyId());
 	}
 
 	protected TaxonomyCategory postTaxonomyVocabularyTaxonomyCategory(

@@ -71,15 +71,15 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 	public void testGetObjectEntryByExternalReferenceCodeWithSlash()
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		ObjectField objectField = objectFieldLocalService.getObjectField(
-			getObjectDefinition1().getObjectDefinitionId(),
-			OBJECT_FIELD_NAME_1);
+			objectDefinition.getObjectDefinitionId(), OBJECT_FIELD_NAME_1);
 
-		getObjectDefinition1().setTitleObjectFieldId(
-			objectField.getObjectFieldId());
+		objectDefinition.setTitleObjectFieldId(objectField.getObjectFieldId());
 
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition1());
+		objectDefinition = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
 
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -87,13 +87,13 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			).put(
 				"externalReferenceCode", "a"
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		Assert.assertEquals(
 			200,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition.getRESTContextPath() +
 					"/by-external-reference-code/a/",
 				Http.Method.GET));
 
@@ -103,20 +103,20 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			).put(
 				"externalReferenceCode", "a/"
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		Assert.assertEquals(
 			200,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition.getRESTContextPath() +
 					"/by-external-reference-code/a%252F",
 				Http.Method.GET));
 		Assert.assertEquals(
 			200,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition.getRESTContextPath() +
 					"/by-external-reference-code/a%252F/",
 				Http.Method.GET));
 
@@ -126,13 +126,13 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			).put(
 				"externalReferenceCode", "/a"
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		Assert.assertEquals(
 			200,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition.getRESTContextPath() +
 					"/by-external-reference-code/%252Fa",
 				Http.Method.GET));
 
@@ -142,7 +142,7 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			).put(
 				"externalReferenceCode", "a/b/c"
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
@@ -153,7 +153,7 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 				404,
 				HTTPTestUtil.invokeToHttpCode(
 					null,
-					getObjectDefinition1().getRESTContextPath() +
+					objectDefinition.getRESTContextPath() +
 						"/by-external-reference-code/a/b/c",
 					Http.Method.GET));
 		}
@@ -162,21 +162,21 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			200,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition.getRESTContextPath() +
 					"/by-external-reference-code/a%252Fb%252Fc",
 				Http.Method.GET));
 		Assert.assertEquals(
 			200,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition.getRESTContextPath() +
 					"/by-external-reference-code/a%252Fb%252Fc/",
 				Http.Method.GET));
 		Assert.assertEquals(
 			400,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition.getRESTContextPath() +
 					"/by-external-reference-code/a%2Fb%2Fc",
 				Http.Method.GET));
 
@@ -186,13 +186,13 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			).put(
 				"externalReferenceCode", "a//b"
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		Assert.assertEquals(
 			200,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition.getRESTContextPath() +
 					"/by-external-reference-code/a%252F%252Fb",
 				Http.Method.GET));
 	}
@@ -259,17 +259,21 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 	public void testPatchByExternalReferenceCodeCustomObjectEntry()
 		throws Exception {
 
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
+
 		assertPatchCustomObjectEntry(
 			jsonObject ->
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition1.getRESTContextPath() +
 					"/by-external-reference-code/" +
 						jsonObject.getString("externalReferenceCode"),
-			getObjectDefinition1(), getObjectDefinition2(), testGroupId);
+			objectDefinition1, getObjectDefinition2(), testGroupId);
 	}
 
 	@Test
 	public void testPatchPutCustomObjectEntryExternalReferenceCode()
 		throws Exception {
+
+		ObjectDefinition objectDefinition = getObjectDefinition1();
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -277,7 +281,7 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			).put(
 				"externalReferenceCode", ERC_VALUE_1
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		_testPatchPutCustomObjectEntryExternalReferenceCode(
 			Http.Method.PATCH, jsonObject.getLong("id"));
@@ -303,8 +307,11 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 
 		_testPostCustomObjectEntryWithDuplicateExternalReferenceCode(
 			getEndpoint(getSiteScopedObjectDefinition1(), testGroupId));
+
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		_testPostCustomObjectEntryWithDuplicateExternalReferenceCode(
-			getObjectDefinition1().getRESTContextPath());
+			objectDefinition.getRESTContextPath());
 	}
 
 	@Test
@@ -312,12 +319,14 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 	public void testPutByExternalReferenceCodeCustomObjectEntry()
 		throws Exception {
 
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
+
 		assertPutCustomObjectEntry(
 			jsonObject ->
-				getObjectDefinition1().getRESTContextPath() +
+				objectDefinition1.getRESTContextPath() +
 					"/by-external-reference-code/" +
 						jsonObject.getString("externalReferenceCode"),
-			getObjectDefinition1(), getObjectDefinition2(), testGroupId);
+			objectDefinition1, getObjectDefinition2(), testGroupId);
 	}
 
 	private void _assertPatchPutCustomObjectEntryExternalReferenceCode(
@@ -340,14 +349,16 @@ public class ObjectEntryResourceExternalReferenceCodeTest
 			Http.Method httpMethod, long objectEntryId)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		_assertPatchPutCustomObjectEntryExternalReferenceCode(
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
+				objectDefinition.getRESTContextPath(), StringPool.SLASH,
 				objectEntryId),
 			ERC_VALUE_2, httpMethod);
 		_assertPatchPutCustomObjectEntryExternalReferenceCode(
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(),
+				objectDefinition.getRESTContextPath(),
 				"/by-external-reference-code/", ERC_VALUE_2),
 			ERC_VALUE_3, httpMethod);
 	}

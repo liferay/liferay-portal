@@ -6,6 +6,7 @@
 package com.liferay.object.rest.internal.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -45,19 +46,21 @@ public class ObjectEntryResourceFriendlyURLTest
 
 	@Test
 	public void testGetObjectEntryWithFriendlyURL() throws Exception {
-		getObjectDefinition1().setEnableFriendlyURLCustomization(true);
+		ObjectDefinition objectDefinition = getObjectDefinition1();
 
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition1());
+		objectDefinition.setEnableFriendlyURLCustomization(true);
+
+		objectDefinition = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomInt()
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		jsonObject = getObjectEntryJSONObject(
-			getObjectDefinition1(), jsonObject.getString("id"));
+			objectDefinition, jsonObject.getString("id"));
 
 		Assert.assertEquals(
 			jsonObject.getString("externalReferenceCode"),
@@ -67,10 +70,10 @@ public class ObjectEntryResourceFriendlyURLTest
 			JSONUtil.put(
 				"friendlyUrlPath", StringPool.SLASH
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		jsonObject = getObjectEntryJSONObject(
-			getObjectDefinition1(), jsonObject.getString("id"));
+			objectDefinition, jsonObject.getString("id"));
 
 		Assert.assertEquals(
 			jsonObject.getString("externalReferenceCode"),
@@ -87,16 +90,18 @@ public class ObjectEntryResourceFriendlyURLTest
 
 		// With friendly URL
 
-		getObjectDefinition1().setEnableFriendlyURLCustomization(true);
+		ObjectDefinition objectDefinition = getObjectDefinition1();
 
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition1());
+		objectDefinition.setEnableFriendlyURLCustomization(true);
+
+		objectDefinition = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -105,7 +110,7 @@ public class ObjectEntryResourceFriendlyURLTest
 					"en_US", "Test URL"
 				).build()
 			).toString(),
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
+			objectDefinition.getRESTContextPath() + StringPool.SLASH +
 				jsonObject.getString("id"),
 			Http.Method.PATCH);
 
@@ -127,13 +132,13 @@ public class ObjectEntryResourceFriendlyURLTest
 					"en_US", friendlyUrlPath
 				).build()
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, objectFieldValue
 			).toString(),
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
+			objectDefinition.getRESTContextPath() + StringPool.SLASH +
 				jsonObject.getString("id"),
 			Http.Method.PATCH);
 
@@ -145,14 +150,16 @@ public class ObjectEntryResourceFriendlyURLTest
 			String expectedFriendlyUrlPath, String friendlyUrlPath)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				"friendlyUrlPath", friendlyUrlPath
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		jsonObject = getObjectEntryJSONObject(
-			getObjectDefinition1(), jsonObject.getString("id"));
+			objectDefinition, jsonObject.getString("id"));
 
 		Assert.assertEquals(
 			expectedFriendlyUrlPath, jsonObject.getString("friendlyUrlPath"));

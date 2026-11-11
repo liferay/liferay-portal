@@ -6,6 +6,7 @@
 package com.liferay.object.rest.internal.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -35,32 +36,44 @@ public class ObjectEntryResourceTest extends BaseObjectEntryResourceTestCase {
 	@Test
 	@TestInfo("LPD-53245")
 	public void testPatchCustomObjectEntry() throws Exception {
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
+
 		assertPatchCustomObjectEntry(
 			jsonObject ->
-				getObjectDefinition1().getRESTContextPath() + "/" +
+				objectDefinition1.getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			getObjectDefinition1(), getObjectDefinition2(), testGroupId);
+			objectDefinition1, getObjectDefinition2(), testGroupId);
+
+		ObjectDefinition siteScopedObjectDefinition1 =
+			getSiteScopedObjectDefinition1();
+
 		assertPatchCustomObjectEntry(
 			jsonObject ->
-				getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +
+				siteScopedObjectDefinition1.getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			getSiteScopedObjectDefinition1(), getSiteScopedObjectDefinition2(),
+			siteScopedObjectDefinition1, getSiteScopedObjectDefinition2(),
 			testGroupId);
 	}
 
 	@Test
 	@TestInfo("LPD-53245")
 	public void testPutCustomObjectEntry() throws Exception {
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
+
 		assertPutCustomObjectEntry(
 			jsonObject ->
-				getObjectDefinition1().getRESTContextPath() + "/" +
+				objectDefinition1.getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			getObjectDefinition1(), getObjectDefinition2(), testGroupId);
+			objectDefinition1, getObjectDefinition2(), testGroupId);
+
+		ObjectDefinition siteScopedObjectDefinition1 =
+			getSiteScopedObjectDefinition1();
+
 		assertPutCustomObjectEntry(
 			jsonObject ->
-				getSiteScopedObjectDefinition1().getRESTContextPath() + "/" +
+				siteScopedObjectDefinition1.getRESTContextPath() + "/" +
 					jsonObject.getLong("id"),
-			getSiteScopedObjectDefinition1(), getSiteScopedObjectDefinition2(),
+			siteScopedObjectDefinition1, getSiteScopedObjectDefinition2(),
 			testGroupId);
 	}
 

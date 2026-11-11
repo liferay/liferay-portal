@@ -96,16 +96,18 @@ public class ObjectEntryResourceCategorizationTest
 		String tagName2 = "tag2" + StringUtil.toLowerCase(randomString2);
 		String tagName3 = "tag3" + StringUtil.toLowerCase(randomString3);
 
+		ObjectDefinition objectDefinition = getObjectDefinition2();
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"keywords", JSONUtil.putAll(tagName1, tagName2)
 			).toString(),
-			getObjectDefinition2().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		jsonObject = getObjectEntryJSONObject(
-			getObjectDefinition2(), jsonObject.getString("id"));
+			objectDefinition, jsonObject.getString("id"));
 
 		JSONAssert.assertEquals(
 			JSONUtil.putAll(
@@ -118,10 +120,10 @@ public class ObjectEntryResourceCategorizationTest
 			JSONUtil.put(
 				"keywords", JSONUtil.putAll(tagName1, tagName2, tagName3)
 			).toString(),
-			getObjectDefinition2().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		jsonObject = getObjectEntryJSONObject(
-			getObjectDefinition2(), jsonObject.getString("id"));
+			objectDefinition, jsonObject.getString("id"));
 
 		JSONAssert.assertEquals(
 			JSONUtil.putAll(
@@ -131,7 +133,7 @@ public class ObjectEntryResourceCategorizationTest
 			JSONCompareMode.STRICT);
 
 		AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
-			getObjectDefinition2().getClassName(), jsonObject.getLong("id"));
+			objectDefinition.getClassName(), jsonObject.getLong("id"));
 
 		Map<String, Integer> expectedAssetCounts = HashMapBuilder.put(
 			tagName1, 2
@@ -243,24 +245,26 @@ public class ObjectEntryResourceCategorizationTest
 		String tagName2 = "tag2" + StringUtil.toLowerCase(randomString2);
 		String tagName3 = "tag3" + StringUtil.toLowerCase(randomString3);
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"keywords", JSONUtil.putAll(tagName1, tagName2)
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				"keywords", JSONUtil.putAll(tagName1, tagName2, tagName3)
 			).toString(),
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
+			objectDefinition.getRESTContextPath() + StringPool.SLASH +
 				jsonObject.getString("id"),
 			Http.Method.PATCH);
 
 		jsonObject = getObjectEntryJSONObject(
-			getObjectDefinition1(), jsonObject.getString("id"));
+			objectDefinition, jsonObject.getString("id"));
 
 		JSONAssert.assertEquals(
 			JSONUtil.putAll(
@@ -291,6 +295,8 @@ public class ObjectEntryResourceCategorizationTest
 				companyAssetVocabulary.getGroupId(),
 				companyAssetVocabulary.getVocabularyId());
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
@@ -299,7 +305,7 @@ public class ObjectEntryResourceCategorizationTest
 				JSONUtil.putAll(
 					taxonomyCategory1.getId(), taxonomyCategory2.getId())
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		TaxonomyCategory taxonomyCategory3 =
 			postTaxonomyVocabularyTaxonomyCategory(
@@ -313,7 +319,7 @@ public class ObjectEntryResourceCategorizationTest
 					taxonomyCategory1.getId(), taxonomyCategory2.getId(),
 					taxonomyCategory3.getId())
 			).toString(),
-			getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
+			objectDefinition.getRESTContextPath() + StringPool.SLASH +
 				jsonObject.getString("id"),
 			Http.Method.PATCH);
 
@@ -332,7 +338,8 @@ public class ObjectEntryResourceCategorizationTest
 
 		objectDefinition.setEnableCategorization(false);
 
-		objectDefinitionLocalService.updateObjectDefinition(objectDefinition);
+		objectDefinition = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
 
 		TaxonomyCategory taxonomyCategory =
 			postTaxonomyVocabularyTaxonomyCategory();
@@ -345,13 +352,13 @@ public class ObjectEntryResourceCategorizationTest
 			).put(
 				"taxonomyCategoryIds", JSONUtil.putAll(taxonomyCategory.getId())
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		Assert.assertFalse(jsonObject.has("keywords"));
 		Assert.assertFalse(jsonObject.has("taxonomyCategoryBriefs"));
 
 		AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
-			getObjectDefinition1().getClassName(), jsonObject.getLong("id"));
+			objectDefinition.getClassName(), jsonObject.getLong("id"));
 
 		List<AssetTag> assetEntryAssetTags =
 			AssetTagLocalServiceUtil.getAssetEntryAssetTags(
@@ -362,8 +369,7 @@ public class ObjectEntryResourceCategorizationTest
 
 		List<AssetCategory> assetCategories =
 			AssetCategoryLocalServiceUtil.getCategories(
-				getObjectDefinition1().getClassName(),
-				jsonObject.getLong("id"));
+				objectDefinition.getClassName(), jsonObject.getLong("id"));
 
 		Assert.assertEquals(
 			assetCategories.toString(), 0, assetCategories.size());
@@ -381,8 +387,10 @@ public class ObjectEntryResourceCategorizationTest
 					UniqueStringRandomizerBumper.INSTANCE),
 				new ServiceContext());
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		long classNameId = classNameLocalService.getClassNameId(
-			getObjectDefinition1().getClassName());
+			objectDefinition.getClassName());
 
 		companyAssetVocabulary.setSettings(
 			StringBundler.concat(
@@ -408,7 +416,7 @@ public class ObjectEntryResourceCategorizationTest
 				JSONUtil.put(
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST
+				objectDefinition.getRESTContextPath(), Http.Method.POST
 			).toString(),
 			JSONCompareMode.STRICT);
 
@@ -440,7 +448,7 @@ public class ObjectEntryResourceCategorizationTest
 					JSONUtil.putAll(
 						taxonomyCategory1.getId(), taxonomyCategory2.getId())
 				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST
+				objectDefinition.getRESTContextPath(), Http.Method.POST
 			).toString(),
 			JSONCompareMode.STRICT);
 
@@ -451,7 +459,7 @@ public class ObjectEntryResourceCategorizationTest
 				"taxonomyCategoryIds",
 				JSONUtil.putAll(taxonomyCategory1.getId())
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		Assert.assertNotNull(
 			objectEntryLocalService.fetchObjectEntry(jsonObject.getLong("id")));
@@ -814,6 +822,8 @@ public class ObjectEntryResourceCategorizationTest
 
 		// Cannot add a category to a company scoped entry
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		Assert.assertEquals(
 			400,
 			HTTPTestUtil.invokeToHttpCode(
@@ -823,7 +833,7 @@ public class ObjectEntryResourceCategorizationTest
 					"taxonomyCategoryIds",
 					JSONUtil.putAll(siteTaxonomyCategory.getId())
 				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
+				objectDefinition.getRESTContextPath(), Http.Method.POST));
 
 		// Cannot add a category via UPSERT
 

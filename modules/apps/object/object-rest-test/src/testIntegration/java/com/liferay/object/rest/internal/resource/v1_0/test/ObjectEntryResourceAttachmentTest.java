@@ -166,8 +166,10 @@ public class ObjectEntryResourceAttachmentTest
 
 	@Test
 	public void testGetObjectEntryWithAttachmentObjectField() throws Exception {
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
+
 		FileEntry fileEntry = addTempFileEntry(
-			DLTestUtil.randomTextFileBytes(), getObjectDefinition1(),
+			DLTestUtil.randomTextFileBytes(), objectDefinition1,
 			RandomTestUtil.randomString());
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -177,7 +179,7 @@ public class ObjectEntryResourceAttachmentTest
 				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
 				fileEntry.getFileEntryId()
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition1.getRESTContextPath(), Http.Method.POST);
 
 		Group testGroup = groupLocalService.getGroup(testGroupId);
 
@@ -196,7 +198,7 @@ public class ObjectEntryResourceAttachmentTest
 		byte[] content = DLTestUtil.randomTextFileBytes();
 
 		fileEntry = addTempFileEntry(
-			content, getObjectDefinition1(), RandomTestUtil.randomString());
+			content, objectDefinition1, RandomTestUtil.randomString());
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -206,7 +208,7 @@ public class ObjectEntryResourceAttachmentTest
 				fileEntry.getFileEntryId()
 			).toString(),
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), "?nestedFields=",
+				objectDefinition1.getRESTContextPath(), "?nestedFields=",
 				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
 				".fileBase64"),
 			Http.Method.POST);
@@ -219,7 +221,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
-			getObjectDefinition1().getRESTContextPath() +
+			objectDefinition1.getRESTContextPath() +
 				"/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
 			Http.Method.GET);
@@ -233,7 +235,7 @@ public class ObjectEntryResourceAttachmentTest
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(),
+				objectDefinition1.getRESTContextPath(),
 				"/by-external-reference-code/",
 				jsonObject.getString("externalReferenceCode"), "?nestedFields=",
 				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
@@ -258,7 +260,7 @@ public class ObjectEntryResourceAttachmentTest
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 				dlFileEntry.getFileEntryId()
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition1.getRESTContextPath(), Http.Method.POST);
 
 		scopeJSONObject = JSONUtil.put(
 			"externalReferenceCode", group.getExternalReferenceCode()
@@ -274,7 +276,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
-			getObjectDefinition1().getRESTContextPath() +
+			objectDefinition1.getRESTContextPath() +
 				"/by-external-reference-code/" +
 					jsonObject.getString("externalReferenceCode"),
 			Http.Method.GET);
@@ -288,7 +290,7 @@ public class ObjectEntryResourceAttachmentTest
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(),
+				objectDefinition1.getRESTContextPath(),
 				"/by-external-reference-code/",
 				jsonObject.getString("externalReferenceCode"), "?nestedFields=",
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
@@ -340,6 +342,8 @@ public class ObjectEntryResourceAttachmentTest
 		DLFileEntry pdfDLFileEntry = _dlFileEntryLocalService.getDLFileEntry(
 			pdfFileEntry.getFileEntryId());
 
+		ObjectDefinition objectDefinition2 = getObjectDefinition2();
+
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
@@ -347,7 +351,7 @@ public class ObjectEntryResourceAttachmentTest
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 				pdfDLFileEntry.getFileEntryId()
 			).toString(),
-			getObjectDefinition2().getRESTContextPath(), Http.Method.POST);
+			objectDefinition2.getRESTContextPath(), Http.Method.POST);
 
 		_assertAttachmentJSONObject(
 			pdfDLFileEntry, null,
@@ -365,7 +369,7 @@ public class ObjectEntryResourceAttachmentTest
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
 			StringBundler.concat(
-				getObjectDefinition2().getRESTContextPath(),
+				objectDefinition2.getRESTContextPath(),
 				"/by-external-reference-code/",
 				jsonObject.getString("externalReferenceCode"), "?nestedFields=",
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
@@ -420,9 +424,11 @@ public class ObjectEntryResourceAttachmentTest
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		addResourcePermission(
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
-			getObjectDefinition1().getResourceName(), role);
+			objectDefinition.getResourceName(), role);
 
 		String userName = RandomTestUtil.randomString(
 			UniqueStringRandomizerBumper.INSTANCE);
@@ -445,12 +451,12 @@ public class ObjectEntryResourceAttachmentTest
 						JSONUtil.put(
 							OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 						).toString(),
-						getObjectDefinition1().getRESTContextPath(),
+						objectDefinition.getRESTContextPath(),
 						Http.Method.POST);
 
 				String endpoint = StringBundler.concat(
-					getObjectDefinition1().getRESTContextPath(),
-					StringPool.SLASH, objectEntryJSONObject.get("id"));
+					objectDefinition.getRESTContextPath(), StringPool.SLASH,
+					objectEntryJSONObject.get("id"));
 
 				com.liferay.object.rest.dto.v1_0.FileEntry fileEntry1 =
 					_toFileEntryWithFileBase64(
@@ -469,7 +475,7 @@ public class ObjectEntryResourceAttachmentTest
 					endpoint, Http.Method.PATCH);
 
 				Company company = companyLocalService.getCompany(
-					getObjectDefinition1().getCompanyId());
+					objectDefinition.getCompanyId());
 
 				DLFileEntry dlFileEntry =
 					_dlFileEntryLocalService.
@@ -565,6 +571,8 @@ public class ObjectEntryResourceAttachmentTest
 	public void testPatchObjectEntryWithKeywordsAndExistingAttachmentObjectField()
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		JSONObject objectEntryJSONObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
@@ -573,7 +581,7 @@ public class ObjectEntryResourceAttachmentTest
 				_randomFileEntryJSONObject(
 					null, OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE)
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				ObjectMapperUtil.class.getName(), LoggerTestUtil.WARN)) {
@@ -582,7 +590,7 @@ public class ObjectEntryResourceAttachmentTest
 				JSONUtil.put(
 					"keywords", JSONUtil.putAll("tag1")
 				).toString(),
-				getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
+				objectDefinition.getRESTContextPath() + StringPool.SLASH +
 					objectEntryJSONObject.getString("id"),
 				Http.Method.PATCH);
 
@@ -646,6 +654,8 @@ public class ObjectEntryResourceAttachmentTest
 	public void testPostCustomObjectEntryWithAttachmentObjectFieldInDifferentCompany()
 		throws Exception {
 
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
+
 		JSONObject objectEntryJSONObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
@@ -657,7 +667,7 @@ public class ObjectEntryResourceAttachmentTest
 							null)))
 			).toString(),
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), "?nestedFields=",
+				objectDefinition1.getRESTContextPath(), "?nestedFields=",
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE, ".folder"),
 			Http.Method.POST);
 
@@ -675,7 +685,7 @@ public class ObjectEntryResourceAttachmentTest
 		String randomString = RandomTestUtil.randomString(
 			UniqueStringRandomizerBumper.INSTANCE);
 
-		ObjectDefinition objectDefinition =
+		ObjectDefinition objectDefinition2 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				"A" + randomString,
 				Collections.singletonList(
@@ -721,7 +731,7 @@ public class ObjectEntryResourceAttachmentTest
 							JSONFactoryUtil.createJSONObject(
 								fileEntry.toString())
 						).toString(),
-						objectDefinition.getRESTContextPath(),
+						objectDefinition2.getRESTContextPath(),
 						Http.Method.POST);
 
 					Assert.assertEquals(
@@ -732,7 +742,7 @@ public class ObjectEntryResourceAttachmentTest
 							OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 							JSONUtil.put("id", RandomTestUtil.randomLong())
 						).toString(),
-						objectDefinition.getRESTContextPath(),
+						objectDefinition2.getRESTContextPath(),
 						Http.Method.POST);
 
 					Assert.assertEquals(
@@ -743,7 +753,7 @@ public class ObjectEntryResourceAttachmentTest
 							OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 							JSONUtil.put("id", fileEntry.getId())
 						).toString(),
-						objectDefinition.getRESTContextPath(),
+						objectDefinition2.getRESTContextPath(),
 						Http.Method.POST);
 
 					Assert.assertEquals(
@@ -753,7 +763,7 @@ public class ObjectEntryResourceAttachmentTest
 		}
 		finally {
 			objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition);
+				objectDefinition2);
 		}
 	}
 
@@ -764,6 +774,8 @@ public class ObjectEntryResourceAttachmentTest
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				ObjectMapperUtil.class.getName(), LoggerTestUtil.WARN)) {
 
+			ObjectDefinition objectDefinition = getObjectDefinition1();
+
 			JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 				JSONUtil.put(
 					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
@@ -771,7 +783,7 @@ public class ObjectEntryResourceAttachmentTest
 					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 					StringPool.BLANK
 				).toString(),
-				getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+				objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
@@ -818,8 +830,10 @@ public class ObjectEntryResourceAttachmentTest
 				).build()),
 			false);
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		objectField.setObjectDefinitionId(
-			getObjectDefinition1().getObjectDefinitionId());
+			objectDefinition.getObjectDefinitionId());
 
 		ObjectFieldTestUtil.addCustomObjectField(
 			TestPropsValues.getUserId(), objectField);
@@ -842,7 +856,7 @@ public class ObjectEntryResourceAttachmentTest
 				)
 			).toString(),
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), "?nestedFields=",
+				objectDefinition.getRESTContextPath(), "?nestedFields=",
 				objectFieldName, ".fileBase64"),
 			Http.Method.POST);
 
@@ -1564,6 +1578,8 @@ public class ObjectEntryResourceAttachmentTest
 			String expectedResolution)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		JSONObject objectEntryJSONObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
@@ -1571,14 +1587,14 @@ public class ObjectEntryResourceAttachmentTest
 				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
 				fileEntry.getFileEntryId()
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		RawMetadataProcessorUtil.saveMetadata(fileEntry.getFileVersion());
 
 		objectEntryJSONObject = HTTPTestUtil.invokeToJSONObject(
 			null,
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
+				objectDefinition.getRESTContextPath(), StringPool.SLASH,
 				objectEntryJSONObject.getString("id"), "?nestedFields=",
 				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
 				".metadata"),
@@ -1600,6 +1616,8 @@ public class ObjectEntryResourceAttachmentTest
 			Function<Long, Object> function)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		JSONObject objectEntryJSONObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
@@ -1608,7 +1626,7 @@ public class ObjectEntryResourceAttachmentTest
 				_randomFileEntryJSONObject(
 					null, OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE)
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				ObjectMapperUtil.class.getName(), LoggerTestUtil.WARN)) {
@@ -1622,7 +1640,7 @@ public class ObjectEntryResourceAttachmentTest
 					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
 					function.apply(attachmentJSONObject.getLong("id"))
 				).toString(),
-				getObjectDefinition1().getRESTContextPath() + StringPool.SLASH +
+				objectDefinition.getRESTContextPath() + StringPool.SLASH +
 					objectEntryJSONObject.getString("id"),
 				Http.Method.PATCH);
 

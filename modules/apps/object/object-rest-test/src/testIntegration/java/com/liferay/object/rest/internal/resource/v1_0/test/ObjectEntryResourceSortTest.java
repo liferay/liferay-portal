@@ -1046,14 +1046,20 @@ public class ObjectEntryResourceSortTest
 	public void testSortByManyToOneRelationshipSystemObjectFields()
 		throws Exception {
 
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
+		ObjectDefinition objectDefinition2 = getObjectDefinition2();
+
 		ObjectRelationship objectRelationship1 =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				getObjectDefinition2(), getObjectDefinition1(),
+				objectDefinition2, objectDefinition1,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		ObjectDefinition objectDefinition3 = getObjectDefinition3();
+
 		ObjectRelationship objectRelationship2 =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				getObjectDefinition3(), getObjectDefinition2(),
+				objectDefinition3, objectDefinition2,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
@@ -1061,14 +1067,14 @@ public class ObjectEntryResourceSortTest
 
 		addResourcePermission(
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
-			getObjectDefinition2().getResourceName(), role);
+			objectDefinition2.getResourceName(), role);
 		addResourcePermission(
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
-			getObjectDefinition3().getResourceName(), role);
+			objectDefinition3.getResourceName(), role);
 		addResourcePermission(
-			ActionKeys.VIEW, getObjectDefinition2().getClassName(), role);
+			ActionKeys.VIEW, objectDefinition2.getClassName(), role);
 		addResourcePermission(
-			ActionKeys.VIEW, getObjectDefinition3().getClassName(), role);
+			ActionKeys.VIEW, objectDefinition3.getClassName(), role);
 
 		String password = RandomTestUtil.randomString();
 		String randomString = RandomTestUtil.randomString(
@@ -1082,22 +1088,22 @@ public class ObjectEntryResourceSortTest
 		roleLocalService.addUserRole(user2.getUserId(), role.getRoleId());
 		roleLocalService.addUserRole(user3.getUserId(), role.getRoleId());
 
-		getObjectDefinition1().setEnableObjectEntryDraft(true);
+		objectDefinition1.setEnableObjectEntryDraft(true);
 
-		getObjectDefinition2().setEnableObjectEntryDraft(true);
+		objectDefinition2.setEnableObjectEntryDraft(true);
 
-		getObjectDefinition3().setEnableObjectEntryDraft(true);
+		objectDefinition3.setEnableObjectEntryDraft(true);
 
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition1());
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition2());
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition3());
+		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition1);
+		objectDefinition2 = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition2);
+		objectDefinition3 = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition3);
 
-		String endpoint1 = getEndpoint(getObjectDefinition1(), testGroupId);
-		String endpoint2 = getEndpoint(getObjectDefinition2(), testGroupId);
-		String endpoint3 = getEndpoint(getObjectDefinition3(), testGroupId);
+		String endpoint1 = getEndpoint(objectDefinition1, testGroupId);
+		String endpoint2 = getEndpoint(objectDefinition2, testGroupId);
+		String endpoint3 = getEndpoint(objectDefinition3, testGroupId);
 
 		JSONObject[] depth1JSONObjects = new JSONObject[2];
 
@@ -1913,14 +1919,20 @@ public class ObjectEntryResourceSortTest
 	public void testSortByOneToManyRelationshipSystemObjectFields()
 		throws Exception {
 
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
+		ObjectDefinition objectDefinition2 = getObjectDefinition2();
+
 		ObjectRelationship objectRelationship1 =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				getObjectDefinition1(), getObjectDefinition2(),
+				objectDefinition1, objectDefinition2,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		ObjectDefinition objectDefinition3 = getObjectDefinition3();
+
 		ObjectRelationship objectRelationship2 =
 			ObjectRelationshipTestUtil.addObjectRelationship(
-				getObjectDefinition2(), getObjectDefinition3(),
+				objectDefinition2, objectDefinition3,
 				TestPropsValues.getUserId(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
@@ -1928,12 +1940,12 @@ public class ObjectEntryResourceSortTest
 
 		addResourcePermission(
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
-			getObjectDefinition2().getResourceName(), role);
+			objectDefinition2.getResourceName(), role);
 		addResourcePermission(
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
-			getObjectDefinition3().getResourceName(), role);
+			objectDefinition3.getResourceName(), role);
 		addResourcePermission(
-			ActionKeys.VIEW, getObjectDefinition1().getClassName(), role);
+			ActionKeys.VIEW, objectDefinition1.getClassName(), role);
 
 		String password = RandomTestUtil.randomString();
 		String randomString = RandomTestUtil.randomString(
@@ -1947,22 +1959,22 @@ public class ObjectEntryResourceSortTest
 		roleLocalService.addUserRole(user2.getUserId(), role.getRoleId());
 		roleLocalService.addUserRole(user3.getUserId(), role.getRoleId());
 
-		getObjectDefinition1().setEnableObjectEntryDraft(true);
+		objectDefinition1.setEnableObjectEntryDraft(true);
 
-		getObjectDefinition2().setEnableObjectEntryDraft(true);
+		objectDefinition2.setEnableObjectEntryDraft(true);
 
-		getObjectDefinition3().setEnableObjectEntryDraft(true);
+		objectDefinition3.setEnableObjectEntryDraft(true);
 
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition1());
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition2());
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition3());
+		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition1);
+		objectDefinition2 = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition2);
+		objectDefinition3 = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition3);
 
-		String endpoint1 = getEndpoint(getObjectDefinition1(), testGroupId);
-		String endpoint2 = getEndpoint(getObjectDefinition2(), testGroupId);
-		String endpoint3 = getEndpoint(getObjectDefinition3(), testGroupId);
+		String endpoint1 = getEndpoint(objectDefinition1, testGroupId);
+		String endpoint2 = getEndpoint(objectDefinition2, testGroupId);
+		String endpoint3 = getEndpoint(objectDefinition3, testGroupId);
 
 		JSONObject[] depth1JSONObjects = new JSONObject[4];
 
@@ -2277,9 +2289,11 @@ public class ObjectEntryResourceSortTest
 	public void testSortBySystemObjectField() throws Exception {
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		addResourcePermission(
 			ObjectActionKeys.ADD_OBJECT_ENTRY,
-			getObjectDefinition1().getResourceName(), role);
+			objectDefinition.getResourceName(), role);
 
 		String password = RandomTestUtil.randomString();
 		String randomString = RandomTestUtil.randomString(
@@ -2291,12 +2305,12 @@ public class ObjectEntryResourceSortTest
 		roleLocalService.addUserRole(user1.getUserId(), role.getRoleId());
 		roleLocalService.addUserRole(user2.getUserId(), role.getRoleId());
 
-		getObjectDefinition1().setEnableObjectEntryDraft(true);
+		objectDefinition.setEnableObjectEntryDraft(true);
 
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition1());
+		objectDefinition = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
 
-		String endpoint = getEndpoint(getObjectDefinition1(), testGroupId);
+		String endpoint = getEndpoint(objectDefinition, testGroupId);
 
 		JSONObject[] jsonObjects = new JSONObject[2];
 

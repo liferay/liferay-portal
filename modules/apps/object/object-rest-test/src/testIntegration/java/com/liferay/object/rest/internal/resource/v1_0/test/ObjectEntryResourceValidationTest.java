@@ -91,16 +91,16 @@ public class ObjectEntryResourceValidationTest
 	public void testPatchObjectEntryWithRequiredObjectFields()
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		ObjectField objectField1 = objectFieldLocalService.getObjectField(
-			getObjectDefinition1().getObjectDefinitionId(),
-			OBJECT_FIELD_NAME_1);
+			objectDefinition.getObjectDefinitionId(), OBJECT_FIELD_NAME_1);
 
 		objectFieldLocalService.updateRequired(
 			objectField1.getObjectFieldId(), true);
 
 		ObjectField objectField2 = objectFieldLocalService.getObjectField(
-			getObjectDefinition1().getObjectDefinitionId(),
-			OBJECT_FIELD_NAME_TEXT);
+			objectDefinition.getObjectDefinitionId(), OBJECT_FIELD_NAME_TEXT);
 
 		objectFieldLocalService.updateRequired(
 			objectField2.getObjectFieldId(), true);
@@ -113,7 +113,7 @@ public class ObjectEntryResourceValidationTest
 			).put(
 				OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		String objectFieldValue2 = RandomTestUtil.randomString();
 
@@ -122,7 +122,7 @@ public class ObjectEntryResourceValidationTest
 				OBJECT_FIELD_NAME_TEXT, objectFieldValue2
 			).toString(),
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
+				objectDefinition.getRESTContextPath(), StringPool.SLASH,
 				jsonObject.get("id")),
 			Http.Method.PATCH);
 
@@ -138,17 +138,18 @@ public class ObjectEntryResourceValidationTest
 
 		String errorMessage = RandomTestUtil.randomString();
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		ObjectField integerObjectField = objectFieldLocalService.getObjectField(
-			getObjectDefinition1().getObjectDefinitionId(),
+			objectDefinition.getObjectDefinitionId(),
 			OBJECT_FIELD_NAME_INTEGER);
 
 		ObjectField textObjectField = objectFieldLocalService.getObjectField(
-			getObjectDefinition1().getObjectDefinitionId(),
-			OBJECT_FIELD_NAME_TEXT);
+			objectDefinition.getObjectDefinitionId(), OBJECT_FIELD_NAME_TEXT);
 
 		objectValidationRuleLocalService.addObjectValidationRule(
 			StringPool.BLANK, TestPropsValues.getUserId(),
-			getObjectDefinition1().getObjectDefinitionId(), true,
+			objectDefinition.getObjectDefinitionId(), true,
 			ObjectValidationRuleConstants.ENGINE_TYPE_COMPOSITE_KEY,
 			LocalizedMapUtil.getLocalizedMap(errorMessage),
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -179,7 +180,7 @@ public class ObjectEntryResourceValidationTest
 		Assert.assertEquals(
 			200,
 			HTTPTestUtil.invokeToHttpCode(
-				objectEntryJSON, getObjectDefinition1().getRESTContextPath(),
+				objectEntryJSON, objectDefinition.getRESTContextPath(),
 				Http.Method.POST));
 
 		JSONAssert.assertEquals(
@@ -191,7 +192,7 @@ public class ObjectEntryResourceValidationTest
 				"type", "ObjectValidationRuleEngineException"
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
-				objectEntryJSON, getObjectDefinition1().getRESTContextPath(),
+				objectEntryJSON, objectDefinition.getRESTContextPath(),
 				Http.Method.POST
 			).toString(),
 			JSONCompareMode.LENIENT);
@@ -199,28 +200,33 @@ public class ObjectEntryResourceValidationTest
 
 	@Test
 	public void testPostScopeScopeKeyValidate() throws Exception {
+		ObjectDefinition siteScopedObjectDefinition =
+			getSiteScopedObjectDefinition1();
+
 		ObjectField objectField = objectFieldLocalService.getObjectField(
-			getSiteScopedObjectDefinition1().getObjectDefinitionId(),
+			siteScopedObjectDefinition.getObjectDefinitionId(),
 			OBJECT_FIELD_NAME_1);
+
 		Group testGroup = groupLocalService.fetchGroup(testGroupId);
 
 		_testPostValidate(
-			getSiteScopedObjectDefinition1(), objectField,
+			siteScopedObjectDefinition, objectField,
 			String.valueOf(testGroupId));
 		_testPostValidate(
-			getSiteScopedObjectDefinition1(), objectField,
+			siteScopedObjectDefinition, objectField,
 			testGroup.getExternalReferenceCode());
 		_testPostValidate(
-			getSiteScopedObjectDefinition1(), objectField,
-			testGroup.getGroupKey());
+			siteScopedObjectDefinition, objectField, testGroup.getGroupKey());
 	}
 
 	@Test
 	public void testPostValidate() throws Exception {
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		_testPostValidate(
-			getObjectDefinition1(),
+			objectDefinition,
 			objectFieldLocalService.getObjectField(
-				getObjectDefinition1().getObjectDefinitionId(),
+				objectDefinition.getObjectDefinitionId(),
 				OBJECT_FIELD_NAME_TEXT),
 			null);
 	}
@@ -294,10 +300,12 @@ public class ObjectEntryResourceValidationTest
 			ObjectEntryResource objectEntryResource = getObjectEntryResource(
 				objectDefinition, TestPropsValues.getUser());
 
+			ObjectEntry objectEntry = getLocalizedObjectEntry();
+
 			resourcePermissionLocalService.removeResourcePermission(
 				TestPropsValues.getCompanyId(), ObjectEntry.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(getLocalizedObjectEntry().getObjectEntryId()),
+				String.valueOf(objectEntry.getObjectEntryId()),
 				user.getRoleIds()[0], ActionKeys.ADD_ENTRY);
 
 			UserTestUtil.setUser(user);

@@ -11,6 +11,7 @@ import com.liferay.map.test.util.GeocoderTestUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.field.builder.LocationObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -87,20 +88,26 @@ public class ObjectEntryResourceLocalizationTest
 
 	@Test
 	public void testGetObjectEntryTranslation() throws Exception {
+		ObjectDefinition objectDefinition = getObjectDefinition4();
+		ObjectEntry objectEntry = getLocalizedObjectEntry();
+
 		_testGetObjectEntryTranslation(
 			StringBundler.concat(
-				getObjectDefinition4().getRESTContextPath(), StringPool.SLASH,
-				getLocalizedObjectEntry().getObjectEntryId(),
+				objectDefinition.getRESTContextPath(), StringPool.SLASH,
+				objectEntry.getObjectEntryId(),
 				"/translations?sourceLanguageId=en_US&targetLanguageIds=es_ES"),
 			null);
 	}
 
 	@Test
 	public void testGetObjectEntryTranslationLanguage() throws Exception {
+		ObjectDefinition objectDefinition = getObjectDefinition4();
+		ObjectEntry objectEntry = getLocalizedObjectEntry();
+
 		_testGetObjectEntryTranslation(
 			StringBundler.concat(
-				getObjectDefinition4().getRESTContextPath(), StringPool.SLASH,
-				getLocalizedObjectEntry().getObjectEntryId(),
+				objectDefinition.getRESTContextPath(), StringPool.SLASH,
+				objectEntry.getObjectEntryId(),
 				"/translations/en_US?targetLanguageId=es_ES"),
 			HashMapBuilder.put(
 				HttpHeaders.ACCEPT, "application/xliff+xml"
@@ -198,9 +205,10 @@ public class ObjectEntryResourceLocalizationTest
 			int expectedItemsCount, Map<String, String> headers, String search)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition4();
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			getObjectDefinition4().getRESTContextPath() + "/?search=" + search,
+			null, objectDefinition.getRESTContextPath() + "/?search=" + search,
 			headers, Http.Method.GET);
 
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
@@ -231,6 +239,9 @@ public class ObjectEntryResourceLocalizationTest
 			String expectedValueSuffix, Map<String, String> headers)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition4();
+		ObjectEntry objectEntry = getLocalizedObjectEntry();
+
 		JSONAssert.assertEquals(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_LOCALIZED_LONG_TEXT,
@@ -246,8 +257,8 @@ public class ObjectEntryResourceLocalizationTest
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
 				null,
-				getObjectDefinition4().getRESTContextPath() + StringPool.SLASH +
-					getLocalizedObjectEntry().getObjectEntryId(),
+				objectDefinition.getRESTContextPath() + StringPool.SLASH +
+					objectEntry.getObjectEntryId(),
 				headers, Http.Method.GET
 			).toString(),
 			JSONCompareMode.LENIENT);

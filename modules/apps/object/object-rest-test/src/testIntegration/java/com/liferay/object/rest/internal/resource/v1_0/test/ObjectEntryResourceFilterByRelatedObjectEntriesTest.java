@@ -324,8 +324,10 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 	public void testFilterByObjectRelationshipERCObjectFieldNameInOneToManyRelationship()
 		throws Exception {
 
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
+
 		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(),
+			objectDefinition1,
 			HashMapBuilder.<String, Serializable>put(
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1
 			).put(
@@ -333,12 +335,15 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				RandomTestUtil.randomString(4) + "a" +
 					RandomTestUtil.randomString(3)
 			).build());
+
+		ObjectDefinition objectDefinition2 = getObjectDefinition2();
+
 		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition2(), OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
+			objectDefinition2, OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2);
 
 		ObjectRelationship objectRelationship =
 			addObjectRelationshipAndRelateObjectEntries(
-				getObjectDefinition1(), getObjectDefinition2(),
+				objectDefinition1, objectDefinition2,
 				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
@@ -353,12 +358,11 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			StringBundler.concat(
 				"r_", objectRelationship.getName(), "_",
 				StringUtil.replaceLast(
-					getObjectDefinition1().getPKObjectFieldName(), "Id",
-					"ERC")),
+					objectDefinition1.getPKObjectFieldName(), "Id", "ERC")),
 			objectRelationshipERCObjectFieldName);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, getObjectDefinition2().getRESTContextPath(), Http.Method.GET);
+			null, objectDefinition2.getRESTContextPath(), Http.Method.GET);
 
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
 
@@ -383,41 +387,41 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				"%s/%s eq '%s'", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName,
 				objectEntry1ExternalReferenceCode),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s ge '%s'", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName,
 				objectEntry1ExternalReferenceCode),
-			getObjectDefinition1());
+			objectDefinition1);
 
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s gt '%s'", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName, substring + "0000"),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s le '%s'", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName,
 				objectEntry1ExternalReferenceCode),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s lt '%s'", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName, substring + "zzzz"),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s ne '%s'", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName,
 				RandomTestUtil.randomInt()),
-			getObjectDefinition1());
+			objectDefinition1);
 
 		// List operators
 
@@ -427,7 +431,7 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				"%s/%s in ('%s', '%s')", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName,
 				objectEntry1ExternalReferenceCode, RandomTestUtil.randomInt()),
-			getObjectDefinition1());
+			objectDefinition1);
 
 		// String operators
 
@@ -436,13 +440,13 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			String.format(
 				"contains(%s/%s,'%s')", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName, substring),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"startswith(%s/%s,'%s')", objectRelationship.getName(),
 				objectRelationshipERCObjectFieldName, substring),
-			getObjectDefinition1());
+			objectDefinition1);
 	}
 
 	@Test
@@ -774,9 +778,11 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				ObjectEntry objectEntry1, ObjectEntry objectEntry2, String type)
 		throws Exception {
 
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
+
 		ObjectRelationship objectRelationship =
 			addObjectRelationshipAndRelateObjectEntries(
-				getObjectDefinition1(), getObjectDefinition2(),
+				objectDefinition1, getObjectDefinition2(),
 				objectEntry1.getPrimaryKey(), objectEntry2.getPrimaryKey(),
 				type);
 
@@ -787,37 +793,37 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			String.format(
 				"%s/%s eq '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s ge '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s gt '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2 - 1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s le '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s lt '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2 + 1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s ne '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2 - 1),
-			getObjectDefinition1());
+			objectDefinition1);
 
 		if (StringUtil.equals(
 				type, ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
@@ -827,9 +833,9 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				String.format(
 					"%s/%s eq '%s'", objectRelationship.getName(),
 					StringUtil.removeFirst(
-						getObjectDefinition1().getPKObjectFieldName(), "c_"),
+						objectDefinition1.getPKObjectFieldName(), "c_"),
 					objectEntry1.getPrimaryKey()),
-				getObjectDefinition1());
+				objectDefinition1);
 		}
 
 		// Other side, custom object field
@@ -917,37 +923,37 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			String.format(
 				"%s/id eq '%s'", objectRelationship.getName(),
 				objectEntry2.getObjectEntryId()),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/id ge '%s'", objectRelationship.getName(),
 				objectEntry2.getObjectEntryId()),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/id gt '%s'", objectRelationship.getName(),
 				objectEntry2.getObjectEntryId() - 1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/id le '%s'", objectRelationship.getName(),
 				objectEntry2.getObjectEntryId()),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/id lt '%s'", objectRelationship.getName(),
 				objectEntry2.getObjectEntryId() + 1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/id ne '%s'", objectRelationship.getName(),
 				objectEntry2.getObjectEntryId() - 1),
-			getObjectDefinition1());
+			objectDefinition1);
 
 		objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship);
@@ -955,87 +961,87 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 		// Self relationship, custom object field
 
 		objectRelationship = addObjectRelationshipAndRelateObjectEntries(
-			getObjectDefinition1(), getObjectDefinition1(),
-			objectEntry1.getPrimaryKey(), objectEntry1.getPrimaryKey(), type);
+			objectDefinition1, objectDefinition1, objectEntry1.getPrimaryKey(),
+			objectEntry1.getPrimaryKey(), type);
 
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s eq '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s ge '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s gt '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s le '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s lt '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 + 1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s ne '%s'", objectRelationship.getName(),
 				OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1 - 1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s/%s eq '%s'", objectRelationship.getName(),
 				objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 				OBJECT_FIELD_VALUE_1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s/%s ge '%s'", objectRelationship.getName(),
 				objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 				OBJECT_FIELD_VALUE_1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s/%s gt '%s'", objectRelationship.getName(),
 				objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 				OBJECT_FIELD_VALUE_1 - 1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s/%s le '%s'", objectRelationship.getName(),
 				objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 				OBJECT_FIELD_VALUE_1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s/%s lt '%s'", objectRelationship.getName(),
 				objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 				OBJECT_FIELD_VALUE_1 + 1),
-			getObjectDefinition1());
+			objectDefinition1);
 		assertFilterString(
 			OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1,
 			String.format(
 				"%s/%s/%s ne '%s'", objectRelationship.getName(),
 				objectRelationship.getName(), OBJECT_FIELD_NAME_1,
 				OBJECT_FIELD_VALUE_1 - 1),
-			getObjectDefinition1());
+			objectDefinition1);
 	}
 
 	private void
@@ -2388,9 +2394,11 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 			String filterString)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
-			getObjectDefinition1().getRESTContextPath() + "?filter=" +
+			objectDefinition.getRESTContextPath() + "?filter=" +
 				URLCodec.encodeURL(filterString),
 			Http.Method.GET);
 

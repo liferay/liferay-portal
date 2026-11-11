@@ -8,6 +8,7 @@ package com.liferay.object.rest.internal.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.TaxonomyCategory;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -73,9 +74,11 @@ public class ObjectEntryResourceFilterTest
 
 		String filterString = "x" + randomString + " eq 'value'";
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
-			getObjectDefinition1().getRESTContextPath() + "?filter=" +
+			objectDefinition.getRESTContextPath() + "?filter=" +
 				URLCodec.encodeURL(filterString),
 			Http.Method.GET);
 
@@ -394,28 +397,30 @@ public class ObjectEntryResourceFilterTest
 
 	@Test
 	public void testGetObjectEntriesFilteredByStatus() throws Exception {
-		getObjectDefinition1().setEnableObjectEntryDraft(true);
+		ObjectDefinition objectDefinition = getObjectDefinition1();
 
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition1());
+		objectDefinition.setEnableObjectEntryDraft(true);
+
+		objectDefinition = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
 
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"status", JSONUtil.put("code", WorkflowConstants.STATUS_DRAFT)
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
 		_assertFilteredObjectEntries(2, "status eq 0");
 		_assertFilteredObjectEntries(1, "status eq 2");
@@ -647,9 +652,11 @@ public class ObjectEntryResourceFilterTest
 			int expectedObjectEntriesCount, String filterString)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			null,
-			getObjectDefinition1().getRESTContextPath() + "?filter=" +
+			objectDefinition.getRESTContextPath() + "?filter=" +
 				URLCodec.encodeURL(filterString),
 			Http.Method.GET);
 
@@ -662,18 +669,22 @@ public class ObjectEntryResourceFilterTest
 	private void _postObjectEntryWithKeywords(String... keywords)
 		throws Exception {
 
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				"keywords", JSONUtil.putAll(keywords)
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 	}
 
 	private void _postObjectEntryWithTaxonomyCategories(
 			TaxonomyCategory... taxonomyCategories)
 		throws Exception {
+
+		ObjectDefinition objectDefinition = getObjectDefinition1();
 
 		HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -683,7 +694,7 @@ public class ObjectEntryResourceFilterTest
 				TransformUtil.transform(
 					taxonomyCategories, TaxonomyCategory::getId, String.class)
 			).toString(),
-			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
+			objectDefinition.getRESTContextPath(), Http.Method.POST);
 	}
 
 	private void _testGetObjectEntriesFilteredBySystemDate(String fieldName)

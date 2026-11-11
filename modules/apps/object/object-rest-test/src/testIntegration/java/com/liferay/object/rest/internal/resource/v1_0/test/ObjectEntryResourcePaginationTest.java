@@ -6,6 +6,7 @@
 package com.liferay.object.rest.internal.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -65,9 +66,10 @@ public class ObjectEntryResourcePaginationTest
 	}
 
 	private void _assertPagination(int expectedTotalCount) throws Exception {
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null,
-			getObjectDefinition1().getRESTContextPath() + "?page=1&pageSize=5",
+			null, objectDefinition.getRESTContextPath() + "?page=1&pageSize=5",
 			Http.Method.GET);
 
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
@@ -80,7 +82,7 @@ public class ObjectEntryResourcePaginationTest
 			expectedTotalCount, jsonObject.getLong("totalCount"));
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, getObjectDefinition1().getRESTContextPath() + "?pageSize=-1",
+			null, objectDefinition.getRESTContextPath() + "?pageSize=-1",
 			Http.Method.GET);
 
 		itemsJSONArray = jsonObject.getJSONArray("items");

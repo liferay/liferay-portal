@@ -7,6 +7,7 @@ package com.liferay.object.rest.internal.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.exception.NoSuchObjectEntryException;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.dto.v1_0.SystemProperties;
 import com.liferay.object.rest.dto.v1_0.Version;
@@ -58,18 +59,22 @@ public class ObjectEntryResourceVersionsTest
 
 	@Test
 	public void testGetByExternalReferenceCodeVersionsPage() throws Exception {
-		getObjectDefinition1().setEnableObjectEntryVersioning(true);
+		ObjectDefinition objectDefinition1 = getObjectDefinition1();
 
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition1());
+		objectDefinition1.setEnableObjectEntryVersioning(true);
 
-		getObjectDefinition2().setEnableObjectEntryVersioning(true);
+		objectDefinition1 = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition1);
 
-		objectDefinitionLocalService.updateObjectDefinition(
-			getObjectDefinition2());
+		ObjectDefinition objectDefinition2 = getObjectDefinition2();
+
+		objectDefinition2.setEnableObjectEntryVersioning(true);
+
+		objectDefinition2 = objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition2);
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
-			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
+			objectDefinition1, OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
 
 		objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
@@ -80,7 +85,7 @@ public class ObjectEntryResourceVersionsTest
 			ServiceContextTestUtil.getServiceContext());
 
 		ObjectEntryResource objectEntryResource1 = getObjectEntryResource(
-			getObjectDefinition1(), TestPropsValues.getUser());
+			objectDefinition1, TestPropsValues.getUser());
 
 		Page<com.liferay.object.rest.dto.v1_0.ObjectEntry> objectEntriesPage =
 			objectEntryResource1.getByExternalReferenceCodeVersionsPage(
@@ -102,7 +107,7 @@ public class ObjectEntryResourceVersionsTest
 		_assertObjectEntryVersionNumber(objectEntries.get(1), 1);
 
 		ObjectEntryResource objectEntryResource2 = getObjectEntryResource(
-			getObjectDefinition2(), TestPropsValues.getUser());
+			objectDefinition2, TestPropsValues.getUser());
 
 		AssertUtils.assertFailure(
 			NoSuchObjectEntryException.class,
@@ -111,7 +116,7 @@ public class ObjectEntryResourceVersionsTest
 				objectEntry.getExternalReferenceCode(), ", groupId=",
 				objectEntry.getGroupId(), ", companyId=",
 				objectEntry.getCompanyId(), ", objectDefinitionId=",
-				getObjectDefinition2().getObjectDefinitionId(), "}"),
+				objectDefinition2.getObjectDefinitionId(), "}"),
 			() -> objectEntryResource2.getByExternalReferenceCodeVersionsPage(
 				objectEntry.getExternalReferenceCode(),
 				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null));
