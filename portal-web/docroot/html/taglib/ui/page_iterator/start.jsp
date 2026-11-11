@@ -20,6 +20,7 @@ boolean forcePost = GetterUtil.getBoolean((String)request.getAttribute("liferay-
 String id = (String)request.getAttribute("liferay-ui:page-iterator:id");
 String jsCall = GetterUtil.getString((String)request.getAttribute("liferay-ui:page-iterator:jsCall"));
 PortletURL portletURL = (PortletURL)request.getAttribute("liferay-ui:page-iterator:portletURL");
+int resultEnd = GetterUtil.getInteger((String)request.getAttribute("liferay-ui:page-iterator:resultEnd"));
 int total = GetterUtil.getInteger((String)request.getAttribute("liferay-ui:page-iterator:total"));
 String url = StringPool.BLANK;
 String urlAnchor = StringPool.BLANK;
@@ -53,6 +54,10 @@ int end = cur * delta;
 
 if (end > total) {
 	end = total;
+}
+
+if ((resultEnd > 0) && (resultEnd < end)) {
+	end = resultEnd;
 }
 
 if (deltaConfigurable) {
