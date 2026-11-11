@@ -238,7 +238,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 			return false;
 		}
 
-		_reindexUsers(new long[] {userGroupId});
+		reindexUsers(new long[] {userGroupId});
 
 		return true;
 	}
@@ -270,7 +270,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 			return false;
 		}
 
-		_reindexUsers(userGroupIds);
+		reindexUsers(userGroupIds);
 
 		return true;
 	}
@@ -439,7 +439,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 		super.clearTeamUserGroups(teamId);
 
-		_reindexUsers(userGroupIds);
+		reindexUsers(userGroupIds);
 	}
 
 	/**
@@ -527,7 +527,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	public void deleteTeamUserGroup(long teamId, long userGroupId) {
 		super.deleteTeamUserGroup(teamId, userGroupId);
 
-		_reindexUsers(new long[] {userGroupId});
+		reindexUsers(new long[] {userGroupId});
 	}
 
 	/**
@@ -564,7 +564,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	public void deleteTeamUserGroups(long teamId, long[] userGroupIds) {
 		super.deleteTeamUserGroups(teamId, userGroupIds);
 
-		_reindexUsers(userGroupIds);
+		reindexUsers(userGroupIds);
 	}
 
 	/**
@@ -1281,7 +1281,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 
 		super.setTeamUserGroups(teamId, userGroupIds);
 
-		_reindexUsers(
+		reindexUsers(
 			ArrayUtil.toLongArray(
 				SetUtil.symmetricDifference(userGroupIds, oldUserGroupIds)));
 	}
@@ -1358,12 +1358,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	public void unsetTeamUserGroups(long teamId, long[] userGroupIds) {
 		teamPersistence.removeUserGroups(teamId, userGroupIds);
 
-		try {
-			reindexUsers(userGroupIds);
-		}
-		catch (PortalException portalException) {
-			throw new SystemException(portalException);
-		}
+		reindexUsers(userGroupIds);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1666,9 +1661,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		reindex(user.getCompanyId(), new long[] {userId});
 	}
 
-	protected void reindex(long companyId, long[] userIds)
-		throws PortalException {
-
+	protected void reindex(long companyId, long[] userIds) {
 		ReindexerBridge reindexerBridge = _reindexerBridgeSnapshot.get();
 
 		reindexerBridge.reindex(companyId, User.class.getName(), userIds);
@@ -1683,9 +1676,7 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		indexer.reindex(userGroup);
 	}
 
-	protected void reindexUsers(List<UserGroup> userGroups)
-		throws PortalException {
-
+	protected void reindexUsers(List<UserGroup> userGroups) {
 		Map<Long, List<UserGroup>> map = new HashMap<>();
 
 		for (UserGroup userGroup : userGroups) {
@@ -1724,12 +1715,12 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		reindexUsers(getUserGroup(userGroupId));
 	}
 
-	protected void reindexUsers(long[] userGroupIds) throws PortalException {
+	protected void reindexUsers(long[] userGroupIds) {
 		reindexUsers(
 			TransformUtil.transformToList(userGroupIds, this::getUserGroup));
 	}
 
-	protected void reindexUsers(UserGroup userGroup) throws PortalException {
+	protected void reindexUsers(UserGroup userGroup) {
 		long companyId = userGroup.getCompanyId();
 		long userGroupId = userGroup.getUserGroupId();
 
@@ -1775,15 +1766,6 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 				reindexUserGroup(getUserGroup(userGroupId));
 			}
 
-			reindexUsers(userGroupIds);
-		}
-		catch (PortalException portalException) {
-			throw new SystemException(portalException);
-		}
-	}
-
-	private void _reindexUsers(long[] userGroupIds) {
-		try {
 			reindexUsers(userGroupIds);
 		}
 		catch (PortalException portalException) {
