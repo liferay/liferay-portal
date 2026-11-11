@@ -16,7 +16,9 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.RandomAccess;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * The String utility class.
@@ -90,6 +92,58 @@ public class StringUtil {
 		}
 
 		return true;
+	}
+
+	public static void forEachLine(String s, Consumer<String> consumer) {
+		forEachLineUntil(
+			s,
+			line -> {
+				consumer.accept(line);
+
+				return false;
+			});
+	}
+
+	public static boolean forEachLineUntil(
+		String s, Predicate<String> predicate) {
+
+		int length = s.length();
+		int nextNewLine = s.indexOf(CharPool.NEW_LINE);
+		int nextReturn = s.indexOf(CharPool.RETURN);
+		int start = 0;
+
+		while (start < length) {
+			if ((nextNewLine != -1) && (nextNewLine < start)) {
+				nextNewLine = s.indexOf(CharPool.NEW_LINE, start);
+			}
+
+			if ((nextReturn != -1) && (nextReturn < start)) {
+				nextReturn = s.indexOf(CharPool.RETURN, start);
+			}
+
+			int end = nextNewLine;
+
+			if ((end == -1) || ((nextReturn != -1) && (nextReturn < end))) {
+				end = nextReturn;
+			}
+
+			if (end == -1) {
+				return predicate.test(s.substring(start));
+			}
+
+			if (predicate.test(s.substring(start, end))) {
+				return true;
+			}
+
+			if ((end == nextReturn) && (nextNewLine == (end + 1))) {
+				start = end + 2;
+			}
+			else {
+				start = end + 1;
+			}
+		}
+
+		return false;
 	}
 
 	public static String merge(boolean[] array, String delimiter) {
