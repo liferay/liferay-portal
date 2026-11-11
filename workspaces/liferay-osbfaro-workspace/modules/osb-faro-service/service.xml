@@ -268,7 +268,9 @@
 
 		<column name="activeLogicalBytes" type="long" />
 		<column name="anonymousIndividualsCount" type="long" />
+		<column name="billableEventsCount" type="long" />
 		<column name="eventsCount" type="long" />
+		<column name="experimentEventsCount" type="long" />
 		<column name="faroProjectId" type="long" />
 		<column name="knownIndividualsCount" type="long" />
 		<column name="longTermLogicalBytes" type="long" />

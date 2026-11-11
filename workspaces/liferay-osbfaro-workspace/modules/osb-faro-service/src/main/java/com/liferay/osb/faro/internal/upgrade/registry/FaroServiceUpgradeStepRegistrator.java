@@ -210,6 +210,12 @@ public class FaroServiceUpgradeStepRegistrator
 		registry.register(
 			"24.1.0", "24.2.0",
 			new GroupFriendlyURLUpgradeProcess(_groupLocalService));
+
+		registry.register(
+			"24.2.0", "25.0.0",
+			UpgradeProcessFactory.addColumns(
+				"OSBFaro_FaroProjectUsage", "billableEventsCount LONG",
+				"experimentEventsCount LONG"));
 	}
 
 	@Reference

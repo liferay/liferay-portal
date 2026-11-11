@@ -27,7 +27,8 @@ public class FaroProjectUsageLocalServiceImpl
 	@Override
 	public FaroProjectUsage addFaroProjectUsage(
 		long companyId, long userId, long activeLogicalBytes,
-		long anonymousIndividualsCount, long eventsCount, long faroProjectId,
+		long anonymousIndividualsCount, long billableEventsCount,
+		long eventsCount, long experimentEventsCount, long faroProjectId,
 		long knownIndividualsCount, long longTermLogicalBytes,
 		String monthDateKey, long onDemandBytesBilled, long pageViewsCount,
 		long reservationSlotMs, Date usageDate) {
@@ -48,7 +49,9 @@ public class FaroProjectUsageLocalServiceImpl
 		faroProjectUsage.setActiveLogicalBytes(activeLogicalBytes);
 		faroProjectUsage.setAnonymousIndividualsCount(
 			anonymousIndividualsCount);
+		faroProjectUsage.setBillableEventsCount(billableEventsCount);
 		faroProjectUsage.setEventsCount(eventsCount);
+		faroProjectUsage.setExperimentEventsCount(experimentEventsCount);
 		faroProjectUsage.setFaroProjectId(faroProjectId);
 		faroProjectUsage.setKnownIndividualsCount(knownIndividualsCount);
 		faroProjectUsage.setLongTermLogicalBytes(longTermLogicalBytes);
@@ -77,7 +80,8 @@ public class FaroProjectUsageLocalServiceImpl
 	@Override
 	public FaroProjectUsage updateFaroProjectUsage(
 			long faroProjectUsageId, long activeLogicalBytes,
-			long anonymousIndividualsCount, long eventsCount,
+			long anonymousIndividualsCount, long billableEventsCount,
+			long eventsCount, long experimentEventsCount,
 			long knownIndividualsCount, long longTermLogicalBytes,
 			long onDemandBytesBilled, long pageViewsCount,
 			long reservationSlotMs)
@@ -91,7 +95,9 @@ public class FaroProjectUsageLocalServiceImpl
 		faroProjectUsage.setActiveLogicalBytes(activeLogicalBytes);
 		faroProjectUsage.setAnonymousIndividualsCount(
 			anonymousIndividualsCount);
+		faroProjectUsage.setBillableEventsCount(billableEventsCount);
 		faroProjectUsage.setEventsCount(eventsCount);
+		faroProjectUsage.setExperimentEventsCount(experimentEventsCount);
 		faroProjectUsage.setKnownIndividualsCount(knownIndividualsCount);
 		faroProjectUsage.setLongTermLogicalBytes(longTermLogicalBytes);
 		faroProjectUsage.setOnDemandBytesBilled(onDemandBytesBilled);
