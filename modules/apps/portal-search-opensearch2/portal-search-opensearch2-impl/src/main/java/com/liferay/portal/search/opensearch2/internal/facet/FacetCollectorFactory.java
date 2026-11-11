@@ -57,7 +57,7 @@ public class FacetCollectorFactory {
 			return getFacetCollector(aggregations.get(name), name);
 		}
 
-		return new OpenSearchFacetFieldCollector(aggregate, name);
+		return new OpenSearchFacetFieldCollector(name);
 	}
 
 }

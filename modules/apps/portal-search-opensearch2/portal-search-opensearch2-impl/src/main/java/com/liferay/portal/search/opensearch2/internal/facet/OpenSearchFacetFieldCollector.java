@@ -12,8 +12,6 @@ import com.liferay.portal.kernel.search.facet.collector.TermCollector;
 import java.util.Collections;
 import java.util.List;
 
-import org.opensearch.client.opensearch._types.aggregations.Aggregate;
-
 /**
  * @author Michael C. Han
  * @author Milen Dyankov
@@ -21,9 +19,7 @@ import org.opensearch.client.opensearch._types.aggregations.Aggregate;
  */
 public class OpenSearchFacetFieldCollector implements FacetCollector {
 
-	public OpenSearchFacetFieldCollector(
-		Aggregate aggregate, String fieldName) {
-
+	public OpenSearchFacetFieldCollector(String fieldName) {
 		_fieldName = fieldName;
 	}
 
