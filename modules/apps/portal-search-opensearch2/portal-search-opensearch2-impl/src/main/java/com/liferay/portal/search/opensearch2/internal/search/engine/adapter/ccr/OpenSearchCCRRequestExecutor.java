@@ -31,7 +31,7 @@ public class OpenSearchCCRRequestExecutor implements CCRRequestExecutor {
 	public PauseFollowCCRResponse executeCCRRequest(
 		PauseFollowCCRRequest pauseFollowCCRRequest) {
 
-		return _pauseFollowCCRRequestExecutor.execute(pauseFollowCCRRequest);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -48,8 +48,6 @@ public class OpenSearchCCRRequestExecutor implements CCRRequestExecutor {
 		return _unfollowCCRRequestExecutor.execute(unfollowCCRRequest);
 	}
 
-	private final PauseFollowCCRRequestExecutor _pauseFollowCCRRequestExecutor =
-		new PauseFollowCCRRequestExecutor();
 	private final PutFollowCCRRequestExecutor _putFollowCCRRequestExecutor =
 		new PutFollowCCRRequestExecutor();
 	private final UnfollowCCRRequestExecutor _unfollowCCRRequestExecutor =
