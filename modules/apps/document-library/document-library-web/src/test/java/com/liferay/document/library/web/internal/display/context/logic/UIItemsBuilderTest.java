@@ -82,7 +82,8 @@ public class UIItemsBuilderTest {
 				Mockito.nullable(FileEntry.class),
 				Mockito.nullable(FileVersion.class),
 				Mockito.nullable(ThemeDisplay.class), Mockito.anyString(),
-				Mockito.anyBoolean(), Mockito.anyBoolean())
+				Mockito.anyBoolean(), Mockito.anyBoolean(),
+				Mockito.anyBoolean())
 		).thenReturn(
 			"http://localhost/"
 		);
@@ -166,6 +167,37 @@ public class UIItemsBuilderTest {
 			uiItemsBuilder.createCancelCheckoutDropdownItem();
 
 		_assertHref(cancelCheckoutDropdownItem);
+	}
+
+	@Test
+	@TestInfo("LPD-112412")
+	public void testCreateDownloadDropdownItem() {
+		String version = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_fileEntry.getVersion()
+		).thenReturn(
+			version
+		);
+
+		Mockito.when(
+			_fileVersion.getVersion()
+		).thenReturn(
+			version
+		);
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		UIItemsBuilder uiItemsBuilder = _getUIItemsBuilder(themeDisplay);
+
+		uiItemsBuilder.createDownloadDropdownItem();
+
+		Mockito.verify(
+			_dlurlHelper
+		).getDownloadURL(
+			_fileEntry, _fileVersion, themeDisplay, StringPool.BLANK, true,
+			true, false
+		);
 	}
 
 	@Test

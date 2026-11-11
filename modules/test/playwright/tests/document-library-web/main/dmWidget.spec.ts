@@ -332,7 +332,7 @@ test(
 
 test(
 	'Versions tab in the widget downloads, views and reverts older versions',
-	{tag: ['@LPS-39248', '@LPS-52101', '@LPS-175916']},
+	{tag: ['@LPS-39248', '@LPS-52101', '@LPS-175916', '@LPD-112412']},
 	async ({apiHelpers, documentLibraryPage, page, site}) => {
 		const pageURL = await addDMWidgetPage({apiHelpers, site});
 
@@ -416,6 +416,8 @@ test(
 				['Download', 'View'],
 				['Delete', 'Revert']
 			);
+
+			expect(await downloadVersion()).toBe('FileName.jpeg');
 
 			await apiHelpers.headlessDelivery.patchDocument({
 				document: {
