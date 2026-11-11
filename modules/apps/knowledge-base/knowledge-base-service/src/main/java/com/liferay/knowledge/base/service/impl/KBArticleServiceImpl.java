@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.permission.WorkflowPermissionUtil;
 import com.liferay.rss.export.RSSExporter;
 import com.liferay.rss.model.SyndContent;
 import com.liferay.rss.model.SyndEntry;
@@ -408,10 +409,21 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 	public KBArticle getKBArticle(long resourcePrimKey, int version)
 		throws PortalException {
 
-		_kbArticleModelResourcePermission.check(
-			getPermissionChecker(), resourcePrimKey, KBActionKeys.VIEW);
+		PermissionChecker permissionChecker = getPermissionChecker();
 
-		return kbArticleLocalService.getKBArticle(resourcePrimKey, version);
+		_kbArticleModelResourcePermission.check(
+			permissionChecker, resourcePrimKey, KBActionKeys.VIEW);
+
+		KBArticle kbArticle = kbArticleLocalService.getKBArticle(
+			resourcePrimKey, version);
+
+		if (!_hasViewPermission(kbArticle, permissionChecker)) {
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, KBArticle.class.getName(), resourcePrimKey,
+				KBActionKeys.VIEW);
+		}
+
+		return kbArticle;
 	}
 
 	@Override
@@ -696,21 +708,28 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 	public KBArticle getLatestKBArticle(long resourcePrimKey)
 		throws PortalException {
 
-		_kbArticleModelResourcePermission.check(
-			getPermissionChecker(), resourcePrimKey, KBActionKeys.VIEW);
-
-		return kbArticleLocalService.getLatestKBArticle(resourcePrimKey);
+		return getLatestKBArticle(
+			resourcePrimKey, WorkflowConstants.STATUS_ANY);
 	}
 
 	@Override
 	public KBArticle getLatestKBArticle(long resourcePrimKey, int status)
 		throws PortalException {
 
+		PermissionChecker permissionChecker = getPermissionChecker();
+
 		_kbArticleModelResourcePermission.check(
-			getPermissionChecker(), resourcePrimKey, KBActionKeys.VIEW);
+			permissionChecker, resourcePrimKey, KBActionKeys.VIEW);
+
+		KBArticle kbArticle = kbArticleLocalService.getLatestKBArticle(
+			resourcePrimKey, status);
+
+		if (_hasViewPermission(kbArticle, permissionChecker)) {
+			return kbArticle;
+		}
 
 		return kbArticleLocalService.getLatestKBArticle(
-			resourcePrimKey, status);
+			resourcePrimKey, WorkflowConstants.STATUS_APPROVED);
 	}
 
 	@Override
@@ -1197,6 +1216,29 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		}
 
 		return kbArticle;
+	}
+
+	private boolean _hasViewPermission(
+			KBArticle kbArticle, PermissionChecker permissionChecker)
+		throws PortalException {
+
+		if (kbArticle.isApproved() || kbArticle.isExpired()) {
+			return true;
+		}
+
+		if (kbArticle.isPending()) {
+			Boolean permission = WorkflowPermissionUtil.hasPermission(
+				permissionChecker, kbArticle.getGroupId(),
+				KBArticle.class.getName(), kbArticle.getResourcePrimKey(),
+				ActionKeys.VIEW);
+
+			if (permission != null) {
+				return permission;
+			}
+		}
+
+		return _kbArticleModelResourcePermission.contains(
+			permissionChecker, kbArticle, KBActionKeys.UPDATE);
 	}
 
 	private boolean _isAttachmentsFolder(Folder folder, KBArticle kbArticle) {
