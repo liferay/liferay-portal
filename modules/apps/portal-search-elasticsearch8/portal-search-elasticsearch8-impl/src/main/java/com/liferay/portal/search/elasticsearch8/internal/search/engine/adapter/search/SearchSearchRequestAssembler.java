@@ -172,7 +172,7 @@ public class SearchSearchRequestAssembler {
 				searchSearchRequest.getHighlightFragmentSize(),
 				searchSearchRequest.isHighlightRequireFieldMatch(),
 				searchSearchRequest.getHighlightSnippetSize(),
-				searchSearchRequest.getLocale(), searchRequestBuilder,
+				searchRequestBuilder,
 				searchSearchRequest.getSelectedFieldNames());
 		}
 	}
@@ -192,7 +192,7 @@ public class SearchSearchRequestAssembler {
 					searchSearchRequest.getHighlightFragmentSize(),
 					searchSearchRequest.isHighlightRequireFieldMatch(),
 					searchSearchRequest.getHighlightSnippetSize(),
-					searchSearchRequest.getLocale(), searchRequestBuilder,
+					searchRequestBuilder,
 					searchSearchRequest.getSelectedFieldNames()));
 		}
 	}

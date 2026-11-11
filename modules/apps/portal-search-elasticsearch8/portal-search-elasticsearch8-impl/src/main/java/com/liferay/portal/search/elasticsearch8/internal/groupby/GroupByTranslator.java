@@ -27,7 +27,6 @@ import com.liferay.portal.search.groupby.GroupByRequest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -45,7 +44,7 @@ public class GroupByTranslator {
 		GroupByRequest groupByRequest, boolean highlightEnabled,
 		String[] highlightFieldNames, int highlightFragmentSize,
 		boolean highlightRequireFieldMatch, int highlightSnippetSize,
-		Locale locale, SearchRequest.Builder searchRequestBuilder,
+		SearchRequest.Builder searchRequestBuilder,
 		String[] selectedFieldNames) {
 
 		Aggregation.Builder aggregationBuilder = new Aggregation.Builder();
