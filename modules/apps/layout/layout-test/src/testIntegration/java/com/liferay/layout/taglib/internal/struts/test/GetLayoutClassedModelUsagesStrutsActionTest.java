@@ -6,6 +6,9 @@
 package com.liferay.layout.taglib.internal.struts.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
@@ -28,6 +31,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -42,7 +46,10 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -95,7 +102,9 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 			new MockHttpServletResponse();
 
 		_getLayoutClassedModelUsages.execute(
-			_getMockHttpServletRequest(journalArticle),
+			_getMockHttpServletRequest(
+				JournalArticle.class.getName(),
+				journalArticle.getResourcePrimKey()),
 			mockHttpServletResponse);
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
@@ -109,6 +118,7 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 
 		_testExecuteWithoutModelViewPermission();
 		_testExecuteWithoutLayoutViewPermission();
+		_testExecuteWithoutInfoItemPermissionProvider();
 	}
 
 	private LayoutClassedModelUsage _addLayoutClassedModelUsage(
@@ -125,11 +135,19 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 	private JSONObject _execute(JournalArticle journalArticle)
 		throws Exception {
 
+		return _execute(
+			JournalArticle.class.getName(),
+			journalArticle.getResourcePrimKey());
+	}
+
+	private JSONObject _execute(String className, long classPK)
+		throws Exception {
+
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
 		_getLayoutClassedModelUsages.execute(
-			_getMockHttpServletRequest(journalArticle),
+			_getMockHttpServletRequest(className, classPK),
 			mockHttpServletResponse);
 
 		return _jsonFactory.createJSONObject(
@@ -153,16 +171,14 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
-			JournalArticle journalArticle)
+			String className, long classPK)
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		mockHttpServletRequest.addParameter(
-			"className", JournalArticle.class.getName());
-		mockHttpServletRequest.addParameter(
-			"classPK", String.valueOf(journalArticle.getResourcePrimKey()));
+		mockHttpServletRequest.addParameter("className", className);
+		mockHttpServletRequest.addParameter("classPK", String.valueOf(classPK));
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY,
 			ContentLayoutTestUtil.getThemeDisplay(
@@ -171,6 +187,61 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 					_portal.getControlPanelPlid(_group.getCompanyId()))));
 
 		return mockHttpServletRequest;
+	}
+
+	private void _testExecuteWithoutInfoItemPermissionProvider()
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM, RandomTestUtil.randomBytes(),
+			null, null, null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
+			_group.getGroupId(), StringPool.BLANK,
+			_portal.getClassNameId(DLFileEntry.class),
+			fileEntry.getFileEntryId(), RandomTestUtil.randomString(),
+			_portal.getClassNameId(FragmentEntryLink.class), layout.getPlid(),
+			new ServiceContext());
+
+		JSONObject jsonObject = _execute(
+			DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+
+		JSONArray jsonArray = jsonObject.getJSONArray("usages");
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, DLFileEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(fileEntry.getFileEntryId()), ActionKeys.VIEW);
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.SITE_MEMBER, DLFileEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(fileEntry.getFileEntryId()), ActionKeys.VIEW);
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_user));
+
+			jsonObject = _execute(
+				DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+
+			jsonArray = jsonObject.getJSONArray("usages");
+
+			Assert.assertEquals(0, jsonArray.length());
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
 	}
 
 	private void _testExecuteWithoutLayoutViewPermission() throws Exception {
@@ -309,6 +380,9 @@ public class GetLayoutClassedModelUsagesStrutsActionTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
 
 	@Inject(filter = "path=/portal/get_layout_classed_model_usages")
 	private StrutsAction _getLayoutClassedModelUsages;
