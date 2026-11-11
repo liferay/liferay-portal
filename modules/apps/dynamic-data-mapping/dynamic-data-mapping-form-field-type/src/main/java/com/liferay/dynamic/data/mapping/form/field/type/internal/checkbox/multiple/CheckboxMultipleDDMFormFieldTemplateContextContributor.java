@@ -123,13 +123,11 @@ public class CheckboxMultipleDDMFormFieldTemplateContextContributor
 		CheckboxMultipleDDMFormFieldContextHelper
 			checkboxMultipleDDMFormFieldContextHelper =
 				new CheckboxMultipleDDMFormFieldContextHelper(
-					jsonFactory,
 					getDDMFormFieldOptions(
 						ddmFormField, ddmFormFieldRenderingContext),
 					ddmFormFieldRenderingContext.getLocale());
 
-		return checkboxMultipleDDMFormFieldContextHelper.getOptions(
-			ddmFormFieldRenderingContext);
+		return checkboxMultipleDDMFormFieldContextHelper.getOptions();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

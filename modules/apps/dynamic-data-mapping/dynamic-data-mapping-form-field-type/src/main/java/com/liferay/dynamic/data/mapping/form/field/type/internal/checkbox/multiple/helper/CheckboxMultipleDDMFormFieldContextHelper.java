@@ -7,8 +7,6 @@ package com.liferay.dynamic.data.mapping.form.field.type.internal.checkbox.multi
 
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
-import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.ArrayList;
@@ -21,17 +19,13 @@ import java.util.Locale;
 public class CheckboxMultipleDDMFormFieldContextHelper {
 
 	public CheckboxMultipleDDMFormFieldContextHelper(
-		JSONFactory jsonFactory, DDMFormFieldOptions ddmFormFieldOptions,
-		Locale locale) {
+		DDMFormFieldOptions ddmFormFieldOptions, Locale locale) {
 
-		_jsonFactory = jsonFactory;
 		_ddmFormFieldOptions = ddmFormFieldOptions;
 		_locale = locale;
 	}
 
-	public List<Object> getOptions(
-		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
-
+	public List<Object> getOptions() {
 		List<Object> options = new ArrayList<>();
 
 		for (String optionValue : _ddmFormFieldOptions.getOptionsValues()) {
@@ -56,7 +50,6 @@ public class CheckboxMultipleDDMFormFieldContextHelper {
 	}
 
 	private final DDMFormFieldOptions _ddmFormFieldOptions;
-	private final JSONFactory _jsonFactory;
 	private final Locale _locale;
 
 }
