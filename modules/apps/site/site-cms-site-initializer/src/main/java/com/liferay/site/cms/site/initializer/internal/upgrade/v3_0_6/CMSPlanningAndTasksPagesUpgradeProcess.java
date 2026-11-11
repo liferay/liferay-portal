@@ -11,21 +11,17 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.structure.LayoutStructure;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -33,7 +29,6 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
@@ -52,10 +47,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Jan Brychta
@@ -96,8 +87,6 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		_waitForLayoutLocalServiceWrapper();
-
 		_companyLocalService.forEachCompanyId(this::_upgradeCompany);
 	}
 
@@ -256,9 +245,8 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 		_setMasterLayout(group, draftLayout);
 		_addTasksFragmentEntryLink(draftLayout);
 
-		layout = _layoutLocalService.copyLayoutContent(draftLayout, layout);
-
 		_setMasterLayout(group, layout);
+		_addTasksFragmentEntryLink(layout);
 
 		_layoutLocalService.updateStatus(
 			serviceContext.getUserId(), draftLayout.getPlid(),
@@ -363,48 +351,6 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
-
-	private void _waitForLayoutLocalServiceWrapper() throws Exception {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		ServiceTracker<ServiceWrapper<?>, ServiceWrapper<?>> serviceTracker =
-			new ServiceTracker<>(
-				bundleContext,
-				FrameworkUtil.createFilter(
-					StringBundler.concat(
-						"(&(component.name=",
-						_CLASS_NAME_LAYOUT_LOCAL_SERVICE_WRAPPER,
-						")(objectClass=", ServiceWrapper.class.getName(),
-						"))")),
-				null);
-
-		serviceTracker.open();
-
-		try {
-			ServiceWrapper<?> serviceWrapper = serviceTracker.waitForService(
-				_LAYOUT_LOCAL_SERVICE_WRAPPER_TIMEOUT);
-
-			if ((serviceWrapper == null) && _log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						_CLASS_NAME_LAYOUT_LOCAL_SERVICE_WRAPPER,
-						" did not activate within ",
-						_LAYOUT_LOCAL_SERVICE_WRAPPER_TIMEOUT,
-						" ms, copying the tasks layout content may fail"));
-			}
-		}
-		finally {
-			serviceTracker.close();
-		}
-	}
-
-	private static final String _CLASS_NAME_LAYOUT_LOCAL_SERVICE_WRAPPER =
-		"com.liferay.layout.internal.service.LayoutLocalServiceWrapper";
-
-	private static final long _LAYOUT_LOCAL_SERVICE_WRAPPER_TIMEOUT = 60000;
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CMSPlanningAndTasksPagesUpgradeProcess.class);
 
 	private final CompanyLocalService _companyLocalService;
 	private final GroupLocalService _groupLocalService;
