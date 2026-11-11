@@ -17,6 +17,7 @@ import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.util.TimeValue;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -63,6 +64,8 @@ public class ClientHttpRequestFactoryUtil {
 		requestConfigBuilder.setResponseTimeout(
 			responseTimeoutMillis, TimeUnit.MILLISECONDS);
 
+		httpClientBuilder.evictExpiredConnections();
+		httpClientBuilder.evictIdleConnections(TimeValue.ofSeconds(30));
 		httpClientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());
 
 		httpClientBuilder.useSystemProperties();
