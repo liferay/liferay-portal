@@ -428,7 +428,6 @@
 		<module name="com.liferay.source.formatter.checkstyle.check.EmptySafeCloseableCheck">
 			<property name="category" value="Styling" />
 			<property name="description" value="Finds empty lambdas used as `SafeCloseable`, which should use `SafeCloseable.EMPTY` instead." />
-			<property name="enabled" value="false" />
 			<message key="safe.closeable.empty.use" value="Use &quot;SafeCloseable.EMPTY&quot; instead of an empty lambda" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.EnumConstantDividerCheck">
