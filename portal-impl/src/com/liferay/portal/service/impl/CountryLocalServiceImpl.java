@@ -313,8 +313,7 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 	}
 
 	private GroupByStep _getGroupByStep(
-			FromStep fromStep, long companyId, Boolean active, String keywords)
-		throws PortalException {
+		FromStep fromStep, long companyId, Boolean active, String keywords) {
 
 		JoinStep joinStep = fromStep.from(
 			CountryTable.INSTANCE
