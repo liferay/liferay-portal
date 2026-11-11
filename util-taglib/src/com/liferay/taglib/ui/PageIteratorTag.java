@@ -58,6 +58,10 @@ public class PageIteratorTag extends IncludeTag {
 		return _portletURL;
 	}
 
+	public int getResultEnd() {
+		return _resultEnd;
+	}
+
 	public String getTarget() {
 		return _target;
 	}
@@ -126,6 +130,10 @@ public class PageIteratorTag extends IncludeTag {
 		_portletURL = portletURL;
 	}
 
+	public void setResultEnd(int resultEnd) {
+		_resultEnd = resultEnd;
+	}
+
 	public void setTarget(String target) {
 		_target = target;
 	}
@@ -155,6 +163,7 @@ public class PageIteratorTag extends IncludeTag {
 		_maxPages = 10;
 		_pages = 0;
 		_portletURL = null;
+		_resultEnd = 0;
 		_target = "_self";
 		_total = 0;
 		_type = "regular";
@@ -207,6 +216,8 @@ public class PageIteratorTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-ui:page-iterator:portletURL", _portletURL);
 		httpServletRequest.setAttribute(
+			"liferay-ui:page-iterator:resultEnd", String.valueOf(_resultEnd));
+		httpServletRequest.setAttribute(
 			"liferay-ui:page-iterator:target", _target);
 		httpServletRequest.setAttribute(
 			"liferay-ui:page-iterator:total", String.valueOf(_total));
@@ -227,6 +238,7 @@ public class PageIteratorTag extends IncludeTag {
 	private int _maxPages = 10;
 	private int _pages;
 	private PortletURL _portletURL;
+	private int _resultEnd;
 	private String _target = "_self";
 	private int _total;
 	private String _type = "regular";
