@@ -80,9 +80,7 @@ public class UpdatePasswordActionUtil {
 		return sb.toString();
 	}
 
-	public static Ticket getTicket(String ticketId, String ticketKey)
-		throws PortalException {
-
+	public static Ticket getTicket(String ticketId, String ticketKey) {
 		if (Validator.isNull(ticketId) || Validator.isNull(ticketKey)) {
 			return null;
 		}
