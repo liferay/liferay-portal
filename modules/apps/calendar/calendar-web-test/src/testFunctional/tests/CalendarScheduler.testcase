@@ -117,7 +117,7 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
-		var siteName = TestCase.getSiteName(siteName = ${siteName});
+		var siteName = "Liferay DXP Site";
 
 		CalendarNavigator.gotoAddEvent();
 

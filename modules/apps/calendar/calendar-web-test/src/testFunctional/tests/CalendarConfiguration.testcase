@@ -325,7 +325,7 @@ definition {
 
 		Navigator.gotoPage(pageName = "Calendar Page");
 
-		CalendarNavigator.gotoAddCurrentSiteCalendars();
+		CalendarNavigator.gotoAddCurrentSiteCalendars(siteName = "Liferay DXP Site");
 
 		Calendar.viewSelectedTimeZone(timeZone = "(UTC +08:00) China Standard Time");
 	}

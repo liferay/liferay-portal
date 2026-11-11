@@ -542,7 +542,7 @@ definition {
 		}
 
 		task ("Then the image appears in the new tab and should be seen without being overflowed") {
-			SelectWindow(value1 = "WC Title - Liferay DXP");
+			SelectWindow(value1 = "WC Title - Liferay DXP Site - Liferay");
 
 			OcularAssertElementImage(
 				locator1 = "PageEditor#CONTENT_PAGE_WEB_CONTENT_CONTENT",

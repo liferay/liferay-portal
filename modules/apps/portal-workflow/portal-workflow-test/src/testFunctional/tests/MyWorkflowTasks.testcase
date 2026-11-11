@@ -219,7 +219,7 @@ definition {
 				key_text = "view",
 				locator1 = "Icon#ANY_LAST");
 
-			SelectWindow(value1 = "title=Pending Orders - Minium - Liferay DXP");
+			SelectWindow(value1 = "title=Pending Orders - Minium - Liferay");
 
 			AssertLocation.assertPartialLocation(value1 = "web/minium/pending-orders");
 		}
