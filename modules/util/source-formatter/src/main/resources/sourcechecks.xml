@@ -1105,7 +1105,7 @@
 			<property name="enabled" value="false" />
 		</check>
 		<check name="MVCRenderCommandViewTemplateCheck">
-			<category name="Miscellaneous" />
+			<category name="Performance" />
 			<description name="Finds MVC render commands that only map `/` to a constant path that the portlet can declare as `view-template`." />
 		</check>
 		<check name="ResourceBundleCheck">
