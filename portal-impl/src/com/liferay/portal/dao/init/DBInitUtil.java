@@ -7,10 +7,12 @@ package com.liferay.portal.dao.init;
 
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.dao.db.DBManagerImpl;
 import com.liferay.portal.dao.jdbc.util.DynamicDataSource;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManager;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataSourceFactoryUtil;
@@ -74,7 +76,14 @@ public class DBInitUtil {
 				defaultDataSourceProperties);
 		}
 
-		DBManagerUtil.setDB(DialectDetector.getDialect(dataSource), dataSource);
+		DBManager dbManager = new DBManagerImpl();
+
+		dbManager.setDB(
+			dbManager.getDB(
+				dbManager.getDBType(DialectDetector.getDialect(dataSource)),
+				dataSource));
+
+		DBManagerUtil.setDBManager(dbManager);
 
 		DBPartitionUtil.checkDatabasePartitionSchemaNamePrefix();
 

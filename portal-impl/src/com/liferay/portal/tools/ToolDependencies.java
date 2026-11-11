@@ -6,6 +6,7 @@
 package com.liferay.portal.tools;
 
 import com.liferay.portal.cache.key.SimpleCacheKeyGenerator;
+import com.liferay.portal.dao.db.DBManagerImpl;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
@@ -18,7 +19,10 @@ import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.cache.PortalCacheManagerProvider;
 import com.liferay.portal.kernel.cache.SingleVMPool;
 import com.liferay.portal.kernel.cache.key.CacheKeyGeneratorUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.DefaultFullNameGenerator;
@@ -28,9 +32,11 @@ import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
+import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 import com.liferay.portal.model.DefaultModelHintsImpl;
@@ -63,6 +69,23 @@ public class ToolDependencies {
 
 	public static void wireBasic() {
 		InitUtil.init();
+
+		DBManagerUtil.setDBManager(new DBManagerImpl());
+
+		if (Validator.isNotNull(PropsValues.HIBERNATE_DIALECT)) {
+			if (_log.isInfoEnabled()) {
+				_log.info("Using dialect " + PropsValues.HIBERNATE_DIALECT);
+			}
+
+			try {
+				DBManagerUtil.setDB(
+					InstanceFactory.newInstance(PropsValues.HIBERNATE_DIALECT),
+					null);
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+			}
+		}
 
 		wireCaches();
 
@@ -162,6 +185,9 @@ public class ToolDependencies {
 
 		resourceActionsUtil.setResourceActions(new ResourceActionsImpl());
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ToolDependencies.class);
 
 	private static class TestMultiVMPool implements MultiVMPool {
 

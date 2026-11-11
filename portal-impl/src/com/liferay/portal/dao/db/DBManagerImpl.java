@@ -18,11 +18,8 @@ import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.InfrastructureUtil;
-import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.spring.hibernate.DialectDetector;
 
 import java.util.EnumMap;
@@ -33,7 +30,6 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.hibernate.dialect.DB2Dialect;
-import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.HSQLDialect;
 import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.dialect.Oracle8iDialect;
@@ -59,25 +55,6 @@ public class DBManagerImpl implements DBManager {
 
 	@Override
 	public DB getDB() {
-		if (_db == null) {
-			try {
-				if (_log.isInfoEnabled()) {
-					_log.info("Using dialect " + PropsValues.HIBERNATE_DIALECT);
-				}
-
-				Dialect dialect = (Dialect)InstanceFactory.newInstance(
-					PropsValues.HIBERNATE_DIALECT);
-
-				setDB(
-					getDB(
-						getDBType(dialect),
-						InfrastructureUtil.getDataSource()));
-			}
-			catch (Exception exception) {
-				_log.error(exception);
-			}
-		}
-
 		return _db;
 	}
 
@@ -136,10 +113,6 @@ public class DBManagerImpl implements DBManager {
 
 	@Override
 	public DBType getDBType() {
-		if (_db == null) {
-			getDB();
-		}
-
 		return _db.getDBType();
 	}
 

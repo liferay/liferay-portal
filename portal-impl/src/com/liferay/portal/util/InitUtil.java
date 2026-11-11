@@ -6,7 +6,6 @@
 package com.liferay.portal.util;
 
 import com.liferay.portal.bean.BeanLocatorImpl;
-import com.liferay.portal.dao.db.DBManagerImpl;
 import com.liferay.portal.dao.init.DBInitUtil;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.bean.BeanLocator;
@@ -199,10 +198,6 @@ public class InitUtil {
 
 		ConfigurationFactoryUtil.setConfigurationFactory(
 			new ConfigurationFactoryImpl());
-
-		// DB manager
-
-		DBManagerUtil.setDBManager(new DBManagerImpl());
 
 		// File
 
