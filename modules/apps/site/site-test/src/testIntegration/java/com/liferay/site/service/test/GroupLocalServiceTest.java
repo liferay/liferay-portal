@@ -19,8 +19,10 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.DuplicateGroupException;
 import com.liferay.portal.kernel.exception.GroupFriendlyURLException;
+import com.liferay.portal.kernel.exception.GroupInheritContentException;
 import com.liferay.portal.kernel.exception.GroupKeyException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.RequiredGroupException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -105,33 +107,25 @@ public class GroupLocalServiceTest {
 	public void testActivatingSiteClearsMaintenanceMode() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
-		Group updatedGroup = _groupLocalService.updateGroup(
-			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
-			group.getDescriptionMap(), group.getType(),
+		Group updatedGroup = _updateGroup(
+			false, group, group.isInheritContent(),
 			UnicodePropertiesBuilder.setProperty(
 				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
 				Boolean.TRUE.toString()
-			).build(
-			).toString(),
-			group.isManualMembership(), group.getMembershipRestriction(),
-			group.getFriendlyURL(), group.isInheritContent(), false,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+			).buildString());
 
 		Assert.assertFalse(updatedGroup.isActive());
 		Assert.assertTrue(updatedGroup.isMaintenanceMode());
 
-		updatedGroup = _groupLocalService.updateGroup(
-			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
-			group.getDescriptionMap(), group.getType(),
-			updatedGroup.getTypeSettings(), group.isManualMembership(),
-			group.getMembershipRestriction(), group.getFriendlyURL(),
-			group.isInheritContent(), true,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+		updatedGroup = _updateGroup(
+			true, group, group.isInheritContent(),
+			updatedGroup.getTypeSettings());
 
 		Assert.assertTrue(updatedGroup.isActive());
 		Assert.assertFalse(updatedGroup.isMaintenanceMode());
 	}
 
+	@FeatureFlag("LPD-82960")
 	@Test
 	public void testAddGroup() throws Exception {
 		String groupName = RandomTestUtil.randomString();
@@ -185,6 +179,16 @@ public class GroupLocalServiceTest {
 			externalReferenceCode, group1.getExternalReferenceCode());
 		Assert.assertEquals(
 			typeSettingsUnicodeProperties, group1.getTypeSettingsProperties());
+
+		group1 = _addGroup(
+			StringPool.BLANK, RandomTestUtil.randomString(),
+			UnicodePropertiesBuilder.setProperty(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+				Boolean.TRUE.toString()
+			).buildString());
+
+		Assert.assertFalse(group1.isActive());
+		Assert.assertTrue(group1.isMaintenanceMode());
 	}
 
 	@Test
@@ -557,17 +561,12 @@ public class GroupLocalServiceTest {
 
 		Assert.assertTrue(group.isActive());
 
-		Group updatedGroup = _groupLocalService.updateGroup(
-			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
-			group.getDescriptionMap(), group.getType(),
+		Group updatedGroup = _updateGroup(
+			true, group, group.isInheritContent(),
 			UnicodePropertiesBuilder.setProperty(
 				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
 				Boolean.TRUE.toString()
-			).build(
-			).toString(),
-			group.isManualMembership(), group.getMembershipRestriction(),
-			group.getFriendlyURL(), group.isInheritContent(), true,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+			).buildString());
 
 		Assert.assertFalse(updatedGroup.isActive());
 		Assert.assertTrue(updatedGroup.isMaintenanceMode());
@@ -691,6 +690,62 @@ public class GroupLocalServiceTest {
 
 			_assertUpdateFriendlyURLRejectsReservedKeywords();
 		}
+	}
+
+	@FeatureFlag("LPD-82960")
+	@Test
+	public void testUpdateGroup() throws Exception {
+		Group parentGroup = GroupTestUtil.addGroup();
+
+		Group group = GroupTestUtil.addGroup(parentGroup.getGroupId());
+
+		Group childGroup = GroupTestUtil.addGroup(group.getGroupId());
+
+		childGroup = _updateGroup(
+			true, childGroup, true, childGroup.getTypeSettings());
+
+		Assert.assertTrue(childGroup.isInheritContent());
+
+		AssertUtils.assertFailure(
+			GroupInheritContentException.class, null,
+			() -> _updateGroup(true, group, true, group.getTypeSettings()));
+		AssertUtils.assertFailure(
+			GroupInheritContentException.class, null,
+			() -> _updateGroup(
+				true, parentGroup, true, parentGroup.getTypeSettings()));
+
+		Group grandchildGroup = GroupTestUtil.addGroup(childGroup.getGroupId());
+
+		AssertUtils.assertFailure(
+			GroupInheritContentException.class, null,
+			() -> _updateGroup(
+				true, grandchildGroup, true,
+				grandchildGroup.getTypeSettings()));
+
+		Group guestGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.GUEST);
+
+		String message = StringBundler.concat(
+			"Site ", guestGroup.getExternalReferenceCode(),
+			" cannot be deactivated because it is a system required site");
+
+		AssertUtils.assertFailure(
+			RequiredGroupException.MustNotDeactivateSystemGroup.class, message,
+			() -> _updateGroup(
+				false, guestGroup, guestGroup.isInheritContent(),
+				guestGroup.getTypeSettings()));
+		AssertUtils.assertFailure(
+			RequiredGroupException.MustNotDeactivateSystemGroup.class, message,
+			() -> _updateGroup(
+				true, guestGroup, guestGroup.isInheritContent(),
+				UnicodePropertiesBuilder.create(
+					true
+				).fastLoad(
+					guestGroup.getTypeSettings()
+				).setProperty(
+					GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+					Boolean.TRUE.toString()
+				).buildString()));
 	}
 
 	private Group _addGroup(String name) throws Exception {
@@ -847,6 +902,19 @@ public class GroupLocalServiceTest {
 					groupFriendlyURLException.getType());
 			}
 		}
+	}
+
+	private Group _updateGroup(
+			boolean active, Group group, boolean inheritContent,
+			String typeSettings)
+		throws Exception {
+
+		return _groupLocalService.updateGroup(
+			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
+			group.getDescriptionMap(), group.getType(), typeSettings,
+			group.isManualMembership(), group.getMembershipRestriction(),
+			group.getFriendlyURL(), inheritContent, active,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 
 	private static final String[] _RESERVED_KEYWORDS = {
