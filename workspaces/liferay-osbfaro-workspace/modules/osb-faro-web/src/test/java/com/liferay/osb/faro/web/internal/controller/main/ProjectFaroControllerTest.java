@@ -7,6 +7,7 @@ package com.liferay.osb.faro.web.internal.controller.main;
 
 import com.liferay.batch.engine.pagination.Page;
 import com.liferay.osb.faro.constants.FaroProjectConstants;
+import com.liferay.osb.faro.engine.client.CerebroEngineClient;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.model.FaroUser;
@@ -28,6 +29,7 @@ import com.liferay.osb.faro.web.internal.exception.FaroValidationException;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ProjectDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ProjectUsageMetricDisplay;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.cache.BasePortalCache;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -53,6 +55,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.mockito.InOrder;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -431,6 +434,50 @@ public class ProjectFaroControllerTest {
 			ReflectionTestUtils.invokeMethod(
 				_projectFaroController, "_getProvisionKey", corpProjectUuid,
 				salesforceAccountId));
+	}
+
+	@Test
+	public void testPatchWithTimeZoneId() throws Exception {
+		CerebroEngineClient cerebroEngineClient = Mockito.mock(
+			CerebroEngineClient.class);
+
+		ReflectionTestUtils.setField(
+			_projectFaroController, "cerebroEngineClient", cerebroEngineClient);
+
+		FaroProjectLocalService faroProjectLocalService = Mockito.mock(
+			FaroProjectLocalService.class);
+
+		ReflectionTestUtils.setField(
+			_projectFaroController, "faroProjectLocalService",
+			faroProjectLocalService);
+
+		FaroProject faroProject = Mockito.mock(FaroProject.class);
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			faroProjectLocalService.getFaroProjectByGroupId(groupId)
+		).thenReturn(
+			faroProject
+		);
+
+		_projectFaroController.patch(
+			StringPool.BLANK, StringPool.BLANK, groupId, StringPool.BLANK,
+			"Europe/Madrid");
+
+		InOrder inOrder = Mockito.inOrder(cerebroEngineClient, faroProject);
+
+		inOrder.verify(
+			faroProject
+		).setTimeZoneId(
+			"Europe/Madrid"
+		);
+
+		inOrder.verify(
+			cerebroEngineClient
+		).updateTimeZone(
+			faroProject
+		);
 	}
 
 	@Test
