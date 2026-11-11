@@ -32,9 +32,8 @@ public class ClusterableAdvice extends ChainableMethodAdvice {
 
 	@Override
 	protected Object afterReturning(
-			AopMethodInvocation aopMethodInvocation, Object[] arguments,
-			Object result)
-		throws Throwable {
+		AopMethodInvocation aopMethodInvocation, Object[] arguments,
+		Object result) {
 
 		if (!ClusterInvokeThreadLocal.isEnabled()) {
 			return result;

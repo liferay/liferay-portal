@@ -62,9 +62,8 @@ public class ClusterableInvokerUtil {
 	}
 
 	public static void invokeOnCluster(
-			Class<? extends ClusterInvokeAcceptor> clusterInvokeAcceptorClass,
-			Object targetObject, Method method, Object[] arguments)
-		throws Throwable {
+		Class<? extends ClusterInvokeAcceptor> clusterInvokeAcceptorClass,
+		Object targetObject, Method method, Object[] arguments) {
 
 		MethodHandler methodHandler = createMethodHandler(
 			clusterInvokeAcceptorClass, targetObject, method, arguments);
