@@ -1148,9 +1148,7 @@ definition {
 
 		Button.clickPublish();
 
-		Navigator.gotoBack();
-
-		Navigator.gotoNavItem(navItem = "Configuration");
+		Workflow.openWorkflowProcessBuilderConfiguration();
 
 		Workflow.configureWorkflow(
 			workflowDefinition = "New Workflow Definition",

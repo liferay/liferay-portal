@@ -244,9 +244,7 @@ definition {
 		}
 
 		task ("and Given that the workflow is configured for blogs") {
-			Navigator.gotoBack();
-
-			Navigator.gotoNavItem(navItem = "Configuration");
+			Workflow.openWorkflowProcessBuilderConfiguration();
 
 			Workflow.configureWorkflow(
 				workflowDefinition = "Multi Task Process",

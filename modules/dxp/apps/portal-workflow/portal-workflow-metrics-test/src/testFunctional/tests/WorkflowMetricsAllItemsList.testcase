@@ -205,9 +205,7 @@ definition {
 
 		Button.clickPublish();
 
-		Navigator.gotoBack();
-
-		Navigator.gotoNavItem(navItem = "Configuration");
+		Workflow.openWorkflowProcessBuilderConfiguration();
 
 		Workflow.configureWorkflow(
 			workflowDefinition = "Multi Task Process",
@@ -250,9 +248,7 @@ definition {
 
 		Button.clickPublish();
 
-		Navigator.gotoBack();
-
-		Navigator.gotoNavItem(navItem = "Configuration");
+		Workflow.openWorkflowProcessBuilderConfiguration();
 
 		Workflow.configureWorkflow(
 			workflowDefinition = "Multi Task Process",
@@ -2290,9 +2286,7 @@ definition {
 
 		Button.clickPublish();
 
-		Navigator.gotoBack();
-
-		Navigator.gotoNavItem(navItem = "Configuration");
+		Workflow.openWorkflowProcessBuilderConfiguration();
 
 		Workflow.configureWorkflow(
 			workflowDefinition = "Similar Single Approver Process",
@@ -2605,9 +2599,7 @@ definition {
 
 		Button.clickPublish();
 
-		Navigator.gotoBack();
-
-		Navigator.gotoNavItem(navItem = "Configuration");
+		Workflow.openWorkflowProcessBuilderConfiguration();
 
 		Workflow.configureWorkflow(
 			workflowDefinition = "Multi Task Process",
@@ -2817,9 +2809,7 @@ definition {
 
 		Button.clickPublish();
 
-		Navigator.gotoBack();
-
-		Navigator.gotoNavItem(navItem = "Configuration");
+		Workflow.openWorkflowProcessBuilderConfiguration();
 
 		Workflow.configureWorkflow(
 			workflowDefinition = "Multi Task Process",
