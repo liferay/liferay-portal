@@ -8,6 +8,7 @@ package com.liferay.journal.web.internal.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
+import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalContentPortletKeys;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
@@ -34,6 +35,8 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -89,7 +92,6 @@ public class UpdateArticleMVCActionCommandTest {
 	}
 
 	@Test
-	@TestInfo("LPS-172561")
 	public void testProcessAction() throws Exception {
 		_processAction(_getMockLiferayPortletActionRequest());
 
@@ -151,31 +153,178 @@ public class UpdateArticleMVCActionCommandTest {
 			portletPreferences.getValue("articleExternalReferenceCode", null));
 		Assert.assertNull(
 			portletPreferences.getValue("groupExternalReferenceCode", null));
+	}
+
+	@Test
+	@TestInfo("LPS-172561")
+	public void testProcessActionWithDuplicatedFriendlyURL() throws Exception {
+		String friendlyURL1 = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
 		_group2 = GroupTestUtil.addGroup();
 
-		JournalArticle journalArticle3 = JournalTestUtil.addArticle(
-			_group2.getGroupId(),
-			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		mockLiferayPortletActionRequest = _getMockLiferayPortletActionRequest(
-			journalArticle2.getArticleId(),
+		_addArticle(
 			HashMapBuilder.put(
-				LocaleUtil.US, journalArticle3.getUrlTitle()
+				LocaleUtil.CHINA, friendlyURL1 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL1 + "-de"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL1 + "-ja"
+			).put(
+				LocaleUtil.SPAIN, friendlyURL1 + "-es"
+			).put(
+				LocaleUtil.US, friendlyURL1
+			).build(),
+			_group2.getGroupId());
+
+		_assertProcessActionWithDuplicatedFriendlyURL(
+			StringBundler.concat(
+				"The content has been published but might cause errors. The ",
+				"URL used in English (United States) already exists in other ",
+				"sites or asset libraries."),
+			HashMapBuilder.put(
+				LocaleUtil.US, friendlyURL1
+			).build());
+		_assertProcessActionWithDuplicatedFriendlyURL(
+			StringBundler.concat(
+				"The content has been published but might cause errors. The ",
+				"URL used in English (United States), Chinese (China) and ",
+				"Japanese (Japan) already exists in other sites or asset ",
+				"libraries."),
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL1 + "-zh"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL1 + "-ja"
+			).put(
+				LocaleUtil.US, friendlyURL1
+			).build());
+		_assertProcessActionWithDuplicatedFriendlyURL(
+			StringBundler.concat(
+				"The content has been published but might cause errors. The ",
+				"URL used in English (United States), Chinese (China), ",
+				"Japanese (Japan) and 1 more translations already exist in ",
+				"other sites or asset libraries."),
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL1 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL1 + "-de"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL1 + "-ja"
+			).put(
+				LocaleUtil.US, friendlyURL1
+			).build());
+		_assertProcessActionWithDuplicatedFriendlyURL(
+			StringBundler.concat(
+				"The content has been published but might cause errors. The ",
+				"URL used in English (United States), Chinese (China), ",
+				"Spanish (Spain) and 2 more translations already exist in ",
+				"other sites or asset libraries."),
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL1 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL1 + "-de"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL1 + "-ja"
+			).put(
+				LocaleUtil.SPAIN, friendlyURL1 + "-es"
+			).put(
+				LocaleUtil.US, friendlyURL1
+			).build());
+		_assertProcessActionWithDuplicatedFriendlyURL(
+			null,
+			HashMapBuilder.put(
+				LocaleUtil.US,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())
 			).build());
 
-		mockLiferayPortletActionRequest.setParameter(
-			"version", String.valueOf(journalArticle2.getVersion()));
+		String friendlyURL2 = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
 
-		_processAction(mockLiferayPortletActionRequest);
+		_addArticle(
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL2 + "-zh"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL2 + "-ja"
+			).put(
+				LocaleUtil.US,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).build(),
+			_group2.getGroupId());
 
-		Assert.assertEquals(
-			"The content has been published but might cause errors. The URL " +
-				"used in English (United States) already exists in other " +
-					"sites or asset libraries.",
-			SessionMessages.get(
-				mockLiferayPortletActionRequest.getHttpServletRequest(),
-				"friendlyURLDuplicated_requestProcessedWarning"));
+		_group3 = GroupTestUtil.addGroup();
+
+		_addArticle(
+			HashMapBuilder.put(
+				LocaleUtil.FRANCE, friendlyURL2 + "-fr"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL2 + "-de"
+			).put(
+				LocaleUtil.SPAIN, friendlyURL2 + "-es"
+			).put(
+				LocaleUtil.US,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).build(),
+			_group3.getGroupId());
+
+		_group4 = GroupTestUtil.addGroup();
+
+		_addArticle(
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL2 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL2 + "-de"
+			).put(
+				LocaleUtil.US, friendlyURL2
+			).build(),
+			_group4.getGroupId());
+
+		_assertProcessActionWithDuplicatedFriendlyURL(
+			StringBundler.concat(
+				"The content has been published but might cause errors. The ",
+				"URL used in Chinese (China), Japanese (Japan) and German ",
+				"(Germany) already exists in other sites or asset libraries."),
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL2 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL2 + "-de"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL2 + "-ja"
+			).put(
+				LocaleUtil.US,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).build());
+		_assertProcessActionWithDuplicatedFriendlyURL(
+			StringBundler.concat(
+				"The content has been published but might cause errors. The ",
+				"URL used in English (United States), Chinese (China) and ",
+				"German (Germany) already exists in other sites or asset ",
+				"libraries."),
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL2 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL2 + "-de"
+			).put(
+				LocaleUtil.US, friendlyURL2
+			).build());
+		_assertProcessActionWithDuplicatedFriendlyURL(
+			StringBundler.concat(
+				"The content has been published but might cause errors. The ",
+				"URL used in English (United States), Spanish (Spain), ",
+				"Japanese (Japan) and 2 more translations already exist in ",
+				"other sites or asset libraries."),
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, StringPool.BLANK
+			).put(
+				LocaleUtil.FRANCE, friendlyURL2 + "-fr"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL2 + "-de"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL2 + "-ja"
+			).put(
+				LocaleUtil.SPAIN, friendlyURL2 + "-es"
+			).put(
+				LocaleUtil.US, friendlyURL2
+			).build());
 	}
 
 	@Test
@@ -197,6 +346,61 @@ public class UpdateArticleMVCActionCommandTest {
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
+
+	private JournalArticle _addArticle(
+			Map<Locale, String> friendlyURLMap, long groupId)
+		throws Exception {
+
+		Map<Locale, String> contentMap = HashMapBuilder.put(
+			LocaleUtil.US, RandomTestUtil.randomString()
+		).build();
+
+		return JournalTestUtil.addArticle(
+			null, groupId, JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, null, true,
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.FRANCE, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.GERMANY, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.JAPAN, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.SPAIN, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			contentMap, friendlyURLMap, contentMap, null, LocaleUtil.US, null,
+			null, false, true,
+			ServiceContextTestUtil.getServiceContext(groupId));
+	}
+
+	private void _assertProcessActionWithDuplicatedFriendlyURL(
+			String expectedFriendlyURLDuplicatedWarningMessage,
+			Map<Locale, String> friendlyURLMap)
+		throws Exception {
+
+		_processAction(_getMockLiferayPortletActionRequest());
+
+		JournalArticle journalArticle =
+			_journalArticleLocalService.fetchArticleByUrlTitle(
+				_group1.getGroupId(), "title");
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest(
+				journalArticle.getArticleId(), friendlyURLMap);
+
+		_processAction(mockLiferayPortletActionRequest);
+
+		Assert.assertEquals(
+			expectedFriendlyURLDuplicatedWarningMessage,
+			SessionMessages.get(
+				mockLiferayPortletActionRequest.getHttpServletRequest(),
+				"friendlyURLDuplicated_requestProcessedWarning"));
+
+		_journalArticleLocalService.deleteArticles(_group1.getGroupId());
+	}
 
 	private MockMultipartHttpServletRequest
 		_createMockMultipartHttpServletRequest() {
@@ -374,6 +578,12 @@ public class UpdateArticleMVCActionCommandTest {
 
 	@DeleteAfterTestRun
 	private Group _group2;
+
+	@DeleteAfterTestRun
+	private Group _group3;
+
+	@DeleteAfterTestRun
+	private Group _group4;
 
 	@Inject
 	private JournalArticleLocalService _journalArticleLocalService;
