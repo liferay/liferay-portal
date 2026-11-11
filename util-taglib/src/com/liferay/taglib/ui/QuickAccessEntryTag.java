@@ -29,9 +29,6 @@ public class QuickAccessEntryTag extends BaseBodyTagSupport implements BodyTag {
 		try {
 			return processEndTag();
 		}
-		catch (Exception exception) {
-			throw new JspException(exception);
-		}
 		finally {
 			_label = null;
 			_onClick = null;
@@ -60,7 +57,7 @@ public class QuickAccessEntryTag extends BaseBodyTagSupport implements BodyTag {
 		return _START_PAGE;
 	}
 
-	protected int processEndTag() throws Exception {
+	protected int processEndTag() {
 		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)pageContext.getRequest();
 
