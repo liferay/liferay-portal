@@ -218,7 +218,9 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			_addUserWithRegularRole(RoleConstants.CMS_ADMINISTRATOR));
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-85946"))
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-82960"), @FeatureFlag("LPD-85946")}
+	)
 	@LazyReferencing
 	@Override
 	@Test
@@ -248,6 +250,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testPostSiteWithInheritLocales();
 		_testPostSiteWithLocalizedDescription();
 		_testPostSiteWithLocalizedName();
+		_testPostSiteWithMaintenanceMode();
 		_testPostSiteWithNondefaultLocales();
 		_testPostSiteWithParentSiteExternalReferenceCode();
 		_testPostSiteWithSelectedSitesOnExport();
@@ -258,7 +261,9 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testPostSiteWithoutAuthentication();
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-85946"))
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-82960"), @FeatureFlag("LPD-85946")}
+	)
 	@LazyReferencing
 	@Override
 	@Test
@@ -271,6 +276,8 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testPutSiteWithCreatorWithoutUpdatePermissionOnImport();
 		_testPutSiteWithExcludedTypeSettings();
 		_testPutSiteWithInheritContent();
+		_testPutSiteWithMaintenanceMode();
+		_testPutSiteWithMaintenanceModeAndSystemSite();
 		_testPutSiteWithParentSiteExternalReferenceCode();
 		_testPutSiteWithoutUpdatePermission();
 	}
@@ -1498,6 +1505,33 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		Assert.assertEquals(name2, nameMap.get("pt-BR"));
 	}
 
+	private void _testPostSiteWithMaintenanceMode() throws Exception {
+		Site randomSite = randomSite();
+
+		randomSite.setActive(true);
+
+		Site postSite = _testPostSite_addSite(randomSite);
+
+		Assert.assertTrue(postSite.getActive());
+		Assert.assertNull(postSite.getMaintenanceMode());
+
+		randomSite = randomSite();
+
+		randomSite.setActive(true);
+		randomSite.setMaintenanceMode(true);
+
+		postSite = _testPostSite_addSite(randomSite);
+
+		Assert.assertFalse(postSite.getActive());
+		Assert.assertTrue(postSite.getMaintenanceMode());
+
+		Site getSite = siteResource.getSite(
+			postSite.getExternalReferenceCode());
+
+		Assert.assertFalse(getSite.getActive());
+		Assert.assertTrue(getSite.getMaintenanceMode());
+	}
+
 	private void _testPostSiteWithNondefaultLocales() throws Exception {
 		Site site = randomSite();
 
@@ -2282,6 +2316,81 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			randomSite.getExternalReferenceCode(), randomSite);
 
 		Assert.assertFalse(putSite.getInheritContent());
+	}
+
+	private void _testPutSiteWithMaintenanceMode() throws Exception {
+		Site randomSite = randomSite();
+
+		randomSite.setActive(true);
+
+		Site postSite = _testPostSite_addSite(randomSite);
+
+		randomSite.setExternalReferenceCode(
+			postSite.getExternalReferenceCode());
+
+		randomSite.setMaintenanceMode(true);
+
+		Site putSite = siteResource.putSite(
+			randomSite.getExternalReferenceCode(), randomSite);
+
+		Assert.assertFalse(putSite.getActive());
+		Assert.assertTrue(putSite.getMaintenanceMode());
+
+		putSite = siteResource.putSite(
+			randomSite.getExternalReferenceCode(), randomSite);
+
+		Assert.assertTrue(putSite.getActive());
+		Assert.assertNull(putSite.getMaintenanceMode());
+
+		randomSite.setActive(false);
+
+		putSite = siteResource.putSite(
+			randomSite.getExternalReferenceCode(), randomSite);
+
+		Assert.assertFalse(putSite.getActive());
+		Assert.assertTrue(putSite.getMaintenanceMode());
+
+		randomSite.setMaintenanceMode(false);
+
+		putSite = siteResource.putSite(
+			randomSite.getExternalReferenceCode(), randomSite);
+
+		Assert.assertFalse(putSite.getActive());
+		Assert.assertNull(putSite.getMaintenanceMode());
+	}
+
+	private void _testPutSiteWithMaintenanceModeAndSystemSite()
+		throws Exception {
+
+		Group guestGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.GUEST);
+
+		try {
+			siteResource.putSite(
+				guestGroup.getExternalReferenceCode(),
+				new Site() {
+					{
+						active = true;
+						externalReferenceCode =
+							guestGroup.getExternalReferenceCode();
+						maintenanceMode = true;
+						name = GroupConstants.GUEST;
+					}
+				});
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("METHOD_NOT_ALLOWED", problem.getStatus());
+			Assert.assertEquals(
+				String.format(
+					"Site %s cannot be deactivated because it is a system " +
+						"required site",
+					guestGroup.getExternalReferenceCode()),
+				problem.getTitle());
+		}
 	}
 
 	private void _testPutSiteWithParentSiteExternalReferenceCode()
