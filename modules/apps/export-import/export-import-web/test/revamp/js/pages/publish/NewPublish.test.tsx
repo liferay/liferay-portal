@@ -19,6 +19,7 @@ import '@testing-library/jest-dom';
 import {NewPublish} from '../../../../../src/main/resources/META-INF/resources/revamp/js/pages/publish/NewPublish';
 import {
 	PublishProcessRequest,
+	RemoteConnection,
 	ScheduledPublishProcess,
 	ScheduledPublishProcessRequest,
 } from '../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportProcess';
@@ -72,6 +73,14 @@ const SCHEDULED_PUBLISH_PROCESS: ScheduledPublishProcess = {
 	name: 'Weekly Content Sync',
 	scheduleStartDate: FUTURE_DATE.toISOString(),
 	scheduledPublishProcessRequest: SCHEDULED_PUBLISH_PROCESS_REQUEST,
+};
+
+const REMOTE_CONNECTION: RemoteConnection = {
+	address: 'remote.example.com',
+	pathContext: '/portal',
+	port: 8080,
+	secureConnection: false,
+	siteId: 12345,
 };
 
 const DEFAULT_PROPS = {
@@ -228,6 +237,130 @@ describe('NewPublish', () => {
 		expect(
 			screen.getByRole('button', {name: /publish-to-live/i})
 		).toBeDisabled();
+	});
+
+	it('publishes to the remote live with the edited connection', async () => {
+		renderComponent({remoteConnection: REMOTE_CONNECTION});
+
+		await fillRequiredFields();
+
+		expect(screen.getByLabelText(/remote-host-ip/)).toHaveValue(
+			'remote.example.com'
+		);
+		expect(screen.getByLabelText(/remote-path-context/)).toHaveValue(
+			'/portal'
+		);
+		expect(screen.getByLabelText(/remote-port/)).toHaveValue(8080);
+		expect(screen.getByLabelText(/remote-site-id/)).toHaveValue(12345);
+
+		const secureConnectionCheckbox = screen.getByLabelText(
+			/use-a-secure-network-connection/
+		);
+
+		expect(secureConnectionCheckbox).not.toBeChecked();
+
+		await user.click(secureConnectionCheckbox);
+
+		expect(secureConnectionCheckbox).toBeChecked();
+
+		const addressField = screen.getByLabelText(/remote-host-ip/);
+
+		await user.clear(addressField);
+		await user.click(addressField);
+		await user.paste('other.example.com');
+
+		await user.click(
+			screen.getByRole('button', {name: /publish-to-remote-live/i})
+		);
+
+		await waitFor(() => {
+			expect(getPublishProcessCall()).toBeDefined();
+		});
+
+		const body = JSON.parse(getPublishProcessCall()![1]!.body as string);
+
+		expect(body.remoteConnection).toEqual({
+			address: 'other.example.com',
+			pathContext: '/portal',
+			port: 8080,
+			secureConnection: true,
+			siteId: 12345,
+		});
+	});
+
+	it('names the remote live in the schedule button', async () => {
+		renderComponent({remoteConnection: REMOTE_CONNECTION});
+
+		await fillRequiredFields();
+
+		await user.click(
+			screen.getByRole('radio', {name: /schedule-for-later/})
+		);
+
+		expect(
+			screen.getByRole('button', {
+				name: /schedule-publication-to-remote-live/i,
+			})
+		).toBeInTheDocument();
+	});
+
+	it('clears the required error once a connection field is corrected', async () => {
+		renderComponent({remoteConnection: REMOTE_CONNECTION});
+
+		await fillRequiredFields();
+
+		const siteIdField = screen.getByLabelText(/remote-site-id/);
+
+		await user.clear(siteIdField);
+		await user.tab();
+
+		expect(
+			await screen.findByText('this-field-is-required')
+		).toBeInTheDocument();
+
+		await user.type(siteIdField, '54321');
+
+		await waitFor(() => {
+			expect(
+				screen.queryByText('this-field-is-required')
+			).not.toBeInTheDocument();
+		});
+	});
+
+	it('seeds the connection of the edited remote schedule', async () => {
+		mockAPIRoutes({
+			scheduledPublishProcess: {
+				...SCHEDULED_PUBLISH_PROCESS,
+				scheduledPublishProcessRequest: {
+					...SCHEDULED_PUBLISH_PROCESS_REQUEST,
+					publishProcessRequest: {
+						...PUBLISH_PROCESS_REQUEST,
+						remoteConnection: {
+							address: 'saved.example.com',
+							pathContext: '/o',
+							port: 443,
+							secureConnection: true,
+							siteId: 98765,
+						},
+					},
+				},
+			},
+		});
+
+		renderComponent({
+			remoteConnection: REMOTE_CONNECTION,
+			scheduledPublishProcessId: SCHEDULED_PUBLISH_PROCESS.id,
+		});
+
+		expect(await screen.findByLabelText(/remote-host-ip/)).toHaveValue(
+			'saved.example.com'
+		);
+		expect(screen.getByLabelText(/remote-path-context/)).toHaveValue('/o');
+		expect(screen.getByLabelText(/remote-port/)).toHaveValue(443);
+		expect(screen.getByLabelText(/remote-site-id/)).toHaveValue(98765);
+		expect(
+			screen.getByLabelText(/use-a-secure-network-connection/)
+		).toBeChecked();
 	});
 
 	it('selects the schedule option when it is the default', async () => {

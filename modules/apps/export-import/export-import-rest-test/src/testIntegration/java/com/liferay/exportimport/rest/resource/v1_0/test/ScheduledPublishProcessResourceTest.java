@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.exportimport.changeset.constants.ChangesetPortletKeys;
+import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
@@ -23,12 +24,14 @@ import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerChoice;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerControl;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerTreeSelection;
 import com.liferay.exportimport.rest.client.dto.v1_0.PublishProcessRequest;
+import com.liferay.exportimport.rest.client.dto.v1_0.RemoteConnection;
 import com.liferay.exportimport.rest.client.dto.v1_0.ScheduledPublishProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.ScheduledPublishProcessRequest;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.pagination.Pagination;
 import com.liferay.exportimport.rest.client.resource.v1_0.ScheduledPublishProcessResource;
+import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.petra.string.StringPool;
@@ -112,6 +115,8 @@ public class ScheduledPublishProcessResourceTest
 				scheduledPublishProcess.getId(),
 				remainingScheduledPublishProcess.getId());
 		}
+
+		_testDeleteSiteScheduledPublishProcessWithRemoteStaging();
 	}
 
 	@Override
@@ -158,6 +163,8 @@ public class ScheduledPublishProcessResourceTest
 		Assert.assertNull(publishProcessRequest.getDateFilter());
 		Assert.assertEquals(
 			scheduledPublishProcess.getName(), publishProcessRequest.getName());
+
+		_testGetSiteScheduledPublishProcessWithRemoteStaging();
 	}
 
 	@Override
@@ -189,6 +196,7 @@ public class ScheduledPublishProcessResourceTest
 		_testPostSiteScheduledPublishProcessWithInvalidDateRange();
 		_testPostSiteScheduledPublishProcessWithInvalidTimeZoneId();
 		_testPostSiteScheduledPublishProcessWithOneTimeCronExpression();
+		_testPostSiteScheduledPublishProcessWithRemoteConnection();
 		_testPostSiteScheduledPublishProcessWithTreeSelection();
 		_testPostSiteScheduledPublishProcessWithoutCronExpression();
 		_testPostSiteScheduledPublishProcessWithoutPublishProcessRequest();
@@ -405,6 +413,83 @@ public class ScheduledPublishProcessResourceTest
 		}
 	}
 
+	private void _testDeleteSiteScheduledPublishProcessWithRemoteStaging()
+		throws Exception {
+
+		ExportImportTestUtil.withRemoteStaging(
+			(stagingGroup, remoteLiveGroup) -> {
+				ScheduledPublishProcess scheduledPublishProcess =
+					_addScheduledPublishProcess(
+						stagingGroup.getExternalReferenceCode(),
+						RandomTestUtil.randomString());
+
+				assertHttpResponseStatusCode(
+					204,
+					scheduledPublishProcessResource.
+						deleteSiteScheduledPublishProcessHttpResponse(
+							stagingGroup.getExternalReferenceCode(),
+							scheduledPublishProcess.getId()));
+
+				Page<ScheduledPublishProcess> page =
+					scheduledPublishProcessResource.
+						getSiteScheduledPublishProcessesPage(
+							stagingGroup.getExternalReferenceCode(), null,
+							Pagination.of(1, 10), null);
+
+				Assert.assertEquals(0, page.getTotalCount());
+			});
+	}
+
+	private void _testGetSiteScheduledPublishProcessWithRemoteStaging()
+		throws Exception {
+
+		ExportImportTestUtil.withRemoteStaging(
+			(stagingGroup, remoteLiveGroup) -> {
+				ScheduledPublishProcess scheduledPublishProcess =
+					_addScheduledPublishProcess(
+						stagingGroup.getExternalReferenceCode(),
+						RandomTestUtil.randomString());
+
+				ExportImportConfiguration exportImportConfiguration =
+					_exportImportConfigurationLocalService.
+						getExportImportConfiguration(
+							scheduledPublishProcess.getId());
+
+				Assert.assertEquals(
+					ExportImportConfigurationConstants.
+						TYPE_SCHEDULED_PUBLISH_LAYOUT_REMOTE,
+					exportImportConfiguration.getType());
+
+				ScheduledPublishProcess getScheduledPublishProcess =
+					scheduledPublishProcessResource.
+						getSiteScheduledPublishProcess(
+							stagingGroup.getExternalReferenceCode(),
+							scheduledPublishProcess.getId());
+
+				ScheduledPublishProcessRequest scheduledPublishProcessRequest =
+					getScheduledPublishProcess.
+						getScheduledPublishProcessRequest();
+
+				PublishProcessRequest publishProcessRequest =
+					scheduledPublishProcessRequest.getPublishProcessRequest();
+
+				RemoteConnection remoteConnection =
+					publishProcessRequest.getRemoteConnection();
+
+				Assert.assertEquals("localhost", remoteConnection.getAddress());
+				Assert.assertEquals(
+					PortalUtil.getPathContext(),
+					remoteConnection.getPathContext());
+				Assert.assertEquals(
+					Integer.valueOf(PortalUtil.getPortalServerPort(false)),
+					remoteConnection.getPort());
+				Assert.assertFalse(remoteConnection.getSecureConnection());
+				Assert.assertEquals(
+					Long.valueOf(remoteLiveGroup.getGroupId()),
+					remoteConnection.getSiteId());
+			});
+	}
+
 	private void _testPostSiteScheduledPublishProcessWithDateFilter()
 		throws Exception {
 
@@ -575,6 +660,43 @@ public class ScheduledPublishProcessResourceTest
 			calendar.getTime(), scheduledPublishProcess.getNextFireDate());
 		Assert.assertEquals(
 			calendar.getTime(), scheduledPublishProcess.getScheduleStartDate());
+	}
+
+	private void _testPostSiteScheduledPublishProcessWithRemoteConnection()
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			ScheduledPublishProcessRequest scheduledPublishProcessRequest =
+				new ScheduledPublishProcessRequest() {
+					{
+						cronExpression = _CRON_EXPRESSION;
+						publishProcessRequest = _toPublishProcessRequest(
+							RandomTestUtil.randomString());
+						timeZoneId = "UTC";
+					}
+				};
+
+			PublishProcessRequest publishProcessRequest =
+				scheduledPublishProcessRequest.getPublishProcessRequest();
+
+			publishProcessRequest.setRemoteConnection(
+				new RemoteConnection() {
+					{
+						siteId = RandomTestUtil.randomLong();
+					}
+				});
+
+			assertHttpResponseStatusCode(
+				400,
+				scheduledPublishProcessResource.
+					postSiteScheduledPublishProcessHttpResponse(
+						testGroup.getExternalReferenceCode(),
+						scheduledPublishProcessRequest));
+		}
 	}
 
 	private void _testPostSiteScheduledPublishProcessWithTreeSelection()

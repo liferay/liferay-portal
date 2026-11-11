@@ -13,8 +13,11 @@ import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
+import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.background.task.model.BackgroundTask;
@@ -25,10 +28,15 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -353,6 +361,53 @@ public class ExportImportTestUtil {
 			}
 
 			Thread.sleep(pauseTimeUnit.toMillis(pause));
+		}
+	}
+
+	public static void withRemoteStaging(
+			UnsafeBiConsumer<Group, Group, Exception> unsafeBiConsumer)
+		throws Exception {
+
+		Group remoteLiveGroup = GroupTestUtil.addGroup();
+
+		try {
+			Group stagingGroup = GroupTestUtil.addGroup();
+
+			try (SafeCloseable safeCloseable1 =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"TUNNELING_SERVLET_SHARED_SECRET",
+						"F0E1D2C3B4A5968778695A4B3C2D1E0F");
+				SafeCloseable safeCloseable2 =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"TUNNELING_SERVLET_SHARED_SECRET_HEX", true)) {
+
+				ServiceContext serviceContext =
+					ServiceContextTestUtil.getServiceContext(
+						stagingGroup.getGroupId());
+
+				Map<String, Serializable> attributes =
+					serviceContext.getAttributes();
+
+				attributes.putAll(
+					ExportImportConfigurationParameterMapFactoryUtil.
+						buildParameterMap());
+
+				StagingLocalServiceUtil.enableRemoteStaging(
+					TestPropsValues.getUserId(), stagingGroup, false, false,
+					"localhost", PortalUtil.getPortalServerPort(false),
+					PortalUtil.getPathContext(), false,
+					remoteLiveGroup.getGroupId(), serviceContext);
+
+				unsafeBiConsumer.accept(
+					GroupLocalServiceUtil.getGroup(stagingGroup.getGroupId()),
+					remoteLiveGroup);
+			}
+			finally {
+				GroupTestUtil.deleteGroup(stagingGroup);
+			}
+		}
+		finally {
+			GroupTestUtil.deleteGroup(remoteLiveGroup);
 		}
 	}
 
