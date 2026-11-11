@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ReleaseInfo;
@@ -43,11 +44,10 @@ import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
  */
 public class DBInitUtil {
 
-	public static DataSource getDataSource() {
-		return _dataSource;
-	}
-
 	public static void init() throws Exception {
+		DataSource dataSource = null;
+		boolean readWriteDataSource = false;
+
 		Properties readDataSourceProperties = PropsUtil.getProperties(
 			"jdbc.read.", true);
 		Properties writeDataSourceProperties = PropsUtil.getProperties(
@@ -56,13 +56,11 @@ public class DBInitUtil {
 		if (!readDataSourceProperties.isEmpty() &&
 			!writeDataSourceProperties.isEmpty()) {
 
-			_readDataSource = DataSourceFactoryUtil.initDataSource(
-				readDataSourceProperties);
-			_writeDataSource = DataSourceFactoryUtil.initDataSource(
-				writeDataSourceProperties);
-
-			_dataSource = new DynamicDataSource(
-				_readDataSource, _writeDataSource);
+			dataSource = new DynamicDataSource(
+				DataSourceFactoryUtil.initDataSource(readDataSourceProperties),
+				DataSourceFactoryUtil.initDataSource(
+					writeDataSourceProperties));
+			readWriteDataSource = true;
 		}
 		else {
 			Properties defaultDataSourceProperties = PropsUtil.getProperties(
@@ -72,30 +70,24 @@ public class DBInitUtil {
 				throw new IllegalStateException("Data source is null");
 			}
 
-			_dataSource = DataSourceFactoryUtil.initDataSource(
+			dataSource = DataSourceFactoryUtil.initDataSource(
 				defaultDataSourceProperties);
 		}
 
-		DBManagerUtil.setDB(
-			DialectDetector.getDialect(_dataSource), _dataSource);
+		DBManagerUtil.setDB(DialectDetector.getDialect(dataSource), dataSource);
 
 		DBPartitionUtil.checkDatabasePartitionSchemaNamePrefix();
 
-		_dataSource = DBPartitionUtil.wrapDataSource(_dataSource);
+		dataSource = DBPartitionUtil.wrapDataSource(dataSource);
 
-		try (Connection connection = _dataSource.getConnection()) {
+		InfrastructureUtil.setDataSource(
+			new LazyConnectionDataSourceProxy(dataSource));
+
+		InfrastructureUtil.setReadWriteDataSource(readWriteDataSource);
+
+		try (Connection connection = dataSource.getConnection()) {
 			_init(DBManagerUtil.getDB(), connection);
 		}
-
-		_dataSource = new LazyConnectionDataSourceProxy(_dataSource);
-	}
-
-	public static boolean isReadWriteDataSource() {
-		if ((_readDataSource != null) && (_writeDataSource != null)) {
-			return true;
-		}
-
-		return false;
 	}
 
 	private static boolean _checkDefaultRelease(Connection connection) {
@@ -294,9 +286,5 @@ public class DBInitUtil {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DBInitUtil.class);
-
-	private static DataSource _dataSource;
-	private static DataSource _readDataSource;
-	private static DataSource _writeDataSource;
 
 }

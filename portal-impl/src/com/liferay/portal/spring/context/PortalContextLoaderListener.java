@@ -270,9 +270,7 @@ public class PortalContextLoaderListener extends ContextLoaderListener {
 			() -> {
 				DBInitUtil.init();
 
-				DataSource dataSource = DBInitUtil.getDataSource();
-
-				InfrastructureUtil.setDataSource(dataSource);
+				DataSource dataSource = InfrastructureUtil.getDataSource();
 
 				return executorService.submit(
 					() -> {

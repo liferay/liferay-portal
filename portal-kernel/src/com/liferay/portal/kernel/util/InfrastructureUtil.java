@@ -40,8 +40,16 @@ public class InfrastructureUtil {
 		}
 	}
 
+	public static boolean isReadWriteDataSource() {
+		return _readWriteDataSource;
+	}
+
 	public static void setDataSource(DataSource dataSource) {
 		_dataSource = dataSource;
+	}
+
+	public static void setReadWriteDataSource(boolean readWriteDataSource) {
+		_readWriteDataSource = readWriteDataSource;
 	}
 
 	public static void setSessionFactory(Object sessionFactory) {
@@ -53,6 +61,7 @@ public class InfrastructureUtil {
 	}
 
 	private static DataSource _dataSource;
+	private static boolean _readWriteDataSource;
 	private static final DefaultNoticeableFuture<Object>
 		_sessionFactoryDefaultNoticeableFuture =
 			new DefaultNoticeableFuture<>();

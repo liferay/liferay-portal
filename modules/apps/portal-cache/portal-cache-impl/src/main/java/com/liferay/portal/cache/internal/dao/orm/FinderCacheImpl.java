@@ -13,7 +13,6 @@ import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.cache.PortalCacheWrapper;
 import com.liferay.portal.cache.TransactionalPortalCache;
-import com.liferay.portal.dao.init.DBInitUtil;
 import com.liferay.portal.kernel.cache.CacheRegistryItem;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.cache.MultiVMPool;
@@ -43,6 +42,7 @@ import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.change.tracking.CTModel;
 import com.liferay.portal.kernel.service.persistence.BasePersistence;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.kernel.util.LRUMap;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
@@ -579,7 +579,7 @@ public class FinderCacheImpl
 		_bundleContext = bundleContext;
 
 		_countMaintenanceEnabled =
-			!DBInitUtil.isReadWriteDataSource() &&
+			!InfrastructureUtil.isReadWriteDataSource() &&
 			GetterUtil.getBoolean(
 				PropsUtil.get(
 					PropsKeys.

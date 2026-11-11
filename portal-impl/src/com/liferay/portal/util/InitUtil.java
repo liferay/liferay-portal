@@ -263,9 +263,7 @@ public class InitUtil {
 
 			DBInitUtil.init();
 
-			DataSource dataSource = DBInitUtil.getDataSource();
-
-			InfrastructureUtil.setDataSource(dataSource);
+			DataSource dataSource = InfrastructureUtil.getDataSource();
 
 			PortalHibernateConfiguration portalHibernateConfiguration =
 				new PortalHibernateConfiguration();
