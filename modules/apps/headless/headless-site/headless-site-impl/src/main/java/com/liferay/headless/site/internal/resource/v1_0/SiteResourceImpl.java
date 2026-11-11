@@ -274,11 +274,17 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			ServiceContextThreadLocal.pushServiceContext(
 				_getServiceContext(group));
 
-			SiteInitializer siteInitializer = _siteInitializerFactory.create(
-				new File(tempFolder, "site-initializer"),
-				group.getName(LocaleUtil.getDefault()));
+			try {
+				SiteInitializer siteInitializer =
+					_siteInitializerFactory.create(
+						new File(tempFolder, "site-initializer"),
+						group.getName(LocaleUtil.getDefault()));
 
-			siteInitializer.initialize(group.getGroupId());
+				siteInitializer.initialize(group.getGroupId());
+			}
+			finally {
+				ServiceContextThreadLocal.popServiceContext();
+			}
 		}
 		catch (Exception exception) {
 
@@ -291,8 +297,6 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		finally {
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 			PrincipalThreadLocal.setName(name);
-
-			ServiceContextThreadLocal.popServiceContext();
 
 			tempFolder.delete();
 		}
@@ -364,7 +368,16 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 				_layoutServiceContextHelper.getServiceContextAutoCloseable(
 					contextCompany, contextUser)) {
 
-			return _addGroup(externalReferenceCode, site, _getServiceContext());
+			ServiceContext serviceContext = _getServiceContext();
+
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+			try {
+				return _addGroup(externalReferenceCode, site, serviceContext);
+			}
+			finally {
+				ServiceContextThreadLocal.popServiceContext();
+			}
 		}
 		catch (Exception exception) {
 
@@ -373,9 +386,6 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			PermissionCacheUtil.clearCache(contextUser.getUserId());
 
 			throw exception;
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 
@@ -525,8 +535,6 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			serviceContext.setRequest(contextHttpServletRequest);
 			serviceContext.setUserId(contextUser.getUserId());
 		}
-
-		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 		return serviceContext;
 	}
@@ -717,33 +725,41 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 				_layoutServiceContextHelper.getServiceContextAutoCloseable(
 					contextCompany, contextUser)) {
 
-			Group updatedGroup = _groupLocalService.updateGroup(
-				group.getGroupId(),
-				_getParentGroupId(
-					group, site.getParentSiteExternalReferenceCode(),
-					site.getParentSiteKey()),
-				_getNameMap(site), _getLocalizationMap(site.getDescription()),
-				_getType(site.getMembershipType()),
-				_getTypeSettings(
-					site.getTypeSettings(), group.getTypeSettingsProperties()),
-				_isManualMembership(site.getManualMembership()),
-				_getMembershipRestriction(site.getMembershipRestriction()),
-				site.getFriendlyUrlPath(), false, _isActive(site.getActive()),
-				_getServiceContext());
+			ServiceContext serviceContext = _getServiceContext();
 
-			LiveUsers.joinGroup(
-				contextCompany.getCompanyId(), updatedGroup.getGroupId(),
-				contextUser.getUserId());
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
-			return updatedGroup;
+			try {
+				Group updatedGroup = _groupLocalService.updateGroup(
+					group.getGroupId(),
+					_getParentGroupId(
+						group, site.getParentSiteExternalReferenceCode(),
+						site.getParentSiteKey()),
+					_getNameMap(site),
+					_getLocalizationMap(site.getDescription()),
+					_getType(site.getMembershipType()),
+					_getTypeSettings(
+						site.getTypeSettings(),
+						group.getTypeSettingsProperties()),
+					_isManualMembership(site.getManualMembership()),
+					_getMembershipRestriction(site.getMembershipRestriction()),
+					site.getFriendlyUrlPath(), false,
+					_isActive(site.getActive()), serviceContext);
+
+				LiveUsers.joinGroup(
+					contextCompany.getCompanyId(), updatedGroup.getGroupId(),
+					contextUser.getUserId());
+
+				return updatedGroup;
+			}
+			finally {
+				ServiceContextThreadLocal.popServiceContext();
+			}
 		}
 		catch (Exception exception) {
 			PermissionCacheUtil.clearCache(contextUser.getUserId());
 
 			throw exception;
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 
