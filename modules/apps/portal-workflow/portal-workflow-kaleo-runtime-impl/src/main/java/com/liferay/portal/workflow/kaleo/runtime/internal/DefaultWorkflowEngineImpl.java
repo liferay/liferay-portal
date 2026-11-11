@@ -1013,9 +1013,8 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	private void _updateWorkflowDefinitionLinks(
-			long companyId, KaleoDefinition kaleoDefinition,
-			WorkflowDefinition workflowDefinition)
-		throws PortalException {
+		long companyId, KaleoDefinition kaleoDefinition,
+		WorkflowDefinition workflowDefinition) {
 
 		if (kaleoDefinition == null) {
 			return;
