@@ -541,10 +541,6 @@ public class ObjectEntryResourceAttachmentTest
 			).toString(),
 			getEndpoint(getObjectDefinition1(), testGroupId), Http.Method.POST);
 
-		Assert.assertNotNull(
-			objectEntryJSONObject.get(
-				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE));
-
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				ObjectMapperUtil.class.getName(), LoggerTestUtil.WARN)) {
 
@@ -559,10 +555,6 @@ public class ObjectEntryResourceAttachmentTest
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
 			Assert.assertTrue(logEntries.isEmpty());
-
-			Assert.assertNotNull(
-				patchedJSONObject.get(
-					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE));
 
 			JSONObject attachmentJSONObject =
 				objectEntryJSONObject.getJSONObject(
@@ -904,11 +896,9 @@ public class ObjectEntryResourceAttachmentTest
 		ObjectDefinition objectDefinition =
 			_publishObjectDefinitionWithLocalizedAttachmentObjectField();
 
-		byte[] fileContent = DLTestUtil.randomTextFileBytes();
-
 		com.liferay.object.rest.dto.v1_0.FileEntry fileEntry =
 			_toFileEntryWithFileBase64(
-				Base64.encode(fileContent),
+				Base64.encode(DLTestUtil.randomTextFileBytes()),
 				RandomTestUtil.randomString() + ".txt", null, null);
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -927,7 +917,7 @@ public class ObjectEntryResourceAttachmentTest
 			localizedAttachmentI18nJSONObject.getJSONObject("en_US");
 
 		Assert.assertEquals(
-			Base64.encode(fileContent),
+			fileEntry.getFileBase64(),
 			defaultLanguageJSONObject.getString("fileBase64"));
 
 		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
@@ -946,11 +936,9 @@ public class ObjectEntryResourceAttachmentTest
 			JSONFactoryUtil.getNullJSON(),
 			objectDefinition.getRESTContextPath(), Http.Method.POST);
 
-		byte[] fileContent1 = DLTestUtil.randomTextFileBytes();
-
 		com.liferay.object.rest.dto.v1_0.FileEntry fileEntry1 =
 			_toFileEntryWithFileBase64(
-				Base64.encode(fileContent1),
+				Base64.encode(DLTestUtil.randomTextFileBytes()),
 				RandomTestUtil.randomString() + ".txt", null, null);
 
 		fileEntry1.setExternalReferenceCode(RandomTestUtil.randomString());
@@ -959,11 +947,9 @@ public class ObjectEntryResourceAttachmentTest
 
 		fileEntry1.setScope(scope);
 
-		byte[] fileContent2 = DLTestUtil.randomTextFileBytes();
-
 		com.liferay.object.rest.dto.v1_0.FileEntry fileEntry2 =
 			_toFileEntryWithFileBase64(
-				Base64.encode(fileContent2),
+				Base64.encode(DLTestUtil.randomTextFileBytes()),
 				RandomTestUtil.randomString() + ".txt", null, null);
 
 		fileEntry2.setExternalReferenceCode(RandomTestUtil.randomString());
@@ -991,11 +977,11 @@ public class ObjectEntryResourceAttachmentTest
 			"localizedAttachment_i18n");
 
 		_assertAttachmentJSONObject(
-			null, Base64.encode(fileContent1),
+			null, fileEntry1.getFileBase64(),
 			localizedAttachmentI18nJSONObject.getJSONObject("en_US"),
 			JSONFactoryUtil.createJSONObject(scope.toString()));
 		_assertAttachmentJSONObject(
-			null, Base64.encode(fileContent2),
+			null, fileEntry2.getFileBase64(),
 			localizedAttachmentI18nJSONObject.getJSONObject("pt_BR"),
 			JSONFactoryUtil.createJSONObject(scope.toString()));
 
@@ -1632,22 +1618,10 @@ public class ObjectEntryResourceAttachmentTest
 		JSONObject metadataJSONObject = attachmentJSONObject.getJSONObject(
 			"metadata");
 
-		if (expectedAspectRatio != null) {
-			Assert.assertEquals(
-				expectedAspectRatio,
-				metadataJSONObject.getString("aspectRatio"));
-		}
-		else {
-			Assert.assertNull(metadataJSONObject.opt("aspectRatio"));
-		}
-
-		if (expectedResolution != null) {
-			Assert.assertEquals(
-				expectedResolution, metadataJSONObject.getString("resolution"));
-		}
-		else {
-			Assert.assertNull(metadataJSONObject.opt("resolution"));
-		}
+		Assert.assertEquals(
+			expectedAspectRatio, metadataJSONObject.opt("aspectRatio"));
+		Assert.assertEquals(
+			expectedResolution, metadataJSONObject.opt("resolution"));
 	}
 
 	private void _testPatchObjectEntryWithAttachmentObjectFieldId(

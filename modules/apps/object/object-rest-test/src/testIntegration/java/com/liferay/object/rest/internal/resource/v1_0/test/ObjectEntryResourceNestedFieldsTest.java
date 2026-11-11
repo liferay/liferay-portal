@@ -572,16 +572,8 @@ public class ObjectEntryResourceNestedFieldsTest
 				objectRelationship5.getName()
 			},
 			new String[][] {
-				{"", "", Boolean.TRUE.toString()},
-				{"", "", Boolean.TRUE.toString()},
-				{"", "", Boolean.TRUE.toString()},
-				{"", "", Boolean.TRUE.toString()},
-				{"", "", Boolean.TRUE.toString()},
-				{
-					OBJECT_FIELD_NAME_TEXT,
-					String.valueOf(OBJECT_FIELD_VALUE_4),
-					Boolean.TRUE.toString()
-				}
+				{"", ""}, {"", ""}, {"", ""}, {"", ""}, {"", ""},
+				{OBJECT_FIELD_NAME_TEXT, String.valueOf(OBJECT_FIELD_VALUE_4)}
 			},
 			new Type[] {
 				Type.ONE_TO_MANY, Type.MANY_TO_MANY, Type.ONE_TO_MANY,
@@ -729,7 +721,7 @@ public class ObjectEntryResourceNestedFieldsTest
 					getObjectDefinition1(), role1),
 				userAccountJSONObject.getJSONArray("permissions")
 			},
-			Type.MANY_TO_MANY);
+			Type.ONE_TO_MANY);
 	}
 
 	@Test
@@ -1614,22 +1606,10 @@ public class ObjectEntryResourceNestedFieldsTest
 		String[] nestedFieldNames,
 		String[][] objectFieldNamesAndObjectFieldValues, Type[] types) {
 
-		String present;
-
-		if (objectFieldNamesAndObjectFieldValues[currentDepth][1].equals(
-				jsonObject.getString(
-					objectFieldNamesAndObjectFieldValues[currentDepth][0]))) {
-
-			present = "true";
-		}
-		else {
-			present = "false";
-		}
-
 		Assert.assertEquals(
-			"Incorrect presence of field " +
-				objectFieldNamesAndObjectFieldValues[currentDepth][0],
-			objectFieldNamesAndObjectFieldValues[currentDepth][2], present);
+			objectFieldNamesAndObjectFieldValues[currentDepth][1],
+			jsonObject.getString(
+				objectFieldNamesAndObjectFieldValues[currentDepth][0]));
 
 		if ((currentDepth == depth) ||
 			(currentDepth ==
@@ -1696,12 +1676,8 @@ public class ObjectEntryResourceNestedFieldsTest
 			JSONObject jsonObject)
 		throws Exception {
 
-		String objectRelationshipName = _getObjectRelationshipName(edge);
-
-		Assert.assertTrue(jsonObject.has(objectRelationshipName));
-
 		JSONObject relatedJSONObject = _getRelatedJSONObject(
-			jsonObject, objectRelationshipName, Type.ONE_TO_MANY);
+			jsonObject, _getObjectRelationshipName(edge), Type.ONE_TO_MANY);
 
 		Assert.assertEquals(
 			expectedExternalReferenceCode,

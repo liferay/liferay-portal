@@ -26,7 +26,6 @@ import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -95,34 +94,32 @@ public class ObjectEntryResourceRelationshipTest
 		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			null, getObjectDefinition2().getRESTContextPath(), Http.Method.GET);
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"items",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						objectRelationship1.getName() + "ERC",
+						objectEntry1.getExternalReferenceCode()))
+			).toString(),
+			HTTPTestUtil.invokeToJSONObject(
+				null, getObjectDefinition2().getRESTContextPath(),
+				Http.Method.GET
+			).toString(),
+			JSONCompareMode.LENIENT);
 
-		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
-
-		Assert.assertEquals(1, itemsJSONArray.length());
-
-		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
-
-		Assert.assertEquals(
-			objectEntry1.getExternalReferenceCode(),
-			itemJSONObject.getString(objectRelationship1.getName() + "ERC"));
-
-		jsonObject = getNestedFieldsObjectEntryJSONObject(
+		JSONObject jsonObject = getNestedFieldsObjectEntryJSONObject(
 			null, objectRelationship1.getName(), getObjectDefinition1());
 
-		JSONArray relatedObjectEntriesJSONArray = jsonObject.getJSONArray(
-			objectRelationship1.getName());
-
-		Assert.assertEquals(1, relatedObjectEntriesJSONArray.length());
-
-		JSONObject relatedObjectEntryJSONObject =
-			relatedObjectEntriesJSONArray.getJSONObject(0);
-
-		Assert.assertEquals(
-			objectEntry1.getExternalReferenceCode(),
-			relatedObjectEntryJSONObject.getString(
-				objectRelationship1.getName() + "ERC"));
+		JSONAssert.assertEquals(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					objectRelationship1.getName() + "ERC",
+					objectEntry1.getExternalReferenceCode())
+			).toString(),
+			String.valueOf(
+				jsonObject.getJSONArray(objectRelationship1.getName())),
+			JSONCompareMode.LENIENT);
 	}
 
 	@Test
@@ -171,27 +168,26 @@ public class ObjectEntryResourceRelationshipTest
 			).toString(),
 			getObjectDefinition1().getRESTContextPath(), Http.Method.POST);
 
-		JSONArray customFieldsJSONArray = JSONUtil.getValueAsJSONArray(
-			HTTPTestUtil.invokeToJSONObject(
-				null,
-				getNestedFieldsEndpoint(
-					jsonObject.getLong("id"), objectRelationship1,
-					getObjectDefinition1()),
-				Http.Method.GET),
-			"JSONObject/" + objectRelationship1.getName(),
-			"JSONArray/customFields");
-
-		Assert.assertEquals(1, customFieldsJSONArray.length());
-
 		JSONAssert.assertEquals(
-			JSONUtil.put(
-				"customValue", JSONUtil.put("data", expandoFieldValue)
-			).put(
-				"dataType", "Text"
-			).put(
-				"name", expandoFieldName
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"customValue", JSONUtil.put("data", expandoFieldValue)
+				).put(
+					"dataType", "Text"
+				).put(
+					"name", expandoFieldName
+				)
 			).toString(),
-			String.valueOf(customFieldsJSONArray.getJSONObject(0)),
+			String.valueOf(
+				JSONUtil.getValueAsJSONArray(
+					HTTPTestUtil.invokeToJSONObject(
+						null,
+						getNestedFieldsEndpoint(
+							jsonObject.getLong("id"), objectRelationship1,
+							getObjectDefinition1()),
+						Http.Method.GET),
+					"JSONObject/" + objectRelationship1.getName(),
+					"JSONArray/customFields")),
 			JSONCompareMode.STRICT);
 	}
 
@@ -1032,19 +1028,6 @@ public class ObjectEntryResourceRelationshipTest
 
 		String objectRelationshipName = objectRelationship.getName();
 
-		JSONObject actualJSONObject1 = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
-			).put(
-				objectFieldName, jsonObject2.getLong("id")
-			).put(
-				objectRelationshipERCObjectFieldName,
-				jsonObject2.getString("externalReferenceCode")
-			).put(
-				objectRelationshipName, jsonObject1
-			).toString(),
-			getObjectDefinition2().getRESTContextPath(), Http.Method.POST);
-
 		JSONAssert.assertEquals(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_2)
@@ -1053,16 +1036,28 @@ public class ObjectEntryResourceRelationshipTest
 			).put(
 				objectRelationshipERCObjectFieldName,
 				jsonObject1.getString("externalReferenceCode")
+			).put(
+				objectRelationshipName,
+				JSONUtil.put(
+					"externalReferenceCode",
+					jsonObject1.getString("externalReferenceCode"))
 			).toString(),
-			actualJSONObject1.toString(), JSONCompareMode.LENIENT);
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
+				).put(
+					objectFieldName, jsonObject2.getLong("id")
+				).put(
+					objectRelationshipERCObjectFieldName,
+					jsonObject2.getString("externalReferenceCode")
+				).put(
+					objectRelationshipName, jsonObject1
+				).toString(),
+				getObjectDefinition2().getRESTContextPath(), Http.Method.POST
+			).toString(),
+			JSONCompareMode.LENIENT);
 
-		Assert.assertEquals(
-			jsonObject1.getString("externalReferenceCode"),
-			JSONUtil.getValueAsString(
-				actualJSONObject1, "JSONObject/" + objectRelationshipName,
-				"Object/externalReferenceCode"));
-
-		JSONObject actualJSONObject2 = HTTPTestUtil.invokeToJSONObject(
+		JSONObject actualJSONObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_2, OBJECT_FIELD_VALUE_2
 			).put(
@@ -1077,10 +1072,10 @@ public class ObjectEntryResourceRelationshipTest
 
 		Assert.assertNotEquals(
 			jsonObject1.getLong("id"),
-			actualJSONObject2.getLong(objectFieldName));
+			actualJSONObject.getLong(objectFieldName));
 		Assert.assertNotEquals(
 			jsonObject1.getString("externalReferenceCode"),
-			actualJSONObject2.getString(objectRelationshipERCObjectFieldName));
+			actualJSONObject.getString(objectRelationshipERCObjectFieldName));
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +

@@ -723,8 +723,7 @@ public class ObjectEntryResourcePermissionTest
 							new String[0], role.getName())));
 
 				Assert.assertNotEquals(
-					jsonObject.getString("status"), "FORBIDDEN",
-					jsonObject.getString("status"));
+					"FORBIDDEN", jsonObject.getString("status"));
 			}
 		);
 	}

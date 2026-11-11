@@ -25,7 +25,6 @@ import com.liferay.headless.admin.taxonomy.client.dto.v1_0.TaxonomyCategory;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -103,10 +102,12 @@ public class ObjectEntryResourceCategorizationTest
 		jsonObject = getObjectEntryJSONObject(
 			getObjectDefinition2(), jsonObject.getString("id"));
 
-		JSONArray keywordsJSONArray = jsonObject.getJSONArray("keywords");
-
-		Assert.assertEquals(tagName1, keywordsJSONArray.get(0));
-		Assert.assertEquals(tagName2, keywordsJSONArray.get(1));
+		JSONAssert.assertEquals(
+			JSONUtil.putAll(
+				tagName1, tagName2
+			).toString(),
+			String.valueOf(jsonObject.getJSONArray("keywords")),
+			JSONCompareMode.STRICT);
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -117,11 +118,12 @@ public class ObjectEntryResourceCategorizationTest
 		jsonObject = getObjectEntryJSONObject(
 			getObjectDefinition2(), jsonObject.getString("id"));
 
-		keywordsJSONArray = jsonObject.getJSONArray("keywords");
-
-		Assert.assertEquals(tagName1, keywordsJSONArray.get(0));
-		Assert.assertEquals(tagName2, keywordsJSONArray.get(1));
-		Assert.assertEquals(tagName3, keywordsJSONArray.get(2));
+		JSONAssert.assertEquals(
+			JSONUtil.putAll(
+				tagName1, tagName2, tagName3
+			).toString(),
+			String.valueOf(jsonObject.getJSONArray("keywords")),
+			JSONCompareMode.STRICT);
 
 		AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
 			getObjectDefinition2().getClassName(), jsonObject.getLong("id"));
@@ -250,11 +252,12 @@ public class ObjectEntryResourceCategorizationTest
 		jsonObject = getObjectEntryJSONObject(
 			getObjectDefinition1(), jsonObject.getString("id"));
 
-		JSONArray keywordsJSONArray = jsonObject.getJSONArray("keywords");
-
-		Assert.assertEquals(tagName1, keywordsJSONArray.get(0));
-		Assert.assertEquals(tagName2, keywordsJSONArray.get(1));
-		Assert.assertEquals(tagName3, keywordsJSONArray.get(2));
+		JSONAssert.assertEquals(
+			JSONUtil.putAll(
+				tagName1, tagName2, tagName3
+			).toString(),
+			String.valueOf(jsonObject.getJSONArray("keywords")),
+			JSONCompareMode.STRICT);
 	}
 
 	@Test
@@ -303,9 +306,8 @@ public class ObjectEntryResourceCategorizationTest
 			Http.Method.PATCH);
 
 		_assertTaxonomyCategoryBriefs(
-			jsonObject.getLong("scopeId"),
-			jsonObject.getJSONArray("taxonomyCategoryBriefs"), false,
-			taxonomyCategory1, taxonomyCategory2, taxonomyCategory3);
+			jsonObject, false, taxonomyCategory1, taxonomyCategory2,
+			taxonomyCategory3);
 	}
 
 	@Test
@@ -456,8 +458,7 @@ public class ObjectEntryResourceCategorizationTest
 	}
 
 	private void _assertTaxonomyCategoryBriefs(
-			long groupId, JSONArray jsonArray,
-			boolean withEmbeddedTaxonomyCategory,
+			JSONObject jsonObject, boolean withEmbeddedTaxonomyCategory,
 			TaxonomyCategory... taxonomyCategories)
 		throws Exception {
 
@@ -465,9 +466,11 @@ public class ObjectEntryResourceCategorizationTest
 			JSONUtil.toJSONArray(
 				taxonomyCategories,
 				taxonomyCategory -> _toTaxonomyCategoryBriefJSONObject(
-					groupId, taxonomyCategory, withEmbeddedTaxonomyCategory)
+					jsonObject.getLong("scopeId"), taxonomyCategory,
+					withEmbeddedTaxonomyCategory)
 			).toString(),
-			jsonArray.toString(), JSONCompareMode.NON_EXTENSIBLE);
+			String.valueOf(jsonObject.getJSONArray("taxonomyCategoryBriefs")),
+			JSONCompareMode.NON_EXTENSIBLE);
 	}
 
 	private Map<String, Integer> _getAssetCounts(long assetEntryId) {
@@ -521,9 +524,7 @@ public class ObjectEntryResourceCategorizationTest
 			null, endpoint, Http.Method.GET);
 
 		_assertTaxonomyCategoryBriefs(
-			jsonObject.getLong("scopeId"),
-			jsonObject.getJSONArray("taxonomyCategoryBriefs"),
-			withEmbeddedTaxonomyCategory, taxonomyCategories);
+			jsonObject, withEmbeddedTaxonomyCategory, taxonomyCategories);
 	}
 
 	private void _testPostObjectEntryWithCrossSiteTaxonomyCategories()
