@@ -10,6 +10,7 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
@@ -18,6 +19,7 @@ import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTProcessLocalService;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -25,6 +27,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -97,7 +100,8 @@ public class AssetListEntryAssetEntryRelConstraintResolverTest {
 
 		_assertPublish();
 
-		_assertAssetListEntryAssetEntryRels(1, 2, 0, 3);
+		_assertAssetListEntryAssetEntryRels(
+			_assetListEntryAssetEntryRels, StringPool.BLANK, 1, 2, 0, 3);
 	}
 
 	@Test
@@ -129,7 +133,60 @@ public class AssetListEntryAssetEntryRelConstraintResolverTest {
 
 		_assertPublish();
 
-		_assertAssetListEntryAssetEntryRels(1, 4, 2, 3, 0);
+		_assertAssetListEntryAssetEntryRels(
+			_assetListEntryAssetEntryRels, StringPool.BLANK, 1, 4, 2, 3, 0);
+	}
+
+	@Test
+	public void testResolveConflictWithAudienceEntryERC() throws Exception {
+		String audienceEntryERC = RandomTestUtil.randomString();
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				_assetListEntry.getAssetListEntryId(), audienceEntryERC, null,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		long[] assetEntryIds = new long[_assetListEntryAssetEntryRels.size()];
+
+		for (int i = 0; i < assetEntryIds.length; i++) {
+			AssetListEntryAssetEntryRel assetListEntryAssetEntryRel =
+				_assetListEntryAssetEntryRels.get(i);
+
+			assetEntryIds[i] = assetListEntryAssetEntryRel.getAssetEntryId();
+		}
+
+		_assetListEntryLocalService.addAssetEntrySelections(
+			_assetListEntry.getAssetListEntryId(), assetEntryIds,
+			audienceEntryERC,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels =
+			_assetListEntryAssetEntryRelLocalService.
+				getAssetListEntryAssetEntryRels(
+					_assetListEntry.getAssetListEntryId(), audienceEntryERC,
+					SegmentsEntryConstants.ID_DEFAULT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			_assetListEntryLocalService.moveAssetEntrySelection(
+				_assetListEntry.getAssetListEntryId(), audienceEntryERC, 0, 1);
+		}
+
+		_assetListEntryLocalService.moveAssetEntrySelection(
+			_assetListEntry.getAssetListEntryId(), audienceEntryERC, 2, 1);
+
+		_assertResolvedConflictInfos();
+
+		_assertPublish();
+
+		_assertAssetListEntryAssetEntryRels(
+			_assetListEntryAssetEntryRels, StringPool.BLANK, 0, 1, 2, 3);
+		_assertAssetListEntryAssetEntryRels(
+			assetListEntryAssetEntryRels, audienceEntryERC, 1, 2, 0, 3);
 	}
 
 	@Test
@@ -153,27 +210,31 @@ public class AssetListEntryAssetEntryRelConstraintResolverTest {
 
 		_assertPublish();
 
-		_assertAssetListEntryAssetEntryRels(2, 0, 3);
+		_assertAssetListEntryAssetEntryRels(
+			_assetListEntryAssetEntryRels, StringPool.BLANK, 2, 0, 3);
 	}
 
-	private void _assertAssetListEntryAssetEntryRels(int... indexes) {
-		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels =
+	private void _assertAssetListEntryAssetEntryRels(
+		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels,
+		String audienceEntryERC, int... indexes) {
+
+		List<AssetListEntryAssetEntryRel> actualAssetListEntryAssetEntryRels =
 			_assetListEntryAssetEntryRelLocalService.
 				getAssetListEntryAssetEntryRels(
-					_assetListEntry.getAssetListEntryId(),
+					_assetListEntry.getAssetListEntryId(), audienceEntryERC,
 					SegmentsEntryConstants.ID_DEFAULT, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
 
 		Assert.assertEquals(
-			assetListEntryAssetEntryRels.toString(), indexes.length,
-			assetListEntryAssetEntryRels.size());
+			actualAssetListEntryAssetEntryRels.toString(), indexes.length,
+			actualAssetListEntryAssetEntryRels.size());
 
 		for (int i = 0; i < indexes.length; i++) {
 			AssetListEntryAssetEntryRel assetListEntryAssetEntryRel =
-				assetListEntryAssetEntryRels.get(i);
+				actualAssetListEntryAssetEntryRels.get(i);
 
 			AssetListEntryAssetEntryRel expectedAssetListEntryAssetEntryRel =
-				_assetListEntryAssetEntryRels.get(indexes[i]);
+				assetListEntryAssetEntryRels.get(indexes[i]);
 
 			Assert.assertEquals(
 				expectedAssetListEntryAssetEntryRel.
@@ -218,6 +279,10 @@ public class AssetListEntryAssetEntryRelConstraintResolverTest {
 
 	private final List<AssetListEntryAssetEntryRel>
 		_assetListEntryAssetEntryRels = new ArrayList<>();
+
+	@Inject
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
 
 	@Inject
 	private AssetListEntryLocalService _assetListEntryLocalService;
