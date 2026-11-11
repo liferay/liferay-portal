@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -23,6 +24,8 @@ import com.liferay.site.cms.site.initializer.internal.util.CommentUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.function.Function;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -77,11 +80,25 @@ public class EditContentItemCommentStrutsAction implements StrutsAction {
 				ParamUtil.getString(httpServletRequest, "body"), className1,
 				classPK, _discussionPermission, themeDisplay);
 
+			Function<String, ServiceContext> serviceContextFunction =
+				CommentUtil.getServiceContextFunction(
+					className1, classPK, httpServletRequest);
+
+			if (comment != null) {
+				String previousBody = comment.getBody();
+
+				serviceContextFunction = serviceContextFunction.andThen(
+					serviceContext -> {
+						serviceContext.setAttribute(
+							"previousBody", previousBody);
+
+						return serviceContext;
+					});
+			}
+
 			_commentManager.updateComment(
 				themeDisplay.getUserId(), className1, classPK, commentId, null,
-				body,
-				CommentUtil.getServiceContextFunction(
-					className1, classPK, httpServletRequest));
+				body, serviceContextFunction);
 
 			comment = _commentManager.fetchComment(commentId);
 

@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.service.permission.LayoutPermission;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.Portal;
@@ -80,10 +79,18 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		String[] mentionedUsersScreenNames = _getMentionedUsersScreenNames(
+		Set<String> mentionedUsersScreenNames = _getMentionedUsersScreenNames(
 			userId, className, content);
 
-		if (ArrayUtil.isEmpty(mentionedUsersScreenNames)) {
+		String previousBody = (String)serviceContext.getAttribute(
+			"previousBody");
+
+		if (previousBody != null) {
+			mentionedUsersScreenNames.removeAll(
+				_getMentionedUsersScreenNames(userId, className, previousBody));
+		}
+
+		if (mentionedUsersScreenNames.isEmpty()) {
 			return;
 		}
 
@@ -202,9 +209,11 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 		return StringPool.BLANK;
 	}
 
-	private String[] _getMentionedUsersScreenNames(
+	private Set<String> _getMentionedUsersScreenNames(
 			long userId, String className, String content)
 		throws PortalException {
+
+		Set<String> mentionedUsersScreenNames = new HashSet<>();
 
 		User user = _userLocalService.getUser(userId);
 
@@ -212,8 +221,6 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 			SocialInteractionsConfigurationUtil.
 				getSocialInteractionsConfiguration(
 					user.getCompanyId(), MentionsPortletKeys.MENTIONS);
-
-		Set<String> mentionedUsersScreenNames = new HashSet<>();
 
 		if (FeatureFlagManagerUtil.isEnabled(
 				user.getCompanyId(), "LPD-104086")) {
@@ -251,7 +258,7 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 			}
 		}
 
-		return mentionedUsersScreenNames.toArray(new String[0]);
+		return mentionedUsersScreenNames;
 	}
 
 	private boolean _hasDiscussionViewPermission(
