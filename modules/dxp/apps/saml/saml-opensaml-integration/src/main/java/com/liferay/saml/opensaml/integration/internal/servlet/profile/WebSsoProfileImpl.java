@@ -897,10 +897,7 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 				" including clock skew ", clockSkew));
 	}
 
-	protected void verifyReplay(
-			MessageContext<?> messageContext, Assertion assertion)
-		throws PortalException {
-
+	protected void verifyReplay(Assertion assertion) throws PortalException {
 		Issuer issuer = assertion.getIssuer();
 
 		String idpEntityId = issuer.getValue();
@@ -2319,7 +2316,7 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			TrustEngine<Signature> trustEngine)
 		throws PortalException {
 
-		verifyReplay(messageContext, assertion);
+		verifyReplay(assertion);
 		verifyIssuer(messageContext, assertion.getIssuer());
 		verifyAssertionSignature(
 			httpServletRequest, messageContext, assertion.getSignature(),

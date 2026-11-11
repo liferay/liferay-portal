@@ -1320,11 +1320,6 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 
 		prepareServiceProvider(SP_ENTITY_ID);
 
-		MessageContext<?> spMessageContext =
-			_webSsoProfileImpl.getMessageContext(
-				getMockHttpServletRequest(ACS_URL),
-				new MockHttpServletResponse());
-
 		Assertion assertion = OpenSamlUtil.buildAssertion();
 
 		assertion.setConditions(conditions);
@@ -1347,7 +1342,7 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			null
 		);
 
-		_webSsoProfileImpl.verifyReplay(spMessageContext, assertion);
+		_webSsoProfileImpl.verifyReplay(assertion);
 	}
 
 	@Test
