@@ -118,8 +118,11 @@ public class SearchRequestImplTest {
 				0, searchContext, searchRequestImpl, Integer.MAX_VALUE);
 		}
 
-		searchRequestImpl.setFrom(10);
 		searchRequestImpl.setSize(5);
+
+		_assertWindow(0, searchContext, searchRequestImpl, 5);
+
+		searchRequestImpl.setFrom(10);
 
 		try {
 			searchRequestImpl.setSize(Integer.MAX_VALUE);
