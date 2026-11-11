@@ -245,7 +245,13 @@ public class SearchResultsPortlet extends MVCPortlet {
 
 			int from = GetterUtil.getInteger(searchRequest.getFrom());
 
+			int requestedPaginationStart = paginationStart;
+
 			paginationStart = (from / paginationDelta) + 1;
+
+			searchResultsPortletDisplayContext.setPaginationStartAdjusted(
+				(requestedPaginationStart > 0) &&
+				(requestedPaginationStart != paginationStart));
 		}
 
 		searchResultsPortletDisplayContext.setSearchContainer(
