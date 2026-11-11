@@ -494,7 +494,7 @@ public class ObjectEntryResourceNestedObjectEntriesTest
 		String objectFieldValue) {
 
 		ObjectEntry objectEntry = objectEntryLocalService.fetchObjectEntry(
-			objectEntryJSONObject.getInt("id"));
+			objectEntryJSONObject.getLong("id"));
 
 		Assert.assertEquals(
 			objectFieldValue,

@@ -22,10 +22,10 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -91,8 +91,7 @@ public class ObjectEntryResourceLocalizationTest
 			StringBundler.concat(
 				getObjectDefinition4().getRESTContextPath(), StringPool.SLASH,
 				getLocalizedObjectEntry().getObjectEntryId(),
-				"/translations?sourceLanguageId=en_US",
-				"&targetLanguageIds=es_ES"),
+				"/translations?sourceLanguageId=en_US&targetLanguageIds=es_ES"),
 			null);
 	}
 
@@ -190,11 +189,9 @@ public class ObjectEntryResourceLocalizationTest
 	}
 
 	private int _getTempFilesCount() {
-		File tempFile = FileUtil.createTempFile();
+		File tempDir = new File(SystemProperties.get(SystemProperties.TMP_DIR));
 
-		File parentFile = tempFile.getParentFile();
-
-		return ArrayUtil.getLength(parentFile.listFiles());
+		return ArrayUtil.getLength(tempDir.listFiles());
 	}
 
 	private void _testGetObjectEntriesPageWithLocalizedObjectField(

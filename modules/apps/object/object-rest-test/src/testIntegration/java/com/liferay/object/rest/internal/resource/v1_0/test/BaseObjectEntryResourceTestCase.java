@@ -73,7 +73,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
@@ -99,11 +99,8 @@ import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
-import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
-
-import java.lang.reflect.Method;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -156,30 +153,26 @@ public abstract class BaseObjectEntryResourceTestCase {
 		_listTypeDefinition =
 			listTypeDefinitionLocalService.addListTypeDefinition(
 				null, TestPropsValues.getUserId(),
-				Collections.singletonMap(
-					LocaleUtil.US, RandomTestUtil.randomString()),
-				false, Collections.emptyList(), new ServiceContext());
+				RandomTestUtil.randomLocaleStringMap(LocaleUtil.US), false,
+				Collections.emptyList(), new ServiceContext());
 
 		_listTypeEntry1 = _listTypeEntryLocalService.addListTypeEntry(
 			null, TestPropsValues.getUserId(),
 			_listTypeDefinition.getListTypeDefinitionId(),
 			LIST_TYPE_ENTRY_KEY_1,
-			Collections.singletonMap(
-				LocaleUtil.US, RandomTestUtil.randomString()),
+			RandomTestUtil.randomLocaleStringMap(LocaleUtil.US),
 			_listTypeDefinition.isSystem());
 		_listTypeEntry2 = _listTypeEntryLocalService.addListTypeEntry(
 			null, TestPropsValues.getUserId(),
 			_listTypeDefinition.getListTypeDefinitionId(),
 			LIST_TYPE_ENTRY_KEY_2,
-			Collections.singletonMap(
-				LocaleUtil.US, RandomTestUtil.randomString()),
+			RandomTestUtil.randomLocaleStringMap(LocaleUtil.US),
 			_listTypeDefinition.isSystem());
 		_listTypeEntry3 = _listTypeEntryLocalService.addListTypeEntry(
 			null, TestPropsValues.getUserId(),
 			_listTypeDefinition.getListTypeDefinitionId(),
 			LIST_TYPE_ENTRY_KEY_3,
-			Collections.singletonMap(
-				LocaleUtil.US, RandomTestUtil.randomString()),
+			RandomTestUtil.randomLocaleStringMap(LocaleUtil.US),
 			_listTypeDefinition.isSystem());
 	}
 
@@ -289,7 +282,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 
 		user.setEmailAddressVerified(true);
 
-		user = UserLocalServiceUtil.updateUser(user);
+		user = userLocalService.updateUser(user);
 
 		_users.add(user);
 
@@ -956,8 +949,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 				).indexed(
 					true
 				).labelMap(
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString())
+					RandomTestUtil.randomLocaleStringMap()
 				).localized(
 					true
 				).name(
@@ -967,8 +959,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 				).indexed(
 					true
 				).labelMap(
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString())
+					RandomTestUtil.randomLocaleStringMap()
 				).localized(
 					true
 				).name(
@@ -978,8 +969,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 				).indexed(
 					true
 				).labelMap(
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString())
+					RandomTestUtil.randomLocaleStringMap()
 				).localized(
 					true
 				).name(
@@ -989,8 +979,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 				).indexed(
 					true
 				).labelMap(
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString())
+					RandomTestUtil.randomLocaleStringMap()
 				).localized(
 					true
 				).name(
@@ -1263,8 +1252,7 @@ public abstract class BaseObjectEntryResourceTestCase {
 			Collections.singletonList(
 				new TextObjectFieldBuilder(
 				).labelMap(
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString())
+					RandomTestUtil.randomLocaleStringMap()
 				).localized(
 					true
 				).name(
@@ -1299,16 +1287,12 @@ public abstract class BaseObjectEntryResourceTestCase {
 	}
 
 	protected void setObjectDefinition(
-			ObjectDefinition objectDefinition,
-			ObjectEntryResource objectEntryResource)
-		throws Exception {
+		ObjectDefinition objectDefinition,
+		ObjectEntryResource objectEntryResource) {
 
-		Class<?> clazz = objectEntryResource.getClass();
-
-		Method method = clazz.getMethod(
-			"setObjectDefinition", ObjectDefinition.class);
-
-		method.invoke(objectEntryResource, objectDefinition);
+		ReflectionTestUtil.invoke(
+			objectEntryResource, "setObjectDefinition",
+			new Class<?>[] {ObjectDefinition.class}, objectDefinition);
 	}
 
 	protected static final String ERC_VALUE_1 =

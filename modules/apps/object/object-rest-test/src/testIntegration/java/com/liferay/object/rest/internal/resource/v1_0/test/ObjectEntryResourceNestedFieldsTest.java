@@ -1819,9 +1819,7 @@ public class ObjectEntryResourceNestedFieldsTest
 					key = objectRelationshipName + "." + name;
 				}
 
-				invocations.compute(
-					key,
-					(__, invocation) -> GetterUtil.get(invocation, 0L) + 1);
+				invocations.merge(key, 1L, Long::sum);
 
 				if (StringUtil.equals(name, objectRelationship.getName())) {
 					com.liferay.object.rest.dto.v1_0.ObjectEntry[]
@@ -1992,7 +1990,7 @@ public class ObjectEntryResourceNestedFieldsTest
 			return _atomicInteger.get();
 		}
 
-		private final AtomicInteger _atomicInteger = new AtomicInteger(0);
+		private final AtomicInteger _atomicInteger = new AtomicInteger();
 		private final Stack<AutoCloseable> _autoCloseables = new Stack<>();
 
 	}

@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
@@ -42,13 +41,13 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -229,28 +228,18 @@ public class ObjectEntryResourceValidationTest
 		Map<String, Object> properties,
 		String... objectValidationRuleExternalReferenceCodes) {
 
+		ValidationRequest validationRequest = new ValidationRequest();
+
 		com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
 			new com.liferay.object.rest.dto.v1_0.ObjectEntry();
 
 		objectEntry.setProperties(properties);
 
-		String[] finalObjectValidationRuleExternalReferenceCodes =
-			objectValidationRuleExternalReferenceCodes;
+		validationRequest.setObjectValidationRuleExternalReferenceCodes(
+			objectValidationRuleExternalReferenceCodes);
+		validationRequest.setValues(objectEntry);
 
-		return new ValidationRequest() {
-			{
-				setObjectValidationRuleExternalReferenceCodes(
-					() -> finalObjectValidationRuleExternalReferenceCodes);
-				setValues(() -> objectEntry);
-			}
-		};
-	}
-
-	private void _setUpPermissionThreadLocal(User user) {
-		PrincipalThreadLocal.setName(user.getUserId());
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(user));
+		return validationRequest;
 	}
 
 	private void _testPostValidate(
@@ -310,19 +299,15 @@ public class ObjectEntryResourceValidationTest
 				String.valueOf(getLocalizedObjectEntry().getObjectEntryId()),
 				user.getRoleIds()[0], ActionKeys.ADD_ENTRY);
 
-			_setUpPermissionThreadLocal(user);
+			UserTestUtil.setUser(user);
 
 			String errorScopeKey = StringPool.BLANK;
 
-			if (Validator.isNotNull(scopeKey)) {
-				errorScopeKey = scopeKey;
-
-				if (!Validator.isNumber(scopeKey)) {
-					errorScopeKey = String.valueOf(
-						GroupUtil.getGroupId(
-							TestPropsValues.getCompanyId(), scopeKey,
-							groupLocalService));
-				}
+			if (scopeKey != null) {
+				errorScopeKey = String.valueOf(
+					GroupUtil.getGroupId(
+						TestPropsValues.getCompanyId(), scopeKey,
+						groupLocalService));
 			}
 
 			AssertUtils.assertFailure(
@@ -340,7 +325,7 @@ public class ObjectEntryResourceValidationTest
 						).build(),
 						objectValidationRule1.getExternalReferenceCode())));
 
-			_setUpPermissionThreadLocal(TestPropsValues.getUser());
+			UserTestUtil.setUser(TestPropsValues.getUser());
 
 			AssertUtils.assertFailure(
 				BadRequestException.class, "No values found in body",

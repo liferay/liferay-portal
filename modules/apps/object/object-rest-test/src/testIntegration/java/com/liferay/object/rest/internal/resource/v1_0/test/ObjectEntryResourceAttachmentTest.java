@@ -338,7 +338,7 @@ public class ObjectEntryResourceAttachmentTest
 			FileUtil.getBytes(getClass(), "dependencies/document.pdf"),
 			ContentTypes.APPLICATION_PDF, "pdf");
 
-		DLFileEntry pdfDLFileEntry = _dlFileEntryLocalService.getFileEntry(
+		DLFileEntry pdfDLFileEntry = _dlFileEntryLocalService.getDLFileEntry(
 			pdfFileEntry.getFileEntryId());
 
 		jsonObject = HTTPTestUtil.invokeToJSONObject(
@@ -1040,7 +1040,7 @@ public class ObjectEntryResourceAttachmentTest
 			new ByteArrayInputStream(content), 0, null, null, null,
 			ServiceContextTestUtil.getServiceContext());
 
-		return _dlFileEntryLocalService.getFileEntry(
+		return _dlFileEntryLocalService.getDLFileEntry(
 			fileEntry.getFileEntryId());
 	}
 
@@ -1141,7 +1141,7 @@ public class ObjectEntryResourceAttachmentTest
 			getEndpoint(objectDefinition, testGroupId), Http.Method.POST);
 
 		String endpoint =
-			objectDefinition.getRESTContextPath() + "/" +
+			objectDefinition.getRESTContextPath() + StringPool.SLASH +
 				jsonObject.getLong("id");
 
 		if (useExternalReferenceCode) {
@@ -1380,9 +1380,10 @@ public class ObjectEntryResourceAttachmentTest
 
 				link.setHref(
 					StringBundler.concat(
-						"/documents/", repositoryId, "/", folderId, "/",
-						URLCodec.encodeURL(fileEntry.getName()), "/",
-						dlFileEntry.getUuid(), "?version=",
+						"/documents/", repositoryId, StringPool.SLASH, folderId,
+						StringPool.SLASH,
+						URLCodec.encodeURL(fileEntry.getName()),
+						StringPool.SLASH, dlFileEntry.getUuid(), "?version=",
 						dlFileVersion.getVersion(), "&t=",
 						modifiedDate.getTime(),
 						"&download=true&groupExternalReferenceCode=",
@@ -1536,7 +1537,7 @@ public class ObjectEntryResourceAttachmentTest
 			fileEntry.setFolder(
 				new Folder() {
 					{
-						setSiteId(testGroupId);
+						siteId = testGroupId;
 					}
 				});
 		}
@@ -1578,7 +1579,7 @@ public class ObjectEntryResourceAttachmentTest
 		objectEntryJSONObject = HTTPTestUtil.invokeToJSONObject(
 			null,
 			StringBundler.concat(
-				getObjectDefinition1().getRESTContextPath(), "/",
+				getObjectDefinition1().getRESTContextPath(), StringPool.SLASH,
 				objectEntryJSONObject.getString("id"), "?nestedFields=",
 				OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
 				".metadata"),
@@ -3034,7 +3035,7 @@ public class ObjectEntryResourceAttachmentTest
 
 			String malformedFileURL = StringBundler.concat(
 				"http//", company.getVirtualHostname(), ":",
-				PortalUtil.getPortalServerPort(false), "/",
+				PortalUtil.getPortalServerPort(false), StringPool.SLASH,
 				RandomTestUtil.randomString());
 
 			unsafeBiConsumer.accept(
@@ -3044,7 +3045,7 @@ public class ObjectEntryResourceAttachmentTest
 
 		// Documents and media source, file from URL not found
 
-		String notFoundPath = "/" + RandomTestUtil.randomString();
+		String notFoundPath = StringPool.SLASH + RandomTestUtil.randomString();
 
 		String notFoundFileURL = StringBundler.concat(
 			"http://", company.getVirtualHostname(), ":",
