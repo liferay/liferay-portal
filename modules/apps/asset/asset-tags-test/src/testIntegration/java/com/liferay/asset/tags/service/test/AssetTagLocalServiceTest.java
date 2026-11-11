@@ -447,16 +447,16 @@ public class AssetTagLocalServiceTest {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
-	private List<AssetTag> _addAssetTags(String[] tagNames)
+	private List<AssetTag> _addAssetTags(String[] assetTagNames)
 		throws PortalException {
 
 		List<AssetTag> assetTags = new ArrayList<>();
 
-		for (String tagName : tagNames) {
+		for (String assetTagName : assetTagNames) {
 			assetTags.add(
 				_assetTagLocalService.addTag(
 					null, TestPropsValues.getUserId(), _group.getGroupId(),
-					tagName, _serviceContext));
+					assetTagName, _serviceContext));
 		}
 
 		return assetTags;
