@@ -312,8 +312,7 @@ public class HookHotDeployListener
 	}
 
 	protected void destroyPortalProperties(
-			String servletContextName, Properties portalProperties)
-		throws Exception {
+		String servletContextName, Properties portalProperties) {
 
 		for (String name : portalProperties.stringPropertyNames()) {
 			PropsUtil.set(name, null);
@@ -391,23 +390,9 @@ public class HookHotDeployListener
 		initLanguageProperties(
 			servletContextName, portletClassLoader, rootElement);
 
-		try {
-			initCustomJspDir(
-				servletContext, servletContextName, portletClassLoader,
-				hotDeployEvent.getPluginPackage(), rootElement);
-		}
-		catch (DuplicateCustomJspException duplicateCustomJspException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					servletContextName + " will be undeployed",
-					duplicateCustomJspException);
-			}
-
-			HotDeployUtil.fireUndeployEvent(
-				new HotDeployEvent(servletContext, portletClassLoader));
-
-			return;
-		}
+		initCustomJspDir(
+			servletContext, servletContextName, portletClassLoader,
+			hotDeployEvent.getPluginPackage(), rootElement);
 
 		initIndexerPostProcessors(
 			servletContextName, portletClassLoader, rootElement);
@@ -595,8 +580,7 @@ public class HookHotDeployListener
 	}
 
 	protected void initAuthPublicPaths(
-			String servletContextName, Properties portalProperties)
-		throws Exception {
+		String servletContextName, Properties portalProperties) {
 
 		String[] authPublicPaths = StringUtil.split(
 			portalProperties.getProperty(AUTH_PUBLIC_PATHS));
@@ -709,10 +693,9 @@ public class HookHotDeployListener
 	}
 
 	protected void initCustomJspDir(
-			ServletContext servletContext, String servletContextName,
-			ClassLoader portletClassLoader, PluginPackage pluginPackage,
-			Element rootElement)
-		throws Exception {
+		ServletContext servletContext, String servletContextName,
+		ClassLoader portletClassLoader, PluginPackage pluginPackage,
+		Element rootElement) {
 
 		String customJspDir = rootElement.elementText("custom-jsp-dir");
 
@@ -807,8 +790,7 @@ public class HookHotDeployListener
 	}
 
 	protected void initFormNavigatorEntries(
-			String servletContextName, Properties portalProperties)
-		throws Exception {
+		String servletContextName, Properties portalProperties) {
 
 		initFormNavigatorEntry(
 			servletContextName, portalProperties,
@@ -1751,8 +1733,7 @@ public class HookHotDeployListener
 	}
 
 	protected void initTokensWhitelists(
-			String servletContextName, Properties portalProperties)
-		throws Exception {
+		String servletContextName, Properties portalProperties) {
 
 		for (String tokenWhitelistName : _TOKEN_WHITELIST_NAMES) {
 			String propertyValue = portalProperties.getProperty(
@@ -1774,9 +1755,8 @@ public class HookHotDeployListener
 	}
 
 	protected void resetPortalProperties(
-			String servletContextName, Properties portalProperties,
-			boolean initPhase)
-		throws Exception {
+		String servletContextName, Properties portalProperties,
+		boolean initPhase) {
 
 		for (String key : _PROPS_VALUES_BOOLEAN) {
 			String fieldName = StringUtil.replace(
