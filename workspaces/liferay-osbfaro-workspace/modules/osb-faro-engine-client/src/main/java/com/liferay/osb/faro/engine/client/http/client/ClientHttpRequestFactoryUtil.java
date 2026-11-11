@@ -27,12 +27,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 public class ClientHttpRequestFactoryUtil {
 
 	public static HttpComponentsClientHttpRequestFactory
-		createHttpComponentsClientHttpRequestFactory() {
-
-		return new GetHttpComponentsClientHttpRequestFactory();
-	}
-
-	public static HttpComponentsClientHttpRequestFactory
 		createHttpComponentsClientHttpRequestFactory(
 			long connectTimeoutMillis, int maxConnections,
 			long responseTimeoutMillis) {
@@ -89,9 +83,6 @@ public class ClientHttpRequestFactoryUtil {
 			}
 
 			return super.createHttpUriRequest(httpMethod, uri);
-		}
-
-		private GetHttpComponentsClientHttpRequestFactory() {
 		}
 
 		private GetHttpComponentsClientHttpRequestFactory(
