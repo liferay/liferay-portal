@@ -262,6 +262,7 @@ public class LaunchSetPublisherTest {
 
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
+
 		mockLiferayPortletActionRequest.setParameter(
 			"launchSetId",
 			String.valueOf(_launchSetObjectEntry.getObjectEntryId()));
