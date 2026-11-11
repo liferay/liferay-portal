@@ -12,7 +12,6 @@ import com.liferay.account.model.AccountRole;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.digital.sales.room.constants.DSRRoleConstants;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -168,6 +167,7 @@ public class GetEmailNotificationRolesMVCResourceCommandTest {
 				"regularRoles",
 				JSONUtil.putAll(
 					JSONUtil.put("name", "CMS Space Administrator"),
+					JSONUtil.put("name", "DSR Seller"),
 					JSONUtil.put(
 						"name",
 						AccountRoleConstants.ROLE_NAME_ORDER_ADMINISTRATOR),
@@ -175,7 +175,6 @@ public class GetEmailNotificationRolesMVCResourceCommandTest {
 						"name", AccountRoleConstants.ROLE_NAME_RETURNS_MANAGER),
 					JSONUtil.put(
 						"name", AccountRoleConstants.ROLE_NAME_SUPPLIER),
-					JSONUtil.put("name", DSRRoleConstants.NAME_DSR_SELLER),
 					JSONUtil.put("name", RoleConstants.ADMINISTRATOR),
 					JSONUtil.put("name", RoleConstants.ANALYTICS_ADMINISTRATOR),
 					JSONUtil.put("name", RoleConstants.CMS_ADMINISTRATOR),

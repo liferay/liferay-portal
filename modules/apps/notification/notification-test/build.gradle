@@ -20,6 +20,5 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":apps:subscription:subscription-api")
-	testIntegrationImplementation project(":dxp:apps:digital-sales-room:digital-sales-room-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
