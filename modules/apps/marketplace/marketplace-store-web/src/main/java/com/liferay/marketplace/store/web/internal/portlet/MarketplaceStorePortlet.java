@@ -53,7 +53,6 @@ import jakarta.portlet.ActionResponse;
 import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletException;
 import jakarta.portlet.PortletRequest;
-import jakarta.portlet.PortletResponse;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 import jakarta.portlet.ResourceRequest;
@@ -653,24 +652,6 @@ public class MarketplaceStorePortlet extends MVCPortlet {
 			"/osb-portlet/mp_server";
 	}
 
-	protected void processPortletParameterMap(
-		PortletRequest portletRequest, PortletResponse portletResponse,
-		Map<String, String[]> parameterMap) {
-
-		parameterMap.put(
-			"clientBuild",
-			new String[] {String.valueOf(MarketplaceConstants.CLIENT_BUILD)});
-
-		parameterMap.putIfAbsent(
-			"compatibility",
-			new String[] {String.valueOf(ReleaseInfo.getBuildNumber())});
-
-		parameterMap.put(
-			"installedPatches", PatcherValues.INSTALLED_PATCH_NAMES);
-		parameterMap.put(
-			"supportsHotDeploy", new String[] {Boolean.TRUE.toString()});
-	}
-
 	protected void setBaseRequestParameters(
 		PortletRequest portletRequest, OAuthRequest oAuthRequest) {
 
@@ -776,6 +757,23 @@ public class MarketplaceStorePortlet extends MVCPortlet {
 		return jsonArray;
 	}
 
+	private void _processPortletParameterMap(
+		Map<String, String[]> parameterMap) {
+
+		parameterMap.put(
+			"clientBuild",
+			new String[] {String.valueOf(MarketplaceConstants.CLIENT_BUILD)});
+
+		parameterMap.putIfAbsent(
+			"compatibility",
+			new String[] {String.valueOf(ReleaseInfo.getBuildNumber())});
+
+		parameterMap.put(
+			"installedPatches", PatcherValues.INSTALLED_PATCH_NAMES);
+		parameterMap.put(
+			"supportsHotDeploy", new String[] {Boolean.TRUE.toString()});
+	}
+
 	private void _remoteProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
@@ -786,7 +784,7 @@ public class MarketplaceStorePortlet extends MVCPortlet {
 		OAuthRequest oAuthRequest = new OAuthRequest(
 			Verb.POST, getServerPortletURL());
 
-		_setRequestParameters(actionRequest, actionResponse, oAuthRequest);
+		_setRequestParameters(actionRequest, oAuthRequest);
 
 		addOAuthParameter(oAuthRequest, "p_p_lifecycle", "1");
 		addOAuthParameter(
@@ -821,7 +819,7 @@ public class MarketplaceStorePortlet extends MVCPortlet {
 		OAuthRequest oAuthRequest = new OAuthRequest(
 			Verb.GET, getServerPortletURL());
 
-		_setRequestParameters(renderRequest, renderResponse, oAuthRequest);
+		_setRequestParameters(renderRequest, oAuthRequest);
 
 		Response response = getResponse(themeDisplay.getUser(), oAuthRequest);
 
@@ -842,7 +840,7 @@ public class MarketplaceStorePortlet extends MVCPortlet {
 		OAuthRequest oAuthRequest = new OAuthRequest(
 			Verb.GET, getServerPortletURL());
 
-		_setRequestParameters(resourceRequest, resourceResponse, oAuthRequest);
+		_setRequestParameters(resourceRequest, oAuthRequest);
 
 		addOAuthParameter(oAuthRequest, "p_p_lifecycle", "2");
 		addOAuthParameter(
@@ -872,8 +870,7 @@ public class MarketplaceStorePortlet extends MVCPortlet {
 	}
 
 	private void _setRequestParameters(
-		PortletRequest portletRequest, PortletResponse portletResponse,
-		OAuthRequest oAuthRequest) {
+		PortletRequest portletRequest, OAuthRequest oAuthRequest) {
 
 		setBaseRequestParameters(portletRequest, oAuthRequest);
 
@@ -881,8 +878,7 @@ public class MarketplaceStorePortlet extends MVCPortlet {
 
 		MapUtil.copy(portletRequest.getParameterMap(), parameterMap);
 
-		processPortletParameterMap(
-			portletRequest, portletResponse, parameterMap);
+		_processPortletParameterMap(parameterMap);
 
 		String serverNamespace = getServerNamespace();
 
