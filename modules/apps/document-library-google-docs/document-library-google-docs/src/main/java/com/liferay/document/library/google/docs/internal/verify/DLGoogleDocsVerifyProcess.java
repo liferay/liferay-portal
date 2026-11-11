@@ -5,7 +5,7 @@
 
 package com.liferay.document.library.google.docs.internal.verify;
 
-import com.liferay.document.library.google.docs.internal.helper.GoogleDocsDLFileEntryTypeHelper;
+import com.liferay.document.library.google.docs.internal.helper.GoogleDocsDLFileEntryTypeUtil;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
@@ -31,19 +31,13 @@ public class DLGoogleDocsVerifyProcess extends VerifyProcess {
 
 	private void _checkGoogleDocsDLFileEntryType() throws Exception {
 		_companyLocalService.forEachCompany(
-			company -> {
-				GoogleDocsDLFileEntryTypeHelper
-					googleDocsDLFileEntryTypeHelper =
-						new GoogleDocsDLFileEntryTypeHelper(
-							company, _defaultDDMStructureHelper,
-							_classNameLocalService.getClassNameId(
-								DLFileEntryMetadata.class),
-							_ddmStructureLocalService,
-							_dlFileEntryTypeLocalService, _userLocalService);
-
-				googleDocsDLFileEntryTypeHelper.addGoogleDocsDLFileEntryType(
-					false);
-			});
+			company ->
+				GoogleDocsDLFileEntryTypeUtil.addGoogleDocsDLFileEntryType(
+					company, _ddmStructureLocalService,
+					_defaultDDMStructureHelper,
+					_classNameLocalService.getClassNameId(
+						DLFileEntryMetadata.class),
+					_dlFileEntryTypeLocalService, false, _userLocalService));
 	}
 
 	@Reference

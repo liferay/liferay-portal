@@ -5,7 +5,7 @@
 
 package com.liferay.document.library.google.docs.internal.instance.lifecycle;
 
-import com.liferay.document.library.google.docs.internal.helper.GoogleDocsDLFileEntryTypeHelper;
+import com.liferay.document.library.google.docs.internal.helper.GoogleDocsDLFileEntryTypeUtil;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
@@ -32,15 +32,11 @@ public class GoogleDocsPortalInstanceLifecycleListener
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
 		try {
-			GoogleDocsDLFileEntryTypeHelper googleDocsDLFileEntryTypeHelper =
-				new GoogleDocsDLFileEntryTypeHelper(
-					company, _defaultDDMStructureHelper,
-					_classNameLocalService.getClassNameId(
-						DLFileEntryMetadata.class),
-					_ddmStructureLocalService, _dlFileEntryTypeLocalService,
-					_userLocalService);
-
-			googleDocsDLFileEntryTypeHelper.addGoogleDocsDLFileEntryType(true);
+			GoogleDocsDLFileEntryTypeUtil.addGoogleDocsDLFileEntryType(
+				company, _ddmStructureLocalService, _defaultDDMStructureHelper,
+				_classNameLocalService.getClassNameId(
+					DLFileEntryMetadata.class),
+				_dlFileEntryTypeLocalService, true, _userLocalService);
 		}
 		catch (PortalException portalException) {
 			throw new ModelListenerException(portalException);
