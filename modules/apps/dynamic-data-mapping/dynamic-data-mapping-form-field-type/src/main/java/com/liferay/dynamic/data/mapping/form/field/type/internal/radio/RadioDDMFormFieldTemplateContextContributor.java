@@ -119,8 +119,7 @@ public class RadioDDMFormFieldTemplateContextContributor
 					ddmFormField, ddmFormFieldRenderingContext),
 				ddmFormFieldRenderingContext.getLocale());
 
-		return radioDDMFormFieldContextHelper.getOptions(
-			ddmFormFieldRenderingContext);
+		return radioDDMFormFieldContextHelper.getOptions();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

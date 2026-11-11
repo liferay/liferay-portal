@@ -6,7 +6,6 @@
 package com.liferay.dynamic.data.mapping.form.field.type.internal.radio.helper;
 
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
-import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormFieldOptionsTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -58,8 +57,7 @@ public class RadioDDMFormFieldContextHelperTest {
 		RadioDDMFormFieldContextHelper radioDDMFormFieldContextHelper =
 			new RadioDDMFormFieldContextHelper(ddmFormFieldOptions, locale);
 
-		return radioDDMFormFieldContextHelper.getOptions(
-			new DDMFormFieldRenderingContext());
+		return radioDDMFormFieldContextHelper.getOptions();
 	}
 
 }
