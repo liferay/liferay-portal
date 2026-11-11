@@ -88,6 +88,13 @@ public abstract class BaseEngineClient {
 
 	@Activate
 	protected void activate() {
+		_backgroundHttpComponentsClientHttpRequestFactory =
+			ClientHttpRequestFactoryUtil.
+				createHttpComponentsClientHttpRequestFactory(
+					FaroPropsValues.OSB_ASAH_BACKEND_CONNECT_TIMEOUT_MILLIS,
+					FaroPropsValues.OSB_ASAH_BACKEND_MAX_CONNECTIONS,
+					FaroPropsValues.
+						OSB_ASAH_BACKEND_BACKGROUND_RESPONSE_TIMEOUT_MILLIS);
 		_httpComponentsClientHttpRequestFactory =
 			ClientHttpRequestFactoryUtil.
 				createHttpComponentsClientHttpRequestFactory(
@@ -220,6 +227,7 @@ public abstract class BaseEngineClient {
 
 	@Deactivate
 	protected void deactivate() throws Exception {
+		_backgroundHttpComponentsClientHttpRequestFactory.destroy();
 		_httpComponentsClientHttpRequestFactory.destroy();
 	}
 
@@ -427,8 +435,7 @@ public abstract class BaseEngineClient {
 		}
 		else {
 			restTemplate.setRequestFactory(
-				ClientHttpRequestFactoryUtil.
-					createHttpComponentsClientHttpRequestFactory());
+				_backgroundHttpComponentsClientHttpRequestFactory);
 		}
 
 		restTemplate.setUriTemplateHandler(new UriBuilderFactory());
@@ -729,6 +736,8 @@ public abstract class BaseEngineClient {
 	private static final Map<String, String> _urlPaths =
 		new ConcurrentHashMap<>();
 
+	private HttpComponentsClientHttpRequestFactory
+		_backgroundHttpComponentsClientHttpRequestFactory;
 	private String _engineURL;
 	private HttpComponentsClientHttpRequestFactory
 		_httpComponentsClientHttpRequestFactory;
