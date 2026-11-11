@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.trash.TrashHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -36,8 +35,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 public class DLAdminDisplayContextProvider {
 
 	public DLAdminDisplayContext getDLAdminDisplayContext(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse) {
+		HttpServletRequest httpServletRequest) {
 
 		httpServletRequest.setAttribute(
 			ItemSelector.class.getName(), _itemSelector);
@@ -56,7 +54,6 @@ public class DLAdminDisplayContextProvider {
 	public DLAdminManagementToolbarDisplayContext
 		getDLAdminManagementToolbarDisplayContext(
 			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse,
 			DLAdminDisplayContext dlAdminDisplayContext) {
 
 		DLRequestHelper dlRequestHelper = new DLRequestHelper(

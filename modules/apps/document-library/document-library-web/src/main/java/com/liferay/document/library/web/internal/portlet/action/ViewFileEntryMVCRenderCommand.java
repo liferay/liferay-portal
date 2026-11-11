@@ -145,8 +145,7 @@ public class ViewFileEntryMVCRenderCommand
 
 		DLAdminDisplayContext dlAdminDisplayContext =
 			_dlAdminDisplayContextProvider.getDLAdminDisplayContext(
-				_portal.getHttpServletRequest(renderRequest),
-				_portal.getHttpServletResponse(renderResponse));
+				_portal.getHttpServletRequest(renderRequest));
 
 		DLViewFileEntryDisplayContext dlViewFileEntryDisplayContext =
 			new DLViewFileEntryDisplayContext(

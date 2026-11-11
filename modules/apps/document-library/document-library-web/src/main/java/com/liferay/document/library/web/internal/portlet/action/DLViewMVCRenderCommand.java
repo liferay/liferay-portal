@@ -80,8 +80,7 @@ public class DLViewMVCRenderCommand extends BaseFolderMVCRenderCommand {
 
 			DLAdminDisplayContext dlAdminDisplayContext =
 				_dlAdminDisplayContextProvider.getDLAdminDisplayContext(
-					_portal.getHttpServletRequest(renderRequest),
-					_portal.getHttpServletResponse(renderResponse));
+					_portal.getHttpServletRequest(renderRequest));
 
 			renderRequest.setAttribute(
 				DLAdminDisplayContext.class.getName(), dlAdminDisplayContext);
@@ -90,7 +89,6 @@ public class DLViewMVCRenderCommand extends BaseFolderMVCRenderCommand {
 				_dlAdminDisplayContextProvider.
 					getDLAdminManagementToolbarDisplayContext(
 						_portal.getHttpServletRequest(renderRequest),
-						_portal.getHttpServletResponse(renderResponse),
 						dlAdminDisplayContext));
 
 			return super.render(renderRequest, renderResponse);

@@ -39,8 +39,7 @@ public class UploadMultipleFileEntriesMVCRenderCommand
 		renderRequest.setAttribute(
 			DLAdminDisplayContext.class.getName(),
 			_dlAdminDisplayContextProvider.getDLAdminDisplayContext(
-				_portal.getHttpServletRequest(renderRequest),
-				_portal.getHttpServletResponse(renderResponse)));
+				_portal.getHttpServletRequest(renderRequest)));
 
 		return "/document_library/upload_multiple_file_entries.jsp";
 	}

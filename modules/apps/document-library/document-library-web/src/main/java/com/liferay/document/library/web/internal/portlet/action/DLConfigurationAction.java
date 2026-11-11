@@ -48,7 +48,7 @@ public class DLConfigurationAction
 		httpServletRequest.setAttribute(
 			DLAdminDisplayContext.class.getName(),
 			_dlAdminDisplayContextProvider.getDLAdminDisplayContext(
-				httpServletRequest, httpServletResponse));
+				httpServletRequest));
 		httpServletRequest.setAttribute(
 			ItemSelector.class.getName(), _itemSelector);
 

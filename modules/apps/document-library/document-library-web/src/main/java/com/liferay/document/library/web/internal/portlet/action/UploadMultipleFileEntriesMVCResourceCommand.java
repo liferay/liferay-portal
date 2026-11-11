@@ -41,8 +41,7 @@ public class UploadMultipleFileEntriesMVCResourceCommand
 		resourceRequest.setAttribute(
 			DLAdminDisplayContext.class.getName(),
 			_dlAdminDisplayContextProvider.getDLAdminDisplayContext(
-				_portal.getHttpServletRequest(resourceRequest),
-				_portal.getHttpServletResponse(resourceResponse)));
+				_portal.getHttpServletRequest(resourceRequest)));
 
 		include(
 			resourceRequest, resourceResponse,

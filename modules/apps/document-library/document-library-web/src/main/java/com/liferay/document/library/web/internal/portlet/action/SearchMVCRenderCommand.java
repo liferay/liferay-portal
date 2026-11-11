@@ -53,8 +53,7 @@ public class SearchMVCRenderCommand implements MVCRenderCommand {
 
 		DLAdminDisplayContext dlAdminDisplayContext =
 			_dlAdminDisplayContextProvider.getDLAdminDisplayContext(
-				_portal.getHttpServletRequest(renderRequest),
-				_portal.getHttpServletResponse(renderResponse));
+				_portal.getHttpServletRequest(renderRequest));
 
 		renderRequest.setAttribute(
 			DLAdminDisplayContext.class.getName(), dlAdminDisplayContext);
@@ -63,7 +62,6 @@ public class SearchMVCRenderCommand implements MVCRenderCommand {
 			_dlAdminDisplayContextProvider.
 				getDLAdminManagementToolbarDisplayContext(
 					_portal.getHttpServletRequest(renderRequest),
-					_portal.getHttpServletResponse(renderResponse),
 					dlAdminDisplayContext));
 
 		renderRequest.setAttribute(
