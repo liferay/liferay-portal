@@ -14,11 +14,17 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.layout.util.constants.LayoutClassedModelUsageConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -43,15 +49,23 @@ public class LayoutClassedModelUsagesHelper {
 	public String getName(
 		LayoutClassedModelUsage layoutClassedModelUsage, Locale locale) {
 
+		long plid = layoutClassedModelUsage.getPlid();
+
+		Layout layout = _layoutLocalService.fetchLayout(plid);
+
+		if (layout == null) {
+			return StringPool.BLANK;
+		}
+
+		if (!_hasPermission(layout)) {
+			return StringBundler.concat(
+				StringPool.OPEN_BRACKET,
+				_language.get(locale, "restricted-page"),
+				StringPool.CLOSE_BRACKET);
+		}
+
 		if (layoutClassedModelUsage.getType() ==
 				LayoutClassedModelUsageConstants.TYPE_LAYOUT) {
-
-			Layout layout = _layoutLocalService.fetchLayout(
-				layoutClassedModelUsage.getPlid());
-
-			if (layout == null) {
-				return StringPool.BLANK;
-			}
 
 			if (!layout.isDraftLayout()) {
 				return layout.getName(locale);
@@ -60,14 +74,6 @@ public class LayoutClassedModelUsagesHelper {
 			return StringBundler.concat(
 				layout.getName(locale), " (", _language.get(locale, "draft"),
 				")");
-		}
-
-		long plid = layoutClassedModelUsage.getPlid();
-
-		Layout layout = _layoutLocalService.fetchLayout(plid);
-
-		if (layout == null) {
-			return StringPool.BLANK;
 		}
 
 		if (layout.isDraftLayout()) {
@@ -164,6 +170,14 @@ public class LayoutClassedModelUsagesHelper {
 	public boolean isShowPreview(
 		LayoutClassedModelUsage layoutClassedModelUsage) {
 
+		long plid = layoutClassedModelUsage.getPlid();
+
+		Layout layout = _layoutLocalService.fetchLayout(plid);
+
+		if ((layout == null) || !_hasPermission(layout)) {
+			return false;
+		}
+
 		if (layoutClassedModelUsage.getType() ==
 				LayoutClassedModelUsageConstants.TYPE_LAYOUT) {
 
@@ -175,14 +189,6 @@ public class LayoutClassedModelUsagesHelper {
 			(layoutClassedModelUsage.getType() !=
 				LayoutClassedModelUsageConstants.TYPE_PAGE_TEMPLATE)) {
 
-			return false;
-		}
-
-		long plid = layoutClassedModelUsage.getPlid();
-
-		Layout layout = _layoutLocalService.fetchLayout(plid);
-
-		if (layout == null) {
 			return false;
 		}
 
@@ -203,6 +209,30 @@ public class LayoutClassedModelUsagesHelper {
 
 		return true;
 	}
+
+	private boolean _hasPermission(Layout layout) {
+		long plid = layout.getPlid();
+
+		if (layout.isDraftLayout()) {
+			plid = layout.getClassPK();
+		}
+
+		try {
+			return LayoutPermissionUtil.contains(
+				PermissionThreadLocal.getPermissionChecker(), plid,
+				ActionKeys.VIEW);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			return false;
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutClassedModelUsagesHelper.class);
 
 	@Reference
 	private Language _language;
