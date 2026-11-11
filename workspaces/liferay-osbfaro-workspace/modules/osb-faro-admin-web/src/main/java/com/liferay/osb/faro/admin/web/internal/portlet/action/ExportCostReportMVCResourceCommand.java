@@ -62,8 +62,8 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 		sb.append(
 			StringBundler.concat(
 				"Workspace,Project ID,Owner,Subscription,Location,Events,",
-				"Anonymous Individuals,Query Cost (USD),Storage Cost (USD),",
-				"Total Cost (USD)\n"));
+				"Billable Events,A/B Testing Events,Anonymous Individuals,",
+				"Query Cost (USD),Storage Cost (USD),Total Cost (USD)\n"));
 
 		Map<String, BigQueryPrice> bigQueryPrices = new HashMap<>();
 
@@ -93,16 +93,20 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 			sb.append(CSVUtil.encode(bigQueryPrice.getLocation()));
 
 			sb.append(StringPool.COMMA);
+			sb.append(values[4]);
+			sb.append(StringPool.COMMA);
 			sb.append(values[3]);
+			sb.append(StringPool.COMMA);
+			sb.append(values[5]);
 			sb.append(StringPool.COMMA);
 			sb.append(values[2]);
 			sb.append(StringPool.COMMA);
 
 			BigDecimal onDemandCost = _getCost(
-				(Long)values[5], _BYTES_PER_TIB,
+				(Long)values[7], _BYTES_PER_TIB,
 				bigQueryPrice.getOnDemandPricePerTiB());
 			BigDecimal reservationCost = _getCost(
-				(Long)values[6], _MILLISECONDS_PER_HOUR,
+				(Long)values[8], _MILLISECONDS_PER_HOUR,
 				bigQueryPrice.getReservationPricePerSlotHour());
 
 			BigDecimal queryCost = onDemandCost.add(reservationCost);
@@ -115,7 +119,7 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 				(Long)values[1], _BYTE_DAYS_PER_GIB_MONTH,
 				bigQueryPrice.getActiveLogicalStoragePricePerGiBMonth());
 			BigDecimal longTermLogicalStorageCost = _getCost(
-				(Long)values[4], _BYTE_DAYS_PER_GIB_MONTH,
+				(Long)values[6], _BYTE_DAYS_PER_GIB_MONTH,
 				bigQueryPrice.getLongTermLogicalStoragePricePerGiBMonth());
 
 			BigDecimal storageCost = activeLogicalStorageCost.add(
@@ -161,7 +165,9 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 		projectionList.add(ProjectionFactoryUtil.sum("activeLogicalBytes"));
 		projectionList.add(
 			ProjectionFactoryUtil.sum("anonymousIndividualsCount"));
+		projectionList.add(ProjectionFactoryUtil.sum("billableEventsCount"));
 		projectionList.add(ProjectionFactoryUtil.sum("eventsCount"));
+		projectionList.add(ProjectionFactoryUtil.sum("experimentEventsCount"));
 		projectionList.add(ProjectionFactoryUtil.sum("longTermLogicalBytes"));
 		projectionList.add(ProjectionFactoryUtil.sum("onDemandBytesBilled"));
 		projectionList.add(ProjectionFactoryUtil.sum("reservationSlotMs"));
