@@ -79,6 +79,13 @@ const expect = baseExpect.extend({
 	}),
 });
 
+const aiCreatorTest = mergeTests(
+	baseTest,
+	featureFlagsTest({
+		'LPD-93786': {enabled: true},
+	})
+);
+
 const assetPublisherDeprecationTest = mergeTests(
 	baseTest,
 	featureFlagsTest({
@@ -2087,7 +2094,7 @@ baseTest(
 	}
 );
 
-baseTest(
+aiCreatorTest(
 	'LPD-6800 Create AI Image option visible from Item Selector',
 	async ({journalEditArticlePage, page, site}) => {
 		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
