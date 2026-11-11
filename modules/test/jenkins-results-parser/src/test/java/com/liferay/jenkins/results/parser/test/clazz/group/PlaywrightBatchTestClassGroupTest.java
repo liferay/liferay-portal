@@ -219,9 +219,9 @@ public class PlaywrightBatchTestClassGroupTest
 			playwrightBatchTestClassGroup, "portalGitWorkingDirectory",
 			Mockito.mock(PortalGitWorkingDirectory.class));
 
-		List<Throwable> throwables = new ArrayList<>();
-
 		AntException antException = new AntException();
+
+		List<Throwable> throwables = new ArrayList<>();
 
 		try (MockedStatic<AntUtil> antUtilMockedStatic = Mockito.mockStatic(
 				AntUtil.class)) {
