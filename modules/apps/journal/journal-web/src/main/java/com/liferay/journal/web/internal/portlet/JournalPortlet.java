@@ -55,6 +55,7 @@ import com.liferay.journal.exception.NoSuchFeedException;
 import com.liferay.journal.exception.NoSuchFolderException;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalFolderService;
 import com.liferay.journal.util.JournalContent;
 import com.liferay.journal.util.JournalConverter;
@@ -63,6 +64,7 @@ import com.liferay.journal.web.internal.configuration.JournalWebConfiguration;
 import com.liferay.journal.web.internal.display.context.JournalDisplayContext;
 import com.liferay.journal.web.internal.display.context.JournalEditDDMStructuresDisplayContext;
 import com.liferay.journal.web.internal.portlet.action.ActionUtil;
+import com.liferay.journal.web.internal.security.permission.resource.JournalArticlePermission;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -84,6 +86,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.translation.security.permission.TranslationPermission;
 import com.liferay.translation.url.provider.TranslationURLProvider;
 import com.liferay.trash.TrashHelper;
@@ -279,6 +282,11 @@ public class JournalPortlet extends MVCPortlet {
 
 				ActionUtil.getArticle(httpServletRequest);
 			}
+			else if (Objects.equals(path, "/view_asset_entry_usages.jsp")) {
+				_getFolder(httpServletRequest);
+
+				_checkArticleViewPermission(httpServletRequest);
+			}
 			else if (Objects.equals(path, "/view_ddm_structures.jsp")) {
 				CTTimelineUtil.setClassName(
 					httpServletRequest, DDMStructure.class);
@@ -372,6 +380,37 @@ public class JournalPortlet extends MVCPortlet {
 		return false;
 	}
 
+	private void _checkArticleViewPermission(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		String articleId = ParamUtil.getString(httpServletRequest, "articleId");
+		long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
+
+		JournalArticle journalArticle =
+			_journalArticleLocalService.fetchLatestArticle(
+				groupId, articleId, WorkflowConstants.STATUS_APPROVED);
+
+		if (journalArticle == null) {
+			journalArticle = _journalArticleLocalService.getLatestArticle(
+				groupId, articleId, WorkflowConstants.STATUS_ANY);
+		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (!JournalArticlePermission.contains(
+				themeDisplay.getPermissionChecker(), journalArticle,
+				ActionKeys.VIEW)) {
+
+			throw new PrincipalException.MustHavePermission(
+				themeDisplay.getPermissionChecker(),
+				JournalArticle.class.getName(),
+				journalArticle.getResourcePrimKey(), ActionKeys.VIEW);
+		}
+	}
+
 	private void _getFolder(HttpServletRequest httpServletRequest)
 		throws PortalException {
 
@@ -420,6 +459,9 @@ public class JournalPortlet extends MVCPortlet {
 
 	@Reference
 	private ItemSelector _itemSelector;
+
+	@Reference
+	private JournalArticleLocalService _journalArticleLocalService;
 
 	@Reference
 	private JournalContent _journalContent;
