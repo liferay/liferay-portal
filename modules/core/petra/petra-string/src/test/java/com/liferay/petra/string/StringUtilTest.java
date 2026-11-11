@@ -111,6 +111,67 @@ public class StringUtilTest {
 	}
 
 	@Test
+	public void testForEachLine() {
+		_assertForEachLine(" a \n b ", " a ", " b ");
+		_assertForEachLine("\n", StringPool.BLANK);
+		_assertForEachLine("\r\n\n", StringPool.BLANK, StringPool.BLANK);
+		_assertForEachLine("a", "a");
+		_assertForEachLine("a\n", "a");
+		_assertForEachLine("a\n\nb", "a", StringPool.BLANK, "b");
+		_assertForEachLine("a\n\rb", "a", StringPool.BLANK, "b");
+		_assertForEachLine("a\nb", "a", "b");
+		_assertForEachLine("a\r", "a");
+		_assertForEachLine("a\r\n", "a");
+		_assertForEachLine("a\r\n\r\nb\n", "a", StringPool.BLANK, "b");
+		_assertForEachLine("a\r\nb", "a", "b");
+		_assertForEachLine("a\r\rb", "a", StringPool.BLANK, "b");
+		_assertForEachLine("a\rb", "a", "b");
+		_assertForEachLine(StringPool.BLANK);
+	}
+
+	@Test
+	public void testForEachLineUntil() {
+		Assert.assertFalse(
+			StringUtil.forEachLineUntil(StringPool.BLANK, line -> true));
+
+		List<String> lines = new ArrayList<>();
+
+		Assert.assertTrue(
+			StringUtil.forEachLineUntil(
+				"a\nb\r\nc",
+				line -> {
+					lines.add(line);
+
+					return line.equals("b");
+				}));
+		Assert.assertEquals(Arrays.asList("a", "b"), lines);
+
+		lines.clear();
+
+		Assert.assertTrue(
+			StringUtil.forEachLineUntil(
+				"a\nb",
+				line -> {
+					lines.add(line);
+
+					return line.equals("b");
+				}));
+		Assert.assertEquals(Arrays.asList("a", "b"), lines);
+
+		lines.clear();
+
+		Assert.assertFalse(
+			StringUtil.forEachLineUntil(
+				"a\nb\n",
+				line -> {
+					lines.add(line);
+
+					return false;
+				}));
+		Assert.assertEquals(Arrays.asList("a", "b"), lines);
+	}
+
+	@Test
 	public void testMerge() {
 		Assert.assertNull(StringUtil.merge((boolean[])null, null));
 		Assert.assertNull(StringUtil.merge((byte[])null, null));
@@ -319,6 +380,14 @@ public class StringUtilTest {
 		Assert.assertEquals(
 			Arrays.asList("test1", "test2"),
 			StringUtil.split("test1-test2", CharPool.DASH));
+	}
+
+	private void _assertForEachLine(String s, String... expectedLines) {
+		List<String> lines = new ArrayList<>();
+
+		StringUtil.forEachLine(s, lines::add);
+
+		Assert.assertEquals(Arrays.asList(expectedLines), lines);
 	}
 
 }
