@@ -69,7 +69,7 @@ else {
 	emptyResultsMessage='<%= LanguageUtil.get(resourceBundle, "there-are-no-attachments") %>'
 	itemSelectedEventName="<%= kbAttachmentItemSelectorViewDisplayContext.getItemSelectedEventName() %>"
 	itemSelectorReturnTypeResolver="<%= kbAttachmentItemSelectorViewDisplayContext.getItemSelectorReturnTypeResolver() %>"
-	portletURL="<%= kbAttachmentItemSelectorViewDisplayContext.getPortletURL(request, liferayPortletResponse) %>"
+	portletURL="<%= kbAttachmentItemSelectorViewDisplayContext.getPortletURL(liferayPortletResponse) %>"
 	repositoryEntries="<%= portletFileEntries %>"
 	repositoryEntriesCount="<%= portletFileEntriesCount %>"
 	showDragAndDropZone="<%= false %>"

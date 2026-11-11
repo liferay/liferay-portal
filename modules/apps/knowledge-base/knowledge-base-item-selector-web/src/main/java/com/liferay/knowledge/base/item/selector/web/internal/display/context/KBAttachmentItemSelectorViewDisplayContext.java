@@ -94,7 +94,6 @@ public class KBAttachmentItemSelectorViewDisplayContext {
 	}
 
 	public PortletURL getPortletURL(
-			HttpServletRequest httpServletRequest,
 			LiferayPortletResponse liferayPortletResponse)
 		throws PortletException {
 
