@@ -659,10 +659,10 @@ public class PlaywrightBatchTestClassGroupTest
 
 		playwrightJSONObjectsLoaded.set(false);
 
-		File portalWorkingDirectory = temporaryFolder.newFolder();
-
 		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
 			PortalGitWorkingDirectory.class);
+
+		File portalWorkingDirectory = temporaryFolder.newFolder();
 
 		Mockito.doReturn(
 			portalWorkingDirectory
