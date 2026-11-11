@@ -2304,7 +2304,8 @@ public class StringUtil {
 			InputStream inputStream, Collection<String> lines)
 		throws IOException {
 
-		_splitLines(_read(inputStream), lines);
+		com.liferay.petra.string.StringUtil.forEachLine(
+			_read(inputStream), lines::add);
 	}
 
 	public static String removeChar(String s, char oldSub) {
@@ -3917,7 +3918,7 @@ public class StringUtil {
 
 		List<String> lines = new ArrayList<>();
 
-		_splitLines(s, lines);
+		com.liferay.petra.string.StringUtil.forEachLine(s, lines::add);
 
 		return lines.toArray(new String[0]);
 	}
@@ -5035,43 +5036,6 @@ public class StringUtil {
 
 		if (offset < s.length()) {
 			values.add(s.substring(offset));
-		}
-	}
-
-	private static void _splitLines(String s, Collection<String> lines) {
-		int lastIndex = 0;
-
-		while (true) {
-			int returnIndex = s.indexOf(CharPool.RETURN, lastIndex);
-
-			if (returnIndex == -1) {
-				_split(lines, s, lastIndex, CharPool.NEW_LINE);
-
-				return;
-			}
-
-			int newLineIndex = s.indexOf(CharPool.NEW_LINE, lastIndex);
-
-			if (newLineIndex == -1) {
-				_split(lines, s, lastIndex, CharPool.RETURN);
-
-				return;
-			}
-
-			if (newLineIndex < returnIndex) {
-				lines.add(s.substring(lastIndex, newLineIndex));
-
-				lastIndex = newLineIndex + 1;
-			}
-			else {
-				lines.add(s.substring(lastIndex, returnIndex));
-
-				lastIndex = returnIndex + 1;
-
-				if (lastIndex == newLineIndex) {
-					lastIndex++;
-				}
-			}
 		}
 	}
 
