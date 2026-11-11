@@ -721,6 +721,8 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 		</DTDDoc>
 	</target>
 
+	<target depends="find-security-bugs-core,find-security-bugs-modules" name="find-security-bugs" />
+
 	<target name="find-security-bugs-core">
 		<property name="find.security.bugs.projects" value="portal-impl,portal-test,portal-web,support-tomcat,util-bridges,util-java,util-slf4j,util-taglib" />
 
@@ -747,6 +749,16 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 				</gradle-execute>
 			</sequential>
 		</for>
+	</target>
+
+	<target name="find-security-bugs-modules">
+		<antcall target="install-portal-snapshots" />
+
+		<gradle-execute dir="${project.dir}/modules" forcedcacheenabled="false" stacktrace="false" task="findSecurityBugs">
+			<arg value="--continue" />
+			<arg if:set="findSecurityBugs.Xms" value="-DfindSecurityBugs.Xms=${findSecurityBugs.Xms}" />
+			<arg if:set="findSecurityBugs.Xmx" value="-DfindSecurityBugs.Xmx=${findSecurityBugs.Xmx}" />
+		</gradle-execute>
 	</target>
 
 	<target name="install-portal-snapshots">
