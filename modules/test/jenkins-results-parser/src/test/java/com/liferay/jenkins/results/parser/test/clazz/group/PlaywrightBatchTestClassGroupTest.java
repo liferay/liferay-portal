@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
+import com.liferay.jenkins.results.parser.AntException;
 import com.liferay.jenkins.results.parser.AntUtil;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.NotificationUtil;
@@ -209,6 +210,58 @@ public class PlaywrightBatchTestClassGroupTest
 	}
 
 	@Test
+	public void testLoadPlaywrightJSONObjectsSetupYarnFailure() {
+		PlaywrightBatchTestClassGroup playwrightBatchTestClassGroup =
+			Mockito.mock(PlaywrightBatchTestClassGroup.class);
+
+		ReflectionTestUtil.setFieldValue(
+			playwrightBatchTestClassGroup, "portalGitWorkingDirectory",
+			Mockito.mock(PortalGitWorkingDirectory.class));
+
+		List<Throwable> throwables = new ArrayList<>();
+
+		AntException antException = new AntException();
+
+		try (MockedStatic<AntUtil> antUtilMockedStatic = Mockito.mockStatic(
+				AntUtil.class)) {
+
+			antUtilMockedStatic.when(
+				() -> AntUtil.callTarget(null, "build.xml", "setup-yarn")
+			).thenThrow(
+				antException
+			);
+
+			for (int i = 0; i < 2; i++) {
+				try {
+					ReflectionTestUtil.invoke(
+						playwrightBatchTestClassGroup,
+						"_loadPlaywrightJSONObjects", new Class<?>[0]);
+
+					Assert.fail();
+				}
+				catch (RuntimeException runtimeException) {
+					InvocationTargetException invocationTargetException =
+						(InvocationTargetException)runtimeException.getCause();
+
+					throwables.add(invocationTargetException.getCause());
+				}
+			}
+
+			antUtilMockedStatic.verify(
+				() -> AntUtil.callTarget(null, "build.xml", "setup-yarn"));
+		}
+
+		Throwable throwable = throwables.get(0);
+
+		Assert.assertSame(antException, throwable.getCause());
+		Assert.assertEquals(
+			"Unable to list Playwright tests because the \"setup-yarn\" " +
+				"target failed",
+			throwable.getMessage());
+		Assert.assertSame(throwable, throwables.get(1));
+	}
+
+	@Test
 	public void testParsePlaywrightJSONObjectsDescribeBlocks() {
 		String projectName = RandomTestUtil.randomString();
 		File rootDir = new File(RandomTestUtil.randomString());
@@ -382,7 +435,7 @@ public class PlaywrightBatchTestClassGroupTest
 			Assert.assertEquals(
 				"Unable to set test classes because the Playwright test " +
 					"listing \"test --list --reporter=json\" did not return " +
-						"a config",
+						"a \"config\"",
 				runtimeException.getMessage());
 		}
 	}
