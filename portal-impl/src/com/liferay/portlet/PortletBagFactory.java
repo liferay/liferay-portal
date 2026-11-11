@@ -252,9 +252,7 @@ public class PortletBagFactory {
 		return xml;
 	}
 
-	private String _getPluginPropertyValue(String propertyKey)
-		throws Exception {
-
+	private String _getPluginPropertyValue(String propertyKey) {
 		if (_configuration == null) {
 			_configuration = ConfigurationFactoryUtil.getConfiguration(
 				_classLoader, "portlet");
