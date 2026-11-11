@@ -6459,6 +6459,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// Authenticate against the User_ table
 
+		boolean passwordReset = false;
+
 		if (authResult == Authenticator.SKIP_LIFERAY_CHECK) {
 			authResult = Authenticator.SUCCESS;
 		}
@@ -6469,12 +6471,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				login, password, user.getPassword());
 
 			if (authenticated) {
-				if (!FIPSModeValidator.isNotAllowedPassword(password) &&
-					!StringUtil.equalsIgnoreCase(
-						PasswordEncryptorUtil.
-							getEncryptedPasswordAlgorithmSettings(
-								user.getPassword()),
-						_PASSWORDS_ENCRYPTION_ALGORITHM)) {
+				if (FIPSModeValidator.isNotAllowedPassword(password)) {
+					passwordReset = true;
+				}
+				else if (!StringUtil.equalsIgnoreCase(
+							PasswordEncryptorUtil.
+								getEncryptedPasswordAlgorithmSettings(
+									user.getPassword()),
+							_PASSWORDS_ENCRYPTION_ALGORITHM)) {
 
 					user.setPassword(
 						PasswordEncryptorUtil.encrypt(
@@ -6519,6 +6523,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 					companyId, authType, login, user, headerMap, parameterMap);
 
 				throw portalException;
+			}
+
+			if (passwordReset) {
+				user.setPasswordReset(true);
 			}
 		}
 

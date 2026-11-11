@@ -578,10 +578,11 @@ public class UserLocalServiceTest {
 		_testAuthenticateByEmailAddressWithOutdatedPasswordsEncryptionAlgorithm(
 			"SHA-384", "PBKDF2WITHHMACSHA1/160/1300000");
 		_testAuthenticateByEmailAddressWithOutdatedPasswordsEncryptionAlgorithmInFIPSMode(
-			"PBKDF2WITHHMACSHA1/160/1300000", RandomTestUtil.randomString(13));
-		_testAuthenticateByEmailAddressWithOutdatedPasswordsEncryptionAlgorithmInFIPSMode(
-			"PBKDF2WITHHMACSHA256/256/1300000",
+			false, "PBKDF2WITHHMACSHA256/256/1300000",
 			RandomTestUtil.randomString(14));
+		_testAuthenticateByEmailAddressWithOutdatedPasswordsEncryptionAlgorithmInFIPSMode(
+			true, "PBKDF2WITHHMACSHA1/160/1300000",
+			RandomTestUtil.randomString(13));
 	}
 
 	@Test
@@ -3008,6 +3009,7 @@ public class UserLocalServiceTest {
 
 	private void
 			_testAuthenticateByEmailAddressWithOutdatedPasswordsEncryptionAlgorithmInFIPSMode(
+				boolean expectedPasswordReset,
 				String expectedPasswordsEncryptionAlgorithm, String password)
 		throws Exception {
 
@@ -3051,6 +3053,7 @@ public class UserLocalServiceTest {
 				expectedPasswordsEncryptionAlgorithm,
 				PasswordEncryptorUtil.getEncryptedPasswordAlgorithmSettings(
 					user.getPassword()));
+			Assert.assertEquals(expectedPasswordReset, user.isPasswordReset());
 		}
 	}
 
