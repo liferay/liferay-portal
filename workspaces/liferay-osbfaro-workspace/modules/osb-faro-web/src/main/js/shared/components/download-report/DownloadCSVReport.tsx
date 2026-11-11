@@ -11,7 +11,7 @@ import {toLocale} from 'shared/util/numbers';
 import {useDispatch} from 'react-redux';
 import {useModal} from '@clayui/modal';
 import {useParams} from 'react-router-dom';
-import {useUnsafeQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {useUnsafeQueryRangeSelectors} from 'shared/hooks/useUnsafeQueryRangeSelectors';
 
 export interface IDownloadReport {
 	assetId?: string;
