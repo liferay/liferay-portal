@@ -33,6 +33,7 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.RequiredGroupException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -50,6 +51,7 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
@@ -264,6 +266,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 		_testPutSiteBatch();
 		_testPutSiteBatchWithParentSiteExternalReferenceCode();
+		_testPutSiteSystemSite();
 		_testPutSiteWithCreatorWithoutUpdatePermissionOnImport();
 		_testPutSiteWithExcludedTypeSettings();
 		_testPutSiteWithParentSiteExternalReferenceCode();
@@ -2067,6 +2070,45 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 				user.getUserId(), true));
 	}
 
+	private void _testPutSiteSystemSite() throws Exception {
+		Group guestGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.GUEST);
+
+		com.liferay.headless.admin.site.dto.v1_0.Site site =
+			new com.liferay.headless.admin.site.dto.v1_0.Site();
+
+		site.setActive(false);
+		site.setExternalReferenceCode(guestGroup.getExternalReferenceCode());
+
+		com.liferay.headless.admin.site.resource.v1_0.SiteResource.Builder
+			builder = _siteResourceFactory.create();
+
+		com.liferay.headless.admin.site.resource.v1_0.SiteResource
+			siteResource = builder.user(
+				TestPropsValues.getUser()
+			).build();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			siteResource.putSite(guestGroup.getExternalReferenceCode(), site);
+
+			Assert.fail();
+		}
+		catch (RequiredGroupException.MustNotDeactivateSystemGroup
+					requiredGroupException) {
+
+			Assert.assertSame(
+				serviceContext, ServiceContextThreadLocal.getServiceContext());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
 	private void _testPutSiteWithCreatorWithoutUpdatePermissionOnImport()
 		throws Exception {
 
@@ -2250,6 +2292,10 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private com.liferay.headless.admin.site.resource.v1_0.SiteResource.Factory
+		_siteResourceFactory;
 
 	private final List<Site> _sites = new ArrayList<>();
 
