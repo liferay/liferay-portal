@@ -6,16 +6,11 @@
 package com.liferay.osb.faro.admin.web.internal.display.context;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,33 +41,6 @@ public class FaroAdminManagementToolbarDisplayContext
 		).setKeywords(
 			StringPool.BLANK
 		).buildString();
-	}
-
-	@Override
-	public CreationMenu getCreationMenu() {
-		return CreationMenuBuilder.addDropdownItem(
-			() -> {
-				PermissionChecker permissionChecker =
-					PermissionThreadLocal.getPermissionChecker();
-
-				return permissionChecker.isOmniadmin();
-			},
-			dropdownItem -> {
-				dropdownItem.setHref(
-					PortletURLBuilder.create(
-						liferayPortletResponse.createActionURL()
-					).setActionName(
-						"/faro_admin/refresh_project"
-					).setRedirect(
-						currentURLObj
-					).setParameter(
-						"groupId", -1
-					).buildPortletURL());
-				dropdownItem.setLabel(
-					LanguageUtil.get(
-						httpServletRequest, "refresh-all-projects"));
-			}
-		).build();
 	}
 
 	@Override
