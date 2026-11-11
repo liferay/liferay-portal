@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.workflow.kaleo.definition.ExecutionType;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
 import com.liferay.portal.workflow.kaleo.model.KaleoNode;
-import com.liferay.portal.workflow.kaleo.model.KaleoTimer;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.action.KaleoActionExecutor;
 import com.liferay.portal.workflow.kaleo.runtime.graph.PathElement;
@@ -99,16 +98,6 @@ public abstract class BaseNodeExecutor implements NodeExecutor {
 			KaleoNode currentKaleoNode, ExecutionContext executionContext,
 			List<PathElement> remainingPathElements)
 		throws PortalException;
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
-	 */
-	@Deprecated
-	protected void doExecuteTimer(
-			KaleoNode currentKaleoNode, KaleoTimer kaleoTimer,
-			ExecutionContext executionContext)
-		throws PortalException {
-	}
 
 	protected abstract void doExit(
 			KaleoNode currentKaleoNode, ExecutionContext executionContext,
