@@ -839,7 +839,9 @@ definition {
 		task ("When an entry is submitted using the form") {
 			FormsAdminNavigator.gotoPublishedForm();
 
-			FormFields.editParagraphBody(content = "Test Text");
+			CKEditor.addContentInWebContent(
+				content = "Test Text",
+				fieldLabel = "Rich Text");
 
 			FormPortlet.submitSuccessfully();
 		}

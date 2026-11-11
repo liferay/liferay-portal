@@ -440,13 +440,28 @@ definition {
 
 	@summary = "Default summary"
 	macro editParagraphBody(content = null) {
-		SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
+		WaitForVisible(locator1 = "CKEditor#BODY_FIELD_EITHER_EDITOR");
 
-		Type.clickAtType(
-			locator1 = "CKEditor#BODY",
-			value1 = ${content});
+		if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
+			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
 
-		SelectFrame(value1 = "relative=top");
+			Type.clickAtType(
+				locator1 = "CKEditor#BODY",
+				value1 = ${content});
+
+			SelectFrame(value1 = "relative=top");
+		}
+		else {
+			SelectFieldText(locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE");
+
+			Type.sendKeys(
+				locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
+				value1 = ${content});
+
+			WaitForElementPresent(
+				key_bodyName = ${content},
+				locator1 = "FormFields#PARAGRAPH_SPECIFIC_FIELD_BY_BODY");
+		}
 	}
 
 	@summary = "Default summary"
