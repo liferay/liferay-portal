@@ -8,7 +8,7 @@
 <%@ include file="/empty_result_message/init.jsp" %>
 
 <div class="c-empty-state c-empty-state-animation taglib-empty-result-message">
-	<div class="c-empty-state-image <%= animationTypeCssClass %>">
+	<div class="c-empty-state-image">
 		<c:if test="<%= Validator.isNotNull(animationTypeSymbol) %>">
 			<div class="c-empty-state-illustration">
 				<svg aria-hidden="true" class="c-empty-state-icon c-empty-state-icon-<%= animationTypeSymbol %>" focusable="false" viewBox="0 0 256 256">

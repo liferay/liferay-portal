@@ -13,7 +13,6 @@ page import="com.liferay.portal.kernel.util.ListUtil" %>
 <%
 List<DropdownItem> actionDropdownItems = (List<DropdownItem>)request.getAttribute("liferay-frontend:empty-result-message:actionDropdownItems");
 Map<String, Object> additionalProps = (Map<String, Object>)request.getAttribute("liferay-frontend:empty-result-message:additionalProps");
-String animationTypeCssClass = GetterUtil.getString((String)request.getAttribute("liferay-frontend:empty-result-message:animationTypeCssClass"));
 String animationTypeSymbol = GetterUtil.getString((String)request.getAttribute("liferay-frontend:empty-result-message:animationTypeSymbol"));
 String buttonCssClass = GetterUtil.getString((String)request.getAttribute("liferay-frontend:empty-result-message:buttonCssClass"));
 String buttonPropsTransformer = GetterUtil.getString((String)request.getAttribute("liferay-frontend:empty-result-message:buttonPropsTransformer"));

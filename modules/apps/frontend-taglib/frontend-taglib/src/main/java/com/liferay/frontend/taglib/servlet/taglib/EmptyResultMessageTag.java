@@ -167,9 +167,6 @@ public class EmptyResultMessageTag extends IncludeTag {
 			"liferay-frontend:empty-result-message:additionalProps",
 			_additionalProps);
 		httpServletRequest.setAttribute(
-			"liferay-frontend:empty-result-message:animationTypeCssClass",
-			EmptyResultMessageKeys.getAnimationTypeCssClass(_animationType));
-		httpServletRequest.setAttribute(
 			"liferay-frontend:empty-result-message:animationTypeSymbol",
 			EmptyResultMessageKeys.getAnimationTypeSymbol(_animationType));
 		httpServletRequest.setAttribute(

@@ -12,10 +12,6 @@ import com.liferay.petra.string.StringPool;
  */
 public class EmptyResultMessageKeys {
 
-	public static String getAnimationTypeCssClass(AnimationType animationType) {
-		return StringPool.BLANK;
-	}
-
 	public static String getAnimationTypeSymbol(AnimationType animationType) {
 		if (animationType == AnimationType.EMPTY) {
 			return "empty-state";
