@@ -47,25 +47,25 @@ public class QueuedBuildDurationMonitor extends BaseMonitor {
 		long currentTimeMillis =
 			JenkinsResultsParserUtil.getCurrentTimeMillis();
 
-		List<JenkinsMaster> cohortJenkinsMasters = _getJenkinsMasters();
+		List<JenkinsMaster> jenkinsMasters = _getJenkinsMasters();
 
-		if (cohortJenkinsMasters.isEmpty()) {
+		if (jenkinsMasters.isEmpty()) {
 			return new MonitorResult(
 				"Unable to find a master in cohort " + _cohortName, null,
 				MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 
-		List<JenkinsMaster> jenkinsMasters = new ArrayList<>();
+		List<JenkinsMaster> activeJenkinsMasters = new ArrayList<>();
 
-		for (JenkinsMaster cohortJenkinsMaster : cohortJenkinsMasters) {
-			if (cohortJenkinsMaster.isBlacklisted()) {
+		for (JenkinsMaster jenkinsMaster : jenkinsMasters) {
+			if (jenkinsMaster.isBlacklisted()) {
 				continue;
 			}
 
-			jenkinsMasters.add(cohortJenkinsMaster);
+			activeJenkinsMasters.add(jenkinsMaster);
 		}
 
-		if (jenkinsMasters.isEmpty()) {
+		if (activeJenkinsMasters.isEmpty()) {
 			Map<String, String> metrics = new LinkedHashMap<>();
 
 			metrics.put("queued.builds.count", "0");
@@ -80,21 +80,22 @@ public class QueuedBuildDurationMonitor extends BaseMonitor {
 		Map<String, String> queueExceptionMessages = new ConcurrentHashMap<>();
 
 		List<List<JenkinsMaster.QueueItem>> queueItemsList = _readQueueItems(
-			queueExceptionMessages, jenkinsMasters);
+			queueExceptionMessages, activeJenkinsMasters);
 
 		Map<String, String> runningBuildExceptionMessages =
 			new ConcurrentHashMap<>();
 
 		List<List<JenkinsMaster.RunningBuild>> runningBuildsList =
-			_readRunningBuilds(runningBuildExceptionMessages, jenkinsMasters);
+			_readRunningBuilds(
+				runningBuildExceptionMessages, activeJenkinsMasters);
 
 		List<String> messages = new ArrayList<>();
 		int queuedBuildsCount = 0;
 		List<MonitorResult.Status> statuses = new ArrayList<>();
 		List<JenkinsMaster.QueueItem> stuckQueueItems = new ArrayList<>();
 
-		for (int i = 0; i < jenkinsMasters.size(); i++) {
-			JenkinsMaster jenkinsMaster = jenkinsMasters.get(i);
+		for (int i = 0; i < activeJenkinsMasters.size(); i++) {
+			JenkinsMaster jenkinsMaster = activeJenkinsMasters.get(i);
 
 			List<JenkinsMaster.QueueItem> queueItems = queueItemsList.get(i);
 
