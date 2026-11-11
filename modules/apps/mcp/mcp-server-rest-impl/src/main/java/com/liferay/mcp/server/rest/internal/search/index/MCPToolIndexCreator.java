@@ -112,15 +112,19 @@ public class MCPToolIndexCreator {
 	private JSONArray _getSynonymsJSONArray() {
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
-		for (String line : StringUtil.splitLines(_read(_FILE_NAME_SYNONYMS))) {
-			line = line.trim();
+		com.liferay.petra.string.StringUtil.forEachLine(
+			_read(_FILE_NAME_SYNONYMS),
+			line -> {
+				line = line.trim();
 
-			if (Validator.isNull(line) || line.startsWith(StringPool.POUND)) {
-				continue;
-			}
+				if (Validator.isNull(line) ||
+					line.startsWith(StringPool.POUND)) {
 
-			jsonArray.put(line);
-		}
+					return;
+				}
+
+				jsonArray.put(line);
+			});
 
 		return jsonArray;
 	}
