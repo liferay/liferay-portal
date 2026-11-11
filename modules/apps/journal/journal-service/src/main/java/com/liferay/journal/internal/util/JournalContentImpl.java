@@ -77,17 +77,14 @@ public class JournalContentImpl implements JournalContent {
 	}
 
 	@Override
-	public void clearCache(
-		long groupId, String articleId, String ddmTemplateKey) {
-
-		_clearCache(groupId, articleId, ddmTemplateKey);
+	public void clearCache(long groupId, String articleId) {
+		_clearCache(groupId, articleId);
 
 		if (ClusterInvokeThreadLocal.isEnabled()) {
 			ClusterRequest clusterRequest =
 				ClusterRequest.createMulticastRequest(
 					new MethodHandler(
-						_clearArticleCacheMethodKey, groupId, articleId,
-						ddmTemplateKey),
+						_clearArticleCacheMethodKey, groupId, articleId),
 					true);
 
 			clusterRequest.setFireAndForget(true);
@@ -509,12 +506,9 @@ public class JournalContentImpl implements JournalContent {
 
 	protected static final String CACHE_NAME = JournalContent.class.getName();
 
-	private static void _clearCache(
-		long groupId, String articleId, String ddmTemplateKey) {
-
+	private static void _clearCache(long groupId, String articleId) {
 		_journalArticlePortalCacheIndexer.removeKeys(
-			JournalContentArticleKeyIndexEncoder.encode(
-				groupId, articleId, ddmTemplateKey));
+			JournalContentArticleKeyIndexEncoder.encode(groupId, articleId));
 	}
 
 	private static void _clearCache(String ddmTemplateKey) {
@@ -559,8 +553,7 @@ public class JournalContentImpl implements JournalContent {
 		JournalContentImpl.class);
 
 	private static final MethodKey _clearArticleCacheMethodKey = new MethodKey(
-		JournalContentImpl.class, "_clearCache", long.class, String.class,
-		String.class);
+		JournalContentImpl.class, "_clearCache", long.class, String.class);
 	private static final MethodKey _clearTemplateCacheMethodKey = new MethodKey(
 		JournalContentImpl.class, "_clearCache", String.class);
 	private static PortalCacheIndexer
@@ -589,19 +582,16 @@ public class JournalContentImpl implements JournalContent {
 	private static class JournalContentArticleKeyIndexEncoder
 		implements IndexEncoder<String, JournalContentKey> {
 
-		public static String encode(
-			long groupId, String articleId, String ddmTemplateKey) {
-
+		public static String encode(long groupId, String articleId) {
 			return StringBundler.concat(
-				groupId, StringPool.UNDERLINE, articleId, StringPool.UNDERLINE,
-				ddmTemplateKey);
+				groupId, StringPool.UNDERLINE,
+				StringUtil.toUpperCase(articleId));
 		}
 
 		@Override
 		public String encode(JournalContentKey journalContentKey) {
 			return encode(
-				journalContentKey._groupId, journalContentKey._articleId,
-				journalContentKey._ddmTemplateKey);
+				journalContentKey._groupId, journalContentKey._articleId);
 		}
 
 	}
