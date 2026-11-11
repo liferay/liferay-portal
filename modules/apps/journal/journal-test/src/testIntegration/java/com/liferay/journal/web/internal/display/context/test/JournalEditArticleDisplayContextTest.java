@@ -16,6 +16,7 @@ import com.liferay.dynamic.data.mapping.test.util.DDMTemplateTestUtil;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
@@ -36,7 +37,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -139,32 +139,159 @@ public class JournalEditArticleDisplayContextTest {
 	@Test
 	@TestInfo("LPS-172561")
 	public void testGetFriendlyURLDuplicatedWarningMessage() throws Exception {
+		String friendlyURL1 = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
 		_group2 = GroupTestUtil.addGroup();
+
+		_addArticle(
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL1 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL1 + "-de"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL1 + "-ja"
+			).put(
+				LocaleUtil.SPAIN, friendlyURL1 + "-es"
+			).put(
+				LocaleUtil.US, friendlyURL1
+			).build(),
+			_group2.getGroupId());
 
 		_assertGetFriendlyURLDuplicatedWarningMessage(
 			"The URL used in English (United States) already exists in other " +
 				"sites or asset libraries.",
-			_group2.getGroupId(), LocaleUtil.US);
+			HashMapBuilder.put(
+				LocaleUtil.US, friendlyURL1
+			).build());
 		_assertGetFriendlyURLDuplicatedWarningMessage(
 			"The URL used in English (United States), Chinese (China) and " +
 				"Japanese (Japan) already exists in other sites or asset " +
 					"libraries.",
-			_group2.getGroupId(), LocaleUtil.CHINA, LocaleUtil.JAPAN,
-			LocaleUtil.US);
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL1 + "-zh"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL1 + "-ja"
+			).put(
+				LocaleUtil.US, friendlyURL1
+			).build());
 		_assertGetFriendlyURLDuplicatedWarningMessage(
 			"The URL used in English (United States), Chinese (China), " +
 				"Japanese (Japan) and 1 more translations already exist in " +
 					"other sites or asset libraries.",
-			_group2.getGroupId(), LocaleUtil.CHINA, LocaleUtil.GERMANY,
-			LocaleUtil.JAPAN, LocaleUtil.US);
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL1 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL1 + "-de"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL1 + "-ja"
+			).put(
+				LocaleUtil.US, friendlyURL1
+			).build());
 		_assertGetFriendlyURLDuplicatedWarningMessage(
 			"The URL used in English (United States), Chinese (China), " +
 				"Spanish (Spain) and 2 more translations already exist in " +
 					"other sites or asset libraries.",
-			_group2.getGroupId(), LocaleUtil.CHINA, LocaleUtil.GERMANY,
-			LocaleUtil.JAPAN, LocaleUtil.SPAIN, LocaleUtil.US);
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL1 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL1 + "-de"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL1 + "-ja"
+			).put(
+				LocaleUtil.SPAIN, friendlyURL1 + "-es"
+			).put(
+				LocaleUtil.US, friendlyURL1
+			).build());
 		_assertGetFriendlyURLDuplicatedWarningMessage(
-			StringPool.BLANK, _group2.getGroupId());
+			StringPool.BLANK,
+			HashMapBuilder.put(
+				LocaleUtil.US,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).build());
+
+		String friendlyURL2 = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		_addArticle(
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL2 + "-zh"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL2 + "-ja"
+			).put(
+				LocaleUtil.US,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).build(),
+			_group2.getGroupId());
+
+		_group3 = GroupTestUtil.addGroup();
+
+		_addArticle(
+			HashMapBuilder.put(
+				LocaleUtil.FRANCE, friendlyURL2 + "-fr"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL2 + "-de"
+			).put(
+				LocaleUtil.SPAIN, friendlyURL2 + "-es"
+			).put(
+				LocaleUtil.US,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).build(),
+			_group3.getGroupId());
+
+		_group4 = GroupTestUtil.addGroup();
+
+		_addArticle(
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL2 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL2 + "-de"
+			).put(
+				LocaleUtil.US, friendlyURL2
+			).build(),
+			_group4.getGroupId());
+
+		_assertGetFriendlyURLDuplicatedWarningMessage(
+			"The URL used in Chinese (China), Japanese (Japan) and German " +
+				"(Germany) already exists in other sites or asset libraries.",
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL2 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL2 + "-de"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL2 + "-ja"
+			).put(
+				LocaleUtil.US,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).build());
+		_assertGetFriendlyURLDuplicatedWarningMessage(
+			"The URL used in English (United States), Chinese (China) and " +
+				"German (Germany) already exists in other sites or asset " +
+					"libraries.",
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, friendlyURL2 + "-zh"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL2 + "-de"
+			).put(
+				LocaleUtil.US, friendlyURL2
+			).build());
+		_assertGetFriendlyURLDuplicatedWarningMessage(
+			"The URL used in English (United States), Spanish (Spain), " +
+				"Japanese (Japan) and 2 more translations already exist in " +
+					"other sites or asset libraries.",
+			HashMapBuilder.put(
+				LocaleUtil.CHINA, StringPool.BLANK
+			).put(
+				LocaleUtil.FRANCE, friendlyURL2 + "-fr"
+			).put(
+				LocaleUtil.GERMANY, friendlyURL2 + "-de"
+			).put(
+				LocaleUtil.JAPAN, friendlyURL2 + "-ja"
+			).put(
+				LocaleUtil.SPAIN, friendlyURL2 + "-es"
+			).put(
+				LocaleUtil.US, friendlyURL2
+			).build());
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(
@@ -176,10 +303,27 @@ public class JournalEditArticleDisplayContextTest {
 			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 
+		String friendlyURL3 = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		_addArticle(
+			HashMapBuilder.put(
+				LocaleUtil.SPAIN, friendlyURL3 + "-es"
+			).put(
+				LocaleUtil.US,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).build(),
+			_depotEntry.getGroupId());
+
 		_assertGetFriendlyURLDuplicatedWarningMessage(
 			"The URL used in Spanish (Spain) already exists in other sites " +
 				"or asset libraries.",
-			_depotEntry.getGroupId(), LocaleUtil.SPAIN);
+			HashMapBuilder.put(
+				LocaleUtil.SPAIN, friendlyURL3 + "-es"
+			).put(
+				LocaleUtil.US,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).build());
 	}
 
 	@FeatureFlag("LPD-11228")
@@ -236,6 +380,8 @@ public class JournalEditArticleDisplayContextTest {
 			HashMapBuilder.put(
 				LocaleUtil.CHINA, RandomTestUtil.randomString()
 			).put(
+				LocaleUtil.FRANCE, RandomTestUtil.randomString()
+			).put(
 				LocaleUtil.GERMANY, RandomTestUtil.randomString()
 			).put(
 				LocaleUtil.JAPAN, RandomTestUtil.randomString()
@@ -250,50 +396,12 @@ public class JournalEditArticleDisplayContextTest {
 	}
 
 	private void _assertGetFriendlyURLDuplicatedWarningMessage(
-			String expectedFriendlyURLDuplicatedWarningMessage, long groupId,
-			Locale... duplicatedLocales)
+			String expectedFriendlyURLDuplicatedWarningMessage,
+			Map<Locale, String> friendlyURLMap)
 		throws Exception {
 
-		String friendlyURL = StringUtil.toLowerCase(
-			RandomTestUtil.randomString());
-
-		_addArticle(
-			HashMapBuilder.put(
-				LocaleUtil.CHINA, friendlyURL + "-zh"
-			).put(
-				LocaleUtil.GERMANY, friendlyURL + "-de"
-			).put(
-				LocaleUtil.JAPAN, friendlyURL + "-ja"
-			).put(
-				LocaleUtil.SPAIN, friendlyURL + "-es"
-			).put(
-				LocaleUtil.US, friendlyURL + "-en"
-			).build(),
-			groupId);
-
 		JournalArticle journalArticle = _addArticle(
-			HashMapBuilder.put(
-				LocaleUtil.CHINA,
-				_getFriendlyURL(
-					friendlyURL + "-zh", duplicatedLocales, LocaleUtil.CHINA)
-			).put(
-				LocaleUtil.GERMANY,
-				_getFriendlyURL(
-					friendlyURL + "-de", duplicatedLocales, LocaleUtil.GERMANY)
-			).put(
-				LocaleUtil.JAPAN,
-				_getFriendlyURL(
-					friendlyURL + "-ja", duplicatedLocales, LocaleUtil.JAPAN)
-			).put(
-				LocaleUtil.SPAIN,
-				_getFriendlyURL(
-					friendlyURL + "-es", duplicatedLocales, LocaleUtil.SPAIN)
-			).put(
-				LocaleUtil.US,
-				_getFriendlyURL(
-					friendlyURL + "-en", duplicatedLocales, LocaleUtil.US)
-			).build(),
-			_group1.getGroupId());
+			friendlyURLMap, _group1.getGroupId());
 
 		Assert.assertEquals(
 			expectedFriendlyURLDuplicatedWarningMessage,
@@ -306,6 +414,8 @@ public class JournalEditArticleDisplayContextTest {
 						String.valueOf(journalArticle.getResourcePrimKey())
 					).build()),
 				"getFriendlyURLDuplicatedWarningMessage", new Class<?>[0]));
+
+		_journalArticleLocalService.deleteArticles(_group1.getGroupId());
 	}
 
 	private Object _getDDMTemplate(Map<String, String> parameters)
@@ -314,17 +424,6 @@ public class JournalEditArticleDisplayContextTest {
 		return ReflectionTestUtil.invoke(
 			_getJournalEditArticleDisplayContext(parameters), "getDDMTemplate",
 			new Class<?>[0]);
-	}
-
-	private String _getFriendlyURL(
-		String duplicatedFriendlyURL, Locale[] duplicatedLocales,
-		Locale locale) {
-
-		if (ArrayUtil.contains(duplicatedLocales, locale)) {
-			return duplicatedFriendlyURL;
-		}
-
-		return StringUtil.toLowerCase(RandomTestUtil.randomString());
 	}
 
 	private Object _getJournalEditArticleDisplayContext(
@@ -391,6 +490,15 @@ public class JournalEditArticleDisplayContextTest {
 
 	@DeleteAfterTestRun
 	private Group _group2;
+
+	@DeleteAfterTestRun
+	private Group _group3;
+
+	@DeleteAfterTestRun
+	private Group _group4;
+
+	@Inject
+	private JournalArticleLocalService _journalArticleLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.journal.web.internal.portlet.JournalPortlet"
