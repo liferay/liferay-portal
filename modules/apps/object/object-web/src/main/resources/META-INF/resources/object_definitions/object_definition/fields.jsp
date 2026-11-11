@@ -40,7 +40,7 @@ renderResponse.setTitle(objectDefinition.getLabel(locale, true));
 			).put(
 				"creationLanguageId", objectDefinition.getDefaultLanguageId()
 			).put(
-				"creationMenu", objectDefinitionsFieldsDisplayContext.getCreationMenu(objectDefinition)
+				"creationMenu", objectDefinitionsFieldsDisplayContext.getCreationMenu()
 			).put(
 				"formName", "fm"
 			).put(

@@ -8,7 +8,7 @@ package com.liferay.object.web.internal.object.definitions.display.context;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.list.type.service.ListTypeDefinitionService;
 import com.liferay.map.util.MapProviderHelperUtil;
 import com.liferay.object.admin.rest.dto.v1_0.util.ObjectFieldUtil;
@@ -19,9 +19,9 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.web.internal.util.ObjectFieldBusinessTypeUtil;
+import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.editor.configuration.EditorConfiguration;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactoryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -96,27 +96,6 @@ public class ObjectDefinitionsFieldsDisplayContext
 		}
 
 		return getCountries();
-	}
-
-	public CreationMenu getCreationMenu(ObjectDefinition objectDefinition)
-		throws PortalException {
-
-		CreationMenu creationMenu = new CreationMenu();
-
-		if (!hasUpdateObjectDefinitionPermission()) {
-			return creationMenu;
-		}
-
-		creationMenu.addDropdownItem(
-			dropdownItem -> {
-				dropdownItem.setHref("addObjectField");
-				dropdownItem.setLabel(
-					LanguageUtil.get(
-						objectRequestHelper.getRequest(), "add-object-field"));
-				dropdownItem.setTarget("event");
-			});
-
-		return creationMenu;
 	}
 
 	public String getEditObjectFieldURL() throws Exception {
@@ -248,6 +227,19 @@ public class ObjectDefinitionsFieldsDisplayContext
 	@Override
 	protected String getAPIURI() {
 		return "/object-fields";
+	}
+
+	@Override
+	protected UnsafeConsumer<DropdownItem, Exception>
+		getCreationMenuDropdownItemUnsafeConsumer() {
+
+		return dropdownItem -> {
+			dropdownItem.setHref("addObjectField");
+			dropdownItem.setLabel(
+				LanguageUtil.get(
+					objectRequestHelper.getRequest(), "add-object-field"));
+			dropdownItem.setTarget("event");
+		};
 	}
 
 	private final DepotEntryLocalService _depotEntryLocalService;
