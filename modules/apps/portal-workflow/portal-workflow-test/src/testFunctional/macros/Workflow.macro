@@ -361,6 +361,8 @@ definition {
 
 		Workflow.confirmWorkflowAction();
 
+		SelectFrameTop();
+
 		Click(locator1 = "Icon#ANGLE_LEFT_BACK");
 
 		Workflow.viewTaskAssignedToMe(
