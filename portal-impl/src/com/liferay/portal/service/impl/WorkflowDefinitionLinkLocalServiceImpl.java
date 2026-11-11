@@ -167,8 +167,7 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 
 	@Override
 	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
-			long companyId, long groupId, long classPK)
-		throws PortalException {
+		long companyId, long groupId, long classPK) {
 
 		return workflowDefinitionLinkPersistence.findByG_C_CPK(
 			groupId, companyId, classPK);
@@ -176,8 +175,7 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 
 	@Override
 	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
-			long companyId, long groupId, String className, long classPK)
-		throws PortalException {
+		long companyId, long groupId, String className, long classPK) {
 
 		return workflowDefinitionLinkPersistence.findByG_C_C_C(
 			companyId, StagingUtil.getLiveGroupId(groupId),
@@ -194,9 +192,8 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 
 	@Override
 	public List<WorkflowDefinitionLink> getWorkflowDefinitionLinks(
-			long companyId, String workflowDefinitionName,
-			int workflowDefinitionVersion)
-		throws PortalException {
+		long companyId, String workflowDefinitionName,
+		int workflowDefinitionVersion) {
 
 		return workflowDefinitionLinkPersistence.findByC_W_W(
 			companyId, workflowDefinitionName, workflowDefinitionVersion);
