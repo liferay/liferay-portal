@@ -1,0 +1,25 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"properties": {
+		"database": {
+			"additionalProperties": false,
+			"description": "Database of the deployment.",
+			"properties": {
+				"engine": {
+					"description": "Database engine of every environment in the deployment. It cannot be changed after the deployment is created.",
+					"enum": [
+						"postgresql"
+					]
+				}
+			},
+			"required": [
+				"engine"
+			],
+			"type": "object"
+		}
+	},
+	"required": [
+		"database"
+	],
+	"type": "object"
+}

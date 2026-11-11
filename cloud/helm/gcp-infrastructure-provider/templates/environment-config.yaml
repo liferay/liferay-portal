@@ -1,5 +1,6 @@
 apiVersion: apiextensions.crossplane.io/v1beta1
 data:
+    databaseEngine: {{ .Values.database.engine | quote }}
     deploymentName: {{ .Values.deploymentContext.deploymentName | quote }}
     projectId: {{ .Values.deploymentContext.projectId | quote }}
     projectNumber: {{ .Values.deploymentContext.projectNumber | quote }}
