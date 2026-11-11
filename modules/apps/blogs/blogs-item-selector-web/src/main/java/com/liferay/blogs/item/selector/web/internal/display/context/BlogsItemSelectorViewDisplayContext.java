@@ -119,7 +119,6 @@ public class BlogsItemSelectorViewDisplayContext {
 	}
 
 	public PortletURL getPortletURL(
-			HttpServletRequest httpServletRequest,
 			LiferayPortletResponse liferayPortletResponse)
 		throws PortletException {
 
