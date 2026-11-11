@@ -1091,7 +1091,7 @@ public class BaseAutoDeployer implements AutoDeployer {
 		return null;
 	}
 
-	private void _rewriteFiles(File srcDir) throws Exception {
+	private void _rewriteFiles(File srcDir) {
 		String[] fileNames = FileUtil.listFiles(srcDir + "/WEB-INF/");
 
 		for (String fileName : fileNames) {
