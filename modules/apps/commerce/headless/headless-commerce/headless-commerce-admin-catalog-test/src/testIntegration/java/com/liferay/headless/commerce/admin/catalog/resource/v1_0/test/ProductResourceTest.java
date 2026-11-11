@@ -1330,6 +1330,17 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	private void _testPatchProductByExternalReferenceCodeWithOptionExternalReferenceCode()
 		throws Exception {
 
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ProductResource productResource = ProductResource.builder(
+		).authentication(
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "productOptions"
+		).build();
+
 		CPOption cpOption = CPTestUtil.addCPOption(
 			testGroup.getGroupId(), true);
 
@@ -1358,20 +1369,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				}
 			});
 
-		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
-
-		ProductResource nestedFieldsProductResource = ProductResource.builder(
-		).authentication(
-			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
-		).locale(
-			LocaleUtil.getDefault()
-		).parameters(
-			"nestedFields", "productOptions"
-		).build();
-
-		Product product =
-			nestedFieldsProductResource.getProductByExternalReferenceCode(
-				postProduct.getExternalReferenceCode());
+		Product product = productResource.getProductByExternalReferenceCode(
+			postProduct.getExternalReferenceCode());
 
 		ProductOption[] productOptions = product.getProductOptions();
 
