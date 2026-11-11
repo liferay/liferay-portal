@@ -10,10 +10,6 @@ import jakarta.el.ELResolver;
 
 import jakarta.portlet.PortletRequest;
 
-import java.beans.FeatureDescriptor;
-
-import java.util.Iterator;
-
 import org.springframework.beans.factory.BeanFactory;
 
 /**
@@ -27,12 +23,6 @@ public class SpringBeanELResolver extends ELResolver {
 
 	@Override
 	public Class<?> getCommonPropertyType(ELContext elContext, Object base) {
-		return null;
-	}
-
-	public Iterator<FeatureDescriptor> getFeatureDescriptors(
-		ELContext elContext, Object base) {
-
 		return null;
 	}
 
