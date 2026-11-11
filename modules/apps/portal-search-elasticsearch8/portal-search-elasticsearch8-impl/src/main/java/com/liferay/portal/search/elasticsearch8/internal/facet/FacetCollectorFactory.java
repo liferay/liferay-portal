@@ -56,7 +56,7 @@ public class FacetCollectorFactory {
 			return getFacetCollector(aggregations.get(name), name);
 		}
 
-		return new ElasticsearchFacetFieldCollector(aggregate, name);
+		return new ElasticsearchFacetFieldCollector(name);
 	}
 
 }

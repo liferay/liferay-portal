@@ -5,8 +5,6 @@
 
 package com.liferay.portal.search.elasticsearch8.internal.facet;
 
-import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
-
 import com.liferay.portal.kernel.search.facet.collector.DefaultTermCollector;
 import com.liferay.portal.kernel.search.facet.collector.FacetCollector;
 import com.liferay.portal.kernel.search.facet.collector.TermCollector;
@@ -20,9 +18,7 @@ import java.util.List;
  */
 public class ElasticsearchFacetFieldCollector implements FacetCollector {
 
-	public ElasticsearchFacetFieldCollector(
-		Aggregate aggregate, String fieldName) {
-
+	public ElasticsearchFacetFieldCollector(String fieldName) {
 		_fieldName = fieldName;
 	}
 
