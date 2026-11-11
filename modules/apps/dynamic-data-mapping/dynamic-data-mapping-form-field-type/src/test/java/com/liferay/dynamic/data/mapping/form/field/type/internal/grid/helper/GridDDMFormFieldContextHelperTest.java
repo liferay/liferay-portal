@@ -6,7 +6,6 @@
 package com.liferay.dynamic.data.mapping.form.field.type.internal.grid.helper;
 
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
-import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormFieldOptionsTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -58,8 +57,7 @@ public class GridDDMFormFieldContextHelperTest {
 		GridDDMFormFieldContextHelper gridDDMFormFieldContextHelper =
 			new GridDDMFormFieldContextHelper(ddmFormFieldOptions, locale);
 
-		return gridDDMFormFieldContextHelper.getOptions(
-			new DDMFormFieldRenderingContext());
+		return gridDDMFormFieldContextHelper.getOptions();
 	}
 
 }

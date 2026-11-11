@@ -7,7 +7,6 @@ package com.liferay.dynamic.data.mapping.form.field.type.internal.grid.helper;
 
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
-import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.ArrayList;
@@ -26,9 +25,7 @@ public class GridDDMFormFieldContextHelper {
 		_locale = locale;
 	}
 
-	public List<Object> getOptions(
-		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
-
+	public List<Object> getOptions() {
 		List<Object> options = new ArrayList<>();
 
 		if (_ddmFormFieldOptions == null) {
