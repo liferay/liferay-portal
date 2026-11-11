@@ -39,14 +39,16 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 	public void write(Collection<PortletData> portletDatas, Writer writer)
 		throws IOException {
 
-		String rawCode = _computeRawCode(portletDatas);
+		StringBundler rawCodeSB = _computeRawCode(portletDatas);
 
-		if (!Validator.isBlank(rawCode)) {
+		if (rawCodeSB.index() > 0) {
 			writer.write("<script");
 			writer.write(
 				ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(null));
 			writer.write(" type=\"text/javascript\">\n");
-			writer.write(rawCode);
+
+			rawCodeSB.writeTo(writer);
+
 			writer.write("\n</script>");
 		}
 
@@ -147,8 +149,10 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 
 		// Write actual JS code
 
-		writer.write(
-			_computeNonrawCode(amdRequiresMap, esImportsMap, portletDatas));
+		StringBundler nonrawCodeSB = _computeNonrawCode(
+			amdRequiresMap, esImportsMap, portletDatas);
+
+		nonrawCodeSB.writeTo(writer);
 
 		// Write AUI epilogue
 
@@ -267,7 +271,7 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 		return esImportsMap;
 	}
 
-	private String _computeNonrawCode(
+	private StringBundler _computeNonrawCode(
 		Map<AMDRequire, AMDRequire> amdRequiresMap,
 		Map<ESImport, ESImport> esImportsMap,
 		Collection<PortletData> portletDatas) {
@@ -356,10 +360,12 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 			}
 		}
 
-		return sb.toString();
+		return sb;
 	}
 
-	private String _computeRawCode(Collection<PortletData> portletDatas) {
+	private StringBundler _computeRawCode(
+		Collection<PortletData> portletDatas) {
+
 		StringBundler sb = new StringBundler();
 
 		for (PortletData portletData : portletDatas) {
@@ -375,7 +381,7 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 			}
 		}
 
-		return sb.toString();
+		return sb;
 	}
 
 }
