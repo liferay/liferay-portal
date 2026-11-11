@@ -6,6 +6,10 @@
 package com.liferay.journal.web.internal.display.context.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMTemplate;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
+import com.liferay.dynamic.data.mapping.test.util.DDMTemplateTestUtil;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
@@ -27,7 +31,10 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -37,7 +44,8 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.test.MockLiferayPortletContext;
 
 import jakarta.portlet.Portlet;
-import jakarta.portlet.RenderRequest;
+
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,6 +53,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Gergely Szalay
@@ -65,6 +75,58 @@ public class JournalEditArticleDisplayContextTest {
 		_user = TestPropsValues.getUser();
 	}
 
+	@Test
+	public void testGetDDMTemplate() throws Exception {
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		DDMTemplate ddmTemplate1 = DDMTemplateTestUtil.addTemplate(
+			_group.getGroupId(), ddmStructure.getStructureId(),
+			PortalUtil.getClassNameId(JournalArticle.class));
+
+		DDMTemplate ddmTemplate2 = DDMTemplateTestUtil.addTemplate(
+			_group.getGroupId(), ddmStructure.getStructureId(),
+			PortalUtil.getClassNameId(JournalArticle.class));
+
+		Assert.assertEquals(
+			ddmTemplate2,
+			_getDDMTemplate(
+				HashMapBuilder.put(
+					"ddmStructureId",
+					String.valueOf(ddmStructure.getStructureId())
+				).build()));
+
+		JournalArticle journalArticle =
+			JournalTestUtil.addArticleWithXMLContent(
+				_group.getGroupId(),
+				DDMStructureTestUtil.getSampleStructuredContent(),
+				ddmStructure.getStructureKey(), ddmTemplate2.getTemplateKey());
+
+		Assert.assertEquals(
+			ddmTemplate2,
+			_getDDMTemplate(
+				HashMapBuilder.put(
+					"articleId", journalArticle.getArticleId()
+				).put(
+					"resourcePrimKey",
+					String.valueOf(journalArticle.getResourcePrimKey())
+				).build()));
+
+		journalArticle.setDDMTemplateKey(ddmTemplate1.getTemplateKey());
+
+		journalArticle = JournalTestUtil.updateArticle(journalArticle);
+
+		Assert.assertEquals(
+			ddmTemplate1,
+			_getDDMTemplate(
+				HashMapBuilder.put(
+					"articleId", journalArticle.getArticleId()
+				).put(
+					"resourcePrimKey",
+					String.valueOf(journalArticle.getResourcePrimKey())
+				).build()));
+	}
+
 	@FeatureFlag("LPD-11228")
 	@Test
 	public void testIsShowPublishModal() throws Exception {
@@ -80,19 +142,14 @@ public class JournalEditArticleDisplayContextTest {
 			_group.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID, serviceContext);
 
-		RenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest(journalArticle);
-
-		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
-
-		mvcPortlet.render(
-			mockLiferayPortletRenderRequest,
-			new MockLiferayPortletRenderResponse());
-
 		Object journalEditArticleDisplayContext =
-			mockLiferayPortletRenderRequest.getAttribute(
-				"com.liferay.journal.web.internal.display.context." +
-					"JournalEditArticleDisplayContext");
+			_getJournalEditArticleDisplayContext(
+				HashMapBuilder.put(
+					"articleId", journalArticle.getArticleId()
+				).put(
+					"resourcePrimKey",
+					String.valueOf(journalArticle.getResourcePrimKey())
+				).build());
 
 		Assert.assertTrue(
 			ReflectionTestUtil.invoke(
@@ -110,20 +167,30 @@ public class JournalEditArticleDisplayContextTest {
 				new Class<?>[0]));
 	}
 
-	private RenderRequest _getMockLiferayPortletRenderRequest(
-			JournalArticle journalArticle)
+	private Object _getDDMTemplate(Map<String, String> parameters)
 		throws Exception {
 
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			new MockLiferayPortletRenderRequest();
+		return ReflectionTestUtil.invoke(
+			_getJournalEditArticleDisplayContext(parameters), "getDDMTemplate",
+			new Class<?>[0]);
+	}
 
-		mockLiferayPortletRenderRequest.addParameter(
+	private Object _getJournalEditArticleDisplayContext(
+			Map<String, String> parameters)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setParameter(
 			"mvcRenderCommandName", "/journal/edit_article");
-		mockLiferayPortletRenderRequest.addParameter(
-			"resourcePrimKey",
-			String.valueOf(journalArticle.getResourcePrimKey()));
-		mockLiferayPortletRenderRequest.addParameter(
-			"articleId", journalArticle.getArticleId());
+		mockHttpServletRequest.setParameters(parameters);
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			new MockLiferayPortletRenderRequest(mockHttpServletRequest);
+
+		mockHttpServletRequest.removeAttribute(
+			JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		String path = "/edit_article.jsp";
 
@@ -147,7 +214,15 @@ public class JournalEditArticleDisplayContextTest {
 
 		mockLiferayPortletRenderRequest.setParameter("mvcPath", path);
 
-		return mockLiferayPortletRenderRequest;
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
+
+		mvcPortlet.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		return mockLiferayPortletRenderRequest.getAttribute(
+			"com.liferay.journal.web.internal.display.context." +
+				"JournalEditArticleDisplayContext");
 	}
 
 	@Inject
