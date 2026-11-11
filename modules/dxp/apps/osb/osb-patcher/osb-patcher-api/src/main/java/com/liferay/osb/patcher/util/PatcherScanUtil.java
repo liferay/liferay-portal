@@ -432,8 +432,7 @@ public class PatcherScanUtil {
 		List<String> patcherBuildTickets = PatcherUtil.sortTokens(tickets);
 
 		PatcherFixRadix patcherFixRadix = PatcherFixUtil.getPatcherFixRadix(
-			patcherProjectVersionId, patcherBuildTickets,
-			patcherFixesSelection);
+			patcherBuildTickets, patcherFixesSelection);
 
 		List<Map<String, Object>> trace = new ArrayList<>();
 
@@ -443,8 +442,8 @@ public class PatcherScanUtil {
 
 			if (patcherFix == null) {
 				patcherFixPackFixIds = scanWithPatcherFixPackFixTickets(
-					patcherBuildTickets, patcherFixPackFixIds,
-					patcherProjectVersionId, tickets, patcherFixesSelection);
+					patcherBuildTickets, patcherFixPackFixIds, tickets,
+					patcherFixesSelection);
 
 				if (patcherFixPackFixIds != null) {
 					patcherFixIds.addAll(patcherFixPackFixIds);
@@ -548,8 +547,7 @@ public class PatcherScanUtil {
 
 	protected static List<Long> scanWithPatcherFixPackFixTickets(
 			List<String> missingTickets, List<Long> patcherFixPackFixIds,
-			long patcherProjectVersionId, String patcherBuildTickets,
-			List<PatcherFix> patcherFixesSelection)
+			String patcherBuildTickets, List<PatcherFix> patcherFixesSelection)
 		throws Exception {
 
 		Map<String, PatcherFix> patcherFixPackFixNamePatcherFixPackFixMap =
@@ -568,7 +566,7 @@ public class PatcherScanUtil {
 		}
 
 		PatcherFixRadix patcherFixRadix = PatcherFixUtil.getPatcherFixRadix(
-			patcherProjectVersionId, tickets, patcherFixesSelection,
+			tickets, patcherFixesSelection,
 			missingTickets.toArray(new String[0]));
 
 		while (!missingTickets.isEmpty()) {

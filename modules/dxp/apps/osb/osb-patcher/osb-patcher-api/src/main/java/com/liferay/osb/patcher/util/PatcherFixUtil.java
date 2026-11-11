@@ -446,7 +446,7 @@ public class PatcherFixUtil {
 	}
 
 	public static PatcherFixRadix getPatcherFixRadix(
-		long patcherProjectVersionId, List<String> patcherBuildTickets,
+		List<String> patcherBuildTickets,
 		List<PatcherFix> patcherFixesSelection) {
 
 		PatcherFixRadix patcherFixRadix = new PatcherFixRadix();
@@ -465,7 +465,7 @@ public class PatcherFixUtil {
 	}
 
 	public static PatcherFixRadix getPatcherFixRadix(
-		long patcherProjectVersionId, List<String> patcherBuildTickets,
+		List<String> patcherBuildTickets,
 		List<PatcherFix> patcherFixesSelection, String[] ticketsFilter) {
 
 		PatcherFixRadix patcherFixRadix = new PatcherFixRadix();
