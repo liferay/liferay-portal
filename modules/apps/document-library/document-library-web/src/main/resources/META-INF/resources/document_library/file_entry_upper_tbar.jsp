@@ -71,7 +71,7 @@ FileVersion fileVersion = dlViewFileEntryDisplayContext.getFileVersion();
 						data-analytics-file-entry-title="<%= fileEntry.getTitle() %>"
 						data-analytics-file-entry-version="<%= fileEntry.getVersion() %>"
 						displayType="primary"
-						href="<%= DLURLHelperUtil.getDownloadURL(fileEntry, fileVersion, themeDisplay, StringPool.BLANK, false, true) %>"
+						href="<%= DLURLHelperUtil.getDownloadURL(fileEntry, fileVersion, themeDisplay, StringPool.BLANK, true, true, false) %>"
 						icon="download"
 						label="download"
 						small="<%= true %>"

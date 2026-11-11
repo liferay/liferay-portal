@@ -372,7 +372,7 @@ public class UIItemsBuilder {
 			_addDoAsUserIdParameter(
 				_dlURLHelper.getDownloadURL(
 					_fileEntry, _fileVersion, _themeDisplay, StringPool.BLANK,
-					appendVersion, true))
+					true, true, appendVersion))
 		).setIcon(
 			"download"
 		).setKey(
