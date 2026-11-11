@@ -566,8 +566,7 @@ public class ResourcePermissionLocalServiceImpl
 
 	@Override
 	public void copyModelResourcePermissions(
-			long companyId, String name, long sourcePrimKey, long targetPrimKey)
-		throws PortalException {
+		long companyId, String name, long sourcePrimKey, long targetPrimKey) {
 
 		List<ResourcePermission> sourceResourcePermissions =
 			resourcePermissionPersistence.findByC_N_S_P(
@@ -611,8 +610,7 @@ public class ResourcePermissionLocalServiceImpl
 
 	@Override
 	public void deleteResourcePermissions(
-			long companyId, String name, int scope)
-		throws PortalException {
+		long companyId, String name, int scope) {
 
 		Session session = resourcePermissionPersistence.openSession();
 
@@ -936,9 +934,8 @@ public class ResourcePermissionLocalServiceImpl
 
 	@Override
 	public List<Role> getRoles(
-			long companyId, String name, int scope, String primKey,
-			String actionId)
-		throws PortalException {
+		long companyId, String name, int scope, String primKey,
+		String actionId) {
 
 		ResourceAction resourceAction =
 			_resourceActionLocalService.fetchResourceAction(name, actionId);
