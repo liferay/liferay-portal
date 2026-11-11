@@ -52,6 +52,7 @@ it('ends the operation when the save fails so the Save button stops loading', as
 
 	await handleSaveStructure({
 		dispatch,
+		objectDefinitions: {},
 		state: buildDraftState(),
 		validate: () => true,
 	});
@@ -68,6 +69,7 @@ it('resets the structure status to draft after a successful update save so the S
 
 	await handleSaveStructure({
 		dispatch,
+		objectDefinitions: {},
 		state: buildDraftState(),
 		validate: () => true,
 	});

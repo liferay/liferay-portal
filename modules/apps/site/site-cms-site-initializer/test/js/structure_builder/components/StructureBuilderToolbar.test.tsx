@@ -10,10 +10,18 @@ import React from 'react';
 
 import SpaceService from '../../../../src/main/resources/META-INF/resources/js/common/services/SpaceService';
 import StructureService from '../../../../src/main/resources/META-INF/resources/js/common/services/StructureService';
-import {ObjectDefinitions} from '../../../../src/main/resources/META-INF/resources/js/common/types/ObjectDefinition';
+import {
+	ObjectDefinition,
+	ObjectDefinitions,
+} from '../../../../src/main/resources/META-INF/resources/js/common/types/ObjectDefinition';
 import {Space} from '../../../../src/main/resources/META-INF/resources/js/common/types/Space';
 import StructureBuilderToolbar from '../../../../src/main/resources/META-INF/resources/js/structure_builder/components/StructureBuilderToolbar';
-import {Structure} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
+import {
+	ReferencedStructure,
+	Structure,
+	StructureChild,
+} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
+import {Uuid} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Uuid';
 import {Field} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 import {addParams, mockNavigate} from '../../__mocks__/frontend-js-web';
@@ -82,7 +90,57 @@ const MOCK_OBJECT_DEFINITIONS: ObjectDefinitions = {
 	} as any,
 };
 
-const renderComponent = (state: MockState) => {
+function buildDeepChildren() {
+	let children = new Map<Uuid, StructureChild>();
+
+	for (let i = 0; i < 5; i++) {
+		const uuid = getUuid();
+
+		children = new Map([
+			[
+				uuid,
+				{
+					children,
+					erc: `referenced-${i}`,
+					type: 'referenced-structure',
+					uuid,
+				} as ReferencedStructure,
+			],
+		]);
+	}
+
+	return children;
+}
+
+function buildParentDefinitions() {
+	const objectDefinitions: ObjectDefinitions = {...MOCK_OBJECT_DEFINITIONS};
+
+	let target = 'structure-erc';
+
+	for (let i = 0; i < 5; i++) {
+		const erc = `parent-${i}`;
+
+		objectDefinitions[erc] = {
+			externalReferenceCode: erc,
+			objectRelationships: [
+				{
+					edge: true,
+					objectDefinitionExternalReferenceCode1: erc,
+					objectDefinitionExternalReferenceCode2: target,
+				},
+			],
+		} as ObjectDefinition;
+
+		target = erc;
+	}
+
+	return objectDefinitions;
+}
+
+const renderComponent = (
+	state: MockState,
+	objectDefinitions: ObjectDefinitions = MOCK_OBJECT_DEFINITIONS
+) => {
 	const structure: Partial<Structure> = {
 		children: DEFAULT_CHILDREN,
 		erc: 'structure-erc',
@@ -92,7 +150,7 @@ const renderComponent = (state: MockState) => {
 
 	return render(
 		<MockCacheProvider
-			objectDefinitions={MOCK_OBJECT_DEFINITIONS}
+			objectDefinitions={objectDefinitions}
 			spaces={[MOCK_SPACE_1, MOCK_SPACE_2]}
 		>
 			<MockStateProvider state={{...state, structure}}>
@@ -188,6 +246,92 @@ describe('StructureBuilderToolbar', () => {
 			).toHaveBeenCalledWith(
 				expect.objectContaining({
 					text: 'you-have-made-changes-to-the-content-structure-that-may-impact-existing-stored-data-once-published',
+				})
+			);
+		});
+
+		expect(StructureService.saveStructure).not.toHaveBeenCalled();
+	});
+
+	it('Blocks saving when the structure exceeds the maximum nesting depth', async () => {
+		renderComponent({
+			structure: {children: buildDeepChildren(), status: 'draft'},
+		});
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => {
+			expect(
+				require('@liferay/layout-js-components-web').openConfirmModal
+			).toHaveBeenCalledWith(
+				expect.objectContaining({
+					text: 'this-content-structure-exceeds-the-maximum-nesting-depth-of-x-levels',
+					title: 'unable-to-save',
+				})
+			);
+		});
+
+		expect(StructureService.saveStructure).not.toHaveBeenCalled();
+	});
+
+	it('Blocks saving when the structures that reference it would exceed the maximum nesting depth', async () => {
+		renderComponent(
+			{structure: {status: 'draft'}},
+			buildParentDefinitions()
+		);
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => {
+			expect(
+				require('@liferay/layout-js-components-web').openConfirmModal
+			).toHaveBeenCalledWith(
+				expect.objectContaining({
+					text: 'this-content-structure-cannot-be-saved-because-it-is-referenced-in-other-content-structures-that-would-exceed-the-maximum-nesting-depth-of-x-levels',
+					title: 'unable-to-save',
+				})
+			);
+		});
+
+		expect(StructureService.saveStructure).not.toHaveBeenCalled();
+	});
+
+	it('Blocks publishing when the structure exceeds the maximum nesting depth', async () => {
+		renderComponent({
+			structure: {children: buildDeepChildren(), status: 'draft'},
+		});
+
+		await userEvent.click(screen.getByRole('button', {name: 'publish'}));
+
+		await waitFor(() => {
+			expect(
+				require('@liferay/layout-js-components-web').openConfirmModal
+			).toHaveBeenCalledWith(
+				expect.objectContaining({
+					text: 'this-content-structure-exceeds-the-maximum-nesting-depth-of-x-levels',
+					title: 'unable-to-publish',
+				})
+			);
+		});
+
+		expect(StructureService.saveStructure).not.toHaveBeenCalled();
+	});
+
+	it('Blocks publishing when the structures that reference it would exceed the maximum nesting depth', async () => {
+		renderComponent(
+			{structure: {status: 'published'}},
+			buildParentDefinitions()
+		);
+
+		await userEvent.click(screen.getByRole('button', {name: 'publish'}));
+
+		await waitFor(() => {
+			expect(
+				require('@liferay/layout-js-components-web').openConfirmModal
+			).toHaveBeenCalledWith(
+				expect.objectContaining({
+					text: 'this-content-structure-cannot-be-published-because-it-is-referenced-in-other-content-structures-that-would-exceed-the-maximum-nesting-depth-of-x-levels-if-these-changes-are-propagated',
+					title: 'unable-to-publish',
 				})
 			);
 		});
