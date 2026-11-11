@@ -1,4 +1,3 @@
-import * as API from 'shared/api';
 import Card from 'shared/components/Card';
 import DataValue from 'shared/components/DataValue';
 import Loading from 'shared/components/Loading';
@@ -13,14 +12,13 @@ import {
 } from 'shared/components/FrontendDataSet';
 import {
 	isLifecycleStage,
-	LifecycleStages,
 	lifecycleStagesLabelMap,
 } from 'contacts/pages/account/utils/constants';
 import {buildViews} from './utils';
 import {ICatalogField} from 'shared/api/catalog';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes} from 'shared/util/router';
-import {useRequest} from 'shared/hooks/useRequest';
+import {useLifecycleStageFilterItems} from 'shared/hooks/useLifecycleStageFilterItems';
 
 interface IAccountsDataSetProps {
 	accountLifecycleId?: string;
@@ -36,13 +34,6 @@ interface IAccountsDataSetProps {
 	segmentFilter?: string;
 	segmentName?: string;
 	stageSelectionNonce?: number;
-}
-
-interface ILifecycleStageFieldValue {
-	externalReferenceCode: string;
-	id: string;
-	stageName?: string;
-	stageType?: LifecycleStages;
 }
 
 export const buildSelectionPreloadedData = (value?: string, label?: string) =>
@@ -68,29 +59,11 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 	segmentName,
 	stageSelectionNonce,
 }) => {
-	const {data: lifecycleStageFieldValues, loading: lifecycleStagesLoading} =
-		useRequest({
-			dataSourceFn: API.accounts.fetchLifecycleStageFieldValues,
-			skipRequest: !accountLifecycleId,
-			variables: {
-				accountLifecycleId,
-				channelId,
-				groupId,
-			},
-		});
-
-	const lifecycleStages: ILifecycleStageFieldValue[] =
-		lifecycleStageFieldValues?.items ?? [];
-
-	const lifecycleStageItems = lifecycleStages.map(
-		({externalReferenceCode, stageName, stageType}) => ({
-			label:
-				stageName ??
-				(stageType && lifecycleStagesLabelMap[stageType]?.label) ??
-				externalReferenceCode,
-			value: externalReferenceCode,
-		})
-	);
+	const {
+		items: lifecycleStageItems,
+		lifecycleStages,
+		loading: lifecycleStagesLoading,
+	} = useLifecycleStageFilterItems({accountLifecycleId, channelId, groupId});
 
 	const preloadedRangeSelector = rangeSelectors.find(
 		({value}) => value === rangeKeyFilter
