@@ -155,9 +155,7 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<Region> getRegions(long countryId, boolean active)
-		throws PortalException {
-
+	public List<Region> getRegions(long countryId, boolean active) {
 		return regionPersistence.findByC_A(countryId, active);
 	}
 
