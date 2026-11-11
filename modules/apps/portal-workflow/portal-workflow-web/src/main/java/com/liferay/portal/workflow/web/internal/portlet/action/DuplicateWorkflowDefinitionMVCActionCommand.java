@@ -64,15 +64,13 @@ public class DuplicateWorkflowDefinitionMVCActionCommand
 			workflowDefinition =
 				workflowDefinitionManager.deployWorkflowDefinition(
 					content.getBytes(), themeDisplay.getCompanyId(), null, name,
-					getTitle(actionRequest, titleMap),
-					themeDisplay.getUserId());
+					getTitle(titleMap), themeDisplay.getUserId());
 		}
 		else {
 			workflowDefinition =
 				workflowDefinitionManager.saveWorkflowDefinition(
 					content.getBytes(), themeDisplay.getCompanyId(), null, name,
-					getTitle(actionRequest, titleMap),
-					themeDisplay.getUserId());
+					getTitle(titleMap), themeDisplay.getUserId());
 		}
 
 		setRedirectAttribute(actionRequest, workflowDefinition);

@@ -109,9 +109,7 @@ public abstract class BaseWorkflowDefinitionMVCActionCommand
 			getResourceBundle(actionRequest), "workflow-updated-successfully");
 	}
 
-	protected String getTitle(
-		ActionRequest actionRequest, Map<Locale, String> titleMap) {
-
+	protected String getTitle(Map<Locale, String> titleMap) {
 		if (titleMap == null) {
 			return StringPool.BLANK;
 		}
