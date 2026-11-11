@@ -130,8 +130,7 @@ public class PrimaryKeyUpdaterUtil {
 	}
 
 	private static void _updatePrimaryKey(
-			String tableName, String[] primaryKeyColumnNames)
-		throws Exception {
+		String tableName, String[] primaryKeyColumnNames) {
 
 		DB db = DBManagerUtil.getDB();
 
