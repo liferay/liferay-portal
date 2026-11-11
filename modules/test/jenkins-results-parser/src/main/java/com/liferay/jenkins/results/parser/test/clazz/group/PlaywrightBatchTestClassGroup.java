@@ -363,7 +363,7 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 			throw new RuntimeException(
 				"Unable to set test classes because the Playwright test " +
 					"listing \"test --list --reporter=json\" did not return " +
-						"a config");
+						"a \"config\"");
 		}
 
 		File rootDir = new File(configJSONObject.getString("rootDir"));
@@ -1007,17 +1007,14 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 					"build.xml", "setup-yarn");
 			}
 			catch (AntException antException) {
-				System.out.println(
-					"Skipping Playwright class group enumeration because the " +
-						"\"setup-yarn\" target failed");
-
-				antException.printStackTrace();
-
-				_playwrightJSONObject = new JSONObject();
+				_playwrightJSONObjectRuntimeException = new RuntimeException(
+					"Unable to list Playwright tests because the " +
+						"\"setup-yarn\" target failed",
+					antException);
 
 				_playwrightJSONObjectsLoaded.set(true);
 
-				return;
+				throw _playwrightJSONObjectRuntimeException;
 			}
 
 			String playwrightArgs = "test --list --reporter=json";
