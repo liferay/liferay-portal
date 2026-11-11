@@ -6,11 +6,12 @@
 package com.liferay.layout.page.template.admin.web.internal.display.context;
 
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
+import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -91,10 +92,11 @@ public class AssetDisplayPageUsagesManagementToolbarDisplayContext
 		}
 
 		_defaultLayoutPageTemplateEntry =
-			LayoutPageTemplateEntryLocalServiceUtil.
-				fetchDefaultLayoutPageTemplateEntry(
-					_themeDisplay.getScopeGroupId(), _getClassNameId(),
-					_getClassTypeId());
+			LayoutPageTemplateEntryUtil.fetchDefaultLayoutPageTemplateEntry(
+				_getClassNameId(), _getClassTypeId(),
+				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+					_themeDisplay.getScopeGroupId()),
+				_themeDisplay.getScopeGroupId());
 
 		return _defaultLayoutPageTemplateEntry;
 	}
