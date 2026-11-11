@@ -138,13 +138,9 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 				"Unable to render Liferay global object", portalException);
 		}
 
-		String requestURL = String.valueOf(httpServletRequest.getRequestURL());
-
 		printWriter.println(
 			StringUtil.replace(
-				_TPL_LIFERAY_JS,
-				new String[] {"[$DEFINITION$]", "[$DEV_MODE$]"},
-				new Object[] {sb, requestURL.startsWith("http://localhost")}));
+				_TPL_LIFERAY_JS, "[$DEFINITION$]", sb.toString()));
 
 		printWriter.println("</script>");
 	}
