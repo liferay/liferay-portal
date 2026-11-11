@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
-import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
@@ -52,17 +51,6 @@ public class FaroAdminManagementToolbarDisplayContext
 	@Override
 	public CreationMenu getCreationMenu() {
 		return CreationMenuBuilder.addDropdownItem(
-			dropdownItem -> {
-				dropdownItem.setHref(
-					ResourceURLBuilder.createResourceURL(
-						liferayPortletResponse
-					).setResourceID(
-						"/faro_admin/export_cost_report"
-					).buildString());
-				dropdownItem.setLabel(
-					LanguageUtil.get(httpServletRequest, "export-cost-report"));
-			}
-		).addDropdownItem(
 			() -> {
 				PermissionChecker permissionChecker =
 					PermissionThreadLocal.getPermissionChecker();
