@@ -2236,6 +2236,79 @@ public class JournalArticleLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo({"LPS-52248", "LPS-86223"})
+	public void testGetArticleDisplayWithoutDDMTemplate() throws Exception {
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm();
+
+		ddmForm.addDDMFormField(
+			DDMFormTestUtil.createDDMFormField(
+				"Color", "Color", DDMFormFieldTypeConstants.COLOR, "string",
+				false, false, false));
+		ddmForm.addDDMFormField(
+			DDMFormTestUtil.createDDMFormField(
+				"RichText", "Rich Text", DDMFormFieldTypeConstants.RICH_TEXT,
+				"html", false, true, false));
+		ddmForm.addDDMFormField(
+			DDMFormTestUtil.createDDMFormField(
+				"Separator", "Separator", DDMFormFieldTypeConstants.SEPARATOR,
+				StringPool.BLANK, false, false, false));
+		ddmForm.addDDMFormField(
+			DDMFormTestUtil.createDDMFormField(
+				"Text", "Text", DDMFormFieldTypeConstants.TEXT, "string", false,
+				false, false));
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName(), ddmForm);
+
+		JournalArticle journalArticle =
+			JournalTestUtil.addArticleWithXMLContent(
+				_group.getGroupId(),
+				StringBundler.concat(
+					"<?xml version=\"1.0\"?><root available-locales=\"en_US\" ",
+					"default-locale=\"en_US\"><dynamic-element ",
+					"index-type=\"keyword\" instance-id=\"pgbvxbin\" ",
+					"name=\"Color\" type=\"color\"><dynamic-content ",
+					"language-id=\"en_US\"><![CDATA[#FF0D0D]]>",
+					"</dynamic-content></dynamic-element><dynamic-element ",
+					"index-type=\"text\" instance-id=\"kqsmrgea\" ",
+					"name=\"RichText\" type=\"rich_text\"><dynamic-content ",
+					"language-id=\"en_US\"><![CDATA[First Rich Text]]>",
+					"</dynamic-content></dynamic-element><dynamic-element ",
+					"index-type=\"text\" instance-id=\"zdxwqlbo\" ",
+					"name=\"RichText\" type=\"rich_text\"><dynamic-content ",
+					"language-id=\"en_US\"><![CDATA[Second Rich Text]]>",
+					"</dynamic-content></dynamic-element><dynamic-element ",
+					"index-type=\"\" instance-id=\"hnvmtyca\" ",
+					"name=\"Separator\" type=\"separator\"><dynamic-content ",
+					"language-id=\"en_US\"><![CDATA[]]></dynamic-content>",
+					"</dynamic-element><dynamic-element ",
+					"index-type=\"keyword\" instance-id=\"wjrfkuso\" ",
+					"name=\"Text\" type=\"text\"><dynamic-content ",
+					"language-id=\"en_US\"><![CDATA[Text Value]]>",
+					"</dynamic-content></dynamic-element></root>"),
+				ddmStructure.getStructureKey(), null);
+
+		JournalArticleDisplay journalArticleDisplay =
+			_journalArticleLocalService.getArticleDisplay(
+				journalArticle.getGroupId(), journalArticle.getArticleId(),
+				null, null, _themeDisplay);
+
+		String content = journalArticleDisplay.getContent();
+
+		Assert.assertTrue(content.contains("#FF0D0D"));
+		Assert.assertTrue(
+			content.contains("<dt class=\"text-capitalize\">Color"));
+		Assert.assertTrue(
+			content.contains("<dt class=\"text-capitalize\">Rich Text"));
+		Assert.assertTrue(
+			content.contains("<dt class=\"text-capitalize\">Text"));
+		Assert.assertTrue(content.contains("First Rich Text"));
+		Assert.assertTrue(content.contains("Second Rich Text"));
+		Assert.assertFalse(content.contains("Separator"));
+		Assert.assertTrue(content.contains("Text Value"));
+	}
+
+	@Test
 	public void testGetArticlesByReviewDate() throws Exception {
 		JournalFolder folder = JournalTestUtil.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
