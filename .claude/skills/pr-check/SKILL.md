@@ -206,8 +206,6 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Startup Sync Usage](validations/branch/startup-sync-usage.md)
 
-1. [MVC Render Command View Template](validations/branch/mvc-render-command-view-template.md)
-
 1. [Service Holder Usage](validations/branch/service-holder-usage.md)
 
 1. [BeanParamUtil Getter](validations/branch/bean-param-util-getter.md)
