@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedChannelTest} from '../../../fixtures/isolatedChannelTest';
 import {loginAnalyticsCloudTest} from '../../../fixtures/loginAnalyticsCloudTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import getRandomString from '../../../utils/getRandomString';
 import {
 	connectToAnalyticsCloud,
 	disconnectFromAnalyticsCloud,
@@ -39,6 +40,8 @@ test(
 		tag: '@LPD-44493',
 	},
 	async ({page, project}) => {
+		const dataSourceName = 'Data Source ' + getRandomString();
+
 		const {token} = await createDataSource(page);
 
 		await test.step('Go to DXP --> Instance Settings --> Analytics Cloud and disconnect the workspace', async () => {
@@ -67,7 +70,7 @@ test(
 			await gotoLatestLiferayDXPDataSource(page, project);
 
 			await renameDataSource({
-				newDataSourceName: 'TEST_DS',
+				newDataSourceName: dataSourceName,
 				page,
 			});
 		});
@@ -80,7 +83,7 @@ test(
 			});
 
 			const dataSource = await findDataSource({
-				dataSourceName: 'TEST_DS',
+				dataSourceName,
 				page,
 			});
 
@@ -96,7 +99,7 @@ test(
 			await waitForLoading(page);
 
 			await checkDataSourceStatus({
-				dataSourceName: 'TEST_DS',
+				dataSourceName,
 				dataSourceStatus: 'Disconnected',
 				page,
 			});
