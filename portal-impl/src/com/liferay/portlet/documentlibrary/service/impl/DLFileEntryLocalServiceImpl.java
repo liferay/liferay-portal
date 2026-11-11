@@ -3942,8 +3942,7 @@ public class DLFileEntryLocalServiceImpl
 	}
 
 	private void _validateExternalReferenceCode(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
+		String externalReferenceCode, long groupId) {
 
 		if (Validator.isNull(externalReferenceCode)) {
 			return;
