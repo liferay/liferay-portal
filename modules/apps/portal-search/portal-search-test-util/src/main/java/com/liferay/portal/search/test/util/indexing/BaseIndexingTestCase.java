@@ -213,6 +213,7 @@ public abstract class BaseIndexingTestCase {
 		queryConfig.setHitsProcessingEnabled(true);
 		queryConfig.setScoreEnabled(false);
 
+		searchContext.setEnd(QueryUtil.ALL_POS);
 		searchContext.setStart(QueryUtil.ALL_POS);
 
 		return searchContext;
