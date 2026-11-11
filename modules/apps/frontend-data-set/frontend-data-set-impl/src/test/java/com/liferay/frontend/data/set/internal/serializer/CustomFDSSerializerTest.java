@@ -1281,6 +1281,42 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		_resetFDSSerializer();
 
+		// Disabled view is not restored when the enabled ones have no fields
+
+		_mockSerializeViewsCardsOrList(
+			FDS_NAMES[0],
+			HashMapBuilder.put(
+				"image", IMAGES[0]
+			).put(
+				"title", TITLES[0]
+			).build(),
+			"dataSetToDataSetCardsSections");
+
+		Mockito.when(
+			_customFDSSerializer.getDataSetObjectEntryProperties(
+				FDS_NAMES[0], httpServletRequest)
+		).thenReturn(
+			HashMapBuilder.<String, Object>put(
+				"defaultVisualizationMode", "table"
+			).put(
+				"visualizationModes",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"enabled", false
+					).put(
+						"name", "cards"
+					)
+				).toString()
+			).build()
+		);
+
+		jsonArray = _customFDSSerializer.serializeViews(
+			FDS_NAMES[0], httpServletRequest);
+
+		Assert.assertEquals(0, jsonArray.length());
+
+		_resetFDSSerializer();
+
 		// List view
 
 		_mockSerializeViewsCardsOrList(

@@ -961,6 +961,8 @@ public class CustomFDSSerializer
 				defaultViewJSONObject.getString("name"), defaultViewJSONObject);
 		}
 
+		boolean defaultVisualizationModeEnabled = false;
+
 		for (JSONObject visualizationModeJSONObject :
 				_getEnabledVisualizationModeJSONObjects(
 					visualizationModesJSON)) {
@@ -968,6 +970,8 @@ public class CustomFDSSerializer
 			String name = visualizationModeJSONObject.getString("name");
 
 			if (_defaultVisualizationModeNames.contains(name)) {
+				defaultVisualizationModeEnabled = true;
+
 				jsonArray.put(() -> defaultViewJSONObjects.get(name));
 			}
 			else {
@@ -979,9 +983,10 @@ public class CustomFDSSerializer
 		}
 
 		// At least one visualization mode must stay available, even when the
-		// persisted ones leave none enabled or deployed
+		// persisted ones leave none enabled or deployed. Do not bring back
+		// disabled default modes when an enabled one simply has no fields
 
-		if (jsonArray.length() == 0) {
+		if ((jsonArray.length() == 0) && !defaultVisualizationModeEnabled) {
 			for (String name : _defaultVisualizationModeNames) {
 				jsonArray.put(() -> defaultViewJSONObjects.get(name));
 			}
