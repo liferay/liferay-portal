@@ -125,31 +125,8 @@ public class FragmentEntriesDisplayContext {
 
 		searchContainer.setId("fragmentCollections");
 
-		List<FragmentCollection> fragmentCollections = ListUtil.filter(
-			FragmentCollectionLocalServiceUtil.getFragmentCollections(
-				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			fragmentCollection -> {
-				if (ListUtil.exists(
-						FragmentEntryLocalServiceUtil.getFragmentEntries(
-							_group.getGroupId(),
-							fragmentCollection.getFragmentCollectionId(),
-							WorkflowConstants.STATUS_APPROVED),
-						fragmentEntry ->
-							SetUtil.isEmpty(
-								_fragmentEntryItemSelectorCriterion.
-									getInputTypes()) ||
-							_filterInputTypes(
-								fragmentEntry,
-								_fragmentEntryItemSelectorCriterion.
-									getInputTypes()))) {
-
-					return true;
-				}
-
-				return false;
-			});
-
-		searchContainer.setResultsAndTotal(fragmentCollections);
+		searchContainer.setResultsAndTotal(
+			_getFragmentCollections(_group.getGroupId()));
 
 		_fragmentCollectionSearchContainer = searchContainer;
 
@@ -264,6 +241,32 @@ public class FragmentEntriesDisplayContext {
 		}
 
 		return orderByComparator;
+	}
+
+	private List<FragmentCollection> _getFragmentCollections(long groupId) {
+		return ListUtil.filter(
+			FragmentCollectionLocalServiceUtil.getFragmentCollections(
+				groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+			fragmentCollection -> {
+				if (ListUtil.exists(
+						FragmentEntryLocalServiceUtil.getFragmentEntries(
+							groupId,
+							fragmentCollection.getFragmentCollectionId(),
+							WorkflowConstants.STATUS_APPROVED),
+						fragmentEntry ->
+							SetUtil.isEmpty(
+								_fragmentEntryItemSelectorCriterion.
+									getInputTypes()) ||
+							_filterInputTypes(
+								fragmentEntry,
+								_fragmentEntryItemSelectorCriterion.
+									getInputTypes()))) {
+
+					return true;
+				}
+
+				return false;
+			});
 	}
 
 	private String _getKeywords() {
