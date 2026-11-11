@@ -17,7 +17,10 @@ import com.liferay.portal.search.engine.adapter.index.CreateIndexRequest;
 import com.liferay.portal.search.engine.adapter.index.DeleteIndexRequest;
 import com.liferay.portal.search.engine.adapter.index.IndicesExistsIndexRequest;
 import com.liferay.portal.search.engine.adapter.index.IndicesExistsIndexResponse;
+import com.liferay.portal.search.engine.adapter.search.CountSearchRequest;
+import com.liferay.portal.search.engine.adapter.search.CountSearchResponse;
 import com.liferay.portal.search.index.IndexNameBuilder;
+import com.liferay.portal.search.query.QueriesUtil;
 
 /**
  * @author Riccardo Ferrari
@@ -90,6 +93,32 @@ public class RecommendationIndexer {
 
 	public String getIndexName(long companyId) {
 		return _indexNameBuilder.getIndexName(companyId) + "-" + _name;
+	}
+
+	public boolean isEmpty(long companyId) {
+		if (!_searchCapabilities.isAnalyticsSupported()) {
+			return false;
+		}
+
+		String indexName = getIndexName(companyId);
+
+		if (!_indexExists(indexName)) {
+			return false;
+		}
+
+		CountSearchRequest countSearchRequest = new CountSearchRequest();
+
+		countSearchRequest.setIndexNames(indexName);
+		countSearchRequest.setQuery(QueriesUtil.matchAll());
+
+		CountSearchResponse countSearchResponse = _searchEngineAdapter.execute(
+			countSearchRequest);
+
+		if (countSearchResponse.getCount() == 0) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private String _getIndexMappingFileName() {
