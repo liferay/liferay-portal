@@ -7,16 +7,10 @@ package com.liferay.osb.faro.engine.client;
 
 import com.liferay.osb.faro.model.FaroProject;
 
-import java.util.Date;
-
 /**
  * @author Marcellus Tavares
  */
 public interface CerebroEngineClient {
-
-	public long getPageViews(
-			FaroProject faroProject, Date fromDate, Date toDate)
-		throws Exception;
 
 	public String getSiteMetrics(
 			String channelId, FaroProject faroProject, String interval,
