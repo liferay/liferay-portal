@@ -201,6 +201,7 @@ export default function ShortcutManager() {
 			handler: () =>
 				handleSaveStructure({
 					dispatch,
+					objectDefinitions,
 					state,
 					validate,
 				}),

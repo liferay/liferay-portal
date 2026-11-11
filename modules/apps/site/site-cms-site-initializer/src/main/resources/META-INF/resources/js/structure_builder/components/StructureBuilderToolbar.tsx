@@ -198,9 +198,12 @@ function SaveButton() {
 	const operation = useSelector(selectOperation);
 	const state = useSelector(selectState);
 
+	const {data: objectDefinitions} = useCache('object-definitions');
+
 	const onSave = async () => {
 		await handleSaveStructure({
 			dispatch,
+			objectDefinitions,
 			state,
 			validate,
 		});

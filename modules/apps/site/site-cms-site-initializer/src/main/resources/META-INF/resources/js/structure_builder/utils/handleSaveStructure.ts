@@ -7,9 +7,11 @@ import {openToast} from 'frontend-js-components-web';
 import {Dispatch} from 'react';
 
 import StructureService from '../../common/services/StructureService';
+import {ObjectDefinitions} from '../../common/types/ObjectDefinition';
 import {Action, State} from '../contexts/StateContext';
 import selectHistory from '../selectors/selectHistory';
 import selectPublishedChildren from '../selectors/selectPublishedChildren';
+import selectStructure from '../selectors/selectStructure';
 import selectStructureChildren from '../selectors/selectStructureChildren';
 import selectStructureERC from '../selectors/selectStructureERC';
 import selectStructureId from '../selectors/selectStructureId';
@@ -24,22 +26,40 @@ import selectStructureTitleFieldName from '../selectors/selectStructureTitleFiel
 import selectStructureUuid from '../selectors/selectStructureUuid';
 import selectStructureWorkflows from '../selectors/selectStructureWorkflows';
 import buildStructureErrorAction from './buildStructureErrorAction';
+import getNestingDepthError from './getNestingDepthError';
+import openNestingDepthErrorModal from './openNestingDepthErrorModal';
 import {ServerError} from './validation';
 
 type Props = {
 	dispatch: Dispatch<Action>;
+	objectDefinitions: ObjectDefinitions;
 	state: State;
 	validate: () => boolean;
 };
 
 export default async function handleSaveStructure({
 	dispatch,
+	objectDefinitions,
 	state,
 	validate,
 }: Props) {
 	const valid = validate();
 
 	if (!valid) {
+		return;
+	}
+
+	const depthError = getNestingDepthError({
+		objectDefinitions,
+		structure: selectStructure(state),
+	});
+
+	if (depthError) {
+		await openNestingDepthErrorModal({
+			error: depthError,
+			operation: 'save',
+		});
+
 		return;
 	}
 
