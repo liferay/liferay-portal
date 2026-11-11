@@ -12,6 +12,7 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.headless.asset.library.client.dto.v1_0.ConnectedSite;
 import com.liferay.headless.asset.library.client.problem.Problem;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
@@ -19,6 +20,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -62,6 +64,12 @@ public class ConnectedSiteResourceTest
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(),
+			FeatureFlagManagerUtil.isEnabled(
+				TestPropsValues.getCompanyId(), "LPD-57283"),
+			"LPD-57283");
 
 		_testConnectedSite = _addConnectedSite();
 	}
