@@ -8123,7 +8123,7 @@ paths:
                                 $ref: "#/components/schemas/PageSpecification"
                 400:
                     description:
-                        "The request is invalid. For example, the page is not a content, widget, or asset display page, or a sitemap setting value is invalid."
+                        "The request is invalid. For example, the page is not a content, widget, or asset display page, or a theme setting key does not start with the lfr-theme: prefix."
                 404:
                     description:
                         "The requested page specification could not be found."
@@ -8179,7 +8179,7 @@ paths:
                                 $ref: "#/components/schemas/PageSpecification"
                 400:
                     description:
-                        "The request is invalid. For example, the page is not a content, widget, or asset display page, or a sitemap setting value is invalid."
+                        "The request is invalid. For example, the page is not a content, widget, or asset display page, or a theme setting key does not start with the lfr-theme: prefix."
                 404:
                     description:
                         "The requested page specification could not be found."
