@@ -38,10 +38,6 @@ public class RSSMVCResourceCommand extends BaseRSSMVCResourceCommand {
 		return _journalRSSHelper.getRSS(resourceRequest, resourceResponse);
 	}
 
-	protected void unsetJournalRSSHelper(JournalRSSHelper journalRSSHelper) {
-		_journalRSSHelper = null;
-	}
-
 	@Reference
 	private JournalRSSHelper _journalRSSHelper;
 
