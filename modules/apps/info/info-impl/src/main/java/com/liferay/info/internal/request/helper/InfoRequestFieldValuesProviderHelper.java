@@ -28,7 +28,6 @@ import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormProvider;
-import com.liferay.info.item.updater.InfoItemFieldValuesUpdater;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -103,8 +102,6 @@ public class InfoRequestFieldValuesProviderHelper {
 
 		String[] checkboxNames = ParamUtil.getStringValues(
 			uploadServletRequest, "checkboxNames");
-		String[] deletedItemIdentifiers = ParamUtil.getStringValues(
-			uploadServletRequest, "deletedItemIdentifiers");
 		long groupId = ParamUtil.getLong(uploadServletRequest, "groupId");
 
 		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
@@ -217,19 +214,6 @@ public class InfoRequestFieldValuesProviderHelper {
 				_putInfoFieldValue(infoFieldValues, infoFieldValue, inputName);
 			}
 		}
-
-		InfoField<MultiselectInfoFieldType> infoField = InfoField.builder(
-		).infoFieldType(
-			MultiselectInfoFieldType.INSTANCE
-		).namespace(
-			InfoItemFieldValuesUpdater.class.getSimpleName()
-		).name(
-			"deletedItemIdentifiers"
-		).build();
-
-		infoFieldValues.put(
-			infoField.getUniqueId(),
-			new InfoFieldValue<>(infoField, deletedItemIdentifiers));
 
 		return infoFieldValues;
 	}
