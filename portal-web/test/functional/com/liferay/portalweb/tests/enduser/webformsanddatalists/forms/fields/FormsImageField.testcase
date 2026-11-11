@@ -533,7 +533,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Forms",
 				configurationName = "Forms",
-				configurationScope = "Site Scope");
+				configurationScope = "Virtual Instance Scope");
 
 			FormFields.editText(
 				fieldName = "guestUploadMaximumFileSize",

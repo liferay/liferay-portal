@@ -678,7 +678,7 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Forms",
 			configurationName = "Forms",
-			configurationScope = "Site Scope");
+			configurationScope = "System Scope");
 
 		FormFields.editText(
 			fieldName = "guestUploadMaximumFileSize",
@@ -730,7 +730,7 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Forms",
 			configurationName = "Forms",
-			configurationScope = "Site Scope");
+			configurationScope = "System Scope");
 
 		SystemSettings.resetConfiguration();
 	}

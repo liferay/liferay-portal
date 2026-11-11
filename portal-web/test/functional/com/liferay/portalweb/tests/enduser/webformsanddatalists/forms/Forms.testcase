@@ -283,7 +283,7 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Forms",
 			configurationName = "Forms",
-			configurationScope = "Site Scope");
+			configurationScope = "System Scope");
 
 		FormFields.viewTextLabel(
 			fieldLabel = "Autosave Interval",
@@ -1435,7 +1435,7 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Dynamic Data Mapping",
 			configurationName = "Dynamic Data Mapping Service",
-			configurationScope = "Site Scope");
+			configurationScope = "System Scope");
 
 		FormFields.viewRepeatableTextMultilineField(
 			fieldHelpText = "Set the allowed file extensions for template images. A file extension of * will permit all file extensions.",
@@ -1479,7 +1479,7 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Dynamic Data Mapping",
 			configurationName = "Dynamic Data Mapping Service",
-			configurationScope = "Site Scope");
+			configurationScope = "System Scope");
 
 		FormFields.viewRepeatableTextMultilineValue(
 			fieldName = "smallImageExtensions",
