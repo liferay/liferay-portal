@@ -22,14 +22,6 @@ import java.util.List;
  */
 public class DDMFormRendererUtil {
 
-	/**
-	 * @deprecated As of Mueller (7.2.x), with no direct replacement
-	 */
-	@Deprecated
-	public static DDMFormRenderer getDDMFormRenderer() {
-		return null;
-	}
-
 	public static String render(
 			DDMForm ddmForm,
 			DDMFormFieldRenderingContext ddmFormFieldRenderingContext)
@@ -61,13 +53,6 @@ public class DDMFormRendererUtil {
 		_clearDDMFieldsCounter(ddmFormFieldRenderingContext);
 
 		return sb.toString();
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x), with no direct replacement
-	 */
-	@Deprecated
-	public void setDDMFormRenderer(DDMFormRenderer ddmFormRenderer) {
 	}
 
 	private static void _clearDDMFieldsCounter(
