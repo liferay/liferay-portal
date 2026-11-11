@@ -78,7 +78,7 @@ public class InetAddressUtil {
 		}
 	}
 
-	public static String getLocalHostName() throws Exception {
+	public static String getLocalHostName() {
 		return LocalHostNameHolder._LOCAL_HOST_NAME;
 	}
 
