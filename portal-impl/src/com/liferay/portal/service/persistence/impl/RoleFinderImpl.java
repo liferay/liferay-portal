@@ -993,6 +993,8 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 		if (Validator.isNotNull(subtype)) {
 			Predicate subtypeWherePredicate = RoleTable.INSTANCE.subtype.isNull(
 			).or(
+				RoleTable.INSTANCE.subtype.eq(StringPool.BLANK)
+			).or(
 				RoleTable.INSTANCE.subtype.eq(subtype)
 			);
 
