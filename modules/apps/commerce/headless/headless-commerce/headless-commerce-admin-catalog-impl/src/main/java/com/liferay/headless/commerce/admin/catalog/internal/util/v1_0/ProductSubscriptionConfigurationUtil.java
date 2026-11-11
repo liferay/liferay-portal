@@ -9,7 +9,6 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductSubscriptionConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 
@@ -21,7 +20,7 @@ public class ProductSubscriptionConfigurationUtil {
 	public static CPDefinition updateCPDefinitionSubscriptionInfo(
 			CPDefinitionService cpDefinitionService,
 			ProductSubscriptionConfiguration productSubscriptionConfiguration,
-			CPDefinition cpDefinition, ServiceContext serviceContext)
+			CPDefinition cpDefinition)
 		throws PortalException {
 
 		String deliverySubscriptionTypeValue = null;

@@ -1492,7 +1492,7 @@ public class ProductResourceImpl
 				ProductSubscriptionConfigurationUtil.
 					updateCPDefinitionSubscriptionInfo(
 						_cpDefinitionService, productSubscriptionConfiguration,
-						cpDefinition, serviceContext);
+						cpDefinition);
 		}
 
 		// Product tax configuration

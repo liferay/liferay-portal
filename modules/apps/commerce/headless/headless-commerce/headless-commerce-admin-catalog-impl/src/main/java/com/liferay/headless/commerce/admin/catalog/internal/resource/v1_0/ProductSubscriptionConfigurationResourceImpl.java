@@ -13,7 +13,6 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductSubscriptionC
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductSubscriptionConfigurationUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductSubscriptionConfigurationResource;
-import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -150,9 +149,7 @@ public class ProductSubscriptionConfigurationResourceImpl
 			ProductSubscriptionConfigurationUtil.
 				updateCPDefinitionSubscriptionInfo(
 					_cpDefinitionService, productSubscriptionConfiguration,
-					cpDefinition,
-					_serviceContextHelper.getServiceContext(
-						cpDefinition.getGroupId()));
+					cpDefinition);
 
 		return _toProductSubscriptionConfiguration(
 			cpDefinition.getCPDefinitionId());
@@ -166,8 +163,5 @@ public class ProductSubscriptionConfigurationResourceImpl
 	)
 	private DTOConverter<CPDefinition, ProductSubscriptionConfiguration>
 		_productSubscriptionConfigurationDTOConverter;
-
-	@Reference
-	private ServiceContextHelper _serviceContextHelper;
 
 }
