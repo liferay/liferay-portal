@@ -464,8 +464,8 @@ public class SitePageResourceImpl
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);
 
-		Layout layout = _layoutService.fetchLayoutByExternalReferenceCode(
-			sitePageExternalReferenceCode, groupId);
+		Layout layout = _fetchLayout(
+			groupId, privateLayout, sitePage, sitePageExternalReferenceCode);
 
 		if (layout == null) {
 			if (Objects.equals(sitePage.getType(), SitePage.Type.WIDGET_PAGE)) {
@@ -678,6 +678,32 @@ public class SitePageResourceImpl
 		}
 
 		return layout;
+	}
+
+	private Layout _fetchLayout(
+			long groupId, boolean privateLayout, SitePage sitePage,
+			String sitePageExternalReferenceCode)
+		throws Exception {
+
+		Layout layout = _layoutService.fetchLayoutByExternalReferenceCode(
+			sitePageExternalReferenceCode, groupId);
+
+		if ((layout != null) || !ExportImportThreadLocal.isImportInProcess() ||
+			(sitePage.getUuid() == null)) {
+
+			return layout;
+		}
+
+		layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			sitePage.getUuid(), groupId, privateLayout);
+
+		if (layout == null) {
+			return null;
+		}
+
+		layout.setExternalReferenceCode(sitePageExternalReferenceCode);
+
+		return _layoutLocalService.updateLayout(layout);
 	}
 
 	private CustomMetaTag[] _getCustomMetaTags(PageSettings pageSettings) {
