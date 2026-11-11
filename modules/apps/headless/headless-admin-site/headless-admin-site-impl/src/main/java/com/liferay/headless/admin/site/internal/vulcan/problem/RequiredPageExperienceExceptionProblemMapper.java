@@ -7,7 +7,7 @@ package com.liferay.headless.admin.site.internal.vulcan.problem;
 
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
-import com.liferay.segments.exception.LockedSegmentsExperimentException;
+import com.liferay.segments.exception.RequiredSegmentsExperienceException;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -15,17 +15,18 @@ import org.osgi.service.component.annotations.Component;
  * @author Javier Moral
  */
 @Component(service = ProblemMapper.class)
-public class LockedSegmentsExperimentExceptionProblemMapper
-	implements ProblemMapper<LockedSegmentsExperimentException> {
+public class RequiredPageExperienceExceptionProblemMapper
+	implements ProblemMapper<RequiredSegmentsExperienceException> {
 
 	@Override
 	public Problem getProblem(
-		LockedSegmentsExperimentException lockedSegmentsExperimentException) {
+		RequiredSegmentsExperienceException
+			requiredSegmentsExperienceException) {
 
 		return ProblemUtil.getProblem(
-			"The page experience cannot be modified while it is used by an " +
-				"active A/B test",
-			Problem.Status.CONFLICT, lockedSegmentsExperimentException);
+			"The page experience cannot be removed while it is referenced by " +
+				"an A/B test",
+			Problem.Status.CONFLICT, requiredSegmentsExperienceException);
 	}
 
 }
