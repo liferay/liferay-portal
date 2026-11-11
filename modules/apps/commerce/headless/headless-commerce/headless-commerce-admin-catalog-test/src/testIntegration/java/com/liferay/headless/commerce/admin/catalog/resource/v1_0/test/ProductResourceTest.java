@@ -1341,6 +1341,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 					RandomTestUtil.randomLocaleStringMap());
 				optionExternalReferenceCode =
 					cpOption.getExternalReferenceCode();
+				optionId = 0L;
 			}
 		};
 
@@ -1349,6 +1350,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		ProductResource productResource = _getProductResource("productOptions");
 
 		Product postProduct = productResource.postProduct(randomProduct);
+
+		productOption1.setOptionId((Long)null);
 
 		productResource.patchProductByExternalReferenceCode(
 			postProduct.getExternalReferenceCode(),
