@@ -24,8 +24,11 @@ function main {
 		_run_test "${script}" _test_aborts_with_tfstate_missing_bucket_name
 	done
 
-	_run_test "${scripts_dir}/setup_azure.sh" _test_aborts_with_config_missing_database_engine
-	_run_test "${scripts_dir}/setup_azure.sh" _test_aborts_with_config_unsupported_database_engine
+	for script in "${scripts_dir}/setup_azure.sh" "${scripts_dir}/setup_gcp.sh"
+	do
+		_run_test "${script}" _test_aborts_with_config_missing_database_engine
+		_run_test "${script}" _test_aborts_with_config_unsupported_database_engine
+	done
 
 	for script in "${scripts_dir}/setup_aws.sh" "${scripts_dir}/setup_azure.sh" "${scripts_dir}/setup_gcp.sh"
 	do
@@ -47,12 +50,13 @@ function main {
 }
 
 function _make_helm_stub {
+	local cloud="${2}"
 	local stub_dir="${1}"
 
 	local chart_dir
 	local helm_path
 
-	chart_dir=$(cd "$(dirname "${0}")/../../helm/azure-infrastructure-provider" && pwd)
+	chart_dir=$(cd "$(dirname "${0}")/../../helm/${cloud}-infrastructure-provider" && pwd)
 	helm_path=$(command -v helm)
 
 	rm "${stub_dir}/helm"
@@ -64,7 +68,7 @@ helm_args=()
 
 for helm_arg in "\${@}"
 do
-	if [[ \${helm_arg} == oci://*/liferay-azure-infrastructure-provider ]]
+	if [[ \${helm_arg} == oci://*/liferay-${cloud}-infrastructure-provider ]]
 	then
 		helm_arg="${chart_dir}"
 	fi
@@ -137,7 +141,11 @@ function _run_setup_test {
 
 	stub_dir=$(_make_stub_path)
 
-	_make_helm_stub "${stub_dir}"
+	local cloud
+
+	cloud=$(basename "${script}" .sh | sed --expression "s/^setup_//")
+
+	_make_helm_stub "${stub_dir}" "${cloud}"
 
 	_make_terraform_stub "${stub_dir}"
 
@@ -216,7 +224,7 @@ function _test_aborts_with_config_missing_database_engine {
 	local output
 	local result
 
-	config_json=$(jq --null-input '{deployment_name: "liferay-test", region: "eastus", subscription_id: "subscription", tenant_id: "tenant"}')
+	config_json=$(jq --null-input '{deployment_name: "liferay-test", project_id: "project", region: "eastus", subscription_id: "subscription", tenant_id: "tenant"}')
 	result=$(_run_setup_test "${1}" "${config_json}")
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)
@@ -254,7 +262,7 @@ function _test_aborts_with_config_unsupported_database_engine {
 	local output
 	local result
 
-	config_json=$(jq --null-input '{deployment_name: "liferay-test", region: "eastus", setup: {database: {engine: "hypersonic"}}, subscription_id: "subscription", tenant_id: "tenant"}')
+	config_json=$(jq --null-input '{deployment_name: "liferay-test", project_id: "project", region: "eastus", setup: {database: {engine: "hypersonic"}}, subscription_id: "subscription", tenant_id: "tenant"}')
 	result=$(_run_setup_test "${1}" "${config_json}")
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)

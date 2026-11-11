@@ -1,0 +1,13 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Database Engine ValidatingAdmissionPolicy
+templates:
+    -   templates/validatingadmissionpolicy-database-engine.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the database engine policy when the infrastructure provider is disabled
+        set:
+            infrastructureProvider.enabled: false
