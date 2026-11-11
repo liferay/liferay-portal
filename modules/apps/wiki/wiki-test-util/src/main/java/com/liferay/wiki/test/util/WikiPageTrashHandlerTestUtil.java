@@ -7,7 +7,6 @@ package com.liferay.wiki.test.util;
 
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.ClassedModel;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -57,8 +56,7 @@ public class WikiPageTrashHandlerTestUtil {
 			WorkflowConstants.STATUS_ANY);
 	}
 
-	public static BaseModel<?> getParentBaseModel(
-			Group group, ServiceContext serviceContext)
+	public static BaseModel<?> getParentBaseModel(ServiceContext serviceContext)
 		throws Exception {
 
 		serviceContext = (ServiceContext)serviceContext.clone();

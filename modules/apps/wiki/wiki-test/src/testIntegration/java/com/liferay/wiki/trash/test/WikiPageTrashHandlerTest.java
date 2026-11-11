@@ -166,8 +166,7 @@ public class WikiPageTrashHandlerTest
 			Group group, ServiceContext serviceContext)
 		throws Exception {
 
-		return WikiPageTrashHandlerTestUtil.getParentBaseModel(
-			group, serviceContext);
+		return WikiPageTrashHandlerTestUtil.getParentBaseModel(serviceContext);
 	}
 
 	@Override
