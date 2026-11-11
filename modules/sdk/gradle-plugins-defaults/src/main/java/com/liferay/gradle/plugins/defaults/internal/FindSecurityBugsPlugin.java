@@ -356,6 +356,21 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 						JavaBasePlugin.VERIFICATION_GROUP);
 					findSecurityBugsJavaExec.setIgnoreExitValue(true);
 
+					String xms = System.getProperty("findSecurityBugs.Xms");
+
+					if (xms != null) {
+						findSecurityBugsJavaExec.setMinHeapSize(xms);
+					}
+
+					String xmx = System.getProperty("findSecurityBugs.Xmx");
+
+					if (xmx != null) {
+						findSecurityBugsJavaExec.setMaxHeapSize(xmx);
+					}
+
+					findSecurityBugsJavaExec.jvmArgs(
+						"-XX:+UseStringDeduplication");
+
 					findSecurityBugsJavaExec.systemProperty(
 						"findsecbugs.injection.customconfigfile." +
 							"PathTraversalDetector",
