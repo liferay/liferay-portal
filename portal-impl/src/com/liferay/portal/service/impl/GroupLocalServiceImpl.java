@@ -1739,9 +1739,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	 * @throws PortalException if a portal exception occurred
 	 */
 	@Override
-	public Group fetchUserPersonalSiteGroup(long companyId)
-		throws PortalException {
-
+	public Group fetchUserPersonalSiteGroup(long companyId) {
 		User user = _userLocalService.fetchGuestUser(companyId);
 
 		if (user == null) {
@@ -2502,9 +2500,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	 * @throws PortalException if a portal exception occurred
 	 */
 	@Override
-	public List<Group> getUserGroupsGroups(List<UserGroup> userGroups)
-		throws PortalException {
-
+	public List<Group> getUserGroupsGroups(List<UserGroup> userGroups) {
 		return TransformUtil.transform(
 			userGroups, userGroup -> userGroup.getGroup());
 	}
