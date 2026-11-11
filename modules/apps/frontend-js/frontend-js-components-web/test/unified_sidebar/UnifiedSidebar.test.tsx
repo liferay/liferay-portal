@@ -84,6 +84,22 @@ describe('UnifiedSidebar', () => {
 			Liferay.FeatureFlags['LPD-57922'] = false;
 		});
 
+		it('hides the color scheme toggle button with a back button', () => {
+			render(
+				<UnifiedSidebar
+					{...DEFAULT_PROPS}
+					colorScheme="light"
+					colorSchemeSessionKey="colorScheme"
+					onBack={jest.fn()}
+				/>
+			);
+
+			expect(screen.getByLabelText('go-back')).toBeInTheDocument();
+			expect(
+				screen.queryByLabelText('switch-to-dark-mode')
+			).not.toBeInTheDocument();
+		});
+
 		it('shows the color scheme toggle button', () => {
 			render(
 				<UnifiedSidebar
