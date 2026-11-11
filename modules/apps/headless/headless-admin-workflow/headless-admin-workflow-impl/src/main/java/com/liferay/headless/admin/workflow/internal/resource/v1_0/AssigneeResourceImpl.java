@@ -10,7 +10,6 @@ import com.liferay.headless.admin.workflow.internal.dto.v1_0.util.AssigneeUtil;
 import com.liferay.headless.admin.workflow.resource.v1_0.AssigneeResource;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -43,13 +42,9 @@ public class AssigneeResourceImpl extends BaseAssigneeResourceImpl {
 				ListUtil.subList(
 					assignableUsers, pagination.getStartPosition(),
 					pagination.getEndPosition()),
-				assignableUser -> AssigneeUtil.toAssignee(
-					_portal, assignableUser)),
+				AssigneeUtil::toAssignee),
 			pagination, assignableUsers.size());
 	}
-
-	@Reference
-	private Portal _portal;
 
 	@Reference
 	private WorkflowTaskManager _workflowTaskManager;
