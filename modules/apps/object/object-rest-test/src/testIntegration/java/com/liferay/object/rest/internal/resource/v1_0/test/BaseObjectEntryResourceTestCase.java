@@ -569,6 +569,18 @@ public abstract class BaseObjectEntryResourceTestCase {
 			endpoint, expectedJSONObject, OBJECT_FIELD_NAME_PICKLIST,
 			LIST_TYPE_ENTRY_KEY_1);
 
+		// Precision decimal field
+
+		BigDecimal bigDecimal = randomBigDecimal.add(BigDecimal.ONE);
+
+		expectedJSONObject = _cloneJSONObject(
+			expectedJSONObject, OBJECT_FIELD_NAME_PRECISION_DECIMAL,
+			bigDecimal);
+
+		_assertPatchObjectField(
+			endpoint, expectedJSONObject, OBJECT_FIELD_NAME_PRECISION_DECIMAL,
+			bigDecimal);
+
 		// Relationship external reference code field
 
 		expectedJSONObject = _cloneJSONObject(
@@ -589,18 +601,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 			endpoint, expectedJSONObject,
 			objectRelationship2ObjectField.getName(),
 			parentObjectEntry2.getObjectEntryId());
-
-		// Precision decimal field
-
-		BigDecimal bigDecimal = randomBigDecimal.add(BigDecimal.ONE);
-
-		expectedJSONObject = _cloneJSONObject(
-			expectedJSONObject, OBJECT_FIELD_NAME_PRECISION_DECIMAL,
-			bigDecimal);
-
-		_assertPatchObjectField(
-			endpoint, expectedJSONObject, OBJECT_FIELD_NAME_PRECISION_DECIMAL,
-			bigDecimal);
 
 		// Rich text field
 
@@ -853,8 +853,8 @@ public abstract class BaseObjectEntryResourceTestCase {
 	}
 
 	protected String getNestedFieldsEndpoint(
-		long objectEntryId, ObjectRelationship objectRelationship,
-		ObjectDefinition objectDefinition) {
+		ObjectDefinition objectDefinition, long objectEntryId,
+		ObjectRelationship objectRelationship) {
 
 		return StringBundler.concat(
 			objectDefinition.getRESTContextPath(), StringPool.SLASH,

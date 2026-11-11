@@ -205,23 +205,24 @@ public class ObjectEntryResourceValidationTest
 		Group testGroup = groupLocalService.fetchGroup(testGroupId);
 
 		_testPostValidate(
-			String.valueOf(testGroupId), getSiteScopedObjectDefinition1(),
-			objectField);
+			getSiteScopedObjectDefinition1(), objectField,
+			String.valueOf(testGroupId));
 		_testPostValidate(
-			testGroup.getExternalReferenceCode(),
-			getSiteScopedObjectDefinition1(), objectField);
+			getSiteScopedObjectDefinition1(), objectField,
+			testGroup.getExternalReferenceCode());
 		_testPostValidate(
-			testGroup.getGroupKey(), getSiteScopedObjectDefinition1(),
-			objectField);
+			getSiteScopedObjectDefinition1(), objectField,
+			testGroup.getGroupKey());
 	}
 
 	@Test
 	public void testPostValidate() throws Exception {
 		_testPostValidate(
-			null, getObjectDefinition1(),
+			getObjectDefinition1(),
 			objectFieldLocalService.getObjectField(
 				getObjectDefinition1().getObjectDefinitionId(),
-				OBJECT_FIELD_NAME_TEXT));
+				OBJECT_FIELD_NAME_TEXT),
+			null);
 	}
 
 	private ValidationRequest _getValidationRequest(
@@ -243,8 +244,8 @@ public class ObjectEntryResourceValidationTest
 	}
 
 	private void _testPostValidate(
-			String scopeKey, ObjectDefinition objectDefinition,
-			ObjectField objectField1)
+			ObjectDefinition objectDefinition, ObjectField objectField1,
+			String scopeKey)
 		throws Exception {
 
 		String errorMessage1 = RandomTestUtil.randomString();
@@ -317,7 +318,7 @@ public class ObjectEntryResourceValidationTest
 					" must have ADD_OBJECT_ENTRY permission for ",
 					objectDefinition.getResourceName(), " ", errorScopeKey),
 				() -> _validate(
-					scopeKey, objectEntryResource,
+					objectEntryResource, scopeKey,
 					_getValidationRequest(
 						HashMapBuilder.<String, Object>put(
 							objectField1.getName(),
@@ -330,10 +331,10 @@ public class ObjectEntryResourceValidationTest
 			AssertUtils.assertFailure(
 				BadRequestException.class, "No values found in body",
 				() -> _validate(
-					scopeKey, objectEntryResource, new ValidationRequest()));
+					objectEntryResource, scopeKey, new ValidationRequest()));
 
 			ValidationResponse validationResponse = _validate(
-				scopeKey, objectEntryResource,
+				objectEntryResource, scopeKey,
 				_getValidationRequest(
 					HashMapBuilder.<String, Object>put(
 						objectField1.getName(), RandomTestUtil.randomString()
@@ -347,7 +348,7 @@ public class ObjectEntryResourceValidationTest
 				errorMessage1, validationErrors[0].getErrorMessage());
 
 			validationResponse = _validate(
-				scopeKey, objectEntryResource,
+				objectEntryResource, scopeKey,
 				_getValidationRequest(
 					HashMapBuilder.<String, Object>put(
 						objectField1.getName(), "foo"
@@ -359,7 +360,7 @@ public class ObjectEntryResourceValidationTest
 			Assert.assertTrue(ArrayUtil.isEmpty(validationErrors));
 
 			validationResponse = _validate(
-				scopeKey, objectEntryResource,
+				objectEntryResource, scopeKey,
 				_getValidationRequest(
 					HashMapBuilder.<String, Object>put(
 						objectField1.getName(), RandomTestUtil.randomInt()
@@ -381,7 +382,7 @@ public class ObjectEntryResourceValidationTest
 				objectValidationRule2);
 
 			validationResponse = _validate(
-				scopeKey, objectEntryResource,
+				objectEntryResource, scopeKey,
 				_getValidationRequest(
 					HashMapBuilder.<String, Object>put(
 						objectField1.getName(), RandomTestUtil.randomInt()
@@ -430,7 +431,7 @@ public class ObjectEntryResourceValidationTest
 				objectEntryResource);
 
 			validationResponse = _validate(
-				scopeKey, objectEntryResource,
+				objectEntryResource, scopeKey,
 				_getValidationRequest(Collections.emptyMap()));
 
 			validationErrors = validationResponse.getValidationErrors();
@@ -446,7 +447,7 @@ public class ObjectEntryResourceValidationTest
 				objectDefinition.getObjectDefinitionId());
 
 			validationResponse = _validate(
-				scopeKey, objectEntryResource,
+				objectEntryResource, scopeKey,
 				_getValidationRequest(
 					HashMapBuilder.<String, Object>put(
 						objectField2.getName(), RandomTestUtil.randomString(10)
@@ -463,7 +464,7 @@ public class ObjectEntryResourceValidationTest
 				objectDefinition, objectField2.getName(), "Peter");
 
 			validationResponse = _validate(
-				scopeKey, objectEntryResource,
+				objectEntryResource, scopeKey,
 				_getValidationRequest(
 					HashMapBuilder.<String, Object>put(
 						objectField2.getName(), "Peter"
@@ -496,7 +497,7 @@ public class ObjectEntryResourceValidationTest
 				ContentTypes.TEXT_PLAIN);
 
 			validationResponse = _validate(
-				scopeKey, objectEntryResource,
+				objectEntryResource, scopeKey,
 				_getValidationRequest(
 					HashMapBuilder.<String, Object>put(
 						OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
@@ -525,7 +526,7 @@ public class ObjectEntryResourceValidationTest
 	}
 
 	private ValidationResponse _validate(
-			String scopeKey, ObjectEntryResource objectEntryResource,
+			ObjectEntryResource objectEntryResource, String scopeKey,
 			ValidationRequest validationRequest)
 		throws Exception {
 

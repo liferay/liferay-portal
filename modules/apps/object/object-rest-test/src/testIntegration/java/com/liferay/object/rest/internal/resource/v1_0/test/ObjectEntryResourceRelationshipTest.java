@@ -185,8 +185,8 @@ public class ObjectEntryResourceRelationshipTest
 					HTTPTestUtil.invokeToJSONObject(
 						null,
 						getNestedFieldsEndpoint(
-							jsonObject.getLong("id"), objectRelationship,
-							getObjectDefinition1()),
+							getObjectDefinition1(), jsonObject.getLong("id"),
+							objectRelationship),
 						Http.Method.GET),
 					"JSONObject/" + objectRelationship.getName(),
 					"JSONArray/customFields")),
@@ -206,7 +206,6 @@ public class ObjectEntryResourceRelationshipTest
 			getObjectDefinition1().getRESTContextPath() +
 				"?fields=id,externalReferenceCode," + OBJECT_FIELD_NAME_1,
 			Http.Method.POST);
-
 		JSONObject customObjectJSONObject2 = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
@@ -233,7 +232,6 @@ public class ObjectEntryResourceRelationshipTest
 				HashMapBuilder.<String, Serializable>put(
 					OBJECT_FIELD_NAME_2, String.valueOf(OBJECT_FIELD_VALUE_1)
 				).build());
-
 		JSONObject systemObjectJSONObject2 =
 			UserAccountTestUtil.addUserAccountJSONObject(
 				getUserSystemObjectDefinitionManager(),
@@ -425,6 +423,52 @@ public class ObjectEntryResourceRelationshipTest
 			).toString(),
 			getObjectDefinition2().getRESTContextPath(), Http.Method.POST);
 
+		// Slash on both sides
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.ERROR)) {
+
+			Assert.assertEquals(
+				404,
+				HTTPTestUtil.invokeToHttpCode(
+					null,
+					StringBundler.concat(
+						getObjectDefinition1().getRESTContextPath(),
+						"/by-external-reference-code/a%252Fb/",
+						objectRelationship.getName(), "/c/d"),
+					Http.Method.PUT));
+			Assert.assertEquals(
+				404,
+				HTTPTestUtil.invokeToHttpCode(
+					null,
+					StringBundler.concat(
+						getObjectDefinition1().getRESTContextPath(),
+						"/by-external-reference-code/a/b/",
+						objectRelationship.getName(), "/c%252Fd"),
+					Http.Method.PUT));
+			Assert.assertEquals(
+				404,
+				HTTPTestUtil.invokeToHttpCode(
+					null,
+					StringBundler.concat(
+						getObjectDefinition1().getRESTContextPath(),
+						"/by-external-reference-code/a/b/",
+						objectRelationship.getName(), "/c/d"),
+					Http.Method.PUT));
+		}
+
+		Assert.assertEquals(
+			200,
+			HTTPTestUtil.invokeToHttpCode(
+				null,
+				StringBundler.concat(
+					getObjectDefinition1().getRESTContextPath(),
+					"/by-external-reference-code/a%252Fb/",
+					objectRelationship.getName(), "/c%252Fd"),
+				Http.Method.PUT));
+
 		// Slash on the left side
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -478,52 +522,6 @@ public class ObjectEntryResourceRelationshipTest
 				StringBundler.concat(
 					getObjectDefinition1().getRESTContextPath(),
 					"/by-external-reference-code/a/",
-					objectRelationship.getName(), "/c%252Fd"),
-				Http.Method.PUT));
-
-		// Slash on both sides
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
-				LoggerTestUtil.ERROR)) {
-
-			Assert.assertEquals(
-				404,
-				HTTPTestUtil.invokeToHttpCode(
-					null,
-					StringBundler.concat(
-						getObjectDefinition1().getRESTContextPath(),
-						"/by-external-reference-code/a%252Fb/",
-						objectRelationship.getName(), "/c/d"),
-					Http.Method.PUT));
-			Assert.assertEquals(
-				404,
-				HTTPTestUtil.invokeToHttpCode(
-					null,
-					StringBundler.concat(
-						getObjectDefinition1().getRESTContextPath(),
-						"/by-external-reference-code/a/b/",
-						objectRelationship.getName(), "/c%252Fd"),
-					Http.Method.PUT));
-			Assert.assertEquals(
-				404,
-				HTTPTestUtil.invokeToHttpCode(
-					null,
-					StringBundler.concat(
-						getObjectDefinition1().getRESTContextPath(),
-						"/by-external-reference-code/a/b/",
-						objectRelationship.getName(), "/c/d"),
-					Http.Method.PUT));
-		}
-
-		Assert.assertEquals(
-			200,
-			HTTPTestUtil.invokeToHttpCode(
-				null,
-				StringBundler.concat(
-					getObjectDefinition1().getRESTContextPath(),
-					"/by-external-reference-code/a%252Fb/",
 					objectRelationship.getName(), "/c%252Fd"),
 				Http.Method.PUT));
 	}
@@ -632,8 +630,8 @@ public class ObjectEntryResourceRelationshipTest
 			HTTPTestUtil.invokeToJSONObject(
 				null,
 				getNestedFieldsEndpoint(
-					jsonObject.getLong("id"), objectRelationship,
-					getObjectDefinition1()),
+					getObjectDefinition1(), jsonObject.getLong("id"),
+					objectRelationship),
 				Http.Method.GET
 			).toString(),
 			JSONCompareMode.LENIENT);

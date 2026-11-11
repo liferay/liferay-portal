@@ -605,41 +605,6 @@ public class ObjectEntryResourceCategorizationTest
 
 		groupLocalService.deleteGroup(childGroup);
 
-		// Can add a category from an all spaces vocabulary
-
-		AssetVocabulary allSpacesAssetVocabulary =
-			assetVocabularyLocalService.addVocabulary(
-				TestPropsValues.getUserId(), group.getGroupId(),
-				RandomTestUtil.randomString(
-					UniqueStringRandomizerBumper.INSTANCE),
-				new ServiceContext());
-
-		AssetVocabularyGroupRelLocalServiceUtil.addAssetVocabularyGroupRel(
-			GroupConstants.ANY_PARENT_GROUP_ID,
-			allSpacesAssetVocabulary.getVocabularyId(),
-			DepotConstants.TYPE_SPACE);
-
-		TaxonomyCategory allSpacesTaxonomyCategory =
-			postTaxonomyVocabularyTaxonomyCategory(
-				allSpacesAssetVocabulary.getGroupId(),
-				allSpacesAssetVocabulary.getVocabularyId());
-
-		Assert.assertNotNull(
-			HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).put(
-					"taxonomyCategoryIds",
-					JSONUtil.putAll(allSpacesTaxonomyCategory.getId())
-				).toString(),
-				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
-				Http.Method.POST
-			).get(
-				"id"
-			));
-
-		assetVocabularyLocalService.deleteVocabulary(allSpacesAssetVocabulary);
-
 		// Can add a category from a space associated vocabulary
 
 		AssetVocabulary sharedAssetVocabulary =
@@ -758,6 +723,55 @@ public class ObjectEntryResourceCategorizationTest
 			GroupThreadLocal.setDeleteInProcess(deleteInProcess);
 		}
 
+		// Can add a category from an all spaces vocabulary
+
+		AssetVocabulary allSpacesAssetVocabulary =
+			assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), group.getGroupId(),
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE),
+				new ServiceContext());
+
+		AssetVocabularyGroupRelLocalServiceUtil.addAssetVocabularyGroupRel(
+			GroupConstants.ANY_PARENT_GROUP_ID,
+			allSpacesAssetVocabulary.getVocabularyId(),
+			DepotConstants.TYPE_SPACE);
+
+		TaxonomyCategory allSpacesTaxonomyCategory =
+			postTaxonomyVocabularyTaxonomyCategory(
+				allSpacesAssetVocabulary.getGroupId(),
+				allSpacesAssetVocabulary.getVocabularyId());
+
+		Assert.assertNotNull(
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+				).put(
+					"taxonomyCategoryIds",
+					JSONUtil.putAll(allSpacesTaxonomyCategory.getId())
+				).toString(),
+				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
+				Http.Method.POST
+			).get(
+				"id"
+			));
+
+		assetVocabularyLocalService.deleteVocabulary(allSpacesAssetVocabulary);
+
+		// Cannot add a category from a foreign site
+
+		Assert.assertEquals(
+			400,
+			HTTPTestUtil.invokeToHttpCode(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
+				).put(
+					"taxonomyCategoryIds",
+					JSONUtil.putAll(siteTaxonomyCategory.getId())
+				).toString(),
+				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
+				Http.Method.POST));
+
 		// Cannot add a category from an unassociated vocabulary
 
 		AssetVocabulary foreignAssetVocabulary =
@@ -810,20 +824,6 @@ public class ObjectEntryResourceCategorizationTest
 					JSONUtil.putAll(siteTaxonomyCategory.getId())
 				).toString(),
 				getObjectDefinition1().getRESTContextPath(), Http.Method.POST));
-
-		// Cannot add a category from a foreign site
-
-		Assert.assertEquals(
-			400,
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
-				).put(
-					"taxonomyCategoryIds",
-					JSONUtil.putAll(siteTaxonomyCategory.getId())
-				).toString(),
-				getEndpoint(getSiteScopedObjectDefinition1(), testGroupId),
-				Http.Method.POST));
 
 		// Cannot add a category via UPSERT
 

@@ -256,7 +256,7 @@ public class ObjectEntryResourcePermissionTest
 				user.getUserId(), depotEntry.getGroupId(), role.getRoleId());
 
 		JSONObject actionsJSONObject = _getObjectEntryActionsJSONObject(
-			objectDefinition, objectEntry, user, password);
+			objectDefinition, objectEntry, password, user);
 
 		Assert.assertTrue(actionsJSONObject.has("share"));
 
@@ -272,7 +272,7 @@ public class ObjectEntryResourcePermissionTest
 			user.getUserId(), depotEntry.getGroupId(), role.getRoleId());
 
 		actionsJSONObject = _getObjectEntryActionsJSONObject(
-			objectDefinition, objectEntry, user, password);
+			objectDefinition, objectEntry, password, user);
 
 		Assert.assertFalse(actionsJSONObject.has("share"));
 
@@ -288,7 +288,7 @@ public class ObjectEntryResourcePermissionTest
 				depotEntry.getGroupId(), TestPropsValues.getUserId()));
 
 		actionsJSONObject = _getObjectEntryActionsJSONObject(
-			objectDefinition, objectEntry, user, password);
+			objectDefinition, objectEntry, password, user);
 
 		Assert.assertTrue(actionsJSONObject.has("share"));
 
@@ -305,7 +305,7 @@ public class ObjectEntryResourcePermissionTest
 		roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
 
 		actionsJSONObject = _getObjectEntryActionsJSONObject(
-			objectDefinition, objectEntry, user, password);
+			objectDefinition, objectEntry, password, user);
 
 		Assert.assertTrue(actionsJSONObject.has("share"));
 
@@ -320,14 +320,14 @@ public class ObjectEntryResourcePermissionTest
 			user.getUserId());
 
 		actionsJSONObject = _getObjectEntryActionsJSONObject(
-			objectDefinition, userObjectEntry, user, password);
+			objectDefinition, userObjectEntry, password, user);
 
 		Assert.assertTrue(actionsJSONObject.has("share"));
 
 		// Without role
 
 		actionsJSONObject = _getObjectEntryActionsJSONObject(
-			objectDefinition, objectEntry, user, password);
+			objectDefinition, objectEntry, password, user);
 
 		Assert.assertFalse(actionsJSONObject.has("share"));
 	}
@@ -893,7 +893,7 @@ public class ObjectEntryResourcePermissionTest
 
 	private JSONObject _getObjectEntryActionsJSONObject(
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
-			User user, String password)
+			String password, User user)
 		throws Exception {
 
 		AtomicReference<JSONObject> atomicReference = new AtomicReference<>();
