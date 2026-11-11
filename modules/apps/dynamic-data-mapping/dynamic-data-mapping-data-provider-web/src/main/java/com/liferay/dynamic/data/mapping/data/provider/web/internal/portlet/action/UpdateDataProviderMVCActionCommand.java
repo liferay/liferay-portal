@@ -61,8 +61,7 @@ public class UpdateDataProviderMVCActionCommand
 		long dataProviderInstanceId = ParamUtil.getLong(
 			actionRequest, "dataProviderInstanceId");
 
-		DDMFormValues ddmFormValues = getDDMFormValues(
-			actionRequest, actionResponse);
+		DDMFormValues ddmFormValues = getDDMFormValues(actionRequest);
 
 		_restorePasswordDDMFormFieldValues(
 			dataProviderInstanceId, ddmFormValues);

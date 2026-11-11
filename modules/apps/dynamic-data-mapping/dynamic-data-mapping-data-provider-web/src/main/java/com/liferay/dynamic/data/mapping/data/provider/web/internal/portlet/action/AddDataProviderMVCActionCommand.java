@@ -47,8 +47,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class AddDataProviderMVCActionCommand extends BaseMVCActionCommand {
 
-	public DDMFormValues getDDMFormValues(
-			ActionRequest actionRequest, ActionResponse actionResponse)
+	public DDMFormValues getDDMFormValues(ActionRequest actionRequest)
 		throws PortalException {
 
 		String type = ParamUtil.getString(actionRequest, "type");
@@ -75,8 +74,7 @@ public class AddDataProviderMVCActionCommand extends BaseMVCActionCommand {
 
 		String name = ParamUtil.getString(actionRequest, "name");
 		String description = ParamUtil.getString(actionRequest, "description");
-		DDMFormValues ddmFormValues = getDDMFormValues(
-			actionRequest, actionResponse);
+		DDMFormValues ddmFormValues = getDDMFormValues(actionRequest);
 		String type = ParamUtil.getString(actionRequest, "type");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
