@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -84,6 +85,9 @@ public class CMSPlanningAndTasksPagesUpgradeProcessTest {
 
 	@Test
 	public void testUpgrade() throws Exception {
+
+		// Upgrading adds the planning and tasks pages
+
 		Group group = _groupLocalService.getGroup(
 			_company.getCompanyId(), GroupConstants.CMS);
 
@@ -207,30 +211,32 @@ public class CMSPlanningAndTasksPagesUpgradeProcessTest {
 		long companyId = layout.getCompanyId();
 		String primKey = String.valueOf(layout.getPlid());
 
+		Role cmsAdministratorRole = _roleLocalService.getRole(
+			companyId, RoleConstants.CMS_ADMINISTRATOR);
+
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
 				companyId, Layout.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL, primKey,
-				_roleLocalService.getRole(
-					companyId, RoleConstants.CMS_ADMINISTRATOR
-				).getRoleId(),
-				"VIEW"));
+				cmsAdministratorRole.getRoleId(), "VIEW"));
+
+		Role siteMemberRole = _roleLocalService.getRole(
+			companyId, RoleConstants.SITE_MEMBER);
+
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
 				companyId, Layout.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL, primKey,
-				_roleLocalService.getRole(
-					companyId, RoleConstants.SITE_MEMBER
-				).getRoleId(),
-				"VIEW"));
+				siteMemberRole.getRoleId(), "VIEW"));
+
+		Role guestRole = _roleLocalService.getRole(
+			companyId, RoleConstants.GUEST);
+
 		Assert.assertFalse(
 			_resourcePermissionLocalService.hasResourcePermission(
 				companyId, Layout.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL, primKey,
-				_roleLocalService.getRole(
-					companyId, RoleConstants.GUEST
-				).getRoleId(),
-				"VIEW"));
+				guestRole.getRoleId(), "VIEW"));
 	}
 
 	private void _assertTasksFragmentEntryLink(Layout layout) throws Exception {
