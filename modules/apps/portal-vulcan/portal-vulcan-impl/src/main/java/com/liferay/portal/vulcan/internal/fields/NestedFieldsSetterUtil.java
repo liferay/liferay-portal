@@ -410,7 +410,7 @@ public class NestedFieldsSetterUtil {
 			_bundleContext = bundleContext;
 		}
 
-		private Object _convert(Object value, Class<?> type) {
+		private Object _convert(Class<?> type, Object value) {
 			if (value == null) {
 				return null;
 			}
@@ -470,9 +470,9 @@ public class NestedFieldsSetterUtil {
 
 		private Object _getMethodArgValueFromRequest(
 			ContextDataInjector contextDataInjector, String fieldName,
-			Map.Entry<String, Class<?>> resourceMethodArgNameTypeEntry,
 			NestedFieldsContext nestedFieldsContext,
-			Map<String, Object> parentPathParameters) {
+			Map<String, Object> parentPathParameters,
+			Map.Entry<String, Class<?>> resourceMethodArgNameTypeEntry) {
 
 			Object argValue = null;
 
@@ -489,28 +489,28 @@ public class NestedFieldsSetterUtil {
 						resourceMethodArgNameTypeEntry.getKey())) {
 
 				argValue = _convert(
+					resourceMethodArgType,
 					parentPathParameters.get(
-						resourceMethodArgNameTypeEntry.getKey()),
-					resourceMethodArgType);
+						resourceMethodArgNameTypeEntry.getKey()));
 			}
 			else {
 				MultivaluedMap<String, String> pathParameters =
 					nestedFieldsContext.getPathParameters();
 
 				argValue = _convert(
+					resourceMethodArgType,
 					pathParameters.getFirst(
-						resourceMethodArgNameTypeEntry.getKey()),
-					resourceMethodArgType);
+						resourceMethodArgNameTypeEntry.getKey()));
 
 				if (argValue == null) {
 					MultivaluedMap<String, String> queryParameters =
 						nestedFieldsContext.getQueryParameters();
 
 					argValue = _convert(
+						resourceMethodArgType,
 						queryParameters.getFirst(
 							fieldName + StringPool.PERIOD +
-								resourceMethodArgNameTypeEntry.getKey()),
-						resourceMethodArgType);
+								resourceMethodArgNameTypeEntry.getKey()));
 				}
 			}
 
@@ -539,9 +539,8 @@ public class NestedFieldsSetterUtil {
 				}
 
 				args[i] = _getMethodArgValueFromRequest(
-					contextDataInjector, fieldName,
-					resourceMethodArgNameTypeEntries[i], nestedFieldsContext,
-					parentPathParameters);
+					contextDataInjector, fieldName, nestedFieldsContext,
+					parentPathParameters, resourceMethodArgNameTypeEntries[i]);
 			}
 
 			return args;
