@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer;
 
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.listener.FragmentEntryLinkListener;
@@ -32,14 +33,22 @@ import com.liferay.headless.admin.site.internal.resource.v1_0.util.PortletUtil;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.message.boards.model.MBMessage;
+import com.liferay.message.boards.service.MBMessageLocalService;
 import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.comment.Comment;
+import com.liferay.portal.kernel.comment.CommentManager;
+import com.liferay.portal.kernel.comment.WorkflowableComment;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -51,11 +60,14 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.util.tracker.ServiceTracker;
@@ -130,6 +142,8 @@ public class FragmentLayoutStructureItemImporter
 		if (fragmentEntryLink == null) {
 			return null;
 		}
+
+		_copyComments(fragmentEntryLink);
 
 		Layout layout = layoutStructureItemImporterContext.getLayout();
 
@@ -277,6 +291,153 @@ public class FragmentLayoutStructureItemImporter
 		finally {
 			serviceContext.setCreateDate(createDate);
 			serviceContext.setUuid(uuid);
+		}
+	}
+
+	private long _copyComment(
+			Comment comment, CommentManager commentManager,
+			FragmentEntryLink fragmentEntryLink, long parentCommentId)
+		throws Exception {
+
+		Function<String, ServiceContext> serviceContextFunction = className -> {
+			ServiceContext serviceContext = new ServiceContext();
+
+			serviceContext.setCompanyId(fragmentEntryLink.getCompanyId());
+			serviceContext.setCreateDate(comment.getCreateDate());
+			serviceContext.setModifiedDate(comment.getModifiedDate());
+			serviceContext.setScopeGroupId(fragmentEntryLink.getGroupId());
+
+			WorkflowableComment workflowableComment =
+				(WorkflowableComment)comment;
+
+			if (workflowableComment.getStatus() ==
+					WorkflowConstants.STATUS_APPROVED) {
+
+				serviceContext.setWorkflowAction(
+					WorkflowConstants.ACTION_PUBLISH);
+			}
+			else {
+				serviceContext.setWorkflowAction(
+					WorkflowConstants.ACTION_SAVE_DRAFT);
+			}
+
+			return serviceContext;
+		};
+
+		long commentId = 0;
+
+		if (parentCommentId == 0) {
+			commentId = commentManager.addComment(
+				null, comment.getUserId(), fragmentEntryLink.getGroupId(),
+				FragmentEntryLink.class.getName(),
+				fragmentEntryLink.getFragmentEntryLinkId(),
+				comment.getUserName(), null, comment.getBody(),
+				serviceContextFunction);
+		}
+		else {
+			commentId = commentManager.addComment(
+				null, comment.getUserId(), FragmentEntryLink.class.getName(),
+				fragmentEntryLink.getFragmentEntryLinkId(),
+				comment.getUserName(), parentCommentId, null, comment.getBody(),
+				serviceContextFunction);
+		}
+
+		for (Comment childComment :
+				commentManager.getChildComments(
+					comment.getCommentId(), WorkflowConstants.STATUS_ANY,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+
+			_copyComment(
+				childComment, commentManager, fragmentEntryLink, commentId);
+		}
+
+		return commentId;
+	}
+
+	private void _copyComments(FragmentEntryLink fragmentEntryLink)
+		throws Exception {
+
+		if (!ExportImportThreadLocal.isStagingInProcess()) {
+			return;
+		}
+
+		Group group = GroupLocalServiceUtil.getGroup(
+			fragmentEntryLink.getGroupId());
+
+		Group stagingGroup = group.getStagingGroup();
+
+		if (stagingGroup == null) {
+			return;
+		}
+
+		FragmentEntryLink stagingFragmentEntryLink =
+			FragmentEntryLinkLocalServiceUtil.
+				fetchFragmentEntryLinkByExternalReferenceCode(
+					fragmentEntryLink.getExternalReferenceCode(),
+					stagingGroup.getGroupId());
+
+		if (stagingFragmentEntryLink == null) {
+			return;
+		}
+
+		CommentManager commentManager =
+			_commentManagerServiceTracker.getService();
+
+		commentManager.deleteDiscussion(
+			FragmentEntryLink.class.getName(),
+			fragmentEntryLink.getFragmentEntryLinkId());
+
+		if (!commentManager.hasDiscussion(
+				FragmentEntryLink.class.getName(),
+				stagingFragmentEntryLink.getFragmentEntryLinkId())) {
+
+			return;
+		}
+
+		boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
+
+		WorkflowThreadLocal.setEnabled(false);
+
+		try {
+			long copiedCommentId = 0;
+			long earliestCreateTime = Long.MAX_VALUE;
+
+			for (Comment comment :
+					commentManager.getRootComments(
+						FragmentEntryLink.class.getName(),
+						stagingFragmentEntryLink.getFragmentEntryLinkId(),
+						WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS)) {
+
+				copiedCommentId = _copyComment(
+					comment, commentManager, fragmentEntryLink, 0);
+
+				Date createDate = comment.getCreateDate();
+
+				earliestCreateTime = Math.min(
+					earliestCreateTime, createDate.getTime());
+			}
+
+			if (copiedCommentId != 0) {
+				MBMessageLocalService mbMessageLocalService =
+					_mbMessageLocalServiceServiceTracker.getService();
+
+				MBMessage copiedMBMessage = mbMessageLocalService.getMBMessage(
+					copiedCommentId);
+
+				MBMessage rootMBMessage = mbMessageLocalService.getMBMessage(
+					copiedMBMessage.getRootMessageId());
+
+				Date rootCreateDate = new Date(earliestCreateTime - 1000);
+
+				rootMBMessage.setCreateDate(rootCreateDate);
+				rootMBMessage.setModifiedDate(rootCreateDate);
+
+				mbMessageLocalService.updateMBMessage(rootMBMessage);
+			}
+		}
+		finally {
+			WorkflowThreadLocal.setEnabled(workflowEnabled);
 		}
 	}
 
@@ -468,6 +629,10 @@ public class FragmentLayoutStructureItemImporter
 			false);
 	}
 
+	private static final ServiceTracker<CommentManager, CommentManager>
+		_commentManagerServiceTracker = ServiceTrackerFactory.open(
+			FrameworkUtil.getBundle(FragmentLayoutStructureItemImporter.class),
+			CommentManager.class);
 	private static final ServiceTracker
 		<FragmentEntryLinkListenerRegistry, FragmentEntryLinkListenerRegistry>
 			_fragmentEntryLinkListenerRegistryServiceTracker =
@@ -475,6 +640,12 @@ public class FragmentLayoutStructureItemImporter
 					FrameworkUtil.getBundle(
 						FragmentLayoutStructureItemImporter.class),
 					FragmentEntryLinkListenerRegistry.class);
+	private static final ServiceTracker
+		<MBMessageLocalService, MBMessageLocalService>
+			_mbMessageLocalServiceServiceTracker = ServiceTrackerFactory.open(
+				FrameworkUtil.getBundle(
+					FragmentLayoutStructureItemImporter.class),
+				MBMessageLocalService.class);
 	private static final ServiceTracker<PortletRegistry, PortletRegistry>
 		_portletRegistryServiceTracker = ServiceTrackerFactory.open(
 			FrameworkUtil.getBundle(FragmentLayoutStructureItemImporter.class),
