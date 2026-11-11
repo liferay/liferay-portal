@@ -19,7 +19,7 @@ serviceContext.setScopeGroupId(group.getGroupId())
 serviceContext.setUserId(userId)
 
 for (i =1; i <= numberOfUsers; i++) {
-boolean autoPassword = true;
+boolean autoPassword = false;
 String password = "123";
 String screenName = i + "user";
 String emailAddress = i + "user@liferay.com";
