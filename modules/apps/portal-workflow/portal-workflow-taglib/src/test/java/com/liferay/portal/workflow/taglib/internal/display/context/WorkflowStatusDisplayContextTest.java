@@ -6,9 +6,7 @@
 package com.liferay.portal.workflow.taglib.internal.display.context;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanProperties;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.model.LayoutRevisionWrapper;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.workflow.taglib.internal.constants.WorkflowStatusConstants;
@@ -19,8 +17,6 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import org.mockito.Mockito;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -36,22 +32,19 @@ public class WorkflowStatusDisplayContextTest {
 
 	@Test
 	public void testGetStatus() {
-		BeanProperties beanProperties = Mockito.mock(BeanProperties.class);
-
-		Mockito.when(
-			beanProperties.getInteger(Mockito.any(), Mockito.eq("status"))
-		).thenReturn(
-			2
-		);
-
-		ReflectionTestUtil.setFieldValue(
-			BeanPropertiesUtil.class, "_beanProperties", beanProperties);
-
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
 		_setAttribute(
-			"bean", mockHttpServletRequest, Mockito.mock(Object.class));
+			"bean", mockHttpServletRequest,
+			new LayoutRevisionWrapper(null) {
+
+				@Override
+				public int getStatus() {
+					return 2;
+				}
+
+			});
 		_setAttribute("status", mockHttpServletRequest, 1);
 
 		Assert.assertEquals(
