@@ -756,6 +756,7 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 
 		<gradle-execute dir="${project.dir}/modules" forcedcacheenabled="false" stacktrace="false" task="findSecurityBugs">
 			<arg value="--continue" />
+			<arg value="-Dbuild.profile=${build.profile}" />
 			<arg if:set="findSecurityBugs.Xms" value="-DfindSecurityBugs.Xms=${findSecurityBugs.Xms}" />
 			<arg if:set="findSecurityBugs.Xmx" value="-DfindSecurityBugs.Xmx=${findSecurityBugs.Xmx}" />
 		</gradle-execute>
