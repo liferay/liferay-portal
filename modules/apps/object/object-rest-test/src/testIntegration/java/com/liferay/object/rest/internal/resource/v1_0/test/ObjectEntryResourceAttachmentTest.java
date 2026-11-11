@@ -99,7 +99,6 @@ import com.liferay.portlet.documentlibrary.constants.DLConstants;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -3143,36 +3142,36 @@ public class ObjectEntryResourceAttachmentTest
 	private static class TestDLFileEntryModelListener
 		extends BaseModelListener<DLFileEntry> {
 
-		public Long getLastFileEntryId() {
-			return _fileEntryIds.get(_fileEntryIds.size() - 1);
+		public long getLastFileEntryId() {
+			return _lastFileEntryId;
 		}
 
 		@Override
 		public void onAfterCreate(DLFileEntry dlFileEntry)
 			throws ModelListenerException {
 
-			_fileEntryIds.add(dlFileEntry.getFileEntryId());
+			_lastFileEntryId = dlFileEntry.getFileEntryId();
 		}
 
-		private List<Long> _fileEntryIds = new ArrayList<>();
+		private long _lastFileEntryId;
 
 	}
 
 	private static class TestObjectEntryModelListener
 		extends BaseModelListener<ObjectEntry> {
 
-		public Long getLastObjectEntryId() {
-			return _objectEntryIds.get(_objectEntryIds.size() - 1);
+		public long getLastObjectEntryId() {
+			return _lastObjectEntryId;
 		}
 
 		@Override
 		public void onAfterCreate(ObjectEntry objectEntry)
 			throws ModelListenerException {
 
-			_objectEntryIds.add(objectEntry.getObjectEntryId());
+			_lastObjectEntryId = objectEntry.getObjectEntryId();
 		}
 
-		private List<Long> _objectEntryIds = new ArrayList<>();
+		private long _lastObjectEntryId;
 
 	}
 

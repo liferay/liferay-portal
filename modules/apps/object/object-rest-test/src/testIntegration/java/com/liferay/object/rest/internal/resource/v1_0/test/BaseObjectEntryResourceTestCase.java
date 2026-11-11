@@ -1507,12 +1507,6 @@ public abstract class BaseObjectEntryResourceTestCase {
 	@Inject
 	protected UserLocalService userLocalService;
 
-	protected enum Type {
-
-		MANY_TO_MANY, MANY_TO_ONE, ONE_TO_MANY
-
-	}
-
 	private void _assertPatchObjectField(
 			String endpoint, JSONObject expectedJSONObject,
 			String objectFieldName, Object objectFieldValue)

@@ -1576,26 +1576,26 @@ public class ObjectEntryResourceNestedFieldsTest
 					objectDefinitionLocalService.getObjectDefinition(
 						objectDefinitionRootNode.getPrimaryKey()));
 
+			Node objectEntryRootNode = objectEntryTree.getRootNode();
+
 			_assertRelatedObjectEntryExternalReferenceCode(
-				_getChildNodeEdge(0, objectEntryTree.getRootNode()), "AA1",
+				_getChildNodeEdge(0, objectEntryRootNode), "AA1",
 				objectEntryAJSONObject);
 			_assertRelatedObjectEntryExternalReferenceCode(
-				_getChildNodeEdge(1, objectEntryTree.getRootNode()), "AB1",
+				_getChildNodeEdge(1, objectEntryRootNode), "AB1",
 				objectEntryAJSONObject);
 
 			JSONObject objectEntryAAJSONObject = _getRelatedJSONObject(
 				objectEntryAJSONObject,
 				_getObjectRelationshipName(
-					_getChildNodeEdge(0, objectEntryTree.getRootNode())),
+					_getChildNodeEdge(0, objectEntryRootNode)),
 				Type.ONE_TO_MANY);
 
 			_assertRelatedObjectEntryExternalReferenceCode(
-				_getChildNodeEdge(
-					0, _getChildNode(0, objectEntryTree.getRootNode())),
+				_getChildNodeEdge(0, _getChildNode(0, objectEntryRootNode)),
 				"AAA1", objectEntryAAJSONObject);
 			_assertRelatedObjectEntryExternalReferenceCode(
-				_getChildNodeEdge(
-					1, _getChildNode(0, objectEntryTree.getRootNode())),
+				_getChildNodeEdge(1, _getChildNode(0, objectEntryRootNode)),
 				"AAB1", objectEntryAAJSONObject);
 		}
 		finally {
@@ -1992,6 +1992,12 @@ public class ObjectEntryResourceNestedFieldsTest
 
 		private final AtomicInteger _atomicInteger = new AtomicInteger();
 		private final Stack<AutoCloseable> _autoCloseables = new Stack<>();
+
+	}
+
+	private enum Type {
+
+		MANY_TO_MANY, MANY_TO_ONE, ONE_TO_MANY
 
 	}
 
