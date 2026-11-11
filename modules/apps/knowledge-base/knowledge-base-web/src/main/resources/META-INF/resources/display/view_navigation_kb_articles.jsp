@@ -41,7 +41,7 @@
 				<%= HtmlUtil.escape(childKBArticle.getTitle()) %>
 			</a>
 
-			<c:if test="<%= kbNavigationDisplayContext.isFurtherExpansionRequired(parentResourcePrimKey, childKBArticle, level) %>">
+			<c:if test="<%= kbNavigationDisplayContext.isFurtherExpansionRequired(childKBArticle, level) %>">
 
 				<%
 				request.setAttribute("view_navigation_kb_articles.jsp-level", level + 1);

@@ -200,7 +200,7 @@ public class KBNavigationDisplayContext {
 	}
 
 	public boolean isFurtherExpansionRequired(
-			long parentResourcePrimKey, KBArticle childKBArticle, int level)
+			KBArticle childKBArticle, int level)
 		throws PortalException {
 
 		List<Long> ancestorResourcePrimaryKeys =
