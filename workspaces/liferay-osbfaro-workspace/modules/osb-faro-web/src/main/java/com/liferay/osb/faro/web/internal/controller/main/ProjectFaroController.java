@@ -194,7 +194,7 @@ public class ProjectFaroController extends BaseFaroController {
 	@Path("/usage/backfill")
 	@POST
 	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
-	public void backfillProjectUsageMetrics(
+	public void backfillFaroProjectUsages(
 		@QueryParam("endDateString") String endDateString,
 		@QueryParam("startDateString") String startDateString) {
 
