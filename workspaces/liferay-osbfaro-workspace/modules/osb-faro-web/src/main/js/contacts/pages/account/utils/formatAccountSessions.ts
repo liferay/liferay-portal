@@ -64,9 +64,14 @@ const toSessionItem = (
 
 	const events: UserSessionEvent[] = session.events ?? [];
 
+	// An anonymous session's row shows "Anonymous User" rather than the tracked
+	// name (see getIndividual), so its attributes leave the name out as well.
+
 	return {
 		applicationId: events[0]?.applicationId ?? '',
-		attributes: getDisplayableFields(session),
+		attributes: getDisplayableFields(
+			session.individualId ? session : {...session, userName: null}
+		),
 		browserName: session.browserName,
 		device: session.deviceType,
 		endTime: session.completeDate,
