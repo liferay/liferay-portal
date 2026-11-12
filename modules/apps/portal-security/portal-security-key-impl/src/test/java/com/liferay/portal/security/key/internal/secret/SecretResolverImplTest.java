@@ -288,7 +288,7 @@ public class SecretResolverImplTest {
 		}
 	}
 
-	private void _assertAudit(
+	private void _assertFIPSAuditEvent(
 		long companyId, MockedStatic<FIPSAuditUtil> fipsAuditUtilMockedStatic,
 		String identifier, String operation) {
 
@@ -388,7 +388,7 @@ public class SecretResolverImplTest {
 					companyId, secretContext,
 					_toKeyReferenceString(identifier)));
 
-			_assertAudit(
+			_assertFIPSAuditEvent(
 				companyId, fipsAuditUtilMockedStatic, identifier, "resolve");
 		}
 
@@ -810,7 +810,7 @@ public class SecretResolverImplTest {
 					companyId, secretContext,
 					_toKeyReferenceString(identifier)));
 
-			_assertAudit(
+			_assertFIPSAuditEvent(
 				companyId, fipsAuditUtilMockedStatic, identifier, "store");
 		}
 

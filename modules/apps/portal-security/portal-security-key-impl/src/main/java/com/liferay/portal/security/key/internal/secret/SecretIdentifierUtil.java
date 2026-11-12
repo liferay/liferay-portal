@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.function.Function;
+import java.util.Dictionary;
 
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -24,69 +24,75 @@ import org.osgi.service.cm.ConfigurationAdmin;
  */
 public class SecretIdentifierUtil {
 
-	public static String buildConfigurationIdentifier(
-		String key, String pid, ExtendedObjectClassDefinition.Scope scope,
-		Object scopePrimaryKey) {
+	public static long getConfigurationCompanyId(
+		Dictionary<String, ?> properties) {
 
-		return StringBundler.concat(
-			"config/", pid, StringPool.SLASH, scope.getValue(),
-			StringPool.SLASH, scopePrimaryKey, StringPool.SLASH, key);
+		return GetterUtil.getLong(
+			properties.get(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()),
+			CompanyConstants.SYSTEM);
 	}
 
-	public static String buildConfigurationIdentifier(
-		String key, String pid, Function<String, Object> propertyFunction) {
+	public static String getSecretIdentifier(
+		String key, String pid, Dictionary<String, ?> properties) {
 
-		String configurationPid = StringUtil.replace(
-			pid, CharPool.TILDE, CharPool.SLASH);
-		String factoryPid = GetterUtil.getString(
-			propertyFunction.apply(ConfigurationAdmin.SERVICE_FACTORYPID));
-
-		if (factoryPid.endsWith(".scoped")) {
-			configurationPid = ConfigurationPidUtil.getRawPid(factoryPid);
-		}
+		String configurationPid = _getConfigurationPid(pid, properties);
 
 		String portletInstanceId = GetterUtil.getString(
-			propertyFunction.apply(
+			properties.get(
 				ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
 					getPropertyKey()));
 
 		if (Validator.isNotNull(portletInstanceId)) {
-			return buildConfigurationIdentifier(
+			return _getSecretIdentifier(
 				key, configurationPid,
 				ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE,
 				portletInstanceId);
 		}
 
 		long groupId = GetterUtil.getLong(
-			propertyFunction.apply(
+			properties.get(
 				ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey()));
 
 		if (groupId > 0) {
-			return buildConfigurationIdentifier(
+			return _getSecretIdentifier(
 				key, configurationPid,
 				ExtendedObjectClassDefinition.Scope.GROUP, groupId);
 		}
 
-		long companyId = getConfigurationCompanyId(propertyFunction);
+		long companyId = getConfigurationCompanyId(properties);
 
 		if (companyId != CompanyConstants.SYSTEM) {
-			return buildConfigurationIdentifier(
+			return _getSecretIdentifier(
 				key, configurationPid,
 				ExtendedObjectClassDefinition.Scope.COMPANY, companyId);
 		}
 
-		return buildConfigurationIdentifier(
+		return _getSecretIdentifier(
 			key, configurationPid, ExtendedObjectClassDefinition.Scope.SYSTEM,
 			CompanyConstants.SYSTEM);
 	}
 
-	public static long getConfigurationCompanyId(
-		Function<String, Object> propertyFunction) {
+	private static String _getConfigurationPid(
+		String pid, Dictionary<String, ?> properties) {
 
-		return GetterUtil.getLong(
-			propertyFunction.apply(
-				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()),
-			CompanyConstants.SYSTEM);
+		String factoryPid = GetterUtil.getString(
+			properties.get(ConfigurationAdmin.SERVICE_FACTORYPID));
+
+		if (factoryPid.endsWith(".scoped")) {
+			return ConfigurationPidUtil.getRawPid(factoryPid);
+		}
+
+		return StringUtil.replace(pid, CharPool.TILDE, CharPool.SLASH);
+	}
+
+	private static String _getSecretIdentifier(
+		String key, String pid, ExtendedObjectClassDefinition.Scope scope,
+		Object scopePrimaryKey) {
+
+		return StringBundler.concat(
+			"config/", pid, StringPool.SLASH, scope.getValue(),
+			StringPool.SLASH, scopePrimaryKey, StringPool.SLASH, key);
 	}
 
 }

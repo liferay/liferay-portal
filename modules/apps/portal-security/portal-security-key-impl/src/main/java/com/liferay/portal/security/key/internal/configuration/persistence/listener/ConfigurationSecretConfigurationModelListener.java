@@ -75,7 +75,7 @@ public class ConfigurationSecretConfigurationModelListener
 				}
 
 				long companyId = SecretIdentifierUtil.getConfigurationCompanyId(
-					properties::get);
+					properties);
 
 				Enumeration<String> enumeration = properties.keys();
 
@@ -93,11 +93,13 @@ public class ConfigurationSecretConfigurationModelListener
 						continue;
 					}
 
-					String identifier =
-						SecretIdentifierUtil.buildConfigurationIdentifier(
-							key, pid, properties::get);
+					String secretIdentifier =
+						SecretIdentifierUtil.getSecretIdentifier(
+							key, pid, properties);
 
-					if (!identifier.equals(keyReference.getIdentifier())) {
+					if (!secretIdentifier.equals(
+							keyReference.getIdentifier())) {
+
 						continue;
 					}
 
@@ -131,7 +133,7 @@ public class ConfigurationSecretConfigurationModelListener
 		}
 
 		long companyId = SecretIdentifierUtil.getConfigurationCompanyId(
-			properties::get);
+			properties);
 
 		for (AttributeDefinition attributeDefinition :
 				objectClassDefinition.getAttributeDefinitions(

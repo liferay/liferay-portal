@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
 import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -29,6 +30,7 @@ import com.liferay.portal.security.key.secret.exception.SecretException;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfile;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 
+import java.util.Dictionary;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -67,7 +69,7 @@ public class SecretResolverImpl implements SecretResolver {
 
 			long scopeCompanyId = _getScopeCompanyId(
 				companyId, keyReference.getIdentifier(), "resolve",
-				_buildSecretIdScopeMap(secretContext));
+				_getSecretIdentifierMap(secretContext));
 
 			String key = getKey(scopeCompanyId, value);
 
@@ -159,25 +161,25 @@ public class SecretResolverImpl implements SecretResolver {
 		}
 
 		try {
-			SequencedMap<String, Long> secretIdScopeMap =
-				_buildSecretIdScopeMap(secretContext);
+			SequencedMap<String, Long> secretIdentifierMap =
+				_getSecretIdentifierMap(secretContext);
 
 			if (KeyReferenceUtil.isKeyReference(value)) {
 				KeyReference keyReference = _getKeyReference(value);
 
 				_getScopeCompanyId(
 					companyId, keyReference.getIdentifier(), "store",
-					secretIdScopeMap);
+					secretIdentifierMap);
 
 				return value;
 			}
 
-			Map.Entry<String, Long> entry = secretIdScopeMap.firstEntry();
+			Map.Entry<String, Long> entry = secretIdentifierMap.firstEntry();
 
 			String identifier = entry.getKey();
 
 			long scopeCompanyId = _getScopeCompanyId(
-				companyId, identifier, "store", secretIdScopeMap);
+				companyId, identifier, "store", secretIdentifierMap);
 
 			try (Secret secret = new Secret(
 					new KeyReference(
@@ -263,29 +265,6 @@ public class SecretResolverImpl implements SecretResolver {
 			PortalCacheManagerNames.SINGLE_VM, PORTAL_CACHE_NAME);
 	}
 
-	private SequencedMap<String, Long> _buildSecretIdScopeMap(
-		SecretContext secretContext) {
-
-		SequencedMap<String, Long> secretIdScopeMap = new LinkedHashMap<>();
-
-		SecretContext.Type type = secretContext.getType();
-
-		if (type == SecretContext.Type.CONFIGURATION) {
-			Map<String, Object> properties = secretContext.getProperties();
-
-			String pid = GetterUtil.getString(
-				properties.get(Constants.SERVICE_PID));
-
-			secretIdScopeMap.put(
-				SecretIdentifierUtil.buildConfigurationIdentifier(
-					secretContext.getKey(), pid, properties::get),
-				SecretIdentifierUtil.getConfigurationCompanyId(
-					properties::get));
-		}
-
-		return secretIdScopeMap;
-	}
-
 	private KeyReference _getKeyReference(String keyReferenceString)
 		throws SecretException {
 
@@ -297,9 +276,7 @@ public class SecretResolverImpl implements SecretResolver {
 		}
 
 		if (keyReference.getType() != KeyReference.Type.SECRET) {
-			throw new SecretException(
-				"Crypto key references are not supported by the secret " +
-					"resolver");
+			throw new SecretException("Only secret references are supported");
 		}
 
 		return keyReference;
@@ -307,10 +284,10 @@ public class SecretResolverImpl implements SecretResolver {
 
 	private long _getScopeCompanyId(
 			long companyId, String identifier, String operation,
-			Map<String, Long> secretIdScopeMap)
+			Map<String, Long> secretIdentifierMap)
 		throws SecretException {
 
-		Long scopeCompanyId = secretIdScopeMap.get(identifier);
+		Long scopeCompanyId = secretIdentifierMap.get(identifier);
 
 		if ((scopeCompanyId != null) &&
 			((scopeCompanyId == CompanyConstants.SYSTEM) ||
@@ -332,6 +309,29 @@ public class SecretResolverImpl implements SecretResolver {
 			StringBundler.concat(
 				"Unable to ", operation, " the key reference \"", identifier,
 				"\" in this secret context"));
+	}
+
+	private SequencedMap<String, Long> _getSecretIdentifierMap(
+		SecretContext secretContext) {
+
+		SequencedMap<String, Long> secretIdentifierMap = new LinkedHashMap<>();
+
+		SecretContext.Type type = secretContext.getType();
+
+		if (type == SecretContext.Type.CONFIGURATION) {
+			Dictionary<String, Object> properties = new HashMapDictionary<>(
+				secretContext.getProperties());
+
+			String pid = GetterUtil.getString(
+				properties.get(Constants.SERVICE_PID));
+
+			secretIdentifierMap.put(
+				SecretIdentifierUtil.getSecretIdentifier(
+					secretContext.getKey(), pid, properties),
+				SecretIdentifierUtil.getConfigurationCompanyId(properties));
+		}
+
+		return secretIdentifierMap;
 	}
 
 	private String _putSecret(long companyId, Secret secret)
