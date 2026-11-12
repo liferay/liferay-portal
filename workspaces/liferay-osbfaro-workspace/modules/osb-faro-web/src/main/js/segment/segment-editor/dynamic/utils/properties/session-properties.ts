@@ -20,11 +20,19 @@ export const DEVICE_OPTIONS = [
  */
 export const CHANNEL_OPTIONS = [
 	{label: Liferay.Language.get('direct'), value: 'direct'},
+	{label: Liferay.Language.get('affiliates'), value: 'affiliates'},
+	{label: Liferay.Language.get('ai-chatbot'), value: 'chatbot'},
+	{label: Liferay.Language.get('display'), value: 'display'},
+	{label: Liferay.Language.get('email'), value: 'email'},
 	{label: Liferay.Language.get('organic'), value: 'organic'},
+	{label: Liferay.Language.get('other'), value: 'other'},
+	{
+		label: Liferay.Language.get('other-advertising'),
+		value: 'other advertising',
+	},
 	{label: Liferay.Language.get('paid-search'), value: 'paid search'},
 	{label: Liferay.Language.get('referral'), value: 'referral'},
 	{label: Liferay.Language.get('social'), value: 'social'},
-	{label: Liferay.Language.get('ai-chatbot'), value: 'chatbot'},
 ];
 
 export interface IAcquisitionParameter {
