@@ -40,7 +40,12 @@ const AssetTypeInfoPanelFilesView = () => {
 
 			<Tabs.Panels>
 				{tabs.map((tab, index) => (
-					<Tabs.TabPanel className="p-4" key={tab.id}>
+					<Tabs.TabPanel
+						className={
+							tab.id === TABS.COMMENTS.id ? 'px-2 py-4' : 'p-4'
+						}
+						key={tab.id}
+					>
 						{active === index ? <tab.component /> : null}
 					</Tabs.TabPanel>
 				))}
