@@ -41,6 +41,5 @@ dependencies {
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":apps:translation:translation-api")
 	testIntegrationImplementation project(":apps:trash:trash-api")
-	testIntegrationImplementation project(":dxp:apps:content-marketing-platform:content-marketing-platform-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
