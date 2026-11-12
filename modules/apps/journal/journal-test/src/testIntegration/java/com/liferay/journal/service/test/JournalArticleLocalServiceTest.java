@@ -2186,6 +2186,50 @@ public class JournalArticleLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo({"LPS-58698", "LPS-64814", "LPS-83798"})
+	public void testGetArticleDisplayWithRestrictedTemplate() throws Exception {
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		JournalArticle journalArticle =
+			JournalTestUtil.addArticleWithXMLContent(
+				_group.getGroupId(),
+				DDMStructureTestUtil.getSampleStructuredContent(),
+				ddmStructure.getStructureKey(), null);
+
+		_assertGetArticleDisplayWithTemplateError(
+			ddmStructure, journalArticle,
+			"${company.setKey(\"rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5Y" +
+				"nxBzKWwCAAB4cH////c=\")}${company.getKeyObj()}");
+		_assertGetArticleDisplayWithTemplateError(
+			ddmStructure, journalArticle,
+			"${objectUtil(\"com.liferay.portal.kernel.service." +
+				"UserLocalServiceUtil\").getService()}");
+		_assertGetArticleDisplayWithTemplateError(
+			ddmStructure, journalArticle,
+			"${staticUtil[\"com.liferay.portal.kernel.service." +
+				"UserLocalServiceUtil\"].getService()}");
+		_assertGetArticleDisplayWithTemplateError(
+			ddmStructure, journalArticle,
+			"${staticUtil[\"java.lang.Runtime\"].getRuntime()}");
+		_assertGetArticleDisplayWithTemplateError(
+			ddmStructure, journalArticle,
+			StringBundler.concat(
+				"${httpUtil.URLtoString(request.getAttribute(\"CTX\").",
+				"getResource(\".\").toURI().create(\"file:///etc/hosts\").",
+				"toURL())}"));
+		_assertGetArticleDisplayWithTemplateError(
+			ddmStructure, journalArticle,
+			StringBundler.concat(
+				"<#assign velocityBeanHandler = expandoRowLocalService.",
+				"getInvocationHandler(expandoRowLocalService)>",
+				"<#assign getRuntime = velocityBeanHandler.getClassLoader().",
+				"loadClass(\"java.lang.Runtime\").getMethod(\"getRuntime\", ",
+				"null)><#assign runtimeInstance = velocityBeanHandler.invoke(",
+				"null, getRuntime, null)>${runtimeInstance}"));
+	}
+
+	@Test
 	public void testGetArticleDisplayWithSimpleData() throws Exception {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(),
@@ -3268,6 +3312,29 @@ public class JournalArticleLocalServiceTest {
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(locale),
 			dymanicContentElement.attributeValue("language-id"));
+	}
+
+	private void _assertGetArticleDisplayWithTemplateError(
+			DDMStructure ddmStructure, JournalArticle journalArticle,
+			String script)
+		throws Exception {
+
+		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
+			_group.getGroupId(), ddmStructure.getStructureId(),
+			_portal.getClassNameId(JournalArticle.class),
+			TemplateConstants.LANG_TYPE_FTL, script,
+			LocaleUtil.getSiteDefault());
+
+		JournalArticleDisplay journalArticleDisplay =
+			_journalArticleLocalService.getArticleDisplay(
+				journalArticle, ddmTemplate.getTemplateKey(), Constants.VIEW,
+				LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault()), 1, null,
+				_themeDisplay);
+
+		String content = journalArticleDisplay.getContent();
+
+		Assert.assertFalse(content.contains("java.lang.Runtime@"));
+		Assert.assertTrue(content.contains("journal-template-error"));
 	}
 
 	private Tuple _createJournalArticleWithPredefinedValues(long groupId)
