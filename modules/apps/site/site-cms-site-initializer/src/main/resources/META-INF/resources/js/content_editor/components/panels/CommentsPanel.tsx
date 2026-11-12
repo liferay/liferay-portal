@@ -15,7 +15,7 @@ import {
 } from 'frontend-editor-ckeditor-web';
 import {openToast} from 'frontend-js-components-web';
 import {Ratings} from 'ratings-taglib';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import CommentService, {Comment} from '../../services/CommentService';
 import getCommentMentionConfig from '../../utils/getCommentMentionConfig';
@@ -33,6 +33,7 @@ export default function CommentsPanel({
 	editorConfig,
 	getCommentsURL,
 	getMentionUsersURL,
+	highlightedCommentId,
 	readOnly = false,
 }: {
 	addCommentURL: string;
@@ -42,6 +43,7 @@ export default function CommentsPanel({
 	editorConfig: LiferayEditorConfig;
 	getCommentsURL: string;
 	getMentionUsersURL?: string;
+	highlightedCommentId?: string;
 	readOnly?: boolean;
 }) {
 	const [comments, setComments] = useState<Comment[]>([]);
@@ -258,6 +260,7 @@ export default function CommentsPanel({
 							comment={comment}
 							editorConfig={editorConfig}
 							getMentionUsersURL={getMentionUsersURL}
+							highlightedCommentId={highlightedCommentId}
 							isLast={index === comments.length - 1}
 							key={comment.commentId}
 							onDeleteComment={deleteComment}
@@ -275,6 +278,7 @@ function CommentNode({
 	comment,
 	editorConfig,
 	getMentionUsersURL,
+	highlightedCommentId,
 	isLast,
 	onDeleteComment,
 	onSaveComment,
@@ -284,6 +288,7 @@ function CommentNode({
 	comment: Comment;
 	editorConfig: LiferayEditorConfig;
 	getMentionUsersURL?: string;
+	highlightedCommentId?: string;
 	isLast: boolean;
 	onDeleteComment: (
 		commentId: string,
@@ -305,7 +310,25 @@ function CommentNode({
 	parentCommentId?: string;
 	readOnly?: boolean;
 }) {
+	const [highlighted, setHighlighted] = useState(
+		String(comment.commentId) === highlightedCommentId
+	);
 	const [status, setStatus] = useState<Status>('default');
+	const articleRef = useRef<HTMLElement>(null);
+	const contentRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (!highlighted) {
+			return;
+		}
+
+		contentRef.current?.scrollIntoView({block: 'center'});
+		articleRef.current?.focus({preventScroll: true});
+
+		const timeout = setTimeout(() => setHighlighted(false), 5000);
+
+		return () => clearTimeout(timeout);
+	}, [highlighted]);
 
 	return (
 		<>
@@ -315,106 +338,131 @@ function CommentNode({
 					'pr-3 py-3': comment.rootComment,
 				})}
 			>
-				<article>
-					<div className="autofit-padded autofit-row mb-1 pt-2">
-						<div className="autofit-col pl-0">
-							<Sticker shape="user-icon">
-								{comment.author.portraitURL ? (
-									<Sticker.Image
-										alt=""
-										src={comment.author.portraitURL}
+				<article
+					aria-current={highlighted || undefined}
+					className="comments-panel__comment"
+					onKeyDown={(event) => {
+						if (
+							event.key === 'Tab' &&
+							event.target === event.currentTarget
+						) {
+							event.stopPropagation();
+						}
+					}}
+					ref={articleRef}
+					tabIndex={-1}
+				>
+					<div
+						className={classNames({
+							'comments-panel__comment--highlighted ml-n3 pl-3':
+								highlighted,
+							'mr-n3 pr-3': highlighted && comment.rootComment,
+						})}
+						ref={contentRef}
+					>
+						<div className="autofit-padded autofit-row mb-1 pt-2">
+							<div className="autofit-col pl-0">
+								<Sticker shape="user-icon">
+									{comment.author.portraitURL ? (
+										<Sticker.Image
+											alt=""
+											src={comment.author.portraitURL}
+										/>
+									) : (
+										<ClayIcon symbol="user" />
+									)}
+								</Sticker>
+							</div>
+
+							<header className="autofit-col autofit-col-expand">
+								<span className="list-group-title">
+									{comment.author.fullName}
+								</span>
+
+								<time className="list-group-text text-3">
+									{comment.dateDescription}
+								</time>
+							</header>
+
+							{!readOnly &&
+								(comment.hasDeletePermission ||
+									comment.hasUpdatePermission) && (
+									<ClayDropDownWithItems
+										items={[
+											...(comment.hasUpdatePermission
+												? [
+														{
+															label: Liferay.Language.get(
+																'edit'
+															),
+															onClick: () =>
+																setStatus(
+																	'edit'
+																),
+															symbolLeft:
+																'pencil',
+														},
+													]
+												: []),
+											...(comment.hasDeletePermission
+												? [
+														{
+															label: Liferay.Language.get(
+																'delete'
+															),
+															onClick: () =>
+																onDeleteComment(
+																	comment.commentId,
+																	parentCommentId
+																),
+															symbolLeft: 'trash',
+														},
+													]
+												: []),
+										]}
+										menuWidth="shrink"
+										trigger={
+											<ClayButtonWithIcon
+												borderless
+												displayType="secondary"
+												monospaced
+												size="xs"
+												symbol="ellipsis-v"
+												title={Liferay.Language.get(
+													'actions'
+												)}
+											/>
+										}
 									/>
-								) : (
-									<ClayIcon symbol="user" />
 								)}
-							</Sticker>
 						</div>
 
-						<header className="autofit-col autofit-col-expand">
-							<span className="list-group-title">
-								{comment.author.fullName}
-							</span>
+						{status === 'edit' ? (
+							<CommentEditor
+								editorConfig={editorConfig!}
+								getMentionUsersURL={getMentionUsersURL}
+								initialData={comment.body}
+								onCancel={() => setStatus('default')}
+								onSave={async (content, editor) => {
+									await onSaveComment({
+										commentId: comment.commentId,
+										content,
+										editor,
+										parentCommentId,
+										status,
+									});
 
-							<time className="list-group-text text-3">
-								{comment.dateDescription}
-							</time>
-						</header>
-
-						{!readOnly &&
-							(comment.hasDeletePermission ||
-								comment.hasUpdatePermission) && (
-								<ClayDropDownWithItems
-									items={[
-										...(comment.hasUpdatePermission
-											? [
-													{
-														label: Liferay.Language.get(
-															'edit'
-														),
-														onClick: () =>
-															setStatus('edit'),
-														symbolLeft: 'pencil',
-													},
-												]
-											: []),
-										...(comment.hasDeletePermission
-											? [
-													{
-														label: Liferay.Language.get(
-															'delete'
-														),
-														onClick: () =>
-															onDeleteComment(
-																comment.commentId,
-																parentCommentId
-															),
-														symbolLeft: 'trash',
-													},
-												]
-											: []),
-									]}
-									menuWidth="shrink"
-									trigger={
-										<ClayButtonWithIcon
-											borderless
-											displayType="secondary"
-											monospaced
-											size="xs"
-											symbol="ellipsis-v"
-											title={Liferay.Language.get(
-												'actions'
-											)}
-										/>
-									}
-								/>
-							)}
+									setStatus('default');
+								}}
+								status={status}
+							/>
+						) : (
+							<div
+								className="comments-panel__content text-3"
+								dangerouslySetInnerHTML={{__html: comment.body}}
+							/>
+						)}
 					</div>
-
-					{status === 'edit' ? (
-						<CommentEditor
-							editorConfig={editorConfig!}
-							getMentionUsersURL={getMentionUsersURL}
-							initialData={comment.body}
-							onCancel={() => setStatus('default')}
-							onSave={async (content, editor) => {
-								await onSaveComment({
-									commentId: comment.commentId,
-									content,
-									editor,
-									parentCommentId,
-									status,
-								});
-
-								setStatus('default');
-							}}
-							status={status}
-						/>
-					) : (
-						<div
-							className="comments-panel__content text-3"
-							dangerouslySetInnerHTML={{__html: comment.body}}
-						/>
-					)}
 
 					{comment.children?.length ? (
 						<ul className="border-left border-secondary pl-0">
@@ -423,6 +471,7 @@ function CommentNode({
 									comment={child}
 									editorConfig={editorConfig}
 									getMentionUsersURL={getMentionUsersURL}
+									highlightedCommentId={highlightedCommentId}
 									isLast={
 										index === comment.children.length - 1
 									}

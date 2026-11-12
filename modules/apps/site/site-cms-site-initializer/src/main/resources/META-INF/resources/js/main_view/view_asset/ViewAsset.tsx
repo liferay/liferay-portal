@@ -40,9 +40,11 @@ interface ViewAssetProps {
 
 const ViewAssetCommentsPanel = ({
 	commentsProps,
+	highlightedCommentId,
 	item,
 }: {
 	commentsProps: CommentsProps;
+	highlightedCommentId?: string;
 	item: ISearchAssetObjectEntry;
 }) => {
 	const {
@@ -59,6 +61,7 @@ const ViewAssetCommentsPanel = ({
 			<CommentsPanel
 				{...commentsProps}
 				{...getAssetCommentsURLs(commentsProps, entryClassName, id)}
+				highlightedCommentId={highlightedCommentId}
 			/>
 		</>
 	);
@@ -100,7 +103,14 @@ export default function ViewAsset({
 		return itemState;
 	}, [className, itemState]);
 
-	const [openSidePanel, setOpenSidePanel] = useState(false);
+	const [highlightedCommentId] = useState(
+		() =>
+			new URLSearchParams(window.location.search).get('messageId') ??
+			undefined
+	);
+	const [openSidePanel, setOpenSidePanel] = useState(
+		hasCommentPermission && !!highlightedCommentId
+	);
 	const containerRef = useRef(null);
 
 	const handleClickComments = () => {
@@ -176,6 +186,7 @@ export default function ViewAsset({
 					{hasCommentPermission && (
 						<ViewAssetCommentsPanel
 							commentsProps={commentsProps}
+							highlightedCommentId={highlightedCommentId}
 							item={item}
 						/>
 					)}
