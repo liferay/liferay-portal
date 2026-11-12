@@ -47,26 +47,7 @@ public class FieldMappingInfoResourceImpl
 			Boolean external, String indexName, String query)
 		throws Exception {
 
-		return Page.of(getFieldMappings(external, indexName, query));
-	}
-
-	public List<FieldMappingInfo> getFieldMappings(
-		boolean external, String indexName, String query) {
-
-		JSONObject jsonObject = FieldMappingsWebCacheItem.get(
-			_indexInformation, _getIndexName(indexName), _jsonFactory);
-
-		if (jsonObject.length() == 0) {
-			return Collections.<FieldMappingInfo>emptyList();
-		}
-
-		List<FieldMappingInfo> fieldMappingInfos = new ArrayList<>();
-
-		_addFieldMappingInfos(
-			fieldMappingInfos, new HashSet<String>(), jsonObject,
-			StringPool.BLANK, query);
-
-		return fieldMappingInfos;
+		return Page.of(_getFieldMappings(indexName, query));
 	}
 
 	private void _addFieldMappingInfo(
@@ -132,6 +113,25 @@ public class FieldMappingInfoResourceImpl
 					languageIdPosition);
 			}
 		}
+	}
+
+	private List<FieldMappingInfo> _getFieldMappings(
+		String indexName, String query) {
+
+		JSONObject jsonObject = FieldMappingsWebCacheItem.get(
+			_indexInformation, _getIndexName(indexName), _jsonFactory);
+
+		if (jsonObject.length() == 0) {
+			return Collections.<FieldMappingInfo>emptyList();
+		}
+
+		List<FieldMappingInfo> fieldMappingInfos = new ArrayList<>();
+
+		_addFieldMappingInfos(
+			fieldMappingInfos, new HashSet<String>(), jsonObject,
+			StringPool.BLANK, query);
+
+		return fieldMappingInfos;
 	}
 
 	private String _getIndexName(String indexName) {
