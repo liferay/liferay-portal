@@ -40,12 +40,13 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 
 	@Test
 	public void testGetMessageElement() {
-		String osgiModulesListFile = RandomTestUtil.randomString();
-
 		_testGetMessageElement(
 			JenkinsResultsParserUtil.combine(
 				"Duplicate OSGi modules found for ",
 				RandomTestUtil.randomString(), ":"));
+
+		String osgiModulesListFile = RandomTestUtil.randomString();
+
 		_testGetMessageElement(
 			JenkinsResultsParserUtil.combine(
 				"Unable to deploy OSGi module ", RandomTestUtil.randomString(),
@@ -128,9 +129,9 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 
 		String text = preElement.getText();
 
-		Assert.assertFalse(text, text.contains(trailingLine));
-		Assert.assertTrue(text, text.contains(taskFailedLine.trim()));
-		Assert.assertTrue(text, text.endsWith(message));
+		Assert.assertTrue(text.endsWith(message));
+		Assert.assertTrue(text.contains(taskFailedLine.trim()));
+		Assert.assertFalse(text.contains(trailingLine));
 
 		Element strongElement = (Element)messageElement.selectSingleNode(
 			"p/strong");

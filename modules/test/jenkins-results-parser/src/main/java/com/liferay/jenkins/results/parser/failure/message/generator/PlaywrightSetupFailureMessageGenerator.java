@@ -39,7 +39,7 @@ public class PlaywrightSetupFailureMessageGenerator
 	public Element getMessageElement(Build build) {
 		String jobVariant = build.getJobVariant();
 
-		if (!jobVariant.contains("playwright-js")) {
+		if (!jobVariant.startsWith("playwright-js")) {
 			return null;
 		}
 
@@ -48,9 +48,9 @@ public class PlaywrightSetupFailureMessageGenerator
 
 	@Override
 	public Element getMessageElement(String consoleText) {
-		String errorMessage = getMessage(consoleText);
+		String message = getMessage(consoleText);
 
-		if (errorMessage == null) {
+		if (message == null) {
 			return null;
 		}
 
@@ -58,12 +58,12 @@ public class PlaywrightSetupFailureMessageGenerator
 			"div", null,
 			Dom4JUtil.getNewElement(
 				"p", null,
-				Dom4JUtil.getNewElement("strong", null, errorMessage)));
+				Dom4JUtil.getNewElement("strong", null, message)));
 
-		int end = consoleText.indexOf("\n", consoleText.indexOf(errorMessage));
+		int index = consoleText.indexOf("\n", consoleText.indexOf(message));
 
 		messageElement.add(
-			getConsoleTextSnippetElementByEnd(consoleText, true, end));
+			getConsoleTextSnippetElementByEnd(consoleText, true, index));
 
 		return messageElement;
 	}
