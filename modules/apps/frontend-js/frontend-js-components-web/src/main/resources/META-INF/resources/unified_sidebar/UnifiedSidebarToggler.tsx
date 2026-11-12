@@ -4,7 +4,11 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+
+import {useUnifiedSidebarAnnouncement} from './useUnifiedSidebarAnnouncement';
+import {useUnifiedSidebarFocusReturn} from './useUnifiedSidebarFocusReturn';
+import {useUnifiedSidebarShortcut} from './useUnifiedSidebarShortcut';
 
 interface Props {
 	navigationId: string;
@@ -25,8 +29,18 @@ function UnifiedSidebarToggler({
 		Liferay.fire(stateRequestedEventName, {visible: !visible});
 	}
 
+	const buttonRef = useRef<HTMLButtonElement>(null);
+
+	const trackFocus = useUnifiedSidebarFocusReturn({
+		buttonRef,
+		navigationId,
+		visible,
+	});
+
 	useEffect(() => {
 		function handleStateChanged({visible}: {visible: boolean}) {
+			trackFocus(visible);
+
 			setVisible(visible);
 		}
 
@@ -43,7 +57,16 @@ function UnifiedSidebarToggler({
 		}
 
 		return () => Liferay.detach(stateChangedEventName, handleStateChanged);
-	}, [navigationId, stateChangedEventName]);
+	}, [navigationId, stateChangedEventName, trackFocus]);
+
+	const {announceNextChange, announcement} =
+		useUnifiedSidebarAnnouncement(visible);
+
+	useUnifiedSidebarShortcut(navigationId, () => {
+		announceNextChange();
+
+		toggle();
+	});
 
 	const title = useMemo(
 		() =>
@@ -54,20 +77,28 @@ function UnifiedSidebarToggler({
 	);
 
 	return (
-		<ClayButtonWithIcon
-			aria-controls={navigationId}
-			aria-expanded={visible}
-			aria-label={title}
-			className="control-menu-nav-link"
-			data-qa-id="sideNavigationToggler"
-			displayType="unstyled"
-			monospaced
-			onClick={toggle}
-			role="tab"
-			size="sm"
-			symbol={visible ? 'product-menu-open' : 'product-menu-closed'}
-			title={title}
-		/>
+		<>
+			<ClayButtonWithIcon
+				aria-controls={navigationId}
+				aria-expanded={visible}
+				aria-keyshortcuts="Control+Alt+M"
+				aria-label={title}
+				className="control-menu-nav-link"
+				data-qa-id="sideNavigationToggler"
+				displayType="unstyled"
+				monospaced
+				onClick={toggle}
+				ref={buttonRef}
+				role="tab"
+				size="sm"
+				symbol={visible ? 'product-menu-open' : 'product-menu-closed'}
+				title={title}
+			/>
+
+			<span aria-live="polite" className="sr-only">
+				{announcement}
+			</span>
+		</>
 	);
 }
 
