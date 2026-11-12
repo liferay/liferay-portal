@@ -5,10 +5,14 @@
 
 package com.liferay.site.admin.web.internal.configuration.admin.display;
 
+import com.liferay.asset.kernel.exception.NoSuchCategoryException;
+import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -16,9 +20,12 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.ScopeUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenFactory;
 
@@ -29,6 +36,7 @@ import java.io.Serializable;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -75,15 +83,40 @@ public class CategorizationSiteSettingsConfigurationScreenWrapper
 		public Dictionary<String, Object> exportProperties(
 			Serializable scopePK) {
 
-			String[] assetTagNames = _assetTagLocalService.getTagNames(
-				Group.class.getName(), (long)scopePK);
-
-			if (assetTagNames.length == 0) {
-				return new HashMapDictionary<>();
-			}
-
 			return HashMapDictionaryBuilder.<String, Object>put(
-				"assetTagNames", ListUtil.fromArray(assetTagNames)
+				"assetCategories",
+				() -> {
+					List<AssetCategory> assetCategories =
+						_assetCategoryLocalService.getCategories(
+							Group.class.getName(), (long)scopePK);
+
+					if (assetCategories.isEmpty()) {
+						return null;
+					}
+
+					return TransformUtil.transform(
+						assetCategories,
+						assetCategory -> HashMapBuilder.<String, Object>put(
+							"externalReferenceCode",
+							assetCategory.getExternalReferenceCode()
+						).put(
+							"scopeExternalReferenceCode",
+							() -> ScopeUtil.getItemScopeExternalReferenceCode(
+								assetCategory.getGroupId(), (long)scopePK)
+						).build());
+				}
+			).put(
+				"assetTagNames",
+				() -> {
+					String[] assetTagNames = _assetTagLocalService.getTagNames(
+						Group.class.getName(), (long)scopePK);
+
+					if (assetTagNames.length == 0) {
+						return null;
+					}
+
+					return ListUtil.fromArray(assetTagNames);
+				}
 			).build();
 		}
 
@@ -122,10 +155,12 @@ public class CategorizationSiteSettingsConfigurationScreenWrapper
 				Dictionary<String, Object> properties, Serializable scopePK)
 			throws Exception {
 
+			List<Map<String, Object>> assetCategoryMaps =
+				(List<Map<String, Object>>)properties.get("assetCategories");
 			List<String> assetTagNames = (List<String>)properties.get(
 				"assetTagNames");
 
-			if (assetTagNames == null) {
+			if ((assetCategoryMaps == null) && (assetTagNames == null)) {
 				return;
 			}
 
@@ -133,11 +168,34 @@ public class CategorizationSiteSettingsConfigurationScreenWrapper
 
 			ServiceContext serviceContext = new ServiceContext();
 
-			serviceContext.setAssetCategoryIds(
-				_assetCategoryLocalService.getCategoryIds(
-					Group.class.getName(), group.getGroupId()));
-			serviceContext.setAssetTagNames(
-				ArrayUtil.toStringArray(assetTagNames));
+			if (assetCategoryMaps == null) {
+				serviceContext.setAssetCategoryIds(
+					_assetCategoryLocalService.getCategoryIds(
+						Group.class.getName(), group.getGroupId()));
+			}
+			else {
+				serviceContext.setAssetCategoryIds(
+					TransformUtil.unsafeTransformToLongArray(
+						assetCategoryMaps,
+						assetCategoryMap -> _getAssetCategoryId(
+							GetterUtil.getString(
+								assetCategoryMap.get("externalReferenceCode")),
+							group,
+							GetterUtil.getString(
+								assetCategoryMap.get(
+									"scopeExternalReferenceCode")))));
+			}
+
+			if (assetTagNames == null) {
+				serviceContext.setAssetTagNames(
+					_assetTagLocalService.getTagNames(
+						Group.class.getName(), group.getGroupId()));
+			}
+			else {
+				serviceContext.setAssetTagNames(
+					ArrayUtil.toStringArray(assetTagNames));
+			}
+
 			serviceContext.setUserId(PrincipalThreadLocal.getUserId());
 
 			_groupService.updateGroup(
@@ -151,6 +209,38 @@ public class CategorizationSiteSettingsConfigurationScreenWrapper
 		@Override
 		public boolean isVisible(Group group) {
 			return !group.isCompany();
+		}
+
+		private long _getAssetCategoryId(
+				String externalReferenceCode, Group group,
+				String scopeExternalReferenceCode)
+			throws Exception {
+
+			if (Validator.isNull(scopeExternalReferenceCode)) {
+				scopeExternalReferenceCode = group.getExternalReferenceCode();
+			}
+
+			Long groupId = ScopeUtil.getItemGroupId(
+				group.getCompanyId(), scopeExternalReferenceCode,
+				group.getGroupId());
+
+			if (groupId != null) {
+				AssetCategory assetCategory =
+					_assetCategoryLocalService.
+						fetchAssetCategoryByExternalReferenceCode(
+							externalReferenceCode, groupId);
+
+				if (assetCategory != null) {
+					return assetCategory.getCategoryId();
+				}
+			}
+
+			throw new NoSuchCategoryException(
+				StringBundler.concat(
+					"No asset category exists with external reference code ",
+					externalReferenceCode,
+					" in the site or asset library with external reference ",
+					"code ", scopeExternalReferenceCode));
 		}
 
 	}
