@@ -700,22 +700,21 @@ public class SharepointQueryBuilder {
 	}
 
 	private void _explain(StringBundler sb, TermRangeQuery termRangeQuery) {
-		String lowerTerm = termRangeQuery.getLowerTerm();
-
-		String upperTerm = termRangeQuery.getUpperTerm();
+		sb.append(termRangeQuery.getField());
+		sb.append(" ∈ ");
 
 		String openInterval = termRangeQuery.includesLower() ? "[" : "(";
 
+		sb.append(openInterval);
+
+		sb.append("\"");
+		sb.append(termRangeQuery.getLowerTerm());
+		sb.append("\", \"");
+		sb.append(termRangeQuery.getUpperTerm());
+		sb.append("\"");
+
 		String closeInterval = termRangeQuery.includesUpper() ? "]" : ")";
 
-		sb.append(termRangeQuery.getField());
-		sb.append(" ∈ ");
-		sb.append(openInterval);
-		sb.append("\"");
-		sb.append(lowerTerm);
-		sb.append("\", \"");
-		sb.append(upperTerm);
-		sb.append("\"");
 		sb.append(closeInterval);
 	}
 
