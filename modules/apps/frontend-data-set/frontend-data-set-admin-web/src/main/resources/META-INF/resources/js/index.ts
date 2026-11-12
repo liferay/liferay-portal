@@ -9,4 +9,6 @@ export {default as SystemDataSets} from './SystemDataSets';
 export {default as DataSet} from './data_set/DataSet';
 export {default as getDataSetResourceURL} from './utils/getDataSetResourceURL';
 
+export {hasDisplayedVisualizationMode} from './utils/getVisualizationModes';
+
 export type {IDataSet} from './utils/types';

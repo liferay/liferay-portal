@@ -5,7 +5,10 @@
 
 import ClayButton from '@clayui/button';
 import ClayModal from '@clayui/modal';
-import {getDataSetResourceURL} from '@liferay/frontend-data-set-admin-web';
+import {
+	getDataSetResourceURL,
+	hasDisplayedVisualizationMode,
+} from '@liferay/frontend-data-set-admin-web';
 import {FrontendDataSet} from '@liferay/frontend-data-set-web';
 import React, {useState} from 'react';
 
@@ -29,11 +32,7 @@ const views = [
 			tooltip: 'tooltip',
 		},
 		setItemComponentProps: ({item, props}: {item: any; props: any}) => {
-			if (
-				!item.dataSetToDataSetCardsSections.length &&
-				!item.dataSetToDataSetTableSections.length &&
-				!item.dataSetToDataSetListSections.length
-			) {
+			if (!hasDisplayedVisualizationMode(item)) {
 				return {
 					...props,
 					item: {

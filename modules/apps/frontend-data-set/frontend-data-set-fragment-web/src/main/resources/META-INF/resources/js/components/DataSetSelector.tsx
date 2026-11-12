@@ -9,6 +9,7 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import {
 	IDataSet,
 	getDataSetResourceURL,
+	hasDisplayedVisualizationMode,
 } from '@liferay/frontend-data-set-admin-web';
 import {openItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
 import {useId} from 'frontend-js-components-web';
@@ -32,11 +33,7 @@ const FDS_VIEWS = [
 			tooltip: 'tooltip',
 		},
 		setItemComponentProps: ({item, props}: {item: any; props: any}) => {
-			if (
-				!item.dataSetToDataSetCardsSections.length &&
-				!item.dataSetToDataSetTableSections.length &&
-				!item.dataSetToDataSetListSections.length
-			) {
+			if (!hasDisplayedVisualizationMode(item)) {
 				return {
 					...props,
 					item: {

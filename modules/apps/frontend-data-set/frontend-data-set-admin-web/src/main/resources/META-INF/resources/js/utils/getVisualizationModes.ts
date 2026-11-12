@@ -103,6 +103,53 @@ export function getMappedVisualizationModeNames(dataSet: {
 	).map(({mode}) => mode);
 }
 
+/**
+ * Returns whether a data set fetched with its relationships as nested fields
+ * renders at least one visualization mode, as the runtime does: persisted
+ * modes are enabled unless stated otherwise, default ones need fields, and
+ * the default ones with fields stand in when none of them is enabled.
+ */
+export function hasDisplayedVisualizationMode(dataSet: {
+	[key: string]: any;
+}): boolean {
+	const mappedVisualizationModeNames =
+		getMappedVisualizationModeNames(dataSet);
+
+	const defaultVisualizationModeNames = DEFAULT_VISUALIZATION_MODES.map(
+		({mode}) => mode
+	);
+
+	const persistedVisualizationModes = parseVisualizationModes(
+		dataSet.visualizationModes
+	).filter(({name}) => !!name);
+
+	const enabledVisualizationModeNames = [
+		...persistedVisualizationModes
+			.filter(({enabled}) => enabled)
+			.map(({name}) => name),
+		...defaultVisualizationModeNames.filter(
+			(name) =>
+				!persistedVisualizationModes.some(
+					(visualizationMode) => visualizationMode.name === name
+				)
+		),
+	];
+
+	const defaultVisualizationModeEnabled = enabledVisualizationModeNames.some(
+		(name) => defaultVisualizationModeNames.includes(name)
+	);
+
+	return (
+		enabledVisualizationModeNames.some(
+			(name) =>
+				!defaultVisualizationModeNames.includes(name) ||
+				mappedVisualizationModeNames.includes(name)
+		) ||
+		(!defaultVisualizationModeEnabled &&
+			!!mappedVisualizationModeNames.length)
+	);
+}
+
 export function isVisualizationModeDisplayed({
 	mappedVisualizationModeNames,
 	visualizationMode,
