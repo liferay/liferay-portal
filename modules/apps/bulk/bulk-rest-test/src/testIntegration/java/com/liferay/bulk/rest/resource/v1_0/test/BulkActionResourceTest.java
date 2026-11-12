@@ -11,7 +11,6 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.bulk.rest.client.dto.v1_0.AddObjectToProjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.AssignStructureDefaultWorkflowBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.AssignToObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.BulkAction;
@@ -31,7 +30,6 @@ import com.liferay.bulk.rest.client.pagination.Page;
 import com.liferay.bulk.rest.client.pagination.Pagination;
 import com.liferay.bulk.rest.client.problem.Problem;
 import com.liferay.bulk.selection.constants.BulkSelectionActionStatusConstants;
-import com.liferay.content.marketing.platform.test.util.CMPTestUtil;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -80,7 +78,6 @@ import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -88,7 +85,6 @@ import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
 import com.liferay.portal.kernel.service.persistence.GroupUtil;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -174,7 +170,6 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 	@Override
 	@Test
 	public void testPostBulkAction() throws Exception {
-		_testPostBulkActionWithTypeAddObjectToProject();
 		_testPostBulkActionWithTypeAssignStructureDefaultWorkflow();
 		_testPostBulkActionWithTypeAssignTo();
 		_testPostBulkActionWithTypeCopy();
@@ -286,49 +281,6 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		Assert.assertEquals(expectedName, bulkActionItem.getName());
 	}
 
-	private void _assertCMPProjectLinks(
-			ObjectDefinition cmpProjectLinkObjectDefinition, long groupId,
-			ObjectEntry[] objectEntries)
-		throws Exception {
-
-		List<ObjectEntry> cmpProjectLinkObjectEntries =
-			_objectEntryLocalService.getObjectEntries(
-				groupId, cmpProjectLinkObjectDefinition.getObjectDefinitionId(),
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		Assert.assertEquals(
-			cmpProjectLinkObjectEntries.toString(), objectEntries.length,
-			cmpProjectLinkObjectEntries.size());
-
-		Map<String, Map<String, Serializable>> valuesMaps = new HashMap<>();
-
-		for (ObjectEntry cmpProjectLinkObjectEntry :
-				cmpProjectLinkObjectEntries) {
-
-			Map<String, Serializable> values =
-				cmpProjectLinkObjectEntry.getValues();
-
-			valuesMaps.put(
-				GetterUtil.getString(values.get("classExternalReferenceCode")),
-				values);
-		}
-
-		for (ObjectEntry objectEntry : objectEntries) {
-			Group group = GroupLocalServiceUtil.getGroup(
-				objectEntry.getGroupId());
-
-			Map<String, Serializable> values = valuesMaps.get(
-				objectEntry.getExternalReferenceCode());
-
-			Assert.assertEquals(
-				objectEntry.getModelClassName(),
-				GetterUtil.getString(values.get("className")));
-			Assert.assertEquals(
-				group.getExternalReferenceCode(),
-				GetterUtil.getString(values.get("groupExternalReferenceCode")));
-		}
-	}
-
 	private void _assertHasActionIds(
 		ResourcePermission resourcePermission, String... actionIds) {
 
@@ -340,20 +292,6 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 				Assert.assertFalse(resourcePermission.hasActionId(actionId));
 			}
 		}
-	}
-
-	private void _assertNumberOfFailedItems(
-			BulkActionTask bulkActionTask, int expectedNumberOfFailedItems)
-		throws Exception {
-
-		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
-			GetterUtil.getLong(bulkActionTask.getId()));
-
-		Map<String, Serializable> values = objectEntry.getValues();
-
-		Assert.assertEquals(
-			expectedNumberOfFailedItems,
-			GetterUtil.getInteger(values.get("numberOfFailedItems")));
 	}
 
 	private JSONObject _getDefaultPermissionsJSONObject(
@@ -811,97 +749,6 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 			items.get(1), objectEntry.getObjectEntryId(), "PERMANENT_DELETION",
 			null, "basic-web-content", objectEntry.getTitleValue(_LANGUAGE_ID),
 			"ASSET", 1L);
-	}
-
-	private void _testPostBulkActionWithTypeAddObjectToProject()
-		throws Exception {
-
-		// Invalid project scope key
-
-		ObjectEntry cmsBasicWebContentObjectEntry1 =
-			ObjectEntryTestUtil.addObjectEntry(
-				_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
-				_getObjectEntryValues());
-		ObjectEntry cmsBasicWebContentObjectEntry2 =
-			ObjectEntryTestUtil.addObjectEntry(
-				_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
-				_getObjectEntryValues());
-
-		AddObjectToProjectBulkSelectionAction bulkAction =
-			new AddObjectToProjectBulkSelectionAction();
-
-		bulkAction.setBulkActionItems(
-			_toBulkActionItems(
-				_cmsBasicWebContentObjectDefinition,
-				cmsBasicWebContentObjectEntry1,
-				cmsBasicWebContentObjectEntry2));
-		bulkAction.setProjectScopeKeys(
-			new String[] {RandomTestUtil.randomString()});
-		bulkAction.setType(
-			BulkAction.Type.ADD_OBJECT_TO_PROJECT_BULK_SELECTION_ACTION);
-
-		_assertNumberOfFailedItems(_postBulkAction(bulkAction), 2);
-
-		// Link basic web content to projects
-
-		bulkAction = new AddObjectToProjectBulkSelectionAction();
-
-		bulkAction.setBulkActionItems(
-			_toBulkActionItems(
-				_cmsBasicWebContentObjectDefinition,
-				cmsBasicWebContentObjectEntry1,
-				cmsBasicWebContentObjectEntry2));
-
-		CMPTestUtil.getOrAddGroup(BulkActionResourceTest.class);
-
-		ObjectEntry cmpProjectObjectEntry1 =
-			CMPTestUtil.addCMPProjectObjectEntry();
-
-		_projectDepotEntry1 = _depotEntryLocalService.fetchGroupDepotEntry(
-			cmpProjectObjectEntry1.getGroupId());
-
-		ObjectEntry cmpProjectObjectEntry2 =
-			CMPTestUtil.addCMPProjectObjectEntry();
-
-		_projectDepotEntry2 = _depotEntryLocalService.fetchGroupDepotEntry(
-			cmpProjectObjectEntry2.getGroupId());
-
-		bulkAction.setProjectScopeKeys(
-			new String[] {
-				String.valueOf(cmpProjectObjectEntry1.getGroupId()),
-				String.valueOf(cmpProjectObjectEntry2.getGroupId())
-			});
-
-		bulkAction.setType(
-			BulkAction.Type.ADD_OBJECT_TO_PROJECT_BULK_SELECTION_ACTION);
-
-		_assertNumberOfFailedItems(_postBulkAction(bulkAction), 0);
-
-		ObjectDefinition cmpProjectLinkObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMP_PROJECT_LINK", testCompany.getCompanyId());
-		ObjectEntry[] cmsBasicWebContentObjectEntries = {
-			cmsBasicWebContentObjectEntry1, cmsBasicWebContentObjectEntry2
-		};
-
-		_assertCMPProjectLinks(
-			cmpProjectLinkObjectDefinition, cmpProjectObjectEntry1.getGroupId(),
-			cmsBasicWebContentObjectEntries);
-		_assertCMPProjectLinks(
-			cmpProjectLinkObjectDefinition, cmpProjectObjectEntry2.getGroupId(),
-			cmsBasicWebContentObjectEntries);
-
-		// Skip duplicate basic web content
-
-		_assertNumberOfFailedItems(_postBulkAction(bulkAction), 0);
-
-		_assertCMPProjectLinks(
-			cmpProjectLinkObjectDefinition, cmpProjectObjectEntry1.getGroupId(),
-			cmsBasicWebContentObjectEntries);
-		_assertCMPProjectLinks(
-			cmpProjectLinkObjectDefinition, cmpProjectObjectEntry2.getGroupId(),
-			cmsBasicWebContentObjectEntries);
 	}
 
 	private void _testPostBulkActionWithTypeAssignStructureDefaultWorkflow()
@@ -2409,12 +2256,6 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 	@Inject
 	private Portal _portal;
-
-	@DeleteAfterTestRun
-	private DepotEntry _projectDepotEntry1;
-
-	@DeleteAfterTestRun
-	private DepotEntry _projectDepotEntry2;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;

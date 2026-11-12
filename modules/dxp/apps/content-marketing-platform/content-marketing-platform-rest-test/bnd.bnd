@@ -1,4 +1,6 @@
 Bundle-Name: Liferay Content Marketing Platform REST Test
 Bundle-SymbolicName: com.liferay.content.marketing.platform.rest.test
 Bundle-Version: 1.0.0
--includeresource: com.liferay.content.marketing.platform.rest.client.jar=com.liferay.content.marketing.platform.rest.client-*.jar;lib:=true
+-includeresource:\
+	com.liferay.bulk.rest.client.jar=com.liferay.bulk.rest.client-*.jar;lib:=true,\
+	com.liferay.content.marketing.platform.rest.client.jar=com.liferay.content.marketing.platform.rest.client-*.jar;lib:=true
