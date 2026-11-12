@@ -44,19 +44,18 @@ definition {
 			key_vocabularyName = ${vocabularyName},
 			locator1 = "AssetCategorization#CATEGORY_SELECT");
 
-		IFrame.selectCategoryFrame();
-
 		LexiconEntry.gotoAdd();
 
-		IFrame.selectCategoryFrame();
-
-		PortletEntry.inputName(name = ${categoryName});
-
-		IFrame.selectTopFrame();
+		Type(
+			key_fieldLabel = "Name",
+			locator1 = "Modal#INPUT_WITH_LABEL",
+			value1 = ${categoryName});
 
 		Click(locator1 = "Modal#SAVE_BUTTON");
 
-		IFrame.closeFrame();
+		AssertVisible(
+			key_nodeName = ${categoryName},
+			locator1 = "Treeview#NODE_ITEM");
 	}
 
 	@summary = "Default summary"
