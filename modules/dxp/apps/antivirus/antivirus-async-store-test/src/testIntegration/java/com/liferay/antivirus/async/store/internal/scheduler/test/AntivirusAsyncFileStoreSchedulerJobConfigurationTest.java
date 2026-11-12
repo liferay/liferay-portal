@@ -45,6 +45,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import java.io.ByteArrayInputStream;
 
 import java.util.Dictionary;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -81,7 +82,13 @@ public class AntivirusAsyncFileStoreSchedulerJobConfigurationTest {
 			(AntivirusScanner)ProxyUtil.newProxyInstance(
 				AntivirusScanner.class.getClassLoader(),
 				new Class<?>[] {AntivirusScanner.class},
-				(proxy, method, args) -> method.getDefaultValue()),
+				(proxy, method, args) -> {
+					if (Objects.equals(method.getName(), "isActive")) {
+						return true;
+					}
+
+					return null;
+				}),
 			null);
 
 		_configuration = _configurationAdmin.getConfiguration(
