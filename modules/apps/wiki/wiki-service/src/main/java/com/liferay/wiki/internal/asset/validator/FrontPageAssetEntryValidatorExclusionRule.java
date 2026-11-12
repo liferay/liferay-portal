@@ -6,25 +6,24 @@
 package com.liferay.wiki.internal.asset.validator;
 
 import com.liferay.asset.kernel.validator.AssetEntryValidatorExclusionRule;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
+import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.constants.WikiPageConstants;
 import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiPageLocalService;
 
-import java.util.Map;
-
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Roberto Díaz
  */
 @Component(
-	configurationPid = "com.liferay.wiki.configuration.WikiGroupServiceConfiguration",
 	property = "model.class.name=com.liferay.wiki.model.WikiPage",
 	service = AssetEntryValidatorExclusionRule.class
 )
@@ -46,30 +45,30 @@ public class FrontPageAssetEntryValidatorExclusionRule
 			wikiPage = _wikiPageLocalService.fetchPage(classPK, false);
 		}
 
-		if (wikiPage == null) {
+		if ((wikiPage == null) ||
+			(wikiPage.getVersion() != WikiPageConstants.VERSION_DEFAULT)) {
+
 			return false;
 		}
 
-		if (StringUtil.equals(
+		try {
+			WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
+				_configurationProvider.getConfiguration(
+					WikiGroupServiceConfiguration.class,
+					new GroupServiceSettingsLocator(
+						wikiPage.getGroupId(), WikiConstants.SERVICE_NAME));
+
+			return StringUtil.equals(
 				wikiPage.getTitle(),
-				_wikiGroupServiceConfiguration.frontPageName()) &&
-			(wikiPage.getVersion() == WikiPageConstants.VERSION_DEFAULT)) {
-
-			return true;
+				wikiGroupServiceConfiguration.frontPageName());
 		}
-
-		return false;
+		catch (ConfigurationException configurationException) {
+			throw new SystemException(configurationException);
+		}
 	}
 
-	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) {
-		_wikiGroupServiceConfiguration = ConfigurableUtil.createConfigurable(
-			WikiGroupServiceConfiguration.class, properties);
-	}
-
-	private volatile WikiGroupServiceConfiguration
-		_wikiGroupServiceConfiguration;
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference(unbind = "-")
 	private WikiPageLocalService _wikiPageLocalService;
