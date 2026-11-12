@@ -37,16 +37,17 @@ public class ObjectMapperProviderUtil {
 
 	public static ObjectMapper getBatchEngineObjectMapper() {
 		if ((_batchEngineObjectMapper != null) &&
-			(_jsonStringMaxLength != null) &&
-			_jsonStringMaxLength.equals(PropsValues.JSON_STRING_MAX_LENGTH)) {
+			(_batchEngineJSONStringMaxLength != null) &&
+			_batchEngineJSONStringMaxLength.equals(
+				PropsValues.JSON_STRING_MAX_LENGTH)) {
 
 			return _batchEngineObjectMapper;
 		}
 
-		_jsonStringMaxLength = PropsValues.JSON_STRING_MAX_LENGTH;
+		_batchEngineJSONStringMaxLength = PropsValues.JSON_STRING_MAX_LENGTH;
 
 		_batchEngineObjectMapper = new ObjectMapper(
-			_getJsonFactory(_jsonStringMaxLength)) {
+			_getJsonFactory(_batchEngineJSONStringMaxLength)) {
 
 			{
 				disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -131,6 +132,7 @@ public class ObjectMapperProviderUtil {
 		).build();
 	}
 
+	private static Integer _batchEngineJSONStringMaxLength;
 	private static volatile ObjectMapper _batchEngineObjectMapper;
 	private static Integer _jsonStringMaxLength;
 	private static volatile ObjectMapper _objectMapper;
