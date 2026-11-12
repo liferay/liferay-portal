@@ -8,13 +8,11 @@ package com.liferay.site.cms.site.initializer.internal.struts;
 import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.ClassName;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -24,8 +22,6 @@ import com.liferay.site.cms.site.initializer.internal.util.CommentUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.util.function.Function;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -54,51 +50,27 @@ public class EditContentItemCommentStrutsAction implements StrutsAction {
 
 			Comment comment = _commentManager.fetchComment(commentId);
 
-			if ((comment != null) &&
-				(themeDisplay.getUserId() != comment.getUserId())) {
+			if (comment == null) {
+				throw new NoSuchModelException(
+					"No comment exists with the primary key " + commentId);
+			}
 
+			if (themeDisplay.getUserId() != comment.getUserId()) {
 				_discussionPermission.checkUpdatePermission(
 					themeDisplay.getPermissionChecker(), commentId);
 			}
 
-			String className1 = ParamUtil.getString(
-				httpServletRequest, "className", null);
-
-			if (className1 == null) {
-				long classNameId = ParamUtil.getLong(
-					httpServletRequest, "classNameId");
-
-				ClassName className2 = _classNameLocalService.getClassName(
-					classNameId);
-
-				className1 = className2.getClassName();
-			}
-
-			long classPK = ParamUtil.getLong(httpServletRequest, "classPK");
-
 			String body = CommentUtil.getSanitizedBody(
-				ParamUtil.getString(httpServletRequest, "body"), className1,
-				classPK, _discussionPermission, themeDisplay);
-
-			Function<String, ServiceContext> serviceContextFunction =
-				CommentUtil.getServiceContextFunction(
-					className1, classPK, httpServletRequest);
-
-			if (comment != null) {
-				String previousBody = comment.getBody();
-
-				serviceContextFunction = serviceContextFunction.andThen(
-					serviceContext -> {
-						serviceContext.setAttribute(
-							"previousBody", previousBody);
-
-						return serviceContext;
-					});
-			}
+				ParamUtil.getString(httpServletRequest, "body"),
+				comment.getClassName(), comment.getClassPK(),
+				_discussionPermission, themeDisplay);
 
 			_commentManager.updateComment(
-				themeDisplay.getUserId(), className1, classPK, commentId, null,
-				body, serviceContextFunction);
+				themeDisplay.getUserId(), comment.getClassName(),
+				comment.getClassPK(), commentId, null, body,
+				CommentUtil.getServiceContextFunction(
+					comment.getClassName(), comment.getClassPK(),
+					comment.getBody(), httpServletRequest));
 
 			comment = _commentManager.fetchComment(commentId);
 
@@ -126,9 +98,6 @@ public class EditContentItemCommentStrutsAction implements StrutsAction {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		EditContentItemCommentStrutsAction.class);
-
-	@Reference
-	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
 	private CommentManager _commentManager;

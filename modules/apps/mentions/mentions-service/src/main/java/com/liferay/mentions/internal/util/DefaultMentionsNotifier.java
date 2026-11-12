@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.service.permission.LayoutPermission;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
@@ -82,12 +81,25 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 		Set<String> mentionedUsersScreenNames = _getMentionedUsersScreenNames(
 			userId, className, content);
 
-		String previousBody = (String)serviceContext.getAttribute(
-			"previousBody");
+		String discussionClassName = null;
+		long discussionClassPK = 0;
 
-		if (previousBody != null) {
-			mentionedUsersScreenNames.removeAll(
-				_getMentionedUsersScreenNames(userId, className, previousBody));
+		if ((serviceContext.getAttribute("discussionClassNameId") instanceof
+				Long discussionClassNameId) &&
+			(serviceContext.getAttribute("discussionClassPK") instanceof
+				Long curDiscussionClassPK)) {
+
+			discussionClassName = _portal.getClassName(discussionClassNameId);
+			discussionClassPK = curDiscussionClassPK;
+
+			String previousBody = (String)serviceContext.getAttribute(
+				"previousBody");
+
+			if (previousBody != null) {
+				mentionedUsersScreenNames.removeAll(
+					_getMentionedUsersScreenNames(
+						userId, className, previousBody));
+			}
 		}
 
 		if (mentionedUsersScreenNames.isEmpty()) {
@@ -119,11 +131,8 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 			"[$USER_ADDRESS$]", messageUserEmailAddress, "[$USER_NAME$]",
 			messageUserName, "[$CONTENT_URL$]", contentURL);
 		mentionsSubscriptionSender.setCurrentUserId(userId);
-		mentionsSubscriptionSender.setDiscussionClassName(
-			(String)serviceContext.getAttribute("discussionClassName"));
-		mentionsSubscriptionSender.setDiscussionClassPK(
-			GetterUtil.getLong(
-				serviceContext.getAttribute("discussionClassPK")));
+		mentionsSubscriptionSender.setDiscussionClassName(discussionClassName);
+		mentionsSubscriptionSender.setDiscussionClassPK(discussionClassPK);
 		mentionsSubscriptionSender.setEntryTitle(title);
 		mentionsSubscriptionSender.setEntryURL(contentURL);
 		mentionsSubscriptionSender.setFrom(fromAddress, fromName);
