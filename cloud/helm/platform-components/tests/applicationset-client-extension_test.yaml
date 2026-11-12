@@ -1,0 +1,146 @@
+release:
+    name: my-release
+    namespace: argocd-system
+set:
+    clusterSecretStore:
+        name: liferay-test-secret-store
+    gitops:
+        repository:
+            url: https://git.example.com/gitops.git
+    networkPolicy:
+        apiServerSources:
+            -   cidr: 10.0.0.0/8
+suite: Client extension ApplicationSet and AppProject
+templates:
+    -   templates/applicationset-client-extension.yaml
+    -   templates/appproject-client-extension.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.template.metadata.name
+                    value: "{{ index .path.segments 2 }}-{{ index .path.segments 4 }}-{{ base .descriptor }}"
+                template: templates/applicationset-client-extension.yaml
+            -   equal:
+                    path: spec.template.spec.destination.namespace
+                    value: liferay-{{ index .path.segments 2 }}-{{ index .path.segments 4 }}
+                template: templates/applicationset-client-extension.yaml
+            -   matchRegex:
+                    path: spec.templatePatch
+                    pattern: "\\{\\{- \\$projectId := index \\.path\\.segments 2 \\}\\}"
+                template: templates/applicationset-client-extension.yaml
+        it: Derives the application names and namespaces from the layout expressions
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "gitops.layout.projectId" must have the form {{path[n]}} for the client extension ApplicationSet
+                template: templates/applicationset-client-extension.yaml
+        it: Fails for a layout expression that is not a path segment
+        set:
+            gitops:
+                layout:
+                    projectId: "{{path.basename}}"
+    -   asserts:
+            -   equal:
+                    path: spec.clusterResourceWhitelist
+                    value: []
+                template: templates/appproject-client-extension.yaml
+            -   notContains:
+                    any: true
+                    content:
+                        kind: RoleBinding
+                    path: spec.namespaceResourceWhitelist
+                template: templates/appproject-client-extension.yaml
+            -   equal:
+                    path: spec.destinations
+                    value:
+                        -   namespace: liferay-*
+                            server: https://kubernetes.default.svc
+                template: templates/appproject-client-extension.yaml
+        it: Limits the AppProject to namespaced chart resources in the Liferay namespaces
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/applicationset-client-extension.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/appproject-client-extension.yaml
+        it: Omits the ApplicationSet and AppProject when the DXP operator does not deliver client extensions
+        set:
+            operatorApplications:
+                dxpOperator:
+                    values:
+                        clientExtensions:
+                            enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/applicationset-client-extension.yaml
+        it: Omits the ApplicationSet when Liferay is disabled
+        set:
+            liferay:
+                enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec.generators[0].matrix.generators[1].oci.repoURL
+                    value: "{{ .descriptor }}"
+                template: templates/applicationset-client-extension.yaml
+            -   equal:
+                    path: spec.generators[0].matrix.generators[1].oci.revision
+                    value: "{{ .version }}"
+                template: templates/applicationset-client-extension.yaml
+            -   equal:
+                    path: spec.generators[0].matrix.generators[1].oci.files
+                    value:
+                        -   path: client-extension.yaml
+                template: templates/applicationset-client-extension.yaml
+            -   equal:
+                    path: spec.generators[0].matrix.generators[1].oci.requeueAfterSeconds
+                    value: 60
+                template: templates/applicationset-client-extension.yaml
+        it: Reads each client extension descriptor from its OCI artifact
+        set:
+            clientExtensions:
+                requeueAfterSeconds: 60
+    -   asserts:
+            -   equal:
+                    path: spec.generators[0].matrix.generators[0].matrix.generators[0].git
+                    value:
+                        files:
+                            -   path: liferay/projects/*/environments/*/liferay.yaml
+                        repoURL: https://git.example.com/gitops.git
+                        revision: HEAD
+                template: templates/applicationset-client-extension.yaml
+            -   equal:
+                    path: spec.generators[0].matrix.generators[0].matrix.generators[1].list.elementsYaml
+                    value: "{{ get . \"clientExtensions\" | default list | toJson }}"
+                template: templates/applicationset-client-extension.yaml
+        it: Reads the client extensions from each environment's liferay.yaml
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.source
+                    value:
+                        helm:
+                            releaseName: "{{ base .descriptor }}"
+                        path: .
+                        repoURL: oci://registry.example.com/charts/liferay-client-extension
+                        targetRevision: 0.2.0
+                template: templates/applicationset-client-extension.yaml
+            -   contains:
+                    content: oci://registry.example.com/charts/liferay-client-extension
+                    path: spec.sourceRepos
+                template: templates/appproject-client-extension.yaml
+        it: Renders every client extension from the platform's chart and version
+        set:
+            clientExtensions:
+                chart:
+                    repoURL: oci://registry.example.com/charts/liferay-client-extension
+                    targetRevision: 0.2.0
+    -   asserts:
+            -   matchRegex:
+                    path: spec.templatePatch
+                    pattern: "valuesObject: \\{\\{ toJson \\$values \\}\\}"
+                template: templates/applicationset-client-extension.yaml
+            -   notMatchRegex:
+                    path: spec.templatePatch
+                    pattern: ": \\{\\{ \\.clientExtension"
+                template: templates/applicationset-client-extension.yaml
+        it: Writes the descriptor values only through toJson

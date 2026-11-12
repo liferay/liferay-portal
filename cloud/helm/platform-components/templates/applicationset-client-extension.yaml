@@ -1,0 +1,131 @@
+{{- $dxpOperator := .Values.operatorApplications.dxpOperator -}}
+{{- if and .Values.liferay.enabled $dxpOperator.enabled (dig "clientExtensions" "enabled" false ($dxpOperator.values | default dict)) -}}
+{{- $gitops := .Values.gitops -}}
+{{- $layout := $gitops.layout -}}
+{{- $segmentPattern := "^\\{\\{path\\[(\\d+)\\]\\}\\}$" -}}
+{{- range $layoutKey := list "environmentId" "projectId" -}}
+{{- if not (regexMatch $segmentPattern (get $layout $layoutKey)) -}}
+{{- fail (printf "The value \"gitops.layout.%s\" must have the form {{path[n]}} for the client extension ApplicationSet" $layoutKey) -}}
+{{- end -}}
+{{- end -}}
+{{- $environmentId := regexReplaceAll $segmentPattern $layout.environmentId "index .path.segments $1" -}}
+{{- $projectId := regexReplaceAll $segmentPattern $layout.projectId "index .path.segments $1" -}}
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-60"
+    finalizers:
+        -   resources-finalizer.argocd.argoproj.io
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: client-extension-applicationset
+    name: client-extension-applicationset
+    namespace: {{ .Release.Namespace }}
+spec:
+    generators:
+        -   matrix:
+                generators:
+                    -   matrix:
+                            generators:
+                                -   git:
+                                        files:
+                                            -   path: {{ $layout.environments }}/{{ $layout.liferayValuesFilename }}
+                                        repoURL: {{ $gitops.repository.url }}
+                                        revision: {{ $gitops.repository.revision }}
+                                -   list:
+                                        elementsYaml: {{ `{{ get . "clientExtensions" | default list | toJson }}` | quote }}
+                    -   oci:
+                            files:
+                                -   path: client-extension.yaml
+                            pathParamPrefix: descriptorFile
+                            repoURL: {{ `{{ .descriptor }}` | quote }}
+                            requeueAfterSeconds: {{ .Values.clientExtensions.requeueAfterSeconds }}
+                            revision: {{ `{{ .version }}` | quote }}
+    goTemplate: true
+    goTemplateOptions:
+        -   missingkey=error
+    template:
+        metadata:
+            labels:
+                {{- include "liferay-platform.labels" . | nindent 16 }}
+                app.kubernetes.io/name: client-extension
+            name: {{ printf "{{ %s }}-{{ %s }}-{{ base .descriptor }}" $projectId $environmentId | quote }}
+        spec:
+            destination:
+                namespace: {{ printf "liferay-{{ %s }}-{{ %s }}" $projectId $environmentId | quote }}
+                server: https://kubernetes.default.svc
+            project: liferay-client-extension
+            source:
+                {{- include "liferay-platform.chartSource" .Values.clientExtensions.chart | nindent 16 }}
+                helm:
+                    releaseName: {{ `{{ base .descriptor }}` | quote }}
+            syncPolicy:
+                automated:
+                    prune: true
+                    selfHeal: true
+                retry:
+                    backoff:
+                        duration: 30s
+                        factor: 2
+                        maxDuration: 10m
+                    limit: 10
+    {{- /*
+    Maps the client extension descriptor that Workspace publishes onto the
+    liferay-client-extension chart. The descriptor comes from the customer's
+    registry, so every value is built into a dict and written with toJson,
+    never interpolated into YAML. Nothing here may fail the template, because
+    a failing template stops the ApplicationSet from updating any of its
+    Applications: maps of the wrong type become empty, the port and replicas
+    are coerced to integers (a port that is not one becomes 80), and the
+    probes are passed to the chart as they are, where a bad probe only fails
+    its own Application.
+    */}}
+    templatePatch: |
+        {{- printf "{{- $environmentId := %s }}" $environmentId | nindent 8 }}
+        {{- printf "{{- $projectId := %s }}" $projectId | nindent 8 }}
+        {{- `{{- $serviceId := base .descriptor }}
+{{- $descriptor := get . "clientExtension" }}
+{{- if not (kindIs "map" $descriptor) }}{{ $descriptor = dict }}{{ end }}
+{{- $type := toString (get $descriptor "type" | default "service") }}
+{{- $workloadEnabled := ne $type "configuration" }}
+{{- $descriptorWorkload := get $descriptor "workload" }}
+{{- if not (kindIs "map" $descriptorWorkload) }}{{ $descriptorWorkload = dict }}{{ end }}
+{{- $kind := toString (get $descriptorWorkload "kind" | default "Deployment") }}
+{{- $env := dict }}
+{{- $descriptorEnv := get $descriptorWorkload "env" }}
+{{- if kindIs "map" $descriptorEnv }}{{ range $key, $value := $descriptorEnv }}{{ $_ := set $env (toString $key) (toString $value) }}{{ end }}{{ end }}
+{{- $oauthApplicationERC := toString (get $descriptor "oauthApplicationHeadlessServerERC") }}
+{{- if and (eq $type "batch") $oauthApplicationERC }}{{ $_ := set $env "LIFERAY_BATCH_OAUTH_APP_ERC" $oauthApplicationERC }}{{ end }}
+{{- $workload := dict "containerPort" (get $descriptorWorkload "port" | int | default 80) "enabled" $workloadEnabled "env" $env "kind" $kind "replicas" (get $descriptorWorkload "replicas" | default 1 | int) }}
+{{- with get $descriptorWorkload "schedule" }}{{ $_ := set $workload "schedule" (toString .) }}{{ end }}
+{{- $startupProbe := dict }}
+{{- range $probeName := list "livenessProbe" "readinessProbe" }}
+{{- $probe := get $descriptorWorkload $probeName }}
+{{- if and (kindIs "map" $probe) $probe }}
+{{- $_ := set $workload $probeName $probe }}
+{{- $handler := pick $probe "exec" "grpc" "httpGet" "tcpSocket" }}
+{{- if $handler }}{{ $startupProbe = merge (dict "failureThreshold" 60 "periodSeconds" 5) $handler }}{{ end }}
+{{- end }}
+{{- end }}
+{{- if $startupProbe }}{{ $_ := set $workload "startupProbe" $startupProbe }}{{ end }}
+{{- if eq $type "frontend" }}
+{{- $_ := set $workload "volumeMounts" (list (dict "mountPath" "/etc/caddy.d" "name" "caddy-d")) }}
+{{- $_ := set $workload "volumes" (list (dict "emptyDir" dict "name" "caddy-d")) }}
+{{- end }}
+{{- $configs := get $descriptor "configs" }}
+{{- if not (kindIs "map" $configs) }}{{ $configs = dict }}{{ end }}
+{{- $values := dict "clientExtension" (dict "configs" $configs "serviceId" $serviceId) "fullnameOverride" $serviceId "network" (dict "gatewayName" (printf "%s-%s-gateway" $projectId $environmentId)) "service" (dict "enabled" (and $workloadEnabled (eq $kind "Deployment"))) "workload" $workload }}
+{{- $image := get $descriptor "image" }}
+{{- if and $workloadEnabled (kindIs "map" $image) }}
+{{- $tag := toString (get $image "tag") }}
+{{- if $tag }}{{ with get $image "digest" }}{{ $tag = printf "%s@%s" $tag (toString .) }}{{ end }}{{ end }}
+{{- $_ := set $values "image" (dict "repository" (toString (get $image "repository")) "tag" $tag) }}
+{{- end }}
+{{- $overrides := get . "values" }}
+{{- if kindIs "map" $overrides }}{{ $values = mergeOverwrite $values $overrides }}{{ end }}
+spec:
+    source:
+        helm:
+            valuesObject: {{ toJson $values }}` | nindent 8 }}
+{{- end -}}

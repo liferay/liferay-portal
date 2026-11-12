@@ -1,6 +1,17 @@
 mock_provider "helm" {}
 mock_provider "kubernetes" {}
 mock_provider "random" {}
+run "should_accept_docker_layers_in_oci_artifacts" {
+	assert {
+		condition=contains(split(",", yamldecode(helm_release.argocd.values[0]).configs.params["reposerver.oci.layer.media.types"]), "application/vnd.docker.image.rootfs.diff.tar.gzip")
+		error_message="The repo server must read OCI artifacts that Docker pushed, such as client extension descriptors"
+	}
+	assert {
+		condition=contains(split(",", yamldecode(helm_release.argocd.values[0]).configs.params["reposerver.oci.layer.media.types"]), "application/vnd.cncf.helm.chart.content.v1.tar+gzip")
+		error_message="The repo server must keep reading Helm charts from OCI registries"
+	}
+	command=plan
+}
 run "should_add_every_metrics_rule_when_observability_is_enabled" {
 	assert {
 		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-application-controller"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "observability"
@@ -174,6 +185,13 @@ run "should_omit_the_external_url_and_the_dex_connector_by_default" {
 	}
 	command=plan
 }
+run "should_register_the_client_extension_health_check" {
+	assert {
+		condition=contains(keys(yamldecode(helm_release.argocd.values[0]).configs.cm), "resource.customizations.health.cx.liferay.com_ClientExtension")
+		error_message="The ClientExtension health check must be registered under the cx.liferay.com API group"
+	}
+	command=plan
+}
 run "should_register_the_liferay_infrastructure_health_check" {
 	assert {
 		condition=contains(keys(yamldecode(helm_release.argocd.values[0]).configs.cm), "resource.customizations.health.liferay.com_LiferayInfrastructure")
@@ -231,5 +249,5 @@ run "should_write_the_network_policies_through_extra_objects" {
 	command=plan
 }
 variables {
-	argocd_helm_chart_version="10.1.3"
+	argocd_helm_chart_version="10.18.0"
 }

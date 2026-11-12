@@ -27,6 +27,7 @@ resource "helm_release" "argocd" {
 							"admin.enabled"=var.argocd_admin_login_enabled
 							"kustomize.buildOptions"="--enable-helm"
 							"resource.customizations.health.argoproj.io_Application"=file("${path.module}/health-argoproj.io_Application.lua")
+							"resource.customizations.health.cx.liferay.com_ClientExtension"=file("${path.module}/health-cx.liferay.com_ClientExtension.lua")
 							"resource.customizations.health.liferay.com_LiferayInfrastructure"=file("${path.module}/health-LiferayInfrastructure.lua")
 							"resource.customizations.ignoreDifferences.all"=yamlencode(
 								{
@@ -117,6 +118,14 @@ resource "helm_release" "argocd" {
 						}
 						params={
 							"controller.sync.timeout.seconds"="3600"
+							"reposerver.oci.layer.media.types"=join(
+								",",
+								[
+									"application/vnd.cncf.helm.chart.content.v1.tar+gzip",
+									"application/vnd.docker.image.rootfs.diff.tar.gzip",
+									"application/vnd.oci.image.layer.v1.tar",
+									"application/vnd.oci.image.layer.v1.tar+gzip",
+								])
 							"server.insecure"="true"
 						}
 					}
