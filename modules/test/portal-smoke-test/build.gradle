@@ -47,6 +47,5 @@ dependencies {
 	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	testIntegrationImplementation project(":apps:style-book:style-book-api")
 	testIntegrationImplementation project(":apps:template:template-api")
-	testIntegrationImplementation project(":dxp:apps:search-experiences:search-experiences-rest-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
