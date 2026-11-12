@@ -360,7 +360,34 @@ public abstract class BaseService {
 	}
 
 	private WebClient _getWebClient() {
-		ConnectionProvider connectionProvider = ConnectionProvider.builder(
+		if (_webClient == null) {
+			_webClient = WebClient.builder(
+			).clientConnector(
+				new ReactorClientHttpConnector(
+					HttpClient.create(_connectionProvider))
+			).defaultHeader(
+				HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE
+			).defaultHeader(
+				HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
+			).exchangeStrategies(
+				ExchangeStrategies.builder(
+				).codecs(
+					clientCodecConfigurer ->
+						clientCodecConfigurer.defaultCodecs(
+						).maxInMemorySize(
+							16 * 1024 * 1024
+						)
+				).build()
+			).filter(
+				getWebClientExchangeFilterFunction()
+			).build();
+		}
+
+		return _webClient;
+	}
+
+	private static final ConnectionProvider _connectionProvider =
+		ConnectionProvider.builder(
 			"fixed"
 		).evictInBackground(
 			Duration.ofSeconds(120)
@@ -374,25 +401,6 @@ public abstract class BaseService {
 			Duration.ofSeconds(60)
 		).build();
 
-		return WebClient.builder(
-		).clientConnector(
-			new ReactorClientHttpConnector(
-				HttpClient.create(connectionProvider))
-		).defaultHeader(
-			HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE
-		).defaultHeader(
-			HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
-		).exchangeStrategies(
-			ExchangeStrategies.builder(
-			).codecs(
-				clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs(
-				).maxInMemorySize(
-					16 * 1024 * 1024
-				)
-			).build()
-		).filter(
-			getWebClientExchangeFilterFunction()
-		).build();
-	}
+	private volatile WebClient _webClient;
 
 }
