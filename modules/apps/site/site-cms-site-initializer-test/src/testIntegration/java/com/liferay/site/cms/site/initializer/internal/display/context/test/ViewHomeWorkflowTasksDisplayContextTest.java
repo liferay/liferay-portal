@@ -25,8 +25,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -72,9 +70,16 @@ public class ViewHomeWorkflowTasksDisplayContextTest
 					WorkflowConstants.STATUS_APPROVED));
 		}
 
+		_fragmentRenderer.render(
+			fragmentRendererContext, mockHttpServletRequest,
+			new MockHttpServletResponse());
+
+		Object displayContext = mockHttpServletRequest.getAttribute(
+			"com.liferay.site.cms.site.initializer.internal.display.context." +
+				"ViewHomeWorkflowTasksDisplayContext");
+
 		Map<String, Object> reactData = ReflectionTestUtil.invoke(
-			_getSectionDisplayContext(mockHttpServletRequest), "getReactData",
-			new Class<?>[0]);
+			displayContext, "getReactData", new Class<?>[0]);
 
 		JSONArray objectDefinitionsJSONArray = (JSONArray)reactData.get(
 			"objectDefinitions");
@@ -100,19 +105,6 @@ public class ViewHomeWorkflowTasksDisplayContextTest
 		Assert.assertEquals(
 			PortletKeys.MY_WORKFLOW_TASK,
 			HttpComponentsUtil.getParameter(workflowTaskURL, "p_p_id", false));
-	}
-
-	private Object _getSectionDisplayContext(
-			HttpServletRequest httpServletRequest)
-		throws Exception {
-
-		_fragmentRenderer.render(
-			fragmentRendererContext, httpServletRequest,
-			new MockHttpServletResponse());
-
-		return httpServletRequest.getAttribute(
-			"com.liferay.site.cms.site.initializer.internal.display.context." +
-				"ViewHomeWorkflowTasksDisplayContext");
 	}
 
 	@Inject(
