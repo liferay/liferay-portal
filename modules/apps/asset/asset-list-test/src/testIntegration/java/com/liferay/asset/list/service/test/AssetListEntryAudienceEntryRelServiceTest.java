@@ -289,7 +289,6 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 		_addAssetListEntryAudienceEntryRel(
 			AssetListTestUtil.addAssetListEntry(_group.getGroupId()),
 			audienceEntryERC);
-
 		_addAssetListEntryAudienceEntryRel(
 			_assetListEntry, RandomTestUtil.randomString());
 		_addAssetListEntryAudienceEntryRel(_assetListEntry, audienceEntryERC);
