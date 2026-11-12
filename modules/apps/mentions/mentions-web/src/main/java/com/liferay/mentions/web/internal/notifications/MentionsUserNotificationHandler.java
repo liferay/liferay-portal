@@ -137,6 +137,23 @@ public class MentionsUserNotificationHandler
 			"content.Language", serviceContext.getLocale(), getClass());
 
 		if (_isCMSDiscussion(jsonObject)) {
+			String userGroupName = jsonObject.getString("userGroupName");
+
+			if (Validator.isNotNull(userGroupName)) {
+				return _language.format(
+					resourceBundle, "x-mentioned-x-in-a-comment-on-x",
+					new String[] {
+						HtmlUtil.escape(
+							_portal.getUserName(
+								jsonObject.getLong("userId"),
+								StringPool.BLANK)),
+						HtmlUtil.escape(userGroupName),
+						HtmlUtil.escape(
+							assetRenderer.getTitle(serviceContext.getLocale()))
+					},
+					false);
+			}
+
 			return _language.format(
 				resourceBundle, "x-mentioned-you-in-a-comment-on-x",
 				new String[] {
