@@ -34,11 +34,11 @@ public class CMSLoginDisplayContextTest {
 	@Test
 	public void testGetQueryString() {
 		Assert.assertEquals(
-			"mvcRenderCommandName=/login/login",
-			_getQueryString(LoginPortletKeys.LOGIN));
+			StringPool.BLANK, _getQueryString(RandomTestUtil.randomString()));
 		Assert.assertEquals(StringPool.BLANK, _getQueryString(null));
 		Assert.assertEquals(
-			StringPool.BLANK, _getQueryString(RandomTestUtil.randomString()));
+			"mvcRenderCommandName=/login/login",
+			_getQueryString(LoginPortletKeys.LOGIN));
 	}
 
 	private String _getQueryString(String portletId) {
