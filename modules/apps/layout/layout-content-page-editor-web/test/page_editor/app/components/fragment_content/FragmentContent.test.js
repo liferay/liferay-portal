@@ -238,6 +238,24 @@ describe('FragmentContent', () => {
 		expect(editableContent.dataset.tooltipFloating).toBe('true');
 	});
 
+	it('does not add the ck-content class to rich text editables', async () => {
+		const fragmentEntryLink = getFragmentEntryLink({
+			content:
+				'<h1 data-lfr-editable-id="editable-id" data-lfr-editable-type="rich-text">Default content</h1>',
+		});
+
+		await act(async () => {
+			renderFragmentContent({fragmentEntryLink});
+		});
+
+		const editableContent = document.body.querySelector(
+			'[data-lfr-editable-id="editable-id"]'
+		);
+
+		expect(editableContent).toHaveClass('page-editor__editable');
+		expect(editableContent).not.toHaveClass('ck-content');
+	});
+
 	it('does not hide old widget topper for embedded widgets', async () => {
 		const fragmentEntryLink = getFragmentEntryLink({
 			content:
