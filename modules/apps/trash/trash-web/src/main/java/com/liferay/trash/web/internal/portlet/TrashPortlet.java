@@ -8,6 +8,7 @@ package com.liferay.trash.web.internal.portlet;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.TrashPermissionException;
 import com.liferay.portal.kernel.model.Release;
+import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -347,30 +348,74 @@ public class TrashPortlet extends MVCPortlet {
 	private void _checkPermissions(RenderRequest renderRequest)
 		throws PortalException {
 
+		String className = null;
+		long classPK = 0;
+		TrashEntry trashEntry = null;
+
 		long trashEntryId = ParamUtil.getLong(renderRequest, "trashEntryId");
 
-		if (trashEntryId == 0) {
-			return;
-		}
+		if (trashEntryId > 0) {
+			trashEntry = _trashEntryLocalService.getTrashEntry(trashEntryId);
 
-		TrashEntry trashEntry = _trashEntryLocalService.getTrashEntry(
-			trashEntryId);
+			className = trashEntry.getClassName();
+			classPK = trashEntry.getClassPK();
+		}
+		else {
+			long classNameId = ParamUtil.getLong(renderRequest, "classNameId");
+
+			classPK = ParamUtil.getLong(renderRequest, "classPK");
+
+			if ((classNameId == 0) || (classPK == 0)) {
+				return;
+			}
+
+			className = _portal.getClassName(classNameId);
+
+			trashEntry = _getTrashEntry(className, classPK);
+		}
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
 		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
-			trashEntry.getClassName());
+			className);
 
-		if ((trashEntry.getGroupId() != themeDisplay.getScopeGroupId()) ||
+		if ((trashHandler == null) ||
+			((trashEntry != null) &&
+			 (trashEntry.getGroupId() != themeDisplay.getScopeGroupId())) ||
 			!trashHandler.hasTrashPermission(
-				themeDisplay.getPermissionChecker(), trashEntry.getGroupId(),
-				trashEntry.getClassPK(), ActionKeys.VIEW)) {
+				themeDisplay.getPermissionChecker(),
+				themeDisplay.getScopeGroupId(), classPK, ActionKeys.VIEW)) {
 
 			throw new PrincipalException.MustHavePermission(
-				themeDisplay.getUserId(), trashEntry.getClassName(),
-				trashEntry.getClassPK(), ActionKeys.VIEW);
+				themeDisplay.getUserId(), className, classPK, ActionKeys.VIEW);
 		}
+	}
+
+	private TrashEntry _getTrashEntry(String className, long classPK)
+		throws PortalException {
+
+		TrashEntry trashEntry = _trashEntryLocalService.fetchEntry(
+			className, classPK);
+
+		if (trashEntry != null) {
+			return trashEntry;
+		}
+
+		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
+			className);
+
+		if (trashHandler == null) {
+			return null;
+		}
+
+		TrashedModel trashedModel = trashHandler.getTrashedModel(classPK);
+
+		if (trashedModel == null) {
+			return null;
+		}
+
+		return _trashHelper.getTrashEntry(trashedModel);
 	}
 
 	@Reference
