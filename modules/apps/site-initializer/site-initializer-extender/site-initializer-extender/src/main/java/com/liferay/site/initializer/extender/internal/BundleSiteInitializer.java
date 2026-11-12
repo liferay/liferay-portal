@@ -4837,7 +4837,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			return;
 		}
 
-		List<Long> roleIds = new ArrayList<>();
+		List<String> roleExternalReferenceCodes = new ArrayList<>();
 
 		for (int i = 0; i < accessToControlMenuRoleNamesJSONArray.length();
 			 i++) {
@@ -4856,11 +4856,12 @@ public class BundleSiteInitializer implements SiteInitializer {
 				continue;
 			}
 
-			roleIds.add(role.getRoleId());
+			roleExternalReferenceCodes.add(role.getExternalReferenceCode());
 		}
 
 		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
-			serviceContext.getScopeGroupId(), ArrayUtil.toStringArray(roleIds),
+			serviceContext.getScopeGroupId(),
+			ArrayUtil.toStringArray(roleExternalReferenceCodes),
 			jsonObject.getBoolean("showControlMenuByRole"));
 	}
 

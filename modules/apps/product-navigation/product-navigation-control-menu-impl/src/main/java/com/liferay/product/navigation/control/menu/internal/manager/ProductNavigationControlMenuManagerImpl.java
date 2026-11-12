@@ -81,15 +81,16 @@ public class ProductNavigationControlMenuManagerImpl
 			if ((menuAccessConfiguration != null) &&
 				menuAccessConfiguration.showControlMenuByRole()) {
 
-				String[] accessToControlMenuRoleIds =
-					menuAccessConfiguration.accessToControlMenuRoleIds();
+				String[] accessToControlMenuRoleExternalReferenceCodes =
+					menuAccessConfiguration.
+						accessToControlMenuRoleExternalReferenceCodes();
 
 				User user = themeDisplay.getUser();
 
 				for (Role role : user.getAllRoles()) {
 					if (ArrayUtil.contains(
-							accessToControlMenuRoleIds,
-							String.valueOf(role.getRoleId()))) {
+							accessToControlMenuRoleExternalReferenceCodes,
+							role.getExternalReferenceCode())) {
 
 						return hasRelevantProductNavigationControlMenuEntries;
 					}

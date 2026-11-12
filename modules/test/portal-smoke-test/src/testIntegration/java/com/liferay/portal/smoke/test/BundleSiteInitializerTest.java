@@ -4373,13 +4373,14 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(GroupConstants.TYPE_SITE_OPEN, _group.getType());
 		Assert.assertTrue(_group.isManualMembership());
 
-		String[] accessToControlMenuRoleIds =
-			_menuAccessConfigurationManager.getAccessToControlMenuRoleIds(
-				_group.getGroupId());
+		String[] accessToControlMenuRoleExternalReferenceCodes =
+			_menuAccessConfigurationManager.
+				getAccessToControlMenuRoleExternalReferenceCodes(
+					_group.getGroupId());
 
 		Assert.assertEquals(
-			Arrays.toString(accessToControlMenuRoleIds), 2,
-			accessToControlMenuRoleIds.length);
+			Arrays.toString(accessToControlMenuRoleExternalReferenceCodes), 2,
+			accessToControlMenuRoleExternalReferenceCodes.length);
 
 		Assert.assertTrue(
 			_menuAccessConfigurationManager.isShowControlMenuByRole(
@@ -4393,13 +4394,14 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(GroupConstants.TYPE_SITE_OPEN, _group.getType());
 		Assert.assertTrue(_group.isManualMembership());
 
-		String[] accessToControlMenuRoleIds =
-			_menuAccessConfigurationManager.getAccessToControlMenuRoleIds(
-				_group.getGroupId());
+		String[] accessToControlMenuRoleExternalReferenceCodes =
+			_menuAccessConfigurationManager.
+				getAccessToControlMenuRoleExternalReferenceCodes(
+					_group.getGroupId());
 
 		Assert.assertEquals(
-			Arrays.toString(accessToControlMenuRoleIds), 0,
-			accessToControlMenuRoleIds.length);
+			Arrays.toString(accessToControlMenuRoleExternalReferenceCodes), 0,
+			accessToControlMenuRoleExternalReferenceCodes.length);
 
 		Assert.assertTrue(
 			_menuAccessConfigurationManager.isShowControlMenuByRole(

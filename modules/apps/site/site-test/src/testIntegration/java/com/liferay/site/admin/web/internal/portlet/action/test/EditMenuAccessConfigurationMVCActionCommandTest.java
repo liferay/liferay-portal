@@ -90,7 +90,7 @@ public class EditMenuAccessConfigurationMVCActionCommandTest {
 			mockLiferayPortletActionRequest,
 			new MockLiferayPortletActionResponse());
 
-		_assertConfiguration(new String[] {String.valueOf(role.getRoleId())});
+		_assertConfiguration(new String[] {role.getExternalReferenceCode()});
 	}
 
 	@Test
@@ -118,8 +118,8 @@ public class EditMenuAccessConfigurationMVCActionCommandTest {
 
 		_assertConfiguration(
 			new String[] {
-				String.valueOf(administratorRole.getRoleId()),
-				String.valueOf(siteAdministratorRole.getRoleId())
+				administratorRole.getExternalReferenceCode(),
+				siteAdministratorRole.getExternalReferenceCode()
 			});
 	}
 
@@ -163,12 +163,14 @@ public class EditMenuAccessConfigurationMVCActionCommandTest {
 
 		Dictionary<String, Object> properties = configuration.getProperties();
 
-		String[] accessToControlMenuRoleIds = (String[])properties.get(
-			"accessToControlMenuRoleIds");
+		String[] accessToControlMenuRoleExternalReferenceCodes =
+			(String[])properties.get(
+				"accessToControlMenuRoleExternalReferenceCodes");
 
 		Assert.assertArrayEquals(
-			Arrays.toString(accessToControlMenuRoleIds),
-			expectedRolesCanSeeControlMenu, accessToControlMenuRoleIds);
+			Arrays.toString(accessToControlMenuRoleExternalReferenceCodes),
+			expectedRolesCanSeeControlMenu,
+			accessToControlMenuRoleExternalReferenceCodes);
 
 		Assert.assertTrue(
 			GetterUtil.getBoolean(properties.get("showControlMenuByRole")));

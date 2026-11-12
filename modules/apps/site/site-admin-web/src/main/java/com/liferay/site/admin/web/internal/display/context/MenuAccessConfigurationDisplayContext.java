@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -73,15 +72,20 @@ public class MenuAccessConfigurationDisplayContext {
 		RegularRoleItemSelectorCriterion regularRoleItemSelectorCriterion =
 			new RegularRoleItemSelectorCriterion();
 
-		String[] roleIds =
-			_menuAccessConfigurationManager.getAccessToControlMenuRoleIds(
-				_themeDisplay.getScopeGroupId());
+		String[] accessToControlMenuRoleExternalReferenceCodes =
+			_menuAccessConfigurationManager.
+				getAccessToControlMenuRoleExternalReferenceCodes(
+					_themeDisplay.getScopeGroupId());
 
-		long[] checkedRoleIds = new long[roleIds.length];
+		long[] checkedRoleIds =
+			new long[accessToControlMenuRoleExternalReferenceCodes.length];
 
-		for (int i = 0; i < roleIds.length; i++) {
-			Role role = _roleLocalService.fetchRole(
-				GetterUtil.getLong(roleIds[i]));
+		for (int i = 0;
+			 i < accessToControlMenuRoleExternalReferenceCodes.length; i++) {
+
+			Role role = _roleLocalService.fetchRoleByExternalReferenceCode(
+				accessToControlMenuRoleExternalReferenceCodes[i],
+				_themeDisplay.getCompanyId());
 
 			if (role == null) {
 				continue;
@@ -134,12 +138,17 @@ public class MenuAccessConfigurationDisplayContext {
 
 		List<Role> roles = new ArrayList<>();
 
-		String[] accessToControlMenuRoleIds =
-			_menuAccessConfigurationManager.getAccessToControlMenuRoleIds(
-				_themeDisplay.getScopeGroupId());
+		String[] accessToControlMenuRoleExternalReferenceCodes =
+			_menuAccessConfigurationManager.
+				getAccessToControlMenuRoleExternalReferenceCodes(
+					_themeDisplay.getScopeGroupId());
 
-		for (String roleId : accessToControlMenuRoleIds) {
-			Role role = _roleLocalService.fetchRole(GetterUtil.getLong(roleId));
+		for (String accessToControlMenuRoleExternalReferenceCode :
+				accessToControlMenuRoleExternalReferenceCodes) {
+
+			Role role = _roleLocalService.fetchRoleByExternalReferenceCode(
+				accessToControlMenuRoleExternalReferenceCode,
+				_themeDisplay.getCompanyId());
 
 			if (role == null) {
 				continue;
@@ -155,8 +164,8 @@ public class MenuAccessConfigurationDisplayContext {
 				_themeDisplay.getCompanyId(), RoleConstants.ADMINISTRATOR);
 
 			if (!ArrayUtil.contains(
-					accessToControlMenuRoleIds,
-					String.valueOf(administratorRole.getRoleId()))) {
+					accessToControlMenuRoleExternalReferenceCodes,
+					administratorRole.getExternalReferenceCode())) {
 
 				roles.add(administratorRole);
 			}
@@ -165,8 +174,8 @@ public class MenuAccessConfigurationDisplayContext {
 				_themeDisplay.getCompanyId(), RoleConstants.SITE_ADMINISTRATOR);
 
 			if (!ArrayUtil.contains(
-					accessToControlMenuRoleIds,
-					String.valueOf(siteAdministratorRole.getRoleId()))) {
+					accessToControlMenuRoleExternalReferenceCodes,
+					siteAdministratorRole.getExternalReferenceCode())) {
 
 				roles.add(siteAdministratorRole);
 			}

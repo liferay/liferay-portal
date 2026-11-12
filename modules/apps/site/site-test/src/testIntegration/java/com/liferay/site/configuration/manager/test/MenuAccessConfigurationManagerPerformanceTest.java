@@ -68,7 +68,7 @@ public class MenuAccessConfigurationManagerPerformanceTest {
 
 			_menuAccessConfigurationManager.updateMenuAccessConfiguration(
 				group.getGroupId(),
-				new String[] {String.valueOf(role.getRoleId())}, true);
+				new String[] {role.getExternalReferenceCode()}, true);
 		}
 
 		try (PerformanceTimer performanceTimer = new PerformanceTimer(400)) {

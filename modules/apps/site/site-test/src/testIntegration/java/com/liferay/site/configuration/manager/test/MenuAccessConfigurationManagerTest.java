@@ -74,11 +74,11 @@ public class MenuAccessConfigurationManagerTest {
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
-			_group.getGroupId(),
-			new String[] {String.valueOf(role.getRoleId())}, true);
+			_group.getGroupId(), new String[] {role.getExternalReferenceCode()},
+			true);
 
 		_assertMenuAccessConfiguration(
-			new String[] {String.valueOf(role.getRoleId())});
+			new String[] {role.getExternalReferenceCode()});
 	}
 
 	@Test
@@ -96,8 +96,8 @@ public class MenuAccessConfigurationManagerTest {
 
 		_assertMenuAccessConfiguration(
 			new String[] {
-				String.valueOf(administratorRole.getRoleId()),
-				String.valueOf(siteAdministratorRole.getRoleId())
+				administratorRole.getExternalReferenceCode(),
+				siteAdministratorRole.getExternalReferenceCode()
 			});
 	}
 
@@ -112,7 +112,7 @@ public class MenuAccessConfigurationManagerTest {
 	}
 
 	private void _assertMenuAccessConfiguration(
-			String[] expectedAccessToControlMenuRoleIds)
+			String[] expectedAccessToControlMenuRoleExternalReferenceCodes)
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
@@ -128,13 +128,15 @@ public class MenuAccessConfigurationManagerTest {
 
 		Dictionary<String, Object> properties = configuration.getProperties();
 
-		String[] actualAccessToControlMenuRoleIds = (String[])properties.get(
-			"accessToControlMenuRoleIds");
+		String[] actualAccessToControlMenuRoleExternalReferenceCodes =
+			(String[])properties.get(
+				"accessToControlMenuRoleExternalReferenceCodes");
 
 		Assert.assertArrayEquals(
-			Arrays.toString(actualAccessToControlMenuRoleIds),
-			expectedAccessToControlMenuRoleIds,
-			actualAccessToControlMenuRoleIds);
+			Arrays.toString(
+				actualAccessToControlMenuRoleExternalReferenceCodes),
+			expectedAccessToControlMenuRoleExternalReferenceCodes,
+			actualAccessToControlMenuRoleExternalReferenceCodes);
 
 		Assert.assertTrue(
 			GetterUtil.getBoolean(properties.get("showControlMenuByRole")));

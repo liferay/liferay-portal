@@ -138,8 +138,8 @@ public class ProductNavigationControlMenuManagerTest {
 			"ACCESS_IN_CONTROL_PANEL");
 
 		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
-			_group.getGroupId(),
-			new String[] {String.valueOf(role.getRoleId())}, true);
+			_group.getGroupId(), new String[] {role.getExternalReferenceCode()},
+			true);
 
 		User user = UserTestUtil.addUser();
 
@@ -190,8 +190,8 @@ public class ProductNavigationControlMenuManagerTest {
 		_roleLocalService.addGroupRole(userGroup.getGroupId(), role);
 
 		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
-			_group.getGroupId(),
-			new String[] {String.valueOf(role.getRoleId())}, true);
+			_group.getGroupId(), new String[] {role.getExternalReferenceCode()},
+			true);
 
 		User user = UserTestUtil.addUser();
 

@@ -55,7 +55,7 @@ public class EditMenuAccessConfigurationMVCActionCommand
 		String[] roleSearchContainerPrimaryKeys = ParamUtil.getStringValues(
 			actionRequest, "roleSearchContainerPrimaryKeys");
 
-		List<String> roleIds = new ArrayList<>();
+		List<String> roleExternalReferenceCodes = new ArrayList<>();
 
 		for (String roleId : roleSearchContainerPrimaryKeys) {
 			Role role = _roleLocalService.fetchRole(Long.valueOf(roleId));
@@ -64,12 +64,13 @@ public class EditMenuAccessConfigurationMVCActionCommand
 				continue;
 			}
 
-			roleIds.add(roleId);
+			roleExternalReferenceCodes.add(role.getExternalReferenceCode());
 		}
 
 		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
 			themeDisplay.getScopeGroupId(),
-			roleIds.isEmpty() ? null : ArrayUtil.toStringArray(roleIds),
+			roleExternalReferenceCodes.isEmpty() ? null :
+				ArrayUtil.toStringArray(roleExternalReferenceCodes),
 			ParamUtil.getBoolean(actionRequest, "showControlMenuByRole"));
 	}
 

@@ -62,7 +62,7 @@ public class RoleModelListenerTest {
 			MenuAccessConfiguration.class, _group.getCompanyId(),
 			_group.getGroupId(),
 			HashMapDictionaryBuilder.<String, Object>put(
-				"accessToControlMenuRoleIds", new String[0]
+				"accessToControlMenuRoleExternalReferenceCodes", new String[0]
 			).put(
 				"showControlMenuByRole", true
 			).build());
@@ -115,10 +115,10 @@ public class RoleModelListenerTest {
 			null, _serviceContext);
 
 		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
-			_group.getGroupId(),
-			new String[] {String.valueOf(role.getRoleId())}, true);
+			_group.getGroupId(), new String[] {role.getExternalReferenceCode()},
+			true);
 
-		_assertConfiguration(new String[] {String.valueOf(role.getRoleId())});
+		_assertConfiguration(new String[] {role.getExternalReferenceCode()});
 
 		_roleLocalService.deleteRole(role);
 
@@ -141,12 +141,14 @@ public class RoleModelListenerTest {
 
 		Dictionary<String, Object> properties = configuration.getProperties();
 
-		String[] accessToControlMenuRoleIds = (String[])properties.get(
-			"accessToControlMenuRoleIds");
+		String[] accessToControlMenuRoleExternalReferenceCodes =
+			(String[])properties.get(
+				"accessToControlMenuRoleExternalReferenceCodes");
 
 		Assert.assertArrayEquals(
-			Arrays.toString(accessToControlMenuRoleIds),
-			expectedRolesCanSeeControlMenu, accessToControlMenuRoleIds);
+			Arrays.toString(accessToControlMenuRoleExternalReferenceCodes),
+			expectedRolesCanSeeControlMenu,
+			accessToControlMenuRoleExternalReferenceCodes);
 
 		Assert.assertTrue(
 			GetterUtil.getBoolean(properties.get("showControlMenuByRole")));
