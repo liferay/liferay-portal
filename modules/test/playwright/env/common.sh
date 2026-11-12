@@ -263,7 +263,7 @@ function deploy_osgi_modules {
 					echo "${dir/${_PORTAL_PROJECT_DIR}\/modules\/}"
 				done
 
-				osgi_module_dir=$(echo ${osgi_module_dir} | awk '{print $1}')
+				exit 1
 			fi
 
 			if [[ -f ${osgi_module_dir}/build.gradle ]]
@@ -274,9 +274,16 @@ function deploy_osgi_modules {
 
 				local gradlew=$(get_gradlew)
 
-				${gradlew} deploy
+				if ! ${gradlew} deploy
+				then
+					echo "Unable to deploy OSGi module ${osgi_module_name} in ${osgi_modules_list_file}."
+
+					exit 1
+				fi
 			else
-				echo "Unable to find OSGi module in ${osgi_module_dir}."
+				echo "Unable to find OSGi module ${osgi_module_name} in ${osgi_modules_list_file}."
+
+				exit 1
 			fi
 		done
 	fi
