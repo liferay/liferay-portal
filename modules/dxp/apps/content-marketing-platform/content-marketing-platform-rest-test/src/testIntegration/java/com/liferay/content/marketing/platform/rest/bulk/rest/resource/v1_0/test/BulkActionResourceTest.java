@@ -18,7 +18,6 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
@@ -107,7 +106,7 @@ public class BulkActionResourceTest {
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMS_BASIC_WEB_CONTENT", _testCompany.getCompanyId());
 
-		_depotEntry2 = _addDepotEntry(false);
+		_depotEntry = _addDepotEntry();
 	}
 
 	@Test
@@ -115,7 +114,7 @@ public class BulkActionResourceTest {
 		_testPostBulkActionWithTypeAddObjectToProject();
 	}
 
-	private DepotEntry _addDepotEntry(boolean trashEnabled) throws Exception {
+	private DepotEntry _addDepotEntry() throws Exception {
 		Map<Locale, String> nameMap = Collections.singletonMap(
 			LocaleUtil.US, RandomTestUtil.randomString());
 
@@ -133,7 +132,7 @@ public class BulkActionResourceTest {
 			depotEntry.getDepotEntryId(), nameMap, null, Collections.emptyMap(),
 			null,
 			UnicodePropertiesBuilder.put(
-				"trashEnabled", trashEnabled
+				"trashEnabled", false
 			).build(),
 			serviceContext);
 	}
@@ -199,7 +198,7 @@ public class BulkActionResourceTest {
 		return HashMapBuilder.<String, Serializable>put(
 			"title_i18n",
 			HashMapBuilder.put(
-				_LANGUAGE_ID, RandomTestUtil.randomString()
+				"en_US", RandomTestUtil.randomString()
 			).build()
 		).build();
 	}
@@ -235,11 +234,11 @@ public class BulkActionResourceTest {
 
 		ObjectEntry cmsBasicWebContentObjectEntry1 =
 			ObjectEntryTestUtil.addObjectEntry(
-				_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
+				_depotEntry.getGroupId(), _cmsBasicWebContentObjectDefinition,
 				_getObjectEntryValues());
 		ObjectEntry cmsBasicWebContentObjectEntry2 =
 			ObjectEntryTestUtil.addObjectEntry(
-				_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
+				_depotEntry.getGroupId(), _cmsBasicWebContentObjectDefinition,
 				_getObjectEntryValues());
 
 		AddObjectToProjectBulkSelectionAction bulkAction =
@@ -320,44 +319,19 @@ public class BulkActionResourceTest {
 	}
 
 	private BulkActionItem[] _toBulkActionItems(
-			ObjectDefinition objectDefinition, Object... objects)
+			ObjectDefinition objectDefinition, ObjectEntry... objectEntries)
 		throws Exception {
 
 		return TransformUtil.transform(
-			objects,
-			object -> new BulkActionItem() {
+			objectEntries,
+			objectEntry -> new BulkActionItem() {
 				{
-					if (object instanceof ObjectDefinition) {
-						ObjectDefinition objectDefinition =
-							(ObjectDefinition)object;
+					setClassExternalReferenceCode(
+						objectEntry::getExternalReferenceCode);
 
-						setClassExternalReferenceCode(
-							objectDefinition::getExternalReferenceCode);
-
-						setClassName(ObjectDefinition.class.getName());
-						setClassPK(objectDefinition::getObjectDefinitionId);
-						setName(objectDefinition::getName);
-					}
-					else if (object instanceof ObjectEntry) {
-						ObjectEntry objectEntry = (ObjectEntry)object;
-
-						setClassExternalReferenceCode(
-							objectEntry::getExternalReferenceCode);
-
-						setClassName(objectDefinition::getClassName);
-						setClassPK(objectEntry::getObjectEntryId);
-						setName(objectEntry::getTitleValue);
-					}
-					else if (object instanceof ObjectEntryFolder) {
-						ObjectEntryFolder objectEntryFolder =
-							(ObjectEntryFolder)object;
-
-						setClassExternalReferenceCode(
-							objectEntryFolder::getExternalReferenceCode);
-						setClassName(objectEntryFolder::getModelClassName);
-						setClassPK(objectEntryFolder::getObjectEntryFolderId);
-						setName(objectEntryFolder::getName);
-					}
+					setClassName(objectDefinition::getClassName);
+					setClassPK(objectEntry::getObjectEntryId);
+					setName(objectEntry::getTitleValue);
 				}
 			},
 			BulkActionItem.class);
@@ -388,11 +362,9 @@ public class BulkActionResourceTest {
 		}
 	}
 
-	private static final String _LANGUAGE_ID = "en_US";
-
 	private BulkActionResource _bulkActionResource;
 	private ObjectDefinition _cmsBasicWebContentObjectDefinition;
-	private DepotEntry _depotEntry2;
+	private DepotEntry _depotEntry;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;

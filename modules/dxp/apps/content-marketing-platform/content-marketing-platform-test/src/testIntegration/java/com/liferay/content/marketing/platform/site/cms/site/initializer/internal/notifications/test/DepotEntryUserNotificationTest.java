@@ -73,19 +73,19 @@ public class DepotEntryUserNotificationTest {
 	public void testGetLink() throws Exception {
 		CMPTestUtil.getOrAddGroup(DepotEntryUserNotificationTest.class);
 
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
+
+		_depotEntry = _depotEntryLocalService.getGroupDepotEntry(
+			cmpProjectObjectEntry.getGroupId());
+
 		ObjectDefinition cmpProjectObjectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMP_PROJECT", TestPropsValues.getCompanyId());
 
-		ObjectEntry cmpProjectObjectEntry =
-			CMPTestUtil.addCMPProjectObjectEntry();
-
-		_depotEntry4 = _depotEntryLocalService.getGroupDepotEntry(
-			cmpProjectObjectEntry.getGroupId());
-
 		UserNotificationFeedEntry userNotificationFeedEntry =
-			_getUserNotificationFeedEntry(_depotEntry4);
+			_getUserNotificationFeedEntry(_depotEntry);
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -152,7 +152,7 @@ public class DepotEntryUserNotificationTest {
 	private CompanyLocalService _companyLocalService;
 
 	@DeleteAfterTestRun
-	private DepotEntry _depotEntry4;
+	private DepotEntry _depotEntry;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
