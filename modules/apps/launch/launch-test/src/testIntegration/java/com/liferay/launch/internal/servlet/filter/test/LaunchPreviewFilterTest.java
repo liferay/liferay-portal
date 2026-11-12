@@ -48,11 +48,10 @@ public class LaunchPreviewFilterTest {
 
 	@Test
 	public void testProcessFilter() throws Exception {
-		long previewLaunchSetId = RandomTestUtil.randomLong();
-
 		MockFilterChain mockFilterChain = new MockFilterChain();
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
+		long previewLaunchSetId = RandomTestUtil.randomLong();
 
 		_processFilter(
 			mockFilterChain, mockHttpServletResponse, previewLaunchSetId,
