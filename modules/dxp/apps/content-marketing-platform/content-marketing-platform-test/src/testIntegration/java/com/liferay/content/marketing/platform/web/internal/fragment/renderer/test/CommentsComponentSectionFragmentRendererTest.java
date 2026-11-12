@@ -53,6 +53,7 @@ public class CommentsComponentSectionFragmentRendererTest
 		Assert.assertEquals(
 			_getURL("/get_asset_comments"), props.get("getCommentsURL"));
 		Assert.assertNull(props.get("getMentionUsersURL"));
+		Assert.assertNull(props.get("highlightedCommentId"));
 	}
 
 	@FeatureFlag("LPD-104086")
@@ -63,6 +64,15 @@ public class CommentsComponentSectionFragmentRendererTest
 		Assert.assertEquals(
 			_getURL("/get_content_item_mention_users"),
 			props.get("getMentionUsersURL"));
+	}
+
+	@Test
+	public void testGetPropsWithMessageId() throws Exception {
+		mockHttpServletRequest.setParameter("messageId", "12345");
+
+		Map<String, Object> props = getProps();
+
+		Assert.assertEquals("12345", props.get("highlightedCommentId"));
 	}
 
 	@Override

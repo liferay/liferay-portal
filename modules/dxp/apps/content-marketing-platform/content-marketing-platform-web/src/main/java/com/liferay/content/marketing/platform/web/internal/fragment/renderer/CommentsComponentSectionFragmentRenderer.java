@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -122,6 +123,18 @@ public class CommentsComponentSectionFragmentRenderer
 					return _getURL(
 						"/get_content_item_mention_users", objectDefinition,
 						objectEntry, themeDisplay);
+				}
+
+				return null;
+			}
+		).put(
+			"highlightedCommentId",
+			() -> {
+				long messageId = ParamUtil.getLong(
+					httpServletRequest, "messageId");
+
+				if (messageId > 0) {
+					return String.valueOf(messageId);
 				}
 
 				return null;
