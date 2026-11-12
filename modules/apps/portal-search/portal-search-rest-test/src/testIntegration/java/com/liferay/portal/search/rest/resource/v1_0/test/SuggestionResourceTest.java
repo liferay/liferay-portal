@@ -11,8 +11,10 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
@@ -28,6 +30,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
@@ -93,6 +96,7 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithSearchResultsPortletWithoutViewInContext();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithSearchResultsPortletWithoutViewInContextWithLayout();
 		_testPostSuggestionsPageWithBasicSuggestionsContributorWithThisSiteScope();
+		_testPostSuggestionsPageWithSuggestionsSizeLimit();
 	}
 
 	private FileEntry _addFileEntry() throws Exception {
@@ -158,6 +162,48 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 
 		Assert.assertEquals(
 			Arrays.toString(expectedTexts), String.valueOf(texts));
+	}
+
+	private void _assertSuggestionsCounts(
+			int[] expectedCounts, String search, int[] suggestionsSizes)
+		throws Exception {
+
+		SuggestionsContributorConfiguration[]
+			suggestionsContributorConfigurations =
+				new SuggestionsContributorConfiguration
+					[suggestionsSizes.length];
+
+		for (int i = 0; i < suggestionsSizes.length; i++) {
+			int suggestionsSize = suggestionsSizes[i];
+
+			suggestionsContributorConfigurations[i] =
+				new SuggestionsContributorConfiguration() {
+					{
+						contributorName = "basic";
+						displayGroupName = RandomTestUtil.randomString();
+						size = suggestionsSize;
+					}
+				};
+		}
+
+		Page<SuggestionsContributorResults> suggestionsPage =
+			_postSuggestionsPage(
+				"http://localhost:" + PortalUtil.getPortalServerPort(false) +
+					"/web/guest/home",
+				"/search", null, "q", _layout.getPlid(), null, search,
+				suggestionsContributorConfigurations);
+
+		List<Integer> suggestionsCounts = TransformUtil.transform(
+			suggestionsPage.getItems(),
+			suggestionsContributorResults -> {
+				Suggestion[] suggestions =
+					suggestionsContributorResults.getSuggestions();
+
+				return suggestions.length;
+			});
+
+		Assert.assertEquals(
+			Arrays.toString(expectedCounts), suggestionsCounts.toString());
 	}
 
 	private String _getAssetURL(Layout destinationLayout, String search)
@@ -518,6 +564,39 @@ public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
 			page.fetchFirstItem(), _journalArticle.getTitle(_locale));
 
 		GroupTestUtil.deleteGroup(group);
+	}
+
+	private void _testPostSuggestionsPageWithSuggestionsSizeLimit()
+		throws Exception {
+
+		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		String search = StringBundler.concat(
+			_journalArticle.getTitle(_locale), StringPool.SPACE,
+			journalArticle1.getTitle(_locale), StringPool.SPACE,
+			journalArticle2.getTitle(_locale));
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						"com.liferay.portal.search.rest.configuration." +
+							"SearchSuggestionsCompanyConfiguration",
+						MapUtil.singletonDictionary(
+							"suggestionsSizeLimit", 2))) {
+
+			_assertSuggestionsCounts(new int[] {1}, search, new int[] {1});
+			_assertSuggestionsCounts(
+				new int[] {2, 1, 2}, search, new int[] {3, 1, 3});
+			_assertSuggestionsCounts(new int[] {2}, search, new int[] {3});
+		}
+
+		_assertSuggestionsCounts(new int[] {3}, search, new int[] {3});
 	}
 
 	@Inject
