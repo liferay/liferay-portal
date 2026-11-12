@@ -9,6 +9,8 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Petteri Karttunen
  */
@@ -20,6 +22,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	localization = "content/Language",
 	name = "search-suggestions-company-configuration-name"
 )
+@ProviderType
 public interface SearchSuggestionsCompanyConfiguration {
 
 	@Meta.AD(
@@ -27,5 +30,11 @@ public interface SearchSuggestionsCompanyConfiguration {
 		name = "enable-suggestions-endpoint", required = false
 	)
 	public boolean enableSuggestionsEndpoint();
+
+	@Meta.AD(
+		deflt = "20", description = "suggestions-size-limit-help",
+		name = "suggestions-size-limit", required = false
+	)
+	public int suggestionsSizeLimit();
 
 }
