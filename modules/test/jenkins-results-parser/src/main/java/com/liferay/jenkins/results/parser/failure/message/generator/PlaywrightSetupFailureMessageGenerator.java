@@ -57,8 +57,7 @@ public class PlaywrightSetupFailureMessageGenerator
 		Element messageElement = Dom4JUtil.getNewElement(
 			"div", null,
 			Dom4JUtil.getNewElement(
-				"p", null,
-				Dom4JUtil.getNewElement("strong", null, message)));
+				"p", null, Dom4JUtil.getNewElement("strong", null, message)));
 
 		int index = consoleText.indexOf("\n", consoleText.indexOf(message));
 
