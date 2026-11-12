@@ -16,7 +16,13 @@ portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(fragmentEntryLinkDisplayContext.getRedirect());
 portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 
-renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x", fragmentEntry.getName()));
+String title = fragmentEntry.getName();
+
+if (fragmentEntryLinkDisplayContext.isGroupUsages()) {
+	title = StringBundler.concat(title, " - ", fragmentEntryLinkDisplayContext.getGroupName());
+}
+
+renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x", title));
 %>
 
 <clay:container-fluid
