@@ -21,6 +21,7 @@ public class CampaignDisplay {
 		_endDate = campaign.getEndDate();
 		_id = campaign.getId();
 		_individualsTouched = campaign.getIndividualsTouched();
+		_lastTouchDate = campaign.getLastTouchDate();
 		_origin = campaign.getOrigin();
 		_startDate = campaign.getStartDate();
 		_status = campaign.getStatus();
@@ -32,6 +33,7 @@ public class CampaignDisplay {
 	private final Date _endDate;
 	private final String _id;
 	private final Long _individualsTouched;
+	private final Date _lastTouchDate;
 	private final String _origin;
 	private final Date _startDate;
 	private final String _status;
