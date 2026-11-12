@@ -41,11 +41,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>ENTRY_CONTENT_ROW_NUMBER_CHECKBOX</td>
-	<td>xpath=(//*[@data-qa-id='row'])[${key_rowNumber}]//input[@title='Select']</td>
-	<td></td>
-</tr>
-<tr>
 	<td>ENTRY_CONTENT_ROW_NUMBER_ELLIPSIS</td>
 	<td>xpath=(//*[@data-qa-id='row']//a[span/*[name()='svg'][contains(@class,'icon-ellipsis')]])[${key_rowNumber}]</td>
 	<td></td>
