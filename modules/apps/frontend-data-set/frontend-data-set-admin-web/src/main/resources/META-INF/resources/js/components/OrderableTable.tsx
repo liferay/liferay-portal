@@ -425,28 +425,38 @@ const OrderableTable = ({
 	);
 	const [query, setQuery] = useState('');
 
-	useEffect(() => setItems(initialItems), [initialItems]);
+	const filterItems = (query: string) => {
+		if (!query) {
+			return initialItems;
+		}
+
+		const regexp = new RegExp(query, 'i');
+
+		return initialItems.filter((item) =>
+			fields.some((field) => {
+				if (field.contentRenderer?.textMatch) {
+					return String(field.contentRenderer.textMatch(item)).match(
+						regexp
+					);
+				}
+
+				return String(item[field.name]).match(regexp);
+			})
+		);
+	};
+
+	// Keep the search applied when the items change, e.g. after reordering
+
+	useEffect(() => {
+		setItems(filterItems(query));
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [initialItems]);
 
 	const onSearch = (query: string) => {
 		setQuery(query);
 
-		const regexp = new RegExp(query, 'i');
-
-		setItems(
-			query
-				? initialItems.filter((item) =>
-						fields.some((field) => {
-							if (field.contentRenderer?.textMatch) {
-								return String(
-									field.contentRenderer.textMatch(item)
-								).match(regexp);
-							}
-
-							return String(item[field.name]).match(regexp);
-						})
-					) || []
-				: initialItems
-		);
+		setItems(filterItems(query));
 	};
 
 	return (

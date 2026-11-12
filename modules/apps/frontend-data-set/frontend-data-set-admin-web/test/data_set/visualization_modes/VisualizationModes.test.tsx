@@ -174,6 +174,9 @@ describe('VisualizationModes', () => {
 				({name}: {name: string}) => name
 			)
 		).toEqual(['cards', 'LXC:timeline', 'table', 'list']);
+
+		expect(screen.getByPlaceholderText('search')).toHaveValue('li');
+		expect(getRowNames()).toEqual(['Timeline', 'list[noun]']);
 	});
 
 	it('disables client extensions until they are enabled', async () => {
