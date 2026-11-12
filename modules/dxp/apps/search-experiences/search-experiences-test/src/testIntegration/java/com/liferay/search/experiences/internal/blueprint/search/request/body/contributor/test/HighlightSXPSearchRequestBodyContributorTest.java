@@ -8,7 +8,6 @@ package com.liferay.search.experiences.internal.blueprint.search.request.body.co
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -104,7 +103,6 @@ public class HighlightSXPSearchRequestBodyContributorTest {
 		).build();
 
 		_locale = LocaleUtil.getSiteDefault();
-
 		_searchEngine = _searchEngineHelper.getSearchEngine();
 
 		_user = TestPropsValues.getUser();
@@ -130,10 +128,7 @@ public class HighlightSXPSearchRequestBodyContributorTest {
 					"fetchSource", true
 				).put(
 					"includes",
-					JSONFactoryUtil.createJSONArray(
-					).put(
-						Field.getLocalizedName(_locale, "fullName")
-					)
+					JSONUtil.put(Field.getLocalizedName(_locale, "fullName"))
 				))
 		).put(
 			"generalConfiguration",
@@ -173,17 +168,9 @@ public class HighlightSXPSearchRequestBodyContributorTest {
 					"number_of_fragments", 10
 				))
 		).put(
-			"post_tags",
-			JSONFactoryUtil.createJSONArray(
-			).put(
-				"</liferay-hl>"
-			)
+			"post_tags", JSONUtil.put("</liferay-hl>")
 		).put(
-			"pre_tags",
-			JSONFactoryUtil.createJSONArray(
-			).put(
-				"<liferay-hl>"
-			)
+			"pre_tags", JSONUtil.put("<liferay-hl>")
 		).put(
 			"require_field_match", true
 		);
@@ -207,7 +194,8 @@ public class HighlightSXPSearchRequestBodyContributorTest {
 	private String _getUserHighlightedFullName() {
 		Version version = _getSearchEngineVersion();
 
-		if (_isSearchEngineElasticsearch() &&
+		if (StringUtil.startsWith(
+				_searchEngineInformation.getVendorString(), "Elasticsearch") &&
 			(version.compareTo(Version.parseVersion("8.10.2")) >= 0)) {
 
 			return StringBundler.concat(
@@ -221,11 +209,6 @@ public class HighlightSXPSearchRequestBodyContributorTest {
 			HighlightUtil.HIGHLIGHT_TAG_CLOSE, StringPool.SPACE,
 			HighlightUtil.HIGHLIGHT_TAG_OPEN, _user.getLastName(),
 			HighlightUtil.HIGHLIGHT_TAG_CLOSE);
-	}
-
-	private boolean _isSearchEngineElasticsearch() {
-		return StringUtil.startsWith(
-			_searchEngineInformation.getVendorString(), "Elasticsearch");
 	}
 
 	private Page<SearchResult> _postSearchPageWithSXPBlueprintConfiguration(
