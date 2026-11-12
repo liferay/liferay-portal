@@ -76,13 +76,13 @@ public class GroupSelectorTag extends IncludeTag {
 
 	@Override
 	protected void setAttributes(HttpServletRequest httpServletRequest) {
-		boolean scopeGroupTypeAndSiteGroupType =
-			_isScopeGroupTypeAndSiteGroupType(httpServletRequest);
+		boolean scopeGroupOnlyOrTypeAndSiteGroupType =
+			_isScopeGroupOnlyOrTypeAndSiteGroupType(httpServletRequest);
 
 		_groups = _getGroups(
-			httpServletRequest, scopeGroupTypeAndSiteGroupType);
+			httpServletRequest, scopeGroupOnlyOrTypeAndSiteGroupType);
 
-		_groupsCount = scopeGroupTypeAndSiteGroupType ? _groups.size() :
+		_groupsCount = scopeGroupOnlyOrTypeAndSiteGroupType ? _groups.size() :
 			_getGroupSelectorProviderGroupsCount(httpServletRequest);
 
 		httpServletRequest.setAttribute(
@@ -134,7 +134,7 @@ public class GroupSelectorTag extends IncludeTag {
 
 	private List<Group> _getGroups(
 		HttpServletRequest httpServletRequest,
-		boolean scopeGroupTypeAndSiteGroupType) {
+		boolean scopeGroupOnlyOrTypeAndSiteGroupType) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -142,7 +142,7 @@ public class GroupSelectorTag extends IncludeTag {
 
 		Group group = _getGroup(themeDisplay);
 
-		if (scopeGroupTypeAndSiteGroupType) {
+		if (scopeGroupOnlyOrTypeAndSiteGroupType) {
 			if (_isScopeGroupOnly(httpServletRequest)) {
 				return ListUtil.fromArray(group);
 			}
@@ -235,18 +235,7 @@ public class GroupSelectorTag extends IncludeTag {
 		return _scopeGroupOnly;
 	}
 
-	private boolean _isScopeGroupType(HttpServletRequest httpServletRequest) {
-		if (_scopeGroupType != null) {
-			return _scopeGroupType;
-		}
-
-		_scopeGroupType = ParamUtil.getBoolean(
-			httpServletRequest, "scopeGroupType");
-
-		return _scopeGroupType;
-	}
-
-	private boolean _isScopeGroupTypeAndSiteGroupType(
+	private boolean _isScopeGroupOnlyOrTypeAndSiteGroupType(
 		HttpServletRequest httpServletRequest) {
 
 		if ((_isScopeGroupOnly(httpServletRequest) ||
@@ -257,6 +246,17 @@ public class GroupSelectorTag extends IncludeTag {
 		}
 
 		return false;
+	}
+
+	private boolean _isScopeGroupType(HttpServletRequest httpServletRequest) {
+		if (_scopeGroupType != null) {
+			return _scopeGroupType;
+		}
+
+		_scopeGroupType = ParamUtil.getBoolean(
+			httpServletRequest, "scopeGroupType");
+
+		return _scopeGroupType;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
