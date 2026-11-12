@@ -106,7 +106,6 @@ public class CTScoreMessageListener extends BaseMessageListener {
 					PublicationRoleConstants.NAME_PUBLISHER));
 
 			_ctUserNotificationSender.sendUserNotificationEvents(
-				ctCollection,
 				JSONUtil.put(
 					"ctCollectionId", ctCollectionId
 				).put(

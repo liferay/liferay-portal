@@ -73,8 +73,7 @@ public class CTUserNotificationSender {
 	}
 
 	public void sendUserNotificationEvents(
-			CTCollection ctCollection, JSONObject notificationEventJSONObject,
-			long[] userIds)
+			JSONObject notificationEventJSONObject, long[] userIds)
 		throws PortalException {
 
 		for (long userId : userIds) {

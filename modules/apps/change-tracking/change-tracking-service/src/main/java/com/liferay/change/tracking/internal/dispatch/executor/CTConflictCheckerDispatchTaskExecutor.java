@@ -66,7 +66,6 @@ public class CTConflictCheckerDispatchTaskExecutor
 				}
 
 				_ctUserNotificationSender.sendUserNotificationEvents(
-					ctCollection,
 					JSONUtil.put(
 						"ctCollectionId", ctCollection.getCtCollectionId()
 					).put(

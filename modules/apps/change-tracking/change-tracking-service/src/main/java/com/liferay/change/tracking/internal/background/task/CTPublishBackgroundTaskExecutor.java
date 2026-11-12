@@ -135,7 +135,6 @@ public class CTPublishBackgroundTaskExecutor
 				_ctCollectionLocalService.getCTCollection(ctCollectionId);
 
 			_ctUserNotificationSender.sendUserNotificationEvents(
-				ctCollection,
 				JSONUtil.put(
 					"backgroundTaskId", backgroundTask.getBackgroundTaskId()
 				).put(
