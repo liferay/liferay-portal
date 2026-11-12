@@ -109,7 +109,7 @@ export default function WorkflowTasksOverview({
 		setLoading(true);
 
 		const fetchWorkflowCount = (completed: boolean) =>
-			fetch(`${filterURL} and completed eq ${completed}&pageSize=1`)
+			fetch(`${filterURL}&filter=completed eq ${completed}&pageSize=1`)
 				.then((response) => {
 					if (!response.ok) {
 						throw new Error();
