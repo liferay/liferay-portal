@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -50,6 +51,7 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.kernel.util.SystemProperties;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -63,9 +65,11 @@ import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -380,8 +384,6 @@ public class AsyncAntivirusDLStoreTest {
 
 	@Test
 	public void testQueueOverflow() throws Exception {
-		AtomicInteger calledSchedule = new AtomicInteger();
-
 		AtomicInteger firedEventPrepare = new AtomicInteger();
 
 		_registerService(
@@ -398,21 +400,6 @@ public class AsyncAntivirusDLStoreTest {
 			MapUtil.singletonDictionary(Constants.SERVICE_RANKING, -100));
 
 		_registerService(
-			AntivirusAsyncRetryScheduler.class,
-			new AntivirusAsyncRetryScheduler() {
-
-				@Override
-				public void schedule(Message message) {
-					calledSchedule.incrementAndGet();
-				}
-
-				@Override
-				public void unschedule(Message message) {
-				}
-
-			},
-			MapUtil.singletonDictionary(Constants.SERVICE_RANKING, 100));
-		_registerService(
 			AntivirusScanner.class,
 			new MockAntivirusScanner(
 				() -> {
@@ -428,6 +415,10 @@ public class AsyncAntivirusDLStoreTest {
 			"0 0/10 * * * ?", 1, false,
 			() -> {
 				DLFolder dlFolder = DLTestUtil.addDLFolder(_group.getGroupId());
+
+				ServiceReference<?>[] serviceReferences =
+					_bundleContext.getServiceReferences(
+						SchedulerJobConfiguration.class.getName(), null);
 
 				int count = 10;
 
@@ -448,15 +439,39 @@ public class AsyncAntivirusDLStoreTest {
 
 						Assert.assertTrue(
 							message.contains(
-								"into persistent storage because the async " +
-									"antivirus queue is overflowing"));
+								"for retry because the async antivirus queue " +
+									"is overflowing"));
 					}
 				}
 
-				Assert.assertTrue(
-					String.valueOf(calledSchedule.get()),
-					calledSchedule.get() > 0);
 				Assert.assertEquals(count, firedEventPrepare.get());
+
+				AntivirusAsyncRetryScheduler antivirusAsyncRetryScheduler =
+					_getService(
+						AntivirusAsyncRetryScheduler.class.getName(),
+						"com.liferay.antivirus.async.store.internal.retry." +
+							"AntivirusAsyncRetrySchedulerImpl");
+
+				Map<String, Message> messages =
+					ReflectionTestUtil.getFieldValue(
+						antivirusAsyncRetryScheduler, "_messages");
+
+				Assert.assertFalse(messages.isEmpty());
+
+				for (Message message : messages.values()) {
+					Assert.assertEquals(0, message.getInteger("retriesCount"));
+					Assert.assertTrue(
+						message.getLong("retryTime") >
+							System.currentTimeMillis());
+				}
+
+				ServiceReference<?>[] newServiceReferences =
+					_bundleContext.getServiceReferences(
+						SchedulerJobConfiguration.class.getName(), null);
+
+				Assert.assertEquals(
+					Arrays.toString(newServiceReferences),
+					serviceReferences.length, newServiceReferences.length);
 			});
 
 		String[] fileNames = FileUtil.listFiles(
@@ -479,6 +494,106 @@ public class AsyncAntivirusDLStoreTest {
 
 		Assert.assertEquals(
 			Arrays.toString(fileNames), count, fileNames.length);
+	}
+
+	@Test
+	public void testSchedule() throws Exception {
+		AtomicInteger firedEventProcessingError = new AtomicInteger();
+
+		_registerService(
+			AntivirusAsyncEventListener.class,
+			message -> {
+				if ((message.get("antivirusAsyncEvent") ==
+						AntivirusAsyncEvent.PROCESSING_ERROR) &&
+					(message.get("exception") != null)) {
+
+					firedEventProcessingError.incrementAndGet();
+				}
+			},
+			MapUtil.singletonDictionary(Constants.SERVICE_RANKING, -100));
+
+		AtomicInteger scansCount = new AtomicInteger();
+
+		_registerService(
+			AntivirusScanner.class,
+			new MockAntivirusScanner(
+				() -> {
+					scansCount.incrementAndGet();
+
+					throw new AntivirusScannerException(
+						AntivirusScannerException.PROCESS_FAILURE);
+				}),
+			null);
+
+		_withAsyncAntivirusConfiguration(
+			"0 0/1 * * * ?", 1, true,
+			() -> {
+				DLFolder dlFolder = DLTestUtil.addDLFolder(_group.getGroupId());
+
+				DLTestUtil.addDLFileEntry(dlFolder.getFolderId());
+
+				AntivirusAsyncRetryScheduler antivirusAsyncRetryScheduler =
+					_getService(
+						AntivirusAsyncRetryScheduler.class.getName(),
+						"com.liferay.antivirus.async.store.internal.retry." +
+							"AntivirusAsyncRetrySchedulerImpl");
+
+				Map<String, Message> messages =
+					ReflectionTestUtil.getFieldValue(
+						antivirusAsyncRetryScheduler, "_messages");
+
+				Assert.assertEquals(messages.toString(), 1, messages.size());
+
+				ServiceRegistration<SchedulerJobConfiguration>
+					serviceRegistration = ReflectionTestUtil.getFieldValue(
+						antivirusAsyncRetryScheduler, "_serviceRegistration");
+
+				SchedulerJobConfiguration schedulerJobConfiguration =
+					_bundleContext.getService(
+						serviceRegistration.getReference());
+
+				UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
+					schedulerJobConfiguration.getJobExecutorUnsafeRunnable();
+
+				jobExecutorUnsafeRunnable.run();
+
+				Assert.assertEquals(1, scansCount.get());
+
+				_assertRetry(
+					jobExecutorUnsafeRunnable, messages, 1, Time.MINUTE * 5,
+					scansCount);
+				_assertRetry(
+					jobExecutorUnsafeRunnable, messages, 2, Time.MINUTE * 10,
+					scansCount);
+				_assertRetry(
+					jobExecutorUnsafeRunnable, messages, 3, Time.MINUTE * 20,
+					scansCount);
+				_assertRetry(
+					jobExecutorUnsafeRunnable, messages, 4, Time.MINUTE * 40,
+					scansCount);
+				_assertRetry(
+					jobExecutorUnsafeRunnable, messages, 5, Time.MINUTE * 80,
+					scansCount);
+
+				Assert.assertTrue(messages.isEmpty());
+
+				DLTestUtil.addDLFileEntry(dlFolder.getFolderId());
+				DLTestUtil.addDLFileEntry(dlFolder.getFolderId());
+
+				Assert.assertEquals(messages.toString(), 2, messages.size());
+
+				for (Message message : messages.values()) {
+					message.put("retryTime", 0L);
+				}
+
+				jobExecutorUnsafeRunnable.run();
+
+				Assert.assertEquals(messages.toString(), 2, messages.size());
+				Assert.assertEquals(9, scansCount.get());
+
+				Assert.assertEquals(
+					scansCount.get(), firedEventProcessingError.get());
+			});
 	}
 
 	@Test
@@ -583,6 +698,32 @@ public class AsyncAntivirusDLStoreTest {
 			});
 	}
 
+	private void _assertRetry(
+			UnsafeRunnable<Exception> jobExecutorUnsafeRunnable,
+			Map<String, Message> messages, int retriesCount, long retryDelay,
+			AtomicInteger scansCount)
+		throws Exception {
+
+		Collection<Message> values = messages.values();
+
+		Iterator<Message> iterator = values.iterator();
+
+		Message message = iterator.next();
+
+		Assert.assertEquals(retriesCount, message.getInteger("retriesCount"));
+
+		long delay = message.getLong("retryTime") - System.currentTimeMillis();
+
+		Assert.assertTrue(delay > (retryDelay - Time.MINUTE));
+		Assert.assertTrue(delay <= retryDelay);
+
+		message.put("retryTime", 0L);
+
+		jobExecutorUnsafeRunnable.run();
+
+		Assert.assertEquals(retriesCount + 1, scansCount.get());
+	}
+
 	private AntivirusAsyncEventListener _create(
 		Map<AntivirusAsyncEvent, Runnable> runnables) {
 
@@ -671,7 +812,7 @@ public class AsyncAntivirusDLStoreTest {
 		AtomicBoolean firedEventPrepare = new AtomicBoolean();
 		AtomicBoolean firedEventSuccess = new AtomicBoolean();
 		AtomicBoolean firedEventVirusFound = new AtomicBoolean();
-		AtomicInteger scanCount = new AtomicInteger(0);
+		AtomicInteger scansCount = new AtomicInteger(0);
 
 		try (SafeCloseable closeable1 = _registerService(
 				AntivirusAsyncEventListener.class,
@@ -702,7 +843,7 @@ public class AsyncAntivirusDLStoreTest {
 				AntivirusScanner.class,
 				new MockAntivirusScanner(
 					() -> {
-						int currentScan = scanCount.getAndIncrement();
+						int currentScan = scansCount.getAndIncrement();
 
 						if (currentScan > 0) {
 							throw new AntivirusVirusFoundException(
@@ -798,6 +939,8 @@ public class AsyncAntivirusDLStoreTest {
 						"batch-scan-cron-expression", batchScanCronExpression
 					).put(
 						"maximumQueueSize", maximumQueueSize
+					).put(
+						"retryCronExpression", "0 0 0 1 1 ? 2099"
 					).build())) {
 
 			if (sync) {
