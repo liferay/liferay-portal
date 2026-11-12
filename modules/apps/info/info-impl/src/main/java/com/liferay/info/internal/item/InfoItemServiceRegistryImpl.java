@@ -220,7 +220,7 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 						StringBundler.concat(
 							"Skipping item class name ",
 							curInfoItemClassDetails.getClassName(),
-							" because its capability ",
+							" because info item capability ",
 							infoItemCapability.getKey(),
 							" failed verification"),
 						capabilityVerificationException);

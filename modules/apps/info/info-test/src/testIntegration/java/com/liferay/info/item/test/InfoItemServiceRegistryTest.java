@@ -244,8 +244,8 @@ public class InfoItemServiceRegistryTest {
 			Assert.assertEquals(
 				StringBundler.concat(
 					"Skipping item class name ", itemClassName1,
-					" because its capability ", infoItemCapability.getKey(),
-					" failed verification"),
+					" because info item capability ",
+					infoItemCapability.getKey(), " failed verification"),
 				logEntry.getMessage());
 
 			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
