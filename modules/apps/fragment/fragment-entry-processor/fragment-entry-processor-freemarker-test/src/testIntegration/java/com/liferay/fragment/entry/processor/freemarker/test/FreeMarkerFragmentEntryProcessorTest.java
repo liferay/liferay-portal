@@ -999,7 +999,7 @@ public class FreeMarkerFragmentEntryProcessorTest {
 
 	@Test
 	@TestInfo("LPD-114036")
-	public void testProcessFragmentEntryLinkHTMLWithDisablePortletRenderAndRESTClient()
+	public void testProcessFragmentEntryLinkHTMLWithDisablePortletRenderAndEnableRESTClient()
 		throws Exception {
 
 		FragmentEntryLink fragmentEntryLink =
@@ -1007,8 +1007,8 @@ public class FreeMarkerFragmentEntryProcessorTest {
 
 		fragmentEntryLink.setHtml(
 			_readFileToString(
-				"fragment_entry_with_disable_portlet_render_and_rest_client." +
-					"html"));
+				"fragment_entry_with_disable_portlet_render_and_enable_rest_" +
+					"client.html"));
 
 		DefaultFragmentEntryProcessorContext
 			defaultFragmentEntryProcessorContext =
