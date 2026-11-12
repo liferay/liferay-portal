@@ -6,7 +6,6 @@
 package com.liferay.wiki.engine.creole;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.wiki.engine.creole.internal.parser.ast.ASTNode;
 import com.liferay.wiki.engine.creole.internal.parser.ast.BaseListNode;
@@ -33,8 +32,6 @@ import com.liferay.wiki.engine.creole.internal.parser.ast.table.TableHeaderNode;
 import com.liferay.wiki.engine.creole.internal.parser.ast.table.TableNode;
 import com.liferay.wiki.engine.creole.internal.parser.parser.Creole10Lexer;
 import com.liferay.wiki.engine.creole.internal.parser.parser.Creole10Parser;
-import com.liferay.wiki.engine.creole.internal.util.WikiEngineCreoleComponentProvider;
-import com.liferay.wiki.engine.creole.util.test.CreoleTestUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,9 +41,7 @@ import java.util.List;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,18 +56,6 @@ public class AntlrCreoleParserTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
-
-	@Before
-	public void setUp() {
-		_wikiEngineCreoleComponentProvider =
-			CreoleTestUtil.getWikiEngineCreoleComponentProvider();
-	}
-
-	@After
-	public void tearDown() {
-		ReflectionTestUtil.invoke(
-			_wikiEngineCreoleComponentProvider, "deactivate", new Class<?>[0]);
-	}
 
 	@Test
 	public void testParseCorrectlyBoldContentInListItems() throws Exception {
@@ -946,7 +929,5 @@ public class AntlrCreoleParserTest {
 	}
 
 	private Creole10Parser _creole10Parser;
-	private WikiEngineCreoleComponentProvider
-		_wikiEngineCreoleComponentProvider;
 
 }

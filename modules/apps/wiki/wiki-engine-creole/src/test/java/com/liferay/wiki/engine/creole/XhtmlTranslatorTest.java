@@ -5,11 +5,15 @@
 
 package com.liferay.wiki.engine.creole;
 
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
 import com.liferay.wiki.engine.creole.internal.antlrwiki.translator.XhtmlTranslator;
 import com.liferay.wiki.engine.creole.util.test.CreoleTestUtil;
 import com.liferay.wiki.model.WikiPage;
+
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -39,7 +43,8 @@ public class XhtmlTranslatorTest {
 			"test"
 		);
 
-		XhtmlTranslator xhtmlTranslator = new XhtmlTranslator();
+		XhtmlTranslator xhtmlTranslator = new XhtmlTranslator(
+			_wikiGroupServiceConfiguration);
 
 		String translation = xhtmlTranslator.translate(
 			wikiPage, null, null, null,
@@ -60,7 +65,8 @@ public class XhtmlTranslatorTest {
 			"test"
 		);
 
-		XhtmlTranslator xhtmlTranslator = new XhtmlTranslator();
+		XhtmlTranslator xhtmlTranslator = new XhtmlTranslator(
+			_wikiGroupServiceConfiguration);
 
 		String translation = xhtmlTranslator.translate(
 			wikiPage, null, null, null,
@@ -82,7 +88,8 @@ public class XhtmlTranslatorTest {
 			"test"
 		);
 
-		XhtmlTranslator xhtmlTranslator = new XhtmlTranslator();
+		XhtmlTranslator xhtmlTranslator = new XhtmlTranslator(
+			_wikiGroupServiceConfiguration);
 
 		String translation = xhtmlTranslator.translate(
 			wikiPage, null, null, null,
@@ -98,5 +105,9 @@ public class XhtmlTranslatorTest {
 					"id=\"section-test-Level+3\">Level 3</h3>",
 			translation);
 	}
+
+	private final WikiGroupServiceConfiguration _wikiGroupServiceConfiguration =
+		ConfigurableUtil.createConfigurable(
+			WikiGroupServiceConfiguration.class, Collections.emptyMap());
 
 }

@@ -6,11 +6,15 @@
 package com.liferay.wiki.engine.creole.internal;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
+import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.engine.BaseWikiEngine;
 import com.liferay.wiki.engine.WikiEngine;
 import com.liferay.wiki.engine.creole.internal.antlrwiki.translator.XhtmlTranslator;
@@ -54,11 +58,20 @@ public class CreoleWikiEngine extends BaseWikiEngine {
 		WikiPage page, PortletURL viewPageURL, PortletURL editPageURL,
 		String attachmentURLPrefix) {
 
-		XhtmlTranslator xhtmlTranslator = new XhtmlTranslator();
+		try {
+			XhtmlTranslator xhtmlTranslator = new XhtmlTranslator(
+				_configurationProvider.getConfiguration(
+					WikiGroupServiceConfiguration.class,
+					new GroupServiceSettingsLocator(
+						page.getGroupId(), WikiConstants.SERVICE_NAME)));
 
-		return xhtmlTranslator.translate(
-			page, viewPageURL, editPageURL, attachmentURLPrefix,
-			_parse(page.getContent()));
+			return xhtmlTranslator.translate(
+				page, viewPageURL, editPageURL, attachmentURLPrefix,
+				_parse(page.getContent()));
+		}
+		catch (ConfigurationException configurationException) {
+			throw new SystemException(configurationException);
+		}
 	}
 
 	@Override
@@ -166,6 +179,9 @@ public class CreoleWikiEngine extends BaseWikiEngine {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CreoleWikiEngine.class);
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.wiki.engine.creole)"

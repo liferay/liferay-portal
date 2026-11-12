@@ -7,15 +7,12 @@ package com.liferay.wiki.engine.creole;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.wiki.engine.creole.internal.parser.ast.WikiPageNode;
 import com.liferay.wiki.engine.creole.internal.parser.parser.Creole10Lexer;
 import com.liferay.wiki.engine.creole.internal.parser.parser.Creole10Parser;
 import com.liferay.wiki.engine.creole.internal.parser.visitor.XhtmlTranslationVisitor;
-import com.liferay.wiki.engine.creole.internal.util.WikiEngineCreoleComponentProvider;
-import com.liferay.wiki.engine.creole.util.test.CreoleTestUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +20,7 @@ import java.io.InputStream;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,18 +35,6 @@ public class TranslationToXHTMLTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
-
-	@Before
-	public void setUp() {
-		_wikiEngineCreoleComponentProvider =
-			CreoleTestUtil.getWikiEngineCreoleComponentProvider();
-	}
-
-	@After
-	public void tearDown() {
-		ReflectionTestUtil.invoke(
-			_wikiEngineCreoleComponentProvider, "deactivate", new Class<?>[0]);
-	}
 
 	@Test
 	public void testEscapedEscapedCharacter() throws Exception {
@@ -799,8 +782,6 @@ public class TranslationToXHTMLTest {
 	private static final String _NEW_LINE = StringPool.NEW_LINE;
 
 	private Creole10Parser _creole10Parser;
-	private WikiEngineCreoleComponentProvider
-		_wikiEngineCreoleComponentProvider;
 	private final XhtmlTranslationVisitor _xhtmlTranslationVisitor =
 		new XhtmlTranslationVisitor();
 

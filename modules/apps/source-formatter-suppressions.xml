@@ -42,7 +42,6 @@
 		<suppress checks="ComponentExposureCheck" files="staging/staging-taglib/src/main/java/com/liferay/staging/taglib/internal/servlet/ServletContextUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="template/template-taglib/src/main/java/com/liferay/template/taglib/internal/servlet/ServletContextUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="trash/trash-taglib/src/main/java/com/liferay/trash/taglib/internal/servlet/ServletContextUtil\.java" />
-		<suppress checks="ComponentExposureCheck" files="wiki/wiki-engine-creole/src/main/java/com/liferay/wiki/engine/creole/internal/util/WikiEngineCreoleComponentProvider\.java" />
 		<suppress checks="ComponentExposureCheck" files="wiki/wiki-web/src/main/java/com/liferay/wiki/web/internal/display/context/DLMimeTypeDisplayContextUtil\.java" />
 		<suppress checks="InnerExceptionClassCheck" files="data-engine/data-engine-rest-api/src/main/java/com/liferay/data/engine/rest/resource/exception/DataDefinitionValidationException\.java" />
 		<suppress checks="InnerExceptionClassCheck" files="data-engine/data-engine-rest-api/src/main/java/com/liferay/data/engine/rest/resource/exception/DataLayoutValidationException\.java" />
