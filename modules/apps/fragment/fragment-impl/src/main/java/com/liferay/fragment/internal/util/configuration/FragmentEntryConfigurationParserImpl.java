@@ -265,17 +265,6 @@ public class FragmentEntryConfigurationParserImpl
 	}
 
 	@Override
-	public Map<String, Object> getContextObjects(
-		JSONObject configurationValuesJSONObject,
-		JSONObject configurationJSONObject, Object displayObject,
-		long[] segmentsEntryIds) {
-
-		return getContextObjects(
-			configurationValuesJSONObject, configurationJSONObject, null,
-			displayObject, null, segmentsEntryIds);
-	}
-
-	@Override
 	public Object getFieldValue(
 		JSONObject editableValuesJSONObject,
 		FragmentConfigurationField fragmentConfigurationField, Locale locale) {

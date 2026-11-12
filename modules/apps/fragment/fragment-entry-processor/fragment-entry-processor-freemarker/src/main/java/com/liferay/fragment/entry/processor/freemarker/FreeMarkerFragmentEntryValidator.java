@@ -127,7 +127,7 @@ public class FreeMarkerFragmentEntryValidator
 				).putAll(
 					_fragmentEntryConfigurationParser.getContextObjects(
 						configurationDefaultValuesJSONObject,
-						configurationJSONObject, null, new long[0])
+						configurationJSONObject, null, null, null, new long[0])
 				).build());
 
 			template.prepareTaglib(httpServletRequest, httpServletResponse);

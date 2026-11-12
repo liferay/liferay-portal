@@ -6,6 +6,7 @@
 package com.liferay.fragment.util.configuration;
 
 import com.liferay.fragment.constants.FragmentConfigurationFieldDataType;
+import com.liferay.info.item.InfoItemReference;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.module.service.Snapshot;
@@ -56,7 +57,8 @@ public class FragmentEntryConfigurationParserUtil {
 
 	public static Map<String, Object> getContextObjects(
 		JSONObject configurationValuesJSONObject,
-		JSONObject configurationJSONObject, Object displayObject,
+		JSONObject configurationJSONObject, JSONObject editableValuesJSONObject,
+		Object displayObject, InfoItemReference fallbackInfoItemReference,
 		long[] segmentsEntryIds) {
 
 		FragmentEntryConfigurationParser fragmentEntryConfigurationParser =
@@ -64,7 +66,8 @@ public class FragmentEntryConfigurationParserUtil {
 
 		return fragmentEntryConfigurationParser.getContextObjects(
 			configurationValuesJSONObject, configurationJSONObject,
-			displayObject, segmentsEntryIds);
+			editableValuesJSONObject, displayObject, fallbackInfoItemReference,
+			segmentsEntryIds);
 	}
 
 	public static Object getFieldValue(

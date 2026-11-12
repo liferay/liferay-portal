@@ -41,11 +41,6 @@ public interface FragmentEntryConfigurationParser {
 		Object displayObject, InfoItemReference fallbackInfoItemReference,
 		long[] segmentsEntryIds);
 
-	public Map<String, Object> getContextObjects(
-		JSONObject configurationValuesJSONObject,
-		JSONObject configurationJSONObject, Object displayObject,
-		long[] segmentsEntryIds);
-
 	public Object getFieldValue(
 		JSONObject editableValuesJSONObject,
 		FragmentConfigurationField fragmentConfigurationField, Locale locale);
