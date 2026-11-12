@@ -5,20 +5,30 @@
 
 package com.liferay.portal.search.web.internal.search.results.portlet;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
+import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.web.internal.search.results.configuration.SearchResultsPortletInstanceConfiguration;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.util.PortalImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.MockedStatic;
@@ -30,6 +40,7 @@ import org.mockito.Mockito;
 public class SearchResultsPortletDisplayContextTest {
 
 	@ClassRule
+	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
@@ -90,6 +101,80 @@ public class SearchResultsPortletDisplayContextTest {
 			Mockito.times(1));
 	}
 
+	@FeatureFlag("LPD-114635")
+	@Test
+	public void testGetPaginationResultEnd() throws Exception {
+		SearchContainer<Document> searchContainer = Mockito.mock(
+			SearchContainer.class);
+
+		Mockito.doReturn(
+			Arrays.asList(
+				Mockito.mock(Document.class), Mockito.mock(Document.class))
+		).when(
+			searchContainer
+		).getResults();
+
+		int start = RandomTestUtil.randomInt();
+
+		Mockito.doReturn(
+			start
+		).when(
+			searchContainer
+		).getStart();
+
+		SearchResultsPortletDisplayContext searchResultsPortletDisplayContext =
+			_createSearchResultsPortletDisplayContext(searchContainer);
+
+		Assert.assertEquals(
+			start + 2,
+			searchResultsPortletDisplayContext.getPaginationResultEnd());
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-114635")
+	@Test
+	public void testGetPaginationResultEndWhenFeatureFlagIsDisabled()
+		throws Exception {
+
+		SearchResultsPortletDisplayContext searchResultsPortletDisplayContext =
+			_createSearchResultsPortletDisplayContext(
+				Mockito.mock(SearchContainer.class));
+
+		Assert.assertEquals(
+			0, searchResultsPortletDisplayContext.getPaginationResultEnd());
+	}
+
+	@Test
+	public void testGetPaginationStartURL() throws Exception {
+		_setUpPortalUtil();
+
+		SearchContainer<Document> searchContainer = Mockito.mock(
+			SearchContainer.class);
+
+		int cur = RandomTestUtil.randomInt();
+
+		Mockito.doReturn(
+			cur
+		).when(
+			searchContainer
+		).getCur();
+
+		String curParam = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			curParam
+		).when(
+			searchContainer
+		).getCurParam();
+
+		SearchResultsPortletDisplayContext searchResultsPortletDisplayContext =
+			_createSearchResultsPortletDisplayContext(searchContainer);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				_URL_CURRENT_PATH, "?q=", _KEYWORDS, "&", curParam, "=", cur),
+			searchResultsPortletDisplayContext.getPaginationStartURL());
+	}
+
 	private void _assertDisplayStyleGroupId(
 			Group expectedGroup, Group scopeGroup)
 		throws Exception {
@@ -101,6 +186,20 @@ public class SearchResultsPortletDisplayContextTest {
 		Assert.assertEquals(
 			expectedGroup.getGroupId(),
 			searchResultsPortletDisplayContext.getDisplayStyleGroupId());
+	}
+
+	private SearchResultsPortletDisplayContext
+			_createSearchResultsPortletDisplayContext(
+				SearchContainer<Document> searchContainer)
+		throws Exception {
+
+		SearchResultsPortletDisplayContext searchResultsPortletDisplayContext =
+			new SearchResultsPortletDisplayContext(
+				_getHttpServletRequest(_getGroup()));
+
+		searchResultsPortletDisplayContext.setSearchContainer(searchContainer);
+
+		return searchResultsPortletDisplayContext;
 	}
 
 	private Group _getGroup() {
@@ -157,6 +256,12 @@ public class SearchResultsPortletDisplayContextTest {
 			themeDisplay
 		).getScopeGroupId();
 
+		Mockito.doReturn(
+			StringBundler.concat(_URL_CURRENT_PATH, "?q=", _KEYWORDS)
+		).when(
+			themeDisplay
+		).getURLCurrent();
+
 		return themeDisplay;
 	}
 
@@ -167,6 +272,11 @@ public class SearchResultsPortletDisplayContextTest {
 		).thenReturn(
 			group
 		);
+	}
+
+	private void _setUpPortalUtil() {
+		ReflectionTestUtil.setFieldValue(
+			PortalUtil.class, "_portal", new PortalImpl());
 	}
 
 	private void _setUpPortletDisplayStyleGroupExternalReferenceCode(
@@ -192,6 +302,11 @@ public class SearchResultsPortletDisplayContextTest {
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
+
+	private static final String _KEYWORDS = RandomTestUtil.randomString();
+
+	private static final String _URL_CURRENT_PATH =
+		"/web/" + RandomTestUtil.randomString();
 
 	private static final MockedStatic<ConfigurationProviderUtil>
 		_configurationProviderUtilMockedStatic = Mockito.mockStatic(
