@@ -1265,18 +1265,16 @@ public class ResourceFolderResourceTest
 
 			Assert.assertEquals(
 				Arrays.asList(
-					_language.get(
-						LocaleUtil.getDefault(),
-						"this-external-reference-code-is-already-in-use"),
-					_language.get(
-						LocaleUtil.getDefault(),
-						"a-resource-folder-with-that-name-already-exists"),
-					_language.get(
-						LocaleUtil.getDefault(),
-						"a-resource-file-with-that-name-already-exists"),
-					_language.get(
-						LocaleUtil.getDefault(),
-						"resource-folder-name-is-invalid")),
+					StringBundler.concat(
+						"Duplicate document library folder with external ",
+						"reference code ",
+						postResourceFolder.getExternalReferenceCode(),
+						" and group ", testGroup.getGroupId()),
+					"A folder already exists with name " +
+						postResourceFolder.getName(),
+					"A file entry already exists with title " +
+						fileEntry.getTitle(),
+					"Invalid folder name .."),
 				TransformUtil.transformToList(
 					importTask.getFailedItems(), FailedItem::getMessage));
 		}
