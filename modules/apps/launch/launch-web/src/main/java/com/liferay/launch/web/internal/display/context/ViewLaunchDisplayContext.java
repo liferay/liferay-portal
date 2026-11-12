@@ -165,12 +165,17 @@ public class ViewLaunchDisplayContext {
 		layoutItemSelectorCriterion.setShowPrivatePages(true);
 		layoutItemSelectorCriterion.setShowPublicPages(true);
 
-		return String.valueOf(
+		return PortletURLBuilder.create(
 			_itemSelector.getItemSelectorURL(
 				RequestBackedPortletURLFactoryUtil.create(_httpServletRequest),
 				themeDisplay.getSiteGroup(), themeDisplay.getSiteGroupId(),
 				getPreviewPageItemSelectedEventName(),
-				layoutItemSelectorCriterion));
+				layoutItemSelectorCriterion)
+		).setParameter(
+			"groupType", "site"
+		).setParameter(
+			"showGroupSelector", true
+		).buildString();
 	}
 
 	public String getPublishLaunchURL() {
