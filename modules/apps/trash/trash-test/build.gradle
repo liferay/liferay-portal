@@ -6,6 +6,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
 	testIntegrationImplementation project(":apps:journal:journal-api")
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
+	testIntegrationImplementation project(":apps:knowledge-base:knowledge-base-api")
+	testIntegrationImplementation project(":apps:knowledge-base:knowledge-base-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:trash:trash-api")
 	testIntegrationImplementation project(":apps:trash:trash-test-util")
