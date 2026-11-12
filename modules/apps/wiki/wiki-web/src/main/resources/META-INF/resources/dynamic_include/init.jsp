@@ -19,8 +19,7 @@ page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.wiki.constants.WikiWebKeys" %><%@
 page import="com.liferay.wiki.model.WikiNode" %><%@
 page import="com.liferay.wiki.web.internal.display.context.helper.WikiRequestHelper" %><%@
-page import="com.liferay.wiki.web.internal.display.context.helper.WikiURLHelper" %><%@
-page import="com.liferay.wiki.web.internal.util.WikiWebComponentProvider" %>
+page import="com.liferay.wiki.web.internal.display.context.helper.WikiURLHelper" %>
 
 <%@ page import="jakarta.portlet.PortletResponse" %><%@
 page import="jakarta.portlet.PortletURL" %>

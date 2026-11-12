@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
@@ -26,7 +27,7 @@ import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiNodeService;
 import com.liferay.wiki.service.WikiPageService;
-import com.liferay.wiki.web.internal.util.WikiWebComponentProvider;
+import com.liferay.wiki.web.internal.display.context.helper.WikiRequestHelper;
 
 import jakarta.portlet.PortletException;
 import jakarta.portlet.PortletPreferences;
@@ -67,11 +68,11 @@ public class WikiDisplayViewMVCRenderCommand implements MVCRenderCommand {
 			PortletPreferences portletPreferences =
 				renderRequest.getPreferences();
 
-			WikiWebComponentProvider wikiWebComponentProvider =
-				WikiWebComponentProvider.getWikiWebComponentProvider();
+			WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(
+				_portal.getHttpServletRequest(renderRequest));
 
 			WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
-				wikiWebComponentProvider.getWikiGroupServiceConfiguration();
+				wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 			String title = ParamUtil.getString(
 				renderRequest, "title",
@@ -140,6 +141,9 @@ public class WikiDisplayViewMVCRenderCommand implements MVCRenderCommand {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		WikiDisplayViewMVCRenderCommand.class);
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private WikiEngineRenderer _wikiEngineRenderer;

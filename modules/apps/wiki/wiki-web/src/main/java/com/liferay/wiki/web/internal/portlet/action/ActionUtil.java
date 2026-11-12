@@ -43,9 +43,9 @@ import com.liferay.wiki.service.WikiNodeServiceUtil;
 import com.liferay.wiki.service.WikiPageLocalServiceUtil;
 import com.liferay.wiki.service.WikiPageServiceUtil;
 import com.liferay.wiki.web.internal.configuration.WikiPortletInstanceConfiguration;
+import com.liferay.wiki.web.internal.display.context.helper.WikiRequestHelper;
 import com.liferay.wiki.web.internal.security.permission.resource.WikiNodePermission;
 import com.liferay.wiki.web.internal.util.WikiUtil;
-import com.liferay.wiki.web.internal.util.WikiWebComponentProvider;
 
 import jakarta.portlet.PortletException;
 import jakarta.portlet.PortletRequest;
@@ -187,11 +187,11 @@ public class ActionUtil {
 			long nodeId, PortletRequest portletRequest)
 		throws PortalException {
 
-		WikiWebComponentProvider wikiWebComponentProvider =
-			WikiWebComponentProvider.getWikiWebComponentProvider();
+		WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(
+			PortalUtil.getHttpServletRequest(portletRequest));
 
 		WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
-			wikiWebComponentProvider.getWikiGroupServiceConfiguration();
+			wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 		WikiPage page = WikiPageLocalServiceUtil.fetchPage(
 			nodeId, wikiGroupServiceConfiguration.frontPageName(), 0);
@@ -372,11 +372,11 @@ public class ActionUtil {
 			}
 		}
 
-		WikiWebComponentProvider wikiWebComponentProvider =
-			WikiWebComponentProvider.getWikiWebComponentProvider();
+		WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(
+			httpServletRequest);
 
 		WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
-			wikiWebComponentProvider.getWikiGroupServiceConfiguration();
+			wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 		if (Validator.isNull(title)) {
 			title = wikiGroupServiceConfiguration.frontPageName();

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -43,7 +44,7 @@ import com.liferay.wiki.model.WikiPageResource;
 import com.liferay.wiki.service.WikiPageLocalService;
 import com.liferay.wiki.service.WikiPageResourceLocalService;
 import com.liferay.wiki.service.WikiPageService;
-import com.liferay.wiki.web.internal.util.WikiWebComponentProvider;
+import com.liferay.wiki.web.internal.display.context.helper.WikiRequestHelper;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -252,6 +253,9 @@ public class EditPageMVCActionCommand extends BaseMVCActionCommand {
 		long[] restoreEntryIds = StringUtil.split(
 			ParamUtil.getString(actionRequest, "restoreTrashEntryIds"), 0L);
 
+		WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(
+			_portal.getHttpServletRequest(actionRequest));
+
 		for (long restoreEntryId : restoreEntryIds) {
 			long overridePageResourcePrimKey = 0;
 
@@ -265,11 +269,8 @@ public class EditPageMVCActionCommand extends BaseMVCActionCommand {
 			String title = _trashHelper.getOriginalTitle(
 				pageResource.getTitle());
 
-			WikiWebComponentProvider wikiWebComponentProvider =
-				WikiWebComponentProvider.getWikiWebComponentProvider();
-
 			WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
-				wikiWebComponentProvider.getWikiGroupServiceConfiguration();
+				wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 			if (title.equals(wikiGroupServiceConfiguration.frontPageName())) {
 				WikiPage overridePage = _wikiPageLocalService.fetchPage(
@@ -363,6 +364,9 @@ public class EditPageMVCActionCommand extends BaseMVCActionCommand {
 
 		return page;
 	}
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private TrashEntryLocalService _trashEntryLocalService;

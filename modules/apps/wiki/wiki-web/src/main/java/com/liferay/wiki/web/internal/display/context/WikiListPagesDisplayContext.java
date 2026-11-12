@@ -53,7 +53,6 @@ import com.liferay.wiki.web.internal.display.context.helper.WikiRequestHelper;
 import com.liferay.wiki.web.internal.security.permission.resource.WikiNodePermission;
 import com.liferay.wiki.web.internal.security.permission.resource.WikiPagePermission;
 import com.liferay.wiki.web.internal.util.WikiPortletUtil;
-import com.liferay.wiki.web.internal.util.WikiWebComponentProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -332,11 +331,8 @@ public class WikiListPagesDisplayContext {
 			return "there-are-no-drafts";
 		}
 		else if (navigation.equals("frontpage")) {
-			WikiWebComponentProvider wikiWebComponentProvider =
-				WikiWebComponentProvider.getWikiWebComponentProvider();
-
 			WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
-				wikiWebComponentProvider.getWikiGroupServiceConfiguration();
+				_wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 			return LanguageUtil.format(
 				_httpServletRequest, "there-is-no-x",
@@ -545,11 +541,8 @@ public class WikiListPagesDisplayContext {
 			}
 		}
 		else if (navigation.equals("frontpage")) {
-			WikiWebComponentProvider wikiWebComponentProvider =
-				WikiWebComponentProvider.getWikiWebComponentProvider();
-
 			WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
-				wikiWebComponentProvider.getWikiGroupServiceConfiguration();
+				_wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 			searchContainer.setResultsAndTotal(
 				() -> ListUtil.fromArray(

@@ -9,12 +9,12 @@
 
 <%@ page import="com.liferay.wiki.configuration.WikiGroupServiceConfiguration" %><%@
 page import="com.liferay.wiki.exception.NoSuchNodeException" %><%@
-page import="com.liferay.wiki.web.internal.util.WikiWebComponentProvider" %>
+page import="com.liferay.wiki.web.internal.display.context.helper.WikiRequestHelper" %>
 
 <%
-WikiWebComponentProvider wikiWebComponentProvider = WikiWebComponentProvider.getWikiWebComponentProvider();
+WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(request);
 
-WikiGroupServiceConfiguration wikiGroupServiceConfiguration = wikiWebComponentProvider.getWikiGroupServiceConfiguration();
+WikiGroupServiceConfiguration wikiGroupServiceConfiguration = wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 long nodeId = GetterUtil.getLong(portletPreferences.getValue("nodeId", StringPool.BLANK));
 String title = GetterUtil.getString(portletPreferences.getValue("title", wikiGroupServiceConfiguration.frontPageName()));

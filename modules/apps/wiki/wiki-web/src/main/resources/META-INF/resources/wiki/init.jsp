@@ -54,8 +54,7 @@ page import="com.liferay.wiki.web.internal.frontend.taglib.clay.servlet.taglib.W
 page import="com.liferay.wiki.web.internal.security.permission.resource.WikiNodePermission" %><%@
 page import="com.liferay.wiki.web.internal.security.permission.resource.WikiPagePermission" %><%@
 page import="com.liferay.wiki.web.internal.util.WikiPageAttachmentsUtil" %><%@
-page import="com.liferay.wiki.web.internal.util.WikiUtil" %><%@
-page import="com.liferay.wiki.web.internal.util.WikiWebComponentProvider" %>
+page import="com.liferay.wiki.web.internal.util.WikiUtil" %>
 
 <%@ page import="java.util.Objects" %>
 
@@ -64,13 +63,9 @@ AssetHelper assetHelper = (AssetHelper)request.getAttribute(AssetWebKeys.ASSET_H
 
 WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(request);
 
-WikiGroupServiceConfiguration siteWikiGroupServiceConfiguration = wikiRequestHelper.getWikiGroupServiceConfiguration();
+WikiGroupServiceConfiguration wikiGroupServiceConfiguration = wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 WikiPortletInstanceSettingsHelper wikiPortletInstanceSettingsHelper = new WikiPortletInstanceSettingsHelper(wikiRequestHelper);
-
-WikiWebComponentProvider wikiWebComponentProvider = WikiWebComponentProvider.getWikiWebComponentProvider();
-
-WikiGroupServiceConfiguration wikiGroupServiceConfiguration = wikiWebComponentProvider.getWikiGroupServiceConfiguration();
 
 Format dateTimeFormat = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
 %>

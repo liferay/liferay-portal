@@ -86,43 +86,43 @@ portletDisplay.setURLBackTitle("wiki");
 						<c:when test='<%= Objects.equals(wikiConfigurationDisplayContext.getNavigation(), "page-added-email") %>'>
 							<div class="c-px-4 panel-group-flush">
 								<liferay-frontend:email-notification-settings
-									emailBodyLocalizedValuesMap="<%= siteWikiGroupServiceConfiguration.emailPageAddedBody() %>"
+									emailBodyLocalizedValuesMap="<%= wikiGroupServiceConfiguration.emailPageAddedBody() %>"
 									emailDefinitionTerms="<%= definitionTerms %>"
-									emailEnabled="<%= siteWikiGroupServiceConfiguration.emailPageAddedEnabled() %>"
+									emailEnabled="<%= wikiGroupServiceConfiguration.emailPageAddedEnabled() %>"
 									emailParam="emailPageAdded"
-									emailSubjectLocalizedValuesMap="<%= siteWikiGroupServiceConfiguration.emailPageAddedSubject() %>"
+									emailSubjectLocalizedValuesMap="<%= wikiGroupServiceConfiguration.emailPageAddedSubject() %>"
 								/>
 							</div>
 						</c:when>
 						<c:when test='<%= Objects.equals(wikiConfigurationDisplayContext.getNavigation(), "page-updated-email") %>'>
 							<div class="c-px-4 panel-group-flush">
 								<liferay-frontend:email-notification-settings
-									emailBodyLocalizedValuesMap="<%= siteWikiGroupServiceConfiguration.emailPageUpdatedBody() %>"
+									emailBodyLocalizedValuesMap="<%= wikiGroupServiceConfiguration.emailPageUpdatedBody() %>"
 									emailDefinitionTerms="<%= definitionTerms %>"
-									emailEnabled="<%= siteWikiGroupServiceConfiguration.emailPageUpdatedEnabled() %>"
+									emailEnabled="<%= wikiGroupServiceConfiguration.emailPageUpdatedEnabled() %>"
 									emailParam="emailPageUpdated"
-									emailSubjectLocalizedValuesMap="<%= siteWikiGroupServiceConfiguration.emailPageUpdatedSubject() %>"
+									emailSubjectLocalizedValuesMap="<%= wikiGroupServiceConfiguration.emailPageUpdatedSubject() %>"
 								/>
 							</div>
 						</c:when>
 						<c:when test='<%= Objects.equals(wikiConfigurationDisplayContext.getNavigation(), "rss") && PortalUtil.isRSSFeedsEnabled() %>'>
 							<div class="c-px-4 panel-group-flush">
 								<liferay-rss:rss-settings
-									delta="<%= GetterUtil.getInteger(siteWikiGroupServiceConfiguration.rssDelta()) %>"
-									displayStyle="<%= siteWikiGroupServiceConfiguration.rssDisplayStyle() %>"
-									enabled="<%= siteWikiGroupServiceConfiguration.enableRss() %>"
-									feedType="<%= siteWikiGroupServiceConfiguration.rssFeedType() %>"
+									delta="<%= GetterUtil.getInteger(wikiGroupServiceConfiguration.rssDelta()) %>"
+									displayStyle="<%= wikiGroupServiceConfiguration.rssDisplayStyle() %>"
+									enabled="<%= wikiGroupServiceConfiguration.enableRss() %>"
+									feedType="<%= wikiGroupServiceConfiguration.rssFeedType() %>"
 								/>
 							</div>
 						</c:when>
 						<c:otherwise>
 							<div class="c-px-4">
 								<liferay-frontend:fieldset>
-									<aui:input cssClass="lfr-input-text-container" label="name" name="preferences--emailFromName--" value="<%= siteWikiGroupServiceConfiguration.emailFromName() %>">
+									<aui:input cssClass="lfr-input-text-container" label="name" name="preferences--emailFromName--" value="<%= wikiGroupServiceConfiguration.emailFromName() %>">
 										<aui:validator errorMessage="please-enter-a-valid-name" name="required" />
 									</aui:input>
 
-									<aui:input cssClass="lfr-input-text-container" label="address" name="preferences--emailFromAddress--" value="<%= siteWikiGroupServiceConfiguration.emailFromAddress() %>">
+									<aui:input cssClass="lfr-input-text-container" label="address" name="preferences--emailFromAddress--" value="<%= wikiGroupServiceConfiguration.emailFromAddress() %>">
 										<aui:validator errorMessage="please-enter-a-valid-email-address" name="required" />
 										<aui:validator name="email" />
 									</aui:input>

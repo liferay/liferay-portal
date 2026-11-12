@@ -24,11 +24,11 @@ WikiNode node = (WikiNode)request.getAttribute(WikiWebKeys.WIKI_NODE);
 
 	<br />
 
-	<c:if test="<%= WikiUtil.isRSSFeedsEnabled(siteWikiGroupServiceConfiguration) %>">
+	<c:if test="<%= WikiUtil.isRSSFeedsEnabled(wikiGroupServiceConfiguration) %>">
 		<liferay-rss:rss
-			delta="<%= GetterUtil.getInteger(siteWikiGroupServiceConfiguration.rssDelta()) %>"
-			displayStyle="<%= siteWikiGroupServiceConfiguration.rssDisplayStyle() %>"
-			feedType="<%= siteWikiGroupServiceConfiguration.rssFeedType() %>"
+			delta="<%= GetterUtil.getInteger(wikiGroupServiceConfiguration.rssDelta()) %>"
+			displayStyle="<%= wikiGroupServiceConfiguration.rssDisplayStyle() %>"
+			feedType="<%= wikiGroupServiceConfiguration.rssFeedType() %>"
 			url='<%= themeDisplay.getPathMain() + "/wiki/rss?nodeId=" + node.getNodeId() %>'
 		/>
 	</c:if>

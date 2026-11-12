@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
@@ -31,7 +32,7 @@ import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiPageService;
 import com.liferay.wiki.validator.WikiPageTitleValidator;
-import com.liferay.wiki.web.internal.util.WikiWebComponentProvider;
+import com.liferay.wiki.web.internal.display.context.helper.WikiRequestHelper;
 
 import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
@@ -145,11 +146,11 @@ public class EditPageMVCRenderCommand implements MVCRenderCommand {
 					_log.debug(noSuchPageException2);
 				}
 
-				WikiWebComponentProvider wikiWebComponentProvider =
-					WikiWebComponentProvider.getWikiWebComponentProvider();
+				WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(
+					_portal.getHttpServletRequest(renderRequest));
 
 				WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
-					wikiWebComponentProvider.getWikiGroupServiceConfiguration();
+					wikiRequestHelper.getWikiGroupServiceConfiguration();
 
 				if (title.equals(
 						wikiGroupServiceConfiguration.frontPageName()) &&
@@ -181,6 +182,9 @@ public class EditPageMVCRenderCommand implements MVCRenderCommand {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		EditPageMVCRenderCommand.class);
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private WikiEngineRenderer _wikiEngineRenderer;

@@ -12,11 +12,9 @@ PortletResponse portletResponse = (PortletResponse)request.getAttribute(JavaCons
 
 WikiNode node = (WikiNode)request.getAttribute(WikiWebKeys.WIKI_NODE);
 
-WikiWebComponentProvider wikiWebComponentProvider = WikiWebComponentProvider.getWikiWebComponentProvider();
-
 WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(request);
 
-WikiURLHelper wikiURLHelper = new WikiURLHelper(wikiRequestHelper, portletResponse, wikiWebComponentProvider.getWikiGroupServiceConfiguration());
+WikiURLHelper wikiURLHelper = new WikiURLHelper(wikiRequestHelper, portletResponse, wikiRequestHelper.getWikiGroupServiceConfiguration());
 
 PortletURL searchURL = wikiURLHelper.getSearchURL();
 %>
