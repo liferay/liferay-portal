@@ -8,6 +8,7 @@ package com.liferay.antivirus.async.store.internal;
 import com.liferay.antivirus.async.store.constants.AntivirusAsyncDestinationNames;
 import com.liferay.antivirus.async.store.internal.event.AntivirusAsyncEventListenerManager;
 import com.liferay.antivirus.async.store.util.AntivirusAsyncUtil;
+import com.liferay.document.library.kernel.antivirus.AntivirusScannerUtil;
 import com.liferay.document.library.kernel.exception.AccessDeniedException;
 import com.liferay.document.library.kernel.exception.DirectoryNameException;
 import com.liferay.document.library.kernel.store.DLStore;
@@ -359,6 +360,10 @@ public class AntivirusAsyncDLStore implements DLStore {
 
 	private void _registerCallback(DLStoreRequest dlStoreRequest)
 		throws PortalException {
+
+		if (!AntivirusScannerUtil.isActive()) {
+			return;
+		}
 
 		Message message = new Message();
 

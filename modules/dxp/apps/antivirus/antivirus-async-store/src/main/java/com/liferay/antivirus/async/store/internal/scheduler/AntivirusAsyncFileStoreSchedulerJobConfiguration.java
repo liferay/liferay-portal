@@ -10,6 +10,7 @@ import com.liferay.antivirus.async.store.constants.AntivirusAsyncConstants;
 import com.liferay.antivirus.async.store.constants.AntivirusAsyncDestinationNames;
 import com.liferay.antivirus.async.store.internal.event.AntivirusAsyncEventListenerManager;
 import com.liferay.antivirus.async.store.util.AntivirusAsyncUtil;
+import com.liferay.document.library.kernel.antivirus.AntivirusScannerUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
@@ -107,6 +108,10 @@ public class AntivirusAsyncFileStoreSchedulerJobConfiguration
 	}
 
 	private void _scan(String rootDirAbsolutePathString) throws IOException {
+		if (!AntivirusScannerUtil.isActive()) {
+			return;
+		}
+
 		if (_log.isDebugEnabled()) {
 			_log.debug("Scanning " + rootDirAbsolutePathString);
 		}
@@ -146,6 +151,10 @@ public class AntivirusAsyncFileStoreSchedulerJobConfiguration
 	}
 
 	private void _scanDLFileEntries() {
+		if (!AntivirusScannerUtil.isActive()) {
+			return;
+		}
+
 		try {
 			ActionableDynamicQuery actionableDynamicQuery =
 				_dlFileVersionLocalService.getActionableDynamicQuery();
