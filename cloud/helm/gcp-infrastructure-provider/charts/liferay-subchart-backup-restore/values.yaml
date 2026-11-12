@@ -4,6 +4,8 @@ argo:
             strategy: OnWorkflowSuccess
         ttlStrategy:
             secondsAfterCompletion: 86400
+database:
+    engine: ""
 images:
     cloudSQLProxy:
         repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
@@ -14,6 +16,9 @@ images:
     helmKubectl:
         repository: dtzar/helm-kubectl
         tag: 4.1.1
+    mysql:
+        repository: mysql
+        tag: "8.4"
     postgres:
         repository: postgres
         tag: 18-alpine

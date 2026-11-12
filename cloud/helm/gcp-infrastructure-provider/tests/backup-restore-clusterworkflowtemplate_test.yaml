@@ -4,6 +4,9 @@ release:
 set:
     database:
         engine: postgresql
+    liferay-subchart-backup-restore:
+        database:
+            engine: postgresql
 suite: Backup Restore ClusterWorkflowTemplate
 templates:
     -   charts/liferay-subchart-backup-restore/templates/clusterworkflowtemplate.yaml
@@ -26,9 +29,9 @@ tests:
             -   contains:
                     content: "{{inputs.parameters.restore-instance-connection-name}}"
                     path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].args
-            -   contains:
-                    content: --port=5432
-                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].args
+            -   notMatchRegex:
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].args[*]
+                    pattern: ^--port
             -   contains:
                     content: --auto-iam-authn
                     path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].args

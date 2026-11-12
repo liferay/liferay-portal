@@ -6,3 +6,6 @@ deploymentContext:
     projectNumber: "000000000000"
     region: us-central1
     vpcName: liferay-example-vpc
+liferay-subchart-backup-restore:
+    database:
+        engine: postgresql

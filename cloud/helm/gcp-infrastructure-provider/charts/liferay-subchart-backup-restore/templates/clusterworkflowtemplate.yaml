@@ -415,7 +415,6 @@ spec:
                 -   args:
                         -   "{{ "{{" }}inputs.parameters.restore-instance-connection-name}}"
                         -   --auto-iam-authn
-                        -   --port=5432
                         -   --private-ip
                         -   --structured-logs
                     env:
@@ -450,7 +449,7 @@ spec:
                 envFrom:
                     -   configMapRef:
                             name: database-server-details
-                image: "{{ .Values.images.postgres.repository }}:{{ .Values.images.postgres.tag }}"
+                image: {{ include "backupRestore.databaseClientImage" . | quote }}
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
                 source: |-
