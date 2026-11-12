@@ -19,6 +19,16 @@ const test = mergeTests(
 	workflowPagesTest
 );
 
+test.beforeEach(async ({apiHelpers}) => {
+	const cmpProjectObjectDefinition =
+		await apiHelpers.objectAdmin.getObjectDefinitionByName('CMPProject');
+
+	test.skip(
+		Boolean(cmpProjectObjectDefinition),
+		'CMP overrides the CMS /tasks page with its own tabbed UI (LPD-112720).'
+	);
+});
+
 test(
 	'Shows a pending workflow task with its asset title, type and status',
 	{tag: '@LPD-112143'},
