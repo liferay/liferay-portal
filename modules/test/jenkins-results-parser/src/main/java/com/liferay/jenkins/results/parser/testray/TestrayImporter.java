@@ -9,7 +9,6 @@ import com.liferay.jenkins.results.parser.BuildDatabase;
 import com.liferay.jenkins.results.parser.BuildReport;
 import com.liferay.jenkins.results.parser.Dom4JUtil;
 import com.liferay.jenkins.results.parser.Environment;
-import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.NotificationUtil;
@@ -843,17 +842,10 @@ public class TestrayImporter {
 
 		TestrayServer testrayServer = testrayBuild.getTestrayServer();
 
-		JenkinsMaster jenkinsMaster = _topLevelBuildReport.getJenkinsMaster();
-
 		try {
-			String axisName = axisTestClassGroup.getAxisName();
-
 			testrayServer.writeCaseResult(
-				JenkinsResultsParserUtil.combine(
-					"TESTS-", jenkinsMaster.getName(), "_",
-					_topLevelBuildReport.getJobName(), "_",
-					String.valueOf(_topLevelBuildReport.getBuildNumber()), "_",
-					axisName.replace("/", "_"), ".xml"),
+				_topLevelBuildReport.getTestrayCaseFileName(
+					axisTestClassGroup.getAxisName()),
 				Dom4JUtil.format(rootElement));
 		}
 		catch (IOException ioException) {

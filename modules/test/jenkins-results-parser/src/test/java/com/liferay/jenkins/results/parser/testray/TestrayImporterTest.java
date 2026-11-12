@@ -6,7 +6,6 @@
 package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.Dom4JUtil;
-import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
@@ -311,16 +310,12 @@ public class TestrayImporterTest
 			TopLevelBuildReport.class);
 
 		Mockito.doReturn(
-			Mockito.mock(JenkinsMaster.class)
-		).when(
-			topLevelBuildReport
-		).getJenkinsMaster();
-
-		Mockito.doReturn(
 			RandomTestUtil.randomString()
 		).when(
 			topLevelBuildReport
-		).getJobName();
+		).getTestrayCaseFileName(
+			Mockito.anyString()
+		);
 
 		Mockito.doReturn(
 			RandomTestUtil.randomString()
