@@ -15,12 +15,14 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.remote.jaxrs.whiteboard.lifecycle.JAXRSLifecycle;
 import com.liferay.portal.vulcan.application.HeadlessApplicationProvider;
+import com.liferay.portal.vulcan.internal.configuration.util.ConfigurationUtil;
 import com.liferay.portal.vulcan.internal.feature.flag.FeatureFlagUtil;
 
 import io.swagger.v3.core.util.Json;
@@ -52,6 +54,7 @@ import java.util.regex.Pattern;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -100,7 +103,10 @@ public class HeadlessApplicationProviderImpl
 			if (!_isRegistered(
 					companyId,
 					_companyIdsServiceTrackerMap.getService(
-						applicationDTO.serviceId))) {
+						applicationDTO.serviceId)) ||
+				!ConfigurationUtil.isRESTEnabled(
+					_companyLocalService.fetchCompany(companyId),
+					_configurationAdmin, applicationDTO.base)) {
 
 				continue;
 			}
@@ -335,6 +341,12 @@ public class HeadlessApplicationProviderImpl
 	private volatile List<ApplicationDTO> _applicationDTOs;
 	private ServiceTrackerMap<Long, ServiceReference<?>>
 		_companyIdsServiceTrackerMap;
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private ConfigurationAdmin _configurationAdmin;
 
 	@Reference
 	private JAXRSLifecycle _jaxrsLifecycle;

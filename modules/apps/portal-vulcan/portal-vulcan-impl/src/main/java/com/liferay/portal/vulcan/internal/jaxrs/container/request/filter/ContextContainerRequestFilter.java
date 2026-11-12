@@ -6,7 +6,6 @@
 package com.liferay.portal.vulcan.internal.jaxrs.container.request.filter;
 
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -146,16 +145,10 @@ public class ContextContainerRequestFilter
 			HttpServletRequest httpServletRequest, Message message)
 		throws Exception {
 
-		Company company = _portal.getCompany(httpServletRequest);
-
-		String path = StringUtil.removeFirst(
-			(String)message.get(Message.BASE_PATH), "/o");
-
-		path = StringUtil.replaceLast(path, '/', "");
-
 		Set<String> excludedOperationIds =
 			ConfigurationUtil.getExcludedOperationIds(
-				company.getCompanyId(), _configurationAdmin, path);
+				_portal.getCompanyId(httpServletRequest), _configurationAdmin,
+				_getPath(message));
 
 		Method method = (Method)message.get("org.apache.cxf.resource.method");
 
@@ -167,6 +160,13 @@ public class ContextContainerRequestFilter
 					"Conflict with " + method.getName()
 				).build());
 		}
+	}
+
+	private String _getPath(Message message) {
+		String path = StringUtil.removeFirst(
+			(String)message.get(Message.BASE_PATH), "/o");
+
+		return StringUtil.replaceLast(path, '/', "");
 	}
 
 	private void _handleMessage(
@@ -181,6 +181,18 @@ public class ContextContainerRequestFilter
 
 		HttpServletRequest httpServletRequest =
 			ContextProviderUtil.getHttpServletRequest(message);
+
+		if (!ConfigurationUtil.isRESTEnabled(
+				_portal.getCompany(httpServletRequest), _configurationAdmin,
+				_getPath(message))) {
+
+			containerRequestContext.abortWith(
+				Response.status(
+					Response.Status.NOT_FOUND
+				).build());
+
+			return;
+		}
 
 		_filterExcludedOperationIds(
 			containerRequestContext, httpServletRequest, message);
