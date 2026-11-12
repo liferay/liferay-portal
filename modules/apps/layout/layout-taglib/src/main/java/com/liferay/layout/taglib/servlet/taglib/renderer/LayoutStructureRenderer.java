@@ -734,12 +734,13 @@ public class LayoutStructureRenderer {
 
 		if (Validator.isNotNull(containerLinkHref)) {
 			jspWriter.write("<a href=\"");
-			jspWriter.write(HtmlUtil.escapeAttribute(containerLinkHref));
+			jspWriter.write(HtmlUtil.escapeHREF(containerLinkHref));
 			jspWriter.write("\"style=\"color: inherit; text-decoration: ");
 			jspWriter.write("none;\" target=\"");
 			jspWriter.write(
-				_renderLayoutStructureDisplayContext.getContainerLinkTarget(
-					containerStyledLayoutStructureItem));
+				HtmlUtil.escapeAttribute(
+					_renderLayoutStructureDisplayContext.getContainerLinkTarget(
+						containerStyledLayoutStructureItem)));
 			jspWriter.write("\">");
 		}
 
