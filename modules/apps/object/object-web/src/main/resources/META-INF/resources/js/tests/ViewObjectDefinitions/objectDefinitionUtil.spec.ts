@@ -5,6 +5,7 @@
 
 import {
 	canCreateInObjectFolder,
+	getDefaultObjectFolder,
 	getObjectDefinitionsFilter,
 } from '../../components/ViewObjectDefinitions/objectDefinitionUtil';
 
@@ -25,6 +26,40 @@ describe('canCreateInObjectFolder', () => {
 				externalReferenceCode: 'L_CMS_CONTENT_STRUCTURES',
 			})
 		).toBe(false);
+	});
+});
+
+describe('getDefaultObjectFolder', () => {
+	it('returns the Default folder when it is not the first folder', () => {
+		const defaultObjectFolder = {
+			externalReferenceCode: 'default',
+			name: 'Default',
+		};
+
+		expect(
+			getDefaultObjectFolder([
+				{
+					externalReferenceCode:
+						'L_CMP_PROJECT_MANAGEMENT_DEFINITIONS',
+					name: 'CMPProjectManagementDefinitions',
+				},
+				defaultObjectFolder,
+			])
+		).toBe(defaultObjectFolder);
+	});
+
+	it('returns the first folder when there is no Default folder', () => {
+		const firstObjectFolder = {
+			externalReferenceCode: 'folder1',
+			name: 'folder1',
+		};
+
+		expect(
+			getDefaultObjectFolder([
+				firstObjectFolder,
+				{externalReferenceCode: 'folder2', name: 'folder2'},
+			])
+		).toBe(firstObjectFolder);
 	});
 });
 
