@@ -115,7 +115,7 @@ definition {
 		Click(locator1 = "UserBar#USER_AVATAR_IMAGE");
 
 		Click(
-			key_dropdownItem = "Mi cuenta",
+			key_dropdownItem = "Configuración de la cuenta",
 			locator1 = "UserBar#USER_AVATAR_DROPDOWN_ITEM");
 
 		MyAccount.changeUserLanguage(

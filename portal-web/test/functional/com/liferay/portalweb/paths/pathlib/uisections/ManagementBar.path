@@ -52,7 +52,7 @@
 </tr>
 <tr>
 	<td>FILTER_AND_ORDER_ITEM_SELECTED</td>
-	<td>//li[contains(@aria-selected,'true')]//a[contains(text(),'${key_menuItem}')]</td>
+	<td>//*[contains(@class,'dropdown-item') and @aria-selected='true'][contains(.,'${key_menuItem}')]</td>
 	<td></td>
 </tr>
 <tr>

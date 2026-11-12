@@ -176,6 +176,8 @@ definition {
 
 	@priority = 4
 	test ConfigureEventsDisplaySettingsAndViewEvents {
+		property custom.properties = "company.default.time.zone=America/Los_Angeles${line.separator}default.layout.template.id=1_column${line.separator}search.container.page.delta.values=4,8,20,40,60";
+
 		for (var eventNumber : list "1,2,3,4,5") {
 			CalendarNavigator.gotoAddEvent();
 
@@ -343,12 +345,16 @@ definition {
 
 		CalendarNavigator.gotoAddEvent();
 
-		var endDateTime = CalendarEvent.getCalendarTimeHour(status = "End");
-		var startDateTime = CalendarEvent.getCalendarTimeHour(status = "Start");
-
 		CalendarEvent.editTitle(eventTitle = "Calendar Event All Day Title");
 
 		CalendarEvent.setAllDay();
+
+		var endDate = selenium.getElementValue("CalendarEditEvent#END_DATE");
+
+		var endDate = DateUtil.format(${endDate}, "MM/dd/yyyy", "MMMM d");
+		var startDate = selenium.getElementValue("CalendarEditEvent#START_DATE");
+
+		var startDate = DateUtil.format(${startDate}, "MM/dd/yyyy", "MMMM d");
 
 		CalendarEvent.publish();
 
@@ -360,8 +366,8 @@ definition {
 			eventType = "All Day");
 
 		CalendarEvent.viewTimesViaDetails(
-			endDateTime = ${endDateTime},
-			startDateTime = ${startDateTime});
+			endDateTime = ${endDate},
+			startDateTime = ${startDate});
 	}
 
 	@description = "This is a use case for LPS-51127."
