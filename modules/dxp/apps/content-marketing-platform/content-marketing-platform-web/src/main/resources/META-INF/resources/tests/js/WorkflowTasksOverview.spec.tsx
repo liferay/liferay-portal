@@ -217,10 +217,10 @@ describe('WorkflowTasksOverview', () => {
 		});
 
 		expect(mockFetch).toHaveBeenCalledWith(
-			'/o/search/v1.0/search?filter=test and completed eq true&pageSize=1'
+			'/o/search/v1.0/search?filter=test&filter=completed eq true&pageSize=1'
 		);
 		expect(mockFetch).toHaveBeenCalledWith(
-			'/o/search/v1.0/search?filter=test and completed eq false&pageSize=1'
+			'/o/search/v1.0/search?filter=test&filter=completed eq false&pageSize=1'
 		);
 	});
 
