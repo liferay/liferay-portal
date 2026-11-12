@@ -25,7 +25,6 @@ import com.liferay.gradle.plugins.node.task.ExecuteNodeTask;
 import com.liferay.gradle.plugins.workspace.WorkspaceExtension;
 import com.liferay.gradle.plugins.workspace.WorkspacePlugin;
 import com.liferay.gradle.plugins.workspace.internal.client.extension.ClientExtension;
-import com.liferay.gradle.plugins.workspace.internal.client.extension.HelmCLI;
 import com.liferay.gradle.plugins.workspace.internal.client.extension.NodeBuildConfigurer;
 import com.liferay.gradle.plugins.workspace.internal.client.extension.ThemeCSSTypeConfigurer;
 import com.liferay.gradle.plugins.workspace.internal.util.GradleUtil;
@@ -503,24 +502,10 @@ public class ClientExtensionProjectConfigurator
 				publishClientExtensionTask.dependsOn(
 					RootProjectConfigurator.BUILD_DOCKER_IMAGE_TASK_NAME);
 				publishClientExtensionTask.setDescription(
-					"Pushes the client extension's Docker image and writes " +
-						"the liferay-client-extension chart values that " +
-							"deploy it.");
+					"Pushes the client extension's Docker image and a " +
+						"descriptor that the platform deploys it from.");
 				publishClientExtensionTask.setGroup(
 					PublishingPlugin.PUBLISH_TASK_GROUP);
-
-				Property<String> chartProperty =
-					publishClientExtensionTask.getChart();
-
-				chartProperty.convention(
-					_getGradlePropertyProvider(project, "chart", _CHART_URL));
-
-				Property<String> chartVersionProperty =
-					publishClientExtensionTask.getChartVersion();
-
-				chartVersionProperty.convention(
-					_getGradlePropertyProvider(
-						project, "chart.version", _CHART_VERSION));
 
 				RegularFileProperty clientExtensionConfigFileProperty =
 					publishClientExtensionTask.getClientExtensionConfigFile();
@@ -536,12 +521,6 @@ public class ClientExtensionProjectConfigurator
 				dockerfileProperty.fileProvider(
 					createClientExtensionConfigTaskProvider.map(
 						CreateClientExtensionConfigTask::getDockerFile));
-
-				Property<String> helmProperty =
-					publishClientExtensionTask.getHelm();
-
-				helmProperty.convention(
-					_getGradlePropertyProvider(project, "helm", "helm"));
 
 				SetProperty<String> imagesSetProperty =
 					publishClientExtensionTask.getImages();
@@ -564,42 +543,6 @@ public class ClientExtensionProjectConfigurator
 					publishClientExtensionTask.getVersion();
 
 				versionProperty.convention(_getVersionProvider(project));
-			});
-
-		Gradle gradle = project.getGradle();
-
-		TaskExecutionGraph taskGraph = gradle.getTaskGraph();
-
-		taskGraph.whenReady(
-			new Action<TaskExecutionGraph>() {
-
-				@Override
-				public void execute(TaskExecutionGraph taskExecutionGraph) {
-					if (!taskExecutionGraph.hasTask(
-							project.absoluteProjectPath(
-								PUBLISH_CLIENT_EXTENSION_TASK_NAME))) {
-
-						return;
-					}
-
-					PublishClientExtensionTask publishClientExtensionTask =
-						publishClientExtensionTaskProvider.get();
-
-					Property<String> helmProperty =
-						publishClientExtensionTask.getHelm();
-
-					HelmCLI helmCLI = new HelmCLI(helmProperty.get());
-
-					try {
-						helmCLI.version();
-					}
-					catch (InterruptedException | IOException exception) {
-						throw new GradleException(
-							"Unable to run \"" + helmProperty.get() + "\"",
-							exception);
-					}
-				}
-
 			});
 	}
 
@@ -1318,17 +1261,6 @@ public class ClientExtensionProjectConfigurator
 		return project.getName() + ":latest";
 	}
 
-	private Provider<String> _getGradlePropertyProvider(
-		Project project, String name, String defaultValue) {
-
-		ProviderFactory providerFactory = project.getProviders();
-
-		Provider<String> provider = providerFactory.gradleProperty(
-			_PROPERTY_PREFIX + name);
-
-		return provider.orElse(defaultValue);
-	}
-
 	private JsonNode _getJsonNode(File file) {
 		if (!file.exists()) {
 			return _yamlObjectMapper.createObjectNode();
@@ -1618,12 +1550,6 @@ public class ClientExtensionProjectConfigurator
 				StringUtil.quote(typeSettingsKey),
 				StringUtil.join(StringUtil.COMMA_AND_SPACE, validValues)));
 	}
-
-	private static final String _CHART_URL =
-		"oci://us-central1-docker.pkg.dev/external-assets-prd" +
-			"/liferay-helm-chart/liferay-client-extension";
-
-	private static final String _CHART_VERSION = "0.1.0";
 
 	private static final String _CLIENT_EXTENSION_YAML =
 		"client-extension.yaml";

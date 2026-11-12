@@ -13,25 +13,33 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.command.BuildImageCmd;
+import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.github.dockerjava.api.command.InspectImageCmd;
 import com.github.dockerjava.api.command.InspectImageResponse;
+import com.github.dockerjava.api.command.PushImageCmd;
+import com.github.dockerjava.api.model.AuthConfig;
+import com.github.dockerjava.api.model.PushResponseItem;
+import com.github.dockerjava.api.model.ResponseItem;
 
-import com.liferay.gradle.plugins.workspace.internal.client.extension.ClientExtensionValues;
-import com.liferay.gradle.plugins.workspace.internal.client.extension.HelmCLI;
+import com.liferay.gradle.plugins.workspace.internal.client.extension.ClientExtensionDescriptor;
 import com.liferay.gradle.plugins.workspace.internal.util.FileUtil;
 
 import java.io.File;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
-import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.ProjectLayout;
@@ -60,11 +68,8 @@ public class PublishClientExtensionTask extends DockerPushImage {
 
 		ObjectFactory objectFactory = project.getObjects();
 
-		_chart = objectFactory.property(String.class);
-		_chartVersion = objectFactory.property(String.class);
 		_clientExtensionConfigFile = objectFactory.fileProperty();
 		_dockerfile = objectFactory.fileProperty();
-		_helm = objectFactory.property(String.class);
 		_lcpJsonFile = objectFactory.fileProperty();
 		_outputDir = objectFactory.directoryProperty();
 		_registry = objectFactory.property(String.class);
@@ -83,30 +88,20 @@ public class PublishClientExtensionTask extends DockerPushImage {
 		taskOutputs.upToDateWhen(task -> false);
 	}
 
-	@Input
-	public Property<String> getChart() {
-		return _chart;
-	}
-
-	@Input
-	@Optional
-	public Property<String> getChartVersion() {
-		return _chartVersion;
-	}
-
 	@InputFile
 	public RegularFileProperty getClientExtensionConfigFile() {
 		return _clientExtensionConfigFile;
 	}
 
+	@Internal
+	public String getDescriptorImage() {
+		return _registry.get() + "/descriptors/" + getProject().getName() +
+			":" + _version.get();
+	}
+
 	@InputFile
 	public RegularFileProperty getDockerfile() {
 		return _dockerfile;
-	}
-
-	@Internal
-	public Property<String> getHelm() {
-		return _helm;
 	}
 
 	@Internal
@@ -133,23 +128,26 @@ public class PublishClientExtensionTask extends DockerPushImage {
 
 	@Override
 	public void runRemoteCommand() throws Exception {
-		String baseImage = ClientExtensionValues.getBaseImage(
+		Project project = getProject();
+
+		if (!_registry.isPresent() || !_version.isPresent()) {
+			throw new GradleException(
+				"Set the liferay.workspace.client.extension.registry " +
+					"property and a version to publish \"" + project.getName() +
+						"\"");
+		}
+
+		String baseImage = ClientExtensionDescriptor.getBaseImage(
 			FileUtil.read(_getFile(_dockerfile)));
 
+		String imageDigest = null;
 		String imageRepository = null;
 		String imageTag = null;
 
-		if (!ClientExtensionValues.isConfigurationOnly(baseImage)) {
+		if (!ClientExtensionDescriptor.isConfigurationOnly(baseImage)) {
 			SetProperty<String> imagesSetProperty = getImages();
 
 			Set<String> images = imagesSetProperty.get();
-
-			if (images.isEmpty()) {
-				throw new GradleException(
-					"Set the liferay.workspace.client.extension.registry " +
-						"property and a version to publish \"" +
-							getProject().getName() + "\"");
-			}
 
 			super.runRemoteCommand();
 
@@ -157,53 +155,11 @@ public class PublishClientExtensionTask extends DockerPushImage {
 
 			String image = iterator.next();
 
-			imageRepository = ClientExtensionValues.getRepository(image);
+			imageRepository = ClientExtensionDescriptor.getRepository(image);
 
-			imageTag =
-				image.substring(imageRepository.length() + 1) + "@" +
-					_getDigest(image, imageRepository);
+			imageDigest = _getDigest(image, imageRepository);
+			imageTag = image.substring(imageRepository.length() + 1);
 		}
-
-		Project project = getProject();
-
-		String registry = _registry.getOrNull();
-		String version = _version.getOrNull();
-
-		if ((registry == null) || (version == null)) {
-			throw new GradleException(
-				"Set the liferay.workspace.client.extension.registry " +
-					"property and a version to publish \"" + project.getName() +
-						"\"");
-		}
-
-		File workDir = getTemporaryDir();
-
-		project.delete(workDir.listFiles());
-
-		HelmCLI helmCLI = new HelmCLI(_helm.get());
-
-		File chartDir = _getChartDir(helmCLI, workDir);
-
-		File valuesFile = new File(chartDir, "values.yaml");
-
-		_yamlObjectMapper.writeValue(
-			valuesFile,
-			_merge(
-				_readYAML(valuesFile),
-				ClientExtensionValues.derive(
-					baseImage, _readJSON(_clientExtensionConfigFile),
-					imageRepository, imageTag, _readJSON(_lcpJsonFile),
-					project.getName())));
-
-		File chartYamlFile = new File(chartDir, "Chart.yaml");
-
-		Map<String, Object> chartYamlMap = _readYAML(chartYamlFile);
-
-		chartYamlMap.put("appVersion", version);
-		chartYamlMap.put("name", project.getName());
-		chartYamlMap.put("version", version);
-
-		_yamlObjectMapper.writeValue(chartYamlFile, chartYamlMap);
 
 		File outputDir = _getFile(_outputDir);
 
@@ -211,49 +167,42 @@ public class PublishClientExtensionTask extends DockerPushImage {
 
 		outputDir.mkdirs();
 
-		String repository = "oci://" + registry + "/charts";
+		_yamlObjectMapper.writeValue(
+			new File(outputDir, "client-extension.yaml"),
+			ClientExtensionDescriptor.derive(
+				baseImage, _readJSON(_clientExtensionConfigFile), imageDigest,
+				imageRepository, imageTag, _readJSON(_lcpJsonFile)));
 
-		String digest = helmCLI.push(
-			helmCLI.packageChart(chartDir, outputDir), repository);
+		Files.write(
+			new File(
+				outputDir, "Dockerfile"
+			).toPath(),
+			"FROM scratch\n\nCOPY client-extension.yaml /\n".getBytes(
+				StandardCharsets.UTF_8));
+
+		String descriptorImage = getDescriptorImage();
+
+		_buildImage(outputDir, descriptorImage);
+
+		_pushImage(descriptorImage);
 
 		Logger logger = getLogger();
 
 		logger.lifecycle(
-			"Published Helm chart {}/{} version {} ({})", repository,
-			project.getName(), version, digest);
+			"Published client extension descriptor {}", descriptorImage);
 	}
 
-	private File _getChartDir(HelmCLI helmCLI, File workDir) throws Exception {
-		String chart = _chart.get();
+	private void _buildImage(File dir, String image) {
+		DockerClient dockerClient = getDockerClient();
 
-		if (chart.startsWith("oci://")) {
-			return helmCLI.pull(chart, _chartVersion.getOrNull(), workDir);
-		}
+		BuildImageCmd buildImageCmd = dockerClient.buildImageCmd(dir);
 
-		Project project = getProject();
+		buildImageCmd.withTags(Collections.singleton(image));
 
-		Project rootProject = project.getRootProject();
+		BuildImageResultCallback buildImageResultCallback = buildImageCmd.exec(
+			new BuildImageResultCallback());
 
-		File chartDir = rootProject.file(chart);
-
-		if (!chartDir.isDirectory()) {
-			return helmCLI.pull(chart, _chartVersion.getOrNull(), workDir);
-		}
-
-		File copyDir = new File(workDir, chartDir.getName());
-
-		project.copy(
-			new Action<CopySpec>() {
-
-				@Override
-				public void execute(CopySpec copySpec) {
-					copySpec.from(chartDir);
-					copySpec.into(copyDir);
-				}
-
-			});
-
-		return copyDir;
+		buildImageResultCallback.awaitImageId();
 	}
 
 	private String _getDigest(String image, String imageRepository) {
@@ -289,28 +238,38 @@ public class PublishClientExtensionTask extends DockerPushImage {
 		return regularFile.getAsFile();
 	}
 
-	private Map<String, Object> _merge(
-		Map<String, Object> defaultValuesMap,
-		Map<String, Object> derivedValuesMap) {
+	private void _pushImage(String image) throws Exception {
+		AuthConfig authConfig = getRegistryAuthLocator().lookupAuthConfig(
+			image, getRegistryCredentials());
 
-		Map<String, Object> valuesMap = new LinkedHashMap<>(defaultValuesMap);
+		DockerClient dockerClient = getDockerClient();
 
-		for (Map.Entry<String, Object> entry : derivedValuesMap.entrySet()) {
-			Object defaultValue = valuesMap.get(entry.getKey());
-			Object value = entry.getValue();
+		PushImageCmd pushImageCmd = dockerClient.pushImageCmd(image);
 
-			if ((defaultValue instanceof Map<?, ?>) &&
-				(value instanceof Map<?, ?>)) {
+		pushImageCmd.withAuthConfig(authConfig);
 
-				value = _merge(
-					(Map<String, Object>)defaultValue,
-					(Map<String, Object>)value);
+		pushImageCmd.exec(
+			new ResultCallback.Adapter<PushResponseItem>() {
+
+				@Override
+				public void onNext(PushResponseItem pushResponseItem) {
+					if (pushResponseItem.isErrorIndicated()) {
+						ResponseItem.ErrorDetail errorDetail =
+							pushResponseItem.getErrorDetail();
+
+						String message = pushResponseItem.getError();
+
+						if (errorDetail != null) {
+							message = errorDetail.getMessage();
+						}
+
+						throw new GradleException(
+							"Unable to push \"" + image + "\": " + message);
+					}
+				}
+
 			}
-
-			valuesMap.put(entry.getKey(), value);
-		}
-
-		return valuesMap;
+		).awaitCompletion();
 	}
 
 	private Map<String, Object> _readJSON(
@@ -324,17 +283,6 @@ public class PublishClientExtensionTask extends DockerPushImage {
 		}
 
 		return _objectMapper.readValue(
-			file,
-			new TypeReference<LinkedHashMap<String, Object>>() {
-			});
-	}
-
-	private Map<String, Object> _readYAML(File file) throws Exception {
-		if (!file.exists()) {
-			return new LinkedHashMap<>();
-		}
-
-		return _yamlObjectMapper.readValue(
 			file,
 			new TypeReference<LinkedHashMap<String, Object>>() {
 			});
@@ -357,11 +305,8 @@ public class PublishClientExtensionTask extends DockerPushImage {
 			).build());
 	}
 
-	private final Property<String> _chart;
-	private final Property<String> _chartVersion;
 	private final RegularFileProperty _clientExtensionConfigFile;
 	private final RegularFileProperty _dockerfile;
-	private final Property<String> _helm;
 	private final RegularFileProperty _lcpJsonFile;
 	private final DirectoryProperty _outputDir;
 	private final Property<String> _registry;

@@ -1,7 +1,0 @@
-buildscript {
-	dependencies {
-		classpath fileTree(dir: pluginClasspathDir, include: "*.jar")
-	}
-}
-
-apply plugin: "com.liferay.workspace"

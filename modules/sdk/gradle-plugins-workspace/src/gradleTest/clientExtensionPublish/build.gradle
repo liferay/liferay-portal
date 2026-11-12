@@ -13,68 +13,63 @@ runGradleTest {
 		Map<String, Object> catalog = new JsonSlurper().parse(new URL("http://${registry}/v2/_catalog"))
 
 		assert catalog.repositories.contains("able")
-		assert catalog.repositories.contains("charts/able")
-		assert catalog.repositories.contains("charts/baker")
+		assert catalog.repositories.contains("descriptors/able")
+		assert catalog.repositories.contains("descriptors/baker")
 		assert !catalog.repositories.contains("baker")
 
-		HttpURLConnection httpURLConnection = new URL("http://${registry}/v2/able/manifests/1.0.0").openConnection()
+		HttpURLConnection httpURLConnection = _openManifest(registry, "able", "1.0.0")
 
 		httpURLConnection.requestMethod = "HEAD"
-
-		httpURLConnection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json")
 
 		assert httpURLConnection.responseCode == 200
 
 		String digest = httpURLConnection.getHeaderField("Docker-Content-Digest")
 
-		Map<String, Object> ableChart = _pullChart(registry, "able")
+		Map<String, Object> able = _pullDescriptor(registry, "able").clientExtension
 
-		assert ableChart.chart.appVersion == "1.0.0"
-		assert ableChart.chart.name == "able"
-		assert ableChart.chart.version == "1.0.0"
+		assert able.configs.size() > 0
+		assert able.descriptorVersion == 1
+		assert able.image.digest == digest
+		assert able.image.repository == "${registry}/able"
+		assert able.image.tag == "1.0.0"
+		assert able.serviceId == null
+		assert able.type == "service"
+		assert able.workload.kind == "Deployment"
+		assert able.workload.port == 58081
+		assert able.workload.replicas == 1
 
-		Map<String, Object> ableValues = ableChart.values
+		Map<String, Object> baker = _pullDescriptor(registry, "baker").clientExtension
 
-		assert ableValues.clientExtension.configs.size() > 0
-		assert ableValues.clientExtension.serviceId == "able"
-		assert ableValues.fullnameOverride == "able"
-		assert ableValues.image.pullPolicy == "IfNotPresent"
-		assert ableValues.image.repository == "${registry}/able"
-		assert ableValues.image.tag == "1.0.0@" + digest
-		assert ableValues.service.enabled == true
-		assert ableValues.workload.containerPort == 58081
-		assert ableValues.workload.enabled == true
-		assert ableValues.workload.kind == "Deployment"
-		assert ableValues.workload.securityContext.runAsNonRoot == true
-
-		Map<String, Object> bakerChart = _pullChart(registry, "baker")
-
-		assert bakerChart.chart.name == "baker"
-		assert bakerChart.chart.version == "1.0.0"
-
-		Map<String, Object> bakerValues = bakerChart.values
-
-		assert bakerValues.clientExtension.configs.size() > 0
-		assert bakerValues.image.repository == null
-		assert bakerValues.service.enabled == false
-		assert bakerValues.workload.enabled == false
+		assert baker.configs.size() > 0
+		assert baker.image == null
+		assert baker.oauthApplicationHeadlessServerERC == "baker-oauth-application-headless-server"
+		assert baker.type == "configuration"
+		assert baker.workload == null
 	}
 }
 
-Map<String, Object> _pullChart(String registry, String name) {
-	File destinationDir = new File(buildDir, "pulled-charts/${name}")
+HttpURLConnection _openManifest(String registry, String name, String reference) {
+	HttpURLConnection httpURLConnection = new URL("http://${registry}/v2/${name}/manifests/${reference}").openConnection()
 
-	delete destinationDir
+	httpURLConnection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json")
 
-	destinationDir.mkdirs()
+	return httpURLConnection
+}
 
-	exec {
-		commandLine "helm", "pull", "oci://${registry}/charts/${name}", "--plain-http", "--untar", "--untardir", destinationDir, "--version", "1.0.0"
-	}
+Map<String, Object> _pullDescriptor(String registry, String name) {
+	Map<String, Object> manifest = new JsonSlurper().parse(_openManifest(registry, "descriptors/${name}", "1.0.0").inputStream)
 
-	File chartDir = new File(destinationDir, name)
+	assert manifest.layers.size() == 1
 
-	Yaml yaml = new Yaml()
+	File layerFile = new File(buildDir, "pulled-descriptors/${name}.tar.gz")
 
-	return [chart: yaml.load(new File(chartDir, "Chart.yaml").text), values: yaml.load(new File(chartDir, "values.yaml").text)]
+	layerFile.parentFile.mkdirs()
+
+	layerFile.bytes = new URL("http://${registry}/v2/descriptors/${name}/blobs/${manifest.layers[0].digest}").bytes
+
+	File descriptorFile = tarTree(resources.gzip(layerFile)).matching {
+		include "client-extension.yaml"
+	}.singleFile
+
+	return new Yaml().load(descriptorFile.text)
 }

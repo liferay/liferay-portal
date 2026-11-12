@@ -1,5 +1,0 @@
-image:
-    pullPolicy: IfNotPresent
-workload:
-    securityContext:
-        runAsNonRoot: true
