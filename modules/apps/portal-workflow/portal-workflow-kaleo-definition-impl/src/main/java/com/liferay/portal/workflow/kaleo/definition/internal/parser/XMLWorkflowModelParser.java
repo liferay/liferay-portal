@@ -328,6 +328,19 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 			settings.add(new Setting("inputVariables", inputVariables));
 		}
 
+		String modelName = aiDecisionElement.elementTextTrim("model-name");
+
+		if (modelName != null) {
+			settings.add(new Setting("modelName", modelName));
+		}
+
+		String modelProvider = aiDecisionElement.elementTextTrim(
+			"model-provider");
+
+		if (modelProvider != null) {
+			settings.add(new Setting("modelProvider", modelProvider));
+		}
+
 		String outputVariables = _normalizeJSONArrayJSON(
 			aiDecisionElement.elementTextTrim("output-variables"));
 
@@ -757,6 +770,12 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 
 		if (modelName != null) {
 			settings.add(new Setting("modelName", modelName));
+		}
+
+		String modelProvider = llmElement.elementTextTrim("model-provider");
+
+		if (modelProvider != null) {
+			settings.add(new Setting("modelProvider", modelProvider));
 		}
 
 		String outputVariables = _normalizeJSONArrayJSON(
