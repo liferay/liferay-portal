@@ -298,14 +298,21 @@ public class AnalyticsReportsDataProvider {
 			Map<String, AcquisitionChannel> acquisitionChannels =
 				getAcquisitionChannels(companyId, experienceId, timeRange, url);
 
-			Collection<AcquisitionChannel> values =
-				acquisitionChannels.values();
+			for (AcquisitionChannel acquisitionChannel :
+					acquisitionChannels.values()) {
 
-			for (TrafficChannel trafficChannel :
-					TransformUtil.transform(
-						values, TrafficChannel::newInstance)) {
+				try {
+					TrafficChannel trafficChannel = TrafficChannel.newInstance(
+						acquisitionChannel);
 
-				trafficChannels.put(trafficChannel.getType(), trafficChannel);
+					trafficChannels.put(
+						trafficChannel.getType(), trafficChannel);
+				}
+				catch (IllegalArgumentException illegalArgumentException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(illegalArgumentException);
+					}
+				}
 			}
 
 			return trafficChannels;
