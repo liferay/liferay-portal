@@ -467,6 +467,39 @@ public class AnalyticsReportsDataProviderTest {
 			RandomTestUtil.randomString());
 	}
 
+	@Test
+	public void testGetTrafficChannelsWithUnknownChannel() throws Exception {
+		AnalyticsReportsDataProvider analyticsReportsDataProvider =
+			new AnalyticsReportsDataProvider(
+				_getAnalyticsSettingsManager(),
+				_getHttp(
+					HashMapBuilder.put(
+						"/acquisition-channels",
+						JSONUtil.put(
+							"chatbot", 100L
+						).put(
+							"unknown", 100L
+						).toString()
+					).build()));
+
+		TimeSpan timeSpan = TimeSpan.of("last-7-days");
+
+		TimeRange timeRange = timeSpan.toTimeRange(0);
+
+		Map<TrafficChannel.Type, TrafficChannel> trafficChannels =
+			analyticsReportsDataProvider.getTrafficChannels(
+				RandomTestUtil.randomLong(), null, timeRange,
+				RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			trafficChannels.toString(), 1, trafficChannels.size());
+		Assert.assertEquals(
+			String.valueOf(
+				TrafficChannel.newInstance(
+					100, 50.0D, TrafficChannel.Type.CHATBOT)),
+			String.valueOf(trafficChannels.get(TrafficChannel.Type.CHATBOT)));
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testNewAnalyticsReportsDataProviderWithNullHttp()
 		throws Exception {

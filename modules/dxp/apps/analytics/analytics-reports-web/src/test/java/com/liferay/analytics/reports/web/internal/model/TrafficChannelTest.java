@@ -155,6 +155,31 @@ public class TrafficChannelTest {
 	}
 
 	@Test
+	public void testToTrafficChannelWithChatbotName() {
+		AcquisitionChannel acquisitionChannel = new AcquisitionChannel(
+			"CHATBOT", RandomTestUtil.randomInt(),
+			RandomTestUtil.randomDouble());
+
+		TrafficChannel trafficChannel = TrafficChannel.newInstance(
+			acquisitionChannel);
+
+		Assert.assertEquals(
+			"this-is-the-number-of-page-views-generated-by-people-coming-to-" +
+				"your-page-from-ai-chatbots",
+			trafficChannel.getHelpMessageKey());
+		Assert.assertEquals(
+			acquisitionChannel.getTrafficAmount(),
+			trafficChannel.getTrafficAmount());
+		Assert.assertEquals(
+			acquisitionChannel.getTrafficShare(),
+			trafficChannel.getTrafficShare(), 0);
+		Assert.assertNull(trafficChannel.getTuple());
+		Assert.assertEquals(
+			TrafficChannel.Type.valueOf(acquisitionChannel.getName()),
+			trafficChannel.getType());
+	}
+
+	@Test
 	public void testToTrafficChannelWithOrganicName() {
 		AcquisitionChannel acquisitionChannel = new AcquisitionChannel(
 			"ORGANIC", RandomTestUtil.randomInt(),
