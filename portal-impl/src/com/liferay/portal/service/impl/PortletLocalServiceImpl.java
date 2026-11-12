@@ -857,25 +857,27 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			return portletFriendlyURLMapperMatch;
 		}
 
+		String matchURL = url;
+
 		for (Portlet portlet : getFriendlyURLMapperPortlets()) {
 			FriendlyURLMapper friendlyURLMapper =
 				portlet.getFriendlyURLMapperInstance();
 
-			if (url.endsWith(
+			if (matchURL.endsWith(
 					StringPool.SLASH + friendlyURLMapper.getMapping())) {
 
-				url += StringPool.SLASH;
+				matchURL += StringPool.SLASH;
 			}
 
 			int pos = -1;
 
 			if (friendlyURLMapper.isCheckMappingWithPrefix()) {
-				pos = url.indexOf(
+				pos = matchURL.indexOf(
 					Portal.FRIENDLY_URL_SEPARATOR +
 						friendlyURLMapper.getMapping() + StringPool.SLASH);
 			}
 			else {
-				pos = url.indexOf(
+				pos = matchURL.indexOf(
 					StringPool.SLASH + friendlyURLMapper.getMapping() +
 						StringPool.SLASH);
 			}
