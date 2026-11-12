@@ -104,7 +104,7 @@ describe('FrontendDataSet', () => {
 
 	it('renders nothing when there are no views', () => {
 		const {container} = render(
-			<FrontendDataSet apiURL="/o/products" id={id} />
+			<FrontendDataSet apiURL="/o/products" id={id} views={[]} />
 		);
 
 		expect(container).toBeEmptyDOMElement();
