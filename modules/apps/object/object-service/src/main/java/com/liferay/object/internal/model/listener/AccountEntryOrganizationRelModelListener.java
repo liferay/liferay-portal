@@ -6,7 +6,6 @@
 package com.liferay.object.internal.model.listener;
 
 import com.liferay.account.model.AccountEntryOrganizationRel;
-import com.liferay.object.internal.search.ObjectEntryBatchReindexer;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -14,6 +13,9 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -94,18 +96,38 @@ public class AccountEntryOrganizationRelModelListener
 				continue;
 			}
 
-			ObjectEntryBatchReindexer objectEntryBatchReindexer =
-				new ObjectEntryBatchReindexer(
-					objectField, objectDefinition, _objectEntryLocalService);
+			IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+				_objectEntryLocalService.getIndexableActionableDynamicQuery();
+
+			indexableActionableDynamicQuery.setAddCriteriaMethod(
+				dynamicQuery -> {
+					dynamicQuery.add(
+						RestrictionsFactoryUtil.eq(
+							"objectDefinitionId",
+							objectDefinition.getObjectDefinitionId()));
+					dynamicQuery.add(
+						RestrictionsFactoryUtil.eqProperty(
+							"objectEntryId", "headObjectEntryId"));
+					dynamicQuery.add(
+						RestrictionsFactoryUtil.sqlRestriction(
+							StringBundler.concat(
+								"this_.objectEntryId in (select ",
+								objectDefinition.getPKObjectFieldDBColumnName(),
+								" from ", objectField.getDBTableName(),
+								" where ", objectField.getDBColumnName(), " = ",
+								accountEntryOrganizationRel.getAccountEntryId(),
+								")")));
+				});
+			indexableActionableDynamicQuery.setCompanyId(
+				accountEntryOrganizationRel.getCompanyId());
 
 			IndexerDocumentBuilder indexerDocumentBuilder =
-				_serviceTrackerMap.getService(
-					objectEntryBatchReindexer.getClassName());
+				_serviceTrackerMap.getService(objectDefinition.getClassName());
 
-			objectEntryBatchReindexer.reindex(
-				indexerDocumentBuilder,
-				accountEntryOrganizationRel.getAccountEntryId(),
-				accountEntryOrganizationRel.getCompanyId());
+			indexableActionableDynamicQuery.setPerformActionMethod(
+				indexerDocumentBuilder::getDocument);
+
+			indexableActionableDynamicQuery.performActions();
 		}
 	}
 
