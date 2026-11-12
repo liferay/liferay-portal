@@ -40,9 +40,9 @@ public class OriginContainerRequestFilter implements ContainerRequestFilter {
 					"com.liferay.portal.vulcan.internal.http." +
 						"VulcanRequestForwarderHttpServletRequestWrapper"))) {
 
-			Method method = _resourceInfo.getResourceMethod();
+			Method resourceMethod = _resourceInfo.getResourceMethod();
 
-			FaroThreadLocal.setOperationId(method.getName());
+			FaroThreadLocal.setOperationId(resourceMethod.getName());
 
 			FaroThreadLocal.setOrigin("mcp");
 		}
