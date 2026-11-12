@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SubscriptionLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
@@ -780,14 +779,8 @@ public class KBArticleServiceTest {
 
 		Assert.assertTrue(kbArticle.isPending());
 
-		User reviewerUser = UserTestUtil.addUser(_group1.getGroupId());
-		Role role = _roleLocalService.getRole(
-			TestPropsValues.getCompanyId(),
-			RoleConstants.SITE_CONTENT_REVIEWER);
-
-		_userGroupRoleLocalService.addUserGroupRoles(
-			reviewerUser.getUserId(), _group1.getGroupId(),
-			new long[] {role.getRoleId()});
+		User reviewerUser = UserTestUtil.addGroupUser(
+			_group1, RoleConstants.SITE_CONTENT_REVIEWER);
 
 		try {
 			Assert.assertFalse(
@@ -1097,9 +1090,6 @@ public class KBArticleServiceTest {
 
 	@DeleteAfterTestRun
 	private Role _role;
-
-	@Inject
-	private RoleLocalService _roleLocalService;
 
 	private ServiceContext _serviceContext;
 
