@@ -46,6 +46,28 @@ import org.xml.sax.SAXException;
  */
 public class Dom4JUtil {
 
+	public static void addPropertyElements(
+		Element propertiesElement, Map<String, String> propertiesMap) {
+
+		for (Map.Entry<String, String> propertyEntry :
+				propertiesMap.entrySet()) {
+
+			Element propertyElement = propertiesElement.addElement("property");
+
+			String propertyName = propertyEntry.getKey();
+			String propertyValue = propertyEntry.getValue();
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(propertyName) ||
+				JenkinsResultsParserUtil.isNullOrEmpty(propertyValue)) {
+
+				continue;
+			}
+
+			propertyElement.addAttribute("name", propertyName);
+			propertyElement.addAttribute("value", propertyValue);
+		}
+	}
+
 	public static void addRawXMLToElement(Element element, String xml)
 		throws DocumentException {
 

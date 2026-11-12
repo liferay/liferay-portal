@@ -342,28 +342,6 @@ public class TestrayImporter {
 		}
 	}
 
-	private void _addPropertyElements(
-		Element propertiesElement, Map<String, String> propertiesMap) {
-
-		for (Map.Entry<String, String> propertyEntry :
-				propertiesMap.entrySet()) {
-
-			Element propertyElement = propertiesElement.addElement("property");
-
-			String propertyName = propertyEntry.getKey();
-			String propertyValue = propertyEntry.getValue();
-
-			if (JenkinsResultsParserUtil.isNullOrEmpty(propertyName) ||
-				JenkinsResultsParserUtil.isNullOrEmpty(propertyValue)) {
-
-				continue;
-			}
-
-			propertyElement.addAttribute("name", propertyName);
-			propertyElement.addAttribute("value", propertyValue);
-		}
-	}
-
 	private Element _getJenkinsBuildDescriptionCodeElement(
 		String title, String name) {
 
@@ -567,7 +545,7 @@ public class TestrayImporter {
 			}
 		}
 
-		_addPropertyElements(propertiesElement, testcasePropertiesMap);
+		Dom4JUtil.addPropertyElements(propertiesElement, testcasePropertiesMap);
 
 		if ((warnings != null) && (warnings.length > 0)) {
 			Element warningsPropertyElement = propertiesElement.addElement(
@@ -774,7 +752,7 @@ public class TestrayImporter {
 			JenkinsResultsParserUtil.toDurationString(
 				_topLevelBuildReport.getTotalActualDuration()));
 
-		_addPropertyElements(
+		Dom4JUtil.addPropertyElements(
 			rootElement.addElement("properties"), propertiesMap);
 
 		List<TestrayCaseResult> testrayCaseResults = new ArrayList<>();
