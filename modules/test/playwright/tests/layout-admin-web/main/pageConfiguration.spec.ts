@@ -1675,11 +1675,19 @@ test.describe('SEO configuration', () => {
 				'https://search.google.com/search-console'
 			);
 
-			await expect(
-				page.getByRole('link', {name: 'Yahoo! Webmaster'})
-			).toHaveAttribute(
+			// Check the sitemaps.org link opens safely in a new tab
+
+			const sitemapsLink = page.getByRole('link', {
+				name: 'For more information, visit www.sitemaps.org.',
+			});
+
+			await expect(sitemapsLink).toHaveAttribute(
 				'href',
-				'https://help.yahoo.com/kb/search-for-desktop/SLN2217.html'
+				'https://www.sitemaps.org'
+			);
+			await expect(sitemapsLink).toHaveAttribute(
+				'rel',
+				'noreferrer noopener'
 			);
 
 			// Check the deprecated sitemap ping links are gone
