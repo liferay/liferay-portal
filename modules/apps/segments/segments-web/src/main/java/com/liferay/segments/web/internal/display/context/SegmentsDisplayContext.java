@@ -9,6 +9,7 @@ import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -46,6 +47,7 @@ import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.service.SegmentsEntryService;
+import com.liferay.segments.source.provider.SegmentsSourceDetailsProvider;
 import com.liferay.segments.web.internal.security.permission.resource.SegmentsEntryPermission;
 import com.liferay.segments.web.internal.util.comparator.SegmentsEntryModifiedDateComparator;
 import com.liferay.segments.web.internal.util.comparator.SegmentsEntryNameComparator;
@@ -73,7 +75,9 @@ public class SegmentsDisplayContext {
 		RenderResponse renderResponse,
 		RoleTypeContributorProvider roleTypeContributorProvider,
 		SegmentsConfigurationProvider segmentsConfigurationProvider,
-		SegmentsEntryService segmentsEntryService) {
+		SegmentsEntryService segmentsEntryService,
+		ServiceTrackerMap<String, SegmentsSourceDetailsProvider>
+			serviceTrackerMap) {
 
 		_analyticsSettingsManager = analyticsSettingsManager;
 		_groupLocalService = groupLocalService;
@@ -85,6 +89,7 @@ public class SegmentsDisplayContext {
 		_roleTypeContributorProvider = roleTypeContributorProvider;
 		_segmentsConfigurationProvider = segmentsConfigurationProvider;
 		_segmentsEntryService = segmentsEntryService;
+		_serviceTrackerMap = serviceTrackerMap;
 
 		_httpServletRequest = portal.getHttpServletRequest(renderRequest);
 
@@ -396,6 +401,20 @@ public class SegmentsDisplayContext {
 		return "_self";
 	}
 
+	public SegmentsSourceDetailsProvider getSegmentsSourceDetailsProvider(
+		SegmentsEntry segmentsEntry) {
+
+		SegmentsSourceDetailsProvider segmentsSourceDetailsProvider =
+			_serviceTrackerMap.getService(segmentsEntry.getSource());
+
+		if (segmentsSourceDetailsProvider != null) {
+			return segmentsSourceDetailsProvider;
+		}
+
+		return _serviceTrackerMap.getService(
+			SegmentsEntryConstants.SOURCE_DEFAULT);
+	}
+
 	public int getTotalItems() throws PortalException {
 		SearchContainer<?> searchContainer = getSearchContainer();
 
@@ -655,6 +674,8 @@ public class SegmentsDisplayContext {
 	private SearchContainer<SegmentsEntry> _searchContainer;
 	private final SegmentsConfigurationProvider _segmentsConfigurationProvider;
 	private final SegmentsEntryService _segmentsEntryService;
+	private final ServiceTrackerMap<String, SegmentsSourceDetailsProvider>
+		_serviceTrackerMap;
 	private final ThemeDisplay _themeDisplay;
 
 }

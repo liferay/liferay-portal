@@ -105,7 +105,7 @@ request.setAttribute("view.jsp-eventName", eventName);
 				>
 
 					<%
-					SegmentsSourceDetailsProvider segmentsSourceDetailsProvider = SegmentsSourceDetailsProviderUtil.getSegmentsSourceDetailsProvider(segmentsEntry);
+					SegmentsSourceDetailsProvider segmentsSourceDetailsProvider = segmentsDisplayContext.getSegmentsSourceDetailsProvider(segmentsEntry);
 					%>
 
 					<c:if test="<%= segmentsSourceDetailsProvider != null %>">

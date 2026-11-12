@@ -7,6 +7,8 @@ package com.liferay.segments.web.internal.portlet;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -15,6 +17,7 @@ import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributo
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.service.SegmentsEntryService;
+import com.liferay.segments.source.provider.SegmentsSourceDetailsProvider;
 import com.liferay.segments.web.internal.display.context.SegmentsDisplayContext;
 
 import jakarta.portlet.Portlet;
@@ -24,7 +27,10 @@ import jakarta.portlet.RenderResponse;
 
 import java.io.IOException;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -65,9 +71,21 @@ public class SegmentsPortlet extends MVCPortlet {
 				_analyticsSettingsManager, _groupLocalService, _itemSelector,
 				_language, _portal, renderRequest, renderResponse,
 				_roleTypeContributorProvider, _segmentsConfigurationProvider,
-				_segmentsEntryService));
+				_segmentsEntryService, _serviceTrackerMap));
 
 		super.render(renderRequest, renderResponse);
+	}
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, SegmentsSourceDetailsProvider.class,
+			"segments.source");
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceTrackerMap.close();
 	}
 
 	@Reference
@@ -93,5 +111,8 @@ public class SegmentsPortlet extends MVCPortlet {
 
 	@Reference
 	private SegmentsEntryService _segmentsEntryService;
+
+	private ServiceTrackerMap<String, SegmentsSourceDetailsProvider>
+		_serviceTrackerMap;
 
 }

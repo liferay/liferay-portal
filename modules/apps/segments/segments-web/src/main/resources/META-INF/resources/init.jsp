@@ -39,8 +39,7 @@ page import="com.liferay.segments.web.internal.display.context.PreviewSegmentsEn
 page import="com.liferay.segments.web.internal.display.context.SegmentsCompanyConfigurationDisplayContext" %><%@
 page import="com.liferay.segments.web.internal.display.context.SegmentsDisplayContext" %><%@
 page import="com.liferay.segments.web.internal.display.context.SegmentsManagementToolbarDisplayContext" %><%@
-page import="com.liferay.segments.web.internal.util.SegmentsEntryActionDropdownItemsProvider" %><%@
-page import="com.liferay.segments.web.internal.util.SegmentsSourceDetailsProviderUtil" %>
+page import="com.liferay.segments.web.internal.util.SegmentsEntryActionDropdownItemsProvider" %>
 
 <liferay-frontend:defineObjects />
 
