@@ -35,6 +35,8 @@ export default function ModalDeleteObjectEntry({
 
 	const {observer, onClose} = useModal({
 		onClose: () => {
+			setDeleteButtonDisabled(false);
+
 			setModalDeleteObjectEntryState({
 				deletionErrorMessage: null,
 				objectEntry: null,
@@ -44,6 +46,8 @@ export default function ModalDeleteObjectEntry({
 	});
 
 	const onSubmit = async () => {
+		setDeleteButtonDisabled(true);
+
 		try {
 			await API.deleteItem(
 				`${byExternalReferenceCodePath}/${modalDeleteObjectEntryState.objectEntry?.externalReferenceCode}`
@@ -61,6 +65,8 @@ export default function ModalDeleteObjectEntry({
 			setTimeout(() => window.location.reload(), 1000);
 		}
 		catch (error) {
+			setDeleteButtonDisabled(false);
+
 			setModalDeleteObjectEntryState((prevState) => ({
 				...prevState,
 				deletionErrorMessage: (error as Error).message,
@@ -131,12 +137,11 @@ export default function ModalDeleteObjectEntry({
 									? 'warning'
 									: 'danger'
 							}
-							onClick={() => {
-								setDeleteButtonDisabled(true);
+							onClick={
 								modalDeleteObjectEntryState.deletionErrorMessage
-									? onClose()
-									: onSubmit();
-							}}
+									? onClose
+									: onSubmit
+							}
 						>
 							{modalDeleteObjectEntryState.deletionErrorMessage
 								? Liferay.Language.get('close')
