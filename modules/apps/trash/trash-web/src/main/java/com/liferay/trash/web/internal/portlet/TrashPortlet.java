@@ -5,8 +5,6 @@
 
 package com.liferay.trash.web.internal.portlet;
 
-import com.liferay.asset.kernel.model.AssetEntry;
-import com.liferay.asset.kernel.service.AssetEntryService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.TrashPermissionException;
 import com.liferay.portal.kernel.model.Release;
@@ -358,21 +356,22 @@ public class TrashPortlet extends MVCPortlet {
 		TrashEntry trashEntry = _trashEntryLocalService.getTrashEntry(
 			trashEntryId);
 
-		AssetEntry assetEntry = _assetEntryService.getEntry(
-			trashEntry.getClassName(), trashEntry.getClassPK());
-
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		if (assetEntry.getGroupId() != themeDisplay.getScopeGroupId()) {
+		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
+			trashEntry.getClassName());
+
+		if ((trashEntry.getGroupId() != themeDisplay.getScopeGroupId()) ||
+			!trashHandler.hasTrashPermission(
+				themeDisplay.getPermissionChecker(), trashEntry.getGroupId(),
+				trashEntry.getClassPK(), ActionKeys.VIEW)) {
+
 			throw new PrincipalException.MustHavePermission(
 				themeDisplay.getUserId(), trashEntry.getClassName(),
 				trashEntry.getClassPK(), ActionKeys.VIEW);
 		}
 	}
-
-	@Reference
-	private AssetEntryService _assetEntryService;
 
 	@Reference
 	private Portal _portal;
