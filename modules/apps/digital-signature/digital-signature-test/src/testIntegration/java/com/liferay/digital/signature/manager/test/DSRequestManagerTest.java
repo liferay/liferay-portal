@@ -854,14 +854,6 @@ public class DSRequestManagerTest {
 
 		dsEnvelope1.setStatus(DSRequestConstants.STATUS_COMPLETED);
 
-		DSEnvelopeManager dsEnvelopeManager =
-			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
-				_dsRequestManager, "_dsEnvelopeManager",
-				ProxyUtil.newProxyInstance(
-					DSEnvelopeManager.class.getClassLoader(),
-					new Class<?>[] {DSEnvelopeManager.class},
-					(proxy, method, arguments) -> dsEnvelope1));
-
 		DSDocumentManager dsDocumentManager =
 			(DSDocumentManager)ReflectionTestUtil.getAndSetFieldValue(
 				_dsRequestManager, "_dsDocumentManager",
@@ -870,6 +862,14 @@ public class DSRequestManagerTest {
 					new Class<?>[] {DSDocumentManager.class},
 					(proxy, method, arguments) -> FileUtil.getBytes(
 						getClass(), "dependencies/SignedDocument.pdf")));
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> dsEnvelope1));
 
 		try {
 			DSEnvelope dsEnvelope2 = _createDSEnvelope(
@@ -1685,18 +1685,6 @@ public class DSRequestManagerTest {
 
 		List<String> methodNames = new ArrayList<>();
 
-		DSEnvelopeManager dsEnvelopeManager =
-			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
-				_dsRequestManager, "_dsEnvelopeManager",
-				ProxyUtil.newProxyInstance(
-					DSEnvelopeManager.class.getClassLoader(),
-					new Class<?>[] {DSEnvelopeManager.class},
-					(proxy, method, arguments) -> {
-						methodNames.add(method.getName());
-
-						return dsEnvelope;
-					}));
-
 		byte[] bytes = FileUtil.getBytes(
 			getClass(), "dependencies/SignedDocument.pdf");
 
@@ -1710,6 +1698,18 @@ public class DSRequestManagerTest {
 						methodNames.add(method.getName());
 
 						return bytes;
+					}));
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> {
+						methodNames.add(method.getName());
+
+						return dsEnvelope;
 					}));
 
 		PermissionChecker originalPermissionChecker =
@@ -1984,14 +1984,6 @@ public class DSRequestManagerTest {
 
 		dsEnvelope.setStatus(DSRequestConstants.STATUS_COMPLETED);
 
-		DSEnvelopeManager dsEnvelopeManager =
-			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
-				_dsRequestManager, "_dsEnvelopeManager",
-				ProxyUtil.newProxyInstance(
-					DSEnvelopeManager.class.getClassLoader(),
-					new Class<?>[] {DSEnvelopeManager.class},
-					(proxy, method, arguments) -> dsEnvelope));
-
 		String dsDocumentId = String.valueOf(fileEntry2.getFileEntryId());
 
 		DSDocumentManager dsDocumentManager =
@@ -2012,6 +2004,14 @@ public class DSRequestManagerTest {
 						return FileUtil.getBytes(
 							getClass(), "dependencies/SignedDocument.pdf");
 					}));
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> dsEnvelope));
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.digital.signature.internal.manager." +
@@ -2220,14 +2220,6 @@ public class DSRequestManagerTest {
 
 		dsEnvelope.setStatus(DSRequestConstants.STATUS_COMPLETED);
 
-		DSEnvelopeManager dsEnvelopeManager =
-			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
-				_dsRequestManager, "_dsEnvelopeManager",
-				ProxyUtil.newProxyInstance(
-					DSEnvelopeManager.class.getClassLoader(),
-					new Class<?>[] {DSEnvelopeManager.class},
-					(proxy, method, arguments) -> dsEnvelope));
-
 		DSDocumentManager dsDocumentManager =
 			(DSDocumentManager)ReflectionTestUtil.getAndSetFieldValue(
 				_dsRequestManager, "_dsDocumentManager",
@@ -2236,6 +2228,14 @@ public class DSRequestManagerTest {
 					new Class<?>[] {DSDocumentManager.class},
 					(proxy, method, arguments) -> FileUtil.getBytes(
 						getClass(), "dependencies/SignedDocument.pdf")));
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> dsEnvelope));
 
 		try {
 			_dsRequestManager.updateDSRequest(dsRequest.getDSRequestId());
