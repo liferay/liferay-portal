@@ -802,8 +802,8 @@ test(
 );
 
 test(
-	'The external URL preview shows an error for a blocked URL and renders the iframe when a valid one is entered',
-	{tag: '@LPD-89124'},
+	'The external URL preview shows an error for an unreachable URL and renders the iframe when a valid one is entered',
+	{tag: ['@LPD-89124', '@LPD-112716']},
 	async ({contentsPage, page}) => {
 		const title = getRandomString();
 		const previewTitle = `${title} Preview`;
@@ -833,41 +833,29 @@ test(
 				.locator('.alert')
 				.filter({hasText: 'We could not load the preview'});
 
-			await page.route('https://blocked.test/**', (route) =>
+			await page.route('https://unreachable.test/**', () => {});
+
+			await page.route('https://valid.test/**', (route) =>
 				route.fulfill({
-					body: '<html><body>Blocked</body></html>',
-					headers: {'X-Frame-Options': 'DENY'},
+					body: '<html><body>Valid Preview</body></html>',
 					status: 200,
 				})
 			);
 
-			await page.route('https://valid.test/**', async (route) => {
-				await new Promise((resolve) => setTimeout(resolve, 800));
-
-				await route.fulfill({
-					body: '<html><body>Valid Preview</body></html>',
-					status: 200,
-				});
-			});
-
-			await test.step('Enter a URL that blocks iframe embedding and check the error alert appears', async () => {
-				await externalURLInput.fill('blocked.test');
+			await test.step('Enter a URL that never responds and check the error alert appears', async () => {
+				await externalURLInput.fill('unreachable.test');
 				await externalURLInput.blur();
 
 				await expect(externalURLInput).toHaveValue(
-					'https://blocked.test'
+					'https://unreachable.test'
 				);
 
-				await expect(errorAlert).toBeVisible();
-
-				await page.reload();
-
-				await expect(errorAlert).toBeVisible();
+				await expect(errorAlert).toBeVisible({timeout: 15000});
 			});
 
 			await test.step('Click refresh in the error alert and verify a new request is issued', async () => {
 				const requestPromise = page.waitForRequest(
-					'https://blocked.test/'
+					'https://unreachable.test/'
 				);
 
 				await errorAlert.getByRole('button', {name: 'Refresh'}).click();
