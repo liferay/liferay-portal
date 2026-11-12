@@ -297,9 +297,6 @@ public class BaseDisplayTag extends AttributesTagSupport {
 		return EVAL_PAGE;
 	}
 
-	protected void setAttributes(HttpServletRequest httpServletRequest) {
-	}
-
 	protected FDSSerializer fdsSerializer;
 
 	private void _setViewsJSONArray() {
