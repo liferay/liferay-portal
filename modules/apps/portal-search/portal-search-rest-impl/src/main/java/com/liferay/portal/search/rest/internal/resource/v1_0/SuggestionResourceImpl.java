@@ -80,6 +80,25 @@ public class SuggestionResourceImpl extends BaseSuggestionResourceImpl {
 			return Page.of(Collections.emptyList());
 		}
 
+		int suggestionsSizeLimit =
+			searchSuggestionsCompanyConfiguration.suggestionsSizeLimit();
+
+		if (suggestionsSizeLimit > 0) {
+			for (SuggestionsContributorConfiguration
+					suggestionsContributorConfiguration :
+						suggestionsContributorConfigurations) {
+
+				Integer size = suggestionsContributorConfiguration.getSize();
+
+				if ((size == null) || (size <= suggestionsSizeLimit)) {
+					continue;
+				}
+
+				suggestionsContributorConfiguration.setSize(
+					() -> suggestionsSizeLimit);
+			}
+		}
+
 		Layout layout = _layoutLocalService.getLayout(plid);
 
 		if (Validator.isNotNull(destinationFriendlyURL)) {
