@@ -526,10 +526,6 @@ definition {
 				var portletId = "com.liferay.translation.translator.aws.internal.configuration.AWSTranslatorConfiguration";
 			}
 
-			if (${portlet} == "Azure Translator") {
-				var portletId = "com.liferay.translation.translator.azure.internal.configuration.AzureTranslatorConfiguration";
-			}
-
 			if (${portlet} == "Documents and Media Size Limits") {
 				var portletId = "com.liferay.document.library.internal.configuration.DLSizeLimitConfiguration";
 			}

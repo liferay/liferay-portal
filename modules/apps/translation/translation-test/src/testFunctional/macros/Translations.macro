@@ -96,31 +96,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro enableAzureTranslation() {
-		var subscriptionKey = PropsUtil.get("azure.translation.subscription.key");
-		var resourceLocation = PropsUtil.get("azure.translation.resource.location");
-
-		Type(
-			key_text = "subscriptionKey",
-			locator1 = "TextInput#ANY_PASSWORD",
-			value1 = ${subscriptionKey});
-
-		Type(
-			key_text = "resourceLocation",
-			locator1 = "TextArea#ANY",
-			value1 = ${resourceLocation});
-
-		FormFields.enableCheckbox(fieldName = "enabled");
-
-		if (IsElementPresent(locator1 = "Button#UPDATE")) {
-			PortletEntry.update();
-		}
-		else if (IsElementPresent(locator1 = "Button#SAVE")) {
-			PortletEntry.save();
-		}
-	}
-
-	@summary = "Default summary"
 	macro exportTranslation(defaultLanguage = null, experienceList = null, multiplePageExperiencesSelector = null, exportFileFormat = null) {
 		AssertElementPresent(
 			key_defaultLanguage = "English (United States)",
