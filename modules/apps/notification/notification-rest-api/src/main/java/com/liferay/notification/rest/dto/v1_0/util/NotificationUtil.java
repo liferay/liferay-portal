@@ -26,7 +26,6 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -62,16 +61,6 @@ public class NotificationUtil {
 			notificationTemplate.
 				getAttachmentObjectFieldExternalReferenceCodes();
 
-		boolean importInProcess = false;
-
-		if (FeatureFlagManagerUtil.isEnabled(
-				serviceBuilderNotificationTemplate.getCompanyId(),
-				"LPD-49854") &&
-			ExportImportThreadLocal.isImportInProcess()) {
-
-			importInProcess = true;
-		}
-
 		List<Long> attachmentObjectFieldIds = new ArrayList<>();
 		List<String> missingAttachmentObjectFieldExternalReferenceCodes =
 			new ArrayList<>();
@@ -87,7 +76,7 @@ public class NotificationUtil {
 							getObjectDefinitionId());
 
 				if (objectField == null) {
-					if (!importInProcess) {
+					if (!ExportImportThreadLocal.isImportInProcess()) {
 						attachmentObjectFieldIds.clear();
 
 						break;
@@ -144,7 +133,8 @@ public class NotificationUtil {
 		}
 
 		if ((attachmentObjectFieldExternalReferenceCodes == null) ||
-			(!importInProcess && attachmentObjectFieldIds.isEmpty())) {
+			(!ExportImportThreadLocal.isImportInProcess() &&
+			 attachmentObjectFieldIds.isEmpty())) {
 
 			notificationContext.setAttachmentObjectFieldIds(
 				ListUtil.fromArray(
@@ -267,10 +257,7 @@ public class NotificationUtil {
 				notificationTemplate.getObjectDefinitionId());
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				user.getCompanyId(), "LPD-49854") &&
-			ExportImportThreadLocal.isImportInProcess()) {
-
+		if (ExportImportThreadLocal.isImportInProcess()) {
 			ObjectFolder defaultObjectFolder =
 				ObjectFolderLocalServiceUtil.getOrAddDefaultObjectFolder(
 					user.getCompanyId());
