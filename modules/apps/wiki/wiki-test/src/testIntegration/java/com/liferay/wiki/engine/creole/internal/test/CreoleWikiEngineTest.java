@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.wiki.constants.WikiConstants;
+import com.liferay.wiki.engine.BaseWikiEngine;
 import com.liferay.wiki.engine.WikiEngine;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
@@ -66,6 +67,24 @@ public class CreoleWikiEngineTest {
 							"enableHighlightCreoleFormat", true))) {
 
 			Assert.assertTrue(_hasNewWikiPageClass(wikiPage));
+		}
+	}
+
+	@Test
+	public void testGetEditorName() throws Exception {
+		String editorName = RandomTestUtil.randomString();
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group.getGroupId(), WikiConstants.SERVICE_NAME,
+						MapUtil.<String, Object>singletonDictionary(
+							"getCreoleEditor", editorName))) {
+
+			BaseWikiEngine baseWikiEngine = (BaseWikiEngine)_wikiEngine;
+
+			Assert.assertEquals(
+				editorName, baseWikiEngine.getEditorName(_group.getGroupId()));
 		}
 	}
 
