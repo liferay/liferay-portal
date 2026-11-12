@@ -90,14 +90,14 @@ public class GraphQLResourceImpl extends BaseGraphQLResourceImpl {
 				"/api/1.0/graphql");
 		options.setPost(true);
 
-		String responseBody = _http.URLtoString(options);
+		String responseString = _http.URLtoString(options);
 
 		Http.Response response = options.getResponse();
 
 		return Response.status(
 			response.getResponseCode()
 		).entity(
-			responseBody
+			responseString
 		).type(
 			MediaType.APPLICATION_JSON
 		).build();
