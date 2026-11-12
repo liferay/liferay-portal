@@ -40,7 +40,12 @@ public class GenerateReportsControllerBuildRunner
 
 	@Override
 	public void run() {
-		invokeGenerateReportsBuilds();
+		try {
+			invokeGenerateReportsBuilds();
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
 	}
 
 	@Override
@@ -51,7 +56,7 @@ public class GenerateReportsControllerBuildRunner
 		super(buildData);
 	}
 
-	protected void invokeGenerateReportsBuilds() {
+	protected void invokeGenerateReportsBuilds() throws IOException {
 		List<String> reportNames = _getSelectedReportNames();
 
 		if (reportNames.isEmpty()) {
@@ -69,6 +74,12 @@ public class GenerateReportsControllerBuildRunner
 		List<String> groupedReportNames = new ArrayList<>();
 
 		for (String reportName : reportNames) {
+			if (reportName.equals("CI Monitoring")) {
+				_invoke(jenkinsGitHubURL, reportName, null);
+
+				continue;
+			}
+
 			if (reportName.startsWith("Flaky Test")) {
 				_invoke(jenkinsGitHubURL, reportName, "slave-mem");
 
@@ -205,7 +216,7 @@ public class GenerateReportsControllerBuildRunner
 		return TimeUnit.MINUTES.toMillis(Long.parseLong(reportStaleDuration));
 	}
 
-	private List<String> _getSelectedReportNames() {
+	private List<String> _getSelectedReportNames() throws IOException {
 		if (_selectedReportNames != null) {
 			return _selectedReportNames;
 		}
@@ -225,6 +236,14 @@ public class GenerateReportsControllerBuildRunner
 			if ((report ==
 					GenerateReportsBuildRunner.Report.AWS_BUILD_COMPARISON) &&
 				JenkinsResultsParserUtil.isCloudCINode()) {
+
+				continue;
+			}
+
+			if ((report == GenerateReportsBuildRunner.Report.CI_MONITORING) &&
+				JenkinsResultsParserUtil.isNullOrEmpty(
+					JenkinsResultsParserUtil.getBuildProperty(
+						"monitoring.amp.workspace.url"))) {
 
 				continue;
 			}
