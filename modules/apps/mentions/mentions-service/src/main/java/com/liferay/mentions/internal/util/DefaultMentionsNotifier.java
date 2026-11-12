@@ -85,12 +85,13 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 		long discussionClassPK = 0;
 
 		if ((serviceContext.getAttribute("discussionClassNameId") instanceof
-				Long discussionClassNameId) &&
+				Number discussionClassNameId) &&
 			(serviceContext.getAttribute("discussionClassPK") instanceof
-				Long curDiscussionClassPK)) {
+				Number curDiscussionClassPK)) {
 
-			discussionClassName = _portal.getClassName(discussionClassNameId);
-			discussionClassPK = curDiscussionClassPK;
+			discussionClassName = _portal.getClassName(
+				discussionClassNameId.longValue());
+			discussionClassPK = curDiscussionClassPK.longValue();
 
 			String previousBody = (String)serviceContext.getAttribute(
 				"previousBody");
