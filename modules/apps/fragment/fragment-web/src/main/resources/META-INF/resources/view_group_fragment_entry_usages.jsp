@@ -63,12 +63,26 @@ renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x",
 								value="<%= HtmlUtil.escape(group.getDescriptiveName(locale)) %>"
 							/>
 
+							<portlet:renderURL var="viewPagesURL">
+								<portlet:param name="mvcRenderCommandName" value="/fragment/view_fragment_entry_usages" />
+								<portlet:param name="redirect" value="<%= currentURL %>" />
+								<portlet:param name="fragmentCollectionId" value="<%= String.valueOf(groupFragmentEntryLinkDisplayContext.getFragmentCollectionId()) %>" />
+								<portlet:param name="fragmentEntryId" value="<%= String.valueOf(fragmentEntry.getFragmentEntryId()) %>" />
+								<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
+							</portlet:renderURL>
+
 							<liferay-ui:search-container-column-text
 								cssClass="table-cell-expand-smallest table-cell-minw-100"
 								name="usages"
-								translate="<%= true %>"
-								value="<%= String.valueOf(groupFragmentEntryLinkDisplayContext.getFragmentGroupUsageCount(group)) %>"
-							/>
+							>
+								<clay:link
+									aria-label='<%= LanguageUtil.format(request, "view-x-usages", groupFragmentEntryLinkDisplayContext.getFragmentGroupUsageCount(group)) %>'
+									cssClass="lfr-portal-tooltip"
+									href="<%= viewPagesURL %>"
+									label="<%= String.valueOf(groupFragmentEntryLinkDisplayContext.getFragmentGroupUsageCount(group)) %>"
+									title='<%= LanguageUtil.get(request, "view-pages") %>'
+								/>
+							</liferay-ui:search-container-column-text>
 						</liferay-ui:search-container-row>
 
 						<liferay-ui:search-iterator
