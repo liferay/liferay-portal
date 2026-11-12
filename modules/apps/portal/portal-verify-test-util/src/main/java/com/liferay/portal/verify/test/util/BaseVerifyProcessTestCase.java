@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -226,10 +227,14 @@ public abstract class BaseVerifyProcessTestCase {
 				Object result = method.invoke(_instance, args);
 
 				if (result instanceof Connection) {
-					_objectValuePairs.add(
-						new ObjectValuePair<>(
-							(Connection)result,
-							new Exception("Caught an unclosed exception")));
+					Exception exception = new Exception(
+						"Caught an unclosed exception");
+
+					if (!_isSchedulerConnection(exception.getStackTrace())) {
+						_objectValuePairs.add(
+							new ObjectValuePair<>(
+								(Connection)result, exception));
+					}
 				}
 
 				return result;
@@ -241,6 +246,22 @@ public abstract class BaseVerifyProcessTestCase {
 
 		private DataSourceInvocationHandler(Object instance) {
 			_instance = instance;
+		}
+
+		private boolean _isSchedulerConnection(
+			StackTraceElement[] stackTraceElements) {
+
+			for (StackTraceElement stackTraceElement : stackTraceElements) {
+				if (Objects.equals(
+						stackTraceElement.getClassName(),
+						"com.liferay.portal.scheduler.quartz.internal." +
+							"QuartzConnectionProvider")) {
+
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		private final Object _instance;
