@@ -6,7 +6,9 @@
 package com.liferay.portal.security.audit.storage.internal;
 
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -48,13 +50,15 @@ public class AuditEventManagerImpl implements AuditEventManager {
 				companyAuditMessages.add(auditMessage);
 			}
 
-			for (Map.Entry<Long, List<AuditMessage>> entry :
-					auditMessagesMap.entrySet()) {
+			try (SafeCloseable safeCloseable = CompanyThreadLocal.unlock()) {
+				for (Map.Entry<Long, List<AuditMessage>> entry :
+						auditMessagesMap.entrySet()) {
 
-				_companyLocalService.forEachCompanyId(
-					companyId -> _auditEventLocalService.addAuditEvents(
-						entry.getValue()),
-					new long[] {entry.getKey()});
+					_companyLocalService.forEachCompanyId(
+						companyId -> _auditEventLocalService.addAuditEvents(
+							entry.getValue()),
+						new long[] {entry.getKey()});
+				}
 			}
 		}
 		else {
