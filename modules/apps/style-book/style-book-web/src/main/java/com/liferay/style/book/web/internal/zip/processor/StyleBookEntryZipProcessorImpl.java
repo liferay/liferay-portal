@@ -161,9 +161,7 @@ public class StyleBookEntryZipProcessorImpl
 		catch (PortalException portalException) {
 			_importResultEntries.add(
 				new StyleBookEntryZipProcessorImportResultEntry(
-					name,
-					StyleBookEntryZipProcessorImportResultEntry.Status.INVALID,
-					portalException.getMessage()));
+					name, portalException.getMessage()));
 		}
 
 		return null;

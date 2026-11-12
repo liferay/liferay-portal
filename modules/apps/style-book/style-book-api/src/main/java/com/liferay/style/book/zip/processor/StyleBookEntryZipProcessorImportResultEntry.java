@@ -13,20 +13,20 @@ import com.liferay.style.book.model.StyleBookEntry;
 public class StyleBookEntryZipProcessorImportResultEntry {
 
 	public StyleBookEntryZipProcessorImportResultEntry(
-		String name, Status status, String errorMessage) {
-
-		_name = name;
-		_errorMessage = errorMessage;
-
-		_status = Status.INVALID;
-	}
-
-	public StyleBookEntryZipProcessorImportResultEntry(
 		String name, Status status, StyleBookEntry styleBookEntry) {
 
 		_name = name;
 		_status = status;
 		_styleBookEntry = styleBookEntry;
+	}
+
+	public StyleBookEntryZipProcessorImportResultEntry(
+		String name, String errorMessage) {
+
+		_name = name;
+		_errorMessage = errorMessage;
+
+		_status = Status.INVALID;
 	}
 
 	public String getErrorMessage() {
