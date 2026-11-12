@@ -92,6 +92,11 @@ public class EmptySafeCloseable {
 		};
 	}
 
+	public void method11() {
+		this._safeCloseable = () -> {
+		};
+	}
+
 	private void _close(SafeCloseable safeCloseable) {
 		safeCloseable.close();
 	}

@@ -237,6 +237,8 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	public void testEmptySafeCloseable() throws Exception {
 		String message =
 			"Use \"SafeCloseable.EMPTY\" instead of an empty lambda";
+		String notRequireThisMessage =
+			"Reference to variable \"_safeCloseable\" does not need \".this\"";
 		String ternaryOperatorMessage =
 			"Use if-else-statement instead of ternary conditional operator " +
 				"for better readability";
@@ -259,7 +261,11 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 			).addExpectedMessage(
 				message, 43
 			).addExpectedMessage(
-				message, 99
+				notRequireThisMessage, 96
+			).addExpectedMessage(
+				message, 96
+			).addExpectedMessage(
+				message, 104
 			));
 	}
 
