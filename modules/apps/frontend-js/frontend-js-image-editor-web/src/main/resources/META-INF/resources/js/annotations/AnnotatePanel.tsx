@@ -37,7 +37,7 @@ const SHAPE_LABELS: Record<ShapeTool, string> = {
 	arrow: Liferay.Language.get('arrow'),
 	circle: Liferay.Language.get('circle'),
 	rectangle: Liferay.Language.get('rectangle'),
-	square: Liferay.Language.get('square'),
+	square: Liferay.Language.get('square[shape]'),
 };
 
 function ToolTile({

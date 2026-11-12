@@ -312,7 +312,7 @@
 			</dynamic-element>
 			<dynamic-element dataType="string" indexType="text" name="minutes" required="false" showLabel="true" type="textarea" width="large">
 				<meta-data locale="[$LOCALE_DEFAULT$]">
-					<entry name="label"><![CDATA[minutes]]></entry>
+					<entry name="label"><![CDATA[minutes[meeting]]]></entry>
 					<entry name="predefinedValue"><![CDATA[]]></entry>
 				</meta-data>
 			</dynamic-element>

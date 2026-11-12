@@ -30,6 +30,6 @@ export const DOCUSIGN_STATUS = {
 	},
 	voided: {
 		color: 'warning',
-		label: Liferay.Language.get('void'),
+		label: Liferay.Language.get('voided'),
 	},
 };
