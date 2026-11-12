@@ -197,13 +197,13 @@ public class PublishClientExtensionTask extends DockerPushImage {
 
 		File chartYamlFile = new File(chartDir, "Chart.yaml");
 
-		Map<String, Object> chartYaml = _readYAML(chartYamlFile);
+		Map<String, Object> chartYamlMap = _readYAML(chartYamlFile);
 
-		chartYaml.put("appVersion", version);
-		chartYaml.put("name", project.getName());
-		chartYaml.put("version", version);
+		chartYamlMap.put("appVersion", version);
+		chartYamlMap.put("name", project.getName());
+		chartYamlMap.put("version", version);
 
-		_yamlObjectMapper.writeValue(chartYamlFile, chartYaml);
+		_yamlObjectMapper.writeValue(chartYamlFile, chartYamlMap);
 
 		File outputDir = _getFile(_outputDir);
 
@@ -290,12 +290,13 @@ public class PublishClientExtensionTask extends DockerPushImage {
 	}
 
 	private Map<String, Object> _merge(
-		Map<String, Object> defaultValues, Map<String, Object> derivedValues) {
+		Map<String, Object> defaultValuesMap,
+		Map<String, Object> derivedValuesMap) {
 
-		Map<String, Object> values = new LinkedHashMap<>(defaultValues);
+		Map<String, Object> valuesMap = new LinkedHashMap<>(defaultValuesMap);
 
-		for (Map.Entry<String, Object> entry : derivedValues.entrySet()) {
-			Object defaultValue = values.get(entry.getKey());
+		for (Map.Entry<String, Object> entry : derivedValuesMap.entrySet()) {
+			Object defaultValue = valuesMap.get(entry.getKey());
 			Object value = entry.getValue();
 
 			if ((defaultValue instanceof Map<?, ?>) &&
@@ -306,10 +307,10 @@ public class PublishClientExtensionTask extends DockerPushImage {
 					(Map<String, Object>)value);
 			}
 
-			values.put(entry.getKey(), value);
+			valuesMap.put(entry.getKey(), value);
 		}
 
-		return values;
+		return valuesMap;
 	}
 
 	private Map<String, Object> _readJSON(

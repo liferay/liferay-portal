@@ -17,77 +17,78 @@ import java.util.TreeMap;
 public class ClientExtensionValues {
 
 	public static Map<String, Object> derive(
-		String baseImage, Map<String, Object> configs, String imageRepository,
-		String imageTag, Map<String, Object> lcp, String serviceId) {
+		String baseImage, Map<String, Object> configsMap,
+		String imageRepository, String imageTag, Map<String, Object> lcpMap,
+		String serviceId) {
 
 		String baseRepository = getRepository(baseImage);
 
-		Map<String, Object> workload = new LinkedHashMap<>();
+		Map<String, Object> workloadMap = new LinkedHashMap<>();
 
-		workload.put("containerPort", 80);
-		workload.put("kind", "Deployment");
-		workload.put("replicas", 1);
+		workloadMap.put("containerPort", 80);
+		workloadMap.put("kind", "Deployment");
+		workloadMap.put("replicas", 1);
 
-		Map<?, ?> loadBalancer = _getMap(lcp.get("loadBalancer"));
+		Map<?, ?> loadBalancerMap = _getMap(lcpMap.get("loadBalancer"));
 
-		if (loadBalancer != null) {
-			Integer targetPort = _getInteger(loadBalancer.get("targetPort"));
+		if (loadBalancerMap != null) {
+			Integer targetPort = _getInteger(loadBalancerMap.get("targetPort"));
 
 			if (targetPort != null) {
-				workload.put("containerPort", targetPort);
+				workloadMap.put("containerPort", targetPort);
 			}
 		}
 
-		String kind = _getString(lcp.get("kind"));
+		String kind = _getString(lcpMap.get("kind"));
 
 		if (kind != null) {
-			workload.put("kind", kind);
+			workloadMap.put("kind", kind);
 		}
 
-		Integer scale = _getInteger(lcp.get("scale"));
+		Integer scale = _getInteger(lcpMap.get("scale"));
 
 		if (scale != null) {
-			workload.put("replicas", scale);
+			workloadMap.put("replicas", scale);
 		}
 
-		String schedule = _getString(lcp.get("schedule"));
+		String schedule = _getString(lcpMap.get("schedule"));
 
 		if (schedule != null) {
-			workload.put("schedule", schedule);
+			workloadMap.put("schedule", schedule);
 		}
 
 		for (String probeName :
 				new String[] {"livenessProbe", "readinessProbe"}) {
 
-			Map<?, ?> probe = _getMap(lcp.get(probeName));
+			Map<?, ?> probeMap = _getMap(lcpMap.get(probeName));
 
-			if ((probe == null) || probe.isEmpty()) {
+			if ((probeMap == null) || probeMap.isEmpty()) {
 				continue;
 			}
 
-			workload.put(probeName, probe);
+			workloadMap.put(probeName, probeMap);
 		}
 
-		Map<String, Object> startupProbe = _getStartupProbe(lcp);
+		Map<String, Object> startupProbeMap = _getStartupProbeMap(lcpMap);
 
-		if (startupProbe != null) {
-			workload.put("startupProbe", startupProbe);
+		if (startupProbeMap != null) {
+			workloadMap.put("startupProbe", startupProbeMap);
 		}
 
-		Map<String, Object> env = new TreeMap<>();
+		Map<String, Object> envMap = new TreeMap<>();
 
-		Map<?, ?> lcpEnv = _getMap(lcp.get("env"));
+		Map<?, ?> lcpEnvMap = _getMap(lcpMap.get("env"));
 
-		if (lcpEnv != null) {
-			for (Map.Entry<?, ?> entry : lcpEnv.entrySet()) {
-				env.put(
+		if (lcpEnvMap != null) {
+			for (Map.Entry<?, ?> entry : lcpEnvMap.entrySet()) {
+				envMap.put(
 					String.valueOf(entry.getKey()),
 					String.valueOf(entry.getValue()));
 			}
 		}
 
 		if (_isLiferayRepository(baseRepository, "batch")) {
-			for (String configurationKey : configs.keySet()) {
+			for (String configurationKey : configsMap.keySet()) {
 				int index = configurationKey.indexOf(
 					_CONFIGURATION_KEY_HEADLESS_SERVER);
 
@@ -104,63 +105,63 @@ public class ClientExtensionValues {
 					identifier = identifier.substring(0, index);
 				}
 
-				env.put("LIFERAY_BATCH_OAUTH_APP_ERC", identifier);
+				envMap.put("LIFERAY_BATCH_OAUTH_APP_ERC", identifier);
 			}
 		}
 
-		workload.put("env", env);
+		workloadMap.put("env", envMap);
 
 		boolean workloadEnabled = !isConfigurationOnly(baseImage);
 
-		workload.put("enabled", workloadEnabled);
+		workloadMap.put("enabled", workloadEnabled);
 
 		if (_isLiferayRepository(baseRepository, "caddy")) {
-			Map<String, Object> volumeMount = new TreeMap<>();
+			Map<String, Object> volumeMountMap = new TreeMap<>();
 
-			volumeMount.put("mountPath", "/etc/caddy.d");
-			volumeMount.put("name", "caddy-d");
+			volumeMountMap.put("mountPath", "/etc/caddy.d");
+			volumeMountMap.put("name", "caddy-d");
 
-			workload.put(
-				"volumeMounts", Collections.singletonList(volumeMount));
+			workloadMap.put(
+				"volumeMounts", Collections.singletonList(volumeMountMap));
 
-			Map<String, Object> volume = new TreeMap<>();
+			Map<String, Object> volumeMap = new TreeMap<>();
 
-			volume.put("emptyDir", Collections.emptyMap());
-			volume.put("name", "caddy-d");
+			volumeMap.put("emptyDir", Collections.emptyMap());
+			volumeMap.put("name", "caddy-d");
 
-			workload.put("volumes", Collections.singletonList(volume));
+			workloadMap.put("volumes", Collections.singletonList(volumeMap));
 		}
 
-		Map<String, Object> clientExtension = new LinkedHashMap<>();
+		Map<String, Object> clientExtensionMap = new LinkedHashMap<>();
 
-		clientExtension.put("configs", new TreeMap<>(configs));
-		clientExtension.put("serviceId", serviceId);
+		clientExtensionMap.put("configs", new TreeMap<>(configsMap));
+		clientExtensionMap.put("serviceId", serviceId);
 
-		Map<String, Object> values = new LinkedHashMap<>();
+		Map<String, Object> valuesMap = new LinkedHashMap<>();
 
-		values.put("clientExtension", clientExtension);
+		valuesMap.put("clientExtension", clientExtensionMap);
 
-		values.put("fullnameOverride", serviceId);
+		valuesMap.put("fullnameOverride", serviceId);
 
 		if (workloadEnabled) {
-			Map<String, Object> image = new LinkedHashMap<>();
+			Map<String, Object> imageMap = new LinkedHashMap<>();
 
-			image.put("repository", imageRepository);
-			image.put("tag", imageTag);
+			imageMap.put("repository", imageRepository);
+			imageMap.put("tag", imageTag);
 
-			values.put("image", image);
+			valuesMap.put("image", imageMap);
 		}
 
-		values.put(
+		valuesMap.put(
 			"service",
 			Collections.singletonMap(
 				"enabled",
 				workloadEnabled &&
-				Objects.equals(workload.get("kind"), "Deployment")));
+				Objects.equals(workloadMap.get("kind"), "Deployment")));
 
-		values.put("workload", workload);
+		valuesMap.put("workload", workloadMap);
 
-		return values;
+		return valuesMap;
 	}
 
 	public static String getBaseImage(String dockerfileText) {
@@ -223,37 +224,37 @@ public class ClientExtensionValues {
 		return null;
 	}
 
-	private static Map<String, Object> _getStartupProbe(
-		Map<String, Object> lcp) {
+	private static Map<String, Object> _getStartupProbeMap(
+		Map<String, Object> lcpMap) {
 
 		for (String probeName :
 				new String[] {"readinessProbe", "livenessProbe"}) {
 
-			Map<?, ?> probe = _getMap(lcp.get(probeName));
+			Map<?, ?> probeMap = _getMap(lcpMap.get(probeName));
 
-			if (probe == null) {
+			if (probeMap == null) {
 				continue;
 			}
 
-			Map<String, Object> startupProbe = new LinkedHashMap<>();
+			Map<String, Object> startupProbeMap = new LinkedHashMap<>();
 
-			startupProbe.put("failureThreshold", 60);
-			startupProbe.put("periodSeconds", 5);
+			startupProbeMap.put("failureThreshold", 60);
+			startupProbeMap.put("periodSeconds", 5);
 
 			for (String handler :
 					new String[] {"exec", "grpc", "httpGet", "tcpSocket"}) {
 
-				Object value = probe.get(handler);
+				Object value = probeMap.get(handler);
 
 				if (value == null) {
 					continue;
 				}
 
-				startupProbe.put(handler, value);
+				startupProbeMap.put(handler, value);
 			}
 
-			if (startupProbe.size() > 2) {
-				return startupProbe;
+			if (startupProbeMap.size() > 2) {
+				return startupProbeMap;
 			}
 		}
 

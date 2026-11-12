@@ -1623,7 +1623,7 @@ public class ClientExtensionProjectConfigurator
 		"oci://us-central1-docker.pkg.dev/external-assets-prd" +
 			"/liferay-helm-chart/liferay-client-extension";
 
-	private static final String _CHART_VERSION = "0.1.1";
+	private static final String _CHART_VERSION = "0.1.0";
 
 	private static final String _CLIENT_EXTENSION_YAML =
 		"client-extension.yaml";
