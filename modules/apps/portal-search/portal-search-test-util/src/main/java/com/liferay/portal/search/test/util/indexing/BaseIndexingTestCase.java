@@ -203,17 +203,16 @@ public abstract class BaseIndexingTestCase {
 	protected SearchContext createSearchContext() {
 		SearchContext searchContext = new SearchContext();
 
-		searchContext.setCommitImmediately(true);
-		searchContext.setCompanyId(getCompanyId());
-		searchContext.setGroupIds(new long[] {_GROUP_ID});
-
 		QueryConfig queryConfig = searchContext.getQueryConfig();
 
 		queryConfig.setHighlightEnabled(false);
 		queryConfig.setHitsProcessingEnabled(true);
 		queryConfig.setScoreEnabled(false);
 
+		searchContext.setCommitImmediately(true);
+		searchContext.setCompanyId(getCompanyId());
 		searchContext.setEnd(QueryUtil.ALL_POS);
+		searchContext.setGroupIds(new long[] {_GROUP_ID});
 		searchContext.setStart(QueryUtil.ALL_POS);
 
 		return searchContext;
