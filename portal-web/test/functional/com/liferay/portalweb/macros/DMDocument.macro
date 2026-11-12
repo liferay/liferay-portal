@@ -4689,6 +4689,11 @@ definition {
 					locator1 = "DocumentsAndMedia#ICON_DOCUMENT_WORKFLOW_STATUS_DRAFT",
 					value1 = "Draft");
 			}
+			else if (${dmDocumentStatus} == "Pending") {
+				AssertTextEquals(
+					locator1 = "DocumentsAndMedia#ICON_DOCUMENT_WORKFLOW_STATUS_PENDING",
+					value1 = "Pending");
+			}
 			else {
 				AssertTextEquals(
 					locator1 = "DocumentsAndMedia#ICON_DOCUMENT_WORKFLOW_STATUS",

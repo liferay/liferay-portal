@@ -376,7 +376,7 @@ definition {
 
 		Workflow.unpublishWorkflowDefinition(workflowDefinitionTitle = "Single Approver");
 
-		Workflow.permissionsWorkflowDefinition(workflowDefinitionTitle = "Single Approver");
+		ProcessBuilderListView.gotoPermissions(workflowDefinitionTitle = "Single Approver");
 	}
 
 	@description = "Verify that the user can select View option in the kebab menu for a particular row"

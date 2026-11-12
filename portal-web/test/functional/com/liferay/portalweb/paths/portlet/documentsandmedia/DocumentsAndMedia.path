@@ -162,6 +162,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ICON_DOCUMENT_WORKFLOW_STATUS_PENDING</td>
+	<td>//dd[contains(.,'${key_dmDocumentTitle}')]//span[@class='label label-info']//span[@class='label-item label-item-expand']</td>
+	<td></td>
+</tr>
+<tr>
 	<td></td>
 	<td></td>
 	<td></td>

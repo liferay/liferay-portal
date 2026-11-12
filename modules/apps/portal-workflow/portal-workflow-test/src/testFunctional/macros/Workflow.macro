@@ -751,17 +751,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro permissionsWorkflowDefinition(workflowDefinitionTitle = null) {
-		var key_workflowDefinitionTitle = ${workflowDefinitionTitle};
-
-		Click(locator1 = "WorkflowDefinition#DEFINITION_TABLE_SPECIFIC_DEFINITION_ELLIPSIS");
-
-		MenuItem.click(menuItem = "Permissions");
-
-		AssertElementPresent(locator1 = "WorkflowDefinition#DEFINITION_TABLE_TITLE_PERMISSIONS");
-	}
-
-	@summary = "Default summary"
 	macro processBuilderFilterAndOrder(optionOrder = null) {
 		var key_optionOrder = ${optionOrder};
 

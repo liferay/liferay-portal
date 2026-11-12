@@ -22,7 +22,7 @@
 </tr>
 <tr>
 	<td>CLOSE_MODAL_BUTTON</td>
-	<td>//div[@class='modal-header']//button[contains(@aria-label,'close')]</td>
+	<td>//div[contains(@class,'modal-header')]//button[@aria-label='Close']</td>
 	<td></td>
 </tr>
 <tr>
@@ -88,11 +88,6 @@
 <tr>
 	<td>BULK_NEW_ASSIGNEE</td>
 	<td>//input[contains(@placeholder,'Search for an Assignee')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>SEARCH_NEW_ASSIGNEE</td>
-	<td>//input[contains(@class,'form-control')]</td>
 	<td></td>
 </tr>
 <tr>

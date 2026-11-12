@@ -165,10 +165,6 @@ definition {
 			roleTitle = "Board Member",
 			userScreenName = "usersn");
 
-		ApplicationsMenu.gotoSite(site = ${siteName});
-
-		ProductMenu.gotoSite(site = "Space Program Academy of Continuing Education");
-
 		ProductMenu.gotoPortlet(
 			category = "Content & Data",
 			panel = "Site Administration",
@@ -249,10 +245,6 @@ definition {
 		User.logoutAndLoginPG(
 			userLoginEmailAddress = "test@liferay.com",
 			userLoginFullName = "Test Test");
-
-		ApplicationsMenu.gotoSite(site = ${siteName});
-
-		ProductMenu.gotoSite(site = "Space Program Academy of Continuing Education");
 
 		for (var entryCount : list "1,2,3") {
 			ProductMenu.gotoPortlet(
