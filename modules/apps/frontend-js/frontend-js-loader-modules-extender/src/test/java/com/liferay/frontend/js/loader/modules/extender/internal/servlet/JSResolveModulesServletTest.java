@@ -181,14 +181,14 @@ public class JSResolveModulesServletTest {
 		// Request above default limit
 
 		mockHttpServletResponse = _service(
-			null, _OVERFLOW_MODULES_QUERY_STRING, post);
+			null, _MODULES_QUERY_STRING_OVERFLOW, post);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
 
 		// Request above hard limit
 
 		mockHttpServletResponse = _service(
-			0L, _OVERFLOW_MODULES_QUERY_STRING, post);
+			0L, _MODULES_QUERY_STRING_OVERFLOW, post);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
 
@@ -222,7 +222,7 @@ public class JSResolveModulesServletTest {
 	private static final String _MODULES_QUERY_STRING =
 		"modules=" + _MODULES_PARAMETER;
 
-	private static final String _OVERFLOW_MODULES_QUERY_STRING =
+	private static final String _MODULES_QUERY_STRING_OVERFLOW =
 		"modules=" + RandomTestUtil.randomString((1024 * 1024) + 1);
 
 	private static final String _RESPONSE_CONTENT =
