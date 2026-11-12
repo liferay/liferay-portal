@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -375,11 +378,21 @@ public class TestrayServer {
 			return;
 		}
 
+		File resultFile = new File(getResultsDir(), fileName);
+
+		File tempResultFile = new File(
+			resultFile.getParentFile(), fileName + ".tmp");
+
 		try {
-			JenkinsResultsParserUtil.write(
-				new File(getResultsDir(), fileName), fileContent);
+			JenkinsResultsParserUtil.write(tempResultFile, fileContent);
+
+			Files.move(
+				tempResultFile.toPath(), resultFile.toPath(),
+				StandardCopyOption.ATOMIC_MOVE,
+				StandardCopyOption.REPLACE_EXISTING);
 		}
 		catch (IOException ioException) {
+			tempResultFile.delete();
 		}
 	}
 
