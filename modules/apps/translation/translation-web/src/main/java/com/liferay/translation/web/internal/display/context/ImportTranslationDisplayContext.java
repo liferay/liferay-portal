@@ -97,7 +97,8 @@ public class ImportTranslationDisplayContext {
 			return _redirect;
 		}
 
-		_redirect = ParamUtil.getString(_httpServletRequest, "redirect");
+		_redirect = PortalUtil.escapeRedirect(
+			ParamUtil.getString(_httpServletRequest, "redirect"));
 
 		return _redirect;
 	}

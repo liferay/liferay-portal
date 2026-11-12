@@ -150,7 +150,7 @@ public class ExportTranslationDisplayContext {
 		).put(
 			"pathModule", PortalUtil.getPathModule()
 		).put(
-			"redirectURL", PortalUtil.escapeRedirect(getRedirect())
+			"redirectURL", getRedirect()
 		).build();
 	}
 
@@ -159,7 +159,8 @@ public class ExportTranslationDisplayContext {
 			return _redirect;
 		}
 
-		_redirect = ParamUtil.getString(_httpServletRequest, "redirect");
+		_redirect = PortalUtil.escapeRedirect(
+			ParamUtil.getString(_httpServletRequest, "redirect"));
 
 		return _redirect;
 	}

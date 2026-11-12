@@ -133,7 +133,8 @@ public class ImportTranslationResultsDisplayContext implements Serializable {
 			return _redirect;
 		}
 
-		_redirect = ParamUtil.getString(httpServletRequest, "redirect");
+		_redirect = PortalUtil.escapeRedirect(
+			ParamUtil.getString(httpServletRequest, "redirect"));
 
 		return _redirect;
 	}
