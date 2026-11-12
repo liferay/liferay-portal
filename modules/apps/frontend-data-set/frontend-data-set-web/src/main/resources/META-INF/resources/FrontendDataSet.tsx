@@ -2611,6 +2611,10 @@ const FrontendDataSet = ({
 		selectedItemsKey,
 	});
 
+	if (!otherProps.views?.length) {
+		return null;
+	}
+
 	return (
 		<DnDContext.Provider
 			value={{

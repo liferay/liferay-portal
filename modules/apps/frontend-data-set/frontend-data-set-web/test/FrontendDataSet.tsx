@@ -102,6 +102,14 @@ describe('FrontendDataSet', () => {
 		window.history.pushState({}, '', '/');
 	});
 
+	it('renders nothing when there are no views', () => {
+		const {container} = render(
+			<FrontendDataSet apiURL="/o/products" id={id} />
+		);
+
+		expect(container).toBeEmptyDOMElement();
+	});
+
 	it('cancels a search request superseded by a newer one', async () => {
 		const requests = mockPendingRequests();
 
