@@ -451,7 +451,7 @@ describe('shapes and arrows', () => {
 		expect(shape(container)).toHaveAttribute('height', '120');
 		expect(hit(container)).toHaveAttribute('aria-label', 'rectangle');
 
-		addShape('square');
+		addShape('square[shape]');
 
 		const squares = container.querySelectorAll(
 			'.editor-workspace rect[fill]:not([class])'
@@ -1242,7 +1242,7 @@ describe('groups and the clipboard', () => {
 
 		expect(screen.getByRole('status')).not.toBeEmptyDOMElement();
 
-		addShape('square');
+		addShape('square[shape]');
 
 		const third = container.querySelectorAll('.overlay-hit')[2];
 
