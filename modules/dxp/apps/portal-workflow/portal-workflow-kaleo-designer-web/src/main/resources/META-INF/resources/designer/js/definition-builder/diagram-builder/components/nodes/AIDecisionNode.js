@@ -14,6 +14,8 @@ export default function AIDecisionNode({
 		description,
 		inputVariables,
 		label,
+		modelName,
+		modelProvider,
 		newNode,
 		outputVariables,
 		prompt,
@@ -39,6 +41,8 @@ export default function AIDecisionNode({
 			id={id}
 			inputVariables={inputVariables}
 			label={label}
+			modelName={modelName}
+			modelProvider={modelProvider}
 			newNode={newNode}
 			nodeTypeClassName="ai-decision"
 			outputVariables={outputVariables}

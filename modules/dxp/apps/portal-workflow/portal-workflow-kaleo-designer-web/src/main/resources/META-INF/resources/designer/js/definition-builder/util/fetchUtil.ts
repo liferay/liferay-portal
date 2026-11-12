@@ -7,6 +7,7 @@ import {fetch} from 'frontend-js-web';
 
 import {contextUrl} from '../constants';
 
+export const aiHubBaseURL = '/o/ai-hub';
 export const userBaseURL = '/o/headless-admin-user/v1.0';
 export const workflowBaseURL = '/o/headless-admin-workflow/v1.0';
 
@@ -64,6 +65,28 @@ export function retrieveDefinitionRequest(
 		headers: HEADERS,
 		method: 'GET',
 	});
+}
+
+export function retrieveModelProviderModels(
+	modelProviderExternalReferenceCode: string
+) {
+	return fetch(
+		`${window.location.origin}${contextUrl}${aiHubBaseURL}/v1.0/model-providers/by-external-reference-code/${encodeURIComponent(modelProviderExternalReferenceCode)}/models`,
+		{
+			headers: HEADERS,
+			method: 'GET',
+		}
+	);
+}
+
+export function retrieveModelProviders() {
+	return fetch(
+		`${window.location.origin}${contextUrl}${aiHubBaseURL}/model-providers?fields=externalReferenceCode,title&pageSize=-1&sort=title:asc`,
+		{
+			headers: HEADERS,
+			method: 'GET',
+		}
+	);
 }
 
 export function retrieveRole(
