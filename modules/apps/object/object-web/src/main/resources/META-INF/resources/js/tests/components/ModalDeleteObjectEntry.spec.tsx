@@ -10,6 +10,22 @@ import React from 'react';
 
 import ModalDeleteObjectEntry from '../../components/ModalDeleteObjectEntry';
 
+const mockDeleteItem = jest.fn(() => new Promise(() => {}));
+
+jest.mock('@liferay/object-js-components-web', () => {
+	const objectJSComponentsWeb = jest.requireActual(
+		'@liferay/object-js-components-web'
+	);
+
+	return {
+		...objectJSComponentsWeb,
+		API: {
+			...objectJSComponentsWeb.API,
+			deleteItem: () => mockDeleteItem(),
+		},
+	};
+});
+
 const MOCK_OBJECT_ENTRY = {
 	externalReferenceCode: 'test',
 	id: 1,
@@ -37,6 +53,43 @@ describe('ModalDeleteObjectEntry', () => {
 		userEvent.click(deleteButton);
 
 		expect(deleteButton).toBeDisabled();
+	});
+
+	it('enables the buttons again after a blocked deletion', async () => {
+		mockDeleteItem.mockRejectedValueOnce(
+			new Error('deletion-not-possible-message')
+		);
+
+		const {findByText} = render(
+			<ModalDeleteObjectEntry
+				byExternalReferenceCodePath="/test"
+				portletNamespace="_portletNamespace_"
+			/>
+		);
+
+		await act(async () => {
+			Liferay.fire('_portletNamespace_openModalDeleteObjectEntry', {
+				objectEntry: MOCK_OBJECT_ENTRY,
+			});
+		});
+
+		userEvent.click(await findByText('delete'));
+
+		await findByText('deletion-not-possible-message');
+
+		const closeButton = await findByText('close');
+
+		expect(closeButton).not.toBeDisabled();
+
+		userEvent.click(closeButton);
+
+		await act(async () => {
+			Liferay.fire('_portletNamespace_openModalDeleteObjectEntry', {
+				objectEntry: MOCK_OBJECT_ENTRY,
+			});
+		});
+
+		expect(await findByText('delete')).not.toBeDisabled();
 	});
 
 	it('opens the modal only in the widget that fired the event', async () => {
