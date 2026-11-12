@@ -23,10 +23,12 @@ import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden'
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {expandSection} from '../../../utils/expandSection';
 import getGlobalSiteId from '../../../utils/getGlobalSiteId';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {performLogout} from '../../../utils/performLogin';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import getDataStructureDefinition from '../../journal-web/main/utils/getDataStructureDefinition';
 import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
@@ -1763,6 +1765,82 @@ test(
 			await expect(
 				page.getByRole('button', {name: 'Edit Tags'})
 			).toBeDisabled();
+		});
+	}
+);
+
+test(
+	'Required fields of a document type with a metadata set are validated before publishing',
+	{
+		tag: '@LPD-115154',
+	},
+	async ({apiHelpers, documentLibraryEditFilePage, page, site}) => {
+		const documentTypeName = getRandomString();
+		const metadataFieldName = `Metadata${getRandomInt()}`;
+		const requiredFieldName = `Required${getRandomInt()}`;
+
+		const metadataSet = await test.step('Add a metadata set', async () => {
+			return apiHelpers.dataEngine.createDocumentMetadataSet(
+				site.id,
+				getDataStructureDefinition({
+					defaultLanguageId: 'en_US',
+					fields: [{fieldType: 'text', name: metadataFieldName}],
+					name: getRandomString(),
+				})
+			);
+		});
+
+		await test.step('Add a document type with a required field and the metadata set', async () => {
+			const {dataDefinitionFields, defaultDataLayout} =
+				getDataStructureDefinition({
+					defaultLanguageId: 'en_US',
+					fields: [{name: requiredFieldName, required: true}],
+					name: documentTypeName,
+				});
+
+			await apiHelpers.post(
+				`${apiHelpers.baseUrl}headless-delivery/v1.0/sites/${site.id}/document-data-definition-types`,
+				{
+					data: {
+						availableLanguages: ['en-US'],
+						dataDefinitionFields,
+						dataLayout: defaultDataLayout,
+						documentMetadataSetIds: [metadataSet.id],
+						name: documentTypeName,
+					},
+				}
+			);
+		});
+
+		await test.step('Publish with the required field empty', async () => {
+			await documentLibraryEditFilePage.goToNewFileDifferentType(
+				documentTypeName,
+				site.friendlyUrlPath
+			);
+
+			await page.getByLabel('Title Required').fill(getRandomString());
+			await page.getByLabel(metadataFieldName).fill(getRandomString());
+
+			await documentLibraryEditFilePage.publishButton.click();
+
+			await expect(
+				page.getByText('This field is required.')
+			).toBeVisible();
+
+			await expect(
+				documentLibraryEditFilePage.publishButton
+			).toBeVisible();
+		});
+
+		await test.step('Publish with every required field filled', async () => {
+			await page.getByLabel(requiredFieldName).fill(getRandomString());
+
+			await documentLibraryEditFilePage.publishButton.click();
+
+			await waitForAlert(
+				page,
+				'Success:Your request completed successfully.'
+			);
 		});
 	}
 );

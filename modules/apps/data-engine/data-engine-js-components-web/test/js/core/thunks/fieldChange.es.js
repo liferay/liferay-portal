@@ -9,7 +9,7 @@ const DEFAULT_LANGUAGE_ID = 'en_US';
 
 const EDITING_LANGUAGE_ID = 'es_ES';
 
-const createPages = (localizedValue, localizable) => [
+const createPages = (localizedValue, localizable, name = 'Text1') => [
 	{
 		rows: [
 			{
@@ -17,10 +17,10 @@ const createPages = (localizedValue, localizable) => [
 					{
 						fields: [
 							{
-								fieldName: 'Text1',
+								fieldName: name,
 								localizable,
 								localizedValue,
-								name: 'Text1',
+								name,
 								type: 'text',
 								visible: true,
 							},
@@ -68,6 +68,21 @@ const changeField = async (localizedValue, value, localizable = true) => {
 };
 
 describe('fieldChange', () => {
+	const originalThemeDisplay = themeDisplay;
+
+	beforeEach(() => {
+		themeDisplay = {
+			...originalThemeDisplay,
+			getSiteGroupId: () => '20126',
+		};
+	});
+
+	afterEach(() => {
+		jest.useRealTimers();
+
+		themeDisplay = originalThemeDisplay;
+	});
+
 	it('does not record a translation on a nonlocalizable field', async () => {
 		const field = await changeField(undefined, 'new value', false);
 
@@ -98,13 +113,6 @@ describe('fieldChange', () => {
 	});
 
 	it('evaluates a configuration field in the default language', async () => {
-		const originalThemeDisplay = themeDisplay;
-
-		themeDisplay = {
-			...originalThemeDisplay,
-			getSiteGroupId: () => '20126',
-		};
-
 		jest.useFakeTimers();
 
 		const pages = createPages({[DEFAULT_LANGUAGE_ID]: 'Hello'}, true);
@@ -143,10 +151,65 @@ describe('fieldChange', () => {
 		const [, {body}] = fetch.mock.calls[0];
 
 		expect(body.get('languageId')).toBe(DEFAULT_LANGUAGE_ID);
+	});
 
-		jest.useRealTimers();
+	it('keeps the values of each container when their evaluations overlap', async () => {
+		jest.useFakeTimers();
 
-		themeDisplay = originalThemeDisplay;
+		fetch.mockResponseOnce(
+			JSON.stringify(createPages(undefined, false, 'TextA'))
+		);
+		fetch.mockResponseOnce(
+			JSON.stringify(createPages(undefined, false, 'TextB'))
+		);
+
+		const evaluatedPages = {};
+
+		const changeContainerField = (containerId, name, value) =>
+			fieldChange({
+				containerId,
+				defaultLanguageId: DEFAULT_LANGUAGE_ID,
+				editingLanguageId: DEFAULT_LANGUAGE_ID,
+				focusedField: {},
+				formId: 'formId',
+				objectFields: [],
+				pages: createPages(undefined, false, name),
+				portletNamespace: '_portletNamespace_',
+				properties: {
+					fieldInstance: {
+						evaluable: true,
+						fieldName: name,
+						isDisposed: () => false,
+						name,
+						type: 'text',
+					},
+					key: 'value',
+					value,
+				},
+				rules: [],
+				submitButtonId: 'submitButtonId',
+				viewMode: true,
+			})((action) => {
+				if (action.type === 'field_evaluate') {
+					evaluatedPages[containerId] = action.payload;
+				}
+			});
+
+		const changes = Promise.all([
+			changeContainerField('containerA', 'TextA', 'a'),
+			changeContainerField('containerB', 'TextB', 'b'),
+		]);
+
+		jest.runAllTimers();
+
+		await changes;
+
+		expect(
+			evaluatedPages.containerA[0].rows[0].columns[0].fields[0].value
+		).toBe('a');
+		expect(
+			evaluatedPages.containerB[0].rows[0].columns[0].fields[0].value
+		).toBe('b');
 	});
 
 	it('records an edit when the locale is given its own value', async () => {
