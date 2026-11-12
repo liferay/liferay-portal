@@ -169,7 +169,7 @@ test.describe('Profiles - FDS Table', () => {
 		async ({fdsTablePage}) => {
 			await expectFDSTableColumns(fdsTablePage, [
 				'Title',
-				'Path',
+				'URL',
 				'Description',
 				'Status',
 				'Last Modified',

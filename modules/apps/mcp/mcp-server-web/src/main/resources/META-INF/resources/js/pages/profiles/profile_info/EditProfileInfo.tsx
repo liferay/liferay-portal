@@ -4,7 +4,7 @@
  */
 
 import ClayAlert from '@clayui/alert';
-import ClayButton from '@clayui/button';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {Text} from '@clayui/core';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
@@ -23,6 +23,7 @@ import {
 	ProfileFormValues,
 	ProfilePayload,
 } from '../../../types/Profile';
+import copyProfileURL from '../../../utils/copyProfileURL';
 import required from '../../../utils/required';
 import toIdentifier from '../../../utils/toIdentifier';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
@@ -245,6 +246,20 @@ function ProfileForm({
 							</Text>
 						}
 						required={!isDefaultProfile}
+						suffix={
+							<ClayButtonWithIcon
+								aria-label={Liferay.Language.get('copy-url')}
+								disabled={
+									!isDefaultProfile && !values.profilePath
+								}
+								displayType="secondary"
+								onClick={() =>
+									copyProfileURL(values.profilePath)
+								}
+								symbol="copy"
+								title={Liferay.Language.get('copy-url')}
+							/>
+						}
 						validate={
 							isDefaultProfile ? undefined : validateProfilePath
 						}

@@ -107,6 +107,52 @@ describe('EditProfileInfo', () => {
 		).toBeInTheDocument();
 	});
 
+	it('copies the base URL of the default profile', async () => {
+		fetch.mockResponseOnce(
+			JSON.stringify({
+				description: 'Description',
+				externalReferenceCode: 'L_MCP_SERVER_DEFAULT_PROFILE',
+				name: 'Default',
+				profilePath: '',
+				profileStatus: {key: 'active'},
+			})
+		);
+
+		const user = userEvent.setup();
+
+		renderEditProfileInfo('L_MCP_SERVER_DEFAULT_PROFILE');
+
+		await user.click(await screen.findByRole('button', {name: 'copy-url'}));
+
+		expect(await navigator.clipboard.readText()).toBe(
+			`${window.location.origin}/o/mcp`
+		);
+
+		expect(
+			await screen.findByText('copied-to-clipboard')
+		).toBeInTheDocument();
+	});
+
+	it('copies the URL of the profile path', async () => {
+		const user = userEvent.setup();
+
+		renderEditProfileInfo();
+
+		const copyButton = screen.getByRole('button', {name: 'copy-url'});
+
+		expect(copyButton).toBeDisabled();
+
+		await user.type(
+			screen.getByRole('textbox', {name: /^title/}),
+			'My Docs'
+		);
+		await user.click(copyButton);
+
+		expect(await navigator.clipboard.readText()).toBe(
+			`${window.location.origin}/o/mcp/my-docs`
+		);
+	});
+
 	it('keeps only valid characters in the profile path while typing', async () => {
 		renderEditProfileInfo();
 
@@ -204,9 +250,9 @@ describe('EditProfileInfo', () => {
 
 		renderEditProfileInfo('PROFILE_ERC');
 
-		expect(await screen.findByRole('alert')).toHaveTextContent(
-			'Profile not found'
-		);
+		expect(
+			await screen.findByText('Profile not found')
+		).toBeInTheDocument();
 		expect(navigate).toHaveBeenCalledWith(BACK_URL);
 	});
 });

@@ -20,6 +20,7 @@ interface FormFieldProps {
 	onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 	prefix?: React.ReactNode;
 	required?: boolean;
+	suffix?: React.ReactNode;
 	validate?: FieldValidator;
 }
 
@@ -33,12 +34,31 @@ export function FormField({
 	onChange,
 	prefix,
 	required: isRequired,
+	suffix,
 	validate,
 }: FormFieldProps) {
 	const [field, meta] = useField({
 		name,
 		validate: validate ?? (isRequired ? required : undefined),
 	});
+
+	const input = (
+		<ClayInput
+			{...field}
+			aria-describedby={`${id}fieldFeedback`}
+			aria-invalid={meta.touched && meta.error ? true : undefined}
+			component={component}
+			disabled={disabled}
+			id={id}
+			onChange={(event) => {
+				field.onChange(event);
+
+				onChange?.(event);
+			}}
+			required={isRequired}
+			type="text"
+		/>
+	);
 
 	return (
 		<FieldBase
@@ -51,21 +71,15 @@ export function FormField({
 		>
 			{prefix}
 
-			<ClayInput
-				{...field}
-				aria-describedby={`${id}fieldFeedback`}
-				aria-invalid={meta.touched && meta.error ? true : undefined}
-				component={component}
-				disabled={disabled}
-				id={id}
-				onChange={(event) => {
-					field.onChange(event);
+			{suffix ? (
+				<ClayInput.Group>
+					<ClayInput.GroupItem>{input}</ClayInput.GroupItem>
 
-					onChange?.(event);
-				}}
-				required={isRequired}
-				type="text"
-			/>
+					<ClayInput.GroupItem shrink>{suffix}</ClayInput.GroupItem>
+				</ClayInput.Group>
+			) : (
+				input
+			)}
 		</FieldBase>
 	);
 }
