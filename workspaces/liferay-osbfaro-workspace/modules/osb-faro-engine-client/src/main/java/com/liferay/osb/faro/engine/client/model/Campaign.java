@@ -40,6 +40,14 @@ public class Campaign {
 		return _individualsTouched;
 	}
 
+	public Date getLastTouchDate() {
+		if (_lastTouchDate == null) {
+			return null;
+		}
+
+		return new Date(_lastTouchDate.getTime());
+	}
+
 	public String getOrigin() {
 		return _origin;
 	}
@@ -82,6 +90,12 @@ public class Campaign {
 		_individualsTouched = individualsTouched;
 	}
 
+	public void setLastTouchDate(Date lastTouchDate) {
+		if (lastTouchDate != null) {
+			_lastTouchDate = new Date(lastTouchDate.getTime());
+		}
+	}
+
 	public void setOrigin(String origin) {
 		_origin = origin;
 	}
@@ -102,6 +116,7 @@ public class Campaign {
 	private Date _endDate;
 	private String _id;
 	private Long _individualsTouched;
+	private Date _lastTouchDate;
 	private String _origin;
 	private Date _startDate;
 	private String _status;
