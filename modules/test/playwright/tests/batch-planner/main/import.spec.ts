@@ -1322,12 +1322,10 @@ test('can preview CSV file', async ({
 			.getByRole('columnheader', {name: 'externalReferenceCode'})
 	).toBeVisible();
 	await expect(
-		page
-			.getByLabel('Preview')
-			.getByRole('columnheader', {
-				exact: true,
-				name: 'testAutoIncrementField',
-			})
+		page.getByLabel('Preview').getByRole('columnheader', {
+			exact: true,
+			name: 'testAutoIncrementField',
+		})
 	).toBeVisible();
 	await expect(
 		page
@@ -2151,18 +2149,14 @@ test.describe('can rely on anyOf form validation', () => {
 		await page.getByRole('button', {name: 'Next'}).click();
 
 		await expect(
-			page
-				.getByLabel('Preview')
-				.getByRole('columnheader', {
-					name: 'r_studentSubjects1_c_studentERC',
-				})
+			page.getByLabel('Preview').getByRole('columnheader', {
+				name: 'r_studentSubjects1_c_studentERC',
+			})
 		).toBeVisible();
 		await expect(
-			page
-				.getByLabel('Preview')
-				.getByRole('columnheader', {
-					name: 'r_studentSubjects2_c_studentERC',
-				})
+			page.getByLabel('Preview').getByRole('columnheader', {
+				name: 'r_studentSubjects2_c_studentERC',
+			})
 		).toBeVisible();
 	});
 });
