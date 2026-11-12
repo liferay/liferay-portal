@@ -2416,6 +2416,55 @@ public class RenderLayoutStructureTagTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115011")
+	public void testRenderContainerWithMappedLink() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(), "javascript:alert(document.domain)",
+			RandomTestUtil.randomString());
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid());
+
+		JSONObject jsonObject = ContentLayoutTestUtil.addItemToLayout(
+			JSONUtil.put(
+				"link",
+				JSONUtil.put(
+					"classNameId", _portal.getClassNameId(JournalArticle.class)
+				).put(
+					"classPK", journalArticle.getResourcePrimKey()
+				).put(
+					"fieldId", "title"
+				).put(
+					"target", "_blank\" data-test=\""
+				)
+			).toString(),
+			LayoutDataItemTypeConstants.TYPE_CONTAINER, draftLayout,
+			_layoutStructureProvider, segmentsExperienceId);
+
+		_addFragmentEntryLinkToLayout(
+			JSONUtil.put(
+				LocaleUtil.toLanguageId(_portal.getSiteDefaultLocale(_group)),
+				RandomTestUtil.randomString()),
+			draftLayout, jsonObject.getString("addedItemId"),
+			segmentsExperienceId);
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		String content = _getRenderLayoutHTML(layout);
+
+		Assert.assertTrue(
+			StringUtil.startsWith(
+				content, "<a href=\"javascript%3aalert(document.domain)\""));
+		Assert.assertTrue(
+			content.contains("target=\"_blank&quot; data-test=&quot;"));
+	}
+
+	@Test
 	public void testRenderEditionForm() throws Exception {
 		MockObject mockObject = new MockObject(RandomTestUtil.randomLong());
 
