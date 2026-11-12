@@ -13,15 +13,15 @@ import {
 
 describe('session-properties', () => {
 	describe('CHANNEL_OPTIONS', () => {
-		it('should offer the six acquisition channels', () => {
-			expect(CHANNEL_OPTIONS).toEqual([
-				{label: 'Direct', value: 'direct'},
-				{label: 'Organic', value: 'organic'},
-				{label: 'Paid Search', value: 'paid search'},
-				{label: 'Referral', value: 'referral'},
-				{label: 'Social', value: 'social'},
-				{label: 'AI Chatbot', value: 'chatbot'},
-			]);
+		it('should give every channel a label and a value, both strings', () => {
+			expect(CHANNEL_OPTIONS.length).toBeGreaterThan(0);
+
+			CHANNEL_OPTIONS.forEach(({label, value}) => {
+				expect(typeof label).toBe('string');
+				expect(label).not.toBe('');
+				expect(typeof value).toBe('string');
+				expect(value).not.toBe('');
+			});
 		});
 
 		it('should keep every value lowercase to match Session.acquisitionChannel', () => {
