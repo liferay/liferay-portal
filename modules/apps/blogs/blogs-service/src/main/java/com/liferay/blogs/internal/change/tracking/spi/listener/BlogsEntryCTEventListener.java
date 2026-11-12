@@ -28,7 +28,10 @@ public class BlogsEntryCTEventListener implements CTEventListener {
 
 	@Override
 	public void onAfterPublish(long ctCollectionId) {
-		Pattern pattern = _getPattern(ctCollectionId);
+		Pattern pattern = Pattern.compile(
+			StringBundler.concat(
+				"(\\?|&(?:amp;)?)previewCTCollectionId=", ctCollectionId,
+				"(?!\\d)(&(?:amp;)?)?"));
 
 		for (CTEntry ctEntry :
 				_ctEntryLocalService.getCTEntries(
@@ -38,33 +41,29 @@ public class BlogsEntryCTEventListener implements CTEventListener {
 			BlogsEntry blogsEntry = _blogsEntryLocalService.fetchBlogsEntry(
 				ctEntry.getModelClassPK());
 
-			if ((blogsEntry == null) || (blogsEntry.getContent() == null)) {
+			if (blogsEntry == null) {
 				continue;
 			}
 
 			Matcher matcher = pattern.matcher(blogsEntry.getContent());
 
-			String content = matcher.replaceAll(StringPool.BLANK);
-
-			if (content.equals(blogsEntry.getContent())) {
+			if (!matcher.find()) {
 				continue;
 			}
 
+			blogsEntry.setContent(
+				matcher.replaceAll(
+					matchResult -> {
+						if (matchResult.group(2) == null) {
+							return StringPool.BLANK;
+						}
+
+						return matchResult.group(1);
+					}));
 			blogsEntry.setModifiedDate(blogsEntry.getModifiedDate());
-			blogsEntry.setContent(content);
 
 			_blogsEntryLocalService.updateBlogsEntry(blogsEntry);
 		}
-	}
-
-	private Pattern _getPattern(long ctCollectionId) {
-		String parameter =
-			"previewCTCollectionId=" + ctCollectionId + "(?!\\d)";
-
-		return Pattern.compile(
-			StringBundler.concat(
-				"(?<=\\?|&amp;)", parameter, "&amp;|(?:\\?|&amp;)", parameter,
-				"(?!&amp;)"));
 	}
 
 	@Reference
