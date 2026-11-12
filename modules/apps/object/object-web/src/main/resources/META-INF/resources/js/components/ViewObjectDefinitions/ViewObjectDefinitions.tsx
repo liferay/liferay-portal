@@ -26,6 +26,7 @@ import ObjectFoldersSideBar from './ObjectFoldersSidebar';
 import {
 	canCreateInObjectFolder,
 	deleteObjectDefinition,
+	getDefaultObjectFolder,
 	getObjectDefinitionsFilter,
 	getObjectFolderActions,
 } from './objectDefinitionUtil';
@@ -290,7 +291,7 @@ export default function ViewObjectDefinitions({
 
 		window.history.replaceState(null, '', currentURL.href);
 
-		setSelectedObjectFolder(allObjectFolders.items[0]);
+		setSelectedObjectFolder(getDefaultObjectFolder(allObjectFolders.items));
 	};
 
 	useEffect(() => {

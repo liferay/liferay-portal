@@ -500,6 +500,15 @@ export function canCreateInObjectFolder(
 	return folder.externalReferenceCode !== 'L_CMS_CONTENT_STRUCTURES';
 }
 
+export function getDefaultObjectFolder<T extends Partial<ObjectFolder>>(
+	objectFolders: T[]
+): T | undefined {
+	return (
+		objectFolders.find((objectFolder) => objectFolder.name === 'Default') ??
+		objectFolders[0]
+	);
+}
+
 export async function getUpdatedModelBuilderStructurePayload(
 	baseResourceURL: string,
 	currentObjectFolderName: string
