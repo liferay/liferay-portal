@@ -6,7 +6,11 @@ import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 export const useRangeSelectorChange = () => {
 	const history = useHistoryAdapter();
 
-	return ({rangeEnd, rangeKey, rangeStart}: RangeSelectors) => {
+	const handleRangeSelectorChange = ({
+		rangeEnd,
+		rangeKey,
+		rangeStart,
+	}: RangeSelectors) => {
 		history.push(
 			setUriQueryValues(
 				pickBy({rangeEnd, rangeKey, rangeStart}),
@@ -18,4 +22,6 @@ export const useRangeSelectorChange = () => {
 			)
 		);
 	};
+
+	return handleRangeSelectorChange;
 };
