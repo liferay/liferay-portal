@@ -7,23 +7,29 @@ package com.liferay.wiki.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.GroupConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ProgressTracker;
 import com.liferay.portal.kernel.util.ProgressTrackerThreadLocal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.wiki.constants.WikiConstants;
+import com.liferay.wiki.constants.WikiWebKeys;
 import com.liferay.wiki.exception.DuplicateWikiNodeExternalReferenceCodeException;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
@@ -134,6 +140,45 @@ public class WikiNodeLocalServiceTest {
 	}
 
 	@Test
+	public void testImportPagesFrontPage() throws Exception {
+		_group = GroupTestUtil.addGroup();
+
+		_node = WikiTestUtil.addNode(_group.getGroupId());
+
+		ProgressTracker progressTracker = new ProgressTracker(
+			StringUtil.randomString());
+
+		ProgressTrackerThreadLocal.setProgressTracker(progressTracker);
+
+		String frontPageName = RandomTestUtil.randomString();
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group.getGroupId(), WikiConstants.SERVICE_NAME,
+						MapUtil.<String, Object>singletonDictionary(
+							"frontPageName", frontPageName))) {
+
+			WikiNodeLocalServiceUtil.importPages(
+				TestPropsValues.getUserId(), _node.getNodeId(),
+				new InputStream[] {
+					new ByteArrayInputStream(
+						FileUtil.getBytes(
+							getClass(),
+							"/com/liferay/wiki/service/test/dependencies" +
+								"/liferay_media_wiki.xml")),
+					null, null
+				},
+				Collections.singletonMap(
+					WikiWebKeys.OPTIONS_FRONT_PAGE, new String[] {"Liferay"}));
+		}
+
+		Assert.assertNotNull(
+			WikiPageLocalServiceUtil.fetchPage(
+				_node.getNodeId(), frontPageName));
+	}
+
+	@Test
 	public void testMediaLinks() throws Exception {
 		_node = WikiTestUtil.addNode(TestPropsValues.getGroupId());
 
@@ -189,6 +234,9 @@ public class WikiNodeLocalServiceTest {
 		Assert.assertEquals(
 			"<<TableOfContents>>\n\n" + linkTag, importedPage.getContent());
 	}
+
+	@DeleteAfterTestRun
+	private Group _group;
 
 	@DeleteAfterTestRun
 	private WikiNode _node;
