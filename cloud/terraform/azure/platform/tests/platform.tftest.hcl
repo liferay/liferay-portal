@@ -586,7 +586,7 @@ run "should_wire_the_platform_identities" {
 	command=apply
 }
 variables {
-	argocd_helm_chart_version="10.1.3"
+	argocd_helm_chart_version="10.18.0"
 	cluster_secret_store={
 		key_vault={
 			name="liferay-test-vault"

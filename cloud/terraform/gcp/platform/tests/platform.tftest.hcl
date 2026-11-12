@@ -199,7 +199,7 @@ run "should_publish_the_marketplace_filestore_share" {
 	command=plan
 }
 variables {
-	argocd_helm_chart_version="10.1.3"
+	argocd_helm_chart_version="10.18.0"
 	deployment_name="liferay-test"
 	project_id="liferay-test-project"
 	region="us-central1"

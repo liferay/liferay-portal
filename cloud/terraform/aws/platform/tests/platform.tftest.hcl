@@ -419,7 +419,7 @@ run "should_publish_the_marketplace_volume_handle" {
 	command=apply
 }
 variables {
-	argocd_helm_chart_version="10.1.3"
+	argocd_helm_chart_version="10.18.0"
 	deployment_name="liferay-test"
 	region="us-east-1"
 }
