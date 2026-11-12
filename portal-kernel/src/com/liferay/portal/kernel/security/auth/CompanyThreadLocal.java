@@ -289,6 +289,16 @@ public class CompanyThreadLocal {
 			upgradingPortalInstance);
 	}
 
+	public static SafeCloseable unlock() {
+		if (!isLocked()) {
+			return SafeCloseable.EMPTY;
+		}
+
+		_locked.set(false);
+
+		return () -> _locked.set(true);
+	}
+
 	private static void _syncLastDBPartitionSessionState() {
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			LastSessionRecorderHelperUtil.syncLastSessionState(false);
