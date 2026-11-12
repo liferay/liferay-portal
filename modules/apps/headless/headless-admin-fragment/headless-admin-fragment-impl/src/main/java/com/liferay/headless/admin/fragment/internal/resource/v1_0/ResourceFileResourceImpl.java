@@ -5,9 +5,6 @@
 
 package com.liferay.headless.admin.fragment.internal.resource.v1_0;
 
-import com.liferay.document.library.kernel.exception.DuplicateFileEntryException;
-import com.liferay.document.library.kernel.exception.DuplicateFileEntryExternalReferenceCodeException;
-import com.liferay.document.library.kernel.exception.DuplicateFolderNameException;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
@@ -22,9 +19,6 @@ import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentCollectionService;
 import com.liferay.headless.admin.fragment.dto.v1_0.FileURLReference;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFile;
-import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFileExternalReferenceCodeException;
-import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFileNameException;
-import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFolderNameException;
 import com.liferay.headless.admin.fragment.internal.odata.entity.v1_0.ResourceFileEntityModel;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.FragmentSetUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ResourceFolderUtil;
@@ -267,24 +261,14 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 
 		_checkBytes(bytes);
 
-		try {
-			return _toResourceFile(
-				_dlAppLocalService.updateFileEntry(
-					contextUser.getUserId(), dlFileEntry.getFileEntryId(),
-					resourceFile.getName(),
-					_mimeTypes.getContentType(resourceFile.getName()),
-					resourceFile.getName(), null, null, null,
-					DLVersionNumberIncrease.NONE, bytes, null, null, null,
-					_getServiceContext(groupId, resourceFile)));
-		}
-		catch (DuplicateFileEntryException duplicateFileEntryException) {
-			throw new DuplicateResourceFileNameException(
-				duplicateFileEntryException.getMessage());
-		}
-		catch (DuplicateFolderNameException duplicateFolderNameException) {
-			throw new DuplicateResourceFolderNameException(
-				duplicateFolderNameException.getMessage());
-		}
+		return _toResourceFile(
+			_dlAppLocalService.updateFileEntry(
+				contextUser.getUserId(), dlFileEntry.getFileEntryId(),
+				resourceFile.getName(),
+				_mimeTypes.getContentType(resourceFile.getName()),
+				resourceFile.getName(), null, null, null,
+				DLVersionNumberIncrease.NONE, bytes, null, null, null,
+				_getServiceContext(groupId, resourceFile)));
 	}
 
 	private ResourceFile _addResourceFile(
@@ -306,30 +290,14 @@ public class ResourceFileResourceImpl extends BaseResourceFileResourceImpl {
 			resourceFile.getResourceFolderExternalReferenceCode(),
 			contextUser.getUserId());
 
-		try {
-			return _toResourceFile(
-				_dlAppLocalService.addFileEntry(
-					resourceFile.getExternalReferenceCode(),
-					contextUser.getUserId(), dlFolder.getRepositoryId(),
-					dlFolder.getFolderId(), resourceFile.getName(),
-					_mimeTypes.getContentType(resourceFile.getName()),
-					resourceFile.getName(), null, null, null, bytes, null, null,
-					null, _getServiceContext(groupId, resourceFile)));
-		}
-		catch (DuplicateFileEntryException duplicateFileEntryException) {
-			throw new DuplicateResourceFileNameException(
-				duplicateFileEntryException.getMessage());
-		}
-		catch (DuplicateFileEntryExternalReferenceCodeException
-					duplicateFileEntryExternalReferenceCodeException) {
-
-			throw new DuplicateResourceFileExternalReferenceCodeException(
-				duplicateFileEntryExternalReferenceCodeException.getMessage());
-		}
-		catch (DuplicateFolderNameException duplicateFolderNameException) {
-			throw new DuplicateResourceFolderNameException(
-				duplicateFolderNameException.getMessage());
-		}
+		return _toResourceFile(
+			_dlAppLocalService.addFileEntry(
+				resourceFile.getExternalReferenceCode(),
+				contextUser.getUserId(), dlFolder.getRepositoryId(),
+				dlFolder.getFolderId(), resourceFile.getName(),
+				_mimeTypes.getContentType(resourceFile.getName()),
+				resourceFile.getName(), null, null, null, bytes, null, null,
+				null, _getServiceContext(groupId, resourceFile)));
 	}
 
 	private void _checkBytes(byte[] bytes) {
