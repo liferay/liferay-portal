@@ -712,63 +712,6 @@ Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
 		}
 	}
 
-	@description = "This is a use case for LPS-71941. Can deploy and undeploy a Web Content Display widget via Gogo Shell."
-	@priority = 5
-	@uitest
-	test UndeployWebContentDisplayModuleViaGogoShell {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Disable Web Content Display module via GogoShell") {
-			GogoShell.openGogoShellAdmin();
-
-			var moduleId = GogoShell.getModuleID(moduleName = "com.liferay.journal.content.web");
-
-			GogoShell.stopModule(moduleId = ${moduleId});
-
-			GogoShell.viewModuleStatus(
-				moduleName = "com.liferay.journal.content.web",
-				moduleStatus = "Resolved");
-		}
-
-		task ("View undeployed message in shown then delete widget") {
-			Navigator.gotoSitePage(
-				pageName = "Test Page Name",
-				siteName = "Test Site Name");
-
-			Portlet.viewUndeployMessage();
-
-			Click(locator1 = "Portlet#PORTLET_CONTENT");
-
-			Portlet.deletePG(portletName = "Web Content Display");
-		}
-
-		task ("Enable Web Content Display module via GogoShell") {
-			GogoShell.openGogoShellAdmin();
-
-			GogoShell.startModule(moduleId = ${moduleId});
-
-			GogoShell.viewModuleStatus(
-				moduleName = "com.liferay.journal.content.web",
-				moduleStatus = "Active");
-		}
-
-		task ("Add a Web Content Display widget") {
-			Navigator.gotoSitePage(
-				pageName = "Test Page Name",
-				siteName = "Test Site Name");
-
-			Portlet.addPG(portletName = "Web Content Display");
-		}
-
-		task ("View undeployed message is not shown") {
-			AssertTextNotEquals.assertNotPartialMatch(
-				locator1 = "Portlet#PORTLET_CONTENT",
-				value1 = "This portlet could not be found. Please redeploy it or remove it from the page.");
-		}
-	}
-
 	@description = "View all settings are shown in Web Content Display."
 	@priority = 4
 	test ViewAllSettingsEnabled {

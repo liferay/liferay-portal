@@ -80,17 +80,6 @@ definition {
 		}
 	}
 
-	@summary = "Start ${moduleId} via Gogo Shell"
-	macro startModule(moduleId = null) {
-		Type(
-			locator1 = "GogoShell#COMMAND_FIELD",
-			value1 = "start ${moduleId}");
-
-		AssertClick(
-			locator1 = "GogoShell#EXECUTE_BUTTON",
-			value1 = "Execute");
-	}
-
 	@summary = "Stop ${moduleId} via Gogo Shell"
 	macro stopModule(moduleId = null) {
 		Type(

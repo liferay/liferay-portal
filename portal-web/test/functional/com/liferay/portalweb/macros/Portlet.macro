@@ -929,13 +929,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewUndeployMessage() {
-		AssertTextEquals.assertPartialText(
-			locator1 = "Portlet#PORTLET_CONTENT",
-			value1 = "This portlet could not be found. Please redeploy it or remove it from the page.");
-	}
-
-	@summary = "Default summary"
 	macro waitForForm() {
 		AssertElementNotPresent(locator1 = "//fieldset[@disabled]");
 	}
