@@ -54,7 +54,7 @@ import org.junit.runner.RunWith;
 @DataGuard(scope = DataGuard.Scope.NONE)
 @FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
-public class MCPProfilePathUpgradeProcessTest {
+public class MCPServerProfilePathUpgradeProcessTest {
 
 	@ClassRule
 	@Rule
@@ -98,7 +98,7 @@ public class MCPProfilePathUpgradeProcessTest {
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
 			"com.liferay.mcp.server.rest.internal.upgrade." +
-				"MCPProfilePathUpgradeProcess");
+				"MCPServerProfilePathUpgradeProcess");
 
 		try {
 			upgradeProcess.upgrade();

@@ -38,9 +38,9 @@ import java.util.Map;
 /**
  * @author Alejandro Tardín
  */
-public class MCPProfilePathUpgradeProcess extends UpgradeProcess {
+public class MCPServerProfilePathUpgradeProcess extends UpgradeProcess {
 
-	public MCPProfilePathUpgradeProcess(
+	public MCPServerProfilePathUpgradeProcess(
 		CompanyLocalService companyLocalService,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectEntryLocalService objectEntryLocalService,

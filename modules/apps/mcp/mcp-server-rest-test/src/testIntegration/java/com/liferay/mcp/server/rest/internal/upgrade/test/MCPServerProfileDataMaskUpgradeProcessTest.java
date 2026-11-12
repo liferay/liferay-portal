@@ -43,7 +43,7 @@ import org.junit.runner.RunWith;
  */
 @FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
-public class MCPProfileDataMaskUpgradeProcessTest {
+public class MCPServerProfileDataMaskUpgradeProcessTest {
 
 	@ClassRule
 	@Rule

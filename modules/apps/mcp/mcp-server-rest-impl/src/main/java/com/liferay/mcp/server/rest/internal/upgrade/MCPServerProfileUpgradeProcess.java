@@ -59,9 +59,9 @@ import java.util.Set;
 /**
  * @author Alberto Javier Moreno Lage
  */
-public class MCPProfileUpgradeProcess extends UpgradeProcess {
+public class MCPServerProfileUpgradeProcess extends UpgradeProcess {
 
-	public MCPProfileUpgradeProcess(
+	public MCPServerProfileUpgradeProcess(
 		CompanyLocalService companyLocalService,
 		ListTypeDefinitionLocalService listTypeDefinitionLocalService,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
@@ -598,7 +598,7 @@ public class MCPProfileUpgradeProcess extends UpgradeProcess {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		MCPProfileUpgradeProcess.class);
+		MCPServerProfileUpgradeProcess.class);
 
 	private static final Map<String, String>
 		_defaultProfileToolExternalReferenceCodes = HashMapBuilder.put(

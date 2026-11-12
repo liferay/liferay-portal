@@ -25,9 +25,9 @@ import java.util.Collections;
 /**
  * @author Alberto Javier Moreno Lage
  */
-public class MCPProfileToolUpgradeProcess extends UpgradeProcess {
+public class MCPServerProfileToolUpgradeProcess extends UpgradeProcess {
 
-	public MCPProfileToolUpgradeProcess(
+	public MCPServerProfileToolUpgradeProcess(
 		CompanyLocalService companyLocalService,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectFieldLocalService objectFieldLocalService) {
@@ -100,7 +100,7 @@ public class MCPProfileToolUpgradeProcess extends UpgradeProcess {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		MCPProfileToolUpgradeProcess.class);
+		MCPServerProfileToolUpgradeProcess.class);
 
 	private final CompanyLocalService _companyLocalService;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;

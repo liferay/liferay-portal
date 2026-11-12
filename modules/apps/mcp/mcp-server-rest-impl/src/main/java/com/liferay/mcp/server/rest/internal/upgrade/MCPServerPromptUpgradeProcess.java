@@ -47,9 +47,9 @@ import java.util.Set;
 /**
  * @author Jaime León
  */
-public class MCPPromptUpgradeProcess extends UpgradeProcess {
+public class MCPServerPromptUpgradeProcess extends UpgradeProcess {
 
-	public MCPPromptUpgradeProcess(
+	public MCPServerPromptUpgradeProcess(
 		CompanyLocalService companyLocalService,
 		ListTypeDefinitionLocalService listTypeDefinitionLocalService,
 		ObjectDefinitionLocalService objectDefinitionLocalService,

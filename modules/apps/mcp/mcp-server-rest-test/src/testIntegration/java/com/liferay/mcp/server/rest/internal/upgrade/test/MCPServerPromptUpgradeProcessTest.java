@@ -53,7 +53,7 @@ import org.junit.runner.RunWith;
  */
 @DataGuard(scope = DataGuard.Scope.NONE)
 @RunWith(Arquillian.class)
-public class MCPPromptUpgradeProcessTest {
+public class MCPServerPromptUpgradeProcessTest {
 
 	@ClassRule
 	@Rule
@@ -97,7 +97,7 @@ public class MCPPromptUpgradeProcessTest {
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
 			"com.liferay.mcp.server.rest.internal.upgrade." +
-				"MCPPromptUpgradeProcess");
+				"MCPServerPromptUpgradeProcess");
 
 		upgradeProcess.upgrade();
 

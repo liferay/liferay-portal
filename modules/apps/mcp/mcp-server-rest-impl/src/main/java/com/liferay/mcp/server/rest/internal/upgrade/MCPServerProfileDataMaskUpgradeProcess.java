@@ -35,9 +35,9 @@ import java.util.Set;
 /**
  * @author Alberto Javier Moreno Lage
  */
-public class MCPProfileDataMaskUpgradeProcess extends UpgradeProcess {
+public class MCPServerProfileDataMaskUpgradeProcess extends UpgradeProcess {
 
-	public MCPProfileDataMaskUpgradeProcess(
+	public MCPServerProfileDataMaskUpgradeProcess(
 		CompanyLocalService companyLocalService,
 		FilterFactory<Predicate> filterFactory,
 		ObjectDefinitionLocalService objectDefinitionLocalService,

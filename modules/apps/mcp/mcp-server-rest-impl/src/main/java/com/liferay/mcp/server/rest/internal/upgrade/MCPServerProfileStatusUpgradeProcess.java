@@ -33,9 +33,9 @@ import java.util.Map;
 /**
  * @author Jose Luis Navarro
  */
-public class MCPProfileStatusUpgradeProcess extends UpgradeProcess {
+public class MCPServerProfileStatusUpgradeProcess extends UpgradeProcess {
 
-	public MCPProfileStatusUpgradeProcess(
+	public MCPServerProfileStatusUpgradeProcess(
 		CompanyLocalService companyLocalService,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectEntryLocalService objectEntryLocalService,
@@ -124,7 +124,7 @@ public class MCPProfileStatusUpgradeProcess extends UpgradeProcess {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		MCPProfileStatusUpgradeProcess.class);
+		MCPServerProfileStatusUpgradeProcess.class);
 
 	private final CompanyLocalService _companyLocalService;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
