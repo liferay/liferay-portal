@@ -1,10 +1,25 @@
 @import 'atlas-variables';
 
 .comments-panel {
-	&__content .mention {
-		background: none;
-		color: $primary;
-		font-weight: $font-weight-bold;
-		white-space: nowrap;
+	&__content {
+		&.form-control.lfr-ck {
+			&:has(> .ck-focused) {
+				background-color: $input-focus-bg;
+				border-color: $input-focus-border-color;
+				box-shadow: $input-focus-box-shadow;
+			}
+
+			.ck-focused {
+				border-color: transparent;
+				box-shadow: none;
+			}
+		}
+
+		.mention {
+			background: none;
+			color: $primary;
+			font-weight: $font-weight-bold;
+			white-space: nowrap;
+		}
 	}
 }
