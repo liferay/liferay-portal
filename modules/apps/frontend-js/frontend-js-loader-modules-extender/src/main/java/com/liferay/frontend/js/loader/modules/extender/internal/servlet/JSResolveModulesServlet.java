@@ -15,7 +15,6 @@ import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
@@ -25,6 +24,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 
 import jakarta.servlet.Servlet;
@@ -113,6 +113,12 @@ public class JSResolveModulesServlet extends HttpServlet {
 
 			httpServletResponse.setStatus(
 				HttpServletResponse.SC_REQUEST_URI_TOO_LONG);
+
+			return;
+		}
+
+		if (Validator.isNull(httpServletRequest.getParameter("modules"))) {
+			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
 			return;
 		}
