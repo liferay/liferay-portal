@@ -130,6 +130,8 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
 
 /**
  * @author Luis Miguel Barcos
+ * @author Magdalena Jedraszak
+ * @author Daniel Raposo
  */
 @FeatureFlags(featureFlags = @FeatureFlag(value = "LPS-164801"))
 @RunWith(Arquillian.class)

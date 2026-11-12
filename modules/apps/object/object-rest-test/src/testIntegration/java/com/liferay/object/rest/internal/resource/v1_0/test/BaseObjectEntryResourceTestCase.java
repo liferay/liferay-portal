@@ -139,6 +139,8 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /**
  * @author Luis Miguel Barcos
+ * @author Magdalena Jedraszak
+ * @author Daniel Raposo
  */
 @RunWith(Arquillian.class)
 public abstract class BaseObjectEntryResourceTestCase {
