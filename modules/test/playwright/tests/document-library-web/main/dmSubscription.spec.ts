@@ -7,13 +7,15 @@ import {expect, mergeTests} from '@playwright/test';
 import {createReadStream} from 'fs';
 import path from 'path';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 const test = mergeTests(
-	apiHelpersTest,
+	dataApiHelpersTest,
 	documentLibraryPagesTest,
 	isolatedSiteTest,
 	loginTest()
@@ -172,6 +174,68 @@ test(
 				'Subscribe',
 				folderName
 			);
+		});
+	}
+);
+
+test(
+	'Unsubscription of the Home Folder through My Subscriptions',
+	{tag: '@LPD-115150'},
+	async ({apiHelpers, documentLibraryPage, page, site}) => {
+		await test.step('Log in as a new Site Administrator', async () => {
+			const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			userData[user.alternateName] = {
+				name: user.givenName,
+				password: 'test',
+				surname: user.familyName,
+			};
+
+			const siteAdministratorRole =
+				await apiHelpers.headlessAdminUser.getRoleByName(
+					'Site Administrator'
+				);
+
+			await apiHelpers.headlessAdminUser.assignUserToSite(
+				siteAdministratorRole.id,
+				site.id,
+				user.id
+			);
+
+			await performUserSwitchViaApi(page, user.alternateName);
+		});
+
+		await test.step('Subscribe to the Home Folder through the Info Panel', async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.openInfoPanel('Home', 'Details');
+			await page.getByLabel('Subscribe').click();
+
+			await waitForAlert(page);
+		});
+
+		await test.step('Unsubscribe through My Subscriptions', async () => {
+			await page.getByTestId('userPersonalMenu').click();
+			await page
+				.getByRole('menuitem', {name: 'My Subscriptions'})
+				.click();
+
+			const row = page.getByRole('row').filter({hasText: 'Home'});
+
+			await expect(row).toContainText('Documents Folder');
+
+			await row.getByRole('checkbox').check();
+			await page.getByRole('button', {name: 'Unsubscribe'}).click();
+
+			await expect(
+				page.getByText('No subscriptions were found.')
+			).toBeVisible();
+		});
+
+		await test.step('Assert the Info Panel offers to subscribe again', async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.openInfoPanel('Home', 'Details');
+
+			await expect(page.getByLabel('Subscribe')).toBeVisible();
 		});
 	}
 );
