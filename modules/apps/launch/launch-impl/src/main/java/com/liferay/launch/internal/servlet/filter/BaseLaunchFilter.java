@@ -16,10 +16,12 @@ import com.liferay.petra.function.UnsafeSupplierValue;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.preview.PreviewableResolverUtil;
@@ -44,6 +46,15 @@ import org.osgi.service.component.annotations.Reference;
  * @author Carlos Correa
  */
 public abstract class BaseLaunchFilter extends BasePortalFilter {
+
+	@Override
+	public boolean isFilterEnabled(
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
+		return FeatureFlagManagerUtil.isEnabled(
+			CompanyThreadLocal.getCompanyId(), "LPD-72278");
+	}
 
 	protected Map<Class<?>, Map<Serializable, Object>> getPreviewableMap(
 			long companyId, long launchSetId)

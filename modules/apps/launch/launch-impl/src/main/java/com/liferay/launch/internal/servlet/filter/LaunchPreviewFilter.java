@@ -6,7 +6,6 @@
 package com.liferay.launch.internal.servlet.filter;
 
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -55,16 +54,6 @@ public class LaunchPreviewFilter extends BaseLaunchFilter {
 			return;
 		}
 
-		long companyId = CompanyThreadLocal.getCompanyId();
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-72278")) {
-			processFilter(
-				LaunchPreviewFilter.class.getName(), httpServletRequest,
-				httpServletResponse, filterChain);
-
-			return;
-		}
-
 		String mode = ParamUtil.getString(httpServletRequest, "p_l_mode");
 
 		if (!mode.equals(Constants.PREVIEW)) {
@@ -93,7 +82,8 @@ public class LaunchPreviewFilter extends BaseLaunchFilter {
 
 			processFilter(
 				filterChain, httpServletRequest, httpServletResponse,
-				getPreviewableMap(companyId, previewLaunchSetId));
+				getPreviewableMap(
+					CompanyThreadLocal.getCompanyId(), previewLaunchSetId));
 		}
 	}
 
