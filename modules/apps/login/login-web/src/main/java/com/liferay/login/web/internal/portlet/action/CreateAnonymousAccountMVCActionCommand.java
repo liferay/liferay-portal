@@ -276,9 +276,6 @@ public class CreateAnonymousAccountMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			User.class.getName(), actionRequest);
-
 		boolean autoPassword = true;
 		String password1 = null;
 		String password2 = null;
@@ -300,6 +297,9 @@ public class CreateAnonymousAccountMVCActionCommand
 		String jobTitle = null;
 		boolean updateUserInformation = false;
 		boolean sendEmail = true;
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			User.class.getName(), actionRequest);
 
 		User user = _userService.updateIncompleteUser(
 			themeDisplay.getCompanyId(), autoPassword, password1, password2,
