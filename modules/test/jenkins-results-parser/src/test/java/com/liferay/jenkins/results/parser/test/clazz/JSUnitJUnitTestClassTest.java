@@ -136,7 +136,8 @@ public class JSUnitJUnitTestClassTest
 
 	@Test
 	public void testIsTestClassFileReported() throws Exception {
-		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(null);
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
+			_getJSONObject(_JS_UNIT_FILE));
 
 		Assert.assertFalse(jsUnitJUnitTestClass.isTestClassFileReported());
 
@@ -147,7 +148,8 @@ public class JSUnitJUnitTestClassTest
 
 	@Test
 	public void testIsTestClassFileReportedJSONObject() throws Exception {
-		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(null);
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
+			_getJSONObject(_JS_UNIT_FILE));
 
 		jsUnitJUnitTestClass.setTestClassFileReported(true);
 
@@ -173,6 +175,17 @@ public class JSUnitJUnitTestClassTest
 
 		Assert.assertFalse(
 			rebuiltJSUnitJUnitTestClass.isTestClassFileReported());
+	}
+
+	@Test
+	public void testIsTestClassFileReportedNoTestClassMethods()
+		throws Exception {
+
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(null);
+
+		jsUnitJUnitTestClass.setTestClassFileReported(true);
+
+		Assert.assertFalse(jsUnitJUnitTestClass.isTestClassFileReported());
 	}
 
 	private JSUnitModulesBatchTestClassGroup _getBatchTestClassGroup() {

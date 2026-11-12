@@ -20,7 +20,6 @@ import com.liferay.jenkins.results.parser.TestSuiteJob;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.job.property.JobProperty;
 import com.liferay.jenkins.results.parser.persistent.resource.PersistentResource;
-import com.liferay.jenkins.results.parser.test.clazz.JSUnitJUnitTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
@@ -647,21 +646,6 @@ public class TestrayImporter {
 		return null;
 	}
 
-	private boolean _isTestClassFileReported(TestClass testClass) {
-		if (!(testClass instanceof JSUnitJUnitTestClass)) {
-			return false;
-		}
-
-		JSUnitJUnitTestClass jsUnitJUnitTestClass =
-			(JSUnitJUnitTestClass)testClass;
-
-		if (!jsUnitJUnitTestClass.isTestClassFileReported()) {
-			return false;
-		}
-
-		return testClass.hasTestClassMethods();
-	}
-
 	private TestrayCaseResult _recordAppServerTestrayCaseResult(
 		Job job, PersistentResource.Type persistentResourceType,
 		File testBaseDir, TestrayCaseResult topLevelTestrayCaseResult) {
@@ -796,7 +780,7 @@ public class TestrayImporter {
 			axisTestClassGroup instanceof WorkspacesCompileAxisTestClassGroup) {
 
 			for (TestClass testClass : axisTestClassGroup.getTestClasses()) {
-				if (_isTestClassFileReported(testClass)) {
+				if (testClass.isTestClassFileReported()) {
 					for (TestClassMethod testClassMethod :
 							testClass.getTestClassMethods()) {
 

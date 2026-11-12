@@ -104,8 +104,13 @@ public class JSUnitJUnitTestClass extends JUnitTestClass {
 		return testTaskName.replaceAll("/", ":") + ":" + getTaskName();
 	}
 
+	@Override
 	public boolean isTestClassFileReported() {
-		return _testClassFileReported;
+		if (!_testClassFileReported) {
+			return false;
+		}
+
+		return hasTestClassMethods();
 	}
 
 	public void setTestClassFileReported(boolean testClassFileReported) {

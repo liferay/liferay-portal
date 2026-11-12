@@ -60,6 +60,8 @@ public interface TestClass extends Comparable<TestClass>, WeightedItem {
 
 	public boolean isIgnored();
 
+	public boolean isTestClassFileReported();
+
 	public void setAxisTestClassGroup(AxisTestClassGroup axisTestClassGroup);
 
 	public void setBatchTestClassGroup(BatchTestClassGroup batchTestClassGroup);

@@ -245,6 +245,11 @@ public abstract class BaseTestClass implements TestClass {
 	}
 
 	@Override
+	public boolean isTestClassFileReported() {
+		return false;
+	}
+
+	@Override
 	public void setAxisTestClassGroup(AxisTestClassGroup axisTestClassGroup) {
 		_axisTestClassGroup = axisTestClassGroup;
 	}

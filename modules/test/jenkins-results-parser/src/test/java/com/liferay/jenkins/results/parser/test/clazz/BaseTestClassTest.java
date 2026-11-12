@@ -12,6 +12,7 @@ import java.io.File;
 
 import org.json.JSONObject;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -44,6 +45,18 @@ public class BaseTestClassTest extends com.liferay.jenkins.results.parser.Test {
 		testEquals(
 			JenkinsResultsParserUtil.getCanonicalPath(testClassFile),
 			baseTestClassJSONObject.get("file"));
+	}
+
+	@Test
+	public void testIsTestClassFileReported() {
+		BaseTestClass baseTestClass = Mockito.mock(BaseTestClass.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTestClass
+		).isTestClassFileReported();
+
+		Assert.assertFalse(baseTestClass.isTestClassFileReported());
 	}
 
 }
