@@ -44,9 +44,6 @@ public interface TopLevelBuild extends ParentBuild {
 
 	public File getJobSummaryDir();
 
-	public int getJobVariantsDownstreamBuildCount(
-		List<String> jobVariants, String result, String status);
-
 	public List<Build> getJobVariantsDownstreamBuilds(
 		Iterable<String> jobVariants, String result, String status);
 

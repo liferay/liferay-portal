@@ -452,16 +452,6 @@ public abstract class BaseTopLevelBuild
 	}
 
 	@Override
-	public int getJobVariantsDownstreamBuildCount(
-		List<String> jobVariants, String result, String status) {
-
-		List<Build> jobVariantsDownstreamBuilds =
-			getJobVariantsDownstreamBuilds(jobVariants, result, status);
-
-		return jobVariantsDownstreamBuilds.size();
-	}
-
-	@Override
 	public List<Build> getJobVariantsDownstreamBuilds(
 		Iterable<String> jobVariants, String result, String status) {
 
