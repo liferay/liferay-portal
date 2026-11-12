@@ -155,7 +155,7 @@ public class SourceServiceTest {
 
 	protected void setUpSource() throws Exception {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.spring.hibernate.DialectDetector",
+				"com.liferay.portal.spring.hibernate.DialectUtil",
 				LoggerTestUtil.OFF)) {
 
 			ServiceContext serviceContext =

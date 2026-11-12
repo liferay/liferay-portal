@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.spring.hibernate.DialectDetector;
+import com.liferay.portal.spring.hibernate.DialectUtil;
 import com.liferay.portal.spring.hibernate.SpringHibernateThreadLocalUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -75,8 +75,8 @@ public class DynamicDataSourceTest {
 			null
 		);
 
-		_dialectDetectorMockedStatic.when(
-			() -> DialectDetector.getDialect(Mockito.any())
+		_dialectUtilMockedStatic.when(
+			() -> DialectUtil.getDialect(Mockito.any())
 		).thenReturn(
 			null
 		);
@@ -104,7 +104,7 @@ public class DynamicDataSourceTest {
 		_currentTransactionReadOnly.remove();
 
 		_dbManagerUtilMockedStatic.close();
-		_dialectDetectorMockedStatic.close();
+		_dialectUtilMockedStatic.close();
 
 		FileUtil.deltree(_tempDir);
 
@@ -246,8 +246,8 @@ public class DynamicDataSourceTest {
 	private ThreadLocal<Boolean> _currentTransactionReadOnly;
 	private final MockedStatic<DBManagerUtil> _dbManagerUtilMockedStatic =
 		Mockito.mockStatic(DBManagerUtil.class);
-	private final MockedStatic<DialectDetector> _dialectDetectorMockedStatic =
-		Mockito.mockStatic(DialectDetector.class);
+	private final MockedStatic<DialectUtil> _dialectUtilMockedStatic =
+		Mockito.mockStatic(DialectUtil.class);
 	private DynamicDataSource _dynamicDataSource;
 	private File _tempDir;
 	private ThreadLocal<Boolean> _writeDynamicDataSource;

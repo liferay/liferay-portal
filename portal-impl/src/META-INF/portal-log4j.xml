@@ -170,7 +170,7 @@
 		<Logger level="ERROR" name="com.liferay.portal.spring.context.PortalApplicationContext" />
 		<Logger level="INFO" name="com.liferay.portal.spring.context.PortalContextLoaderListener" />
 		<Logger level="ERROR" name="com.liferay.portal.spring.context.TunnelApplicationContext" />
-		<Logger level="INFO" name="com.liferay.portal.spring.hibernate.DialectDetector" />
+		<Logger level="INFO" name="com.liferay.portal.spring.hibernate.DialectUtil" />
 		<Logger level="WARN" name="com.liferay.portal.spring.hibernate.PortalHibernateConfiguration" />
 		<Logger level="ERROR" name="com.liferay.portal.struts" />
 		<Logger level="ERROR" name="com.liferay.portal.struts.JSONAction" />

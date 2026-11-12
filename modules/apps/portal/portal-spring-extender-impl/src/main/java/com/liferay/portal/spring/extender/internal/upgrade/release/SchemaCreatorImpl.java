@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.spring.hibernate.DialectDetector;
+import com.liferay.portal.spring.hibernate.DialectUtil;
 import com.liferay.portal.upgrade.release.SchemaCreator;
 
 import java.sql.Connection;
@@ -40,7 +40,7 @@ public class SchemaCreatorImpl implements SchemaCreator {
 	@Override
 	public void create() throws UpgradeException {
 		_db = DBManagerUtil.getDB(
-			DialectDetector.getDialect(_dataSource), _dataSource);
+			DialectUtil.getDialect(_dataSource), _dataSource);
 
 		try {
 			_db.process(

@@ -111,7 +111,7 @@ public class PortalHibernateConfiguration
 		Properties properties = configuration.getProperties();
 
 		if (Validator.isNull(PropsValues.HIBERNATE_DIALECT)) {
-			Dialect dialect = DialectDetector.getDialect(_dataSource);
+			Dialect dialect = DialectUtil.getDialect(_dataSource);
 
 			Class<?> clazz = dialect.getClass();
 

@@ -48,7 +48,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.spring.hibernate.DialectDetector;
+import com.liferay.portal.spring.hibernate.DialectUtil;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -582,7 +582,7 @@ public class DBPartitionUtil {
 
 		_initializeDBPartitionDB(
 			DBManagerUtil.getDB(
-				DBManagerUtil.getDBType(DialectDetector.getDialect(dataSource)),
+				DBManagerUtil.getDBType(DialectUtil.getDialect(dataSource)),
 				dataSource),
 			dataSource);
 

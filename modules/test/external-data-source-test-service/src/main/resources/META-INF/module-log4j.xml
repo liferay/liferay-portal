@@ -2,6 +2,6 @@
 
 <Configuration strict="true">
 	<Loggers>
-		<Logger level="ERROR" name="com.liferay.portal.spring.hibernate.DialectDetector" />
+		<Logger level="ERROR" name="com.liferay.portal.spring.hibernate.DialectUtil" />
 	</Loggers>
 </Configuration>

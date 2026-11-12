@@ -35,7 +35,7 @@ import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
 /**
  * @author Brian Wing Shun Chan
  */
-public class DialectDetector {
+public class DialectUtil {
 
 	public static Dialect getDialect(DataSource dataSource) {
 		Dialect dialect = null;
@@ -143,8 +143,7 @@ public class DialectDetector {
 		return dialect;
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		DialectDetector.class);
+	private static final Log _log = LogFactoryUtil.getLog(DialectUtil.class);
 
 	private static final Map<String, Dialect> _dialects =
 		new ConcurrentHashMap<>();

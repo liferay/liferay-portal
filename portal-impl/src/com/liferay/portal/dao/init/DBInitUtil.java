@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ReleaseInfo;
-import com.liferay.portal.spring.hibernate.DialectDetector;
+import com.liferay.portal.spring.hibernate.DialectUtil;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 
 import java.sql.Connection;
@@ -80,7 +80,7 @@ public class DBInitUtil {
 
 		dbManager.setDB(
 			dbManager.getDB(
-				dbManager.getDBType(DialectDetector.getDialect(dataSource)),
+				dbManager.getDBType(DialectUtil.getDialect(dataSource)),
 				dataSource));
 
 		DBManagerUtil.setDBManager(dbManager);

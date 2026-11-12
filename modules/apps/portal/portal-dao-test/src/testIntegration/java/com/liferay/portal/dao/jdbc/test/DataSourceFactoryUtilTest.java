@@ -54,7 +54,7 @@ public class DataSourceFactoryUtilTest {
 	@Test
 	public void testDestroyDataSource() throws Exception {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.spring.hibernate.DialectDetector",
+				"com.liferay.portal.spring.hibernate.DialectUtil",
 				LoggerTestUtil.OFF)) {
 
 			DataSource dataSource1 = DataSourceFactoryUtil.initDataSource(
