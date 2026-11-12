@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -51,6 +52,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -60,6 +62,8 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 
 import java.io.Serializable;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -87,6 +91,7 @@ public class EditContentItemCommentStrutsActionTest {
 
 	@Test
 	public void testExecute() throws Exception {
+		_testExecuteWithAnotherObjectEntry();
 		_testExecuteWithMentionedUserWithoutViewPermission();
 		_testExecuteWithMentionedUsers();
 	}
@@ -233,6 +238,88 @@ public class EditContentItemCommentStrutsActionTest {
 			ResourceConstants.SCOPE_INDIVIDUAL,
 			String.valueOf(objectEntry.getObjectEntryId()), role.getRoleId(),
 			new String[0]);
+	}
+
+	private void _testExecuteWithAnotherObjectEntry() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry();
+
+		ObjectEntry objectEntry1 = _addObjectEntry(depotEntry);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CMS));
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				objectEntry1.getObjectDefinitionId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		long commentId = _commentManager.addComment(
+			null, TestPropsValues.getUserId(), layout.getGroupId(),
+			objectDefinition.getClassName(), objectEntry1.getObjectEntryId(),
+			StringPool.BLANK, null, RandomTestUtil.randomString(),
+			className -> serviceContext);
+
+		User user = UserTestUtil.addUser();
+
+		Role role = _addViewRole(objectEntry1, user);
+
+		ObjectEntry objectEntry2 = _addObjectEntry(depotEntry);
+
+		String mentionHTML = _getMentionHTML(user);
+
+		JSONObject jsonObject = _execute(
+			StringBundler.concat(
+				"<p>", RandomTestUtil.randomString(), StringPool.SPACE,
+				mentionHTML, "</p>"),
+			commentId, layout, objectEntry2, TestPropsValues.getUser());
+
+		Assert.assertTrue(
+			jsonObject.getString(
+				"body"
+			).contains(
+				mentionHTML
+			));
+
+		Comment comment = _commentManager.fetchComment(commentId);
+
+		Assert.assertEquals(
+			objectEntry1.getObjectEntryId(), comment.getClassPK());
+
+		List<UserNotificationEvent> userNotificationEvents =
+			_userNotificationEventLocalService.getUserNotificationEvents(
+				user.getUserId());
+
+		Assert.assertEquals(
+			userNotificationEvents.toString(), 1,
+			userNotificationEvents.size());
+
+		UserNotificationEvent userNotificationEvent =
+			userNotificationEvents.get(0);
+
+		JSONObject payloadJSONObject = _jsonFactory.createJSONObject(
+			userNotificationEvent.getPayload());
+
+		Assert.assertEquals(
+			objectDefinition.getClassName(),
+			payloadJSONObject.getString("discussionClassName"));
+		Assert.assertEquals(
+			objectEntry1.getObjectEntryId(),
+			payloadJSONObject.getLong("discussionClassPK"));
+		Assert.assertEquals(
+			String.valueOf(objectEntry1.getObjectEntryId()),
+			HttpComponentsUtil.getParameter(
+				payloadJSONObject.getString("entryURL"), "objectEntryId",
+				false));
+
+		_depotEntryLocalService.deleteDepotEntry(depotEntry);
+		_layoutLocalService.deleteLayout(layout);
+		_objectEntryLocalService.deleteObjectEntry(objectEntry1);
+		_objectEntryLocalService.deleteObjectEntry(objectEntry2);
+		_roleLocalService.deleteRole(role);
+		_userLocalService.deleteUser(user);
 	}
 
 	private void _testExecuteWithMentionedUserWithoutViewPermission()
@@ -399,6 +486,10 @@ public class EditContentItemCommentStrutsActionTest {
 			1,
 			_userNotificationEventLocalService.getUserNotificationEventsCount(
 				user1.getUserId()));
+		Assert.assertEquals(
+			2,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user2.getUserId()));
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry);
 		_layoutLocalService.deleteLayout(layout);
