@@ -67,7 +67,9 @@ test(
 
 			await viewTasksPage.goto();
 
-			const taskRow = page.getByRole('row').filter({hasText: contentName});
+			const taskRow = page
+				.getByRole('row')
+				.filter({hasText: contentName});
 
 			await expect(taskRow).toBeVisible();
 			await expect(taskRow.getByText('Basic Web Content')).toBeVisible();
@@ -86,7 +88,9 @@ test(
 					page.getByRole('menuitem', {name: 'Update Due Date'})
 				).toBeVisible();
 
-				await page.getByRole('menuitem', {name: 'Assign to Me'}).click();
+				await page
+					.getByRole('menuitem', {name: 'Assign to Me'})
+					.click();
 				await page.getByRole('button', {name: 'Save'}).click();
 
 				await waitForAlert(
