@@ -386,20 +386,23 @@ public class FragmentEntryLinkLocalServiceImpl
 			OrderByComparator<FragmentEntryLink> orderByComparator)
 		throws PortalException {
 
-		return fragmentEntryLinkPersistence.dslQuery(
-			DSLQueryFactoryUtil.select(
-				FragmentEntryLinkTable.INSTANCE
-			).from(
-				FragmentEntryLinkTable.INSTANCE
-			).where(
-				_getLatestFragmentEntryLinkPredicate(
-					_getAllFragmentEntryLinksByFragmentEntryPredicate(
-						fragmentEntry))
-			).orderBy(
-				_getOrderByStepLimitStepFunction(orderByComparator)
-			).limit(
-				start, end
-			));
+		return _getLatestFragmentEntryLinks(
+			_getAllFragmentEntryLinksByFragmentEntryPredicate(fragmentEntry),
+			start, end, orderByComparator);
+	}
+
+	@Override
+	public List<FragmentEntryLink> getAllFragmentEntryLinksByFragmentEntry(
+			long groupId, FragmentEntry fragmentEntry, int start, int end,
+			OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException {
+
+		return _getLatestFragmentEntryLinks(
+			_getGroupPredicate(
+				groupId,
+				_getAllFragmentEntryLinksByFragmentEntryPredicate(
+					fragmentEntry)),
+			start, end, orderByComparator);
 	}
 
 	@Override
@@ -407,20 +410,20 @@ public class FragmentEntryLinkLocalServiceImpl
 			FragmentEntry fragmentEntry)
 		throws PortalException {
 
-		return fragmentEntryLinkPersistence.dslQueryCount(
-			DSLQueryFactoryUtil.count(
-			).from(
-				DSLQueryFactoryUtil.selectDistinct(
-					FragmentEntryLinkTable.INSTANCE.classPK
-				).from(
-					FragmentEntryLinkTable.INSTANCE
-				).where(
-					_getAllFragmentEntryLinksByFragmentEntryPredicate(
-						fragmentEntry)
-				).as(
-					"tempFragmentEntryLinkTable"
-				)
-			));
+		return _getFragmentEntryLinksClassPKsCount(
+			_getAllFragmentEntryLinksByFragmentEntryPredicate(fragmentEntry));
+	}
+
+	@Override
+	public int getAllFragmentEntryLinksCountByFragmentEntry(
+			long groupId, FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		return _getFragmentEntryLinksClassPKsCount(
+			_getGroupPredicate(
+				groupId,
+				_getAllFragmentEntryLinksByFragmentEntryPredicate(
+					fragmentEntry)));
 	}
 
 	@Override
@@ -430,20 +433,25 @@ public class FragmentEntryLinkLocalServiceImpl
 				OrderByComparator<FragmentEntryLink> orderByComparator)
 		throws PortalException {
 
-		return fragmentEntryLinkPersistence.dslQuery(
-			DSLQueryFactoryUtil.select(
-				FragmentEntryLinkTable.INSTANCE
-			).from(
-				FragmentEntryLinkTable.INSTANCE
-			).where(
-				_getLatestFragmentEntryLinkPredicate(
-					_getAllLayoutFragmentEntryLinksByFragmentEntryPredicate(
-						fragmentEntry))
-			).orderBy(
-				_getOrderByStepLimitStepFunction(orderByComparator)
-			).limit(
-				start, end
-			));
+		return _getLatestFragmentEntryLinks(
+			_getAllLayoutFragmentEntryLinksByFragmentEntryPredicate(
+				fragmentEntry),
+			start, end, orderByComparator);
+	}
+
+	@Override
+	public List<FragmentEntryLink>
+			getAllLayoutFragmentEntryLinksByFragmentEntry(
+				long groupId, FragmentEntry fragmentEntry, int start, int end,
+				OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException {
+
+		return _getLatestFragmentEntryLinks(
+			_getGroupPredicate(
+				groupId,
+				_getAllLayoutFragmentEntryLinksByFragmentEntryPredicate(
+					fragmentEntry)),
+			start, end, orderByComparator);
 	}
 
 	@Override
@@ -451,15 +459,21 @@ public class FragmentEntryLinkLocalServiceImpl
 			FragmentEntry fragmentEntry)
 		throws PortalException {
 
-		return fragmentEntryLinkPersistence.dslQueryCount(
-			DSLQueryFactoryUtil.countDistinct(
-				FragmentEntryLinkTable.INSTANCE.plid
-			).from(
-				FragmentEntryLinkTable.INSTANCE
-			).where(
+		return _getFragmentEntryLinksPlidsCount(
+			_getAllLayoutFragmentEntryLinksByFragmentEntryPredicate(
+				fragmentEntry));
+	}
+
+	@Override
+	public int getAllLayoutFragmentEntryLinksCountByFragmentEntry(
+			long groupId, FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		return _getFragmentEntryLinksPlidsCount(
+			_getGroupPredicate(
+				groupId,
 				_getAllLayoutFragmentEntryLinksByFragmentEntryPredicate(
-					fragmentEntry)
-			));
+					fragmentEntry)));
 	}
 
 	@Override
@@ -470,20 +484,26 @@ public class FragmentEntryLinkLocalServiceImpl
 				OrderByComparator<FragmentEntryLink> orderByComparator)
 		throws PortalException {
 
-		return fragmentEntryLinkPersistence.dslQuery(
-			DSLQueryFactoryUtil.select(
-				FragmentEntryLinkTable.INSTANCE
-			).from(
-				FragmentEntryLinkTable.INSTANCE
-			).where(
-				_getLatestFragmentEntryLinkPredicate(
-					_getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntryPredicate(
-						fragmentEntry, layoutPageTemplateType))
-			).orderBy(
-				_getOrderByStepLimitStepFunction(orderByComparator)
-			).limit(
-				start, end
-			));
+		return _getLatestFragmentEntryLinks(
+			_getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntryPredicate(
+				fragmentEntry, layoutPageTemplateType),
+			start, end, orderByComparator);
+	}
+
+	@Override
+	public List<FragmentEntryLink>
+			getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntry(
+				long groupId, FragmentEntry fragmentEntry,
+				int layoutPageTemplateType, int start, int end,
+				OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException {
+
+		return _getLatestFragmentEntryLinks(
+			_getGroupPredicate(
+				groupId,
+				_getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntryPredicate(
+					fragmentEntry, layoutPageTemplateType)),
+			start, end, orderByComparator);
 	}
 
 	@Override
@@ -491,15 +511,22 @@ public class FragmentEntryLinkLocalServiceImpl
 			FragmentEntry fragmentEntry, int layoutPageTemplateType)
 		throws PortalException {
 
-		return fragmentEntryLinkPersistence.dslQueryCount(
-			DSLQueryFactoryUtil.countDistinct(
-				FragmentEntryLinkTable.INSTANCE.plid
-			).from(
-				FragmentEntryLinkTable.INSTANCE
-			).where(
+		return _getFragmentEntryLinksPlidsCount(
+			_getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntryPredicate(
+				fragmentEntry, layoutPageTemplateType));
+	}
+
+	@Override
+	public int getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
+			long groupId, FragmentEntry fragmentEntry,
+			int layoutPageTemplateType)
+		throws PortalException {
+
+		return _getFragmentEntryLinksPlidsCount(
+			_getGroupPredicate(
+				groupId,
 				_getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntryPredicate(
-					fragmentEntry, layoutPageTemplateType)
-			));
+					fragmentEntry, layoutPageTemplateType)));
 	}
 
 	@Override
@@ -947,6 +974,33 @@ public class FragmentEntryLinkLocalServiceImpl
 		);
 	}
 
+	private int _getFragmentEntryLinksClassPKsCount(Predicate predicate) {
+		return fragmentEntryLinkPersistence.dslQueryCount(
+			DSLQueryFactoryUtil.count(
+			).from(
+				DSLQueryFactoryUtil.selectDistinct(
+					FragmentEntryLinkTable.INSTANCE.classPK
+				).from(
+					FragmentEntryLinkTable.INSTANCE
+				).where(
+					predicate
+				).as(
+					"tempFragmentEntryLinkTable"
+				)
+			));
+	}
+
+	private int _getFragmentEntryLinksPlidsCount(Predicate predicate) {
+		return fragmentEntryLinkPersistence.dslQueryCount(
+			DSLQueryFactoryUtil.countDistinct(
+				FragmentEntryLinkTable.INSTANCE.plid
+			).from(
+				FragmentEntryLinkTable.INSTANCE
+			).where(
+				predicate
+			));
+	}
+
 	private Predicate _getFragmentEntryScopePredicate(Group group)
 		throws PortalException {
 
@@ -987,6 +1041,14 @@ public class FragmentEntryLinkLocalServiceImpl
 			));
 	}
 
+	private Predicate _getGroupPredicate(long groupId, Predicate predicate) {
+		return FragmentEntryLinkTable.INSTANCE.groupId.eq(
+			groupId
+		).and(
+			predicate
+		);
+	}
+
 	private Predicate _getLatestFragmentEntryLinkPredicate(
 		Predicate predicate) {
 
@@ -1000,6 +1062,24 @@ public class FragmentEntryLinkLocalServiceImpl
 				predicate
 			).groupBy(
 				FragmentEntryLinkTable.INSTANCE.plid
+			));
+	}
+
+	private List<FragmentEntryLink> _getLatestFragmentEntryLinks(
+		Predicate predicate, int start, int end,
+		OrderByComparator<FragmentEntryLink> orderByComparator) {
+
+		return fragmentEntryLinkPersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				FragmentEntryLinkTable.INSTANCE
+			).from(
+				FragmentEntryLinkTable.INSTANCE
+			).where(
+				_getLatestFragmentEntryLinkPredicate(predicate)
+			).orderBy(
+				_getOrderByStepLimitStepFunction(orderByComparator)
+			).limit(
+				start, end
 			));
 	}
 
