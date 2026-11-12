@@ -75,8 +75,16 @@ public class JSResolveModulesServlet extends HttpServlet {
 			_absolutePortalURLBuilderFactory, bundleContext, _jsonFactory,
 			_npmRegistry, properties);
 
-		_details = ConfigurableUtil.createConfigurable(
+		Details details = ConfigurableUtil.createConfigurable(
 			Details.class, properties);
+
+		_maxRequestLength = details.maxRequestLength();
+
+		if ((_maxRequestLength <= 0) ||
+			(_maxRequestLength > _MAX_REQUEST_LENGTH)) {
+
+			_maxRequestLength = _MAX_REQUEST_LENGTH;
+		}
 	}
 
 	@Deactivate
@@ -90,18 +98,17 @@ public class JSResolveModulesServlet extends HttpServlet {
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
-		long maxRequestLength = _getMaxRequestLength();
 		String queryString = httpServletRequest.getQueryString();
 
 		if ((queryString != null) &&
 			(queryString.getBytes(StandardCharsets.UTF_8).length >
-				maxRequestLength)) {
+				_maxRequestLength)) {
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					StringBundler.concat(
 						"Module resolution query string exceeds the maximum ",
-						"length of ", maxRequestLength, " bytes"));
+						"length of ", _maxRequestLength, " bytes"));
 			}
 
 			httpServletResponse.setStatus(
@@ -122,14 +129,12 @@ public class JSResolveModulesServlet extends HttpServlet {
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
-		long maxRequestLength = _getMaxRequestLength();
-
-		if (httpServletRequest.getContentLengthLong() > maxRequestLength) {
+		if (httpServletRequest.getContentLengthLong() > _maxRequestLength) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					StringBundler.concat(
 						"Module resolution request content length exceeds the ",
-						"maximum length of ", maxRequestLength, " bytes"));
+						"maximum length of ", _maxRequestLength, " bytes"));
 			}
 
 			httpServletResponse.setStatus(
@@ -143,14 +148,14 @@ public class JSResolveModulesServlet extends HttpServlet {
 
 		StreamUtil.transfer(
 			httpServletRequest.getInputStream(), unsyncByteArrayOutputStream,
-			StreamUtil.BUFFER_SIZE, false, maxRequestLength + 1);
+			StreamUtil.BUFFER_SIZE, false, _maxRequestLength + 1);
 
-		if (unsyncByteArrayOutputStream.size() > maxRequestLength) {
+		if (unsyncByteArrayOutputStream.size() > _maxRequestLength) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					StringBundler.concat(
 						"Module resolution request body exceeds the maximum ",
-						"length of ", maxRequestLength, " bytes"));
+						"length of ", _maxRequestLength, " bytes"));
 			}
 
 			httpServletResponse.setStatus(
@@ -225,18 +230,6 @@ public class JSResolveModulesServlet extends HttpServlet {
 		super.service(httpServletRequest, httpServletResponse);
 	}
 
-	private long _getMaxRequestLength() {
-		long maxRequestLength = _details.maxRequestLength();
-
-		if ((maxRequestLength <= 0) ||
-			(maxRequestLength > _MAX_REQUEST_LENGTH)) {
-
-			return _MAX_REQUEST_LENGTH;
-		}
-
-		return maxRequestLength;
-	}
-
 	private void _writeResponse(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, List<String> moduleNames)
@@ -302,7 +295,7 @@ public class JSResolveModulesServlet extends HttpServlet {
 
 	private BrowserModulesResolver _browserModulesResolver;
 
-	private volatile Details _details;
+	private volatile long _maxRequestLength;
 
 	@Reference
 	private JSONFactory _jsonFactory;
