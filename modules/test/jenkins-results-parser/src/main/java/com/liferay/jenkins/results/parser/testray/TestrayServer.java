@@ -328,6 +328,16 @@ public class TestrayServer {
 		}
 	}
 
+	public boolean isCaseResultFileAvailable(String fileName) {
+		if (JenkinsResultsParserUtil.isNullOrEmpty(fileName)) {
+			return false;
+		}
+
+		File resultFile = new File(getResultsDir(), fileName);
+
+		return resultFile.exists();
+	}
+
 	public String requestGet(String urlPath) throws IOException {
 		try {
 			return JenkinsResultsParserUtil.toString(

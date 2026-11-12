@@ -694,6 +694,20 @@ public class TestrayImporter {
 
 		TestrayBuild testrayBuild = testrayRun.getTestrayBuild();
 
+		TestrayServer testrayServer = testrayBuild.getTestrayServer();
+
+		if (testrayServer.isCaseResultFileAvailable(
+				_topLevelBuildReport.getTestrayCaseFileName(
+					axisTestClassGroup.getAxisName()))) {
+
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"Testray case results for ",
+					axisTestClassGroup.getAxisName(), " are already cached"));
+
+			return;
+		}
+
 		long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
 
 		Document document = DocumentHelper.createDocument();
@@ -839,8 +853,6 @@ public class TestrayImporter {
 		for (Element testcaseElement : testcaseElements) {
 			rootElement.add(testcaseElement);
 		}
-
-		TestrayServer testrayServer = testrayBuild.getTestrayServer();
 
 		try {
 			testrayServer.writeCaseResult(
