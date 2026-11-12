@@ -109,7 +109,7 @@ public class MCPServerProfilePathUpgradeProcessTest {
 			String message = exception.getMessage();
 
 			Assert.assertTrue(
-				message, message.contains("Unique value constraint violation"));
+				message.contains("Unique value constraint violation"));
 		}
 
 		_objectEntryLocalService.deleteObjectEntry(objectEntry);
