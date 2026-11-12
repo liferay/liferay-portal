@@ -173,7 +173,7 @@ async function expectPreview(
 
 test(
 	'Previews two launches holding their own drafts of a web content and a page over the live site',
-	{tag: ['@LPD-72339', '@LPD-109351']},
+	{tag: ['@LPD-72339', '@LPD-109351', '@LPD-115209']},
 	async ({
 		apiHelpers,
 		launchSetIds,
@@ -410,7 +410,10 @@ test(
 		let previewPage: Page;
 
 		await test.step('Preview the first launch on the page', async () => {
-			previewPage = await launchesPage.previewOnPage(pageTitle);
+			previewPage = await launchesPage.previewOnPage(
+				site.name,
+				pageTitle
+			);
 
 			expect(previewPage.url()).toContain(
 				`previewLaunchSetId=${firstLaunch.id}`
@@ -597,7 +600,10 @@ test(
 		});
 
 		await test.step('The first launch is previewed as the version it wrote', async () => {
-			previewPage = await launchesPage.previewOnPage(pageTitle);
+			previewPage = await launchesPage.previewOnPage(
+				site.name,
+				pageTitle
+			);
 
 			await expectPreview(previewPage, {
 				hidden: [liveText, secondLaunchText],

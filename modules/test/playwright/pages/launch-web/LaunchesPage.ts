@@ -156,12 +156,14 @@ export class LaunchesPage {
 		await waitForPageToBeLoaded(this.page);
 	}
 
-	async previewOnPage(pageName: string): Promise<Page> {
+	async previewOnPage(siteName: string, pageName: string): Promise<Page> {
 		await this.previewButton.click();
 
 		const iframe = this.page.frameLocator(
 			'iframe[title="Select Page to Preview"]'
 		);
+
+		await iframe.getByRole('link', {exact: true, name: siteName}).click();
 
 		const pageNode = iframe.getByText(pageName, {exact: true});
 
