@@ -175,6 +175,14 @@
 					"#tag-name": "input-variables"
 				},
 				{
+					"#tag-name": "model-name",
+					"#value": "anthropic.claude-sonnet-4-5"
+				},
+				{
+					"#tag-name": "model-provider",
+					"#value": "AMAZON_BEDROCK_PROVIDER"
+				},
+				{
 					"#cdata-value": [
 						"[",
 						"    {",

@@ -289,6 +289,10 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 						)
 					).toString()),
 				_createWorkflowNodeSetting(
+					"modelName", "anthropic.claude-sonnet-4-5"),
+				_createWorkflowNodeSetting(
+					"modelProvider", "AMAZON_BEDROCK_PROVIDER"),
+				_createWorkflowNodeSetting(
 					"outputVariables",
 					JSONUtil.put(
 						JSONUtil.put(
@@ -469,6 +473,10 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 							"type", "string"
 						)
 					).toString()),
+				_createWorkflowNodeSetting(
+					"modelName", "anthropic.claude-sonnet-4-5"),
+				_createWorkflowNodeSetting(
+					"modelProvider", "AMAZON_BEDROCK_PROVIDER"),
 				_createWorkflowNodeSetting(
 					"outputVariables",
 					JSONUtil.put(
