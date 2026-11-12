@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.editor.configuration.EditorConfiguration;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactoryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -314,6 +315,22 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 				return DateUtil.getDate(
 					expirationDate, "yyyy-MM-dd'T'HH:mm",
 					themeDisplay.getLocale(), themeDisplay.getTimeZone());
+			}
+		).put(
+			"getMentionUsersURL",
+			() -> {
+				if (FeatureFlagManagerUtil.isEnabled(
+						themeDisplay.getCompanyId(), "LPD-104086")) {
+
+					return StringBundler.concat(
+						themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
+						GroupConstants.CMS_FRIENDLY_URL,
+						"/get_content_item_mention_users?classNameId=",
+						classNameId, "&classPK=",
+						objectEntry.getObjectEntryId());
+				}
+
+				return null;
 			}
 		).put(
 			"hasUpdatePermission",

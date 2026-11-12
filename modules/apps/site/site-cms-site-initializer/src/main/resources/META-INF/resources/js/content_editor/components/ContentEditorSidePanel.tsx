@@ -53,6 +53,7 @@ type Props = {
 	entryGroupExternalReferenceCode?: string;
 	expirationDate: string;
 	getCommentsURL: string;
+	getMentionUsersURL?: string;
 	hasUpdatePermission: boolean;
 	id: string;
 	isSubscribed: boolean;
