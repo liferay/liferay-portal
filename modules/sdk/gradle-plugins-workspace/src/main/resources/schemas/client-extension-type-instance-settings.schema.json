@@ -1878,6 +1878,26 @@
 		},
 		{
 			"properties": {
+				"fragmentCacheHostsAllowed": {
+					"description": "List the host names allowed to use fragment caching. Leave the list blank for any host. Requests through hosts outside the list render fragments fresh, without reading from or writing to the fragment caches.",
+					"items": {
+						"type": "string"
+					},
+					"title": "Fragment Cache Hosts Allowed",
+					"type": "array"
+				},
+				"pid": {
+					"const": "com.liferay.fragment.configuration.FragmentCacheConfiguration",
+					"title": "Fragment Cache"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Fragment Cache"
+		},
+		{
+			"properties": {
 				"maximumVersionsPerEntry": {
 					"default": 10,
 					"description": "Define the maximum number of versions to be stored per fragment entry. Once this limit is reached, the oldest versions will be automatically deleted to optimize storage space.",
@@ -5426,6 +5446,7 @@
 				"com.liferay.document.library.web.internal.configuration.CacheControlConfiguration",
 				"com.liferay.exportimport.configuration.ExportImportServiceConfiguration",
 				"com.liferay.flags.configuration.FlagsGroupServiceConfiguration",
+				"com.liferay.fragment.configuration.FragmentCacheConfiguration",
 				"com.liferay.fragment.configuration.FragmentEntryVersionConfiguration",
 				"com.liferay.fragment.configuration.FragmentJavaScriptConfiguration",
 				"com.liferay.fragment.configuration.FragmentServiceConfiguration",
