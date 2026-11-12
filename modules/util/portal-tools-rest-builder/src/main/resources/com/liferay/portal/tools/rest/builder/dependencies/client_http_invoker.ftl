@@ -70,8 +70,6 @@ public class HttpInvoker {
 		httpResponse.setMessage(httpURLConnection.getResponseMessage());
 		httpResponse.setStatusCode(httpURLConnection.getResponseCode());
 
-		httpURLConnection.disconnect();
-
 		return httpResponse;
 	}
 
@@ -347,7 +345,7 @@ public class HttpInvoker {
 
 		int responseCode = httpURLConnection.getResponseCode();
 
-		if (responseCode > 299) {
+		if (responseCode > 399) {
 			inputStream = httpURLConnection.getErrorStream();
 		}
 		else {
@@ -355,16 +353,21 @@ public class HttpInvoker {
 		}
 
 		if (inputStream != null) {
-			byte[] bytes = new byte[8192];
+			try {
+				byte[] bytes = new byte[8192];
 
-			while (true) {
-				int read = inputStream.read(bytes, 0, bytes.length);
+				while (true) {
+					int read = inputStream.read(bytes, 0, bytes.length);
 
-				if (read == -1) {
-					break;
+					if (read == -1) {
+						break;
+					}
+
+					byteArrayOutputStream.write(bytes, 0, read);
 				}
-
-				byteArrayOutputStream.write(bytes, 0, read);
+			}
+			finally {
+				inputStream.close();
 			}
 		}
 
