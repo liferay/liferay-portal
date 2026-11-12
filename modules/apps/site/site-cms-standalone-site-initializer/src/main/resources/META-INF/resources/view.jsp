@@ -7,6 +7,10 @@
 
 <%@ include file="/init.jsp" %>
 
+<%
+CMSLoginDisplayContext cmsLoginDisplayContext = new CMSLoginDisplayContext(request);
+%>
+
 <div class="align-items-center cms-standalone-login d-flex min-vh-100">
 	<div class="container-fluid container-fluid-max-xl">
 		<div class="align-items-center no-gutters px-3 row w-100">
@@ -20,6 +24,7 @@
 
 				<liferay-portlet:runtime
 					portletName="com_liferay_login_web_portlet_LoginPortlet"
+					queryString="<%= cmsLoginDisplayContext.getQueryString() %>"
 				/>
 			</div>
 

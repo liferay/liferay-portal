@@ -33,6 +33,7 @@ dependencies {
 	compileOnly project(":apps:layout:layout-page-template-admin-api")
 	compileOnly project(":apps:layout:layout-set-prototype-api")
 	compileOnly project(":apps:locked-items:locked-items-api")
+	compileOnly project(":apps:login:login-web-api")
 	compileOnly project(":apps:marketplace:marketplace-api")
 	compileOnly project(":apps:message-boards:message-boards-api")
 	compileOnly project(":apps:notification:notification-api")
