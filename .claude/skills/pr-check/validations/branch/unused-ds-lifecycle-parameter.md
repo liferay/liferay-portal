@@ -1,6 +1,6 @@
 # Unused DS Lifecycle Parameter
 
-Flags a parameter that the body of a Declarative Services lifecycle method never reads, in a method that the branch adds or changes. A lifecycle method is a method or a constructor annotated `@Activate`, `@Modified` or `@Deactivate`. Service Component Runtime passes only the parameters a lifecycle method declares, so an unused `BundleContext`, `ComponentContext`, `Map<String, Object> properties` or deactivation reason is dead weight that invites the next reader to look for a use that is not there. A parameter annotated `@Reference` is a constructor injected service, not a lifecycle argument, so it is exempt.
+Flags a parameter that the body of a Declarative Services (DS) lifecycle method never reads, in a method that the branch adds or changes. A lifecycle method is a method or a constructor annotated `@Activate`, `@Modified`, or `@Deactivate`. Service Component Runtime passes only the parameters a lifecycle method declares, so an unused `BundleContext`, `ComponentContext`, `Map<String, Object> properties`, or deactivation reason is dead weight that invites the next reader to look for a use that is not there. A constructor parameter annotated `@Reference` is an injected service, not a lifecycle argument, so it is exempt.
 
 ## Source Formatter Candidate
 
@@ -16,9 +16,9 @@ This validation stands in for a Source Formatter check. Source Formatter catches
 
 ## Command
 
-This check is static and needs no build. It walks each changed Java file that mentions `@Activate`, `@Modified` or `@Deactivate`, skips generated files, and splits the file into tokens with comments, string literals, and character literals left out. After each lifecycle annotation, it skips any further annotations and modifiers up to the opening parenthesis of the parameter list. An annotated field, which ends at `;`, `=`, `{` or `}` before any parenthesis, is not a method and is skipped, and so is a method without a body. Each parameter of the list, other than one annotated `@Reference`, is reported when no token of the body, outside a member access after `.`, equals its name.
+This check is static and needs no build. It walks each changed Java file that mentions `@Activate`, `@Modified`, or `@Deactivate`, skips generated files, and splits the file into tokens with comments, string literals, and character literals left out. It then skips the annotations and modifiers that follow each lifecycle annotation, up to the opening parenthesis of the parameter list. An annotated field, which reaches `;`, `=`, `{`, or `}` before any parenthesis, is not a method and is skipped, and so is a method without a body. Each parameter not annotated `@Reference` is reported when no token of the body equals its name, other than a member name that follows `.`.
 
-The finding is reported only when the branch adds or changes a line between the lifecycle annotation and the closing brace of the body. A generated file carries the `@generated` Javadoc marker, matched ignoring case so the `@Generated` annotation on REST Builder output is covered too, and is excluded before the scan. The check uses `command grep` so each file and its added lines are searched by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults. Each finding prints as `<path>:<line>: "<method>" never reads its "<parameter>" parameter, remove it`.
+A finding is reported only when the branch adds or changes a line between the lifecycle annotation and the closing brace of the body. A generated file carries the `@generated` Javadoc marker and is excluded before the scan. The match ignores case, so the `@Generated` annotation on REST Builder output is covered too. The check uses `command grep` so each file and its added lines are searched by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults. Each finding prints as `<path>:<line>: "<method>" never reads its "<parameter>" parameter, remove it`.
 
 ```bash
 UNUSED_PARAMETERS='
@@ -240,10 +240,10 @@ Use `while read` rather than a `for` over an unquoted substitution, so a path ho
 
 When `${FINDINGS}` is empty, every lifecycle method that the branch adds or changes reads each of its parameters, so the validation passes.
 
-Otherwise, the validation fails. Report the message below to the developer with one row for each finding, giving the path, the line, the method and the parameter as the finding prints them, and return it as the failure note.
+Otherwise, the validation fails. Report the message below to the developer with one row for each finding, giving the path, the line, the method, and the parameter as the finding prints them, and return it as the failure note.
 
 ```markdown
-**A DS lifecycle method declares a parameter it never reads.** Service Component Runtime passes only the parameters a lifecycle method declares, so remove each parameter below, along with its import when nothing else uses it. A lifecycle method left with no parameters and an empty body can be removed as a whole.
+**A DS lifecycle method declares a parameter it never reads.** Service Component Runtime passes only the parameters a lifecycle method declares, so remove each parameter below, along with its import when nothing else uses it. Remove the whole lifecycle method when it is left with no parameters and an empty body.
 
 | File | Line | Method | Parameter |
 | --- | --- | --- | --- |
