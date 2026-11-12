@@ -9,10 +9,15 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.StreamReadConstraints;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.validation.Valid;
@@ -68,6 +73,41 @@ public class ObjectMapperProviderUtilTest {
 			jsonNode);
 	}
 
+	@Test
+	public void testGetBatchEngineObjectMapperWithJSONStringMaxLength() {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"JSON_STRING_MAX_LENGTH", 10)) {
+
+			_assertMaxStringLength(
+				10, ObjectMapperProviderUtil.getBatchEngineObjectMapper());
+		}
+
+		_assertMaxStringLength(
+			PropsValues.JSON_STRING_MAX_LENGTH,
+			ObjectMapperProviderUtil.getBatchEngineObjectMapper());
+	}
+
+	@Test
+	public void testGetObjectMapperWithJSONStringMaxLength() {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"JSON_STRING_MAX_LENGTH", 10)) {
+
+			_assertMaxStringLength(
+				10, ObjectMapperProviderUtil.getBatchEngineObjectMapper());
+			_assertMaxStringLength(
+				10, ObjectMapperProviderUtil.getObjectMapper());
+		}
+
+		_assertMaxStringLength(
+			PropsValues.JSON_STRING_MAX_LENGTH,
+			ObjectMapperProviderUtil.getBatchEngineObjectMapper());
+		_assertMaxStringLength(
+			PropsValues.JSON_STRING_MAX_LENGTH,
+			ObjectMapperProviderUtil.getObjectMapper());
+	}
+
 	@JsonSubTypes(
 		{@JsonSubTypes.Type(name = "test", value = TestSubclass.class)}
 	)
@@ -90,6 +130,19 @@ public class ObjectMapperProviderUtilTest {
 	}
 
 	public static class TestSubclass extends TestClass {
+	}
+
+	private void _assertMaxStringLength(
+		int expectedMaxStringLength, ObjectMapper objectMapper) {
+
+		JsonFactory jsonFactory = objectMapper.getFactory();
+
+		StreamReadConstraints streamReadConstraints =
+			jsonFactory.streamReadConstraints();
+
+		Assert.assertEquals(
+			expectedMaxStringLength,
+			streamReadConstraints.getMaxStringLength());
 	}
 
 	private final ObjectMapper _objectMapper =
