@@ -17,6 +17,7 @@ function assert_clean_upgrade_log {
 	if [ -n "${unclean_log_entries}" ]
 	then
 		echo "Upgrade log contains ERROR or FATAL entries:"
+
 		printf "%s\n" "${unclean_log_entries}"
 
 		exit 1
