@@ -5,12 +5,17 @@
 
 package com.liferay.wiki.navigation.web.internal.portlet;
 
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Release;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
+import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.navigation.web.internal.constants.WikiNavigationPortletKeys;
 
 import jakarta.portlet.Portlet;
@@ -20,9 +25,6 @@ import jakarta.portlet.RenderResponse;
 
 import java.io.IOException;
 
-import java.util.Map;
-
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -30,7 +32,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sergio González
  */
 @Component(
-	configurationPid = "com.liferay.wiki.configuration.WikiGroupServiceConfiguration",
 	property = {
 		"com.liferay.portlet.css-class-wrapper=wiki-navigation-portlet-tree-menu",
 		"com.liferay.portlet.display-category=category.wiki",
@@ -65,18 +66,27 @@ public class WikiNavigationTreeMenuPortlet extends MVCPortlet {
 			return;
 		}
 
-		renderRequest.setAttribute(
-			WikiGroupServiceConfiguration.class.getName(),
-			_wikiGroupServiceConfiguration);
+		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+			renderRequest.setAttribute(
+				WikiGroupServiceConfiguration.class.getName(),
+				_configurationProvider.getConfiguration(
+					WikiGroupServiceConfiguration.class,
+					new GroupServiceSettingsLocator(
+						themeDisplay.getSiteGroupId(),
+						WikiConstants.SERVICE_NAME)));
+		}
+		catch (ConfigurationException configurationException) {
+			throw new PortletException(configurationException);
+		}
 
 		super.render(renderRequest, renderResponse);
 	}
 
-	@Activate
-	protected void activate(Map<String, Object> properties) {
-		_wikiGroupServiceConfiguration = ConfigurableUtil.createConfigurable(
-			WikiGroupServiceConfiguration.class, properties);
-	}
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private Portal _portal;
@@ -85,7 +95,5 @@ public class WikiNavigationTreeMenuPortlet extends MVCPortlet {
 		target = "(&(release.bundle.symbolic.name=com.liferay.wiki.navigation.web)(&(release.schema.version>=1.0.0)(!(release.schema.version>=2.0.0))))"
 	)
 	private Release _release;
-
-	private WikiGroupServiceConfiguration _wikiGroupServiceConfiguration;
 
 }
