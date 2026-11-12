@@ -1632,15 +1632,14 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 			Assert.assertEquals(
 				Arrays.asList(
-					_language.get(
-						LocaleUtil.getDefault(),
-						"this-external-reference-code-is-already-in-use"),
-					_language.get(
-						LocaleUtil.getDefault(),
-						"a-resource-file-with-that-name-already-exists"),
-					_language.get(
-						LocaleUtil.getDefault(),
-						"a-resource-folder-with-that-name-already-exists")),
+					StringBundler.concat(
+						"Duplicate file entry external reference code ",
+						postResourceFile.getExternalReferenceCode(),
+						" in group ", testGroup.getGroupId()),
+					"A file entry already exists with title " +
+						postResourceFile.getName(),
+					"A folder already exists with name " +
+						postResourceFolder.getName()),
 				TransformUtil.transformToList(
 					importTask.getFailedItems(), FailedItem::getMessage));
 		}
