@@ -183,14 +183,24 @@ public class MentionsUserNotificationHandler
 	}
 
 	private boolean _isCMSDiscussion(JSONObject jsonObject) {
-		String discussionClassName = jsonObject.getString(
-			"discussionClassName");
-
-		if (Validator.isNull(discussionClassName) ||
-			!FeatureFlagManagerUtil.isEnabled(
+		if (!FeatureFlagManagerUtil.isEnabled(
 				CompanyThreadLocal.getCompanyId(), "LPD-104086")) {
 
 			return false;
+		}
+
+		String discussionClassName = jsonObject.getString(
+			"discussionClassName");
+
+		if (Validator.isNull(discussionClassName)) {
+			MBMessage mbMessage = _mbMessageLocalService.fetchMBMessage(
+				jsonObject.getLong("classPK"));
+
+			if ((mbMessage == null) || !mbMessage.isDiscussion()) {
+				return false;
+			}
+
+			discussionClassName = mbMessage.getClassName();
 		}
 
 		ObjectDefinition objectDefinition =
