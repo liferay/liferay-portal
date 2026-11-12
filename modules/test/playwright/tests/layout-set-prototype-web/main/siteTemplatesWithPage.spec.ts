@@ -210,13 +210,16 @@ test(
 
 		// Add new page on created site
 
-		await expect(async () => {
-			await productMenuPage.goToPages();
+		await productMenuPage.goToPages();
 
-			await expect(
-				page.getByLabel(templatePageName, {exact: true})
-			).toBeVisible();
-		}).toPass();
+		const templatePage = page.getByLabel(templatePageName, {exact: true});
+
+		await reloadUntilVisible({
+			myLocator: templatePage,
+			page,
+		});
+
+		await expect(templatePage).toBeVisible();
 
 		const pageName = 'Test Page-' + getRandomString();
 		await pagesAdminPage.clickNewButtonAndWaitForBlankTemplate();
@@ -251,11 +254,13 @@ test(
 
 		await productMenuPage.goToPages();
 
-		await pagesAdminPage.showChildPages(pageName);
+		await expect(async () => {
+			await pagesAdminPage.showChildPages(pageName);
 
-		await expect(
-			pagesAdminPage.getPageMenuItem(childPageName)
-		).toBeVisible();
+			await expect(
+				pagesAdminPage.getPageMenuItem(childPageName)
+			).toBeVisible({timeout: 1000});
+		}).toPass();
 	}
 );
 
