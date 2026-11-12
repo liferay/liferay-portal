@@ -41,21 +41,54 @@ public class JAXRSServiceTracker
 			   ServiceTrackerCustomizer
 				   <Object, JAXRSServiceTracker.TrackedService> {
 
+	public static boolean isApplication(
+		CachingServiceReference<Object> cachingServiceReference) {
+
+		ServiceReference<Object> serviceReference =
+			cachingServiceReference.getServiceReference();
+
+		if (!ArrayUtil.contains(
+				(String[])serviceReference.getProperty(Constants.OBJECTCLASS),
+				Application.class.getName())) {
+
+			return false;
+		}
+
+		Object applicationBase = cachingServiceReference.getProperty(
+			JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE);
+
+		if (applicationBase != null) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public static boolean isExtension(
+		CachingServiceReference<Object> cachingServiceReference) {
+
+		return _isTrue(
+			cachingServiceReference.getProperty(
+				JaxrsWhiteboardConstants.JAX_RS_EXTENSION));
+	}
+
+	public static boolean isResource(
+		CachingServiceReference<Object> cachingServiceReference) {
+
+		return _isTrue(
+			cachingServiceReference.getProperty(
+				JaxrsWhiteboardConstants.JAX_RS_RESOURCE));
+	}
+
 	public JAXRSServiceTracker(
 		Function<CachingServiceReference<Object>, Runnable>
 			applicationsFunction,
-		AriesJaxrsServiceRuntime ariesJaxrsServiceRuntime,
 		BundleContext bundleContext,
 		Function<CachingServiceReference<Object>, Runnable> extensionsFunction,
-		ServiceRegistration<JaxrsServiceRuntime>
-			jaxrsServiceRuntimeServiceRegistration,
 		Function<CachingServiceReference<Object>, Runnable> resourcesFunction) {
 
 		_applicationsFunction = applicationsFunction;
-		_ariesJaxrsServiceRuntime = ariesJaxrsServiceRuntime;
 		_extensionsFunction = extensionsFunction;
-		_jaxrsServiceRuntimeServiceRegistration =
-			jaxrsServiceRuntimeServiceRegistration;
 		_resourcesFunction = resourcesFunction;
 
 		_serviceTracker = new ServiceTracker<>(
@@ -65,8 +98,6 @@ public class JAXRSServiceTracker
 					"(&(objectClass=jakarta.ws.rs.core.Application)" +
 						"(osgi.jaxrs.application.base=*)))"),
 			this);
-
-		_serviceTracker.open();
 	}
 
 	@Override
@@ -86,6 +117,30 @@ public class JAXRSServiceTracker
 		_serviceTracker.close();
 	}
 
+	public synchronized List<CachingServiceReference<Object>>
+		getDuplicateNameCachingServiceReferences() {
+
+		List<CachingServiceReference<Object>> cachingServiceReferences =
+			new ArrayList<>();
+
+		for (PriorityQueue<TrackedService> priorityQueue :
+				_priorityQueues.values()) {
+
+			TrackedService headTrackedService = priorityQueue.peek();
+
+			for (TrackedService trackedService : priorityQueue) {
+				if (trackedService == headTrackedService) {
+					continue;
+				}
+
+				cachingServiceReferences.add(
+					trackedService._cachingServiceReference);
+			}
+		}
+
+		return cachingServiceReferences;
+	}
+
 	@Override
 	public synchronized void modifiedService(
 		ServiceReference<Object> serviceReference,
@@ -103,6 +158,16 @@ public class JAXRSServiceTracker
 
 			_add(trackedService);
 		}
+	}
+
+	public synchronized void open(
+		ServiceRegistration<JaxrsServiceRuntime>
+			jaxrsServiceRuntimeServiceRegistration) {
+
+		_jaxrsServiceRuntimeServiceRegistration =
+			jaxrsServiceRuntimeServiceRegistration;
+
+		_serviceTracker.open();
 	}
 
 	@Override
@@ -126,14 +191,21 @@ public class JAXRSServiceTracker
 
 	}
 
-	private void _add(TrackedService trackedService) {
-		CachingServiceReference<Object> cachingServiceReference =
-			trackedService._cachingServiceReference;
+	private static boolean _isTrue(Object value) {
+		if (Objects.equals(value, Boolean.TRUE) ||
+			Objects.equals(value, "true")) {
 
+			return true;
+		}
+
+		return false;
+	}
+
+	private void _add(TrackedService trackedService) {
 		PriorityQueue<TrackedService> priorityQueue =
 			_priorityQueues.computeIfAbsent(
 				AriesJaxrsServiceRuntime.getServiceName(
-					cachingServiceReference::getProperty),
+					trackedService._cachingServiceReference::getProperty),
 				name -> new PriorityQueue<>(_comparator));
 
 		TrackedService previousTrackedService = priorityQueue.peek();
@@ -146,36 +218,9 @@ public class JAXRSServiceTracker
 			}
 
 			_publish(trackedService);
-
-			if (previousTrackedService != null) {
-				_addClashingService(
-					previousTrackedService._cachingServiceReference);
-			}
-		}
-		else {
-			_addClashingService(cachingServiceReference);
 		}
 
 		_incrementChangeCount();
-	}
-
-	private void _addClashingService(
-		CachingServiceReference<Object> cachingServiceReference) {
-
-		if (_isApplication(cachingServiceReference)) {
-			_ariesJaxrsServiceRuntime.addClashingApplication(
-				cachingServiceReference);
-		}
-
-		if (_isExtension(cachingServiceReference)) {
-			_ariesJaxrsServiceRuntime.addClashingExtension(
-				cachingServiceReference);
-		}
-
-		if (_isResource(cachingServiceReference)) {
-			_ariesJaxrsServiceRuntime.addClashingResource(
-				cachingServiceReference);
-		}
 	}
 
 	private void _incrementChangeCount() {
@@ -194,84 +239,30 @@ public class JAXRSServiceTracker
 		_jaxrsServiceRuntimeServiceRegistration.setProperties(properties);
 	}
 
-	private boolean _isApplication(
-		CachingServiceReference<Object> cachingServiceReference) {
-
-		ServiceReference<Object> serviceReference =
-			cachingServiceReference.getServiceReference();
-
-		if (!ArrayUtil.contains(
-				(String[])serviceReference.getProperty(Constants.OBJECTCLASS),
-				Application.class.getName())) {
-
-			return false;
-		}
-
-		Object applicationBase = cachingServiceReference.getProperty(
-			JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE);
-
-		if (applicationBase != null) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean _isExtension(
-		CachingServiceReference<Object> cachingServiceReference) {
-
-		return _isTrue(
-			cachingServiceReference.getProperty(
-				JaxrsWhiteboardConstants.JAX_RS_EXTENSION));
-	}
-
-	private boolean _isResource(
-		CachingServiceReference<Object> cachingServiceReference) {
-
-		return _isTrue(
-			cachingServiceReference.getProperty(
-				JaxrsWhiteboardConstants.JAX_RS_RESOURCE));
-	}
-
-	private boolean _isTrue(Object value) {
-		if (Objects.equals(value, Boolean.TRUE) ||
-			Objects.equals(value, "true")) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	private void _publish(TrackedService trackedService) {
 		CachingServiceReference<Object> cachingServiceReference =
 			trackedService._cachingServiceReference;
-
-		_ariesJaxrsServiceRuntime.addServiceForName(cachingServiceReference);
 
 		List<Runnable> runnables = new ArrayList<>(3);
 
 		trackedService._runnables = runnables;
 
-		if (_isApplication(cachingServiceReference)) {
+		if (isApplication(cachingServiceReference)) {
 			runnables.add(_applicationsFunction.apply(cachingServiceReference));
 		}
 
-		if (_isResource(cachingServiceReference)) {
+		if (isResource(cachingServiceReference)) {
 			runnables.add(_resourcesFunction.apply(cachingServiceReference));
 		}
 
-		if (_isExtension(cachingServiceReference)) {
+		if (isExtension(cachingServiceReference)) {
 			runnables.add(_extensionsFunction.apply(cachingServiceReference));
 		}
 	}
 
 	private void _remove(TrackedService trackedService) {
-		CachingServiceReference<Object> cachingServiceReference =
-			trackedService._cachingServiceReference;
-
 		String name = AriesJaxrsServiceRuntime.getServiceName(
-			cachingServiceReference::getProperty);
+			trackedService._cachingServiceReference::getProperty);
 
 		PriorityQueue<TrackedService> priorityQueue = _priorityQueues.get(name);
 
@@ -279,45 +270,20 @@ public class JAXRSServiceTracker
 
 		priorityQueue.remove(trackedService);
 
-		TrackedService currentTrackedService = priorityQueue.peek();
-
 		if (trackedService == previousTrackedService) {
 			_withdraw(trackedService);
-		}
-		else {
-			_removeClashingService(cachingServiceReference);
-		}
 
-		if (currentTrackedService == null) {
-			_priorityQueues.remove(name);
-		}
-		else if (currentTrackedService != previousTrackedService) {
-			_removeClashingService(
-				currentTrackedService._cachingServiceReference);
+			TrackedService currentTrackedService = priorityQueue.peek();
 
-			_publish(currentTrackedService);
+			if (currentTrackedService == null) {
+				_priorityQueues.remove(name);
+			}
+			else {
+				_publish(currentTrackedService);
+			}
 		}
 
 		_incrementChangeCount();
-	}
-
-	private void _removeClashingService(
-		CachingServiceReference<Object> cachingServiceReference) {
-
-		if (_isApplication(cachingServiceReference)) {
-			_ariesJaxrsServiceRuntime.removeClashingApplication(
-				cachingServiceReference);
-		}
-
-		if (_isExtension(cachingServiceReference)) {
-			_ariesJaxrsServiceRuntime.removeClashingExtension(
-				cachingServiceReference);
-		}
-
-		if (_isResource(cachingServiceReference)) {
-			_ariesJaxrsServiceRuntime.removeClashingResource(
-				cachingServiceReference);
-		}
 	}
 
 	private void _withdraw(TrackedService trackedService) {
@@ -326,9 +292,6 @@ public class JAXRSServiceTracker
 		}
 
 		trackedService._runnables = null;
-
-		_ariesJaxrsServiceRuntime.removedServiceForName(
-			trackedService._cachingServiceReference);
 	}
 
 	private static final Comparator<TrackedService> _comparator =
@@ -338,11 +301,10 @@ public class JAXRSServiceTracker
 
 	private final Function<CachingServiceReference<Object>, Runnable>
 		_applicationsFunction;
-	private final AriesJaxrsServiceRuntime _ariesJaxrsServiceRuntime;
 	private long _changeCount;
 	private final Function<CachingServiceReference<Object>, Runnable>
 		_extensionsFunction;
-	private final ServiceRegistration<JaxrsServiceRuntime>
+	private ServiceRegistration<JaxrsServiceRuntime>
 		_jaxrsServiceRuntimeServiceRegistration;
 	private final Map<String, PriorityQueue<TrackedService>> _priorityQueues =
 		new HashMap<>();

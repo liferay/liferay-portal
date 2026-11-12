@@ -52,12 +52,20 @@ public class JAXRSWhiteboard implements SafeCloseable {
 
 			_bundleContextField.set(whiteboard, bundleContext);
 
-			AriesJaxrsServiceRuntime ariesJaxrsServiceRuntime =
-				(AriesJaxrsServiceRuntime)_runtimeField.get(whiteboard);
+			_jaxrsServiceTracker = new JAXRSServiceTracker(
+				_runPipeline(bundleContext, _applicationsMethod, whiteboard),
+				bundleContext,
+				_runPipeline(
+					bundleContext, _applicationExtensionsMethod, whiteboard),
+				_runPipeline(
+					bundleContext, _applicationResourcesMethod, whiteboard));
 
 			_jaxrsServiceRuntimeServiceRegistration =
 				bundleContext.registerService(
-					JaxrsServiceRuntime.class, ariesJaxrsServiceRuntime,
+					JaxrsServiceRuntime.class,
+					new JAXRSServiceRuntime(
+						(AriesJaxrsServiceRuntime)_runtimeField.get(whiteboard),
+						_jaxrsServiceTracker),
 					configuration);
 
 			_runtimeReferenceField.set(
@@ -69,14 +77,7 @@ public class JAXRSWhiteboard implements SafeCloseable {
 					Application.class, new DefaultApplication(),
 					_getDefaultApplicationProperties(configuration));
 
-			_jaxrsServiceTracker = new JAXRSServiceTracker(
-				_runPipeline(bundleContext, _applicationsMethod, whiteboard),
-				ariesJaxrsServiceRuntime, bundleContext,
-				_runPipeline(
-					bundleContext, _applicationExtensionsMethod, whiteboard),
-				_jaxrsServiceRuntimeServiceRegistration,
-				_runPipeline(
-					bundleContext, _applicationResourcesMethod, whiteboard));
+			_jaxrsServiceTracker.open(_jaxrsServiceRuntimeServiceRegistration);
 
 			_registry = (Registry<?>)_applicationRegistryField.get(whiteboard);
 		}
