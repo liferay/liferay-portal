@@ -231,8 +231,8 @@ export function Head<T extends Record<string, any>>(
 
 							<Menu
 								UNSAFE_focusableElements={[
-									'input[type="text"]',
 									'input[role="switch"]',
+									'input[type="text"]',
 								]}
 								active={active}
 								alwaysClose={false}
