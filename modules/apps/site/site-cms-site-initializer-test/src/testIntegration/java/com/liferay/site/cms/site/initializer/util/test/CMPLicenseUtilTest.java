@@ -143,8 +143,8 @@ public class CMPLicenseUtilTest {
 
 			_checkResources();
 
-			_assertLayout(expectedAppEnabled, "/projects");
 			_assertLayout(true, "/planning");
+			_assertLayout(expectedAppEnabled, "/projects");
 			_assertLayout(true, "/tasks");
 			_assertObjectDefinition(expectedAppEnabled, "L_CMP_PROJECT");
 			_assertObjectDefinition(expectedAppEnabled, "L_CMP_PROJECT_LINK");
