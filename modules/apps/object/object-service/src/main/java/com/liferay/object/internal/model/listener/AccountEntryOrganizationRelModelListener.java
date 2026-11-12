@@ -79,7 +79,9 @@ public class AccountEntryOrganizationRelModelListener
 		for (ObjectDefinition objectDefinition :
 				_objectDefinitionLocalService.getObjectDefinitions(true)) {
 
-			if (!objectDefinition.isEnableIndexSearch() ||
+			if ((objectDefinition.getCompanyId() !=
+					accountEntryOrganizationRel.getCompanyId()) ||
+				!objectDefinition.isEnableIndexSearch() ||
 				objectDefinition.isUnmodifiableSystemObject()) {
 
 				continue;
