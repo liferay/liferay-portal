@@ -165,12 +165,12 @@ public class FragmentEntryConfigurationParserImpl
 		Object displayObject, InfoItemReference fallbackInfoItemReference,
 		long[] segmentsEntryIds) {
 
-		HashMap<String, Object> contextObjects = new HashMap<>();
+		Map<String, Object> contextObjects = new HashMap<>();
+
+		Object fallbackInfoItem = null;
 
 		List<FragmentConfigurationField> fragmentConfigurationFields =
 			getFragmentConfigurationFields(configurationJSONObject);
-
-		Object fallbackInfoItem = null;
 
 		for (FragmentConfigurationField fragmentConfigurationField :
 				fragmentConfigurationFields) {

@@ -767,6 +767,8 @@ public class FreeMarkerFragmentEntryProcessorTest {
 	public void testProcessFragmentEntryLinkHTMLWithContextInfoItemReference()
 		throws Exception {
 
+		// Default value
+
 		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
 			_group.getGroupId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
@@ -789,8 +791,6 @@ public class FreeMarkerFragmentEntryProcessorTest {
 		fragmentEntryLink.setHtml(
 			"<div class=\"fragment_name\">[#if itemSelector1Object??]" +
 				"${itemSelector1Object}[/#if]</div>");
-
-		// Default value
 
 		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
 			_group.getGroupId(), RandomTestUtil.randomString(),
