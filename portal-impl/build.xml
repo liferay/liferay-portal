@@ -5,6 +5,12 @@
 
 	<import file="../build-common-java.xml" />
 
+	<property file="${project.dir}/working.dir.properties" prefix="working.dir" />
+
+	<condition else="${git.working.branch.name}" property="git.upstream.branch.name" value="${working.dir.private.branch.name}">
+		<isset property="working.dir.private.branch.name" />
+	</condition>
+
 	<property name="copy.jar" value="false" />
 	<property name="deploy.dir" value="${app.server.shielded-container-lib.portal.dir}" />
 	<property name="jar.file" value="${ant.project.name}" />
@@ -701,12 +707,12 @@
 		</path>
 
 		<if>
-			<equals arg1="${current.branch.name}" arg2="${git.working.branch.name}" />
+			<equals arg1="${current.branch.name}" arg2="${git.upstream.branch.name}" />
 			<then>
 				<if>
 					<isset property="format.current.branch" />
 					<then>
-						<property name="source.formatter.message" value="The current branch is the same as the working branch (${git.working.branch.name}).${line.separator}Not executing Source Formatter task." />
+						<property name="source.formatter.message" value="The current branch is the same as the working branch (${git.upstream.branch.name}).${line.separator}Not executing Source Formatter task." />
 						<property name="source.formatter.skip" value="true" />
 					</then>
 				</if>
@@ -722,7 +728,7 @@
 					resultproperty="baseline.current.branch.result"
 				>
 					<arg value="git.type=current-branch" />
-					<arg value="git.working.branch.name=${git.working.branch.name}" />
+					<arg value="git.working.branch.name=${git.upstream.branch.name}" />
 				</java>
 
 				<if>
@@ -815,7 +821,7 @@
 					<arg value="format.current.branch=${format.current.branch}" />
 					<arg value="format.latest.author=${format.latest.author}" />
 					<arg value="format.local.changes=${format.local.changes}" />
-					<arg value="git.working.branch.name=${git.working.branch.name}" />
+					<arg value="git.working.branch.name=${git.upstream.branch.name}" />
 					<arg value="include.subrepositories=${source.formatter.include.subrepositories}" />
 					<arg value="java.parser.enabled=${java.parser.enabled}" />
 					<arg value="max.line.length=${source.formatter.max.line.length}" />
@@ -982,7 +988,7 @@
 			newenvironment="true"
 		>
 			<arg value="git.type=${git.type}" />
-			<arg value="git.working.branch.name=${git.working.branch.name}" />
+			<arg value="git.working.branch.name=${git.upstream.branch.name}" />
 		</java>
 	</target>
 
