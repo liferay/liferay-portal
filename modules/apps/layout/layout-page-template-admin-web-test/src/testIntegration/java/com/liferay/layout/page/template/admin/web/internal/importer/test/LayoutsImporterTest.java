@@ -1067,9 +1067,7 @@ public class LayoutsImporterTest {
 			_getNamespacePlaceholderPortletPreferencesCount();
 
 		_importFile(
-			_getFile(
-				"com/liferay/layout/page/template/admin/web/internal/importer" +
-					"/test/dependencies/master-pages-with-embedded-widgets"),
+			_getFile(_RESOURCES_PATH_MASTER_PAGES_WITH_EMBEDDED_WIDGETS),
 			LayoutsImportStrategy.OVERWRITE,
 			LayoutPageTemplateConstants.
 				PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
@@ -2591,6 +2589,11 @@ public class LayoutsImporterTest {
 	private static final String _RESOURCES_PATH_MASTER_PAGES =
 		"com/liferay/layout/page/template/admin/web/internal/importer/test" +
 			"/dependencies/master-pages";
+
+	private static final String
+		_RESOURCES_PATH_MASTER_PAGES_WITH_EMBEDDED_WIDGETS =
+			"com/liferay/layout/page/template/admin/web/internal/importer" +
+				"/test/dependencies/master-pages-with-embedded-widgets";
 
 	private static final String _RESOURCES_PATH_PAGE_TEMPLATES =
 		"com/liferay/layout/page/template/admin/web/internal/importer/test" +
