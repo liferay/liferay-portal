@@ -124,6 +124,10 @@ public class FIDO2BrowserSetupMFAChecker
 			_mfaFIDO2CredentialEntryLocalService.
 				getMFAFIDO2CredentialEntriesByUserId(userId);
 
+		httpServletRequest.setAttribute(
+			MFAFIDO2WebKeys.MFA_FIDO2_CREDENTIAL_ENTRIES,
+			mfaFIDO2CredentialEntries);
+
 		if (mfaFIDO2CredentialEntries.size() <
 				_mfaFIDO2Configuration.allowedCredentialsPerUser()) {
 

@@ -8,13 +8,13 @@
 <%@ include file="/init.jsp" %>
 
 <%
-List<MFAFIDO2CredentialEntry> mfaIDO2CredentialEntries = MFAFIDO2CredentialEntryLocalServiceUtil.getMFAFIDO2CredentialEntriesByUserId(themeDisplay.getUserId());
+List<MFAFIDO2CredentialEntry> mfaFIDO2CredentialEntries = (List<MFAFIDO2CredentialEntry>)request.getAttribute(MFAFIDO2WebKeys.MFA_FIDO2_CREDENTIAL_ENTRIES);
 %>
 
 <div id="<portlet:namespace />messageContainer"></div>
 
 <c:choose>
-	<c:when test="<%= mfaIDO2CredentialEntries.size() < mfaFIDO2Configuration.allowedCredentialsPerUser() %>">
+	<c:when test="<%= mfaFIDO2CredentialEntries.size() < mfaFIDO2Configuration.allowedCredentialsPerUser() %>">
 		<aui:button-row>
 			<clay:button
 				additionalProps='<%=
@@ -47,11 +47,11 @@ List<MFAFIDO2CredentialEntry> mfaIDO2CredentialEntries = MFAFIDO2CredentialEntry
 
 <liferay-ui:search-container
 	iteratorURL="<%= renderResponse.createRenderURL() %>"
-	total="<%= mfaIDO2CredentialEntries.size() %>"
+	total="<%= mfaFIDO2CredentialEntries.size() %>"
 >
 	<liferay-ui:search-container-results
 		calculateStartAndEnd="<%= true %>"
-		results="<%= mfaIDO2CredentialEntries %>"
+		results="<%= mfaFIDO2CredentialEntries %>"
 	/>
 
 	<liferay-ui:search-container-row
