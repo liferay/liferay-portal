@@ -11,31 +11,29 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
+import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.service.WikiNodeLocalService;
 
 import java.util.List;
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Zsolt Berentey
  */
-@Component(
-	configurationPid = "com.liferay.wiki.configuration.WikiGroupServiceConfiguration",
-	service = StagedModelDataHandler.class
-)
+@Component(service = StagedModelDataHandler.class)
 public class WikiNodeStagedModelDataHandler
 	extends BaseStagedModelDataHandler<WikiNode> {
 
@@ -90,12 +88,6 @@ public class WikiNodeStagedModelDataHandler
 	@Override
 	public boolean isEnabled(long companyId) {
 		return FeatureFlagManagerUtil.isEnabled(companyId, "LPD-35013");
-	}
-
-	@Activate
-	protected void activate(Map<String, Object> properties) {
-		_wikiGroupServiceConfiguration = ConfigurableUtil.createConfigurable(
-			WikiGroupServiceConfiguration.class, properties);
 	}
 
 	@Override
@@ -184,8 +176,15 @@ public class WikiNodeStagedModelDataHandler
 			}
 		}
 		else {
+			WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
+				_configurationProvider.getConfiguration(
+					WikiGroupServiceConfiguration.class,
+					new GroupServiceSettingsLocator(
+						portletDataContext.getScopeGroupId(),
+						WikiConstants.SERVICE_NAME));
+
 			String initialNodeName =
-				_wikiGroupServiceConfiguration.initialNodeName();
+				wikiGroupServiceConfiguration.initialNodeName();
 
 			if ((existingNode != null) &&
 				initialNodeName.equals(existingNode.getName())) {
@@ -246,7 +245,8 @@ public class WikiNodeStagedModelDataHandler
 			StringBundler.concat(nodeName, StringPool.SPACE, count), ++count);
 	}
 
-	private WikiGroupServiceConfiguration _wikiGroupServiceConfiguration;
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private WikiNodeLocalService _wikiNodeLocalService;
