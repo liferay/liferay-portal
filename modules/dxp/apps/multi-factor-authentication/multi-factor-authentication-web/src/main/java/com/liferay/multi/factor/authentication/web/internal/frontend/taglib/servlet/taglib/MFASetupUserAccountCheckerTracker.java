@@ -6,11 +6,9 @@
 package com.liferay.multi.factor.authentication.web.internal.frontend.taglib.servlet.taglib;
 
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
-import com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailOTPConfiguration;
 import com.liferay.multi.factor.authentication.spi.checker.setup.SetupMFAChecker;
+import com.liferay.multi.factor.authentication.web.internal.policy.MFAPolicy;
 import com.liferay.osgi.util.ServiceTrackerFactory;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -18,14 +16,12 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import jakarta.servlet.ServletContext;
 
 import java.util.Dictionary;
-import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -34,33 +30,16 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 /**
  * @author Tomas Polesovsky
  */
-@Component(
-	configurationPid = "com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailOTPConfiguration.scoped",
-	configurationPolicy = ConfigurationPolicy.REQUIRE, service = {}
-)
+@Component(service = {})
 public class MFASetupUserAccountCheckerTracker {
 
 	@Activate
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 
-		MFAEmailOTPConfiguration mfaEmailOTPConfiguration =
-			ConfigurableUtil.createConfigurable(
-				MFAEmailOTPConfiguration.class, properties);
-
-		if (mfaEmailOTPConfiguration.enabled()) {
-			long companyId = GetterUtil.getLong(properties.get("companyId"));
-
-			String filterString = StringBundler.concat(
-				"(&(companyId=", companyId, ")(objectClass=",
-				SetupMFAChecker.class.getName(), "))");
-
-			_serviceTracker = ServiceTrackerFactory.open(
-				bundleContext, filterString,
-				new MFACheckerSetupServiceTrackerCustomizer());
-		}
+		_serviceTracker = ServiceTrackerFactory.open(
+			bundleContext, SetupMFAChecker.class,
+			new MFACheckerSetupServiceTrackerCustomizer());
 	}
 
 	@Deactivate
@@ -71,8 +50,12 @@ public class MFASetupUserAccountCheckerTracker {
 	}
 
 	private BundleContext _bundleContext;
+
+	@Reference
+	private MFAPolicy _mfaPolicy;
+
 	private ServiceTracker
-		<Object, ServiceRegistration<ScreenNavigationEntry<User>>>
+		<SetupMFAChecker, ServiceRegistration<ScreenNavigationEntry<User>>>
 			_serviceTracker;
 
 	@Reference(
@@ -82,13 +65,14 @@ public class MFASetupUserAccountCheckerTracker {
 
 	private class MFACheckerSetupServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer
-			<Object, ServiceRegistration<ScreenNavigationEntry<User>>> {
+			<SetupMFAChecker,
+			 ServiceRegistration<ScreenNavigationEntry<User>>> {
 
 		@Override
 		public ServiceRegistration<ScreenNavigationEntry<User>> addingService(
-			ServiceReference<Object> serviceReference) {
+			ServiceReference<SetupMFAChecker> serviceReference) {
 
-			Object setupMFAChecker = _bundleContext.getService(
+			SetupMFAChecker setupMFAChecker = _bundleContext.getService(
 				serviceReference);
 
 			if (setupMFAChecker == null) {
@@ -98,14 +82,14 @@ public class MFASetupUserAccountCheckerTracker {
 			return (ServiceRegistration)_bundleContext.registerService(
 				ScreenNavigationEntry.class,
 				new MFASetupUserAccountScreenNavigationEntry(
-					serviceReference, _servletContext,
-					(SetupMFAChecker)setupMFAChecker),
+					_mfaPolicy, serviceReference, _servletContext,
+					setupMFAChecker),
 				_buildProperties(serviceReference));
 		}
 
 		@Override
 		public void modifiedService(
-			ServiceReference<Object> serviceReference,
+			ServiceReference<SetupMFAChecker> serviceReference,
 			ServiceRegistration<ScreenNavigationEntry<User>>
 				serviceRegistration) {
 
@@ -115,7 +99,7 @@ public class MFASetupUserAccountCheckerTracker {
 
 		@Override
 		public void removedService(
-			ServiceReference<Object> serviceReference,
+			ServiceReference<SetupMFAChecker> serviceReference,
 			ServiceRegistration<ScreenNavigationEntry<User>>
 				serviceRegistration) {
 
@@ -125,7 +109,7 @@ public class MFASetupUserAccountCheckerTracker {
 		}
 
 		private Dictionary<String, Object> _buildProperties(
-			ServiceReference<Object> serviceReference) {
+			ServiceReference<SetupMFAChecker> serviceReference) {
 
 			return HashMapDictionaryBuilder.<String, Object>put(
 				"screen.navigation.entry.order",

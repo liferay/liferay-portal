@@ -65,6 +65,17 @@ public class VerifyMVCActionCommand extends BaseMVCActionCommand {
 			_mfaPolicy.getAvailableBrowserMFACheckers(
 				_portal.getCompanyId(actionRequest), mfaUserId);
 
+		if (browserMFACheckers.isEmpty()) {
+			hideDefaultErrorMessage(actionRequest);
+
+			SessionErrors.add(actionRequest, "noAvailableBrowserMFAChecker");
+
+			actionResponse.setRenderParameter(
+				"mvcRenderCommandName", "/mfa_verify/view");
+
+			return;
+		}
+
 		int mfaCheckerIndex = ParamUtil.getInteger(
 			actionRequest, "mfaCheckerIndex");
 

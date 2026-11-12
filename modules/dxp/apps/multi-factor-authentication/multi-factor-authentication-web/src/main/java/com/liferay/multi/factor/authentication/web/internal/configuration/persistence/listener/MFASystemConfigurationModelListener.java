@@ -7,6 +7,7 @@ package com.liferay.multi.factor.authentication.web.internal.configuration.persi
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailOTPConfiguration;
+import com.liferay.multi.factor.authentication.web.internal.company.configuration.MFACompanyConfiguration;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
@@ -58,11 +59,17 @@ public class MFASystemConfigurationModelListener
 		_companyLocalService.forEachCompanyId(
 			companyId -> {
 				try {
+					MFACompanyConfiguration mfaCompanyConfiguration =
+						_configurationProvider.getCompanyConfiguration(
+							MFACompanyConfiguration.class, companyId);
+
 					MFAEmailOTPConfiguration mfaEmailOTPConfiguration =
 						_configurationProvider.getCompanyConfiguration(
 							MFAEmailOTPConfiguration.class, companyId);
 
-					if (mfaEmailOTPConfiguration.enabled()) {
+					if (mfaCompanyConfiguration.enabled() ||
+						mfaEmailOTPConfiguration.enabled()) {
+
 						_sendUserNotificationEvents(
 							companyId, mfaDisableGlobally);
 					}

@@ -32,27 +32,36 @@ portletDisplay.setURLBack(ParamUtil.getString(request, "backURL", loginURL));
 	<portlet:param name="mvcRenderCommandName" value="/mfa_verify/view" />
 </portlet:actionURL>
 
-<aui:form action="<%= verifyURL %>" cssClass="container-fluid container-fluid-max-xl sign-in-form" data-senna-off="true" method="post" name="fm">
-	<aui:input name="saveLastPath" type="hidden" value="<%= false %>" />
-	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
-	<aui:input name="state" type="hidden" value="<%= state %>" />
-	<aui:input name="mfaCheckerIndex" type="hidden" value="<%= mfaCheckerIndex %>" />
+<c:choose>
+	<c:when test="<%= browserMFACheckers.isEmpty() %>">
+		<div class="container-fluid container-fluid-max-xl sign-in-form">
+			<liferay-ui:error key="noAvailableBrowserMFAChecker" message="you-have-no-available-multi-factor-authentication-methods-please-contact-your-administrator" />
+		</div>
+	</c:when>
+	<c:otherwise>
+		<aui:form action="<%= verifyURL %>" cssClass="container-fluid container-fluid-max-xl sign-in-form" data-senna-off="true" method="post" name="fm">
+			<aui:input name="saveLastPath" type="hidden" value="<%= false %>" />
+			<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+			<aui:input name="state" type="hidden" value="<%= state %>" />
+			<aui:input name="mfaCheckerIndex" type="hidden" value="<%= mfaCheckerIndex %>" />
 
-	<liferay-ui:error key="mfaVerificationFailed" message="multi-factor-authentication-has-failed" />
+			<liferay-ui:error key="mfaVerificationFailed" message="multi-factor-authentication-has-failed" />
 
-	<%
-	browserMFAChecker.includeBrowserVerification(request, PipingServletResponseFactory.createPipingServletResponse(pageContext), mfaUserId);
-	%>
+			<%
+			browserMFAChecker.includeBrowserVerification(request, PipingServletResponseFactory.createPipingServletResponse(pageContext), mfaUserId);
+			%>
 
-	<c:if test="<%= browserMFACheckers.size() > 1 %>">
-		<portlet:renderURL copyCurrentRenderParameters="<%= false %>" var="useAnotherBrowserMFAChecker">
-			<portlet:param name="saveLastPath" value="<%= Boolean.FALSE.toString() %>" />
-			<portlet:param name="mvcRenderCommandName" value="/mfa_verify/view" />
-			<portlet:param name="redirect" value="<%= redirect %>" />
-			<portlet:param name="state" value="<%= state %>" />
-			<portlet:param name="mfaCheckerIndex" value='<%= ((mfaCheckerIndex + 1) < browserMFACheckers.size()) ? String.valueOf(mfaCheckerIndex + 1) : "0" %>' />
-		</portlet:renderURL>
+			<c:if test="<%= browserMFACheckers.size() > 1 %>">
+				<portlet:renderURL copyCurrentRenderParameters="<%= false %>" var="useAnotherBrowserMFAChecker">
+					<portlet:param name="saveLastPath" value="<%= Boolean.FALSE.toString() %>" />
+					<portlet:param name="mvcRenderCommandName" value="/mfa_verify/view" />
+					<portlet:param name="redirect" value="<%= redirect %>" />
+					<portlet:param name="state" value="<%= state %>" />
+					<portlet:param name="mfaCheckerIndex" value='<%= ((mfaCheckerIndex + 1) < browserMFACheckers.size()) ? String.valueOf(mfaCheckerIndex + 1) : "0" %>' />
+				</portlet:renderURL>
 
-		<b><a href="<%= HtmlUtil.escapeAttribute(useAnotherBrowserMFAChecker) %>"><%= LanguageUtil.format(request, "use-another-mfa-checker", browserMFACheckerName, false) %></a></b>
-	</c:if>
-</aui:form>
+				<b><a href="<%= HtmlUtil.escapeAttribute(useAnotherBrowserMFAChecker) %>"><%= LanguageUtil.format(request, "use-another-mfa-checker", browserMFACheckerName, false) %></a></b>
+			</c:if>
+		</aui:form>
+	</c:otherwise>
+</c:choose>

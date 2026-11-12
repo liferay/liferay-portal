@@ -129,6 +129,11 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 	}
 
 	@Override
+	public boolean isAvailable(long userId) {
+		return _mfaEmailOTPConfiguration.enabled();
+	}
+
+	@Override
 	public boolean isBrowserVerified(
 		HttpServletRequest httpServletRequest, long userId) {
 

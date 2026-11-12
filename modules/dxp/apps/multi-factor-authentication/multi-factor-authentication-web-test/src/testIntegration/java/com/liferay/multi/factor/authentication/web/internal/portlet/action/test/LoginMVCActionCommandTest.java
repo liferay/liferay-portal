@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -206,6 +207,54 @@ public class LoginMVCActionCommandTest {
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	@Test
+	public void testProcessActionRequiresMFAWhenCompanyConfigurationIsEnabled()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				configurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						_company.getCompanyId(),
+						"com.liferay.multi.factor.authentication.web." +
+							"internal.company.configuration." +
+								"MFACompanyConfiguration",
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			String password = StringUtil.toLowerCase(
+				RandomTestUtil.randomString());
+
+			User user = UserTestUtil.addUser(_company, password);
+
+			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+				_getMockLiferayPortletActionRequest(
+					HashMapBuilder.put(
+						"login", user.getEmailAddress()
+					).put(
+						"password", password
+					).build());
+
+			_mvcActionCommand.processAction(
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletActionResponse());
+
+			HttpServletRequest httpServletRequest =
+				_portal.getOriginalServletRequest(
+					_portal.getHttpServletRequest(
+						mockLiferayPortletActionRequest));
+
+			httpServletRequest = _portal.getOriginalServletRequest(
+				httpServletRequest);
+
+			HttpSession httpSession = httpServletRequest.getSession();
+
+			Assert.assertEquals(
+				user.getUserId(),
+				GetterUtil.getLong(httpSession.getAttribute("MFA_USER_ID")));
 		}
 	}
 

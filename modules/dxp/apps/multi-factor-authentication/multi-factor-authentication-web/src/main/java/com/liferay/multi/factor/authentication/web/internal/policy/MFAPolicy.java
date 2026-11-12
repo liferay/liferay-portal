@@ -8,6 +8,7 @@ package com.liferay.multi.factor.authentication.web.internal.policy;
 import com.liferay.multi.factor.authentication.email.otp.configuration.MFAEmailOTPConfiguration;
 import com.liferay.multi.factor.authentication.spi.checker.browser.BrowserMFAChecker;
 import com.liferay.multi.factor.authentication.spi.checker.headless.HeadlessMFAChecker;
+import com.liferay.multi.factor.authentication.web.internal.company.configuration.MFACompanyConfiguration;
 import com.liferay.multi.factor.authentication.web.internal.system.configuration.MFASystemConfiguration;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
@@ -70,15 +71,23 @@ public class MFAPolicy {
 				_configurationProvider.getSystemConfiguration(
 					MFASystemConfiguration.class);
 
-			if (!mfaSystemConfiguration.disableGlobally()) {
-				MFAEmailOTPConfiguration mfaEmailOTPConfiguration =
-					_configurationProvider.getCompanyConfiguration(
-						MFAEmailOTPConfiguration.class, companyId);
-
-				return mfaEmailOTPConfiguration.enabled();
+			if (mfaSystemConfiguration.disableGlobally()) {
+				return false;
 			}
 
-			return false;
+			MFACompanyConfiguration mfaCompanyConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					MFACompanyConfiguration.class, companyId);
+
+			if (mfaCompanyConfiguration.enabled()) {
+				return true;
+			}
+
+			MFAEmailOTPConfiguration mfaEmailOTPConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					MFAEmailOTPConfiguration.class, companyId);
+
+			return mfaEmailOTPConfiguration.enabled();
 		}
 		catch (ConfigurationException configurationException) {
 			throw new SystemException(configurationException);
