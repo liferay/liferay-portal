@@ -47,6 +47,10 @@ import {
 const DDM_FORM_PORTLET_NAMESPACE =
 	'_com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormPortlet_';
 
+const formAPIRefs = new WeakMap();
+
+const handledSubmitEvents = new WeakSet();
+
 /**
  * This is a copy of the old implementation made in Metal.js, deals with
  * the submit of the Form in the User View, removes the default behavior
@@ -61,9 +65,16 @@ const useFormSubmit = ({apiRef, containerRef}) => {
 
 	const submitForm = useCallback(
 		(event) => {
-			apiRef.current
-				.validate()
-				.then(([ddmFormSubmitButton, validForm]) => {
+			const apiRefs = formAPIRefs.get(event.target) ?? new Set([apiRef]);
+
+			Promise.all([...apiRefs].map((ref) => ref.current.validate()))
+				.then((validations) => {
+					const [[ddmFormSubmitButton]] = validations;
+
+					const validForm = validations.every(
+						([, validForm]) => validForm
+					);
+
 					if (validForm) {
 						AUI().use('liferay-form', () => {
 							const liferayForm =
@@ -141,6 +152,12 @@ const useFormSubmit = ({apiRef, containerRef}) => {
 	const handleFormSubmitted = useCallback(
 		(event) => {
 			event.preventDefault();
+
+			if (handledSubmitEvents.has(event)) {
+				return;
+			}
+
+			handledSubmitEvents.add(event);
 
 			if (isDDMFormPortletNamespace) {
 				fetch(validateCSRFTokenURL, {
@@ -227,7 +244,15 @@ const useFormSubmit = ({apiRef, containerRef}) => {
 		const waitForElementHandler = waitForElement(
 			container,
 			getFormNode,
-			(form) => {
+			(formNode) => {
+				form = formNode;
+
+				if (!formAPIRefs.has(form)) {
+					formAPIRefs.set(form, new Set());
+				}
+
+				formAPIRefs.get(form).add(apiRef);
+
 				formSubmitHandler = Liferay.on(
 					'submitForm',
 					(event) => {
@@ -243,11 +268,15 @@ const useFormSubmit = ({apiRef, containerRef}) => {
 		);
 
 		return () => {
+			if (form) {
+				formAPIRefs.get(form).delete(apiRef);
+			}
+
 			form?.removeEventListener('submit', handleFormSubmitted);
 			formSubmitHandler?.detach();
 			waitForElementHandler.dispose();
 		};
-	}, [containerRef, handleFormSubmitted]);
+	}, [apiRef, containerRef, handleFormSubmitted]);
 };
 
 /**
