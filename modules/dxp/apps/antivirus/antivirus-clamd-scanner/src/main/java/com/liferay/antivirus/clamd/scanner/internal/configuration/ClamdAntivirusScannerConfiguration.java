@@ -7,6 +7,7 @@ package com.liferay.antivirus.clamd.scanner.internal.configuration;
 
 import aQute.bnd.annotation.metatype.Meta;
 
+import com.liferay.portal.configuration.metatype.annotations.ExtendedAttributeDefinition;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
 /**
@@ -23,6 +24,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface ClamdAntivirusScannerConfiguration {
 
+	@ExtendedAttributeDefinition(requiredInput = true)
 	@Meta.AD(deflt = "", name = "hostname")
 	public String hostname();
 

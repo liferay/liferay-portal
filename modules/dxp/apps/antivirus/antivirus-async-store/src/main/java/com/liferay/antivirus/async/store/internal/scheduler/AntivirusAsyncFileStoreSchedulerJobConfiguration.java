@@ -10,6 +10,7 @@ import com.liferay.antivirus.async.store.constants.AntivirusAsyncConstants;
 import com.liferay.antivirus.async.store.constants.AntivirusAsyncDestinationNames;
 import com.liferay.antivirus.async.store.internal.event.AntivirusAsyncEventListenerManager;
 import com.liferay.antivirus.async.store.util.AntivirusAsyncUtil;
+import com.liferay.document.library.kernel.antivirus.AntivirusScanner;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
@@ -74,6 +75,11 @@ public class AntivirusAsyncFileStoreSchedulerJobConfiguration
 
 	@Override
 	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
+		if (!_antivirusScanner.isActive()) {
+			return () -> {
+			};
+		}
+
 		if (StringUtil.startsWith(
 				PropsUtil.get(PropsKeys.DL_STORE_IMPL),
 				"com.liferay.portal.store.file.system")) {
@@ -313,6 +319,9 @@ public class AntivirusAsyncFileStoreSchedulerJobConfiguration
 	@Reference
 	private AntivirusAsyncEventListenerManager
 		_antivirusAsyncEventListenerManager;
+
+	@Reference
+	private AntivirusScanner _antivirusScanner;
 
 	@Reference
 	private DLFileVersionLocalService _dlFileVersionLocalService;

@@ -10,6 +10,9 @@ import com.liferay.document.library.kernel.antivirus.AntivirusScanner;
 import com.liferay.document.library.kernel.antivirus.AntivirusScannerException;
 import com.liferay.document.library.kernel.antivirus.AntivirusVirusFoundException;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import fi.solita.clamav.ClamAVClient;
 import fi.solita.clamav.ClamAVSizeLimitException;
@@ -112,6 +115,14 @@ public class ClamdAntivirusScanner implements AntivirusScanner {
 			ConfigurableUtil.createConfigurable(
 				ClamdAntivirusScannerConfiguration.class, properties);
 
+		if (Validator.isBlank(clamdAntivirusScannerConfiguration.hostname()) &&
+			_log.isWarnEnabled()) {
+
+			_log.warn(
+				"The ClamAV hostname is blank, so scans will connect to the " +
+					"loopback address");
+		}
+
 		_clamdClient = new ClamAVClient(
 			clamdAntivirusScannerConfiguration.hostname(),
 			clamdAntivirusScannerConfiguration.port(),
@@ -124,6 +135,9 @@ public class ClamdAntivirusScanner implements AntivirusScanner {
 		return virusName.substring(
 			"stream: ".length(), virusName.length() - (" FOUND".length() + 1));
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ClamdAntivirusScanner.class);
 
 	private ClamAVClient _clamdClient;
 
