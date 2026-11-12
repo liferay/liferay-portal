@@ -9,3 +9,4 @@ export {default as ManagementToolbarSamples} from './ManagementToolbarSamples';
 export {default as SampleWalkthrough} from './SampleWalkthrough';
 export {default as TestSampleWalkthrough} from './TestSampleWalkthrough';
 export {default as TranslationManagerSamples} from './TranslationManagerSamples';
+export {default as UnifiedSidebarSamples} from './UnifiedSidebarSamples';

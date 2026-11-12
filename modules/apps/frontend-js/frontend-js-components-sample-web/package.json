@@ -6,6 +6,7 @@
 		"@clayui/icon": "^3.167.0",
 		"@clayui/label": "^3.167.0",
 		"@clayui/layout": "^3.167.0",
+		"@clayui/nav": "^3.167.0",
 		"@liferay/frontend-js-state-web": "*",
 		"@liferay/frontend-js-walkthrough-web": "*",
 		"frontend-js-components-web": "*",
