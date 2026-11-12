@@ -76,8 +76,9 @@ public class CTReviewChangesServlet extends HttpServlet {
 				CTPortletKeys.PUBLICATIONS);
 
 			httpServletResponse.sendRedirect(
-				_portal.getControlPanelFullURL(
-					group.getGroupId(), CTPortletKeys.PUBLICATIONS,
+				_portal.getSiteAdminURL(
+					_portal.getPortalURL(httpServletRequest), group,
+					CTPortletKeys.PUBLICATIONS,
 					HashMapBuilder.put(
 						portletNamespace.concat("mvcRenderCommandName"),
 						new String[] {"/change_tracking/view_changes"}
