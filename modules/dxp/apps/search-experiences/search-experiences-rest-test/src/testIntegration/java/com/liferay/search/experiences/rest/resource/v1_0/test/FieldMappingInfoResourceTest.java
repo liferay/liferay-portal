@@ -46,6 +46,17 @@ public class FieldMappingInfoResourceTest
 
 			assertValid(page);
 		}
+
+		_testGetFieldMappingInfosPageWithoutExternal();
+	}
+
+	private void _testGetFieldMappingInfosPageWithoutExternal()
+		throws Exception {
+
+		assertHttpResponseStatusCode(
+			200,
+			fieldMappingInfoResource.getFieldMappingInfosPageHttpResponse(
+				null, null, null));
 	}
 
 	@Inject
