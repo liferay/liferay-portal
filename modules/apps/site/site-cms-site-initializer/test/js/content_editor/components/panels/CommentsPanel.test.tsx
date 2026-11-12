@@ -85,6 +85,8 @@ const initialComments: Comment[] = [
 				negativeVotes: 0,
 				positiveVotes: 0,
 				rootComment: true,
+				thumbDown: false,
+				thumbUp: false,
 			},
 		],
 		className: 'Z7P5',
@@ -96,6 +98,8 @@ const initialComments: Comment[] = [
 		negativeVotes: 0,
 		positiveVotes: 0,
 		rootComment: true,
+		thumbDown: false,
+		thumbUp: false,
 	},
 ];
 
@@ -272,6 +276,76 @@ describe('CommentsPanel', () => {
 		});
 	});
 
+	it('Votes when the thumb down button is pressed on a comment rated by other users', async () => {
+		renderComponent('addCommentURL', false, [
+			{
+				...initialComments[0],
+				children: [],
+				negativeVotes: 1,
+				positiveVotes: 1,
+				thumbDown: false,
+				thumbUp: false,
+			},
+		]);
+
+		const thumbDownButton = screen.getByTitle(/this-as-bad$/);
+
+		expect(thumbDownButton).toHaveAttribute('aria-pressed', 'false');
+
+		await userEvent.click(thumbDownButton);
+
+		expect(mockFetch).toHaveBeenCalledWith('/c/portal/rate_entry', {
+			body: expect.objectContaining({score: 0}),
+			method: 'POST',
+		});
+	});
+
+	it('Votes when the thumb up button is pressed on a comment rated by another user', async () => {
+		renderComponent('addCommentURL', false, [
+			{
+				...initialComments[0],
+				children: [],
+				positiveVotes: 1,
+				thumbDown: false,
+				thumbUp: false,
+			},
+		]);
+
+		const thumbUpButton = screen.getByTitle(/this-as-good$/);
+
+		expect(thumbUpButton).toHaveAttribute('aria-pressed', 'false');
+
+		await userEvent.click(thumbUpButton);
+
+		expect(mockFetch).toHaveBeenCalledWith('/c/portal/rate_entry', {
+			body: expect.objectContaining({score: 1}),
+			method: 'POST',
+		});
+	});
+
+	it('Removes the vote when the thumb up button is pressed on a comment rated by the current user', async () => {
+		renderComponent('addCommentURL', false, [
+			{
+				...initialComments[0],
+				children: [],
+				positiveVotes: 1,
+				thumbDown: false,
+				thumbUp: true,
+			},
+		]);
+
+		const thumbUpButton = screen.getByTitle(/this-as-good$/);
+
+		expect(thumbUpButton).toHaveAttribute('aria-pressed', 'true');
+
+		await userEvent.click(thumbUpButton);
+
+		expect(mockFetch).toHaveBeenCalledWith('/c/portal/rate_entry', {
+			body: expect.objectContaining({score: -1}),
+			method: 'POST',
+		});
+	});
+
 	it('Adds a new comment and fires the messagePosted event', async () => {
 		const addCommentSpy = jest
 			.spyOn(CommentService, 'addComment')
@@ -293,6 +367,8 @@ describe('CommentsPanel', () => {
 					negativeVotes: 0,
 					positiveVotes: 0,
 					rootComment: true,
+					thumbDown: false,
+					thumbUp: false,
 				},
 				error: null,
 			});
