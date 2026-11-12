@@ -613,12 +613,18 @@ public class ObjectEntryModelDocumentContributor
 
 			document.addDate("cmpDueDate", (Timestamp)values.get("dueDate"));
 			document.addKeyword(
+				"cmpParentTaskId",
+				MapUtil.getLong(values, "r_cmpTaskToCMPTasks_c_cmpTaskId"));
+			document.addKeyword(
 				"cmpProjectManagerUserId",
 				MapUtil.getLong(values, "r_userToCMPProjectManager_userId"));
 			document.addKeyword(
 				"cmpProjectSponsorUserId",
 				MapUtil.getLong(values, "r_userToCMPProjectSponsor_userId"));
 			document.addKeyword("cmpState", MapUtil.getString(values, "state"));
+			document.addKeyword(
+				"cmpSubtask",
+				MapUtil.getLong(values, "r_cmpTaskToCMPTasks_c_cmpTaskId") > 0);
 			document.addKeyword(
 				"cmpTaskCMPProjectId",
 				MapUtil.getLong(
