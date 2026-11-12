@@ -144,8 +144,7 @@ public class CreateAnonymousAccountMVCActionCommand
 						PropsKeys.COMPANY_SECURITY_STRANGERS);
 				}
 
-				jsonObject = updateIncompleteUser(
-					actionRequest, actionResponse);
+				jsonObject = _updateIncompleteUser(actionRequest);
 
 				JSONPortletResponseUtil.writeJSON(
 					actionRequest, actionResponse, jsonObject);
@@ -202,57 +201,6 @@ public class CreateAnonymousAccountMVCActionCommand
 		catch (Exception exception) {
 			throw new CaptchaConfigurationException(exception);
 		}
-	}
-
-	protected JSONObject updateIncompleteUser(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws Exception {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			User.class.getName(), actionRequest);
-
-		boolean autoPassword = true;
-		String password1 = null;
-		String password2 = null;
-		boolean autoScreenName = false;
-		String screenName = null;
-		String emailAddress = ParamUtil.getString(
-			actionRequest, "emailAddress");
-		long facebookId = 0;
-		String openId = null;
-		String firstName = null;
-		String middleName = null;
-		String lastName = null;
-		long prefixListTypeId = 0;
-		long suffixListTypeId = 0;
-		boolean male = true;
-		int birthdayMonth = 0;
-		int birthdayDay = 1;
-		int birthdayYear = 1970;
-		String jobTitle = null;
-		boolean updateUserInformation = false;
-		boolean sendEmail = true;
-
-		User user = _userService.updateIncompleteUser(
-			themeDisplay.getCompanyId(), autoPassword, password1, password2,
-			autoScreenName, screenName, emailAddress, facebookId, openId,
-			themeDisplay.getLocale(), firstName, middleName, lastName,
-			prefixListTypeId, suffixListTypeId, male, birthdayMonth,
-			birthdayDay, birthdayYear, jobTitle, updateUserInformation,
-			sendEmail, serviceContext);
-
-		return JSONUtil.put(
-			"userStatus",
-			() -> {
-				if (user.getStatus() == WorkflowConstants.STATUS_APPROVED) {
-					return "user_added";
-				}
-
-				return "user_pending";
-			});
 	}
 
 	private void _addAnonymousUser(ActionRequest actionRequest)
@@ -320,6 +268,56 @@ public class CreateAnonymousAccountMVCActionCommand
 		SessionMessages.add(
 			httpServletRequest, "userAddedPassword",
 			user.getPasswordUnencrypted());
+	}
+
+	private JSONObject _updateIncompleteUser(ActionRequest actionRequest)
+		throws Exception {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			User.class.getName(), actionRequest);
+
+		boolean autoPassword = true;
+		String password1 = null;
+		String password2 = null;
+		boolean autoScreenName = false;
+		String screenName = null;
+		String emailAddress = ParamUtil.getString(
+			actionRequest, "emailAddress");
+		long facebookId = 0;
+		String openId = null;
+		String firstName = null;
+		String middleName = null;
+		String lastName = null;
+		long prefixListTypeId = 0;
+		long suffixListTypeId = 0;
+		boolean male = true;
+		int birthdayMonth = 0;
+		int birthdayDay = 1;
+		int birthdayYear = 1970;
+		String jobTitle = null;
+		boolean updateUserInformation = false;
+		boolean sendEmail = true;
+
+		User user = _userService.updateIncompleteUser(
+			themeDisplay.getCompanyId(), autoPassword, password1, password2,
+			autoScreenName, screenName, emailAddress, facebookId, openId,
+			themeDisplay.getLocale(), firstName, middleName, lastName,
+			prefixListTypeId, suffixListTypeId, male, birthdayMonth,
+			birthdayDay, birthdayYear, jobTitle, updateUserInformation,
+			sendEmail, serviceContext);
+
+		return JSONUtil.put(
+			"userStatus",
+			() -> {
+				if (user.getStatus() == WorkflowConstants.STATUS_APPROVED) {
+					return "user_added";
+				}
+
+				return "user_pending";
+			});
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
