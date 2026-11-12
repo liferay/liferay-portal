@@ -148,9 +148,9 @@
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 		</finder>
-		<finder name="T_C_C" return-type="ExpandoValue" unique="true">
+		<finder name="T_C_C" return-type="Collection" unique="true">
 			<finder-column name="tableId" />
-			<finder-column name="columnId" />
+			<finder-column arrayable-operator="OR" name="columnId" />
 			<finder-column name="classPK" />
 		</finder>
 		<finder db-index="false" name="T_C_D" return-type="Collection">
