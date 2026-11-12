@@ -51,6 +51,7 @@ function AssetCategoriesSelector({
 								? [...vocabulary.selectedItems]
 								: []
 						}
+						showAddCategoryButton={vocabulary.showAddCategoryButton}
 						showLabel={showLabel}
 						singleSelect={vocabulary.singleSelect}
 						sourceItemsVocabularyIds={[vocabulary.id]}

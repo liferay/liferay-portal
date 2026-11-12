@@ -15,6 +15,8 @@ import {fetch, sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
 
+import getCreateCategoryItem from './getCreateCategoryItem';
+
 function AssetVocabulariesCategoriesSelector({
 	id,
 	isValid = true,
@@ -25,6 +27,7 @@ function AssetVocabulariesCategoriesSelector({
 	onSelectedItemsChange = () => {},
 	required,
 	selectedItems = [],
+	showAddCategoryButton,
 	showVocabularyLabel = true,
 	singleSelect,
 	sourceItemsVocabularyIds = [],
@@ -140,6 +143,10 @@ function AssetVocabulariesCategoriesSelector({
 
 	const handleSelectButtonClick = () => {
 		openTreeItemSelectorModal({
+			createItem: getCreateCategoryItem({
+				showAddCategoryButton,
+				vocabularyIds: sourceItemsVocabularyIds,
+			}),
 			multiSelect: !singleSelect,
 			onItemsChange: (categories) => {
 				onSelectedItemsChange(
@@ -293,6 +300,7 @@ AssetVocabulariesCategoriesSelector.propTypes = {
 	onSelectedItemsChange: PropTypes.func,
 	required: PropTypes.bool,
 	selectedItems: PropTypes.array,
+	showAddCategoryButton: PropTypes.bool,
 	singleSelect: PropTypes.bool,
 	sourceItemsVocabularyIds: PropTypes.array,
 	useDataCategoriesAttribute: PropTypes.bool,

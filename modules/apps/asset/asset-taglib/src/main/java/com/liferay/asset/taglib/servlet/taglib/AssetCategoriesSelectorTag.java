@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -46,6 +47,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portlet.asset.service.permission.AssetCategoryPermission;
 import com.liferay.portlet.asset.util.comparator.AssetVocabularyGroupLocalizedTitleComparator;
 import com.liferay.taglib.aui.AUIUtil;
 import com.liferay.taglib.util.IncludeTag;
@@ -402,6 +404,16 @@ public class AssetCategoriesSelectorTag extends IncludeTag {
 
 						return selectedItems;
 					}
+				).put(
+					"showAddCategoryButton",
+					() ->
+						(assetVocabulary.getGroupId() ==
+							themeDisplay.getScopeGroupId()) &&
+						AssetCategoryPermission.contains(
+							themeDisplay.getPermissionChecker(),
+							assetVocabulary.getGroupId(),
+							AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+							ActionKeys.ADD_CATEGORY)
 				).put(
 					"singleSelect",
 					_singleSelect || !assetVocabulary.isMultiValued()
