@@ -594,7 +594,8 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 		if (parentOrganizationId ==
 				OrganizationConstants.ANY_PARENT_ORGANIZATION_ID) {
 
-			return organizationPersistence.filterFindByC_LikeN(companyId, name);
+			return organizationPersistence.filterFindByC_LikeN(
+				companyId, name, start, end);
 		}
 
 		return organizationPersistence.filterFindByC_P_LikeN(
