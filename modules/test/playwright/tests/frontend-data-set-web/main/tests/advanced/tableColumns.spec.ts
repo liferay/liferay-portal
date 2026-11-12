@@ -203,6 +203,26 @@ test(
 				})
 			).toHaveCount(0);
 		});
+
+		await test.step('Reach the search and the columns with the keyboard', async () => {
+			await page.keyboard.press('Escape');
+
+			await expect(
+				fdsSamplePage.table.manageColumnsVisibilityButton
+			).toBeFocused();
+
+			await page.keyboard.press('Enter');
+
+			await expect(searchInput).toBeFocused();
+
+			await page.keyboard.press('ArrowDown');
+
+			await expect(menuItems.first().getByRole('switch')).toBeFocused();
+
+			await page.keyboard.press('ArrowUp');
+
+			await expect(searchInput).toBeFocused();
+		});
 	}
 );
 
