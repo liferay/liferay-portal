@@ -724,6 +724,24 @@ function serializeDefinition(xmlNamespace, metadata, nodes, transitions) {
 					cdata(jsonStringify(item.data.inputVariables || []))
 				)
 			);
+
+			if (item.data.modelName) {
+				buffer.push(
+					createTagWithEscapedContent(
+						'model-name',
+						item.data.modelName
+					)
+				);
+			}
+
+			if (item.data.modelProvider) {
+				buffer.push(
+					createTagWithEscapedContent(
+						'model-provider',
+						item.data.modelProvider
+					)
+				);
+			}
 			buffer.push(
 				XMLUtil.create(
 					'output-variables',

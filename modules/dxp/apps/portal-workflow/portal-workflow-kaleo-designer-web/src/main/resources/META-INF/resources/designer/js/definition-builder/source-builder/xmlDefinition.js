@@ -370,6 +370,8 @@ XMLDefinition.prototype = {
 					locator: 'labels',
 				},
 				'metadata',
+				'model-name',
+				'model-provider',
 				'name',
 				{
 					key: 'prompt',

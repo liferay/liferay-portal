@@ -122,6 +122,10 @@ DeserializeUtil.prototype = {
 						[]
 					);
 
+					data.modelName = node['model-name'] || '';
+
+					data.modelProvider = node['model-provider'] || '';
+
 					data.outputVariables = parseJSON(
 						node['output-variables'],
 						[]
