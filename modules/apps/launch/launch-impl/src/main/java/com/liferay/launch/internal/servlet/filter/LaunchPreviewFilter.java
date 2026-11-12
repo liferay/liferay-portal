@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -109,10 +108,10 @@ public class LaunchPreviewFilter extends BasePortalFilter {
 		User user = _portal.getUser(httpServletRequest);
 
 		if ((user == null) || user.isGuestUser()) {
-			_portal.sendError(
-				new PrincipalException.MustBeAuthenticated(
-					(user == null) ? 0 : user.getUserId()),
-				httpServletRequest, httpServletResponse);
+			httpServletResponse.sendRedirect(
+				HttpComponentsUtil.addParameter(
+					_portal.getPathMain() + "/portal/login", "redirect",
+					_portal.getCurrentCompleteURL(httpServletRequest)));
 
 			return;
 		}
