@@ -27,7 +27,14 @@ String sitemapURLInputId = liferayPortletResponse.getNamespace() + "sitemapURLIn
 />
 
 <p class="text-secondary">
-	<liferay-ui:message key="sitemap-help" /> <a class="text-decoration-underline" href="https://www.sitemaps.org" target="_blank"><liferay-ui:message arguments="https://www.sitemaps.org" key="visit-x-for-more-information" /></a>
+	<liferay-ui:message key="sitemap-help" />
+
+	<clay:link
+		decoration="underline"
+		href="https://www.sitemaps.org"
+		label='<%= LanguageUtil.format(request, "for-more-information,-visit-x", "www.sitemaps.org") %>'
+		target="_blank"
+	/>
 </p>
 
 <div class="form-group">
@@ -63,21 +70,12 @@ String sitemapURLInputId = liferayPortletResponse.getNamespace() + "sitemapURLIn
 			target="_blank"
 		/>
 	</li>
-	<li class="mb-2">
+	<li>
 		<clay:link
 			decoration="underline"
 			href="https://www.bing.com/webmasters"
 			iconAfter="shortcut"
 			label="bing-webmaster-tools"
-			target="_blank"
-		/>
-	</li>
-	<li>
-		<clay:link
-			decoration="underline"
-			href="https://help.yahoo.com/kb/search-for-desktop/SLN2217.html"
-			iconAfter="shortcut"
-			label="yahoo-webmaster"
 			target="_blank"
 		/>
 	</li>
