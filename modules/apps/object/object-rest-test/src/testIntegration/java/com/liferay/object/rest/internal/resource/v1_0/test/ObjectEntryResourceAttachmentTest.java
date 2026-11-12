@@ -576,7 +576,7 @@ public class ObjectEntryResourceAttachmentTest
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
-				_randomFileEntryJSONObject(
+				_createFileEntryJSONObject(
 					null, OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE)
 			).toString(),
 			objectDefinition.getRESTContextPath(), Http.Method.POST);
@@ -1146,7 +1146,7 @@ public class ObjectEntryResourceAttachmentTest
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				objectFieldName,
-				_randomFileEntryJSONObject(
+				_createFileEntryJSONObject(
 					fileEntry.getFolder(), objectFieldName)
 			).toString(),
 			getEndpoint(objectDefinition, testGroupId), Http.Method.POST);
@@ -1526,7 +1526,7 @@ public class ObjectEntryResourceAttachmentTest
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 	}
 
-	private JSONObject _randomFileEntryJSONObject(
+	private JSONObject _createFileEntryJSONObject(
 			Folder folder, String objectFieldName)
 		throws Exception {
 
@@ -1621,7 +1621,7 @@ public class ObjectEntryResourceAttachmentTest
 				OBJECT_FIELD_NAME_1, RandomTestUtil.randomString()
 			).put(
 				OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
-				_randomFileEntryJSONObject(
+				_createFileEntryJSONObject(
 					null, OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE)
 			).toString(),
 			objectDefinition.getRESTContextPath(), Http.Method.POST);
