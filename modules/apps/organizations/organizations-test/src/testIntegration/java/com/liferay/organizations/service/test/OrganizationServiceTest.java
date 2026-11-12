@@ -277,6 +277,13 @@ public class OrganizationServiceTest {
 			_assertExpectedOrganizations(
 				allOrganizations,
 				OrganizationConstants.ANY_PARENT_ORGANIZATION_ID, "");
+
+			Assert.assertEquals(
+				likeNameChildOrganizations.subList(0, 5),
+				_organizationService.getOrganizations(
+					TestPropsValues.getCompanyId(),
+					OrganizationConstants.ANY_PARENT_ORGANIZATION_ID,
+					name + "%", 0, 5));
 		}
 		finally {
 			for (Organization childOrganization : allChildOrganizations) {
