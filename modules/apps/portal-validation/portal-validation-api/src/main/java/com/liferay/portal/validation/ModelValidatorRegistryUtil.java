@@ -36,15 +36,6 @@ public class ModelValidatorRegistryUtil {
 		return _modelValidatorRegistryUtil._getModelValidator(className);
 	}
 
-	public static <T extends ClassedModel, U extends ModelValidator<T>> U
-		getSpecificModelValidator(
-			Class<T> modelClass, Class<U> modelValidatorClass) {
-
-		ModelValidator<T> modelValidator = getModelValidator(modelClass);
-
-		return (U)modelValidator;
-	}
-
 	private ModelValidatorRegistryUtil() {
 		Bundle bundle = FrameworkUtil.getBundle(
 			ModelValidatorRegistryUtil.class);
