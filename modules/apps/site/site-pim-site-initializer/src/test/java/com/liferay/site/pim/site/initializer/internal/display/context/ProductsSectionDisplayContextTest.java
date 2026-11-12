@@ -200,8 +200,7 @@ public class ProductsSectionDisplayContextTest {
 		Assert.assertEquals(
 			"Click \"New\" to create your first product.",
 			emptyState.get("description"));
-		Assert.assertEquals(
-			"/states/cms_empty_state_content.svg", emptyState.get("image"));
+		Assert.assertEquals("products", emptyState.get("symbol"));
 		Assert.assertEquals("No Products Yet", emptyState.get("title"));
 	}
 

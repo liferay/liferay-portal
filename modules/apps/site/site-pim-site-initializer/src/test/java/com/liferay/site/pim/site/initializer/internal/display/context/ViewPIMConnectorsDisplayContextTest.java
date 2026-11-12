@@ -148,6 +148,7 @@ public class ViewPIMConnectorsDisplayContextTest {
 		Assert.assertEquals(
 			"Create a connector to link the PIM to a shopping experience.",
 			emptyState.get("description"));
+		Assert.assertEquals("connectors", emptyState.get("symbol"));
 		Assert.assertEquals("No Connectors Yet", emptyState.get("title"));
 	}
 

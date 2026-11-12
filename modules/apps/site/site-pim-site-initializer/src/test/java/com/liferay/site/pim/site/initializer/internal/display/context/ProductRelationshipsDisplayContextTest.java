@@ -224,8 +224,7 @@ public class ProductRelationshipsDisplayContextTest {
 		Map<String, Object> emptyState =
 			productRelationshipsDisplayContext.getEmptyState();
 
-		Assert.assertEquals(
-			"/states/cms_empty_state_preview.svg", emptyState.get("image"));
+		Assert.assertEquals("products", emptyState.get("symbol"));
 		Assert.assertEquals(
 			"No relationships were found.", emptyState.get("title"));
 	}
