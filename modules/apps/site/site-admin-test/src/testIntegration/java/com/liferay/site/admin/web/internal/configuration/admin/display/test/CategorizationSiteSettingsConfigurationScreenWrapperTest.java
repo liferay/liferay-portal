@@ -6,11 +6,12 @@
 package com.liferay.site.admin.web.internal.configuration.admin.display.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.exception.NoSuchCategoryException;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
@@ -19,9 +20,11 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -29,6 +32,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.Dictionary;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -79,14 +83,34 @@ public class CategorizationSiteSettingsConfigurationScreenWrapperTest {
 
 	@Test
 	public void testExportImportProperties() throws Exception {
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		AssetVocabulary companyAssetVocabulary = AssetTestUtil.addVocabulary(
+			companyGroup.getGroupId());
+
+		AssetCategory companyAssetCategory = AssetTestUtil.addCategory(
+			companyGroup.getGroupId(),
+			companyAssetVocabulary.getVocabularyId());
+
 		Group sourceGroup = GroupTestUtil.addGroup();
+
+		AssetVocabulary sourceAssetVocabulary = AssetTestUtil.addVocabulary(
+			sourceGroup.getGroupId());
+
+		AssetCategory sourceAssetCategory = AssetTestUtil.addCategory(
+			sourceGroup.getGroupId(), sourceAssetVocabulary.getVocabularyId());
 
 		String[] sourceAssetTagNames = {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString()
 		};
 
 		_groupLocalService.updateAsset(
-			TestPropsValues.getUserId(), sourceGroup, null,
+			TestPropsValues.getUserId(), sourceGroup,
+			new long[] {
+				companyAssetCategory.getCategoryId(),
+				sourceAssetCategory.getCategoryId()
+			},
 			sourceAssetTagNames);
 
 		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
@@ -95,7 +119,22 @@ public class CategorizationSiteSettingsConfigurationScreenWrapperTest {
 		Dictionary<String, Object> properties =
 			configurationScreen.exportProperties(sourceGroup.getGroupId());
 
-		Assert.assertEquals(properties.toString(), 1, properties.size());
+		Assert.assertEquals(properties.toString(), 2, properties.size());
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				HashMapBuilder.<String, Object>put(
+					"externalReferenceCode",
+					companyAssetCategory.getExternalReferenceCode()
+				).put(
+					"scopeExternalReferenceCode",
+					companyGroup.getExternalReferenceCode()
+				).build(),
+				HashMapBuilder.<String, Object>put(
+					"externalReferenceCode",
+					sourceAssetCategory.getExternalReferenceCode()
+				).build()),
+			SetUtil.fromCollection(
+				(List<Map<String, Object>>)properties.get("assetCategories")));
 		Assert.assertEquals(
 			SetUtil.fromArray(sourceAssetTagNames),
 			SetUtil.fromCollection(
@@ -103,25 +142,20 @@ public class CategorizationSiteSettingsConfigurationScreenWrapperTest {
 
 		Group targetGroup = GroupTestUtil.addGroup();
 
-		AssetCategory assetCategory = _addAssetCategory(targetGroup);
+		AssetVocabulary targetAssetVocabulary = AssetTestUtil.addVocabulary(
+			targetGroup.getGroupId());
 
-		_groupLocalService.updateAsset(
-			TestPropsValues.getUserId(), targetGroup,
-			new long[] {assetCategory.getCategoryId()},
-			new String[] {RandomTestUtil.randomString()});
+		AssetCategory targetAssetCategory = AssetTestUtil.addCategory(
+			sourceAssetCategory.getExternalReferenceCode(),
+			targetGroup.getGroupId(), targetAssetVocabulary.getVocabularyId());
 
 		configurationScreen.importProperties(
 			properties, targetGroup.getGroupId());
 
-		Assert.assertArrayEquals(
-			new long[] {assetCategory.getCategoryId()},
-			_assetCategoryLocalService.getCategoryIds(
-				Group.class.getName(), targetGroup.getGroupId()));
-		Assert.assertEquals(
-			SetUtil.fromArray(sourceAssetTagNames),
-			SetUtil.fromArray(
-				_assetTagLocalService.getTagNames(
-					Group.class.getName(), targetGroup.getGroupId())));
+		_assertAssetCategoryIds(
+			targetGroup, companyAssetCategory.getCategoryId(),
+			targetAssetCategory.getCategoryId());
+		_assertAssetTagNames(targetGroup, sourceAssetTagNames);
 	}
 
 	@Test
@@ -141,10 +175,19 @@ public class CategorizationSiteSettingsConfigurationScreenWrapperTest {
 	public void testImportProperties() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			group.getGroupId());
+
+		AssetCategory assetCategory = AssetTestUtil.addCategory(
+			group.getGroupId(), assetVocabulary.getVocabularyId());
+
+		long[] assetCategoryIds = {assetCategory.getCategoryId()};
+
 		String[] assetTagNames = {RandomTestUtil.randomString()};
 
 		_groupLocalService.updateAsset(
-			TestPropsValues.getUserId(), group, null, assetTagNames);
+			TestPropsValues.getUserId(), group, assetCategoryIds,
+			assetTagNames);
 
 		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
 			"site-configuration-categorization");
@@ -152,23 +195,78 @@ public class CategorizationSiteSettingsConfigurationScreenWrapperTest {
 		configurationScreen.importProperties(
 			new HashMapDictionary<>(), group.getGroupId());
 
-		Assert.assertArrayEquals(
-			assetTagNames,
-			_assetTagLocalService.getTagNames(
-				Group.class.getName(), group.getGroupId()));
+		_assertAssetCategoryIds(group, assetCategoryIds);
+		_assertAssetTagNames(group, assetTagNames);
+
+		assetTagNames = new String[] {RandomTestUtil.randomString()};
+
+		configurationScreen.importProperties(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"assetTagNames", ListUtil.fromArray(assetTagNames)
+			).build(),
+			group.getGroupId());
+
+		_assertAssetCategoryIds(group, assetCategoryIds);
+		_assertAssetTagNames(group, assetTagNames);
+
+		assetCategory = AssetTestUtil.addCategory(
+			group.getGroupId(), assetVocabulary.getVocabularyId());
+
+		assetCategoryIds = new long[] {assetCategory.getCategoryId()};
+
+		configurationScreen.importProperties(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"assetCategories",
+				ListUtil.fromArray(
+					HashMapBuilder.<String, Object>put(
+						"externalReferenceCode",
+						assetCategory.getExternalReferenceCode()
+					).build())
+			).build(),
+			group.getGroupId());
+
+		_assertAssetCategoryIds(group, assetCategoryIds);
+		_assertAssetTagNames(group, assetTagNames);
+
+		try {
+			configurationScreen.importProperties(
+				HashMapDictionaryBuilder.<String, Object>put(
+					"assetCategories",
+					ListUtil.fromArray(
+						HashMapBuilder.<String, Object>put(
+							"externalReferenceCode",
+							RandomTestUtil.randomString()
+						).build())
+				).put(
+					"assetTagNames",
+					ListUtil.fromArray(RandomTestUtil.randomString())
+				).build(),
+				group.getGroupId());
+
+			Assert.fail();
+		}
+		catch (NoSuchCategoryException noSuchCategoryException) {
+			_assertAssetCategoryIds(group, assetCategoryIds);
+			_assertAssetTagNames(group, assetTagNames);
+		}
 	}
 
-	private AssetCategory _addAssetCategory(Group group) throws Exception {
-		AssetVocabulary assetVocabulary =
-			_assetVocabularyLocalService.addVocabulary(
-				TestPropsValues.getUserId(), group.getGroupId(),
-				RandomTestUtil.randomString(),
-				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+	private void _assertAssetCategoryIds(
+		Group group, long... assetCategoryIds) {
 
-		return _assetCategoryLocalService.addCategory(
-			TestPropsValues.getUserId(), group.getGroupId(),
-			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+		Assert.assertEquals(
+			SetUtil.fromArray(assetCategoryIds),
+			SetUtil.fromArray(
+				_assetCategoryLocalService.getCategoryIds(
+					Group.class.getName(), group.getGroupId())));
+	}
+
+	private void _assertAssetTagNames(Group group, String... assetTagNames) {
+		Assert.assertEquals(
+			SetUtil.fromArray(assetTagNames),
+			SetUtil.fromArray(
+				_assetTagLocalService.getTagNames(
+					Group.class.getName(), group.getGroupId())));
 	}
 
 	@Inject
@@ -176,9 +274,6 @@ public class CategorizationSiteSettingsConfigurationScreenWrapperTest {
 
 	@Inject
 	private AssetTagLocalService _assetTagLocalService;
-
-	@Inject
-	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
