@@ -126,10 +126,12 @@ export {default as UnifiedSidebarResultsSkeleton} from './unified_sidebar/Unifie
 export {default as UnifiedSidebarSearchInput} from './unified_sidebar/UnifiedSidebarSearchInput';
 export {default as UnifiedSidebarSiteSelector} from './unified_sidebar/UnifiedSidebarSiteSelector';
 export {default as UnifiedSidebarToggler} from './unified_sidebar/UnifiedSidebarToggler';
+export {countUnifiedSidebarItems} from './unified_sidebar/countUnifiedSidebarItems';
 export type {
 	UnifiedSidebarItem,
 	UnifiedSidebarItemsMap,
 } from './unified_sidebar/types';
+export {useUnifiedSidebarExpandedKeys} from './unified_sidebar/useUnifiedSidebarExpandedKeys';
 export type {UnifiedSidebarFilter} from './unified_sidebar/useUnifiedSidebarFilter';
 export {
 	filterUnifiedSidebarItems,
@@ -137,3 +139,4 @@ export {
 } from './unified_sidebar/useUnifiedSidebarFilter';
 export {useUnifiedSidebarItems} from './unified_sidebar/useUnifiedSidebarItems';
 export {useUnifiedSidebarStuck} from './unified_sidebar/useUnifiedSidebarStuck';
+export {useUnifiedSidebarVisibility} from './unified_sidebar/useUnifiedSidebarVisibility';

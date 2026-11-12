@@ -13,12 +13,15 @@ import {
 	UnifiedSidebarResultsSkeleton,
 	UnifiedSidebarSearchInput,
 	UnifiedSidebarSiteSelector,
+	countUnifiedSidebarItems,
 	useId,
+	useUnifiedSidebarExpandedKeys,
 	useUnifiedSidebarFilter,
 	useUnifiedSidebarItems,
 	useUnifiedSidebarStuck,
+	useUnifiedSidebarVisibility,
 } from 'frontend-js-components-web';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useMemo, useRef} from 'react';
 
 import SideNavigationScopeItem from './SideNavigationScopeItem';
 import {
@@ -44,20 +47,6 @@ interface Props {
 	visibleSessionKey: string;
 }
 
-function countNavigableItems(
-	navigationItems: Array<SideNavigationItem>
-): number {
-	return navigationItems.reduce(
-		(count, navigationItem) =>
-			count +
-			(navigationItem.href ? 1 : 0) +
-			(navigationItem.items
-				? countNavigableItems(navigationItem.items)
-				: 0),
-		0
-	);
-}
-
 function SideNavigation({
 	canonicalName,
 	categoryImageUrl,
@@ -80,15 +69,6 @@ function SideNavigation({
 		)
 	);
 
-	const [initialExpandedKeys] = useState<Set<React.Key>>(
-		() => new Set(externalExpandedKeys)
-	);
-
-	const [userExpandedKeys, setUserExpandedKeys] =
-		useState<Set<React.Key>>(initialExpandedKeys);
-
-	const [visible, setVisible] = useState(initialVisible);
-
 	const baseId = useId();
 
 	const scrollRef = useRef<HTMLDivElement>(null);
@@ -99,73 +79,34 @@ function SideNavigation({
 		prefetchFilterOnlyItems,
 	} = useUnifiedSidebarItems(externalItems, navigationItemsURL);
 
-	const {expandedKeys, isFilterActive, items, numberOfMatches, setQuery} =
-		useUnifiedSidebarFilter(navigationItems, filterSideNavigationItems);
+	const {
+		expandedKeys: filterExpandedKeys,
+		isFilterActive,
+		items,
+		numberOfMatches,
+		setQuery,
+	} = useUnifiedSidebarFilter(navigationItems, filterSideNavigationItems);
 
-	const [filterCollapse, setFilterCollapse] = useState<{
-		appliesTo: Set<React.Key>;
-		expandedKeys: Set<React.Key>;
-	}>();
+	const {expandedKeys, initialExpandedKeys, updateExpandedKeys} =
+		useUnifiedSidebarExpandedKeys({
+			expandedKeys: externalExpandedKeys,
+			expandedKeysSessionKey,
+			filterExpandedKeys,
+			isFilterActive,
+		});
 
-	const effectiveExpandedKeys =
-		filterCollapse && filterCollapse.appliesTo === expandedKeys
-			? filterCollapse.expandedKeys
-			: expandedKeys ?? userExpandedKeys;
-
-	const updateExpandedKeys = useCallback(
-		async (updatedExpandedKeys: Set<React.Key>) => {
-			if (isFilterActive && expandedKeys) {
-				setFilterCollapse({
-					appliesTo: expandedKeys,
-					expandedKeys: updatedExpandedKeys,
-				});
-
-				return;
-			}
-
-			await Liferay.Util.Session.set(
-				expandedKeysSessionKey,
-				Array.from(updatedExpandedKeys).join(',')
-			);
-
-			setUserExpandedKeys(updatedExpandedKeys);
-		},
-		[expandedKeys, expandedKeysSessionKey, isFilterActive]
-	);
-
-	const updateVisible = useCallback(
-		async (visible: boolean) => {
-			await Liferay.Util.Session.set(
-				visibleSessionKey,
-				visible ? 'visible' : 'hidden'
-			);
-
-			setVisible(visible);
-
-			Liferay.fire('sideNavigationStateChanged', {visible});
-		},
-		[visibleSessionKey]
-	);
-
-	useEffect(
-		function setupVisibilityRequestHandler() {
-			async function handleStateRequest({visible}: {visible: boolean}) {
-				await updateVisible(visible);
-			}
-
-			Liferay.on('sideNavigationStateRequested', handleStateRequest);
-
-			return () =>
-				Liferay.detach(
-					'sideNavigationStateRequested',
-					handleStateRequest
-				);
-		},
-		[updateVisible]
-	);
+	const {updateVisible, visible} = useUnifiedSidebarVisibility({
+		hiddenSessionValue: 'hidden',
+		initialVisible,
+		sessionKey: visibleSessionKey,
+		stateChangedEventName: 'sideNavigationStateChanged',
+		stateRequestedEventName: 'sideNavigationStateRequested',
+		visibleSessionValue: 'visible',
+	});
 
 	const numberOfResults = useMemo(
-		() => (isFilterActive ? numberOfMatches : countNavigableItems(items)),
+		() =>
+			isFilterActive ? numberOfMatches : countUnifiedSidebarItems(items),
 		[isFilterActive, items, numberOfMatches]
 	);
 
@@ -230,7 +171,7 @@ function SideNavigation({
 							active={selectedPortletId}
 							defaultExpandedKeys={initialExpandedKeys}
 							displayType="primary"
-							expandedKeys={effectiveExpandedKeys}
+							expandedKeys={expandedKeys}
 							itemAriaCurrent={true}
 							items={items}
 							onExpandedChange={updateExpandedKeys}
