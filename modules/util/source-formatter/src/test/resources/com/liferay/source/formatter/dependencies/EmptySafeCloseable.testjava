@@ -15,18 +15,18 @@ import java.util.function.Supplier;
  */
 public class EmptySafeCloseable {
 
-	public SafeCloseable method01() {
+	public SafeCloseable method1() {
 		return () -> {
 		};
 	}
 
-	public SafeCloseable method02(boolean value) {
+	public SafeCloseable method2(boolean value) {
 		return value ? _EMPTY_SAFE_CLOSEABLE :
 			() -> {
 			};
 	}
 
-	public void method03(boolean value) {
+	public void method3(boolean value) {
 		SafeCloseable safeCloseable1 = () -> {
 		};
 
@@ -39,7 +39,7 @@ public class EmptySafeCloseable {
 		safeCloseable2.close();
 	}
 
-	public void method04() {
+	public void method4() {
 		_safeCloseable = () -> {
 
 			// There is nothing to close.
@@ -47,12 +47,12 @@ public class EmptySafeCloseable {
 		};
 	}
 
-	public Runnable method05() {
+	public Runnable method5() {
 		return () -> {
 		};
 	}
 
-	public void method06() throws Exception {
+	public void method6() throws Exception {
 		Runnable runnable = () -> {
 		};
 
@@ -64,7 +64,7 @@ public class EmptySafeCloseable {
 		unsafeRunnable.run();
 	}
 
-	public SafeCloseable method07() {
+	public SafeCloseable method7() {
 		return () -> {
 			if (_safeCloseable != null) {
 				_safeCloseable.close();
@@ -72,7 +72,7 @@ public class EmptySafeCloseable {
 		};
 	}
 
-	public Supplier<SafeCloseable> method08() {
+	public Supplier<SafeCloseable> method8() {
 		return () -> {
 			_safeCloseable.close();
 
@@ -81,7 +81,7 @@ public class EmptySafeCloseable {
 		};
 	}
 
-	public void method09() {
+	public void method9() {
 		_close(
 			() -> {
 			});

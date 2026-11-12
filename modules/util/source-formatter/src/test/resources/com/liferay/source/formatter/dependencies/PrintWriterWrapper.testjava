@@ -22,7 +22,7 @@ public class PrintWriterWrapper {
 		_unsyncPrintWriter = new UnsyncPrintWriter(outputStream);
 	}
 
-	public void method01(OutputStream outputStream, String s) {
+	public void method1(OutputStream outputStream, String s) {
 		PrintWriter printWriter = new PrintWriter(outputStream, true);
 
 		printWriter.println(s);
@@ -30,37 +30,37 @@ public class PrintWriterWrapper {
 		printWriter.close();
 	}
 
-	public void method02(OutputStream outputStream, String s) {
+	public void method2(OutputStream outputStream, String s) {
 		try (PrintWriter printWriter = new PrintWriter(outputStream)) {
 			printWriter.print(s);
 		}
 	}
 
-	public void method03(String s) {
+	public void method3(String s) {
 		_unsyncPrintWriter.write(s);
 
 		_unsyncPrintWriter.flush();
 	}
 
-	public void method04(Writer writer, String s) {
+	public void method4(Writer writer, String s) {
 		_write(new PrintWriter(writer, true), s);
 	}
 
-	public void method05(Map<String, Object> map, Writer writer) {
+	public void method5(Map<String, Object> map, Writer writer) {
 		Writer templateWriter = new UnsyncPrintWriter(writer);
 
 		map.put("writer", templateWriter);
 	}
 
-	public void method06(Exception exception, Writer writer) {
+	public void method6(Exception exception, Writer writer) {
 		exception.printStackTrace(new PrintWriter(writer));
 	}
 
-	public PrintWriter method07(Writer writer) {
+	public PrintWriter method7(Writer writer) {
 		return new UnsyncPrintWriter(writer);
 	}
 
-	public void method08(OutputStream outputStream, String s) {
+	public void method8(OutputStream outputStream, String s) {
 		PrintWriter printWriter = new PrintWriter(outputStream);
 
 		printWriter.printf("%s", s);
@@ -68,7 +68,7 @@ public class PrintWriterWrapper {
 		printWriter.close();
 	}
 
-	public void method09(Map<String, Object> map, Writer writer) {
+	public void method9(Map<String, Object> map, Writer writer) {
 		PrintWriter printWriter = new PrintWriter(writer);
 
 		printWriter.println();
