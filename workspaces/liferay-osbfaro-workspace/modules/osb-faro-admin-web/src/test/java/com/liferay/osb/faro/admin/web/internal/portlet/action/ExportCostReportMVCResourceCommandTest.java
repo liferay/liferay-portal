@@ -135,8 +135,12 @@ public class ExportCostReportMVCResourceCommandTest {
 		_mockDynamicQuery(
 			_totalsDynamicQuery,
 			new Object[] {
-				RandomTestUtil.randomLong(), 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L,
-				1L
+				RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
+				RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
+				RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
+				RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
+				RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
+				RandomTestUtil.randomLong()
 			},
 			new Object[] {
 				faroProjectId, null, null, null, null, null, null, null, null,
