@@ -635,6 +635,11 @@ public interface ContactsEngineClient {
 			OutputStream outputStream)
 		throws Exception;
 
+	public List<Campaign> getTopCampaigns(
+			FaroProject faroProject, long channelId, String filterString,
+			String rangeEnd, Integer rangeKey, String rangeStart, int size)
+		throws FaroEngineClientException;
+
 	public Results<IndividualSegment> getUnassignedIndividualSegments(
 		FaroProject faroProject, int cur, int delta,
 		List<OrderByField> orderByFields);

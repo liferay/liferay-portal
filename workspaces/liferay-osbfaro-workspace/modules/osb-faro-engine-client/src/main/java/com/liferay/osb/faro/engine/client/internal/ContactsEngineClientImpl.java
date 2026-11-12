@@ -3617,6 +3617,41 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
+	public List<Campaign> getTopCampaigns(
+			FaroProject faroProject, long channelId, String filterString,
+			String rangeEnd, Integer rangeKey, String rangeStart, int size)
+		throws FaroEngineClientException {
+
+		Map<String, Object> uriVariables = getUriVariables(faroProject);
+
+		uriVariables.put("channelId", channelId);
+
+		if (Validator.isNotNull(filterString)) {
+			uriVariables.put("filter", filterString);
+		}
+
+		if (Validator.isNotNull(rangeEnd)) {
+			uriVariables.put("rangeEnd", rangeEnd);
+		}
+
+		if (rangeKey != null) {
+			uriVariables.put("rangeKey", rangeKey);
+		}
+
+		if (Validator.isNotNull(rangeStart)) {
+			uriVariables.put("rangeStart", rangeStart);
+		}
+
+		uriVariables.put("size", size);
+
+		return get(
+			faroProject, Rels.CAMPAIGNS_TOP,
+			new ParameterizedTypeReference<List<Campaign>>() {
+			},
+			uriVariables);
+	}
+
+	@Override
 	public Results<IndividualSegment> getUnassignedIndividualSegments(
 		FaroProject faroProject, int cur, int delta,
 		List<OrderByField> orderByFields) {
