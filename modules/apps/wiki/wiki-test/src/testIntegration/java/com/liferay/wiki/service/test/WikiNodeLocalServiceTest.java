@@ -59,6 +59,27 @@ public class WikiNodeLocalServiceTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
+	@Test
+	public void testAddDefaultNode() throws Exception {
+		_group = GroupTestUtil.addGroup();
+
+		String initialNodeName = RandomTestUtil.randomString();
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group.getGroupId(), WikiConstants.SERVICE_NAME,
+						MapUtil.<String, Object>singletonDictionary(
+							"initialNodeName", initialNodeName))) {
+
+			_node = WikiNodeLocalServiceUtil.addDefaultNode(
+				TestPropsValues.getUserId(),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		}
+
+		Assert.assertEquals(initialNodeName, _node.getName());
+	}
+
 	@Test(expected = DuplicateWikiNodeExternalReferenceCodeException.class)
 	public void testAddNodeWithExistingExternalReferenceCode()
 		throws Exception {
