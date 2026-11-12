@@ -1797,7 +1797,6 @@ public class DSRequestManagerTest {
 
 	private void _testUpdateDSRequestWithDeletedFileEntry() throws Exception {
 		DSEnvelope dsEnvelope = _createDSEnvelope();
-
 		FileEntry fileEntry1 = _addFileEntry(
 			RandomTestUtil.randomString() + ".pdf");
 		FileEntry fileEntry2 = _addFileEntry(
