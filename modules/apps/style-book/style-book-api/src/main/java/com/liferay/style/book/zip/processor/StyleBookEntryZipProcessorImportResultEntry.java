@@ -15,18 +15,13 @@ public class StyleBookEntryZipProcessorImportResultEntry {
 	public StyleBookEntryZipProcessorImportResultEntry(
 		String name, Status status, StyleBookEntry styleBookEntry) {
 
-		_name = name;
-		_status = status;
-		_styleBookEntry = styleBookEntry;
+		this(name, status, styleBookEntry, null);
 	}
 
 	public StyleBookEntryZipProcessorImportResultEntry(
 		String name, String errorMessage) {
 
-		_name = name;
-		_errorMessage = errorMessage;
-
-		_status = Status.INVALID;
+		this(name, Status.INVALID, null, errorMessage);
 	}
 
 	public String getErrorMessage() {
@@ -61,9 +56,19 @@ public class StyleBookEntryZipProcessorImportResultEntry {
 
 	}
 
-	private String _errorMessage;
+	private StyleBookEntryZipProcessorImportResultEntry(
+		String name, Status status, StyleBookEntry styleBookEntry,
+		String errorMessage) {
+
+		_name = name;
+		_status = status;
+		_styleBookEntry = styleBookEntry;
+		_errorMessage = errorMessage;
+	}
+
+	private final String _errorMessage;
 	private final String _name;
 	private final Status _status;
-	private StyleBookEntry _styleBookEntry;
+	private final StyleBookEntry _styleBookEntry;
 
 }
