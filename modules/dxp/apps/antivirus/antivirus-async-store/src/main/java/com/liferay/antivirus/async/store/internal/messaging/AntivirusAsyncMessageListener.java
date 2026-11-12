@@ -79,10 +79,11 @@ public class AntivirusAsyncMessageListener implements MessageListener {
 						StringBundler.concat(
 							"Schedule ",
 							AntivirusAsyncUtil.getFileIdentifier(message),
-							" into persistent storage because the async ",
-							"antivirus queue is overflowing: ",
-							message.getValues()));
+							" for retry because the async antivirus queue is ",
+							"overflowing: ", message.getValues()));
 				}
+
+				message.put("overflow", true);
 
 				_antivirusAsyncRetryScheduler.schedule(message);
 			});
