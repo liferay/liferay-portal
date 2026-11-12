@@ -90,13 +90,15 @@ public class AccountEntryOrganizationRelModelListenerTest {
 		_objectDefinitions.add(objectDefinition2);
 
 		ObjectDefinition objectDefinition3 = _enableAccountEntryRestricted(
-			_publishSiteObjectDefinition());
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						RandomTestUtil.randomString(), StringUtil.randomId())),
+				ObjectDefinitionConstants.SCOPE_SITE));
 
 		_objectDefinitions.add(objectDefinition3);
-
-		ObjectDefinition objectDefinition4 = _publishSiteObjectDefinition();
-
-		_objectDefinitions.add(objectDefinition4);
 
 		AccountEntry accountEntry1 = _addAccountEntry();
 
@@ -113,10 +115,6 @@ public class AccountEntryOrganizationRelModelListenerTest {
 		_addObjectEntry(accountEntry2, 0, objectDefinition2);
 		_addObjectEntry(
 			accountEntry2, TestPropsValues.getGroupId(), objectDefinition3);
-
-		ObjectEntryTestUtil.addObjectEntry(
-			TestPropsValues.getGroupId(),
-			objectDefinition4.getObjectDefinitionId(), Collections.emptyMap());
 
 		Set<Long> objectEntryIds = new ConcurrentSkipListSet<>();
 		ServiceTrackerMap<String, IndexerDocumentBuilder>
@@ -265,16 +263,6 @@ public class AccountEntryOrganizationRelModelListenerTest {
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				StringUtil.randomId(), false,
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null));
-	}
-
-	private ObjectDefinition _publishSiteObjectDefinition() throws Exception {
-		return ObjectDefinitionTestUtil.publishObjectDefinition(
-			Collections.singletonList(
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING,
-					RandomTestUtil.randomString(), StringUtil.randomId())),
-			ObjectDefinitionConstants.SCOPE_SITE);
 	}
 
 	@Inject
