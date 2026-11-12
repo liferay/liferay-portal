@@ -35,6 +35,7 @@ import com.liferay.dynamic.data.mapping.model.DDMStorageLink;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordVersionLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceReportLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceVersionLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStorageLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.base.DDMFormInstanceRecordLocalServiceBaseImpl;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstancePersistence;
@@ -437,8 +438,13 @@ public class DDMFormInstanceRecordLocalServiceImpl
 		DDMFormInstance ddmFormInstance =
 			ddmFormInstanceRecord.getFormInstance();
 
+		DDMFormInstanceVersion latestDDMFormInstanceVersion =
+			_ddmFormInstanceVersionLocalService.getLatestFormInstanceVersion(
+				ddmFormInstance.getFormInstanceId(),
+				WorkflowConstants.STATUS_APPROVED);
+
 		ddmFormInstanceRecord.setFormInstanceVersion(
-			ddmFormInstance.getVersion());
+			latestDDMFormInstanceVersion.getVersion());
 
 		ddmFormInstanceRecord = ddmFormInstanceRecordPersistence.update(
 			ddmFormInstanceRecord);
@@ -448,9 +454,9 @@ public class DDMFormInstanceRecordLocalServiceImpl
 
 		if (ddmFormInstanceRecordVersion.isApproved()) {
 			long ddmStorageId = _createDDMContent(
-				ddmFormInstanceRecord.getGroupId(),
 				ddmFormInstance.getFormInstanceId(), ddmFormValues,
-				serviceContext);
+				latestDDMFormInstanceVersion.getStructureVersionId(),
+				ddmFormInstanceRecord.getGroupId(), serviceContext);
 
 			String version = _getNextVersion(
 				ddmFormInstanceRecordVersion.getVersion(), majorVersion,
@@ -469,7 +475,7 @@ public class DDMFormInstanceRecordLocalServiceImpl
 
 			_updateFormInstanceRecordVersion(
 				user, ddmFormInstanceRecordVersion,
-				ddmFormInstance.getVersion(),
+				latestDDMFormInstanceVersion.getVersion(),
 				ddmFormInstanceRecordVersion.getStatus(), version,
 				serviceContext);
 
@@ -753,8 +759,14 @@ public class DDMFormInstanceRecordLocalServiceImpl
 		ddmFormInstanceRecord.setVersionUserId(user.getUserId());
 		ddmFormInstanceRecord.setVersionUserName(user.getFullName());
 
+		DDMFormInstanceVersion latestDDMFormInstanceVersion =
+			_ddmFormInstanceVersionLocalService.getLatestFormInstanceVersion(
+				ddmFormInstance.getFormInstanceId(),
+				WorkflowConstants.STATUS_APPROVED);
+
 		long ddmStorageId = _createDDMContent(
-			groupId, ddmFormInstance.getFormInstanceId(), ddmFormValues,
+			ddmFormInstance.getFormInstanceId(), ddmFormValues,
+			latestDDMFormInstanceVersion.getStructureVersionId(), groupId,
 			serviceContext);
 
 		ddmFormInstanceRecord.setStorageId(ddmStorageId);
@@ -762,7 +774,7 @@ public class DDMFormInstanceRecordLocalServiceImpl
 		ddmFormInstanceRecord.setFormInstanceId(
 			ddmFormInstance.getFormInstanceId());
 		ddmFormInstanceRecord.setFormInstanceVersion(
-			ddmFormInstance.getVersion());
+			latestDDMFormInstanceVersion.getVersion());
 		ddmFormInstanceRecord.setVersion(_VERSION_DEFAULT);
 
 		_setIpAddress(ddmFormInstanceRecord, serviceContext);
@@ -869,7 +881,8 @@ public class DDMFormInstanceRecordLocalServiceImpl
 	}
 
 	private long _createDDMContent(
-			long groupId, long ddmFormInstanceId, DDMFormValues ddmFormValues,
+			long ddmFormInstanceId, DDMFormValues ddmFormValues,
+			long ddmStructureVersionId, long groupId,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -903,13 +916,9 @@ public class DDMFormInstanceRecordLocalServiceImpl
 			return primaryKey;
 		}
 
-		DDMFormInstanceVersion ddmFormInstanceVersion =
-			ddmFormInstance.getFormInstanceVersion(
-				ddmFormInstance.getVersion());
-
 		_ddmStorageLinkLocalService.addStorageLink(
 			_portal.getClassNameId(DDMContent.class.getName()), primaryKey,
-			ddmFormInstanceVersion.getStructureVersionId(), serviceContext);
+			ddmStructureVersionId, serviceContext);
 
 		return primaryKey;
 	}
@@ -1332,6 +1341,10 @@ public class DDMFormInstanceRecordLocalServiceImpl
 
 	@Reference
 	private DDMFormInstanceReportPersistence _ddmFormInstanceReportPersistence;
+
+	@Reference
+	private DDMFormInstanceVersionLocalService
+		_ddmFormInstanceVersionLocalService;
 
 	@Reference
 	private DDMFormValuesValidator _ddmFormValuesValidator;
