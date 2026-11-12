@@ -242,6 +242,7 @@ public class FragmentEntryLinkStagingTest {
 						draftStagingLayout.getPlid()));
 
 		String body = RandomTestUtil.randomString();
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_stagingGroup.getGroupId());
