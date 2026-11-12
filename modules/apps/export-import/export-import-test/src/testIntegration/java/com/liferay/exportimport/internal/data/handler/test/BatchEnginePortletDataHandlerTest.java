@@ -1770,7 +1770,6 @@ public class BatchEnginePortletDataHandlerTest {
 		_assertListTypeDefinition(listTypeDefinition, 1, listTypeEntries[2]);
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplates() throws Exception {
 		NotificationTemplate notificationTemplate = _addNotificationTemplate(
@@ -1814,7 +1813,6 @@ public class BatchEnginePortletDataHandlerTest {
 			notificationTemplate, importedNotificationTemplate);
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithAlwaysCurrentUser()
 		throws Exception {
@@ -1845,7 +1843,6 @@ public class BatchEnginePortletDataHandlerTest {
 			importedNotificationTemplate.getUserId());
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithDifferentExistingCreator()
 		throws Exception {
@@ -1881,7 +1878,6 @@ public class BatchEnginePortletDataHandlerTest {
 			user2.getUserId(), importedNotificationTemplate.getUserId());
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithExistingOriginalCreator()
 		throws Exception {
@@ -1910,7 +1906,6 @@ public class BatchEnginePortletDataHandlerTest {
 			user.getUserId(), importedNotificationTemplate.getUserId());
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithIndividualDeletions()
 		throws Exception {
@@ -1980,7 +1975,6 @@ public class BatchEnginePortletDataHandlerTest {
 				notificationTemplate2.getExternalReferenceCode()));
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithMissingAttachmentObjectField()
 		throws Exception {
@@ -2101,7 +2095,6 @@ public class BatchEnginePortletDataHandlerTest {
 			exportImportReportEntry.getErrorMessage());
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithMissingObjectDefinition()
 		throws Exception {
@@ -2257,7 +2250,6 @@ public class BatchEnginePortletDataHandlerTest {
 			importedNotificationTemplate);
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithMissingOriginalCreator()
 		throws Exception {
@@ -2289,7 +2281,6 @@ public class BatchEnginePortletDataHandlerTest {
 			importedNotificationTemplate.getUserId());
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithMissingRoleAndUserGroup()
 		throws Exception {
@@ -2534,7 +2525,6 @@ public class BatchEnginePortletDataHandlerTest {
 		_userGroupLocalService.deleteUserGroup(userGroup);
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithMissingUsers()
 		throws Exception {
@@ -2682,7 +2672,6 @@ public class BatchEnginePortletDataHandlerTest {
 			exportImportReportEntry2.getErrorMessage());
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithObjectDefinition()
 		throws Exception {
@@ -2770,7 +2759,6 @@ public class BatchEnginePortletDataHandlerTest {
 			importedNotificationTemplate);
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithPermissions()
 		throws Exception {
@@ -2876,7 +2864,6 @@ public class BatchEnginePortletDataHandlerTest {
 			RoleConstants.OWNER, RoleConstants.SITE_MEMBER);
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithRecipients()
 		throws Exception {
@@ -3000,7 +2987,6 @@ public class BatchEnginePortletDataHandlerTest {
 		_userGroupLocalService.deleteUserGroup(userGroup);
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithSystemDeletions()
 		throws Exception {
@@ -3038,7 +3024,6 @@ public class BatchEnginePortletDataHandlerTest {
 		Assert.assertNotNull(_fetchNotificationTemplate(externalReferenceCode));
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
 	public void testExportImportNotificationTemplatesWithUserNotificationType()
 		throws Exception {

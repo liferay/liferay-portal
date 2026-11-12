@@ -28,7 +28,6 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -50,12 +49,9 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.odata.entity.EntityField;
-import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
@@ -79,7 +75,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 /**
  * @author Gabriel Albuquerque
  */
-@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 @RunWith(Arquillian.class)
 public class NotificationTemplateResourceTest
 	extends BaseNotificationTemplateResourceTestCase {
@@ -110,7 +105,6 @@ public class NotificationTemplateResourceTest
 		super.testGetNotificationTemplate();
 
 		_testGetNotificationTemplateWithRecipientsAndEmailType();
-		_testGetNotificationTemplateWithRecipientsAndFeatureFlagDisabled();
 		_testGetNotificationTemplateWithRecipientsAndUserNotificationType();
 	}
 
@@ -213,9 +207,7 @@ public class NotificationTemplateResourceTest
 		_testPostNotificationTemplateWithNameWithoutDefaultLanguage();
 		_testPostNotificationTemplateWithObjectDefinition();
 		_testPostNotificationTemplateWithPermissions();
-		_testPostNotificationTemplateWithPermissionsAndFeatureFlagDisabled();
 		_testPostNotificationTemplateWithRecipientsAndEmailType();
-		_testPostNotificationTemplateWithRecipientsAndFeatureFlagDisabled();
 		_testPostNotificationTemplateWithRecipientsAndUserNotificationType();
 	}
 
@@ -481,7 +473,13 @@ public class NotificationTemplateResourceTest
 		).put(
 			"name", RandomTestUtil.randomString()
 		).put(
-			"permissions", JSONUtil.putAll(_getPermissionJSONObject(roleName))
+			"permissions",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"actionIds", new String[] {ActionKeys.VIEW}
+				).put(
+					"roleName", roleName
+				))
 		).put(
 			"recipients", JSONUtil.putAll()
 		).put(
@@ -491,14 +489,6 @@ public class NotificationTemplateResourceTest
 				RandomTestUtil.randomString())
 		).put(
 			"type", NotificationConstants.TYPE_USER_NOTIFICATION
-		);
-	}
-
-	private JSONObject _getPermissionJSONObject(String roleName) {
-		return JSONUtil.put(
-			"actionIds", new String[] {ActionKeys.VIEW}
-		).put(
-			"roleName", roleName
 		);
 	}
 
@@ -615,49 +605,6 @@ public class NotificationTemplateResourceTest
 				)),
 			NotificationRecipientConstants.TYPE_EMAIL,
 			NotificationConstants.TYPE_EMAIL);
-	}
-
-	private void _testGetNotificationTemplateWithRecipientsAndFeatureFlagDisabled()
-		throws Exception {
-
-		try (PropsTemporarySwapper propsTemporarySwapper =
-				new PropsTemporarySwapper(
-					FeatureFlagConstants.getKey("LPD-49854"),
-					Boolean.FALSE.toString())) {
-
-			_testGetNotificationTemplate(
-				JSONUtil.putAll(
-					_toEmailRecipientJSONObject(
-						RandomTestUtil.randomString() + "@liferay.com",
-						JSONUtil.put("en_US", RandomTestUtil.randomString()),
-						JSONUtil.putAll(
-							JSONUtil.put(
-								NotificationRecipientSettingConstants.
-									NAME_ROLE_NAME,
-								_role.getName())),
-						NotificationRecipientConstants.TYPE_ROLE
-					).put(
-						NotificationRecipientSettingConstants.NAME_BCC,
-						JSONUtil.putAll(
-							JSONUtil.put(
-								NotificationRecipientSettingConstants.
-									NAME_USER_GROUP_NAME,
-								_userGroup.getName()))
-					).put(
-						NotificationRecipientSettingConstants.NAME_BCC_TYPE,
-						NotificationRecipientConstants.TYPE_USER_GROUP
-					)),
-				NotificationRecipientConstants.TYPE_EMAIL,
-				NotificationConstants.TYPE_EMAIL);
-			_testGetNotificationTemplate(
-				JSONUtil.putAll(
-					JSONUtil.put(
-						NotificationRecipientSettingConstants.
-							NAME_USER_SCREEN_NAME,
-						_user.getScreenName())),
-				NotificationRecipientConstants.TYPE_USER,
-				NotificationConstants.TYPE_USER_NOTIFICATION);
-		}
 	}
 
 	private void _testGetNotificationTemplateWithRecipientsAndUserNotificationType()
@@ -1341,28 +1288,6 @@ public class NotificationTemplateResourceTest
 			RoleConstants.ADMINISTRATOR);
 	}
 
-	private void _testPostNotificationTemplateWithPermissionsAndFeatureFlagDisabled()
-		throws Exception {
-
-		try (PropsTemporarySwapper propsTemporarySwapper =
-				new PropsTemporarySwapper(
-					FeatureFlagConstants.getKey("LPD-49854"),
-					Boolean.FALSE.toString())) {
-
-			Assert.assertEquals(
-				400,
-				HTTPTestUtil.invokeToHttpCode(
-					JSONUtil.put(
-						"permissions",
-						JSONUtil.putAll(
-							_getPermissionJSONObject(
-								RoleConstants.ADMINISTRATOR))
-					).toString(),
-					"notification/v1.0/notification-templates",
-					Http.Method.POST));
-		}
-	}
-
 	private void _testPostNotificationTemplateWithRecipient(
 			JSONArray expectedRecipientsJSONArray,
 			JSONObject recipientJSONObject, String recipientType)
@@ -1491,46 +1416,6 @@ public class NotificationTemplateResourceTest
 				NotificationRecipientSettingConstants.NAME_TO_TYPE,
 				NotificationRecipientConstants.TYPE_USER_GROUP
 			));
-	}
-
-	private void _testPostNotificationTemplateWithRecipientsAndFeatureFlagDisabled()
-		throws Exception {
-
-		try (PropsTemporarySwapper propsTemporarySwapper =
-				new PropsTemporarySwapper(
-					FeatureFlagConstants.getKey("LPD-49854"),
-					Boolean.FALSE.toString())) {
-
-			_testPostNotificationTemplateWithRecipient(
-				JSONUtil.putAll(
-					JSONUtil.put(
-						NotificationRecipientSettingConstants.NAME_ROLE_NAME,
-						_role.getName())),
-				_toRoleJSONObject(
-					RandomTestUtil.randomString(), _role.getName()),
-				NotificationRecipientConstants.TYPE_ROLE);
-
-			String screenName = RandomTestUtil.randomString();
-
-			_testPostNotificationTemplateWithRecipient(
-				JSONUtil.putAll(
-					JSONUtil.put(
-						NotificationRecipientSettingConstants.
-							NAME_USER_SCREEN_NAME,
-						screenName)),
-				_toUserJSONObject(RandomTestUtil.randomString(), screenName),
-				NotificationRecipientConstants.TYPE_USER);
-
-			_testPostNotificationTemplateWithRecipient(
-				JSONUtil.putAll(
-					JSONUtil.put(
-						NotificationRecipientSettingConstants.
-							NAME_USER_GROUP_NAME,
-						_userGroup.getName())),
-				_toUserGroupJSONObject(
-					RandomTestUtil.randomString(), _userGroup.getName()),
-				NotificationRecipientConstants.TYPE_USER_GROUP);
-		}
 	}
 
 	private void _testPostNotificationTemplateWithRecipientsAndUserNotificationType()
