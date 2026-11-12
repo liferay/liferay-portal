@@ -345,6 +345,29 @@ public class AddContentItemCommentStrutsActionTest {
 					author.getFullName(), " mentioned you in a comment on ",
 					title, ".")));
 
+		payloadJSONObject.remove("discussionClassName");
+		payloadJSONObject.remove("discussionClassPK");
+
+		userNotificationEvent =
+			_userNotificationEventLocalService.addUserNotificationEvent(
+				user1.getUserId(), userNotificationEvent.getType(),
+				System.currentTimeMillis(),
+				userNotificationEvent.getDeliveryType(), 0,
+				payloadJSONObject.toString(), false,
+				ServiceContextTestUtil.getServiceContext());
+
+		userNotificationFeedEntry = UserNotificationManagerUtil.interpret(
+			StringPool.BLANK, userNotificationEvent,
+			ServiceContextTestUtil.getServiceContext());
+
+		body = userNotificationFeedEntry.getBody();
+
+		Assert.assertTrue(
+			body.contains(
+				StringBundler.concat(
+					author.getFullName(), " mentioned you in a comment on ",
+					title, ".")));
+
 		Assert.assertEquals(
 			0,
 			_userNotificationEventLocalService.getUserNotificationEventsCount(
