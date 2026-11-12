@@ -91,6 +91,31 @@ describe('TrafficChannels', () => {
 		expect(trafficChannelItem).toHaveLength(7);
 	});
 
+	it.each([
+		['chatbot', 'ai-chatbot'],
+		['others', 'others'],
+		['unknown-channel', 'unknown-channel'],
+	])('renders the %s traffic channel as %s', async (name, label) => {
+		jest.spyOn(ApiHelper, 'get').mockResolvedValue({
+			data: {
+				items: [{count: 10, name, percentage: 1}],
+				totalCount: 10,
+			},
+			error: null,
+		});
+
+		render(<TrafficChannels />);
+
+		await waitForElementToBeRemoved(() => screen.getByTestId('loading'));
+
+		expect(
+			screen.getByRole('row', {name: `traffic-channel: ${label}`})
+		).toBeInTheDocument();
+		expect(screen.getByRole('cell', {name: label})).toHaveTextContent(
+			label
+		);
+	});
+
 	it('renders an empty state', async () => {
 		jest.spyOn(ApiHelper, 'get').mockResolvedValue({
 			data: {
