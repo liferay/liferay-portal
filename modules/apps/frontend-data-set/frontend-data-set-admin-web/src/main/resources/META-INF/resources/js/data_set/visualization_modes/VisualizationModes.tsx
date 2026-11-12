@@ -259,21 +259,26 @@ export default function VisualizationModes(props: IDataSetSectionProps) {
 	const updateVisualizationModesOrder = (order: string) => {
 		const names = order.split(',');
 
-		// The order only lists the visible rows while searching, so the
-		// hidden ones keep their relative order at the end
+		// The order only lists the visible rows while searching, so they take
+		// the slots the visible rows held and the hidden ones stay in place
 
-		updateVisualizationModes([
-			...(names
-				.map((name) =>
-					visualizationModes.find(
-						(visualizationMode) => visualizationMode.name === name
-					)
+		const reorderedVisualizationModes = names
+			.map((name) =>
+				visualizationModes.find(
+					(visualizationMode) => visualizationMode.name === name
 				)
-				.filter(Boolean) as IDataSetVisualizationMode[]),
-			...visualizationModes.filter(
-				(visualizationMode) => !names.includes(visualizationMode.name)
-			),
-		]);
+			)
+			.filter(Boolean) as IDataSetVisualizationMode[];
+
+		let index = 0;
+
+		updateVisualizationModes(
+			visualizationModes.map((visualizationMode) =>
+				names.includes(visualizationMode.name)
+					? reorderedVisualizationModes[index++]
+					: visualizationMode
+			)
+		);
 	};
 
 	const toggleVisualizationMode = (name: string) =>

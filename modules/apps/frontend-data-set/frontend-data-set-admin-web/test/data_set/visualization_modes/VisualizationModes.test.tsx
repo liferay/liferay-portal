@@ -151,6 +151,31 @@ describe('VisualizationModes', () => {
 		).toEqual(['list', 'cards', 'table', 'LXC:timeline']);
 	});
 
+	it('keeps the hidden visualization modes in place when moving one while searching', async () => {
+		renderVisualizationModes();
+
+		await userEvent.type(screen.getByPlaceholderText('search'), 'ca');
+
+		expect(getRowNames()).toEqual(['cards']);
+
+		await userEvent.clear(screen.getByPlaceholderText('search'));
+		await userEvent.type(screen.getByPlaceholderText('search'), 'li');
+
+		const visibleNames = getRowNames();
+
+		expect(visibleNames).toEqual(['list[noun]', 'Timeline']);
+
+		screen.getByRole('button', {name: 'drag-Timeline'}).focus();
+
+		await userEvent.keyboard('{Enter}{ArrowUp}{Enter}');
+
+		expect(
+			JSON.parse(patchRequestBodies[0].visualizationModes).map(
+				({name}: {name: string}) => name
+			)
+		).toEqual(['cards', 'LXC:timeline', 'table', 'list']);
+	});
+
 	it('disables client extensions until they are enabled', async () => {
 		renderVisualizationModes();
 
