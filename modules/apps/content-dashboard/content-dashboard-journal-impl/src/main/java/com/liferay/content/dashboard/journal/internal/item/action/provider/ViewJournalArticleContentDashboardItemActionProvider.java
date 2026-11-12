@@ -5,7 +5,6 @@
 
 package com.liferay.content.dashboard.journal.internal.item.action.provider;
 
-import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.content.dashboard.item.action.ContentDashboardItemAction;
 import com.liferay.content.dashboard.item.action.provider.ContentDashboardItemActionProvider;
 import com.liferay.content.dashboard.journal.internal.item.action.ViewJournalArticleContentDashboardItemAction;
@@ -69,14 +68,10 @@ public class ViewJournalArticleContentDashboardItemActionProvider
 		HttpServletRequest httpServletRequest, JournalArticle journalArticle) {
 
 		return new ViewJournalArticleContentDashboardItemAction(
-			_assetDisplayPageFriendlyURLProvider, httpServletRequest,
-			journalArticle, _language, _layoutDisplayPageProviderRegistry,
-			_layoutLocalService, _layoutSEOLinkManager, _portal);
+			httpServletRequest, journalArticle, _language,
+			_layoutDisplayPageProviderRegistry, _layoutLocalService,
+			_layoutSEOLinkManager, _portal);
 	}
-
-	@Reference
-	private AssetDisplayPageFriendlyURLProvider
-		_assetDisplayPageFriendlyURLProvider;
 
 	@Reference
 	private Language _language;

@@ -5,7 +5,6 @@
 
 package com.liferay.content.dashboard.journal.internal.item.action;
 
-import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.content.dashboard.item.action.ContentDashboardItemVersionAction;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
@@ -37,7 +36,6 @@ public class PreviewJournalArticleContentDashboardItemVersionAction
 	implements ContentDashboardItemVersionAction {
 
 	public PreviewJournalArticleContentDashboardItemVersionAction(
-		AssetDisplayPageFriendlyURLProvider assetDisplayPageFriendlyURLProvider,
 		HttpServletRequest httpServletRequest, JournalArticle journalArticle,
 		Language language,
 		LayoutDisplayPageProviderRegistry layoutDisplayPageProviderRegistry,
@@ -45,8 +43,6 @@ public class PreviewJournalArticleContentDashboardItemVersionAction
 		LayoutSEOLinkManager layoutSEOLinkManager, Portal portal,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
 
-		_assetDisplayPageFriendlyURLProvider =
-			assetDisplayPageFriendlyURLProvider;
 		_httpServletRequest = httpServletRequest;
 		_journalArticle = journalArticle;
 		_language = language;
@@ -85,8 +81,7 @@ public class PreviewJournalArticleContentDashboardItemVersionAction
 		ViewJournalArticleContentDashboardItemAction
 			viewJournalArticleContentDashboardItemAction =
 				new ViewJournalArticleContentDashboardItemAction(
-					_assetDisplayPageFriendlyURLProvider, _httpServletRequest,
-					_journalArticle, _language,
+					_httpServletRequest, _journalArticle, _language,
 					_layoutDisplayPageProviderRegistry, _layoutLocalService,
 					_layoutSEOLinkManager, _portal);
 
@@ -135,8 +130,6 @@ public class PreviewJournalArticleContentDashboardItemVersionAction
 		).buildString();
 	}
 
-	private final AssetDisplayPageFriendlyURLProvider
-		_assetDisplayPageFriendlyURLProvider;
 	private final HttpServletRequest _httpServletRequest;
 	private final JournalArticle _journalArticle;
 	private final Language _language;

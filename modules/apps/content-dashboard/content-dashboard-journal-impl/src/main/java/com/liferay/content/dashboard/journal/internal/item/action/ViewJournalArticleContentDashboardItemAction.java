@@ -5,7 +5,6 @@
 
 package com.liferay.content.dashboard.journal.internal.item.action;
 
-import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
 import com.liferay.content.dashboard.item.action.ContentDashboardItemAction;
 import com.liferay.info.item.InfoItemReference;
@@ -49,7 +48,6 @@ public class ViewJournalArticleContentDashboardItemAction
 	implements ContentDashboardItemAction {
 
 	public ViewJournalArticleContentDashboardItemAction(
-		AssetDisplayPageFriendlyURLProvider assetDisplayPageFriendlyURLProvider,
 		HttpServletRequest httpServletRequest, JournalArticle journalArticle,
 		Language language,
 		LayoutDisplayPageProviderRegistry layoutDisplayPageProviderRegistry,
