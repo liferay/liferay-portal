@@ -115,9 +115,7 @@ public class PortalHibernateConfiguration
 
 		properties.setProperty("hibernate.dialect", clazz.getName());
 
-		if (_dataSource != null) {
-			properties.put("hibernate.connection.datasource", _dataSource);
-		}
+		properties.put("hibernate.connection.datasource", _dataSource);
 
 		properties.put(
 			"hibernate.connection.handling_mode",
