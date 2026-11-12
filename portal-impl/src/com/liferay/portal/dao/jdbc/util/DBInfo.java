@@ -5,6 +5,10 @@
 
 package com.liferay.portal.dao.jdbc.util;
 
+import com.liferay.petra.lang.HashUtil;
+
+import java.util.Objects;
+
 /**
  * @author Shuyang Zhou
  */
@@ -14,6 +18,28 @@ public class DBInfo {
 		_name = name;
 		_majorVersion = majorVersion;
 		_minorVersion = minorVersion;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+
+		if (!(object instanceof DBInfo)) {
+			return false;
+		}
+
+		DBInfo dbInfo = (DBInfo)object;
+
+		if ((_majorVersion == dbInfo._majorVersion) &&
+			(_minorVersion == dbInfo._minorVersion) &&
+			Objects.equals(_name, dbInfo._name)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public int getMajorVersion() {
@@ -26,6 +52,15 @@ public class DBInfo {
 
 	public String getName() {
 		return _name;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = HashUtil.hash(0, _majorVersion);
+
+		hash = HashUtil.hash(hash, _minorVersion);
+
+		return HashUtil.hash(hash, _name);
 	}
 
 	private final int _majorVersion;

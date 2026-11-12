@@ -6,7 +6,6 @@
 package com.liferay.portal.spring.hibernate;
 
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.jdbc.util.DBInfo;
 import com.liferay.portal.dao.jdbc.util.DBInfoUtil;
 import com.liferay.portal.dao.orm.hibernate.DB2Dialect;
@@ -38,27 +37,19 @@ import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
 public class DialectUtil {
 
 	public static Dialect getDialect(DataSource dataSource) {
-		Dialect dialect = null;
-
 		DBInfo dbInfo = DBInfoUtil.getDBInfo(dataSource);
+
+		Dialect dialect = _dialects.get(dbInfo);
+
+		if (dialect != null) {
+			return dialect;
+		}
 
 		int dbMajorVersion = dbInfo.getMajorVersion();
 		int dbMinorVersion = dbInfo.getMinorVersion();
 		String dbName = dbInfo.getName();
 
-		String dialectKey = null;
-
 		try {
-			dialectKey = StringBundler.concat(
-				dbName, StringPool.COLON, dbMajorVersion, StringPool.COLON,
-				dbMinorVersion);
-
-			dialect = _dialects.get(dialectKey);
-
-			if (dialect != null) {
-				return dialect;
-			}
-
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					StringBundler.concat(
@@ -127,25 +118,24 @@ public class DialectUtil {
 		if (dialect == null) {
 			throw new RuntimeException("No dialect found");
 		}
-		else if (dialectKey != null) {
-			if (_log.isInfoEnabled()) {
-				Class<?> clazz = dialect.getClass();
 
-				_log.info(
-					StringBundler.concat(
-						"Using dialect ", clazz.getName(), " for ", dbName, " ",
-						dbMajorVersion, ".", dbMinorVersion));
-			}
+		if (_log.isInfoEnabled()) {
+			Class<?> clazz = dialect.getClass();
 
-			_dialects.put(dialectKey, dialect);
+			_log.info(
+				StringBundler.concat(
+					"Using dialect ", clazz.getName(), " for ", dbName, " ",
+					dbMajorVersion, ".", dbMinorVersion));
 		}
+
+		_dialects.put(dbInfo, dialect);
 
 		return dialect;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DialectUtil.class);
 
-	private static final Map<String, Dialect> _dialects =
+	private static final Map<DBInfo, Dialect> _dialects =
 		new ConcurrentHashMap<>();
 
 }
