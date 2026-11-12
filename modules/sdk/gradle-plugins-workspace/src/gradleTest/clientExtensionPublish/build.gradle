@@ -2,20 +2,22 @@ import groovy.json.JsonSlurper
 
 import org.yaml.snakeyaml.Yaml
 
+String registry = project.property("liferay.workspace.client.extension.registry")
+
 task runGradleTest
 
 runGradleTest {
 	dependsOn ":client-extensions:able:publishClientExtension", ":client-extensions:baker:publishClientExtension"
 
 	doLast {
-		Map<String, Object> catalog = new JsonSlurper().parse(new URL("http://localhost:5000/v2/_catalog"))
+		Map<String, Object> catalog = new JsonSlurper().parse(new URL("http://${registry}/v2/_catalog"))
 
 		assert catalog.repositories.contains("able")
 		assert catalog.repositories.contains("charts/able")
 		assert catalog.repositories.contains("charts/baker")
 		assert !catalog.repositories.contains("baker")
 
-		HttpURLConnection httpURLConnection = new URL("http://localhost:5000/v2/able/manifests/1.0.0").openConnection()
+		HttpURLConnection httpURLConnection = new URL("http://${registry}/v2/able/manifests/1.0.0").openConnection()
 
 		httpURLConnection.requestMethod = "HEAD"
 
@@ -25,7 +27,7 @@ runGradleTest {
 
 		String digest = httpURLConnection.getHeaderField("Docker-Content-Digest")
 
-		Map<String, Object> ableChart = _pullChart("able")
+		Map<String, Object> ableChart = _pullChart(registry, "able")
 
 		assert ableChart.chart.appVersion == "1.0.0"
 		assert ableChart.chart.name == "able"
@@ -37,7 +39,7 @@ runGradleTest {
 		assert ableValues.clientExtension.serviceId == "able"
 		assert ableValues.fullnameOverride == "able"
 		assert ableValues.image.pullPolicy == "IfNotPresent"
-		assert ableValues.image.repository == "localhost:5000/able"
+		assert ableValues.image.repository == "${registry}/able"
 		assert ableValues.image.tag == "1.0.0@" + digest
 		assert ableValues.service.enabled == true
 		assert ableValues.workload.containerPort == 58081
@@ -45,7 +47,7 @@ runGradleTest {
 		assert ableValues.workload.kind == "Deployment"
 		assert ableValues.workload.securityContext.runAsNonRoot == true
 
-		Map<String, Object> bakerChart = _pullChart("baker")
+		Map<String, Object> bakerChart = _pullChart(registry, "baker")
 
 		assert bakerChart.chart.name == "baker"
 		assert bakerChart.chart.version == "1.0.0"
@@ -59,7 +61,7 @@ runGradleTest {
 	}
 }
 
-Map<String, Object> _pullChart(String name) {
+Map<String, Object> _pullChart(String registry, String name) {
 	File destinationDir = new File(buildDir, "pulled-charts/${name}")
 
 	delete destinationDir
@@ -67,7 +69,7 @@ Map<String, Object> _pullChart(String name) {
 	destinationDir.mkdirs()
 
 	exec {
-		commandLine "helm", "pull", "oci://localhost:5000/charts/${name}", "--plain-http", "--untar", "--untardir", destinationDir, "--version", "1.0.0"
+		commandLine "helm", "pull", "oci://${registry}/charts/${name}", "--plain-http", "--untar", "--untardir", destinationDir, "--version", "1.0.0"
 	}
 
 	File chartDir = new File(destinationDir, name)

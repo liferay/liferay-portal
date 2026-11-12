@@ -11,6 +11,7 @@ buildscript {
 
 apply plugin: "com.liferay.workspace"
 
+String registry = settings.providers.gradleProperty("liferay.workspace.client.extension.registry").get()
 String registryContainerName = "client_extension_publish_registry"
 String registryImage = "registry:2"
 
@@ -33,7 +34,7 @@ gradle.projectsEvaluated {
 
 		containerName = registryContainerName
 		exposePorts "tcp", [5000]
-		hostConfig.portBindings = ["5000:5000"]
+		hostConfig.portBindings = ["${registry.substring(registry.lastIndexOf(":") + 1)}:5000"]
 		targetImageId registryImage
 	}
 
@@ -47,7 +48,7 @@ gradle.projectsEvaluated {
 		dependsOn "createRegistry"
 
 		doLast {
-			URL url = new URL("http://localhost:5000/v2/")
+			URL url = new URL("http://${registry}/v2/")
 
 			for (int i = 0; i < 60; i++) {
 				try {
@@ -63,7 +64,7 @@ gradle.projectsEvaluated {
 				sleep 500
 			}
 
-			throw new GradleException("Registry did not start on localhost:5000")
+			throw new GradleException("Registry did not start on ${registry}")
 		}
 
 		finalizedBy "removeRegistry"

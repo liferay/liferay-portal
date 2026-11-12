@@ -1,0 +1,9 @@
+task runGradleTest
+
+runGradleTest {
+	dependsOn ":client-extensions:able:createClientExtensionConfig"
+
+	doLast {
+		assert new File(project(":client-extensions:able").buildDir, "liferay-client-extension-build/able.client-extension-config.json").exists()
+	}
+}

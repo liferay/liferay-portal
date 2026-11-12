@@ -1,0 +1,7 @@
+able-oauth-application-headless-server:
+    .serviceAddress: localhost:58081
+    .serviceScheme: http
+    name: Able OAuth Application Headless Server
+    scopes:
+        -   Liferay.Headless.Admin.Workflow.everything
+    type: oAuthApplicationHeadlessServer

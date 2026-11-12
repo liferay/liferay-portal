@@ -95,6 +95,10 @@ public class HelmCLI {
 		return matcher.group(1);
 	}
 
+	public String version() throws InterruptedException, IOException {
+		return _run("version", "--short");
+	}
+
 	private void _addPlainHTTP(List<String> args, String reference) {
 		String host = reference.replaceFirst("^oci://", "");
 

@@ -25,6 +25,7 @@ import com.liferay.gradle.plugins.node.task.ExecuteNodeTask;
 import com.liferay.gradle.plugins.workspace.WorkspaceExtension;
 import com.liferay.gradle.plugins.workspace.WorkspacePlugin;
 import com.liferay.gradle.plugins.workspace.internal.client.extension.ClientExtension;
+import com.liferay.gradle.plugins.workspace.internal.client.extension.HelmCLI;
 import com.liferay.gradle.plugins.workspace.internal.client.extension.NodeBuildConfigurer;
 import com.liferay.gradle.plugins.workspace.internal.client.extension.ThemeCSSTypeConfigurer;
 import com.liferay.gradle.plugins.workspace.internal.util.GradleUtil;
@@ -563,6 +564,42 @@ public class ClientExtensionProjectConfigurator
 					publishClientExtensionTask.getVersion();
 
 				versionProperty.convention(_getVersionProvider(project));
+			});
+
+		Gradle gradle = project.getGradle();
+
+		TaskExecutionGraph taskGraph = gradle.getTaskGraph();
+
+		taskGraph.whenReady(
+			new Action<TaskExecutionGraph>() {
+
+				@Override
+				public void execute(TaskExecutionGraph taskExecutionGraph) {
+					if (!taskExecutionGraph.hasTask(
+							project.absoluteProjectPath(
+								PUBLISH_CLIENT_EXTENSION_TASK_NAME))) {
+
+						return;
+					}
+
+					PublishClientExtensionTask publishClientExtensionTask =
+						publishClientExtensionTaskProvider.get();
+
+					Property<String> helmProperty =
+						publishClientExtensionTask.getHelm();
+
+					HelmCLI helmCLI = new HelmCLI(helmProperty.get());
+
+					try {
+						helmCLI.version();
+					}
+					catch (InterruptedException | IOException exception) {
+						throw new GradleException(
+							"Unable to run \"" + helmProperty.get() + "\"",
+							exception);
+					}
+				}
+
 			});
 	}
 
