@@ -88,11 +88,16 @@ function configureFetch({
 }
 
 const Wrapper = ({
+	createItem,
 	multiSelect = false,
 	onItemsChange,
 	selectedItems = [],
 	title,
 }: {
+	createItem?: {
+		label: string;
+		onCreate: (name: string) => Promise<void>;
+	};
 	multiSelect?: boolean;
 	onItemsChange: (items: ITaxonomyCategory[]) => void;
 	selectedItems?: ITaxonomyCategory[];
@@ -102,6 +107,7 @@ const Wrapper = ({
 
 	return (
 		<TreeItemSelectorModal
+			createItem={createItem}
 			multiSelect={multiSelect}
 			observer={observer}
 			onItemsChange={onItemsChange}
@@ -380,5 +386,199 @@ describe('TreeItemSelectorModal', () => {
 
 		expect(alphaCheckbox).not.toBeNull();
 		expect(alphaCheckbox).toBeChecked();
+	});
+
+	it('creates an item through createItem and shows it in the tree', async () => {
+		const categories = [ROOT_PARENT, CHILD_ALPHA, CHILD_BETA, ROOT_LEAF];
+
+		mockedFetch.mockImplementation(() => pageOf(categories));
+
+		const onCreate = jest.fn((name: string) => {
+			const category = {id: 5, name};
+
+			categories.push(category);
+
+			return Promise.resolve();
+		});
+
+		const user = userEvent.setup();
+
+		const {findByRole} = render(
+			<Wrapper
+				createItem={{label: 'Add Item', onCreate}}
+				onItemsChange={jest.fn()}
+			/>
+		);
+
+		const modal = await findByRole('dialog');
+
+		await within(modal).findByText('Solo');
+
+		await user.click(within(modal).getByRole('button', {name: 'Add Item'}));
+
+		await user.type(within(modal).getByLabelText('name'), 'Gamma');
+
+		await user.click(within(modal).getByRole('button', {name: 'save'}));
+
+		expect(await within(modal).findByText('Gamma')).toBeInTheDocument();
+
+		expect(onCreate).toHaveBeenCalledWith('Gamma');
+	});
+
+	it('keeps the selection and expanded nodes after creating an item', async () => {
+		const categories = [ROOT_PARENT, CHILD_ALPHA, CHILD_BETA, ROOT_LEAF];
+
+		mockedFetch.mockImplementation(() => pageOf(categories));
+
+		const onCreate = jest.fn((name: string) => {
+			categories.push({id: 5, name});
+
+			return Promise.resolve();
+		});
+
+		const user = userEvent.setup();
+
+		const {findByRole} = render(
+			<Wrapper
+				createItem={{label: 'Add Item', onCreate}}
+				multiSelect
+				onItemsChange={jest.fn()}
+			/>
+		);
+
+		const modal = await findByRole('dialog');
+
+		await within(modal).findByText('Parent');
+
+		await user.click(
+			within(modal)
+				.getByText('Parent')
+				.closest('[role="treeitem"]')!
+				.querySelector('button')!
+		);
+
+		await user.click(
+			within(
+				(await within(modal).findByText('Beta')).closest(
+					'[role="treeitem"]'
+				) as HTMLElement
+			).getByRole('checkbox')
+		);
+
+		expect(within(modal).getByText('1 item-selected')).toBeInTheDocument();
+
+		await user.click(within(modal).getByRole('button', {name: 'Add Item'}));
+
+		await user.type(within(modal).getByLabelText('name'), 'Gamma');
+
+		await user.click(within(modal).getByRole('button', {name: 'save'}));
+
+		expect(await within(modal).findByText('Gamma')).toBeInTheDocument();
+
+		expect(
+			within(modal).getByText('Parent').closest('[role="treeitem"]')
+		).toHaveAttribute('aria-expanded', 'true');
+		expect(
+			within(
+				within(modal)
+					.getByText('Beta')
+					.closest('[role="treeitem"]') as HTMLElement
+			).getByRole('checkbox')
+		).toBeChecked();
+		expect(within(modal).getByText('1 item-selected')).toBeInTheDocument();
+	});
+
+	it('disables save while creating and calls onCreate once on double click', async () => {
+		mockedFetch.mockImplementation(() =>
+			pageOf([ROOT_PARENT, CHILD_ALPHA, CHILD_BETA, ROOT_LEAF])
+		);
+
+		let resolveCreate: () => void = () => {};
+
+		const onCreate = jest.fn(
+			() =>
+				new Promise<void>((resolve) => {
+					resolveCreate = resolve;
+				})
+		);
+
+		const user = userEvent.setup();
+
+		const {findByRole} = render(
+			<Wrapper
+				createItem={{label: 'Add Item', onCreate}}
+				onItemsChange={jest.fn()}
+			/>
+		);
+
+		const modal = await findByRole('dialog');
+
+		await within(modal).findByText('Solo');
+
+		await user.click(within(modal).getByRole('button', {name: 'Add Item'}));
+
+		await user.type(within(modal).getByLabelText('name'), 'Gamma');
+
+		await user.dblClick(within(modal).getByRole('button', {name: 'save'}));
+
+		expect(onCreate).toHaveBeenCalledTimes(1);
+		expect(
+			within(modal).getByRole('button', {name: 'save'})
+		).toBeDisabled();
+		expect(within(modal).getByLabelText('name')).toBeDisabled();
+
+		resolveCreate();
+
+		await waitFor(() =>
+			expect(
+				within(modal).queryByRole('textbox', {name: 'name'})
+			).not.toBeInTheDocument()
+		);
+	});
+
+	it('saves the item when Enter is pressed in the name field', async () => {
+		mockedFetch.mockImplementation(() =>
+			pageOf([ROOT_PARENT, CHILD_ALPHA, CHILD_BETA, ROOT_LEAF])
+		);
+
+		const onCreate = jest.fn(() => Promise.resolve());
+
+		const onItemsChange = jest.fn();
+
+		const user = userEvent.setup();
+
+		const {findByRole} = render(
+			<Wrapper
+				createItem={{label: 'Add Item', onCreate}}
+				onItemsChange={onItemsChange}
+			/>
+		);
+
+		const modal = await findByRole('dialog');
+
+		await within(modal).findByText('Solo');
+
+		await user.click(within(modal).getByRole('button', {name: 'Add Item'}));
+
+		await user.type(within(modal).getByLabelText('name'), 'Gamma{Enter}');
+
+		expect(onCreate).toHaveBeenCalledTimes(1);
+		expect(onCreate).toHaveBeenCalledWith('Gamma');
+		expect(onItemsChange).not.toHaveBeenCalled();
+	});
+
+	it('hides the add button without createItem', async () => {
+		const {findByRole} = render(<Wrapper onItemsChange={jest.fn()} />);
+
+		const modal = await findByRole('dialog');
+
+		await within(modal).findByText('Solo');
+
+		expect(
+			within(modal).queryByRole('button', {name: 'Add Item'})
+		).not.toBeInTheDocument();
+		expect(
+			within(modal).queryByRole('textbox', {name: 'name'})
+		).not.toBeInTheDocument();
 	});
 });

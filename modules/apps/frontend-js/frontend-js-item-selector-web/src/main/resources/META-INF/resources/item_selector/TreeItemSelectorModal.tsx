@@ -6,13 +6,13 @@
 import ClayButton from '@clayui/button';
 import {TreeView as ClayTreeView} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
-import {ClayCheckbox} from '@clayui/form';
+import ClayForm, {ClayCheckbox, ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import {SearchResultsMessage} from '@liferay/layout-js-components-web';
 import {openToast} from 'frontend-js-components-web';
-import {navigate, sub} from 'frontend-js-web';
+import {escapeHTML, sub} from 'frontend-js-web';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import useTaxonomyCategoryTreeNodes, {
@@ -25,10 +25,14 @@ import '../css/TreeItemSelectorModal.scss';
 export interface ITreeItemSelectorModalProps {
 
 	/**
-	 * URL navigated to when the user clicks the inline "+" button next to the
-	 * search field. Renders the button only when set.
+	 * Renders a "+" button next to the search field, labeled with `label`,
+	 * that opens a name field. Saving calls `onCreate` with the name and
+	 * reloads the tree.
 	 */
-	createItemURL?: string;
+	createItem?: {
+		label: string;
+		onCreate: (name: string) => Promise<void>;
+	};
 
 	/**
 	 * Multi-select mode. When false, selecting a category immediately confirms
@@ -190,7 +194,7 @@ function buildParentMap(
 }
 
 function TreeItemSelectorModal({
-	createItemURL,
+	createItem,
 	multiSelect = false,
 	observer,
 	onCancel,
@@ -201,7 +205,10 @@ function TreeItemSelectorModal({
 	title,
 	vocabularyIds,
 }: ITreeItemSelectorModalProps) {
-	const {error, loading, nodes} = useTaxonomyCategoryTreeNodes(vocabularyIds);
+	const {error, loading, nodes, reload} =
+		useTaxonomyCategoryTreeNodes(vocabularyIds);
+
+	const [addingItem, setAddingItem] = useState(false);
 
 	const [filterQuery, setFilterQuery] = useState('');
 
@@ -210,6 +217,14 @@ function TreeItemSelectorModal({
 	);
 
 	const [expandedKeys, setExpandedKeys] = useState<Set<React.Key>>(new Set());
+
+	const [itemName, setItemName] = useState('');
+
+	const [saving, setSaving] = useState(false);
+
+	const savingRef = useRef(false);
+
+	const expandedInitializedRef = useRef(false);
 
 	const itemsById = useMemo(() => flattenById(nodes), [nodes]);
 
@@ -225,6 +240,16 @@ function TreeItemSelectorModal({
 		setSelectedKeys(
 			new Set(externalSelectedItems.map((item) => String(item.id)))
 		);
+
+		expandedInitializedRef.current = false;
+	}, [externalSelectedItems, open]);
+
+	useEffect(() => {
+		if (!open || expandedInitializedRef.current || !parentById.size) {
+			return;
+		}
+
+		expandedInitializedRef.current = true;
 
 		// Auto-expand ancestor chains of pre-selected categories so
 		// indicators are visible when the modal opens.
@@ -293,6 +318,41 @@ function TreeItemSelectorModal({
 	const handleCancel = () => {
 		onCancel?.();
 		onOpenChange(false);
+	};
+
+	const handleCancelAddItem = () => {
+		setAddingItem(false);
+		setItemName('');
+	};
+
+	const handleSaveItem = async () => {
+		if (savingRef.current || !itemName.trim()) {
+			return;
+		}
+
+		savingRef.current = true;
+
+		setSaving(true);
+
+		try {
+			await createItem?.onCreate(itemName.trim());
+
+			handleCancelAddItem();
+
+			reload();
+		}
+		catch (error) {
+			openToast({
+				message: escapeHTML((error as Error).message),
+				title: Liferay.Language.get('error'),
+				type: 'danger',
+			});
+		}
+		finally {
+			savingRef.current = false;
+
+			setSaving(false);
+		}
 	};
 
 	const handleSelectionChange = (keys: Set<React.Key>) => {
@@ -416,16 +476,45 @@ function TreeItemSelectorModal({
 						</div>
 					</div>
 
-					{createItemURL && (
+					{createItem && (
 						<ClayButton
+							aria-label={createItem.label}
 							className="btn-monospaced ml-3 nav-btn nav-btn-monospaced"
 							displayType="primary"
-							onClick={() => navigate(createItemURL)}
+							onClick={() => setAddingItem(true)}
+							title={createItem.label}
 						>
 							<ClayIcon symbol="plus" />
 						</ClayButton>
 					)}
 				</form>
+
+				{addingItem && (
+					<form
+						onSubmit={(event) => {
+							event.preventDefault();
+
+							handleSaveItem();
+						}}
+					>
+						<ClayForm.Group className="px-3">
+							<label htmlFor="treeItemSelectorModalItemName">
+								{Liferay.Language.get('name')}
+							</label>
+
+							<ClayInput
+								autoFocus
+								disabled={saving}
+								id="treeItemSelectorModalItemName"
+								onChange={(event) =>
+									setItemName(event.target.value)
+								}
+								type="text"
+								value={itemName}
+							/>
+						</ClayForm.Group>
+					</form>
+				)}
 
 				{showSelectionBanner && (
 					<div className="align-items-center category-tree-count-feedback d-flex justify-content-between px-3 py-2">
@@ -631,12 +720,23 @@ function TreeItemSelectorModal({
 						<ClayButton
 							className="btn-cancel"
 							displayType="secondary"
-							onClick={handleCancel}
+							onClick={
+								addingItem ? handleCancelAddItem : handleCancel
+							}
 						>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
 
-						{multiSelect && (
+						{addingItem && (
+							<ClayButton
+								disabled={saving || !itemName.trim()}
+								onClick={handleSaveItem}
+							>
+								{Liferay.Language.get('save')}
+							</ClayButton>
+						)}
+
+						{!addingItem && multiSelect && (
 							<ClayButton
 								disabled={selectedKeys.size === 0}
 								onClick={() => handleConfirm(selectedItems)}

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {useEffect, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 
 import fetchAllPages from './fetchAllPages';
 
@@ -111,6 +111,7 @@ export interface IUseTaxonomyCategoryTreeNodesResult {
 	error: Error | null;
 	loading: boolean;
 	nodes: ITaxonomyCategoryTreeNode[];
+	reload: () => void;
 }
 
 export default function useTaxonomyCategoryTreeNodes(
@@ -119,6 +120,7 @@ export default function useTaxonomyCategoryTreeNodes(
 	const [nodes, setNodes] = useState<ITaxonomyCategoryTreeNode[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
+	const [reloadCount, setReloadCount] = useState(0);
 
 	const idsKey = useMemo(() => {
 		return vocabularyIds
@@ -165,7 +167,9 @@ export default function useTaxonomyCategoryTreeNodes(
 		return () => {
 			controller.abort();
 		};
-	}, [idsKey]);
+	}, [idsKey, reloadCount]);
 
-	return {error, loading, nodes};
+	const reload = useCallback(() => setReloadCount((count) => count + 1), []);
+
+	return {error, loading, nodes, reload};
 }
