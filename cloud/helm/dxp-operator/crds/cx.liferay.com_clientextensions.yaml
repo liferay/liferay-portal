@@ -34,6 +34,9 @@ spec:
         -   jsonPath: .status.conditions[?(@.type=="Provisioned")].status
             name: Provisioned
             type: string
+        -   jsonPath: .status.conditions[?(@.type=="WorkloadAvailable")].status
+            name: Available
+            type: string
         -   jsonPath: .status.phase
             name: Phase
             type: string
@@ -42,6 +45,14 @@ spec:
             type: date
         -   jsonPath: .spec.serviceId
             name: Service-ID
+            priority: 1
+            type: string
+        -   jsonPath: .spec.domain
+            name: Domain
+            priority: 1
+            type: string
+        -   jsonPath: .status.image
+            name: Image
             priority: 1
             type: string
         name: v1alpha1
@@ -200,6 +211,8 @@ spec:
                                 format: date-time
                                 type: string
                             extProvisionResourceVersion:
+                                type: string
+                            image:
                                 type: string
                             observedGeneration:
                                 format: int64

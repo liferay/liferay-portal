@@ -21,6 +21,8 @@ tests:
                     path: rules[?(@.resources[0]=="deployments")].verbs
             -   exists:
                     path: rules[?(@.resources[0]=="jobs")]
+            -   exists:
+                    path: rules[?(@.resources[0]=="pods")]
         documentSelector:
             path: kind
             value: ClusterRole
@@ -164,6 +166,8 @@ tests:
                     path: rules[?(@.resources[0]=="deployments")].verbs
             -   notExists:
                     path: rules[?(@.resources[0]=="jobs")]
+            -   notExists:
+                    path: rules[?(@.resources[0]=="pods")]
         documentSelector:
             path: kind
             value: ClusterRole

@@ -893,7 +893,7 @@ func TestReconcileRequiresNoExtInitWithoutOAuth2Application(t *testing.T) {
 
 	if ready := getCondition(
 		clientExtension, clientExtensionReconciler, cxv1alpha1.ConditionReady, t,
-	); ready.Message != "The client extension is delivered and provisioned." {
+	); ready.Message != "The client extension is delivered and provisioned, and its workload is available." {
 		t.Errorf(
 			"Ready message = %q, want a summary rather than the OAuth2 detail",
 			ready.Message,

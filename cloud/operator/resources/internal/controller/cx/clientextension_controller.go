@@ -31,12 +31,16 @@ import (
 
 const (
 	ReasonConfigurationOnly      = "ConfigurationOnly"
+	ReasonCronJobScheduled       = "CronJobScheduled"
 	ReasonDeleteIncomplete       = "DeleteIncomplete"
 	ReasonDeleting               = "Deleting"
 	ReasonDelivered              = "Delivered"
 	ReasonDeliveryNotPermitted   = "DeliveryNotPermitted"
 	ReasonDxpNamespaceNotFound   = "DxpNamespaceNotFound"
 	ReasonExtInitMissing         = "ExtInitMissing"
+	ReasonJobComplete            = "JobComplete"
+	ReasonJobFailed              = "JobFailed"
+	ReasonJobRunning             = "JobRunning"
 	ReasonMirrorFailed           = "MirrorFailed"
 	ReasonMirrored               = "Mirrored"
 	ReasonNamespaceNotPermitted  = "NamespaceNotPermitted"
@@ -47,8 +51,11 @@ const (
 	ReasonServiceIDConflict      = "ServiceIDConflict"
 	ReasonUnknownVirtualInstance = "UnknownVirtualInstance"
 	ReasonWorkloadAccepted       = "WorkloadAccepted"
+	ReasonWorkloadAvailable      = "WorkloadAvailable"
 	ReasonWorkloadMisconfigured  = "WorkloadMisconfigured"
 	ReasonWorkloadNotFound       = "WorkloadNotFound"
+	ReasonWorkloadProgressing    = "WorkloadProgressing"
+	ReasonWorkloadUnavailable    = "WorkloadUnavailable"
 )
 
 const deliveryClusterRoleName = "client-extension-delivery-cluster-role"
@@ -60,6 +67,7 @@ const refusalRequeueInterval = time.Minute
 // +kubebuilder:rbac:groups="",resources=configmaps,verbs=get;list;watch
 // +kubebuilder:rbac:groups="",resources=events,verbs=create;patch
 // +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;watch
+// +kubebuilder:rbac:groups="",resources=pods,verbs=get;list
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;patch;watch
 // +kubebuilder:rbac:groups=batch,resources=cronjobs,verbs=get;list;watch
 // +kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch
@@ -102,7 +110,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 			newCondition(
 				metav1.ConditionFalse, refusalMessage(&clientExtension, dxpNamespace, refusedReason), refusedReason,
 			),
-			"", nil, nil, nil, nil,
+			"", nil, nil, nil, nil, "", nil,
 		); error != nil {
 			return controllerruntime.Result{}, error
 		}
@@ -142,7 +150,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 				metav1.ConditionFalse, unknownVirtualInstanceMessage(&clientExtension, dxpNamespace),
 				ReasonUnknownVirtualInstance,
 			),
-			"", nil, nil, nil, nil,
+			"", nil, nil, nil, nil, "", nil,
 		)
 	}
 
@@ -168,7 +176,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 					),
 					ReasonDeliveryNotPermitted,
 				),
-				"", nil, nil, nil, nil,
+				"", nil, nil, nil, nil, "", nil,
 			)
 	}
 
@@ -183,7 +191,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 				metav1.ConditionFalse, serviceIDConflictMessage(&clientExtension, conflictingConfigMap),
 				ReasonServiceIDConflict,
 			),
-			"", nil, nil, nil, nil,
+			"", nil, nil, nil, nil, "", nil,
 		)
 	}
 
@@ -248,9 +256,8 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 		}
 	}
 
-	workloadAcceptedCondition, workloadIssues, error := clientExtensionReconciler.workloadCondition(
-		&clientExtension, configMapsWithDigest, context,
-	)
+	workloadAcceptedCondition, workloadAvailableCondition, image, workloadIssues, error :=
+		clientExtensionReconciler.workloadCondition(&clientExtension, configMapsWithDigest, context)
 
 	if error != nil {
 		return controllerruntime.Result{}, error
@@ -260,12 +267,13 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 		&clientExtension, context,
 		newCondition(metav1.ConditionTrue, message, ReasonDelivered),
 		extProvisionResourceVersion, &mirroredCondition, &provisionedCondition,
-		&workloadAcceptedCondition, workloadIssues,
+		&workloadAcceptedCondition, workloadAvailableCondition, image, workloadIssues,
 	); error != nil {
 		return controllerruntime.Result{}, error
 	}
 
 	for _, graceRemaining := range []time.Duration{
+		availabilityRequeueInterval(&clientExtension.Status),
 		extInitGraceRemaining(&clientExtension.Status),
 		workloadGraceRemaining(&clientExtension.Status),
 	} {
@@ -293,7 +301,6 @@ func (clientExtensionReconciler *ClientExtensionReconciler) SetupWithManager(
 		&appsv1.Deployment{},
 		handler.EnqueueRequestsFromMapFunc(clientExtensionReconciler.requestsForWorkload(cxv1alpha1.WorkloadKindDeployment)),
 		builder.OnlyMetadata,
-		builder.WithPredicates(predicate.GenerationChangedPredicate{}),
 	).Watches(
 		&batchv1.CronJob{},
 		handler.EnqueueRequestsFromMapFunc(clientExtensionReconciler.requestsForWorkload(cxv1alpha1.WorkloadKindCronJob)),
@@ -301,9 +308,8 @@ func (clientExtensionReconciler *ClientExtensionReconciler) SetupWithManager(
 		builder.WithPredicates(predicate.GenerationChangedPredicate{}),
 	).Watches(
 		&batchv1.Job{},
-		handler.EnqueueRequestsFromMapFunc(clientExtensionReconciler.requestsForWorkload(cxv1alpha1.WorkloadKindJob)),
+		handler.EnqueueRequestsFromMapFunc(clientExtensionReconciler.requestsForJob),
 		builder.OnlyMetadata,
-		builder.WithPredicates(predicate.GenerationChangedPredicate{}),
 	).Watches(
 		&corev1.ConfigMap{},
 		handler.EnqueueRequestsFromMapFunc(clientExtensionReconciler.requestsForConfigMap),
@@ -608,7 +614,10 @@ func readyCondition(conditions []metav1.Condition) metav1.Condition {
 		}
 	}
 
-	return newCondition(metav1.ConditionTrue, "The client extension is delivered and provisioned.", ReasonReady)
+	return newCondition(
+		metav1.ConditionTrue, "The client extension is delivered and provisioned, and its workload is available.",
+		ReasonReady,
+	)
 }
 
 func refusalMessage(
@@ -817,6 +826,8 @@ func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
 	mirrored *metav1.Condition,
 	provisioned *metav1.Condition,
 	workloadAccepted *metav1.Condition,
+	workloadAvailable *metav1.Condition,
+	image string,
 	workloadIssues []string,
 ) error {
 	status := clientExtension.Status.DeepCopy()
@@ -828,6 +839,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
 	conditions = appendOptionalCondition(conditions, mirrored, cxv1alpha1.ConditionMirrored, status)
 	conditions = appendOptionalCondition(conditions, provisioned, cxv1alpha1.ConditionProvisioned, status)
 	conditions = appendOptionalCondition(conditions, workloadAccepted, cxv1alpha1.ConditionWorkloadAccepted, status)
+	conditions = appendOptionalCondition(conditions, workloadAvailable, cxv1alpha1.ConditionWorkloadAvailable, status)
 
 	if previousWorkloadAccepted := meta.FindStatusCondition(
 		status.Conditions, cxv1alpha1.ConditionWorkloadAccepted,
@@ -858,6 +870,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
 		status.ExtProvisionResourceVersion = extProvisionResourceVersion
 	}
 
+	status.Image = image
 	status.ObservedGeneration = clientExtension.Generation
 
 	status.WorkloadIssues = workloadIssues
@@ -868,7 +881,8 @@ func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
 	}
 
 	if ((ready.Reason == ReasonExtInitMissing) && (extInitGraceRemaining(status) > 0)) ||
-		((ready.Reason == ReasonWorkloadNotFound) && (workloadGraceRemaining(status) > 0)) {
+		((ready.Reason == ReasonWorkloadNotFound) && (workloadGraceRemaining(status) > 0)) ||
+		(ready.Reason == ReasonJobRunning) || (ready.Reason == ReasonWorkloadProgressing) {
 
 		status.Phase = cxv1alpha1.PhasePending
 	} else if ready.Status == metav1.ConditionTrue {

@@ -32,6 +32,15 @@ rules:
             -   list
             -   update
             -   watch
+    {{- if .Values.clientExtensions.enabled }}
+    -   apiGroups:
+            -   ""
+        resources:
+            -   pods
+        verbs:
+            -   get
+            -   list
+    {{- end }}
     -   apiGroups:
             -   ""
         resources:
