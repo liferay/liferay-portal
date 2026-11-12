@@ -192,7 +192,8 @@ public class AddFormInstanceRecordMVCActionCommand
 
 		_updateFormInstanceRecord(
 			actionRequest, ddmFormInstance, ddmFormValues, groupId,
-			serviceContext, themeDisplay.getUserId());
+			latestDDMFormInstanceVersion, serviceContext,
+			themeDisplay.getUserId());
 
 		if (!SessionErrors.isEmpty(actionRequest)) {
 			return;
@@ -270,6 +271,7 @@ public class AddFormInstanceRecordMVCActionCommand
 	private void _updateFormInstanceRecord(
 			ActionRequest actionRequest, DDMFormInstance ddmFormInstance,
 			DDMFormValues ddmFormValues, long groupId,
+			DDMFormInstanceVersion latestDDMFormInstanceVersion,
 			ServiceContext serviceContext, long userId)
 		throws Exception {
 
@@ -285,7 +287,7 @@ public class AddFormInstanceRecordMVCActionCommand
 				_ddmFormInstanceRecordVersionLocalService.
 					fetchLatestFormInstanceRecordVersion(
 						userId, ddmFormInstance.getFormInstanceId(),
-						ddmFormInstance.getVersion(),
+						latestDDMFormInstanceVersion.getVersion(),
 						WorkflowConstants.STATUS_DRAFT);
 
 			if (ddmFormInstanceRecordVersion == null) {

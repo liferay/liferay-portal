@@ -11,7 +11,6 @@ import com.liferay.dynamic.data.mapping.exception.FormInstanceSubmissionLimitExc
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormContextDeserializer;
 import com.liferay.dynamic.data.mapping.form.builder.context.DDMFormContextDeserializerRequest;
 import com.liferay.dynamic.data.mapping.form.web.internal.portlet.action.util.AddFormInstanceRecordMVCCommandUtil;
-import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecordVersion;
@@ -22,7 +21,6 @@ import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordVersionLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceVersionLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -61,7 +59,8 @@ public class AddFormInstanceRecordMVCResourceCommand
 	extends BaseMVCResourceCommand {
 
 	protected DDMFormValues createDDMFormValues(
-			DDMFormInstance ddmFormInstance, ResourceRequest resourceRequest)
+			DDMFormInstanceVersion latestDDMFormInstanceVersion,
+			ResourceRequest resourceRequest)
 		throws Exception {
 
 		String serializedDDMFormValues = ParamUtil.getString(
@@ -71,9 +70,12 @@ public class AddFormInstanceRecordMVCResourceCommand
 			return null;
 		}
 
+		DDMStructureVersion ddmStructureVersion =
+			latestDDMFormInstanceVersion.getStructureVersion();
+
 		DDMFormContextDeserializerRequest ddmFormContextDeserializerRequest =
 			DDMFormContextDeserializerRequest.with(
-				getDDMForm(ddmFormInstance), serializedDDMFormValues);
+				ddmStructureVersion.getDDMForm(), serializedDDMFormValues);
 
 		Locale currentLocale = LocaleUtil.fromLanguageId(
 			_language.getLanguageId(resourceRequest));
@@ -135,8 +137,12 @@ public class AddFormInstanceRecordMVCResourceCommand
 			return;
 		}
 
+		DDMFormInstanceVersion latestDDMFormInstanceVersion =
+			_ddmFormInstanceVersionLocalService.getLatestFormInstanceVersion(
+				formInstanceId, WorkflowConstants.STATUS_APPROVED);
+
 		DDMFormValues ddmFormValues = createDDMFormValues(
-			ddmFormInstance, resourceRequest);
+			latestDDMFormInstanceVersion, resourceRequest);
 
 		if (ddmFormValues == null) {
 			return;
@@ -146,7 +152,7 @@ public class AddFormInstanceRecordMVCResourceCommand
 			_ddmFormInstanceRecordVersionLocalService.
 				fetchLatestFormInstanceRecordVersion(
 					themeDisplay.getUserId(), formInstanceId,
-					ddmFormInstance.getVersion(),
+					latestDDMFormInstanceVersion.getVersion(),
 					WorkflowConstants.STATUS_DRAFT);
 
 		ServiceContext serviceContext = _createServiceContext(resourceRequest);
@@ -161,20 +167,6 @@ public class AddFormInstanceRecordMVCResourceCommand
 				ddmFormInstanceRecordVersion.getFormInstanceRecordId(), false,
 				ddmFormValues, serviceContext);
 		}
-	}
-
-	protected DDMForm getDDMForm(DDMFormInstance ddmFormInstance)
-		throws PortalException {
-
-		DDMFormInstanceVersion latestDDMFormInstanceVersion =
-			_ddmFormInstanceVersionLocalService.getLatestFormInstanceVersion(
-				ddmFormInstance.getFormInstanceId(),
-				WorkflowConstants.STATUS_APPROVED);
-
-		DDMStructureVersion ddmStructureVersion =
-			latestDDMFormInstanceVersion.getStructureVersion();
-
-		return ddmStructureVersion.getDDMForm();
 	}
 
 	private ServiceContext _createServiceContext(

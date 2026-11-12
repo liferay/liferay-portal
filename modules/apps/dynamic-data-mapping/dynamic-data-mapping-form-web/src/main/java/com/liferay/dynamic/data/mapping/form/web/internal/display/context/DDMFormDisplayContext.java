@@ -1081,14 +1081,21 @@ public class DDMFormDisplayContext {
 		return ddmFormLayout;
 	}
 
-	protected String getFormInstanceVersion() {
+	protected String getFormInstanceVersion() throws PortalException {
 		DDMFormInstance ddmFormInstance = getFormInstance();
 
 		if (ddmFormInstance == null) {
 			return "1.0";
 		}
 
-		return ddmFormInstance.getVersion();
+		if (isPreview()) {
+			return ddmFormInstance.getVersion();
+		}
+
+		DDMFormInstanceVersion latestDDMFormInstanceVersion =
+			_getLatestApprovedDDMFormInstanceVersion();
+
+		return latestDDMFormInstanceVersion.getVersion();
 	}
 
 	protected Locale getLocale(
