@@ -124,7 +124,7 @@ public class JSResolveModulesServletTest {
 	}
 
 	private MockHttpServletResponse _service(
-			Long maxRequestLength, String queryString, boolean post)
+			Long maxRequestLength, boolean post, String queryString)
 		throws Exception {
 
 		Mockito.clearInvocations(_browserModulesResolver);
@@ -167,47 +167,47 @@ public class JSResolveModulesServletTest {
 		// Invalid request: missing "modules" prefix
 
 		MockHttpServletResponse mockHttpServletResponse = _service(
-			_MODULES_PARAMETER.length() + 1L, _MODULES_PARAMETER, post);
+			_MODULES_PARAMETER.length() + 1L, post, _MODULES_PARAMETER);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.INVALID);
 
 		// Request above configured limit
 
 		mockHttpServletResponse = _service(
-			_MODULES_QUERY_STRING.length() - 1L, _MODULES_QUERY_STRING, post);
+			_MODULES_QUERY_STRING.length() - 1L, post, _MODULES_QUERY_STRING);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
 
 		// Request above default limit
 
 		mockHttpServletResponse = _service(
-			null, _MODULES_QUERY_STRING_OVERFLOW, post);
+			null, post, _MODULES_QUERY_STRING_OVERFLOW);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
 
 		// Request above hard limit
 
 		mockHttpServletResponse = _service(
-			0L, _MODULES_QUERY_STRING_OVERFLOW, post);
+			0L, post, _MODULES_QUERY_STRING_OVERFLOW);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
 
 		// Request within configured limit
 
 		mockHttpServletResponse = _service(
-			_MODULES_QUERY_STRING.length() + 1L, _MODULES_QUERY_STRING, post);
+			_MODULES_QUERY_STRING.length() + 1L, post, _MODULES_QUERY_STRING);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OK);
 
 		// Request within default limit
 
-		mockHttpServletResponse = _service(null, _MODULES_QUERY_STRING, post);
+		mockHttpServletResponse = _service(null, post, _MODULES_QUERY_STRING);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OK);
 
 		// Request within hard limit
 
-		mockHttpServletResponse = _service(0L, _MODULES_QUERY_STRING, post);
+		mockHttpServletResponse = _service(0L, post, _MODULES_QUERY_STRING);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OK);
 	}
