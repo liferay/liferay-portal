@@ -5,7 +5,6 @@
 
 package com.liferay.comment.upgrade;
 
-import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.message.boards.model.MBDiscussion;
 import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.string.StringBundler;
@@ -25,21 +24,6 @@ import java.sql.Connection;
  */
 public class DiscussionSubscriptionClassNameUpgradeProcess
 	extends UpgradeProcess {
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public DiscussionSubscriptionClassNameUpgradeProcess(
-		AssetEntryLocalService assetEntryLocalService,
-		ClassNameLocalService classNameLocalService,
-		SubscriptionLocalService subscriptionLocalService,
-		String oldSubscriptionClassName, DeletionMode deletionMode) {
-
-		this(
-			classNameLocalService, subscriptionLocalService,
-			oldSubscriptionClassName, deletionMode);
-	}
 
 	public DiscussionSubscriptionClassNameUpgradeProcess(
 		ClassNameLocalService classNameLocalService,
