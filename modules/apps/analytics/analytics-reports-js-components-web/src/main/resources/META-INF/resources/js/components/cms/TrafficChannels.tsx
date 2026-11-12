@@ -34,12 +34,14 @@ type TrafficChannelsApiResponse = {
 
 const trafficChannelsNames: Record<string, string> = {
 	'affiliates': Liferay.Language.get('affiliates'),
+	'chatbot': Liferay.Language.get('ai-chatbot'),
 	'direct': Liferay.Language.get('direct[traffic-channel]'),
 	'display': Liferay.Language.get('display[advertising]'),
 	'email': Liferay.Language.get('email'),
 	'organic': Liferay.Language.get('organic'),
 	'other': Liferay.Language.get('other'),
 	'other-advertising': Liferay.Language.get('other-advertising'),
+	'others': Liferay.Language.get('others'),
 	'paid': Liferay.Language.get('paid'),
 	'paid-search': Liferay.Language.get('paid-search'),
 	'referral': Liferay.Language.get('referral'),
@@ -49,7 +51,7 @@ const trafficChannelsNames: Record<string, string> = {
 const TrafficChannelsContent = ({data}: {data: TrafficChannelsApiResponse}) => {
 	const formattedItems = data.items.map((channel) => ({
 		count: channel.count,
-		name: channel.name,
+		name: trafficChannelsNames[channel.name] ?? channel.name,
 		percentage: channel.percentage * 100,
 	}));
 
@@ -104,20 +106,20 @@ const TrafficChannelsContent = ({data}: {data: TrafficChannelsApiResponse}) => {
 
 			{formattedItems.map(({count, name, percentage}, index) => (
 				<div
-					aria-label={`${Liferay.Language.get('traffic-channel')}: ${trafficChannelsNames[name]}`}
+					aria-label={`${Liferay.Language.get('traffic-channel')}: ${name}`}
 					className="d-flex flex-row py-3 tab-focus traffic-channel-item"
 					key={name}
 					role="row"
 					tabIndex={0}
 				>
 					<div
-						aria-label={trafficChannelsNames[name]}
+						aria-label={name}
 						className="tab-focus traffic-channel-item__name"
 						role="cell"
 						style={{width: '35%'}}
 					>
 						<Text size={3} weight="semi-bold">
-							{trafficChannelsNames[name]}
+							{name}
 						</Text>
 					</div>
 
