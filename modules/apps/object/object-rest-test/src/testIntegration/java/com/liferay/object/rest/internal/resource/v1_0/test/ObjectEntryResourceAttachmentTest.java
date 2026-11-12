@@ -1262,6 +1262,36 @@ public class ObjectEntryResourceAttachmentTest
 			OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
 	}
 
+	private JSONObject _createFileEntryJSONObject(
+			Folder folder, String objectFieldName)
+		throws Exception {
+
+		com.liferay.object.rest.dto.v1_0.FileEntry fileEntry =
+			_toFileEntryWithFileBase64(
+				Base64.encode(DLTestUtil.randomTextFileBytes()),
+				RandomTestUtil.randomString() + ".txt", null, null);
+
+		if (StringUtil.equals(
+				objectFieldName,
+				OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE)) {
+
+			fileEntry.setFolder(folder);
+		}
+		else if (StringUtil.equals(
+					objectFieldName,
+					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE)) {
+
+			fileEntry.setFolder(
+				new Folder() {
+					{
+						siteId = testGroupId;
+					}
+				});
+		}
+
+		return JSONFactoryUtil.createJSONObject(fileEntry.toString());
+	}
+
 	private DLFolder _getDLFolder(
 			ObjectDefinition objectDefinition, boolean showFilesInLibrary)
 		throws Exception {
@@ -1524,36 +1554,6 @@ public class ObjectEntryResourceAttachmentTest
 						).build())
 				).build()),
 			ObjectDefinitionConstants.SCOPE_COMPANY);
-	}
-
-	private JSONObject _createFileEntryJSONObject(
-			Folder folder, String objectFieldName)
-		throws Exception {
-
-		com.liferay.object.rest.dto.v1_0.FileEntry fileEntry =
-			_toFileEntryWithFileBase64(
-				Base64.encode(DLTestUtil.randomTextFileBytes()),
-				RandomTestUtil.randomString() + ".txt", null, null);
-
-		if (StringUtil.equals(
-				objectFieldName,
-				OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE)) {
-
-			fileEntry.setFolder(folder);
-		}
-		else if (StringUtil.equals(
-					objectFieldName,
-					OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE)) {
-
-			fileEntry.setFolder(
-				new Folder() {
-					{
-						siteId = testGroupId;
-					}
-				});
-		}
-
-		return JSONFactoryUtil.createJSONObject(fileEntry.toString());
 	}
 
 	private CompanyConfigurationTemporarySwapper _swapObjectConfiguration(
