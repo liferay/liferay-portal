@@ -13,13 +13,16 @@ import com.liferay.message.boards.constants.MBMessageConstants;
 import com.liferay.message.boards.model.MBMessageDisplay;
 import com.liferay.message.boards.model.MBThread;
 import com.liferay.message.boards.service.MBMessageLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.notifications.UserNotificationFeedEntry;
 import com.liferay.portal.kernel.notifications.UserNotificationManagerUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -27,6 +30,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -75,19 +79,31 @@ public class MentionsMessageServiceWrapperTest {
 
 		MBThread mbThread = mbMessageDisplay.getThread();
 
-		User user = UserTestUtil.addUser(group.getGroupId());
+		User user1 = UserTestUtil.addUser(group.getGroupId());
+		User user2 = UserTestUtil.addUser(group.getGroupId());
+
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addGroupUserGroup(group.getGroupId(), userGroup);
+
+		_userLocalService.addUserGroupUser(userGroup.getUserGroupId(), user2);
 
 		_mbMessageLocalService.addDiscussionMessage(
 			null, TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			group.getGroupId(), BlogsEntry.class.getName(),
 			blogsEntry.getEntryId(), mbThread.getThreadId(),
 			MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID,
-			RandomTestUtil.randomString(), "@" + user.getScreenName(),
+			RandomTestUtil.randomString(),
+			StringBundler.concat(
+				"@", user1.getScreenName(),
+				" <span class=\"mention mention-usergroup-",
+				userGroup.getExternalReferenceCode(), "\">@",
+				userGroup.getName(), "</span>"),
 			serviceContext);
 
 		List<UserNotificationEvent> userNotificationEvents =
 			_userNotificationEventLocalService.getUserNotificationEvents(
-				user.getUserId());
+				user1.getUserId());
 
 		Assert.assertEquals(
 			userNotificationEvents.toString(), 1,
@@ -102,8 +118,14 @@ public class MentionsMessageServiceWrapperTest {
 
 		Assert.assertTrue(body.contains(" mentioned you in a comment in a "));
 
+		Assert.assertEquals(
+			0,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user2.getUserId()));
+
 		_blogsEntryLocalService.deleteEntry(blogsEntry);
-		_userLocalService.deleteUser(user);
+		_userLocalService.deleteUser(user1);
+		_userLocalService.deleteUser(user2);
 
 		GroupTestUtil.deleteGroup(group);
 	}
@@ -113,6 +135,9 @@ public class MentionsMessageServiceWrapperTest {
 
 	@Inject
 	private MBMessageLocalService _mbMessageLocalService;
+
+	@Inject
+	private UserGroupLocalService _userGroupLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

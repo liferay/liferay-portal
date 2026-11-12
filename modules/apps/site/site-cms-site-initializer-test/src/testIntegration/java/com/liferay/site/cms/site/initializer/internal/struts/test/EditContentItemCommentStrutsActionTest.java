@@ -12,6 +12,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.mentions.constants.MentionsPortletKeys;
 import com.liferay.message.boards.model.MBDiscussion;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -31,6 +32,8 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -42,6 +45,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
@@ -52,6 +56,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -99,6 +104,7 @@ public class EditContentItemCommentStrutsActionTest {
 	@Test
 	public void testExecute() throws Exception {
 		_testExecuteWithAnotherObjectEntry();
+		_testExecuteWithMentionedUserGroups();
 		_testExecuteWithMentionedUserWithoutViewPermission();
 		_testExecuteWithMentionedUsers();
 		_testExecuteWithWorkflow();
@@ -259,6 +265,20 @@ public class EditContentItemCommentStrutsActionTest {
 			"</span>");
 	}
 
+	private String _getMentionHTML(UserGroup userGroup) {
+		return StringBundler.concat(
+			"<span class=\"mention mention-usergroup-",
+			userGroup.getExternalReferenceCode(), "\">@", userGroup.getName(),
+			"</span>");
+	}
+
+	private int _getMentionsUserNotificationEventsCount(long userId) {
+		return _userNotificationEventLocalService.
+			getUserNotificationEventsCount(
+				userId, MentionsPortletKeys.MENTIONS,
+				UserNotificationDeliveryConstants.TYPE_WEBSITE, true, false);
+	}
+
 	private void _removeResourcePermissions(
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
 			String roleName)
@@ -351,6 +371,100 @@ public class EditContentItemCommentStrutsActionTest {
 		_objectEntryLocalService.deleteObjectEntry(objectEntry2);
 		_roleLocalService.deleteRole(role);
 		_userLocalService.deleteUser(user);
+	}
+
+	private void _testExecuteWithMentionedUserGroups() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry();
+
+		ObjectEntry objectEntry = _addObjectEntry(depotEntry);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CMS));
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				objectEntry.getObjectDefinitionId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		long commentId = _commentManager.addComment(
+			null, TestPropsValues.getUserId(), layout.getGroupId(),
+			objectDefinition.getClassName(), objectEntry.getObjectEntryId(),
+			StringPool.BLANK, null, RandomTestUtil.randomString(),
+			className -> serviceContext);
+
+		User user1 = UserTestUtil.addUser();
+
+		Role role = _addViewRole(objectEntry, user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUser(role.getRoleId(), user2);
+
+		User user3 = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUser(role.getRoleId(), user3);
+
+		UserGroup userGroup1 = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addGroupUserGroup(
+			depotEntry.getGroupId(), userGroup1);
+		_userLocalService.addUserGroupUsers(
+			userGroup1.getUserGroupId(),
+			new long[] {user1.getUserId(), user2.getUserId()});
+
+		UserGroup userGroup2 = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addGroupUserGroup(
+			depotEntry.getGroupId(), userGroup2);
+		_userLocalService.addUserGroupUsers(
+			userGroup2.getUserGroupId(),
+			new long[] {user2.getUserId(), user3.getUserId()});
+
+		_execute(
+			StringBundler.concat(
+				"<p>", RandomTestUtil.randomString(), StringPool.SPACE,
+				_getMentionHTML(user1), "</p>"),
+			commentId, layout, objectEntry, TestPropsValues.getUser());
+
+		_execute(
+			StringBundler.concat(
+				"<p>", RandomTestUtil.randomString(), StringPool.SPACE,
+				_getMentionHTML(user1), StringPool.SPACE,
+				_getMentionHTML(userGroup1), "</p>"),
+			commentId, layout, objectEntry, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			1, _getMentionsUserNotificationEventsCount(user1.getUserId()));
+		Assert.assertEquals(
+			1, _getMentionsUserNotificationEventsCount(user2.getUserId()));
+		Assert.assertEquals(
+			0, _getMentionsUserNotificationEventsCount(user3.getUserId()));
+
+		_execute(
+			StringBundler.concat(
+				"<p>", RandomTestUtil.randomString(), StringPool.SPACE,
+				_getMentionHTML(user1), StringPool.SPACE,
+				_getMentionHTML(userGroup1), StringPool.SPACE,
+				_getMentionHTML(userGroup2), "</p>"),
+			commentId, layout, objectEntry, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			1, _getMentionsUserNotificationEventsCount(user1.getUserId()));
+		Assert.assertEquals(
+			1, _getMentionsUserNotificationEventsCount(user2.getUserId()));
+		Assert.assertEquals(
+			1, _getMentionsUserNotificationEventsCount(user3.getUserId()));
+
+		_depotEntryLocalService.deleteDepotEntry(depotEntry);
+		_layoutLocalService.deleteLayout(layout);
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+		_roleLocalService.deleteRole(role);
+		_userLocalService.deleteUser(user1);
+		_userLocalService.deleteUser(user2);
+		_userLocalService.deleteUser(user3);
 	}
 
 	private void _testExecuteWithMentionedUserWithoutViewPermission()
@@ -664,6 +778,9 @@ public class EditContentItemCommentStrutsActionTest {
 
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private UserGroupLocalService _userGroupLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
