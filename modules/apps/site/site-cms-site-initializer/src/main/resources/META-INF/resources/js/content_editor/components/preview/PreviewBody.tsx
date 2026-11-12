@@ -39,7 +39,7 @@ export default function PreviewBody({
 		iframeKey,
 		isIframeLoading,
 		reloadIframe,
-	} = useIframeLoad(previewURL, isExternalURL);
+	} = useIframeLoad(previewURL);
 
 	const previewAlert = getPreviewAlert({
 		iframeError,
