@@ -6,6 +6,7 @@
 import React, {useContext} from 'react';
 
 import {ISearchAssetObjectEntry} from '../../../common/types/AssetType';
+import getAssetCommentsURLs from '../../../common/utils/getAssetCommentsURLs';
 import CommentsPanel from '../../../content_editor/components/panels/CommentsPanel';
 import {
 	AssetTypeInfoPanelContext,
@@ -19,20 +20,13 @@ const CommentsTabContent = () => {
 		selectedAssets = [],
 	}: IAssetTypeInfoPanelContext = useContext(AssetTypeInfoPanelContext);
 
-	const {addCommentURL, editCommentURL, getCommentsURL} = commentsProps;
 	const [{entryClassName}]: ISearchAssetObjectEntry[] = selectedAssets;
-
-	const dynamicURL = `?className=${encodeURIComponent(
-		entryClassName
-	)}&classPK=${id}`;
 
 	return (
 		<CommentsPanel
 			{...commentsProps}
-			addCommentURL={`${addCommentURL}${dynamicURL}`}
-			editCommentURL={`${editCommentURL}${dynamicURL}`}
-			getCommentsURL={`${getCommentsURL}${dynamicURL}`}
-		></CommentsPanel>
+			{...getAssetCommentsURLs(commentsProps, entryClassName, id)}
+		/>
 	);
 };
 

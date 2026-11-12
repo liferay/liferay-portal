@@ -28,6 +28,7 @@ export type DashboardAdditionalProps = Pick<
 		editCommentURL: string;
 		editorConfig: unknown;
 		getCommentsURL: string;
+		getMentionUsersURL?: string;
 	};
 };
 

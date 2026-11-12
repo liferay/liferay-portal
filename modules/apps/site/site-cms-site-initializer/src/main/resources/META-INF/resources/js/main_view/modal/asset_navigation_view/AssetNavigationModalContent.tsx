@@ -5,10 +5,11 @@
 
 import {SidePanel} from '@clayui/core';
 import ClayModal from '@clayui/modal';
-import {addParams, sub} from 'frontend-js-web';
+import {sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {SharingPermission} from '../../../common/types/SharingPermission';
+import getAssetCommentsURLs from '../../../common/utils/getAssetCommentsURLs';
 import CommentsPanel from '../../../content_editor/components/panels/CommentsPanel';
 import AssetTypeInfoPanel from '../../info_panel/AssetTypeInfoPanelContent';
 import Carousel from './Carousel';
@@ -41,13 +42,10 @@ const AssetNavigationCommentsPanel = ({
 	additionalProps: any;
 	item: ISearchAssetObjectEntry;
 }) => {
-	const {addCommentURL, editCommentURL, getCommentsURL} = commentsProps;
 	const {
 		embedded: {id},
 		entryClassName,
 	}: ISearchAssetObjectEntry = item;
-
-	const params = `?className=${encodeURIComponent(entryClassName)}&classPK=${id}`;
 
 	return (
 		<>
@@ -57,10 +55,8 @@ const AssetNavigationCommentsPanel = ({
 
 			<CommentsPanel
 				{...commentsProps}
-				addCommentURL={addParams(params, addCommentURL)}
-				editCommentURL={addParams(params, editCommentURL)}
-				getCommentsURL={addParams(params, getCommentsURL)}
-			></CommentsPanel>
+				{...getAssetCommentsURLs(commentsProps, entryClassName, id)}
+			/>
 		</>
 	);
 };

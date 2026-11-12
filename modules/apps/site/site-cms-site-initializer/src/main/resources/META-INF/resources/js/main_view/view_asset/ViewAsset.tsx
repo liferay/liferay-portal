@@ -9,12 +9,12 @@ import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import classNames from 'classnames';
-import {addParams} from 'frontend-js-web';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import AssetPreview from '../../common/components/AssetPreview';
 import Toolbar from '../../common/components/Toolbar';
 import {ISearchAssetObjectEntry} from '../../common/types/AssetType';
+import getAssetCommentsURLs from '../../common/utils/getAssetCommentsURLs';
 import CommentsPanel from '../../content_editor/components/panels/CommentsPanel';
 import ObjectEntryService from '../info_panel/services/ObjectEntryService';
 
@@ -26,6 +26,7 @@ interface CommentsProps {
 	editCommentURL: string;
 	editorConfig: any;
 	getCommentsURL: string;
+	getMentionUsersURL?: string;
 }
 
 interface ViewAssetProps {
@@ -44,13 +45,10 @@ const ViewAssetCommentsPanel = ({
 	commentsProps: CommentsProps;
 	item: ISearchAssetObjectEntry;
 }) => {
-	const {addCommentURL, editCommentURL, getCommentsURL} = commentsProps;
 	const {
 		embedded: {id},
 		entryClassName,
 	}: ISearchAssetObjectEntry = item;
-
-	const params = `?className=${encodeURIComponent(entryClassName)}&classPK=${id}`;
 
 	return (
 		<>
@@ -60,10 +58,8 @@ const ViewAssetCommentsPanel = ({
 
 			<CommentsPanel
 				{...commentsProps}
-				addCommentURL={addParams(params, addCommentURL)}
-				editCommentURL={addParams(params, editCommentURL)}
-				getCommentsURL={addParams(params, getCommentsURL)}
-			></CommentsPanel>
+				{...getAssetCommentsURLs(commentsProps, entryClassName, id)}
+			/>
 		</>
 	);
 };
