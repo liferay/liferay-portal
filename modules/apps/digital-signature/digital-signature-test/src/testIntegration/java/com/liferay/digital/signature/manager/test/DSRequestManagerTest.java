@@ -25,6 +25,7 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
+import com.liferay.document.library.kernel.service.DLTrashLocalService;
 import com.liferay.notification.constants.NotificationRecipientSettingConstants;
 import com.liferay.notification.model.NotificationQueueEntry;
 import com.liferay.notification.service.NotificationQueueEntryLocalService;
@@ -574,6 +575,7 @@ public class DSRequestManagerTest {
 			localDateTime);
 
 		_testUpdateDSRequestWithCompletedDSEnvelope();
+		_testUpdateDSRequestWithDeletedFileEntry();
 		_testUpdateDSRequestWithDifferentDSRecipientStatuses();
 		_testUpdateDSRequestWithDSRequestDocumentObjectEntry();
 		_testUpdateDSRequestWithInvalidSignedDocument();
@@ -1793,6 +1795,90 @@ public class DSRequestManagerTest {
 			() -> _dsRequestManager.updateDSRequest(dsRequestDocumentId));
 	}
 
+	private void _testUpdateDSRequestWithDeletedFileEntry() throws Exception {
+		DSEnvelope dsEnvelope = _createDSEnvelope();
+
+		FileEntry fileEntry1 = _addFileEntry(
+			RandomTestUtil.randomString() + ".pdf");
+		FileEntry fileEntry2 = _addFileEntry(
+			RandomTestUtil.randomString() + ".pdf");
+		FileEntry fileEntry3 = _addFileEntry(
+			RandomTestUtil.randomString() + ".pdf");
+
+		DSRequest dsRequest = _addDSRequestWithoutValidation(
+			dsEnvelope, TestPropsValues.getUserId(),
+			fileEntry1.getFileEntryId(), fileEntry2.getFileEntryId(),
+			fileEntry3.getFileEntryId());
+
+		_dlAppLocalService.deleteFileEntry(fileEntry1.getFileEntryId());
+
+		_dlTrashLocalService.moveFileEntryToTrash(
+			TestPropsValues.getUserId(), fileEntry2.getRepositoryId(),
+			fileEntry2.getFileEntryId());
+
+		dsEnvelope.setStatus(DSRequestConstants.STATUS_COMPLETED);
+
+		DSDocumentManager dsDocumentManager =
+			(DSDocumentManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsDocumentManager",
+				ProxyUtil.newProxyInstance(
+					DSDocumentManager.class.getClassLoader(),
+					new Class<?>[] {DSDocumentManager.class},
+					(proxy, method, arguments) -> FileUtil.getBytes(
+						getClass(), "dependencies/SignedDocument.pdf")));
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> dsEnvelope));
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.digital.signature.internal.manager." +
+					"DSRequestManagerImpl",
+				LoggerTestUtil.WARN)) {
+
+			_dsRequestManager.updateDSRequest(dsRequest.getDSRequestId());
+
+			Assert.assertEquals(
+				TransformUtil.transform(
+					Arrays.asList(fileEntry1, fileEntry2),
+					fileEntry -> StringBundler.concat(
+						"Unable to update file entry ",
+						fileEntry.getFileEntryId(),
+						" of digital signature envelope ",
+						dsEnvelope.getDSEnvelopeId(),
+						" because the file entry does not exist or is in the ",
+						"trash")),
+				TransformUtil.transform(
+					logCapture.getLogEntries(), LogEntry::getMessage));
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_dsRequestManager, "_dsDocumentManager", dsDocumentManager);
+			ReflectionTestUtil.setFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager", dsEnvelopeManager);
+		}
+
+		dsRequest = _dsRequestManager.fetchDSRequest(
+			TestPropsValues.getCompanyId(), dsRequest.getDSRequestId());
+
+		Assert.assertEquals(
+			DSRequestConstants.STATUS_COMPLETED, dsRequest.getStatus());
+
+		fileEntry2 = _dlAppLocalService.getFileEntry(
+			fileEntry2.getFileEntryId());
+
+		Assert.assertEquals("1.0", fileEntry2.getVersion());
+
+		fileEntry3 = _dlAppLocalService.getFileEntry(
+			fileEntry3.getFileEntryId());
+
+		Assert.assertEquals("2.0", fileEntry3.getVersion());
+	}
+
 	private void _testUpdateDSRequestWithDifferentDSRecipientStatuses()
 		throws Exception {
 
@@ -2194,6 +2280,9 @@ public class DSRequestManagerTest {
 
 	@Inject
 	private DLFolderLocalService _dlFolderLocalService;
+
+	@Inject
+	private DLTrashLocalService _dlTrashLocalService;
 
 	private ObjectDefinition _dsRequestDocumentObjectDefinition;
 
