@@ -8,6 +8,7 @@ package com.liferay.jenkins.results.parser;
 import com.liferay.jenkins.results.parser.aws.CloudTrailEventsUtil;
 import com.liferay.jenkins.results.parser.metrics.BuildHistoryProcessor;
 import com.liferay.jenkins.results.parser.metrics.BuildHistoryReport;
+import com.liferay.jenkins.results.parser.metrics.CIMonitoringReport;
 import com.liferay.jenkins.results.parser.metrics.SpotInterruptionReport;
 import com.liferay.jenkins.results.parser.testray.TestrayCloudBucket;
 import com.liferay.jenkins.results.parser.testray.TestrayCloudObject;
@@ -92,7 +93,8 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 	public enum Report {
 
 		AWS_BUILD_COMPARISON("AWS Build Comparison"),
-		BUILD_HISTORY("Build History"), CI_SYSTEM_HISTORY("CI System History"),
+		BUILD_HISTORY("Build History"), CI_MONITORING("CI Monitoring"),
+		CI_SYSTEM_HISTORY("CI System History"),
 		CI_SYSTEM_STATUS("CI System Status"),
 		FLAKY_TEST_7_0_x("Flaky Test 7.0.x"),
 		FLAKY_TEST_7_1_x("Flaky Test 7.1.x"),
@@ -426,6 +428,31 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		_archiveReport(filePath);
 	}
 
+	private void _generateCIMonitoringReport(String reportName)
+		throws IOException {
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"Generating the ", reportName, " report"));
+
+		String workspaceURL = _getBuildProperty("monitoring.amp.workspace.url");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(workspaceURL)) {
+			throw new RuntimeException(
+				"Please set \"monitoring.amp.workspace.url\"");
+		}
+
+		String filePath = _getReportFilePath(reportName);
+
+		CIMonitoringReport ciMonitoringReport =
+			CIMonitoringReport.newCIMonitoringReport(
+				"test-1-0", new File(filePath), workspaceURL);
+
+		ciMonitoringReport.write();
+
+		_updateReport(filePath);
+	}
+
 	private void _generateCISystemHistoryReport(String reportName)
 		throws IOException {
 
@@ -570,7 +597,9 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		boolean reportFilesSynced = false;
 
 		for (String reportName : reportNames) {
-			if (!reportName.startsWith("Flaky Test") && !reportFilesSynced) {
+			if (!reportName.equals(Report.CI_MONITORING.toString()) &&
+				!reportName.startsWith("Flaky Test") && !reportFilesSynced) {
+
 				try {
 					CloudBucketUtil.syncGCPFiles(
 						_ARCHIVE_BASE_DIR_PATH + "/data",
@@ -595,6 +624,10 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 
 				if (reportName.equals(Report.BUILD_HISTORY.toString())) {
 					_generateBuildHistoryReport(reportName);
+				}
+
+				if (reportName.equals(Report.CI_MONITORING.toString())) {
+					_generateCIMonitoringReport(reportName);
 				}
 
 				if (reportName.equals(Report.CI_SYSTEM_HISTORY.toString())) {
@@ -1174,6 +1207,7 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		new HashMap<String, String>() {
 			{
 				put(Report.BUILD_HISTORY.toString(), "table-data.js");
+				put(Report.CI_MONITORING.toString(), "report-data.js");
 				put(Report.CI_SYSTEM_HISTORY.toString(), "all-durations.js");
 				put(Report.CI_SYSTEM_STATUS.toString(), "jenkins-data.js");
 				put(Report.FLAKY_TEST_7_0_x.toString(), "flaky-test-data.js");
@@ -1195,6 +1229,7 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 					Report.AWS_BUILD_COMPARISON.toString(),
 					"aws-build-comparison-report");
 				put(Report.BUILD_HISTORY.toString(), "build-history-report");
+				put(Report.CI_MONITORING.toString(), "ci-monitoring-report");
 				put(Report.CI_SYSTEM_HISTORY.toString(), "ci-system-history");
 				put(Report.CI_SYSTEM_STATUS.toString(), "ci-system-status");
 				put(
@@ -1227,10 +1262,10 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		_SCRIPT_ELEMENT_REGEX);
 	private static final List<String> _validReportNames = Arrays.asList(
 		Report.AWS_BUILD_COMPARISON.toString(), Report.BUILD_HISTORY.toString(),
-		Report.CI_SYSTEM_HISTORY.toString(), Report.CI_SYSTEM_STATUS.toString(),
-		Report.FLAKY_TEST_7_0_x.toString(), Report.FLAKY_TEST_7_1_x.toString(),
-		Report.FLAKY_TEST_7_2_x.toString(), Report.FLAKY_TEST_7_3_x.toString(),
-		Report.FLAKY_TEST_MASTER.toString(),
+		Report.CI_MONITORING.toString(), Report.CI_SYSTEM_HISTORY.toString(),
+		Report.CI_SYSTEM_STATUS.toString(), Report.FLAKY_TEST_7_0_x.toString(),
+		Report.FLAKY_TEST_7_1_x.toString(), Report.FLAKY_TEST_7_2_x.toString(),
+		Report.FLAKY_TEST_7_3_x.toString(), Report.FLAKY_TEST_MASTER.toString(),
 		Report.PULL_REQUEST_HISTORY.toString(),
 		Report.RELEASE_HISTORY.toString(), Report.SPOT_INTERRUPTION.toString(),
 		Report.UPSTREAM_HISTORY.toString(), Report.UTILIZATION.toString());
