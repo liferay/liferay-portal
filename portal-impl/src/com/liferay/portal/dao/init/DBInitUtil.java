@@ -24,9 +24,12 @@ import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
+import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ReleaseInfo;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.hibernate.DialectUtil;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 
@@ -38,6 +41,8 @@ import java.util.Objects;
 import java.util.Properties;
 
 import javax.sql.DataSource;
+
+import org.hibernate.dialect.Dialect;
 
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 
@@ -78,10 +83,31 @@ public class DBInitUtil {
 
 		DBManager dbManager = new DBManagerImpl();
 
+		Dialect dialect = DialectUtil.getDialect(dataSource);
+
+		if (Validator.isNotNull(PropsValues.HIBERNATE_DIALECT)) {
+			Dialect configuredDialect = (Dialect)InstanceFactory.newInstance(
+				PropsValues.HIBERNATE_DIALECT);
+
+			DBType configuredDBType = dbManager.getDBType(configuredDialect);
+
+			DBType dbType = dbManager.getDBType(dialect);
+
+			if (configuredDBType != dbType) {
+				throw new IllegalArgumentException(
+					StringBundler.concat(
+						"The configured dialect ",
+						PropsValues.HIBERNATE_DIALECT, " is for ",
+						configuredDBType, ", but the database is ", dbType));
+			}
+
+			dialect = configuredDialect;
+
+			DialectUtil.setDialect(dataSource, dialect);
+		}
+
 		dbManager.setDB(
-			dbManager.getDB(
-				dbManager.getDBType(DialectUtil.getDialect(dataSource)),
-				dataSource));
+			dbManager.getDB(dbManager.getDBType(dialect), dataSource));
 
 		DBManagerUtil.setDBManager(dbManager);
 

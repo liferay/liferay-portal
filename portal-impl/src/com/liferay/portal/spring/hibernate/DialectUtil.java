@@ -133,6 +133,10 @@ public class DialectUtil {
 		return dialect;
 	}
 
+	public static void setDialect(DataSource dataSource, Dialect dialect) {
+		_dialects.put(DBInfoUtil.getDBInfo(dataSource), dialect);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(DialectUtil.class);
 
 	private static final Map<DBInfo, Dialect> _dialects =

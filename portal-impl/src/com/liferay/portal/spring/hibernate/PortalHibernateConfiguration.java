@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.persistence.PersistenceException;
 
@@ -110,13 +109,11 @@ public class PortalHibernateConfiguration
 
 		Properties properties = configuration.getProperties();
 
-		if (Validator.isNull(PropsValues.HIBERNATE_DIALECT)) {
-			Dialect dialect = DialectUtil.getDialect(_dataSource);
+		Dialect dialect = DialectUtil.getDialect(_dataSource);
 
-			Class<?> clazz = dialect.getClass();
+		Class<?> clazz = dialect.getClass();
 
-			properties.setProperty("hibernate.dialect", clazz.getName());
-		}
+		properties.setProperty("hibernate.dialect", clazz.getName());
 
 		if (_dataSource != null) {
 			properties.put("hibernate.connection.datasource", _dataSource);
