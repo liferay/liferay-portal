@@ -12,6 +12,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -529,9 +530,9 @@ public class WikiNodeLocalServiceImpl extends WikiNodeLocalServiceBaseImpl {
 			WikiGroupServiceConfiguration.class, properties);
 
 		_mediaWikiImporter = new MediaWikiImporter(
-			_assetTagLocalService, _companyLocalService, _portletFileRepository,
-			_userLocalService, _wikiGroupServiceConfiguration,
-			_wikiPageLocalService, _wikiPageTitleValidator, _zipReaderFactory);
+			_assetTagLocalService, _companyLocalService, _configurationProvider,
+			_portletFileRepository, _userLocalService, _wikiPageLocalService,
+			_wikiPageTitleValidator, _zipReaderFactory);
 
 		_portalCache = _multiVMPool.getPortalCache(
 			WikiPageDisplay.class.getName());
@@ -642,6 +643,9 @@ public class WikiNodeLocalServiceImpl extends WikiNodeLocalServiceBaseImpl {
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
