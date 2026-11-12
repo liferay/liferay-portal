@@ -2243,6 +2243,25 @@ public class JournalArticleLocalServiceTest {
 	}
 
 	@Test
+	public void testGetArticleDisplayWithPageBreak() throws Exception {
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), "@page_break@ Home @page_break@");
+
+		JournalArticleDisplay journalArticleDisplay =
+			_journalArticleLocalService.getArticleDisplay(
+				journalArticle, journalArticle.getDDMTemplateKey(),
+				Constants.VIEW,
+				LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault()), 2, null,
+				_themeDisplay);
+
+		Assert.assertEquals(
+			"Home", StringUtil.trim(journalArticleDisplay.getContent()));
+		Assert.assertTrue(journalArticleDisplay.isPaginate());
+	}
+
+	@Test
 	@TestInfo({"LPS-58698", "LPS-64814", "LPS-83798"})
 	public void testGetArticleDisplayWithRestrictedTemplate() throws Exception {
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
