@@ -15,60 +15,16 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.internal.configuration.VulcanCompanyConfiguration;
 import com.liferay.portal.vulcan.internal.configuration.VulcanConfiguration;
 
-import java.util.Collection;
 import java.util.Dictionary;
-import java.util.Map;
-import java.util.Set;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.component.runtime.ServiceComponentRuntime;
-import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
 
 /**
  * @author Carlos Correa
  */
 public class BaseConfigurationModelListener
 	implements ConfigurationModelListener {
-
-	@Override
-	public void onAfterSave(String pid, Dictionary<String, Object> dictionary) {
-		Collection<ComponentDescriptionDTO> componentDescriptionDTOs =
-			_serviceComponentRuntime.getComponentDescriptionDTOs(
-				_bundleContext.getBundles());
-
-		for (ComponentDescriptionDTO componentDescriptionDTO :
-				componentDescriptionDTOs) {
-
-			Map<String, Object> properties = componentDescriptionDTO.properties;
-
-			Set<Map.Entry<String, Object>> entries = properties.entrySet();
-
-			for (Map.Entry<String, Object> entry : entries) {
-				String key = entry.getKey();
-
-				Object value = entry.getValue();
-
-				if (!key.equals("osgi.jaxrs.application.base") ||
-					!value.equals(dictionary.get("path"))) {
-
-					continue;
-				}
-
-				if ((Boolean)dictionary.get("restEnabled")) {
-					_serviceComponentRuntime.enableComponent(
-						componentDescriptionDTO);
-				}
-				else {
-					_serviceComponentRuntime.disableComponent(
-						componentDescriptionDTO);
-				}
-
-				break;
-			}
-		}
-	}
 
 	@Override
 	public void onBeforeSave(String pid, Dictionary<String, Object> dictionary)
@@ -88,13 +44,8 @@ public class BaseConfigurationModelListener
 		}
 	}
 
-	protected void init(
-		BundleContext bundleContext, ConfigurationAdmin configurationAdmin,
-		ServiceComponentRuntime serviceComponentRuntime) {
-
-		_bundleContext = bundleContext;
+	protected void init(ConfigurationAdmin configurationAdmin) {
 		_configurationAdmin = configurationAdmin;
-		_serviceComponentRuntime = serviceComponentRuntime;
 	}
 
 	private void _validatePathExists(String path) throws Exception {
@@ -162,8 +113,6 @@ public class BaseConfigurationModelListener
 		_validateUniqueConfiguration(dictionary, filterString);
 	}
 
-	private BundleContext _bundleContext;
 	private ConfigurationAdmin _configurationAdmin;
-	private ServiceComponentRuntime _serviceComponentRuntime;
 
 }

@@ -7,12 +7,10 @@ package com.liferay.portal.vulcan.internal.configuration.persistence.listener;
 
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.runtime.ServiceComponentRuntime;
 
 /**
  * @author Javier Gamarra
@@ -25,14 +23,11 @@ public class VulcanConfigurationModelListener
 	extends BaseConfigurationModelListener {
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
-		init(bundleContext, _configurationAdmin, _serviceComponentRuntime);
+	protected void activate() {
+		init(_configurationAdmin);
 	}
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
-
-	@Reference
-	private ServiceComponentRuntime _serviceComponentRuntime;
 
 }
