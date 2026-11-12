@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {objectToFormData} from 'frontend-js-web';
+import {addParams, objectToFormData} from 'frontend-js-web';
 
 import ApiHelper, {RequestResult} from '../../common/services/ApiHelper';
 
@@ -26,6 +26,13 @@ export type Comment = {
 	negativeVotes: number;
 	positiveVotes: number;
 	rootComment: boolean;
+};
+
+export type MentionUser = {
+	id: string;
+	name: string;
+	portraitURL: string;
+	screenName: string;
 };
 
 async function addComment({
@@ -79,9 +86,20 @@ async function getComments({
 	return await ApiHelper.get(url);
 }
 
+async function getMentionUsers({
+	keywords,
+	url,
+}: {
+	keywords: string;
+	url: string;
+}): Promise<RequestResult<{users: MentionUser[]}>> {
+	return await ApiHelper.get(addParams({keywords}, url));
+}
+
 export default {
 	addComment,
 	deleteComment,
 	editComment,
 	getComments,
+	getMentionUsers,
 };

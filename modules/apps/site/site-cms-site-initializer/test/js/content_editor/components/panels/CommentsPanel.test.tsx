@@ -30,27 +30,34 @@ jest.mock(
 	})
 );
 
-jest.mock('@ckeditor/ckeditor5-react', () => ({
-	CKEditor: ({onChange, onReady}: any) => {
-		const mockEditor = {
-			getData: jest.fn().mockReturnValue('mocked data'),
-			on: jest.fn(),
-			setData: jest.fn(),
-		};
-		onReady(mockEditor);
+jest.mock('@ckeditor/ckeditor5-react', () => {
+	const {useEffect, useRef} = jest.requireActual('react');
 
-		return (
-			<input
-				aria-label="Mocked CKEditor"
-				onChange={(event) => {
-					if (onChange) {
-						onChange(event, mockEditor);
-					}
-				}}
-			/>
-		);
-	},
-}));
+	return {
+		CKEditor: ({onChange, onReady}: any) => {
+			const mockEditorRef = useRef({
+				getData: jest.fn().mockReturnValue('mocked data'),
+				on: jest.fn(),
+				setData: jest.fn(),
+			});
+
+			useEffect(() => {
+				onReady(mockEditorRef.current);
+			}, [onReady]);
+
+			return (
+				<input
+					aria-label="Mocked CKEditor"
+					onChange={(event) => {
+						if (onChange) {
+							onChange(event, mockEditorRef.current);
+						}
+					}}
+				/>
+			);
+		},
+	};
+});
 
 const initialComments: Comment[] = [
 	{

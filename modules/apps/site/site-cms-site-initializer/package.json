@@ -1,5 +1,10 @@
 {
 	"dependencies": {
+		"@ckeditor/ckeditor5-core": "49.0.0",
+		"@ckeditor/ckeditor5-engine": "49.0.0",
+		"@ckeditor/ckeditor5-mention": "49.0.0",
+		"@ckeditor/ckeditor5-typing": "49.0.0",
+		"@ckeditor/ckeditor5-utils": "49.0.0",
 		"@clayui/alert": "^3.167.0",
 		"@clayui/autocomplete": "^3.167.0",
 		"@clayui/badge": "^3.167.0",

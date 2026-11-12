@@ -1,0 +1,10 @@
+@import 'atlas-variables';
+
+.comments-panel {
+	&__content .mention {
+		background: none;
+		color: $primary;
+		font-weight: $font-weight-bold;
+		white-space: nowrap;
+	}
+}
