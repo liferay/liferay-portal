@@ -18,6 +18,8 @@ import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectEntryTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -93,6 +95,7 @@ public class AddContentItemCommentStrutsActionTest {
 	public void testExecute() throws Exception {
 		_testExecuteWithMentionedAuthor();
 		_testExecuteWithMentionedUser();
+		_testExecuteWithMentionedUserOutsideSpace();
 		_testExecuteWithMentionedUserWithoutViewPermission();
 	}
 
@@ -314,6 +317,11 @@ public class AddContentItemCommentStrutsActionTest {
 
 		String entryURL = payloadJSONObject.getString("entryURL");
 
+		String path = HttpComponentsUtil.getPath(entryURL);
+
+		Assert.assertTrue(
+			path.endsWith(GroupConstants.CMS_FRIENDLY_URL + "/view-asset"));
+
 		Assert.assertEquals(
 			jsonObject.getString("commentId"),
 			HttpComponentsUtil.getParameter(entryURL, "messageId", false));
@@ -348,6 +356,59 @@ public class AddContentItemCommentStrutsActionTest {
 		_roleLocalService.deleteRole(role2);
 		_userLocalService.deleteUser(user1);
 		_userLocalService.deleteUser(user2);
+	}
+
+	private void _testExecuteWithMentionedUserOutsideSpace() throws Exception {
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition);
+
+		User user = UserTestUtil.addUser();
+
+		Role role = _addViewRole(objectEntry, user);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CMS));
+
+		_execute(
+			StringBundler.concat(
+				"<p>", RandomTestUtil.randomString(), StringPool.SPACE,
+				_getMentionHTML(user), "</p>"),
+			layout, objectEntry, TestPropsValues.getUser());
+
+		List<UserNotificationEvent> userNotificationEvents =
+			_userNotificationEventLocalService.getUserNotificationEvents(
+				user.getUserId());
+
+		Assert.assertEquals(
+			userNotificationEvents.toString(), 1,
+			userNotificationEvents.size());
+
+		UserNotificationEvent userNotificationEvent =
+			userNotificationEvents.get(0);
+
+		JSONObject payloadJSONObject = _jsonFactory.createJSONObject(
+			userNotificationEvent.getPayload());
+
+		String entryURL = payloadJSONObject.getString("entryURL");
+
+		String path = HttpComponentsUtil.getPath(entryURL);
+
+		Assert.assertTrue(
+			path.endsWith(
+				GroupConstants.CMS_FRIENDLY_URL + "/edit_content_item"));
+
+		Assert.assertEquals(
+			StringPool.BLANK,
+			HttpComponentsUtil.getParameter(entryURL, "p_l_mode", false));
+
+		_layoutLocalService.deleteLayout(layout);
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+		_roleLocalService.deleteRole(role);
+		_userLocalService.deleteUser(user);
 	}
 
 	private void _testExecuteWithMentionedUserWithoutViewPermission()
