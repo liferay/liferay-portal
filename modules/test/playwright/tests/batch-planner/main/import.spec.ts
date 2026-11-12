@@ -1319,54 +1319,65 @@ test('can preview CSV file', async ({
 	await expect(
 		page
 			.getByLabel('Preview')
-			.getByRole('cell', {name: 'externalReferenceCode'})
+			.getByRole('columnheader', {name: 'externalReferenceCode'})
 	).toBeVisible();
 	await expect(
 		page
 			.getByLabel('Preview')
-			.getByRole('cell', {exact: true, name: 'testAutoIncrementField'})
+			.getByRole('columnheader', {
+				exact: true,
+				name: 'testAutoIncrementField',
+			})
 	).toBeVisible();
 	await expect(
 		page
 			.getByLabel('Preview')
-			.getByRole('cell', {exact: true, name: 'testBooleanField'})
-	).toBeVisible();
-	await expect(
-		page.getByLabel('Preview').getByRole('cell', {name: 'testDateField'})
+			.getByRole('columnheader', {exact: true, name: 'testBooleanField'})
 	).toBeVisible();
 	await expect(
 		page
 			.getByLabel('Preview')
-			.getByRole('cell', {name: 'testDateTimeField'})
-	).toBeVisible();
-	await expect(
-		page.getByLabel('Preview').getByRole('cell', {name: 'testDecimalField'})
-	).toBeVisible();
-	await expect(
-		page.getByLabel('Preview').getByRole('cell', {name: 'testIntegerField'})
-	).toBeVisible();
-	await expect(
-		page.getByLabel('Preview').getByRole('cell', {name: 'testLongInteger'})
+			.getByRole('columnheader', {name: 'testDateField'})
 	).toBeVisible();
 	await expect(
 		page
 			.getByLabel('Preview')
-			.getByRole('cell', {exact: true, name: 'testLongTextField'})
+			.getByRole('columnheader', {name: 'testDateTimeField'})
 	).toBeVisible();
 	await expect(
 		page
 			.getByLabel('Preview')
-			.getByRole('cell', {name: 'testPrecisionDecimalField'})
+			.getByRole('columnheader', {name: 'testDecimalField'})
 	).toBeVisible();
 	await expect(
 		page
 			.getByLabel('Preview')
-			.getByRole('cell', {exact: true, name: 'testRichTextField'})
+			.getByRole('columnheader', {name: 'testIntegerField'})
 	).toBeVisible();
 	await expect(
 		page
 			.getByLabel('Preview')
-			.getByRole('cell', {exact: true, name: 'testTextField'})
+			.getByRole('columnheader', {name: 'testLongInteger'})
+	).toBeVisible();
+	await expect(
+		page
+			.getByLabel('Preview')
+			.getByRole('columnheader', {exact: true, name: 'testLongTextField'})
+	).toBeVisible();
+	await expect(
+		page
+			.getByLabel('Preview')
+			.getByRole('columnheader', {name: 'testPrecisionDecimalField'})
+	).toBeVisible();
+	await expect(
+		page
+			.getByLabel('Preview')
+			.getByRole('columnheader', {exact: true, name: 'testRichTextField'})
+	).toBeVisible();
+	await expect(
+		page
+			.getByLabel('Preview')
+			.getByRole('columnheader', {exact: true, name: 'testTextField'})
 	).toBeVisible();
 });
 
@@ -2142,12 +2153,16 @@ test.describe('can rely on anyOf form validation', () => {
 		await expect(
 			page
 				.getByLabel('Preview')
-				.getByRole('cell', {name: 'r_studentSubjects1_c_studentERC'})
+				.getByRole('columnheader', {
+					name: 'r_studentSubjects1_c_studentERC',
+				})
 		).toBeVisible();
 		await expect(
 			page
 				.getByLabel('Preview')
-				.getByRole('cell', {name: 'r_studentSubjects2_c_studentERC'})
+				.getByRole('columnheader', {
+					name: 'r_studentSubjects2_c_studentERC',
+				})
 		).toBeVisible();
 	});
 });
