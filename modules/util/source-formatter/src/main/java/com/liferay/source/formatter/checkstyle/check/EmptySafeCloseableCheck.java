@@ -41,7 +41,7 @@ public class EmptySafeCloseableCheck extends BaseCheck {
 
 		if (parentDetailAST.getType() == TokenTypes.LITERAL_RETURN) {
 			if (_isSafeCloseableReturn(detailAST)) {
-				log(detailAST, _MSG_USE_EMPTY);
+				log(detailAST, _MSG_USE_SAFE_CLOSEABLE_EMPTY);
 			}
 
 			return;
@@ -51,11 +51,11 @@ public class EmptySafeCloseableCheck extends BaseCheck {
 			return;
 		}
 
-		DetailAST grandparentDetailAST = parentDetailAST.getParent();
+		DetailAST grandParentDetailAST = parentDetailAST.getParent();
 
-		if (grandparentDetailAST.getType() == TokenTypes.VARIABLE_DEF) {
-			if (_isSafeCloseableType(grandparentDetailAST)) {
-				log(detailAST, _MSG_USE_EMPTY);
+		if (grandParentDetailAST.getType() == TokenTypes.VARIABLE_DEF) {
+			if (_isSafeCloseableType(grandParentDetailAST)) {
+				log(detailAST, _MSG_USE_SAFE_CLOSEABLE_EMPTY);
 			}
 
 			return;
@@ -77,7 +77,7 @@ public class EmptySafeCloseableCheck extends BaseCheck {
 		if ((variableDefinitionDetailAST != null) &&
 			_isSafeCloseableType(variableDefinitionDetailAST)) {
 
-			log(detailAST, _MSG_USE_EMPTY);
+			log(detailAST, _MSG_USE_SAFE_CLOSEABLE_EMPTY);
 		}
 	}
 
@@ -127,6 +127,7 @@ public class EmptySafeCloseableCheck extends BaseCheck {
 		return typeName.equals("com.liferay.petra.lang.SafeCloseable");
 	}
 
-	private static final String _MSG_USE_EMPTY = "safe.closeable.empty.use";
+	private static final String _MSG_USE_SAFE_CLOSEABLE_EMPTY =
+		"safe.closeable.empty.use";
 
 }
