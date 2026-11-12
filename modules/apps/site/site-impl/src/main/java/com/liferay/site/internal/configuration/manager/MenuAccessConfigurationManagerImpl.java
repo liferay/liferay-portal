@@ -124,6 +124,47 @@ public class MenuAccessConfigurationManagerImpl
 			).build());
 	}
 
+	@Override
+	public void updateRoleAccessToControlMenu(Role originalRole, Role role)
+		throws Exception {
+
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				role.getCompanyId(), null,
+				MenuAccessConfiguration.class.getName(), null));
+
+		if (configurations == null) {
+			return;
+		}
+
+		for (Configuration configuration : configurations) {
+			Dictionary<String, Object> properties =
+				configuration.getProperties();
+
+			String[] accessToControlMenuRoleExternalReferenceCodes =
+				(String[])properties.get(
+					"accessToControlMenuRoleExternalReferenceCodes");
+
+			if (!ArrayUtil.contains(
+					accessToControlMenuRoleExternalReferenceCodes,
+					originalRole.getExternalReferenceCode())) {
+
+				continue;
+			}
+
+			ArrayUtil.replace(
+				accessToControlMenuRoleExternalReferenceCodes,
+				originalRole.getExternalReferenceCode(),
+				role.getExternalReferenceCode());
+
+			properties.put(
+				"accessToControlMenuRoleExternalReferenceCodes",
+				accessToControlMenuRoleExternalReferenceCodes);
+
+			configuration.update(properties);
+		}
+	}
+
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
 

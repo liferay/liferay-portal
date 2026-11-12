@@ -125,6 +125,23 @@ public class RoleModelListenerTest {
 		_assertConfiguration(new String[0]);
 	}
 
+	@Test
+	public void testOnAfterUpdate() throws Exception {
+		Role role = _roleLocalService.addRole(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
+			StringUtil.randomString(), null, null, RoleConstants.TYPE_SITE,
+			null, _serviceContext);
+
+		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
+			_group.getGroupId(), new String[] {role.getExternalReferenceCode()},
+			true);
+
+		role = _roleLocalService.updateExternalReferenceCode(
+			role, RandomTestUtil.randomString());
+
+		_assertConfiguration(new String[] {role.getExternalReferenceCode()});
+	}
+
 	private void _assertConfiguration(String[] expectedRolesCanSeeControlMenu)
 		throws Exception {
 

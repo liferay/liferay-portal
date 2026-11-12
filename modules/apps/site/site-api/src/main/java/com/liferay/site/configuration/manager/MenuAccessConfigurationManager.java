@@ -26,4 +26,7 @@ public interface MenuAccessConfigurationManager {
 			boolean showControlMenuByRole)
 		throws Exception;
 
+	public void updateRoleAccessToControlMenu(Role originalRole, Role role)
+		throws Exception;
+
 }
