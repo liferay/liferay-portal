@@ -61,18 +61,18 @@ public class EmptySafeCloseableCheck extends BaseCheck {
 			return;
 		}
 
-		DetailAST targetDetailAST = parentDetailAST.getFirstChild();
+		DetailAST firstChildDetailAST = parentDetailAST.getFirstChild();
 
-		if (targetDetailAST.getType() == TokenTypes.DOT) {
-			targetDetailAST = targetDetailAST.getLastChild();
+		if (firstChildDetailAST.getType() == TokenTypes.DOT) {
+			firstChildDetailAST = firstChildDetailAST.getLastChild();
 		}
 
-		if (targetDetailAST.getType() != TokenTypes.IDENT) {
+		if (firstChildDetailAST.getType() != TokenTypes.IDENT) {
 			return;
 		}
 
 		DetailAST variableDefinitionDetailAST = getVariableDefinitionDetailAST(
-			detailAST, targetDetailAST.getText(), true);
+			detailAST, firstChildDetailAST.getText(), true);
 
 		if ((variableDefinitionDetailAST != null) &&
 			_isSafeCloseableType(variableDefinitionDetailAST)) {
@@ -103,18 +103,18 @@ public class EmptySafeCloseableCheck extends BaseCheck {
 	}
 
 	private boolean _isSafeCloseableReturn(DetailAST detailAST) {
-		DetailAST enclosingDetailAST = getParentWithTokenType(
+		DetailAST parentDetailAST = getParentWithTokenType(
 			detailAST, TokenTypes.COMPACT_CTOR_DEF, TokenTypes.CTOR_DEF,
 			TokenTypes.INSTANCE_INIT, TokenTypes.LAMBDA, TokenTypes.METHOD_DEF,
 			TokenTypes.STATIC_INIT);
 
-		if ((enclosingDetailAST == null) ||
-			(enclosingDetailAST.getType() != TokenTypes.METHOD_DEF)) {
+		if ((parentDetailAST == null) ||
+			(parentDetailAST.getType() != TokenTypes.METHOD_DEF)) {
 
 			return false;
 		}
 
-		return _isSafeCloseableType(enclosingDetailAST);
+		return _isSafeCloseableType(parentDetailAST);
 	}
 
 	private boolean _isSafeCloseableType(DetailAST detailAST) {
