@@ -44,7 +44,7 @@ public class RelationshipManagerUtil {
 			Class<T> modelClass, long primKey, Degree degree) {
 
 		return _relationshipManager.getOutboundRelatedModels(
-			modelClass, primKey);
+			modelClass, primKey, degree);
 	}
 
 	public static <T extends ClassedModel> Collection<? extends ClassedModel>
