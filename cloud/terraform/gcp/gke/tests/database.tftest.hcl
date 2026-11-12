@@ -45,7 +45,7 @@ run "should_not_accept_unsupported_database_engine" {
 	command=plan
 	expect_failures=[var.database_engine]
 	variables {
-		database_engine="mysql"
+		database_engine="hypersonic"
 	}
 }
 run "should_pass_database_unchanged" {

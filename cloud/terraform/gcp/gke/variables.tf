@@ -9,8 +9,8 @@ variable "control_plane_logging_config" {
 variable "database_engine" {
 	type=string
 	validation {
-		condition=var.database_engine == "postgresql"
-		error_message="The variable \"database_engine\" must be \"postgresql\"."
+		condition=contains(["mysql", "postgresql"], var.database_engine)
+		error_message="The variable \"database_engine\" must be \"mysql\" or \"postgresql\"."
 	}
 }
 variable "deployment_name" {
