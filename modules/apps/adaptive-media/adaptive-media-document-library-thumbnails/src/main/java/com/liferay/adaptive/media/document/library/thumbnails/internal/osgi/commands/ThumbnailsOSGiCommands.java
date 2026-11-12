@@ -132,7 +132,7 @@ public class ThumbnailsOSGiCommands implements OSGiCommands {
 					continue;
 				}
 
-				companyTotal = +1;
+				companyTotal++;
 			}
 		}
 
