@@ -28,7 +28,7 @@ export default function ProductTitleRenderer({
 	return (
 		<span className="align-items-center d-flex table-list-title">
 			<ClaySticker className="c-mr-2 content-icon-custom-structure flex-shrink-0 inline-item inline-item-before">
-				<ClayIcon symbol="product-configuration" />
+				<ClayIcon symbol="product" />
 			</ClaySticker>
 
 			{href ? (
