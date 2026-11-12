@@ -5,9 +5,6 @@
 
 package com.liferay.headless.admin.fragment.internal.resource.v1_0;
 
-import com.liferay.document.library.kernel.exception.DuplicateFileEntryException;
-import com.liferay.document.library.kernel.exception.DuplicateFolderNameException;
-import com.liferay.document.library.kernel.exception.FolderNameException;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
@@ -17,9 +14,6 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentCollectionService;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFolder;
-import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFileNameException;
-import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFolderNameException;
-import com.liferay.headless.admin.fragment.internal.exception.ResourceFolderNameException;
 import com.liferay.headless.admin.fragment.internal.odata.entity.v1_0.ResourceFolderEntityModel;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.FragmentSetUtil;
 import com.liferay.headless.admin.fragment.internal.resource.v1_0.util.ResourceFolderUtil;
@@ -247,31 +241,16 @@ public class ResourceFolderResourceImpl extends BaseResourceFolderResourceImpl {
 
 		ResourceFolderUtil.checkResourceFolder(dlFolder);
 
-		try {
-			Folder folder = _dlAppLocalService.updateFolder(
-				dlFolder.getFolderId(), dlFolder.getParentFolderId(),
-				resourceFolder.getName(), dlFolder.getDescription(),
-				ServiceContextUtil.getServiceContext(
-					contextCompany.getCompanyId(),
-					resourceFolder.getDateCreated(), groupId,
-					contextHttpServletRequest, resourceFolder.getDateModified(),
-					contextUser.getUserId()));
+		Folder folder = _dlAppLocalService.updateFolder(
+			dlFolder.getFolderId(), dlFolder.getParentFolderId(),
+			resourceFolder.getName(), dlFolder.getDescription(),
+			ServiceContextUtil.getServiceContext(
+				contextCompany.getCompanyId(), resourceFolder.getDateCreated(),
+				groupId, contextHttpServletRequest,
+				resourceFolder.getDateModified(), contextUser.getUserId()));
 
-			return _toResourceFolder(
-				_dlFolderLocalService.getDLFolder(folder.getFolderId()));
-		}
-		catch (DuplicateFileEntryException duplicateFileEntryException) {
-			throw new DuplicateResourceFileNameException(
-				duplicateFileEntryException.getMessage());
-		}
-		catch (DuplicateFolderNameException duplicateFolderNameException) {
-			throw new DuplicateResourceFolderNameException(
-				duplicateFolderNameException.getMessage());
-		}
-		catch (FolderNameException folderNameException) {
-			throw new ResourceFolderNameException(
-				folderNameException.getMessage());
-		}
+		return _toResourceFolder(
+			_dlFolderLocalService.getDLFolder(folder.getFolderId()));
 	}
 
 	private DLFolder _addDLFolder(

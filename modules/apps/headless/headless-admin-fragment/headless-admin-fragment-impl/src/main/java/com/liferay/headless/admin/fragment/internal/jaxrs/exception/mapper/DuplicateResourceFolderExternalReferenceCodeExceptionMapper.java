@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.fragment.internal.jaxrs.exception.mapper;
 
-import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFolderExternalReferenceCodeException;
+import com.liferay.document.library.kernel.exception.DuplicateDLFolderExternalReferenceCodeException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
@@ -31,12 +31,12 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class DuplicateResourceFolderExternalReferenceCodeExceptionMapper
 	extends BaseExceptionMapper
-		<DuplicateResourceFolderExternalReferenceCodeException> {
+		<DuplicateDLFolderExternalReferenceCodeException> {
 
 	@Override
 	protected Problem getProblem(
-		DuplicateResourceFolderExternalReferenceCodeException
-			duplicateResourceFolderExternalReferenceCodeException) {
+		DuplicateDLFolderExternalReferenceCodeException
+			duplicateDLFolderExternalReferenceCodeException) {
 
 		return new Problem(
 			Response.Status.CONFLICT,

@@ -5,10 +5,6 @@
 
 package com.liferay.headless.admin.fragment.internal.resource.v1_0.util;
 
-import com.liferay.document.library.kernel.exception.DuplicateDLFolderExternalReferenceCodeException;
-import com.liferay.document.library.kernel.exception.DuplicateFileEntryException;
-import com.liferay.document.library.kernel.exception.DuplicateFolderNameException;
-import com.liferay.document.library.kernel.exception.FolderNameException;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -16,10 +12,6 @@ import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionServiceUtil;
 import com.liferay.headless.admin.fragment.dto.v1_0.ResourceFolder;
-import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFileNameException;
-import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFolderExternalReferenceCodeException;
-import com.liferay.headless.admin.fragment.internal.exception.DuplicateResourceFolderNameException;
-import com.liferay.headless.admin.fragment.internal.exception.ResourceFolderNameException;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
@@ -56,32 +48,12 @@ public class ResourceFolderUtil {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
-		try {
-			Folder folder = DLAppLocalServiceUtil.addFolder(
-				resourceFolder.getExternalReferenceCode(), userId,
-				parentDLFolder.getRepositoryId(), parentDLFolder.getFolderId(),
-				resourceFolder.getName(), StringPool.BLANK, serviceContext);
+		Folder folder = DLAppLocalServiceUtil.addFolder(
+			resourceFolder.getExternalReferenceCode(), userId,
+			parentDLFolder.getRepositoryId(), parentDLFolder.getFolderId(),
+			resourceFolder.getName(), StringPool.BLANK, serviceContext);
 
-			return DLFolderLocalServiceUtil.getDLFolder(folder.getFolderId());
-		}
-		catch (DuplicateDLFolderExternalReferenceCodeException
-					duplicateDLFolderExternalReferenceCodeException) {
-
-			throw new DuplicateResourceFolderExternalReferenceCodeException(
-				duplicateDLFolderExternalReferenceCodeException.getMessage());
-		}
-		catch (DuplicateFileEntryException duplicateFileEntryException) {
-			throw new DuplicateResourceFileNameException(
-				duplicateFileEntryException.getMessage());
-		}
-		catch (DuplicateFolderNameException duplicateFolderNameException) {
-			throw new DuplicateResourceFolderNameException(
-				duplicateFolderNameException.getMessage());
-		}
-		catch (FolderNameException folderNameException) {
-			throw new ResourceFolderNameException(
-				folderNameException.getMessage());
-		}
+		return DLFolderLocalServiceUtil.getDLFolder(folder.getFolderId());
 	}
 
 	public static void checkResourceFolder(DLFolder dlFolder) throws Exception {
