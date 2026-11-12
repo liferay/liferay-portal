@@ -35,7 +35,9 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.ratings.kernel.model.RatingsEntry;
 import com.liferay.ratings.kernel.model.RatingsStats;
+import com.liferay.ratings.kernel.service.RatingsEntryLocalServiceUtil;
 import com.liferay.ratings.kernel.service.RatingsStatsLocalServiceUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,6 +73,9 @@ public class CommentUtil {
 				httpServletRequest,
 				System.currentTimeMillis() - modifiedDate.getTime(), true));
 
+		RatingsEntry ratingsEntry = RatingsEntryLocalServiceUtil.fetchEntry(
+			themeDisplay.getUserId(), comment.getClassName(),
+			comment.getCommentId());
 		RatingsStats ratingsStats = RatingsStatsLocalServiceUtil.fetchStats(
 			comment.getClassName(), comment.getCommentId());
 
@@ -120,6 +125,24 @@ public class CommentUtil {
 					comment.getParentCommentId());
 
 				return parentComment.isRoot();
+			}
+		).put(
+			"thumbDown",
+			() -> {
+				if (ratingsEntry != null) {
+					return ratingsEntry.getScore() < 0.5;
+				}
+
+				return false;
+			}
+		).put(
+			"thumbUp",
+			() -> {
+				if (ratingsEntry != null) {
+					return ratingsEntry.getScore() >= 0.5;
+				}
+
+				return false;
 			}
 		);
 	}

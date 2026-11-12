@@ -26,6 +26,8 @@ export type Comment = {
 	negativeVotes: number;
 	positiveVotes: number;
 	rootComment: boolean;
+	thumbDown: boolean;
+	thumbUp: boolean;
 };
 
 export type MentionUser = {
