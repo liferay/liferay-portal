@@ -65,10 +65,6 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -443,52 +439,6 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 		}
 	}
 
-	protected void unbindDataSource(String servletContextName) {
-		Boolean dataSourceBindState = _dataSourceBindStates.remove(
-			servletContextName);
-
-		if (dataSourceBindState == null) {
-			return;
-		}
-
-		try {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Dynamically unbinding the Liferay data source");
-			}
-
-			Context context = new InitialContext();
-
-			try {
-				context.lookup(_JNDI_JDBC_LIFERAY_POOL);
-
-				context.unbind(_JNDI_JDBC_LIFERAY_POOL);
-			}
-			catch (NamingException namingException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(namingException);
-				}
-			}
-
-			try {
-				context.lookup(_JNDI_JDBC);
-
-				context.destroySubcontext(_JNDI_JDBC);
-			}
-			catch (NamingException namingException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(namingException);
-				}
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to dynamically unbind the Liferay data source: " +
-						exception.getMessage());
-			}
-		}
-	}
-
 	private void _addCategoryNames(
 		Portlet portlet, PortletCategory portletCategory) {
 
@@ -564,16 +514,9 @@ public class PortletHotDeployListener extends BaseHotDeployListener {
 			portletProperties.getProperty(PropsKeys.RESOURCE_ACTIONS_CONFIGS));
 	}
 
-	private static final String _JNDI_JDBC = "java_liferay:jdbc";
-
-	private static final String _JNDI_JDBC_LIFERAY_POOL =
-		_JNDI_JDBC + "/LiferayPool";
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortletHotDeployListener.class);
 
-	private static final Map<String, Boolean> _dataSourceBindStates =
-		new HashMap<>();
 	private static final Map<String, List<Portlet>> _portlets = new HashMap<>();
 
 	private final Map<String, ServiceRegistration<ResourceBundleLoader>>
