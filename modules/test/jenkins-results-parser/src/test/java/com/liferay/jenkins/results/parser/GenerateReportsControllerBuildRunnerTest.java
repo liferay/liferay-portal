@@ -62,7 +62,8 @@ public class GenerateReportsControllerBuildRunnerTest
 				_newBuildJSONObject(
 					GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString(),
 					reportStaleTime - 1, secondBuildURL)),
-			true, Collections.<String>emptyList(), reportGeneratedTimes);
+			new Properties(), true, Collections.<String>emptyList(),
+			reportGeneratedTimes);
 		_testGetSelectedReportNames(
 			Arrays.asList(
 				_newBuildJSONObject(
@@ -72,14 +73,15 @@ public class GenerateReportsControllerBuildRunnerTest
 					GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString(),
 					reportStaleTime + (2 * _MILLISECONDS_PER_HOUR),
 					secondBuildURL)),
-			true, Collections.<String>emptyList(), reportGeneratedTimes);
+			new Properties(), true, Collections.<String>emptyList(),
+			reportGeneratedTimes);
 
 		_testGetSelectedReportNames(
 			Arrays.asList(
 				_newBuildJSONObject(
 					GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString(),
 					reportStaleTime - 1, firstBuildURL)),
-			true,
+			new Properties(), true,
 			Arrays.asList(
 				GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString()),
 			reportGeneratedTimes);
@@ -93,13 +95,13 @@ public class GenerateReportsControllerBuildRunnerTest
 			new HashMap<>();
 
 		_testGetSelectedReportNames(
-			Collections.<JSONObject>emptyList(), false,
+			Collections.<JSONObject>emptyList(), new Properties(), false,
 			Arrays.asList(
 				GenerateReportsBuildRunner.Report.AWS_BUILD_COMPARISON.
 					toString()),
 			reportGeneratedTimes);
 		_testGetSelectedReportNames(
-			Collections.<JSONObject>emptyList(), true,
+			Collections.<JSONObject>emptyList(), new Properties(), true,
 			Collections.<String>emptyList(), reportGeneratedTimes);
 
 		List<String> reportNames = new ArrayList<>();
@@ -109,8 +111,9 @@ public class GenerateReportsControllerBuildRunnerTest
 		for (GenerateReportsBuildRunner.Report report :
 				GenerateReportsBuildRunner.Report.values()) {
 
-			if (report ==
-					GenerateReportsBuildRunner.Report.AWS_BUILD_COMPARISON) {
+			if ((report ==
+					GenerateReportsBuildRunner.Report.AWS_BUILD_COMPARISON) ||
+				(report == GenerateReportsBuildRunner.Report.CI_MONITORING)) {
 
 				continue;
 			}
@@ -123,8 +126,59 @@ public class GenerateReportsControllerBuildRunnerTest
 		Collections.sort(reportNames);
 
 		_testGetSelectedReportNames(
-			Collections.<JSONObject>emptyList(), true, reportNames,
+			Collections.<JSONObject>emptyList(), new Properties(), true,
+			reportNames, reportGeneratedTimes);
+	}
+
+	@Test
+	public void testGetSelectedReportNamesCIMonitoring() throws Exception {
+		Map<GenerateReportsBuildRunner.Report, Long> reportGeneratedTimes =
+			new HashMap<>();
+
+		reportGeneratedTimes.put(
+			GenerateReportsBuildRunner.Report.CI_MONITORING, 0L);
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty(
+			"monitoring.amp.workspace.url", RandomTestUtil.randomString());
+
+		_testGetSelectedReportNames(
+			Collections.<JSONObject>emptyList(), buildProperties, false,
+			Arrays.asList(
+				GenerateReportsBuildRunner.Report.AWS_BUILD_COMPARISON.
+					toString(),
+				GenerateReportsBuildRunner.Report.CI_MONITORING.toString()),
 			reportGeneratedTimes);
+		_testGetSelectedReportNames(
+			Collections.<JSONObject>emptyList(), buildProperties, true,
+			Arrays.asList(
+				GenerateReportsBuildRunner.Report.CI_MONITORING.toString()),
+			reportGeneratedTimes);
+
+		buildProperties.setProperty("monitoring.amp.workspace.url", "");
+
+		_testGetSelectedReportNames(
+			Collections.<JSONObject>emptyList(), buildProperties, false,
+			Arrays.asList(
+				GenerateReportsBuildRunner.Report.AWS_BUILD_COMPARISON.
+					toString()),
+			reportGeneratedTimes);
+		_testGetSelectedReportNames(
+			Collections.<JSONObject>emptyList(), buildProperties, true,
+			Collections.<String>emptyList(), reportGeneratedTimes);
+
+		buildProperties.remove("monitoring.amp.workspace.url");
+
+		_testGetSelectedReportNames(
+			Collections.<JSONObject>emptyList(), buildProperties, false,
+			Arrays.asList(
+				GenerateReportsBuildRunner.Report.AWS_BUILD_COMPARISON.
+					toString()),
+			reportGeneratedTimes);
+		_testGetSelectedReportNames(
+			Collections.<JSONObject>emptyList(), buildProperties, true,
+			Collections.<String>emptyList(), reportGeneratedTimes);
 	}
 
 	@Test
@@ -143,14 +197,15 @@ public class GenerateReportsControllerBuildRunnerTest
 					GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString(),
 					(_currentTimeMillis - _MILLISECONDS_PER_DAY) + 1,
 					RandomTestUtil.randomString())),
-			true, Collections.<String>emptyList(), reportGeneratedTimes);
+			new Properties(), true, Collections.<String>emptyList(),
+			reportGeneratedTimes);
 		_testGetSelectedReportNames(
 			Arrays.asList(
 				_newBuildJSONObject(
 					GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString(),
 					_currentTimeMillis - _MILLISECONDS_PER_DAY,
 					RandomTestUtil.randomString())),
-			true,
+			new Properties(), true,
 			Arrays.asList(
 				GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString()),
 			reportGeneratedTimes);
@@ -164,14 +219,15 @@ public class GenerateReportsControllerBuildRunnerTest
 					GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString(),
 					(_currentTimeMillis - _MILLISECONDS_PER_DAY) + 1,
 					RandomTestUtil.randomString())),
-			true, Collections.<String>emptyList(), reportGeneratedTimes);
+			new Properties(), true, Collections.<String>emptyList(),
+			reportGeneratedTimes);
 		_testGetSelectedReportNames(
 			Arrays.asList(
 				_newBuildJSONObject(
 					GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString(),
 					_currentTimeMillis - _MILLISECONDS_PER_DAY,
 					RandomTestUtil.randomString())),
-			true,
+			new Properties(), true,
 			Arrays.asList(
 				GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString()),
 			reportGeneratedTimes);
@@ -244,8 +300,8 @@ public class GenerateReportsControllerBuildRunnerTest
 	}
 
 	private void _testGetSelectedReportNames(
-			List<JSONObject> buildJSONObjects, boolean cloudCINode,
-			List<String> expectedReportNames,
+			List<JSONObject> buildJSONObjects, Properties buildProperties,
+			boolean cloudCINode, List<String> expectedReportNames,
 			Map<GenerateReportsBuildRunner.Report, Long> reportGeneratedTimes)
 		throws Exception {
 
@@ -294,7 +350,7 @@ public class GenerateReportsControllerBuildRunnerTest
 				() -> JenkinsResultsParserUtil.getBuildProperties(
 					Mockito.anyBoolean())
 			).thenReturn(
-				new Properties()
+				buildProperties
 			);
 
 			Map<File, String> reportDataFileContents = new HashMap<>();
