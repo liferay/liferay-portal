@@ -40,7 +40,7 @@ public class TextEngine extends BaseWikiEngine {
 	}
 
 	@Override
-	public String getEditorName() {
+	public String getEditorName(long groupId) {
 		return null;
 	}
 

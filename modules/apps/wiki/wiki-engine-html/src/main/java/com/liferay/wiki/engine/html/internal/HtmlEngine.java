@@ -6,18 +6,21 @@
 package com.liferay.wiki.engine.html.internal;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
 import com.liferay.portal.kernel.portlet.Router;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoaderUtil;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.wiki.configuration.WikiGroupServiceConfiguration;
+import com.liferay.wiki.constants.WikiConstants;
 import com.liferay.wiki.constants.WikiPortletKeys;
 import com.liferay.wiki.engine.BaseWikiEngine;
 import com.liferay.wiki.engine.WikiEngine;
@@ -45,15 +48,18 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jorge Ferrer
  * @author Zsigmond Rab
  */
-@Component(
-	configurationPid = "com.liferay.wiki.configuration.WikiGroupServiceConfiguration",
-	service = WikiEngine.class
-)
+@Component(service = WikiEngine.class)
 public class HtmlEngine extends BaseWikiEngine {
 
 	@Override
-	public String getEditorName() {
-		return _wikiGroupServiceConfiguration.getHTMLEditor();
+	public String getEditorName(long groupId) throws ConfigurationException {
+		WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
+			_configurationProvider.getConfiguration(
+				WikiGroupServiceConfiguration.class,
+				new GroupServiceSettingsLocator(
+					groupId, WikiConstants.SERVICE_NAME));
+
+		return wikiGroupServiceConfiguration.getHTMLEditor();
 	}
 
 	@Override
@@ -89,10 +95,7 @@ public class HtmlEngine extends BaseWikiEngine {
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
-		_wikiGroupServiceConfiguration = ConfigurableUtil.createConfigurable(
-			WikiGroupServiceConfiguration.class, properties);
-
+	protected void activate() {
 		_friendlyURLMapping =
 			Portal.FRIENDLY_URL_SEPARATOR + _friendlyURLMapper.getMapping();
 
@@ -183,6 +186,9 @@ public class HtmlEngine extends BaseWikiEngine {
 
 	private static final Log _log = LogFactoryUtil.getLog(HtmlEngine.class);
 
+	@Reference
+	private ConfigurationProvider _configurationProvider;
+
 	@Reference(target = "(jakarta.portlet.name=" + WikiPortletKeys.WIKI + ")")
 	private FriendlyURLMapper _friendlyURLMapper;
 
@@ -193,8 +199,6 @@ public class HtmlEngine extends BaseWikiEngine {
 		target = "(osgi.web.symbolicname=com.liferay.wiki.engine.input.editor.common)"
 	)
 	private ServletContext _servletContext;
-
-	private WikiGroupServiceConfiguration _wikiGroupServiceConfiguration;
 
 	@Reference
 	private WikiNodeLocalService _wikiNodeLocalService;

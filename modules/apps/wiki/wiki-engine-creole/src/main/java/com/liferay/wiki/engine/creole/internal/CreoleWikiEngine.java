@@ -5,7 +5,6 @@
 
 package com.liferay.wiki.engine.creole.internal;
 
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -40,17 +39,13 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Miguel Pastor
  */
-@Component(
-	configurationPid = "com.liferay.wiki.configuration.WikiGroupServiceConfiguration",
-	service = WikiEngine.class
-)
+@Component(service = WikiEngine.class)
 public class CreoleWikiEngine extends BaseWikiEngine {
 
 	@Override
@@ -75,8 +70,14 @@ public class CreoleWikiEngine extends BaseWikiEngine {
 	}
 
 	@Override
-	public String getEditorName() {
-		return _wikiGroupServiceConfiguration.getCreoleEditor();
+	public String getEditorName(long groupId) throws ConfigurationException {
+		WikiGroupServiceConfiguration wikiGroupServiceConfiguration =
+			_configurationProvider.getConfiguration(
+				WikiGroupServiceConfiguration.class,
+				new GroupServiceSettingsLocator(
+					groupId, WikiConstants.SERVICE_NAME));
+
+		return wikiGroupServiceConfiguration.getCreoleEditor();
 	}
 
 	@Override
@@ -128,12 +129,6 @@ public class CreoleWikiEngine extends BaseWikiEngine {
 		}
 
 		return outgoingLinks;
-	}
-
-	@Activate
-	protected void activate(Map<String, Object> properties) {
-		_wikiGroupServiceConfiguration = ConfigurableUtil.createConfigurable(
-			WikiGroupServiceConfiguration.class, properties);
 	}
 
 	@Override
@@ -192,8 +187,6 @@ public class CreoleWikiEngine extends BaseWikiEngine {
 		target = "(osgi.web.symbolicname=com.liferay.wiki.engine.input.editor.common)"
 	)
 	private ServletContext _wikiEngineInputEditorServletContext;
-
-	private WikiGroupServiceConfiguration _wikiGroupServiceConfiguration;
 
 	@Reference
 	private WikiPageLocalService _wikiPageLocalService;

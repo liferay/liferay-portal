@@ -8,6 +8,7 @@ package com.liferay.wiki.engine;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
@@ -63,7 +64,7 @@ public abstract class BaseWikiEngine implements WikiEngine {
 		return page.getContent();
 	}
 
-	public abstract String getEditorName();
+	public abstract String getEditorName(long groupId) throws PortalException;
 
 	@Override
 	public String getFormatLabel(Locale locale) {
