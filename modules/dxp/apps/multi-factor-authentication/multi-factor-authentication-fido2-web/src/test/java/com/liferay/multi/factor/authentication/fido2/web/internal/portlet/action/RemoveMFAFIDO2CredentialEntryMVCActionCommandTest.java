@@ -11,7 +11,10 @@ import com.liferay.multi.factor.authentication.fido2.web.internal.BaseMFAFIDO2We
 import com.liferay.multi.factor.authentication.fido2.web.internal.constants.MFAFIDO2EventTypes;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -67,33 +70,8 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommandTest
 			themeDisplay
 		);
 
-		Mockito.when(
-			_actionRequest.getParameter("mfaFIDO2CredentialEntryId")
-		).thenReturn(
-			String.valueOf(_MFA_FIDO2_CREDENTIAL_ENTRY_ID)
-		);
-
-		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry = Mockito.mock(
-			MFAFIDO2CredentialEntry.class);
-
-		Mockito.when(
-			mfaFIDO2CredentialEntry.getUserId()
-		).thenReturn(
-			_DO_AS_USER_ID
-		);
-
-		Mockito.when(
-			mfaFIDO2CredentialEntry.getMfaFIDO2CredentialEntryId()
-		).thenReturn(
-			_MFA_FIDO2_CREDENTIAL_ENTRY_ID
-		);
-
-		Mockito.when(
-			_mfaFIDO2CredentialEntryLocalService.getMFAFIDO2CredentialEntry(
-				_MFA_FIDO2_CREDENTIAL_ENTRY_ID)
-		).thenReturn(
-			mfaFIDO2CredentialEntry
-		);
+		_setUpMFAFIDO2CredentialEntry(
+			_MFA_FIDO2_CREDENTIAL_ENTRY_ID, _DO_AS_USER_ID);
 
 		ReflectionTestUtil.setFieldValue(
 			_removeMFAFIDO2CredentialEntryMVCActionCommand, "_auditRouter",
@@ -104,12 +82,50 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommandTest
 			_mfaFIDO2CredentialEntryLocalService);
 		ReflectionTestUtil.setFieldValue(
 			_removeMFAFIDO2CredentialEntryMVCActionCommand, "_portal", portal);
+		ReflectionTestUtil.setFieldValue(
+			_removeMFAFIDO2CredentialEntryMVCActionCommand,
+			"_userModelResourcePermission", _userModelResourcePermission);
 	}
 
 	@Test
 	public void testDoProcessAction() throws Exception {
 		_testDoProcessAction();
 		_testDoProcessActionWithFailedDeletion();
+		_testDoProcessActionWithImpersonatePermission();
+		_testDoProcessActionWithoutImpersonatePermission();
+	}
+
+	private void _setUpMFAFIDO2CredentialEntry(
+			long mfaFIDO2CredentialEntryId, long userId)
+		throws Exception {
+
+		Mockito.when(
+			_actionRequest.getParameter("mfaFIDO2CredentialEntryId")
+		).thenReturn(
+			String.valueOf(mfaFIDO2CredentialEntryId)
+		);
+
+		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry = Mockito.mock(
+			MFAFIDO2CredentialEntry.class);
+
+		Mockito.when(
+			mfaFIDO2CredentialEntry.getUserId()
+		).thenReturn(
+			userId
+		);
+
+		Mockito.when(
+			mfaFIDO2CredentialEntry.getMfaFIDO2CredentialEntryId()
+		).thenReturn(
+			mfaFIDO2CredentialEntryId
+		);
+
+		Mockito.when(
+			_mfaFIDO2CredentialEntryLocalService.getMFAFIDO2CredentialEntry(
+				mfaFIDO2CredentialEntryId)
+		).thenReturn(
+			mfaFIDO2CredentialEntry
+		);
 	}
 
 	private void _testDoProcessAction() throws Exception {
@@ -153,6 +169,75 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommandTest
 		Mockito.verifyNoMoreInteractions(auditRouter);
 	}
 
+	private void _testDoProcessActionWithImpersonatePermission()
+		throws Exception {
+
+		Mockito.clearInvocations(auditRouter);
+
+		long mfaFIDO2CredentialEntryId = RandomTestUtil.randomLong();
+		long userId = RandomTestUtil.randomLong();
+
+		_setUpMFAFIDO2CredentialEntry(mfaFIDO2CredentialEntryId, userId);
+
+		Mockito.when(
+			_userModelResourcePermission.contains(
+				Mockito.any(), Mockito.eq(userId),
+				Mockito.eq(ActionKeys.IMPERSONATE))
+		).thenReturn(
+			true
+		);
+
+		_removeMFAFIDO2CredentialEntryMVCActionCommand.doProcessAction(
+			_actionRequest, Mockito.mock(ActionResponse.class));
+
+		Mockito.verify(
+			_mfaFIDO2CredentialEntryLocalService
+		).deleteMFAFIDO2CredentialEntry(
+			mfaFIDO2CredentialEntryId
+		);
+
+		ArgumentCaptor<AuditMessage> argumentCaptor = ArgumentCaptor.forClass(
+			AuditMessage.class);
+
+		Mockito.verify(
+			auditRouter
+		).route(
+			argumentCaptor.capture()
+		);
+
+		assertAuditMessage(
+			argumentCaptor.getValue(), String.valueOf(_DO_AS_USER_ID),
+			MFAFIDO2EventTypes.MFA_FIDO2_SETUP_REMOVED, userId);
+	}
+
+	private void _testDoProcessActionWithoutImpersonatePermission()
+		throws Exception {
+
+		long mfaFIDO2CredentialEntryId = RandomTestUtil.randomLong();
+
+		_setUpMFAFIDO2CredentialEntry(
+			mfaFIDO2CredentialEntryId, RandomTestUtil.randomLong());
+
+		Mockito.when(
+			_userModelResourcePermission.contains(
+				Mockito.any(), Mockito.anyLong(),
+				Mockito.eq(ActionKeys.IMPERSONATE))
+		).thenReturn(
+			false
+		);
+
+		_removeMFAFIDO2CredentialEntryMVCActionCommand.doProcessAction(
+			_actionRequest, Mockito.mock(ActionResponse.class));
+
+		Mockito.verify(
+			_mfaFIDO2CredentialEntryLocalService, Mockito.never()
+		).deleteMFAFIDO2CredentialEntry(
+			mfaFIDO2CredentialEntryId
+		);
+
+		Mockito.verifyNoMoreInteractions(auditRouter);
+	}
+
 	private static final long _DO_AS_USER_ID = RandomTestUtil.randomLong();
 
 	private static final long _MFA_FIDO2_CREDENTIAL_ENTRY_ID =
@@ -166,5 +251,7 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommandTest
 	private final RemoveMFAFIDO2CredentialEntryMVCActionCommand
 		_removeMFAFIDO2CredentialEntryMVCActionCommand =
 			new RemoveMFAFIDO2CredentialEntryMVCActionCommand();
+	private final ModelResourcePermission<User> _userModelResourcePermission =
+		Mockito.mock(ModelResourcePermission.class);
 
 }

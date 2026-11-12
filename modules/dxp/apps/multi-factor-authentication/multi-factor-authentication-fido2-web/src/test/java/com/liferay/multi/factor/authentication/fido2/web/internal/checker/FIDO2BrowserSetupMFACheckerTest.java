@@ -15,9 +15,15 @@ import com.liferay.multi.factor.authentication.fido2.web.internal.configuration.
 import com.liferay.multi.factor.authentication.fido2.web.internal.constants.MFAFIDO2EventTypes;
 import com.liferay.multi.factor.authentication.fido2.web.internal.constants.MFAFIDO2WebKeys;
 import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -34,6 +40,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -131,6 +138,59 @@ public class FIDO2BrowserSetupMFACheckerTest extends BaseMFAFIDO2WebTestCase {
 	}
 
 	@Test
+	public void testIncludeSetupRemovable() throws Exception {
+		long userId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_mfaFIDO2CredentialEntryLocalService.
+				getMFAFIDO2CredentialEntriesByUserId(userId)
+		).thenReturn(
+			Collections.emptyList()
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_fido2BrowserSetupMFAChecker, "_mfaFIDO2Configuration",
+			Mockito.mock(MFAFIDO2Configuration.class));
+
+		ServletContext servletContext = Mockito.mock(ServletContext.class);
+
+		Mockito.when(
+			servletContext.getRequestDispatcher("/mfa_fido2_checker/setup.jsp")
+		).thenReturn(
+			Mockito.mock(RequestDispatcher.class)
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_fido2BrowserSetupMFAChecker, "_servletContext", servletContext);
+
+		ModelResourcePermission<User> userModelResourcePermission =
+			Mockito.mock(ModelResourcePermission.class);
+
+		ReflectionTestUtil.setFieldValue(
+			_fido2BrowserSetupMFAChecker, "_userModelResourcePermission",
+			userModelResourcePermission);
+
+		Assert.assertFalse(_isSetupRemovable(null, userId));
+
+		Assert.assertTrue(_isSetupRemovable(_mockThemeDisplay(userId), userId));
+
+		ThemeDisplay themeDisplay = _mockThemeDisplay(
+			RandomTestUtil.randomLong());
+
+		Assert.assertFalse(_isSetupRemovable(themeDisplay, userId));
+
+		Mockito.when(
+			userModelResourcePermission.contains(
+				Mockito.any(), Mockito.eq(userId),
+				Mockito.eq(ActionKeys.IMPERSONATE))
+		).thenReturn(
+			true
+		);
+
+		Assert.assertTrue(_isSetupRemovable(themeDisplay, userId));
+	}
+
+	@Test
 	public void testRemoveExistingSetup() throws Exception {
 		long selectedUserId = RandomTestUtil.randomLong();
 
@@ -197,6 +257,37 @@ public class FIDO2BrowserSetupMFACheckerTest extends BaseMFAFIDO2WebTestCase {
 
 		_testSetUp();
 		_testSetUpWithFailedRegistration();
+	}
+
+	private boolean _isSetupRemovable(ThemeDisplay themeDisplay, long userId)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		if (themeDisplay != null) {
+			mockHttpServletRequest.setAttribute(
+				WebKeys.THEME_DISPLAY, themeDisplay);
+		}
+
+		_fido2BrowserSetupMFAChecker.includeSetup(
+			mockHttpServletRequest, new MockHttpServletResponse(), userId);
+
+		return GetterUtil.getBoolean(
+			mockHttpServletRequest.getAttribute(
+				MFAFIDO2WebKeys.MFA_FIDO2_REMOVABLE));
+	}
+
+	private ThemeDisplay _mockThemeDisplay(long userId) {
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Mockito.when(
+			themeDisplay.getUserId()
+		).thenReturn(
+			userId
+		);
+
+		return themeDisplay;
 	}
 
 	private void _testSetUp() throws Exception {

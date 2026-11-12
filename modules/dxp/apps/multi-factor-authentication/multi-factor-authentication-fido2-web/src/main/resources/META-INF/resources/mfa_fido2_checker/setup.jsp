@@ -9,6 +9,8 @@
 
 <%
 List<MFAFIDO2CredentialEntry> mfaFIDO2CredentialEntries = (List<MFAFIDO2CredentialEntry>)request.getAttribute(MFAFIDO2WebKeys.MFA_FIDO2_CREDENTIAL_ENTRIES);
+
+boolean removable = GetterUtil.getBoolean(request.getAttribute(MFAFIDO2WebKeys.MFA_FIDO2_REMOVABLE));
 %>
 
 <div id="<portlet:namespace />messageContainer"></div>
@@ -31,15 +33,17 @@ List<MFAFIDO2CredentialEntry> mfaFIDO2CredentialEntries = (List<MFAFIDO2Credenti
 	<c:otherwise>
 		<liferay-ui:message key="you-have-registered-the-maximum-number-of-allowed-authenticators" />
 
-		<aui:input name="removeExistingSetup" type="hidden" value="<%= true %>" />
+		<c:if test="<%= removable %>">
+			<aui:input name="removeExistingSetup" type="hidden" value="<%= true %>" />
 
-		<aui:button-row>
-			<clay:button
-				displayType="danger"
-				label="remove-all-registered-fido2-authenticators"
-				type="submit"
-			/>
-		</aui:button-row>
+			<aui:button-row>
+				<clay:button
+					displayType="danger"
+					label="remove-all-registered-fido2-authenticators"
+					type="submit"
+				/>
+			</aui:button-row>
+		</c:if>
 	</c:otherwise>
 </c:choose>
 
@@ -70,21 +74,23 @@ List<MFAFIDO2CredentialEntry> mfaFIDO2CredentialEntries = (List<MFAFIDO2Credenti
 			value="<%= String.valueOf(mfaFIDO2CredentialEntry.getCreateDate()) %>"
 		/>
 
-		<liferay-ui:search-container-column-text>
-			<portlet:actionURL name="/multi_factor_authentication_fido2/remove_mfa_fido2_credential_entry" var="removeMFAFIDO2CredentialEntryURL">
-				<portlet:param name="redirect" value="<%= currentURL %>" />
-				<portlet:param name="mfaFIDO2CredentialEntryId" value="<%= String.valueOf(mfaFIDO2CredentialEntry.getPrimaryKey()) %>" />
-				<portlet:param name="setupMFACheckerServiceId" value="<%= String.valueOf(request.getAttribute(MFAFIDO2WebKeys.SETUP_MFA_CHECKER_SERVICE_ID)) %>" />
-			</portlet:actionURL>
+		<c:if test="<%= removable %>">
+			<liferay-ui:search-container-column-text>
+				<portlet:actionURL name="/multi_factor_authentication_fido2/remove_mfa_fido2_credential_entry" var="removeMFAFIDO2CredentialEntryURL">
+					<portlet:param name="redirect" value="<%= currentURL %>" />
+					<portlet:param name="mfaFIDO2CredentialEntryId" value="<%= String.valueOf(mfaFIDO2CredentialEntry.getPrimaryKey()) %>" />
+					<portlet:param name="setupMFACheckerServiceId" value="<%= String.valueOf(request.getAttribute(MFAFIDO2WebKeys.SETUP_MFA_CHECKER_SERVICE_ID)) %>" />
+				</portlet:actionURL>
 
-			<liferay-ui:icon-delete
-				confirmation="are-you-sure-you-want-to-remove-this-authenticator"
-				icon="times-circle"
-				message="remove"
-				showIcon="<%= true %>"
-				url="<%= removeMFAFIDO2CredentialEntryURL %>"
-			/>
-		</liferay-ui:search-container-column-text>
+				<liferay-ui:icon-delete
+					confirmation="are-you-sure-you-want-to-remove-this-authenticator"
+					icon="times-circle"
+					message="remove"
+					showIcon="<%= true %>"
+					url="<%= removeMFAFIDO2CredentialEntryURL %>"
+				/>
+			</liferay-ui:search-container-column-text>
+		</c:if>
 	</liferay-ui:search-container-row>
 
 	<liferay-ui:search-iterator

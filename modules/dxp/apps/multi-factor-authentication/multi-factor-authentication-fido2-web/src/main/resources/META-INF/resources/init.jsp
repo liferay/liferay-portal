@@ -19,6 +19,7 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 page import="com.liferay.multi.factor.authentication.fido2.web.internal.configuration.MFAFIDO2Configuration" %><%@
 page import="com.liferay.multi.factor.authentication.fido2.web.internal.constants.MFAFIDO2WebKeys" %><%@
 page import="com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil" %><%@
+page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %>
 
 <%@ page import="java.util.List" %>

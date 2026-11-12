@@ -27,13 +27,17 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import com.yubico.webauthn.AssertionRequest;
 import com.yubico.webauthn.AssertionResult;
@@ -145,6 +149,24 @@ public class FIDO2BrowserSetupMFAChecker
 			httpSession.setAttribute(
 				MFAFIDO2WebKeys.MFA_FIDO2_PKCC_OPTIONS, mfaFIDO2PKCCOptions);
 		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		boolean removable = false;
+
+		if ((themeDisplay != null) &&
+			((userId == themeDisplay.getUserId()) ||
+			 _userModelResourcePermission.contains(
+				 themeDisplay.getPermissionChecker(), userId,
+				 ActionKeys.IMPERSONATE))) {
+
+			removable = true;
+		}
+
+		httpServletRequest.setAttribute(
+			MFAFIDO2WebKeys.MFA_FIDO2_REMOVABLE, removable);
 
 		RequestDispatcher requestDispatcher =
 			_servletContext.getRequestDispatcher(
@@ -562,5 +584,10 @@ public class FIDO2BrowserSetupMFAChecker
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.model.User)"
+	)
+	private ModelResourcePermission<User> _userModelResourcePermission;
 
 }

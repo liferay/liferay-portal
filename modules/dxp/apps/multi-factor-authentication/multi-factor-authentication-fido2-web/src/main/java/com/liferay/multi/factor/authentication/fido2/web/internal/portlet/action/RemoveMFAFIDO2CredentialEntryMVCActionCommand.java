@@ -12,9 +12,12 @@ import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -50,14 +53,20 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
+		if (themeDisplay == null) {
+			throw new PrincipalException();
+		}
+
 		MFAFIDO2CredentialEntry mfaFIDO2CredentialEntry =
 			_mfaFIDO2CredentialEntryLocalService.getMFAFIDO2CredentialEntry(
 				ParamUtil.getLong(actionRequest, "mfaFIDO2CredentialEntryId"));
 
-		if ((themeDisplay == null) ||
-			(themeDisplay.getUserId() != mfaFIDO2CredentialEntry.getUserId())) {
+		if ((themeDisplay.getUserId() != mfaFIDO2CredentialEntry.getUserId()) &&
+			!_userModelResourcePermission.contains(
+				themeDisplay.getPermissionChecker(),
+				mfaFIDO2CredentialEntry.getUserId(), ActionKeys.IMPERSONATE)) {
 
-			throw new PrincipalException();
+			return;
 		}
 
 		try {
@@ -97,5 +106,10 @@ public class RemoveMFAFIDO2CredentialEntryMVCActionCommand
 
 	@Reference
 	private Portal _portal;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.model.User)"
+	)
+	private ModelResourcePermission<User> _userModelResourcePermission;
 
 }
