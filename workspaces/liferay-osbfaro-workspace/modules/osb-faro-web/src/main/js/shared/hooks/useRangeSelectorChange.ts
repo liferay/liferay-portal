@@ -23,5 +23,5 @@ export const useRangeSelectorChange = () => {
 		);
 	};
 
-	return handleRangeSelectorChange;
+	return {handleRangeSelectorChange};
 };

@@ -19,7 +19,7 @@ const MostEngagedIndividuals: React.FC = () => {
 
 	const rangeSelectors = useQueryRangeSelectors();
 
-	const handleRangeSelectorChange = useRangeSelectorChange();
+	const {handleRangeSelectorChange} = useRangeSelectorChange();
 
 	return (
 		<Card minHeight={260} testId="most-engaged-individuals">

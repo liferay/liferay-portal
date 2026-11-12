@@ -16,7 +16,7 @@ const AccountIndividuals: React.FC<IAccountIndividualsProps> = ({
 }) => {
 	const rangeSelectors = useQueryRangeSelectors();
 
-	const handleRangeSelectorChange = useRangeSelectorChange();
+	const {handleRangeSelectorChange} = useRangeSelectorChange();
 
 	return (
 		<Card className={classNames(className)} minHeight={300}>

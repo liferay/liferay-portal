@@ -41,7 +41,7 @@ const Campaigns: React.FC = () => {
 		},
 	});
 
-	const handleRangeSelectorChange = useRangeSelectorChange();
+	const {handleRangeSelectorChange} = useRangeSelectorChange();
 
 	const authorized = currentUser.isAdmin();
 

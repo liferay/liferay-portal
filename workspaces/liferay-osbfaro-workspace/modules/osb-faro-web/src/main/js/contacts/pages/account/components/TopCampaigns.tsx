@@ -32,7 +32,7 @@ const TopCampaigns: React.FC<ITopCampaignsProps> = ({accountName}) => {
 		...pickBy({accountId: id, accountName}),
 	};
 
-	const handleRangeSelectorChange = useRangeSelectorChange();
+	const {handleRangeSelectorChange} = useRangeSelectorChange();
 
 	return (
 		<Card minHeight={260} testId="top-campaigns">

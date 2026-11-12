@@ -21,7 +21,7 @@ describe('useRangeSelectorChange', () => {
 		let handleRangeSelectorChange;
 
 		const TestComponent = () => {
-			handleRangeSelectorChange = useRangeSelectorChange();
+			({handleRangeSelectorChange} = useRangeSelectorChange());
 
 			return null;
 		};

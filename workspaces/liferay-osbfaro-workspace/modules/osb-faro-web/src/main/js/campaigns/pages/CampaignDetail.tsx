@@ -27,7 +27,7 @@ const CampaignDetail: React.FC = () => {
 		variables: {channelId: channelId!, groupId: groupId!, id: id!},
 	});
 
-	const handleRangeSelectorChange = useRangeSelectorChange();
+	const {handleRangeSelectorChange} = useRangeSelectorChange();
 
 	// Empty until the campaign arrives. The title doubles as the last
 	// breadcrumb, so a placeholder would show up twice on the way in.
