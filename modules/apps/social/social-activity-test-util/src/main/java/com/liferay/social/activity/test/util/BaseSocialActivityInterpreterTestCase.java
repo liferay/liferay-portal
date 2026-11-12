@@ -161,7 +161,7 @@ public abstract class BaseSocialActivityInterpreterTestCase {
 		return false;
 	}
 
-	protected boolean isSupportsRename(String className) {
+	protected boolean isSupportsRename() {
 		return true;
 	}
 
@@ -265,9 +265,7 @@ public abstract class BaseSocialActivityInterpreterTestCase {
 			String title = activity.getExtraDataValue(
 				"title", serviceContext.getLocale());
 
-			if (!isSupportsRename(activity.getClassName()) ||
-				Validator.isNull(title)) {
-
+			if (!isSupportsRename() || Validator.isNull(title)) {
 				continue;
 			}
 

@@ -60,7 +60,7 @@ public class MBThreadActivityInterpreterTest
 	}
 
 	@Override
-	protected boolean isSupportsRename(String className) {
+	protected boolean isSupportsRename() {
 		return false;
 	}
 
