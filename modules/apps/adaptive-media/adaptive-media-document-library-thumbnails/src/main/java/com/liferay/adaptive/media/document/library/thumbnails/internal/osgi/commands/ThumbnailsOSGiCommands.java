@@ -63,7 +63,8 @@ public class ThumbnailsOSGiCommands implements OSGiCommands {
 		AtomicInteger count = new AtomicInteger();
 
 		_companyLocalService.forEachCompanyId(
-			companyId -> _countPendingThumbnails(companyId, count));
+			companyId -> _countPendingThumbnails(companyId, count),
+			_getCompanyIds(companyIds));
 
 		System.out.printf("%nTOTAL: %d%n", count.get());
 	}
