@@ -116,6 +116,9 @@ public class GetTrafficSourcesMVCResourceCommand
 		throws Exception {
 
 		Map<TrafficChannel.Type, TrafficChannel> emptyMap = HashMapBuilder.put(
+			TrafficChannel.Type.CHATBOT,
+			TrafficChannel.newInstance(0, 0.0, TrafficChannel.Type.CHATBOT)
+		).put(
 			TrafficChannel.Type.DIRECT,
 			TrafficChannel.newInstance(0, 0.0, TrafficChannel.Type.DIRECT)
 		).put(
@@ -139,6 +142,8 @@ public class GetTrafficSourcesMVCResourceCommand
 				"Invalid Analytics Connection");
 
 			return Arrays.asList(
+				TrafficChannel.newInstance(
+					portalException, TrafficChannel.Type.CHATBOT),
 				TrafficChannel.newInstance(
 					portalException, TrafficChannel.Type.DIRECT),
 				TrafficChannel.newInstance(
@@ -167,6 +172,8 @@ public class GetTrafficSourcesMVCResourceCommand
 			_log.error(portalException);
 
 			return Arrays.asList(
+				TrafficChannel.newInstance(
+					portalException, TrafficChannel.Type.CHATBOT),
 				TrafficChannel.newInstance(
 					portalException, TrafficChannel.Type.DIRECT),
 				TrafficChannel.newInstance(

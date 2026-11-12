@@ -208,6 +208,14 @@ public class TrafficChannel {
 
 	public enum Type {
 
+		CHATBOT {
+
+			@Override
+			public String toString() {
+				return "chatbot";
+			}
+
+		},
 		DIRECT {
 
 			@Override
@@ -260,6 +268,10 @@ public class TrafficChannel {
 	}
 
 	private String _getTitleKey() {
+		if (_type == Type.CHATBOT) {
+			return "ai-chatbot";
+		}
+
 		if (_type == Type.DIRECT) {
 			return "direct[traffic-channel]";
 		}
@@ -269,6 +281,10 @@ public class TrafficChannel {
 
 	private static final Map<Type, String> _helpMessageKeys =
 		HashMapBuilder.put(
+			Type.CHATBOT,
+			"this-is-the-number-of-page-views-generated-by-people-coming-to-" +
+				"your-page-from-ai-chatbots"
+		).put(
 			Type.DIRECT,
 			"this-is-the-number-of-page-views-generated-by-people-arriving-" +
 				"directly-to-your-page"

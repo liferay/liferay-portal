@@ -22,6 +22,7 @@ import EmptyPieChart from './EmptyPieChart';
 import Hint from './Hint';
 
 const COLORS_MAP = {
+	chatbot: '#9B6DFF',
 	direct: '#FF73C3',
 	organic: '#4B9FFF',
 	paid: '#FFB46E',
