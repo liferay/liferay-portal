@@ -343,12 +343,33 @@ public class FragmentEntryLinkLocalServiceUtil {
 			fragmentEntry, start, end, orderByComparator);
 	}
 
+	public static List<FragmentEntryLink>
+			getAllFragmentEntryLinksByFragmentEntry(
+				long groupId,
+				com.liferay.fragment.model.FragmentEntry fragmentEntry,
+				int start, int end,
+				OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException {
+
+		return getService().getAllFragmentEntryLinksByFragmentEntry(
+			groupId, fragmentEntry, start, end, orderByComparator);
+	}
+
 	public static int getAllFragmentEntryLinksCountByFragmentEntry(
 			com.liferay.fragment.model.FragmentEntry fragmentEntry)
 		throws PortalException {
 
 		return getService().getAllFragmentEntryLinksCountByFragmentEntry(
 			fragmentEntry);
+	}
+
+	public static int getAllFragmentEntryLinksCountByFragmentEntry(
+			long groupId,
+			com.liferay.fragment.model.FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		return getService().getAllFragmentEntryLinksCountByFragmentEntry(
+			groupId, fragmentEntry);
 	}
 
 	public static List<FragmentEntryLink>
@@ -362,12 +383,33 @@ public class FragmentEntryLinkLocalServiceUtil {
 			fragmentEntry, start, end, orderByComparator);
 	}
 
+	public static List<FragmentEntryLink>
+			getAllLayoutFragmentEntryLinksByFragmentEntry(
+				long groupId,
+				com.liferay.fragment.model.FragmentEntry fragmentEntry,
+				int start, int end,
+				OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException {
+
+		return getService().getAllLayoutFragmentEntryLinksByFragmentEntry(
+			groupId, fragmentEntry, start, end, orderByComparator);
+	}
+
 	public static int getAllLayoutFragmentEntryLinksCountByFragmentEntry(
 			com.liferay.fragment.model.FragmentEntry fragmentEntry)
 		throws PortalException {
 
 		return getService().getAllLayoutFragmentEntryLinksCountByFragmentEntry(
 			fragmentEntry);
+	}
+
+	public static int getAllLayoutFragmentEntryLinksCountByFragmentEntry(
+			long groupId,
+			com.liferay.fragment.model.FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		return getService().getAllLayoutFragmentEntryLinksCountByFragmentEntry(
+			groupId, fragmentEntry);
 	}
 
 	public static List<FragmentEntryLink>
@@ -383,6 +425,20 @@ public class FragmentEntryLinkLocalServiceUtil {
 				orderByComparator);
 	}
 
+	public static List<FragmentEntryLink>
+			getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntry(
+				long groupId,
+				com.liferay.fragment.model.FragmentEntry fragmentEntry,
+				int layoutPageTemplateType, int start, int end,
+				OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException {
+
+		return getService().
+			getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntry(
+				groupId, fragmentEntry, layoutPageTemplateType, start, end,
+				orderByComparator);
+	}
+
 	public static int
 			getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
 				com.liferay.fragment.model.FragmentEntry fragmentEntry,
@@ -392,6 +448,18 @@ public class FragmentEntryLinkLocalServiceUtil {
 		return getService().
 			getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
 				fragmentEntry, layoutPageTemplateType);
+	}
+
+	public static int
+			getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
+				long groupId,
+				com.liferay.fragment.model.FragmentEntry fragmentEntry,
+				int layoutPageTemplateType)
+		throws PortalException {
+
+		return getService().
+			getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
+				groupId, fragmentEntry, layoutPageTemplateType);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -702,4 +770,4 @@ public class FragmentEntryLinkLocalServiceUtil {
 			FragmentEntryLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1530852026
+// LIFERAY-SERVICE-BUILDER-HASH:1566799282

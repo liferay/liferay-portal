@@ -281,8 +281,19 @@ public interface FragmentEntryLinkLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<FragmentEntryLink> getAllFragmentEntryLinksByFragmentEntry(
+			long groupId, FragmentEntry fragmentEntry, int start, int end,
+			OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAllFragmentEntryLinksCountByFragmentEntry(
 			FragmentEntry fragmentEntry)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getAllFragmentEntryLinksCountByFragmentEntry(
+			long groupId, FragmentEntry fragmentEntry)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -293,8 +304,20 @@ public interface FragmentEntryLinkLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<FragmentEntryLink>
+			getAllLayoutFragmentEntryLinksByFragmentEntry(
+				long groupId, FragmentEntry fragmentEntry, int start, int end,
+				OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAllLayoutFragmentEntryLinksCountByFragmentEntry(
 			FragmentEntry fragmentEntry)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getAllLayoutFragmentEntryLinksCountByFragmentEntry(
+			long groupId, FragmentEntry fragmentEntry)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -306,8 +329,22 @@ public interface FragmentEntryLinkLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<FragmentEntryLink>
+			getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntry(
+				long groupId, FragmentEntry fragmentEntry,
+				int layoutPageTemplateType, int start, int end,
+				OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
 			FragmentEntry fragmentEntry, int layoutPageTemplateType)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
+			long groupId, FragmentEntry fragmentEntry,
+			int layoutPageTemplateType)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -525,4 +562,4 @@ public interface FragmentEntryLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1504279358
+// LIFERAY-SERVICE-BUILDER-HASH:-478354446
