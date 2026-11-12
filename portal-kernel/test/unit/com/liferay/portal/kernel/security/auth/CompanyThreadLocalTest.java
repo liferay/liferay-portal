@@ -156,6 +156,29 @@ public class CompanyThreadLocalTest {
 		}
 	}
 
+	@Test
+	public void testUnlock() {
+		try (SafeCloseable safeCloseable1 = CompanyThreadLocal.lock(
+				CompanyConstants.SYSTEM)) {
+
+			try (SafeCloseable safeCloseable2 = CompanyThreadLocal.unlock();
+				SafeCloseable safeCloseable3 =
+					CompanyThreadLocal.setCompanyIdWithSafeCloseable(1L)) {
+
+				Assert.assertEquals(
+					Long.valueOf(1), CompanyThreadLocal.getCompanyId());
+			}
+
+			Assert.assertTrue(CompanyThreadLocal.isLocked());
+		}
+
+		try (SafeCloseable safeCloseable = CompanyThreadLocal.unlock()) {
+			Assert.assertFalse(CompanyThreadLocal.isLocked());
+		}
+
+		Assert.assertFalse(CompanyThreadLocal.isLocked());
+	}
+
 	private void _testLock(Consumer<Long> consumer) {
 		try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
 				CompanyConstants.SYSTEM)) {
