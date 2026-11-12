@@ -18,6 +18,7 @@ import com.liferay.expando.kernel.service.persistence.ExpandoTablePersistence;
 import com.liferay.expando.kernel.util.ExpandoValueDeleteHandler;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -1187,16 +1188,29 @@ public class ExpandoValueLocalServiceImpl
 				table.getTableId(), columnNames.toArray(new String[0]));
 		}
 
+		if (columns.isEmpty()) {
+			return new HashMap<>();
+		}
+
 		Map<String, Serializable> attributeValues = new HashMap<>(
 			(int)(columnNames.size() * 1.4));
+
+		Map<Long, ExpandoValue> values = new HashMap<>();
+
+		for (ExpandoValue value :
+				expandoValuePersistence.findByT_C_C(
+					table.getTableId(),
+					TransformUtil.transformToLongArray(
+						columns, ExpandoColumn::getColumnId),
+					classPK)) {
+
+			values.put(value.getColumnId(), value);
+		}
 
 		for (ExpandoColumn column : columns) {
 			attributeValues.put(
 				column.getName(),
-				_getData(
-					column,
-					expandoValuePersistence.fetchByT_C_C(
-						table.getTableId(), column.getColumnId(), classPK)));
+				_getData(column, values.get(column.getColumnId())));
 		}
 
 		return attributeValues;
