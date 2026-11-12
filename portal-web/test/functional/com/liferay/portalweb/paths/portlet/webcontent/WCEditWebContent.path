@@ -244,11 +244,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>VIDEO_BUTTON</td>
-	<td>//a[contains(@class,'videoselector')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>WEB_CONTENT_ID</td>
 	<td>//input[contains(@id,'JournalPortlet_newArticleId')]</td>
 	<td></td>

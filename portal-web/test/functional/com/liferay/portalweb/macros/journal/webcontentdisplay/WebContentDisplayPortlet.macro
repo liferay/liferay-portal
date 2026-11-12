@@ -514,14 +514,8 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewContent(videoShortcutTitle = null, displayText = null, webContentTitle = null, imageFileName = null, webContentContent = null, audioFileName = null, pageName = null, url = null) {
-		if (isSet(audioFileName)) {
-			AssertElementPresent(
-				key_audioFileName = ${audioFileName},
-				key_webContentTitle = ${webContentTitle},
-				locator1 = "WCD#WEB_CONTENT_AUDIO");
-		}
-		else if (isSet(imageFileName)) {
+	macro viewContent(videoShortcutTitle = null, displayText = null, webContentTitle = null, imageFileName = null, webContentContent = null, pageName = null, url = null) {
+		if (isSet(imageFileName)) {
 			AssertElementPresent(
 				key_imageFileName = ${imageFileName},
 				key_webContentTitle = ${webContentTitle},
@@ -584,30 +578,6 @@ definition {
 		AssertElementNotPresent(
 			key_portletName = "Web Content Display",
 			locator1 = "Portlet#BODY");
-	}
-
-	@summary = "Default summary"
-	macro viewContentPageBreak(webContentContent = null) {
-		Click(
-			key_pageNumber = 2,
-			locator1 = "Pagination#ANY_PAGE");
-
-		AssertTextEquals.assertPartialText(
-			index = 1,
-			locator1 = "WCD#WEB_CONTENT_CONTENT",
-			value1 = ${webContentContent});
-
-		Click(locator1 = "Pagination#PREVIOUS_LINK");
-	}
-
-	@summary = "Default summary"
-	macro viewEnabledFileTypes(fileTypeList = null) {
-		for (var fileType : list ${fileTypeList}) {
-			AssertTextEquals.assertPartialText(
-				key_fileType = ${fileType},
-				locator1 = "WCD#DOCUMENT_CONVERSION_TYPE",
-				value1 = ${fileType});
-		}
 	}
 
 	@summary = "Default summary"

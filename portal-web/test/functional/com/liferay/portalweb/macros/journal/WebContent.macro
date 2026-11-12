@@ -2069,31 +2069,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro uploadVideo(navTab = null, videoShortcutTitle = null, dmDocumentURL = null, videoShortcutPreview = null) {
-		Click(locator1 = "WCEditWebContent#VIDEO_BUTTON");
-
-		if (${navTab} == "URL") {
-			ItemSelector.addVideoFromURL(
-				navTab = ${navTab},
-				videoSourceURL = ${dmDocumentURL});
-		}
-		else if (${navTab} == "Documents and Media") {
-			ItemSelector.addVideoFromDM(
-				navTab = ${navTab},
-				videoShortcutPreview = ${videoShortcutPreview},
-				videoShortcutTitle = ${videoShortcutTitle});
-		}
-
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Content",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-		AssertElementPresent(locator1 = "CKEditor#CONTENT_VIDEO_LINK_IMAGE");
-
-		IFrame.selectTopFrame();
-	}
-
-	@summary = "Default summary"
 	macro viewApprovedStatus(webContentTitle = null) {
 		var key_webContentTitle = ${webContentTitle};
 
