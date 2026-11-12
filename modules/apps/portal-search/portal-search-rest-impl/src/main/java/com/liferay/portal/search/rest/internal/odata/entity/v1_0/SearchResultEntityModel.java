@@ -28,6 +28,7 @@ public class SearchResultEntityModel implements EntityModel {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(
 			new BooleanEntityField(
 				"cmpProjectTask", locale -> "cmpProjectTask"),
+			new BooleanEntityField("cmpSubtask", locale -> "cmpSubtask"),
 			new BooleanEntityField("cmsRoot", locale -> "cms_root"),
 			new BooleanEntityField("cmsTask", locale -> "cmsTask"),
 			new BooleanEntityField("completed", locale -> "completed"),
@@ -104,6 +105,8 @@ public class SearchResultEntityModel implements EntityModel {
 				locale -> Field.ENTRY_CLASS_NAME,
 				locale -> Field.ENTRY_CLASS_NAME,
 				value -> PortalUtil.getClassName(GetterUtil.getLong(value))),
+			new IntegerEntityField(
+				"cmpParentTaskId", locale -> "cmpParentTaskId"),
 			new IntegerEntityField(
 				"cmpProjectManagerUserId", locale -> "cmpProjectManagerUserId"),
 			new IntegerEntityField(
