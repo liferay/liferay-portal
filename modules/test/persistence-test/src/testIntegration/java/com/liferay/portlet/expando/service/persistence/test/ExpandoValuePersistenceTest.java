@@ -223,6 +223,14 @@ public class ExpandoValuePersistenceTest {
 	}
 
 	@Test
+	public void testCountByT_C_CArrayable() throws Exception {
+		_persistence.countByT_C_C(
+			RandomTestUtil.nextLong(),
+			new long[] {RandomTestUtil.nextLong(), 0L},
+			RandomTestUtil.nextLong());
+	}
+
+	@Test
 	public void testCountByT_C_D() throws Exception {
 		_persistence.countByT_C_D(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "");
@@ -581,4 +589,4 @@ public class ExpandoValuePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1943021515
+// LIFERAY-SERVICE-BUILDER-HASH:1497953509

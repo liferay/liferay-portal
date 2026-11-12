@@ -628,6 +628,32 @@ public class ExpandoValueUtil {
 	}
 
 	/**
+	 * Returns an ordered range of all the expando values where tableId = &#63; and columnId = &#63; and classPK = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.expando.model.impl.ExpandoValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param tableId the table ID
+	 * @param columnIds the column IDs
+	 * @param classPK the class pk
+	 * @param start the lower bound of the range of expando values
+	 * @param end the upper bound of the range of expando values (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching expando values
+	 */
+	public static List<ExpandoValue> findByT_C_C(
+		long tableId, long[] columnIds, long classPK, int start, int end,
+		OrderByComparator<ExpandoValue> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByT_C_C(
+			tableId, columnIds, classPK, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
 	 * Returns the expando value where tableId = &#63; and columnId = &#63; and classPK = &#63; or throws a <code>NoSuchValueException</code> if it could not be found.
 	 *
 	 * @param tableId the table ID
@@ -684,6 +710,20 @@ public class ExpandoValueUtil {
 	 */
 	public static int countByT_C_C(long tableId, long columnId, long classPK) {
 		return getPersistence().countByT_C_C(tableId, columnId, classPK);
+	}
+
+	/**
+	 * Returns the number of expando values where tableId = &#63; and columnId = any &#63; and classPK = &#63;.
+	 *
+	 * @param tableId the table ID
+	 * @param columnIds the column IDs
+	 * @param classPK the class pk
+	 * @return the number of matching expando values
+	 */
+	public static int countByT_C_C(
+		long tableId, long[] columnIds, long classPK) {
+
+		return getPersistence().countByT_C_C(tableId, columnIds, classPK);
 	}
 
 	/**
@@ -1150,6 +1190,64 @@ public class ExpandoValueUtil {
 	}
 
 	/**
+	 * Returns all the expando values where tableId = &#63; and columnId = any &#63; and classPK = &#63;.
+	 *
+	 * @param tableId the table ID
+	 * @param columnIds the column IDs
+	 * @param classPK the class pk
+	 * @return the matching expando values
+	 */
+	public static List<ExpandoValue> findByT_C_C(
+		long tableId, long[] columnIds, long classPK) {
+
+		return getPersistence().findByT_C_C(tableId, columnIds, classPK);
+	}
+
+	/**
+	 * Returns a range of all the expando values where tableId = &#63; and columnId = any &#63; and classPK = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.expando.model.impl.ExpandoValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param tableId the table ID
+	 * @param columnIds the column IDs
+	 * @param classPK the class pk
+	 * @param start the lower bound of the range of expando values
+	 * @param end the upper bound of the range of expando values (not inclusive)
+	 * @return the range of matching expando values
+	 */
+	public static List<ExpandoValue> findByT_C_C(
+		long tableId, long[] columnIds, long classPK, int start, int end) {
+
+		return getPersistence().findByT_C_C(
+			tableId, columnIds, classPK, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the expando values where tableId = &#63; and columnId = any &#63; and classPK = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.expando.model.impl.ExpandoValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param tableId the table ID
+	 * @param columnIds the column IDs
+	 * @param classPK the class pk
+	 * @param start the lower bound of the range of expando values
+	 * @param end the upper bound of the range of expando values (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching expando values
+	 */
+	public static List<ExpandoValue> findByT_C_C(
+		long tableId, long[] columnIds, long classPK, int start, int end,
+		OrderByComparator<ExpandoValue> orderByComparator) {
+
+		return getPersistence().findByT_C_C(
+			tableId, columnIds, classPK, start, end, orderByComparator);
+	}
+
+	/**
 	 * Returns all the expando values where tableId = &#63; and columnId = &#63; and data = &#63;.
 	 *
 	 * @param tableId the table ID
@@ -1218,4 +1316,4 @@ public class ExpandoValueUtil {
 	private static volatile ExpandoValuePersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:176057898
+// LIFERAY-SERVICE-BUILDER-HASH:-519765797

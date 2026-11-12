@@ -20,10 +20,12 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelperUtil;
+import com.liferay.portal.kernel.service.persistence.impl.ArrayableFinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -670,8 +672,38 @@ public class ExpandoValuePersistenceImpl
 			new Object[] {classNameId, classPK});
 	}
 
+	private CollectionPersistenceFinder<ExpandoValue, NoSuchValueException>
+		_collectionPersistenceFinderByT_C_C;
 	private UniquePersistenceFinder<ExpandoValue, NoSuchValueException>
 		_uniquePersistenceFinderByT_C_C;
+
+	/**
+	 * Returns an ordered range of all the expando values where tableId = &#63; and columnId = &#63; and classPK = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ExpandoValueModelImpl</code>.
+	 * </p>
+	 *
+	 * @param tableId the table ID
+	 * @param columnIds the column IDs
+	 * @param classPK the class pk
+	 * @param start the lower bound of the range of expando values
+	 * @param end the upper bound of the range of expando values (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching expando values
+	 */
+	@Override
+	public List<ExpandoValue> findByT_C_C(
+		long tableId, long[] columnIds, long classPK, int start, int end,
+		OrderByComparator<ExpandoValue> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByT_C_C.find(
+			FinderCacheUtil.getFinderCache(),
+			new Object[] {tableId, ArrayUtil.sortedUnique(columnIds), classPK},
+			start, end, orderByComparator, useFinderCache);
+	}
 
 	/**
 	 * Returns the expando value where tableId = &#63; and columnId = &#63; and classPK = &#63; or throws a <code>NoSuchValueException</code> if it could not be found.
@@ -736,9 +768,24 @@ public class ExpandoValuePersistenceImpl
 	 */
 	@Override
 	public int countByT_C_C(long tableId, long columnId, long classPK) {
-		return _uniquePersistenceFinderByT_C_C.count(
+		return _collectionPersistenceFinderByT_C_C.count(
 			FinderCacheUtil.getFinderCache(),
-			new Object[] {tableId, columnId, classPK});
+			new Object[] {tableId, new long[] {columnId}, classPK});
+	}
+
+	/**
+	 * Returns the number of expando values where tableId = &#63; and columnId = any &#63; and classPK = &#63;.
+	 *
+	 * @param tableId the table ID
+	 * @param columnIds the column IDs
+	 * @param classPK the class pk
+	 * @return the number of matching expando values
+	 */
+	@Override
+	public int countByT_C_C(long tableId, long[] columnIds, long classPK) {
+		return _collectionPersistenceFinderByT_C_C.count(
+			FinderCacheUtil.getFinderCache(),
+			new Object[] {tableId, ArrayUtil.sortedUnique(columnIds), classPK});
 	}
 
 	private CollectionPersistenceFinder<ExpandoValue, NoSuchValueException>
@@ -1295,6 +1342,43 @@ public class ExpandoValuePersistenceImpl
 				"expandoValue.", "classPK", FinderColumn.Type.LONG, "=", true,
 				true, ExpandoValue::getClassPK));
 
+		_collectionPersistenceFinderByT_C_C = new CollectionPersistenceFinder<>(
+			this,
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByT_C_C",
+				new String[] {
+					Long.class.getName(), Long.class.getName(),
+					Long.class.getName(), Integer.class.getName(),
+					Integer.class.getName(), OrderByComparator.class.getName()
+				},
+				new String[] {"tableId", "columnId", "classPK"}, true),
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByT_C_C",
+				new String[] {
+					Long.class.getName(), Long.class.getName(),
+					Long.class.getName()
+				},
+				new String[] {"tableId", "columnId", "classPK"}, true),
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByT_C_C",
+				new String[] {
+					Long.class.getName(), Long.class.getName(),
+					Long.class.getName()
+				},
+				new String[] {"tableId", "columnId", "classPK"}, false),
+			_SQL_SELECT_EXPANDOVALUE_WHERE, _SQL_COUNT_EXPANDOVALUE_WHERE,
+			ExpandoValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+			_uniquePersistenceFinderByT_C_C,
+			new FinderColumn<>(
+				"expandoValue.", "tableId", FinderColumn.Type.LONG, "=", true,
+				true, ExpandoValue::getTableId),
+			new ArrayableFinderColumn<>(
+				"expandoValue.", "columnId", FinderColumn.Type.LONG, "=", false,
+				true, true, ExpandoValue::getColumnId),
+			new FinderColumn<>(
+				"expandoValue.", "classPK", FinderColumn.Type.LONG, "=", true,
+				true, ExpandoValue::getClassPK));
+
 		_collectionPersistenceFinderByT_C_D = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1364,4 +1448,4 @@ public class ExpandoValuePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1194283269
+// LIFERAY-SERVICE-BUILDER-HASH:747820820
