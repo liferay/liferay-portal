@@ -12,17 +12,15 @@
 <aui:script use="aui-alert">
 	var alertNode = A.one('#<%= id %>');
 
-	new A.Alert(
-		{
-			animated: <%= animated %>,
-			closeable: <%= closeable %>,
-			cssClass: null,
-			destroyOnHide: <%= destroyOnHide %>,
-			duration: <%= duration %>,
-			render: true,
-			srcNode: alertNode
-		}
-	);
+	new A.Alert({
+		animated: <%= animated %>,
+		closeable: <%= closeable %>,
+		cssClass: null,
+		destroyOnHide: <%= destroyOnHide %>,
+		duration: <%= duration %>,
+		render: true,
+		srcNode: alertNode,
+	});
 
 	if (<%= animated %>) {
 		alertNode.show();

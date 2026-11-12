@@ -273,7 +273,7 @@
 
 						var connectionMessages = A.one('#connectionMessages');
 
-						var toggleDatabaseOptions = function(showDefault, event) {
+						var toggleDatabaseOptions = function (showDefault, event) {
 							if (event) {
 								event.preventDefault();
 							}
@@ -291,33 +291,30 @@
 							basicConfiguration.toggle(showDefault);
 						};
 
-						databaseSelector.on(
-							'focus',
-							function () {
-								addSampleData.removeAttribute('disabled');
-							}
-						);
+						databaseSelector.on('focus', function () {
+							addSampleData.removeAttribute('disabled');
+						});
 
-						jdbcDefaultURL.on(
-							'focus',
-							function () {
-								addSampleData.removeAttribute('disabled');
-							}
-						);
+						jdbcDefaultURL.on('focus', function () {
+							addSampleData.removeAttribute('disabled');
+						});
 
-						jdbcDefaultUserName.on(
-							'focus',
-							function () {
-								addSampleData.removeAttribute('disabled');
-							}
-						);
+						jdbcDefaultUserName.on('focus', function () {
+							addSampleData.removeAttribute('disabled');
+						});
 
 						if (customDatabaseOptionsLink) {
-							customDatabaseOptionsLink.on('click', A.bind(toggleDatabaseOptions, null, false));
+							customDatabaseOptionsLink.on(
+								'click',
+								A.bind(toggleDatabaseOptions, null, false)
+							);
 						}
 
 						if (defaultDatabaseOptionsLink) {
-							defaultDatabaseOptionsLink.on('click', A.bind(toggleDatabaseOptions, null, true));
+							defaultDatabaseOptionsLink.on(
+								'click',
+								A.bind(toggleDatabaseOptions, null, true)
+							);
 						}
 
 						var onChangeDatabaseSelector = function () {
@@ -334,24 +331,24 @@
 
 						databaseSelector.on('change', onChangeDatabaseSelector);
 
-						A.one('#changeLanguageButton').on(
-							'click',
-							function(event) {
-								command.val('<%= Constants.TRANSLATE %>');
+						A.one('#changeLanguageButton').on('click', function (event) {
+							command.val('<%= Constants.TRANSLATE %>');
 
-								setupForm.submit();
-							}
-						);
+							setupForm.submit();
+						});
 
-						var loadingMask = new A.LoadingMask(
-							{
-								'strings.loading': '<%= UnicodeLanguageUtil.get(request, "liferay-is-being-installed") %>',
-								target: A.one('#main-content')
-							}
-						);
+						var loadingMask = new A.LoadingMask({
+							'strings.loading':
+								'<%= UnicodeLanguageUtil.get(request, "liferay-is-being-installed") %>',
+							'target': A.one('#main-content'),
+						});
 
-						var updateMessage = function(message) {
-							connectionMessages.html('<div class="alert alert-danger"><span class="alert-indicator"><svg aria-hidden="true" class="lexicon-icon lexicon-icon-exclamation-full"><use xlink:href="<%= themeDisplay.getPathThemeSpritemap() %>#exclamation-full"></use></svg></span><strong class="lead"><liferay-ui:message key="error-colon" /></strong>' + message + '</div>');
+						var updateMessage = function (message) {
+							connectionMessages.html(
+								'<div class="alert alert-danger"><span class="alert-indicator"><svg aria-hidden="true" class="lexicon-icon lexicon-icon-exclamation-full"><use xlink:href="<%= themeDisplay.getPathThemeSpritemap() %>#exclamation-full"></use></svg></span><strong class="lead"><liferay-ui:message key="error-colon" /></strong>' +
+									message +
+									'</div>'
+							);
 						};
 
 						var startInstall = function () {
@@ -360,7 +357,7 @@
 							loadingMask.show();
 						};
 
-						var updateConfiguration = function(event) {
+						var updateConfiguration = function (event) {
 							var form = document.fm;
 
 							if (defaultDatabase.val() == 'true') {
@@ -375,18 +372,14 @@
 
 								startInstall();
 
-								Liferay.Util.fetch(
-									form.action,
-									{
-										body: new FormData(form),
-										method: 'POST'
-									}
-								).then(
-									function(response) {
+								Liferay.Util.fetch(form.action, {
+									body: new FormData(form),
+									method: 'POST',
+								})
+									.then(function (response) {
 										return response.json();
-									}
-								).then(
-									function(responseData) {
+									})
+									.then(function (responseData) {
 										command.val('<%= Constants.UPDATE %>');
 
 										if (!responseData.success) {
@@ -397,14 +390,14 @@
 										else {
 											submitForm(form);
 										}
-									}
-								).catch(
-									function () {
+									})
+									.catch(function () {
 										loadingMask.hide();
 
-										updateMessage('<%= UnicodeLanguageUtil.get(request, "an-unexpected-error-occurred-while-connecting-to-the-database") %>');
-									}
-								);
+										updateMessage(
+											'<%= UnicodeLanguageUtil.get(request, "an-unexpected-error-occurred-while-connecting-to-the-database") %>'
+										);
+									});
 							}
 						};
 					</aui:script>

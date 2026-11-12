@@ -12,48 +12,45 @@ String collapsed = HtmlUtil.escapeJS(GetterUtil.getString(SessionClicks.get(requ
 <div id="liferayJSConsole"></div>
 
 <aui:script>
-	AUI().use(
-		'console',
-		'console-filters',
-		function(A) {
-			var maxHeight = '300px';
-			var autoHeight = 'auto';
+	AUI().use('console', 'console-filters', function (A) {
+		var maxHeight = '300px';
+		var autoHeight = 'auto';
 
-			var Console = new A.Console(
-				{
-					after: {
-						collapsedChange: function(event) {
-							var instance = this;
+		var Console = new A.Console({
+			after: {
+				collapsedChange: function (event) {
+					var instance = this;
 
-							var height = maxHeight;
+					var height = maxHeight;
 
-							if (event.newVal) {
-								height = autoHeight;
-							}
+					if (event.newVal) {
+						height = autoHeight;
+					}
 
-							instance.set('height', height);
+					instance.set('height', height);
 
-							Liferay.Util.Session.set('liferay_js_console_collapsed', String(event.newVal));
-						}
-					},
-					collapsed: <%= collapsed %>,
-					height: (<%= collapsed %>) ? autoHeight : maxHeight,
-					logSource: A.Global,
-					newestOnTop: false,
-					plugins: [A.Plugin.ConsoleFilters],
-					strings: {
-						clear: '<%= UnicodeLanguageUtil.get(request, "clear") %>',
-						collapse: '<%= UnicodeLanguageUtil.get(request, "collapse") %>',
-						expand: '<%= UnicodeLanguageUtil.get(request, "expand") %>',
-						pause: '<%= UnicodeLanguageUtil.get(request, "pause") %>',
-						title: '<%= UnicodeLanguageUtil.get(request, "console") %>'
-					},
-					style: 'block',
-					width: '100%'
-				}
-			).render('#liferayJSConsole');
+					Liferay.Util.Session.set(
+						'liferay_js_console_collapsed',
+						String(event.newVal)
+					);
+				},
+			},
+			collapsed: <%= collapsed %>,
+			height: <%= collapsed %> ? autoHeight : maxHeight,
+			logSource: A.Global,
+			newestOnTop: false,
+			plugins: [A.Plugin.ConsoleFilters],
+			strings: {
+				clear: '<%= UnicodeLanguageUtil.get(request, "clear") %>',
+				collapse: '<%= UnicodeLanguageUtil.get(request, "collapse") %>',
+				expand: '<%= UnicodeLanguageUtil.get(request, "expand") %>',
+				pause: '<%= UnicodeLanguageUtil.get(request, "pause") %>',
+				title: '<%= UnicodeLanguageUtil.get(request, "console") %>',
+			},
+			style: 'block',
+			width: '100%',
+		}).render('#liferayJSConsole');
 
-			Liferay.Console = Console;
-		}
-	);
+		Liferay.Console = Console;
+	});
 </aui:script>

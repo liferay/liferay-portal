@@ -333,22 +333,21 @@ boolean choiceField = checkboxField || radioField;
 					<aui:script use="resize-base">
 						var textareaNode = A.one('#<%= namespace + id %>');
 
-						var resizeInstance = new A.Resize(
-							{
-								after: {
-									end: function (event) {
-										Liferay.Util.Session.set(
-											'<%= _TEXTAREA_WIDTH_HEIGHT_PREFIX %><%= namespace + id %>',
-											textareaNode.getStyle('height') +
-												',' +
-												textareaNode.getStyle('width')
-										);
-									},
+						var resizeInstance = new A.Resize({
+							after: {
+								end: function (event) {
+									Liferay.Util.Session.set(
+										'<%= _TEXTAREA_WIDTH_HEIGHT_PREFIX %><%= namespace + id %>',
+										textareaNode.getStyle('height') +
+											',' +
+											textareaNode.getStyle('width')
+									);
 								},
-								autoHide: true,
-								handles: 'r, br, b',
-								node: textareaNode,
-							});
+							},
+							autoHide: true,
+							handles: 'r, br, b',
+							node: textareaNode,
+						});
 
 						textareaNode.setData('resizeInstance', resizeInstance);
 					</aui:script>

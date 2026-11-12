@@ -52,16 +52,15 @@
 				rememberCheckBoxState = '<%= rowChecker.getRememberCheckBoxStateURLRegex() %>';
 			</c:if>
 
-			plugins.push(
-				{
-					cfg: {
-						keepSelection: rememberCheckBoxState,
-						rowClassNameActive: '<%= displayStyle.equals(SearchIteratorTag.DEFAULT_DISPLAY_STYLE) ? "table-active" : "active" %>',
-						rowSelector: rowSelector
-					},
-					fn: A.Plugin.SearchContainerSelect
-				}
-			);
+			plugins.push({
+				cfg: {
+					keepSelection: rememberCheckBoxState,
+					rowClassNameActive:
+						'<%= displayStyle.equals(SearchIteratorTag.DEFAULT_DISPLAY_STYLE) ? "table-active" : "active" %>',
+					rowSelector: rowSelector,
+				},
+				fn: A.Plugin.SearchContainerSelect,
+			});
 		</c:if>
 
 		<c:if test="<%= rowMover != null %>">
@@ -69,20 +68,16 @@
 
 			rowMoverConfig.rowSelector = rowSelector + rowMoverConfig.rowSelector;
 
-			plugins.push(
-				{
-					cfg: rowMoverConfig,
-					fn: A.Plugin.SearchContainerMove
-				}
-			);
+			plugins.push({
+				cfg: rowMoverConfig,
+				fn: A.Plugin.SearchContainerMove,
+			});
 		</c:if>
 
-		var searchContainer = new Liferay.SearchContainer(
-			{
-				id: '<%= namespace + id %>',
-				plugins: plugins
-			}
-		).render();
+		var searchContainer = new Liferay.SearchContainer({
+			id: '<%= namespace + id %>',
+			plugins: plugins,
+		}).render();
 
 		<c:if test="<%= fixedHeader && displayStyle.equals(SearchIteratorTag.DEFAULT_DISPLAY_STYLE) %>">
 			var inModal = window !== Liferay.Util.getOpener();
@@ -90,35 +85,58 @@
 			var initFixedHeaderSync = function () {
 				var contentBox = searchContainer.get('contentBox');
 
-				var fixedHeader = document.getElementById('<%= namespace + id %>fixedHeader');
-				var innerWrapper = document.getElementById('<%= namespace + id %>innerWrapper');
-				var tableResponsive = document.getElementById('<%= namespace + id %>tableResponsive');
+				var fixedHeader = document.getElementById(
+					'<%= namespace + id %>fixedHeader'
+				);
+				var innerWrapper = document.getElementById(
+					'<%= namespace + id %>innerWrapper'
+				);
+				var tableResponsive = document.getElementById(
+					'<%= namespace + id %>tableResponsive'
+				);
 
 				if (contentBox) {
 					var mainContent = contentBox.ancestor('#main-content');
-					var horizontalScrollingContainer = document.querySelector('.lfr-search-container-fixed-first-column .table-responsive');
-					var fixedHeaderScrollingContainer = document.querySelector('.lfr-search-iterator-fixed-header-inner-wrapper');
+					var horizontalScrollingContainer = document.querySelector(
+						'.lfr-search-container-fixed-first-column .table-responsive'
+					);
+					var fixedHeaderScrollingContainer = document.querySelector(
+						'.lfr-search-iterator-fixed-header-inner-wrapper'
+					);
 
-					if (mainContent && horizontalScrollingContainer && fixedHeaderScrollingContainer) {
-						var verticalScrollingContainer = inModal ? mainContent._node : window;
+					if (
+						mainContent &&
+						horizontalScrollingContainer &&
+						fixedHeaderScrollingContainer
+					) {
+						var verticalScrollingContainer = inModal
+							? mainContent._node
+							: window;
 
 						var table = fixedHeader.parentElement.parentElement;
-						var trDomRect = fixedHeader.previousElementSibling.getBoundingClientRect();
+						var trDomRect =
+							fixedHeader.previousElementSibling.getBoundingClientRect();
 
-						var syncScrollingContainers = function(event) {
-							fixedHeaderScrollingContainer.scrollLeft = horizontalScrollingContainer.scrollLeft;
+						var syncScrollingContainers = function (event) {
+							fixedHeaderScrollingContainer.scrollLeft =
+								horizontalScrollingContainer.scrollLeft;
 
-							innerWrapper.style.width = tableResponsive.getBoundingClientRect().width + 'px';
-						}
+							innerWrapper.style.width =
+								tableResponsive.getBoundingClientRect().width + 'px';
+						};
 
-						var fixedHeaderEventHandler = function(event) {
+						var fixedHeaderEventHandler = function (event) {
 							var scrollTop = verticalScrollingContainer.scrollTop;
 
-							var trDomRect = fixedHeader.previousElementSibling.getBoundingClientRect();
+							var trDomRect =
+								fixedHeader.previousElementSibling.getBoundingClientRect();
 
-							var trDomRecTop = (trDomRect.top + 80);
+							var trDomRecTop = trDomRect.top + 80;
 
-							if (fixedHeader.classList.contains('hide') && (scrollTop >= trDomRecTop)) {
+							if (
+								fixedHeader.classList.contains('hide') &&
+								scrollTop >= trDomRecTop
+							) {
 								fixedHeader.classList.remove('hide');
 
 								syncScrollingContainers();
@@ -128,27 +146,36 @@
 							}
 						};
 
-						verticalScrollingContainer.addEventListener('scroll', fixedHeaderEventHandler);
-
-						horizontalScrollingContainer.addEventListener('scroll', syncScrollingContainers);
-
-						Liferay.on(
-							'destroyPortlet',
-							function () {
-								verticalScrollingContainer.removeEventListener('scroll', fixedHeaderEventHandler);
-								horizontalScrollingContainer.removeEventListener('scroll', syncScrollingContainers);
-							}
+						verticalScrollingContainer.addEventListener(
+							'scroll',
+							fixedHeaderEventHandler
 						);
+
+						horizontalScrollingContainer.addEventListener(
+							'scroll',
+							syncScrollingContainers
+						);
+
+						Liferay.on('destroyPortlet', function () {
+							verticalScrollingContainer.removeEventListener(
+								'scroll',
+								fixedHeaderEventHandler
+							);
+							horizontalScrollingContainer.removeEventListener(
+								'scroll',
+								syncScrollingContainers
+							);
+						});
 					}
 				}
-			}
+			};
 
 			initFixedHeaderSync();
 		</c:if>
 
 		searchContainer.updateDataStore(<%= primaryKeysJSONArray.toString() %>);
 
-		var destroySearchContainer = function(event) {
+		var destroySearchContainer = function (event) {
 			if (event.portletId === '<%= portletDisplay.getRootPortletId() %>') {
 				searchContainer.destroy();
 

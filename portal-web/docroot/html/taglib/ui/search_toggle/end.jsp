@@ -21,42 +21,37 @@
 	var simpleNode = A.one('#<%= id %>simple');
 	var toggleAdvancedNode = A.one('#<%= id %>toggleAdvanced');
 
-	var toggleDisabled = function(state) {
+	var toggleDisabled = function (state) {
 		Util.toggleDisabled(simpleNode.all('input'), state);
 		Util.toggleDisabled(advancedNode.all('input'), !state);
 	};
 
-	var toggler = new A.Toggler(
-		{
-			animated: true,
-			content: advancedNode,
-			expanded: <%= displayTerms.isAdvancedSearch() %>,
-			header: toggleAdvancedNode,
-			transition: {
-				duration: 0.2,
-				easing: 'cubic-bezier(0, 0.1, 0, 1.0)'
-			}
+	var toggler = new A.Toggler({
+		animated: true,
+		content: advancedNode,
+		expanded: <%= displayTerms.isAdvancedSearch() %>,
+		header: toggleAdvancedNode,
+		transition: {
+			duration: 0.2,
+			easing: 'cubic-bezier(0, 0.1, 0, 1.0)',
+		},
+	});
+
+	toggler.on('expandedChange', function () {
+		var expanded = !toggler.get('expanded');
+
+		advancedSearchNode.val(expanded);
+
+		toggleDisabled(expanded);
+
+		var inputNode = keywordsNode;
+
+		if (expanded) {
+			inputNode = advancedNode.one('input:text');
 		}
-	);
 
-	toggler.on(
-		'expandedChange',
-		function () {
-			var expanded = !toggler.get('expanded');
-
-			advancedSearchNode.val(expanded);
-
-			toggleDisabled(expanded);
-
-			var inputNode = keywordsNode;
-
-			if (expanded) {
-				inputNode = advancedNode.one('input:text');
-			}
-
-			Util.focusFormField(inputNode);
-		}
-	);
+		Util.focusFormField(inputNode);
+	});
 
 	closeAdvancedNode.on('click', A.fn(0, 'toggle', toggler));
 </aui:script>

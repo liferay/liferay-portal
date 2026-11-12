@@ -351,7 +351,9 @@ if (iteratorURL != null) {
 		(function () {
 			var form = document.<%= rowChecker.getFormName() %>;
 
-			var allRowsIdCheckbox = form.querySelector('#<%= namespace + id %>SearchContainer input[name="<%= rowChecker.getAllRowsId() %>"]');
+			var allRowsIdCheckbox = form.querySelector(
+				'#<%= namespace + id %>SearchContainer input[name="<%= rowChecker.getAllRowsId() %>"]'
+			);
 
 			if (allRowsIdCheckbox) {
 				allRowsIdCheckbox.checked = true;
@@ -364,11 +366,9 @@ if (iteratorURL != null) {
 	<input id="<%= namespace + id %>PrimaryKeys" name="<%= namespace + id %>PrimaryKeys" type="hidden" value="" />
 
 	<aui:script use="liferay-search-container">
-		var searchContainer = new Liferay.SearchContainer(
-			{
-				id: '<%= namespace + id %>'
-			}
-		).render();
+		var searchContainer = new Liferay.SearchContainer({
+			id: '<%= namespace + id %>',
+		}).render();
 
 		searchContainer.updateDataStore(<%= primaryKeysJSONArray.toString() %>);
 	</aui:script>
