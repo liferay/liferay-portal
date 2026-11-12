@@ -9,16 +9,19 @@ import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.model.Account;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStage;
+import com.liferay.osb.faro.engine.client.model.Campaign;
 import com.liferay.osb.faro.engine.client.model.Individual;
 import com.liferay.osb.faro.engine.client.model.Metric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
+import com.liferay.osb.faro.web.internal.model.display.contacts.CampaignDisplay;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +73,63 @@ public class AccountFaroControllerTest {
 			metrics,
 			_accountFaroController.getAccountOverviewMetrics(
 				groupId, id, channelId));
+
+		Mockito.verify(
+			_faroProjectLocalService
+		).getFaroProjectByGroupId(
+			groupId
+		);
+	}
+
+	@Test
+	public void testGetCampaignsFaroFDSResultsDisplay() throws Exception {
+		long channelId = RandomTestUtil.randomLong();
+		String id = RandomTestUtil.randomString();
+		int pageSize = RandomTestUtil.randomInt();
+		String rangeEnd = RandomTestUtil.randomString();
+		Integer rangeKey = RandomTestUtil.randomInt();
+		String rangeStart = RandomTestUtil.randomString();
+
+		Campaign campaign = new Campaign();
+
+		campaign.setId(RandomTestUtil.randomString());
+		campaign.setIndividualsTouched(RandomTestUtil.randomLong());
+		campaign.setLastTouchDate(new Date());
+
+		Mockito.when(
+			_contactsEngineClient.getTopCampaigns(
+				_faroProject, channelId, "accountId eq '" + id + "'", rangeEnd,
+				rangeKey, rangeStart, pageSize)
+		).thenReturn(
+			Collections.singletonList(campaign)
+		);
+
+		long groupId = RandomTestUtil.randomLong();
+		int page = RandomTestUtil.randomInt();
+
+		FaroFDSResultsDisplay<Campaign> faroFDSResultsDisplay =
+			_accountFaroController.getCampaignsFaroFDSResultsDisplay(
+				groupId, id, channelId, rangeEnd, rangeKey, rangeStart, page,
+				pageSize);
+
+		Assert.assertEquals(1, faroFDSResultsDisplay.getTotalCount());
+
+		List<?> items = faroFDSResultsDisplay.getItems();
+
+		Assert.assertEquals(items.toString(), 1, items.size());
+
+		CampaignDisplay campaignDisplay = (CampaignDisplay)items.get(0);
+
+		Assert.assertEquals(
+			campaign.getId(),
+			ReflectionTestUtils.getField(campaignDisplay, "_id"));
+		Assert.assertEquals(
+			campaign.getIndividualsTouched(),
+			ReflectionTestUtils.getField(
+				campaignDisplay, "_individualsTouched"));
+		Assert.assertEquals(
+			campaign.getLastTouchDate(),
+			ReflectionTestUtils.getField(campaignDisplay, "_lastTouchDate"));
 
 		Mockito.verify(
 			_faroProjectLocalService

@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -291,67 +290,6 @@ public class CampaignFaroControllerTest {
 		).getCampaignIndividuals(
 			_faroProject, channelId, id, search, rangeEnd, rangeKey, rangeStart,
 			sortString, page, pageSize
-		);
-	}
-
-	@Test
-	public void testGetTopCampaignDisplays() throws Exception {
-		long channelId = RandomTestUtil.randomLong();
-		String filterString = RandomTestUtil.randomString();
-		String rangeEnd = RandomTestUtil.randomString();
-		Integer rangeKey = RandomTestUtil.randomInt();
-		String rangeStart = RandomTestUtil.randomString();
-		int size = RandomTestUtil.randomInt();
-
-		Campaign campaign = new Campaign();
-
-		campaign.setId(RandomTestUtil.randomString());
-		campaign.setIndividualsTouched(RandomTestUtil.randomLong());
-		campaign.setLastTouchDate(new Date());
-
-		Mockito.when(
-			_contactsEngineClient.getTopCampaigns(
-				_faroProject, channelId, filterString, rangeEnd, rangeKey,
-				rangeStart, size)
-		).thenReturn(
-			Collections.singletonList(campaign)
-		);
-
-		long groupId = RandomTestUtil.randomLong();
-
-		List<CampaignDisplay> campaignDisplays =
-			_campaignFaroController.getTopCampaignDisplays(
-				groupId, channelId, filterString, rangeEnd, rangeKey,
-				rangeStart, size);
-
-		Assert.assertEquals(
-			campaignDisplays.toString(), 1, campaignDisplays.size());
-
-		CampaignDisplay campaignDisplay = campaignDisplays.get(0);
-
-		Assert.assertEquals(
-			campaign.getId(),
-			ReflectionTestUtil.getFieldValue(campaignDisplay, "_id"));
-		Assert.assertEquals(
-			campaign.getIndividualsTouched(),
-			ReflectionTestUtil.getFieldValue(
-				campaignDisplay, "_individualsTouched"));
-		Assert.assertEquals(
-			campaign.getLastTouchDate(),
-			ReflectionTestUtil.getFieldValue(
-				campaignDisplay, "_lastTouchDate"));
-
-		Mockito.verify(
-			_contactsEngineClient
-		).getTopCampaigns(
-			_faroProject, channelId, filterString, rangeEnd, rangeKey,
-			rangeStart, size
-		);
-
-		Mockito.verify(
-			_faroProjectLocalService
-		).getFaroProjectByGroupId(
-			groupId
 		);
 	}
 
