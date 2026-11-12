@@ -14,7 +14,6 @@ import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.AccountDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.CampaignDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.IndividualDisplay;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.RoleConstants;
 
@@ -147,26 +146,6 @@ public class CampaignFaroController extends BaseFaroController {
 				channelId, id, search, rangeEnd, rangeKey, rangeStart,
 				sortString, page, pageSize),
 			IndividualDisplay::new, page, pageSize);
-	}
-
-	@GET
-	@Path("/top")
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public List<CampaignDisplay> getTopCampaignDisplays(
-			@PathParam("groupId") long groupId,
-			@QueryParam("channelId") long channelId,
-			@QueryParam("filter") String filterString,
-			@QueryParam("rangeEnd") String rangeEnd,
-			@QueryParam("rangeKey") Integer rangeKey,
-			@QueryParam("rangeStart") String rangeStart,
-			@DefaultValue("5") @QueryParam("size") int size)
-		throws Exception {
-
-		return TransformUtil.transform(
-			contactsEngineClient.getTopCampaigns(
-				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, filterString, rangeEnd, rangeKey, rangeStart, size),
-			CampaignDisplay::new);
 	}
 
 }
