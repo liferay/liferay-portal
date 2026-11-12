@@ -5,13 +5,18 @@
 
 package com.liferay.trash.web.internal.portlet.action;
 
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.trash.TrashHandler;
+import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.trash.model.TrashEntry;
 import com.liferay.trash.service.TrashEntryLocalServiceUtil;
 
 import jakarta.portlet.ResourceRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,18 +30,34 @@ public class ActionUtil {
 	public static List<TrashEntry> getTrashEntries(ResourceRequest request)
 		throws Exception {
 
-		List<TrashEntry> trashEntries = new ArrayList<>();
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
 
 		long[] trashEntryIds = ParamUtil.getLongValues(request, "rowIds");
 
-		for (long trashEntryId : trashEntryIds) {
-			TrashEntry trashEntry = TrashEntryLocalServiceUtil.getEntry(
-				trashEntryId);
+		return TransformUtil.unsafeTransformToList(
+			trashEntryIds,
+			trashEntryId -> {
+				TrashEntry trashEntry = TrashEntryLocalServiceUtil.getEntry(
+					trashEntryId);
 
-			trashEntries.add(trashEntry);
-		}
+				TrashHandler trashHandler =
+					TrashHandlerRegistryUtil.getTrashHandler(
+						trashEntry.getClassName());
 
-		return trashEntries;
+				if ((trashHandler == null) ||
+					(trashEntry.getGroupId() !=
+						themeDisplay.getScopeGroupId()) ||
+					!trashHandler.hasTrashPermission(
+						themeDisplay.getPermissionChecker(),
+						trashEntry.getGroupId(), trashEntry.getClassPK(),
+						ActionKeys.VIEW)) {
+
+					return null;
+				}
+
+				return trashEntry;
+			});
 	}
 
 }

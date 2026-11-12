@@ -7,12 +7,16 @@ package com.liferay.trash.web.internal.portlet;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.TrashPermissionException;
+import com.liferay.portal.kernel.model.ClassName;
+import com.liferay.portal.kernel.model.ContainerModel;
+import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -345,65 +349,109 @@ public class TrashPortlet extends MVCPortlet {
 		}
 	}
 
-	private void _checkPermissions(RenderRequest renderRequest)
+	private void _checkPermission(
+			String className, long classPK, long groupId,
+			RenderRequest renderRequest, TrashHandler trashHandler)
 		throws PortalException {
-
-		String className = null;
-		long classPK = 0;
-		TrashEntry trashEntry = null;
-
-		long trashEntryId = ParamUtil.getLong(renderRequest, "trashEntryId");
-
-		if (trashEntryId > 0) {
-			trashEntry = _trashEntryLocalService.getTrashEntry(trashEntryId);
-
-			className = trashEntry.getClassName();
-			classPK = trashEntry.getClassPK();
-		}
-		else {
-			long classNameId = ParamUtil.getLong(renderRequest, "classNameId");
-
-			classPK = ParamUtil.getLong(renderRequest, "classPK");
-
-			if ((classNameId == 0) || (classPK == 0)) {
-				return;
-			}
-
-			className = _portal.getClassName(classNameId);
-
-			trashEntry = _getTrashEntry(className, classPK);
-		}
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
-			className);
-
 		if ((trashHandler == null) ||
-			((trashEntry != null) &&
-			 (trashEntry.getGroupId() != themeDisplay.getScopeGroupId())) ||
+			(groupId != themeDisplay.getScopeGroupId()) ||
 			!trashHandler.hasTrashPermission(
-				themeDisplay.getPermissionChecker(),
-				themeDisplay.getScopeGroupId(), classPK, ActionKeys.VIEW)) {
+				themeDisplay.getPermissionChecker(), groupId, classPK,
+				ActionKeys.VIEW)) {
 
 			throw new PrincipalException.MustHavePermission(
-				themeDisplay.getUserId(), className, classPK, ActionKeys.VIEW);
+				_portal.getUserId(renderRequest), className, classPK,
+				ActionKeys.VIEW);
 		}
 	}
 
-	private TrashEntry _getTrashEntry(String className, long classPK)
+	private void _checkPermissions(RenderRequest renderRequest)
 		throws PortalException {
 
-		TrashEntry trashEntry = _trashEntryLocalService.fetchEntry(
-			className, classPK);
+		long trashEntryId = ParamUtil.getLong(renderRequest, "trashEntryId");
 
-		if (trashEntry != null) {
-			return trashEntry;
+		if (trashEntryId > 0) {
+			TrashEntry trashEntry = _trashEntryLocalService.getTrashEntry(
+				trashEntryId);
+
+			_checkPermission(
+				trashEntry.getClassName(), trashEntry.getClassPK(),
+				trashEntry.getGroupId(), renderRequest,
+				TrashHandlerRegistryUtil.getTrashHandler(
+					trashEntry.getClassName()));
 		}
+
+		long classNameId = ParamUtil.getLong(renderRequest, "classNameId");
+
+		if (classNameId == 0) {
+			return;
+		}
+
+		String className = _getClassName(classNameId);
+		long classPK = ParamUtil.getLong(renderRequest, "classPK");
 
 		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
 			className);
+
+		TrashEntry trashEntry = _getTrashEntry(
+			className, classPK, trashHandler);
+
+		if (trashEntry == null) {
+			throw new PrincipalException.MustHavePermission(
+				_portal.getUserId(renderRequest), className, classPK,
+				ActionKeys.VIEW);
+		}
+
+		_checkPermission(
+			className, classPK, trashEntry.getGroupId(), renderRequest,
+			trashHandler);
+
+		long containerModelId = ParamUtil.getLong(
+			renderRequest, "containerModelId");
+
+		if (containerModelId == 0) {
+			return;
+		}
+
+		long containerModelClassNameId = ParamUtil.getLong(
+			renderRequest, "containerModelClassNameId");
+
+		String containerModelClassName =
+			trashHandler.getContainerModelClassName(classPK);
+
+		if (containerModelClassNameId != 0) {
+			containerModelClassName = _getClassName(containerModelClassNameId);
+		}
+
+		ContainerModel containerModel = trashHandler.getContainerModel(
+			containerModelId);
+
+		long groupId = 0;
+
+		if (containerModel instanceof GroupedModel) {
+			GroupedModel groupedModel = (GroupedModel)containerModel;
+
+			groupId = groupedModel.getGroupId();
+		}
+
+		_checkPermission(
+			containerModelClassName, containerModelId, groupId, renderRequest,
+			TrashHandlerRegistryUtil.getTrashHandler(containerModelClassName));
+	}
+
+	private String _getClassName(long classNameId) throws PortalException {
+		ClassName className = _classNameLocalService.getClassName(classNameId);
+
+		return className.getValue();
+	}
+
+	private TrashEntry _getTrashEntry(
+			String className, long classPK, TrashHandler trashHandler)
+		throws PortalException {
 
 		if (trashHandler == null) {
 			return null;
@@ -411,12 +459,15 @@ public class TrashPortlet extends MVCPortlet {
 
 		TrashedModel trashedModel = trashHandler.getTrashedModel(classPK);
 
-		if (trashedModel == null) {
-			return null;
+		if (trashedModel != null) {
+			return _trashHelper.getTrashEntry(trashedModel);
 		}
 
-		return _trashHelper.getTrashEntry(trashedModel);
+		return _trashEntryLocalService.fetchEntry(className, classPK);
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
 	private Portal _portal;
