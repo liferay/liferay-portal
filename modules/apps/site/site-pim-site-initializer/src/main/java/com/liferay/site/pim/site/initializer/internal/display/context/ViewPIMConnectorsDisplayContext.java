@@ -67,6 +67,8 @@ public class ViewPIMConnectorsDisplayContext {
 				_httpServletRequest,
 				"create-a-connector-to-link-the-pim-to-a-shopping-experience")
 		).put(
+			"symbol", "connectors"
+		).put(
 			"title", LanguageUtil.get(_httpServletRequest, "no-connectors-yet")
 		).build();
 	}

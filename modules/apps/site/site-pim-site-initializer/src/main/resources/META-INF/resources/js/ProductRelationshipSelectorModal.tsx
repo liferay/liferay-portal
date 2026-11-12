@@ -167,6 +167,7 @@ export default function ProductRelationshipSelectorModal({
 							},
 						],
 					}}
+					emptyState={{symbol: 'products'}}
 					filters={JSON.parse(filters || '[]')}
 					id="productRelationshipSelector"
 					onSelectedItemsChange={setSelectedItems}

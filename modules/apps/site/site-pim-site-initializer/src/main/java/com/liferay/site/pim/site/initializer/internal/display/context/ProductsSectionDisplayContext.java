@@ -212,7 +212,7 @@ public class ProductsSectionDisplayContext {
 			LanguageUtil.get(
 				_httpServletRequest, "click-new-to-create-your-first-product")
 		).put(
-			"image", "/states/cms_empty_state_content.svg"
+			"symbol", "products"
 		).put(
 			"title", LanguageUtil.get(_httpServletRequest, "no-products-yet")
 		).build();
