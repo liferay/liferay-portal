@@ -66,6 +66,15 @@ public class GroupFragmentEntryUsageManagementToolbarDisplayContext
 	}
 
 	@Override
+	public Boolean isSelectable() {
+		if (searchContainer.getRowChecker() == null) {
+			return false;
+		}
+
+		return super.isSelectable();
+	}
+
+	@Override
 	protected String[] getOrderByKeys() {
 		return new String[] {"name"};
 	}
