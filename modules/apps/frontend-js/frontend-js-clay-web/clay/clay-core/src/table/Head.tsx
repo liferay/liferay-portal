@@ -225,8 +225,8 @@ export function Head<T extends Record<string, any>>(
 					{columnsVisibility && (
 						<Cell keyValue="visibility" width="64px">
 							<span className="sr-only">
-								{messages['columnsVisibilityCell'] ||
-									messages['columnsVisibility']}
+								{messages.columnsVisibilityCell ||
+									messages.columnsVisibility}
 							</span>
 
 							<Menu
@@ -292,9 +292,7 @@ export function Head<T extends Record<string, any>>(
 								}}
 								trigger={
 									<Button
-										aria-label={
-											messages['columnsVisibility']
-										}
+										aria-label={messages.columnsVisibility}
 										borderless
 										displayType="secondary"
 										monospaced
@@ -304,7 +302,7 @@ export function Head<T extends Record<string, any>>(
 											triggerRef.current = node;
 										}}
 										size="sm"
-										title={messages['columnsVisibility']}
+										title={messages.columnsVisibility}
 									>
 										<Icon symbol="caret-bottom" />
 									</Button>
