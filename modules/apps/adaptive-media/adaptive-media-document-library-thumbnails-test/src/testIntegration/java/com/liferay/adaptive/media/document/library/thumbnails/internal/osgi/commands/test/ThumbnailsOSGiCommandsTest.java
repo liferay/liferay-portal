@@ -56,10 +56,12 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.test.rule.Inject;
@@ -68,13 +70,16 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -162,6 +167,25 @@ public class ThumbnailsOSGiCommandsTest {
 		CompanyLocalServiceUtil.deleteCompany(_company);
 
 		ServiceContextThreadLocal.popServiceContext();
+	}
+
+	@Test
+	public void testCheck() throws Exception {
+		List<String> lines = _getCheckOutputLines();
+
+		int count = GetterUtil.getInteger(
+			StringUtil.removeSubstring(lines.get(lines.size() - 1), "TOTAL: "));
+
+		_addPNGFileEntry();
+		_addPNGFileEntry();
+
+		Assert.assertEquals(
+			List.of(
+				"Company ID\t# of thumbnails pending migration",
+				"-------------------------------------------------",
+				_company.getCompanyId() + "\t\t" + (count + 2), "",
+				"TOTAL: " + (count + 2)),
+			_getCheckOutputLines());
 	}
 
 	@Test
@@ -381,6 +405,25 @@ public class ThumbnailsOSGiCommandsTest {
 				).done());
 
 		return adaptiveMedias.size();
+	}
+
+	private List<String> _getCheckOutputLines() throws Exception {
+		PrintStream printStream = System.out;
+
+		try {
+			ByteArrayOutputStream byteArrayOutputStream =
+				new ByteArrayOutputStream();
+
+			System.setOut(new PrintStream(byteArrayOutputStream));
+
+			_run("check");
+
+			return Arrays.asList(
+				StringUtil.splitLines(byteArrayOutputStream.toString()));
+		}
+		finally {
+			System.setOut(printStream);
+		}
 	}
 
 	private int _getThumbnailCount() throws Exception {
