@@ -12,7 +12,6 @@ import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.store.DLStore;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.change.tracking.CTModel;
@@ -72,8 +71,5 @@ public class DLFileEntryCTEntryConflictHelper implements CTEntryConflictHelper {
 
 	@Reference
 	private DLStore _dlStore;
-
-	@Reference
-	private Language _language;
 
 }
