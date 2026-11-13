@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -99,6 +100,29 @@ public class RatingsStatsLocalServiceTest {
 			className, classPK);
 
 		Assert.assertEquals(1.6 / 3, ratingsStats.getAverageScore(), 0.001);
+	}
+
+	@Test
+	@TestInfo("LPD-115333")
+	public void testAverageScoreWithUpdatedRatingsEntry() throws Exception {
+		String className = StringUtil.randomString();
+		long classPK = RandomTestUtil.randomLong();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		RatingsEntryLocalServiceUtil.updateEntry(
+			_user1.getUserId(), className, classPK, 1, serviceContext);
+		RatingsEntryLocalServiceUtil.updateEntry(
+			_user2.getUserId(), className, classPK, 0.4, serviceContext);
+		RatingsEntryLocalServiceUtil.updateEntry(
+			_user2.getUserId(), className, classPK, 0, serviceContext);
+
+		RatingsStats ratingsStats = RatingsStatsLocalServiceUtil.getStats(
+			className, classPK);
+
+		Assert.assertEquals(1.0 / 2, ratingsStats.getAverageScore(), 0.001);
+		Assert.assertEquals(2, ratingsStats.getTotalEntries());
 	}
 
 	@Test
