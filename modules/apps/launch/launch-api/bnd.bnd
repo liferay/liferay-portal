@@ -7,4 +7,5 @@ Export-Package:\
 	com.liferay.launch.set.details.provider,\
 	com.liferay.launch.set.permission,\
 	com.liferay.launch.set.publisher,\
-	com.liferay.launch.set.util.comparator
+	com.liferay.launch.set.util.comparator,\
+	com.liferay.launch.url.provider
