@@ -1562,7 +1562,7 @@ exports[`MarketoCampaignOverview should render the connected data source with th
                     <div
                       class="h4 mb-3 no-results-title"
                     >
-                      No properties were found.
+                      No Properties Were Found
                     </div>
                     <div
                       class="mb-3 no-results-description"
@@ -2528,7 +2528,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
                     <div
                       class="h4 mb-3 no-results-title"
                     >
-                      No properties were found.
+                      No Properties Were Found
                     </div>
                     <div
                       class="mb-3 no-results-description"

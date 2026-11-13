@@ -23,7 +23,7 @@ const mockLiferayLanguage = key => {
 		custom: 'Custom',
 		default: 'Default',
 		event: 'event',
-		'no-results-were-found': 'No results were found.'
+		'no-results-were-found': 'No Results Were Found'
 	};
 	return messages[key] || key;
 };
@@ -190,7 +190,7 @@ describe('CriteriaSidebar', () => {
 		expect(pageActions).toHaveFocus();
 	});
 
-	it('should render w/ "No results were found." when propertyGroupsIList is empty', () => {
+	it('should render w/ "No Results Were Found" when propertyGroupsIList is empty', () => {
 		render(
 			<CriteriaSidebar
 				propertyGroupsIList={new List()}
@@ -199,7 +199,7 @@ describe('CriteriaSidebar', () => {
 		);
 
 		expect(
-			screen.queryByText('No results were found.')
+			screen.queryByText('No Results Were Found')
 		).not.toBeInTheDocument();
 	});
 

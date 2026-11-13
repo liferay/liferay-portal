@@ -1363,7 +1363,7 @@ exports[`View should render a Liferay data-source page 1`] = `
                     <div
                       class="h4 mb-3 no-results-title"
                     >
-                      No properties were found.
+                      No Properties Were Found
                     </div>
                     <div
                       class="mb-3 no-results-description"
@@ -2337,7 +2337,7 @@ exports[`View should render a Salesforce data-source page 1`] = `
                     <div
                       class="h4 mb-3 no-results-title"
                     >
-                      No properties were found.
+                      No Properties Were Found
                     </div>
                     <div
                       class="mb-3 no-results-description"

@@ -773,7 +773,7 @@ exports[`InterestTopics should render with an empty state 1`] = `
     <div
       class="h4 mb-3 no-results-title"
     >
-      No results were found.
+      No Results Were Found
     </div>
     <div
       class="mb-3 no-results-description"

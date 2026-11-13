@@ -28,7 +28,7 @@ describe('withEmpty', () => {
 			<ComposedComponent items={[]} query='asdf' total={0} />
 		);
 
-		expect(queryByText('No results were found.')).toBeTruthy();
+		expect(queryByText('No Results Were Found')).toBeTruthy();
 		expect(queryByText('Please try a different search term.')).toBeTruthy();
 	});
 
