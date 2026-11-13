@@ -9,6 +9,7 @@ import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 
 interface IConditionChipProps {
+	className?: string;
 	dragState?: DragStates;
 	handle?: React.ReactNode;
 	label: React.ReactNode;
@@ -26,6 +27,7 @@ const CONTROL_SELECTOR = '[data-chip-control]';
 const ConditionChip = React.forwardRef<HTMLDivElement, IConditionChipProps>(
 	(
 		{
+			className,
 			dragState,
 			handle,
 			label,
@@ -104,6 +106,7 @@ const ConditionChip = React.forwardRef<HTMLDivElement, IConditionChipProps>(
 				aria-label={name}
 				className={getCN(
 					'align-items-center condition-chip d-flex rounded-lg',
+					className,
 					{
 						'condition-chip-draggable': !!handle,
 						'condition-chip-selectable': !!onSelect,
@@ -136,7 +139,7 @@ const ConditionChip = React.forwardRef<HTMLDivElement, IConditionChipProps>(
 							</span>
 						)}
 
-						<span className="d-block">
+						<span className="condition-chip-label d-block">
 							<Text size={4} weight="semi-bold">
 								{label}
 							</Text>

@@ -114,6 +114,7 @@ const LifecycleStructure: React.FC<ILifecycleStructureProps> = ({
 
 						return (
 							<SortableConditionChip
+								className="lifecycle-stage-chip"
 								dragType={STAGE_DRAG_TYPE}
 								index={index}
 								key={stage.key}

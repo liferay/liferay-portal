@@ -34,6 +34,14 @@
 		}
 	}
 
+	&.lifecycle-stage-chip {
+		min-height: 64px;
+
+		.condition-chip-label {
+			min-height: 24px;
+		}
+	}
+
 	&.condition-chip-selectable {
 		cursor: pointer;
 	}
