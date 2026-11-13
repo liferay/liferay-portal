@@ -100,7 +100,10 @@ public class RegisterServicePropertiesCheck extends BaseCheck {
 			detailAST.getFirstChild());
 
 		if (!ArrayUtil.contains(
-				_DICTIONARY_CLASS_NAMES,
+				new String[] {
+					"com.liferay.portal.kernel.util.HashMapDictionary",
+					"java.util.Hashtable"
+				},
 				getFullyQualifiedTypeName(
 					fullIdent.getText(), detailAST, true))) {
 
@@ -115,11 +118,6 @@ public class RegisterServicePropertiesCheck extends BaseCheck {
 
 		return true;
 	}
-
-	private static final String[] _DICTIONARY_CLASS_NAMES = {
-		"com.liferay.portal.kernel.util.HashMapDictionary",
-		"java.util.Hashtable"
-	};
 
 	private static final String _MSG_USE_NULL = "null.use";
 

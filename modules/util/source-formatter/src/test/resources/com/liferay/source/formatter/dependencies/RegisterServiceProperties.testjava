@@ -55,7 +55,7 @@ public class RegisterServiceProperties {
 	}
 
 	public void method7() {
-		registerService(Object.class, new Object(), new Hashtable<>());
+		_registerService(Object.class, new Object(), new Hashtable<>());
 	}
 
 	public void method8(BundleContext bundleContext) {
@@ -71,7 +71,7 @@ public class RegisterServiceProperties {
 			Object.class, new Object(), new java.util.Hashtable<>());
 	}
 
-	protected void registerService(
+	private void _registerService(
 		Class<?> clazz, Object object, Dictionary<String, Object> properties) {
 	}
 
