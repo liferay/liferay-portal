@@ -236,7 +236,7 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	@Test
 	public void testEmptyServiceProperties() throws Exception {
 		String message =
-			"Pass \"null\" instead of an empty \"Dictionary\" as the service " +
+			"Pass \"null\" instead of an empty dictionary as the service " +
 				"properties";
 
 		test(

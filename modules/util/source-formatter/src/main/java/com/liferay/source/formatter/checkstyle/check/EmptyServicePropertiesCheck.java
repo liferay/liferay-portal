@@ -48,7 +48,7 @@ public class EmptyServicePropertiesCheck extends BaseCheck {
 		DetailAST firstChildDetailAST = exprDetailAST.getFirstChild();
 
 		if (_isEmptyDictionary(firstChildDetailAST)) {
-			log(firstChildDetailAST, _MSG_PASS_NULL);
+			log(firstChildDetailAST, _MSG_USE_NULL);
 
 			return;
 		}
@@ -85,7 +85,7 @@ public class EmptyServicePropertiesCheck extends BaseCheck {
 		if ((variableCallerDetailASTs.size() == 1) &&
 			equals(variableCallerDetailASTs.get(0), firstChildDetailAST)) {
 
-			log(firstChildDetailAST, _MSG_PASS_NULL);
+			log(firstChildDetailAST, _MSG_USE_NULL);
 		}
 	}
 
@@ -121,6 +121,6 @@ public class EmptyServicePropertiesCheck extends BaseCheck {
 		"java.util.Hashtable"
 	};
 
-	private static final String _MSG_PASS_NULL = "service.properties.null";
+	private static final String _MSG_USE_NULL = "null.use";
 
 }
