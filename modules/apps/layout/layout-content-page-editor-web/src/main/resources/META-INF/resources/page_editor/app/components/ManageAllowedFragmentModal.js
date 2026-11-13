@@ -6,9 +6,10 @@
 import ClayButton from '@clayui/button';
 import ClayModal from '@clayui/modal';
 import PropTypes from 'prop-types';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import {useDispatch} from '../contexts/StoreContext';
+import LayoutService from '../services/LayoutService';
 import updateItemConfig from '../thunks/updateItemConfig';
 import AllowedFragmentSelectorTree from './AllowedFragmentSelectorTree';
 
@@ -19,6 +20,19 @@ const ManageAllowedFragmentModal = ({item, observer, onClose}) => {
 		useState(true);
 	const [selectedFragments, setSelectedFragments] = useState(new Set([]));
 	const [loading, setLoading] = useState();
+	const [dropZoneConfig, setDropZoneConfig] = useState();
+
+	useEffect(() => {
+		LayoutService.getDropZoneAllowedFragmentEntryKeys(item.itemId).then(
+			({fragmentEntryKeys}) => {
+				setDropZoneConfig({
+					allowNewFragmentEntries:
+						item.config.allowNewFragmentEntries,
+					fragmentEntryKeys,
+				});
+			}
+		);
+	}, [item.config.allowNewFragmentEntries, item.itemId]);
 
 	const handleSaveClick = () => {
 		setLoading(true);
@@ -65,10 +79,12 @@ const ManageAllowedFragmentModal = ({item, observer, onClose}) => {
 					)}
 				</p>
 
-				<AllowedFragmentSelectorTree
-					dropZoneConfig={item.config}
-					onSelectedFragment={onSelectedFragment}
-				/>
+				{dropZoneConfig && (
+					<AllowedFragmentSelectorTree
+						dropZoneConfig={dropZoneConfig}
+						onSelectedFragment={onSelectedFragment}
+					/>
+				)}
 			</ClayModal.Body>
 
 			<ClayModal.Footer
@@ -79,6 +95,7 @@ const ManageAllowedFragmentModal = ({item, observer, onClose}) => {
 						</ClayButton>
 
 						<ClayButton
+							disabled={!dropZoneConfig}
 							displayType="primary"
 							onClick={handleSaveClick}
 						>

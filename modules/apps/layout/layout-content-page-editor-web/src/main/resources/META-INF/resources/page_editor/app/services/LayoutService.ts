@@ -108,6 +108,13 @@ export default {
 		);
 	},
 
+	getDropZoneAllowedFragmentEntryKeys(itemId: string) {
+		return serviceFetch<{fragmentEntryKeys: string[]}>(
+			config.getDropZoneAllowedFragmentEntryKeysURL,
+			{body: {itemId}}
+		);
+	},
+
 	getLayoutFriendlyURL(layout: Layout) {
 		return serviceFetch<{friendlyURL: string}>(
 			config.getLayoutFriendlyURL,

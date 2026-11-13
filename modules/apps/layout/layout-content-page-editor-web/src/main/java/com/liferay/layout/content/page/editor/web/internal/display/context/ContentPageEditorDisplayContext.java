@@ -490,6 +490,11 @@ public class ContentPageEditorDisplayContext {
 					"/layout_content_page_editor" +
 						"/get_collection_warning_message")
 			).put(
+				"getDropZoneAllowedFragmentEntryKeysURL",
+				_getResourceURL(
+					"/layout_content_page_editor" +
+						"/get_drop_zone_allowed_fragment_entry_keys")
+			).put(
 				"getEditCollectionConfigurationURL",
 				ResourceURLBuilder.createResourceURL(
 					renderResponse

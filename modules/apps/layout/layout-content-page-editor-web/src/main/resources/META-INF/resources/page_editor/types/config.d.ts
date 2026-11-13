@@ -162,6 +162,7 @@ export interface Config {
 	getCollectionSupportedFiltersURL: string;
 	getCollectionVariationsURL: string;
 	getCollectionWarningMessageURL: string;
+	getDropZoneAllowedFragmentEntryKeysURL: string;
 	getEditCollectionConfigurationURL: string;
 	getExperienceDataURL: string;
 	getFileEntryURL: string;
