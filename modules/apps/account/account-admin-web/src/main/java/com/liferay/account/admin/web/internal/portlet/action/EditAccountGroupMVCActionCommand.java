@@ -8,7 +8,6 @@ package com.liferay.account.admin.web.internal.portlet.action;
 import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.account.exception.DuplicateAccountGroupExternalReferenceCodeException;
 import com.liferay.account.model.AccountGroup;
-import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -123,9 +122,6 @@ public class EditAccountGroupMVCActionCommand
 			ServiceContextFactory.getInstance(
 				AccountGroup.class.getName(), actionRequest));
 	}
-
-	@Reference
-	private AccountGroupLocalService _accountGroupLocalService;
 
 	@Reference
 	private AccountGroupService _accountGroupService;
