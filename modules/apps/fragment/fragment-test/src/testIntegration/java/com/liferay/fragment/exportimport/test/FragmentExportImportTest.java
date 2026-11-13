@@ -29,8 +29,16 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -45,6 +53,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -187,6 +196,49 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 	@Override
 	@Test
 	public void testExportImportAssetLinks() throws Exception {
+	}
+
+	@Test
+	@TestInfo("LPD-115198")
+	public void testExportImportLayoutsWithValidationWithLayoutWithGuestViewPermission()
+		throws Exception {
+
+		Layout importedGroupLayout = LayoutTestUtil.addTypePortletLayout(
+			importedGroup);
+
+		_testExportImportLayoutsWithValidation(importedGroupLayout.getPlid());
+	}
+
+	@Test
+	@TestInfo("LPD-115198")
+	public void testExportImportLayoutsWithValidationWithLayoutWithoutGuestViewPermission()
+		throws Exception {
+
+		Layout importedGroupLayout = LayoutTestUtil.addTypePortletLayout(
+			importedGroup);
+
+		Role role = _roleLocalService.getRole(
+			importedGroupLayout.getCompanyId(), RoleConstants.GUEST);
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			importedGroupLayout.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(importedGroupLayout.getPlid()), role.getRoleId(),
+			ActionKeys.VIEW);
+
+		Layout guestGroupLayout = _getGuestGroupLayout();
+
+		_testExportImportLayoutsWithValidation(guestGroupLayout.getPlid());
+	}
+
+	@Test
+	@TestInfo("LPD-115198")
+	public void testExportImportLayoutsWithValidationWithoutLayout()
+		throws Exception {
+
+		Layout guestGroupLayout = _getGuestGroupLayout();
+
+		_testExportImportLayoutsWithValidation(guestGroupLayout.getPlid());
 	}
 
 	@Test
@@ -401,6 +453,15 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 		throw new AssertionError(exception);
 	}
 
+	private Layout _getGuestGroupLayout() throws Exception {
+		Group group = _groupLocalService.getGroup(
+			importedGroup.getCompanyId(), GroupConstants.GUEST);
+
+		return _layoutLocalService.getLayoutByFriendlyURL(
+			group.getGroupId(), false,
+			PropsValues.DEFAULT_GUEST_PUBLIC_LAYOUT_FRIENDLY_URL);
+	}
+
 	private String _getLayoutContent(Layout layout, Locale locale)
 		throws Exception {
 
@@ -425,6 +486,37 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 			"\"/o/headless-delivery/v1.0/sites/0/site-pages\")]\n",
 			"[#if (restGetSample.items)??]${restGetSample.items?size}",
 			"[/#if]\n<h1>", RandomTestUtil.randomString(), "</h1>");
+	}
+
+	private void _testExportImportLayoutsWithValidation(long plid)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group, TestPropsValues.getUserId());
+
+		FragmentEntry fragmentEntry = _addFragmentEntry(
+			_fragmentCollectionLocalService.addFragmentCollection(
+				null, TestPropsValues.getUserId(),
+				serviceContext.getScopeGroupId(), RandomTestUtil.randomString(),
+				StringPool.BLANK, serviceContext),
+			RandomTestUtil.randomString(), serviceContext);
+
+		fragmentEntry = _updateFragmentEntry(
+			fragmentEntry,
+			StringBundler.concat(
+				"[#if themeDisplay.getPlid() != ", plid,
+				"]${invalidPlid}[/#if][#if themeDisplay.getScopeGroupId() != ",
+				importedGroup.getGroupId(), "]${invalidScopeGroupId}[/#if]"));
+
+		exportImportLayouts(new long[0], getImportParameterMap());
+
+		FragmentEntry importedGroupFragmentEntry =
+			_fragmentEntryLocalService.getFragmentEntryByUuidAndGroupId(
+				fragmentEntry.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertEquals(
+			fragmentEntry.getHtml(), importedGroupFragmentEntry.getHtml());
 	}
 
 	private void _testExportImportPortletWithValidation(
@@ -570,6 +662,9 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 	private PortletDataHandler _fragmentPortletDataHandler;
 
 	@Inject
+	private GroupLocalService _groupLocalService;
+
+	@Inject
 	private LayoutContentProvider _layoutContentProvider;
 
 	@Inject
@@ -580,6 +675,12 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
