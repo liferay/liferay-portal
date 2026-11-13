@@ -6,6 +6,7 @@
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {DataApiHelpers} from '../../helpers/ApiHelpers';
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
 import {waitForAlert} from '../../utils/waitForAlert';
 import {DataTablePage} from './DataTablePage';
@@ -19,8 +20,9 @@ export class EditAccountPage {
 	readonly accountGroupsLink: Locator;
 	readonly accountIdInput: Locator;
 	readonly accountNameInput: Locator;
-	readonly addDomainLink: Locator;
 	readonly addDomainFrame: FrameLocator;
+	readonly addDomainIframe: Locator;
+	readonly addDomainLink: Locator;
 	readonly addressesTab: Locator;
 	readonly assignUserMessage: Locator;
 	readonly backButton: Locator;
@@ -106,10 +108,11 @@ export class EditAccountPage {
 		};
 		this.accountIdInput = page.getByLabel('Account ID');
 		this.accountNameInput = page.getByLabel('Account Name');
-		this.addDomainLink = page.locator(
-			'[id="_com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet_addDomains"]'
-		);
-		this.addDomainFrame = page.frameLocator('iframe[title="Add Domain"]');
+		this.addDomainIframe = page.locator('iframe[title="Add Domain"]');
+		this.addDomainLink = page
+			.getByRole('heading', {name: 'Valid Domains'})
+			.getByRole('link', {exact: true, name: 'Add'});
+		this.addDomainFrame = this.addDomainIframe.contentFrame();
 		this.addressesTab = page.getByRole('link', {
 			name: 'Addresses',
 		});
@@ -261,11 +264,12 @@ export class EditAccountPage {
 		}
 
 		if (domains && domains.length) {
-			await expect(async () => {
-				await this.addDomainLink.click();
+			await clickAndExpectToBeVisible({
+				target: this.addDomainIframe,
+				trigger: this.addDomainLink,
+			});
 
-				await expect(this.frameDomainInput).toBeEnabled({timeout: 500});
-			}).toPass();
+			await expect(this.frameDomainInput).toBeEnabled();
 
 			await this.frameDomainInput.fill(domains.join());
 			await this.frameSaveButton.click();
