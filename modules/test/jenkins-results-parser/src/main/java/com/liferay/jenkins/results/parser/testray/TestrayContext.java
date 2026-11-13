@@ -12,6 +12,7 @@ import com.liferay.jenkins.results.parser.PortalHotfixRelease;
 import com.liferay.jenkins.results.parser.PortalRelease;
 import com.liferay.jenkins.results.parser.PullRequest;
 import com.liferay.jenkins.results.parser.job.property.JobProperty;
+import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 
 import java.io.File;
 
@@ -69,6 +70,13 @@ public interface TestrayContext {
 	public TestrayServer getTestrayServer();
 
 	public TestrayServer getTestrayServer(File testBaseDir);
+
+	public boolean hasTestrayCaseResultFile(
+		AxisTestClassGroup axisTestClassGroup);
+
+	public void recordTestrayCaseResultFile(
+		AxisTestClassGroup axisTestClassGroup,
+		TestrayCaseResult buildTestrayCaseResult);
 
 	public String replace(String string);
 

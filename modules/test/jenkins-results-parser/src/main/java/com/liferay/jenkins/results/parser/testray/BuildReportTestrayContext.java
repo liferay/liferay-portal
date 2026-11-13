@@ -96,6 +96,11 @@ public class BuildReportTestrayContext extends BaseTestrayContext {
 	}
 
 	@Override
+	protected TopLevelBuildReport getTopLevelBuildReport() {
+		return _topLevelBuildReport;
+	}
+
+	@Override
 	protected JenkinsMaster getTopLevelJenkinsMaster() {
 		return _topLevelBuildReport.getJenkinsMaster();
 	}

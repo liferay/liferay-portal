@@ -6,10 +6,12 @@
 package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.BuildDatabase;
+import com.liferay.jenkins.results.parser.Dom4JUtil;
 import com.liferay.jenkins.results.parser.Environment;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Job;
+import com.liferay.jenkins.results.parser.ParallelExecutor;
 import com.liferay.jenkins.results.parser.PluginsWorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.PortalFixpackRelease;
 import com.liferay.jenkins.results.parser.PortalHotfixRelease;
@@ -20,16 +22,27 @@ import com.liferay.jenkins.results.parser.PullRequest;
 import com.liferay.jenkins.results.parser.QAWebsitesGitRepositoryJob;
 import com.liferay.jenkins.results.parser.QAWebsitesWorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.TestSuiteJob;
+import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.Workspace;
 import com.liferay.jenkins.results.parser.WorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.job.property.JobProperty;
 import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
+import com.liferay.jenkins.results.parser.test.clazz.TestClass;
+import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
+import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.FunctionalAxisTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.JSUnitAxisTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.JUnitAxisTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.ModulesAxisTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightAxisTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.WorkspacesCompileAxisTestClassGroup;
 
 import java.io.File;
 import java.io.IOException;
 
 import java.net.URL;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,10 +52,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.client.utils.URIBuilder;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 
 /**
  * @author Michael Hashimoto
@@ -932,6 +953,188 @@ public abstract class BaseTestrayContext implements TestrayContext {
 	}
 
 	@Override
+	public boolean hasTestrayCaseResultFile(
+		AxisTestClassGroup axisTestClassGroup) {
+
+		TestrayRun testrayRun = _getTestrayRun(axisTestClassGroup);
+
+		TestrayBuild testrayBuild = testrayRun.getTestrayBuild();
+
+		TestrayServer testrayServer = testrayBuild.getTestrayServer();
+
+		TopLevelBuildReport topLevelBuildReport = getTopLevelBuildReport();
+
+		return testrayServer.isCaseResultFileAvailable(
+			topLevelBuildReport.getTestrayCaseFileName(
+				axisTestClassGroup.getAxisName()));
+	}
+
+	@Override
+	public void recordTestrayCaseResultFile(
+		AxisTestClassGroup axisTestClassGroup,
+		TestrayCaseResult buildTestrayCaseResult) {
+
+		TestrayRun testrayRun = _getTestrayRun(axisTestClassGroup);
+
+		TestrayBuild testrayBuild = testrayRun.getTestrayBuild();
+
+		TestrayServer testrayServer = testrayBuild.getTestrayServer();
+
+		TopLevelBuildReport topLevelBuildReport = getTopLevelBuildReport();
+
+		long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
+
+		Document document = DocumentHelper.createDocument();
+
+		Element rootElement = document.addElement("testsuite");
+
+		rootElement.add(testrayRun.getEnvironmentsElement());
+
+		Map<String, String> propertiesMap = new HashMap<>();
+
+		propertiesMap.put(
+			"testray.build.date",
+			topLevelBuildReport.getTestrayBuildDateString());
+		propertiesMap.put("testray.build.name", testrayBuild.getName());
+		propertiesMap.put(
+			"testray.build.time",
+			JenkinsResultsParserUtil.toDurationString(
+				topLevelBuildReport.getDuration()));
+
+		TestrayRoutine testrayRoutine = testrayBuild.getTestrayRoutine();
+
+		propertiesMap.put("testray.build.type", testrayRoutine.getName());
+
+		TestrayProductVersion testrayProductVersion =
+			testrayBuild.getTestrayProductVersion();
+
+		if (testrayProductVersion != null) {
+			propertiesMap.put(
+				"testray.product.version", testrayProductVersion.getName());
+		}
+
+		TestrayProject testrayProject = testrayBuild.getTestrayProject();
+
+		propertiesMap.put("testray.project.name", testrayProject.getName());
+
+		propertiesMap.put("testray.run.id", testrayRun.getRunIdString());
+		propertiesMap.put(
+			"testray.total.cpu.use.time",
+			JenkinsResultsParserUtil.toDurationString(
+				topLevelBuildReport.getTotalActualDuration()));
+
+		Dom4JUtil.addPropertyElements(
+			rootElement.addElement("properties"), propertiesMap);
+
+		List<TestrayCaseResult> testrayCaseResults = new ArrayList<>();
+
+		testrayCaseResults.add(buildTestrayCaseResult);
+
+		PortalLogBatchBuildTestrayCaseResult
+			portalLogBatchBuildTestrayCaseResult =
+				TestrayFactory.newPortalLogTestrayCaseResult(
+					axisTestClassGroup, testrayBuild, topLevelBuildReport);
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(
+				portalLogBatchBuildTestrayCaseResult.getErrors())) {
+
+			portalLogBatchBuildTestrayCaseResult.setParentTestrayCaseResult(
+				buildTestrayCaseResult);
+			portalLogBatchBuildTestrayCaseResult.setTestrayRun(testrayRun);
+
+			testrayCaseResults.add(portalLogBatchBuildTestrayCaseResult);
+		}
+
+		if (axisTestClassGroup instanceof FunctionalAxisTestClassGroup ||
+			axisTestClassGroup instanceof JSUnitAxisTestClassGroup ||
+			axisTestClassGroup instanceof JUnitAxisTestClassGroup ||
+			axisTestClassGroup instanceof ModulesAxisTestClassGroup ||
+			axisTestClassGroup instanceof WorkspacesCompileAxisTestClassGroup) {
+
+			for (TestClass testClass : axisTestClassGroup.getTestClasses()) {
+				if (testClass.isTestClassFileReported()) {
+					for (TestClassMethod testClassMethod :
+							testClass.getTestClassMethods()) {
+
+						TestrayCaseResult testClassMethodTestrayCaseResult =
+							TestrayFactory.newBuildTestrayCaseResult(
+								axisTestClassGroup, testClass, testClassMethod,
+								testrayBuild, topLevelBuildReport);
+
+						testClassMethodTestrayCaseResult.
+							setParentTestrayCaseResult(buildTestrayCaseResult);
+
+						testClassMethodTestrayCaseResult.setTestrayRun(
+							testrayRun);
+
+						testrayCaseResults.add(
+							testClassMethodTestrayCaseResult);
+					}
+
+					continue;
+				}
+
+				TestrayCaseResult testClassTestrayCaseResult =
+					TestrayFactory.newBuildTestrayCaseResult(
+						axisTestClassGroup, testClass, testrayBuild,
+						topLevelBuildReport);
+
+				testClassTestrayCaseResult.setParentTestrayCaseResult(
+					buildTestrayCaseResult);
+				testClassTestrayCaseResult.setTestrayRun(testrayRun);
+
+				testrayCaseResults.add(testClassTestrayCaseResult);
+			}
+		}
+		else if (axisTestClassGroup instanceof PlaywrightAxisTestClassGroup) {
+			for (TestClass testClass : axisTestClassGroup.getTestClasses()) {
+				for (TestClassMethod testClassMethod :
+						testClass.getTestClassMethods()) {
+
+					TestrayCaseResult testClassMethodTestrayCaseResult =
+						TestrayFactory.newBuildTestrayCaseResult(
+							axisTestClassGroup, testClass, testClassMethod,
+							testrayBuild, topLevelBuildReport);
+
+					testClassMethodTestrayCaseResult.setParentTestrayCaseResult(
+						buildTestrayCaseResult);
+					testClassMethodTestrayCaseResult.setTestrayRun(testrayRun);
+
+					testrayCaseResults.add(testClassMethodTestrayCaseResult);
+				}
+			}
+		}
+
+		List<Element> testcaseElements = _getTestcaseElements(
+			axisTestClassGroup, testrayCaseResults,
+			topLevelBuildReport.getTestSuiteName());
+
+		for (Element testcaseElement : testcaseElements) {
+			rootElement.add(testcaseElement);
+		}
+
+		try {
+			testrayServer.writeCaseResult(
+				topLevelBuildReport.getTestrayCaseFileName(
+					axisTestClassGroup.getAxisName()),
+				Dom4JUtil.format(rootElement));
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+
+		long currentTimeMillis =
+			JenkinsResultsParserUtil.getCurrentTimeMillis();
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"Recorded ", String.valueOf(testrayCaseResults.size()),
+				" case results for ", axisTestClassGroup.getAxisName(), " in ",
+				JenkinsResultsParserUtil.toDurationString(
+					currentTimeMillis - start)));
+	}
+
+	@Override
 	public String replace(String string) {
 		if (string == null) {
 			return null;
@@ -988,6 +1191,8 @@ public abstract class BaseTestrayContext implements TestrayContext {
 
 	protected abstract Map<String, String> getTopLevelBuildParameters();
 
+	protected abstract TopLevelBuildReport getTopLevelBuildReport();
+
 	protected abstract JenkinsMaster getTopLevelJenkinsMaster();
 
 	protected abstract String getTopLevelJobName();
@@ -998,6 +1203,44 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		String suffix);
 
 	protected abstract boolean hasControllerBuild();
+
+	private void _addDetailsElements(
+		Element propertiesElement,
+		JUnitBatchBuildTestrayCaseResult testrayCaseResult) {
+
+		Element detailsElement = propertiesElement.addElement("details");
+
+		for (String methodName : testrayCaseResult.getMethodNames()) {
+			if (JenkinsResultsParserUtil.isNullOrEmpty(
+					testrayCaseResult.getMethodIssues(methodName))) {
+
+				continue;
+			}
+
+			Element detailElement = detailsElement.addElement("detail");
+
+			Element issuesPropertyElement = detailElement.addElement(
+				"property");
+
+			issuesPropertyElement.addAttribute("name", "testray.jira.issues");
+			issuesPropertyElement.addAttribute(
+				"value", testrayCaseResult.getMethodIssues(methodName));
+
+			Element namePropertyElement = detailElement.addElement("property");
+
+			namePropertyElement.addAttribute(
+				"name", "testray.testcase.detail.name");
+			namePropertyElement.addAttribute("value", methodName);
+
+			Element statusPropertyElement = detailElement.addElement(
+				"property");
+
+			statusPropertyElement.addAttribute(
+				"name", "testray.testcase.detail.status");
+			statusPropertyElement.addAttribute(
+				"value", testrayCaseResult.getMethodStatus(methodName));
+		}
+	}
 
 	private String _fixSlackString(String string) {
 		string = string.replace("*", "&#42;");
@@ -1145,6 +1388,174 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		}
 
 		return null;
+	}
+
+	private Element _getTestcaseElement(
+		TestrayCaseResult testrayCaseResult, String testSuiteName,
+		String[] warnings) {
+
+		Element testcaseElement = Dom4JUtil.getNewElement("testcase");
+
+		Map<String, String> testcasePropertiesMap = new HashMap<>();
+
+		testcasePropertiesMap.put(
+			"testray.case.type.name", testrayCaseResult.getType());
+		testcasePropertiesMap.put(
+			"testray.component.names",
+			testrayCaseResult.getSubcomponentNames());
+		testcasePropertiesMap.put(
+			"testray.main.component.name",
+			testrayCaseResult.getComponentName());
+		testcasePropertiesMap.put(
+			"testray.team.name", testrayCaseResult.getTeamName());
+		testcasePropertiesMap.put(
+			"testray.testcase.duration",
+			String.valueOf(testrayCaseResult.getDuration()));
+
+		String testrayCaseName = testrayCaseResult.getName();
+
+		if (testrayCaseName.length() > 250) {
+			testrayCaseName = testrayCaseName.substring(0, 250);
+		}
+
+		testcasePropertiesMap.put("testray.testcase.name", testrayCaseName);
+
+		testcasePropertiesMap.put(
+			"testray.testcase.priority",
+			String.valueOf(testrayCaseResult.getPriority()));
+
+		TestrayCaseResult.Status testrayCaseStatus =
+			testrayCaseResult.getStatus();
+
+		testcasePropertiesMap.put(
+			"testray.testcase.status", testrayCaseStatus.getName());
+
+		Element propertiesElement = testcaseElement.addElement("properties");
+
+		if (testSuiteName.equals("upstream-dxp")) {
+			if (testrayCaseResult instanceof JUnitBatchBuildTestrayCaseResult) {
+				_addDetailsElements(
+					propertiesElement,
+					(JUnitBatchBuildTestrayCaseResult)testrayCaseResult);
+			}
+			else {
+				testcasePropertiesMap.put(
+					"testray.jira.issues", testrayCaseResult.getIssues());
+			}
+		}
+
+		Dom4JUtil.addPropertyElements(propertiesElement, testcasePropertiesMap);
+
+		if ((warnings != null) && (warnings.length > 0)) {
+			Element warningsPropertyElement = propertiesElement.addElement(
+				"property");
+
+			warningsPropertyElement.addAttribute(
+				"name", "testray.testcase.warnings");
+			warningsPropertyElement.addAttribute(
+				"value", String.valueOf(warnings.length));
+
+			for (String warning : warnings) {
+				Element warningPropertyElement =
+					warningsPropertyElement.addElement("value");
+
+				warningPropertyElement.addText(
+					StringEscapeUtils.escapeHtml4(warning));
+			}
+		}
+
+		Element attachmentsElement = testcaseElement.addElement("attachments");
+
+		for (TestrayAttachment testrayAttachment :
+				testrayCaseResult.getTestrayAttachments()) {
+
+			Element attachmentFileElement = attachmentsElement.addElement(
+				"file");
+
+			attachmentFileElement.addAttribute(
+				"name", testrayAttachment.getName());
+
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				String.valueOf(testrayAttachment.getURL()));
+
+			uriBuilder.addParameter("authuser", "0");
+
+			attachmentFileElement.addAttribute("url", uriBuilder.toString());
+
+			attachmentFileElement.addAttribute(
+				"value", testrayAttachment.getKey());
+		}
+
+		String errors = testrayCaseResult.getErrors();
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(errors)) {
+			Element failureElement = testcaseElement.addElement("failure");
+
+			failureElement.addAttribute("message", errors);
+		}
+
+		return testcaseElement;
+	}
+
+	private List<Element> _getTestcaseElements(
+		AxisTestClassGroup axisTestClassGroup,
+		List<TestrayCaseResult> testrayCaseResults, String testSuiteName) {
+
+		List<Callable<Element>> callables = new ArrayList<>();
+
+		final String[] testrayCaseResultWarnings =
+			_getTestrayCaseResultWarnings(testrayCaseResults);
+
+		for (final TestrayCaseResult testrayCaseResult : testrayCaseResults) {
+			callables.add(
+				new Callable<Element>() {
+
+					@Override
+					public Element call() throws Exception {
+						return _getTestcaseElement(
+							testrayCaseResult, testSuiteName,
+							testrayCaseResultWarnings);
+					}
+
+				});
+		}
+
+		ParallelExecutor<Element> parallelExecutor = new ParallelExecutor<>(
+			callables, true, _caseResultExecutorService, true,
+			"recordAxisTestClassGroup:" + axisTestClassGroup.getAxisName());
+
+		try {
+			return parallelExecutor.execute(60L * 30L);
+		}
+		catch (TimeoutException timeoutException) {
+			throw new RuntimeException(timeoutException);
+		}
+	}
+
+	private String[] _getTestrayCaseResultWarnings(
+		List<TestrayCaseResult> testrayCaseResults) {
+
+		for (TestrayCaseResult testrayCaseResult : testrayCaseResults) {
+			String[] warnings = testrayCaseResult.getWarnings();
+
+			if (warnings != null) {
+				return warnings;
+			}
+		}
+
+		return null;
+	}
+
+	private TestrayRun _getTestrayRun(AxisTestClassGroup axisTestClassGroup) {
+		TestrayRun testrayRun = axisTestClassGroup.getTestrayRun();
+
+		if (testrayRun == null) {
+			throw new RuntimeException(
+				"Unable to find a Testray run for " +
+					axisTestClassGroup.getAxisName());
+		}
+
+		return testrayRun;
 	}
 
 	private String _replace(String string) {
@@ -1580,6 +1991,8 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		return string.replace("$(jenkins.report.url)", _getJenkinsReportURL());
 	}
 
+	private static final ExecutorService _caseResultExecutorService =
+		JenkinsResultsParserUtil.getNewThreadPoolExecutor(20, true);
 	private static final Pattern _quarterlyReleaseVersionPattern =
 		Pattern.compile("(?<year>\\d{4}).(?<quarter>[Qq]\\d+).\\d+");
 	private static final Pattern _releaseArtifactURLPattern = Pattern.compile(

@@ -5,29 +5,17 @@
 
 package com.liferay.jenkins.results.parser.testray;
 
-import com.liferay.jenkins.results.parser.Dom4JUtil;
-import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
-import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightAxisTestClassGroup;
 
-import java.net.URL;
-
-import java.util.Collections;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.lang3.StringUtils;
-
-import org.dom4j.Element;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -38,62 +26,85 @@ public class TestrayImporterTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testGetTestcaseElementAttachment() throws Exception {
-		TestrayCaseResult testrayCaseResult = Mockito.mock(
+	public void testRecordAxisTestClassGroup() {
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+
+		TestrayRun testrayRun = Mockito.mock(TestrayRun.class);
+
+		Mockito.doReturn(
+			testrayRun
+		).when(
+			axisTestClassGroup
+		).getTestrayRun();
+
+		TestrayContext testrayContext = Mockito.mock(TestrayContext.class);
+
+		TestrayCaseResult buildTestrayCaseResult = Mockito.mock(
+			TestrayCaseResult.class);
+		TestrayCaseResult topLevelTestrayCaseResult = Mockito.mock(
 			TestrayCaseResult.class);
 
-		TestrayAttachment testrayAttachment = Mockito.mock(
-			TestrayAttachment.class);
+		_recordAxisTestClassGroup(
+			axisTestClassGroup, buildTestrayCaseResult, testrayContext,
+			topLevelTestrayCaseResult);
 
-		String key = RandomTestUtil.randomString();
+		Mockito.verify(
+			testrayContext
+		).recordTestrayCaseResultFile(
+			axisTestClassGroup, buildTestrayCaseResult
+		);
 
-		Mockito.doReturn(
-			key
-		).when(
-			testrayAttachment
-		).getKey();
+		Mockito.verify(
+			buildTestrayCaseResult
+		).setParentTestrayCaseResult(
+			topLevelTestrayCaseResult
+		);
 
-		String url = JenkinsResultsParserUtil.combine(
-			"https://", RandomTestUtil.randomString(), "/", key);
-
-		Mockito.doReturn(
-			new URL(url)
-		).when(
-			testrayAttachment
-		).getURL();
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			testrayCaseResult
-		).getName();
-
-		Mockito.doReturn(
-			TestrayCaseResult.Status.PASSED
-		).when(
-			testrayCaseResult
-		).getStatus();
-
-		Mockito.doReturn(
-			Collections.singletonList(testrayAttachment)
-		).when(
-			testrayCaseResult
-		).getTestrayAttachments();
-
-		Element testcaseElement = _getTestcaseElement(testrayCaseResult);
-
-		Element attachmentsElement = testcaseElement.element("attachments");
-
-		Element fileElement = attachmentsElement.element("file");
-
-		testEquals(url + "?authuser=0", fileElement.attributeValue("url"));
-		testEquals(key, fileElement.attributeValue("value"));
+		Mockito.verify(
+			buildTestrayCaseResult
+		).setTestrayRun(
+			testrayRun
+		);
 	}
 
 	@Test
-	public void testGetTestcaseElementName() throws Exception {
-		_testGetTestcaseElementName(250, 250);
-		_testGetTestcaseElementName(251, 250);
+	public void testRecordAxisTestClassGroupCached() {
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+
+		Mockito.doReturn(
+			Mockito.mock(TestrayRun.class)
+		).when(
+			axisTestClassGroup
+		).getTestrayRun();
+
+		TestrayContext testrayContext = Mockito.mock(TestrayContext.class);
+
+		Mockito.doReturn(
+			true
+		).when(
+			testrayContext
+		).hasTestrayCaseResultFile(
+			axisTestClassGroup
+		);
+
+		TestrayCaseResult buildTestrayCaseResult = Mockito.mock(
+			TestrayCaseResult.class);
+
+		_recordAxisTestClassGroup(
+			axisTestClassGroup, buildTestrayCaseResult, testrayContext,
+			Mockito.mock(TestrayCaseResult.class));
+
+		Mockito.verify(
+			buildTestrayCaseResult, Mockito.never()
+		).cacheTestrayCaseResultURL();
+
+		Mockito.verify(
+			testrayContext, Mockito.never()
+		).recordTestrayCaseResultFile(
+			Mockito.any(), Mockito.any()
+		);
 	}
 
 	@Test
@@ -139,225 +150,31 @@ public class TestrayImporterTest
 		Assert.assertTrue(message.contains(axisName));
 	}
 
-	@Test
-	public void testRecordAxisTestClassGroupPlaywrightPortalLogFailure()
-		throws Exception {
-
-		String portalLogErrors = RandomTestUtil.randomString();
-
-		String xmlString = _recordAxisTestClassGroup(
-			Mockito.mock(PlaywrightAxisTestClassGroup.class), portalLogErrors);
-
-		Assert.assertTrue(xmlString, xmlString.contains(portalLogErrors));
-	}
-
-	@Test
-	public void testRecordAxisTestClassGroupPlaywrightPortalLogPassing()
-		throws Exception {
-
-		String xmlString = _recordAxisTestClassGroup(
-			Mockito.mock(PlaywrightAxisTestClassGroup.class), null);
-
-		Assert.assertFalse(xmlString, xmlString.contains("<failure"));
-	}
-
-	@Test
-	public void testRecordAxisTestClassGroupPortalLogFailure()
-		throws Exception {
-
-		String portalLogErrors = RandomTestUtil.randomString();
-
-		String xmlString = _recordAxisTestClassGroup(
-			Mockito.mock(AxisTestClassGroup.class), portalLogErrors);
-
-		Assert.assertTrue(xmlString, xmlString.contains(portalLogErrors));
-	}
-
-	private Element _getTestcaseElement(TestrayCaseResult testrayCaseResult)
-		throws Exception {
-
-		return ReflectionTestUtil.invoke(
-			Mockito.mock(TestrayImporter.class), "_getTestcaseElement",
-			new Class<?>[] {
-				TestrayCaseResult.class, String.class, String[].class
-			},
-			testrayCaseResult, RandomTestUtil.randomString(), null);
-	}
-
-	private String _getTestcaseName(String name) throws Exception {
-		TestrayCaseResult testrayCaseResult = Mockito.mock(
-			TestrayCaseResult.class);
-
-		Mockito.doReturn(
-			name
-		).when(
-			testrayCaseResult
-		).getName();
-
-		Mockito.doReturn(
-			TestrayCaseResult.Status.PASSED
-		).when(
-			testrayCaseResult
-		).getStatus();
-
-		Element testcaseElement = _getTestcaseElement(testrayCaseResult);
-
-		Element propertiesElement = testcaseElement.element("properties");
-
-		for (Element propertyElement : propertiesElement.elements("property")) {
-			if (Objects.equals(
-					propertyElement.attributeValue("name"),
-					"testray.testcase.name")) {
-
-				return propertyElement.attributeValue("value");
-			}
-		}
-
-		return null;
-	}
-
-	private <T extends TestrayCaseResult> T _mockTestrayCaseResult(
-		Class<T> clazz, String errors, TestrayCaseResult.Status status) {
-
-		T testrayCaseResult = Mockito.mock(clazz);
-
-		Mockito.doReturn(
-			errors
-		).when(
-			testrayCaseResult
-		).getErrors();
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			testrayCaseResult
-		).getName();
-
-		Mockito.doReturn(
-			status
-		).when(
-			testrayCaseResult
-		).getStatus();
-
-		return testrayCaseResult;
-	}
-
-	private String _recordAxisTestClassGroup(
-			AxisTestClassGroup axisTestClassGroup, String portalLogErrors)
-		throws Exception {
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			axisTestClassGroup
-		).getAxisName();
-
-		Mockito.doReturn(
-			Collections.emptyList()
-		).when(
-			axisTestClassGroup
-		).getTestClasses();
-
-		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
-
-		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			testrayBuild
-		).getName();
-
-		Mockito.doReturn(
-			Mockito.mock(TestrayProject.class)
-		).when(
-			testrayBuild
-		).getTestrayProject();
-
-		Mockito.doReturn(
-			Mockito.mock(TestrayRoutine.class)
-		).when(
-			testrayBuild
-		).getTestrayRoutine();
-
-		Mockito.doReturn(
-			testrayServer
-		).when(
-			testrayBuild
-		).getTestrayServer();
-
-		TestrayRun testrayRun = Mockito.mock(TestrayRun.class);
-
-		Mockito.doReturn(
-			Dom4JUtil.getNewElement("environments")
-		).when(
-			testrayRun
-		).getEnvironmentsElement();
-
-		Mockito.doReturn(
-			testrayBuild
-		).when(
-			testrayRun
-		).getTestrayBuild();
-
-		Mockito.doReturn(
-			testrayRun
-		).when(
-			axisTestClassGroup
-		).getTestrayRun();
-
-		TopLevelBuildReport topLevelBuildReport = Mockito.mock(
-			TopLevelBuildReport.class);
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			topLevelBuildReport
-		).getTestrayCaseFileName(
-			Mockito.anyString()
-		);
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			topLevelBuildReport
-		).getTestSuiteName();
+	private void _recordAxisTestClassGroup(
+		AxisTestClassGroup axisTestClassGroup,
+		TestrayCaseResult buildTestrayCaseResult, TestrayContext testrayContext,
+		TestrayCaseResult topLevelTestrayCaseResult) {
 
 		TestrayImporter testrayImporter = Mockito.mock(TestrayImporter.class);
 
 		ReflectionTestUtil.setFieldValue(
-			testrayImporter, "_topLevelBuildReport", topLevelBuildReport);
+			testrayImporter, "_testrayContext", testrayContext);
+		ReflectionTestUtil.setFieldValue(
+			testrayImporter, "_topLevelBuildReport",
+			Mockito.mock(TopLevelBuildReport.class));
 		ReflectionTestUtil.setFieldValue(
 			testrayImporter, "_uncreatedTestrayCaseResultsCount",
 			new AtomicInteger());
-
-		TestrayCaseResult testrayCaseResult = _mockTestrayCaseResult(
-			TestrayCaseResult.class, null, TestrayCaseResult.Status.PASSED);
-
-		PortalLogBatchBuildTestrayCaseResult
-			portalLogBatchBuildTestrayCaseResult = _mockTestrayCaseResult(
-				PortalLogBatchBuildTestrayCaseResult.class, portalLogErrors,
-				TestrayCaseResult.Status.FAILED);
 
 		try (MockedStatic<TestrayFactory> testrayFactoryMockedStatic =
 				Mockito.mockStatic(TestrayFactory.class)) {
 
 			testrayFactoryMockedStatic.when(
 				() -> TestrayFactory.newBuildTestrayCaseResult(
-					Mockito.any(AxisTestClassGroup.class),
-					Mockito.any(TestrayBuild.class),
+					Mockito.any(AxisTestClassGroup.class), Mockito.any(),
 					Mockito.any(TopLevelBuildReport.class))
 			).thenReturn(
-				testrayCaseResult
-			);
-
-			testrayFactoryMockedStatic.when(
-				() -> TestrayFactory.newPortalLogTestrayCaseResult(
-					Mockito.any(AxisTestClassGroup.class),
-					Mockito.any(TestrayBuild.class),
-					Mockito.any(TopLevelBuildReport.class))
-			).thenReturn(
-				portalLogBatchBuildTestrayCaseResult
+				buildTestrayCaseResult
 			);
 
 			ReflectionTestUtil.invoke(
@@ -365,19 +182,8 @@ public class TestrayImporterTest
 				new Class<?>[] {
 					AxisTestClassGroup.class, TestrayCaseResult.class
 				},
-				axisTestClassGroup, Mockito.mock(TestrayCaseResult.class));
+				axisTestClassGroup, topLevelTestrayCaseResult);
 		}
-
-		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(
-			String.class);
-
-		Mockito.verify(
-			testrayServer
-		).writeCaseResult(
-			Mockito.anyString(), argumentCaptor.capture()
-		);
-
-		return argumentCaptor.getValue();
 	}
 
 	private String _recordAxisTestClassGroupNoTestrayRun(
@@ -420,16 +226,6 @@ public class TestrayImporterTest
 		}
 
 		throw new AssertionError();
-	}
-
-	private void _testGetTestcaseElementName(int nameLength, int expectedLength)
-		throws Exception {
-
-		String name = StringUtils.repeat(RandomTestUtil.randomString(), 8);
-
-		name = name.substring(0, nameLength);
-
-		testEquals(name.substring(0, expectedLength), _getTestcaseName(name));
 	}
 
 }

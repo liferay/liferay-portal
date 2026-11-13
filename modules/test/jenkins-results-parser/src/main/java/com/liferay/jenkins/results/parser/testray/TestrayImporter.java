@@ -19,15 +19,7 @@ import com.liferay.jenkins.results.parser.TestSuiteJob;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.job.property.JobProperty;
 import com.liferay.jenkins.results.parser.persistent.resource.PersistentResource;
-import com.liferay.jenkins.results.parser.test.clazz.TestClass;
-import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
-import com.liferay.jenkins.results.parser.test.clazz.group.FunctionalAxisTestClassGroup;
-import com.liferay.jenkins.results.parser.test.clazz.group.JSUnitAxisTestClassGroup;
-import com.liferay.jenkins.results.parser.test.clazz.group.JUnitAxisTestClassGroup;
-import com.liferay.jenkins.results.parser.test.clazz.group.ModulesAxisTestClassGroup;
-import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightAxisTestClassGroup;
-import com.liferay.jenkins.results.parser.test.clazz.group.WorkspacesCompileAxisTestClassGroup;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +27,6 @@ import java.io.IOException;
 import java.net.URL;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,9 +34,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.http.client.utils.URIBuilder;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -302,44 +290,6 @@ public class TestrayImporter {
 		_sendPullRequestNotification();
 	}
 
-	private void _addDetailsElements(
-		Element propertiesElement,
-		JUnitBatchBuildTestrayCaseResult testrayCaseResult) {
-
-		Element detailsElement = propertiesElement.addElement("details");
-
-		for (String methodName : testrayCaseResult.getMethodNames()) {
-			if (JenkinsResultsParserUtil.isNullOrEmpty(
-					testrayCaseResult.getMethodIssues(methodName))) {
-
-				continue;
-			}
-
-			Element detailElement = detailsElement.addElement("detail");
-
-			Element issuesPropertyElement = detailElement.addElement(
-				"property");
-
-			issuesPropertyElement.addAttribute("name", "testray.jira.issues");
-			issuesPropertyElement.addAttribute(
-				"value", testrayCaseResult.getMethodIssues(methodName));
-
-			Element namePropertyElement = detailElement.addElement("property");
-
-			namePropertyElement.addAttribute(
-				"name", "testray.testcase.detail.name");
-			namePropertyElement.addAttribute("value", methodName);
-
-			Element statusPropertyElement = detailElement.addElement(
-				"property");
-
-			statusPropertyElement.addAttribute(
-				"name", "testray.testcase.detail.status");
-			statusPropertyElement.addAttribute(
-				"value", testrayCaseResult.getMethodStatus(methodName));
-		}
-	}
-
 	private Element _getJenkinsBuildDescriptionCodeElement(
 		String title, String name) {
 
@@ -489,162 +439,6 @@ public class TestrayImporter {
 		return "Liferay CI";
 	}
 
-	private Element _getTestcaseElement(
-		TestrayCaseResult testrayCaseResult, String testSuiteName,
-		String[] warnings) {
-
-		Element testcaseElement = Dom4JUtil.getNewElement("testcase");
-
-		Map<String, String> testcasePropertiesMap = new HashMap<>();
-
-		testcasePropertiesMap.put(
-			"testray.case.type.name", testrayCaseResult.getType());
-		testcasePropertiesMap.put(
-			"testray.component.names",
-			testrayCaseResult.getSubcomponentNames());
-		testcasePropertiesMap.put(
-			"testray.main.component.name",
-			testrayCaseResult.getComponentName());
-		testcasePropertiesMap.put(
-			"testray.team.name", testrayCaseResult.getTeamName());
-		testcasePropertiesMap.put(
-			"testray.testcase.duration",
-			String.valueOf(testrayCaseResult.getDuration()));
-
-		String testrayCaseName = testrayCaseResult.getName();
-
-		if (testrayCaseName.length() > 250) {
-			testrayCaseName = testrayCaseName.substring(0, 250);
-		}
-
-		testcasePropertiesMap.put("testray.testcase.name", testrayCaseName);
-
-		testcasePropertiesMap.put(
-			"testray.testcase.priority",
-			String.valueOf(testrayCaseResult.getPriority()));
-
-		TestrayCaseResult.Status testrayCaseStatus =
-			testrayCaseResult.getStatus();
-
-		testcasePropertiesMap.put(
-			"testray.testcase.status", testrayCaseStatus.getName());
-
-		Element propertiesElement = testcaseElement.addElement("properties");
-
-		if (testSuiteName.equals("upstream-dxp")) {
-			if (testrayCaseResult instanceof JUnitBatchBuildTestrayCaseResult) {
-				_addDetailsElements(
-					propertiesElement,
-					(JUnitBatchBuildTestrayCaseResult)testrayCaseResult);
-			}
-			else {
-				testcasePropertiesMap.put(
-					"testray.jira.issues", testrayCaseResult.getIssues());
-			}
-		}
-
-		Dom4JUtil.addPropertyElements(propertiesElement, testcasePropertiesMap);
-
-		if ((warnings != null) && (warnings.length > 0)) {
-			Element warningsPropertyElement = propertiesElement.addElement(
-				"property");
-
-			warningsPropertyElement.addAttribute(
-				"name", "testray.testcase.warnings");
-			warningsPropertyElement.addAttribute(
-				"value", String.valueOf(warnings.length));
-
-			for (String warning : warnings) {
-				Element warningPropertyElement =
-					warningsPropertyElement.addElement("value");
-
-				warningPropertyElement.addText(
-					StringEscapeUtils.escapeHtml4(warning));
-			}
-		}
-
-		Element attachmentsElement = testcaseElement.addElement("attachments");
-
-		for (TestrayAttachment testrayAttachment :
-				testrayCaseResult.getTestrayAttachments()) {
-
-			Element attachmentFileElement = attachmentsElement.addElement(
-				"file");
-
-			attachmentFileElement.addAttribute(
-				"name", testrayAttachment.getName());
-
-			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-				String.valueOf(testrayAttachment.getURL()));
-
-			uriBuilder.addParameter("authuser", "0");
-
-			attachmentFileElement.addAttribute("url", uriBuilder.toString());
-
-			attachmentFileElement.addAttribute(
-				"value", testrayAttachment.getKey());
-		}
-
-		String errors = testrayCaseResult.getErrors();
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(errors)) {
-			Element failureElement = testcaseElement.addElement("failure");
-
-			failureElement.addAttribute("message", errors);
-		}
-
-		return testcaseElement;
-	}
-
-	private List<Element> _getTestcaseElements(
-		AxisTestClassGroup axisTestClassGroup,
-		List<TestrayCaseResult> testrayCaseResults, String testSuiteName) {
-
-		final String[] testrayCaseResultWarnings =
-			_getTestrayCaseResultWarnings(testrayCaseResults);
-
-		List<Callable<Element>> callables = new ArrayList<>();
-
-		for (final TestrayCaseResult testrayCaseResult : testrayCaseResults) {
-			callables.add(
-				new Callable<Element>() {
-
-					@Override
-					public Element call() throws Exception {
-						return _getTestcaseElement(
-							testrayCaseResult, testSuiteName,
-							testrayCaseResultWarnings);
-					}
-
-				});
-		}
-
-		ParallelExecutor<Element> parallelExecutor = new ParallelExecutor<>(
-			callables, true, _caseResultExecutorService, true,
-			"recordAxisTestClassGroup:" + axisTestClassGroup.getAxisName());
-
-		try {
-			return parallelExecutor.execute(60L * 30L);
-		}
-		catch (TimeoutException timeoutException) {
-			throw new RuntimeException(timeoutException);
-		}
-	}
-
-	private String[] _getTestrayCaseResultWarnings(
-		List<TestrayCaseResult> testrayCaseResults) {
-
-		for (TestrayCaseResult testrayCaseResult : testrayCaseResults) {
-			String[] warnings = testrayCaseResult.getWarnings();
-
-			if (warnings != null) {
-				return warnings;
-			}
-		}
-
-		return null;
-	}
-
 	private TestrayCaseResult _recordAppServerTestrayCaseResult(
 		Job job, PersistentResource.Type persistentResourceType,
 		File testBaseDir, TestrayCaseResult topLevelTestrayCaseResult) {
@@ -692,14 +486,7 @@ public class TestrayImporter {
 					axisTestClassGroup.getAxisName());
 		}
 
-		TestrayBuild testrayBuild = testrayRun.getTestrayBuild();
-
-		TestrayServer testrayServer = testrayBuild.getTestrayServer();
-
-		if (testrayServer.isCaseResultFileAvailable(
-				_topLevelBuildReport.getTestrayCaseFileName(
-					axisTestClassGroup.getAxisName()))) {
-
+		if (_testrayContext.hasTestrayCaseResultFile(axisTestClassGroup)) {
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
 					"Testray case results for ",
@@ -708,55 +495,10 @@ public class TestrayImporter {
 			return;
 		}
 
-		long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
-
-		Document document = DocumentHelper.createDocument();
-
-		Element rootElement = document.addElement("testsuite");
-
-		rootElement.add(testrayRun.getEnvironmentsElement());
-
-		Map<String, String> propertiesMap = new HashMap<>();
-
-		propertiesMap.put(
-			"testray.build.date",
-			_topLevelBuildReport.getTestrayBuildDateString());
-		propertiesMap.put("testray.build.name", testrayBuild.getName());
-		propertiesMap.put(
-			"testray.build.time",
-			JenkinsResultsParserUtil.toDurationString(
-				_topLevelBuildReport.getDuration()));
-
-		TestrayRoutine testrayRoutine = testrayBuild.getTestrayRoutine();
-
-		propertiesMap.put("testray.build.type", testrayRoutine.getName());
-
-		TestrayProductVersion testrayProductVersion =
-			testrayBuild.getTestrayProductVersion();
-
-		if (testrayProductVersion != null) {
-			propertiesMap.put(
-				"testray.product.version", testrayProductVersion.getName());
-		}
-
-		TestrayProject testrayProject = testrayBuild.getTestrayProject();
-
-		propertiesMap.put("testray.project.name", testrayProject.getName());
-
-		propertiesMap.put("testray.run.id", testrayRun.getRunIdString());
-		propertiesMap.put(
-			"testray.total.cpu.use.time",
-			JenkinsResultsParserUtil.toDurationString(
-				_topLevelBuildReport.getTotalActualDuration()));
-
-		Dom4JUtil.addPropertyElements(
-			rootElement.addElement("properties"), propertiesMap);
-
-		List<TestrayCaseResult> testrayCaseResults = new ArrayList<>();
-
 		TestrayCaseResult buildTestrayCaseResult =
 			TestrayFactory.newBuildTestrayCaseResult(
-				axisTestClassGroup, testrayBuild, _topLevelBuildReport);
+				axisTestClassGroup, testrayRun.getTestrayBuild(),
+				_topLevelBuildReport);
 
 		buildTestrayCaseResult.setParentTestrayCaseResult(
 			topLevelTestrayCaseResult);
@@ -769,110 +511,8 @@ public class TestrayImporter {
 			_uncreatedTestrayCaseResultsCount.incrementAndGet();
 		}
 
-		testrayCaseResults.add(buildTestrayCaseResult);
-
-		PortalLogBatchBuildTestrayCaseResult
-			portalLogBatchBuildTestrayCaseResult =
-				TestrayFactory.newPortalLogTestrayCaseResult(
-					axisTestClassGroup, testrayBuild, _topLevelBuildReport);
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(
-				portalLogBatchBuildTestrayCaseResult.getErrors())) {
-
-			portalLogBatchBuildTestrayCaseResult.setParentTestrayCaseResult(
-				buildTestrayCaseResult);
-			portalLogBatchBuildTestrayCaseResult.setTestrayRun(testrayRun);
-
-			testrayCaseResults.add(portalLogBatchBuildTestrayCaseResult);
-		}
-
-		if (axisTestClassGroup instanceof FunctionalAxisTestClassGroup ||
-			axisTestClassGroup instanceof JSUnitAxisTestClassGroup ||
-			axisTestClassGroup instanceof JUnitAxisTestClassGroup ||
-			axisTestClassGroup instanceof ModulesAxisTestClassGroup ||
-			axisTestClassGroup instanceof WorkspacesCompileAxisTestClassGroup) {
-
-			for (TestClass testClass : axisTestClassGroup.getTestClasses()) {
-				if (testClass.isTestClassFileReported()) {
-					for (TestClassMethod testClassMethod :
-							testClass.getTestClassMethods()) {
-
-						TestrayCaseResult testClassMethodTestrayCaseResult =
-							TestrayFactory.newBuildTestrayCaseResult(
-								axisTestClassGroup, testClass, testClassMethod,
-								testrayBuild, _topLevelBuildReport);
-
-						testClassMethodTestrayCaseResult.
-							setParentTestrayCaseResult(buildTestrayCaseResult);
-
-						testClassMethodTestrayCaseResult.setTestrayRun(
-							testrayRun);
-
-						testrayCaseResults.add(
-							testClassMethodTestrayCaseResult);
-					}
-
-					continue;
-				}
-
-				TestrayCaseResult testClassTestrayCaseResult =
-					TestrayFactory.newBuildTestrayCaseResult(
-						axisTestClassGroup, testClass, testrayBuild,
-						_topLevelBuildReport);
-
-				testClassTestrayCaseResult.setParentTestrayCaseResult(
-					buildTestrayCaseResult);
-				testClassTestrayCaseResult.setTestrayRun(testrayRun);
-
-				testrayCaseResults.add(testClassTestrayCaseResult);
-			}
-		}
-		else if (axisTestClassGroup instanceof PlaywrightAxisTestClassGroup) {
-			for (TestClass testClass : axisTestClassGroup.getTestClasses()) {
-				for (TestClassMethod testClassMethod :
-						testClass.getTestClassMethods()) {
-
-					TestrayCaseResult testClassMethodTestrayCaseResult =
-						TestrayFactory.newBuildTestrayCaseResult(
-							axisTestClassGroup, testClass, testClassMethod,
-							testrayBuild, _topLevelBuildReport);
-
-					testClassMethodTestrayCaseResult.setParentTestrayCaseResult(
-						buildTestrayCaseResult);
-					testClassMethodTestrayCaseResult.setTestrayRun(testrayRun);
-
-					testrayCaseResults.add(testClassMethodTestrayCaseResult);
-				}
-			}
-		}
-
-		List<Element> testcaseElements = _getTestcaseElements(
-			axisTestClassGroup, testrayCaseResults,
-			_topLevelBuildReport.getTestSuiteName());
-
-		for (Element testcaseElement : testcaseElements) {
-			rootElement.add(testcaseElement);
-		}
-
-		try {
-			testrayServer.writeCaseResult(
-				_topLevelBuildReport.getTestrayCaseFileName(
-					axisTestClassGroup.getAxisName()),
-				Dom4JUtil.format(rootElement));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
-		long currentTimeMillis =
-			JenkinsResultsParserUtil.getCurrentTimeMillis();
-
-		System.out.println(
-			JenkinsResultsParserUtil.combine(
-				"Recorded ", String.valueOf(testrayCaseResults.size()),
-				" case results for ", axisTestClassGroup.getAxisName(), " in ",
-				JenkinsResultsParserUtil.toDurationString(
-					currentTimeMillis - start)));
+		_testrayContext.recordTestrayCaseResultFile(
+			axisTestClassGroup, buildTestrayCaseResult);
 	}
 
 	private TestrayCaseResult _recordTopLevelTestrayCaseResult(
@@ -913,8 +553,6 @@ public class TestrayImporter {
 		pullRequest.addComment(getJenkinsBuildDescription());
 	}
 
-	private static final ExecutorService _caseResultExecutorService =
-		JenkinsResultsParserUtil.getNewThreadPoolExecutor(20, true);
 	private static final ExecutorService _executorService =
 		JenkinsResultsParserUtil.getNewThreadPoolExecutor(10, true);
 

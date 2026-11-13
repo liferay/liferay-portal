@@ -9,6 +9,7 @@ import com.liferay.jenkins.results.parser.Build;
 import com.liferay.jenkins.results.parser.BuildDatabase;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.TopLevelBuild;
+import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 
 import java.net.URL;
 
@@ -82,6 +83,11 @@ public class BuildTestrayContext extends BaseTestrayContext {
 		_buildParameters = _topLevelBuild.getParameters();
 
 		return _buildParameters;
+	}
+
+	@Override
+	protected TopLevelBuildReport getTopLevelBuildReport() {
+		return _topLevelBuild.getTopLevelBuildReport();
 	}
 
 	@Override
