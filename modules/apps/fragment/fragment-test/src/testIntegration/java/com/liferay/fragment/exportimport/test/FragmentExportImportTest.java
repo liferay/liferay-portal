@@ -200,22 +200,28 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 
 	@Test
 	@TestInfo("LPD-115198")
-	public void testExportImportLayoutsWithValidationWithLayoutWithGuestViewPermission()
-		throws Exception {
+	public void testExportImportLayoutsWithValidation() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group, TestPropsValues.getUserId());
+
+		FragmentEntry fragmentEntry = _addFragmentEntry(
+			_fragmentCollectionLocalService.addFragmentCollection(
+				null, TestPropsValues.getUserId(),
+				serviceContext.getScopeGroupId(), RandomTestUtil.randomString(),
+				StringPool.BLANK, serviceContext),
+			RandomTestUtil.randomString(), serviceContext);
+
+		Layout guestGroupLayout = _getGuestGroupLayout();
+
+		_testExportImportLayoutsWithValidation(
+			fragmentEntry, guestGroupLayout.getPlid());
 
 		Layout importedGroupLayout = LayoutTestUtil.addTypePortletLayout(
 			importedGroup);
 
-		_testExportImportLayoutsWithValidation(importedGroupLayout.getPlid());
-	}
-
-	@Test
-	@TestInfo("LPD-115198")
-	public void testExportImportLayoutsWithValidationWithLayoutWithoutGuestViewPermission()
-		throws Exception {
-
-		Layout importedGroupLayout = LayoutTestUtil.addTypePortletLayout(
-			importedGroup);
+		_testExportImportLayoutsWithValidation(
+			fragmentEntry, importedGroupLayout.getPlid());
 
 		Role role = _roleLocalService.getRole(
 			importedGroupLayout.getCompanyId(), RoleConstants.GUEST);
@@ -226,19 +232,8 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 			String.valueOf(importedGroupLayout.getPlid()), role.getRoleId(),
 			ActionKeys.VIEW);
 
-		Layout guestGroupLayout = _getGuestGroupLayout();
-
-		_testExportImportLayoutsWithValidation(guestGroupLayout.getPlid());
-	}
-
-	@Test
-	@TestInfo("LPD-115198")
-	public void testExportImportLayoutsWithValidationWithoutLayout()
-		throws Exception {
-
-		Layout guestGroupLayout = _getGuestGroupLayout();
-
-		_testExportImportLayoutsWithValidation(guestGroupLayout.getPlid());
+		_testExportImportLayoutsWithValidation(
+			fragmentEntry, guestGroupLayout.getPlid());
 	}
 
 	@Test
@@ -488,19 +483,9 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 			"[/#if]\n<h1>", RandomTestUtil.randomString(), "</h1>");
 	}
 
-	private void _testExportImportLayoutsWithValidation(long plid)
+	private void _testExportImportLayoutsWithValidation(
+			FragmentEntry fragmentEntry, long plid)
 		throws Exception {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				group, TestPropsValues.getUserId());
-
-		FragmentEntry fragmentEntry = _addFragmentEntry(
-			_fragmentCollectionLocalService.addFragmentCollection(
-				null, TestPropsValues.getUserId(),
-				serviceContext.getScopeGroupId(), RandomTestUtil.randomString(),
-				StringPool.BLANK, serviceContext),
-			RandomTestUtil.randomString(), serviceContext);
 
 		fragmentEntry = _updateFragmentEntry(
 			fragmentEntry,
