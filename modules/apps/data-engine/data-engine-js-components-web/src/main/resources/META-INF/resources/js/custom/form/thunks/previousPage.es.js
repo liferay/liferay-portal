@@ -8,6 +8,7 @@ import {evaluate} from '../../../utils/evaluation.es';
 
 export default function previousPage({
 	activePage,
+	containerId,
 	defaultLanguageId,
 	editingLanguageId,
 	formId,
@@ -22,6 +23,7 @@ export default function previousPage({
 	return (dispatch) => {
 		evaluate(null, {
 			activePage,
+			containerId,
 			defaultLanguageId,
 			editingLanguageId,
 			formId,

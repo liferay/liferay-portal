@@ -7,7 +7,7 @@ import {evaluate, mergePages} from '../../utils/evaluation.es';
 import {PagesVisitor} from '../../utils/visitors.es';
 import {EVENT_TYPES} from '../actions/eventTypes.es';
 import {disableSubmitButton} from '../utils/submitButtonController.es';
-let REVALIDATE_UPDATES = [];
+const revalidateUpdatesMap = new Map();
 
 const skipPageEvaluationFieldNames = ['name', 'requiredErrorMessage'];
 
@@ -93,7 +93,7 @@ const getEditedPages = ({
 	);
 };
 
-let lastEditedPages = [];
+const lastEditedPagesMap = new Map();
 
 export default function fieldChange({
 	containerId,
@@ -122,7 +122,7 @@ export default function fieldChange({
 			value,
 		});
 
-		lastEditedPages = editedPages;
+		lastEditedPagesMap.set(containerId, editedPages);
 
 		// We want a synchronous update without waiting for an evaluation of
 		// the field.
@@ -177,12 +177,15 @@ export default function fieldChange({
 					type: EVENT_TYPES.FIELD.CHANGE,
 				});
 
-				if (REVALIDATE_UPDATES.length) {
+				const revalidateUpdates =
+					revalidateUpdatesMap.get(containerId) ?? [];
+
+				if (revalidateUpdates.length) {
 
 					// All nonevaluable operations that were performed after the request
 					// was sent are used here to revalidate the new data
 
-					REVALIDATE_UPDATES.forEach((item) => {
+					revalidateUpdates.forEach((item) => {
 						evaluatedPages = getEditedPages({
 							...item,
 							pages: evaluatedPages,
@@ -192,7 +195,7 @@ export default function fieldChange({
 					// Redefine the list of updates to avoid leaking memory and avoid
 					// more expensive operations in the next interactions
 
-					REVALIDATE_UPDATES = [];
+					revalidateUpdatesMap.delete(containerId);
 				}
 				if (fieldInstance.isDisposed()) {
 					return;
@@ -203,7 +206,7 @@ export default function fieldChange({
 					editingLanguageId,
 					fieldName,
 					evaluatedPages,
-					lastEditedPages,
+					lastEditedPagesMap.get(containerId),
 					viewMode
 				);
 
@@ -230,7 +233,11 @@ export default function fieldChange({
 				type: EVENT_TYPES.FIELD.CHANGE,
 			});
 
-			REVALIDATE_UPDATES.push({
+			if (!revalidateUpdatesMap.has(containerId)) {
+				revalidateUpdatesMap.set(containerId, []);
+			}
+
+			revalidateUpdatesMap.get(containerId).push({
 				defaultLanguageId,
 				editingLanguageId,
 				name: fieldInstance.name,

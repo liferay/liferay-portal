@@ -9,6 +9,7 @@ import {PagesVisitor} from '../../../utils/visitors.es';
 
 export default function nextPage({
 	activePage,
+	containerId,
 	defaultLanguageId,
 	editingLanguageId,
 	formId,
@@ -40,6 +41,7 @@ export default function nextPage({
 	return (dispatch) => {
 		evaluate(null, {
 			activePage,
+			containerId,
 			defaultLanguageId,
 			editingLanguageId,
 			formId,
