@@ -214,4 +214,18 @@ describe('Liferay.Util.fetch', () => {
 
 		expect(fetch).toHaveBeenCalledWith(`/myportal${sameOriginUrl}`, init);
 	});
+
+	it('adds the edit launch set ID header when a launch is being edited', () => {
+		window.Liferay.ThemeDisplay = {
+			getDoAsUserIdEncoded: () => '',
+			getEditLaunchSetId: () => '123',
+			getPathContext: () => '',
+		};
+
+		fetchWrapper(sameOriginUrl);
+
+		const [, init] = fetch.mock.calls[fetch.mock.calls.length - 1];
+
+		expect(init.headers.get('x-liferay-launch-set-id')).toBe('123');
+	});
 });

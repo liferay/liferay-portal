@@ -266,6 +266,7 @@ declare module Liferay {
 		export function getCDNHost(): string;
 		export function getCompanyId(): string;
 		export function getDefaultLanguageId(): Language.Locale;
+		export function getEditLaunchSetId(): string;
 		export function getLanguageId(): Language.Locale;
 		export function getLayoutRelativeControlPanelURL(): string;
 		export function getPathContext(): string;

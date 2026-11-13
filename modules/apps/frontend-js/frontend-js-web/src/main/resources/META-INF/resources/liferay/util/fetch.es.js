@@ -73,6 +73,12 @@ export default function defaultFetch(resource, init = {}) {
 
 			resource = setNewLocation(resource, resourceLocation);
 		}
+
+		const editLaunchSetId = Liferay.ThemeDisplay.getEditLaunchSetId?.();
+
+		if (editLaunchSetId > 0) {
+			headers.set('x-liferay-launch-set-id', editLaunchSetId);
+		}
 	}
 
 	new Headers(init.headers || {}).forEach((value, key) => {
