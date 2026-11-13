@@ -37,16 +37,17 @@ public class DispatchTriggerMetadataProviderImpl
 			_dispatchTriggerLocalService.fetchDispatchTrigger(
 				dispatchTriggerId);
 
-		if ((dispatchTrigger == null) ||
-			!_serviceTrackerMap.containsKey(
-				dispatchTrigger.getDispatchTaskExecutorType())) {
-
+		if (dispatchTrigger == null) {
 			return _defaultDispatchTriggerMetadata;
 		}
 
 		DispatchTriggerMetadataFactory dispatchTriggerMetadataFactory =
 			_serviceTrackerMap.getService(
 				dispatchTrigger.getDispatchTaskExecutorType());
+
+		if (dispatchTriggerMetadataFactory == null) {
+			return _defaultDispatchTriggerMetadata;
+		}
 
 		return dispatchTriggerMetadataFactory.instance(dispatchTrigger);
 	}
