@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -186,15 +185,9 @@ public class FIDO2BrowserSetupMFAChecker
 			_mfaFIDO2CredentialEntryLocalService.deleteMFAFIDO2CredentialEntry(
 				mfaFIDO2CredentialEntry);
 
-			AuditRouter auditRouter = _auditRouterSnapshot.get();
-
-			if (auditRouter == null) {
-				continue;
-			}
-
 			MFAFIDO2AuditMessageUtil.routeAuditMessage(
 				MFAFIDO2AuditMessageUtil.buildSetupRemovedAuditMessage(userId),
-				auditRouter);
+				_auditRouter);
 		}
 	}
 
@@ -217,14 +210,9 @@ public class FIDO2BrowserSetupMFAChecker
 				userId, credentialIdByteArray.getBase64(), 0,
 				publicKeyCOSEByteArray.getBase64());
 
-			AuditRouter auditRouter = _auditRouterSnapshot.get();
-
-			if (auditRouter != null) {
-				MFAFIDO2AuditMessageUtil.routeAuditMessage(
-					MFAFIDO2AuditMessageUtil.buildSetupAddedAuditMessage(
-						userId),
-					auditRouter);
-			}
+			MFAFIDO2AuditMessageUtil.routeAuditMessage(
+				MFAFIDO2AuditMessageUtil.buildSetupAddedAuditMessage(userId),
+				_auditRouter);
 
 			return true;
 		}
@@ -254,16 +242,12 @@ public class FIDO2BrowserSetupMFAChecker
 						userId);
 			}
 
-			AuditRouter auditRouter = _auditRouterSnapshot.get();
-
-			if (auditRouter != null) {
-				MFAFIDO2AuditMessageUtil.routeAuditMessage(
-					MFAFIDO2AuditMessageUtil.
-						buildNonexistentUserVerificationFailureAuditMessage(
-							CompanyThreadLocal.getCompanyId(), userId,
-							_getClassName()),
-					auditRouter);
-			}
+			MFAFIDO2AuditMessageUtil.routeAuditMessage(
+				MFAFIDO2AuditMessageUtil.
+					buildNonexistentUserVerificationFailureAuditMessage(
+						CompanyThreadLocal.getCompanyId(), userId,
+						_getClassName()),
+				_auditRouter);
 
 			return false;
 		}
@@ -275,16 +259,12 @@ public class FIDO2BrowserSetupMFAChecker
 						" with incomplete configuration");
 			}
 
-			AuditRouter auditRouter = _auditRouterSnapshot.get();
-
-			if (auditRouter != null) {
-				MFAFIDO2AuditMessageUtil.routeAuditMessage(
-					MFAFIDO2AuditMessageUtil.
-						buildUnconfiguredUserVerificationFailureAuditMessage(
-							CompanyThreadLocal.getCompanyId(), user,
-							_getClassName()),
-					auditRouter);
-			}
+			MFAFIDO2AuditMessageUtil.routeAuditMessage(
+				MFAFIDO2AuditMessageUtil.
+					buildUnconfiguredUserVerificationFailureAuditMessage(
+						CompanyThreadLocal.getCompanyId(), user,
+						_getClassName()),
+				_auditRouter);
 
 			return false;
 		}
@@ -299,16 +279,12 @@ public class FIDO2BrowserSetupMFAChecker
 				_mfaFIDO2CredentialEntryLocalService.updateAttempts(
 					userId, credentialIdByteArray.getBase64(), 0);
 
-				AuditRouter auditRouter = _auditRouterSnapshot.get();
-
-				if (auditRouter != null) {
-					MFAFIDO2AuditMessageUtil.routeAuditMessage(
-						MFAFIDO2AuditMessageUtil.
-							buildVerificationFailureAuditMessage(
-								user, _getClassName(),
-								"Incorrect FIDO2 verification"),
-						auditRouter);
-				}
+				MFAFIDO2AuditMessageUtil.routeAuditMessage(
+					MFAFIDO2AuditMessageUtil.
+						buildVerificationFailureAuditMessage(
+							user, _getClassName(),
+							"Incorrect FIDO2 verification"),
+					_auditRouter);
 
 				return false;
 			}
@@ -336,14 +312,10 @@ public class FIDO2BrowserSetupMFAChecker
 		httpSession.setAttribute(
 			MFAFIDO2WebKeys.MFA_FIDO2_VALIDATED_USER_ID, userId);
 
-		AuditRouter auditRouter = _auditRouterSnapshot.get();
-
-		if (auditRouter != null) {
-			MFAFIDO2AuditMessageUtil.routeAuditMessage(
-				MFAFIDO2AuditMessageUtil.buildVerifiedAuditMessage(
-					user, _getClassName()),
-				auditRouter);
-		}
+		MFAFIDO2AuditMessageUtil.routeAuditMessage(
+			MFAFIDO2AuditMessageUtil.buildVerifiedAuditMessage(
+				user, _getClassName()),
+			_auditRouter);
 
 		return true;
 	}
@@ -534,29 +506,21 @@ public class FIDO2BrowserSetupMFAChecker
 						userId);
 			}
 
-			AuditRouter auditRouter = _auditRouterSnapshot.get();
-
-			if (auditRouter != null) {
-				MFAFIDO2AuditMessageUtil.routeAuditMessage(
-					MFAFIDO2AuditMessageUtil.
-						buildNonexistentUserVerificationFailureAuditMessage(
-							CompanyThreadLocal.getCompanyId(), userId,
-							_getClassName()),
-					auditRouter);
-			}
+			MFAFIDO2AuditMessageUtil.routeAuditMessage(
+				MFAFIDO2AuditMessageUtil.
+					buildNonexistentUserVerificationFailureAuditMessage(
+						CompanyThreadLocal.getCompanyId(), userId,
+						_getClassName()),
+				_auditRouter);
 
 			return false;
 		}
 
 		if (httpSession == null) {
-			AuditRouter auditRouter = _auditRouterSnapshot.get();
-
-			if (auditRouter != null) {
-				MFAFIDO2AuditMessageUtil.routeAuditMessage(
-					MFAFIDO2AuditMessageUtil.buildNotVerifiedAuditMessage(
-						user, _getClassName(), "Empty session"),
-					auditRouter);
-			}
+			MFAFIDO2AuditMessageUtil.routeAuditMessage(
+				MFAFIDO2AuditMessageUtil.buildNotVerifiedAuditMessage(
+					user, _getClassName(), "Empty session"),
+				_auditRouter);
 
 			return false;
 		}
@@ -570,8 +534,8 @@ public class FIDO2BrowserSetupMFAChecker
 	private static final Log _log = LogFactoryUtil.getLog(
 		FIDO2BrowserSetupMFAChecker.class);
 
-	private static final Snapshot<AuditRouter> _auditRouterSnapshot =
-		new Snapshot<>(FIDO2BrowserSetupMFAChecker.class, AuditRouter.class);
+	@Reference
+	private AuditRouter _auditRouter;
 
 	private MFAFIDO2Configuration _mfaFIDO2Configuration;
 

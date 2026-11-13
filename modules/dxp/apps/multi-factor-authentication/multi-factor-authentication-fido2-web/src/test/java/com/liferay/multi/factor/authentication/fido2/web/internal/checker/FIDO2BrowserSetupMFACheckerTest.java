@@ -60,6 +60,8 @@ public class FIDO2BrowserSetupMFACheckerTest extends BaseMFAFIDO2WebTestCase {
 		PrincipalThreadLocal.setName(REAL_USER_ID);
 
 		ReflectionTestUtil.setFieldValue(
+			_fido2BrowserSetupMFAChecker, "_auditRouter", auditRouter);
+		ReflectionTestUtil.setFieldValue(
 			_fido2BrowserSetupMFAChecker,
 			"_mfaFIDO2CredentialEntryLocalService",
 			_mfaFIDO2CredentialEntryLocalService);
