@@ -41,6 +41,18 @@ public class TestrayCaseResult {
 		"dueStatus { key name }", "errors", "id", "startDate"
 	};
 
+	public void cacheTestrayCaseResultURL() {
+		try {
+			getTestrayCaseResultURL();
+		}
+		catch (RuntimeException runtimeException) {
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"Unable to create Testray case result '", getName(), "':\n",
+					runtimeException.getMessage()));
+		}
+	}
+
 	public TestrayAttachment getBuildResultTestrayAttachment() {
 		initTestrayAttachments();
 
@@ -532,18 +544,6 @@ public class TestrayCaseResult {
 
 			propertyElement.addAttribute("name", propertyName);
 			propertyElement.addAttribute("value", propertyValue);
-		}
-	}
-
-	protected void cacheTestrayCaseResultURL() {
-		try {
-			getTestrayCaseResultURL();
-		}
-		catch (RuntimeException runtimeException) {
-			System.out.println(
-				JenkinsResultsParserUtil.combine(
-					"Unable to create Testray case result '", getName(), "':\n",
-					runtimeException.getMessage()));
 		}
 	}
 

@@ -33,6 +33,7 @@ import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 import com.liferay.jenkins.results.parser.testray.TestrayCaseResult;
 import com.liferay.jenkins.results.parser.testray.TestrayCloudBucket;
 import com.liferay.jenkins.results.parser.testray.TestrayCloudObject;
+import com.liferay.jenkins.results.parser.testray.TestrayContext;
 import com.liferay.jenkins.results.parser.testray.TestrayFactory;
 
 import java.io.File;
@@ -125,6 +126,51 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		finally {
 			JenkinsResultsParserUtil.delete(buildReportFile);
 			JenkinsResultsParserUtil.delete(buildReportGzipFile);
+		}
+	}
+
+	@Override
+	public void generateTestrayCaseResult() {
+		synchronized (_testrayCaseResultURLLock) {
+			AxisTestClassGroup axisTestClassGroup = getAxisTestClassGroup();
+
+			if (axisTestClassGroup == null) {
+				return;
+			}
+
+			Job job = axisTestClassGroup.getJob();
+
+			if (job == null) {
+				return;
+			}
+
+			TestrayContext testrayContext = job.getTestrayContext();
+
+			if ((testrayContext == null) ||
+				testrayContext.hasTestrayCaseResultFile(axisTestClassGroup)) {
+
+				return;
+			}
+
+			TestrayCaseResult buildTestrayCaseResult =
+				TestrayFactory.newDownstreamBuildTestrayCaseResult(
+					this, testrayContext);
+
+			if (buildTestrayCaseResult == null) {
+				return;
+			}
+
+			buildTestrayCaseResult.cacheTestrayCaseResultURL();
+
+			_testrayCaseResultURL =
+				buildTestrayCaseResult.getTestrayCaseResultURL();
+
+			if (_testrayCaseResultURL == null) {
+				return;
+			}
+
+			testrayContext.recordTestrayCaseResultFile(
+				axisTestClassGroup, buildTestrayCaseResult);
 		}
 	}
 
