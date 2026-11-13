@@ -162,10 +162,8 @@ public class NotificationUpgradeStepRegistrator
 
 		registry.register(
 			"4.0.0", "4.0.1",
-			UpgradeProcessFactory.runSQL(
-				"update NotificationTemplate set externalReferenceCode = " +
-					"'COMMERCE_ORDER_TEMPLATE' where externalReferenceCode = " +
-						"'L_COMMERCE_ORDER_TEMPLATE'"));
+			new com.liferay.notification.internal.upgrade.v4_0_1.
+				NotificationTemplateUpgradeProcess());
 	}
 
 	@Reference
