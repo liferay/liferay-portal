@@ -9,6 +9,7 @@ import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.friendly.url.configuration.manager.FriendlyURLSeparatorConfigurationManager;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.notification.service.NotificationTemplateLocalService;
+import com.liferay.object.constants.ObjectEntryConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectValidationRuleSettingConstants;
@@ -860,6 +861,18 @@ public class ObjectServiceUpgradeStepRegistrator
 			new ObjectEntryGroupIdUpgradeProcess(
 				_classNameLocalService, _companyLocalService,
 				_friendlyURLEntryLocalService));
+
+		registry.register(
+			"13.13.3", "13.14.0",
+			UpgradeProcessFactory.addColumns("ObjectEntry", "type_ INTEGER"),
+			UpgradeProcessFactory.runSQL(
+				"update ObjectEntry set type_ = " +
+					ObjectEntryConstants.TYPE_DEFAULT),
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"update ObjectEntry set type_ = ",
+					ObjectEntryConstants.TYPE_LATEST_APPROVED,
+					" where objectEntryId != headObjectEntryId")));
 	}
 
 	private static final String[] _REMOVED_PANEL_CATEGORY_KEYS = {
