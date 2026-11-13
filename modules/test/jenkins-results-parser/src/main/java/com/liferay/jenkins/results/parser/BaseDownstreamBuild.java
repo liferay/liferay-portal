@@ -840,7 +840,12 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		super.reset();
 
 		_downstreamBuildReport = null;
-		_testrayCaseResultURL = null;
+
+		synchronized (_testrayCaseResultURLLock) {
+			_testrayCaseResultURL = null;
+
+			_deleteTestrayCaseResultFile();
+		}
 
 		Build parentBuild = getParentBuild();
 
@@ -1303,6 +1308,37 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		}
 
 		return testResultGitHubElements;
+	}
+
+	private void _deleteTestrayCaseResultFile() {
+		AxisTestClassGroup axisTestClassGroup = getAxisTestClassGroup();
+
+		if (axisTestClassGroup == null) {
+			return;
+		}
+
+		Job job = axisTestClassGroup.getJob();
+
+		if (job == null) {
+			return;
+		}
+
+		TestrayContext testrayContext = job.getTestrayContext();
+
+		if (testrayContext == null) {
+			return;
+		}
+
+		try {
+			testrayContext.deleteTestrayCaseResultFile(axisTestClassGroup);
+		}
+		catch (RuntimeException runtimeException) {
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"Unable to delete the Testray case result file for ",
+					axisTestClassGroup.getAxisName(), ":\n",
+					runtimeException.getMessage()));
+		}
 	}
 
 	private String _getS3ObjectPath(File file) {

@@ -68,6 +68,16 @@ public class TestrayServer {
 		}
 	}
 
+	public void deleteCaseResult(String fileName) {
+		if (JenkinsResultsParserUtil.isNullOrEmpty(fileName)) {
+			return;
+		}
+
+		File resultFile = new File(getResultsDir(), fileName);
+
+		resultFile.delete();
+	}
+
 	public JenkinsResultsParserUtil.HTTPAuthorization getHTTPAuthorization() {
 		return _httpAuthorization;
 	}

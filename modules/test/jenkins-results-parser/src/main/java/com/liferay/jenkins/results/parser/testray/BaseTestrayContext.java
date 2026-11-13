@@ -71,6 +71,23 @@ import org.dom4j.Element;
 public abstract class BaseTestrayContext implements TestrayContext {
 
 	@Override
+	public void deleteTestrayCaseResultFile(
+		AxisTestClassGroup axisTestClassGroup) {
+
+		TestrayRun testrayRun = _getTestrayRun(axisTestClassGroup);
+
+		TestrayBuild testrayBuild = testrayRun.getTestrayBuild();
+
+		TestrayServer testrayServer = testrayBuild.getTestrayServer();
+
+		TopLevelBuildReport topLevelBuildReport = getTopLevelBuildReport();
+
+		testrayServer.deleteCaseResult(
+			topLevelBuildReport.getTestrayCaseFileName(
+				axisTestClassGroup.getAxisName()));
+	}
+
+	@Override
 	public BuildDatabase getBuildDatabase() {
 		return _buildDatabase;
 	}

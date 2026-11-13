@@ -494,6 +494,33 @@ public class BaseDownstreamBuildTest
 		ReflectionTestUtil.setFieldValue(
 			baseDownstreamBuild, "_testrayCaseResultURL",
 			new URL("https://" + RandomTestUtil.randomString()));
+		ReflectionTestUtil.setFieldValue(
+			baseDownstreamBuild, "_testrayCaseResultURLLock", new Object());
+
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+
+		Mockito.when(
+			baseDownstreamBuild.getAxisTestClassGroup()
+		).thenReturn(
+			axisTestClassGroup
+		);
+
+		Job job = Mockito.mock(Job.class);
+
+		Mockito.when(
+			axisTestClassGroup.getJob()
+		).thenReturn(
+			job
+		);
+
+		TestrayContext testrayContext = Mockito.mock(TestrayContext.class);
+
+		Mockito.when(
+			job.getTestrayContext()
+		).thenReturn(
+			testrayContext
+		);
 
 		baseDownstreamBuild.reset();
 
@@ -506,6 +533,12 @@ public class BaseDownstreamBuildTest
 		Assert.assertNull(
 			ReflectionTestUtil.getFieldValue(
 				baseDownstreamBuild, "_testrayCaseResultURL"));
+
+		Mockito.verify(
+			testrayContext
+		).deleteTestrayCaseResultFile(
+			axisTestClassGroup
+		);
 
 		Mockito.verify(
 			baseParentBuild

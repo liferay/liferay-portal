@@ -26,6 +26,9 @@ import java.util.Set;
  */
 public interface TestrayContext {
 
+	public void deleteTestrayCaseResultFile(
+		AxisTestClassGroup axisTestClassGroup);
+
 	public BuildDatabase getBuildDatabase();
 
 	public JobProperty getJobProperty(
