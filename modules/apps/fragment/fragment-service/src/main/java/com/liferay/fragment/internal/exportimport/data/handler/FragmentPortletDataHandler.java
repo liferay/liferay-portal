@@ -23,7 +23,7 @@ import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
-import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.xml.Element;
 
@@ -177,8 +177,8 @@ public class FragmentPortletDataHandler extends BasePortletDataHandler {
 
 		try (AutoCloseable autoCloseable =
 				_layoutServiceContextHelper.getServiceContextAutoCloseable(
-					_companyLocalService.getCompany(
-						portletDataContext.getCompanyId()))) {
+					_groupLocalService.getGroup(
+						portletDataContext.getScopeGroupId()))) {
 
 			for (Element fragmentEntryElement : fragmentEntryElements) {
 				StagedModelDataHandlerUtil.importStagedModel(
@@ -221,9 +221,6 @@ public class FragmentPortletDataHandler extends BasePortletDataHandler {
 		fragmentEntryExportActionableDynamicQuery.performCount();
 	}
 
-	@Reference
-	private CompanyLocalService _companyLocalService;
-
 	@Reference(
 		target = "(model.class.name=com.liferay.fragment.model.FragmentCollection)",
 		unbind = "-"
@@ -237,6 +234,9 @@ public class FragmentPortletDataHandler extends BasePortletDataHandler {
 	)
 	private StagedModelRepository<FragmentEntry>
 		_fragmentEntryStagedModelRepository;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private LayoutServiceContextHelper _layoutServiceContextHelper;
