@@ -8,6 +8,7 @@ package com.liferay.source.formatter.checkstyle.check;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 import java.util.List;
@@ -104,22 +105,18 @@ public class EmptyServicePropertiesCheck extends BaseCheck {
 			return false;
 		}
 
-		DetailAST typeDetailAST = detailAST.getFirstChild();
-
-		if (typeDetailAST.getType() == TokenTypes.DOT) {
-			typeDetailAST = typeDetailAST.findFirstToken(TokenTypes.IDENT);
-		}
-
-		if ((typeDetailAST == null) ||
-			(typeDetailAST.getType() != TokenTypes.IDENT)) {
-
-			return false;
-		}
+		FullIdent fullIdent = FullIdent.createFullIdent(
+			detailAST.getFirstChild());
 
 		return ArrayUtil.contains(
-			new String[] {"HashMapDictionary", "Hashtable"},
-			typeDetailAST.getText());
+			_DICTIONARY_CLASS_NAMES,
+			getFullyQualifiedTypeName(fullIdent.getText(), detailAST, true));
 	}
+
+	private static final String[] _DICTIONARY_CLASS_NAMES = {
+		"com.liferay.portal.kernel.util.HashMapDictionary",
+		"java.util.Hashtable"
+	};
 
 	private static final String _MSG_PASS_NULL = "service.properties.null";
 

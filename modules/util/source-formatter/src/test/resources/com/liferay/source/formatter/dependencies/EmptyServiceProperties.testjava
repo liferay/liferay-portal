@@ -66,6 +66,11 @@ public class EmptyServiceProperties {
 		properties.put("key", "value");
 	}
 
+	public void method9(BundleContext bundleContext) {
+		bundleContext.registerService(
+			Object.class, new Object(), new java.util.Hashtable<>());
+	}
+
 	protected void registerService(
 		Class<?> clazz, Object object, Dictionary<String, Object> properties) {
 	}
