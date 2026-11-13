@@ -432,8 +432,6 @@ public class AnalyticsReportsDataProviderTest {
 				RandomTestUtil.randomString());
 
 		Assert.assertEquals(
-			trafficChannels.toString(), 3, trafficChannels.size());
-		Assert.assertEquals(
 			String.valueOf(
 				TrafficChannel.newInstance(
 					3849L, 86.0D, TrafficChannel.Type.ORGANIC)),
@@ -448,6 +446,8 @@ public class AnalyticsReportsDataProviderTest {
 				TrafficChannel.newInstance(
 					389L, 8.7D, TrafficChannel.Type.SOCIAL)),
 			String.valueOf(trafficChannels.get(TrafficChannel.Type.SOCIAL)));
+		Assert.assertEquals(
+			trafficChannels.toString(), 3, trafficChannels.size());
 	}
 
 	@Test(expected = PortalException.class)
@@ -492,12 +492,12 @@ public class AnalyticsReportsDataProviderTest {
 				RandomTestUtil.randomString());
 
 		Assert.assertEquals(
-			trafficChannels.toString(), 1, trafficChannels.size());
-		Assert.assertEquals(
 			String.valueOf(
 				TrafficChannel.newInstance(
 					100, 50.0D, TrafficChannel.Type.CHATBOT)),
 			String.valueOf(trafficChannels.get(TrafficChannel.Type.CHATBOT)));
+		Assert.assertEquals(
+			trafficChannels.toString(), 1, trafficChannels.size());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
