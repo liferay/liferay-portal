@@ -265,7 +265,9 @@ public class JavaScriptFrontendResourceRequestHandler
 							_portal, resourceURI),
 						"/language.json"));
 
-				if (languageJsonURL == null) {
+				if ((languageJsonURL == null) ||
+					!HashedFilesUtil.containsHash(url.getFile())) {
+
 					_translatable.putIfAbsent(resourceURI, true);
 				}
 				else {
