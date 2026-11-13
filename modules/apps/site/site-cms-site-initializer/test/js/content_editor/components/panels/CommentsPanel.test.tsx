@@ -84,6 +84,8 @@ const initialComments: Comment[] = [
 				hasUpdatePermission: true,
 				negativeVotes: 0,
 				positiveVotes: 0,
+				ratingsClassName:
+					'com.liferay.message.boards.model.MBDiscussion',
 				rootComment: true,
 				thumbDown: false,
 				thumbUp: false,
@@ -97,6 +99,7 @@ const initialComments: Comment[] = [
 		hasUpdatePermission: true,
 		negativeVotes: 0,
 		positiveVotes: 0,
+		ratingsClassName: 'com.liferay.message.boards.model.MBDiscussion',
 		rootComment: true,
 		thumbDown: false,
 		thumbUp: false,
@@ -318,7 +321,10 @@ describe('CommentsPanel', () => {
 		await userEvent.click(thumbUpButton);
 
 		expect(mockFetch).toHaveBeenCalledWith('/c/portal/rate_entry', {
-			body: expect.objectContaining({score: 1}),
+			body: expect.objectContaining({
+				className: 'com.liferay.message.boards.model.MBDiscussion',
+				score: 1,
+			}),
 			method: 'POST',
 		});
 	});
@@ -366,6 +372,8 @@ describe('CommentsPanel', () => {
 					hasUpdatePermission: true,
 					negativeVotes: 0,
 					positiveVotes: 0,
+					ratingsClassName:
+						'com.liferay.message.boards.model.MBDiscussion',
 					rootComment: true,
 					thumbDown: false,
 					thumbUp: false,

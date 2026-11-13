@@ -6,6 +6,7 @@
 package com.liferay.site.cms.site.initializer.internal.struts.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.comment.constants.CommentConstants;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -97,14 +98,16 @@ public class GetContentItemCommentStrutsActionTest {
 		User user1 = UserTestUtil.addCompanyAdminUser(company);
 
 		_ratingsEntryLocalService.updateEntry(
-			user1.getUserId(), comment.getClassName(), comment.getCommentId(),
-			1, ServiceContextTestUtil.getServiceContext());
+			user1.getUserId(), CommentConstants.getDiscussionClassName(),
+			comment.getCommentId(), 1,
+			ServiceContextTestUtil.getServiceContext());
 
 		User user2 = UserTestUtil.addCompanyAdminUser(company);
 
 		_ratingsEntryLocalService.updateEntry(
-			user2.getUserId(), comment.getClassName(), comment.getCommentId(),
-			0, ServiceContextTestUtil.getServiceContext());
+			user2.getUserId(), CommentConstants.getDiscussionClassName(),
+			comment.getCommentId(), 0,
+			ServiceContextTestUtil.getServiceContext());
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(
 			_groupLocalService.getGroup(
@@ -221,6 +224,9 @@ public class GetContentItemCommentStrutsActionTest {
 
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
+		Assert.assertEquals(
+			CommentConstants.getDiscussionClassName(),
+			jsonObject.getString("ratingsClassName"));
 		Assert.assertEquals(thumbDown, jsonObject.getBoolean("thumbDown"));
 		Assert.assertEquals(thumbUp, jsonObject.getBoolean("thumbUp"));
 	}
