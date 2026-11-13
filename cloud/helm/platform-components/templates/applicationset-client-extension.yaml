@@ -109,10 +109,6 @@ spec:
 {{- end }}
 {{- end }}
 {{- if $startupProbe }}{{ $_ := set $workload "startupProbe" $startupProbe }}{{ end }}
-{{- if eq $type "frontend" }}
-{{- $_ := set $workload "volumeMounts" (list (dict "mountPath" "/etc/caddy.d" "name" "caddy-d")) }}
-{{- $_ := set $workload "volumes" (list (dict "emptyDir" dict "name" "caddy-d")) }}
-{{- end }}
 {{- $configs := get $descriptor "configs" }}
 {{- if not (kindIs "map" $configs) }}{{ $configs = dict }}{{ end }}
 {{- $values := dict "clientExtension" (dict "configs" $configs "serviceId" $serviceId) "fullnameOverride" $serviceId "network" (dict "gatewayName" (printf "%s-%s-gateway" $projectId $environmentId)) "service" (dict "enabled" (and $workloadEnabled (eq $kind "Deployment"))) "workload" $workload }}
