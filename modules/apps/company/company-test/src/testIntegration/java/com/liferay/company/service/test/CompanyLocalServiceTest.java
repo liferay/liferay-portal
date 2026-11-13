@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.model.PasswordPolicyTable;
 import com.liferay.portal.kernel.model.PortalPreferenceValue;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.SystemEvent;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.UserGroupRole;
@@ -1238,7 +1239,7 @@ public class CompanyLocalServiceTest {
 		finally {
 			_resetCompanyLocales(_company.getCompanyId());
 
-			GroupTestUtil.deleteGroup(group);
+			_deleteGroup(group);
 
 			safeCloseable.close();
 		}
@@ -1498,6 +1499,16 @@ public class CompanyLocalServiceTest {
 			_getServiceContext(companyId));
 	}
 
+	private void _deleteGroup(Group group) throws Exception {
+		_groupLocalService.deleteGroup(group);
+
+		SystemEvent systemEvent = _systemEventLocalService.fetchSystemEvent(
+			0, _portal.getClassNameId(Group.class), group.getGroupId(),
+			SystemEventConstants.TYPE_DELETE);
+
+		_systemEventLocalService.deleteSystemEvent(systemEvent);
+	}
+
 	private String _getRandomUnicodeHostname() {
 		return "b\u00fccher" +
 			StringUtil.toLowerCase(RandomTestUtil.randomString()) + ".com";
@@ -1684,7 +1695,7 @@ public class CompanyLocalServiceTest {
 					_company.getType(), _company.getSize());
 
 				if (group != null) {
-					GroupTestUtil.deleteGroup(group);
+					_deleteGroup(group);
 				}
 			}
 		}
@@ -1835,7 +1846,7 @@ public class CompanyLocalServiceTest {
 					new String[] {hostname}, true);
 			}
 			finally {
-				_groupLocalService.deleteGroup(group);
+				_deleteGroup(group);
 			}
 		}
 	}

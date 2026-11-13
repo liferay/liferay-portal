@@ -26,7 +26,10 @@ import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.SystemEvent;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.DataCleanupTestUtil;
@@ -124,7 +127,7 @@ public class DDMDataCleanupPreupgradeProcessTest
 		_journalArticleResourceLocalService.deleteArticleResource(
 			group.getGroupId(), journalArticle.getArticleId());
 
-		_groupLocalService.deleteGroup(group);
+		_deleteGroup(group);
 
 		UpgradeProcess upgradeProcess =
 			new ResourcePermissionDataCleanupPreupgradeProcess();
@@ -250,7 +253,7 @@ public class DDMDataCleanupPreupgradeProcessTest
 
 		upgrade();
 
-		_groupLocalService.deleteGroup(group);
+		_deleteGroup(group);
 
 		UpgradeProcess upgradeProcess =
 			new ResourcePermissionDataCleanupPreupgradeProcess();
@@ -341,6 +344,16 @@ public class DDMDataCleanupPreupgradeProcessTest
 			runSQL("delete from Group_ where companyId = " + companyId);
 			runSQL("delete from JournalArticle where companyId = " + companyId);
 		}
+	}
+
+	private void _deleteGroup(Group group) throws Exception {
+		_groupLocalService.deleteGroup(group);
+
+		SystemEvent systemEvent = _systemEventLocalService.fetchSystemEvent(
+			0, _portal.getClassNameId(Group.class), group.getGroupId(),
+			SystemEventConstants.TYPE_DELETE);
+
+		_systemEventLocalService.deleteSystemEvent(systemEvent);
 	}
 
 	private String _getExpectedMessage(
@@ -463,5 +476,8 @@ public class DDMDataCleanupPreupgradeProcessTest
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private SystemEventLocalService _systemEventLocalService;
 
 }
