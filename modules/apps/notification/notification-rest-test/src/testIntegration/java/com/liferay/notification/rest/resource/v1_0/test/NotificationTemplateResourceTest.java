@@ -546,19 +546,6 @@ public class NotificationTemplateResourceTest
 		return jsonObject;
 	}
 
-	private JSONObject _putNotificationTemplateWithPermissions(
-			long notificationTemplateId, String roleName)
-		throws Exception {
-
-		return HTTPTestUtil.invokeToJSONObject(
-			_getNotificationTemplateJSONObject(
-				roleName
-			).toString(),
-			"notification/v1.0/notification-templates/" +
-				notificationTemplateId + "?nestedFields=permissions",
-			Http.Method.PUT);
-	}
-
 	private void _testDeleteNotificationTemplateByExternalReferenceCodeNotFound()
 		throws Exception {
 
@@ -1621,8 +1608,13 @@ public class NotificationTemplateResourceTest
 			RoleConstants.ADMINISTRATOR);
 
 		_assertPermissions(
-			_putNotificationTemplateWithPermissions(
-				jsonObject.getLong("id"), RoleConstants.GUEST),
+			HTTPTestUtil.invokeToJSONObject(
+				_getNotificationTemplateJSONObject(
+					RoleConstants.GUEST
+				).toString(),
+				"notification/v1.0/notification-templates/" +
+					jsonObject.getLong("id") + "?nestedFields=permissions",
+				Http.Method.PUT),
 			RoleConstants.GUEST);
 	}
 
