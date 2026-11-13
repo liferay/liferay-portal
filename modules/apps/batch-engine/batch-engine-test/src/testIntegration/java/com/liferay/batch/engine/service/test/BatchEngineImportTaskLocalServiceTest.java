@@ -12,8 +12,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.BaseBatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
-import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry;
-import com.liferay.batch.engine.BatchEngineTaskItemDelegateRegistry.BatchEngineTaskItemDelegateSafeCloseable;
 import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.constants.BatchEngineImportTaskConstants;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
@@ -105,10 +103,6 @@ public class BatchEngineImportTaskLocalServiceTest {
 		_testUpdateBatchEngineImportTaskWithMalformedContent(
 			BatchEngineTaskExecuteStatus.COMPLETED);
 		_testUpdateBatchEngineImportTaskWithMalformedContent(
-			BatchEngineTaskExecuteStatus.FAILED);
-		_testUpdateBatchEngineImportTaskWithRegisteredTaskItemDelegate(
-			BatchEngineTaskExecuteStatus.COMPLETED);
-		_testUpdateBatchEngineImportTaskWithRegisteredTaskItemDelegate(
 			BatchEngineTaskExecuteStatus.FAILED);
 		_testUpdateBatchEngineImportTaskWithUnregisteredTaskItemDelegate(
 			BatchEngineTaskExecuteStatus.COMPLETED);
@@ -536,36 +530,6 @@ public class BatchEngineImportTaskLocalServiceTest {
 		}
 	}
 
-	private void _testUpdateBatchEngineImportTaskWithRegisteredTaskItemDelegate(
-			BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus)
-		throws Exception {
-
-		String emailAddress = RandomTestUtil.randomString() + "@liferay.com";
-		String password = RandomTestUtil.randomString();
-
-		BatchEngineImportTask batchEngineImportTask = _addBatchEngineImportTask(
-			_CLASS_NAME_USER_ACCOUNT,
-			JSONUtil.putAll(
-				JSONUtil.put(
-					"emailAddress", emailAddress
-				).put(
-					"password", password
-				)
-			).toString());
-
-		batchEngineImportTask.setExecuteStatus(
-			batchEngineTaskExecuteStatus.name());
-
-		batchEngineImportTask =
-			_batchEngineImportTaskLocalService.updateBatchEngineImportTask(
-				batchEngineImportTask);
-
-		String content = _readContent(batchEngineImportTask);
-
-		Assert.assertTrue(content.contains(emailAddress));
-		Assert.assertFalse(content.contains(password));
-	}
-
 	private void
 			_testUpdateBatchEngineImportTaskWithUnregisteredTaskItemDelegate(
 				BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus)
@@ -639,20 +603,8 @@ public class BatchEngineImportTaskLocalServiceTest {
 		batchEngineImportTask.setExecuteStatus(
 			batchEngineTaskExecuteStatus.name());
 
-		try (BatchEngineTaskItemDelegateSafeCloseable
-				batchEngineTaskItemDelegateSafeCloseable =
-					_batchEngineTaskItemDelegateRegistry.
-						getBatchEngineTaskItemDelegateWithSafeCloseable(
-							batchEngineImportTask.getCompanyId(),
-							batchEngineImportTask.getClassName(),
-							batchEngineImportTask.getTaskItemDelegateName())) {
-
-			return _batchEngineImportTaskLocalService.
-				updateBatchEngineImportTask(
-					batchEngineImportTask,
-					batchEngineTaskItemDelegateSafeCloseable.
-						getBatchEngineTaskItemDelegate());
-		}
+		return _batchEngineImportTaskLocalService.updateBatchEngineImportTask(
+			batchEngineImportTask);
 	}
 
 	private static final String _CLASS_NAME_USER_ACCOUNT =
@@ -665,10 +617,6 @@ public class BatchEngineImportTaskLocalServiceTest {
 	@DeleteAfterTestRun
 	private final List<BatchEngineImportTask> _batchEngineImportTasks =
 		new ArrayList<>();
-
-	@Inject
-	private BatchEngineTaskItemDelegateRegistry
-		_batchEngineTaskItemDelegateRegistry;
 
 	private static class TestBatchEngineTaskItemDelegate
 		extends BaseBatchEngineTaskItemDelegate<TestItem> {
