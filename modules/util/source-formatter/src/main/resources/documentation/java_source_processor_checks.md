@@ -46,7 +46,6 @@ DeprecatedClassesCheck | [Bug Prevention](bug_prevention_checks.md#bug-preventio
 [EarlyLoopExitCheck](check/early_loop_exit_check.md#earlyloopexitcheck) | [Styling](styling_checks.md#styling-checks) | Finds if-statements at the end of a loop body that can be inverted to use `break`, `continue`, `return`, or `throw` as early as possible. |
 EmptyCollectionCheck | [Styling](styling_checks.md#styling-checks) | Checks that there are no calls to `Collections.EMPTY_LIST`, `Collections.EMPTY_MAP` or `Collections.EMPTY_SET`. |
 EmptyConstructorCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds unnecessary empty constructors. |
-[EmptyServicePropertiesCheck](check/empty_service_properties_check.md#emptyservicepropertiescheck) | [Performance](performance_checks.md#performance-checks) | Finds `registerService` calls that pass an empty `Hashtable` or `HashMapDictionary` as the service properties, which should pass `null` instead. |
 EnumConstantDividerCheck | [Styling](styling_checks.md#styling-checks) | Find unnecessary empty lines between enum constants. |
 EnumConstantOrderCheck | [Styling](styling_checks.md#styling-checks) | Checks the order of enum constants. |
 EqualClauseIfStatementsCheck | [Styling](styling_checks.md#styling-checks) | Finds consecutive if-statements with identical clauses. |
@@ -285,6 +284,7 @@ RecordPatternCheck | [Performance](performance_checks.md#performance-checks) | F
 RedundantBranchingStatementCheck | [Performance](performance_checks.md#performance-checks) | Finds unnecessary branching (`break`, `continue` or `return`) statements. |
 [RedundantLogCheck](check/redundant_log_check.md#redundantlogcheck) | [Performance](performance_checks.md#performance-checks) | Finds unnecessary logs. |
 ReferenceAnnotationCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on classes with @Reference annotation. |
+[RegisterServicePropertiesCheck](check/register_service_properties_check.md#registerservicepropertiescheck) | [Performance](performance_checks.md#performance-checks) | Finds `registerService` calls that pass an empty `HashMapDictionary` or `Hashtable` as the service properties, which should pass `null` instead. |
 [RequireThisCheck](https://checkstyle.sourceforge.io/checks/coding/requirethis.html) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that references to instance variables and methods of the present object are explicitly of the form 'this.varName' or 'this.methodName(args)' and that those references don't rely on the default behavior when 'this.' is absent. |
 [ResourceBundleCheck](check/resource_bundle_check.md#resourcebundlecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that there are no calls to `java.util.ResourceBundle.getBundle`. |
 ResourceImplCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on `*ResourceImpl` classes. |

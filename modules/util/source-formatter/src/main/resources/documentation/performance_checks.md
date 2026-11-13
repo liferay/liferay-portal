@@ -7,7 +7,6 @@ AssignAsUsedCheck | .java | Finds cases where an assign statement can be inlined
 [BatchableUpdateCheck](check/batchable_update_check.md#batchableupdatecheck) | .java | Checks for cases where batch updates should be used inside a loop instead of individual executeUpdate calls. |
 ConcatCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks for correct use of `StringBundler.concat`. |
 ConstructorGlobalVariableDeclarationCheck | .java | Checks that initial values of global variables are not set in the constructor. |
-[EmptyServicePropertiesCheck](check/empty_service_properties_check.md#emptyservicepropertiescheck) | .java | Finds `registerService` calls that pass an empty `Hashtable` or `HashMapDictionary` as the service properties, which should pass `null` instead. |
 [ExceptionCheck](check/exception_check.md#exceptioncheck) | .java | Finds private methods that throw unnecessary exception. |
 [FrameworkBundleCheck](check/framework_bundle_check.md#frameworkbundlecheck) | .java | Checks that `org.osgi.framework.Bundle.getHeaders()` is not used. |
 [GradleDependenciesCheck](check/gradle_dependencies_check.md#gradledependenciescheck) | .gradle | Checks that modules are not depending on other modules. |
@@ -35,6 +34,7 @@ RecordClassCheck | .java | Finds usage of `record`. |
 RecordPatternCheck | .java | Finds usage of record patterns. |
 RedundantBranchingStatementCheck | .java | Finds unnecessary branching (`break`, `continue` or `return`) statements. |
 [RedundantLogCheck](check/redundant_log_check.md#redundantlogcheck) | .java | Finds unnecessary logs. |
+[RegisterServicePropertiesCheck](check/register_service_properties_check.md#registerservicepropertiescheck) | .java | Finds `registerService` calls that pass an empty `HashMapDictionary` or `Hashtable` as the service properties, which should pass `null` instead. |
 [ResourcePermissionFactoryCheck](check/resource_permission_factory_check.md#resourcepermissionfactorycheck) | .java | Checks usage of `*ResourcePermissionFactory` classes. |
 SealedAndNonsealedModifierCheck | .java | Finds usage of `sealed` and `non-sealed`. |
 SetUtilMethodsCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds cases of inefficient SetUtil operations. |
