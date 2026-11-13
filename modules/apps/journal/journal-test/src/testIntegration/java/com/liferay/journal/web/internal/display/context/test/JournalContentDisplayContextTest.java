@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstant
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -138,6 +139,7 @@ public class JournalContentDisplayContextTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115170")
 	public void testIsEnabledConversion() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(

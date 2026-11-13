@@ -2186,6 +2186,7 @@ public class JournalArticleLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115170")
 	public void testGetArticleDisplayWithMedia() throws Exception {
 		FileEntry audioFileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
@@ -2243,6 +2244,7 @@ public class JournalArticleLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115170")
 	public void testGetArticleDisplayWithPageBreak() throws Exception {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(),
@@ -3397,7 +3399,7 @@ public class JournalArticleLocalServiceTest {
 
 		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
 			_group.getGroupId(), ddmStructure.getStructureId(),
-			_portal.getClassNameId(JournalArticle.class),
+			PortalUtil.getClassNameId(JournalArticle.class),
 			TemplateConstants.LANG_TYPE_FTL, script,
 			LocaleUtil.getSiteDefault());
 
