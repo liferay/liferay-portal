@@ -8,6 +8,7 @@ package com.liferay.depot.web.internal.item.selector.provider.test;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.depot.test.util.DepotTestUtil;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
@@ -91,6 +92,48 @@ public abstract class BaseDepotGroupItemSelectorProviderTestCase {
 			1,
 			getGroupItemSelectorProvider().getGroupsCount(
 				stagingGroup.getCompanyId(), stagingGroup.getGroupId(), null));
+	}
+
+	@Test
+	@TestInfo("LPD-115382")
+	public void testGetGroupsDepot() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry(getDepotType());
+
+		Group group = depotEntry.getGroup();
+
+		GroupItemSelectorProvider groupItemSelectorProvider =
+			getGroupItemSelectorProvider();
+
+		Assert.assertEquals(
+			Collections.singletonList(group),
+			groupItemSelectorProvider.getGroups(
+				group.getCompanyId(), group.getGroupId(), null, 0, 20));
+
+		depotEntry = _addDepotEntry(getOtherDepotType());
+
+		group = depotEntry.getGroup();
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			groupItemSelectorProvider.getGroups(
+				group.getCompanyId(), group.getGroupId(), null, 0, 20));
+	}
+
+	@Test
+	@TestInfo("LPD-115382")
+	public void testGetGroupsDepotWithoutViewPermission() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry(getDepotType());
+
+		Group group = depotEntry.getGroup();
+
+		GroupItemSelectorProvider groupItemSelectorProvider =
+			getGroupItemSelectorProvider();
+
+		DepotTestUtil.withRegularUser(
+			(user, role) -> Assert.assertEquals(
+				Collections.emptyList(),
+				groupItemSelectorProvider.getGroups(
+					group.getCompanyId(), group.getGroupId(), null, 0, 20)));
 	}
 
 	@Test
