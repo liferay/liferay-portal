@@ -5,6 +5,8 @@
 
 package com.liferay.portal.kernel.dao.search;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,12 +16,30 @@ import org.junit.Test;
 public class SearchPaginationUtilTest {
 
 	@Test
+	public void testCalculateStartAndEndWhenAllPositions() {
+		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, 10);
+
+		Assert.assertEquals(QueryUtil.ALL_POS, startAndEnd[0]);
+		Assert.assertEquals(QueryUtil.ALL_POS, startAndEnd[1]);
+	}
+
+	@Test
 	public void testCalculateStartAndEndWhenEmptyResultsPage() {
 		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
 			40, 60, 10);
 
 		Assert.assertEquals(0, startAndEnd[0]);
 		Assert.assertEquals(10, startAndEnd[1]);
+	}
+
+	@Test
+	public void testCalculateStartAndEndWhenEmptyResultsPageAndPartialLastPage() {
+		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
+			100, 120, 50);
+
+		Assert.assertEquals(40, startAndEnd[0]);
+		Assert.assertEquals(50, startAndEnd[1]);
 	}
 
 	@Test
@@ -32,6 +52,15 @@ public class SearchPaginationUtilTest {
 	}
 
 	@Test
+	public void testCalculateStartAndEndWhenNegativeDelta() {
+		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
+			40, 20, 10);
+
+		Assert.assertEquals(0, startAndEnd[0]);
+		Assert.assertEquals(0, startAndEnd[1]);
+	}
+
+	@Test
 	public void testCalculateStartAndEndWhenNoResults() {
 		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
 			20, 40, 0);
@@ -41,12 +70,30 @@ public class SearchPaginationUtilTest {
 	}
 
 	@Test
+	public void testCalculateStartAndEndWhenPartialResultsPage() {
+		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
+			40, 60, 50);
+
+		Assert.assertEquals(40, startAndEnd[0]);
+		Assert.assertEquals(50, startAndEnd[1]);
+	}
+
+	@Test
 	public void testCalculateStartAndEndWhenResultsPage() {
 		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
 			20, 40, 80);
 
 		Assert.assertEquals(20, startAndEnd[0]);
 		Assert.assertEquals(40, startAndEnd[1]);
+	}
+
+	@Test
+	public void testCalculateStartAndEndWhenUnalignedEmptyResultsPage() {
+		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
+			45, 65, 30);
+
+		Assert.assertEquals(20, startAndEnd[0]);
+		Assert.assertEquals(30, startAndEnd[1]);
 	}
 
 	@Test
