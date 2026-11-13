@@ -77,10 +77,18 @@ public class ObjectEntryInfoItemObjectProvider
 			ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
 				classPKInfoItemIdentifier.getClassPK());
 
-			if (objectEntry == null) {
+			if ((objectEntry == null) ||
+				(objectEntry.isTypeDraft() &&
+				 (objectEntry.getHeadObjectEntryId() !=
+					 classPKInfoItemIdentifier.getClassPK()))) {
+
 				throw new NoSuchInfoItemException(
 					"Unable to get object entry " +
 						classPKInfoItemIdentifier.getClassPK());
+			}
+
+			if (objectEntry.isTypeDraft()) {
+				return objectEntry;
 			}
 
 			return _resolveLatestApprovedObjectEntry(

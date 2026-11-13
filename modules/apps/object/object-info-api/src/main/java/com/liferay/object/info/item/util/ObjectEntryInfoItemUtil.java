@@ -76,9 +76,7 @@ public class ObjectEntryInfoItemUtil {
 
 		int version = serviceBuilderObjectEntry.getVersion();
 
-		if ((serviceBuilderObjectEntry.getHeadObjectEntryId() > 0) &&
-			!serviceBuilderObjectEntry.isHead()) {
-
+		if (serviceBuilderObjectEntry.isTypeLatestApproved()) {
 			serviceBuilderObjectEntry =
 				ObjectEntryLocalServiceUtil.fetchObjectEntry(
 					serviceBuilderObjectEntry.getHeadObjectEntryId());
