@@ -97,6 +97,7 @@ exports[`MostActiveVisitors renders the component with provided data 1`] = `
                                 class="dropdown"
                               >
                                 <button
+                                  aria-expanded="false"
                                   aria-haspopup="true"
                                   aria-label="manage-columns-visibility"
                                   class="dropdown-toggle btn btn-monospaced btn-outline-borderless btn-sm btn-outline-secondary"
