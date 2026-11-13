@@ -88,8 +88,9 @@ public class AssigneeFieldPredicateProvider implements FieldPredicateProvider {
 
 	@Override
 	public Predicate getContainsPredicate(
+		String fieldName, Object fieldValue,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, long objectDefinitionId, Object fieldValue) {
+		long objectDefinitionId) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getContainsPredicate for assignee fields");
@@ -97,8 +98,9 @@ public class AssigneeFieldPredicateProvider implements FieldPredicateProvider {
 
 	@Override
 	public Predicate getInPredicate(
+		Object left,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Object left, long objectDefinitionId, List<Object> rights) {
+		long objectDefinitionId, List<Object> rights) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getInPredicate for assignee fields");
@@ -106,16 +108,18 @@ public class AssigneeFieldPredicateProvider implements FieldPredicateProvider {
 
 	@Override
 	public Predicate getIsNotEmptyPredicate(
-		String fieldName, long objectDefinitionId,
-		Function<String, Column<?, ?>> objectDefinitionColumnSupplier) {
+		String fieldName,
+		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
+		long objectDefinitionId) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getIsNotEmptyPredicate for assignee fields");
 	}
 
 	public Predicate getStartsWithPredicate(
+		String fieldName, Object fieldValue,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, long objectDefinitionId, Object fieldValue) {
+		long objectDefinitionId) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getStartsWithPredicate for assignee fields");

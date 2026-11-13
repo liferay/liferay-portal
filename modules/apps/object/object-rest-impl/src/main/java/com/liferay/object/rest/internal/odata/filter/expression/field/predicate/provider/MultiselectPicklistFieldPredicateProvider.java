@@ -60,8 +60,9 @@ public class MultiselectPicklistFieldPredicateProvider
 
 	@Override
 	public Predicate getContainsPredicate(
+		String fieldName, Object fieldValue,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, long objectDefinitionId, Object fieldValue) {
+		long objectDefinitionId) {
 
 		return objectDefinitionColumnSupplier.apply(
 			fieldName
@@ -73,8 +74,9 @@ public class MultiselectPicklistFieldPredicateProvider
 
 	@Override
 	public Predicate getInPredicate(
+		Object left,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Object left, long objectDefinitionId, List<Object> rights) {
+		long objectDefinitionId, List<Object> rights) {
 
 		if (ListUtil.isEmpty(rights)) {
 			return null;
@@ -102,8 +104,9 @@ public class MultiselectPicklistFieldPredicateProvider
 
 	@Override
 	public Predicate getIsNotEmptyPredicate(
-		String fieldName, long objectDefinitionId,
-		Function<String, Column<?, ?>> objectDefinitionColumnSupplier) {
+		String fieldName,
+		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
+		long objectDefinitionId) {
 
 		return objectDefinitionColumnSupplier.apply(
 			fieldName
@@ -112,8 +115,9 @@ public class MultiselectPicklistFieldPredicateProvider
 
 	@Override
 	public Predicate getStartsWithPredicate(
+		String fieldName, Object fieldValue,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, long objectDefinitionId, Object fieldValue) {
+		long objectDefinitionId) {
 
 		return _getDelimitedLikePredicate(
 			(Expression<String>)objectDefinitionColumnSupplier.apply(fieldName),

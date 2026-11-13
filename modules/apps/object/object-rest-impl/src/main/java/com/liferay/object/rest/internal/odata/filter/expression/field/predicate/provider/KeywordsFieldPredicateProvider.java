@@ -53,8 +53,9 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 
 	@Override
 	public Predicate getContainsPredicate(
+		String fieldName, Object fieldValue,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, long objectDefinitionId, Object fieldValue) {
+		long objectDefinitionId) {
 
 		return _getKeywordsPredicate(
 			objectDefinitionColumnSupplier, objectDefinitionId,
@@ -68,8 +69,9 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 
 	@Override
 	public Predicate getInPredicate(
+		Object left,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Object left, long objectDefinitionId, List<Object> rights) {
+		long objectDefinitionId, List<Object> rights) {
 
 		return _getKeywordsPredicate(
 			objectDefinitionColumnSupplier, objectDefinitionId,
@@ -85,8 +87,9 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 
 	@Override
 	public Predicate getIsNotEmptyPredicate(
-		String fieldName, long objectDefinitionId,
-		Function<String, Column<?, ?>> objectDefinitionColumnSupplier) {
+		String fieldName,
+		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
+		long objectDefinitionId) {
 
 		return _getKeywordsPredicate(
 			objectDefinitionColumnSupplier, objectDefinitionId, null);
@@ -94,8 +97,9 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 
 	@Override
 	public Predicate getStartsWithPredicate(
+		String fieldName, Object fieldValue,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, long objectDefinitionId, Object fieldValue) {
+		long objectDefinitionId) {
 
 		return _getKeywordsPredicate(
 			objectDefinitionColumnSupplier, objectDefinitionId,

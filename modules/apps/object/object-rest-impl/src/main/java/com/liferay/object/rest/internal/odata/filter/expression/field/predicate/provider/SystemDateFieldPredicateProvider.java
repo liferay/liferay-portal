@@ -59,8 +59,9 @@ public class SystemDateFieldPredicateProvider
 
 	@Override
 	public Predicate getContainsPredicate(
+		String fieldName, Object fieldValue,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, long objectDefinitionId, Object fieldValue) {
+		long objectDefinitionId) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getContainsPredicate for " +
@@ -69,8 +70,9 @@ public class SystemDateFieldPredicateProvider
 
 	@Override
 	public Predicate getInPredicate(
+			Object left,
 			Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-			Object left, long objectDefinitionId, List<Object> rights)
+			long objectDefinitionId, List<Object> rights)
 		throws ExpressionVisitException {
 
 		Predicate predicate = null;
@@ -94,8 +96,9 @@ public class SystemDateFieldPredicateProvider
 
 	@Override
 	public Predicate getIsNotEmptyPredicate(
-		String fieldName, long objectDefinitionId,
-		Function<String, Column<?, ?>> objectDefinitionColumnSupplier) {
+		String fieldName,
+		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
+		long objectDefinitionId) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getIsNotEmptyPredicate for " +
@@ -104,8 +107,9 @@ public class SystemDateFieldPredicateProvider
 
 	@Override
 	public Predicate getStartsWithPredicate(
+		String fieldName, Object fieldValue,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		String fieldName, long objectDefinitionId, Object fieldValue) {
+		long objectDefinitionId) {
 
 		throw new UnsupportedOperationException(
 			"Unsupported method getStartsWithPredicate for " +
