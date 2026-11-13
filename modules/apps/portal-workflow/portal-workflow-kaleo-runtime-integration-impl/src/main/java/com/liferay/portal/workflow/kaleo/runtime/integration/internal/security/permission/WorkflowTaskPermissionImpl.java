@@ -67,27 +67,6 @@ public class WorkflowTaskPermissionImpl implements WorkflowTaskPermission {
 			return true;
 		}
 
-		boolean notifiableUser = false;
-
-		try {
-			notifiableUser =
-				_kaleoTaskInstanceTokenLocalService.isNotifiableUser(
-					permissionChecker.getUserId(),
-					workflowTask.getWorkflowTaskId());
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-		}
-
-		if (hasAssetViewPermission(workflowTask, permissionChecker) &&
-			(notifiableUser ||
-			 (workflowTask.isCompleted() &&
-			  (workflowTask.getAssigneeUserId() ==
-				  permissionChecker.getUserId())))) {
-
-			return true;
-		}
-
 		long[] roleIds = getRoleIds(groupId, permissionChecker);
 
 		for (WorkflowTaskAssignee workflowTaskAssignee :
@@ -102,11 +81,25 @@ public class WorkflowTaskPermissionImpl implements WorkflowTaskPermission {
 			}
 		}
 
-		if (!hasAssetViewPermission(workflowTask, permissionChecker) &&
-			!permissionChecker.isContentReviewer(
-				permissionChecker.getCompanyId(), groupId)) {
+		boolean notifiableUser = false;
 
-			return false;
+		try {
+			notifiableUser =
+				_kaleoTaskInstanceTokenLocalService.isNotifiableUser(
+					permissionChecker.getUserId(),
+					workflowTask.getWorkflowTaskId());
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+
+		if ((notifiableUser ||
+			 (workflowTask.isCompleted() &&
+			  (workflowTask.getAssigneeUserId() ==
+				  permissionChecker.getUserId()))) &&
+			hasAssetViewPermission(workflowTask, permissionChecker)) {
+
+			return true;
 		}
 
 		return false;
