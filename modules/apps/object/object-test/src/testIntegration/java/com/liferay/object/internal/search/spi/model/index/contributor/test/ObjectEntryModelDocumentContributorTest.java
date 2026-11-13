@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
@@ -73,6 +74,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Jhosseph Gonzalez
@@ -498,6 +500,71 @@ public class ObjectEntryModelDocumentContributorTest {
 				String.valueOf(objectEntryFolder.getObjectEntryFolderId())
 			},
 			field.getValues());
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			ObjectEntryModelDocumentContributorTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		ServiceRegistration<?> serviceRegistration =
+			bundleContext.registerService(
+				ModelDocumentContributor.class,
+				(ModelDocumentContributor<ObjectEntry>)
+					(curDocument, curObjectEntry) -> curDocument.addKeyword(
+						"objectEntryFolderId",
+						parentObjectEntryFolder.getObjectEntryFolderId()),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"root.object.entry.folder.external.reference.code",
+					parentObjectEntryFolder.getExternalReferenceCode()
+				).build());
+
+		try {
+			document = new DocumentImpl();
+
+			objectEntryModelDocumentContributor.contribute(
+				document, objectEntry);
+
+			Assert.assertEquals(
+				String.valueOf(
+					parentObjectEntryFolder.getObjectEntryFolderId()),
+				document.get("objectEntryFolderId"));
+
+			document = new DocumentImpl();
+
+			objectEntry = ObjectEntryTestUtil.addObjectEntry(
+				TestPropsValues.getGroupId(), objectDefinition,
+				parentObjectEntryFolder.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					objectFieldName, RandomTestUtil.randomString()
+				).build());
+
+			objectEntryModelDocumentContributor.contribute(
+				document, objectEntry);
+
+			Assert.assertEquals(
+				String.valueOf(
+					parentObjectEntryFolder.getObjectEntryFolderId()),
+				document.get("objectEntryFolderId"));
+
+			document = new DocumentImpl();
+
+			ObjectEntryFolder rootObjectEntryFolder =
+				ObjectEntryFolderTestUtil.addObjectEntryFolder();
+
+			objectEntryModelDocumentContributor.contribute(
+				document,
+				ObjectEntryTestUtil.addObjectEntry(
+					TestPropsValues.getGroupId(), objectDefinition,
+					rootObjectEntryFolder.getObjectEntryFolderId(),
+					HashMapBuilder.<String, Serializable>put(
+						objectFieldName, RandomTestUtil.randomString()
+					).build()));
+
+			Assert.assertNull(document.getField("objectEntryFolderId"));
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
 	}
 
 	private ObjectDefinition _addModifiableSystemObjectDefinition(
