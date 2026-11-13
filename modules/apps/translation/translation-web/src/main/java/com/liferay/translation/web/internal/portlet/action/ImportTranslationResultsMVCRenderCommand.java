@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.translation.constants.TranslationPortletKeys;
 import com.liferay.translation.web.internal.display.context.ImportTranslationResultsDisplayContext;
 
@@ -76,11 +77,15 @@ public class ImportTranslationResultsMVCRenderCommand
 		throws PortletException {
 
 		try {
-			HttpServletResponse httpServletResponse =
-				_portal.getHttpServletResponse(renderResponse);
-
-			httpServletResponse.sendRedirect(
+			String redirect = _portal.escapeRedirect(
 				ParamUtil.getString(renderRequest, "redirect"));
+
+			if (Validator.isNotNull(redirect)) {
+				HttpServletResponse httpServletResponse =
+					_portal.getHttpServletResponse(renderResponse);
+
+				httpServletResponse.sendRedirect(redirect);
+			}
 		}
 		catch (IOException ioException) {
 			throw new PortletException(ioException);
