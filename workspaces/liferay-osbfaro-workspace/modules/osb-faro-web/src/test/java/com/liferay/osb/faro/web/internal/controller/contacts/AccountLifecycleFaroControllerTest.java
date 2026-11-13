@@ -45,6 +45,26 @@ public class AccountLifecycleFaroControllerTest {
 	}
 
 	@Test
+	public void testDeleteAccountLifecycle() throws Exception {
+		long groupId = RandomTestUtil.randomLong();
+		String id = RandomTestUtil.randomString();
+
+		_accountLifecycleFaroController.deleteAccountLifecycle(groupId, id);
+
+		Mockito.verify(
+			_contactsEngineClient
+		).deleteAccountLifecycle(
+			_faroProject, id
+		);
+
+		Mockito.verify(
+			_faroProjectLocalService
+		).getFaroProjectByGroupId(
+			groupId
+		);
+	}
+
+	@Test
 	public void testGetAccountLifecyclesFaroFDSResultsDisplay()
 		throws Exception {
 
