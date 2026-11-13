@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.annotation.security.RolesAllowed;
 
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
@@ -62,6 +63,17 @@ public class AccountLifecycleFaroController extends BaseFaroController {
 		return contactsEngineClient.addAccountLifecycle(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId),
 			accountLifecycleFaroParam.getValue(), channelId, getUserId());
+	}
+
+	@DELETE
+	@Path("/{id}")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public void deleteAccountLifecycle(
+			@PathParam("groupId") long groupId, @PathParam("id") String id)
+		throws Exception {
+
+		contactsEngineClient.deleteAccountLifecycle(
+			faroProjectLocalService.getFaroProjectByGroupId(groupId), id);
 	}
 
 	@GET
