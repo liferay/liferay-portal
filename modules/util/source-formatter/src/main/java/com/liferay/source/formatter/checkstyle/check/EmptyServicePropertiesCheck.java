@@ -44,20 +44,20 @@ public class EmptyServicePropertiesCheck extends BaseCheck {
 		DetailAST exprDetailAST = parameterExprDetailASTs.get(
 			parameterExprDetailASTs.size() - 1);
 
-		DetailAST argumentDetailAST = exprDetailAST.getFirstChild();
+		DetailAST firstChildDetailAST = exprDetailAST.getFirstChild();
 
-		if (_isEmptyDictionary(argumentDetailAST)) {
-			log(argumentDetailAST, _MSG_PASS_NULL);
+		if (_isEmptyDictionary(firstChildDetailAST)) {
+			log(firstChildDetailAST, _MSG_PASS_NULL);
 
 			return;
 		}
 
-		if (argumentDetailAST.getType() != TokenTypes.IDENT) {
+		if (firstChildDetailAST.getType() != TokenTypes.IDENT) {
 			return;
 		}
 
 		DetailAST variableDefinitionDetailAST = getVariableDefinitionDetailAST(
-			argumentDetailAST, argumentDetailAST.getText(), false);
+			firstChildDetailAST, firstChildDetailAST.getText(), false);
 
 		if ((variableDefinitionDetailAST == null) ||
 			(variableDefinitionDetailAST.getType() !=
@@ -85,9 +85,9 @@ public class EmptyServicePropertiesCheck extends BaseCheck {
 			variableDefinitionDetailAST);
 
 		if ((variableCallerDetailASTs.size() == 1) &&
-			equals(variableCallerDetailASTs.get(0), argumentDetailAST)) {
+			equals(variableCallerDetailASTs.get(0), firstChildDetailAST)) {
 
-			log(argumentDetailAST, _MSG_PASS_NULL);
+			log(firstChildDetailAST, _MSG_PASS_NULL);
 		}
 	}
 
