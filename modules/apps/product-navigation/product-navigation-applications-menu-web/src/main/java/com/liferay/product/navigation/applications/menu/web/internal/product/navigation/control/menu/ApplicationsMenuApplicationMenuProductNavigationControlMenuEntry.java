@@ -6,7 +6,6 @@
 package com.liferay.product.navigation.applications.menu.web.internal.product.navigation.control.menu;
 
 import com.liferay.application.list.PanelAppRegistry;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
@@ -66,9 +65,6 @@ public class ApplicationsMenuApplicationMenuProductNavigationControlMenuEntry
 	protected ServletContext getServletContext() {
 		return _servletContext;
 	}
-
-	@Reference
-	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private PanelAppRegistry _panelAppRegistry;

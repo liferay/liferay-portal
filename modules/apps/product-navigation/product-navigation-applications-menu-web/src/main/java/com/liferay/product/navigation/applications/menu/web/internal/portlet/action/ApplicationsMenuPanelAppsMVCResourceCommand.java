@@ -22,7 +22,6 @@ import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -525,9 +524,6 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 	@Reference
 	private AssetLibraryResource.Factory _assetLibraryResourceFactory;
-
-	@Reference
-	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private GroupURLProvider _groupURLProvider;
