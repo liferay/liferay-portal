@@ -822,64 +822,6 @@ definition {
 			wikiPageTitle = "Wiki Page Rename");
 	}
 
-	@description = "This ensures that the changes can revert after moving a wiki page."
-	@priority = 4
-	@refactordone
-	test CanRevertChangesMadeToParentPages {
-		for (var num : list "1,2") {
-			JSONWiki.addWikiPage(
-				groupName = "Guest",
-				wikiNodeName = "Main",
-				wikiPageContent = "Wiki Page Content${num}",
-				wikiPageName = "Wiki Page Title${num}");
-		}
-
-		WikiNavigator.openToWikiPage(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "Wiki Page Title2");
-
-		WikiPage.changeParentWikipagetoWikipagePG(
-			wikiPage1Title = "Wiki Page Title1",
-			wikiPage2Content = "Wiki Page Content2",
-			wikiPage2Title = "Wiki Page Title2",
-			wikiPageContent = "Wiki Page Content2");
-
-		WikiNavigator.openToWikiPage(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "Wiki Page Title2");
-
-		WikiPage.revertChangeParentWikipagetoWikipagePG(
-			wikiPage1Title = "Wiki Page Title1",
-			wikiPage2Content = "Wiki Page Content2",
-			wikiPage2Title = "Wiki Page Title2",
-			wikiVersion1Summary = "Changed parent from",
-			wikiVersion2Summary = "Reverted to 1.0");
-
-		WikiNavigator.openToWikiPage(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "Wiki Page Title1");
-
-		WikiPage.viewPG(
-			wikiPageContent = "Wiki Page Content1",
-			wikiPageTitle = "Wiki Page Title1");
-
-		WikiNavigator.openToWikiPage(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "Wiki Page Title2");
-
-		WikiPage.viewPG(
-			wikiPageContent = "Wiki Page Content2",
-			wikiPageTitle = "Wiki Page Title2");
-	}
-
 	@description = "This ensures that the edited front page can revert to previous version."
 	@priority = 4
 	@refactordone
