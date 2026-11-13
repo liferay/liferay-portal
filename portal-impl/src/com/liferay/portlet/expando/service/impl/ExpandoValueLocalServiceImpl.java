@@ -1192,28 +1192,13 @@ public class ExpandoValueLocalServiceImpl
 			return new HashMap<>();
 		}
 
-		Map<String, Serializable> attributeValues = new HashMap<>(
-			(int)(columnNames.size() * 1.4));
-
-		Map<Long, ExpandoValue> values = new HashMap<>();
-
-		for (ExpandoValue value :
-				expandoValuePersistence.findByT_C_C(
-					table.getTableId(),
-					TransformUtil.transformToLongArray(
-						columns, ExpandoColumn::getColumnId),
-					classPK)) {
-
-			values.put(value.getColumnId(), value);
-		}
-
-		for (ExpandoColumn column : columns) {
-			attributeValues.put(
-				column.getName(),
-				_getData(column, values.get(column.getColumnId())));
-		}
-
-		return attributeValues;
+		return _getAttributeValues(
+			columns,
+			expandoValuePersistence.findByT_C_C(
+				table.getTableId(),
+				TransformUtil.transformToLongArray(
+					columns, ExpandoColumn::getColumnId),
+				classPK));
 	}
 
 	@Override
@@ -1877,6 +1862,28 @@ public class ExpandoValueLocalServiceImpl
 		}
 
 		return false;
+	}
+
+	private Map<String, Serializable> _getAttributeValues(
+			List<ExpandoColumn> columns, List<ExpandoValue> values)
+		throws PortalException {
+
+		Map<Long, ExpandoValue> valuesMap = new HashMap<>();
+
+		for (ExpandoValue value : values) {
+			valuesMap.put(value.getColumnId(), value);
+		}
+
+		Map<String, Serializable> attributeValues = new HashMap<>(
+			(int)(columns.size() * 1.4));
+
+		for (ExpandoColumn column : columns) {
+			attributeValues.put(
+				column.getName(),
+				_getData(column, valuesMap.get(column.getColumnId())));
+		}
+
+		return attributeValues;
 	}
 
 	private Serializable _getData(ExpandoColumn column, ExpandoValue value)
