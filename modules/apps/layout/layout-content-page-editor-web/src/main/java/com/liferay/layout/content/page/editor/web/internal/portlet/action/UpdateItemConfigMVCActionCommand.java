@@ -7,6 +7,10 @@ package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
+import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
+import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -46,6 +50,24 @@ public class UpdateItemConfigMVCActionCommand
 		return _updateItemConfig(actionRequest);
 	}
 
+	private JSONObject _toItemConfigJSONObject(
+			long companyId, String itemConfig,
+			LayoutStructureItem layoutStructureItem, long scopeGroupId)
+		throws PortalException {
+
+		JSONObject itemConfigJSONObject = _jsonFactory.createJSONObject(
+			itemConfig);
+
+		if (layoutStructureItem instanceof DropZoneLayoutStructureItem) {
+			itemConfigJSONObject =
+				_dropZoneAllowedFragmentEntriesHelper.
+					normalizeItemConfigJSONObject(
+						companyId, itemConfigJSONObject, scopeGroupId);
+		}
+
+		return itemConfigJSONObject;
+	}
+
 	private JSONObject _updateItemConfig(ActionRequest actionRequest)
 		throws Exception {
 
@@ -82,11 +104,19 @@ public class UpdateItemConfigMVCActionCommand
 				layoutStructure -> {
 					for (String curItemId : finalItemIds) {
 						layoutStructure.updateItemConfig(
-							_jsonFactory.createJSONObject(itemConfig),
+							_toItemConfigJSONObject(
+								layout.getCompanyId(), itemConfig,
+								layoutStructure.getLayoutStructureItem(
+									curItemId),
+								themeDisplay.getScopeGroupId()),
 							curItemId);
 					}
 				}));
 	}
+
+	@Reference
+	private DropZoneAllowedFragmentEntriesHelper
+		_dropZoneAllowedFragmentEntriesHelper;
 
 	@Reference
 	private JSONFactory _jsonFactory;
