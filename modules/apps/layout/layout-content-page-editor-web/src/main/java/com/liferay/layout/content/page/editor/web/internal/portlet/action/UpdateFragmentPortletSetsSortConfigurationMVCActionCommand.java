@@ -9,9 +9,6 @@ import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortlet
 import com.liferay.layout.content.page.editor.web.internal.manager.FragmentCollectionManager;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.portlet.category.PortletCategoryManager;
-import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
-import com.liferay.layout.util.structure.LayoutStructure;
-import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -19,7 +16,6 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
@@ -31,7 +27,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.segments.constants.SegmentsExperienceConstants;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -69,39 +64,6 @@ public class UpdateFragmentPortletSetsSortConfigurationMVCActionCommand
 		JSONPortletResponseUtil.writeJSON(
 			actionRequest, actionResponse,
 			_updateFragmentPortletSetsSortConfiguration(actionRequest));
-	}
-
-	private DropZoneLayoutStructureItem _getMasterDropZoneLayoutStructureItem(
-		ThemeDisplay themeDisplay) {
-
-		Layout layout = themeDisplay.getLayout();
-
-		if (layout.getMasterLayoutPlid() <= 0) {
-			return null;
-		}
-
-		try {
-			LayoutStructure masterLayoutStructure =
-				LayoutStructureUtil.getLayoutStructure(
-					layout.getGroupId(), layout.getMasterLayoutPlid(),
-					SegmentsExperienceConstants.KEY_DEFAULT);
-
-			LayoutStructureItem layoutStructureItem =
-				masterLayoutStructure.getDropZoneLayoutStructureItem();
-
-			if (layoutStructureItem == null) {
-				return null;
-			}
-
-			return (DropZoneLayoutStructureItem)layoutStructureItem;
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Unable to get master layout structure", exception);
-			}
-		}
-
-		return null;
 	}
 
 	private String[] _mergeFragmentCollectionKeys(
@@ -256,7 +218,8 @@ public class UpdateFragmentPortletSetsSortConfigurationMVCActionCommand
 			"fragmentCollections",
 			_fragmentCollectionManager.getFragmentCollectionMapsList(
 				themeDisplay.getScopeGroupId(), httpServletRequest, false, true,
-				_getMasterDropZoneLayoutStructureItem(themeDisplay),
+				LayoutStructureUtil.getMasterDropZoneLayoutStructureItem(
+					themeDisplay.getLayout()),
 				themeDisplay)
 		).put(
 			"portletCategories",

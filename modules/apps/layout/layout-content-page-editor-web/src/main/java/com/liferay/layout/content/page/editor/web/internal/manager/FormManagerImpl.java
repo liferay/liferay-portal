@@ -43,7 +43,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.segments.constants.SegmentsExperienceConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,7 +123,7 @@ public class FormManagerImpl implements FormManager {
 		}
 
 		DropZoneLayoutStructureItem masterDropZoneLayoutStructureItem =
-			_getMasterDropZoneLayoutStructureItem(layout);
+			LayoutStructureUtil.getMasterDropZoneLayoutStructureItem(layout);
 		TreeSet<String> missingInputTypes = new TreeSet<>();
 
 		JSONObject defaultInputFragmentEntryKeysJSONObject =
@@ -382,31 +381,6 @@ public class FormManagerImpl implements FormManager {
 			groupId);
 
 		return infoForm.getAllInfoFields();
-	}
-
-	private DropZoneLayoutStructureItem _getMasterDropZoneLayoutStructureItem(
-		Layout layout) {
-
-		if (layout.getMasterLayoutPlid() <= 0) {
-			return null;
-		}
-
-		try {
-			LayoutStructure masterLayoutStructure =
-				LayoutStructureUtil.getLayoutStructure(
-					layout.getGroupId(), layout.getMasterLayoutPlid(),
-					SegmentsExperienceConstants.KEY_DEFAULT);
-
-			return (DropZoneLayoutStructureItem)
-				masterLayoutStructure.getDropZoneLayoutStructureItem();
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Unable to get master layout structure", exception);
-			}
-		}
-
-		return null;
 	}
 
 	private boolean _isAllowedFragmentEntryKey(

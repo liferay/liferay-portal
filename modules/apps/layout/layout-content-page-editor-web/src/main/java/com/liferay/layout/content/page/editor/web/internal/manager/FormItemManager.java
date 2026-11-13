@@ -38,8 +38,6 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -48,7 +46,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
-import com.liferay.segments.constants.SegmentsExperienceConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -820,7 +817,8 @@ public class FormItemManager {
 		if ((fragmentEntry == null) ||
 			!_isAllowedFragmentEntryKey(
 				fragmentEntry.getFragmentEntryKey(),
-				_getMasterDropZoneLayoutStructureItem(layout))) {
+				LayoutStructureUtil.getMasterDropZoneLayoutStructureItem(
+					layout))) {
 
 			return null;
 		}
@@ -986,31 +984,6 @@ public class FormItemManager {
 			null);
 	}
 
-	private DropZoneLayoutStructureItem _getMasterDropZoneLayoutStructureItem(
-		Layout layout) {
-
-		if (layout.getMasterLayoutPlid() <= 0) {
-			return null;
-		}
-
-		try {
-			LayoutStructure masterLayoutStructure =
-				LayoutStructureUtil.getLayoutStructure(
-					layout.getGroupId(), layout.getMasterLayoutPlid(),
-					SegmentsExperienceConstants.KEY_DEFAULT);
-
-			return (DropZoneLayoutStructureItem)
-				masterLayoutStructure.getDropZoneLayoutStructureItem();
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Unable to get master layout structure", exception);
-			}
-		}
-
-		return null;
-	}
-
 	private boolean _hasChildFormStyledLayoutStructureItem(
 		String itemId, LayoutStructure layoutStructure) {
 
@@ -1112,9 +1085,6 @@ public class FormItemManager {
 
 		return false;
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		FormItemManager.class);
 
 	@Reference
 	private DefaultInputFragmentEntryConfigurationProvider

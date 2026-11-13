@@ -18,14 +18,19 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocal
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureServiceUtil;
 import com.liferay.layout.util.structure.DeletedLayoutStructureItem;
+import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.segments.constants.SegmentsExperienceConstants;
 
 import java.util.List;
 
@@ -111,6 +116,30 @@ public class LayoutStructureUtil {
 
 		return LayoutStructure.of(
 			layoutPageTemplateStructure.getData(segmentsExperienceKey));
+	}
+
+	public static DropZoneLayoutStructureItem
+		getMasterDropZoneLayoutStructureItem(Layout layout) {
+
+		if (layout.getMasterLayoutPlid() <= 0) {
+			return null;
+		}
+
+		try {
+			LayoutStructure masterLayoutStructure = getLayoutStructure(
+				layout.getGroupId(), layout.getMasterLayoutPlid(),
+				SegmentsExperienceConstants.KEY_DEFAULT);
+
+			return (DropZoneLayoutStructureItem)
+				masterLayoutStructure.getDropZoneLayoutStructureItem();
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to get master layout structure", exception);
+			}
+		}
+
+		return null;
 	}
 
 	public static boolean hasMissingFragmentEntryFragmentEntryLinks(
@@ -209,5 +238,8 @@ public class LayoutStructureUtil {
 
 		return false;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutStructureUtil.class);
 
 }
