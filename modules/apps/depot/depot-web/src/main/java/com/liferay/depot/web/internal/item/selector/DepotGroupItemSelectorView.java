@@ -7,7 +7,7 @@ package com.liferay.depot.web.internal.item.selector;
 
 import com.liferay.depot.item.selector.DepotGroupItemSelectorCriterion;
 import com.liferay.depot.service.DepotEntryService;
-import com.liferay.depot.web.internal.util.DepotEntryAdminSearchUtil;
+import com.liferay.depot.web.internal.dao.search.GroupSearchContainerFactory;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
@@ -269,7 +269,7 @@ public class DepotGroupItemSelectorView
 							setCTCollectionIdWithSafeCloseable(
 								ctCollectionId)) {
 
-					return DepotEntryAdminSearchUtil.getGroupSearch(
+					return GroupSearchContainerFactory.create(
 						_depotEntryService, _depotGroupItemSelectorCriterion,
 						_language, portletRequest, portletResponse,
 						_portletURL);

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.depot.web.internal.util;
+package com.liferay.depot.web.internal.dao.search;
 
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.site.search.GroupSearch;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
@@ -42,9 +41,9 @@ import java.util.List;
 /**
  * @author Roberto Díaz
  */
-public class DepotEntryAdminSearchUtil {
+public class DepotEntrySearchContainerFactory {
 
-	public static DepotEntrySearch getDepotEntrySearch(
+	public static DepotEntrySearch create(
 			DepotEntryService depotEntryService,
 			GroupItemSelectorCriterion groupItemSelectorCriterion,
 			Language language, PortletRequest portletRequest,
@@ -54,71 +53,18 @@ public class DepotEntryAdminSearchUtil {
 		if (Validator.isNull(ParamUtil.getString(portletRequest, "keywords")) &&
 			!groupItemSelectorCriterion.isIncludeAllVisibleGroups()) {
 
-			return _getGroupConnectedDepotEntrySearch(
+			return _createGroupConnectedDepotEntrySearch(
 				depotEntryService,
 				groupItemSelectorCriterion.getDepotEntryType(), language,
 				portletRequest, portletResponse, portletURL);
 		}
 
-		return _getDepotEntrySearch(
+		return create(
 			depotEntryService, groupItemSelectorCriterion.getDepotEntryType(),
 			language, portletRequest, portletResponse, portletURL);
 	}
 
-	public static DepotEntrySearch getDepotEntrySearch(
-			DepotEntryService depotEntryService, int depotEntryType,
-			Language language, PortletRequest portletRequest,
-			PortletResponse portletResponse, PortletURL portletURL)
-		throws PortalException {
-
-		return _getDepotEntrySearch(
-			depotEntryService, depotEntryType, language, portletRequest,
-			portletResponse, portletURL);
-	}
-
-	public static GroupSearch getGroupSearch(
-			DepotEntryService depotEntryService,
-			GroupItemSelectorCriterion groupItemSelectorCriterion,
-			Language language, PortletRequest portletRequest,
-			PortletResponse portletResponse, PortletURL portletURL)
-		throws PortalException {
-
-		DepotEntrySearch depotEntrySearch = getDepotEntrySearch(
-			depotEntryService, groupItemSelectorCriterion, language,
-			portletRequest, portletResponse, portletURL);
-
-		GroupSearch groupSearch = new GroupSearch(portletRequest, portletURL);
-
-		groupSearch.setEmptyResultsMessage(
-			depotEntrySearch.getEmptyResultsMessage());
-		groupSearch.setResultsAndTotal(
-			() -> TransformUtil.transform(
-				depotEntrySearch.getResults(),
-				depotEntry -> depotEntry.getGroup()),
-			depotEntrySearch.getTotal());
-
-		return groupSearch;
-	}
-
-	private static BooleanClause[] _getBooleanClauses() {
-		BooleanQuery booleanQuery = new BooleanQuery();
-
-		BooleanFilter booleanFilter = new BooleanFilter();
-
-		TermsFilter termsFilter = new TermsFilter(Field.STAGING_GROUP);
-
-		termsFilter.addValue("false");
-
-		booleanFilter.add(termsFilter, BooleanClauseOccur.MUST);
-
-		booleanQuery.setPreBooleanFilter(booleanFilter);
-
-		return new BooleanClause[] {
-			new BooleanClause<>(booleanQuery, BooleanClauseOccur.MUST)
-		};
-	}
-
-	private static DepotEntrySearch _getDepotEntrySearch(
+	public static DepotEntrySearch create(
 			DepotEntryService depotEntryService, int depotEntryType,
 			Language language, PortletRequest portletRequest,
 			PortletResponse portletResponse, PortletURL portletURL)
@@ -139,7 +85,7 @@ public class DepotEntryAdminSearchUtil {
 		return depotEntrySearch;
 	}
 
-	private static DepotEntrySearch _getGroupConnectedDepotEntrySearch(
+	private static DepotEntrySearch _createGroupConnectedDepotEntrySearch(
 			DepotEntryService depotEntryService, int depotEntryType,
 			Language language, PortletRequest portletRequest,
 			PortletResponse portletResponse, PortletURL portletURL)
@@ -164,6 +110,24 @@ public class DepotEntryAdminSearchUtil {
 				themeDisplay.getScopeGroupId(), depotEntryType));
 
 		return depotEntrySearch;
+	}
+
+	private static BooleanClause[] _getBooleanClauses() {
+		BooleanQuery booleanQuery = new BooleanQuery();
+
+		BooleanFilter booleanFilter = new BooleanFilter();
+
+		TermsFilter termsFilter = new TermsFilter(Field.STAGING_GROUP);
+
+		termsFilter.addValue("false");
+
+		booleanFilter.add(termsFilter, BooleanClauseOccur.MUST);
+
+		booleanQuery.setPreBooleanFilter(booleanFilter);
+
+		return new BooleanClause[] {
+			new BooleanClause<>(booleanQuery, BooleanClauseOccur.MUST)
+		};
 	}
 
 	private static List<DepotEntry> _getResults(
