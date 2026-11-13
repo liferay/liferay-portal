@@ -755,8 +755,10 @@ public class ObjectServiceUpgradeStepRegistrator
 
 		registry.register("13.2.3", "13.2.4", new DummyUpgradeStep());
 
+		registry.register("13.2.4", "13.2.5", new DummyUpgradeStep());
+
 		registry.register(
-			"13.2.4", "13.3.0",
+			"13.2.5", "13.3.0",
 			new com.liferay.object.internal.upgrade.v13_2_0.
 				ObjectDefinitionExternalReferenceCodeUpgradeProcess(
 					_systemObjectDefinitionManagerRegistry));
