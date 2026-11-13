@@ -8447,6 +8447,13 @@ public class ObjectEntryLocalServiceImpl
 		_contributeValues(
 			objectEntry.getGroupId(), objectDefinition, userId, values);
 
+		if (objectEntry.isTypeDraft()) {
+			serviceContext = (ServiceContext)serviceContext.clone();
+
+			serviceContext.setWorkflowAction(
+				WorkflowConstants.ACTION_SAVE_DRAFT);
+		}
+
 		Map<ObjectField, Set<DLFileEntry>> dlFileEntriesMap = new HashMap<>();
 
 		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
