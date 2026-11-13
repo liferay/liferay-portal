@@ -7,7 +7,6 @@ package com.liferay.portal.workflow.metrics.internal.search.index.creation.helpe
 
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskContextMapConstants;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -35,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = WorkflowMetricsIndexCreator.class)
 public class WorkflowMetricsIndexCreator {
 
-	public void createIndex(Company company) throws PortalException {
+	public void createIndex(Company company) {
 		for (WorkflowMetricsIndex workflowMetricsIndex :
 				WorkflowMetricsIndex.values()) {
 
@@ -106,7 +105,7 @@ public class WorkflowMetricsIndexCreator {
 			});
 	}
 
-	public void removeIndex(Company company) throws PortalException {
+	public void removeIndex(Company company) {
 		for (WorkflowMetricsIndex workflowMetricsIndex :
 				WorkflowMetricsIndex.values()) {
 

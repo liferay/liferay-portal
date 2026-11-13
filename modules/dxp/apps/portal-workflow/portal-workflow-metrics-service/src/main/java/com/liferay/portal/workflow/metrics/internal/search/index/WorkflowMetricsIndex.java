@@ -6,7 +6,6 @@
 package com.liferay.portal.workflow.metrics.internal.search.index;
 
 import com.liferay.petra.string.CharPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -51,10 +50,9 @@ public enum WorkflowMetricsIndex {
 		WorkflowMetricsIndexTypeConstants.TRANSITION_TYPE);
 
 	public static void createMissingIndexes(
-			SearchCapabilities searchCapabilities,
-			SearchEngineAdapter searchEngineAdapter,
-			IndexNameBuilder indexNameBuilder, long companyId)
-		throws PortalException {
+		SearchCapabilities searchCapabilities,
+		SearchEngineAdapter searchEngineAdapter,
+		IndexNameBuilder indexNameBuilder, long companyId) {
 
 		for (WorkflowMetricsIndex workflowMetricsIndex : values()) {
 			workflowMetricsIndex.createIndex(
@@ -81,10 +79,9 @@ public enum WorkflowMetricsIndex {
 	}
 
 	public boolean createIndex(
-			SearchCapabilities searchCapabilities,
-			SearchEngineAdapter searchEngineAdapter,
-			IndexNameBuilder indexNameBuilder, long companyId)
-		throws PortalException {
+		SearchCapabilities searchCapabilities,
+		SearchEngineAdapter searchEngineAdapter,
+		IndexNameBuilder indexNameBuilder, long companyId) {
 
 		if (!searchCapabilities.isWorkflowMetricsSupported() ||
 			_hasIndex(
@@ -101,15 +98,7 @@ public enum WorkflowMetricsIndex {
 			_readJSON(_indexType + "-mappings.json"));
 		createIndexRequest.setSettings(_readJSON("settings.json"));
 
-		try {
-			searchEngineAdapter.execute(createIndexRequest);
-		}
-		catch (Exception exception) {
-			throw new PortalException(
-				"Unable to create index " +
-					getIndexName(indexNameBuilder, _indexNameSuffix, companyId),
-				exception);
-		}
+		searchEngineAdapter.execute(createIndexRequest);
 
 		return true;
 	}
@@ -119,10 +108,9 @@ public enum WorkflowMetricsIndex {
 	}
 
 	public boolean removeIndex(
-			SearchCapabilities searchCapabilities,
-			SearchEngineAdapter searchEngineAdapter,
-			IndexNameBuilder indexNameBuilder, long companyId)
-		throws PortalException {
+		SearchCapabilities searchCapabilities,
+		SearchEngineAdapter searchEngineAdapter,
+		IndexNameBuilder indexNameBuilder, long companyId) {
 
 		if (!searchCapabilities.isWorkflowMetricsSupported() ||
 			!_hasIndex(
