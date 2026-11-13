@@ -5,14 +5,12 @@
 
 package com.liferay.portlet.configuration.toolbar.contributor.locator.internal;
 
-import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.portlet.toolbar.contributor.locator.PortletToolbarContributorLocator;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * Provides an implementation of {@link PortletToolbarContributorLocator} for
@@ -74,8 +72,5 @@ public class StrutsPortletToolbarContributorLocator
 	protected String getPropertyName() {
 		return "struts.action";
 	}
-
-	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED)
-	private ModuleServiceLifecycle _moduleServiceLifecycle;
 
 }
