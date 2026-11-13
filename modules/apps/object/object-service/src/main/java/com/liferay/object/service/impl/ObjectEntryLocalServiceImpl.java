@@ -74,6 +74,7 @@ import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.entry.util.ObjectEntryValuesUtil;
 import com.liferay.object.exception.DuplicateObjectEntryExternalReferenceCodeException;
 import com.liferay.object.exception.NoSuchObjectDefinitionException;
+import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.exception.ObjectEntryDefaultLanguageIdException;
 import com.liferay.object.exception.ObjectEntryExpirationDateException;
@@ -2280,6 +2281,56 @@ public class ObjectEntryLocalServiceImpl
 		return _updateObjectEntry(
 			userId, objectEntryId, objectEntryFolderId, values, serviceContext,
 			false, true);
+	}
+
+	@Override
+	public ObjectEntry publishDraftObjectEntry(
+			long userId, long objectEntryId, ServiceContext serviceContext)
+		throws PortalException {
+
+		ObjectEntry draftObjectEntry = objectEntryPersistence.findByPrimaryKey(
+			objectEntryId);
+
+		if (!draftObjectEntry.isTypeDraft()) {
+			throw new NoSuchObjectEntryException(
+				StringBundler.concat(
+					"No ObjectEntry exists with the key {objectEntryId=",
+					objectEntryId, ", type=", ObjectEntryConstants.TYPE_DRAFT,
+					"}"));
+		}
+
+		ObjectEntry headObjectEntry = objectEntryPersistence.findByPrimaryKey(
+			draftObjectEntry.getHeadObjectEntryId());
+
+		if (headObjectEntry.isInTrash()) {
+			throw new NoSuchObjectEntryException(
+				StringBundler.concat(
+					"No ObjectEntry exists with the key {objectEntryId=",
+					headObjectEntry.getObjectEntryId(), ", status=",
+					WorkflowConstants.STATUS_IN_TRASH, "}"));
+		}
+
+		serviceContext = (ServiceContext)serviceContext.clone();
+
+		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+			draftObjectEntry.getModelClassName(),
+			draftObjectEntry.getObjectEntryId());
+
+		if (assetEntry != null) {
+			serviceContext.setAssetCategoryIds(assetEntry.getCategoryIds());
+			serviceContext.setAssetTagNames(assetEntry.getTagNames());
+		}
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
+
+		headObjectEntry = updateObjectEntry(
+			userId, headObjectEntry.getObjectEntryId(),
+			headObjectEntry.getObjectEntryFolderId(),
+			draftObjectEntry.getValues(), serviceContext);
+
+		objectEntryLocalService.deleteObjectEntry(draftObjectEntry);
+
+		return headObjectEntry;
 	}
 
 	@Override
