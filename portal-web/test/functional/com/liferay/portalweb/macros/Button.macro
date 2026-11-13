@@ -124,13 +124,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro clickRemove() {
-		Click.javaScriptClick(
-			key_text = "Remove",
-			locator1 = "Button#ANY");
-	}
-
-	@summary = "Default summary"
 	macro clickSave() {
 		Button.click(button = "Save");
 

@@ -133,6 +133,7 @@ import {config as headlessDiscoveryWebConfig} from './tests/headless-discovery-w
 import {config as iframeWebConfig} from './tests/iframe-web/main/config';
 import {config as ipGeocoderSampleWebConfig} from './tests/ip-geocoder-sample-web/main/config';
 import {config as itemSelectorTaglibConfig} from './tests/item-selector-taglib/main/config';
+import {config as journalContentWebConfig} from './tests/journal-content-web/main/config';
 import {config as journalWebConfig} from './tests/journal-web/main/config';
 import {config as knowledgeBaseWebConfig} from './tests/knowledge-base-web/main/config';
 import {config as launchWebConfig} from './tests/launch-web/main/config';
@@ -428,6 +429,7 @@ export default defineConfig({
 		iframeWebConfig,
 		ipGeocoderSampleWebConfig,
 		itemSelectorTaglibConfig,
+		journalContentWebConfig,
 		journalWebConfig,
 		knowledgeBaseWebConfig,
 		launchWebConfig,

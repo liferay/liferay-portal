@@ -171,11 +171,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>UNDO</td>
-	<td>//a[text()='Undo']</td>
-	<td></td>
-</tr>
-<tr>
 	<td>UNSUBSCRIBE</td>
 	<td>//a[@aria-label='Unsubscribe']</td>
 	<td></td>

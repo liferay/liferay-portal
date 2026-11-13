@@ -43,15 +43,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addDraft(webContentTitle = null, webContentContent = null) {
-		WebContentDisplayPortletNavigator.gotoAdd();
-
-		WebContent.addDraft(
-			webContentContent = ${webContentContent},
-			webContentTitle = ${webContentTitle});
-	}
-
-	@summary = "Default summary"
 	macro addTag(tagNameList = null, edit = null) {
 		Panel.expandPanel(panel = "Categorization");
 
@@ -308,72 +299,12 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro removeWebContent(portletName = null) {
-		Portlet.gotoPortletOptions(
-			portletName = ${portletName},
-			portletOption = "Configuration");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		Button.clickRemove();
-
-		AssertElementNotPresent(
-			key_text = "Remove",
-			locator1 = "Button#ANY");
-
-		PortletEntry.save();
-	}
-
-	@summary = "Default summary"
 	macro saveConfiguration() {
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
 		PortletEntry.save();
 
 		SelectFrame(value1 = "relative=top");
-	}
-
-	@summary = "Default summary"
-	macro searchWebContent(depotName = null, searchTerm = null, errorMessage = null, webContentTitleList = null, webContentTitleNotPresentList = null, portletName = null) {
-		WebContentDisplayPortlet.gotoSelectWebContent(
-			depotName = ${depotName},
-			portletName = ${portletName});
-
-		if (isSet(webContentTitleNotPresentList)) {
-			if (isSet(depotName)) {
-				for (var webContentTitleNotPresent : list ${webContentTitleNotPresentList}) {
-					AssertElementNotPresent(
-						key_contentName = ${webContentTitleNotPresent},
-						locator1 = "ItemSelector#SELECT_FILE_WEB_CONTENT");
-				}
-
-				AssertTextEquals.assertPartialText(
-					locator1 = "Message#INFO",
-					value1 = ${errorMessage});
-			}
-			else {
-				Search.searchCP(searchTerm = ${searchTerm});
-
-				LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-				for (var webContentTitleNotPresent : list ${webContentTitleNotPresentList}) {
-					AssertElementNotPresent(
-						key_listEntry = ${webContentTitleNotPresent},
-						locator1 = "LexiconList#LIST_ENTRY_TITLE");
-				}
-			}
-		}
-		else {
-			Search.searchCP(searchTerm = ${searchTerm});
-
-			LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-			for (var webContentTitle : list ${webContentTitleList}) {
-				AssertVisible(
-					key_listEntry = ${webContentTitle},
-					locator1 = "LexiconList#LIST_ENTRY_TITLE");
-			}
-		}
 	}
 
 	@summary = "Default summary"
@@ -419,13 +350,6 @@ definition {
 		PortletEntry.save();
 
 		SelectFrame(value1 = "relative=top");
-	}
-
-	@summary = "Default summary"
-	macro undoMoveToRecycleBin() {
-		AssertClick(
-			locator1 = "Link#UNDO",
-			value1 = "Undo");
 	}
 
 	@summary = "Default summary"
@@ -590,26 +514,11 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewMessage(recycleBinWebContentTitle = null, expiredWebContentTitle = null, draftWebContentTitle = null) {
-		if (isSet(recycleBinWebContentTitle)) {
-			AssertTextEquals.assertPartialText(
-				locator1 = "Message#ERROR_3",
-				value1 = "The web content article ${recycleBinWebContentTitle} was moved to the Recycle Bin");
-		}
-		else if (isSet(draftWebContentTitle)) {
-			AssertTextEquals(
-				locator1 = "Message#ERROR_3",
-				value1 = "${draftWebContentTitle} is not approved.");
-		}
-		else if (isSet(expiredWebContentTitle)) {
+	macro viewMessage(expiredWebContentTitle = null) {
+		if (isSet(expiredWebContentTitle)) {
 			AssertTextEquals(
 				locator1 = "Message#ERROR_3",
 				value1 = "${expiredWebContentTitle} is expired.");
-		}
-		else if (isSet(deletedWebContentTitle)) {
-			Alert.viewWarningSpecific(warningMessage = "The selected web content no longer exists.");
-
-			Alert.viewWarningSpecific(warningMessage = "Do you want to Select Another web content?");
 		}
 		else {
 			Alert.viewInfoMessageSpecific(infoMessage = "This application is not visible to users yet");
