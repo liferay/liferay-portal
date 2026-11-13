@@ -72,6 +72,9 @@ public class RenderFragmentEntryStrutsAction implements StrutsAction {
 		themeDisplay.setLookAndFeel(
 			layoutSet.getTheme(), layoutSet.getColorScheme());
 
+		themeDisplay.setScopeGroupId(groupId);
+		themeDisplay.setSiteGroupId(groupId);
+
 		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
 		RequestDispatcher requestDispatcher =
