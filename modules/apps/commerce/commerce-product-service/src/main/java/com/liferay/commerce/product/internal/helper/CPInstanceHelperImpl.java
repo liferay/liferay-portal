@@ -5,7 +5,6 @@
 
 package com.liferay.commerce.product.internal.helper;
 
-import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.adaptive.media.image.html.AMImageHTMLTagFactory;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceMoney;
@@ -13,8 +12,6 @@ import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.media.CommerceMediaProvider;
 import com.liferay.commerce.media.CommerceMediaResolver;
 import com.liferay.commerce.price.CommerceProductPriceCalculation;
-import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
-import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.availability.CPAvailabilityChecker;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPSku;
@@ -34,7 +31,6 @@ import com.liferay.commerce.product.model.CPInstanceOptionValueRel;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
-import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
@@ -959,9 +955,6 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 		CPInstanceHelperImpl.class);
 
 	@Reference
-	private AccountGroupLocalService _accountGroupLocalService;
-
-	@Reference
 	private AMImageHTMLTagFactory _amImageHTMLTagFactory;
 
 	@Reference
@@ -972,12 +965,6 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 
 	@Reference
 	private CommerceMediaResolver _commerceMediaResolver;
-
-	@Reference
-	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
-
-	@Reference
-	private CommercePriceListLocalService _commercePriceListLocalService;
 
 	@Reference
 	private CommerceProductPriceCalculation _commerceProductPriceCalculation;
@@ -997,9 +984,6 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 
 	@Reference
 	private CPConfigurationListDiscovery _cpConfigurationListDiscovery;
-
-	@Reference
-	private CPConfigurationListLocalService _cpConfigurationListLocalService;
 
 	@Reference
 	private CPDefinitionInventoryEngine _cpDefinitionInventoryEngine;

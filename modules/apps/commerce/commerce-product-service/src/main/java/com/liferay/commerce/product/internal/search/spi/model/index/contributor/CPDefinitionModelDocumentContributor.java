@@ -27,9 +27,6 @@ import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
-import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
-import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLinkLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueLocalService;
@@ -698,16 +695,6 @@ public class CPDefinitionModelDocumentContributor
 
 	@Reference
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
-
-	@Reference
-	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
-
-	@Reference
-	private CPConfigurationEntrySettingLocalService
-		_cpConfigurationEntrySettingLocalService;
-
-	@Reference
-	private CPConfigurationListLocalService _cpConfigurationListLocalService;
 
 	@Reference
 	private CPDefinitionLinkLocalService _cpDefinitionLinkLocalService;

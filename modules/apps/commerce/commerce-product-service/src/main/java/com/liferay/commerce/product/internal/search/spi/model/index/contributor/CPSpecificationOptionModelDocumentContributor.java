@@ -9,7 +9,6 @@ import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.model.CPOptionCategory;
 import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.service.CPOptionCategoryLocalService;
-import com.liferay.commerce.product.service.CPSpecificationOptionLocalService;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -91,10 +90,6 @@ public class CPSpecificationOptionModelDocumentContributor
 
 	@Reference
 	private CPOptionCategoryLocalService _cpOptionCategoryLocalService;
-
-	@Reference
-	private CPSpecificationOptionLocalService
-		_cpSpecificationOptionLocalService;
 
 	@Reference
 	private Localization _localization;
