@@ -14620,7 +14620,14 @@ ANT_OPTS=${env.ANT_OPTS}</echo>
 	</target>
 
 	<target name="prepare-test-bundle">
-		<setup-libs />
+		<if>
+			<not>
+				<available file="liferay-portal-source.tar.gz" />
+			</not>
+			<then>
+				<setup-libs />
+			</then>
+		</if>
 
 		<if>
 			<not>

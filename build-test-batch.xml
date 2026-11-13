@@ -1296,9 +1296,17 @@ mariadb.executable=${mariadb.executable}]]></echo>
 				<param name="test.sql.zip.url" value="@{test.sql.zip.url}" />
 			</antcall>
 
-			<antcall inheritAll="false" target="setup-libs" />
+			<if>
+				<available file="liferay-portal-source.tar.gz" />
+				<then>
+					<antcall inheritAll="false" target="update-gradle-properties" />
+				</then>
+				<else>
+					<antcall inheritAll="false" target="setup-libs" />
 
-			<antcall inheritAll="false" target="setup-sdk" />
+					<antcall inheritAll="false" target="setup-sdk" />
+				</else>
+			</if>
 
 			<antcall inheritAll="false" target="setup-yarn" />
 
@@ -1575,9 +1583,17 @@ app.server.type=@{app.server.type}]]></echo>
 		<attribute default="true" name="setup.testable.tomcat" />
 
 		<sequential>
-			<antcall inheritAll="false" target="setup-libs" />
+			<if>
+				<available file="liferay-portal-source.tar.gz" />
+				<then>
+					<antcall inheritAll="false" target="update-gradle-properties" />
+				</then>
+				<else>
+					<antcall inheritAll="false" target="setup-libs" />
 
-			<antcall inheritAll="false" target="setup-sdk" />
+					<antcall inheritAll="false" target="setup-sdk" />
+				</else>
+			</if>
 
 			<antcall inheritAll="false" target="setup-yarn" />
 
