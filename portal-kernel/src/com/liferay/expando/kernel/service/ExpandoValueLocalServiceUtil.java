@@ -591,6 +591,13 @@ public class ExpandoValueLocalServiceUtil {
 			companyId, className, tableName, columnNames, classPK);
 	}
 
+	public static Map<String, Serializable> getData(
+			long companyId, String className, String tableName, long classPK)
+		throws PortalException {
+
+		return getService().getData(companyId, className, tableName, classPK);
+	}
+
 	public static Serializable getData(
 			long companyId, String className, String tableName,
 			String columnName, long classPK)
@@ -978,4 +985,4 @@ public class ExpandoValueLocalServiceUtil {
 	private static volatile ExpandoValueLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1643081554
+// LIFERAY-SERVICE-BUILDER-HASH:38832824

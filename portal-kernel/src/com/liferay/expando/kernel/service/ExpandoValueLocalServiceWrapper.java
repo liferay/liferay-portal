@@ -664,6 +664,15 @@ public class ExpandoValueLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.Map<String, java.io.Serializable> getData(
+			long companyId, String className, String tableName, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _expandoValueLocalService.getData(
+			companyId, className, tableName, classPK);
+	}
+
+	@Override
 	public java.io.Serializable getData(
 			long companyId, String className, String tableName,
 			String columnName, long classPK)
@@ -1124,4 +1133,4 @@ public class ExpandoValueLocalServiceWrapper
 	private ExpandoValueLocalService _expandoValueLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1705224228
+// LIFERAY-SERVICE-BUILDER-HASH:1023640156
