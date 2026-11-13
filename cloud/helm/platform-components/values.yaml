@@ -41,10 +41,7 @@ clusterBootstrap:
         requests:
             cpu: 1m
             memory: 8Mi
-clusterSecretStore:
-    enabled: false
-    name: ""
-    provider: {}
+clusterSecretStores: {}
 database:
     engine: ""
 deploymentContext:

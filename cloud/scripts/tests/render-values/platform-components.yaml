@@ -7,8 +7,12 @@ argocd:
     gateway:
         enabled: true
         hostname: argocd.liferay.render
-clusterSecretStore:
-    name: liferay-render-secret-store
+clusterSecretStores:
+    liferay-render-secret-store:
+        spec:
+            provider:
+                azurekv:
+                    vaultUrl: https://liferay-render.vault.azure.net
 deploymentContext:
     deploymentName: liferay-render
 gitops:

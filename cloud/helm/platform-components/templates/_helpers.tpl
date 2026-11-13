@@ -18,7 +18,16 @@ targetRevision: {{ .targetRevision | quote }}
 {{- end -}}
 
 {{- define "liferay-platform.clusterSecretStoreName" -}}
-{{- required "The value \"clusterSecretStore.name\" is required to identify the cluster secret store" .Values.clusterSecretStore.name -}}
+{{- $clusterSecretStoreNames := list -}}
+{{- range $name, $clusterSecretStore := .Values.clusterSecretStores -}}
+{{- if or $clusterSecretStore.default (eq (len $.Values.clusterSecretStores) 1) -}}
+{{- $clusterSecretStoreNames = append $clusterSecretStoreNames $name -}}
+{{- end -}}
+{{- end -}}
+{{- if ne (len $clusterSecretStoreNames) 1 -}}
+{{- fail "The value \"clusterSecretStores\" must define one store, or mark exactly one store with \"default: true\"" -}}
+{{- end -}}
+{{- first $clusterSecretStoreNames -}}
 {{- end -}}
 
 {{- define "liferay-platform.crossplaneDeploymentRuntimeConfigAnnotations" -}}

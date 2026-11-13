@@ -282,7 +282,7 @@ tests:
                     hostname: argocd.liferay.test
     -   asserts:
             -   failedTemplate:
-                    errorPattern: The value "clusterSecretStore.name" is required to identify the cluster secret store
+                    errorPattern: The value "clusterSecretStores" must define one store
         it: Rejects TLS without a cluster secret store name
         set:
             argocd:
@@ -383,8 +383,8 @@ tests:
                     hostname: argocd.liferay.test
                     tls:
                         externalSecretKey: liferay-certificates-argocd
-            clusterSecretStore:
-                name: liferay-secret-store
+            clusterSecretStores:
+                liferay-secret-store: {}
     -   asserts:
             -   hasDocuments:
                     count: 7
@@ -419,8 +419,8 @@ tests:
                     hostname: workflows.liferay.test
                     tls:
                         externalSecretKey: liferay-certificates-workflows
-            clusterSecretStore:
-                name: liferay-test-secret-store
+            clusterSecretStores:
+                liferay-test-secret-store: {}
     -   asserts:
             -   hasDocuments:
                     count: 7
@@ -499,7 +499,7 @@ tests:
                     hostname: argocd.liferay.test
                     tls:
                         externalSecretKey: liferay-certificates-argocd
-            clusterSecretStore:
-                name: liferay-test-secret-store
+            clusterSecretStores:
+                liferay-test-secret-store: {}
             deploymentContext:
                 deploymentName: liferay-test

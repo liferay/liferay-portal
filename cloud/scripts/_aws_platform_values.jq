@@ -32,10 +32,12 @@ $configuration[0] as $configuration
 					}
 				}
 			},
-			clusterSecretStore: {
-				enabled: true,
-				name: ($deployment_context.deploymentName + "-secret-store"),
-				provider: $outputs.cluster_secret_store_provider.value
+			clusterSecretStores: {
+				($deployment_context.deploymentName + "-secret-store"): {
+					spec: {
+						provider: $outputs.cluster_secret_store_provider.value
+					}
+				}
 			},
 			deploymentContext: $deployment_context,
 			gateway: {
