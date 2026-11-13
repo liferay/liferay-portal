@@ -13,6 +13,7 @@ import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
@@ -67,8 +68,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.springframework.mock.web.MockHttpServletResponse;
-
 /**
  * @author Roberto Díaz
  */
@@ -103,11 +102,9 @@ public class SpaceStickerDisplayContextTest extends BaseDisplayContextTestCase {
 
 		AssetLibrary assetLibrary = _addAssetLibraryWithLogo(name, logoColor);
 
-		Map<String, Object> props = ReflectionTestUtil.invoke(
-			_getSpaceStickerDisplayContext(
-				_getMockHttpServletRequest(assetLibrary.getId()),
-				_depotEntryLocalService.getDepotEntry(assetLibrary.getId())),
-			"getProps", new Class<?>[0]);
+		Map<String, Object> props = _getProps(
+			_getMockHttpServletRequest(assetLibrary.getId()),
+			_depotEntryLocalService.getDepotEntry(assetLibrary.getId()));
 
 		Assert.assertEquals(logoColor, props.get("displayType"));
 		Assert.assertEquals(name, props.get("name"));
@@ -183,7 +180,7 @@ public class SpaceStickerDisplayContextTest extends BaseDisplayContextTestCase {
 		return httpServletRequest;
 	}
 
-	private Object _getSpaceStickerDisplayContext(
+	private Map<String, Object> _getProps(
 			HttpServletRequest httpServletRequest, DepotEntry depotEntry)
 		throws Exception {
 
@@ -234,17 +231,12 @@ public class SpaceStickerDisplayContextTest extends BaseDisplayContextTestCase {
 		defaultFragmentRendererContext.setContextInfoItemReference(
 			infoItemDetails.getInfoItemReference());
 
-		_fragmentRenderer.render(
-			defaultFragmentRendererContext, httpServletRequest,
-			new MockHttpServletResponse());
-
-		Object spaceStickerDisplayContext = httpServletRequest.getAttribute(
-			"com.liferay.site.cms.site.initializer.internal.display.context." +
-				"SpaceStickerDisplayContext");
-
-		Assert.assertNotNull(spaceStickerDisplayContext);
-
-		return spaceStickerDisplayContext;
+		return ReflectionTestUtil.invoke(
+			_fragmentRenderer, "getProps",
+			new Class<?>[] {
+				FragmentRendererContext.class, HttpServletRequest.class
+			},
+			defaultFragmentRendererContext, httpServletRequest);
 	}
 
 	private AssetLibraryResource _assetLibraryResource;
