@@ -60,10 +60,7 @@ public class EmptyServicePropertiesCheck extends BaseCheck {
 		DetailAST variableDefinitionDetailAST = getVariableDefinitionDetailAST(
 			firstChildDetailAST, firstChildDetailAST.getText(), false);
 
-		if ((variableDefinitionDetailAST == null) ||
-			(variableDefinitionDetailAST.getType() !=
-				TokenTypes.VARIABLE_DEF)) {
-
+		if (variableDefinitionDetailAST == null) {
 			return;
 		}
 
