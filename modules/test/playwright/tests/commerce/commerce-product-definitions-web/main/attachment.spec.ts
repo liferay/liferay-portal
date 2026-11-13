@@ -354,7 +354,15 @@ test(
 
 test(
 	'Add and remove the tags of a product attachment',
-	{tag: ['@COMMERCE-12853', '@LPD-108797', '@LPD-111085', '@LPD-113914']},
+	{
+		tag: [
+			'@COMMERCE-12853',
+			'@LPD-108797',
+			'@LPD-111085',
+			'@LPD-113914',
+			'@LPD-115346',
+		],
+	},
 	async ({
 		apiHelpers,
 		commerceAdminProductDetailsMediaPage,

@@ -22,9 +22,14 @@ export class CommerceAdminProductDetailsMediaPage {
 	readonly selectFileButton: Locator;
 	readonly selectFileFrame: FrameLocator;
 	readonly selectFileIframe: Locator;
+	readonly selectFileItem: (title: string) => Locator;
+	readonly selectFileSearchInput: Locator;
+	readonly sidePanel: Locator;
+	readonly sidePanelCurrentImage: Locator;
 	readonly sidePanelCustomFieldInput: (fieldName: string) => Locator;
 	readonly sidePanelDoneButton: Locator;
 	readonly sidePanelFrame: FrameLocator;
+	readonly sidePanelOptionSelect: (optionName: string) => Locator;
 	readonly sidePanelSaveAsDraftButton: Locator;
 	readonly sidePanelTag: (tagName: string) => Locator;
 	readonly sidePanelTagOption: (tagName: string) => Locator;
@@ -64,6 +69,7 @@ export class CommerceAdminProductDetailsMediaPage {
 				.getByRole('button', {name: 'Actions'});
 		this.deleteMenuItem = page.getByRole('menuitem', {name: 'Delete'});
 		this.page = page;
+		this.sidePanel = page.locator('.fds-side-panel.is-visible');
 		this.sidePanelFrame = page.frameLocator('.is-visible iframe');
 		this.selectFileButton = this.sidePanelFrame.getByRole('button', {
 			exact: true,
@@ -73,6 +79,13 @@ export class CommerceAdminProductDetailsMediaPage {
 			'iframe[title="Select File"]'
 		);
 		this.selectFileFrame = this.selectFileIframe.contentFrame();
+		this.selectFileItem = (title: string) =>
+			this.selectFileFrame.getByText(title, {exact: true});
+		this.selectFileSearchInput =
+			this.selectFileFrame.getByPlaceholder('Search for');
+		this.sidePanelCurrentImage = this.sidePanelFrame.getByRole('img', {
+			name: 'Current Image',
+		});
 		this.sidePanelCustomFieldInput = (fieldName: string) =>
 			this.sidePanelFrame.locator(
 				`input[name*="ExpandoAttribute--${fieldName}--"]`
@@ -81,6 +94,8 @@ export class CommerceAdminProductDetailsMediaPage {
 			exact: true,
 			name: 'Done',
 		});
+		this.sidePanelOptionSelect = (optionName: string) =>
+			this.sidePanelFrame.getByLabel(optionName, {exact: true});
 		this.sidePanelSaveAsDraftButton = this.sidePanelFrame.getByRole(
 			'button',
 			{exact: true, name: 'Save as Draft'}
@@ -149,6 +164,9 @@ export class CommerceAdminProductDetailsMediaPage {
 			target: this.sidePanelTitleInput,
 			trigger: this.mediaForm.getByText(title, {exact: true}),
 		});
+
+		await expect(this.sidePanel).not.toHaveClass(/is-loading|is-moving/);
+		await expect(this.sidePanelTitleInput).toBeVisible();
 	}
 
 	async publishAttachment() {
