@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.text.Collator;
 
+import java.util.Locale;
+
 /**
  * @author Rafael Praxedes
  */
@@ -37,10 +39,12 @@ public class DDMFormInstanceNameComparator
 	public int compare(
 		DDMFormInstance ddmFormInstance1, DDMFormInstance ddmFormInstance2) {
 
-		String name1 = StringUtil.toLowerCase(ddmFormInstance1.getName());
-		String name2 = StringUtil.toLowerCase(ddmFormInstance2.getName());
+		Locale locale = LocaleUtil.getMostRelevantLocale();
 
-		Collator collator = CollatorUtil.getInstance(LocaleUtil.getDefault());
+		Collator collator = CollatorUtil.getInstance(locale);
+
+		String name1 = StringUtil.toLowerCase(ddmFormInstance1.getName(locale));
+		String name2 = StringUtil.toLowerCase(ddmFormInstance2.getName(locale));
 
 		int value = collator.compare(name1, name2);
 
