@@ -50,7 +50,11 @@ portletDisplay.setShowBackIcon(Validator.isNotNull(backURL));
 							<liferay-ui:message key="status" />:
 						</dt>
 						<dd>
-							<aui:workflow-status markupView="lexicon" model="<%= CalendarBooking.class %>" showHelpMessage="<%= false %>" showIcon="<%= false %>" showLabel="<%= false %>" status="<%= calendarBooking.getStatus() %>" />
+							<liferay-portal-workflow:status
+								showStatusLabel="<%= false %>"
+								status="<%= calendarBooking.getStatus() %>"
+								statusMessage="<%= CalendarUtil.getStatusMessage(calendarBooking.getStatus()) %>"
+							/>
 						</dd>
 						<dt>
 							<liferay-ui:message key="starts" />:

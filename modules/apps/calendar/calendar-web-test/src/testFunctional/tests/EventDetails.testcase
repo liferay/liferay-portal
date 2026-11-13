@@ -762,25 +762,6 @@ definition {
 		CalendarEvent.view(eventTitle = "Calendar Event Repeating Title Edit");
 	}
 
-	@description = "LRQA-71888 - Verify that the event status is Any when the user Maybe attend the event"
-	@priority = 3
-	test EventStatusIsAnyWhenUserMaybeAttend {
-		CalendarNavigator.gotoAddEvent();
-
-		CalendarEvent.add(
-			eventTitle = "Calendar Event Title",
-			eventType = "Regular",
-			pageName = "Calendar Page");
-
-		Navigator.gotoPage(pageName = "Calendar Page");
-
-		CalendarNavigator.gotoEventDetails(eventTitle = "Calendar Event Title");
-
-		CalendarEvent.clickMaybeButton();
-
-		CalendarEvent.viewStatusViaDetails(status = "ANY");
-	}
-
 	@description = "LRQA-71888 - Verify that the event status is -Approved- when the Calendar has no workflow assigned"
 	@priority = 4
 	test EventStatusIsApprovedWhenNoWorkflowAssigned {
@@ -817,6 +798,25 @@ definition {
 		CalendarEvent.clickDeclineButton();
 
 		CalendarEvent.viewStatusViaDetails(status = "DENIED");
+	}
+
+	@description = "LRQA-71888 - Verify that the event status is Maybe when the user answers Maybe to the event"
+	@priority = 3
+	test EventStatusIsMaybeWhenUserMaybeAttend {
+		CalendarNavigator.gotoAddEvent();
+
+		CalendarEvent.add(
+			eventTitle = "Calendar Event Title",
+			eventType = "Regular",
+			pageName = "Calendar Page");
+
+		Navigator.gotoPage(pageName = "Calendar Page");
+
+		CalendarNavigator.gotoEventDetails(eventTitle = "Calendar Event Title");
+
+		CalendarEvent.clickMaybeButton();
+
+		CalendarEvent.viewStatusViaDetails(status = "Maybe");
 	}
 
 	@description = "LRQA-71888 - Verify that the event status is -Pending- when the Calendar has the Single Approver assigned"

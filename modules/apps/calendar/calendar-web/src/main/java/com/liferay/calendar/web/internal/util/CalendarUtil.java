@@ -16,6 +16,7 @@ import com.liferay.calendar.service.CalendarResourceLocalService;
 import com.liferay.calendar.service.CalendarService;
 import com.liferay.calendar.util.JCalendarUtil;
 import com.liferay.calendar.util.RecurrenceUtil;
+import com.liferay.calendar.workflow.constants.CalendarBookingWorkflowConstants;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -143,6 +144,14 @@ public class CalendarUtil {
 		}
 
 		return calendarResources;
+	}
+
+	public static String getStatusMessage(int status) {
+		if (status == CalendarBookingWorkflowConstants.STATUS_MAYBE) {
+			return "maybe";
+		}
+
+		return WorkflowConstants.getStatusLabel(status);
 	}
 
 	public static JSONObject toCalendarBookingJSONObject(
