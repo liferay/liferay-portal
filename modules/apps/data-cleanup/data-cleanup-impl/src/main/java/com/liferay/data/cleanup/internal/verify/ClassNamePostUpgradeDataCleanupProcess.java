@@ -294,7 +294,9 @@ public class ClassNamePostUpgradeDataCleanupProcess
 					}
 				}
 				catch (Exception exception) {
-					_log.error(exception);
+					if (_log.isDebugEnabled()) {
+						_log.debug(exception);
+					}
 
 					return true;
 				}
