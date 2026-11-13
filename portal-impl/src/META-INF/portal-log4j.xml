@@ -130,6 +130,7 @@
 		<Logger level="INFO" name="com.liferay.portal.plugin.PluginPackageUtil" />
 		<Logger level="ERROR" name="com.liferay.portal.pop" />
 		<Logger level="WARN" name="com.liferay.portal.security" />
+		<Logger level="INFO" name="com.liferay.portal.security.audit.router.internal.LoggingAuditMessageProcessor" />
 		<Logger level="ERROR" name="com.liferay.portal.security.auth.EmailAddressGeneratorFactory" />
 		<Logger level="ERROR" name="com.liferay.portal.security.auth.EmailAddressValidatorFactory" />
 		<Logger level="ERROR" name="com.liferay.portal.security.auth.ScreenNameGeneratorFactory" />
