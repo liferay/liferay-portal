@@ -2955,8 +2955,13 @@ public class ObjectEntryLocalServiceImpl
 			Objects.equals(
 				dlFileEntryFolder.getFolderId(), dlFolder.getFolderId())) {
 
+			ObjectEntry objectEntry = objectEntryPersistence.fetchByPrimaryKey(
+				dlFileEntry.getClassPK());
+
 			if (Validator.isNull(dlFileEntry.getClassName()) ||
-				(dlFileEntry.getClassPK() <= 0)) {
+				(dlFileEntry.getClassPK() <= 0) ||
+				((objectEntry != null) && objectEntry.isTypeDraft() &&
+				 (objectEntry.getHeadObjectEntryId() == objectEntryId))) {
 
 				dlFileEntry.setClassName(objectDefinition.getClassName());
 				dlFileEntry.setClassPK(objectEntryId);
