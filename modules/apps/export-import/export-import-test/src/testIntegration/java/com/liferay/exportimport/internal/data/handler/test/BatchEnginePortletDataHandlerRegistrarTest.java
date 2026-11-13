@@ -7,6 +7,7 @@ package com.liferay.exportimport.internal.data.handler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.exportimport.kernel.lar.DefaultConfigurationPortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerControl;
@@ -255,9 +256,8 @@ public class BatchEnginePortletDataHandlerRegistrarTest {
 						portletDataHandler.getClassNames()));
 			_assertPortletDataHandler(
 				RandomTestUtil.randomLong(), portletId2,
-				portletDataHandler -> StringUtil.contains(
-					ClassUtil.getClassName(portletDataHandler),
-					"DefaultPortletDataHandler", StringPool.PERIOD));
+				portletDataHandler -> portletDataHandler instanceof
+					DefaultConfigurationPortletDataHandler);
 
 			safeCloseable3.close();
 
@@ -310,9 +310,8 @@ public class BatchEnginePortletDataHandlerRegistrarTest {
 
 			_assertPortletDataHandler(
 				TestPropsValues.getCompanyId(), portletId1,
-				portletDataHandler -> StringUtil.contains(
-					ClassUtil.getClassName(portletDataHandler),
-					"DefaultPortletDataHandler", StringPool.PERIOD));
+				portletDataHandler -> portletDataHandler instanceof
+					DefaultConfigurationPortletDataHandler);
 		}
 	}
 

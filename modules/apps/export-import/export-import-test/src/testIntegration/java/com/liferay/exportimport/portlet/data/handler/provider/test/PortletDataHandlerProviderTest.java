@@ -7,6 +7,7 @@ package com.liferay.exportimport.portlet.data.handler.provider.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.lar.BasePortletDataHandler;
+import com.liferay.exportimport.kernel.lar.DefaultConfigurationPortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -94,9 +95,10 @@ public class PortletDataHandlerProviderTest {
 			Assert.assertEquals(
 				portletDataHandler5,
 				_portletDataHandlerProvider.provide(companyId1, portletId3));
-			Assert.assertEquals(
-				_defaultPortletDataHandler,
-				_portletDataHandlerProvider.provide(companyId1, portletId4));
+			Assert.assertTrue(
+				_portletDataHandlerProvider.provide(
+					companyId1, portletId4) instanceof
+						DefaultConfigurationPortletDataHandler);
 			Assert.assertEquals(
 				portletDataHandler1,
 				_portletDataHandlerProvider.provide(companyId2, portletId1));
@@ -106,9 +108,10 @@ public class PortletDataHandlerProviderTest {
 			Assert.assertEquals(
 				portletDataHandler5,
 				_portletDataHandlerProvider.provide(companyId2, portletId3));
-			Assert.assertEquals(
-				_defaultPortletDataHandler,
-				_portletDataHandlerProvider.provide(companyId2, portletId4));
+			Assert.assertTrue(
+				_portletDataHandlerProvider.provide(
+					companyId2, portletId4) instanceof
+						DefaultConfigurationPortletDataHandler);
 		}
 	}
 
@@ -152,9 +155,6 @@ public class PortletDataHandlerProviderTest {
 
 		return serviceRegistration::unregister;
 	}
-
-	@Inject(filter = "jakarta.portlet.name=ALL")
-	private PortletDataHandler _defaultPortletDataHandler;
 
 	@Inject
 	private PortletDataHandlerProvider _portletDataHandlerProvider;

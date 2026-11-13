@@ -6,6 +6,7 @@
 package com.liferay.portlet.internal;
 
 import com.liferay.expando.kernel.model.CustomAttributesDisplay;
+import com.liferay.exportimport.kernel.lar.DefaultConfigurationPortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
@@ -259,7 +260,7 @@ public class PortletBagImpl implements PortletBag {
 			return portletDataHandler;
 		}
 
-		return _serviceTrackerMap.getService(companyId, "ALL");
+		return _defaultPortletDataHandler;
 	}
 
 	/**
@@ -482,6 +483,17 @@ public class PortletBagImpl implements PortletBag {
 
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();
+
+	private static final PortletDataHandler _defaultPortletDataHandler =
+		new DefaultConfigurationPortletDataHandler() {
+
+			@Override
+			public String getSectionKey() {
+				return "category.other";
+			}
+
+		};
+
 	private static final ScopedServiceTrackerMap<PortletDataHandler>
 		_serviceTrackerMap;
 
