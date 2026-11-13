@@ -52,6 +52,9 @@ definition {
 	@description = "LPS-135888 - Verify that the user with Account role type can Approve the task"
 	@priority = 5
 	test AccountUserCanApproveTask {
+		property test.liferay.virtual.instance = "false";
+		property test.run.type = "single";
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		Account.openAccountsAdmin();
