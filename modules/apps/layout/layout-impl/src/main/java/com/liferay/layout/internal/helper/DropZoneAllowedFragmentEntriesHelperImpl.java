@@ -5,13 +5,21 @@
 
 package com.liferay.layout.internal.helper;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
+import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -96,6 +104,59 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 		return contains;
 	}
 
+	@Override
+	public JSONObject normalizeItemConfigJSONObject(
+			long companyId, JSONObject itemConfigJSONObject, long scopeGroupId)
+		throws PortalException {
+
+		if (!itemConfigJSONObject.has("fragmentEntryKeys")) {
+			return itemConfigJSONObject;
+		}
+
+		List<String> fragmentEntryKeys = JSONUtil.toStringList(
+			itemConfigJSONObject.getJSONArray("fragmentEntryKeys"));
+
+		itemConfigJSONObject.remove("fragmentEntryKeys");
+
+		JSONArray fragmentEntriesJSONArray = JSONUtil.putAll();
+
+		long[] groupIds = _getGroupIds(companyId, scopeGroupId);
+
+		for (String fragmentEntryKey : fragmentEntryKeys) {
+			FragmentEntry defaultFragmentEntry =
+				_fragmentCollectionContributorRegistry.getFragmentEntry(
+					fragmentEntryKey);
+			FragmentRenderer fragmentRenderer =
+				_fragmentRendererRegistry.getFragmentRenderer(fragmentEntryKey);
+
+			if ((defaultFragmentEntry != null) || (fragmentRenderer != null)) {
+				fragmentEntriesJSONArray.put(
+					JSONUtil.put("fragmentEntryRendererKey", fragmentEntryKey));
+
+				continue;
+			}
+
+			FragmentEntry fragmentEntry = _fetchFragmentEntry(
+				fragmentEntryKey, groupIds);
+
+			if (fragmentEntry == null) {
+				continue;
+			}
+
+			fragmentEntriesJSONArray.put(
+				JSONUtil.put(
+					"fragmentEntryERC", fragmentEntry.getExternalReferenceCode()
+				).put(
+					"fragmentEntryScopeERC",
+					ScopeUtil.getItemScopeExternalReferenceCode(
+						fragmentEntry.getGroupId(), scopeGroupId)
+				));
+		}
+
+		return itemConfigJSONObject.put(
+			"fragmentEntries", fragmentEntriesJSONArray);
+	}
+
 	private FragmentEntry _fetchFragmentEntry(
 		long companyId, String fragmentEntryERC, String fragmentEntryScopeERC,
 		long scopeGroupId) {
@@ -112,7 +173,44 @@ public class DropZoneAllowedFragmentEntriesHelperImpl
 				fragmentEntryERC, fragmentEntryScopeGroupId);
 	}
 
+	private FragmentEntry _fetchFragmentEntry(
+		String fragmentEntryKey, long[] groupIds) {
+
+		for (long groupId : groupIds) {
+			FragmentEntry fragmentEntry =
+				_fragmentEntryLocalService.fetchFragmentEntry(
+					groupId, fragmentEntryKey);
+
+			if (fragmentEntry != null) {
+				return fragmentEntry;
+			}
+		}
+
+		return null;
+	}
+
+	private long[] _getGroupIds(long companyId, long scopeGroupId)
+		throws PortalException {
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
+
+		return ArrayUtil.append(
+			new long[] {scopeGroupId, companyGroup.getGroupId()},
+			DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+				scopeGroupId));
+	}
+
+	@Reference
+	private FragmentCollectionContributorRegistry
+		_fragmentCollectionContributorRegistry;
+
 	@Reference
 	private FragmentEntryLocalService _fragmentEntryLocalService;
+
+	@Reference
+	private FragmentRendererRegistry _fragmentRendererRegistry;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 }

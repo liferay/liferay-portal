@@ -6,6 +6,8 @@
 package com.liferay.layout.helper;
 
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 
 import java.util.List;
 
@@ -21,5 +23,9 @@ public interface DropZoneAllowedFragmentEntriesHelper {
 	public boolean isAllowedFragmentEntryKey(
 		long companyId, DropZoneLayoutStructureItem dropZoneLayoutStructureItem,
 		String fragmentEntryKey, long scopeGroupId);
+
+	public JSONObject normalizeItemConfigJSONObject(
+			long companyId, JSONObject itemConfigJSONObject, long scopeGroupId)
+		throws PortalException;
 
 }
