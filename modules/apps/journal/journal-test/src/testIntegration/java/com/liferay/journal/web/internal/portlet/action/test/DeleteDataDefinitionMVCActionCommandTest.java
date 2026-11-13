@@ -70,16 +70,14 @@ public class DeleteDataDefinitionMVCActionCommandTest {
 		Assert.assertNull(
 			_ddmStructureLocalService.fetchStructure(dataDefinition.getId()));
 
-		// Structure used by a display page template
-
-		DataDefinition usedDataDefinition = _addDataDefinition();
+		dataDefinition = _addDataDefinition();
 
 		_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			LayoutPageTemplateConstants.
 				PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 			null, _portal.getClassNameId(JournalArticle.class),
-			usedDataDefinition.getDataDefinitionKey(),
+			dataDefinition.getDataDefinitionKey(),
 			RandomTestUtil.randomString(),
 			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
 			WorkflowConstants.STATUS_APPROVED,
@@ -88,7 +86,7 @@ public class DeleteDataDefinitionMVCActionCommandTest {
 		PortletException portletException = Assert.assertThrows(
 			PortletException.class,
 			() -> _mvcActionCommand.processAction(
-				_createMockLiferayPortletActionRequest(usedDataDefinition),
+				_createMockLiferayPortletActionRequest(dataDefinition),
 				new MockLiferayPortletActionResponse()));
 
 		Assert.assertTrue(
@@ -97,8 +95,7 @@ public class DeleteDataDefinitionMVCActionCommandTest {
 					MustNotDeleteStructureReferencedByStructureLinks);
 
 		Assert.assertNotNull(
-			_ddmStructureLocalService.fetchStructure(
-				usedDataDefinition.getId()));
+			_ddmStructureLocalService.fetchStructure(dataDefinition.getId()));
 	}
 
 	private DataDefinition _addDataDefinition() throws Exception {
