@@ -66,6 +66,11 @@ public interface ObjectEntryLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.object.service.impl.ObjectEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the object entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ObjectEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	public ObjectEntry addDraftObjectEntry(
+			long userId, long headObjectEntryId, int version,
+			Map<String, Serializable> values, ServiceContext serviceContext)
+		throws PortalException;
+
 	public ObjectEntry addLatestApprovedObjectEntry(
 			String externalReferenceCode, long groupId, long userId,
 			long headObjectEntryId, ObjectDefinition objectDefinition,
@@ -636,4 +641,4 @@ public interface ObjectEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1345900404
+// LIFERAY-SERVICE-BUILDER-HASH:-1646229091

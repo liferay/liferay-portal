@@ -30,6 +30,17 @@ public class ObjectEntryLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.object.model.ObjectEntry addDraftObjectEntry(
+			long userId, long headObjectEntryId, int version,
+			java.util.Map<String, java.io.Serializable> values,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryLocalService.addDraftObjectEntry(
+			userId, headObjectEntryId, version, values, serviceContext);
+	}
+
+	@Override
 	public com.liferay.object.model.ObjectEntry addLatestApprovedObjectEntry(
 			String externalReferenceCode, long groupId, long userId,
 			long headObjectEntryId,
@@ -1063,4 +1074,4 @@ public class ObjectEntryLocalServiceWrapper
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:225887381
+// LIFERAY-SERVICE-BUILDER-HASH:-615820576
