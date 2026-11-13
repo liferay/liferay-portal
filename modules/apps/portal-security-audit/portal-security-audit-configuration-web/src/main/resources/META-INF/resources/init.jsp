@@ -15,7 +15,8 @@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 <%@ page import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %><%@
 page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil" %><%@
 page import="com.liferay.portal.security.audit.configuration.web.internal.display.context.AuditConfigurationDisplayContext" %><%@
-page import="com.liferay.portal.security.audit.configuration.web.internal.display.context.FileSystemAuditMessageProcessorConfigurationDisplayContext" %>
+page import="com.liferay.portal.security.audit.configuration.web.internal.display.context.FileSystemAuditMessageProcessorConfigurationDisplayContext" %><%@
+page import="com.liferay.portal.security.audit.configuration.web.internal.display.context.PersistentAuditMessageProcessorCompanyConfigurationDisplayContext" %>
 
 <liferay-theme:defineObjects />
 
