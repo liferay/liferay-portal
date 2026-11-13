@@ -891,15 +891,17 @@ public class CommerceServiceUpgradeStepRegistrator
 				_companyLocalService, _resourcePermissionLocalService,
 				_roleLocalService));
 
+		registry.register("15.0.3", "15.0.4", new DummyUpgradeProcess());
+
 		registry.register(
-			"15.0.3", "15.0.4",
-			new com.liferay.commerce.internal.upgrade.v15_0_4.
+			"15.0.4", "15.0.5",
+			new com.liferay.commerce.internal.upgrade.v15_0_5.
 				CommerceOrderAttachmentRoleUpgradeProcess(
 					_companyLocalService, _resourcePermissionLocalService,
 					_roleLocalService));
 
 		registry.register(
-			"15.0.4", "15.1.0", CommerceOrderAttachmentTable.create());
+			"15.0.5", "15.1.0", CommerceOrderAttachmentTable.create());
 
 		registry.register(
 			"15.1.0", "15.1.1",
