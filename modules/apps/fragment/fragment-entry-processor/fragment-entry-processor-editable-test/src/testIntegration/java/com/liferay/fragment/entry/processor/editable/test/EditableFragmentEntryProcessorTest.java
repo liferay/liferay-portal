@@ -1716,6 +1716,33 @@ public class EditableFragmentEntryProcessorTest {
 
 	@Test
 	@TestInfo("LPD-115011")
+	public void testFragmentEntryProcessorEditableLinkManualURLScheme()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			StringUtil.replace(
+				_readJSONFileToString("link/editable_values_link_inline.json"),
+				"https://www.liferay.com", "javascript:void(0)"),
+			"link/fragment_entry_link.html");
+
+		Document document = _getDocument(
+			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+				fragmentEntryLink,
+				_getFragmentEntryProcessorContext(
+					LocaleUtil.getSiteDefault(),
+					FragmentEntryLinkConstants.VIEW)));
+
+		Element body = document.body();
+
+		Elements elements = body.getElementsByTag("a");
+
+		Element element = elements.get(0);
+
+		Assert.assertEquals("javascript:void(0)", element.attr("href"));
+	}
+
+	@Test
+	@TestInfo("LPD-115011")
 	public void testFragmentEntryProcessorEditableLinkMappedURLScheme()
 		throws Exception {
 
