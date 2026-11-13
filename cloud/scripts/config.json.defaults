@@ -3,57 +3,57 @@
 		"charts": {
 			"liferay-aws": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "4.0.0"
+				"version": "4.0.1"
 			},
 			"liferay-aws-infrastructure-provider": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "3.0.0"
+				"version": "3.0.1"
 			},
 			"liferay-aws-marketplace": {
 				"registry": "709825985650.dkr.ecr.us-east-1.amazonaws.com",
-				"version": "4.0.0"
+				"version": "4.0.1"
 			},
 			"liferay-azure": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "0.3.0"
+				"version": "0.3.1"
 			},
 			"liferay-azure-infrastructure-provider": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "0.3.0"
+				"version": "0.3.1"
 			},
 			"liferay-dxp-operator": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "0.2.0"
+				"version": "0.2.2"
 			},
 			"liferay-gcp": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "3.0.0"
+				"version": "3.0.1"
 			},
 			"liferay-gcp-infrastructure-provider": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "1.2.0"
+				"version": "1.2.1"
 			},
 			"liferay-infrastructure": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "0.2.0"
+				"version": "0.2.1"
 			},
 			"liferay-platform": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "0.3.0"
+				"version": "0.3.1"
 			},
 			"liferay-platform-components": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "0.3.0"
+				"version": "0.3.2"
 			},
 			"observability": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-				"version": "2.0.0"
+				"version": "2.0.1"
 			}
 		},
 		"images": {
 			"liferay-dxp-operator": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-cloud-native",
-				"version": "0.2.0"
+				"version": "0.2.1"
 			}
 		}
 	}

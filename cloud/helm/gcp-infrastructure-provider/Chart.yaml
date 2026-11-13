@@ -18,4 +18,4 @@ description:
 icon: https://www-cdn.liferay.com/documents/d/guest/liferay-logo
 name: liferay-gcp-infrastructure-provider
 type: application
-version: 1.2.0
+version: 1.2.1
