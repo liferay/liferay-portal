@@ -12,11 +12,9 @@ import com.liferay.batch.engine.context.ImportTaskContext;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Vendel Toreki
@@ -51,8 +49,5 @@ public class ItemImportTaskPostAction implements ImportTaskPostAction {
 			importTaskContext.setOriginalUser(null);
 		}
 	}
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }
