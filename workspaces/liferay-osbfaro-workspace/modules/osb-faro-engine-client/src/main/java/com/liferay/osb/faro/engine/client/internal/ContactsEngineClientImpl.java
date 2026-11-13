@@ -475,6 +475,13 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
+	public void deleteAccountLifecycle(FaroProject faroProject, String id)
+		throws FaroEngineClientException {
+
+		delete(faroProject, Rels.ACCOUNT_LIFECYCLE, id);
+	}
+
+	@Override
 	public void deleteBlockedKeywords(FaroProject faroProject, List<String> ids)
 		throws FaroEngineClientException {
 

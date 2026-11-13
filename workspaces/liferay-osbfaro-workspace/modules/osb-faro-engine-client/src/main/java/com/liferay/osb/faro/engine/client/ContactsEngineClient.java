@@ -141,6 +141,9 @@ public interface ContactsEngineClient {
 	public void clearChannel(
 		FaroProject faroProject, FaroUser faroUser, List<String> ids);
 
+	public void deleteAccountLifecycle(FaroProject faroProject, String id)
+		throws FaroEngineClientException;
+
 	public void deleteBlockedKeywords(FaroProject faroProject, List<String> ids)
 		throws FaroEngineClientException;
 
