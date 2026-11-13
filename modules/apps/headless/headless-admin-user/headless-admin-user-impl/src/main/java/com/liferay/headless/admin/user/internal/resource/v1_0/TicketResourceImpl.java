@@ -10,6 +10,7 @@ import com.liferay.headless.admin.user.resource.v1_0.TicketResource;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
@@ -44,6 +45,12 @@ public class TicketResourceImpl extends BaseTicketResourceImpl {
 	@Override
 	public Ticket getUserAccountPasswordResetTicket(Long userAccountId)
 		throws Exception {
+
+		if (userAccountId == contextUser.getUserId()) {
+			throw new PrincipalException(
+				"User " + userAccountId +
+					" cannot get their own password reset ticket");
+		}
 
 		return _getTicket(TicketConstants.TYPE_PASSWORD, userAccountId);
 	}
