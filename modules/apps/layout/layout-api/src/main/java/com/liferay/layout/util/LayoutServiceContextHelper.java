@@ -7,6 +7,7 @@ package com.liferay.layout.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 
@@ -23,6 +24,9 @@ public interface LayoutServiceContextHelper {
 
 	public AutoCloseable getServiceContextAutoCloseable(
 			Company company, User user)
+		throws PortalException;
+
+	public AutoCloseable getServiceContextAutoCloseable(Group group)
 		throws PortalException;
 
 	public AutoCloseable getServiceContextAutoCloseable(Layout layout)
