@@ -41,7 +41,6 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -96,9 +95,6 @@ public class UploadFileEntryMVCActionCommand extends BaseMVCActionCommand {
 
 		hideDefaultSuccessMessage(actionRequest);
 	}
-
-	@Reference
-	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
