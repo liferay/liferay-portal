@@ -549,9 +549,18 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 					objectDefinition.getCompanyId(),
 					objectDefinition.getStorageType()));
 
-		return defaultObjectEntryManager.getObjectEntry(
+		ObjectEntry objectEntry = defaultObjectEntryManager.getObjectEntry(
 			contextCompany.getCompanyId(), _getDTOConverterContext(null),
 			objectEntryExternalReferenceCode, objectDefinition, scopeKey);
+
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
+			_objectEntryLocalService.getObjectEntry(objectEntry.getId());
+
+		if (!serviceBuilderObjectEntry.isHead()) {
+			throw new NotFoundException();
+		}
+
+		return objectEntry;
 	}
 
 	private boolean _isEnabled(ObjectDefinition objectDefinition) {
