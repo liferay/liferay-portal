@@ -11,7 +11,6 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
 import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSampleFDSNames;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -26,7 +25,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marko Cikos
@@ -331,8 +329,5 @@ public class AdvancedFDSItemsActions implements FDSItemsActions {
 	public FDSEntryItemImportPolicy getFDSEntryItemImportPolicy() {
 		return FDSEntryItemImportPolicy.ITEM_PROXY;
 	}
-
-	@Reference
-	private Language _language;
 
 }

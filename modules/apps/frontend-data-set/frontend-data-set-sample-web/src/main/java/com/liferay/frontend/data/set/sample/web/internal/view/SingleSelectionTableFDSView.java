@@ -5,7 +5,6 @@
 
 package com.liferay.frontend.data.set.sample.web.internal.view;
 
-import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.data.set.constants.FDSTimeZoneBehaviorConstants;
 import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSampleFDSNames;
 import com.liferay.frontend.data.set.view.FDSView;
@@ -14,7 +13,6 @@ import com.liferay.frontend.data.set.view.table.DateTimeFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
-import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 
 import java.util.Locale;
 
@@ -97,12 +95,6 @@ public class SingleSelectionTableFDSView extends BaseTableFDSView {
 
 		return dateFDSTableSchemaField;
 	}
-
-	@Reference
-	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
-
-	@Reference
-	private CETManager _cetManager;
 
 	@Reference
 	private FDSTableSchemaBuilderFactory _fdsTableSchemaBuilderFactory;
