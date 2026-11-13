@@ -19,7 +19,7 @@ const ErrorPage: React.FC<IErrorPageProps> = ({
 	message = Liferay.Language.get(
 		'the-page-you-are-looking-for-does-not-exist'
 	),
-	subtitle = Liferay.Language.get('page-not-found'),
+	subtitle = Liferay.Language.get('page-was-not-found'),
 	title = '404',
 }) => (
 	<div className={getCN('error-page-root', 'page-container', className)}>

@@ -366,7 +366,9 @@ const DataSourceList: React.FC<IDataSourceListProps> = ({className}) => {
 						symbol: 'ac_satellite',
 					}}
 					primary
-					title={Liferay.Language.get('no-data-sources-connected')}
+					title={Liferay.Language.get(
+						'no-data-sources-are-connected'
+					)}
 				/>
 			);
 		}

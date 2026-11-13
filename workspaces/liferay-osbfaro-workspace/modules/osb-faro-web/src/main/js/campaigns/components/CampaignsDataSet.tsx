@@ -91,7 +91,7 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 					),
 					image: EMPTY_STATE_IMAGE,
 					imageReducedMotion: EMPTY_STATE_REDUCED_MOTION_IMAGE,
-					title: Liferay.Language.get('no-campaigns-found'),
+					title: Liferay.Language.get('no-campaigns-were-found'),
 				}}
 				filters={[
 					{

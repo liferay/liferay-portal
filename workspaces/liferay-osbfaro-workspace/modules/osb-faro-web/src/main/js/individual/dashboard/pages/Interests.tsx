@@ -62,7 +62,7 @@ const InterestsPage = () => {
 					}
 					displayCard
 					title={Liferay.Language.get(
-						'no-sites-synced-from-data-sources'
+						'no-sites-have-been-synced-from-data-sources'
 					)}
 				/>
 

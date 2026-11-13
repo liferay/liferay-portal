@@ -119,7 +119,7 @@ const Edit: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 				message={Liferay.Language.get(
 					'the-analysis-you-are-looking-for-does-not-exist'
 				)}
-				subtitle={Liferay.Language.get('analysis-not-found')}
+				subtitle={Liferay.Language.get('analysis-was-not-found')}
 			/>
 		);
 	}

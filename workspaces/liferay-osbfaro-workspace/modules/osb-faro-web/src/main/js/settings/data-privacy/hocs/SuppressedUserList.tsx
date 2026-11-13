@@ -197,7 +197,9 @@ const SuppressedUserList: React.FC<ISuppressedUserListProps> = (props) => (
 						size: Sizes.XXXLarge,
 						symbol: 'ac_satellite',
 					}}
-					title={Liferay.Language.get('no-suppressed-users-found')}
+					title={Liferay.Language.get(
+						'no-suppressed-users-were-found'
+					)}
 				/>
 			}
 		/>

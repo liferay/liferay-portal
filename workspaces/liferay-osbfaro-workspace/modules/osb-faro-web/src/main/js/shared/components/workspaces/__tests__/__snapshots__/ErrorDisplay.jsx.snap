@@ -81,7 +81,7 @@ exports[`WorkspacesErrorDisplay should render 1`] = `
           <h1
             class="title"
           >
-            DXP Subscription Not Found
+            DXP Subscription Was Not Found
           </h1>
           <div
             class="details-container"

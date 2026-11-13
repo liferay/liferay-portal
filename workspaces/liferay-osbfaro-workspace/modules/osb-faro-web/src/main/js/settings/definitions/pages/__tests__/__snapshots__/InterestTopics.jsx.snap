@@ -669,7 +669,7 @@ exports[`InterestTopics should render page not found if an invalid page is provi
     <div
       class="h4 mb-3 no-results-title"
     >
-      Page Not Found
+      Page Was Not Found
     </div>
     <a
       class="button-root btn btn-secondary"
@@ -700,7 +700,7 @@ exports[`InterestTopics should render with a member-specific message to add keyw
     <div
       class="h4 mb-3 no-results-title"
     >
-      No Keywords Found
+      No Keywords Were Found
     </div>
     <div
       class="mb-3 no-results-description"
@@ -730,7 +730,7 @@ exports[`InterestTopics should render with a message to add keywords if there ar
     <div
       class="h4 mb-3 no-results-title"
     >
-      No Keywords Found
+      No Keywords Were Found
     </div>
     <div
       class="mb-3 no-results-description"

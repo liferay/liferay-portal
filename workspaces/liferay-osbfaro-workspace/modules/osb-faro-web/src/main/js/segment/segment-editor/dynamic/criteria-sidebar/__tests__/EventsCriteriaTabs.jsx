@@ -251,7 +251,7 @@ describe('EventsCriteriaTabs', () => {
 		fireEvent.click(screen.getByText('Custom'));
 
 		await waitFor(() =>
-			expect(screen.getByText('no-results-found')).toBeInTheDocument()
+			expect(screen.getByText('no-results-were-found')).toBeInTheDocument()
 		);
 	});
 });

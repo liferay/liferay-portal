@@ -14,7 +14,7 @@ export default withAction(
 			message: Liferay.Language.get(
 				'the-data-source-you-are-looking-for-does-not-exist'
 			),
-			subtitle: Liferay.Language.get('data-source-not-found'),
+			subtitle: Liferay.Language.get('data-source-was-not-found'),
 		}),
 		propName: 'dataSource',
 	}

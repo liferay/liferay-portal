@@ -122,7 +122,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 				symbol: 'ac_satellite',
 			}}
 			spacer
-			title={Liferay.Language.get('no-data-sources-connected')}
+			title={Liferay.Language.get('no-data-sources-are-connected')}
 		/>
 	);
 

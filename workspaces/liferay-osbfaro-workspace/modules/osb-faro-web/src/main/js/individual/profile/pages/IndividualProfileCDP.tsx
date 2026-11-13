@@ -54,7 +54,9 @@ const ProfileCDPEmptyState: React.FC<IProfileCDPEmptyStateProps> = ({
 						: Liferay.Language.get(
 								'contact-an-administrator-to-connect-a-data-source-containing-account-data'
 							),
-					title: Liferay.Language.get('no-account-data-synced'),
+					title: Liferay.Language.get(
+						'no-account-data-has-been-synced'
+					),
 				};
 			}
 
@@ -66,7 +68,9 @@ const ProfileCDPEmptyState: React.FC<IProfileCDPEmptyStateProps> = ({
 					: Liferay.Language.get(
 							'contact-an-administrator-to-connect-a-data-source-containing-individuals-data'
 						),
-				title: Liferay.Language.get('no-individuals-data-synced'),
+				title: Liferay.Language.get(
+					'no-individuals-data-has-been-synced'
+				),
 			};
 		};
 

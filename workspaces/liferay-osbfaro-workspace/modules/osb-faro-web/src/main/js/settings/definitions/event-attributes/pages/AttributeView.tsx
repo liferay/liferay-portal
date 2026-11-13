@@ -110,7 +110,7 @@ const AttributeView: React.FC<IAttributeViewProps> = ({
 								}
 								spacer
 								title={Liferay.Language.get(
-									'no-sample-data-found'
+									'no-sample-data-was-found'
 								)}
 							/>
 

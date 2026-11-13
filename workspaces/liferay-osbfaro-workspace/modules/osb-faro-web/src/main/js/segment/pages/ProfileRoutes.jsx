@@ -142,7 +142,7 @@ export const SegmentProfileRoutes = () => {
 				message={Liferay.Language.get(
 					'the-segment-you-are-looking-for-does-not-exist'
 				)}
-				subtitle={Liferay.Language.get('segment-not-found')}
+				subtitle={Liferay.Language.get('segment-was-not-found')}
 			/>
 		);
 	}

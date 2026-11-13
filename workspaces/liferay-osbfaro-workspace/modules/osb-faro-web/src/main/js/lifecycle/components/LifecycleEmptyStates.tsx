@@ -58,7 +58,7 @@ export const NoDataSourcesEmptyState = ({
 					)
 		}
 		groupId={groupId}
-		title={Liferay.Language.get('no-data-sources-connected')}
+		title={Liferay.Language.get('no-data-sources-are-connected')}
 	/>
 );
 

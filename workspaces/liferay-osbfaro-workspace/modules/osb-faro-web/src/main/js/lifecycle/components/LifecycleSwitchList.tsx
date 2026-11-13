@@ -160,7 +160,7 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 			return (
 				<NoResultsDisplay
 					spacer
-					title={Liferay.Language.get('no-results-found')}
+					title={Liferay.Language.get('no-results-were-found')}
 				/>
 			);
 		}

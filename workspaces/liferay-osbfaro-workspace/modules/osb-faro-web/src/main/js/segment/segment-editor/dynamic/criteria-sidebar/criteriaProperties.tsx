@@ -36,7 +36,7 @@ export const renderProperties = (
 					description: Liferay.Language.get(
 						'review-your-search-and-try-again'
 					),
-					title: Liferay.Language.get('no-results-found'),
+					title: Liferay.Language.get('no-results-were-found'),
 				}
 			: emptyState;
 

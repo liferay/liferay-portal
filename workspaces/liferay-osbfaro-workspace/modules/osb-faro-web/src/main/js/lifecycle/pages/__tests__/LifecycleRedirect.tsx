@@ -221,7 +221,7 @@ describe('LifecycleRedirect', () => {
 			renderPage();
 
 			expect(
-				screen.getByText(/no data sources connected/i)
+				screen.getByText(/no data sources are connected/i)
 			).toBeInTheDocument();
 			expect(screen.queryByText(/configure a new lifecycle/i)).toBeNull();
 		});
@@ -270,7 +270,7 @@ describe('LifecycleRedirect', () => {
 			renderPage();
 
 			expect(
-				screen.getByText(/no data sources connected/i)
+				screen.getByText(/no data sources are connected/i)
 			).toBeInTheDocument();
 			expect(screen.queryByText(/no account data available/i)).toBeNull();
 		});

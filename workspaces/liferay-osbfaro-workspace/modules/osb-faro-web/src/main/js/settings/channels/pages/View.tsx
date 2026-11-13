@@ -68,7 +68,7 @@ export const ViewContainer: React.FC<Omit<IViewProps, 'channel'>> = ({
 				message: Liferay.Language.get(
 					'the-property-you-are-looking-for-does-not-exist'
 				),
-				subtitle: Liferay.Language.get('property-not-found'),
+				subtitle: Liferay.Language.get('property-was-not-found'),
 			}}
 			loading={loading}
 			onReload={refetch}

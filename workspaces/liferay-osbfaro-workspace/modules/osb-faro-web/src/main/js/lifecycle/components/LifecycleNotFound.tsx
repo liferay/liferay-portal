@@ -10,7 +10,7 @@ const LifecycleNotFound = () => {
 
 	return (
 		<LifecyclesPage
-			documentTitle={Liferay.Language.get('dashboard-not-found')}
+			documentTitle={Liferay.Language.get('dashboard-was-not-found')}
 			showTitle={false}
 		>
 			<div className="card mt-4 py-8">
@@ -22,7 +22,7 @@ const LifecycleNotFound = () => {
 					description={Liferay.Language.get(
 						'the-lifecycle-dashboard-you-are-looking-for-does-not-exist'
 					)}
-					title={Liferay.Language.get('dashboard-not-found')}
+					title={Liferay.Language.get('dashboard-was-not-found')}
 				>
 					<ClayLink
 						button

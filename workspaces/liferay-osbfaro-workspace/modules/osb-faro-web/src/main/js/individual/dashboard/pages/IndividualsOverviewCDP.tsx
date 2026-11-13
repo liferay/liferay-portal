@@ -98,7 +98,9 @@ const IndividualsOverviewEmptyState: React.FC<
 						symbol: 'ac_satellite',
 					}}
 					primary
-					title={Liferay.Language.get('no-data-source-synced')}
+					title={Liferay.Language.get(
+						'no-data-source-has-been-synced'
+					)}
 				>
 					{authorized ? (
 						<ClayLink

@@ -79,7 +79,7 @@ export const IndividualsDistribution: React.FC<
 					</>
 				}
 				displayCard
-				title={Liferay.Language.get('no-data-sources-connected')}
+				title={Liferay.Language.get('no-data-sources-are-connected')}
 			/>
 
 			<StatesRenderer.Success>

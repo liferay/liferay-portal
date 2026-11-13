@@ -226,7 +226,7 @@ const IndividualsList: React.FC = () => {
 			}}
 			spacer
 			title={Liferay.Language.get(
-				'no-individuals-synced-from-data-sources'
+				'no-individuals-have-been-synced-from-data-sources'
 			)}
 		/>
 	);

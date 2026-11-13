@@ -76,8 +76,8 @@ const STEP_LIST_MAP = {
 const TITLE_MAP = {
 	[ProjectStates.Deactivated]: Liferay.Language.get('inactive-workspace'),
 	[ProjectStates.Maintenance]: Liferay.Language.get('scheduled-maintenance'),
-	[NO_ACCOUNT]: Liferay.Language.get('account-not-found'),
-	[NO_SUBSCRIPTION]: Liferay.Language.get('dxp-subscription-not-found'),
+	[NO_ACCOUNT]: Liferay.Language.get('account-was-not-found'),
+	[NO_SUBSCRIPTION]: Liferay.Language.get('dxp-subscription-was-not-found'),
 	[ProjectStates.Unavailable]: Liferay.Language.get(
 		'service-temporarily-unavailable'
 	)

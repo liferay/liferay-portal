@@ -64,7 +64,9 @@ const TableWithData: React.FC<ITableWithDataProps> = withRangeKey(
 			],
 			false
 		),
-		emptyTitle: Liferay.Language.get('empty-title-pages'),
+		emptyTitle: Liferay.Language.get(
+			'no-visitor-data-has-been-received-from-your-pages'
+		),
 		getColumns: ({
 			accountId,
 			accountName,

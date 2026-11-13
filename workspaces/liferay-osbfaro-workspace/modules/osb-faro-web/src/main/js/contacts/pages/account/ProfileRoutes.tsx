@@ -69,7 +69,7 @@ const AccountProfileRoutes = () => {
 				message={Liferay.Language.get(
 					'the-account-you-are-looking-for-does-not-exist'
 				)}
-				subtitle={Liferay.Language.get('account-not-found')}
+				subtitle={Liferay.Language.get('account-was-not-found')}
 			/>
 		);
 	}

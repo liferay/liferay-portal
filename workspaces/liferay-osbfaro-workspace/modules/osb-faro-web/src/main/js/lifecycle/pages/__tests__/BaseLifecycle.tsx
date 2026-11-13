@@ -364,7 +364,7 @@ describe('BaseLifecycle', () => {
 
 			expect(screen.getByText('404')).toBeInTheDocument();
 			expect(
-				screen.getByText(/dashboard not found/i)
+				screen.getByText(/dashboard was not found/i)
 			).toBeInTheDocument();
 			expect(
 				screen.getByText(/lifecycle dashboard you are looking for/i)
@@ -424,7 +424,7 @@ describe('BaseLifecycle', () => {
 
 		renderPage();
 
-		expect(screen.queryByText('No Data Sources Connected')).toBeNull();
+		expect(screen.queryByText('No Data Sources Are Connected')).toBeNull();
 		expect(screen.queryByText('No Account Data Available')).toBeNull();
 		expect(screen.queryByTestId('overview-section')).toBeNull();
 	});
@@ -491,11 +491,11 @@ describe('BaseLifecycle', () => {
 			mockedUseDataSources.mockReturnValue({empty: true, loading: false});
 		});
 
-		it('renders the "No Data Sources Connected" empty state', () => {
+		it('renders the "No Data Sources Are Connected" empty state', () => {
 			renderPage();
 
 			expect(
-				screen.getByText('No Data Sources Connected')
+				screen.getByText('No Data Sources Are Connected')
 			).toBeInTheDocument();
 			expect(
 				screen.getByText(

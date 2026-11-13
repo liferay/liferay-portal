@@ -403,7 +403,7 @@ const ChannelList: React.FC<IChannelListProps> = ({
 									symbol: 'ac_satellite',
 								}}
 								title={Liferay.Language.get(
-									'no-properties-found'
+									'no-properties-were-found'
 								)}
 							/>
 						}

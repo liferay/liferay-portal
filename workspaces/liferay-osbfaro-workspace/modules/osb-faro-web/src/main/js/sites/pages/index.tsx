@@ -120,7 +120,7 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 					title={
 						selectedChannel
 							? Liferay.Language.get('sites')
-							: Liferay.Language.get('no-sites-connected')
+							: Liferay.Language.get('no-sites-are-connected')
 					}
 				/>
 
@@ -240,7 +240,7 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 								}
 								displayCard
 								title={Liferay.Language.get(
-									'no-sites-synced-from-data-sources'
+									'no-sites-have-been-synced-from-data-sources'
 								)}
 							/>
 

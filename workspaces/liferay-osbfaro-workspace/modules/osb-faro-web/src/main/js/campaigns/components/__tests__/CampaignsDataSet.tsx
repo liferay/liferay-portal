@@ -200,7 +200,9 @@ describe('CampaignsDataSet', () => {
 	it('should tell the marketer that no campaigns were synced', () => {
 		renderDataSet();
 
-		expect(lastFDSProps.emptyState.title).toMatch(/no campaigns found/i);
+		expect(lastFDSProps.emptyState.title).toMatch(
+			/no campaigns were found/i
+		);
 		expect(lastFDSProps.emptyState.description).toMatch(
 			/no campaigns were synced/i
 		);

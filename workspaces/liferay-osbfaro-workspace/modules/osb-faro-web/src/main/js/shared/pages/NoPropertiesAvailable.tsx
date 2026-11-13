@@ -40,7 +40,7 @@ const NoPropertiesAvailable: React.FC<INoPropertiesAvailableProps> = ({
 
 	const title = admin
 		? Liferay.Language.get('first-connect-your-dxp-sites')
-		: Liferay.Language.get('no-properties-found');
+		: Liferay.Language.get('no-properties-were-found');
 
 	return (
 		<BasePage

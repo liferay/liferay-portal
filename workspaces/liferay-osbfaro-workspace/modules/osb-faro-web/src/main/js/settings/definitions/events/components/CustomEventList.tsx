@@ -297,7 +297,7 @@ const CustomEventList: React.FC<ICustomEventListProps> = ({
 								symbol: 'ac_satellite',
 							}}
 							title={Liferay.Language.get(
-								'no-custom-events-found'
+								'no-custom-events-were-found'
 							)}
 						/>
 					}

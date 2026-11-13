@@ -204,7 +204,9 @@ const InterestTopics: React.FC<IInterestTopicsProps> = ({
 				title={getFormattedTitle(Liferay.Language.get('keywords'))}
 			/>
 		) : page > INITIAL_PAGE ? (
-			<NoResultsDisplay title={Liferay.Language.get('page-not-found')}>
+			<NoResultsDisplay
+				title={Liferay.Language.get('page-was-not-found')}
+			>
 				<ClayLink
 					button
 					className="button-root"
@@ -225,7 +227,7 @@ const InterestTopics: React.FC<IInterestTopicsProps> = ({
 					symbol: 'ac_satellite',
 				}}
 				primary
-				title={Liferay.Language.get('no-keywords-found')}
+				title={Liferay.Language.get('no-keywords-were-found')}
 			/>
 		);
 	};

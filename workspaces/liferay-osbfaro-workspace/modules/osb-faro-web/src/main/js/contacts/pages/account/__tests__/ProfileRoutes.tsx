@@ -105,7 +105,9 @@ describe('AccountProfileRoutes', () => {
 		const {container} = renderProfileRoutes();
 
 		expect(container.querySelector('.loading-root')).toBeInTheDocument();
-		expect(screen.queryByText('Account Not Found')).not.toBeInTheDocument();
+		expect(
+			screen.queryByText('Account Was Not Found')
+		).not.toBeInTheDocument();
 	});
 
 	it('renders the not-found error page when the account request errors', () => {
@@ -117,7 +119,7 @@ describe('AccountProfileRoutes', () => {
 
 		renderProfileRoutes();
 
-		expect(screen.getByText('Account Not Found')).toBeInTheDocument();
+		expect(screen.getByText('Account Was Not Found')).toBeInTheDocument();
 		expect(
 			screen.getByText('The account you are looking for does not exist.')
 		).toBeInTheDocument();
@@ -133,7 +135,7 @@ describe('AccountProfileRoutes', () => {
 
 		renderProfileRoutes();
 
-		expect(screen.getByText('Account Not Found')).toBeInTheDocument();
+		expect(screen.getByText('Account Was Not Found')).toBeInTheDocument();
 	});
 
 	it('points the error page link back to the accounts list', () => {
@@ -161,7 +163,9 @@ describe('AccountProfileRoutes', () => {
 		renderProfileRoutes();
 
 		expect(screen.getAllByText('Acme Corp').length).toBeGreaterThan(0);
-		expect(screen.queryByText('Account Not Found')).not.toBeInTheDocument();
+		expect(
+			screen.queryByText('Account Was Not Found')
+		).not.toBeInTheDocument();
 	});
 
 	it('lists overview as the first tab in the account nav bar', () => {

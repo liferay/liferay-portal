@@ -109,7 +109,7 @@ export const withNull =
 						),
 						[entityType.toLowerCase()]
 					)}
-					subtitle={sub(Liferay.Language.get('x-not-found'), [
+					subtitle={sub(Liferay.Language.get('x-was-not-found'), [
 						entityType
 					])}
 					title={Liferay.Language.get('404')}

@@ -355,7 +355,9 @@ const RequestList: React.FC<IRequestListProps> = ({
 								size: Sizes.XXXLarge,
 								symbol: 'ac_satellite',
 							}}
-							title={Liferay.Language.get('no-requests-found')}
+							title={Liferay.Language.get(
+								'no-requests-were-found'
+							)}
 						/>
 					}
 					nowrap={false}

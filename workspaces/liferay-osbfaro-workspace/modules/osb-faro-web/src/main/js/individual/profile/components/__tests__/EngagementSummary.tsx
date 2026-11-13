@@ -52,7 +52,7 @@ const renderEngagementSummary = (
 						individualName="Jane Doe"
 						{...props}
 					>
-						<div>{'No Individuals Data Synced'}</div>
+						<div>{'No Individuals Data Has Been Synced'}</div>
 					</EngagementSummary>
 				</MockedProvider>
 			</MemoryRouter>
@@ -85,7 +85,7 @@ describe('EngagementSummary', () => {
 			renderEngagementSummary({showEmptyState: true});
 
 			expect(
-				screen.getByText('No Individuals Data Synced')
+				screen.getByText('No Individuals Data Has Been Synced')
 			).toBeInTheDocument();
 			expect(screen.queryByText('TOP PAGES')).toBeNull();
 			expect(screen.queryByText('TOP ASSETS')).toBeNull();
@@ -116,7 +116,9 @@ describe('EngagementSummary', () => {
 			renderEngagementSummary({loading: true, showEmptyState: true});
 
 			expect(screen.getByText('TOP PAGES')).toBeInTheDocument();
-			expect(screen.queryByText('No Individuals Data Synced')).toBeNull();
+			expect(
+				screen.queryByText('No Individuals Data Has Been Synced')
+			).toBeNull();
 		});
 	});
 });

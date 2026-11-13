@@ -58,7 +58,7 @@ describe('Individuals Dashboard KnownIndividuals List', () => {
 
 		const {getByText} = render(<WrappedComponent />);
 
-		expect(getByText('No Data Sources Connected')).toBeInTheDocument();
+		expect(getByText('No Data Sources Are Connected')).toBeInTheDocument();
 	});
 
 	it('searches with the last year range key', async () => {

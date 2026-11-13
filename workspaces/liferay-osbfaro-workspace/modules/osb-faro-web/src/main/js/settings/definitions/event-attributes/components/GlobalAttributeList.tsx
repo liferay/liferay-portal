@@ -73,7 +73,9 @@ const GlobalAttributeList: React.FC = () => {
 			).toLowerCase()}
 			noResultsRenderer={
 				<NoResultsDisplay
-					title={Liferay.Language.get('empty-title-pages')}
+					title={Liferay.Language.get(
+						'no-visitor-data-has-been-received-from-your-pages'
+					)}
 				/>
 			}
 			orderIOMap={orderIOMap}

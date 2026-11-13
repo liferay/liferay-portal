@@ -99,7 +99,9 @@ const KnownIndividuals: React.FC<IKnownIndividualsProps> = () => {
 								)
 					}
 					primary
-					title={Liferay.Language.get('no-data-sources-connected')}
+					title={Liferay.Language.get(
+						'no-data-sources-are-connected'
+					)}
 				>
 					{authorized ? createDataSourceButton : undefined}
 				</NoResultsDisplay>
@@ -155,7 +157,7 @@ const KnownIndividuals: React.FC<IKnownIndividualsProps> = () => {
 					}}
 					primary
 					title={Liferay.Language.get(
-						'no-individuals-synced-from-data-sources'
+						'no-individuals-have-been-synced-from-data-sources'
 					)}
 				/>
 			);
@@ -221,7 +223,9 @@ const KnownIndividuals: React.FC<IKnownIndividualsProps> = () => {
 						</>
 					}
 					displayCard
-					title={Liferay.Language.get('no-data-sources-connected')}
+					title={Liferay.Language.get(
+						'no-data-sources-are-connected'
+					)}
 				/>
 
 				<StatesRenderer.Success>

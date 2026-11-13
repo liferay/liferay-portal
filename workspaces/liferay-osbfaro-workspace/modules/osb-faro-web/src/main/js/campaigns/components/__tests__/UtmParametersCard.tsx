@@ -119,7 +119,7 @@ describe('UtmParametersCard', () => {
 		expand();
 
 		expect(
-			screen.queryByText('No UTM Parameters Found')
+			screen.queryByText('No UTM Parameters Were Found')
 		).not.toBeInTheDocument();
 		expect(getValueCell('utmSource')).toHaveTextContent(/^-$/);
 	});
@@ -129,7 +129,7 @@ describe('UtmParametersCard', () => {
 
 		expand();
 
-		expect(screen.getByText('No UTM Parameters Found')).toBeTruthy();
+		expect(screen.getByText('No UTM Parameters Were Found')).toBeTruthy();
 		expect(
 			screen.getByText(
 				'This campaign has no UTM parameters associated with it yet.'

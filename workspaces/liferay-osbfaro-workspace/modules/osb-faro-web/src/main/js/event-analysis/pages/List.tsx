@@ -142,7 +142,7 @@ const List = () => {
 						}
 						displayCard
 						title={Liferay.Language.get(
-							'no-data-sources-connected'
+							'no-data-sources-are-connected'
 						)}
 					/>
 

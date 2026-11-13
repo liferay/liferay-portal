@@ -273,7 +273,7 @@ const UserList: React.FC<IUserListProps> = ({
 					}}
 					primary
 					spacer
-					title={Liferay.Language.get('no-users-added')}
+					title={Liferay.Language.get('no-users-have-been-added')}
 				/>
 			),
 			orderIOMap,

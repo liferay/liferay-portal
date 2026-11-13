@@ -184,7 +184,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 					),
 					image: EMPTY_STATE_IMAGE,
 					imageReducedMotion: EMPTY_STATE_REDUCED_MOTION_IMAGE,
-					title: Liferay.Language.get('no-accounts-found'),
+					title: Liferay.Language.get('no-accounts-were-found'),
 				}}
 				filters={[
 					{

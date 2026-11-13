@@ -174,7 +174,7 @@ const IndividualAttributes: React.FC<IIndividualAttributesProps> = ({
 							}}
 							spacer
 							title={Liferay.Language.get(
-								'no-individuals-synced-from-data-sources'
+								'no-individuals-have-been-synced-from-data-sources'
 							)}
 						/>
 					)}

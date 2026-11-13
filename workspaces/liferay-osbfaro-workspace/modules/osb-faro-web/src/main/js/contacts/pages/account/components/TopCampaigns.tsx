@@ -81,7 +81,9 @@ const TopCampaigns: React.FC<ITopCampaignsProps> = ({accountName}) => {
 							description: Liferay.Language.get(
 								'this-account-has-not-been-touched-by-any-campaign-yet'
 							),
-							title: Liferay.Language.get('no-campaigns-found'),
+							title: Liferay.Language.get(
+								'no-campaigns-were-found'
+							),
 						}}
 						id="top-campaigns-dataset"
 						showManagementBar={false}

@@ -71,7 +71,9 @@ const AttributeList: React.FC = () => {
 			entityLabel={Liferay.Language.get('attributes').toLowerCase()}
 			noResultsRenderer={
 				<NoResultsDisplay
-					title={Liferay.Language.get('empty-title-pages')}
+					title={Liferay.Language.get(
+						'no-visitor-data-has-been-received-from-your-pages'
+					)}
 				/>
 			}
 			orderIOMap={orderIOMap}

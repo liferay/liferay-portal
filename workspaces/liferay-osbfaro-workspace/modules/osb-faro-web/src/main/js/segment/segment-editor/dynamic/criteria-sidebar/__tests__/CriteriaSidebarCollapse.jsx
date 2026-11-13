@@ -29,8 +29,7 @@ const mockLiferayLanguage = key => {
 			'connect-a-data-source-containing-account-data',
 		'connect-data-source': 'connect-data-source',
 		'learn-more-about-data-sources': 'learn-more-about-data-sources',
-		'no-account-data-synced': 'no-account-data-synced',
-		'no-results-found': 'no-results-found',
+		'no-account-data-has-been-synced': 'no-account-data-has-been-synced',
 		'no-results-were-found': 'no-results-were-found',
 		'review-your-search-and-try-again': 'review-your-search-and-try-again'
 	};
@@ -148,10 +147,10 @@ describe('CriteriaSidebarCollapse', () => {
 		);
 		expect(secondListItem).toHaveTextContent('no-results-were-found');
 
-		expect(queryByText('no-results-found')).toBeNull();
+		expect(queryByText('review-your-search-and-try-again')).toBeNull();
 	});
 
-	it('should render w/ global EmptyState "no-results-found" when no properties match the search', () => {
+	it('should render w/ global EmptyState "no-results-were-found" when no properties match the search', () => {
 		const {queryByText} = render(
 			<DndProvider backend={HTML5Backend}>
 				<CriteriaSidebarCollapse
@@ -162,14 +161,13 @@ describe('CriteriaSidebarCollapse', () => {
 			</DndProvider>
 		);
 
-		expect(queryByText('no-results-found')).toBeInTheDocument();
+		expect(queryByText('no-results-were-found')).toBeInTheDocument();
 		expect(
 			queryByText('review-your-search-and-try-again')
 		).toBeInTheDocument();
 
 		expect(queryByText('Page Views')).toBeNull();
 		expect(queryByText('Page Actions')).toBeNull();
-		expect(queryByText('no-results-were-found')).toBeNull();
 	});
 
 	it('should render custom events in the sidebar', () => {
@@ -200,7 +198,7 @@ describe('CriteriaSidebarCollapse', () => {
 			</DndProvider>
 		);
 
-		expect(queryByText('no-account-data-synced')).toBeInTheDocument();
+		expect(queryByText('no-account-data-has-been-synced')).toBeInTheDocument();
 		expect(
 			queryByText('connect-a-data-source-containing-account-data')
 		).toBeInTheDocument();
@@ -254,7 +252,7 @@ describe('CriteriaSidebarCollapse', () => {
 
 		expect(queryByText('Account Name')).toBeInTheDocument();
 
-		expect(queryByText('no-account-data-synced')).toBeNull();
+		expect(queryByText('no-account-data-has-been-synced')).toBeNull();
 	});
 });
 

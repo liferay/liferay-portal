@@ -9,7 +9,7 @@ const UtmParametersEmptyState = () => (
 				'this-campaign-has-no-utm-parameters-associated-with-it-yet'
 			)}
 			small
-			title={Liferay.Language.get('no-utm-parameters-found')}
+			title={Liferay.Language.get('no-utm-parameters-were-found')}
 		/>
 	</div>
 );
