@@ -46,6 +46,7 @@ public class LinkEditableElementMapper implements EditableElementMapper {
 			FragmentEntryProcessorContext fragmentEntryProcessorContext)
 		throws PortalException {
 
+		boolean mapped = false;
 		boolean nofollow = false;
 		String href = null;
 
@@ -56,6 +57,8 @@ public class LinkEditableElementMapper implements EditableElementMapper {
 				configJSONObject) ||
 			_fragmentEntryProcessorHelper.isMappedDisplayPage(
 				configJSONObject)) {
+
+			mapped = true;
 
 			Object fieldValue = _fragmentEntryProcessorHelper.getFieldValue(
 				configJSONObject, new HashMap<>(),
@@ -153,7 +156,8 @@ public class LinkEditableElementMapper implements EditableElementMapper {
 			empty = true;
 		}
 
-		if (!Objects.equals(
+		if (mapped &&
+			!Objects.equals(
 				HtmlUtil.escapeHREF(href), HtmlUtil.escapeAttribute(href))) {
 
 			href = StringUtil.replaceFirst(href, CharPool.COLON, "%3a");
