@@ -221,8 +221,11 @@ public class DispatchFileRepositoryImpl implements DispatchFileRepository {
 	private DispatchFileValidator _getDispatchFileValidator(
 		String dispatchTaskExecutorType) {
 
-		if (_serviceTrackerMap.containsKey(dispatchTaskExecutorType)) {
-			return _serviceTrackerMap.getService(dispatchTaskExecutorType);
+		DispatchFileValidator dispatchFileValidator =
+			_serviceTrackerMap.getService(dispatchTaskExecutorType);
+
+		if (dispatchFileValidator != null) {
+			return dispatchFileValidator;
 		}
 
 		return _serviceTrackerMap.getService("default");
