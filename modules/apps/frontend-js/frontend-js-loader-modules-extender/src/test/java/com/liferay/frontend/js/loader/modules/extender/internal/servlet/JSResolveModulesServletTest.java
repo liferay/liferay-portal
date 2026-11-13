@@ -121,7 +121,7 @@ public class JSResolveModulesServletTest {
 	}
 
 	private MockHttpServletResponse _service(
-			Long maxRequestLength, boolean post, String queryString)
+			Long maxRequestLength, boolean post, String requestString)
 		throws Exception {
 
 		Mockito.clearInvocations(_browserModulesResolver);
@@ -151,12 +151,12 @@ public class JSResolveModulesServletTest {
 
 		if (post) {
 			mockHttpServletRequest.setContent(
-				queryString.getBytes(StandardCharsets.UTF_8));
+				requestString.getBytes(StandardCharsets.UTF_8));
 		}
 		else {
 			mockHttpServletRequest.setParameters(
-				HttpComponentsUtil.getParameterMap(queryString));
-			mockHttpServletRequest.setQueryString(queryString);
+				HttpComponentsUtil.getParameterMap(requestString));
+			mockHttpServletRequest.setQueryString(requestString);
 		}
 
 		MockHttpServletResponse mockHttpServletResponse =
@@ -173,54 +173,52 @@ public class JSResolveModulesServletTest {
 		// Invalid request: missing "modules" prefix
 
 		MockHttpServletResponse mockHttpServletResponse = _service(
-			_MODULES_PARAMETER.length() + 1L, post, _MODULES_PARAMETER);
+			_REQUEST_STRINGS[0].length() + 1L, post, _REQUEST_STRINGS[0]);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.INVALID);
 
 		// Request above configured limit
 
 		mockHttpServletResponse = _service(
-			_MODULES_QUERY_STRING.length() - 1L, post, _MODULES_QUERY_STRING);
+			_REQUEST_STRINGS[1].length() - 1L, post, _REQUEST_STRINGS[1]);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
 
 		// Request above default limit
 
-		mockHttpServletResponse = _service(
-			null, post, _MODULES_QUERY_STRING_OVERFLOW);
+		mockHttpServletResponse = _service(null, post, _REQUEST_STRINGS[2]);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
 
 		// Request above hard limit
 
-		mockHttpServletResponse = _service(
-			0L, post, _MODULES_QUERY_STRING_OVERFLOW);
+		mockHttpServletResponse = _service(0L, post, _REQUEST_STRINGS[2]);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
 
 		// Request above hard limit with higher configured limit
 
 		mockHttpServletResponse = _service(
-			(1024 * 1024) * 2L, post, _MODULES_QUERY_STRING_OVERFLOW);
+			(1024 * 1024) * 2L, post, _REQUEST_STRINGS[2]);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
 
 		// Request within configured limit
 
 		mockHttpServletResponse = _service(
-			_MODULES_QUERY_STRING.length() + 1L, post, _MODULES_QUERY_STRING);
+			_REQUEST_STRINGS[1].length() + 1L, post, _REQUEST_STRINGS[1]);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OK);
 
 		// Request within default limit
 
-		mockHttpServletResponse = _service(null, post, _MODULES_QUERY_STRING);
+		mockHttpServletResponse = _service(null, post, _REQUEST_STRINGS[1]);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OK);
 
 		// Request within hard limit
 
-		mockHttpServletResponse = _service(0L, post, _MODULES_QUERY_STRING);
+		mockHttpServletResponse = _service(0L, post, _REQUEST_STRINGS[1]);
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OK);
 	}
@@ -230,13 +228,10 @@ public class JSResolveModulesServletTest {
 		RandomTestUtil.randomString()
 	};
 
-	private static final String _MODULES_PARAMETER = StringUtil.merge(_MODULES);
-
-	private static final String _MODULES_QUERY_STRING =
-		"modules=" + _MODULES_PARAMETER;
-
-	private static final String _MODULES_QUERY_STRING_OVERFLOW =
-		"modules=" + RandomTestUtil.randomString((1024 * 1024) + 1);
+	private static final String[] _REQUEST_STRINGS = {
+		RandomTestUtil.randomString(), "modules=" + StringUtil.merge(_MODULES),
+		"modules=" + RandomTestUtil.randomString((1024 * 1024) + 1)
+	};
 
 	private static final String _RESPONSE_CONTENT =
 		RandomTestUtil.randomString();
