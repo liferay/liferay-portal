@@ -42,6 +42,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.ratings.kernel.model.RatingsEntry;
+import com.liferay.ratings.kernel.service.RatingsEntryLocalService;
 
 import java.io.InputStream;
 
@@ -480,6 +482,34 @@ public class BlogsEntryStagedModelDataHandlerTest
 	}
 
 	@Override
+	protected void validateImport(
+			StagedModel stagedModel, StagedModelAssets stagedModelAssets,
+			Map<String, List<StagedModel>> dependentStagedModelsMap,
+			Group group)
+		throws Exception {
+
+		super.validateImport(
+			stagedModel, stagedModelAssets, dependentStagedModelsMap, group);
+
+		BlogsEntry entry = (BlogsEntry)stagedModel;
+
+		BlogsEntry importedEntry = (BlogsEntry)getStagedModel(
+			entry.getUuid(), group);
+
+		RatingsEntry importedRatingsEntry =
+			_ratingsEntryLocalService.fetchEntry(
+				TestPropsValues.getUserId(), BlogsEntry.class.getName(),
+				importedEntry.getEntryId());
+
+		RatingsEntry ratingsEntry = _ratingsEntryLocalService.getEntry(
+			TestPropsValues.getUserId(), BlogsEntry.class.getName(),
+			entry.getEntryId());
+
+		Assert.assertEquals(
+			ratingsEntry.getScore(), importedRatingsEntry.getScore(), 0);
+	}
+
+	@Override
 	protected void validateImportedStagedModel(
 			StagedModel stagedModel, StagedModel importedStagedModel)
 		throws Exception {
@@ -608,5 +638,8 @@ public class BlogsEntryStagedModelDataHandlerTest
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private RatingsEntryLocalService _ratingsEntryLocalService;
 
 }
