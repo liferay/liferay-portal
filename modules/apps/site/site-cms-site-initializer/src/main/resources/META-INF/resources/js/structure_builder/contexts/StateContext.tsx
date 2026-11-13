@@ -41,6 +41,7 @@ import getOwnFields from '../utils/getOwnFields';
 import getRandomId from '../utils/getRandomId';
 import getUuid from '../utils/getUuid';
 import normalizeString from '../utils/normalizeString';
+import {copyRepeatableGroups} from '../utils/repeatableGroups';
 import addChild from '../utils/state/addChild';
 import addGroup from '../utils/state/addGroup';
 import addRepeatableGroup from '../utils/state/addRepeatableGroup';
@@ -1287,12 +1288,16 @@ function getDefaultChildren({
 	systemFieldNames: SystemFieldNames;
 }) {
 	if (baseObjectDefinition) {
-		return buildChildren({
+		const children = buildChildren({
 			objectDefinition: baseObjectDefinition,
 			objectDefinitions,
 			parent,
 			systemFieldNames,
 		});
+
+		copyRepeatableGroups(children);
+
+		return children;
 	}
 
 	const children = new Map();

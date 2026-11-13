@@ -11,6 +11,8 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import findChild from './findChild';
+import getRandomId from './getRandomId';
+import getRandomName from './getRandomName';
 
 export const REPEATABLE_GROUP_BOX_NAME_PREFIX = 'repeatable-group-';
 
@@ -74,6 +76,32 @@ export function canPlaceRepeatableGroups({
 
 		return true;
 	});
+}
+
+/**
+ * A structure created from a base structure starts with a copy of its
+ * children. Its repeatable groups get object definitions and relationships of
+ * their own, because the object definitions of the base's repeatable groups
+ * already belong to relationships with the same names. The relationships keep
+ * their names, so a repeatable group is reached by the same name in every
+ * structure created from the base.
+ */
+export function copyRepeatableGroups(
+	children: Group['children'] | Structure['children']
+) {
+	for (const child of children.values()) {
+		if (child.type !== 'group') {
+			continue;
+		}
+
+		if (child.isRepeatable) {
+			child.erc = getRandomId();
+			child.name = getRandomName({capitalize: true});
+			child.relationshipERC = getRandomId();
+		}
+
+		copyRepeatableGroups(child.children);
+	}
 }
 
 function isObjectDefinitionRoot({
