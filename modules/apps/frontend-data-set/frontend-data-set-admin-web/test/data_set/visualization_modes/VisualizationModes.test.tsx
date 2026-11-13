@@ -179,6 +179,22 @@ describe('VisualizationModes', () => {
 		expect(getRowNames()).toEqual(['Timeline', 'list[noun]']);
 	});
 
+	it('searches for special characters without crashing', async () => {
+		renderVisualizationModes();
+
+		for (const character of ['(', '[', '*', '+', '?']) {
+			await userEvent.clear(screen.getByPlaceholderText('search'));
+			await userEvent.type(
+				screen.getByPlaceholderText('search'),
+				character === '[' ? '[[' : character
+			);
+
+			expect(screen.getByPlaceholderText('search')).toHaveValue(
+				character
+			);
+		}
+	});
+
 	it('disables client extensions until they are enabled', async () => {
 		renderVisualizationModes();
 

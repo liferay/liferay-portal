@@ -418,17 +418,15 @@ const filterItems = ({
 		return items;
 	}
 
-	const regexp = new RegExp(query, 'i');
+	const lowerCaseQuery = query.toLowerCase();
 
 	return items.filter((item) =>
 		fields.some((field) => {
-			if (field.contentRenderer?.textMatch) {
-				return String(field.contentRenderer.textMatch(item)).match(
-					regexp
-				);
-			}
+			const text = field.contentRenderer?.textMatch
+				? field.contentRenderer.textMatch(item)
+				: item[field.name];
 
-			return String(item[field.name]).match(regexp);
+			return String(text).toLowerCase().includes(lowerCaseQuery);
 		})
 	);
 };
