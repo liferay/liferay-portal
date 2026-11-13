@@ -5,19 +5,20 @@
 
 package com.liferay.site.pim.site.initializer.internal.search.spi.model.index.contributor;
 
-import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -32,64 +33,80 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 
 	@Test
 	public void testContribute() {
-		Document document = Mockito.mock(Document.class);
+		ReflectionTestUtil.setFieldValue(
+			_pimProductObjectEntryModelDocumentContributor,
+			"_objectEntryFolderLocalService", _objectEntryFolderLocalService);
 
-		_pimProductObjectEntryModelDocumentContributor.contribute(
-			document, _mockObjectEntry(RandomTestUtil.randomLong()));
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
 
-		Mockito.verifyNoInteractions(document);
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-96666"))
+			).thenReturn(
+				false
+			);
 
-		_mockObjectEntryFolder(
-			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS, 100L,
-			"/0/100/");
+			Document document = Mockito.mock(Document.class);
 
-		document = Mockito.mock(Document.class);
+			_pimProductObjectEntryModelDocumentContributor.contribute(
+				document, _mockObjectEntry(RandomTestUtil.randomLong()));
 
-		_pimProductObjectEntryModelDocumentContributor.contribute(
-			document, _mockObjectEntry(100L));
+			Mockito.verifyNoInteractions(document);
 
-		Mockito.verifyNoInteractions(document);
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-96666"))
+			).thenReturn(
+				true
+			);
 
-		_mockObjectEntryFolder(
-			PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
-			200L, "/200/");
+			document = Mockito.mock(Document.class);
 
-		document = Mockito.mock(Document.class);
+			_pimProductObjectEntryModelDocumentContributor.contribute(
+				document, _mockObjectEntry(RandomTestUtil.randomLong()));
 
-		_pimProductObjectEntryModelDocumentContributor.contribute(
-			document, _mockObjectEntry(200L));
+			Mockito.verifyNoInteractions(document);
 
-		Mockito.verify(
-			document
-		).addKeyword(
-			"cms_root", true
-		);
+			_mockObjectEntryFolder(100L, true);
 
-		Mockito.verify(
-			document
-		).addKeyword(
-			"cms_section", "products"
-		);
+			document = Mockito.mock(Document.class);
 
-		_mockObjectEntryFolder(
-			RandomTestUtil.randomString(), 300L, "/200/300/");
+			_pimProductObjectEntryModelDocumentContributor.contribute(
+				document, _mockObjectEntry(100L));
 
-		document = Mockito.mock(Document.class);
+			Mockito.verify(
+				document
+			).addKeyword(
+				"cms_root", true
+			);
 
-		_pimProductObjectEntryModelDocumentContributor.contribute(
-			document, _mockObjectEntry(300L));
+			Mockito.verify(
+				document
+			).addKeyword(
+				"cms_section", "products"
+			);
 
-		Mockito.verify(
-			document
-		).addKeyword(
-			"cms_root", false
-		);
+			_mockObjectEntryFolder(200L, false);
 
-		Mockito.verify(
-			document
-		).addKeyword(
-			"cms_section", "products"
-		);
+			document = Mockito.mock(Document.class);
+
+			_pimProductObjectEntryModelDocumentContributor.contribute(
+				document, _mockObjectEntry(200L));
+
+			Mockito.verify(
+				document
+			).addKeyword(
+				"cms_root", false
+			);
+
+			Mockito.verify(
+				document
+			).addKeyword(
+				"cms_section", "products"
+			);
+		}
 	}
 
 	private ObjectEntry _mockObjectEntry(long objectEntryFolderId) {
@@ -104,29 +121,16 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 		return objectEntry;
 	}
 
-	private ObjectEntryFolder _mockObjectEntryFolder(
-		String externalReferenceCode, long objectEntryFolderId,
-		String treePath) {
+	private void _mockObjectEntryFolder(
+		long objectEntryFolderId, boolean root) {
 
 		ObjectEntryFolder objectEntryFolder = Mockito.mock(
 			ObjectEntryFolder.class);
 
 		Mockito.when(
-			objectEntryFolder.getExternalReferenceCode()
+			objectEntryFolder.isRoot()
 		).thenReturn(
-			externalReferenceCode
-		);
-
-		Mockito.when(
-			objectEntryFolder.getObjectEntryFolderId()
-		).thenReturn(
-			objectEntryFolderId
-		);
-
-		Mockito.when(
-			objectEntryFolder.getTreePath()
-		).thenReturn(
-			treePath
+			root
 		);
 
 		Mockito.when(
@@ -135,15 +139,12 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 		).thenReturn(
 			objectEntryFolder
 		);
-
-		return objectEntryFolder;
 	}
 
 	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService =
 		Mockito.mock(ObjectEntryFolderLocalService.class);
 	private final PIMProductObjectEntryModelDocumentContributor
 		_pimProductObjectEntryModelDocumentContributor =
-			new PIMProductObjectEntryModelDocumentContributor(
-				_objectEntryFolderLocalService);
+			new PIMProductObjectEntryModelDocumentContributor();
 
 }
