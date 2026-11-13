@@ -236,13 +236,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro configureRatingType(ratingType = null, configureBlogsRatingType = null, configureKbRatingType = null) {
-		if (${configureBlogsRatingType} == "true") {
-			Select(
-				locator1 = "Select#BLOGS_RATING",
-				value1 = ${ratingType});
-		}
-
+	macro configureRatingType(ratingType = null, configureKbRatingType = null) {
 		if (${configureKbRatingType} == "true") {
 			Select(
 				locator1 = "Select#KNOWLEDGE_BASE_RATING",

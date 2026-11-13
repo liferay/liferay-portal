@@ -204,15 +204,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewDefault() {
-		AssertTextEquals(
-			locator1 = "Ratings#AVERAGE_STAR_RESULT",
-			value1 = "0.0");
-
-		AssertElementPresent(locator1 = "Ratings#YOUR_RATING_STAR_EMPTY");
-	}
-
-	@summary = "Default summary"
 	macro viewNoRateStackedStar(averageStarCount = null) {
 		for (var ratingStarCount : list "1,2,3,4,5") {
 			AssertElementNotPresent(

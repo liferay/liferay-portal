@@ -56,11 +56,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>BLOGS_RATING</td>
-	<td>//select[contains(@id,'blogs')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>APPLICATIONS_RATING</td>
 	<td>//select[contains(@id,'${key_applications}')]</td>
 	<td></td>

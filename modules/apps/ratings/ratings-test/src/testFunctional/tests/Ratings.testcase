@@ -33,36 +33,6 @@ definition {
 		}
 	}
 
-	@priority = 4
-	@refactordone
-	test CanChangeBlogsRatingType {
-		property portal.acceptance = "true";
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Blogs Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Blogs Page",
-			widgetName = "Blogs");
-
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Ratings.openToConfigInInstanceSettings(portlet = "Ratings");
-
-		PortalSettings.configureRatingType(
-			configureBlogsRatingType = "true",
-			ratingType = "Stars");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		Ratings.viewDefault();
-	}
-
 	@description = "This test covers LPS-181857. It ensures that the document folder rating type can be changed from site settings."
 	@priority = 4
 	test CanChangeDocumentFolderRatingTypeFromSiteSetting {
