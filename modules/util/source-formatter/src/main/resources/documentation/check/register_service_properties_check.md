@@ -1,4 +1,4 @@
-## EmptyServicePropertiesCheck
+## RegisterServicePropertiesCheck
 
 Do not pass an empty `HashMapDictionary` or `Hashtable` as the service properties of `registerService`. OSGi documents `null` as "no properties", so the empty dictionary only allocates and suggests properties that are not there.
 

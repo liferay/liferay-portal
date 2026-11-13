@@ -425,11 +425,6 @@
 			<property name="enabled" value="false" />
 			<message key="empty.constructor.unneeded" value="Empty constructor is not needed" />
 		</module>
-		<module name="com.liferay.source.formatter.checkstyle.check.EmptyServicePropertiesCheck">
-			<property name="category" value="Performance" />
-			<property name="description" value="Finds `registerService` calls that pass an empty `HashMapDictionary` or `Hashtable` as the service properties, which should pass `null` instead." />
-			<message key="null.use" value="Pass &quot;null&quot; instead of an empty dictionary as the service properties" />
-		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.EnumConstantDividerCheck">
 			<property name="category" value="Styling" />
 			<property name="description" value="Find unnecessary empty lines between enum constants." />
@@ -838,6 +833,11 @@
 			<message key="unbind.dynamic.policy.missing" value="Always specify a valid &quot;unbind&quot; method when using &quot;policy = ReferencePolicy.DYNAMIC&quot; policy. See https://osgi.org/javadoc/r4v43/cmpn/org/osgi/service/component/annotations/Reference.html#unbind()" />
 			<message key="unbind.static.policy.missing" value="Specify &quot;unbind&quot; method. Use &quot;unbind = {0}&quot; when &quot;unbind&quot; method is not needed. See https://osgi.org/javadoc/r4v43/cmpn/org/osgi/service/component/annotations/Reference.html#unbind()" />
 			<message key="volatile.missing" value="Variable &quot;{0}&quot; should be volatile" />
+		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.RegisterServicePropertiesCheck">
+			<property name="category" value="Performance" />
+			<property name="description" value="Finds `registerService` calls that pass an empty `HashMapDictionary` or `Hashtable` as the service properties, which should pass `null` instead." />
+			<message key="null.use" value="Pass &quot;null&quot; instead of an empty dictionary as the service properties" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.ResourceImplCheck">
 			<property name="category" value="Bug Prevention" />

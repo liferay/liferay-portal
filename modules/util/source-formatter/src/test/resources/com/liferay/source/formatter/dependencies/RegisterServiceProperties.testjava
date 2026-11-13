@@ -16,7 +16,7 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Shuyang Zhou
  */
-public class EmptyServiceProperties {
+public class RegisterServiceProperties {
 
 	public void method1(BundleContext bundleContext) {
 		bundleContext.registerService(

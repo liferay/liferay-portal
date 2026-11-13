@@ -17,7 +17,7 @@ import java.util.Objects;
 /**
  * @author Shuyang Zhou
  */
-public class EmptyServicePropertiesCheck extends BaseCheck {
+public class RegisterServicePropertiesCheck extends BaseCheck {
 
 	@Override
 	public int[] getDefaultTokens() {

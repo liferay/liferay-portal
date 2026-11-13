@@ -234,26 +234,6 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
-	public void testEmptyServiceProperties() throws Exception {
-		String message =
-			"Pass \"null\" instead of an empty dictionary as the service " +
-				"properties";
-
-		test(
-			SourceProcessorTestParameters.create(
-				"EmptyServiceProperties.testjava"
-			).addExpectedMessage(
-				message, 23
-			).addExpectedMessage(
-				message, 28
-			).addExpectedMessage(
-				message, 34
-			).addExpectedMessage(
-				message, 71
-			));
-	}
-
-	@Test
 	public void testExceedMaxLineLength() throws Exception {
 		test("ExceedMaxLineLength.testjava", "> 80", 27);
 	}
@@ -1175,6 +1155,26 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 			"Do not use @Reference on method testMethod, use @Reference on " +
 				"field or ServiceTracker/ServiceTrackerList" +
 					"/ServiceTrackerMap instead");
+	}
+
+	@Test
+	public void testRegisterServiceProperties() throws Exception {
+		String message =
+			"Pass \"null\" instead of an empty dictionary as the service " +
+				"properties";
+
+		test(
+			SourceProcessorTestParameters.create(
+				"RegisterServiceProperties.testjava"
+			).addExpectedMessage(
+				message, 23
+			).addExpectedMessage(
+				message, 28
+			).addExpectedMessage(
+				message, 34
+			).addExpectedMessage(
+				message, 71
+			));
 	}
 
 	@Test
