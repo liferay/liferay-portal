@@ -33,23 +33,15 @@ public class SearchPaginationUtil {
 			return new int[] {0, 0};
 		}
 
-		int[] startAndEnd = {start, end};
+		if ((start > 0) && (start >= total)) {
+			start = Math.min(
+				Math.max(((start / delta) - 1) * delta, 0),
+				((total - 1) / delta) * delta);
 
-		while ((start > 0) && (start >= total)) {
-			int cur = start / delta;
-
-			startAndEnd = calculateStartAndEnd(cur, delta);
-
-			start = startAndEnd[0];
+			end = start + delta;
 		}
 
-		end = startAndEnd[1];
-
-		if (end > total) {
-			startAndEnd[1] = total;
-		}
-
-		return startAndEnd;
+		return new int[] {start, Math.min(end, total)};
 	}
 
 }
