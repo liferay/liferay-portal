@@ -104,6 +104,14 @@
 			<contains>Unable to extend the HTTP session</contains>
 			<matches></matches>
 		</ignore-error>
+		<ignore-error description="LPD-106907">
+			<contains></contains>
+			<matches>(?s)ERROR: duplicate key value violates unique constraint "ix_b27a301f".*</matches>
+		</ignore-error>
+		<ignore-error description="LPD-106907">
+			<contains></contains>
+			<matches>Duplicate entry '.*' for key 'ClassName_\.IX_B27A301F'</matches>
+		</ignore-error>
 		<ignore-error description="LPS-22821">
 			<contains>Exception sending context destroyed event to listener instance of class com.liferay.portal.spring.context.PortalContextLoaderListener</contains>
 			<matches></matches>
