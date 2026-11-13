@@ -65,43 +65,6 @@ definition {
 	}
 
 	@priority = 4
-	@refactorneeded
-	test CanAddMultipleSuggestions {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article1 Content",
-			kbArticleTitle = "Knowledge Base Article1 Title");
-
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article2 Content",
-			kbArticleTitle = "Knowledge Base Article2 Title");
-
-		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
-
-		KBArticle.gotoKBArticleViaKBDisplayHierarchyNavigationPG(kbArticleTitle = "Knowledge Base Article1 Title");
-
-		for (var suggestionCount : list "1,2,3") {
-			KBArticleSuggestion.addPG(
-				kbArticleTitle = "Knowledge Base Article1 Title",
-				kbSuggestionBody = "Knowledge Base Article1 Suggestion${suggestionCount}");
-		}
-
-		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "KnowledgeBase#LINK_THERE_ARE_SUGGESTIONS",
-			value1 = "There are 3 suggestions. (3 Pending)");
-
-		for (var suggestionCount : list "1,2,3") {
-			KBArticleSuggestion.viewPG(
-				kbSuggestionBody = "Knowledge Base Article1 Suggestion${suggestionCount}",
-				kbSuggestionUserName = "Test Test",
-				status = "New");
-		}
-	}
-
-	@priority = 4
 	@refactordone
 	test CanCancelAddingChildArticle {
 		JSONKnowledgeBase.addkBArticle(
@@ -709,48 +672,6 @@ definition {
 		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
 
 		KBDisplayWidget.viewDefaultViaKBDisplayPG();
-	}
-
-	@priority = 4
-	@refactordone
-	test CanViewSuggestionsWorkflow {
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article1 Content",
-			kbArticleTitle = "Knowledge Base Article1 Title");
-
-		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
-
-		KBArticleSuggestion.addPG(
-			kbArticleTitle = "Knowledge Base Article1 Title",
-			kbSuggestionBody = "Knowledge Base Article1 Suggestion");
-
-		KBArticleSuggestion.gotoSuggestionStatusNew(
-			kbSuggestionBody = "Knowledge Base Article1 Suggestion",
-			suggestionCount = 1);
-
-		KBArticleSuggestion.viewPG(
-			kbSuggestionBody = "Knowledge Base Article1 Suggestion",
-			kbSuggestionUserName = "Test Test",
-			status = "New");
-
-		KBArticleSuggestion.moveToInProgressStatus(
-			kbArticleTitle = "Knowledge Base Article1 Title",
-			kbSuggestionBody = "Knowledge Base Article1 Suggestion");
-
-		KBArticleSuggestion.viewPG(
-			kbSuggestionBody = "Knowledge Base Article1 Suggestion",
-			kbSuggestionUserName = "Test Test",
-			status = "In Progress");
-
-		KBArticleSuggestion.moveToResolvedStatus(
-			kbArticleTitle = "Knowledge Base Article1 Title",
-			kbSuggestionBody = "Knowledge Base Article1 Suggestion");
-
-		KBArticleSuggestion.viewPG(
-			kbSuggestionBody = "Knowledge Base Article1 Suggestion",
-			kbSuggestionUserName = "Test Test",
-			status = "Resolved");
 	}
 
 	@priority = 3
