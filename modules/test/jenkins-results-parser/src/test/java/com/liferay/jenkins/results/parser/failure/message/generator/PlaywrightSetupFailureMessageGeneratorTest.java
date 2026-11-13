@@ -86,7 +86,7 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 		Mockito.when(
 			build.getJobVariant()
 		).thenReturn(
-			"modules-compile"
+			RandomTestUtil.randomString()
 		);
 
 		Assert.assertNull(
