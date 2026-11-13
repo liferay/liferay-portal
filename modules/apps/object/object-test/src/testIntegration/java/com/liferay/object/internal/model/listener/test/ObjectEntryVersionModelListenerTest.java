@@ -7,6 +7,7 @@ package com.liferay.object.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectEntryConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
@@ -308,6 +309,10 @@ public class ObjectEntryVersionModelListenerTest {
 			_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
 				objectEntryId);
 
+		Assert.assertEquals(
+			ObjectEntryConstants.TYPE_LATEST_APPROVED, objectEntry.getType());
+		Assert.assertEquals(expectedVersion, objectEntry.getVersion());
+
 		Map<String, Serializable> values = objectEntry.getValues();
 
 		Assert.assertEquals(
@@ -334,8 +339,6 @@ public class ObjectEntryVersionModelListenerTest {
 					MapUtil.getLong(localizedValues, languageId));
 			}
 		}
-
-		Assert.assertEquals(expectedVersion, objectEntry.getVersion());
 	}
 
 	private void _assertNullLatestApprovedObjectEntry(long objectEntryId) {
