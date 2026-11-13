@@ -190,6 +190,7 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 
 		layoutItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 			new LayoutItemSelectorReturnType());
+		layoutItemSelectorCriterion.setIncludeDraftLayouts(true);
 
 		return layoutItemSelectorCriterion;
 	}
