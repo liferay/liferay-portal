@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.redirect.RedirectURLSettingsUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -55,6 +56,7 @@ public class ExportTranslationDisplayContextTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115188")
 	public void testGetRedirect() {
 		Assert.assertNull(_getRedirect("javascript:alert(document.domain)"));
 
