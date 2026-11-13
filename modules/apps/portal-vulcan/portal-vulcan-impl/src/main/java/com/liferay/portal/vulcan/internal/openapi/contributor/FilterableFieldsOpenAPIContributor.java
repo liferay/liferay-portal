@@ -231,19 +231,15 @@ public class FilterableFieldsOpenAPIContributor implements OpenAPIContributor {
 	private EntityModelResource _getEntityModelResource(
 		long companyId, String className, String version) {
 
-		String companyIdKey = _encodeKey(className, companyId, version);
+		EntityModelResource entityModelResource = _serviceTrackerMap.getService(
+			_encodeKey(className, companyId, version));
 
-		if (_serviceTrackerMap.containsKey(companyIdKey)) {
-			return _serviceTrackerMap.getService(companyIdKey);
+		if (entityModelResource != null) {
+			return entityModelResource;
 		}
 
-		String key = _encodeKey(className, null, version);
-
-		if (_serviceTrackerMap.containsKey(key)) {
-			return _serviceTrackerMap.getService(key);
-		}
-
-		return null;
+		return _serviceTrackerMap.getService(
+			_encodeKey(className, null, version));
 	}
 
 	private Map<String, Object> _getFilterableFields(
