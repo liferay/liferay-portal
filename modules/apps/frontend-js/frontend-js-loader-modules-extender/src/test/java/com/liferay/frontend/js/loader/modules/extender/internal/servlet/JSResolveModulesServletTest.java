@@ -198,6 +198,13 @@ public class JSResolveModulesServletTest {
 
 		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
 
+		// Request above hard limit with higher configured limit
+
+		mockHttpServletResponse = _service(
+			(1024 * 1024) * 2L, post, _MODULES_QUERY_STRING_OVERFLOW);
+
+		_assertResponse(mockHttpServletResponse, post, ResponseStatus.OVERFLOW);
+
 		// Request within configured limit
 
 		mockHttpServletResponse = _service(
