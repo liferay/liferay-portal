@@ -8,11 +8,8 @@ package com.liferay.layout.internal.importer.structure.util;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.fragment.contributor.FragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
-import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
-import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
@@ -23,17 +20,18 @@ import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.ScopeUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -109,10 +107,6 @@ public class DropZoneLayoutStructureItemImporter
 			return dropZoneLayoutStructureItem;
 		}
 
-		Set<String> fragmentEntryKeys = new HashSet<>();
-
-		Set<String> fragmentCollectionKeys = new HashSet<>();
-
 		List<Map<String, String>> allowedFragments = new ArrayList<>();
 
 		if (fragmentSettingsMap.containsKey(_KEY_ALLOWED_FRAGMENTS)) {
@@ -136,25 +130,15 @@ public class DropZoneLayoutStructureItemImporter
 		long[] groupIds = _getGroupIds(
 			layout.getCompanyId(), layout.getGroupId());
 
-		for (Map<String, String> allowedFragmentMap : allowedFragments) {
-			fragmentEntryKeys.add(allowedFragmentMap.get(_KEY_KEY));
-
-			String fragmentCollectionKey = _getFragmentCollectionKey(
-				allowedFragmentMap.get(_KEY_KEY), groupIds);
-
-			if (Validator.isNull(fragmentCollectionKey)) {
-				continue;
-			}
-
-			fragmentCollectionKeys.add(fragmentCollectionKey);
-		}
-
-		for (String fragmentCollectionKey : fragmentCollectionKeys) {
-			fragmentEntryKeys.add(fragmentCollectionKey);
-		}
-
-		dropZoneLayoutStructureItem.setFragmentEntryKeys(
-			new ArrayList<>(fragmentEntryKeys));
+		dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(
+			JSONUtil.toJSONArray(
+				ListUtil.unique(
+					TransformUtil.transform(
+						allowedFragments,
+						allowedFragmentMap -> allowedFragmentMap.get(
+							_KEY_KEY))),
+				fragmentEntryKey -> _toFragmentEntryJSONObject(
+					fragmentEntryKey, groupIds, layout.getGroupId())));
 
 		return dropZoneLayoutStructureItem;
 	}
@@ -180,48 +164,6 @@ public class DropZoneLayoutStructureItemImporter
 		return null;
 	}
 
-	private String _getFragmentCollectionKey(
-			String fragmentKey, long[] groupIds)
-		throws Exception {
-
-		FragmentEntry fragmentEntry = _fetchFragmentEntry(
-			fragmentKey, groupIds);
-
-		if (fragmentEntry != null) {
-			FragmentCollection fragmentCollection =
-				_fragmentCollectionLocalService.getFragmentCollection(
-					fragmentEntry.getFragmentCollectionId());
-
-			return fragmentCollection.getFragmentCollectionKey();
-		}
-
-		List<FragmentCollectionContributor> fragmentCollectionContributors =
-			_fragmentCollectionContributorRegistry.
-				getFragmentCollectionContributors();
-
-		for (FragmentCollectionContributor fragmentCollectionContributor :
-				fragmentCollectionContributors) {
-
-			String fragmentCollectionKey =
-				fragmentCollectionContributor.getFragmentCollectionKey();
-
-			if (fragmentKey.startsWith(
-					fragmentCollectionKey + StringPool.DASH)) {
-
-				return fragmentCollectionKey;
-			}
-		}
-
-		FragmentRenderer fragmentRenderer =
-			_fragmentRendererRegistry.getFragmentRenderer(fragmentKey);
-
-		if (fragmentRenderer != null) {
-			return fragmentRenderer.getCollectionKey();
-		}
-
-		return null;
-	}
-
 	private long[] _getGroupIds(long companyId, long groupId) throws Exception {
 		Company company = _companyLocalService.getCompany(companyId);
 
@@ -237,6 +179,26 @@ public class DropZoneLayoutStructureItemImporter
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
 				DepotEntry::getGroupId),
 			new long[] {company.getGroupId()});
+	}
+
+	private JSONObject _toFragmentEntryJSONObject(
+			String fragmentEntryKey, long[] groupIds, long scopeGroupId)
+		throws Exception {
+
+		FragmentEntry fragmentEntry = _fetchFragmentEntry(
+			fragmentEntryKey, groupIds);
+
+		if (fragmentEntry != null) {
+			return JSONUtil.put(
+				"fragmentEntryERC", fragmentEntry.getExternalReferenceCode()
+			).put(
+				"fragmentEntryScopeERC",
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(), scopeGroupId)
+			);
+		}
+
+		return JSONUtil.put("fragmentEntryRendererKey", fragmentEntryKey);
 	}
 
 	private static final String _KEY_ALLOWED_FRAGMENTS = "allowedFragments";
