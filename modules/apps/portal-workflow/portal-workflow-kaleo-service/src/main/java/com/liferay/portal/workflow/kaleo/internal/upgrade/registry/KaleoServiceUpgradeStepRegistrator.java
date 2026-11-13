@@ -254,8 +254,10 @@ public class KaleoServiceUpgradeStepRegistrator
 
 		registry.register("4.5.0", "4.6.0", KaleoNodeSettingTable.create());
 
+		registry.register("4.6.0", "4.6.1", new DummyUpgradeProcess());
+
 		registry.register(
-			"4.6.0", "4.7.0",
+			"4.6.1", "4.7.0",
 			new com.liferay.portal.workflow.kaleo.internal.upgrade.v4_7_0.
 				KaleoDefinitionUpgradeProcess());
 
