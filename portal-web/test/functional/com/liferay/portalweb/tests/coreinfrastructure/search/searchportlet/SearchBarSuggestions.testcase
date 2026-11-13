@@ -38,10 +38,12 @@ definition {
 		Navigator.gotoPage(pageName = "New Search Page");
 
 		SearchBarSuggestions.viewSuggestionResultDetailsURL(
-			expectedURL = "/new-search-page",
+			expectedURL = "/search",
 			searchAssetTitle = "Apple");
 
 		Navigator.gotoBack();
+
+		AssertElementNotPresent(locator1 = "SearchPage#ASSET_DETAILS_TITLE");
 
 		var currentURL = selenium.getCurrentUrl();
 
