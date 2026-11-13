@@ -654,10 +654,10 @@ test(
 		await accountRolesPage.rolesTable.newButton.click();
 		await editAccountRolePage.addRole({name: roleName});
 		await editAccountRolePage.defineGroupScopePermissionsLink.click();
-		await roleDefinePermissionsPage
-			.menuItem('Site and Asset Library')
-			.click();
-		await roleDefinePermissionsPage.menuItem('Applications').click();
+		await roleDefinePermissionsPage.expandMenuItem(
+			'Site and Asset Library'
+		);
+		await roleDefinePermissionsPage.expandMenuItem('Applications');
 		await roleDefinePermissionsPage.menuItem('Account Management').click();
 		await roleDefinePermissionsPage
 			.permissionCheckbox('Add to Page')
@@ -742,10 +742,10 @@ test(
 
 		await (await rolesPage.rolesTable.cellLink(role.name)).click();
 		await editAccountRolePage.defineGroupScopePermissionsLink.click();
-		await roleDefinePermissionsPage
-			.menuItem('Site and Asset Library')
-			.click();
-		await roleDefinePermissionsPage.menuItem('Applications').click();
+		await roleDefinePermissionsPage.expandMenuItem(
+			'Site and Asset Library'
+		);
+		await roleDefinePermissionsPage.expandMenuItem('Applications');
 		await roleDefinePermissionsPage.menuItem('Account Management').click();
 		await roleDefinePermissionsPage
 			.permissionCheckbox('Add to Page')
@@ -822,10 +822,10 @@ test(
 		await accountRolesPage.rolesTable.newButton.click();
 		await editAccountRolePage.addRole({name: roleName});
 		await editAccountRolePage.definePermissionsLink.click();
-		await roleDefinePermissionsPage
-			.menuItem('Site and Asset Library')
-			.click();
-		await roleDefinePermissionsPage.menuItem('Applications').click();
+		await roleDefinePermissionsPage.expandMenuItem(
+			'Site and Asset Library'
+		);
+		await roleDefinePermissionsPage.expandMenuItem('Applications');
 		await roleDefinePermissionsPage.menuItem('Account Management').click();
 		await roleDefinePermissionsPage
 			.permissionCheckbox('Add to Page')
@@ -910,10 +910,10 @@ test(
 
 		await (await rolesPage.rolesTable.cellLink(role.name)).click();
 		await editAccountRolePage.definePermissionsLink.click();
-		await roleDefinePermissionsPage
-			.menuItem('Site and Asset Library')
-			.click();
-		await roleDefinePermissionsPage.menuItem('Applications').click();
+		await roleDefinePermissionsPage.expandMenuItem(
+			'Site and Asset Library'
+		);
+		await roleDefinePermissionsPage.expandMenuItem('Applications');
 		await roleDefinePermissionsPage.menuItem('Account Management').click();
 		await roleDefinePermissionsPage
 			.permissionCheckbox('Add to Page')

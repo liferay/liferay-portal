@@ -194,4 +194,20 @@ export class RoleDefinePermissionsPage {
 			'Success:The role permissions were updated.'
 		);
 	}
+
+	async expandMenuItem(name: string) {
+		const menuItem = this.menuItem(name);
+
+		await expect(async () => {
+			if ((await menuItem.getAttribute('aria-expanded')) !== 'true') {
+				await menuItem.click({timeout: 1000});
+			}
+
+			await expect(menuItem).toHaveAttribute('aria-expanded', 'true', {
+				timeout: 1000,
+			});
+		}).toPass({timeout: 10000});
+
+		await expect(this.navigation.locator('.collapsing')).toHaveCount(0);
+	}
 }
