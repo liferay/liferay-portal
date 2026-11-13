@@ -206,9 +206,32 @@ if (liveLayout != null) {
 								<clay:col
 									cssClass="staging-alert-container"
 								>
-									<div class="alert alert-warning hide warning-content" id="<portlet:namespace />warningMessage">
-										<liferay-ui:message key="an-initial-staging-publish-process-is-in-progress" />
-									</div>
+									<c:if test="<%= BackgroundTaskManagerUtil.getBackgroundTasksCount(liveGroup.getGroupId(), BackgroundTaskExecutorNames.LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR, false) > 0 %>">
+										<div class="alert alert-warning warning-content" id="<portlet:namespace />warningMessage">
+											<liferay-ui:message key="an-initial-staging-publish-process-is-in-progress" />
+										</div>
+
+										<portlet:resourceURL id="/staging_bar/get_initial_publish_status" var="getInitialPublishStatusURL" />
+
+										<aui:script>
+											const checkInitialPublishStatus = () => {
+												Liferay.Util.fetch('<%= getInitialPublishStatusURL %>')
+													.then((response) => response.text())
+													.then((inProgress) => {
+														if (inProgress === 'true') {
+															setTimeout(checkInitialPublishStatus, 5000);
+														}
+														else {
+															document
+																.getElementById('<portlet:namespace />warningMessage')
+																?.remove();
+														}
+													});
+											};
+
+											checkInitialPublishStatus();
+										</aui:script>
+									</c:if>
 
 									<liferay-util:include page="/last_publication_date_message.jsp" servletContext="<%= application %>" />
 								</clay:col>
@@ -266,39 +289,5 @@ if (liveLayout != null) {
 				});
 			}
 		}
-
-		var warningMessage = document.getElementById(
-			'<portlet:namespace />warningMessage'
-		);
-
-		var checkBackgroundTasks = function () {
-			Liferay.Service(
-				'/backgroundtask.backgroundtask/get-background-tasks-count',
-				{
-					completed: false,
-					groupId: '<%= liveGroup.getGroupId() %>',
-					taskExecutorClassName:
-						'<%= BackgroundTaskExecutorNames.LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR %>',
-				},
-				(obj) => {
-					var incomplete = obj > 0;
-
-					if (incomplete) {
-						if (warningMessage) {
-							warningMessage.classList.remove('hide');
-						}
-
-						setTimeout(checkBackgroundTasks, 5000);
-					}
-					else {
-						if (warningMessage) {
-							warningMessage.classList.add('hide');
-						}
-					}
-				}
-			);
-		};
-
-		checkBackgroundTasks();
 	</aui:script>
 </c:if>
