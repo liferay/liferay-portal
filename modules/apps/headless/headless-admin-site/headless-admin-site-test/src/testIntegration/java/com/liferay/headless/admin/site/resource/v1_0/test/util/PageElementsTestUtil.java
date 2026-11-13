@@ -419,7 +419,7 @@ public class PageElementsTestUtil {
 	}
 
 	public static PageElement getDropZonePageElement(
-			String externalReferenceCode, long groupId)
+			String externalReferenceCode, long groupId, long... itemGroupIds)
 		throws PortalException {
 
 		DropZonePageElementDefinition dropZonePageElementDefinition =
@@ -427,7 +427,7 @@ public class PageElementsTestUtil {
 
 		dropZonePageElementDefinition.setAddNewFragmentEntries(true);
 		dropZonePageElementDefinition.setAllowedFragmentReferences(
-			_getFragmentReferences(groupId));
+			_getFragmentReferences(groupId, itemGroupIds));
 		dropZonePageElementDefinition.setType(
 			PageElementDefinition.Type.DROP_ZONE);
 
@@ -1174,7 +1174,34 @@ public class PageElementsTestUtil {
 		return fragmentInstance;
 	}
 
-	private static FragmentReference[] _getFragmentReferences(long groupId)
+	private static List<FragmentReference> _getFragmentItemExternalReferences(
+			long groupId, long scopeGroupId)
+		throws PortalException {
+
+		List<FragmentReference> fragmentReferences = new ArrayList<>();
+
+		FragmentCollection fragmentCollection =
+			FragmentCollectionLocalServiceUtil.addFragmentCollection(
+				null, TestPropsValues.getUserId(), groupId,
+				StringUtil.randomString(), StringPool.BLANK,
+				ServiceContextTestUtil.getServiceContext(groupId));
+
+		Scope scope = ScopeTestUtil.getItemScope(groupId, scopeGroupId);
+
+		for (int i = 0; i < 3; i++) {
+			fragmentReferences.add(
+				_addFragmentItemExternalReference(
+					FragmentEntryTestUtil.addFragmentEntry(
+						fragmentCollection.getFragmentCollectionId(),
+						fragmentCollection.getGroupId()),
+					scope));
+		}
+
+		return fragmentReferences;
+	}
+
+	private static FragmentReference[] _getFragmentReferences(
+			long groupId, long... itemGroupIds)
 		throws PortalException {
 
 		List<FragmentReference> fragmentReferences = new ArrayList<>();
@@ -1184,19 +1211,9 @@ public class PageElementsTestUtil {
 		fragmentReferences.add(
 			_addDefaultFragmentReference("INPUTS-date-input"));
 
-		FragmentCollection fragmentCollection =
-			FragmentCollectionLocalServiceUtil.addFragmentCollection(
-				null, TestPropsValues.getUserId(), groupId,
-				StringUtil.randomString(), StringPool.BLANK,
-				ServiceContextTestUtil.getServiceContext(groupId));
-
-		for (int i = 0; i < 3; i++) {
-			fragmentReferences.add(
-				_addFragmentItemExternalReference(
-					FragmentEntryTestUtil.addFragmentEntry(
-						fragmentCollection.getFragmentCollectionId(),
-						fragmentCollection.getGroupId()),
-					null));
+		for (long itemGroupId : itemGroupIds) {
+			fragmentReferences.addAll(
+				_getFragmentItemExternalReferences(itemGroupId, groupId));
 		}
 
 		return fragmentReferences.toArray(new FragmentReference[0]);
