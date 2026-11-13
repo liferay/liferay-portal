@@ -132,70 +132,6 @@ definition {
 			wikiChildPageTitle = "Wiki Child Page Title");
 	}
 
-	@description = "This ensures that multiple child pages can be added to the front page."
-	@priority = 3
-	@refactordone
-	test CanAddChildPagesToFrontPage {
-		property portal.acceptance = "false";
-
-		JSONWiki.updateWikiPage(
-			groupName = "Guest",
-			wikiNodeName = "Main",
-			wikiPageContent = "Wiki FrontPage Content",
-			wikiPageName = "FrontPage");
-
-		for (var childPageCount : list "1,2") {
-			WikiNavigator.openToWikiPage(
-				layoutURLKey = "wiki-test-page",
-				siteURLKey = "guest",
-				wikiNodeName = "Main",
-				wikiPageTitle = "FrontPage");
-
-			WikiPage.addChildPagePG(
-				wikiChildPageContent = "Wiki FrontPage Child Page${childPageCount} Content",
-				wikiChildPageTitle = "Wiki FrontPage Child Page${childPageCount} Title");
-		}
-
-		for (var childPageCount : list "1,2") {
-			WikiNavigator.openToWikiPage(
-				layoutURLKey = "wiki-test-page",
-				siteURLKey = "guest",
-				wikiNodeName = "Main",
-				wikiPageTitle = "FrontPage");
-
-			WikiNavigator.gotoChildPagePG(wikiChildPageTitle = "Wiki FrontPage Child Page${childPageCount} Title");
-
-			WikiPage.viewChildPagePG(
-				wikiChildPageContent = "Wiki FrontPage Child Page${childPageCount} Content",
-				wikiChildPageTitle = "Wiki FrontPage Child Page${childPageCount} Title");
-		}
-	}
-
-	@description = "This ensures that the front page can be added with creole format."
-	@priority = 4
-	@refactordone
-	test CanAddFrontPageWithCreoleFormat {
-		WikiPage.addFrontPagePG(
-			creoleSource = "true",
-			groupName = "Guest",
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageContent = "**Wiki FrontPage Content**",
-			wikiPageText = "Wiki FrontPage Content",
-			wikiPageTitle = "FrontPage");
-
-		WikiNavigator.openToWikiPage(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "FrontPage");
-
-		WikiPage.viewPG(
-			wikiPageContent = "Wiki FrontPage Content",
-			wikiPageTitle = "FrontPage");
-	}
-
 	@description = "This ensures that a front page can be added with HTML format."
 	@e2etest
 	@priority = 4
@@ -220,72 +156,6 @@ definition {
 			wikiPageRevision = "1.1",
 			wikiPageTitle = "FrontPage",
 			wikiPageUsername = "Test Test");
-	}
-
-	@description = "This ensures that a user can add wiki page with HTML format via wiki widget."
-	@priority = 4
-	@refactordone
-	test CanAddPageWithHTMLFormat {
-		WikiNavigator.gotoWidgetSpecificTabByURL(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			tabURLKey = "all_pages",
-			wikiNodeName = "Main");
-
-		var welcomeToLiferay = '''
-				<p><a href="http://www.liferay.com">Welcome to LIFERAY</a></p>
-			''';
-
-		WikiPage.addPG(
-			htmlSource = "true",
-			wikiPageContent = ${welcomeToLiferay},
-			wikiPageTitle = "Wiki Page Title");
-
-		WikiNavigator.openToWikiPage(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "Wiki Page Title");
-
-		WikiPage.viewPG(
-			wikiPageContent = "Welcome to LIFERAY",
-			wikiPageTitle = "Wiki Page Title");
-	}
-
-	@description = "This test covers LPS-95711. It ensures that an image can be added to the front page via URL."
-	@priority = 4
-	@refactordone
-	test CanAddPageWithImageViaURL {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2.jpg",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		WikiNavigator.openToEditPage(
-			groupName = "Guest",
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "FrontPage");
-
-		WikiPage.addInlineImage(
-			contentImageName = "Document_2.jpg",
-			imageSourceURL = "http://localhost:8080/webdav/guest/document_library/Document_2.jpg",
-			navTab = "URL");
-
-		PortletEntry.publish();
-
-		Navigator.gotoPage(pageName = "Wiki Test Page");
-
-		WikiPage.viewFrontPagePG(
-			contentImageName = "Document_2.jpg",
-			wikiPageContent = "",
-			wikiPageTitle = "FrontPage");
 	}
 
 	@description = "This ensures that a wiki page can be added inline image via upload."
@@ -413,36 +283,6 @@ definition {
 			wikiPageTitle = "Wiki Page Title");
 	}
 
-	@description = "This ensures that the wiki page versions can be compared via wiki widget."
-	@priority = 4
-	@refactordone
-	test CanCompareVersionAfterEditingFrontPage {
-		for (var wikiPageContent : list "Wiki FrontPage Content,Wiki FrontPage Content Edit") {
-			JSONWiki.updateWikiPage(
-				groupName = "Guest",
-				wikiNodeName = "Main",
-				wikiPageContent = ${wikiPageContent},
-				wikiPageName = "FrontPage");
-		}
-
-		WikiNavigator.openToWikiPage(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "FrontPage");
-
-		WikiPage.viewPG(
-			wikiPageContent = "Wiki FrontPage Content Edit",
-			wikiPageTitle = "FrontPage");
-
-		WikiPage.compareVersionsPG(
-			wikiPageContentEdit = "Wiki FrontPage Content Edit",
-			wikiPageTitle = "FrontPage",
-			wikiPageVersionDiff = "Wiki FrontPage Content Edit",
-			wikiPageVersionNew = "1.2",
-			wikiPageVersionOld = "1.0");
-	}
-
 	@description = "This ensures that a wiki page can be added through copy."
 	@priority = 4
 	@refactordone
@@ -484,25 +324,6 @@ definition {
 		WikiPage.viewPG(
 			wikiPageContent = "Copied Wiki Page Content",
 			wikiPageTitle = "Copied Wiki Page Title");
-	}
-
-	@description = "This ensures that the front page can be deleted."
-	@priority = 4
-	@refactordone
-	test CanDeleteFrontPage {
-		JSONWiki.updateWikiPage(
-			groupName = "Guest",
-			wikiNodeName = "Main",
-			wikiPageContent = "Wiki FrontPage Content",
-			wikiPageName = "FrontPage");
-
-		WikiNavigator.gotoWidgetSpecificTabByURL(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			tabURLKey = "all_pages",
-			wikiNodeName = "Main");
-
-		WikiPage.deletePG(wikiPageTitle = "FrontPage");
 	}
 
 	@description = "This ensures that a wiki page can be deleted."
@@ -574,37 +395,6 @@ definition {
 			wikiPageTitle = "Wiki Page Title");
 	}
 
-	@description = "This ensures that the front page can be edited."
-	@priority = 4
-	@refactordone
-	test CanEditFrontPage {
-		JSONWiki.updateWikiPage(
-			groupName = "Guest",
-			wikiNodeName = "Main",
-			wikiPageContent = "Wiki FrontPage Content",
-			wikiPageName = "FrontPage");
-
-		WikiNavigator.openToWikiPage(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "FrontPage");
-
-		WikiPage.editFrontPagePG(wikiPageContentEdit = "Wiki FrontPage Content Edit");
-
-		Navigator.gotoPage(pageName = "Wiki Test Page");
-
-		WikiNavigator.gotoPG(
-			wikiPageContent = "Wiki FrontPage Content Edit",
-			wikiPageRevision = "1.2",
-			wikiPageTitle = "FrontPage",
-			wikiPageUsername = "Test Test");
-
-		WikiPage.viewPG(
-			wikiPageContent = "Wiki FrontPage Content Edit",
-			wikiPageTitle = "FrontPage");
-	}
-
 	@description = "This ensures that a wiki page can link to other wiki page, also covers LPS-81914."
 	@priority = 4
 	@refactordone
@@ -644,50 +434,6 @@ definition {
 		WikiPage.viewPG(
 			wikiPageContent = "Wiki Page Content2",
 			wikiPageTitle = "Wiki Page Title2");
-	}
-
-	@description = "This ensures that a wiki page can not be published with invalid character in title."
-	@priority = 4
-	@refactordone
-	test CannotPublishWikiPageWithInvalidTitle {
-		JSONWiki.updateWikiPage(
-			groupName = "Guest",
-			wikiNodeName = "Main",
-			wikiPageContent = "Wiki FrontPage Content",
-			wikiPageName = "FrontPage");
-
-		for (var invalidCharacter : list "\,],[,;,:,|,&lt;,&gt;") {
-			WikiPage.addFrontPageChildPageInvalidTitle(
-				groupName = "Guest",
-				layoutURLKey = "wiki-test-page",
-				siteURLKey = "guest",
-				wikiChildPageContent = "Wiki FrontPage Child Page Content",
-				wikiChildPageInvalidTitle = "true",
-				wikiChildPageTitle = "Wiki${invalidCharacter} Front${invalidCharacter} Page${invalidCharacter} Child${invalidCharacter} Page${invalidCharacter} Title${invalidCharacter}",
-				wikiNodeName = "Main",
-				wikiParentPageTitle = "FrontPage");
-		}
-
-		WikiNavigator.openToWikiPage(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "FrontPage");
-
-		WikiPage.viewPG(
-			wikiPageContent = "Wiki FrontPage Content",
-			wikiPageTitle = "FrontPage");
-
-		WikiNavigator.gotoWidgetSpecificTabByURL(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			tabURLKey = "all_pages",
-			wikiNodeName = "Main");
-
-		WikiPage.viewNoChildPagePGViaAllPages(
-			wikiChildPageTitle = "Wiki FrontPage Child Page Title",
-			wikiPageRevision = "1.1",
-			wikiPageTitle = "FrontPage");
 	}
 
 	@description = "This ensures that javascript can not be viewed in wiki page content."
