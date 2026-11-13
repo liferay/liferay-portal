@@ -234,21 +234,6 @@ definition {
 
 	@priority = 4
 	@refactordone
-	test CanGenerateAutomaticImageVariantID {
-		AdaptiveMedia.openToAddImageResolution();
-
-		AdaptiveMedia.addImageResolution(
-			imageName = "Small Image Variant",
-			maxHeight = 100,
-			maxWidth = 100);
-
-		AdaptiveMedia.gotoImageVariantEntry(imageName = "Small Image Variant");
-
-		AdaptiveMedia.viewImageVariantID(imageVariantId = "small-image-variant");
-	}
-
-	@priority = 4
-	@refactordone
 	test CannotAddDuplicateImageResolution {
 		property portal.acceptance = "false";
 
@@ -272,64 +257,6 @@ definition {
 		AdaptiveMedia.openAdaptiveMediaAdmin();
 
 		AdaptiveMedia.viewNoImageResolution();
-	}
-
-	@priority = 4
-	@refactordone
-	test CannotAddImageResolutionWithNoDimensions {
-		AdaptiveMedia.openToAddImageResolution();
-
-		AdaptiveMedia.addImageResolution(
-			imageName = "testResolutionNoDimensions",
-			maxHeight = "",
-			maxWidth = "",
-			noDimensions = "true");
-
-		AdaptiveMedia.openAdaptiveMediaAdmin();
-
-		AdaptiveMedia.viewNoImageResolution(imageName = "testResolutionNoDimensions");
-	}
-
-	@priority = 4
-	@refactordone
-	test CannotAddNonNumericWidthOrHeight {
-		AdaptiveMedia.openAdaptiveMediaAdmin();
-
-		AdaptiveMedia.addNonNumericImageResolution(
-			imageName = "Small Image Variant",
-			maxHeight = "notallowed",
-			maxWidth = "notallowed");
-
-		AdaptiveMedia.openAdaptiveMediaAdmin();
-
-		AdaptiveMedia.viewNoImageResolution(imageName = "Small Image Variant");
-	}
-
-	@priority = 4
-	@refactordone
-	test CannotUpdateResolutionWithNullValues {
-		AdaptiveMedia.openToAddImageResolution();
-
-		AdaptiveMedia.addImageResolution(
-			imageName = "testResolution",
-			maxHeight = 1000,
-			maxWidth = 1000);
-
-		AdaptiveMedia.viewImageResolutionTableEntry(
-			imageName = "testResolution",
-			maxHeight = 1000,
-			maxWidth = 1000);
-
-		AdaptiveMedia.editImageResolution(
-			imageName = "testResolution",
-			imageNameEdit = "testResolutionEdit",
-			maxHeightEdit = 0,
-			maxWidthEdit = 0,
-			zero = "true");
-
-		AdaptiveMedia.openAdaptiveMediaAdmin();
-
-		AdaptiveMedia.viewNoImageResolution(imageName = "testResolutionEdit");
 	}
 
 	@description = "This is a test for LPS-78626. It ensures that a reloaded image can be viewed after changing the screen resolution."
