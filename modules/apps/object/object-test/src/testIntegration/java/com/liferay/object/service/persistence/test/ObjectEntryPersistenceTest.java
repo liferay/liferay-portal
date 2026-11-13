@@ -147,6 +147,8 @@ public class ObjectEntryPersistenceTest {
 
 		newObjectEntry.setTreePath(RandomTestUtil.randomString());
 
+		newObjectEntry.setType(RandomTestUtil.nextInt());
+
 		newObjectEntry.setVersion(RandomTestUtil.nextInt());
 
 		newObjectEntry.setLastPublishDate(RandomTestUtil.nextDate());
@@ -217,6 +219,8 @@ public class ObjectEntryPersistenceTest {
 			Time.getShortTimestamp(newObjectEntry.getReviewDate()));
 		Assert.assertEquals(
 			existingObjectEntry.getTreePath(), newObjectEntry.getTreePath());
+		Assert.assertEquals(
+			existingObjectEntry.getType(), newObjectEntry.getType());
 		Assert.assertEquals(
 			existingObjectEntry.getVersion(), newObjectEntry.getVersion());
 		Assert.assertEquals(
@@ -298,6 +302,14 @@ public class ObjectEntryPersistenceTest {
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
 
 		_persistence.countByU_ODI(0L, 0L);
+	}
+
+	@Test
+	public void testCountByHOEI_T() throws Exception {
+		_persistence.countByHOEI_T(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByHOEI_T(0L, 0);
 	}
 
 	@Test
@@ -395,9 +407,9 @@ public class ObjectEntryPersistenceTest {
 			"objectDefinitionId", true, "objectEntryFolderId", true,
 			"rootObjectEntryId", true, "defaultLanguageId", true, "displayDate",
 			true, "expirationDate", true, "reviewDate", true, "treePath", true,
-			"version", true, "lastPublishDate", true, "status", true,
-			"statusByUserId", true, "statusByUserName", true, "statusDate",
-			true);
+			"type", true, "version", true, "lastPublishDate", true, "status",
+			true, "statusByUserId", true, "statusByUserName", true,
+			"statusDate", true);
 	}
 
 	@Test
@@ -740,6 +752,8 @@ public class ObjectEntryPersistenceTest {
 
 		objectEntry.setTreePath(RandomTestUtil.randomString());
 
+		objectEntry.setType(RandomTestUtil.nextInt());
+
 		objectEntry.setVersion(RandomTestUtil.nextInt());
 
 		objectEntry.setLastPublishDate(RandomTestUtil.nextDate());
@@ -762,4 +776,4 @@ public class ObjectEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-581398502
+// LIFERAY-SERVICE-BUILDER-HASH:144527579

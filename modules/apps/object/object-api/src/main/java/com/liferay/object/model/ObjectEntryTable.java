@@ -71,6 +71,8 @@ public class ObjectEntryTable extends BaseTable<ObjectEntryTable> {
 		"reviewDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 	public final Column<ObjectEntryTable, String> treePath = createColumn(
 		"treePath", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<ObjectEntryTable, Integer> type = createColumn(
+		"type_", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<ObjectEntryTable, Integer> version = createColumn(
 		"version", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<ObjectEntryTable, Date> lastPublishDate = createColumn(
@@ -91,4 +93,4 @@ public class ObjectEntryTable extends BaseTable<ObjectEntryTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1724132446
+// LIFERAY-SERVICE-BUILDER-HASH:2098738539

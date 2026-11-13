@@ -360,6 +360,20 @@ public interface ObjectEntryModel
 	public void setTreePath(String treePath);
 
 	/**
+	 * Returns the type of this object entry.
+	 *
+	 * @return the type of this object entry
+	 */
+	public int getType();
+
+	/**
+	 * Sets the type of this object entry.
+	 *
+	 * @param type the type of this object entry
+	 */
+	public void setType(int type);
+
+	/**
 	 * Returns the version of this object entry.
 	 *
 	 * @return the version of this object entry
@@ -558,4 +572,4 @@ public interface ObjectEntryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-494733442
+// LIFERAY-SERVICE-BUILDER-HASH:-505834989

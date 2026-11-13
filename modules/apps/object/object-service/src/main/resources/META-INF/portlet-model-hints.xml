@@ -126,6 +126,7 @@
 		<field name="treePath" type="String">
 			<hint name="max-length">4000</hint>
 		</field>
+		<field name="type" type="int" />
 		<field name="version" type="int" />
 		<field name="lastPublishDate" type="Date" />
 		<field name="status" type="int" />

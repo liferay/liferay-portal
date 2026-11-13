@@ -102,6 +102,7 @@ create table ObjectEntry (
 	expirationDate DATE null,
 	reviewDate DATE null,
 	treePath STRING null,
+	type_ INTEGER,
 	version INTEGER,
 	lastPublishDate DATE null,
 	status INTEGER,

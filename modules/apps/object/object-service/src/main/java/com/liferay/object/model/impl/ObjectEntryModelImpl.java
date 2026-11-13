@@ -80,10 +80,10 @@ public class ObjectEntryModelImpl
 		{"rootObjectEntryId", Types.BIGINT},
 		{"defaultLanguageId", Types.VARCHAR}, {"displayDate", Types.TIMESTAMP},
 		{"expirationDate", Types.TIMESTAMP}, {"reviewDate", Types.TIMESTAMP},
-		{"treePath", Types.VARCHAR}, {"version", Types.INTEGER},
-		{"lastPublishDate", Types.TIMESTAMP}, {"status", Types.INTEGER},
-		{"statusByUserId", Types.BIGINT}, {"statusByUserName", Types.VARCHAR},
-		{"statusDate", Types.TIMESTAMP}
+		{"treePath", Types.VARCHAR}, {"type_", Types.INTEGER},
+		{"version", Types.INTEGER}, {"lastPublishDate", Types.TIMESTAMP},
+		{"status", Types.INTEGER}, {"statusByUserId", Types.BIGINT},
+		{"statusByUserName", Types.VARCHAR}, {"statusDate", Types.TIMESTAMP}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -109,6 +109,7 @@ public class ObjectEntryModelImpl
 		TABLE_COLUMNS_MAP.put("expirationDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("reviewDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("treePath", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("version", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
@@ -118,7 +119,7 @@ public class ObjectEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table ObjectEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(500) null,objectEntryId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,headObjectEntryId LONG,objectDefinitionId LONG,objectEntryFolderId LONG,rootObjectEntryId LONG,defaultLanguageId VARCHAR(75) null,displayDate DATE null,expirationDate DATE null,reviewDate DATE null,treePath STRING null,version INTEGER,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+		"create table ObjectEntry (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(500) null,objectEntryId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,headObjectEntryId LONG,objectDefinitionId LONG,objectEntryFolderId LONG,rootObjectEntryId LONG,defaultLanguageId VARCHAR(75) null,displayDate DATE null,expirationDate DATE null,reviewDate DATE null,treePath STRING null,type_ INTEGER,version INTEGER,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 
 	public static final String TABLE_SQL_DROP = "drop table ObjectEntry";
 
@@ -194,20 +195,26 @@ public class ObjectEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long USERID_COLUMN_BITMASK = 512L;
+	public static final long TYPE_COLUMN_BITMASK = 512L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 1024L;
+	public static final long USERID_COLUMN_BITMASK = 1024L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long UUID_COLUMN_BITMASK = 2048L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long OBJECTENTRYID_COLUMN_BITMASK = 2048L;
+	public static final long OBJECTENTRYID_COLUMN_BITMASK = 4096L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -351,6 +358,7 @@ public class ObjectEntryModelImpl
 			attributeGetterFunctions.put(
 				"reviewDate", ObjectEntry::getReviewDate);
 			attributeGetterFunctions.put("treePath", ObjectEntry::getTreePath);
+			attributeGetterFunctions.put("type", ObjectEntry::getType);
 			attributeGetterFunctions.put("version", ObjectEntry::getVersion);
 			attributeGetterFunctions.put(
 				"lastPublishDate", ObjectEntry::getLastPublishDate);
@@ -439,6 +447,8 @@ public class ObjectEntryModelImpl
 			attributeSetterBiConsumers.put(
 				"treePath",
 				(BiConsumer<ObjectEntry, String>)ObjectEntry::setTreePath);
+			attributeSetterBiConsumers.put(
+				"type", (BiConsumer<ObjectEntry, Integer>)ObjectEntry::setType);
 			attributeSetterBiConsumers.put(
 				"version",
 				(BiConsumer<ObjectEntry, Integer>)ObjectEntry::setVersion);
@@ -894,6 +904,31 @@ public class ObjectEntryModelImpl
 
 	@JSON
 	@Override
+	public int getType() {
+		return _type;
+	}
+
+	@Override
+	public void setType(int type) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_type = type;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalType() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("type_"));
+	}
+
+	@JSON
+	@Override
 	public int getVersion() {
 		return _version;
 	}
@@ -1197,6 +1232,7 @@ public class ObjectEntryModelImpl
 		objectEntryImpl.setExpirationDate(getExpirationDate());
 		objectEntryImpl.setReviewDate(getReviewDate());
 		objectEntryImpl.setTreePath(getTreePath());
+		objectEntryImpl.setType(getType());
 		objectEntryImpl.setVersion(getVersion());
 		objectEntryImpl.setLastPublishDate(getLastPublishDate());
 		objectEntryImpl.setStatus(getStatus());
@@ -1249,6 +1285,7 @@ public class ObjectEntryModelImpl
 			this.<Date>getColumnOriginalValue("reviewDate"));
 		objectEntryImpl.setTreePath(
 			this.<String>getColumnOriginalValue("treePath"));
+		objectEntryImpl.setType(this.<Integer>getColumnOriginalValue("type_"));
 		objectEntryImpl.setVersion(
 			this.<Integer>getColumnOriginalValue("version"));
 		objectEntryImpl.setLastPublishDate(
@@ -1470,6 +1507,8 @@ public class ObjectEntryModelImpl
 			objectEntryCacheModel.treePath = null;
 		}
 
+		objectEntryCacheModel.type = getType();
+
 		objectEntryCacheModel.version = getVersion();
 
 		Date lastPublishDate = getLastPublishDate();
@@ -1593,6 +1632,7 @@ public class ObjectEntryModelImpl
 	private Date _expirationDate;
 	private Date _reviewDate;
 	private String _treePath;
+	private int _type;
 	private int _version;
 	private Date _lastPublishDate;
 	private int _status;
@@ -1650,6 +1690,7 @@ public class ObjectEntryModelImpl
 		_columnOriginalValues.put("expirationDate", _expirationDate);
 		_columnOriginalValues.put("reviewDate", _reviewDate);
 		_columnOriginalValues.put("treePath", _treePath);
+		_columnOriginalValues.put("type_", _type);
 		_columnOriginalValues.put("version", _version);
 		_columnOriginalValues.put("lastPublishDate", _lastPublishDate);
 		_columnOriginalValues.put("status", _status);
@@ -1664,6 +1705,7 @@ public class ObjectEntryModelImpl
 		Map<String, String> attributeNames = new HashMap<>();
 
 		attributeNames.put("uuid_", "uuid");
+		attributeNames.put("type_", "type");
 
 		_attributeNames = Collections.unmodifiableMap(attributeNames);
 	}
@@ -1717,17 +1759,19 @@ public class ObjectEntryModelImpl
 
 		columnBitmasks.put("treePath", 262144L);
 
-		columnBitmasks.put("version", 524288L);
+		columnBitmasks.put("type_", 524288L);
 
-		columnBitmasks.put("lastPublishDate", 1048576L);
+		columnBitmasks.put("version", 1048576L);
 
-		columnBitmasks.put("status", 2097152L);
+		columnBitmasks.put("lastPublishDate", 2097152L);
 
-		columnBitmasks.put("statusByUserId", 4194304L);
+		columnBitmasks.put("status", 4194304L);
 
-		columnBitmasks.put("statusByUserName", 8388608L);
+		columnBitmasks.put("statusByUserId", 8388608L);
 
-		columnBitmasks.put("statusDate", 16777216L);
+		columnBitmasks.put("statusByUserName", 16777216L);
+
+		columnBitmasks.put("statusDate", 33554432L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1777,4 +1821,4 @@ public class ObjectEntryModelImpl
 	private ObjectEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:60534783
+// LIFERAY-SERVICE-BUILDER-HASH:842960713

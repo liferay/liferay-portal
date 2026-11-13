@@ -73,7 +73,7 @@ public class ObjectEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(51);
+		StringBundler sb = new StringBundler(53);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -113,6 +113,8 @@ public class ObjectEntryCacheModel
 		sb.append(reviewDate);
 		sb.append(", treePath=");
 		sb.append(treePath);
+		sb.append(", type=");
+		sb.append(type);
 		sb.append(", version=");
 		sb.append(version);
 		sb.append(", lastPublishDate=");
@@ -216,6 +218,7 @@ public class ObjectEntryCacheModel
 			objectEntryImpl.setTreePath(treePath);
 		}
 
+		objectEntryImpl.setType(type);
 		objectEntryImpl.setVersion(version);
 
 		if (lastPublishDate == Long.MIN_VALUE) {
@@ -286,6 +289,8 @@ public class ObjectEntryCacheModel
 		expirationDate = objectInput.readLong();
 		reviewDate = objectInput.readLong();
 		treePath = objectInput.readUTF();
+
+		type = objectInput.readInt();
 
 		version = objectInput.readInt();
 		lastPublishDate = objectInput.readLong();
@@ -361,6 +366,8 @@ public class ObjectEntryCacheModel
 			objectOutput.writeUTF(treePath);
 		}
 
+		objectOutput.writeInt(type);
+
 		objectOutput.writeInt(version);
 		objectOutput.writeLong(lastPublishDate);
 
@@ -399,6 +406,7 @@ public class ObjectEntryCacheModel
 	public long expirationDate;
 	public long reviewDate;
 	public String treePath;
+	public int type;
 	public int version;
 	public long lastPublishDate;
 	public int status;
@@ -424,4 +432,4 @@ public class ObjectEntryCacheModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:216255637
+// LIFERAY-SERVICE-BUILDER-HASH:-333304251

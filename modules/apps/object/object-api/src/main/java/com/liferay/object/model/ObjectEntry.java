@@ -91,6 +91,10 @@ public interface ObjectEntry
 
 	public boolean isRootDescendantNode();
 
+	public boolean isTypeDraft();
+
+	public boolean isTypeLatestApproved();
+
 	public void setObjectDefinition(ObjectDefinition objectDefinition);
 
 	public void setRelatedObjectEntry(
@@ -105,4 +109,4 @@ public interface ObjectEntry
 	public void setValues(java.util.Map<String, java.io.Serializable> values);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-700683142
+// LIFERAY-SERVICE-BUILDER-HASH:-531676967

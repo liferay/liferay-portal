@@ -55,6 +55,7 @@ public class ObjectEntryWrapper
 		attributes.put("expirationDate", getExpirationDate());
 		attributes.put("reviewDate", getReviewDate());
 		attributes.put("treePath", getTreePath());
+		attributes.put("type", getType());
 		attributes.put("version", getVersion());
 		attributes.put("lastPublishDate", getLastPublishDate());
 		attributes.put("status", getStatus());
@@ -180,6 +181,12 @@ public class ObjectEntryWrapper
 
 		if (treePath != null) {
 			setTreePath(treePath);
+		}
+
+		Integer type = (Integer)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
 		}
 
 		Integer version = (Integer)attributes.get("version");
@@ -538,6 +545,16 @@ public class ObjectEntryWrapper
 		return model.getTreePath();
 	}
 
+	/**
+	 * Returns the type of this object entry.
+	 *
+	 * @return the type of this object entry
+	 */
+	@Override
+	public int getType() {
+		return model.getType();
+	}
+
 	@Override
 	public String getURLTitle(java.util.Locale locale) {
 		return model.getURLTitle(locale);
@@ -701,6 +718,16 @@ public class ObjectEntryWrapper
 	@Override
 	public boolean isScheduled() {
 		return model.isScheduled();
+	}
+
+	@Override
+	public boolean isTypeDraft() {
+		return model.isTypeDraft();
+	}
+
+	@Override
+	public boolean isTypeLatestApproved() {
+		return model.isTypeLatestApproved();
 	}
 
 	@Override
@@ -965,6 +992,16 @@ public class ObjectEntryWrapper
 	}
 
 	/**
+	 * Sets the type of this object entry.
+	 *
+	 * @param type the type of this object entry
+	 */
+	@Override
+	public void setType(int type) {
+		model.setType(type);
+	}
+
+	/**
 	 * Sets the user ID of this object entry.
 	 *
 	 * @param userId the user ID of this object entry
@@ -1040,4 +1077,4 @@ public class ObjectEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-237075011
+// LIFERAY-SERVICE-BUILDER-HASH:-1200602909
