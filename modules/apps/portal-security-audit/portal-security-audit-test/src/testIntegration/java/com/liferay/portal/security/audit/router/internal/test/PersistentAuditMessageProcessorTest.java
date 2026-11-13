@@ -8,13 +8,16 @@ package com.liferay.portal.security.audit.router.internal.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.persistence.ConfigurationOverridePropertiesUtil;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
+import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRequestContext;
 import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -23,14 +26,19 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorCompanyConfiguration;
 import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.service.AuditEventLocalService;
@@ -42,6 +50,7 @@ import jakarta.servlet.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -69,6 +78,7 @@ public class PersistentAuditMessageProcessorTest {
 		_testProcessHttpRequestContext();
 		_testProcessRequestContextPersistsAfterClear();
 		_testProcessRolesPersistAfterRoleChanges();
+		_testProcessWithCompanyConfiguration();
 	}
 
 	private AuditEvent _addAuditEvent(
@@ -322,6 +332,144 @@ public class PersistentAuditMessageProcessorTest {
 		}
 	}
 
+	private void _testProcessWithCompanyConfiguration() throws Exception {
+		_company = CompanyTestUtil.addCompany();
+
+		try (SafeCloseable safeCloseable1 =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-6417", "LPD-114718")) {
+
+			try (ConfigurationTemporarySwapper configurationTemporarySwapper1 =
+					new ConfigurationTemporarySwapper(
+						PersistentAuditMessageProcessorConfiguration.class.
+							getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"bufferSize", 1
+						).build())) {
+
+				String className =
+					PersistentAuditMessageProcessorCompanyConfiguration.class.
+						getName();
+
+				String factoryPid = className + ".scoped";
+
+				String pid = ConfigurationTestUtil.createFactoryConfiguration(
+					factoryPid,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"companyId", _company.getCompanyId()
+					).put(
+						"enabled", false
+					).build());
+
+				String eventType = _createEventType();
+
+				_route(TestPropsValues.getCompanyId(), eventType);
+				_route(_company.getCompanyId(), eventType);
+
+				Assert.assertEquals(
+					0,
+					_getAuditEventsCount(_company.getCompanyId(), eventType));
+				Assert.assertEquals(
+					1,
+					_getAuditEventsCount(
+						TestPropsValues.getCompanyId(), eventType));
+
+				try (SafeCloseable safeCloseable2 =
+						FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+							false, "LPD-114718")) {
+
+					_route(_company.getCompanyId(), eventType);
+				}
+
+				Assert.assertEquals(
+					1,
+					_getAuditEventsCount(_company.getCompanyId(), eventType));
+
+				ConfigurationTestUtil.deleteFactoryConfiguration(
+					pid, factoryPid);
+
+				_route(_company.getCompanyId(), eventType);
+
+				Assert.assertEquals(
+					2,
+					_getAuditEventsCount(_company.getCompanyId(), eventType));
+
+				try (ConfigurationTemporarySwapper
+						configurationTemporarySwapper2 =
+							new ConfigurationTemporarySwapper(
+								className,
+								HashMapDictionaryBuilder.<String, Object>put(
+									"enabled", false
+								).build())) {
+
+					_route(_company.getCompanyId(), eventType);
+				}
+
+				Assert.assertEquals(
+					3,
+					_getAuditEventsCount(_company.getCompanyId(), eventType));
+
+				Map<String, Map<String, Object>> overridePropertiesMap =
+					ReflectionTestUtil.getFieldValue(
+						ConfigurationOverridePropertiesUtil.
+							getOverridePropertiesMap(),
+						"m");
+
+				overridePropertiesMap.put(
+					className,
+					HashMapBuilder.<String, Object>put(
+						"enabled", false
+					).build());
+
+				try {
+					pid = ConfigurationTestUtil.createFactoryConfiguration(
+						factoryPid,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"companyId", _company.getCompanyId()
+						).put(
+							"enabled", true
+						).build());
+
+					_route(_company.getCompanyId(), eventType);
+
+					ConfigurationTestUtil.deleteFactoryConfiguration(
+						pid, factoryPid);
+				}
+				finally {
+					overridePropertiesMap.remove(className);
+				}
+
+				Assert.assertEquals(
+					3,
+					_getAuditEventsCount(_company.getCompanyId(), eventType));
+			}
+
+			try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+					new ConfigurationTemporarySwapper(
+						PersistentAuditMessageProcessorConfiguration.class.
+							getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"bufferSize", 1
+						).put(
+							"enabled", false
+						).build())) {
+
+				String eventType = _createEventType();
+
+				_route(TestPropsValues.getCompanyId(), eventType);
+				_route(_company.getCompanyId(), eventType);
+
+				Assert.assertEquals(
+					0,
+					_getAuditEventsCount(_company.getCompanyId(), eventType));
+				Assert.assertEquals(
+					0,
+					_getAuditEventsCount(
+						TestPropsValues.getCompanyId(), eventType));
+			}
+		}
+	}
+
 	private static final long _FLUSH_INTERVAL = 86400000;
 
 	@Inject
@@ -332,6 +480,9 @@ public class PersistentAuditMessageProcessorTest {
 
 	@Inject
 	private AuditRouter _auditRouter;
+
+	@DeleteAfterTestRun
+	private Company _company;
 
 	@Inject
 	private RoleLocalService _roleLocalService;
