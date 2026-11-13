@@ -16,10 +16,12 @@ import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -40,6 +42,8 @@ import com.liferay.portal.vulcan.pagination.Page;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.lang.reflect.Constructor;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -53,7 +57,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Roberto Díaz
@@ -324,17 +327,22 @@ public class ViewSpacesSectionDisplayContextTest
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 
-		_fragmentRenderer.render(
-			fragmentRendererContext, httpServletRequest,
-			new MockHttpServletResponse());
+		Class<?> clazz = _fragmentRenderer.getClass();
 
-		Object spacesSectionDisplayContext = httpServletRequest.getAttribute(
+		ClassLoader classLoader = clazz.getClassLoader();
+
+		Class<?> viewSpacesDisplayContextClass = classLoader.loadClass(
 			"com.liferay.site.cms.site.initializer.internal.display.context." +
 				"ViewSpacesDisplayContext");
 
-		Assert.assertNotNull(spacesSectionDisplayContext);
+		Constructor<?> constructor =
+			viewSpacesDisplayContextClass.getConstructor(
+				AssetLibraryResource.Factory.class, HttpServletRequest.class,
+				JSONFactory.class, PortletResourcePermission.class);
 
-		return spacesSectionDisplayContext;
+		return constructor.newInstance(
+			_assetLibraryResourceFactory, httpServletRequest, _jsonFactory,
+			_portletResourcePermission);
 	}
 
 	private AssetLibraryResource _assetLibraryResource;
@@ -351,6 +359,12 @@ public class ViewSpacesSectionDisplayContextTest
 	private FragmentRenderer _fragmentRenderer;
 
 	@Inject
+	private JSONFactory _jsonFactory;
+
+	@Inject
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+
+	@Inject(filter = "resource.name=" + DepotConstants.RESOURCE_NAME)
+	private PortletResourcePermission _portletResourcePermission;
 
 }
