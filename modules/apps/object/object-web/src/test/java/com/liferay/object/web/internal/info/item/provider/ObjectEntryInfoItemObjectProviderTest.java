@@ -100,6 +100,69 @@ public class ObjectEntryInfoItemObjectProviderTest {
 	}
 
 	@Test
+	public void testGetInfoItemDraftLiferayObjectEntry() throws Exception {
+		long headObjectEntryId = RandomTestUtil.randomLong();
+
+		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+
+		Mockito.when(
+			objectEntry.getHeadObjectEntryId()
+		).thenReturn(
+			headObjectEntryId
+		);
+
+		Mockito.when(
+			objectEntry.isTypeDraft()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_objectEntryLocalService.fetchObjectEntry(headObjectEntryId)
+		).thenReturn(
+			objectEntry
+		);
+
+		Assert.assertEquals(
+			objectEntry,
+			_assertGetInfoItem(
+				new ClassPKInfoItemIdentifier(headObjectEntryId)));
+
+		Mockito.verify(
+			_objectEntryLocalService, Mockito.never()
+		).fetchObjectEntryByHeadObjectEntryId(
+			Mockito.anyLong()
+		);
+
+		Mockito.verifyNoInteractions(_objectEntryManagerRegistry);
+	}
+
+	@Test
+	public void testGetInfoItemDraftLiferayObjectEntryNoSuchInfoItemException() {
+		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+
+		Mockito.when(
+			objectEntry.isTypeDraft()
+		).thenReturn(
+			true
+		);
+
+		long objectEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_objectEntryLocalService.fetchObjectEntry(objectEntryId)
+		).thenReturn(
+			objectEntry
+		);
+
+		_assertGetInfoItemNoSuchInfoItemException(
+			new ClassPKInfoItemIdentifier(objectEntryId),
+			"Unable to get object entry " + objectEntryId);
+
+		Mockito.verifyNoInteractions(_objectEntryManagerRegistry);
+	}
+
+	@Test
 	public void testGetInfoItemLiferayObjectEntry() throws Exception {
 		long classPK = RandomTestUtil.randomLong();
 		ObjectEntry objectEntry = _mockObjectEntry(true);
