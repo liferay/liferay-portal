@@ -5,6 +5,7 @@
 
 package com.liferay.site.cms.site.initializer.internal.util;
 
+import com.liferay.comment.constants.CommentConstants;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
@@ -74,10 +75,10 @@ public class CommentUtil {
 				System.currentTimeMillis() - modifiedDate.getTime(), true));
 
 		RatingsEntry ratingsEntry = RatingsEntryLocalServiceUtil.fetchEntry(
-			themeDisplay.getUserId(), comment.getClassName(),
+			themeDisplay.getUserId(), CommentConstants.getDiscussionClassName(),
 			comment.getCommentId());
 		RatingsStats ratingsStats = RatingsStatsLocalServiceUtil.fetchStats(
-			comment.getClassName(), comment.getCommentId());
+			CommentConstants.getDiscussionClassName(), comment.getCommentId());
 
 		return JSONUtil.put(
 			"author", _getAuthorJSONObject(comment, httpServletRequest)
@@ -118,6 +119,8 @@ public class CommentUtil {
 
 				return 0;
 			}
+		).put(
+			"ratingsClassName", CommentConstants.getDiscussionClassName()
 		).put(
 			"rootComment",
 			() -> {

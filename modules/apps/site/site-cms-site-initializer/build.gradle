@@ -13,6 +13,7 @@ dependencies {
 	compileOnly project(":apps:asset:asset-categories-admin-web-api")
 	compileOnly project(":apps:asset:asset-tags-api")
 	compileOnly project(":apps:bulk:bulk-selection-api")
+	compileOnly project(":apps:comment:comment-api")
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:design-library:design-library-api")
 	compileOnly project(":apps:diff:diff-api")
