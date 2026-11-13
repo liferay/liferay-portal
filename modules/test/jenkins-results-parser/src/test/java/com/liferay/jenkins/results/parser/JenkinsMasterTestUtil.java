@@ -175,6 +175,9 @@ public class JenkinsMasterTestUtil {
 
 		jenkinsMastersBlacklist.clear();
 
+		ReflectionTestUtil.setFieldValue(
+			JenkinsMaster.class, "_jenkinsMastersWhitelist", null);
+
 		Map<String, ?> jenkinsMastersMap = ReflectionTestUtil.getFieldValue(
 			LoadBalancerUtil.class, "_jenkinsMastersMap");
 

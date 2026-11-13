@@ -13,6 +13,7 @@ import java.io.PrintStream;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
 import org.json.JSONArray;
@@ -505,6 +506,27 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testIsWhitelisted() {
+		Properties properties = new Properties();
+
+		properties.setProperty(
+			"jenkins.load.balancer.group[test-9]", "test-9-1..3");
+		properties.setProperty(
+			"jenkins.load.balancer.whitelist",
+			"${jenkins.load.balancer.group[test-9]},test-8-1");
+
+		JenkinsResultsParserUtil.setBuildProperties(properties);
+
+		JenkinsMasterTestUtil.resetCaches();
+
+		_testIsWhitelisted(true, "test-8-1");
+		_testIsWhitelisted(false, "test-9-0");
+		_testIsWhitelisted(true, "test-9-1");
+		_testIsWhitelisted(true, "test-9-3");
+		_testIsWhitelisted(false, "test-9-4");
+	}
+
+	@Test
 	public void testReadQueueItems() throws Exception {
 		_setQueueAPIJSONObject();
 
@@ -894,6 +916,13 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertEquals(cancelled, queueItem.isCancelled());
 		Assert.assertEquals(executableURL, queueItem.getExecutableURL());
 		Assert.assertEquals(queueId, queueItem.getId());
+	}
+
+	private void _testIsWhitelisted(boolean expected, String masterName) {
+		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(masterName);
+
+		Assert.assertEquals(
+			masterName, expected, jenkinsMaster.isWhitelisted());
 	}
 
 	private static final String _BUILD_URL_FLYWEIGHT =
