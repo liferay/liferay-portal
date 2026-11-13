@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 
@@ -258,37 +257,6 @@ public class JSResolveModulesServlet extends HttpServlet {
 		printWriter.close();
 	}
 
-	private List<String> _getModuleNames(HttpServletRequest httpServletRequest)
-		throws IOException {
-
-		String[] moduleNames = null;
-
-		String method = httpServletRequest.getMethod();
-
-		if (method.equals("GET")) {
-			moduleNames = ParamUtil.getStringValues(
-				httpServletRequest, "modules");
-		}
-		else {
-			String body = StringUtil.read(httpServletRequest.getInputStream());
-
-			body = URLDecoder.decode(
-				body, httpServletRequest.getCharacterEncoding());
-
-			if (!body.isEmpty()) {
-				body = body.substring(8);
-
-				moduleNames = body.split(StringPool.COMMA);
-			}
-		}
-
-		if (moduleNames != null) {
-			return Arrays.asList(moduleNames);
-		}
-
-		return Collections.emptyList();
-	}
-
 	private static final long _MAX_REQUEST_LENGTH = 1024 * 1024;
 
 	private static final String _MODULES_PREFIX = "modules=";
@@ -299,12 +267,12 @@ public class JSResolveModulesServlet extends HttpServlet {
 	@Reference
 	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
 
-	private BrowserModulesResolver _browserModulesResolver;
-
-	private volatile long _maxRequestLength;
+	private volatile BrowserModulesResolver _browserModulesResolver;
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	private volatile long _maxRequestLength;
 
 	@Reference
 	private NPMRegistry _npmRegistry;
