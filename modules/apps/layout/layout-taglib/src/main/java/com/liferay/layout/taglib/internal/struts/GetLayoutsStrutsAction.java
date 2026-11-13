@@ -38,6 +38,8 @@ public class GetLayoutsStrutsAction implements StrutsAction {
 		boolean enableCurrentPage = ParamUtil.getBoolean(
 			httpServletRequest, "enableCurrentPage");
 		long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
+		boolean includeDraftLayouts = ParamUtil.getBoolean(
+			httpServletRequest, "includeDraftLayouts");
 		String itemSelectorReturnType = ParamUtil.getString(
 			httpServletRequest, "itemSelectorReturnType");
 		boolean privateLayout = ParamUtil.getBoolean(
@@ -68,8 +70,8 @@ public class GetLayoutsStrutsAction implements StrutsAction {
 
 		JSONObject layoutsJSONObject = LayoutUtil.getLayoutsJSONObject(
 			checkDisplayPage, enableCurrentPage, groupId, httpServletRequest,
-			itemSelectorReturnType, privateLayout, parentLayoutId,
-			selectedLayoutUuids, selPlid, start, end);
+			includeDraftLayouts, itemSelectorReturnType, privateLayout,
+			parentLayoutId, selectedLayoutUuids, selPlid, start, end);
 
 		ServletResponseUtil.write(
 			httpServletResponse,

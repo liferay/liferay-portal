@@ -22,6 +22,7 @@ LayoutItemSelectorViewDisplayContext layoutItemSelectorViewDisplayContext = (Lay
 <liferay-layout:select-layout
 	checkDisplayPage="<%= layoutItemSelectorViewDisplayContext.isCheckDisplayPage() %>"
 	enableCurrentPage="<%= layoutItemSelectorViewDisplayContext.isEnableCurrentPage() %>"
+	includeDraftLayouts="<%= layoutItemSelectorViewDisplayContext.isIncludeDraftLayouts() %>"
 	itemSelectorReturnType="<%= layoutItemSelectorViewDisplayContext.getItemSelectedReturnType() %>"
 	itemSelectorSaveEvent="<%= layoutItemSelectorViewDisplayContext.getItemSelectedEventName() %>"
 	multiSelection="<%= layoutItemSelectorViewDisplayContext.isMultiSelection() %>"

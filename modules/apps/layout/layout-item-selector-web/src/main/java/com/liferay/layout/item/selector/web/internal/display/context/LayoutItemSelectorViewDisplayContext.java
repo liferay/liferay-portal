@@ -103,6 +103,10 @@ public class LayoutItemSelectorViewDisplayContext {
 		return _layoutItemSelectorCriterion.isEnableCurrentPage();
 	}
 
+	public boolean isIncludeDraftLayouts() {
+		return _layoutItemSelectorCriterion.isIncludeDraftLayouts();
+	}
+
 	public boolean isMultiSelection() {
 		return _layoutItemSelectorCriterion.isMultiSelection();
 	}

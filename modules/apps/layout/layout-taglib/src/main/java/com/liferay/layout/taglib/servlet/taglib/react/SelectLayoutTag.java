@@ -56,6 +56,10 @@ public class SelectLayoutTag extends IncludeTag {
 		return _enableCurrentPage;
 	}
 
+	public boolean isIncludeDraftLayouts() {
+		return _includeDraftLayouts;
+	}
+
 	public boolean isMultiSelection() {
 		return _multiSelection;
 	}
@@ -70,6 +74,10 @@ public class SelectLayoutTag extends IncludeTag {
 
 	public void setEnableCurrentPage(boolean enableCurrentPage) {
 		_enableCurrentPage = enableCurrentPage;
+	}
+
+	public void setIncludeDraftLayouts(boolean includeDraftLayouts) {
+		_includeDraftLayouts = includeDraftLayouts;
 	}
 
 	public void setItemSelectorReturnType(String itemSelectorReturnType) {
@@ -105,6 +113,7 @@ public class SelectLayoutTag extends IncludeTag {
 
 		_checkDisplayPage = false;
 		_enableCurrentPage = false;
+		_includeDraftLayouts = false;
 		_itemSelectorReturnType = null;
 		_itemSelectorSaveEvent = null;
 		_multiSelection = false;
@@ -138,13 +147,6 @@ public class SelectLayoutTag extends IncludeTag {
 		long selPlid = ParamUtil.getLong(
 			httpServletRequest, "selPlid", LayoutConstants.DEFAULT_PLID);
 
-		String findLayoutsURL = HttpComponentsUtil.addParameter(
-			themeDisplay.getPathMain() + "/portal/find_layouts", "selPlid",
-			selPlid);
-
-		findLayoutsURL = HttpComponentsUtil.addParameter(
-			findLayoutsURL, "privateLayout", _privateLayout);
-
 		String[] selectedLayoutIds = ParamUtil.getStringValues(
 			httpServletRequest, "layoutUuid");
 
@@ -153,12 +155,17 @@ public class SelectLayoutTag extends IncludeTag {
 		).put(
 			"config",
 			HashMapBuilder.<String, Object>put(
-				"findLayoutsURL", findLayoutsURL
+				"findLayoutsURL",
+				HttpComponentsUtil.addParameters(
+					themeDisplay.getPathMain() + "/portal/find_layouts",
+					"includeDraftLayouts", _includeDraftLayouts,
+					"privateLayout", _privateLayout, "selPlid", selPlid)
 			).put(
 				"loadMoreItemsURL",
-				HttpComponentsUtil.addParameter(
+				HttpComponentsUtil.addParameters(
 					themeDisplay.getPathMain() + "/portal/get_layouts",
-					"selPlid", selPlid)
+					"includeDraftLayouts", _includeDraftLayouts, "selPlid",
+					selPlid)
 			).put(
 				"maxPageSize",
 				GetterUtil.getInteger(
@@ -204,7 +211,7 @@ public class SelectLayoutTag extends IncludeTag {
 
 		JSONObject layoutsJSONObject = LayoutUtil.getLayoutsJSONObject(
 			_checkDisplayPage, _enableCurrentPage,
-			themeDisplay.getScopeGroupId(), getRequest(),
+			themeDisplay.getScopeGroupId(), getRequest(), _includeDraftLayouts,
 			_itemSelectorReturnType, _privateLayout,
 			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, selectedLayoutIds,
 			selPlid, QueryUtil.ALL_POS, end);
@@ -249,6 +256,7 @@ public class SelectLayoutTag extends IncludeTag {
 
 	private boolean _checkDisplayPage;
 	private boolean _enableCurrentPage;
+	private boolean _includeDraftLayouts;
 	private String _itemSelectorReturnType;
 	private String _itemSelectorSaveEvent;
 	private boolean _multiSelection;

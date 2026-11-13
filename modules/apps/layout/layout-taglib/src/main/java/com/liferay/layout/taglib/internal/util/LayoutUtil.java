@@ -7,19 +7,24 @@ package com.liferay.layout.taglib.internal.util;
 
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.layout.item.selector.LayoutItemSelectorReturnType;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
@@ -86,7 +91,7 @@ public class LayoutUtil {
 
 	public static JSONObject getLayoutsJSONObject(
 			boolean checkDisplayPage, boolean enableCurrentPage, long groupId,
-			HttpServletRequest httpServletRequest,
+			HttpServletRequest httpServletRequest, boolean includeDraftLayouts,
 			String itemSelectorReturnType, boolean privateLayout,
 			long parentLayoutId, String[] selectedLayoutUuid, long selPlid,
 			int start, int end)
@@ -96,18 +101,38 @@ public class LayoutUtil {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
-		List<Layout> layouts = ListUtil.filter(
+		List<Layout> layouts = TransformUtil.transform(
 			LayoutServiceUtil.getLayouts(
 				groupId, privateLayout, parentLayoutId),
-			layout -> _isIncluded(layout));
+			layout -> {
+				if (!_isIncluded(
+						includeDraftLayouts, layout, permissionChecker)) {
+
+					return null;
+				}
+
+				return layout;
+			});
 
 		for (Layout layout : ListUtil.subList(layouts, start, end)) {
-			List<Layout> childLayouts = ListUtil.filter(
+			List<Layout> childLayouts = TransformUtil.transform(
 				LayoutServiceUtil.getLayouts(
 					groupId, layout.isPrivateLayout(), layout.getLayoutId()),
-				curLayout -> _isIncluded(curLayout));
+				childLayout -> {
+					if (!_isIncluded(
+							includeDraftLayouts, childLayout,
+							permissionChecker)) {
+
+						return null;
+					}
+
+					return childLayout;
+				});
 
 			jsonArray.put(
 				JSONUtil.put(
@@ -197,16 +222,43 @@ public class LayoutUtil {
 		);
 	}
 
-	private static boolean _isIncluded(Layout layout) {
+	private static boolean _isIncluded(
+			boolean includeDraftLayouts, Layout layout,
+			PermissionChecker permissionChecker)
+		throws Exception {
+
 		if (!layout.isTypeContent() && !layout.isTypeEmpty()) {
 			return true;
 		}
 
-		if (layout.fetchDraftLayout() != null) {
-			return layout.isPublished();
+		if (layout.fetchDraftLayout() == null) {
+			if (layout.isApproved() && !layout.isHidden() &&
+				!layout.isSystem()) {
+
+				return true;
+			}
+
+			return false;
 		}
 
-		if (layout.isApproved() && !layout.isHidden() && !layout.isSystem()) {
+		if (layout.isPublished() ||
+			(includeDraftLayouts &&
+			 LayoutPermissionUtil.containsLayoutPreviewDraftPermission(
+				 permissionChecker, layout))) {
+
+			return true;
+		}
+
+		long launchSetId = LaunchPreviewThreadLocal.getLaunchSetId();
+
+		if (launchSetId <= 0) {
+			return false;
+		}
+
+		Layout launchDraftLayout = LayoutLocalServiceUtil.fetchDraftLayout(
+			layout.getPlid(), launchSetId);
+
+		if (launchDraftLayout != null) {
 			return true;
 		}
 

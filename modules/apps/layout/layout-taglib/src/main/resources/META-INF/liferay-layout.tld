@@ -195,6 +195,13 @@
 		</attribute>
 		<attribute>
 			<description></description>
+			<name>includeDraftLayouts</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<description></description>
 			<name>itemSelectorReturnType</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
