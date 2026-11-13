@@ -56,6 +56,8 @@ test(
 		await editUserPage.birthdayInput.blur();
 		await editUserPage.saveButton.click();
 
+		await waitForAlert(page);
+
 		await usersAndOrganizationsPage.goToUsers(true);
 
 		await (

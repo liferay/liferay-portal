@@ -865,7 +865,7 @@ export class UsersAndOrganizationsPage {
 
 	async goto(forceReload?: boolean) {
 		if (forceReload) {
-			this.globalMenuPage.goToHome();
+			await this.globalMenuPage.goToHome();
 		}
 
 		await this.globalMenuPage.goToControlPanel('Users and Organizations');
