@@ -137,10 +137,11 @@ public class ResponseErrorHandler extends DefaultResponseErrorHandler {
 
 	private static final Set<String> _messageKeys = Set.of(
 		"date-range-limit-exceeded", "mcp-cancelled-by-operator",
-		"mcp-disabled", "mcp-tool-disabled", "page-size-limit-exceeded",
-		"query-in-progress", "query-timeout-exceeded",
-		"request-deadline-exceeded", "service-capacity-unavailable",
-		"too-many-concurrent-requests");
+		"mcp-concurrency-limit-exceeded", "mcp-disabled",
+		"mcp-rate-limit-exceeded", "mcp-tool-disabled",
+		"page-size-limit-exceeded", "query-in-progress",
+		"query-timeout-exceeded", "request-deadline-exceeded",
+		"service-capacity-unavailable", "too-many-concurrent-requests");
 	private static final ObjectMapper _objectMapper = new ObjectMapper();
 
 }

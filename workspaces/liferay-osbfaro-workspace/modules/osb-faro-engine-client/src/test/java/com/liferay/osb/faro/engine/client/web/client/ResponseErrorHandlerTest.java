@@ -93,17 +93,31 @@ public class ResponseErrorHandlerTest {
 
 	@Test
 	public void testHandleErrorWithMCPCancelledByOperator() throws Exception {
-		_assertHeadlessRequestRejectedException("mcp-cancelled-by-operator");
+		_assertHeadlessRequestRejectedException(
+			"mcp-cancelled-by-operator", 503);
+	}
+
+	@Test
+	public void testHandleErrorWithMCPConcurrencyLimitExceeded()
+		throws Exception {
+
+		_assertHeadlessRequestRejectedException(
+			"mcp-concurrency-limit-exceeded", 429);
 	}
 
 	@Test
 	public void testHandleErrorWithMCPDisabled() throws Exception {
-		_assertHeadlessRequestRejectedException("mcp-disabled");
+		_assertHeadlessRequestRejectedException("mcp-disabled", 503);
+	}
+
+	@Test
+	public void testHandleErrorWithMCPRateLimitExceeded() throws Exception {
+		_assertHeadlessRequestRejectedException("mcp-rate-limit-exceeded", 429);
 	}
 
 	@Test
 	public void testHandleErrorWithMCPToolDisabled() throws Exception {
-		_assertHeadlessRequestRejectedException("mcp-tool-disabled");
+		_assertHeadlessRequestRejectedException("mcp-tool-disabled", 503);
 	}
 
 	@Test
@@ -124,7 +138,7 @@ public class ResponseErrorHandlerTest {
 
 	@Test
 	public void testHandleErrorWithQueryInProgress() throws Exception {
-		_assertHeadlessRequestRejectedException("query-in-progress");
+		_assertHeadlessRequestRejectedException("query-in-progress", 503);
 	}
 
 	@Test
@@ -140,7 +154,8 @@ public class ResponseErrorHandlerTest {
 		Assert.assertEquals(content, faroEngineClientException.getMessage());
 	}
 
-	private void _assertHeadlessRequestRejectedException(String messageKey)
+	private void _assertHeadlessRequestRejectedException(
+			String messageKey, int statusCode)
 		throws Exception {
 
 		long retryAfterSeconds = RandomTestUtil.randomLong();
@@ -149,7 +164,7 @@ public class ResponseErrorHandlerTest {
 			JSONUtil.put(
 				"errorAttributes", JSONUtil.put("messageKey", messageKey)
 			).toString(),
-			String.valueOf(retryAfterSeconds), 503);
+			String.valueOf(retryAfterSeconds), statusCode);
 
 		Assert.assertTrue(
 			faroEngineClientException instanceof
