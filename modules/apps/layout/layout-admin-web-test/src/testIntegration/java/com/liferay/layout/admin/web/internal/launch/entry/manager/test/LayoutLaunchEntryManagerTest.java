@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.launch.internal.entry.manager.test;
+package com.liferay.layout.admin.web.internal.launch.entry.manager.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.launch.test.util.BaseLaunchEntryManagerTestCase;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
 import com.liferay.layout.manager.LayoutLockManager;
 import com.liferay.layout.test.util.LayoutTestUtil;

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.launch.internal.entry.manager.test;
+package com.liferay.journal.web.internal.launch.entry.manager.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.journal.constants.JournalFolderConstants;
@@ -12,6 +12,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.launch.test.util.BaseLaunchEntryManagerTestCase;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;

@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Launch Test Utilities
+Bundle-SymbolicName: com.liferay.launch.test.util
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.launch.test.util
