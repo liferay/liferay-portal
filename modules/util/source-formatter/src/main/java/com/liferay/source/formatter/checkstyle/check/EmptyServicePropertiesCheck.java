@@ -71,10 +71,10 @@ public class EmptyServicePropertiesCheck extends BaseCheck {
 			return;
 		}
 
-		DetailAST initializerExprDetailAST = assignDetailAST.getFirstChild();
+		DetailAST childDetailAST = assignDetailAST.getFirstChild();
 
-		if ((initializerExprDetailAST.getType() != TokenTypes.EXPR) ||
-			!_isEmptyDictionary(initializerExprDetailAST.getFirstChild())) {
+		if ((childDetailAST.getType() != TokenTypes.EXPR) ||
+			!_isEmptyDictionary(childDetailAST.getFirstChild())) {
 
 			return;
 		}
