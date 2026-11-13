@@ -63,9 +63,19 @@ public class HeadlessRequestRejectedExceptionMapperTest {
 			"The query was cancelled by an operator, retry after " +
 				retryAfterSeconds + " seconds");
 		_testToResponse(
+			null, "mcp-concurrency-limit-exceeded", retryAfterSeconds,
+			Response.Status.TOO_MANY_REQUESTS,
+			"Request limit was exceeded, retry after " + retryAfterSeconds +
+				" seconds");
+		_testToResponse(
 			null, "mcp-disabled", retryAfterSeconds,
 			Response.Status.SERVICE_UNAVAILABLE,
 			"MCP is temporarily unavailable, retry after " + retryAfterSeconds +
+				" seconds");
+		_testToResponse(
+			null, "mcp-rate-limit-exceeded", retryAfterSeconds,
+			Response.Status.TOO_MANY_REQUESTS,
+			"Request limit was exceeded, retry after " + retryAfterSeconds +
 				" seconds");
 		_testToResponse(
 			null, "mcp-tool-disabled", retryAfterSeconds,
@@ -89,8 +99,16 @@ public class HeadlessRequestRejectedExceptionMapperTest {
 				retryAfterSeconds + " seconds");
 
 		_testToResponse(
+			null, "mcp-concurrency-limit-exceeded", null,
+			Response.Status.TOO_MANY_REQUESTS,
+			"Request limit was exceeded, retry later");
+		_testToResponse(
 			null, "mcp-disabled", null, Response.Status.SERVICE_UNAVAILABLE,
 			"MCP is temporarily unavailable, retry later");
+		_testToResponse(
+			null, "mcp-rate-limit-exceeded", null,
+			Response.Status.TOO_MANY_REQUESTS,
+			"Request limit was exceeded, retry later");
 		_testToResponse(
 			null, "page-size-limit-exceeded", null, Response.Status.BAD_REQUEST,
 			"Page size is too large");

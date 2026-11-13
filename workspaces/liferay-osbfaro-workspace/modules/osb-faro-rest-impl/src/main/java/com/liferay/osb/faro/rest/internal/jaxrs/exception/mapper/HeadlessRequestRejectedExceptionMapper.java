@@ -41,8 +41,10 @@ public class HeadlessRequestRejectedExceptionMapper
 			headlessRequestRejectedException.getRetryAfterSeconds();
 
 		if ((retryAfterSeconds == null) ||
-			(response.getStatus() !=
-				Response.Status.SERVICE_UNAVAILABLE.getStatusCode())) {
+			((response.getStatus() !=
+				Response.Status.SERVICE_UNAVAILABLE.getStatusCode()) &&
+			 (response.getStatus() !=
+				 Response.Status.TOO_MANY_REQUESTS.getStatusCode()))) {
 
 			return response;
 		}
@@ -76,6 +78,16 @@ public class HeadlessRequestRejectedExceptionMapper
 				_getRetryTitle(
 					headlessRequestRejectedException.getRetryAfterSeconds(),
 					"The query was cancelled by an operator, retry %s"));
+		}
+
+		if (Objects.equals(messageKey, "mcp-concurrency-limit-exceeded") ||
+			Objects.equals(messageKey, "mcp-rate-limit-exceeded")) {
+
+			return new Problem(
+				Response.Status.TOO_MANY_REQUESTS,
+				_getRetryTitle(
+					headlessRequestRejectedException.getRetryAfterSeconds(),
+					"Request limit was exceeded, retry %s"));
 		}
 
 		if (Objects.equals(messageKey, "mcp-disabled")) {
