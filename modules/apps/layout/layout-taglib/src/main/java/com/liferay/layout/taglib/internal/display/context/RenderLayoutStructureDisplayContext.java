@@ -47,6 +47,7 @@ import com.liferay.layout.util.structure.LayoutStructureItemUtil;
 import com.liferay.layout.util.structure.RootLayoutStructureItem;
 import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.StyledLayoutStructureItem;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.InfoFormException;
@@ -179,6 +180,13 @@ public class RenderLayoutStructureDisplayContext {
 		String value = _getFieldValue(linkJSONObject);
 
 		if (Validator.isNotNull(value)) {
+			if (!Objects.equals(
+					HtmlUtil.escapeHREF(value),
+					HtmlUtil.escapeAttribute(value))) {
+
+				value = StringUtil.replaceFirst(value, CharPool.COLON, "%3a");
+			}
+
 			return value;
 		}
 

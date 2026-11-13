@@ -734,7 +734,7 @@ public class LayoutStructureRenderer {
 
 		if (Validator.isNotNull(containerLinkHref)) {
 			jspWriter.write("<a href=\"");
-			jspWriter.write(HtmlUtil.escapeHREF(containerLinkHref));
+			jspWriter.write(HtmlUtil.escapeAttribute(containerLinkHref));
 			jspWriter.write("\"style=\"color: inherit; text-decoration: ");
 			jspWriter.write("none;\" target=\"");
 			jspWriter.write(
