@@ -40,9 +40,10 @@ public class KeywordsFieldPredicateProvider implements FieldPredicateProvider {
 
 	@Override
 	public Predicate getBinaryExpressionPredicate(
+		Object left,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Object left, long objectDefinitionId,
-		BinaryExpression.Operation operation, Object right) {
+		long objectDefinitionId, BinaryExpression.Operation operation,
+		Object right) {
 
 		return _getKeywordsPredicate(
 			objectDefinitionColumnSupplier, objectDefinitionId,

@@ -22,9 +22,10 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface FieldPredicateProvider {
 
 	public Predicate getBinaryExpressionPredicate(
+			Object left,
 			Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-			Object left, long objectDefinitionId,
-			BinaryExpression.Operation operation, Object right)
+			long objectDefinitionId, BinaryExpression.Operation operation,
+			Object right)
 		throws ExpressionVisitException;
 
 	public Predicate getContainsPredicate(

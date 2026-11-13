@@ -36,9 +36,10 @@ public class MultiselectPicklistFieldPredicateProvider
 
 	@Override
 	public Predicate getBinaryExpressionPredicate(
+		Object left,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Object left, long objectDefinitionId,
-		BinaryExpression.Operation operation, Object right) {
+		long objectDefinitionId, BinaryExpression.Operation operation,
+		Object right) {
 
 		Expression<String> expression =
 			(Expression<String>)objectDefinitionColumnSupplier.apply(
@@ -87,13 +88,13 @@ public class MultiselectPicklistFieldPredicateProvider
 		for (Object right : rights) {
 			if (predicate == null) {
 				predicate = getBinaryExpressionPredicate(
-					objectDefinitionColumnSupplier, left, objectDefinitionId,
+					left, objectDefinitionColumnSupplier, objectDefinitionId,
 					BinaryExpression.Operation.EQ, right);
 			}
 			else {
 				predicate = predicate.or(
 					getBinaryExpressionPredicate(
-						objectDefinitionColumnSupplier, left,
+						left, objectDefinitionColumnSupplier,
 						objectDefinitionId, BinaryExpression.Operation.EQ,
 						right));
 			}

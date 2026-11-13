@@ -36,9 +36,10 @@ public class SystemDateFieldPredicateProvider
 
 	@Override
 	public Predicate getBinaryExpressionPredicate(
+			Object left,
 			Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-			Object left, long objectDefinitionId,
-			BinaryExpression.Operation operation, Object right)
+			long objectDefinitionId, BinaryExpression.Operation operation,
+			Object right)
 		throws ExpressionVisitException {
 
 		Expression<Object> expression =
@@ -79,7 +80,7 @@ public class SystemDateFieldPredicateProvider
 
 		for (Object right : rights) {
 			Predicate binaryExpressionPredicate = getBinaryExpressionPredicate(
-				objectDefinitionColumnSupplier, left, objectDefinitionId,
+				left, objectDefinitionColumnSupplier, objectDefinitionId,
 				BinaryExpression.Operation.EQ, right);
 
 			if (predicate == null) {

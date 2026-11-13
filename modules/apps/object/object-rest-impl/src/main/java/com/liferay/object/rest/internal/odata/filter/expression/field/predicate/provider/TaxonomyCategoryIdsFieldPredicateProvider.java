@@ -37,9 +37,10 @@ public class TaxonomyCategoryIdsFieldPredicateProvider
 
 	@Override
 	public Predicate getBinaryExpressionPredicate(
+		Object left,
 		Function<String, Column<?, ?>> objectDefinitionColumnSupplier,
-		Object left, long objectDefinitionId,
-		BinaryExpression.Operation operation, Object right) {
+		long objectDefinitionId, BinaryExpression.Operation operation,
+		Object right) {
 
 		return _getTaxonomyCategoryIdsPredicate(
 			objectDefinitionColumnSupplier, objectDefinitionId,

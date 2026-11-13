@@ -721,7 +721,7 @@ public class PredicateExpressionVisitorImpl
 
 			if (fieldPredicateProvider != null) {
 				predicate = fieldPredicateProvider.getBinaryExpressionPredicate(
-					name -> _getColumn(name, objectDefinition), left,
+					left, name -> _getColumn(name, objectDefinition),
 					objectDefinition.getObjectDefinitionId(), operation,
 					_getValue(left, objectDefinition, right));
 			}
