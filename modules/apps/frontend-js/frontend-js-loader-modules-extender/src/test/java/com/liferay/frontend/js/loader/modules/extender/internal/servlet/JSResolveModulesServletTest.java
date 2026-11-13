@@ -7,6 +7,7 @@ package com.liferay.frontend.js.loader.modules.extender.internal.servlet;
 
 import com.liferay.frontend.js.loader.modules.extender.internal.resolution.BrowserModulesResolution;
 import com.liferay.frontend.js.loader.modules.extender.internal.resolution.BrowserModulesResolver;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -61,10 +62,6 @@ public class JSResolveModulesServletTest {
 		).thenReturn(
 			browserModulesResolution
 		);
-
-		ReflectionTestUtil.setFieldValue(
-			_jsResolveModulesServlet, "_browserModulesResolver",
-			_browserModulesResolver);
 	}
 
 	@Test
@@ -130,14 +127,23 @@ public class JSResolveModulesServletTest {
 		Mockito.clearInvocations(_browserModulesResolver);
 
 		if (maxRequestLength == null) {
-			_jsResolveModulesServlet.activate(Collections.emptyMap());
+			_jsResolveModulesServlet.activate(
+				SystemBundleUtil.getBundleContext(), Collections.emptyMap());
 		}
 		else {
 			_jsResolveModulesServlet.activate(
+				SystemBundleUtil.getBundleContext(),
 				HashMapBuilder.<String, Object>put(
 					"maxRequestLength", maxRequestLength
 				).build());
 		}
+
+		BrowserModulesResolver browserModulesResolver =
+			ReflectionTestUtil.getAndSetFieldValue(
+				_jsResolveModulesServlet, "_browserModulesResolver",
+				_browserModulesResolver);
+
+		browserModulesResolver.destroy();
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest(
