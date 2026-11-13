@@ -50,6 +50,24 @@ tests:
             operatorApplications.crossplane.providers.provider-nop:
                 package: xpkg.upbound.io/crossplane-contrib/provider-nop:v0.4.0
     -   asserts:
+            -   hasDocuments:
+                    count: 2
+            -   documentSelector:
+                    path: metadata.name
+                    value: provider-kubernetes
+                equal:
+                    path: kind
+                    value: Provider
+            -   documentSelector:
+                    path: metadata.name
+                    value: provider-kubernetes-runtime-config
+                equal:
+                    path: kind
+                    value: DeploymentRuntimeConfig
+        it: Leaves the default Kubernetes provider config to another release and keeps the providers
+        set:
+            operatorApplications.crossplane.clusterProviderConfig.enabled: false
+    -   asserts:
             -   notExists:
                     path: spec.deploymentTemplate.spec.template.spec.serviceAccountName
             -   notExists:
@@ -78,24 +96,6 @@ tests:
             path: kind
             value: ClusterProviderConfig
         it: Points the default Kubernetes provider config at the injected identity
-    -   asserts:
-            -   hasDocuments:
-                    count: 2
-            -   documentSelector:
-                    path: metadata.name
-                    value: provider-kubernetes
-                equal:
-                    path: kind
-                    value: Provider
-            -   documentSelector:
-                    path: metadata.name
-                    value: provider-kubernetes-runtime-config
-                equal:
-                    path: kind
-                    value: DeploymentRuntimeConfig
-        it: Leaves the default Kubernetes provider config to another release and keeps the providers
-        set:
-            operatorApplications.crossplane.clusterProviderConfig.enabled: false
     -   asserts:
             -   hasDocuments:
                     count: 3
