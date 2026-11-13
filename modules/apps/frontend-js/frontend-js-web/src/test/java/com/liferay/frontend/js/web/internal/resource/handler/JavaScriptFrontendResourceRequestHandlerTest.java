@@ -290,11 +290,11 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 		null, null, null, null, ExpectedCacheKey.URL_AND_LAST_MODIFIED, null,
 		null, ExpectedCacheKey.NULL, null, null,
 		ExpectedCacheKey.URL_AND_LAST_MODIFIED, null, null,
-		ExpectedCacheKey.URL_AND_LAST_MODIFIED, ExpectedCacheKey.URL,
-		ExpectedCacheKey.URL, ExpectedCacheKey.URL, ExpectedCacheKey.NULL,
-		ExpectedCacheKey.NULL, ExpectedCacheKey.NULL, ExpectedCacheKey.URL,
+		ExpectedCacheKey.NULL, ExpectedCacheKey.URL, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL, ExpectedCacheKey.NULL, ExpectedCacheKey.NULL,
+		ExpectedCacheKey.NULL, ExpectedCacheKey.URL, ExpectedCacheKey.URL,
 		ExpectedCacheKey.URL, ExpectedCacheKey.URL, ExpectedCacheKey.URL,
-		ExpectedCacheKey.URL, ExpectedCacheKey.URL
+		ExpectedCacheKey.URL
 	};
 
 	private static final boolean[] _EXPECTED_CAN_HANDLE_REQUEST = {
@@ -306,7 +306,7 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 	private static final ExpectedContent[] _EXPECTED_CONTENT = {
 		null, null, null, null, ExpectedContent.JS, null, null,
 		ExpectedContent.TRANSLATED_JS, null, null, ExpectedContent.JS, null,
-		null, ExpectedContent.TRANSLATABLE_JS, ExpectedContent.JS,
+		null, ExpectedContent.TRANSLATED_JS, ExpectedContent.JS,
 		ExpectedContent.JS, ExpectedContent.JS, ExpectedContent.TRANSLATED_JS,
 		ExpectedContent.TRANSLATED_JS, ExpectedContent.TRANSLATED_JS,
 		ExpectedContent.JS, ExpectedContent.JS, ExpectedContent.JS,
@@ -339,7 +339,7 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 	private static final ExpectedMaxAge[] _EXPECTED_MAX_AGE = {
 		null, null, null, null, ExpectedMaxAge.JS_FILES, null, null,
 		ExpectedMaxAge.TRANSLATED_JS_FILES, null, null, ExpectedMaxAge.JS_FILES,
-		null, null, ExpectedMaxAge.JS_FILES, ExpectedMaxAge.INFINITE,
+		null, null, ExpectedMaxAge.TRANSLATED_JS_FILES, ExpectedMaxAge.INFINITE,
 		ExpectedMaxAge.INFINITE, ExpectedMaxAge.JS_FILES,
 		ExpectedMaxAge.TRANSLATED_JS_FILES, ExpectedMaxAge.TRANSLATED_JS_FILES,
 		ExpectedMaxAge.TRANSLATED_JS_FILES, ExpectedMaxAge.INFINITE,
@@ -350,16 +350,17 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 
 	private static final boolean[] _EXPECTED_PRIVATE = {
 		false, false, false, false, false, false, false, true, false, false,
-		false, false, false, false, false, false, false, true, true, true,
-		false, false, false, false, false, false
+		false, false, false, true, false, false, false, true, true, true, false,
+		false, false, false, false, false
 	};
 
 	private static final ExpectedSendNoCache[] _EXPECTED_SEND_NO_CACHE = {
 		null, null, null, null, ExpectedSendNoCache.JS_FILES, null, null,
 		ExpectedSendNoCache.TRANSLATED_JS_FILES, null, null,
-		ExpectedSendNoCache.JS_FILES, null, null, ExpectedSendNoCache.JS_FILES,
-		ExpectedSendNoCache.FALSE, ExpectedSendNoCache.FALSE,
-		ExpectedSendNoCache.JS_FILES, ExpectedSendNoCache.TRANSLATED_JS_FILES,
+		ExpectedSendNoCache.JS_FILES, null, null,
+		ExpectedSendNoCache.TRANSLATED_JS_FILES, ExpectedSendNoCache.FALSE,
+		ExpectedSendNoCache.FALSE, ExpectedSendNoCache.JS_FILES,
+		ExpectedSendNoCache.TRANSLATED_JS_FILES,
 		ExpectedSendNoCache.TRANSLATED_JS_FILES,
 		ExpectedSendNoCache.TRANSLATED_JS_FILES, ExpectedSendNoCache.FALSE,
 		ExpectedSendNoCache.FALSE, ExpectedSendNoCache.JS_FILES,
