@@ -841,10 +841,12 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 
 		_downstreamBuildReport = null;
 
-		synchronized (_testrayCaseResultURLLock) {
-			_testrayCaseResultURL = null;
+		if (_testrayCaseResultURLLock != null) {
+			synchronized (_testrayCaseResultURLLock) {
+				_testrayCaseResultURL = null;
 
-			_deleteTestrayCaseResultFile();
+				_deleteTestrayCaseResultFile();
+			}
 		}
 
 		Build parentBuild = getParentBuild();

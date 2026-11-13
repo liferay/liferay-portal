@@ -680,6 +680,50 @@ public class BaseDownstreamBuildTest
 	}
 
 	@Test
+	public void testResetBeforeInitialization() {
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).reset();
+
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+
+		Mockito.when(
+			baseDownstreamBuild.getAxisTestClassGroup()
+		).thenReturn(
+			axisTestClassGroup
+		);
+
+		Job job = Mockito.mock(Job.class);
+
+		Mockito.when(
+			axisTestClassGroup.getJob()
+		).thenReturn(
+			job
+		);
+
+		TestrayContext testrayContext = Mockito.mock(TestrayContext.class);
+
+		Mockito.when(
+			job.getTestrayContext()
+		).thenReturn(
+			testrayContext
+		);
+
+		baseDownstreamBuild.reset();
+
+		Mockito.verify(
+			testrayContext, Mockito.never()
+		).deleteTestrayCaseResultFile(
+			Mockito.any()
+		);
+	}
+
+	@Test
 	public void testSaveBadBuildURLsInBuildDatabase() {
 		String axisVariable = RandomTestUtil.randomString();
 		String buildURL = RandomTestUtil.randomString();
