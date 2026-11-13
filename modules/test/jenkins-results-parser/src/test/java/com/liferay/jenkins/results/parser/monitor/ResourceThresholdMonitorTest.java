@@ -44,10 +44,14 @@ public class ResourceThresholdMonitorTest
 		setURLReaderException(
 			new IOException(RandomTestUtil.randomString()), "/prometheus");
 
-		_testExecuteBlacklistedJenkinsMaster("disk");
-		_testExecuteBlacklistedJenkinsMaster("executor.utilization");
-		_testExecuteBlacklistedJenkinsMaster("queue.depth");
-		_testExecuteBlacklistedJenkinsMaster("ram");
+		_testExecuteBlacklistedJenkinsMaster("disk", true);
+		_testExecuteBlacklistedJenkinsMaster("disk", false);
+		_testExecuteBlacklistedJenkinsMaster("executor.utilization", true);
+		_testExecuteBlacklistedJenkinsMaster("executor.utilization", false);
+		_testExecuteBlacklistedJenkinsMaster("queue.depth", true);
+		_testExecuteBlacklistedJenkinsMaster("queue.depth", false);
+		_testExecuteBlacklistedJenkinsMaster("ram", true);
+		_testExecuteBlacklistedJenkinsMaster("ram", false);
 	}
 
 	@Test
@@ -598,7 +602,9 @@ public class ResourceThresholdMonitorTest
 		return monitorProperties;
 	}
 
-	private void _testExecuteBlacklistedJenkinsMaster(String metric) {
+	private void _testExecuteBlacklistedJenkinsMaster(
+		String metric, boolean whitelisted) {
+
 		String masterName = MonitorTestUtil.newJenkinsMasterName();
 
 		Properties monitorProperties = _newMonitorProperties(
@@ -612,10 +618,25 @@ public class ResourceThresholdMonitorTest
 			"monitor[a].parameter[mount]", MonitorTestUtil.MOUNT);
 		monitorProperties.setProperty("monitor[a].threshold[warn]", "1");
 
+		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(masterName);
+
+		ReflectionTestUtil.setFieldValue(jenkinsMaster, "_blacklisted", true);
 		ReflectionTestUtil.setFieldValue(
-			JenkinsMaster.getInstance(masterName), "_blacklisted", true);
+			jenkinsMaster, "_whitelisted", whitelisted);
 
 		MonitorResult monitorResult = _execute(monitorProperties);
+
+		if (!whitelisted) {
+			String message = monitorResult.getMessage();
+
+			Assert.assertTrue(
+				message, message.startsWith("Unable to read the "));
+
+			testEquals(
+				MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+
+			return;
+		}
 
 		testEquals(masterName + " is blacklisted", monitorResult.getMessage());
 

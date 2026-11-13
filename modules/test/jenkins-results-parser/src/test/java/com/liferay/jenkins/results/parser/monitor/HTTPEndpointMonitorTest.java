@@ -94,10 +94,16 @@ public class HTTPEndpointMonitorTest
 			JenkinsMaster.getInstance(masterName), "_blacklisted", true);
 
 		_testExecuteMasterName(
+			unreadableMessage, MonitorResult.Status.CRITICAL, masterName);
+
+		ReflectionTestUtil.setFieldValue(
+			JenkinsMaster.getInstance(masterName), "_whitelisted", true);
+
+		_testExecuteMasterName(
 			masterName + " is blacklisted", MonitorResult.Status.OK,
 			masterName);
 
-		verifyURLReaderAttemptsCount(2, _URL);
+		verifyURLReaderAttemptsCount(3, _URL);
 	}
 
 	@Test
