@@ -168,21 +168,8 @@ public class BatchEngineImportTaskLocalServiceImpl
 
 		return _updateBatchEngineImportTask(
 			batchEngineImportTask,
-			() -> {
-				try (BatchEngineTaskItemDelegateSafeCloseable
-						batchEngineTaskItemDelegateSafeCloseable =
-							_batchEngineTaskItemDelegateRegistry.
-								getBatchEngineTaskItemDelegateWithSafeCloseable(
-									batchEngineImportTask.getCompanyId(),
-									batchEngineImportTask.getClassName(),
-									batchEngineImportTask.
-										getTaskItemDelegateName())) {
-
-					return _itemClassRegistry.getItemClass(
-						batchEngineTaskItemDelegateSafeCloseable.
-							getBatchEngineTaskItemDelegate());
-				}
-			});
+			() -> _itemClassRegistry.getItemClass(
+				batchEngineImportTask.getClassName()));
 	}
 
 	@Override
