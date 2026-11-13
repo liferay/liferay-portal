@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -286,9 +285,6 @@ public class SystemConfigurationResourceFactoryImpl
 	@Reference
 	private SortParserProvider _sortParserProvider;
 
-	@Reference
-	private UserLocalService _userLocalService;
-
 	private static class ResourceProxyProviderFunctionHolder {
 
 		private static final Function
@@ -349,4 +345,4 @@ public class SystemConfigurationResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1896578654
+// LIFERAY-REST-BUILDER-HASH:674550316

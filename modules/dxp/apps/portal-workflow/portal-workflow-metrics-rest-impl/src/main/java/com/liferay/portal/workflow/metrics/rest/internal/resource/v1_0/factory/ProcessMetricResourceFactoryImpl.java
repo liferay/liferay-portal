@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -268,9 +267,6 @@ public class ProcessMetricResourceFactoryImpl
 	@Reference
 	private SortParserProvider _sortParserProvider;
 
-	@Reference
-	private UserLocalService _userLocalService;
-
 	private static class ResourceProxyProviderFunctionHolder {
 
 		private static final Function<InvocationHandler, ProcessMetricResource>
@@ -330,4 +326,4 @@ public class ProcessMetricResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1491176899
+// LIFERAY-REST-BUILDER-HASH:824852561
