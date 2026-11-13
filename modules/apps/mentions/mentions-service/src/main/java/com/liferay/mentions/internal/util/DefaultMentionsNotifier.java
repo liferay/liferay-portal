@@ -7,6 +7,7 @@ package com.liferay.mentions.internal.util;
 
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.mentions.configuration.MentionsGroupServiceConfiguration;
 import com.liferay.mentions.constants.MentionsConstants;
 import com.liferay.mentions.constants.MentionsPortletKeys;
 import com.liferay.mentions.matcher.MentionsMatcher;
@@ -17,6 +18,7 @@ import com.liferay.message.boards.service.MBMessageLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -232,6 +234,23 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 				classPK, _permissionCheckerFactory.create(mentionedUser)));
 		mentionsSubscriptionSender.setUserGroupIds(mentionedUserGroupIds);
 
+		if (!mentionedUserGroupIds.isEmpty()) {
+			MentionsGroupServiceConfiguration
+				mentionsGroupServiceConfiguration =
+					_configurationProvider.getCompanyConfiguration(
+						MentionsGroupServiceConfiguration.class,
+						user.getCompanyId());
+
+			mentionsSubscriptionSender.setUserGroupLocalizedBodyMap(
+				_localization.getMap(
+					mentionsGroupServiceConfiguration.
+						commentUserGroupMentionEmailBody()));
+			mentionsSubscriptionSender.setUserGroupLocalizedSubjectMap(
+				_localization.getMap(
+					mentionsGroupServiceConfiguration.
+						commentUserGroupMentionEmailSubject()));
+		}
+
 		mentionsSubscriptionSender.flushNotificationsAsync();
 	}
 
@@ -364,6 +383,9 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 	private static final Pattern _mentionPattern = Pattern.compile(
 		"<span\\s+class=\"mention mention-(user|usergroup)-([^\"\\s]+)\">" +
 			"[^<]*</span>");
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private DiscussionPermission _discussionPermission;

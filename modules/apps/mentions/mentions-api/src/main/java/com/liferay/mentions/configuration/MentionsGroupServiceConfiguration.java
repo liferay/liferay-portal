@@ -10,6 +10,8 @@ import aQute.bnd.annotation.metatype.Meta;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Sergio González
  */
@@ -19,6 +21,7 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 	localization = "content/Language",
 	name = "mentions-group-service-configuration-name"
 )
+@ProviderType
 public interface MentionsGroupServiceConfiguration {
 
 	@Meta.AD(
@@ -44,5 +47,17 @@ public interface MentionsGroupServiceConfiguration {
 		name = "comment-mention-email-subject", required = false
 	)
 	public LocalizedValuesMap commentMentionEmailSubject();
+
+	@Meta.AD(
+		deflt = "${resource:com/liferay/mentions/configuration/dependencies/comment_user_group_mention_email_body.tmpl}",
+		name = "comment-user-group-mention-email-body", required = false
+	)
+	public LocalizedValuesMap commentUserGroupMentionEmailBody();
+
+	@Meta.AD(
+		deflt = "${resource:com/liferay/mentions/configuration/dependencies/comment_user_group_mention_email_subject.tmpl}",
+		name = "comment-user-group-mention-email-subject", required = false
+	)
+	public LocalizedValuesMap commentUserGroupMentionEmailSubject();
 
 }

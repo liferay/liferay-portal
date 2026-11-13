@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,6 +39,9 @@ public class MentionsSubscriptionSender extends SubscriptionSender {
 				userIds.add(userId);
 			}
 		}
+
+		setLocalizedBodyMap(_userGroupLocalizedBodyMap);
+		setLocalizedSubjectMap(_userGroupLocalizedSubjectMap);
 
 		for (long userGroupId : _userGroupIds) {
 			UserGroup userGroup = UserGroupLocalServiceUtil.fetchUserGroup(
@@ -61,6 +66,8 @@ public class MentionsSubscriptionSender extends SubscriptionSender {
 			}
 
 			_userGroupName = userGroup.getName();
+
+			setContextAttribute("[$USER_GROUP_NAME$]", _userGroupName);
 
 			super.flushNotifications();
 		}
@@ -92,6 +99,18 @@ public class MentionsSubscriptionSender extends SubscriptionSender {
 		_userGroupIds = userGroupIds;
 	}
 
+	public void setUserGroupLocalizedBodyMap(
+		Map<Locale, String> userGroupLocalizedBodyMap) {
+
+		_userGroupLocalizedBodyMap = userGroupLocalizedBodyMap;
+	}
+
+	public void setUserGroupLocalizedSubjectMap(
+		Map<Locale, String> userGroupLocalizedSubjectMap) {
+
+		_userGroupLocalizedSubjectMap = userGroupLocalizedSubjectMap;
+	}
+
 	@Override
 	protected void populateNotificationEventJSONObject(
 		JSONObject notificationEventJSONObject) {
@@ -119,6 +138,8 @@ public class MentionsSubscriptionSender extends SubscriptionSender {
 	private Set<Long> _excludedUserIds = Collections.emptySet();
 	private UnsafePredicate<User, Exception> _mentionableUnsafePredicate;
 	private Set<Long> _userGroupIds = Collections.emptySet();
+	private Map<Locale, String> _userGroupLocalizedBodyMap;
+	private Map<Locale, String> _userGroupLocalizedSubjectMap;
 	private String _userGroupName;
 
 }
