@@ -66,6 +66,12 @@ public class TestrayImporterTest
 		).setTestrayRun(
 			testrayRun
 		);
+
+		Mockito.verify(
+			testrayContext, Mockito.never()
+		).updateTestrayCaseResultFileDurations(
+			Mockito.any()
+		);
 	}
 
 	@Test
@@ -104,6 +110,12 @@ public class TestrayImporterTest
 			testrayContext, Mockito.never()
 		).recordTestrayCaseResultFile(
 			Mockito.any(), Mockito.any()
+		);
+
+		Mockito.verify(
+			testrayContext
+		).updateTestrayCaseResultFileDurations(
+			axisTestClassGroup
 		);
 	}
 

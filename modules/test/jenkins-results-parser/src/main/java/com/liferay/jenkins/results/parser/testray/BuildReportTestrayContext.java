@@ -129,6 +129,11 @@ public class BuildReportTestrayContext extends BaseTestrayContext {
 		return true;
 	}
 
+	@Override
+	protected boolean isTopLevelBuildCompleted() {
+		return true;
+	}
+
 	private Map<String, String> _buildParameters;
 	private String _testSuiteName;
 	private final TopLevelBuildReport _topLevelBuildReport;

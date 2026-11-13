@@ -348,6 +348,11 @@ public class TestrayServer {
 		return resultFile.exists();
 	}
 
+	public String readCaseResult(String fileName) throws IOException {
+		return JenkinsResultsParserUtil.read(
+			new File(getResultsDir(), fileName));
+	}
+
 	public String requestGet(String urlPath) throws IOException {
 		try {
 			return JenkinsResultsParserUtil.toString(

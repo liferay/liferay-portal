@@ -16,10 +16,12 @@ import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightAxisTestCla
 import java.net.URL;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import org.dom4j.Document;
 import org.dom4j.Element;
 
 import org.junit.Assert;
@@ -101,7 +103,8 @@ public class BaseTestrayContextTest
 		String portalLogErrors = RandomTestUtil.randomString();
 
 		String xmlString = _recordTestrayCaseResultFile(
-			Mockito.mock(PlaywrightAxisTestClassGroup.class), portalLogErrors);
+			Mockito.mock(PlaywrightAxisTestClassGroup.class), portalLogErrors,
+			false);
 
 		Assert.assertTrue(xmlString, xmlString.contains(portalLogErrors));
 	}
@@ -111,7 +114,7 @@ public class BaseTestrayContextTest
 		throws Exception {
 
 		String xmlString = _recordTestrayCaseResultFile(
-			Mockito.mock(PlaywrightAxisTestClassGroup.class), null);
+			Mockito.mock(PlaywrightAxisTestClassGroup.class), null, false);
 
 		Assert.assertFalse(xmlString, xmlString.contains("<failure"));
 	}
@@ -123,9 +126,168 @@ public class BaseTestrayContextTest
 		String portalLogErrors = RandomTestUtil.randomString();
 
 		String xmlString = _recordTestrayCaseResultFile(
-			Mockito.mock(AxisTestClassGroup.class), portalLogErrors);
+			Mockito.mock(AxisTestClassGroup.class), portalLogErrors, false);
 
 		Assert.assertTrue(xmlString, xmlString.contains(portalLogErrors));
+	}
+
+	@Test
+	public void testRecordTestrayCaseResultFileTopLevelBuildCompleted()
+		throws Exception {
+
+		Element propertiesElement = _getPropertiesElement(
+			_recordTestrayCaseResultFile(
+				Mockito.mock(AxisTestClassGroup.class), null, true));
+
+		testEquals(
+			JenkinsResultsParserUtil.toDurationString(_DURATION),
+			_getPropertyValue(propertiesElement, "testray.build.time"));
+		testEquals(
+			JenkinsResultsParserUtil.toDurationString(_TOTAL_ACTUAL_DURATION),
+			_getPropertyValue(propertiesElement, "testray.total.cpu.use.time"));
+	}
+
+	@Test
+	public void testRecordTestrayCaseResultFileTopLevelBuildRunning()
+		throws Exception {
+
+		Element propertiesElement = _getPropertiesElement(
+			_recordTestrayCaseResultFile(
+				Mockito.mock(AxisTestClassGroup.class), null, false));
+
+		Assert.assertNull(
+			_getPropertyValue(propertiesElement, "testray.build.time"));
+		Assert.assertNull(
+			_getPropertyValue(propertiesElement, "testray.total.cpu.use.time"));
+	}
+
+	@Test
+	public void testUpdateTestrayCaseResultFileDurations() throws Exception {
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			axisTestClassGroup
+		).getAxisName();
+
+		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
+
+		String testrayBuildName = RandomTestUtil.randomString();
+		String testcaseName = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			JenkinsResultsParserUtil.combine(
+				"<testsuite><properties>",
+				"<property name=\"testray.build.name\" value=\"",
+				testrayBuildName, "\"/>",
+				"<property name=\"testray.build.time\" value=\"1 ms\"/>",
+				"<property name=\"testray.total.cpu.use.time\" ",
+				"value=\"2 ms\"/></properties><testcase name=\"", testcaseName,
+				"\"/></testsuite>")
+		).when(
+			testrayServer
+		).readCaseResult(
+			Mockito.anyString()
+		);
+
+		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
+
+		Mockito.doReturn(
+			testrayServer
+		).when(
+			testrayBuild
+		).getTestrayServer();
+
+		TestrayRun testrayRun = Mockito.mock(TestrayRun.class);
+
+		Mockito.doReturn(
+			testrayBuild
+		).when(
+			testrayRun
+		).getTestrayBuild();
+
+		Mockito.doReturn(
+			testrayRun
+		).when(
+			axisTestClassGroup
+		).getTestrayRun();
+
+		String testrayCaseFileName = RandomTestUtil.randomString();
+
+		TopLevelBuildReport topLevelBuildReport = _mockTopLevelBuildReport(
+			testrayCaseFileName);
+
+		BaseTestrayContext baseTestrayContext = Mockito.mock(
+			BaseTestrayContext.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTestrayContext
+		).updateTestrayCaseResultFileDurations(
+			Mockito.any(AxisTestClassGroup.class)
+		);
+
+		Mockito.doReturn(
+			topLevelBuildReport
+		).when(
+			baseTestrayContext
+		).getTopLevelBuildReport();
+
+		baseTestrayContext.updateTestrayCaseResultFileDurations(
+			axisTestClassGroup);
+
+		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(
+			String.class);
+
+		Mockito.verify(
+			testrayServer
+		).writeCaseResult(
+			Mockito.eq(testrayCaseFileName), argumentCaptor.capture()
+		);
+
+		String xmlString = argumentCaptor.getValue();
+
+		Element propertiesElement = _getPropertiesElement(xmlString);
+
+		List<Element> propertyElements = propertiesElement.elements("property");
+
+		testEquals(3, propertyElements.size());
+
+		testEquals(
+			JenkinsResultsParserUtil.toDurationString(_DURATION),
+			_getPropertyValue(propertiesElement, "testray.build.time"));
+		testEquals(
+			JenkinsResultsParserUtil.toDurationString(_TOTAL_ACTUAL_DURATION),
+			_getPropertyValue(propertiesElement, "testray.total.cpu.use.time"));
+		testEquals(
+			testrayBuildName,
+			_getPropertyValue(propertiesElement, "testray.build.name"));
+
+		Assert.assertTrue(xmlString, xmlString.contains(testcaseName));
+	}
+
+	private Element _getPropertiesElement(String xmlString) throws Exception {
+		Document document = Dom4JUtil.parse(xmlString);
+
+		Element rootElement = document.getRootElement();
+
+		return rootElement.element("properties");
+	}
+
+	private String _getPropertyValue(
+		Element propertiesElement, String propertyName) {
+
+		for (Element propertyElement : propertiesElement.elements("property")) {
+			if (Objects.equals(
+					propertyElement.attributeValue("name"), propertyName)) {
+
+				return propertyElement.attributeValue("value");
+			}
+		}
+
+		return null;
 	}
 
 	private Element _getTestcaseElement(TestrayCaseResult testrayCaseResult)
@@ -197,8 +359,38 @@ public class BaseTestrayContextTest
 		return testrayCaseResult;
 	}
 
+	private TopLevelBuildReport _mockTopLevelBuildReport(
+		String testrayCaseFileName) {
+
+		TopLevelBuildReport topLevelBuildReport = Mockito.mock(
+			TopLevelBuildReport.class);
+
+		Mockito.doReturn(
+			_DURATION
+		).when(
+			topLevelBuildReport
+		).getDuration();
+
+		Mockito.doReturn(
+			testrayCaseFileName
+		).when(
+			topLevelBuildReport
+		).getTestrayCaseFileName(
+			Mockito.anyString()
+		);
+
+		Mockito.doReturn(
+			_TOTAL_ACTUAL_DURATION
+		).when(
+			topLevelBuildReport
+		).getTotalActualDuration();
+
+		return topLevelBuildReport;
+	}
+
 	private String _recordTestrayCaseResultFile(
-			AxisTestClassGroup axisTestClassGroup, String portalLogErrors)
+			AxisTestClassGroup axisTestClassGroup, String portalLogErrors,
+			boolean topLevelBuildCompleted)
 		throws Exception {
 
 		Mockito.doReturn(
@@ -261,16 +453,8 @@ public class BaseTestrayContextTest
 			axisTestClassGroup
 		).getTestrayRun();
 
-		TopLevelBuildReport topLevelBuildReport = Mockito.mock(
-			TopLevelBuildReport.class);
-
-		Mockito.doReturn(
-			RandomTestUtil.randomString()
-		).when(
-			topLevelBuildReport
-		).getTestrayCaseFileName(
-			Mockito.anyString()
-		);
+		TopLevelBuildReport topLevelBuildReport = _mockTopLevelBuildReport(
+			RandomTestUtil.randomString());
 
 		Mockito.doReturn(
 			RandomTestUtil.randomString()
@@ -294,6 +478,12 @@ public class BaseTestrayContextTest
 		).when(
 			baseTestrayContext
 		).getTopLevelBuildReport();
+
+		Mockito.doReturn(
+			topLevelBuildCompleted
+		).when(
+			baseTestrayContext
+		).isTopLevelBuildCompleted();
 
 		TestrayCaseResult testrayCaseResult = _mockTestrayCaseResult(
 			TestrayCaseResult.class, null, TestrayCaseResult.Status.PASSED);
@@ -340,5 +530,9 @@ public class BaseTestrayContextTest
 
 		testEquals(name.substring(0, expectedLength), _getTestcaseName(name));
 	}
+
+	private static final long _DURATION = 5400000L;
+
+	private static final long _TOTAL_ACTUAL_DURATION = 86400000L;
 
 }

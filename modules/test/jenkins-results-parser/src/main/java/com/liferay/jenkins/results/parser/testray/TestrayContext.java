@@ -85,4 +85,7 @@ public interface TestrayContext {
 
 	public String replaceSlack(String string, TestrayBuild testrayBuild);
 
+	public void updateTestrayCaseResultFileDurations(
+		AxisTestClassGroup axisTestClassGroup);
+
 }

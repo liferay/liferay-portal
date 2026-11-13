@@ -62,6 +62,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.client.utils.URIBuilder;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
@@ -1013,10 +1014,6 @@ public abstract class BaseTestrayContext implements TestrayContext {
 			"testray.build.date",
 			topLevelBuildReport.getTestrayBuildDateString());
 		propertiesMap.put("testray.build.name", testrayBuild.getName());
-		propertiesMap.put(
-			"testray.build.time",
-			JenkinsResultsParserUtil.toDurationString(
-				topLevelBuildReport.getDuration()));
 
 		TestrayRoutine testrayRoutine = testrayBuild.getTestrayRoutine();
 
@@ -1035,10 +1032,11 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		propertiesMap.put("testray.project.name", testrayProject.getName());
 
 		propertiesMap.put("testray.run.id", testrayRun.getRunIdString());
-		propertiesMap.put(
-			"testray.total.cpu.use.time",
-			JenkinsResultsParserUtil.toDurationString(
-				topLevelBuildReport.getTotalActualDuration()));
+
+		if (isTopLevelBuildCompleted()) {
+			propertiesMap.putAll(
+				_getTopLevelBuildDurationsMap(topLevelBuildReport));
+		}
 
 		Dom4JUtil.addPropertyElements(
 			rootElement.addElement("properties"), propertiesMap);
@@ -1182,6 +1180,55 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		return string;
 	}
 
+	@Override
+	public void updateTestrayCaseResultFileDurations(
+		AxisTestClassGroup axisTestClassGroup) {
+
+		TestrayRun testrayRun = _getTestrayRun(axisTestClassGroup);
+
+		TestrayBuild testrayBuild = testrayRun.getTestrayBuild();
+
+		TestrayServer testrayServer = testrayBuild.getTestrayServer();
+
+		TopLevelBuildReport topLevelBuildReport = getTopLevelBuildReport();
+
+		String testrayCaseFileName = topLevelBuildReport.getTestrayCaseFileName(
+			axisTestClassGroup.getAxisName());
+
+		Map<String, String> topLevelBuildDurationsMap =
+			_getTopLevelBuildDurationsMap(topLevelBuildReport);
+
+		try {
+			Document document = Dom4JUtil.parse(
+				testrayServer.readCaseResult(testrayCaseFileName));
+
+			Element rootElement = document.getRootElement();
+
+			Element propertiesElement = rootElement.element("properties");
+
+			for (Element propertyElement :
+					propertiesElement.elements("property")) {
+
+				if (!topLevelBuildDurationsMap.containsKey(
+						propertyElement.attributeValue("name"))) {
+
+					continue;
+				}
+
+				propertiesElement.remove(propertyElement);
+			}
+
+			Dom4JUtil.addPropertyElements(
+				propertiesElement, topLevelBuildDurationsMap);
+
+			testrayServer.writeCaseResult(
+				testrayCaseFileName, Dom4JUtil.format(rootElement));
+		}
+		catch (DocumentException | IOException exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+
 	protected BaseTestrayContext(BuildDatabase buildDatabase) {
 		_buildDatabase = buildDatabase;
 
@@ -1220,6 +1267,8 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		String suffix);
 
 	protected abstract boolean hasControllerBuild();
+
+	protected abstract boolean isTopLevelBuildCompleted();
 
 	private void _addDetailsElements(
 		Element propertiesElement,
@@ -1573,6 +1622,23 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		}
 
 		return testrayRun;
+	}
+
+	private Map<String, String> _getTopLevelBuildDurationsMap(
+		TopLevelBuildReport topLevelBuildReport) {
+
+		Map<String, String> topLevelBuildDurationsMap = new HashMap<>();
+
+		topLevelBuildDurationsMap.put(
+			"testray.build.time",
+			JenkinsResultsParserUtil.toDurationString(
+				topLevelBuildReport.getDuration()));
+		topLevelBuildDurationsMap.put(
+			"testray.total.cpu.use.time",
+			JenkinsResultsParserUtil.toDurationString(
+				topLevelBuildReport.getTotalActualDuration()));
+
+		return topLevelBuildDurationsMap;
 	}
 
 	private String _replace(String string) {
