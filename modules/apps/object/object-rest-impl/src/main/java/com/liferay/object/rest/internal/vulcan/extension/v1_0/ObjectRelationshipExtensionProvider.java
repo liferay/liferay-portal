@@ -8,7 +8,6 @@ package com.liferay.object.rest.internal.vulcan.extension.v1_0;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectRelationship;
-import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistry;
 import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.internal.util.ObjectDefinitionUtil;
@@ -405,10 +404,6 @@ public class ObjectRelationshipExtensionProvider
 
 	@Reference
 	private ObjectEntryManagerRegistry _objectEntryManagerRegistry;
-
-	@Reference
-	private ObjectRelatedModelsProviderRegistry
-		_objectRelatedModelsProviderRegistry;
 
 	@Reference
 	private ObjectRelationshipElementsParserRegistry

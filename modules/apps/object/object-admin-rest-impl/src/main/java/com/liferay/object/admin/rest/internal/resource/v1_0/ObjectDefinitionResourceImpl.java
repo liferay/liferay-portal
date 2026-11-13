@@ -11,7 +11,6 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
-import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectAction;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectField;
@@ -50,7 +49,6 @@ import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationshipModel;
 import com.liferay.object.model.ObjectValidationRuleModel;
 import com.liferay.object.service.ObjectActionLocalService;
-import com.liferay.object.service.ObjectActionService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
@@ -62,8 +60,6 @@ import com.liferay.object.service.ObjectLayoutLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
 import com.liferay.object.service.ObjectViewLocalService;
-import com.liferay.object.service.ObjectViewService;
-import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -94,7 +90,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -1709,19 +1704,10 @@ public class ObjectDefinitionResourceImpl
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 	@Reference
-	private Localization _localization;
-
-	@Reference
-	private NotificationTemplateLocalService _notificationTemplateLocalService;
-
-	@Reference
 	private ObjectActionLocalService _objectActionLocalService;
 
 	@Reference
 	private ObjectActionResource.Factory _objectActionResourceFactory;
-
-	@Reference
-	private ObjectActionService _objectActionService;
 
 	@Reference(target = DTOConverterConstants.OBJECT_DEFINITION_DTO_CONVERTER)
 	private DTOConverter
@@ -1737,10 +1723,6 @@ public class ObjectDefinitionResourceImpl
 	@Reference
 	private ObjectDefinitionSettingLocalService
 		_objectDefinitionSettingLocalService;
-
-	@Reference(target = DTOConverterConstants.OBJECT_FIELD_DTO_CONVERTER)
-	private DTOConverter<com.liferay.object.model.ObjectField, ObjectField>
-		_objectFieldDTOConverter;
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
@@ -1760,24 +1742,12 @@ public class ObjectDefinitionResourceImpl
 	@Reference
 	private ObjectLayoutResource.Factory _objectLayoutResourceFactory;
 
-	@Reference(target = DTOConverterConstants.OBJECT_RELATIONSHIP_DTO_CONVERTER)
-	private DTOConverter
-		<com.liferay.object.model.ObjectRelationship, ObjectRelationship>
-			_objectRelationshipDTOConverter;
-
 	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference
 	private ObjectRelationshipResource.Factory
 		_objectRelationshipResourceFactory;
-
-	@Reference(
-		target = DTOConverterConstants.OBJECT_VALIDATION_RULE_DTO_CONVERTER
-	)
-	private DTOConverter
-		<com.liferay.object.model.ObjectValidationRule, ObjectValidationRule>
-			_objectValidationRuleDTOConverter;
 
 	@Reference
 	private ObjectValidationRuleLocalService _objectValidationRuleLocalService;
@@ -1786,18 +1756,11 @@ public class ObjectDefinitionResourceImpl
 	private ObjectValidationRuleResource.Factory
 		_objectValidationRuleResourceFactory;
 
-	@Reference(target = DTOConverterConstants.OBJECT_VIEW_DTO_CONVERTER)
-	private DTOConverter<com.liferay.object.model.ObjectView, ObjectView>
-		_objectViewDTOConverter;
-
 	@Reference
 	private ObjectViewLocalService _objectViewLocalService;
 
 	@Reference
 	private ObjectViewResource.Factory _objectViewResourceFactory;
-
-	@Reference
-	private ObjectViewService _objectViewService;
 
 	@Reference
 	private ResourceActionLocalService _resourceActionLocalService;
@@ -1807,10 +1770,6 @@ public class ObjectDefinitionResourceImpl
 
 	@Reference
 	private RoleLocalService _roleLocalService;
-
-	@Reference
-	private SystemObjectDefinitionManagerRegistry
-		_systemObjectDefinitionManagerRegistry;
 
 	@Reference
 	private WorkflowDefinitionLinkLocalService

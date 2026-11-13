@@ -6,8 +6,6 @@
 package com.liferay.object.rest.internal.jaxrs.feature;
 
 import com.liferay.object.rest.internal.jaxrs.param.converter.provider.ScopeKeyParamConverterProvider;
-import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 
 import jakarta.ws.rs.core.Feature;
@@ -39,11 +37,5 @@ public class ObjectFeature implements Feature {
 
 	@Reference
 	private GroupLocalService _groupLocalService;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Reference
-	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 }

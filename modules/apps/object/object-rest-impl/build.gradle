@@ -35,7 +35,6 @@ dependencies {
 	compileOnly project(":apps:portal-security-audit:portal-security-audit-storage-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal:portal-catapult-api")
-	compileOnly project(":apps:roles:roles-admin-api")
 	compileOnly project(":apps:sharing:sharing-api")
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
