@@ -52,6 +52,7 @@ import com.liferay.object.configuration.ObjectEntryScheduleConfiguration;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.constants.ObjectEntryConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
@@ -395,7 +396,8 @@ public class ObjectEntryLocalServiceImpl
 		ObjectEntry objectEntry = _addObjectEntry(
 			externalReferenceCode, groupId, userId, headObjectEntryId,
 			objectDefinition.getObjectDefinitionId(), objectEntryFolderId,
-			defaultLanguageId, version, WorkflowConstants.STATUS_APPROVED);
+			defaultLanguageId, ObjectEntryConstants.TYPE_LATEST_APPROVED,
+			version, WorkflowConstants.STATUS_APPROVED);
 
 		_insertIntoLocalizationTable(
 			defaultLanguageId, new HashMap<>(), objectDefinition,
@@ -633,7 +635,8 @@ public class ObjectEntryLocalServiceImpl
 		return _addObjectEntry(
 			externalReferenceCode, groupId, userId, 0,
 			objectDefinition.getObjectDefinitionId(), objectEntryFolderId, null,
-			0, WorkflowConstants.STATUS_DRAFT);
+			ObjectEntryConstants.TYPE_DEFAULT, 0,
+			WorkflowConstants.STATUS_DRAFT);
 	}
 
 	@Override
@@ -1625,7 +1628,8 @@ public class ObjectEntryLocalServiceImpl
 				externalReferenceCode, groupId, userId, 0, objectDefinitionId,
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				null, 0, WorkflowConstants.STATUS_EMPTY),
+				null, ObjectEntryConstants.TYPE_DEFAULT, 0,
+				WorkflowConstants.STATUS_EMPTY),
 			externalReferenceCode,
 			(_externalReferenceCode, _groupId) -> fetchObjectEntry(
 				_externalReferenceCode, _groupId, objectDefinitionId),
@@ -3071,8 +3075,8 @@ public class ObjectEntryLocalServiceImpl
 	private ObjectEntry _addObjectEntry(
 			String externalReferenceCode, long groupId, long userId,
 			long headObjectEntryId, long objectDefinitionId,
-			long objectEntryFolderId, String defaultLanguageId, int version,
-			int status)
+			long objectEntryFolderId, String defaultLanguageId, int type,
+			int version, int status)
 		throws PortalException {
 
 		ObjectEntry objectEntry = objectEntryPersistence.create(
@@ -3094,6 +3098,7 @@ public class ObjectEntryLocalServiceImpl
 		objectEntry.setObjectEntryFolderId(objectEntryFolderId);
 		objectEntry.setDefaultLanguageId(defaultLanguageId);
 		objectEntry.setTreePath(objectEntry.buildTreePath());
+		objectEntry.setType(type);
 		objectEntry.setVersion(version);
 		objectEntry.setStatus(status);
 		objectEntry.setStatusDate(new Date());
