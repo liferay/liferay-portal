@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
-import com.liferay.portal.kernel.util.PortalRunMode;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 
@@ -50,8 +49,7 @@ public class EPNUtil {
 		PortletPreferencesFactory portletPreferencesFactory, long userId,
 		UserLocalService userLocalService) {
 
-		if (PortalRunMode.isTestMode() ||
-			!PropsValues.ENTERPRISE_PRODUCT_NOTIFICATION_ENABLED ||
+		if (!PropsValues.ENTERPRISE_PRODUCT_NOTIFICATION_ENABLED ||
 			(userId == 0L)) {
 
 			return null;
