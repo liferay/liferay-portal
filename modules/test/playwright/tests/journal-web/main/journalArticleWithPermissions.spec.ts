@@ -12,12 +12,14 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
 import {webContentDisplayPageTest} from '../../../fixtures/webContentDisplayPageTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {
 	performLogout,
 	performUserSwitchViaApi,
 	userData,
 } from '../../../utils/performLogin';
+import {PORTLET_URLS} from '../../../utils/portletUrls';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {journalPagesTest} from './fixtures/journalPagesTest';
 import getDataStructureDefinition from './utils/getDataStructureDefinition';
@@ -237,7 +239,7 @@ ckeditor5Test(
 isolatedSiteCkeditor5Test(
 	'A user with a web content administrator role can edit a web content',
 	{
-		tag: '@LPD-100988',
+		tag: ['@LPD-100988', '@LPD-115527'],
 	},
 	async ({apiHelpers, journalEditArticlePage, journalPage, page, site}) => {
 		const webContentContent = getRandomString();
@@ -328,6 +330,29 @@ isolatedSiteCkeditor5Test(
 				.locator('.list-group-item')
 				.filter({hasText: webContentTitleEdit})
 		).toContainText(`${user.givenName} ${user.familyName}`);
+
+		await journalPage.selectItemByTitle(webContentTitleEdit);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('tab', {exact: true, name: 'Versions'}),
+			trigger: page.getByTitle('Toggle Info Panel'),
+		});
+
+		await expect(
+			page.getByRole('listitem').filter({hasText: 'Version 1.0'})
+		).toContainText('By Test Test, on');
+		await expect(
+			page.getByRole('listitem').filter({hasText: 'Version 1.1'})
+		).toContainText(`By ${user.givenName} ${user.familyName}, on`);
+
+		await page.goto(
+			`/group${site.friendlyUrlPath}${PORTLET_URLS.journal}&_com_liferay_journal_web_portlet_JournalPortlet_keywords=${webContentTitleEdit}&_com_liferay_journal_web_portlet_JournalPortlet_type=versions`
+		);
+
+		await expect(
+			page.getByText(`${user.givenName} ${user.familyName}, modified`)
+		).toBeVisible();
 	}
 );
 
