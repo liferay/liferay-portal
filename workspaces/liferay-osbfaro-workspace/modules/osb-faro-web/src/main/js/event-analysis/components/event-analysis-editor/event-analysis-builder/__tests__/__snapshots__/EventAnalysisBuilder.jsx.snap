@@ -147,7 +147,7 @@ exports[`Event Analysis Builder render with filters & breakdowns 1`] = `
               class="condition-chip-text d-flex flex-column text-break"
             >
               <span
-                class="d-block"
+                class="condition-chip-label d-block"
               >
                 <span
                   class="text-4 font-weight-semi-bold"
