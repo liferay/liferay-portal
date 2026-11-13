@@ -284,7 +284,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 								</div>
 
 								<div class="list-group-subtitle">
-									<liferay-ui:message arguments="<%= new Object[] {HtmlUtil.escape(articleVersion.getUserName()), dateTimeFormat.format(articleVersion.getStatusDate())} %>" key="by-x-on-x" translateArguments="<%= false %>" />
+									<liferay-ui:message arguments="<%= new Object[] {HtmlUtil.escape(articleVersion.getStatusByUserName()), dateTimeFormat.format(articleVersion.getStatusDate())} %>" key="by-x-on-x" translateArguments="<%= false %>" />
 								</div>
 
 								<div>
