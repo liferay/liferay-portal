@@ -24,15 +24,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface AMProcessor<M> {
 
-	/**
-	 * Completely removes any generated media for the model.
-	 *
-	 * @param  model the model for which all generated media is deleted
-	 * @throws PortalException if an error occurred while calling any Liferay
-	 *         services
-	 */
-	public void cleanUp(M model) throws PortalException;
-
 	public void process(FileVersion fileVersion, String configurationEntryUuid)
 		throws PortalException;
 

@@ -172,42 +172,6 @@ public class AMImageProcessorTest {
 			adaptiveMedias.toString(), 0, adaptiveMedias.size());
 	}
 
-	@Test
-	public void testCleaningFileEntryWithImageRemovesMedia() throws Exception {
-		FileEntry fileEntry = _addImageFileEntry(
-			ServiceContextTestUtil.getServiceContext(
-				_group, TestPropsValues.getUserId()));
-
-		_amProcessor.cleanUp(fileEntry.getLatestFileVersion(true));
-
-		List<AdaptiveMedia<AMProcessor<FileVersion>>> adaptiveMedias =
-			_amImageFinder.getAdaptiveMedias(
-				amImageQueryBuilder -> amImageQueryBuilder.forFileEntry(
-					fileEntry
-				).done());
-
-		Assert.assertEquals(
-			adaptiveMedias.toString(), 0, adaptiveMedias.size());
-	}
-
-	@Test
-	public void testCleaningFileEntryWithNoImageDoesNothing() throws Exception {
-		FileEntry fileEntry = _addNonimageFileEntry(
-			ServiceContextTestUtil.getServiceContext(
-				_group, TestPropsValues.getUserId()));
-
-		_amProcessor.cleanUp(fileEntry.getLatestFileVersion(true));
-
-		List<AdaptiveMedia<AMProcessor<FileVersion>>> adaptiveMedias =
-			_amImageFinder.getAdaptiveMedias(
-				amImageQueryBuilder -> amImageQueryBuilder.forFileEntry(
-					fileEntry
-				).done());
-
-		Assert.assertEquals(
-			adaptiveMedias.toString(), 0, adaptiveMedias.size());
-	}
-
 	private FileEntry _addImageFileEntry(ServiceContext serviceContext)
 		throws Exception {
 
@@ -266,9 +230,6 @@ public class AMImageProcessorTest {
 
 	@Inject
 	private AMImageFinder _amImageFinder;
-
-	@Inject
-	private AMProcessor<FileVersion> _amProcessor;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;

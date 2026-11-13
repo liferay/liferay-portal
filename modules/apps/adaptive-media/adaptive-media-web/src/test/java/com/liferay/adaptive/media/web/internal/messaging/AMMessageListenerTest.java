@@ -54,15 +54,6 @@ public class AMMessageListenerTest {
 				CTCollectionThreadLocal.getCTCollectionId())
 		).when(
 			_amProcessor
-		).cleanUp(
-			Mockito.any()
-		);
-
-		Mockito.doAnswer(
-			invocation -> _ctCollectionIds.add(
-				CTCollectionThreadLocal.getCTCollectionId())
-		).when(
-			_amProcessor
 		).process(
 			Mockito.any()
 		);

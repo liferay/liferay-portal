@@ -16,7 +16,6 @@ import com.liferay.adaptive.media.image.scaler.AMImageScaler;
 import com.liferay.adaptive.media.image.scaler.AMImageScalerRegistry;
 import com.liferay.adaptive.media.image.service.AMImageEntryLocalService;
 import com.liferay.adaptive.media.image.validator.AMImageValidator;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -59,78 +58,6 @@ public class AMImageProcessorImplTest {
 			_amImageScalerRegistry);
 		ReflectionTestUtil.setFieldValue(
 			_amImageAMProcessor, "_amImageValidator", _amImageValidator);
-	}
-
-	@Test
-	public void testCleanUpFileVersion() throws Exception {
-		Mockito.when(
-			_amImageValidator.isValid(Mockito.any(FileVersion.class))
-		).thenReturn(
-			true
-		);
-
-		_amImageAMProcessor.cleanUp(_fileVersion);
-
-		Mockito.verify(
-			_amImageEntryLocalService
-		).deleteAMImageEntryFileVersion(
-			_fileVersion
-		);
-	}
-
-	@Test(expected = AMRuntimeException.IOException.class)
-	public void testCleanUpIOException() throws Exception {
-		Mockito.when(
-			_amImageValidator.isValid(Mockito.any(FileVersion.class))
-		).thenReturn(
-			true
-		);
-
-		Mockito.doThrow(
-			AMRuntimeException.IOException.class
-		).when(
-			_amImageEntryLocalService
-		).deleteAMImageEntryFileVersion(
-			Mockito.any(FileVersion.class)
-		);
-
-		_amImageAMProcessor.cleanUp(_fileVersion);
-	}
-
-	@Test(expected = PortalException.class)
-	public void testCleanUpPortalException() throws Exception {
-		Mockito.when(
-			_amImageValidator.isValid(Mockito.any(FileVersion.class))
-		).thenReturn(
-			true
-		);
-
-		Mockito.doThrow(
-			PortalException.class
-		).when(
-			_amImageEntryLocalService
-		).deleteAMImageEntryFileVersion(
-			Mockito.any(FileVersion.class)
-		);
-
-		_amImageAMProcessor.cleanUp(_fileVersion);
-	}
-
-	@Test
-	public void testCleanUpWhenNotSupported() throws Exception {
-		Mockito.when(
-			_amImageValidator.isValid(Mockito.any(FileVersion.class))
-		).thenReturn(
-			false
-		);
-
-		_amImageAMProcessor.cleanUp(_fileVersion);
-
-		Mockito.verify(
-			_amImageEntryLocalService, Mockito.never()
-		).deleteAMImageEntryFileVersion(
-			_fileVersion
-		);
 	}
 
 	@Test
