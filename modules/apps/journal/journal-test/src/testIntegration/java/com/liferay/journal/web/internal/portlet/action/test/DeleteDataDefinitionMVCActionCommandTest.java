@@ -83,10 +83,13 @@ public class DeleteDataDefinitionMVCActionCommandTest {
 			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_createMockLiferayPortletActionRequest(dataDefinition);
+
 		PortletException portletException = Assert.assertThrows(
 			PortletException.class,
 			() -> _mvcActionCommand.processAction(
-				_createMockLiferayPortletActionRequest(dataDefinition),
+				mockLiferayPortletActionRequest,
 				new MockLiferayPortletActionResponse()));
 
 		Assert.assertTrue(
