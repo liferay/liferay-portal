@@ -6,7 +6,6 @@
 package com.liferay.segments.web.internal.configuration.admin.display;
 
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -76,9 +75,6 @@ public class SegmentsCompanyConfigurationFormRenderer
 				"Unable to render /segments_configuration.jsp", exception);
 		}
 	}
-
-	@Reference
-	private Language _language;
 
 	@Reference
 	private Portal _portal;
