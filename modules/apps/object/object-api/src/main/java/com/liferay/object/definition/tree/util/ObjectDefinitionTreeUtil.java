@@ -39,7 +39,6 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.PortalRunMode;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.sql.Connection;
@@ -220,14 +219,6 @@ public class ObjectDefinitionTreeUtil {
 		}
 
 		return rootObjectDefinitionIds;
-	}
-
-	public static void invalidate() {
-		if (!PortalRunMode.isTestMode()) {
-			return;
-		}
-
-		_rootObjectDefinitionIds.clear();
 	}
 
 	public static void populateRootObjectDefinitionIds(
