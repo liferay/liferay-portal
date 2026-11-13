@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -140,6 +141,20 @@ public class ArticlePortlet extends BaseKBPortlet {
 		throws IOException, PortletException {
 
 		try {
+			if (Objects.equals(
+					ParamUtil.getString(renderRequest, Constants.CMD),
+					"compareVersions")) {
+
+				KBArticle kbArticle =
+					_kbArticleLocalService.fetchLatestKBArticle(
+						ParamUtil.getLong(renderRequest, "resourcePrimKey"),
+						WorkflowConstants.STATUS_ANY);
+
+				if (kbArticle != null) {
+					_checkGroupId(kbArticle, renderRequest);
+				}
+			}
+
 			KBArticle kbArticle = null;
 
 			long resourcePrimKey = getResourcePrimKey(renderRequest);
