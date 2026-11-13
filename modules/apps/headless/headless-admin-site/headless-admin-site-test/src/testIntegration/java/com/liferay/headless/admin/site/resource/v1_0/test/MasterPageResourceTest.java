@@ -607,7 +607,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-92443", "LPD-107149"})
+	@TestInfo({"LPD-92443", "LPD-107149", "LPD-108786"})
 	public void testPostSiteMasterPage() throws Exception {
 		super.testPostSiteMasterPage();
 
@@ -779,7 +779,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-86817", "LPD-92443", "LPD-97472"})
+	@TestInfo({"LPD-86817", "LPD-92443", "LPD-97472", "LPD-108786"})
 	public void testPutSiteMasterPage() throws Exception {
 		_testPutSiteMasterPage(randomMasterPage());
 
@@ -958,6 +958,11 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		return testGetSiteMasterPagesPage_addMasterPage(
 			testGroup.getExternalReferenceCode(), masterPage);
+	}
+
+	private Group _addConnectedDesignLibraryGroup() throws Exception {
+		return DesignLibraryTestUtil.addDesignLibraryGroup(
+			testGroup.getGroupId(), true);
 	}
 
 	private MasterPage _addDesignLibraryMasterPage(
@@ -2215,9 +2220,13 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
 		PageElement[] pageElements = {
 			PageElementsTestUtil.getDropZonePageElement(
-				RandomTestUtil.randomString(), testGroup.getGroupId())
+				RandomTestUtil.randomString(), testGroup.getGroupId(),
+				designLibraryGroup.getGroupId(), testGroup.getGroupId(),
+				testCompany.getGroupId())
 		};
 
 		MasterPage masterPage = _getMasterPage(pageElements);
@@ -2631,9 +2640,13 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
+		Group designLibraryGroup = _addConnectedDesignLibraryGroup();
+
 		PageElement[] pageElements = {
 			PageElementsTestUtil.getDropZonePageElement(
-				RandomTestUtil.randomString(), testGroup.getGroupId())
+				RandomTestUtil.randomString(), testGroup.getGroupId(),
+				designLibraryGroup.getGroupId(), testGroup.getGroupId(),
+				testCompany.getGroupId())
 		};
 
 		MasterPage masterPage = _getMasterPage(pageElements);
@@ -2728,7 +2741,8 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 			PageElement[] pageElements = {
 				PageElementsTestUtil.getDropZonePageElement(
-					RandomTestUtil.randomString(), testGroup.getGroupId()),
+					RandomTestUtil.randomString(), testGroup.getGroupId(),
+					testGroup.getGroupId()),
 				_getContainerPageElement()
 			};
 
