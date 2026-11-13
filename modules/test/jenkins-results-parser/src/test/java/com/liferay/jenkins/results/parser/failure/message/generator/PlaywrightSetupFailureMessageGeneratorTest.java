@@ -101,8 +101,9 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 		Element messageElement =
 			_playwrightSetupFailureMessageGenerator.getMessageElement(build);
 
-		Element strongElement = (Element)messageElement.selectSingleNode(
-			"p/strong");
+		Element pElement = messageElement.element("p");
+
+		Element strongElement = pElement.element("strong");
 
 		Assert.assertEquals(message, strongElement.getText());
 	}
@@ -131,7 +132,7 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 			_playwrightSetupFailureMessageGenerator.getMessageElement(
 				consoleText);
 
-		Element preElement = (Element)messageElement.selectSingleNode("pre");
+		Element preElement = messageElement.element("pre");
 
 		String text = preElement.getText();
 
@@ -139,8 +140,9 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 		Assert.assertTrue(text.contains(taskFailedLine.trim()));
 		Assert.assertFalse(text.contains(trailingLine));
 
-		Element strongElement = (Element)messageElement.selectSingleNode(
-			"p/strong");
+		Element pElement = messageElement.element("p");
+
+		Element strongElement = pElement.element("strong");
 
 		Assert.assertEquals(message, strongElement.getText());
 	}
