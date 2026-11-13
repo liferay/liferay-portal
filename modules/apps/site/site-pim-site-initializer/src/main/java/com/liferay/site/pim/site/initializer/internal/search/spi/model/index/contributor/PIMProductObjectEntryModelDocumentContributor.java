@@ -8,29 +8,32 @@ package com.liferay.site.pim.site.initializer.internal.search.spi.model.index.co
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
-import com.liferay.petra.string.CharPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 
-import java.util.Objects;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Stefano Motta
  */
+@Component(
+	property = "root.object.entry.folder.external.reference.code=" + PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS,
+	service = ModelDocumentContributor.class
+)
 public class PIMProductObjectEntryModelDocumentContributor
 	implements ModelDocumentContributor<ObjectEntry> {
 
-	public PIMProductObjectEntryModelDocumentContributor(
-		ObjectEntryFolderLocalService objectEntryFolderLocalService) {
-
-		_objectEntryFolderLocalService = objectEntryFolderLocalService;
-	}
-
 	@Override
 	public void contribute(Document document, ObjectEntry objectEntry) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-96666")) {
+
+			return;
+		}
+
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.fetchObjectEntryFolder(
 				objectEntry.getObjectEntryFolderId());
@@ -39,47 +42,12 @@ public class PIMProductObjectEntryModelDocumentContributor
 			return;
 		}
 
-		ObjectEntryFolder rootObjectEntryFolder = _getRootObjectEntryFolder(
-			objectEntryFolder);
+		document.addKeyword("cms_root", objectEntryFolder.isRoot());
 
-		if ((rootObjectEntryFolder == null) ||
-			!Objects.equals(
-				rootObjectEntryFolder.getExternalReferenceCode(),
-				PIMObjectEntryFolderConstants.
-					EXTERNAL_REFERENCE_CODE_PRODUCTS)) {
-
-			return;
-		}
-
-		document.addKeyword(
-			"cms_root",
-			rootObjectEntryFolder.getObjectEntryFolderId() ==
-				objectEntry.getObjectEntryFolderId());
 		document.addKeyword("cms_section", "products");
 	}
 
-	private ObjectEntryFolder _getRootObjectEntryFolder(
-		ObjectEntryFolder objectEntryFolder) {
-
-		if (Objects.equals(
-				objectEntryFolder.getExternalReferenceCode(),
-				PIMObjectEntryFolderConstants.
-					EXTERNAL_REFERENCE_CODE_PRODUCTS)) {
-
-			return objectEntryFolder;
-		}
-
-		String[] parts = StringUtil.split(
-			objectEntryFolder.getTreePath(), CharPool.SLASH);
-
-		if (parts.length <= 2) {
-			return null;
-		}
-
-		return _objectEntryFolderLocalService.fetchObjectEntryFolder(
-			GetterUtil.getLong(parts[1]));
-	}
-
-	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+	@Reference
+	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 }
