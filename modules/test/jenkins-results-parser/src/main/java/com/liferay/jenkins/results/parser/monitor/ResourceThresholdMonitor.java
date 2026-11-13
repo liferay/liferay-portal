@@ -73,8 +73,6 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 
 	@Override
 	public MonitorResult execute() {
-		Double value = null;
-
 		long currentTimeMillis =
 			JenkinsResultsParserUtil.getCurrentTimeMillis();
 
@@ -83,6 +81,8 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 				_masterName + " is blacklisted", null, MonitorResult.Status.OK,
 				currentTimeMillis);
 		}
+
+		Double value = null;
 
 		try {
 			MonitorResult monitorResult = _getFileStoreMonitorResult(

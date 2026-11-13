@@ -179,8 +179,9 @@ public class RunningBuildDurationMonitorTest
 			JenkinsMaster.getInstance(_MASTER_NAME_2), "_blacklisted", true);
 
 		_testExecute(
-			null, 0, "Every master in cohort " + _COHORT_NAME + " is blacklisted",
-			0, MonitorResult.Status.OK);
+			null, 0,
+			"Every master in cohort " + _COHORT_NAME + " is blacklisted", 0,
+			MonitorResult.Status.OK);
 
 		verifyURLReaderAttemptsCount(
 			0, "http://" + _MASTER_NAME_1 + "/computer/api/json");
