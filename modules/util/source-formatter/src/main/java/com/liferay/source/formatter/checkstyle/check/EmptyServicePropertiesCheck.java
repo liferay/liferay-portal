@@ -99,18 +99,24 @@ public class EmptyServicePropertiesCheck extends BaseCheck {
 			return false;
 		}
 
+		FullIdent fullIdent = FullIdent.createFullIdent(
+			detailAST.getFirstChild());
+
+		if (!ArrayUtil.contains(
+				_DICTIONARY_CLASS_NAMES,
+				getFullyQualifiedTypeName(
+					fullIdent.getText(), detailAST, true))) {
+
+			return false;
+		}
+
 		DetailAST elistDetailAST = detailAST.findFirstToken(TokenTypes.ELIST);
 
 		if ((elistDetailAST == null) || (elistDetailAST.getChildCount() > 0)) {
 			return false;
 		}
 
-		FullIdent fullIdent = FullIdent.createFullIdent(
-			detailAST.getFirstChild());
-
-		return ArrayUtil.contains(
-			_DICTIONARY_CLASS_NAMES,
-			getFullyQualifiedTypeName(fullIdent.getText(), detailAST, true));
+		return true;
 	}
 
 	private static final String[] _DICTIONARY_CLASS_NAMES = {
