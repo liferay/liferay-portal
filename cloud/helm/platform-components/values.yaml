@@ -184,6 +184,8 @@ operatorApplications:
                     create: false
     crossplane:
         chart: crossplane
+        clusterProviderConfig:
+            enabled: true
         enabled: true
         functions:
             function-auto-ready:
