@@ -12,6 +12,7 @@ import {
 	isStageConfigured,
 } from 'lifecycle/utils/lifecycleOperators';
 import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
+import {isAtStageLimit} from 'lifecycle/utils/lifecycleValidation';
 import {getPluralMessage, sub} from 'shared/util/lang';
 import {useAnnounce} from 'shared/components/condition-chip/AnnounceContext';
 
@@ -100,6 +101,7 @@ const LifecycleStructure: React.FC<ILifecycleStructureProps> = ({
 		<ConditionsSection
 			action={
 				<AddConditionButton
+					disabled={isAtStageLimit(stageConfigs)}
 					label={Liferay.Language.get('add-stage')}
 					onClick={addStage}
 				/>

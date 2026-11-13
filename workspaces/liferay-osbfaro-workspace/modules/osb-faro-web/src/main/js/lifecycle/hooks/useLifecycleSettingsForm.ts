@@ -13,6 +13,7 @@ import {
 	getStageErrorMessages,
 	hasLifecycleName,
 	hasStageChipError,
+	isAtStageLimit,
 } from 'lifecycle/utils/lifecycleValidation';
 import {ILifecycleDetail} from 'shared/api/lifecycle';
 import {Routes, toRoute} from 'shared/util/router';
@@ -173,6 +174,10 @@ export const useLifecycleSettingsForm = ({
 		);
 
 	const addStage = () => {
+		if (isAtStageLimit(stageConfigs)) {
+			return;
+		}
+
 		const stage = createStageConfig();
 
 		setStageConfigs((previous) => [...previous, stage]);

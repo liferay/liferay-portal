@@ -4,9 +4,13 @@ import {
 } from 'lifecycle/utils/lifecycleOperators';
 import {ILifecycle} from 'shared/api/lifecycle';
 import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
+import {LIFECYCLE_STAGES_MAX_COUNT} from 'lifecycle/utils/constants';
 
 export const isAtCharacterLimit = (value: string, maxLength: number) =>
 	value.length >= maxLength;
+
+export const isAtStageLimit = (stageConfigs: IStageConfig[]) =>
+	stageConfigs.length >= LIFECYCLE_STAGES_MAX_COUNT;
 
 export const getFieldErrorMessage = ({
 	maxLength,

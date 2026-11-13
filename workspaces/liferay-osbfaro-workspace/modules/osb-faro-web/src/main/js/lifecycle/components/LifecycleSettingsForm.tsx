@@ -1,10 +1,14 @@
 import BaseEditPage from 'shared/components/base-edit-page';
+import ClayAlert from '@clayui/alert';
 import LifecycleConditionsPanel from 'lifecycle/components/LifecycleConditionsPanel';
 import LifecycleErrorAlert from 'lifecycle/components/LifecycleErrorAlert';
 import LifecycleSummary from 'lifecycle/components/LifecycleSummary';
 import NavigationWarning from 'shared/components/NavigationWarning';
 import React from 'react';
 import StageConfigurationPanel from 'lifecycle/components/StageConfigurationPanel';
+import {isAtStageLimit} from 'lifecycle/utils/lifecycleValidation';
+import {LIFECYCLE_STAGES_MAX_COUNT} from 'lifecycle/utils/constants';
+import {sub} from 'shared/util/lang';
 import {useLifecycleSettingsForm} from 'lifecycle/hooks/useLifecycleSettingsForm';
 
 interface ILifecycleSettingsFormProps {
@@ -69,6 +73,23 @@ const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 				</BaseEditPage.Sidebar>
 
 				<BaseEditPage.Main className="page-container">
+					{isAtStageLimit(form.stageConfigs) && (
+						<ClayAlert
+							className="mb-4"
+							displayType="warning"
+							title={Liferay.Language.get('warning')}
+						>
+							{
+								sub(
+									Liferay.Language.get(
+										'you-have-reached-the-limit-of-x-stages-for-this-lifecycle'
+									),
+									[LIFECYCLE_STAGES_MAX_COUNT]
+								) as string
+							}
+						</ClayAlert>
+					)}
+
 					<LifecycleErrorAlert
 						alertCount={form.alertCount}
 						messages={form.alertMessages}
