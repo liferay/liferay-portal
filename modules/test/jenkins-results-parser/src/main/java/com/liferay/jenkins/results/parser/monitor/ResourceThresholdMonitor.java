@@ -76,7 +76,7 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 		long currentTimeMillis =
 			JenkinsResultsParserUtil.getCurrentTimeMillis();
 
-		if (_jenkinsMaster.isBlacklisted()) {
+		if (_jenkinsMaster.isBlacklisted() && _jenkinsMaster.isWhitelisted()) {
 			return new MonitorResult(
 				JenkinsResultsParserUtil.combine(
 					_masterName, " is blacklisted"),

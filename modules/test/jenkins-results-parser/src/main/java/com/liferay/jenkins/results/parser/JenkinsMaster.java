@@ -1002,6 +1002,16 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return _offline;
 	}
 
+	public boolean isWhitelisted() {
+		List<String> jenkinsMastersWhitelist = _getJenkinsMastersWhitelist();
+
+		if (jenkinsMastersWhitelist.contains(getName())) {
+			_whitelisted = true;
+		}
+
+		return _whitelisted;
+	}
+
 	public boolean matchesLabelExpression(String labelExpression) {
 		if (_matchesLabels(labelExpression, getAssignedLabels())) {
 			return true;
@@ -1915,6 +1925,39 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return idleNodesCount;
 	}
 
+	private List<String> _getJenkinsMastersWhitelist() {
+		if (_jenkinsMastersWhitelist != null) {
+			return _jenkinsMastersWhitelist;
+		}
+
+		List<String> jenkinsMastersWhitelist = new ArrayList<>();
+
+		try {
+			String jenkinsLoadBalancerWhitelist =
+				JenkinsResultsParserUtil.getBuildProperty(
+					"jenkins.load.balancer.whitelist");
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(
+					jenkinsLoadBalancerWhitelist)) {
+
+				jenkinsLoadBalancerWhitelist =
+					JenkinsResultsParserUtil.expandSlaveRange(
+						jenkinsLoadBalancerWhitelist);
+
+				Collections.addAll(
+					jenkinsMastersWhitelist,
+					jenkinsLoadBalancerWhitelist.split(","));
+			}
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+
+		_jenkinsMastersWhitelist = jenkinsMastersWhitelist;
+
+		return _jenkinsMastersWhitelist;
+	}
+
 	private List<String> _getLabels(String labelExpression) {
 		List<String> labelExpressionLabels = _labelExpressionLabels.get(
 			labelExpression);
@@ -2224,6 +2267,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		Collections.synchronizedMap(new HashMap<String, JenkinsMaster>());
 	private static final List<String> _jenkinsMastersBlacklist =
 		new ArrayList<>();
+	private static volatile List<String> _jenkinsMastersWhitelist;
 	private static final Pattern _masterNamePattern = Pattern.compile(
 		"(?<cohortName>test-\\d+)-\\d+");
 
@@ -2281,5 +2325,6 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	private List<String> _topLevelJobNames;
 	private boolean _updateMinimal = true;
 	private long _updateTimestamp = -1;
+	private boolean _whitelisted;
 
 }
