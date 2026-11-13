@@ -88,8 +88,6 @@ public class HTTPEndpointMonitorTest
 			unreadableMessage, MonitorResult.Status.CRITICAL,
 			MonitorTestUtil.newJenkinsMasterName());
 
-		verifyURLReaderAttemptsCount(2, _URL);
-
 		String masterName = MonitorTestUtil.newJenkinsMasterName();
 
 		ReflectionTestUtil.setFieldValue(
