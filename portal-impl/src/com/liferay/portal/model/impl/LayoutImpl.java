@@ -1421,7 +1421,9 @@ public class LayoutImpl extends LayoutBaseImpl {
 	 */
 	@Override
 	public boolean isSupportsEmbeddedPortlets() {
-		if (isTypeEmbedded() || isTypePanel() || isTypePortlet()) {
+		if (isTypeEmbedded() || isTypePanel() || isTypePortlet() ||
+			isTypeUtility()) {
+
 			return true;
 		}
 
