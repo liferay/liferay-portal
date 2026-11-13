@@ -19,6 +19,7 @@ import com.liferay.object.model.ObjectFieldTable;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectFolderTable;
 import com.liferay.object.model.bag.ObjectFieldBag;
+import com.liferay.object.search.RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
@@ -91,6 +92,7 @@ public class ObjectEntryModelSearchConfigurator
 					_dlFileEntryLocalService, _dlFileEntryTextProvider,
 					_objectEntryFolderLocalService,
 					_objectFieldBusinessTypeRegistry,
+					_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry,
 					_textEmbeddingDocumentContributor),
 				MapUtil.singletonDictionary(
 					"indexer.class.name", ObjectEntry.class.getName()));
@@ -249,6 +251,10 @@ public class ObjectEntryModelSearchConfigurator
 
 	@Reference
 	private ObjectFolderLocalService _objectFolderLocalService;
+
+	@Reference
+	private RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry
+		_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 
 	private ServiceTrackerMap<String, IndexerDocumentBuilder>
 		_serviceTrackerMap;

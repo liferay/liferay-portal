@@ -24,6 +24,7 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.bag.ObjectFieldBag;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
+import com.liferay.object.search.RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -83,6 +84,8 @@ public class ObjectEntryModelDocumentContributor
 		DLFileEntryTextProvider dlFileEntryTextProvider,
 		ObjectEntryFolderLocalService objectEntryFolderLocalService,
 		ObjectFieldBusinessTypeRegistry objectFieldBusinessTypeRegistry,
+		RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry
+			rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry,
 		TextEmbeddingDocumentContributor textEmbeddingDocumentContributor) {
 
 		_accountEntryOrganizationRelLocalService =
@@ -91,6 +94,8 @@ public class ObjectEntryModelDocumentContributor
 		_dlFileEntryTextProvider = dlFileEntryTextProvider;
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
 		_objectFieldBusinessTypeRegistry = objectFieldBusinessTypeRegistry;
+		_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry =
+			rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 		_textEmbeddingDocumentContributor = textEmbeddingDocumentContributor;
 	}
 
@@ -592,8 +597,7 @@ public class ObjectEntryModelDocumentContributor
 		document.addKeyword(
 			"rootDescendantNode", objectEntry.isRootDescendantNode());
 
-		_contributeObjectEntryFolder(
-			document, objectEntry.getObjectEntryFolderId());
+		_contributeObjectEntryFolder(document, objectEntry);
 
 		if (objectDefinition.isCMP()) {
 			if (values == null) {
@@ -638,7 +642,9 @@ public class ObjectEntryModelDocumentContributor
 	}
 
 	private void _contributeObjectEntryFolder(
-		Document document, long objectEntryFolderId) {
+		Document document, ObjectEntry objectEntry) {
+
+		long objectEntryFolderId = objectEntry.getObjectEntryFolderId();
 
 		document.addKeyword(Field.FOLDER_ID, objectEntryFolderId);
 
@@ -659,6 +665,14 @@ public class ObjectEntryModelDocumentContributor
 
 		if (rootObjectEntryFolder == null) {
 			return;
+		}
+
+		for (ModelDocumentContributor<ObjectEntry> modelDocumentContributor :
+				_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry.
+					getRootObjectEntryFolderObjectEntryModelDocumentContributors(
+						rootObjectEntryFolder.getExternalReferenceCode())) {
+
+			modelDocumentContributor.contribute(document, objectEntry);
 		}
 
 		String cmsSection = _getCMSSection(
@@ -846,17 +860,7 @@ public class ObjectEntryModelDocumentContributor
 	private ObjectEntryFolder _getRootObjectEntryFolder(
 		ObjectEntryFolder objectEntryFolder) {
 
-		if (objectEntryFolder == null) {
-			return null;
-		}
-
-		if (Objects.equals(
-				objectEntryFolder.getExternalReferenceCode(),
-				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS) ||
-			Objects.equals(
-				objectEntryFolder.getExternalReferenceCode(),
-				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES)) {
-
+		if (objectEntryFolder.isRoot()) {
 			return objectEntryFolder;
 		}
 
@@ -914,6 +918,9 @@ public class ObjectEntryModelDocumentContributor
 	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 	private final ObjectFieldBusinessTypeRegistry
 		_objectFieldBusinessTypeRegistry;
+	private final
+		RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry
+			_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 	private final TextEmbeddingDocumentContributor
 		_textEmbeddingDocumentContributor;
 
