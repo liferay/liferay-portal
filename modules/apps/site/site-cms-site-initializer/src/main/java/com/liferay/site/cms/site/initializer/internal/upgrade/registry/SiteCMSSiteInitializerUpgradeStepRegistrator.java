@@ -36,6 +36,7 @@ import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_3.CMSFileType
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_4.CMSFileTypeFriendlyURLUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_5.CMSSpaceAdministratorRoleUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_6.CMSPlanningAndTasksPagesUpgradeProcess;
+import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_7.CMSCommentRatingsUpgradeProcess;
 import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 
@@ -118,6 +119,12 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 				_segmentsExperienceLocalService,
 				_siteNavigationMenuItemLocalService,
 				_siteNavigationMenuLocalService, _userLocalService));
+
+		registry.register(
+			"3.0.6", "3.0.7",
+			new CMSCommentRatingsUpgradeProcess(
+				_classNameLocalService, _companyLocalService,
+				_objectDefinitionLocalService, _objectFolderLocalService));
 	}
 
 	@Reference
