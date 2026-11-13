@@ -1190,17 +1190,13 @@ public class ExpandoValueLocalServiceImpl
 		Map<String, Serializable> attributeValues = new HashMap<>(
 			(int)(columnNames.size() * 1.4));
 
-		ExpandoValue value = new ExpandoValueImpl();
-
 		for (ExpandoColumn column : columns) {
-			value.setColumn(column);
-			value.setData(column.getDefaultData());
-
-			Serializable attributeValue = doGetData(
-				companyId, className, tableName, column.getName(), classPK,
-				value, column.getType());
-
-			attributeValues.put(column.getName(), attributeValue);
+			attributeValues.put(
+				column.getName(),
+				_getData(
+					column,
+					expandoValuePersistence.fetchByT_C_C(
+						table.getTableId(), column.getColumnId(), classPK)));
 		}
 
 		return attributeValues;
@@ -1227,14 +1223,10 @@ public class ExpandoValueLocalServiceImpl
 			return null;
 		}
 
-		ExpandoValue value = new ExpandoValueImpl();
-
-		value.setColumn(column);
-		value.setData(column.getDefaultData());
-
-		return doGetData(
-			companyId, className, tableName, columnName, classPK, value,
-			column.getType());
+		return _getData(
+			column,
+			expandoValuePersistence.fetchByT_C_C(
+				table.getTableId(), column.getColumnId(), classPK));
 	}
 
 	@Override
@@ -1830,112 +1822,6 @@ public class ExpandoValueLocalServiceImpl
 		return value;
 	}
 
-	protected Serializable doGetData(
-			long companyId, String className, String tableName,
-			String columnName, long classPK, ExpandoValue value, int type)
-		throws PortalException {
-
-		if (type == ExpandoColumnConstants.BOOLEAN) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				value.getBoolean());
-		}
-		else if (type == ExpandoColumnConstants.BOOLEAN_ARRAY) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				new boolean[0]);
-		}
-		else if (type == ExpandoColumnConstants.DATE) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				value.getDate());
-		}
-		else if (type == ExpandoColumnConstants.DATE_ARRAY) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				new Date[0]);
-		}
-		else if (type == ExpandoColumnConstants.DOUBLE) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				value.getDouble());
-		}
-		else if (type == ExpandoColumnConstants.DOUBLE_ARRAY) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				new double[0]);
-		}
-		else if (type == ExpandoColumnConstants.FLOAT) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				value.getFloat());
-		}
-		else if (type == ExpandoColumnConstants.FLOAT_ARRAY) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				new float[0]);
-		}
-		else if (type == ExpandoColumnConstants.GEOLOCATION) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				value.getGeolocationJSONObject());
-		}
-		else if (type == ExpandoColumnConstants.INTEGER) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				value.getInteger());
-		}
-		else if (type == ExpandoColumnConstants.INTEGER_ARRAY) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				new int[0]);
-		}
-		else if (type == ExpandoColumnConstants.LONG) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				value.getLong());
-		}
-		else if (type == ExpandoColumnConstants.LONG_ARRAY) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				new long[0]);
-		}
-		else if (type == ExpandoColumnConstants.NUMBER) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				value.getNumber());
-		}
-		else if (type == ExpandoColumnConstants.NUMBER_ARRAY) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				new Number[0]);
-		}
-		else if (type == ExpandoColumnConstants.SHORT) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				value.getShort());
-		}
-		else if (type == ExpandoColumnConstants.SHORT_ARRAY) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				new short[0]);
-		}
-		else if (type == ExpandoColumnConstants.STRING_ARRAY) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				new String[0]);
-		}
-		else if (type == ExpandoColumnConstants.STRING) {
-			return expandoValueLocalService.getData(
-				companyId, className, tableName, columnName, classPK,
-				value.getString());
-		}
-
-		return (Serializable)expandoValueLocalService.getData(
-			companyId, className, tableName, columnName, classPK,
-			new HashMap<Object, Object>());
-	}
-
 	protected Object handleCollections(int type, Object object) {
 		if (!(object instanceof Collection) || !isTypeArray(type)) {
 			return object;
@@ -1977,6 +1863,27 @@ public class ExpandoValueLocalServiceImpl
 		}
 
 		return false;
+	}
+
+	private Serializable _getData(ExpandoColumn column, ExpandoValue value)
+		throws PortalException {
+
+		if (value == null) {
+			value = new ExpandoValueImpl();
+
+			int type = column.getType();
+
+			if (!isTypeArray(type) &&
+				(type != ExpandoColumnConstants.STRING_ARRAY_LOCALIZED) &&
+				(type != ExpandoColumnConstants.STRING_LOCALIZED)) {
+
+				value.setData(column.getDefaultData());
+			}
+		}
+
+		value.setColumn(column);
+
+		return value.getSerializable();
 	}
 
 	@BeanReference(type = ClassNameLocalService.class)
