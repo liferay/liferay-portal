@@ -208,11 +208,24 @@ public class LayoutImplTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115482")
 	public void testIsSupportsEmbeddedPortlets() {
 		for (String type :
 				new String[] {
-					LayoutConstants.TYPE_EMBEDDED, LayoutConstants.TYPE_PANEL,
-					LayoutConstants.TYPE_PORTLET
+					LayoutConstants.TYPE_LINK_TO_LAYOUT,
+					LayoutConstants.TYPE_NODE, LayoutConstants.TYPE_URL
+				}) {
+
+			_layout.setType(type);
+
+			Assert.assertFalse(_layout.isSupportsEmbeddedPortlets());
+		}
+
+		for (String type :
+				new String[] {
+					LayoutConstants.TYPE_CONTENT, LayoutConstants.TYPE_EMBEDDED,
+					LayoutConstants.TYPE_PANEL, LayoutConstants.TYPE_PORTLET,
+					LayoutConstants.TYPE_UTILITY
 				}) {
 
 			_layout.setType(type);
