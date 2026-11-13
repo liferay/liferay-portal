@@ -107,6 +107,12 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 		Assert.assertEquals(message, strongElement.getText());
 	}
 
+	@Test
+	public void testGetMessageElementDuplicateOSGiModules() {
+		_testGetMessageElementDuplicateOSGiModules("     [exec] ");
+		_testGetMessageElementDuplicateOSGiModules("");
+	}
+
 	private void _testGetMessageElement(String message) {
 		String taskFailedLine = JenkinsResultsParserUtil.combine(
 			"  [exec] > Task :", RandomTestUtil.randomString(),
@@ -135,6 +141,51 @@ public class PlaywrightSetupFailureMessageGeneratorTest
 
 		Element strongElement = (Element)messageElement.selectSingleNode(
 			"p/strong");
+
+		Assert.assertEquals(message, strongElement.getText());
+	}
+
+	private void _testGetMessageElementDuplicateOSGiModules(String linePrefix) {
+		String osgiModuleName = RandomTestUtil.randomString();
+
+		String appsOSGiModuleDirName = JenkinsResultsParserUtil.combine(
+			"apps/", RandomTestUtil.randomString(), "/", osgiModuleName);
+		String dxpAppsOSGiModuleDirName = JenkinsResultsParserUtil.combine(
+			"dxp/apps/", RandomTestUtil.randomString(), "/", osgiModuleName);
+		String message = JenkinsResultsParserUtil.combine(
+			"Duplicate OSGi modules found for ", osgiModuleName, ":");
+		String replaceLine = JenkinsResultsParserUtil.combine(
+			"Replace \"", osgiModuleName, "\" in ",
+			RandomTestUtil.randomString(), " with one of the following:");
+
+		String trailingLine = RandomTestUtil.randomString();
+
+		Element messageElement =
+			_playwrightSetupFailureMessageGenerator.getMessageElement(
+				JenkinsResultsParserUtil.combine(
+					RandomTestUtil.randomString(), "\n", linePrefix, message,
+					"\n", linePrefix, "/", RandomTestUtil.randomString(), "/",
+					appsOSGiModuleDirName, "\n", linePrefix, "/",
+					RandomTestUtil.randomString(), "/",
+					dxpAppsOSGiModuleDirName, "\n", linePrefix, replaceLine,
+					"\n", linePrefix, appsOSGiModuleDirName, "\n", linePrefix,
+					dxpAppsOSGiModuleDirName, "\n", linePrefix, trailingLine,
+					"\n"));
+
+		Element preElement = messageElement.element("pre");
+
+		String text = preElement.getText();
+
+		Assert.assertTrue(
+			text.endsWith(
+				JenkinsResultsParserUtil.combine(
+					replaceLine, "\n", linePrefix, appsOSGiModuleDirName, "\n",
+					linePrefix, dxpAppsOSGiModuleDirName)));
+		Assert.assertFalse(text.contains(trailingLine));
+
+		Element pElement = messageElement.element("p");
+
+		Element strongElement = pElement.element("strong");
 
 		Assert.assertEquals(message, strongElement.getText());
 	}
