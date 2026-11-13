@@ -48,32 +48,6 @@ public class AMAsyncProcessorImplTest {
 	}
 
 	@Test
-	public void testTriggerCleanUp() throws Exception {
-		String modelId = RandomTestUtil.randomString();
-
-		TransactionCallbackUtil.TRANSACTION_LIFECYCLE_LISTENER.created(
-			_transactionAttribute, _transactionStatus);
-
-		_amAsyncProcessorImpl.triggerCleanUp(new Object(), modelId);
-
-		TransactionCallbackUtil.TRANSACTION_LIFECYCLE_LISTENER.rollbacked(
-			_transactionAttribute, _transactionStatus, null);
-
-		long ctCollectionId = RandomTestUtil.randomLong();
-
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					ctCollectionId)) {
-
-			_amAsyncProcessorImpl.triggerCleanUp(new Object(), modelId);
-		}
-
-		AMAsyncProcessorImpl.cleanQueue(AMProcessorCommand.CLEAN_UP, modelId);
-
-		_assertMessage(AMProcessorCommand.CLEAN_UP, ctCollectionId, modelId);
-	}
-
-	@Test
 	public void testTriggerProcess() throws Exception {
 		String modelId = RandomTestUtil.randomString();
 
@@ -94,7 +68,7 @@ public class AMAsyncProcessorImplTest {
 			_amAsyncProcessorImpl.triggerProcess(new Object(), modelId);
 		}
 
-		AMAsyncProcessorImpl.cleanQueue(AMProcessorCommand.PROCESS, modelId);
+		AMAsyncProcessorImpl.cleanQueue(modelId);
 
 		_assertMessage(AMProcessorCommand.PROCESS, ctCollectionId, modelId);
 	}

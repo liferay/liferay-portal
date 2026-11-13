@@ -13,17 +13,6 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public enum AMProcessorCommand {
 
-	CLEAN_UP {
-
-		@Override
-		protected <M> void execute(
-				AMProcessor<M> amProcessor, M model, String modelId)
-			throws PortalException {
-
-			amProcessor.cleanUp(model);
-		}
-
-	},
 	PROCESS {
 
 		@Override

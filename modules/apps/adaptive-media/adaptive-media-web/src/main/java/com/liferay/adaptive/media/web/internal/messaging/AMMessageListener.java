@@ -86,7 +86,7 @@ public class AMMessageListener extends BaseMessageListener {
 			}
 		}
 
-		AMAsyncProcessorImpl.cleanQueue(amProcessorCommand, modelId);
+		AMAsyncProcessorImpl.cleanQueue(modelId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

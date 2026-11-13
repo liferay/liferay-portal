@@ -8,7 +8,6 @@ package com.liferay.adaptive.media.web.internal.processor;
 import com.liferay.adaptive.media.processor.AMAsyncProcessor;
 import com.liferay.adaptive.media.web.internal.constants.AMDestinationNames;
 import com.liferay.adaptive.media.web.internal.messaging.AMProcessorCommand;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -28,70 +27,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class AMAsyncProcessorImpl<M, T>
 	implements AMAsyncProcessor<M, T> {
 
-	public static void cleanQueue(
-		AMProcessorCommand amProcessorCommand, String modelId) {
-
-		if (amProcessorCommand == AMProcessorCommand.CLEAN_UP) {
-			_cleanUpModelIds.remove(modelId);
-		}
-		else {
-			_processModelIds.remove(modelId);
-		}
+	public static void cleanQueue(String modelId) {
+		_processModelIds.remove(modelId);
 
 		if (_log.isInfoEnabled()) {
-			_log.info(
-				StringBundler.concat(
-					"Cleaned queue for model ID ", modelId,
-					" and adaptive media processor command ",
-					amProcessorCommand));
+			_log.info("Cleaned queue for model ID " + modelId);
 		}
 	}
 
 	public AMAsyncProcessorImpl(Class<M> clazz, MessageBus messageBus) {
 		_clazz = clazz;
 		_messageBus = messageBus;
-	}
-
-	@Override
-	public void triggerCleanUp(M model, String modelId) throws PortalException {
-		long ctCollectionId = CTCollectionThreadLocal.getCTCollectionId();
-
-		TransactionCallbackUtil.registerCommitCallback(
-			() -> {
-				if (Validator.isNotNull(modelId)) {
-					if (!_cleanUpModelIds.add(modelId)) {
-						if (_log.isInfoEnabled()) {
-							_log.info(
-								"Omitted clean up for model ID " + modelId +
-									" because it is already in progress");
-						}
-
-						return null;
-					}
-
-					if (_log.isInfoEnabled()) {
-						_log.info(
-							"Added clean up for model ID " + modelId +
-								" to the queue");
-					}
-				}
-
-				Message message = new Message();
-
-				message.put("className", _clazz.getName());
-				message.put("command", AMProcessorCommand.CLEAN_UP);
-				message.put("ctCollectionId", ctCollectionId);
-				message.put("model", model);
-
-				if (Validator.isNotNull(modelId)) {
-					message.put("modelId", modelId);
-				}
-
-				_messageBus.sendMessage(
-					AMDestinationNames.ADAPTIVE_MEDIA_PROCESSOR, message);
-
-				return null;
-			});
 	}
 
 	@Override
@@ -139,8 +85,6 @@ public final class AMAsyncProcessorImpl<M, T>
 	private static final Log _log = LogFactoryUtil.getLog(
 		AMAsyncProcessorImpl.class);
 
-	private static final Set<String> _cleanUpModelIds =
-		Collections.newSetFromMap(new ConcurrentHashMap<>());
 	private static final Set<String> _processModelIds =
 		Collections.newSetFromMap(new ConcurrentHashMap<>());
 

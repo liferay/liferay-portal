@@ -70,7 +70,6 @@ public class AMMessageListenerTest {
 
 	@Test
 	public void testDoReceive() throws Exception {
-		_testDoReceive(AMProcessorCommand.CLEAN_UP);
 		_testDoReceive(AMProcessorCommand.PROCESS);
 	}
 

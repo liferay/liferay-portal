@@ -29,16 +29,6 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface AMAsyncProcessor<M, T> {
 
 	/**
-	 * Asynchronously removes any generated media from the model.
-	 *
-	 * @param  model the model from which to remove all generated media
-	 * @param  modelId the model's ID
-	 * @throws PortalException if an error occurred while calling any Liferay
-	 *         services
-	 */
-	public void triggerCleanUp(M model, String modelId) throws PortalException;
-
-	/**
 	 * Asynchronously generates the media for the model.
 	 *
 	 * @param  model the model for which media is generated
