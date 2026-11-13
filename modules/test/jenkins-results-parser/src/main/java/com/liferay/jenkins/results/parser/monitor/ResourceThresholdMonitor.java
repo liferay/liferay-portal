@@ -78,8 +78,9 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 
 		if (_jenkinsMaster.isBlacklisted()) {
 			return new MonitorResult(
-				_masterName + " is blacklisted", null, MonitorResult.Status.OK,
-				currentTimeMillis);
+				JenkinsResultsParserUtil.combine(
+					_masterName, " is blacklisted"),
+				null, MonitorResult.Status.OK, currentTimeMillis);
 		}
 
 		Double value = null;

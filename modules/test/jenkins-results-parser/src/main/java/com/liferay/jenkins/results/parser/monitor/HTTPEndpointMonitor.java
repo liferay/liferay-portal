@@ -52,8 +52,9 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 
 		if ((_jenkinsMaster != null) && _jenkinsMaster.isBlacklisted()) {
 			return new MonitorResult(
-				_jenkinsMaster.getName() + " is blacklisted", null,
-				MonitorResult.Status.OK, currentTimeMillis);
+				JenkinsResultsParserUtil.combine(
+					_jenkinsMaster.getName(), " is blacklisted"),
+				null, MonitorResult.Status.OK, currentTimeMillis);
 		}
 
 		long startTimestamp = System.currentTimeMillis();
