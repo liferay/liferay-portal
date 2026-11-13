@@ -160,17 +160,44 @@ public class RunningBuildDurationMonitorTest
 	}
 
 	@Test
-	public void testExecuteJenkinsMasters() throws Exception {
-		String buildURL = _newBuildURL(_MASTER_NAME_2);
-		String fullDisplayName = RandomTestUtil.randomString();
+	public void testExecuteBlacklistedJenkinsMasters() throws Exception {
+		setURLReaderException(
+			new IOException(RandomTestUtil.randomString()),
+			"http://" + _MASTER_NAME_1 + "/computer/api/json");
 
+		_setComputerAPIJSONObject(
+			_MASTER_NAME_2,
+			JenkinsMasterTestUtil.getComputerJSONObject(
+				RandomTestUtil.randomString(),
+				_newExecutorJSONObject(
+					_newBuildURL(_MASTER_NAME_2), RandomTestUtil.randomString(),
+					_SECONDS_DAY + 1)));
+
+		ReflectionTestUtil.setFieldValue(
+			JenkinsMaster.getInstance(_MASTER_NAME_1), "_blacklisted", true);
+		ReflectionTestUtil.setFieldValue(
+			JenkinsMaster.getInstance(_MASTER_NAME_2), "_blacklisted", true);
+
+		_testExecute(
+			null, 0, "Every master in cohort " + _COHORT_NAME + " is blacklisted",
+			0, MonitorResult.Status.OK);
+
+		verifyURLReaderAttemptsCount(
+			0, "http://" + _MASTER_NAME_1 + "/computer/api/json");
+		verifyURLReaderAttemptsCount(
+			0, "http://" + _MASTER_NAME_2 + "/computer/api/json");
+	}
+
+	@Test
+	public void testExecuteJenkinsMasters() throws Exception {
 		_setComputerAPIJSONObject(_MASTER_NAME_1);
 		_setComputerAPIJSONObject(
 			_MASTER_NAME_2,
 			JenkinsMasterTestUtil.getComputerJSONObject(
 				RandomTestUtil.randomString(),
 				_newExecutorJSONObject(
-					buildURL, fullDisplayName, _SECONDS_DAY + 1)));
+					_newBuildURL(_MASTER_NAME_2), RandomTestUtil.randomString(),
+					_SECONDS_DAY + 1)));
 
 		ReflectionTestUtil.setFieldValue(
 			JenkinsMaster.getInstance(_MASTER_NAME_2), "_blacklisted", true);
@@ -182,28 +209,21 @@ public class RunningBuildDurationMonitorTest
 		Assert.assertFalse(
 			jenkinsMasters.contains(JenkinsMaster.getInstance(_MASTER_NAME_2)));
 
-		List<String> expectedLinkURLs = Collections.singletonList(
-			_getRemoteBuildURL(buildURL));
-		String expectedMessage = _getCountMessage(1, _SECONDS_DAY);
-
 		_testExecute(
-			expectedLinkURLs, 1, expectedMessage, 1,
-			MonitorResult.Status.CRITICAL);
+			null, 0, _getOKMessage(_SECONDS_DAY), 0, MonitorResult.Status.OK);
 
 		verifyURLReaderAttemptsCount(
-			1, "http://" + _MASTER_NAME_2 + "/computer/api/json");
+			0, "http://" + _MASTER_NAME_2 + "/computer/api/json");
 
 		JenkinsMasterTestUtil.getJenkinsCohortProperties(_COHORT_NAME, 2);
 
 		mockURLReaders();
 
 		_setComputerAPIJSONObject(_MASTER_NAME_1);
-		_setComputerAPIJSONObject(
-			_MASTER_NAME_2,
-			JenkinsMasterTestUtil.getComputerJSONObject(
-				RandomTestUtil.randomString(),
-				_newExecutorJSONObject(
-					buildURL, fullDisplayName, _SECONDS_DAY + 1)));
+
+		setURLReaderException(
+			new IOException(RandomTestUtil.randomString()),
+			"http://" + _MASTER_NAME_2 + "/computer/api/json");
 
 		jenkinsCohort = JenkinsCohort.getInstance(_COHORT_NAME);
 
@@ -216,11 +236,10 @@ public class RunningBuildDurationMonitorTest
 			JenkinsMaster.getInstance(_MASTER_NAME_2), "_blacklisted", true);
 
 		_testExecute(
-			expectedLinkURLs, 1, expectedMessage, 1,
-			MonitorResult.Status.CRITICAL);
+			null, 0, _getOKMessage(_SECONDS_DAY), 0, MonitorResult.Status.OK);
 
 		verifyURLReaderAttemptsCount(
-			1, "http://" + _MASTER_NAME_2 + "/computer/api/json");
+			0, "http://" + _MASTER_NAME_2 + "/computer/api/json");
 	}
 
 	@Test

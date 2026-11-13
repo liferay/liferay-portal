@@ -5,8 +5,10 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
+import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -67,6 +69,37 @@ public class HTTPEndpointMonitorTest
 		_testExecuteLatencyMaximumWithinBound("0");
 		_testExecuteLatencyMaximumWithinBound("60000");
 		_testExecuteLatencyMaximumWithinBound(null);
+	}
+
+	@Test
+	public void testExecuteMasterName() throws Exception {
+		mockURLReaders();
+
+		String exceptionMessage = RandomTestUtil.randomString();
+
+		setURLReaderException(new IOException(exceptionMessage), _URL);
+
+		String unreadableMessage = JenkinsResultsParserUtil.combine(
+			"Unable to read ", _REMOTE_URL, ": ", exceptionMessage);
+
+		_testExecuteMasterName(
+			unreadableMessage, MonitorResult.Status.CRITICAL, "");
+		_testExecuteMasterName(
+			unreadableMessage, MonitorResult.Status.CRITICAL,
+			MonitorTestUtil.newJenkinsMasterName());
+
+		verifyURLReaderAttemptsCount(2, _URL);
+
+		String masterName = MonitorTestUtil.newJenkinsMasterName();
+
+		ReflectionTestUtil.setFieldValue(
+			JenkinsMaster.getInstance(masterName), "_blacklisted", true);
+
+		_testExecuteMasterName(
+			masterName + " is blacklisted", MonitorResult.Status.OK,
+			masterName);
+
+		verifyURLReaderAttemptsCount(2, _URL);
 	}
 
 	@Test
@@ -255,6 +288,26 @@ public class HTTPEndpointMonitorTest
 		MonitorResult monitorResult = _execute(monitorProperties);
 
 		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+	}
+
+	private void _testExecuteMasterName(
+		String expectedMessage, MonitorResult.Status expectedStatus,
+		String masterName) {
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[master.name]", masterName);
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(expectedMessage, monitorResult.getMessage());
+
+		Map<String, String> metrics = monitorResult.getMetrics();
+
+		Assert.assertTrue(metrics.isEmpty());
+
+		testEquals(expectedStatus, monitorResult.getStatus());
 	}
 
 	private void _testHTTPEndpointMonitorAtSignBeyondAuthority(
