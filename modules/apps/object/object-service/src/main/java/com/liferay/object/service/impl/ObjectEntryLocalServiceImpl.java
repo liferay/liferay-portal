@@ -194,6 +194,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -351,6 +352,47 @@ public class ObjectEntryLocalServiceImpl
 	extends ObjectEntryLocalServiceBaseImpl {
 
 	@Override
+	public ObjectEntry addDraftObjectEntry(
+			long userId, long headObjectEntryId, int version,
+			Map<String, Serializable> values, ServiceContext serviceContext)
+		throws PortalException {
+
+		ObjectEntry headObjectEntry = objectEntryPersistence.findByPrimaryKey(
+			headObjectEntryId);
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				headObjectEntry.getCompanyId(), "LPD-72278")) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionPersistence.findByPrimaryKey(
+				headObjectEntry.getObjectDefinitionId());
+
+		if (!objectDefinition.isEnableObjectEntryDraft() ||
+			!objectDefinition.isEnableObjectEntryVersioning()) {
+
+			throw new ObjectEntryStatusException("Draft status is not allowed");
+		}
+
+		ObjectEntry draftObjectEntry = _addObjectEntry(
+			null, headObjectEntry.getGroupId(), userId, headObjectEntryId,
+			objectDefinition, headObjectEntry.getObjectEntryFolderId(),
+			headObjectEntry.getDefaultLanguageId(),
+			ObjectEntryConstants.TYPE_DRAFT, version,
+			WorkflowConstants.STATUS_DRAFT, values);
+
+		_updateAsset(
+			userId, draftObjectEntry, serviceContext.getAssetCategoryIds(),
+			serviceContext.getAssetTagNames(),
+			serviceContext.getAssetLinkEntryIds(),
+			serviceContext.getAssetPriority(), serviceContext);
+
+		return draftObjectEntry;
+	}
+
+	@Override
 	public ObjectEntry addLatestApprovedObjectEntry(
 			String externalReferenceCode, long groupId, long userId,
 			long headObjectEntryId, ObjectDefinition objectDefinition,
@@ -358,60 +400,11 @@ public class ObjectEntryLocalServiceImpl
 			Map<String, Serializable> values)
 		throws PortalException {
 
-		values = new HashMap<>(values);
-
-		ObjectFieldBusinessType objectFieldBusinessType =
-			_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
-				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
-
-		for (ObjectField objectField :
-				_objectFieldPersistence.findByObjectDefinitionId(
-					objectDefinition.getObjectDefinitionId())) {
-
-			if (!objectField.compareBusinessType(
-					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
-
-				continue;
-			}
-
-			if (objectField.isLocalized()) {
-				Map<String, Object> localizedValues =
-					objectFieldBusinessType.getLocalizedValues(
-						groupId, objectField, userId, new HashMap<>(values));
-
-				if (localizedValues != null) {
-					values.put(
-						objectField.getI18nObjectFieldName(),
-						(Serializable)localizedValues);
-				}
-			}
-			else if (values.containsKey(objectField.getName())) {
-				values.put(
-					objectField.getName(),
-					(Serializable)objectFieldBusinessType.getValue(
-						groupId, objectField, userId, new HashMap<>(values)));
-			}
-		}
-
-		ObjectEntry objectEntry = _addObjectEntry(
+		return _addObjectEntry(
 			externalReferenceCode, groupId, userId, headObjectEntryId,
-			objectDefinition.getObjectDefinitionId(), objectEntryFolderId,
-			defaultLanguageId, ObjectEntryConstants.TYPE_LATEST_APPROVED,
-			version, WorkflowConstants.STATUS_APPROVED);
-
-		_insertIntoLocalizationTable(
-			defaultLanguageId, new HashMap<>(), objectDefinition,
-			objectEntry.getObjectEntryId(), null, false, values);
-		_insertIntoTable(
-			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				false, objectDefinition, _objectFieldLocalService),
-			new HashMap<>(), objectEntry.getObjectEntryId(), false, values);
-		_insertIntoTable(
-			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				true, objectDefinition, _objectFieldLocalService),
-			new HashMap<>(), objectEntry.getObjectEntryId(), false, values);
-
-		return objectEntry;
+			objectDefinition, objectEntryFolderId, defaultLanguageId,
+			ObjectEntryConstants.TYPE_LATEST_APPROVED, version,
+			WorkflowConstants.STATUS_APPROVED, values);
 	}
 
 	@Override
@@ -3104,6 +3097,68 @@ public class ObjectEntryLocalServiceImpl
 		objectEntry.setStatusDate(new Date());
 
 		return objectEntryPersistence.updateImpl(objectEntry);
+	}
+
+	private ObjectEntry _addObjectEntry(
+			String externalReferenceCode, long groupId, long userId,
+			long headObjectEntryId, ObjectDefinition objectDefinition,
+			long objectEntryFolderId, String defaultLanguageId, int type,
+			int version, int status, Map<String, Serializable> values)
+		throws PortalException {
+
+		values = new HashMap<>(values);
+
+		ObjectFieldBusinessType objectFieldBusinessType =
+			_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
+
+		for (ObjectField objectField :
+				_objectFieldPersistence.findByObjectDefinitionId(
+					objectDefinition.getObjectDefinitionId())) {
+
+			if (!objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+
+				continue;
+			}
+
+			if (objectField.isLocalized()) {
+				Map<String, Object> localizedValues =
+					objectFieldBusinessType.getLocalizedValues(
+						groupId, objectField, userId, new HashMap<>(values));
+
+				if (localizedValues != null) {
+					values.put(
+						objectField.getI18nObjectFieldName(),
+						(Serializable)localizedValues);
+				}
+			}
+			else if (values.containsKey(objectField.getName())) {
+				values.put(
+					objectField.getName(),
+					(Serializable)objectFieldBusinessType.getValue(
+						groupId, objectField, userId, new HashMap<>(values)));
+			}
+		}
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			externalReferenceCode, groupId, userId, headObjectEntryId,
+			objectDefinition.getObjectDefinitionId(), objectEntryFolderId,
+			defaultLanguageId, type, version, status);
+
+		_insertIntoLocalizationTable(
+			defaultLanguageId, new HashMap<>(), objectDefinition,
+			objectEntry.getObjectEntryId(), null, false, values);
+		_insertIntoTable(
+			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
+				false, objectDefinition, _objectFieldLocalService),
+			new HashMap<>(), objectEntry.getObjectEntryId(), false, values);
+		_insertIntoTable(
+			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
+				true, objectDefinition, _objectFieldLocalService),
+			new HashMap<>(), objectEntry.getObjectEntryId(), false, values);
+
+		return objectEntry;
 	}
 
 	private ObjectEntry _addObjectEntryVersion(
