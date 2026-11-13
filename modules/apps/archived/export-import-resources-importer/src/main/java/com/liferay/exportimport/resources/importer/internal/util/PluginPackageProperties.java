@@ -9,7 +9,6 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.PortalRunMode;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -82,15 +81,9 @@ public class PluginPackageProperties {
 	}
 
 	public boolean isDeveloperModeEnabled() {
-		if (GetterUtil.getBoolean(
-				_properties.getProperty(
-					"resources-importer-developer-mode-enabled")) ||
-			PortalRunMode.isTestMode()) {
-
-			return true;
-		}
-
-		return false;
+		return GetterUtil.getBoolean(
+			_properties.getProperty(
+				"resources-importer-developer-mode-enabled"));
 	}
 
 	public boolean isUpdateModeEnabled() {
