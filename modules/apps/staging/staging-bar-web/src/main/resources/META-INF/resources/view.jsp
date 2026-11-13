@@ -267,7 +267,6 @@ if (liveLayout != null) {
 			}
 		}
 
-		var stagingLink = document.getElementById('<portlet:namespace />stagingLink');
 		var warningMessage = document.getElementById(
 			'<portlet:namespace />warningMessage'
 		);
@@ -285,10 +284,6 @@ if (liveLayout != null) {
 					var incomplete = obj > 0;
 
 					if (incomplete) {
-						if (stagingLink) {
-							stagingLink.classList.add('hide');
-						}
-
 						if (warningMessage) {
 							warningMessage.classList.remove('hide');
 						}
@@ -296,10 +291,6 @@ if (liveLayout != null) {
 						setTimeout(checkBackgroundTasks, 5000);
 					}
 					else {
-						if (stagingLink) {
-							stagingLink.classList.remove('hide');
-						}
-
 						if (warningMessage) {
 							warningMessage.classList.add('hide');
 						}
