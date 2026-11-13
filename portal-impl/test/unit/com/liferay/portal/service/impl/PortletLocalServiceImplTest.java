@@ -126,6 +126,7 @@ public class PortletLocalServiceImplTest {
 		Assert.assertSame(
 			portletFriendlyURLMapperMatch,
 			portletLocalServiceImpl.getPortletFriendlyURLMapperMatch(url));
+
 		Assert.assertEquals(1, atomicInteger.get());
 	}
 
