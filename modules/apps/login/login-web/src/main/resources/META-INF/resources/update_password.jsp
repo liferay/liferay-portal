@@ -62,7 +62,7 @@ if (Validator.isNull(titlePage)) {
 
 		<div class="sheet-text">
 			<c:choose>
-				<c:when test="<%= !themeDisplay.isSignedIn() && (ticket == null) %>">
+				<c:when test="<%= ticket == null %>">
 					<div class="alert alert-warning">
 						<c:choose>
 							<c:when test="<%= (ticket == null) && (ticketKey != null) && Validator.isNull(ticketId) %>">

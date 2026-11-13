@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -129,16 +130,23 @@ public class UpdatePasswordActionUtil {
 
 		AuthTokenUtil.checkCSRFToken(httpServletRequest, csrfOrigin);
 
-		HttpSession httpSession = httpServletRequest.getSession();
-
 		long userId = 0;
 
 		if (ticket != null) {
 			userId = ticket.getClassPK();
 		}
 		else {
-			userId = themeDisplay.getUserId();
+			User user = themeDisplay.getUser();
+
+			if (user.isGuestUser() || !user.isPasswordReset()) {
+				throw new PrincipalException(
+					"Password reset ticket is invalid");
+			}
+
+			userId = user.getUserId();
 		}
+
+		HttpSession httpSession = httpServletRequest.getSession();
 
 		boolean passwordReset = false;
 
