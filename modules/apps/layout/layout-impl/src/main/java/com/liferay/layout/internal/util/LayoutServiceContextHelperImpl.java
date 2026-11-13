@@ -214,27 +214,10 @@ public class LayoutServiceContextHelperImpl
 				_group = _groupLocalService.getGroup(
 					company.getCompanyId(), GroupConstants.GUEST);
 
-				String friendlyURL =
-					_friendlyURLNormalizer.normalizeWithEncoding(
-						PropsValues.DEFAULT_GUEST_PUBLIC_LAYOUT_FRIENDLY_URL);
-
-				layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-					_group.getGroupId(), false, friendlyURL);
+				layout = _fetchGuestGroupLayout(company);
 			}
 			else {
 				_group = _groupLocalService.getGroup(layout.getGroupId());
-			}
-
-			if (layout == null) {
-				layout = _layoutLocalService.fetchFirstLayout(
-					_group.getGroupId(), false,
-					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false);
-			}
-
-			if (layout == null) {
-				layout = _layoutLocalService.fetchFirstLayout(
-					_group.getGroupId(), false,
-					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
 			}
 
 			_layout = layout;
@@ -362,6 +345,38 @@ public class LayoutServiceContextHelperImpl
 
 				},
 				ProxyFactory.newDummyInstance(HttpServletRequest.class));
+		}
+
+		private Layout _fetchFirstLayout(Group group) {
+			Layout layout = _layoutLocalService.fetchFirstLayout(
+				group.getGroupId(), false,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false);
+
+			if (layout != null) {
+				return layout;
+			}
+
+			return _layoutLocalService.fetchFirstLayout(
+				group.getGroupId(), false,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+		}
+
+		private Layout _fetchGuestGroupLayout(Company company)
+			throws PortalException {
+
+			Group group = _groupLocalService.getGroup(
+				company.getCompanyId(), GroupConstants.GUEST);
+
+			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false,
+				_friendlyURLNormalizer.normalizeWithEncoding(
+					PropsValues.DEFAULT_GUEST_PUBLIC_LAYOUT_FRIENDLY_URL));
+
+			if (layout != null) {
+				return layout;
+			}
+
+			return _fetchFirstLayout(group);
 		}
 
 		private ThemeDisplay _getThemeDisplay(
