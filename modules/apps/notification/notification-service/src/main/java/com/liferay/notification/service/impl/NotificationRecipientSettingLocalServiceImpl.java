@@ -348,6 +348,13 @@ public class NotificationRecipientSettingLocalServiceImpl
 		User user) {
 
 		if (Validator.isNotNull(externalReferenceCode)) {
+			Role role = _roleLocalService.fetchRoleByExternalReferenceCode(
+				externalReferenceCode, user.getCompanyId());
+
+			if (role != null) {
+				return role;
+			}
+
 			try {
 				return _roleService.getOrAddEmptyRole(
 					externalReferenceCode, _getRoleClassName(typeLabel), 0,
@@ -410,6 +417,14 @@ public class NotificationRecipientSettingLocalServiceImpl
 		String externalReferenceCode, String name, User user) {
 
 		if (Validator.isNotNull(externalReferenceCode)) {
+			UserGroup userGroup =
+				_userGroupLocalService.fetchUserGroupByExternalReferenceCode(
+					externalReferenceCode, user.getCompanyId());
+
+			if (userGroup != null) {
+				return userGroup;
+			}
+
 			try {
 				return _userGroupService.getOrAddEmptyUserGroup(
 					externalReferenceCode, name);
