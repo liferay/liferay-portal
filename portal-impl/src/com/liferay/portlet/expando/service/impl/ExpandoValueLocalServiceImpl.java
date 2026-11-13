@@ -1202,6 +1202,24 @@ public class ExpandoValueLocalServiceImpl
 	}
 
 	@Override
+	public Map<String, Serializable> getData(
+			long companyId, String className, String tableName, long classPK)
+		throws PortalException {
+
+		ExpandoTable table = _expandoTablePersistence.fetchByC_C_N(
+			companyId, _classNameLocalService.getClassNameId(className),
+			tableName);
+
+		if (table == null) {
+			return new HashMap<>();
+		}
+
+		return _getAttributeValues(
+			_expandoColumnPersistence.findByTableId(table.getTableId()),
+			expandoValuePersistence.findByT_CPK(table.getTableId(), classPK));
+	}
+
+	@Override
 	public Serializable getData(
 			long companyId, String className, String tableName,
 			String columnName, long classPK)
