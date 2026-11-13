@@ -197,26 +197,6 @@ definition {
 	// You can use this navigation when you need to access the configuration quickly without checking the UI.
 
 	@summary = "Default summary"
-	macro openToAddChildPage(wikiNodeName = null, layoutURLKey = null, groupName = null, siteURLKey = null, wikiParentPageTitle = null) {
-		var baseURL = ${baseURL};
-
-		if (!(isSet(baseURL))) {
-			var baseURL = JSONCompany.getPortalURL();
-		}
-
-		var nodeId = JSONWikiSetter.setNodeId(
-			groupName = ${groupName},
-			name = ${wikiNodeName});
-
-		if (isSet(layoutURLKey)) {
-			Open(value1 = "${baseURL}/web/${siteURLKey}/${layoutURLKey}?p_p_id=com_liferay_wiki_web_portlet_WikiPortlet&_com_liferay_wiki_web_portlet_WikiPortlet_mvcRenderCommandName=%2Fwiki%2Fedit_page&_com_liferay_wiki_web_portlet_WikiPortlet_editTitle=1&p_r_p_http%3A%2F%2Fwww.liferay.com%2Fpublic-render-parameters%2Fwiki_nodeId=${nodeId}&_com_liferay_wiki_web_portlet_WikiPortlet_parentTitle=${wikiParentPageTitle}");
-		}
-		else {
-			Open(value1 = "${baseURL}/${siteURLKey}/~/control_panel/manage?p_p_id=com_liferay_wiki_web_portlet_WikiAdminPortlet&_com_liferay_wiki_web_portlet_WikiAdminPortlet_mvcRenderCommandName=%2Fwiki%2Fedit_page&_com_liferay_wiki_web_portlet_WikiAdminPortlet_editTitle=1&_com_liferay_wiki_web_portlet_WikiAdminPortlet_nodeId=${nodeId}&_com_liferay_wiki_web_portlet_WikiAdminPortlet_parentTitle=${wikiParentPageTitle}");
-		}
-	}
-
-	@summary = "Default summary"
 	macro openToAddPage(wikiNodeName = null, layoutURLKey = null, groupName = null, siteURLKey = null) {
 		var baseURL = ${baseURL};
 

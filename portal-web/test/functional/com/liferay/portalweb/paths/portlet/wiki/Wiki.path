@@ -118,41 +118,6 @@
 <!--COMPARE_ACTIVITIES_NAVIGATION-->
 
 <tr>
-	<td>COMPARE_ACTIVITIES_NAVIGATION_TEXT_MODE_LINK</td>
-	<td>//div[@class='central-info']//a[contains(.,'Text Mode')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>COMPARE_VERSIONS_TEXT_MODE_TABLE_TITLE_VERSION_OLD</td>
-	<td>//table[@id='taglib-diff-results']//tr/td[1]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>COMPARE_VERSIONS_TEXT_MODE_TABLE_TITLE_VERSION_NEW</td>
-	<td>//table[@id='taglib-diff-results']//tr/td[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>COMPARE_VERSIONS_TEXT_MODE_TABLE_LINE_NUMBER_OLD_1</td>
-	<td>//table[@id='taglib-diff-results']//tr[contains(.,'Line')]/th[1]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>COMPARE_VERSIONS_TEXT_MODE_TABLE_LINE_NUMBER_NEW_1</td>
-	<td>//table[@id='taglib-diff-results']//tr[contains(.,'Line')]/th[2]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>COMPARE_VERSIONS_TEXT_MODE_TABLE_CONTENT_OLD_1</td>
-	<td>//table[@id='taglib-diff-results']//tr[3]/td[1]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>COMPARE_VERSIONS_TEXT_MODE_TABLE_CONTENT_NEW_1</td>
-	<td>//table[@id='taglib-diff-results']//tr[3]/td[2]</td>
-	<td></td>
-</tr>
-<tr>
 	<td></td>
 	<td></td>
 	<td></td>
@@ -225,23 +190,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>COMPARE_VERSIONS_DIFF_ADDED</td>
-	<td>//span[contains(@class,'diff-html-added') and contains (.,'${key_wikiPageContentCompareAdded}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>COMPARE_VERSIONS_DIFF_REMOVED</td>
-	<td>//span[contains(@class,'diff-html-removed') and contains (.,'${key_wikiPageContentCompareRemoved}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>COMPARE_VERSIONS_IFRAME</td>
 	<td>//div[contains(@class,'modal-body')]/iframe[contains(@id,'selectVersionFm')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>COMPARE_VERSIONS_PARAGRAPH_FULL</td>
-	<td>//div[contains(@class,'portlet-wiki')]//p[contains(.,'${key_wikiPageContentCompareFull}')]</td>
 	<td></td>
 </tr>
 <tr>

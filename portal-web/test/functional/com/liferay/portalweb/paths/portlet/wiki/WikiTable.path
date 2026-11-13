@@ -135,16 +135,6 @@
 
 <!--SELECT_VERSION-->
 
-<tr>
-	<td>SELECT_VERSION_NEW_VERSION_CHECKBOX</td>
-	<td>//tr[contains(.,'${key_wikiPageVersionNew}')]/td[1]//input[@type='checkbox']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>SELECT_VERSION_OLD_VERSION_CHECKBOX</td>
-	<td>//tr[contains(.,'${key_wikiPageVersionOld}')]/td[1]//input[@type='checkbox']</td>
-	<td></td>
-</tr>
 </tbody>
 </table>
 </body>

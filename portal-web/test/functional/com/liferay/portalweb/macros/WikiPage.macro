@@ -200,45 +200,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addFrontPageChildPageInvalidTitle(wikiNodeName = null, layoutURLKey = null, groupName = null, siteURLKey = null, wikiParentPageTitle = null, wikiChildPageContent = null, wikiChildPageTitle = null) {
-		if (isSet(siteURLKey)) {
-			WikiNavigator.openToAddChildPage(
-				groupName = ${groupName},
-				layoutURLKey = ${layoutURLKey},
-				siteURLKey = ${siteURLKey},
-				wikiNodeName = ${wikiNodeName},
-				wikiParentPageTitle = ${wikiParentPageTitle});
-		}
-		else {
-			AssertClick(
-				locator1 = "Link#ADD_CHILD_PAGE",
-				value1 = "Add Child Page");
-		}
-
-		var key_wikiChildPageTitle = ${wikiChildPageTitle};
-
-		WikiEntry.addPageTitle(title = ${wikiChildPageTitle});
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
-
-		Type(
-			locator1 = "CKEditor#BODY",
-			value1 = ${wikiChildPageContent});
-
-		SelectFrame(value1 = "relative=top");
-
-		AssertClick(
-			locator1 = "Button#PUBLISH",
-			value1 = "Publish");
-
-		Alert.viewRequestFailedToComplete();
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#ERROR_1",
-			value1 = "Please enter a valid title.");
-	}
-
-	@summary = "Default summary"
 	macro addFrontPageChildPageInvalidTitleViaWD(wikiChildPageContent = null, wikiChildPageTitle = null) {
 		AssertClick(
 			locator1 = "Link#ADD_CHILD_PAGE",
@@ -579,44 +540,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro changeParentWikipagetoWikipagePG(wikiPage2Title = null, wikiPage1Title = null, wikiPage2Content = null) {
-		var key_wikiPageTitle = ${wikiPage2Title};
-
-		AssertTextEquals(
-			locator1 = "Portlet#H3_HEADER",
-			value1 = ${wikiPage2Title});
-
-		AssertTextEquals(
-			locator1 = "WikiEntry#BODY",
-			value1 = ${wikiPage2Content});
-
-		AssertClick(
-			locator1 = "Link#DETAILS",
-			value1 = "Details");
-
-		AssertClick(
-			key_text = "Move",
-			locator1 = "Link#ANY",
-			value1 = "Move");
-
-		AssertClick(
-			locator1 = "Wiki#PAGE_TABS_CHANGE_PARENT",
-			value1 = "Change Parent");
-
-		var key_wikiPageTitle = ${wikiPage1Title};
-
-		Select(
-			locator1 = "Select#NEW_PARENT",
-			value1 = "- ${wikiPage1Title}");
-
-		AssertClick(
-			locator1 = "Button#CHANGE",
-			value1 = "Change Parent");
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro clickWikiPage(workflowInstanceName = null) {
 		AssertClick(
 			key_workflowInstanceName = ${workflowInstanceName},
@@ -680,108 +603,6 @@ definition {
 		AssertTextEquals(
 			locator1 = "Wiki#COMPARE_VERSIONS_DIFF",
 			value1 = ${wikiPageVersionDiff});
-	}
-
-	@summary = "Default summary"
-	macro compareVersionsPG(wikiPageCompareContentDetails = null, wikiPageVersionDiff = null, wikiPageTitle = null, wikiPageContentCompareAdded = null, wikiPageContentCompareFull = null, compareLineNumberOld = null, wikiNodeName = null, wikiPageVersionNew = null, compareLineNumberNew = null, wikiPageContentCompareNew = null, wikiPageVersionOld = null, wikiPageContentCompareRemoved = null, wikiPageContentCompareOld = null) {
-		var key_wikiNodeName = ${wikiNodeName};
-
-		AssertClick(
-			locator1 = "Link#DETAILS",
-			value1 = "Details");
-
-		AssertClick(
-			locator1 = "Wiki#PAGE_TABS_HISTORY",
-			value1 = "History");
-
-		AssertClick(
-			locator1 = "Wiki#HISTORY_VERSIONS_TAB",
-			value1 = "Versions");
-
-		var key_wikiPageVersionNew = ${wikiPageVersionNew};
-
-		Check(
-			locator1 = "WikiTable#SELECT_VERSION_NEW_VERSION_CHECKBOX",
-			value1 = ${wikiPageVersionNew});
-
-		var key_wikiPageVersionOld = ${wikiPageVersionOld};
-
-		Check(
-			locator1 = "WikiTable#SELECT_VERSION_OLD_VERSION_CHECKBOX",
-			value1 = ${wikiPageVersionOld});
-
-		AssertClick(
-			locator1 = "Button#COMPARE_VERSIONS",
-			value1 = "Compare Versions");
-
-		SelectFrame(value1 = "relative=top");
-
-		if (${wikiPageCompareContentDetails} == "true") {
-			var key_wikiPageContentCompareAdded = ${wikiPageContentCompareAdded};
-			var key_wikiPageContentCompareFull = ${wikiPageContentCompareFull};
-			var key_wikiPageContentCompareRemoved = ${wikiPageContentCompareRemoved};
-
-			AssertTextEquals(
-				locator1 = "Wiki#COMPARE_VERSIONS_DIFF_ADDED",
-				value1 = ${wikiPageContentCompareAdded});
-
-			AssertTextEquals(
-				locator1 = "Wiki#COMPARE_VERSIONS_DIFF_REMOVED",
-				value1 = ${wikiPageContentCompareRemoved});
-
-			AssertTextEquals(
-				locator1 = "Wiki#COMPARE_VERSIONS_PARAGRAPH_FULL",
-				value1 = ${wikiPageContentCompareFull});
-
-			AssertClick(
-				locator1 = "Wiki#COMPARE_ACTIVITIES_NAVIGATION_TEXT_MODE_LINK",
-				value1 = "Text Mode");
-
-			AssertTextEquals(
-				locator1 = "Wiki#COMPARE_VERSIONS_TEXT_MODE_TABLE_TITLE_VERSION_OLD",
-				value1 = "${wikiPageTitle} ${wikiPageVersionOld}");
-
-			AssertTextEquals(
-				locator1 = "Wiki#COMPARE_VERSIONS_TEXT_MODE_TABLE_TITLE_VERSION_NEW",
-				value1 = "${wikiPageTitle} ${wikiPageVersionNew}");
-
-			if (isSet(compareLineNumberOld)) {
-				AssertTextEquals(
-					locator1 = "Wiki#COMPARE_VERSIONS_TEXT_MODE_TABLE_LINE_NUMBER_OLD_1",
-					value1 = "Line ${compareLineNumberOld}");
-			}
-			else {
-				AssertTextEquals(
-					locator1 = "Wiki#COMPARE_VERSIONS_TEXT_MODE_TABLE_LINE_NUMBER_OLD_1",
-					value1 = "Line 1");
-			}
-
-			if (isSet(compareLineNumberNew)) {
-				AssertTextEquals(
-					locator1 = "Wiki#COMPARE_VERSIONS_TEXT_MODE_TABLE_LINE_NUMBER_NEW_1",
-					value1 = "Line ${compareLineNumberNew}");
-			}
-			else {
-				AssertTextEquals(
-					locator1 = "Wiki#COMPARE_VERSIONS_TEXT_MODE_TABLE_LINE_NUMBER_NEW_1",
-					value1 = "Line 1");
-			}
-
-			AssertTextEquals(
-				locator1 = "Wiki#COMPARE_VERSIONS_TEXT_MODE_TABLE_CONTENT_OLD_1",
-				value1 = ${wikiPageContentCompareOld});
-
-			AssertTextEquals(
-				locator1 = "Wiki#COMPARE_VERSIONS_TEXT_MODE_TABLE_CONTENT_NEW_1",
-				value1 = ${wikiPageContentCompareNew});
-		}
-		else {
-			var key_wikiPageVersionDiff = ${wikiPageVersionDiff};
-
-			AssertTextEquals(
-				locator1 = "Wiki#COMPARE_VERSIONS_DIFF",
-				value1 = ${wikiPageVersionDiff});
-		}
 	}
 
 	@summary = "Default summary"
@@ -1063,12 +884,7 @@ definition {
 			locator1 = "Button#RENAME",
 			value1 = "Rename");
 
-		if (isSet(renameDraftWikiPage)) {
-			Alert.viewErrorMessage(errorMessage = "Your request failed to complete.");
-		}
-		else {
-			Alert.viewSuccessMessage();
-		}
+		Alert.viewSuccessMessage();
 	}
 
 	@summary = "Default summary"
@@ -1095,56 +911,6 @@ definition {
 			value1 = "Rename");
 
 		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
-	macro revertChangeParentWikipagetoWikipagePG(wikiPage2Title = null, wikiVersion1Summary = null, wikiPage2Content = null, wikiVersion2Summary = null, wikiPageRevision = null) {
-		var key_wikiPageTitle = ${wikiPage2Title};
-
-		AssertTextEquals(
-			locator1 = "Portlet#H3_HEADER",
-			value1 = ${wikiPage2Title});
-
-		AssertTextEquals(
-			locator1 = "WikiEntry#BODY",
-			value1 = ${wikiPage2Content});
-
-		AssertClick(
-			locator1 = "Link#DETAILS",
-			value1 = "Details");
-
-		AssertClick(
-			locator1 = "Wiki#PAGE_TABS_HISTORY",
-			value1 = "History");
-
-		AssertClick(
-			locator1 = "Wiki#HISTORY_VERSIONS_TAB",
-			value1 = "Versions");
-
-		var key_wikiPageRevision = "1.1";
-		var key_wikiPageTitle = ${wikiPage2Title};
-		var key_wikiVersionSummary = ${wikiVersion1Summary};
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Wiki#HISTORY_VERSIONS_SUMMARY",
-			value1 = ${wikiVersion1Summary});
-
-		var key_wikiPageRevision = "1.0";
-
-		Click.waitForMenuToggleJSClick(
-			key_wikiPageRevision = ${wikiPageRevision},
-			locator1 = "Wiki#HISTORY_VERSIONS_ACTIONS");
-
-		MenuItem.click(menuItem = "Revert");
-
-		Alert.viewSuccessMessage();
-
-		var key_wikiPageRevision = "1.2";
-		var key_wikiVersionSummary = ${wikiVersion2Summary};
-
-		AssertTextEquals(
-			locator1 = "Wiki#HISTORY_VERSIONS_SUMMARY",
-			value1 = ${wikiVersion2Summary});
 	}
 
 	@summary = "Default summary"
@@ -1517,33 +1283,6 @@ definition {
 		AssertTextNotPresent(
 			locator1 = "Wiki#CHILD_PAGE_TITLE",
 			value1 = ${wikiChildPageTitle});
-	}
-
-	@summary = "Default summary"
-	macro viewNoChildPagePGViaAllPages(wikiPageTitle = null, wikiPageRevision = null, wikiChildPageTitle = null) {
-		var key_wikiPageTitle = ${wikiPageTitle};
-
-		AssertTextEquals(
-			locator1 = "WikiTable#ALL_PAGES_WIKI_PAGE_TITLE",
-			value1 = ${wikiPageTitle});
-
-		AssertTextEquals(
-			locator1 = "WikiTable#ALL_PAGES_STATUS",
-			value1 = "APPROVED");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "WikiTable#ALL_PAGES_REVISION",
-			value1 = ${wikiPageRevision});
-
-		AssertElementNotPresent(
-			key_wikiPageUsername = "Test Test",
-			locator1 = "WikiTable#ALL_PAGES_USER");
-
-		AssertElementPresent(locator1 = "WikiTable#ALL_PAGES_DATE");
-
-		var key_wikiPageTitle = ${wikiChildPageTitle};
-
-		AssertElementNotPresent(locator1 = "WikiTable#ALL_PAGES_WIKI_PAGE_TITLE");
 	}
 
 	@summary = "Default summary"
