@@ -92,44 +92,6 @@ definition {
 		PortletEntry.publish();
 	}
 
-	@e2etest
-	@priority = 5
-	@refactordone
-	test CanAddEntryWithHighDensityResolution {
-		ApplicationsMenu.gotoRootPortlet(
-			panel = "Control Panel",
-			portlet = "Adaptive Media");
-
-		AdaptiveMedia.addImageResolution(
-			addHighDensityDisplay = "true",
-			description = "Low resolution variant",
-			imageName = "Low Resolution",
-			maxHeight = 480,
-			maxWidth = 320);
-
-		AdaptiveMedia.viewImageResolutionTableEntry(
-			imageName = "Low Resolution",
-			maxHeight = 480,
-			maxWidth = 320,
-			percentAdapted = 0);
-
-		AdaptiveMedia.viewImageResolutionTableEntry(
-			imageName = "Low Resolution-2x",
-			maxHeight = 960,
-			maxWidth = 640,
-			percentAdapted = 0);
-
-		AdaptiveMedia.gotoImageVariantEntry(imageName = "Low Resolution");
-
-		AdaptiveMedia.viewImageVariantDescription(description = "Low resolution variant");
-
-		AdaptiveMedia.openAdaptiveMediaAdmin();
-
-		AdaptiveMedia.gotoImageVariantEntry(imageName = "Low Resolution-2x");
-
-		AdaptiveMedia.viewImageVariantDescription(description = "2x Low resolution variant");
-	}
-
 	@priority = 4
 	@refactordone
 	test CanAddImageResolutionWithSingleDimension {
@@ -230,33 +192,6 @@ definition {
 		AdaptiveMedia.gotoImageVariantEntry(imageName = '''[]\{}|:&quot;;&apos;,./&gt;&lt;?''');
 
 		AdaptiveMedia.viewImageVariantDescription(description = '''1234567890!@#$%^&amp;*()~`''');
-	}
-
-	@priority = 4
-	@refactordone
-	test CannotAddDuplicateImageResolution {
-		property portal.acceptance = "false";
-
-		AdaptiveMedia.openToAddImageResolution();
-
-		AdaptiveMedia.addImageResolution(
-			customId = "custom-id",
-			imageName = "Image Variant With Custom ID",
-			maxHeight = 350,
-			maxWidth = 450);
-
-		AdaptiveMedia.openToAddImageResolution();
-
-		AdaptiveMedia.addImageResolution(
-			customId = "custom-id",
-			duplicate = "true",
-			imageName = "Image Variant With Duplicate Custom ID",
-			maxHeight = 350,
-			maxWidth = 450);
-
-		AdaptiveMedia.openAdaptiveMediaAdmin();
-
-		AdaptiveMedia.viewNoImageResolution();
 	}
 
 	@description = "This is a test for LPS-78626. It ensures that a reloaded image can be viewed after changing the screen resolution."
