@@ -220,6 +220,7 @@ export async function getLaunchEntrySummary({
 	className,
 	classPK,
 	draftId,
+	launchSetId,
 	portletNamespace,
 	resourceURL,
 	versionKey,
@@ -227,6 +228,7 @@ export async function getLaunchEntrySummary({
 	className: string;
 	classPK: number;
 	draftId: number;
+	launchSetId: number;
 	portletNamespace: string;
 	resourceURL: string;
 	versionKey?: string;
@@ -236,6 +238,7 @@ export async function getLaunchEntrySummary({
 	url.searchParams.set(`${portletNamespace}className`, className);
 	url.searchParams.set(`${portletNamespace}classPK`, String(classPK));
 	url.searchParams.set(`${portletNamespace}draftId`, String(draftId));
+	url.searchParams.set(`${portletNamespace}launchSetId`, String(launchSetId));
 	url.searchParams.set(`${portletNamespace}redirect`, window.location.href);
 	url.searchParams.set(`${portletNamespace}versionKey`, versionKey ?? '');
 

@@ -21,10 +21,16 @@ export default function useLaunchEntrySummary(
 	const [launchEntrySummary, setLaunchEntrySummary] =
 		useState<LaunchEntrySummary | null>(null);
 
-	const {className, classPK, draftId, versionKey} = launchEntry;
+	const {
+		className,
+		classPK,
+		draftId,
+		r_launchSetToLaunchEntries_c_launchSetId: launchSetId,
+		versionKey,
+	} = launchEntry;
 
 	useEffect(() => {
-		const key = `${className}|${classPK}|${draftId}|${versionKey}`;
+		const key = `${className}|${classPK}|${draftId}|${launchSetId}|${versionKey}`;
 
 		setLaunchEntrySummary(null);
 
@@ -35,6 +41,7 @@ export default function useLaunchEntrySummary(
 					className,
 					classPK,
 					draftId,
+					launchSetId,
 					portletNamespace,
 					resourceURL,
 					versionKey,
@@ -62,6 +69,7 @@ export default function useLaunchEntrySummary(
 		className,
 		classPK,
 		draftId,
+		launchSetId,
 		portletNamespace,
 		resourceURL,
 		versionKey,
