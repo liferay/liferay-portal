@@ -18,7 +18,7 @@ import useDebounceCallback from '../hooks/useDebounceCallback';
 import cleanSuggestionsContributorConfiguration from '../utils/clean_suggestions_contributor_configuration';
 
 export default function SearchBar({
-	destinationFriendlyURL,
+	destinationFriendlyURL = '',
 	emptySearchEnabled,
 	initialKeywords = '',
 	inputPlaceholder = '',
@@ -109,9 +109,7 @@ export default function SearchBar({
 			addParams(
 				{
 					currentURL: window.location.href,
-					destinationFriendlyURL: destinationFriendlyURL.trim().length
-						? destinationFriendlyURL
-						: '/search',
+					destinationFriendlyURL: destinationFriendlyURL.trim(),
 					groupId: Liferay.ThemeDisplay.getScopeGroupId(),
 					keywordsParameterName,
 					plid: Liferay.ThemeDisplay.getPlid(),
