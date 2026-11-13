@@ -373,10 +373,8 @@ test('CSP-Report-Only connect-src alerts connections', async ({
 	page.on('console', (msg) => {
 		if (
 			msg.type() === 'info' &&
-			msg.text().includes('[Report Only] Refused to connect to') &&
-			msg
-				.text()
-				.includes('Content Security Policy directive: "connect-src')
+			msg.text().includes('report-only') &&
+			msg.text().includes('directive: "connect-src')
 		) {
 			logs.push({text: msg.text(), type: msg.type()});
 		}
@@ -894,7 +892,8 @@ test('CSP-Report-Only frame-src allerts frames', async ({
 				text.includes(
 					`http://www.able.com:${liferayConfig.environment.port}/`
 				) &&
-				text.includes('[Report Only] Refused to frame')
+				text.includes('report-only') &&
+				text.includes('directive: "frame-src')
 			) {
 				logs.push(text);
 			}
@@ -1108,7 +1107,8 @@ test('CSP-Report-Only img-src alerts images', async ({
 				text.includes(
 					`http://www.able.com:${liferayConfig.environment.port}/html/icons/default.png`
 				) &&
-				text.includes('[Report Only] Refused to load the image')
+				text.includes('report-only') &&
+				text.includes('directive: "img-src')
 			) {
 				logs.push(text);
 			}
