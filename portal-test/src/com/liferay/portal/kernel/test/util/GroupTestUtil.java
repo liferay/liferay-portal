@@ -15,17 +15,21 @@ import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.SystemEvent;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SystemEventLocalServiceUtil;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.SiteFriendlyURLKeywordRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
@@ -297,6 +301,16 @@ public class GroupTestUtil {
 
 	public static Group deleteGroup(Group group) throws Exception {
 		return GroupLocalServiceUtil.deleteGroup(group);
+	}
+
+	public static void deleteGroupAndSystemEvent(Group group) throws Exception {
+		GroupLocalServiceUtil.deleteGroup(group);
+
+		SystemEvent systemEvent = SystemEventLocalServiceUtil.fetchSystemEvent(
+			0, PortalUtil.getClassNameId(Group.class), group.getGroupId(),
+			SystemEventConstants.TYPE_DELETE);
+
+		SystemEventLocalServiceUtil.deleteSystemEvent(systemEvent);
 	}
 
 	public static void enableLocalStaging(Group group) throws Exception {

@@ -17,10 +17,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.SystemEvent;
-import com.liferay.portal.kernel.model.SystemEventConstants;
-import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.DataCleanupTestUtil;
@@ -28,7 +24,6 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -168,7 +163,7 @@ public class DDMStorageLinkDataCleanupPreupgradeProcessTest
 		_ddmTemplateLocalService.deleteTemplate(
 			journalArticle.getDDMTemplate());
 
-		_deleteGroup(group);
+		GroupTestUtil.deleteGroupAndSystemEvent(group);
 	}
 
 	@Test
@@ -213,16 +208,6 @@ public class DDMStorageLinkDataCleanupPreupgradeProcessTest
 		}
 	}
 
-	private void _deleteGroup(Group group) throws Exception {
-		_groupLocalService.deleteGroup(group);
-
-		SystemEvent systemEvent = _systemEventLocalService.fetchSystemEvent(
-			0, _portal.getClassNameId(Group.class), group.getGroupId(),
-			SystemEventConstants.TYPE_DELETE);
-
-		_systemEventLocalService.deleteSystemEvent(systemEvent);
-	}
-
 	private long _getCount(
 			Connection connection, String columnName, String tableName,
 			long value)
@@ -250,14 +235,5 @@ public class DDMStorageLinkDataCleanupPreupgradeProcessTest
 
 	@Inject
 	private DDMTemplateLocalService _ddmTemplateLocalService;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
-
-	@Inject
-	private Portal _portal;
-
-	@Inject
-	private SystemEventLocalService _systemEventLocalService;
 
 }

@@ -20,22 +20,17 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.SystemEvent;
-import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.DataCleanupTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.data.cleanup.JournalDataCleanupPreupgradeProcess;
@@ -73,7 +68,7 @@ public class JournalDataCleanupPreupgradeProcessTest
 	@After
 	public void tearDown() throws Exception {
 		if (_group != null) {
-			_deleteGroup(_group);
+			GroupTestUtil.deleteGroupAndSystemEvent(_group);
 		}
 
 		_classNamesSavepointSafeCloseable.close();
@@ -174,16 +169,6 @@ public class JournalDataCleanupPreupgradeProcessTest
 			journalArticle.getDDMStructure());
 	}
 
-	private void _deleteGroup(Group group) throws Exception {
-		_groupLocalService.deleteGroup(group);
-
-		SystemEvent systemEvent = _systemEventLocalService.fetchSystemEvent(
-			0, _portal.getClassNameId(Group.class), group.getGroupId(),
-			SystemEventConstants.TYPE_DELETE);
-
-		_systemEventLocalService.deleteSystemEvent(systemEvent);
-	}
-
 	private SafeCloseable _classNamesSavepointSafeCloseable;
 
 	@Inject
@@ -198,21 +183,12 @@ public class JournalDataCleanupPreupgradeProcessTest
 	private Group _group;
 
 	@Inject
-	private GroupLocalService _groupLocalService;
-
-	@Inject
 	private LayoutLocalService _layoutLocalService;
-
-	@Inject
-	private Portal _portal;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Inject
 	private RoleLocalService _roleLocalService;
-
-	@Inject
-	private SystemEventLocalService _systemEventLocalService;
 
 }
