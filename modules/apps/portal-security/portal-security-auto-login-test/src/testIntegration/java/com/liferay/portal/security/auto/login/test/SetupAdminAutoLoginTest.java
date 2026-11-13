@@ -14,13 +14,17 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Ticket;
+import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auto.login.AutoLogin;
+import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.TicketLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
@@ -41,6 +45,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -139,7 +144,7 @@ public class SetupAdminAutoLoginTest {
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest(
-				ServletContextPool.get(StringPool.BLANK), HttpMethods.GET,
+				ServletContextPool.get(StringPool.BLANK), HttpMethods.POST,
 				StringPool.SLASH);
 
 		mockHttpServletRequest.addParameter(Constants.CMD, "update");
@@ -150,6 +155,20 @@ public class SetupAdminAutoLoginTest {
 		mockHttpServletRequest.addParameter("password2", password);
 
 		mockHttpServletRequest.addParameter("p_auth", "test");
+
+		Ticket ticket = TicketLocalServiceUtil.addDistinctTicket(
+			_user.getCompanyId(), User.class.getName(), _user.getUserId(),
+			TicketConstants.TYPE_PASSWORD, null,
+			new Date(System.currentTimeMillis() + 3600000),
+			new ServiceContext());
+
+		mockHttpServletRequest.addParameter(
+			"ticketId", String.valueOf(ticket.getTicketId()));
+		mockHttpServletRequest.addParameter("ticketKey", ticket.getKey());
+
+		ticket.setKey(PasswordEncryptorUtil.encrypt(ticket.getKey()));
+
+		TicketLocalServiceUtil.updateTicket(ticket);
 
 		mockHttpServletRequest.setAttribute(
 			WebKeys.COMPANY_ID, _company.getCompanyId());

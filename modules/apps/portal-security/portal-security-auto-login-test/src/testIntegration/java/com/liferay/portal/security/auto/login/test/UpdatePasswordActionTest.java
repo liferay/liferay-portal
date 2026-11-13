@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -35,6 +37,8 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.struts.Action;
+import com.liferay.portal.struts.model.ActionMapping;
+import com.liferay.portal.struts.model.ModuleConfig;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -69,6 +73,18 @@ public class UpdatePasswordActionTest {
 	public void testExecute() throws Exception {
 		_testExecute();
 		_testExecuteWithMFARedirectingToSignIn();
+		_testExecuteWithoutTicket(
+			false,
+			_userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
+
+		User user = UserTestUtil.addUser();
+
+		_testExecuteWithoutTicket(
+			false,
+			_userLocalService.updatePasswordReset(user.getUserId(), false));
+		_testExecuteWithoutTicket(
+			true,
+			_userLocalService.updatePasswordReset(user.getUserId(), true));
 	}
 
 	private MockHttpServletRequest _mockHttpServletRequest(
@@ -217,6 +233,32 @@ public class UpdatePasswordActionTest {
 		Assert.assertEquals(
 			themeDisplay.getURLSignIn(),
 			mockHttpServletResponse.getRedirectedUrl());
+	}
+
+	private void _testExecuteWithoutTicket(boolean success, User user)
+		throws Exception {
+
+		Action action = new UpdatePasswordAction();
+
+		MockHttpServletRequest mockHttpServletRequest = _mockHttpServletRequest(
+			_companyLocalService.getCompany(user.getCompanyId()), user);
+
+		mockHttpServletRequest.removeParameter("ticketId");
+		mockHttpServletRequest.removeParameter("ticketKey");
+
+		action.execute(
+			new ActionMapping(null, null, true, new ModuleConfig(), null),
+			mockHttpServletRequest, new MockHttpServletResponse());
+
+		Assert.assertEquals(
+			!success,
+			SessionErrors.contains(
+				mockHttpServletRequest, PrincipalException.class));
+
+		HttpSession httpSession = mockHttpServletRequest.getSession();
+
+		Assert.assertEquals(
+			success, httpSession.getAttribute("j_remoteuser") != null);
 	}
 
 	@Inject
