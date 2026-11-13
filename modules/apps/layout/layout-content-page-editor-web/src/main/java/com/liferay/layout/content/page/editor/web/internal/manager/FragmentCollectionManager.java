@@ -25,6 +25,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.permission.provider.InfoPermissionProvider;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorConstants;
+import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
 import com.liferay.layout.page.template.info.item.capability.EditPageInfoItemCapability;
 import com.liferay.layout.util.PortalPreferencesUtil;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
@@ -290,8 +291,9 @@ public class FragmentCollectionManager {
 
 			if (!fragmentRenderer.isSelectable(httpServletRequest) ||
 				!_isAllowedFragmentEntryKey(
-					fragmentRenderer.getKey(),
-					masterDropZoneLayoutStructureItem)) {
+					themeDisplay.getCompanyId(), fragmentRenderer.getKey(),
+					masterDropZoneLayoutStructureItem,
+					themeDisplay.getScopeGroupId())) {
 
 				continue;
 			}
@@ -443,8 +445,10 @@ public class FragmentCollectionManager {
 			fragmentCompositions,
 			fragmentComposition -> {
 				if (!_isAllowedFragmentEntryKey(
+						themeDisplay.getCompanyId(),
 						fragmentComposition.getFragmentCompositionKey(),
-						masterDropZoneLayoutStructureItem)) {
+						masterDropZoneLayoutStructureItem,
+						themeDisplay.getScopeGroupId())) {
 
 					return null;
 				}
@@ -485,8 +489,10 @@ public class FragmentCollectionManager {
 			fragmentEntries,
 			fragmentEntry -> {
 				if (!_isAllowedFragmentEntryKey(
+						themeDisplay.getCompanyId(),
 						fragmentEntry.getFragmentEntryKey(),
-						masterDropZoneLayoutStructureItem) ||
+						masterDropZoneLayoutStructureItem,
+						themeDisplay.getScopeGroupId()) ||
 					((fragmentEntry.isTypeInput() ||
 					  Objects.equals(
 						  fragmentEntry.getFragmentEntryKey(),
@@ -648,7 +654,9 @@ public class FragmentCollectionManager {
 					"fragmentEntryKey");
 
 				if (!_isAllowedFragmentEntryKey(
-						fragmentEntryKey, masterDropZoneLayoutStructureItem)) {
+						themeDisplay.getCompanyId(), fragmentEntryKey,
+						masterDropZoneLayoutStructureItem,
+						themeDisplay.getScopeGroupId())) {
 
 					continue;
 				}
@@ -720,36 +728,13 @@ public class FragmentCollectionManager {
 	}
 
 	private boolean _isAllowedFragmentEntryKey(
-		String fragmentEntryKey,
-		DropZoneLayoutStructureItem masterDropZoneLayoutStructureItem) {
+		long companyId, String fragmentEntryKey,
+		DropZoneLayoutStructureItem masterDropZoneLayoutStructureItem,
+		long scopeGroupId) {
 
-		List<String> fragmentEntryKeys = Collections.emptyList();
-		boolean allowNewFragmentEntries = true;
-
-		if (masterDropZoneLayoutStructureItem != null) {
-			fragmentEntryKeys =
-				masterDropZoneLayoutStructureItem.getFragmentEntryKeys();
-			allowNewFragmentEntries =
-				masterDropZoneLayoutStructureItem.isAllowNewFragmentEntries();
-		}
-
-		if (allowNewFragmentEntries) {
-			if (ListUtil.isEmpty(fragmentEntryKeys) ||
-				!fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-				return true;
-			}
-
-			return false;
-		}
-
-		if (ListUtil.isNotEmpty(fragmentEntryKeys) &&
-			fragmentEntryKeys.contains(fragmentEntryKey)) {
-
-			return true;
-		}
-
-		return false;
+		return _dropZoneAllowedFragmentEntriesHelper.isAllowedFragmentEntryKey(
+			companyId, masterDropZoneLayoutStructureItem, fragmentEntryKey,
+			scopeGroupId);
 	}
 
 	private static final String[] _SORTED_FRAGMENT_COLLECTION_KEYS = {
@@ -761,6 +746,10 @@ public class FragmentCollectionManager {
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Reference
+	private DropZoneAllowedFragmentEntriesHelper
+		_dropZoneAllowedFragmentEntriesHelper;
 
 	@Reference
 	private FragmentCollectionContributorRegistry
