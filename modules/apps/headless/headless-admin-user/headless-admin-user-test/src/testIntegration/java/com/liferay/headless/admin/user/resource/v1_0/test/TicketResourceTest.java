@@ -74,6 +74,18 @@ public class TicketResourceTest extends BaseTicketResourceTestCase {
 
 		_assertGetUserAccountTicketWithPermission(
 			requestingUser, ticketResource::getUserAccountPasswordResetTicket);
+
+		try {
+			ticketResource.getUserAccountPasswordResetTicket(
+				requestingUser.getUserId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
 	}
 
 	@Ignore
