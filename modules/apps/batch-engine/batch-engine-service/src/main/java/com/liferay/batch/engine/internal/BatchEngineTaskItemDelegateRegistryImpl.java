@@ -218,20 +218,15 @@ public class BatchEngineTaskItemDelegateRegistryImpl
 	private ServiceObjects<Object> _getServiceObjects(
 		long companyId, String itemClassName, String taskItemDelegateName) {
 
-		String companyIdKey = _encodeKey(
-			companyId, itemClassName, taskItemDelegateName);
+		ServiceObjects<Object> serviceObjects = _serviceTrackerMap.getService(
+			_encodeKey(companyId, itemClassName, taskItemDelegateName));
 
-		if (_serviceTrackerMap.containsKey(companyIdKey)) {
-			return _serviceTrackerMap.getService(companyIdKey);
+		if (serviceObjects != null) {
+			return serviceObjects;
 		}
 
-		String key = _encodeKey(null, itemClassName, taskItemDelegateName);
-
-		if (_serviceTrackerMap.containsKey(key)) {
-			return _serviceTrackerMap.getService(key);
-		}
-
-		return null;
+		return _serviceTrackerMap.getService(
+			_encodeKey(null, itemClassName, taskItemDelegateName));
 	}
 
 	private ServiceTrackerMap<String, ServiceObjects<Object>>
