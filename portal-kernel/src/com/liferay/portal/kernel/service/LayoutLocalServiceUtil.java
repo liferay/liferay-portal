@@ -788,7 +788,8 @@ public class LayoutLocalServiceUtil {
 	 * @throws PortalException
 	 */
 	public static long getDefaultPlid(
-		long groupId, boolean privateLayout, String portletId) {
+			long groupId, boolean privateLayout, String portletId)
+		throws PortalException {
 
 		return getService().getDefaultPlid(groupId, privateLayout, portletId);
 	}
@@ -1320,12 +1321,6 @@ public class LayoutLocalServiceUtil {
 
 	public static int getLayoutsCount(long groupId, boolean privateLayout) {
 		return getService().getLayoutsCount(groupId, privateLayout);
-	}
-
-	public static int getLayoutsCount(
-		long groupId, boolean privateLayout, int[] statuses) {
-
-		return getService().getLayoutsCount(groupId, privateLayout, statuses);
 	}
 
 	public static int getLayoutsCount(
@@ -2003,7 +1998,9 @@ public class LayoutLocalServiceUtil {
 	 * @param privateLayout whether the layout is private to the group
 	 * @throws PortalException
 	 */
-	public static void updatePriorities(long groupId, boolean privateLayout) {
+	public static void updatePriorities(long groupId, boolean privateLayout)
+		throws PortalException {
+
 		getService().updatePriorities(groupId, privateLayout);
 	}
 
@@ -2145,4 +2142,4 @@ public class LayoutLocalServiceUtil {
 	private static volatile LayoutLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-629644598
+// LIFERAY-SERVICE-BUILDER-HASH:-39907294

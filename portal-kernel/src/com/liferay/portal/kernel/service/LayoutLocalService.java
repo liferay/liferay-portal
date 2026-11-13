@@ -692,7 +692,8 @@ public interface LayoutLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long getDefaultPlid(
-		long groupId, boolean privateLayout, String portletId);
+			long groupId, boolean privateLayout, String portletId)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -1124,10 +1125,6 @@ public interface LayoutLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getLayoutsCount(long groupId, boolean privateLayout);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutsCount(
-		long groupId, boolean privateLayout, int[] statuses);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getLayoutsCount(
@@ -1627,7 +1624,8 @@ public interface LayoutLocalService
 	 * @param privateLayout whether the layout is private to the group
 	 * @throws PortalException
 	 */
-	public void updatePriorities(long groupId, boolean privateLayout);
+	public void updatePriorities(long groupId, boolean privateLayout)
+		throws PortalException;
 
 	/**
 	 * Updates the priority of the layout.
@@ -1739,4 +1737,4 @@ public interface LayoutLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2037369851
+// LIFERAY-SERVICE-BUILDER-HASH:-1729628992

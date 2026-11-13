@@ -840,7 +840,8 @@ public class LayoutLocalServiceWrapper
 	 */
 	@Override
 	public long getDefaultPlid(
-		long groupId, boolean privateLayout, String portletId) {
+			long groupId, boolean privateLayout, String portletId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _layoutLocalService.getDefaultPlid(
 			groupId, privateLayout, portletId);
@@ -1430,14 +1431,6 @@ public class LayoutLocalServiceWrapper
 	@Override
 	public int getLayoutsCount(long groupId, boolean privateLayout) {
 		return _layoutLocalService.getLayoutsCount(groupId, privateLayout);
-	}
-
-	@Override
-	public int getLayoutsCount(
-		long groupId, boolean privateLayout, int[] statuses) {
-
-		return _layoutLocalService.getLayoutsCount(
-			groupId, privateLayout, statuses);
 	}
 
 	@Override
@@ -2185,7 +2178,9 @@ public class LayoutLocalServiceWrapper
 	 * @throws PortalException
 	 */
 	@Override
-	public void updatePriorities(long groupId, boolean privateLayout) {
+	public void updatePriorities(long groupId, boolean privateLayout)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		_layoutLocalService.updatePriorities(groupId, privateLayout);
 	}
 
@@ -2363,4 +2358,4 @@ public class LayoutLocalServiceWrapper
 	private LayoutLocalService _layoutLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-253017056
+// LIFERAY-SERVICE-BUILDER-HASH:1490364414
