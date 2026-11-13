@@ -81,6 +81,7 @@ import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -95,6 +96,7 @@ import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
@@ -1472,6 +1474,50 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 	}
 
 	@Test
+	@TestInfo("LPD-94885")
+	public void testSearchWorkflowTaskByUserRolesWithRegularRole()
+		throws Exception {
+
+		Role role = _roleLocalService.addRole(
+			RandomTestUtil.randomString(), _companyAdminUser.getUserId(), null,
+			0, RandomTestUtil.randomString(), null, null,
+			RoleConstants.TYPE_REGULAR, null, null);
+
+		String content = StringUtil.replace(
+			StringUtil.read(
+				getResourceInputStream("role-id-workflow-definition.json")),
+			"[$ROLE_ID$]", String.valueOf(role.getRoleId()));
+
+		String name = RandomTestUtil.randomString();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				TestPropsValues.getUser())) {
+
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				content.getBytes(), _company.getCompanyId(), null, name, name,
+				_adminUser.getUserId());
+		}
+
+		_activateWorkflow(DLFolder.class.getName(), 0, -1, name, 1);
+
+		FileVersion fileVersion = _addFileVersion(
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_PENDING, fileVersion.getStatus());
+
+		User user = _createUser(RoleConstants.SITE_MEMBER, _group, false);
+
+		_assertWorkflowTasksByUserRoles(0, fileVersion, user);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		_assertWorkflowTasksByUserRoles(1, fileVersion, user);
+
+		_deactivateWorkflow(DLFolder.class.getName(), 0, -1);
+	}
+
+	@Test
 	public void testSearchWorkflowTasksByAssetTypesAndAssetPrimaryKeys()
 		throws Exception {
 
@@ -1869,6 +1915,39 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 			Assert.assertTrue(
 				workflowException.getCause() instanceof
 					PrincipalException.MustHavePermission);
+		}
+	}
+
+	private void _assertWorkflowTasksByUserRoles(
+			int expectedCount, FileVersion fileVersion, User user)
+		throws Exception {
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			Assert.assertEquals(
+				expectedCount,
+				_workflowTaskManager.getWorkflowTaskCountByUserRoles(
+					user.getCompanyId(), user.getUserId(), false));
+
+			List<WorkflowTask> workflowTasks =
+				_workflowTaskManager.getWorkflowTasksByUserRoles(
+					user.getCompanyId(), user.getUserId(), false,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+			Assert.assertEquals(
+				workflowTasks.toString(), expectedCount, workflowTasks.size());
+
+			Assert.assertEquals(expectedCount, _searchCountByUserRoles(user));
+
+			FileEntry fileEntry = _dlAppLocalService.getFileEntry(
+				fileVersion.getFileEntryId());
+
+			Assert.assertEquals(
+				expectedCount > 0,
+				fileEntry.containsPermission(
+					PermissionThreadLocal.getPermissionChecker(),
+					ActionKeys.VIEW));
 		}
 	}
 
