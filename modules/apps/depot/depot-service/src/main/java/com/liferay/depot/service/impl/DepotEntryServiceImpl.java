@@ -90,12 +90,21 @@ public class DepotEntryServiceImpl extends DepotEntryServiceBaseImpl {
 			long groupId, int type, int start, int end)
 		throws PortalException {
 
+		if (!GroupPermissionUtil.contains(
+				getPermissionChecker(), groupId, ActionKeys.VIEW)) {
+
+			return Collections.emptyList();
+		}
+
 		List<DepotEntry> filteredDepotEntries = getGroupConnectedDepotEntries(
 			groupId, type, start, end);
 
 		DepotEntry depotEntry = depotEntryPersistence.fetchByGroupId(groupId);
 
-		if (depotEntry != null) {
+		if ((depotEntry != null) &&
+			((type == DepotConstants.TYPE_ANY) ||
+			 (type == depotEntry.getType()))) {
+
 			filteredDepotEntries.add(depotEntry);
 		}
 
