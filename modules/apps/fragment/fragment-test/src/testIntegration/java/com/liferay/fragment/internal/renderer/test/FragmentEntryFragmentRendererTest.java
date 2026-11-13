@@ -324,71 +324,6 @@ public class FragmentEntryFragmentRendererTest {
 	}
 
 	@Test
-	@TestInfo("LPD-114360")
-	public void testFragmentCacheHostsAllowedConfiguration() throws Exception {
-		FragmentCollection fragmentCollection =
-			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
-
-		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.addFragmentEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
-				fragmentCollection.getFragmentCollectionId(), null,
-				RandomTestUtil.randomString(), StringPool.BLANK,
-				"<div>##URL=${configuration.pageLink}##</div>",
-				StringPool.BLANK, true,
-				JSONUtil.put(
-					"fieldSets",
-					JSONUtil.putAll(
-						JSONUtil.put(
-							"fields",
-							JSONUtil.putAll(
-								JSONUtil.put(
-									"name", "pageLink"
-								).put(
-									"type", "url"
-								))))
-				).toString(),
-				null, 0, false, false, FragmentConstants.TYPE_COMPONENT, null,
-				WorkflowConstants.STATUS_APPROVED, _serviceContext);
-
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
-				fragmentEntry.getExternalReferenceCode(),
-				ScopeUtil.getItemScopeExternalReferenceCode(
-					fragmentEntry.getGroupId(), _group.getGroupId()),
-				_defaultSegmentsExperienceId, _layout.getPlid(),
-				fragmentEntry.getCss(), fragmentEntry.getHtml(),
-				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-				JSONUtil.put(
-					FragmentEntryProcessorConstants.
-						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
-					JSONUtil.put(
-						"pageLink",
-						JSONUtil.put(
-							"layout",
-							JSONUtil.put(
-								"groupId", String.valueOf(_layout.getGroupId())
-							).put(
-								"layoutId",
-								String.valueOf(_layout.getLayoutId())
-							).put(
-								"privateLayout", false
-							)
-						).toString())
-				).toString(),
-				StringPool.BLANK, 0, null, fragmentEntry.getType(),
-				_serviceContext);
-
-		_testFragmentCacheHostsAllowedConfigurationWithEmptyHostsAllowed(
-			fragmentEntryLink);
-		_testFragmentCacheHostsAllowedConfigurationWithHostsAllowed(
-			fragmentEntryLink);
-		_testFragmentCacheHostsAllowedConfigurationWithHostsAllowedCaseInsensitive(
-			fragmentEntryLink);
-	}
-
-	@Test
 	public void testFragmentEntryLinkJavaScriptVariables() throws Exception {
 		FragmentEntry fragmentEntry = _getFragmentEntry(true);
 
@@ -620,6 +555,71 @@ public class FragmentEntryFragmentRendererTest {
 				_serviceContext);
 
 		_testRenderWithNonce(fragmentEntryLink, RandomTestUtil.randomString());
+	}
+
+	@Test
+	@TestInfo("LPD-114360")
+	public void testRenderWithFragmentCacheHostsAllowed() throws Exception {
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.addFragmentEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				fragmentCollection.getFragmentCollectionId(), null,
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				"<div>##URL=${configuration.pageLink}##</div>",
+				StringPool.BLANK, true,
+				JSONUtil.put(
+					"fieldSets",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"fields",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"name", "pageLink"
+								).put(
+									"type", "url"
+								))))
+				).toString(),
+				null, 0, false, false, FragmentConstants.TYPE_COMPONENT, null,
+				WorkflowConstants.STATUS_APPROVED, _serviceContext);
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				fragmentEntry.getExternalReferenceCode(),
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(), _group.getGroupId()),
+				_defaultSegmentsExperienceId, _layout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						"pageLink",
+						JSONUtil.put(
+							"layout",
+							JSONUtil.put(
+								"groupId", String.valueOf(_layout.getGroupId())
+							).put(
+								"layoutId",
+								String.valueOf(_layout.getLayoutId())
+							).put(
+								"privateLayout", false
+							)
+						).toString())
+				).toString(),
+				StringPool.BLANK, 0, null, fragmentEntry.getType(),
+				_serviceContext);
+
+		_testRenderWithEmptyHostsAllowed(
+			fragmentEntryLink);
+		_testRenderWithHostsAllowed(
+			fragmentEntryLink);
+		_testRenderWithHostsAllowedCaseInsensitive(
+			fragmentEntryLink);
 	}
 
 	@Test
@@ -1169,7 +1169,7 @@ public class FragmentEntryFragmentRendererTest {
 	}
 
 	private void
-			_testFragmentCacheHostsAllowedConfigurationWithEmptyHostsAllowed(
+			_testRenderWithEmptyHostsAllowed(
 				FragmentEntryLink fragmentEntryLink)
 		throws Exception {
 
@@ -1193,7 +1193,7 @@ public class FragmentEntryFragmentRendererTest {
 			contentHost1, _getRenderedContent(fragmentEntryLink, host2));
 	}
 
-	private void _testFragmentCacheHostsAllowedConfigurationWithHostsAllowed(
+	private void _testRenderWithHostsAllowed(
 			FragmentEntryLink fragmentEntryLink)
 		throws Exception {
 
@@ -1230,7 +1230,7 @@ public class FragmentEntryFragmentRendererTest {
 	}
 
 	private void
-			_testFragmentCacheHostsAllowedConfigurationWithHostsAllowedCaseInsensitive(
+			_testRenderWithHostsAllowedCaseInsensitive(
 				FragmentEntryLink fragmentEntryLink)
 		throws Exception {
 
