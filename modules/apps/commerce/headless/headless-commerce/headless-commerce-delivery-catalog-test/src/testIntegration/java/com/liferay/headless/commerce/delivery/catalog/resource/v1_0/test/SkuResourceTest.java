@@ -121,32 +121,6 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	@Ignore
 	@Override
 	@Test
-	public void testGraphQLGetChannelByExternalReferenceCodeChannelExternalReferenceCodeProductByExternalReferenceCodeProductExternalReferenceCodeSkuByExternalReferenceCodeSkuExternalReferenceCode()
-		throws Exception {
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetChannelByExternalReferenceCodeChannelExternalReferenceCodeProductByExternalReferenceCodeProductExternalReferenceCodeSkuByExternalReferenceCodeSkuExternalReferenceCodeNotFound()
-		throws Exception {
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetChannelProductSku() throws Exception {
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetChannelProductSkuNotFound() throws Exception {
-	}
-
-	@Ignore
-	@Override
-	@Test
 	public void testPostChannelProductSku() {
 	}
 
@@ -252,10 +226,35 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	}
 
 	@Override
+	protected String
+			testGraphQLGetChannelByExternalReferenceCodeChannelExternalReferenceCodeProductByExternalReferenceCodeProductExternalReferenceCodeSkuByExternalReferenceCodeSkuExternalReferenceCode_getChannelExternalReferenceCode()
+		throws Exception {
+
+		return _commerceChannel.getExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGraphQLGetChannelByExternalReferenceCodeChannelExternalReferenceCodeProductByExternalReferenceCodeProductExternalReferenceCodeSkuByExternalReferenceCodeSkuExternalReferenceCode_getProductExternalReferenceCode()
+		throws Exception {
+
+		CProduct cProduct = _cpDefinition.getCProduct();
+
+		return cProduct.getExternalReferenceCode();
+	}
+
+	@Override
 	protected Long testGraphQLGetChannelProductSku_getChannelId()
 		throws Exception {
 
 		return _commerceChannel.getCommerceChannelId();
+	}
+
+	@Override
+	protected Long testGraphQLGetChannelProductSku_getProductId(Sku sku)
+		throws Exception {
+
+		return sku.getProductId();
 	}
 
 	@Override
