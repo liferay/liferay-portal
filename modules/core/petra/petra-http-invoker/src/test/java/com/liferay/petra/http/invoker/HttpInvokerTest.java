@@ -86,10 +86,10 @@ public class HttpInvokerTest {
 
 	@Test
 	public void testInvoke() throws Exception {
-		Set<Integer> remotePorts = ConcurrentHashMap.newKeySet();
-
 		HttpServer httpServer = HttpServer.create(
 			new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0);
+
+		Set<Integer> remotePorts = ConcurrentHashMap.newKeySet();
 
 		httpServer.createContext(
 			"/",
