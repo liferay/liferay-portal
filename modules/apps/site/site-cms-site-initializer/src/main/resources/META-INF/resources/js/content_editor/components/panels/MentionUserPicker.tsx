@@ -8,6 +8,7 @@ import ClayIcon from '@clayui/icon';
 import {useNavigation} from '@clayui/shared';
 import Sticker from '@clayui/sticker';
 import {ReactPortal} from '@liferay/frontend-js-react-web';
+import {ScreenReaderAnnouncer} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {TEditor} from 'frontend-editor-ckeditor-web';
 import {sub} from 'frontend-js-web';
@@ -55,6 +56,10 @@ export default function MentionUserPicker({
 	const {users} = results;
 
 	const open = !!query && (!!users.length || status !== 'loading');
+
+	const activeDescendant =
+		open && users.length ? `${id}-${activeIndex}` : null;
+	const listboxId = `${id}-listbox`;
 
 	const close = useCallback(() => {
 		setKeyboardNavigation(false);
@@ -111,6 +116,33 @@ export default function MentionUserPicker({
 		orientation: 'vertical',
 		visible: open,
 	});
+
+	useEffect(() => {
+		const {view} = editor.editing;
+
+		const root = view.document.getRoot();
+
+		if (!root) {
+			return;
+		}
+
+		view.change((writer) => {
+			writer.setAttribute('aria-autocomplete', 'list', root);
+
+			if (activeDescendant) {
+				writer.setAttribute(
+					'aria-activedescendant',
+					activeDescendant,
+					root
+				);
+				writer.setAttribute('aria-controls', listboxId, root);
+			}
+			else {
+				writer.removeAttribute('aria-activedescendant', root);
+				writer.removeAttribute('aria-controls', root);
+			}
+		});
+	}, [activeDescendant, editor, listboxId]);
 
 	const select = (user: MentionUser) => {
 		query?.insert(user);
@@ -188,123 +220,140 @@ export default function MentionUserPicker({
 		};
 	}, [close, open]);
 
-	if (!query) {
-		return null;
-	}
+	const screenReaderAnnouncerRef = useScreenReaderAnnouncement({
+		keywords,
+		open,
+		resultsCount: users.length,
+		status,
+	});
 
-	const rect = query.getRect();
+	const rect = query?.getRect();
 
 	return (
 		<>
-			<ReactPortal
-				ref={anchorRef}
-				style={{
-					height: rect.height,
-					left: rect.left,
-					position: 'fixed',
-					top: rect.top,
-					width: rect.width,
-				}}
-				wrapper="span"
-			/>
+			<ScreenReaderAnnouncer ref={screenReaderAnnouncerRef} />
 
-			<ClayDropDown.Menu
-				active={open}
-				alignElementRef={anchorRef}
-				className="comments-panel__mention-user-picker"
-				onActiveChange={close}
-				ref={menuRef}
-				suppress={[editableRef, menuRef]}
-				triggerRef={editableRef}
-			>
-				{users.length ? (
-					<>
-						<div
-							aria-hidden="true"
-							className="dropdown-subheader text-secondary"
-						>
-							{Liferay.Language.get('people')}
-						</div>
+			{rect && (
+				<>
+					<ReactPortal
+						ref={anchorRef}
+						style={{
+							height: rect.height,
+							left: rect.left,
+							position: 'fixed',
+							top: rect.top,
+							width: rect.width,
+						}}
+						wrapper="span"
+					/>
 
-						<ClayDropDown.ItemList role="listbox">
-							{users.map((user, index) => (
-								<ClayDropDown.Item
-									active={index === activeIndex}
-									className={classNames({
-										focus:
-											keyboardNavigation &&
-											index === activeIndex,
-									})}
-									id={`${id}-${index}`}
-									key={user.id}
-									onClick={() => select(user)}
-									onMouseDown={(event) =>
-										event.preventDefault()
-									}
-									onMouseEnter={() => setActiveIndex(index)}
-									roleItem="option"
+					<ClayDropDown.Menu
+						active={open}
+						alignElementRef={anchorRef}
+						className="comments-panel__mention-user-picker"
+						onActiveChange={close}
+						ref={menuRef}
+						suppress={[editableRef, menuRef]}
+						triggerRef={editableRef}
+					>
+						{users.length ? (
+							<>
+								<div
+									aria-hidden="true"
+									className="dropdown-subheader text-secondary"
 								>
-									<span className="align-items-center d-flex">
-										<Sticker
-											className={classNames(
-												'flex-shrink-0 mr-3',
-												{
-													[`user-icon-color-${user.id.charCodeAt(0) % 10}`]:
-														!user.portraitURL,
-												}
-											)}
-											shape="user-icon"
+									{Liferay.Language.get('people')}
+								</div>
+
+								<ClayDropDown.ItemList
+									aria-label={Liferay.Language.get('people')}
+									id={listboxId}
+									role="listbox"
+								>
+									{users.map((user, index) => (
+										<ClayDropDown.Item
+											active={index === activeIndex}
+											className={classNames({
+												focus:
+													keyboardNavigation &&
+													index === activeIndex,
+											})}
+											id={`${id}-${index}`}
+											key={user.id}
+											onClick={() => select(user)}
+											onMouseDown={(event) =>
+												event.preventDefault()
+											}
+											onMouseEnter={() =>
+												setActiveIndex(index)
+											}
+											roleItem="option"
 										>
-											{user.portraitURL ? (
-												<Sticker.Image
-													alt=""
-													src={user.portraitURL}
-												/>
-											) : (
-												<ClayIcon symbol="user" />
-											)}
-										</Sticker>
+											<span className="align-items-center d-flex">
+												<Sticker
+													className={classNames(
+														'flex-shrink-0 mr-3',
+														{
+															[`user-icon-color-${user.id.charCodeAt(0) % 10}`]:
+																!user.portraitURL,
+														}
+													)}
+													shape="user-icon"
+												>
+													{user.portraitURL ? (
+														<Sticker.Image
+															alt=""
+															src={
+																user.portraitURL
+															}
+														/>
+													) : (
+														<ClayIcon symbol="user" />
+													)}
+												</Sticker>
 
-										<span className="autofit-col autofit-col-expand">
-											<span className="font-weight-semi-bold text-3 text-dark text-truncate">
-												{user.name}
+												<span className="autofit-col autofit-col-expand">
+													<span className="font-weight-semi-bold text-3 text-dark text-truncate">
+														{user.name}
+													</span>
+
+													<span className="text-2 text-secondary text-truncate">
+														{`@${user.screenName}`}
+													</span>
+												</span>
 											</span>
+										</ClayDropDown.Item>
+									))}
+								</ClayDropDown.ItemList>
 
-											<span className="text-2 text-secondary text-truncate">
-												{`@${user.screenName}`}
-											</span>
-										</span>
-									</span>
-								</ClayDropDown.Item>
-							))}
-						</ClayDropDown.ItemList>
+								<ClayDropDown.Divider />
 
-						<ClayDropDown.Divider />
+								<ClayDropDown.Caption>
+									{Liferay.Language.get(
+										'only-people-with-access-to-this-asset-are-shown'
+									)}
+								</ClayDropDown.Caption>
+							</>
+						) : status === 'searching' ? (
+							<ClayDropDown.Caption className="font-weight-semi-bold text-dark">
+								{Liferay.Language.get('searching')}
+							</ClayDropDown.Caption>
+						) : (
+							<>
+								<ClayDropDown.Caption className="font-weight-semi-bold text-dark">
+									{getNoPeopleMessage(keywords)}
+								</ClayDropDown.Caption>
 
-						<ClayDropDown.Caption>
-							{Liferay.Language.get(
-								'only-people-with-access-to-this-asset-are-shown'
-							)}
-						</ClayDropDown.Caption>
-					</>
-				) : status === 'searching' ? (
-					<ClayDropDown.Caption className="font-weight-semi-bold text-dark">
-						{Liferay.Language.get('searching')}
-					</ClayDropDown.Caption>
-				) : (
-					<>
-						<ClayDropDown.Caption className="font-weight-semi-bold text-dark">
-							{getNoPeopleMessage(keywords)}
-						</ClayDropDown.Caption>
-
-						<ClayDropDown.Caption>
-							{Liferay.Language.get(
-								'only-people-with-access-to-this-asset-can-be-mentioned'
-							)}
-						</ClayDropDown.Caption>
-					</>
-				)}
-			</ClayDropDown.Menu>
+								<ClayDropDown.Caption>
+									{Liferay.Language.get(
+										'only-people-with-access-to-this-asset-can-be-mentioned'
+									)}
+								</ClayDropDown.Caption>
+							</>
+						)}
+					</ClayDropDown.Menu>
+				</>
+			)}
 		</>
 	);
 }
@@ -315,4 +364,47 @@ function getNoPeopleMessage(keywords?: string) {
 	}
 
 	return sub(Liferay.Language.get('no-people-match-x'), keywords);
+}
+
+function useScreenReaderAnnouncement({
+	keywords,
+	open,
+	resultsCount,
+	status,
+}: {
+	keywords?: string;
+	open: boolean;
+	resultsCount: number;
+	status: Status;
+}) {
+	const screenReaderAnnouncerRef = useRef<{
+		sendMessage: (message: string) => void;
+	}>(null);
+
+	let announcement = '';
+
+	if (open) {
+		if (resultsCount) {
+			announcement = sub(
+				resultsCount === 1
+					? Liferay.Language.get('x-result-found')
+					: Liferay.Language.get('x-results-found'),
+				resultsCount
+			);
+		}
+		else if (status === 'searching') {
+			announcement = Liferay.Language.get('searching');
+		}
+		else {
+			announcement = getNoPeopleMessage(keywords);
+		}
+	}
+
+	useEffect(() => {
+		if (announcement) {
+			screenReaderAnnouncerRef.current?.sendMessage(announcement);
+		}
+	}, [announcement]);
+
+	return screenReaderAnnouncerRef;
 }

@@ -114,6 +114,12 @@ test(
 
 				await expect(picker).not.toContainText(nonMember.name);
 				await expect(picker).not.toContainText('Test Test');
+
+				await expect(
+					page.locator('[aria-live="polite"]', {
+						hasText: '2 Results Found',
+					})
+				).toBeAttached();
 			});
 
 			await test.step('Select a member with the keyboard and post the comment', async () => {
@@ -133,9 +139,22 @@ test(
 
 				await expect(option).toHaveAttribute('aria-selected', 'true');
 
+				await expect(editor).toHaveAttribute(
+					'aria-activedescendant',
+					(await option.getAttribute('id'))!
+				);
+				await expect(editor).toHaveAttribute(
+					'aria-controls',
+					(await picker.getByRole('listbox').getAttribute('id'))!
+				);
+
 				await page.keyboard.press('Enter');
 
 				await expect(picker).toBeHidden();
+
+				await expect(editor).not.toHaveAttribute(
+					'aria-activedescendant'
+				);
 
 				await expect(
 					editor.locator(
