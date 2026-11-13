@@ -19,9 +19,11 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
@@ -33,6 +35,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.util.comparator.UserFirstNameComparator;
+import com.liferay.portal.kernel.util.comparator.UserGroupNameComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -180,13 +183,39 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 			httpServletResponse,
 			JSONUtil.toString(
 				JSONUtil.put(
+					"userGroups",
+					JSONUtil.toJSONArray(
+						_userGroupLocalService.search(
+							themeDisplay.getCompanyId(), keywords, null,
+							LinkedHashMapBuilder.<String, Object>put(
+								"userGroupsGroups", groupId
+							).build(),
+							true, 0, 20,
+							UserGroupNameComparator.getInstance(true)),
+						this::_getUserGroupJSONObject)
+				).put(
 					"users",
 					JSONUtil.toJSONArray(
 						users.values(),
 						user -> _getUserJSONObject(
-							recentUserIds, themeDisplay, user)))));
+							recentUserIds, themeDisplay, user))
+				)));
 
 		return null;
+	}
+
+	private JSONObject _getUserGroupJSONObject(UserGroup userGroup)
+		throws PortalException {
+
+		return JSONUtil.put(
+			"id", userGroup.getExternalReferenceCode()
+		).put(
+			"membersCount",
+			_userLocalService.getUserGroupUsersCount(
+				userGroup.getUserGroupId(), WorkflowConstants.STATUS_APPROVED)
+		).put(
+			"name", userGroup.getName()
+		);
 	}
 
 	private JSONObject _getUserJSONObject(
@@ -268,6 +297,9 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 
 	@Reference
 	private PermissionCheckerFactory _permissionCheckerFactory;
+
+	@Reference
+	private UserGroupLocalService _userGroupLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
