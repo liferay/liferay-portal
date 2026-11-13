@@ -7,6 +7,7 @@ package com.liferay.fragment.internal.struts.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.EventsProcessorUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -15,6 +16,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -116,6 +118,47 @@ public class RenderFragmentEntryStrutsActionTest {
 		String expectedHTML = _getHTML(URLUtil.toString(renderedURL));
 
 		Assert.assertEquals(expectedHTML, actualHTML);
+	}
+
+	@Test
+	@TestInfo("LPD-115199")
+	public void testRenderFragmentWithScopeGroupId() throws Exception {
+		_user = UserTestUtil.addOmniadminUser();
+
+		UserTestUtil.setUser(_user);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest(
+				Method.POST, "/portal/fragment/render_fragment_entry");
+
+		mockHttpServletRequest.setContentType(
+			"multipart/form-data;boundary=" + System.currentTimeMillis());
+		mockHttpServletRequest.setParameter(
+			"groupId", String.valueOf(_group.getGroupId()));
+		mockHttpServletRequest.setParameter(
+			"html",
+			"<div class=\"scope-group-id\">" +
+				"${themeDisplay.getScopeGroupId()}</div>");
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_processEvents(mockHttpServletRequest, mockHttpServletResponse, _user);
+
+		UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
+
+		_renderFragmentEntryStrutsAction.execute(
+			mockHttpServletRequest,
+			new PipingServletResponse(
+				mockHttpServletResponse, unsyncStringWriter));
+
+		String html = unsyncStringWriter.toString();
+
+		Assert.assertTrue(
+			html.contains(
+				StringBundler.concat(
+					"<div class=\"scope-group-id\">", _group.getGroupId(),
+					"</div>")));
 	}
 
 	@Test(expected = PrincipalException.class)
