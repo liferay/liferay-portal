@@ -28,6 +28,7 @@ import com.liferay.headless.delivery.internal.dto.v1_0.mapper.RowLayoutStructure
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.layout.exporter.PortletPermissionsExporter;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
+import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
 import com.liferay.layout.util.structure.CollectionItemLayoutStructureItem;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
@@ -127,7 +128,8 @@ public class PageElementDTOConverter
 				_infoItemServiceRegistry, _portal));
 		_layoutStructureItemMappers.put(
 			DropZoneLayoutStructureItem.class,
-			new DropZoneLayoutStructureItemMapper());
+			new DropZoneLayoutStructureItemMapper(
+				_dropZoneAllowedFragmentEntriesHelper));
 		_layoutStructureItemMappers.put(
 			FormRelationshipStyledLayoutStructureItem.class,
 			new FormRelationshipLayoutStructureItemMapper(
@@ -222,6 +224,10 @@ public class PageElementDTOConverter
 			groupId, layoutStructureItem, saveInlineContent,
 			saveMappingConfiguration);
 	}
+
+	@Reference
+	private DropZoneAllowedFragmentEntriesHelper
+		_dropZoneAllowedFragmentEntriesHelper;
 
 	@Reference
 	private FragmentCollectionContributorRegistry

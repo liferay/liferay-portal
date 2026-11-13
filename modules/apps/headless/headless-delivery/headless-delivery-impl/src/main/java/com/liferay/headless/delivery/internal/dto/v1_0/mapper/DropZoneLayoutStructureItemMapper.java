@@ -8,8 +8,10 @@ package com.liferay.headless.delivery.internal.dto.v1_0.mapper;
 import com.liferay.headless.delivery.dto.v1_0.Fragment;
 import com.liferay.headless.delivery.dto.v1_0.PageDropZoneDefinition;
 import com.liferay.headless.delivery.dto.v1_0.PageElement;
+import com.liferay.layout.helper.DropZoneAllowedFragmentEntriesHelper;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.ArrayList;
@@ -21,6 +23,14 @@ import java.util.Map;
  */
 public class DropZoneLayoutStructureItemMapper
 	implements LayoutStructureItemMapper {
+
+	public DropZoneLayoutStructureItemMapper(
+		DropZoneAllowedFragmentEntriesHelper
+			dropZoneAllowedFragmentEntriesHelper) {
+
+		_dropZoneAllowedFragmentEntriesHelper =
+			dropZoneAllowedFragmentEntriesHelper;
+	}
 
 	@Override
 	public PageElement getPageElement(
@@ -35,7 +45,8 @@ public class DropZoneLayoutStructureItemMapper
 							setFragmentSettings(
 								() -> _toFragmentSettingsMap(
 									(DropZoneLayoutStructureItem)
-										layoutStructureItem));
+										layoutStructureItem,
+									groupId));
 						}
 					});
 				setId(layoutStructureItem::getItemId);
@@ -45,18 +56,21 @@ public class DropZoneLayoutStructureItemMapper
 	}
 
 	private Map<String, Fragment[]> _toFragmentSettingsMap(
-		DropZoneLayoutStructureItem dropZoneLayoutStructureItem) {
+		DropZoneLayoutStructureItem dropZoneLayoutStructureItem, long groupId) {
+
+		List<String> fragmentEntryKeys =
+			_dropZoneAllowedFragmentEntriesHelper.getFragmentEntryKeys(
+				CompanyThreadLocal.getCompanyId(), dropZoneLayoutStructureItem,
+				groupId);
 
 		if (dropZoneLayoutStructureItem.isAllowNewFragmentEntries()) {
 			return HashMapBuilder.put(
-				"unallowedFragments",
-				_toFragments(dropZoneLayoutStructureItem.getFragmentEntryKeys())
+				"unallowedFragments", _toFragments(fragmentEntryKeys)
 			).build();
 		}
 
 		return HashMapBuilder.put(
-			"allowedFragments",
-			_toFragments(dropZoneLayoutStructureItem.getFragmentEntryKeys())
+			"allowedFragments", _toFragments(fragmentEntryKeys)
 		).build();
 	}
 
@@ -74,5 +88,8 @@ public class DropZoneLayoutStructureItemMapper
 
 		return fragments.toArray(new Fragment[0]);
 	}
+
+	private final DropZoneAllowedFragmentEntriesHelper
+		_dropZoneAllowedFragmentEntriesHelper;
 
 }
