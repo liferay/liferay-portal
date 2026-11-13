@@ -12,6 +12,7 @@ import {
 	hasLifecycleName,
 	hasStageChipError,
 	isAtCharacterLimit,
+	isAtStageLimit,
 } from 'lifecycle/utils/lifecycleValidation';
 
 const completeCondition: Partial<IStageCondition> = {
@@ -219,6 +220,19 @@ describe('isAtCharacterLimit', () => {
 	it('reaches the limit at the maximum length', () => {
 		expect(isAtCharacterLimit('a'.repeat(23), 24)).toBe(false);
 		expect(isAtCharacterLimit('a'.repeat(24), 24)).toBe(true);
+	});
+});
+
+describe('isAtStageLimit', () => {
+	const buildStages = (count: number) =>
+		Array.from({length: count}, (_, index) =>
+			buildStage({key: `stage-${index}`, name: `Stage ${index}`})
+		);
+
+	it('reaches the limit at 20 stages', () => {
+		expect(isAtStageLimit(buildStages(19))).toBe(false);
+		expect(isAtStageLimit(buildStages(20))).toBe(true);
+		expect(isAtStageLimit(buildStages(21))).toBe(true);
 	});
 });
 
