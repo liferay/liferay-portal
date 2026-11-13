@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.SystemEventConstants;
+import com.liferay.portal.kernel.preview.Previewable;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -262,6 +263,7 @@ public interface ObjectEntryLocalService
 			long groupId, long objectRelationshipId, long primaryKey)
 		throws PortalException;
 
+	@Previewable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ObjectEntry fetchObjectEntry(long objectEntryId);
 
@@ -413,6 +415,7 @@ public interface ObjectEntryLocalService
 	 * @return the object entry
 	 * @throws PortalException if a object entry with the primary key could not be found
 	 */
+	@Previewable
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ObjectEntry getObjectEntry(long objectEntryId)
 		throws PortalException;
@@ -641,4 +644,4 @@ public interface ObjectEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1646229091
+// LIFERAY-SERVICE-BUILDER-HASH:-857567631
