@@ -5,7 +5,9 @@
 
 package com.liferay.layout.page.template.internal.upgrade.registry;
 
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.layout.page.template.internal.upgrade.v1_1_0.LayoutPrototypeUpgradeProcess;
 import com.liferay.layout.page.template.internal.upgrade.v1_1_1.LayoutPageTemplateEntryUpgradeProcess;
@@ -22,6 +24,7 @@ import com.liferay.layout.page.template.internal.upgrade.v6_1_0.util.LayoutPageT
 import com.liferay.layout.page.template.internal.upgrade.v6_2_1.LayoutPageTemplateEntryClassTypeKeyUpgradeProcess;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
@@ -283,10 +286,20 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 		registry.register(
 			"6.2.0", "6.2.1",
 			new LayoutPageTemplateEntryClassTypeKeyUpgradeProcess());
+
+		registry.register(
+			"6.2.1", "6.2.2",
+			new com.liferay.layout.page.template.internal.upgrade.v6_2_2.
+				LayoutPageTemplateStructureRelUpgradeProcess(
+					_depotEntryLocalService, _fragmentEntryLocalService,
+					_groupLocalService));
 	}
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference(
 		target = "(&(release.bundle.symbolic.name=com.liferay.dynamic.data.mapping.service)(release.schema.version>=3.3.0))"
@@ -298,6 +311,12 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference
+	private FragmentEntryLocalService _fragmentEntryLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
