@@ -10495,7 +10495,9 @@ ${output.content}</echo>
 
 		<local name="source.formatter.tree.sha" />
 
-		<exec executable="git" failonerror="true" outputproperty="source.formatter.tree.sha">
+		<property file="source.formatter.tree.properties" />
+
+		<exec executable="git" failonerror="true" outputproperty="source.formatter.tree.sha" unless:set="source.formatter.tree.sha">
 			<arg value="rev-parse" />
 			<arg value="${liferay.portal.branch}:modules/util/source-formatter" />
 		</exec>
