@@ -517,6 +517,64 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	@Test
+	public void testGetTestrayCaseFileName() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport = Mockito.mock(
+			BaseTopLevelBuildReport.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTopLevelBuildReport
+		).getTestrayCaseFileName(
+			Mockito.anyString()
+		);
+
+		int buildNumber = RandomTestUtil.randomInt();
+
+		Mockito.doReturn(
+			buildNumber
+		).when(
+			baseTopLevelBuildReport
+		).getBuildNumber();
+
+		JenkinsMaster jenkinsMaster = Mockito.mock(JenkinsMaster.class);
+
+		String jenkinsMasterName = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			jenkinsMasterName
+		).when(
+			jenkinsMaster
+		).getName();
+
+		Mockito.doReturn(
+			jenkinsMaster
+		).when(
+			baseTopLevelBuildReport
+		).getJenkinsMaster();
+
+		String jobName = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			jobName
+		).when(
+			baseTopLevelBuildReport
+		).getJobName();
+
+		String axisVariable = RandomTestUtil.randomString();
+		String batchName = RandomTestUtil.randomString();
+		String segmentIndex = RandomTestUtil.randomString();
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"TESTS-", jenkinsMasterName, "_", jobName, "_",
+				String.valueOf(buildNumber), "_", batchName, "_", segmentIndex,
+				"_", axisVariable, ".xml"),
+			baseTopLevelBuildReport.getTestrayCaseFileName(
+				JenkinsResultsParserUtil.combine(
+					batchName, "/", segmentIndex, "/", axisVariable)));
+	}
+
+	@Test
 	public void testGetTopLevelActiveDuration() {
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport(

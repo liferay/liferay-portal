@@ -7,7 +7,9 @@ package com.liferay.jenkins.results.parser;
 
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 import com.liferay.jenkins.results.parser.testray.TestrayBuild;
+import com.liferay.jenkins.results.parser.testray.TestrayCaseResult;
 import com.liferay.jenkins.results.parser.testray.TestrayContext;
+import com.liferay.jenkins.results.parser.testray.TestrayFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,6 +28,7 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -33,6 +36,135 @@ import org.mockito.Mockito;
  */
 public class BaseDownstreamBuildTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testGenerateTestrayCaseResult() throws Exception {
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).generateTestrayCaseResult();
+
+		ReflectionTestUtil.setFieldValue(
+			baseDownstreamBuild, "_testrayCaseResultURLLock", new Object());
+
+		TestrayCaseResult testrayCaseResult = Mockito.mock(
+			TestrayCaseResult.class);
+
+		try (MockedStatic<TestrayFactory> testrayFactoryMockedStatic =
+				Mockito.mockStatic(TestrayFactory.class)) {
+
+			testrayFactoryMockedStatic.when(
+				() -> TestrayFactory.newDownstreamBuildTestrayCaseResult(
+					Mockito.any(DownstreamBuild.class),
+					Mockito.any(TestrayContext.class))
+			).thenReturn(
+				testrayCaseResult
+			);
+
+			baseDownstreamBuild.generateTestrayCaseResult();
+
+			AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+				AxisTestClassGroup.class);
+
+			Mockito.when(
+				baseDownstreamBuild.getAxisTestClassGroup()
+			).thenReturn(
+				axisTestClassGroup
+			);
+
+			baseDownstreamBuild.generateTestrayCaseResult();
+
+			Job job = Mockito.mock(Job.class);
+
+			Mockito.when(
+				axisTestClassGroup.getJob()
+			).thenReturn(
+				job
+			);
+
+			baseDownstreamBuild.generateTestrayCaseResult();
+
+			TestrayContext testrayContext = Mockito.mock(TestrayContext.class);
+
+			Mockito.when(
+				job.getTestrayContext()
+			).thenReturn(
+				testrayContext
+			);
+
+			Mockito.when(
+				testrayContext.hasTestrayCaseResultFile(axisTestClassGroup)
+			).thenReturn(
+				true
+			);
+
+			baseDownstreamBuild.generateTestrayCaseResult();
+
+			testrayFactoryMockedStatic.verify(
+				() -> TestrayFactory.newDownstreamBuildTestrayCaseResult(
+					Mockito.any(), Mockito.any()),
+				Mockito.never());
+
+			Mockito.when(
+				testrayContext.hasTestrayCaseResultFile(axisTestClassGroup)
+			).thenReturn(
+				false
+			);
+
+			baseDownstreamBuild.generateTestrayCaseResult();
+
+			Mockito.verify(
+				testrayCaseResult
+			).cacheTestrayCaseResultURL();
+
+			Mockito.verify(
+				testrayContext, Mockito.never()
+			).recordTestrayCaseResultFile(
+				Mockito.any(), Mockito.any()
+			);
+
+			URL testrayCaseResultURL = new URL(
+				"https://" + RandomTestUtil.randomString());
+
+			Mockito.when(
+				testrayCaseResult.getTestrayCaseResultURL()
+			).thenReturn(
+				testrayCaseResultURL
+			);
+
+			baseDownstreamBuild.generateTestrayCaseResult();
+
+			Assert.assertSame(
+				testrayCaseResultURL,
+				ReflectionTestUtil.getFieldValue(
+					baseDownstreamBuild, "_testrayCaseResultURL"));
+
+			Mockito.verify(
+				testrayContext
+			).recordTestrayCaseResultFile(
+				axisTestClassGroup, testrayCaseResult
+			);
+
+			testrayFactoryMockedStatic.when(
+				() -> TestrayFactory.newDownstreamBuildTestrayCaseResult(
+					Mockito.any(DownstreamBuild.class),
+					Mockito.any(TestrayContext.class))
+			).thenReturn(
+				null
+			);
+
+			baseDownstreamBuild.generateTestrayCaseResult();
+
+			Mockito.verify(
+				testrayContext
+			).recordTestrayCaseResultFile(
+				Mockito.any(), Mockito.any()
+			);
+		}
+	}
 
 	@Test
 	public void testGetAxisName() {

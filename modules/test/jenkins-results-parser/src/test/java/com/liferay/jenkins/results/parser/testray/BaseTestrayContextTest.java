@@ -38,6 +38,32 @@ public class BaseTestrayContextTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
+	public void testDeleteTestrayCaseResultFile() {
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+		String testrayCaseFileName = RandomTestUtil.randomString();
+		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
+
+		BaseTestrayContext baseTestrayContext = _mockBaseTestrayContext(
+			axisTestClassGroup, testrayCaseFileName, testrayServer);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTestrayContext
+		).deleteTestrayCaseResultFile(
+			Mockito.any(AxisTestClassGroup.class)
+		);
+
+		baseTestrayContext.deleteTestrayCaseResultFile(axisTestClassGroup);
+
+		Mockito.verify(
+			testrayServer
+		).deleteCaseResult(
+			testrayCaseFileName
+		);
+	}
+
+	@Test
 	public void testGetTestcaseElementAttachment() throws Exception {
 		TestrayCaseResult testrayCaseResult = Mockito.mock(
 			TestrayCaseResult.class);
@@ -94,6 +120,12 @@ public class BaseTestrayContextTest
 	public void testGetTestcaseElementName() throws Exception {
 		_testGetTestcaseElementName(250, 250);
 		_testGetTestcaseElementName(250, 251);
+	}
+
+	@Test
+	public void testHasTestrayCaseResultFile() {
+		_testHasTestrayCaseResultFile(false);
+		_testHasTestrayCaseResultFile(true);
 	}
 
 	@Test
@@ -333,6 +365,50 @@ public class BaseTestrayContextTest
 		return null;
 	}
 
+	private BaseTestrayContext _mockBaseTestrayContext(
+		AxisTestClassGroup axisTestClassGroup, String testrayCaseFileName,
+		TestrayServer testrayServer) {
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			axisTestClassGroup
+		).getAxisName();
+
+		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
+
+		Mockito.doReturn(
+			testrayServer
+		).when(
+			testrayBuild
+		).getTestrayServer();
+
+		TestrayRun testrayRun = Mockito.mock(TestrayRun.class);
+
+		Mockito.doReturn(
+			testrayBuild
+		).when(
+			testrayRun
+		).getTestrayBuild();
+
+		Mockito.doReturn(
+			testrayRun
+		).when(
+			axisTestClassGroup
+		).getTestrayRun();
+
+		BaseTestrayContext baseTestrayContext = Mockito.mock(
+			BaseTestrayContext.class);
+
+		Mockito.doReturn(
+			_mockTopLevelBuildReport(testrayCaseFileName)
+		).when(
+			baseTestrayContext
+		).getTopLevelBuildReport();
+
+		return baseTestrayContext;
+	}
+
 	private <T extends TestrayCaseResult> T _mockTestrayCaseResult(
 		Class<T> clazz, String errors, TestrayCaseResult.Status status) {
 
@@ -509,6 +585,20 @@ public class BaseTestrayContextTest
 				axisTestClassGroup, testrayCaseResult);
 		}
 
+		Mockito.verify(
+			portalLogBatchBuildTestrayCaseResult,
+			getVerificationMode(portalLogErrors != null)
+		).setParentTestrayCaseResult(
+			testrayCaseResult
+		);
+
+		Mockito.verify(
+			portalLogBatchBuildTestrayCaseResult,
+			getVerificationMode(portalLogErrors != null)
+		).setTestrayRun(
+			testrayRun
+		);
+
 		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(
 			String.class);
 
@@ -518,7 +608,15 @@ public class BaseTestrayContextTest
 			Mockito.anyString(), argumentCaptor.capture()
 		);
 
-		return argumentCaptor.getValue();
+		String xmlString = argumentCaptor.getValue();
+
+		Document document = Dom4JUtil.parse(xmlString);
+
+		Element rootElement = document.getRootElement();
+
+		Assert.assertNotNull(rootElement.element("environments"));
+
+		return xmlString;
 	}
 
 	private void _testGetTestcaseElementName(int expectedLength, int nameLength)
@@ -529,6 +627,37 @@ public class BaseTestrayContextTest
 		name = name.substring(0, nameLength);
 
 		testEquals(name.substring(0, expectedLength), _getTestcaseName(name));
+	}
+
+	private void _testHasTestrayCaseResultFile(
+		boolean caseResultFileAvailable) {
+
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+		String testrayCaseFileName = RandomTestUtil.randomString();
+		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
+
+		BaseTestrayContext baseTestrayContext = _mockBaseTestrayContext(
+			axisTestClassGroup, testrayCaseFileName, testrayServer);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTestrayContext
+		).hasTestrayCaseResultFile(
+			Mockito.any(AxisTestClassGroup.class)
+		);
+
+		Mockito.doReturn(
+			caseResultFileAvailable
+		).when(
+			testrayServer
+		).isCaseResultFileAvailable(
+			testrayCaseFileName
+		);
+
+		testEquals(
+			caseResultFileAvailable,
+			baseTestrayContext.hasTestrayCaseResultFile(axisTestClassGroup));
 	}
 
 	private static final long _DURATION = 5400000L;
