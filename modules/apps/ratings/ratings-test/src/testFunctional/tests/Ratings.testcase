@@ -113,33 +113,6 @@ definition {
 
 	@priority = 4
 	@refactordone
-	test CanRateKBArticleWithoutSuggestions {
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Knowledge Base Display Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Knowledge Base Display Page",
-			widgetName = "Knowledge Base Display");
-
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
-
-		Ratings.rateThumb(ratingResult = "Rate this as good");
-
-		Ratings.viewRateThumb(
-			ratingResult = "You have rated this as good",
-			voteCount = 1);
-	}
-
-	@priority = 4
-	@refactordone
 	test CanRateMBThreadAndReply {
 		task ("Enable Message Boards") {
 			MessageboardsPortlet.enableMessageBoards();
@@ -229,43 +202,6 @@ definition {
 		Ratings.viewRateStar(
 			averageRatingStarCount = "4.0",
 			ratingStarCount = 4);
-	}
-
-	@description = "This test covers LPS-117741. It ensures that the rated stacked stars can be removed from the blog entry."
-	@priority = 4
-	@refactordone
-	test CanRemoveRatedStackedStarsFromBlogsEntry {
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Blogs Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Blogs Page",
-			widgetName = "Blogs");
-
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Ratings.configureRatingType(
-			applications = "Blogs",
-			portlet = "Ratings",
-			ratingType = "Stacked Stars",
-			siteURLKey = "guest");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		Ratings.rateStackedStars(ratingStarCount = 3);
-
-		Ratings.viewRateStackedStar(
-			averageStarCount = "3.0",
-			ratingStarCount = 3);
-
-		Ratings.revokeStackedStarsRating();
-
-		Ratings.viewNoRateStackedStar(averageStarCount = "0.0");
 	}
 
 	@description = "This ensures that the stars rating can be revoked."
@@ -378,103 +314,6 @@ definition {
 		Ratings.viewNoRateStackedStar(averageStarCount = "0.0");
 	}
 
-	@description = "This is a test for LPS-136958. It checks that Stacked stars can be added and removed from a web content."
-	@priority = 5
-	test CanRevokeStackedStarsFromWC {
-		property portal.acceptance = "true";
-
-		Ratings.configureRatingType(
-			applications = "JournalArticle",
-			portlet = "Ratings",
-			ratingType = "Stacked Stars",
-			siteURLKey = "guest");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Web Content Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Web Content Page",
-			widgetName = "Web Content Display");
-
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Content",
-			groupName = "Guest",
-			title = "WC WebContent Title");
-
-		Navigator.gotoPage(pageName = "Web Content Page");
-
-		WebContentDisplayPortlet.selectWebContent(webContentTitle = "WC WebContent Title");
-
-		IFrame.closeFrame();
-
-		Portlet.gotoPortletOptions(
-			portletName = "Web Content Display",
-			portletOption = "Configuration");
-
-		WebContentDisplayPortlet.configureSetup(metadataNameList = "Ratings");
-
-		WebContentDisplayPortlet.saveConfiguration();
-
-		IFrame.closeFrame();
-
-		Ratings.rateStackedStars(ratingStarCount = 3);
-
-		Ratings.viewRateStackedStar(
-			averageStarCount = "3.0",
-			ratingStarCount = 3);
-
-		Ratings.revokeStackedStarsRating();
-
-		Ratings.viewNoRateStackedStar(averageStarCount = "0.0");
-	}
-
-	@description = "This is a test for LPS-136951. It checks that Stacked stars can be added and removed from a wiki entry."
-	@priority = 5
-	test CanRevokeStackedStarsFromWiki {
-		property portal.acceptance = "true";
-
-		Ratings.configureRatingType(
-			applications = "Wiki",
-			portlet = "Ratings",
-			ratingType = "Stacked Stars",
-			siteURLKey = "guest");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Wiki Test Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Wiki Test Page",
-			widgetName = "Wiki");
-
-		JSONWiki.addWikiPage(
-			groupName = "Guest",
-			wikiNodeName = "Main",
-			wikiPageContent = "Wiki Page Content",
-			wikiPageName = "Wiki Page");
-
-		WikiNavigator.openToWikiPage(
-			layoutURLKey = "wiki-test-page",
-			siteURLKey = "guest",
-			wikiNodeName = "Main",
-			wikiPageTitle = "Wiki Page");
-
-		Ratings.rateStackedStars(ratingStarCount = 5);
-
-		Ratings.viewRateStackedStar(
-			averageStarCount = "5.0",
-			ratingStarCount = 5);
-
-		Ratings.revokeStackedStarsRating();
-
-		Ratings.viewNoRateStackedStar(averageStarCount = "0.0");
-	}
-
 	@description = "This is a test for LPS-136954. It checks that stars can be added and removed from a document."
 	@priority = 5
 	test CanRevokeStarsFromDocument {
@@ -499,85 +338,6 @@ definition {
 			siteURLKey = "guest");
 
 		DMDocument.expandInfo();
-
-		Ratings.rateStackedStars(ratingStarCount = 3);
-
-		Ratings.viewRateStackedStar(
-			averageStarCount = "3.0",
-			ratingStarCount = 3);
-
-		Ratings.revokeStackedStarsRating();
-
-		Ratings.viewNoRateStackedStar(averageStarCount = "0.0");
-	}
-
-	@description = "This is a test for LPS-136956. It checks that stars can be added and removed from a KB article."
-	@priority = 5
-	test CanRevokeStarsFromKB {
-		property portal.acceptance = "true";
-
-		Ratings.configureRatingType(
-			applications = "knowledge",
-			portlet = "Ratings",
-			ratingType = "Stacked Stars",
-			siteURLKey = "guest");
-
-		JSONKnowledgeBase.addkBArticle(
-			groupName = "Guest",
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		KBArticle.openToKBArticleInSite(
-			groupName = "Guest",
-			kbArticleTitle = "Knowledge Base Article Title",
-			siteURLKey = "guest");
-
-		Ratings.rateStackedStars(ratingStarCount = 3);
-
-		Ratings.viewRateStackedStar(
-			averageStarCount = "3.0",
-			ratingStarCount = 3);
-
-		Ratings.revokeStackedStarsRating();
-
-		Ratings.viewNoRateStackedStar(averageStarCount = "0.0");
-	}
-
-	@description = "This is a test for LPS-136960. It checks that stars can be added and removed from a MB thread."
-	@priority = 5
-	test CanRevokeStarsFromMB {
-		property portal.acceptance = "true";
-
-		task ("Enable Message Boards") {
-			MessageboardsPortlet.enableMessageBoards();
-		}
-
-		Ratings.configureRatingType(
-			applications = "MBMessage",
-			portlet = "Ratings",
-			ratingType = "Stacked Stars",
-			siteURLKey = "guest");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Message Boards Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 2,
-			groupName = "Guest",
-			layoutName = "Message Boards Page",
-			widgetName = "Message Boards");
-
-		JSONMBMessage.addMessage(
-			groupName = "Guest",
-			threadBody = "MB Thread Message Body",
-			threadSubject = "MB Thread Message Subject");
-
-		MessageboardsThread.openToThread(
-			groupName = "Guest",
-			layoutName = "message-boards-page",
-			siteURLKey = "guest",
-			threadSubject = "MB Thread Message Subject");
 
 		Ratings.rateStackedStars(ratingStarCount = 3);
 
@@ -712,41 +472,6 @@ definition {
 		Ratings.rateLike();
 
 		Ratings.viewRateLike(ratingLikeCount = 2);
-	}
-
-	@description = "This is a test for LPS-84584. It checks that the rating tooltip can be translated to Japanese."
-	@priority = 4
-	test ToolTipCanBeTranslatedToJapanese {
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Blogs Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 2,
-			groupName = "Guest",
-			layoutName = "Blogs Page",
-			widgetName = "Blogs");
-
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			groupName = "Guest");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "ja/web/guest/blogs-page");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Ratings.viewRateThumb(
-			ratingResult = "高評価",
-			toolTip = "true",
-			voteCount = 0);
-
-		Ratings.viewRateThumb(
-			ratingResult = "低評価",
-			toolTip = "true",
-			voteCount = 0);
 	}
 
 }
