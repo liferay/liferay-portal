@@ -263,6 +263,7 @@
 		<column name="expirationDate" type="Date" />
 		<column name="reviewDate" type="Date" />
 		<column name="treePath" type="String" />
+		<column name="type" type="int" />
 		<column name="version" type="int" />
 		<column name="lastPublishDate" type="Date" />
 		<column name="status" type="int" />
@@ -278,7 +279,7 @@
 
 		<!-- Finder methods -->
 
-		<finder name="HeadObjectEntryId" return-type="ObjectEntry" where="objectEntryId != headObjectEntryId">
+		<finder name="HeadObjectEntryId" return-type="ObjectEntry" where="type = 1">
 			<finder-column name="headObjectEntryId" />
 		</finder>
 		<finder name="ObjectDefinitionId" return-type="Collection" where="objectEntryId = headObjectEntryId">
@@ -295,6 +296,10 @@
 		<finder name="U_ODI" return-type="Collection" where="objectEntryId = headObjectEntryId">
 			<finder-column name="userId" />
 			<finder-column name="objectDefinitionId" />
+		</finder>
+		<finder name="HOEI_T" return-type="Collection">
+			<finder-column name="headObjectEntryId" />
+			<finder-column name="type" />
 		</finder>
 		<finder name="ODI_NotS" return-type="Collection" where="objectEntryId = headObjectEntryId">
 			<finder-column name="objectDefinitionId" />
