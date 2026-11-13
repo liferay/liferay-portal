@@ -46,7 +46,7 @@ String aggregationType = customFacetDisplayContext.getAggregationType();
 	<c:otherwise>
 		<aui:form action="#" autocomplete="off" method="get" name="fm">
 			<aui:input cssClass="aggregation-type" name="aggregation-type" type="hidden" value="<%= customFacetDisplayContext.getAggregationType() %>" />
-			<aui:input cssClass="facet-parameter-name" name="facet-parameter-name" type="hidden" value="<%= HtmlUtil.escapeAttribute(customFacetDisplayContext.getParameterName()) %>" />
+			<aui:input cssClass="facet-parameter-name" name="facet-parameter-name" type="hidden" value="<%= customFacetDisplayContext.getParameterName() %>" />
 			<aui:input cssClass="start-parameter-name" name="start-parameter-name" type="hidden" value="<%= customFacetDisplayContext.getPaginationStartParameterName() %>" />
 
 			<liferay-ddm:template-renderer
