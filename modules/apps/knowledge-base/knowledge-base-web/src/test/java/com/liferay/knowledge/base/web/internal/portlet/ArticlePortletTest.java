@@ -5,6 +5,7 @@
 
 package com.liferay.knowledge.base.web.internal.portlet;
 
+import com.liferay.knowledge.base.constants.KBFolderConstants;
 import com.liferay.knowledge.base.constants.KBPortletKeys;
 import com.liferay.knowledge.base.exception.NoSuchArticleException;
 import com.liferay.knowledge.base.model.KBArticle;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.test.portlet.MockRenderResponse;
 import com.liferay.portal.kernel.test.portlet.MockResourceRequest;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -60,6 +62,7 @@ public class ArticlePortletTest {
 		ReflectionTestUtil.setFieldValue(
 			_articlePortlet, "kbArticleService", _kbArticleService);
 		ReflectionTestUtil.setFieldValue(_articlePortlet, "portal", _portal);
+		ReflectionTestUtil.setFieldValue(_articlePortlet, "_portal", _portal);
 
 		Mockito.when(
 			_kbArticleLocalService.fetchLatestKBArticle(
@@ -144,6 +147,19 @@ public class ArticlePortletTest {
 
 	@Test
 	@TestInfo("LPD-114594")
+	public void testDoRenderWithCompareVersions() throws Exception {
+		Assert.assertFalse(
+			SessionErrors.contains(
+				_renderCompareVersions(_GROUP_ID_ANCESTOR),
+				NoSuchArticleException.class));
+		Assert.assertTrue(
+			SessionErrors.contains(
+				_renderCompareVersions(RandomTestUtil.randomLong()),
+				NoSuchArticleException.class));
+	}
+
+	@Test
+	@TestInfo("LPD-114594")
 	public void testServeResource() throws Exception {
 		_serveResource(
 			RandomTestUtil.randomLong(),
@@ -201,6 +217,64 @@ public class ArticlePortletTest {
 
 		mockRenderRequest.addParameter(
 			"resourcePrimKey", String.valueOf(_RESOURCE_PRIM_KEY));
+		mockRenderRequest.setAttribute(KBWebKeys.THEME_DISPLAY, _themeDisplay);
+
+		_articlePortlet.doRender(mockRenderRequest, new MockRenderResponse());
+
+		return mockRenderRequest;
+	}
+
+	private MockRenderRequest _renderCompareVersions(long groupId)
+		throws Exception {
+
+		_mockGroupId(groupId);
+		_mockPortletId(KBPortletKeys.KNOWLEDGE_BASE_ARTICLE_DEFAULT_INSTANCE);
+
+		KBArticle kbArticle = Mockito.mock(KBArticle.class);
+
+		Mockito.when(
+			kbArticle.getGroupId()
+		).thenReturn(
+			_GROUP_ID_SCOPE
+		);
+
+		long resourcePrimKey = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			kbArticle.getResourcePrimKey()
+		).thenReturn(
+			resourcePrimKey
+		);
+
+		Mockito.when(
+			_kbArticleService.getLatestKBArticle(
+				resourcePrimKey, WorkflowConstants.STATUS_APPROVED)
+		).thenReturn(
+			kbArticle
+		);
+
+		Mockito.when(
+			_portal.getScopeGroupId(Mockito.any(PortletRequest.class))
+		).thenReturn(
+			_GROUP_ID_SCOPE
+		);
+
+		String urlTitle = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_kbArticleLocalService.fetchKBArticleByUrlTitle(
+				_GROUP_ID_SCOPE, KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				urlTitle)
+		).thenReturn(
+			kbArticle
+		);
+
+		MockRenderRequest mockRenderRequest = new MockRenderRequest();
+
+		mockRenderRequest.addParameter(Constants.CMD, "compareVersions");
+		mockRenderRequest.addParameter(
+			"resourcePrimKey", String.valueOf(_RESOURCE_PRIM_KEY));
+		mockRenderRequest.addParameter("urlTitle", urlTitle);
 		mockRenderRequest.setAttribute(KBWebKeys.THEME_DISPLAY, _themeDisplay);
 
 		_articlePortlet.doRender(mockRenderRequest, new MockRenderResponse());
