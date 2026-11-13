@@ -1733,23 +1733,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewNavigationLinksPG(next = null, previous = null) {
-		if (${previous} == "true") {
-			AssertElementPresent(locator1 = "KnowledgeBaseArticle#PREVIOUS");
-		}
-		else if (${previous} == "false") {
-			AssertElementNotPresent(locator1 = "KnowledgeBaseArticle#PREVIOUS");
-		}
-
-		if (${next} == "true") {
-			AssertElementPresent(locator1 = "KnowledgeBaseArticle#NEXT");
-		}
-		else if (${next} == "false") {
-			AssertElementNotPresent(locator1 = "KnowledgeBaseArticle#NEXT");
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewNoExpirationStatus(kbArticleTitle = null) {
 		AssertElementNotPresent(
 			key_kbArticleTitle = ${kbArticleTitle},
@@ -1888,17 +1871,6 @@ definition {
 		else {
 			AssertTextNotPresent(value1 = "Your request failed to complete.");
 		}
-	}
-
-	@summary = "Default summary"
-	macro viewViaNextLinkPG(kbArticleContent = null, kbArticleTitle = null) {
-		AssertClick(
-			locator1 = "KnowledgeBaseArticle#NEXT",
-			value1 = ${kbArticleTitle});
-
-		AssertTextPresent(
-			locator1 = "KnowledgeBase#DISPLAY_CONTENT",
-			value1 = ${kbArticleContent});
 	}
 
 }
