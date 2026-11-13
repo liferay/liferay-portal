@@ -186,14 +186,13 @@ public class BatchEngineImportTaskLocalServiceImpl
 	private Blob _getBatchEngineImportTaskSanitizedContentBlob(
 			BatchEngineImportTask batchEngineImportTask,
 			UnsafeSupplier<InputStream, Exception> inputStreamUnsafeSupplier,
-			UnsafeSupplier<Class<?>, Exception> itemClassUnsafeSupplier,
+			Class<?> itemClass,
 			UnsafeFunction<String, String, Exception>
 				passwordFieldValueUnsafeFunction)
 		throws Exception {
 
 		Set<String> passwordFieldNames =
-			PasswordFieldUtil.getPasswordFieldNames(
-				itemClassUnsafeSupplier.get());
+			PasswordFieldUtil.getPasswordFieldNames(itemClass);
 
 		if (passwordFieldNames.isEmpty()) {
 			return null;
@@ -236,8 +235,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 			Blob blob = _getBatchEngineImportTaskSanitizedContentBlob(
 				batchEngineImportTask,
 				() -> new UnsyncByteArrayInputStream(content),
-				() -> _itemClassRegistry.getItemClass(
-					batchEngineTaskItemDelegate),
+				_itemClassRegistry.getItemClass(batchEngineTaskItemDelegate),
 				PasswordFieldUtil::encrypt);
 
 			if (blob == null) {
@@ -295,7 +293,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 				batchEngineImportTask,
 				() -> openContentInputStream(
 					batchEngineImportTask.getBatchEngineImportTaskId()),
-				itemClassUnsafeSupplier, value -> null);
+				itemClassUnsafeSupplier.get(), value -> null);
 		}
 		catch (Exception exception) {
 			Class<?> clazz = exception.getClass();
