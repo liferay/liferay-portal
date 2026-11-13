@@ -49,6 +49,28 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 				MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 
+		List<JenkinsMaster> activeJenkinsMasters = new ArrayList<>();
+
+		for (JenkinsMaster jenkinsMaster : jenkinsMasters) {
+			if (jenkinsMaster.isBlacklisted()) {
+				continue;
+			}
+
+			activeJenkinsMasters.add(jenkinsMaster);
+		}
+
+		if (activeJenkinsMasters.isEmpty()) {
+			Map<String, String> metrics = new LinkedHashMap<>();
+
+			metrics.put("long.running.builds.count", "0");
+			metrics.put("running.builds.count", "0");
+
+			return new MonitorResult(
+				JenkinsResultsParserUtil.combine(
+					"Every master in cohort ", _cohortName, " is blacklisted"),
+				metrics, MonitorResult.Status.OK, currentTimeMillis);
+		}
+
 		Map<String, String> exceptionMessages = new ConcurrentHashMap<>();
 		List<JenkinsMaster.RunningBuild> longRunningBuilds = new ArrayList<>();
 		List<String> messages = new ArrayList<>();
@@ -56,10 +78,10 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 		List<MonitorResult.Status> statuses = new ArrayList<>();
 
 		List<List<JenkinsMaster.RunningBuild>> runningBuildsList =
-			_readRunningBuilds(exceptionMessages, jenkinsMasters);
+			_readRunningBuilds(exceptionMessages, activeJenkinsMasters);
 
-		for (int i = 0; i < jenkinsMasters.size(); i++) {
-			JenkinsMaster jenkinsMaster = jenkinsMasters.get(i);
+		for (int i = 0; i < activeJenkinsMasters.size(); i++) {
+			JenkinsMaster jenkinsMaster = activeJenkinsMasters.get(i);
 
 			List<JenkinsMaster.RunningBuild> runningBuilds =
 				runningBuildsList.get(i);

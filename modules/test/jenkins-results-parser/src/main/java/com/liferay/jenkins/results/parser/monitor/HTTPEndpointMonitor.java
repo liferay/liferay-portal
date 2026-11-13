@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
 import java.io.FileNotFoundException;
@@ -22,8 +23,20 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 	public HTTPEndpointMonitor(MonitorConfig monitorConfig) {
 		super(monitorConfig);
 
+		Map<String, String> parameters = monitorConfig.getParameters();
+
 		_endpointURL = getRequiredURLParameter(
-			"url", monitorConfig.getParameters(), "http://", "https://");
+			"url", parameters, "http://", "https://");
+
+		String masterName = parameters.get("master.name");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(masterName)) {
+			_jenkinsMaster = null;
+		}
+		else {
+			_jenkinsMaster = JenkinsMaster.getInstance(masterName);
+		}
+
 		_latencyMaximumMillis = getLongValue(
 			"threshold", 0, "latency.maximum.millis",
 			monitorConfig.getThresholds());
@@ -36,6 +49,12 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 	public MonitorResult execute() {
 		long currentTimeMillis =
 			JenkinsResultsParserUtil.getCurrentTimeMillis();
+
+		if ((_jenkinsMaster != null) && _jenkinsMaster.isBlacklisted()) {
+			return new MonitorResult(
+				_jenkinsMaster.getName() + " is blacklisted", null,
+				MonitorResult.Status.OK, currentTimeMillis);
+		}
 
 		long startTimestamp = System.currentTimeMillis();
 
@@ -102,6 +121,7 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 		"HTTP response code: (?<responseCode>\\d+)");
 
 	private final String _endpointURL;
+	private final JenkinsMaster _jenkinsMaster;
 	private final long _latencyMaximumMillis;
 	private final String _remoteEndpointURL;
 
