@@ -966,6 +966,16 @@ public class ObjectEntryLocalServiceImpl
 				objectEntry.getObjectEntryId());
 		}
 
+		if (objectEntry.isHead()) {
+			for (ObjectEntry draftObjectEntry :
+					objectEntryPersistence.findByHOEI_T(
+						objectEntry.getObjectEntryId(),
+						ObjectEntryConstants.TYPE_DRAFT)) {
+
+				objectEntryLocalService.deleteObjectEntry(draftObjectEntry);
+			}
+		}
+
 		deleteRelatedObjectEntries(
 			objectEntry.getGroupId(), objectDefinition.getObjectDefinitionId(),
 			objectEntry.getPrimaryKey());
@@ -2223,7 +2233,7 @@ public class ObjectEntryLocalServiceImpl
 			long userId, ObjectEntry objectEntry, ServiceContext serviceContext)
 		throws PortalException {
 
-		if (objectEntry.isInTrash()) {
+		if (objectEntry.isInTrash() || objectEntry.isTypeDraft()) {
 			throw new TrashEntryException();
 		}
 
