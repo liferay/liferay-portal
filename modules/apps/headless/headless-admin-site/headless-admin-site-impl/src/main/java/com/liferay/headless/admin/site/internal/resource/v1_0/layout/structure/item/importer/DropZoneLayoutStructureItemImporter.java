@@ -17,7 +17,6 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -88,12 +87,9 @@ public class DropZoneLayoutStructureItemImporter
 		if (fragmentEntryReferences != null) {
 			dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(
 				_toFragmentEntriesJSONArray(fragmentEntryReferences));
-			dropZoneLayoutStructureItem.setFragmentEntryKeys(
-				_toFragmentEntryKeys(fragmentEntryReferences));
 		}
 		else {
 			dropZoneLayoutStructureItem.setFragmentEntriesJSONArray(null);
-			dropZoneLayoutStructureItem.setFragmentEntryKeys(null);
 		}
 
 		return dropZoneLayoutStructureItem;
@@ -128,63 +124,44 @@ public class DropZoneLayoutStructureItemImporter
 	}
 
 	private JSONArray _toFragmentEntriesJSONArray(
-		List<FragmentEntryReference> fragmentEntryReferences) {
+			List<FragmentEntryReference> fragmentEntryReferences)
+		throws Exception {
 
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-		for (FragmentEntryReference fragmentEntryReference :
-				fragmentEntryReferences) {
-
-			if (Validator.isNotNull(
-					fragmentEntryReference.getFragmentEntryKey())) {
-
-				jsonArray.put(
-					JSONUtil.put(
-						"fragmentEntryERC",
-						fragmentEntryReference.getFragmentEntryERC()
-					).put(
-						"fragmentEntryKey",
-						fragmentEntryReference.getFragmentEntryKey()
-					).put(
-						"fragmentEntryScopeERC",
-						fragmentEntryReference.getFragmentEntryScopeERC()
-					));
-			}
-			else if (Validator.isNotNull(
+		return JSONUtil.toJSONArray(
+			fragmentEntryReferences,
+			fragmentEntryReference -> {
+				if (Validator.isNotNull(
 						fragmentEntryReference.getRendererKey())) {
 
-				jsonArray.put(
-					JSONUtil.put(
+					return JSONUtil.put(
 						"fragmentEntryRendererKey",
-						fragmentEntryReference.getRendererKey()));
-			}
-		}
+						fragmentEntryReference.getRendererKey());
+				}
 
-		return jsonArray;
-	}
+				if (Validator.isNull(
+						fragmentEntryReference.getFragmentEntryERC())) {
 
-	private List<String> _toFragmentEntryKeys(
-		List<FragmentEntryReference> fragmentEntryReferences) {
+					return null;
+				}
 
-		List<String> fragmentEntryKeys = new ArrayList<>();
+				return JSONUtil.put(
+					"fragmentEntryERC",
+					fragmentEntryReference.getFragmentEntryERC()
+				).put(
+					"fragmentEntryScopeERC",
+					() -> {
+						if (Validator.isNull(
+								fragmentEntryReference.
+									getFragmentEntryScopeERC())) {
 
-		for (FragmentEntryReference fragmentEntryReference :
-				fragmentEntryReferences) {
+							return null;
+						}
 
-			if (Validator.isNotNull(
-					fragmentEntryReference.getFragmentEntryKey())) {
-
-				fragmentEntryKeys.add(
-					fragmentEntryReference.getFragmentEntryKey());
-			}
-			else if (Validator.isNotNull(
-						fragmentEntryReference.getRendererKey())) {
-
-				fragmentEntryKeys.add(fragmentEntryReference.getRendererKey());
-			}
-		}
-
-		return fragmentEntryKeys;
+						return fragmentEntryReference.
+							getFragmentEntryScopeERC();
+					}
+				);
+			});
 	}
 
 }
