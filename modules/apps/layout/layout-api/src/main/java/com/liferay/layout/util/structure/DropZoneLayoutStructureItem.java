@@ -65,6 +65,11 @@ public class DropZoneLayoutStructureItem extends LayoutStructureItem {
 		return _fragmentEntriesJSONArray;
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #getFragmentEntriesJSONArray()}
+	 */
+	@Deprecated
 	public List<String> getFragmentEntryKeys() {
 		return _fragmentEntryKeys;
 	}
@@ -104,6 +109,11 @@ public class DropZoneLayoutStructureItem extends LayoutStructureItem {
 		_fragmentEntriesJSONArray = fragmentEntriesJSONArray;
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #setFragmentEntriesJSONArray(JSONArray)}
+	 */
+	@Deprecated
 	public void setFragmentEntryKeys(List<String> fragmentEntryKeys) {
 		_fragmentEntryKeys = fragmentEntryKeys;
 	}
