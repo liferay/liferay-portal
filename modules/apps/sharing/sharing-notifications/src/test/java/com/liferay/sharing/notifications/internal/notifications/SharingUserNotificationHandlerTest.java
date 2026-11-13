@@ -19,12 +19,16 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.model.UserNotificationEventWrapper;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.security.permission.SharingEntryAction;
@@ -76,6 +80,110 @@ public class SharingUserNotificationHandlerTest {
 	}
 
 	@Test
+	@TestInfo("LPD-114364")
+	public void testGetLinkWhenAssetRendererIsNull() throws Exception {
+		_setUpSharingEntry();
+
+		_setUpAssetRendererFactoryRegistryUtil(
+			_sharingEntry.getClassName(), null, _sharingEntry.getClassPK());
+
+		String entryURL = _getEntryURL("/shared_assets/view_sharing_entry");
+
+		Assert.assertEquals(entryURL, _getLink(entryURL));
+	}
+
+	@Test
+	@TestInfo("LPD-114364")
+	public void testGetLinkWhenEntryURLMVCRenderCommandNameIsCurrent()
+		throws Exception {
+
+		_setUpSharingEntry();
+
+		_setUpAssetRendererFactoryRegistryUtil(
+			_sharingEntry.getClassName(), Mockito.mock(AssetRenderer.class),
+			_sharingEntry.getClassPK());
+
+		String entryURL = _getEntryURL("/sharing/view_sharing_entry");
+
+		try (MockedStatic<PortletProviderUtil> portletProviderUtilMockedStatic =
+				Mockito.mockStatic(PortletProviderUtil.class)) {
+
+			Assert.assertEquals(entryURL, _getLink(entryURL));
+
+			portletProviderUtilMockedStatic.verifyNoInteractions();
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-114364")
+	public void testGetLinkWhenEntryURLMVCRenderCommandNameIsRemoved()
+		throws Exception {
+
+		_setUpSharingEntry();
+
+		_setUpAssetRendererFactoryRegistryUtil(
+			_sharingEntry.getClassName(), Mockito.mock(AssetRenderer.class),
+			_sharingEntry.getClassPK());
+
+		HttpServletRequest httpServletRequest = Mockito.mock(
+			HttpServletRequest.class);
+
+		Mockito.when(
+			_themeDisplay.getRequest()
+		).thenReturn(
+			httpServletRequest
+		);
+
+		MockLiferayPortletURL mockLiferayPortletURL =
+			new MockLiferayPortletURL();
+
+		try (MockedStatic<PortletProviderUtil> portletProviderUtilMockedStatic =
+				Mockito.mockStatic(PortletProviderUtil.class)) {
+
+			portletProviderUtilMockedStatic.when(
+				() -> PortletProviderUtil.getPortletURL(
+					httpServletRequest, SharingEntry.class.getName(),
+					PortletProvider.Action.PREVIEW)
+			).thenReturn(
+				mockLiferayPortletURL
+			);
+
+			String link = _getLink(
+				_getEntryURL("/shared_assets/view_sharing_entry"));
+
+			Assert.assertEquals(
+				String.valueOf(_sharingEntry.getClassNameId()),
+				mockLiferayPortletURL.getParameter("classNameId"));
+			Assert.assertEquals(
+				String.valueOf(_sharingEntry.getClassPK()),
+				mockLiferayPortletURL.getParameter("classPK"));
+			Assert.assertEquals(
+				String.valueOf(_sharingEntry.getSharingEntryId()),
+				mockLiferayPortletURL.getParameter("sharingEntryId"));
+
+			Assert.assertEquals(mockLiferayPortletURL.toString(), link);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-114364")
+	public void testGetLinkWhenPreviewPortletURLIsNull() throws Exception {
+		_setUpSharingEntry();
+
+		_setUpAssetRendererFactoryRegistryUtil(
+			_sharingEntry.getClassName(), Mockito.mock(AssetRenderer.class),
+			_sharingEntry.getClassPK());
+
+		String entryURL = _getEntryURL("/shared_assets/view_sharing_entry");
+
+		try (MockedStatic<PortletProviderUtil> portletProviderUtilMockedStatic =
+				Mockito.mockStatic(PortletProviderUtil.class)) {
+
+			Assert.assertEquals(entryURL, _getLink(entryURL));
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-108755")
 	public void testGetTitleWhenAssetRendererIsNull() throws Exception {
 		_testGetTitleWhenAssetRendererIsNull(
@@ -84,7 +192,35 @@ public class SharingUserNotificationHandlerTest {
 	}
 
 	protected UserNotificationEvent mockUserNotificationEvent(long classPK) {
-		JSONObject jsonObject = JSONUtil.put("classPK", classPK);
+		return _mockUserNotificationEvent(JSONUtil.put("classPK", classPK));
+	}
+
+	private String _getEntryURL(String mvcRenderCommandName) {
+		return StringBundler.concat(
+			"http://localhost:8080/group/guest/~/control_panel/manage",
+			"?p_p_id=com_liferay_sharing_web_portlet_SharedAssetsPortlet",
+			"&p_p_lifecycle=0&_com_liferay_sharing_web_portlet_",
+			"SharedAssetsPortlet_mvcRenderCommandName=",
+			URLCodec.encodeURL(mvcRenderCommandName),
+			"&_com_liferay_sharing_web_portlet_SharedAssetsPortlet_",
+			"sharingEntryId=", _sharingEntry.getSharingEntryId());
+	}
+
+	private String _getLink(String entryURL) {
+		return ReflectionTestUtil.invoke(
+			_sharingUserNotificationHandler, "getLink",
+			new Class<?>[] {UserNotificationEvent.class, ServiceContext.class},
+			_mockUserNotificationEvent(
+				JSONUtil.put(
+					"classPK", RandomTestUtil.randomLong()
+				).put(
+					"entryURL", entryURL
+				)),
+			_serviceContext);
+	}
+
+	private UserNotificationEvent _mockUserNotificationEvent(
+		JSONObject jsonObject) {
 
 		return new UserNotificationEventWrapper(null) {
 
@@ -131,6 +267,12 @@ public class SharingUserNotificationHandlerTest {
 		);
 
 		Mockito.when(
+			_serviceContext.getPortalURL()
+		).thenReturn(
+			"http://localhost:8080"
+		);
+
+		Mockito.when(
 			_serviceContext.getRequest()
 		).thenReturn(
 			Mockito.mock(HttpServletRequest.class)
@@ -152,6 +294,34 @@ public class SharingUserNotificationHandlerTest {
 			_serviceContext.getUserId()
 		).thenReturn(
 			_USER_ID
+		);
+	}
+
+	private void _setUpSharingEntry() {
+		Mockito.reset(_sharingEntry);
+
+		Mockito.when(
+			_sharingEntry.getClassName()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			_sharingEntry.getClassNameId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			_sharingEntry.getClassPK()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			_sharingEntry.getSharingEntryId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
 		);
 	}
 
