@@ -576,6 +576,10 @@ public interface ObjectEntryLocalService
 			Map<String, Serializable> values, ServiceContext serviceContext)
 		throws PortalException;
 
+	public ObjectEntry publishDraftObjectEntry(
+			long userId, long objectEntryId, ServiceContext serviceContext)
+		throws PortalException;
+
 	public void restoreObjectEntriesFromTrash(
 			long userId, ObjectEntryFolder objectEntryFolder,
 			ServiceContext serviceContext)
@@ -644,4 +648,4 @@ public interface ObjectEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-857567631
+// LIFERAY-SERVICE-BUILDER-HASH:1851736207

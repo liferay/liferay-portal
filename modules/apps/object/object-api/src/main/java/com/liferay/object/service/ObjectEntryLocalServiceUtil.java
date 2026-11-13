@@ -808,6 +808,15 @@ public class ObjectEntryLocalServiceUtil {
 			userId, objectEntryId, objectEntryFolderId, values, serviceContext);
 	}
 
+	public static ObjectEntry publishDraftObjectEntry(
+			long userId, long objectEntryId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().publishDraftObjectEntry(
+			userId, objectEntryId, serviceContext);
+	}
+
 	public static void restoreObjectEntriesFromTrash(
 			long userId,
 			com.liferay.object.model.ObjectEntryFolder objectEntryFolder,
@@ -933,4 +942,4 @@ public class ObjectEntryLocalServiceUtil {
 			ObjectEntryLocalServiceUtil.class, ObjectEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-750239788
+// LIFERAY-SERVICE-BUILDER-HASH:793051021

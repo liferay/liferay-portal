@@ -922,6 +922,16 @@ public class ObjectEntryLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.object.model.ObjectEntry publishDraftObjectEntry(
+			long userId, long objectEntryId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryLocalService.publishDraftObjectEntry(
+			userId, objectEntryId, serviceContext);
+	}
+
+	@Override
 	public void restoreObjectEntriesFromTrash(
 			long userId,
 			com.liferay.object.model.ObjectEntryFolder objectEntryFolder,
@@ -1074,4 +1084,4 @@ public class ObjectEntryLocalServiceWrapper
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-615820576
+// LIFERAY-SERVICE-BUILDER-HASH:-133152576
