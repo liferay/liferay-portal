@@ -23,7 +23,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addImageResolution(imageName = null, maxHeight = null, description = null, customId = null, maxWidth = null) {
+	macro addImageResolution(imageName = null, maxHeight = null, description = null, maxWidth = null) {
 		if (IsTextNotEqual(locator1 = "ControlMenu#HEADING", value1 = "New Image Resolution")) {
 			LexiconEntry.gotoAdd();
 		}
@@ -46,63 +46,11 @@ definition {
 				value1 = ${maxHeight});
 		}
 
-		if (isSet(addHighDensityDisplay)) {
-			Check.checkNotVisible(locator1 = "Checkbox#ADD_HIGH_DENSITY_DISPLAY");
-		}
-
-		if (isSet(customId)) {
-			Click.clickAtNotVisible(locator1 = "Radio#CUSTOM_URL");
-
-			Type(
-				locator1 = "TextInput#IMAGE_ID",
-				value1 = ${customId});
-		}
-
 		AssertClick(
 			locator1 = "Button#SAVE",
 			value1 = "Save");
 
-		if (isSet(duplicate)) {
-			Alert.viewErrorMessage(errorMessage = "A configuration with this ID already exists. Enter a unique ID.");
-		}
-		else if (isSet(zero)) {
-			AssertTextEquals(
-				locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
-				value1 = "Please enter a max width or max height value larger than 0.");
-		}
-		else if (isSet(noDimensions)) {
-			AssertTextEquals(
-				locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
-				value1 = "At least one value is required.");
-		}
-		else {
-			AssertElementNotPresent(locator1 = "Message#ERROR");
-		}
-	}
-
-	@summary = "Default summary"
-	macro addNonNumericImageResolution(imageName = null, maxHeight = null, maxWidth = null) {
-		LexiconEntry.gotoAdd();
-
-		PortletEntry.inputName(name = ${imageName});
-
-		Type(
-			locator1 = "TextInput#MAX_WIDTH",
-			value1 = ${maxWidth});
-
-		Type(
-			locator1 = "TextInput#MAX_HEIGHT",
-			value1 = ${maxHeight});
-
-		AssertClick(
-			locator1 = "Button#SAVE",
-			value1 = "Save");
-
-		AssertElementNotPresent(locator1 = "Message#SUCCESS");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "TextInput#REQUIRED_ALERT",
-			value1 = "At least one value is required.");
+		AssertElementNotPresent(locator1 = "Message#ERROR");
 	}
 
 	@summary = "Default summary"
@@ -138,7 +86,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editImageResolution(imageIdEdit = null, imageName = null, maxHeightEdit = null, imageNameEdit = null, maxWidthEdit = null) {
+	macro editImageResolution(imageName = null, maxHeightEdit = null, imageNameEdit = null, maxWidthEdit = null) {
 		var key_imageName = ${imageName};
 
 		Click(locator1 = "AdaptiveMediaTable#IMAGE_RESOLUTION_OPTIONS");
@@ -178,33 +126,13 @@ definition {
 					locator1 = "TextInput#MAX_WIDTH",
 					value1 = ${maxWidthEdit});
 			}
-
-			if (isSet(imageIdEdit)) {
-				Click.clickAtNotVisible(locator1 = "Radio#CUSTOM_URL");
-
-				Type(
-					locator1 = "TextInput#IMAGE_ID",
-					value1 = ${imageIdEdit});
-			}
 		}
 
 		AssertClick(
 			locator1 = "Button#SAVE",
 			value1 = "Save");
 
-		if (isSet(noDimensions)) {
-			AssertTextEquals(
-				locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
-				value1 = "At least one value is required.");
-		}
-		else if (isSet(zero)) {
-			AssertTextEquals(
-				locator1 = "Message#ERROR_FORM_FIELD_REQUIRED",
-				value1 = "Please enter a max width or max height value larger than 0.");
-		}
-		else {
-			AssertElementNotPresent(locator1 = "Message#ERROR");
-		}
+		AssertElementNotPresent(locator1 = "Message#ERROR");
 	}
 
 	@summary = "Default summary"
@@ -292,13 +220,6 @@ definition {
 		AssertTextEquals(
 			locator1 = "TextArea#DESCRIPTION",
 			value1 = ${description});
-	}
-
-	@summary = "Default summary"
-	macro viewImageVariantID(imageVariantId = null) {
-		AssertTextEquals(
-			locator1 = "TextInput#IMAGE_ID",
-			value1 = ${imageVariantId});
 	}
 
 	@summary = "Default summary"
