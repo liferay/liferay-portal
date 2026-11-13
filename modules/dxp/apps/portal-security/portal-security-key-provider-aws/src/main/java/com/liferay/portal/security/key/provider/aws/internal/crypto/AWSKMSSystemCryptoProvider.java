@@ -9,12 +9,14 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.security.key.spi.crypto.CryptoProvider;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 /**
  * @author Christopher Kian
  */
 @Component(
 	configurationPid = "com.liferay.portal.security.key.provider.aws.internal.configuration.AWSKMSSystemCryptoProviderConfiguration",
+	configurationPolicy = ConfigurationPolicy.REQUIRE,
 	property = "crypto.provider.id=aws-system-crypto",
 	service = CryptoProvider.class
 )

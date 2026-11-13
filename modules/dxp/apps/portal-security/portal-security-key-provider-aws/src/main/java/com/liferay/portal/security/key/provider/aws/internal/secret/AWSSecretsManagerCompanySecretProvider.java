@@ -8,12 +8,14 @@ package com.liferay.portal.security.key.provider.aws.internal.secret;
 import com.liferay.portal.security.key.spi.secret.SecretProvider;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 /**
  * @author Christopher Kian
  */
 @Component(
 	configurationPid = "com.liferay.portal.security.key.provider.aws.internal.configuration.AWSSecretsManagerCompanySecretProviderConfiguration",
+	configurationPolicy = ConfigurationPolicy.REQUIRE,
 	property = "secret.provider.id=aws-company-secret",
 	service = SecretProvider.class
 )
