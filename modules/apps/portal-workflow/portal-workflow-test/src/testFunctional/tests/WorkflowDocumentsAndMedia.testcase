@@ -103,8 +103,6 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
-		var siteName = TestCase.getSiteName(siteName = ${siteName});
-
 		JSONOrganization.addOrganization(organizationName = "Space Program Academy of Continuing Education");
 
 		Organization.openOrganizationsAdmin();
@@ -169,7 +167,7 @@ definition {
 			category = "Content & Data",
 			panel = "Site Administration",
 			portlet = "Documents and Media",
-			site = ${siteName});
+			site = "Space Program Academy of Continuing Education");
 
 		DMFolder.addCP(
 			dmFolderDescription = "Financial Reports Description",
@@ -185,7 +183,7 @@ definition {
 				category = "Content & Data",
 				panel = "Site Administration",
 				portlet = "Documents and Media",
-				site = ${siteName});
+				site = "Space Program Academy of Continuing Education");
 
 			DMFolder.viewCP(dmFolderName = "Financial Reports");
 
@@ -251,7 +249,7 @@ definition {
 				category = "Content & Data",
 				panel = "Site Administration",
 				portlet = "Documents and Media",
-				site = ${siteName});
+				site = "Space Program Academy of Continuing Education");
 
 			DMFolder.viewCP(dmFolderName = "Financial Reports");
 
