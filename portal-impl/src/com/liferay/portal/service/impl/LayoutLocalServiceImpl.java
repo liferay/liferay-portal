@@ -2312,6 +2312,14 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 	@Override
 	public int getLayoutsCount(
+		long groupId, boolean privateLayout, int[] statuses) {
+
+		return layoutPersistence.countByG_P_ST(
+			groupId, privateLayout, statuses);
+	}
+
+	@Override
+	public int getLayoutsCount(
 		long groupId, boolean privateLayout, long parentLayoutId) {
 
 		return layoutPersistence.countByG_P_P(
@@ -2808,6 +2816,18 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 	@Override
 	public List<Layout> search(
+			long groupId, boolean privateLayout, String keywords,
+			boolean searchOnlyByTitle, String[] types, int[] statuses,
+			int start, int end, OrderByComparator<Layout> orderByComparator)
+		throws PortalException {
+
+		return search(
+			groupId, 0, privateLayout, keywords, searchOnlyByTitle, types,
+			statuses, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<Layout> search(
 			long groupId, long userId, boolean privateLayout, String keywords,
 			boolean searchOnlyByTitle, String[] types, int start, int end,
 			OrderByComparator<Layout> orderByComparator)
@@ -2874,12 +2894,34 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 	@Override
 	public int searchCount(
+			Group group, boolean privateLayout, String keywords,
+			boolean searchOnlyByTitle, String[] types, int[] statuses)
+		throws PortalException {
+
+		return searchCount(
+			group.getGroupId(), 0, privateLayout, keywords, searchOnlyByTitle,
+			types, statuses);
+	}
+
+	@Override
+	public int searchCount(
 			long groupId, long userId, boolean privateLayout, String keywords,
 			boolean searchOnlyByTitle, String[] types)
 		throws PortalException {
 
+		return searchCount(
+			groupId, userId, privateLayout, keywords, searchOnlyByTitle, types,
+			new int[0]);
+	}
+
+	@Override
+	public int searchCount(
+			long groupId, long userId, boolean privateLayout, String keywords,
+			boolean searchOnlyByTitle, String[] types, int[] statuses)
+		throws PortalException {
+
 		if (Validator.isNull(keywords)) {
-			return getLayoutsCount(groupId, privateLayout);
+			return getLayoutsCount(groupId, privateLayout, statuses);
 		}
 
 		Indexer<Layout> indexer = IndexerRegistryUtil.getIndexer(
@@ -2888,7 +2930,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		Hits hits = indexer.search(
 			_buildSearchContext(
 				groupId, userId, privateLayout, keywords, searchOnlyByTitle,
-				types, new int[0], QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+				types, statuses, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
 
 		return hits.getLength();
 	}
