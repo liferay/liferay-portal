@@ -32,16 +32,19 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -248,6 +251,7 @@ public class NotificationTemplateResourceTest
 		_testPutNotificationTemplateWithNameTranslations();
 		_testPutNotificationTemplateWithObjectDefinition();
 		_testPutNotificationTemplateWithPermissions();
+		_testPutNotificationTemplateWithRecipientsWithoutViewPermission();
 	}
 
 	@Override
@@ -1618,6 +1622,84 @@ public class NotificationTemplateResourceTest
 			RoleConstants.GUEST);
 	}
 
+	private void _testPutNotificationTemplateWithRecipientsWithoutViewPermission()
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_roles.add(role);
+
+		RoleTestUtil.addResourcePermission(
+			role,
+			com.liferay.notification.model.NotificationTemplate.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.UPDATE);
+		RoleTestUtil.addResourcePermission(
+			role,
+			com.liferay.notification.model.NotificationTemplate.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			ServiceContextTestUtil.getServiceContext());
+
+		user.setEmailAddressVerified(true);
+
+		user = _userLocalService.updateUser(user);
+
+		_users.add(user);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+
+		JSONObject notificationTemplateJSONObject =
+			_postNotificationTemplateJSONObject(
+				JSONUtil.putAll(
+					_toEmailRecipientJSONObject(
+						RandomTestUtil.randomString() + "@liferay.com",
+						JSONUtil.put("en_US", RandomTestUtil.randomString()),
+						JSONUtil.put("en_US", RandomTestUtil.randomString()),
+						NotificationRecipientConstants.TYPE_EMAIL)),
+				NotificationRecipientConstants.TYPE_EMAIL,
+				NotificationConstants.TYPE_EMAIL);
+
+		String from = RandomTestUtil.randomString() + "@liferay.com";
+		JSONObject fromNameJSONObject = JSONUtil.put(
+			"en_US", RandomTestUtil.randomString());
+
+		JSONArray recipientsJSONArray = JSONUtil.putAll(
+			_toEmailRecipientJSONObject(
+				from, fromNameJSONObject,
+				JSONUtil.putAll(_toRoleJSONObject(_role.getName())),
+				NotificationRecipientConstants.TYPE_ROLE
+			).put(
+				NotificationRecipientSettingConstants.NAME_BCC,
+				JSONUtil.putAll(_toUserGroupJSONObject(_userGroup))
+			).put(
+				NotificationRecipientSettingConstants.NAME_BCC_TYPE,
+				NotificationRecipientConstants.TYPE_USER_GROUP
+			));
+
+		HTTPTestUtil.customize(
+		).withCredentials(
+			user.getEmailAddress(), password
+		).apply(
+			() -> _assertNotificationTemplateRecipients(
+				recipientsJSONArray,
+				_patchPutNotificationTemplateJSONObject(
+					Http.Method.PUT,
+					notificationTemplateJSONObject.getLong("id"),
+					recipientsJSONArray,
+					NotificationRecipientConstants.TYPE_EMAIL,
+					NotificationConstants.TYPE_EMAIL))
+		);
+	}
+
 	private JSONObject _toEmailRecipientJSONObject(
 		String from, JSONObject fromNameJSONObject, Object to, String toType) {
 
@@ -1735,9 +1817,18 @@ public class NotificationTemplateResourceTest
 	private RoleLocalService _roleLocalService;
 
 	@DeleteAfterTestRun
+	private List<Role> _roles = new ArrayList<>();
+
+	@DeleteAfterTestRun
 	private User _user;
 
 	@DeleteAfterTestRun
 	private UserGroup _userGroup;
+
+	@Inject
+	private UserLocalService _userLocalService;
+
+	@DeleteAfterTestRun
+	private List<User> _users = new ArrayList<>();
 
 }
