@@ -169,6 +169,14 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 				return;
 			}
 
+			TopLevelBuild topLevelBuild = getTopLevelBuild();
+
+			TopLevelBuildReport topLevelBuildReport =
+				topLevelBuild.getTopLevelBuildReport();
+
+			topLevelBuildReport.addDownstreamBuildReport(
+				getDownstreamBuildReport());
+
 			testrayContext.recordTestrayCaseResultFile(
 				axisTestClassGroup, buildTestrayCaseResult);
 		}

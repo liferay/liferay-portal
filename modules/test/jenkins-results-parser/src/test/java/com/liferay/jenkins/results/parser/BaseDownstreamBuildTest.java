@@ -126,6 +126,45 @@ public class BaseDownstreamBuildTest
 				Mockito.any(), Mockito.any()
 			);
 
+			String axisName = RandomTestUtil.randomString();
+			DownstreamBuildReport downstreamBuildReport = Mockito.mock(
+				DownstreamBuildReport.class);
+			TopLevelBuild topLevelBuild = Mockito.mock(TopLevelBuild.class);
+
+			Mockito.when(
+				downstreamBuildReport.getAxisName()
+			).thenReturn(
+				axisName
+			);
+
+			Mockito.when(
+				topLevelBuild.getBuildURL()
+			).thenReturn(
+				"https://test-1-1.liferay.com/job/" +
+					RandomTestUtil.randomString() + "/1"
+			);
+
+			TopLevelBuildReport topLevelBuildReport =
+				new DefaultTopLevelBuildReport(topLevelBuild);
+
+			Mockito.when(
+				topLevelBuild.getTopLevelBuildReport()
+			).thenReturn(
+				topLevelBuildReport
+			);
+
+			Mockito.when(
+				baseDownstreamBuild.getDownstreamBuildReport()
+			).thenReturn(
+				downstreamBuildReport
+			);
+
+			Mockito.when(
+				baseDownstreamBuild.getTopLevelBuild()
+			).thenReturn(
+				topLevelBuild
+			);
+
 			URL testrayCaseResultURL = new URL(
 				"https://" + RandomTestUtil.randomString());
 
@@ -137,6 +176,9 @@ public class BaseDownstreamBuildTest
 
 			baseDownstreamBuild.generateTestrayCaseResultFile();
 
+			Assert.assertSame(
+				downstreamBuildReport,
+				topLevelBuildReport.getDownstreamBuildReport(axisName));
 			Assert.assertSame(
 				testrayCaseResultURL,
 				ReflectionTestUtil.getFieldValue(
