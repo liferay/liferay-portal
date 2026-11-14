@@ -893,9 +893,7 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			Assert.assertArrayEquals(
 				new String[] {JournalArticle.class.getName()},
 				_getValues(portletConfiguration, "anyAssetType"));
-			Assert.assertArrayEquals(
-				new String[] {JournalArticle.class.getName()},
-				_getValues(portletConfiguration, "classNameIds"));
+			Assert.assertNull(portletConfiguration.get("classNameIds"));
 		}
 		finally {
 			ExportImportThreadLocal.setPortletStagingInProcess(false);
@@ -907,8 +905,7 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 		Assert.assertEquals(
 			journalArticleClassNameId,
 			importedPortletPreferences.getValue("anyAssetType", null));
-		Assert.assertArrayEquals(
-			new String[] {journalArticleClassNameId},
+		Assert.assertNull(
 			importedPortletPreferences.getValues("classNameIds", null));
 	}
 
@@ -980,16 +977,15 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			importedGroup.getGroupId(), JournalArticle.class.getName(), 0,
 			ddmStructure.getDDMForm(), LocaleUtil.getDefault(), serviceContext);
 
+		String journalArticleClassNameId = String.valueOf(
+			_portal.getClassNameId(JournalArticle.class));
+
 		PortletPreferences importedPortletPreferences =
 			_getRemoteStagingImportedPortletPreferences(
 				HashMapBuilder.put(
 					"anyAssetType", new String[] {"false"}
 				).put(
-					"classNameIds",
-					new String[] {
-						String.valueOf(
-							_portal.getClassNameId(JournalArticle.class))
-					}
+					"classNameIds", new String[] {journalArticleClassNameId}
 				).put(
 					"classTypeIds",
 					new String[] {String.valueOf(ddmStructure.getStructureId())}
@@ -997,6 +993,9 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 					"selectionStyle", new String[] {"dynamic"}
 				).build());
 
+		Assert.assertArrayEquals(
+			new String[] {journalArticleClassNameId},
+			importedPortletPreferences.getValues("classNameIds", null));
 		Assert.assertEquals(
 			String.valueOf(remoteDDMStructure.getStructureId()),
 			importedPortletPreferences.getValue("classTypeIds", null));
