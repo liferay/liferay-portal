@@ -118,20 +118,20 @@ public class PageSpecificationResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-107120", "LPD-97472"})
+	@TestInfo({"LPD-97472", "LPD-107120"})
 	public void testDeleteSitePageSpecification() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				testGroup.getGroupId(), TestPropsValues.getUserId());
 
 		_testDeleteSitePageSpecificationWithLockedLayout(serviceContext);
-		_testDeleteSitePageSpecificationWithoutUpdatePermission(
-			_addLayout(LayoutConstants.TYPE_CONTENT, serviceContext));
 		_testDeleteSitePageSpecificationWithSupportedPageTypes(serviceContext);
 		_testDeleteSitePageSpecificationWithUnsupportedLayoutType(
 			serviceContext);
 		_testDeleteSitePageSpecificationWithWidgetPage(serviceContext);
 		_testDeleteSitePageSpecificationWithWidgetPageTemplate(serviceContext);
+		_testDeleteSitePageSpecificationWithoutUpdatePermission(
+			_addLayout(LayoutConstants.TYPE_CONTENT, serviceContext));
 
 		_testDeleteSitePageSpecificationWithUnsupportedSite();
 	}
@@ -1026,34 +1026,6 @@ public class PageSpecificationResourceTest
 		}
 	}
 
-	private void _testDeleteSitePageSpecificationWithoutUpdatePermission(
-			Layout layout)
-		throws Exception {
-
-		String password = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser(testCompany, password);
-
-		PageSpecificationResource pageSpecificationResource =
-			PageSpecificationResource.builder(
-			).authentication(
-				user.getEmailAddress(), password
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		ProblemExceptionTestUtil.assertProblemException(
-			"FORBIDDEN", "Forbidden",
-			() -> pageSpecificationResource.deleteSitePageSpecification(
-				testGroup.getExternalReferenceCode(),
-				draftLayout.getExternalReferenceCode()));
-	}
-
 	private void _testDeleteSitePageSpecificationWithSupportedPageTypes(
 			ServiceContext serviceContext)
 		throws Exception {
@@ -1137,6 +1109,34 @@ public class PageSpecificationResourceTest
 
 		_assertDeleteSitePageSpecificationProblemException(
 			layoutPageTemplateEntry.getExternalReferenceCode());
+	}
+
+	private void _testDeleteSitePageSpecificationWithoutUpdatePermission(
+			Layout layout)
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		PageSpecificationResource pageSpecificationResource =
+			PageSpecificationResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"FORBIDDEN", "Forbidden",
+			() -> pageSpecificationResource.deleteSitePageSpecification(
+				testGroup.getExternalReferenceCode(),
+				draftLayout.getExternalReferenceCode()));
 	}
 
 	private void _testGetSitePageSpecification(
