@@ -1841,15 +1841,13 @@ public class ProjectFaroController extends BaseFaroController {
 
 		long groupId = faroProject.getGroupId();
 
-		if (_initializingGroupIds.contains(groupId)) {
+		if (!_initializingGroupIds.add(groupId)) {
 			faroProject.setState(FaroProjectConstants.STATE_READY);
 
 			return faroProject;
 		}
 
 		try {
-			_initializingGroupIds.add(groupId);
-
 			cerebroEngineClient.updateTimeZone(faroProject);
 
 			_fieldMappingFaroController.addDefaultFieldMappings(groupId);
