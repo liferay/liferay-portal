@@ -27,10 +27,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * @author Riccardo Alberti
  */
-@Component(
-	configurationPid = "com.liferay.commerce.qualifier.configuration.AccountEntryCommerceQualifierConfiguration",
-	service = CommerceQualifierMetadata.class
-)
+@Component(service = CommerceQualifierMetadata.class)
 public class AccountEntryCommerceQualifierMetadata
 	extends BaseCommerceQualifierMetadata<AccountEntry> {
 
