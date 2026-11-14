@@ -44,7 +44,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jürgen Kappler
  */
 @Component(
-	configurationPid = "com.liferay.fragment.web.internal.configuration.FragmentPortletConfiguration",
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.css-class-wrapper=portlet-fragment-web",

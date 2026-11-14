@@ -23,7 +23,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Stian Sigvartsen
  */
 @Component(
-	configurationPid = "com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration",
 	property = {
 		"com.liferay.portlet.css-class-wrapper=portlet-oauth2-provider-admin",
 		"com.liferay.portlet.display-category=category.hidden",
