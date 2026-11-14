@@ -40,6 +40,7 @@ const config = {
 		campaigns: getComponentEntry('campaigns'),
 		events: getComponentEntry('events'),
 		individuals: getComponentEntry('individuals'),
+		lifecycles: getComponentEntry('lifecycles'),
 		main: [...POLYFILLS, resolveModule('main.jsx')],
 		segments: getComponentEntry('segments'),
 		workspaces: getComponentEntry('workspaces'),
