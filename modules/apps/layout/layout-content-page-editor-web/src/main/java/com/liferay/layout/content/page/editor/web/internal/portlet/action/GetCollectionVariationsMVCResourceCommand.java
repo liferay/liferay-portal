@@ -71,12 +71,12 @@ public class GetCollectionVariationsMVCResourceCommand
 			return _jsonFactory.createJSONArray();
 		}
 
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
 		assetListEntryAudienceEntryRels = ListUtil.sort(
 			assetListEntryAudienceEntryRels,
 			Comparator.comparingInt(
 				AssetListEntryAudienceEntryRel::getPriority));
-
-		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
 		for (AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel :
 				assetListEntryAudienceEntryRels) {
