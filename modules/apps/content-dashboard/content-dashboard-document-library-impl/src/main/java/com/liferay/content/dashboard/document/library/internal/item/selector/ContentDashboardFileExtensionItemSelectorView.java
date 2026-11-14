@@ -59,10 +59,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alejandro Tardín
  */
-@Component(
-	configurationPid = "com.liferay.document.library.configuration.DLConfiguration",
-	service = ItemSelectorView.class
-)
+@Component(service = ItemSelectorView.class)
 public class ContentDashboardFileExtensionItemSelectorView
 	implements ItemSelectorView<FileExtensionItemSelectorCriterion> {
 

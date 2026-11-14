@@ -40,10 +40,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alicia García
  * @author Roberto Díaz
  */
-@Component(
-	configurationPid = "com.liferay.document.library.configuration.DLFileEntryFriendlyURLConfiguration",
-	service = ServiceWrapper.class
-)
+@Component(service = ServiceWrapper.class)
 public class FriendlyURLDLFileEntryLocalServiceWrapper
 	extends DLFileEntryLocalServiceWrapper {
 
