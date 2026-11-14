@@ -537,7 +537,6 @@ public class BatchEngineImportTaskLocalServiceTest {
 
 		String name = RandomTestUtil.randomString();
 		String password = RandomTestUtil.randomString();
-
 		TestBatchEngineTaskItemDelegate testBatchEngineTaskItemDelegate =
 			new TestBatchEngineTaskItemDelegate();
 
