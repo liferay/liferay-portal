@@ -1263,6 +1263,25 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo("LPD-110540")
+	public void testExportImportMalformedOrderByColumnWithRemoteStaging()
+		throws Exception {
+
+		String orderByColumn =
+			DDMIndexer.DDM_FIELD_PREFIX + RandomTestUtil.randomString();
+
+		PortletPreferences importedPortletPreferences =
+			_getRemoteStagingImportedPortletPreferences(
+				HashMapBuilder.put(
+					"orderByColumn1", new String[] {orderByColumn}
+				).build());
+
+		Assert.assertEquals(
+			orderByColumn,
+			importedPortletPreferences.getValue("orderByColumn1", null));
+	}
+
+	@Test
 	public void testExportImportManualAssetEntryOfUnstagedPortlet()
 		throws Exception {
 
@@ -1345,12 +1364,81 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 				HashMapBuilder.put(
 					"orderByColumn1",
 					new String[] {
-						_getOrderByColumn(ddmStructure.getStructureId())
+						_getOrderByColumn(
+							ddmStructure.getStructureId(),
+							"Numeric" + ddmStructure.getStructureId())
 					}
 				).build());
 
 		Assert.assertEquals(
-			_getOrderByColumn(remoteDDMStructure.getStructureId()),
+			_getOrderByColumn(
+				remoteDDMStructure.getStructureId(),
+				"Numeric" + ddmStructure.getStructureId()),
+			importedPortletPreferences.getValue("orderByColumn1", null));
+	}
+
+	@Test
+	@TestInfo("LPD-110540")
+	public void testExportImportPreloadedDDMStructureOrderByColumnWithRemoteStaging()
+		throws Exception {
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			group.getCompanyId());
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.fetchStructure(
+			companyGroup.getGroupId(),
+			_portal.getClassNameId(DLFileEntryMetadata.class),
+			"DL_VIDEO_EXTERNAL_SHORTCUT");
+
+		String orderByColumn = _getOrderByColumn(
+			ddmStructure.getStructureId(), "URL");
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
+			HashMapBuilder.put(
+				"orderByColumn1", new String[] {orderByColumn}
+			).build());
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		Map<String, Object> portletConfiguration;
+
+		try {
+			portletConfiguration =
+				_portletPreferencesPortletConfigurationExporter.
+					getPortletConfiguration(layout.getPlid(), portletId);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
+
+		importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		try {
+			_portletPreferencesPortletConfigurationImporter.
+				importPortletConfiguration(
+					importedLayout.getPlid(), portletId,
+					HashMapBuilder.<String, Object>put(
+						"orderByColumn1",
+						Collections.singletonList(
+							StringUtil.replace(
+								_getValues(
+									portletConfiguration, "orderByColumn1")[0],
+								ddmStructure.getUuid(),
+								RandomTestUtil.randomString()))
+					).build());
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
+
+		PortletPreferences importedPortletPreferences =
+			LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
+
+		Assert.assertEquals(
+			orderByColumn,
 			importedPortletPreferences.getValue("orderByColumn1", null));
 	}
 
@@ -1565,6 +1653,29 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 		Assert.assertEquals(
 			classNameId,
 			importedPortletPreferences.getValue("anyAssetType", null));
+	}
+
+	@Test
+	@TestInfo("LPD-110540")
+	public void testExportImportUnresolvedOrderByColumnWithRemoteStaging()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			group.getGroupId(), JournalArticle.class.getName());
+
+		PortletPreferences importedPortletPreferences =
+			_getRemoteStagingImportedPortletPreferences(
+				HashMapBuilder.put(
+					"orderByColumn1",
+					new String[] {
+						_getOrderByColumn(
+							ddmStructure.getStructureId(),
+							RandomTestUtil.randomString())
+					}
+				).build());
+
+		Assert.assertNull(
+			importedPortletPreferences.getValue("orderByColumn1", null));
 	}
 
 	@Test
@@ -2325,11 +2436,11 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 		return depotEntry;
 	}
 
-	private String _getOrderByColumn(long ddmStructureId) {
+	private String _getOrderByColumn(long ddmStructureId, String fieldName) {
 		return StringBundler.concat(
 			DDMIndexer.DDM_FIELD_PREFIX, "keyword",
 			DDMIndexer.DDM_FIELD_SEPARATOR, ddmStructureId,
-			DDMIndexer.DDM_FIELD_SEPARATOR, "text_en_US");
+			DDMIndexer.DDM_FIELD_SEPARATOR, fieldName, "_en_US");
 	}
 
 	private Map<String, String[]> _getPreferenceMap(
