@@ -43,6 +43,7 @@ const config = {
 		lifecycles: getComponentEntry('lifecycles'),
 		main: [...POLYFILLS, resolveModule('main.jsx')],
 		segments: getComponentEntry('segments'),
+		sites: getComponentEntry('sites'),
 		workspaces: getComponentEntry('workspaces'),
 	},
 	experiments: {
