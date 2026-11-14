@@ -52,10 +52,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alvaro Saugar
  */
-@Component(
-	configurationPid = "com.liferay.scim.rest.internal.configuration.ScimClientOAuth2ApplicationConfiguration",
-	service = ConfigurationScreen.class
-)
+@Component(service = ConfigurationScreen.class)
 public class ScimPortalSettingsConfigurationScreenWrapper
 	extends ConfigurationScreenWrapper {
 
