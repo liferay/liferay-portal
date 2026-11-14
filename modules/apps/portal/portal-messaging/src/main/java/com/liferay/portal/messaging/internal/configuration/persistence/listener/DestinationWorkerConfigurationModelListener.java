@@ -19,7 +19,6 @@ import org.osgi.service.component.annotations.Component;
  * @author Jonathan McCann
  */
 @Component(
-	configurationPid = "com.liferay.portal.messaging.internal.configuration.DestinationWorkerConfiguration",
 	property = "model.class.name=com.liferay.portal.messaging.internal.configuration.DestinationWorkerConfiguration",
 	service = ConfigurationModelListener.class
 )
