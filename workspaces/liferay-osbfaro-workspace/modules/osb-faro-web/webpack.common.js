@@ -39,6 +39,7 @@ const config = {
 		assets: getComponentEntry('assets'),
 		campaigns: getComponentEntry('campaigns'),
 		events: getComponentEntry('events'),
+		individuals: getComponentEntry('individuals'),
 		main: [...POLYFILLS, resolveModule('main.jsx')],
 		segments: getComponentEntry('segments'),
 		workspaces: getComponentEntry('workspaces'),
