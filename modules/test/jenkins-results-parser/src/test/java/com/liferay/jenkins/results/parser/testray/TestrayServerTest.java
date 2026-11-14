@@ -24,13 +24,13 @@ public class TestrayServerTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testDeleteCaseResultFile() throws Exception {
-		TestrayServer testrayServer = _mockTestrayServer();
-
 		String fileName = RandomTestUtil.randomString();
 
 		File file = new File(temporaryFolder.getRoot(), fileName);
 
 		JenkinsResultsParserUtil.write(file, RandomTestUtil.randomString());
+
+		TestrayServer testrayServer = _mockTestrayServer();
 
 		testrayServer.deleteCaseResultFile("");
 		testrayServer.deleteCaseResultFile(null);
@@ -62,13 +62,13 @@ public class TestrayServerTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testReadCaseResultFile() throws Exception {
-		TestrayServer testrayServer = _mockTestrayServer();
-
 		String fileContent = RandomTestUtil.randomString();
 		String fileName = RandomTestUtil.randomString();
 
 		JenkinsResultsParserUtil.write(
 			new File(temporaryFolder.getRoot(), fileName), fileContent);
+
+		TestrayServer testrayServer = _mockTestrayServer();
 
 		testEquals(fileContent, testrayServer.readCaseResultFile(fileName));
 	}

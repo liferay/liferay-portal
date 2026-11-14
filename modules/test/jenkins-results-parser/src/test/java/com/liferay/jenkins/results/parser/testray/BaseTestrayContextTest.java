@@ -65,9 +65,6 @@ public class BaseTestrayContextTest
 
 	@Test
 	public void testGetTestcaseElementAttachment() throws Exception {
-		TestrayCaseResult testrayCaseResult = Mockito.mock(
-			TestrayCaseResult.class);
-
 		TestrayAttachment testrayAttachment = Mockito.mock(
 			TestrayAttachment.class);
 
@@ -87,6 +84,9 @@ public class BaseTestrayContextTest
 		).when(
 			testrayAttachment
 		).getURL();
+
+		TestrayCaseResult testrayCaseResult = Mockito.mock(
+			TestrayCaseResult.class);
 
 		Mockito.doReturn(
 			RandomTestUtil.randomString()
@@ -481,8 +481,6 @@ public class BaseTestrayContextTest
 			axisTestClassGroup
 		).getTestClasses();
 
-		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
-
 		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
 
 		Mockito.doReturn(
@@ -502,6 +500,8 @@ public class BaseTestrayContextTest
 		).when(
 			testrayBuild
 		).getTestrayRoutine();
+
+		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
 
 		Mockito.doReturn(
 			testrayServer
