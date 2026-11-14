@@ -3246,7 +3246,7 @@ public class UserLocalServiceTest {
 			if (expired) {
 				try {
 					ticket.setExpirationDate(
-						new Date(System.currentTimeMillis()));
+						new Date(System.currentTimeMillis() - 5000));
 
 					ticket = _ticketLocalService.updateTicket(ticket);
 
