@@ -62,7 +62,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Iván Zaera Avellón
  */
 @Component(
-	configurationPid = "com.liferay.frontend.js.web.internal.configuration.FrontendCachingConfiguration",
 	property = {
 		"before-filter=Header Filter", "dispatcher=FORWARD",
 		"dispatcher=REQUEST", "servlet-context-name=",

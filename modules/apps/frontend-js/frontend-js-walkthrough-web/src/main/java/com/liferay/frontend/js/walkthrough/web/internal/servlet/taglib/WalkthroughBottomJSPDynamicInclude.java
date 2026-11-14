@@ -36,7 +36,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Diego Nascimento
  */
 @Component(
-	configurationPid = "com.liferay.frontend.js.walkthrough.web.internal.configuration.WalkthroughConfiguration",
 	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
 	service = DynamicInclude.class
 )

@@ -34,7 +34,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Chema Balsas
  */
 @Component(
-	configurationPid = "com.liferay.frontend.js.tooltip.support.web.internal.configuration.JSTooltipSupportConfiguration",
 	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
 	service = DynamicInclude.class
 )

@@ -23,10 +23,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Iván Zaera Avellón
  */
-@Component(
-	configurationPid = "com.liferay.frontend.js.web.internal.session.timeout.configuration.SessionTimeoutConfiguration",
-	service = SessionTimeout.class
-)
+@Component(service = SessionTimeout.class)
 public class SessionTimeoutImpl implements SessionTimeout {
 
 	@Override
