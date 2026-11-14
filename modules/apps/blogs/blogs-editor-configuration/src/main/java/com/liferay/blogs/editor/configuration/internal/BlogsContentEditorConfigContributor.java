@@ -42,7 +42,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Roberto Díaz
  */
 @Component(
-	configurationPid = "com.liferay.blogs.configuration.BlogsFileUploadsConfiguration",
 	property = {
 		"editor.config.key=contentEditor",
 		"jakarta.portlet.name=" + BlogsPortletKeys.BLOGS,

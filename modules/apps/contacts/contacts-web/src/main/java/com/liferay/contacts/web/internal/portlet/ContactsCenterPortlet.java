@@ -124,7 +124,6 @@ import org.osgi.service.component.annotations.Reference;
  * @deprecated As of Cavanaugh (7.4.x)
  */
 @Component(
-	configurationPid = "com.liferay.users.admin.configuration.UserFileUploadsConfiguration",
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.css-class-wrapper=contacts-portlet",

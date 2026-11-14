@@ -21,7 +21,6 @@ import org.osgi.service.component.annotations.Component;
  * @author Albert Lee
  */
 @Component(
-	configurationPid = "com.liferay.users.admin.configuration.UserFileUploadsConfiguration",
 	property = {
 		"jakarta.portlet.name=" + AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
 		"jakarta.portlet.name=" + AccountPortletKeys.ACCOUNT_ENTRIES_MANAGEMENT,

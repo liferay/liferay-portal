@@ -21,7 +21,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	configurationPid = "com.liferay.commerce.shop.by.diagram.configuration.CSDiagramSettingImageConfiguration",
 	property = "screen.navigation.category.order:Integer=20",
 	service = ScreenNavigationCategory.class
 )
