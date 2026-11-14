@@ -57,14 +57,8 @@ public class SearchResultPermissionFilterFactoryImpl
 	}
 
 	@Activate
-	@Modified
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
-
-		_defaultSearchResultPermissionFilterConfiguration =
-			ConfigurableUtil.createConfigurable(
-				DefaultSearchResultPermissionFilterConfiguration.class,
-				properties);
 
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext,
@@ -73,11 +67,21 @@ public class SearchResultPermissionFilterFactoryImpl
 			"(permissions.view.dynamic.inheritance.checking=true)",
 			(serviceReference, emitter) -> emitter.emit(
 				(String)serviceReference.getProperty("model.class.name")));
+
+		modified(properties);
 	}
 
 	@Deactivate
 	protected void deactivate() {
 		_serviceTrackerMap.close();
+	}
+
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		_defaultSearchResultPermissionFilterConfiguration =
+			ConfigurableUtil.createConfigurable(
+				DefaultSearchResultPermissionFilterConfiguration.class,
+				properties);
 	}
 
 	@Reference
