@@ -468,9 +468,9 @@ public class PortletContainerImpl implements PortletContainer {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			liferayActionRequest);
 
-		try {
-			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
+		try {
 			invokerPortlet.processAction(
 				liferayActionRequest, liferayActionResponse);
 
@@ -1032,9 +1032,9 @@ public class PortletContainerImpl implements PortletContainer {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			liferayResourceRequest);
 
-		try {
-			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
+		try {
 			invokerPortlet.serveResource(
 				liferayResourceRequest, liferayResourceResponse);
 
