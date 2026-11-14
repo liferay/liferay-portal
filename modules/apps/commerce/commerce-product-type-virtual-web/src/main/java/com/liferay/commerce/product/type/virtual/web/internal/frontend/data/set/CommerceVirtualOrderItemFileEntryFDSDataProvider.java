@@ -102,7 +102,7 @@ public class CommerceVirtualOrderItemFileEntryFDSDataProvider
 
 			return DLURLHelperUtil.getDownloadURL(
 				fileEntry, fileEntry.getLatestFileVersion(), null,
-				StringPool.BLANK, true, true);
+				StringPool.BLANK, true, false, true);
 		}
 
 		return commerceVirtualOrderItemFileEntry.getUrl();

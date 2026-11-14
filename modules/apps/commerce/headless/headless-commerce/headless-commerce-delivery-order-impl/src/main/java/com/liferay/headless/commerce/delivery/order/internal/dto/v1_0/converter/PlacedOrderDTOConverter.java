@@ -281,7 +281,7 @@ public class PlacedOrderDTOConverter
 					setUrl(
 						() -> DLURLHelperUtil.getDownloadURL(
 							fileEntry, fileEntry.getLatestFileVersion(), null,
-							StringPool.BLANK, true, true));
+							StringPool.BLANK, true, false, true));
 				}
 			},
 			Attachment.class);

@@ -131,7 +131,7 @@ public class CommerceVirtualOrderItemEditDisplayContext {
 		return DLURLHelperUtil.getDownloadURL(
 			fileEntry, fileEntry.getLatestFileVersion(),
 			_cpDefinitionVirtualSettingRequestHelper.getThemeDisplay(),
-			StringPool.BLANK, true, true);
+			StringPool.BLANK, true, false, true);
 	}
 
 	public String getFileEntryItemSelectorURL() {

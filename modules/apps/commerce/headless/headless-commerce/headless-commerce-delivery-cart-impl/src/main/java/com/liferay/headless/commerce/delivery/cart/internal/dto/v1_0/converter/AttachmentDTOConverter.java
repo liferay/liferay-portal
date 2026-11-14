@@ -49,7 +49,7 @@ public class AttachmentDTOConverter
 				setUrl(
 					() -> DLURLHelperUtil.getDownloadURL(
 						fileEntry, fileEntry.getLatestFileVersion(), null,
-						StringPool.BLANK, true, true));
+						StringPool.BLANK, true, false, true));
 			}
 		};
 	}

@@ -44,7 +44,7 @@ public class FileEntryDownloadURLItemSelectorReturnTypeResolver
 
 		return _dlURLHelper.getDownloadURL(
 			fileEntry, fileEntry.getFileVersion(), themeDisplay,
-			StringPool.BLANK, false, false);
+			StringPool.BLANK, false, false, false);
 	}
 
 	@Reference

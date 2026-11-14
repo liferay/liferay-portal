@@ -796,7 +796,7 @@ public class FragmentLayoutStructureItemImporter
 						"url",
 						DLURLHelperUtil.getDownloadURL(
 							fileEntry, fileEntry.getFileVersion(), null,
-							StringPool.BLANK, false, false)
+							StringPool.BLANK, false, false, false)
 					));
 			}
 			catch (PortalException portalException) {
@@ -1272,7 +1272,7 @@ public class FragmentLayoutStructureItemImporter
 			if (fileEntry != null) {
 				fileEntryURL = DLURLHelperUtil.getDownloadURL(
 					fileEntry, fileEntry.getFileVersion(), null,
-					StringPool.BLANK, false, false);
+					StringPool.BLANK, false, false, false);
 			}
 
 			html = StringUtil.replace(html, matcher.group(), fileEntryURL);

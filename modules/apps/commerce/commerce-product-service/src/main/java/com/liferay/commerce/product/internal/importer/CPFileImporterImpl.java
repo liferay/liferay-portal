@@ -667,7 +667,7 @@ public class CPFileImporterImpl implements CPFileImporter {
 			fileEntry -> {
 				String previewURL = DLURLHelperUtil.getDownloadURL(
 					fileEntry, fileEntry.getLatestFileVersion(), null,
-					StringPool.BLANK, false, false);
+					StringPool.BLANK, false, false, false);
 
 				return String.format(
 					IMG_TAG, previewURL,

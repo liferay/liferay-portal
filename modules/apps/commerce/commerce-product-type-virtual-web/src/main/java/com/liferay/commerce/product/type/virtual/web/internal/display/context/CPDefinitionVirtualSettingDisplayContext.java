@@ -216,7 +216,7 @@ public class CPDefinitionVirtualSettingDisplayContext
 
 		return DLURLHelperUtil.getDownloadURL(
 			fileEntry, fileEntry.getLatestFileVersion(), themeDisplay,
-			StringPool.BLANK, true, true);
+			StringPool.BLANK, true, false, true);
 	}
 
 	public String getDownloadSampleFileEntryURL() throws PortalException {
@@ -237,7 +237,7 @@ public class CPDefinitionVirtualSettingDisplayContext
 
 		return DLURLHelperUtil.getDownloadURL(
 			fileEntry, fileEntry.getLatestFileVersion(), themeDisplay,
-			StringPool.BLANK, true, true);
+			StringPool.BLANK, true, false, true);
 	}
 
 	public FileEntry getFileEntry(long fileEntryId) throws PortalException {

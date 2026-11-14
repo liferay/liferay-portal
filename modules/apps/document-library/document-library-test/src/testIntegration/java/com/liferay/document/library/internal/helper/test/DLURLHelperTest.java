@@ -101,7 +101,7 @@ public class DLURLHelperTest {
 
 		String downloadURL = _dlURLHelper.getDownloadURL(
 			fileEntry, fileEntry.getFileVersion(), _getThemeDisplay(),
-			StringPool.BLANK, true, false);
+			StringPool.BLANK, false, false, true);
 
 		Assert.assertTrue(
 			downloadURL, downloadURL.contains(fileEntry.getUuid()));
@@ -122,7 +122,7 @@ public class DLURLHelperTest {
 
 		String downloadURL = _dlURLHelper.getDownloadURL(
 			fileEntry, fileEntry.getFileVersion(), _getThemeDisplay(),
-			StringPool.BLANK, true, true);
+			StringPool.BLANK, true, false, true);
 
 		Assert.assertTrue(
 			downloadURL,
@@ -147,7 +147,7 @@ public class DLURLHelperTest {
 
 		String downloadURL = _dlURLHelper.getDownloadURL(
 			fileEntry, fileEntry.getFileVersion(), _getThemeDisplay(),
-			StringPool.BLANK, true, false);
+			StringPool.BLANK, false, false, true);
 
 		Assert.assertFalse(
 			downloadURL,
@@ -172,7 +172,7 @@ public class DLURLHelperTest {
 
 		String downloadURL = _dlURLHelper.getDownloadURL(
 			fileEntry, fileEntry.getFileVersion(), _getThemeDisplay(),
-			StringPool.BLANK, false, false);
+			StringPool.BLANK, false, false, false);
 
 		Assert.assertTrue(
 			downloadURL,
@@ -196,7 +196,7 @@ public class DLURLHelperTest {
 
 		String downloadURL = _dlURLHelper.getDownloadURL(
 			fileEntry, fileEntry.getFileVersion(), _getThemeDisplay(),
-			StringPool.BLANK, false, true);
+			StringPool.BLANK, true, false, false);
 
 		Assert.assertTrue(
 			downloadURL,

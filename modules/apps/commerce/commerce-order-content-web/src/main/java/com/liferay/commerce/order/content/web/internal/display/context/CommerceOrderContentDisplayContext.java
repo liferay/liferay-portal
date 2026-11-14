@@ -266,7 +266,8 @@ public class CommerceOrderContentDisplayContext {
 
 		return DLURLHelperUtil.getDownloadURL(
 			fileEntry, fileEntry.getFileVersion(),
-			_cpRequestHelper.getThemeDisplay(), StringPool.BLANK, false, true);
+			_cpRequestHelper.getThemeDisplay(), StringPool.BLANK, true, false,
+			false);
 	}
 
 	public long getCommerceAccountId() {

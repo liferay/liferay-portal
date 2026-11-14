@@ -62,7 +62,7 @@ public class ResourcesFragmentEntryProcessorUtil {
 			if (fileEntry != null) {
 				fileEntryURL = DLURLHelperUtil.getDownloadURL(
 					fileEntry, fileEntry.getFileVersion(), null,
-					StringPool.BLANK, false, false);
+					StringPool.BLANK, false, false, false);
 			}
 
 			code = StringUtil.replace(code, matcher.group(), fileEntryURL);

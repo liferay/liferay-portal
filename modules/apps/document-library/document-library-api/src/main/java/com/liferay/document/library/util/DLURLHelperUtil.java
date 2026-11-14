@@ -43,15 +43,6 @@ public class DLURLHelperUtil {
 
 	public static String getDownloadURL(
 		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
-		String queryString, boolean appendVersion, boolean absoluteURL) {
-
-		return getDLURLHelper().getDownloadURL(
-			fileEntry, fileVersion, themeDisplay, queryString, appendVersion,
-			absoluteURL);
-	}
-
-	public static String getDownloadURL(
-		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
 		String queryString, boolean absoluteURL, boolean appendModifiedDate,
 		boolean appendVersion) {
 
