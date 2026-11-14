@@ -90,14 +90,13 @@ public class RoleNotificationRecipientBuilder
 	}
 
 	@Activate
-	@Modified
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
 		_serviceTrackerList = ServiceTrackerListFactory.open(
 			bundleContext, GroupAwareRoleValidator.class);
-		_workflowDefinitionConfiguration = ConfigurableUtil.createConfigurable(
-			WorkflowDefinitionConfiguration.class, properties);
+
+		modified(properties);
 	}
 
 	protected void addRoleRecipientAddresses(
@@ -121,6 +120,12 @@ public class RoleNotificationRecipientBuilder
 	@Deactivate
 	protected void deactivate() {
 		_serviceTrackerList.close();
+	}
+
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		_workflowDefinitionConfiguration = ConfigurableUtil.createConfigurable(
+			WorkflowDefinitionConfiguration.class, properties);
 	}
 
 	@Reference
