@@ -37,10 +37,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Brian Wing Shun Chan
  * @author Wesley Gong
  */
-@Component(
-	configurationPid = "com.liferay.portal.security.auto.login.internal.request.header.configuration.RequestHeaderAutoLoginConfiguration",
-	service = AutoLogin.class
-)
+@Component(service = AutoLogin.class)
 public class RequestHeaderAutoLogin extends BaseAutoLogin {
 
 	@Override
