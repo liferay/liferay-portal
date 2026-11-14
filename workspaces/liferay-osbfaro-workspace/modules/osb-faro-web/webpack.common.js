@@ -14,16 +14,29 @@ function resolveModule(name = '') {
 
 const include = [resolveModule()];
 
+const POLYFILLS = [
+	'core-js/fn/array/fill',
+	'core-js/fn/string/code-point-at',
+	'core-js/fn/typed',
+	'custom-event-polyfill',
+	'unorm',
+	'whatwg-fetch',
+];
+
+function getComponentEntry(name) {
+	return {
+		filename: '../__liferay__/[name].js',
+		import: [...POLYFILLS, resolveModule(`fragments/${name}/index.ts`)],
+		library: {
+			type: 'module',
+		},
+	};
+}
+
 const config = {
-	entry: [
-		'core-js/fn/array/fill',
-		'core-js/fn/string/code-point-at',
-		'core-js/fn/typed',
-		'custom-event-polyfill',
-		'unorm',
-		'whatwg-fetch',
-		resolveModule('main.jsx'),
-	],
+	entry: {
+		main: [...POLYFILLS, resolveModule('main.jsx')],
+	},
 	experiments: {
 		outputModule: true,
 	},
@@ -224,7 +237,7 @@ const config = {
 		],
 	},
 	output: {
-		filename: 'main.js',
+		filename: '[name].js',
 		module: true,
 		path: path.resolve('src/main/resources/META-INF/resources/dist'),
 		pathinfo: false,
@@ -232,7 +245,7 @@ const config = {
 	},
 	plugins: [
 		new MiniCssExtractPlugin({
-			filename: 'main.css',
+			filename: '[name].css',
 		}),
 		new ForkTsCheckerWebpackPlugin({
 			issue: {

@@ -2,3 +2,4 @@
 .awcache/
 .env
 coverage/
+**/resources/META-INF/resources/__liferay__
