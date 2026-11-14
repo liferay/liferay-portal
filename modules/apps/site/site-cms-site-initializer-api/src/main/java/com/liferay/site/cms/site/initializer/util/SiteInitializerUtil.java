@@ -66,9 +66,9 @@ public class SiteInitializerUtil {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		try {
-			User user = _getUser(companyId);
+		User user = _getUser(companyId);
 
+		try {
 			PrincipalThreadLocal.setName(user.getUserId());
 
 			PermissionThreadLocal.setPermissionChecker(

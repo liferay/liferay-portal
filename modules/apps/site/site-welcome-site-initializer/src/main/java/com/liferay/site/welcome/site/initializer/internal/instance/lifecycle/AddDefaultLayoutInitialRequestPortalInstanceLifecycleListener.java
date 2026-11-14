@@ -141,36 +141,41 @@ public class AddDefaultLayoutInitialRequestPortalInstanceLifecycleListener
 					currentThreadServiceContext.getRequest(), permissionChecker,
 					(ServiceContext)currentThreadServiceContext.clone(), user));
 
-			UnicodeProperties typeSettingsUnicodeProperties =
-				group.getTypeSettingsProperties();
+			try {
+				UnicodeProperties typeSettingsUnicodeProperties =
+					group.getTypeSettingsProperties();
 
-			String siteInitializerKey =
-				typeSettingsUnicodeProperties.getProperty("siteInitializerKey");
+				String siteInitializerKey =
+					typeSettingsUnicodeProperties.getProperty(
+						"siteInitializerKey");
 
-			if (Validator.isNull(siteInitializerKey)) {
-				siteInitializerKey = _SITE_INITIALIZER_KEY_WELCOME;
+				if (Validator.isNull(siteInitializerKey)) {
+					siteInitializerKey = _SITE_INITIALIZER_KEY_WELCOME;
+				}
+
+				if (!Objects.equals(
+						siteInitializerKey, _SITE_INITIALIZER_KEY_WELCOME) &&
+					!Objects.equals(
+						siteInitializerKey, _SITE_INITIALIZER_KEY_BLANK)) {
+
+					_layoutLocalService.deleteLayouts(
+						group.getGroupId(), false, new ServiceContext());
+				}
+
+				SiteInitializer siteInitializer =
+					_siteInitializerRegistry.getSiteInitializer(
+						siteInitializerKey);
+
+				siteInitializer.initialize(group.getGroupId());
 			}
-
-			if (!Objects.equals(
-					siteInitializerKey, _SITE_INITIALIZER_KEY_WELCOME) &&
-				!Objects.equals(
-					siteInitializerKey, _SITE_INITIALIZER_KEY_BLANK)) {
-
-				_layoutLocalService.deleteLayouts(
-					group.getGroupId(), false, new ServiceContext());
+			finally {
+				ServiceContextThreadLocal.popServiceContext();
 			}
-
-			SiteInitializer siteInitializer =
-				_siteInitializerRegistry.getSiteInitializer(siteInitializerKey);
-
-			siteInitializer.initialize(group.getGroupId());
 		}
 		finally {
 			PrincipalThreadLocal.setName(name);
 
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-
-			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 
