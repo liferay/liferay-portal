@@ -387,11 +387,15 @@ public class DDMFormValuesFactoryImpl implements DDMFormValuesFactory {
 	private DDMFormFieldValueRequestParameterRetriever
 		_getDDMFormFieldValueRequestParameterRetriever(String fieldType) {
 
-		if (!_serviceTrackerMap.containsKey(fieldType)) {
+		DDMFormFieldValueRequestParameterRetriever
+			ddmFormFieldValueRequestParameterRetriever =
+				_serviceTrackerMap.getService(fieldType);
+
+		if (ddmFormFieldValueRequestParameterRetriever == null) {
 			return _defaultDDMFormFieldValueRequestParameterRetriever;
 		}
 
-		return _serviceTrackerMap.getService(fieldType);
+		return ddmFormFieldValueRequestParameterRetriever;
 	}
 
 	private List<DDMFormFieldValue> _getDDMFormFieldValues(
