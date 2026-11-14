@@ -7,6 +7,7 @@ package com.liferay.change.tracking.internal.model.listener;
 
 import com.liferay.change.tracking.closure.CTClosureFactory;
 import com.liferay.change.tracking.constants.CTDestinationNames;
+import com.liferay.change.tracking.internal.CTCollectionDeletionThreadLocal;
 import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.messaging.Message;
@@ -37,6 +38,12 @@ public class CTEntryModelListener extends BaseModelListener<CTEntry> {
 	@Override
 	public void onAfterRemove(CTEntry ctEntry) {
 		_ctClosureFactory.clearCache(ctEntry.getCtCollectionId());
+
+		if (ctEntry.getCtCollectionId() ==
+				CTCollectionDeletionThreadLocal.getCTCollectionId()) {
+
+			return;
+		}
 
 		_reindexCTEntry(ctEntry, "delete");
 

@@ -17,6 +17,7 @@ import com.liferay.change.tracking.exception.CTCollectionStatusException;
 import com.liferay.change.tracking.exception.CTEnclosureException;
 import com.liferay.change.tracking.exception.CTLocalizedException;
 import com.liferay.change.tracking.exception.CTPublishConflictException;
+import com.liferay.change.tracking.internal.CTCollectionDeletionThreadLocal;
 import com.liferay.change.tracking.internal.CTEnclosureUtil;
 import com.liferay.change.tracking.internal.CTServiceCopier;
 import com.liferay.change.tracking.internal.CTServiceRegistry;
@@ -531,7 +532,11 @@ public class CTCollectionLocalServiceImpl
 		Set<Serializable> ctEntryPrimaryKeys = new HashSet<>();
 		int entityCacheThreshold = _getEntityCacheThreshold();
 
-		try (SafeCloseable safeCloseable =
+		try (SafeCloseable safeCloseable1 =
+				CTCollectionDeletionThreadLocal.
+					setCTCollectionIdWithSafeCloseable(
+						ctCollection.getCtCollectionId());
+			SafeCloseable safeCloseable2 =
 				SkipReplicationThreadLocal.setEnabledWithSafeCloseable(
 					_isAboveThreshold(
 						ctEntries.size(), entityCacheThreshold))) {
