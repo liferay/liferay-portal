@@ -690,9 +690,12 @@ public class ConfigurationPersistenceManager
 				"model.class.name");
 		}
 
-		if (_serviceTrackerMap.containsKey(key)) {
+		List<ConfigurationModelListener> configurationModelListeners =
+			_serviceTrackerMap.getService(key);
+
+		if (configurationModelListeners != null) {
 			UnsafeConsumer.accept(
-				_serviceTrackerMap.getService(key),
+				configurationModelListeners,
 				configurationModelListenerUnsafeConsumer,
 				ConfigurationModelListenerException.class);
 		}
