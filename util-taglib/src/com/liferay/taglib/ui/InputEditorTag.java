@@ -57,13 +57,15 @@ public class InputEditorTag extends BaseValidatorTagSupport {
 	public static Editor getEditor(
 		HttpServletRequest httpServletRequest, String editorName) {
 
-		if (Validator.isNull(editorName) ||
-			!_serviceTrackerMap.containsKey(editorName)) {
+		if (Validator.isNotNull(editorName)) {
+			Editor editor = _serviceTrackerMap.getService(editorName);
 
-			return _serviceTrackerMap.getService(_EDITOR_WYSIWYG_DEFAULT);
+			if (editor != null) {
+				return editor;
+			}
 		}
 
-		return _serviceTrackerMap.getService(editorName);
+		return _serviceTrackerMap.getService(_EDITOR_WYSIWYG_DEFAULT);
 	}
 
 	public Map<String, String> getConfigParams() {
