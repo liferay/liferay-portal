@@ -1466,8 +1466,22 @@ public class ExtRepositoryAdapter extends BaseRepositoryImpl {
 
 		return TransformUtil.transform(
 			extRepositoryObjects,
-			extRepositoryObject -> _toExtRepositoryObjectAdapter(
-				extRepositoryObjectAdapterType, extRepositoryObject));
+			extRepositoryObject -> {
+				try {
+					return _toExtRepositoryObjectAdapter(
+						extRepositoryObjectAdapterType, extRepositoryObject);
+				}
+				catch (SystemException systemException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to get external repository object " +
+								extRepositoryObject.getExtRepositoryModelKey(),
+							systemException);
+					}
+
+					return null;
+				}
+			});
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
