@@ -1231,6 +1231,15 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			PortletPreferences portletPreferences, String key)
 		throws Exception {
 
+		if (key.equals("classNameIds") &&
+			!Objects.equals(
+				portletPreferences.getValue("anyAssetType", null), "false")) {
+
+			portletPreferences.reset(key);
+
+			return;
+		}
+
 		String[] oldValues = portletPreferences.getValues(key, null);
 
 		if (oldValues == null) {
@@ -1437,15 +1446,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 				portletPreferences.getValue(name, null));
 
 			if (name.equals("anyAssetType") || name.equals("classNameIds")) {
-				if (name.equals("classNameIds") &&
-					Validator.isNotNull(anyAssetTypeString) &&
-					!anyAssetTypeString.equals("false")) {
-
-					portletPreferences.reset(name);
-				}
-				else {
-					_updateExportClassNameIds(portletPreferences, name);
-				}
+				_updateExportClassNameIds(portletPreferences, name);
 			}
 			else if (name.equals(
 						"anyClassTypeDLFileEntryAssetRendererFactory") ||
