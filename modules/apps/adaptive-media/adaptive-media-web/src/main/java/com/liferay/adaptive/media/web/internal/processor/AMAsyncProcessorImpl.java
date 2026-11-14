@@ -7,7 +7,6 @@ package com.liferay.adaptive.media.web.internal.processor;
 
 import com.liferay.adaptive.media.processor.AMAsyncProcessor;
 import com.liferay.adaptive.media.web.internal.constants.AMDestinationNames;
-import com.liferay.adaptive.media.web.internal.messaging.AMProcessorCommand;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -67,7 +66,6 @@ public final class AMAsyncProcessorImpl<M, T>
 				Message message = new Message();
 
 				message.put("className", _clazz.getName());
-				message.put("command", AMProcessorCommand.PROCESS);
 				message.put("ctCollectionId", ctCollectionId);
 				message.put("model", model);
 

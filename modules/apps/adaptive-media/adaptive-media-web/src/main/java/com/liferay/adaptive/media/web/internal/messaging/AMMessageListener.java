@@ -59,11 +59,7 @@ public class AMMessageListener extends BaseMessageListener {
 			return;
 		}
 
-		AMProcessorCommand amProcessorCommand = (AMProcessorCommand)message.get(
-			"command");
-
 		Object model = message.get("model");
-		String modelId = (String)message.get("modelId");
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
@@ -71,7 +67,7 @@ public class AMMessageListener extends BaseMessageListener {
 
 			for (AMProcessor<Object> amProcessor : amProcessors) {
 				try {
-					amProcessorCommand.execute(amProcessor, model, modelId);
+					amProcessor.process(model);
 				}
 				catch (NoSuchFileEntryException noSuchFileEntryException) {
 					if (_log.isInfoEnabled()) {
@@ -86,7 +82,7 @@ public class AMMessageListener extends BaseMessageListener {
 			}
 		}
 
-		AMAsyncProcessorImpl.cleanQueue(modelId);
+		AMAsyncProcessorImpl.cleanQueue((String)message.get("modelId"));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

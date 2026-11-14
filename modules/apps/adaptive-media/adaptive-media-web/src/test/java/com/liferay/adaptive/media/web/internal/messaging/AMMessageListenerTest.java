@@ -61,20 +61,11 @@ public class AMMessageListenerTest {
 
 	@Test
 	public void testDoReceive() throws Exception {
-		_testDoReceive(AMProcessorCommand.PROCESS);
-	}
-
-	private void _testDoReceive(AMProcessorCommand amProcessorCommand)
-		throws Exception {
-
-		_ctCollectionIds.clear();
-
 		long ctCollectionId = CTCollectionThreadLocal.getCTCollectionId();
 
 		Message message = new Message();
 
 		message.put("className", _CLASS_NAME);
-		message.put("command", amProcessorCommand);
 
 		long messageCTCollectionId = RandomTestUtil.randomLong();
 
