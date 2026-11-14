@@ -60,7 +60,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Hugo Huijser
  */
 @Component(
-	configurationPid = "com.liferay.portal.security.sso.opensso.configuration.OpenSSOConfiguration",
 	property = {
 		"before-filter=Auto Login Filter", "dispatcher=FORWARD",
 		"dispatcher=REQUEST", "servlet-context-name=",

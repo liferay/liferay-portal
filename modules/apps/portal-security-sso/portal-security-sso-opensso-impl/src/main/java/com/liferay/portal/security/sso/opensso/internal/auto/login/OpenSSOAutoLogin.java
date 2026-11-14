@@ -72,10 +72,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Brian Wing Shun Chan
  * @author Prashant Dighe
  */
-@Component(
-	configurationPid = "com.liferay.portal.security.sso.opensso.configuration.OpenSSOConfiguration",
-	service = AutoLogin.class
-)
+@Component(service = AutoLogin.class)
 public class OpenSSOAutoLogin extends BaseAutoLogin {
 
 	@Override
