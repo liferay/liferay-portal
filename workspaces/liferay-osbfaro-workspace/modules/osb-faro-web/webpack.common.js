@@ -44,6 +44,7 @@ const config = {
 		main: [...POLYFILLS, resolveModule('main.jsx')],
 		segments: getComponentEntry('segments'),
 		sites: getComponentEntry('sites'),
+		tests: getComponentEntry('tests'),
 		workspaces: getComponentEntry('workspaces'),
 	},
 	experiments: {
