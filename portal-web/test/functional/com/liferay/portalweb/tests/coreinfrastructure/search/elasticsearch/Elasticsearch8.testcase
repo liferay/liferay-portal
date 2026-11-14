@@ -540,23 +540,17 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
-		ServerAdministration.openServerAdmin();
-
-		ServerAdministration.addCategoryLogLevels(
-			categoryLevel = "DEBUG",
-			categoryName = "com.liferay.portal.search.internal.background.task");
-
 		SearchAdministration.executeReindex(executionScope = "System");
 
 		var companyId = JSONCompany.getCompanyId();
 
-		AssertConsoleTextNotPresent(value1 = "phase=portalStart, companyId=${companyId}");
+		AssertConsoleTextNotPresent(value1 = "Start reindexing company ${companyId} with execution mode");
 
-		AssertConsoleTextPresent(value1 = "phase=portalStart, companyId=0");
+		AssertConsoleTextPresent(value1 = "Start reindexing company 0 with execution mode");
 
 		SearchAdministration.executeReindex(executionScope = "liferay.com");
 
-		AssertConsoleTextPresent(value1 = "phase=portalStart, companyId=${companyId}");
+		AssertConsoleTextPresent(value1 = "Start reindexing company ${companyId} with execution mode");
 
 		SearchAdministration.executeReindex(executionScope = "All Instances");
 	}
