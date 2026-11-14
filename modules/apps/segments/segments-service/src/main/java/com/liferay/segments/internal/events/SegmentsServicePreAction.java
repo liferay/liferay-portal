@@ -44,7 +44,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eduardo García
  */
 @Component(
-	configurationPid = "com.liferay.segments.configuration.SegmentsConfiguration",
 	property = "key=servlet.service.events.pre", service = LifecycleAction.class
 )
 public class SegmentsServicePreAction extends Action {

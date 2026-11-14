@@ -41,10 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Drew Brokke
  */
-@Component(
-	configurationPid = "com.liferay.segments.configuration.SegmentsConfiguration",
-	service = RoleContributor.class
-)
+@Component(service = RoleContributor.class)
 public class SegmentsEntryRoleContributor implements RoleContributor {
 
 	@Override

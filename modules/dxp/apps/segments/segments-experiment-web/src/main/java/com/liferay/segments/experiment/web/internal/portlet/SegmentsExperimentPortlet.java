@@ -16,7 +16,6 @@ import org.osgi.service.component.annotations.Component;
  * @author David Arques
  */
 @Component(
-	configurationPid = "com.liferay.segments.asah.connector.internal.configuration.SegmentsExperimentConfiguration",
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.display-category=category.hidden",
