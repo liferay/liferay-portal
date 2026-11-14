@@ -40,20 +40,20 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Shinn Lok
  */
-@Component(
-	configurationPid = "com.liferay.analytics.settings.configuration.AnalyticsConfiguration.scoped",
-	configurationPolicy = ConfigurationPolicy.REQUIRE,
-	property = "auth.verifier.AnalyticsSecurityAuthVerifier.urls.includes=/o/segments-asah/v1.0/asah-segments-entry,/o/segments-asah/v1.0/experiments/*,/v1.0/asah-segments-entry,/v1.0/experiments/*",
-	service = AuthVerifier.class
-)
 public class AnalyticsSecurityAuthVerifier implements AuthVerifier {
+
+	public AnalyticsSecurityAuthVerifier(
+		ConfigurationProvider configurationProvider, JSONFactory jsonFactory,
+		Portal portal, UserLocalService userLocalService) {
+
+		_configurationProvider = configurationProvider;
+		_jsonFactory = jsonFactory;
+		_portal = portal;
+		_userLocalService = userLocalService;
+	}
 
 	@Override
 	public String getAuthType() {
@@ -211,16 +211,9 @@ public class AnalyticsSecurityAuthVerifier implements AuthVerifier {
 	private static final Log _log = LogFactoryUtil.getLog(
 		AnalyticsSecurityAuthVerifier.class);
 
-	@Reference
-	private ConfigurationProvider _configurationProvider;
-
-	@Reference
-	private JSONFactory _jsonFactory;
-
-	@Reference
-	private Portal _portal;
-
-	@Reference
-	private UserLocalService _userLocalService;
+	private final ConfigurationProvider _configurationProvider;
+	private final JSONFactory _jsonFactory;
+	private final Portal _portal;
+	private final UserLocalService _userLocalService;
 
 }

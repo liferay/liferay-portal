@@ -12,6 +12,7 @@ import com.liferay.analytics.message.storage.service.AnalyticsAssociationLocalSe
 import com.liferay.analytics.message.storage.service.AnalyticsDeleteMessageLocalService;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.configuration.AnalyticsConfigurationRegistry;
+import com.liferay.analytics.settings.internal.security.auth.verifier.AnalyticsSecurityAuthVerifier;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.security.constants.AnalyticsSecurityConstants;
 import com.liferay.petra.executor.PortalExecutorManager;
@@ -19,10 +20,12 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.BaseManagedServiceFactory;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.cluster.ClusterMasterExecutor;
 import com.liferay.portal.kernel.concurrent.SystemExecutorServiceUtil;
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -31,6 +34,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
+import com.liferay.portal.kernel.security.auth.verifier.AuthVerifier;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -38,6 +42,8 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -177,6 +183,7 @@ public class AnalyticsConfigurationRegistryImpl
 				}
 			});
 
+		_bundleContext = bundleContext;
 		_executorService = _portalExecutorManager.getPortalExecutor(
 			AnalyticsConfigurationRegistryImpl.class.getName());
 		_serviceRegistration = bundleContext.registerService(
@@ -192,6 +199,10 @@ public class AnalyticsConfigurationRegistryImpl
 	@Deactivate
 	protected void deactivate() {
 		_serviceRegistration.unregister();
+
+		if (_authVerifierServiceRegistration != null) {
+			_authVerifierServiceRegistration.unregister();
+		}
 	}
 
 	@Modified
@@ -872,6 +883,28 @@ public class AnalyticsConfigurationRegistryImpl
 		}
 	}
 
+	private void _updateAuthVerifierServiceRegistration() {
+		if (_analyticsConfigurations.isEmpty()) {
+			if (_authVerifierServiceRegistration != null) {
+				_authVerifierServiceRegistration.unregister();
+
+				_authVerifierServiceRegistration = null;
+			}
+		}
+		else if (_authVerifierServiceRegistration == null) {
+			_authVerifierServiceRegistration = _bundleContext.registerService(
+				AuthVerifier.class,
+				new AnalyticsSecurityAuthVerifier(
+					_configurationProvider, _jsonFactory, _portal,
+					_userLocalService),
+				MapUtil.singletonDictionary(
+					"auth.verifier.AnalyticsSecurityAuthVerifier.urls.includes",
+					"/o/segments-asah/v1.0/asah-segments-entry,/o" +
+						"/segments-asah/v1.0/experiments/*,/v1.0" +
+							"/asah-segments-entry,/v1.0/experiments/*"));
+		}
+	}
+
 	private void _updated(long companyId, Dictionary<String, ?> dictionary) {
 		if (companyId != CompanyConstants.SYSTEM) {
 			_analyticsConfigurations.put(
@@ -966,6 +999,9 @@ public class AnalyticsConfigurationRegistryImpl
 	@Reference
 	private AnalyticsSettingsManager _analyticsSettingsManager;
 
+	private ServiceRegistration<AuthVerifier> _authVerifierServiceRegistration;
+	private BundleContext _bundleContext;
+
 	@Reference
 	private ClusterMasterExecutor _clusterMasterExecutor;
 
@@ -975,8 +1011,17 @@ public class AnalyticsConfigurationRegistryImpl
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
 
+	@Reference
+	private ConfigurationProvider _configurationProvider;
+
 	private ExecutorService _executorService;
 	private final Set<Long> _initializedCompanyIds = new HashSet<>();
+
+	@Reference
+	private JSONFactory _jsonFactory;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private PortalExecutorManager _portalExecutorManager;
@@ -1011,6 +1056,8 @@ public class AnalyticsConfigurationRegistryImpl
 			_unmapPid(companyId);
 
 			_disable(companyId);
+
+			_updateAuthVerifierServiceRegistration();
 		}
 
 		@Override
@@ -1020,6 +1067,8 @@ public class AnalyticsConfigurationRegistryImpl
 			_unmapPid(companyId);
 
 			_updated(companyId, dictionary);
+
+			_updateAuthVerifierServiceRegistration();
 		}
 
 	}

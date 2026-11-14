@@ -45,7 +45,8 @@ public class AnalyticsSecurityAuthVerifierTest {
 		Assert.assertThrows(
 			InvalidKeySpecException.class,
 			() -> ReflectionTestUtil.invoke(
-				new AnalyticsSecurityAuthVerifier(), "_validateSignature",
+				new AnalyticsSecurityAuthVerifier(null, null, null, null),
+				"_validateSignature",
 				new Class<?>[] {
 					HttpServletRequest.class, String.class, String.class,
 					String.class
