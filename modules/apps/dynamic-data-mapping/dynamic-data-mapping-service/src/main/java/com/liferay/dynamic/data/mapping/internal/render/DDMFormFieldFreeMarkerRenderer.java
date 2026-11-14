@@ -281,14 +281,16 @@ public class DDMFormFieldFreeMarkerRenderer implements DDMFormFieldRenderer {
 	}
 
 	private Editor _getEditor() {
-		if (Validator.isNull(_TEXT_HTML_EDITOR_WYSIWYG_DEFAULT) ||
-			!_serviceTrackerMap.containsKey(
-				_TEXT_HTML_EDITOR_WYSIWYG_DEFAULT)) {
+		if (Validator.isNotNull(_TEXT_HTML_EDITOR_WYSIWYG_DEFAULT)) {
+			Editor editor = _serviceTrackerMap.getService(
+				_TEXT_HTML_EDITOR_WYSIWYG_DEFAULT);
 
-			return _serviceTrackerMap.getService(_EDITOR_WYSIWYG_DEFAULT);
+			if (editor != null) {
+				return editor;
+			}
 		}
 
-		return _serviceTrackerMap.getService(_TEXT_HTML_EDITOR_WYSIWYG_DEFAULT);
+		return _serviceTrackerMap.getService(_EDITOR_WYSIWYG_DEFAULT);
 	}
 
 	private Map<String, Object> _getFieldContext(
