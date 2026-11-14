@@ -724,8 +724,10 @@ public class ObjectServiceUpgradeStepRegistrator
 
 		registry.register("12.0.4", "12.0.5", new DummyUpgradeStep());
 
+		registry.register("12.0.5", "12.0.6", new DummyUpgradeStep());
+
 		registry.register(
-			"12.0.5", "12.1.0",
+			"12.0.6", "12.1.0",
 			new com.liferay.object.internal.upgrade.v12_1_0.
 				ObjectDefinitionSettingUpgradeProcess());
 
