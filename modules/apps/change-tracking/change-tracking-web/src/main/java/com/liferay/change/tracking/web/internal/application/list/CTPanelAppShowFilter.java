@@ -21,10 +21,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author David Truong
  */
-@Component(
-	configurationPid = "com.liferay.change.tracking.web.internal.configuration.CTConfiguration",
-	service = PanelAppShowFilter.class
-)
+@Component(service = PanelAppShowFilter.class)
 public class CTPanelAppShowFilter implements PanelAppShowFilter {
 
 	@Override

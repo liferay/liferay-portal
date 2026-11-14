@@ -33,7 +33,6 @@ import org.osgi.service.component.annotations.Reference;
  * @author Preston Crary
  */
 @Component(
-	configurationPid = "com.liferay.change.tracking.configuration.CTSettingsConfiguration",
 	property = "model.class.name=com.liferay.change.tracking.model.CTSchemaVersion",
 	service = AopService.class
 )
