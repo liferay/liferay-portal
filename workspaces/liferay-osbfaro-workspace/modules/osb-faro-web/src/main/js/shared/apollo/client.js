@@ -9,6 +9,12 @@ import {resolvers} from './resolvers/resolvers';
 
 const groupIdRegex = /^\/workspace\/([a-z0-9._-]+)/;
 
+let defaultGroupId = null;
+
+export function setDefaultGroupId(groupId) {
+	defaultGroupId = groupId;
+}
+
 /**
  * Fecth With Project ID
  * @param {string} uri
@@ -19,9 +25,10 @@ const fetchWithGroupId = (uri, options) => {
 	const {operationName} = JSON.parse(options.body);
 	const matches = currentUri.pathname.match(groupIdRegex);
 
-	if (matches !== null && matches.length > 1) {
-		const groupId = matches[1];
+	const groupId =
+		matches !== null && matches.length > 1 ? matches[1] : defaultGroupId;
 
+	if (groupId) {
 		return fetch(
 			`${uri}?opname=${operationName}&projectGroupId=${groupId}`,
 			options
