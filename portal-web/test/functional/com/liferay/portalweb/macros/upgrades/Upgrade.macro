@@ -23,6 +23,8 @@ definition {
 			key_navItem = "Index Actions",
 			locator1 = "NavBar#NAV_ITEM_LINK");
 
+		TestUtils.hardRefresh();
+
 		SearchAdministration.startReindex(action = "All Search Indexes");
 
 		SearchAdministration.waitForReindexFinished(waitForReindexRequest = "true");

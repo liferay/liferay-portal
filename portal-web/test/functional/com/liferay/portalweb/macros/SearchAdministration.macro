@@ -105,6 +105,8 @@ definition {
 		Navigator.openWithAppendToBaseURL(
 			baseURL = ${baseURL},
 			urlAppend = "group/control_panel/manage?p_p_id=com_liferay_portal_search_admin_web_portlet_SearchAdminPortlet&_com_liferay_portal_search_admin_web_portlet_SearchAdminPortlet_tabs1=index-actions");
+
+		TestUtils.hardRefresh();
 	}
 
 	@summary = "Default summary"
@@ -116,8 +118,6 @@ definition {
 
 	@summary = "Default summary"
 	macro startReindex(action = null) {
-		TestUtils.hardRefresh();
-
 		Click(
 			key_action = ${action},
 			locator1 = "SearchAdmin#EXECUTE_REINDEX_BUTTON");
