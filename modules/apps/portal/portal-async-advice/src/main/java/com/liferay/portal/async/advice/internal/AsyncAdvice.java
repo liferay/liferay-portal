@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,13 +60,9 @@ public class AsyncAdvice extends ChainableMethodAdvice {
 			return null;
 		}
 
-		String destinationName = null;
+		Class<?> targetClass = target.getClass();
 
-		if (_destinationNames != null) {
-			Class<?> targetClass = target.getClass();
-
-			destinationName = _destinationNames.get(targetClass.getName());
-		}
+		String destinationName = _destinationNames.get(targetClass.getName());
 
 		if (destinationName == null) {
 			return _asyncAdviceConfiguration.defaultDestinationName();
@@ -84,6 +81,8 @@ public class AsyncAdvice extends ChainableMethodAdvice {
 			_asyncAdviceConfiguration.targetClassNamesToDestinationNames();
 
 		if (targetClassNamesToDestinationNames == null) {
+			_destinationNames = Collections.emptyMap();
+
 			return;
 		}
 
@@ -109,9 +108,7 @@ public class AsyncAdvice extends ChainableMethodAdvice {
 			}
 		}
 
-		if (!destinationNames.isEmpty()) {
-			_destinationNames = destinationNames;
-		}
+		_destinationNames = destinationNames;
 	}
 
 	@Override
