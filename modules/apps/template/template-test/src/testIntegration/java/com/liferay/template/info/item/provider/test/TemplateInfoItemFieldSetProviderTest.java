@@ -175,9 +175,9 @@ public class TemplateInfoItemFieldSetProviderTest {
 			_company.getCompanyId(), _originalCompanyLanguageIds,
 			LocaleUtil.US);
 
-		ServiceContextThreadLocal.popServiceContext();
 		LocaleThreadLocal.setSiteDefaultLocale(_originalSiteDefaultLocale);
 		LocaleThreadLocal.setThemeDisplayLocale(_originalThemeDisplayLocale);
+		ServiceContextThreadLocal.popServiceContext();
 
 		if (_companyGroupTemplateEntry != null) {
 			_templateEntryLocalService.deleteTemplateEntry(
