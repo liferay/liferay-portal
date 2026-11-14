@@ -15,7 +15,6 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
-import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectAction;
@@ -168,7 +167,7 @@ public class ObjectDefinitionTreeUtilTest {
 			},
 			_objectEntryLocalService, _objectRelationshipLocalService);
 
-		ObjectDefinitionTreeUtil.invalidate();
+		TreeTestUtil.clearRootObjectDefinitionIds();
 	}
 
 	@Test

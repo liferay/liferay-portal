@@ -66,7 +66,6 @@ import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectFieldValidationConstants;
 import com.liferay.object.constants.ObjectFilterConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
-import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.exception.NoSuchObjectEntryFolderException;
 import com.liferay.object.exception.ObjectDefinitionAccountEntryRestrictedException;
@@ -468,7 +467,7 @@ public class DefaultObjectEntryManagerImplTest
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		ObjectDefinitionTreeUtil.invalidate();
+		TreeTestUtil.clearRootObjectDefinitionIds();
 
 		super.setUp();
 
@@ -1133,7 +1132,7 @@ public class DefaultObjectEntryManagerImplTest
 			new String[] {"C_A", "C_AA", "C_AB", "C_AAA", "C_AAB"},
 			_objectEntryLocalService, _objectRelationshipLocalService);
 
-		ObjectDefinitionTreeUtil.invalidate();
+		TreeTestUtil.clearRootObjectDefinitionIds();
 	}
 
 	@Test
