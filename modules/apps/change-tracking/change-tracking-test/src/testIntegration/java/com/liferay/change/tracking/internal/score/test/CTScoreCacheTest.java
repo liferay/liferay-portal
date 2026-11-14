@@ -16,16 +16,23 @@ import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -33,11 +40,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+
 /**
  * @author David Truong
  */
 @RunWith(Arquillian.class)
-@Sync(destinationNames = CTDestinationNames.CT_SCORE)
+@Sync(
+	destinationNames = {
+		CTDestinationNames.CT_ENTRY_REINDEX, CTDestinationNames.CT_SCORE
+	}
+)
 public class CTScoreCacheTest {
 
 	@ClassRule
@@ -107,8 +121,27 @@ public class CTScoreCacheTest {
 			Integer.valueOf(ctCollection.getScore()),
 			portalCache.get(ctCollectionId));
 
-		_ctCollectionLocalService.deleteCTCollection(ctCollection);
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+		List<Message> messages = new ArrayList<>();
 
+		ServiceRegistration<MessageListener> serviceRegistration =
+			bundleContext.registerService(
+				MessageListener.class, messages::add,
+				MapUtil.singletonDictionary(
+					"destination.name",
+					new String[] {
+						CTDestinationNames.CT_ENTRY_REINDEX,
+						CTDestinationNames.CT_SCORE
+					}));
+
+		try {
+			_ctCollectionLocalService.deleteCTCollection(ctCollection);
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		Assert.assertEquals(messages.toString(), 0, messages.size());
 		Assert.assertNull(portalCache.get(ctCollectionId));
 
 		GroupTestUtil.deleteGroup(group);
