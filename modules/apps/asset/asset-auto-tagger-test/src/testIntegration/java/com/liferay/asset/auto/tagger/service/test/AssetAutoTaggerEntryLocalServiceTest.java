@@ -63,7 +63,6 @@ public class AssetAutoTaggerEntryLocalServiceTest {
 	@Test
 	public void testAddAssetAutoTaggerEntries() throws PortalException {
 		AssetEntry assetEntry = _addAssetEntry();
-
 		String assetTagName1 = RandomTestUtil.randomString();
 		String assetTagName2 = RandomTestUtil.randomString() + StringPool.STAR;
 		String assetTagName3 = RandomTestUtil.randomString();
@@ -172,7 +171,6 @@ public class AssetAutoTaggerEntryLocalServiceTest {
 	@Test
 	public void testDeleteAssetAutoTaggerEntries() throws PortalException {
 		AssetEntry assetEntry = _addAssetEntry();
-
 		AssetTag assetTag = _assetTagLocalService.addTag(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			RandomTestUtil.randomString(), _serviceContext);
