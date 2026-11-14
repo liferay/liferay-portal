@@ -67,14 +67,14 @@ public class FaroSiteInitializerPortalInstanceLifecycleListener
 
 		User user = _getUser(companyId);
 
+		PermissionThreadLocal.setPermissionChecker(
+			_permissionCheckerFactory.create(user));
+
+		PrincipalThreadLocal.setName(user.getUserId());
+
+		ServiceContextThreadLocal.pushServiceContext(new ServiceContext());
+
 		try {
-			PrincipalThreadLocal.setName(user.getUserId());
-
-			PermissionThreadLocal.setPermissionChecker(
-				_permissionCheckerFactory.create(user));
-
-			ServiceContextThreadLocal.pushServiceContext(new ServiceContext());
-
 			_siteInitializer.initialize(group.getGroupId());
 
 			typeSettingsUnicodeProperties.setProperty(
