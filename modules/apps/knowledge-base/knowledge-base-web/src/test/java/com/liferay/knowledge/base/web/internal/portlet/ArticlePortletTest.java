@@ -53,10 +53,6 @@ public class ArticlePortletTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PortalUtil portalUtil = new PortalUtil();
-
-		portalUtil.setPortal(_portal);
-
 		ReflectionTestUtil.setFieldValue(
 			_articlePortlet, "_kbArticleLocalService", _kbArticleLocalService);
 		ReflectionTestUtil.setFieldValue(
@@ -83,6 +79,10 @@ public class ArticlePortletTest {
 		).thenReturn(
 			_GROUP_ID_SCOPE
 		);
+
+		PortalUtil portalUtil = new PortalUtil();
+
+		portalUtil.setPortal(_portal);
 
 		Mockito.when(
 			_portal.getCurrentAndAncestorSiteGroupIds(_GROUP_ID_SCOPE)
