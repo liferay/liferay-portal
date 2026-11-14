@@ -54,19 +54,24 @@ public class VersioningPolicyVersioningStrategy implements VersioningStrategy {
 	}
 
 	@Activate
-	@Modified
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
-		_dlConfiguration = ConfigurableUtil.createConfigurable(
-			DLConfiguration.class, properties);
 		_serviceTrackerList = ServiceTrackerListFactory.open(
 			bundleContext, VersioningPolicy.class);
+
+		modified(properties);
 	}
 
 	@Deactivate
 	protected void deactivate() {
 		_serviceTrackerList.close();
+	}
+
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		_dlConfiguration = ConfigurableUtil.createConfigurable(
+			DLConfiguration.class, properties);
 	}
 
 	private volatile DLConfiguration _dlConfiguration;
