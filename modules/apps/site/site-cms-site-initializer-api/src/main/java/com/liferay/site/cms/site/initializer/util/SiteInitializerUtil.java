@@ -68,14 +68,14 @@ public class SiteInitializerUtil {
 
 		User user = _getUser(companyId);
 
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		PrincipalThreadLocal.setName(user.getUserId());
+
+		ServiceContextThreadLocal.pushServiceContext(new ServiceContext());
+
 		try {
-			PrincipalThreadLocal.setName(user.getUserId());
-
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(user));
-
-			ServiceContextThreadLocal.pushServiceContext(new ServiceContext());
-
 			Role role = RoleUtil.getOrAddCMSAdministratorRole(
 				companyId, user.getUserId());
 
