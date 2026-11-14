@@ -453,24 +453,22 @@ public class PortletContainerImpl implements PortletContainer {
 			_log.debug("Content type " + contentType);
 		}
 
+		LiferayActionRequest liferayActionRequest = ActionRequestFactory.create(
+			httpServletRequest, portlet, invokerPortlet, portletContext,
+			windowState, portletMode, portletPreferences, layout.getPlid());
+
+		LiferayActionResponse liferayActionResponse =
+			ActionResponseFactory.create(
+				liferayActionRequest, httpServletResponse,
+				PortalUtil.getUser(httpServletRequest), layout);
+
+		liferayActionRequest.defineObjects(
+			portletConfig, liferayActionResponse);
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			liferayActionRequest);
+
 		try {
-			LiferayActionRequest liferayActionRequest =
-				ActionRequestFactory.create(
-					httpServletRequest, portlet, invokerPortlet, portletContext,
-					windowState, portletMode, portletPreferences,
-					layout.getPlid());
-
-			LiferayActionResponse liferayActionResponse =
-				ActionResponseFactory.create(
-					liferayActionRequest, httpServletResponse,
-					PortalUtil.getUser(httpServletRequest), layout);
-
-			liferayActionRequest.defineObjects(
-				portletConfig, liferayActionResponse);
-
-			ServiceContext serviceContext = ServiceContextFactory.getInstance(
-				liferayActionRequest);
-
 			ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 			invokerPortlet.processAction(
@@ -1031,10 +1029,10 @@ public class PortletContainerImpl implements PortletContainer {
 		liferayResourceRequest.defineObjects(
 			portletConfig, liferayResourceResponse);
 
-		try {
-			ServiceContext serviceContext = ServiceContextFactory.getInstance(
-				liferayResourceRequest);
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			liferayResourceRequest);
 
+		try {
 			ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 			invokerPortlet.serveResource(
