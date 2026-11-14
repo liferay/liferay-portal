@@ -35,10 +35,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Michael C. Han
  * @author Petteri Karttunen
  */
-@Component(
-	configurationPid = "com.liferay.portal.search.opensearch2.configuration.OpenSearchConnectionConfiguration",
-	service = OpenSearchConnectionManager.class
-)
+@Component(service = OpenSearchConnectionManager.class)
 public class OpenSearchConnectionManagerImpl
 	implements OpenSearchConfigurationObserver, OpenSearchConnectionManager {
 

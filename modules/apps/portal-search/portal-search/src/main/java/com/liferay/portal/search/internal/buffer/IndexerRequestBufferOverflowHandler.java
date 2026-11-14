@@ -14,10 +14,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Michael C. Han
  */
-@Component(
-	configurationPid = "com.liferay.portal.search.configuration.IndexerRegistryConfiguration",
-	service = IndexerRequestBufferOverflowHandler.class
-)
+@Component(service = IndexerRequestBufferOverflowHandler.class)
 public class IndexerRequestBufferOverflowHandler {
 
 	public void bufferOverflowed(
