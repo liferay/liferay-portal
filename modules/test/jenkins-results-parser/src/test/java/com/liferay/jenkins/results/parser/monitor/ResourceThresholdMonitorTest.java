@@ -629,8 +629,7 @@ public class ResourceThresholdMonitorTest
 		if (!whitelisted) {
 			String message = monitorResult.getMessage();
 
-			Assert.assertTrue(
-				message, message.startsWith("Unable to read the "));
+			Assert.assertTrue(message.startsWith("Unable to read the "));
 
 			testEquals(
 				MonitorResult.Status.CRITICAL, monitorResult.getStatus());
