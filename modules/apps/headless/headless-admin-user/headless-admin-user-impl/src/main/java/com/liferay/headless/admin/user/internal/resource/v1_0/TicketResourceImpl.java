@@ -48,7 +48,7 @@ public class TicketResourceImpl extends BaseTicketResourceImpl {
 
 		if (userAccountId == contextUser.getUserId()) {
 			throw new PrincipalException(
-				"User " + userAccountId +
+				"User account " + userAccountId +
 					" cannot get their own password reset ticket");
 		}
 
