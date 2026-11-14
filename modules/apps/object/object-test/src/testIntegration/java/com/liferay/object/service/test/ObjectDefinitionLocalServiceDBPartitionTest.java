@@ -13,7 +13,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.portal.db.partition.util.DBPartitionUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -42,7 +41,6 @@ import jakarta.portlet.Portlet;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -112,22 +110,11 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 
 		Company company = CompanyTestUtil.addCompany();
 
-		List<ObjectDefinition> objectDefinitions = null;
-
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					company.getCompanyId())) {
-
-			objectDefinitions =
-				_objectDefinitionLocalService.getObjectDefinitions(
-					company.getCompanyId(), WorkflowConstants.STATUS_APPROVED);
-		}
-
-		Assert.assertTrue(_hasRootObjectDefinitionIds(objectDefinitions));
+		Assert.assertTrue(_hasRootObjectDefinitionIds(company));
 
 		_companyLocalService.deleteCompany(company);
 
-		Assert.assertFalse(_hasRootObjectDefinitionIds(objectDefinitions));
+		Assert.assertFalse(_hasRootObjectDefinitionIds(company));
 	}
 
 	@Test
@@ -304,20 +291,13 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 			serviceReferences.size());
 	}
 
-	private boolean _hasRootObjectDefinitionIds(
-		List<ObjectDefinition> objectDefinitions) {
-
+	private boolean _hasRootObjectDefinitionIds(Company company) {
 		Map<String, long[]> rootObjectDefinitionIds =
 			ReflectionTestUtil.getFieldValue(
 				ObjectDefinitionTreeUtil.class, "_rootObjectDefinitionIds");
 
-		for (ObjectDefinition objectDefinition : objectDefinitions) {
-			if (rootObjectDefinitionIds.containsKey(
-					DBPartitionUtil.getPartitionKey(
-						String.valueOf(
-							objectDefinition.getObjectDefinitionId()),
-						objectDefinition))) {
-
+		for (String key : rootObjectDefinitionIds.keySet()) {
+			if (key.endsWith(StringPool.AT + company.getCompanyId())) {
 				return true;
 			}
 		}
