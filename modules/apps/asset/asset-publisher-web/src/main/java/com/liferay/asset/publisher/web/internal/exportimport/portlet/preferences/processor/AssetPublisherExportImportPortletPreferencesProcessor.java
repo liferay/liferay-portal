@@ -24,6 +24,7 @@ import com.liferay.asset.publisher.web.internal.display.context.AssetPublisherDi
 import com.liferay.asset.publisher.web.internal.helper.AssetPublisherWebHelper;
 import com.liferay.asset.publisher.web.internal.util.AssetPublisherUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -1025,6 +1026,13 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 				ddmStructure = ddmStructureLocalService.fetchStructure(
 					groupId, portal.getClassNameId(JournalArticle.class),
 					oldValues[2]);
+
+				if (ddmStructure == null) {
+					ddmStructure = ddmStructureLocalService.fetchStructure(
+						groupId,
+						portal.getClassNameId(DLFileEntryMetadata.class),
+						oldValues[2]);
+				}
 			}
 
 			if (ddmStructure != null) {
@@ -1309,6 +1317,10 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		String[] ddmStructureFieldNameParts = StringUtil.split(
 			oldValue, DDMIndexer.DDM_FIELD_SEPARATOR);
 
+		if (ddmStructureFieldNameParts.length < 4) {
+			return;
+		}
+
 		String primaryKey = ddmStructureFieldNameParts[2];
 
 		if (!Validator.isNumber(primaryKey)) {
@@ -1325,7 +1337,8 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 		portletPreferences.setValue(
 			key,
-			StringUtil.replace(oldValue, primaryKey, exportReferenceValue));
+			StringUtil.replaceFirst(
+				oldValue, primaryKey, exportReferenceValue));
 	}
 
 	private void _updateExportOrderByColumnClassPKs(
@@ -1781,6 +1794,10 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		String[] ddmStructureFieldNameParts = StringUtil.split(
 			oldValue, DDMIndexer.DDM_FIELD_SEPARATOR);
 
+		if (ddmStructureFieldNameParts.length < 4) {
+			return;
+		}
+
 		String portletPreferencesOldValue = ddmStructureFieldNameParts[2];
 
 		Long importReferenceValue = _getImportReferenceValue(
@@ -1788,6 +1805,10 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			portletPreferencesOldValue);
 
 		if (importReferenceValue == null) {
+			if (portletPreferencesOldValue.contains(StringPool.POUND)) {
+				portletPreferences.reset(key);
+			}
+
 			return;
 		}
 
