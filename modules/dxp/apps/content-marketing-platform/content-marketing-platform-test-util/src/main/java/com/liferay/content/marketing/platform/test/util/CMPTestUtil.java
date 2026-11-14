@@ -302,34 +302,32 @@ public class CMPTestUtil {
 
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
-		try {
-			try (SafeCloseable safeCloseable =
-					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-						group.getCompanyId())) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					group.getCompanyId())) {
 
-				SiteInitializerRegistry siteInitializerRegistry =
-					_siteInitializerRegistrySnapshot.get();
+			SiteInitializerRegistry siteInitializerRegistry =
+				_siteInitializerRegistrySnapshot.get();
 
-				SiteInitializer siteInitializer =
-					siteInitializerRegistry.getSiteInitializer(
-						_BUNDLE_SYMBOLIC_NAME);
+			SiteInitializer siteInitializer =
+				siteInitializerRegistry.getSiteInitializer(
+					_BUNDLE_SYMBOLIC_NAME);
 
-				siteInitializer.initialize(group.getGroupId());
+			siteInitializer.initialize(group.getGroupId());
 
-				if (processBatchEngine) {
-					BatchEngineTestUtil.processBatchEngineUnits(
-						_BUNDLE_SYMBOLIC_NAME, clazz,
-						new String[] {
-							"." + _BUNDLE_SYMBOLIC_NAME +
-								".internal.batch.00.list.type.definition",
-							"." + _BUNDLE_SYMBOLIC_NAME +
-								".internal.batch.01.notification.template",
-							"." + _BUNDLE_SYMBOLIC_NAME +
-								".internal.batch.02.object.folder",
-							"." + _BUNDLE_SYMBOLIC_NAME +
-								".internal.batch.03.object.definition"
-						});
-				}
+			if (processBatchEngine) {
+				BatchEngineTestUtil.processBatchEngineUnits(
+					_BUNDLE_SYMBOLIC_NAME, clazz,
+					new String[] {
+						"." + _BUNDLE_SYMBOLIC_NAME +
+							".internal.batch.00.list.type.definition",
+						"." + _BUNDLE_SYMBOLIC_NAME +
+							".internal.batch.01.notification.template",
+						"." + _BUNDLE_SYMBOLIC_NAME +
+							".internal.batch.02.object.folder",
+						"." + _BUNDLE_SYMBOLIC_NAME +
+							".internal.batch.03.object.definition"
+					});
 			}
 		}
 		finally {

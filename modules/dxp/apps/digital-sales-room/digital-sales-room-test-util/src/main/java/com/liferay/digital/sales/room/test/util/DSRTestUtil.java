@@ -61,20 +61,18 @@ public class DSRTestUtil {
 
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
-		try {
-			try (SafeCloseable safeCloseable =
-					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-						group.getCompanyId())) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					group.getCompanyId())) {
 
-				SiteInitializerRegistry siteInitializerRegistry =
-					_siteInitializerRegistrySnapshot.get();
+			SiteInitializerRegistry siteInitializerRegistry =
+				_siteInitializerRegistrySnapshot.get();
 
-				SiteInitializer siteInitializer =
-					siteInitializerRegistry.getSiteInitializer(
-						_BUNDLE_SYMBOLIC_NAME);
+			SiteInitializer siteInitializer =
+				siteInitializerRegistry.getSiteInitializer(
+					_BUNDLE_SYMBOLIC_NAME);
 
-				siteInitializer.initialize(group.getGroupId());
-			}
+			siteInitializer.initialize(group.getGroupId());
 		}
 		finally {
 			PermissionThreadLocal.setPermissionChecker(
