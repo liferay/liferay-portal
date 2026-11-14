@@ -22,6 +22,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -290,14 +291,17 @@ public class CMPTestUtil {
 
 		String originalName = PrincipalThreadLocal.getName();
 
+		User user = TestPropsValues.getUser();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
 		try {
 			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+				PermissionCheckerFactoryUtil.create(user));
 
-			PrincipalThreadLocal.setName(TestPropsValues.getUserId());
+			PrincipalThreadLocal.setName(user.getUserId());
 
-			ServiceContextThreadLocal.pushServiceContext(
-				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 			try (SafeCloseable safeCloseable =
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
