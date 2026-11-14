@@ -107,7 +107,7 @@ public class CommentsTagTest {
 		// Feature flag disabled
 
 		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest();
+			_getMockHttpServletRequest(0);
 
 		Assert.assertNotNull(
 			mockHttpServletRequest.getAttribute(
@@ -115,6 +115,10 @@ public class CommentsTagTest {
 		Assert.assertNull(
 			mockHttpServletRequest.getAttribute(
 				"liferay-digital-sales-room-web:comments:getMentionUsersURL"));
+		Assert.assertNull(
+			mockHttpServletRequest.getAttribute(
+				"liferay-digital-sales-room-web:comments:" +
+					"highlightedCommentId"));
 
 		// Feature flag enabled
 
@@ -143,7 +147,7 @@ public class CommentsTagTest {
 			RandomTestUtil.randomString()
 		);
 
-		mockHttpServletRequest = _getMockHttpServletRequest();
+		mockHttpServletRequest = _getMockHttpServletRequest(0);
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -156,12 +160,28 @@ public class CommentsTagTest {
 				"liferay-digital-sales-room-web:comments:getMentionUsersURL"));
 	}
 
-	private MockHttpServletRequest _getMockHttpServletRequest() {
+	@Test
+	public void testSetAttributesWithMessageId() {
+		long messageId = RandomTestUtil.randomLong();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(messageId);
+
+		Assert.assertEquals(
+			String.valueOf(messageId),
+			mockHttpServletRequest.getAttribute(
+				"liferay-digital-sales-room-web:comments:" +
+					"highlightedCommentId"));
+	}
+
+	private MockHttpServletRequest _getMockHttpServletRequest(long messageId) {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _themeDisplay);
+		mockHttpServletRequest.setParameter(
+			"messageId", String.valueOf(messageId));
 
 		CommentsTag commentsTag = new CommentsTag();
 

@@ -24,6 +24,8 @@
 			).put(
 				"getMentionUsersURL", getMentionUsersURL
 			).put(
+				"highlightedCommentId", highlightedCommentId
+			).put(
 				"readOnly", readOnly
 			).build()
 		%>'

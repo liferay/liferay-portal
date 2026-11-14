@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
 
@@ -217,6 +218,18 @@ public class CommentsTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-digital-sales-room-web:comments:getMentionUsersURL",
 			getMentionUsersURL);
+
+		String highlightedCommentId = null;
+
+		long messageId = ParamUtil.getLong(httpServletRequest, "messageId");
+
+		if (messageId > 0) {
+			highlightedCommentId = String.valueOf(messageId);
+		}
+
+		httpServletRequest.setAttribute(
+			"liferay-digital-sales-room-web:comments:highlightedCommentId",
+			highlightedCommentId);
 
 		httpServletRequest.setAttribute(
 			"liferay-digital-sales-room-web:comments:readOnly", readOnly);
