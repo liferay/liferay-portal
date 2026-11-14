@@ -992,6 +992,8 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		AxisTestClassGroup axisTestClassGroup,
 		TestrayCaseResult buildTestrayCaseResult) {
 
+		long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
+
 		TestrayRun testrayRun = _getTestrayRun(axisTestClassGroup);
 
 		TestrayBuild testrayBuild = testrayRun.getTestrayBuild();
@@ -999,8 +1001,6 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		TestrayServer testrayServer = testrayBuild.getTestrayServer();
 
 		TopLevelBuildReport topLevelBuildReport = getTopLevelBuildReport();
-
-		long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
 
 		Document document = DocumentHelper.createDocument();
 
@@ -1128,11 +1128,13 @@ public abstract class BaseTestrayContext implements TestrayContext {
 			rootElement.add(testcaseElement);
 		}
 
+		String testrayCaseResultFileName =
+			topLevelBuildReport.getTestrayCaseResultFileName(
+				axisTestClassGroup.getAxisName());
+
 		try {
 			testrayServer.writeCaseResult(
-				topLevelBuildReport.getTestrayCaseResultFileName(
-					axisTestClassGroup.getAxisName()),
-				Dom4JUtil.format(rootElement));
+				testrayCaseResultFileName, Dom4JUtil.format(rootElement));
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
@@ -1145,6 +1147,7 @@ public abstract class BaseTestrayContext implements TestrayContext {
 			JenkinsResultsParserUtil.combine(
 				"Recorded ", String.valueOf(testrayCaseResults.size()),
 				" case results for ", axisTestClassGroup.getAxisName(), " in ",
+				testrayCaseResultFileName, " in ",
 				JenkinsResultsParserUtil.toDurationString(
 					currentTimeMillis - start)));
 	}
@@ -1183,6 +1186,8 @@ public abstract class BaseTestrayContext implements TestrayContext {
 	@Override
 	public void updateTestrayCaseResultFileDurations(
 		AxisTestClassGroup axisTestClassGroup) {
+
+		long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
 
 		TestrayRun testrayRun = _getTestrayRun(axisTestClassGroup);
 
@@ -1228,6 +1233,17 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		catch (DocumentException | IOException exception) {
 			throw new RuntimeException(exception);
 		}
+
+		long currentTimeMillis =
+			JenkinsResultsParserUtil.getCurrentTimeMillis();
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"Updated case results durations for ",
+				axisTestClassGroup.getAxisName(), " in ",
+				testrayCaseResultFileName, " in ",
+				JenkinsResultsParserUtil.toDurationString(
+					currentTimeMillis - start)));
 	}
 
 	protected BaseTestrayContext(BuildDatabase buildDatabase) {

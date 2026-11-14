@@ -490,12 +490,6 @@ public class TestrayImporter {
 			_testrayContext.updateTestrayCaseResultFileDurations(
 				axisTestClassGroup);
 
-			System.out.println(
-				JenkinsResultsParserUtil.combine(
-					"Testray case results for ",
-					axisTestClassGroup.getAxisName(),
-					" are already cached. Updated the build durations."));
-
 			return;
 		}
 
