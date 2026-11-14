@@ -36,6 +36,7 @@ function getComponentEntry(name) {
 const config = {
 	entry: {
 		accounts: getComponentEntry('accounts'),
+		assets: getComponentEntry('assets'),
 		main: [...POLYFILLS, resolveModule('main.jsx')],
 		segments: getComponentEntry('segments'),
 		workspaces: getComponentEntry('workspaces'),
