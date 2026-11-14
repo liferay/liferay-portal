@@ -218,7 +218,8 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 	@Override
 	public long[] getRootObjectDefinitionIds() {
 		return ObjectDefinitionTreeUtil.getRootObjectDefinitionIds(
-			this, ObjectDefinitionSettingLocalServiceUtil.getService());
+			getObjectDefinitionId(),
+			ObjectDefinitionSettingLocalServiceUtil.getService());
 	}
 
 	@Override

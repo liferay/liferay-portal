@@ -10,7 +10,6 @@ import com.liferay.fragment.model.FragmentCompositionTable;
 import com.liferay.fragment.model.FragmentEntryLinkTable;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelTable;
 import com.liferay.object.definition.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
-import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectActionLocalService;
@@ -170,12 +169,6 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 					objectDefinition);
 			}
 		}
-	}
-
-	@Override
-	public void portalInstanceUnregistered(Company company) throws Exception {
-		ObjectDefinitionTreeUtil.removeRootObjectDefinitionIds(
-			company.getCompanyId());
 	}
 
 	private void _executeUpdates(

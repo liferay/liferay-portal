@@ -83,7 +83,8 @@ public class ObjectDefinitionTreeUtil {
 
 		if (ArrayUtil.isEmpty(
 				getRootObjectDefinitionIds(
-					objectDefinition1, objectDefinitionSettingLocalService))) {
+					objectDefinition1.getObjectDefinitionId(),
+					objectDefinitionSettingLocalService))) {
 
 			_setRootObjectDefinitionIds(
 				new long[] {objectDefinition1.getObjectDefinitionId()},
@@ -131,7 +132,8 @@ public class ObjectDefinitionTreeUtil {
 
 				_setRootObjectDefinitionIds(
 					getRootObjectDefinitionIds(
-						objectDefinition1, objectDefinitionSettingLocalService),
+						objectDefinition1.getObjectDefinitionId(),
+						objectDefinitionSettingLocalService),
 					nodeObjectDefinition, objectDefinitionSettingLocalService,
 					new long[] {objectDefinition2.getObjectDefinitionId()});
 
@@ -151,7 +153,7 @@ public class ObjectDefinitionTreeUtil {
 
 			if (ArrayUtil.isNotEmpty(
 					getRootObjectDefinitionIds(
-						objectDefinition2,
+						objectDefinition2.getObjectDefinitionId(),
 						objectDefinitionSettingLocalService))) {
 
 				return;
@@ -170,7 +172,8 @@ public class ObjectDefinitionTreeUtil {
 
 		for (long rootObjectDefinitionId :
 				getRootObjectDefinitionIds(
-					objectDefinition1, objectDefinitionSettingLocalService)) {
+					objectDefinition1.getObjectDefinitionId(),
+					objectDefinitionSettingLocalService)) {
 
 			ObjectDefinition rootObjectDefinition =
 				objectDefinitionPersistence.findByPrimaryKey(
@@ -186,16 +189,13 @@ public class ObjectDefinitionTreeUtil {
 	}
 
 	public static long[] getRootObjectDefinitionIds(
-		ObjectDefinition objectDefinition,
+		long objectDefinitionId,
 		ObjectDefinitionSettingLocalService
 			objectDefinitionSettingLocalService) {
 
-		Map<Long, long[]> rootObjectDefinitionIdsMap =
-			_getRootObjectDefinitionIdsMap(objectDefinition.getCompanyId());
-
 		long[] rootObjectDefinitionIds =
-			rootObjectDefinitionIdsMap.computeIfAbsent(
-				objectDefinition.getObjectDefinitionId(),
+			_rootObjectDefinitionIds.computeIfAbsent(
+				objectDefinitionId,
 				key -> {
 					ObjectDefinitionSetting objectDefinitionSetting =
 						objectDefinitionSettingLocalService.
@@ -227,7 +227,7 @@ public class ObjectDefinitionTreeUtil {
 			return;
 		}
 
-		_rootObjectDefinitionIdsMaps.clear();
+		_rootObjectDefinitionIds.clear();
 	}
 
 	public static void populateRootObjectDefinitionIds(
@@ -239,11 +239,7 @@ public class ObjectDefinitionTreeUtil {
 
 			ObjectDefinitionSetting objectDefinitionSetting = entry.getValue();
 
-			Map<Long, long[]> rootObjectDefinitionIdsMap =
-				_getRootObjectDefinitionIdsMap(
-					objectDefinitionSetting.getCompanyId());
-
-			rootObjectDefinitionIdsMap.put(
+			_rootObjectDefinitionIds.put(
 				entry.getKey(),
 				ListUtil.toLongArray(
 					Arrays.asList(
@@ -252,16 +248,9 @@ public class ObjectDefinitionTreeUtil {
 		}
 
 		for (ObjectDefinition objectDefinition : objectDefinitions) {
-			Map<Long, long[]> rootObjectDefinitionIdsMap =
-				_getRootObjectDefinitionIdsMap(objectDefinition.getCompanyId());
-
-			rootObjectDefinitionIdsMap.putIfAbsent(
+			_rootObjectDefinitionIds.putIfAbsent(
 				objectDefinition.getObjectDefinitionId(), new long[0]);
 		}
-	}
-
-	public static void removeRootObjectDefinitionIds(long companyId) {
-		_rootObjectDefinitionIdsMaps.remove(companyId);
 	}
 
 	public static void unbindObjectDefinitions(
@@ -466,13 +455,6 @@ public class ObjectDefinitionTreeUtil {
 			objectDefinitionSetting);
 	}
 
-	private static Map<Long, long[]> _getRootObjectDefinitionIdsMap(
-		long companyId) {
-
-		return _rootObjectDefinitionIdsMaps.computeIfAbsent(
-			companyId, key -> new ConcurrentHashMap<>());
-	}
-
 	private static void _performActions(
 			boolean addRootObjectEntryIdRestrictions,
 			ObjectDefinition objectDefinition,
@@ -555,10 +537,7 @@ public class ObjectDefinitionTreeUtil {
 			long[] removeRootObjectDefinitionIds)
 		throws PortalException {
 
-		Map<Long, long[]> rootObjectDefinitionIdsMap =
-			_getRootObjectDefinitionIdsMap(objectDefinition.getCompanyId());
-
-		rootObjectDefinitionIdsMap.put(
+		_rootObjectDefinitionIds.put(
 			objectDefinition.getObjectDefinitionId(),
 			_updateRootObjectDefinitionIds(
 				addRootObjectDefinitionIds, objectDefinition,
@@ -830,7 +809,7 @@ public class ObjectDefinitionTreeUtil {
 			rootObjectDefinitionIds, GetterUtil::getLong);
 	}
 
-	private static final Map<Long, Map<Long, long[]>>
-		_rootObjectDefinitionIdsMaps = new ConcurrentHashMap<>();
+	private static final Map<Long, long[]> _rootObjectDefinitionIds =
+		new ConcurrentHashMap<>();
 
 }
