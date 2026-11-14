@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.Validator;
 import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.Provider;
@@ -80,7 +81,21 @@ public class LiferayJWTBearerAuthenticationHandler
 			throw new NotAuthorizedException("Missing JWT assertion");
 		}
 
-		JwtToken jwtToken = super.getJwtToken(assertion);
+		JwtToken jwtToken = null;
+
+		try {
+			jwtToken = super.getJwtToken(assertion);
+		}
+		catch (WebApplicationException webApplicationException) {
+			throw webApplicationException;
+		}
+		catch (RuntimeException runtimeException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(runtimeException);
+			}
+
+			throw new NotAuthorizedException(OAuthConstants.INVALID_CLIENT);
+		}
 
 		String claimSubject = (String)jwtToken.getClaim(
 			JwtConstants.CLAIM_SUBJECT);
@@ -115,12 +130,15 @@ public class LiferayJWTBearerAuthenticationHandler
 	protected JwsSignatureVerifier getInitializedSignatureVerifier(
 		JwtToken jwtToken) {
 
-		Client client = _clientRegistrationProvider.getClient(
-			(String)jwtToken.getClaim(JwtConstants.CLAIM_SUBJECT));
-
-		String tokenEndpointAuthMethod = client.getTokenEndpointAuthMethod();
-
 		try {
+			Client client = _clientRegistrationProvider.getClient(
+				(String)jwtToken.getClaim(JwtConstants.CLAIM_SUBJECT));
+
+			if (client == null) {
+				throw new IllegalArgumentException(
+					"No client was found for the JWT subject");
+			}
+
 			String algorithm = GetterUtil.getString(
 				jwtToken.getJwsHeader(JoseConstants.HEADER_ALGORITHM), null);
 
@@ -137,6 +155,9 @@ public class LiferayJWTBearerAuthenticationHandler
 
 				throw securityException;
 			}
+
+			String tokenEndpointAuthMethod =
+				client.getTokenEndpointAuthMethod();
 
 			if (tokenEndpointAuthMethod.equals("client_secret_jwt")) {
 				String clientSecret = client.getClientSecret();
