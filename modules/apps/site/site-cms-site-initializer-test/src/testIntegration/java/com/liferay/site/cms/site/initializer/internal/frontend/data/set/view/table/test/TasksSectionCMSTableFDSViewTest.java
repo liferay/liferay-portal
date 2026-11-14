@@ -49,9 +49,9 @@ public class TasksSectionCMSTableFDSViewTest
 		assertFDSTableSchemaField(
 			null, "dateTime", "last-activity-date", "dateModified");
 
-		Assert.assertFalse(_isSortable("dueDate"));
 		Assert.assertFalse(_isSortable("completed"));
 		Assert.assertTrue(_isSortable("dateModified"));
+		Assert.assertFalse(_isSortable("dueDate"));
 	}
 
 	@Override
