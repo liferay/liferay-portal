@@ -7,7 +7,6 @@ package com.liferay.osb.faro.web.internal.instance.lifecycle;
 
 import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -66,9 +65,9 @@ public class FaroSiteInitializerPortalInstanceLifecycleListener
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		try {
-			User user = _getUser(companyId);
+		User user = _getUser(companyId);
 
+		try {
 			PrincipalThreadLocal.setName(user.getUserId());
 
 			PermissionThreadLocal.setPermissionChecker(
@@ -93,7 +92,7 @@ public class FaroSiteInitializerPortalInstanceLifecycleListener
 		}
 	}
 
-	private User _getUser(long companyId) throws PortalException {
+	private User _getUser(long companyId) throws Exception {
 		Role role = _roleLocalService.fetchRole(
 			companyId, RoleConstants.ADMINISTRATOR);
 

@@ -5,7 +5,6 @@
 
 package com.liferay.osb.faro.web.internal.util;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -34,9 +33,9 @@ public class SiteInitializerUtil {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		try {
-			User user = _getUser(group.getCompanyId());
+		User user = _getUser(group.getCompanyId());
 
+		try {
 			PrincipalThreadLocal.setName(user.getUserId());
 
 			PermissionThreadLocal.setPermissionChecker(
@@ -55,7 +54,7 @@ public class SiteInitializerUtil {
 		}
 	}
 
-	private static User _getUser(long companyId) throws PortalException {
+	private static User _getUser(long companyId) throws Exception {
 		Role role = RoleLocalServiceUtil.fetchRole(
 			companyId, RoleConstants.ADMINISTRATOR);
 
