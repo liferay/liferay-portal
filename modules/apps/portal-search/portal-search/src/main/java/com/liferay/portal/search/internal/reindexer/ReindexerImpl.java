@@ -40,13 +40,11 @@ public class ReindexerImpl implements Reindexer {
 	}
 
 	@Activate
-	@Modified
 	protected void activate(Map<String, Object> properties) {
-		_reindexerConfiguration = ConfigurableUtil.createConfigurable(
-			ReindexerConfiguration.class, properties);
-
 		_executorService = Executors.newSingleThreadExecutor(this::_getThread);
 		_reindexRequestsHolder = new ReindexRequestsHolder();
+
+		modified(properties);
 	}
 
 	@Deactivate
@@ -55,6 +53,12 @@ public class ReindexerImpl implements Reindexer {
 
 		_executorService = null;
 		_reindexRequestsHolder = null;
+	}
+
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		_reindexerConfiguration = ConfigurableUtil.createConfigurable(
+			ReindexerConfiguration.class, properties);
 	}
 
 	@Reference
