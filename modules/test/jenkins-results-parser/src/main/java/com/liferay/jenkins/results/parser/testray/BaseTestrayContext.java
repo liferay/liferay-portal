@@ -83,8 +83,8 @@ public abstract class BaseTestrayContext implements TestrayContext {
 
 		TopLevelBuildReport topLevelBuildReport = getTopLevelBuildReport();
 
-		testrayServer.deleteCaseResult(
-			topLevelBuildReport.getTestrayCaseFileName(
+		testrayServer.deleteCaseResultFile(
+			topLevelBuildReport.getTestrayCaseResultFileName(
 				axisTestClassGroup.getAxisName()));
 	}
 
@@ -983,7 +983,7 @@ public abstract class BaseTestrayContext implements TestrayContext {
 		TopLevelBuildReport topLevelBuildReport = getTopLevelBuildReport();
 
 		return testrayServer.isCaseResultFileAvailable(
-			topLevelBuildReport.getTestrayCaseFileName(
+			topLevelBuildReport.getTestrayCaseResultFileName(
 				axisTestClassGroup.getAxisName()));
 	}
 
@@ -1130,7 +1130,7 @@ public abstract class BaseTestrayContext implements TestrayContext {
 
 		try {
 			testrayServer.writeCaseResult(
-				topLevelBuildReport.getTestrayCaseFileName(
+				topLevelBuildReport.getTestrayCaseResultFileName(
 					axisTestClassGroup.getAxisName()),
 				Dom4JUtil.format(rootElement));
 		}
@@ -1192,15 +1192,16 @@ public abstract class BaseTestrayContext implements TestrayContext {
 
 		TopLevelBuildReport topLevelBuildReport = getTopLevelBuildReport();
 
-		String testrayCaseFileName = topLevelBuildReport.getTestrayCaseFileName(
-			axisTestClassGroup.getAxisName());
+		String testrayCaseResultFileName =
+			topLevelBuildReport.getTestrayCaseResultFileName(
+				axisTestClassGroup.getAxisName());
 
 		Map<String, String> topLevelBuildDurationsMap =
 			_getTopLevelBuildDurationsMap(topLevelBuildReport);
 
 		try {
 			Document document = Dom4JUtil.parse(
-				testrayServer.readCaseResult(testrayCaseFileName));
+				testrayServer.readCaseResultFile(testrayCaseResultFileName));
 
 			Element rootElement = document.getRootElement();
 
@@ -1222,7 +1223,7 @@ public abstract class BaseTestrayContext implements TestrayContext {
 				propertiesElement, topLevelBuildDurationsMap);
 
 			testrayServer.writeCaseResult(
-				testrayCaseFileName, Dom4JUtil.format(rootElement));
+				testrayCaseResultFileName, Dom4JUtil.format(rootElement));
 		}
 		catch (DocumentException | IOException exception) {
 			throw new RuntimeException(exception);

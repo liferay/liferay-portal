@@ -58,7 +58,7 @@ public class BaseTestrayContextTest
 
 		Mockito.verify(
 			testrayServer
-		).deleteCaseResult(
+		).deleteCaseResultFile(
 			testrayCaseFileName
 		);
 	}
@@ -220,7 +220,7 @@ public class BaseTestrayContextTest
 				"\"/></testsuite>")
 		).when(
 			testrayServer
-		).readCaseResult(
+		).readCaseResultFile(
 			Mockito.anyString()
 		);
 
@@ -451,7 +451,7 @@ public class BaseTestrayContextTest
 			testrayCaseFileName
 		).when(
 			topLevelBuildReport
-		).getTestrayCaseFileName(
+		).getTestrayCaseResultFileName(
 			Mockito.anyString()
 		);
 

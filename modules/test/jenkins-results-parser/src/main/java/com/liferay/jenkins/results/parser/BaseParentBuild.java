@@ -861,7 +861,7 @@ public abstract class BaseParentBuild extends BaseBuild implements ParentBuild {
 
 					@Override
 					public URL call() {
-						downstreamBuild.generateTestrayCaseResult();
+						downstreamBuild.generateTestrayCaseResultFile();
 
 						return downstreamBuild.getTestrayCaseResultURL();
 					}

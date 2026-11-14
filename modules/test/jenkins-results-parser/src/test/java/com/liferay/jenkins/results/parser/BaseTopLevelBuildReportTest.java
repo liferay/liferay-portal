@@ -517,14 +517,14 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	@Test
-	public void testGetTestrayCaseFileName() {
+	public void testGetTestrayCaseResultFileName() {
 		BaseTopLevelBuildReport baseTopLevelBuildReport = Mockito.mock(
 			BaseTopLevelBuildReport.class);
 
 		Mockito.doCallRealMethod(
 		).when(
 			baseTopLevelBuildReport
-		).getTestrayCaseFileName(
+		).getTestrayCaseResultFileName(
 			Mockito.anyString()
 		);
 
@@ -569,7 +569,7 @@ public class BaseTopLevelBuildReportTest
 				"TESTS-", jenkinsMasterName, "_", jobName, "_",
 				String.valueOf(buildNumber), "_", batchName, "_", segmentIndex,
 				"_", axisVariable, ".xml"),
-			baseTopLevelBuildReport.getTestrayCaseFileName(
+			baseTopLevelBuildReport.getTestrayCaseResultFileName(
 				JenkinsResultsParserUtil.combine(
 					batchName, "/", segmentIndex, "/", axisVariable)));
 	}

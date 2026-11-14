@@ -16,7 +16,7 @@ public interface DownstreamBuild extends Build {
 
 	public void generateBuildReport();
 
-	public void generateTestrayCaseResult();
+	public void generateTestrayCaseResultFile();
 
 	public long getAverageDuration();
 

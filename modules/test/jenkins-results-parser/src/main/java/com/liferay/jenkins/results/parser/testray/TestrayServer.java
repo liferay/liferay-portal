@@ -68,7 +68,7 @@ public class TestrayServer {
 		}
 	}
 
-	public void deleteCaseResult(String fileName) {
+	public void deleteCaseResultFile(String fileName) {
 		if (JenkinsResultsParserUtil.isNullOrEmpty(fileName)) {
 			return;
 		}
@@ -348,7 +348,7 @@ public class TestrayServer {
 		return resultFile.exists();
 	}
 
-	public String readCaseResult(String fileName) throws IOException {
+	public String readCaseResultFile(String fileName) throws IOException {
 		return JenkinsResultsParserUtil.read(
 			new File(getResultsDir(), fileName));
 	}

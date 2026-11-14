@@ -480,7 +480,7 @@ public abstract class BaseTopLevelBuildReport
 			getStartDate(), "yyyy-MM-dd HH:mm:ss", "America/Los_Angeles");
 	}
 
-	public String getTestrayCaseFileName(String axisName) {
+	public String getTestrayCaseResultFileName(String axisName) {
 		JenkinsMaster jenkinsMaster = getJenkinsMaster();
 
 		return JenkinsResultsParserUtil.combine(

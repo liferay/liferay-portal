@@ -130,7 +130,7 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 	}
 
 	@Override
-	public void generateTestrayCaseResult() {
+	public void generateTestrayCaseResultFile() {
 		synchronized (_testrayCaseResultURLLock) {
 			AxisTestClassGroup axisTestClassGroup = getAxisTestClassGroup();
 

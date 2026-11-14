@@ -23,7 +23,7 @@ import org.mockito.Mockito;
 public class TestrayServerTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testDeleteCaseResult() throws Exception {
+	public void testDeleteCaseResultFile() throws Exception {
 		TestrayServer testrayServer = _mockTestrayServer();
 
 		String fileName = RandomTestUtil.randomString();
@@ -32,12 +32,12 @@ public class TestrayServerTest extends com.liferay.jenkins.results.parser.Test {
 
 		JenkinsResultsParserUtil.write(file, RandomTestUtil.randomString());
 
-		testrayServer.deleteCaseResult("");
-		testrayServer.deleteCaseResult(null);
+		testrayServer.deleteCaseResultFile("");
+		testrayServer.deleteCaseResultFile(null);
 
 		Assert.assertTrue(file.exists());
 
-		testrayServer.deleteCaseResult(fileName);
+		testrayServer.deleteCaseResultFile(fileName);
 
 		Assert.assertFalse(file.exists());
 	}
@@ -61,7 +61,7 @@ public class TestrayServerTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
-	public void testReadCaseResult() throws Exception {
+	public void testReadCaseResultFile() throws Exception {
 		TestrayServer testrayServer = _mockTestrayServer();
 
 		String fileContent = RandomTestUtil.randomString();
@@ -70,7 +70,7 @@ public class TestrayServerTest extends com.liferay.jenkins.results.parser.Test {
 		JenkinsResultsParserUtil.write(
 			new File(temporaryFolder.getRoot(), fileName), fileContent);
 
-		testEquals(fileContent, testrayServer.readCaseResult(fileName));
+		testEquals(fileContent, testrayServer.readCaseResultFile(fileName));
 	}
 
 	@Test
@@ -113,7 +113,7 @@ public class TestrayServerTest extends com.liferay.jenkins.results.parser.Test {
 		Mockito.doCallRealMethod(
 		).when(
 			testrayServer
-		).deleteCaseResult(
+		).deleteCaseResultFile(
 			Mockito.any()
 		);
 
@@ -127,7 +127,7 @@ public class TestrayServerTest extends com.liferay.jenkins.results.parser.Test {
 		Mockito.doCallRealMethod(
 		).when(
 			testrayServer
-		).readCaseResult(
+		).readCaseResultFile(
 			Mockito.any()
 		);
 

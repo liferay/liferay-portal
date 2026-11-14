@@ -38,14 +38,14 @@ public class BaseDownstreamBuildTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testGenerateTestrayCaseResult() throws Exception {
+	public void testGenerateTestrayCaseResultFile() throws Exception {
 		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
 			BaseDownstreamBuild.class);
 
 		Mockito.doCallRealMethod(
 		).when(
 			baseDownstreamBuild
-		).generateTestrayCaseResult();
+		).generateTestrayCaseResultFile();
 
 		ReflectionTestUtil.setFieldValue(
 			baseDownstreamBuild, "_testrayCaseResultURLLock", new Object());
@@ -64,7 +64,7 @@ public class BaseDownstreamBuildTest
 				testrayCaseResult
 			);
 
-			baseDownstreamBuild.generateTestrayCaseResult();
+			baseDownstreamBuild.generateTestrayCaseResultFile();
 
 			AxisTestClassGroup axisTestClassGroup = Mockito.mock(
 				AxisTestClassGroup.class);
@@ -75,7 +75,7 @@ public class BaseDownstreamBuildTest
 				axisTestClassGroup
 			);
 
-			baseDownstreamBuild.generateTestrayCaseResult();
+			baseDownstreamBuild.generateTestrayCaseResultFile();
 
 			Job job = Mockito.mock(Job.class);
 
@@ -85,7 +85,7 @@ public class BaseDownstreamBuildTest
 				job
 			);
 
-			baseDownstreamBuild.generateTestrayCaseResult();
+			baseDownstreamBuild.generateTestrayCaseResultFile();
 
 			TestrayContext testrayContext = Mockito.mock(TestrayContext.class);
 
@@ -101,7 +101,7 @@ public class BaseDownstreamBuildTest
 				true
 			);
 
-			baseDownstreamBuild.generateTestrayCaseResult();
+			baseDownstreamBuild.generateTestrayCaseResultFile();
 
 			testrayFactoryMockedStatic.verify(
 				() -> TestrayFactory.newDownstreamBuildTestrayCaseResult(
@@ -114,7 +114,7 @@ public class BaseDownstreamBuildTest
 				false
 			);
 
-			baseDownstreamBuild.generateTestrayCaseResult();
+			baseDownstreamBuild.generateTestrayCaseResultFile();
 
 			Mockito.verify(
 				testrayCaseResult
@@ -135,7 +135,7 @@ public class BaseDownstreamBuildTest
 				testrayCaseResultURL
 			);
 
-			baseDownstreamBuild.generateTestrayCaseResult();
+			baseDownstreamBuild.generateTestrayCaseResultFile();
 
 			Assert.assertSame(
 				testrayCaseResultURL,
@@ -156,7 +156,7 @@ public class BaseDownstreamBuildTest
 				null
 			);
 
-			baseDownstreamBuild.generateTestrayCaseResult();
+			baseDownstreamBuild.generateTestrayCaseResultFile();
 
 			Mockito.verify(
 				testrayContext
