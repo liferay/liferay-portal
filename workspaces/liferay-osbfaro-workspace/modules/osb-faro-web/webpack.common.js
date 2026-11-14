@@ -36,6 +36,7 @@ function getComponentEntry(name) {
 const config = {
 	entry: {
 		main: [...POLYFILLS, resolveModule('main.jsx')],
+		workspaces: getComponentEntry('workspaces'),
 	},
 	experiments: {
 		outputModule: true,
