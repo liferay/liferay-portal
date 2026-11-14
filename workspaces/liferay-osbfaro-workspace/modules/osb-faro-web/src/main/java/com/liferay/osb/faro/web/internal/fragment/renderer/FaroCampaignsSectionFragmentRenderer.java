@@ -21,9 +21,4 @@ public class FaroCampaignsSectionFragmentRenderer
 		return "campaigns";
 	}
 
-	@Override
-	protected String getSection() {
-		return "campaigns";
-	}
-
 }

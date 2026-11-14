@@ -21,9 +21,4 @@ public class FaroAssetsSectionFragmentRenderer
 		return "assets";
 	}
 
-	@Override
-	protected String getSection() {
-		return "assets";
-	}
-
 }

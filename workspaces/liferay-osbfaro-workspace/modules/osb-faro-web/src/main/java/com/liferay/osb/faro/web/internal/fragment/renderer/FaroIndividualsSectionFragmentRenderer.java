@@ -21,9 +21,4 @@ public class FaroIndividualsSectionFragmentRenderer
 		return "individuals";
 	}
 
-	@Override
-	protected String getSection() {
-		return "contacts/individuals";
-	}
-
 }

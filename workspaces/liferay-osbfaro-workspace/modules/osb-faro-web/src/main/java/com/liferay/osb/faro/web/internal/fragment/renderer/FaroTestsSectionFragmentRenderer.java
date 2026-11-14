@@ -21,9 +21,4 @@ public class FaroTestsSectionFragmentRenderer
 		return "tests";
 	}
 
-	@Override
-	protected String getSection() {
-		return "tests";
-	}
-
 }

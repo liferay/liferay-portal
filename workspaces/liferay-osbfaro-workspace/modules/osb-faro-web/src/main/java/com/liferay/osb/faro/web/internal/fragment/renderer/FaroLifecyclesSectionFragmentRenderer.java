@@ -21,9 +21,4 @@ public class FaroLifecyclesSectionFragmentRenderer
 		return "lifecycles";
 	}
 
-	@Override
-	protected String getSection() {
-		return "lifecycle";
-	}
-
 }

@@ -21,9 +21,4 @@ public class FaroEventsSectionFragmentRenderer
 		return "events";
 	}
 
-	@Override
-	protected String getSection() {
-		return "event-analysis";
-	}
-
 }

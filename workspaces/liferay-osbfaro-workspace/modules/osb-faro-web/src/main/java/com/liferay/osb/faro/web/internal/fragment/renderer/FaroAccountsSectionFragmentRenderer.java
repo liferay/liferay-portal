@@ -21,9 +21,4 @@ public class FaroAccountsSectionFragmentRenderer
 		return "accounts";
 	}
 
-	@Override
-	protected String getSection() {
-		return "contacts/accounts";
-	}
-
 }
