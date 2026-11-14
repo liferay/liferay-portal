@@ -31,10 +31,7 @@ import software.amazon.awssdk.services.translate.model.TranslateTextResponse;
  * @author Adolfo Pérez
  * @author Roberto Díaz
  */
-@Component(
-	configurationPid = "com.liferay.translation.translator.aws.internal.configuration.AWSTranslatorConfiguration",
-	service = Translator.class
-)
+@Component(service = Translator.class)
 public class AWSTranslator extends BaseTranslator {
 
 	@Override

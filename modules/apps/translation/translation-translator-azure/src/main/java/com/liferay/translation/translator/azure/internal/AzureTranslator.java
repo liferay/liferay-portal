@@ -42,10 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Adolfo Pérez
  * @author Roberto Díaz
  */
-@Component(
-	configurationPid = "com.liferay.translation.translator.azure.internal.configuration.AzureTranslatorConfiguration",
-	service = Translator.class
-)
+@Component(service = Translator.class)
 public class AzureTranslator extends BaseTranslator {
 
 	@Override

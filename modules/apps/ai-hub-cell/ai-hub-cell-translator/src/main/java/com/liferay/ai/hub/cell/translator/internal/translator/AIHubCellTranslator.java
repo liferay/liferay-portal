@@ -19,10 +19,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Carolina Barbosa
  */
-@Component(
-	configurationPid = "com.liferay.ai.hub.cell.translator.internal.configuration.AIHubCellTranslatorConfiguration",
-	service = Translator.class
-)
+@Component(service = Translator.class)
 public class AIHubCellTranslator implements Translator {
 
 	@Override

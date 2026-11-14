@@ -45,10 +45,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Yasuyuki Takeo
  * @author Roberto Díaz
  */
-@Component(
-	configurationPid = "com.liferay.translation.translator.deepl.internal.configuration.DeepLTranslatorConfiguration",
-	service = Translator.class
-)
+@Component(service = Translator.class)
 public class DeepLTranslator extends BaseTranslator {
 
 	@Override

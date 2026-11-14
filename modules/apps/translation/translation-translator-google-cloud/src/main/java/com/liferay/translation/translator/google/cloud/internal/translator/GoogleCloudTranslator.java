@@ -43,10 +43,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Adolfo Pérez
  * @author Roberto Díaz
  */
-@Component(
-	configurationPid = "com.liferay.translation.translator.google.cloud.internal.configuration.GoogleCloudTranslatorConfiguration",
-	service = Translator.class
-)
+@Component(service = Translator.class)
 public class GoogleCloudTranslator extends BaseTranslator {
 
 	@Override
