@@ -44,14 +44,14 @@ public class ResourceThresholdMonitorTest
 		setURLReaderException(
 			new IOException(RandomTestUtil.randomString()), "/prometheus");
 
-		_testExecuteBlacklistedJenkinsMaster("disk", true);
 		_testExecuteBlacklistedJenkinsMaster("disk", false);
-		_testExecuteBlacklistedJenkinsMaster("executor.utilization", true);
+		_testExecuteBlacklistedJenkinsMaster("disk", true);
 		_testExecuteBlacklistedJenkinsMaster("executor.utilization", false);
-		_testExecuteBlacklistedJenkinsMaster("queue.depth", true);
+		_testExecuteBlacklistedJenkinsMaster("executor.utilization", true);
 		_testExecuteBlacklistedJenkinsMaster("queue.depth", false);
-		_testExecuteBlacklistedJenkinsMaster("ram", true);
+		_testExecuteBlacklistedJenkinsMaster("queue.depth", true);
 		_testExecuteBlacklistedJenkinsMaster("ram", false);
+		_testExecuteBlacklistedJenkinsMaster("ram", true);
 	}
 
 	@Test
