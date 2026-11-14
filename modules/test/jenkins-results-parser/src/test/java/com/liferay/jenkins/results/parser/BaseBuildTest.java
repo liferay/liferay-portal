@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -115,6 +117,13 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 				"https://", masterName,
 				".liferay.com/job/test%20portal(master)"),
 			baseBuild.getJobURL());
+	}
+
+	@Test
+	public void testGetResult() {
+		_testGetResult("completed", "SUCCESS");
+		_testGetResult("reporting", "UNSTABLE");
+		_testGetResult("running", null);
 	}
 
 	@Test
@@ -297,6 +306,34 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertEquals(
 			parameters,
 			ReflectionTestUtil.getFieldValue(baseBuild, "_parameters"));
+	}
+
+	private void _testGetResult(String status, String expectedResult) {
+		BaseBuild baseBuild = Mockito.mock(BaseBuild.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuild
+		).getResult();
+
+		Mockito.doReturn(
+			new JSONObject(
+			).put(
+				"result", expectedResult
+			)
+		).when(
+			baseBuild
+		).getBuildJSONObject(
+			"result"
+		);
+
+		Mockito.doReturn(
+			status
+		).when(
+			baseBuild
+		).getStatus();
+
+		Assert.assertEquals(expectedResult, baseBuild.getResult());
 	}
 
 	private void _testSaveBuildURLInBuildDatabase(

@@ -1113,8 +1113,8 @@ public abstract class BaseBuild implements Build {
 
 		String status = getStatus();
 
-		if (!Objects.equals(status, "reported") &&
-			!Objects.equals(status, "completed")) {
+		if (!Objects.equals(status, "completed") &&
+			!Objects.equals(status, "reporting")) {
 
 			return null;
 		}
