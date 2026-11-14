@@ -21,4 +21,9 @@ public class FaroCampaignsSectionFragmentRenderer
 		return "campaigns";
 	}
 
+	@Override
+	protected String getModule() {
+		return "{Campaigns} from osb-faro-web/campaigns";
+	}
+
 }

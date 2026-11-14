@@ -21,4 +21,9 @@ public class FaroAssetsSectionFragmentRenderer
 		return "assets";
 	}
 
+	@Override
+	protected String getModule() {
+		return "{Assets} from osb-faro-web/assets";
+	}
+
 }

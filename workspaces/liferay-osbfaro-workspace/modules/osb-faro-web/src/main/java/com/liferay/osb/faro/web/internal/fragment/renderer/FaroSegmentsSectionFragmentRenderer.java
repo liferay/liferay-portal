@@ -21,4 +21,9 @@ public class FaroSegmentsSectionFragmentRenderer
 		return "segments";
 	}
 
+	@Override
+	protected String getModule() {
+		return "{Segments} from osb-faro-web/segments";
+	}
+
 }

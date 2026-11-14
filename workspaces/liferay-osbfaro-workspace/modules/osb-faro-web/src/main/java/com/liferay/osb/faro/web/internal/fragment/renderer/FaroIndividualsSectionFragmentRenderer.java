@@ -21,4 +21,9 @@ public class FaroIndividualsSectionFragmentRenderer
 		return "individuals";
 	}
 
+	@Override
+	protected String getModule() {
+		return "{Individuals} from osb-faro-web/individuals";
+	}
+
 }

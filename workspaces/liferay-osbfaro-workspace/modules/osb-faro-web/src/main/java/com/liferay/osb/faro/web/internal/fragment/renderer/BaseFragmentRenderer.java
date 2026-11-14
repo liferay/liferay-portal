@@ -7,20 +7,24 @@ package com.liferay.osb.faro.web.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
+import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
+import com.liferay.osb.faro.web.internal.display.context.ChannelSelectorDisplayContext;
 import com.liferay.osb.faro.web.internal.util.FaroFragmentRendererUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.taglib.servlet.PageContextFactoryUtil;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
 
-import java.io.PrintWriter;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
@@ -34,45 +38,14 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 		HttpServletResponse httpServletResponse) {
 
 		try {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
-			if (!themeDisplay.isSignedIn()) {
-				FaroFragmentRendererUtil.renderScriptTag(
-					httpServletRequest, httpServletResponse, null,
-					StringBundler.concat(
-						"window.location.href = '",
-						HtmlUtil.escapeJS(
-							StringBundler.concat(
-								themeDisplay.getURLSignIn(), "?redirect=",
-								URLCodec.encodeURL(
-									PortalUtil.getCurrentURL(
-										httpServletRequest)))),
-						"';"),
-					null, null);
-
-				return;
-			}
-
 			FaroFragmentRendererUtil.renderLinkTag(
 				httpServletRequest, httpServletResponse,
 				"/o/osb-faro-web/dist/main.css");
-
-			PrintWriter printWriter = httpServletResponse.getWriter();
-
-			printWriter.write("<div id=\"faroApp\"></div>");
-
 			FaroFragmentRendererUtil.renderScriptTag(
 				httpServletRequest, httpServletResponse, "inline",
 				"window.faroConstants = " +
 					FaroFragmentRendererUtil.getFaroConstants() + ";",
 				null, null);
-			FaroFragmentRendererUtil.renderScriptTag(
-				httpServletRequest, httpServletResponse, null, null,
-				FaroFragmentRendererUtil.getStaticResourceURL(
-					httpServletRequest, "/o/osb-faro-web/dist/main.js"),
-				"module");
 			FaroFragmentRendererUtil.renderScriptTag(
 				httpServletRequest, httpServletResponse, null,
 				StringBundler.concat(
@@ -81,6 +54,45 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 					"const element = document.getElementById(id);",
 					"if (element) {element.disabled = true;}}});"),
 				null, null);
+
+			PageContext pageContext = PageContextFactoryUtil.create(
+				httpServletRequest, httpServletResponse);
+
+			JspWriter jspWriter = pageContext.getOut();
+
+			jspWriter.write("<div>");
+
+			ComponentTag componentTag = new ComponentTag();
+
+			componentTag.setModule(getModule());
+			componentTag.setPageContext(pageContext);
+			componentTag.setProps(
+				HashMapBuilder.<String, Object>put(
+					"channelId",
+					() -> {
+						ChannelSelectorDisplayContext
+							channelSelectorDisplayContext =
+								new ChannelSelectorDisplayContext(
+									httpServletRequest);
+
+						return channelSelectorDisplayContext.getFaroChannelId();
+					}
+				).put(
+					"groupId",
+					() -> {
+						ThemeDisplay themeDisplay =
+							(ThemeDisplay)httpServletRequest.getAttribute(
+								WebKeys.THEME_DISPLAY);
+
+						return String.valueOf(themeDisplay.getScopeGroupId());
+					}
+				).build());
+			componentTag.setServletContext(servletContext);
+
+			componentTag.doStartTag();
+			componentTag.doEndTag();
+
+			jspWriter.write("</div>");
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -88,6 +100,11 @@ public abstract class BaseFragmentRenderer implements FragmentRenderer {
 			throw new RuntimeException(exception);
 		}
 	}
+
+	protected abstract String getModule();
+
+	@Reference(target = "(osgi.web.symbolicname=com.liferay.osb.faro.web)")
+	protected ServletContext servletContext;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseFragmentRenderer.class);

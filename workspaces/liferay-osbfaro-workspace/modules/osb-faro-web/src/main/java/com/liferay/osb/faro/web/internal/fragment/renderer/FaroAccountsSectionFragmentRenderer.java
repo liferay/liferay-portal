@@ -21,4 +21,9 @@ public class FaroAccountsSectionFragmentRenderer
 		return "accounts";
 	}
 
+	@Override
+	protected String getModule() {
+		return "{Accounts} from osb-faro-web/accounts";
+	}
+
 }

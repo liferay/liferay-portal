@@ -21,4 +21,9 @@ public class FaroTestsSectionFragmentRenderer
 		return "tests";
 	}
 
+	@Override
+	protected String getModule() {
+		return "{Tests} from osb-faro-web/tests";
+	}
+
 }
