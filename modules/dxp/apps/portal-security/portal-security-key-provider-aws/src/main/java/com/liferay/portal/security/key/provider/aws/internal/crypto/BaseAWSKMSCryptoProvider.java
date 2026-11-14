@@ -406,53 +406,21 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 	}
 
 	@Activate
-	@Modified
 	protected void activate(Map<String, Object> properties) {
-		String awsAccountId = GetterUtil.getString(
-			properties.get("awsAccountId"));
-		String awsRegion = GetterUtil.getString(properties.get("awsRegion"));
-		String cipherMode = GetterUtil.getString(
-			properties.get("cipherMode"), "AES_256_GCM");
-		boolean enabled = GetterUtil.getBoolean(properties.get("enabled"));
-		boolean fipsEnforced = GetterUtil.getBoolean(
-			properties.get("fipsEnforced"));
-		String keyARNTemplate = GetterUtil.getString(
-			properties.get("keyARNTemplate"));
-		int pendingWindowInDays = GetterUtil.getInteger(
-			properties.get("pendingWindowInDays"), 30);
-		boolean useFIPSEndpoint = GetterUtil.getBoolean(
-			properties.get("useFIPSEndpoint"));
+		AWSClientManager<AWSKMS> awsClientManager = new AWSClientManager<>(
+			GetterUtil.getString(properties.get("awsRegion")),
+			BaseAWSKMSCryptoProvider::_buildAWSKMS,
+			"kms-fips.{region}.amazonaws.com",
+			GetterUtil.getBoolean(properties.get("useFIPSEndpoint")));
 
-		AWSClientManager<AWSKMS> awsClientManager = null;
-		AWSKMSCryptoProviderContext awsKMSCryptoProviderContext =
-			_awsKMSCryptoProviderContext;
-
-		if (awsKMSCryptoProviderContext != null) {
-			awsClientManager =
-				awsKMSCryptoProviderContext.getAWSClientManager();
-		}
-
-		if (awsClientManager == null) {
-			awsClientManager = new AWSClientManager<>(
-				awsRegion, BaseAWSKMSCryptoProvider::_buildAWSKMS,
-				"kms-fips.{region}.amazonaws.com", useFIPSEndpoint);
-		}
-		else {
-			awsClientManager.updateConfiguration(awsRegion, useFIPSEndpoint);
-		}
-
-		awsRegion = awsClientManager.getAWSRegion();
-
-		_awsKMSCryptoProviderContext = new AWSKMSCryptoProviderContext(
-			awsAccountId, awsClientManager,
-			new AWSKMSFIPSValidator(cipherMode, fipsEnforced), awsRegion,
-			enabled, keyARNTemplate, pendingWindowInDays, useFIPSEndpoint);
+		_awsKMSCryptoProviderContext = _createAWSKMSCryptoProviderContext(
+			awsClientManager, properties);
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
 				StringBundler.concat(
 					"Activated ", getProviderId(), " in AWS region ",
-					awsRegion));
+					awsClientManager.getAWSRegion()));
 		}
 	}
 
@@ -472,6 +440,19 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 	protected abstract String getProviderId();
 
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		AWSClientManager<AWSKMS> awsClientManager =
+			_awsKMSCryptoProviderContext.getAWSClientManager();
+
+		awsClientManager.updateConfiguration(
+			GetterUtil.getString(properties.get("awsRegion")),
+			GetterUtil.getBoolean(properties.get("useFIPSEndpoint")));
+
+		_awsKMSCryptoProviderContext = _createAWSKMSCryptoProviderContext(
+			awsClientManager, properties);
+	}
+
 	private static AWSKMS _buildAWSKMS(
 		AWSCredentialsProvider awsCredentialsProvider, String awsRegion,
 		AwsClientBuilder.EndpointConfiguration endpointConfiguration) {
@@ -490,6 +471,24 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		}
 
 		return awsKMSClientBuilder.build();
+	}
+
+	private AWSKMSCryptoProviderContext _createAWSKMSCryptoProviderContext(
+		AWSClientManager<AWSKMS> awsClientManager,
+		Map<String, Object> properties) {
+
+		return new AWSKMSCryptoProviderContext(
+			GetterUtil.getString(properties.get("awsAccountId")),
+			awsClientManager,
+			new AWSKMSFIPSValidator(
+				GetterUtil.getString(
+					properties.get("cipherMode"), "AES_256_GCM"),
+				GetterUtil.getBoolean(properties.get("fipsEnforced"))),
+			awsClientManager.getAWSRegion(),
+			GetterUtil.getBoolean(properties.get("enabled")),
+			GetterUtil.getString(properties.get("keyARNTemplate")),
+			GetterUtil.getInteger(properties.get("pendingWindowInDays"), 30),
+			GetterUtil.getBoolean(properties.get("useFIPSEndpoint")));
 	}
 
 	private String _createKey(

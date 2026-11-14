@@ -275,56 +275,23 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 	}
 
 	@Activate
-	@Modified
 	protected void activate(Map<String, Object> properties) {
-		String awsAccountId = GetterUtil.getString(
-			properties.get("awsAccountId"));
-		String awsRegion = GetterUtil.getString(properties.get("awsRegion"));
-		boolean enabled = GetterUtil.getBoolean(properties.get("enabled"));
-		boolean fipsEnforced = GetterUtil.getBoolean(
-			properties.get("fipsEnforced"));
-		long recoveryWindowInDays = GetterUtil.getLong(
-			properties.get("recoveryWindowInDays"), 30);
-		String secretARNTemplate = GetterUtil.getString(
-			properties.get("arnTemplate"));
-		boolean useFIPSEndpoint = GetterUtil.getBoolean(
-			properties.get("useFIPSEndpoint"));
-
-		AWSClientManager<AWSSecretsManager> awsClientManager = null;
-
-		AWSSecretsManagerSecretProviderContext
-			awsSecretsManagerSecretProviderContext =
-				_awsSecretsManagerSecretProviderContext;
-
-		if (awsSecretsManagerSecretProviderContext != null) {
-			awsClientManager =
-				awsSecretsManagerSecretProviderContext.getAWSClientManager();
-		}
-
-		if (awsClientManager == null) {
-			awsClientManager = new AWSClientManager<>(
-				awsRegion,
+		AWSClientManager<AWSSecretsManager> awsClientManager =
+			new AWSClientManager<>(
+				GetterUtil.getString(properties.get("awsRegion")),
 				BaseAWSSecretsManagerSecretProvider::_buildAWSSecretsManager,
-				"secretsmanager-fips.{region}.amazonaws.com", useFIPSEndpoint);
-		}
-		else {
-			awsClientManager.updateConfiguration(awsRegion, useFIPSEndpoint);
-		}
-
-		awsRegion = awsClientManager.getAWSRegion();
+				"secretsmanager-fips.{region}.amazonaws.com",
+				GetterUtil.getBoolean(properties.get("useFIPSEndpoint")));
 
 		_awsSecretsManagerSecretProviderContext =
-			new AWSSecretsManagerSecretProviderContext(
-				awsAccountId, awsClientManager, awsRegion,
-				new AWSSecretsManagerFIPSValidator(
-					fipsEnforced, useFIPSEndpoint),
-				enabled, recoveryWindowInDays, secretARNTemplate);
+			_createAWSSecretsManagerSecretProviderContext(
+				awsClientManager, properties);
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
 				StringBundler.concat(
 					"Activated ", getProviderId(), " in AWS region ",
-					awsRegion));
+					awsClientManager.getAWSRegion()));
 		}
 	}
 
@@ -346,6 +313,20 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 
 	protected abstract String getProviderId();
 
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		AWSClientManager<AWSSecretsManager> awsClientManager =
+			_awsSecretsManagerSecretProviderContext.getAWSClientManager();
+
+		awsClientManager.updateConfiguration(
+			GetterUtil.getString(properties.get("awsRegion")),
+			GetterUtil.getBoolean(properties.get("useFIPSEndpoint")));
+
+		_awsSecretsManagerSecretProviderContext =
+			_createAWSSecretsManagerSecretProviderContext(
+				awsClientManager, properties);
+	}
+
 	private static AWSSecretsManager _buildAWSSecretsManager(
 		AWSCredentialsProvider awsCredentialsProvider, String awsRegion,
 		AwsClientBuilder.EndpointConfiguration endpointConfiguration) {
@@ -365,6 +346,22 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 		}
 
 		return awsSecretsManagerClientBuilder.build();
+	}
+
+	private AWSSecretsManagerSecretProviderContext
+		_createAWSSecretsManagerSecretProviderContext(
+			AWSClientManager<AWSSecretsManager> awsClientManager,
+			Map<String, Object> properties) {
+
+		return new AWSSecretsManagerSecretProviderContext(
+			GetterUtil.getString(properties.get("awsAccountId")),
+			awsClientManager, awsClientManager.getAWSRegion(),
+			new AWSSecretsManagerFIPSValidator(
+				GetterUtil.getBoolean(properties.get("fipsEnforced")),
+				GetterUtil.getBoolean(properties.get("useFIPSEndpoint"))),
+			GetterUtil.getBoolean(properties.get("enabled")),
+			GetterUtil.getLong(properties.get("recoveryWindowInDays"), 30),
+			GetterUtil.getString(properties.get("arnTemplate")));
 	}
 
 	private AWSSecretsManagerSecretProviderContext
