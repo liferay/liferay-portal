@@ -69,7 +69,7 @@ public class PortletRenderUtil {
 		boolean portletOnLayout = false;
 
 		if (portlet.isInstanceable()) {
-			String rootPortletId = _getRootPortletId(portlet);
+			String rootPortletId = portlet.getRootPortletId();
 			String portletId = portlet.getPortletId();
 
 			for (Portlet layoutPortlet : _getAllPortlets(httpServletRequest)) {
@@ -77,10 +77,7 @@ public class PortletRenderUtil {
 				// Check to see if an instance of this portlet is already in the
 				// layout, but ignore the portlet that was just added
 
-				String layoutPortletRootPortletId = _getRootPortletId(
-					layoutPortlet);
-
-				if (rootPortletId.equals(layoutPortletRootPortletId) &&
+				if (rootPortletId.equals(layoutPortlet.getRootPortletId()) &&
 					!portletId.equals(layoutPortlet.getPortletId())) {
 
 					portletOnLayout = true;
@@ -240,16 +237,6 @@ public class PortletRenderUtil {
 		return new PortletRenderParts(
 			footerCssPaths, footerJavaScriptPaths, headerCssPaths,
 			headerJavaScriptPaths, portletHTML, !portlet.isAjaxable());
-	}
-
-	private static String _getRootPortletId(Portlet portlet) {
-
-		// Workaround for portlet#getRootPortletId because that does not return
-		// the proper root portlet ID for OpenSocial and WSRP portlets
-
-		Portlet rootPortlet = portlet.getRootPortlet();
-
-		return rootPortlet.getPortletId();
 	}
 
 	private static String _getStaticCSSResourceURL(
