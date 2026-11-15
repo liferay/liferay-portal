@@ -8,7 +8,6 @@ package com.liferay.portal.search.internal.sort;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.sort.Sort;
@@ -58,28 +57,13 @@ public class SortBuilderImpl implements SortBuilder {
 		return this;
 	}
 
-	private Localization _getLocalization() {
-
-		// See LPS-72507 and LPS-76500
-
-		if (_localization != null) {
-			return _localization;
-		}
-
-		return LocalizationUtil.getLocalization();
-	}
-
-	private String _getLocalizedName(String name, Locale locale) {
-		Localization localization = _getLocalization();
-
-		return localization.getLocalizedName(
-			name, LocaleUtil.toLanguageId(locale));
-	}
-
 	private String _getSortableField() {
 		if ((_locale != null) && _field.equals(Field.TITLE)) {
 			return StringBundler.concat(
-				"localized_", _getLocalizedName(_field, _locale), "_sortable");
+				"localized_",
+				LocalizationUtil.getLocalizedName(
+					_field, LocaleUtil.toLanguageId(_locale)),
+				"_sortable");
 		}
 
 		return _field;
@@ -87,7 +71,6 @@ public class SortBuilderImpl implements SortBuilder {
 
 	private String _field;
 	private Locale _locale;
-	private Localization _localization;
 	private SortOrder _sortOrder;
 	private final Sorts _sorts;
 
