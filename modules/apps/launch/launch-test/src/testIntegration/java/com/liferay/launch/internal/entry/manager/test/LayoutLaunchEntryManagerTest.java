@@ -7,11 +7,13 @@ package com.liferay.launch.internal.entry.manager.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
@@ -55,6 +57,18 @@ public class LayoutLaunchEntryManagerTest
 		super.testFetchDraft();
 
 		_testFetchDraftLayoutByLaunchSetId();
+	}
+
+	@Test
+	@TestInfo("LPD-112665")
+	public void testGetItemSelectorCriterion() {
+		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
+
+		LayoutItemSelectorCriterion layoutItemSelectorCriterion =
+			(LayoutItemSelectorCriterion)
+				launchEntryManager.getItemSelectorCriterion();
+
+		Assert.assertTrue(layoutItemSelectorCriterion.isIncludeDraftLayouts());
 	}
 
 	@Override
