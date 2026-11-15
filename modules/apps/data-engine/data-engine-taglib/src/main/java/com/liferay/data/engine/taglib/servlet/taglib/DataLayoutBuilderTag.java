@@ -682,9 +682,11 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 			_dataDefinitionContentTypeServiceTrackerMap.getService(contentType);
 
 		if (dataDefinitionContentType == null) {
-			dataDefinitionContentType =
-				_dataDefinitionContentTypeServiceTrackerMap.getService(
-					"default");
+			return JSONUtil.put(
+				"allowInvalidAvailableLocalesForProperty", false
+			).put(
+				"allowReferencedDataDefinitionDeletion", false
+			);
 		}
 
 		return JSONUtil.put(
