@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -101,11 +102,56 @@ public class GetLayoutsStrutsActionTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
+
+		RoleTestUtil.addResourcePermission(
+			_role, Layout.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(_group.getGroupId()), ActionKeys.VIEW);
+
 		_themeDisplay = ContentLayoutTestUtil.getThemeDisplay(
 			_companyLocalService.getCompany(_group.getCompanyId()), _group,
 			_layoutLocalService.getLayout(
 				_portal.getControlPanelPlid(_group.getCompanyId())));
-		_user = UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER);
+		_user = UserTestUtil.addGroupUser(_group, _role.getName());
+	}
+
+	@Test
+	@TestInfo("LPD-112154")
+	public void testGetLayoutsStrutsActionWithIncludeDraftLayouts()
+		throws Exception {
+
+		Layout publishedLayout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			LayoutConstants.TYPE_CONTENT, false, StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+
+		ContentLayoutTestUtil.publishLayout(
+			publishedLayout.fetchDraftLayout(), publishedLayout);
+
+		Layout unpublishedLayout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			LayoutConstants.TYPE_CONTENT, false, StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+
+		_assertLayoutInTree(true, publishedLayout, false);
+		_assertLayoutInTree(false, unpublishedLayout, false);
+
+		_assertLayoutInTree(true, publishedLayout, true);
+		_assertLayoutInTree(false, unpublishedLayout, true);
+
+		RoleTestUtil.addResourcePermission(
+			_role, Layout.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(unpublishedLayout.getPlid()),
+			ActionKeys.PREVIEW_DRAFT);
+
+		_assertLayoutInTree(false, unpublishedLayout, false);
+		_assertLayoutInTree(true, unpublishedLayout, true);
 	}
 
 	@Test
@@ -229,8 +275,15 @@ public class GetLayoutsStrutsActionTest {
 	private void _assertLayoutInTree(boolean expected, Layout layout)
 		throws Exception {
 
+		_assertLayoutInTree(expected, layout, false);
+	}
+
+	private void _assertLayoutInTree(
+			boolean expected, Layout layout, boolean includeDraftLayouts)
+		throws Exception {
+
 		JSONObject jsonObject = _getLayoutsStrutsActionResponseJSONObject(
-			0, _PAGE_SIZE);
+			0, _PAGE_SIZE, includeDraftLayouts);
 
 		JSONArray jsonArray = jsonObject.getJSONArray("items");
 
@@ -305,8 +358,15 @@ public class GetLayoutsStrutsActionTest {
 			int start, int end)
 		throws Exception {
 
+		return _getLayoutsStrutsActionResponseJSONObject(start, end, false);
+	}
+
+	private JSONObject _getLayoutsStrutsActionResponseJSONObject(
+			int start, int end, boolean includeDraftLayouts)
+		throws Exception {
+
 		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest(start, end);
+			_getMockHttpServletRequest(start, end, includeDraftLayouts);
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
@@ -338,15 +398,18 @@ public class GetLayoutsStrutsActionTest {
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
-		int start, int end) {
+		int start, int end, boolean includeDraftLayouts) {
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.addParameter(
 			"groupId", String.valueOf(_group.getGroupId()));
+		mockHttpServletRequest.addParameter(
+			"includeDraftLayouts", String.valueOf(includeDraftLayouts));
 		mockHttpServletRequest.addParameter("start", String.valueOf(start));
 		mockHttpServletRequest.addParameter("end", String.valueOf(end));
+
 		mockHttpServletRequest.setAttribute(
 			WebKeys.LAYOUT, _themeDisplay.getLayout());
 		mockHttpServletRequest.setAttribute(
@@ -400,6 +463,9 @@ public class GetLayoutsStrutsActionTest {
 
 	@Inject
 	private Portal _portal;
+
+	@DeleteAfterTestRun
+	private Role _role;
 
 	private ThemeDisplay _themeDisplay;
 	private User _user;
