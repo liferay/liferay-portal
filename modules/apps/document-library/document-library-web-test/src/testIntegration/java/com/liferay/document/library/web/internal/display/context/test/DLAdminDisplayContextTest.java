@@ -55,7 +55,6 @@ import jakarta.portlet.WindowState;
 import jakarta.portlet.annotations.PortletSerializable;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.Writer;
 
@@ -278,10 +277,8 @@ public class DLAdminDisplayContextTest {
 
 		Object dlAdminDisplayContext = ReflectionTestUtil.invoke(
 			_dlAdminDisplayContextProvider, "getDLAdminDisplayContext",
-			new Class<?>[] {
-				HttpServletRequest.class, HttpServletResponse.class
-			},
-			mockLiferayPortletActionRequest.getHttpServletRequest(), null);
+			new Class<?>[] {HttpServletRequest.class},
+			mockLiferayPortletActionRequest.getHttpServletRequest());
 
 		return ReflectionTestUtil.invoke(
 			dlAdminDisplayContext, "getSearchContainer", new Class<?>[0], null);
