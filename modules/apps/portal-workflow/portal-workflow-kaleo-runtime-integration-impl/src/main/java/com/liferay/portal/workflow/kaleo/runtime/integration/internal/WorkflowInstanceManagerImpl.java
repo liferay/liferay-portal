@@ -89,8 +89,18 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 			serviceContext.setCompanyId(companyId);
 			serviceContext.setUserId(userId);
 
-			return _getNextWorkflowTransitions(
-				workflowInstanceId, serviceContext);
+			KaleoInstance kaleoInstance =
+				_kaleoInstanceLocalService.getKaleoInstance(workflowInstanceId);
+
+			KaleoInstanceToken rootKaleoInstanceToken =
+				kaleoInstance.getRootKaleoInstanceToken(null, serviceContext);
+
+			List<WorkflowTransition> workflowTransitions = new ArrayList<>();
+
+			_getNextWorkflowTransitions(
+				rootKaleoInstanceToken, workflowTransitions);
+
+			return workflowTransitions;
 		}
 		catch (WorkflowException workflowException) {
 			throw workflowException;
@@ -495,32 +505,6 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 						}
 					});
 			}
-		}
-	}
-
-	private List<WorkflowTransition> _getNextWorkflowTransitions(
-			long workflowInstanceId, ServiceContext serviceContext)
-		throws WorkflowException {
-
-		try {
-			KaleoInstance kaleoInstance =
-				_kaleoInstanceLocalService.getKaleoInstance(workflowInstanceId);
-
-			KaleoInstanceToken rootKaleoInstanceToken =
-				kaleoInstance.getRootKaleoInstanceToken(null, serviceContext);
-
-			List<WorkflowTransition> workflowTransitions = new ArrayList<>();
-
-			_getNextWorkflowTransitions(
-				rootKaleoInstanceToken, workflowTransitions);
-
-			return workflowTransitions;
-		}
-		catch (WorkflowException workflowException) {
-			throw workflowException;
-		}
-		catch (Exception exception) {
-			throw new WorkflowException(exception);
 		}
 	}
 
