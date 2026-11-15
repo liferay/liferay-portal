@@ -935,27 +935,7 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 	private void _collectAnnotatedClasses(
 		WebXMLDefinition webXMLDefinition, Class<?> clazz) {
 
-		WebServlet webServlet = null;
-
-		try {
-			webServlet = clazz.getAnnotation(WebServlet.class);
-		}
-		catch (Exception exception) {
-
-			// See http://bugs.java.com/view_bug.do?bug_id=7183985 and LPS-69679
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					StringBundler.concat(
-						"Unexpected error retrieving the annotation ",
-						WebServlet.class, "from class ", clazz,
-						" because a some dependency may not be present in the ",
-						"classpath"),
-					exception);
-			}
-
-			return;
-		}
+		WebServlet webServlet = clazz.getAnnotation(WebServlet.class);
 
 		boolean annotated = false;
 
