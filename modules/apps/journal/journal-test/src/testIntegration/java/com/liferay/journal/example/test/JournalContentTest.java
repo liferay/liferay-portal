@@ -110,6 +110,7 @@ public class JournalContentTest {
 		_testClearCache(new Locale[] {LocaleUtil.SPAIN, LocaleUtil.US});
 		_testClearCache(new Locale[] {LocaleUtil.US});
 		_testClearCacheWithCustomDDMTemplate();
+		_testClearCacheWithDraftVersion();
 		_testClearCacheWithLowercaseArticleId();
 	}
 
@@ -424,6 +425,47 @@ public class JournalContentTest {
 
 		Assert.assertNotEquals(
 			spanishContent, spanishArticleDisplay.getContent());
+	}
+
+	private void _testClearCacheWithDraftVersion() throws Exception {
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(), 0);
+
+		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
+			_group.getGroupId(), journalArticle.getDDMStructureId(),
+			_portal.getClassNameId(JournalArticle.class),
+			TemplateConstants.LANG_TYPE_FTL, "${randomNamespace}",
+			LocaleUtil.US);
+
+		ddmTemplate.setCacheable(true);
+
+		ddmTemplate = _ddmTemplateLocalService.updateDDMTemplate(ddmTemplate);
+
+		JournalArticle draftJournalArticle = JournalTestUtil.updateArticle(
+			journalArticle, RandomTestUtil.randomString(),
+			journalArticle.getContent(), true, false, _serviceContext);
+
+		String languageId = LocaleUtil.toLanguageId(LocaleUtil.US);
+
+		JournalArticleDisplay journalArticleDisplay1 =
+			_journalContent.getDisplay(
+				journalArticle.getGroupId(), journalArticle.getArticleId(),
+				ddmTemplate.getTemplateKey(), Constants.VIEW, languageId,
+				_portletRequestModel);
+
+		JournalTestUtil.updateArticle(
+			draftJournalArticle, RandomTestUtil.randomString(),
+			draftJournalArticle.getContent(), true, false, _serviceContext);
+
+		JournalArticleDisplay journalArticleDisplay2 =
+			_journalContent.getDisplay(
+				journalArticle.getGroupId(), journalArticle.getArticleId(),
+				ddmTemplate.getTemplateKey(), Constants.VIEW, languageId,
+				_portletRequestModel);
+
+		Assert.assertEquals(
+			journalArticleDisplay1.getContent(),
+			journalArticleDisplay2.getContent());
 	}
 
 	private void _testClearCacheWithLowercaseArticleId() throws Exception {
