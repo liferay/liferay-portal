@@ -7,17 +7,22 @@ package com.liferay.document.library.preview.audio.internal;
 
 import com.liferay.document.library.kernel.util.AudioConverter;
 import com.liferay.document.library.preview.audio.internal.configuration.DLAudioFFMPEGAudioConverterConfiguration;
+import com.liferay.document.library.preview.audio.internal.servlet.taglib.DLAudioFFMPEGEditConfigurationJSPDynamicInclude;
 import com.liferay.petra.io.AutoDeleteFileInputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+
+import jakarta.servlet.ServletContext;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,9 +36,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adolfo Pérez
@@ -78,8 +87,29 @@ public class DLAudioFFMPEGAudioConverter implements AudioConverter {
 	}
 
 	@Activate
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
+		modified(properties);
+
+		_serviceRegistration = bundleContext.registerService(
+			DynamicInclude.class,
+			new DLAudioFFMPEGEditConfigurationJSPDynamicInclude(
+				this, _servletContext),
+			MapUtil.singletonDictionary(
+				"dynamic.include.key",
+				"com.liferay.configuration.admin.web#/edit_configuration.jsp#" +
+					DLAudioFFMPEGAudioConverterConfiguration.class.getName() +
+						"#pre"));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceRegistration.unregister();
+	}
+
 	@Modified
-	protected void activate(Map<String, Object> properties) {
+	protected void modified(Map<String, Object> properties) {
 		_dlAudioFFMPEGAudioConverterConfiguration =
 			ConfigurableUtil.createConfigurable(
 				DLAudioFFMPEGAudioConverterConfiguration.class, properties);
@@ -154,5 +184,11 @@ public class DLAudioFFMPEGAudioConverter implements AudioConverter {
 
 	private volatile DLAudioFFMPEGAudioConverterConfiguration
 		_dlAudioFFMPEGAudioConverterConfiguration;
+	private ServiceRegistration<DynamicInclude> _serviceRegistration;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.document.library.preview.audio)"
+	)
+	private ServletContext _servletContext;
 
 }
