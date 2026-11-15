@@ -472,33 +472,13 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 			SchedulerJobConfiguration schedulerJobConfiguration =
 				_bundleContext.getService(serviceReference);
 
-			TriggerConfiguration triggerConfiguration =
-				schedulerJobConfiguration.getTriggerConfiguration();
-
-			Trigger trigger = null;
-
-			if (Validator.isNotNull(triggerConfiguration.getCronExpression())) {
-				trigger = _triggerFactory.createTrigger(
-					schedulerJobConfiguration.getName(),
-					schedulerJobConfiguration.getName(),
-					triggerConfiguration.getStartDate(), null,
-					triggerConfiguration.getCronExpression());
-			}
-			else {
-				trigger = _triggerFactory.createTrigger(
-					schedulerJobConfiguration.getName(),
-					schedulerJobConfiguration.getName(),
-					triggerConfiguration.getStartDate(), null,
-					triggerConfiguration.getInterval(),
-					triggerConfiguration.getTimeUnit());
-			}
-
 			ClusterableContextThreadLocal.putThreadLocalContext(
 				SchedulerEngine.SCHEDULER_CLUSTER_INVOKING, false);
 
 			try {
 				schedule(
-					trigger, StorageType.MEMORY_CLUSTERED, null,
+					_createTrigger(schedulerJobConfiguration),
+					StorageType.MEMORY_CLUSTERED, null,
 					schedulerJobConfiguration.getDestinationName(), null);
 
 				return new ObjectValuePair<>(
@@ -566,6 +546,28 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 				objectValuePair.getValue();
 
 			serviceRegistration.unregister();
+		}
+
+		private Trigger _createTrigger(
+			SchedulerJobConfiguration schedulerJobConfiguration) {
+
+			TriggerConfiguration triggerConfiguration =
+				schedulerJobConfiguration.getTriggerConfiguration();
+
+			if (Validator.isNotNull(triggerConfiguration.getCronExpression())) {
+				return _triggerFactory.createTrigger(
+					schedulerJobConfiguration.getName(),
+					schedulerJobConfiguration.getName(),
+					triggerConfiguration.getStartDate(), null,
+					triggerConfiguration.getCronExpression());
+			}
+
+			return _triggerFactory.createTrigger(
+				schedulerJobConfiguration.getName(),
+				schedulerJobConfiguration.getName(),
+				triggerConfiguration.getStartDate(), null,
+				triggerConfiguration.getInterval(),
+				triggerConfiguration.getTimeUnit());
 		}
 
 	}
