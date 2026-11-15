@@ -23,11 +23,14 @@ import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
+import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerState;
+import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.test.log.LogCapture;
@@ -37,10 +40,12 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -68,6 +73,56 @@ public class SchedulerEngineHelperImplTest {
 	@After
 	public void tearDown() {
 		AuditRequestContextThreadLocal.removeAuditRequestContext();
+	}
+
+	@Test
+	public void testSchedulerJobConfigurationModified() throws Exception {
+		Bundle bundle = FrameworkUtil.getBundle(
+			SchedulerEngineHelperImplTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		AtomicInteger interval = new AtomicInteger(1);
+		String name = RandomTestUtil.randomString();
+
+		ServiceRegistration<SchedulerJobConfiguration> serviceRegistration =
+			bundleContext.registerService(
+				SchedulerJobConfiguration.class,
+				new SchedulerJobConfiguration() {
+
+					@Override
+					public UnsafeRunnable<Exception>
+						getJobExecutorUnsafeRunnable() {
+
+						return null;
+					}
+
+					@Override
+					public String getName() {
+						return name;
+					}
+
+					@Override
+					public TriggerConfiguration getTriggerConfiguration() {
+						return TriggerConfiguration.createTriggerConfiguration(
+							interval.get(), TimeUnit.YEAR);
+					}
+
+				},
+				null);
+
+		try {
+			_assertTriggerYears(name, 1);
+
+			interval.set(2);
+
+			serviceRegistration.setProperties(new HashMapDictionary<>());
+
+			_assertTriggerYears(name, 2);
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
 	}
 
 	@Test
@@ -259,6 +314,24 @@ public class SchedulerEngineHelperImplTest {
 			serviceRegistration1.unregister();
 			serviceRegistration2.unregister();
 		}
+	}
+
+	private void _assertTriggerYears(String name, int years) throws Exception {
+		SchedulerResponse schedulerResponse =
+			_schedulerEngineHelper.getScheduledJob(
+				name, name, StorageType.MEMORY_CLUSTERED);
+
+		Trigger trigger = schedulerResponse.getTrigger();
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.setTime(trigger.getStartDate());
+
+		calendar.add(Calendar.YEAR, years);
+
+		Assert.assertEquals(
+			calendar.getTime(),
+			trigger.getFireDateAfter(trigger.getStartDate()));
 	}
 
 	@Inject
