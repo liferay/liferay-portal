@@ -76,12 +76,8 @@ public class DLFileEntryTextProviderImpl implements DLFileEntryTextProvider {
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
-		modified(properties);
-	}
-
 	@Modified
-	protected void modified(Map<String, Object> properties) {
+	protected void activate(Map<String, Object> properties) {
 		_dlIndexerConfiguration = ConfigurableUtil.createConfigurable(
 			DLIndexerConfiguration.class, properties);
 	}

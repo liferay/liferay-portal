@@ -1085,12 +1085,8 @@ public class DDMTemplateLocalServiceImpl
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
-		modified(properties);
-	}
-
 	@Modified
-	protected void modified(Map<String, Object> properties) {
+	protected void activate(Map<String, Object> properties) {
 		ddmWebConfiguration = ConfigurableUtil.createConfigurable(
 			DDMWebConfiguration.class, properties);
 	}

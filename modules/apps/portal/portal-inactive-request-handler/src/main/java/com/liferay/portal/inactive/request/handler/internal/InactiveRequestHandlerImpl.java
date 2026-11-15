@@ -67,12 +67,8 @@ public class InactiveRequestHandlerImpl implements InactiveRequestHandler {
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
-		modified(properties);
-	}
-
 	@Modified
-	protected void modified(Map<String, Object> properties) {
+	protected void activate(Map<String, Object> properties) {
 		InactiveRequestHandlerConfiguration
 			inactiveRequestHandlerConfiguration =
 				ConfigurableUtil.createConfigurable(

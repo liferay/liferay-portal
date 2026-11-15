@@ -102,12 +102,8 @@ public class ObjectEntrySearchPermissionFilterContributor
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
-		modified(properties);
-	}
-
 	@Modified
-	protected void modified(Map<String, Object> properties) {
+	protected void activate(Map<String, Object> properties) {
 		_searchPermissionCheckerConfiguration =
 			ConfigurableUtil.createConfigurable(
 				SearchPermissionCheckerConfiguration.class, properties);
