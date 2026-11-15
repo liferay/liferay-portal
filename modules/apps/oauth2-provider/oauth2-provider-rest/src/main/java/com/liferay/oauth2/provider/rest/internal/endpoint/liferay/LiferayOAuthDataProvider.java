@@ -99,10 +99,8 @@ import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.rs.security.jose.common.JoseConstants;
 import org.apache.cxf.rs.security.jose.jwk.JwkUtils;
-import org.apache.cxf.rs.security.jose.jws.JwsHeaders;
 import org.apache.cxf.rs.security.jose.jws.JwsUtils;
 import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
-import org.apache.cxf.rs.security.jose.jwt.JwtToken;
 import org.apache.cxf.rs.security.oauth2.common.AccessTokenRegistration;
 import org.apache.cxf.rs.security.oauth2.common.Client;
 import org.apache.cxf.rs.security.oauth2.common.OAuthPermission;
@@ -1162,21 +1160,6 @@ public class LiferayOAuthDataProvider
 			throw ExceptionUtils.toInternalServerErrorException(
 				portalException, null);
 		}
-	}
-
-	@Override
-	protected String processJwtAccessToken(JwtClaims jwtClaims) {
-		OAuthJoseJwtProducer oAuthJoseJwtProducer = getJwtAccessTokenProducer();
-
-		// Fix a bug in CXF. See
-		// https://datatracker.ietf.org/doc/html/rfc9068#section-2.1.
-
-		JwsHeaders jwsHeaders = new JwsHeaders();
-
-		jwsHeaders.setHeader("typ", "at+jwt");
-
-		return oAuthJoseJwtProducer.processJwt(
-			new JwtToken(jwsHeaders, jwtClaims));
 	}
 
 	@Override
