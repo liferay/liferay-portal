@@ -318,4 +318,4 @@ public interface ObjectLayoutTabLocalService
 		ObjectLayoutTab objectLayoutTab);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-446412893
+// LIFERAY-SERVICE-BUILDER-HASH:1904373129
