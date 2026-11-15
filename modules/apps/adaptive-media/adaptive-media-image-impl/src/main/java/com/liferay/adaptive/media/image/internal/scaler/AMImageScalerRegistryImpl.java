@@ -11,8 +11,6 @@ import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReference
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.List;
@@ -41,21 +39,7 @@ public class AMImageScalerRegistryImpl implements AMImageScalerRegistry {
 			}
 		}
 
-		amImageScalers = _serviceTrackerMap.getService("*");
-
-		if (ListUtil.isNotEmpty(amImageScalers)) {
-			for (AMImageScaler amImageScaler : amImageScalers) {
-				if (amImageScaler.isEnabled()) {
-					return amImageScaler;
-				}
-			}
-		}
-
-		if (_log.isWarnEnabled()) {
-			_log.warn("Unable to find default image scaler");
-		}
-
-		return null;
+		return _amDefaultImageScaler;
 	}
 
 	@Activate
@@ -71,9 +55,8 @@ public class AMImageScalerRegistryImpl implements AMImageScalerRegistry {
 		_serviceTrackerMap.close();
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		AMImageScalerRegistryImpl.class);
-
+	private final AMImageScaler _amDefaultImageScaler =
+		new AMDefaultImageScaler();
 	private ServiceTrackerMap<String, List<AMImageScaler>> _serviceTrackerMap;
 
 }

@@ -184,10 +184,6 @@ public final class AMImageAMProcessor implements AMProcessor<FileVersion> {
 				_amImageScalerRegistry.getAMImageScaler(
 					fileVersion.getMimeType());
 
-			if (amImageScaler == null) {
-				return;
-			}
-
 			AMImageScaledImage amImageScaledImage = amImageScaler.scaleImage(
 				fileVersion, amImageConfigurationEntry);
 

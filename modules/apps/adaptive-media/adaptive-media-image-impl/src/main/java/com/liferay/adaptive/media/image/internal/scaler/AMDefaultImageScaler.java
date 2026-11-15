@@ -23,12 +23,9 @@ import java.io.InputStream;
 
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Component;
-
 /**
  * @author Adolfo Pérez
  */
-@Component(property = "mimeTypes=*", service = AMImageScaler.class)
 public class AMDefaultImageScaler implements AMImageScaler {
 
 	@Override

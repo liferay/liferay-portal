@@ -23,10 +23,7 @@ package com.liferay.adaptive.media.image.scaler;
  *
  * <p>
  * If no enabled image scalers are registered for the specific MIME type, it
- * searches for the enabled image scaler with the highest
- * <code>service.ranking</code> that's registered with the <code>*</code> MIME
- * type. If no enabled image scalers are registered for the <code>*</code> MIME
- * type, it returns <code>null</code>.
+ * returns the default image scaler.
  * </p>
  *
  * @author Sergio González
