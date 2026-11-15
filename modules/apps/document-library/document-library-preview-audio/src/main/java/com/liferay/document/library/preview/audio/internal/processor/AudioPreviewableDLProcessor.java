@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.model.UserConstants;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.repository.event.FileVersionPreviewEventListener;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
@@ -158,12 +159,18 @@ public class AudioPreviewableDLProcessor
 
 	@Override
 	public boolean isEnabled() {
-		return _audioConverter.isEnabled();
+		AudioConverter audioConverter = _audioConverterSnapshot.get();
+
+		if (audioConverter == null) {
+			return false;
+		}
+
+		return audioConverter.isEnabled();
 	}
 
 	@Override
 	public boolean isSupported(String mimeType) {
-		if (_audioMimeTypes.contains(mimeType) && _audioConverter.isEnabled()) {
+		if (_audioMimeTypes.contains(mimeType) && isEnabled()) {
 			return true;
 		}
 
@@ -310,9 +317,11 @@ public class AudioPreviewableDLProcessor
 		stopWatch.start();
 
 		try {
+			AudioConverter audioConverter = _audioConverterSnapshot.get();
+
 			FileUtil.write(
 				destFile,
-				_audioConverter.generateAudioPreview(srcFile, containerType));
+				audioConverter.generateAudioPreview(srcFile, containerType));
 		}
 		catch (Exception exception) {
 			_log.error(
@@ -377,9 +386,7 @@ public class AudioPreviewableDLProcessor
 				return;
 			}
 
-			if (!_audioConverter.isEnabled() ||
-				hasPreviews(destinationFileVersion)) {
-
+			if (!isEnabled() || hasPreviews(destinationFileVersion)) {
 				return;
 			}
 
@@ -468,8 +475,8 @@ public class AudioPreviewableDLProcessor
 	private static final Log _log = LogFactoryUtil.getLog(
 		AudioPreviewableDLProcessor.class);
 
-	@Reference
-	private AudioConverter _audioConverter;
+	private static final Snapshot<AudioConverter> _audioConverterSnapshot =
+		new Snapshot<>(AudioPreviewableDLProcessor.class, AudioConverter.class);
 
 	private final Set<String> _audioMimeTypes = SetUtil.fromArray(
 		PropsValues.DL_FILE_ENTRY_PREVIEW_AUDIO_MIME_TYPES);
