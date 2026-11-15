@@ -430,16 +430,10 @@ public class PortletURLImpl
 		if (Validator.isNull(paramName)) {
 			paramName = portletSerializableClass.getSimpleName();
 
-			if (paramName.endsWith("$$EnhancerBySpringCGLIB")) {
+			int index = paramName.indexOf("$$SpringCGLIB$$");
 
-				// If RenderURL#setBeanParameter(PortletSerializable) is called
-				// from within a bean portlet that uses Spring for IoC, and if
-				// Spring dynamically created the bean at runtime using CGLib,
-				// then the parameter name will have "$$EnhanderBySpringCGLib"
-				// as a suffix.
-
-				paramName = paramName.substring(
-					0, paramName.length() - "$$EnhancerBySpringCGLIB".length());
+			if (index != -1) {
+				paramName = paramName.substring(0, index);
 			}
 			else if (paramName.endsWith("$Proxy$_$$_WeldClientProxy")) {
 
