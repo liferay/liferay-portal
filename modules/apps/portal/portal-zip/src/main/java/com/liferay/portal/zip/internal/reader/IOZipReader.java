@@ -69,24 +69,17 @@ public class IOZipReader extends BaseZipReader {
 		ZipEntry zipEntry = zipFile.getEntry(name);
 
 		if ((zipEntry != null) && !zipEntry.isDirectory()) {
-			InputStream inputStream = zipFile.getInputStream(zipEntry);
+			return new UnsyncFilterInputStream(
+				zipFile.getInputStream(zipEntry)) {
 
-			// Null check inputStream to overcome
-			// jdk.util.zip.ensureTrailingSlash issue in between
-			// [JDK 8u141, JDK 8u144)
+				@Override
+				public void close() throws IOException {
+					super.close();
 
-			if (inputStream != null) {
-				return new UnsyncFilterInputStream(inputStream) {
+					zipFile.close();
+				}
 
-					@Override
-					public void close() throws IOException {
-						super.close();
-
-						zipFile.close();
-					}
-
-				};
-			}
+			};
 		}
 
 		zipFile.close();
