@@ -201,11 +201,12 @@ public class LiferayOAuth2OSGiFeature implements Feature {
 
 		_serviceRegistrations.add(
 			_bundleContext.registerService(
-				new String[] {
-					ScopeDescriptor.class.getName(),
-					ApplicationDescriptor.class.getName()
-				},
-				new ApplicationDescriptorsImpl(serviceTracker, osgiJaxRsName),
+				ApplicationDescriptor.class,
+				new ApplicationDescriptorImpl(serviceTracker, osgiJaxRsName),
+				properties));
+		_serviceRegistrations.add(
+			_bundleContext.registerService(
+				ScopeDescriptor.class, new ScopeDescriptorImpl(serviceTracker),
 				properties));
 	}
 
@@ -237,10 +238,9 @@ public class LiferayOAuth2OSGiFeature implements Feature {
 	private final Collection<ServiceTracker<?, ?>> _serviceTrackers =
 		new ArrayList<>();
 
-	private class ApplicationDescriptorsImpl
-		implements ApplicationDescriptor, ScopeDescriptor {
+	private class ApplicationDescriptorImpl implements ApplicationDescriptor {
 
-		public ApplicationDescriptorsImpl(
+		public ApplicationDescriptorImpl(
 			ServiceTracker<?, ResourceBundleLoader> serviceTracker,
 			String osgiJaxRsName) {
 
@@ -265,6 +265,19 @@ public class LiferayOAuth2OSGiFeature implements Feature {
 				key);
 		}
 
+		private final String _osgiJaxRsName;
+		private final ServiceTracker<?, ResourceBundleLoader> _serviceTracker;
+
+	}
+
+	private class ScopeDescriptorImpl implements ScopeDescriptor {
+
+		public ScopeDescriptorImpl(
+			ServiceTracker<?, ResourceBundleLoader> serviceTracker) {
+
+			_serviceTracker = serviceTracker;
+		}
+
 		@Override
 		public String describeScope(String scope, Locale locale) {
 			ResourceBundleLoader resourceBundleLoader =
@@ -282,7 +295,6 @@ public class LiferayOAuth2OSGiFeature implements Feature {
 				_defaultScopeDescriptor.describeScope(scope, locale));
 		}
 
-		private final String _osgiJaxRsName;
 		private final ServiceTracker<?, ResourceBundleLoader> _serviceTracker;
 
 	}
