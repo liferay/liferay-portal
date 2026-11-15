@@ -44,6 +44,13 @@ public class JournalArticleModelListener
 	public void onAfterUpdate(
 		JournalArticle originalJournalArticle, JournalArticle journalArticle) {
 
+		if ((originalJournalArticle != null) &&
+			!originalJournalArticle.isApproved() &&
+			!journalArticle.isApproved()) {
+
+			return;
+		}
+
 		clearCache(journalArticle);
 	}
 
