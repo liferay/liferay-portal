@@ -125,6 +125,9 @@ public class ServletContextHelperRegistrationImpl
 		_servletContextHelperServiceRegistration = _createServletContextHelper(
 			contextPath);
 
+		_customServletContextListener = new CustomServletContextListener(
+			_bundle);
+
 		_servletContextListenerServiceRegistration =
 			_createServletContextListener();
 
@@ -232,7 +235,7 @@ public class ServletContextHelperRegistrationImpl
 
 	@Override
 	public ServletContext getServletContext() {
-		return _customServletContextHelper.getServletContext();
+		return _customServletContextListener.getServletContext();
 	}
 
 	@Override
@@ -431,7 +434,7 @@ public class ServletContextHelperRegistrationImpl
 			Boolean.TRUE.toString());
 
 		return _bundleContext.registerService(
-			ServletContextListener.class, _customServletContextHelper,
+			ServletContextListener.class, _customServletContextListener,
 			properties);
 	}
 
@@ -572,7 +575,7 @@ public class ServletContextHelperRegistrationImpl
 
 	private void _registerServletContext() {
 		ServletContext servletContext =
-			_customServletContextHelper.getServletContext();
+			_customServletContextListener.getServletContext();
 
 		Dictionary<String, Object> properties =
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -629,6 +632,7 @@ public class ServletContextHelperRegistrationImpl
 	private final BundleContext _bundleContext;
 	private final Set<Class<?>> _classes;
 	private final CustomServletContextHelper _customServletContextHelper;
+	private final CustomServletContextListener _customServletContextListener;
 	private final ServiceRegistration<?> _defaultServletServiceRegistration;
 	private final ExecutorService _executorService;
 	private final JSPServletFactory _jspServletFactory;

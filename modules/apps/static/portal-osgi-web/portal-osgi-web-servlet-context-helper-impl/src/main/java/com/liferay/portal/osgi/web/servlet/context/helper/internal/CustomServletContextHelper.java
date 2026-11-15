@@ -11,18 +11,14 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.ServletContextClassLoaderPool;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.osgi.web.servlet.context.helper.definition.WebResourceCollectionDefinition;
-import com.liferay.portal.servlet.delegate.ServletContextDelegate;
 
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -36,14 +32,12 @@ import java.util.List;
 import java.util.Objects;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.http.context.ServletContextHelper;
 
 /**
  * @author Raymond Augé
  */
-public class CustomServletContextHelper
-	extends ServletContextHelper implements ServletContextListener {
+public class CustomServletContextHelper extends ServletContextHelper {
 
 	public CustomServletContextHelper(
 		Bundle bundle,
@@ -62,26 +56,6 @@ public class CustomServletContextHelper
 		Class<?> clazz = getClass();
 
 		_string = clazz.getSimpleName() + '[' + bundle + ']';
-	}
-
-	@Override
-	public void contextDestroyed(ServletContextEvent servletContextEvent) {
-		ServletContextClassLoaderPool.unregister(
-			_servletContext.getServletContextName());
-
-		_servletContext = null;
-	}
-
-	@Override
-	public void contextInitialized(ServletContextEvent servletContextEvent) {
-		_servletContext = ServletContextDelegate.create(
-			servletContextEvent.getServletContext());
-
-		BundleWiring bundleWiring = _bundle.adapt(BundleWiring.class);
-
-		ServletContextClassLoaderPool.register(
-			_servletContext.getServletContextName(),
-			bundleWiring.getClassLoader());
 	}
 
 	@Override
@@ -133,10 +107,6 @@ public class CustomServletContextHelper
 		}
 
 		return url;
-	}
-
-	public ServletContext getServletContext() {
-		return _servletContext;
 	}
 
 	@Override
@@ -304,7 +274,6 @@ public class CustomServletContextHelper
 
 	private final Bundle _bundle;
 	private final String _overrideDirName;
-	private ServletContext _servletContext;
 	private final String _string;
 	private final List<WebResourceCollectionDefinition>
 		_webResourceCollectionDefinitions;
