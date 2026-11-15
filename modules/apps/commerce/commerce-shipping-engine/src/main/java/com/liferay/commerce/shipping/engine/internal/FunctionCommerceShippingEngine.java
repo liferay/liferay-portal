@@ -174,6 +174,7 @@ public class FunctionCommerceShippingEngine implements CommerceShippingEngine {
 	}
 
 	@Activate
+	@Modified
 	protected void activate(Map<String, Object> properties) {
 		_functionCommerceShippingEngineConfiguration =
 			ConfigurableUtil.createConfigurable(
@@ -183,13 +184,6 @@ public class FunctionCommerceShippingEngine implements CommerceShippingEngine {
 	@Deactivate
 	protected void deactivate() {
 		_functionCommerceShippingEngineConfiguration = null;
-	}
-
-	@Modified
-	protected void modified(Map<String, Object> properties) {
-		_functionCommerceShippingEngineConfiguration =
-			ConfigurableUtil.createConfigurable(
-				FunctionCommerceShippingEngineConfiguration.class, properties);
 	}
 
 	private JSONObject _getCommerceOrderJSONObject(CommerceOrder commerceOrder)

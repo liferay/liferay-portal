@@ -117,6 +117,7 @@ public class FunctionCommerceTaxEngine implements CommerceTaxEngine {
 	}
 
 	@Activate
+	@Modified
 	protected void activate(Map<String, Object> properties) {
 		_functionCommerceTaxEngineConfiguration =
 			ConfigurableUtil.createConfigurable(
@@ -154,13 +155,6 @@ public class FunctionCommerceTaxEngine implements CommerceTaxEngine {
 		).put(
 			"typeSettings", jsonObject
 		);
-	}
-
-	@Modified
-	protected void modified(Map<String, Object> properties) {
-		_functionCommerceTaxEngineConfiguration =
-			ConfigurableUtil.createConfigurable(
-				FunctionCommerceTaxEngineConfiguration.class, properties);
 	}
 
 	private JSONObject _getCommerceTaxCalculateRequestJSONObject(

@@ -104,6 +104,7 @@ public class OfflineCommercePaymentMethod implements CommercePaymentMethod {
 	}
 
 	@Activate
+	@Modified
 	protected void activate(Map<String, Object> properties) {
 		_offlineCommercePaymentMethodConfiguration =
 			ConfigurableUtil.createConfigurable(
@@ -137,13 +138,6 @@ public class OfflineCommercePaymentMethod implements CommercePaymentMethod {
 					commercePaymentMethodGroupRel.
 						getCommercePaymentMethodGroupRelId());
 		}
-	}
-
-	@Modified
-	protected void modified(Map<String, Object> properties) {
-		_offlineCommercePaymentMethodConfiguration =
-			ConfigurableUtil.createConfigurable(
-				OfflineCommercePaymentMethodConfiguration.class, properties);
 	}
 
 	private ResourceBundle _getResourceBundle(Locale locale) {
