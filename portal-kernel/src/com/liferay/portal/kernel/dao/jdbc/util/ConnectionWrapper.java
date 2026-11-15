@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import javax.sql.DataSource;
-
 /**
  * @author Alberto Chaparro
  */
@@ -188,7 +186,7 @@ public class ConnectionWrapper implements Connection {
 
 		// JDK 6
 
-		return DataSource.class.equals(clazz);
+		return Connection.class.equals(clazz);
 	}
 
 	@Override
