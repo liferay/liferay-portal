@@ -15,6 +15,7 @@ import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -28,14 +29,17 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.InputStream;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,6 +57,19 @@ public class VideoProcessorUtilTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_configurationTemporarySwapper = new ConfigurationTemporarySwapper(
+			"com.liferay.document.library.video.internal.configuration." +
+				"DLVideoFFMPEGVideoConverterConfiguration",
+			new HashMapDictionary<>());
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		_configurationTemporarySwapper.close();
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -132,6 +149,8 @@ public class VideoProcessorUtilTest {
 				fileVersion.getFileVersionId(), ".", type),
 			Store.VERSION_DEFAULT, new UnsyncByteArrayInputStream(bytes));
 	}
+
+	private static ConfigurationTemporarySwapper _configurationTemporarySwapper;
 
 	@DeleteAfterTestRun
 	private Group _group;
