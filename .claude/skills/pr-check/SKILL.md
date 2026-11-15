@@ -216,6 +216,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Unused DS Lifecycle Parameter](validations/branch/unused-ds-lifecycle-parameter.md)
 
+1. [Required Configuration Policy](validations/branch/required-configuration-policy.md)
+
 1. [Full Portal Build](validations/portal/full-portal-build.md)
 
 1. [Per-Module Compile](validations/portal/per-module-compile.md)
