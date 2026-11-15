@@ -46,8 +46,7 @@ public class SAPEntryScopeDescriptorFinderTest {
 
 							},
 							"everything.read"));
-				},
-				(scope, locale) -> scope);
+				});
 
 		Assert.assertEquals(
 			Collections.singleton("everything.read"),

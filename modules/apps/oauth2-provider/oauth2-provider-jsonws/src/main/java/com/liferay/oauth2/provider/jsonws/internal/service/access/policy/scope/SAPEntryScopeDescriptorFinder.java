@@ -5,17 +5,13 @@
 
 package com.liferay.oauth2.provider.jsonws.internal.service.access.policy.scope;
 
-import com.liferay.oauth2.provider.scope.spi.scope.descriptor.ScopeDescriptor;
 import com.liferay.oauth2.provider.scope.spi.scope.finder.ScopeFinder;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.security.service.access.policy.model.SAPEntry;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -23,32 +19,12 @@ import java.util.function.Supplier;
 /**
  * @author Tomas Polesovsky
  */
-public class SAPEntryScopeDescriptorFinder
-	implements ScopeDescriptor, ScopeFinder {
+public class SAPEntryScopeDescriptorFinder implements ScopeFinder {
 
 	public SAPEntryScopeDescriptorFinder(
-		Supplier<List<SAPEntryScope>> sapEntryScopesSupplier,
-		ScopeDescriptor defaultScopeDescriptor) {
+		Supplier<List<SAPEntryScope>> sapEntryScopesSupplier) {
 
 		_sapEntryScopesSupplier = sapEntryScopesSupplier;
-		_defaultScopeDescriptor = defaultScopeDescriptor;
-	}
-
-	@Override
-	public String describeScope(String scope, Locale locale) {
-		_initialize();
-
-		SAPEntryScope sapEntryScope = _sapEntryScopes.get(scope);
-
-		if (sapEntryScope == null) {
-			if (_log.isDebugEnabled()) {
-				_log.debug("Unable to get SAP entry scope " + scope);
-			}
-
-			return _defaultScopeDescriptor.describeScope(scope, locale);
-		}
-
-		return sapEntryScope.getTitle(locale);
 	}
 
 	@Override
@@ -56,6 +32,12 @@ public class SAPEntryScopeDescriptorFinder
 		_initialize();
 
 		return new HashSet<>(_scopes);
+	}
+
+	public SAPEntryScope getSAPEntryScope(String scope) {
+		_initialize();
+
+		return _sapEntryScopes.get(scope);
 	}
 
 	public Collection<SAPEntryScope> getSAPEntryScopes() {
@@ -88,10 +70,6 @@ public class SAPEntryScopeDescriptorFinder
 		}
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		SAPEntryScopeDescriptorFinder.class);
-
-	private final ScopeDescriptor _defaultScopeDescriptor;
 	private volatile boolean _initialized;
 	private final Map<String, SAPEntryScope> _sapEntryScopes = new HashMap<>();
 	private final Supplier<List<SAPEntryScope>> _sapEntryScopesSupplier;

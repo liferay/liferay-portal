@@ -66,8 +66,7 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 		try {
 			SAPEntryScopeDescriptorFinder sapEntryScopeDescriptorFinder =
 				new SAPEntryScopeDescriptorFinder(
-					() -> _loadSAPEntryScopes(companyId),
-					_defaultScopeDescriptor);
+					() -> _loadSAPEntryScopes(companyId));
 
 			_scopeDescriptorServiceRegistrations.compute(
 				companyId,
@@ -77,7 +76,10 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 					}
 
 					return _bundleContext.registerService(
-						ScopeDescriptor.class, sapEntryScopeDescriptorFinder,
+						ScopeDescriptor.class,
+						new SAPEntryScopeDescriptor(
+							_defaultScopeDescriptor,
+							sapEntryScopeDescriptorFinder),
 						_buildScopeDescriptorProperties(companyId));
 				});
 
