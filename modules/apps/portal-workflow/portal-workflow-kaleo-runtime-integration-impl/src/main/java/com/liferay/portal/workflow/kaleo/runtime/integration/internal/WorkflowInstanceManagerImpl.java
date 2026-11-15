@@ -9,8 +9,10 @@ import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.workflow.DefaultWorkflowTransition;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowException;
@@ -19,11 +21,21 @@ import com.liferay.portal.kernel.workflow.WorkflowInstanceManager;
 import com.liferay.portal.kernel.workflow.WorkflowTransition;
 import com.liferay.portal.kernel.workflow.search.WorkflowModelSearchResult;
 import com.liferay.portal.lock.service.LockLocalService;
+import com.liferay.portal.workflow.kaleo.KaleoWorkflowModelConverter;
+import com.liferay.portal.workflow.kaleo.exception.NoSuchInstanceException;
+import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
+import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
+import com.liferay.portal.workflow.kaleo.model.KaleoNode;
+import com.liferay.portal.workflow.kaleo.model.KaleoTransition;
 import com.liferay.portal.workflow.kaleo.runtime.WorkflowEngine;
 import com.liferay.portal.workflow.kaleo.runtime.integration.internal.util.WorkflowLockUtil;
+import com.liferay.portal.workflow.kaleo.runtime.util.comparator.KaleoInstanceOrderByComparator;
+import com.liferay.portal.workflow.kaleo.service.KaleoInstanceLocalService;
+import com.liferay.portal.workflow.kaleo.service.KaleoInstanceService;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +89,7 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 			serviceContext.setCompanyId(companyId);
 			serviceContext.setUserId(userId);
 
-			return _workflowEngine.getNextWorkflowTransitions(
+			return _getNextWorkflowTransitions(
 				workflowInstanceId, serviceContext);
 		}
 		catch (WorkflowException workflowException) {
@@ -92,7 +104,8 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 	public WorkflowInstance getWorkflowInstance(long workflowInstanceId)
 		throws PortalException {
 
-		return _workflowEngine.getWorkflowInstance(workflowInstanceId);
+		return _kaleoWorkflowModelConverter.toWorkflowInstance(
+			_kaleoInstanceService.getKaleoInstance(workflowInstanceId));
 	}
 
 	@Override
@@ -104,8 +117,7 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		serviceContext.setCompanyId(companyId);
 
-		return _workflowEngine.getWorkflowInstance(
-			workflowInstanceId, serviceContext);
+		return _getWorkflowInstance(workflowInstanceId, serviceContext);
 	}
 
 	@Override
@@ -118,8 +130,7 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 		serviceContext.setCompanyId(companyId);
 		serviceContext.setUserId(userId);
 
-		return _workflowEngine.getWorkflowInstance(
-			workflowInstanceId, serviceContext);
+		return _getWorkflowInstance(workflowInstanceId, serviceContext);
 	}
 
 	@Override
@@ -132,8 +143,14 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		serviceContext.setCompanyId(companyId);
 
-		return _workflowEngine.getWorkflowInstanceCount(
-			userId, assetClassName, assetClassPK, completed, serviceContext);
+		try {
+			return _kaleoInstanceLocalService.getKaleoInstancesCount(
+				userId, assetClassName, assetClassPK, completed,
+				serviceContext);
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
 	}
 
 	@Override
@@ -146,8 +163,13 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		serviceContext.setCompanyId(companyId);
 
-		return _workflowEngine.getWorkflowInstanceCount(
-			userId, assetClassNames, completed, serviceContext);
+		try {
+			return _kaleoInstanceLocalService.getKaleoInstancesCount(
+				userId, assetClassNames, completed, serviceContext);
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
 	}
 
 	@Override
@@ -160,9 +182,14 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		serviceContext.setCompanyId(companyId);
 
-		return _workflowEngine.getWorkflowInstanceCount(
-			workflowDefinitionName, workflowDefinitionVersion, completed,
-			serviceContext);
+		try {
+			return _kaleoInstanceLocalService.getKaleoInstancesCount(
+				workflowDefinitionName, workflowDefinitionVersion, completed,
+				serviceContext);
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
 	}
 
 	@Override
@@ -176,9 +203,21 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		serviceContext.setCompanyId(companyId);
 
-		return _workflowEngine.getWorkflowInstances(
-			userId, assetClassName, assetClassPK, completed, start, end,
-			orderByComparator, serviceContext);
+		try {
+			return _toWorkflowInstances(
+				_kaleoInstanceLocalService.getKaleoInstances(
+					userId, assetClassName, assetClassPK, completed, start, end,
+					KaleoInstanceOrderByComparator.getOrderByComparator(
+						orderByComparator, _kaleoWorkflowModelConverter,
+						serviceContext),
+					serviceContext));
+		}
+		catch (WorkflowException workflowException) {
+			throw workflowException;
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
 	}
 
 	@Override
@@ -192,9 +231,21 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		serviceContext.setCompanyId(companyId);
 
-		return _workflowEngine.getWorkflowInstances(
-			userId, assetClassNames, completed, start, end, orderByComparator,
-			serviceContext);
+		try {
+			return _toWorkflowInstances(
+				_kaleoInstanceLocalService.getKaleoInstances(
+					userId, assetClassNames, completed, start, end,
+					KaleoInstanceOrderByComparator.getOrderByComparator(
+						orderByComparator, _kaleoWorkflowModelConverter,
+						serviceContext),
+					serviceContext));
+		}
+		catch (WorkflowException workflowException) {
+			throw workflowException;
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
 	}
 
 	@Override
@@ -208,9 +259,22 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		serviceContext.setCompanyId(companyId);
 
-		return _workflowEngine.getWorkflowInstances(
-			workflowDefinitionName, workflowDefinitionVersion, completed, start,
-			end, orderByComparator, serviceContext);
+		try {
+			return _toWorkflowInstances(
+				_kaleoInstanceLocalService.getKaleoInstances(
+					workflowDefinitionName, workflowDefinitionVersion,
+					completed, start, end,
+					KaleoInstanceOrderByComparator.getOrderByComparator(
+						orderByComparator, _kaleoWorkflowModelConverter,
+						serviceContext),
+					serviceContext));
+		}
+		catch (WorkflowException workflowException) {
+			throw workflowException;
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
 	}
 
 	@Override
@@ -239,10 +303,21 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		serviceContext.setCompanyId(companyId);
 
-		return _workflowEngine.search(
-			userId, active, assetClassName, assetTitle, assetDescription,
-			nodeName, kaleoDefinitionName, completed, start, end,
-			orderByComparator, serviceContext);
+		try {
+			WorkflowModelSearchResult<WorkflowInstance>
+				workflowModelSearchResult = _searchWorkflowInstances(
+					userId, active, assetClassName, assetTitle,
+					assetDescription, nodeName, kaleoDefinitionName, completed,
+					false, start, end, orderByComparator, serviceContext);
+
+			return workflowModelSearchResult.getWorkflowModels();
+		}
+		catch (WorkflowException workflowException) {
+			throw workflowException;
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
 	}
 
 	@Override
@@ -256,9 +331,14 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		serviceContext.setCompanyId(companyId);
 
-		return _workflowEngine.searchCount(
-			userId, active, assetClassName, assetTitle, assetDescription,
-			nodeName, kaleoDefinitionName, completed, serviceContext);
+		try {
+			return _kaleoInstanceLocalService.searchCount(
+				userId, active, assetClassName, assetTitle, assetDescription,
+				nodeName, kaleoDefinitionName, completed, serviceContext);
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
 	}
 
 	@Override
@@ -274,7 +354,7 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		serviceContext.setCompanyId(companyId);
 
-		return _workflowEngine.searchWorkflowInstances(
+		return _searchWorkflowInstances(
 			userId, active, assetClassName, assetTitle, assetDescription,
 			nodeName, kaleoDefinitionName, completed,
 			searchByActiveWorkflowHandlers, start, end, orderByComparator,
@@ -381,6 +461,142 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 		return serviceUnsafeSupplier.get();
 	}
 
+	private void _getNextWorkflowTransitions(
+			KaleoInstanceToken kaleoInstanceToken,
+			List<WorkflowTransition> workflowTransitions)
+		throws Exception {
+
+		if (kaleoInstanceToken.hasIncompleteChildrenKaleoInstanceToken()) {
+			List<KaleoInstanceToken> incompleteChildrenKaleoInstanceTokens =
+				kaleoInstanceToken.getIncompleteChildrenKaleoInstanceTokens();
+
+			for (KaleoInstanceToken incompleteChildrenKaleoInstanceToken :
+					incompleteChildrenKaleoInstanceTokens) {
+
+				_getNextWorkflowTransitions(
+					incompleteChildrenKaleoInstanceToken, workflowTransitions);
+			}
+		}
+		else {
+			KaleoNode kaleoNode = kaleoInstanceToken.getCurrentKaleoNode();
+
+			for (KaleoTransition kaleoTransition :
+					kaleoNode.getKaleoTransitions()) {
+
+				workflowTransitions.add(
+					new DefaultWorkflowTransition() {
+						{
+							setLabelMap(kaleoTransition.getLabelMap());
+							setName(kaleoTransition.getName());
+							setSourceNodeName(
+								kaleoTransition.getSourceKaleoNodeName());
+							setTargetNodeName(
+								kaleoTransition.getTargetKaleoNodeName());
+						}
+					});
+			}
+		}
+	}
+
+	private List<WorkflowTransition> _getNextWorkflowTransitions(
+			long workflowInstanceId, ServiceContext serviceContext)
+		throws WorkflowException {
+
+		try {
+			KaleoInstance kaleoInstance =
+				_kaleoInstanceLocalService.getKaleoInstance(workflowInstanceId);
+
+			KaleoInstanceToken rootKaleoInstanceToken =
+				kaleoInstance.getRootKaleoInstanceToken(null, serviceContext);
+
+			List<WorkflowTransition> workflowTransitions = new ArrayList<>();
+
+			_getNextWorkflowTransitions(
+				rootKaleoInstanceToken, workflowTransitions);
+
+			return workflowTransitions;
+		}
+		catch (WorkflowException workflowException) {
+			throw workflowException;
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
+	}
+
+	private WorkflowInstance _getWorkflowInstance(
+			long workflowInstanceId, ServiceContext serviceContext)
+		throws WorkflowException {
+
+		try {
+			KaleoInstance kaleoInstance = null;
+
+			if (serviceContext.getUserId() > 0) {
+				kaleoInstance = _kaleoInstanceLocalService.fetchKaleoInstance(
+					workflowInstanceId, serviceContext.getCompanyId(),
+					serviceContext.getUserId());
+			}
+			else {
+				kaleoInstance = _kaleoInstanceLocalService.getKaleoInstance(
+					workflowInstanceId);
+
+				if (kaleoInstance.getCompanyId() !=
+						serviceContext.getCompanyId()) {
+
+					throw new NoSuchInstanceException(
+						"No KaleoInstance exists with the primary key " +
+							workflowInstanceId);
+				}
+			}
+
+			if (kaleoInstance != null) {
+				return _kaleoWorkflowModelConverter.toWorkflowInstance(
+					kaleoInstance);
+			}
+		}
+		catch (WorkflowException workflowException) {
+			throw workflowException;
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
+
+		return null;
+	}
+
+	private WorkflowModelSearchResult<WorkflowInstance>
+			_searchWorkflowInstances(
+				Long userId, Boolean active, String assetClassName,
+				String assetTitle, String assetDescription, String nodeName,
+				String kaleoDefinitionName, Boolean completed,
+				boolean searchByActiveWorkflowHandlers, int start, int end,
+				OrderByComparator<WorkflowInstance> orderByComparator,
+				ServiceContext serviceContext)
+		throws WorkflowException {
+
+		try {
+			BaseModelSearchResult<KaleoInstance> baseModelSearchResult =
+				_kaleoInstanceLocalService.searchKaleoInstances(
+					userId, active, assetClassName, assetTitle,
+					assetDescription, nodeName, kaleoDefinitionName, completed,
+					searchByActiveWorkflowHandlers, start, end,
+					KaleoInstanceOrderByComparator.getOrderByComparator(
+						orderByComparator, _kaleoWorkflowModelConverter,
+						serviceContext),
+					serviceContext);
+
+			return new WorkflowModelSearchResult<>(
+				_toWorkflowInstances(baseModelSearchResult.getBaseModels()),
+				baseModelSearchResult.getLength());
+		}
+		catch (WorkflowException workflowException) {
+			throw workflowException;
+		}
+		catch (Exception exception) {
+			throw new WorkflowException(exception);
+		}
+	}
+
 	private WorkflowInstance _startWorkflowInstance(
 			long companyId, long groupId, long userId,
 			String workflowDefinitionName, Integer workflowDefinitionVersion,
@@ -426,6 +642,24 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 			throw new WorkflowException(portalException);
 		}
 	}
+
+	private List<WorkflowInstance> _toWorkflowInstances(
+		List<KaleoInstance> kaleoInstances) {
+
+		return TransformUtil.transform(
+			kaleoInstances,
+			kaleoInstance -> _kaleoWorkflowModelConverter.toWorkflowInstance(
+				kaleoInstance));
+	}
+
+	@Reference
+	private KaleoInstanceLocalService _kaleoInstanceLocalService;
+
+	@Reference
+	private KaleoInstanceService _kaleoInstanceService;
+
+	@Reference
+	private KaleoWorkflowModelConverter _kaleoWorkflowModelConverter;
 
 	@Reference
 	private LockLocalService _lockLocalService;
