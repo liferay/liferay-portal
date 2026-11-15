@@ -17,8 +17,6 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelListener;
@@ -130,15 +128,6 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 			_layoutRevisionLocalService.deleteLayoutLayoutRevisions(
 				layout.getPlid());
 		}
-		catch (IllegalStateException illegalStateException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(illegalStateException);
-			}
-
-			// This is only needed because of LayoutPersistenceTest but should
-			// never happen in a deployed environment
-
-		}
 		catch (PortalException portalException) {
 			throw new ModelListenerException(portalException);
 		}
@@ -146,9 +135,6 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 			throw new ModelListenerException(systemException);
 		}
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LayoutModelListener.class);
 
 	@Reference
 	private ClientExtensionEntryRelLocalService
