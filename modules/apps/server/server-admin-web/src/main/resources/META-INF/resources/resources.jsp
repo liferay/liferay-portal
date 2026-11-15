@@ -455,7 +455,7 @@ long usedMemory = totalMemory - runtime.freeMemory();
 
 		<aui:fieldset collapsed="<%= false %>" collapsible="<%= true %>" label="regeneration-actions">
 			<ul class="list-group system-action-group">
-				<c:if test="<%= (audioConverter != null) && audioConverter.isEnabled() %>">
+				<c:if test="<%= AudioProcessorUtil.isEnabled() %>">
 					<li class="list-group-item list-group-item-flex">
 						<div class="autofit-col autofit-col-expand">
 							<p class="list-group-title text-truncate">
@@ -537,7 +537,7 @@ long usedMemory = totalMemory - runtime.freeMemory();
 					</div>
 				</li>
 
-				<c:if test="<%= (videoConverter != null) && videoConverter.isEnabled() %>">
+				<c:if test="<%= VideoProcessorUtil.isAvailable() %>">
 					<li class="list-group-item list-group-item-flex">
 						<div class="autofit-col autofit-col-expand">
 							<p class="list-group-title text-truncate">

@@ -5,8 +5,6 @@
 
 package com.liferay.server.admin.web.internal.portlet.action;
 
-import com.liferay.document.library.kernel.util.AudioConverter;
-import com.liferay.document.library.kernel.util.VideoConverter;
 import com.liferay.friendly.url.checker.FriendlyURLPublicMappingChecker;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -37,25 +35,15 @@ public class ViewMVCRenderCommand implements MVCRenderCommand {
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
 		renderRequest.setAttribute(
-			AudioConverter.class.getName(), _audioConverter);
-		renderRequest.setAttribute(
 			ServerAdminWebKeys.SERVER_DISPLAY_CONTEXT,
 			new ServerDisplayContext(
 				_friendlyURLPublicMappingChecker, renderRequest,
 				renderResponse));
-		renderRequest.setAttribute(
-			VideoConverter.class.getName(), _videoConverter);
 
 		return "/view.jsp";
 	}
 
 	@Reference
-	private AudioConverter _audioConverter;
-
-	@Reference
 	private FriendlyURLPublicMappingChecker _friendlyURLPublicMappingChecker;
-
-	@Reference
-	private VideoConverter _videoConverter;
 
 }

@@ -25,9 +25,9 @@ page import="com.liferay.data.cleanup.util.DataCleanupUtil" %><%@
 page import="com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil" %><%@
 page import="com.liferay.document.library.kernel.model.DLFileEntry" %><%@
 page import="com.liferay.document.library.kernel.model.DLFileVersion" %><%@
+page import="com.liferay.document.library.kernel.processor.AudioProcessorUtil" %><%@
+page import="com.liferay.document.library.kernel.processor.VideoProcessorUtil" %><%@
 page import="com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil" %><%@
-page import="com.liferay.document.library.kernel.util.AudioConverter" %><%@
-page import="com.liferay.document.library.kernel.util.VideoConverter" %><%@
 page import="com.liferay.expando.kernel.model.ExpandoBridge" %><%@
 page import="com.liferay.expando.kernel.model.ExpandoColumnConstants" %><%@
 page import="com.liferay.friendly.url.checker.FriendlyURLPublicMappingConflict" %><%@
@@ -114,9 +114,6 @@ page import="java.util.TreeMap" %>
 <%
 String tabs1 = ParamUtil.getString(request, "tabs1", "resources");
 String tabs2 = ParamUtil.getString(request, "tabs2");
-
-AudioConverter audioConverter = (AudioConverter)request.getAttribute(AudioConverter.class.getName());
-VideoConverter videoConverter = (VideoConverter)request.getAttribute(VideoConverter.class.getName());
 %>
 
 <%@ include file="/init-ext.jsp" %>
