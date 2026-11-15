@@ -16,7 +16,6 @@ import com.liferay.asset.kernel.model.NullClassTypeReader;
 import com.liferay.asset.kernel.search.AssetSearcherFactory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
-import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.asset.util.AssetHelper;
 import com.liferay.asset.util.AssetPublisherAddItemHolder;
@@ -317,14 +316,10 @@ public class AssetHelperImpl implements AssetHelper {
 		List<String> keywords = new ArrayList<>();
 
 		keywords.addAll(
-			ListUtil.toList(
-				_assetTagLocalService.getEntryTags(assetEntry.getEntryId()),
-				AssetTag.NAME_ACCESSOR));
+			ListUtil.toList(assetEntry.getTags(), AssetTag.NAME_ACCESSOR));
 		keywords.addAll(
 			ListUtil.toList(
-				_assetCategoryLocalService.getEntryCategories(
-					assetEntry.getEntryId()),
-				AssetCategory.NAME_ACCESSOR));
+				assetEntry.getCategories(), AssetCategory.NAME_ACCESSOR));
 
 		return StringUtil.merge(keywords);
 	}
@@ -343,13 +338,10 @@ public class AssetHelperImpl implements AssetHelper {
 		List<String> keywords = new ArrayList<>();
 
 		keywords.addAll(
-			ListUtil.toList(
-				_assetTagLocalService.getEntryTags(assetEntry.getEntryId()),
-				AssetTag.NAME_ACCESSOR));
+			ListUtil.toList(assetEntry.getTags(), AssetTag.NAME_ACCESSOR));
 		keywords.addAll(
 			ListUtil.toList(
-				_assetCategoryLocalService.getEntryCategories(
-					assetEntry.getEntryId()),
+				assetEntry.getCategories(),
 				assetCategory -> assetCategory.getTitle(locale)));
 
 		return StringUtil.merge(keywords);
@@ -880,9 +872,6 @@ public class AssetHelperImpl implements AssetHelper {
 
 	@Reference
 	private AssetSearcherFactory _assetSearcherFactory;
-
-	@Reference
-	private AssetTagLocalService _assetTagLocalService;
 
 	@Reference
 	private DDMIndexer _ddmIndexer;
