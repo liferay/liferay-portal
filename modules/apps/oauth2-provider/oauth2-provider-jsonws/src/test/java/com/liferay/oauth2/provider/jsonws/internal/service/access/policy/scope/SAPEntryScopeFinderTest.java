@@ -19,7 +19,7 @@ import org.junit.Test;
 /**
  * @author Shuyang Zhou
  */
-public class SAPEntryScopeDescriptorFinderTest {
+public class SAPEntryScopeFinderTest {
 
 	@ClassRule
 	@Rule
@@ -30,30 +30,29 @@ public class SAPEntryScopeDescriptorFinderTest {
 	public void testFindScopes() {
 		AtomicInteger atomicInteger = new AtomicInteger();
 
-		SAPEntryScopeDescriptorFinder sapEntryScopeDescriptorFinder =
-			new SAPEntryScopeDescriptorFinder(
-				() -> {
-					atomicInteger.incrementAndGet();
+		SAPEntryScopeFinder sapEntryScopeFinder = new SAPEntryScopeFinder(
+			() -> {
+				atomicInteger.incrementAndGet();
 
-					return Collections.singletonList(
-						new SAPEntryScope(
-							new SAPEntryWrapper(null) {
+				return Collections.singletonList(
+					new SAPEntryScope(
+						new SAPEntryWrapper(null) {
 
-								@Override
-								public boolean isEnabled() {
-									return true;
-								}
+							@Override
+							public boolean isEnabled() {
+								return true;
+							}
 
-							},
-							"everything.read"));
-				});
+						},
+						"everything.read"));
+			});
 
 		Assert.assertEquals(
 			Collections.singleton("everything.read"),
-			sapEntryScopeDescriptorFinder.findScopes());
+			sapEntryScopeFinder.findScopes());
 		Assert.assertEquals(
 			Collections.singleton("everything.read"),
-			sapEntryScopeDescriptorFinder.findScopes());
+			sapEntryScopeFinder.findScopes());
 
 		Assert.assertEquals(1, atomicInteger.get());
 	}

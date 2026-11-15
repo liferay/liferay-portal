@@ -19,9 +19,9 @@ import java.util.function.Supplier;
 /**
  * @author Tomas Polesovsky
  */
-public class SAPEntryScopeDescriptorFinder implements ScopeFinder {
+public class SAPEntryScopeFinder implements ScopeFinder {
 
-	public SAPEntryScopeDescriptorFinder(
+	public SAPEntryScopeFinder(
 		Supplier<List<SAPEntryScope>> sapEntryScopesSupplier) {
 
 		_sapEntryScopesSupplier = sapEntryScopesSupplier;

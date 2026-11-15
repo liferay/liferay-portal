@@ -55,18 +55,16 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 	}
 
 	public List<SAPEntryScope> getRegisteredSAPEntryScopes(long companyId) {
-		SAPEntryScopeDescriptorFinder sapEntryScopeDescriptorFinder =
-			_registeredSAPEntryScopeDescriptorFinders.get(companyId);
+		SAPEntryScopeFinder sapEntryScopeFinder =
+			_registeredSAPEntryScopeFinders.get(companyId);
 
-		return new ArrayList<>(
-			sapEntryScopeDescriptorFinder.getSAPEntryScopes());
+		return new ArrayList<>(sapEntryScopeFinder.getSAPEntryScopes());
 	}
 
 	public void register(long companyId) {
 		try {
-			SAPEntryScopeDescriptorFinder sapEntryScopeDescriptorFinder =
-				new SAPEntryScopeDescriptorFinder(
-					() -> _loadSAPEntryScopes(companyId));
+			SAPEntryScopeFinder sapEntryScopeFinder = new SAPEntryScopeFinder(
+				() -> _loadSAPEntryScopes(companyId));
 
 			_scopeDescriptorServiceRegistrations.compute(
 				companyId,
@@ -78,8 +76,7 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 					return _bundleContext.registerService(
 						ScopeDescriptor.class,
 						new SAPEntryScopeDescriptor(
-							_defaultScopeDescriptor,
-							sapEntryScopeDescriptorFinder),
+							_defaultScopeDescriptor, sapEntryScopeFinder),
 						_buildScopeDescriptorProperties(companyId));
 				});
 
@@ -100,11 +97,10 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 					}
 
 					serviceRegistration = _bundleContext.registerService(
-						ScopeFinder.class, sapEntryScopeDescriptorFinder,
-						properties);
+						ScopeFinder.class, sapEntryScopeFinder, properties);
 
-					_registeredSAPEntryScopeDescriptorFinders.put(
-						companyId, sapEntryScopeDescriptorFinder);
+					_registeredSAPEntryScopeFinders.put(
+						companyId, sapEntryScopeFinder);
 
 					return serviceRegistration;
 				});
@@ -279,8 +275,8 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 
 	private final Set<String> _jaxRsApplicationNames =
 		Collections.newSetFromMap(new ConcurrentHashMap<>());
-	private final Map<Long, SAPEntryScopeDescriptorFinder>
-		_registeredSAPEntryScopeDescriptorFinders = new ConcurrentHashMap<>();
+	private final Map<Long, SAPEntryScopeFinder>
+		_registeredSAPEntryScopeFinders = new ConcurrentHashMap<>();
 	private boolean _removeSAPEntryOAuth2Prefix = true;
 
 	@Reference

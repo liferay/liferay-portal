@@ -18,16 +18,16 @@ public class SAPEntryScopeDescriptor implements ScopeDescriptor {
 
 	public SAPEntryScopeDescriptor(
 		ScopeDescriptor defaultScopeDescriptor,
-		SAPEntryScopeDescriptorFinder sapEntryScopeDescriptorFinder) {
+		SAPEntryScopeFinder sapEntryScopeFinder) {
 
 		_defaultScopeDescriptor = defaultScopeDescriptor;
-		_sapEntryScopeDescriptorFinder = sapEntryScopeDescriptorFinder;
+		_sapEntryScopeFinder = sapEntryScopeFinder;
 	}
 
 	@Override
 	public String describeScope(String scope, Locale locale) {
-		SAPEntryScope sapEntryScope =
-			_sapEntryScopeDescriptorFinder.getSAPEntryScope(scope);
+		SAPEntryScope sapEntryScope = _sapEntryScopeFinder.getSAPEntryScope(
+			scope);
 
 		if (sapEntryScope == null) {
 			if (_log.isDebugEnabled()) {
@@ -44,6 +44,6 @@ public class SAPEntryScopeDescriptor implements ScopeDescriptor {
 		SAPEntryScopeDescriptor.class);
 
 	private final ScopeDescriptor _defaultScopeDescriptor;
-	private final SAPEntryScopeDescriptorFinder _sapEntryScopeDescriptorFinder;
+	private final SAPEntryScopeFinder _sapEntryScopeFinder;
 
 }
