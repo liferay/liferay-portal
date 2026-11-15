@@ -511,6 +511,31 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 			ObjectValuePair
 				<SchedulerJobConfiguration,
 				 ServiceRegistration<MessageListener>> objectValuePair) {
+
+			SchedulerJobConfiguration schedulerJobConfiguration =
+				objectValuePair.getKey();
+
+			ClusterableContextThreadLocal.putThreadLocalContext(
+				SchedulerEngine.SCHEDULER_CLUSTER_INVOKING, false);
+
+			try {
+				delete(
+					schedulerJobConfiguration.getName(),
+					schedulerJobConfiguration.getName(),
+					StorageType.MEMORY_CLUSTERED);
+
+				schedule(
+					_createTrigger(schedulerJobConfiguration),
+					StorageType.MEMORY_CLUSTERED, null,
+					schedulerJobConfiguration.getDestinationName(), null);
+			}
+			catch (SchedulerException schedulerException) {
+				_log.error(schedulerException);
+			}
+			finally {
+				ClusterableContextThreadLocal.putThreadLocalContext(
+					SchedulerEngine.SCHEDULER_CLUSTER_INVOKING, true);
+			}
 		}
 
 		@Override
