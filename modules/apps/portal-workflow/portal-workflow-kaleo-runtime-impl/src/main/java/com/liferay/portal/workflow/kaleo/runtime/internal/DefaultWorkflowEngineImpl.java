@@ -88,6 +88,7 @@ public class DefaultWorkflowEngineImpl
 	extends BaseKaleoBean implements AopService, WorkflowEngine {
 
 	@Override
+	@Transactional(enabled = false)
 	public void deleteWorkflowDefinition(
 			String name, int version, ServiceContext serviceContext)
 		throws WorkflowException {
@@ -127,6 +128,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public void deleteWorkflowInstance(long workflowInstanceId)
 		throws PortalException {
 
@@ -134,6 +136,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public void deleteWorkflowInstance(
 			long workflowInstanceId, ServiceContext serviceContext)
 		throws WorkflowException {
@@ -268,6 +271,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public WorkflowInstance liberalStartWorkflowInstance(
 			String workflowDefinitionName, Integer workflowDefinitionVersion,
 			String transitionName, Map<String, Serializable> workflowContext,
@@ -325,6 +329,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public WorkflowInstance signalWorkflowInstance(
 			long workflowInstanceId, String transitionName,
 			Map<String, Serializable> workflowContext,
@@ -337,6 +342,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public WorkflowInstance signalWorkflowInstance(
 			long workflowInstanceId, String transitionName,
 			Map<String, Serializable> workflowContext,
@@ -394,6 +400,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public WorkflowInstance startWorkflowInstance(
 			String workflowDefinitionName, Integer workflowDefinitionVersion,
 			String transitionName, Map<String, Serializable> workflowContext,
@@ -406,6 +413,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public WorkflowInstance startWorkflowInstance(
 			String workflowDefinitionName, Integer workflowDefinitionVersion,
 			String transitionName, Map<String, Serializable> workflowContext,
@@ -429,6 +437,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public WorkflowInstance updateContext(
 			long workflowInstanceId, Map<String, Serializable> workflowContext)
 		throws PortalException {
@@ -439,6 +448,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public WorkflowInstance updateContext(
 			long workflowInstanceId, Map<String, Serializable> workflowContext,
 			ServiceContext serviceContext)
@@ -460,6 +470,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public WorkflowInstance updateWorkflowInstanceActive(
 			long userId, long companyId, long workflowInstanceId,
 			boolean active)
@@ -484,6 +495,7 @@ public class DefaultWorkflowEngineImpl
 	}
 
 	@Override
+	@Transactional(enabled = false)
 	public void validateWorkflowDefinition(InputStream inputStream)
 		throws WorkflowException {
 
