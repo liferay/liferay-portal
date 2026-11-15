@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.model.UserConstants;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.repository.event.FileVersionPreviewEventListener;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
@@ -168,12 +169,18 @@ public class VideoPreviewableDLProcessor
 
 	@Override
 	public boolean isAvailable() {
-		return _videoConverter.isEnabled();
+		VideoConverter videoConverter = _videoConverterSnapshot.get();
+
+		if (videoConverter == null) {
+			return false;
+		}
+
+		return videoConverter.isEnabled();
 	}
 
 	@Override
 	public boolean isSupported(String mimeType) {
-		if (_videoMimeTypes.contains(mimeType) && _videoConverter.isEnabled()) {
+		if (_videoMimeTypes.contains(mimeType) && isAvailable()) {
 			return true;
 		}
 
@@ -360,9 +367,11 @@ public class VideoPreviewableDLProcessor
 
 		try {
 			try {
+				VideoConverter videoConverter = _videoConverterSnapshot.get();
+
 				FileUtil.write(
 					thumbnailTempFile,
-					_videoConverter.generateVideoThumbnail(
+					videoConverter.generateVideoThumbnail(
 						file, THUMBNAIL_TYPE));
 			}
 			catch (CancellationException cancellationException) {
@@ -414,10 +423,11 @@ public class VideoPreviewableDLProcessor
 		stopWatch.start();
 
 		try {
+			VideoConverter videoConverter = _videoConverterSnapshot.get();
+
 			FileUtil.write(
 				destinationFile,
-				_videoConverter.generateVideoPreview(
-					sourceFile, containerType));
+				videoConverter.generateVideoPreview(sourceFile, containerType));
 
 			_fileVersionPreviewEventListener.onSuccess(fileVersion);
 		}
@@ -488,7 +498,7 @@ public class VideoPreviewableDLProcessor
 			FileVersion sourceFileVersion, FileVersion destinationFileVersion)
 		throws Exception {
 
-		if (!_videoConverter.isEnabled() || _hasVideo(destinationFileVersion)) {
+		if (!isAvailable() || _hasVideo(destinationFileVersion)) {
 			return;
 		}
 
@@ -603,6 +613,9 @@ public class VideoPreviewableDLProcessor
 	private static final Log _log = LogFactoryUtil.getLog(
 		VideoPreviewableDLProcessor.class);
 
+	private static final Snapshot<VideoConverter> _videoConverterSnapshot =
+		new Snapshot<>(VideoPreviewableDLProcessor.class, VideoConverter.class);
+
 	@Reference
 	private BackgroundTaskManager _backgroundTaskManager;
 
@@ -613,9 +626,6 @@ public class VideoPreviewableDLProcessor
 
 	@Reference
 	private FileVersionPreviewEventListener _fileVersionPreviewEventListener;
-
-	@Reference
-	private VideoConverter _videoConverter;
 
 	private final Set<String> _videoMimeTypes = SetUtil.fromArray(
 		PropsValues.DL_FILE_ENTRY_PREVIEW_VIDEO_MIME_TYPES);
