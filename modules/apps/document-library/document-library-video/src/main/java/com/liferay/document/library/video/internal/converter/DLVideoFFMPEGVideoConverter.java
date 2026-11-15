@@ -7,6 +7,7 @@ package com.liferay.document.library.video.internal.converter;
 
 import com.liferay.document.library.kernel.util.VideoConverter;
 import com.liferay.document.library.video.internal.configuration.DLVideoFFMPEGVideoConverterConfiguration;
+import com.liferay.document.library.video.internal.servlet.taglib.DLVideoFFMPEGEditConfigurationJSPDynamicInclude;
 import com.liferay.petra.io.AutoDeleteFileInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.StringBundler;
@@ -15,12 +16,16 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.image.ImageToolUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+
+import jakarta.servlet.ServletContext;
 
 import java.awt.image.BufferedImage;
 
@@ -37,9 +42,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alejandro Tardín
@@ -125,8 +134,25 @@ public class DLVideoFFMPEGVideoConverter implements VideoConverter {
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
 		modified(properties);
+
+		_serviceRegistration = bundleContext.registerService(
+			DynamicInclude.class,
+			new DLVideoFFMPEGEditConfigurationJSPDynamicInclude(
+				this, _servletContext),
+			MapUtil.singletonDictionary(
+				"dynamic.include.key",
+				"com.liferay.configuration.admin.web#/edit_configuration.jsp#" +
+					DLVideoFFMPEGVideoConverterConfiguration.class.getName() +
+						"#pre"));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceRegistration.unregister();
 	}
 
 	@Modified
@@ -230,5 +256,11 @@ public class DLVideoFFMPEGVideoConverter implements VideoConverter {
 
 	private volatile DLVideoFFMPEGVideoConverterConfiguration
 		_dlVideoFFMPEGVideoConverterConfiguration;
+	private ServiceRegistration<DynamicInclude> _serviceRegistration;
+
+	@Reference(
+		target = "(osgi.web.symbolicname=com.liferay.document.library.video)"
+	)
+	private ServletContext _servletContext;
 
 }
