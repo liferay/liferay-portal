@@ -1472,6 +1472,8 @@ public class ThemeDisplay
 
 	public void setLayout(Layout layout) {
 		_layout = layout;
+
+		_layoutPortletPreferences = null;
 	}
 
 	public void setLayoutSet(LayoutSet layoutSet) {
