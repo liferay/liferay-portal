@@ -7,6 +7,16 @@ task patch(type: PatchTask)
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
+copyPatchOriginalLibClasses {
+	doLast {
+		File file = file("classes/META-INF/versions")
+
+		if (file.exists()) {
+			delete(file)
+		}
+	}
+}
+
 dependencies {
 	compileOnly group: "org.json", name: "json", transitive: false, version: "20260814"
 }
