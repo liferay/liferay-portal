@@ -328,6 +328,43 @@ public class LanguageOverrideResourceTest
 		}
 	}
 
+	private void _testGetLanguageOverridesPageWithoutPermission()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		LanguageOverrideResource userLanguageOverrideResource =
+			LanguageOverrideResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		try {
+			List<EntityField> entityFields = getEntityFields(
+				EntityField.Type.DATE_TIME);
+
+			userLanguageOverrideResource.getLanguageOverridesPage(
+				null,
+				getFilterString(
+					entityFields.get(0), "between", randomLanguageOverride()),
+				null, null);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
 	private void _testGetLanguageOverridesPageWithSearch() throws Exception {
 		String externalReferenceCode = RandomTestUtil.randomString();
 
@@ -371,43 +408,6 @@ public class LanguageOverrideResourceTest
 
 		Assert.assertEquals(
 			Arrays.asList(keyPrefix + "-b", keyPrefix + "-a"), _toKeys(page));
-	}
-
-	private void _testGetLanguageOverridesPageWithoutPermission()
-		throws Exception {
-
-		String password = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser(testCompany, password);
-
-		LanguageOverrideResource userLanguageOverrideResource =
-			LanguageOverrideResource.builder(
-			).authentication(
-				user.getEmailAddress(), password
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
-
-		List<EntityField> entityFields = getEntityFields(
-			EntityField.Type.DATE_TIME);
-
-		try {
-			userLanguageOverrideResource.getLanguageOverridesPage(
-				null,
-				getFilterString(
-					entityFields.get(0), "between", randomLanguageOverride()),
-				null, null);
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
 	}
 
 	private List<String> _toKeys(Page<LanguageOverride> page) {

@@ -191,16 +191,17 @@ public class LanguageOverrideResourceImpl
 		if (Validator.isNull(filterString)) {
 			if (filter != null) {
 				throw new InvalidFilterException(
-					"Language overrides can only be filtered with the filter " +
-						"query parameter");
+					"Language overrides can only be filtered with the " +
+						"\"filter\" query parameter");
 			}
 
 			return null;
 		}
 
-		FilterParser filterParser = _filterParserProvider.provide(_entityModel);
-
 		try {
+			FilterParser filterParser = _filterParserProvider.provide(
+				_entityModel);
+
 			Expression expression = filterParser.parse(filterString);
 
 			return (Predicate)expression.accept(
