@@ -62,6 +62,8 @@ export {default as OrphanPortletsManagementToolbarPropsTransformer} from './Orph
 export {default as SelectLayoutUtilityPageEntryMasterLayoutVerticalCardPropsTransformer} from './SelectLayoutUtilityPageEntryMasterLayoutVerticalCardPropsTransformer';
 export {default as ThemeCSSReplacementSelector} from './ThemeCSSReplacementSelector';
 
+export {default as LayoutAIAssistantTriggerButton} from './ai_assistant/LayoutAIAssistantTriggerButton';
+
 // @ts-ignore
 
 export {default as InformationMessages} from './dynamic_include/InformationMessages';
