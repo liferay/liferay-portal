@@ -53,7 +53,7 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 		LiferayUnitTestRule.INSTANCE;
 
 	@Parameterized.Parameters(
-		name = "{0}: deployHashed={1},  deployLanguageJSON={2}, deployTranslatable={3}, requestURL={4}"
+		name = "{0}: deployHashed={1},  deployLanguageImport={2}, deployTranslatable={3}, requestURL={4}"
 	)
 	public static Collection<Object[]> data() {
 		return Arrays.asList(
@@ -127,13 +127,11 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 
 		mockDeployedFile(
 			hashedFilesRegistry, deployHashed ? _VALID_HASHED_URL : _VALID_URL,
-			deployTranslatable ? _TRANSLATABLE_JS_CONTENT : _JS_CONTENT);
+			_getDeployedContent());
 
-		if (deployLanguageJSON) {
-			mockDeployedFile(
-				hashedFilesRegistry,
-				"/o/" + _SERVLET_CONTEXT_NAME + "/language.json", "{}");
-		}
+		mockDeployedFile(
+			hashedFilesRegistry,
+			"/o/" + _SERVLET_CONTEXT_NAME + "/language.json", "{}");
 
 		JavaScriptFrontendResourceRequestHandler
 			javaScriptFrontendResourceRequestHandler =
@@ -236,12 +234,7 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 
 		if (_EXPECTED_CONTENT[index] == ExpectedContent.JS) {
 			Assert.assertEquals(
-				_JS_CONTENT,
-				StreamUtil.toString(frontendResource.getInputStream()));
-		}
-		else if (_EXPECTED_CONTENT[index] == ExpectedContent.TRANSLATABLE_JS) {
-			Assert.assertEquals(
-				_TRANSLATABLE_JS_CONTENT,
+				_getDeployedContent(),
 				StreamUtil.toString(frontendResource.getInputStream()));
 		}
 		else if (_EXPECTED_CONTENT[index] == ExpectedContent.TRANSLATED_JS) {
@@ -255,7 +248,7 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 	public boolean deployHashed;
 
 	@Parameterized.Parameter(2)
-	public boolean deployLanguageJSON;
+	public boolean deployLanguageImport;
 
 	@Parameterized.Parameter(3)
 	public boolean deployTranslatable;
@@ -265,6 +258,20 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 
 	@Parameterized.Parameter(4)
 	public String requestURL;
+
+	private String _getDeployedContent() {
+		String content = _JS_CONTENT;
+
+		if (deployTranslatable) {
+			content = _TRANSLATABLE_JS_CONTENT;
+		}
+
+		if (deployLanguageImport) {
+			content = _LANGUAGE_IMPORT + content;
+		}
+
+		return content;
+	}
 
 	private Language _mockLanguage() {
 		Language language = Mockito.mock(Language.class);
@@ -290,11 +297,11 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 		null, null, null, null, ExpectedCacheKey.URL_AND_LAST_MODIFIED, null,
 		null, ExpectedCacheKey.NULL, null, null,
 		ExpectedCacheKey.URL_AND_LAST_MODIFIED, null, null,
-		ExpectedCacheKey.NULL, ExpectedCacheKey.URL, ExpectedCacheKey.URL,
-		ExpectedCacheKey.URL, ExpectedCacheKey.NULL, ExpectedCacheKey.NULL,
-		ExpectedCacheKey.NULL, ExpectedCacheKey.URL, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL_AND_LAST_MODIFIED, ExpectedCacheKey.URL,
+		ExpectedCacheKey.URL, ExpectedCacheKey.URL, ExpectedCacheKey.NULL,
+		ExpectedCacheKey.NULL, ExpectedCacheKey.NULL, ExpectedCacheKey.URL,
 		ExpectedCacheKey.URL, ExpectedCacheKey.URL, ExpectedCacheKey.URL,
-		ExpectedCacheKey.URL
+		ExpectedCacheKey.URL, ExpectedCacheKey.URL
 	};
 
 	private static final boolean[] _EXPECTED_CAN_HANDLE_REQUEST = {
@@ -306,12 +313,11 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 	private static final ExpectedContent[] _EXPECTED_CONTENT = {
 		null, null, null, null, ExpectedContent.JS, null, null,
 		ExpectedContent.TRANSLATED_JS, null, null, ExpectedContent.JS, null,
-		null, ExpectedContent.TRANSLATED_JS, ExpectedContent.JS,
-		ExpectedContent.JS, ExpectedContent.JS, ExpectedContent.TRANSLATED_JS,
+		null, ExpectedContent.JS, ExpectedContent.JS, ExpectedContent.JS,
+		ExpectedContent.JS, ExpectedContent.TRANSLATED_JS,
 		ExpectedContent.TRANSLATED_JS, ExpectedContent.TRANSLATED_JS,
 		ExpectedContent.JS, ExpectedContent.JS, ExpectedContent.JS,
-		ExpectedContent.TRANSLATABLE_JS, ExpectedContent.TRANSLATABLE_JS,
-		ExpectedContent.TRANSLATABLE_JS
+		ExpectedContent.JS, ExpectedContent.JS, ExpectedContent.JS
 	};
 
 	private static final ExpectedETag[] _EXPECTED_E_TAG = {
@@ -339,7 +345,7 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 	private static final ExpectedMaxAge[] _EXPECTED_MAX_AGE = {
 		null, null, null, null, ExpectedMaxAge.JS_FILES, null, null,
 		ExpectedMaxAge.TRANSLATED_JS_FILES, null, null, ExpectedMaxAge.JS_FILES,
-		null, null, ExpectedMaxAge.TRANSLATED_JS_FILES, ExpectedMaxAge.INFINITE,
+		null, null, ExpectedMaxAge.JS_FILES, ExpectedMaxAge.INFINITE,
 		ExpectedMaxAge.INFINITE, ExpectedMaxAge.JS_FILES,
 		ExpectedMaxAge.TRANSLATED_JS_FILES, ExpectedMaxAge.TRANSLATED_JS_FILES,
 		ExpectedMaxAge.TRANSLATED_JS_FILES, ExpectedMaxAge.INFINITE,
@@ -350,17 +356,16 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 
 	private static final boolean[] _EXPECTED_PRIVATE = {
 		false, false, false, false, false, false, false, true, false, false,
-		false, false, false, true, false, false, false, true, true, true, false,
-		false, false, false, false, false
+		false, false, false, false, false, false, false, true, true, true,
+		false, false, false, false, false, false
 	};
 
 	private static final ExpectedSendNoCache[] _EXPECTED_SEND_NO_CACHE = {
 		null, null, null, null, ExpectedSendNoCache.JS_FILES, null, null,
 		ExpectedSendNoCache.TRANSLATED_JS_FILES, null, null,
-		ExpectedSendNoCache.JS_FILES, null, null,
-		ExpectedSendNoCache.TRANSLATED_JS_FILES, ExpectedSendNoCache.FALSE,
-		ExpectedSendNoCache.FALSE, ExpectedSendNoCache.JS_FILES,
-		ExpectedSendNoCache.TRANSLATED_JS_FILES,
+		ExpectedSendNoCache.JS_FILES, null, null, ExpectedSendNoCache.JS_FILES,
+		ExpectedSendNoCache.FALSE, ExpectedSendNoCache.FALSE,
+		ExpectedSendNoCache.JS_FILES, ExpectedSendNoCache.TRANSLATED_JS_FILES,
 		ExpectedSendNoCache.TRANSLATED_JS_FILES,
 		ExpectedSendNoCache.TRANSLATED_JS_FILES, ExpectedSendNoCache.FALSE,
 		ExpectedSendNoCache.FALSE, ExpectedSendNoCache.JS_FILES,
@@ -377,6 +382,9 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 	private static final long _JS_FILES_MAX_AGE = 1000;
 
 	private static final String _LANGUAGE_ID = "en";
+
+	private static final String _LANGUAGE_IMPORT =
+		"import '@liferay/language/frontend-js-web/all.js';\n";
 
 	private static final boolean _SEND_NO_CACHE_FOR_JS_FILES =
 		RandomTestUtil.randomBoolean();
@@ -417,7 +425,7 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 
 	private enum ExpectedContent {
 
-		JS, TRANSLATABLE_JS, TRANSLATED_JS
+		JS, TRANSLATED_JS
 
 	}
 

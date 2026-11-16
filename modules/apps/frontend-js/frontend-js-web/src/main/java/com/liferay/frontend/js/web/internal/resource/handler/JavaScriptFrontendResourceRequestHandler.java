@@ -247,43 +247,34 @@ public class JavaScriptFrontendResourceRequestHandler
 	}
 
 	private boolean _isTranslatable(String resourceURI) {
-		if (!_translatable.containsKey(resourceURI)) {
-			try {
-				URL url = _hashedFilesRegistry.getResource(resourceURI);
+		Boolean translatable = _translatable.get(resourceURI);
 
-				String content = StreamUtil.toString(url.openStream());
-
-				if (!content.contains("Liferay.Language.get(")) {
-					return false;
-				}
-
-				URL languageJsonURL = _hashedFilesRegistry.getResource(
-					StringBundler.concat(
-						FrontendJSWebUtil.getPortalContextPath(_portal),
-						Portal.PATH_MODULE,
-						FrontendJSWebUtil.getWebContextPathFromFileURI(
-							_portal, resourceURI),
-						"/language.json"));
-
-				if ((languageJsonURL == null) ||
-					!HashedFilesUtil.containsHash(url.getFile())) {
-
-					_translatable.putIfAbsent(resourceURI, true);
-				}
-				else {
-					_translatable.putIfAbsent(resourceURI, false);
-				}
-			}
-			catch (IOException ioException) {
-				_log.error(
-					"Unable to read translatable resource " + resourceURI,
-					ioException);
-
-				_translatable.putIfAbsent(resourceURI, false);
-			}
+		if (translatable != null) {
+			return translatable;
 		}
 
-		return _translatable.get(resourceURI);
+		try {
+			URL url = _hashedFilesRegistry.getResource(resourceURI);
+
+			String content = StreamUtil.toString(url.openStream());
+
+			if (content.contains("Liferay.Language.get(") &&
+				!content.contains("@liferay/language/")) {
+
+				_translatable.putIfAbsent(resourceURI, true);
+
+				return true;
+			}
+		}
+		catch (IOException ioException) {
+			_log.error(
+				"Unable to read translatable resource " + resourceURI,
+				ioException);
+		}
+
+		_translatable.putIfAbsent(resourceURI, false);
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
