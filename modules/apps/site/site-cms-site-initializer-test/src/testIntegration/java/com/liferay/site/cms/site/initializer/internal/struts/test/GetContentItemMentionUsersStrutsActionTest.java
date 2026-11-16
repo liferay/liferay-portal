@@ -379,6 +379,25 @@ public class GetContentItemMentionUsersStrutsActionTest {
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			objectDefinition);
 
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CMS));
+
+		UserGroupTestUtil.addUserGroup();
+
+		JSONObject jsonObject = _execute(
+			null, layout, objectEntry, TestPropsValues.getUser());
+
+		JSONArray userGroupsJSONArray = jsonObject.getJSONArray("userGroups");
+
+		Assert.assertEquals(
+			userGroupsJSONArray.toString(), 0, userGroupsJSONArray.length());
+
+		JSONArray usersJSONArray = jsonObject.getJSONArray("users");
+
+		Assert.assertEquals(
+			usersJSONArray.toString(), 0, usersJSONArray.length());
+
 		Group group = GroupTestUtil.addGroup();
 
 		group.setClassNameId(
@@ -387,11 +406,8 @@ public class GetContentItemMentionUsersStrutsActionTest {
 
 		group = _groupLocalService.updateGroup(group);
 
-		Layout layout = LayoutTestUtil.addTypeContentLayout(
-			_groupLocalService.getGroup(
-				TestPropsValues.getCompanyId(), GroupConstants.CMS));
-
 		User user1 = UserTestUtil.addUser(group.getGroupId());
+
 		User user2 = UserTestUtil.addUser();
 
 		_addViewRole(objectEntry, user1, user2);
@@ -400,12 +416,10 @@ public class GetContentItemMentionUsersStrutsActionTest {
 
 		_userGroupLocalService.addGroupUserGroup(group.getGroupId(), userGroup);
 
-		UserGroupTestUtil.addUserGroup();
-
-		JSONObject jsonObject = _execute(
+		jsonObject = _execute(
 			null, layout, objectEntry, TestPropsValues.getUser());
 
-		JSONArray userGroupsJSONArray = jsonObject.getJSONArray("userGroups");
+		userGroupsJSONArray = jsonObject.getJSONArray("userGroups");
 
 		Assert.assertEquals(
 			userGroupsJSONArray.toString(), 1, userGroupsJSONArray.length());
@@ -416,7 +430,7 @@ public class GetContentItemMentionUsersStrutsActionTest {
 			userGroup.getExternalReferenceCode(),
 			userGroupJSONObject.getString("id"));
 
-		JSONArray usersJSONArray = jsonObject.getJSONArray("users");
+		usersJSONArray = jsonObject.getJSONArray("users");
 
 		Assert.assertEquals(
 			usersJSONArray.toString(), 1, usersJSONArray.length());
@@ -618,8 +632,10 @@ public class GetContentItemMentionUsersStrutsActionTest {
 			userGroupJSONObject2.getString("id"));
 		Assert.assertEquals(0, userGroupJSONObject2.getInt("membersCount"));
 
+		String name = userGroup2.getName();
+
 		jsonObject = _execute(
-			userGroup2.getName(), layout, objectEntry,
+			name.substring(0, 3), layout, objectEntry,
 			TestPropsValues.getUser());
 
 		userGroupsJSONArray = jsonObject.getJSONArray("userGroups");
