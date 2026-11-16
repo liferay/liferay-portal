@@ -33,8 +33,10 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalService;
+import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
@@ -53,6 +55,8 @@ import java.util.Objects;
 public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 
 	public ViewFolderSectionDisplayContext(
+		List<CMSStructureObjectFolderContributor>
+			cmsStructureObjectFolderContributors,
 		DepotEntryLocalService depotEntryLocalService,
 		ModelResourcePermission<DepotEntry> depotEntryModelResourcePermission,
 		DLConfiguration dlConfiguration, GroupLocalService groupLocalService,
@@ -69,6 +73,8 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 			httpServletRequest, language, objectDefinitionService, portal,
 			translationInfoItemFieldValuesExporterRegistry);
 
+		_cmsStructureObjectFolderContributors =
+			cmsStructureObjectFolderContributors;
 		_depotEntryModelResourcePermission = depotEntryModelResourcePermission;
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
 		_sharingEntryLocalService = sharingEntryLocalService;
@@ -77,16 +83,24 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 
 	@Override
 	public Map<String, Object> getAdditionalProps() {
-		Boolean contentsFolder = Objects.equals(
-			getRootObjectEntryFolderExternalReferenceCode(),
-			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS);
-
 		return new HashMapBuilder<>().putAll(
 			super.getAdditionalProps()
 		).put(
 			"breadcrumbProps", getBreadcrumbProps()
 		).put(
-			"galleryViewEnabled", !contentsFolder
+			"galleryViewEnabled",
+			() -> {
+				CMSStructureObjectFolderContributor
+					cmsStructureObjectFolderContributor =
+						_getCMSStructureObjectFolderContributor();
+
+				if (cmsStructureObjectFolderContributor != null) {
+					return cmsStructureObjectFolderContributor.
+						isGalleryViewEnabled();
+				}
+
+				return !_isContentsFolder();
+			}
 		).put(
 			"rootObjectEntryFolderExternalReferenceCode",
 			getRootObjectEntryFolderExternalReferenceCode()
@@ -187,6 +201,20 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 
 	@Override
 	public List<DropdownItem> getBulkActionDropdownItems() {
+		CMSStructureObjectFolderContributor
+			cmsStructureObjectFolderContributor =
+				_getCMSStructureObjectFolderContributor();
+
+		if (cmsStructureObjectFolderContributor != null) {
+			List<DropdownItem> bulkActionDropdownItems =
+				cmsStructureObjectFolderContributor.getBulkActionDropdownItems(
+					httpServletRequest);
+
+			if (bulkActionDropdownItems != null) {
+				return bulkActionDropdownItems;
+			}
+		}
+
 		if (_isContentsFolder()) {
 			return SectionDisplayContextUtil.getContentsBulkActionDropdownItems(
 				httpServletRequest);
@@ -197,6 +225,17 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 	}
 
 	public String getCMSSiteInitializerFDSName() {
+		CMSStructureObjectFolderContributor
+			cmsStructureObjectFolderContributor =
+				_getCMSStructureObjectFolderContributor();
+
+		if ((cmsStructureObjectFolderContributor != null) &&
+			Validator.isNotNull(
+				cmsStructureObjectFolderContributor.getFDSName())) {
+
+			return cmsStructureObjectFolderContributor.getFDSName();
+		}
+
 		if (Objects.equals(
 				getRootObjectEntryFolderExternalReferenceCode(),
 				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS)) {
@@ -209,6 +248,21 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 
 	@Override
 	public List<DropdownItem> getCreationMenuDropdownItems() {
+		CMSStructureObjectFolderContributor
+			cmsStructureObjectFolderContributor =
+				_getCMSStructureObjectFolderContributor();
+
+		if (cmsStructureObjectFolderContributor != null) {
+			List<DropdownItem> creationMenuDropdownItems =
+				cmsStructureObjectFolderContributor.
+					getCreationMenuDropdownItems(
+						httpServletRequest, objectEntryFolder);
+
+			if (creationMenuDropdownItems != null) {
+				return creationMenuDropdownItems;
+			}
+		}
+
 		if (Objects.equals(
 				getRootObjectEntryFolderExternalReferenceCode(),
 				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS)) {
@@ -223,6 +277,20 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 
 	@Override
 	public Map<String, Object> getEmptyState() {
+		CMSStructureObjectFolderContributor
+			cmsStructureObjectFolderContributor =
+				_getCMSStructureObjectFolderContributor();
+
+		if (cmsStructureObjectFolderContributor != null) {
+			Map<String, Object> emptyState =
+				cmsStructureObjectFolderContributor.getEmptyState(
+					httpServletRequest);
+
+			if (emptyState != null) {
+				return emptyState;
+			}
+		}
+
 		String rootObjectEntryFolderExternalReferenceCode =
 			getRootObjectEntryFolderExternalReferenceCode();
 
@@ -258,6 +326,20 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 
 	@Override
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
+		CMSStructureObjectFolderContributor
+			cmsStructureObjectFolderContributor =
+				_getCMSStructureObjectFolderContributor();
+
+		if (cmsStructureObjectFolderContributor != null) {
+			List<FDSActionDropdownItem> fdsActionDropdownItems =
+				cmsStructureObjectFolderContributor.getFDSActionDropdownItems(
+					httpServletRequest);
+
+			if (fdsActionDropdownItems != null) {
+				return fdsActionDropdownItems;
+			}
+		}
+
 		if (_isContentsFolder()) {
 			return SectionDisplayContextUtil.getContentsFDSActionDropdownItems(
 				httpServletRequest);
@@ -295,10 +377,33 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES;
 		}
 
+		CMSStructureObjectFolderContributor
+			cmsStructureObjectFolderContributor =
+				_getCMSStructureObjectFolderContributor();
+
+		if (cmsStructureObjectFolderContributor != null) {
+			_objectFolderExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getObjectFolderExternalReferenceCode();
+		}
+
 		return new String[] {_objectFolderExternalReferenceCode};
 	}
 
 	public String getPropsTransformerModule() {
+		CMSStructureObjectFolderContributor
+			cmsStructureObjectFolderContributor =
+				_getCMSStructureObjectFolderContributor();
+
+		if ((cmsStructureObjectFolderContributor != null) &&
+			Validator.isNotNull(
+				cmsStructureObjectFolderContributor.
+					getPropsTransformerModule())) {
+
+			return cmsStructureObjectFolderContributor.
+				getPropsTransformerModule();
+		}
+
 		String rootObjectEntryFolderExternalReferenceCode =
 			getRootObjectEntryFolderExternalReferenceCode();
 
@@ -356,6 +461,32 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 		return true;
 	}
 
+	private CMSStructureObjectFolderContributor
+		_getCMSStructureObjectFolderContributor() {
+
+		String rootObjectEntryFolderExternalReferenceCode =
+			getRootObjectEntryFolderExternalReferenceCode();
+
+		if (Validator.isNull(rootObjectEntryFolderExternalReferenceCode)) {
+			return null;
+		}
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					_cmsStructureObjectFolderContributors) {
+
+			if (Objects.equals(
+					rootObjectEntryFolderExternalReferenceCode,
+					cmsStructureObjectFolderContributor.
+						getObjectEntryFolderExternalReferenceCode())) {
+
+				return cmsStructureObjectFolderContributor;
+			}
+		}
+
+		return null;
+	}
+
 	private int _getFirstAncestorIndex(String[] parts, long userId) {
 		long classNameId = portal.getClassNameId(
 			ObjectEntryFolder.class.getName());
@@ -404,6 +535,8 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ViewFolderSectionDisplayContext.class);
 
+	private final List<CMSStructureObjectFolderContributor>
+		_cmsStructureObjectFolderContributors;
 	private final ModelResourcePermission<DepotEntry>
 		_depotEntryModelResourcePermission;
 	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;

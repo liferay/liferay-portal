@@ -16,17 +16,21 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.sharing.service.SharingEntryLocalService;
+import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.cms.site.initializer.internal.display.context.ViewFolderSectionDisplayContext;
 import com.liferay.trash.TrashHelper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Marco Galluzzi
@@ -55,8 +59,9 @@ public class ViewFolderJSPSectionFragmentRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return new ViewFolderSectionDisplayContext(
-			_depotEntryLocalService, _depotEntryModelResourcePermission,
-			_dlConfiguration, _groupLocalService, httpServletRequest, language,
+			_cmsStructureObjectFolderContributors, _depotEntryLocalService,
+			_depotEntryModelResourcePermission, _dlConfiguration,
+			_groupLocalService, httpServletRequest, language,
 			_objectDefinitionService, _objectEntryFolderLocalService, _portal,
 			_sharingEntryLocalService,
 			translationInfoItemFieldValuesExporterRegistry, _trashHelper);
@@ -66,6 +71,13 @@ public class ViewFolderJSPSectionFragmentRenderer
 	protected String getLabelKey() {
 		return "view-folder";
 	}
+
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile List<CMSStructureObjectFolderContributor>
+		_cmsStructureObjectFolderContributors;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
