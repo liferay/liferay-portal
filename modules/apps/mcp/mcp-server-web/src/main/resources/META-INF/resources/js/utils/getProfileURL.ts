@@ -4,7 +4,7 @@
  */
 
 export default function getProfileURL(profilePath: string): string {
-	const baseURL = `${window.location.origin}/o/mcp`;
+	const baseURL = `${Liferay.ThemeDisplay.getPortalURL()}${Liferay.ThemeDisplay.getPathContext()}/o/mcp`;
 
 	return profilePath ? `${baseURL}/${profilePath}` : baseURL;
 }

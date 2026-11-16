@@ -24,6 +24,7 @@ import {
 	ProfilePayload,
 } from '../../../types/Profile';
 import copyProfileURL from '../../../utils/copyProfileURL';
+import getProfileURL from '../../../utils/getProfileURL';
 import required from '../../../utils/required';
 import toIdentifier from '../../../utils/toIdentifier';
 import {openErrorToast, openSuccessToast} from '../../../utils/toasts';
@@ -240,9 +241,7 @@ function ProfileForm({
 						}}
 						prefix={
 							<Text as="p" size={2} weight="semi-bold">
-								{isDefaultProfile
-									? `${window.location.origin}/o/mcp`
-									: `${window.location.origin}/o/mcp/`}
+								{`${getProfileURL('')}${isDefaultProfile ? '' : '/'}`}
 							</Text>
 						}
 						required={!isDefaultProfile}
