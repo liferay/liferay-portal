@@ -241,7 +241,7 @@ boolean choiceField = checkboxField || radioField;
 		if (Validator.isNull(value)) {
 			TimeZone defaultTimeZone = TimeZoneUtil.getDefault();
 
-			value = BeanPropertiesUtil.getStringSilent(bean, field, defaultTimeZone.getID());
+			value = BeanGetterUtil.getStringSilent(bean, field, defaultTimeZone.getID());
 		}
 		%>
 
@@ -265,10 +265,10 @@ boolean choiceField = checkboxField || radioField;
 		}
 
 		if (type.equals("hidden") && (value == null)) {
-			valueString = BeanPropertiesUtil.getStringSilent(bean, name);
+			valueString = BeanGetterUtil.getStringSilent(bean, name);
 		}
 		else if (!ignoreRequestValue && (Validator.isNull(type) || _TYPES.contains(type))) {
-			valueString = BeanParamUtil.getString(bean, request, name, AUIUtil.getBeanPropertyFunction(name, valueString), valueString);
+			valueString = ParamUtil.getString(request, name, BeanGetterUtil.getStringSilent(bean, name, valueString));
 
 			if (Validator.isNotNull(fieldParam)) {
 				valueString = ParamUtil.getString(request, fieldParam, valueString);

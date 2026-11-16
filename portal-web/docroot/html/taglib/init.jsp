@@ -12,6 +12,7 @@ page import="com.liferay.portal.kernel.frontend.esm.FrontendESMUtil" %><%@
 page import="com.liferay.portal.kernel.servlet.MultiSessionErrors" %><%@
 page import="com.liferay.portal.kernel.util.DateFormatFactoryUtil" %><%@
 page import="com.liferay.taglib.aui.AUIUtil" %><%@
+page import="com.liferay.taglib.util.BeanGetterUtil" %><%@
 page import="com.liferay.taglib.util.InlineUtil" %><%@
 page import="com.liferay.taglib.util.TagResourceBundleUtil" %>
 

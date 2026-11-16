@@ -6,7 +6,6 @@
 package com.liferay.taglib.aui;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.servlet.taglib.aui.ValidatorTag;
@@ -20,6 +19,7 @@ import com.liferay.portal.kernel.util.Tuple;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.aui.base.BaseInputTag;
+import com.liferay.taglib.util.BeanGetterUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
@@ -321,9 +321,8 @@ public class InputTag extends BaseInputTag {
 		if (getLocalized()) {
 			long groupId = themeDisplay.getSiteGroupId();
 
-			if (groupedModel) {
-				groupId = BeanPropertiesUtil.getLongSilent(
-					bean, "groupId", groupId);
+			if (groupedModel && (bean != null)) {
+				groupId = BeanGetterUtil.getLong(bean, "groupId");
 			}
 
 			setNamespacedAttribute(httpServletRequest, "groupId", groupId);
