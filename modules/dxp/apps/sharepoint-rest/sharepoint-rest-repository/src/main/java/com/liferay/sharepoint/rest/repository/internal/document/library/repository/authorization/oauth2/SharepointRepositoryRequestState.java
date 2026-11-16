@@ -7,11 +7,7 @@ package com.liferay.sharepoint.rest.repository.internal.document.library.reposit
 
 import com.liferay.document.library.repository.authorization.capability.AuthorizationException;
 import com.liferay.document.library.repository.authorization.oauth2.OAuth2AuthorizationException;
-import com.liferay.portal.kernel.util.JavaConstants;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-
-import jakarta.portlet.PortletRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,23 +35,20 @@ public final class SharepointRepositoryRequestState implements Serializable {
 	}
 
 	public static void save(
-		HttpServletRequest httpServletRequest, String nonce, String state) {
+		HttpServletRequest httpServletRequest, String nonce, long repositoryId,
+		String state) {
 
 		HttpSession httpSession = httpServletRequest.getSession();
-
-		PortletRequest portletRequest =
-			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		httpSession.setAttribute(
 			SharepointRepositoryRequestState.class.getName(),
 			new SharepointRepositoryRequestState(
-				ParamUtil.getLong(portletRequest, "folderId"), nonce, state,
+				nonce, repositoryId, state,
 				PortalUtil.getCurrentCompleteURL(httpServletRequest)));
 	}
 
-	public long getFolderId() {
-		return _folderId;
+	public long getRepositoryId() {
+		return _repositoryId;
 	}
 
 	public void restore(
@@ -94,18 +87,18 @@ public final class SharepointRepositoryRequestState implements Serializable {
 	}
 
 	private SharepointRepositoryRequestState(
-		long folderId, String nonce, String state, String url) {
+		String nonce, long repositoryId, String state, String url) {
 
-		_folderId = folderId;
 		_nonce = nonce;
+		_repositoryId = repositoryId;
 		_state = state;
 		_url = url;
 	}
 
 	private static final long serialVersionUID = 1L;
 
-	private final long _folderId;
 	private final String _nonce;
+	private final long _repositoryId;
 	private final String _state;
 	private final String _url;
 

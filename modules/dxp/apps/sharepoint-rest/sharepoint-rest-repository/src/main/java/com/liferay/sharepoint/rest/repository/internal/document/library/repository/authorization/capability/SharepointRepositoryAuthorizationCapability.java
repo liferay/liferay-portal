@@ -11,6 +11,7 @@ import com.liferay.document.library.repository.authorization.oauth2.OAuth2Author
 import com.liferay.document.library.repository.authorization.oauth2.Token;
 import com.liferay.document.library.repository.authorization.oauth2.TokenStore;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.repository.DocumentRepository;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -40,10 +41,11 @@ public class SharepointRepositoryAuthorizationCapability
 	implements AuthorizationCapability {
 
 	public SharepointRepositoryAuthorizationCapability(
-		TokenStore tokenStore,
+		DocumentRepository documentRepository, TokenStore tokenStore,
 		SharepointRepositoryConfiguration sharepointRepositoryConfiguration,
 		SharepointRepositoryTokenBroker sharepointOAuth2AuthorizationServer) {
 
+		_documentRepository = documentRepository;
 		_tokenStore = tokenStore;
 		_sharepointRepositoryConfiguration = sharepointRepositoryConfiguration;
 		_sharepointOAuth2AuthorizationServer =
@@ -203,7 +205,9 @@ public class SharepointRepositoryAuthorizationCapability
 		String nonce = String.valueOf(UUID.randomUUID());
 		String state = String.valueOf(UUID.randomUUID());
 
-		SharepointRepositoryRequestState.save(httpServletRequest, nonce, state);
+		SharepointRepositoryRequestState.save(
+			httpServletRequest, nonce, _documentRepository.getRepositoryId(),
+			state);
 
 		try {
 			httpServletResponse.sendRedirect(
@@ -233,6 +237,7 @@ public class SharepointRepositoryAuthorizationCapability
 		}
 	}
 
+	private final DocumentRepository _documentRepository;
 	private final SharepointRepositoryTokenBroker
 		_sharepointOAuth2AuthorizationServer;
 	private final SharepointRepositoryConfiguration

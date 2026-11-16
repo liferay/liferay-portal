@@ -83,17 +83,20 @@ public abstract class BaseSharepointRepositoryDefiner
 	public void registerCapabilities(
 		CapabilityRegistry<DocumentRepository> capabilityRegistry) {
 
+		DocumentRepository documentRepository = capabilityRegistry.getTarget();
+
 		capabilityRegistry.addSupportedCapability(
 			ProcessorCapability.class,
 			portalCapabilityLocator.getProcessorCapability(
-				capabilityRegistry.getTarget(),
+				documentRepository,
 				ProcessorCapability.ResourceGenerationStrategy.
 					ALWAYS_GENERATE));
 
 		capabilityRegistry.addExportedCapability(
 			AuthorizationCapability.class,
 			new SharepointRepositoryAuthorizationCapability(
-				tokenStore, _sharepointRepositoryConfiguration,
+				documentRepository, tokenStore,
+				_sharepointRepositoryConfiguration,
 				SharepointRepositoryTokenBrokerFactoryUtil.create(
 					_sharepointRepositoryConfiguration)));
 	}
