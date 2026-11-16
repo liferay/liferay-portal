@@ -109,17 +109,16 @@ public class PortalHibernateConfiguration
 
 		Properties properties = configuration.getProperties();
 
+		properties.put("hibernate.connection.datasource", _dataSource);
+		properties.put(
+			"hibernate.connection.handling_mode",
+			PhysicalConnectionHandlingMode.DELAYED_ACQUISITION_AND_HOLD);
+
 		Dialect dialect = DialectUtil.getDialect(_dataSource);
 
 		Class<?> clazz = dialect.getClass();
 
 		properties.setProperty("hibernate.dialect", clazz.getName());
-
-		properties.put("hibernate.connection.datasource", _dataSource);
-
-		properties.put(
-			"hibernate.connection.handling_mode",
-			PhysicalConnectionHandlingMode.DELAYED_ACQUISITION_AND_HOLD);
 
 		_sessionFactory = _buildSessionFactory(configuration);
 	}
