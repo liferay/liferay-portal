@@ -82,3 +82,7 @@ LPD-116783 Show each calendar's own color in Manage Calendars
 
 Keep the CSP safe <aui:style> form from LPD-53713 rather than going back to an inline style.
 ```
+
+### Security Changes
+
+When the change fixes a vulnerability, or touches security in another way, such as adding a check or tightening access, describe the code that changed the way any other change to it would read, in the title and in any body. This overrides any other rule about the commit message where they differ. A commit message stays in Git history for good and is public once the branch is pushed, so leave out how a defect could be exploited, what could reach it, what it allowed, and any word that labels the change as a security fix, and keep those details in the private ticket. Name the classes and methods the change touches rather than the protection it adds or who may now do what. Check each message against this section before the branch is first pushed.
