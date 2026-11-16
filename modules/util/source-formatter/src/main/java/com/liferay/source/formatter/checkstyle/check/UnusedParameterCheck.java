@@ -29,55 +29,50 @@ public class UnusedParameterCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> constructorsAndMethodsDetailASTs = getAllChildTokens(
+		List<DetailAST> childDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.CTOR_DEF, TokenTypes.METHOD_DEF);
 
-		for (DetailAST constructorOrMethodDetailAST :
-				constructorsAndMethodsDetailASTs) {
-
-			_checkUnusedParameters(detailAST, constructorOrMethodDetailAST);
+		for (DetailAST childDetailAST : childDetailASTs) {
+			_checkUnusedParameters(detailAST, childDetailAST);
 		}
 	}
 
 	private void _checkUnusedParameters(
-		DetailAST classDetailAST, DetailAST constructorOrMethodDetailAST) {
+		DetailAST classDetailAST, DetailAST childDetailAST) {
 
-		DetailAST modifiersDetailAST =
-			constructorOrMethodDetailAST.findFirstToken(TokenTypes.MODIFIERS);
+		DetailAST modifiersDetailAST = childDetailAST.findFirstToken(
+			TokenTypes.MODIFIERS);
 
 		if ((!modifiersDetailAST.branchContains(TokenTypes.LITERAL_PRIVATE) &&
-			 !_isDSLifecycleMethod(constructorOrMethodDetailAST)) ||
-			AnnotationUtil.containsAnnotation(
-				constructorOrMethodDetailAST, "Override")) {
+			 !_isDSLifecycleMethod(childDetailAST)) ||
+			AnnotationUtil.containsAnnotation(childDetailAST, "Override")) {
 
 			return;
 		}
 
-		String constructorOrMethodName = getName(constructorOrMethodDetailAST);
+		String name = getName(childDetailAST);
 
-		if (constructorOrMethodName.equals("readObject") ||
-			constructorOrMethodName.equals("writeObject")) {
-
+		if (name.equals("readObject") || name.equals("writeObject")) {
 			return;
 		}
 
 		List<DetailAST> parameterDefinitionDetailASTs = getParameterDefs(
-			constructorOrMethodDetailAST);
+			childDetailAST);
 
 		if (parameterDefinitionDetailASTs.isEmpty()) {
 			return;
 		}
 
-		DetailAST statementsDetailAST =
-			constructorOrMethodDetailAST.findFirstToken(TokenTypes.SLIST);
+		DetailAST slistDetailAST = childDetailAST.findFirstToken(
+			TokenTypes.SLIST);
 
-		if ((statementsDetailAST == null) ||
-			_isReferencedMethod(classDetailAST, constructorOrMethodDetailAST)) {
+		if ((slistDetailAST == null) ||
+			_isReferencedMethod(classDetailAST, childDetailAST)) {
 
 			return;
 		}
 
-		List<String> names = getNames(statementsDetailAST, true);
+		List<String> names = getNames(slistDetailAST, true);
 
 		for (DetailAST parameterDefinitionDetailAST :
 				parameterDefinitionDetailASTs) {
@@ -91,21 +86,14 @@ public class UnusedParameterCheck extends BaseCheck {
 				continue;
 			}
 
-			log(
-				constructorOrMethodDetailAST, _MSG_UNUSED_PARAMETER,
-				parameterName);
+			log(childDetailAST, _MSG_UNUSED_PARAMETER, parameterName);
 		}
 	}
 
-	private boolean _isDSLifecycleMethod(
-		DetailAST constructorOrMethodDetailAST) {
-
-		if (AnnotationUtil.containsAnnotation(
-				constructorOrMethodDetailAST, "Activate") ||
-			AnnotationUtil.containsAnnotation(
-				constructorOrMethodDetailAST, "Deactivate") ||
-			AnnotationUtil.containsAnnotation(
-				constructorOrMethodDetailAST, "Modified")) {
+	private boolean _isDSLifecycleMethod(DetailAST detailAST) {
+		if (AnnotationUtil.containsAnnotation(detailAST, "Activate") ||
+			AnnotationUtil.containsAnnotation(detailAST, "Deactivate") ||
+			AnnotationUtil.containsAnnotation(detailAST, "Modified")) {
 
 			return true;
 		}
@@ -114,7 +102,7 @@ public class UnusedParameterCheck extends BaseCheck {
 	}
 
 	private boolean _isReferencedMethod(
-		DetailAST classDetailAST, DetailAST constructorOrMethodDetailAST) {
+		DetailAST classDetailAST, DetailAST childDetailAST) {
 
 		List<DetailAST> methodReferenceDetailASTs = getAllChildTokens(
 			classDetailAST, true, TokenTypes.METHOD_REF);
@@ -123,7 +111,7 @@ public class UnusedParameterCheck extends BaseCheck {
 			return false;
 		}
 
-		String constructorOrMethodName = getName(constructorOrMethodDetailAST);
+		String constructorOrMethodName = getName(childDetailAST);
 
 		for (DetailAST methodReferenceDetailAST : methodReferenceDetailASTs) {
 			for (String name : getNames(methodReferenceDetailAST, true)) {
