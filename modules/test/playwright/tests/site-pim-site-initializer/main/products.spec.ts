@@ -626,3 +626,77 @@ test(
 		});
 	}
 );
+
+test(
+	'A product folder lists its products and subfolders',
+	{tag: '@LPD-115762'},
+	async ({apiHelpers, page, productFolderPage, productPage}) => {
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
+		const objectEntryFolder =
+			await apiHelpers.objectFolder.createObjectEntryFolder({
+				parentObjectEntryFolderExternalReferenceCode: 'L_PRODUCTS',
+				scopeKey: space.name,
+				title: getRandomString(),
+			});
+
+		const subfolderTitle = getRandomString();
+
+		await apiHelpers.objectFolder.createObjectEntryFolder({
+			parentObjectEntryFolderExternalReferenceCode:
+				objectEntryFolder.externalReferenceCode,
+			scopeKey: space.name,
+			title: subfolderTitle,
+		});
+
+		await productFolderPage.goto(objectEntryFolder.id);
+
+		await test.step('The New menu offers a folder and the product types', async () => {
+			await productFolderPage.openNewMenu();
+
+			await expect(
+				productFolderPage.menuItem('PIM Basic Product')
+			).toBeVisible();
+
+			await page.keyboard.press('Escape');
+		});
+
+		await test.step('A subfolder row has the folder actions', async () => {
+			await expect(
+				productFolderPage.rowLink(subfolderTitle)
+			).toBeVisible();
+
+			await productFolderPage.expectRowActions(subfolderTitle, [
+				'View Folder',
+				'Edit',
+				'Permissions',
+				'Delete',
+			]);
+		});
+
+		await test.step('A product created from the folder is listed in it', async () => {
+			const productTitle = getRandomString();
+
+			await productFolderPage.openNewProductEditor('PIM Basic Product');
+
+			await productPage.sku.fill(getRandomString());
+			await productPage.title.fill(productTitle);
+
+			await productPage.save();
+
+			await expect(productFolderPage.rowLink(productTitle)).toBeVisible();
+
+			await productFolderPage.expectRowActions(productTitle, [
+				'Edit',
+				'Permissions',
+				'Delete',
+			]);
+		});
+
+		await test.step('An empty subfolder shows the products empty state', async () => {
+			await productFolderPage.rowLink(subfolderTitle).click();
+
+			await expect(productFolderPage.emptyState).toBeVisible();
+		});
+	}
+);
