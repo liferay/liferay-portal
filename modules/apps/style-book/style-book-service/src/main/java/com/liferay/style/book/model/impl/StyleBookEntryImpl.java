@@ -12,11 +12,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.zip.ZipWriter;
+import com.liferay.style.book.internal.util.StyleBookEntryPreviewFileEntryUtil;
 
 /**
  * @author Eudaldo Alonso
@@ -30,8 +30,9 @@ public class StyleBookEntryImpl extends StyleBookEntryBaseImpl {
 		}
 
 		try {
-			FileEntry fileEntry = PortletFileRepositoryUtil.getPortletFileEntry(
-				getPreviewFileEntryId());
+			FileEntry fileEntry =
+				StyleBookEntryPreviewFileEntryUtil.fetchPreviewFileEntry(
+					getGroupId(), getPreviewFileEntryId());
 
 			if (fileEntry == null) {
 				return StringPool.BLANK;
@@ -97,13 +98,9 @@ public class StyleBookEntryImpl extends StyleBookEntryBaseImpl {
 	}
 
 	private FileEntry _getPreviewFileEntry() {
-		if (getPreviewFileEntryId() <= 0) {
-			return null;
-		}
-
 		try {
-			return PortletFileRepositoryUtil.getPortletFileEntry(
-				getPreviewFileEntryId());
+			return StyleBookEntryPreviewFileEntryUtil.fetchPreviewFileEntry(
+				getGroupId(), getPreviewFileEntryId());
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {

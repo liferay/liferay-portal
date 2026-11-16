@@ -10,11 +10,14 @@ import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.dto.v1_0.util.ThumbnailURLReferenceUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
+import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
+import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 
@@ -108,6 +111,18 @@ public class StyleBookDTOConverter
 								return null;
 							}
 
+							Repository repository =
+								_portletFileRepository.fetchPortletRepository(
+									styleBookEntry.getGroupId(),
+									StyleBookPortletKeys.STYLE_BOOK);
+
+							if ((repository == null) ||
+								(repository.getRepositoryId() !=
+									fileEntry.getRepositoryId())) {
+
+								return null;
+							}
+
 							return ThumbnailURLReferenceUtil.
 								getFileEntryThumbnailURLReference(
 									previewFileEntryId);
@@ -118,6 +133,9 @@ public class StyleBookDTOConverter
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
+	private PortletFileRepository _portletFileRepository;
 
 	@Reference
 	private StyleBookEntryLocalService _styleBookEntryLocalService;

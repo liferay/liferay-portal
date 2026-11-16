@@ -5,7 +5,6 @@
 
 package com.liferay.style.book.service.impl;
 
-import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.frontend.token.definition.FrontendToken;
 import com.liferay.frontend.token.definition.util.FrontendTokenDefinitionUtil;
@@ -50,12 +49,14 @@ import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryFrontendTokenException;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryKeyException;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryNameException;
+import com.liferay.style.book.exception.StyleBookEntryFileException;
 import com.liferay.style.book.exception.StyleBookEntryFrontendTokenDefinitionException;
 import com.liferay.style.book.exception.StyleBookEntryFrontendTokenException;
 import com.liferay.style.book.exception.StyleBookEntryFrontendTokensValuesException;
 import com.liferay.style.book.exception.StyleBookEntryNameException;
 import com.liferay.style.book.exception.StyleBookEntryThemeIdException;
 import com.liferay.style.book.internal.util.StyleBookEntryFrontendTokensValuesUtil;
+import com.liferay.style.book.internal.util.StyleBookEntryPreviewFileEntryUtil;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.model.StyleBookEntryVersion;
 import com.liferay.style.book.service.base.StyleBookEntryLocalServiceBaseImpl;
@@ -247,7 +248,9 @@ public class StyleBookEntryLocalServiceImpl
 		throws PortalException {
 
 		if (styleBookEntry.getPreviewFileEntryId() > 0) {
-			_deletePreviewFileEntry(styleBookEntry.getPreviewFileEntryId());
+			_deletePreviewFileEntry(
+				styleBookEntry.getGroupId(),
+				styleBookEntry.getPreviewFileEntryId());
 		}
 
 		return delete(styleBookEntry);
@@ -715,6 +718,8 @@ public class StyleBookEntryLocalServiceImpl
 		StyleBookEntry styleBookEntry =
 			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
 
+		_validatePreviewFileEntryId(previewFileEntryId, styleBookEntry);
+
 		long previousPreviewFileEntryId =
 			styleBookEntry.getPreviewFileEntryId();
 
@@ -733,7 +738,8 @@ public class StyleBookEntryLocalServiceImpl
 			styleBookEntry, serviceContext);
 
 		if ((previewFileEntryId == 0) && (previousPreviewFileEntryId > 0)) {
-			_deletePreviewFileEntry(previousPreviewFileEntryId);
+			_deletePreviewFileEntry(
+				styleBookEntry.getGroupId(), previousPreviewFileEntryId);
 		}
 
 		return styleBookEntry;
@@ -771,6 +777,8 @@ public class StyleBookEntryLocalServiceImpl
 					frontendTokenDefinition, frontendTokensValues, themeId);
 
 		_validateFrontendTokensValues(frontendTokensValues, styleBookEntry);
+
+		_validatePreviewFileEntryId(previewFileEntryId, styleBookEntry);
 
 		if (Validator.isNull(styleBookEntryKey)) {
 			styleBookEntryKey = generateStyleBookEntryKey(
@@ -830,7 +838,8 @@ public class StyleBookEntryLocalServiceImpl
 		if ((previousPreviewFileEntryId > 0) &&
 			(previousPreviewFileEntryId != previewFileEntryId)) {
 
-			_deletePreviewFileEntry(previousPreviewFileEntryId);
+			_deletePreviewFileEntry(
+				styleBookEntry.getGroupId(), previousPreviewFileEntryId);
 		}
 
 		return styleBookEntry;
@@ -841,12 +850,14 @@ public class StyleBookEntryLocalServiceImpl
 			StyleBookEntry copyStyleBookEntry)
 		throws PortalException {
 
-		if (sourceStyleBookEntry.getPreviewFileEntryId() == 0) {
+		FileEntry previewFileEntry =
+			StyleBookEntryPreviewFileEntryUtil.fetchPreviewFileEntry(
+				sourceStyleBookEntry.getGroupId(),
+				sourceStyleBookEntry.getPreviewFileEntryId());
+
+		if (previewFileEntry == null) {
 			return 0;
 		}
-
-		FileEntry fileEntry = _dlAppLocalService.getFileEntry(
-			sourceStyleBookEntry.getPreviewFileEntryId());
 
 		Repository repository =
 			PortletFileRepositoryUtil.fetchPortletRepository(
@@ -866,34 +877,27 @@ public class StyleBookEntryLocalServiceImpl
 
 		String fileName =
 			copyStyleBookEntry.getStyleBookEntryId() + "_preview." +
-				fileEntry.getExtension();
+				previewFileEntry.getExtension();
 
-		fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
-			null, groupId, userId, StyleBookEntry.class.getName(),
-			copyStyleBookEntry.getStyleBookEntryId(),
-			StyleBookPortletKeys.STYLE_BOOK, repository.getDlFolderId(),
-			fileEntry.getContentStream(), fileName, fileEntry.getMimeType(),
-			false);
+		FileEntry portletFileEntry =
+			PortletFileRepositoryUtil.addPortletFileEntry(
+				null, groupId, userId, StyleBookEntry.class.getName(),
+				copyStyleBookEntry.getStyleBookEntryId(),
+				StyleBookPortletKeys.STYLE_BOOK, repository.getDlFolderId(),
+				previewFileEntry.getContentStream(), fileName,
+				previewFileEntry.getMimeType(), false);
 
-		return fileEntry.getFileEntryId();
+		return portletFileEntry.getFileEntryId();
 	}
 
-	private void _deletePreviewFileEntry(long previewFileEntryId)
+	private void _deletePreviewFileEntry(long groupId, long previewFileEntryId)
 		throws PortalException {
 
-		FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
-			previewFileEntryId);
+		FileEntry previewFileEntry =
+			StyleBookEntryPreviewFileEntryUtil.fetchPreviewFileEntry(
+				groupId, previewFileEntryId);
 
-		if (fileEntry == null) {
-			return;
-		}
-
-		Repository repository = _portletFileRepository.fetchPortletRepository(
-			fileEntry.getGroupId(), StyleBookPortletKeys.STYLE_BOOK);
-
-		if ((repository != null) &&
-			(repository.getRepositoryId() == fileEntry.getRepositoryId())) {
-
+		if (previewFileEntry != null) {
 			_portletFileRepository.deletePortletFileEntry(previewFileEntryId);
 		}
 	}
@@ -1126,6 +1130,29 @@ public class StyleBookEntryLocalServiceImpl
 		}
 	}
 
+	private void _validatePreviewFileEntryId(
+			long previewFileEntryId, StyleBookEntry styleBookEntry)
+		throws PortalException {
+
+		if ((previewFileEntryId == 0) ||
+			(previewFileEntryId == styleBookEntry.getPreviewFileEntryId())) {
+
+			return;
+		}
+
+		FileEntry previewFileEntry =
+			StyleBookEntryPreviewFileEntryUtil.fetchPreviewFileEntry(
+				styleBookEntry.getGroupId(), previewFileEntryId);
+
+		if (previewFileEntry == null) {
+			throw new StyleBookEntryFileException(
+				StringBundler.concat(
+					"File entry ", previewFileEntryId,
+					" is not in the style book repository of group ",
+					styleBookEntry.getGroupId()));
+		}
+	}
+
 	private void _validateStyleBookEntryKey(
 			long groupId, String styleBookEntryKey)
 		throws PortalException {
@@ -1146,9 +1173,6 @@ public class StyleBookEntryLocalServiceImpl
 
 	@Reference
 	private CustomSQL _customSQL;
-
-	@Reference
-	private DLAppLocalService _dlAppLocalService;
 
 	private final FrontendTokenDefinitionJSONValidator
 		_frontendTokenDefinitionJSONValidator =
