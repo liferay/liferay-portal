@@ -354,33 +354,34 @@ public class VirtualHostFilter extends BasePortalFilter {
 				StringPool.BLANK);
 		}
 
-		String groupFriendlyURL = GroupFriendlyURLUtil.parseGroupFriendlyURL(
-			friendlyURL);
+		Group group = null;
+		String groupFriendlyURL = null;
 
-		Group group = GroupFriendlyURLUtil.fetchFriendlyURLGroup(
-			companyId, groupFriendlyURL);
+		if (!PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING_ENABLED &&
+			!layoutSet.isPrivateLayout()) {
 
-		if ((group != null) &&
-			SiteVirtualHostUtil.isRestricted(group, httpServletRequest)) {
+			groupFriendlyURL = GroupFriendlyURLUtil.parseGroupFriendlyURL(
+				friendlyURL);
 
-			httpServletRequest.setAttribute(
-				WebKeys.SITE_VIRTUAL_HOST_RESTRICTED, Boolean.TRUE);
-
-			PortalUtil.sendError(
-				new NoSuchLayoutException(), httpServletRequest,
-				httpServletResponse);
-
-			return;
+			group = GroupFriendlyURLUtil.fetchFriendlyURLGroup(
+				companyId, groupFriendlyURL);
 		}
 
 		if (group != null) {
+			if (SiteVirtualHostUtil.isRestricted(group, httpServletRequest)) {
+				httpServletRequest.setAttribute(
+					WebKeys.SITE_VIRTUAL_HOST_RESTRICTED, Boolean.TRUE);
+
+				PortalUtil.sendError(
+					new NoSuchLayoutException(), httpServletRequest,
+					httpServletResponse);
+
+				return;
+			}
+
 			httpServletRequest.setAttribute(WebKeys.FRIENDLY_URL_GROUP, group);
 			httpServletRequest.setAttribute(
 				WebKeys.GROUP_FRIENDLY_URL, groupFriendlyURL);
-		}
-
-		if (!PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING_ENABLED &&
-			!layoutSet.isPrivateLayout() && (group != null)) {
 
 			sb.append(_PUBLIC_GROUP_SERVLET_MAPPING);
 		}
