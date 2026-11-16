@@ -1,6 +1,9 @@
 {{- $repoURLs := list -}}
 {{- range $operatorApplication := .Values.operatorApplications -}}
 {{- $repoURLs = append $repoURLs $operatorApplication.repoURL -}}
+{{- with $operatorApplication.crds -}}
+{{- $repoURLs = append $repoURLs .repoURL -}}
+{{- end -}}
 {{- end -}}
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject

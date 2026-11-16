@@ -75,6 +75,9 @@ tests:
                     path: spec.source.helm.valuesObject.config.envoyGateway.extensionApis.enableBackend
                     value: false
             -   equal:
+                    path: spec.source.helm.valuesObject.crds.enabled
+                    value: false
+            -   equal:
                     path: spec.source.helm.valuesObject.deployment.replicas
                     value: 2
             -   equal:

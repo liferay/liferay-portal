@@ -1,0 +1,98 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Envoy Gateway CRDs
+templates:
+    -   templates/envoy-gateway-crds.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.source.helm.valuesObject.crds.envoyGateway.enabled
+                    value: true
+            -   equal:
+                    path: spec.source.helm.valuesObject.crds.gatewayAPI.enabled
+                    value: false
+        it: Can leave the Gateway API CRDs to the cluster and keep the Envoy Gateway CRDs
+        set:
+            operatorApplications.envoyGateway.crds.values.crds.gatewayAPI.enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec.source.targetRevision
+                    value: 1.9.2
+        it: Can override the CRD chart version
+        set:
+            operatorApplications.envoyGateway.crds.targetRevision: 1.9.2
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "operatorApplications.envoyGateway.values.crds.enabled" must be false when "operatorApplications.envoyGateway.crds.enabled" is true
+        it: Fails when the Envoy Gateway application still installs its bundled CRDs
+        set:
+            operatorApplications.envoyGateway.values.crds.enabled: true
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "operatorApplications.envoyGateway.values.crds.enabled" must be false when "operatorApplications.envoyGateway.crds.enabled" is true
+        it: Fails when the Envoy Gateway application values omit the CRD switch
+        set:
+            operatorApplications.envoyGateway.values.crds: null
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-100"
+            -   equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: envoy-gateway-crds
+            -   equal:
+                    path: metadata.name
+                    value: envoy-gateway-crds
+            -   equal:
+                    path: metadata.namespace
+                    value: argocd-system
+            -   equal:
+                    path: spec.destination.namespace
+                    value: envoy-gateway-system
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+            -   equal:
+                    path: spec.source.helm.valuesObject.crds.envoyGateway.enabled
+                    value: true
+            -   equal:
+                    path: spec.source.helm.valuesObject.crds.gatewayAPI.channel
+                    value: standard
+            -   equal:
+                    path: spec.source.helm.valuesObject.crds.gatewayAPI.enabled
+                    value: true
+            -   equal:
+                    path: spec.source.path
+                    value: .
+            -   equal:
+                    path: spec.source.repoURL
+                    value: oci://docker.io/envoyproxy/gateway-crds-helm
+            -   equal:
+                    path: spec.source.targetRevision
+                    value: 1.9.3
+            -   contains:
+                    content: ServerSideApply=true
+                    path: spec.syncPolicy.syncOptions
+        it: Installs the standard Gateway API CRDs and the Envoy Gateway CRDs by default
+    -   asserts:
+            -   notExists:
+                    path: metadata.finalizers
+            -   equal:
+                    path: spec.syncPolicy.automated.prune
+                    value: false
+        it: Keeps the CRDs when the application is deleted or stops rendering them
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the CRDs application when Envoy Gateway is disabled
+        set:
+            operatorApplications.envoyGateway.enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the CRDs application when it is disabled
+        set:
+            operatorApplications.envoyGateway.crds.enabled: false

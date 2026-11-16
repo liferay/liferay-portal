@@ -16,6 +16,16 @@ templates:
     -   templates/appproject-operator.yaml
 tests:
     -   asserts:
+            -   contains:
+                    content: oci://docker.io/envoyproxy/gateway-crds-helm
+                    path: spec.sourceRepos
+                template: templates/appproject-operator.yaml
+            -   contains:
+                    content: oci://docker.io/envoyproxy/gateway-crds-helm/**
+                    path: spec.sourceRepos
+                template: templates/appproject-operator.yaml
+        it: Allows the Envoy Gateway CRD chart repository in the operator AppProject
+    -   asserts:
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
                     value: "-80"
@@ -626,6 +636,8 @@ tests:
                         -   https://helm.elastic.co/**
                         -   oci://docker.io/envoyproxy/gateway-helm
                         -   oci://docker.io/envoyproxy/gateway-helm/**
+                        -   oci://docker.io/envoyproxy/gateway-crds-helm
+                        -   oci://docker.io/envoyproxy/gateway-crds-helm/**
                         -   https://charts.external-secrets.io
                         -   https://charts.external-secrets.io/**
                         -   https://kedacore.github.io/charts

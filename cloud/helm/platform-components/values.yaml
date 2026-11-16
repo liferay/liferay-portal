@@ -321,6 +321,18 @@ operatorApplications:
                 seccompProfile:
                     type: RuntimeDefault
     envoyGateway:
+        crds:
+            enabled: true
+            name: envoy-gateway-crds
+            repoURL: oci://docker.io/envoyproxy/gateway-crds-helm
+            targetRevision: 1.9.3
+            values:
+                crds:
+                    envoyGateway:
+                        enabled: true
+                    gatewayAPI:
+                        channel: standard
+                        enabled: true
         enabled: true
         name: envoy-gateway
         namespace: envoy-gateway-system
@@ -331,6 +343,8 @@ operatorApplications:
                 envoyGateway:
                     extensionApis:
                         enableBackend: false
+            crds:
+                enabled: false
             deployment:
                 replicas: 2
             podDisruptionBudget:

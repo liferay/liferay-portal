@@ -1,0 +1,42 @@
+{{- $envoyGateway := .Values.operatorApplications.envoyGateway -}}
+{{- $crds := $envoyGateway.crds -}}
+{{- if and $envoyGateway.enabled $crds.enabled -}}
+{{- if ne (dig "crds" "enabled" true $envoyGateway.values) false -}}
+{{- fail "The value \"operatorApplications.envoyGateway.values.crds.enabled\" must be false when \"operatorApplications.envoyGateway.crds.enabled\" is true" -}}
+{{- end -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-100"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ $crds.name }}
+    name: {{ $crds.name }}
+    namespace: {{ .Release.Namespace }}
+spec:
+    destination:
+        namespace: {{ $envoyGateway.namespace }}
+        server: https://kubernetes.default.svc
+    project: liferay-operator
+    source:
+        {{- include "liferay-platform.chartSource" (dict "repoURL" $crds.repoURL "targetRevision" $crds.targetRevision) | nindent 8 }}
+        {{- with $crds.values }}
+        helm:
+            valuesObject:
+                {{- toYaml . | nindent 16 }}
+        {{- end }}
+    syncPolicy:
+        automated:
+            prune: false
+            selfHeal: true
+        retry:
+            backoff:
+                duration: 30s
+                factor: 2
+                maxDuration: 10m
+            limit: 10
+        syncOptions:
+            -   CreateNamespace=true
+            -   ServerSideApply=true
+{{- end -}}
