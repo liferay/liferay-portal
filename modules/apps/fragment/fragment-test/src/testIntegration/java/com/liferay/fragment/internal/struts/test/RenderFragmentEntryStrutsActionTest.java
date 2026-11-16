@@ -155,6 +155,7 @@ public class RenderFragmentEntryStrutsActionTest {
 		String html = unsyncStringWriter.toString();
 
 		Assert.assertTrue(
+			html,
 			html.contains(
 				StringBundler.concat(
 					"<div class=\"scope-group-id\">", _group.getGroupId(),
