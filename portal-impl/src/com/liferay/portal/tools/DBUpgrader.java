@@ -97,7 +97,18 @@ public class DBUpgrader {
 			if (StartupHelperUtil.isUpgrading() &&
 				PortalUpgradeProcess.supportsRetry(connection)) {
 
-				System.out.println("Retrying upgrade");
+				if ((state != ReleaseConstants.STATE_IN_PROGRESS) &&
+					_log.isWarnEnabled()) {
+
+					_log.warn(
+						StringBundler.concat(
+							"Retrying the upgrade of ",
+							ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+							" from schema version ",
+							PortalUpgradeProcess.getCurrentSchemaVersion(
+								connection),
+							" after a failure"));
+				}
 
 				return;
 			}
