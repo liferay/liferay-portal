@@ -245,6 +245,12 @@ public class MBCommentManagerImplTest extends Mockito {
 
 	@Test
 	public void testDeleteComment() throws Exception {
+		when(
+			_mbMessage.isDiscussion()
+		).thenReturn(
+			true
+		);
+
 		_mbCommentManagerImpl.deleteComment(_MBMESSAGE_ID);
 
 		Mockito.verify(

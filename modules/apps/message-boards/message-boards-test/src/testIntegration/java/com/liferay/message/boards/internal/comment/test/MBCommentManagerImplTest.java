@@ -88,6 +88,16 @@ public class MBCommentManagerImplTest {
 
 	@Test
 	@TestInfo("LPD-115704")
+	public void testDeleteComment() throws Exception {
+		MBMessage mbMessage = _addMessage();
+
+		Assert.assertThrows(
+			NoSuchMessageException.class,
+			() -> _commentManager.deleteComment(mbMessage.getMessageId()));
+	}
+
+	@Test
+	@TestInfo("LPD-115704")
 	public void testFetchComment() throws Exception {
 		Assert.assertNotNull(_commentManager.fetchComment(_parentCommentId));
 
@@ -219,6 +229,20 @@ public class MBCommentManagerImplTest {
 				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 				DLFileEntryConstants.getClassName(),
 				_fileEntry.getFileEntryId()));
+	}
+
+	@Test
+	@TestInfo("LPD-115704")
+	public void testUpdateComment() throws Exception {
+		MBMessage mbMessage = _addMessage();
+
+		Assert.assertThrows(
+			NoSuchMessageException.class,
+			() -> _commentManager.updateComment(
+				_user.getUserId(), DLFileEntryConstants.getClassName(),
+				_fileEntry.getFileEntryId(), mbMessage.getMessageId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				_createServiceContextFunction()));
 	}
 
 	private long _addComment() throws Exception {
