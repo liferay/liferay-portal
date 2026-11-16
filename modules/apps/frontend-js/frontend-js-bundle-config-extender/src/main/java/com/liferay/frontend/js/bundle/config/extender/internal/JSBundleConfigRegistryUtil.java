@@ -47,52 +47,13 @@ public class JSBundleConfigRegistryUtil {
 		return _lastModified;
 	}
 
-	public static class JSConfig {
-
-		public ServletContext getServletContext() {
-			return _servletContext;
-		}
-
-		public URL getURL() {
-			return _url;
-		}
-
-		private JSConfig(ServletContext servletContext, URL url) {
-			_servletContext = servletContext;
-			_url = url;
-		}
-
-		private final ServletContext _servletContext;
-		private final URL _url;
-
-	}
-
 	private static String _createJavaScript() {
-		List<JSConfig> jsConfigs = _serviceTrackerList.toList();
+		List<String> javaScripts = _serviceTrackerList.toList();
 
-		StringBundler sb = new StringBundler(jsConfigs.size() * 8);
+		StringBundler sb = new StringBundler(javaScripts.size());
 
-		for (JSConfig jsConfig : jsConfigs) {
-			try {
-				sb.append("try {var MODULE_MAIN='");
-
-				ServletContext servletContext = jsConfig.getServletContext();
-
-				sb.append(_getModuleMain(servletContext));
-
-				sb.append("';var MODULE_PATH='");
-				sb.append(PortalUtil.getPathProxy());
-				sb.append(servletContext.getContextPath());
-				sb.append("';");
-				sb.append(
-					StringUtil.removeSubstring(
-						URLUtil.toString(jsConfig.getURL()),
-						"//# sourceMappingURL=config.js.map"));
-				sb.append("} catch(error) {console.error(error);}");
-			}
-			catch (Exception exception) {
-				_log.error("Unable to open resource", exception);
-			}
+		for (String javaScript : javaScripts) {
+			sb.append(javaScript);
 		}
 
 		return sb.toString();
@@ -138,10 +99,10 @@ public class JSBundleConfigRegistryUtil {
 	private static final DCLSingleton<String> _javaScriptDCLSingleton =
 		new DCLSingleton<>();
 	private static volatile long _lastModified = System.currentTimeMillis();
-	private static final ServiceTrackerList<JSConfig> _serviceTrackerList;
+	private static final ServiceTrackerList<String> _serviceTrackerList;
 
 	private static class JSBundleConfigServiceTrackerCustomizer
-		implements ServiceTrackerCustomizer<ServletContext, JSConfig> {
+		implements ServiceTrackerCustomizer<ServletContext, String> {
 
 		public JSBundleConfigServiceTrackerCustomizer(
 			BundleContext bundleContext) {
@@ -150,7 +111,7 @@ public class JSBundleConfigRegistryUtil {
 		}
 
 		@Override
-		public JSConfig addingService(
+		public String addingService(
 			ServiceReference<ServletContext> serviceReference) {
 
 			Bundle bundle = serviceReference.getBundle();
@@ -173,23 +134,41 @@ public class JSBundleConfigRegistryUtil {
 			ServletContext servletContext = _bundleContext.getService(
 				serviceReference);
 
-			_javaScriptDCLSingleton.destroy(null);
+			try {
+				String javaScript = StringBundler.concat(
+					"try {var MODULE_MAIN='", _getModuleMain(servletContext),
+					"';var MODULE_PATH='", PortalUtil.getPathProxy(),
+					servletContext.getContextPath(), "';",
+					StringUtil.removeSubstring(
+						URLUtil.toString(url),
+						"//# sourceMappingURL=config.js.map"),
+					"} catch(error) {console.error(error);}");
 
-			_lastModified = System.currentTimeMillis();
+				_javaScriptDCLSingleton.destroy(null);
 
-			return new JSConfig(servletContext, url);
+				_lastModified = System.currentTimeMillis();
+
+				return javaScript;
+			}
+			catch (Exception exception) {
+				_log.error("Unable to open resource", exception);
+			}
+
+			_bundleContext.ungetService(serviceReference);
+
+			return null;
 		}
 
 		@Override
 		public void modifiedService(
 			ServiceReference<ServletContext> serviceReference,
-			JSConfig jsConfig) {
+			String javaScript) {
 		}
 
 		@Override
 		public void removedService(
 			ServiceReference<ServletContext> serviceReference,
-			JSConfig jsConfig) {
+			String javaScript) {
 
 			_bundleContext.ungetService(serviceReference);
 
