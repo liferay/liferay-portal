@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.dao.jdbc.CurrentConnectionUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataSourceWrapper;
 import com.liferay.portal.kernel.dao.jdbc.util.ConnectionWrapper;
 import com.liferay.portal.kernel.dao.jdbc.util.StatementWrapper;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
 import com.liferay.portal.kernel.exception.CompanyWebIdException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ShardedModel;
 import com.liferay.portal.kernel.module.framework.ThrowableCollector;
@@ -41,6 +43,7 @@ import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.ReleaseLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
@@ -48,6 +51,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.spring.hibernate.DialectUtil;
 
 import java.sql.CallableStatement;
@@ -768,6 +772,48 @@ public class DBPartitionUtil {
 			throw new IllegalArgumentException(
 				"Unable to insert the database partition " +
 					sourcePartitionName + " because it does not exist");
+		}
+
+		Map<String, Release> releases = new HashMap<>();
+
+		for (Release release :
+				ReleaseLocalServiceUtil.getReleases(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+
+			releases.put(release.getServletContextName(), release);
+		}
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				"select servletContextName, schemaVersion from " +
+					sourcePartitionName + ".Release_");
+
+			ResultSet resultSet = preparedStatement.executeQuery()) {
+
+			while (resultSet.next()) {
+				String servletContextName = resultSet.getString(
+					"servletContextName");
+
+				Release release = releases.remove(servletContextName);
+
+				if (release == null) {
+					continue;
+				}
+
+				Version exportedSchemaVersion = Version.parseVersion(
+					resultSet.getString("schemaVersion"));
+				Version schemaVersion = Version.parseVersion(
+					release.getSchemaVersion());
+
+				if (!exportedSchemaVersion.equals(schemaVersion)) {
+					throw new IllegalArgumentException(
+						StringBundler.concat(
+							"Unable to insert the database partition ",
+							sourcePartitionName, " because module ",
+							servletContextName, " has schema version ",
+							exportedSchemaVersion, " instead of ",
+							schemaVersion));
+				}
+			}
 		}
 	}
 
