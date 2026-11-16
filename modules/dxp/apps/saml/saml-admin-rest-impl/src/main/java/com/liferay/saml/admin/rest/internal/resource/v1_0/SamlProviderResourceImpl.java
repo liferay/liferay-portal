@@ -421,7 +421,7 @@ public class SamlProviderResourceImpl extends BaseSamlProviderResourceImpl {
 					SecretResolverUtil.resolve(
 						CompanyThreadLocal.getCompanyId(),
 						SecretContext.createConfigurationSecretContext(
-							"saml.keystore.credential.password",
+							PortletPropsKeys.SAML_KEYSTORE_CREDENTIAL_PASSWORD,
 							samlProviderConfigurationProperties),
 						samlProviderConfiguration.
 							keyStoreCredentialPassword())),

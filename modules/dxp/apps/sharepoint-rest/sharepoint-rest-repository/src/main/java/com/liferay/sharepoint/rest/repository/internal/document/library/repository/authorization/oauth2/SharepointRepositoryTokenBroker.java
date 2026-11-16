@@ -6,6 +6,7 @@
 package com.liferay.sharepoint.rest.repository.internal.document.library.repository.authorization.oauth2;
 
 import com.liferay.document.library.repository.authorization.oauth2.Token;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.security.key.secret.SecretContext;
 import com.liferay.portal.security.key.secret.SecretResolverUtil;
@@ -125,7 +126,9 @@ public class SharepointRepositoryTokenBroker {
 	private ConfidentialClientApplication _getConfidentialClientApplication()
 		throws MalformedURLException {
 
-		long companyId = GetterUtil.getLong(_properties.get("companyId"));
+		long companyId = GetterUtil.getLong(
+			_properties.get(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()));
 
 		return ConfidentialClientApplication.builder(
 			_sharepointRepositoryConfiguration.clientId(),

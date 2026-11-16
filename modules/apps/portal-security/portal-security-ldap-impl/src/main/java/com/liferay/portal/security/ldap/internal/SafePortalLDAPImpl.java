@@ -37,6 +37,7 @@ import com.liferay.portal.security.ldap.UserConverterKeys;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
 import com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration;
+import com.liferay.portal.security.ldap.constants.LDAPConstants;
 import com.liferay.portal.security.ldap.constants.LDAPReferralModes;
 import com.liferay.portal.security.ldap.internal.ssl.LDAPSSLSocketFactory;
 import com.liferay.portal.security.ldap.internal.util.SafeLdapReferralUtil;
@@ -421,7 +422,7 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 			_secretResolver.resolve(
 				companyId,
 				SecretContext.createConfigurationSecretContext(
-					"securityCredential",
+					LDAPConstants.SECURITY_CREDENTIAL,
 					_ldapServerConfigurationProvider.getConfigurationProperties(
 						companyId, ldapServerId)),
 				ldapServerConfiguration.securityCredential()));

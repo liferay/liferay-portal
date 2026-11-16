@@ -21,6 +21,7 @@ import com.liferay.portal.security.ldap.SafeLdapNameFactory;
 import com.liferay.portal.security.ldap.SafePortalLDAP;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
+import com.liferay.portal.security.ldap.constants.LDAPConstants;
 import com.liferay.portal.settings.authentication.ldap.web.internal.portlet.action.ActionUtil;
 import com.liferay.portal.settings.authentication.ldap.web.internal.portlet.util.ConfigurationProviderUtil;
 import com.liferay.portal.settings.authentication.ldap.web.internal.util.SafePortalLDAPUtil;
@@ -165,7 +166,7 @@ public class LDAPTestDisplayContext {
 		return SecretResolverUtil.resolve(
 			_companyId,
 			SecretContext.createConfigurationSecretContext(
-				"securityCredential",
+				LDAPConstants.SECURITY_CREDENTIAL,
 				ldapServerConfigurationProvider.getConfigurationProperties(
 					_companyId, ldapServerId)),
 			ldapServerConfiguration.securityCredential());

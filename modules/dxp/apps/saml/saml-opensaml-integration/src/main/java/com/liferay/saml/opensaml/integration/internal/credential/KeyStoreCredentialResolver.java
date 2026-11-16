@@ -12,6 +12,7 @@ import com.liferay.saml.opensaml.integration.internal.util.KeyStoreUtil;
 import com.liferay.saml.runtime.configuration.SamlProviderConfiguration;
 import com.liferay.saml.runtime.configuration.SamlProviderConfigurationHelper;
 import com.liferay.saml.runtime.credential.KeyStoreManager;
+import com.liferay.saml.util.PortletPropsKeys;
 
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
@@ -74,7 +75,8 @@ public class KeyStoreCredentialResolver extends AbstractCredentialResolver {
 				keyStoreCredentialPassword = SecretResolverUtil.resolve(
 					companyId,
 					SecretContext.createConfigurationSecretContext(
-						"saml.keystore.encryption.credential.password",
+						PortletPropsKeys.
+							SAML_KEYSTORE_ENCRYPTION_CREDENTIAL_PASSWORD,
 						_samlProviderConfigurationHelper.
 							getSamlProviderConfigurationProperties()),
 					samlProviderConfiguration.
@@ -84,7 +86,7 @@ public class KeyStoreCredentialResolver extends AbstractCredentialResolver {
 				keyStoreCredentialPassword = SecretResolverUtil.resolve(
 					companyId,
 					SecretContext.createConfigurationSecretContext(
-						"saml.keystore.credential.password",
+						PortletPropsKeys.SAML_KEYSTORE_CREDENTIAL_PASSWORD,
 						_samlProviderConfigurationHelper.
 							getSamlProviderConfigurationProperties()),
 					samlProviderConfiguration.keyStoreCredentialPassword());

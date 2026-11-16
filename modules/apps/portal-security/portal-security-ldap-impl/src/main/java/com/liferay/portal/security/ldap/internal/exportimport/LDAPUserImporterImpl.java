@@ -80,6 +80,7 @@ import com.liferay.portal.security.ldap.SafePortalLDAP;
 import com.liferay.portal.security.ldap.UserConverterKeys;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
+import com.liferay.portal.security.ldap.constants.LDAPConstants;
 import com.liferay.portal.security.ldap.exportimport.LDAPGroup;
 import com.liferay.portal.security.ldap.exportimport.LDAPToPortalConverter;
 import com.liferay.portal.security.ldap.exportimport.LDAPUser;
@@ -654,7 +655,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 				String defaultPassword = _secretResolver.resolve(
 					companyId,
 					SecretContext.createConfigurationSecretContext(
-						"importUserPasswordDefault",
+						LDAPConstants.IMPORT_USER_PASSWORD_DEFAULT,
 						_ldapImportConfigurationProvider.
 							getConfigurationProperties(companyId)),
 					ldapImportConfiguration.importUserPasswordDefault());
@@ -2015,7 +2016,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 				password = _secretResolver.resolve(
 					companyId,
 					SecretContext.createConfigurationSecretContext(
-						"importUserPasswordDefault",
+						LDAPConstants.IMPORT_USER_PASSWORD_DEFAULT,
 						_ldapImportConfigurationProvider.
 							getConfigurationProperties(companyId)),
 					ldapImportConfiguration.importUserPasswordDefault());
