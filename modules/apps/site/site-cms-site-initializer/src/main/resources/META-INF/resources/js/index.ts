@@ -27,6 +27,7 @@ export {
 } from './common/types/BulkActionTask';
 export {ObjectField, StateFlowValue} from './common/types/ObjectDefinition';
 export {type Space} from './common/types/Space';
+export {OBJECT_ENTRY_FOLDER_CLASS_NAME} from './common/utils/constants';
 export {getFormattedLabel} from './common/utils/getFormattedText';
 export {getScopeExternalReferenceCode} from './common/utils/getScopeExternalReferenceCode';
 export {default as isOverdue} from './common/utils/isOverdue';
@@ -79,6 +80,7 @@ export {default as AllSpacesFDSPropsTransformer} from './main_view/props_transfo
 export {
 	default as AssetsFDSPropsTransformer,
 	AdditionalProps,
+	additionalAPIURLParametersTransformer,
 } from './main_view/props_transformer/AssetsFDSPropsTransformer';
 export {default as AssetsFilesDropFDSPropsTransformer} from './main_view/props_transformer/AssetsFilesDropFDSPropsTransformer';
 export {default as BrokenLinksFDSPropsTransformer} from './main_view/props_transformer/BrokenLinksFDSPropsTransformer';

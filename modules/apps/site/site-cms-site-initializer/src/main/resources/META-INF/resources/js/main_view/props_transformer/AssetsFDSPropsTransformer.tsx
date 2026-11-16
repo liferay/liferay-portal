@@ -83,9 +83,50 @@ export interface AdditionalAPIURLParametersTransformerArgs {
 	additionalAPIURLParameters: string;
 	searchParam: string;
 }
-const additionalAPIURLParametersTransformer = (
+
+export interface IBreadcrumbProps {
+	breadcrumbItems: IBreadcrumbItem[];
+	displayType: string;
+	hideSpace?: boolean;
+	size: string;
+}
+
+export type AdditionalProps = {
+	additionalAPIURLParameters: string | undefined;
+	assetLibraries: AssetLibrary[];
+	autocompleteURL: string;
+	availableExportFileFormats: any[];
+	availableLocales: any[];
+	baseFolderViewURL: string;
+	breadcrumbProps?: IBreadcrumbProps;
+	brokenLinksCheckerEnabled: boolean;
+	candidateAssetLibraries: AssetLibrary[];
+	cmpEnabled?: boolean;
+	cmpProjectLinkObjectDefinitionId?: number;
+	cmpProjectObjectDefinitionId?: number;
+	cmpProjectViewURL?: string;
+	cmsGroupId?: number;
+	collaboratorURLs: Record<string, string>;
+	contentViewURL: string;
+	defaultPermissionAdditionalProps?: any;
+	editableImageMIMETypes: string[];
+	fileMimeTypeCssClasses: Record<string, string>;
+	fileMimeTypeIcons: Record<string, string>;
+	filter?: string;
+	galleryViewEnabled?: boolean;
+	objectDefinitionCssClasses: Record<string, string>;
+	objectDefinitionIcons: Record<string, string>;
+	objectEntryFolderExternalReferenceCode: string;
+	parentObjectEntryFolderExternalReferenceCode: string;
+	redirect: string;
+	rootObjectEntryFolderExternalReferenceCode: string;
+	showAdditionalItemInfo?: boolean;
+	trashEnabled?: boolean;
+};
+
+export function additionalAPIURLParametersTransformer(
 	args: AdditionalAPIURLParametersTransformerArgs
-): string | undefined => {
+): string | undefined {
 	const {additionalAPIURLParameters, searchParam} = args;
 
 	if (!additionalAPIURLParameters) {
@@ -135,47 +176,7 @@ const additionalAPIURLParametersTransformer = (
 	}
 
 	return `${prefixPart}${cleanedFilters.join(' and ')}`.trim();
-};
-
-export interface IBreadcrumbProps {
-	breadcrumbItems: IBreadcrumbItem[];
-	displayType: string;
-	hideSpace?: boolean;
-	size: string;
 }
-
-export type AdditionalProps = {
-	additionalAPIURLParameters: string | undefined;
-	assetLibraries: AssetLibrary[];
-	autocompleteURL: string;
-	availableExportFileFormats: any[];
-	availableLocales: any[];
-	baseFolderViewURL: string;
-	breadcrumbProps?: IBreadcrumbProps;
-	brokenLinksCheckerEnabled: boolean;
-	candidateAssetLibraries: AssetLibrary[];
-	cmpEnabled?: boolean;
-	cmpProjectLinkObjectDefinitionId?: number;
-	cmpProjectObjectDefinitionId?: number;
-	cmpProjectViewURL?: string;
-	cmsGroupId?: number;
-	collaboratorURLs: Record<string, string>;
-	contentViewURL: string;
-	defaultPermissionAdditionalProps?: any;
-	editableImageMIMETypes: string[];
-	fileMimeTypeCssClasses: Record<string, string>;
-	fileMimeTypeIcons: Record<string, string>;
-	filter?: string;
-	galleryViewEnabled?: boolean;
-	objectDefinitionCssClasses: Record<string, string>;
-	objectDefinitionIcons: Record<string, string>;
-	objectEntryFolderExternalReferenceCode: string;
-	parentObjectEntryFolderExternalReferenceCode: string;
-	redirect: string;
-	rootObjectEntryFolderExternalReferenceCode: string;
-	showAdditionalItemInfo?: boolean;
-	trashEnabled?: boolean;
-};
 
 export default function AssetsFDSPropsTransformer({
 	additionalProps,
