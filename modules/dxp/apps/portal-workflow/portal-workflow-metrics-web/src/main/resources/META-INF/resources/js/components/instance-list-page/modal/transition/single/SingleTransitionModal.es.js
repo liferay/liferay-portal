@@ -80,9 +80,7 @@ export default function SingleTransitionModal() {
 				)} ${Liferay.Language.get('select-done-to-retry')}`
 			);
 		});
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [toaster]);
+	}, [postData]);
 
 	return (
 		<>

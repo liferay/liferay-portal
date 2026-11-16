@@ -82,9 +82,7 @@ export default function SingleUpdateDueDateModal() {
 			setErrorToast(dataError?.title ?? errorMessage);
 			setSendingPost(false);
 		});
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [toaster]);
+	}, [postData]);
 
 	const promises = useMemo(() => {
 		setErrorToast(false);
