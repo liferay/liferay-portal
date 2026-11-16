@@ -25,6 +25,7 @@ type AIAssistantTriggerButtonProps = Omit<
 	label?: string;
 	onOpen?: () => void;
 	round?: boolean;
+	size?: React.ComponentProps<typeof AIAssistantTrigger>['size'];
 	triggerId?: string;
 };
 
@@ -35,6 +36,7 @@ const AIAssistantTriggerButton: React.FC<AIAssistantTriggerButtonProps> = ({
 	label,
 	onOpen,
 	round = true,
+	size,
 	triggerId,
 	...command
 }) => {
@@ -76,6 +78,7 @@ const AIAssistantTriggerButton: React.FC<AIAssistantTriggerButtonProps> = ({
 			label={label}
 			onClick={handleClick}
 			round={round}
+			size={size}
 		/>
 	);
 };
