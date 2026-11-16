@@ -95,6 +95,8 @@ public class AuditPortletPreferencesLocalServiceWrapper
 			return Collections.emptyMap();
 		}
 
+		Map<String, List<String>> valuesMap = new HashMap<>();
+
 		List<PortletPreferenceValue> portletPreferenceValues =
 			_portletPreferenceValueLocalService.dslQuery(
 				DSLQueryFactoryUtil.select(
@@ -107,8 +109,6 @@ public class AuditPortletPreferencesLocalServiceWrapper
 				).orderBy(
 					PortletPreferenceValueTable.INSTANCE.index.ascending()
 				));
-
-		Map<String, List<String>> valuesMap = new HashMap<>();
 
 		for (PortletPreferenceValue portletPreferenceValue :
 				portletPreferenceValues) {

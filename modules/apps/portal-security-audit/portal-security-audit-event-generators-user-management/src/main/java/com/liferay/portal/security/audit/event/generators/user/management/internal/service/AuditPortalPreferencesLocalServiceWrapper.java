@@ -110,6 +110,8 @@ public class AuditPortalPreferencesLocalServiceWrapper
 			return Collections.emptyMap();
 		}
 
+		Map<String, List<String>> valuesMap = new HashMap<>();
+
 		List<PortalPreferenceValue> portalPreferenceValues =
 			_portalPreferenceValueLocalService.dslQuery(
 				DSLQueryFactoryUtil.select(
@@ -122,8 +124,6 @@ public class AuditPortalPreferencesLocalServiceWrapper
 				).orderBy(
 					PortalPreferenceValueTable.INSTANCE.index.ascending()
 				));
-
-		Map<String, List<String>> valuesMap = new HashMap<>();
 
 		for (PortalPreferenceValue portalPreferenceValue :
 				portalPreferenceValues) {
