@@ -146,7 +146,7 @@ public class CalendarUtil {
 		return calendarResources;
 	}
 
-	public static String getStatusMessage(int status) {
+	public static String getStatusLabel(int status) {
 		if (status == CalendarBookingWorkflowConstants.STATUS_MAYBE) {
 			return "maybe";
 		}

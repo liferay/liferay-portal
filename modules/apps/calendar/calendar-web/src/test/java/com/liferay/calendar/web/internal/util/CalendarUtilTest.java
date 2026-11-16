@@ -23,24 +23,20 @@ public class CalendarUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testGetStatusMessage() {
+	public void testGetStatusLabel() {
 		Assert.assertEquals(
 			"approved",
-			CalendarUtil.getStatusMessage(WorkflowConstants.STATUS_APPROVED));
+			CalendarUtil.getStatusLabel(WorkflowConstants.STATUS_APPROVED));
 		Assert.assertEquals(
 			"denied",
-			CalendarUtil.getStatusMessage(WorkflowConstants.STATUS_DENIED));
-		Assert.assertEquals(
-			"pending",
-			CalendarUtil.getStatusMessage(WorkflowConstants.STATUS_PENDING));
-	}
-
-	@Test
-	public void testGetStatusMessageMaybe() {
+			CalendarUtil.getStatusLabel(WorkflowConstants.STATUS_DENIED));
 		Assert.assertEquals(
 			"maybe",
-			CalendarUtil.getStatusMessage(
+			CalendarUtil.getStatusLabel(
 				CalendarBookingWorkflowConstants.STATUS_MAYBE));
+		Assert.assertEquals(
+			"pending",
+			CalendarUtil.getStatusLabel(WorkflowConstants.STATUS_PENDING));
 	}
 
 }

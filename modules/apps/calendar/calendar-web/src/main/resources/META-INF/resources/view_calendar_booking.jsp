@@ -53,7 +53,7 @@ portletDisplay.setShowBackIcon(Validator.isNotNull(backURL));
 							<liferay-portal-workflow:status
 								showStatusLabel="<%= false %>"
 								status="<%= calendarBooking.getStatus() %>"
-								statusMessage="<%= CalendarUtil.getStatusMessage(calendarBooking.getStatus()) %>"
+								statusMessage="<%= CalendarUtil.getStatusLabel(calendarBooking.getStatus()) %>"
 							/>
 						</dd>
 						<dt>
