@@ -19,7 +19,7 @@ function ToastAlert10Secs({
 	title,
 }) {
 	return (
-		<ClayAlert.ToastContainer id="ToastAlertContainer">
+		<ClayAlert.ToastContainer>
 			<ClayAlert
 				autoClose={autoClose}
 				displayType={displayType}
