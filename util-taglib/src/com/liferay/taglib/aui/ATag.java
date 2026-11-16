@@ -5,6 +5,7 @@
 
 package com.liferay.taglib.aui;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyHTMLRewriterUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -25,8 +26,6 @@ import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.tagext.BodyContent;
 import jakarta.servlet.jsp.tagext.BodyTag;
 
-import java.io.CharArrayWriter;
-
 import java.util.Map;
 
 /**
@@ -44,7 +43,7 @@ public class ATag extends BaseATag implements BodyTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
-		_charArrayWriter.reset();
+		_sb.setIndex(0);
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class ATag extends BaseATag implements BodyTag {
 		BodyContent bodyContent = getBodyContent();
 
 		if (bodyContent != null) {
-			_charArrayWriter.write(bodyContent.getString());
+			_sb.append(bodyContent.getString());
 		}
 
 		if (Validator.isNotNull(getHref())) {
@@ -67,37 +66,35 @@ public class ATag extends BaseATag implements BodyTag {
 					(ThemeDisplay)httpServletRequest.getAttribute(
 						WebKeys.THEME_DISPLAY);
 
-				_charArrayWriter.write(StringPool.SPACE);
-				_charArrayWriter.write("<svg class=\"lexicon-icon ");
-				_charArrayWriter.write(
-					"lexicon-icon-shortcut\" focusable=\"false\" ");
-				_charArrayWriter.write("role=\"img\"><use href=\"");
-				_charArrayWriter.write(themeDisplay.getPathThemeSpritemap());
-				_charArrayWriter.write("#shortcut\" /><span ");
-				_charArrayWriter.write("class=\"sr-only\">");
+				_sb.append(" <svg class=\"lexicon-icon ");
+				_sb.append("lexicon-icon-shortcut\" focusable=\"false\" ");
+				_sb.append("role=\"img\"><use href=\"");
+				_sb.append(themeDisplay.getPathThemeSpritemap());
+				_sb.append("#shortcut\" /><span ");
+				_sb.append("class=\"sr-only\">");
 
 				String opensNewWindowLabel = LanguageUtil.get(
 					TagResourceBundleUtil.getResourceBundle(pageContext),
 					"opens-new-window");
 
-				_charArrayWriter.write(opensNewWindowLabel);
+				_sb.append(opensNewWindowLabel);
 
-				_charArrayWriter.write("</span>");
-				_charArrayWriter.write("<title>");
-				_charArrayWriter.write(opensNewWindowLabel);
-				_charArrayWriter.write("</title>");
-				_charArrayWriter.write("</svg>");
+				_sb.append("</span>");
+				_sb.append("<title>");
+				_sb.append(opensNewWindowLabel);
+				_sb.append("</title>");
+				_sb.append("</svg>");
 			}
 
-			_charArrayWriter.write("</a>");
+			_sb.append("</a>");
 		}
 		else {
-			_charArrayWriter.write("</span>");
+			_sb.append("</span>");
 		}
 
 		jspWriter.write(
 			ContentSecurityPolicyHTMLRewriterUtil.rewriteInlineAttributes(
-				_charArrayWriter.toString(), getRequest(), false));
+				_sb.toString(), getRequest(), false));
 
 		return EVAL_PAGE;
 	}
@@ -117,103 +114,103 @@ public class ATag extends BaseATag implements BodyTag {
 		String title = getTitle();
 
 		if (Validator.isNotNull(href)) {
-			_charArrayWriter.write("<a ");
+			_sb.append("<a ");
 
-			_charArrayWriter.write("href=\"");
-			_charArrayWriter.write(HtmlUtil.escapeAttribute(href));
-			_charArrayWriter.write("\" ");
+			_sb.append("href=\"");
+			_sb.append(HtmlUtil.escapeAttribute(href));
+			_sb.append("\" ");
 
 			String target = getTarget();
 
 			if (Validator.isNotNull(target)) {
-				_charArrayWriter.write("target=\"");
-				_charArrayWriter.write(target);
-				_charArrayWriter.write("\" ");
+				_sb.append("target=\"");
+				_sb.append(target);
+				_sb.append("\" ");
 			}
 		}
 		else {
-			_charArrayWriter.write("<span ");
+			_sb.append("<span ");
 		}
 
 		if (Validator.isNotNull(ariaLabel)) {
-			_charArrayWriter.write("aria-label=\"");
-			_charArrayWriter.write(ariaLabel);
-			_charArrayWriter.write("\" ");
+			_sb.append("aria-label=\"");
+			_sb.append(ariaLabel);
+			_sb.append("\" ");
 		}
 
 		if (Validator.isNotNull(cssClass)) {
-			_charArrayWriter.write("class=\"");
-			_charArrayWriter.write(cssClass);
-			_charArrayWriter.write("\" ");
+			_sb.append("class=\"");
+			_sb.append(cssClass);
+			_sb.append("\" ");
 		}
 
 		if (Validator.isNotNull(id)) {
-			_charArrayWriter.write("id=\"");
-			_charArrayWriter.write(_getNamespace());
-			_charArrayWriter.write(id);
-			_charArrayWriter.write("\" ");
+			_sb.append("id=\"");
+			_sb.append(_getNamespace());
+			_sb.append(id);
+			_sb.append("\" ");
 		}
 
 		if (Validator.isNotNull(lang)) {
-			_charArrayWriter.write("lang=\"");
-			_charArrayWriter.write(lang);
-			_charArrayWriter.write("\" ");
+			_sb.append("lang=\"");
+			_sb.append(lang);
+			_sb.append("\" ");
 		}
 
 		if (Validator.isNotNull(onClick)) {
-			_charArrayWriter.write("onClick=\"");
-			_charArrayWriter.write(HtmlUtil.escapeAttribute(onClick));
-			_charArrayWriter.write("\" ");
+			_sb.append("onClick=\"");
+			_sb.append(HtmlUtil.escapeAttribute(onClick));
+			_sb.append("\" ");
 		}
 
 		if (Validator.isNotNull(ariaRole)) {
-			_charArrayWriter.write("role=\"");
-			_charArrayWriter.write(ariaRole);
-			_charArrayWriter.write("\" ");
+			_sb.append("role=\"");
+			_sb.append(ariaRole);
+			_sb.append("\" ");
 		}
 
 		if (Validator.isNotNull(title)) {
-			_charArrayWriter.write("title=\"");
+			_sb.append("title=\"");
 
 			if (Validator.isNotNull(title)) {
-				_charArrayWriter.write(
+				_sb.append(
 					LanguageUtil.get(
 						TagResourceBundleUtil.getResourceBundle(pageContext),
 						title));
 			}
 
-			_charArrayWriter.write("\" ");
+			_sb.append("\" ");
 		}
 
 		if ((data != null) && !data.isEmpty()) {
-			_charArrayWriter.write(AUIUtil.buildData(data));
+			_sb.append(AUIUtil.buildData(data));
 		}
 
 		String dynamicAttributesString = InlineUtil.buildDynamicAttributes(
 			getDynamicAttributes());
 
 		if (!dynamicAttributesString.isEmpty()) {
-			_charArrayWriter.write(dynamicAttributesString);
+			_sb.append(dynamicAttributesString);
 		}
 
-		_charArrayWriter.write(">");
+		_sb.append(">");
 
 		if (Validator.isNotNull(label)) {
 			if (getLocalizeLabel()) {
-				_charArrayWriter.write(
+				_sb.append(
 					LanguageUtil.get(
 						TagResourceBundleUtil.getResourceBundle(pageContext),
 						label));
 			}
 			else {
-				_charArrayWriter.write(label);
+				_sb.append(label);
 			}
 		}
 
 		if (Validator.isNotNull(iconCssClass)) {
-			_charArrayWriter.write("<span class=\"icon-monospaced ");
-			_charArrayWriter.write(iconCssClass);
-			_charArrayWriter.write("\"></span>");
+			_sb.append("<span class=\"icon-monospaced ");
+			_sb.append(iconCssClass);
+			_sb.append("\"></span>");
 		}
 
 		return EVAL_BODY_BUFFERED;
@@ -242,6 +239,6 @@ public class ATag extends BaseATag implements BodyTag {
 		return StringPool.BLANK;
 	}
 
-	private final CharArrayWriter _charArrayWriter = new CharArrayWriter();
+	private final StringBundler _sb = new StringBundler();
 
 }
