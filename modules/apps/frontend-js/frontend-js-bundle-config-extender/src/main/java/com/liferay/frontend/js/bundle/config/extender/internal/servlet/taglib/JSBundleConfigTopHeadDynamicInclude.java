@@ -78,21 +78,9 @@ public class JSBundleConfigTopHeadDynamicInclude extends BaseDynamicInclude {
 		_writeResponse(httpServletResponse, bundleConfig);
 	}
 
-	private String _getBundleConfig(String nonce) {
-		Collection<JSBundleConfigRegistryUtil.JSConfig> jsConfigs =
-			JSBundleConfigRegistryUtil.getJSConfigs();
-
-		if (jsConfigs.isEmpty()) {
-			return StringPool.BLANK;
-		}
-
-		StringBundler sb = new StringBundler();
-
-		sb.append("<script");
-		sb.append(nonce);
-		sb.append(" data-senna-track=\"temporary\" type=\"");
-		sb.append(ContentTypes.TEXT_JAVASCRIPT);
-		sb.append("\">");
+	private void _appendJavaScript(
+		StringBundler sb,
+		Collection<JSBundleConfigRegistryUtil.JSConfig> jsConfigs) {
 
 		for (JSBundleConfigRegistryUtil.JSConfig jsConfig : jsConfigs) {
 			try {
@@ -115,6 +103,25 @@ public class JSBundleConfigTopHeadDynamicInclude extends BaseDynamicInclude {
 				_log.error("Unable to open resource", exception);
 			}
 		}
+	}
+
+	private String _getBundleConfig(String nonce) {
+		Collection<JSBundleConfigRegistryUtil.JSConfig> jsConfigs =
+			JSBundleConfigRegistryUtil.getJSConfigs();
+
+		if (jsConfigs.isEmpty()) {
+			return StringPool.BLANK;
+		}
+
+		StringBundler sb = new StringBundler();
+
+		sb.append("<script");
+		sb.append(nonce);
+		sb.append(" data-senna-track=\"temporary\" type=\"");
+		sb.append(ContentTypes.TEXT_JAVASCRIPT);
+		sb.append("\">");
+
+		_appendJavaScript(sb, jsConfigs);
 
 		sb.append("</script>");
 
