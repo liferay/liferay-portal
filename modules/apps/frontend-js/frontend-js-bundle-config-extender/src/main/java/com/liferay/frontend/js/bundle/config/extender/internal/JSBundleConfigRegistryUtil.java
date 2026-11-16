@@ -104,12 +104,6 @@ public class JSBundleConfigRegistryUtil {
 	private static class JSBundleConfigServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer<ServletContext, String> {
 
-		public JSBundleConfigServiceTrackerCustomizer(
-			BundleContext bundleContext) {
-
-			_bundleContext = bundleContext;
-		}
-
 		@Override
 		public String addingService(
 			ServiceReference<ServletContext> serviceReference) {
@@ -175,6 +169,12 @@ public class JSBundleConfigRegistryUtil {
 			_javaScriptDCLSingleton.destroy(null);
 
 			_lastModified = System.currentTimeMillis();
+		}
+
+		private JSBundleConfigServiceTrackerCustomizer(
+			BundleContext bundleContext) {
+
+			_bundleContext = bundleContext;
 		}
 
 		private final BundleContext _bundleContext;
