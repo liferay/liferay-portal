@@ -24,6 +24,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -46,6 +47,7 @@ import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -55,6 +57,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -95,6 +98,7 @@ public class AddContentItemCommentStrutsActionTest {
 	public void testExecute() throws Exception {
 		_testExecuteWithMentionedAuthor();
 		_testExecuteWithMentionedUser();
+		_testExecuteWithMentionedUserInObjectEntryGroup();
 		_testExecuteWithMentionedUserOutsideSpace();
 		_testExecuteWithMentionedUserWithoutViewPermission();
 		_testExecuteWithMentionedUsers();
@@ -380,6 +384,68 @@ public class AddContentItemCommentStrutsActionTest {
 		_roleLocalService.deleteRole(role2);
 		_userLocalService.deleteUser(user1);
 		_userLocalService.deleteUser(user2);
+	}
+
+	private void _testExecuteWithMentionedUserInObjectEntryGroup()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition);
+
+		Group group = GroupTestUtil.addGroup();
+
+		group.setClassNameId(
+			PortalUtil.getClassNameId(objectDefinition.getClassName()));
+		group.setClassPK(objectEntry.getObjectEntryId());
+
+		group = _groupLocalService.updateGroup(group);
+
+		User user = UserTestUtil.addUser(group.getGroupId());
+
+		Role role = _addViewRole(objectEntry, user);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CMS));
+
+		JSONObject jsonObject = _execute(
+			StringBundler.concat(
+				"<p>", RandomTestUtil.randomString(), StringPool.SPACE,
+				_getMentionHTML(user), "</p>"),
+			layout, objectEntry, TestPropsValues.getUser());
+
+		List<UserNotificationEvent> userNotificationEvents =
+			_userNotificationEventLocalService.getUserNotificationEvents(
+				user.getUserId());
+
+		Assert.assertEquals(
+			userNotificationEvents.toString(), 1,
+			userNotificationEvents.size());
+
+		UserNotificationEvent userNotificationEvent =
+			userNotificationEvents.get(0);
+
+		JSONObject payloadJSONObject = _jsonFactory.createJSONObject(
+			userNotificationEvent.getPayload());
+
+		String entryURL = payloadJSONObject.getString("entryURL");
+
+		String path = HttpComponentsUtil.getPath(entryURL);
+
+		Assert.assertTrue(path.endsWith(group.getFriendlyURL()));
+
+		Assert.assertEquals(
+			jsonObject.getString("commentId"),
+			HttpComponentsUtil.getParameter(entryURL, "messageId", false));
+
+		_groupLocalService.deleteGroup(group);
+		_layoutLocalService.deleteLayout(layout);
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+		_roleLocalService.deleteRole(role);
+		_userLocalService.deleteUser(user);
 	}
 
 	private void _testExecuteWithMentionedUserOutsideSpace() throws Exception {

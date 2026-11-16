@@ -22,10 +22,12 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFunction;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -311,6 +313,18 @@ public class CommentUtil {
 					themeDisplay.getPathFriendlyURLPublic(),
 					GroupConstants.CMS_FRIENDLY_URL,
 					"/view-asset?objectEntryId=", objectEntryId);
+			}
+
+			Group group = GroupLocalServiceUtil.fetchGroup(
+				objectEntry.getCompanyId(),
+				PortalUtil.getClassNameId(objectEntry.getModelClassName()),
+				objectEntryId);
+
+			if (group != null) {
+				return StringBundler.concat(
+					themeDisplay.getPortalURL(),
+					themeDisplay.getPathFriendlyURLPublic(),
+					group.getFriendlyURL());
 			}
 		}
 
