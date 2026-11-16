@@ -62,7 +62,9 @@ export class JournalEditArticlePage {
 			'#_com_liferay_journal_web_portlet_JournalPortlet_inputPermissionsViewRole'
 		);
 		this.journalPage = new JournalPage(page);
-		this.previewButton = page.getByLabel('A draft will be saved before');
+		this.previewButton = page.getByLabel(
+			/A draft will be saved before|Save as draft or publish the web content/
+		);
 		this.propertiesTab = page.getByRole('tab', {
 			name: /properties|propriétés/i,
 		});

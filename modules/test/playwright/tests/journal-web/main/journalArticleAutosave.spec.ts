@@ -943,7 +943,7 @@ autoSaveTest(
 				displayPageTemplateName
 			);
 
-			expect(journalEditArticlePage.previewButton).toBeDisabled();
+			await expect(journalEditArticlePage.previewButton).toBeDisabled();
 		});
 
 		await autoSaveTest.step(
