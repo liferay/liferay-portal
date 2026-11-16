@@ -417,7 +417,7 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		KBArticle kbArticle = kbArticleLocalService.getKBArticle(
 			resourcePrimKey, version);
 
-		if (!_hasViewPermission(kbArticle, permissionChecker)) {
+		if (!_hasPermission(kbArticle, permissionChecker)) {
 			throw new PrincipalException.MustHavePermission(
 				permissionChecker, KBArticle.class.getName(), resourcePrimKey,
 				KBActionKeys.VIEW);
@@ -724,7 +724,7 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		KBArticle kbArticle = kbArticleLocalService.getLatestKBArticle(
 			resourcePrimKey, status);
 
-		if (_hasViewPermission(kbArticle, permissionChecker)) {
+		if (_hasPermission(kbArticle, permissionChecker)) {
 			return kbArticle;
 		}
 
@@ -1218,12 +1218,13 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		return kbArticle;
 	}
 
-	private boolean _hasViewPermission(
+	private boolean _hasPermission(
 			KBArticle kbArticle, PermissionChecker permissionChecker)
 		throws PortalException {
 
-		if (kbArticle.isApproved() || kbArticle.isExpired()) {
-			return true;
+		if (kbArticle.isDraft() || kbArticle.isScheduled()) {
+			return _kbArticleModelResourcePermission.contains(
+				permissionChecker, kbArticle, KBActionKeys.UPDATE);
 		}
 
 		if (kbArticle.isPending()) {
@@ -1238,7 +1239,7 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		}
 
 		return _kbArticleModelResourcePermission.contains(
-			permissionChecker, kbArticle, KBActionKeys.UPDATE);
+			permissionChecker, kbArticle, KBActionKeys.VIEW);
 	}
 
 	private boolean _isAttachmentsFolder(Folder folder, KBArticle kbArticle) {
