@@ -10,11 +10,24 @@ import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistryUtil;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.LayoutWrapper;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceWrapper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.ProxyFactory;
+
+import jakarta.portlet.PortletPreferences;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -313,6 +326,61 @@ public class ThemeDisplayTest {
 	}
 
 	@Test
+	public void testGetStrictLayoutPortletSetupAfterSetLayout() {
+		String portletId = RandomTestUtil.randomString();
+		PortletPreferences portletPreferences1 = ProxyFactory.newDummyInstance(
+			PortletPreferences.class);
+		PortletPreferences portletPreferences2 = ProxyFactory.newDummyInstance(
+			PortletPreferences.class);
+
+		PortletPreferencesLocalService portletPreferencesLocalService =
+			PortletPreferencesLocalServiceUtil.getService();
+
+		PortletPreferencesLocalServiceUtil.setService(
+			new PortletPreferencesLocalServiceWrapper() {
+
+				@Override
+				public Map<String, PortletPreferences> getStrictPreferences(
+					Layout layout, List<Portlet> portlets) {
+
+					if (layout.getPlid() == 1) {
+						return Collections.singletonMap(
+							portletId, portletPreferences1);
+					}
+
+					return Collections.singletonMap(
+						portletId, portletPreferences2);
+				}
+
+			});
+
+		try {
+			_themeDisplay.setLayoutTypePortlet(
+				ProxyFactory.newDummyInstance(LayoutTypePortlet.class));
+
+			Layout layout1 = _createLayout(1);
+
+			_themeDisplay.setLayout(layout1);
+
+			Assert.assertSame(
+				portletPreferences1,
+				_themeDisplay.getStrictLayoutPortletSetup(layout1, portletId));
+
+			Layout layout2 = _createLayout(2);
+
+			_themeDisplay.setLayout(layout2);
+
+			Assert.assertSame(
+				portletPreferences2,
+				_themeDisplay.getStrictLayoutPortletSetup(layout2, portletId));
+		}
+		finally {
+			PortletPreferencesLocalServiceUtil.setService(
+				portletPreferencesLocalService);
+		}
+	}
+
+	@Test
 	public void testRTLGetClayCSSURL() {
 		_mockPortalUtil(
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, true);
@@ -330,6 +398,22 @@ public class ThemeDisplayTest {
 		Assert.assertEquals(
 			"/o/classic-theme/css/main_rtl.(" + _HASH + ").css",
 			_themeDisplay.getMainCSSURL());
+	}
+
+	private Layout _createLayout(long plid) {
+		return new LayoutWrapper(null) {
+
+			@Override
+			public long getMvccVersion() {
+				return 0;
+			}
+
+			@Override
+			public long getPlid() {
+				return plid;
+			}
+
+		};
 	}
 
 	private void _mockPortalUtil(
