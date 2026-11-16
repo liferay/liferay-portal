@@ -1027,11 +1027,6 @@ public class TaxonomyCategoryResourceImpl
 			dynamicQuery.add(RestrictionsFactoryUtil.eq("groupId", siteId));
 		}
 
-		dynamicQuery.add(
-			RestrictionsFactoryUtil.sqlRestriction(
-				"exists (select 1 from AssetEntryAssetCategoryRel where " +
-					"assetCategoryId = this_.categoryId)"));
-
 		return _assetCategoryLocalService.dynamicQueryCount(dynamicQuery);
 	}
 
