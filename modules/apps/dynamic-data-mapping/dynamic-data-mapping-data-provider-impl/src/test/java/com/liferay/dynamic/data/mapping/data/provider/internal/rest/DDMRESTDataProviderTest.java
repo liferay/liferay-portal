@@ -94,6 +94,21 @@ public class DDMRESTDataProviderTest {
 			dataProviderInstanceId
 		);
 
+		DDMDataProviderInstanceLocalService
+			ddmDataProviderInstanceLocalService = Mockito.mock(
+				DDMDataProviderInstanceLocalService.class);
+
+		Mockito.when(
+			ddmDataProviderInstanceLocalService.getDDMDataProviderInstance(
+				dataProviderInstanceId)
+		).thenReturn(
+			ddmDataProviderInstance
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_ddmrestDataProvider, "_ddmDataProviderInstanceLocalService",
+			ddmDataProviderInstanceLocalService);
+
 		DDMDataProviderInstanceService ddmDataProviderInstanceService =
 			Mockito.mock(DDMDataProviderInstanceService.class);
 
@@ -109,21 +124,6 @@ public class DDMRESTDataProviderTest {
 		ReflectionTestUtil.setFieldValue(
 			_ddmrestDataProvider, "_ddmDataProviderInstanceService",
 			ddmDataProviderInstanceService);
-
-		DDMDataProviderInstanceLocalService
-			ddmDataProviderInstanceLocalService = Mockito.mock(
-				DDMDataProviderInstanceLocalService.class);
-
-		Mockito.when(
-			ddmDataProviderInstanceLocalService.getDDMDataProviderInstance(
-				dataProviderInstanceId)
-		).thenReturn(
-			ddmDataProviderInstance
-		);
-
-		ReflectionTestUtil.setFieldValue(
-			_ddmrestDataProvider, "_ddmDataProviderInstanceLocalService",
-			ddmDataProviderInstanceLocalService);
 
 		DDMDataProviderInstanceSettings ddmDataProviderInstanceSettings =
 			Mockito.mock(DDMDataProviderInstanceSettings.class);
