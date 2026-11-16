@@ -28,20 +28,38 @@ spec:
         -   jsonPath: .status.conditions[?(@.type=="Delivered")].status
             name: Delivered
             type: string
-        -   jsonPath: .status.conditions[?(@.type=="ConfigurationAccepted")].status
-            name: Config-Accepted
-            type: string
         -   jsonPath: .status.conditions[?(@.type=="Provisioned")].status
             name: Provisioned
             type: string
+        -   jsonPath: .status.conditions[?(@.type=="WorkloadAvailable")].status
+            name: Available
+            type: string
         -   jsonPath: .status.phase
             name: Phase
+            type: string
+        -   jsonPath: .spec.version
+            name: Version
+            type: string
+        -   jsonPath: .status.workloadSummary
+            name: Workload-Status
             type: string
         -   jsonPath: .metadata.creationTimestamp
             name: Age
             type: date
         -   jsonPath: .spec.serviceId
             name: Service-ID
+            priority: 1
+            type: string
+        -   jsonPath: .spec.domain
+            name: Domain
+            priority: 1
+            type: string
+        -   jsonPath: .status.image
+            name: Image
+            priority: 1
+            type: string
+        -   jsonPath: .status.url
+            name: URL
             priority: 1
             type: string
         name: v1alpha1
@@ -85,6 +103,9 @@ spec:
                                 maxLength: 63
                                 minLength: 1
                                 pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                                type: string
+                            version:
+                                maxLength: 128
                                 type: string
                             virtualInstanceId:
                                 maxLength: 63
@@ -201,6 +222,8 @@ spec:
                                 type: string
                             extProvisionResourceVersion:
                                 type: string
+                            image:
+                                type: string
                             observedGeneration:
                                 format: int64
                                 type: integer
@@ -210,11 +233,15 @@ spec:
                                 -   Pending
                                 -   Ready
                                 type: string
+                            url:
+                                type: string
                             workloadIssues:
                                 items:
                                     type: string
                                 type: array
                             workloadName:
+                                type: string
+                            workloadSummary:
                                 type: string
                         type: object
                 type: object

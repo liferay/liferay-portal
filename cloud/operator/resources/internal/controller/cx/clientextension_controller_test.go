@@ -315,10 +315,14 @@ func TestReconcileDeliversExtProvisionConfigMap(t *testing.T) {
 func TestReconcileDeliversOnceVirtualInstanceAppears(t *testing.T) {
 	clientExtension := newClientExtension("", "able", "able")
 
+	clientExtension.Spec.Domain = "able.example.com"
+
 	clientExtensionReconciler := newClientExtensionReconciler(nil, t, clientExtension)
 
-	if _, reason := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); reason != ReasonUnknownVirtualInstance {
-		t.Fatalf("Delivered reason = %q, want %q", reason, ReasonUnknownVirtualInstance)
+	if phase, reason := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); (phase != cxv1alpha1.PhasePending) ||
+		(reason != ReasonUnknownVirtualInstance) {
+
+		t.Fatalf("Reconcile() = %s / %s, want %s / %s", phase, reason, cxv1alpha1.PhasePending, ReasonUnknownVirtualInstance)
 	}
 
 	if error := clientExtensionReconciler.Create(
@@ -334,6 +338,24 @@ func TestReconcileDeliversOnceVirtualInstanceAppears(t *testing.T) {
 
 	if getExtProvisionConfigMap(clientExtensionReconciler, "able", t) == nil {
 		t.Error("Expected the ext-provision ConfigMap once the virtual instance appears")
+	}
+
+	if url := getClientExtension(clientExtension, clientExtensionReconciler, t).Status.URL; url != "https://able.example.com" {
+		t.Errorf("status.url = %q, want %q", url, "https://able.example.com")
+	}
+
+	dxpMetadata := getConfigMap(clientExtensionReconciler, "liferay.com-lxc-dxp-metadata", "able", t)
+
+	dxpMetadata.Data = map[string]string{MetadataKeyServerProtocol: "http"}
+
+	if error := clientExtensionReconciler.Update(context.Background(), dxpMetadata); error != nil {
+		t.Fatal(error)
+	}
+
+	reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
+
+	if url := getClientExtension(clientExtension, clientExtensionReconciler, t).Status.URL; url != "http://able.example.com" {
+		t.Errorf("status.url = %q, want %q", url, "http://able.example.com")
 	}
 }
 
@@ -414,6 +436,49 @@ func TestReconcileKeepsConfigMapWhenVirtualInstanceDisappears(t *testing.T) {
 
 	if (afterExtProvisionConfigMap == nil) || (afterExtProvisionConfigMap.UID != beforeExtProvisionConfigMap.UID) || (afterExtProvisionConfigMap.ResourceVersion != beforeExtProvisionConfigMap.ResourceVersion) {
 		t.Errorf("Expected the ext-provision ConfigMap to be untouched, got %v", afterExtProvisionConfigMap)
+	}
+}
+
+func TestUnknownVirtualInstanceGraceRemaining(t *testing.T) {
+	testCases := map[string]struct {
+		condition *metav1.Condition
+		wantGrace bool
+	}{
+		"a client extension that is delivered": {
+			condition: &metav1.Condition{
+				LastTransitionTime: metav1.Now(), Reason: ReasonDelivered, Status: metav1.ConditionTrue,
+				Type: cxv1alpha1.ConditionDelivered,
+			},
+		},
+		"a virtual instance that has been unknown longer than the grace period": {
+			condition: &metav1.Condition{
+				LastTransitionTime: metav1.NewTime(time.Now().Add(-unknownVirtualInstanceGracePeriod - time.Minute)),
+				Reason:             ReasonUnknownVirtualInstance, Status: metav1.ConditionFalse,
+				Type: cxv1alpha1.ConditionDelivered,
+			},
+		},
+		"a virtual instance that just became unknown": {
+			condition: &metav1.Condition{
+				LastTransitionTime: metav1.Now(), Reason: ReasonUnknownVirtualInstance, Status: metav1.ConditionFalse,
+				Type: cxv1alpha1.ConditionDelivered,
+			},
+			wantGrace: true,
+		},
+		"no Delivered condition yet": {},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			status := &cxv1alpha1.ClientExtensionStatus{}
+
+			if testCase.condition != nil {
+				status.Conditions = []metav1.Condition{*testCase.condition}
+			}
+
+			if grace := unknownVirtualInstanceGraceRemaining(status); (grace > 0) != testCase.wantGrace {
+				t.Errorf("unknownVirtualInstanceGraceRemaining() = %s, want grace %t", grace, testCase.wantGrace)
+			}
+		})
 	}
 }
 
@@ -593,14 +658,17 @@ func TestReconcileRefusesUnknownVirtualInstance(t *testing.T) {
 		t.Fatalf("Reconcile() error = %v, want nil", error)
 	}
 
-	if result != (controllerruntime.Result{}) {
-		t.Errorf("Reconcile() = %+v, want no requeue: the dxp metadata watch delivers once the virtual instance appears", result)
+	if (result.RequeueAfter <= 0) || (result.RequeueAfter > unknownVirtualInstanceGracePeriod) {
+		t.Errorf(
+			"Reconcile() = %+v, want a requeue when the grace period ends: the DXP metadata watch delivers once the virtual instance appears",
+			result,
+		)
 	}
 
 	updatedClientExtension := getClientExtension(clientExtension, clientExtensionReconciler, t)
 
-	if updatedClientExtension.Status.Phase != cxv1alpha1.PhaseDegraded {
-		t.Errorf("phase = %q, want %q", updatedClientExtension.Status.Phase, cxv1alpha1.PhaseDegraded)
+	if updatedClientExtension.Status.Phase != cxv1alpha1.PhasePending {
+		t.Errorf("phase = %q, want %q while DXP may still be starting", updatedClientExtension.Status.Phase, cxv1alpha1.PhasePending)
 	}
 
 	delivered := getDelivered(clientExtension, clientExtensionReconciler, t)
@@ -638,8 +706,8 @@ func TestReconcileRemovesProvisionedWhenUndelivered(t *testing.T) {
 		t.Fatal(error)
 	}
 
-	if phase, _ := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); phase != cxv1alpha1.PhaseDegraded {
-		t.Errorf("phase = %q, want %q", phase, cxv1alpha1.PhaseDegraded)
+	if phase, _ := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); phase != cxv1alpha1.PhasePending {
+		t.Errorf("phase = %q, want %q while DXP may be restarting", phase, cxv1alpha1.PhasePending)
 	}
 
 	if provisioned := getCondition(clientExtension, clientExtensionReconciler, cxv1alpha1.ConditionProvisioned, t); provisioned != nil {
@@ -893,7 +961,7 @@ func TestReconcileRequiresNoExtInitWithoutOAuth2Application(t *testing.T) {
 
 	if ready := getCondition(
 		clientExtension, clientExtensionReconciler, cxv1alpha1.ConditionReady, t,
-	); ready.Message != "The client extension is delivered and provisioned." {
+	); ready.Message != "The client extension is delivered and provisioned, and its workload is available." {
 		t.Errorf(
 			"Ready message = %q, want a summary rather than the OAuth2 detail",
 			ready.Message,

@@ -85,7 +85,7 @@ func TestCRDExposesTheColumnsAndShortName(t *testing.T) {
 	}
 
 	for _, expected := range []string{
-		"Config-Accepted", "DXP-Namespace", "Delivered", "Phase", "Provisioned",
+		"DXP-Namespace", "Delivered", "Phase", "Provisioned",
 		"Virtual-Instance", "Workload",
 	} {
 		if !slices.Contains(columns, expected) {

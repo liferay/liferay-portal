@@ -537,6 +537,7 @@ func newDeployment(podTemplate corev1.PodTemplateSpec) *appsv1.Deployment {
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{Name: "able", Namespace: "liferay-cx"},
 		Spec:       appsv1.DeploymentSpec{Template: podTemplate},
+		Status:     appsv1.DeploymentStatus{AvailableReplicas: 1, UpdatedReplicas: 1},
 	}
 }
 

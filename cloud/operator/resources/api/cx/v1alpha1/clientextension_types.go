@@ -11,12 +11,12 @@ import (
 )
 
 const (
-	ConditionConfigurationAccepted = "ConfigurationAccepted"
-	ConditionDelivered             = "Delivered"
-	ConditionMirrored              = "Mirrored"
-	ConditionProvisioned           = "Provisioned"
-	ConditionReady                 = "Ready"
-	ConditionWorkloadAccepted      = "WorkloadAccepted"
+	ConditionDelivered         = "Delivered"
+	ConditionMirrored          = "Mirrored"
+	ConditionProvisioned       = "Provisioned"
+	ConditionReady             = "Ready"
+	ConditionWorkloadAccepted  = "WorkloadAccepted"
+	ConditionWorkloadAvailable = "WorkloadAvailable"
 )
 
 const (
@@ -58,11 +58,16 @@ func init() {
 // +kubebuilder:printcolumn:JSONPath=`.spec.virtualInstanceId`,name="Virtual-Instance",type=string
 // +kubebuilder:printcolumn:JSONPath=`.spec.workloadRef.kind`,name="Workload",type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.conditions[?(@.type=="Delivered")].status`,name="Delivered",type=string
-// +kubebuilder:printcolumn:JSONPath=`.status.conditions[?(@.type=="ConfigurationAccepted")].status`,name="Config-Accepted",type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.conditions[?(@.type=="Provisioned")].status`,name="Provisioned",type=string
+// +kubebuilder:printcolumn:JSONPath=`.status.conditions[?(@.type=="WorkloadAvailable")].status`,name="Available",type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.phase`,name="Phase",type=string
+// +kubebuilder:printcolumn:JSONPath=`.spec.version`,name="Version",type=string
+// +kubebuilder:printcolumn:JSONPath=`.status.workloadSummary`,name="Workload-Status",type=string
 // +kubebuilder:printcolumn:JSONPath=`.metadata.creationTimestamp`,name="Age",type=date
 // +kubebuilder:printcolumn:JSONPath=`.spec.serviceId`,name="Service-ID",priority=1,type=string
+// +kubebuilder:printcolumn:JSONPath=`.spec.domain`,name="Domain",priority=1,type=string
+// +kubebuilder:printcolumn:JSONPath=`.status.image`,name="Image",priority=1,type=string
+// +kubebuilder:printcolumn:JSONPath=`.status.url`,name="URL",priority=1,type=string
 // +kubebuilder:resource:shortName=cx
 // +kubebuilder:subresource:status
 type ClientExtension struct {
@@ -108,6 +113,10 @@ type ClientExtensionSpec struct {
 	// +kubebuilder:validation:Required
 	VirtualInstanceID string `json:"virtualInstanceId"`
 
+	// +kubebuilder:validation:MaxLength=128
+	// +optional
+	Version string `json:"version,omitempty"`
+
 	// +optional
 	WorkloadRef *WorkloadRef `json:"workloadRef,omitempty"`
 }
@@ -134,6 +143,9 @@ type ClientExtensionStatus struct {
 	ExtProvisionResourceVersion string `json:"extProvisionResourceVersion,omitempty"`
 
 	// +optional
+	Image string `json:"image,omitempty"`
+
+	// +optional
 	ObservedGeneration int64 `json:"observedGeneration,omitempty"`
 
 	// +kubebuilder:validation:Enum=Degraded;Pending;Ready
@@ -141,10 +153,16 @@ type ClientExtensionStatus struct {
 	Phase string `json:"phase,omitempty"`
 
 	// +optional
+	URL string `json:"url,omitempty"`
+
+	// +optional
 	WorkloadIssues []string `json:"workloadIssues,omitempty"`
 
 	// +optional
 	WorkloadName string `json:"workloadName,omitempty"`
+
+	// +optional
+	WorkloadSummary string `json:"workloadSummary,omitempty"`
 }
 
 // +kubebuilder:pruning:PreserveUnknownFields
