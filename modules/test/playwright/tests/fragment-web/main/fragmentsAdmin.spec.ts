@@ -16,8 +16,10 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../../fixtures/pageManagementSiteTest';
 import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getGlobalSiteId from '../../../utils/getGlobalSiteId';
 import getRandomString from '../../../utils/getRandomString';
+import {performUserSwitch} from '../../../utils/performLogin';
 import {getTempDir} from '../../../utils/temp';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {zipFolder} from '../../../utils/zip';
@@ -1751,6 +1753,232 @@ test(
 			await apiHelpers.headlessAdminSite.deleteSite(
 				site.externalReferenceCode
 			);
+
+			await apiHelpers.jsonWebServicesFragmentCollection.deleteFragmentCollection(
+				globalFragmentCollection.fragmentCollectionId
+			);
+		}
+	}
+);
+
+test(
+	'View the pages of each site usage of global fragments',
+	{tag: '@LPD-114647'},
+	async ({apiHelpers, fragmentsPage, page, site}) => {
+
+		// Create global fragment set
+
+		const globalSiteId = await getGlobalSiteId(apiHelpers);
+
+		const globalFragmentCollectionName = getRandomString();
+
+		const globalFragmentCollection =
+			await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+				{
+					groupId: globalSiteId,
+					name: globalFragmentCollectionName,
+				}
+			);
+
+		// Create global fragment
+
+		const fragmentEntryName = getRandomString();
+
+		await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+			fragmentCollectionId: globalFragmentCollection.fragmentCollectionId,
+			groupId: globalSiteId,
+			html: '<div class="fragment-name">Custom Fragment</div>',
+			name: fragmentEntryName,
+		});
+
+		const globalFragmentDefinition = getFragmentDefinition({
+			id: getRandomString(),
+			key: fragmentEntryName,
+		});
+
+		// Create new site
+
+		const newSite = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		let layout: Layout | undefined;
+
+		try {
+
+			// Add layout with global fragment
+
+			const layoutTitle = getRandomString();
+
+			layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([globalFragmentDefinition]),
+				siteId: site.id,
+				title: layoutTitle,
+			});
+
+			// Add layout with global fragment to the new site
+
+			const newSiteLayoutTitle = getRandomString();
+
+			await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([globalFragmentDefinition]),
+				siteId: newSite.id,
+				title: newSiteLayoutTitle,
+			});
+
+			// Go to site usages
+
+			await fragmentsPage.goto('/global');
+
+			await fragmentsPage.gotoFragmentSet(globalFragmentCollectionName);
+
+			await fragmentsPage.clickAction(
+				'View Site Usages',
+				fragmentEntryName
+			);
+
+			// Go to the pages of the site usage
+
+			await page
+				.getByRole('row', {name: site.name})
+				.getByRole('link', {name: '2'})
+				.click();
+
+			await expect(
+				page.getByRole('heading', {
+					name: `${fragmentEntryName} - ${site.name}`,
+				})
+			).toBeVisible();
+
+			// Assert pages of the site usage
+
+			const draftLayoutRow = page.getByRole('row').filter({
+				has: page.getByText(`${layoutTitle} (Draft)`, {
+					exact: true,
+				}),
+			});
+			const layoutRow = page
+				.getByRole('row')
+				.filter({has: page.getByText(layoutTitle, {exact: true})});
+
+			await expect(draftLayoutRow).toBeVisible();
+			await expect(layoutRow).toBeVisible();
+			await expect(page.getByText(newSiteLayoutTitle)).toHaveCount(0);
+
+			// View layout
+
+			await layoutRow.getByRole('link', {name: 'View'}).click();
+
+			await page.waitForURL(/segmentsExperienceId=/);
+
+			await expect(page.getByText('Custom Fragment')).toBeVisible();
+
+			// Go back to the pages of the site usage
+
+			await page.getByRole('link', {exact: true, name: 'Back'}).click();
+
+			await expect(layoutRow).toBeVisible();
+		}
+		finally {
+
+			// Clean up
+
+			await apiHelpers.headlessAdminSite.deleteSite(
+				newSite.externalReferenceCode
+			);
+
+			if (layout) {
+				await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.id);
+			}
+
+			await apiHelpers.jsonWebServicesFragmentCollection.deleteFragmentCollection(
+				globalFragmentCollection.fragmentCollectionId
+			);
+		}
+	}
+);
+
+test(
+	'View site usages returns 404 without the manage fragment entries permission',
+	{tag: '@LPD-114647'},
+	async ({apiHelpers, fragmentsPage, page}) => {
+
+		// Create global fragment set
+
+		const globalSiteId = await getGlobalSiteId(apiHelpers);
+
+		const globalFragmentCollectionName = getRandomString();
+
+		const globalFragmentCollection =
+			await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+				{
+					groupId: globalSiteId,
+					name: globalFragmentCollectionName,
+				}
+			);
+
+		try {
+
+			// Create global fragment
+
+			const fragmentEntryName = getRandomString();
+
+			const fragmentEntry =
+				await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+					fragmentCollectionId:
+						globalFragmentCollection.fragmentCollectionId,
+					groupId: globalSiteId,
+					html: '<div class="fragment-name">Custom Fragment</div>',
+					name: fragmentEntryName,
+				});
+
+			// Switch to a user without the manage fragment entries permission
+
+			const user = await createUserWithPermissions({
+				apiHelpers,
+				rolePermissions: [
+					{
+						actionIds: ['ACCESS_IN_CONTROL_PANEL', 'VIEW'],
+						primaryKey: globalSiteId,
+						resourceName:
+							'com_liferay_fragment_web_portlet_FragmentPortlet',
+						scope: 2,
+					},
+				],
+			});
+
+			await performUserSwitch(page, user.alternateName);
+
+			// Assert view site usages action is not available
+
+			await fragmentsPage.goto('/global');
+
+			await fragmentsPage.gotoFragmentSet(globalFragmentCollectionName);
+
+			await expect(
+				page
+					.locator('.card-row')
+					.filter({hasText: fragmentEntryName})
+					.getByLabel('More actions')
+			).toHaveCount(0);
+
+			// Assert view site usages URL returns 404
+
+			const response = await page.goto(
+				`/group/global/~/control_panel/manage/-/fragments/fragment_collection/${globalFragmentCollection.fragmentCollectionId}/fragment_entry/${fragmentEntry.fragmentEntryId}/group_usages`
+			);
+
+			expect(response.status()).toBe(404);
+
+			await expect(
+				page.getByText('The fragment entry could not be found.')
+			).toBeVisible();
+		}
+		finally {
+
+			// Clean up
+
+			await performUserSwitch(page, 'test');
 
 			await apiHelpers.jsonWebServicesFragmentCollection.deleteFragmentCollection(
 				globalFragmentCollection.fragmentCollectionId
