@@ -8,6 +8,7 @@ package com.liferay.journal.example.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMTemplateTestUtil;
@@ -19,6 +20,7 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.JournalContent;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
@@ -34,6 +36,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.template.TemplateConstants;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockPortletResponse;
 import com.liferay.portal.kernel.test.portlet.MockRenderRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -120,6 +123,77 @@ public class JournalContentTest {
 		_testGetDisplayWithCSPNonceTemplate();
 		_testGetDisplayWithCSPNonceTemplateWithBlankNonce();
 		_testGetDisplayWithoutCSPNonceTemplate();
+	}
+
+	@Test
+	@TestInfo("LPD-115959")
+	public void testGetDisplayWithTranslation() throws Exception {
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			_portal.getSiteGroupId(_group.getGroupId()),
+			_portal.getClassNameId(JournalArticle.class), "BASIC-WEB-CONTENT",
+			true);
+
+		JournalArticle journalArticle = _journalArticleLocalService.addArticle(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			HashMapBuilder.put(
+				LocaleUtil.JAPAN,
+				"Basic S.P.A.C.E. Banner (Japanese Translation)"
+			).put(
+				LocaleUtil.US, "Basic S.P.A.C.E. Banner"
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.JAPAN,
+				"A Japanese translation of the basic front page banner"
+			).build(),
+			DDMStructureTestUtil.getSampleStructuredContent(
+				"content",
+				Collections.singletonList(
+					HashMapBuilder.put(
+						LocaleUtil.JAPAN,
+						"<h2 class=\"text-center\">Space Program 大学生涯教育</h2>" +
+							"<p class=\"text-center\">地球から、宇宙の果てへ</p>"
+					).put(
+						LocaleUtil.US,
+						StringBundler.concat(
+							"<h2 class=\"text-center\">",
+							"Space Program Academy of Continuing Education",
+							"</h2><p class=\"text-center\">",
+							"Dare to Dream out of this world</p>")
+					).build()),
+				LocaleUtil.toLanguageId(LocaleUtil.US)),
+			ddmStructure.getStructureId(), "BASIC-WEB-CONTENT",
+			_serviceContext);
+
+		JournalArticleDisplay journalArticleDisplay =
+			_journalContent.getDisplay(
+				journalArticle.getGroupId(), journalArticle.getArticleId(),
+				Constants.VIEW, LocaleUtil.toLanguageId(LocaleUtil.JAPAN),
+				_portletRequestModel);
+
+		Assert.assertEquals(
+			"<h2 class=\"text-center\">Space Program 大学生涯教育</h2><p " +
+				"class=\"text-center\">地球から、宇宙の果てへ</p>",
+			journalArticleDisplay.getContent());
+		Assert.assertEquals(
+			"A Japanese translation of the basic front page banner",
+			journalArticleDisplay.getDescription());
+		Assert.assertEquals(
+			"Basic S.P.A.C.E. Banner (Japanese Translation)",
+			journalArticleDisplay.getTitle());
+
+		journalArticleDisplay = _journalContent.getDisplay(
+			journalArticle.getGroupId(), journalArticle.getArticleId(),
+			Constants.VIEW, LocaleUtil.toLanguageId(LocaleUtil.US),
+			_portletRequestModel);
+
+		Assert.assertEquals(
+			"<h2 class=\"text-center\">Space Program Academy of Continuing " +
+				"Education</h2><p class=\"text-center\">Dare to Dream out of " +
+					"this world</p>",
+			journalArticleDisplay.getContent());
+		Assert.assertEquals(
+			"Basic S.P.A.C.E. Banner", journalArticleDisplay.getTitle());
 	}
 
 	protected static String getXML() {
@@ -604,6 +678,9 @@ public class JournalContentTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DDMStructureLocalService _ddmStructureLocalService;
 
 	@Inject
 	private DDMTemplateLocalService _ddmTemplateLocalService;
