@@ -61,7 +61,7 @@ public class PropertiesPortalFileCheck extends BaseFileCheck {
 		throws IOException {
 
 		List<String> allowedSingleLinePropertyKeys = getAttributeValues(
-			_ALLOWED_SINGLE_LINE_PROPERTY_KEYS, absolutePath);
+			_ALLOWED_SINGLE_LINE_PROPERTY_KEYS_KEY, absolutePath);
 
 		StringBundler sb = new StringBundler();
 
@@ -356,7 +356,7 @@ public class PropertiesPortalFileCheck extends BaseFileCheck {
 		return content;
 	}
 
-	private static final String _ALLOWED_SINGLE_LINE_PROPERTY_KEYS =
+	private static final String _ALLOWED_SINGLE_LINE_PROPERTY_KEYS_KEY =
 		"allowedSingleLinePropertyKeys";
 
 	private static final String[] _PORTAL_PROPERTIES_COMMON_PREFIXES = {

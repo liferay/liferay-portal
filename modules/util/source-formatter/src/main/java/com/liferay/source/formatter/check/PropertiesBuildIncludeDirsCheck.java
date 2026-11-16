@@ -89,7 +89,7 @@ public class PropertiesBuildIncludeDirsCheck extends BaseFileCheck {
 		File modulesDir = new File(getPortalDir(), "modules");
 
 		List<String> buildExcludeModuleNames = getAttributeValues(
-			_BUILD_EXCLUDE_MODULE_NAMES, absolutePath);
+			_BUILD_EXCLUDE_MODULE_NAMES_KEY, absolutePath);
 
 		List<String> skipModuleNames = ListUtil.concat(
 			buildExcludeModuleNames,
@@ -187,7 +187,7 @@ public class PropertiesBuildIncludeDirsCheck extends BaseFileCheck {
 		}
 
 		List<String> buildIncludeCategoryNames = getAttributeValues(
-			_BUILD_INCLUDE_CATEGORY_NAMES, absolutePath);
+			_BUILD_INCLUDE_CATEGORY_NAMES_KEY, absolutePath);
 
 		for (int i = 0; i < (directoryNames.length - 1); i++) {
 			if (buildIncludeCategoryNames.contains(directoryNames[i])) {
@@ -200,10 +200,10 @@ public class PropertiesBuildIncludeDirsCheck extends BaseFileCheck {
 		return null;
 	}
 
-	private static final String _BUILD_EXCLUDE_MODULE_NAMES =
+	private static final String _BUILD_EXCLUDE_MODULE_NAMES_KEY =
 		"buildExcludeModuleNames";
 
-	private static final String _BUILD_INCLUDE_CATEGORY_NAMES =
+	private static final String _BUILD_INCLUDE_CATEGORY_NAMES_KEY =
 		"buildIncludeCategoryNames";
 
 	private static final String[] _SKIP_DIR_NAMES = {

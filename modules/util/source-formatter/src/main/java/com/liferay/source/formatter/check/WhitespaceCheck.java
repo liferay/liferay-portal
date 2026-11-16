@@ -324,7 +324,7 @@ public class WhitespaceCheck extends BaseFileCheck {
 	protected boolean isAllowTrailingEmptyLines(
 		String fileName, String absolutePath) {
 
-		return isAttributeValue(_ALLOW_TRAILING_EMPTY_LINES, absolutePath);
+		return isAttributeValue(_ALLOW_TRAILING_EMPTY_LINES_KEY, absolutePath);
 	}
 
 	protected boolean isAllowTrailingSpaces(String line) {
@@ -411,7 +411,7 @@ public class WhitespaceCheck extends BaseFileCheck {
 	private static final String _ALLOW_TRAILING_DOUBLE_SPACE_KEY =
 		"allowTrailingDoubleSpace";
 
-	private static final String _ALLOW_TRAILING_EMPTY_LINES =
+	private static final String _ALLOW_TRAILING_EMPTY_LINES_KEY =
 		"allowTrailingEmptyLines";
 
 	private static final Pattern _closingTagPattern = Pattern.compile(

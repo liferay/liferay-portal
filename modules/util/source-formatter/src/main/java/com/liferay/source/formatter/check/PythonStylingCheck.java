@@ -33,7 +33,7 @@ public class PythonStylingCheck extends BaseFileCheck {
 
 		try {
 			maxLineLength = Integer.parseInt(
-				getAttributeValue(_MAX_LINE_LENGTH, absolutePath));
+				getAttributeValue(_MAX_LINE_LENGTH_KEY, absolutePath));
 		}
 		catch (NumberFormatException numberFormatException) {
 			return content;
@@ -106,7 +106,7 @@ public class PythonStylingCheck extends BaseFileCheck {
 				indent, maxLineLength));
 	}
 
-	private static final String _MAX_LINE_LENGTH = "maxLineLength";
+	private static final String _MAX_LINE_LENGTH_KEY = "maxLineLength";
 
 	private static final Pattern _classDefinitionHeaderPattern =
 		Pattern.compile(

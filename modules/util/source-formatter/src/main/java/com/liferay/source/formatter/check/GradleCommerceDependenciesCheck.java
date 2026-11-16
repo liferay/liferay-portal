@@ -46,7 +46,7 @@ public class GradleCommerceDependenciesCheck extends BaseFileCheck {
 			_checkCommerceDependencies(
 				fileName, absolutePath, content, dependencies,
 				getAttributeValues(
-					_ALLOWED_COMMERCE_DEPENDENCIES_MODULE_PATH_NAMES,
+					_ALLOWED_COMMERCE_DEPENDENCIES_MODULE_PATH_NAMES_KEY,
 					absolutePath));
 		}
 
@@ -85,7 +85,7 @@ public class GradleCommerceDependenciesCheck extends BaseFileCheck {
 	}
 
 	private static final String
-		_ALLOWED_COMMERCE_DEPENDENCIES_MODULE_PATH_NAMES =
+		_ALLOWED_COMMERCE_DEPENDENCIES_MODULE_PATH_NAMES_KEY =
 			"allowedCommerceDependenciesModulePathNames";
 
 }

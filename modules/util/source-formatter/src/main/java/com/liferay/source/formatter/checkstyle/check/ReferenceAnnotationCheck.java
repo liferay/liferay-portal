@@ -194,7 +194,8 @@ public class ReferenceAnnotationCheck extends BaseCheck {
 			return;
 		}
 
-		List<String> allowedFileNames = getAttributeValues(_ALLOWED_FILE_NAMES);
+		List<String> allowedFileNames = getAttributeValues(
+			_ALLOWED_FILE_NAMES_KEY);
 
 		String absolutePath = getAbsolutePath();
 
@@ -205,7 +206,7 @@ public class ReferenceAnnotationCheck extends BaseCheck {
 		}
 
 		List<String> forbiddenReferenceTargetValues = getAttributeValues(
-			_FORBIDDEN_REFERENCE_TARGET_VALUES);
+			_FORBIDDEN_REFERENCE_TARGET_VALUES_KEY);
 
 		if (forbiddenReferenceTargetValues.contains(targetValue)) {
 			log(annotationDetailAST, _MSG_INCORRECT_TARGET_VALUE, targetValue);
@@ -331,14 +332,14 @@ public class ReferenceAnnotationCheck extends BaseCheck {
 		return sb.toString();
 	}
 
-	private static final String _ALLOWED_FILE_NAMES = "allowedFileNames";
+	private static final String _ALLOWED_FILE_NAMES_KEY = "allowedFileNames";
 
 	private static final String _CARDINALITY_OPTIONAL = "OPTIONAL";
 
 	private static final String _CHECK_REFERENCE_CARDINALITY_OPTIONAL_KEY =
 		"checkReferenceCardinalityOptional";
 
-	private static final String _FORBIDDEN_REFERENCE_TARGET_VALUES =
+	private static final String _FORBIDDEN_REFERENCE_TARGET_VALUES_KEY =
 		"forbiddenReferenceTargetValues";
 
 	private static final String _MSG_INCORRECT_TARGET_VALUE =

@@ -483,7 +483,7 @@ public class LanguageKeysCheck extends BaseFileCheck {
 		_portalLanguageProperties = new Properties();
 
 		String portalLanguagePropertiesFileName = getAttributeValue(
-			_PORTAL_LANGUAGE_PROPERTIES_FILE_NAME, absolutePath);
+			_PORTAL_LANGUAGE_PROPERTIES_FILE_NAME_KEY, absolutePath);
 
 		if (Validator.isNull(portalLanguagePropertiesFileName)) {
 			return _portalLanguageProperties;
@@ -501,7 +501,7 @@ public class LanguageKeysCheck extends BaseFileCheck {
 		return _portalLanguageProperties;
 	}
 
-	private static final String _PORTAL_LANGUAGE_PROPERTIES_FILE_NAME =
+	private static final String _PORTAL_LANGUAGE_PROPERTIES_FILE_NAME_KEY =
 		"portalLanguagePropertiesFileName";
 
 	private static final Log _log = LogFactoryUtil.getLog(

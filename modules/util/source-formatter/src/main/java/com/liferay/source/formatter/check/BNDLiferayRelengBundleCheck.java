@@ -35,7 +35,7 @@ public class BNDLiferayRelengBundleCheck extends BaseFileCheck {
 		}
 
 		List<String> allowedLiferayRelengBundleNames = getAttributeValues(
-			_ALLOWED_LIFERAY_RELENG_BUNDLE_NAMES, absolutePath);
+			_ALLOWED_LIFERAY_RELENG_BUNDLE_NAMES_KEY, absolutePath);
 
 		for (String allowedLiferayRelengBundleName :
 				allowedLiferayRelengBundleNames) {
@@ -71,7 +71,7 @@ public class BNDLiferayRelengBundleCheck extends BaseFileCheck {
 		return content;
 	}
 
-	private static final String _ALLOWED_LIFERAY_RELENG_BUNDLE_NAMES =
+	private static final String _ALLOWED_LIFERAY_RELENG_BUNDLE_NAMES_KEY =
 		"allowedLiferayRelengBundleNames";
 
 }

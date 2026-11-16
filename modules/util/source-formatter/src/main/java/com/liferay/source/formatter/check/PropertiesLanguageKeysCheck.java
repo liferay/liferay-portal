@@ -102,7 +102,7 @@ public class PropertiesLanguageKeysCheck extends BaseFileCheck {
 		throws IOException {
 
 		String portalLanguagePropertiesFileName = getAttributeValue(
-			_PORTAL_LANGUAGE_PROPERTIES_FILE_NAME, absolutePath);
+			_PORTAL_LANGUAGE_PROPERTIES_FILE_NAME_KEY, absolutePath);
 
 		if (absolutePath.endsWith(portalLanguagePropertiesFileName)) {
 			return null;
@@ -144,7 +144,7 @@ public class PropertiesLanguageKeysCheck extends BaseFileCheck {
 	private static final String _ALLOWED_LANGUAGE_KEYS_KEY =
 		"allowedLanguageKeys";
 
-	private static final String _PORTAL_LANGUAGE_PROPERTIES_FILE_NAME =
+	private static final String _PORTAL_LANGUAGE_PROPERTIES_FILE_NAME_KEY =
 		"portalLanguagePropertiesFileName";
 
 	private Properties _portalLanguageProperties;

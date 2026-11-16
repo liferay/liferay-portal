@@ -876,7 +876,7 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 		Map<String, List<DetailAST>> expressionDetailASTMap,
 		String builderClassName, int startLineNumber, int endLineNumber) {
 
-		if (!isAttributeValue(_CHECK_INLINE)) {
+		if (!isAttributeValue(_CHECK_INLINE_KEY)) {
 			return;
 		}
 
@@ -1632,7 +1632,7 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 		return false;
 	}
 
-	private static final String _CHECK_INLINE = "checkInline";
+	private static final String _CHECK_INLINE_KEY = "checkInline";
 
 	private static final String _ENFORCE_BUILDER_NAMES_KEY =
 		"enforceBuilderNames";

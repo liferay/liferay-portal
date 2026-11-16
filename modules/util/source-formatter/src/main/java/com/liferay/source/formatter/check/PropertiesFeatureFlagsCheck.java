@@ -93,7 +93,8 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		String absolutePath, String content) {
 
 		List<String> featureFlagKeys = new ArrayList<>(
-			getAttributeValues(_ADDITIONAL_FEATURE_FLAG_KEYS, absolutePath));
+			getAttributeValues(
+				_ADDITIONAL_FEATURE_FLAG_KEYS_KEY, absolutePath));
 
 		List<String> fileNames = SourceFormatterUtil.filterFileNames(
 			_allFileNames, new String[] {"**/*-test-*/**", "**/test/**"},
@@ -463,7 +464,7 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		throws IOException {
 
 		String portalLanguagePropertiesFileName = getAttributeValue(
-			_PORTAL_LANGUAGE_PROPERTIES_FILE_NAME, absolutePath);
+			_PORTAL_LANGUAGE_PROPERTIES_FILE_NAME_KEY, absolutePath);
 
 		Properties properties = new Properties();
 
@@ -475,14 +476,14 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		return properties;
 	}
 
-	private static final String _ADDITIONAL_FEATURE_FLAG_KEYS =
+	private static final String _ADDITIONAL_FEATURE_FLAG_KEYS_KEY =
 		"additionalFeatureFlagKeys";
 
 	private static final String[] _ENFORCE_PROPERTY_NAMES = {
 		"description", "title"
 	};
 
-	private static final String _PORTAL_LANGUAGE_PROPERTIES_FILE_NAME =
+	private static final String _PORTAL_LANGUAGE_PROPERTIES_FILE_NAME_KEY =
 		"portalLanguagePropertiesFileName";
 
 	private static final Pattern _deprecationFeatureFlagPattern =
