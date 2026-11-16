@@ -86,18 +86,26 @@ public class ConfigurationUtil {
 		try {
 			Configuration[] configurations =
 				configurationAdmin.listConfigurations(
-					_getVulcanConfigurationFilterString(company, path));
+					String.format(
+						"(&(path=%s)(|(service.factoryPid=%s)%s))",
+						SystemBundleUtil.escapeFilterValue(path),
+						VulcanConfiguration.class.getName(),
+						ConfigurationFilterStringUtil.
+							getCompanyScopedFilterString(
+								company.getCompanyId(),
+								VulcanCompanyConfiguration.class.getName(),
+								company.getWebId())));
 
-			Boolean companyRESTEnabled = _isRESTEnabled(true, configurations);
+			Boolean restEnabled = _isRESTEnabled(true, configurations);
 
-			if (companyRESTEnabled != null) {
-				return companyRESTEnabled;
+			if (restEnabled != null) {
+				return restEnabled;
 			}
 
-			Boolean systemRESTEnabled = _isRESTEnabled(false, configurations);
+			restEnabled = _isRESTEnabled(false, configurations);
 
-			if (systemRESTEnabled != null) {
-				return systemRESTEnabled;
+			if (restEnabled != null) {
+				return restEnabled;
 			}
 		}
 		catch (Exception exception) {
@@ -118,19 +126,6 @@ public class ConfigurationUtil {
 			properties.get("excludedOperationIds"));
 
 		return SetUtil.fromArray(excludedOperationIds.split(","));
-	}
-
-	private static String _getVulcanConfigurationFilterString(
-		Company company, String path) {
-
-		return String.format(
-			"(&(path=%s)(|(service.factoryPid=%s)%s))",
-			SystemBundleUtil.escapeFilterValue(path),
-			VulcanConfiguration.class.getName(),
-			ConfigurationFilterStringUtil.getCompanyScopedFilterString(
-				company.getCompanyId(),
-				VulcanCompanyConfiguration.class.getName(),
-				company.getWebId()));
 	}
 
 	private static boolean _isCompanyFactoryPid(String factoryPid) {
