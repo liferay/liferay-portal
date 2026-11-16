@@ -492,6 +492,23 @@ public class PostUpgradeVerifyDatabaseStateTest
 						"1.0.0"),
 					_getMessage(logCapture, "release state"));
 			}
+
+			release.setState(ReleaseConstants.STATE_IN_PROGRESS);
+
+			release = _releaseLocalService.updateRelease(release);
+
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					PostUpgradeVerifyDatabaseState.class.getName(),
+					LoggerTestUtil.ERROR)) {
+
+				testVerify();
+
+				Assert.assertEquals(
+					StringBundler.concat(
+						"Module ", _BUILD_NAMESPACE,
+						" has release state in progress, schema version 1.0.0"),
+					_getMessage(logCapture, "release state"));
+			}
 		}
 		finally {
 			if (release != null) {

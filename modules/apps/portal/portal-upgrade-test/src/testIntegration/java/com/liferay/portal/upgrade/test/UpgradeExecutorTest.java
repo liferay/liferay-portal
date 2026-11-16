@@ -7,7 +7,9 @@ package com.liferay.portal.upgrade.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Release;
+import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -19,6 +21,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,6 +54,30 @@ public class UpgradeExecutorTest {
 		if (_serviceRegistration != null) {
 			_serviceRegistration.unregister();
 		}
+	}
+
+	@Test
+	public void testExecuteUpgradeInfosWithInterruptedUpgrade()
+		throws Exception {
+
+		Bundle bundle = FrameworkUtil.getBundle(UpgradeExecutorTest.class);
+
+		String bundleSymbolicName = bundle.getSymbolicName();
+
+		_testExecuteUpgradeInfos(
+			bundle, ReleaseConstants.STATE_IN_PROGRESS,
+			StringBundler.concat(
+				"Resuming the upgrade of ", bundleSymbolicName,
+				" from schema version 1.0.0 after an interruption"));
+	}
+
+	@Test
+	public void testExecuteUpgradeInfosWithoutInterruptedUpgrade()
+		throws Exception {
+
+		_testExecuteUpgradeInfos(
+			FrameworkUtil.getBundle(UpgradeExecutorTest.class),
+			ReleaseConstants.STATE_GOOD);
 	}
 
 	@Test
@@ -195,6 +222,63 @@ public class UpgradeExecutorTest {
 		}
 
 		return registerCount;
+	}
+
+	private void _testExecuteUpgradeInfos(
+			Bundle bundle, int state, String... expectedMessages)
+		throws Exception {
+
+		String bundleSymbolicName = bundle.getSymbolicName();
+
+		Release release = _releaseLocalService.addRelease(
+			bundleSymbolicName, "1.0.0");
+
+		release.setState(state);
+
+		release = _releaseLocalService.updateRelease(release);
+
+		try {
+			BundleContext bundleContext = bundle.getBundleContext();
+
+			try (SafeCloseable safeCloseable =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"UPGRADE_DATABASE_AUTO_RUN", false, false)) {
+
+				_serviceRegistration = bundleContext.registerService(
+					UpgradeStepRegistrator.class,
+					upgradeStepRegistry -> upgradeStepRegistry.register(
+						"1.0.0", "2.0.0", new DummyUpgradeStep()),
+					null);
+			}
+
+			Class<?> clazz = _upgradeExecutor.getClass();
+
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					clazz.getName(), LoggerTestUtil.WARN)) {
+
+				ReflectionTestUtil.invoke(
+					_upgradeExecutor, "executeUpgradeInfos",
+					new Class<?>[] {Bundle.class, List.class}, bundle,
+					_getUpgradeInfos(bundleSymbolicName));
+
+				Assert.assertEquals(
+					Arrays.asList(expectedMessages), logCapture.getMessages());
+			}
+
+			Release persistedRelease = _releaseLocalService.fetchRelease(
+				bundleSymbolicName);
+
+			Assert.assertEquals("2.0.0", persistedRelease.getSchemaVersion());
+			Assert.assertEquals(
+				ReleaseConstants.STATE_GOOD, persistedRelease.getState());
+		}
+		finally {
+			release = _releaseLocalService.fetchRelease(bundleSymbolicName);
+
+			if (release != null) {
+				_releaseLocalService.deleteRelease(release);
+			}
+		}
 	}
 
 	@Inject
