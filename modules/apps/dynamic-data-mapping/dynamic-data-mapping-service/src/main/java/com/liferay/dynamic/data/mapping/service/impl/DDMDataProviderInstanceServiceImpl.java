@@ -90,7 +90,7 @@ public class DDMDataProviderInstanceServiceImpl
 			getPermissionChecker(),
 			dataProviderInstance.getDataProviderInstanceId(), ActionKeys.VIEW);
 
-		return _filterDDMDataProviderInstance(dataProviderInstance);
+		return _getDDMDataProviderInstance(dataProviderInstance);
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class DDMDataProviderInstanceServiceImpl
 			getPermissionChecker(),
 			dataProviderInstance.getDataProviderInstanceId(), ActionKeys.VIEW);
 
-		return _filterDDMDataProviderInstance(dataProviderInstance);
+		return _getDDMDataProviderInstance(dataProviderInstance);
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class DDMDataProviderInstanceServiceImpl
 		_ddmDataProviderInstanceModelResourcePermission.check(
 			getPermissionChecker(), dataProviderInstanceId, ActionKeys.VIEW);
 
-		return _filterDDMDataProviderInstance(
+		return _getDDMDataProviderInstance(
 			ddmDataProviderInstancePersistence.findByPrimaryKey(
 				dataProviderInstanceId));
 	}
@@ -138,14 +138,14 @@ public class DDMDataProviderInstanceServiceImpl
 			ddmDataProviderInstance.getDataProviderInstanceId(),
 			ActionKeys.VIEW);
 
-		return _filterDDMDataProviderInstance(ddmDataProviderInstance);
+		return _getDDMDataProviderInstance(ddmDataProviderInstance);
 	}
 
 	@Override
 	public List<DDMDataProviderInstance> getDataProviderInstances(
 		long companyId, long[] groupIds, int start, int end) {
 
-		return _filterDDMDataProviderInstances(
+		return _getDDMDataProviderInstances(
 			ddmDataProviderInstanceFinder.filterByC_G(
 				companyId, groupIds, start, end));
 	}
@@ -173,7 +173,7 @@ public class DDMDataProviderInstanceServiceImpl
 									getDataProviderInstanceId(),
 								ActionKeys.VIEW)) {
 
-						return _filterDDMDataProviderInstance(
+						return _getDDMDataProviderInstance(
 							ddmDataProviderInstance);
 					}
 				}
@@ -191,7 +191,7 @@ public class DDMDataProviderInstanceServiceImpl
 		boolean andOperator, int start, int end,
 		OrderByComparator<DDMDataProviderInstance> orderByComparator) {
 
-		return _filterDDMDataProviderInstances(
+		return _getDDMDataProviderInstances(
 			ddmDataProviderInstanceFinder.filterFindByC_G_N_D(
 				companyId, groupIds, name, description, andOperator, start, end,
 				orderByComparator));
@@ -227,41 +227,6 @@ public class DDMDataProviderInstanceServiceImpl
 			ddmFormValues, serviceContext);
 	}
 
-	private DDMDataProviderInstance _filterDDMDataProviderInstance(
-			DDMDataProviderInstance ddmDataProviderInstance)
-		throws PortalException {
-
-		if (_ddmDataProviderInstanceModelResourcePermission.contains(
-				getPermissionChecker(), ddmDataProviderInstance,
-				ActionKeys.UPDATE)) {
-
-			return ddmDataProviderInstance;
-		}
-
-		return _removeAuthenticationData(
-			(DDMDataProviderInstance)ddmDataProviderInstance.clone());
-	}
-
-	private List<DDMDataProviderInstance> _filterDDMDataProviderInstances(
-		List<DDMDataProviderInstance> ddmDataProviderInstances) {
-
-		return TransformUtil.transform(
-			ddmDataProviderInstances,
-			ddmDataProviderInstance -> {
-				try {
-					return _filterDDMDataProviderInstance(
-						ddmDataProviderInstance);
-				}
-				catch (PortalException portalException) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(portalException);
-					}
-
-					return null;
-				}
-			});
-	}
-
 	private JSONArray _filterFieldValues(JSONArray fieldValuesJSONArray) {
 		JSONArray filteredFieldValuesJSONArray = _jsonFactory.createJSONArray();
 
@@ -282,6 +247,40 @@ public class DDMDataProviderInstanceServiceImpl
 		}
 
 		return filteredFieldValuesJSONArray;
+	}
+
+	private DDMDataProviderInstance _getDDMDataProviderInstance(
+			DDMDataProviderInstance ddmDataProviderInstance)
+		throws PortalException {
+
+		if (_ddmDataProviderInstanceModelResourcePermission.contains(
+				getPermissionChecker(), ddmDataProviderInstance,
+				ActionKeys.UPDATE)) {
+
+			return ddmDataProviderInstance;
+		}
+
+		return _removeAuthenticationData(
+			(DDMDataProviderInstance)ddmDataProviderInstance.clone());
+	}
+
+	private List<DDMDataProviderInstance> _getDDMDataProviderInstances(
+		List<DDMDataProviderInstance> ddmDataProviderInstances) {
+
+		return TransformUtil.transform(
+			ddmDataProviderInstances,
+			ddmDataProviderInstance -> {
+				try {
+					return _getDDMDataProviderInstance(ddmDataProviderInstance);
+				}
+				catch (PortalException portalException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(portalException);
+					}
+
+					return null;
+				}
+			});
 	}
 
 	private DDMDataProviderInstance _removeAuthenticationData(
