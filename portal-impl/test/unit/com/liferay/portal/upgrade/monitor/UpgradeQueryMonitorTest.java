@@ -213,6 +213,7 @@ public class UpgradeQueryMonitorTest {
 			UpgradeQueryMonitor.stop();
 
 			Assert.assertFalse(future.get());
+
 			Assert.assertNull(
 				ReflectionTestUtil.getFieldValue(
 					UpgradeQueryMonitor.class, _SCHEDULED_EXECUTOR_SERVICE));
