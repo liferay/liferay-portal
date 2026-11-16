@@ -89,6 +89,7 @@ import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.search.IndexStatusManagerThreadLocal;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -130,6 +131,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -291,6 +293,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testGetProductsPageWithChannelFilter();
 		_testGetProductsPageWithFilter();
 		_testGetProductsPageWithSearch();
+		_testGetProductsPageWithStaleDocument();
 	}
 
 	@Ignore
@@ -1240,6 +1243,42 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 		productResource.deleteProduct(product1.getProductId());
 		productResource.deleteProduct(product2.getProductId());
+	}
+
+	private void _testGetProductsPageWithStaleDocument() throws Exception {
+		Product product = testGetProductsPage_addProduct(randomProduct());
+
+		CPDefinition cpDefinition =
+			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+				product.getProductId(), false);
+
+		boolean indexReadOnly = IndexStatusManagerThreadLocal.isIndexReadOnly();
+
+		IndexStatusManagerThreadLocal.setIndexReadOnly(true);
+
+		try {
+			_cpDefinitionLocalService.deleteCPDefinition(cpDefinition);
+		}
+		finally {
+			IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
+		}
+
+		Page<Product> page = productResource.getProductsPage(
+			null,
+			"externalReferenceCode eq '" + product.getExternalReferenceCode() +
+				"'",
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		Collection<Product> products = page.getItems();
+
+		Assert.assertEquals(products.toString(), 0, products.size());
+
+		Indexer<CPDefinition> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			CPDefinition.class);
+
+		indexer.delete(cpDefinition);
 	}
 
 	private Product _testPatchProduct_addProduct() throws Exception {
