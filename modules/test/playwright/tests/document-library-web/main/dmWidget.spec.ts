@@ -330,6 +330,166 @@ test(
 	}
 );
 
+test('Folders and their documents can be added, edited and deleted from the widget', async ({
+	apiHelpers,
+	documentLibraryEditFilePage,
+	documentLibraryEditFolderPage,
+	documentLibraryPage,
+	page,
+	site,
+}) => {
+	const pageURL = await addDMWidgetPage({apiHelpers, site});
+
+	const folderName = getRandomString();
+
+	await test.step('CanAddDocumentInFolder', async () => {
+		const documentTitle = getRandomString();
+
+		await page.goto(pageURL);
+
+		await documentLibraryPage.goToCreateNewFolder();
+
+		await documentLibraryEditFolderPage.fillTitle(folderName);
+
+		await page.getByLabel('Characters Maximum:').fill(getRandomString());
+
+		await documentLibraryEditFolderPage.save();
+
+		await documentLibraryPage.changeView('List');
+
+		await page.getByRole('link', {exact: true, name: folderName}).click();
+
+		await documentLibraryPage.goToCreateNewFile();
+
+		await page.locator('input[type="file"]').setInputFiles(getDocFile());
+
+		await documentLibraryEditFilePage.titleSelector.fill(documentTitle);
+
+		await documentLibraryEditFilePage.publishFileEntry();
+
+		await page
+			.getByRole('link', {exact: true, name: documentTitle})
+			.click();
+
+		const infoPanel = await openInfoPanel(page);
+
+		await expect(infoPanel.getByText('doc', {exact: true})).toBeVisible();
+	});
+
+	const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
+		site.id
+	);
+
+	const subfolder1 =
+		await apiHelpers.headlessDelivery.postDocumentFolderDocumentFolder(
+			folder.id
+		);
+	const subfolder2 =
+		await apiHelpers.headlessDelivery.postDocumentFolderDocumentFolder(
+			folder.id
+		);
+
+	await test.step('CanAddImageInSubFolder', async () => {
+		const description = getRandomString();
+		const imageTitle = getRandomString();
+
+		await page.goto(pageURL);
+
+		await documentLibraryPage.changeView('List');
+
+		await page.getByRole('link', {exact: true, name: folder.name}).click();
+
+		await page
+			.getByRole('link', {exact: true, name: subfolder1.name})
+			.click();
+
+		await documentLibraryPage.goToCreateNewFile();
+
+		await page.locator('input[type="file"]').setInputFiles(IMAGE_PATH);
+
+		await documentLibraryEditFilePage.titleSelector.fill(imageTitle);
+
+		await page.getByLabel('Characters Maximum:').fill(description);
+
+		await documentLibraryEditFilePage.publishFileEntry();
+
+		await page.getByRole('link', {exact: true, name: imageTitle}).click();
+
+		const infoPanel = await openInfoPanel(page);
+
+		await expect(
+			infoPanel.getByRole('img', {name: 'Thumbnail'})
+		).toBeVisible();
+		await expect(infoPanel.getByText(description)).toBeVisible();
+	});
+
+	const subfolder2Name = getRandomString();
+
+	await test.step('CanEditSubFolder', async () => {
+		await page.goto(pageURL);
+
+		await documentLibraryPage.changeView('List');
+
+		await page.getByRole('link', {exact: true, name: folder.name}).click();
+
+		await expect(
+			page.getByRole('link', {exact: true, name: subfolder1.name})
+		).toBeVisible();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {exact: true, name: 'Edit'}),
+			trigger: page
+				.locator('.list-group-item', {hasText: subfolder2.name})
+				.getByRole('button', {name: 'Show Actions'}),
+		});
+
+		await documentLibraryEditFolderPage.fillTitle(subfolder2Name);
+
+		await page.getByLabel('Characters Maximum:').fill(getRandomString());
+
+		await documentLibraryEditFolderPage.save();
+
+		await expect(
+			page.getByRole('link', {exact: true, name: subfolder2Name})
+		).toBeVisible();
+	});
+
+	await test.step('CanDeleteSubFolderInSite', async () => {
+		await page
+			.locator('.list-group-item', {hasText: subfolder2Name})
+			.getByRole('checkbox')
+			.check();
+
+		await page.getByRole('button', {exact: true, name: 'Delete'}).click();
+
+		await waitForAlert(page, 'was moved to the Recycle Bin');
+
+		await expect(
+			page.getByRole('link', {exact: true, name: subfolder2Name})
+		).toBeHidden();
+	});
+
+	await test.step('CanDeleteFolderWithDocument', async () => {
+		await page.goto(pageURL);
+
+		await documentLibraryPage.changeView('List');
+
+		await page
+			.locator('.list-group-item', {hasText: folderName})
+			.getByRole('checkbox')
+			.check();
+
+		await page.getByRole('button', {exact: true, name: 'Delete'}).click();
+
+		await waitForAlert(page, 'was moved to the Recycle Bin');
+
+		await expect(
+			page.getByRole('link', {exact: true, name: folderName})
+		).toBeHidden();
+	});
+});
+
 test(
 	'Versions tab in the widget downloads, views and reverts older versions',
 	{tag: ['@LPS-39248', '@LPS-52101', '@LPS-175916', '@LPD-112412']},
