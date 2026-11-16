@@ -110,12 +110,12 @@ public class CatalogResourceTest extends BaseCatalogResourceTestCase {
 		Catalog catalog = testGetCatalogsPage_addCatalog(randomCatalog());
 
 		for (EntityField entityField : entityFields) {
-			Page<Catalog> page = catalogResource.getCatalogsPage(
+			Page<Catalog> catalogsPage = catalogResource.getCatalogsPage(
 				null, getFilterString(entityField, "between", catalog),
 				Pagination.of(1, 10), null);
 
 			List<Long> ids = TransformUtil.transform(
-				page.getItems(), Catalog::getId);
+				catalogsPage.getItems(), Catalog::getId);
 
 			Assert.assertTrue(ids.contains(catalog.getId()));
 		}
