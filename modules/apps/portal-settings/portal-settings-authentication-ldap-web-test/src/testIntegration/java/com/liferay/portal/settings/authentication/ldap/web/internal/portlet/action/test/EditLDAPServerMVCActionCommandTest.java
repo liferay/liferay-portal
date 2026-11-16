@@ -8,11 +8,15 @@ package com.liferay.portal.settings.authentication.ldap.web.internal.portlet.act
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
+import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
@@ -24,7 +28,10 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.ldap.LDAPConfigurationModelListenerException;
@@ -137,6 +144,8 @@ public class EditLDAPServerMVCActionCommandTest {
 			String serverName)
 		throws Exception {
 
+		_waitForConfigurationEvents();
+
 		List<LDAPServerConfiguration> ldapServerConfigurations =
 			_ldapServerConfigurationProvider.getConfigurations(
 				TestPropsValues.getCompanyId(), false);
@@ -169,6 +178,12 @@ public class EditLDAPServerMVCActionCommandTest {
 			};
 
 		mockLiferayPortletActionRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_CONFIG,
+			PortletConfigFactoryUtil.create(
+				_portletLocalService.getPortletById(
+					ConfigurationAdminPortletKeys.INSTANCE_SETTINGS),
+				null));
+		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.PORTLET_ID,
 			ConfigurationAdminPortletKeys.INSTANCE_SETTINGS);
 		mockLiferayPortletActionRequest.setAttribute(
@@ -190,6 +205,9 @@ public class EditLDAPServerMVCActionCommandTest {
 
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setLayout(
+			_layoutLocalService.getLayout(
+				_portal.getControlPanelPlid(TestPropsValues.getCompanyId())));
 		themeDisplay.setLocale(LocaleUtil.getDefault());
 		themeDisplay.setPermissionChecker(
 			PermissionThreadLocal.getPermissionChecker());
@@ -197,8 +215,19 @@ public class EditLDAPServerMVCActionCommandTest {
 		return themeDisplay;
 	}
 
+	private void _waitForConfigurationEvents() throws Exception {
+		String pid = EditLDAPServerMVCActionCommandTest.class.getName();
+
+		ConfigurationTestUtil.saveConfiguration(pid, new HashMapDictionary<>());
+
+		ConfigurationTestUtil.deleteConfiguration(pid);
+	}
+
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	@Inject(
 		filter = "factoryPid=com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration"
@@ -211,5 +240,11 @@ public class EditLDAPServerMVCActionCommandTest {
 		type = MVCActionCommand.class
 	)
 	private MVCActionCommand _mvcActionCommand;
+
+	@Inject
+	private Portal _portal;
+
+	@Inject
+	private PortletLocalService _portletLocalService;
 
 }
