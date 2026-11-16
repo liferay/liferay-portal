@@ -21,7 +21,12 @@ import focusInvalidElement from '../../common/utils/focusInvalidElement';
 import ObjectEntryService from '../../main_view/info_panel/services/ObjectEntryService';
 import {Comment} from '../services/CommentService';
 import {EVENT_VALIDATE_FORM} from './ContentEditorToolbar';
-import {dateConfig, toMomentDate, toServerISOFormat} from './ScheduleField';
+import {
+	dateConfig,
+	isPastDate,
+	toMomentDate,
+	toServerISOFormat,
+} from './ScheduleField';
 import CategorizationPanel from './panels/CategorizationPanel';
 import CommentsPanel from './panels/CommentsPanel';
 import GeneralPanel from './panels/GeneralPanel';
@@ -147,7 +152,9 @@ export default function ContentEditorSidePanel(props: Props) {
 	const [formId, setFormId] = useState<string | undefined>();
 	const [scheduleFields, setScheduleFields] = useState<ScheduleFields>({
 		expirationDate: {
-			error: '',
+			error: isPastDate(toMomentDate(props.expirationDate))
+				? Liferay.Language.get('the-date-entered-is-in-the-past')
+				: '',
 			neverCheckbox: {
 				label: Liferay.Language.get('never-expire'),
 				value: !props.expirationDate,
