@@ -5,7 +5,7 @@ apply plugin: "com.liferay.patcher"
 task patch(type: PatchTask)
 
 dependencies {
-	compileOnly group: "org.json", name: "json", transitive: false, version: "20231013"
+	compileOnly group: "org.json", name: "json", transitive: false, version: "20260814"
 }
 
 jarSources {
