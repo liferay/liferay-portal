@@ -119,20 +119,19 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 		auditRequestContext.setServerPort(httpServletRequest.getServerPort());
 		auditRequestContext.setSessionID(auditSessionId);
 
-		long companyId = CompanyThreadLocal.getCompanyId();
+		String requestId = auditRequestContext.getRequestId();
 
 		String xRequestId = httpServletRequest.getHeader(
 			HttpHeaders.X_REQUEST_ID);
 
-		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
-			if (_isValidXRequestId(xRequestId)) {
-				auditRequestContext.setRequestId(xRequestId);
-				auditRequestContext.setRequestIdGenerated(false);
-			}
-			else {
-				xRequestId = auditRequestContext.getRequestId();
-			}
+		if (_isValidXRequestId(xRequestId)) {
+			auditRequestContext.setRequestId(xRequestId);
+			auditRequestContext.setRequestIdGenerated(false);
+		}
 
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
 			auditRequestContext.setHttpMethod(
 				_truncate(75, httpServletRequest.getMethod()));
 			auditRequestContext.setUserAgent(
@@ -144,11 +143,10 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 			return null;
 		}
 
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417") &&
-			(!_auditLogContextConfiguration.useIncomingXRequestId() ||
-			 !_isValidXRequestId(xRequestId))) {
+		if (!_auditLogContextConfiguration.useIncomingXRequestId() ||
+			!_isValidXRequestId(xRequestId)) {
 
-			xRequestId = auditRequestContext.getRequestId();
+			xRequestId = requestId;
 		}
 
 		httpServletResponse.setHeader(HttpHeaders.X_REQUEST_ID, xRequestId);

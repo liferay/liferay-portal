@@ -94,11 +94,11 @@ public class AuditMessage implements Serializable {
 			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
 
 			_httpMethod = auditRequestContext.getHttpMethod();
-			_requestId = auditRequestContext.getRequestId();
-			_requestIdGenerated = auditRequestContext.isRequestIdGenerated();
 			_userAgent = auditRequestContext.getUserAgent();
 		}
 
+		_requestId = auditRequestContext.getRequestId();
+		_requestIdGenerated = auditRequestContext.isRequestIdGenerated();
 		_serverName = auditRequestContext.getServerName();
 		_serverPort = auditRequestContext.getServerPort();
 		_sessionID = auditRequestContext.getSessionID();
