@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -93,6 +94,42 @@ public class ObjectEntryResourceTest {
 					"title_i18n",
 					(Serializable)RandomTestUtil.randomLanguageIdStringMap()),
 				ServiceContextTestUtil.getServiceContext());
+	}
+
+	@FeatureFlag("LPD-107678")
+	@Test
+	public void testPatchCMPTaskObjectEntry() throws Exception {
+		JSONObject cmpProjectObjectEntryJSONObject =
+			_postCMPProjectObjectEntry();
+
+		JSONObject cmpTaskObjectEntryJSONObject1 = _postCMPTaskObjectEntry(
+			cmpProjectObjectEntryJSONObject, 0);
+		JSONObject cmpTaskObjectEntryJSONObject2 = _postCMPTaskObjectEntry(
+			cmpProjectObjectEntryJSONObject, 0);
+
+		Assert.assertEquals(
+			400,
+			_patchCMPTaskObjectEntry(
+				cmpTaskObjectEntryJSONObject2,
+				cmpTaskObjectEntryJSONObject1.getLong("id")));
+
+		JSONObject cmpTaskObjectEntryJSONObject3 = _postCMPTaskObjectEntry(
+			cmpProjectObjectEntryJSONObject,
+			cmpTaskObjectEntryJSONObject1.getLong("id"));
+
+		Assert.assertEquals(
+			400, _patchCMPTaskObjectEntry(cmpTaskObjectEntryJSONObject3, 0));
+		Assert.assertEquals(
+			400,
+			_patchCMPTaskObjectEntry(
+				cmpTaskObjectEntryJSONObject3,
+				cmpTaskObjectEntryJSONObject2.getLong("id")));
+
+		Assert.assertEquals(
+			200,
+			_patchCMPTaskObjectEntry(
+				cmpTaskObjectEntryJSONObject3,
+				cmpTaskObjectEntryJSONObject1.getLong("id")));
 	}
 
 	@Test
@@ -187,6 +224,7 @@ public class ObjectEntryResourceTest {
 		_testPostCMPTaskLinkObjectEntry();
 	}
 
+	@FeatureFlag("LPD-107678")
 	@Test
 	public void testPostCMPTaskObjectEntry() throws Exception {
 		JSONObject cmpProjectObjectEntryJSONObject =
@@ -217,6 +255,23 @@ public class ObjectEntryResourceTest {
 				).toString(),
 				_cmpTaskObjectDefinition.getRESTContextPath() + "/scopes/" +
 					depotEntry.getGroupId(),
+				Http.Method.POST));
+
+		Assert.assertEquals(
+			404,
+			HTTPTestUtil.invokeToHttpCode(
+				JSONUtil.put(
+					"r_cmpProjectToCMPTasks_c_cmpProjectERC",
+					cmpProjectObjectEntryJSONObject.getString(
+						"externalReferenceCode")
+				).put(
+					"r_cmpTaskToCMPTasks_c_cmpTaskERC",
+					RandomTestUtil.randomString()
+				).put(
+					"title", RandomTestUtil.randomString()
+				).toString(),
+				_cmpTaskObjectDefinition.getRESTContextPath() + "/scopes/" +
+					cmpProjectObjectEntryJSONObject.getLong("scopeId"),
 				Http.Method.POST));
 
 		JSONObject cmpTaskObjectEntryJSONObject =
@@ -299,6 +354,20 @@ public class ObjectEntryResourceTest {
 		);
 	}
 
+	private int _patchCMPTaskObjectEntry(
+			JSONObject cmpTaskObjectEntryJSONObject,
+			long parentCMPTaskObjectEntryId)
+		throws Exception {
+
+		return HTTPTestUtil.invokeToHttpCode(
+			JSONUtil.put(
+				"r_cmpTaskToCMPTasks_c_cmpTaskId", parentCMPTaskObjectEntryId
+			).toString(),
+			_cmpTaskObjectDefinition.getRESTContextPath() + "/" +
+				cmpTaskObjectEntryJSONObject.getLong("id"),
+			Http.Method.PATCH);
+	}
+
 	private JSONObject _postCMPProjectObjectEntry() throws Exception {
 		return HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
@@ -316,6 +385,26 @@ public class ObjectEntryResourceTest {
 				"r_cmpProjectToCMPTasks_c_cmpProjectERC",
 				cmpProjectObjectEntryJSONObject.getString(
 					"externalReferenceCode")
+			).put(
+				"title", RandomTestUtil.randomString()
+			).toString(),
+			_cmpTaskObjectDefinition.getRESTContextPath() + "/scopes/" +
+				cmpProjectObjectEntryJSONObject.getLong("scopeId"),
+			Http.Method.POST);
+	}
+
+	private JSONObject _postCMPTaskObjectEntry(
+			JSONObject cmpProjectObjectEntryJSONObject,
+			long parentCMPTaskObjectEntryId)
+		throws Exception {
+
+		return HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"r_cmpProjectToCMPTasks_c_cmpProjectERC",
+				cmpProjectObjectEntryJSONObject.getString(
+					"externalReferenceCode")
+			).put(
+				"r_cmpTaskToCMPTasks_c_cmpTaskId", parentCMPTaskObjectEntryId
 			).put(
 				"title", RandomTestUtil.randomString()
 			).toString(),
