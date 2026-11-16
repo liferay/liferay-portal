@@ -66,6 +66,10 @@ public class BlogsEntryCTEventListenerTest {
 			blogsEntry
 		);
 
+		ReflectionTestUtil.setFieldValue(
+			blogsEntryCTEventListener, "_blogsEntryLocalService",
+			blogsEntryLocalService);
+
 		CTEntryLocalService ctEntryLocalService = Mockito.mock(
 			CTEntryLocalService.class);
 
@@ -76,11 +80,9 @@ public class BlogsEntryCTEventListenerTest {
 		);
 
 		ReflectionTestUtil.setFieldValue(
-			blogsEntryCTEventListener, "_blogsEntryLocalService",
-			blogsEntryLocalService);
-		ReflectionTestUtil.setFieldValue(
 			blogsEntryCTEventListener, "_ctEntryLocalService",
 			ctEntryLocalService);
+
 		ReflectionTestUtil.setFieldValue(
 			blogsEntryCTEventListener, "_portal", Mockito.mock(Portal.class));
 
@@ -88,14 +90,9 @@ public class BlogsEntryCTEventListenerTest {
 
 		Assert.assertEquals(expectedContent, blogsEntry.getContent());
 
-		int wantedNumberOfInvocations = 1;
-
-		if (content.equals(expectedContent)) {
-			wantedNumberOfInvocations = 0;
-		}
-
 		Mockito.verify(
-			blogsEntryLocalService, Mockito.times(wantedNumberOfInvocations)
+			blogsEntryLocalService,
+			Mockito.times(content.equals(expectedContent) ? 0 : 1)
 		).updateBlogsEntry(
 			blogsEntry
 		);
