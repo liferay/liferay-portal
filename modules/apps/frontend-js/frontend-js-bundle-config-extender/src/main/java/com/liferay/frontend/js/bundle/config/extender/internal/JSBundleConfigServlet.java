@@ -5,7 +5,9 @@
 
 package com.liferay.frontend.js.bundle.config.extender.internal;
 
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
@@ -55,6 +57,18 @@ public class JSBundleConfigServlet extends HttpServlet {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws IOException {
+
+		if (GetterUtil.getLong(httpServletRequest.getParameter("t")) ==
+				JSBundleConfigRegistryUtil.getLastModified()) {
+
+			httpServletResponse.setHeader(
+				HttpHeaders.CACHE_CONTROL,
+				"immutable, max-age=31536000, public");
+		}
+		else {
+			httpServletResponse.setHeader(
+				HttpHeaders.CACHE_CONTROL, "no-cache");
+		}
 
 		httpServletResponse.setContentType(ContentTypes.TEXT_JAVASCRIPT_UTF8);
 
