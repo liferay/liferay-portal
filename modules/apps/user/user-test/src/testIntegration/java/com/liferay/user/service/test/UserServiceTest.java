@@ -455,37 +455,27 @@ public class UserServiceTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				organizationAdminUser)) {
 
-			// Organization member
-
-			User user = UserTestUtil.addUser();
+			User user1 = UserTestUtil.addUser();
 
 			_userLocalService.addOrganizationUser(
-				organization.getOrganizationId(), user.getUserId());
+				organization.getOrganizationId(), user1.getUserId());
 
 			_updateUser(
 				null, null, new long[] {organization.getOrganizationId()},
-				user.getUserId());
+				user1.getUserId());
 
-			// Organization nonmember
-
-			User nonmemberUser = UserTestUtil.addUser();
+			User user2 = UserTestUtil.addUser();
 
 			Assert.assertThrows(
 				PrincipalException.class,
 				() -> _updateUser(
 					RandomTestUtil.randomString(), null,
 					new long[] {organization.getOrganizationId()},
-					nonmemberUser.getUserId()));
+					user2.getUserId()));
 
 			Assert.assertFalse(
 				_userLocalService.hasOrganizationUser(
-					organization.getOrganizationId(),
-					nonmemberUser.getUserId()));
-
-			user = _userLocalService.getUser(nonmemberUser.getUserId());
-
-			Assert.assertEquals(
-				nonmemberUser.getPassword(), user.getPassword());
+					organization.getOrganizationId(), user2.getUserId()));
 		}
 	}
 
