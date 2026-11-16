@@ -46,4 +46,11 @@ public class UnusedParameterDSLifecycleMethods {
 	private String _name;
 	private int _reason;
 
+	private abstract static class BaseDSLifecycleMethods {
+
+		@Activate
+		protected abstract void activate(Map<String, Object> properties);
+
+	}
+
 }

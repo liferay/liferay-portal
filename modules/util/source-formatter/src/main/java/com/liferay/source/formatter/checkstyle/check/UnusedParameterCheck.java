@@ -69,6 +69,10 @@ public class UnusedParameterCheck extends BaseCheck {
 		DetailAST statementsDetailAST =
 			constructorOrMethodDetailAST.findFirstToken(TokenTypes.SLIST);
 
+		if (statementsDetailAST == null) {
+			return;
+		}
+
 		List<String> names = getNames(statementsDetailAST, true);
 
 		for (DetailAST parameterDefinitionDetailAST :
