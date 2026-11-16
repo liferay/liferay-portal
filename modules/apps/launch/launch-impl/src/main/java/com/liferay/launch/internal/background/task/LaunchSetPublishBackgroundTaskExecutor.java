@@ -113,11 +113,12 @@ public class LaunchSetPublishBackgroundTaskExecutor
 				BackgroundTaskConstants.STATUS_FAILED, message);
 		}
 
-		long userId = backgroundTask.getUserId();
-
 		ServiceContext serviceContext = new ServiceContext();
 
 		serviceContext.setCompanyId(launchSetObjectEntry.getCompanyId());
+
+		long userId = backgroundTask.getUserId();
+
 		serviceContext.setUserId(userId);
 
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
