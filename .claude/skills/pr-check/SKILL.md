@@ -71,6 +71,8 @@ The **Forward Target** is the repository `ci:forward` merges a pull request into
 
 - **Diff is nonempty.** When the three dot diff produces no files, exit with a one line message — no validation produces useful signal on a clean branch.
 
+- **Commit message wording.** Read the branch's commit messages as [commit-message-wording.md](commit-message-wording.md) describes, before any validation runs, so a reword costs no build. This precondition never stops the run on its own: it shows what it flagged or noted and lets the developer choose whether to stop and reword.
+
 - **No source file hidden from git.** A file the build reads but git never sees passes every validation here and fails CI's clean checkout, as a Sass import of an uncommitted partial once did. The clean tree check above cannot see it when the developer's own ignore rules hide it, in `core.excludesFile` or `.git/info/exclude`, since `git status` honors those. List the ignored files under each changed module, keep those hidden by a rule outside the repository's own `.gitignore` files, and keep the source and build file types among them:
 
 	```bash
