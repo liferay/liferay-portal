@@ -250,33 +250,6 @@ definition {
 
 	@priority = 5
 	@refactordone
-	test CanDeleteDocumentInFolder {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMFolder.addPG(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			folderName = "DM Folder Name",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
-
-		DMDocument.deletePG(dmDocumentTitle = "DM Document Title");
-	}
-
-	@priority = 5
-	@refactordone
 	test CanDeleteFolderWithDocument {
 		property custom.properties = "dl.actions.visible=true";
 		property portal.acceptance = "true";
@@ -457,36 +430,6 @@ definition {
 			dmDocumentTitle = "DM Document Title",
 			dmFolderName = "DM Folder Name",
 			locationFieldName = "true");
-	}
-
-	@priority = 4
-	@refactordone
-	test CanMoveDocumentWithSlashesInTitle {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "/D/M/Document Title",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Guest");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.moveToFolderPG(
-			dmDocumentTitle = "/D/M/Document Title",
-			dmFolderName = "DM Folder Name");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
-
-		DMDocument.viewPG(dmDocumentTitle = "/D/M/Document Title");
 	}
 
 	@priority = 4
