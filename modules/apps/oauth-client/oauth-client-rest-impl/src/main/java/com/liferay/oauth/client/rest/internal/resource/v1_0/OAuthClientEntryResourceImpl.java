@@ -401,7 +401,6 @@ public class OAuthClientEntryResourceImpl
 			serviceBuilderOAuthClientEntry.getOAuthClientEntryId());
 		List<ResourceAction> resourceActions =
 			_resourceActionLocalService.getResourceActions(className);
-		Collection<String> roleNames = modelPermissions.getRoleNames();
 
 		for (ResourcePermission resourcePermission :
 				_resourcePermissionLocalService.getResourcePermissions(
@@ -410,6 +409,8 @@ public class OAuthClientEntryResourceImpl
 
 			Role role = _roleLocalService.fetchRole(
 				resourcePermission.getRoleId());
+
+			Collection<String> roleNames = modelPermissions.getRoleNames();
 
 			if ((role == null) || roleNames.contains(role.getName())) {
 				continue;

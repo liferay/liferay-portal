@@ -352,7 +352,6 @@ public class OAuthClientASLocalMetadataResourceImpl
 				getOAuthClientASLocalMetadataId());
 		List<ResourceAction> resourceActions =
 			_resourceActionLocalService.getResourceActions(className);
-		Collection<String> roleNames = modelPermissions.getRoleNames();
 
 		for (ResourcePermission resourcePermission :
 				_resourcePermissionLocalService.getResourcePermissions(
@@ -361,6 +360,8 @@ public class OAuthClientASLocalMetadataResourceImpl
 
 			Role role = _roleLocalService.fetchRole(
 				resourcePermission.getRoleId());
+
+			Collection<String> roleNames = modelPermissions.getRoleNames();
 
 			if ((role == null) || roleNames.contains(role.getName())) {
 				continue;
