@@ -28,7 +28,8 @@ spec:
                 -   port: webhook
                     protocol: TCP
         -   from:
-                -   podSelector:
+                -   namespaceSelector: {}
+                    podSelector:
                         matchLabels:
                             app.kubernetes.io/managed-by: envoy-gateway
                             app.kubernetes.io/name: envoy

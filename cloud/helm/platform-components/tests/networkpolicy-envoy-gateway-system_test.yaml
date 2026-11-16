@@ -11,6 +11,19 @@ templates:
 tests:
     -   asserts:
             -   equal:
+                    path: spec.ingress[1].from
+                    value:
+                        -   namespaceSelector: {}
+                            podSelector:
+                                matchLabels:
+                                    app.kubernetes.io/managed-by: envoy-gateway
+                                    app.kubernetes.io/name: envoy
+        documentSelector:
+            path: metadata.name
+            value: envoy-gateway-ingress
+        it: Admits Envoy proxies from any namespace to the xDS and Wasm ports
+    -   asserts:
+            -   equal:
                     path: spec.ingress[0].from
                     value:
                         -   ipBlock:
