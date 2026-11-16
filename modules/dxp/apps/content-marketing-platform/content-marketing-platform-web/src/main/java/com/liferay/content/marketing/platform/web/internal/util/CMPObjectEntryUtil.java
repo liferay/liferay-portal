@@ -27,8 +27,10 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Guilherme Camacho
@@ -125,6 +127,53 @@ public class CMPObjectEntryUtil {
 					group.getExternalReferenceCode(), "'"),
 				objectDefinition),
 			false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	public static List<ObjectEntry> getParentCMPTaskObjectEntries(
+			ObjectEntry cmpTaskObjectEntry,
+			ObjectEntryLocalService objectEntryLocalService)
+		throws PortalException {
+
+		List<ObjectEntry> parentCMPTaskObjectEntries = new ArrayList<>();
+
+		long parentCMPTaskObjectEntryId = MapUtil.getLong(
+			cmpTaskObjectEntry.getValues(), "r_cmpTaskToCMPTasks_c_cmpTaskId");
+
+		while (parentCMPTaskObjectEntryId > 0) {
+			ObjectEntry parentCMPTaskObjectEntry =
+				objectEntryLocalService.getObjectEntry(
+					parentCMPTaskObjectEntryId);
+
+			if (parentCMPTaskObjectEntries.contains(parentCMPTaskObjectEntry)) {
+				break;
+			}
+
+			parentCMPTaskObjectEntries.add(0, parentCMPTaskObjectEntry);
+
+			parentCMPTaskObjectEntryId = MapUtil.getLong(
+				parentCMPTaskObjectEntry.getValues(),
+				"r_cmpTaskToCMPTasks_c_cmpTaskId");
+		}
+
+		return parentCMPTaskObjectEntries;
+	}
+
+	public static Long getParentCMPTaskObjectEntryId(
+		Map<String, Object> entryDTO) {
+
+		if (MapUtil.isEmpty(entryDTO)) {
+			return null;
+		}
+
+		Map<String, Object> properties = (Map<String, Object>)entryDTO.get(
+			"properties");
+
+		if (properties == null) {
+			return 0L;
+		}
+
+		return GetterUtil.getLong(
+			properties.get("r_cmpTaskToCMPTasks_c_cmpTaskId"));
 	}
 
 	public static boolean isCMSAsset(
