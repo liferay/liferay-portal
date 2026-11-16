@@ -1,10 +1,13 @@
 import {
 	buildCreateLifecyclePayload,
+	buildDuplicateLifecycleName,
 	buildStageFilter,
 	buildStageFilterMetadata,
 	buildUpdateLifecyclePayload,
+	duplicateStageConfigsFromLifecycle,
 	stageConfigsFromLifecycle,
 } from 'lifecycle/utils/lifecyclePayload';
+import {LIFECYCLE_NAME_MAX_LENGTH} from 'lifecycle/utils/constants';
 import {
 	createStageCondition,
 	IStageCondition,
@@ -389,6 +392,29 @@ describe('buildCreateLifecyclePayload', () => {
 
 		expect(payload.stages[0].maxDuration).toBeNull();
 	});
+
+	it('sends the segment only when one is given', () => {
+		const payload = buildCreateLifecyclePayload({
+			channelId: '123',
+			description: '',
+			groupId: '23',
+			name: 'My Lifecycle',
+			stageConfigs: [buildStage()],
+		});
+
+		expect(payload).not.toHaveProperty('segmentId');
+
+		expect(
+			buildCreateLifecyclePayload({
+				channelId: '123',
+				description: '',
+				groupId: '23',
+				name: 'My Lifecycle',
+				segmentId: '456',
+				stageConfigs: [buildStage()],
+			}).segmentId
+		).toBe('456');
+	});
 });
 
 describe('buildUpdateLifecyclePayload', () => {
@@ -610,5 +636,89 @@ describe('stageConfigsFromLifecycle', () => {
 		]);
 
 		expect(aware.maxTimeEnabled).toBe(false);
+	});
+});
+
+describe('buildDuplicateLifecycleName', () => {
+	it('adds (1) to the original name', () => {
+		expect(buildDuplicateLifecycleName('Growth Hub')).toBe(
+			'Growth Hub (1)'
+		);
+	});
+
+	it('shortens a long original name to keep the copy within the limit', () => {
+		const name = buildDuplicateLifecycleName(
+			'a'.repeat(LIFECYCLE_NAME_MAX_LENGTH)
+		);
+
+		expect(name).toHaveLength(LIFECYCLE_NAME_MAX_LENGTH);
+		expect(name.endsWith(' (1)')).toBe(true);
+	});
+});
+
+describe('duplicateStageConfigsFromLifecycle', () => {
+	it('copies every stage in display order without its id', () => {
+		const configs = duplicateStageConfigsFromLifecycle([
+			{
+				accountLifecycleStageRule: {
+					filterMetadata: JSON.stringify({
+						conditionValue: '1000',
+						field: 'account.annualRevenue',
+						fieldDataCategory: 'Number',
+						fieldDataType: 'NUMERIC',
+						operator: 'gt',
+					}),
+					filterString: '(account.annualRevenue gt 1000)',
+				},
+				description: 'Second',
+				externalReferenceCode: 'erc-stage-2',
+				id: 'stage-2',
+				maxDuration: 30,
+				name: 'Qualified',
+				position: 2,
+			},
+			{
+				description: 'First',
+				externalReferenceCode: 'erc-stage-1',
+				id: 'stage-1',
+				maxDuration: null,
+				name: 'Aware',
+				position: 1,
+			},
+		]);
+
+		expect(
+			configs.map(
+				({description, id, maxTimeDays, maxTimeEnabled, name}) => ({
+					description,
+					id,
+					maxTimeDays,
+					maxTimeEnabled,
+					name,
+				})
+			)
+		).toEqual([
+			{
+				description: 'First',
+				id: null,
+				maxTimeDays: 90,
+				maxTimeEnabled: false,
+				name: 'Aware',
+			},
+			{
+				description: 'Second',
+				id: null,
+				maxTimeDays: 30,
+				maxTimeEnabled: true,
+				name: 'Qualified',
+			},
+		]);
+		expect(configs[1].conditions[0]).toEqual(
+			expect.objectContaining({
+				conditionValue: '1000',
+				field: 'account.annualRevenue',
+				operator: 'gt',
+			})
+		);
 	});
 });

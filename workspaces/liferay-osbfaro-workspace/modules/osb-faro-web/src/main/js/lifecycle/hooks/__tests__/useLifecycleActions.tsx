@@ -131,13 +131,14 @@ describe('useLifecycleActions', () => {
 
 		const labels = getLabels();
 
-		expect(labels).toHaveLength(6);
+		expect(labels).toHaveLength(7);
 		expect(labels[0]).toMatch(/^view$/i);
 		expect(labels[1]).toMatch(/^edit$/i);
-		expect(labels[2]).toMatch(/manage.notifications/i);
-		expect(labels[3]).toMatch(/set.default/i);
-		expect(labels[4]).toMatch(/show.details/i);
-		expect(labels[5]).toMatch(/^delete$/i);
+		expect(labels[2]).toMatch(/^duplicate$/i);
+		expect(labels[3]).toMatch(/manage.notifications/i);
+		expect(labels[4]).toMatch(/set.default/i);
+		expect(labels[5]).toMatch(/show.details/i);
+		expect(labels[6]).toMatch(/^delete$/i);
 	});
 
 	it('hides View and Show Details when no handler is given', () => {
@@ -155,12 +156,13 @@ describe('useLifecycleActions', () => {
 		).toBeNull();
 	});
 
-	it('hides Edit for non-admins', () => {
+	it('hides Edit and Duplicate for non-admins', () => {
 		mockedUseCurrentUser.mockReturnValue({isAdmin: () => false});
 
 		renderActions({lifecycle: {externalReferenceCode: 'erc-1', id: '1'}});
 
 		expect(screen.queryByRole('button', {name: /^edit$/i})).toBeNull();
+		expect(screen.queryByRole('button', {name: /^duplicate$/i})).toBeNull();
 		expect(
 			screen.getByRole('button', {name: /manage.notifications/i})
 		).toBeInTheDocument();
@@ -214,6 +216,34 @@ describe('useLifecycleActions', () => {
 				channelId: '123',
 				groupId: '23',
 				lifecycleId: 'erc-5',
+			})
+		);
+	});
+
+	it('shows Duplicate on the default lifecycle', () => {
+		renderActions({
+			lifecycle: {
+				defaultAccountLifecycle: true,
+				externalReferenceCode: 'erc-1',
+				id: '1',
+			},
+		});
+
+		expect(
+			screen.getByRole('button', {name: /^duplicate$/i})
+		).toBeInTheDocument();
+	});
+
+	it('opens the duplicate editor by its external reference code on Duplicate', () => {
+		renderActions({lifecycle: {externalReferenceCode: 'erc-5', id: '5'}});
+
+		fireEvent.click(screen.getByRole('button', {name: /^duplicate$/i}));
+
+		expect(screen.getByTestId('location')).toHaveTextContent(
+			toRoute(Routes.LIFECYCLE_DUPLICATE, {
+				channelId: '123',
+				groupId: '23',
+				sourceLifecycleId: 'erc-5',
 			})
 		);
 	});
