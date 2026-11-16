@@ -8,15 +8,20 @@ package com.liferay.asset.publisher.web.internal.util;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryLocalServiceUtil;
 import com.liferay.asset.list.service.AssetListEntryServiceUtil;
+import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.asset.publisher.web.internal.configuration.AssetPublisherSelectionStyleConfigurationUtil;
 import com.liferay.asset.publisher.web.internal.constants.AssetPublisherSelectionStyleConstants;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.MockPortletPreferences;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import jakarta.portlet.PortletRequest;
 
 import java.util.Collections;
 import java.util.Map;
@@ -47,6 +52,7 @@ public class AssetPublisherUtilTest {
 		_assetListEntryServiceUtilMockedStatic.close();
 		_assetPublisherSelectionStyleConfigurationUtilMockedStatic.close();
 		_groupLocalServiceUtilMockedStatic.close();
+		_portalUtilMockedStatic.close();
 	}
 
 	@Before
@@ -54,6 +60,7 @@ public class AssetPublisherUtilTest {
 		_assetListEntryLocalServiceUtilMockedStatic.reset();
 		_assetListEntryServiceUtilMockedStatic.reset();
 		_groupLocalServiceUtilMockedStatic.reset();
+		_portalUtilMockedStatic.reset();
 
 		_assetPublisherSelectionStyleConfigurationUtilMockedStatic.when(
 			AssetPublisherSelectionStyleConfigurationUtil::defaultSelectionStyle
@@ -216,6 +223,40 @@ public class AssetPublisherUtilTest {
 					).build())));
 
 		_groupLocalServiceUtilMockedStatic.verifyNoInteractions();
+	}
+
+	@Test
+	public void testGetRedirect() {
+		PortletRequest portletRequest = Mockito.mock(PortletRequest.class);
+
+		String url = "/web/guest/" + RandomTestUtil.randomString();
+
+		_portalUtilMockedStatic.when(
+			() -> PortalUtil.getCurrentURL(portletRequest)
+		).thenReturn(
+			StringBundler.concat(
+				url, "?x&redirect=%2Fa&_",
+				AssetPublisherPortletKeys.ASSET_PUBLISHER, "_INSTANCE_",
+				RandomTestUtil.randomString(), "_redirect=%2Fb&_",
+				AssetPublisherPortletKeys.RELATED_ASSETS,
+				"_redirect=%2Fc&_com_liferay_blogs_web_portlet_BlogsPortlet_",
+				"redirect=%2Fd&t=abc==#anchor?redirect=e")
+		);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				url, "?x&_com_liferay_blogs_web_portlet_BlogsPortlet_",
+				"redirect=%2Fd&t=abc==#anchor?redirect=e"),
+			AssetPublisherUtil.getRedirect(portletRequest));
+
+		Mockito.when(
+			portletRequest.getParameter("redirect")
+		).thenReturn(
+			url + "?redirect=%2Fa"
+		);
+
+		Assert.assertEquals(
+			url, AssetPublisherUtil.getRedirect(portletRequest));
 	}
 
 	private void _assertGetAssetListEntry(
@@ -434,5 +475,7 @@ public class AssetPublisherUtilTest {
 	private static final MockedStatic<GroupLocalServiceUtil>
 		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			GroupLocalServiceUtil.class);
+	private static final MockedStatic<PortalUtil> _portalUtilMockedStatic =
+		Mockito.mockStatic(PortalUtil.class);
 
 }

@@ -15,6 +15,7 @@ import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
+import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.asset.publisher.test.util.AssetPublisherTestUtil;
 import com.liferay.asset.publisher.util.AssetEntryResult;
 import com.liferay.asset.publisher.util.AssetPublisherHelper;
@@ -612,7 +613,9 @@ public class AssetPublisherHelperTest {
 
 		String nestedRedirectURL = StringBundler.concat(
 			currentURL, "&redirect=", previousRedirect, "&_",
+			AssetPublisherPortletKeys.ASSET_PUBLISHER, "_INSTANCE_",
 			RandomTestUtil.randomString(), "_redirect=", previousRedirect, "&_",
+			AssetPublisherPortletKeys.ASSET_PUBLISHER, "_INSTANCE_",
 			RandomTestUtil.randomString(), "_redirect=", previousRedirect);
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
@@ -629,72 +632,13 @@ public class AssetPublisherHelperTest {
 		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
 			JournalArticle.class.getName(),
 			journalArticle.getResourcePrimKey());
-		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
-			new MockLiferayPortletRenderResponse();
 
 		Assert.assertEquals(
 			URLCodec.encodeURL(currentURL),
 			HttpComponentsUtil.getParameter(
 				_assetPublisherHelper.getAssetViewURL(
 					mockLiferayPortletRenderRequest,
-					mockLiferayPortletRenderResponse, assetEntry, true),
-				"redirect", false));
-
-		mockLiferayPortletRenderRequest.setAttribute(
-			WebKeys.CURRENT_URL, "/web/" + RandomTestUtil.randomString());
-		mockLiferayPortletRenderRequest.setParameter(
-			"redirect", nestedRedirectURL);
-
-		Assert.assertEquals(
-			URLCodec.encodeURL(currentURL),
-			HttpComponentsUtil.getParameter(
-				_assetPublisherHelper.getAssetViewURL(
-					mockLiferayPortletRenderRequest,
-					mockLiferayPortletRenderResponse, assetEntry, true),
-				"redirect", false));
-
-		String anchor = StringBundler.concat(
-			"#", RandomTestUtil.randomString(), "?",
-			RandomTestUtil.randomString());
-
-		mockLiferayPortletRenderRequest.setParameter(
-			"redirect", nestedRedirectURL + anchor);
-
-		Assert.assertEquals(
-			URLCodec.encodeURL(currentURL + anchor),
-			HttpComponentsUtil.getParameter(
-				_assetPublisherHelper.getAssetViewURL(
-					mockLiferayPortletRenderRequest,
-					mockLiferayPortletRenderResponse, assetEntry, true),
-				"redirect", false));
-
-		String anchorRedirectURL =
-			"/web/" + RandomTestUtil.randomString() + anchor;
-
-		mockLiferayPortletRenderRequest.setParameter(
-			"redirect", anchorRedirectURL);
-
-		Assert.assertEquals(
-			URLCodec.encodeURL(anchorRedirectURL),
-			HttpComponentsUtil.getParameter(
-				_assetPublisherHelper.getAssetViewURL(
-					mockLiferayPortletRenderRequest,
-					mockLiferayPortletRenderResponse, assetEntry, true),
-				"redirect", false));
-
-		String fragmentRedirectURL = StringBundler.concat(
-			currentURL, "#", RandomTestUtil.randomString(), "&redirect=",
-			RandomTestUtil.randomString());
-
-		mockLiferayPortletRenderRequest.setParameter(
-			"redirect", fragmentRedirectURL);
-
-		Assert.assertEquals(
-			URLCodec.encodeURL(fragmentRedirectURL),
-			HttpComponentsUtil.getParameter(
-				_assetPublisherHelper.getAssetViewURL(
-					mockLiferayPortletRenderRequest,
-					mockLiferayPortletRenderResponse, assetEntry, true),
+					new MockLiferayPortletRenderResponse(), assetEntry, true),
 				"redirect", false));
 	}
 

@@ -781,6 +781,7 @@ public class AssetPublisherDisplayContextTest {
 			WebKeys.CURRENT_URL,
 			StringBundler.concat(
 				currentURL, "&redirect=", previousRedirect, "&_",
+				AssetPublisherPortletKeys.ASSET_PUBLISHER, "_INSTANCE_",
 				RandomTestUtil.randomString(), "_redirect=", previousRedirect));
 
 		MockLiferayPortletURL mockLiferayPortletURL = ReflectionTestUtil.invoke(
