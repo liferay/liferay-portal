@@ -564,7 +564,10 @@ public class EditMessageMVCActionCommand extends BaseMVCActionCommand {
 				if (formatHandler != null) {
 					List<FileEntry> tempMBAttachmentFileEntries =
 						MBAttachmentFileEntryUtil.
-							getTempMBAttachmentFileEntries(message.getBody());
+							getTempMBAttachmentFileEntries(
+								message.getBody(),
+								themeDisplay.getScopeGroupId(),
+								themeDisplay.getUserId());
 
 					if (!tempMBAttachmentFileEntries.isEmpty()) {
 						body = _addBodyAttachmentTempFiles(
@@ -587,7 +590,9 @@ public class EditMessageMVCActionCommand extends BaseMVCActionCommand {
 				if (formatHandler != null) {
 					List<FileEntry> tempMBAttachmentFileEntries =
 						MBAttachmentFileEntryUtil.
-							getTempMBAttachmentFileEntries(body);
+							getTempMBAttachmentFileEntries(
+								body, themeDisplay.getScopeGroupId(),
+								themeDisplay.getUserId());
 
 					if (!tempMBAttachmentFileEntries.isEmpty()) {
 						body = _addBodyAttachmentTempFiles(
