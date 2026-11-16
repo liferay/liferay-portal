@@ -24,8 +24,8 @@ import jakarta.servlet.ServletContext;
 
 import java.net.URL;
 
-import java.util.Collection;
 import java.util.Dictionary;
+import java.util.List;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -37,36 +37,6 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * @author Carlos Sierra Andrés
  */
 public class JSBundleConfigRegistryUtil {
-
-	public static void appendJavaScript(
-		StringBundler sb, Collection<JSConfig> jsConfigs) {
-
-		for (JSConfig jsConfig : jsConfigs) {
-			try {
-				sb.append("try {var MODULE_MAIN='");
-
-				ServletContext servletContext = jsConfig.getServletContext();
-
-				sb.append(_getModuleMain(jsConfig));
-				sb.append("';var MODULE_PATH='");
-				sb.append(PortalUtil.getPathProxy());
-				sb.append(servletContext.getContextPath());
-				sb.append("';");
-				sb.append(
-					StringUtil.removeSubstring(
-						URLUtil.toString(jsConfig.getURL()),
-						"//# sourceMappingURL=config.js.map"));
-				sb.append("} catch(error) {console.error(error);}");
-			}
-			catch (Exception exception) {
-				_log.error("Unable to open resource", exception);
-			}
-		}
-	}
-
-	public static Collection<JSConfig> getJSConfigs() {
-		return _serviceTrackerList.toList();
-	}
 
 	public static String getJavaScript() {
 		return _javaScriptDCLSingleton.getSingleton(
@@ -98,11 +68,31 @@ public class JSBundleConfigRegistryUtil {
 	}
 
 	private static String _createJavaScript() {
-		Collection<JSConfig> jsConfigs = getJSConfigs();
+		List<JSConfig> jsConfigs = _serviceTrackerList.toList();
 
 		StringBundler sb = new StringBundler(jsConfigs.size() * 8);
 
-		appendJavaScript(sb, jsConfigs);
+		for (JSConfig jsConfig : jsConfigs) {
+			try {
+				sb.append("try {var MODULE_MAIN='");
+
+				ServletContext servletContext = jsConfig.getServletContext();
+
+				sb.append(_getModuleMain(jsConfig));
+				sb.append("';var MODULE_PATH='");
+				sb.append(PortalUtil.getPathProxy());
+				sb.append(servletContext.getContextPath());
+				sb.append("';");
+				sb.append(
+					StringUtil.removeSubstring(
+						URLUtil.toString(jsConfig.getURL()),
+						"//# sourceMappingURL=config.js.map"));
+				sb.append("} catch(error) {console.error(error);}");
+			}
+			catch (Exception exception) {
+				_log.error("Unable to open resource", exception);
+			}
+		}
 
 		return sb.toString();
 	}
