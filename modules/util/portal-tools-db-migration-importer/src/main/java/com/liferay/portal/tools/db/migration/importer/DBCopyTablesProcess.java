@@ -94,12 +94,43 @@ public class DBCopyTablesProcess {
 		_addCustomIndexes();
 	}
 
+	public List<String> getCustomTableAndColumnInfos() {
+		List<String> customTableAndColumnInfos = new ArrayList<>();
+
+		String customTableNames = StringUtil.merge(
+			_customTableNames, StringPool.COMMA_AND_SPACE);
+
+		customTableAndColumnInfos.add("custom tables: " + customTableNames);
+
+		customTableAndColumnInfos.addAll(_customColumnInfos);
+
+		return customTableAndColumnInfos;
+	}
+
 	public void run() throws Exception {
 		_loadColumnsMetadata();
 
 		_addCustomColumnsAndTables();
 
 		_copyTables();
+	}
+
+	private void _addCustomColumnInfo(String columnName, ResultSet resultSet)
+		throws SQLException {
+
+		String columnType = _getPostgreSQLColumnType(
+			resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("DATA_TYPE"),
+			resultSet.getInt("DECIMAL_DIGITS"));
+
+		if (columnType == null) {
+			columnType = "text (fallback)";
+		}
+
+		_customColumnInfos.add(
+			StringBundler.concat(
+				"custom column ", resultSet.getString("TABLE_NAME"), ".",
+				columnName, ": source ", resultSet.getString("TYPE_NAME"),
+				", created as ", columnType));
 	}
 
 	private void _addCustomColumnsAndTables() throws Exception {
@@ -139,6 +170,8 @@ public class DBCopyTablesProcess {
 							continue;
 						}
 
+						_addCustomColumnInfo(columnName, resultSet);
+
 						String columnDefinition = _getColumnDefinition(
 							columnName, resultSet);
 
@@ -176,6 +209,8 @@ public class DBCopyTablesProcess {
 						continue;
 					}
 
+					_addCustomColumnInfo(columnName, resultSet);
+
 					statement.executeUpdate(
 						StringBundler.concat(
 							"alter table ",
@@ -186,6 +221,10 @@ public class DBCopyTablesProcess {
 			}
 
 			for (String longNameTableName : longNameTableNames) {
+				_customColumnInfos.removeIf(
+					customColumnInfo -> customColumnInfo.startsWith(
+						"custom column " + longNameTableName + "."));
+
 				columnDefinitionsMap.remove(longNameTableName);
 
 				System.out.println(
@@ -858,11 +897,17 @@ public class DBCopyTablesProcess {
 	private String _getColumnDefinition(String columnName, ResultSet resultSet)
 		throws SQLException {
 
+		String columnType = _getPostgreSQLColumnType(
+			resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("DATA_TYPE"),
+			resultSet.getInt("DECIMAL_DIGITS"));
+
+		if (columnType == null) {
+			columnType = "text";
+		}
+
 		return StringBundler.concat(
 			_getQuotedName(StringUtil.toLowerCase(columnName)), " ",
-			_getPostgreSQLColumnType(
-				resultSet.getInt("COLUMN_SIZE"), resultSet.getInt("DATA_TYPE"),
-				resultSet.getInt("DECIMAL_DIGITS")));
+			columnType);
 	}
 
 	private List<IndexMetadata> _getIndexMetadatas(Connection connection)
@@ -1085,6 +1130,15 @@ public class DBCopyTablesProcess {
 			return "varchar(" + columnSize + ")";
 		}
 
+		if ((dataType == Types.CHAR) || (dataType == Types.CLOB) ||
+			(dataType == Types.LONGNVARCHAR) ||
+			(dataType == Types.LONGVARCHAR) || (dataType == Types.NCHAR) ||
+			(dataType == Types.NCLOB) || (dataType == Types.NVARCHAR) ||
+			(dataType == Types.VARCHAR)) {
+
+			return "text";
+		}
+
 		if ((dataType == Types.DATE) || (dataType == Types.TIMESTAMP)) {
 			return "timestamp";
 		}
@@ -1130,7 +1184,7 @@ public class DBCopyTablesProcess {
 			return "timestamp with time zone";
 		}
 
-		return "text";
+		return null;
 	}
 
 	private String _getQuotedName(String name) {
@@ -1381,6 +1435,7 @@ public class DBCopyTablesProcess {
 
 	private static final int _SQL_TYPE_SQL_SERVER_DATETIMEOFFSET = -155;
 
+	private final List<String> _customColumnInfos = new ArrayList<>();
 	private final Set<String> _customTableNames = new TreeSet<>(
 		String.CASE_INSENSITIVE_ORDER);
 	private final String _partitionMessage;
