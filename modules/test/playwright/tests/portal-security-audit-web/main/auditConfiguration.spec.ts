@@ -12,6 +12,12 @@ import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
 const test = mergeTests(
+	instanceSettingsPagesTest,
+	loginTest(),
+	systemSettingsPageTest
+);
+
+const testWithFeatureFlag = mergeTests(
 	featureFlagsTest({
 		'LPD-6417': {enabled: true},
 	}),
@@ -24,6 +30,7 @@ const testWithoutFeatureFlag = mergeTests(
 	featureFlagsTest({
 		'LPD-6417': {enabled: false},
 	}),
+	instanceSettingsPagesTest,
 	loginTest(),
 	systemSettingsPageTest
 );
@@ -45,7 +52,7 @@ test(
 );
 
 test(
-	'Assert that the audit message maximum queue size is not rendered on the system scope when the feature flag is enabled',
+	'Assert that the audit message maximum queue size is not rendered on the system scope',
 	{tag: '@LPD-98544'},
 	async ({page, systemSettingsPage}) => {
 		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
@@ -53,37 +60,6 @@ test(
 		await expect(page.getByLabel('Enabled', {exact: true})).toBeVisible();
 		await expect(
 			page.getByLabel('Audit Message Maximum Queue Size')
-		).toBeHidden();
-	}
-);
-
-testWithoutFeatureFlag(
-	'Assert that the audit message maximum queue size is rendered on the system scope when the feature flag is disabled',
-	{tag: '@LPD-98544'},
-	async ({page, systemSettingsPage}) => {
-		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
-
-		await expect(page.getByLabel('Enabled', {exact: true})).toBeVisible();
-		await expect(
-			page.getByLabel('Audit Message Maximum Queue Size')
-		).toBeVisible();
-	}
-);
-
-testWithoutFeatureFlag(
-	'Assert that the database processor has a separate configuration entry on the system scope when the feature flag is disabled',
-	{tag: '@LPD-98545'},
-	async ({page, systemSettingsPage}) => {
-		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
-
-		await expect(
-			page.getByRole('menuitem', {
-				name: 'Persistent Message Audit Message Processor',
-			})
-		).toBeVisible();
-
-		await expect(
-			page.getByRole('heading', {name: 'Database Processor'})
 		).toBeHidden();
 	}
 );
@@ -113,20 +89,25 @@ test(
 );
 
 testWithoutFeatureFlag(
-	'Assert that the file system processor has no separate configuration entry on the system scope when the feature flag is disabled',
-	{tag: '@LPD-98546'},
-	async ({page, systemSettingsPage}) => {
+	'Assert that the pseudonymization toggle is not rendered when the feature flag is disabled',
+	{tag: '@LPD-115244'},
+	async ({instanceSettingsPage, page, systemSettingsPage}) => {
+		await instanceSettingsPage.goToInstanceSetting(
+			'Audit',
+			'Audit',
+			true,
+			'Virtual Instance Scope'
+		);
+
+		await expect(page.getByLabel('Pseudonymization Enabled')).toBeHidden();
+
 		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
 
-		await expect(
-			page.getByRole('menuitem', {
-				name: 'File System Audit Message Processor',
-			})
-		).toBeHidden();
+		await expect(page.getByLabel('Pseudonymization Enabled')).toBeHidden();
 	}
 );
 
-test(
+testWithFeatureFlag(
 	'Assert that the pseudonymization toggle is rendered and enabled by default on the instance scope',
 	{tag: '@LPD-97702'},
 	async ({instanceSettingsPage, page}) => {
@@ -141,7 +122,7 @@ test(
 	}
 );
 
-test(
+testWithFeatureFlag(
 	'Assert that the pseudonymization toggle is rendered and enabled by default on the system scope',
 	{tag: '@LPD-97702'},
 	async ({page, systemSettingsPage}) => {
@@ -219,13 +200,13 @@ test.describe('File System Processor instance configuration', () => {
 	);
 });
 
-test.describe('Pseudonymization instance configuration', () => {
+testWithFeatureFlag.describe('Pseudonymization instance configuration', () => {
 	const disablePseudonymizationWarning =
 		'While pseudonymization is disabled, new audit records store ' +
 		'personally identifiable information as plaintext. This is a high ' +
 		'risk operation.';
 
-	test.afterEach(async ({instanceSettingsPage, page}) => {
+	testWithFeatureFlag.afterEach(async ({instanceSettingsPage, page}) => {
 		await instanceSettingsPage.goToInstanceSetting(
 			'Audit',
 			'Audit',
@@ -238,7 +219,7 @@ test.describe('Pseudonymization instance configuration', () => {
 		await instanceSettingsPage.saveAndWaitForAlert();
 	});
 
-	test(
+	testWithFeatureFlag(
 		'Assert that disabling pseudonymization warns and persists after confirmation',
 		{tag: '@LPD-97702'},
 		async ({instanceSettingsPage, page}) => {
@@ -276,7 +257,7 @@ test.describe('Pseudonymization instance configuration', () => {
 		}
 	);
 
-	test(
+	testWithFeatureFlag(
 		'Assert that canceling the warning keeps pseudonymization enabled',
 		{tag: '@LPD-97702'},
 		async ({instanceSettingsPage, page}) => {
@@ -315,7 +296,7 @@ test.describe('Pseudonymization instance configuration', () => {
 		}
 	);
 
-	test(
+	testWithFeatureFlag(
 		'Assert that saving without disabling pseudonymization does not warn',
 		{tag: '@LPD-97702'},
 		async ({instanceSettingsPage, page}) => {
