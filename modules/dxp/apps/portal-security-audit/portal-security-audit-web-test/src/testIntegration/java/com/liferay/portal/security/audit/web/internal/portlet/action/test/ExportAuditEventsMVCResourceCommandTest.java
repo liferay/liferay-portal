@@ -77,7 +77,8 @@ public class ExportAuditEventsMVCResourceCommandTest {
 	public void testGetDefaultColumns() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
-					_CONFIGURATION_PID,
+					"com.liferay.portal.security.audit.router.configuration." +
+						"CSVLogMessageFormatterConfiguration",
 					HashMapDictionaryBuilder.<String, Object>put(
 						"columns", new String[] {RandomTestUtil.randomString()}
 					).build())) {
@@ -97,10 +98,6 @@ public class ExportAuditEventsMVCResourceCommandTest {
 		"sessionID", "timestamp", "userEmailAddress", "userId", "userLogin",
 		"userName"
 	};
-
-	private static final String _CONFIGURATION_PID =
-		"com.liferay.portal.security.audit.router.configuration." +
-			"CSVLogMessageFormatterConfiguration";
 
 	@Inject(filter = "mvc.command.name=/audit/export_audit_events")
 	private MVCResourceCommand _mvcResourceCommand;
