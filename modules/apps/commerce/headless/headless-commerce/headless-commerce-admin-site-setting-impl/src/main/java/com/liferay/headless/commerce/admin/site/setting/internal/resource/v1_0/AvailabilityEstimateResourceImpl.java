@@ -9,11 +9,15 @@ import com.liferay.commerce.exception.NoSuchAvailabilityEstimateException;
 import com.liferay.commerce.model.CommerceAvailabilityEstimate;
 import com.liferay.commerce.service.CommerceAvailabilityEstimateService;
 import com.liferay.headless.commerce.admin.site.setting.dto.v1_0.AvailabilityEstimate;
+import com.liferay.headless.commerce.admin.site.setting.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.commerce.admin.site.setting.internal.mapper.v1_0.util.DTOMapperUtil;
 import com.liferay.headless.commerce.admin.site.setting.resource.v1_0.AvailabilityEstimateResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -67,34 +71,6 @@ public class AvailabilityEstimateResourceImpl
 	}
 
 	@Override
-	public AvailabilityEstimate getAvailabilityEstimate(Long id)
-		throws Exception {
-
-		return DTOMapperUtil.modelToDTO(
-			_commerceAvailabilityEstimateService.
-				getCommerceAvailabilityEstimate(id));
-	}
-
-	@Override
-	public AvailabilityEstimate getAvailabilityEstimateByExternalReferenceCode(
-			String externalReferenceCode)
-		throws Exception {
-
-		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
-			_commerceAvailabilityEstimateService.
-				fetchCommerceAvailabilityEstimateByExternalReferenceCode(
-					externalReferenceCode, contextCompany.getCompanyId());
-
-		if (commerceAvailabilityEstimate == null) {
-			throw new NoSuchAvailabilityEstimateException(
-				"Unable to find availability estimate with external " +
-					"reference code " + externalReferenceCode);
-		}
-
-		return DTOMapperUtil.modelToDTO(commerceAvailabilityEstimate);
-	}
-
-	@Override
 	public Page<AvailabilityEstimate>
 			getCommerceAdminSiteSettingGroupAvailabilityEstimatePage(
 				Long groupId, Pagination pagination)
@@ -107,7 +83,7 @@ public class AvailabilityEstimateResourceImpl
 						contextCompany.getCompanyId(),
 						pagination.getStartPosition(),
 						pagination.getEndPosition(), null),
-				DTOMapperUtil::modelToDTO),
+				this::_toAvailabilityEstimate),
 			pagination,
 			_commerceAvailabilityEstimateService.
 				getCommerceAvailabilityEstimatesCount(
@@ -132,7 +108,7 @@ public class AvailabilityEstimateResourceImpl
 					"reference code " + externalReferenceCode);
 		}
 
-		return DTOMapperUtil.modelToDTO(
+		return _toAvailabilityEstimate(
 			_updateCommerceAvailabilityEstimate(
 				availabilityEstimate, commerceAvailabilityEstimate));
 	}
@@ -143,7 +119,7 @@ public class AvailabilityEstimateResourceImpl
 				Long groupId, AvailabilityEstimate availabilityEstimate)
 		throws Exception {
 
-		return DTOMapperUtil.modelToDTO(
+		return _toAvailabilityEstimate(
 			_commerceAvailabilityEstimateService.
 				addCommerceAvailabilityEstimate(
 					availabilityEstimate.getExternalReferenceCode(),
@@ -154,21 +130,18 @@ public class AvailabilityEstimateResourceImpl
 	}
 
 	@Override
-	public AvailabilityEstimate putAvailabilityEstimate(
-			Long id, AvailabilityEstimate availabilityEstimate)
+	protected AvailabilityEstimate doGetAvailabilityEstimate(Long id)
 		throws Exception {
 
-		return DTOMapperUtil.modelToDTO(
-			_updateCommerceAvailabilityEstimate(
-				availabilityEstimate,
-				_commerceAvailabilityEstimateService.
-					getCommerceAvailabilityEstimate(id)));
+		return _toAvailabilityEstimate(
+			_commerceAvailabilityEstimateService.
+				getCommerceAvailabilityEstimate(id));
 	}
 
 	@Override
-	public AvailabilityEstimate putAvailabilityEstimateByExternalReferenceCode(
-			String externalReferenceCode,
-			AvailabilityEstimate availabilityEstimate)
+	protected AvailabilityEstimate
+			doGetAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode)
 		throws Exception {
 
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
@@ -177,7 +150,40 @@ public class AvailabilityEstimateResourceImpl
 					externalReferenceCode, contextCompany.getCompanyId());
 
 		if (commerceAvailabilityEstimate == null) {
-			return DTOMapperUtil.modelToDTO(
+			throw new NoSuchAvailabilityEstimateException(
+				"Unable to find availability estimate with external " +
+					"reference code " + externalReferenceCode);
+		}
+
+		return _toAvailabilityEstimate(commerceAvailabilityEstimate);
+	}
+
+	@Override
+	protected AvailabilityEstimate doPutAvailabilityEstimate(
+			Long id, AvailabilityEstimate availabilityEstimate)
+		throws Exception {
+
+		return _toAvailabilityEstimate(
+			_updateCommerceAvailabilityEstimate(
+				availabilityEstimate,
+				_commerceAvailabilityEstimateService.
+					getCommerceAvailabilityEstimate(id)));
+	}
+
+	@Override
+	protected AvailabilityEstimate
+			doPutAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode,
+				AvailabilityEstimate availabilityEstimate)
+		throws Exception {
+
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
+			_commerceAvailabilityEstimateService.
+				fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId());
+
+		if (commerceAvailabilityEstimate == null) {
+			return _toAvailabilityEstimate(
 				_commerceAvailabilityEstimateService.
 					addCommerceAvailabilityEstimate(
 						externalReferenceCode,
@@ -188,9 +194,36 @@ public class AvailabilityEstimateResourceImpl
 						_serviceContextHelper.getServiceContext(contextUser)));
 		}
 
-		return DTOMapperUtil.modelToDTO(
+		return _toAvailabilityEstimate(
 			_updateCommerceAvailabilityEstimate(
 				availabilityEstimate, commerceAvailabilityEstimate));
+	}
+
+	@Override
+	protected Long getPermissionCheckerGroupId(Object id) {
+		return 0L;
+	}
+
+	@Override
+	protected String getPermissionCheckerResourceName(Object id) {
+		return CommerceAvailabilityEstimate.class.getName();
+	}
+
+	private AvailabilityEstimate _toAvailabilityEstimate(
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate) {
+
+		AvailabilityEstimate availabilityEstimate = DTOMapperUtil.modelToDTO(
+			commerceAvailabilityEstimate);
+
+		availabilityEstimate.setCreator(
+			() -> NestedFieldsSupplier.supply(
+				"creator",
+				fieldName -> CreatorUtil.toCreator(
+					_portal,
+					_userLocalService.fetchUser(
+						commerceAvailabilityEstimate.getUserId()))));
+
+		return availabilityEstimate;
 	}
 
 	private CommerceAvailabilityEstimate _updateCommerceAvailabilityEstimate(
@@ -225,6 +258,12 @@ public class AvailabilityEstimateResourceImpl
 		_commerceAvailabilityEstimateService;
 
 	@Reference
+	private Portal _portal;
+
+	@Reference
 	private ServiceContextHelper _serviceContextHelper;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }

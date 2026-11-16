@@ -28,6 +28,8 @@ public class DTOMapperUtil {
 
 		return new AvailabilityEstimate() {
 			{
+				setDateCreated(commerceAvailabilityEstimate::getCreateDate);
+				setDateModified(commerceAvailabilityEstimate::getModifiedDate);
 				setExternalReferenceCode(
 					commerceAvailabilityEstimate::getExternalReferenceCode);
 				setId(

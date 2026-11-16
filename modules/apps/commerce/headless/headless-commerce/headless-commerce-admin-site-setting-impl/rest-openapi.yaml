@@ -151,6 +151,26 @@ components:
             description:
                 Named restock-time window shown on out-of-stock storefront items to communicate when the merchant expects the product to become available again. Records are company-scoped; the localized `title` is the user-facing label and the `priority` orders estimates when more than one matches an item.
             properties:
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        User who created the availability estimate. Read only; embedded through the `creator` nested field.
+                    readOnly: true
+                dateCreated:
+                    description:
+                        The creation timestamp in ISO 8601 (UTC) of the availability estimate. It is read only and set when the availability estimate is first persisted. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        The last modification timestamp in ISO 8601 (UTC) of the availability estimate. It is read only and updated on each save. Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
+                    format: date-time
+                    readOnly: true
+                    type: string
                 externalReferenceCode:
                     description:
                         Idempotency key for create and update; must be unique per availability estimate within the company. Accepted in place of the numeric identifier on the matching by-external-reference-code endpoints. Defaults to the record's UUID when omitted on create.
@@ -172,6 +192,10 @@ components:
                     minimum: 0
                     readOnly: true
                     type: integer
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 priority:
                     description:
                         Ordering hint applied when more than one estimate matches an item; lower values are applied first. Defaults to 0 when omitted.
@@ -191,6 +215,68 @@ components:
                     type: object
             required:
                 -   title
+            type: object
+        Creator:
+            description:
+                User account that created the entity. Properties follow the [creator](https://schema.org/creator) specification; the batch engine uses `externalReferenceCode` and `id` to keep the original creator on import.
+            properties:
+                additionalName:
+                    description:
+                        The user's additional name, which can be used as a middle name. Read only; taken from the user's middle name.
+                    example: Paul
+                    readOnly: true
+                    type: string
+                contentType:
+                    description:
+                        The type of the referenced content. Read only; always UserAccount, because the creator is always a user.
+                    example: UserAccount
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    description:
+                        The user's external reference code. Read only; the batch engine matches the creator by this code on import.
+                    example: AB-34098-789-N
+                    readOnly: true
+                    type: string
+                familyName:
+                    description:
+                        The user's surname (last name).
+                    example: Smith
+                    readOnly: true
+                    type: string
+                givenName:
+                    description:
+                        The user's first name.
+                    example: John
+                    readOnly: true
+                    type: string
+                id:
+                    description:
+                        The user's ID. Read only; the batch engine falls back to this identifier when the external reference code does not match a user on import.
+                    example: 20132
+                    format: int64
+                    readOnly: true
+                    type: integer
+                image:
+                    description:
+                        A relative URL to the user's profile image. Read only; omitted when the user has no portrait.
+                    example: /image/user_portrait?screenName=john.smith
+                    format: uri
+                    readOnly: true
+                    type: string
+                name:
+                    description:
+                        The user's full name.
+                    example: John Smith
+                    readOnly: true
+                    type: string
+                profileURL:
+                    description:
+                        A relative URL to the user's profile. Read only; resolved from the user's personal site.
+                    example: /web/john.smith
+                    format: uri
+                    readOnly: true
+                    type: string
             type: object
         Error:
             description:
@@ -460,6 +546,64 @@ info:
     version: v1.0
 openapi: 3.0.0
 paths:
+    /availability-estimates:
+        get:
+            description:
+                Returns a page of availability estimates scoped to the caller's company, bounded by the `page` and `pageSize` query parameters. List query support -- the `filter` (OData v4) and `sort` parameters accept the dateCreated, dateModified, and externalReferenceCode fields. A filter that matches nothing yields an empty page rather than an error.
+            operationId: getAvailabilityEstimatesPage
+            parameters:
+                -   $ref: "#/components/parameters/filterQueryParam"
+                -   $ref: "#/components/parameters/pageQueryParam"
+                -   $ref: "#/components/parameters/pageSizeQueryParam"
+                -   $ref: "#/components/parameters/sortQueryParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/AvailabilityEstimate"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/AvailabilityEstimate"
+                                type: array
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action.
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a list of Availability Estimates.
+            tags:
+                -   AvailabilityEstimate
     /availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}:
         delete:
             description:
@@ -700,6 +844,69 @@ paths:
                     description:
                         Unexpected error
             summary: Creates or updates an Availability Estimate.
+            tags:
+                -   AvailabilityEstimate
+    /availabilityEstimate/{availabilityEstimateId}/permissions:
+        get:
+            description:
+                Lists the role permissions granted on the availability estimate identified by ID. Requires the PERMISSIONS action on the availability estimate.
+            operationId: getAvailabilityEstimatePermissionsPage
+            parameters:
+                -   in: path
+                    name: availabilityEstimateId
+                    required: true
+                    schema:
+                        description:
+                            Internal numeric identifier of the availability estimate, the same `id` the availability estimate payload carries.
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The role permissions of the availability estimate.
+            summary: Lists the permissions of an availability estimate by ID.
+            tags:
+                -   AvailabilityEstimate
+        put:
+            description:
+                Replaces the role permissions granted on the availability estimate identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the availability estimate.
+            operationId: putAvailabilityEstimatePermissionsPage
+            parameters:
+                -   in: path
+                    name: availabilityEstimateId
+                    required: true
+                    schema:
+                        description:
+                            Internal numeric identifier of the availability estimate, the same `id` the availability estimate payload carries.
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        The updated role permissions of the availability estimate.
+            summary: Replaces the permissions of an availability estimate by ID.
             tags:
                 -   AvailabilityEstimate
     /availabilityEstimate/{id}:
