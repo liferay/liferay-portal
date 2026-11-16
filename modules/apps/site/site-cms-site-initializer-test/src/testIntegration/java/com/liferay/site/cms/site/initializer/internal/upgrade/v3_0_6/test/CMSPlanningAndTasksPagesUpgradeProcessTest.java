@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -153,6 +154,29 @@ public class CMSPlanningAndTasksPagesUpgradeProcessTest {
 			_layoutLocalService.fetchLayoutByFriendlyURL(
 				group.getGroupId(), false, "/tasks"
 			).getPlid());
+	}
+
+	@Test
+	public void testUpgradeWithoutCMSPages() throws Exception {
+		Company company = CompanyTestUtil.addCompany();
+
+		Group group = _groupLocalService.getGroup(
+			company.getCompanyId(), GroupConstants.CMS);
+
+		_layoutLocalService.deleteLayouts(
+			group.getGroupId(), false, new ServiceContext());
+
+		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
+			_upgradeStepRegistrator, _CLASS_NAME);
+
+		upgradeProcess.upgrade();
+
+		Assert.assertNull(
+			_layoutLocalService.fetchFirstLayout(
+				group.getGroupId(), false,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID));
+
+		_companyLocalService.deleteCompany(company);
 	}
 
 	private void _assertNameMap(Layout layout, String key) {
