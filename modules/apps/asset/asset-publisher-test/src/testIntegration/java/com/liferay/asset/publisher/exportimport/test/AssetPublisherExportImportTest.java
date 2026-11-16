@@ -1051,7 +1051,6 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			stagingGroup.getGroupId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
-
 		Layout stagingLayout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
 			layout.getUuid(), stagingGroup.getGroupId(),
 			layout.isPrivateLayout());
