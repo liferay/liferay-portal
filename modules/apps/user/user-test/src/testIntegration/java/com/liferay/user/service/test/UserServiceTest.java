@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.Website;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -372,11 +373,11 @@ public class UserServiceTest {
 				UserPasswordException.MustMatchCurrentPassword.class,
 				() -> _updateUser(
 					newPassword, RandomTestUtil.randomString(),
-					user.getUserId()));
+					user.getUserId(), null));
 
-			_updateUser(newPassword, password, user.getUserId());
+			_updateUser(newPassword, password, user.getUserId(), null);
 
-			_updateUser(null, null, user.getUserId());
+			_updateUser(null, null, user.getUserId(), null);
 		}
 
 		_userLocalService.updateEmailAddressVerified(user.getUserId(), false);
@@ -400,7 +401,8 @@ public class UserServiceTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				TestPropsValues.getUser())) {
 
-			_updateUser(RandomTestUtil.randomString(), null, user.getUserId());
+			_updateUser(
+				RandomTestUtil.randomString(), null, user.getUserId(), null);
 		}
 	}
 
@@ -443,8 +445,53 @@ public class UserServiceTest {
 		}
 	}
 
+	@Test
+	public void testUpdateUserWithOrganizationIds() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		User organizationAdminUser = UserTestUtil.addOrganizationAdminUser(
+			organization);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				organizationAdminUser)) {
+
+			// Organization member
+
+			User user = UserTestUtil.addUser();
+
+			_userLocalService.addOrganizationUser(
+				organization.getOrganizationId(), user.getUserId());
+
+			_updateUser(
+				null, null, user.getUserId(),
+				new long[] {organization.getOrganizationId()});
+
+			// Organization nonmember
+
+			User nonmemberUser = UserTestUtil.addUser();
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> _updateUser(
+					RandomTestUtil.randomString(), null,
+					nonmemberUser.getUserId(),
+					new long[] {organization.getOrganizationId()}));
+
+			Assert.assertFalse(
+				_userLocalService.hasOrganizationUser(
+					organization.getOrganizationId(),
+					nonmemberUser.getUserId()));
+
+			user = _userLocalService.getUser(nonmemberUser.getUserId());
+
+			Assert.assertEquals(
+				nonmemberUser.getPassword(), user.getPassword());
+		}
+	}
+
 	private User _updateUser(
-			String newPassword, String oldPassword, long userId)
+			String newPassword, String oldPassword, long userId,
+			long[] organizationIds)
 		throws Exception {
 
 		User user = _userLocalService.getUser(userId);
@@ -466,7 +513,7 @@ public class UserServiceTest {
 			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
 			contact.getSmsSn(), contact.getFacebookSn(), contact.getJabberSn(),
 			contact.getSkypeSn(), contact.getTwitterSn(), user.getJobTitle(),
-			null, null, null, null, null, new ServiceContext());
+			null, organizationIds, null, null, null, new ServiceContext());
 	}
 
 	@Inject
