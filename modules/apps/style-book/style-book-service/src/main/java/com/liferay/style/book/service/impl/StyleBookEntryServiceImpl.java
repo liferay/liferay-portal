@@ -90,6 +90,13 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 			getPermissionChecker(), groupId,
 			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
 
+		StyleBookEntry sourceStyleBookEntry =
+			styleBookEntryPersistence.findByPrimaryKey(sourceStyleBookEntryId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), sourceStyleBookEntry.getGroupId(),
+			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
+
 		return styleBookEntryLocalService.copyStyleBookEntry(
 			getUserId(), groupId, sourceStyleBookEntryId, serviceContext);
 	}
