@@ -34,11 +34,16 @@ run "setup_database_engine" {
 		]
 	}
 }
-run "should_fail_database_changed" {
+run "should_not_accept_empty_database_engine" {
 	command=plan
-	expect_failures=[
-		terraform_data.database_engine,
-	]
+	expect_failures=[var.database_engine]
+	variables {
+		database_engine=""
+	}
+}
+run "should_not_accept_unsupported_database_engine" {
+	command=plan
+	expect_failures=[var.database_engine]
 	variables {
 		database_engine="mysql"
 	}

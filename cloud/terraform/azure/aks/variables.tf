@@ -10,6 +10,10 @@ variable "container_registries" {
 }
 variable "database_engine" {
 	type=string
+	validation {
+		condition=contains(["mysql", "postgresql"], var.database_engine)
+		error_message="The variable \"database_engine\" must be \"mysql\" or \"postgresql\"."
+	}
 }
 variable "deployment_name" {
 	type=string
