@@ -92,11 +92,12 @@ public class ExportCostReportMVCResourceCommandTest {
 		String name = RandomTestUtil.randomString();
 		String owner = RandomTestUtil.randomString();
 		String projectId = RandomTestUtil.randomString();
+		String salesforceAccountId = RandomTestUtil.randomString();
 		String shortSubscriptionName = RandomTestUtil.randomString();
 
 		FaroProject faroProject = _mockFaroProject(
 			corpProjectName, corpProjectUuid, faroProjectId, name, projectId,
-			shortSubscriptionName);
+			salesforceAccountId, shortSubscriptionName);
 
 		_mockDynamicQuery(
 			_queryUsageTimesDynamicQuery,
@@ -114,7 +115,8 @@ public class ExportCostReportMVCResourceCommandTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				_HEADER, name, ",", projectId, ",", corpProjectUuid, ",",
-				corpProjectName, ",", owner, ",", shortSubscriptionName,
+				corpProjectName, ",", salesforceAccountId, ",", owner, ",",
+				shortSubscriptionName,
 				",us-west1,1000,700,300,500,200,100,12.25,2026-05-14,0.48,",
 				"2026-11-03,12.73\n"),
 			_serveResource(faroProject, owner));
@@ -128,7 +130,8 @@ public class ExportCostReportMVCResourceCommandTest {
 		String shortSubscriptionName = RandomTestUtil.randomString();
 
 		FaroProject faroProject = _mockFaroProject(
-			null, null, faroProjectId, name, projectId, shortSubscriptionName);
+			null, null, faroProjectId, name, projectId, null,
+			shortSubscriptionName);
 
 		_mockDynamicQuery(_queryUsageTimesDynamicQuery);
 		_mockDynamicQuery(_storageUsageTimesDynamicQuery);
@@ -149,7 +152,7 @@ public class ExportCostReportMVCResourceCommandTest {
 
 		Assert.assertEquals(
 			StringBundler.concat(
-				_HEADER, name, ",", projectId, ",,,,", shortSubscriptionName,
+				_HEADER, name, ",", projectId, ",,,,,", shortSubscriptionName,
 				",us-west1,0,0,0,0,0,0,0.00,,0.00,,0.00\n"),
 			_serveResource(faroProject, null));
 	}
@@ -182,7 +185,8 @@ public class ExportCostReportMVCResourceCommandTest {
 
 	private FaroProject _mockFaroProject(
 			String corpProjectName, String corpProjectUuid, long faroProjectId,
-			String name, String projectId, String shortSubscriptionName)
+			String name, String projectId, String salesforceAccountId,
+			String shortSubscriptionName)
 		throws Exception {
 
 		FaroProject faroProject = Mockito.mock(FaroProject.class);
@@ -215,6 +219,12 @@ public class ExportCostReportMVCResourceCommandTest {
 			faroProject.getProjectId()
 		).thenReturn(
 			projectId
+		);
+
+		Mockito.when(
+			faroProject.getSalesforceAccountId()
+		).thenReturn(
+			salesforceAccountId
 		);
 
 		Mockito.when(
@@ -285,11 +295,11 @@ public class ExportCostReportMVCResourceCommandTest {
 	}
 
 	private static final String _HEADER = StringBundler.concat(
-		"Workspace,Project ID,Customer ID,Customer Name,Owner,Subscription,",
-		"Location,Events,Billable Events,A/B Testing Events,Page Views,",
-		"Anonymous Individuals,Known Individuals,Query Cost (USD),",
-		"Query Cost Data Since,Storage Cost (USD),Storage Cost Data Since,",
-		"Total Cost (USD)\n");
+		"Workspace,Project ID,Customer ID,Customer Name,Salesforce Account ID,",
+		"Owner,Subscription,Location,Events,Billable Events,",
+		"A/B Testing Events,Page Views,Anonymous Individuals,",
+		"Known Individuals,Query Cost (USD),Query Cost Data Since,",
+		"Storage Cost (USD),Storage Cost Data Since,Total Cost (USD)\n");
 
 	private final ContactsEngineClient _contactsEngineClient = Mockito.mock(
 		ContactsEngineClient.class);
