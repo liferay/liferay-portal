@@ -6,6 +6,8 @@
 package com.liferay.account.admin.web.internal.dao.search;
 
 import com.liferay.account.admin.web.internal.display.AddressDisplay;
+import com.liferay.account.admin.web.internal.security.permission.resource.AccountEntryPermission;
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.account.model.AccountEntry;
@@ -21,12 +23,14 @@ import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.AddressLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
@@ -56,6 +60,28 @@ public class AccountEntryAddressDisplaySearchContainerFactory {
 				liferayPortletRequest, AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
 				"address-order-by-type", "asc"));
 
+		long accountEntryId = ParamUtil.getLong(
+			liferayPortletRequest, "accountEntryId");
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)liferayPortletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		if (!AccountEntryPermission.contains(
+				permissionChecker, accountEntryId,
+				AccountActionKeys.MANAGE_ADDRESSES) &&
+			!AccountEntryPermission.contains(
+				permissionChecker, accountEntryId,
+				AccountActionKeys.VIEW_ADDRESSES)) {
+
+			searchContainer.setResultsAndTotal(Collections::emptyList, 0);
+
+			return searchContainer;
+		}
+
 		String keywords = ParamUtil.getString(
 			liferayPortletRequest, "keywords");
 
@@ -83,15 +109,10 @@ public class AccountEntryAddressDisplaySearchContainerFactory {
 				});
 		}
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)liferayPortletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		BaseModelSearchResult<Address> baseModelSearchResult =
 			AddressLocalServiceUtil.searchAddresses(
 				themeDisplay.getCompanyId(), AccountEntry.class.getName(),
-				ParamUtil.getLong(liferayPortletRequest, "accountEntryId"),
-				keywords, params, searchContainer.getStart(),
+				accountEntryId, keywords, params, searchContainer.getStart(),
 				searchContainer.getEnd(),
 				_getSort(
 					searchContainer.getOrderByCol(),

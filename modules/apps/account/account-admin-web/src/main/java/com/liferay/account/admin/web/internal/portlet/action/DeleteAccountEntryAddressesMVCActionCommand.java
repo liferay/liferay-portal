@@ -7,9 +7,12 @@ package com.liferay.account.admin.web.internal.portlet.action;
 
 import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -19,6 +22,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -44,10 +49,10 @@ public class DeleteAccountEntryAddressesMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		_checkPermission(actionRequest);
-
 		long[] accountEntryAddressIds = ParamUtil.getLongValues(
 			actionRequest, "accountEntryAddressIds");
+
+		_checkPermission(accountEntryAddressIds, actionRequest);
 
 		for (long accountEntryAddressId : accountEntryAddressIds) {
 			_addressLocalService.deleteAddress(accountEntryAddressId);
@@ -60,16 +65,36 @@ public class DeleteAccountEntryAddressesMVCActionCommand
 		}
 	}
 
-	private void _checkPermission(ActionRequest actionRequest)
+	private void _checkPermission(
+			long[] accountEntryAddressIds, ActionRequest actionRequest)
 		throws Exception {
+
+		long accountEntryId = ParamUtil.getLong(
+			actionRequest, "accountEntryId");
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
 		_accountEntryModelResourcePermission.check(
-			themeDisplay.getPermissionChecker(),
-			ParamUtil.getLong(actionRequest, "accountEntryId"),
-			ActionKeys.UPDATE);
+			permissionChecker, accountEntryId, ActionKeys.UPDATE);
+
+		for (long accountEntryAddressId : accountEntryAddressIds) {
+			Address address = _addressLocalService.fetchAddress(
+				accountEntryAddressId);
+
+			if ((address != null) &&
+				(!Objects.equals(
+					address.getClassName(), AccountEntry.class.getName()) ||
+				 (address.getClassPK() != accountEntryId))) {
+
+				throw new PrincipalException.MustHavePermission(
+					permissionChecker, Address.class.getName(),
+					accountEntryAddressId, ActionKeys.DELETE);
+			}
+		}
 	}
 
 	@Reference(

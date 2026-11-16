@@ -9,8 +9,17 @@ import com.liferay.account.admin.web.internal.constants.AccountWebKeys;
 import com.liferay.account.admin.web.internal.display.AccountEntryDisplayFactoryUtil;
 import com.liferay.account.admin.web.internal.display.AddressDisplay;
 import com.liferay.account.admin.web.internal.display.context.AccountEntryAddressDisplayContext;
+import com.liferay.account.admin.web.internal.security.permission.resource.AccountEntryPermission;
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountPortletKeys;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.AddressLocalService;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -18,6 +27,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -41,16 +52,27 @@ public class EditAccountEntryAddressMVCRenderCommand
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
+		long accountEntryAddressId = ParamUtil.getLong(
+			renderRequest, "accountEntryAddressId");
 		long accountEntryId = ParamUtil.getLong(
 			renderRequest, "accountEntryId");
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (!_hasPermission(
+				accountEntryAddressId, accountEntryId,
+				themeDisplay.getPermissionChecker())) {
+
+			SessionErrors.add(renderRequest, PrincipalException.class);
+
+			return "/account_entries_admin/error.jsp";
+		}
 
 		renderRequest.setAttribute(
 			AccountWebKeys.ACCOUNT_ENTRY_DISPLAY,
 			AccountEntryDisplayFactoryUtil.create(
 				accountEntryId, renderRequest));
-
-		long accountEntryAddressId = ParamUtil.getLong(
-			renderRequest, "accountEntryAddressId");
 
 		AddressDisplay addressDisplay = AddressDisplay.of(
 			accountEntryAddressId);
@@ -64,6 +86,34 @@ public class EditAccountEntryAddressMVCRenderCommand
 
 		return "/account_entries_admin/edit_account_entry_address.jsp";
 	}
+
+	private boolean _hasPermission(
+		long accountEntryAddressId, long accountEntryId,
+		PermissionChecker permissionChecker) {
+
+		if (!AccountEntryPermission.contains(
+				permissionChecker, accountEntryId,
+				AccountActionKeys.MANAGE_ADDRESSES)) {
+
+			return false;
+		}
+
+		Address address = _addressLocalService.fetchAddress(
+			accountEntryAddressId);
+
+		if ((address != null) &&
+			(!Objects.equals(
+				address.getClassName(), AccountEntry.class.getName()) ||
+			 (address.getClassPK() != accountEntryId))) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	@Reference
+	private AddressLocalService _addressLocalService;
 
 	@Reference
 	private Portal _portal;
