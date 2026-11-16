@@ -198,8 +198,7 @@ public class CopyDLObjectsMVCActionCommandTest {
 		Group companyGroup = _groupLocalService.getCompanyGroup(
 			TestPropsValues.getCompanyId());
 
-		DLFileEntryType dlFileEntryType = _addFileEntryType(
-			companyGroup.getGroupId());
+		_dlFileEntryType = _addFileEntryType(companyGroup.getGroupId());
 
 		Folder folder = _dlAppLocalService.addFolder(
 			null, TestPropsValues.getUserId(), _group1.getGroupId(),
@@ -208,14 +207,12 @@ public class CopyDLObjectsMVCActionCommandTest {
 			ServiceContextTestUtil.getServiceContext(_group1.getGroupId()));
 
 		_assertProcessAction(
-			_group2.getGroupId(), dlFileEntryType.getFileEntryTypeId(),
+			_group2.getGroupId(), _dlFileEntryType.getFileEntryTypeId(),
 			_addFileEntry(
-				dlFileEntryType.getFileEntryTypeId(), folder.getFolderId(),
+				_dlFileEntryType.getFileEntryTypeId(), folder.getFolderId(),
 				_group1.getGroupId()));
 
 		_deleteRepositories();
-
-		_dlFileEntryTypeLocalService.deleteFileEntryType(dlFileEntryType);
 	}
 
 	private void _testProcessActionWithDepotGroupFileEntryType()
@@ -283,6 +280,9 @@ public class CopyDLObjectsMVCActionCommandTest {
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
+
+	@DeleteAfterTestRun
+	private DLFileEntryType _dlFileEntryType;
 
 	@Inject
 	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;
