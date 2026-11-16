@@ -85,6 +85,8 @@ spec:
                         {{- toYaml . | nindent 24 }}
                 {{- end }}
                 replicas: {{ $envoyProxy.replicas }}
+            envoyPDB:
+                maxUnavailable: 1
             envoyService:
                 {{- with $envoyProxy.serviceAnnotations }}
                 annotations:

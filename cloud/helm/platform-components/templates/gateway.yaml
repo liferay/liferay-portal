@@ -38,6 +38,8 @@ spec:
                                 type: Utilization
                         type: Resource
                 minReplicas: 3
+            envoyPDB:
+                maxUnavailable: 1
             envoyService:
                 {{- with $envoyProxy.serviceAnnotations }}
                 annotations:

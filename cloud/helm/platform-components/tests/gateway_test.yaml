@@ -81,6 +81,10 @@ tests:
                     value: 3
             -   documentIndex: 0
                 equal:
+                    path: spec.provider.kubernetes.envoyPDB.maxUnavailable
+                    value: 1
+            -   documentIndex: 0
+                equal:
                     path: spec.provider.kubernetes.envoyService.externalTrafficPolicy
                     value: Local
             -   documentIndex: 0

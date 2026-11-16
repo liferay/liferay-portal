@@ -323,6 +323,10 @@ tests:
                 equal:
                     path: metadata.name
                     value: argo-workflows-gateway-proxy-config
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyPDB.maxUnavailable
+                    value: 1
             -   documentIndex: 2
                 equal:
                     path: metadata.name
@@ -335,6 +339,10 @@ tests:
                 equal:
                     path: metadata.name
                     value: argocd-gateway-proxy-config
+            -   documentIndex: 5
+                equal:
+                    path: spec.provider.kubernetes.envoyPDB.maxUnavailable
+                    value: 1
             -   documentIndex: 7
                 equal:
                     path: metadata.name
