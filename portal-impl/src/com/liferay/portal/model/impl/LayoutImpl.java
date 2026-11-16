@@ -199,6 +199,11 @@ public class LayoutImpl extends LayoutBaseImpl {
 		return LayoutLocalServiceUtil.fetchDraftLayout(getPlid());
 	}
 
+	@Override
+	public List<Layout> fetchDraftLayouts() {
+		return LayoutLocalServiceUtil.fetchDraftLayouts(getPlid());
+	}
+
 	/**
 	 * Returns all layouts that are direct or indirect children of the current
 	 * layout.
