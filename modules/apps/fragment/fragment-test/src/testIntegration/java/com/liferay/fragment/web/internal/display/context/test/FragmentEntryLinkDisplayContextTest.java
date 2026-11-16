@@ -325,6 +325,18 @@ public class FragmentEntryLinkDisplayContextTest {
 	}
 
 	@Test
+	@TestInfo("LPD-114647")
+	public void testGetGroupName() throws Exception {
+		Assert.assertEquals(
+			_group.getDescriptiveName(LocaleUtil.getDefault()),
+			ReflectionTestUtil.invoke(
+				_getFragmentEntryLinkDisplayContext(
+					_fragmentEntry.getFragmentEntryId(), _group.getGroupId(),
+					"all"),
+				"getGroupName", new Class<?>[0]));
+	}
+
+	@Test
 	@TestInfo("LPD-104425")
 	public void testGetMasterPagesUsageCount() throws Exception {
 		Assert.assertEquals(1, _getUsageCount("getMasterPagesUsageCount"));
@@ -357,6 +369,57 @@ public class FragmentEntryLinkDisplayContextTest {
 			"page-templates", _pageTemplateFragmentEntryLink);
 		_testGetSearchContainer(
 			"pages", _layoutFragmentEntryLink1, _layoutFragmentEntryLink2);
+	}
+
+	@Test
+	@TestInfo("LPD-114647")
+	public void testGetSearchContainerWithGroupId() throws Exception {
+		long groupId = _layoutFragmentEntryLink1.getGroupId();
+
+		SearchContainer<FragmentEntryLink> searchContainer =
+			_testGetSearchContainer(
+				groupId, "all", _layoutFragmentEntryLink1,
+				_pageTemplateFragmentEntryLink,
+				_displayPageTemplateFragmentEntryLink,
+				_masterPageFragmentEntryLink);
+
+		Assert.assertNull(searchContainer.getRowChecker());
+
+		_testGetSearchContainer(
+			groupId, "display-page-templates",
+			_displayPageTemplateFragmentEntryLink);
+		_testGetSearchContainer(
+			groupId, "master-pages", _masterPageFragmentEntryLink);
+		_testGetSearchContainer(
+			groupId, "page-templates", _pageTemplateFragmentEntryLink);
+		_testGetSearchContainer(groupId, "pages", _layoutFragmentEntryLink1);
+		_testGetSearchContainer(
+			_layoutFragmentEntryLink2.getGroupId(), "all",
+			_layoutFragmentEntryLink2);
+
+		searchContainer = _testGetSearchContainer(
+			0, "all", _layoutFragmentEntryLink1, _layoutFragmentEntryLink2,
+			_pageTemplateFragmentEntryLink,
+			_displayPageTemplateFragmentEntryLink,
+			_masterPageFragmentEntryLink);
+
+		Assert.assertNotNull(searchContainer.getRowChecker());
+	}
+
+	@Test
+	@TestInfo("LPD-114647")
+	public void testIsGroupUsages() throws Exception {
+		Assert.assertFalse(
+			ReflectionTestUtil.invoke(
+				_getFragmentEntryLinkDisplayContext(
+					_fragmentEntry.getFragmentEntryId(), "all"),
+				"isGroupUsages", new Class<?>[0]));
+		Assert.assertTrue(
+			ReflectionTestUtil.invoke(
+				_getFragmentEntryLinkDisplayContext(
+					_fragmentEntry.getFragmentEntryId(), _group.getGroupId(),
+					"all"),
+				"isGroupUsages", new Class<?>[0]));
 	}
 
 	private static FragmentEntryLink _addFragmentEntryLinkToLayout(Group group)
@@ -460,7 +523,7 @@ public class FragmentEntryLinkDisplayContextTest {
 	}
 
 	private Object _getFragmentEntryLinkDisplayContext(
-			long fragmentEntryId, String navigation)
+			long fragmentEntryId, long groupId, String navigation)
 		throws Exception {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
@@ -481,6 +544,7 @@ public class FragmentEntryLinkDisplayContextTest {
 			WebKeys.THEME_DISPLAY, themeDisplay);
 		mockHttpServletRequest.setParameter(
 			"fragmentEntryId", String.valueOf(fragmentEntryId));
+		mockHttpServletRequest.setParameter("groupId", String.valueOf(groupId));
 		mockHttpServletRequest.setParameter("navigation", navigation);
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
@@ -506,6 +570,14 @@ public class FragmentEntryLinkDisplayContextTest {
 		return constructor.newInstance(
 			mockHttpServletRequest, mockLiferayPortletRenderRequest,
 			new MockLiferayPortletRenderResponse());
+	}
+
+	private Object _getFragmentEntryLinkDisplayContext(
+			long fragmentEntryId, String navigation)
+		throws Exception {
+
+		return _getFragmentEntryLinkDisplayContext(
+			fragmentEntryId, 0, navigation);
 	}
 
 	private int _getUsageCount(String methodName) throws Exception {
@@ -543,14 +615,15 @@ public class FragmentEntryLinkDisplayContextTest {
 			_getExpectedWarnMessages(fragmentEntryLink, layout));
 	}
 
-	private void _testGetSearchContainer(
-			String navigation, FragmentEntryLink... fragmentEntryLinks)
+	private SearchContainer<FragmentEntryLink> _testGetSearchContainer(
+			long groupId, String navigation,
+			FragmentEntryLink... fragmentEntryLinks)
 		throws Exception {
 
 		SearchContainer<FragmentEntryLink> searchContainer =
 			ReflectionTestUtil.invoke(
 				_getFragmentEntryLinkDisplayContext(
-					_fragmentEntry.getFragmentEntryId(), navigation),
+					_fragmentEntry.getFragmentEntryId(), groupId, navigation),
 				"getSearchContainer", new Class<?>[0]);
 
 		List<FragmentEntryLink> results = searchContainer.getResults();
@@ -563,6 +636,15 @@ public class FragmentEntryLinkDisplayContextTest {
 			Assert.assertTrue(
 				results.toString(), results.contains(fragmentEntryLink));
 		}
+
+		return searchContainer;
+	}
+
+	private void _testGetSearchContainer(
+			String navigation, FragmentEntryLink... fragmentEntryLinks)
+		throws Exception {
+
+		_testGetSearchContainer(0, navigation, fragmentEntryLinks);
 	}
 
 	private static final String _CLASS_NAME =
