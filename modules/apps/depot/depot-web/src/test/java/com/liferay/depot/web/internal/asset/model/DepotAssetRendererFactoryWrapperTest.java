@@ -256,7 +256,7 @@ public class DepotAssetRendererFactoryWrapperTest {
 		Mockito.when(
 			depotEntry.getType()
 		).thenReturn(
-			DepotConstants.TYPE_SPACE
+			DepotConstants.TYPE_ASSET_LIBRARY
 		);
 
 		DepotAssetRendererFactoryWrapper depotAssetRendererFactoryWrapper =
@@ -270,8 +270,7 @@ public class DepotAssetRendererFactoryWrapperTest {
 		try (SafeCloseable safeCloseable =
 				GroupThreadLocal.setGroupIdWithSafeCloseable(groupId)) {
 
-			Assert.assertSame(
-				assetRenderer,
+			Assert.assertNull(
 				depotAssetRendererFactoryWrapper.getAssetRenderer(
 					RandomTestUtil.randomLong()));
 		}
@@ -279,7 +278,7 @@ public class DepotAssetRendererFactoryWrapperTest {
 		Mockito.when(
 			depotEntry.getType()
 		).thenReturn(
-			DepotConstants.TYPE_ASSET_LIBRARY
+			DepotConstants.TYPE_PROJECT
 		);
 
 		depotAssetRendererFactoryWrapper = new DepotAssetRendererFactoryWrapper(
@@ -289,7 +288,27 @@ public class DepotAssetRendererFactoryWrapperTest {
 		try (SafeCloseable safeCloseable =
 				GroupThreadLocal.setGroupIdWithSafeCloseable(groupId)) {
 
-			Assert.assertNull(
+			Assert.assertSame(
+				assetRenderer,
+				depotAssetRendererFactoryWrapper.getAssetRenderer(
+					RandomTestUtil.randomLong()));
+		}
+
+		Mockito.when(
+			depotEntry.getType()
+		).thenReturn(
+			DepotConstants.TYPE_SPACE
+		);
+
+		depotAssetRendererFactoryWrapper = new DepotAssetRendererFactoryWrapper(
+			_assetRendererFactory, null, _depotEntryLocalService,
+			_groupLocalService, null, null, _siteConnectedGroupGroupProvider);
+
+		try (SafeCloseable safeCloseable =
+				GroupThreadLocal.setGroupIdWithSafeCloseable(groupId)) {
+
+			Assert.assertSame(
+				assetRenderer,
 				depotAssetRendererFactoryWrapper.getAssetRenderer(
 					RandomTestUtil.randomLong()));
 		}
