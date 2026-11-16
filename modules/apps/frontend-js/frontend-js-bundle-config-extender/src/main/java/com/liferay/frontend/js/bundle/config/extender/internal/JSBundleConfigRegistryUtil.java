@@ -67,6 +67,16 @@ public class JSBundleConfigRegistryUtil {
 		return _serviceTrackerList.toList();
 	}
 
+	public static String getJavaScript() {
+		Collection<JSConfig> jsConfigs = getJSConfigs();
+
+		StringBundler sb = new StringBundler(jsConfigs.size() * 8);
+
+		appendJavaScript(sb, jsConfigs);
+
+		return sb.toString();
+	}
+
 	public static long getLastModified() {
 		return _lastModified;
 	}

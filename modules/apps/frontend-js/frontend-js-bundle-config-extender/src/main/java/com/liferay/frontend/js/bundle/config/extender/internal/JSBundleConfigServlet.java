@@ -5,17 +5,10 @@
 
 package com.liferay.frontend.js.bundle.config.extender.internal;
 
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.URLUtil;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,12 +17,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import java.util.Collection;
-
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Carlos Sierra Andrés
@@ -70,48 +60,11 @@ public class JSBundleConfigServlet extends HttpServlet {
 
 		PrintWriter printWriter = httpServletResponse.getWriter();
 
-		Collection<JSBundleConfigRegistryUtil.JSConfig> jsConfigs =
-			JSBundleConfigRegistryUtil.getJSConfigs();
-
-		if (!jsConfigs.isEmpty()) {
-			printWriter.print("(function() {");
-
-			for (JSBundleConfigRegistryUtil.JSConfig jsConfig : jsConfigs) {
-				try {
-					printWriter.print("try{");
-
-					ServletContext servletContext =
-						jsConfig.getServletContext();
-
-					printWriter.print(
-						StringBundler.concat(
-							"var MODULE_PATH='", _portal.getPathProxy(),
-							servletContext.getContextPath(), "';"));
-
-					printWriter.print(
-						StringUtil.removeSubstring(
-							URLUtil.toString(jsConfig.getURL()),
-							"//# sourceMappingURL=config.js.map"));
-
-					printWriter.print("}catch(error){console.error(error);}");
-				}
-				catch (Exception exception) {
-					_log.error("Unable to open resource", exception);
-				}
-			}
-
-			printWriter.print("}());");
-		}
+		printWriter.write(JSBundleConfigRegistryUtil.getJavaScript());
 
 		printWriter.close();
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		JSBundleConfigServlet.class);
-
 	private volatile ComponentContext _componentContext;
-
-	@Reference
-	private Portal _portal;
 
 }
