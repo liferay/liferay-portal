@@ -52,7 +52,7 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 		_checkUnnecessaryFeatureFlags(fileName, content);
 
-		content = _generateFeatureFlagProperties(content);
+		content = _generateFeatureFlagProperties(absolutePath, content);
 		content = _generateFeatureFlagUIProperties(
 			fileName, absolutePath, content);
 
@@ -89,8 +89,11 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		}
 	}
 
-	private String _generateFeatureFlagProperties(String content) {
-		List<String> featureFlagKeys = new ArrayList<>();
+	private String _generateFeatureFlagProperties(
+		String absolutePath, String content) {
+
+		List<String> featureFlagKeys = new ArrayList<>(
+			getAttributeValues(_ADDITIONAL_FEATURE_FLAG_KEYS, absolutePath));
 
 		List<String> fileNames = SourceFormatterUtil.filterFileNames(
 			_allFileNames, new String[] {"**/*-test-*/**", "**/test/**"},
@@ -471,6 +474,9 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 		return properties;
 	}
+
+	private static final String _ADDITIONAL_FEATURE_FLAG_KEYS =
+		"additionalFeatureFlagKeys";
 
 	private static final String[] _ENFORCE_PROPERTY_NAMES = {
 		"description", "title"
