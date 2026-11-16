@@ -63,6 +63,17 @@ public interface AvailabilityEstimateResource {
 			String externalReferenceCode)
 		throws Exception;
 
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getAvailabilityEstimatePermissionsPage(
+				Long availabilityEstimateId, String roleNames)
+		throws Exception;
+
+	public Page<AvailabilityEstimate> getAvailabilityEstimatesPage(
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
 	public Page<AvailabilityEstimate>
 			getCommerceAdminSiteSettingGroupAvailabilityEstimatePage(
 				Long groupId, Pagination pagination)
@@ -72,6 +83,12 @@ public interface AvailabilityEstimateResource {
 			patchAvailabilityEstimateByExternalReferenceCode(
 				String externalReferenceCode,
 				AvailabilityEstimate availabilityEstimate)
+		throws Exception;
+
+	public Response postAvailabilityEstimatesPageExportBatch(
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public AvailabilityEstimate
@@ -90,6 +107,12 @@ public interface AvailabilityEstimateResource {
 	public AvailabilityEstimate putAvailabilityEstimateByExternalReferenceCode(
 			String externalReferenceCode,
 			AvailabilityEstimate availabilityEstimate)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putAvailabilityEstimatePermissionsPage(
+				Long availabilityEstimateId,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -188,4 +211,4 @@ public interface AvailabilityEstimateResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:130730957
+// LIFERAY-REST-BUILDER-HASH:1455908280

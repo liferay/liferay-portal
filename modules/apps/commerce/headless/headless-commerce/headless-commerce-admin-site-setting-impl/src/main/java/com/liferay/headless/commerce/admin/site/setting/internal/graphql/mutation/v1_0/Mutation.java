@@ -22,6 +22,7 @@ import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTa
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
+import com.liferay.portal.vulcan.pagination.Page;
 
 import jakarta.annotation.Generated;
 
@@ -139,6 +140,28 @@ public class Mutation {
 						externalReferenceCode, availabilityEstimate));
 	}
 
+	@GraphQLField
+	public Response createAvailabilityEstimatesPageExportBatch(
+			@GraphQLName("filter") String filterString,
+			@GraphQLName("sort") String sortsString,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("contentType") String contentType,
+			@GraphQLName("fieldNames") String fieldNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_availabilityEstimateResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			availabilityEstimateResource ->
+				availabilityEstimateResource.
+					postAvailabilityEstimatesPageExportBatch(
+						_filterBiFunction.apply(
+							availabilityEstimateResource, filterString),
+						_sortsBiFunction.apply(
+							availabilityEstimateResource, sortsString),
+						callbackURL, contentType, fieldNames));
+	}
+
 	@GraphQLField(
 		description = "Creates an availability estimate for the caller's company from the supplied external reference code, localized `title`, and `priority`. The supplied site (`groupId`) is a wire-only compatibility field and does not scope the record. Returns 400 when the supplied external reference code is already taken by another estimate in the company."
 	)
@@ -207,6 +230,31 @@ public class Mutation {
 				availabilityEstimateResource.
 					putAvailabilityEstimateByExternalReferenceCode(
 						externalReferenceCode, availabilityEstimate));
+	}
+
+	@GraphQLField(
+		description = "Replaces the role permissions granted on the availability estimate identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the availability estimate."
+	)
+	public java.util.Collection<com.liferay.portal.vulcan.permission.Permission>
+			updateAvailabilityEstimatePermissionsPage(
+				@GraphQLName("availabilityEstimateId") Long
+					availabilityEstimateId,
+				@GraphQLName("permissions")
+					com.liferay.portal.vulcan.permission.Permission[]
+						permissions)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_availabilityEstimateResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			availabilityEstimateResource -> {
+				Page paginationPage =
+					availabilityEstimateResource.
+						putAvailabilityEstimatePermissionsPage(
+							availabilityEstimateId, permissions);
+
+				return paginationPage.getItems();
+			});
 	}
 
 	@GraphQLField(
@@ -673,4 +721,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-228747382
+// LIFERAY-REST-BUILDER-HASH:-952923030

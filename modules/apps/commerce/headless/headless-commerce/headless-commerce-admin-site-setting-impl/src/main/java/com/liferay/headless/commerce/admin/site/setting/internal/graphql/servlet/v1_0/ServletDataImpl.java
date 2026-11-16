@@ -114,6 +114,11 @@ public class ServletDataImpl implements ServletData {
 							AvailabilityEstimateResourceImpl.class,
 							"patchAvailabilityEstimateByExternalReferenceCode"));
 					put(
+						"mutation#createAvailabilityEstimatesPageExportBatch",
+						new ObjectValuePair<>(
+							AvailabilityEstimateResourceImpl.class,
+							"postAvailabilityEstimatesPageExportBatch"));
+					put(
 						"mutation#createCommerceAdminSiteSettingGroupAvailabilityEstimate",
 						new ObjectValuePair<>(
 							AvailabilityEstimateResourceImpl.class,
@@ -133,6 +138,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							AvailabilityEstimateResourceImpl.class,
 							"putAvailabilityEstimateByExternalReferenceCode"));
+					put(
+						"mutation#updateAvailabilityEstimatePermissionsPage",
+						new ObjectValuePair<>(
+							AvailabilityEstimateResourceImpl.class,
+							"putAvailabilityEstimatePermissionsPage"));
 					put(
 						"mutation#deleteMeasurementUnit",
 						new ObjectValuePair<>(
@@ -246,6 +256,16 @@ public class ServletDataImpl implements ServletData {
 							AvailabilityEstimateResourceImpl.class,
 							"getAvailabilityEstimateByExternalReferenceCode"));
 					put(
+						"query#availabilityEstimatePermissions",
+						new ObjectValuePair<>(
+							AvailabilityEstimateResourceImpl.class,
+							"getAvailabilityEstimatePermissionsPage"));
+					put(
+						"query#availabilityEstimates",
+						new ObjectValuePair<>(
+							AvailabilityEstimateResourceImpl.class,
+							"getAvailabilityEstimatesPage"));
+					put(
 						"query#commerceAdminSettingGroupAvailabilityEstimate",
 						new ObjectValuePair<>(
 							AvailabilityEstimateResourceImpl.class,
@@ -324,4 +344,4 @@ public class ServletDataImpl implements ServletData {
 		_warehouseResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:107165368
+// LIFERAY-REST-BUILDER-HASH:1133642896

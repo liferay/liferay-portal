@@ -20,9 +20,11 @@ import com.liferay.headless.commerce.admin.site.setting.client.dto.v1_0.Availabi
 import com.liferay.headless.commerce.admin.site.setting.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.site.setting.client.pagination.Page;
 import com.liferay.headless.commerce.admin.site.setting.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.site.setting.client.permission.Permission;
 import com.liferay.headless.commerce.admin.site.setting.client.resource.v1_0.AvailabilityEstimateResource;
 import com.liferay.headless.commerce.admin.site.setting.client.serdes.v1_0.AvailabilityEstimateSerDes;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
+import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -31,6 +33,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -41,6 +44,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -49,8 +53,10 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -154,6 +160,20 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+
+		permissionsAvailabilityEstimateResource =
+			AvailabilityEstimateResource.builder(
+			).authentication(
+				_testCompanyAdminUser.getEmailAddress(),
+				PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).parameter(
+				"nestedFields", "permissions"
+			).build();
 	}
 
 	@After
@@ -565,6 +585,14 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 
 		assertEquals(postAvailabilityEstimate, getAvailabilityEstimate);
 		assertValid(getAvailabilityEstimate);
+
+		Assert.assertNull(getAvailabilityEstimate.getPermissions());
+
+		getAvailabilityEstimate =
+			permissionsAvailabilityEstimateResource.getAvailabilityEstimate(
+				postAvailabilityEstimate.getId());
+
+		Assert.assertNotNull(getAvailabilityEstimate.getPermissions());
 	}
 
 	@Test
@@ -885,6 +913,15 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 
 		assertEquals(postAvailabilityEstimate, getAvailabilityEstimate);
 		assertValid(getAvailabilityEstimate);
+
+		Assert.assertNull(getAvailabilityEstimate.getPermissions());
+
+		getAvailabilityEstimate =
+			permissionsAvailabilityEstimateResource.
+				getAvailabilityEstimateByExternalReferenceCode(
+					postAvailabilityEstimate.getExternalReferenceCode());
+
+		Assert.assertNotNull(getAvailabilityEstimate.getPermissions());
 	}
 
 	protected AvailabilityEstimate
@@ -1007,6 +1044,450 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		throws Exception {
 
 		return testGraphQLAvailabilityEstimate_addAvailabilityEstimate();
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatePermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		AvailabilityEstimate postAvailabilityEstimate =
+			testGetAvailabilityEstimatePermissionsPage_addAvailabilityEstimate();
+
+		Page<Permission> page =
+			availabilityEstimateResource.getAvailabilityEstimatePermissionsPage(
+				postAvailabilityEstimate.getId(), RoleConstants.GUEST);
+
+		Assert.assertNotNull(page);
+	}
+
+	protected AvailabilityEstimate
+			testGetAvailabilityEstimatePermissionsPage_addAvailabilityEstimate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPage() throws Exception {
+		Page<AvailabilityEstimate> page =
+			availabilityEstimateResource.getAvailabilityEstimatesPage(
+				null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		AvailabilityEstimate availabilityEstimate1 =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				randomAvailabilityEstimate());
+
+		AvailabilityEstimate availabilityEstimate2 =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				randomAvailabilityEstimate());
+
+		page = availabilityEstimateResource.getAvailabilityEstimatesPage(
+			null, Pagination.of(1, (int)totalCount + 2), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(
+			availabilityEstimate1, (List<AvailabilityEstimate>)page.getItems());
+		assertContains(
+			availabilityEstimate2, (List<AvailabilityEstimate>)page.getItems());
+		assertValid(
+			page, testGetAvailabilityEstimatesPage_getExpectedActions());
+
+		for (AvailabilityEstimate availabilityEstimate : page.getItems()) {
+			Assert.assertNull(availabilityEstimate.getPermissions());
+		}
+
+		page =
+			permissionsAvailabilityEstimateResource.
+				getAvailabilityEstimatesPage(null, Pagination.of(1, 10), null);
+
+		for (AvailabilityEstimate availabilityEstimate : page.getItems()) {
+			Assert.assertNotNull(availabilityEstimate.getPermissions());
+		}
+
+		availabilityEstimateResource.deleteAvailabilityEstimate(
+			availabilityEstimate1.getId());
+
+		availabilityEstimateResource.deleteAvailabilityEstimate(
+			availabilityEstimate2.getId());
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetAvailabilityEstimatesPage_getExpectedActions()
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		AvailabilityEstimate availabilityEstimate1 =
+			randomAvailabilityEstimate();
+
+		availabilityEstimate1 =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				availabilityEstimate1);
+
+		for (EntityField entityField : entityFields) {
+			Page<AvailabilityEstimate> page =
+				availabilityEstimateResource.getAvailabilityEstimatesPage(
+					getFilterString(
+						entityField, "between", availabilityEstimate1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(availabilityEstimate1),
+				(List<AvailabilityEstimate>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPageWithFilterDoubleEquals()
+		throws Exception {
+
+		testGetAvailabilityEstimatesPageWithFilter(
+			"eq", EntityField.Type.DOUBLE);
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPageWithFilterStringContains()
+		throws Exception {
+
+		testGetAvailabilityEstimatesPageWithFilter(
+			"contains", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPageWithFilterStringEquals()
+		throws Exception {
+
+		testGetAvailabilityEstimatesPageWithFilter(
+			"eq", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPageWithFilterStringStartsWith()
+		throws Exception {
+
+		testGetAvailabilityEstimatesPageWithFilter(
+			"startswith", EntityField.Type.STRING);
+	}
+
+	protected void testGetAvailabilityEstimatesPageWithFilter(
+			String operator, EntityField.Type type)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		AvailabilityEstimate availabilityEstimate1 =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				randomAvailabilityEstimate());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		AvailabilityEstimate availabilityEstimate2 =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				randomAvailabilityEstimate());
+
+		for (EntityField entityField : entityFields) {
+			Page<AvailabilityEstimate> page =
+				availabilityEstimateResource.getAvailabilityEstimatesPage(
+					getFilterString(
+						entityField, operator, availabilityEstimate1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(availabilityEstimate1),
+				(List<AvailabilityEstimate>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPageWithPagination()
+		throws Exception {
+
+		Page<AvailabilityEstimate> availabilityEstimatesPage =
+			availabilityEstimateResource.getAvailabilityEstimatesPage(
+				null, null, null);
+
+		int totalCount = GetterUtil.getInteger(
+			availabilityEstimatesPage.getTotalCount());
+
+		AvailabilityEstimate availabilityEstimate1 =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				randomAvailabilityEstimate());
+
+		AvailabilityEstimate availabilityEstimate2 =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				randomAvailabilityEstimate());
+
+		AvailabilityEstimate availabilityEstimate3 =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				randomAvailabilityEstimate());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<AvailabilityEstimate> page1 =
+				availabilityEstimateResource.getAvailabilityEstimatesPage(
+					null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(
+				availabilityEstimate1,
+				(List<AvailabilityEstimate>)page1.getItems());
+
+			Page<AvailabilityEstimate> page2 =
+				availabilityEstimateResource.getAvailabilityEstimatesPage(
+					null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(
+				availabilityEstimate2,
+				(List<AvailabilityEstimate>)page2.getItems());
+
+			Page<AvailabilityEstimate> page3 =
+				availabilityEstimateResource.getAvailabilityEstimatesPage(
+					null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(
+				availabilityEstimate3,
+				(List<AvailabilityEstimate>)page3.getItems());
+		}
+		else {
+			Page<AvailabilityEstimate> page1 =
+				availabilityEstimateResource.getAvailabilityEstimatesPage(
+					null, Pagination.of(1, totalCount + 2), null);
+
+			List<AvailabilityEstimate> availabilityEstimates1 =
+				(List<AvailabilityEstimate>)page1.getItems();
+
+			Assert.assertEquals(
+				availabilityEstimates1.toString(), totalCount + 2,
+				availabilityEstimates1.size());
+
+			Page<AvailabilityEstimate> page2 =
+				availabilityEstimateResource.getAvailabilityEstimatesPage(
+					null, Pagination.of(2, totalCount + 2), null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<AvailabilityEstimate> availabilityEstimates2 =
+				(List<AvailabilityEstimate>)page2.getItems();
+
+			Assert.assertEquals(
+				availabilityEstimates2.toString(), 1,
+				availabilityEstimates2.size());
+
+			Page<AvailabilityEstimate> page3 =
+				availabilityEstimateResource.getAvailabilityEstimatesPage(
+					null, Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(
+				availabilityEstimate1,
+				(List<AvailabilityEstimate>)page3.getItems());
+			assertContains(
+				availabilityEstimate2,
+				(List<AvailabilityEstimate>)page3.getItems());
+			assertContains(
+				availabilityEstimate3,
+				(List<AvailabilityEstimate>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPageWithSortDateTime()
+		throws Exception {
+
+		testGetAvailabilityEstimatesPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, availabilityEstimate1, availabilityEstimate2) -> {
+				BeanTestUtil.setProperty(
+					availabilityEstimate1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPageWithSortDouble()
+		throws Exception {
+
+		testGetAvailabilityEstimatesPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, availabilityEstimate1, availabilityEstimate2) -> {
+				BeanTestUtil.setProperty(
+					availabilityEstimate1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					availabilityEstimate2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPageWithSortInteger()
+		throws Exception {
+
+		testGetAvailabilityEstimatesPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, availabilityEstimate1, availabilityEstimate2) -> {
+				BeanTestUtil.setProperty(
+					availabilityEstimate1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(
+					availabilityEstimate2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetAvailabilityEstimatesPageWithSortString()
+		throws Exception {
+
+		testGetAvailabilityEstimatesPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, availabilityEstimate1, availabilityEstimate2) -> {
+				Class<?> clazz = availabilityEstimate1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						availabilityEstimate1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						availabilityEstimate2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						availabilityEstimate1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						availabilityEstimate2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						availabilityEstimate1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						availabilityEstimate2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetAvailabilityEstimatesPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer
+				<EntityField, AvailabilityEstimate, AvailabilityEstimate,
+				 Exception> unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		AvailabilityEstimate availabilityEstimate1 =
+			randomAvailabilityEstimate();
+		AvailabilityEstimate availabilityEstimate2 =
+			randomAvailabilityEstimate();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(
+				entityField, availabilityEstimate1, availabilityEstimate2);
+		}
+
+		availabilityEstimate1 =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				availabilityEstimate1);
+
+		availabilityEstimate2 =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				availabilityEstimate2);
+
+		Page<AvailabilityEstimate> page =
+			availabilityEstimateResource.getAvailabilityEstimatesPage(
+				null, null, null);
+
+		for (EntityField entityField : entityFields) {
+			Page<AvailabilityEstimate> ascPage =
+				availabilityEstimateResource.getAvailabilityEstimatesPage(
+					null, Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":asc");
+
+			assertContains(
+				availabilityEstimate1,
+				(List<AvailabilityEstimate>)ascPage.getItems());
+			assertContains(
+				availabilityEstimate2,
+				(List<AvailabilityEstimate>)ascPage.getItems());
+
+			Page<AvailabilityEstimate> descPage =
+				availabilityEstimateResource.getAvailabilityEstimatesPage(
+					null, Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":desc");
+
+			assertContains(
+				availabilityEstimate2,
+				(List<AvailabilityEstimate>)descPage.getItems());
+			assertContains(
+				availabilityEstimate1,
+				(List<AvailabilityEstimate>)descPage.getItems());
+		}
+	}
+
+	protected AvailabilityEstimate
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				AvailabilityEstimate availabilityEstimate)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1306,12 +1787,35 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		assertEquals(randomAvailabilityEstimate, putAvailabilityEstimate);
 		assertValid(putAvailabilityEstimate);
 
+		Assert.assertNull(putAvailabilityEstimate.getPermissions());
+
 		AvailabilityEstimate getAvailabilityEstimate =
 			availabilityEstimateResource.getAvailabilityEstimate(
 				putAvailabilityEstimate.getId());
 
 		assertEquals(randomAvailabilityEstimate, getAvailabilityEstimate);
 		assertValid(getAvailabilityEstimate);
+
+		AvailabilityEstimate randomPermissionsAvailabilityEstimate =
+			randomPermissionsAvailabilityEstimate();
+
+		putAvailabilityEstimate =
+			availabilityEstimateResource.putAvailabilityEstimate(
+				postAvailabilityEstimate.getId(),
+				randomPermissionsAvailabilityEstimate);
+
+		assertEquals(
+			randomPermissionsAvailabilityEstimate, putAvailabilityEstimate);
+		assertValid(putAvailabilityEstimate);
+
+		Assert.assertNull(putAvailabilityEstimate.getPermissions());
+
+		putAvailabilityEstimate =
+			permissionsAvailabilityEstimateResource.putAvailabilityEstimate(
+				postAvailabilityEstimate.getId(),
+				randomPermissionsAvailabilityEstimate);
+
+		Assert.assertNotNull(putAvailabilityEstimate.getPermissions());
 	}
 
 	protected AvailabilityEstimate
@@ -1341,6 +1845,8 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		assertEquals(randomAvailabilityEstimate, putAvailabilityEstimate);
 		assertValid(putAvailabilityEstimate);
 
+		Assert.assertNull(putAvailabilityEstimate.getPermissions());
+
 		AvailabilityEstimate getAvailabilityEstimate =
 			availabilityEstimateResource.
 				getAvailabilityEstimateByExternalReferenceCode(
@@ -1348,6 +1854,29 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 
 		assertEquals(randomAvailabilityEstimate, getAvailabilityEstimate);
 		assertValid(getAvailabilityEstimate);
+
+		AvailabilityEstimate randomPermissionsAvailabilityEstimate =
+			randomPermissionsAvailabilityEstimate();
+
+		putAvailabilityEstimate =
+			availabilityEstimateResource.
+				putAvailabilityEstimateByExternalReferenceCode(
+					postAvailabilityEstimate.getExternalReferenceCode(),
+					randomPermissionsAvailabilityEstimate);
+
+		assertEquals(
+			randomPermissionsAvailabilityEstimate, putAvailabilityEstimate);
+		assertValid(putAvailabilityEstimate);
+
+		Assert.assertNull(putAvailabilityEstimate.getPermissions());
+
+		putAvailabilityEstimate =
+			permissionsAvailabilityEstimateResource.
+				putAvailabilityEstimateByExternalReferenceCode(
+					postAvailabilityEstimate.getExternalReferenceCode(),
+					randomPermissionsAvailabilityEstimate);
+
+		Assert.assertNotNull(putAvailabilityEstimate.getPermissions());
 
 		AvailabilityEstimate newAvailabilityEstimate =
 			testPutAvailabilityEstimateByExternalReferenceCode_createAvailabilityEstimate();
@@ -1386,6 +1915,53 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		throws Exception {
 
 		return randomAvailabilityEstimate();
+	}
+
+	@Test
+	public void testPutAvailabilityEstimatePermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		AvailabilityEstimate availabilityEstimate =
+			testPutAvailabilityEstimatePermissionsPage_addAvailabilityEstimate();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		assertHttpResponseStatusCode(
+			200,
+			availabilityEstimateResource.
+				putAvailabilityEstimatePermissionsPageHttpResponse(
+					availabilityEstimate.getId(),
+					new Permission[] {
+						new Permission() {
+							{
+								setActionIds(new String[] {"VIEW"});
+								setRoleName(role.getName());
+							}
+						}
+					}));
+
+		assertHttpResponseStatusCode(
+			404,
+			availabilityEstimateResource.
+				putAvailabilityEstimatePermissionsPageHttpResponse(
+					0L,
+					new Permission[] {
+						new Permission() {
+							{
+								setActionIds(new String[] {"-"});
+								setRoleName("-");
+							}
+						}
+					}));
+	}
+
+	protected AvailabilityEstimate
+			testPutAvailabilityEstimatePermissionsPage_addAvailabilityEstimate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1483,6 +2059,9 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		}
 	}
 
+	@Rule
+	public SearchTestRule searchTestRule = new SearchTestRule();
+
 	protected AvailabilityEstimate
 			testGraphQLAvailabilityEstimate_addAvailabilityEstimate()
 		throws Exception {
@@ -1578,12 +2157,28 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 
 		boolean valid = true;
 
+		if (availabilityEstimate.getDateCreated() == null) {
+			valid = false;
+		}
+
+		if (availabilityEstimate.getDateModified() == null) {
+			valid = false;
+		}
+
 		if (availabilityEstimate.getId() == null) {
 			valid = false;
 		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (availabilityEstimate.getCreator() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
@@ -1597,6 +2192,14 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 
 			if (Objects.equals("groupId", additionalAssertFieldName)) {
 				if (availabilityEstimate.getGroupId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (availabilityEstimate.getPermissions() == null) {
 					valid = false;
 				}
 
@@ -1744,6 +2347,39 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						availabilityEstimate1.getCreator(),
+						availabilityEstimate2.getCreator())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						availabilityEstimate1.getDateCreated(),
+						availabilityEstimate2.getDateCreated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateModified", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						availabilityEstimate1.getDateModified(),
+						availabilityEstimate2.getDateModified())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
@@ -1772,6 +2408,17 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 				if (!Objects.deepEquals(
 						availabilityEstimate1.getId(),
 						availabilityEstimate2.getId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						availabilityEstimate1.getPermissions(),
+						availabilityEstimate2.getPermissions())) {
 
 					return false;
 				}
@@ -1909,6 +2556,71 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
+		if (entityFieldName.equals("creator")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("dateCreated")) {
+			if (operator.equals("between")) {
+				Date date = availabilityEstimate.getDateCreated();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(
+					_format.format(availabilityEstimate.getDateCreated()));
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("dateModified")) {
+			if (operator.equals("between")) {
+				Date date = availabilityEstimate.getDateModified();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(
+					_format.format(availabilityEstimate.getDateModified()));
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("externalReferenceCode")) {
 			Object object = availabilityEstimate.getExternalReferenceCode();
 
@@ -1961,6 +2673,11 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		}
 
 		if (entityFieldName.equals("id")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("permissions")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -2025,6 +2742,8 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 
 		return new AvailabilityEstimate() {
 			{
+				dateCreated = RandomTestUtil.nextDate();
+				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				groupId = RandomTestUtil.randomLong();
@@ -2047,6 +2766,28 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		throws Exception {
 
 		return randomAvailabilityEstimate();
+	}
+
+	protected AvailabilityEstimate randomPermissionsAvailabilityEstimate()
+		throws Exception {
+
+		AvailabilityEstimate availabilityEstimate =
+			randomAvailabilityEstimate();
+
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		availabilityEstimate.setPermissions(
+			new Permission[] {
+				new Permission() {
+					{
+						setActionIds(new String[] {"VIEW"});
+						setRoleName(role.getName());
+					}
+				}
+			});
+
+		return availabilityEstimate;
 	}
 
 	protected final JSONObject waitForFinish(
@@ -2074,6 +2815,8 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 	protected AvailabilityEstimateResource availabilityEstimateResource;
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
+	protected AvailabilityEstimateResource
+		permissionsAvailabilityEstimateResource;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
@@ -2304,4 +3047,4 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:517337168
+// LIFERAY-REST-BUILDER-HASH:-289135877

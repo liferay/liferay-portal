@@ -13,11 +13,22 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Resource;
+import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.PermissionServiceUtil;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.GroupThreadLocal;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -34,8 +45,11 @@ import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
+import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
@@ -55,6 +69,8 @@ import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -197,6 +213,9 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 		throws Exception {
 	}
 
+	protected abstract AvailabilityEstimate doGetAvailabilityEstimate(Long id)
+		throws Exception;
+
 	/**
 	 * Invoke this method with the command line:
 	 *
@@ -225,15 +244,38 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	@jakarta.ws.rs.Path("/availabilityEstimate/{id}")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public AvailabilityEstimate getAvailabilityEstimate(
+	public final AvailabilityEstimate getAvailabilityEstimate(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("id")
 			Long id)
 		throws Exception {
 
-		return new AvailabilityEstimate();
+		AvailabilityEstimate getAvailabilityEstimate =
+			doGetAvailabilityEstimate(id);
+
+		getAvailabilityEstimate.setPermissions(
+			() -> NestedFieldsSupplier.supply(
+				"permissions",
+				nestedField -> {
+					Page<Permission> permissionsPage =
+						getAvailabilityEstimatePermissionsPage(
+							getAvailabilityEstimate.getId(), null);
+
+					Collection<Permission> permissions =
+						permissionsPage.getItems();
+
+					return permissions.toArray(
+						new Permission[permissions.size()]);
+				}));
+
+		return getAvailabilityEstimate;
 	}
+
+	protected abstract AvailabilityEstimate
+			doGetAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode)
+		throws Exception;
 
 	/**
 	 * Invoke this method with the command line:
@@ -265,14 +307,194 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public AvailabilityEstimate getAvailabilityEstimateByExternalReferenceCode(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull
-			@jakarta.ws.rs.PathParam("externalReferenceCode")
-			String externalReferenceCode)
+	public final AvailabilityEstimate
+			getAvailabilityEstimateByExternalReferenceCode(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode)
 		throws Exception {
 
-		return new AvailabilityEstimate();
+		AvailabilityEstimate getAvailabilityEstimate =
+			doGetAvailabilityEstimateByExternalReferenceCode(
+				externalReferenceCode);
+
+		getAvailabilityEstimate.setPermissions(
+			() -> NestedFieldsSupplier.supply(
+				"permissions",
+				nestedField -> {
+					Page<Permission> permissionsPage =
+						getAvailabilityEstimatePermissionsPage(
+							getAvailabilityEstimate.getId(), null);
+
+					Collection<Permission> permissions =
+						permissionsPage.getItems();
+
+					return permissions.toArray(
+						new Permission[permissions.size()]);
+				}));
+
+		return getAvailabilityEstimate;
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{availabilityEstimateId}/permissions'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Lists the role permissions granted on the availability estimate identified by ID. Requires the PERMISSIONS action on the availability estimate."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "availabilityEstimateId", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "fields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "restrictFields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "roleNames"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "AvailabilityEstimate"
+			)
+		}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
+		"/availabilityEstimate/{availabilityEstimateId}/permissions"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Page<Permission> getAvailabilityEstimatePermissionsPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("availabilityEstimateId")
+			Long availabilityEstimateId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("roleNames")
+			String roleNames)
+		throws Exception {
+
+		Long groupId = getPermissionCheckerGroupId(availabilityEstimateId);
+		Long resourceId = getPermissionCheckerResourceId(
+			availabilityEstimateId);
+		String resourceName = getPermissionCheckerResourceName(
+			availabilityEstimateId);
+
+		PermissionServiceUtil.checkPermission(
+			groupId, resourceName, resourceId);
+
+		return toPermissionPage(
+			HashMapBuilder.put(
+				"get",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"getAvailabilityEstimatePermissionsPage", null,
+					resourceName, groupId)
+			).put(
+				"replace",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"putAvailabilityEstimatePermissionsPage", null,
+					resourceName, groupId)
+			).build(),
+			resourceId, resourceName, roleNames);
+	}
+
+	protected abstract Page<AvailabilityEstimate>
+			doGetAvailabilityEstimatesPage(
+				com.liferay.portal.kernel.search.filter.Filter filter,
+				Pagination pagination,
+				com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availability-estimates'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns a page of availability estimates scoped to the caller's company, bounded by the `page` and `pageSize` query parameters. List query support -- the `filter` (OData v4) and `sort` parameters accept the dateCreated, dateModified, and externalReferenceCode fields. A filter that matches nothing yields an empty page rather than an error."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "OData v4 $filter expression applied to the resource (for example, `key eq 'kg'` or `name eq 'Acme'`). The set of filterable fields is defined by the back-end entity model; see the per-resource list operation description for specifics.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "filter"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "1-based page number for paginated responses. Defaults to 1.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "page"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Number of items returned per page. Defaults to the server-configured page size.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "pageSize"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression in the form `field:asc` or `field:desc`. The set of sortable fields is defined by the back-end entity model.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sort"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "AvailabilityEstimate"
+			)
+		}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/availability-estimates")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public final Page<AvailabilityEstimate> getAvailabilityEstimatesPage(
+			@jakarta.ws.rs.core.Context
+				com.liferay.portal.kernel.search.filter.Filter filter,
+			@jakarta.ws.rs.core.Context Pagination pagination,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+				sorts)
+		throws Exception {
+
+		Page<AvailabilityEstimate> availabilityEstimatesPage =
+			doGetAvailabilityEstimatesPage(filter, pagination, sorts);
+
+		for (AvailabilityEstimate availabilityEstimate :
+				availabilityEstimatesPage.getItems()) {
+
+			availabilityEstimate.setPermissions(
+				() -> NestedFieldsSupplier.supply(
+					"permissions",
+					nestedField -> {
+						Page<Permission> permissionsPage =
+							getAvailabilityEstimatePermissionsPage(
+								availabilityEstimate.getId(), null);
+
+						Collection<Permission> permissions =
+							permissionsPage.getItems();
+
+						return permissions.toArray(
+							new Permission[permissions.size()]);
+					}));
+		}
+
+		return availabilityEstimatesPage;
 	}
 
 	/**
@@ -330,7 +552,7 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}' -d $'{"externalReferenceCode": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}' -d $'{"externalReferenceCode": ___, "permissions": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Partially updates the availability estimate identified by external reference code, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 404 when no estimate carries that code, and 400 when the supplied external reference code is already taken by another estimate in the company."
@@ -376,6 +598,11 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 				availabilityEstimate.getExternalReferenceCode());
 		}
 
+		if (availabilityEstimate.getPermissions() != null) {
+			existingAvailabilityEstimate.setPermissions(
+				availabilityEstimate.getPermissions());
+		}
+
 		if (availabilityEstimate.getPriority() != null) {
 			existingAvailabilityEstimate.setPriority(
 				availabilityEstimate.getPriority());
@@ -395,7 +622,86 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/commerceAdminSiteSetting/{groupId}/availabilityEstimate' -d $'{"externalReferenceCode": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availability-estimates/export-batch'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "OData v4 $filter expression applied to the resource (for example, `key eq 'kg'` or `name eq 'Acme'`). The set of filterable fields is defined by the back-end entity model; see the per-resource list operation description for specifics.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "filter"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression in the form `field:asc` or `field:desc`. The set of sortable fields is defined by the back-end entity model.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sort"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "callbackURL"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "contentType"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "fieldNames"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "AvailabilityEstimate"
+			)
+		}
+	)
+	@jakarta.ws.rs.Consumes("application/json")
+	@jakarta.ws.rs.Path("/availability-estimates/export-batch")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces("application/json")
+	@Override
+	public Response postAvailabilityEstimatesPageExportBatch(
+			@jakarta.ws.rs.core.Context
+				com.liferay.portal.kernel.search.filter.Filter filter,
+			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
+				sorts,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("callbackURL")
+			String callbackURL,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.DefaultValue("JSON")
+			@jakarta.ws.rs.QueryParam("contentType")
+			String contentType,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("fieldNames")
+			String fieldNames)
+		throws Exception {
+
+		vulcanBatchEngineExportTaskResource.setContextAcceptLanguage(
+			contextAcceptLanguage);
+		vulcanBatchEngineExportTaskResource.setContextCompany(contextCompany);
+		vulcanBatchEngineExportTaskResource.setContextHttpServletRequest(
+			contextHttpServletRequest);
+		vulcanBatchEngineExportTaskResource.setContextUriInfo(contextUriInfo);
+		vulcanBatchEngineExportTaskResource.setContextUser(contextUser);
+		vulcanBatchEngineExportTaskResource.setGroupLocalService(
+			groupLocalService);
+
+		Response.ResponseBuilder responseBuilder = Response.accepted();
+
+		return responseBuilder.entity(
+			vulcanBatchEngineExportTaskResource.postExportTask(
+				AvailabilityEstimate.class.getName(), callbackURL, contentType,
+				fieldNames)
+		).build();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/commerceAdminSiteSetting/{groupId}/availabilityEstimate' -d $'{"externalReferenceCode": ___, "permissions": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates an availability estimate for the caller's company from the supplied external reference code, localized `title`, and `priority`. The supplied site (`groupId`) is a wire-only compatibility field and does not scope the record. Returns 400 when the supplied external reference code is already taken by another estimate in the company."
@@ -435,10 +741,14 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 		return new AvailabilityEstimate();
 	}
 
+	protected abstract AvailabilityEstimate doPutAvailabilityEstimate(
+			Long id, AvailabilityEstimate availabilityEstimate)
+		throws Exception;
+
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}' -d $'{"externalReferenceCode": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}' -d $'{"externalReferenceCode": ___, "permissions": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Replaces the availability estimate identified by ID with the request body. Returns 404 when no estimate matches the ID, and 400 when the supplied external reference code is already taken by another estimate in the company."
@@ -464,7 +774,7 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override
-	public AvailabilityEstimate putAvailabilityEstimate(
+	public final AvailabilityEstimate putAvailabilityEstimate(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("id")
@@ -472,7 +782,29 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 			AvailabilityEstimate availabilityEstimate)
 		throws Exception {
 
-		return new AvailabilityEstimate();
+		Permission[] permissions = availabilityEstimate.getPermissions();
+
+		AvailabilityEstimate putAvailabilityEstimate =
+			doPutAvailabilityEstimate(id, availabilityEstimate);
+
+		if (permissions != null) {
+			Page<Permission> permissionsPage =
+				putAvailabilityEstimatePermissionsPage(
+					putAvailabilityEstimate.getId(), permissions);
+
+			putAvailabilityEstimate.setPermissions(
+				() -> NestedFieldsSupplier.supply(
+					"permissions",
+					nestedField -> {
+						Collection<Permission> collection =
+							permissionsPage.getItems();
+
+						return collection.toArray(
+							new Permission[collection.size()]);
+					}));
+		}
+
+		return putAvailabilityEstimate;
 	}
 
 	/**
@@ -523,10 +855,16 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 		).build();
 	}
 
+	protected abstract AvailabilityEstimate
+			doPutAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode,
+				AvailabilityEstimate availabilityEstimate)
+		throws Exception;
+
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}' -d $'{"externalReferenceCode": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}' -d $'{"externalReferenceCode": ___, "permissions": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Upserts the availability estimate identified by external reference code -- replaces it with the request body when the code exists, otherwise creates a new estimate. Returns 400 when the supplied external reference code is already taken by another estimate in the company."
@@ -554,15 +892,140 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override
-	public AvailabilityEstimate putAvailabilityEstimateByExternalReferenceCode(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull
-			@jakarta.ws.rs.PathParam("externalReferenceCode")
-			String externalReferenceCode,
-			AvailabilityEstimate availabilityEstimate)
+	public final AvailabilityEstimate
+			putAvailabilityEstimateByExternalReferenceCode(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				AvailabilityEstimate availabilityEstimate)
 		throws Exception {
 
-		return new AvailabilityEstimate();
+		Permission[] permissions = availabilityEstimate.getPermissions();
+
+		AvailabilityEstimate putAvailabilityEstimate =
+			doPutAvailabilityEstimateByExternalReferenceCode(
+				externalReferenceCode, availabilityEstimate);
+
+		if (permissions != null) {
+			Page<Permission> permissionsPage =
+				putAvailabilityEstimatePermissionsPage(
+					putAvailabilityEstimate.getId(), permissions);
+
+			putAvailabilityEstimate.setPermissions(
+				() -> NestedFieldsSupplier.supply(
+					"permissions",
+					nestedField -> {
+						Collection<Permission> collection =
+							permissionsPage.getItems();
+
+						return collection.toArray(
+							new Permission[collection.size()]);
+					}));
+		}
+
+		return putAvailabilityEstimate;
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{availabilityEstimateId}/permissions'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Replaces the role permissions granted on the availability estimate identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the availability estimate."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "availabilityEstimateId", required = true
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "AvailabilityEstimate"
+			)
+		}
+	)
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path(
+		"/availabilityEstimate/{availabilityEstimateId}/permissions"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
+	@Override
+	public Page<Permission> putAvailabilityEstimatePermissionsPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("availabilityEstimateId")
+			Long availabilityEstimateId,
+			Permission[] permissions)
+		throws Exception {
+
+		Long groupId = getPermissionCheckerGroupId(availabilityEstimateId);
+		Long resourceId = getPermissionCheckerResourceId(
+			availabilityEstimateId);
+		String resourceName = getPermissionCheckerResourceName(
+			availabilityEstimateId);
+
+		PermissionServiceUtil.checkPermission(
+			groupId, resourceName, resourceId);
+
+		ModelPermissions modelPermissions =
+			ModelPermissionsUtil.toModelPermissions(
+				contextCompany.getCompanyId(), permissions, resourceId,
+				resourceName, resourceActionLocalService,
+				resourcePermissionLocalService, roleLocalService);
+
+		Collection<String> roleNames = modelPermissions.getRoleNames();
+
+		for (ResourcePermission resourcePermission :
+				resourcePermissionLocalService.getResourcePermissions(
+					contextCompany.getCompanyId(), resourceName,
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(resourceId))) {
+
+			com.liferay.portal.kernel.model.Role role =
+				roleLocalService.fetchRole(resourcePermission.getRoleId());
+
+			if ((role == null) || roleNames.contains(role.getName())) {
+				continue;
+			}
+
+			for (ResourceAction resourceAction :
+					resourceActionLocalService.getResourceActions(
+						resourceName)) {
+
+				resourcePermissionLocalService.removeResourcePermission(
+					contextCompany.getCompanyId(), resourceName,
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(resourceId), role.getRoleId(),
+					resourceAction.getActionId());
+			}
+		}
+
+		resourcePermissionLocalService.updateResourcePermissions(
+			contextCompany.getCompanyId(), groupId, resourceName,
+			String.valueOf(resourceId), modelPermissions);
+
+		return toPermissionPage(
+			HashMapBuilder.put(
+				"get",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"getAvailabilityEstimatePermissionsPage", null,
+					resourceName, groupId)
+			).put(
+				"replace",
+				addAction(
+					ActionKeys.PERMISSIONS, resourceId,
+					"putAvailabilityEstimatePermissionsPage", null,
+					resourceName, groupId)
+			).build(),
+			resourceId, resourceName, null);
 	}
 
 	@Override
@@ -710,8 +1173,7 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return getAvailabilityEstimatesPage(filter, pagination, sorts);
 	}
 
 	@Override
@@ -797,6 +1259,175 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	@Override
 	public AvailabilityEstimate getItem(Long id) throws Exception {
 		return getAvailabilityEstimate(id);
+	}
+
+	protected String getPermissionCheckerActionsResourceName(Object id)
+		throws Exception {
+
+		return getPermissionCheckerResourceName(id);
+	}
+
+	protected Long getPermissionCheckerGroupId(Object id) throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String getPermissionCheckerPortletName(Object id)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long getPermissionCheckerResourceId(Object id) throws Exception {
+		return GetterUtil.getLong(id);
+	}
+
+	protected String getPermissionCheckerResourceName(Object id)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Page<Permission> toPermissionPage(
+			Map<String, Map<String, String>> actions, long id,
+			String resourceName, String roleNames)
+		throws Exception {
+
+		List<ResourceAction> resourceActions =
+			resourceActionLocalService.getResourceActions(resourceName);
+
+		if (Validator.isNotNull(roleNames)) {
+			return Page.of(
+				actions,
+				_getPermissions(
+					contextCompany.getCompanyId(), resourceActions, id,
+					resourceName, StringUtil.split(roleNames)));
+		}
+
+		return Page.of(
+			actions,
+			_getPermissions(
+				contextCompany.getCompanyId(), resourceActions, id,
+				resourceName, null));
+	}
+
+	/**
+	 * @see com.liferay.portal.vulcan.permission.PermissionUtil#getPermissions(long, List, long, String, String[])
+	 */
+	private Collection<Permission> _getPermissions(
+			long companyId, List<ResourceAction> resourceActions,
+			long resourceId, String resourceName, String[] roleNames)
+		throws Exception {
+
+		Map<String, Permission> permissions = new HashMap<>();
+
+		int count = resourcePermissionLocalService.getResourcePermissionsCount(
+			companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(resourceId));
+
+		if (count == 0) {
+			ResourceLocalServiceUtil.addResources(
+				companyId, resourceId, 0, resourceName,
+				String.valueOf(resourceId), false, true, true);
+		}
+
+		List<String> actionIds = transform(
+			resourceActions, resourceAction -> resourceAction.getActionId());
+
+		Set<ResourcePermission> resourcePermissions = new HashSet<>();
+
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(companyId)));
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_GROUP,
+				String.valueOf(GroupThreadLocal.getGroupId())));
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_GROUP_TEMPLATE,
+				"0"));
+		resourcePermissions.addAll(
+			resourcePermissionLocalService.getResourcePermissions(
+				companyId, resourceName, ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(resourceId)));
+
+		List<Resource> resources = transform(
+			resourcePermissions,
+			resourcePermission -> ResourceLocalServiceUtil.getResource(
+				resourcePermission.getCompanyId(), resourcePermission.getName(),
+				resourcePermission.getScope(),
+				resourcePermission.getPrimKey()));
+
+		Set<com.liferay.portal.kernel.model.Role> roles = new HashSet<>();
+
+		if (roleNames != null) {
+			for (String roleName : roleNames) {
+				roles.add(roleLocalService.getRole(companyId, roleName));
+			}
+		}
+		else {
+			for (ResourcePermission resourcePermission : resourcePermissions) {
+				com.liferay.portal.kernel.model.Role role =
+					roleLocalService.getRole(resourcePermission.getRoleId());
+
+				roles.add(role);
+			}
+		}
+
+		for (com.liferay.portal.kernel.model.Role role : roles) {
+			Set<String> actionsIdsSet = new HashSet<>();
+
+			for (Resource resource : resources) {
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							ResourceConstants.SCOPE_COMPANY,
+							String.valueOf(resource.getCompanyId()),
+							role.getRoleId(), actionIds));
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							ResourceConstants.SCOPE_GROUP,
+							String.valueOf(GroupThreadLocal.getGroupId()),
+							role.getRoleId(), actionIds));
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							ResourceConstants.SCOPE_GROUP_TEMPLATE, "0",
+							role.getRoleId(), actionIds));
+				actionsIdsSet.addAll(
+					resourcePermissionLocalService.
+						getAvailableResourcePermissionActionIds(
+							resource.getCompanyId(), resource.getName(),
+							resource.getScope(), resource.getPrimKey(),
+							role.getRoleId(), actionIds));
+			}
+
+			if (actionsIdsSet.isEmpty()) {
+				continue;
+			}
+
+			Permission permission = new Permission() {
+				{
+					actionIds = actionsIdsSet.toArray(new String[0]);
+
+					roleExternalReferenceCode = role.getExternalReferenceCode();
+
+					roleName = role.getName();
+				}
+			};
+
+			permissions.put(role.getName(), permission);
+		}
+
+		return permissions.values();
 	}
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
@@ -1361,4 +1992,4 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 		LogFactoryUtil.getLog(BaseAvailabilityEstimateResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1901042545
+// LIFERAY-REST-BUILDER-HASH:-167076107

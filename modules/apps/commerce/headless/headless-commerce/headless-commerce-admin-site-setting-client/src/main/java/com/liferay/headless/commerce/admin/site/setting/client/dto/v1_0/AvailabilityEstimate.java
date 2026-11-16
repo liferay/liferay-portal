@@ -12,6 +12,7 @@ import jakarta.annotation.Generated;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,6 +26,69 @@ public class AvailabilityEstimate implements Cloneable, Serializable {
 	public static AvailabilityEstimate toDTO(String json) {
 		return AvailabilityEstimateSerDes.toDTO(json);
 	}
+
+	public Creator getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Creator creator) {
+		this.creator = creator;
+	}
+
+	public void setCreator(
+		UnsafeSupplier<Creator, Exception> creatorUnsafeSupplier) {
+
+		try {
+			creator = creatorUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Creator creator;
+
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
+	public void setDateCreated(
+		UnsafeSupplier<Date, Exception> dateCreatedUnsafeSupplier) {
+
+		try {
+			dateCreated = dateCreatedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date dateCreated;
+
+	public Date getDateModified() {
+		return dateModified;
+	}
+
+	public void setDateModified(Date dateModified) {
+		this.dateModified = dateModified;
+	}
+
+	public void setDateModified(
+		UnsafeSupplier<Date, Exception> dateModifiedUnsafeSupplier) {
+
+		try {
+			dateModified = dateModifiedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date dateModified;
 
 	public String getExternalReferenceCode() {
 		return externalReferenceCode;
@@ -86,6 +150,37 @@ public class AvailabilityEstimate implements Cloneable, Serializable {
 	}
 
 	protected Long id;
+
+	public com.liferay.headless.commerce.admin.site.setting.client.permission.
+		Permission[] getPermissions() {
+
+		return permissions;
+	}
+
+	public void setPermissions(
+		com.liferay.headless.commerce.admin.site.setting.client.permission.
+			Permission[] permissions) {
+
+		this.permissions = permissions;
+	}
+
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.headless.commerce.admin.site.setting.client.permission.
+				Permission[],
+			 Exception> permissionsUnsafeSupplier) {
+
+		try {
+			permissions = permissionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected
+		com.liferay.headless.commerce.admin.site.setting.client.permission.
+			Permission[] permissions;
 
 	public Double getPriority() {
 		return priority;
@@ -162,4 +257,4 @@ public class AvailabilityEstimate implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1889316966
+// LIFERAY-REST-BUILDER-HASH:-1759758269

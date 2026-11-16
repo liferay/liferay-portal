@@ -10,6 +10,9 @@ import com.liferay.headless.commerce.admin.site.setting.client.json.BaseJSONPars
 
 import jakarta.annotation.Generated;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,6 +50,51 @@ public class AvailabilityEstimateSerDes {
 
 		sb.append("{");
 
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
+		if (availabilityEstimate.getCreator() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(String.valueOf(availabilityEstimate.getCreator()));
+		}
+
+		if (availabilityEstimate.getDateCreated() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateCreated\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(
+					availabilityEstimate.getDateCreated()));
+
+			sb.append("\"");
+		}
+
+		if (availabilityEstimate.getDateModified() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateModified\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(
+					availabilityEstimate.getDateModified()));
+
+			sb.append("\"");
+		}
+
 		if (availabilityEstimate.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -79,6 +127,28 @@ public class AvailabilityEstimateSerDes {
 			sb.append("\"id\": ");
 
 			sb.append(availabilityEstimate.getId());
+		}
+
+		if (availabilityEstimate.getPermissions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < availabilityEstimate.getPermissions().length;
+				 i++) {
+
+				sb.append(availabilityEstimate.getPermissions()[i]);
+
+				if ((i + 1) < availabilityEstimate.getPermissions().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		if (availabilityEstimate.getPriority() != null) {
@@ -122,6 +192,37 @@ public class AvailabilityEstimateSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
+		if (availabilityEstimate.getCreator() == null) {
+			map.put("creator", null);
+		}
+		else {
+			map.put(
+				"creator", String.valueOf(availabilityEstimate.getCreator()));
+		}
+
+		if (availabilityEstimate.getDateCreated() == null) {
+			map.put("dateCreated", null);
+		}
+		else {
+			map.put(
+				"dateCreated",
+				liferayToJSONDateFormat.format(
+					availabilityEstimate.getDateCreated()));
+		}
+
+		if (availabilityEstimate.getDateModified() == null) {
+			map.put("dateModified", null);
+		}
+		else {
+			map.put(
+				"dateModified",
+				liferayToJSONDateFormat.format(
+					availabilityEstimate.getDateModified()));
+		}
+
 		if (availabilityEstimate.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
@@ -145,6 +246,15 @@ public class AvailabilityEstimateSerDes {
 		}
 		else {
 			map.put("id", String.valueOf(availabilityEstimate.getId()));
+		}
+
+		if (availabilityEstimate.getPermissions() == null) {
+			map.put("permissions", null);
+		}
+		else {
+			map.put(
+				"permissions",
+				String.valueOf(availabilityEstimate.getPermissions()));
 		}
 
 		if (availabilityEstimate.getPriority() == null) {
@@ -180,13 +290,27 @@ public class AvailabilityEstimateSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
+			if (Objects.equals(jsonParserFieldName, "creator")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "groupId")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "priority")) {
@@ -204,7 +328,27 @@ public class AvailabilityEstimateSerDes {
 			AvailabilityEstimate availabilityEstimate,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
+			if (Objects.equals(jsonParserFieldName, "creator")) {
+				if (jsonParserFieldValue != null) {
+					availabilityEstimate.setCreator(
+						CreatorSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				if (jsonParserFieldValue != null) {
+					availabilityEstimate.setDateCreated(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				if (jsonParserFieldValue != null) {
+					availabilityEstimate.setDateModified(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
 				if (jsonParserFieldValue != null) {
 					availabilityEstimate.setExternalReferenceCode(
 						(String)jsonParserFieldValue);
@@ -220,6 +364,26 @@ public class AvailabilityEstimateSerDes {
 				if (jsonParserFieldValue != null) {
 					availabilityEstimate.setId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					com.liferay.headless.commerce.admin.site.setting.client.
+						permission.Permission[] permissionsArray = new
+						com.liferay.headless.commerce.admin.site.setting.client.
+							permission.Permission[jsonParserFieldValues.length];
+
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.headless.commerce.admin.site.setting.
+								client.permission.Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
+					}
+
+					availabilityEstimate.setPermissions(permissionsArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "priority")) {
@@ -321,4 +485,4 @@ public class AvailabilityEstimateSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:871372438
+// LIFERAY-REST-BUILDER-HASH:-881096953
