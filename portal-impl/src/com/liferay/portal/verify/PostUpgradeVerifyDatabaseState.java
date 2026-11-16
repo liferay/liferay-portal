@@ -397,6 +397,10 @@ public class PostUpgradeVerifyDatabaseState extends VerifyProcess {
 	}
 
 	private String _getReleaseStateLabel(int state) {
+		if (state == ReleaseConstants.STATE_IN_PROGRESS) {
+			return "in progress";
+		}
+
 		if (state == ReleaseConstants.STATE_UPGRADE_FAILURE) {
 			return "upgrade failure";
 		}

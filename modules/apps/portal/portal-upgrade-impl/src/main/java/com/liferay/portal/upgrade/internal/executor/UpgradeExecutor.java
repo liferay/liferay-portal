@@ -222,10 +222,25 @@ public class UpgradeExecutor {
 		String bundleSymbolicName = bundle.getSymbolicName();
 
 		try {
-			Release release = _updateReleaseState(
-				bundleSymbolicName, _STATE_IN_PROGRESS);
+			Release release = _releaseLocalService.fetchRelease(
+				bundleSymbolicName);
 
 			if (release != null) {
+				if ((release.getState() ==
+						ReleaseConstants.STATE_IN_PROGRESS) &&
+					_log.isWarnEnabled()) {
+
+					_log.warn(
+						StringBundler.concat(
+							"Resuming the upgrade of ", bundleSymbolicName,
+							" from schema version ", release.getSchemaVersion(),
+							" after an interruption"));
+				}
+
+				release.setState(ReleaseConstants.STATE_IN_PROGRESS);
+
+				_releaseLocalService.updateRelease(release);
+
 				StartupHelperUtil.setRunOnPortalUpgradeVerifiers(true);
 			}
 
@@ -291,20 +306,6 @@ public class UpgradeExecutor {
 
 		return !_isInitialRelease(upgradeInfos);
 	}
-
-	private Release _updateReleaseState(String bundleSymbolicName, int state) {
-		Release release = _releaseLocalService.fetchRelease(bundleSymbolicName);
-
-		if (release != null) {
-			release.setState(state);
-
-			release = _releaseLocalService.updateRelease(release);
-		}
-
-		return release;
-	}
-
-	private static final int _STATE_IN_PROGRESS = -1;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		UpgradeExecutor.class);

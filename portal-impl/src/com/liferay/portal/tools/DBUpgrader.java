@@ -85,8 +85,11 @@ public class DBUpgrader {
 
 	public static void checkReleaseState() throws Exception {
 		try (Connection connection = DataAccess.getConnection()) {
-			if (PortalUpgradeProcess.getCurrentState(connection) ==
-					ReleaseConstants.STATE_GOOD) {
+			int state = PortalUpgradeProcess.getCurrentState(connection);
+
+			if ((state == ReleaseConstants.STATE_GOOD) ||
+				((state == ReleaseConstants.STATE_IN_PROGRESS) &&
+				 !StartupHelperUtil.isUpgrading())) {
 
 				return;
 			}
@@ -483,14 +486,37 @@ public class DBUpgrader {
 			int buildNumber = _getBuildNumber();
 
 			try (Connection connection = DataAccess.getConnection()) {
+				int state = PortalUpgradeProcess.getCurrentState(connection);
+
 				if (PortalUpgradeProcess.isInCompatibleSchemaVersion(
 						connection) &&
 					(buildNumber == ReleaseInfo.getParentBuildNumber())) {
+
+					if (state == ReleaseConstants.STATE_IN_PROGRESS) {
+						PortalUpgradeProcess.updateState(
+							connection, ReleaseConstants.STATE_GOOD);
+					}
 
 					_checkClassNamesAndResourceActions();
 
 					return;
 				}
+
+				if ((state == ReleaseConstants.STATE_IN_PROGRESS) &&
+					_log.isWarnEnabled()) {
+
+					_log.warn(
+						StringBundler.concat(
+							"Resuming the upgrade of ",
+							ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+							" from schema version ",
+							PortalUpgradeProcess.getCurrentSchemaVersion(
+								connection),
+							" after an interruption"));
+				}
+
+				PortalUpgradeProcess.updateState(
+					connection, ReleaseConstants.STATE_IN_PROGRESS);
 			}
 
 			if (_log.isDebugEnabled()) {
