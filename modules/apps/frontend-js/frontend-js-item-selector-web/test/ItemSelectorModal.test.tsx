@@ -72,11 +72,13 @@ const ItemSelectorModalWrapper = ({
 	filesUploaderComponent,
 	onItemsChange,
 	selectedItems,
+	sidebar,
 }: {
 	defaultOpen: boolean;
 	filesUploaderComponent?: FilesUploaderComponent;
 	onItemsChange: (items: TestItem[]) => void;
 	selectedItems: TestItem[];
+	sidebar?: React.ReactNode;
 }) => {
 	const {observer, onOpenChange, open} = useModal({defaultOpen});
 
@@ -117,6 +119,7 @@ const ItemSelectorModalWrapper = ({
 				onItemsChange={onItemsChange}
 				onOpenChange={onOpenChange}
 				open={open}
+				sidebar={sidebar}
 			/>
 		</>
 	);
@@ -533,5 +536,20 @@ describe('ItemSelectorModal component', () => {
 		user.click(uploadFilesButton);
 
 		expect(await findByTestId('mockFilesUploader')).toBeInTheDocument();
+	});
+
+	it('renders the sidebar when the sidebar prop is provided', async () => {
+		const {findByRole, findByText} = render(
+			<ItemSelectorModalWrapper
+				defaultOpen={true}
+				onItemsChange={jest.fn()}
+				selectedItems={[]}
+				sidebar={<nav>Source panel</nav>}
+			/>
+		);
+
+		await findByRole('dialog');
+
+		expect(await findByText('Source panel')).toBeInTheDocument();
 	});
 });

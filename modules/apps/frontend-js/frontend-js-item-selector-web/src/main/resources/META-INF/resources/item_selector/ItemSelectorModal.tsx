@@ -158,6 +158,12 @@ export interface IItemSelectorModalProps<T> {
 	open: boolean;
 
 	/**
+	 * When provided, renders a vertical navigation panel to the left of the
+	 * main content area and switches the modal body from column to row layout.
+	 */
+	sidebar?: React.ReactNode;
+
+	/**
 	 * Modal size. Defaults to "full-screen" to preserve the file-picker
 	 * layout; pass a smaller value (e.g. "lg") for compact list pickers.
 	 */
@@ -194,6 +200,7 @@ function ItemSelectorModal<T extends Record<string, any>>({
 	onItemsChange,
 	onOpenChange,
 	open,
+	sidebar,
 	size = 'full-screen',
 	title,
 }: IItemSelectorModalProps<T>) {
@@ -256,74 +263,102 @@ function ItemSelectorModal<T extends Record<string, any>>({
 
 			{message}
 
-			<ClayModal.Body className="d-flex flex-column p-0">
-				<ClayLayout.Container
-					className={classNames({'d-none': view !== 'fds'})}
-					fluid
-				>
-					{breadcrumbs && (
-						<ClayLayout.Container
-							className="item-selector-modal-breadcrumb-wrapper"
-							fluid
-						>
-							{breadcrumbsLabel && (
-								<h2 className="mb-0 mt-2">
-									{breadcrumbs[breadcrumbs.length - 1].label}
-								</h2>
-							)}
-
-							<ClayBreadcrumb
-								items={breadcrumbs.map((breadcrumb, index) => ({
-									...breadcrumb,
-									active: index === breadcrumbs.length - 1,
-								}))}
-							/>
-						</ClayLayout.Container>
-					)}
-
-					<FrontendDataSet
-						{...fdsProps}
-						apiURL={apiURL}
-						creationMenu={
-							FilesUploaderComponent
-								? {
-										primaryItems: [
-											{
-												label: Liferay.Language.get(
-													'upload-files'
-												),
-												onClick: () =>
-													setViewType('upload'),
-											},
-										],
-									}
-								: undefined
-						}
-						emptyState={fdsProps.emptyState}
-						fileDropSettings={fileDropSettings}
-						key={fdsRefreshKey}
-						onSelectedItemsChange={setSelectedItems}
-						selectedItems={selectedItems}
-						selectedItemsKey={locator.id}
-						selectionType={multiSelect ? 'multiple' : 'single'}
-						showNavBarWhenSelected={true}
-						style="fluid"
-					/>
-				</ClayLayout.Container>
-
-				{view === 'upload' && FilesUploaderComponent && (
-					<FilesUploaderComponent
-						allowedExtensions={allowedExtensions}
-						files={filesToUpload}
-						groupId={groupId}
-						maxFileSize={maxFileSize}
-						onCloseUploadView={() => {
-							setViewType('fds');
-							setFilesToUpload([]);
-							setFdsRefreshKey(fdsRefreshKey + 1);
-						}}
-					/>
+			<ClayModal.Body
+				className={classNames(
+					'p-0',
+					sidebar ? 'd-flex flex-row' : 'd-flex flex-column'
 				)}
+			>
+				{sidebar && (
+					<div
+						className="border-end flex-shrink-0 overflow-y-auto"
+						style={{width: '200px'}}
+					>
+						{sidebar}
+					</div>
+				)}
+
+				<div
+					className={classNames({
+						'd-flex flex-column flex-grow-1 overflow-hidden':
+							!!sidebar,
+					})}
+				>
+					<ClayLayout.Container
+						className={classNames({'d-none': view !== 'fds'})}
+						fluid
+					>
+						{breadcrumbs && (
+							<ClayLayout.Container
+								className="item-selector-modal-breadcrumb-wrapper"
+								fluid
+							>
+								{breadcrumbsLabel && (
+									<h2 className="mb-0 mt-2">
+										{
+											breadcrumbs[breadcrumbs.length - 1]
+												.label
+										}
+									</h2>
+								)}
+
+								<ClayBreadcrumb
+									items={breadcrumbs.map(
+										(breadcrumb, index) => ({
+											...breadcrumb,
+											active:
+												index ===
+												breadcrumbs.length - 1,
+										})
+									)}
+								/>
+							</ClayLayout.Container>
+						)}
+
+						<FrontendDataSet
+							{...fdsProps}
+							apiURL={apiURL}
+							creationMenu={
+								FilesUploaderComponent
+									? {
+											primaryItems: [
+												{
+													label: Liferay.Language.get(
+														'upload-files'
+													),
+													onClick: () =>
+														setViewType('upload'),
+												},
+											],
+										}
+									: undefined
+							}
+							emptyState={fdsProps.emptyState}
+							fileDropSettings={fileDropSettings}
+							key={fdsRefreshKey}
+							onSelectedItemsChange={setSelectedItems}
+							selectedItems={selectedItems}
+							selectedItemsKey={locator.id}
+							selectionType={multiSelect ? 'multiple' : 'single'}
+							showNavBarWhenSelected={true}
+							style="fluid"
+						/>
+					</ClayLayout.Container>
+
+					{view === 'upload' && FilesUploaderComponent && (
+						<FilesUploaderComponent
+							allowedExtensions={allowedExtensions}
+							files={filesToUpload}
+							groupId={groupId}
+							maxFileSize={maxFileSize}
+							onCloseUploadView={() => {
+								setViewType('fds');
+								setFilesToUpload([]);
+								setFdsRefreshKey(fdsRefreshKey + 1);
+							}}
+						/>
+					)}
+				</div>
 			</ClayModal.Body>
 
 			{view === 'fds' && (
