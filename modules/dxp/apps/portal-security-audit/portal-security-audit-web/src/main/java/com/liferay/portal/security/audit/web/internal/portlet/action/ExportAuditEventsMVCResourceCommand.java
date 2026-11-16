@@ -9,7 +9,6 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -21,7 +20,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CSVUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -43,20 +41,16 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Stian Sigvartsen
  */
 @Component(
-	configurationPid = "com.liferay.portal.security.audit.router.configuration.CSVLogMessageFormatterConfiguration",
 	property = {
 		"jakarta.portlet.name=" + AuditPortletKeys.AUDIT,
 		"mvc.command.name=/audit/export_audit_events"
@@ -65,16 +59,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class ExportAuditEventsMVCResourceCommand
 	extends BaseMVCResourceCommand {
-
-	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) {
-		_columns = GetterUtil.getStringValues(properties.get("columns"));
-
-		if (ArrayUtil.isEmpty(_columns)) {
-			_columns = _getDefaultColumns();
-		}
-	}
 
 	@Override
 	protected void doServeResource(
@@ -88,8 +72,7 @@ public class ExportAuditEventsMVCResourceCommand
 					SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 
 			String auditEventsCSV = _getAuditEventsCSV(
-				_getColumns(_portal.getCompanyId(resourceRequest)),
-				resourceRequest, resourceResponse);
+				_getDefaultColumns(), resourceRequest, resourceResponse);
 
 			PortletResponseUtil.sendFile(
 				resourceRequest, resourceResponse, "audit_events.csv",
@@ -212,14 +195,6 @@ public class ExportAuditEventsMVCResourceCommand
 		return csv;
 	}
 
-	private String[] _getColumns(long companyId) {
-		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
-			return _getDefaultColumns();
-		}
-
-		return _columns;
-	}
-
 	private String[] _getDefaultColumns() {
 		Set<String> keys = _functions.keySet();
 
@@ -257,7 +232,6 @@ public class ExportAuditEventsMVCResourceCommand
 	private static final Log _log = LogFactoryUtil.getLog(
 		ExportAuditEventsMVCResourceCommand.class);
 
-	private volatile String[] _columns;
 	private final LinkedHashMap<String, Function<AuditEvent, String>>
 		_functions =
 			LinkedHashMapBuilder.<String, Function<AuditEvent, String>>put(

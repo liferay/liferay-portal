@@ -80,7 +80,8 @@ public class SaveAuditConfigurationMVCActionCommand
 
 				Dictionary<String, Object> properties =
 					_getAuditConfigurationProperties(
-						actionRequest, auditConfiguration);
+						actionRequest, auditConfiguration,
+						themeDisplay.getCompanyId());
 
 				properties.put(
 					"auditMessageMaxQueueSize",
@@ -115,29 +116,29 @@ public class SaveAuditConfigurationMVCActionCommand
 		else {
 			long companyId = themeDisplay.getCompanyId();
 
-			FeatureFlagManagerUtil.checkEnabled(companyId, "LPD-6417");
-
 			if (!permissionChecker.isCompanyAdmin(companyId)) {
 				throw new PrincipalException.MustBeCompanyAdmin(
 					permissionChecker);
 			}
 
-			AuditConfiguration auditConfiguration =
-				_configurationProvider.getCompanyConfiguration(
-					AuditConfiguration.class, companyId);
+			if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+				AuditConfiguration auditConfiguration =
+					_configurationProvider.getCompanyConfiguration(
+						AuditConfiguration.class, companyId);
 
-			_configurationProvider.saveCompanyConfiguration(
-				AuditConfiguration.class, companyId,
-				HashMapDictionaryBuilder.<String, Object>put(
-					"pseudonymizationEnabled",
-					ParamUtil.getBoolean(
-						actionRequest, "pseudonymizationEnabled",
-						auditConfiguration.pseudonymizationEnabled())
-				).build());
+				_configurationProvider.saveCompanyConfiguration(
+					AuditConfiguration.class, companyId,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"pseudonymizationEnabled",
+						ParamUtil.getBoolean(
+							actionRequest, "pseudonymizationEnabled",
+							auditConfiguration.pseudonymizationEnabled())
+					).build());
 
-			_routePseudonymizationChangeAuditMessage(
-				actionRequest, auditConfiguration.pseudonymizationEnabled(),
-				themeDisplay);
+				_routePseudonymizationChangeAuditMessage(
+					actionRequest, auditConfiguration.pseudonymizationEnabled(),
+					themeDisplay);
+			}
 
 			Dictionary<String, Object>
 				fileSystemAuditMessageProcessorConfigurationProperties =
@@ -163,7 +164,8 @@ public class SaveAuditConfigurationMVCActionCommand
 	}
 
 	private Dictionary<String, Object> _getAuditConfigurationProperties(
-		ActionRequest actionRequest, AuditConfiguration auditConfiguration) {
+		ActionRequest actionRequest, AuditConfiguration auditConfiguration,
+		long companyId) {
 
 		return HashMapDictionaryBuilder.<String, Object>put(
 			"enabled",
@@ -171,9 +173,8 @@ public class SaveAuditConfigurationMVCActionCommand
 				actionRequest, "enabled", auditConfiguration.enabled())
 		).put(
 			"pseudonymizationEnabled",
-			ParamUtil.getBoolean(
-				actionRequest, "pseudonymizationEnabled",
-				auditConfiguration.pseudonymizationEnabled())
+			_isPseudonymizationEnabled(
+				actionRequest, auditConfiguration, companyId)
 		).build();
 	}
 
@@ -243,6 +244,19 @@ public class SaveAuditConfigurationMVCActionCommand
 		}
 
 		return properties;
+	}
+
+	private boolean _isPseudonymizationEnabled(
+		ActionRequest actionRequest, AuditConfiguration auditConfiguration,
+		long companyId) {
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+			return auditConfiguration.pseudonymizationEnabled();
+		}
+
+		return ParamUtil.getBoolean(
+			actionRequest, "pseudonymizationEnabled",
+			auditConfiguration.pseudonymizationEnabled());
 	}
 
 	private void _routePseudonymizationChangeAuditMessage(
