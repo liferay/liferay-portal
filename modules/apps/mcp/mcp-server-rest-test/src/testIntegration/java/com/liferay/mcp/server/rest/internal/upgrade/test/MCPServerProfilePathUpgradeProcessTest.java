@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -38,6 +40,7 @@ import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 
 import java.io.Serializable;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.junit.After;
@@ -91,30 +94,37 @@ public class MCPServerProfilePathUpgradeProcessTest {
 			"L_MCP_SERVER_DEFAULT_PROFILE", objectDefinition, "Default");
 		_objectEntry1 = _addObjectEntry(null, objectDefinition, "My Profile/1");
 		_objectEntry2 = _addObjectEntry(null, objectDefinition, "My Profile 2");
-
-		ObjectEntry objectEntry = _addObjectEntry(
-			null, objectDefinition, "My-Profile-2");
+		_objectEntry3 = _addObjectEntry(null, objectDefinition, "My-Profile-2");
+		_objectEntry4 = _addObjectEntry(null, objectDefinition, "!!!");
+		_objectEntry5 = _addObjectEntry(null, objectDefinition, "???");
+		_objectEntry6 = _addObjectEntry(null, objectDefinition, "my-profile");
 
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
 			"com.liferay.mcp.server.rest.internal.upgrade." +
 				"MCPServerProfilePathUpgradeProcess");
 
-		try {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.mcp.server.rest.internal.upgrade.util." +
+					"MCPServerProfileUpgradeProcessUtil",
+				LoggerTestUtil.INFO)) {
+
 			upgradeProcess.upgrade();
 
-			Assert.fail();
+			Assert.assertEquals(
+				Arrays.asList(
+					"Generated profile path \"my-profile-1\" for MCP server " +
+						"profile \"My Profile/1\"",
+					"Generated profile path \"my-profile-2\" for MCP server " +
+						"profile \"My Profile 2\"",
+					"Generated profile path \"my-profile-2-1\" for MCP " +
+						"server profile \"My-Profile-2\"",
+					"Generated profile path \"profile\" for MCP server " +
+						"profile \"!!!\"",
+					"Generated profile path \"profile-1\" for MCP server " +
+						"profile \"???\""),
+				logCapture.getMessages());
 		}
-		catch (Exception exception) {
-			String message = exception.getMessage();
-
-			Assert.assertTrue(
-				message.contains("Unique value constraint violation"));
-		}
-
-		_objectEntryLocalService.deleteObjectEntry(objectEntry);
-
-		upgradeProcess.upgrade();
 
 		_assertUpgrade(objectDefinition);
 
@@ -188,6 +198,10 @@ public class MCPServerProfilePathUpgradeProcessTest {
 			_defaultMCPServerProfileObjectEntry, StringPool.BLANK);
 		_assertProfilePath(_objectEntry1, "my-profile-1");
 		_assertProfilePath(_objectEntry2, "my-profile-2");
+		_assertProfilePath(_objectEntry3, "my-profile-2-1");
+		_assertProfilePath(_objectEntry4, "profile");
+		_assertProfilePath(_objectEntry5, "profile-1");
+		_assertProfilePath(_objectEntry6, "my-profile");
 	}
 
 	private ObjectEntry _defaultMCPServerProfileObjectEntry;
@@ -200,6 +214,18 @@ public class MCPServerProfilePathUpgradeProcessTest {
 
 	@DeleteAfterTestRun
 	private ObjectEntry _objectEntry2;
+
+	@DeleteAfterTestRun
+	private ObjectEntry _objectEntry3;
+
+	@DeleteAfterTestRun
+	private ObjectEntry _objectEntry4;
+
+	@DeleteAfterTestRun
+	private ObjectEntry _objectEntry5;
+
+	@DeleteAfterTestRun
+	private ObjectEntry _objectEntry6;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

@@ -70,7 +70,8 @@ public class MCPServerProfileStatusUpgradeProcessTest {
 		for (ObjectEntry objectEntry :
 				new ObjectEntry[] {
 					_activeMCPServerProfileObjectEntry,
-					_activeMCPServerProfileWithoutToolsObjectEntry,
+					_activeMCPServerProfileWithoutToolsObjectEntry1,
+					_activeMCPServerProfileWithoutToolsObjectEntry2,
 					_inactiveMCPServerProfileObjectEntry
 				}) {
 
@@ -101,8 +102,10 @@ public class MCPServerProfileStatusUpgradeProcessTest {
 				"toolSetName", "mcp-server-profiles"
 			).build());
 
-		_activeMCPServerProfileWithoutToolsObjectEntry =
+		_activeMCPServerProfileWithoutToolsObjectEntry1 =
 			_addMCPServerProfileObjectEntry("My Profile", "active");
+		_activeMCPServerProfileWithoutToolsObjectEntry2 =
+			_addMCPServerProfileObjectEntry("My-Profile", "active");
 		_inactiveMCPServerProfileObjectEntry = _addMCPServerProfileObjectEntry(
 			RandomTestUtil.randomString(), "inactive");
 
@@ -167,9 +170,15 @@ public class MCPServerProfileStatusUpgradeProcessTest {
 			"active", _getProfileStatus(_activeMCPServerProfileObjectEntry));
 
 		Map<String, Serializable> values = _objectEntryLocalService.getValues(
-			_activeMCPServerProfileWithoutToolsObjectEntry.getObjectEntryId());
+			_activeMCPServerProfileWithoutToolsObjectEntry1.getObjectEntryId());
 
 		Assert.assertEquals("my-profile", values.get("profilePath"));
+		Assert.assertEquals("inactive", values.get("profileStatus"));
+
+		values = _objectEntryLocalService.getValues(
+			_activeMCPServerProfileWithoutToolsObjectEntry2.getObjectEntryId());
+
+		Assert.assertEquals("my-profile-1", values.get("profilePath"));
 		Assert.assertEquals("inactive", values.get("profileStatus"));
 
 		Assert.assertEquals(
@@ -187,7 +196,8 @@ public class MCPServerProfileStatusUpgradeProcessTest {
 	}
 
 	private ObjectEntry _activeMCPServerProfileObjectEntry;
-	private ObjectEntry _activeMCPServerProfileWithoutToolsObjectEntry;
+	private ObjectEntry _activeMCPServerProfileWithoutToolsObjectEntry1;
+	private ObjectEntry _activeMCPServerProfileWithoutToolsObjectEntry2;
 	private ObjectEntry _inactiveMCPServerProfileObjectEntry;
 
 	@Inject
