@@ -9,6 +9,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -47,6 +49,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Alejandro Tardín
@@ -317,6 +321,27 @@ public class HeadlessApplicationProviderTest {
 		}
 
 		Assert.assertNull(_getApplication("/test-vulcan-application-added"));
+
+		Configuration configuration = _createConfiguration(
+			TestPropsValues.getCompanyId() + 1);
+
+		try {
+			Assert.assertNotNull(_getApplication("/test-vulcan-application"));
+		}
+		finally {
+			configuration.delete();
+		}
+
+		configuration = _createConfiguration(TestPropsValues.getCompanyId());
+
+		try {
+			Assert.assertNull(_getApplication("/test-vulcan-application"));
+		}
+		finally {
+			configuration.delete();
+		}
+
+		Assert.assertNotNull(_getApplication("/test-vulcan-application"));
 	}
 
 	@FeatureFlag(enable = false, value = _FEATURE_FLAG_KEY)
@@ -456,6 +481,28 @@ public class HeadlessApplicationProviderTest {
 
 	}
 
+	private Configuration _createConfiguration(long companyId)
+		throws Exception {
+
+		Configuration configuration =
+			_configurationAdmin.createFactoryConfiguration(
+				"com.liferay.portal.vulcan.internal.configuration." +
+					"VulcanCompanyConfiguration",
+				StringPool.QUESTION);
+
+		configuration.update(
+			HashMapDictionaryBuilder.<String, Object>put(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+				companyId
+			).put(
+				"path", "/test-vulcan-application"
+			).put(
+				"restEnabled", false
+			).build());
+
+		return configuration;
+	}
+
 	private HeadlessApplicationProvider.Application _getApplication(
 			String basePath)
 		throws Exception {
@@ -505,6 +552,9 @@ public class HeadlessApplicationProviderTest {
 	private static final String _FEATURE_FLAG_KEY_UNDECLARED = "UNDECLARED-123";
 
 	private BundleContext _bundleContext;
+
+	@Inject
+	private ConfigurationAdmin _configurationAdmin;
 
 	@Inject
 	private FeatureFlagManager _featureFlagManager;
