@@ -83,18 +83,18 @@ public class AccountFaroControllerTest {
 
 	@Test
 	public void testGetCampaignsFaroFDSResultsDisplay() throws Exception {
+		Campaign campaign = new Campaign();
+
+		campaign.setId(RandomTestUtil.randomString());
+		campaign.setIndividualsTouched(RandomTestUtil.randomLong());
+		campaign.setLastTouchDate(new Date());
+
 		long channelId = RandomTestUtil.randomLong();
 		String id = RandomTestUtil.randomString();
 		int pageSize = RandomTestUtil.randomInt();
 		String rangeEnd = RandomTestUtil.randomString();
 		Integer rangeKey = RandomTestUtil.randomInt();
 		String rangeStart = RandomTestUtil.randomString();
-
-		Campaign campaign = new Campaign();
-
-		campaign.setId(RandomTestUtil.randomString());
-		campaign.setIndividualsTouched(RandomTestUtil.randomLong());
-		campaign.setLastTouchDate(new Date());
 
 		Mockito.when(
 			_contactsEngineClient.getTopCampaigns(
