@@ -13,8 +13,10 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
@@ -23,7 +25,11 @@ import com.liferay.ratings.kernel.RatingsType;
 import com.liferay.ratings.kernel.definition.PortletRatingsDefinitionUtil;
 import com.liferay.ratings.kernel.transformer.RatingsDataTransformerUtil;
 
+import jakarta.portlet.PortletPreferences;
+
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,69 +46,96 @@ public class PortletRatingsDefinitionUtilTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
+	@Before
+	public void setUp() throws Exception {
+		_blogsEntryPropertyKey = RatingsDataTransformerUtil.getPropertyKey(
+			BlogsEntry.class.getName());
+
+		PortletPreferences portletPreferences = PrefsPropsUtil.getPreferences(
+			TestPropsValues.getCompanyId());
+
+		_originalBlogsEntryRatingsType = portletPreferences.getValue(
+			_blogsEntryPropertyKey, null);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		if (_originalBlogsEntryRatingsType == null) {
+			_companyLocalService.removePreferences(
+				TestPropsValues.getCompanyId(),
+				new String[] {_blogsEntryPropertyKey});
+		}
+		else {
+			_companyLocalService.updatePreferences(
+				TestPropsValues.getCompanyId(),
+				UnicodePropertiesBuilder.put(
+					_blogsEntryPropertyKey, _originalBlogsEntryRatingsType
+				).build());
+		}
+	}
+
 	@Test
 	@TestInfo("LPD-115333")
 	public void testGetRatingsType() throws Exception {
-		String blogsEntryPropertyKey =
-			RatingsDataTransformerUtil.getPropertyKey(
-				BlogsEntry.class.getName());
-
 		_companyLocalService.updatePreferences(
 			TestPropsValues.getCompanyId(),
 			UnicodePropertiesBuilder.put(
-				blogsEntryPropertyKey, RatingsType.STARS.getValue()
+				_blogsEntryPropertyKey, RatingsType.STARS.getValue()
 			).build());
 
-		Group group1 = GroupTestUtil.addGroup();
+		_group1 = GroupTestUtil.addGroup();
 
-		Group group2 = GroupTestUtil.addGroup();
+		_group2 = GroupTestUtil.addGroup();
 
 		UnicodeProperties typeSettingsUnicodeProperties =
-			group2.getTypeSettingsProperties();
+			_group2.getTypeSettingsProperties();
 
 		typeSettingsUnicodeProperties.setProperty(
-			blogsEntryPropertyKey, RatingsType.STACKED_STARS.getValue());
+			_blogsEntryPropertyKey, RatingsType.STACKED_STARS.getValue());
 		typeSettingsUnicodeProperties.setProperty(
 			RatingsDataTransformerUtil.getPropertyKey(
 				DLFileEntry.class.getName()),
 			RatingsType.LIKE.getValue());
 
 		_groupLocalService.updateGroup(
-			group2.getGroupId(), typeSettingsUnicodeProperties.toString());
+			_group2.getGroupId(), typeSettingsUnicodeProperties.toString());
 
 		Assert.assertEquals(
 			RatingsType.STARS,
 			PortletRatingsDefinitionUtil.getRatingsType(
-				TestPropsValues.getCompanyId(), group1.getGroupId(),
+				TestPropsValues.getCompanyId(), _group1.getGroupId(),
 				BlogsEntry.class.getName()));
+		Assert.assertEquals(
+			RatingsType.STARS,
+			PortletRatingsDefinitionUtil.getRatingsType(
+				TestPropsValues.getCompanyId(), _group1.getGroupId(),
+				DLFileEntry.class.getName()));
 		Assert.assertEquals(
 			RatingsType.STACKED_STARS,
 			PortletRatingsDefinitionUtil.getRatingsType(
-				TestPropsValues.getCompanyId(), group2.getGroupId(),
+				TestPropsValues.getCompanyId(), _group2.getGroupId(),
 				BlogsEntry.class.getName()));
-		Assert.assertEquals(
-			RatingsType.STARS,
-			PortletRatingsDefinitionUtil.getRatingsType(
-				TestPropsValues.getCompanyId(), group1.getGroupId(),
-				DLFileEntry.class.getName()));
 		Assert.assertEquals(
 			RatingsType.LIKE,
 			PortletRatingsDefinitionUtil.getRatingsType(
-				TestPropsValues.getCompanyId(), group2.getGroupId(),
+				TestPropsValues.getCompanyId(), _group2.getGroupId(),
 				DLFileEntry.class.getName()));
-
-		_companyLocalService.removePreferences(
-			TestPropsValues.getCompanyId(),
-			new String[] {blogsEntryPropertyKey});
-
-		_groupLocalService.deleteGroup(group1);
-		_groupLocalService.deleteGroup(group2);
 	}
+
+	private String _blogsEntryPropertyKey;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
+	@DeleteAfterTestRun
+	private Group _group1;
+
+	@DeleteAfterTestRun
+	private Group _group2;
+
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	private String _originalBlogsEntryRatingsType;
 
 }
