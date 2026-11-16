@@ -1,6 +1,6 @@
 ---
 
-allowed-tools: [Bash, Glob, Grep, Read, Skill]
+allowed-tools: [Agent, Bash, Glob, Grep, Read, Skill]
 argument-hint: "[optional target-org/repo, message hint, --skip-pr-check, or --skip-pr-reviewer <reason>]"
 description: Create a GitHub PR for the current branch. Use when the user asks to create a PR, send a PR, or invokes /pr.
 name: pr
@@ -39,6 +39,17 @@ The ticket key follows the pattern `LPD-12345`, `LCD-12345`, `LRCI-1234`, and si
 
 Collect every distinct ticket key from the subjects of the branch's commits relative to `${BASE_BRANCH}`. Each subject is prefixed with its ticket (`LPD-12345 <subject>`); extract every distinct key, in commit order (oldest first). When no commit carries a ticket, prompt the user for one.
 
+Fetch the summary, security level, labels, and links of each ticket in the set once the set is resolved, for **Security Mode** and for the wording check under **Pull Request**, but never its description, which for a security ticket usually holds the reproduction. Never change a ticket here. When a fetch fails, name the ticket that went unchecked, and ask the user whether the branch is a security change.
+
+### Security Mode
+
+A security change must not stand out on the public pull request. Its title, body, and commit messages read like any other change to the same code, and the details of the vulnerability stay in the private ticket. Decide on every run whether the branch is a security change, and treat it as one, without asking the user, when either of these holds:
+
+- A commit message on the branch names a vulnerability, or the commit message report from `pr-check` flagged or noted it.
+- A ticket in the set has a security level, a label or a link that marks it as a security finding, or a summary that describes a vulnerability.
+
+When neither holds but the diff adds or changes a permission or access check, input validation, escaping or sanitization, path handling, deserialization, or token or CSRF handling, ask the user whether the branch is a security change, since routine work touches this code too. Ask as well when in doubt. A false positive costs only a plainer description, while a miss can publish the details. Tell the user that security mode is on and which of these set it, and never say so in the PR.
+
 ### Target Repository
 
 The target repository defaults to `<fork-owner>/<repository>`. When `${ARGUMENTS}` names a different `org/repo`, use that; when it matches an alias below, expand the alias; otherwise, ask the user to choose `<fork-owner>` from the teams below, leaving out any team that has no fork of `<repository>`:
@@ -70,7 +81,7 @@ The PR head is `<github-username>:<branch-name>` (the GitHub username is read fr
 
 ### Pushed Branch
 
-Push the current branch to the user's remote when it has not been pushed yet or when new local commits exist.
+Push the current branch to the user's remote when it has not been pushed yet or when new local commits exist. Push only after the user approves the title and body, since a reword under **Pull Request** changes the commits.
 
 ### Pull Request
 
@@ -88,7 +99,7 @@ https://liferay.atlassian.net/browse/TICKET-ID-2
 
 ## What Is Being Fixed
 
-Explain the problem or bug that motivated the change — what was going wrong or what was missing.
+Explain the problem or bug that motivated the change — what was going wrong or what was missing. In security mode, describe what the code now does instead, as described below.
 
 ## How It Is Being Fixed
 
@@ -118,6 +129,12 @@ When pr-check was skipped via `--skip-pr-check`, still write the section, but as
 ```
 
 The webhook applies the status and label when it processes the `pull_request` event for the newly opened PR, so no publish step is needed at creation. Use the `pr-check-publish` skill only to record a later pr-check run on an existing PR.
+
+In security mode, have a subagent write the title and the **What Is Being Fixed** and **How It Is Being Fixed** sections from only the diff, the titles of the commits that the commit message report from `pr-check` did not flag or note and that the check below would not flag, and this paragraph, since the tickets, this session, and a flagged or noted title hold the details of the vulnerability, and an instruction to ignore what is already in context is no barrier. It describes the change the way the same diff would read as routine maintenance: the classes and methods it touches, how it changes them, and which test classes it adds, rather than the protection it adds or who may now do what. Under **What Is Being Fixed**, it says what the code now does, never what was wrong before. It takes each verb from the change itself rather than a stock phrase, and keeps every statement true, so that a change in behavior is never called a refactor. It leaves out how the defect could be exploited, what could reach it, what it allowed, any word that labels the change as a vulnerability fix, and any placeholder such as a pointer to the ticket.
+
+Before presenting them, check the title, the body, and the summary of each ticket in the set for the details that **Security Changes** in [commit.md](../../rules/commit.md) says to leave out, and suggest a wording for each one that follows that section. In security mode, also flag any sentence that says what was wrong before the change, names a protection the change adds, or says who may now do what. When pr-check was skipped, check the message of every commit on the branch as well. Present the findings with the proposed title and body, together with any commit message report pr-check showed, and say that nothing here blocks the PR and that the user decides. In every mode, never copy a ticket summary into the title or the body. Never change a ticket, since the user changes it in Jira when they agree, and never copy a finding into the PR.
+
+In security mode, also have the same subagent propose a new message for each commit that has not been pushed yet and whose message was flagged or noted in the commit message report from `pr-check`, or would be flagged by the check above, from that commit's diff alone, never its current message. Reword a commit only once the user approves its new message, keep its tree unchanged, and run pr-check again before creating the PR, since its Results Summary names the SHA it tested. Leave pushed commits as they are.
 
 Use a direct, to-the-point style. Avoid being verbose. Present the proposed title and body to the user before submitting, and proceed once they approve.
 
