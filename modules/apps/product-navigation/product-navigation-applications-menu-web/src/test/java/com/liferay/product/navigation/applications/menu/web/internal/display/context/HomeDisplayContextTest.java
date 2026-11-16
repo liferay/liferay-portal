@@ -64,14 +64,13 @@ public class HomeDisplayContextTest {
 			true);
 		_testGetPropsItems(
 			"data:image/svg+xml;charset=utf-8,%3Csvg%2F%3E", true);
-		_testGetPropsItems(
-			"https://" + RandomTestUtil.randomString() + ".com/icon.png", true);
-
 		_testGetPropsItems("data:text/html,<script>alert(1)</script>", false);
 		_testGetPropsItems(
 			"https://" + RandomTestUtil.randomString() +
 				".com/\"onerror=\"alert(1)",
 			false);
+		_testGetPropsItems(
+			"https://" + RandomTestUtil.randomString() + ".com/icon.png", true);
 		_testGetPropsItems("javascript:alert(1)", false);
 		_testGetPropsItems(null, false);
 	}
