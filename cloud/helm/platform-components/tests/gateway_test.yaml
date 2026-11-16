@@ -86,10 +86,6 @@ tests:
                     value: envoy
             -   documentIndex: 0
                 equal:
-                    path: spec.provider.kubernetes.envoyDeployment.replicas
-                    value: 3
-            -   documentIndex: 0
-                equal:
                     path: spec.provider.kubernetes.envoyHpa.maxReplicas
                     value: 10
             -   documentIndex: 0
@@ -113,6 +109,9 @@ tests:
                     path: spec.provider.kubernetes.envoyDeployment.pod.annotations
             -   documentIndex: 0
                 notExists:
+                    path: spec.provider.kubernetes.envoyDeployment.replicas
+            -   documentIndex: 0
+                notExists:
                     path: spec.provider.kubernetes.envoyService.annotations
             -   documentIndex: 1
                 isKind:
@@ -134,3 +133,16 @@ tests:
                     path: spec.parametersRef.namespace
                     value: envoy-gateway-system
         it: Renders the Envoy proxy configuration and the gateway class
+    -   asserts:
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyHpa.maxReplicas
+                    value: 5
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyHpa.minReplicas
+                    value: 1
+        it: Scales the Envoy proxies between the configured replica bounds
+        set:
+            gateway.envoyProxy.maxReplicas: 5
+            gateway.envoyProxy.minReplicas: 1

@@ -27,9 +27,8 @@ spec:
                             maxSkew: 1
                             topologyKey: kubernetes.io/hostname
                             whenUnsatisfiable: ScheduleAnyway
-                replicas: 3
             envoyHpa:
-                maxReplicas: 10
+                maxReplicas: {{ $envoyProxy.maxReplicas }}
                 metrics:
                     -   resource:
                             name: cpu
@@ -37,7 +36,7 @@ spec:
                                 averageUtilization: 75
                                 type: Utilization
                         type: Resource
-                minReplicas: 3
+                minReplicas: {{ $envoyProxy.minReplicas }}
             envoyPDB:
                 maxUnavailable: 1
             envoyService:
