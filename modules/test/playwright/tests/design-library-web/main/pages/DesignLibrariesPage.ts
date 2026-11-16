@@ -193,6 +193,23 @@ export class DesignLibrariesPage extends POM {
 		await designLibraryLink.click();
 	}
 
+	async goToPageTemplate(
+		designLibraryName: string,
+		pageTemplateCollectionName: string,
+		pageTemplateName: string
+	) {
+		await this.goToPageTemplateCollection(
+			designLibraryName,
+			pageTemplateCollectionName
+		);
+
+		await this.page
+			.locator('.card-type-asset')
+			.filter({hasText: pageTemplateName})
+			.locator('.card-title')
+			.click();
+	}
+
 	async goToPageTemplateCollection(
 		designLibraryName: string,
 		pageTemplateCollectionName: string
