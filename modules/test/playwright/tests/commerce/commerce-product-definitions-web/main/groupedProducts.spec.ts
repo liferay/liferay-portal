@@ -10,6 +10,7 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
+import {waitForPageToBeLoaded} from '../../../../utils/waitForPageToBeLoaded';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -48,6 +49,10 @@ test(
 			});
 
 		await commerceAdminProductPage.gotoProduct(groupedProduct.name.en_US);
+
+		await page.waitForURL(/edit_cp_definition/);
+
+		await waitForPageToBeLoaded(page);
 
 		await page.getByRole('link', {exact: true, name: 'Grouped'}).click();
 
@@ -88,6 +93,8 @@ test(
 			await itemSelectorModal
 				.getByRole('button', {exact: true, name: 'Select'})
 				.click();
+
+			await expect(itemSelectorModal).toBeHidden();
 
 			await expect(
 				page.getByRole('cell', {
