@@ -8,7 +8,6 @@ import {cleanup, render} from '@testing-library/react';
 import React from 'react';
 
 import HeaderReindexStatus from '../../../../src/main/resources/META-INF/resources/js/shared/components/header/HeaderReindexStatus.es';
-import ToasterProvider from '../../../../src/main/resources/META-INF/resources/js/shared/components/toaster/ToasterProvider.es';
 import {MockRouter} from '../../../mock/MockRouter.es';
 
 describe('The HeaderTitle component should', () => {
@@ -32,9 +31,7 @@ describe('The HeaderTitle component should', () => {
 	test('Not render without statuses', () => {
 		const {getByTestId} = render(
 			<MockRouter>
-				<ToasterProvider>
-					<HeaderReindexStatus container={containerWrapper} />
-				</ToasterProvider>
+				<HeaderReindexStatus container={containerWrapper} />
 			</MockRouter>
 		);
 
@@ -48,9 +45,7 @@ describe('The HeaderTitle component should', () => {
 			<MockRouter
 				initialReindexStatuses={[{completionPercentage: 0, key: 'All'}]}
 			>
-				<ToasterProvider>
-					<HeaderReindexStatus container={containerWrapper} />
-				</ToasterProvider>
+				<HeaderReindexStatus container={containerWrapper} />
 			</MockRouter>
 		);
 

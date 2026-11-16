@@ -10,7 +10,6 @@ import {act, fireEvent} from '@testing-library/react';
 // import {InstanceListContext} from '../../../../../../src/main/resources/META-INF/resources/js/components/instance-list-page/InstanceListPageProvider.es';
 // import {ModalContext} from '../../../../../../src/main/resources/META-INF/resources/js/components/instance-list-page/modal/ModalProvider.es';
 // import BulkReassignModal from '../../../../../../src/main/resources/META-INF/resources/js/components/instance-list-page/modal/reassign/bulk/BulkReassignModal.es';
-// import ToasterProvider from '../../../../../../src/main/resources/META-INF/resources/js/shared/components/toaster/ToasterProvider.es';
 // import {MockRouter} from '../../../../../mock/MockRouter.es';
 
 import '@testing-library/jest-dom';
@@ -149,7 +148,7 @@ import '@testing-library/jest-dom';
 // 						visibleModal,
 // 					}}
 // 				>
-// 					<ToasterProvider>{children}</ToasterProvider>
+// 					{children}
 // 				</ModalContext.Provider>
 // 			</InstanceListContext.Provider>
 // 		</MockRouter>

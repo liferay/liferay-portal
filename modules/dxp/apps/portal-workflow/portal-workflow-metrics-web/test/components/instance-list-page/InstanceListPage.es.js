@@ -7,7 +7,6 @@ import {act, fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
 import InstanceListPage from '../../../src/main/resources/META-INF/resources/js/components/instance-list-page/InstanceListPage.es';
-import ToasterProvider from '../../../src/main/resources/META-INF/resources/js/shared/components/toaster/ToasterProvider.es';
 import {MockRouter} from '../../mock/MockRouter.es';
 
 import '@testing-library/jest-dom';
@@ -56,8 +55,7 @@ describe('The instance list card should', () => {
 		const renderResult = render(
 			<MockRouter>
 				<InstanceListPage routeParams={routeParams} />
-			</MockRouter>,
-			{wrapper: ToasterProvider}
+			</MockRouter>
 		);
 
 		container = renderResult.container;

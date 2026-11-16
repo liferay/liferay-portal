@@ -15,7 +15,6 @@ import '@testing-library/jest-dom';
 // 	SLA_INDEXES_KEY,
 // } from '../../../../src/main/resources/META-INF/resources/js/components/settings/indexes-page/IndexesConstants.es';
 // import IndexesPage from '../../../../src/main/resources/META-INF/resources/js/components/settings/indexes-page/IndexesPage.es';
-// import ToasterProvider from '../../../../src/main/resources/META-INF/resources/js/shared/components/toaster/ToasterProvider.es';
 // import {MockRouter} from '../../../mock/MockRouter.es';
 
 xdescribe('The IndexesPage component should', () => {
@@ -55,9 +54,7 @@ xdescribe('The IndexesPage component should', () => {
 
 		// 	const renderResult = render(
 		// 		<MockRouter client={clientMock}>
-		// 			<ToasterProvider>
-		// 				<IndexesPage />
-		// 			</ToasterProvider>
+		// 			<IndexesPage />
 		// 		</MockRouter>
 		// 	);
 
@@ -254,9 +251,7 @@ xdescribe('The IndexesPage component should', () => {
 		// 			client={clientMock}
 		// 			initialReindexStatuses={mockStatuses}
 		// 		>
-		// 			<ToasterProvider>
-		// 				<IndexesPage />
-		// 			</ToasterProvider>
+		// 			<IndexesPage />
 		// 		</MockRouter>
 		// 	);
 

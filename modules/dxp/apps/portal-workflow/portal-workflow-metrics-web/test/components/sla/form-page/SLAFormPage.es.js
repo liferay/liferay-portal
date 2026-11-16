@@ -4,17 +4,26 @@
  */
 
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
+import {openToast} from 'frontend-js-components-web';
 import React from 'react';
 
 import '@testing-library/jest-dom';
 
 import {SLAContext} from '../../../../src/main/resources/META-INF/resources/js/components/sla/SLAContainer.es';
 import SLAFormPage from '../../../../src/main/resources/META-INF/resources/js/components/sla/form-page/SLAFormPage.es';
-import ToasterProvider from '../../../../src/main/resources/META-INF/resources/js/shared/components/toaster/ToasterProvider.es';
 import {MockRouter} from '../../../mock/MockRouter.es';
 import FetchMock, {fetchMockResponse} from '../../../mock/fetch.es';
 
+jest.mock('frontend-js-components-web', () => ({
+	...jest.requireActual('frontend-js-components-web'),
+	openToast: jest.fn(),
+}));
+
 describe('The SLAFormPage component should', () => {
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
 	const calendars = [
 		{
 			defaultCalendar: false,
@@ -145,11 +154,9 @@ describe('The SLAFormPage component should', () => {
 					initialPath="/sla/5678/new"
 					path="/sla/:processId/new"
 				>
-					<ToasterProvider>
-						<SLAContext.Provider value={{}}>
-							<SLAFormPage />
-						</SLAContext.Provider>
-					</ToasterProvider>
+					<SLAContext.Provider value={{}}>
+						<SLAFormPage />
+					</SLAContext.Provider>
 				</MockRouter>
 			);
 
@@ -264,7 +271,7 @@ describe('The SLAFormPage component should', () => {
 			expect(durationHoursField.classList).not.toContain('has-error');
 		});
 
-		it('Dismiss errors when the inputs receive valid values and submit', async () => {
+		it('Dismiss errors when the inputs receive valid values', () => {
 			const dropDownListItems =
 				document.querySelectorAll('.dropdown-item');
 
@@ -285,27 +292,21 @@ describe('The SLAFormPage component should', () => {
 			expect(stopField.classList).not.toContain('has-error');
 			expect(durationDaysField.classList).not.toContain('has-error');
 			expect(durationHoursField.classList).not.toContain('has-error');
+		});
 
+		it('Display an error when a SLA submission failure happens and resubmit', async () => {
 			fireEvent.click(saveButton);
 
 			await act(async () => {
 				jest.runAllTimers();
 			});
-		});
 
-		it('Display an error when a SLA submission failure happens and resubmit', async () => {
-			const alertToast =
-				await document.querySelector('.alert-dismissible');
-
-			const alertClose = alertToast.children[1];
-
-			expect(alertToast).toHaveTextContent('your-request-has-failed');
-
-			fireEvent.click(alertClose);
-
-			const alertContainer = document.querySelector('.alert-container');
-
-			expect(alertContainer.children[0].children.length).toBe(0);
+			expect(openToast).toHaveBeenCalledWith(
+				expect.objectContaining({
+					message: 'your-request-has-failed',
+					type: 'danger',
+				})
+			);
 
 			fireEvent.click(saveButton);
 
@@ -397,11 +398,9 @@ describe('The SLAFormPage component should', () => {
 					initialPath="/sla/5678/edit/1234"
 					path="/sla/:processId/edit/:id"
 				>
-					<ToasterProvider>
-						<SLAContext.Provider value={contextMock}>
-							<SLAFormPage />
-						</SLAContext.Provider>
-					</ToasterProvider>
+					<SLAContext.Provider value={contextMock}>
+						<SLAFormPage />
+					</SLAContext.Provider>
 				</MockRouter>
 			);
 
@@ -533,11 +532,9 @@ describe('The SLAFormPage component should', () => {
 					initialPath="/sla/35901/edit/37741"
 					path="/sla/:processId/edit/:id"
 				>
-					<ToasterProvider>
-						<SLAContext.Provider value={{}}>
-							<SLAFormPage />
-						</SLAContext.Provider>
-					</ToasterProvider>
+					<SLAContext.Provider value={{}}>
+						<SLAFormPage />
+					</SLAContext.Provider>
 				</MockRouter>
 			);
 

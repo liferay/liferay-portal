@@ -9,7 +9,6 @@ import React, {useState} from 'react';
 import {InstanceListContext} from '../../../../../../src/main/resources/META-INF/resources/js/components/instance-list-page/InstanceListPageProvider.es';
 import {ModalContext} from '../../../../../../src/main/resources/META-INF/resources/js/components/instance-list-page/modal/ModalProvider.es';
 import SingleTransitionModal from '../../../../../../src/main/resources/META-INF/resources/js/components/instance-list-page/modal/transition/single/SingleTransitionModal.es';
-import ToasterProvider from '../../../../../../src/main/resources/META-INF/resources/js/shared/components/toaster/ToasterProvider.es';
 import {MockRouter} from '../../../../../mock/MockRouter.es';
 import FetchMock, {fetchMockResponse} from '../../../../../mock/fetch.es';
 
@@ -42,7 +41,7 @@ const ContainerMock = ({children}) => {
 					visibleModal: 'singleTransition',
 				}}
 			>
-				<ToasterProvider>{children}</ToasterProvider>
+				{children}
 			</ModalContext.Provider>
 		</InstanceListContext.Provider>
 	);
