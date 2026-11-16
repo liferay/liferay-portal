@@ -5,13 +5,17 @@
 
 package com.liferay.headless.commerce.admin.account.internal.resource.v1_0;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.helper.CommerceAccountHelper;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.User;
+import com.liferay.headless.commerce.admin.account.internal.util.v1_0.AccountMemberUtil;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.UserResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -29,6 +33,8 @@ import java.util.Date;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
@@ -50,6 +56,10 @@ public class UserResourceImpl extends BaseUserResourceImpl {
 		AccountEntry accountEntry =
 			_accountEntryService.getAccountEntryByExternalReferenceCode(
 				externalReferenceCode, contextCompany.getCompanyId());
+
+		_accountEntryModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			accountEntry.getAccountEntryId(), AccountActionKeys.ASSIGN_USERS);
 
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			accountEntry.getAccountEntryGroupId());
@@ -127,6 +137,9 @@ public class UserResourceImpl extends BaseUserResourceImpl {
 			}
 		}
 
+		AccountMemberUtil.validateAccountRoleIds(
+			accountEntry.getAccountEntryId(), roleIds);
+
 		_commerceAccountHelper.addAccountEntryUserRel(
 			accountEntry.getAccountEntryId(), invitedUser.getUserId(), roleIds,
 			serviceContext);
@@ -136,6 +149,14 @@ public class UserResourceImpl extends BaseUserResourceImpl {
 				invitedUser.getUserId(),
 				contextAcceptLanguage.getPreferredLocale()));
 	}
+
+	@Reference(
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY,
+		target = "(model.class.name=com.liferay.account.model.AccountEntry)"
+	)
+	private volatile ModelResourcePermission<AccountEntry>
+		_accountEntryModelResourcePermission;
 
 	@Reference
 	private AccountEntryService _accountEntryService;
