@@ -518,8 +518,17 @@ public class ProductResourceImpl
 
 		return _getProductsPage(
 			contextCompany.getCompanyId(), search, filter, pagination, sorts,
-			document -> _toProduct(
-				GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))),
+			document -> {
+				CPDefinition cpDefinition =
+					_cpDefinitionService.fetchCPDefinition(
+						GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)));
+
+				if (cpDefinition == null) {
+					return null;
+				}
+
+				return _toProduct(cpDefinition);
+			},
 			contextAcceptLanguage.getPreferredLocale());
 	}
 
@@ -1348,16 +1357,18 @@ public class ProductResourceImpl
 		}
 	}
 
-	private Product _toProduct(Long cpDefinitionId) throws Exception {
-		CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
-			cpDefinitionId);
-
+	private Product _toProduct(CPDefinition cpDefinition) throws Exception {
 		return _productDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
 				contextAcceptLanguage.isAcceptAllLanguages(),
 				_getActions(cpDefinition), _dtoConverterRegistry,
-				cpDefinitionId, contextAcceptLanguage.getPreferredLocale(),
-				contextUriInfo, contextUser));
+				cpDefinition.getCPDefinitionId(),
+				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
+				contextUser));
+	}
+
+	private Product _toProduct(Long cpDefinitionId) throws Exception {
+		return _toProduct(_cpDefinitionService.getCPDefinition(cpDefinitionId));
 	}
 
 	private CPDefinition _updateNestedResources(
