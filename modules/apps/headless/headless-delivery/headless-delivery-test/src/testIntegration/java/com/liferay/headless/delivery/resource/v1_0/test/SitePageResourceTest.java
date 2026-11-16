@@ -214,6 +214,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			testGroup.getCompanyId(), true, "LPS-178052");
+
 		_originalName = PrincipalThreadLocal.getName();
 
 		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
@@ -233,6 +236,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			testGroup.getCompanyId(), false, "LPS-178052");
 
 		PrincipalThreadLocal.setName(_originalName);
 	}
