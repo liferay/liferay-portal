@@ -84,6 +84,7 @@ const EditFolder: React.FC<EditFolderProps> = ({backURL, folderId}) => {
 			const newFolderValues: TFolder = {
 				description: formValues.folderDescription,
 				id: parseInt(folderId, 10),
+				label: formValues.folderName,
 				title: formValues.folderName,
 			};
 
