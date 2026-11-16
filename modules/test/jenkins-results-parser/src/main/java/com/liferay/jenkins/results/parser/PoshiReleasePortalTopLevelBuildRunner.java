@@ -348,10 +348,10 @@ public class PoshiReleasePortalTopLevelBuildRunner
 	private String _getDistPortalBundlesBuildSHA(String upstreamBranchName)
 		throws IOException {
 
-		String distPortalBundlesBuildURL = null;
+		String latestPortalBundleS3ObjectPath = null;
 
 		try {
-			distPortalBundlesBuildURL =
+			latestPortalBundleS3ObjectPath =
 				JenkinsResultsParserUtil.getLatestPortalBundleS3ObjectPath(
 					upstreamBranchName);
 		}
@@ -359,11 +359,11 @@ public class PoshiReleasePortalTopLevelBuildRunner
 			System.out.println("WARNING: Unable to get a dist portal bundle");
 		}
 
-		if ((distPortalBundlesBuildURL != null) &&
-			distPortalBundlesBuildURL.startsWith("s3://")) {
+		if ((latestPortalBundleS3ObjectPath != null) &&
+			latestPortalBundleS3ObjectPath.startsWith("s3://")) {
 
 			return JenkinsResultsParserUtil.getPortalBundleGitCommit(
-				distPortalBundlesBuildURL);
+				latestPortalBundleS3ObjectPath);
 		}
 
 		StringBuilder sb = new StringBuilder();
