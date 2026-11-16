@@ -166,6 +166,50 @@ describe('CMSShareModalContent', () => {
 		});
 	});
 
+	it('skips search results without embedded data', async () => {
+		global.fetch = jest.fn().mockImplementation(() => {
+			return Promise.resolve({
+				items: [
+					{
+						entryClassName:
+							'com.liferay.portal.kernel.model.UserGroup',
+					},
+					{
+						embedded: {
+							emailAddress: 'test3@liferay.com',
+							id: 3,
+							name: 'Test3 Test3',
+						},
+						entryClassName: 'com.liferay.portal.kernel.model.User',
+					},
+				],
+			});
+		});
+
+		const {container, getByRole, getByText} = renderComponent();
+
+		const input = container.querySelector<HTMLInputElement>(
+			'input#collaboratorAutocomplete'
+		)!;
+
+		await act(async () => {
+			fireEvent.change(input, {
+				target: {value: 'Test'},
+			});
+		});
+
+		await act(async () => {
+			jest.advanceTimersByTime(300);
+		});
+
+		await waitFor(() => {
+			expect(getByRole('listbox')).toHaveTextContent('Test3 Test3');
+		});
+
+		expect(getByRole('option')).toBeInTheDocument();
+		expect(getByText('share-x')).toBeInTheDocument();
+	});
+
 	it('calls submission when share is clicked', async () => {
 		const {getByLabelText, getByRole, getByText} = renderComponent();
 

@@ -107,27 +107,31 @@ export default function CMSShareModalContent({
 		rawItems: any[],
 		query: string
 	): AutocompleteItem[] => {
-		const items: AutocompleteItem[] = rawItems.map((item) => {
-			if (item.entryClassName?.includes(COLLABORATOR_TYPE.USER_GROUP)) {
+		const items: AutocompleteItem[] = rawItems
+			.filter((item) => item.embedded)
+			.map((item) => {
+				if (
+					item.entryClassName?.includes(COLLABORATOR_TYPE.USER_GROUP)
+				) {
+					return {
+						type: COLLABORATOR_TYPE.USER_GROUP,
+						user: {
+							id: item.embedded.id.toString(),
+							name: item.embedded.name,
+						},
+					};
+				}
+
 				return {
-					type: COLLABORATOR_TYPE.USER_GROUP,
+					type: COLLABORATOR_TYPE.USER,
 					user: {
+						emailAddress: item.embedded.emailAddress,
 						id: item.embedded.id.toString(),
+						image: item.embedded.image,
 						name: item.embedded.name,
 					},
 				};
-			}
-
-			return {
-				type: COLLABORATOR_TYPE.USER,
-				user: {
-					emailAddress: item.embedded.emailAddress,
-					id: item.embedded.id.toString(),
-					image: item.embedded.image,
-					name: item.embedded.name,
-				},
-			};
-		});
+			});
 
 		const trimmedQuery = query.trim();
 
