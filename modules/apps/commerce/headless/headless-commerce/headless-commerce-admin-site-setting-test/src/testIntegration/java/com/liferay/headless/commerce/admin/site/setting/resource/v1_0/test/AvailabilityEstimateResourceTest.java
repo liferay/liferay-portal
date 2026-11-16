@@ -7,11 +7,22 @@ package com.liferay.headless.commerce.admin.site.setting.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.commerce.admin.site.setting.client.dto.v1_0.AvailabilityEstimate;
+import com.liferay.headless.commerce.admin.site.setting.client.dto.v1_0.Creator;
+import com.liferay.headless.commerce.admin.site.setting.client.pagination.Page;
+import com.liferay.headless.commerce.admin.site.setting.client.pagination.Pagination;
 import com.liferay.headless.commerce.admin.site.setting.client.problem.Problem;
+import com.liferay.headless.commerce.admin.site.setting.client.resource.v1_0.AvailabilityEstimateResource;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.rule.Inject;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -25,6 +36,21 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class AvailabilityEstimateResourceTest
 	extends BaseAvailabilityEstimateResourceTestCase {
+
+	@Override
+	@Test
+	public void testGetAvailabilityEstimatesPage() throws Exception {
+		super.testGetAvailabilityEstimatesPage();
+
+		_testGetAvailabilityEstimatesPageWithFilter();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetAvailabilityEstimatesPageWithFilterDateTimeEquals()
+		throws Exception {
+	}
 
 	@Ignore
 	@Override
@@ -49,6 +75,7 @@ public class AvailabilityEstimateResourceTest
 
 		super.testPostCommerceAdminSiteSettingGroupAvailabilityEstimate();
 
+		_testPostCommerceAdminSiteSettingGroupAvailabilityEstimateWithCreator();
 		_testPostCommerceAdminSiteSettingGroupAvailabilityEstimateWithDuplicateExternalReferenceCode();
 		_testPostCommerceAdminSiteSettingGroupAvailabilityEstimateWithoutExternalReferenceCode();
 	}
@@ -65,7 +92,7 @@ public class AvailabilityEstimateResourceTest
 
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
-		return new String[] {"externalReferenceCode", "priority", "title"};
+		return new String[] {"priority", "title"};
 	}
 
 	@Override
@@ -121,6 +148,27 @@ public class AvailabilityEstimateResourceTest
 		return availabilityEstimateResource.
 			postCommerceAdminSiteSettingGroupAvailabilityEstimate(
 				testGroup.getGroupId(), randomAvailabilityEstimate());
+	}
+
+	@Override
+	protected AvailabilityEstimate
+			testGetAvailabilityEstimatePermissionsPage_addAvailabilityEstimate()
+		throws Exception {
+
+		return availabilityEstimateResource.
+			postCommerceAdminSiteSettingGroupAvailabilityEstimate(
+				testGroup.getGroupId(), randomAvailabilityEstimate());
+	}
+
+	@Override
+	protected AvailabilityEstimate
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				AvailabilityEstimate availabilityEstimate)
+		throws Exception {
+
+		return availabilityEstimateResource.
+			postCommerceAdminSiteSettingGroupAvailabilityEstimate(
+				testGroup.getGroupId(), availabilityEstimate);
 	}
 
 	@Override
@@ -193,6 +241,42 @@ public class AvailabilityEstimateResourceTest
 				testGroup.getGroupId(), randomAvailabilityEstimate());
 	}
 
+	@Override
+	protected AvailabilityEstimate
+			testPutAvailabilityEstimatePermissionsPage_addAvailabilityEstimate()
+		throws Exception {
+
+		return availabilityEstimateResource.
+			postCommerceAdminSiteSettingGroupAvailabilityEstimate(
+				testGroup.getGroupId(), randomAvailabilityEstimate());
+	}
+
+	private void _testGetAvailabilityEstimatesPageWithFilter()
+		throws Exception {
+
+		AvailabilityEstimate randomAvailabilityEstimate =
+			randomAvailabilityEstimate();
+
+		randomAvailabilityEstimate.setExternalReferenceCode(
+			"ERC-" + RandomTestUtil.randomString());
+
+		AvailabilityEstimate availabilityEstimate =
+			testGetAvailabilityEstimatesPage_addAvailabilityEstimate(
+				randomAvailabilityEstimate);
+
+		Page<AvailabilityEstimate> availabilityEstimatesPage =
+			availabilityEstimateResource.getAvailabilityEstimatesPage(
+				"externalReferenceCode eq '" +
+					availabilityEstimate.getExternalReferenceCode() + "'",
+				Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, availabilityEstimatesPage.getTotalCount());
+
+		assertEquals(
+			Collections.singletonList(availabilityEstimate),
+			(List<AvailabilityEstimate>)availabilityEstimatesPage.getItems());
+	}
+
 	private void _testPatchAvailabilityEstimateByExternalReferenceCodeWithNewExternalReferenceCode()
 		throws Exception {
 
@@ -222,6 +306,40 @@ public class AvailabilityEstimateResourceTest
 
 		Assert.assertTrue(
 			equals(availabilityEstimate, getAvailabilityEstimate));
+		Assert.assertEquals(
+			availabilityEstimate.getExternalReferenceCode(),
+			getAvailabilityEstimate.getExternalReferenceCode());
+	}
+
+	private void _testPostCommerceAdminSiteSettingGroupAvailabilityEstimateWithCreator()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+		User user = UserTestUtil.addOmniadminUser();
+
+		_userLocalService.updatePassword(
+			user.getUserId(), password, password, false, true);
+
+		AvailabilityEstimateResource availabilityEstimateResource =
+			AvailabilityEstimateResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).locale(
+				LocaleUtil.getDefault()
+			).parameters(
+				"nestedFields", "creator"
+			).build();
+
+		AvailabilityEstimate postAvailabilityEstimate =
+			availabilityEstimateResource.
+				postCommerceAdminSiteSettingGroupAvailabilityEstimate(
+					testGroup.getGroupId(), randomAvailabilityEstimate());
+
+		Creator creator = postAvailabilityEstimate.getCreator();
+
+		Assert.assertEquals(
+			user.getExternalReferenceCode(),
+			creator.getExternalReferenceCode());
 	}
 
 	private void _testPostCommerceAdminSiteSettingGroupAvailabilityEstimateWithDuplicateExternalReferenceCode()
@@ -298,5 +416,8 @@ public class AvailabilityEstimateResourceTest
 		Assert.assertEquals(
 			postAvailabilityEstimate.getId(), putAvailabilityEstimate.getId());
 	}
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
