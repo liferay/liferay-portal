@@ -146,7 +146,8 @@ public class DepotAssetRendererFactoryWrapper<T>
 		}
 
 		if ((depotEntry != null) &&
-			(depotEntry.getType() == DepotConstants.TYPE_SPACE)) {
+			((depotEntry.getType() == DepotConstants.TYPE_PROJECT) ||
+			 (depotEntry.getType() == DepotConstants.TYPE_SPACE))) {
 
 			return assetRenderer;
 		}
