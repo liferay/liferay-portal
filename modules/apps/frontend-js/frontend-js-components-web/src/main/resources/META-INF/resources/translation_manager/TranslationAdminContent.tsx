@@ -43,13 +43,7 @@ interface IProps extends Translations {
 const noop = () => {};
 
 export default function TranslationAdminContent({
-	ariaLabels = {
-		default: Liferay.Language.get('default'),
-		manageTranslations: Liferay.Language.get('manage-translations'),
-		managementToolbar: Liferay.Language.get('management-toolbar'),
-		notTranslated: Liferay.Language.get('not-translated'),
-		translated: Liferay.Language.get('translated'),
-	},
+	ariaLabels,
 	activeLanguageIds: initialActiveLanguageIds = [],
 	availableLocales: initialAvailableLocales = [],
 	defaultLanguageId,
@@ -217,10 +211,19 @@ export default function TranslationAdminContent({
 											}
 										>
 											{isDefaultLocale
-												? ariaLabels.default
+												? ariaLabels?.default ||
+													Liferay.Language.get(
+														'default'
+													)
 												: localeValue
-													? ariaLabels.translated
-													: ariaLabels.notTranslated}
+													? ariaLabels?.translated ||
+														Liferay.Language.get(
+															'translated'
+														)
+													: ariaLabels?.notTranslated ||
+														Liferay.Language.get(
+															'not-translated'
+														)}
 										</ClayLabel>
 									</ClayTable.Cell>
 
