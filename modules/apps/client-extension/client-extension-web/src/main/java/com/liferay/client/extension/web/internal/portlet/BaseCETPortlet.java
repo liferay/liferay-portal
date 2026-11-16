@@ -9,9 +9,7 @@ import com.liferay.client.extension.type.CET;
 import com.liferay.client.extension.web.internal.type.deployer.Registrable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.portal.kernel.servlet.taglib.util.OutputData;
 import com.liferay.portal.kernel.util.PropertiesUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletPreferences;
 import jakarta.portlet.RenderRequest;
@@ -32,19 +30,6 @@ public abstract class BaseCETPortlet<T extends CET>
 
 	public T getCET() {
 		return cet;
-	}
-
-	protected OutputData getOutputData(RenderRequest renderRequest) {
-		OutputData outputData = (OutputData)renderRequest.getAttribute(
-			WebKeys.OUTPUT_DATA);
-
-		if (outputData == null) {
-			outputData = new OutputData();
-
-			renderRequest.setAttribute(WebKeys.OUTPUT_DATA, outputData);
-		}
-
-		return outputData;
 	}
 
 	protected Properties getProperties(RenderRequest renderRequest)

@@ -7,21 +7,17 @@ package com.liferay.client.extension.web.internal.portlet;
 
 import com.liferay.client.extension.type.IFrameCET;
 import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.servlet.taglib.util.OutputData;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import java.util.Dictionary;
 import java.util.Map;
@@ -68,16 +64,6 @@ public class IFrameCETPortlet extends BaseCETPortlet<IFrameCET> {
 	public void render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException {
-
-		OutputData outputData = getOutputData(renderRequest);
-
-		StringWriter stringWriter = new StringWriter();
-
-		StringBuffer stringBuffer = stringWriter.getBuffer();
-
-		outputData.setDataSB(
-			IFrameCETPortlet.class.toString(), WebKeys.PAGE_TOP,
-			new StringBundler(stringBuffer.toString()));
 
 		PrintWriter printWriter = renderResponse.getWriter();
 
