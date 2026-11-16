@@ -51,7 +51,7 @@ public class DBCopyTablesProcessTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-110097", "LPD-110098"})
+	@TestInfo({"LPD-110097", "LPD-110098", "LPD-110100"})
 	public void testGetPostgreSQLColumnType() {
 		_testGetPostgreSQLColumnType(
 			0, Types.CHAR, RandomTestUtil.randomInt(), "text");
@@ -130,6 +130,9 @@ public class DBCopyTablesProcessTest {
 		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), Types.NCLOB, RandomTestUtil.randomInt(),
 			"text");
+		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), Types.OTHER, RandomTestUtil.randomInt(),
+			null);
 		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), Types.REAL, RandomTestUtil.randomInt(),
 			"double precision");
