@@ -5,6 +5,7 @@
 
 package com.liferay.depot.web.internal.item.selector;
 
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.web.internal.application.controller.DepotApplicationController;
 import com.liferay.info.collection.provider.item.selector.InfoCollectionProviderItemSelectorCriterion;
 import com.liferay.item.selector.ItemSelectorCriterion;
@@ -53,8 +54,9 @@ public class DepotItemSelectorViewRendererCustomizer
 
 			return new DepotItemSelectorViewRenderer(
 				assetEntryItemSelectorCriterion.getTypeSelection(),
-				_depotApplicationController, itemSelectorViewRenderer, _portal,
-				Collections.emptyList(), _servletContext);
+				_depotApplicationController, _depotEntryLocalService,
+				itemSelectorViewRenderer, _portal, Collections.emptyList(),
+				_servletContext);
 		}
 
 		ItemSelectorView<ItemSelectorCriterion> itemSelectorView =
@@ -76,7 +78,8 @@ public class DepotItemSelectorViewRendererCustomizer
 
 		return new DepotItemSelectorViewRenderer(
 			StringPool.BLANK, _depotApplicationController,
-			itemSelectorViewRenderer, _portal, portletIds, _servletContext);
+			_depotEntryLocalService, itemSelectorViewRenderer, _portal,
+			portletIds, _servletContext);
 	}
 
 	@Override
@@ -98,6 +101,9 @@ public class DepotItemSelectorViewRendererCustomizer
 
 	@Reference
 	private DepotApplicationController _depotApplicationController;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private Portal _portal;

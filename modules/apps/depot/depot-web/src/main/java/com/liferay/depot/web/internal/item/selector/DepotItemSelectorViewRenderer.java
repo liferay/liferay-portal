@@ -6,6 +6,9 @@
 package com.liferay.depot.web.internal.item.selector;
 
 import com.liferay.asset.list.constants.AssetListPortletKeys;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.web.internal.application.controller.DepotApplicationController;
 import com.liferay.depot.web.internal.constants.DepotAdminWebKeys;
 import com.liferay.depot.web.internal.display.context.DepotApplicationDisplayContext;
@@ -20,12 +23,15 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.PortalIncludeUtil;
 
@@ -47,11 +53,13 @@ public class DepotItemSelectorViewRenderer implements ItemSelectorViewRenderer {
 
 	public DepotItemSelectorViewRenderer(
 		String className, DepotApplicationController depotApplicationController,
+		DepotEntryLocalService depotEntryLocalService,
 		ItemSelectorViewRenderer itemSelectorViewRenderer, Portal portal,
 		List<String> portletIds, ServletContext servletContext) {
 
 		_className = className;
 		_depotApplicationController = depotApplicationController;
+		_depotEntryLocalService = depotEntryLocalService;
 		_itemSelectorViewRenderer = itemSelectorViewRenderer;
 		_portal = portal;
 		_portletIds = portletIds;
@@ -103,6 +111,29 @@ public class DepotItemSelectorViewRenderer implements ItemSelectorViewRenderer {
 
 				if (_depotApplicationController.isEnabled(portletId, groupId)) {
 					_itemSelectorViewRenderer.renderHTML(pageContext);
+
+					return;
+				}
+
+				DepotEntry depotEntry =
+					_depotEntryLocalService.fetchGroupDepotEntry(groupId);
+
+				if ((depotEntry != null) &&
+					(depotEntry.getType() ==
+						DepotConstants.TYPE_DESIGN_LIBRARY) &&
+					Validator.isNull(
+						ParamUtil.getString(httpServletRequest, "groupType")) &&
+					FeatureFlagManagerUtil.isEnabled(
+						themeDisplay.getCompanyId(), "LPD-57283") &&
+					FeatureFlagManagerUtil.isEnabled(
+						themeDisplay.getCompanyId(), "LPD-81022")) {
+
+					RequestDispatcher requestDispatcher =
+						_servletContext.getRequestDispatcher(
+							"/item/selector/group_selector.jsp");
+
+					requestDispatcher.include(
+						httpServletRequest, httpServletResponse);
 
 					return;
 				}
@@ -164,6 +195,7 @@ public class DepotItemSelectorViewRenderer implements ItemSelectorViewRenderer {
 
 	private final String _className;
 	private final DepotApplicationController _depotApplicationController;
+	private final DepotEntryLocalService _depotEntryLocalService;
 	private final ItemSelectorViewRenderer _itemSelectorViewRenderer;
 	private final Portal _portal;
 	private final List<String> _portletIds;
