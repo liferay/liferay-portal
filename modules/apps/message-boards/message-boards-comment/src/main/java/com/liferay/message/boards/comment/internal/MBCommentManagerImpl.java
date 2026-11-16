@@ -127,13 +127,7 @@ public class MBCommentManagerImpl implements CommentManager {
 			Function<String, ServiceContext> serviceContextFunction)
 		throws PortalException {
 
-		MBMessage parentMessage = _mbMessageLocalService.getMessage(
-			parentCommentId);
-
-		if (!parentMessage.isDiscussion()) {
-			throw new NoSuchMessageException(
-				"No comment exists with comment ID " + parentCommentId);
-		}
+		MBMessage parentMessage = _getDiscussionMessage(parentCommentId);
 
 		ServiceContext serviceContext = serviceContextFunction.apply(
 			MBMessage.class.getName());
@@ -200,6 +194,8 @@ public class MBCommentManagerImpl implements CommentManager {
 
 	@Override
 	public void deleteComment(long commentId) throws PortalException {
+		_getDiscussionMessage(commentId);
+
 		_mbMessageLocalService.deleteDiscussionMessage(commentId);
 	}
 
@@ -436,6 +432,8 @@ public class MBCommentManagerImpl implements CommentManager {
 			Function<String, ServiceContext> serviceContextFunction)
 		throws PortalException {
 
+		_getDiscussionMessage(commentId);
+
 		ServiceContext serviceContext = serviceContextFunction.apply(
 			MBMessage.class.getName());
 
@@ -552,6 +550,19 @@ public class MBCommentManagerImpl implements CommentManager {
 
 		return new MBDiscussionCommentImpl(
 			treeWalker.getRoot(), treeWalker, ratingsEntries, ratingsStats);
+	}
+
+	private MBMessage _getDiscussionMessage(long commentId)
+		throws PortalException {
+
+		MBMessage mbMessage = _mbMessageLocalService.getMessage(commentId);
+
+		if (!mbMessage.isDiscussion()) {
+			throw new NoSuchMessageException(
+				"No comment exists with comment ID " + commentId);
+		}
+
+		return mbMessage;
 	}
 
 	@Reference
