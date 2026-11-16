@@ -35,6 +35,37 @@ describe('Toolbar', () => {
 		expect(screen.getByText(/liferay data platform/i)).toBeTruthy();
 	});
 
+	it('renders the product name as a link to Sites', () => {
+		renderToolbar();
+
+		const link = screen.getByRole('link', {
+			name: 'Liferay Data Platform, Go to Sites',
+		});
+
+		expect(link).toHaveAttribute(
+			'href',
+			toRoute(Routes.SITES, {groupId: '23'})
+		);
+		expect(link).toHaveTextContent('Liferay Data Platform');
+	});
+
+	it('keeps the user on Sites when the product name link is clicked', () => {
+		renderToolbar();
+
+		const link = screen.getByRole('link', {
+			name: 'Liferay Data Platform, Go to Sites',
+		});
+
+		fireEvent.click(link);
+		fireEvent.click(link);
+
+		expect(
+			screen.getByRole('link', {
+				name: 'Liferay Data Platform, Go to Sites',
+			})
+		).toBeTruthy();
+	});
+
 	it('collapses the sidebar from the toggle', () => {
 		const {container} = renderToolbar();
 
