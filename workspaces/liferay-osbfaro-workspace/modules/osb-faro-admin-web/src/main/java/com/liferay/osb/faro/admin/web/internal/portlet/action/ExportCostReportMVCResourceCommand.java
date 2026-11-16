@@ -68,12 +68,12 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 
 		sb.append(
 			StringBundler.concat(
-				"Workspace,Project ID,Customer ID,Customer Name,Owner,",
-				"Subscription,Location,Events,Billable Events,",
-				"A/B Testing Events,Page Views,Anonymous Individuals,",
-				"Known Individuals,Query Cost (USD),Query Cost Data Since,",
-				"Storage Cost (USD),Storage Cost Data Since,",
-				"Total Cost (USD)\n"));
+				"Workspace,Project ID,Customer ID,Customer Name,",
+				"Salesforce Account ID,Owner,Subscription,Location,Events,",
+				"Billable Events,A/B Testing Events,Page Views,",
+				"Anonymous Individuals,Known Individuals,Query Cost (USD),",
+				"Query Cost Data Since,Storage Cost (USD),",
+				"Storage Cost Data Since,Total Cost (USD)\n"));
 
 		long startTime = System.currentTimeMillis() - Time.YEAR;
 
@@ -106,6 +106,8 @@ public class ExportCostReportMVCResourceCommand extends BaseMVCResourceCommand {
 			sb.append(_encode(faroProject.getCorpProjectUuid()));
 			sb.append(StringPool.COMMA);
 			sb.append(_encode(faroProject.getCorpProjectName()));
+			sb.append(StringPool.COMMA);
+			sb.append(_encode(faroProject.getSalesforceAccountId()));
 			sb.append(StringPool.COMMA);
 			sb.append(_encode(FaroProjectOwnerUtil.fetchOwner(faroProject)));
 			sb.append(StringPool.COMMA);
