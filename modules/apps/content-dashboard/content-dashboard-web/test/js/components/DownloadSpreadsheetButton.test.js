@@ -4,6 +4,7 @@
  */
 
 import {cleanup, fireEvent, render} from '@testing-library/react';
+import {openToast} from 'frontend-js-components-web';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -12,12 +13,18 @@ import {act} from 'react-dom/test-utils';
 import DownloadSpreadsheetButton from '../../../src/main/resources/META-INF/resources/js/components/DownloadSpreadsheetButton/DownloadSpreadsheetButton';
 import * as utils from '../../../src/main/resources/META-INF/resources/js/components/DownloadSpreadsheetButton/downloadSpreadsheetUtils';
 
+jest.mock('frontend-js-components-web', () => ({
+	...jest.requireActual('frontend-js-components-web'),
+	openToast: jest.fn(),
+}));
+
 const getComponent = (fileURL = 'demo-file-url') => {
 	return <DownloadSpreadsheetButton fileURL={fileURL} total={12} />;
 };
 
 describe('DownloadSpreadsheetButton', () => {
 	beforeEach(() => {
+		jest.clearAllMocks();
 		jest.useFakeTimers();
 
 		global.Liferay.on = jest.fn().mockReturnValue({
@@ -64,6 +71,9 @@ describe('DownloadSpreadsheetButton', () => {
 	});
 
 	it('...with the proper loading UI state', async () => {
+		jest.spyOn(utils, 'fetchFile').mockResolvedValue(new Blob());
+		jest.spyOn(utils, 'downloadFileFromBlob').mockImplementation(() => {});
+
 		const {container, findByText, getByText} = render(getComponent());
 		const exportButton = getByText('export-xls');
 
@@ -77,11 +87,12 @@ describe('DownloadSpreadsheetButton', () => {
 			})
 		);
 
-		await findByText('generating-xls');
 		expect(getByText('generating-xls')).toBeInTheDocument();
 		expect(
 			container.getElementsByClassName('loading-animation').length
 		).toBe(1);
+
+		await findByText('xls-generated');
 
 		act(() => {
 			jest.runAllTimers();
@@ -91,6 +102,15 @@ describe('DownloadSpreadsheetButton', () => {
 	});
 
 	it('...with the proper restored UI state after cancel', async () => {
+		jest.spyOn(utils, 'fetchFile').mockImplementation(
+			({controller}) =>
+				new Promise((resolve, reject) => {
+					controller.signal.addEventListener('abort', () =>
+						reject(new DOMException('', 'AbortError'))
+					);
+				})
+		);
+
 		const {container, findByText, getByText, getByTitle} =
 			render(getComponent());
 		const exportButton = getByText('export-xls');
@@ -109,7 +129,6 @@ describe('DownloadSpreadsheetButton', () => {
 			container.getElementsByClassName('lexicon-icon-times-circle').length
 		).toBe(1);
 
-		await findByText('generating-xls');
 		expect(getByText('generating-xls')).toBeInTheDocument();
 
 		fireEvent(
@@ -119,6 +138,8 @@ describe('DownloadSpreadsheetButton', () => {
 				cancelable: true,
 			})
 		);
+
+		await findByText('xls-generation-was-cancelled');
 
 		act(() => {
 			jest.runAllTimers();
@@ -136,7 +157,7 @@ describe('DownloadSpreadsheetButton', () => {
 
 		/* eslint-disable no-import-assign */
 		const fileURL = 'demo-file-url';
-		const {findByText, getByText} = render(getComponent(fileURL));
+		const {getByText} = render(getComponent(fileURL));
 		const exportButton = getByText('export-xls');
 
 		utils.downloadFileFromBlob = jest.fn();
@@ -158,7 +179,6 @@ describe('DownloadSpreadsheetButton', () => {
 			})
 		);
 
-		await findByText('generating-xls');
 		expect(getByText('generating-xls')).toBeInTheDocument();
 
 		act(() => {
@@ -170,5 +190,49 @@ describe('DownloadSpreadsheetButton', () => {
 			url: fileURL,
 		});
 		expect(utils.downloadFileFromBlob).toHaveBeenCalledWith(blob);
+		expect(openToast).toHaveBeenCalledWith({
+			message: 'xls-was-successfully-generated',
+			title: '',
+			type: 'success',
+		});
+	});
+
+	it('...that opens a toast when it unmounts during the download', async () => {
+		let resolveFetch;
+
+		jest.spyOn(utils, 'fetchFile').mockReturnValue(
+			new Promise((resolve) => {
+				resolveFetch = resolve;
+			})
+		);
+		jest.spyOn(utils, 'downloadFileFromBlob').mockImplementation(() => {});
+
+		const {findByText, getByText, unmount} = render(getComponent());
+
+		fireEvent(
+			getByText('export-xls'),
+			new MouseEvent('click', {
+				bubbles: true,
+				cancelable: true,
+			})
+		);
+
+		await findByText('generating-xls');
+
+		unmount();
+
+		await act(async () => {
+			resolveFetch(new Blob());
+		});
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(openToast).toHaveBeenCalledWith({
+			message: 'xls-was-successfully-generated',
+			title: '',
+			type: 'success',
+		});
 	});
 });
