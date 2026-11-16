@@ -80,21 +80,8 @@ public interface ScopeLocator {
 	public Collection<String> getScopeAliases(
 		long companyId, String applicationName);
 
-	/**
-	 * Returns the scope aliases that {@link #waitForScopeAliases(long, Set,
-	 * Runnable)} is still waiting on, grouped by the ID of the portal instance
-	 * that declared them.
-	 *
-	 * @return the non-<code>null</code> scope aliases being waited on
-	 */
 	public Map<Long, Set<String>> getWaitingScopeAliases();
 
-	/**
-	 * Runs the waiting callbacks whose scope aliases now resolve. A scope alias
-	 * also resolves through a scope mapper, a prefix handler factory and a
-	 * scope matcher factory, none of which notify when they register, so a wait
-	 * is otherwise dropped only when a scope finder registers.
-	 */
 	public void recheckWaitingScopeAliases();
 
 	public void stopWaitingForScopeAliases(Runnable runnable);
