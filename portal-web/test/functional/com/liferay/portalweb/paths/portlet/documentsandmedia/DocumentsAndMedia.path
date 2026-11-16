@@ -281,11 +281,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>DESCRIPTIVE_LIST_FOLDER_CHECKBOX</td>
-	<td>//*[@data-title='${key_dmFolderName}']//input[@type='checkbox']</td>
-	<td></td>
-</tr>
-<tr>
 	<td>DESCRIPTIVE_LIST_FOLDER_ICON</td>
 	<td>//*[@data-title='${key_dmFolderName}']//div[span/*[name()='svg'][contains(@class,'icon-folder')]]</td>
 	<td></td>
@@ -293,11 +288,6 @@
 <tr>
 	<td>DESCRIPTIVE_LIST_FOLDER_TITLE</td>
 	<td>//*[@data-title='${key_dmFolderName}']//a|//tr[@data-title='${key_dmFolderName}']//a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>DESCRIPTIVE_LIST_FOLDER_EDITED_TITLE</td>
-	<td>//*[@data-title='${key_dmFolderNameEdit}']//a</td>
 	<td></td>
 </tr>
 <tr>

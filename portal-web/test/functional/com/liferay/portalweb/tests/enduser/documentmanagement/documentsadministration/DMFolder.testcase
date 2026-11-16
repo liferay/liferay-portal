@@ -151,27 +151,6 @@ definition {
 		Ratings.revokeStarsRating();
 	}
 
-	@priority = 5
-	@refactordone
-	test CanEditFolder {
-		property portal.acceptance = "true";
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Guest");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMFolder.editCP(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderDescriptionEdit = "DM Folder Description Edit",
-			dmFolderName = "DM Folder Name",
-			dmFolderNameEdit = "DM Folder Name Name");
-
-		DMFolder.viewCP(dmFolderName = "DM Folder Name Name");
-	}
-
 	@priority = 3
 	test CanEditRatingForFolder {
 		var responseFromFolder = DocumentFolderAPI.addDocumentFolder(
@@ -195,66 +174,6 @@ definition {
 		Ratings.viewRateStar(
 			averageRatingStarCount = "3.0",
 			ratingStarCount = 3);
-	}
-
-	@description = "This case ensures that a document can be viewed after being moved into a folder."
-	@priority = 5
-	@refactordone
-	test CanMoveDocumentToFolder {
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "text/plain",
-			sourceFileName = "Document_1.txt");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Guest");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.moveToFolderCP(
-			dmDocumentTitle = "DM Document Title",
-			dmFolderName = "DM Folder Name");
-
-		DMDocument.viewMovedToFolderCP(
-			dmDocumentTitle = "DM Document Title",
-			dmFolderName = "DM Folder Name");
-
-		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewCP(
-			dmDocumentSize = "259 B",
-			dmDocumentTitle = "DM Document Title",
-			dmFolderName = "DM Folder Name",
-			locationFieldName = "true");
-	}
-
-	@priority = 4
-	@refactordone
-	test CanMoveFolderToFolder {
-		property portal.acceptance = "true";
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder1 Description",
-			dmFolderName = "DM Folder1 Name",
-			groupName = "Guest");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder2 Description",
-			dmFolderName = "DM Folder2 Name",
-			groupName = "Guest");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMFolder.moveToFolderCP(
-			dmFolderName = "DM Folder2 Name",
-			dmFolderName1 = "DM Folder1 Name",
-			dmFolderName2 = "DM Folder2 Name");
 	}
 
 	@description = "This ensures that a folder can be moved to another folder via drag and drop."
@@ -289,51 +208,6 @@ definition {
 			siteURLKey = "guest");
 
 		DMFolder.viewCP(dmFolderName = "DM Folder Name1");
-	}
-
-	@description = "This case covers LPS-127681. It ensures that a subfolder cannot be moved to parent folder when they are using same name."
-	@priority = 3
-	@refactordone
-	test CanMoveFolderToParentWithSameName {
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Guest");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Guest",
-			parentFolderName = "DM Folder Name");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
-
-		DMFolder.moveToFolderCP(
-			dmFolderName = "DM Folder Name",
-			dmFolderName2 = "DM Folder Name",
-			moveFailure = "true",
-			moveSubfolder = "true");
-	}
-
-	@priority = 5
-	@refactordone
-	test CanMoveFolderToRecycleBin {
-		property portal.acceptance = "true";
-
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Site Name");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMFolder.moveToRecycleBinCP(
-			assetType = "Documents Folder",
-			dmFolderName = "DM Folder Name");
 	}
 
 	@description = "This test ensures that an error is displayed when copying a duplicated folder."

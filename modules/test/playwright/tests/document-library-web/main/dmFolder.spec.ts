@@ -4,6 +4,8 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import {createReadStream} from 'fs';
+import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
@@ -14,6 +16,7 @@ import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden'
 import getRandomString from '../../../utils/getRandomString';
 import {openFieldset} from '../../../utils/openFieldset';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 const test = mergeTests(
 	apiHelpersTest,
@@ -48,6 +51,170 @@ test(
 		// change back to english language
 
 		await page.goto('/en');
+	}
+);
+
+test(
+	'Folders and documents can be edited and moved in the admin',
+	{tag: '@LPS-127681'},
+	async ({
+		apiHelpers,
+		documentLibraryEditFolderPage,
+		documentLibraryPage,
+		documentLibraryViewFileEntryPage,
+		page,
+		site,
+	}) => {
+		const documentTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(
+				path.join(__dirname, 'dependencies/Document_1.txt')
+			),
+			{fileName: 'Document_1.txt', title: documentTitle}
+		);
+
+		const folder1 = await apiHelpers.headlessDelivery.postDocumentFolder(
+			site.id
+		);
+		const folder2 = await apiHelpers.headlessDelivery.postDocumentFolder(
+			site.id
+		);
+
+		const folder2Name = getRandomString();
+
+		await test.step('CanEditFolder', async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+
+			await documentLibraryPage.goToEditFolder(folder2.name);
+
+			await documentLibraryEditFolderPage.fillTitle(folder2Name);
+
+			await page
+				.getByLabel('Characters Maximum:')
+				.fill(getRandomString());
+
+			await documentLibraryEditFolderPage.save();
+
+			await expect(
+				page.getByRole('link', {exact: true, name: folder2.name})
+			).toBeHidden();
+			await expect(
+				page.getByRole('link', {exact: true, name: folder2Name})
+			).toBeVisible();
+		});
+
+		const selectFolderDialog = page.getByRole('dialog');
+
+		await test.step('CanMoveFolderToFolder', async () => {
+			await documentLibraryPage.goToFolderAction('Move', folder2Name);
+
+			await selectFolderDialog
+				.frameLocator('iframe')
+				.getByRole('row', {name: folder1.name})
+				.getByRole('button', {exact: true, name: 'Select'})
+				.click();
+
+			await waitForAlert(page);
+
+			await expect(
+				page.getByRole('link', {exact: true, name: folder2Name})
+			).toBeHidden();
+
+			await page
+				.getByRole('link', {exact: true, name: folder1.name})
+				.click();
+
+			await expect(
+				page.getByRole('link', {exact: true, name: folder2Name})
+			).toBeVisible();
+		});
+
+		await test.step('CanMoveDocumentToFolder', async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+
+			await documentLibraryPage.goToFileEntryAction(
+				'Move',
+				documentTitle
+			);
+
+			await selectFolderDialog
+				.frameLocator('iframe')
+				.getByRole('row', {name: folder1.name})
+				.getByRole('button', {exact: true, name: 'Select'})
+				.click();
+
+			await waitForAlert(page);
+
+			await expect(
+				page.getByRole('link', {exact: true, name: documentTitle})
+			).toBeHidden();
+
+			await page
+				.getByRole('link', {exact: true, name: folder1.name})
+				.click();
+
+			await documentLibraryPage.goToViewFileEntry(documentTitle);
+
+			await documentLibraryViewFileEntryPage.openInfoTab();
+
+			await expect(
+				documentLibraryViewFileEntryPage.infoPanel.locator(
+					'dt:text-is("Location") + dd'
+				)
+			).toHaveText(folder1.name);
+			await expect(
+				documentLibraryViewFileEntryPage.infoPanel.locator(
+					'dt:text-is("Size") + dd'
+				)
+			).toHaveText('259 B');
+		});
+
+		await test.step('CanMoveFolderToParentWithSameName', async () => {
+			const subfolder =
+				await apiHelpers.headlessDelivery.postDocumentFolderDocumentFolder(
+					folder1.id,
+					{name: folder1.name}
+				);
+
+			await documentLibraryPage.gotoFolder({
+				folderId: folder1.id,
+				siteUrl: site.friendlyUrlPath,
+			});
+
+			await documentLibraryPage.goToFolderAction('Move', subfolder.name);
+
+			const selectFolderFrame = selectFolderDialog.frameLocator('iframe');
+
+			await selectFolderFrame
+				.getByRole('link', {exact: true, name: site.name})
+				.click();
+
+			await clickAndExpectToBeHidden({
+				target: selectFolderDialog,
+				trigger: selectFolderFrame.getByRole('button', {
+					exact: true,
+					name: 'Select This Folder',
+				}),
+			});
+
+			await expect(
+				page.getByText(
+					'The folder you selected already has an entry with this name. Please select a different folder.'
+				)
+			).toBeVisible();
+		});
+
+		await test.step('CanMoveFolderToRecycleBin', async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+
+			await documentLibraryPage.moveFolderToRecycleBin(folder1.name);
+
+			await expect(
+				page.getByRole('link', {exact: true, name: folder1.name})
+			).toBeHidden();
+		});
 	}
 );
 
