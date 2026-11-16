@@ -229,7 +229,7 @@ public class LaunchSetPublisherTest {
 			WorkflowConstants.STATUS_DRAFT,
 			unscheduledLaunchSetObjectEntry.getStatus());
 
-		// Launch set with an entry that has no launch entry manager
+		// Launch set with a launch entry that has no launch entry manager
 
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(),
