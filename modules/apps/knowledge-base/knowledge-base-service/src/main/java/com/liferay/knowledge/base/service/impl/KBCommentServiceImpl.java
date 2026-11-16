@@ -44,10 +44,7 @@ public class KBCommentServiceImpl extends KBCommentServiceBaseImpl {
 	public KBComment deleteKBComment(KBComment kbComment)
 		throws PortalException {
 
-		_kbCommentModelResourcePermission.check(
-			getPermissionChecker(), kbComment, KBActionKeys.DELETE);
-
-		return kbCommentLocalService.deleteKBComment(kbComment);
+		return deleteKBComment(kbComment.getKbCommentId());
 	}
 
 	@Override
@@ -55,7 +52,10 @@ public class KBCommentServiceImpl extends KBCommentServiceBaseImpl {
 		KBComment kbComment = kbCommentPersistence.findByPrimaryKey(
 			kbCommentId);
 
-		return deleteKBComment(kbComment);
+		_kbCommentModelResourcePermission.check(
+			getPermissionChecker(), kbComment, KBActionKeys.DELETE);
+
+		return kbCommentLocalService.deleteKBComment(kbComment);
 	}
 
 	@Override
