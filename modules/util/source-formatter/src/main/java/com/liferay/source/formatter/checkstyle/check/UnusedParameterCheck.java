@@ -75,7 +75,6 @@ public class UnusedParameterCheck extends BaseCheck {
 		List<String> names = getNames(slistDetailAST, true);
 
 		for (DetailAST parameterDefDetailAST : parameterDefDetailASTs) {
-
 			String parameterName = getName(parameterDefDetailAST);
 
 			if (names.contains(parameterName) ||
