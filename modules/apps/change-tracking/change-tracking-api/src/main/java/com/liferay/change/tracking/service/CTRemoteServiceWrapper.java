@@ -53,18 +53,21 @@ public class CTRemoteServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.change.tracking.model.CTRemote>
-		getCTRemotes(
-			String keywords, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.change.tracking.model.CTRemote>
-					orderByComparator) {
+			getCTRemotes(
+				String keywords, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.change.tracking.model.CTRemote>
+						orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _ctRemoteService.getCTRemotes(
 			keywords, start, end, orderByComparator);
 	}
 
 	@Override
-	public int getCTRemotesCount(String keywords) {
+	public int getCTRemotesCount(String keywords)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		return _ctRemoteService.getCTRemotesCount(keywords);
 	}
 
@@ -101,4 +104,4 @@ public class CTRemoteServiceWrapper
 	private CTRemoteService _ctRemoteService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1554210712
+// LIFERAY-SERVICE-BUILDER-HASH:1422940584

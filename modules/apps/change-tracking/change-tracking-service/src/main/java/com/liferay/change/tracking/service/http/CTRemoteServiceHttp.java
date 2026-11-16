@@ -164,11 +164,13 @@ public class CTRemoteServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.change.tracking.model.CTRemote>
-		getCTRemotes(
-			HttpPrincipal httpPrincipal, String keywords, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.change.tracking.model.CTRemote>
-					orderByComparator) {
+			getCTRemotes(
+				HttpPrincipal httpPrincipal, String keywords, int start,
+				int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.change.tracking.model.CTRemote>
+						orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -184,6 +186,13 @@ public class CTRemoteServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -201,7 +210,8 @@ public class CTRemoteServiceHttp {
 	}
 
 	public static int getCTRemotesCount(
-		HttpPrincipal httpPrincipal, String keywords) {
+			HttpPrincipal httpPrincipal, String keywords)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -217,6 +227,13 @@ public class CTRemoteServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -297,4 +314,4 @@ public class CTRemoteServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2019459424
+// LIFERAY-SERVICE-BUILDER-HASH:548074400

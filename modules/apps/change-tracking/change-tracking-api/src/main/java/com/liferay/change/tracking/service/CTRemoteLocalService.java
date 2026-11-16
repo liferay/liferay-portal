@@ -96,9 +96,10 @@ public interface CTRemoteLocalService
 	 *
 	 * @param ctRemote the ct remote
 	 * @return the ct remote that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	public CTRemote deleteCTRemote(CTRemote ctRemote);
+	public CTRemote deleteCTRemote(CTRemote ctRemote) throws PortalException;
 
 	/**
 	 * Deletes the ct remote with the primary key from the database. Also notifies the appropriate model listeners.
@@ -272,4 +273,4 @@ public interface CTRemoteLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1338467828
+// LIFERAY-SERVICE-BUILDER-HASH:-500339769

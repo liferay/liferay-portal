@@ -53,14 +53,17 @@ public class CTRemoteServiceUtil {
 	}
 
 	public static List<CTRemote> getCTRemotes(
-		String keywords, int start, int end,
-		OrderByComparator<CTRemote> orderByComparator) {
+			String keywords, int start, int end,
+			OrderByComparator<CTRemote> orderByComparator)
+		throws PortalException {
 
 		return getService().getCTRemotes(
 			keywords, start, end, orderByComparator);
 	}
 
-	public static int getCTRemotesCount(String keywords) {
+	public static int getCTRemotesCount(String keywords)
+		throws PortalException {
+
 		return getService().getCTRemotesCount(keywords);
 	}
 
@@ -90,4 +93,4 @@ public class CTRemoteServiceUtil {
 		new Snapshot<>(CTRemoteServiceUtil.class, CTRemoteService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-720461924
+// LIFERAY-SERVICE-BUILDER-HASH:-269691912

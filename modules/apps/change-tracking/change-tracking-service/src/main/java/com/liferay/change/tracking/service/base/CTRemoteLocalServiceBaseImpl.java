@@ -121,10 +121,11 @@ public abstract class CTRemoteLocalServiceBaseImpl
 	 *
 	 * @param ctRemote the ct remote
 	 * @return the ct remote that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public CTRemote deleteCTRemote(CTRemote ctRemote) {
+	public CTRemote deleteCTRemote(CTRemote ctRemote) throws PortalException {
 		return ctRemotePersistence.remove(ctRemote);
 	}
 
@@ -444,4 +445,4 @@ public abstract class CTRemoteLocalServiceBaseImpl
 		CTRemoteLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:876986903
+// LIFERAY-SERVICE-BUILDER-HASH:859584165

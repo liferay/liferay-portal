@@ -54,11 +54,12 @@ public interface CTRemoteService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CTRemote> getCTRemotes(
-		String keywords, int start, int end,
-		OrderByComparator<CTRemote> orderByComparator);
+			String keywords, int start, int end,
+			OrderByComparator<CTRemote> orderByComparator)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCTRemotesCount(String keywords);
+	public int getCTRemotesCount(String keywords) throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -73,4 +74,4 @@ public interface CTRemoteService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-813802411
+// LIFERAY-SERVICE-BUILDER-HASH:-467106131

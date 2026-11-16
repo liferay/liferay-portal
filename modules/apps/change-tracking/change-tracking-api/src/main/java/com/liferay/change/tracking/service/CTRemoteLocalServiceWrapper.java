@@ -88,10 +88,12 @@ public class CTRemoteLocalServiceWrapper
 	 *
 	 * @param ctRemote the ct remote
 	 * @return the ct remote that was removed
+	 * @throws PortalException
 	 */
 	@Override
 	public com.liferay.change.tracking.model.CTRemote deleteCTRemote(
-		com.liferay.change.tracking.model.CTRemote ctRemote) {
+			com.liferay.change.tracking.model.CTRemote ctRemote)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _ctRemoteLocalService.deleteCTRemote(ctRemote);
 	}
@@ -365,4 +367,4 @@ public class CTRemoteLocalServiceWrapper
 	private CTRemoteLocalService _ctRemoteLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:670551806
+// LIFERAY-SERVICE-BUILDER-HASH:210567287

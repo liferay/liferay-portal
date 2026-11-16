@@ -502,7 +502,7 @@ public class CTRemoteModelImpl
 		_clientId = clientId;
 	}
 
-	@JSON
+	@JSON(include = false)
 	@Override
 	public String getClientSecret() {
 		if (_clientSecret == null) {
@@ -914,4 +914,4 @@ public class CTRemoteModelImpl
 	private CTRemote _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1725860377
+// LIFERAY-SERVICE-BUILDER-HASH:-786056954
