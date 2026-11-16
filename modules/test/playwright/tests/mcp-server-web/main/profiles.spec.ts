@@ -215,8 +215,9 @@ test.describe('Profiles - FDS Table', () => {
 		async ({fdsTablePage, page}) => {
 			await expectFDSTableRowActions(fdsTablePage, page, seededItemName, [
 				'Edit',
-				'Delete',
+				'Copy URL',
 				'Permissions',
+				'Delete',
 			]);
 		}
 	);

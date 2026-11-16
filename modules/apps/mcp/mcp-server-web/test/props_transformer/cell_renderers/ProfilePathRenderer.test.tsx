@@ -4,7 +4,6 @@
  */
 
 import {render, screen} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -14,9 +13,7 @@ import ProfilePathRenderer from '../../../src/main/resources/META-INF/resources/
 import type {Profile} from '../../../src/main/resources/META-INF/resources/js/types/Profile';
 
 describe('ProfilePathRenderer', () => {
-	it('copies the URL of the profile', async () => {
-		const user = userEvent.setup();
-
+	it('renders the profile path', () => {
 		render(
 			<ProfilePathRenderer
 				itemData={{
@@ -28,15 +25,6 @@ describe('ProfilePathRenderer', () => {
 		);
 
 		expect(screen.getByText('/tool-search')).toBeInTheDocument();
-
-		await user.click(screen.getByRole('button', {name: 'copy-url'}));
-
-		expect(await navigator.clipboard.readText()).toBe(
-			`${window.location.origin}/o/mcp/tool-search`
-		);
-		expect(
-			await screen.findByText('copied-to-clipboard')
-		).toBeInTheDocument();
 	});
 
 	it('renders a missing profile path as the base URL', () => {
@@ -52,27 +40,5 @@ describe('ProfilePathRenderer', () => {
 		);
 
 		expect(screen.getByText('/')).toBeInTheDocument();
-	});
-
-	it('copies the base URL of the default profile', async () => {
-		const user = userEvent.setup();
-
-		render(
-			<ProfilePathRenderer
-				itemData={{
-					description: 'Description',
-					name: 'Default',
-					profilePath: '',
-				}}
-			/>
-		);
-
-		expect(screen.getByText('/')).toBeInTheDocument();
-
-		await user.click(screen.getByRole('button', {name: 'copy-url'}));
-
-		expect(await navigator.clipboard.readText()).toBe(
-			`${window.location.origin}/o/mcp`
-		);
 	});
 });
