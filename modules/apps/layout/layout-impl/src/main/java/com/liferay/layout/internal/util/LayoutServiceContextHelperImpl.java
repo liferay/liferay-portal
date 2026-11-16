@@ -247,7 +247,7 @@ public class LayoutServiceContextHelperImpl
 				_group = _groupLocalService.getGroup(
 					company.getCompanyId(), GroupConstants.GUEST);
 
-				layout = _fetchGuestGroupLayout(company);
+				layout = _fetchGuestGroupLayout(_group);
 			}
 
 			_layout = layout;
@@ -390,9 +390,12 @@ public class LayoutServiceContextHelperImpl
 		private Layout _fetchGuestGroupLayout(Company company)
 			throws PortalException {
 
-			Group group = _groupLocalService.getGroup(
-				company.getCompanyId(), GroupConstants.GUEST);
+			return _fetchGuestGroupLayout(
+				_groupLocalService.getGroup(
+					company.getCompanyId(), GroupConstants.GUEST));
+		}
 
+		private Layout _fetchGuestGroupLayout(Group group) {
 			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
 				group.getGroupId(), false,
 				_friendlyURLNormalizer.normalizeWithEncoding(
