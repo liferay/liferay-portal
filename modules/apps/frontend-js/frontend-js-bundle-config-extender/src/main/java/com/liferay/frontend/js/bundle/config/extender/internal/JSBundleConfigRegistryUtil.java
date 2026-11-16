@@ -78,7 +78,8 @@ public class JSBundleConfigRegistryUtil {
 
 				ServletContext servletContext = jsConfig.getServletContext();
 
-				sb.append(_getModuleMain(jsConfig));
+				sb.append(_getModuleMain(servletContext));
+
 				sb.append("';var MODULE_PATH='");
 				sb.append(PortalUtil.getPathProxy());
 				sb.append(servletContext.getContextPath());
@@ -97,10 +98,8 @@ public class JSBundleConfigRegistryUtil {
 		return sb.toString();
 	}
 
-	private static String _getModuleMain(JSConfig jsConfig) {
+	private static String _getModuleMain(ServletContext servletContext) {
 		try {
-			ServletContext servletContext = jsConfig.getServletContext();
-
 			URL url = servletContext.getResource(
 				"META-INF/resources/package.json");
 
