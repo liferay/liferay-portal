@@ -22,8 +22,6 @@ import com.liferay.product.navigation.product.menu.helper.ProductNavigationProdu
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.List;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -99,12 +97,16 @@ public class ProductNavigationProductMenuHelperImpl
 			return false;
 		}
 
-		List<PanelCategory> childPanelCategories =
-			PanelCategoryRegistryUtil.getChildPanelCategories(
+		PanelCategory panelCategory =
+			PanelCategoryRegistryUtil.getFirstChildPanelCategory(
 				PanelCategoryKeys.ROOT, themeDisplay.getPermissionChecker(),
 				themeDisplay.getScopeGroup());
 
-		return !childPanelCategories.isEmpty();
+		if (panelCategory != null) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@Reference
