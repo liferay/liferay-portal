@@ -372,12 +372,12 @@ public class UserServiceTest {
 			Assert.assertThrows(
 				UserPasswordException.MustMatchCurrentPassword.class,
 				() -> _updateUser(
-					newPassword, RandomTestUtil.randomString(),
-					user.getUserId(), null));
+					newPassword, RandomTestUtil.randomString(), null,
+					user.getUserId()));
 
-			_updateUser(newPassword, password, user.getUserId(), null);
+			_updateUser(newPassword, password, null, user.getUserId());
 
-			_updateUser(null, null, user.getUserId(), null);
+			_updateUser(null, null, null, user.getUserId());
 		}
 
 		_userLocalService.updateEmailAddressVerified(user.getUserId(), false);
@@ -402,7 +402,7 @@ public class UserServiceTest {
 				TestPropsValues.getUser())) {
 
 			_updateUser(
-				RandomTestUtil.randomString(), null, user.getUserId(), null);
+				RandomTestUtil.randomString(), null, null, user.getUserId());
 		}
 	}
 
@@ -463,8 +463,8 @@ public class UserServiceTest {
 				organization.getOrganizationId(), user.getUserId());
 
 			_updateUser(
-				null, null, user.getUserId(),
-				new long[] {organization.getOrganizationId()});
+				null, null, new long[] {organization.getOrganizationId()},
+				user.getUserId());
 
 			// Organization nonmember
 
@@ -474,8 +474,8 @@ public class UserServiceTest {
 				PrincipalException.class,
 				() -> _updateUser(
 					RandomTestUtil.randomString(), null,
-					nonmemberUser.getUserId(),
-					new long[] {organization.getOrganizationId()}));
+					new long[] {organization.getOrganizationId()},
+					nonmemberUser.getUserId()));
 
 			Assert.assertFalse(
 				_userLocalService.hasOrganizationUser(
@@ -490,8 +490,8 @@ public class UserServiceTest {
 	}
 
 	private User _updateUser(
-			String newPassword, String oldPassword, long userId,
-			long[] organizationIds)
+			String newPassword, String oldPassword, long[] organizationIds,
+			long userId)
 		throws Exception {
 
 		User user = _userLocalService.getUser(userId);
