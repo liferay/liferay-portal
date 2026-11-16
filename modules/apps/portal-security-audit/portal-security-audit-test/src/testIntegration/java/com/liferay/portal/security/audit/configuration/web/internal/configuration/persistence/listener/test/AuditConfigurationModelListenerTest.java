@@ -11,7 +11,6 @@ import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.audit.AuditMessage;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
@@ -136,17 +135,16 @@ public class AuditConfigurationModelListenerTest {
 
 		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
 
-		JSONArray jsonArray = JSONUtil.putAll(
-			JSONUtil.put(
-				"name", "pseudonymizationEnabled"
-			).put(
-				"newValue", newValue
-			).put(
-				"oldValue", oldValue
-			));
-
 		JSONAssert.assertEquals(
-			jsonArray.toString(),
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"name", "pseudonymizationEnabled"
+				).put(
+					"newValue", newValue
+				).put(
+					"oldValue", oldValue
+				)
+			).toString(),
 			String.valueOf(additionalInfoJSONObject.getJSONArray("attributes")),
 			true);
 	}
