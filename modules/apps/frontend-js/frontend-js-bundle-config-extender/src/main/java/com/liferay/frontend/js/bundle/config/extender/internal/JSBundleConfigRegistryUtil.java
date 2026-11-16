@@ -8,6 +8,7 @@ package com.liferay.frontend.js.bundle.config.extender.internal;
 import com.liferay.frontend.js.loader.modules.extender.npm.ModuleNameUtil;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -68,13 +69,8 @@ public class JSBundleConfigRegistryUtil {
 	}
 
 	public static String getJavaScript() {
-		Collection<JSConfig> jsConfigs = getJSConfigs();
-
-		StringBundler sb = new StringBundler(jsConfigs.size() * 8);
-
-		appendJavaScript(sb, jsConfigs);
-
-		return sb.toString();
+		return _javaScriptDCLSingleton.getSingleton(
+			JSBundleConfigRegistryUtil::_createJavaScript);
 	}
 
 	public static long getLastModified() {
@@ -99,6 +95,16 @@ public class JSBundleConfigRegistryUtil {
 		private final ServletContext _servletContext;
 		private final URL _url;
 
+	}
+
+	private static String _createJavaScript() {
+		Collection<JSConfig> jsConfigs = getJSConfigs();
+
+		StringBundler sb = new StringBundler(jsConfigs.size() * 8);
+
+		appendJavaScript(sb, jsConfigs);
+
+		return sb.toString();
 	}
 
 	private static String _getModuleMain(JSConfig jsConfig) {
@@ -140,6 +146,8 @@ public class JSBundleConfigRegistryUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		JSBundleConfigRegistryUtil.class);
 
+	private static final DCLSingleton<String> _javaScriptDCLSingleton =
+		new DCLSingleton<>();
 	private static volatile long _lastModified = System.currentTimeMillis();
 	private static final ServiceTrackerList<JSConfig> _serviceTrackerList;
 
@@ -176,6 +184,8 @@ public class JSBundleConfigRegistryUtil {
 			ServletContext servletContext = _bundleContext.getService(
 				serviceReference);
 
+			_javaScriptDCLSingleton.destroy(null);
+
 			_lastModified = System.currentTimeMillis();
 
 			return new JSConfig(servletContext, url);
@@ -194,6 +204,8 @@ public class JSBundleConfigRegistryUtil {
 
 			if (jsConfig != null) {
 				_bundleContext.ungetService(serviceReference);
+
+				_javaScriptDCLSingleton.destroy(null);
 
 				_lastModified = System.currentTimeMillis();
 			}
