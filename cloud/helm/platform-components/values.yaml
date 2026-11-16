@@ -343,6 +343,11 @@ operatorApplications:
                 envoyGateway:
                     extensionApis:
                         enableBackend: false
+                    provider:
+                        kubernetes:
+                            deploy:
+                                type: GatewayNamespace
+                        type: Kubernetes
             crds:
                 enabled: false
             deployment:

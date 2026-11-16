@@ -29,6 +29,9 @@ tests:
                         -   namespaceSelector:
                                 matchLabels:
                                     kubernetes.io/metadata.name: gmp-system
+            -   equal:
+                    path: spec.podSelector.matchLabels["control-plane"]
+                    value: envoy-gateway
         documentSelector:
             path: metadata.name
             value: envoy-gateway-metrics-ingress
