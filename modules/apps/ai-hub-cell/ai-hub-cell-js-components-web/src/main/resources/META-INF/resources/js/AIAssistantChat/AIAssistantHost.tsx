@@ -46,6 +46,9 @@ const AIAssistantHost: React.FC = () => {
 		null
 	);
 
+	const [containerElement, setContainerElement] =
+		useState<HTMLElement | null>(null);
+
 	// Drives Clay's SidePanel open prop. It starts false so the panel mounts
 	// closed and then opens once mounted, letting Clay play its own
 	// slide-in instead of appearing already open.
@@ -88,14 +91,15 @@ const AIAssistantHost: React.FC = () => {
 
 	const activeCommand = command ?? lastCommand;
 	const anchorId = activeCommand?.anchorId;
+	const containerId = activeCommand?.containerId;
 	const startCommand = sessionCommand ?? command;
 	const triggerId = activeCommand?.triggerId;
 
 	const isOpen = command !== null || openedByEvent;
 
 	const collapsible = activeCommand?.presentation === 'dropdown';
-	const showSidebar = isOpen && (!collapsible || expanded);
 	const showDropdown = isOpen && collapsible && !expanded;
+	const showSidebar = isOpen && !containerId && (!collapsible || expanded);
 
 	useEffect(() => {
 		const element = anchorId ? document.getElementById(anchorId) : null;
@@ -104,6 +108,22 @@ const AIAssistantHost: React.FC = () => {
 
 		setAnchorElement(element);
 	}, [anchorId]);
+
+	useEffect(() => {
+		if (!containerId || !isOpen || showDropdown) {
+			setContainerElement(null);
+
+			return;
+		}
+
+		const element = document.getElementById(containerId);
+
+		if (!element) {
+			console.warn(`AI Assistant container ${containerId} was not found`);
+		}
+
+		setContainerElement(element);
+	}, [containerId, isOpen, showDropdown]);
 
 	useEffect(() => {
 		triggerElementRef.current = triggerId
@@ -202,6 +222,29 @@ const AIAssistantHost: React.FC = () => {
 						/>
 					</div>
 				</ClayDropDown.Menu>
+			)}
+
+			{containerElement && (
+				<ReactPortal container={containerElement} wrapper={false}>
+					<div
+						aria-label={Liferay.Language.get('ai-assistant')}
+						className="ai-assistant ai-assistant-chat__embedded-container"
+						role="complementary"
+					>
+						<AIAssistantPanelHeader
+							expanded
+							onClose={handleClose}
+							onToggleExpanded={
+								collapsible ? handleCollapse : undefined
+							}
+						/>
+
+						<div
+							className="ai-assistant-chat__body-slot"
+							ref={mountBodyNode}
+						/>
+					</div>
+				</ReactPortal>
 			)}
 
 			{sidebarMounted && (
