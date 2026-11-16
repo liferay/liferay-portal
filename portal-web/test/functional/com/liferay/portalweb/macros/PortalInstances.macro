@@ -1,7 +1,7 @@
 definition {
 
 	@summary = "Default summary"
-	macro addCP(maxUserNumber = null, instanceAdminLastName = null, maxUsers = null, portalInstanceActive = null, instanceAdminFirstName = null, webId = null, mailDomain = null, instanceScreenName = null, instancePassword = null, virtualHost = null, instanceAdminEmail = null, synchronousCreation = null) {
+	macro addCP(maxUserNumber = null, instanceAdminLastName = null, maxUsers = null, portalInstanceActive = null, instanceAdminFirstName = null, webId = null, mailDomain = null, instanceScreenName = null, instancePassword = null, virtualHost = null, instanceAdminEmail = null) {
 		WaitForElementPresent(locator1 = "Button#PLUS");
 
 		var virtualInstancesAdminURL = Navigator.getCurrentURL();
@@ -70,64 +70,56 @@ definition {
 
 		Button.clickAdd();
 
-		if (${synchronousCreation} == "true") {
+		Alert.viewInfoMessageSpecific(infoMessage = "The instance ${webId} is being created. You will be notified when it finishes.");
 
-			// Bundles that predate LPD-93373 create the instance before the modal closes and show no creation alert. Remove once the upgrade source bundle includes LPD-93373. Needed for LPD-110381.
+		WaitForElementNotPresent(locator1 = "IFrame#MODAL_BODY");
 
-			WaitForElementNotPresent(locator1 = "IFrame#MODAL_BODY");
+		var key_contentBody = "The instance ${webId} is ready to use.";
+
+		Navigator.gotoNotifications();
+
+		while ((!(IsElementPresent(locator1 = "Notifications#NOTIFICATIONS_CONTENT"))) && (maxIterations = "60")) {
+
+			// Wait for the asynchronous creation to finish. The instance is listed as soon as its company row commits, so the notification is the only signal that the initialization is done. Needed for LPD-93373.
+
+			Pause(value1 = 5000);
+
+			Refresh();
 		}
-		else {
-			Alert.viewInfoMessageSpecific(infoMessage = "The instance ${webId} is being created. You will be notified when it finishes.");
 
-			WaitForElementNotPresent(locator1 = "IFrame#MODAL_BODY");
+		AssertElementPresent(locator1 = "Notifications#NOTIFICATIONS_CONTENT");
 
-			var key_contentBody = "The instance ${webId} is ready to use.";
+		var companyId = JSONCompany.getCompanyId(portalInstanceName = ${virtualHost});
 
-			Navigator.gotoNotifications();
+		if (!(isSet(port))) {
+			var port = 8080;
+		}
 
-			while ((!(IsElementPresent(locator1 = "Notifications#NOTIFICATIONS_CONTENT"))) && (maxIterations = "60")) {
+		var javaScript = '''
+		if (typeof Liferay === "undefined") {
+			return "";
+		}
 
-				// Wait for the asynchronous creation to finish. The instance is listed as soon as its company row commits, so the notification is the only signal that the initialization is done. Needed for LPD-93373.
+		return Liferay.ThemeDisplay.getCompanyId();
+		''';
 
-				Pause(value1 = 5000);
+		Navigator.openSpecificURL(url = "http://${virtualHost}:${port}/web/guest");
 
-				Refresh();
-			}
+		var instanceCompanyId = selenium.getEval(${javaScript});
 
-			AssertElementPresent(locator1 = "Notifications#NOTIFICATIONS_CONTENT");
+		while ((${instanceCompanyId} != ${companyId}) && (maxIterations = "60")) {
 
-			var companyId = JSONCompany.getCompanyId(portalInstanceName = ${virtualHost});
+			// Wait until the new instance serves its own guest site. The notification is sent before the instance initializes its sites. Needed for LPD-112057.
 
-			if (!(isSet(port))) {
-				var port = 8080;
-			}
-
-			var javaScript = '''
-			if (typeof Liferay === "undefined") {
-				return "";
-			}
-
-			return Liferay.ThemeDisplay.getCompanyId();
-			''';
+			Pause(value1 = 5000);
 
 			Navigator.openSpecificURL(url = "http://${virtualHost}:${port}/web/guest");
 
 			var instanceCompanyId = selenium.getEval(${javaScript});
+		}
 
-			while ((${instanceCompanyId} != ${companyId}) && (maxIterations = "60")) {
-
-				// Wait until the new instance serves its own guest site. The notification is sent before the instance initializes its sites. Needed for LPD-112057.
-
-				Pause(value1 = 5000);
-
-				Navigator.openSpecificURL(url = "http://${virtualHost}:${port}/web/guest");
-
-				var instanceCompanyId = selenium.getEval(${javaScript});
-			}
-
-			if (${instanceCompanyId} != ${companyId}) {
-				fail("The instance ${webId} did not serve its guest site at ${virtualHost}.");
-			}
+		if (${instanceCompanyId} != ${companyId}) {
+			fail("The instance ${webId} did not serve its guest site at ${virtualHost}.");
 		}
 
 		Navigator.openSpecificURL(url = ${virtualInstancesAdminURL});
