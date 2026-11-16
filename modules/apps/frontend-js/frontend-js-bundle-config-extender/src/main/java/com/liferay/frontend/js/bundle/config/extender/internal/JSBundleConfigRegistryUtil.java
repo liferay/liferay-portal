@@ -191,13 +191,11 @@ public class JSBundleConfigRegistryUtil {
 			ServiceReference<ServletContext> serviceReference,
 			JSConfig jsConfig) {
 
-			if (jsConfig != null) {
-				_bundleContext.ungetService(serviceReference);
+			_bundleContext.ungetService(serviceReference);
 
-				_javaScriptDCLSingleton.destroy(null);
+			_javaScriptDCLSingleton.destroy(null);
 
-				_lastModified = System.currentTimeMillis();
-			}
+			_lastModified = System.currentTimeMillis();
 		}
 
 		private final BundleContext _bundleContext;
