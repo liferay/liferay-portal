@@ -1252,6 +1252,177 @@ test.describe('Operations section', () => {
 	);
 
 	test(
+		'Lists the overdue tasks of the selected space and opens the Tasks page from View All',
+		{tag: '@LPD-109713'},
+		async ({apiHelpers, page}) => {
+			const cmpProjectObjectDefinition =
+				await apiHelpers.objectAdmin.getObjectDefinitionByName(
+					'CMPProject'
+				);
+
+			test.skip(
+				Boolean(cmpProjectObjectDefinition),
+				'CMP overrides the CMS /tasks page with its own tabbed UI (LPD-112720).'
+			);
+
+			await performUserSwitchViaApi(page, 'test');
+
+			const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.getObjectDefinitionByName(
+					'CMSBasicWebContent'
+				);
+
+			const workflowDefinition =
+				await apiHelpers.headlessAdminWorkflow.getWorkflowDefinitionByName(
+					'Single Approver'
+				);
+
+			await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionLink(
+				objectDefinition.className,
+				space.siteId,
+				workflowDefinition.id,
+				workflowDefinition.name,
+				Number(workflowDefinition.version)
+			);
+
+			const overdueTitle = `Overdue ${getRandomString()}`;
+			const pendingTitle = `Pending ${getRandomString()}`;
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: pendingTitle,
+				},
+				APPLICATION_NAME,
+				space.name
+			);
+
+			const overdueObjectEntry =
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+						title: overdueTitle,
+					},
+					APPLICATION_NAME,
+					space.name
+				);
+
+			let overdueWorkflowTask;
+
+			await expect(async () => {
+				overdueWorkflowTask =
+					await apiHelpers.headlessAdminWorkflow.getWorkflowTaskByAsset(
+						objectDefinition.className,
+						String(overdueObjectEntry.id)
+					);
+
+				expect(overdueWorkflowTask).toBeTruthy();
+			}).toPass();
+
+			const userAccount =
+				await apiHelpers.headlessAdminUser.getMyUserAccount();
+
+			await apiHelpers.headlessAdminWorkflow.postAssignTaskToUser(
+				overdueWorkflowTask.id,
+				userAccount.id
+			);
+
+			await apiHelpers.headlessAdminWorkflow.postWorkflowTaskUpdateDueDate(
+				overdueWorkflowTask.id,
+				new Date(Date.parse(overdueWorkflowTask.dateCreated) + 1000)
+			);
+
+			await page.clock.install({time: Date.now() + 2 * 60 * 1000});
+
+			const overdueTasksCard = page.getByRole('button', {
+				name: /^Overdue Tasks/,
+			});
+
+			await test.step('Check the overdue tasks count for the space', async () => {
+				await expect(async () => {
+					await page.goto('/web/cms/dashboard');
+
+					await selectSpace(page, space.name);
+
+					await expect(overdueTasksCard).toContainText(
+						'50% of 2 Workflow Tasks'
+					);
+				}).toPass();
+			});
+
+			await test.step('Open the overdue tasks list', async () => {
+				await overdueTasksCard.click();
+
+				const overdueTasksList = page.getByRole('region', {
+					name: 'Overdue Tasks',
+				});
+
+				await expect(
+					overdueTasksList.getByRole('link', {name: overdueTitle})
+				).toBeVisible();
+				await expect(overdueTasksList).toContainText(
+					`Review · ${userAccount.name} · 0 Days Overdue`
+				);
+				await expect(overdueTasksList).toContainText(
+					'Showing 1 of 1 Items'
+				);
+				await expect(
+					overdueTasksList.getByText(pendingTitle)
+				).toBeHidden();
+			});
+
+			await test.step('Show the same actions as the Tasks page', async () => {
+				await page
+					.getByRole('region', {name: 'Overdue Tasks'})
+					.getByRole('button', {name: /actions/i})
+					.click();
+
+				for (const name of [
+					'Approve',
+					'View',
+					'Assign to...',
+					'Update Due Date',
+				]) {
+					await expect(
+						page.getByRole('menuitem', {exact: true, name})
+					).toBeVisible();
+				}
+
+				for (const name of ['Assign to Me', 'Delete', 'Edit']) {
+					await expect(
+						page.getByRole('menuitem', {exact: true, name})
+					).toBeHidden();
+				}
+
+				await page.keyboard.press('Escape');
+			});
+
+			await test.step('Open the Tasks page filtered by overdue', async () => {
+				await page
+					.getByRole('link', {name: 'View All Overdue Tasks'})
+					.click();
+
+				await expect(page).toHaveURL(
+					/cms\/tasks\?.*tasksSection_fdsConfig=.*dueDate/
+				);
+
+				await expect(
+					page.getByRole('button', {name: /^\d+\s*Overdue$/})
+				).toHaveAttribute('aria-pressed', 'true');
+
+				await expect(
+					page.getByRole('row').filter({hasText: overdueTitle})
+				).toBeVisible();
+				await expect(
+					page.getByRole('row').filter({hasText: pendingTitle})
+				).toBeHidden();
+			});
+		}
+	);
+
+	test(
 		'Lists the drafts of the selected space not modified for more than 30 days',
 		{tag: '@LPD-101600'},
 		async ({apiHelpers, browser, page}) => {
