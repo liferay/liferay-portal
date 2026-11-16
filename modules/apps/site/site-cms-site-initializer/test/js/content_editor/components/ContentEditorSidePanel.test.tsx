@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import CategorizationSuggestionService from '../../../../src/main/resources/META-INF/resources/js/common/services/CategorizationSuggestionService';
+import VocabularyService from '../../../../src/main/resources/META-INF/resources/js/common/services/VocabularyService';
 import ContentEditorSidePanel from '../../../../src/main/resources/META-INF/resources/js/content_editor/components/ContentEditorSidePanel';
 import ObjectEntryService from '../../../../src/main/resources/META-INF/resources/js/main_view/info_panel/services/ObjectEntryService';
 import {mockFetch} from '../../__mocks__/frontend-js-web';
@@ -34,8 +35,15 @@ jest.mock(
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/common/services/CategorizationSuggestionService'
 );
+jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/common/services/VocabularyService'
+);
 
-const renderComponent = ({cmpEnabled = true, isSubscribed = false} = {}) => {
+const renderComponent = ({
+	cmpEnabled = true,
+	expirationDate = EXPIRATION_DATE,
+	isSubscribed = false,
+} = {}) => {
 	return render(
 		<ContentEditorSidePanel
 			addCommentURL="addCommentURL"
@@ -49,7 +57,7 @@ const renderComponent = ({cmpEnabled = true, isSubscribed = false} = {}) => {
 			editCommentURL="editCommentURL"
 			editorConfig={{}}
 			entryClassName=""
-			expirationDate={EXPIRATION_DATE}
+			expirationDate={expirationDate}
 			getCommentsURL="getCommentsURL"
 			hasUpdatePermission={true}
 			id="contentId"
@@ -62,6 +70,40 @@ const renderComponent = ({cmpEnabled = true, isSubscribed = false} = {}) => {
 	);
 };
 
+const renderToPublish = async ({expirationDate}: {expirationDate: string}) => {
+	const listeners: Array<(payload: {event: Event}) => void> = [];
+
+	(global as any).Liferay.on = (
+		name: string,
+		listener: (payload: {event: Event}) => void
+	) => {
+		if (name === 'contentEditor:validateForm') {
+			listeners.push(listener);
+		}
+	};
+
+	(global as any).Liferay.detach = (
+		name: string,
+		listener: (payload: {event: Event}) => void
+	) => {
+		listeners.splice(listeners.indexOf(listener), 1);
+	};
+
+	await act(async () => {
+		renderComponent({expirationDate});
+	});
+
+	return () => {
+		const event = new MouseEvent('click', {cancelable: true});
+
+		act(() => {
+			listeners.forEach((listener) => listener({event}));
+		});
+
+		return event;
+	};
+};
+
 describe('ContentEditorSidePanel', () => {
 	beforeEach(() => {
 		global.Liferay.ThemeDisplay.getTimeZone = jest
@@ -70,6 +112,10 @@ describe('ContentEditorSidePanel', () => {
 		global.Liferay.ThemeDisplay.getSiteGroupId = jest
 			.fn()
 			.mockReturnValue('21000');
+
+		(
+			VocabularyService.getRequiredVocabularies as jest.Mock
+		).mockResolvedValue([]);
 
 		(ObjectEntryService.getObjectEntry as jest.Mock).mockResolvedValue({
 			data: {
@@ -350,6 +396,38 @@ describe('ContentEditorSidePanel', () => {
 				screen.getByRole('textbox', {name: 'expiration-date'})
 			).toHaveValue('08/14/2025 12:01 AM');
 		});
+	});
+
+	it('opens the schedule panel with an error when publishing with a past expiration date', async () => {
+		const publish = await renderToPublish({
+			expirationDate: '2020-01-01T00:00',
+		});
+
+		expect(
+			screen.queryByRole('textbox', {name: 'expiration-date'})
+		).not.toBeInTheDocument();
+
+		const event = publish();
+
+		expect(event.defaultPrevented).toBe(true);
+
+		await waitFor(() => {
+			expect(
+				screen.getByRole('textbox', {name: 'expiration-date'})
+			).toBeInTheDocument();
+		});
+
+		expect(
+			screen.getByText('the-date-entered-is-in-the-past')
+		).toBeInTheDocument();
+	});
+
+	it('publishes with a future expiration date', async () => {
+		const publish = await renderToPublish({
+			expirationDate: `${new Date().getFullYear() + 1}-01-01T00:00`,
+		});
+
+		expect(publish().defaultPrevented).toBe(false);
 	});
 
 	it('renders ContentEditorSidePanel', () => {
