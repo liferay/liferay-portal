@@ -307,7 +307,7 @@ public class SecretResolverImpl implements SecretResolver {
 
 		throw new SecretException(
 			StringBundler.concat(
-				"Unable to ", operation, " the key reference \"", identifier,
+				"Unable to ", operation, " the secret reference \"", identifier,
 				"\" in this secret context"));
 	}
 

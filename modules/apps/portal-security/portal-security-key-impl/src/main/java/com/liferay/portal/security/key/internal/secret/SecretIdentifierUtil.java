@@ -45,7 +45,7 @@ public class SecretIdentifierUtil {
 
 		if (Validator.isNotNull(portletInstanceId)) {
 			return _getSecretIdentifier(
-				key, configurationPid,
+				configurationPid, key,
 				ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE,
 				portletInstanceId);
 		}
@@ -56,7 +56,7 @@ public class SecretIdentifierUtil {
 
 		if (groupId > 0) {
 			return _getSecretIdentifier(
-				key, configurationPid,
+				configurationPid, key,
 				ExtendedObjectClassDefinition.Scope.GROUP, groupId);
 		}
 
@@ -64,12 +64,12 @@ public class SecretIdentifierUtil {
 
 		if (companyId != CompanyConstants.SYSTEM) {
 			return _getSecretIdentifier(
-				key, configurationPid,
+				configurationPid, key,
 				ExtendedObjectClassDefinition.Scope.COMPANY, companyId);
 		}
 
 		return _getSecretIdentifier(
-			key, configurationPid, ExtendedObjectClassDefinition.Scope.SYSTEM,
+			configurationPid, key, ExtendedObjectClassDefinition.Scope.SYSTEM,
 			CompanyConstants.SYSTEM);
 	}
 
@@ -87,12 +87,12 @@ public class SecretIdentifierUtil {
 	}
 
 	private static String _getSecretIdentifier(
-		String key, String pid, ExtendedObjectClassDefinition.Scope scope,
-		Object scopePrimaryKey) {
+		String configurationPid, String key,
+		ExtendedObjectClassDefinition.Scope scope, Object scopePK) {
 
 		return StringBundler.concat(
-			"config/", pid, StringPool.SLASH, scope.getValue(),
-			StringPool.SLASH, scopePrimaryKey, StringPool.SLASH, key);
+			"config/", configurationPid, StringPool.SLASH, scope.getValue(),
+			StringPool.SLASH, scopePK, StringPool.SLASH, key);
 	}
 
 }
