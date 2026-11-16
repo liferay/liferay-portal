@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.Inject;
 
 import java.io.Serializable;
@@ -94,6 +95,30 @@ public class CatalogResourceTest extends BaseCatalogResourceTestCase {
 		super.testGetCatalogsPage();
 
 		_testGetCatalogsPageWithExportImportDescriptorFilter();
+	}
+
+	@Override
+	@Test
+	public void testGetCatalogsPageWithFilterDateTimeEquals() throws Exception {
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		Catalog catalog = testGetCatalogsPage_addCatalog(randomCatalog());
+
+		for (EntityField entityField : entityFields) {
+			Page<Catalog> page = catalogResource.getCatalogsPage(
+				null, getFilterString(entityField, "between", catalog),
+				Pagination.of(1, 10), null);
+
+			List<Long> ids = TransformUtil.transform(
+				page.getItems(), Catalog::getId);
+
+			Assert.assertTrue(ids.contains(catalog.getId()));
+		}
 	}
 
 	@Override
