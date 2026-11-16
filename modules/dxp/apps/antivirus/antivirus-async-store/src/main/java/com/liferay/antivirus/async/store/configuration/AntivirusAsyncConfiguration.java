@@ -7,6 +7,7 @@ package com.liferay.antivirus.async.store.configuration;
 
 import aQute.bnd.annotation.metatype.Meta;
 
+import com.liferay.portal.configuration.metatype.annotations.ExtendedAttributeDefinition;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
 /**
@@ -32,6 +33,9 @@ public interface AntivirusAsyncConfiguration {
 	)
 	public int maximumQueueSize();
 
+	@ExtendedAttributeDefinition(
+		descriptionArguments = {"5", "5", "10", "20", "40", "80"}
+	)
 	@Meta.AD(
 		deflt = "0 0/5 * * * ?", description = "retry-cron-expression-help",
 		name = "retry-cron-expression", required = false
