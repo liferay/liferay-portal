@@ -229,6 +229,20 @@ public class KBArticleServiceTest {
 					kbArticle.getResourcePrimKey(),
 					draftKBArticle.getVersion()));
 		}
+
+		KBArticle deniedKBArticle = _kbArticleLocalService.updateStatus(
+			TestPropsValues.getUserId(), kbArticle.getResourcePrimKey(),
+			WorkflowConstants.STATUS_DENIED, _serviceContext);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_siteMemberUser)) {
+
+			Assert.assertEquals(
+				deniedKBArticle,
+				_kbArticleService.getKBArticle(
+					kbArticle.getResourcePrimKey(),
+					deniedKBArticle.getVersion()));
+		}
 	}
 
 	@Test
