@@ -263,6 +263,43 @@ public class TaxonomyCategoryResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-108724")
+	public void testGetTaxonomyCategoriesRankedPage() throws Exception {
+		super.testGetTaxonomyCategoriesRankedPage();
+
+		Page<TaxonomyCategory> page =
+			taxonomyCategoryResource.getTaxonomyCategoriesRankedPage(
+				testGroup.getGroupId(), Pagination.of(1, 10));
+
+		long totalCount = page.getTotalCount();
+
+		TaxonomyCategory taxonomyCategory1 =
+			testGetTaxonomyCategoriesRankedPage_addTaxonomyCategory(
+				randomTaxonomyCategory());
+
+		TaxonomyCategory taxonomyCategory2 =
+			testPostTaxonomyCategoryTaxonomyCategory_addTaxonomyCategory(
+				randomTaxonomyCategory());
+
+		page = taxonomyCategoryResource.getTaxonomyCategoriesRankedPage(
+			testGroup.getGroupId(), Pagination.of(1, (int)totalCount + 2));
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(
+			taxonomyCategory1, (List<TaxonomyCategory>)page.getItems());
+		assertContains(
+			taxonomyCategory2, (List<TaxonomyCategory>)page.getItems());
+
+		taxonomyCategoryResource.deleteTaxonomyCategory(
+			taxonomyCategory1.getId());
+
+		taxonomyCategoryResource.deleteTaxonomyCategory(
+			taxonomyCategory2.getId());
+	}
+
+	@Override
+	@Test
 	public void testGetTaxonomyCategory() throws Exception {
 		super.testGetTaxonomyCategory();
 
