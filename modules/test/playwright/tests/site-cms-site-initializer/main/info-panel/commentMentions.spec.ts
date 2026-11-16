@@ -9,6 +9,7 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {notificationsPagesTest} from '../../../../fixtures/notificationsPagesTest';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
@@ -359,5 +360,77 @@ test(
 				hasText: 'No people are available to mention.',
 			})
 		).toBeAttached();
+	}
+);
+
+test(
+	'Tell that the highlighted comment is no longer available when it was deleted',
+	{tag: '@LPD-115057'},
+	async ({apiHelpers, assetsPage, infoPanelPage, page}) => {
+		const commentText = getRandomString();
+		const title = getRandomString();
+
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title,
+			},
+			'cms/basic-web-contents',
+			space.name
+		);
+
+		await assetsPage.gotoAll();
+
+		await assetsPage.execItemAction({
+			action: 'Show Details',
+			filter: title,
+		});
+
+		await infoPanelPage.selectTab('Comments').click();
+
+		await page.getByLabel('Add Comment.').first().click();
+
+		await page.keyboard.type(commentText);
+
+		const responsePromise = page.waitForResponse(
+			'**/add_content_item_comment**'
+		);
+
+		await page
+			.getByRole('button', {exact: true, name: 'Save'})
+			.first()
+			.click();
+
+		const {commentId} = await (await responsePromise).json();
+
+		await waitForAlert(page, 'Success:Your comment has been posted.', {
+			autoClose: true,
+		});
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem').filter({hasText: 'delete'}),
+			trigger: page
+				.locator('article')
+				.filter({hasText: commentText})
+				.getByTitle('actions'),
+		});
+
+		await waitForAlert(page, 'Success:Your comment has been deleted.', {
+			autoClose: true,
+		});
+
+		await page.goto(
+			`/web/cms/view-asset?objectEntryId=${objectEntry.id}&messageId=${commentId}`
+		);
+
+		await expect(
+			page.getByText('This comment is no longer available.')
+		).toBeVisible();
+		await expect(page.locator('article[aria-current="true"]')).toHaveCount(
+			0
+		);
 	}
 );
