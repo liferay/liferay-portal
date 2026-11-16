@@ -91,12 +91,15 @@ public class LayoutModelPreFilterContributor
 
 		if (!ArrayUtil.contains(statuses, WorkflowConstants.STATUS_ANY)) {
 			booleanFilter.add(
-				_getStatusesFilter(searchContext.getGroupIds(), statuses),
+				_getStatusOrLaunchDraftFilter(
+					searchContext.getGroupIds(), statuses),
 				BooleanClauseOccur.MUST);
 		}
 	}
 
-	private Filter _getStatusesFilter(long[] groupIds, int[] statuses) {
+	private Filter _getStatusOrLaunchDraftFilter(
+		long[] groupIds, int[] statuses) {
+
 		TermsFilter statusesTermsFilter = new TermsFilter(Field.STATUS);
 
 		statusesTermsFilter.addValues(ArrayUtil.toStringArray(statuses));
@@ -118,20 +121,11 @@ public class LayoutModelPreFilterContributor
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 
-		BooleanFilter launchDraftFilter = new BooleanFilter();
-
-		launchDraftFilter.add(
-			new TermFilter(
-				Field.STATUS, String.valueOf(WorkflowConstants.STATUS_DRAFT)),
-			BooleanClauseOccur.MUST);
-
 		TermsFilter classPKsTermsFilter = new TermsFilter(Field.ENTRY_CLASS_PK);
 
 		classPKsTermsFilter.addValues(ArrayUtil.toStringArray(classPKs));
 
-		launchDraftFilter.add(classPKsTermsFilter, BooleanClauseOccur.MUST);
-
-		booleanFilter.add(launchDraftFilter, BooleanClauseOccur.SHOULD);
+		booleanFilter.add(classPKsTermsFilter, BooleanClauseOccur.SHOULD);
 
 		booleanFilter.add(statusesTermsFilter, BooleanClauseOccur.SHOULD);
 
