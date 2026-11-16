@@ -127,6 +127,7 @@ describe('EditFolder', () => {
 			expect(updateFolderSpy).toHaveBeenCalledWith({
 				description: 'Updated Description',
 				id: 123,
+				label: 'Updated Folder Name',
 				title: 'Updated Folder Name',
 			});
 		});
