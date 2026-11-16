@@ -118,7 +118,6 @@ public class CommerceChannelLocalServiceImpl
 		_validateName(name);
 
 		_validateSiteGroupId(user.getCompanyId(), 0, siteGroupId);
-
 		_validateType(type);
 
 		commerceChannel.setExternalReferenceCode(externalReferenceCode);
