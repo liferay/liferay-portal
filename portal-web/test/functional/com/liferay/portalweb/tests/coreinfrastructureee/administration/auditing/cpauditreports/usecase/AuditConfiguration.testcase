@@ -63,57 +63,6 @@ definition {
 		AuditLog.viewLogFileContent(logString = '''"LOGOUT","${userId}","Test Test"''');
 	}
 
-	@description = "This test Audit can be enabled or disabled through System Settings and OSGI config file."
-	@priority = 4
-	test CanEnableOrDisableAudit {
-		property osgi.module.configuration.file.names = "com.liferay.portal.security.audit.configuration.AuditConfiguration.config:com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration.config";
-		property osgi.module.configurations = "enabled=\"false\":bufferSize=\"0\"";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		ApplicationsMenu.gotoRootPortlet(
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Audit",
-			configurationName = "Audit",
-			configurationScope = "System Scope");
-
-		FormFields.viewCheckboxNotChecked(fieldName = "enabled");
-
-		Audit.openAuditAdmin();
-
-		AssertElementNotPresent(locator1 = "AuditReports#REPORTS_TABLE_RESOURCE_ACTION");
-
-		ApplicationsMenu.gotoRootPortlet(
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Audit",
-			configurationName = "Audit",
-			configurationScope = "System Scope");
-
-		FormFields.enableCheckbox(fieldName = "enabled");
-
-		SystemSettings.saveConfiguration();
-
-		User.logoutPG();
-
-		User.firstLoginUI(
-			password = PropsUtil.get("default.admin.password"),
-			userEmailAddress = "test@liferay.com");
-
-		Audit.openAuditAdmin();
-
-		AssertTextEquals(
-			key_resourceAction = "LOGIN",
-			key_resourceName = "User",
-			locator1 = "AuditReports#REPORTS_TABLE_RESOURCE_ACTION",
-			value1 = "LOGIN");
-	}
-
 	@description = "This test Audit log can be disabled to persist in database table Audit_AuditEvent through System Settings or OSGI config file"
 	@priority = 4
 	test CanEnableOrDisableDatabasePersistence {

@@ -5,10 +5,12 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {instanceSettingsPagesTest} from '../../../fixtures/instanceSettingsPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
+import {performLoginViaApi} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
 const test = mergeTests(
@@ -27,6 +29,7 @@ const testWithFeatureFlag = mergeTests(
 );
 
 const testWithoutFeatureFlag = mergeTests(
+	apiHelpersTest,
 	featureFlagsTest({
 		'LPD-6417': {enabled: false},
 	}),
@@ -127,6 +130,76 @@ testWithFeatureFlag(
 		await expect(page.getByLabel('Pseudonymization Enabled')).toBeChecked();
 	}
 );
+
+testWithoutFeatureFlag.describe('Audit system configuration', () => {
+	testWithoutFeatureFlag.afterEach(async ({page, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
+
+		await page.getByLabel('Enabled', {exact: true}).setChecked(true);
+
+		await systemSettingsPage.saveAndWaitForAlert();
+	});
+
+	testWithoutFeatureFlag(
+		'Assert that audit events are recorded only while audit is enabled on the system scope',
+		async ({apiHelpers, browser, page, systemSettingsPage}) => {
+			const startDate = new Date().toISOString();
+
+			const userAccount =
+				await apiHelpers.headlessAdminUser.postUserAccount();
+
+			const getLoginAuditEvents = async () => {
+				const {items} = await apiHelpers.get(
+					`${apiHelpers.baseUrl}audit/v1.0/audit-events?eventType=LOGIN&pageSize=100&startDate=${encodeURIComponent(startDate)}`
+				);
+
+				return items.filter(
+					(auditEvent: {entityId: number}) =>
+						auditEvent.entityId === Number(userAccount.id)
+				);
+			};
+
+			const loginAsUserAccount = async () => {
+				const context = await browser.newContext();
+
+				try {
+					await performLoginViaApi({
+						page: await context.newPage(),
+						password: 'test',
+						screenName: userAccount.alternateName,
+					});
+				}
+				finally {
+					await context.close();
+				}
+			};
+
+			await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
+
+			await page.getByLabel('Enabled', {exact: true}).setChecked(false);
+
+			await systemSettingsPage.saveAndWaitForAlert();
+
+			await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
+
+			await expect(
+				page.getByLabel('Enabled', {exact: true})
+			).not.toBeChecked();
+
+			await loginAsUserAccount();
+
+			expect(await getLoginAuditEvents()).toHaveLength(0);
+
+			await page.getByLabel('Enabled', {exact: true}).setChecked(true);
+
+			await systemSettingsPage.saveAndWaitForAlert();
+
+			await loginAsUserAccount();
+
+			await expect.poll(getLoginAuditEvents).toHaveLength(1);
+		}
+	);
+});
 
 test.describe('File System Processor instance configuration', () => {
 	let defaultOutputDirectory: string;
