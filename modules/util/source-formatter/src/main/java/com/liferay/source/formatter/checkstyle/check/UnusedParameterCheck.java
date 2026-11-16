@@ -56,10 +56,10 @@ public class UnusedParameterCheck extends BaseCheck {
 			return;
 		}
 
-		List<DetailAST> parameterDefinitionDetailASTs = getParameterDefs(
+		List<DetailAST> parameterDefDetailASTs = getParameterDefs(
 			childDetailAST);
 
-		if (parameterDefinitionDetailASTs.isEmpty()) {
+		if (parameterDefDetailASTs.isEmpty()) {
 			return;
 		}
 
@@ -74,14 +74,13 @@ public class UnusedParameterCheck extends BaseCheck {
 
 		List<String> names = getNames(slistDetailAST, true);
 
-		for (DetailAST parameterDefinitionDetailAST :
-				parameterDefinitionDetailASTs) {
+		for (DetailAST parameterDefDetailAST : parameterDefDetailASTs) {
 
-			String parameterName = getName(parameterDefinitionDetailAST);
+			String parameterName = getName(parameterDefDetailAST);
 
 			if (names.contains(parameterName) ||
 				AnnotationUtil.containsAnnotation(
-					parameterDefinitionDetailAST, "Reference")) {
+					parameterDefDetailAST, "Reference")) {
 
 				continue;
 			}
