@@ -90,8 +90,8 @@ public class LaunchSetPublishBackgroundTaskExecutor
 		if (launchSetObjectEntry.getStatus() ==
 				WorkflowConstants.STATUS_APPROVED) {
 
-			String message =
-				"Launch set " + launchSetId + " was already published";
+			String message = StringBundler.concat(
+				"Launch set ", launchSetId, " was already published");
 
 			_log.error(message);
 
@@ -104,8 +104,8 @@ public class LaunchSetPublishBackgroundTaskExecutor
 			(launchSetObjectEntry.getStatus() !=
 				WorkflowConstants.STATUS_SCHEDULED)) {
 
-			String message =
-				"Launch set " + launchSetId + " is no longer scheduled";
+			String message = StringBundler.concat(
+				"Launch set ", launchSetId, " is no longer scheduled");
 
 			_log.error(message);
 
