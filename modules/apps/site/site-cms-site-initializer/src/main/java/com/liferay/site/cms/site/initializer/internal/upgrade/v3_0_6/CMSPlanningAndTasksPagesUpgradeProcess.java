@@ -5,7 +5,9 @@
 
 package com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_6;
 
-import com.liferay.layout.importer.LayoutsImporter;
+import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
@@ -14,7 +16,6 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -56,12 +57,12 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 
 	public CMSPlanningAndTasksPagesUpgradeProcess(
 		CompanyLocalService companyLocalService,
+		FragmentEntryLinkLocalService fragmentEntryLinkLocalService,
 		GroupLocalService groupLocalService,
 		LayoutLocalService layoutLocalService,
 		LayoutPageTemplateEntryLocalService layoutPageTemplateEntryLocalService,
 		LayoutPageTemplateStructureLocalService
 			layoutPageTemplateStructureLocalService,
-		LayoutsImporter layoutsImporter,
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		RoleLocalService roleLocalService,
 		SegmentsExperienceLocalService segmentsExperienceLocalService,
@@ -70,13 +71,13 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 		UserLocalService userLocalService) {
 
 		_companyLocalService = companyLocalService;
+		_fragmentEntryLinkLocalService = fragmentEntryLinkLocalService;
 		_groupLocalService = groupLocalService;
 		_layoutLocalService = layoutLocalService;
 		_layoutPageTemplateEntryLocalService =
 			layoutPageTemplateEntryLocalService;
 		_layoutPageTemplateStructureLocalService =
 			layoutPageTemplateStructureLocalService;
-		_layoutsImporter = layoutsImporter;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
 		_roleLocalService = roleLocalService;
 		_segmentsExperienceLocalService = segmentsExperienceLocalService;
@@ -136,27 +137,23 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 		LayoutStructure layoutStructure = LayoutStructure.of(
 			layoutPageTemplateStructure.getData(segmentsExperienceId));
 
-		_layoutsImporter.importPageElement(
-			layout.getUserId(), layout, layoutStructure,
-			layoutStructure.getMainItemId(),
-			JSONUtil.put(
-				"definition",
-				JSONUtil.put(
-					"fragment",
-					JSONUtil.put(
-						"key",
-						ViewTasksJSPSectionFragmentRenderer.class.getName())
-				).put(
-					"fragmentConfig", JSONFactoryUtil.createJSONObject()
-				).put(
-					"fragmentFields", JSONFactoryUtil.createJSONArray()
-				).put(
-					"indexed", true
-				)
-			).put(
-				"type", "Fragment"
-			).toString(),
-			0, true, segmentsExperienceId);
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, layout.getUserId(), layout.getGroupId(), null, null, null,
+				segmentsExperienceId, layout.getPlid(), StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				JSONFactoryUtil.getNullJSON(), StringPool.BLANK, 0,
+				ViewTasksJSPSectionFragmentRenderer.class.getName(),
+				FragmentConstants.TYPE_COMPONENT, new ServiceContext());
+
+		layoutStructure.addFragmentStyledLayoutStructureItem(
+			fragmentEntryLink.getFragmentEntryLinkId(),
+			layoutStructure.getMainItemId(), 0);
+
+		_layoutPageTemplateStructureLocalService.
+			updateLayoutPageTemplateStructureData(
+				layout.getUserId(), layout.getGroupId(), layout.getPlid(),
+				segmentsExperienceId, layoutStructure.toString());
 	}
 
 	private String _getLayoutTypeSettings(Layout layout) {
@@ -367,13 +364,13 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 	}
 
 	private final CompanyLocalService _companyLocalService;
+	private final FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 	private final GroupLocalService _groupLocalService;
 	private final LayoutLocalService _layoutLocalService;
 	private final LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
 	private final LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
-	private final LayoutsImporter _layoutsImporter;
 	private final ResourcePermissionLocalService
 		_resourcePermissionLocalService;
 	private final RoleLocalService _roleLocalService;

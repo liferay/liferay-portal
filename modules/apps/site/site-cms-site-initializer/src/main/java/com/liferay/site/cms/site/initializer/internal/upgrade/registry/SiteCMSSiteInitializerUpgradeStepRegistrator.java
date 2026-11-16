@@ -6,7 +6,6 @@
 package com.liferay.site.cms.site.initializer.internal.upgrade.registry;
 
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
-import com.liferay.layout.importer.LayoutsImporter;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -111,9 +110,10 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 		registry.register(
 			"3.0.5", "3.0.6",
 			new CMSPlanningAndTasksPagesUpgradeProcess(
-				_companyLocalService, _groupLocalService, _layoutLocalService,
+				_companyLocalService, _fragmentEntryLinkLocalService,
+				_groupLocalService, _layoutLocalService,
 				_layoutPageTemplateEntryLocalService,
-				_layoutPageTemplateStructureLocalService, _layoutsImporter,
+				_layoutPageTemplateStructureLocalService,
 				_resourcePermissionLocalService, _roleLocalService,
 				_segmentsExperienceLocalService,
 				_siteNavigationMenuItemLocalService,
@@ -147,9 +147,6 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
-
-	@Reference
-	private LayoutsImporter _layoutsImporter;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
