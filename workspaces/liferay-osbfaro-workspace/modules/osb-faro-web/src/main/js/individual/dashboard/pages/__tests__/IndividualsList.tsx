@@ -132,7 +132,7 @@ describe('Individuals List', () => {
 		await waitForLoadingToBeRemoved(document.body);
 
 		expect(
-			getByText('No Individuals Have Been Synced from Data Sources')
+			getByText('No Individuals Have Been Synced From Data Sources')
 		).toBeInTheDocument();
 
 		expect(
