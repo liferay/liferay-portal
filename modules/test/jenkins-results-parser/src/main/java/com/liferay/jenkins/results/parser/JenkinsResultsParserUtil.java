@@ -1728,39 +1728,6 @@ public class JenkinsResultsParserUtil {
 		return directoriesContainingFiles;
 	}
 
-	public static String getDistPortalBundlesBuildURL(String portalBranchName) {
-		int lastCompletedBuildNumber =
-			JenkinsAPIUtil.getLastCompletedBuildNumber(
-				_getDistPortalJobURL(portalBranchName));
-
-		Pattern distPortalBundleFileNamesPattern =
-			_getDistPortalBundleFileNamesPattern(portalBranchName);
-
-		int buildNumber = lastCompletedBuildNumber + 1;
-
-		while (buildNumber > Math.max(0, lastCompletedBuildNumber - 10)) {
-			String distPortalBundlesBuildURL = combine(
-				_getDistPortalBundlesURL(portalBranchName), "/",
-				String.valueOf(buildNumber), "/");
-
-			try {
-				Matcher matcher = distPortalBundleFileNamesPattern.matcher(
-					toString(distPortalBundlesBuildURL, false));
-
-				if (matcher.find()) {
-					return distPortalBundlesBuildURL;
-				}
-			}
-			catch (IOException ioException) {
-				System.out.println("WARNING: " + ioException.getMessage());
-			}
-
-			buildNumber--;
-		}
-
-		return null;
-	}
-
 	public static String getDistinctTimeStamp() {
 		while (true) {
 			String timeStamp = String.valueOf(getCurrentTimeMillis());
@@ -6667,92 +6634,6 @@ public class JenkinsResultsParserUtil {
 		};
 	}
 
-	private static Pattern _getDistPortalBundleFileNamesPattern(
-		String portalBranchName) {
-
-		try {
-			String distPortalBundleFileNames = getProperty(
-				getBuildProperties(), "dist.portal.bundle.file.names",
-				portalBranchName);
-
-			if (distPortalBundleFileNames == null) {
-				distPortalBundleFileNames =
-					_DIST_PORTAL_BUNDLE_FILE_NAMES_DEFAULT;
-			}
-
-			StringBuilder sb = new StringBuilder();
-
-			List<String> distPortalBundleFileNamesList = Lists.newArrayList(
-				distPortalBundleFileNames.split("\\s*,\\s*"));
-
-			Collections.sort(distPortalBundleFileNamesList);
-
-			for (String distPortalBundleFileName :
-					distPortalBundleFileNamesList) {
-
-				String quotedDistPortalBundleFileName = Pattern.quote(
-					distPortalBundleFileName);
-
-				sb.append("\\<a href=\"");
-				sb.append(quotedDistPortalBundleFileName);
-				sb.append("\"\\>");
-				sb.append(quotedDistPortalBundleFileName);
-				sb.append("\\</a\\>.*");
-			}
-
-			sb.setLength(sb.length() - 2);
-
-			return Pattern.compile(sb.toString(), Pattern.DOTALL);
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(
-				"Unable to load build properties", ioException);
-		}
-	}
-
-	private static String _getDistPortalBundlesURL(String portalBranchName) {
-		try {
-			String distPortalBundlesURL = getProperty(
-				getBuildProperties(), "dist.portal.bundles.url",
-				portalBranchName);
-
-			if (distPortalBundlesURL != null) {
-				return distPortalBundlesURL;
-			}
-		}
-		catch (IOException ioException) {
-			System.out.println("WARNING: " + ioException.getMessage());
-		}
-
-		return combine(
-			_DIST_PORTAL_BUNDLES_URL_DEFAULT, "(", portalBranchName, ")/");
-	}
-
-	private static String _getDistPortalJobURL(String portalBranchName) {
-		try {
-			String distPortalJobURL = getProperty(
-				getBuildProperties(), "dist.portal.job.url", portalBranchName);
-
-			if (distPortalJobURL != null) {
-				return distPortalJobURL;
-			}
-		}
-		catch (IOException ioException) {
-			System.out.println("WARNING: " + ioException.getMessage());
-		}
-
-		try {
-			return combine(
-				"http://",
-				getBuildProperty("upstream.acceptance.jenkins.master"),
-				"/job/test-portal-acceptance-upstream", "(", portalBranchName,
-				")");
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-	}
-
 	private static Set<String> _getForbiddenRedactTokens() {
 		Set<String> forbiddenRedactTokens = _forbiddenRedactTokens;
 
@@ -7378,13 +7259,6 @@ public class JenkinsResultsParserUtil {
 	private static final long _BYTES_KILO = 1024;
 
 	private static final long _BYTES_MEGA = 1024 * 1024;
-
-	private static final String _DIST_PORTAL_BUNDLE_FILE_NAMES_DEFAULT =
-		"git-hash,liferay-portal-bundle-tomcat.tar.gz," +
-			"liferay-portal-source.tar.gz";
-
-	private static final String _DIST_PORTAL_BUNDLES_URL_DEFAULT =
-		"http://test-1-0/userContent/bundles/test-portal-acceptance-upstream";
 
 	private static final String _JENKINS_DIST_ROOT_PATH_DEFAULT = "/tmp/dist";
 

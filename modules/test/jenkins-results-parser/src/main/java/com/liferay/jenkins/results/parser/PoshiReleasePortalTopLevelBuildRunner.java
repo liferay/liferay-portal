@@ -301,7 +301,8 @@ public class PoshiReleasePortalTopLevelBuildRunner
 					"JENKINS_JOB_VARIANT", _getCITestSuite(upstreamBranchName));
 				invocationParameters.put(
 					"PORTAL_BUNDLES_DIST_URL",
-					_getPortalBundlesDistURL(upstreamBranchName));
+					JenkinsResultsParserUtil.getLatestPortalBundleS3ObjectPath(
+						upstreamBranchName));
 			}
 
 			for (Map.Entry<String, String> invocationParameter :
@@ -350,8 +351,9 @@ public class PoshiReleasePortalTopLevelBuildRunner
 		String distPortalBundlesBuildURL = null;
 
 		try {
-			distPortalBundlesBuildURL = _getPortalBundlesDistURL(
-				upstreamBranchName);
+			distPortalBundlesBuildURL =
+				JenkinsResultsParserUtil.getLatestPortalBundleS3ObjectPath(
+					upstreamBranchName);
 		}
 		catch (Exception exception) {
 			System.out.println("WARNING: Unable to get a dist portal bundle");
@@ -364,27 +366,20 @@ public class PoshiReleasePortalTopLevelBuildRunner
 				distPortalBundlesBuildURL);
 		}
 
-		if (!JenkinsResultsParserUtil.isURL(distPortalBundlesBuildURL)) {
-			StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
-			sb.append("https://github.com/liferay/liferay-portal");
+		sb.append("https://github.com/liferay/liferay-portal");
 
-			if (!upstreamBranchName.equals("master")) {
-				sb.append("-ee");
-			}
-
-			sb.append("/tree/");
-			sb.append(upstreamBranchName);
-
-			RemoteGitRef remoteGitRef = GitUtil.getRemoteGitRef(sb.toString());
-
-			return remoteGitRef.getSHA();
+		if (!upstreamBranchName.equals("master")) {
+			sb.append("-ee");
 		}
 
-		String distPortalBundlesBuildSHA = JenkinsResultsParserUtil.toString(
-			distPortalBundlesBuildURL + "/git-hash");
+		sb.append("/tree/");
+		sb.append(upstreamBranchName);
 
-		return distPortalBundlesBuildSHA.trim();
+		RemoteGitRef remoteGitRef = GitUtil.getRemoteGitRef(sb.toString());
+
+		return remoteGitRef.getSHA();
 	}
 
 	private String _getGitHubBranchName(String parameterName) {
@@ -476,19 +471,6 @@ public class PoshiReleasePortalTopLevelBuildRunner
 		}
 
 		return Collections.emptyList();
-	}
-
-	private String _getPortalBundlesDistURL(String upstreamBranchName) {
-		String latestPortalBundleS3ObjectPath =
-			JenkinsResultsParserUtil.getLatestPortalBundleS3ObjectPath(
-				upstreamBranchName);
-
-		if (latestPortalBundleS3ObjectPath != null) {
-			return latestPortalBundleS3ObjectPath;
-		}
-
-		return JenkinsResultsParserUtil.getDistPortalBundlesBuildURL(
-			upstreamBranchName);
 	}
 
 	private String _getPortalGitHubURL() {
