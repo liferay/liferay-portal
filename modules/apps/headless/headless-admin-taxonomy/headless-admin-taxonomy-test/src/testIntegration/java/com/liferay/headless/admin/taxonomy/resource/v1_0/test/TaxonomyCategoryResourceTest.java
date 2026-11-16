@@ -276,7 +276,6 @@ public class TaxonomyCategoryResourceTest
 		TaxonomyCategory taxonomyCategory1 =
 			testGetTaxonomyCategoriesRankedPage_addTaxonomyCategory(
 				randomTaxonomyCategory());
-
 		TaxonomyCategory taxonomyCategory2 =
 			testPostTaxonomyCategoryTaxonomyCategory_addTaxonomyCategory(
 				randomTaxonomyCategory());
@@ -293,7 +292,6 @@ public class TaxonomyCategoryResourceTest
 
 		taxonomyCategoryResource.deleteTaxonomyCategory(
 			taxonomyCategory1.getId());
-
 		taxonomyCategoryResource.deleteTaxonomyCategory(
 			taxonomyCategory2.getId());
 	}
