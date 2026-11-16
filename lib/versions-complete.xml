@@ -183,13 +183,13 @@
 			</library>
 			<library>
 				<file-name>com.liferay.comment.sanitizer.jar!owasp-java-html-sanitizer.jar</file-name>
-				<version>20211018.2</version>
+				<version>20261110.1</version>
 				<project-name>OWASP Java HTML Sanitizer</project-name>
 				<project-url>https://owasp.org</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache License, Version 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+						<license-name>BSD 2-Clause License</license-name>
+						<license-url>https://opensource.org/licenses/BSD-2-Clause</license-url>
 					</license>
 				</licenses>
 			</library>
