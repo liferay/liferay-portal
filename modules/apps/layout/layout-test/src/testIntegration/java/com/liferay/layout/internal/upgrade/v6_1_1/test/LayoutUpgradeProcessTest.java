@@ -134,9 +134,8 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 
 		_group = GroupTestUtil.addGroup();
 
-		_sites.updateLayoutSetPrototypesLinks(
-			_group, _layoutSetPrototype.getLayoutSetPrototypeId(),
-			_layoutSetPrototype.getLayoutSetPrototypeId(), true, true);
+		_updateLayoutSetPrototypesLinks(
+			_group, _layoutSetPrototype.getLayoutSetPrototypeId(), true);
 
 		_mergeLayoutSetPrototypeLayouts();
 	}
@@ -242,16 +241,14 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 	}
 
 	@Test
-	@TestInfo("LPD-108617")
+	@TestInfo({"LPD-108617", "LPD-115729"})
 	public void testUpgradeWithPrivateLayoutSetPrototypeLink()
 		throws Exception {
 
 		Group group = GroupTestUtil.addGroup();
 
 		try {
-			_sites.updateLayoutSetPrototypesLinks(
-				group, 0, _layoutSetPrototype.getLayoutSetPrototypeId(), false,
-				true);
+			_updateLayoutSetPrototypesLinks(group, 0, false);
 
 			_mergeLayoutSetPrototypeLayouts();
 
@@ -655,6 +652,22 @@ public class LayoutUpgradeProcessTest extends BaseCTUpgradeProcessTestCase {
 		layout.setLayoutSetPrototypeLayoutERC(layoutSetPrototypeLayoutERC);
 
 		_layoutLocalService.updateLayout(layout);
+	}
+
+	private void _updateLayoutSetPrototypesLinks(
+			Group group, long publicLayoutSetPrototypeId,
+			boolean publicLayoutSetPrototypeLinkEnabled)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.headless.admin.site.internal.util.LogUtil",
+				LoggerTestUtil.ERROR)) {
+
+			_sites.updateLayoutSetPrototypesLinks(
+				group, publicLayoutSetPrototypeId,
+				_layoutSetPrototype.getLayoutSetPrototypeId(),
+				publicLayoutSetPrototypeLinkEnabled, true);
+		}
 	}
 
 	private Layout _childLayout;
