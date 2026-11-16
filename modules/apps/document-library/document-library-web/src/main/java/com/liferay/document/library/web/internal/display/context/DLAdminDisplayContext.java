@@ -275,19 +275,28 @@ public class DLAdminDisplayContext {
 		String orderByCol = ParamUtil.getString(
 			_httpServletRequest, "orderByCol");
 
-		if (Objects.equals(orderByCol, "relevance")) {
-			return "relevance";
-		}
-
 		if (orderByCol.equals("downloads") && (getFileEntryTypeId() >= 0)) {
 			orderByCol = "modifiedDate";
 		}
 
 		if (Validator.isNull(orderByCol)) {
-			orderByCol = _getPortletPreference(
-				"order-by-col",
-				_dlFileOrderConfigurationProvider.getGroupOrderByColumn(
-					_themeDisplay.getScopeGroupId()));
+			if (isSearch()) {
+				orderByCol = _getPortletPreference("order-by-col", "relevance");
+			}
+			else {
+				String groupOrderByColumn =
+					_dlFileOrderConfigurationProvider.getGroupOrderByColumn(
+						_themeDisplay.getScopeGroupId());
+
+				orderByCol = _getPortletPreference(
+					"order-by-col", groupOrderByColumn);
+
+				if (Objects.equals(orderByCol, "relevance")) {
+					orderByCol = groupOrderByColumn;
+
+					_setPortletPreference("order-by-col", null);
+				}
+			}
 		}
 		else {
 			_setPortletPreference("order-by-col", orderByCol);
