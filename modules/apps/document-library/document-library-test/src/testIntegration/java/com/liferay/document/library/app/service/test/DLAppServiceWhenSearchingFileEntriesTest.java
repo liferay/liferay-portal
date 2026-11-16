@@ -9,17 +9,29 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.app.service.test.util.DLAppServiceTestUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.test.util.BaseDLAppTestCase;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.QueryTerm;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.search.test.rule.SearchTestRule;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -97,7 +109,64 @@ public class DLAppServiceWhenSearchingFileEntriesTest
 			group.getGroupId(), parentFolder.getFolderId());
 	}
 
+	@Test
+	@TestInfo("LPD-115721")
+	public void testShouldFindViewableFileEntriesOnlyByQuery()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		FileEntry privateFileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			parentFolder.getFolderId(), RandomTestUtil.randomString() + ".txt",
+			ContentTypes.TEXT_PLAIN, RandomTestUtil.randomBytes(), null, null,
+			null, serviceContext);
+
+		serviceContext = ServiceContextTestUtil.getServiceContext(
+			targetGroup.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		FileEntry targetGroupFileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), targetGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
+
+		FileEntry fileEntry = DLAppServiceTestUtil.addFileEntry(
+			group.getGroupId(), parentFolder.getFolderId());
+
+		User user = UserTestUtil.addUser();
+
+		UserTestUtil.setUser(user);
+
+		_assertSearch(fileEntry.getFileEntryId(), 1);
+		_assertSearch(privateFileEntry.getFileEntryId(), 0);
+		_assertSearch(targetGroupFileEntry.getFileEntryId(), 0);
+		_assertSearch(user.getUserId(), 0);
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	private void _assertSearch(long entryClassPK, int expectedLength)
+		throws Exception {
+
+		Hits hits = dlAppService.search(
+			group.getGroupId(), new SearchContext(),
+			new TermQuery(
+				new QueryTerm(
+					Field.ENTRY_CLASS_PK, String.valueOf(entryClassPK))));
+
+		Assert.assertEquals(hits.toString(), expectedLength, hits.getLength());
+	}
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
 
 }
