@@ -165,6 +165,18 @@ export const useLifecycleActions = ({
 								})
 							),
 					},
+					{
+						icon: {symbol: 'copy'},
+						label: Liferay.Language.get('duplicate'),
+						onClick: () =>
+							history.push(
+								toRoute(Routes.LIFECYCLE_DUPLICATE, {
+									channelId,
+									groupId,
+									sourceLifecycleId: lifecycleERC,
+								})
+							),
+					},
 				]
 			: []),
 		{

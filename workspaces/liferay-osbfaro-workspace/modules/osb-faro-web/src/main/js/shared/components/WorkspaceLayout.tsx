@@ -155,6 +155,13 @@ const LifecycleDashboard = lazy(
 			/* webpackChunkName: "LifecycleDashboard" */ 'lifecycle/pages/BaseLifecycle'
 		)
 );
+const LifecycleDuplicate = lazy(
+	() =>
+		import(
+
+			/* webpackChunkName: "LifecycleDuplicate" */ 'lifecycle/pages/DuplicateLifecycle'
+		)
+);
 const LifecycleEdit = lazy(
 	() =>
 		import(
@@ -265,6 +272,16 @@ const WorkspaceLayer = ({groupId}: {groupId: string}) => {
 										/>
 									}
 									path=":channelId?/lifecycle/new"
+								/>
+
+								<Route
+									element={
+										<BundleRouter
+											data={LifecycleDuplicate}
+											destructured={false}
+										/>
+									}
+									path=":channelId?/lifecycle/:sourceLifecycleId/duplicate"
 								/>
 
 								<Route

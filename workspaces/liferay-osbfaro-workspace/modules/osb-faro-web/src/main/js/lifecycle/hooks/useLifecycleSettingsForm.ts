@@ -78,7 +78,7 @@ export const useLifecycleSettingsForm = ({
 
 	const history = useHistoryAdapter();
 
-	const {channelId, groupId, lifecycleId} = useParams();
+	const {channelId, groupId, lifecycleId, sourceLifecycleId} = useParams();
 
 	const {state} = useLocation();
 
@@ -146,7 +146,8 @@ export const useLifecycleSettingsForm = ({
 		}
 	}, [catalogError, dispatch]);
 
-	const backLifecycleId = lifecycleId ?? state?.lifecycleId;
+	const backLifecycleId =
+		lifecycleId ?? sourceLifecycleId ?? state?.lifecycleId;
 
 	const backURL = toRoute(
 		backLifecycleId ? Routes.LIFECYCLE_DASHBOARD : Routes.LIFECYCLE,

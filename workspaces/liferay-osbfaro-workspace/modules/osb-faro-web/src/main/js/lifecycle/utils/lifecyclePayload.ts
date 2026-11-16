@@ -5,7 +5,10 @@ import {
 	IStageConfig,
 	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
-import {LIFECYCLE_STAGE_DEFAULT_MAX_DAYS} from 'lifecycle/utils/constants';
+import {
+	LIFECYCLE_NAME_MAX_LENGTH,
+	LIFECYCLE_STAGE_DEFAULT_MAX_DAYS,
+} from 'lifecycle/utils/constants';
 import {ILifecycleStage} from 'shared/api/lifecycle';
 import {
 	Operator,
@@ -34,6 +37,7 @@ export interface ICreateLifecyclePayload {
 	description: string;
 	groupId: string;
 	name: string;
+	segmentId?: string;
 	stages: IStagePayload[];
 }
 
@@ -167,18 +171,21 @@ export const buildCreateLifecyclePayload = ({
 	description,
 	groupId,
 	name,
+	segmentId,
 	stageConfigs,
 }: {
 	channelId: string;
 	description: string;
 	groupId: string;
 	name: string;
+	segmentId?: string;
 	stageConfigs: IStageConfig[];
 }): ICreateLifecyclePayload => ({
 	channelId,
 	description,
 	groupId,
 	name,
+	...(segmentId && {segmentId}),
 	stages: buildStagePayloads(stageConfigs, name),
 });
 
@@ -280,3 +287,18 @@ const stageConfigFromStage = (stage: ILifecycleStage): IStageConfig => ({
 export const stageConfigsFromLifecycle = (
 	stages: ILifecycleStage[] = []
 ): IStageConfig[] => sortBy(stages, 'position').map(stageConfigFromStage);
+
+const DUPLICATE_NAME_SUFFIX = ' (1)';
+
+export const buildDuplicateLifecycleName = (name: string) =>
+	`${name
+		.slice(0, LIFECYCLE_NAME_MAX_LENGTH - DUPLICATE_NAME_SUFFIX.length)
+		.trimEnd()}${DUPLICATE_NAME_SUFFIX}`;
+
+export const duplicateStageConfigsFromLifecycle = (
+	stages?: ILifecycleStage[]
+): IStageConfig[] =>
+	stageConfigsFromLifecycle(stages).map((stageConfig) => ({
+		...stageConfig,
+		id: null,
+	}));

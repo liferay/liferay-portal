@@ -220,6 +220,7 @@ interface ICreateLifecycle {
 	description: string;
 	groupId: string;
 	name: string;
+	segmentId?: string;
 	stages: ILifecycleStagePayload[];
 }
 
@@ -228,6 +229,7 @@ export async function createLifecycle({
 	description,
 	groupId,
 	name,
+	segmentId,
 	stages,
 }: ICreateLifecycle): Promise<ILifecycleDetail> {
 	if (ENABLE_LIFECYCLE_STAGES_MOCK_DATA) {
@@ -240,6 +242,7 @@ export async function createLifecycle({
 				accountLifecycleStages: stages,
 				description,
 				name,
+				...(segmentId && {segmentId}),
 			},
 		},
 		method: 'POST',
