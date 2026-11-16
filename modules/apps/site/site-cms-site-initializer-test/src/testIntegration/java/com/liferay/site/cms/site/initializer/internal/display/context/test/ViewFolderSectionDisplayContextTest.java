@@ -10,7 +10,10 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -36,17 +39,27 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryService;
+import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -63,6 +76,59 @@ public class ViewFolderSectionDisplayContextTest
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null, DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext());
+
+		_contentsObjectEntryFolder =
+			_objectEntryFolderLocalService.
+				getObjectEntryFolderByExternalReferenceCode(
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
+					depotEntry.getGroupId(), depotEntry.getCompanyId());
+
+		ObjectEntryFolder rootObjectEntryFolder =
+			_objectEntryFolderLocalService.addObjectEntryFolder(
+				RandomTestUtil.randomString(), depotEntry.getGroupId(),
+				TestPropsValues.getUserId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				RandomTestUtil.randomString(),
+				HashMapBuilder.put(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()
+				).build(),
+				RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext(
+					depotEntry.getGroupId()));
+
+		_objectEntryFolder = _addObjectEntryFolder(
+			depotEntry, rootObjectEntryFolder.getObjectEntryFolderId());
+
+		_testCMSStructureObjectFolderContributor =
+			new TestCMSStructureObjectFolderContributor(
+				rootObjectEntryFolder.getExternalReferenceCode());
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			ViewFolderSectionDisplayContextTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		_serviceRegistration = bundleContext.registerService(
+			CMSStructureObjectFolderContributor.class,
+			_testCMSStructureObjectFolderContributor, null);
+	}
+
+	@After
+	public void tearDown() {
+		_serviceRegistration.unregister();
+	}
 
 	@Test
 	public void testGetAdditionalProps() throws Exception {
@@ -111,6 +177,14 @@ public class ViewFolderSectionDisplayContextTest
 			getMockHttpServletRequest(objectEntryFolder));
 
 		Assert.assertEquals(Boolean.FALSE, additionalProps.get("trashEnabled"));
+
+		// Object entry folder with a CMS structure object folder contributor
+
+		additionalProps = _getAdditionalProps(
+			getMockHttpServletRequest(_objectEntryFolder));
+
+		Assert.assertEquals(
+			Boolean.FALSE, additionalProps.get("galleryViewEnabled"));
 	}
 
 	@Test
@@ -261,6 +335,96 @@ public class ViewFolderSectionDisplayContextTest
 		}
 	}
 
+	@Test
+	public void testGetBulkActionDropdownItems() throws Exception {
+		Assert.assertNotSame(
+			_testCMSStructureObjectFolderContributor.getBulkActionDropdownItems(
+				null),
+			_invoke("getBulkActionDropdownItems", _contentsObjectEntryFolder));
+		Assert.assertSame(
+			_testCMSStructureObjectFolderContributor.getBulkActionDropdownItems(
+				null),
+			_invoke("getBulkActionDropdownItems", _objectEntryFolder));
+	}
+
+	@Test
+	public void testGetCMSSiteInitializerFDSName() throws Exception {
+		Assert.assertEquals(
+			"com.liferay.site.cms.site.initializer-viewContentsFolder",
+			_invoke(
+				"getCMSSiteInitializerFDSName", _contentsObjectEntryFolder));
+		Assert.assertEquals(
+			_testCMSStructureObjectFolderContributor.getFDSName(),
+			_invoke("getCMSSiteInitializerFDSName", _objectEntryFolder));
+	}
+
+	@Test
+	public void testGetCreationMenuDropdownItems() throws Exception {
+		Assert.assertNotSame(
+			_testCMSStructureObjectFolderContributor.
+				getCreationMenuDropdownItems(null, null),
+			_invoke(
+				"getCreationMenuDropdownItems", _contentsObjectEntryFolder));
+		Assert.assertSame(
+			_testCMSStructureObjectFolderContributor.
+				getCreationMenuDropdownItems(null, null),
+			_invoke("getCreationMenuDropdownItems", _objectEntryFolder));
+	}
+
+	@Test
+	public void testGetEmptyState() throws Exception {
+		Map<String, Object> emptyState = _invoke(
+			"getEmptyState", _contentsObjectEntryFolder);
+
+		Assert.assertEquals(
+			"/states/cms_empty_state_content.svg", emptyState.get("image"));
+
+		Assert.assertSame(
+			_testCMSStructureObjectFolderContributor.getEmptyState(null),
+			_invoke("getEmptyState", _objectEntryFolder));
+	}
+
+	@Test
+	public void testGetFDSActionDropdownItems() throws Exception {
+		Assert.assertNotSame(
+			_testCMSStructureObjectFolderContributor.getFDSActionDropdownItems(
+				null),
+			_invoke("getFDSActionDropdownItems", _contentsObjectEntryFolder));
+		Assert.assertSame(
+			_testCMSStructureObjectFolderContributor.getFDSActionDropdownItems(
+				null),
+			_invoke("getFDSActionDropdownItems", _objectEntryFolder));
+	}
+
+	@Test
+	public void testGetObjectFolderExternalReferenceCodes() throws Exception {
+		Assert.assertArrayEquals(
+			new String[] {
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES
+			},
+			_invoke(
+				"getObjectFolderExternalReferenceCodes",
+				_contentsObjectEntryFolder));
+		Assert.assertArrayEquals(
+			new String[] {
+				_testCMSStructureObjectFolderContributor.
+					getObjectFolderExternalReferenceCode()
+			},
+			_invoke(
+				"getObjectFolderExternalReferenceCodes", _objectEntryFolder));
+	}
+
+	@Test
+	public void testGetPropsTransformerModule() throws Exception {
+		Assert.assertEquals(
+			"{AssetsFDSPropsTransformer} from site-cms-site-initializer",
+			_invoke("getPropsTransformerModule", _contentsObjectEntryFolder));
+		Assert.assertEquals(
+			_testCMSStructureObjectFolderContributor.
+				getPropsTransformerModule(),
+			_invoke("getPropsTransformerModule", _objectEntryFolder));
+	}
+
 	private ObjectEntryFolder _addObjectEntryFolder(
 			DepotEntry depotEntry, long parentObjectEntryFolderId)
 		throws Exception {
@@ -333,6 +497,15 @@ public class ViewFolderSectionDisplayContextTest
 		return viewFolderSectionDisplayContext;
 	}
 
+	private <T> T _invoke(
+			String methodName, ObjectEntryFolder objectEntryFolder)
+		throws Exception {
+
+		return ReflectionTestUtil.invoke(
+			_getDisplayContext(getMockHttpServletRequest(objectEntryFolder)),
+			methodName, new Class<?>[0]);
+	}
+
 	private void _setTrashEnabled(DepotEntry depotEntry, boolean trashEnabled)
 		throws Exception {
 
@@ -347,6 +520,8 @@ public class ViewFolderSectionDisplayContextTest
 			group.getGroupId(), unicodeProperties.toString());
 	}
 
+	private ObjectEntryFolder _contentsObjectEntryFolder;
+
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
 
@@ -358,13 +533,114 @@ public class ViewFolderSectionDisplayContextTest
 	@Inject
 	private GroupLocalService _groupLocalService;
 
+	private ObjectEntryFolder _objectEntryFolder;
+
 	@Inject
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+
+	private ServiceRegistration<CMSStructureObjectFolderContributor>
+		_serviceRegistration;
 
 	@Inject
 	private SharingEntryService _sharingEntryService;
 
+	private TestCMSStructureObjectFolderContributor
+		_testCMSStructureObjectFolderContributor;
+
 	@Inject
 	private UserLocalService _userLocalService;
+
+	private static class TestCMSStructureObjectFolderContributor
+		implements CMSStructureObjectFolderContributor {
+
+		@Override
+		public List<DropdownItem> getBulkActionDropdownItems(
+			HttpServletRequest httpServletRequest) {
+
+			return _bulkActionDropdownItems;
+		}
+
+		@Override
+		public List<DropdownItem> getCreationMenuDropdownItems(
+			HttpServletRequest httpServletRequest,
+			ObjectEntryFolder objectEntryFolder) {
+
+			return _creationMenuDropdownItems;
+		}
+
+		@Override
+		public Map<String, Object> getEmptyState(
+			HttpServletRequest httpServletRequest) {
+
+			return _emptyState;
+		}
+
+		@Override
+		public List<FDSActionDropdownItem> getFDSActionDropdownItems(
+			HttpServletRequest httpServletRequest) {
+
+			return _fdsActionDropdownItems;
+		}
+
+		@Override
+		public String getFDSName() {
+			return _fdsName;
+		}
+
+		@Override
+		public String getLabel() {
+			return RandomTestUtil.randomString();
+		}
+
+		@Override
+		public String getObjectEntryFolderExternalReferenceCode() {
+			return _objectEntryFolderExternalReferenceCode;
+		}
+
+		@Override
+		public String getObjectFolderExternalReferenceCode() {
+			return _objectFolderExternalReferenceCode;
+		}
+
+		@Override
+		public String getPropsTransformerModule() {
+			return _propsTransformerModule;
+		}
+
+		@Override
+		public Map<String, List<String>> getSystemObjectFieldNames() {
+			return Collections.emptyMap();
+		}
+
+		@Override
+		public boolean isGalleryViewEnabled() {
+			return false;
+		}
+
+		private TestCMSStructureObjectFolderContributor(
+			String objectEntryFolderExternalReferenceCode) {
+
+			_objectEntryFolderExternalReferenceCode =
+				objectEntryFolderExternalReferenceCode;
+		}
+
+		private final List<DropdownItem> _bulkActionDropdownItems =
+			new ArrayList<>();
+		private final List<DropdownItem> _creationMenuDropdownItems =
+			new ArrayList<>();
+		private final Map<String, Object> _emptyState =
+			HashMapBuilder.<String, Object>put(
+				"title", RandomTestUtil.randomString()
+			).build();
+		private final List<FDSActionDropdownItem> _fdsActionDropdownItems =
+			new ArrayList<>();
+		private final String _fdsName = RandomTestUtil.randomString();
+		private final String _objectEntryFolderExternalReferenceCode;
+		private final String _objectFolderExternalReferenceCode =
+			RandomTestUtil.randomString();
+		private final String _propsTransformerModule =
+			RandomTestUtil.randomString();
+
+	}
 
 }
