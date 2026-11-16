@@ -27,7 +27,6 @@ import {NavigationBar} from './components/NavigationBar.es';
 import {INITIAL_CONFIG_STATE} from './config/initialConfigState.es';
 import {BUILDER_INITIAL_STATE, initState} from './config/initialState.es';
 import AutoSaveProvider from './hooks/useAutoSave.es';
-import {ToastProvider} from './hooks/useToast.es';
 import FormBuilder from './pages/FormBuilder.es';
 import Report from './pages/Report';
 import RuleBuilder from './pages/RuleBuilder.es';
@@ -76,37 +75,35 @@ export default function App({autosaveInterval, autosaveURL, ...otherProps}) {
 						value={state}
 					>
 						<KeyboardDNDContextProvider>
-							<ToastProvider>
-								<Router>
-									<AutoSaveProvider
-										interval={autosaveInterval}
-										url={autosaveURL}
+							<Router>
+								<AutoSaveProvider
+									interval={autosaveInterval}
+									url={autosaveURL}
+								>
+									<NavigationBar />
+
+									<Suspense
+										fallback={<ClayLoadingIndicator />}
 									>
-										<NavigationBar />
+										<Routes>
+											<Route
+												element={<FormBuilder />}
+												path="/"
+											/>
 
-										<Suspense
-											fallback={<ClayLoadingIndicator />}
-										>
-											<Routes>
-												<Route
-													element={<FormBuilder />}
-													path="/"
-												/>
+											<Route
+												element={<RuleBuilder />}
+												path="/rules/*"
+											/>
 
-												<Route
-													element={<RuleBuilder />}
-													path="/rules/*"
-												/>
-
-												<Route
-													element={<Report />}
-													path="/report"
-												/>
-											</Routes>
-										</Suspense>
-									</AutoSaveProvider>
-								</Router>
-							</ToastProvider>
+											<Route
+												element={<Report />}
+												path="/report"
+											/>
+										</Routes>
+									</Suspense>
+								</AutoSaveProvider>
+							</Router>
 						</KeyboardDNDContextProvider>
 					</FormProvider>
 				</ClayModalProvider>
