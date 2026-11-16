@@ -221,6 +221,88 @@ public class FragmentEntryLinkDisplayContextTest {
 	}
 
 	@Test
+	@TestInfo("LPD-114647")
+	public void testGetFragmentEntryLinkPreviewURL() throws Exception {
+		FragmentEntry fragmentEntry = _addFragmentEntry();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		FragmentEntryLink layoutFragmentEntryLink =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, layout.getPlid());
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		FragmentEntryLink draftLayoutFragmentEntryLink =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, draftLayout.getPlid());
+
+		Layout privateLayout = LayoutTestUtil.addTypePortletLayout(
+			_group, true);
+
+		FragmentEntryLink privateLayoutFragmentEntryLink =
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, privateLayout.getPlid());
+
+		Object fragmentEntryLinkDisplayContext =
+			_getFragmentEntryLinkDisplayContext(
+				fragmentEntry.getFragmentEntryId(), "all");
+
+		_assertPreviewURL(
+			draftLayoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+		_assertNullPreviewURL(
+			_displayPageTemplateFragmentEntryLink,
+			fragmentEntryLinkDisplayContext);
+		_assertPreviewURL(
+			layoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+		_assertNullPreviewURL(
+			_masterPageFragmentEntryLink, fragmentEntryLinkDisplayContext);
+		_assertPreviewURL(
+			_pageTemplateFragmentEntryLink, fragmentEntryLinkDisplayContext);
+		_assertPreviewURL(
+			privateLayoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		_user = UserTestUtil.addUser();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_user));
+
+			fragmentEntryLinkDisplayContext =
+				_getFragmentEntryLinkDisplayContext(
+					fragmentEntry.getFragmentEntryId(), "all");
+
+			_assertNullPreviewURL(
+				privateLayoutFragmentEntryLink,
+				fragmentEntryLinkDisplayContext);
+
+			_userLocalService.addGroupUser(
+				_group.getGroupId(), _user.getUserId());
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_user));
+
+			fragmentEntryLinkDisplayContext =
+				_getFragmentEntryLinkDisplayContext(
+					fragmentEntry.getFragmentEntryId(), "all");
+
+			_assertNullPreviewURL(
+				draftLayoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+			_assertPreviewURL(
+				layoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+			_assertPreviewURL(
+				privateLayoutFragmentEntryLink,
+				fragmentEntryLinkDisplayContext);
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-99652")
 	public void testGetFragmentEntryLinkTypeLabel() throws Exception {
 		FragmentEntry fragmentEntry = _addFragmentEntry();
@@ -307,6 +389,33 @@ public class FragmentEntryLinkDisplayContextTest {
 			fragmentCollection.getFragmentCollectionId());
 	}
 
+	private void _assertNullPreviewURL(
+		FragmentEntryLink fragmentEntryLink,
+		Object fragmentEntryLinkDisplayContext) {
+
+		Assert.assertNull(
+			ReflectionTestUtil.invoke(
+				fragmentEntryLinkDisplayContext,
+				"getFragmentEntryLinkPreviewURL",
+				new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink));
+	}
+
+	private void _assertPreviewURL(
+		FragmentEntryLink fragmentEntryLink,
+		Object fragmentEntryLinkDisplayContext) {
+
+		String previewURL = ReflectionTestUtil.invoke(
+			fragmentEntryLinkDisplayContext, "getFragmentEntryLinkPreviewURL",
+			new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink);
+
+
+		Assert.assertFalse(previewURL.contains("p_l_mode"));
+		Assert.assertTrue(
+			previewURL.contains(
+				"segmentsExperienceId=" +
+					fragmentEntryLink.getSegmentsExperienceId()));
+	}
+
 	private void _assertWarnMessages(
 			FragmentEntryLink fragmentEntryLink,
 			Object fragmentEntryLinkDisplayContext, String methodName,
@@ -362,6 +471,7 @@ public class FragmentEntryLinkDisplayContextTest {
 		themeDisplay.setPermissionChecker(
 			PermissionThreadLocal.getPermissionChecker());
 		themeDisplay.setScopeGroupId(_group.getGroupId());
+		themeDisplay.setSiteGroupId(_group.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		MockHttpServletRequest mockHttpServletRequest =
