@@ -52,23 +52,24 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 				_ctCollectionTemplateLocalService.deleteCTCollectionTemplate(
 					ctCollectionTemplate);
 			}
+
+			CTPreferences ctPreferences =
+				_ctPreferencesLocalService.fetchCTPreferences(
+					company.getCompanyId(), 0);
+
+			if (ctPreferences != null) {
+				_ctPreferencesLocalService.deleteCTPreferences(ctPreferences);
+			}
+
+			for (CTRemote ctRemote :
+					_ctRemoteLocalService.getCTRemotes(
+						company.getCompanyId())) {
+
+				_ctRemoteLocalService.deleteCTRemote(ctRemote);
+			}
 		}
 		catch (PortalException portalException) {
 			throw new ModelListenerException(portalException);
-		}
-
-		CTPreferences ctPreferences =
-			_ctPreferencesLocalService.fetchCTPreferences(
-				company.getCompanyId(), 0);
-
-		if (ctPreferences != null) {
-			_ctPreferencesLocalService.deleteCTPreferences(ctPreferences);
-		}
-
-		for (CTRemote ctRemote :
-				_ctRemoteLocalService.getCTRemotes(company.getCompanyId())) {
-
-			_ctRemoteLocalService.deleteCTRemote(ctRemote);
 		}
 
 		for (CTSchemaVersion ctSchemaVersion :

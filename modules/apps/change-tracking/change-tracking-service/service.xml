@@ -299,7 +299,7 @@
 		<column name="description" type="String" />
 		<column name="url" type="String" />
 		<column name="clientId" type="String" />
-		<column name="clientSecret" type="String" />
+		<column json-enabled="false" name="clientSecret" type="String" />
 
 		<!-- Order -->
 
