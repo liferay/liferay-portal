@@ -94,9 +94,9 @@ public class AIHubCellConfigurationModelListenerTest {
 	public void testOnAfterSave() throws Exception {
 		_deleteOAuth2ApplicationAndSAPEntry();
 
-		User user = TestPropsValues.getUser();
 		String clientId = RandomTestUtil.randomString();
 		String clientSecret = RandomTestUtil.randomString();
+		User user = TestPropsValues.getUser();
 
 		OAuth2Application oAuth2Application =
 			_oAuth2ApplicationLocalService.addOrUpdateOAuth2Application(
@@ -122,14 +122,14 @@ public class AIHubCellConfigurationModelListenerTest {
 				LocaleUtil.getDefault(), "AI_HUB_CELL_TOKEN"),
 			new ServiceContext());
 
+		String homePageURL = oAuth2Application.getHomePageURL();
+
 		Dictionary<String, Object> properties =
 			HashMapDictionaryBuilder.<String, Object>put(
 				"companyId", user.getCompanyId()
 			).put(
 				"serviceURL", "https://" + RandomTestUtil.randomString()
 			).build();
-
-		String homePageURL = oAuth2Application.getHomePageURL();
 
 		_configurationModelListener.onAfterSave(
 			AIHubCellConfiguration.class.getName(), properties);
@@ -144,7 +144,17 @@ public class AIHubCellConfigurationModelListenerTest {
 				oAuth2Application));
 		Assert.assertEquals(homePageURL, oAuth2Application.getHomePageURL());
 
-		List<String> scopeAliasesList = new ArrayList<>(_scopeAliasesList);
+		List<String> scopeAliasesList = new ArrayList<>(
+			Arrays.asList(
+				"Liferay.Bulk.REST.everything.write",
+				"Liferay.Headless.Admin.Fragment.everything",
+				"Liferay.Headless.Admin.Taxonomy.everything.read",
+				"Liferay.Headless.Admin.User.everything.read",
+				"Liferay.Headless.Batch.Engine.everything",
+				"Liferay.Headless.CMP.everything.read",
+				"Liferay.Object.Admin.REST.everything.read",
+				"Liferay.Portal.Search.REST.everything.read",
+				"cmpprojectlink.everything"));
 
 		scopeAliasesList.add("Liferay.Headless.Delivery.everything.read");
 
@@ -188,7 +198,17 @@ public class AIHubCellConfigurationModelListenerTest {
 
 		Assert.assertEquals(serviceURL1, oAuth2Application.getHomePageURL());
 
-		List<String> scopeAliasesList = new ArrayList<>(_scopeAliasesList);
+		List<String> scopeAliasesList = new ArrayList<>(
+			Arrays.asList(
+				"Liferay.Bulk.REST.everything.write",
+				"Liferay.Headless.Admin.Fragment.everything",
+				"Liferay.Headless.Admin.Taxonomy.everything.read",
+				"Liferay.Headless.Admin.User.everything.read",
+				"Liferay.Headless.Batch.Engine.everything",
+				"Liferay.Headless.CMP.everything.read",
+				"Liferay.Object.Admin.REST.everything.read",
+				"Liferay.Portal.Search.REST.everything.read",
+				"cmpprojectlink.everything"));
 
 		Collections.addAll(
 			scopeAliasesList, "Liferay.AI.Hub.REST.everything",
@@ -313,17 +333,6 @@ public class AIHubCellConfigurationModelListenerTest {
 	private static final String _SAP_ENTRY_ALLOWED_SERVICE_SIGNATURES =
 		"com.liferay.portal.search.rest.internal.resource.v1_0." +
 			"SearchResultResourceImpl#getSearchPage";
-
-	private static final List<String> _scopeAliasesList = Arrays.asList(
-		"Liferay.Bulk.REST.everything.write",
-		"Liferay.Headless.Admin.Fragment.everything",
-		"Liferay.Headless.Admin.Taxonomy.everything.read",
-		"Liferay.Headless.Admin.User.everything.read",
-		"Liferay.Headless.Batch.Engine.everything",
-		"Liferay.Headless.CMP.everything.read",
-		"Liferay.Object.Admin.REST.everything.read",
-		"Liferay.Portal.Search.REST.everything.read",
-		"cmpprojectlink.everything");
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

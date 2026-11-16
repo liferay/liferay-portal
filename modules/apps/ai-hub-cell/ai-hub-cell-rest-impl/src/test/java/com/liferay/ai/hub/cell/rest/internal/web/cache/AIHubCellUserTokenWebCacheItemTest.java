@@ -22,8 +22,9 @@ import com.nimbusds.jwt.SignedJWT;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -40,8 +41,14 @@ public class AIHubCellUserTokenWebCacheItemTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@AfterClass
-	public static void tearDownClass() {
+	@Before
+	public void setUp() {
+		_webCachePoolUtilMockedStatic = Mockito.mockStatic(
+			WebCachePoolUtil.class);
+	}
+
+	@After
+	public void tearDown() {
 		_webCachePoolUtilMockedStatic.close();
 	}
 
@@ -103,8 +110,6 @@ public class AIHubCellUserTokenWebCacheItemTest {
 		return oAuth2Application;
 	}
 
-	private static final MockedStatic<WebCachePoolUtil>
-		_webCachePoolUtilMockedStatic = Mockito.mockStatic(
-			WebCachePoolUtil.class);
+	private MockedStatic<WebCachePoolUtil> _webCachePoolUtilMockedStatic;
 
 }

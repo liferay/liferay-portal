@@ -197,12 +197,12 @@ public class AIHubCellFeatureFlagListenerTest {
 						"AI-HUB-CELL")));
 			Assert.assertNotNull(_fetchSAPEntry());
 
+			Collection<String> scopeAliases = _scopeLocator.getScopeAliases(
+				companyId);
+
 			List<String> scopeAliasesList = _getScopeAliasesList();
 
 			Set<String> scopeAliasesSet = SetUtil.fromList(scopeAliasesList);
-
-			Collection<String> scopeAliases = _scopeLocator.getScopeAliases(
-				companyId);
 
 			Assert.assertEquals(
 				scopeAliasesList.toString(),
@@ -281,10 +281,9 @@ public class AIHubCellFeatureFlagListenerTest {
 
 	@Test
 	public void testOnValueWithLocalServiceURL() throws Exception {
-		User user = TestPropsValues.getUser();
-
 		String clientId = RandomTestUtil.randomString();
 		String clientSecret = RandomTestUtil.randomString();
+		User user = TestPropsValues.getUser();
 
 		OAuth2Application oAuth2Application =
 			_oAuth2ApplicationLocalService.addOrUpdateOAuth2Application(
