@@ -11,18 +11,26 @@ import com.liferay.commerce.service.CommerceAvailabilityEstimateService;
 import com.liferay.headless.commerce.admin.site.setting.dto.v1_0.AvailabilityEstimate;
 import com.liferay.headless.commerce.admin.site.setting.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.commerce.admin.site.setting.internal.mapper.v1_0.util.DTOMapperUtil;
+import com.liferay.headless.commerce.admin.site.setting.internal.odata.entity.v1_0.AvailabilityEstimateEntityModel;
 import com.liferay.headless.commerce.admin.site.setting.resource.v1_0.AvailabilityEstimateResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.util.SearchUtil;
 
+import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
@@ -91,6 +99,11 @@ public class AvailabilityEstimateResourceImpl
 	}
 
 	@Override
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
+		return _entityModel;
+	}
+
+	@Override
 	public AvailabilityEstimate
 			patchAvailabilityEstimateByExternalReferenceCode(
 				String externalReferenceCode,
@@ -156,6 +169,27 @@ public class AvailabilityEstimateResourceImpl
 		}
 
 		return _toAvailabilityEstimate(commerceAvailabilityEstimate);
+	}
+
+	@Override
+	protected Page<AvailabilityEstimate> doGetAvailabilityEstimatesPage(
+			Filter filter, Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return SearchUtil.search(
+			Collections.emptyMap(),
+			booleanQuery -> booleanQuery.getPreBooleanFilter(), filter,
+			CommerceAvailabilityEstimate.class.getName(), null, pagination,
+			queryConfig -> queryConfig.setSelectedFieldNames(
+				Field.ENTRY_CLASS_PK),
+			searchContext -> searchContext.setCompanyId(
+				contextCompany.getCompanyId()),
+			sorts,
+			document -> _toAvailabilityEstimate(
+				_commerceAvailabilityEstimateService.
+					getCommerceAvailabilityEstimate(
+						GetterUtil.getLong(
+							document.get(Field.ENTRY_CLASS_PK)))));
 	}
 
 	@Override
@@ -252,6 +286,9 @@ public class AvailabilityEstimateResourceImpl
 					commerceAvailabilityEstimate.getPriority()),
 				_serviceContextHelper.getServiceContext(contextUser));
 	}
+
+	private static final EntityModel _entityModel =
+		new AvailabilityEstimateEntityModel();
 
 	@Reference
 	private CommerceAvailabilityEstimateService
