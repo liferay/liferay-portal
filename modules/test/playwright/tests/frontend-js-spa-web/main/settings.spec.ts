@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Request, Route, expect, mergeTests} from '@playwright/test';
 
 import {isolatedLayoutTest} from '../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../fixtures/loginTest';
@@ -103,6 +103,19 @@ test(
 
 			await userNotificationTimeoutInput.waitFor({state: 'visible'});
 
+			const delaySaveRequest = async (route: Route, request: Request) => {
+				if (request.method() === 'POST') {
+					await new Promise((resolve) => setTimeout(resolve, 3000));
+				}
+
+				await route.continue();
+			};
+
+			await page.route(
+				'**/group/control_panel/manage?**',
+				delaySaveRequest
+			);
+
 			await saveButton.click();
 
 			await expect(
@@ -110,6 +123,13 @@ test(
 					'It looks like this is taking longer than expected.'
 				)
 			).toBeVisible();
+
+			await waitForAlert(page);
+
+			await page.unroute(
+				'**/group/control_panel/manage?**',
+				delaySaveRequest
+			);
 		});
 
 		await test.step('Change the timeout back to 30000ms', async () => {
