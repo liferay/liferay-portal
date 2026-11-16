@@ -510,7 +510,10 @@ public class MillerColumnsDisplayContext {
 	private JSONArray _getLaunchDraftNamesJSONArray(Layout layout)
 		throws Exception {
 
-		if (!layout.isTypeContent()) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-72278") ||
+			!layout.isTypeContent()) {
+
 			return JSONFactoryUtil.createJSONArray();
 		}
 

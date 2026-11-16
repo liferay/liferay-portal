@@ -128,6 +128,11 @@
 	.list-group-subtitle {
 		align-items: center;
 	}
+
+	.miller-columns-item__launch-indicator {
+		position: relative;
+		z-index: 2;
+	}
 }
 
 .show-quick-actions-on-hover
