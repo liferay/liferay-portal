@@ -5,6 +5,8 @@
 
 package com.liferay.source.formatter.dependencies;
 
+import java.util.function.IntUnaryOperator;
+
 /**
  * @author Hugo Huijser
  */
@@ -12,12 +14,21 @@ public class UnusedParameter {
 
 	public UnusedParameter(int length, int width, int height, String color) {
 		_volume = _getVolume(length, width, height, color);
+
+		IntUnaryOperator intUnaryOperator = this::_getWeight;
+
+		_weight = intUnaryOperator.applyAsInt(_volume);
 	}
 
 	private int _getVolume(int length, int width, int height, String color) {
 		return length * width * height;
 	}
 
+	private int _getWeight(int volume) {
+		return 0;
+	}
+
 	private final int _volume;
+	private final int _weight;
 
 }

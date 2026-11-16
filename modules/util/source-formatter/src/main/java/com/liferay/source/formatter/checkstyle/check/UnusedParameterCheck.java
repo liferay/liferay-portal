@@ -71,7 +71,9 @@ public class UnusedParameterCheck extends BaseCheck {
 		DetailAST statementsDetailAST =
 			constructorOrMethodDetailAST.findFirstToken(TokenTypes.SLIST);
 
-		if (statementsDetailAST == null) {
+		if ((statementsDetailAST == null) ||
+			_isReferencedMethod(classDetailAST, constructorOrMethodDetailAST)) {
+
 			return;
 		}
 
@@ -84,9 +86,7 @@ public class UnusedParameterCheck extends BaseCheck {
 
 			if (names.contains(parameterName) ||
 				AnnotationUtil.containsAnnotation(
-					parameterDefinitionDetailAST, "Reference") ||
-				_isReferencedMethod(
-					classDetailAST, constructorOrMethodDetailAST)) {
+					parameterDefinitionDetailAST, "Reference")) {
 
 				continue;
 			}
