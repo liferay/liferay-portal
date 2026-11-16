@@ -499,12 +499,15 @@ public class LayoutImpl extends LayoutBaseImpl {
 		for (PortletPreferences portletPreferences : portletPreferencesList) {
 			String portletId = portletPreferences.getPortletId();
 
+			if (!layoutPortletIds.contains(portletId)) {
+				continue;
+			}
+
 			Portlet portlet = PortletLocalServiceUtil.getPortletById(
 				getCompanyId(), portletId);
 
 			if ((portlet == null) || !portlet.isReady() ||
-				portlet.isUndeployedPortlet() || !portlet.isActive() ||
-				!layoutPortletIds.contains(portletId)) {
+				portlet.isUndeployedPortlet() || !portlet.isActive()) {
 
 				continue;
 			}
