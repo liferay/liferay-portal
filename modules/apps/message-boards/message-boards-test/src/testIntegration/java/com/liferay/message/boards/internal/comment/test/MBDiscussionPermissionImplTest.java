@@ -15,7 +15,9 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.service.MBBanLocalService;
+import com.liferay.message.boards.test.util.MBTestUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
@@ -44,6 +46,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.IdentityServiceContextFunction;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -150,6 +153,36 @@ public class MBDiscussionPermissionImplTest {
 				permissionChecker, TestPropsValues.getCompanyId(),
 				_group.getGroupId(), DLFileEntry.class.getName(),
 				_fileEntry.getFileEntryId()));
+	}
+
+	@Test
+	@TestInfo("LPD-115704")
+	public void testHasDeletePermission() throws Exception {
+		MBMessage mbMessage = MBTestUtil.addMessage(
+			_group.getGroupId(), _user.getUserId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(
+				_userLocalService.getGuestUser(_group.getCompanyId()));
+
+		Assert.assertFalse(
+			_discussionPermission.hasDeletePermission(
+				permissionChecker, mbMessage.getMessageId()));
+	}
+
+	@Test
+	@TestInfo("LPD-115704")
+	public void testHasUpdatePermission() throws Exception {
+		MBMessage mbMessage = MBTestUtil.addMessage(
+			_group.getGroupId(), _user.getUserId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(
+				_userLocalService.getGuestUser(_group.getCompanyId()));
+
+		Assert.assertFalse(
+			_discussionPermission.hasUpdatePermission(
+				permissionChecker, mbMessage.getMessageId()));
 	}
 
 	@Test
@@ -473,5 +506,8 @@ public class MBDiscussionPermissionImplTest {
 	private User _siteUser2;
 
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

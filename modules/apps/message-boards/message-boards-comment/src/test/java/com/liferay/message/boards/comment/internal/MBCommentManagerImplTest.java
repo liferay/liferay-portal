@@ -106,6 +106,12 @@ public class MBCommentManagerImplTest extends Mockito {
 			_ROOT_MESSAGE_ID
 		);
 
+		when(
+			_mbMessage.isDiscussion()
+		).thenReturn(
+			true
+		);
+
 		Assert.assertEquals(
 			_MBMESSAGE_ID,
 			_mbCommentManagerImpl.addComment(
@@ -279,7 +285,13 @@ public class MBCommentManagerImplTest extends Mockito {
 		long groupId = RandomTestUtil.randomLong();
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		Mockito.when(
+		when(
+			_mbMessage.isDiscussion()
+		).thenReturn(
+			true
+		);
+
+		when(
 			_mbMessageLocalService.fetchMBMessageByExternalReferenceCode(
 				anyString(), anyLong())
 		).thenReturn(
@@ -307,7 +319,7 @@ public class MBCommentManagerImplTest extends Mockito {
 		long groupId = RandomTestUtil.randomLong();
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		Mockito.when(
+		when(
 			_mbMessageLocalService.fetchMBMessageByExternalReferenceCode(
 				anyString(), anyLong())
 		).thenReturn(
@@ -333,7 +345,13 @@ public class MBCommentManagerImplTest extends Mockito {
 		long groupId = RandomTestUtil.randomLong();
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		Mockito.when(
+		when(
+			_mbMessage.isDiscussion()
+		).thenReturn(
+			true
+		);
+
+		when(
 			_mbMessageLocalService.getMBMessageByExternalReferenceCode(
 				anyString(), anyLong())
 		).thenReturn(
@@ -362,14 +380,14 @@ public class MBCommentManagerImplTest extends Mockito {
 		long classNameId = RandomTestUtil.randomLong();
 		int commentsCount = RandomTestUtil.randomInt();
 
-		Mockito.when(
+		when(
 			_mbMessageLocalService.getDiscussionMessagesCount(
 				classNameId, classPK, WorkflowConstants.STATUS_APPROVED)
 		).thenReturn(
 			commentsCount
 		);
 
-		Mockito.when(
+		when(
 			_portal.getClassNameId(_CLASS_NAME)
 		).thenReturn(
 			classNameId

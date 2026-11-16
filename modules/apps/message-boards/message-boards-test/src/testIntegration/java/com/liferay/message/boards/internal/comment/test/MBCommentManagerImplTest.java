@@ -9,7 +9,10 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.message.boards.exception.NoSuchMessageException;
 import com.liferay.message.boards.model.MBDiscussion;
+import com.liferay.message.boards.model.MBMessage;
+import com.liferay.message.boards.test.util.MBTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManager;
@@ -22,9 +25,11 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.IdentityServiceContextFunction;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -72,6 +77,30 @@ public class MBCommentManagerImplTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115704")
+	public void testAddComment() throws Exception {
+		MBMessage mbMessage = _addMessage();
+
+		Assert.assertThrows(
+			NoSuchMessageException.class,
+			() -> _addComment(mbMessage.getMessageId()));
+	}
+
+	@Test
+	@TestInfo("LPD-115704")
+	public void testFetchComment() throws Exception {
+		Assert.assertNotNull(_commentManager.fetchComment(_parentCommentId));
+
+		MBMessage mbMessage = _addMessage();
+
+		Assert.assertNull(
+			_commentManager.fetchComment(mbMessage.getMessageId()));
+		Assert.assertNull(
+			_commentManager.fetchComment(
+				_group.getGroupId(), mbMessage.getExternalReferenceCode()));
+	}
+
+	@Test
 	public void testFetchDiscussionCommentCommentsCount() throws Exception {
 		DiscussionComment discussionComment =
 			_commentManager.fetchDiscussionComment(
@@ -95,6 +124,17 @@ public class MBCommentManagerImplTest {
 			3,
 			_commentManager.getChildCommentsCount(
 				_parentCommentId, WorkflowConstants.STATUS_APPROVED));
+	}
+
+	@Test
+	@TestInfo("LPD-115704")
+	public void testGetComment() throws Exception {
+		MBMessage mbMessage = _addMessage();
+
+		Assert.assertThrows(
+			NoSuchMessageException.class,
+			() -> _commentManager.getComment(
+				_group.getGroupId(), mbMessage.getExternalReferenceCode()));
 	}
 
 	@Test
@@ -207,6 +247,12 @@ public class MBCommentManagerImplTest {
 			null, user.getUserId(), User.class.getName(), user.getUserId(),
 			user.getFullName(), parentCommentId, StringUtil.randomString(),
 			StringUtil.randomString(), serviceContextFunction);
+	}
+
+	private MBMessage _addMessage() throws Exception {
+		return MBTestUtil.addMessage(
+			_group.getGroupId(), _user.getUserId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 	}
 
 	private void _createDiscussion() throws Exception {
