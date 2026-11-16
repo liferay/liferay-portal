@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.struts.LastPath;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -130,6 +132,27 @@ public class VirtualHostFilterTest {
 				mockHttpServletRequest.getAttribute(
 					WebKeys.GROUP_FRIENDLY_URL));
 		}
+	}
+
+	@Test
+	public void testProcessFilterDoesNotSetGroupOnRequestWhenLayoutSetDoesNotMatch()
+		throws Exception {
+
+		_group = GroupTestUtil.addGroup();
+
+		String groupFriendlyURL = _getGroupFriendlyURL(_publicLayoutSet);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(_group.getFriendlyURL());
+
+		Assert.assertEquals(
+			"/web" + groupFriendlyURL + _group.getFriendlyURL(),
+			_getForwardedURL(mockHttpServletRequest));
+
+		Assert.assertNull(
+			mockHttpServletRequest.getAttribute(WebKeys.FRIENDLY_URL_GROUP));
+		Assert.assertNull(
+			mockHttpServletRequest.getAttribute(WebKeys.GROUP_FRIENDLY_URL));
 	}
 
 	@Test(expected = SystemException.class)
@@ -484,6 +507,9 @@ public class VirtualHostFilterTest {
 
 	private static LayoutSet _privateLayoutSet;
 	private static LayoutSet _publicLayoutSet;
+
+	@DeleteAfterTestRun
+	private Group _group;
 
 	private String _pathContext;
 	private String _pathProxy;
