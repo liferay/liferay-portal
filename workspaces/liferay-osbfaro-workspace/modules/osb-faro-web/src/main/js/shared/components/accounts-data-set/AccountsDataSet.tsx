@@ -201,6 +201,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 					...(accountLifecycleId || allLifecycles
 						? [
 								{
+									autocompleteEnabled: true,
 									entityFieldType: 'string',
 									id: 'lifecycleStatus',
 									items: lifecycleStageItems,
@@ -225,6 +226,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 						: []),
 					{
 						apiURL: `/o/faro/contacts/${groupId}/account/fds_field_values?channelId=${channelId}&fieldMappingFieldName=industry`,
+						autocompleteEnabled: true,
 						entityFieldType: 'string',
 						id: 'industry',
 						itemKey: 'name',
@@ -237,6 +239,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 					},
 					{
 						apiURL: `/o/faro/contacts/${groupId}/account/fds_field_values?channelId=${channelId}&fieldMappingFieldName=country`,
+						autocompleteEnabled: true,
 						entityFieldType: 'string',
 						id: 'country',
 						itemKey: 'name',
@@ -249,6 +252,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 					},
 					{
 						apiURL: `/o/faro/contacts/${groupId}/individual_segment/search?channelId=${channelId}`,
+						autocompleteEnabled: true,
 						entityFieldType: 'string',
 						id: 'segmentId',
 						itemKey: 'id',
