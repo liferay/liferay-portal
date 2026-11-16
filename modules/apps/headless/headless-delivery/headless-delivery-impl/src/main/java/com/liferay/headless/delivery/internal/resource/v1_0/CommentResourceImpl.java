@@ -195,6 +195,19 @@ public class CommentResourceImpl extends BaseCommentResourceImpl {
 			Filter filter, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
+		com.liferay.portal.kernel.comment.Comment parentComment =
+			_commentManager.fetchComment(parentCommentId);
+
+		if (parentComment == null) {
+			throw new NoSuchModelException(
+				"No comment exists with comment ID " + parentCommentId);
+		}
+
+		_discussionPermission.checkViewPermission(
+			PermissionThreadLocal.getPermissionChecker(),
+			contextCompany.getCompanyId(), parentComment.getGroupId(),
+			parentComment.getClassName(), parentComment.getClassPK());
+
 		return CommentResourceUtil.getComments(
 			HashMapBuilder.put(
 				"deleteBatch",
