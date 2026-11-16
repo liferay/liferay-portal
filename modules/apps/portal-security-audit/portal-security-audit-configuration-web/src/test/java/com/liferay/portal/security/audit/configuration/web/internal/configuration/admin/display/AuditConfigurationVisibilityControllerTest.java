@@ -7,7 +7,6 @@ package com.liferay.portal.security.audit.configuration.web.internal.configurati
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -25,18 +24,10 @@ public class AuditConfigurationVisibilityControllerTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@FeatureFlag("LPD-6417")
 	@Test
 	public void testIsVisible() {
 		_testIsVisible(false, ExtendedObjectClassDefinition.Scope.COMPANY);
 		_testIsVisible(false, ExtendedObjectClassDefinition.Scope.SYSTEM);
-	}
-
-	@FeatureFlag(enable = false, value = "LPD-6417")
-	@Test
-	public void testIsVisibleWhenFeatureFlagIsDisabled() {
-		_testIsVisible(false, ExtendedObjectClassDefinition.Scope.COMPANY);
-		_testIsVisible(true, ExtendedObjectClassDefinition.Scope.SYSTEM);
 	}
 
 	private void _testIsVisible(

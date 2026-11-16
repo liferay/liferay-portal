@@ -11,7 +11,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.HashMap;
@@ -52,7 +51,6 @@ public class AuditPortalSettingsConfigurationScreenWrapperTest {
 		Assert.assertEquals(scopes, configurationScreens.keySet());
 	}
 
-	@FeatureFlag("LPD-6417")
 	@Test
 	public void testIsVisible() throws Exception {
 		Map<String, ConfigurationScreen> configurationScreens =
@@ -63,22 +61,6 @@ public class AuditPortalSettingsConfigurationScreenWrapperTest {
 				configurationScreens,
 				ExtendedObjectClassDefinition.Scope.COMPANY));
 		Assert.assertTrue(
-			_isVisible(
-				configurationScreens,
-				ExtendedObjectClassDefinition.Scope.SYSTEM));
-	}
-
-	@FeatureFlag(enable = false, value = "LPD-6417")
-	@Test
-	public void testIsVisibleWhenFeatureFlagIsDisabled() throws Exception {
-		Map<String, ConfigurationScreen> configurationScreens =
-			_getConfigurationScreens();
-
-		Assert.assertFalse(
-			_isVisible(
-				configurationScreens,
-				ExtendedObjectClassDefinition.Scope.COMPANY));
-		Assert.assertFalse(
 			_isVisible(
 				configurationScreens,
 				ExtendedObjectClassDefinition.Scope.SYSTEM));

@@ -13,14 +13,12 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ProgressTracker;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.audit.AuditEvent;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -36,7 +34,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Christian Moura
  */
-@FeatureFlag("LPD-6417")
 @RunWith(Arquillian.class)
 public class ExportAuditEventsMVCResourceCommandTest {
 
@@ -67,8 +64,7 @@ public class ExportAuditEventsMVCResourceCommandTest {
 		String csv = ReflectionTestUtil.invoke(
 			_mvcResourceCommand, "_buildCSV",
 			new Class<?>[] {List.class, String[].class, ProgressTracker.class},
-			ListUtil.fromArray(auditEvent),
-			_getColumns(TestPropsValues.getCompanyId()), null);
+			ListUtil.fromArray(auditEvent), _getDefaultColumns(), null);
 
 		String[] lines = StringUtil.split(csv, CharPool.NEW_LINE);
 
@@ -78,7 +74,7 @@ public class ExportAuditEventsMVCResourceCommandTest {
 	}
 
 	@Test
-	public void testGetColumns() throws Exception {
+	public void testGetDefaultColumns() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					_CONFIGURATION_PID,
@@ -86,34 +82,13 @@ public class ExportAuditEventsMVCResourceCommandTest {
 						"columns", new String[] {RandomTestUtil.randomString()}
 					).build())) {
 
-			Assert.assertArrayEquals(
-				_COLUMNS_DEFAULT, _getColumns(TestPropsValues.getCompanyId()));
+			Assert.assertArrayEquals(_COLUMNS_DEFAULT, _getDefaultColumns());
 		}
 	}
 
-	@FeatureFlag(enable = false, value = "LPD-6417")
-	@Test
-	public void testGetColumnsWhenFeatureFlagIsDisabled() throws Exception {
-		String[] columns = {
-			RandomTestUtil.randomString(), RandomTestUtil.randomString()
-		};
-
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					_CONFIGURATION_PID,
-					HashMapDictionaryBuilder.<String, Object>put(
-						"columns", columns
-					).build())) {
-
-			Assert.assertArrayEquals(
-				columns, _getColumns(TestPropsValues.getCompanyId()));
-		}
-	}
-
-	private String[] _getColumns(long companyId) {
+	private String[] _getDefaultColumns() {
 		return ReflectionTestUtil.invoke(
-			_mvcResourceCommand, "_getColumns", new Class<?>[] {long.class},
-			companyId);
+			_mvcResourceCommand, "_getDefaultColumns", new Class<?>[0]);
 	}
 
 	private static final String[] _COLUMNS_DEFAULT = {

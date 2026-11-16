@@ -124,6 +124,31 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 			ExtendedObjectClassDefinition.Scope.SYSTEM);
 	}
 
+	@FeatureFlag(enable = false, value = "LPD-6417")
+	@Test
+	public void testProcessActionWhenFeatureFlagIsDisabled() throws Exception {
+		_processAction(ExtendedObjectClassDefinition.Scope.COMPANY);
+
+		Assert.assertNull(
+			_configurationAdmin.listConfigurations(
+				_getFilterString(
+					AuditConfiguration.class,
+					ExtendedObjectClassDefinition.Scope.COMPANY)));
+
+		AuditConfiguration auditConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				AuditConfiguration.class, TestPropsValues.getCompanyId());
+
+		Assert.assertTrue(auditConfiguration.pseudonymizationEnabled());
+
+		_processAction(ExtendedObjectClassDefinition.Scope.SYSTEM);
+
+		auditConfiguration = _configurationProvider.getSystemConfiguration(
+			AuditConfiguration.class);
+
+		Assert.assertTrue(auditConfiguration.pseudonymizationEnabled());
+	}
+
 	@FeatureFlag("LPD-6417")
 	@Test
 	public void testProcessActionWithCompanyScope() throws Exception {
@@ -142,7 +167,6 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				TestPropsValues.getCompanyId()));
 	}
 
-	@FeatureFlag("LPD-6417")
 	@Test
 	public void testProcessActionWithCompanyScopeDoesNotAffectOtherInstances()
 		throws Exception {
@@ -167,17 +191,6 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 			fileSystemAuditMessageProcessorConfiguration.outputFormat());
 	}
 
-	@FeatureFlag(enable = false, value = "LPD-6417")
-	@Test
-	public void testProcessActionWithCompanyScopeWhenFeatureFlagIsDisabled()
-		throws Exception {
-
-		_assertProcessActionFails(
-			ExtendedObjectClassDefinition.Scope.COMPANY,
-			UnsupportedOperationException.class);
-	}
-
-	@FeatureFlag("LPD-6417")
 	@Test
 	public void testProcessActionWithCompanyScopeWhenFileSystemProcessorIsOverridden()
 		throws Exception {
@@ -186,7 +199,6 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 			ExtendedObjectClassDefinition.Scope.COMPANY);
 	}
 
-	@FeatureFlag("LPD-6417")
 	@Test
 	public void testProcessActionWithCompanyScopeWhenFileSystemProcessorParametersAreAbsent()
 		throws Exception {
@@ -213,7 +225,6 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				TestPropsValues.getCompanyId()));
 	}
 
-	@FeatureFlag("LPD-6417")
 	@Test
 	public void testProcessActionWithCompanyScopeWhenUserIsNotCompanyAdmin()
 		throws Exception {
@@ -223,6 +234,7 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 			PrincipalException.MustBeCompanyAdmin.class);
 	}
 
+	@FeatureFlag("LPD-6417")
 	@Test
 	public void testProcessActionWithSystemScope() throws Exception {
 		_processAction(ExtendedObjectClassDefinition.Scope.SYSTEM);
