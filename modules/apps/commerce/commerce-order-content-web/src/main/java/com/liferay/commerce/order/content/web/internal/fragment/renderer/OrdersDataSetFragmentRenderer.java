@@ -173,7 +173,6 @@ public class OrdersDataSetFragmentRenderer implements FragmentRenderer {
 				"liferay-commerce:order-data-set:propsTransformer",
 				"{OrderDataSetPropsTransformer} from " +
 					"commerce-order-content-web");
-
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-data-set:" +
 					"returnableOrderItemsContextParams",
