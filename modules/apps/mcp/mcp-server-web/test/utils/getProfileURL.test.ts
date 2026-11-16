@@ -5,14 +5,33 @@
 
 import getProfileURL from '../../src/main/resources/META-INF/resources/js/utils/getProfileURL';
 
+const getPathContext = Liferay.ThemeDisplay
+	.getPathContext as unknown as jest.Mock;
+
 describe('getProfileURL', () => {
+	afterEach(() => {
+		getPathContext.mockReturnValue('/');
+	});
+
+	beforeEach(() => {
+		getPathContext.mockReturnValue('');
+	});
+
 	it('appends the profile path to the base URL', () => {
 		expect(getProfileURL('tool-search')).toBe(
-			`${window.location.origin}/o/mcp/tool-search`
+			'http://localhost:8080/o/mcp/tool-search'
+		);
+	});
+
+	it('includes the portal context path', () => {
+		getPathContext.mockReturnValue('/liferay');
+
+		expect(getProfileURL('tool-search')).toBe(
+			'http://localhost:8080/liferay/o/mcp/tool-search'
 		);
 	});
 
 	it('returns the base URL without a profile path', () => {
-		expect(getProfileURL('')).toBe(`${window.location.origin}/o/mcp`);
+		expect(getProfileURL('')).toBe('http://localhost:8080/o/mcp');
 	});
 });

@@ -15,6 +15,9 @@ import EditProfileInfo from '../../../../src/main/resources/META-INF/resources/j
 
 const BACK_URL = '/profiles';
 
+const getPathContext = Liferay.ThemeDisplay
+	.getPathContext as unknown as jest.Mock;
+
 function renderEditProfileInfo(profileERC = '') {
 	render(
 		<EditProfileInfo
@@ -27,8 +30,14 @@ function renderEditProfileInfo(profileERC = '') {
 }
 
 describe('EditProfileInfo', () => {
+	afterEach(() => {
+		getPathContext.mockReturnValue('/');
+	});
+
 	beforeEach(() => {
 		jest.clearAllMocks();
+
+		getPathContext.mockReturnValue('');
 	});
 
 	it('generates the profile path from the title until it is edited by hand', async () => {
@@ -45,7 +54,7 @@ describe('EditProfileInfo', () => {
 
 		expect(profilePathInput).toHaveValue('my-team-docs');
 		expect(
-			screen.getByText(`${window.location.origin}/o/mcp/`)
+			screen.getByText('http://localhost:8080/o/mcp/')
 		).toBeInTheDocument();
 
 		await userEvent.clear(profilePathInput);
@@ -100,7 +109,7 @@ describe('EditProfileInfo', () => {
 		expect(profilePathInput).toBeDisabled();
 		expect(profilePathInput).toHaveValue('');
 		expect(
-			screen.getByText(`${window.location.origin}/o/mcp`)
+			screen.getByText('http://localhost:8080/o/mcp')
 		).toBeInTheDocument();
 		expect(
 			screen.getByText('the-default-profile-has-no-profile-path')
@@ -125,7 +134,7 @@ describe('EditProfileInfo', () => {
 		await user.click(await screen.findByRole('button', {name: 'copy-url'}));
 
 		expect(await navigator.clipboard.readText()).toBe(
-			`${window.location.origin}/o/mcp`
+			'http://localhost:8080/o/mcp'
 		);
 
 		expect(
@@ -133,7 +142,9 @@ describe('EditProfileInfo', () => {
 		).toBeInTheDocument();
 	});
 
-	it('copies the URL of the profile path', async () => {
+	it('copies the URL of the profile path with the portal context path', async () => {
+		getPathContext.mockReturnValue('/liferay');
+
 		const user = userEvent.setup();
 
 		renderEditProfileInfo();
@@ -141,6 +152,9 @@ describe('EditProfileInfo', () => {
 		const copyButton = screen.getByRole('button', {name: 'copy-url'});
 
 		expect(copyButton).toBeDisabled();
+		expect(
+			screen.getByText('http://localhost:8080/liferay/o/mcp/')
+		).toBeInTheDocument();
 
 		await user.type(
 			screen.getByRole('textbox', {name: /^title/}),
@@ -149,7 +163,7 @@ describe('EditProfileInfo', () => {
 		await user.click(copyButton);
 
 		expect(await navigator.clipboard.readText()).toBe(
-			`${window.location.origin}/o/mcp/my-docs`
+			'http://localhost:8080/liferay/o/mcp/my-docs'
 		);
 	});
 

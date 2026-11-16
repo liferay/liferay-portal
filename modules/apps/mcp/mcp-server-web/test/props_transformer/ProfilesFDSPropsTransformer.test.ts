@@ -10,6 +10,9 @@ import '@testing-library/jest-dom';
 
 import ProfilesFDSPropsTransformer from '../../src/main/resources/META-INF/resources/js/props_transformer/ProfilesFDSPropsTransformer';
 
+const getPathContext = Liferay.ThemeDisplay
+	.getPathContext as unknown as jest.Mock;
+
 describe('ProfilesFDSPropsTransformer', () => {
 	const copyURL = (name: string, profilePath: string) => {
 		const {onActionDropdownItemClick} = ProfilesFDSPropsTransformer({});
@@ -21,7 +24,13 @@ describe('ProfilesFDSPropsTransformer', () => {
 		});
 	};
 
+	afterEach(() => {
+		getPathContext.mockReturnValue('/');
+	});
+
 	beforeEach(() => {
+		getPathContext.mockReturnValue('');
+
 		userEvent.setup();
 	});
 
@@ -43,7 +52,7 @@ describe('ProfilesFDSPropsTransformer', () => {
 
 		await waitFor(async () =>
 			expect(await navigator.clipboard.readText()).toBe(
-				`${window.location.origin}/o/mcp/tool-search`
+				'http://localhost:8080/o/mcp/tool-search'
 			)
 		);
 	});
@@ -53,7 +62,7 @@ describe('ProfilesFDSPropsTransformer', () => {
 
 		await waitFor(async () =>
 			expect(await navigator.clipboard.readText()).toBe(
-				`${window.location.origin}/o/mcp`
+				'http://localhost:8080/o/mcp'
 			)
 		);
 	});
