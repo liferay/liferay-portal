@@ -132,9 +132,12 @@ public class DLFileEntryCTTest {
 	public void testAddTempFileEntry() throws Exception {
 		DLFolder dlFolder = null;
 
-		TempFileEntryUtil.getTempFileNames(
+		TempFileEntryUtil.addTempFileEntry(
 			_group.getGroupId(), TestPropsValues.getUserId(),
-			DLFileEntryCTTest.class.getName());
+			DLFileEntryCTTest.class.getName(),
+			TempFileEntryUtil.getTempFileName(RandomTestUtil.randomString()),
+			new ByteArrayInputStream(RandomTestUtil.randomBytes()),
+			ContentTypes.IMAGE_JPEG);
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
