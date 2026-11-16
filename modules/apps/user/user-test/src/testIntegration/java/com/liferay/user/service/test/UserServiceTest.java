@@ -446,7 +446,7 @@ public class UserServiceTest {
 	}
 
 	@Test
-	public void testUpdateUserWithOrganizationIds() throws Exception {
+	public void testUpdateUser() throws Exception {
 		Organization organization = OrganizationTestUtil.addOrganization();
 
 		User organizationAdminUser = UserTestUtil.addOrganizationAdminUser(
