@@ -1049,7 +1049,7 @@ definition {
 			if (isSet(collectionsDisable)) {
 				AssertTextEquals(
 					locator1 = "Message#INFO",
-					value1 = "Info:This application is not supported for Asset Libraries. Please, go back to scope selection.");
+					value1 = "Info:This application is disabled for this scope. Please, go back to scope selection.");
 			}
 			else {
 				Click(locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE_CARD");

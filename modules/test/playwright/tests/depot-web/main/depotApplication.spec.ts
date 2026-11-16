@@ -160,7 +160,7 @@ test(
 
 		await expect(
 			itemSelector.getByText(
-				'This application is not supported for Asset Libraries.'
+				'This application is disabled for this scope.'
 			)
 		).toBeVisible();
 	}
