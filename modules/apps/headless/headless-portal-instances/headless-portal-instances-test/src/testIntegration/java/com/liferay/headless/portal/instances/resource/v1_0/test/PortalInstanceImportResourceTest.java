@@ -12,6 +12,7 @@ import com.liferay.headless.portal.instances.client.http.HttpInvoker;
 import com.liferay.headless.portal.instances.client.problem.Problem;
 import com.liferay.headless.portal.instances.client.resource.v1_0.PortalInstanceImportResource;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -23,11 +24,14 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Release;
+import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
@@ -116,6 +120,7 @@ public class PortalInstanceImportResourceTest
 		_testPostPortalInstanceImportInProgress();
 		_testPostPortalInstanceImportInvalidSchemaName();
 		_testPostPortalInstanceImportNonexistentDBPartition();
+		_testPostPortalInstanceImportOutdatedSchemaVersion();
 		_testPostPortalInstanceImportSuccess();
 		_testPostPortalInstanceImportWithoutOmniadminPermission();
 	}
@@ -533,6 +538,47 @@ public class PortalInstanceImportResourceTest
 		}
 	}
 
+	private void _testPostPortalInstanceImportOutdatedSchemaVersion()
+		throws Exception {
+
+		long companyId = _exportCompany();
+
+		try {
+			String schemaName = DBPartitionUtil.getExportedPartitionName(
+				companyId);
+
+			try (SafeCloseable safeCloseable =
+					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+						PortalInstancePool.getDefaultCompanyId())) {
+
+				DB db = DBManagerUtil.getDB();
+
+				db.runSQL(
+					StringBundler.concat(
+						"update ", schemaName, ".Release_ set schemaVersion = ",
+						"'0.0.1' where servletContextName = 'portal'"));
+			}
+
+			PortalInstanceImport portalInstanceImport =
+				new PortalInstanceImport();
+
+			portalInstanceImport.setSchemaName(schemaName);
+
+			Release release = _releaseLocalService.fetchRelease(
+				ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME);
+
+			_assertPostPortalInstanceImportProblemTitle(
+				portalInstanceImport,
+				StringBundler.concat(
+					"Unable to insert the database partition ", schemaName,
+					" because module portal has schema version 0.0.1 instead ",
+					"of ", release.getSchemaVersion()));
+		}
+		finally {
+			_dropExportedSchema(companyId);
+		}
+	}
+
 	private void _testPostPortalInstanceImportSuccess() throws Exception {
 		Company company = CompanyTestUtil.addCompany();
 
@@ -665,6 +711,9 @@ public class PortalInstanceImportResourceTest
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private ReleaseLocalService _releaseLocalService;
 
 	@Inject
 	private VirtualHostLocalService _virtualHostLocalService;
