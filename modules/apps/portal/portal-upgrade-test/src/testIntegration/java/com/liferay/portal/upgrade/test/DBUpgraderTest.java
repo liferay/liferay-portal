@@ -497,10 +497,25 @@ public class DBUpgraderTest {
 			ReleaseInfo.RELEASE_7_1_0_BUILD_NUMBER,
 			ReleaseConstants.STATE_UPGRADE_FAILURE);
 
-		try {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				DBUpgrader.class.getName(), LoggerTestUtil.WARN)) {
+
+			Version schemaVersion =
+				PortalUpgradeProcess.getCurrentSchemaVersion(_connection);
+
 			_startUpgrade();
 
 			DBUpgrader.upgradePortal();
+
+			List<String> messages = logCapture.getMessages();
+
+			Assert.assertTrue(
+				messages.contains(
+					StringBundler.concat(
+						"Retrying the upgrade of ",
+						ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+						" from schema version ", schemaVersion,
+						" after a failure")));
 		}
 		finally {
 			_stopUpgrade();
@@ -513,11 +528,11 @@ public class DBUpgraderTest {
 			ReleaseInfo.RELEASE_7_1_0_BUILD_NUMBER,
 			ReleaseConstants.STATE_IN_PROGRESS);
 
-		Version schemaVersion = PortalUpgradeProcess.getCurrentSchemaVersion(
-			_connection);
-
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				DBUpgrader.class.getName(), LoggerTestUtil.WARN)) {
+
+			Version schemaVersion =
+				PortalUpgradeProcess.getCurrentSchemaVersion(_connection);
 
 			_startUpgrade();
 
@@ -532,6 +547,13 @@ public class DBUpgraderTest {
 						ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
 						" from schema version ", schemaVersion,
 						" after an interruption")));
+			Assert.assertFalse(
+				messages.contains(
+					StringBundler.concat(
+						"Retrying the upgrade of ",
+						ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+						" from schema version ", schemaVersion,
+						" after a failure")));
 		}
 		finally {
 			_stopUpgrade();
