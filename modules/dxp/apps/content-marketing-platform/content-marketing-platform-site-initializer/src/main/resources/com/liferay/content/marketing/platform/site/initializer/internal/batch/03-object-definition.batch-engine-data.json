@@ -1306,6 +1306,8 @@
 								"value": "r_cmpTaskToCMPTasks_c_cmpTaskERC"
 							}
 						],
+						"readOnly": "conditional",
+						"readOnlyConditionExpression": "NOT(isEmpty(externalReferenceCode))",
 						"relationshipType": "oneToMany",
 						"required": false,
 						"system": true,
@@ -1316,6 +1318,22 @@
 					"reverse": false,
 					"system": true,
 					"type": "oneToMany"
+				}
+			],
+			"objectValidationRules": [
+				{
+					"active": true,
+					"engine": "javaDelegate#CMPTask#maxDepth",
+					"errorLabel": {
+						"en_US": "The max depth for a task is two."
+					},
+					"externalReferenceCode": "L_CMP_TASK_MAX_DEPTH",
+					"name": {
+						"en_US": "Max Depth"
+					},
+					"objectDefinitionExternalReferenceCode": "L_CMP_TASK",
+					"outputType": "fullValidation",
+					"system": true
 				}
 			],
 			"panelCategoryKey": "",
