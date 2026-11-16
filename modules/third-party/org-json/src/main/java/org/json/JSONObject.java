@@ -3256,7 +3256,7 @@ public class JSONObject {
             if (length == 1) {
             	final Entry<String,?> entry = this.entrySet().iterator().next();
                 final String key = entry.getKey();
-                writer.write(quote(key));
+                quote(key, writer);
                 writer.write(':');
                 if (indentFactor > 0) {
                     writer.write(' ');
@@ -3297,7 +3297,7 @@ public class JSONObject {
             }
             indent(writer, newIndent);
             final String key = entry.getKey();
-            writer.write(quote(key));
+            quote(key, writer);
             writer.write(':');
             if (indentFactor > 0) {
                 writer.write(' ');
@@ -3657,3 +3657,4 @@ public class JSONObject {
         }
     }
 }
+/* @generated */
