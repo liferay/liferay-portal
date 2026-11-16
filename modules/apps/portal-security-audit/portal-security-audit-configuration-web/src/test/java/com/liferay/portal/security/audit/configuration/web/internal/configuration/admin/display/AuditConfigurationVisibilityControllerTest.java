@@ -26,8 +26,8 @@ public class AuditConfigurationVisibilityControllerTest {
 
 	@Test
 	public void testIsVisible() {
-		_testIsVisible(false, ExtendedObjectClassDefinition.Scope.COMPANY);
-		_testIsVisible(false, ExtendedObjectClassDefinition.Scope.SYSTEM);
+		_testIsVisible(true, ExtendedObjectClassDefinition.Scope.COMPANY);
+		_testIsVisible(true, ExtendedObjectClassDefinition.Scope.SYSTEM);
 	}
 
 	private void _testIsVisible(

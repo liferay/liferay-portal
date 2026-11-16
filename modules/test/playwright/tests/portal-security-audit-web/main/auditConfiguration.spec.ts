@@ -70,14 +70,10 @@ test(
 	async ({instanceSettingsPage, page}) => {
 		await instanceSettingsPage.goToInstanceSetting(
 			'Audit',
-			'Audit',
+			'File System Audit Message Processor',
 			true,
 			'Virtual Instance Scope'
 		);
-
-		await expect(
-			page.getByRole('heading', {name: 'File System Processor'})
-		).toBeVisible();
 
 		await expect(
 			page.getByLabel('Enable File System Processor')
@@ -138,7 +134,7 @@ test.describe('File System Processor instance configuration', () => {
 	test.afterEach(async ({instanceSettingsPage, page}) => {
 		await instanceSettingsPage.goToInstanceSetting(
 			'Audit',
-			'Audit',
+			'File System Audit Message Processor',
 			true,
 			'Virtual Instance Scope'
 		);
@@ -163,7 +159,7 @@ test.describe('File System Processor instance configuration', () => {
 		async ({instanceSettingsPage, page}) => {
 			await instanceSettingsPage.goToInstanceSetting(
 				'Audit',
-				'Audit',
+				'File System Audit Message Processor',
 				true,
 				'Virtual Instance Scope'
 			);
@@ -183,7 +179,7 @@ test.describe('File System Processor instance configuration', () => {
 
 			await instanceSettingsPage.goToInstanceSetting(
 				'Audit',
-				'Audit',
+				'File System Audit Message Processor',
 				true,
 				'Virtual Instance Scope'
 			);

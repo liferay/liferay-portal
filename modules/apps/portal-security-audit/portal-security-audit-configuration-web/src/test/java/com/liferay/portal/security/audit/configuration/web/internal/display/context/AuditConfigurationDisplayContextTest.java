@@ -10,7 +10,6 @@ import com.liferay.portal.configuration.persistence.ConfigurationOverridePropert
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
-import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.function.Function;
@@ -37,77 +36,46 @@ public class AuditConfigurationDisplayContextTest {
 	@Test
 	public void testGetHelpMessage() {
 		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::getEnabledHelpMessage,
-			AuditConfiguration.class, "enabled");
-		_testGetHelpMessage(
 			AuditConfigurationDisplayContext::
-				getFileSystemAuditMessageProcessorEnabledHelpMessage,
-			FileSystemAuditMessageProcessorConfiguration.class, "enabled");
+				getAuditMessageMaxQueueSizeHelpMessage,
+			"auditMessageMaxQueueSize");
 		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::
-				getFileSystemAuditMessageProcessorGenerateChecksumHelpMessage,
-			FileSystemAuditMessageProcessorConfiguration.class,
-			"generateChecksum");
-		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::
-				getFileSystemAuditMessageProcessorOutputDirectoryHelpMessage,
-			FileSystemAuditMessageProcessorConfiguration.class,
-			"outputDirectory");
-		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::
-				getFileSystemAuditMessageProcessorOutputFormatHelpMessage,
-			FileSystemAuditMessageProcessorConfiguration.class, "outputFormat");
+			AuditConfigurationDisplayContext::getEnabledHelpMessage, "enabled");
 		_testGetHelpMessage(
 			AuditConfigurationDisplayContext::
 				getPseudonymizationEnabledHelpMessage,
-			AuditConfiguration.class, "pseudonymizationEnabled");
+			"pseudonymizationEnabled");
 	}
 
 	@Test
 	public void testIsOverridden() {
 		_testIsOverridden(
-			AuditConfigurationDisplayContext::isEnabledOverridden,
-			AuditConfiguration.class, "enabled");
-		_testIsOverridden(
 			AuditConfigurationDisplayContext::
-				isFileSystemAuditMessageProcessorEnabledOverridden,
-			FileSystemAuditMessageProcessorConfiguration.class, "enabled");
+				isAuditMessageMaxQueueSizeOverridden,
+			"auditMessageMaxQueueSize");
 		_testIsOverridden(
-			AuditConfigurationDisplayContext::
-				isFileSystemAuditMessageProcessorGenerateChecksumOverridden,
-			FileSystemAuditMessageProcessorConfiguration.class,
-			"generateChecksum");
-		_testIsOverridden(
-			AuditConfigurationDisplayContext::
-				isFileSystemAuditMessageProcessorOutputDirectoryOverridden,
-			FileSystemAuditMessageProcessorConfiguration.class,
-			"outputDirectory");
-		_testIsOverridden(
-			AuditConfigurationDisplayContext::
-				isFileSystemAuditMessageProcessorOutputFormatOverridden,
-			FileSystemAuditMessageProcessorConfiguration.class, "outputFormat");
+			AuditConfigurationDisplayContext::isEnabledOverridden, "enabled");
 		_testIsOverridden(
 			AuditConfigurationDisplayContext::
 				isPseudonymizationEnabledOverridden,
-			AuditConfiguration.class, "pseudonymizationEnabled");
+			"pseudonymizationEnabled");
 	}
 
-	private AuditConfigurationDisplayContext _createDisplayContext() {
+	private AuditConfigurationDisplayContext
+		_createAuditConfigurationDisplayContext() {
+
 		return new AuditConfigurationDisplayContext(
-			Mockito.mock(AuditConfiguration.class),
-			Mockito.mock(FileSystemAuditMessageProcessorConfiguration.class),
-			false);
+			Mockito.mock(AuditConfiguration.class), false, false);
 	}
 
 	private void _mockOverrideProperties(
-		Class<?> clazz,
 		MockedStatic<ConfigurationOverridePropertiesUtil>
 			configurationOverridePropertiesUtilMockedStatic,
 		String key) {
 
 		configurationOverridePropertiesUtilMockedStatic.when(
 			() -> ConfigurationOverridePropertiesUtil.getOverrideProperties(
-				clazz.getName())
+				AuditConfiguration.class.getName())
 		).thenReturn(
 			HashMapBuilder.<String, Object>put(
 				key, RandomTestUtil.randomString()
@@ -117,7 +85,7 @@ public class AuditConfigurationDisplayContextTest {
 
 	private void _testGetHelpMessage(
 		Function<AuditConfigurationDisplayContext, String> function,
-		Class<?> clazz, String key) {
+		String key) {
 
 		try (MockedStatic<ConfigurationOverridePropertiesUtil>
 				configurationOverridePropertiesUtilMockedStatic =
@@ -125,14 +93,14 @@ public class AuditConfigurationDisplayContextTest {
 						ConfigurationOverridePropertiesUtil.class)) {
 
 			AuditConfigurationDisplayContext auditConfigurationDisplayContext =
-				_createDisplayContext();
+				_createAuditConfigurationDisplayContext();
 
 			Assert.assertEquals(
 				StringPool.BLANK,
 				function.apply(auditConfigurationDisplayContext));
 
 			_mockOverrideProperties(
-				clazz, configurationOverridePropertiesUtilMockedStatic, key);
+				configurationOverridePropertiesUtilMockedStatic, key);
 
 			Assert.assertEquals(
 				"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
@@ -142,8 +110,7 @@ public class AuditConfigurationDisplayContextTest {
 	}
 
 	private void _testIsOverridden(
-		Predicate<AuditConfigurationDisplayContext> predicate, Class<?> clazz,
-		String key) {
+		Predicate<AuditConfigurationDisplayContext> predicate, String key) {
 
 		try (MockedStatic<ConfigurationOverridePropertiesUtil>
 				configurationOverridePropertiesUtilMockedStatic =
@@ -151,13 +118,13 @@ public class AuditConfigurationDisplayContextTest {
 						ConfigurationOverridePropertiesUtil.class)) {
 
 			AuditConfigurationDisplayContext auditConfigurationDisplayContext =
-				_createDisplayContext();
+				_createAuditConfigurationDisplayContext();
 
 			Assert.assertFalse(
 				predicate.test(auditConfigurationDisplayContext));
 
 			_mockOverrideProperties(
-				clazz, configurationOverridePropertiesUtilMockedStatic, key);
+				configurationOverridePropertiesUtilMockedStatic, key);
 
 			Assert.assertTrue(predicate.test(auditConfigurationDisplayContext));
 		}
