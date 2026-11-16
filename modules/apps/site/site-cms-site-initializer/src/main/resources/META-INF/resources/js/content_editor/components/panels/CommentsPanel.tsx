@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
@@ -14,6 +15,7 @@ import {
 	TEditor,
 } from 'frontend-editor-ckeditor-web';
 import {openToast} from 'frontend-js-components-web';
+import {escapeHTML} from 'frontend-js-web';
 import {Ratings} from 'ratings-taglib';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -47,19 +49,38 @@ export default function CommentsPanel({
 	readOnly?: boolean;
 }) {
 	const [comments, setComments] = useState<Comment[]>([]);
+	const [commentNoLongerAvailable, setCommentNoLongerAvailable] =
+		useState(false);
 
 	useEffect(() => {
+		const loadComments = (comments: Comment[]) => {
+			setComments(comments);
+			setCommentNoLongerAvailable(
+				!!highlightedCommentId &&
+					!isCommentAvailable(comments, highlightedCommentId)
+			);
+		};
+
 		if (!initialComments) {
 			CommentService.getComments({
 				url: getCommentsURL,
-			}).then(({data: comments}) => {
-				setComments(comments ?? []);
+			}).then(({data: comments, error}) => {
+				if (error) {
+					openToast({
+						message: escapeHTML(error),
+						type: 'danger',
+					});
+
+					return;
+				}
+
+				loadComments(comments ?? []);
 			});
 		}
 		else {
-			setComments(initialComments);
+			loadComments(initialComments);
 		}
-	}, [initialComments, getCommentsURL]);
+	}, [initialComments, getCommentsURL, highlightedCommentId]);
 
 	const deleteComment = async (
 		commentId: string,
@@ -251,6 +272,17 @@ export default function CommentsPanel({
 						}
 					/>
 				</div>
+			)}
+
+			{commentNoLongerAvailable && (
+				<ClayAlert
+					className="mx-3 my-3"
+					displayType="info"
+					onClose={() => setCommentNoLongerAvailable(false)}
+					title={Liferay.Language.get(
+						'this-comment-is-no-longer-available'
+					)}
+				/>
 			)}
 
 			{comments.length ? (
@@ -629,5 +661,13 @@ function CommentEditor({
 				</ClayButton>
 			</div>
 		</>
+	);
+}
+
+function isCommentAvailable(comments: Comment[], commentId: string): boolean {
+	return comments.some(
+		(comment) =>
+			String(comment.commentId) === commentId ||
+			isCommentAvailable(comment.children ?? [], commentId)
 	);
 }
