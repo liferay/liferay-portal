@@ -6,14 +6,13 @@
 package com.liferay.frontend.js.bundle.config.extender.internal.servlet.taglib;
 
 import com.liferay.frontend.js.bundle.config.extender.internal.JSBundleConfigRegistryUtil;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.ObjectValuePair;
-import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,9 +20,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import java.util.Collection;
-
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Chema Balsas
@@ -43,72 +41,30 @@ public class JSBundleConfigTopHeadDynamicInclude extends BaseDynamicInclude {
 			HttpServletResponse httpServletResponse, String key)
 		throws IOException {
 
-		String nonce = ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
-			httpServletRequest);
-
-		if (Validator.isNotNull(nonce)) {
-			_writeResponse(httpServletResponse, _getBundleConfig(nonce));
-
-			return;
-		}
-
-		if (!_isStale()) {
-			_writeResponse(httpServletResponse, _objectValuePair.getValue());
-
-			return;
-		}
-
-		String bundleConfig = _getBundleConfig(StringPool.BLANK);
-
-		_objectValuePair = new ObjectValuePair<>(
-			JSBundleConfigRegistryUtil.getLastModified(), bundleConfig);
-
-		_writeResponse(httpServletResponse, bundleConfig);
-	}
-
-	private String _getBundleConfig(String nonce) {
-		Collection<JSBundleConfigRegistryUtil.JSConfig> jsConfigs =
-			JSBundleConfigRegistryUtil.getJSConfigs();
-
-		if (jsConfigs.isEmpty()) {
-			return StringPool.BLANK;
-		}
-
-		StringBundler sb = new StringBundler();
-
-		sb.append("<script");
-		sb.append(nonce);
-		sb.append(" data-senna-track=\"temporary\" type=\"");
-		sb.append(ContentTypes.TEXT_JAVASCRIPT);
-		sb.append("\">");
-
-		JSBundleConfigRegistryUtil.appendJavaScript(sb, jsConfigs);
-
-		sb.append("</script>");
-
-		return sb.toString();
-	}
-
-	private boolean _isStale() {
-		if (JSBundleConfigRegistryUtil.getLastModified() >
-				_objectValuePair.getKey()) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private void _writeResponse(
-			HttpServletResponse httpServletResponse, String content)
-		throws IOException {
-
 		PrintWriter printWriter = httpServletResponse.getWriter();
 
-		printWriter.println(content);
+		printWriter.write("<script");
+		printWriter.write(
+			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
+				httpServletRequest));
+		printWriter.write(" data-senna-track=\"temporary\" src=\"");
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		printWriter.write(themeDisplay.getCDNDynamicResourcesHost());
+
+		printWriter.write(_portal.getPathModule());
+		printWriter.write("/js_bundle_config?t=");
+		printWriter.write(
+			String.valueOf(JSBundleConfigRegistryUtil.getLastModified()));
+		printWriter.write("\" type=\"");
+		printWriter.write(ContentTypes.TEXT_JAVASCRIPT);
+		printWriter.write("\"></script>\n");
 	}
 
-	private volatile ObjectValuePair<Long, String> _objectValuePair =
-		new ObjectValuePair<>(0L, null);
+	@Reference
+	private Portal _portal;
 
 }
