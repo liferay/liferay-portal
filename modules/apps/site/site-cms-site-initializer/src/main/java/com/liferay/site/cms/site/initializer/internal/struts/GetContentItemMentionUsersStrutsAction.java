@@ -112,9 +112,20 @@ public class GetContentItemMentionUsersStrutsAction implements StrutsAction {
 				themeDisplay.getCompanyId(),
 				_classNameLocalService.getClassNameId(className1), classPK);
 
-			if (group != null) {
-				groupId = group.getGroupId();
+			if (group == null) {
+				ServletResponseUtil.write(
+					httpServletResponse,
+					JSONUtil.toString(
+						JSONUtil.put(
+							"userGroups", JSONUtil.putAll()
+						).put(
+							"users", JSONUtil.putAll()
+						)));
+
+				return null;
 			}
+
+			groupId = group.getGroupId();
 		}
 
 		String keywords = ParamUtil.getString(httpServletRequest, "keywords");
