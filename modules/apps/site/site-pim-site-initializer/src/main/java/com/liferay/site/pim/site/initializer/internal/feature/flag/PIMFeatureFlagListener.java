@@ -8,6 +8,7 @@ package com.liferay.site.pim.site.initializer.internal.feature.flag;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
@@ -113,5 +114,10 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 		target = "(site.initializer.key=com.liferay.site.initializer.pim)"
 	)
 	private SiteInitializer _pimSiteInitializer;
+
+	@Reference(
+		target = "(component.name=com.liferay.site.pim.site.initializer.internal.fragment.renderer.ViewPIMConnectorsJSPSectionFragmentRenderer)"
+	)
+	private FragmentRenderer _viewPIMConnectorsJSPSectionFragmentRenderer;
 
 }
