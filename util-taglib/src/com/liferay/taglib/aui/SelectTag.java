@@ -6,7 +6,6 @@
 package com.liferay.taglib.aui;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.servlet.taglib.aui.ValidatorTag;
@@ -15,6 +14,7 @@ import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.Tuple;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.taglib.aui.base.BaseSelectTag;
+import com.liferay.taglib.util.BeanGetterUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
@@ -187,8 +187,7 @@ public class SelectTag extends BaseSelectTag implements BodyTag {
 
 		if (Validator.isNull(listType)) {
 			if (bean != null) {
-				Object beanValue = BeanPropertiesUtil.getObjectSilent(
-					bean, name);
+				Object beanValue = BeanGetterUtil.getObjectSilent(bean, name);
 
 				if (beanValue != null) {
 					if (beanValue instanceof Number) {

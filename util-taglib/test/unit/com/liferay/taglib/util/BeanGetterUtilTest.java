@@ -10,6 +10,8 @@ import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.lang.reflect.InvocationTargetException;
+
 import java.math.BigDecimal;
 
 import java.util.List;
@@ -33,7 +35,7 @@ public class BeanGetterUtilTest {
 	@Test
 	public void testGetLong() {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				BeanGetterUtil.class.getName(), LoggerTestUtil.WARN)) {
+				BeanGetterUtil.class.getName(), LoggerTestUtil.ERROR)) {
 
 			Assert.assertEquals(0, BeanGetterUtil.getLong(null, "id"));
 
@@ -48,6 +50,51 @@ public class BeanGetterUtilTest {
 			Assert.assertEquals(0, BeanGetterUtil.getLong(bean, "name"));
 			Assert.assertEquals(12, BeanGetterUtil.getLong(bean, "number"));
 			Assert.assertEquals(3, BeanGetterUtil.getLong(bean, "ratio"));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unable to get property failure of " + Bean.class.getName(),
+				logEntry.getMessage());
+			Assert.assertEquals("ERROR", logEntry.getPriority());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertSame(
+				InvocationTargetException.class, throwable.getClass());
+			Assert.assertSame(bean.illegalStateException, throwable.getCause());
+
+			logEntry = logEntries.get(1);
+
+			Assert.assertEquals(
+				"Unable to get property missing of " + Bean.class.getName(),
+				logEntry.getMessage());
+			Assert.assertEquals("ERROR", logEntry.getPriority());
+			Assert.assertNull(logEntry.getThrowable());
+		}
+	}
+
+	@Test
+	public void testGetObjectSilent() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BeanGetterUtil.class.getName(), LoggerTestUtil.WARN)) {
+
+			Assert.assertNull(BeanGetterUtil.getObjectSilent(null, "id"));
+
+			Bean bean = new Bean();
+
+			Assert.assertEquals(
+				Boolean.TRUE, BeanGetterUtil.getObjectSilent(bean, "active"));
+			Assert.assertEquals(
+				42L, BeanGetterUtil.getObjectSilent(bean, "id"));
+			Assert.assertNull(BeanGetterUtil.getObjectSilent(bean, "missing"));
+			Assert.assertEquals(
+				new BigDecimal("12.50"),
+				BeanGetterUtil.getObjectSilent(bean, "price"));
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
@@ -128,7 +175,7 @@ public class BeanGetterUtilTest {
 		}
 
 		public String getFailure() {
-			throw new IllegalStateException();
+			throw illegalStateException;
 		}
 
 		public long getId() {
@@ -158,6 +205,9 @@ public class BeanGetterUtilTest {
 		public boolean isActive() {
 			return true;
 		}
+
+		public final IllegalStateException illegalStateException =
+			new IllegalStateException();
 
 	}
 

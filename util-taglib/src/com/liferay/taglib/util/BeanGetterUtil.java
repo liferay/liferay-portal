@@ -24,7 +24,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BeanGetterUtil {
 
 	public static long getLong(Object bean, String name) {
-		return GetterUtil.getLong(_getValue(bean, name));
+		return GetterUtil.getLong(_getValue(bean, name, false));
+	}
+
+	public static Object getObjectSilent(Object bean, String name) {
+		return _getValue(bean, name, true);
 	}
 
 	public static String getStringSilent(Object bean, String name) {
@@ -34,7 +38,7 @@ public class BeanGetterUtil {
 	public static String getStringSilent(
 		Object bean, String name, String defaultValue) {
 
-		Object value = _getValue(bean, name);
+		Object value = _getValue(bean, name, true);
 
 		if (value == null) {
 			return defaultValue;
@@ -83,7 +87,7 @@ public class BeanGetterUtil {
 		return (Method)method;
 	}
 
-	private static Object _getValue(Object bean, String name) {
+	private static Object _getValue(Object bean, String name, boolean silent) {
 		if (bean == null) {
 			return null;
 		}
@@ -93,7 +97,7 @@ public class BeanGetterUtil {
 		Method method = _getMethod(clazz, name);
 
 		if (method == null) {
-			_logFailure(clazz, name, null);
+			_logFailure(clazz, name, silent, null);
 
 			return null;
 		}
@@ -102,17 +106,26 @@ public class BeanGetterUtil {
 			return method.invoke(bean);
 		}
 		catch (ReflectiveOperationException reflectiveOperationException) {
-			_logFailure(clazz, name, reflectiveOperationException);
+			_logFailure(clazz, name, silent, reflectiveOperationException);
 		}
 
 		return null;
 	}
 
 	private static void _logFailure(
-		Class<?> clazz, String name, Throwable throwable) {
+		Class<?> clazz, String name, boolean silent, Throwable throwable) {
 
-		if (_log.isDebugEnabled()) {
-			_log.debug(
+		if (silent) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					StringBundler.concat(
+						"Unable to get property ", name, " of ",
+						clazz.getName()),
+					throwable);
+			}
+		}
+		else {
+			_log.error(
 				StringBundler.concat(
 					"Unable to get property ", name, " of ", clazz.getName()),
 				throwable);
