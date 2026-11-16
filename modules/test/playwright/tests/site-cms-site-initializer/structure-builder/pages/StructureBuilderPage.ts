@@ -677,24 +677,22 @@ export class StructureBuilderPage {
 		return objectDefinitionId ? Number(objectDefinitionId) : undefined;
 	}
 
-	async saveStructure(
-		{autoDelete}: {autoDelete?: boolean} = {autoDelete: true}
-	) {
-		const save = async () => {
-			await this.saveButton.click();
+	async saveStructure({
+		autoDelete = true,
+		timeout = 10000,
+	}: {autoDelete?: boolean; timeout?: number} = {}) {
+		const responsePromise = this.page.waitForResponse(
+			(response) =>
+				response.url().includes('cms/update-structure') &&
+				response.status() === 200,
+			{timeout}
+		);
 
-			await waitForAlert(this.page, 'successfully', {timeout: 5000});
-		};
+		await this.saveButton.click();
 
-		const [response] = await Promise.all([
-			this.page.waitForResponse(
-				(response) =>
-					response.url().includes('cms/update-structure') &&
-					response.status() === 200,
-				{timeout: 10000}
-			),
-			await save(),
-		]);
+		const response = await responsePromise;
+
+		await waitForAlert(this.page, 'successfully', {timeout: 5000});
 
 		const id = Number((await response.json()).id);
 

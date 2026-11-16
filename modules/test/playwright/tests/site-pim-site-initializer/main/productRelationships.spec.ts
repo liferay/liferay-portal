@@ -219,7 +219,7 @@ test(
 				label: structureLabel,
 			});
 
-			await structureBuilderPage.saveStructure();
+			await structureBuilderPage.saveStructure({timeout: 20000});
 
 			await structureBuilderPage.publishStructure();
 

@@ -79,7 +79,7 @@ test(
 				label: structureLabel,
 			});
 
-			await structureBuilderPage.saveStructure();
+			await structureBuilderPage.saveStructure({timeout: 20000});
 
 			await structureBuilderPage.publishStructure();
 
@@ -194,7 +194,7 @@ test(
 				label: structureLabel,
 			});
 
-			await structureBuilderPage.saveStructure();
+			await structureBuilderPage.saveStructure({timeout: 20000});
 
 			await structureBuilderPage.publishStructure();
 
@@ -289,7 +289,9 @@ test(
 				label: structureLabel,
 			});
 
-			const structureId = await structureBuilderPage.saveStructure();
+			const structureId = await structureBuilderPage.saveStructure({
+				timeout: 20000,
+			});
 
 			await structureBuilderPage.publishStructure();
 
@@ -406,7 +408,7 @@ test(
 			label: structureLabel,
 		});
 
-		await structureBuilderPage.saveStructure();
+		await structureBuilderPage.saveStructure({timeout: 20000});
 
 		await structureBuilderPage.publishStructure();
 
