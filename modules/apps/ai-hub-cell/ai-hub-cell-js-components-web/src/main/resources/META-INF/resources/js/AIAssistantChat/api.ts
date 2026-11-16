@@ -25,12 +25,6 @@ export interface ChatContext {
 }
 
 export async function createEventSource() {
-	const editMode = document.body.classList.contains('has-edit-mode-menu');
-
-	if (editMode) {
-		return null;
-	}
-
 	const authorizationToken = await postAuthorizationToken();
 
 	if (!authorizationToken) {
