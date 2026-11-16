@@ -111,13 +111,13 @@ public class UnusedParameterCheck extends BaseCheck {
 			return false;
 		}
 
-		String constructorOrMethodName = getName(childDetailAST);
+		String name = getName(childDetailAST);
 
 		for (DetailAST methodReferenceDetailAST : methodReferenceDetailASTs) {
-			for (String name : getNames(methodReferenceDetailAST, true)) {
-				if (constructorOrMethodName.equals(name)) {
-					return true;
-				}
+			List<String> names = getNames(methodReferenceDetailAST, true);
+
+			if (names.contains(name)) {
+				return true;
 			}
 		}
 
