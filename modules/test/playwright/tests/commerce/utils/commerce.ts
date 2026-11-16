@@ -102,19 +102,15 @@ export async function activateChannelPaymentMethod(
 
 export async function restrictChannelPaymentMethodView(
 	apiHelpers: DataApiHelpers,
+	companyId: string,
 	paymentMethodGroupRel: {
 		commercePaymentMethodGroupRelId: number;
 		groupId: number;
 	},
 	roleIds: number[]
 ) {
-	const company =
-		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
-			'liferay.com'
-		);
-
 	const resourcePermissionArguments = [
-		String(company.companyId),
+		companyId,
 		String(paymentMethodGroupRel.groupId),
 		'com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel',
 		String(paymentMethodGroupRel.commercePaymentMethodGroupRelId),
@@ -1296,22 +1292,6 @@ export async function assignBuyerUserToAccount(
 			buyerUser.emailAddress
 		);
 	}
-}
-
-export async function assignUserToNewRole(
-	apiHelpers: DataApiHelpers,
-	userId: string
-) {
-	const role = await apiHelpers.headlessAdminUser.postRole({
-		name: 'Test Role ' + getRandomString(),
-	});
-
-	await apiHelpers.headlessAdminUser.postRoleByExternalReferenceCodeUserAccountAssociation(
-		role.externalReferenceCode,
-		userId
-	);
-
-	return role;
 }
 
 export async function createBuyerUserForAccount(

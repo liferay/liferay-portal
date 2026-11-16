@@ -35,7 +35,6 @@ import getPageDefinition from '../../../layout-content-page-editor-web/main/util
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {
 	activateChannelPaymentMethod,
-	assignUserToNewRole,
 	checkoutStorefrontSetUp,
 	configureBuyerUserWithoutOrderPermissions,
 	createAccountWithBuyerUser,
@@ -3178,7 +3177,6 @@ test(
 			channel.id,
 			'authorize-net'
 		);
-
 		const moneyOrder = await activateChannelPaymentMethod(
 			apiHelpers,
 			channel.id,
@@ -3190,12 +3188,31 @@ test(
 			'paypal-integration'
 		);
 
-		const buyerRole = await assignUserToNewRole(apiHelpers, buyerUser.id);
+		const buyerRole = await apiHelpers.headlessAdminUser.postRole({
+			name: getRandomString(),
+		});
 
-		await restrictChannelPaymentMethodView(apiHelpers, moneyOrder, [
-			buyerRole.id,
-		]);
-		await restrictChannelPaymentMethodView(apiHelpers, payPal, []);
+		await apiHelpers.headlessAdminUser.postRoleByExternalReferenceCodeUserAccountAssociation(
+			buyerRole.externalReferenceCode,
+			buyerUser.id
+		);
+
+		const companyId = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getCompanyId();
+		});
+
+		await restrictChannelPaymentMethodView(
+			apiHelpers,
+			companyId,
+			moneyOrder,
+			[buyerRole.id]
+		);
+		await restrictChannelPaymentMethodView(
+			apiHelpers,
+			companyId,
+			payPal,
+			[]
+		);
 
 		await apiHelpers.headlessCommerceDeliveryCart.postCart(
 			{

@@ -20,7 +20,6 @@ import {
 } from '../../../../utils/performLogin';
 import {
 	activateChannelPaymentMethod,
-	assignUserToNewRole,
 	configureOperationsManagerUserForSite,
 	createAccountWithBuyerUser,
 	miniumSetUp,
@@ -36,6 +35,7 @@ export const test = mergeTests(
 
 async function postOrderForOperationsManager(
 	apiHelpers: DataApiHelpers,
+	companyId: string,
 	operationsManagerSite: Site,
 	{
 		orderItems,
@@ -47,11 +47,6 @@ async function postOrderForOperationsManager(
 		paymentMethod: string;
 	}
 ) {
-	const company =
-		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
-			'liferay.com'
-		);
-
 	const orderChannel =
 		await apiHelpers.headlessCommerceAdminChannel.postChannel({
 			name: getRandomString(),
@@ -89,12 +84,12 @@ async function postOrderForOperationsManager(
 	const operationsManagerUser = await configureOperationsManagerUserForSite(
 		account,
 		apiHelpers,
-		String(company.companyId),
+		companyId,
 		operationsManagerSite,
 		[
 			{
 				actionIds: ['MANAGE_COMMERCE_ORDER_PAYMENT_METHODS'],
-				primaryKey: String(company.companyId),
+				primaryKey: companyId,
 				resourceName: 'com.liferay.commerce.order',
 				scope: 1,
 			},
@@ -737,8 +732,12 @@ test(
 				'U-Joint'
 			);
 
+		const companyId = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getCompanyId();
+		});
+
 		const {operationsManagerUser, order} =
-			await postOrderForOperationsManager(apiHelpers, site, {
+			await postOrderForOperationsManager(apiHelpers, companyId, site, {
 				orderItems: [{quantity: 1, skuId: String(product.skus[0].id)}],
 				paymentIntegrationKeys: ['money-order', 'paypal-integration'],
 				paymentMethod: 'money-order',
@@ -767,8 +766,12 @@ test(
 		commerceAdminOrdersPage,
 		page,
 	}) => {
+		const companyId = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getCompanyId();
+		});
+
 		const {operationsManagerUser, order} =
-			await postOrderForOperationsManager(apiHelpers, site, {
+			await postOrderForOperationsManager(apiHelpers, companyId, site, {
 				orderItems: [],
 				paymentIntegrationKeys: ['money-order', 'paypal-integration'],
 				paymentMethod: 'money-order',
@@ -812,8 +815,12 @@ test(
 				'U-Joint'
 			);
 
+		const companyId = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getCompanyId();
+		});
+
 		const {operationsManagerUser, order, paymentMethodGroupRels} =
-			await postOrderForOperationsManager(apiHelpers, site, {
+			await postOrderForOperationsManager(apiHelpers, companyId, site, {
 				orderItems: [{quantity: 1, skuId: String(product.skus[0].id)}],
 				paymentIntegrationKeys: [
 					'authorize-net',
@@ -823,18 +830,25 @@ test(
 				paymentMethod: 'paypal-integration',
 			});
 
-		const operationsManagerRole = await assignUserToNewRole(
-			apiHelpers,
+		const operationsManagerRole =
+			await apiHelpers.headlessAdminUser.postRole({
+				name: getRandomString(),
+			});
+
+		await apiHelpers.headlessAdminUser.postRoleByExternalReferenceCodeUserAccountAssociation(
+			operationsManagerRole.externalReferenceCode,
 			operationsManagerUser.id
 		);
 
 		await restrictChannelPaymentMethodView(
 			apiHelpers,
+			companyId,
 			paymentMethodGroupRels['money-order'],
 			[operationsManagerRole.id]
 		);
 		await restrictChannelPaymentMethodView(
 			apiHelpers,
+			companyId,
 			paymentMethodGroupRels['paypal-integration'],
 			[]
 		);
