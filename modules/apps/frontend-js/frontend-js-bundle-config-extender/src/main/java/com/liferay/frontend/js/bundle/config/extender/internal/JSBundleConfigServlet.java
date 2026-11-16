@@ -61,8 +61,6 @@ public class JSBundleConfigServlet extends HttpServlet {
 		PrintWriter printWriter = httpServletResponse.getWriter();
 
 		printWriter.write(JSBundleConfigRegistryUtil.getJavaScript());
-
-		printWriter.close();
 	}
 
 	private volatile ComponentContext _componentContext;
