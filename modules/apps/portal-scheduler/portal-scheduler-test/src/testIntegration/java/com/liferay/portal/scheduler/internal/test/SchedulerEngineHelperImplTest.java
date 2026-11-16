@@ -317,13 +317,13 @@ public class SchedulerEngineHelperImplTest {
 	}
 
 	private void _assertTriggerYears(String name, int years) throws Exception {
+		Calendar calendar = Calendar.getInstance();
+
 		SchedulerResponse schedulerResponse =
 			_schedulerEngineHelper.getScheduledJob(
 				name, name, StorageType.MEMORY_CLUSTERED);
 
 		Trigger trigger = schedulerResponse.getTrigger();
-
-		Calendar calendar = Calendar.getInstance();
 
 		calendar.setTime(trigger.getStartDate());
 
