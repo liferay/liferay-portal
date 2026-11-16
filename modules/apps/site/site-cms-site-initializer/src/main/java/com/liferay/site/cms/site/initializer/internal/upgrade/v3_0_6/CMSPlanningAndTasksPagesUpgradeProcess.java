@@ -330,6 +330,19 @@ public class CMSPlanningAndTasksPagesUpgradeProcess extends UpgradeProcess {
 			return;
 		}
 
+		Layout defaultLayout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			group.getGroupId(), false, "/dashboard");
+
+		if (defaultLayout == null) {
+			defaultLayout = _layoutLocalService.fetchFirstLayout(
+				group.getGroupId(), false,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, false);
+		}
+
+		if (defaultLayout == null) {
+			return;
+		}
+
 		ServiceContext serviceContext = new ServiceContext();
 
 		serviceContext.setCompanyId(companyId);
