@@ -25,6 +25,10 @@ import MentionUserPicker from './MentionUserPicker';
 
 import '../../../../css/components/CommentsPanel.scss';
 
+const EVENT_RATINGS_VOTE = 'ratings:vote';
+const SCORE_DOWN = 0;
+const SCORE_UP = 1;
+
 type Status = 'default' | 'edit' | 'reply';
 
 export default function CommentsPanel({
@@ -81,6 +85,56 @@ export default function CommentsPanel({
 			loadComments(initialComments);
 		}
 	}, [initialComments, getCommentsURL, highlightedCommentId]);
+
+	useEffect(() => {
+		const handleVote = ({
+			className,
+			classPK,
+			score,
+		}: {
+			className: string;
+			classPK: string;
+			score: number;
+		}) => {
+			const updateVote = (comments: Comment[]): Comment[] =>
+				comments.map((comment) => {
+					if (
+						comment.commentId !== classPK ||
+						comment.ratingsClassName !== className
+					) {
+						return comment.children?.length
+							? {
+									...comment,
+									children: updateVote(comment.children),
+								}
+							: comment;
+					}
+
+					const thumbDown = score === SCORE_DOWN;
+					const thumbUp = score === SCORE_UP;
+
+					return {
+						...comment,
+						negativeVotes:
+							comment.negativeVotes +
+							Number(thumbDown) -
+							Number(comment.thumbDown),
+						positiveVotes:
+							comment.positiveVotes +
+							Number(thumbUp) -
+							Number(comment.thumbUp),
+						thumbDown,
+						thumbUp,
+					};
+				});
+
+			setComments(updateVote);
+		};
+
+		Liferay.on(EVENT_RATINGS_VOTE, handleVote);
+
+		return () => Liferay.detach(EVENT_RATINGS_VOTE, handleVote);
+	}, []);
 
 	const deleteComment = async (
 		commentId: string,
