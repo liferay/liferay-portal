@@ -101,7 +101,7 @@ public class SearchContainerRowTag<R>
 		_escapedModel = false;
 		_helpMessages = null;
 		_indexVar = DEFAULT_INDEX_VAR;
-		_keyProperty = null;
+		_keyPropertyName = null;
 		_modelVar = DEFAULT_MODEL_VAR;
 		_orderableHeaders = null;
 		_rowIdProperty = null;
@@ -181,8 +181,8 @@ public class SearchContainerRowTag<R>
 		return _indexVar;
 	}
 
-	public String getKeyProperty() {
-		return _keyProperty;
+	public String getKeyPropertyName() {
+		return _keyPropertyName;
 	}
 
 	public String getModelVar() {
@@ -265,17 +265,8 @@ public class SearchContainerRowTag<R>
 		_indexVar = indexVar;
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #setKeyPropertyName(String)}
-	 */
-	@Deprecated
-	public void setKeyProperty(String keyProperty) {
-		_keyProperty = keyProperty;
-	}
-
 	public void setKeyPropertyName(String keyPropertyName) {
-		_keyProperty = keyPropertyName;
+		_keyPropertyName = keyPropertyName;
 	}
 
 	public void setModelVar(String var) {
@@ -328,16 +319,16 @@ public class SearchContainerRowTag<R>
 
 		String primaryKey = null;
 
-		if (Validator.isNull(_keyProperty)) {
+		if (Validator.isNull(_keyPropertyName)) {
 			primaryKey = String.valueOf(model);
 		}
 		else if (isStringKey()) {
 			primaryKey = BeanPropertiesUtil.getStringSilent(
-				model, _keyProperty);
+				model, _keyPropertyName);
 		}
 		else {
 			Object primaryKeyObject = BeanPropertiesUtil.getObjectSilent(
-				model, _keyProperty);
+				model, _keyPropertyName);
 
 			primaryKey = String.valueOf(primaryKeyObject);
 		}
@@ -379,7 +370,7 @@ public class SearchContainerRowTag<R>
 	private boolean _headerNamesAssigned;
 	private Map<String, String> _helpMessages;
 	private String _indexVar = DEFAULT_INDEX_VAR;
-	private String _keyProperty;
+	private String _keyPropertyName;
 	private String _modelVar = DEFAULT_MODEL_VAR;
 	private Map<String, String> _orderableHeaders;
 	private ResultRow _resultRow;
