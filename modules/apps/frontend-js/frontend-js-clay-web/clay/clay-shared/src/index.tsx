@@ -7,7 +7,7 @@ export {Keys} from './Keys';
 export {LinkOrButton} from './LinkOrButton';
 export {MouseSafeArea} from './MouseSafeArea';
 export {Overlay} from './Overlay';
-export {ClayPortal} from './Portal';
+export {ClayPortal, ClayPortalContext} from './Portal';
 export type {IBaseProps as IPortalBaseProps} from './Portal';
 export {delegate} from './delegate';
 export {doAlign} from './doAlign';

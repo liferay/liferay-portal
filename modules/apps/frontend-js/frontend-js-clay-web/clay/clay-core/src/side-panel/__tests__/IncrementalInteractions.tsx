@@ -5,12 +5,14 @@
 
 import Button from '@clayui/button';
 import {Provider} from '@clayui/provider';
+import {ClayPortal} from '@clayui/shared';
 import {cleanup, render, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, {useRef, useState} from 'react';
 
 import '@testing-library/jest-dom';
 
+import {Option, Picker} from '../../picker';
 import {SidePanel} from '../SidePanel';
 
 // FocusTrap is mocked in this test because JSDOM does not fully simulate
@@ -77,6 +79,32 @@ function Example({
 				</SidePanel>
 			</div>
 		</Provider>
+	);
+}
+
+function NestedExample({
+	backdrop = false,
+	children,
+	fullHeight = false,
+}: {
+	backdrop?: boolean;
+	children: React.ReactNode;
+	fullHeight?: boolean;
+}) {
+	const ref = useRef(null);
+
+	return (
+		<div ref={ref}>
+			<SidePanel
+				backdrop={backdrop}
+				containerRef={ref}
+				fullHeight={fullHeight}
+				open
+				position="fixed"
+			>
+				{children}
+			</SidePanel>
+		</div>
 	);
 }
 
@@ -216,5 +244,54 @@ describe('SidePanel incremental interactions', () => {
 
 		expect(slideout).toHaveClass('c-slideout-height-full');
 		expect(slideout).toHaveStyle({top: '0px'});
+	});
+
+	it('mounts nested portals inside the side panel when running the full height', () => {
+		const {container, getByText} = render(
+			<NestedExample fullHeight>
+				<ClayPortal>Menu</ClayPortal>
+			</NestedExample>
+		);
+
+		const slideout = container.querySelector('.c-slideout');
+
+		expect(slideout).toContainElement(getByText('Menu'));
+		expect(container.querySelector('.sidebar')).not.toContainElement(
+			getByText('Menu')
+		);
+	});
+
+	it('mounts nested portals in the body when not running the full height', () => {
+		const {container, getByText} = render(
+			<NestedExample>
+				<ClayPortal>Menu</ClayPortal>
+			</NestedExample>
+		);
+
+		expect(container).not.toContainElement(getByText('Menu'));
+		expect(document.body).toContainElement(getByText('Menu'));
+	});
+
+	it('closes an open dropdown on ESC before the side panel', async () => {
+		const {getByRole} = render(
+			<NestedExample backdrop>
+				<Picker aria-label="Fruits" items={['Apple', 'Banana']}>
+					{(item) => <Option key={item}>{item}</Option>}
+				</Picker>
+			</NestedExample>
+		);
+
+		const combobox = getByRole('combobox');
+
+		await userEvent.click(combobox);
+
+		expect(combobox).toHaveAttribute('aria-expanded', 'true');
+
+		await userEvent.keyboard('{Escape}');
+
+		expect(combobox).toHaveAttribute('aria-expanded', 'false');
+		expect(document.querySelector('.sidebar')).toHaveClass(
+			'c-slideout-show'
+		);
 	});
 });

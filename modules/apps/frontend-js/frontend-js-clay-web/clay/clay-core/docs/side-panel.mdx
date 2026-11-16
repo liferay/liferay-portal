@@ -174,7 +174,7 @@ When the SidePanel covers the page content, for example on small screens, set th
 
 ## Full Height
 
-A fixed SidePanel starts below its container and stacks below fixed or sticky navigation, such as a sticky header. Set the `fullHeight` property to run it the full height of the page instead, from the top and above that navigation. It adds the `c-slideout-height-full` class.
+A fixed SidePanel starts below its container and stacks below fixed or sticky navigation, such as a sticky header. Set the `fullHeight` property to run it the full height of the page instead, from the top and above that navigation. It adds the `c-slideout-height-full` class. Because it then stacks above dropdowns, popovers and other portals rendered inside it mount inside the SidePanel instead of the body, like the ones rendered inside a Modal.
 
 ```jsx
 <SidePanel fullHeight position="fixed" />

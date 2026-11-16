@@ -6,6 +6,7 @@
 import {useProvider} from '@clayui/provider';
 import {
 	ClayPortal,
+	ClayPortalContext,
 	IPortalBaseProps,
 	Keys,
 	useControlledState,
@@ -258,10 +259,10 @@ export function SidePanel({
 
 			sidePanelRef.current?.removeAttribute('inert');
 
-			document.addEventListener('keydown', onKeyDown, true);
+			document.addEventListener('keydown', onKeyDown);
 
 			return () => {
-				document.removeEventListener('keydown', onKeyDown, true);
+				document.removeEventListener('keydown', onKeyDown);
 			};
 		}
 		else {
@@ -278,6 +279,11 @@ export function SidePanel({
 	const offsetTop = useOffsetTop(containerRef);
 
 	const heightFull = fullHeight || backdrop;
+
+	// A full height SidePanel stacks above dropdowns, so nested portals mount
+	// inside it, the same way they mount inside a modal.
+
+	const parentPortalRef = React.useContext(ClayPortalContext);
 
 	const panelId = externalId ?? internalPanelId;
 	const panelWidth = isResizable
@@ -380,24 +386,30 @@ export function SidePanel({
 						style={panelWidth ? {width: panelWidth} : undefined}
 						tabIndex={-1}
 					>
-						<SidePanelContext.Provider
-							value={{onOpenChange: setOpen, open, titleId}}
+						<ClayPortalContext.Provider
+							value={heightFull ? slideoutRef : parentPortalRef}
 						>
-							<FocusTrap active={(isMobile || backdrop) && open}>
-								{children}
-							</FocusTrap>
+							<SidePanelContext.Provider
+								value={{onOpenChange: setOpen, open, titleId}}
+							>
+								<FocusTrap
+									active={(isMobile || backdrop) && open}
+								>
+									{children}
+								</FocusTrap>
 
-							{isResizable && (
-								<ResizeHandle
-									aria-controls={panelId}
-									maxWidth={sidePanelObservedMaxWidth}
-									minWidth={PANEL_WIDTH_MIN}
-									onWidthChange={setResizeWidth}
-									position={direction}
-									width={panelWidth}
-								/>
-							)}
-						</SidePanelContext.Provider>
+								{isResizable && (
+									<ResizeHandle
+										aria-controls={panelId}
+										maxWidth={sidePanelObservedMaxWidth}
+										minWidth={PANEL_WIDTH_MIN}
+										onWidthChange={setResizeWidth}
+										position={direction}
+										width={panelWidth}
+									/>
+								)}
+							</SidePanelContext.Provider>
+						</ClayPortalContext.Provider>
 					</As>
 				</CSSTransition>
 			</div>
