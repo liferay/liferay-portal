@@ -10,6 +10,8 @@ import {getLanguageLabel} from 'shared/util/locale';
 import {getInitials} from 'shared/util/util';
 import {Link} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
+import {sub} from 'shared/util/lang';
+import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDispatch, useSelector} from 'react-redux';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
@@ -33,6 +35,12 @@ const Toolbar: React.FC<IToolbarProps> = ({className, groupId}) => {
 	const triggerElementRef = useRef(null);
 
 	const LDPEnabled = useLDPEnabled({groupId});
+
+	const {selectedChannel} = useChannelContext();
+
+	const productName = LDPEnabled
+		? Liferay.Language.get('liferay-data-platform')
+		: Liferay.Language.get('analytics-cloud');
 
 	const {emailAddress, languageId} = currentUser;
 
@@ -75,11 +83,19 @@ const Toolbar: React.FC<IToolbarProps> = ({className, groupId}) => {
 
 			<BaseToolbar.Item className="d-none d-sm-block pl-0">
 				<BaseToolbar.Section>
-					<span className="font-weight-semi-bold text-5 text-dark text-nowrap">
-						{LDPEnabled
-							? Liferay.Language.get('liferay-data-platform')
-							: Liferay.Language.get('analytics-cloud')}
-					</span>
+					<Link
+						aria-label={`${productName}, ${sub(
+							Liferay.Language.get('go-to-x'),
+							[Liferay.Language.get('sites')]
+						)}`}
+						className="font-weight-semi-bold text-5 text-dark text-decoration-none text-nowrap"
+						to={toRoute(Routes.SITES, {
+							channelId: selectedChannel?.id,
+							groupId,
+						})}
+					>
+						{productName}
+					</Link>
 				</BaseToolbar.Section>
 			</BaseToolbar.Item>
 
