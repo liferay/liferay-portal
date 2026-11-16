@@ -18,9 +18,6 @@ export default function ({namespace, uploadOpenGraphImageURL}) {
 	const openGraphImageInput = document.getElementById(
 		`${namespace}openGraphImageInput`
 	);
-	const openGraphImageFileEntryId = document.getElementById(
-		`${namespace}openGraphImageFileEntryId`
-	);
 	const openGraphImageFileEntryERC = document.getElementById(
 		`${namespace}openGraphImageFileEntryERC`
 	);
@@ -43,7 +40,6 @@ export default function ({namespace, uploadOpenGraphImageURL}) {
 				if (selectedItem) {
 					const itemValue = JSON.parse(selectedItem.value);
 
-					openGraphImageFileEntryId.value = itemValue.fileEntryId;
 					openGraphImageFileEntryERC.value =
 						itemValue.externalReferenceCode;
 
@@ -87,7 +83,6 @@ export default function ({namespace, uploadOpenGraphImageURL}) {
 	openGraphImageInput.addEventListener('click', openImageSelector);
 
 	openGraphClearImageButton.addEventListener('click', () => {
-		openGraphImageFileEntryId.value = '';
 		openGraphImageFileEntryERC.value = '';
 		openGraphImageFileEntryScopeERC.value = '';
 

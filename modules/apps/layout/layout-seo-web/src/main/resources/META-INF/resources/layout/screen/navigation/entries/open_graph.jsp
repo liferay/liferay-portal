@@ -154,7 +154,6 @@ Layout selLayout = layoutsSEODisplayContext.getSelLayout();
 								<aui:input disabled="<%= (selLayoutSEOEntry != null) ? !selLayoutSEOEntry.isOpenGraphDescriptionEnabled() : true %>" label="custom-description" name="openGraphDescription" placeholder="description" />
 							</div>
 
-							<aui:input id="openGraphImageFileEntryId" name="openGraphImageFileEntryId" type="hidden" />
 							<aui:input id="openGraphImageFileEntryERC" name="openGraphImageFileEntryERC" type="hidden" />
 							<aui:input id="openGraphImageFileEntryScopeERC" name="openGraphImageFileEntryScopeERC" type="hidden" />
 						</div>
