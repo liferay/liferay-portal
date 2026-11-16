@@ -144,7 +144,7 @@ public class DefaultLocalRepositoryImpl implements LocalRepository {
 
 	@Override
 	public FileEntry fetchFileEntry(long fileEntryId) throws PortalException {
-		throw new UnsupportedOperationException();
+		return _repository.fetchFileEntry(fileEntryId);
 	}
 
 	@Override

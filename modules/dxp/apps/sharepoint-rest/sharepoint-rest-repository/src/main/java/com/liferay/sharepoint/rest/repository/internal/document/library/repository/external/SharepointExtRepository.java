@@ -286,13 +286,30 @@ public class SharepointExtRepository implements ExtRepository {
 			ExtRepositoryFileEntry extRepositoryFileEntry, String version)
 		throws PortalException {
 
+		String extRepositoryFileVersionKey = StringBundler.concat(
+			extRepositoryFileEntry.getExtRepositoryModelKey(), StringPool.COLON,
+			version);
+
+		ExtRepositoryFileVersion latestExtRepositoryFileVersion =
+			getLatestExtRepositoryFileVersion(extRepositoryFileEntry);
+
+		if (_isMatch(
+				latestExtRepositoryFileVersion, extRepositoryFileVersionKey,
+				version)) {
+
+			return latestExtRepositoryFileVersion;
+		}
+
 		List<ExtRepositoryFileVersion> extRepositoryFileVersions =
 			getExtRepositoryFileVersions(extRepositoryFileEntry);
 
 		for (ExtRepositoryFileVersion extRepositoryFileVersion :
 				extRepositoryFileVersions) {
 
-			if (version.equals(extRepositoryFileVersion.getVersion())) {
+			if (_isMatch(
+					extRepositoryFileVersion, extRepositoryFileVersionKey,
+					version)) {
+
 				return extRepositoryFileVersion;
 			}
 		}
@@ -480,6 +497,16 @@ public class SharepointExtRepository implements ExtRepository {
 
 		return getExtRepositoryObject(
 			ExtRepositoryObjectType.FOLDER, parentFolderPath);
+	}
+
+	@Override
+	public ExtRepositoryFileVersion getLatestExtRepositoryFileVersion(
+		ExtRepositoryFileEntry extRepositoryFileEntry) {
+
+		SharepointModel sharepointModel =
+			(SharepointModel)extRepositoryFileEntry;
+
+		return sharepointModel.asFileVersion();
 	}
 
 	@Override
@@ -829,6 +856,20 @@ public class SharepointExtRepository implements ExtRepository {
 
 			throw new PrincipalException(message);
 		}
+	}
+
+	private boolean _isMatch(
+		ExtRepositoryFileVersion extRepositoryFileVersion,
+		String extRepositoryFileVersionKey, String version) {
+
+		if (extRepositoryFileVersionKey.equals(
+				extRepositoryFileVersion.getExtRepositoryModelKey()) ||
+			version.equals(extRepositoryFileVersion.getVersion())) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _post(String url) throws PortalException, UnirestException {

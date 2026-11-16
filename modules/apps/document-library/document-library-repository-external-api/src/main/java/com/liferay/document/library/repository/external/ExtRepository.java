@@ -324,6 +324,16 @@ public interface ExtRepository {
 			ExtRepositoryObject extRepositoryObject)
 		throws PortalException;
 
+	public default ExtRepositoryFileVersion getLatestExtRepositoryFileVersion(
+			ExtRepositoryFileEntry extRepositoryFileEntry)
+		throws PortalException {
+
+		List<ExtRepositoryFileVersion> extRepositoryFileVersions =
+			getExtRepositoryFileVersions(extRepositoryFileEntry);
+
+		return extRepositoryFileVersions.get(0);
+	}
+
 	/**
 	 * Returns the Liferay login value, which is mapped from the user's external
 	 * repository login value. A Liferay login value can be a user ID, screen
