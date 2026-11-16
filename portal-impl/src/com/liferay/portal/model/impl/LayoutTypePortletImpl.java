@@ -341,6 +341,10 @@ public class LayoutTypePortletImpl
 			portlets.add(portlet);
 		}
 
+		if (!_HAS_STATIC_PORTLETS) {
+			return portlets;
+		}
+
 		List<Portlet> startPortlets = getStaticPortlets(
 			PropsKeys.LAYOUT_STATIC_PORTLETS_START + columnId);
 
@@ -1999,6 +2003,10 @@ public class LayoutTypePortletImpl
 	}
 
 	protected boolean hasStaticPortletId(String columnId, String portletId) {
+		if (!_HAS_STATIC_PORTLETS) {
+			return false;
+		}
+
 		String[] staticPortletIdsStart = getStaticPortletIds(
 			PropsKeys.LAYOUT_STATIC_PORTLETS_START + columnId);
 
