@@ -33,8 +33,9 @@ import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.repository.model.RepositoryEntry;
+import com.liferay.portal.kernel.search.BooleanClause;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.IndexSearcherHelperUtil;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.Query;
@@ -52,6 +53,7 @@ import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.RepositoryService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -924,7 +926,22 @@ public class LiferayRepository
 	public Hits search(SearchContext searchContext, Query query)
 		throws SearchException {
 
-		return IndexSearcherHelperUtil.search(searchContext, query);
+		BooleanClause<Query> booleanClause = new BooleanClause<>(
+			query, BooleanClauseOccur.MUST);
+
+		BooleanClause<Query>[] booleanClauses =
+			searchContext.getBooleanClauses();
+
+		if (booleanClauses == null) {
+			searchContext.setBooleanClauses(
+				new BooleanClause[] {booleanClause});
+		}
+		else {
+			searchContext.setBooleanClauses(
+				ArrayUtil.append(booleanClauses, booleanClause));
+		}
+
+		return search(searchContext);
 	}
 
 	@Override
