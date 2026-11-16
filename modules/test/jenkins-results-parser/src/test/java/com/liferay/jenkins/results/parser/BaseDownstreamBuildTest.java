@@ -129,13 +129,20 @@ public class BaseDownstreamBuildTest
 			String axisName = RandomTestUtil.randomString();
 			DownstreamBuildReport downstreamBuildReport = Mockito.mock(
 				DownstreamBuildReport.class);
-			TopLevelBuild topLevelBuild = Mockito.mock(TopLevelBuild.class);
 
 			Mockito.when(
 				downstreamBuildReport.getAxisName()
 			).thenReturn(
 				axisName
 			);
+
+			Mockito.when(
+				baseDownstreamBuild.getDownstreamBuildReport()
+			).thenReturn(
+				downstreamBuildReport
+			);
+
+			TopLevelBuild topLevelBuild = Mockito.mock(TopLevelBuild.class);
 
 			Mockito.when(
 				topLevelBuild.getBuildURL()
@@ -151,12 +158,6 @@ public class BaseDownstreamBuildTest
 				topLevelBuild.getTopLevelBuildReport()
 			).thenReturn(
 				topLevelBuildReport
-			);
-
-			Mockito.when(
-				baseDownstreamBuild.getDownstreamBuildReport()
-			).thenReturn(
-				downstreamBuildReport
 			);
 
 			Mockito.when(
