@@ -315,10 +315,10 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: data["load-balancers.json"]
-                    pattern: class=\\"dh-breadcrumb-link\\" href=\\"/d/central-hub/central-hub\\"\\u003eCentral Hub\\u003c/a\\u003e
+                    pattern: class=\\"dh-breadcrumb-current\\"\\u003eLoad Balancer Metrics\\u003c/span\\u003e
             -   matchRegex:
                     path: data["load-balancers.json"]
-                    pattern: class=\\"dh-breadcrumb-current\\"\\u003eLoad Balancer Metrics\\u003c/span\\u003e
+                    pattern: class=\\"dh-breadcrumb-link\\" href=\\"/d/central-hub/central-hub\\"\\u003eCentral Hub\\u003c/a\\u003e
             -   matchRegex:
                     path: data["load-balancers.json"]
                     pattern: nav\[aria-label=\\"Breadcrumbs\\"\] \{ display:\s*none
