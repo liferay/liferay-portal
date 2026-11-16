@@ -31,6 +31,7 @@ dependencies {
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
 	compileOnly project(":apps:journal:journal-api")
+	compileOnly project(":apps:launch:launch-api")
 	compileOnly project(":apps:layout:layout-admin-api")
 	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:layout:layout-display-page-api")
