@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayAlert from '@clayui/alert';
 import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
+import {openToast} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useState} from 'react';
 import {isEdge} from 'react-flow-renderer';
@@ -27,18 +27,25 @@ export default function EdgeInformation({errors, setErrors}) {
 	const [transitionName, setTransitionName] = useState(
 		selectedItem?.data.name ?? ''
 	);
-	const [showWarningAlert, setShowWarningAlert] = useState(false);
 
 	const onToggleDefault = (defaultEdge) => {
 		if (defaultEdge) {
-			setShowWarningAlert(
-				elements.find(
-					(element) =>
-						isEdge(element) &&
-						element.source === selectedItem.source &&
-						element.data.defaultEdge
-				)
+			const replacesDefaultEdge = elements.some(
+				(element) =>
+					isEdge(element) &&
+					element.source === selectedItem.source &&
+					element.data.defaultEdge
 			);
+
+			if (replacesDefaultEdge) {
+				openToast({
+					message: Liferay.Language.get(
+						'your-workflow-may-have-changed-because-the-default-was-changed'
+					),
+					title: Liferay.Language.get('default-was-changed'),
+					type: 'warning',
+				});
+			}
 
 			setElements((previousElements) =>
 				previousElements.map((element) => {
@@ -210,23 +217,6 @@ export default function EdgeInformation({errors, setErrors}) {
 					</div>
 				</ClayForm.Group>
 			</SidebarPanel>
-			{showWarningAlert && (
-				<ClayAlert.ToastContainer>
-					<ClayAlert
-						autoClose={5000}
-						closeButtonAriaLabel={Liferay.Language.get('close')}
-						displayType="warning"
-						onClose={() => setShowWarningAlert(false)}
-						title={`${Liferay.Language.get(
-							'default-was-changed'
-						)}:`}
-					>
-						{Liferay.Language.get(
-							'your-workflow-may-have-changed-because-the-default-was-changed'
-						)}
-					</ClayAlert>
-				</ClayAlert.ToastContainer>
-			)}
 		</>
 	);
 }

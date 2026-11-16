@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayAlert from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayLink from '@clayui/link';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayToolbar from '@clayui/toolbar';
 import {CodeMirrorEditor} from '@liferay/object-js-components-web';
+import {openToast} from 'frontend-js-components-web';
 import React, {useContext, useEffect, useState} from 'react';
 import {isEdge, isNode} from 'react-flow-renderer';
 
@@ -31,8 +31,6 @@ export default function SourceBuilder() {
 		workflowDefinitionVersions,
 	} = useContext(DefinitionBuilderContext);
 	const [loading, setLoading] = useState(true);
-	const [showImportSuccessMessage, setShowImportSuccessMessage] =
-		useState(false);
 
 	useEffect(() => {
 		function loadXmlContent() {
@@ -136,7 +134,12 @@ export default function SourceBuilder() {
 
 					fileInput.value = '';
 
-					setShowImportSuccessMessage(true);
+					openToast({
+						message: Liferay.Language.get(
+							'definition-imported-successfully'
+						),
+						type: 'success',
+					});
 				}
 				else {
 					handleInvalidXMLBlockingError();
@@ -197,35 +200,6 @@ export default function SourceBuilder() {
 				readOnly={false}
 				ref={setCurrentEditor}
 			/>
-
-			{showImportSuccessMessage && (
-				<ClayAlert.ToastContainer>
-					<ClayAlert
-						autoClose={5000}
-						closeButtonAriaLabel={Liferay.Language.get('close')}
-						displayType="success"
-						onClose={() => setShowImportSuccessMessage(false)}
-						title={`${Liferay.Language.get('success')}:`}
-					>
-						{Liferay.Language.get(
-							'definition-imported-successfully'
-						)}
-					</ClayAlert>
-				</ClayAlert.ToastContainer>
-			)}
-
-			{blockingError.errorType === 'invalidXML' && (
-				<ClayAlert.ToastContainer>
-					<ClayAlert
-						autoClose={5000}
-						displayType="danger"
-						onClose={() => setBlockingError({errorType: ''})}
-						title={`${Liferay.Language.get('error')}:`}
-					>
-						{Liferay.Language.get('please-select-a-valid-xml-file')}
-					</ClayAlert>
-				</ClayAlert.ToastContainer>
-			)}
 		</>
 	);
 }

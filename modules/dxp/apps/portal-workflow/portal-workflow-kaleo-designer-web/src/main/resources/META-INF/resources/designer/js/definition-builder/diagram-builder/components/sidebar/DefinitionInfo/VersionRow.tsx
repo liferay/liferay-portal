@@ -4,6 +4,7 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
+import {openToast} from 'frontend-js-components-web';
 import React, {useContext} from 'react';
 
 import {DefinitionBuilderContext} from '../../../../DefinitionBuilderContext';
@@ -44,13 +45,9 @@ export function VersionRow({
 	timeZoneId,
 	versionNumber,
 }: VersionRowProps) {
-	const {
-		definitionName,
-		setAlertMessage,
-		setAlertType,
-		setDefinitionName,
-		setShowAlert,
-	} = useContext(DefinitionBuilderContext);
+	const {definitionName, setDefinitionName} = useContext(
+		DefinitionBuilderContext
+	);
 
 	const versionCreationDate = toLocalDateTimeFormatted(
 		dateCreated,
@@ -59,15 +56,12 @@ export function VersionRow({
 	);
 
 	const restoreSuccess = async (response: Response) => {
-		const alertMessage = lang.sub(
-			Liferay.Language.get('restored-to-revision-x'),
-			[String(versionNumber)]
-		);
-
-		setAlertMessage(alertMessage);
-		setAlertType('success');
-
-		setShowAlert(true);
+		openToast({
+			message: lang.sub(Liferay.Language.get('restored-to-revision-x'), [
+				String(versionNumber),
+			]),
+			type: 'success',
+		});
 
 		const restoredWorkflowDefinition =
 			(await response.json()) as WorkflowDefinition;
@@ -87,14 +81,10 @@ export function VersionRow({
 	};
 
 	const restoreFailed = () => {
-		const alertMessage = Liferay.Language.get(
-			'unable-to-restore-this-item'
-		);
-
-		setAlertMessage(alertMessage);
-		setAlertType('danger');
-
-		setShowAlert(true);
+		openToast({
+			message: Liferay.Language.get('unable-to-restore-this-item'),
+			type: 'danger',
+		});
 	};
 
 	const restoreWorkflowDefinition = async (

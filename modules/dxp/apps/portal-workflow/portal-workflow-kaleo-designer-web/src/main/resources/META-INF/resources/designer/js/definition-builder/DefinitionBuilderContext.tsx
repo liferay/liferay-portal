@@ -9,8 +9,6 @@ import {Elements} from 'react-flow-renderer';
 interface DefinitionBuilderContextProviderProps {
 	accountEntryId: string;
 	active: boolean;
-	alertMessage: string;
-	alertType: string | null;
 	allowScriptContentToBeExecutedOrIncluded: boolean;
 	blockingError: {
 		errorType: string;
@@ -30,8 +28,6 @@ interface DefinitionBuilderContextProviderProps {
 	scriptManagementConfigurationPortletURL: string;
 	setAccountEntryId: () => void;
 	setActive: () => void;
-	setAlertMessage: (value: string) => void;
-	setAlertType: (value: string) => void;
 	setBlockingError: () => void;
 	setCurrentError: () => void;
 	setDefinitionDescription: () => void;
@@ -43,11 +39,9 @@ interface DefinitionBuilderContextProviderProps {
 	setHadGroovyJavaScriptBefore: () => void;
 	setHasGroovyJavaScript: () => void;
 	setScriptManagementConfigurationPortletURL: () => void;
-	setShowAlert: (value: boolean) => void;
 	setWorkflowDefinitionVersions: React.Dispatch<
 		React.SetStateAction<WorkflowDefinitionVersion[]>
 	>;
-	showAlert: boolean;
 	showDefinitionInfo: boolean;
 	sourceView: boolean;
 	statuses: LabelValueObject<number>[];

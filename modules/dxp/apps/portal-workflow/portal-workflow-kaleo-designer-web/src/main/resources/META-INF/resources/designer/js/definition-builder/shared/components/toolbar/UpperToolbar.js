@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayAlert from '@clayui/alert';
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import ClayToolbar from '@clayui/toolbar';
-import {TranslationAdminSelector} from 'frontend-js-components-web';
-import {localStorage} from 'frontend-js-web';
+import {TranslationAdminSelector, openToast} from 'frontend-js-components-web';
+import {escapeHTML, localStorage} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {isEdge, isNode} from 'react-flow-renderer';
@@ -31,6 +30,8 @@ import lang from '../../../util/lang';
 import {isObjectEmpty} from '../../../util/utils';
 import {GroovyScriptWarningModal} from './GroovyScriptWarningModal';
 
+const TOAST_OWNED_ERROR_TYPES = ['assignment', 'invalidXML'];
+
 export default function UpperToolbar({
 	displayNames,
 	groupExternalReferenceCode,
@@ -41,8 +42,6 @@ export default function UpperToolbar({
 }) {
 	const {
 		active,
-		alertMessage,
-		alertType,
 		allowScriptContentToBeExecutedOrIncluded,
 		blockingError,
 		currentEditor,
@@ -53,8 +52,6 @@ export default function UpperToolbar({
 		elements,
 		scriptManagementConfigurationPortletURL,
 		selectedLanguageId,
-		setAlertMessage,
-		setAlertType,
 		setBlockingError,
 		setDefinitionDescription,
 		setDefinitionName,
@@ -65,11 +62,9 @@ export default function UpperToolbar({
 		setHadGroovyOrJavaScriptBefore,
 		setHasGroovyOrJavaScript,
 		setSelectedLanguageId,
-		setShowAlert,
 		setShowDefinitionInfo,
 		setSourceView,
 		setWorkflowDefinitionVersions,
-		showAlert,
 		sourceView,
 		workflowDefinitionVersions,
 	} = useContext(DefinitionBuilderContext);
@@ -85,12 +80,6 @@ export default function UpperToolbar({
 		if (element.data.label && !(language in element.data.label)) {
 			return true;
 		}
-	}
-
-	function setAlert(alertMessage, alertType, showAlert) {
-		setAlertMessage(alertMessage);
-		setAlertType(alertType);
-		setShowAlert(showAlert);
 	}
 
 	const inputRef = useRef(null);
@@ -118,6 +107,22 @@ export default function UpperToolbar({
 		else {
 			return Liferay.Language.get('error');
 		}
+	};
+
+	const showToast = (message, type) => {
+		openToast({
+			message: escapeHTML(message),
+			onClose: TOAST_OWNED_ERROR_TYPES.includes(blockingError.errorType)
+				? () =>
+						setBlockingError((previousBlockingError) =>
+							previousBlockingError === blockingError
+								? {errorType: ''}
+								: previousBlockingError
+						)
+				: undefined,
+			title: type === 'success' ? undefined : errorTitle(),
+			type,
+		});
 	};
 
 	const getXMLContent = () => {
@@ -212,7 +217,7 @@ export default function UpperToolbar({
 		successAlertMessage
 	) => {
 		if (blockingError.errorType !== '') {
-			setAlert(blockingError.errorMessage, 'danger', true);
+			showToast(blockingError.errorMessage, 'danger');
 
 			return;
 		}
@@ -231,10 +236,9 @@ export default function UpperToolbar({
 		);
 
 		if (invalidVariables) {
-			setAlert(
+			showToast(
 				lang.sub(invalidVariables.message, [invalidVariables.label]),
-				'danger',
-				true
+				'danger'
 			);
 
 			return;
@@ -266,12 +270,11 @@ export default function UpperToolbar({
 				await publishedOrSavedDefinitionResponse.json();
 
 			if (!publishedOrSavedDefinitionResponse.ok) {
-				setAlert(
+				showToast(
 					publishedOrSavedDefinitionResponseJSON.title
 						? publishedOrSavedDefinitionResponseJSON.title
 						: Liferay.Language.get('an-unexpected-error-occurred'),
-					'danger',
-					true
+					'danger'
 				);
 
 				return;
@@ -314,15 +317,14 @@ export default function UpperToolbar({
 				return;
 			}
 
-			setAlert(successAlertMessage, 'success', true);
+			showToast(successAlertMessage, 'success');
 		}
 		catch (error) {
 			console.error(error);
 
-			setAlert(
+			showToast(
 				Liferay.Language.get('an-unexpected-error-occurred'),
-				'danger',
-				true
+				'danger'
 			);
 		}
 	};
@@ -338,10 +340,9 @@ export default function UpperToolbar({
 		}
 
 		if (!definitionTitle) {
-			setAlert(
+			showToast(
 				Liferay.Language.get('name-workflow-before-publish'),
-				'danger',
-				true
+				'danger'
 			);
 
 			return;
@@ -425,7 +426,7 @@ export default function UpperToolbar({
 
 	useEffect(() => {
 		if (localStorage.getItem('firstSaved', localStorage.TYPES.FUNCTIONAL)) {
-			setAlert(Liferay.Language.get('workflow-saved'), 'success', true);
+			showToast(Liferay.Language.get('workflow-saved'), 'success');
 			localStorage.removeItem('firstSaved');
 		}
 		else if (
@@ -434,10 +435,9 @@ export default function UpperToolbar({
 				localStorage.TYPES.FUNCTIONAL
 			)
 		) {
-			setAlert(
+			showToast(
 				Liferay.Language.get('workflow-published-successfully'),
-				'success',
-				true
+				'success'
 			);
 			localStorage.removeItem('firstPublished');
 		}
@@ -447,24 +447,14 @@ export default function UpperToolbar({
 
 	useEffect(() => {
 		if (blockingError.errorType === 'assignment') {
-			setAlert(blockingError.errorMessage, 'warning', true);
+			showToast(blockingError.errorMessage, 'warning');
 		}
 		else if (blockingError.errorType === 'invalidXML') {
-			setAlert(blockingError.errorMessage, 'danger', true);
+			showToast(blockingError.errorMessage, 'danger');
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [blockingError]);
-
-	const resetAlert = () => {
-		setShowAlert(false);
-		if (
-			blockingError.errorType === 'assignment' ||
-			blockingError.errorType === 'invalidXML'
-		) {
-			setBlockingError({errorType: ''});
-		}
-	};
 
 	return (
 		<>
@@ -609,24 +599,6 @@ export default function UpperToolbar({
 					</ClayToolbar.Nav>
 				</ClayLayout.ContainerFluid>
 			</ClayToolbar>
-
-			{showAlert && (
-				<ClayAlert.ToastContainer>
-					<ClayAlert
-						autoClose={5000}
-						closeButtonAriaLabel={Liferay.Language.get('close')}
-						displayType={alertType}
-						onClose={() => resetAlert()}
-						title={
-							alertType === 'success'
-								? `${Liferay.Language.get('success')}:`
-								: `${errorTitle()}:`
-						}
-					>
-						{alertMessage}
-					</ClayAlert>
-				</ClayAlert.ToastContainer>
-			)}
 
 			{showGroovyScriptWarningModal && (
 				<GroovyScriptWarningModal

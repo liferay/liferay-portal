@@ -16,8 +16,6 @@ import SourceBuilder from './source-builder/SourceBuilder';
 export default function DefinitionBuilder(props) {
 	const [accountEntryId, setAccountEntryId] = useState(props.accountEntryId);
 	const [active, setActive] = useState(true);
-	const [alertMessage, setAlertMessage] = useState('');
-	const [alertType, setAlertType] = useState(null);
 	const [blockingError, setBlockingError] = useState({errorType: ''});
 	const [currentEditor, setCurrentEditor] = useState(null);
 	const [definitionDescription, setDefinitionDescription] = useState('');
@@ -34,15 +32,12 @@ export default function DefinitionBuilder(props) {
 	const [selectedLanguageId, setSelectedLanguageId] = useState('');
 	const [showDefinitionInfo, setShowDefinitionInfo] = useState(false);
 	const [sourceView, setSourceView] = useState(false);
-	const [showAlert, setShowAlert] = useState(false);
 	const [workflowDefinitionVersions, setWorkflowDefinitionVersions] =
 		useState(props.definitionVersions ? props.definitionVersions : []);
 
 	const contextProps = {
 		accountEntryId,
 		active,
-		alertMessage,
-		alertType,
 		allowScriptContentToBeExecutedOrIncluded:
 			props.allowScriptContentToBeExecutedOrIncluded,
 		blockingError,
@@ -62,8 +57,6 @@ export default function DefinitionBuilder(props) {
 		selectedLanguageId,
 		setAccountEntryId,
 		setActive,
-		setAlertMessage,
-		setAlertType,
 		setBlockingError,
 		setCurrentEditor,
 		setDefinitionDescription,
@@ -76,11 +69,9 @@ export default function DefinitionBuilder(props) {
 		setHadGroovyOrJavaScriptBefore,
 		setHasGroovyOrJavaScript,
 		setSelectedLanguageId,
-		setShowAlert,
 		setShowDefinitionInfo,
 		setSourceView,
 		setWorkflowDefinitionVersions,
-		showAlert,
 		showDefinitionInfo,
 		sourceView,
 		statuses: props.statuses,
