@@ -614,12 +614,9 @@ public class FragmentEntryFragmentRendererTest {
 				StringPool.BLANK, 0, null, fragmentEntry.getType(),
 				_serviceContext);
 
-		_testRenderWithEmptyHostsAllowed(
-			fragmentEntryLink);
-		_testRenderWithHostsAllowed(
-			fragmentEntryLink);
-		_testRenderWithHostsAllowedCaseInsensitive(
-			fragmentEntryLink);
+		_testRenderWithEmptyHostsAllowed(fragmentEntryLink);
+		_testRenderWithHostsAllowed(fragmentEntryLink);
+		_testRenderWithHostsAllowedCaseInsensitive(fragmentEntryLink);
 	}
 
 	@Test
@@ -1168,9 +1165,8 @@ public class FragmentEntryFragmentRendererTest {
 		themeDisplay.setSiteGroupId(_group.getGroupId());
 	}
 
-	private void
-			_testRenderWithEmptyHostsAllowed(
-				FragmentEntryLink fragmentEntryLink)
+	private void _testRenderWithEmptyHostsAllowed(
+			FragmentEntryLink fragmentEntryLink)
 		throws Exception {
 
 		_saveFragmentCacheHostsAllowed(new String[0]);
@@ -1229,9 +1225,8 @@ public class FragmentEntryFragmentRendererTest {
 				fragmentEntryLink, _locale));
 	}
 
-	private void
-			_testRenderWithHostsAllowedCaseInsensitive(
-				FragmentEntryLink fragmentEntryLink)
+	private void _testRenderWithHostsAllowedCaseInsensitive(
+			FragmentEntryLink fragmentEntryLink)
 		throws Exception {
 
 		String host = RandomTestUtil.randomString();
