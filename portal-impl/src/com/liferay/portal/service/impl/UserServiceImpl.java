@@ -2586,7 +2586,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 		throws PortalException {
 
 		UserPermissionUtil.check(
-			getPermissionChecker(), userId, organizationIds, ActionKeys.UPDATE);
+			getPermissionChecker(), userId, ActionKeys.UPDATE);
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
@@ -2958,7 +2958,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 		throws PortalException {
 
 		UserPermissionUtil.check(
-			getPermissionChecker(), userId, organizationIds, ActionKeys.UPDATE);
+			getPermissionChecker(), userId, ActionKeys.UPDATE);
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
