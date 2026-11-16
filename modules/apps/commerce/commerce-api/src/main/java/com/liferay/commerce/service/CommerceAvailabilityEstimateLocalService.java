@@ -74,6 +74,7 @@ public interface CommerceAvailabilityEstimateLocalService
 	public CommerceAvailabilityEstimate addCommerceAvailabilityEstimate(
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public CommerceAvailabilityEstimate addCommerceAvailabilityEstimate(
 			String externalReferenceCode, Map<Locale, String> titleMap,
 			double priority, ServiceContext serviceContext)
@@ -337,6 +338,7 @@ public interface CommerceAvailabilityEstimateLocalService
 	public CommerceAvailabilityEstimate updateCommerceAvailabilityEstimate(
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public CommerceAvailabilityEstimate updateCommerceAvailabilityEstimate(
 			String externalReferenceCode, long commerceAvailabilityEstimateId,
 			Map<Locale, String> titleMap, double priority,
@@ -344,4 +346,4 @@ public interface CommerceAvailabilityEstimateLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:268575048
+// LIFERAY-SERVICE-BUILDER-HASH:-365119822
