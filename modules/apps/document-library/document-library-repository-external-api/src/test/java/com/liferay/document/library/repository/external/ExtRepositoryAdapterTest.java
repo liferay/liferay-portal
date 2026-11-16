@@ -81,12 +81,10 @@ public class ExtRepositoryAdapterTest {
 	@Test
 	public void testGetFileEntries() throws Exception {
 		ExtRepository extRepository = Mockito.mock(ExtRepository.class);
-
 		ExtRepositoryFileEntry extRepositoryFileEntry1 =
 			_getExtRepositoryFileEntry();
 		ExtRepositoryFileEntry extRepositoryFileEntry2 =
 			_getExtRepositoryFileEntry();
-
 		String rootFolderKey = RandomTestUtil.randomString();
 
 		Mockito.doReturn(
