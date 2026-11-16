@@ -75,6 +75,9 @@ tests:
                     path: spec.source.helm.valuesObject.config.envoyGateway.extensionApis.enableBackend
                     value: false
             -   equal:
+                    path: spec.source.helm.valuesObject.config.envoyGateway.logging.encoder
+                    value: JSON
+            -   equal:
                     path: spec.source.helm.valuesObject.config.envoyGateway.provider.kubernetes.deploy.type
                     value: GatewayNamespace
             -   equal:
