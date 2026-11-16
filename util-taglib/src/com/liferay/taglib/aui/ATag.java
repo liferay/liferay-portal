@@ -70,8 +70,7 @@ public class ATag extends BaseATag implements BodyTag {
 				_sb.append("lexicon-icon-shortcut\" focusable=\"false\" ");
 				_sb.append("role=\"img\"><use href=\"");
 				_sb.append(themeDisplay.getPathThemeSpritemap());
-				_sb.append("#shortcut\" /><span ");
-				_sb.append("class=\"sr-only\">");
+				_sb.append("#shortcut\" /><span class=\"sr-only\">");
 
 				String opensNewWindowLabel = LanguageUtil.get(
 					TagResourceBundleUtil.getResourceBundle(pageContext),
@@ -79,11 +78,9 @@ public class ATag extends BaseATag implements BodyTag {
 
 				_sb.append(opensNewWindowLabel);
 
-				_sb.append("</span>");
-				_sb.append("<title>");
+				_sb.append("</span><title>");
 				_sb.append(opensNewWindowLabel);
-				_sb.append("</title>");
-				_sb.append("</svg>");
+				_sb.append("</title></svg>");
 			}
 
 			_sb.append("</a>");
@@ -114,9 +111,7 @@ public class ATag extends BaseATag implements BodyTag {
 		String title = getTitle();
 
 		if (Validator.isNotNull(href)) {
-			_sb.append("<a ");
-
-			_sb.append("href=\"");
+			_sb.append("<a href=\"");
 			_sb.append(HtmlUtil.escapeAttribute(href));
 			_sb.append("\" ");
 
