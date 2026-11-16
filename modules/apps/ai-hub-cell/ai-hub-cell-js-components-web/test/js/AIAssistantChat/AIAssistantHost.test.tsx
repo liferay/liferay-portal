@@ -185,9 +185,10 @@ describe('AIAssistantHost', () => {
 			'__LIFERAY_AI_ASSISTANT_SINGLETON__'
 		] = {
 			eventBound: true,
+			expandedPreferences: new Map(),
 			hostMounted: true,
 			listeners: new Set(),
-			state: {command: null},
+			state: {command: null, expanded: false},
 		};
 
 		hostContainerStub = document.createElement('div');
@@ -789,6 +790,22 @@ describe('AIAssistantHost', () => {
 
 	it('offers the expand toggle for a dropdown command', async () => {
 		await renderAndOpen();
+
+		expect(
+			screen.getByRole('button', {name: 'maximize'})
+		).toBeInTheDocument();
+	});
+
+	it('opens an expanded dropdown command as a sidebar that can be minimized', async () => {
+		await renderAndOpen({defaultExpanded: true, presentation: 'dropdown'});
+
+		const sidebar = await waitForSidebarOpen();
+
+		await act(async () => {
+			fireEvent.click(
+				within(sidebar).getByRole('button', {name: 'minimize'})
+			);
+		});
 
 		expect(
 			screen.getByRole('button', {name: 'maximize'})
@@ -1581,5 +1598,87 @@ describe('AIAssistantHost', () => {
 				})
 			);
 		});
+	});
+
+	describe('container', () => {
+		let container: HTMLDivElement;
+
+		beforeEach(() => {
+			container = document.createElement('div');
+
+			container.id = 'ai-assistant-container';
+
+			document.body.appendChild(container);
+		});
+
+		afterEach(() => {
+			container.remove();
+
+			jest.restoreAllMocks();
+		});
+
+		it('renders a command with a container inside it', async () => {
+			await renderAndOpen({
+				containerId: 'ai-assistant-container',
+				presentation: 'sidebar',
+			});
+
+			expect(
+				within(container).getByRole('complementary', {
+					name: 'ai-assistant',
+				})
+			).toBeInTheDocument();
+			expect(screen.getAllByRole('complementary')).toHaveLength(1);
+
+			await act(async () => {
+				fireEvent.click(
+					within(container).getByRole('button', {name: 'close'})
+				);
+			});
+
+			expect(container).toBeEmptyDOMElement();
+		});
+
+		it('minimizes an expanded command with a container to a dropdown', async () => {
+			await renderAndOpen({
+				containerId: 'ai-assistant-container',
+				defaultExpanded: true,
+				presentation: 'dropdown',
+			});
+
+			await act(async () => {
+				fireEvent.click(
+					within(container).getByRole('button', {name: 'minimize'})
+				);
+			});
+
+			expect(container).toBeEmptyDOMElement();
+			expect(
+				screen.getByRole('button', {name: 'maximize'})
+			).toBeInTheDocument();
+		});
+
+		it('warns when the container is not found', async () => {
+			const warn = jest.spyOn(console, 'warn').mockImplementation();
+
+			await renderAndOpen({
+				containerId: 'missing-container',
+				presentation: 'sidebar',
+			});
+
+			expect(warn).toHaveBeenCalledWith(
+				'AI Assistant container missing-container was not found'
+			);
+		});
+	});
+
+	it('renders the trigger with the given size', async () => {
+		await act(async () => {
+			renderHost({size: 'sm'});
+		});
+
+		expect(screen.getByRole('button', {name: 'ai-assistant'})).toHaveClass(
+			'btn-sm'
+		);
 	});
 });

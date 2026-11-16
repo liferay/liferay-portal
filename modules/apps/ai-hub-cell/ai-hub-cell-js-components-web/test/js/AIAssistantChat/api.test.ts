@@ -3,10 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {EventSource} from 'eventsource';
 import {fetch} from 'frontend-js-web';
 
-import {postChatByExternalReferenceCodeMessage} from '../../../src/main/resources/META-INF/resources/js/AIAssistantChat/api';
+import {
+	createEventSource,
+	postChatByExternalReferenceCodeMessage,
+} from '../../../src/main/resources/META-INF/resources/js/AIAssistantChat/api';
 import {RequestTooLargeError} from '../../../src/main/resources/META-INF/resources/js/utils/throwIfRequestTooLarge';
+
+jest.mock('eventsource', () => ({EventSource: jest.fn()}));
 
 jest.mock('frontend-js-web', () => ({fetch: jest.fn()}));
 
@@ -35,6 +41,31 @@ function jsonResponse(body: unknown, ok = true, status = ok ? 200 : 500) {
 		text: () => Promise.resolve(JSON.stringify(body)),
 	};
 }
+
+describe('createEventSource', () => {
+	beforeEach(() => {
+		document.body.classList.add('has-edit-mode-menu');
+
+		mockFetch.mockReset();
+	});
+
+	afterEach(() => {
+		document.body.classList.remove('has-edit-mode-menu');
+	});
+
+	it('subscribes to the chats in edit mode', async () => {
+		mockFetch.mockResolvedValueOnce(
+			jsonResponse(authorizationToken) as never
+		);
+
+		await createEventSource();
+
+		expect(EventSource).toHaveBeenCalledWith(
+			'https://ai-hub.liferay.com/o/ai-hub/v1.0/chats/subscribe',
+			expect.anything()
+		);
+	});
+});
 
 describe('postChatByExternalReferenceCodeMessage', () => {
 	beforeEach(() => {

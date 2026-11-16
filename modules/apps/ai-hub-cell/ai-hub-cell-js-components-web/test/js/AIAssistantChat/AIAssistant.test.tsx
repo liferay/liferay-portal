@@ -14,6 +14,7 @@ import AIAssistant, {
 	getState,
 	open,
 	releaseHost,
+	setExpanded,
 } from '../../../src/main/resources/META-INF/resources/js/AIAssistantChat/AIAssistant';
 import AIAssistantTriggerButton from '../../../src/main/resources/META-INF/resources/js/AIAssistantChat/AIAssistantTriggerButton';
 
@@ -204,5 +205,26 @@ describe('AIAssistantTriggerButton', () => {
 
 		expect(attachment).toHaveAttribute('aria-expanded', 'false');
 		expect(getState().command).toBeNull();
+	});
+
+	it('remembers the expanded choice for a trigger with a default', () => {
+		open({...command('page-editor'), defaultExpanded: true});
+
+		expect(getState().expanded).toBe(true);
+
+		setExpanded(false);
+		close();
+		open({...command('page-editor'), defaultExpanded: true});
+
+		expect(getState().expanded).toBe(false);
+	});
+
+	it('does not remember the expanded choice for a trigger without a default', () => {
+		open(command('toolbar'));
+		setExpanded(true);
+		close();
+		open(command('toolbar'));
+
+		expect(getState().expanded).toBe(false);
 	});
 });
