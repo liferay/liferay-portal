@@ -412,7 +412,13 @@ public class CIMonitoringReport extends BaseReport {
 				metricJSONObjects.put(monitor, metricJSONObject);
 			}
 
-			Map<Long, Double> values = new HashMap<>();
+			Map<Long, Double> values = valuesMap.get(monitor);
+
+			if (values == null) {
+				values = new HashMap<>();
+
+				valuesMap.put(monitor, values);
+			}
 
 			JSONArray valuesJSONArray = resultJSONObject.getJSONArray("values");
 
@@ -423,8 +429,6 @@ public class CIMonitoringReport extends BaseReport {
 					valueJSONArray.getLong(0),
 					Double.valueOf(valueJSONArray.getString(1)));
 			}
-
-			valuesMap.put(monitor, values);
 		}
 
 		return valuesMap;
