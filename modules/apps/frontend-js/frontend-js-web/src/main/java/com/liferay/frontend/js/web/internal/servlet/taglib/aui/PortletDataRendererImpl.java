@@ -149,10 +149,7 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 
 		// Write actual JS code
 
-		StringBundler nonrawCodeSB = _computeNonrawCode(
-			amdRequiresMap, esImportsMap, portletDatas);
-
-		nonrawCodeSB.writeTo(writer);
+		_writeNonrawCode(amdRequiresMap, esImportsMap, portletDatas, writer);
 
 		// Write AUI epilogue
 
@@ -271,98 +268,6 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 		return esImportsMap;
 	}
 
-	private StringBundler _computeNonrawCode(
-		Map<AMDRequire, AMDRequire> amdRequiresMap,
-		Map<ESImport, ESImport> esImportsMap,
-		Collection<PortletData> portletDatas) {
-
-		StringBundler sb = new StringBundler();
-
-		for (PortletData portletData : portletDatas) {
-			for (JSFragment jsFragment : portletData.getJSFragments()) {
-				String code = jsFragment.getCode();
-
-				if (Validator.isNull(code) || jsFragment.isRaw()) {
-					continue;
-				}
-
-				List<AMDRequire> amdRequires = jsFragment.getAMDRequires();
-				List<String> auiUses = jsFragment.getAUIUses();
-
-				boolean legacyJSFragment = false;
-
-				if (!amdRequires.isEmpty() || !auiUses.isEmpty()) {
-					legacyJSFragment = true;
-				}
-
-				if (legacyJSFragment) {
-					sb.append("(function() {\n");
-				}
-				else {
-					sb.append("{\n");
-				}
-
-				// Map AMD requires to their requested aliases
-
-				List<AMDRequire> fragmentAMDRequires =
-					jsFragment.getAMDRequires();
-
-				for (AMDRequire fragmentAMDRequire : fragmentAMDRequires) {
-					AMDRequire amdRequire = amdRequiresMap.get(
-						fragmentAMDRequire);
-
-					if (Objects.equals(
-							amdRequire.getAlias(),
-							fragmentAMDRequire.getAlias())) {
-
-						continue;
-					}
-
-					sb.append("const ");
-					sb.append(fragmentAMDRequire.getAlias());
-					sb.append(" = ");
-					sb.append(amdRequire.getAlias());
-					sb.append(";\n");
-				}
-
-				// Map ES imports to their requested aliases
-
-				List<ESImport> fragmentESImports = jsFragment.getESImports();
-
-				for (ESImport fragmentESImport : fragmentESImports) {
-					ESImport esImport = esImportsMap.get(fragmentESImport);
-
-					if (Objects.equals(
-							esImport.getAlias(), fragmentESImport.getAlias())) {
-
-						continue;
-					}
-
-					sb.append("const ");
-					sb.append(fragmentESImport.getAlias());
-					sb.append(" = ");
-					sb.append(esImport.getAlias());
-					sb.append(";\n");
-				}
-
-				sb.append(code);
-
-				if (!code.endsWith(StringPool.NEW_LINE)) {
-					sb.append(StringPool.NEW_LINE);
-				}
-
-				if (legacyJSFragment) {
-					sb.append("})();\n");
-				}
-				else {
-					sb.append("}\n");
-				}
-			}
-		}
-
-		return sb;
-	}
-
 	private StringBundler _computeRawCode(
 		Collection<PortletData> portletDatas) {
 
@@ -382,6 +287,95 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 		}
 
 		return sb;
+	}
+
+	private void _writeNonrawCode(
+			Map<AMDRequire, AMDRequire> amdRequiresMap,
+			Map<ESImport, ESImport> esImportsMap,
+			Collection<PortletData> portletDatas, Writer writer)
+		throws IOException {
+
+		for (PortletData portletData : portletDatas) {
+			for (JSFragment jsFragment : portletData.getJSFragments()) {
+				String code = jsFragment.getCode();
+
+				if (Validator.isNull(code) || jsFragment.isRaw()) {
+					continue;
+				}
+
+				List<AMDRequire> amdRequires = jsFragment.getAMDRequires();
+				List<String> auiUses = jsFragment.getAUIUses();
+
+				boolean legacyJSFragment = false;
+
+				if (!amdRequires.isEmpty() || !auiUses.isEmpty()) {
+					legacyJSFragment = true;
+				}
+
+				if (legacyJSFragment) {
+					writer.write("(function() {\n");
+				}
+				else {
+					writer.write("{\n");
+				}
+
+				// Map AMD requires to their requested aliases
+
+				List<AMDRequire> fragmentAMDRequires =
+					jsFragment.getAMDRequires();
+
+				for (AMDRequire fragmentAMDRequire : fragmentAMDRequires) {
+					AMDRequire amdRequire = amdRequiresMap.get(
+						fragmentAMDRequire);
+
+					if (Objects.equals(
+							amdRequire.getAlias(),
+							fragmentAMDRequire.getAlias())) {
+
+						continue;
+					}
+
+					writer.write("const ");
+					writer.write(fragmentAMDRequire.getAlias());
+					writer.write(" = ");
+					writer.write(amdRequire.getAlias());
+					writer.write(";\n");
+				}
+
+				// Map ES imports to their requested aliases
+
+				List<ESImport> fragmentESImports = jsFragment.getESImports();
+
+				for (ESImport fragmentESImport : fragmentESImports) {
+					ESImport esImport = esImportsMap.get(fragmentESImport);
+
+					if (Objects.equals(
+							esImport.getAlias(), fragmentESImport.getAlias())) {
+
+						continue;
+					}
+
+					writer.write("const ");
+					writer.write(fragmentESImport.getAlias());
+					writer.write(" = ");
+					writer.write(esImport.getAlias());
+					writer.write(";\n");
+				}
+
+				writer.write(code);
+
+				if (!code.endsWith(StringPool.NEW_LINE)) {
+					writer.write(StringPool.NEW_LINE);
+				}
+
+				if (legacyJSFragment) {
+					writer.write("})();\n");
+				}
+				else {
+					writer.write("}\n");
+				}
+			}
+		}
 	}
 
 }

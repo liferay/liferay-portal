@@ -108,39 +108,38 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		printWriter.print(" data-senna-track=\"temporary\"");
 		printWriter.println(" type=\"text/javascript\">");
 
-		StringBundler sb = new StringBundler();
+		printWriter.print(_TPL_LIFERAY_JS[0]);
 
 		try {
-			_renderLiferayAUI(httpServletRequest, sb);
-			_renderLiferayBrowser(httpServletRequest, sb);
-			_renderLiferayData(httpServletRequest, sb);
-			_renderLiferayFeatureFlags(httpServletRequest, sb);
-			_renderLiferayLanguage(sb);
-			_renderLiferayPortlet(sb);
-			_renderLiferayPortletKeys(sb);
-			_renderLiferayPropsValues(httpServletRequest, sb);
+			_renderLiferayAUI(httpServletRequest, printWriter);
+			_renderLiferayBrowser(httpServletRequest, printWriter);
+			_renderLiferayData(httpServletRequest, printWriter);
+			_renderLiferayFeatureFlags(httpServletRequest, printWriter);
+			_renderLiferayLanguage(printWriter);
+			_renderLiferayPortlet(printWriter);
+			_renderLiferayPortletKeys(printWriter);
+			_renderLiferayPropsValues(httpServletRequest, printWriter);
 			_renderLiferayThemeDisplay(
-				httpServletRequest, liferayGlobalObjectConfiguration, sb);
-			_renderLiferayUtil(sb);
+				httpServletRequest, liferayGlobalObjectConfiguration,
+				printWriter);
+			_renderLiferayUtil(printWriter);
 
 			_renderValue(
-				"authToken", sb, _authToken.getToken(httpServletRequest));
+				"authToken", printWriter,
+				_authToken.getToken(httpServletRequest));
 
 			String currentURL = _portal.getCurrentURL(httpServletRequest);
 
-			_renderValue("currentURL", sb, HtmlUtil.escapeJS(currentURL));
 			_renderValue(
-				"currentURLEncoded", sb,
+				"currentURL", printWriter, HtmlUtil.escapeJS(currentURL));
+			_renderValue(
+				"currentURLEncoded", printWriter,
 				HtmlUtil.escapeJS(URLCodec.encodeURL(currentURL)));
 		}
 		catch (PortalException portalException) {
 			_log.error(
 				"Unable to render Liferay global object", portalException);
 		}
-
-		printWriter.print(_TPL_LIFERAY_JS[0]);
-
-		sb.writeTo(printWriter);
 
 		printWriter.println(_TPL_LIFERAY_JS[1]);
 
@@ -256,23 +255,26 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		}
 	}
 
-	private void _renderDisabledMethod(String methodName, StringBundler sb) {
-		sb.append(methodName);
-		sb.append(": () => {throw new Error('Method ");
-		sb.append(methodName);
-		sb.append(" has been disabled in Instance Settings');},\n");
+	private void _renderDisabledMethod(
+		String methodName, PrintWriter printWriter) {
+
+		printWriter.print(methodName);
+		printWriter.print(": () => {throw new Error('Method ");
+		printWriter.print(methodName);
+		printWriter.print(" has been disabled in Instance Settings');},\n");
 	}
 
 	private void _renderLiferayAUI(
-		HttpServletRequest httpServletRequest, StringBundler sb) {
+		HttpServletRequest httpServletRequest, PrintWriter printWriter) {
 
-		sb.append("AUI: {\n");
+		printWriter.print("AUI: {\n");
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		_renderMethod("getCombine", sb, themeDisplay.isThemeJsFastLoad());
+		_renderMethod(
+			"getCombine", printWriter, themeDisplay.isThemeJsFastLoad());
 
 		long lastModified = PortalWebResourcesUtil.getLastModified(
 			PortalWebResourceConstants.RESOURCE_TYPE_JS);
@@ -283,13 +285,13 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 				themeDisplay.getPathContext() + "/combo/",
 			"minifierType=", lastModified);
 
-		_renderMethod("getComboPath", sb, comboURL + "&");
+		_renderMethod("getComboPath", printWriter, comboURL + "&");
 
 		_renderMethod(
-			"getDateFormat", sb,
+			"getDateFormat", printWriter,
 			_getDateFormatPattern(themeDisplay.getLocale()));
 		_renderMethod(
-			"getEditorCKEditorPath", sb,
+			"getEditorCKEditorPath", printWriter,
 			PortalWebResourcesUtil.getContextPath(
 				PortalWebResourceConstants.RESOURCE_TYPE_EDITOR_CKEDITOR));
 
@@ -302,109 +304,112 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			filterString = "debug";
 		}
 
-		_renderMethod("getFilter", sb, filterString);
+		_renderMethod("getFilter", printWriter, filterString);
 
 		String staticResourceURLParams = _portal.getStaticResourceURL(
 			httpServletRequest, StringPool.BLANK, "minifierType=",
 			lastModified);
 
 		if (themeDisplay.isThemeJsFastLoad()) {
-			_renderMethod("getFilterConfig", sb, null);
+			_renderMethod("getFilterConfig", printWriter, null);
 		}
 		else {
-			sb.append("getFilterConfig: () => ({\n");
+			printWriter.print("getFilterConfig: () => ({\n");
 
-			_renderMethod("replaceStr", sb, ".js" + staticResourceURLParams);
-			_renderMethod("searchExp", sb, "\\\\.js$");
+			_renderMethod(
+				"replaceStr", printWriter, ".js" + staticResourceURLParams);
+			_renderMethod("searchExp", printWriter, "\\\\.js$");
 
-			sb.append("}),\n");
+			printWriter.print("}),\n");
 		}
 
 		_renderMethod(
-			"getJavaScriptRootPath", sb, themeDisplay.getPathJavaScript());
+			"getJavaScriptRootPath", printWriter,
+			themeDisplay.getPathJavaScript());
 		_renderMethod(
-			"getPortletRootPath", sb,
+			"getPortletRootPath", printWriter,
 			themeDisplay.getPathContext() + "/html/portlet");
 		_renderMethod(
-			"getStaticResourceURLParams", sb, staticResourceURLParams);
+			"getStaticResourceURLParams", printWriter, staticResourceURLParams);
 
-		sb.append("},\n");
+		printWriter.print("},\n");
 	}
 
 	private void _renderLiferayBrowser(
-		HttpServletRequest httpServletRequest, StringBundler sb) {
+		HttpServletRequest httpServletRequest, PrintWriter printWriter) {
 
-		sb.append("Browser: {\n");
+		printWriter.print("Browser: {\n");
 
 		_renderMethod(
-			"acceptsGzip", sb,
+			"acceptsGzip", printWriter,
 			BrowserSnifferUtil.acceptsGzip(httpServletRequest));
 
 		String version = BrowserSnifferUtil.getVersion(httpServletRequest);
 
-		_renderMethod("getMajorVersion", sb, version.isEmpty() ? "0" : version);
+		_renderMethod(
+			"getMajorVersion", printWriter, version.isEmpty() ? "0" : version);
 
 		_renderMethod(
-			"getRevision", sb,
+			"getRevision", printWriter,
 			BrowserSnifferUtil.getRevision(httpServletRequest));
-		_renderMethod("getVersion", sb, version);
+		_renderMethod("getVersion", printWriter, version);
 
 		BrowserMetadata browserMetadata = BrowserSnifferUtil.getBrowserMetadata(
 			httpServletRequest);
 
-		_renderMethod("isAir", sb, browserMetadata.isAir());
-		_renderMethod("isChrome", sb, browserMetadata.isChrome());
-		_renderMethod("isEdge", sb, browserMetadata.isEdge());
-		_renderMethod("isFirefox", sb, browserMetadata.isFirefox());
-		_renderMethod("isGecko", sb, browserMetadata.isGecko());
-		_renderMethod("isIe", sb, browserMetadata.isIe());
-		_renderMethod("isIphone", sb, browserMetadata.isIphone());
-		_renderMethod("isLinux", sb, browserMetadata.isLinux());
-		_renderMethod("isMac", sb, browserMetadata.isMac());
-		_renderMethod("isMobile", sb, browserMetadata.isMobile());
-		_renderMethod("isMozilla", sb, browserMetadata.isMozilla());
-		_renderMethod("isOpera", sb, browserMetadata.isOpera());
-		_renderMethod("isRtf", sb, browserMetadata.isRtf(version));
-		_renderMethod("isSafari", sb, browserMetadata.isSafari());
-		_renderMethod("isSun", sb, browserMetadata.isSun());
-		_renderMethod("isWebKit", sb, browserMetadata.isWebKit());
-		_renderMethod("isWindows", sb, browserMetadata.isWindows());
+		_renderMethod("isAir", printWriter, browserMetadata.isAir());
+		_renderMethod("isChrome", printWriter, browserMetadata.isChrome());
+		_renderMethod("isEdge", printWriter, browserMetadata.isEdge());
+		_renderMethod("isFirefox", printWriter, browserMetadata.isFirefox());
+		_renderMethod("isGecko", printWriter, browserMetadata.isGecko());
+		_renderMethod("isIe", printWriter, browserMetadata.isIe());
+		_renderMethod("isIphone", printWriter, browserMetadata.isIphone());
+		_renderMethod("isLinux", printWriter, browserMetadata.isLinux());
+		_renderMethod("isMac", printWriter, browserMetadata.isMac());
+		_renderMethod("isMobile", printWriter, browserMetadata.isMobile());
+		_renderMethod("isMozilla", printWriter, browserMetadata.isMozilla());
+		_renderMethod("isOpera", printWriter, browserMetadata.isOpera());
+		_renderMethod("isRtf", printWriter, browserMetadata.isRtf(version));
+		_renderMethod("isSafari", printWriter, browserMetadata.isSafari());
+		_renderMethod("isSun", printWriter, browserMetadata.isSun());
+		_renderMethod("isWebKit", printWriter, browserMetadata.isWebKit());
+		_renderMethod("isWindows", printWriter, browserMetadata.isWindows());
 
-		sb.append("},\n");
+		printWriter.print("},\n");
 	}
 
 	private void _renderLiferayData(
-			HttpServletRequest httpServletRequest, StringBundler sb)
+			HttpServletRequest httpServletRequest, PrintWriter printWriter)
 		throws PortalException {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		sb.append("Data: {\n");
+		printWriter.print("Data: {\n");
 
-		_renderValue("ICONS_INLINE_SVG", sb, true);
-		_renderValue("NAV_SELECTOR", sb, "#navigation");
-		_renderValue("NAV_SELECTOR_MOBILE", sb, "#navigationCollapse");
+		_renderValue("ICONS_INLINE_SVG", printWriter, true);
+		_renderValue("NAV_SELECTOR", printWriter, "#navigation");
+		_renderValue("NAV_SELECTOR_MOBILE", printWriter, "#navigationCollapse");
 
 		LayoutTypePortlet layoutTypePortlet =
 			themeDisplay.getLayoutTypePortlet();
 
 		_renderMethod(
-			"isCustomizationView", sb,
+			"isCustomizationView", printWriter,
 			layoutTypePortlet.isCustomizable() &&
 			_layoutPermission.contains(
 				themeDisplay.getPermissionChecker(), themeDisplay.getLayout(),
 				ActionKeys.CUSTOMIZE));
 
-		sb.append("notices: [\n");
+		printWriter.print("notices: [\n");
 
 		if (ShutdownUtil.isInProcess()) {
-			sb.append("{\nmessage: '");
+			printWriter.print("{\nmessage: '");
 
 			Locale locale = themeDisplay.getLocale();
 
-			sb.append(
+			printWriter.print(
 				_language.format(
 					locale,
 					_language.get(
@@ -418,80 +423,83 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 					false));
 
 			if (Validator.isNotNull(ShutdownUtil.getMessage())) {
-				sb.append("<span class=\"custom-shutdown-message\">");
-				sb.append(HtmlUtil.escape(ShutdownUtil.getMessage()));
-				sb.append("</span>");
+				printWriter.print("<span class=\"custom-shutdown-message\">");
+				printWriter.print(HtmlUtil.escape(ShutdownUtil.getMessage()));
+				printWriter.print("</span>");
 			}
 
-			sb.append("',\ntitle: '");
+			printWriter.print("',\ntitle: '");
 
-			sb.append(_language.get(locale, "maintenance-alert"));
+			printWriter.print(_language.get(locale, "maintenance-alert"));
 
-			sb.append("<span class=\"mx-2\">");
+			printWriter.print("<span class=\"mx-2\">");
 
 			Format format = _fastDateFormatFactory.getTime(locale);
 
 			TimeZone timeZone = themeDisplay.getTimeZone();
 
-			sb.append(
+			printWriter.print(
 				format.format(
 					Time.getDate(CalendarFactoryUtil.getCalendar(timeZone))));
 
-			sb.append(StringPool.SPACE);
+			printWriter.print(StringPool.SPACE);
 
-			sb.append(timeZone.getDisplayName(false, TimeZone.SHORT, locale));
+			printWriter.print(
+				timeZone.getDisplayName(false, TimeZone.SHORT, locale));
 
-			sb.append("</span>',\ntype: 'warning'\n},\n");
+			printWriter.print("</span>',\ntype: 'warning'\n},\n");
 		}
 
-		sb.append("],\n},\n");
+		printWriter.print("],\n},\n");
 	}
 
 	private void _renderLiferayFeatureFlags(
-		HttpServletRequest httpServletRequest, StringBundler sb) {
+		HttpServletRequest httpServletRequest, PrintWriter printWriter) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		sb.append("FeatureFlags: {");
+		printWriter.print("FeatureFlags: {");
 
 		for (FeatureFlag featureFlag :
 				_featureFlagManager.getFeatureFlags(
 					CompanyConstants.SYSTEM, FeatureFlag::isEnabled)) {
 
-			sb.append(StringPool.APOSTROPHE);
-			sb.append(featureFlag.getKey());
-			sb.append("': true, ");
+			printWriter.print(StringPool.APOSTROPHE);
+			printWriter.print(featureFlag.getKey());
+			printWriter.print("': true, ");
 		}
 
 		for (FeatureFlag featureFlag :
 				_featureFlagManager.getFeatureFlags(
 					themeDisplay.getCompanyId(), FeatureFlag::isEnabled)) {
 
-			sb.append(StringPool.APOSTROPHE);
-			sb.append(featureFlag.getKey());
-			sb.append("': true, ");
+			printWriter.print(StringPool.APOSTROPHE);
+			printWriter.print(featureFlag.getKey());
+			printWriter.print("': true, ");
 		}
 
-		sb.append("},\n");
+		printWriter.print("},\n");
 	}
 
-	private void _renderLiferayLanguage(StringBundler sb) {
-		sb.append(_TPL_LANGUAGE_JS[0]);
+	private void _renderLiferayLanguage(PrintWriter printWriter)
+		throws IOException {
+
+		printWriter.print(_TPL_LANGUAGE_JS[0]);
 
 		StringBundler directionSB = new StringBundler();
 
 		for (Locale locale : _language.getAvailableLocales()) {
 			String languageId = LocaleUtil.toLanguageId(locale);
 
-			sb.append(StringPool.APOSTROPHE);
-			sb.append(languageId);
-			sb.append("': '");
-			sb.append(
+			printWriter.print(StringPool.APOSTROPHE);
+			printWriter.print(languageId);
+			printWriter.print("': '");
+			printWriter.print(
 				_displayNames.computeIfAbsent(
 					locale, key -> HtmlUtil.escapeJS(key.getDisplayName(key))));
-			sb.append("',\n");
+			printWriter.print("',\n");
 
 			directionSB.append(StringPool.APOSTROPHE);
 			directionSB.append(languageId);
@@ -500,47 +508,51 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			directionSB.append("',\n");
 		}
 
-		sb.append(_TPL_LANGUAGE_JS[1]);
-		sb.append(directionSB);
-		sb.append(_TPL_LANGUAGE_JS[2]);
-		sb.append(StringPool.NEW_LINE);
+		printWriter.print(_TPL_LANGUAGE_JS[1]);
+
+		directionSB.writeTo(printWriter);
+
+		printWriter.print(_TPL_LANGUAGE_JS[2]);
+		printWriter.print(StringPool.NEW_LINE);
 	}
 
-	private void _renderLiferayPortlet(StringBundler sb) {
-		sb.append("Portlet: {\n");
+	private void _renderLiferayPortlet(PrintWriter printWriter) {
+		printWriter.print("Portlet: {\n");
 
 		_renderStub(
-			"frontend-js-components-web", "openModal", sb, "openPortletModal");
+			"frontend-js-components-web", "openModal", printWriter,
+			"openPortletModal");
 		_renderStub(
-			"frontend-js-components-web", "openWindow", sb,
+			"frontend-js-components-web", "openWindow", printWriter,
 			"openPortletWindow");
 
-		sb.append("},\n");
+		printWriter.print("},\n");
 	}
 
-	private void _renderLiferayPortletKeys(StringBundler sb) {
-		sb.append("PortletKeys: {\n");
+	private void _renderLiferayPortletKeys(PrintWriter printWriter) {
+		printWriter.print("PortletKeys: {\n");
 
-		_renderValue("DOCUMENT_LIBRARY", sb, PortletKeys.DOCUMENT_LIBRARY);
 		_renderValue(
-			"DYNAMIC_DATA_MAPPING", sb,
+			"DOCUMENT_LIBRARY", printWriter, PortletKeys.DOCUMENT_LIBRARY);
+		_renderValue(
+			"DYNAMIC_DATA_MAPPING", printWriter,
 			"com_liferay_dynamic_data_mapping_web_portlet_DDMPortlet");
 		_renderValue(
-			"INSTANCE_SETTINGS", sb,
+			"INSTANCE_SETTINGS", printWriter,
 			"com_liferay_configuration_admin_web_portlet_" +
 				"InstanceSettingsPortlet");
-		_renderValue("ITEM_SELECTOR", sb, PortletKeys.ITEM_SELECTOR);
+		_renderValue("ITEM_SELECTOR", printWriter, PortletKeys.ITEM_SELECTOR);
 
-		sb.append("},\n");
+		printWriter.print("},\n");
 	}
 
 	private void _renderLiferayPropsValues(
-		HttpServletRequest httpServletRequest, StringBundler sb) {
+		HttpServletRequest httpServletRequest, PrintWriter printWriter) {
 
-		sb.append("PropsValues: {\n");
+		printWriter.print("PropsValues: {\n");
 
 		_renderValue(
-			"ENTERPRISE_PRODUCT_AI_HUB_ENABLED", sb,
+			"ENTERPRISE_PRODUCT_AI_HUB_ENABLED", printWriter,
 			PropsValues.ENTERPRISE_PRODUCT_AI_HUB_ENABLED);
 
 		ThemeDisplay themeDisplay =
@@ -548,26 +560,26 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 				WebKeys.THEME_DISPLAY);
 
 		_renderValue(
-			"JAVASCRIPT_SINGLE_PAGE_APPLICATION_TIMEOUT", sb,
+			"JAVASCRIPT_SINGLE_PAGE_APPLICATION_TIMEOUT", printWriter,
 			_prefsProps.getInteger(
 				themeDisplay.getCompanyId(),
 				PropsKeys.JAVASCRIPT_SINGLE_PAGE_APPLICATION_TIMEOUT,
 				PropsValues.JAVASCRIPT_SINGLE_PAGE_APPLICATION_TIMEOUT));
 
 		_renderValue(
-			"UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE", sb,
+			"UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE", printWriter,
 			_uploadServletRequestConfigurationProvider.getMaxSize());
 
-		sb.append("},\n");
+		printWriter.print("},\n");
 	}
 
 	private void _renderLiferayThemeDisplay(
 			HttpServletRequest httpServletRequest,
 			LiferayGlobalObjectConfiguration liferayGlobalObjectConfiguration,
-			StringBundler sb)
+			PrintWriter printWriter)
 		throws PortalException {
 
-		sb.append("ThemeDisplay: {\n");
+		printWriter.print("ThemeDisplay: {\n");
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -576,34 +588,39 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 		Layout layout = themeDisplay.getLayout();
 
 		if (layout != null) {
-			_renderMethod("getLayoutId", sb, layout.getLayoutId());
+			_renderMethod("getLayoutId", printWriter, layout.getLayoutId());
 
 			Layout controlPanelLayout = themeDisplay.getControlPanelLayout();
 
 			_renderMethod(
-				"getLayoutRelativeControlPanelURL", sb,
+				"getLayoutRelativeControlPanelURL", printWriter,
 				_portal.getLayoutRelativeURL(
 					new VirtualLayout(
 						controlPanelLayout, themeDisplay.getScopeGroup()),
 					themeDisplay));
 
 			_renderMethod(
-				"getLayoutRelativeURL", sb,
+				"getLayoutRelativeURL", printWriter,
 				_portal.getLayoutRelativeURL(layout, themeDisplay));
 			_renderMethod(
-				"getLayoutURL", sb, _portal.getLayoutURL(layout, themeDisplay));
-			_renderMethod("getParentLayoutId", sb, layout.getParentLayoutId());
+				"getLayoutURL", printWriter,
+				_portal.getLayoutURL(layout, themeDisplay));
 			_renderMethod(
-				"getPathFriendlyURLPublic", sb,
+				"getParentLayoutId", printWriter, layout.getParentLayoutId());
+			_renderMethod(
+				"getPathFriendlyURLPublic", printWriter,
 				_portal.getPathFriendlyURLPublic());
-			_renderMethod("isControlPanel", sb, layout.isTypeControlPanel());
-			_renderMethod("isPrivateLayout", sb, layout.isPrivateLayout());
 			_renderMethod(
-				"isVirtualLayout", sb, layout instanceof VirtualLayout);
+				"isControlPanel", printWriter, layout.isTypeControlPanel());
+			_renderMethod(
+				"isPrivateLayout", printWriter, layout.isPrivateLayout());
+			_renderMethod(
+				"isVirtualLayout", printWriter,
+				layout instanceof VirtualLayout);
 		}
 
 		_renderMethod(
-			"getBCP47LanguageId", sb,
+			"getBCP47LanguageId", printWriter,
 			_language.getBCP47LanguageId(httpServletRequest));
 
 		String completeURL = _portal.getCurrentCompleteURL(httpServletRequest);
@@ -616,191 +633,214 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 				themeDisplay);
 
 		_renderMethod(
-			"getCanonicalURL", sb, HtmlUtil.escapeJS(layoutSEOLink.getHref()));
+			"getCanonicalURL", printWriter,
+			HtmlUtil.escapeJS(layoutSEOLink.getHref()));
 
-		_renderMethod("getCDNBaseURL", sb, themeDisplay.getCDNBaseURL());
 		_renderMethod(
-			"getCDNDynamicResourcesHost", sb,
+			"getCDNBaseURL", printWriter, themeDisplay.getCDNBaseURL());
+		_renderMethod(
+			"getCDNDynamicResourcesHost", printWriter,
 			themeDisplay.getCDNDynamicResourcesHost());
-		_renderMethod("getCDNHost", sb, themeDisplay.getCDNHost());
+		_renderMethod("getCDNHost", printWriter, themeDisplay.getCDNHost());
 		_renderMethod(
-			"getCompanyGroupId", sb, themeDisplay.getCompanyGroupId());
-		_renderMethod("getCompanyId", sb, themeDisplay.getCompanyId());
+			"getCompanyGroupId", printWriter, themeDisplay.getCompanyGroupId());
+		_renderMethod("getCompanyId", printWriter, themeDisplay.getCompanyId());
 		_renderMethod(
-			"getDefaultLanguageId", sb,
+			"getDefaultLanguageId", printWriter,
 			LocaleUtil.toLanguageId(themeDisplay.getSiteDefaultLocale()));
 		_renderMethod(
-			"getDoAsUserIdEncoded", sb,
+			"getDoAsUserIdEncoded", printWriter,
 			UnicodeFormatter.toString(themeDisplay.getDoAsUserId()));
 		_renderMethod(
-			"getLanguageId", sb, _language.getLanguageId(httpServletRequest));
-		_renderMethod("getParentGroupId", sb, themeDisplay.getSiteGroupId());
+			"getLanguageId", printWriter,
+			_language.getLanguageId(httpServletRequest));
 		_renderMethod(
-			"getParentSiteGroupId", sb, themeDisplay.getParentSiteGroupId());
-		_renderMethod("getPathContext", sb, themeDisplay.getPathContext());
-		_renderMethod("getPathImage", sb, themeDisplay.getPathImage());
+			"getParentGroupId", printWriter, themeDisplay.getSiteGroupId());
 		_renderMethod(
-			"getPathJavaScript", sb, themeDisplay.getPathJavaScript());
-		_renderMethod("getPathMain", sb, themeDisplay.getPathMain());
+			"getParentSiteGroupId", printWriter,
+			themeDisplay.getParentSiteGroupId());
 		_renderMethod(
-			"getPathThemeEmptyStatesSpritemap", sb,
+			"getPathContext", printWriter, themeDisplay.getPathContext());
+		_renderMethod("getPathImage", printWriter, themeDisplay.getPathImage());
+		_renderMethod(
+			"getPathJavaScript", printWriter, themeDisplay.getPathJavaScript());
+		_renderMethod("getPathMain", printWriter, themeDisplay.getPathMain());
+		_renderMethod(
+			"getPathThemeEmptyStatesSpritemap", printWriter,
 			themeDisplay.getPathThemeEmptyStatesSpritemap());
 		_renderMethod(
-			"getPathThemeImages", sb, themeDisplay.getPathThemeImages());
-		_renderMethod("getPathThemeRoot", sb, themeDisplay.getPathThemeRoot());
-		_renderMethod("getPlid", sb, themeDisplay.getPlid());
-		_renderMethod("getPortalURL", sb, themeDisplay.getPortalURL());
-		_renderMethod("getRealUserId", sb, themeDisplay.getRealUserId());
+			"getPathThemeImages", printWriter,
+			themeDisplay.getPathThemeImages());
+		_renderMethod(
+			"getPathThemeRoot", printWriter, themeDisplay.getPathThemeRoot());
+		_renderMethod("getPlid", printWriter, themeDisplay.getPlid());
+		_renderMethod("getPortalURL", printWriter, themeDisplay.getPortalURL());
+		_renderMethod(
+			"getRealUserId", printWriter, themeDisplay.getRealUserId());
 
 		if (liferayGlobalObjectConfiguration.disableGetRemoteMethods()) {
-			_renderDisabledMethod("getRemoteAddr", sb);
-			_renderDisabledMethod("getRemoteHost", sb);
+			_renderDisabledMethod("getRemoteAddr", printWriter);
+			_renderDisabledMethod("getRemoteHost", printWriter);
 		}
 		else {
-			_renderMethod("getRemoteAddr", sb, themeDisplay.getRemoteAddr());
-			_renderMethod("getRemoteHost", sb, themeDisplay.getRemoteHost());
+			_renderMethod(
+				"getRemoteAddr", printWriter, themeDisplay.getRemoteAddr());
+			_renderMethod(
+				"getRemoteHost", printWriter, themeDisplay.getRemoteHost());
 		}
 
 		Group scopeGroup = themeDisplay.getScopeGroup();
 
-		_renderMethod("getScopeGroupId", sb, scopeGroup.getGroupId());
+		_renderMethod("getScopeGroupId", printWriter, scopeGroup.getGroupId());
 
 		Group liveGroup = _staging.getLiveGroup(scopeGroup);
 
 		_renderMethod(
-			"getScopeGroupIdOrLiveGroupId", sb, liveGroup.getGroupId());
+			"getScopeGroupIdOrLiveGroupId", printWriter,
+			liveGroup.getGroupId());
 
 		HttpSession httpSession = httpServletRequest.getSession(true);
 
 		_renderMethod(
-			"getSessionId", sb,
+			"getSessionId", printWriter,
 			PropsValues.SESSION_ENABLE_URL_WITH_SESSION_ID ?
 				httpSession.getId() : StringPool.BLANK);
 
 		_renderMethod(
-			"getSiteAdminURL", sb,
+			"getSiteAdminURL", printWriter,
 			_portal.getSiteAdminURL(themeDisplay, StringPool.BLANK, null));
-		_renderMethod("getSiteGroupId", sb, themeDisplay.getSiteGroupId());
+		_renderMethod(
+			"getSiteGroupId", printWriter, themeDisplay.getSiteGroupId());
 
 		TimeZone timeZone = themeDisplay.getTimeZone();
 
 		if (timeZone != null) {
-			_renderMethod("getTimeZone", sb, timeZone.getID());
+			_renderMethod("getTimeZone", printWriter, timeZone.getID());
 		}
 		else {
 			TimeZone defaultTimeZone = TimeZone.getDefault();
 
-			_renderMethod("getTimeZone", sb, defaultTimeZone.getID());
+			_renderMethod("getTimeZone", printWriter, defaultTimeZone.getID());
 		}
 
 		_renderMethod(
-			"getURLControlPanel", sb, themeDisplay.getURLControlPanel());
+			"getURLControlPanel", printWriter,
+			themeDisplay.getURLControlPanel());
 		_renderMethod(
-			"getURLHome", sb, HtmlUtil.escapeJS(themeDisplay.getURLHome()));
+			"getURLHome", printWriter,
+			HtmlUtil.escapeJS(themeDisplay.getURLHome()));
 
 		User user = themeDisplay.getUser();
 
 		_renderMethod(
-			"getUserEmailAddress", sb,
+			"getUserEmailAddress", printWriter,
 			themeDisplay.isSignedIn() ?
 				HtmlUtil.escapeJS(user.getEmailAddress()) : StringPool.BLANK);
 
-		_renderMethod("getUserId", sb, themeDisplay.getUserId());
+		_renderMethod("getUserId", printWriter, themeDisplay.getUserId());
 		_renderMethod(
-			"getUserName", sb,
+			"getUserName", printWriter,
 			themeDisplay.isSignedIn() ?
 				UnicodeFormatter.toString(user.getFullName()) :
 					StringPool.BLANK);
 		_renderMethod(
-			"isAddSessionIdToURL", sb, themeDisplay.isAddSessionIdToURL());
-		_renderMethod("isImpersonated", sb, themeDisplay.isImpersonated());
-		_renderMethod("isSignedIn", sb, themeDisplay.isSignedIn());
+			"isAddSessionIdToURL", printWriter,
+			themeDisplay.isAddSessionIdToURL());
 		_renderMethod(
-			"isStagedPortlet", sb,
+			"isImpersonated", printWriter, themeDisplay.isImpersonated());
+		_renderMethod("isSignedIn", printWriter, themeDisplay.isSignedIn());
+		_renderMethod(
+			"isStagedPortlet", printWriter,
 			Validator.isNotNull(themeDisplay.getPpid()) ?
 				liveGroup.isStagedPortlet(themeDisplay.getPpid()) : false);
-		_renderMethod("isStateExclusive", sb, themeDisplay.isStateExclusive());
-		_renderMethod("isStateMaximized", sb, themeDisplay.isStateMaximized());
-		_renderMethod("isStatePopUp", sb, themeDisplay.isStatePopUp());
+		_renderMethod(
+			"isStateExclusive", printWriter, themeDisplay.isStateExclusive());
+		_renderMethod(
+			"isStateMaximized", printWriter, themeDisplay.isStateMaximized());
+		_renderMethod("isStatePopUp", printWriter, themeDisplay.isStatePopUp());
 
-		sb.append("},\n");
+		printWriter.print("},\n");
 	}
 
-	private void _renderLiferayUtil(StringBundler sb) {
-		sb.append("Util: {\n");
-		sb.append(_TPL_WINDOW_JS);
-		sb.append(StringPool.NEW_LINE);
+	private void _renderLiferayUtil(PrintWriter printWriter) {
+		printWriter.print("Util: {\n");
+		printWriter.print(_TPL_WINDOW_JS);
+		printWriter.print(StringPool.NEW_LINE);
 
 		_renderStub(
-			"frontend-js-components-web", "openAlertModal", sb,
+			"frontend-js-components-web", "openAlertModal", printWriter,
 			"openAlertModal");
 		_renderStub(
-			"frontend-js-components-web", "openConfirmModal", sb,
+			"frontend-js-components-web", "openConfirmModal", printWriter,
 			"openConfirmModal");
-		_renderStub("frontend-js-components-web", "openModal", sb, "openModal");
 		_renderStub(
-			"frontend-js-components-web", "openSelectionModal", sb,
+			"frontend-js-components-web", "openModal", printWriter,
+			"openModal");
+		_renderStub(
+			"frontend-js-components-web", "openSelectionModal", printWriter,
 			"openSelectionModal");
 		_renderStub(
-			"frontend-js-components-web", "openSimpleInputModal", sb,
+			"frontend-js-components-web", "openSimpleInputModal", printWriter,
 			"openSimpleInputModal");
-		_renderStub("frontend-js-components-web", "openToast", sb, "openToast");
+		_renderStub(
+			"frontend-js-components-web", "openToast", printWriter,
+			"openToast");
 
-		sb.append("},\n");
+		printWriter.print("},\n");
 	}
 
 	private void _renderMethod(
-		String methodName, StringBundler sb, Object value) {
+		String methodName, PrintWriter printWriter, Object value) {
 
-		sb.append(methodName);
-		sb.append(": () => ");
+		printWriter.print(methodName);
+		printWriter.print(": () => ");
 
 		if (value == null) {
-			sb.append("null");
+			printWriter.print("null");
 		}
 		else if (value instanceof Number || value instanceof String) {
-			sb.append(StringPool.APOSTROPHE);
-			sb.append(value);
-			sb.append(StringPool.APOSTROPHE);
+			printWriter.print(StringPool.APOSTROPHE);
+			printWriter.print(value);
+			printWriter.print(StringPool.APOSTROPHE);
 		}
 		else {
-			sb.append(value);
+			printWriter.print(value);
 		}
 
-		sb.append(",\n");
+		printWriter.print(",\n");
 	}
 
 	private void _renderStub(
-		String contextPath, String methodName, StringBundler sb,
+		String contextPath, String methodName, PrintWriter printWriter,
 		String symbol) {
 
-		sb.append(methodName);
-		sb.append(": buildESMStub('");
-		sb.append(contextPath);
-		sb.append("', '");
-		sb.append(symbol);
-		sb.append("'),\n");
+		printWriter.print(methodName);
+		printWriter.print(": buildESMStub('");
+		printWriter.print(contextPath);
+		printWriter.print("', '");
+		printWriter.print(symbol);
+		printWriter.print("'),\n");
 	}
 
 	private void _renderValue(
-		String fieldName, StringBundler sb, Object value) {
+		String fieldName, PrintWriter printWriter, Object value) {
 
-		sb.append(fieldName);
-		sb.append(": ");
+		printWriter.print(fieldName);
+		printWriter.print(": ");
 
 		if (value == null) {
-			sb.append("null");
+			printWriter.print("null");
 		}
 		else if (value instanceof String) {
-			sb.append(StringPool.APOSTROPHE);
-			sb.append((String)value);
-			sb.append(StringPool.APOSTROPHE);
+			printWriter.print(StringPool.APOSTROPHE);
+			printWriter.print((String)value);
+			printWriter.print(StringPool.APOSTROPHE);
 		}
 		else {
-			sb.append(value);
+			printWriter.print(value);
 		}
 
-		sb.append(",\n");
+		printWriter.print(",\n");
 	}
 
 	private static final char[] _DATE_DELIMITERS = {
