@@ -10,7 +10,6 @@ import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
 import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -125,11 +124,12 @@ public class ResponsiveLayoutStructureUtil {
 		String propertyName, Object defaultValue) {
 
 		JSONObject viewportConfigurationJSONObject =
-			viewportConfigurationJSONObjects.getOrDefault(
-				currentViewportSize.getViewportSizeId(),
-				JSONFactoryUtil.createJSONObject());
+			viewportConfigurationJSONObjects.get(
+				currentViewportSize.getViewportSizeId());
 
-		if (viewportConfigurationJSONObject.has(propertyName)) {
+		if ((viewportConfigurationJSONObject != null) &&
+			viewportConfigurationJSONObject.has(propertyName)) {
+
 			return viewportConfigurationJSONObject.get(propertyName);
 		}
 
@@ -139,11 +139,12 @@ public class ResponsiveLayoutStructureUtil {
 			}
 
 			viewportConfigurationJSONObject =
-				viewportConfigurationJSONObjects.getOrDefault(
-					viewportSize.getViewportSizeId(),
-					JSONFactoryUtil.createJSONObject());
+				viewportConfigurationJSONObjects.get(
+					viewportSize.getViewportSizeId());
 
-			if (viewportConfigurationJSONObject.has(propertyName)) {
+			if ((viewportConfigurationJSONObject != null) &&
+				viewportConfigurationJSONObject.has(propertyName)) {
+
 				return viewportConfigurationJSONObject.get(propertyName);
 			}
 		}
