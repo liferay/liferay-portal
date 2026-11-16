@@ -4,11 +4,18 @@
  */
 
 import '@testing-library/jest-dom';
-import {render} from '@testing-library/react';
-import React from 'react';
+import {act, render} from '@testing-library/react';
+import {openToast} from 'frontend-js-components-web';
+import React, {useContext, useEffect} from 'react';
 
+import {DefinitionBuilderContext} from '../../../../../../../src/main/resources/META-INF/resources/designer/js/definition-builder/DefinitionBuilderContext';
 import UpperToolbar from '../../../../../../../src/main/resources/META-INF/resources/designer/js/definition-builder/shared/components/toolbar/UpperToolbar';
 import MockDefinitionBuilderContext from '../../../../../../mock/MockDefinitionBuilderContext';
+
+jest.mock('frontend-js-components-web', () => ({
+	...jest.requireActual('frontend-js-components-web'),
+	openToast: jest.fn(),
+}));
 
 const props = {
 	displayNames: ['English (United States)'],
@@ -31,6 +38,10 @@ describe('The UpperToolbar component should', () => {
 		container = renderResult.container;
 	});
 
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
 	it('Be rendered with all buttons and title input', () => {
 		const tbarItems = container.querySelectorAll('li.tbar-item');
 
@@ -51,5 +62,59 @@ describe('The UpperToolbar component should', () => {
 		);
 
 		expect(sourceButton).toBeTruthy();
+	});
+
+	it('Clear only the blocking error that opened a closed toast', () => {
+		let definitionBuilderContext;
+
+		const ContextSpy = () => {
+			const context = useContext(DefinitionBuilderContext);
+
+			useEffect(() => {
+				definitionBuilderContext = context;
+			});
+
+			return null;
+		};
+
+		render(
+			<MockDefinitionBuilderContext>
+				<UpperToolbar {...props} />
+
+				<ContextSpy />
+			</MockDefinitionBuilderContext>
+		);
+
+		act(() => {
+			definitionBuilderContext.setBlockingError({
+				errorMessage: 'older',
+				errorType: 'assignment',
+			});
+		});
+
+		const newerBlockingError = {
+			errorMessage: 'newer',
+			errorType: 'invalidXML',
+		};
+
+		act(() => {
+			definitionBuilderContext.setBlockingError(newerBlockingError);
+		});
+
+		const [[olderToast], [newerToast]] = openToast.mock.calls;
+
+		act(() => {
+			olderToast.onClose();
+		});
+
+		expect(definitionBuilderContext.blockingError).toBe(newerBlockingError);
+
+		act(() => {
+			newerToast.onClose();
+		});
+
+		expect(definitionBuilderContext.blockingError).toEqual({
+			errorType: '',
+		});
 	});
 });
