@@ -2450,6 +2450,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		_recentLayoutSetBranchLocalService.deleteUserRecentLayoutSetBranches(
 			user.getUserId());
 
+		// Remember me tokens
+
 		_rememberMeTokenLocalService.deleteUserRememberMeTokens(
 			user.getUserId());
 
