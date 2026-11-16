@@ -8,6 +8,7 @@ package com.liferay.message.boards.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.message.boards.constants.MBCategoryConstants;
 import com.liferay.message.boards.constants.MBMessageConstants;
+import com.liferay.message.boards.exception.NoSuchMessageException;
 import com.liferay.message.boards.model.MBCategory;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.service.MBBanLocalServiceUtil;
@@ -17,6 +18,7 @@ import com.liferay.message.boards.service.MBMessageServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
+import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -25,6 +27,7 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.ServiceTestConstants;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -275,6 +278,120 @@ public class MBMessageServiceTest {
 					_group.getGroupId(), _category.getCategoryId(),
 					WorkflowConstants.STATUS_APPROVED));
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-115514")
+	public void testGetChildMessages() throws Exception {
+		MBMessage mbMessage = _addMessage();
+
+		List<MBMessage> mbMessages = MBMessageServiceUtil.getChildMessages(
+			mbMessage.getMessageId(), false,
+			new QueryDefinition<>(WorkflowConstants.STATUS_ANY));
+
+		Assert.assertEquals(mbMessages.toString(), 2, mbMessages.size());
+
+		User user = _users[0];
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			mbMessages = MBMessageServiceUtil.getChildMessages(
+				mbMessage.getMessageId(), false,
+				new QueryDefinition<>(WorkflowConstants.STATUS_ANY));
+
+			Assert.assertEquals(mbMessages.toString(), 1, mbMessages.size());
+
+			MBMessage childMBMessage = mbMessages.get(0);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_APPROVED, childMBMessage.getStatus());
+		}
+
+		_user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			Assert.assertThrows(
+				NoSuchMessageException.class,
+				() -> MBMessageServiceUtil.getChildMessages(
+					MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID, false,
+					new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> MBMessageServiceUtil.getChildMessages(
+					mbMessage.getMessageId(), false,
+					new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-115514")
+	public void testGetChildMessagesCount() throws Exception {
+		MBMessage mbMessage = _addMessage();
+
+		Assert.assertEquals(
+			2,
+			MBMessageServiceUtil.getChildMessagesCount(
+				mbMessage.getMessageId(), false,
+				new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+
+		User user = _users[0];
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertEquals(
+				1,
+				MBMessageServiceUtil.getChildMessagesCount(
+					mbMessage.getMessageId(), false,
+					new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+		}
+
+		_user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			Assert.assertThrows(
+				NoSuchMessageException.class,
+				() -> MBMessageServiceUtil.getChildMessagesCount(
+					MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID, false,
+					new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> MBMessageServiceUtil.getChildMessagesCount(
+					mbMessage.getMessageId(), false,
+					new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
+		}
+	}
+
+	private MBMessage _addMessage() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setAddGuestPermissions(false);
+
+		MBMessage mbMessage = MBMessageServiceUtil.addMessage(
+			_group.getGroupId(), _category.getCategoryId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			MBMessageConstants.DEFAULT_FORMAT, new ArrayList<>(), false, 0.0,
+			false, serviceContext);
+
+		MBMessageServiceUtil.addMessage(
+			null, mbMessage.getMessageId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), MBMessageConstants.DEFAULT_FORMAT,
+			new ArrayList<>(), false, 0.0, false, serviceContext);
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		MBMessageServiceUtil.addMessage(
+			null, mbMessage.getMessageId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), MBMessageConstants.DEFAULT_FORMAT,
+			new ArrayList<>(), false, 0.0, false, serviceContext);
+
+		return mbMessage;
 	}
 
 	private MBCategory _category;
