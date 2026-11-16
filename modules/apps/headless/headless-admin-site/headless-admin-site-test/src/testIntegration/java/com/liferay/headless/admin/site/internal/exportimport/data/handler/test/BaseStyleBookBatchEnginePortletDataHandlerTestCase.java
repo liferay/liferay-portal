@@ -775,15 +775,15 @@ public abstract class BaseStyleBookBatchEnginePortletDataHandlerTestCase
 		throws Exception {
 
 		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
-			styleBookEntry.getGroupId(), RandomTestUtil.randomString(),
+			styleBookEntry.getGroupId(), StyleBookPortletKeys.STYLE_BOOK,
 			ServiceContextTestUtil.getServiceContext(
 				styleBookEntry.getGroupId(), TestPropsValues.getUserId()));
 
 		return PortletFileRepositoryUtil.addPortletFileEntry(
 			null, styleBookEntry.getGroupId(), TestPropsValues.getUserId(),
 			StyleBookEntry.class.getName(),
-			styleBookEntry.getStyleBookEntryId(), RandomTestUtil.randomString(),
-			repository.getDlFolderId(),
+			styleBookEntry.getStyleBookEntryId(),
+			StyleBookPortletKeys.STYLE_BOOK, repository.getDlFolderId(),
 			new UnsyncByteArrayInputStream(RandomTestUtil.randomBytes()),
 			RandomTestUtil.randomString(), ContentTypes.IMAGE_PNG, false);
 	}

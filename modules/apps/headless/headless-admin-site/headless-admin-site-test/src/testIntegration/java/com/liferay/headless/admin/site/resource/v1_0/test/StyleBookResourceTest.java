@@ -22,6 +22,9 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
+import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -29,6 +32,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -47,6 +51,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -58,10 +63,14 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.style.book.constants.StyleBookConstants;
+import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.test.util.FrontendTokenDefinitionTestUtil;
 import com.liferay.style.book.util.StyleBookUtil;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -142,6 +151,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		_testGetSiteStyleBookForNonexistingStyleBook();
 		_testGetSiteStyleBookWithDeletedPreviewFileEntry();
 		_testGetSiteStyleBookWithDesignLibraryExternalReferenceCode();
+		_testGetSiteStyleBookWithIrrelevantPreviewFileEntry();
 		_testGetSiteStyleBookWithStagedSite();
 	}
 
@@ -956,6 +966,58 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			() -> styleBookResource.getSiteStyleBook(
 				_getDesignLibraryExternalReferenceCode(),
 				styleBook.getExternalReferenceCode()));
+	}
+
+	private void _testGetSiteStyleBookWithIrrelevantPreviewFileEntry()
+		throws Exception {
+
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId());
+
+		PortletFileRepositoryUtil.addPortletRepository(
+			testGroup.getGroupId(), StyleBookPortletKeys.STYLE_BOOK,
+			serviceContext);
+
+		String portletId = RandomTestUtil.randomString();
+
+		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
+			testGroup.getGroupId(), portletId, serviceContext);
+
+		FileEntry fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
+			testGroup.getGroupId(), TestPropsValues.getUserId(),
+			StyleBookEntry.class.getName(),
+			styleBookEntry.getStyleBookEntryId(), portletId,
+			repository.getDlFolderId(), RandomTestUtil.randomBytes(),
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			false);
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"update StyleBookEntry set previewFileEntryId = ? where " +
+					"styleBookEntryId = ?")) {
+
+			preparedStatement.setLong(1, fileEntry.getFileEntryId());
+			preparedStatement.setLong(2, styleBookEntry.getStyleBookEntryId());
+
+			preparedStatement.executeUpdate();
+		}
+
+		EntityCacheUtil.clearCache();
+		FinderCacheUtil.clearCache();
+
+		StyleBookResource styleBookResource = _getStyleBookResource();
+
+		StyleBook styleBook = styleBookResource.getSiteStyleBook(
+			testGroup.getExternalReferenceCode(),
+			styleBookEntry.getExternalReferenceCode());
+
+		Assert.assertNull(styleBook.getThumbnailURLReference());
 	}
 
 	private void _testGetSiteStyleBookWithStagedSite() throws Exception {

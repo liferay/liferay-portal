@@ -12,8 +12,11 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -23,13 +26,16 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.style.book.constants.StyleBookActionKeys;
+import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.exception.NoSuchEntryException;
+import com.liferay.style.book.exception.StyleBookEntryFileException;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.service.StyleBookEntryService;
@@ -143,6 +149,55 @@ public class StyleBookEntryServiceTest {
 			Assert.fail();
 		}
 		catch (PrincipalException principalException) {
+		}
+		finally {
+			UserTestUtil.setUser(TestPropsValues.getUser());
+		}
+	}
+
+	@Test
+	public void testCopyStyleBookEntry() throws Exception {
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryService.addStyleBookEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(), _serviceContext);
+
+		_irrelevantGroup = GroupTestUtil.addGroup();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_irrelevantGroup, TestPropsValues.getUserId());
+
+		StyleBookEntry irrelevantStyleBookEntry =
+			_styleBookEntryService.addStyleBookEntry(
+				RandomTestUtil.randomString(), _irrelevantGroup.getGroupId(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(), serviceContext);
+
+		UserTestUtil.setUser(
+			UserTestUtil.addGroupUser(
+				_group, RoleConstants.SITE_ADMINISTRATOR));
+
+		try {
+			StyleBookEntry copyStyleBookEntry =
+				_styleBookEntryService.copyStyleBookEntry(
+					_group.getGroupId(), styleBookEntry.getStyleBookEntryId(),
+					_serviceContext);
+
+			Assert.assertEquals(
+				_group.getGroupId(), copyStyleBookEntry.getGroupId());
+
+			try {
+				_styleBookEntryService.copyStyleBookEntry(
+					_group.getGroupId(),
+					irrelevantStyleBookEntry.getStyleBookEntryId(),
+					_serviceContext);
+
+				Assert.fail();
+			}
+			catch (PrincipalException principalException) {
+			}
 		}
 		finally {
 			UserTestUtil.setUser(TestPropsValues.getUser());
@@ -301,6 +356,61 @@ public class StyleBookEntryServiceTest {
 			styleBookEntry.getFrontendTokenDefinition());
 	}
 
+	@Test
+	public void testUpdatePreviewFileEntryId() throws Exception {
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryService.addStyleBookEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(), _serviceContext);
+
+		PortletFileRepositoryUtil.addPortletRepository(
+			_group.getGroupId(), StyleBookPortletKeys.STYLE_BOOK,
+			_serviceContext);
+
+		_irrelevantGroup = GroupTestUtil.addGroup();
+
+		FileEntry fileEntry = _addFileEntry(
+			_irrelevantGroup, StyleBookPortletKeys.STYLE_BOOK);
+
+		_assertUpdateWithInvalidPreviewFileEntryId(
+			fileEntry.getFileEntryId(), styleBookEntry);
+
+		fileEntry = _addFileEntry(_group, RandomTestUtil.randomString());
+
+		_assertUpdateWithInvalidPreviewFileEntryId(
+			fileEntry.getFileEntryId(), styleBookEntry);
+
+		_assertUpdateWithInvalidPreviewFileEntryId(
+			RandomTestUtil.nextLong(), styleBookEntry);
+
+		fileEntry = _addFileEntry(_group, StyleBookPortletKeys.STYLE_BOOK);
+
+		styleBookEntry = _styleBookEntryService.updatePreviewFileEntryId(
+			styleBookEntry.getStyleBookEntryId(), fileEntry.getFileEntryId(),
+			_serviceContext);
+
+		Assert.assertEquals(
+			fileEntry.getFileEntryId(), styleBookEntry.getPreviewFileEntryId());
+	}
+
+	private FileEntry _addFileEntry(Group group, String portletId)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group, TestPropsValues.getUserId());
+
+		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
+			group.getGroupId(), portletId, serviceContext);
+
+		return PortletFileRepositoryUtil.addPortletFileEntry(
+			group.getGroupId(), TestPropsValues.getUserId(),
+			StyleBookEntry.class.getName(), 0, portletId,
+			repository.getDlFolderId(), RandomTestUtil.randomBytes(),
+			RandomTestUtil.randomString(), ContentTypes.IMAGE_PNG, false);
+	}
+
 	private void _assertDeleteStyleBookEntryWithoutPermission(
 			String externalReferenceCode)
 		throws Exception {
@@ -315,11 +425,44 @@ public class StyleBookEntryServiceTest {
 		}
 	}
 
+	private void _assertUpdateWithInvalidPreviewFileEntryId(
+			long previewFileEntryId, StyleBookEntry styleBookEntry)
+		throws Exception {
+
+		try {
+			_styleBookEntryService.updatePreviewFileEntryId(
+				styleBookEntry.getStyleBookEntryId(), previewFileEntryId,
+				_serviceContext);
+
+			Assert.fail();
+		}
+		catch (StyleBookEntryFileException styleBookEntryFileException) {
+		}
+
+		try {
+			_styleBookEntryService.updateStyleBookEntry(
+				styleBookEntry.getStyleBookEntryId(),
+				styleBookEntry.isDefaultStyleBookEntry(),
+				styleBookEntry.getFrontendTokenDefinition(),
+				styleBookEntry.getFrontendTokensValues(),
+				styleBookEntry.getName(), styleBookEntry.getStyleBookEntryKey(),
+				previewFileEntryId, styleBookEntry.getThemeId(),
+				_serviceContext);
+
+			Assert.fail();
+		}
+		catch (StyleBookEntryFileException styleBookEntryFileException) {
+		}
+	}
+
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@DeleteAfterTestRun
+	private Group _irrelevantGroup;
 
 	private ServiceContext _serviceContext;
 
