@@ -175,6 +175,10 @@ public class MBDiscussionPermissionImpl extends BaseDiscussionPermission {
 			String actionId)
 		throws ConfigurationException {
 
+		if (!message.isDiscussion()) {
+			return false;
+		}
+
 		String className = message.getClassName();
 
 		if (className.equals(WorkflowInstance.class.getName())) {
