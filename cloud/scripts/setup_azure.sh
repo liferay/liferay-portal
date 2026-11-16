@@ -26,7 +26,7 @@ function main {
 
 	validate_setup_values "azure" "${configuration_json_file}"
 
-	TF_VAR_database_engine=$(get_terraform_database_engine "${configuration_json_file}")
+	TF_VAR_database_engine=$(get_database_engine "${configuration_json_file}")
 
 	export TF_VAR_database_engine
 

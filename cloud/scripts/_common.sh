@@ -62,7 +62,7 @@ function confirm_teardown {
 	fi
 }
 
-function get_terraform_database_engine {
+function get_database_engine {
 	jq --raw-output '.setup.database.engine // empty' "${1}"
 }
 

@@ -24,7 +24,7 @@ function main {
 
 	configuration_json_file=$(resolve_config_json "${1}")
 
-	TF_VAR_database_engine=$(get_terraform_database_engine "${configuration_json_file}")
+	TF_VAR_database_engine=$(get_database_engine "${configuration_json_file}")
 
 	export TF_VAR_database_engine
 
