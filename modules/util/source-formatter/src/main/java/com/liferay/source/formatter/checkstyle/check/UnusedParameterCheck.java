@@ -61,10 +61,10 @@ public class UnusedParameterCheck extends BaseCheck {
 			return;
 		}
 
-		List<String> parameterNames = getParameterNames(
+		List<DetailAST> parameterDefinitionDetailASTs = getParameterDefs(
 			constructorOrMethodDetailAST);
 
-		if (parameterNames.isEmpty()) {
+		if (parameterDefinitionDetailASTs.isEmpty()) {
 			return;
 		}
 
@@ -80,7 +80,7 @@ public class UnusedParameterCheck extends BaseCheck {
 		List<String> names = getNames(statementsDetailAST, true);
 
 		for (DetailAST parameterDefinitionDetailAST :
-				getParameterDefs(constructorOrMethodDetailAST)) {
+				parameterDefinitionDetailASTs) {
 
 			String parameterName = getName(parameterDefinitionDetailAST);
 
