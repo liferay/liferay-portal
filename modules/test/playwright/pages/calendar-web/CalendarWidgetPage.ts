@@ -119,7 +119,7 @@ export class CalendarWidgetPage {
 			.last();
 		this.eventDetailsWorkflowStatus = page
 			.frameLocator('iframe')
-			.locator('.panel-body .workflow-value');
+			.locator('.property-list .label');
 		this.hideSidebarIcon = page.locator(
 			'.calendar-portlet-column-toggler .lexicon-icon-caret-left'
 		);
