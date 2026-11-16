@@ -32,6 +32,7 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -231,6 +232,43 @@ public class ContentObjectFragmentRendererTest {
 		Assert.assertTrue(
 			html.contains(
 				_journalArticle.getTitle(LocaleUtil.getSiteDefault())));
+	}
+
+	@Test
+	@TestInfo("LPD-115671")
+	public void testRenderContentWithDefaultTemplateInViewMode()
+		throws Exception {
+
+		String content = RandomTestUtil.randomString();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(), RandomTestUtil.randomString(), content);
+
+		Layout draftLayout = _layout.fetchDraftLayout();
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid());
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			_addFragmentEntryLink(
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						"itemSelector",
+						_getItemSelectorJSONObject(journalArticle))
+				).toString(),
+				draftLayout.getPlid()),
+			draftLayout, null, 0, segmentsExperienceId);
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, _layout);
+
+		String html = ContentLayoutTestUtil.getRenderLayoutHTML(
+			_layout, _layoutServiceContextHelper, _layoutStructureProvider,
+			segmentsExperienceId);
+
+		Assert.assertTrue(html.contains(content));
 	}
 
 	@Test
@@ -452,19 +490,8 @@ public class ContentObjectFragmentRendererTest {
 					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
 				JSONUtil.put(
 					"itemSelector",
-					JSONUtil.put(
-						"className", JournalArticle.class.getName()
-					).put(
-						"classNameId",
-						String.valueOf(
-							_portal.getClassNameId(
-								JournalArticle.class.getName()))
-					).put(
-						"classPK",
-						String.valueOf(journalArticle.getResourcePrimKey())
-					).put(
-						"classTypeId",
-						String.valueOf(journalArticle.getDDMStructureId())
+					_getItemSelectorJSONObject(
+						journalArticle
 					).put(
 						"template",
 						JSONUtil.put(
@@ -522,6 +549,22 @@ public class ContentObjectFragmentRendererTest {
 						)))
 			).toString(),
 			_layout.getPlid());
+	}
+
+	private JSONObject _getItemSelectorJSONObject(
+		JournalArticle journalArticle) {
+
+		return JSONUtil.put(
+			"className", JournalArticle.class.getName()
+		).put(
+			"classNameId",
+			String.valueOf(
+				_portal.getClassNameId(JournalArticle.class.getName()))
+		).put(
+			"classPK", String.valueOf(journalArticle.getResourcePrimKey())
+		).put(
+			"classTypeId", String.valueOf(journalArticle.getDDMStructureId())
+		);
 	}
 
 	private HttpServletRequest _getMockHttpServletRequest() throws Exception {
