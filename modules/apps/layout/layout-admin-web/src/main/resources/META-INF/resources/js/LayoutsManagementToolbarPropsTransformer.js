@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {AIAssistant} from '@liferay/ai-hub-cell-js-components-web';
 import {
 	openConfirmModal,
 	openModal,
@@ -11,6 +12,10 @@ import {
 } from 'frontend-js-components-web';
 import {addParams, fetch, navigate, sub} from 'frontend-js-web';
 
+import {
+	AI_ASSISTANT_TRIGGER_ID,
+	GENERATE_PAGE_CHATBOT_ERC,
+} from './ai_assistant/aiAssistant';
 import openDeleteLayoutModal from './openDeleteLayoutModal';
 
 export default function propsTransformer({portletNamespace, ...otherProps}) {
@@ -152,8 +157,36 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 		);
 	};
 
+	const generatePageWithAI = (itemData) => {
+		AIAssistant.open({
+			anchorId: AI_ASSISTANT_TRIGGER_ID,
+			chatbotExternalReferenceCode: GENERATE_PAGE_CHATBOT_ERC,
+			context: {
+				parentPageExternalReferenceCode:
+					itemData.parentPageExternalReferenceCode,
+				privateLayout: itemData.privateLayout === 'true',
+				siteExternalReferenceCode: itemData.siteExternalReferenceCode,
+			},
+			defaultExpanded: true,
+			initialMessage: Liferay.Language.get('generate-page'),
+			instructionDefinitionScope: '',
+			presentation: 'dropdown',
+			pushContainer: '#main-content',
+			triggerId: AI_ASSISTANT_TRIGGER_ID,
+		});
+	};
+
+	const handleCreation = (item) => {
+		if (item?.data?.action === 'generatePageWithAI') {
+			generatePageWithAI(item.data);
+		}
+	};
+
+	const {creationMenu} = otherProps;
+
 	return {
 		...otherProps,
+		creationMenu: creationMenu && {...creationMenu, closeOnClick: true},
 		onActionButtonClick: (event, {item}) => {
 			const data = item?.data;
 
@@ -171,6 +204,12 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 			else if (action === 'changePermissions') {
 				changePermissions(data);
 			}
+		},
+		onCreateButtonClick: (event, {item}) => {
+			handleCreation(item);
+		},
+		onCreationMenuItemClick: (event, {item}) => {
+			handleCreation(item);
 		},
 	};
 }

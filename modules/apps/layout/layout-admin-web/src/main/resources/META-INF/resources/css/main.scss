@@ -8,6 +8,17 @@
 @import '../js/layout/look_and_feel/GlobalCSSCETsConfiguration';
 @import '../js/layout/look_and_feel/GlobalJSCETsConfiguration';
 
+.dropdown-item.generate-with-ai {
+	color: $purple;
+
+	&.focus,
+	&:focus-visible,
+	&:hover {
+		background-color: $purple-l5;
+		color: $purple;
+	}
+}
+
 .style-book-selector-card {
 	.aspect-ratio {
 		margin-left: 0;
