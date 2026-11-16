@@ -7,7 +7,13 @@ import ClayIcon from '@clayui/icon';
 import ClaySticker from '@clayui/sticker';
 import React from 'react';
 
-export default function ProductSticker({imageURL}: {imageURL?: string | null}) {
+export default function ProductSticker({
+	imageURL,
+	symbol = 'product',
+}: {
+	imageURL?: string | null;
+	symbol?: string;
+}) {
 	return (
 		<ClaySticker
 			className={`c-mr-2 flex-shrink-0 inline-item inline-item-before ${imageURL ? '' : 'content-icon-custom-structure'}`}
@@ -15,7 +21,7 @@ export default function ProductSticker({imageURL}: {imageURL?: string | null}) {
 			{imageURL ? (
 				<ClaySticker.Image alt="" src={imageURL} />
 			) : (
-				<ClayIcon symbol="product" />
+				<ClayIcon symbol={symbol} />
 			)}
 		</ClaySticker>
 	);

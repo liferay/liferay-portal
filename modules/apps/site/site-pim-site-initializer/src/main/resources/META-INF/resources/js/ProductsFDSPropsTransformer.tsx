@@ -6,9 +6,11 @@
 import {
 	ACTIONS,
 	AuthorRenderer,
+	OBJECT_ENTRY_FOLDER_CLASS_NAME,
 	SpaceRendererWithCache,
 	StatusLabel,
 	addOnClickToCreationMenuItems,
+	additionalAPIURLParametersTransformer,
 	deleteAssetEntriesBulkAction,
 	deleteItemAction,
 	executeBulkDeleteAction,
@@ -30,15 +32,31 @@ export default function propsTransformer({
 	itemsActions,
 	...props
 }: {
-	additionalProps?: {brokenLinksCheckerEnabled?: boolean};
+	additionalProps?: {
+		additionalAPIURLParameters?: string;
+		brokenLinksCheckerEnabled?: boolean;
+	};
 	apiURL?: string;
 	bulkActions?: any[];
 	creationMenu: any;
 	id?: string;
 	itemsActions?: any[];
 }) {
+	const {additionalAPIURLParameters, ...remainingAdditionalProps} =
+		additionalProps;
+
+	const apiURL =
+		additionalAPIURLParameters && props.apiURL
+			? `${props.apiURL}${
+					props.apiURL.includes('?') ? '&' : '?'
+				}${additionalAPIURLParameters}`
+			: props.apiURL;
+
 	return {
 		...props,
+		additionalAPIURLParameters,
+		additionalAPIURLParametersTransformer,
+		additionalProps: remainingAdditionalProps,
 		bulkActions: transformFDSBulkActions(bulkActions),
 		creationMenu: creationMenu && {
 			...creationMenu,
@@ -72,21 +90,41 @@ export default function propsTransformer({
 					type: 'internal',
 				},
 				{
-					component: ({itemData, value}: any) => (
-						<StatusLabel
-							expirationDate={
-								itemData?.embedded?.expirationDate ?? undefined
-							}
-							label={value?.label}
-						/>
-					),
+					component: ({itemData, value}: any) => {
+						if (
+							itemData?.entryClassName ===
+							OBJECT_ENTRY_FOLDER_CLASS_NAME
+						) {
+							return '--';
+						}
+
+						return (
+							<StatusLabel
+								expirationDate={
+									itemData?.embedded?.expirationDate ??
+									undefined
+								}
+								label={value?.label}
+							/>
+						);
+					},
 					name: 'statusTableCellRenderer',
 					type: 'internal',
 				},
 			],
 		},
 		hideManagementBarInEmptyState: true,
-		itemsActions: itemsActions?.map(styleDeleteAction),
+		itemsActions: itemsActions?.map((action) => {
+			if (action?.data?.id === 'edit') {
+				return {
+					...action,
+					isVisible: (item: any) =>
+						item?.entryClassName !== OBJECT_ENTRY_FOLDER_CLASS_NAME,
+				};
+			}
+
+			return styleDeleteAction(action);
+		}),
 		async onActionDropdownItemClick({
 			action,
 			event,
@@ -105,7 +143,9 @@ export default function propsTransformer({
 			event?.preventDefault();
 
 			const confirmationMessage = sub(
-				Liferay.Language.get('delete-asset-confirmation-body'),
+				itemData.entryClassName === OBJECT_ENTRY_FOLDER_CLASS_NAME
+					? Liferay.Language.get('delete-folder-confirmation-body')
+					: Liferay.Language.get('delete-asset-confirmation-body'),
 				getFormattedLabel(
 					itemData.title ||
 						itemData.embedded?.title ||
@@ -143,18 +183,18 @@ export default function propsTransformer({
 
 			if (additionalProps.brokenLinksCheckerEnabled) {
 				openAssetUsageListModal({
-					apiURL: props.apiURL,
+					apiURL,
 					itemsData: selectedData.items,
 					onDelete: () => {
 						executeBulkDeleteAction(
-							props.apiURL || '',
+							apiURL || '',
 							props.id || '',
 							selectedData
 						);
 					},
 					onSkip: () => {
 						deleteAssetEntriesBulkAction({
-							apiURL: props.apiURL,
+							apiURL,
 							dataSetId: props.id,
 							selectedData,
 						});
@@ -164,7 +204,7 @@ export default function propsTransformer({
 			}
 			else {
 				deleteAssetEntriesBulkAction({
-					apiURL: props.apiURL,
+					apiURL,
 					dataSetId: props.id,
 					selectedData,
 				});

@@ -16,7 +16,16 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 		href.replace('{embedded.id}', itemData.embedded.id),
 }));
 
+jest.mock('@liferay/site-cms-site-initializer', () => ({
+	OBJECT_ENTRY_FOLDER_CLASS_NAME:
+		'com.liferay.object.model.ObjectEntryFolder',
+}));
+
 const ACTIONS = [
+	{
+		data: {id: 'actionLinkFolder'},
+		href: '/e/view-folder/{embedded.id}',
+	},
 	{
 		data: {id: 'edit'},
 		href: '/edit_content_item?objectEntryId={embedded.id}',
@@ -24,6 +33,25 @@ const ACTIONS = [
 ];
 
 describe('ProductTitleRenderer', () => {
+	it('links the folder title to the folder page', () => {
+		render(
+			<ProductTitleRenderer
+				actions={ACTIONS}
+				itemData={{
+					embedded: {actions: {}, id: '7'},
+					entryClassName:
+						'com.liferay.object.model.ObjectEntryFolder',
+				}}
+				value="Folder A"
+			/>
+		);
+
+		expect(screen.getByRole('link', {name: 'Folder A'})).toHaveAttribute(
+			'href',
+			'/e/view-folder/7'
+		);
+	});
+
 	it('links the product title to the edit page when the user can update', () => {
 		render(
 			<ProductTitleRenderer

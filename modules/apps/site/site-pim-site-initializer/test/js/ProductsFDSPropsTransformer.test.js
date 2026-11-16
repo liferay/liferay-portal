@@ -13,9 +13,12 @@ const mockOpenAssetUsageListModal = jest.fn();
 jest.mock('@liferay/site-cms-site-initializer', () => ({
 	ACTIONS: {},
 	AuthorRenderer: () => null,
+	OBJECT_ENTRY_FOLDER_CLASS_NAME:
+		'com.liferay.object.model.ObjectEntryFolder',
 	SpaceRendererWithCache: () => null,
 	StatusLabel: () => null,
 	addOnClickToCreationMenuItems: (primaryItems) => primaryItems,
+	additionalAPIURLParametersTransformer: () => undefined,
 	deleteAssetEntriesBulkAction: (...args) =>
 		mockDeleteAssetEntriesBulkAction(...args),
 	deleteItemAction: (...args) => mockDeleteItemAction(...args),
@@ -62,6 +65,51 @@ describe('ProductsFDSPropsTransformer', () => {
 
 		expect(result.itemsActions[0].className).toBeUndefined();
 		expect(result.itemsActions[1].className).toBe('text-danger');
+	});
+
+	it('hides the product edit action on folder rows', () => {
+		const result = propsTransformer({
+			itemsActions: [{data: {id: 'edit'}, icon: 'pencil'}],
+		});
+
+		const [editAction] = result.itemsActions;
+
+		expect(
+			editAction.isVisible({
+				entryClassName: 'com.liferay.object.model.ObjectEntryFolder',
+			})
+		).toBe(false);
+		expect(
+			editAction.isVisible({
+				entryClassName: 'com.liferay.object.model.ObjectEntry',
+			})
+		).toBe(true);
+	});
+
+	it('scopes the bulk delete to the folder when the folder page passes its filter', () => {
+		const result = propsTransformer({
+			additionalProps: {
+				additionalAPIURLParameters: 'filter=folderId eq 42',
+			},
+			apiURL: '/o/search/v1.0/search',
+			id: 'products',
+		});
+
+		expect(result.additionalAPIURLParameters).toBe('filter=folderId eq 42');
+		expect(result.additionalProps).toEqual({});
+
+		const selectedData = {items: [{embedded: {id: 1}}], selectAll: true};
+
+		result.onBulkActionItemClick({
+			action: {data: {id: 'delete'}},
+			selectedData,
+		});
+
+		expect(mockDeleteAssetEntriesBulkAction).toHaveBeenCalledWith({
+			apiURL: '/o/search/v1.0/search?filter=folderId eq 42',
+			dataSetId: 'products',
+			selectedData,
+		});
 	});
 
 	it('gates the bulk actions behind the shared permission transform', () => {
@@ -159,6 +207,27 @@ describe('ProductsFDSPropsTransformer', () => {
 			loadData
 		);
 		expect(mockOpenAssetUsageListModal).not.toHaveBeenCalled();
+	});
+
+	it('asks to confirm the deletion of a folder with the folder message', async () => {
+		const itemData = {
+			embedded: {id: 7, title: 'Shoes'},
+			entryClassName: 'com.liferay.object.model.ObjectEntryFolder',
+		};
+		const loadData = jest.fn();
+
+		await propsTransformer({}).onActionDropdownItemClick({
+			action: {data: {id: 'delete'}},
+			event: {preventDefault: jest.fn()},
+			itemData,
+			loadData,
+		});
+
+		expect(mockDeleteItemAction).toHaveBeenCalledWith(
+			'delete-folder-confirmation-body:<strong>Shoes</strong>',
+			itemData,
+			loadData
+		);
 	});
 
 	it('checks the usages of the product before deleting it when the broken links checker is enabled', async () => {

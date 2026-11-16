@@ -5,6 +5,7 @@
 
 import ClayLink from '@clayui/link';
 import {findAction, replaceTokens} from '@liferay/frontend-data-set-web';
+import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from '@liferay/site-cms-site-initializer';
 import React from 'react';
 
 import ProductSticker from './ProductSticker';
@@ -19,17 +20,20 @@ export default function ProductTitleRenderer({
 	itemData: any;
 	value: string;
 }) {
-	const editAction = findAction(actions, 'edit');
+	const folder = itemData?.entryClassName === OBJECT_ENTRY_FOLDER_CLASS_NAME;
+
+	const action = findAction(actions, folder ? 'actionLinkFolder' : 'edit');
 
 	const href =
-		editAction?.href && itemData?.embedded?.actions?.update
-			? replaceTokens(editAction.href, itemData)
+		action?.href && (folder || itemData?.embedded?.actions?.update)
+			? replaceTokens(action.href, itemData)
 			: null;
 
 	return (
 		<span className="align-items-center d-flex table-list-title">
 			<ProductSticker
 				imageURL={getImageURL(itemData?.embedded?.images)}
+				symbol={folder ? 'folder' : 'product'}
 			/>
 
 			{href ? (
