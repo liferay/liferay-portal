@@ -79,43 +79,44 @@ public class JSBundleConfigTopHeadDynamicInclude extends BaseDynamicInclude {
 	}
 
 	private String _getBundleConfig(String nonce) {
-		StringBundler sb = new StringBundler();
-
 		Collection<JSBundleConfigRegistryUtil.JSConfig> jsConfigs =
 			JSBundleConfigRegistryUtil.getJSConfigs();
 
-		if (!jsConfigs.isEmpty()) {
-			sb.append("<script");
-			sb.append(nonce);
-			sb.append(" data-senna-track=\"temporary\" type=\"");
-			sb.append(ContentTypes.TEXT_JAVASCRIPT);
-			sb.append("\">");
-
-			for (JSBundleConfigRegistryUtil.JSConfig jsConfig : jsConfigs) {
-				try {
-					sb.append("try {var MODULE_MAIN='");
-
-					ServletContext servletContext =
-						jsConfig.getServletContext();
-
-					sb.append(_getModuleMain(jsConfig));
-					sb.append("';var MODULE_PATH='");
-					sb.append(_portal.getPathProxy());
-					sb.append(servletContext.getContextPath());
-					sb.append("';");
-					sb.append(
-						StringUtil.removeSubstring(
-							URLUtil.toString(jsConfig.getURL()),
-							"//# sourceMappingURL=config.js.map"));
-					sb.append("} catch(error) {console.error(error);}");
-				}
-				catch (Exception exception) {
-					_log.error("Unable to open resource", exception);
-				}
-			}
-
-			sb.append("</script>");
+		if (jsConfigs.isEmpty()) {
+			return StringPool.BLANK;
 		}
+
+		StringBundler sb = new StringBundler();
+
+		sb.append("<script");
+		sb.append(nonce);
+		sb.append(" data-senna-track=\"temporary\" type=\"");
+		sb.append(ContentTypes.TEXT_JAVASCRIPT);
+		sb.append("\">");
+
+		for (JSBundleConfigRegistryUtil.JSConfig jsConfig : jsConfigs) {
+			try {
+				sb.append("try {var MODULE_MAIN='");
+
+				ServletContext servletContext = jsConfig.getServletContext();
+
+				sb.append(_getModuleMain(jsConfig));
+				sb.append("';var MODULE_PATH='");
+				sb.append(_portal.getPathProxy());
+				sb.append(servletContext.getContextPath());
+				sb.append("';");
+				sb.append(
+					StringUtil.removeSubstring(
+						URLUtil.toString(jsConfig.getURL()),
+						"//# sourceMappingURL=config.js.map"));
+				sb.append("} catch(error) {console.error(error);}");
+			}
+			catch (Exception exception) {
+				_log.error("Unable to open resource", exception);
+			}
+		}
+
+		sb.append("</script>");
 
 		return sb.toString();
 	}
