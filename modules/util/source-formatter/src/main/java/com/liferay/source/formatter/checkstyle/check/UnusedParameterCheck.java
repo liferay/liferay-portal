@@ -45,8 +45,10 @@ public class UnusedParameterCheck extends BaseCheck {
 		DetailAST modifiersDetailAST =
 			constructorOrMethodDetailAST.findFirstToken(TokenTypes.MODIFIERS);
 
-		if (!modifiersDetailAST.branchContains(TokenTypes.LITERAL_PRIVATE) &&
-			!_isDSLifecycleMethod(constructorOrMethodDetailAST)) {
+		if ((!modifiersDetailAST.branchContains(TokenTypes.LITERAL_PRIVATE) &&
+			 !_isDSLifecycleMethod(constructorOrMethodDetailAST)) ||
+			AnnotationUtil.containsAnnotation(
+				constructorOrMethodDetailAST, "Override")) {
 
 			return;
 		}
