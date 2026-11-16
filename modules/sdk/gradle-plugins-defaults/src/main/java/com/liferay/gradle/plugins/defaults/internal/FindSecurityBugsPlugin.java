@@ -296,6 +296,9 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 					findSecurityBugsJavaExec.dependsOn(
 						writeFindBugsProjectTask);
 
+					findSecurityBugsJavaExec.jvmArgs(
+						"-XX:+UseStringDeduplication");
+
 					findSecurityBugsJavaExec.onlyIf(
 						new Spec<Task>() {
 
@@ -356,20 +359,17 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 						JavaBasePlugin.VERIFICATION_GROUP);
 					findSecurityBugsJavaExec.setIgnoreExitValue(true);
 
-					String xms = System.getProperty("findSecurityBugs.Xms");
-
-					if (xms != null) {
-						findSecurityBugsJavaExec.setMinHeapSize(xms);
-					}
-
 					String xmx = System.getProperty("findSecurityBugs.Xmx");
 
 					if (xmx != null) {
 						findSecurityBugsJavaExec.setMaxHeapSize(xmx);
 					}
 
-					findSecurityBugsJavaExec.jvmArgs(
-						"-XX:+UseStringDeduplication");
+					String xms = System.getProperty("findSecurityBugs.Xms");
+
+					if (xms != null) {
+						findSecurityBugsJavaExec.setMinHeapSize(xms);
+					}
 
 					findSecurityBugsJavaExec.systemProperty(
 						"findsecbugs.injection.customconfigfile." +
