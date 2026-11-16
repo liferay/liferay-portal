@@ -5,9 +5,19 @@
 
 package com.liferay.frontend.js.bundle.config.extender.internal;
 
+import com.liferay.frontend.js.loader.modules.extender.npm.ModuleNameUtil;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.URLUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.ServletContext;
 
@@ -26,6 +36,32 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * @author Carlos Sierra Andrés
  */
 public class JSBundleConfigRegistryUtil {
+
+	public static void appendJavaScript(
+		StringBundler sb, Collection<JSConfig> jsConfigs) {
+
+		for (JSConfig jsConfig : jsConfigs) {
+			try {
+				sb.append("try {var MODULE_MAIN='");
+
+				ServletContext servletContext = jsConfig.getServletContext();
+
+				sb.append(_getModuleMain(jsConfig));
+				sb.append("';var MODULE_PATH='");
+				sb.append(PortalUtil.getPathProxy());
+				sb.append(servletContext.getContextPath());
+				sb.append("';");
+				sb.append(
+					StringUtil.removeSubstring(
+						URLUtil.toString(jsConfig.getURL()),
+						"//# sourceMappingURL=config.js.map"));
+				sb.append("} catch(error) {console.error(error);}");
+			}
+			catch (Exception exception) {
+				_log.error("Unable to open resource", exception);
+			}
+		}
+	}
 
 	public static Collection<JSConfig> getJSConfigs() {
 		return _serviceTrackerList.toList();
@@ -54,6 +90,45 @@ public class JSBundleConfigRegistryUtil {
 		private final URL _url;
 
 	}
+
+	private static String _getModuleMain(JSConfig jsConfig) {
+		try {
+			ServletContext servletContext = jsConfig.getServletContext();
+
+			URL url = servletContext.getResource(
+				"META-INF/resources/package.json");
+
+			if (url == null) {
+				url = servletContext.getResource("package.json");
+			}
+
+			if (url == null) {
+				return null;
+			}
+
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+				URLUtil.toString(url));
+
+			String moduleName = jsonObject.getString("name");
+			String moduleVersion = jsonObject.getString("version");
+
+			String moduleMain = jsonObject.getString("main");
+
+			if (Validator.isNull(moduleMain)) {
+				moduleMain = "index.js";
+			}
+
+			return StringBundler.concat(
+				moduleName, "@", moduleVersion, "/",
+				ModuleNameUtil.toModuleName(moduleMain));
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		JSBundleConfigRegistryUtil.class);
 
 	private static volatile long _lastModified = System.currentTimeMillis();
 	private static final ServiceTrackerList<JSConfig> _serviceTrackerList;
