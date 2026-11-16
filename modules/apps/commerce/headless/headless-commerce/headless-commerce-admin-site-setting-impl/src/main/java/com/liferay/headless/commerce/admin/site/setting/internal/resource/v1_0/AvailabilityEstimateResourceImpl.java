@@ -5,9 +5,12 @@
 
 package com.liferay.headless.commerce.admin.site.setting.internal.resource.v1_0;
 
+import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.exception.NoSuchAvailabilityEstimateException;
 import com.liferay.commerce.model.CommerceAvailabilityEstimate;
 import com.liferay.commerce.service.CommerceAvailabilityEstimateService;
+import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.commerce.admin.site.setting.dto.v1_0.AvailabilityEstimate;
 import com.liferay.headless.commerce.admin.site.setting.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.commerce.admin.site.setting.internal.mapper.v1_0.util.DTOMapperUtil;
@@ -31,6 +34,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -43,10 +47,13 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/availability-estimate.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = AvailabilityEstimateResource.class
 )
 public class AvailabilityEstimateResourceImpl
-	extends BaseAvailabilityEstimateResourceImpl {
+	extends BaseAvailabilityEstimateResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate
+		<AvailabilityEstimate> {
 
 	@Override
 	public Response deleteAvailabilityEstimate(Long id) throws Exception {
@@ -101,6 +108,50 @@ public class AvailabilityEstimateResourceImpl
 	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		return _entityModel;
+	}
+
+	@Override
+	public ExportImportDescriptor<CommerceAvailabilityEstimate>
+		getExportImportDescriptor() {
+
+		return new ExportImportDescriptor<>() {
+
+			@Override
+			public String getKey() {
+				return AvailabilityEstimateResourceImpl.class.getName();
+			}
+
+			@Override
+			public String getLabelLanguageKey() {
+				return "availability-estimates";
+			}
+
+			@Override
+			public Class<CommerceAvailabilityEstimate> getModelClass() {
+				return CommerceAvailabilityEstimate.class;
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of("creator");
+			}
+
+			@Override
+			public String getPortletId() {
+				return CommercePortletKeys.COMMERCE_AVAILABILITY_ESTIMATE;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+			@Override
+			public String getSectionKey() {
+				return ExportImportConstants.SECTION_KEY_STORE_MANAGEMENT;
+			}
+
+		};
 	}
 
 	@Override
