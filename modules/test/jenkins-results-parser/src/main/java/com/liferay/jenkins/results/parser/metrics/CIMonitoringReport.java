@@ -221,10 +221,6 @@ public class CIMonitoringReport extends BaseReport {
 		return ciMonitoringReport;
 	}
 
-	public CIMonitoringReport(File outputDir) {
-		super(outputDir);
-	}
-
 	private static Map<String, Double> _getCurrentValues(
 		JSONArray resultJSONArray) {
 
@@ -440,6 +436,10 @@ public class CIMonitoringReport extends BaseReport {
 		}
 
 		return Math.round(value * 1000) / 1000.0;
+	}
+
+	private CIMonitoringReport(File outputDir) {
+		super(outputDir);
 	}
 
 	private static final long _DURATION_DAY = 24 * 60 * 60;
