@@ -261,7 +261,7 @@ public class AccountFaroController extends BaseFaroController {
 			@QueryParam("accountLifecycleId") String accountLifecycleId,
 			@QueryParam("channelId") long channelId,
 			@QueryParam("fieldMappingFieldName") String fieldMappingFieldName,
-			@QueryParam("query") String query,
+			@QueryParam("search") String search,
 			@DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("20") @QueryParam("pageSize") int pageSize)
 		throws Exception {
@@ -270,7 +270,7 @@ public class AccountFaroController extends BaseFaroController {
 			return new FaroFDSResultsDisplay<>(
 				contactsEngineClient.getAccountFieldValues(
 					faroProjectLocalService.getFaroProjectByGroupId(groupId),
-					channelId, fieldMappingFieldName, query, page, pageSize),
+					channelId, fieldMappingFieldName, search, page, pageSize),
 				object -> Collections.singletonMap(
 					"name", String.valueOf(object)),
 				page, pageSize);
