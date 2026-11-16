@@ -76,52 +76,51 @@ public class FriendlyURLWebServerTest extends BaseWebServerTestCase {
 
 	@Test
 	public void testHasFilesWithFileEntryNameHasPlusSign() throws Exception {
-		String nameBase = RandomTestUtil.randomString();
+		String fileName = RandomTestUtil.randomString() + "%2B.txt";
 
-		String fileURL = nameBase + "%2B.txt";
-		String fileName = nameBase + "+.txt";
-
-		Assert.assertFalse(
-			WebServerServlet.hasFiles(
-				_createMockHttpServletRequest(
-					String.format("/%s/0/%s", group.getGroupId(), fileURL))));
-
-		_addFileEntry(fileName, RandomTestUtil.randomString());
-
-		Assert.assertTrue(
-			WebServerServlet.hasFiles(
-				_createMockHttpServletRequest(
-					String.format("/%s/0/%s", group.getGroupId(), fileURL))));
 		Assert.assertFalse(
 			WebServerServlet.hasFiles(
 				_createMockHttpServletRequest(
 					String.format("/%s/0/%s", group.getGroupId(), fileName))));
-	}
 
-	@Test
-	public void testHasFilesWithFileEntryNameHasSpaces() throws Exception {
-		String nameBase = RandomTestUtil.randomString();
+		String sourceFileName = HttpComponentsUtil.decodeURL(fileName);
 
-		String fileURL = nameBase + "+.txt";
-		String fileName = nameBase + " .txt";
-
-		Assert.assertFalse(
-			WebServerServlet.hasFiles(
-				_createMockHttpServletRequest(
-					String.format("/%s/0/%s", group.getGroupId(), fileURL))));
-
-		_addFileEntry(fileName, RandomTestUtil.randomString());
+		_addFileEntry(sourceFileName, RandomTestUtil.randomString());
 
 		Assert.assertTrue(
 			WebServerServlet.hasFiles(
 				_createMockHttpServletRequest(
-					String.format("/%s/0/%s", group.getGroupId(), fileURL))));
+					String.format("/%s/0/%s", group.getGroupId(), fileName))));
+		Assert.assertFalse(
+			WebServerServlet.hasFiles(
+				_createMockHttpServletRequest(
+					String.format(
+						"/%s/0/%s", group.getGroupId(), sourceFileName))));
+	}
+
+	@Test
+	public void testHasFilesWithFileEntryNameHasSpaces() throws Exception {
+		String fileName = RandomTestUtil.randomString() + "+.txt";
+
+		Assert.assertFalse(
+			WebServerServlet.hasFiles(
+				_createMockHttpServletRequest(
+					String.format("/%s/0/%s", group.getGroupId(), fileName))));
+
+		String sourceFileName = HttpComponentsUtil.decodeURL(fileName);
+
+		_addFileEntry(sourceFileName, RandomTestUtil.randomString());
+
+		Assert.assertTrue(
+			WebServerServlet.hasFiles(
+				_createMockHttpServletRequest(
+					String.format("/%s/0/%s", group.getGroupId(), fileName))));
 		Assert.assertTrue(
 			WebServerServlet.hasFiles(
 				_createMockHttpServletRequest(
 					String.format(
 						"/%s/0/%s", group.getGroupId(),
-						nameBase + "%20.txt"))));
+						HttpComponentsUtil.encodePath(sourceFileName)))));
 	}
 
 	@Test
@@ -197,10 +196,11 @@ public class FriendlyURLWebServerTest extends BaseWebServerTestCase {
 	@Test
 	public void testServiceWithFileName() throws Exception {
 		byte[] bytes = RandomTestUtil.randomBytes();
-		String nameBase = RandomTestUtil.randomString();
+		String fileName = RandomTestUtil.randomString() + "+.doc";
 
 		FileEntry fileEntry = _addFileEntry(
-			bytes, nameBase + " .doc", ContentTypes.APPLICATION_MSWORD,
+			bytes, ContentTypes.APPLICATION_MSWORD,
+			HttpComponentsUtil.decodeURL(fileName),
 			RandomTestUtil.randomString());
 
 		_assertService(
@@ -209,7 +209,7 @@ public class FriendlyURLWebServerTest extends BaseWebServerTestCase {
 				"/%s/0/%s", group.getGroupId(), fileEntry.getTitle()));
 		_assertService(
 			bytes, HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT, fileEntry,
-			String.format("/%s/0/%s+.doc", group.getGroupId(), nameBase));
+			String.format("/%s/0/%s", group.getGroupId(), fileName));
 
 		String title = fileEntry.getTitle();
 
@@ -242,8 +242,9 @@ public class FriendlyURLWebServerTest extends BaseWebServerTestCase {
 		bytes = FileUtil.getBytes(getClass(), "dependencies/liferay.jpg");
 
 		fileEntry = _addFileEntry(
-			bytes, RandomTestUtil.randomString() + ".jpg",
-			ContentTypes.IMAGE_JPEG, RandomTestUtil.randomString());
+			bytes, ContentTypes.IMAGE_JPEG,
+			RandomTestUtil.randomString() + ".jpg",
+			RandomTestUtil.randomString());
 
 		_assertService(
 			bytes, HttpHeaders.CONTENT_DISPOSITION_INLINE, fileEntry,
@@ -257,7 +258,7 @@ public class FriendlyURLWebServerTest extends BaseWebServerTestCase {
 		String title = RandomTestUtil.randomString() + ".pdf";
 
 		FileEntry fileEntry = _addFileEntry(
-			bytes, title, ContentTypes.APPLICATION_PDF, title);
+			bytes, ContentTypes.APPLICATION_PDF, title, title);
 
 		_assertService(
 			bytes, HttpHeaders.CONTENT_DISPOSITION_INLINE, fileEntry,
@@ -266,7 +267,7 @@ public class FriendlyURLWebServerTest extends BaseWebServerTestCase {
 				fileEntry.getTitle(), fileEntry.getUuid()));
 
 		fileEntry = _addFileEntry(
-			bytes, RandomTestUtil.randomString(), ContentTypes.APPLICATION_PDF,
+			bytes, ContentTypes.APPLICATION_PDF, RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
 
 		_assertService(
@@ -277,22 +278,23 @@ public class FriendlyURLWebServerTest extends BaseWebServerTestCase {
 	}
 
 	private FileEntry _addFileEntry(
-			byte[] bytes, String fileName, String mimeType, String title)
+			byte[] bytes, String mimeType, String sourceFileName, String title)
 		throws Exception {
 
 		return _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName, mimeType,
-			title, null, StringPool.BLANK, StringPool.BLANK, bytes, null, null,
-			null, ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, sourceFileName,
+			mimeType, title, null, StringPool.BLANK, StringPool.BLANK, bytes,
+			null, null, null,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 
-	private FileEntry _addFileEntry(String fileName, String urlTitle)
+	private FileEntry _addFileEntry(String sourceFileName, String urlTitle)
 		throws Exception {
 
 		return _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName,
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, sourceFileName,
 			ContentTypes.APPLICATION_OCTET_STREAM,
 			RandomTestUtil.randomString(), urlTitle,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
