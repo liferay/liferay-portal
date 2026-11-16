@@ -8,8 +8,8 @@ metadata:
         argocd.argoproj.io/sync-wave: "-90"
     labels:
         {{- include "liferay-platform.labels" . | nindent 8 }}
-        app.kubernetes.io/name: liferay-proxy-config
-    name: liferay-proxy-config
+        app.kubernetes.io/name: {{ $envoyProxy.name }}
+    name: {{ $envoyProxy.name }}
     namespace: {{ .Values.operatorApplications.envoyGateway.namespace }}
 spec:
     provider:
@@ -57,13 +57,13 @@ metadata:
         argocd.argoproj.io/sync-wave: "-90"
     labels:
         {{- include "liferay-platform.labels" . | nindent 8 }}
-        app.kubernetes.io/name: liferay-gateway-class
-    name: liferay-gateway-class
+        app.kubernetes.io/name: {{ .Values.gateway.className }}
+    name: {{ .Values.gateway.className }}
 spec:
     controllerName: gateway.envoyproxy.io/gatewayclass-controller
     parametersRef:
         group: gateway.envoyproxy.io
         kind: EnvoyProxy
-        name: liferay-proxy-config
+        name: {{ $envoyProxy.name }}
         namespace: {{ .Values.operatorApplications.envoyGateway.namespace }}
 {{- end -}}

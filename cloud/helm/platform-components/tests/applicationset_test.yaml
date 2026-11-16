@@ -330,6 +330,19 @@ tests:
     -   asserts:
             -   contains:
                     content:
+                        name: gateway.className
+                        value: envoy-gateway-l4
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-infrastructure.yaml
+        it: Passes the configured gateway class to the infrastructure ApplicationSet
+        set:
+            gateway:
+                className: envoy-gateway-l4
+            infrastructure:
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+    -   asserts:
+            -   contains:
+                    content:
                         name: persistence.storageClassName
                         value: managed-csi-premium-v2
                     path: spec.template.spec.sources[0].helm.parameters

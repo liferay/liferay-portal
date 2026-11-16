@@ -8,6 +8,23 @@ tests:
     -   asserts:
             -   documentIndex: 0
                 equal:
+                    path: metadata.name
+                    value: envoy-gateway-proxy
+            -   documentIndex: 1
+                equal:
+                    path: metadata.name
+                    value: envoy-gateway-l4
+            -   documentIndex: 1
+                equal:
+                    path: spec.parametersRef.name
+                    value: envoy-gateway-proxy
+        it: Adopts an existing gateway class and proxy configuration by name
+        set:
+            gateway.className: envoy-gateway-l4
+            gateway.envoyProxy.name: envoy-gateway-proxy
+    -   asserts:
+            -   documentIndex: 0
+                equal:
                     path: spec.provider.kubernetes.envoyService.annotations["service.beta.kubernetes.io/azure-load-balancer-internal"]
                     value: "true"
         it: Annotates the Envoy service for an internal load balancer

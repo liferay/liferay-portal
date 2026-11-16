@@ -42,7 +42,7 @@ spec:
                             -   name: environmentId
                                 value: {{ $layout.environmentId | quote }}
                             -   name: gateway.className
-                                value: liferay-gateway-class
+                                value: {{ .Values.gateway.className | quote }}
                             -   name: gateway.name
                                 value: {{ printf "%s-%s-gateway" $layout.projectId $layout.environmentId | quote }}
                             -   name: overlayBucket.enabled

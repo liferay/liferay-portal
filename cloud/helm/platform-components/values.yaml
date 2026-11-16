@@ -50,7 +50,9 @@ database:
 deploymentContext:
     deploymentName: ""
 gateway:
+    className: liferay-gateway-class
     envoyProxy:
+        name: liferay-proxy-config
         podAnnotations: {}
         serviceAnnotations: {}
 gitops:
