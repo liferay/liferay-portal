@@ -13,10 +13,12 @@ import com.liferay.portal.kernel.audit.AuditRequestContextThreadLocal;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -25,6 +27,10 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpSession;
+
+import java.lang.reflect.Field;
+
+import java.util.Objects;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -60,11 +66,61 @@ public class AuditFilterTest {
 		_testDoFilterCapturesHttpMethod();
 		_testDoFilterCapturesUserAgent();
 		_testDoFilterResolvesRequestId();
+		_testDoFilterWhenAuditLogContextIsEnabled();
 		_testDoFilterWhenFeatureFlagIsDisabled();
+	}
+
+	private MockHttpServletResponse _testDoFilter(
+			boolean useIncomingXRequestId, String xRequestId)
+		throws Exception {
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		Field field = ReflectionTestUtil.getField(
+			_filter.getClass(), "_auditLogContextConfiguration");
+
+		Class<?> clazz = field.getType();
+
+		try (AutoCloseable autoCloseable =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					_filter, "_auditLogContextConfiguration",
+					ProxyUtil.newProxyInstance(
+						clazz.getClassLoader(), new Class<?>[] {clazz},
+						(proxy, method, args) -> {
+							if (Objects.equals(
+									method.getName(),
+									"useIncomingXRequestId")) {
+
+								return useIncomingXRequestId;
+							}
+
+							return true;
+						}))) {
+
+			MockHttpServletRequest mockHttpServletRequest =
+				new MockHttpServletRequest();
+
+			mockHttpServletRequest.addHeader(
+				HttpHeaders.X_REQUEST_ID, xRequestId);
+
+			_testDoFilter(mockHttpServletRequest, mockHttpServletResponse);
+		}
+
+		return mockHttpServletResponse;
 	}
 
 	private AuditRequestContext _testDoFilter(
 			MockHttpServletRequest mockHttpServletRequest)
+		throws Exception {
+
+		return _testDoFilter(
+			mockHttpServletRequest, new MockHttpServletResponse());
+	}
+
+	private AuditRequestContext _testDoFilter(
+			MockHttpServletRequest mockHttpServletRequest,
+			MockHttpServletResponse mockHttpServletResponse)
 		throws Exception {
 
 		try (SafeCloseable safeCloseable =
@@ -78,7 +134,7 @@ public class AuditFilterTest {
 			invokerFilterChain.addFilter(_filter);
 
 			invokerFilterChain.doFilter(
-				mockHttpServletRequest, new MockHttpServletResponse());
+				mockHttpServletRequest, mockHttpServletResponse);
 		}
 
 		AuditRequestContext auditRequestContext =
@@ -198,6 +254,25 @@ public class AuditFilterTest {
 		Assert.assertFalse(auditRequestContext.isRequestIdGenerated());
 	}
 
+	private void _testDoFilterWhenAuditLogContextIsEnabled() throws Exception {
+		String xRequestId = PortalUUIDUtil.generate();
+
+		MockHttpServletResponse mockHttpServletResponse = _testDoFilter(
+			false, xRequestId);
+
+		Assert.assertNotNull(
+			mockHttpServletResponse.getHeader(HttpHeaders.X_REQUEST_ID));
+		Assert.assertNotEquals(
+			xRequestId,
+			mockHttpServletResponse.getHeader(HttpHeaders.X_REQUEST_ID));
+
+		mockHttpServletResponse = _testDoFilter(true, xRequestId);
+
+		Assert.assertEquals(
+			xRequestId,
+			mockHttpServletResponse.getHeader(HttpHeaders.X_REQUEST_ID));
+	}
+
 	private void _testDoFilterWhenFeatureFlagIsDisabled() throws Exception {
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
@@ -218,9 +293,8 @@ public class AuditFilterTest {
 				mockHttpServletRequest);
 
 			Assert.assertNull(auditRequestContext.getHttpMethod());
-			Assert.assertNotEquals(
-				xRequestId, auditRequestContext.getRequestId());
-			Assert.assertTrue(auditRequestContext.isRequestIdGenerated());
+			Assert.assertEquals(xRequestId, auditRequestContext.getRequestId());
+			Assert.assertFalse(auditRequestContext.isRequestIdGenerated());
 			Assert.assertNull(auditRequestContext.getUserAgent());
 		}
 	}

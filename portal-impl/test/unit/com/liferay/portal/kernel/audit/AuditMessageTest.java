@@ -163,8 +163,10 @@ public class AuditMessageTest {
 				RandomTestUtil.randomLong());
 
 			Assert.assertNull(auditMessage.getHttpMethod());
-			Assert.assertNull(auditMessage.getRequestId());
-			Assert.assertFalse(auditMessage.isRequestIdGenerated());
+			Assert.assertEquals(
+				auditRequestContext.getRequestId(),
+				auditMessage.getRequestId());
+			Assert.assertTrue(auditMessage.isRequestIdGenerated());
 			Assert.assertNull(auditMessage.getUserAgent());
 
 			AuditRequestContextThreadLocal.removeAuditRequestContext();
@@ -240,8 +242,9 @@ public class AuditMessageTest {
 			CompanyConstants.SYSTEM);
 
 		Assert.assertNull(auditMessage.getHttpMethod());
-		Assert.assertNull(auditMessage.getRequestId());
-		Assert.assertFalse(auditMessage.isRequestIdGenerated());
+		Assert.assertEquals(
+			auditRequestContext.getRequestId(), auditMessage.getRequestId());
+		Assert.assertTrue(auditMessage.isRequestIdGenerated());
 		Assert.assertNull(auditMessage.getUserAgent());
 
 		AuditRequestContextThreadLocal.removeAuditRequestContext();
