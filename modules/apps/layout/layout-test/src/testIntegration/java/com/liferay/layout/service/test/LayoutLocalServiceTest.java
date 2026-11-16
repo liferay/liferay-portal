@@ -579,6 +579,55 @@ public class LayoutLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-115763")
+	public void testFetchDraftLayouts() throws Exception {
+		List<Layout> draftLayouts = _layoutLocalService.fetchDraftLayouts(
+			RandomTestUtil.randomLong());
+
+		Assert.assertTrue(draftLayouts.toString(), draftLayouts.isEmpty());
+
+		Layout layout = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+
+		Layout mainDraftLayout = _layoutLocalService.fetchDraftLayout(
+			layout.getPlid());
+
+		draftLayouts = _layoutLocalService.fetchDraftLayouts(layout.getPlid());
+
+		Assert.assertTrue(
+			draftLayouts.toString(), draftLayouts.contains(mainDraftLayout));
+		Assert.assertEquals(draftLayouts.toString(), 1, draftLayouts.size());
+
+		Layout launchDraftLayout1 = LayoutTestUtil.addLaunchDraftLayout(
+			RandomTestUtil.randomLong(), layout);
+
+		draftLayouts = _layoutLocalService.fetchDraftLayouts(layout.getPlid());
+
+		Assert.assertTrue(
+			draftLayouts.toString(),
+			draftLayouts.containsAll(
+				Arrays.asList(launchDraftLayout1, mainDraftLayout)));
+		Assert.assertEquals(draftLayouts.toString(), 2, draftLayouts.size());
+
+		Layout launchDraftLayout2 = LayoutTestUtil.addLaunchDraftLayout(
+			RandomTestUtil.randomLong(), layout);
+
+		draftLayouts = _layoutLocalService.fetchDraftLayouts(layout.getPlid());
+
+		Assert.assertTrue(
+			draftLayouts.toString(),
+			draftLayouts.containsAll(
+				Arrays.asList(
+					launchDraftLayout1, launchDraftLayout2, mainDraftLayout)));
+		Assert.assertEquals(draftLayouts.toString(), 3, draftLayouts.size());
+
+		Assert.assertEquals(
+			mainDraftLayout,
+			_layoutLocalService.fetchDraftLayout(layout.getPlid()));
+	}
+
+	@Test
 	@TestInfo("LPD-112154")
 	public void testGetClassPKsByLaunchSetId() throws Exception {
 		long launchSetId = RandomTestUtil.randomLong();
