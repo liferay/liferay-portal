@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -41,6 +42,7 @@ import java.io.File;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -238,8 +240,14 @@ public class LayoutRemoteStagingBackgroundTaskExecutor
 					continue;
 				}
 
-				List<Layout> parentLayouts = _getMissingRemoteParentLayouts(
-					httpPrincipal, layout, remoteGroupId);
+				List<Layout> parentLayouts = Collections.emptyList();
+
+				if (!FeatureFlagManagerUtil.isEnabled(
+						layout.getCompanyId(), "LPD-96689")) {
+
+					parentLayouts = _getMissingRemoteParentLayouts(
+						httpPrincipal, layout, remoteGroupId);
+				}
 
 				for (Layout parentLayout : parentLayouts) {
 					if (layouts.contains(parentLayout)) {
