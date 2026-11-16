@@ -11,6 +11,7 @@ import com.liferay.fragment.input.template.parser.InputTemplateNode;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,17 +41,23 @@ public class DefaultFragmentEntryProcessorContext
 		_locale = locale;
 		_mode = mode;
 		_scopeGroupId = scopeGroupId;
-
-		_fragmentElementId = "fragment-" + PortalUtil.getUniqueElementId();
 	}
 
 	@Override
 	public Serializable getAttribute(String name) {
+		if (_attributes == null) {
+			return null;
+		}
+
 		return _attributes.get(name);
 	}
 
 	@Override
 	public Map<String, Serializable> getAttributes() {
+		if (_attributes == null) {
+			_attributes = new LinkedHashMap<>();
+		}
+
 		return _attributes;
 	}
 
@@ -71,6 +78,10 @@ public class DefaultFragmentEntryProcessorContext
 
 	@Override
 	public String getFragmentElementId() {
+		if (_fragmentElementId == null) {
+			_fragmentElementId = "fragment-" + PortalUtil.getUniqueElementId();
+		}
+
 		return _fragmentElementId;
 	}
 
@@ -169,7 +180,9 @@ public class DefaultFragmentEntryProcessorContext
 	}
 
 	public void setAttribute(String name, Serializable value) {
-		_attributes.put(name, value);
+		Map<String, Serializable> attributes = getAttributes();
+
+		attributes.put(name, value);
 	}
 
 	public void setAttributes(Map<String, Serializable> attributes) {
@@ -226,7 +239,7 @@ public class DefaultFragmentEntryProcessorContext
 		_segmentsEntryIds = segmentsEntryIds;
 	}
 
-	private Map<String, Serializable> _attributes = new LinkedHashMap<>();
+	private Map<String, Serializable> _attributes;
 	private final long _companyId;
 	private Object _contextInfoItem;
 	private boolean _disablePortletRender;
@@ -244,6 +257,6 @@ public class DefaultFragmentEntryProcessorContext
 	private int _previewType = AssetRendererFactory.TYPE_LATEST_APPROVED;
 	private String _previewVersion = InfoItemIdentifier.VERSION_LATEST_APPROVED;
 	private final long _scopeGroupId;
-	private long[] _segmentsEntryIds = new long[0];
+	private long[] _segmentsEntryIds = GetterUtil.DEFAULT_LONG_VALUES;
 
 }
