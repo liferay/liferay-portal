@@ -65,7 +65,8 @@ public class DepotApplicationDisplayContext {
 
 		return LanguageUtil.format(
 			_themeDisplay.getLocale(),
-			"application-is-not-supported.-please-go-back-to-selection",
+			"application-is-disabled-for-this-scope.-please-go-back-to-" +
+				"selection",
 			new Object[] {viewGroupSelectorLink, "</a>"});
 	}
 
