@@ -87,11 +87,15 @@ public class ViewProfilesDisplayContext {
 				"pencil", "edit", LanguageUtil.get(_httpServletRequest, "edit"),
 				"get", "update", null),
 			new FDSActionDropdownItem(
+				"#", "copy", "copyURL",
+				LanguageUtil.get(_httpServletRequest, "copy-url"), "get", null,
+				null),
+			MCPServerPermissionUtil.getPermissionsFDSActionDropdownItem(
+				_httpServletRequest, _objectDefinition),
+			new FDSActionDropdownItem(
 				"#", "trash", "delete",
 				LanguageUtil.get(_httpServletRequest, "delete"), "get",
-				"delete", null),
-			MCPServerPermissionUtil.getPermissionsFDSActionDropdownItem(
-				_httpServletRequest, _objectDefinition));
+				"delete", null));
 	}
 
 	public String getFDSName() {

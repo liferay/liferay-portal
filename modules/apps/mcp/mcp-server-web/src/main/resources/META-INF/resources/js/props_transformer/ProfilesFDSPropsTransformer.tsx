@@ -6,6 +6,7 @@
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 
 import {Profile} from '../types/Profile';
+import copyProfileURL from '../utils/copyProfileURL';
 import confirmAndDeleteProfileAction from './actions/confirmAndDeleteProfileAction';
 import MCPStatusRenderer from './cell_renderers/MCPStatusRenderer';
 import ProfilePathRenderer from './cell_renderers/ProfilePathRenderer';
@@ -46,7 +47,10 @@ export default function ProfilesFDSPropsTransformer(
 			itemData: Profile;
 			loadData: () => void;
 		}) {
-			if (action?.data?.id === 'delete') {
+			if (action?.data?.id === 'copyURL') {
+				copyProfileURL(itemData.profilePath ?? '');
+			}
+			else if (action?.data?.id === 'delete') {
 				confirmAndDeleteProfileAction({itemData, loadData});
 			}
 		},

@@ -4,12 +4,17 @@
  */
 
 import getProfileURL from './getProfileURL';
-import {openSuccessToast} from './toasts';
+import {openErrorToast, openSuccessToast} from './toasts';
 
 export default async function copyProfileURL(
 	profilePath: string
 ): Promise<void> {
-	await navigator.clipboard.writeText(getProfileURL(profilePath));
+	try {
+		await navigator.clipboard.writeText(getProfileURL(profilePath));
 
-	openSuccessToast(Liferay.Language.get('copied-to-clipboard'));
+		openSuccessToast(Liferay.Language.get('copied-to-clipboard'));
+	}
+	catch {
+		openErrorToast(Liferay.Language.get('failed-to-copy-to-clipboard'));
+	}
 }
