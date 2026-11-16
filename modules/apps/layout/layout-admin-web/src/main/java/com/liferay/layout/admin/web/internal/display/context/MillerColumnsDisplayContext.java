@@ -6,7 +6,12 @@
 package com.liferay.layout.admin.web.internal.display.context;
 
 import com.liferay.exportimport.kernel.staging.LayoutStagingUtil;
+import com.liferay.launch.set.details.LaunchSetDetails;
+import com.liferay.launch.set.details.provider.LaunchSetDetailsProvider;
+import com.liferay.launch.set.permission.LaunchSetPermission;
+import com.liferay.launch.set.util.comparator.LaunchSetDetailsNameComparator;
 import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -61,11 +66,15 @@ import java.util.Map;
 public class MillerColumnsDisplayContext {
 
 	public MillerColumnsDisplayContext(
+		LaunchSetDetailsProvider launchSetDetailsProvider,
+		LaunchSetPermission launchSetPermission,
 		LayoutSetPrototypeHelper layoutSetPrototypeHelper,
 		LayoutsAdminDisplayContext layoutsAdminDisplayContext,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
+		_launchSetDetailsProvider = launchSetDetailsProvider;
+		_launchSetPermission = launchSetPermission;
 		_layoutSetPrototypeHelper = layoutSetPrototypeHelper;
 		_layoutsAdminDisplayContext = layoutsAdminDisplayContext;
 		_liferayPortletResponse = liferayPortletResponse;
@@ -278,6 +287,8 @@ public class MillerColumnsDisplayContext {
 					"id", layout.getPlid()
 				).put(
 					"key", String.valueOf(layout.getPlid())
+				).put(
+					"launchDraftNames", _getLaunchDraftNamesJSONArray(layout)
 				).put(
 					"parentable",
 					() -> {
@@ -496,6 +507,42 @@ public class MillerColumnsDisplayContext {
 		return jsonArray;
 	}
 
+	private JSONArray _getLaunchDraftNamesJSONArray(Layout layout)
+		throws Exception {
+
+		if (!layout.isTypeContent()) {
+			return JSONFactoryUtil.createJSONArray();
+		}
+
+		String restrictedLaunchName = LanguageUtil.get(
+			_httpServletRequest, "restricted-launch");
+
+		List<LaunchSetDetails> launchSetDetailsList = TransformUtil.transform(
+			layout.fetchDraftLayouts(),
+			draftLayout -> {
+				long launchSetId = draftLayout.getLaunchSetId();
+
+				if (launchSetId == 0) {
+					return null;
+				}
+
+				if (!_launchSetPermission.contains(
+						_themeDisplay.getPermissionChecker(), launchSetId,
+						ActionKeys.VIEW)) {
+
+					return new LaunchSetDetails(0, restrictedLaunchName);
+				}
+
+				return _launchSetDetailsProvider.fetchLaunchSetDetails(
+					launchSetId);
+			});
+
+		launchSetDetailsList.sort(LaunchSetDetailsNameComparator.INSTANCE);
+
+		return JSONUtil.toJSONArray(
+			launchSetDetailsList, LaunchSetDetails::getName);
+	}
+
 	private String _getLayoutPageTemplateCollectionsURL() {
 		return ResourceURLBuilder.createResourceURL(
 			_liferayPortletResponse
@@ -647,6 +694,8 @@ public class MillerColumnsDisplayContext {
 
 	private List<Long> _duplicatedFriendlyURLPlids;
 	private final HttpServletRequest _httpServletRequest;
+	private final LaunchSetDetailsProvider _launchSetDetailsProvider;
+	private final LaunchSetPermission _launchSetPermission;
 	private final LayoutSetPrototypeHelper _layoutSetPrototypeHelper;
 	private final LayoutsAdminDisplayContext _layoutsAdminDisplayContext;
 	private final LiferayPortletResponse _liferayPortletResponse;

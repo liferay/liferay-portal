@@ -14,6 +14,8 @@ import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationExcepti
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.friendly.url.exception.DuplicateFriendlyURLEntryException;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.launch.set.details.provider.LaunchSetDetailsProvider;
+import com.liferay.launch.set.permission.LaunchSetPermission;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.configuration.LayoutUtilityPageThumbnailConfiguration;
 import com.liferay.layout.admin.web.internal.constants.LayoutAdminWebKeys;
@@ -246,6 +248,7 @@ public class GroupPagesPortlet extends MVCPortlet {
 				renderRequest.setAttribute(
 					LayoutAdminWebKeys.MILLER_COLUMNS_DISPLAY_CONTEXT,
 					new MillerColumnsDisplayContext(
+						_launchSetDetailsProvider, _launchSetPermission,
 						_layoutSetPrototypeHelper, layoutsAdminDisplayContext,
 						_portal.getLiferayPortletRequest(renderRequest),
 						_portal.getLiferayPortletResponse(renderResponse)));
@@ -315,6 +318,12 @@ public class GroupPagesPortlet extends MVCPortlet {
 
 	@Reference
 	private ItemSelector _itemSelector;
+
+	@Reference
+	private LaunchSetDetailsProvider _launchSetDetailsProvider;
+
+	@Reference
+	private LaunchSetPermission _launchSetPermission;
 
 	@Reference
 	private LayoutConverterRegistry _layoutConverterRegistry;

@@ -8,6 +8,8 @@ package com.liferay.layout.admin.web.internal.portlet.action;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.launch.set.details.provider.LaunchSetDetailsProvider;
+import com.liferay.launch.set.permission.LaunchSetPermission;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.display.context.LayoutsAdminDisplayContext;
 import com.liferay.layout.admin.web.internal.display.context.MillerColumnsDisplayContext;
@@ -111,6 +113,8 @@ public class MoveLayoutMVCActionCommand extends BaseAddLayoutMVCActionCommand {
 						MillerColumnsDisplayContext
 							millerColumnsDisplayContext =
 								new MillerColumnsDisplayContext(
+									_launchSetDetailsProvider,
+									_launchSetPermission,
 									_layoutSetPrototypeHelper,
 									layoutsAdminDisplayContext,
 									liferayPortletRequest,
@@ -135,6 +139,12 @@ public class MoveLayoutMVCActionCommand extends BaseAddLayoutMVCActionCommand {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private LaunchSetDetailsProvider _launchSetDetailsProvider;
+
+	@Reference
+	private LaunchSetPermission _launchSetPermission;
 
 	@Reference
 	private LayoutConverterRegistry _layoutConverterRegistry;
