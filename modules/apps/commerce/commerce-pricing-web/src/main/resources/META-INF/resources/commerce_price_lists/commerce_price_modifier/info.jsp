@@ -77,7 +77,7 @@ if (modifierType.equals(CommercePriceModifierConstants.MODIFIER_TYPE_PERCENTAGE)
 
 		</aui:select>
 
-		<aui:input label='<%= LanguageUtil.get(request, "amount") %>' name="modifierAmount" suffix="<%= amountSuffix %>" type="text" value="<%= commerceCurrency.round(commercePriceModifier.getModifierAmount()) %>">
+		<aui:input ignoreRequestValue="<%= true %>" label='<%= LanguageUtil.get(request, "amount") %>' name="modifierAmount" suffix="<%= amountSuffix %>" type="text" value="<%= commerceCurrency.round(commercePriceModifier.getModifierAmount()) %>">
 			<aui:validator name="number" />
 		</aui:input>
 
