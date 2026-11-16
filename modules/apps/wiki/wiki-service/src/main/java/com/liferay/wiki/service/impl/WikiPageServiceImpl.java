@@ -231,6 +231,12 @@ public class WikiPageServiceImpl extends WikiPageServiceBaseImpl {
 		_wikiNodeModelResourcePermission.check(
 			getPermissionChecker(), nodeId, ActionKeys.ADD_ATTACHMENT);
 
+		WikiPage templatePage = wikiPageLocalService.getPage(
+			templateNodeId, templateTitle);
+
+		_wikiPageModelResourcePermission.check(
+			getPermissionChecker(), templatePage, ActionKeys.VIEW);
+
 		wikiPageLocalService.copyPageAttachments(
 			getUserId(), templateNodeId, templateTitle, nodeId, title);
 	}
