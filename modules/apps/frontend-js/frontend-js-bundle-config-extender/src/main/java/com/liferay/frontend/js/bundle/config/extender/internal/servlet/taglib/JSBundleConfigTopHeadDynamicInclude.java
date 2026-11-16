@@ -29,7 +29,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import java.net.URL;
 
@@ -80,52 +79,45 @@ public class JSBundleConfigTopHeadDynamicInclude extends BaseDynamicInclude {
 	}
 
 	private String _getBundleConfig(String nonce) {
-		StringWriter stringWriter = new StringWriter();
+		StringBundler sb = new StringBundler();
 
 		Collection<JSBundleConfigRegistryUtil.JSConfig> jsConfigs =
 			JSBundleConfigRegistryUtil.getJSConfigs();
 
 		if (!jsConfigs.isEmpty()) {
-			stringWriter.write("<script");
-			stringWriter.write(nonce);
-			stringWriter.write(" data-senna-track=\"temporary\" type=\"");
-			stringWriter.write(ContentTypes.TEXT_JAVASCRIPT);
-			stringWriter.write("\">");
+			sb.append("<script");
+			sb.append(nonce);
+			sb.append(" data-senna-track=\"temporary\" type=\"");
+			sb.append(ContentTypes.TEXT_JAVASCRIPT);
+			sb.append("\">");
 
 			for (JSBundleConfigRegistryUtil.JSConfig jsConfig : jsConfigs) {
 				try {
-					stringWriter.write("try {");
+					sb.append("try {var MODULE_MAIN='");
 
 					ServletContext servletContext =
 						jsConfig.getServletContext();
 
-					stringWriter.write(
-						StringBundler.concat(
-							"var MODULE_MAIN='", _getModuleMain(jsConfig),
-							"';"));
-
-					stringWriter.write(
-						StringBundler.concat(
-							"var MODULE_PATH='", _portal.getPathProxy(),
-							servletContext.getContextPath(), "';"));
-
-					stringWriter.write(
+					sb.append(_getModuleMain(jsConfig));
+					sb.append("';var MODULE_PATH='");
+					sb.append(_portal.getPathProxy());
+					sb.append(servletContext.getContextPath());
+					sb.append("';");
+					sb.append(
 						StringUtil.removeSubstring(
 							URLUtil.toString(jsConfig.getURL()),
 							"//# sourceMappingURL=config.js.map"));
-
-					stringWriter.write(
-						"} catch(error) {console.error(error);}");
+					sb.append("} catch(error) {console.error(error);}");
 				}
 				catch (Exception exception) {
 					_log.error("Unable to open resource", exception);
 				}
 			}
 
-			stringWriter.write("</script>");
+			sb.append("</script>");
 		}
 
-		return stringWriter.toString();
+		return sb.toString();
 	}
 
 	private String _getModuleMain(
