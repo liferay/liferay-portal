@@ -1,4 +1,4 @@
-{{- if and .Values.workload.enabled (eq .Values.workload.kind "Job") }}
+{{- if and (include "liferay-client-extension.workloadEnabled" .) (eq (include "liferay-client-extension.workloadKind" .) "Job") }}
 apiVersion: batch/v1
 kind: Job
 metadata:

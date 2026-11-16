@@ -1,5 +1,5 @@
-{{- if .Values.service.enabled }}
-{{- if not (and .Values.workload.enabled (eq .Values.workload.kind "Deployment")) }}
+{{- if include "liferay-client-extension.serviceEnabled" . }}
+{{- if not (and (include "liferay-client-extension.workloadEnabled" .) (eq (include "liferay-client-extension.workloadKind" .) "Deployment")) }}
 {{- fail "workload.kind must be an enabled deployment when service.enabled is true" }}
 {{- end }}
 apiVersion: v1

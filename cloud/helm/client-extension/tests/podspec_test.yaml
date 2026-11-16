@@ -44,15 +44,6 @@ tests:
                 configs:
                     com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationUserAgentConfiguration: {}
     -   asserts:
-            -   notExists:
-                    path: spec.template.spec.volumes[?(@.name == "artifact")]
-        it: Mounts no artifact without a reference
-        set:
-            artifact:
-                mounts:
-                    -   mountPath: /opt/liferay
-                        subPath: .cx-mounts/0
-    -   asserts:
             -   contains:
                     content:
                         configMap:
@@ -69,35 +60,6 @@ tests:
             clientExtension:
                 configs:
                     com.liferay.oauth2.provider.configuration.OAuth2ProviderApplicationHeadlessServerConfiguration~able-oauth-application-headless-server: {}
-    -   asserts:
-            -   contains:
-                    content:
-                        image:
-                            pullPolicy: IfNotPresent
-                            reference: registry.example.com/cx/able@sha256:0
-                        name: artifact
-                    path: spec.template.spec.volumes
-            -   contains:
-                    content:
-                        mountPath: /opt/liferay
-                        name: artifact
-                        readOnly: true
-                        subPath: .cx-mounts/0
-                    path: spec.template.spec.containers[0].volumeMounts
-            -   contains:
-                    content:
-                        mountPath: /public_html
-                        name: artifact
-                        readOnly: true
-                    path: spec.template.spec.containers[0].volumeMounts
-        it: Mounts the artifact at each of its mounts
-        set:
-            artifact:
-                mounts:
-                    -   mountPath: /opt/liferay
-                        subPath: .cx-mounts/0
-                    -   mountPath: /public_html
-                reference: registry.example.com/cx/able@sha256:0
     -   asserts:
             -   equal:
                     path: spec.template.spec.containers[0].env

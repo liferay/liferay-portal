@@ -1,0 +1,38 @@
+{{- $dxpOperator := .Values.operatorApplications.dxpOperator -}}
+{{- if and .Values.liferay.enabled $dxpOperator.enabled (dig "clientExtensions" "enabled" false ($dxpOperator.values | default dict)) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+    annotations:
+        argocd.argoproj.io/compare-options: IgnoreExtraneous
+        argocd.argoproj.io/sync-wave: "-110"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: client-extension-appproject
+    name: liferay-client-extension
+    namespace: {{ .Release.Namespace }}
+spec:
+    clusterResourceWhitelist: []
+    description:
+        ArgoCD project for client extensions, generated from the descriptors that Liferay Workspace publishes.
+    destinations:
+        -   namespace: liferay-*
+            server: https://kubernetes.default.svc
+    namespaceResourceWhitelist:
+        -   group: ""
+            kind: Service
+        -   group: ""
+            kind: ServiceAccount
+        -   group: apps
+            kind: Deployment
+        -   group: batch
+            kind: CronJob
+        -   group: batch
+            kind: Job
+        -   group: cx.liferay.com
+            kind: ClientExtension
+        -   group: gateway.networking.k8s.io
+            kind: HTTPRoute
+    sourceRepos:
+        {{- include "liferay-platform.sourceRepos" (list .Values.clientExtensions.chart.repoURL) | nindent 8 }}
+{{- end -}}

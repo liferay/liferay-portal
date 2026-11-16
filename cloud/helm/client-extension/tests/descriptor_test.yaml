@@ -1,0 +1,184 @@
+release:
+    name: my-release
+    namespace: my-namespace
+set:
+    clientExtension:
+        serviceId: able
+suite: Descriptor
+templates:
+    -   templates/clientextension.yaml
+    -   templates/cronjob.yaml
+    -   templates/deployment.yaml
+    -   templates/job.yaml
+    -   templates/service.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].image
+                    value: registry.example.com/able:1.0.0@sha256:1
+                template: templates/deployment.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/service.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/job.yaml
+            -   equal:
+                    path: spec.configs
+                    value:
+                        com.liferay.client.extension.type.configuration.CETConfiguration~able-global-js:
+                            name: Able Global JS
+                template: templates/clientextension.yaml
+            -   equal:
+                    path: spec.workloadRef
+                    value:
+                        kind: Deployment
+                        name: my-release-liferay-client-extension
+                template: templates/clientextension.yaml
+        it: Runs a frontend descriptor as a Deployment with a Service, pinned to its digest
+        set:
+            descriptor:
+                configs:
+                    com.liferay.client.extension.type.configuration.CETConfiguration~able-global-js:
+                        name: Able Global JS
+                descriptorVersion: 1
+                image:
+                    digest: sha256:1
+                    repository: registry.example.com/able
+                    tag: 1.0.0
+                type: frontend
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/deployment.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/service.yaml
+        it: Runs a service descriptor as a Deployment with a Service
+        set:
+            descriptor:
+                configs:
+                    key~able: {}
+                descriptorVersion: 1
+                image:
+                    repository: registry.example.com/able
+                    tag: 1.0.0
+                type: service
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/deployment.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/job.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/service.yaml
+            -   notExists:
+                    path: spec.workloadRef
+                template: templates/clientextension.yaml
+            -   equal:
+                    path: spec.configs
+                    value:
+                        key~able: {}
+                template: templates/clientextension.yaml
+        it: Runs no workload and no Service for a configuration descriptor
+        set:
+            descriptor:
+                configs:
+                    key~able: {}
+                descriptorVersion: 1
+                type: configuration
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/job.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/service.yaml
+            -   contains:
+                    content:
+                        name: LIFERAY_BATCH_OAUTH_APP_ERC
+                        value: able-batch
+                    path: spec.template.spec.containers[0].env
+                template: templates/job.yaml
+        it: Runs a batch descriptor as a Job that knows its OAuth application
+        set:
+            descriptor:
+                configs:
+                    key~able: {}
+                descriptorVersion: 1
+                image:
+                    repository: registry.example.com/able
+                    tag: 1.0.0
+                oauthApplicationHeadlessServerERC: able-batch
+                type: batch
+    -   asserts:
+            -   notContains:
+                    content:
+                        name: LIFERAY_BATCH_OAUTH_APP_ERC
+                        value: able-batch
+                    path: spec.template.spec.containers[0].env
+                template: templates/job.yaml
+            -   contains:
+                    content:
+                        name: LIFERAY_BATCH_OAUTH_APP_ERC
+                        value: other
+                    path: spec.template.spec.containers[0].env
+                template: templates/job.yaml
+        it: Lets workload.env set the batch OAuth application
+        set:
+            descriptor:
+                configs:
+                    key~able: {}
+                descriptorVersion: 1
+                image:
+                    repository: registry.example.com/able
+                    tag: 1.0.0
+                oauthApplicationHeadlessServerERC: able-batch
+                type: batch
+            workload:
+                env:
+                    LIFERAY_BATCH_OAUTH_APP_ERC: other
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/cronjob.yaml
+            -   equal:
+                    path: spec.jobTemplate.spec.template.spec.containers[0].image
+                    value: registry.example.com/able:2.0.0
+                template: templates/cronjob.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/service.yaml
+            -   equal:
+                    path: spec.configs
+                    value:
+                        key~able:
+                            name: Chart
+                        key~baker: {}
+                template: templates/clientextension.yaml
+        it: Lets values set on the chart take precedence over the descriptor
+        set:
+            clientExtension:
+                configs:
+                    key~able:
+                        name: Chart
+            descriptor:
+                configs:
+                    key~able:
+                        name: Descriptor
+                    key~baker: {}
+                descriptorVersion: 1
+                image:
+                    digest: sha256:1
+                    repository: registry.example.com/able
+                    tag: 1.0.0
+                type: service
+            image:
+                tag: 2.0.0
+            service:
+                enabled: false
+            workload:
+                kind: CronJob
+                schedule: 0 * * * *

@@ -17,6 +17,10 @@ variable "argocd_external_access_config" {
 variable "argocd_helm_chart_version" {
 	type=string
 }
+variable "client_extension_registries" {
+	default=[]
+	type=list(string)
+}
 variable "observability_enabled" {
 	default=false
 	type=bool

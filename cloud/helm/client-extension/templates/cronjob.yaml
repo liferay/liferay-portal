@@ -1,4 +1,4 @@
-{{- if and .Values.workload.enabled (eq .Values.workload.kind "CronJob") }}
+{{- if and (include "liferay-client-extension.workloadEnabled" .) (eq (include "liferay-client-extension.workloadKind" .) "CronJob") }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:

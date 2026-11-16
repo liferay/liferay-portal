@@ -1,4 +1,5 @@
-{{- if not .Values.clientExtension.configs }}
+{{- $configs := include "liferay-client-extension.configs" . | fromJson }}
+{{- if not $configs }}
 {{- fail "clientExtension.configs is required" }}
 {{- end }}
 apiVersion: cx.liferay.com/v1alpha1
@@ -11,7 +12,7 @@ metadata:
     name: {{ include "liferay-client-extension.fullname" . }}
 spec:
     configs:
-        {{- toYaml .Values.clientExtension.configs | nindent 8 }}
+        {{- toYaml $configs | nindent 8 }}
     {{- with .Values.clientExtension.domain }}
     domain: {{ . | quote }}
     {{- end }}
@@ -19,9 +20,12 @@ spec:
     dxpNamespace: {{ . | quote }}
     {{- end }}
     serviceId: {{ include "liferay-client-extension.serviceId" . | quote }}
+    {{- with .Values.clientExtension.version }}
+    version: {{ . | quote }}
+    {{- end }}
     virtualInstanceId: {{ .Values.clientExtension.virtualInstanceId | quote }}
-    {{- if .Values.workload.enabled }}
+    {{- if include "liferay-client-extension.workloadEnabled" . }}
     workloadRef:
-        kind: {{ .Values.workload.kind }}
+        kind: {{ include "liferay-client-extension.workloadKind" . }}
         name: {{ include "liferay-client-extension.workloadName" . }}
     {{- end }}

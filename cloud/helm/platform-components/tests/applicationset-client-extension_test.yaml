@@ -1,0 +1,164 @@
+release:
+    name: my-release
+    namespace: argocd-system
+set:
+    clusterSecretStore:
+        name: liferay-test-secret-store
+    gitops:
+        repository:
+            url: https://git.example.com/gitops.git
+    networkPolicy:
+        apiServerSources:
+            -   cidr: 10.0.0.0/8
+suite: Client extension ApplicationSet and AppProject
+templates:
+    -   templates/applicationset-client-extension.yaml
+    -   templates/appproject-client-extension.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.template.metadata.name
+                    value: "{{ index .path.segments 2 }}-{{ index .path.segments 4 }}-{{ .name }}"
+                template: templates/applicationset-client-extension.yaml
+            -   equal:
+                    path: spec.template.spec.destination.namespace
+                    value: liferay-{{ index .path.segments 2 }}-{{ index .path.segments 4 }}
+                template: templates/applicationset-client-extension.yaml
+            -   contains:
+                    content:
+                        forceString: true
+                        name: network.gatewayName
+                        value: "{{ index .path.segments 2 }}-{{ index .path.segments 4 }}-gateway"
+                    path: spec.template.spec.source.helm.parameters
+                template: templates/applicationset-client-extension.yaml
+        it: Derives the application names and namespaces from the layout expressions
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "gitops.layout.projectId" must have the form {{path[n]}} for the client extension ApplicationSet
+                template: templates/applicationset-client-extension.yaml
+        it: Fails for a layout expression that is not a path segment
+        set:
+            gitops:
+                layout:
+                    projectId: "{{path.basename}}"
+    -   asserts:
+            -   equal:
+                    path: spec.clusterResourceWhitelist
+                    value: []
+                template: templates/appproject-client-extension.yaml
+            -   notContains:
+                    any: true
+                    content:
+                        kind: RoleBinding
+                    path: spec.namespaceResourceWhitelist
+                template: templates/appproject-client-extension.yaml
+            -   equal:
+                    path: spec.destinations
+                    value:
+                        -   namespace: liferay-*
+                            server: https://kubernetes.default.svc
+                template: templates/appproject-client-extension.yaml
+        it: Limits the AppProject to namespaced chart resources in the Liferay namespaces
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/applicationset-client-extension.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/appproject-client-extension.yaml
+        it: Omits the ApplicationSet and AppProject when the DXP operator does not deliver client extensions
+        set:
+            operatorApplications:
+                dxpOperator:
+                    values:
+                        clientExtensions:
+                            enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/applicationset-client-extension.yaml
+        it: Omits the ApplicationSet when Liferay is disabled
+        set:
+            liferay:
+                enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.source.helm.valueFiles
+                    value:
+                        -   "cxdescriptor://{{ trimPrefix \"oci://\" .descriptor }}:{{ .version }}"
+                template: templates/applicationset-client-extension.yaml
+            -   notExists:
+                    path: spec.generators[0].matrix.generators[1].oci
+                template: templates/applicationset-client-extension.yaml
+        it: Reads each client extension descriptor for its own Application, not in a generator
+    -   asserts:
+            -   equal:
+                    path: spec.generators[0].matrix.generators[0].matrix.generators
+                    value:
+                        -   git:
+                                files:
+                                    -   path: liferay/projects/*/environments/*/liferay.yaml
+                                repoURL: https://git.example.com/gitops.git
+                                revision: HEAD
+                        -   git:
+                                files:
+                                    -   path: liferay/projects/{{ index .path.segments 2 }}/base/liferay.yaml
+                                pathParamPrefix: base
+                                repoURL: https://git.example.com/gitops.git
+                                revision: HEAD
+                template: templates/applicationset-client-extension.yaml
+        it: Pairs each environment's liferay.yaml with its project's base liferay.yaml
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "gitops.layout.base" may only use {{path[n]}} placeholders for the client extension ApplicationSet
+                template: templates/applicationset-client-extension.yaml
+        it: Fails for a base layout that uses a placeholder other than a path segment
+        set:
+            gitops:
+                layout:
+                    base: liferay/projects/{{path.basename}}/base
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.source
+                    value:
+                        helm:
+                            parameters:
+                                -   forceString: true
+                                    name: clientExtension.serviceId
+                                    value: "{{ .name }}"
+                                -   forceString: true
+                                    name: clientExtension.version
+                                    value: "{{ .version }}"
+                                -   forceString: true
+                                    name: fullnameOverride
+                                    value: "{{ .name }}"
+                                -   forceString: true
+                                    name: network.gatewayName
+                                    value: "{{ index .path.segments 2 }}-{{ index .path.segments 4 }}-gateway"
+                            releaseName: "{{ .name }}"
+                            valueFiles:
+                                -   "cxdescriptor://{{ trimPrefix \"oci://\" .descriptor }}:{{ .version }}"
+                            values: "{{ get . \"values\" | default dict | toJson }}"
+                        path: .
+                        repoURL: oci://registry.example.com/charts/liferay-client-extension
+                        targetRevision: 0.2.0
+                template: templates/applicationset-client-extension.yaml
+            -   contains:
+                    content: oci://registry.example.com/charts/liferay-client-extension
+                    path: spec.sourceRepos
+                template: templates/appproject-client-extension.yaml
+        it: Renders every client extension from the platform's chart and version
+        set:
+            clientExtensions:
+                chart:
+                    repoURL: oci://registry.example.com/charts/liferay-client-extension
+                    targetRevision: 0.2.0
+    -   asserts:
+            -   notExists:
+                    path: spec.templatePatch
+                template: templates/applicationset-client-extension.yaml
+            -   notMatchRegex:
+                    path: spec.template.spec.source.helm.values
+                    pattern: "\\b(fail|required)\\b"
+                template: templates/applicationset-client-extension.yaml
+        it: Passes the liferay.yaml values to the chart through toJson, without a template patch or anything that can fail

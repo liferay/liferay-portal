@@ -129,6 +129,11 @@ spec:
                         {{- with .statefulset.volumeMounts }}
                         {{- toYaml . | nindent 22 }}
                         {{- end }}
+                        {{- $rootValues := .root.Values }}
+                        {{- if and (not .name) $rootValues.clientExtensions.delivery.enabled (not $rootValues.configmap.overrideDefaults) }}
+                        {{- $agentConfigurationFileName := "com.liferay.portal.k8s.agent.configuration.PortalK8sAgentConfiguration.config" }}
+                        {{- toYaml (list (dict "mountPath" (printf "/opt/liferay/osgi/configs/%s" $agentConfigurationFileName) "name" "liferay-configmap" "subPath" $agentConfigurationFileName)) | nindent 22 }}
+                        {{- end }}
                         {{- range $k, $v := .statefulset.customVolumeMounts }}
                         {{- if and $v (gt (len $v) 0) }}
                         {{- toYaml $v | nindent 22 }}

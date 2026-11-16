@@ -1,4 +1,4 @@
-{{- if and .Values.workload.enabled (eq .Values.workload.kind "Deployment") }}
+{{- if and (include "liferay-client-extension.workloadEnabled" .) (eq (include "liferay-client-extension.workloadKind" .) "Deployment") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

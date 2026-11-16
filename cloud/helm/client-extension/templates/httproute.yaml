@@ -1,5 +1,5 @@
 {{- if .Values.network.enabled }}
-{{- if not .Values.service.enabled }}
+{{- if not (include "liferay-client-extension.serviceEnabled" .) }}
 {{- fail "service.enabled must be true when network.enabled is true" }}
 {{- end }}
 {{- $hostnames := concat (compact (list .Values.clientExtension.domain)) .Values.network.hostnames | uniq }}

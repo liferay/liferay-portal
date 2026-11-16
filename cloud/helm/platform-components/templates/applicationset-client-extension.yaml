@@ -1,0 +1,92 @@
+{{- $dxpOperator := .Values.operatorApplications.dxpOperator -}}
+{{- if and .Values.liferay.enabled $dxpOperator.enabled (dig "clientExtensions" "enabled" false ($dxpOperator.values | default dict)) -}}
+{{- $gitops := .Values.gitops -}}
+{{- $layout := $gitops.layout -}}
+{{- $basePath := regexReplaceAll "\\{\\{path\\[(\\d+)\\]\\}\\}" $layout.base "{{ index .path.segments $1 }}" -}}
+{{- if contains "{{path" $basePath -}}
+{{- fail "The value \"gitops.layout.base\" may only use {{path[n]}} placeholders for the client extension ApplicationSet" -}}
+{{- end -}}
+{{- $segmentPattern := "^\\{\\{path\\[(\\d+)\\]\\}\\}$" -}}
+{{- range $layoutKey := list "environmentId" "projectId" -}}
+{{- if not (regexMatch $segmentPattern (get $layout $layoutKey)) -}}
+{{- fail (printf "The value \"gitops.layout.%s\" must have the form {{path[n]}} for the client extension ApplicationSet" $layoutKey) -}}
+{{- end -}}
+{{- end -}}
+{{- $environmentId := regexReplaceAll $segmentPattern $layout.environmentId "index .path.segments $1" -}}
+{{- $projectId := regexReplaceAll $segmentPattern $layout.projectId "index .path.segments $1" -}}
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-60"
+    finalizers:
+        -   resources-finalizer.argocd.argoproj.io
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: client-extension-applicationset
+    name: client-extension-applicationset
+    namespace: {{ .Release.Namespace }}
+spec:
+    generators:
+        -   matrix:
+                generators:
+                    -   matrix:
+                            generators:
+                                -   git:
+                                        files:
+                                            -   path: {{ $layout.environments }}/{{ $layout.liferayValuesFilename }}
+                                        repoURL: {{ $gitops.repository.url }}
+                                        revision: {{ $gitops.repository.revision }}
+                                -   git:
+                                        files:
+                                            -   path: {{ printf "%s/%s" $basePath $layout.liferayValuesFilename | quote }}
+                                        pathParamPrefix: base
+                                        repoURL: {{ $gitops.repository.url }}
+                                        revision: {{ $gitops.repository.revision }}
+                    -   list:
+                            elementsYaml: |{{- .Files.Get "client-extension-elements.gotmpl" | nindent 32 }}
+    goTemplate: true
+    goTemplateOptions:
+        -   missingkey=error
+    template:
+        metadata:
+            labels:
+                {{- include "liferay-platform.labels" . | nindent 16 }}
+                app.kubernetes.io/name: client-extension
+            name: {{ printf "{{ %s }}-{{ %s }}-{{ .name }}" $projectId $environmentId | quote }}
+        spec:
+            destination:
+                namespace: {{ printf "liferay-{{ %s }}-{{ %s }}" $projectId $environmentId | quote }}
+                server: https://kubernetes.default.svc
+            project: liferay-client-extension
+            source:
+                {{- include "liferay-platform.chartSource" .Values.clientExtensions.chart | nindent 16 }}
+                helm:
+                    parameters:
+                        -   forceString: true
+                            name: clientExtension.serviceId
+                            value: {{ `{{ .name }}` | quote }}
+                        -   forceString: true
+                            name: clientExtension.version
+                            value: {{ `{{ .version }}` | quote }}
+                        -   forceString: true
+                            name: fullnameOverride
+                            value: {{ `{{ .name }}` | quote }}
+                        -   forceString: true
+                            name: network.gatewayName
+                            value: {{ printf "{{ %s }}-{{ %s }}-gateway" $projectId $environmentId | quote }}
+                    releaseName: {{ `{{ .name }}` | quote }}
+                    valueFiles:
+                        -   {{ `cxdescriptor://{{ trimPrefix "oci://" .descriptor }}:{{ .version }}` | quote }}
+                    values: {{ `{{ get . "values" | default dict | toJson }}` | quote }}
+            syncPolicy:
+                automated:
+                    prune: true
+                    selfHeal: true
+                retry:
+                    backoff:
+                        duration: 30s
+                        factor: 2
+                        maxDuration: 10m
+                    limit: 10
+{{- end -}}

@@ -1,0 +1,17 @@
+{{- $clientExtensions := get . "clientExtensions" }}
+{{- $elements := list }}
+{{- if kindIs "map" $clientExtensions }}
+    {{- range $name, $clientExtension := $clientExtensions }}
+        {{- if not (kindIs "map" $clientExtension) }}
+            {{- continue }}
+        {{- end }}
+        {{- if eq (toString (get $clientExtension "enabled")) "false" }}
+            {{- continue }}
+        {{- end }}
+        {{- if not (and (get $clientExtension "descriptor") (get $clientExtension "version")) }}
+            {{- continue }}
+        {{- end }}
+        {{- $elements = append $elements (merge (dict "name" $name) $clientExtension) }}
+    {{- end }}
+{{- end }}
+{{- toJson $elements }}
