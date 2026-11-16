@@ -267,7 +267,9 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 		}
 
 		if (deployLanguageImport) {
-			content = _LANGUAGE_IMPORT + content;
+			content =
+				"import '@liferay/language/frontend-js-web/all.js';\n" +
+					content;
 		}
 
 		return content;
@@ -382,9 +384,6 @@ public class JavaScriptFrontendResourceRequestHandlerTest
 	private static final long _JS_FILES_MAX_AGE = 1000;
 
 	private static final String _LANGUAGE_ID = "en";
-
-	private static final String _LANGUAGE_IMPORT =
-		"import '@liferay/language/frontend-js-web/all.js';\n";
 
 	private static final boolean _SEND_NO_CACHE_FOR_JS_FILES =
 		RandomTestUtil.randomBoolean();
