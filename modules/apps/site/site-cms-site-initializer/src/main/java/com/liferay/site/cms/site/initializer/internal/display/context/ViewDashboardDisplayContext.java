@@ -300,10 +300,20 @@ public class ViewDashboardDisplayContext {
 		).put(
 			"redirect", _themeDisplay.getURLCurrent()
 		).put(
+			"tasksSectionFDSName", CMSSiteInitializerFDSNames.TASKS_SECTION
+		).put(
 			"unlinkedContentFDSActionDropdownItems",
 			() ->
 				_viewUnlinkedContentSectionFDSItemsActions.
 					getFDSActionDropdownItems(_httpServletRequest)
+		).put(
+			"workflowTaskFDSActionDropdownItems",
+			() -> {
+				ViewTasksDisplayContext viewTasksDisplayContext =
+					new ViewTasksDisplayContext(_httpServletRequest);
+
+				return viewTasksDisplayContext.getFDSActionDropdownItems();
+			}
 		).build();
 	}
 

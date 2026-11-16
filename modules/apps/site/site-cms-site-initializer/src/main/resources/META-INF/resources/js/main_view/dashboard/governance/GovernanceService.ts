@@ -84,6 +84,9 @@ const NESTED_FIELDS = 'embedded,systemProperties.objectDefinitionBrief';
 
 const SEARCH_URL = '/o/search/v1.0/search';
 
+const WORKFLOW_TASK_CLASS_NAME =
+	'com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken';
+
 const FRESHNESS_LIST_QUERIES: Record<
 	FreshnessListType,
 	() => {filter: string; sort: string}
@@ -282,14 +285,16 @@ function getContentProgress(
 	});
 }
 
-function getScopedFilter(filter: string, groupIds: number[]) {
+function getScopedFilter(
+	filter: string,
+	groupIds: number[],
+	getGroupFilter = (groupId: number) => `groupIds/any(g:g eq ${groupId})`
+) {
 	if (!groupIds.length) {
 		return filter;
 	}
 
-	const groupFilter = groupIds
-		.map((groupId) => `groupIds/any(g:g eq ${groupId})`)
-		.join(' or ');
+	const groupFilter = groupIds.map(getGroupFilter).join(' or ');
 
 	if (groupIds.length === 1) {
 		return `${filter} and ${groupFilter}`;
@@ -366,6 +371,24 @@ function getLongStandingDraftsURL(filter: string, groupIds: number[]) {
 	);
 }
 
+function getOverdueTasksURL(groupIds: number[]) {
+	const searchParams = new URLSearchParams({
+		emptySearch: 'true',
+		entryClassNames: WORKFLOW_TASK_CLASS_NAME,
+		filter: getScopedFilter(
+			`completed eq false and dueDate le ${new Date().toISOString()}`,
+			groupIds,
+			(groupId) => `scopeGroupId eq ${groupId}`
+		),
+		nestedFields: 'embedded,embedded.objectReviewed',
+		nestedFieldsDepth: '2',
+		pageSize: String(GOVERNANCE_ASSET_LIST_PAGE_SIZE),
+		sort: 'dueDate:asc',
+	});
+
+	return `${SEARCH_URL}?${searchParams}`;
+}
+
 export default {
 	getAssetStatistics,
 	getBrokenLinkAssetsURL,
@@ -376,5 +399,6 @@ export default {
 	getLongStandingDraftsThresholdDate,
 	getLongStandingDraftsURL,
 	getMissingRequiredFieldsAssetsURL,
+	getOverdueTasksURL,
 	getUnlinkedAssetsURL,
 };

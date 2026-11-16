@@ -373,3 +373,31 @@ describe('GovernanceService.getMissingRequiredFieldsAssetsURL', () => {
 		);
 	});
 });
+
+describe('GovernanceService.getOverdueTasksURL', () => {
+	function getSearchParams(groupIds: number[]) {
+		return new URL(
+			GovernanceService.getOverdueTasksURL(groupIds),
+			'http://localhost'
+		).searchParams;
+	}
+
+	it('searches the pending tasks past their due date, most overdue first', () => {
+		const searchParams = getSearchParams([]);
+
+		expect(searchParams.get('entryClassNames')).toBe(
+			'com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken'
+		);
+		expect(searchParams.get('filter')).toMatch(
+			/^completed eq false and dueDate le \S+$/
+		);
+		expect(searchParams.get('pageSize')).toBe('8');
+		expect(searchParams.get('sort')).toBe('dueDate:asc');
+	});
+
+	it('scopes the tasks to the selected spaces', () => {
+		expect(getSearchParams([1, 2]).get('filter')).toMatch(
+			/ and \(scopeGroupId eq 1 or scopeGroupId eq 2\)$/
+		);
+	});
+});

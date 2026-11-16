@@ -13,5 +13,7 @@ export type GovernanceAdditionalProps = DashboardAssetListAdditionalProps & {
 	contentProgressFilter: string;
 	fdsActionDropdownItems: IItemsActions[];
 	missingRequiredFieldsFDSActionDropdownItems: IItemsActions[];
+	tasksSectionFDSName: string;
 	unlinkedContentFDSActionDropdownItems: IItemsActions[];
+	workflowTaskFDSActionDropdownItems: IItemsActions[];
 };

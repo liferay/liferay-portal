@@ -18,7 +18,10 @@ import GovernanceService, {
 	LONG_STANDING_DRAFT_DAYS,
 	MILLISECONDS_PER_DAY,
 } from '../GovernanceService';
-import getAllSectionHref, {getSpaceFilters} from '../getAllSectionHref';
+import getSectionHref, {
+	getSpaceFilters,
+	toFDSConfigFilters,
+} from '../getSectionHref';
 import {GovernanceAdditionalProps} from '../types';
 import {
 	GovernanceAssetList,
@@ -107,25 +110,31 @@ export function LongStandingDraftsList({
 				additionalProps.contentProgressFilter,
 				groupIds
 			),
-			viewAllHref: getAllSectionHref(additionalProps.allSectionFDSName, {
-				filters: [
-					...Object.entries(
-						QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.IN_DRAFT]()
-					).map(([id, selectedData]) => ({id, selectedData})),
-					{
-						id: FDS_FILTER_ID.DATE_MODIFIED,
-						selectedData: {
-							exclude: false,
-							from: null,
-							to: toDatePart(
-								GovernanceService.getLongStandingDraftsThresholdDate()
-							),
+			viewAllHref: getSectionHref(
+				'all',
+				additionalProps.allSectionFDSName,
+				{
+					filters: [
+						...toFDSConfigFilters(
+							QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.IN_DRAFT]()
+						),
+						{
+							id: FDS_FILTER_ID.DATE_MODIFIED,
+							selectedData: {
+								exclude: false,
+								from: null,
+								to: toDatePart(
+									GovernanceService.getLongStandingDraftsThresholdDate()
+								),
+							},
 						},
-					},
-					...getSpaceFilters(space),
-				],
-				sorts: [{direction: 'asc', key: FDS_FILTER_ID.DATE_MODIFIED}],
-			}),
+						...getSpaceFilters(space),
+					],
+					sorts: [
+						{direction: 'asc', key: FDS_FILTER_ID.DATE_MODIFIED},
+					],
+				}
+			),
 		}),
 		[
 			additionalProps.allSectionFDSName,

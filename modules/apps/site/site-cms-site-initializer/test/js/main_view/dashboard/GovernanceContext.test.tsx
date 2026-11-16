@@ -27,6 +27,7 @@ function StatisticsConsumer() {
 		groupIds,
 		loadingStatistics,
 		reloadStatistics,
+		selectedSpaceGroupIds,
 		setSpace,
 		statistics,
 	} = useContext(GovernanceContext);
@@ -34,6 +35,10 @@ function StatisticsConsumer() {
 	return (
 		<>
 			<span data-testid="groupIds">{groupIds.join()}</span>
+
+			<span data-testid="selectedSpaceGroupIds">
+				{selectedSpaceGroupIds.join()}
+			</span>
 
 			<span data-testid="loadingStatistics">
 				{String(loadingStatistics)}
@@ -87,7 +92,7 @@ describe('[CMS Dashboard] GovernanceContext', () => {
 		expect(screen.getByTestId('groupIds')).toHaveTextContent('999');
 	});
 
-	it('leaves the group ids empty when the user administers every space', async () => {
+	it('leaves the group ids empty but keeps the selected space group ids when the user administers every space', async () => {
 		mockedGovernanceService.getAssetStatistics.mockResolvedValue(
 			mockStatistics(1)
 		);
@@ -103,12 +108,18 @@ describe('[CMS Dashboard] GovernanceContext', () => {
 		);
 
 		expect(screen.getByTestId('groupIds')).toBeEmptyDOMElement();
+		expect(screen.getByTestId('selectedSpaceGroupIds')).toHaveTextContent(
+			'111,222'
+		);
 
 		await userEvent.click(
 			screen.getByRole('button', {name: 'Select Space'})
 		);
 
 		expect(screen.getByTestId('groupIds')).toHaveTextContent('999');
+		expect(screen.getByTestId('selectedSpaceGroupIds')).toHaveTextContent(
+			'999'
+		);
 	});
 
 	it('keeps showing the statistics while reloading them', async () => {

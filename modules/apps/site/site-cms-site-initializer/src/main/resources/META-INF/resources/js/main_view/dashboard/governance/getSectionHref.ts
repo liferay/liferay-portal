@@ -11,6 +11,7 @@ import {
 } from '@liferay/frontend-data-set-web';
 
 import {FDS_FILTER_ID} from '../../../common/utils/constants';
+import {QuickFilterUpdates} from '../../quick_filters/utils';
 import {SpaceOption} from '../common/SpacePicker';
 import getCMSSectionURL from './getCMSSectionURL';
 
@@ -18,6 +19,15 @@ type FDSConfigFilter = {
 	id: string;
 	selectedData: IBaseFilterState['selectedData'];
 };
+
+export function toFDSConfigFilters(
+	quickFilterUpdates: QuickFilterUpdates
+): FDSConfigFilter[] {
+	return Object.entries(quickFilterUpdates).map(([id, selectedData]) => ({
+		id,
+		selectedData,
+	}));
+}
 
 export function getSpaceFilters(space: SpaceOption): FDSConfigFilter[] {
 	if (!space.siteId) {
@@ -35,7 +45,8 @@ export function getSpaceFilters(space: SpaceOption): FDSConfigFilter[] {
 	];
 }
 
-export default function getAllSectionHref(
+export default function getSectionHref(
+	sectionPath: string,
 	fdsName: string,
 	config: {filters?: FDSConfigFilter[]; sorts?: TSort[]}
 ) {
@@ -43,5 +54,5 @@ export default function getAllSectionHref(
 		[getConfigParamName(fdsName)]: serializeFDSConfig(config),
 	});
 
-	return `${getCMSSectionURL('all')}?${searchParams}`;
+	return `${getCMSSectionURL(sectionPath)}?${searchParams}`;
 }

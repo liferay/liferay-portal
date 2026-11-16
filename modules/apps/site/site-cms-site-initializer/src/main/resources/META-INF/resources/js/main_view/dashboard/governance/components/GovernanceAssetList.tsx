@@ -15,7 +15,10 @@ import {sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useMemo} from 'react';
 
 import {ISearchAssetObjectEntry} from '../../../../common/types/AssetType';
-import {FDS_EVENT_UPDATE_DISPLAY} from '../../../../common/utils/constants';
+import {
+	FDS_EVENT_ACTION_PERFORMED,
+	FDS_EVENT_UPDATE_DISPLAY,
+} from '../../../../common/utils/constants';
 import getDashboardAssetListFDSProps from '../../../props_transformer/getDashboardAssetListFDSProps';
 import {GovernanceContext} from '../GovernanceContext';
 import {GOVERNANCE_ASSET_LIST_PAGE_SIZE} from '../GovernanceService';
@@ -25,9 +28,11 @@ const EMPTY_STATE_IMAGE = '/states/cms_empty_state.svg';
 
 export function getGovernanceAssetListViews({
 	actionId,
+	contentRenderer = 'assetRenderer',
 	fieldName,
 }: {
 	actionId: string;
+	contentRenderer?: string;
 	fieldName: string;
 }) {
 	return [
@@ -40,7 +45,7 @@ export function getGovernanceAssetListViews({
 				fields: [
 					{
 						actionId,
-						contentRenderer: 'assetRenderer',
+						contentRenderer,
 						fieldName,
 						label: Liferay.Language.get('title'),
 					},
@@ -149,6 +154,28 @@ export function GovernanceListPanel({
 	);
 }
 
+export function useReloadStatisticsOnListRefresh(id: string) {
+	const {reloadStatistics} = useContext(GovernanceContext);
+
+	useEffect(() => {
+		const handleListRefresh = (event?: {id?: string}) => {
+			if (event?.id === id) {
+				reloadStatistics();
+			}
+		};
+
+		Liferay.on(FDS_EVENT_ACTION_PERFORMED, handleListRefresh);
+		Liferay.on(FDS_EVENT_UPDATE_DISPLAY, handleListRefresh);
+
+		return () => {
+			Liferay.detach(FDS_EVENT_ACTION_PERFORMED, handleListRefresh);
+			Liferay.detach(FDS_EVENT_UPDATE_DISPLAY, handleListRefresh);
+		};
+	}, [id, reloadStatistics]);
+
+	return reloadStatistics;
+}
+
 export function GovernanceAssetList({
 	additionalProps,
 	apiURL,
@@ -174,21 +201,7 @@ export function GovernanceAssetList({
 	title: string;
 	viewAllHref: string;
 }) {
-	const {reloadStatistics} = useContext(GovernanceContext);
-
-	useEffect(() => {
-		const handleUpdateDisplay = (event?: {id?: string}) => {
-			if (event?.id === id) {
-				reloadStatistics();
-			}
-		};
-
-		Liferay.on(FDS_EVENT_UPDATE_DISPLAY, handleUpdateDisplay);
-
-		return () => {
-			Liferay.detach(FDS_EVENT_UPDATE_DISPLAY, handleUpdateDisplay);
-		};
-	}, [id, reloadStatistics]);
+	const reloadStatistics = useReloadStatisticsOnListRefresh(id);
 
 	const fdsProps = useMemo(
 		() => ({

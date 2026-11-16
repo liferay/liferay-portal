@@ -18,6 +18,7 @@ type State = {
 	groupIds: number[];
 	loadingStatistics: boolean;
 	reloadStatistics: () => void;
+	selectedSpaceGroupIds: number[];
 	setSpace: (space: SpaceOption) => void;
 	space: SpaceOption;
 	spaceIds: string[];
@@ -28,6 +29,7 @@ const GovernanceContext = createContext<State>({
 	groupIds: [],
 	loadingStatistics: true,
 	reloadStatistics: () => {},
+	selectedSpaceGroupIds: [],
 	setSpace: () => {},
 	space: initialSpace,
 	spaceIds: [],
@@ -80,23 +82,28 @@ function GovernanceContextProvider({
 		[]
 	);
 
-	const groupIds = useMemo(() => {
+	const selectedSpaceGroupIds = useMemo(() => {
 		if (space.value !== initialSpace.value) {
 			return space.siteId ? [space.siteId] : [];
 		}
 
-		if (allSpacesAdministered) {
+		return spaceGroupIds.map(Number);
+	}, [space, spaceGroupIds]);
+
+	const groupIds = useMemo(() => {
+		if (allSpacesAdministered && space.value === initialSpace.value) {
 			return [];
 		}
 
-		return spaceGroupIds.map(Number);
-	}, [allSpacesAdministered, space, spaceGroupIds]);
+		return selectedSpaceGroupIds;
+	}, [allSpacesAdministered, selectedSpaceGroupIds, space]);
 
 	const value = useMemo(
 		() => ({
 			groupIds,
 			loadingStatistics,
 			reloadStatistics,
+			selectedSpaceGroupIds,
 			setSpace,
 			space,
 			spaceIds,
@@ -106,6 +113,7 @@ function GovernanceContextProvider({
 			groupIds,
 			loadingStatistics,
 			reloadStatistics,
+			selectedSpaceGroupIds,
 			space,
 			spaceIds,
 			statistics,

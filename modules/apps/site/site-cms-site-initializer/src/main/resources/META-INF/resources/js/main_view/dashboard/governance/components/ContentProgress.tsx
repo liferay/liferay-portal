@@ -24,7 +24,7 @@ import GovernanceService, {
 	FacetBucket,
 	MILLISECONDS_PER_DAY,
 } from '../GovernanceService';
-import getAllSectionHref, {getSpaceFilters} from '../getAllSectionHref';
+import getSectionHref, {getSpaceFilters} from '../getSectionHref';
 import {GovernanceAdditionalProps} from '../types';
 
 const CHART_HEIGHT = 36;
@@ -138,7 +138,7 @@ export function ContentProgress({
 		const spaceFilters = getSpaceFilters(space);
 
 		return getSegments(buckets ?? [], (statuses) =>
-			getAllSectionHref(additionalProps.allSectionFDSName, {
+			getSectionHref('all', additionalProps.allSectionFDSName, {
 				filters: [
 					{
 						id: FDS_FILTER_ID.STATUS,

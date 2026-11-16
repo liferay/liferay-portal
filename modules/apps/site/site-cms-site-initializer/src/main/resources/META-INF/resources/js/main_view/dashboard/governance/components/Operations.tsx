@@ -14,16 +14,20 @@ import {
 	LongStandingDraftsCard,
 	LongStandingDraftsList,
 } from './LongStandingDrafts';
-import {OverdueTasksCard} from './OverdueTasks';
+import {OverdueTasksCard, OverdueTasksList} from './OverdueTasks';
 import {SLABreachesCard} from './SLABreaches';
+
+type ExpandedList = 'longStandingDrafts' | 'overdueTasks' | null;
 
 export function Operations({
 	additionalProps,
 }: {
 	additionalProps: GovernanceAdditionalProps;
 }) {
-	const [longStandingDraftsExpanded, setLongStandingDraftsExpanded] =
-		useState(false);
+	const [expandedList, setExpandedList] = useState<ExpandedList>(null);
+
+	const toggleList = (list: ExpandedList) =>
+		setExpandedList((expanded) => (expanded === list ? null : list));
 
 	const title = Liferay.Language.get('operations');
 
@@ -33,17 +37,16 @@ export function Operations({
 
 			<ClayLayout.Row className="mt-4">
 				<ClayLayout.Col className="mb-4" md={4}>
-					<OverdueTasksCard />
+					<OverdueTasksCard
+						expanded={expandedList === 'overdueTasks'}
+						onClick={() => toggleList('overdueTasks')}
+					/>
 				</ClayLayout.Col>
 
 				<ClayLayout.Col className="mb-4" md={4}>
 					<LongStandingDraftsCard
-						expanded={longStandingDraftsExpanded}
-						onClick={() =>
-							setLongStandingDraftsExpanded(
-								(expanded) => !expanded
-							)
-						}
+						expanded={expandedList === 'longStandingDrafts'}
+						onClick={() => toggleList('longStandingDrafts')}
 					/>
 				</ClayLayout.Col>
 
@@ -51,7 +54,13 @@ export function Operations({
 					<SLABreachesCard />
 				</ClayLayout.Col>
 
-				{longStandingDraftsExpanded ? (
+				{expandedList === 'overdueTasks' ? (
+					<ClayLayout.Col className="mb-4" size={12}>
+						<OverdueTasksList additionalProps={additionalProps} />
+					</ClayLayout.Col>
+				) : null}
+
+				{expandedList === 'longStandingDrafts' ? (
 					<ClayLayout.Col className="mb-4" size={12}>
 						<LongStandingDraftsList
 							additionalProps={additionalProps}

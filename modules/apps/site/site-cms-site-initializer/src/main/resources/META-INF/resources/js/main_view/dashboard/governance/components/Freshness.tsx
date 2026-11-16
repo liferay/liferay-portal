@@ -31,7 +31,10 @@ import GovernanceService, {
 	FreshnessListType,
 	MILLISECONDS_PER_DAY,
 } from '../GovernanceService';
-import getAllSectionHref, {getSpaceFilters} from '../getAllSectionHref';
+import getSectionHref, {
+	getSpaceFilters,
+	toFDSConfigFilters,
+} from '../getSectionHref';
 import {GovernanceAdditionalProps} from '../types';
 import {ContentAgeDistribution} from './ContentAgeDistribution';
 import {
@@ -222,15 +225,17 @@ function FreshnessList({
 				additionalProps.contentProgressFilter,
 				groupIds
 			),
-			viewAllHref: getAllSectionHref(additionalProps.allSectionFDSName, {
-				filters: [
-					...Object.entries(card.getViewAllFilters()).map(
-						([id, selectedData]) => ({id, selectedData})
-					),
-					...getSpaceFilters(space),
-				],
-				sorts: [{direction: 'asc', key: card.viewAllSortKey}],
-			}),
+			viewAllHref: getSectionHref(
+				'all',
+				additionalProps.allSectionFDSName,
+				{
+					filters: [
+						...toFDSConfigFilters(card.getViewAllFilters()),
+						...getSpaceFilters(space),
+					],
+					sorts: [{direction: 'asc', key: card.viewAllSortKey}],
+				}
+			),
 		}),
 		[additionalProps, card, groupIds, space]
 	);
