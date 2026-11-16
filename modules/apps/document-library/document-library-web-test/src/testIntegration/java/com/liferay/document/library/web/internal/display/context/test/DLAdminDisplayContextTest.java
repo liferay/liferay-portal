@@ -11,6 +11,7 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -38,9 +40,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
@@ -49,6 +53,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import jakarta.portlet.MutableRenderParameters;
 import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletPreferences;
 import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderURL;
 import jakarta.portlet.WindowState;
@@ -67,6 +72,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpSession;
 
 /**
  * @author Cristina González
@@ -89,6 +97,50 @@ public class DLAdminDisplayContextTest {
 
 		_company = _companyLocalService.getCompany(_group.getCompanyId());
 		_layout = LayoutTestUtil.addTypePortletLayout(_group);
+	}
+
+	@Test
+	public void testGetOrderByCol() throws Exception {
+		Assert.assertEquals("modifiedDate", _getOrderByCol(null, null));
+
+		String keywords = RandomTestUtil.randomString();
+
+		Assert.assertEquals("relevance", _getOrderByCol(keywords, null));
+
+		Assert.assertEquals("size", _getOrderByCol(null, "size"));
+		Assert.assertEquals("size", _getOrderByCol(keywords, null));
+		Assert.assertEquals("relevance", _getOrderByCol(keywords, "relevance"));
+		Assert.assertEquals(
+			"relevance",
+			_mockHttpSession.getAttribute(
+				DLPortletKeys.DOCUMENT_LIBRARY_ADMIN + "_order-by-col"));
+		Assert.assertEquals("modifiedDate", _getOrderByCol(null, null));
+		Assert.assertNull(
+			_mockHttpSession.getAttribute(
+				DLPortletKeys.DOCUMENT_LIBRARY_ADMIN + "_order-by-col"));
+		Assert.assertEquals("relevance", _getOrderByCol(keywords, null));
+		Assert.assertEquals("title", _getOrderByCol(keywords, "title"));
+		Assert.assertEquals("title", _getOrderByCol(null, null));
+	}
+
+	@Test
+	public void testGetOrderByColWithSignedInUser() throws Exception {
+		_signedIn = true;
+
+		Assert.assertEquals("modifiedDate", _getOrderByCol(null, null));
+
+		String keywords = RandomTestUtil.randomString();
+
+		Assert.assertEquals("relevance", _getOrderByCol(keywords, null));
+
+		Assert.assertEquals("size", _getOrderByCol(null, "size"));
+		Assert.assertEquals("size", _getOrderByColPortletPreference());
+		Assert.assertEquals("size", _getOrderByCol(keywords, null));
+		Assert.assertEquals("relevance", _getOrderByCol(keywords, "relevance"));
+		Assert.assertEquals("relevance", _getOrderByColPortletPreference());
+		Assert.assertEquals("modifiedDate", _getOrderByCol(null, null));
+		Assert.assertNull(_getOrderByColPortletPreference());
+		Assert.assertEquals("relevance", _getOrderByCol(keywords, null));
 	}
 
 	@Test
@@ -222,12 +274,26 @@ public class DLAdminDisplayContextTest {
 			null, serviceContext);
 	}
 
+	private Object _getDLAdminDisplayContext(
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest) {
+
+		return ReflectionTestUtil.invoke(
+			_dlAdminDisplayContextProvider, "getDLAdminDisplayContext",
+			new Class<?>[] {HttpServletRequest.class},
+			mockLiferayPortletActionRequest.getHttpServletRequest());
+	}
+
 	private MockLiferayPortletActionRequest
 			_getMockLiferayPortletActionRequest()
 		throws Exception {
 
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setSession(_mockHttpSession);
+
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
+			new MockLiferayPortletActionRequest(mockHttpServletRequest);
 
 		mockLiferayPortletActionRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_CONFIG, null);
@@ -272,16 +338,38 @@ public class DLAdminDisplayContextTest {
 		return mockLiferayPortletActionRequest;
 	}
 
+	private String _getOrderByCol(String keywords, String orderByCol)
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest(-1, -1, keywords, null);
+
+		if (Validator.isNotNull(orderByCol)) {
+			mockLiferayPortletActionRequest.setParameter(
+				"orderByCol", orderByCol);
+		}
+
+		return ReflectionTestUtil.invoke(
+			_getDLAdminDisplayContext(mockLiferayPortletActionRequest),
+			"getOrderByCol", new Class<?>[0], null);
+	}
+
+	private String _getOrderByColPortletPreference() throws Exception {
+		PortletPreferences portletPreferences =
+			PortletPreferencesFactoryUtil.getLayoutPortletSetup(
+				_company.getCompanyId(), TestPropsValues.getUserId(),
+				PortletKeys.PREFS_OWNER_TYPE_USER, _layout.getPlid(),
+				DLPortletKeys.DOCUMENT_LIBRARY_ADMIN, StringPool.BLANK);
+
+		return portletPreferences.getValue("order-by-col", null);
+	}
+
 	private SearchContainer<Object> _getSearchContainer(
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest) {
 
-		Object dlAdminDisplayContext = ReflectionTestUtil.invoke(
-			_dlAdminDisplayContextProvider, "getDLAdminDisplayContext",
-			new Class<?>[] {HttpServletRequest.class},
-			mockLiferayPortletActionRequest.getHttpServletRequest());
-
 		return ReflectionTestUtil.invoke(
-			dlAdminDisplayContext, "getSearchContainer", new Class<?>[0], null);
+			_getDLAdminDisplayContext(mockLiferayPortletActionRequest),
+			"getSearchContainer", new Class<?>[0], null);
 	}
 
 	private ThemeDisplay _getThemeDisplay() throws Exception {
@@ -291,8 +379,15 @@ public class DLAdminDisplayContextTest {
 		themeDisplay.setLayout(_layout);
 		themeDisplay.setPermissionChecker(
 			PermissionThreadLocal.getPermissionChecker());
+		themeDisplay.setPlid(_layout.getPlid());
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		portletDisplay.setId(DLPortletKeys.DOCUMENT_LIBRARY_ADMIN);
+
 		themeDisplay.setRealUser(TestPropsValues.getUser());
 		themeDisplay.setScopeGroupId(_layout.getGroupId());
+		themeDisplay.setSignedIn(_signedIn);
 		themeDisplay.setSiteGroupId(_layout.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
 
@@ -329,6 +424,8 @@ public class DLAdminDisplayContextTest {
 	private Group _group;
 
 	private Layout _layout;
+	private final MockHttpSession _mockHttpSession = new MockHttpSession();
+	private boolean _signedIn;
 
 	private static class MockActionResponse
 		extends MockLiferayPortletActionResponse {
