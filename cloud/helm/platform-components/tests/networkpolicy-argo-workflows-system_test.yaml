@@ -6,9 +6,8 @@ templates:
     -   templates/networkpolicy-argo-workflows-system.yaml
 tests:
     -   asserts:
-            -   equal:
-                    path: spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"]
-                    value: gateways
+            -   notExists:
+                    path: spec.ingress[0].from[0].namespaceSelector
             -   equal:
                     path: spec.ingress[0].from[0].podSelector.matchLabels["gateway.envoyproxy.io/owning-gateway-namespace"]
                     value: workflows
@@ -18,12 +17,11 @@ tests:
         documentSelector:
             path: metadata.name
             value: argo-workflows-server-ingress
-        it: Admits the Argo Workflows gateway's Envoy proxies to the server when the gateway is enabled
+        it: Admits the Argo Workflows gateway's Envoy proxies in its namespace to the server when the gateway is enabled
         set:
             argoWorkflows.gateway.enabled: true
             operatorApplications.argoWorkflows.name: workflows-app
             operatorApplications.argoWorkflows.namespace: workflows
-            operatorApplications.envoyGateway.namespace: gateways
     -   asserts:
             -   equal:
                     path: spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"]
@@ -36,6 +34,21 @@ tests:
             observability.enabled: true
             observability.namespace: monitoring
     -   asserts:
+            -   equal:
+                    path: spec.ingress[1].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"]
+                    value: monitoring
+            -   equal:
+                    path: spec.ingress[1].ports[0].port
+                    value: metrics
+        documentSelector:
+            path: metadata.name
+            value: argo-workflows-gateway-proxy-ingress
+        it: Admits the observability namespace to the gateway proxy metrics when observability is enabled
+        set:
+            argoWorkflows.gateway.enabled: true
+            observability.enabled: true
+            observability.namespace: monitoring
+    -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits every NetworkPolicy when Argo Workflows is disabled
@@ -44,8 +57,32 @@ tests:
     -   asserts:
             -   notEqual:
                     path: metadata.name
+                    value: argo-workflows-gateway-proxy-ingress
+            -   notEqual:
+                    path: metadata.name
                     value: argo-workflows-metrics-ingress
             -   notEqual:
                     path: metadata.name
                     value: argo-workflows-server-ingress
-        it: Omits the metrics and server policies without observability or the gateway
+        it: Omits the gateway proxy, metrics and server policies without observability or the gateway
+    -   asserts:
+            -   equal:
+                    path: spec.ingress
+                    value:
+                        -   ports:
+                                -   port: 10080
+                                    protocol: TCP
+                                -   port: 10443
+                                    protocol: TCP
+                                -   port: 10443
+                                    protocol: UDP
+            -   equal:
+                    path: spec.podSelector.matchLabels["gateway.envoyproxy.io/owning-gateway-namespace"]
+                    value: workflows
+        documentSelector:
+            path: metadata.name
+            value: argo-workflows-gateway-proxy-ingress
+        it: Opens the gateway proxy ports in the Argo Workflows namespace when the gateway is enabled
+        set:
+            argoWorkflows.gateway.enabled: true
+            operatorApplications.argoWorkflows.namespace: workflows

@@ -32,15 +32,48 @@ kind: NetworkPolicy
 metadata:
     labels:
         {{- include "liferay-platform.labels" $ | nindent 8 }}
+    name: argo-workflows-gateway-proxy-ingress
+    namespace: {{ $argoWorkflows.namespace }}
+spec:
+    ingress:
+        -   ports:
+                -   port: 10080
+                    protocol: TCP
+                -   port: 10443
+                    protocol: TCP
+                -   port: 10443
+                    protocol: UDP
+        {{- if .Values.observability.enabled }}
+        -   from:
+                -   namespaceSelector:
+                        matchLabels:
+                            kubernetes.io/metadata.name: {{ .Values.observability.namespace }}
+                {{- with .Values.networkPolicy.metricsSources }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+            ports:
+                -   port: metrics
+                    protocol: TCP
+        {{- end }}
+    podSelector:
+        matchLabels:
+            app.kubernetes.io/managed-by: envoy-gateway
+            app.kubernetes.io/name: envoy
+            gateway.envoyproxy.io/owning-gateway-namespace: {{ $argoWorkflows.namespace }}
+    policyTypes:
+        -   Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
     name: argo-workflows-server-ingress
     namespace: {{ $argoWorkflows.namespace }}
 spec:
     ingress:
         -   from:
-                -   namespaceSelector:
-                        matchLabels:
-                            kubernetes.io/metadata.name: {{ .Values.operatorApplications.envoyGateway.namespace }}
-                    podSelector:
+                -   podSelector:
                         matchLabels:
                             app.kubernetes.io/managed-by: envoy-gateway
                             app.kubernetes.io/name: envoy
