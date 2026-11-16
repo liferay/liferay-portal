@@ -7,16 +7,6 @@
 {{- fail "Azure has no managed OpenSearch, so search.engine must be elasticsearch" -}}
 {{- end -}}
 
-{{- if not $env.databaseEngine -}}
-{{- fail "Property \"database.engine\" must be set" -}}
-{{- end -}}
-
-{{- $observedDatabaseEngine := coalesce (dig "database-primary-blue" "resource" "metadata" "labels" "databaseEngine" "" $observedResources) (dig "database-primary-green" "resource" "metadata" "labels" "databaseEngine" "" $observedResources) -}}
-
-{{- if and $observedDatabaseEngine (ne $observedDatabaseEngine $env.databaseEngine) -}}
-{{- fail (printf "Unable to change the database engine of the environment from %q to %q. Create a new deployment to use another database engine." $observedDatabaseEngine $env.databaseEngine) -}}
-{{- end -}}
-
 {{- $backup := $xr.spec.backup -}}
 {{- $cmkEnabled := $xr.spec.cmk.enabled -}}
 {{- $environmentId := $xr.spec.environmentId -}}
