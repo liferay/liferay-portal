@@ -292,13 +292,14 @@ public class CMPTestUtil {
 		String originalName = PrincipalThreadLocal.getName();
 
 		User user = TestPropsValues.getUser();
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(group.getGroupId());
 
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(user));
 
 		PrincipalThreadLocal.setName(user.getUserId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
 
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
