@@ -173,6 +173,19 @@ public class LayoutsAdminDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
+	public Map<String, Object> getAIAssistantProps() {
+		return HashMapBuilder.<String, Object>put(
+			"portletNamespace", _liferayPortletResponse.getNamespace()
+		).put(
+			"siteExternalReferenceCode",
+			() -> {
+				Group scopeGroup = themeDisplay.getScopeGroup();
+
+				return scopeGroup.getExternalReferenceCode();
+			}
+		).build();
+	}
+
 	public long getActiveLayoutSetBranchId() throws PortalException {
 		if (_activeLayoutSetBranchId != null) {
 			return _activeLayoutSetBranchId;
