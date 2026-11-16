@@ -12,6 +12,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -170,6 +171,42 @@ public class LayoutsAdminManagementToolbarDisplayContext
 		long selPlid = _layoutsAdminDisplayContext.getSelPlid();
 
 		return CreationMenuBuilder.addPrimaryDropdownItem(
+			() ->
+				FeatureFlagManagerUtil.isEnabled(
+					_themeDisplay.getCompanyId(), "LPD-62272") &&
+				FeatureFlagManagerUtil.isEnabled(
+					_themeDisplay.getCompanyId(), "LPD-94002") &&
+				(_layoutsAdminDisplayContext.isShowAddChildPageAction(
+					selLayout) ||
+				 _layoutsAdminDisplayContext.isFirstColumn() ||
+				 !_layoutsAdminDisplayContext.hasLayouts()),
+			dropdownItem -> {
+				dropdownItem.put("className", "generate-with-ai");
+				dropdownItem.putData("action", "generatePageWithAI");
+
+				if (selLayout != null) {
+					dropdownItem.putData(
+						"parentPageExternalReferenceCode",
+						selLayout.getExternalReferenceCode());
+				}
+
+				dropdownItem.putData(
+					"privateLayout",
+					String.valueOf(
+						_layoutsAdminDisplayContext.isPrivateLayout()));
+
+				Group scopeGroup = _themeDisplay.getScopeGroup();
+
+				dropdownItem.putData(
+					"siteExternalReferenceCode",
+					scopeGroup.getExternalReferenceCode());
+
+				dropdownItem.setIcon("stars");
+				dropdownItem.setLabel(
+					LanguageUtil.get(
+						httpServletRequest, "generate-page-with-ai"));
+			}
+		).addPrimaryDropdownItem(
 			() ->
 				_layoutsAdminDisplayContext.isShowPublicLayouts() &&
 				_layoutsAdminDisplayContext.isShowAddChildPageAction(
