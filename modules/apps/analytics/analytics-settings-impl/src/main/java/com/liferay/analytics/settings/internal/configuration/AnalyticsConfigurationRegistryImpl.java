@@ -169,6 +169,8 @@ public class AnalyticsConfigurationRegistryImpl
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
 
+		_bundleContext = bundleContext;
+
 		modified(properties);
 
 		_companyLocalService.forEachCompany(
@@ -183,7 +185,6 @@ public class AnalyticsConfigurationRegistryImpl
 				}
 			});
 
-		_bundleContext = bundleContext;
 		_executorService = _portalExecutorManager.getPortalExecutor(
 			AnalyticsConfigurationRegistryImpl.class.getName());
 		_serviceRegistration = bundleContext.registerService(
@@ -198,11 +199,11 @@ public class AnalyticsConfigurationRegistryImpl
 
 	@Deactivate
 	protected void deactivate() {
-		_serviceRegistration.unregister();
-
 		if (_authVerifierServiceRegistration != null) {
 			_authVerifierServiceRegistration.unregister();
 		}
+
+		_serviceRegistration.unregister();
 	}
 
 	@Modified
