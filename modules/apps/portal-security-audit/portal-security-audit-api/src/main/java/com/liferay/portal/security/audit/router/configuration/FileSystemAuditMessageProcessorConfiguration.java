@@ -15,7 +15,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @author Christian Moura
  */
 @ExtendedObjectClassDefinition(
-	category = "audit", generateUI = false,
+	category = "audit", featureFlagKey = "LPD-6417",
 	scope = ExtendedObjectClassDefinition.Scope.COMPANY
 )
 @Meta.OCD(

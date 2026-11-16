@@ -7,6 +7,7 @@ package com.liferay.portal.security.audit.configuration.web.internal.configurati
 
 import com.liferay.configuration.admin.display.ConfigurationVisibilityController;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 
 import java.io.Serializable;
 
@@ -26,7 +27,11 @@ public class AuditConfigurationVisibilityController
 	public boolean isVisible(
 		ExtendedObjectClassDefinition.Scope scope, Serializable scopePK) {
 
-		return false;
+		if (ExtendedObjectClassDefinition.Scope.SYSTEM.equals(scope)) {
+			return true;
+		}
+
+		return FeatureFlagManagerUtil.isEnabled((long)scopePK, "LPD-6417");
 	}
 
 }
