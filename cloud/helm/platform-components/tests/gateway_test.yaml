@@ -91,7 +91,7 @@ tests:
             -   documentIndex: 0
                 equal:
                     path: spec.provider.kubernetes.envoyHpa.minReplicas
-                    value: 3
+                    value: 2
             -   documentIndex: 0
                 equal:
                     path: spec.provider.kubernetes.envoyPDB.maxUnavailable

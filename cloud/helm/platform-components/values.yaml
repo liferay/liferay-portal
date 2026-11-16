@@ -53,7 +53,7 @@ gateway:
     className: liferay-gateway-class
     envoyProxy:
         maxReplicas: 10
-        minReplicas: 3
+        minReplicas: 2
         name: liferay-proxy-config
         podAnnotations: {}
         serviceAnnotations: {}
