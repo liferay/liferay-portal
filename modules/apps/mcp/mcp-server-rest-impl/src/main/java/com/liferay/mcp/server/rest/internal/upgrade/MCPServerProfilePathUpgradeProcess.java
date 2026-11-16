@@ -34,6 +34,7 @@ import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alejandro Tardín
@@ -119,6 +120,13 @@ public class MCPServerProfilePathUpgradeProcess extends UpgradeProcess {
 	private void _updateObjectEntries(ObjectDefinition objectDefinition)
 		throws PortalException {
 
+		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+			objectDefinition.getObjectDefinitionId(), "profilePath");
+
+		Set<String> profilePaths =
+			MCPServerProfileUpgradeProcessUtil.getProfilePaths(
+				_objectEntryLocalService, objectField);
+
 		for (ObjectEntry objectEntry :
 				_objectEntryLocalService.getObjectEntries(
 					0, objectDefinition.getObjectDefinitionId(),
@@ -132,9 +140,12 @@ public class MCPServerProfilePathUpgradeProcess extends UpgradeProcess {
 			}
 
 			MCPServerProfileUpgradeProcessUtil.putProfilePath(
-				objectEntry.getExternalReferenceCode(),
-				objectDefinition.getObjectDefinitionId(),
-				_objectFieldLocalService, values);
+				objectEntry.getExternalReferenceCode(), objectField,
+				profilePaths, values);
+
+			if (Validator.isNull(values.get("profilePath"))) {
+				continue;
+			}
 
 			_objectEntryLocalService.updateObjectEntry(
 				objectEntry.getUserId(), objectEntry.getObjectEntryId(),

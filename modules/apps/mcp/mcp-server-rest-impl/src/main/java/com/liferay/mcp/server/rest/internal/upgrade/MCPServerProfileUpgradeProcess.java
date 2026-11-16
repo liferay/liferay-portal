@@ -516,6 +516,13 @@ public class MCPServerProfileUpgradeProcess extends UpgradeProcess {
 			ObjectRelationship objectRelationship)
 		throws PortalException {
 
+		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+			objectDefinition.getObjectDefinitionId(), "profilePath");
+
+		Set<String> profilePaths =
+			MCPServerProfileUpgradeProcessUtil.getProfilePaths(
+				_objectEntryLocalService, objectField);
+
 		for (ObjectEntry objectEntry :
 				_objectEntryLocalService.getObjectEntries(
 					0, objectDefinition.getObjectDefinitionId(),
@@ -541,9 +548,8 @@ public class MCPServerProfileUpgradeProcess extends UpgradeProcess {
 			}
 
 			MCPServerProfileUpgradeProcessUtil.putProfilePath(
-				objectEntry.getExternalReferenceCode(),
-				objectDefinition.getObjectDefinitionId(),
-				_objectFieldLocalService, values);
+				objectEntry.getExternalReferenceCode(), objectField,
+				profilePaths, values);
 
 			_objectEntryLocalService.updateObjectEntry(
 				objectEntry.getUserId(), objectEntry.getObjectEntryId(),

@@ -11,6 +11,7 @@ import com.liferay.mcp.server.rest.internal.util.MCPServerProfileUtil;
 import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import java.io.Serializable;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Jose Luis Navarro
@@ -79,6 +81,13 @@ public class MCPServerProfileStatusUpgradeProcess extends UpgradeProcess {
 				ObjectDefinitionThreadLocal.
 					setSkipBundleAllowedCheckWithSafeCloseable(true)) {
 
+			ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+				objectDefinition.getObjectDefinitionId(), "profilePath");
+
+			Set<String> profilePaths =
+				MCPServerProfileUpgradeProcessUtil.getProfilePaths(
+					_objectEntryLocalService, objectField);
+
 			for (ObjectEntry objectEntry :
 					_objectEntryLocalService.getObjectEntries(
 						0, objectDefinition.getObjectDefinitionId(),
@@ -111,9 +120,8 @@ public class MCPServerProfileStatusUpgradeProcess extends UpgradeProcess {
 				values.put("profileStatus", "inactive");
 
 				MCPServerProfileUpgradeProcessUtil.putProfilePath(
-					objectEntry.getExternalReferenceCode(),
-					objectDefinition.getObjectDefinitionId(),
-					_objectFieldLocalService, values);
+					objectEntry.getExternalReferenceCode(), objectField,
+					profilePaths, values);
 
 				_objectEntryLocalService.updateObjectEntry(
 					objectEntry.getUserId(), objectEntry.getObjectEntryId(),
