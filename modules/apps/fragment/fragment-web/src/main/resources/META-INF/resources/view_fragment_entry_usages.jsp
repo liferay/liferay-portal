@@ -115,6 +115,43 @@ renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x",
 								name="last-propagation"
 								value="<%= fragmentEntryLink.getLastPropagationDate() %>"
 							/>
+
+							<liferay-ui:search-container-column-text
+								cssClass="table-cell-expand-smallest table-column-text-center"
+							>
+
+								<%
+								String previewURL = fragmentEntryLinkDisplayContext.getFragmentEntryLinkPreviewURL(fragmentEntryLink);
+								%>
+
+								<c:choose>
+									<c:when test="<%= previewURL != null %>">
+										<clay:link
+											aria-label='<%= LanguageUtil.get(request, "view") %>'
+											cssClass="lfr-portal-tooltip"
+											displayType="secondary"
+											href="<%= previewURL %>"
+											icon="view"
+											monospaced="<%= true %>"
+											small="<%= true %>"
+											title='<%= LanguageUtil.get(request, "view") %>'
+											type="button"
+										/>
+									</c:when>
+									<c:otherwise>
+										<span class="d-inline-block lfr-portal-tooltip" title="<%= LanguageUtil.get(request, "no-preview-available") %>">
+											<clay:button
+												aria-label='<%= LanguageUtil.get(request, "no-preview-available") %>'
+												disabled="<%= true %>"
+												displayType="secondary"
+												icon="view"
+												monospaced="<%= true %>"
+												small="<%= true %>"
+											/>
+										</span>
+									</c:otherwise>
+								</c:choose>
+							</liferay-ui:search-container-column-text>
 						</liferay-ui:search-container-row>
 
 						<liferay-ui:search-iterator
