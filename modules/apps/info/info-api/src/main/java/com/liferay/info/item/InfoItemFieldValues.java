@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -170,7 +169,7 @@ public class InfoItemFieldValues {
 		}
 
 		private final Collection<InfoFieldValue<Object>> _infoFieldValues =
-			new LinkedHashSet<>();
+			new ArrayList<>();
 		private final Map<String, Collection<InfoFieldValue<Object>>>
 			_infoFieldValuesByExternalUniqueIdMap = new HashMap<>();
 		private final Map<String, Collection<InfoFieldValue<Object>>>
