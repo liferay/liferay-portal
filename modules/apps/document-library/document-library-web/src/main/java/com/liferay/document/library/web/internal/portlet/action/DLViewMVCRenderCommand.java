@@ -156,10 +156,15 @@ public class DLViewMVCRenderCommand extends BaseFolderMVCRenderCommand {
 			AuthorizationCapability authorizationCapability =
 				repository.getCapability(AuthorizationCapability.class);
 
+			if (!authorizationCapability.hasCustomRedirectFlow(
+					renderRequest, renderResponse)) {
+
+				return false;
+			}
+
 			authorizationCapability.authorize(renderRequest, renderResponse);
 
-			return authorizationCapability.hasCustomRedirectFlow(
-				renderRequest, renderResponse);
+			return true;
 		}
 
 		_dlAppService.getFileEntriesCount(
