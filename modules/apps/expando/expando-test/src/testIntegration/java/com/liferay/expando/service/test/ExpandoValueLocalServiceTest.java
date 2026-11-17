@@ -96,6 +96,13 @@ public class ExpandoValueLocalServiceTest {
 		Assert.assertEquals(
 			String.valueOf(geolocationJSONObject),
 			String.valueOf(value.getGeolocationJSONObject()));
+
+		Serializable serializable = value.getSerializable();
+
+		Assert.assertTrue(serializable instanceof JSONObject);
+		Assert.assertEquals(
+			String.valueOf(geolocationJSONObject),
+			String.valueOf(serializable));
 	}
 
 	@Test
