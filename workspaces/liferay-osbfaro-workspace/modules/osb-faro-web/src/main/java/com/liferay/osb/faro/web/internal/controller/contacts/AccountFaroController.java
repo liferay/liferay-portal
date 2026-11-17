@@ -143,6 +143,7 @@ public class AccountFaroController extends BaseFaroController {
 				@QueryParam("assetId") String assetId,
 				@QueryParam("assetTitle") String assetTitle,
 				@QueryParam("assetType") String assetType,
+				@QueryParam("campaignTouched") Boolean campaignTouched,
 				@QueryParam("channelId") Long channelId,
 				@QueryParam("keywords") String keywords,
 				@QueryParam("rangeEnd") String rangeEnd,
@@ -155,8 +156,8 @@ public class AccountFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getAccountNames(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				assetId, assetTitle, assetType, channelId, keywords, rangeEnd,
-				rangeKey, rangeStart, page, pageSize),
+				assetId, assetTitle, assetType, campaignTouched, channelId,
+				keywords, rangeEnd, rangeKey, rangeStart, page, pageSize),
 			page, pageSize);
 	}
 

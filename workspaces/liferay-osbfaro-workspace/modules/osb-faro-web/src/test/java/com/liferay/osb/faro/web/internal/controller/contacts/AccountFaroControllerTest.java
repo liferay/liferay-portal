@@ -10,6 +10,7 @@ import com.liferay.osb.faro.engine.client.model.Account;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStage;
 import com.liferay.osb.faro.engine.client.model.AccountMetric;
+import com.liferay.osb.faro.engine.client.model.AccountName;
 import com.liferay.osb.faro.engine.client.model.Campaign;
 import com.liferay.osb.faro.engine.client.model.Individual;
 import com.liferay.osb.faro.engine.client.model.Metric;
@@ -75,6 +76,47 @@ public class AccountFaroControllerTest {
 			accountMetrics,
 			_accountFaroController.getAccountMetrics(
 				groupId, campaignId, channelId));
+
+		Mockito.verify(
+			_faroProjectLocalService
+		).getFaroProjectByGroupId(
+			groupId
+		);
+	}
+
+	@Test
+	public void testGetAccountNamesFaroFDSResultsDisplay() throws Exception {
+		String assetId = RandomTestUtil.randomString();
+		String assetTitle = RandomTestUtil.randomString();
+		String assetType = RandomTestUtil.randomString();
+		Boolean campaignTouched = RandomTestUtil.randomBoolean();
+		Long channelId = RandomTestUtil.randomLong();
+		String keywords = RandomTestUtil.randomString();
+		int page = RandomTestUtil.randomInt();
+		int pageSize = RandomTestUtil.randomInt();
+		String rangeEnd = RandomTestUtil.randomString();
+		Integer rangeKey = RandomTestUtil.randomInt();
+		String rangeStart = RandomTestUtil.randomString();
+		int total = RandomTestUtil.randomInt();
+
+		Mockito.when(
+			_contactsEngineClient.getAccountNames(
+				_faroProject, assetId, assetTitle, assetType, campaignTouched,
+				channelId, keywords, rangeEnd, rangeKey, rangeStart, page,
+				pageSize)
+		).thenReturn(
+			new Results<>(Collections.emptyList(), total)
+		);
+
+		long groupId = RandomTestUtil.randomLong();
+
+		FaroFDSResultsDisplay<AccountName> faroFDSResultsDisplay =
+			_accountFaroController.getAccountNamesFaroFDSResultsDisplay(
+				groupId, assetId, assetTitle, assetType, campaignTouched,
+				channelId, keywords, rangeEnd, rangeKey, rangeStart, page,
+				pageSize);
+
+		Assert.assertEquals(total, faroFDSResultsDisplay.getTotalCount());
 
 		Mockito.verify(
 			_faroProjectLocalService

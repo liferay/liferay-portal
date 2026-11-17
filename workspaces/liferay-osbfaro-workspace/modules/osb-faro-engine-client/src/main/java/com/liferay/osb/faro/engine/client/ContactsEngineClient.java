@@ -253,8 +253,9 @@ public interface ContactsEngineClient {
 
 	public Results<AccountName> getAccountNames(
 		FaroProject faroProject, String assetId, String assetTitle,
-		String assetType, Long channelId, String keywords, String rangeEnd,
-		Integer rangeKey, String rangeStart, int page, int pageSize);
+		String assetType, Boolean campaignTouched, Long channelId,
+		String keywords, String rangeEnd, Integer rangeKey, String rangeStart,
+		int page, int pageSize);
 
 	public List<Metric> getAccountOverviewMetrics(
 			FaroProject faroProject, Long channelId, String id)

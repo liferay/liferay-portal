@@ -1003,8 +1003,9 @@ public class ContactsEngineClientImpl
 	@Override
 	public Results<AccountName> getAccountNames(
 		FaroProject faroProject, String assetId, String assetTitle,
-		String assetType, Long channelId, String keywords, String rangeEnd,
-		Integer rangeKey, String rangeStart, int page, int pageSize) {
+		String assetType, Boolean campaignTouched, Long channelId,
+		String keywords, String rangeEnd, Integer rangeKey, String rangeStart,
+		int page, int pageSize) {
 
 		Map<String, Object> uriVariables = getUriVariables(faroProject);
 
@@ -1015,6 +1016,11 @@ public class ContactsEngineClientImpl
 		}
 
 		uriVariables.put("assetType", assetType);
+
+		if (campaignTouched != null) {
+			uriVariables.put("campaignTouched", campaignTouched);
+		}
+
 		uriVariables.put("channelId", channelId);
 
 		if (Validator.isNotNull(keywords)) {
