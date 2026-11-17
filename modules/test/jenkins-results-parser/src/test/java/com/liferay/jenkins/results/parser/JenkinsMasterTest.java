@@ -521,9 +521,6 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		_testIsWhitelisted(false, "test-9-0");
 		_testIsWhitelisted(false, "test-9-4");
-
-		JenkinsMasterTestUtil.resetCaches();
-
 		_testIsWhitelisted(true, "test-8-1");
 		_testIsWhitelisted(true, "test-9-1");
 		_testIsWhitelisted(true, "test-9-3");
