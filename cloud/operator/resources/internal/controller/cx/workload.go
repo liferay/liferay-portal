@@ -327,15 +327,14 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadCondition(
 		return metav1.Condition{}, nil, "", "", nil, error
 	}
 
-	workloadAvailable, error := clientExtensionReconciler.workloadAvailableCondition(context, workload)
+	workloadAvailableCondition, error := clientExtensionReconciler.workloadAvailableCondition(context, workload)
 
 	if error != nil {
 		return metav1.Condition{}, nil, "", "", nil, error
 	}
 
 	image := containerImage(workload)
-
-	summary := workloadSummary(workload, workloadAvailable)
+	workloadSummary := workloadSummary(workload, workloadAvailableCondition)
 
 	podTemplate := podTemplateOf(workload)
 
@@ -362,7 +361,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadCondition(
 				workloadRef.Kind, workloadRef.Name,
 			),
 			ReasonWorkloadMisconfigured,
-		), &workloadAvailable, image, summary, workloadIssues, nil
+		), &workloadAvailableCondition, image, workloadSummary, workloadIssues, nil
 	}
 
 	if configMapsWithDigest != nil {
@@ -376,7 +375,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadCondition(
 	return newCondition(
 		metav1.ConditionTrue,
 		fmt.Sprintf("%s %q mounts DXP's metadata.", workloadRef.Kind, workloadRef.Name), ReasonWorkloadAccepted,
-	), &workloadAvailable, image, summary, nil, nil
+	), &workloadAvailableCondition, image, workloadSummary, nil, nil
 }
 
 func workloadGraceRemaining(status *cxv1alpha1.ClientExtensionStatus) time.Duration {

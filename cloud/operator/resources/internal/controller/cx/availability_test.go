@@ -249,15 +249,15 @@ func TestPodProblem(t *testing.T) {
 
 func TestReconcileReportsWorkloadAvailability(t *testing.T) {
 	testCases := map[string]struct {
-		deployment     *appsv1.Deployment
-		pods           []client.Object
-		wantPhase      string
-		wantReadyCause string
+		deployment      *appsv1.Deployment
+		pods            []client.Object
+		wantPhase       string
+		wantReadyReason string
 	}{
 		"a Deployment rolling out": {
-			deployment:     newAvailabilityDeployment(1, 0, 0),
-			wantPhase:      cxv1alpha1.PhasePending,
-			wantReadyCause: ReasonWorkloadProgressing,
+			deployment:      newAvailabilityDeployment(1, 0, 0),
+			wantPhase:       cxv1alpha1.PhasePending,
+			wantReadyReason: ReasonWorkloadProgressing,
 		},
 		"a Deployment whose pod cannot start": {
 			deployment: newAvailabilityDeployment(1, 0, 1),
@@ -273,13 +273,13 @@ func TestReconcileReportsWorkloadAvailability(t *testing.T) {
 					return &pod
 				}(),
 			},
-			wantPhase:      cxv1alpha1.PhaseDegraded,
-			wantReadyCause: ReasonWorkloadUnavailable,
+			wantPhase:       cxv1alpha1.PhaseDegraded,
+			wantReadyReason: ReasonWorkloadUnavailable,
 		},
 		"an available Deployment": {
-			deployment:     newAvailabilityDeployment(1, 1, 1),
-			wantPhase:      cxv1alpha1.PhaseReady,
-			wantReadyCause: ReasonReady,
+			deployment:      newAvailabilityDeployment(1, 1, 1),
+			wantPhase:       cxv1alpha1.PhaseReady,
+			wantReadyReason: ReasonReady,
 		},
 	}
 
@@ -308,8 +308,8 @@ func TestReconcileReportsWorkloadAvailability(t *testing.T) {
 
 			if ready := getCondition(
 				clientExtension, clientExtensionReconciler, cxv1alpha1.ConditionReady, t,
-			); ready.Reason != testCase.wantReadyCause {
-				t.Errorf("Ready reason = %q, want %q", ready.Reason, testCase.wantReadyCause)
+			); ready.Reason != testCase.wantReadyReason {
+				t.Errorf("Ready reason = %q, want %q", ready.Reason, testCase.wantReadyReason)
 			}
 
 			clientExtension = getClientExtension(clientExtension, clientExtensionReconciler, t)

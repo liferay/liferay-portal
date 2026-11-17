@@ -901,11 +901,12 @@ func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
 
 	status.WorkloadIssues = workloadIssues
 	status.WorkloadName = ""
-	status.WorkloadSummary = workloadSummary
 
 	if (clientExtension.Spec.WorkloadRef != nil) && (workloadAccepted != nil) {
 		status.WorkloadName = clientExtension.Spec.WorkloadRef.Name
 	}
+
+	status.WorkloadSummary = workloadSummary
 
 	if ((ready.Reason == ReasonExtInitMissing) && (extInitGraceRemaining(status) > 0)) ||
 		(ready.Reason == ReasonJobRunning) ||

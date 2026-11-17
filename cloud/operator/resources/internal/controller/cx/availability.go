@@ -12,18 +12,17 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
+	meta "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-const workloadStatusRequeueInterval = 30 * time.Second
-
 func availabilityRequeueInterval(status *cxv1alpha1.ClientExtensionStatus) time.Duration {
-	for _, condition := range status.Conditions {
-		if (condition.Status != metav1.ConditionTrue) && (condition.Type == cxv1alpha1.ConditionWorkloadAvailable) {
-			return workloadStatusRequeueInterval
-		}
+	condition := meta.FindStatusCondition(status.Conditions, cxv1alpha1.ConditionWorkloadAvailable)
+
+	if (condition != nil) && (condition.Status != metav1.ConditionTrue) {
+		return 30 * time.Second
 	}
 
 	return 0
