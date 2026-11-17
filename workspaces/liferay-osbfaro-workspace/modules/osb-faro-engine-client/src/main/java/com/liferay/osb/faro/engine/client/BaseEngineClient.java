@@ -54,7 +54,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
 
-import org.springframework.cache.Cache;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -355,26 +354,26 @@ public abstract class BaseEngineClient {
 		return restTemplate;
 	}
 
-	protected Cache getCache() {
+	protected FaroCache getCache() {
 		if (!FaroThreadLocal.isCacheEnabled()) {
 			return null;
 		}
 
 		Object object = FaroThreadLocal.getCache();
 
-		if (object instanceof Cache cache) {
-			return cache;
+		if (object instanceof FaroCache faroCache) {
+			return faroCache;
 		}
 
 		if (object != null) {
 			FaroThreadLocal.setCache(null);
 		}
 
-		Cache cache = new FaroCache();
+		FaroCache faroCache = new FaroCache();
 
-		FaroThreadLocal.setCache(cache);
+		FaroThreadLocal.setCache(faroCache);
 
-		return cache;
+		return faroCache;
 	}
 
 	protected String getEngineURL(FaroProject faroProject) {
@@ -407,11 +406,11 @@ public abstract class BaseEngineClient {
 		clientHttpRequestInterceptors.add(
 			new AuthorClientHttpRequestInterceptor());
 
-		Cache cache = getCache();
+		FaroCache faroCache = getCache();
 
-		if (cache != null) {
+		if (faroCache != null) {
 			clientHttpRequestInterceptors.add(
-				new CacheClientHttpRequestInterceptor(cache));
+				new CacheClientHttpRequestInterceptor(faroCache));
 		}
 
 		clientHttpRequestInterceptors.add(

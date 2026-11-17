@@ -5,70 +5,31 @@
 
 package com.liferay.osb.faro.engine.client.cache;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
+import com.liferay.osb.faro.engine.client.FaroClientHttpResponse;
 
-import org.springframework.cache.Cache;
-import org.springframework.cache.support.SimpleValueWrapper;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Shinn Lok
  */
-public class FaroCache implements Cache {
+public class FaroCache {
 
-	public FaroCache() {
-		_store = new LinkedHashMap<Object, ValueWrapper>() {
-		};
-	}
-
-	@Override
 	public synchronized void clear() {
-		_store.clear();
+		_faroClientHttpResponses.clear();
 	}
 
-	@Override
-	public synchronized void evict(Object key) {
-		_store.remove(key);
+	public synchronized FaroClientHttpResponse get(String key) {
+		return _faroClientHttpResponses.get(key);
 	}
 
-	@Override
-	public synchronized ValueWrapper get(Object key) {
-		return _store.get(key);
+	public synchronized void put(
+		String key, FaroClientHttpResponse faroClientHttpResponse) {
+
+		_faroClientHttpResponses.put(key, faroClientHttpResponse);
 	}
 
-	@Override
-	public <T> T get(Object key, Callable<T> callable) {
-		return null;
-	}
-
-	@Override
-	public <T> T get(Object key, Class<T> type) {
-		return null;
-	}
-
-	@Override
-	public String getName() {
-		Class<? extends FaroCache> clazz = getClass();
-
-		return clazz.getName();
-	}
-
-	@Override
-	public Map<Object, ValueWrapper> getNativeCache() {
-		return _store;
-	}
-
-	@Override
-	public synchronized void put(Object key, Object value) {
-		_store.put(key, new SimpleValueWrapper(value));
-	}
-
-	@Override
-	public synchronized ValueWrapper putIfAbsent(Object key, Object value) {
-		return _store.putIfAbsent(key, new SimpleValueWrapper(value));
-	}
-
-	private final LinkedHashMap<Object, ValueWrapper> _store;
+	private final Map<String, FaroClientHttpResponse> _faroClientHttpResponses =
+		new HashMap<>();
 
 }

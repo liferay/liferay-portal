@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.engine.client.http.client;
 
 import com.liferay.osb.faro.engine.client.FaroClientHttpResponse;
+import com.liferay.osb.faro.engine.client.cache.FaroCache;
 import com.liferay.osb.faro.engine.client.constants.OSBAsahHeaderConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -16,7 +17,6 @@ import java.io.IOException;
 
 import java.util.List;
 
-import org.springframework.cache.Cache;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
@@ -31,8 +31,8 @@ import org.springframework.http.client.ClientHttpResponse;
 public class CacheClientHttpRequestInterceptor
 	implements ClientHttpRequestInterceptor {
 
-	public CacheClientHttpRequestInterceptor(Cache cache) {
-		_cache = cache;
+	public CacheClientHttpRequestInterceptor(FaroCache faroCache) {
+		_faroCache = faroCache;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class CacheClientHttpRequestInterceptor
 			 httpMethod.equals(HttpMethod.PUT) ||
 			 httpMethod.equals(HttpMethod.DELETE))) {
 
-			_cache.clear();
+			_faroCache.clear();
 		}
 
 		if (bytes.length > 0) {
@@ -58,8 +58,7 @@ public class CacheClientHttpRequestInterceptor
 
 		String key = getKey(httpRequest);
 
-		FaroClientHttpResponse faroClientHttpResponse =
-			getFaroClientHttpResponse(key);
+		FaroClientHttpResponse faroClientHttpResponse = _faroCache.get(key);
 
 		if (faroClientHttpResponse != null) {
 			return faroClientHttpResponse;
@@ -78,23 +77,13 @@ public class CacheClientHttpRequestInterceptor
 			faroClientHttpResponse = new FaroClientHttpResponse(
 				clientHttpResponse);
 
-			_cache.put(key, faroClientHttpResponse);
+			_faroCache.put(key, faroClientHttpResponse);
 
 			return faroClientHttpResponse;
 		}
 		catch (Exception exception) {
 			throw new IOException(exception);
 		}
-	}
-
-	protected FaroClientHttpResponse getFaroClientHttpResponse(String key) {
-		Cache.ValueWrapper valueWrapper = _cache.get(key);
-
-		if (valueWrapper == null) {
-			return null;
-		}
-
-		return (FaroClientHttpResponse)valueWrapper.get();
 	}
 
 	protected String getKey(HttpRequest httpRequest) {
@@ -127,6 +116,6 @@ public class CacheClientHttpRequestInterceptor
 		return headers.get(0);
 	}
 
-	private final Cache _cache;
+	private final FaroCache _faroCache;
 
 }
