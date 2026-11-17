@@ -312,6 +312,9 @@ function _update_default_chart_version {
 	if [[ ${helm_chart_name} == aws ]] || [[ ${helm_chart_name} == aws-infrastructure-provider ]] || [[ ${helm_chart_name} == aws-marketplace ]] || [[ ${helm_chart_name} == azure ]] || [[ ${helm_chart_name} == azure-infrastructure-provider ]] || [[ ${helm_chart_name} == gcp ]] || [[ ${helm_chart_name} == gcp-infrastructure-provider ]] || [[ ${helm_chart_name} == infrastructure ]] || [[ ${helm_chart_name} == platform ]]
 	then
 		_update_artifact "${chart_name}" "charts" "${version}"
+	elif [[ ${helm_chart_name} == client-extension ]]
+	then
+		_update_platform_components_target_revision "liferay-client-extension" "${version}"
 	elif [[ ${helm_chart_name} == dxp-operator ]]
 	then
 		_update_artifact "${chart_name}" "charts" "${version}"
