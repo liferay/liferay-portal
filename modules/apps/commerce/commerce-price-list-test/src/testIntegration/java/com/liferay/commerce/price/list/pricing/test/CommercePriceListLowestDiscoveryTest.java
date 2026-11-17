@@ -159,7 +159,7 @@ public class CommercePriceListLowestDiscoveryTest {
 				"", cpDefinition.getCProductId(),
 				cpInstance.getCPInstanceUuid(),
 				commerceUnqualifiedPriceList.getCommercePriceListId(),
-				BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+				BigDecimal.valueOf(RandomTestUtil.randomInt(), 2));
 
 		CommercePriceList discoveredCommercePriceList =
 			_commercePriceListDiscovery.getCommercePriceList(
@@ -224,7 +224,7 @@ public class CommercePriceListLowestDiscoveryTest {
 				"", cpDefinition.getCProductId(),
 				cpInstance.getCPInstanceUuid(),
 				commerceUnqualifiedPriceList.getCommercePriceListId(),
-				BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+				BigDecimal.valueOf(RandomTestUtil.randomInt(), 2));
 
 		CommercePriceList discoveredCommercePriceList =
 			_commercePriceListDiscovery.getCommercePriceList(
@@ -326,7 +326,7 @@ public class CommercePriceListLowestDiscoveryTest {
 				"", cpDefinition.getCProductId(),
 				cpInstance.getCPInstanceUuid(),
 				commerceUnqualifiedPriceList.getCommercePriceListId(),
-				BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+				BigDecimal.valueOf(RandomTestUtil.randomInt(), 2));
 
 		BigDecimal lowestPrice = commercePriceEntry.getPrice();
 
@@ -351,7 +351,7 @@ public class CommercePriceListLowestDiscoveryTest {
 		commercePriceEntry = CommercePriceEntryTestUtil.addCommercePriceEntry(
 			"", cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
 			commerceChannelPriceList.getCommercePriceListId(),
-			BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+			BigDecimal.valueOf(RandomTestUtil.randomInt(), 2));
 
 		if (lowestPrice.compareTo(commercePriceEntry.getPrice()) > 0) {
 			lowestPrice = commercePriceEntry.getPrice();
@@ -380,7 +380,7 @@ public class CommercePriceListLowestDiscoveryTest {
 		commercePriceEntry = CommercePriceEntryTestUtil.addCommercePriceEntry(
 			"", cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
 			commerceAccountGroupPriceList.getCommercePriceListId(),
-			BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+			BigDecimal.valueOf(RandomTestUtil.randomInt(), 2));
 
 		if (lowestPrice.compareTo(commercePriceEntry.getPrice()) > 0) {
 			lowestPrice = commercePriceEntry.getPrice();
@@ -406,7 +406,7 @@ public class CommercePriceListLowestDiscoveryTest {
 		commercePriceEntry = CommercePriceEntryTestUtil.addCommercePriceEntry(
 			"", cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
 			commerceAccountGroupAndChannelPriceList.getCommercePriceListId(),
-			BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+			BigDecimal.valueOf(RandomTestUtil.randomInt(), 2));
 
 		if (lowestPrice.compareTo(commercePriceEntry.getPrice()) > 0) {
 			lowestPrice = commercePriceEntry.getPrice();
@@ -432,7 +432,7 @@ public class CommercePriceListLowestDiscoveryTest {
 		commercePriceEntry = CommercePriceEntryTestUtil.addCommercePriceEntry(
 			"", cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
 			commerceAccountPriceList.getCommercePriceListId(),
-			BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+			BigDecimal.valueOf(RandomTestUtil.randomInt(), 2));
 
 		if (lowestPrice.compareTo(commercePriceEntry.getPrice()) > 0) {
 			lowestPrice = commercePriceEntry.getPrice();
@@ -459,7 +459,7 @@ public class CommercePriceListLowestDiscoveryTest {
 		commercePriceEntry = CommercePriceEntryTestUtil.addCommercePriceEntry(
 			"", cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
 			commerceAccountAndChannelPriceList.getCommercePriceListId(),
-			BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+			BigDecimal.valueOf(RandomTestUtil.randomInt(), 2));
 
 		if (lowestPrice.compareTo(commercePriceEntry.getPrice()) > 0) {
 			expectedPriceList = commerceAccountAndChannelPriceList;
@@ -494,7 +494,7 @@ public class CommercePriceListLowestDiscoveryTest {
 			RandomTestUtil.randomString(), cpDefinition.getCProductId(),
 			cpInstance.getCPInstanceUuid(),
 			commercePriceList1.getCommercePriceListId(),
-			BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+			BigDecimal.valueOf(RandomTestUtil.randomInt(), 2));
 
 		CommercePriceList commercePriceList2 =
 			CommercePriceListTestUtil.addCommercePriceList(
