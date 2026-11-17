@@ -38,6 +38,31 @@ import java.util.Map;
  */
 public class PIMProductsSectionUtil {
 
+	public static DropdownItem getCreateFolderDropdownItem(
+		HttpServletRequest httpServletRequest,
+		String parentObjectEntryFolderExternalReferenceCode) {
+
+		ThemeDisplay themeDisplay = _getThemeDisplay(httpServletRequest);
+
+		return DropdownItemBuilder.putData(
+			"action", "createFolder"
+		).putData(
+			"baseAssetLibraryViewURL",
+			_getBaseURL(DepotEntry.class, "/e/space/", themeDisplay)
+		).putData(
+			"baseFolderViewURL",
+			_getBaseURL(
+				ObjectEntryFolder.class, "/e/view-folder/", themeDisplay)
+		).putData(
+			"parentObjectEntryFolderExternalReferenceCode",
+			parentObjectEntryFolderExternalReferenceCode
+		).setIcon(
+			"folder"
+		).setLabel(
+			LanguageUtil.get(httpServletRequest, "folder")
+		).build();
+	}
+
 	public static List<DropdownItem> getCreationMenuDropdownItems(
 		HttpServletRequest httpServletRequest,
 		String objectEntryFolderExternalReferenceCode) {
@@ -47,23 +72,8 @@ public class PIMProductsSectionUtil {
 		List<DropdownItem> dropdownItems = new ArrayList<>();
 
 		dropdownItems.add(
-			DropdownItemBuilder.putData(
-				"action", "createFolder"
-			).putData(
-				"baseAssetLibraryViewURL",
-				_getBaseURL(DepotEntry.class, "/e/space/", themeDisplay)
-			).putData(
-				"baseFolderViewURL",
-				_getBaseURL(
-					ObjectEntryFolder.class, "/e/view-folder/", themeDisplay)
-			).putData(
-				"parentObjectEntryFolderExternalReferenceCode",
-				objectEntryFolderExternalReferenceCode
-			).setIcon(
-				"folder"
-			).setLabel(
-				LanguageUtil.get(httpServletRequest, "folder")
-			).build());
+			getCreateFolderDropdownItem(
+				httpServletRequest, objectEntryFolderExternalReferenceCode));
 
 		for (ObjectDefinition objectDefinition :
 				ObjectDefinitionServiceUtil.getCMSObjectDefinitions(
@@ -93,44 +103,6 @@ public class PIMProductsSectionUtil {
 			LanguageUtil.get(httpServletRequest, "delete")
 		).build(
 			"delete"
-		);
-	}
-
-	public static FDSActionDropdownItem getDeleteFDSActionDropdownItem(
-		HttpServletRequest httpServletRequest) {
-
-		return FDSActionDropdownItemBuilder.setIcon(
-			"trash"
-		).setLabel(
-			LanguageUtil.get(httpServletRequest, "delete")
-		).setPermissionKey(
-			"delete"
-		).build(
-			"delete"
-		);
-	}
-
-	public static FDSActionDropdownItem getEditFDSActionDropdownItem(
-		HttpServletRequest httpServletRequest) {
-
-		ThemeDisplay themeDisplay = _getThemeDisplay(httpServletRequest);
-
-		return FDSActionDropdownItemBuilder.setHref(
-			StringBundler.concat(
-				themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
-				GroupConstants.CMS_FRIENDLY_URL,
-				"/edit_content_item?objectEntryId={embedded.id}&redirect=",
-				themeDisplay.getURLCurrent())
-		).setIcon(
-			"pencil"
-		).setLabel(
-			LanguageUtil.get(httpServletRequest, "edit")
-		).setMethod(
-			"get"
-		).setPermissionKey(
-			"update"
-		).build(
-			"edit"
 		);
 	}
 
@@ -196,7 +168,23 @@ public class PIMProductsSectionUtil {
 			).build(
 				"editFolder"
 			),
-			getEditFDSActionDropdownItem(httpServletRequest),
+			FDSActionDropdownItemBuilder.setHref(
+				StringBundler.concat(
+					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
+					GroupConstants.CMS_FRIENDLY_URL,
+					"/edit_content_item?objectEntryId={embedded.id}&redirect=",
+					themeDisplay.getURLCurrent())
+			).setIcon(
+				"pencil"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "edit")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"update"
+			).build(
+				"edit"
+			),
 			FDSActionDropdownItemBuilder.setHref(
 				PortletURLBuilder.create(
 					PortalUtil.getControlPanelPortletURL(
@@ -232,7 +220,15 @@ public class PIMProductsSectionUtil {
 			).build(
 				"permissions"
 			),
-			getDeleteFDSActionDropdownItem(httpServletRequest));
+			FDSActionDropdownItemBuilder.setIcon(
+				"trash"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "delete")
+			).setPermissionKey(
+				"delete"
+			).build(
+				"delete"
+			));
 	}
 
 	public static DropdownItem getProductTypeDropdownItem(

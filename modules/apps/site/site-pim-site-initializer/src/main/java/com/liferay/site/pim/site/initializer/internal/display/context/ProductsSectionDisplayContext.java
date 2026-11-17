@@ -10,6 +10,7 @@ import com.liferay.depot.service.DepotEntryServiceUtil;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -38,7 +39,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
@@ -63,19 +63,19 @@ public class ProductsSectionDisplayContext {
 	}
 
 	public String getAPIURL() {
-		return StringBundler.concat(
-			"/o/search/v1.0/search?emptySearch=true&filter=",
-			URLCodec.encodeURL(
-				StringBundler.concat(
-					"cmsSection eq 'products' and status in (",
-					StringUtil.merge(CMSWorkflowConstants.STATUSES, ", "),
-					")")),
-			"&nestedFields=embedded,embedded.images,",
-			"systemProperties.objectDefinitionBrief&nestedFieldsDepth=2");
+		return "/o/search/v1.0/search";
 	}
 
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
+			"additionalAPIURLParameters",
+			StringBundler.concat(
+				"emptySearch=true&filter=cmsRoot eq true and cmsSection eq ",
+				"'products' and status in (",
+				StringUtil.merge(CMSWorkflowConstants.STATUSES, ", "),
+				")&nestedFields=embedded,embedded.images,",
+				"systemProperties.objectDefinitionBrief&nestedFieldsDepth=2")
+		).put(
 			"brokenLinksCheckerEnabled",
 			GetterUtil.getBoolean(
 				PropsUtil.get(PropsKeys.CMS_BROKEN_LINKS_CHECKER_ENABLED))
@@ -107,47 +107,24 @@ public class ProductsSectionDisplayContext {
 			return creationMenu;
 		}
 
-		ModelResourcePermission<ObjectEntryFolder> modelResourcePermission =
-			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
-				ObjectEntryFolder.class.getName());
+		List<Long> groupIds = _getGroupIds(
+			ObjectActionKeys.ADD_OBJECT_ENTRY_FOLDER, themeDisplay);
 
-		if (modelResourcePermission == null) {
-			return creationMenu;
+		if (!groupIds.isEmpty()) {
+			DropdownItem dropdownItem =
+				PIMProductsSectionUtil.getCreateFolderDropdownItem(
+					_httpServletRequest,
+					ObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCTS);
+
+			dropdownItem.putData(
+				"assetLibraries",
+				_getAssetLibrariesJSONArray(groupIds, themeDisplay));
+
+			creationMenu.addPrimaryDropdownItem(dropdownItem);
 		}
 
-		List<Long> groupIds = TransformUtil.transform(
-			DepotEntryServiceUtil.getDepotEntryGroupIds(
-				themeDisplay.getCompanyId(), themeDisplay.getUserId(),
-				DepotConstants.TYPE_SPACE),
-			depotEntryGroupId -> {
-				ObjectEntryFolder objectEntryFolder =
-					ObjectEntryFolderLocalServiceUtil.
-						fetchObjectEntryFolderByExternalReferenceCode(
-							ObjectEntryFolderConstants.
-								EXTERNAL_REFERENCE_CODE_PRODUCTS,
-							depotEntryGroupId, themeDisplay.getCompanyId());
-
-				if (objectEntryFolder == null) {
-					return null;
-				}
-
-				try {
-					if (modelResourcePermission.contains(
-							themeDisplay.getPermissionChecker(),
-							objectEntryFolder.getObjectEntryFolderId(),
-							ActionKeys.ADD_ENTRY)) {
-
-						return depotEntryGroupId;
-					}
-				}
-				catch (PortalException portalException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(portalException);
-					}
-				}
-
-				return null;
-			});
+		groupIds = _getGroupIds(ActionKeys.ADD_ENTRY, themeDisplay);
 
 		if (groupIds.isEmpty()) {
 			return creationMenu;
@@ -161,26 +138,10 @@ public class ProductsSectionDisplayContext {
 							EXTERNAL_REFERENCE_CODE_PRODUCT_TYPES
 					})) {
 
-			JSONArray jsonArray = JSONUtil.toJSONArray(
+			JSONArray jsonArray = _getAssetLibrariesJSONArray(
 				_getAcceptedGroupIds(
 					groupIds, objectDefinition.getObjectDefinitionId()),
-				groupId -> {
-					Group group = GroupLocalServiceUtil.fetchGroup(groupId);
-
-					if (group == null) {
-						return null;
-					}
-
-					return JSONUtil.put(
-						"externalReferenceCode",
-						group.getExternalReferenceCode()
-					).put(
-						"groupId", group.getGroupId()
-					).put(
-						"name", group.getName(themeDisplay.getLocale())
-					);
-				},
-				_log);
+				themeDisplay);
 
 			if (jsonArray.length() == 0) {
 				continue;
@@ -213,11 +174,8 @@ public class ProductsSectionDisplayContext {
 			return Collections.emptyList();
 		}
 
-		return ListUtil.fromArray(
-			PIMProductsSectionUtil.getEditFDSActionDropdownItem(
-				_httpServletRequest),
-			PIMProductsSectionUtil.getDeleteFDSActionDropdownItem(
-				_httpServletRequest));
+		return PIMProductsSectionUtil.getFDSActionDropdownItems(
+			_httpServletRequest);
 	}
 
 	private List<Long> _getAcceptedGroupIds(
@@ -253,6 +211,75 @@ public class ProductsSectionDisplayContext {
 			groupId -> {
 				if (groupIds.contains(GetterUtil.getLong(groupId))) {
 					return GetterUtil.getLong(groupId);
+				}
+
+				return null;
+			});
+	}
+
+	private JSONArray _getAssetLibrariesJSONArray(
+		List<Long> groupIds, ThemeDisplay themeDisplay) {
+
+		return JSONUtil.toJSONArray(
+			groupIds,
+			groupId -> {
+				Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+
+				if (group == null) {
+					return null;
+				}
+
+				return JSONUtil.put(
+					"externalReferenceCode", group.getExternalReferenceCode()
+				).put(
+					"groupId", group.getGroupId()
+				).put(
+					"name", group.getName(themeDisplay.getLocale())
+				);
+			},
+			_log);
+	}
+
+	private List<Long> _getGroupIds(
+		String actionId, ThemeDisplay themeDisplay) {
+
+		ModelResourcePermission<ObjectEntryFolder> modelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				ObjectEntryFolder.class.getName());
+
+		if (modelResourcePermission == null) {
+			return Collections.emptyList();
+		}
+
+		return TransformUtil.transform(
+			DepotEntryServiceUtil.getDepotEntryGroupIds(
+				themeDisplay.getCompanyId(), themeDisplay.getUserId(),
+				DepotConstants.TYPE_SPACE),
+			depotEntryGroupId -> {
+				ObjectEntryFolder objectEntryFolder =
+					ObjectEntryFolderLocalServiceUtil.
+						fetchObjectEntryFolderByExternalReferenceCode(
+							ObjectEntryFolderConstants.
+								EXTERNAL_REFERENCE_CODE_PRODUCTS,
+							depotEntryGroupId, themeDisplay.getCompanyId());
+
+				if (objectEntryFolder == null) {
+					return null;
+				}
+
+				try {
+					if (modelResourcePermission.contains(
+							themeDisplay.getPermissionChecker(),
+							objectEntryFolder.getObjectEntryFolderId(),
+							actionId)) {
+
+						return depotEntryGroupId;
+					}
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
 				}
 
 				return null;
