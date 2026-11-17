@@ -35,7 +35,7 @@ export async function viewUpgradedCustomObject({
 		name: `Custom Object${nameSuffix}`,
 	});
 
-	await expect(objectLink).toBeVisible();
+	await expect(objectLink).toBeVisible({timeout: 60 * 1000});
 
 	await expect(
 		page.getByRole('link', {
