@@ -549,7 +549,7 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 						generateJSPJavaTaskProvider);
 					writeFindBugsProjectTask.dependsOn(compileJSPTaskProvider);
 
-					final JavaCompile compileJSPJavaCompile =
+					JavaCompile compileJSPJavaCompile =
 						compileJSPTaskProvider.get();
 
 					writeFindBugsProjectTask.auxClasspath(
