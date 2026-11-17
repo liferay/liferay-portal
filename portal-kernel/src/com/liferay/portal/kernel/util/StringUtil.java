@@ -1605,6 +1605,10 @@ public class StringUtil {
 	 * @return the string, with its first character converted to lower-case
 	 */
 	public static String lowerCaseFirstLetter(String s) {
+		if ((s == null) || s.isEmpty()) {
+			return s;
+		}
+
 		char[] chars = s.toCharArray();
 
 		if ((chars[0] >= 65) && (chars[0] <= 90)) {
