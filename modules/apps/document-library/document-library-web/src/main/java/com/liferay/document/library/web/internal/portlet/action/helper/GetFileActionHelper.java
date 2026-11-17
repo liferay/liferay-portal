@@ -7,6 +7,7 @@ package com.liferay.document.library.web.internal.portlet.action.helper;
 
 import com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.exception.NoSuchFileVersionException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
@@ -99,6 +100,27 @@ public class GetFileActionHelper {
 		}
 	}
 
+	private void _checkFileVersion(
+			FileEntry fileEntry, FileVersion fileVersion,
+			PermissionChecker permissionChecker)
+		throws PortalException {
+
+		if (fileVersion.isApproved() ||
+			(fileVersion.getUserId() == permissionChecker.getUserId()) ||
+			permissionChecker.isContentReviewer(
+				fileVersion.getCompanyId(), fileVersion.getGroupId()) ||
+			DLFileEntryPermission.contains(
+				permissionChecker, fileEntry, ActionKeys.UPDATE)) {
+
+			return;
+		}
+
+		throw new NoSuchFileVersionException(
+			StringBundler.concat(
+				"No FileVersion exists with the key {fileVersionId=",
+				fileVersion.getFileVersionId(), "}"));
+	}
+
 	private void _getFile(
 			long fileEntryId, long folderId, String name, String title,
 			String version, long fileShortcutId, String uuid, long groupId,
@@ -186,6 +208,9 @@ public class GetFileActionHelper {
 			ActionKeys.DOWNLOAD);
 
 		FileVersion fileVersion = fileEntry.getFileVersion(version);
+
+		_checkFileVersion(
+			fileEntry, fileVersion, themeDisplay.getPermissionChecker());
 
 		InputStream inputStream = fileVersion.getContentStream(true);
 

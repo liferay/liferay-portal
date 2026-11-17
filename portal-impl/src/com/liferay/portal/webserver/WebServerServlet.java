@@ -9,6 +9,7 @@ import com.liferay.document.library.kernel.document.conversion.DocumentConversio
 import com.liferay.document.library.kernel.exception.FileEntryExpiredException;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.exception.NoSuchFileException;
+import com.liferay.document.library.kernel.exception.NoSuchFileVersionException;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.processor.AudioProcessorUtil;
@@ -1106,6 +1107,8 @@ public class WebServerServlet extends HttpServlet {
 
 		FileVersion fileVersion = fileEntry.getFileVersion(version);
 
+		_checkFileVersion(fileVersion, httpServletRequest);
+
 		if ((ParamUtil.getInteger(httpServletRequest, "height") > 0) ||
 			(ParamUtil.getInteger(httpServletRequest, "width") > 0)) {
 
@@ -1749,6 +1752,38 @@ public class WebServerServlet extends HttpServlet {
 				"The file entry " + fileEntry.getFileEntryId() +
 					" is expired and the user does not have review permission");
 		}
+	}
+
+	private void _checkFileVersion(
+			FileVersion fileVersion, HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		PermissionChecker permissionChecker = _getPermissionChecker(
+			httpServletRequest);
+
+		if (fileVersion.isApproved() ||
+			(fileVersion.getUserId() == permissionChecker.getUserId()) ||
+			permissionChecker.isContentReviewer(
+				fileVersion.getCompanyId(), fileVersion.getGroupId())) {
+
+			return;
+		}
+
+		ModelResourcePermission<?> fileEntryModelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				FileEntry.class.getName());
+
+		if (fileEntryModelResourcePermission.contains(
+				permissionChecker, fileVersion.getFileEntryId(),
+				ActionKeys.UPDATE)) {
+
+			return;
+		}
+
+		throw new NoSuchFileVersionException(
+			StringBundler.concat(
+				"No FileVersion exists with the key {fileVersionId=",
+				fileVersion.getFileVersionId(), "}"));
 	}
 
 	private void _checkImagePermission(

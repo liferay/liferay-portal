@@ -21,6 +21,7 @@ import com.liferay.adaptive.media.processor.AMAsyncProcessorLocator;
 import com.liferay.adaptive.media.processor.AMProcessor;
 import com.liferay.document.library.kernel.exception.FileEntryExpiredException;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.exception.NoSuchFileVersionException;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -155,6 +156,35 @@ public class AMImageRequestHandler
 		}
 	}
 
+	private void _checkFileVersion(
+			FileVersion fileVersion, PermissionChecker permissionChecker)
+		throws Exception {
+
+		if (fileVersion.isApproved() ||
+			(fileVersion.getUserId() == permissionChecker.getUserId()) ||
+			permissionChecker.isContentReviewer(
+				fileVersion.getCompanyId(), fileVersion.getGroupId())) {
+
+			return;
+		}
+
+		ModelResourcePermission<?> fileEntryModelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				FileEntry.class.getName());
+
+		if (fileEntryModelResourcePermission.contains(
+				permissionChecker, fileVersion.getFileEntryId(),
+				ActionKeys.UPDATE)) {
+
+			return;
+		}
+
+		throw new NoSuchFileVersionException(
+			StringBundler.concat(
+				"No FileVersion exists with the key {fileVersionId=",
+				fileVersion.getFileVersionId(), "}"));
+	}
+
 	private AdaptiveMedia<AMProcessor<FileVersion>> _createRawAdaptiveMedia(
 		FileVersion fileVersion) {
 
@@ -233,8 +263,11 @@ public class AMImageRequestHandler
 				return null;
 			}
 
-			_checkFileEntry(
-				fileVersion, _getPermissionChecker(httpServletRequest));
+			PermissionChecker permissionChecker = _getPermissionChecker(
+				httpServletRequest);
+
+			_checkFileEntry(fileVersion, permissionChecker);
+			_checkFileVersion(fileVersion, permissionChecker);
 
 			AMImageConfigurationEntry amImageConfigurationEntry =
 				_amImageConfigurationHelper.getAMImageConfigurationEntry(
@@ -253,9 +286,11 @@ public class AMImageRequestHandler
 
 			return _createRawAdaptiveMedia(fileVersion);
 		}
-		catch (NoSuchFileEntryException noSuchFileEntryException) {
+		catch (NoSuchFileEntryException | NoSuchFileVersionException
+					exception) {
+
 			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchFileEntryException);
+				_log.debug(exception);
 			}
 
 			return null;
