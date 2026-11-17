@@ -7,6 +7,7 @@ package com.liferay.layout.page.template.service.impl;
 
 import com.liferay.asset.kernel.NoSuchClassTypeException;
 import com.liferay.design.library.util.DesignLibraryUtil;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.dynamic.data.mapping.info.item.provider.DDMStructureInfoItemFormVariationsProvider;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 import com.liferay.info.item.InfoItemFormVariation;
@@ -23,6 +24,7 @@ import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryGroupId
 import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryLayoutPageTemplateCollectionIdException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryLayoutPageTemplateEntryKeyException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryNameException;
+import com.liferay.layout.page.template.exception.LayoutPageTemplateEntryPreviewFileEntryIdException;
 import com.liferay.layout.page.template.exception.NoSuchPageTemplateEntryException;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -47,6 +49,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.Theme;
@@ -147,6 +150,7 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			groupId, layoutPageTemplateCollectionId, name, type,
 			defaultTemplate, status);
 		_validate(groupId, layoutPageTemplateCollectionId, type);
+		_validatePreviewFileEntryId(groupId, previewFileEntryId);
 
 		if (Validator.isNull(layoutPageTemplateEntryKey)) {
 			layoutPageTemplateEntryKey = _generateLayoutPageTemplateEntryKey(
@@ -800,6 +804,9 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			layoutPageTemplateEntryPersistence.findByPrimaryKey(
 				layoutPageTemplateEntryId);
+
+		_validatePreviewFileEntryId(
+			layoutPageTemplateEntry.getGroupId(), previewFileEntryId);
 
 		long previousPreviewFileEntryId =
 			layoutPageTemplateEntry.getPreviewFileEntryId();
@@ -1468,6 +1475,28 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 		}
 	}
 
+	private void _validatePreviewFileEntryId(
+			long groupId, long previewFileEntryId)
+		throws PortalException {
+
+		if (previewFileEntryId <= 0) {
+			return;
+		}
+
+		FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
+			previewFileEntryId);
+		Repository repository = _portletFileRepository.fetchPortletRepository(
+			groupId, LayoutAdminPortletKeys.GROUP_PAGES);
+
+		if ((fileEntry == null) || (repository == null) ||
+			(repository.getRepositoryId() != fileEntry.getRepositoryId())) {
+
+			throw new LayoutPageTemplateEntryPreviewFileEntryIdException(
+				"Unable to use file entry " + previewFileEntryId +
+					" as a preview");
+		}
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutPageTemplateEntryLocalServiceImpl.class);
 
@@ -1479,6 +1508,9 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 
 	@Reference
 	private DDMStructureLinkLocalService _ddmStructureLinkLocalService;
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private File _file;
