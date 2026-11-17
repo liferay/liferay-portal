@@ -6,6 +6,7 @@
 package com.liferay.mentions.internal.util;
 
 import com.liferay.petra.function.UnsafePredicate;
+import com.liferay.portal.kernel.interval.IntervalActionProcessor;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
@@ -51,25 +52,35 @@ public class MentionsSubscriptionSender extends SubscriptionSender {
 				continue;
 			}
 
-			for (User user :
-					UserLocalServiceUtil.getUserGroupUsers(userGroupId)) {
-
-				if (!user.isActive() || (user.getUserId() == currentUserId) ||
-					!userIds.add(user.getUserId()) ||
-					!_mentionableUnsafePredicate.test(user)) {
-
-					continue;
-				}
-
-				addRuntimeSubscribers(
-					user.getEmailAddress(), user.getFullName());
-			}
-
 			_userGroupName = userGroup.getName();
 
 			setContextAttribute("[$USER_GROUP_NAME$]", _userGroupName);
 
-			super.flushNotifications();
+			int userGroupUsersCount =
+				UserLocalServiceUtil.getUserGroupUsersCount(userGroupId);
+
+			for (int start = 0; start < userGroupUsersCount;
+				 start += IntervalActionProcessor.INTERVAL_DEFAULT) {
+
+				for (User user :
+						UserLocalServiceUtil.getUserGroupUsers(
+							userGroupId, start,
+							start + IntervalActionProcessor.INTERVAL_DEFAULT)) {
+
+					if (!user.isActive() ||
+						(user.getUserId() == currentUserId) ||
+						!userIds.add(user.getUserId()) ||
+						!_mentionableUnsafePredicate.test(user)) {
+
+						continue;
+					}
+
+					addRuntimeSubscribers(
+						user.getEmailAddress(), user.getFullName());
+				}
+
+				super.flushNotifications();
+			}
 		}
 	}
 
