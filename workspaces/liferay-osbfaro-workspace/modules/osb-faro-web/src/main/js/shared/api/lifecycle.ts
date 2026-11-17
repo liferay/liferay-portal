@@ -305,6 +305,12 @@ export async function deleteLifecycle({
 	});
 }
 
+export interface IAccountLifecycleStage {
+	lifecycleName: string;
+	name: string;
+	stageExternalReferenceCode: string;
+}
+
 export interface IAccountLifecycleStageStatus {
 	description?: string;
 	endDate?: number | null;

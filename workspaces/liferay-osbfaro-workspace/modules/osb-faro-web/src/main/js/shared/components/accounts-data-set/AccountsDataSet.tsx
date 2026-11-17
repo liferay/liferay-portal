@@ -15,6 +15,7 @@ import {
 	lifecycleStagesLabelMap,
 } from 'contacts/pages/account/utils/constants';
 import {buildViews} from './utils';
+import {IAccountLifecycleStage} from 'shared/api/lifecycle';
 import {ICatalogField} from 'shared/api/catalog';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes} from 'shared/util/router';
@@ -35,12 +36,6 @@ interface IAccountsDataSetProps {
 	segmentFilter?: string;
 	segmentName?: string;
 	stageSelectionNonce?: number;
-}
-
-interface IAccountLifecycleStage {
-	lifecycleName: string;
-	name: string;
-	stageExternalReferenceCode: string;
 }
 
 export const buildSelectionPreloadedData = (value?: string, label?: string) =>
