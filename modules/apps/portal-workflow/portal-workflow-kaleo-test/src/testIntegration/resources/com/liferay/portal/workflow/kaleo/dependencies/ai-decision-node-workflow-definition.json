@@ -195,6 +195,17 @@
 				},
 				{
 					"#cdata-value": [
+						"[",
+						"    {",
+						"        \"name\": \"maxOutputTokens\",",
+						"        \"value\": \"512\"",
+						"    }",
+						"]"
+					],
+					"#tag-name": "parameters"
+				},
+				{
+					"#cdata-value": [
 						"Prompt"
 					],
 					"#tag-name": "prompt"

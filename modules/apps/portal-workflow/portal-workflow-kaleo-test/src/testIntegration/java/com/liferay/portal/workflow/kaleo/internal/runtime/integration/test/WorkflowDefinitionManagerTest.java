@@ -301,6 +301,15 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 							"type", "string"
 						)
 					).toString()),
+				_createWorkflowNodeSetting(
+					"parameters",
+					JSONUtil.put(
+						JSONUtil.put(
+							"name", "maxOutputTokens"
+						).put(
+							"value", "512"
+						)
+					).toString()),
 				_createWorkflowNodeSetting("prompt", "Prompt"),
 				_createWorkflowNodeSetting(
 					"tools",
@@ -484,6 +493,15 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 							"name", "outputVariable"
 						).put(
 							"type", "string"
+						)
+					).toString()),
+				_createWorkflowNodeSetting(
+					"parameters",
+					JSONUtil.put(
+						JSONUtil.put(
+							"name", "maxOutputTokens"
+						).put(
+							"value", "512"
 						)
 					).toString()),
 				_createWorkflowNodeSetting("prompt", "Prompt"),
