@@ -26,8 +26,10 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.wiki.item.selector.WikiPageItemSelectorCriterion;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
-import com.liferay.wiki.service.WikiNodeLocalService;
+import com.liferay.wiki.service.WikiNodeService;
 import com.liferay.wiki.service.WikiPageLocalServiceUtil;
+import com.liferay.wiki.service.WikiPageServiceUtil;
+import com.liferay.wiki.util.comparator.PageCreateDateComparator;
 import com.liferay.wiki.web.internal.item.selector.WikiPageItemSelectorReturnTypeResolver;
 import com.liferay.wiki.web.internal.item.selector.view.WikiPageItemSelectorView;
 
@@ -49,14 +51,14 @@ public class WikiPageItemSelectorViewDisplayContext {
 	public WikiPageItemSelectorViewDisplayContext(
 		WikiPageItemSelectorCriterion wikiPageItemSelectorCriterion,
 		WikiPageItemSelectorView wikiPageItemSelectorView,
-		WikiNodeLocalService wikiNodeLocalService,
+		WikiNodeService wikiNodeService,
 		ItemSelectorReturnTypeResolverHandler
 			itemSelectorReturnTypeResolverHandler,
 		String itemSelectedEventName, boolean search, PortletURL portletURL) {
 
 		_wikiPageItemSelectorCriterion = wikiPageItemSelectorCriterion;
 		_wikiPageItemSelectorView = wikiPageItemSelectorView;
-		_wikiNodeLocalService = wikiNodeLocalService;
+		_wikiNodeService = wikiNodeService;
 		_itemSelectorReturnTypeResolverHandler =
 			itemSelectorReturnTypeResolverHandler;
 		_itemSelectedEventName = itemSelectedEventName;
@@ -69,7 +71,7 @@ public class WikiPageItemSelectorViewDisplayContext {
 	}
 
 	public WikiNode getNode() throws PortalException {
-		return _wikiNodeLocalService.getNode(
+		return _wikiNodeService.getNode(
 			_wikiPageItemSelectorCriterion.getNodeId());
 	}
 
@@ -153,11 +155,14 @@ public class WikiPageItemSelectorViewDisplayContext {
 		}
 		else {
 			_searchContainer.setResultsAndTotal(
-				() -> WikiPageLocalServiceUtil.getPages(
-					node.getNodeId(), true, getStatus(),
-					_searchContainer.getStart(), _searchContainer.getEnd()),
-				WikiPageLocalServiceUtil.getPagesCount(
-					node.getNodeId(), true, getStatus()));
+				() -> WikiPageServiceUtil.getPages(
+					node.getGroupId(), node.getNodeId(), true, 0, false,
+					getStatus(), _searchContainer.getStart(),
+					_searchContainer.getEnd(),
+					PageCreateDateComparator.getInstance(false)),
+				WikiPageServiceUtil.getPagesCount(
+					node.getGroupId(), node.getNodeId(), true, 0, false,
+					getStatus()));
 		}
 
 		return _searchContainer;
@@ -206,7 +211,7 @@ public class WikiPageItemSelectorViewDisplayContext {
 	private final boolean _search;
 	private SearchContainer<WikiPage> _searchContainer;
 	private String _selectedTab;
-	private final WikiNodeLocalService _wikiNodeLocalService;
+	private final WikiNodeService _wikiNodeService;
 	private final WikiPageItemSelectorCriterion _wikiPageItemSelectorCriterion;
 	private final WikiPageItemSelectorView _wikiPageItemSelectorView;
 

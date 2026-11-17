@@ -14,7 +14,7 @@ import com.liferay.wiki.item.selector.WikiPageItemSelectorCriterion;
 import com.liferay.wiki.item.selector.WikiPageTitleItemSelectorReturnType;
 import com.liferay.wiki.item.selector.WikiPageURLItemSelectorReturnType;
 import com.liferay.wiki.item.selector.constants.WikiItemSelectorViewConstants;
-import com.liferay.wiki.service.WikiNodeLocalService;
+import com.liferay.wiki.service.WikiNodeService;
 import com.liferay.wiki.web.internal.item.selector.constants.WikiItemSelectorWebKeys;
 import com.liferay.wiki.web.internal.item.selector.view.display.context.WikiPageItemSelectorViewDisplayContext;
 
@@ -86,7 +86,7 @@ public class WikiPageItemSelectorView
 		WikiPageItemSelectorViewDisplayContext
 			wikiPageItemSelectorViewDisplayContext =
 				new WikiPageItemSelectorViewDisplayContext(
-					wikiPageItemSelectorCriterion, this, _wikiNodeLocalService,
+					wikiPageItemSelectorCriterion, this, _wikiNodeService,
 					_itemSelectorReturnTypeResolverHandler,
 					itemSelectedEventName, search, portletURL);
 
@@ -112,6 +112,6 @@ public class WikiPageItemSelectorView
 	private ServletContext _servletContext;
 
 	@Reference
-	private WikiNodeLocalService _wikiNodeLocalService;
+	private WikiNodeService _wikiNodeService;
 
 }

@@ -25,7 +25,7 @@ import com.liferay.wiki.configuration.WikiFileUploadConfiguration;
 import com.liferay.wiki.constants.WikiPortletKeys;
 import com.liferay.wiki.item.selector.WikiAttachmentItemSelectorCriterion;
 import com.liferay.wiki.model.WikiPage;
-import com.liferay.wiki.service.WikiPageLocalServiceUtil;
+import com.liferay.wiki.service.WikiPageServiceUtil;
 import com.liferay.wiki.web.internal.item.selector.view.WikiAttachmentItemSelectorView;
 
 import jakarta.portlet.PortletException;
@@ -164,7 +164,7 @@ public class WikiAttachmentItemSelectorViewDisplayContext {
 	}
 
 	public WikiPage getWikiPage() throws PortalException {
-		return WikiPageLocalServiceUtil.getPage(
+		return WikiPageServiceUtil.getPage(
 			_wikiAttachmentItemSelectorCriterion.getWikiPageResourceId());
 	}
 
