@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.product.internal.search.spi.model.index.contributor;
 
+import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -26,6 +27,9 @@ public class CPTaxCategoryModelDocumentContributor
 
 	@Override
 	public void contribute(Document document, CPTaxCategory cpTaxCategory) {
+		document.addKeyword(
+			CPField.EXTERNAL_REFERENCE_CODE,
+			cpTaxCategory.getExternalReferenceCode(), true);
 		document.addDateSortable(
 			Field.CREATE_DATE, cpTaxCategory.getCreateDate());
 		document.addText(Field.DESCRIPTION, cpTaxCategory.getDescription());
