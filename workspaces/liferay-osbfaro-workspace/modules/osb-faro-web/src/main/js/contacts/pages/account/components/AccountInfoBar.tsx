@@ -1,11 +1,15 @@
 import Card from 'shared/components/Card';
 import ClayIcon from 'shared/components/Icon';
 import Label from '@clayui/label';
+import LifecyclePicker from './LifecyclePicker';
 import React from 'react';
 import {getAccountInfoDisplayValues} from 'contacts/pages/account/utils/accountInfo';
+import {IAccountLifecycleStage} from 'shared/api/lifecycle';
 import {isMissingDataValue} from 'shared/util/data-value';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
+import {useLifecycleSelection} from 'shared/hooks/useLifecycleSelection';
+import {useParams} from 'react-router-dom';
 
 /**
  * Read-only summary of an account's firmographics, rendered as a single
@@ -22,7 +26,7 @@ interface IAccountInfoBarProps {
 	annualRevenue?: number;
 	country?: string;
 	industry?: string;
-	lifecycleStage?: string | null;
+	lifecycleStages?: IAccountLifecycleStage[];
 }
 
 const infoItem = (symbol: string, value: string) => (
@@ -39,10 +43,25 @@ const AccountInfoBar: React.FC<IAccountInfoBarProps> = ({
 	annualRevenue,
 	country,
 	industry,
-	lifecycleStage,
+	lifecycleStages,
 }) => {
+	const {channelId, groupId = ''} = useParams<{
+		channelId: string;
+		groupId: string;
+	}>();
+
+	const {lifecycles, selectedLifecycleId, setSelectedLifecycleId} =
+		useLifecycleSelection({channelId, groupId});
+
+	const lifecycleStage = lifecycleStages?.find(
+		({lifecycleId}) => lifecycleId === selectedLifecycleId
+	);
+
 	const {lifecycleStage: lifecycleStageValue, revenue} =
-		getAccountInfoDisplayValues({annualRevenue, lifecycleStage});
+		getAccountInfoDisplayValues({
+			annualRevenue,
+			lifecycleStage: lifecycleStage?.name,
+		});
 
 	return (
 		<Card className="mb-4">
@@ -64,9 +83,15 @@ const AccountInfoBar: React.FC<IAccountInfoBarProps> = ({
 
 					{industry && infoItem('briefcase', industry)}
 
-					{(lifecycleStageValue || accountType) && (
-						<span className="align-self-stretch border-left mr-4" />
-					)}
+					<span className="align-self-stretch border-left mr-4" />
+
+					<span className="mr-2">
+						<LifecyclePicker
+							lifecycles={lifecycles}
+							onSelectionChange={setSelectedLifecycleId}
+							selectedLifecycleId={selectedLifecycleId}
+						/>
+					</span>
 
 					{lifecycleStageValue && (
 						<Label
@@ -74,9 +99,7 @@ const AccountInfoBar: React.FC<IAccountInfoBarProps> = ({
 							displayType={lifecycleStageValue.displayType}
 							inverse
 						>
-							{sub(Liferay.Language.get('lifecycle-x'), [
-								lifecycleStageValue.label,
-							])}
+							{lifecycleStageValue.label}
 						</Label>
 					)}
 

@@ -9,6 +9,7 @@ import React, {useState} from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import {Text} from '@clayui/core';
 import {DataValueType, isMissingDataValue} from 'shared/util/data-value';
+import {IAccountLifecycleStage} from 'shared/api/lifecycle';
 import {useParams} from 'react-router-dom';
 
 export interface IAccount {
@@ -24,7 +25,7 @@ export interface IAccount {
 	}>;
 	id?: string;
 	industry?: string;
-	lifecycleStage?: string | null;
+	lifecycleStages?: IAccountLifecycleStage[];
 	numberOfEmployees?: number;
 	website?: string;
 }

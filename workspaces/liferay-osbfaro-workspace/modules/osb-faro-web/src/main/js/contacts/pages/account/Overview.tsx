@@ -68,7 +68,7 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 				annualRevenue={account?.annualRevenue}
 				country={account?.country}
 				industry={account?.industry}
-				lifecycleStage={account?.lifecycleStage}
+				lifecycleStages={account?.lifecycleStages}
 			/>
 
 			<ClayLayout.Row>
