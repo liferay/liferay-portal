@@ -2673,6 +2673,65 @@ public class ObjectDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testAddSystemObjectDefinitionWithClassNameHeldByCustomObjectDefinition()
+		throws Exception {
+
+		String className = ObjectDefinitionTestUtil.getUniqueRandomClassName();
+
+		ObjectDefinition objectDefinition1 = _addCustomObjectDefinition(
+			className, ObjectDefinitionTestUtil.getRandomName());
+
+		ObjectDefinition objectDefinition2 = null;
+
+		try {
+			objectDefinition2 =
+				_objectDefinitionLocalService.addSystemObjectDefinition(
+					null, TestPropsValues.getUserId(), 0, className, null, null,
+					true, false, true, false, true, false, false, false, false,
+					false, null, RandomTestUtil.randomLocaleStringMap(), true,
+					"Test" + RandomTestUtil.randomString(), null, null, null,
+					null, RandomTestUtil.randomLocaleStringMap(), false,
+					ObjectDefinitionConstants.SCOPE_COMPANY, null, 1,
+					WorkflowConstants.STATUS_APPROVED, Collections.emptyList(),
+					Collections.emptyList(), Collections.emptyList());
+
+			_assertUniqueClassName(className, objectDefinition2);
+
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition2);
+
+			try (SafeCloseable safeCloseable =
+					LazyReferencingThreadLocal.setEnabledWithSafeCloseable(
+						true)) {
+
+				objectDefinition2 =
+					_objectDefinitionLocalService.getOrAddEmptyObjectDefinition(
+						"Test" + RandomTestUtil.randomString(),
+						TestPropsValues.getCompanyId(),
+						TestPropsValues.getUserId(), 0, true,
+						ObjectDefinitionConstants.SCOPE_COMPANY, true);
+
+				Assert.assertTrue(
+					Validator.isNull(objectDefinition2.getClassName()));
+
+				objectDefinition2 = _updateCustomObjectDefinition(
+					className, objectDefinition2);
+
+				_assertUniqueClassName(className, objectDefinition2);
+			}
+		}
+		finally {
+			if (objectDefinition2 != null) {
+				_objectDefinitionLocalService.deleteObjectDefinition(
+					objectDefinition2.getObjectDefinitionId());
+			}
+
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition1);
+		}
+	}
+
+	@Test
 	public void testAuditRouter() throws Exception {
 		Queue<AuditMessage> auditMessages = new LinkedList<>();
 
@@ -5402,6 +5461,17 @@ public class ObjectDefinitionLocalServiceTest {
 			expectedObjectField.isRequired(), objectField.isRequired());
 		Assert.assertEquals(
 			expectedObjectField.isState(), objectField.isState());
+	}
+
+	private void _assertUniqueClassName(
+		String className, ObjectDefinition objectDefinition) {
+
+		Assert.assertNotEquals(className, objectDefinition.getClassName());
+		Assert.assertTrue(
+			StringUtil.startsWith(
+				objectDefinition.getClassName(),
+				ObjectDefinitionConstants.
+					CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION));
 	}
 
 	private void _assertWorkflowDefinitionLink(

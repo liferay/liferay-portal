@@ -3274,17 +3274,19 @@ public class ObjectDefinitionLocalServiceImpl
 			return;
 		}
 
-		ObjectDefinition existingObjectDefinition =
-			objectDefinitionPersistence.fetchByC_C(companyId, className);
+		if (!system) {
+			ObjectDefinition existingObjectDefinition =
+				objectDefinitionPersistence.fetchByC_C(companyId, className);
 
-		if ((existingObjectDefinition != null) &&
-			(existingObjectDefinition.getObjectDefinitionId() !=
-				objectDefinitionId)) {
+			if ((existingObjectDefinition != null) &&
+				(existingObjectDefinition.getObjectDefinitionId() !=
+					objectDefinitionId)) {
 
-			_handleException(
-				new ObjectDefinitionClassNameException.MustNotBeDuplicate(
-					className),
-				"className", className);
+				_handleException(
+					new ObjectDefinitionClassNameException.MustNotBeDuplicate(
+						className),
+					"className", className);
+			}
 		}
 
 		if (!StringUtil.startsWith(
