@@ -240,14 +240,14 @@ public class LayoutServiceContextHelperImpl
 					!_layoutPermission.contains(
 						_permissionChecker, layout, ActionKeys.VIEW)) {
 
-					layout = _fetchGuestGroupLayout(company);
+					layout = _fetchGuestLayout(company);
 				}
 			}
 			else {
 				_group = _groupLocalService.getGroup(
 					company.getCompanyId(), GroupConstants.GUEST);
 
-				layout = _fetchGuestGroupLayout(_group);
+				layout = _fetchGuestLayout(_group);
 			}
 
 			_layout = layout;
@@ -387,15 +387,15 @@ public class LayoutServiceContextHelperImpl
 				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
 		}
 
-		private Layout _fetchGuestGroupLayout(Company company)
+		private Layout _fetchGuestLayout(Company company)
 			throws PortalException {
 
-			return _fetchGuestGroupLayout(
+			return _fetchGuestLayout(
 				_groupLocalService.getGroup(
 					company.getCompanyId(), GroupConstants.GUEST));
 		}
 
-		private Layout _fetchGuestGroupLayout(Group group) {
+		private Layout _fetchGuestLayout(Group group) {
 			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
 				group.getGroupId(), false,
 				_friendlyURLNormalizer.normalizeWithEncoding(

@@ -212,10 +212,10 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 				StringPool.BLANK, serviceContext),
 			RandomTestUtil.randomString(), serviceContext);
 
-		Layout guestGroupLayout = _getGuestGroupLayout();
+		Layout guestLayout = _getGuestLayout();
 
 		_testExportImportLayoutsWithValidation(
-			fragmentEntry, guestGroupLayout.getPlid());
+			fragmentEntry, guestLayout.getPlid());
 
 		Layout importedGroupLayout = LayoutTestUtil.addTypePortletLayout(
 			importedGroup);
@@ -233,7 +233,7 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 			ActionKeys.VIEW);
 
 		_testExportImportLayoutsWithValidation(
-			fragmentEntry, guestGroupLayout.getPlid());
+			fragmentEntry, guestLayout.getPlid());
 	}
 
 	@Test
@@ -448,7 +448,7 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 		throw new AssertionError(exception);
 	}
 
-	private Layout _getGuestGroupLayout() throws Exception {
+	private Layout _getGuestLayout() throws Exception {
 		Group group = _groupLocalService.getGroup(
 			importedGroup.getCompanyId(), GroupConstants.GUEST);
 

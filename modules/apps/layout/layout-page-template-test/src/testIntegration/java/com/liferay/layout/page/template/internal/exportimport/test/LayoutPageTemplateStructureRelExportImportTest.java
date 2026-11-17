@@ -357,8 +357,7 @@ public class LayoutPageTemplateStructureRelExportImportTest
 		Group guestGroup = _groupLocalService.getGroup(
 			TestPropsValues.getGroupId());
 
-		Layout guestGroupLayout = LayoutTestUtil.addTypeContentLayout(
-			guestGroup);
+		Layout guestLayout = LayoutTestUtil.addTypeContentLayout(guestGroup);
 
 		_updateLayoutStructureItem(
 			itemId,
@@ -369,7 +368,7 @@ public class LayoutPageTemplateStructureRelExportImportTest
 				successMessageJSONObject.put(
 					"layout",
 					_getLayoutJSONObject(
-						guestGroupLayout.getExternalReferenceCode(),
+						guestLayout.getExternalReferenceCode(),
 						guestGroup.getExternalReferenceCode()));
 
 				return itemConfigJSONObject;
@@ -379,7 +378,7 @@ public class LayoutPageTemplateStructureRelExportImportTest
 			new long[] {layout.getLayoutId()}, getImportParameterMap());
 
 		_assertLayoutJSONObject(
-			guestGroupLayout.getExternalReferenceCode(), "successMessage",
+			guestLayout.getExternalReferenceCode(), "successMessage",
 			_getLayoutStructureItem(itemId, importedLayout.getPlid()),
 			guestGroup.getExternalReferenceCode());
 	}
