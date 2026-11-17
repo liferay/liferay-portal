@@ -6,11 +6,15 @@
 package com.liferay.frontend.js.bundle.config.extender.internal;
 
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.servlet.PortalWebResourceConstants;
+import com.liferay.portal.kernel.servlet.PortalWebResources;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.servlet.delegate.ServletContextDelegate;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +23,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.osgi.service.component.ComponentContext;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
@@ -38,18 +43,22 @@ import org.osgi.service.component.annotations.Component;
 public class JSBundleConfigServlet extends HttpServlet {
 
 	@Override
+	public void destroy() {
+		_serviceRegistration.unregister();
+	}
+
+	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 
-		_componentContext.enableComponent(
-			JSBundleConfigPortalWebResources.class.getName());
+		_serviceRegistration = _bundleContext.registerService(
+			PortalWebResources.class,
+			new InternalPortalWebResources(config.getServletContext()), null);
 	}
 
 	@Activate
-	protected void activate(ComponentContext componentContext)
-		throws Exception {
-
-		_componentContext = componentContext;
+	protected void activate(BundleContext bundleContext) {
+		_bundleContext = bundleContext;
 	}
 
 	@Override
@@ -77,6 +86,37 @@ public class JSBundleConfigServlet extends HttpServlet {
 		printWriter.write(JSBundleConfigRegistryUtil.getJavaScript());
 	}
 
-	private volatile ComponentContext _componentContext;
+	private BundleContext _bundleContext;
+	private ServiceRegistration<?> _serviceRegistration;
+
+	private class InternalPortalWebResources implements PortalWebResources {
+
+		@Override
+		public String getContextPath() {
+			return _servletContext.getContextPath();
+		}
+
+		@Override
+		public long getLastModified() {
+			return JSBundleConfigRegistryUtil.getLastModified();
+		}
+
+		@Override
+		public String getResourceType() {
+			return PortalWebResourceConstants.RESOURCE_TYPE_JS_BUNDLE_CONFIG;
+		}
+
+		@Override
+		public ServletContext getServletContext() {
+			return _servletContext;
+		}
+
+		private InternalPortalWebResources(ServletContext servletContext) {
+			_servletContext = ServletContextDelegate.create(servletContext);
+		}
+
+		private final ServletContext _servletContext;
+
+	}
 
 }
