@@ -4,7 +4,5 @@ Bundle-Version: 6.0.19
 Import-Package:\
 	!javax.annotation,\
 	\
-	!sun.misc,\
-	\
 	*
 -fixupmessages "Classes found in the wrong directory"; restrict:=error; is:=ignore
