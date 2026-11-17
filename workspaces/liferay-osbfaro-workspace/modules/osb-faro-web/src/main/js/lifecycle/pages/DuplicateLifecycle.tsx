@@ -7,6 +7,7 @@ import React from 'react';
 import {
 	buildDuplicateLifecycleName,
 	duplicateStageConfigsFromLifecycle,
+	getDuplicateLifecycleSearchName,
 } from 'lifecycle/utils/lifecyclePayload';
 import {LifecycleAccountDataEmptyState} from 'lifecycle/components/LifecycleEmptyStates';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -15,8 +16,10 @@ import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 import {AccountDataStatus} from 'lifecycle/utils/types';
 
+const LIFECYCLE_NAME_LOOKUP_PAGE_SIZE = 100;
+
 const DuplicateLifecycle = () => {
-	const {groupId, sourceLifecycleId} = useParams();
+	const {channelId, groupId, sourceLifecycleId} = useParams();
 
 	const currentUser = useCurrentUser();
 
@@ -32,7 +35,23 @@ const DuplicateLifecycle = () => {
 		variables: {groupId: groupId!, lifecycleId: sourceLifecycleId!},
 	});
 
-	if (accountDataStatus === AccountDataStatus.Loading || lifecycleLoading) {
+	const {data: lifecyclesPage, loading: lifecyclesPageLoading} = useRequest({
+		dataSourceFn: API.lifecycle.fetchLifecyclesPage,
+		skipRequest: !lifecycle,
+		variables: {
+			channelId,
+			groupId: groupId!,
+			page: 1,
+			pageSize: LIFECYCLE_NAME_LOOKUP_PAGE_SIZE,
+			search: getDuplicateLifecycleSearchName(lifecycle?.name ?? ''),
+		},
+	});
+
+	if (
+		accountDataStatus === AccountDataStatus.Loading ||
+		lifecycleLoading ||
+		(lifecycle && lifecyclesPageLoading)
+	) {
 		return (
 			<LifecyclesPage showTitle={false}>
 				<Loading />
@@ -60,7 +79,10 @@ const DuplicateLifecycle = () => {
 	return (
 		<CreateLifecycleForm
 			description={lifecycle.description ?? ''}
-			name={buildDuplicateLifecycleName(lifecycle.name ?? '')}
+			name={buildDuplicateLifecycleName(
+				lifecycle.name ?? '',
+				lifecyclesPage?.items.map(({name}) => name ?? '')
+			)}
 			segmentId={lifecycle.segmentId}
 			stageConfigs={() =>
 				duplicateStageConfigsFromLifecycle(

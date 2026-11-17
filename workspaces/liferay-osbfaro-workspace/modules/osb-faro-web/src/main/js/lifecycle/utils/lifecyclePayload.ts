@@ -288,12 +288,56 @@ export const stageConfigsFromLifecycle = (
 	stages: ILifecycleStage[] = []
 ): IStageConfig[] => sortBy(stages, 'position').map(stageConfigFromStage);
 
-const DUPLICATE_NAME_SUFFIX = ' (1)';
+const DUPLICATE_NAME_NUMBER_REGEX = /\s*\((\d+)\)$/;
 
-export const buildDuplicateLifecycleName = (name: string) =>
-	`${name
-		.slice(0, LIFECYCLE_NAME_MAX_LENGTH - DUPLICATE_NAME_SUFFIX.length)
-		.trimEnd()}${DUPLICATE_NAME_SUFFIX}`;
+const normalizeDuplicateName = (name: string) => name.trim().toLowerCase();
+
+const truncateName = (name: string, maxLength: number) => {
+	let truncatedName = '';
+
+	for (const character of Array.from(name)) {
+		if (truncatedName.length + character.length > maxLength) {
+			break;
+		}
+
+		truncatedName += character;
+	}
+
+	return truncatedName;
+};
+
+const getDuplicateLifecycleBaseName = (name: string) =>
+	name.replace(DUPLICATE_NAME_NUMBER_REGEX, '').trim();
+
+const DUPLICATE_NAME_SEARCH_SUFFIX_LENGTH = ' (999)'.length;
+
+export const getDuplicateLifecycleSearchName = (name: string) =>
+	truncateName(
+		getDuplicateLifecycleBaseName(name),
+		LIFECYCLE_NAME_MAX_LENGTH - DUPLICATE_NAME_SEARCH_SUFFIX_LENGTH
+	).trimEnd();
+
+export const buildDuplicateLifecycleName = (
+	name: string,
+	existingNames: string[] = []
+) => {
+	const baseName = getDuplicateLifecycleBaseName(name);
+
+	const usedNames = new Set(existingNames.map(normalizeDuplicateName));
+
+	for (let number = 1; ; number++) {
+		const suffix = ` (${number})`;
+
+		const duplicateName = `${truncateName(
+			baseName,
+			LIFECYCLE_NAME_MAX_LENGTH - suffix.length
+		).trimEnd()}${suffix}`;
+
+		if (!usedNames.has(normalizeDuplicateName(duplicateName))) {
+			return duplicateName;
+		}
+	}
+};
 
 export const duplicateStageConfigsFromLifecycle = (
 	stages?: ILifecycleStage[]
