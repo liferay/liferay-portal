@@ -70,6 +70,8 @@ import java.io.Serializable;
 
 import java.net.URI;
 
+import java.time.Duration;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -761,6 +763,8 @@ public class MCPServerServletTest {
 			).elicitation(
 				true, true
 			).build()
+		).requestTimeout(
+			Duration.ofMinutes(5)
 		).build();
 	}
 
