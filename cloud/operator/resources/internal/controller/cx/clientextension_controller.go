@@ -113,7 +113,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 			newCondition(
 				metav1.ConditionFalse, refusalMessage(&clientExtension, dxpNamespace, refusedReason), refusedReason,
 			),
-			"", nil, nil, "", nil, nil, "", "", nil,
+			"", "", nil, nil, "", nil, nil, nil, "",
 		); error != nil {
 			return controllerruntime.Result{}, error
 		}
@@ -153,7 +153,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 				metav1.ConditionFalse, unknownVirtualInstanceMessage(&clientExtension, dxpNamespace),
 				ReasonUnknownVirtualInstance,
 			),
-			"", nil, nil, "", nil, nil, "", "", nil,
+			"", "", nil, nil, "", nil, nil, nil, "",
 		); error != nil {
 			return controllerruntime.Result{}, error
 		}
@@ -185,7 +185,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 					),
 					ReasonDeliveryNotPermitted,
 				),
-				"", nil, nil, "", nil, nil, "", "", nil,
+				"", "", nil, nil, "", nil, nil, nil, "",
 			)
 	}
 
@@ -200,7 +200,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 				metav1.ConditionFalse, serviceIDConflictMessage(&clientExtension, conflictingConfigMap),
 				ReasonServiceIDConflict,
 			),
-			"", nil, nil, "", nil, nil, "", "", nil,
+			"", "", nil, nil, "", nil, nil, nil, "",
 		)
 	}
 
@@ -275,8 +275,9 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 	if error := clientExtensionReconciler.updateStatus(
 		&clientExtension, context,
 		newCondition(metav1.ConditionTrue, message, ReasonDelivered),
-		extProvisionResourceVersion, &mirroredCondition, &provisionedCondition,
-		dxpMetadata.Data[MetadataKeyServerProtocol], &workloadAcceptedCondition, workloadAvailableCondition, image, workloadSummary, workloadIssues,
+		extProvisionResourceVersion, image, &mirroredCondition, &provisionedCondition,
+		dxpMetadata.Data[MetadataKeyServerProtocol], &workloadAcceptedCondition, workloadAvailableCondition, workloadIssues,
+		workloadSummary,
 	); error != nil {
 		return controllerruntime.Result{}, error
 	}
@@ -842,14 +843,14 @@ func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
 	context context.Context,
 	delivered metav1.Condition,
 	extProvisionResourceVersion string,
+	image string,
 	mirrored *metav1.Condition,
 	provisioned *metav1.Condition,
 	serverProtocol string,
 	workloadAccepted *metav1.Condition,
 	workloadAvailable *metav1.Condition,
-	image string,
-	workloadSummary string,
 	workloadIssues []string,
+	workloadSummary string,
 ) error {
 	status := clientExtension.Status.DeepCopy()
 

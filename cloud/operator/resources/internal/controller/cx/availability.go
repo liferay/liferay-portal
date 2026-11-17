@@ -196,34 +196,32 @@ func podProblem(pods []corev1.Pod) string {
 }
 
 func workloadSummary(workload client.Object, workloadAvailable metav1.Condition) string {
-	switch workload := workload.(type) {
-	case *appsv1.Deployment:
+	if deployment, ok := workload.(*appsv1.Deployment); ok {
 		replicas := int32(1)
 
-		if workload.Spec.Replicas != nil {
-			replicas = *workload.Spec.Replicas
+		if deployment.Spec.Replicas != nil {
+			replicas = *deployment.Spec.Replicas
 		}
 
-		return fmt.Sprintf("%d/%d", workload.Status.AvailableReplicas, replicas)
-	case *batchv1.CronJob:
+		return fmt.Sprintf("%d/%d", deployment.Status.AvailableReplicas, replicas)
+	} else if cronJob, ok := workload.(*batchv1.CronJob); ok {
 		if workloadAvailable.Reason == ReasonJobFailed {
 			return "Failed"
 		}
 
-		if len(workload.Status.Active) > 0 {
+		if len(cronJob.Status.Active) > 0 {
 			return "Running"
 		}
 
-		if workload.Status.LastSuccessfulTime != nil {
+		if cronJob.Status.LastSuccessfulTime != nil {
 			return "Completed"
 		}
 
 		return "Scheduled"
-	case *batchv1.Job:
-		switch workloadAvailable.Reason {
-		case ReasonJobComplete:
+	} else if _, ok := workload.(*batchv1.Job); ok {
+		if workloadAvailable.Reason == ReasonJobComplete {
 			return "Completed"
-		case ReasonJobFailed:
+		} else if workloadAvailable.Reason == ReasonJobFailed {
 			return "Failed"
 		}
 
@@ -263,39 +261,38 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadAvailableCon
 	context context.Context,
 	workload client.Object,
 ) (metav1.Condition, error) {
-	switch workload := workload.(type) {
-	case *appsv1.Deployment:
-		pods, error := clientExtensionReconciler.listPods(context, workload.Namespace, workload.Spec.Selector)
+	if deployment, ok := workload.(*appsv1.Deployment); ok {
+		pods, error := clientExtensionReconciler.listPods(context, deployment.Namespace, deployment.Spec.Selector)
 
 		if error != nil {
 			return metav1.Condition{}, error
 		}
 
-		return deploymentAvailableCondition(workload, podProblem(pods)), nil
-	case *batchv1.CronJob:
+		return deploymentAvailableCondition(deployment, podProblem(pods)), nil
+	} else if cronJob, ok := workload.(*batchv1.CronJob); ok {
 		var jobList batchv1.JobList
 
 		if error := clientExtensionReconciler.APIReader.List(
-			context, &jobList, client.InNamespace(workload.Namespace),
+			context, &jobList, client.InNamespace(cronJob.Namespace),
 		); error != nil {
 			return metav1.Condition{}, error
 		}
 
-		return cronJobAvailableCondition(workload, jobList.Items), nil
-	case *batchv1.Job:
-		selector := workload.Spec.Selector
+		return cronJobAvailableCondition(cronJob, jobList.Items), nil
+	} else if job, ok := workload.(*batchv1.Job); ok {
+		selector := job.Spec.Selector
 
 		if selector == nil {
-			selector = metav1.SetAsLabelSelector(labels.Set{batchv1.JobNameLabel: workload.Name})
+			selector = metav1.SetAsLabelSelector(labels.Set{batchv1.JobNameLabel: job.Name})
 		}
 
-		pods, error := clientExtensionReconciler.listPods(context, workload.Namespace, selector)
+		pods, error := clientExtensionReconciler.listPods(context, job.Namespace, selector)
 
 		if error != nil {
 			return metav1.Condition{}, error
 		}
 
-		return jobAvailableCondition(workload, podProblem(pods)), nil
+		return jobAvailableCondition(job, podProblem(pods)), nil
 	}
 
 	return metav1.Condition{}, fmt.Errorf("unsupported workload %T", workload)

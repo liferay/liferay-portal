@@ -368,40 +368,42 @@ func assertCondition(
 
 func TestWorkloadSummary(t *testing.T) {
 	testCases := map[string]struct {
+		want              string
 		workload          client.Object
 		workloadAvailable metav1.Condition
-		want              string
 	}{
 		"a CronJob that has not run yet": {
-			workload: &batchv1.CronJob{}, workloadAvailable: metav1.Condition{Reason: ReasonCronJobScheduled},
-			want: "Scheduled",
+			want: "Scheduled", workload: &batchv1.CronJob{},
+			workloadAvailable: metav1.Condition{Reason: ReasonCronJobScheduled},
 		},
 		"a CronJob whose last run failed": {
-			workload: &batchv1.CronJob{}, workloadAvailable: metav1.Condition{Reason: ReasonJobFailed}, want: "Failed",
+			want: "Failed", workload: &batchv1.CronJob{}, workloadAvailable: metav1.Condition{Reason: ReasonJobFailed},
 		},
 		"a CronJob whose last run succeeded": {
+			want: "Completed",
 			workload: &batchv1.CronJob{
 				Status: batchv1.CronJobStatus{LastSuccessfulTime: &metav1.Time{Time: time.Now()}},
 			},
-			workloadAvailable: metav1.Condition{Reason: ReasonCronJobScheduled}, want: "Completed",
+			workloadAvailable: metav1.Condition{Reason: ReasonCronJobScheduled},
 		},
 		"a CronJob with a running Job": {
+			want: "Running",
 			workload: &batchv1.CronJob{
 				Status: batchv1.CronJobStatus{Active: []corev1.ObjectReference{{Name: "able-1"}}},
 			},
-			workloadAvailable: metav1.Condition{Reason: ReasonCronJobScheduled}, want: "Running",
+			workloadAvailable: metav1.Condition{Reason: ReasonCronJobScheduled},
 		},
 		"a Deployment rolling out": {
-			workload: newAvailabilityDeployment(2, 1, 1), want: "1/2",
+			want: "1/2", workload: newAvailabilityDeployment(2, 1, 1),
 		},
 		"a Job that completed": {
-			workload: &batchv1.Job{}, workloadAvailable: metav1.Condition{Reason: ReasonJobComplete}, want: "Completed",
+			want: "Completed", workload: &batchv1.Job{}, workloadAvailable: metav1.Condition{Reason: ReasonJobComplete},
 		},
 		"a Job that failed": {
-			workload: &batchv1.Job{}, workloadAvailable: metav1.Condition{Reason: ReasonJobFailed}, want: "Failed",
+			want: "Failed", workload: &batchv1.Job{}, workloadAvailable: metav1.Condition{Reason: ReasonJobFailed},
 		},
 		"a Job that is running": {
-			workload: &batchv1.Job{}, workloadAvailable: metav1.Condition{Reason: ReasonJobRunning}, want: "Running",
+			want: "Running", workload: &batchv1.Job{}, workloadAvailable: metav1.Condition{Reason: ReasonJobRunning},
 		},
 	}
 
