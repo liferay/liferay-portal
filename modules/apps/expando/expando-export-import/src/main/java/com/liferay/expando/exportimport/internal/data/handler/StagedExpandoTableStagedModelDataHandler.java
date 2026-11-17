@@ -11,6 +11,7 @@ import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
+import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.xml.Element;
@@ -80,6 +81,8 @@ public class StagedExpandoTableStagedModelDataHandler
 			PortletDataContext portletDataContext,
 			StagedExpandoTable stagedExpandoTable)
 		throws Exception {
+
+		ScopeUtil.validateInstanceScoped(portletDataContext);
 
 		StagedExpandoTable importedStagedExpandoTable =
 			(StagedExpandoTable)stagedExpandoTable.clone();

@@ -5,10 +5,13 @@
 
 package com.liferay.exportimport.util;
 
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.group.capability.GroupCapabilityUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
 
@@ -61,6 +64,21 @@ public class ScopeUtil {
 		}
 
 		return false;
+	}
+
+	public static void validateInstanceScoped(
+			PortletDataContext portletDataContext)
+		throws PortalException {
+
+		if (isInstanceScoped(
+				GroupLocalServiceUtil.getGroup(
+					portletDataContext.getGroupId()))) {
+
+			return;
+		}
+
+		throw new PortalException(
+			"Unable to import a company scoped element into a site group");
 	}
 
 	private static String _getScopePath(Group group) {

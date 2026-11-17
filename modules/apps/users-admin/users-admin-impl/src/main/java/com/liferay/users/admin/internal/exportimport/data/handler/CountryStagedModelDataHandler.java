@@ -9,6 +9,7 @@ import com.liferay.exportimport.kernel.lar.BaseStagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
+import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Group;
@@ -83,6 +84,8 @@ public class CountryStagedModelDataHandler
 	protected void doImportStagedModel(
 			PortletDataContext portletDataContext, Country country)
 		throws Exception {
+
+		ScopeUtil.validateInstanceScoped(portletDataContext);
 
 		Country existingCountry = _countryLocalService.fetchCountryByA2(
 			portletDataContext.getCompanyId(), country.getA2());

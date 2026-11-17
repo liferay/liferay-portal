@@ -11,6 +11,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
+import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
@@ -178,6 +179,8 @@ public class OrganizationStagedModelDataHandler
 	protected void doImportStagedModel(
 			PortletDataContext portletDataContext, Organization organization)
 		throws Exception {
+
+		ScopeUtil.validateInstanceScoped(portletDataContext);
 
 		organization = _importCountry(portletDataContext, organization);
 		organization = _importListType(portletDataContext, organization);

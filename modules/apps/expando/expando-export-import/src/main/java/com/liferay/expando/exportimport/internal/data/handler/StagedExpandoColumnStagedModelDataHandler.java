@@ -17,6 +17,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
+import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -145,6 +146,8 @@ public class StagedExpandoColumnStagedModelDataHandler
 			PortletDataContext portletDataContext,
 			StagedExpandoColumn stagedExpandoColumn)
 		throws Exception {
+
+		ScopeUtil.validateInstanceScoped(portletDataContext);
 
 		Map<Long, Long> tableIds =
 			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(

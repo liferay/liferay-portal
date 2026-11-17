@@ -9,6 +9,7 @@ import com.liferay.exportimport.kernel.lar.BaseStagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
+import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ListType;
@@ -83,6 +84,8 @@ public class ListTypeStagedModelDataHandler
 	protected void doImportStagedModel(
 			PortletDataContext portletDataContext, ListType listType)
 		throws Exception {
+
+		ScopeUtil.validateInstanceScoped(portletDataContext);
 
 		ListType existingListType = _listTypeLocalService.fetchListType(
 			portletDataContext.getCompanyId(), listType.getName(),

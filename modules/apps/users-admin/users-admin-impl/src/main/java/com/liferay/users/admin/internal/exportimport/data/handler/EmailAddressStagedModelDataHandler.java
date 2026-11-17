@@ -9,6 +9,7 @@ import com.liferay.exportimport.data.handler.base.BaseStagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
+import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.EmailAddress;
 import com.liferay.portal.kernel.model.Group;
@@ -82,6 +83,8 @@ public class EmailAddressStagedModelDataHandler
 	protected void doImportStagedModel(
 			PortletDataContext portletDataContext, EmailAddress emailAddress)
 		throws Exception {
+
+		ScopeUtil.validateInstanceScoped(portletDataContext);
 
 		long userId = portletDataContext.getUserId(emailAddress.getUserUuid());
 
