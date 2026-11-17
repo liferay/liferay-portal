@@ -1,0 +1,21 @@
+.item-selector-modal-body {
+	display: flex;
+	flex-direction: row;
+	overflow: hidden;
+	padding: 0;
+}
+
+.item-selector-modal-content {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+}
+
+.item-selector-modal-sidebar {
+	background: var(--light-l1);
+	border-right: 1px solid var(--gray-300);
+	flex-shrink: 0;
+	overflow-y: auto;
+	padding-top: 0.5rem;
+	width: 200px;
+}

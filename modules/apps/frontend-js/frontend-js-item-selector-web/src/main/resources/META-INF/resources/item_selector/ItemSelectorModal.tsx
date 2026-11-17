@@ -18,6 +18,8 @@ import {FileData} from 'frontend-js-components-web';
 import {getObjectValueFromPath, sub} from 'frontend-js-web';
 import React, {useEffect, useMemo, useState} from 'react';
 
+import '../css/ItemSelectorModal.scss';
+
 type IItemSelectorModalFDSProps = Omit<
 	IFrontendDataSetProps,
 	| 'apiURL'
@@ -266,26 +268,23 @@ function ItemSelectorModal<T extends Record<string, any>>({
 			<ClayModal.Body
 				className={classNames(
 					'p-0',
-					sidebar ? 'd-flex flex-row' : 'd-flex flex-column'
+					sidebar ? 'item-selector-modal-body' : 'd-flex flex-column'
 				)}
 			>
 				{sidebar && (
-					<div
-						className="border-end flex-shrink-0 overflow-y-auto"
-						style={{width: '200px'}}
-					>
-						{sidebar}
-					</div>
+					<div className="item-selector-modal-sidebar">{sidebar}</div>
 				)}
 
 				<div
 					className={classNames({
-						'd-flex flex-column flex-grow-1 overflow-hidden':
-							!!sidebar,
+						'item-selector-modal-content': !!sidebar,
 					})}
 				>
 					<ClayLayout.Container
-						className={classNames({'d-none': view !== 'fds'})}
+						className={classNames({
+							'd-none': view !== 'fds',
+							'px-0': !!sidebar,
+						})}
 						fluid
 					>
 						{breadcrumbs && (
