@@ -1,5 +1,6 @@
 {
 	"defaultStyleBookEntry": true,
 	"frontendTokensValuesPath": "frontend-tokens-values.json",
-	"name": "Liferay Learn"
+	"name": "Liferay Learn",
+	"themeId": "dialect_WAR_dialecttheme"
 }
