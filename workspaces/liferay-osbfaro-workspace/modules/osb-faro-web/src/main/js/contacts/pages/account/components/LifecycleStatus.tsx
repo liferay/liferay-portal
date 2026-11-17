@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from 'shared/components/Icon';
 import ClaySticker from '@clayui/sticker';
+import LifecyclePicker from './LifecyclePicker';
 import MultiStepNav from '@clayui/multi-step-nav';
 import React from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
@@ -11,6 +12,7 @@ import {formatUTCDate, getCustomDateFormat} from 'shared/util/date';
 import {IAccountLifecycleStatus} from 'shared/api/lifecycle';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
+import {useLifecycleSelection} from 'shared/hooks/useLifecycleSelection';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 import {sortBy} from 'lodash';
@@ -32,25 +34,25 @@ const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
 		id: string;
 	}>();
 
-	const {data: lifecyclesData, loading: lifecyclesLoading} = useRequest({
-		dataSourceFn: API.lifecycle.fetchAccountLifecycles,
-		variables: {channelId, groupId},
-	});
-
-	const accountLifecycle = lifecyclesData?.[0];
+	const {
+		lifecycles,
+		loading: lifecyclesLoading,
+		selectedLifecycleId,
+		setSelectedLifecycleId,
+	} = useLifecycleSelection({channelId, groupId});
 
 	const {data: statusData, loading: statusLoading} = useRequest({
 		dataSourceFn: API.accounts.fetchLifecycleStatus,
-		skipRequest: !accountLifecycle,
+		skipRequest: !selectedLifecycleId,
 		variables: {
 			accountId,
-			accountLifecycleId: accountLifecycle?.id ?? '',
+			accountLifecycleId: selectedLifecycleId ?? '',
 			groupId,
 		},
 	});
 
 	const isLoading =
-		lifecyclesLoading || (Boolean(accountLifecycle?.id) && statusLoading);
+		lifecyclesLoading || (Boolean(selectedLifecycleId) && statusLoading);
 
 	const lifecycle: IAccountLifecycleStatus | undefined = statusData;
 	const stages = sortBy(
@@ -77,17 +79,26 @@ const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
 
 	return (
 		<Card className={classNames(className, 'p-3')} minHeight={260}>
-			<Card.Title>
-				<Text weight="semi-bold">
-					{Liferay.Language.get('lifecycle-status').toUpperCase()}
-				</Text>
-				<p>
-					<Text color="secondary" size={3} weight="normal">
-						{Liferay.Language.get(
-							'shows-the-current-stage-progression-for-this-account'
-						)}
+			<Card.Title className="align-items-start d-flex justify-content-between">
+				<div>
+					<Text weight="semi-bold">
+						{Liferay.Language.get('lifecycle-status').toUpperCase()}
 					</Text>
-				</p>
+					<p>
+						<Text color="secondary" size={3} weight="normal">
+							{Liferay.Language.get(
+								'shows-the-current-stage-progression-for-this-account'
+							)}
+						</Text>
+					</p>
+				</div>
+				<div className="ml-3">
+					<LifecyclePicker
+						lifecycles={lifecycles}
+						onSelectionChange={setSelectedLifecycleId}
+						selectedLifecycleId={selectedLifecycleId}
+					/>
+				</div>
 			</Card.Title>
 			<Card.Body
 				alignCenter={isLoading || isEmpty}
