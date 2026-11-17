@@ -15,6 +15,40 @@ import (
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
+func TestAvailabilityRequeueInterval(t *testing.T) {
+	testCases := map[string]struct {
+		reason string
+		want   time.Duration
+	}{
+		"a failed Job": {
+			reason: ReasonJobFailed,
+		},
+		"a progressing workload": {
+			reason: ReasonWorkloadProgressing, want: 30 * time.Second,
+		},
+		"a running Job": {
+			reason: ReasonJobRunning,
+		},
+		"an unavailable workload": {
+			reason: ReasonWorkloadUnavailable, want: 30 * time.Second,
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			status := &cxv1alpha1.ClientExtensionStatus{
+				Conditions: []metav1.Condition{{
+					Reason: testCase.reason, Status: metav1.ConditionFalse, Type: cxv1alpha1.ConditionWorkloadAvailable,
+				}},
+			}
+
+			if got := availabilityRequeueInterval(status); got != testCase.want {
+				t.Errorf("availabilityRequeueInterval() = %v, want %v", got, testCase.want)
+			}
+		})
+	}
+}
+
 func TestCronJobAvailableCondition(t *testing.T) {
 	cronJob := &batchv1.CronJob{
 		ObjectMeta: metav1.ObjectMeta{Name: "able", Namespace: "liferay-cx", UID: types.UID("able-uid")},
@@ -156,7 +190,7 @@ func TestJobAvailableCondition(t *testing.T) {
 		"a running Job whose image cannot be pulled": {
 			podProblem:  `Container "able" of pod "able-x" is waiting: ImagePullBackOff: Back-off pulling image.`,
 			wantMessage: `Job "able" is running. Container "able" of pod "able-x" is waiting: ImagePullBackOff`,
-			wantReason:  ReasonWorkloadUnavailable,
+			wantReason:  ReasonJobRunning,
 			wantStatus:  metav1.ConditionFalse,
 		},
 	}

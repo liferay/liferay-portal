@@ -21,7 +21,9 @@ import (
 func availabilityRequeueInterval(status *cxv1alpha1.ClientExtensionStatus) time.Duration {
 	condition := meta.FindStatusCondition(status.Conditions, cxv1alpha1.ConditionWorkloadAvailable)
 
-	if (condition != nil) && (condition.Status != metav1.ConditionTrue) {
+	if (condition != nil) &&
+		((condition.Reason == ReasonWorkloadProgressing) || (condition.Reason == ReasonWorkloadUnavailable)) {
+
 		return 30 * time.Second
 	}
 
@@ -135,14 +137,13 @@ func jobAvailableCondition(job *batchv1.Job, podProblem string) metav1.Condition
 		return newCondition(metav1.ConditionFalse, message, ReasonJobFailed)
 	}
 
+	message := fmt.Sprintf("Job %q is running.", job.Name)
+
 	if podProblem != "" {
-		return newCondition(
-			metav1.ConditionFalse, fmt.Sprintf("Job %q is running. %s", job.Name, podProblem),
-			ReasonWorkloadUnavailable,
-		)
+		message += " " + podProblem
 	}
 
-	return newCondition(metav1.ConditionFalse, fmt.Sprintf("Job %q is running.", job.Name), ReasonJobRunning)
+	return newCondition(metav1.ConditionFalse, message, ReasonJobRunning)
 }
 
 func jobCondition(conditionType batchv1.JobConditionType, job *batchv1.Job) *batchv1.JobCondition {

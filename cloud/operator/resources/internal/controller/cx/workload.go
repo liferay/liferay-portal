@@ -288,7 +288,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadCondition(
 	clientExtension *cxv1alpha1.ClientExtension,
 	configMapsWithDigest []*corev1.ConfigMap,
 	context context.Context,
-) (metav1.Condition, *metav1.Condition, string, string, []string, error) {
+) (*workloadStatus, error) {
 	workloadRef := clientExtension.Spec.WorkloadRef
 
 	if workloadRef == nil {
@@ -297,13 +297,13 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadCondition(
 			ReasonConfigurationOnly,
 		)
 
-		return configurationOnly, &configurationOnly, "", "", nil, nil
+		return &workloadStatus{accepted: configurationOnly, available: &configurationOnly}, nil
 	}
 
 	workload, error := workloadRef.NewObject()
 
 	if error != nil {
-		return metav1.Condition{}, nil, "", "", nil, error
+		return nil, error
 	}
 
 	error = clientExtensionReconciler.APIReader.Get(
@@ -313,28 +313,27 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadCondition(
 	)
 
 	if apierrors.IsNotFound(error) {
-		return newCondition(
-			metav1.ConditionFalse,
-			fmt.Sprintf(
-				"%s %q does not exist in namespace %q.", workloadRef.Kind,
-				workloadRef.Name, clientExtension.Namespace,
+		return &workloadStatus{
+			accepted: newCondition(
+				metav1.ConditionFalse,
+				fmt.Sprintf(
+					"%s %q does not exist in namespace %q.", workloadRef.Kind,
+					workloadRef.Name, clientExtension.Namespace,
+				),
+				ReasonWorkloadNotFound,
 			),
-			ReasonWorkloadNotFound,
-		), nil, "", "", nil, nil
+		}, nil
 	}
 
 	if error != nil {
-		return metav1.Condition{}, nil, "", "", nil, error
+		return nil, error
 	}
 
 	workloadAvailableCondition, error := clientExtensionReconciler.workloadAvailableCondition(context, workload)
 
 	if error != nil {
-		return metav1.Condition{}, nil, "", "", nil, error
+		return nil, error
 	}
-
-	image := containerImage(workload)
-	workloadSummary := workloadSummary(workload, workloadAvailableCondition)
 
 	podTemplate := podTemplateOf(workload)
 
@@ -353,29 +352,40 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadCondition(
 		)
 	}
 
+	workloadStatus := &workloadStatus{
+		available: &workloadAvailableCondition,
+		image:     containerImage(workload),
+		summary:   workloadSummary(workload, workloadAvailableCondition),
+	}
+
 	if len(workloadIssues) > 0 {
-		return newCondition(
+		workloadStatus.accepted = newCondition(
 			metav1.ConditionFalse,
 			fmt.Sprintf(
 				"%s %q does not mount DXP's metadata; see status.workloadIssues.",
 				workloadRef.Kind, workloadRef.Name,
 			),
 			ReasonWorkloadMisconfigured,
-		), &workloadAvailableCondition, image, workloadSummary, workloadIssues, nil
+		)
+		workloadStatus.issues = workloadIssues
+
+		return workloadStatus, nil
 	}
 
 	if configMapsWithDigest != nil {
 		if error := clientExtensionReconciler.putConfigDigest(
 			clientExtension, context, configDigest(configMapsWithDigest...), workload,
 		); error != nil {
-			return metav1.Condition{}, nil, "", "", nil, error
+			return nil, error
 		}
 	}
 
-	return newCondition(
+	workloadStatus.accepted = newCondition(
 		metav1.ConditionTrue,
 		fmt.Sprintf("%s %q mounts DXP's metadata.", workloadRef.Kind, workloadRef.Name), ReasonWorkloadAccepted,
-	), &workloadAvailableCondition, image, workloadSummary, nil, nil
+	)
+
+	return workloadStatus, nil
 }
 
 func workloadGraceRemaining(status *cxv1alpha1.ClientExtensionStatus) time.Duration {
@@ -386,4 +396,12 @@ func workloadGraceRemaining(status *cxv1alpha1.ClientExtensionStatus) time.Durat
 	}
 
 	return max(time.Until(workloadAccepted.LastTransitionTime.Add(workloadGracePeriod)), 0)
+}
+
+type workloadStatus struct {
+	accepted  metav1.Condition
+	available *metav1.Condition
+	image     string
+	issues    []string
+	summary   string
 }

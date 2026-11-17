@@ -113,7 +113,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 			newCondition(
 				metav1.ConditionFalse, refusalMessage(&clientExtension, dxpNamespace, refusedReason), refusedReason,
 			),
-			"", "", nil, nil, "", nil, nil, nil, "",
+			"", nil, nil, "", nil,
 		); error != nil {
 			return controllerruntime.Result{}, error
 		}
@@ -153,7 +153,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 				metav1.ConditionFalse, unknownVirtualInstanceMessage(&clientExtension, dxpNamespace),
 				ReasonUnknownVirtualInstance,
 			),
-			"", "", nil, nil, "", nil, nil, nil, "",
+			"", nil, nil, "", nil,
 		); error != nil {
 			return controllerruntime.Result{}, error
 		}
@@ -185,7 +185,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 					),
 					ReasonDeliveryNotPermitted,
 				),
-				"", "", nil, nil, "", nil, nil, nil, "",
+				"", nil, nil, "", nil,
 			)
 	}
 
@@ -200,7 +200,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 				metav1.ConditionFalse, serviceIDConflictMessage(&clientExtension, conflictingConfigMap),
 				ReasonServiceIDConflict,
 			),
-			"", "", nil, nil, "", nil, nil, nil, "",
+			"", nil, nil, "", nil,
 		)
 	}
 
@@ -265,8 +265,9 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 		}
 	}
 
-	workloadAcceptedCondition, workloadAvailableCondition, image, workloadSummary, workloadIssues, error :=
-		clientExtensionReconciler.workloadCondition(&clientExtension, configMapsWithDigest, context)
+	workloadStatus, error := clientExtensionReconciler.workloadCondition(
+		&clientExtension, configMapsWithDigest, context,
+	)
 
 	if error != nil {
 		return controllerruntime.Result{}, error
@@ -275,9 +276,8 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 	if error := clientExtensionReconciler.updateStatus(
 		&clientExtension, context,
 		newCondition(metav1.ConditionTrue, message, ReasonDelivered),
-		extProvisionResourceVersion, image, &mirroredCondition, &provisionedCondition,
-		dxpMetadata.Data[MetadataKeyServerProtocol], &workloadAcceptedCondition, workloadAvailableCondition, workloadIssues,
-		workloadSummary,
+		extProvisionResourceVersion, &mirroredCondition, &provisionedCondition,
+		dxpMetadata.Data[MetadataKeyServerProtocol], workloadStatus,
 	); error != nil {
 		return controllerruntime.Result{}, error
 	}
@@ -843,16 +843,20 @@ func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
 	context context.Context,
 	delivered metav1.Condition,
 	extProvisionResourceVersion string,
-	image string,
 	mirrored *metav1.Condition,
 	provisioned *metav1.Condition,
 	serverProtocol string,
-	workloadAccepted *metav1.Condition,
-	workloadAvailable *metav1.Condition,
-	workloadIssues []string,
-	workloadSummary string,
+	workloadStatus *workloadStatus,
 ) error {
 	status := clientExtension.Status.DeepCopy()
+
+	var workloadAccepted *metav1.Condition
+	var workloadAvailable *metav1.Condition
+
+	if workloadStatus != nil {
+		workloadAccepted = &workloadStatus.accepted
+		workloadAvailable = workloadStatus.available
+	}
 
 	delivered.Type = cxv1alpha1.ConditionDelivered
 
@@ -892,7 +896,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
 		status.ExtProvisionResourceVersion = extProvisionResourceVersion
 	}
 
-	status.Image = image
+	status.Image = ""
 	status.ObservedGeneration = clientExtension.Generation
 	status.URL = ""
 
@@ -900,14 +904,19 @@ func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
 		status.URL = cmp.Or(serverProtocol, "https") + "://" + clientExtension.Spec.Domain
 	}
 
-	status.WorkloadIssues = workloadIssues
+	status.WorkloadIssues = nil
 	status.WorkloadName = ""
+	status.WorkloadSummary = ""
 
-	if (clientExtension.Spec.WorkloadRef != nil) && (workloadAccepted != nil) {
-		status.WorkloadName = clientExtension.Spec.WorkloadRef.Name
+	if workloadStatus != nil {
+		status.Image = workloadStatus.image
+		status.WorkloadIssues = workloadStatus.issues
+		status.WorkloadSummary = workloadStatus.summary
+
+		if clientExtension.Spec.WorkloadRef != nil {
+			status.WorkloadName = clientExtension.Spec.WorkloadRef.Name
+		}
 	}
-
-	status.WorkloadSummary = workloadSummary
 
 	if ((ready.Reason == ReasonExtInitMissing) && (extInitGraceRemaining(status) > 0)) ||
 		(ready.Reason == ReasonJobRunning) ||
