@@ -211,9 +211,9 @@ public class PredicateExpressionVisitorImpl
 			Column<PLOEntryTable, Object> column, Object value)
 		throws ExpressionVisitException {
 
-		Class<?> javaType = column.getJavaType();
+		Class<?> clazz = column.getJavaType();
 
-		if (!javaType.isInstance(value)) {
+		if (!clazz.isInstance(value)) {
 			throw new ExpressionVisitException(
 				StringBundler.concat(
 					"Invalid value ", value, " for ", column.getName()));
