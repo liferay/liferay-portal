@@ -9,6 +9,7 @@ import resolve from 'resolve';
 
 import {GLOBAL_NODE_MODULES_DIR} from '../../locations.mjs';
 import print from '../../print.mjs';
+import ALLOWED_TYPES_PACKAGE_MISALIGNMENTS from './ALLOWED_TYPES_PACKAGE_MISALIGNMENTS.mjs';
 
 const GLOBALS_TYPES_PACKAGES = ['@types/jest'];
 
@@ -118,7 +119,10 @@ function checkTypesPackage(dir, typesName, typeScriptVersion) {
 		return `is not needed because ${name} ${describedPkg.version} provides its own types`;
 	}
 
-	if (compareMajorMinor(typesPkg.version, describedPkg.version)) {
+	if (
+		!ALLOWED_TYPES_PACKAGE_MISALIGNMENTS.includes(typesName) &&
+		compareMajorMinor(typesPkg.version, describedPkg.version)
+	) {
 		return `${typesPkg.version} does not match the major.minor of ${name} ${describedPkg.version}`;
 	}
 }
