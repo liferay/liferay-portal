@@ -546,9 +546,6 @@ public class CommerceSearchResource {
 		long accountEntryId = 0;
 
 		if (commerceChannel != null) {
-			attributes.put(
-				"commerceChannelGroupId", commerceChannel.getGroupId());
-
 			AccountEntry accountEntry =
 				_commerceAccountHelper.getCurrentAccountEntry(
 					commerceChannel.getGroupId(), themeDisplay.getRequest());
@@ -562,6 +559,9 @@ public class CommerceSearchResource {
 					_accountGroupLocalService.getAccountGroupIds(
 						accountEntryId));
 			}
+
+			attributes.put(
+				"commerceChannelGroupId", commerceChannel.getGroupId());
 		}
 
 		searchContext.setAttributes(attributes);
