@@ -353,6 +353,12 @@ isolatedSiteCkeditor5Test(
 		await expect(
 			page.getByText(`${user.givenName} ${user.familyName}, modified`)
 		).toBeVisible();
+
+		await journalPage.changeView('table');
+
+		await expect(
+			page.getByRole('row').filter({hasText: 'Version 1.1'})
+		).toContainText(`${user.givenName} ${user.familyName}`);
 	}
 );
 
