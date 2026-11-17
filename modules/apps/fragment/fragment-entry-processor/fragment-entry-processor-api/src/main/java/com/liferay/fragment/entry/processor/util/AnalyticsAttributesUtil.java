@@ -408,6 +408,18 @@ public class AnalyticsAttributesUtil {
 			() -> _getAnalyticsExternalReferenceCode(
 				infoItemFieldMapped, infoItemFieldValues, locale)
 		).put(
+			"analytics-object-definition-label",
+			() -> {
+				if (infoItemFieldMapped.getObject() instanceof
+						ObjectEntry objectEntry) {
+
+					return _getAnalyticsObjectDefinitionLabel(
+						infoItemServiceRegistry, objectEntry);
+				}
+
+				return null;
+			}
+		).put(
 			"analytics-object-definition-name",
 			() -> {
 				if (infoItemFieldMapped.getObject() instanceof
@@ -477,6 +489,39 @@ public class AnalyticsAttributesUtil {
 		}
 
 		return String.valueOf(infoFieldValue.getValue(locale));
+	}
+
+	private static String _getAnalyticsObjectDefinitionLabel(
+		InfoItemServiceRegistry infoItemServiceRegistry,
+		ObjectEntry objectEntry) {
+
+		try {
+			InfoItemObjectProvider<ObjectDefinition> infoItemObjectProvider =
+				infoItemServiceRegistry.getFirstInfoItemService(
+					InfoItemObjectProvider.class,
+					ObjectDefinition.class.getName());
+
+			if (infoItemObjectProvider == null) {
+				return null;
+			}
+
+			ObjectDefinition objectDefinition =
+				infoItemObjectProvider.getInfoItem(
+					new ClassPKInfoItemIdentifier(
+						objectEntry.getObjectDefinitionId()));
+
+			if (objectDefinition == null) {
+				return null;
+			}
+
+			return objectDefinition.getLabel(
+				objectDefinition.getDefaultLocale());
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+
+		return null;
 	}
 
 	private static String _getAnalyticsObjectDefinitionName(

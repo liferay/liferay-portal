@@ -75,6 +75,16 @@ public class AssetAnalyticsAttributesProvider {
 		return null;
 	}
 
+	private String _getAnalyticsObjectDefinitionLabel() {
+		ObjectDefinition objectDefinition = _getObjectDefinition();
+
+		if (objectDefinition == null) {
+			return null;
+		}
+
+		return objectDefinition.getLabel(objectDefinition.getDefaultLocale());
+	}
+
 	private String _getAnalyticsObjectDefinitionName() {
 		ObjectDefinition objectDefinition = _getObjectDefinition();
 
@@ -139,6 +149,9 @@ public class AssetAnalyticsAttributesProvider {
 		).put(
 			"analytics-external-reference-code",
 			() -> _getAnalyticsExternalReferenceCode()
+		).put(
+			"analytics-object-definition-label",
+			() -> _getAnalyticsObjectDefinitionLabel()
 		).put(
 			"analytics-object-definition-name",
 			() -> _getAnalyticsObjectDefinitionName()
