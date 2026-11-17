@@ -79,6 +79,25 @@ public class ConfigurationUtilTest {
 				_createConfiguration(
 					false,
 					VulcanCompanyConfiguration.class.getName() + ".scoped")));
+
+		long companyId = RandomTestUtil.randomLong();
+		String path = RandomTestUtil.randomString();
+
+		Assert.assertTrue(_isRESTEnabled(companyId, path, systemConfiguration));
+
+		systemConfiguration = _createConfiguration(
+			false, VulcanConfiguration.class.getName());
+
+		Assert.assertTrue(_isRESTEnabled(companyId, path, systemConfiguration));
+
+		ConfigurationUtil.clearRESTEnabledCache(RandomTestUtil.randomString());
+
+		Assert.assertTrue(_isRESTEnabled(companyId, path, systemConfiguration));
+
+		ConfigurationUtil.clearRESTEnabledCache(path);
+
+		Assert.assertFalse(
+			_isRESTEnabled(companyId, path, systemConfiguration));
 	}
 
 	private Configuration _createConfiguration(
@@ -149,6 +168,14 @@ public class ConfigurationUtilTest {
 	}
 
 	private boolean _isRESTEnabled(Configuration... configurations) {
+		return _isRESTEnabled(
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			configurations);
+	}
+
+	private boolean _isRESTEnabled(
+		long companyId, String path, Configuration... configurations) {
+
 		return ConfigurationUtil.isRESTEnabled(
 			(Company)ProxyUtil.newProxyInstance(
 				ConfigurationUtilTest.class.getClassLoader(),
@@ -157,7 +184,7 @@ public class ConfigurationUtilTest {
 					String methodName = method.getName();
 
 					if (methodName.equals("getCompanyId")) {
-						return RandomTestUtil.randomLong();
+						return companyId;
 					}
 
 					if (methodName.equals("getWebId")) {
@@ -166,8 +193,7 @@ public class ConfigurationUtilTest {
 
 					throw new UnsupportedOperationException(methodName);
 				}),
-			_createConfigurationAdmin(configurations),
-			RandomTestUtil.randomString());
+			_createConfigurationAdmin(configurations), path);
 	}
 
 }

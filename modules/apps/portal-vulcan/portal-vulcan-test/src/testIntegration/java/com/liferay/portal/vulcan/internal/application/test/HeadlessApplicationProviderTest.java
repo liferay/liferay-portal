@@ -9,8 +9,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -49,8 +49,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Alejandro Tardín
@@ -322,23 +320,23 @@ public class HeadlessApplicationProviderTest {
 
 		Assert.assertNull(_getApplication("/test-vulcan-application-added"));
 
-		Configuration configuration = _createConfiguration(
+		String pid = _createFactoryConfiguration(
 			TestPropsValues.getCompanyId() + 1);
 
 		try {
 			Assert.assertNotNull(_getApplication("/test-vulcan-application"));
 		}
 		finally {
-			configuration.delete();
+			ConfigurationTestUtil.deleteFactoryConfiguration(pid, _FACTORY_PID);
 		}
 
-		configuration = _createConfiguration(TestPropsValues.getCompanyId());
+		pid = _createFactoryConfiguration(TestPropsValues.getCompanyId());
 
 		try {
 			Assert.assertNull(_getApplication("/test-vulcan-application"));
 		}
 		finally {
-			configuration.delete();
+			ConfigurationTestUtil.deleteFactoryConfiguration(pid, _FACTORY_PID);
 		}
 
 		Assert.assertNotNull(_getApplication("/test-vulcan-application"));
@@ -481,16 +479,11 @@ public class HeadlessApplicationProviderTest {
 
 	}
 
-	private Configuration _createConfiguration(long companyId)
+	private String _createFactoryConfiguration(long companyId)
 		throws Exception {
 
-		Configuration configuration =
-			_configurationAdmin.createFactoryConfiguration(
-				"com.liferay.portal.vulcan.internal.configuration." +
-					"VulcanCompanyConfiguration",
-				StringPool.QUESTION);
-
-		configuration.update(
+		return ConfigurationTestUtil.createFactoryConfiguration(
+			_FACTORY_PID,
 			HashMapDictionaryBuilder.<String, Object>put(
 				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
 				companyId
@@ -499,8 +492,6 @@ public class HeadlessApplicationProviderTest {
 			).put(
 				"restEnabled", false
 			).build());
-
-		return configuration;
 	}
 
 	private HeadlessApplicationProvider.Application _getApplication(
@@ -547,14 +538,15 @@ public class HeadlessApplicationProviderTest {
 		return null;
 	}
 
+	private static final String _FACTORY_PID =
+		"com.liferay.portal.vulcan.internal.configuration." +
+			"VulcanCompanyConfiguration";
+
 	private static final String _FEATURE_FLAG_KEY = "APPLICATION-123";
 
 	private static final String _FEATURE_FLAG_KEY_UNDECLARED = "UNDECLARED-123";
 
 	private BundleContext _bundleContext;
-
-	@Inject
-	private ConfigurationAdmin _configurationAdmin;
 
 	@Inject
 	private FeatureFlagManager _featureFlagManager;

@@ -20,8 +20,10 @@ import com.liferay.portal.vulcan.internal.configuration.VulcanConfiguration;
 
 import java.util.Dictionary;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -30,6 +32,10 @@ import org.osgi.service.cm.ConfigurationAdmin;
  * @author Javier Gamarra
  */
 public class ConfigurationUtil {
+
+	public static void clearRESTEnabledCache(String path) {
+		_restEnabledMaps.remove(path);
+	}
 
 	public static Configuration fetchConfiguration(
 		Configuration[] configurations) {
@@ -84,29 +90,19 @@ public class ConfigurationUtil {
 		Company company, ConfigurationAdmin configurationAdmin, String path) {
 
 		try {
-			Configuration[] configurations =
-				configurationAdmin.listConfigurations(
-					String.format(
-						"(&(path=%s)(|(service.factoryPid=%s)%s))",
-						SystemBundleUtil.escapeFilterValue(path),
-						VulcanConfiguration.class.getName(),
-						ConfigurationFilterStringUtil.
-							getCompanyScopedFilterString(
-								company.getCompanyId(),
-								VulcanCompanyConfiguration.class.getName(),
-								company.getWebId())));
+			Map<Long, Boolean> restEnabledMap =
+				_restEnabledMaps.computeIfAbsent(
+					path, key -> new ConcurrentHashMap<>());
 
-			Boolean restEnabled = _isRESTEnabled(true, configurations);
+			Boolean restEnabled = restEnabledMap.get(company.getCompanyId());
 
-			if (restEnabled != null) {
-				return restEnabled;
+			if (restEnabled == null) {
+				restEnabled = _isRESTEnabled(company, configurationAdmin, path);
+
+				restEnabledMap.put(company.getCompanyId(), restEnabled);
 			}
 
-			restEnabled = _isRESTEnabled(false, configurations);
-
-			if (restEnabled != null) {
-				return restEnabled;
-			}
+			return restEnabled;
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -165,7 +161,39 @@ public class ConfigurationUtil {
 		return null;
 	}
 
+	private static boolean _isRESTEnabled(
+			Company company, ConfigurationAdmin configurationAdmin, String path)
+		throws Exception {
+
+		Configuration[] configurations = configurationAdmin.listConfigurations(
+			String.format(
+				"(&(path=%s)(|(service.factoryPid=%s)%s))",
+				SystemBundleUtil.escapeFilterValue(path),
+				VulcanConfiguration.class.getName(),
+				ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+					company.getCompanyId(),
+					VulcanCompanyConfiguration.class.getName(),
+					company.getWebId())));
+
+		Boolean restEnabled = _isRESTEnabled(true, configurations);
+
+		if (restEnabled != null) {
+			return restEnabled;
+		}
+
+		restEnabled = _isRESTEnabled(false, configurations);
+
+		if (restEnabled != null) {
+			return restEnabled;
+		}
+
+		return true;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		ConfigurationUtil.class);
+
+	private static final Map<String, Map<Long, Boolean>> _restEnabledMaps =
+		new ConcurrentHashMap<>();
 
 }

@@ -15,6 +15,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -99,14 +100,15 @@ public class HeadlessApplicationProviderImpl
 			return applications;
 		}
 
+		Company company = _companyLocalService.fetchCompany(companyId);
+
 		for (ApplicationDTO applicationDTO : applicationDTOs) {
 			if (!_isRegistered(
 					companyId,
 					_companyIdsServiceTrackerMap.getService(
 						applicationDTO.serviceId)) ||
 				!ConfigurationUtil.isRESTEnabled(
-					_companyLocalService.fetchCompany(companyId),
-					_configurationAdmin, applicationDTO.base)) {
+					company, _configurationAdmin, applicationDTO.base)) {
 
 				continue;
 			}
