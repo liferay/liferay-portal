@@ -210,6 +210,7 @@
 						<xs:element minOccurs="0" name="model-name" type="xs:string" />
 						<xs:element minOccurs="0" name="model-provider" type="xs:string" />
 						<xs:element minOccurs="0" name="output-variables" type="xs:string" />
+						<xs:element minOccurs="0" name="parameters" type="xs:string" />
 						<xs:element name="prompt" type="xs:string" />
 						<xs:element minOccurs="0" name="rag" type="xs:string" />
 						<xs:element minOccurs="0" name="tools" type="xs:string" />
@@ -329,6 +330,7 @@
 						<xs:element minOccurs="0" name="model-name" type="xs:string" />
 						<xs:element minOccurs="0" name="model-provider" type="xs:string" />
 						<xs:element minOccurs="0" name="output-variables" type="xs:string" />
+						<xs:element minOccurs="0" name="parameters" type="xs:string" />
 						<xs:element name="prompt" type="xs:string" />
 						<xs:element minOccurs="0" name="rag" type="xs:string" />
 						<xs:element minOccurs="0" name="tools" type="xs:string" />
