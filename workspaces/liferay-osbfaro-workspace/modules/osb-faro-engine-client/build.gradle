@@ -9,7 +9,6 @@ dependencies {
 	compileInclude group: "org.apache.httpcomponents.client5", name: "httpclient5", version: "5.6.4"
 	compileInclude group: "org.apache.httpcomponents.core5", name: "httpcore5", version: "5.4.3"
 	compileInclude group: "org.apache.httpcomponents.core5", name: "httpcore5-h2", version: "5.4.3"
-	compileInclude group: "org.joda", name: "joda-convert", version: "2.2.1"
 	compileInclude group: "org.springframework", name: "spring-web", version: "7.0.9"
 
 	compileInclude(group: "org.springframework.hateoas", name: "spring-hateoas", version: "2.5.3") {
