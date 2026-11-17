@@ -15,6 +15,8 @@ export {default as AddMasterPageDesignLibraryModalContent} from './AddMasterPage
 
 export {default as ImportPageTemplates} from './ImportPageTemplates';
 
+export {default as RenameLayoutPageTemplateEntryDesignLibraryModalContent} from './RenameLayoutPageTemplateEntryDesignLibraryModalContent';
+
 // @ts-ignore
 
 export {default as AssetDisplayPageUsagesManagementToolbarPropsTransformer} from './propsTransformers/AssetDisplayPageUsagesManagementToolbarPropsTransformer';

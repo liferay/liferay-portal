@@ -11,6 +11,7 @@ import React from 'react';
 
 import {TableCellContentType} from '../constants';
 import getCreationMenuItems from '../getCreationMenuItems';
+import openModuleModal from '../openModuleModal';
 import {ActionItem, DesignAsset, DesignLibraryResourceType} from '../types';
 import confirmAndDeleteEntriesAction from './actions/confirmAndDeleteEntriesAction';
 import getDesignAssetsConfirmationMessage from './actions/getDesignAssetsConfirmationMessage';
@@ -116,6 +117,28 @@ export default function DesignLibraryAssetsFDSPropsTransformer({
 			],
 		},
 		hideManagementBarInEmptyState: true,
+		onActionDropdownItemClick: ({
+			action,
+			event,
+			itemData,
+			loadData,
+		}: {
+			action: ActionItem;
+			event: Event;
+			itemData: DesignAsset;
+			loadData: () => void;
+		}) => {
+			const {module, moduleProps} = action.data;
+
+			if (module) {
+				event?.preventDefault();
+
+				openModuleModal({
+					module,
+					moduleProps: {...moduleProps, itemData, loadData},
+				});
+			}
+		},
 		onBulkActionItemClick: ({
 			action,
 			loadData,

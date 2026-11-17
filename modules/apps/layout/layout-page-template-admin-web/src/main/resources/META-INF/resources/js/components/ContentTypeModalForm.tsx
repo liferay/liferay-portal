@@ -217,7 +217,7 @@ interface FormFieldProps {
 	name: string;
 }
 
-function FormField({children, error, id, name}: FormFieldProps) {
+export function FormField({children, error, id, name}: FormFieldProps) {
 	const hasError = Boolean(error);
 
 	return (

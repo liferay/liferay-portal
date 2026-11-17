@@ -139,6 +139,7 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 				).buildString(),
 				"pencil", "edit", LanguageUtil.get(httpServletRequest, "edit"),
 				null, "get", "link"),
+			_getRenameFDSActionDropdownItem(httpServletRequest),
 			new FDSActionDropdownItem(
 				"{actions.markAsDefault.href}", "star", "markAsDefault",
 				LanguageUtil.get(httpServletRequest, "mark-as-default"), "post",
@@ -258,6 +259,30 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 		copyMenuFDSActionDropdownItem.setType("contextual");
 
 		return copyMenuFDSActionDropdownItem;
+	}
+
+	private FDSActionDropdownItem _getRenameFDSActionDropdownItem(
+		HttpServletRequest httpServletRequest) {
+
+		FDSActionDropdownItem renameFDSActionDropdownItem =
+			new FDSActionDropdownItem(
+				null, null, "rename",
+				LanguageUtil.get(httpServletRequest, "rename"), null, "update",
+				null);
+
+		renameFDSActionDropdownItem.putData(
+			"module",
+			"{RenameLayoutPageTemplateEntryDesignLibraryModalContent} from " +
+				"layout-page-template-admin-web");
+		renameFDSActionDropdownItem.putData(
+			"moduleProps",
+			HashMapBuilder.<String, Object>put(
+				"title",
+				LanguageUtil.get(
+					httpServletRequest, "rename-display-page-template")
+			).build());
+
+		return renameFDSActionDropdownItem;
 	}
 
 	@Reference

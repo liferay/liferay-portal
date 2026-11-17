@@ -136,6 +136,14 @@ public class ViewResourcesDesignLibraryDisplayContext
 						getFDSActionDropdownItems(
 							httpServletRequest, depotEntry, viewResourcesURL)) {
 
+				Map<String, Object> data =
+					(Map<String, Object>)fdsActionDropdownItem.get("data");
+
+				if ((data != null) && data.containsKey("module")) {
+					data.put(
+						"module", _resolveESImport((String)data.get("module")));
+				}
+
 				fdsActionDropdownItem.setVisibilityFilters(
 					_getVisibilityFilters(
 						designLibraryResourceTypeContributor));

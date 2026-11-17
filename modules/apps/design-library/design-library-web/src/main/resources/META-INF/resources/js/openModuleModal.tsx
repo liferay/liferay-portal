@@ -7,23 +7,24 @@ import {openModal} from 'frontend-js-components-web';
 import {loadModule} from 'frontend-js-web';
 import React from 'react';
 
-import {DesignLibraryResourceCreationItem} from './types';
-
-type CreationModalComponent = React.ComponentType<
+type ModalComponent = React.ComponentType<
 	Record<string, unknown> & {closeModal: () => void}
 >;
 
-export default async function openCreationModal({
+export default async function openModuleModal({
 	module,
 	moduleProps,
-}: DesignLibraryResourceCreationItem) {
-	let Component: CreationModalComponent;
+}: {
+	module: string;
+	moduleProps?: Record<string, unknown>;
+}) {
+	let Component: ModalComponent;
 
 	try {
 		Component = await loadModule(module);
 	}
 	catch (error) {
-		console.error(`Unable to load creation modal from ${module}`, error);
+		console.error(`Unable to load modal from ${module}`, error);
 
 		return;
 	}

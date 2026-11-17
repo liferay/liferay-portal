@@ -4,7 +4,11 @@
  */
 
 export interface ActionItem {
-	data: {id: string};
+	data: {
+		id: string;
+		module?: string;
+		moduleProps?: Record<string, unknown>;
+	};
 	href?: string;
 }
 
