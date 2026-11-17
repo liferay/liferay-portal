@@ -49,12 +49,12 @@ public class FileSystemAuditMessageProcessorConfigurationFormRenderer
 
 		Map<String, Object> requestParameters = new HashMap<>();
 
+		boolean systemScope = AuditConfigurationScopeUtil.isSystemScope(
+			httpServletRequest);
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
-
-		boolean systemScope = AuditConfigurationScopeUtil.isSystemScope(
-			httpServletRequest);
 
 		if (!systemScope) {
 			FeatureFlagManagerUtil.checkEnabled(

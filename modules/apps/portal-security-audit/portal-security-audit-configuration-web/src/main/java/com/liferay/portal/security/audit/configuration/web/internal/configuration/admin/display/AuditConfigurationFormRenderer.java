@@ -50,12 +50,12 @@ public class AuditConfigurationFormRenderer
 
 		Map<String, Object> requestParameters = new HashMap<>();
 
+		boolean systemScope = AuditConfigurationScopeUtil.isSystemScope(
+			httpServletRequest);
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
-
-		boolean systemScope = AuditConfigurationScopeUtil.isSystemScope(
-			httpServletRequest);
 
 		if (!systemScope) {
 			FeatureFlagManagerUtil.checkEnabled(
@@ -66,16 +66,6 @@ public class AuditConfigurationFormRenderer
 			themeDisplay.getCompanyId(), systemScope);
 
 		if (systemScope) {
-			if (!AuditConfigurationOverrideUtil.isOverridden(
-					AuditConfiguration.class, "enabled")) {
-
-				requestParameters.put(
-					"enabled",
-					ParamUtil.getBoolean(
-						httpServletRequest, "enabled",
-						auditConfiguration.enabled()));
-			}
-
 			if (!FeatureFlagManagerUtil.isEnabled(
 					themeDisplay.getCompanyId(), "LPD-6417") &&
 				!AuditConfigurationOverrideUtil.isOverridden(
@@ -86,6 +76,16 @@ public class AuditConfigurationFormRenderer
 					ParamUtil.getInteger(
 						httpServletRequest, "auditMessageMaxQueueSize",
 						_getAuditMessageMaxQueueSize(auditConfiguration)));
+			}
+
+			if (!AuditConfigurationOverrideUtil.isOverridden(
+					AuditConfiguration.class, "enabled")) {
+
+				requestParameters.put(
+					"enabled",
+					ParamUtil.getBoolean(
+						httpServletRequest, "enabled",
+						auditConfiguration.enabled()));
 			}
 		}
 
@@ -121,12 +121,12 @@ public class AuditConfigurationFormRenderer
 				_servletContext.getRequestDispatcher(
 					"/configuration/audit_configuration.jsp");
 
+			boolean systemScope = AuditConfigurationScopeUtil.isSystemScope(
+				httpServletRequest);
+
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
-
-			boolean systemScope = AuditConfigurationScopeUtil.isSystemScope(
-				httpServletRequest);
 
 			httpServletRequest.setAttribute(
 				AuditConfigurationDisplayContext.class.getName(),

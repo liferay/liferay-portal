@@ -8,7 +8,7 @@ package com.liferay.portal.security.audit.configuration.web.internal.configurati
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
-import com.liferay.portal.kernel.audit.AuditRouterUtil;
+import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -23,6 +23,7 @@ import com.liferay.portal.security.audit.configuration.web.internal.util.AuditCo
 import java.util.Dictionary;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Álvaro Saugar
@@ -64,7 +65,7 @@ public class AuditConfigurationModelListener
 
 			User user = permissionChecker.getUser();
 
-			AuditRouterUtil.route(
+			_auditRouter.route(
 				new AuditMessage(
 					companyId, user.getUserId(), user.getFullName(),
 					JSONUtil.put(
@@ -87,5 +88,8 @@ public class AuditConfigurationModelListener
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AuditConfigurationModelListener.class);
+
+	@Reference
+	private AuditRouter _auditRouter;
 
 }
