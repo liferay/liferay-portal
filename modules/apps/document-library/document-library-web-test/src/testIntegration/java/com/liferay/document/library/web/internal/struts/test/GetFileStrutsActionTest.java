@@ -8,6 +8,7 @@ package com.liferay.document.library.web.internal.struts.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.test.util.DLTestUtil;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -27,6 +29,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -41,6 +44,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -96,6 +100,51 @@ public class GetFileStrutsActionTest {
 		_testGetFileByUuidWithOnlyViewPermission();
 		_testGetFileByUuidWithViewAndDownloadPermission();
 		_testGetFileWithVersionAndWithoutIdentifier();
+	}
+
+	@Test
+	@TestInfo("LPD-116066")
+	public void testGetFileWithDraftVersion() throws Exception {
+		FileEntry fileEntry = _addFileEntry();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		_dlAppLocalService.updateFileEntry(
+			TestPropsValues.getUserId(), fileEntry.getFileEntryId(),
+			fileEntry.getFileName(), fileEntry.getMimeType(),
+			fileEntry.getTitle(), StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, DLVersionNumberIncrease.MINOR,
+			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			serviceContext);
+
+		FileVersion latestFileVersion = fileEntry.getLatestFileVersion(true);
+
+		Assert.assertTrue(latestFileVersion.isDraft());
+
+		Map<String, String> parameters = HashMapBuilder.put(
+			"fileEntryId", String.valueOf(fileEntry.getFileEntryId())
+		).put(
+			"version", latestFileVersion.getVersion()
+		).build();
+
+		_assertNotFound(
+			_getMockHttpServletResponse(
+				parameters,
+				_getGuestUser(
+					fileEntry, ActionKeys.DOWNLOAD, ActionKeys.VIEW)));
+		_assertNotFound(
+			_getMockHttpServletResponse(
+				parameters,
+				_addUser(fileEntry, ActionKeys.DOWNLOAD, ActionKeys.VIEW)));
+		_assertFileSent(
+			_getMockHttpServletResponse(
+				parameters,
+				_addUser(
+					fileEntry, ActionKeys.DOWNLOAD, ActionKeys.UPDATE,
+					ActionKeys.VIEW)));
 	}
 
 	private FileEntry _addFileEntry() throws Exception {

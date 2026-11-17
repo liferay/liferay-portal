@@ -11,22 +11,27 @@ import com.liferay.adaptive.media.image.configuration.AMImageConfigurationHelper
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -37,6 +42,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -143,6 +149,73 @@ public class AMImageRequestHandlerTest {
 				fileEntry.getFileName()));
 
 		Assert.assertNull(
+			amRequestHandler.handleRequest(mockHttpServletRequest));
+	}
+
+	@Test
+	@TestInfo("LPD-116066")
+	public void testHandleRequestWithDraftFileVersion() throws Exception {
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			SystemBundleUtil.getBundleContext(),
+			(Class<AMRequestHandler<?>>)(Class<?>)AMRequestHandler.class,
+			"adaptive.media.handler.pattern");
+
+		AMRequestHandler<?> amRequestHandler = _serviceTrackerMap.getService(
+			"image");
+
+		byte[] bytes = FileUtil.getBytes(
+			AMImageRequestHandlerTest.class, "dependencies/image.jpg");
+		String fileName = RandomTestUtil.randomString() + ".jpg";
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName,
+			ContentTypes.IMAGE_JPEG, bytes, null, null, null, serviceContext);
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		_dlAppLocalService.updateFileEntry(
+			TestPropsValues.getUserId(), fileEntry.getFileEntryId(), fileName,
+			ContentTypes.IMAGE_JPEG, fileName, StringPool.BLANK,
+			StringPool.BLANK, StringPool.BLANK, DLVersionNumberIncrease.MINOR,
+			bytes, null, null, null, serviceContext);
+
+		FileVersion fileVersion = fileEntry.getFileVersion();
+
+		FileVersion latestFileVersion = fileEntry.getLatestFileVersion(true);
+
+		Assert.assertTrue(latestFileVersion.isDraft());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.USER,
+			UserLocalServiceUtil.getGuestUser(_group.getCompanyId()));
+		mockHttpServletRequest.setPathInfo(
+			StringBundler.concat(
+				"/image/", fileEntry.getFileEntryId(), "/",
+				fileVersion.getFileVersionId(), "/", _UUID, "/", fileName));
+
+		Assert.assertNotNull(
+			amRequestHandler.handleRequest(mockHttpServletRequest));
+
+		mockHttpServletRequest.setPathInfo(
+			StringBundler.concat(
+				"/image/", fileEntry.getFileEntryId(), "/",
+				latestFileVersion.getFileVersionId(), "/", _UUID, "/",
+				fileName));
+
+		Assert.assertNull(
+			amRequestHandler.handleRequest(mockHttpServletRequest));
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.USER, TestPropsValues.getUser());
+
+		Assert.assertNotNull(
 			amRequestHandler.handleRequest(mockHttpServletRequest));
 	}
 

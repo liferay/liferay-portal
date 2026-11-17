@@ -8,9 +8,11 @@ package com.liferay.portal.webserver.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.document.library.helper.DLURLHelper;
+import com.liferay.document.library.kernel.exception.NoSuchFileVersionException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -33,6 +35,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -64,6 +67,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.repository.liferayrepository.LiferayRepository;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -296,6 +300,55 @@ public class WebServerServletTest {
 		Assert.assertNotEquals(
 			HttpServletResponse.SC_SERVICE_UNAVAILABLE,
 			mockHttpServletResponse.getStatus());
+	}
+
+	@Test
+	@TestInfo("LPD-116066")
+	public void testSendFileWithDraftVersion() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		String title = RandomTestUtil.randomString() + ".txt";
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, title,
+			ContentTypes.TEXT_PLAIN, TestDataConstants.TEST_BYTE_ARRAY, null,
+			null, null, serviceContext);
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		_dlAppLocalService.updateFileEntry(
+			TestPropsValues.getUserId(), fileEntry.getFileEntryId(), title,
+			ContentTypes.TEXT_PLAIN, title, StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, DLVersionNumberIncrease.MINOR,
+			RandomTestUtil.randomBytes(), null, null, null, serviceContext);
+
+		FileVersion fileVersion = fileEntry.getFileVersion();
+		FileVersion latestFileVersion = fileEntry.getLatestFileVersion(true);
+
+		Assert.assertTrue(fileVersion.isApproved());
+		Assert.assertTrue(latestFileVersion.isDraft());
+
+		Assert.assertThrows(
+			NoSuchFileVersionException.class,
+			() -> _sendFile(fileEntry, latestFileVersion.getVersion(), _user));
+
+		MockHttpServletResponse mockHttpServletResponse = _sendFile(
+			fileEntry, fileVersion.getVersion(), _user);
+
+		Assert.assertArrayEquals(
+			TestDataConstants.TEST_BYTE_ARRAY,
+			mockHttpServletResponse.getContentAsByteArray());
+
+		mockHttpServletResponse = _sendFile(
+			fileEntry, latestFileVersion.getVersion(),
+			TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			latestFileVersion.getSize(),
+			mockHttpServletResponse.getContentAsByteArray().length);
 	}
 
 	@Test
@@ -837,6 +890,34 @@ public class WebServerServletTest {
 			_group.getCompanyId(), DLFileEntry.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(fileEntryId),
 			guestRole.getRoleId(), actionId);
+	}
+
+	private MockHttpServletResponse _sendFile(
+			FileEntry fileEntry, String version, User user)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+		mockHttpServletRequest.setParameter("version", version);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		ReflectionTestUtil.invoke(
+			_webServerServlet, "sendFile",
+			new Class<?>[] {
+				HttpServletRequest.class, HttpServletResponse.class, User.class,
+				String[].class
+			},
+			mockHttpServletRequest, mockHttpServletResponse, user,
+			new String[] {
+				String.valueOf(fileEntry.getGroupId()),
+				String.valueOf(fileEntry.getFolderId()), fileEntry.getTitle()
+			});
+
+		return mockHttpServletResponse;
 	}
 
 	private MockHttpServletResponse _sendFile(
