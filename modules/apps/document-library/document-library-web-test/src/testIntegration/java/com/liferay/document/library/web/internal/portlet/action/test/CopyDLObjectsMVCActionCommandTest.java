@@ -89,24 +89,7 @@ public class CopyDLObjectsMVCActionCommandTest {
 		_testProcessActionWithSiteGroupFileEntryType();
 	}
 
-	private FileEntry _addFileEntry(
-			long fileEntryTypeId, long folderId, long groupId)
-		throws Exception {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId);
-
-		serviceContext.setAttribute("fileEntryTypeId", fileEntryTypeId);
-
-		return _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), groupId, folderId,
-			RandomTestUtil.randomString(), ContentTypes.TEXT_PLAIN,
-			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
-			StringPool.BLANK, RandomTestUtil.randomBytes(), null, null, null,
-			serviceContext);
-	}
-
-	private DLFileEntryType _addFileEntryType(long groupId) throws Exception {
+	private DLFileEntryType _addDLFileEntryType(long groupId) throws Exception {
 		Group group = _groupLocalService.getGroup(groupId);
 
 		DDMStructure ddmStructure = _ddmStructureLocalService.addStructure(
@@ -128,6 +111,23 @@ public class CopyDLObjectsMVCActionCommandTest {
 			Collections.emptyMap(),
 			DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_DEFAULT,
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+	}
+
+	private FileEntry _addFileEntry(
+			long fileEntryTypeId, long folderId, long groupId)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(groupId);
+
+		serviceContext.setAttribute("fileEntryTypeId", fileEntryTypeId);
+
+		return _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), groupId, folderId,
+			RandomTestUtil.randomString(), ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, RandomTestUtil.randomBytes(), null, null, null,
+			serviceContext);
 	}
 
 	private void _assertProcessAction(
@@ -198,7 +198,7 @@ public class CopyDLObjectsMVCActionCommandTest {
 		Group companyGroup = _groupLocalService.getCompanyGroup(
 			TestPropsValues.getCompanyId());
 
-		_dlFileEntryType = _addFileEntryType(companyGroup.getGroupId());
+		_dlFileEntryType = _addDLFileEntryType(companyGroup.getGroupId());
 
 		Folder folder = _dlAppLocalService.addFolder(
 			null, TestPropsValues.getUserId(), _group1.getGroupId(),
@@ -229,7 +229,7 @@ public class CopyDLObjectsMVCActionCommandTest {
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 			true, _depotEntry.getDepotEntryId(), _group1.getGroupId(), true);
 
-		DLFileEntryType dlFileEntryType = _addFileEntryType(
+		DLFileEntryType dlFileEntryType = _addDLFileEntryType(
 			_depotEntry.getGroupId());
 
 		FileEntry fileEntry = _addFileEntry(
@@ -251,7 +251,7 @@ public class CopyDLObjectsMVCActionCommandTest {
 	private void _testProcessActionWithSiteGroupFileEntryType()
 		throws Exception {
 
-		DLFileEntryType dlFileEntryType = _addFileEntryType(
+		DLFileEntryType dlFileEntryType = _addDLFileEntryType(
 			_group1.getGroupId());
 
 		_assertProcessAction(
