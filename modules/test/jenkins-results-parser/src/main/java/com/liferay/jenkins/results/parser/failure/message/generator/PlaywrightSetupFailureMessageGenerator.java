@@ -26,7 +26,7 @@ public class PlaywrightSetupFailureMessageGenerator
 			return null;
 		}
 
-		Matcher matcher = _pattern.matcher(consoleText);
+		Matcher matcher = _messagePattern.matcher(consoleText);
 
 		if (!matcher.find()) {
 			return null;
@@ -79,7 +79,7 @@ public class PlaywrightSetupFailureMessageGenerator
 		"Duplicate OSGi modules found for [^\\n]+(?:\\n[^\\n]*)*?\\n[^\\n]*" +
 			"Replace \"[^\\n]+(?:\\n[ \\t]*(?:\\[exec\\][ \\t]+)?(?:dxp/)?" +
 				"apps/[^\\n]+)*");
-	private static final Pattern _pattern = Pattern.compile(
+	private static final Pattern _messagePattern = Pattern.compile(
 		"(Duplicate OSGi modules found for [^\\n]+|Unable to (?:deploy|find) " +
 			"OSGi module [^\\n]+)");
 
