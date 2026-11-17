@@ -3537,6 +3537,8 @@ baseTest(
 
 		await journalEditArticlePage.publishArticle();
 
+		await waitForAlert(page, `Success:${title} was created successfully.`);
+
 		await journalPage.goto(site.friendlyUrlPath);
 
 		await journalEditArticlePage.editArticle(title);
@@ -3592,6 +3594,8 @@ baseTest(
 		await richTextEditables.nth(1).fill(secondContent);
 
 		await journalEditArticlePage.publishArticle();
+
+		await waitForAlert(page, `Success:${title} was created successfully.`);
 
 		await journalPage.goto(site.friendlyUrlPath);
 
