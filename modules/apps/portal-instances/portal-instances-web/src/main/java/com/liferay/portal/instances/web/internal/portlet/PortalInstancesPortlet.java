@@ -9,12 +9,19 @@ import com.liferay.portal.instances.constants.PortalInstancesPortletKeys;
 import com.liferay.portal.instances.web.internal.constants.PortalInstancesWebKeys;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.site.initializer.SiteInitializerRegistry;
 
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
 import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
+import jakarta.portlet.ResourceRequest;
+import jakarta.portlet.ResourceResponse;
 
 import java.io.IOException;
 
@@ -50,6 +57,36 @@ import org.osgi.service.component.annotations.Reference;
 public class PortalInstancesPortlet extends MVCPortlet {
 
 	@Override
+	public void processAction(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws IOException, PortletException {
+
+		_checkOmniadmin();
+
+		super.processAction(actionRequest, actionResponse);
+	}
+
+	@Override
+	public void render(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws IOException, PortletException {
+
+		_checkOmniadmin();
+
+		super.render(renderRequest, renderResponse);
+	}
+
+	@Override
+	public void serveResource(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws IOException, PortletException {
+
+		_checkOmniadmin();
+
+		super.serveResource(resourceRequest, resourceResponse);
+	}
+
+	@Override
 	protected void doDispatch(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
@@ -59,6 +96,18 @@ public class PortalInstancesPortlet extends MVCPortlet {
 			_siteInitializerRegistry);
 
 		super.doDispatch(renderRequest, renderResponse);
+	}
+
+	private void _checkOmniadmin() throws PortletException {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin()) {
+			PrincipalException principalException =
+				new PrincipalException.MustBeOmniadmin(permissionChecker);
+
+			throw new PortletException(principalException);
+		}
 	}
 
 	@Reference(
