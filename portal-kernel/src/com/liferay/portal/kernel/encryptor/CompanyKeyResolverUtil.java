@@ -71,7 +71,7 @@ public class CompanyKeyResolverUtil {
 	}
 
 	public static void rotateKey(Company company) {
-		if (!_isRefusedKey(company.getKey())) {
+		if (_isAllowedKey(company.getKey())) {
 			return;
 		}
 
@@ -110,7 +110,7 @@ public class CompanyKeyResolverUtil {
 	}
 
 	public static Key unwrapKey(long companyId, String keyString) {
-		if (_isRefusedKey(keyString)) {
+		if (!_isAllowedKey(keyString)) {
 			throw new CompanyKeyException(
 				StringBundler.concat(
 					"The key of company ", companyId,
@@ -157,8 +157,8 @@ public class CompanyKeyResolverUtil {
 			_FIPS_KEY_PREFIX.length(), keyString.length() - 1);
 	}
 
-	private static boolean _isRefusedKey(String keyString) {
-		if (PropsValues.FIPS_ENABLED && !isFIPSKey(keyString)) {
+	private static boolean _isAllowedKey(String keyString) {
+		if (!PropsValues.FIPS_ENABLED || isFIPSKey(keyString)) {
 			return true;
 		}
 

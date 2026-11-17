@@ -206,7 +206,7 @@ public class CompanyKeyResolverUtilTest {
 			MockedStatic<FIPSApplicationStateMachineUtil>
 				fipsApplicationStateMachineUtilMockedStatic =
 					Mockito.mockStatic(FIPSApplicationStateMachineUtil.class);
-			SafeCloseable safeCloseable =
+			SafeCloseable safeCloseable1 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
 
@@ -216,7 +216,7 @@ public class CompanyKeyResolverUtilTest {
 					_FIPS_KEY_PREFIX + RandomTestUtil.randomString() + "}",
 					null, RandomTestUtil.randomString()));
 
-			try (SafeCloseable fipsSafeCloseable =
+			try (SafeCloseable safeCloseable2 =
 					PropsValuesTestUtil.swapWithSafeCloseable(
 						"FIPS_ENABLED", false)) {
 
@@ -232,16 +232,16 @@ public class CompanyKeyResolverUtilTest {
 				companyInfo, RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString());
 
+			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
+			Assert.assertEquals(
+				"Rotated the key for company " + _COMPANY_ID,
+				logEntry.getMessage());
+
 			Mockito.verify(
 				companyInfo
 			).setKey(
 				_FIPS_KEY_PREFIX + keyString + "}"
 			);
-
-			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
-			Assert.assertEquals(
-				"Rotated the key for company " + _COMPANY_ID,
-				logEntry.getMessage());
 
 			ORMException ormException = new ORMException();
 
@@ -457,15 +457,15 @@ public class CompanyKeyResolverUtilTest {
 		Company company = Mockito.mock(Company.class);
 
 		Mockito.when(
-			company.getCompanyId()
-		).thenReturn(
-			_COMPANY_ID
-		);
-
-		Mockito.when(
 			company.getKey()
 		).thenReturn(
 			keyString
+		);
+
+		Mockito.when(
+			company.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
 		);
 
 		Mockito.when(

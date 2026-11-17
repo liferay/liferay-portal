@@ -101,7 +101,7 @@ public class CompanyKeyResolverUtilTest {
 
 		_saveKeyManagerConfiguration(StringPool.BLANK);
 
-		Assert.assertEquals(keyString, _getCompanyKey(company));
+		Assert.assertEquals(keyString, _checkCompanyKey(company));
 
 		Company legacyCompany = _addCompany();
 
@@ -115,39 +115,39 @@ public class CompanyKeyResolverUtilTest {
 		_saveKeyManagerCustomProfileConfiguration(
 			RandomTestUtil.randomString());
 
-		Assert.assertEquals(legacyKeyString, _getCompanyKey(legacyCompany));
+		Assert.assertEquals(legacyKeyString, _checkCompanyKey(legacyCompany));
 
 		_saveKeyManagerCustomProfileConfiguration(
 			TestCompanyCryptoProvider.PROVIDER_ID);
 
-		String rotatedKeyString = _getCompanyKey(company);
+		String rotatedKeyString = _checkCompanyKey(company);
 
-		Assert.assertEquals(rotatedKeyString, _getCompanyKey(company));
+		Assert.assertEquals(rotatedKeyString, _checkCompanyKey(company));
 		Assert.assertTrue(CompanyKeyResolverUtil.isFIPSKey(rotatedKeyString));
 		Assert.assertTrue(
 			CompanyKeyResolverUtil.isWrappedKey(rotatedKeyString));
 
-		Key key = CompanyKeyResolverUtil.unwrapKey(
+		Key unwrappedKey = CompanyKeyResolverUtil.unwrapKey(
 			company.getCompanyId(), rotatedKeyString);
 
-		byte[] encodedBytes = key.getEncoded();
+		byte[] encodedBytes = unwrappedKey.getEncoded();
 
 		Assert.assertEquals(
 			Arrays.toString(encodedBytes), 32, encodedBytes.length);
 
 		_saveKeyManagerConfiguration(StringPool.BLANK);
 
-		String rotatedLegacyKeyString = _getCompanyKey(legacyCompany);
+		String rotatedLegacyKeyString = _checkCompanyKey(legacyCompany);
 
 		Assert.assertTrue(
 			CompanyKeyResolverUtil.isFIPSKey(rotatedLegacyKeyString));
 		Assert.assertFalse(
 			CompanyKeyResolverUtil.isWrappedKey(rotatedLegacyKeyString));
 
-		key = CompanyKeyResolverUtil.unwrapKey(
+		unwrappedKey = CompanyKeyResolverUtil.unwrapKey(
 			legacyCompany.getCompanyId(), rotatedLegacyKeyString);
 
-		encodedBytes = key.getEncoded();
+		encodedBytes = unwrappedKey.getEncoded();
 
 		Assert.assertEquals(
 			Arrays.toString(encodedBytes), 32, encodedBytes.length);
@@ -216,11 +216,13 @@ public class CompanyKeyResolverUtilTest {
 
 		Company legacyCompany = _addCompany();
 
-		String keyString = legacyCompany.getKey();
+		String legacyKeyString = legacyCompany.getKey();
 
-		Assert.assertFalse(CompanyKeyResolverUtil.isWrappedKey(keyString));
+		Assert.assertFalse(
+			CompanyKeyResolverUtil.isWrappedKey(legacyKeyString));
 		Assert.assertEquals(
-			EncryptorUtil.deserializeKey(keyString), legacyCompany.getKeyObj());
+			EncryptorUtil.deserializeKey(legacyKeyString),
+			legacyCompany.getKeyObj());
 	}
 
 	private Company _addCompany() throws Exception {
@@ -238,7 +240,7 @@ public class CompanyKeyResolverUtilTest {
 		return CompanyLocalServiceUtil.getCompany(company.getCompanyId());
 	}
 
-	private String _getCompanyKey(Company company) throws Exception {
+	private String _checkCompanyKey(Company company) throws Exception {
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
