@@ -119,6 +119,7 @@ public class PortalInstanceImportResourceTest
 		_testPostPortalInstanceImportGroupNameInUse();
 		_testPostPortalInstanceImportInProgress();
 		_testPostPortalInstanceImportInvalidSchemaName();
+		_testPostPortalInstanceImportMissingServiceModule();
 		_testPostPortalInstanceImportNonexistentDBPartition();
 		_testPostPortalInstanceImportOutdatedSchemaVersion();
 		_testPostPortalInstanceImportSuccess();
@@ -508,6 +509,45 @@ public class PortalInstanceImportResourceTest
 		}
 	}
 
+	private void _testPostPortalInstanceImportMissingServiceModule()
+		throws Exception {
+
+		long companyId = _exportCompany();
+
+		try {
+			String schemaName = DBPartitionUtil.getExportedPartitionName(
+				companyId);
+
+			try (SafeCloseable safeCloseable =
+					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+						PortalInstancePool.getDefaultCompanyId())) {
+
+				DB db = DBManagerUtil.getDB();
+
+				db.runSQL(
+					StringBundler.concat(
+						"delete from ", schemaName, ".Release_ where ",
+						"servletContextName = '",
+						_SERVLET_CONTEXT_NAME_BLOGS_SERVICE, "'"));
+			}
+
+			PortalInstanceImport portalInstanceImport =
+				new PortalInstanceImport();
+
+			portalInstanceImport.setSchemaName(schemaName);
+
+			_assertPostPortalInstanceImportProblemTitle(
+				portalInstanceImport,
+				StringBundler.concat(
+					"Unable to insert the database partition ", schemaName,
+					" because it does not have module ",
+					_SERVLET_CONTEXT_NAME_BLOGS_SERVICE));
+		}
+		finally {
+			_dropExportedSchema(companyId);
+		}
+	}
+
 	private void _testPostPortalInstanceImportNonexistentDBPartition()
 		throws Exception {
 
@@ -708,6 +748,9 @@ public class PortalInstanceImportResourceTest
 		_CLASS_NAME_PORTAL_INSTANCE_IMPORT_RESOURCE_IMPL =
 			"com.liferay.headless.portal.instances.internal.resource.v1_0." +
 				"PortalInstanceImportResourceImpl";
+
+	private static final String _SERVLET_CONTEXT_NAME_BLOGS_SERVICE =
+		"com.liferay.blogs.service";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
