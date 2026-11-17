@@ -56,6 +56,26 @@ public class AssetAnalyticsAttributesProviderTest {
 		_testBuildAttributesWithoutLocale();
 	}
 
+	private void _assertObjectDefinitionLabel(
+		AssetAnalyticsAttributesProvider assetAnalyticsAttributesProvider,
+		String expectedObjectDefinitionLabel) {
+
+		String attributes = assetAnalyticsAttributesProvider.buildAttributes(
+			AssetAnalyticsAttributesProvider.ACTION_VIEW,
+			AssetAnalyticsAttributesProvider.FIELD_CONTENT);
+
+		if (expectedObjectDefinitionLabel == null) {
+			Assert.assertFalse(
+				attributes.contains("analytics-object-definition-label="));
+		}
+		else {
+			Assert.assertTrue(
+				attributes.contains(
+					"analytics-object-definition-label=\"" +
+						expectedObjectDefinitionLabel + "\""));
+		}
+	}
+
 	private void _assertObjectDefinitionName(
 		AssetAnalyticsAttributesProvider assetAnalyticsAttributesProvider,
 		String expectedObjectDefinitionName) {
@@ -244,14 +264,34 @@ public class AssetAnalyticsAttributesProviderTest {
 		);
 
 		Mockito.when(
+			objectDefinition.getDefaultLocale()
+		).thenReturn(
+			LocaleUtil.US
+		);
+
+		Mockito.when(
+			objectDefinition.getLabel(LocaleUtil.US)
+		).thenReturn(
+			"My CMS Type"
+		);
+
+		Mockito.when(
 			objectDefinition.getName()
 		).thenReturn(
 			"MyCMSType"
 		);
 
+		_assertObjectDefinitionLabel(
+			assetAnalyticsAttributesProvider, "My CMS Type");
 		_assertObjectDefinitionName(
 			assetAnalyticsAttributesProvider, "my-cms-type");
 		_assertType(assetAnalyticsAttributesProvider, "object-entry");
+
+		Mockito.when(
+			objectDefinition.getLabel(LocaleUtil.US)
+		).thenReturn(
+			null
+		);
 
 		Mockito.when(
 			objectDefinition.getName()
@@ -259,6 +299,7 @@ public class AssetAnalyticsAttributesProviderTest {
 			null
 		);
 
+		_assertObjectDefinitionLabel(assetAnalyticsAttributesProvider, null);
 		_assertObjectDefinitionName(assetAnalyticsAttributesProvider, null);
 		_assertType(assetAnalyticsAttributesProvider, "object-entry");
 	}

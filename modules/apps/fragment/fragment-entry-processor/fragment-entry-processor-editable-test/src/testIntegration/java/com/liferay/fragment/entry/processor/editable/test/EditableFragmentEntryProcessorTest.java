@@ -1306,6 +1306,9 @@ public class EditableFragmentEntryProcessorTest {
 			objectEntry.getExternalReferenceCode(),
 			element.attr("data-analytics-external-reference-code"));
 		Assert.assertEquals(
+			objectDefinition.getLabel(objectDefinition.getDefaultLocale()),
+			element.attr("data-analytics-object-definition-label"));
+		Assert.assertEquals(
 			objectDefinition.getName(),
 			element.attr("data-analytics-object-definition-name"));
 		Assert.assertEquals("", element.attr("data-analytics-object-type"));
@@ -1375,6 +1378,9 @@ public class EditableFragmentEntryProcessorTest {
 		Assert.assertEquals(
 			objectEntry.getExternalReferenceCode(),
 			element.attr("data-analytics-external-reference-code"));
+		Assert.assertEquals(
+			objectDefinition.getLabel(objectDefinition.getDefaultLocale()),
+			element.attr("data-analytics-object-definition-label"));
 		Assert.assertEquals(
 			objectDefinition.getName(),
 			element.attr("data-analytics-object-definition-name"));

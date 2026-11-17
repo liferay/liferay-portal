@@ -256,6 +256,7 @@ describe('ObjectEntry Plugin', () => {
 			analyticsAssetTags?: string;
 			analyticsAssetVocabularies?: string;
 			analyticsCmpProjects?: string;
+			analyticsObjectDefinitionLabel?: string;
 		}) => {
 			const element = document.createElement('a');
 
@@ -293,6 +294,11 @@ describe('ObjectEntry Plugin', () => {
 			if (options.analyticsCmpProjects !== undefined) {
 				element.dataset.analyticsCmpProjects =
 					options.analyticsCmpProjects;
+			}
+
+			if (options.analyticsObjectDefinitionLabel !== undefined) {
+				element.dataset.analyticsObjectDefinitionLabel =
+					options.analyticsObjectDefinitionLabel;
 			}
 
 			document.body.appendChild(element);
@@ -448,6 +454,38 @@ describe('ObjectEntry Plugin', () => {
 			document.body.removeChild(element);
 		});
 
+		it('includes objectDefinitionLabel in the payload when set', async () => {
+			const element = createObjectEntryLinkElementWithOptions({
+				analyticsObjectDefinitionLabel: 'Product Sheet',
+			});
+
+			await userEvent.click(element);
+
+			expect(Analytics.getEvents()).toEqual([
+				expect.objectContaining({
+					applicationId: AnalyticsTypes.ApplicationId.ObjectEntry,
+					eventId: AnalyticsTypes.EventId.ObjectEntryDownloaded,
+					properties: expect.objectContaining({
+						objectDefinitionLabel: 'Product Sheet',
+					}),
+				}),
+			]);
+
+			document.body.removeChild(element);
+		});
+
+		it('does not include objectDefinitionLabel in the payload when not set', async () => {
+			const element = createObjectEntryLinkElementWithOptions({});
+
+			await userEvent.click(element);
+
+			expect(Analytics.getEvents()[0].properties).not.toHaveProperty(
+				'objectDefinitionLabel'
+			);
+
+			document.body.removeChild(element);
+		});
+
 		it('trims whitespace from optional fields', async () => {
 			const element = createObjectEntryLinkElementWithOptions({
 				analyticsAssetCategories: '  category1  ',
@@ -455,6 +493,7 @@ describe('ObjectEntry Plugin', () => {
 				analyticsAssetVocabularies: '  vocabulary1  ',
 				analyticsCmpProjects:
 					'  [{"id":39601,"name":"Spring Campaign"}]  ',
+				analyticsObjectDefinitionLabel: '  Product Sheet  ',
 			});
 
 			await userEvent.click(element);
@@ -466,6 +505,7 @@ describe('ObjectEntry Plugin', () => {
 						assetTags: 'tag1',
 						assetVocabularies: 'vocabulary1',
 						cmpProjects: '[{"id":39601,"name":"Spring Campaign"}]',
+						objectDefinitionLabel: 'Product Sheet',
 					}),
 				}),
 			]);
