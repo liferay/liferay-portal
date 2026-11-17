@@ -222,7 +222,7 @@ test(
 			name: 'de-DE',
 		});
 
-		test.step('Add a new language', async () => {
+		await test.step('Add a new language', async () => {
 			await clickAndExpectToBeVisible({
 				target: newLanguageOption,
 				trigger: addButton,
@@ -231,21 +231,18 @@ test(
 			await newLanguageOption.click();
 		});
 
-		test.step('Assert the new language is added to the translation manager', async () => {
-			await clickAndExpectToBeVisible({
-				target: germanChoice,
-				trigger: newLanguageOption,
-			});
+		await test.step('Assert the new language is added to the translation manager', async () => {
+			await expect(
+				dialog.getByRole('row', {name: 'German (Germany)'})
+			).toBeVisible();
 
-			// await expect(doneButton).toBeVisible();
-
-			clickAndExpectToBeHidden({
+			await clickAndExpectToBeHidden({
 				target: dialog,
 				trigger: doneButton,
 			});
 		});
 
-		test.step('Assert the new language is listed as an option', async () => {
+		await test.step('Assert the new language is listed as an option', async () => {
 			await expect(englishTriggerButton).toBeVisible();
 
 			await clickAndExpectToBeVisible({

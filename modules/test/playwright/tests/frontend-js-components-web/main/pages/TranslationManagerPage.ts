@@ -61,7 +61,7 @@ export class TranslationManagerPage {
 		});
 		this.cancelButton = this.dialog.getByRole('button', {name: 'Cancel'});
 		this.doneButton = this.dialog.getByRole('button', {name: 'Done'});
-		this.addButton = page.getByLabel('Add', {
+		this.addButton = this.dialog.getByLabel('Add', {
 			exact: true,
 		});
 		this.searchInput = page.getByPlaceholder('Search');
