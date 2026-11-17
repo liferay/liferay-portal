@@ -49,6 +49,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ASSET_TYPE_ROW_SELECT_OPTION</td>
+	<td>//*[@data-qa-id='row'][td[contains(@class,'lfr-asset-type-column')][normalize-space()='${key_workflowResourceValue}']]//select/option[normalize-space()='${key_workflowDefinition}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>RESOURCE_TABLE_CANCEL</td>
 	<td>//*[@data-qa-id='row' and contains(.,'${key_workflowResourceValue}')]//button[contains(.,'Cancel')]</td>
 	<td></td>

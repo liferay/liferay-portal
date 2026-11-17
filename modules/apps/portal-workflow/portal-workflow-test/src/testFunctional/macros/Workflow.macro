@@ -442,7 +442,9 @@ definition {
 			locator1 = "WorkflowConfiguration#ASSET_TYPE_ROW_EDIT",
 			value1 = "Edit");
 
-		if (IsNotVisible(locator1 = "WorkflowConfiguration#ASSET_TYPE_ROW_SELECT")) {
+		var key_workflowDefinition = ${workflowDefinition};
+
+		if ((IsNotVisible(locator1 = "WorkflowConfiguration#ASSET_TYPE_ROW_SELECT")) || (IsElementNotPresent(locator1 = "WorkflowConfiguration#ASSET_TYPE_ROW_SELECT_OPTION"))) {
 			Refresh();
 
 			WaitForSPARefresh();
