@@ -53,14 +53,13 @@ public class OAuthClientEntryCompanyBatchEnginePortletDataHandlerTest
 		_companyConfigurationTemporarySwapper =
 			_getCompanyConfigurationTemporarySwapper(
 				TestPropsValues.getCompanyId());
+		_openIdConnectProviderHttpServer =
+			new OpenIdConnectProviderHttpServer();
 
 		User user = getTargetCompanyAdminUser();
 
 		_targetCompanyConfigurationTemporarySwapper =
 			_getCompanyConfigurationTemporarySwapper(user.getCompanyId());
-
-		_openIdConnectProviderHttpServer =
-			new OpenIdConnectProviderHttpServer();
 
 		super.setUp();
 	}
