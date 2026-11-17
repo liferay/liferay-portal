@@ -63,7 +63,7 @@ public class PersistentAuditMessageProcessorTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testProcess() throws Exception {
 		_testProcessHttpRequestContext();

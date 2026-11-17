@@ -84,7 +84,7 @@ public class OAuth2ApplicationModelListenerTest {
 		_serviceRegistration.unregister();
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testOnAfterCreate() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =

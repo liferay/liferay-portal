@@ -49,6 +49,7 @@ import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -111,7 +112,9 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 			FileSystemAuditMessageProcessorConfiguration.class);
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-6417"), @FeatureFlag("LPD-96921")}
+	)
 	@Test
 	public void testProcessActionRoutesAuditMessage() throws Exception {
 		_testProcessActionRoutesAuditMessage(

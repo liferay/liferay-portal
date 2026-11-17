@@ -61,7 +61,7 @@ public class EmailOTPBrowserMFACheckerTest {
 		_frameworkUtilMockedStatic.close();
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testBuildAuditMessages() throws Exception {
 		AuditMessage auditMessage = _buildAuditMessage(
@@ -176,7 +176,7 @@ public class EmailOTPBrowserMFACheckerTest {
 
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-6417")) {
+					false, "LPD-96921")) {
 
 			String reason = RandomTestUtil.randomString();
 

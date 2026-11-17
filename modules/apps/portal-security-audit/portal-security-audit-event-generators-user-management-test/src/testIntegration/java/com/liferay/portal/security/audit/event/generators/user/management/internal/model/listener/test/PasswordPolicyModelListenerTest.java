@@ -41,7 +41,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 @RunWith(Arquillian.class)
 public class PasswordPolicyModelListenerTest extends BaseModelListenerTestCase {
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testOnBeforeCreate() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =

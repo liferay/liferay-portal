@@ -57,7 +57,7 @@ public class ResourcePermissionModelListenerTest
 		auditMessages.clear();
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testOnBeforeCreate() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =

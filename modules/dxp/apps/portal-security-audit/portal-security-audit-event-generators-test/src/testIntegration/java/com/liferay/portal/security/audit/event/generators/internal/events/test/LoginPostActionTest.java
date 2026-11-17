@@ -203,7 +203,7 @@ public class LoginPostActionTest {
 		}
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testRunSetsResourceAction() throws Exception {
 		_run(_createMockHttpServletRequest());

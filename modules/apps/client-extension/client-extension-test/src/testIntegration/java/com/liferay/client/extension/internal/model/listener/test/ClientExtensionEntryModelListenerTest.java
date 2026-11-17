@@ -90,7 +90,7 @@ public class ClientExtensionEntryModelListenerTest {
 		}
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testOnBeforeCreate() throws Exception {
 		PrintStream printStream = System.out;

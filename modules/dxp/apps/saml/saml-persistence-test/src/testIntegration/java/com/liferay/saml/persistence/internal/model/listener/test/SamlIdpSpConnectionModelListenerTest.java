@@ -43,7 +43,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 public class SamlIdpSpConnectionModelListenerTest
 	extends BaseModelListenerTestCase {
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testOnAfterCreate() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =

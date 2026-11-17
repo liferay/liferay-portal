@@ -55,7 +55,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Christian Moura
  */
-@FeatureFlag("LPD-6417")
+@FeatureFlag("LPD-96921")
 @RunWith(Arquillian.class)
 public class ImpersonationActionTest {
 
@@ -163,7 +163,7 @@ public class ImpersonationActionTest {
 	private void _testRunWhenFeatureFlagIsDisabled() throws Exception {
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-6417")) {
+					false, "LPD-96921")) {
 
 			AuditMessage auditMessage = _run();
 

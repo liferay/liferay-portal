@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -59,7 +60,9 @@ public class AuditFilterTest {
 		AuditRequestContextThreadLocal.removeAuditRequestContext();
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-6417"), @FeatureFlag("LPD-96921")}
+	)
 	@Test
 	public void testDoFilter() throws Exception {
 		_testDoFilterCapturesAuditSessionId();
@@ -68,6 +71,7 @@ public class AuditFilterTest {
 		_testDoFilterResolvesRequestId();
 		_testDoFilterWhenAuditLogContextIsEnabled();
 		_testDoFilterWhenFeatureFlagIsDisabled();
+		_testDoFilterWhenLPD96921IsDisabled();
 	}
 
 	private MockHttpServletResponse _testDoFilter(
@@ -276,10 +280,38 @@ public class AuditFilterTest {
 	private void _testDoFilterWhenFeatureFlagIsDisabled() throws Exception {
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-6417")) {
+					false, "LPD-6417", "LPD-96921")) {
 
 			MockHttpServletRequest mockHttpServletRequest =
 				new MockHttpServletRequest();
+
+			mockHttpServletRequest.addHeader(
+				HttpHeaders.USER_AGENT, RandomTestUtil.randomString());
+
+			String xRequestId = PortalUUIDUtil.generate();
+
+			mockHttpServletRequest.addHeader(
+				HttpHeaders.X_REQUEST_ID, xRequestId);
+
+			AuditRequestContext auditRequestContext = _testDoFilter(
+				mockHttpServletRequest);
+
+			Assert.assertNull(auditRequestContext.getHttpMethod());
+			Assert.assertEquals(xRequestId, auditRequestContext.getRequestId());
+			Assert.assertFalse(auditRequestContext.isRequestIdGenerated());
+			Assert.assertNull(auditRequestContext.getUserAgent());
+		}
+	}
+
+	private void _testDoFilterWhenLPD96921IsDisabled() throws Exception {
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-96921")) {
+
+			MockHttpServletRequest mockHttpServletRequest =
+				new MockHttpServletRequest(
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString());
 
 			mockHttpServletRequest.addHeader(
 				HttpHeaders.USER_AGENT, RandomTestUtil.randomString());

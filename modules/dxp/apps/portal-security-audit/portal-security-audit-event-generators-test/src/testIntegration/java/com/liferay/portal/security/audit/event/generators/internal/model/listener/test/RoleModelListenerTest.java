@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class RoleModelListenerTest extends BaseModelListenerTestCase {
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testOnBeforeAddAssociation() throws Exception {
 		_company = CompanyTestUtil.addCompany();

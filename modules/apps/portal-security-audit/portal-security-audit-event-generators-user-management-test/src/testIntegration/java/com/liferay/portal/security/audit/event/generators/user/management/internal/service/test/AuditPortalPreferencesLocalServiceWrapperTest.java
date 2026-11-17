@@ -42,7 +42,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 public class AuditPortalPreferencesLocalServiceWrapperTest
 	extends BaseModelListenerTestCase {
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testUpdatePreferences() throws Exception {
 		Company company = _companyLocalService.getCompany(

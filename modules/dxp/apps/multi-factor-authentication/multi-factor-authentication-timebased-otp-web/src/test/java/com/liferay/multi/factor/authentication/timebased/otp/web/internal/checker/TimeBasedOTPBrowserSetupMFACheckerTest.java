@@ -109,7 +109,7 @@ public class TimeBasedOTPBrowserSetupMFACheckerTest {
 		_serviceRegistration.unregister();
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testBuildAuditMessages() throws Exception {
 		PrincipalThreadLocal.setName(_REAL_USER_ID);
@@ -308,7 +308,7 @@ public class TimeBasedOTPBrowserSetupMFACheckerTest {
 
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-6417")) {
+					false, "LPD-96921")) {
 
 			String reason = RandomTestUtil.randomString();
 

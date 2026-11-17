@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.text.DateFormat;
@@ -40,11 +41,14 @@ public class AuditMessageTest {
 		AuditRequestContextThreadLocal.removeAuditRequestContext();
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-6417"), @FeatureFlag("LPD-96921")}
+	)
 	@Test
 	public void testConstructor() throws Exception {
 		_testConstructor();
 		_testConstructorWhenFeatureFlagIsDisabled();
+		_testConstructorWhenLPD96921IsDisabled();
 		_testConstructorWithClonedContext();
 		_testConstructorWithSharedContext();
 		_testConstructorWithSystemCompany();
@@ -149,7 +153,7 @@ public class AuditMessageTest {
 	private void _testConstructorWhenFeatureFlagIsDisabled() {
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-6417")) {
+					false, "LPD-6417", "LPD-96921")) {
 
 			AuditRequestContext auditRequestContext =
 				AuditRequestContextThreadLocal.getAuditRequestContext();
@@ -167,6 +171,28 @@ public class AuditMessageTest {
 				auditRequestContext.getRequestId(),
 				auditMessage.getRequestId());
 			Assert.assertTrue(auditMessage.isRequestIdGenerated());
+			Assert.assertNull(auditMessage.getUserAgent());
+
+			AuditRequestContextThreadLocal.removeAuditRequestContext();
+		}
+	}
+
+	private void _testConstructorWhenLPD96921IsDisabled() {
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-96921")) {
+
+			AuditRequestContext auditRequestContext =
+				AuditRequestContextThreadLocal.getAuditRequestContext();
+
+			auditRequestContext.setHttpMethod(RandomTestUtil.randomString());
+			auditRequestContext.setUserAgent(RandomTestUtil.randomString());
+
+			AuditMessage auditMessage = _createAuditMessage(
+				RandomTestUtil.randomLong());
+
+			Assert.assertNull(auditMessage.getHttpMethod());
+			Assert.assertNotNull(auditMessage.getRequestId());
 			Assert.assertNull(auditMessage.getUserAgent());
 
 			AuditRequestContextThreadLocal.removeAuditRequestContext();

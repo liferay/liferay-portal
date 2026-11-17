@@ -86,7 +86,7 @@ public class DefaultAuditRouterTest {
 		_serviceRegistration.unregister();
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testRoute() throws Exception {
 		_testRoute(
@@ -317,7 +317,7 @@ public class DefaultAuditRouterTest {
 	private void _testRouteWhenFeatureFlagIsDisabled() throws Exception {
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-6417")) {
+					false, "LPD-96921")) {
 
 			AuditMessage auditMessage = _getAuditMessage(
 				RandomTestUtil.randomString(), null,

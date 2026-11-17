@@ -65,7 +65,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Christian Moura
  */
-@FeatureFlag("LPD-6417")
+@FeatureFlag("LPD-96921")
 @RunWith(Arquillian.class)
 public class LayoutActionTest {
 
@@ -189,7 +189,7 @@ public class LayoutActionTest {
 	private void _testExecuteWhenFeatureFlagIsDisabled() throws Exception {
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-6417")) {
+					false, "LPD-96921")) {
 
 			AuditMessage auditMessage = _execute(0);
 

@@ -41,7 +41,7 @@ public class MFAFIDO2AuditMessageUtilTest {
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testBuildAuditMessages() throws Exception {
 		AuditMessage auditMessage =
@@ -112,7 +112,7 @@ public class MFAFIDO2AuditMessageUtilTest {
 
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-6417")) {
+					false, "LPD-96921")) {
 
 			String reason = RandomTestUtil.randomString();
 

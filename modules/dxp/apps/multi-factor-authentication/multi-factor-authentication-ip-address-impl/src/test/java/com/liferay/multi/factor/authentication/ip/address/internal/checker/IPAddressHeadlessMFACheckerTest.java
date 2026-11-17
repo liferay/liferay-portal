@@ -42,7 +42,7 @@ public class IPAddressHeadlessMFACheckerTest {
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
 	}
 
-	@FeatureFlag("LPD-6417")
+	@FeatureFlag("LPD-96921")
 	@Test
 	public void testBuildAuditMessages() throws Exception {
 		AuditMessage auditMessage = _buildAuditMessage(
@@ -119,7 +119,7 @@ public class IPAddressHeadlessMFACheckerTest {
 
 		try (SafeCloseable safeCloseable =
 				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-					false, "LPD-6417")) {
+					false, "LPD-96921")) {
 
 			String reason = RandomTestUtil.randomString();
 
