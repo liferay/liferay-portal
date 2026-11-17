@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.hits.TotalHitsRelation;
 import com.liferay.portal.search.searcher.SearchRequest;
@@ -151,16 +152,20 @@ public class SearchResultsPortletTest {
 	@FeatureFlag("LPD-114635")
 	@Test
 	public void testIsPaginationStartAdjusted() throws Exception {
-		_testIsPaginationStartAdjusted(false, 0, 0);
-		_testIsPaginationStartAdjusted(false, 15, 4);
-		_testIsPaginationStartAdjusted(true, 15, 6);
+		_testIsPaginationStartAdjusted(false, 5, 0, 0);
+		_testIsPaginationStartAdjusted(false, 5, 15, 4);
+		_testIsPaginationStartAdjusted(
+			false, PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA + 1,
+			PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA, 2);
+		_testIsPaginationStartAdjusted(true, 5, 15, 6);
 	}
 
+	@FeatureFlag(enable = false, value = "LPD-114635")
 	@Test
-	public void testIsPaginationStartAdjustedWithFeatureFlagDisabled()
+	public void testIsPaginationStartAdjustedWhenFeatureFlagIsDisabled()
 		throws Exception {
 
-		_testIsPaginationStartAdjusted(false, 15, 6);
+		_testIsPaginationStartAdjusted(false, 5, 15, 6);
 	}
 
 	@Test
@@ -505,11 +510,12 @@ public class SearchResultsPortletTest {
 	}
 
 	private void _testIsPaginationStartAdjusted(
-			boolean expectedPaginationStartAdjusted, int from, int start)
+			boolean expectedPaginationStartAdjusted, int delta, int from,
+			int start)
 		throws Exception {
 
 		SearchResultsPortletDisplayContext searchResultsPortletDisplayContext =
-			_render(5, from, start, 25);
+			_render(delta, from, start, RandomTestUtil.randomInt());
 
 		Assert.assertEquals(
 			expectedPaginationStartAdjusted,
