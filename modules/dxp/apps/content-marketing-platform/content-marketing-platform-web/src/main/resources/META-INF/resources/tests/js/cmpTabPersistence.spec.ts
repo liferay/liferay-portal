@@ -7,6 +7,7 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 	FDS_EVENT: {
 		UPDATE_DISPLAY: 'fds-update-display',
 	},
+	getConfigParamName: (id: string) => `${id}_fdsConfig`,
 }));
 
 const mockFire = jest.fn();
@@ -74,6 +75,7 @@ beforeEach(() => {
 	mockFire.mockReset();
 	mockOn.mockReset();
 	document.body.innerHTML = '';
+	window.history.replaceState(null, '', '/');
 	window.sessionStorage.clear();
 
 	(globalThis as any).Liferay = {
@@ -165,6 +167,29 @@ describe('cmpTabPersistence', () => {
 			expect(tabClickSpies[1]).toHaveBeenCalledTimes(1);
 			expect(tabClickSpies[0]).not.toHaveBeenCalled();
 			expect(tabClickSpies[2]).not.toHaveBeenCalled();
+		});
+
+		it('clicks the tab whose FDS receives a configuration in the URL', () => {
+			buildTabsContainer(0);
+
+			const {STORAGE_KEY, installCMPTabPersistence, registerTabFDS} =
+				loadModule();
+
+			window.history.replaceState(
+				null,
+				'',
+				'/tasks?workflowTasksFDS_fdsConfig=%7B%7D'
+			);
+			window.sessionStorage.setItem(STORAGE_KEY, '1');
+
+			registerTabFDS('allTasksFDS', 0);
+			registerTabFDS('workflowTasksFDS', 2);
+
+			installCMPTabPersistence();
+
+			expect(tabClickSpies[2]).toHaveBeenCalledTimes(1);
+			expect(tabClickSpies[0]).not.toHaveBeenCalled();
+			expect(tabClickSpies[1]).not.toHaveBeenCalled();
 		});
 
 		it('registers the activePanel listener only once', () => {

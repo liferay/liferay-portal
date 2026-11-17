@@ -300,7 +300,20 @@ public class ViewDashboardDisplayContext {
 		).put(
 			"redirect", _themeDisplay.getURLCurrent()
 		).put(
-			"tasksSectionFDSName", CMSSiteInitializerFDSNames.TASKS_SECTION
+			"tasksSectionFDSName",
+			() -> {
+				ObjectDefinition cmpProjectObjectDefinition =
+					ObjectDefinitionLocalServiceUtil.
+						fetchObjectDefinitionByExternalReferenceCode(
+							"L_CMP_PROJECT", _themeDisplay.getCompanyId());
+
+				if (cmpProjectObjectDefinition == null) {
+					return CMSSiteInitializerFDSNames.TASKS_SECTION;
+				}
+
+				return "com.liferay.content.marketing.platform.web-workflow-" +
+					"tasks";
+			}
 		).put(
 			"unlinkedContentFDSActionDropdownItems",
 			() ->

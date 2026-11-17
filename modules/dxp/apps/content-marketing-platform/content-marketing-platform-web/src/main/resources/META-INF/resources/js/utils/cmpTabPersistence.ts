@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FDS_EVENT} from '@liferay/frontend-data-set-web';
+import {FDS_EVENT, getConfigParamName} from '@liferay/frontend-data-set-web';
 import {COOKIE_TYPES, sessionStorage} from 'frontend-js-web';
 
 export const STORAGE_KEY = 'cmpGlobalTasksActiveTab';
@@ -41,14 +41,30 @@ function getTabPanelItems(container: HTMLElement): HTMLElement[] {
 	).filter((panel) => !panel.parentElement?.closest('.tab-panel-item'));
 }
 
-function restoreActiveTab() {
+function getTabIndexToRestore() {
+	const searchParams = new URLSearchParams(window.location.search);
+
+	for (const [tabIndex, fdsId] of tabIndexToFDSId) {
+		if (searchParams.has(getConfigParamName(fdsId))) {
+			return tabIndex;
+		}
+	}
+
 	const stored = sessionStorage.getItem(STORAGE_KEY, COOKIE_TYPES.NECESSARY);
 
 	if (stored === null) {
-		return;
+		return null;
 	}
 
-	const index = Number(stored);
+	return Number(stored);
+}
+
+function restoreActiveTab() {
+	const index = getTabIndexToRestore();
+
+	if (index === null) {
+		return;
+	}
 
 	if (!Number.isInteger(index) || index <= 0) {
 		return;
