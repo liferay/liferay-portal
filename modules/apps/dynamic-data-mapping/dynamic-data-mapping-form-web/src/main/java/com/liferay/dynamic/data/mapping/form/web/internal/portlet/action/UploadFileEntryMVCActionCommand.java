@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.form.web.internal.portlet.action.util.Fi
 import com.liferay.dynamic.data.mapping.form.web.internal.security.permission.resource.DDMFormInstancePermission;
 import com.liferay.dynamic.data.mapping.form.web.internal.upload.DDMFormUploadValidator;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
 import com.liferay.dynamic.data.mapping.util.DDMFormUtil;
 import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.model.ObjectFieldSetting;
@@ -99,6 +100,9 @@ public class UploadFileEntryMVCActionCommand extends BaseMVCActionCommand {
 	@Reference
 	private ConfigurationProvider _configurationProvider;
 
+	@Reference
+	private DDMFormInstanceLocalService _ddmFormInstanceLocalService;
+
 	private final DDMFormUploadFileEntryHandler _ddmFormUploadFileEntryHandler =
 		new DDMFormUploadFileEntryHandler();
 	private final DDMFormUploadResponseHandler _ddmFormUploadResponseHandler =
@@ -169,7 +173,6 @@ public class UploadFileEntryMVCActionCommand extends BaseMVCActionCommand {
 				return addFileEntry(
 					file, fileName,
 					ParamUtil.getLong(uploadPortletRequest, "formInstanceId"),
-					ParamUtil.getLong(uploadPortletRequest, "groupId"),
 					mimeType, themeDisplay);
 			}
 			finally {
@@ -178,12 +181,15 @@ public class UploadFileEntryMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		protected FileEntry addFileEntry(
-				File file, String fileName, long formInstanceId, long groupId,
+				File file, String fileName, long formInstanceId,
 				String mimeType, ThemeDisplay themeDisplay)
 			throws PortalException {
 
+			DDMFormInstance ddmFormInstance =
+				_ddmFormInstanceLocalService.getFormInstance(formInstanceId);
+
 			if (!DDMFormInstancePermission.contains(
-					themeDisplay.getPermissionChecker(), formInstanceId,
+					themeDisplay.getPermissionChecker(), ddmFormInstance,
 					DDMActionKeys.ADD_FORM_INSTANCE_RECORD)) {
 
 				throw new PrincipalException.MustHavePermission(
@@ -196,7 +202,8 @@ public class UploadFileEntryMVCActionCommand extends BaseMVCActionCommand {
 				themeDisplay.getCompanyId());
 
 			FileEntry fileEntry = TempFileEntryUtil.addTempFileEntry(
-				groupId, user.getUserId(), DDMFormConstants.TEMP_FOLDER_NAME,
+				ddmFormInstance.getGroupId(), user.getUserId(),
+				DDMFormConstants.TEMP_FOLDER_NAME,
 				TempFileEntryUtil.getTempFileName(fileName), file, mimeType);
 
 			Role role = _roleLocalService.getRole(

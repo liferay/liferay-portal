@@ -425,8 +425,6 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 				String.valueOf(
 					ddmFormFieldRenderingContext.getDDMFormInstanceId()))
 		).setParameter(
-			"groupId", ddmFormFieldRenderingContext.getProperty("groupId")
-		).setParameter(
 			"objectFieldId",
 			GetterUtil.getLong(ddmFormField.getProperty("objectFieldId"))
 		).buildString();
