@@ -298,10 +298,8 @@ public class CMPTestUtil {
 
 		PrincipalThreadLocal.setName(user.getUserId());
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(group.getGroupId());
-
-		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
