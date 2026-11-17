@@ -24,13 +24,13 @@ func TestAvailabilityRequeueInterval(t *testing.T) {
 			reason: ReasonJobFailed,
 		},
 		"a progressing workload": {
-			reason: ReasonWorkloadProgressing, want: 30 * time.Second,
+			reason: ReasonWorkloadProgressing, want: workloadStatusRequeueInterval,
 		},
 		"a running Job": {
 			reason: ReasonJobRunning,
 		},
 		"an unavailable workload": {
-			reason: ReasonWorkloadUnavailable, want: 30 * time.Second,
+			reason: ReasonWorkloadUnavailable, want: workloadStatusRequeueInterval,
 		},
 	}
 
@@ -61,6 +61,14 @@ func TestCronJobAvailableCondition(t *testing.T) {
 		wantReason  string
 		wantStatus  metav1.ConditionStatus
 	}{
+		"a CronJob that has not run": {
+			jobs: []batchv1.Job{
+				{ObjectMeta: metav1.ObjectMeta{Name: "baker-1", Namespace: "liferay-cx"}},
+			},
+			wantMessage: `has not run yet. Its schedule is "*/5 * * * *".`,
+			wantReason:  ReasonCronJobScheduled,
+			wantStatus:  metav1.ConditionTrue,
+		},
 		"a CronJob whose last run completed": {
 			jobs: []batchv1.Job{
 				newCronJobRun(batchv1.JobFailed, cronJob, 1, "able-1"),
@@ -78,14 +86,6 @@ func TestCronJobAvailableCondition(t *testing.T) {
 			wantMessage: `Job "able-2", failed: BackoffLimitExceeded`,
 			wantReason:  ReasonJobFailed,
 			wantStatus:  metav1.ConditionFalse,
-		},
-		"a CronJob that has not run": {
-			jobs: []batchv1.Job{
-				{ObjectMeta: metav1.ObjectMeta{Name: "baker-1", Namespace: "liferay-cx"}},
-			},
-			wantMessage: `has not run yet. Its schedule is "*/5 * * * *".`,
-			wantReason:  ReasonCronJobScheduled,
-			wantStatus:  metav1.ConditionTrue,
 		},
 	}
 
@@ -234,6 +234,13 @@ func TestPodProblem(t *testing.T) {
 			}, "able-1")},
 			want: `Container "able" of pod "able-1" exited with code 3 (Error).`,
 		},
+		"a container whose image cannot be inspected": {
+			pods: []corev1.Pod{newPod(corev1.ContainerStatus{
+				Name:  "able",
+				State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{Reason: "ImageInspectError"}},
+			}, "able-1")},
+			want: `Container "able" of pod "able-1" is waiting: ImageInspectError.`,
+		},
 		"a crash looping container": {
 			pods: []corev1.Pod{newPod(corev1.ContainerStatus{
 				LastTerminationState: corev1.ContainerState{
@@ -243,13 +250,6 @@ func TestPodProblem(t *testing.T) {
 				State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{Reason: "CrashLoopBackOff"}},
 			}, "able-1")},
 			want: `Container "able" of pod "able-1" is waiting: CrashLoopBackOff. It last exited with code 1.`,
-		},
-		"a container whose image cannot be inspected": {
-			pods: []corev1.Pod{newPod(corev1.ContainerStatus{
-				Name:  "able",
-				State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{Reason: "ImageInspectError"}},
-			}, "able-1")},
-			want: `Container "able" of pod "able-1" is waiting: ImageInspectError.`,
 		},
 		"a starting container": {
 			pods: []corev1.Pod{newPod(corev1.ContainerStatus{

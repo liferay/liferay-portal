@@ -341,7 +341,7 @@ func TestReconcileDeliversOnceVirtualInstanceAppears(t *testing.T) {
 	}
 
 	if url := getClientExtension(clientExtension, clientExtensionReconciler, t).Status.URL; url != "https://able.example.com" {
-		t.Errorf("status.url = %q, want %q", url, "https://able.example.com")
+		t.Errorf("url = %q, want %q", url, "https://able.example.com")
 	}
 
 	dxpMetadata := getConfigMap(clientExtensionReconciler, "liferay.com-lxc-dxp-metadata", "able", t)
@@ -355,7 +355,7 @@ func TestReconcileDeliversOnceVirtualInstanceAppears(t *testing.T) {
 	reconcileClientExtension(clientExtension, clientExtensionReconciler, t)
 
 	if url := getClientExtension(clientExtension, clientExtensionReconciler, t).Status.URL; url != "http://able.example.com" {
-		t.Errorf("status.url = %q, want %q", url, "http://able.example.com")
+		t.Errorf("url = %q, want %q", url, "http://able.example.com")
 	}
 }
 
@@ -625,7 +625,7 @@ func TestReconcileRefusesUnknownVirtualInstance(t *testing.T) {
 	updatedClientExtension := getClientExtension(clientExtension, clientExtensionReconciler, t)
 
 	if updatedClientExtension.Status.Phase != cxv1alpha1.PhasePending {
-		t.Errorf("phase = %q, want %q while DXP may still be starting", updatedClientExtension.Status.Phase, cxv1alpha1.PhasePending)
+		t.Errorf("phase = %q, want %q: DXP may still be starting", updatedClientExtension.Status.Phase, cxv1alpha1.PhasePending)
 	}
 
 	delivered := getDelivered(clientExtension, clientExtensionReconciler, t)
@@ -664,7 +664,7 @@ func TestReconcileRemovesProvisionedWhenUndelivered(t *testing.T) {
 	}
 
 	if phase, _ := reconcileClientExtension(clientExtension, clientExtensionReconciler, t); phase != cxv1alpha1.PhasePending {
-		t.Errorf("phase = %q, want %q while DXP may be restarting", phase, cxv1alpha1.PhasePending)
+		t.Errorf("phase = %q, want %q: DXP may be restarting", phase, cxv1alpha1.PhasePending)
 	}
 
 	if provisioned := getCondition(clientExtension, clientExtensionReconciler, cxv1alpha1.ConditionProvisioned, t); provisioned != nil {

@@ -265,7 +265,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) Reconcile(
 		}
 	}
 
-	workloadStatus, error := clientExtensionReconciler.workloadCondition(
+	workloadStatus, error := clientExtensionReconciler.workloadStatus(
 		&clientExtension, configMapsWithDigest, context,
 	)
 
@@ -820,14 +820,6 @@ func serviceIDConflictMessage(clientExtension *cxv1alpha1.ClientExtension, confi
 	)
 }
 
-func unknownVirtualInstanceMessage(clientExtension *cxv1alpha1.ClientExtension, dxpNamespace string) string {
-	return fmt.Sprintf(
-		"Virtual instance %q is unknown to DXP: ConfigMap %q does not exist in namespace %q.",
-		clientExtension.Spec.VirtualInstanceID,
-		dxpMetadataName(clientExtension.Spec.VirtualInstanceID), dxpNamespace,
-	)
-}
-
 func unknownVirtualInstanceGraceRemaining(status *cxv1alpha1.ClientExtensionStatus) time.Duration {
 	delivered := meta.FindStatusCondition(status.Conditions, cxv1alpha1.ConditionDelivered)
 
@@ -836,6 +828,14 @@ func unknownVirtualInstanceGraceRemaining(status *cxv1alpha1.ClientExtensionStat
 	}
 
 	return max(time.Until(delivered.LastTransitionTime.Add(unknownVirtualInstanceGracePeriod)), 0)
+}
+
+func unknownVirtualInstanceMessage(clientExtension *cxv1alpha1.ClientExtension, dxpNamespace string) string {
+	return fmt.Sprintf(
+		"Virtual instance %q is unknown to DXP: ConfigMap %q does not exist in namespace %q.",
+		clientExtension.Spec.VirtualInstanceID,
+		dxpMetadataName(clientExtension.Spec.VirtualInstanceID), dxpNamespace,
+	)
 }
 
 func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
@@ -911,11 +911,12 @@ func (clientExtensionReconciler *ClientExtensionReconciler) updateStatus(
 	if workloadStatus != nil {
 		status.Image = workloadStatus.image
 		status.WorkloadIssues = workloadStatus.issues
-		status.WorkloadSummary = workloadStatus.summary
 
 		if clientExtension.Spec.WorkloadRef != nil {
 			status.WorkloadName = clientExtension.Spec.WorkloadRef.Name
 		}
+
+		status.WorkloadSummary = workloadStatus.summary
 	}
 
 	if ((ready.Reason == ReasonExtInitMissing) && (extInitGraceRemaining(status) > 0)) ||

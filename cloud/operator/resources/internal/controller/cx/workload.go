@@ -284,7 +284,17 @@ func validateVolume(
 	}
 }
 
-func (clientExtensionReconciler *ClientExtensionReconciler) workloadCondition(
+func workloadGraceRemaining(status *cxv1alpha1.ClientExtensionStatus) time.Duration {
+	workloadAccepted := meta.FindStatusCondition(status.Conditions, cxv1alpha1.ConditionWorkloadAccepted)
+
+	if (workloadAccepted == nil) || (workloadAccepted.Reason != ReasonWorkloadNotFound) {
+		return 0
+	}
+
+	return max(time.Until(workloadAccepted.LastTransitionTime.Add(workloadGracePeriod)), 0)
+}
+
+func (clientExtensionReconciler *ClientExtensionReconciler) workloadStatus(
 	clientExtension *cxv1alpha1.ClientExtension,
 	configMapsWithDigest []*corev1.ConfigMap,
 	context context.Context,
@@ -386,16 +396,6 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadCondition(
 	)
 
 	return workloadStatus, nil
-}
-
-func workloadGraceRemaining(status *cxv1alpha1.ClientExtensionStatus) time.Duration {
-	workloadAccepted := meta.FindStatusCondition(status.Conditions, cxv1alpha1.ConditionWorkloadAccepted)
-
-	if (workloadAccepted == nil) || (workloadAccepted.Reason != ReasonWorkloadNotFound) {
-		return 0
-	}
-
-	return max(time.Until(workloadAccepted.LastTransitionTime.Add(workloadGracePeriod)), 0)
 }
 
 type workloadStatus struct {

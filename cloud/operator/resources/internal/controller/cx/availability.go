@@ -18,13 +18,15 @@ import (
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
+const workloadStatusRequeueInterval = 30 * time.Second
+
 func availabilityRequeueInterval(status *cxv1alpha1.ClientExtensionStatus) time.Duration {
-	condition := meta.FindStatusCondition(status.Conditions, cxv1alpha1.ConditionWorkloadAvailable)
+	workloadAvailable := meta.FindStatusCondition(status.Conditions, cxv1alpha1.ConditionWorkloadAvailable)
 
-	if (condition != nil) &&
-		((condition.Reason == ReasonWorkloadProgressing) || (condition.Reason == ReasonWorkloadUnavailable)) {
+	if (workloadAvailable != nil) &&
+		((workloadAvailable.Reason == ReasonWorkloadProgressing) || (workloadAvailable.Reason == ReasonWorkloadUnavailable)) {
 
-		return 30 * time.Second
+		return workloadStatusRequeueInterval
 	}
 
 	return 0
@@ -120,9 +122,11 @@ func isFailedWaitingReason(reason string) bool {
 
 func jobAvailableCondition(job *batchv1.Job, podProblem string) metav1.Condition {
 	if complete := jobCondition(batchv1.JobComplete, job); complete != nil {
+		lastTransitionTime := complete.LastTransitionTime.UTC()
+
 		return newCondition(
 			metav1.ConditionTrue,
-			fmt.Sprintf("Job %q completed at %s.", job.Name, complete.LastTransitionTime.UTC().Format(time.RFC3339)),
+			fmt.Sprintf("Job %q completed at %s.", job.Name, lastTransitionTime.Format(time.RFC3339)),
 			ReasonJobComplete,
 		)
 	}
@@ -226,15 +230,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadAvailableCon
 	context context.Context,
 	workload client.Object,
 ) (metav1.Condition, error) {
-	if deployment, ok := workload.(*appsv1.Deployment); ok {
-		pods, error := clientExtensionReconciler.listPods(context, deployment.Namespace, deployment.Spec.Selector)
-
-		if error != nil {
-			return metav1.Condition{}, error
-		}
-
-		return deploymentAvailableCondition(deployment, podProblem(pods)), nil
-	} else if cronJob, ok := workload.(*batchv1.CronJob); ok {
+	if cronJob, ok := workload.(*batchv1.CronJob); ok {
 		var jobList batchv1.JobList
 
 		if error := clientExtensionReconciler.APIReader.List(
@@ -244,7 +240,19 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadAvailableCon
 		}
 
 		return cronJobAvailableCondition(cronJob, jobList.Items), nil
-	} else if job, ok := workload.(*batchv1.Job); ok {
+	}
+
+	if deployment, ok := workload.(*appsv1.Deployment); ok {
+		pods, error := clientExtensionReconciler.listPods(context, deployment.Namespace, deployment.Spec.Selector)
+
+		if error != nil {
+			return metav1.Condition{}, error
+		}
+
+		return deploymentAvailableCondition(deployment, podProblem(pods)), nil
+	}
+
+	if job, ok := workload.(*batchv1.Job); ok {
 		selector := job.Spec.Selector
 
 		if selector == nil {
@@ -264,15 +272,7 @@ func (clientExtensionReconciler *ClientExtensionReconciler) workloadAvailableCon
 }
 
 func workloadSummary(workload client.Object, workloadAvailable metav1.Condition) string {
-	if deployment, ok := workload.(*appsv1.Deployment); ok {
-		replicas := int32(1)
-
-		if deployment.Spec.Replicas != nil {
-			replicas = *deployment.Spec.Replicas
-		}
-
-		return fmt.Sprintf("%d/%d", deployment.Status.AvailableReplicas, replicas)
-	} else if cronJob, ok := workload.(*batchv1.CronJob); ok {
+	if cronJob, ok := workload.(*batchv1.CronJob); ok {
 		if workloadAvailable.Reason == ReasonJobFailed {
 			return "Failed"
 		}
@@ -286,10 +286,24 @@ func workloadSummary(workload client.Object, workloadAvailable metav1.Condition)
 		}
 
 		return "Scheduled"
-	} else if _, ok := workload.(*batchv1.Job); ok {
+	}
+
+	if deployment, ok := workload.(*appsv1.Deployment); ok {
+		replicas := int32(1)
+
+		if deployment.Spec.Replicas != nil {
+			replicas = *deployment.Spec.Replicas
+		}
+
+		return fmt.Sprintf("%d/%d", deployment.Status.AvailableReplicas, replicas)
+	}
+
+	if _, ok := workload.(*batchv1.Job); ok {
 		if workloadAvailable.Reason == ReasonJobComplete {
 			return "Completed"
-		} else if workloadAvailable.Reason == ReasonJobFailed {
+		}
+
+		if workloadAvailable.Reason == ReasonJobFailed {
 			return "Failed"
 		}
 
