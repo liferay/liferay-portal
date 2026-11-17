@@ -51,7 +51,8 @@
 		table-layout: auto !important;
 
 		tbody tr > td.cell-item-actions,
-		thead tr > th:last-child {
+		thead tr > th.cell-item-actions,
+		thead tr > th[data-id='string,visibility'] {
 			background-color: $white;
 			position: sticky;
 			right: 0;
@@ -60,7 +61,8 @@
 
 		&.table-horizontal-scroll {
 			tbody tr > td.cell-item-actions,
-			thead tr > th:last-child {
+			thead tr > th.cell-item-actions,
+			thead tr > th[data-id='string,visibility'] {
 				box-shadow: -4px 0 8px -4px unquote('hsl(from #{$gray-900} h s l / 0.15)');
 			}
 		}

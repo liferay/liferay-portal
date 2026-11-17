@@ -63,6 +63,9 @@ const Settings = ({
 	const [searchSuggestionsEnabled, setSearchSuggestionsEnabled] = useState(
 		dataSet.searchSuggestionsEnabled ?? false
 	);
+	const [showColumnsVisibility, setShowColumnsVisibility] = useState(
+		dataSet.showColumnsVisibility ?? true
+	);
 	const [showSearch, setShowSearch] = useState(dataSet.showSearch ?? true);
 	const [visualizationModes, setVisualizationModes] = useState<
 		Array<IDataSetVisualizationMode>
@@ -109,6 +112,7 @@ const Settings = ({
 			hideManagementBarInEmptyState,
 			searchAsYouType,
 			searchSuggestionsEnabled,
+			showColumnsVisibility,
 			showSearch,
 			snapshotsEnabled,
 		};
@@ -390,6 +394,32 @@ const Settings = ({
 									)}
 								</ClayLink>
 							)}
+						</ClayLayout.Col>
+					</ClayLayout.Row>
+
+					<ClayLayout.Row className="align-items-center justify-content-between mt-4">
+						<ClayLayout.Col size={9}>
+							<div>
+								<label htmlFor="show-columns-visibility-toggle">
+									{Liferay.Language.get(
+										'show-columns-visibility'
+									)}
+								</label>
+							</div>
+
+							<div>
+								{Liferay.Language.get(
+									'show-columns-visibility-help'
+								)}
+							</div>
+						</ClayLayout.Col>
+
+						<ClayLayout.Col className="align-self-start" size={1}>
+							<ClayToggle
+								id="show-columns-visibility-toggle"
+								onToggle={setShowColumnsVisibility}
+								toggled={showColumnsVisibility}
+							/>
 						</ClayLayout.Col>
 					</ClayLayout.Row>
 				</ClayLayout.SheetSection>

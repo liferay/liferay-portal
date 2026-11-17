@@ -109,7 +109,7 @@ function Header({
 
 										inputRef.current?.focus();
 									}}
-									symbol="times"
+									symbol="times-small"
 									title={clearSearchLabel}
 								/>
 							) : (

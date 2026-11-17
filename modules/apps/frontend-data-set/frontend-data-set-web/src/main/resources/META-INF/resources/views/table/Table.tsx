@@ -103,18 +103,44 @@ const Head = ({
 	fields,
 	items,
 	selectionType,
+	showActionsColumn,
 }: {
 	fields: Array<Field>;
 	items: Array<any>;
 	selectionType?: 'single' | 'multiple';
+	showActionsColumn: boolean;
 }) => {
-	const {selectable} = useContext(FrontendDataSetContext);
+	const {selectable, showColumnsVisibility} = useContext(
+		FrontendDataSetContext
+	);
 
 	return (
 		<ClayTableHead
-			items={selectable ? [{fieldName: 'select'}, ...fields] : fields}
+			items={[
+				...(selectable ? [{fieldName: 'select'}] : []),
+				...fields,
+				...(!showColumnsVisibility && showActionsColumn
+					? [{fieldName: 'actions'}]
+					: []),
+			]}
 		>
 			{(field: Field) => {
+				if (field.fieldName === 'actions') {
+					return (
+						<ClayTableCell
+							className="cell-item-actions"
+							key="actions"
+							scope="col"
+							textValue={Liferay.Language.get('item-actions')}
+							width="64px"
+						>
+							<span className="sr-only">
+								{Liferay.Language.get('item-actions')}
+							</span>
+						</ClayTableCell>
+					);
+				}
+
 				if (field.fieldName === 'select') {
 					if (!!items.length && selectionType !== 'multiple') {
 						return (
@@ -736,7 +762,8 @@ function CellRenderer({
 function getVisibleFieldsMap(
 	fields: Array<Field>,
 	visibleFields: Array<Field>,
-	selectable?: boolean
+	selectable?: boolean,
+	showActionsColumn?: boolean
 ) {
 	const visibleFieldsMap = new Map();
 
@@ -756,6 +783,13 @@ function getVisibleFieldsMap(
 			);
 		}
 	});
+
+	if (showActionsColumn) {
+		visibleFieldsMap.set(
+			'actions',
+			selectable ? fields.length + 1 : fields.length
+		);
+	}
 
 	return visibleFieldsMap;
 }
@@ -778,6 +812,7 @@ const Table = ({
 		nestedItemsReferenceKey,
 		selectable,
 		selectionType,
+		showColumnsVisibility,
 		updateActiveSorts,
 		updateVisibleFields,
 	} = useContext(FrontendDataSetContext);
@@ -815,6 +850,11 @@ const Table = ({
 		fields: schema.fields,
 		visibleFieldNames,
 	});
+
+	const showActionsColumn =
+		showColumnsVisibility ||
+		!!itemsActions?.length ||
+		!!inlineAddingSettings;
 
 	const columnNames = [];
 
@@ -882,6 +922,7 @@ const Table = ({
 				className={classNames({
 					'table-horizontal-scroll': horizontalScroll,
 				})}
+				columnsVisibility={showColumnsVisibility}
 				itemIdKey={nestedItemsKey}
 				messages={{
 					columnsVisibility: Liferay.Language.get(
@@ -937,13 +978,15 @@ const Table = ({
 				visibleColumns={getVisibleFieldsMap(
 					schema.fields as Array<Field>,
 					visibleFields,
-					selectable
+					selectable,
+					!showColumnsVisibility && showActionsColumn
 				)}
 			>
 				<Head
 					fields={schema.fields as Array<Field>}
 					items={items}
 					selectionType={selectionType}
+					showActionsColumn={showActionsColumn}
 				/>
 
 				<Body
