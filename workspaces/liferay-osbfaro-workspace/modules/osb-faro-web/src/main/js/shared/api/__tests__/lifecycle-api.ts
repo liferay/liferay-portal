@@ -6,7 +6,6 @@ jest.mock('shared/util/feature-flags', () => ({
 
 import sendRequest from 'shared/util/request';
 import {
-	fetchAccountLifecycles,
 	fetchChannelLifecycles,
 	fetchLifecycles,
 	fetchLifecyclesPage,
@@ -64,10 +63,7 @@ describe('fetchLifecyclesPage', () => {
 	});
 });
 
-describe.each([
-	['fetchLifecycles', fetchLifecycles],
-	['fetchAccountLifecycles', fetchAccountLifecycles],
-])('%s', (_name, fetchFirstLifecycles) => {
+describe('fetchLifecycles', () => {
 	beforeEach(() => {
 		(sendRequest as jest.Mock).mockReset();
 		(sendRequest as jest.Mock).mockResolvedValue({
@@ -80,9 +76,7 @@ describe.each([
 	});
 
 	it('requests the first lifecycle by name and returns the items', async () => {
-		expect(await fetchFirstLifecycles({groupId: '23'})).toEqual([
-			{id: '1'},
-		]);
+		expect(await fetchLifecycles({groupId: '23'})).toEqual([{id: '1'}]);
 
 		expect(sendRequest).toHaveBeenCalledWith({
 			data: {page: 1, pageSize: 1, sort: 'name:asc'},
@@ -161,17 +155,6 @@ describe('the default lifecycle of a channel', () => {
 			pageSize: 1,
 			sort: 'name:asc',
 		});
-	});
-
-	it('is what an account reads when it knows its channel', async () => {
-		await fetchAccountLifecycles({channelId: '123', groupId: '23'});
-
-		expect((sendRequest as jest.Mock).mock.calls[0][0].data).toEqual(
-			expect.objectContaining({
-				channelId: '123',
-				defaultAccountLifecycle: true,
-			})
-		);
 	});
 });
 

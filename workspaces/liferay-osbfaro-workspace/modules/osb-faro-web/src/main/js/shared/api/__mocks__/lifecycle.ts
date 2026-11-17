@@ -4,8 +4,6 @@ export const createLifecycle = jest.fn(() =>
 
 export const deleteLifecycle = jest.fn(() => Promise.resolve({}));
 
-export const fetchAccountLifecycles = jest.fn(() => Promise.resolve([]));
-
 export const fetchChannelLifecycles = jest.fn(() => Promise.resolve([]));
 
 export const fetchLifecycle = jest.fn(() =>

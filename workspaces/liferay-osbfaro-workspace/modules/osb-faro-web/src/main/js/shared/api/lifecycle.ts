@@ -305,11 +305,6 @@ export async function deleteLifecycle({
 	});
 }
 
-export interface IAccountLifecycle {
-	accountId?: string;
-	id: string;
-}
-
 export interface IAccountLifecycleStageStatus {
 	description?: string;
 	endDate?: number | null;
@@ -376,19 +371,5 @@ export async function fetchLifecycleStages({
 		},
 		method: 'GET',
 		path: `contacts/${groupId}/account-lifecycle/${lifecycleId}/stages`,
-	});
-}
-
-export async function fetchAccountLifecycles({
-	channelId,
-	groupId,
-}: {
-	channelId?: string;
-	groupId: string;
-}): Promise<IAccountLifecycle[]> {
-	return fetchLifecycles({
-		channelId,
-		defaultAccountLifecycle: !!channelId,
-		groupId,
 	});
 }
