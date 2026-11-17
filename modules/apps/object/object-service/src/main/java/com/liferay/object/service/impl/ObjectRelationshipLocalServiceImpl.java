@@ -77,6 +77,7 @@ import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
@@ -2353,6 +2354,14 @@ public class ObjectRelationshipLocalServiceImpl
 			ObjectDefinition objectDefinition2, String name,
 			long parameterObjectFieldId, String type)
 		throws PortalException {
+
+		if (StringUtil.equals(
+				type, ObjectRelationshipConstants.TYPE_ONE_TO_ONE) &&
+			!FeatureFlagManagerUtil.isEnabled(
+				objectDefinition1.getCompanyId(), "LPD-108620")) {
+
+			throw new ObjectRelationshipTypeException("Invalid type " + type);
+		}
 
 		Set<String> defaultObjectRelationshipTypes =
 			ObjectRelationshipUtil.getDefaultObjectRelationshipTypes();

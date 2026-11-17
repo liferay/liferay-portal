@@ -92,7 +92,10 @@ export function objectRelationshipEdgeFactory({
 						fallbackLanguageId: objectDefinition.defaultLanguageId,
 						labels: objectRelationship.label,
 					}),
-					markerEndId: `${manyMarkerId}#${objectRelationship.id}`,
+					markerEndId:
+						objectRelationship.type === 'oneToOne'
+							? `${oneMarkerId}#${objectRelationship.id}`
+							: `${manyMarkerId}#${objectRelationship.id}`,
 					markerStartId:
 						objectRelationship.type === 'manyToMany'
 							? `${manyMarkerId}#${objectRelationship.id}`

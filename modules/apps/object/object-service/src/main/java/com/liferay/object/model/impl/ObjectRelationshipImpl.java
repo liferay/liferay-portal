@@ -5,9 +5,12 @@
 
 package com.liferay.object.model.impl;
 
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.relationship.util.ObjectRelationshipUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Objects;
 import java.util.Set;
@@ -37,6 +40,13 @@ public class ObjectRelationshipImpl extends ObjectRelationshipBaseImpl {
 
 	@Override
 	public boolean isAllowedObjectRelationshipType(String type) {
+		if (StringUtil.equals(
+				type, ObjectRelationshipConstants.TYPE_ONE_TO_ONE) &&
+			!FeatureFlagManagerUtil.isEnabled(getCompanyId(), "LPD-108620")) {
+
+			return false;
+		}
+
 		Set<String> defaultObjectRelationshipTypes =
 			ObjectRelationshipUtil.getDefaultObjectRelationshipTypes();
 

@@ -18,6 +18,7 @@ import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -84,7 +85,17 @@ public class ObjectRelationshipUtil {
 			systemObjectDefinitionManagerRegistry) {
 
 		if (!objectDefinition.isUnmodifiableSystemObject()) {
-			return _defaultObjectRelationshipTypes;
+			Set<String> defaultObjectRelationshipTypes = new HashSet<>(
+				_defaultObjectRelationshipTypes);
+
+			if (!FeatureFlagManagerUtil.isEnabled(
+					objectDefinition.getCompanyId(), "LPD-108620")) {
+
+				defaultObjectRelationshipTypes.remove(
+					ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+			}
+
+			return defaultObjectRelationshipTypes;
 		}
 
 		SystemObjectDefinitionManager systemObjectDefinitionManager =
@@ -95,8 +106,17 @@ public class ObjectRelationshipUtil {
 			return Collections.emptySet();
 		}
 
-		return systemObjectDefinitionManager.
-			getAllowedObjectRelationshipTypes();
+		Set<String> allowedObjectRelationshipTypes = new HashSet<>(
+			systemObjectDefinitionManager.getAllowedObjectRelationshipTypes());
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectDefinition.getCompanyId(), "LPD-108620")) {
+
+			allowedObjectRelationshipTypes.remove(
+				ObjectRelationshipConstants.TYPE_ONE_TO_ONE);
+		}
+
+		return allowedObjectRelationshipTypes;
 	}
 
 	public static Map<String, String> getPKObjectFieldDBColumnNames(
@@ -201,6 +221,7 @@ public class ObjectRelationshipUtil {
 		Collections.unmodifiableSet(
 			SetUtil.fromArray(
 				ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY));
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+				ObjectRelationshipConstants.TYPE_ONE_TO_ONE));
 
 }
