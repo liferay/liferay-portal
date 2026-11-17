@@ -24,6 +24,7 @@ public class AssetSummaryDisplay {
 		_assetTags = assetSummary.getAssetTags();
 		_assetTitle = assetSummary.getAssetTitle();
 		_assetType = assetSummary.getAssetType();
+		_assetTypeLabel = assetSummary.getAssetTypeLabel();
 		_assetVocabularies = assetSummary.getAssetVocabularies();
 		_downloadsMetric = assetSummary.getDownloadsMetric();
 		_impressionsMetric = assetSummary.getImpressionsMetric();
@@ -40,6 +41,7 @@ public class AssetSummaryDisplay {
 	private final List<Map<String, Object>> _assetTags;
 	private final String _assetTitle;
 	private final String _assetType;
+	private final String _assetTypeLabel;
 	private final List<Map<String, Object>> _assetVocabularies;
 	private final Metric _downloadsMetric;
 	private final Metric _impressionsMetric;

@@ -36,6 +36,10 @@ public class AssetSummary {
 		return _assetType;
 	}
 
+	public String getAssetTypeLabel() {
+		return _assetTypeLabel;
+	}
+
 	public List<Map<String, Object>> getAssetVocabularies() {
 		return _assetVocabularies;
 	}
@@ -89,6 +93,10 @@ public class AssetSummary {
 		_assetType = assetType;
 	}
 
+	public void setAssetTypeLabel(String assetTypeLabel) {
+		_assetTypeLabel = assetTypeLabel;
+	}
+
 	public void setAssetVocabularies(
 		List<Map<String, Object>> assetVocabularies) {
 
@@ -128,6 +136,7 @@ public class AssetSummary {
 	private List<Map<String, Object>> _assetTags;
 	private String _assetTitle;
 	private String _assetType;
+	private String _assetTypeLabel;
 	private List<Map<String, Object>> _assetVocabularies;
 	private Metric _downloadsMetric;
 	private Map<String, Object> _embeddedResources = new HashMap<>();
