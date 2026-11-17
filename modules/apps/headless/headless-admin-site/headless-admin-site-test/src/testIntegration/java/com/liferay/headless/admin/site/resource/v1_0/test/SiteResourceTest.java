@@ -2079,6 +2079,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 		site.setActive(false);
 		site.setExternalReferenceCode(guestGroup.getExternalReferenceCode());
+		site.setName(guestGroup.getName(LocaleUtil.getDefault()));
 
 		com.liferay.headless.admin.site.resource.v1_0.SiteResource.Builder
 			builder = _siteResourceFactory.create();
