@@ -96,7 +96,6 @@ public class UserResourceImpl extends BaseUserResourceImpl {
 				invitedUser.getReminderQueryAnswer(),
 				invitedUser.getScreenName(),
 				GetterUtil.get(user.getEmail(), invitedUser.getEmailAddress()),
-				invitedUser.getFacebookId(), invitedUser.getOpenId(),
 				invitedUser.getLanguageId(), invitedUser.getTimeZoneId(),
 				invitedUser.getGreeting(), invitedUser.getComments(),
 				user.getFirstName(),
