@@ -19,6 +19,10 @@ run "should_add_every_metrics_rule_when_observability_is_enabled" {
 		error_message="argocd-dex-server must add a metrics rule scoped to the observability namespace after its component rule"
 	}
 	assert {
+		condition=length([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-gateway-proxy-ingress"][0].spec.ingress) == 2 && [for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-gateway-proxy-ingress"][0].spec.ingress[1].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "observability"
+		error_message="argocd-gateway-proxy-ingress must add a metrics rule scoped to the observability namespace after its listener rule"
+	}
+	assert {
 		condition=length([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-redis"][0].spec.ingress) == 1
 		error_message="argocd-redis must not get a metrics rule, since the redis pod exposes no metrics port unless the exporter sidecar is enabled"
 	}
@@ -189,7 +193,7 @@ run "should_omit_every_metrics_rule_when_observability_is_disabled" {
 		error_message="The metrics only policies must have no ingress rule while observability is disabled"
 	}
 	assert {
-		condition=alltrue([for name in ["argocd-dex-server", "argocd-redis", "argocd-repo-server", "argocd-server-ingress"] : length([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == name][0].spec.ingress) == 1])
+		condition=alltrue([for name in ["argocd-dex-server", "argocd-gateway-proxy-ingress", "argocd-redis", "argocd-repo-server", "argocd-server-ingress"] : length([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == name][0].spec.ingress) == 1])
 		error_message="The component policies must keep only their component rule while observability is disabled"
 	}
 	command=plan
@@ -234,8 +238,8 @@ run "should_register_the_liferay_infrastructure_health_check" {
 }
 run "should_restrict_each_component_to_its_callers" {
 	assert {
-		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-server-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "envoy-gateway-system"
-		error_message="argocd-server must only accept traffic from the Envoy Gateway namespace"
+		condition=!contains(keys([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-server-ingress"][0].spec.ingress[0].from[0]), "namespaceSelector")
+		error_message="argocd-server must only accept Envoy proxies from its own namespace"
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-server-ingress"][0].spec.ingress[0].from[0].podSelector.matchLabels["gateway.envoyproxy.io/owning-gateway-namespace"] == "argocd-system"
@@ -244,6 +248,10 @@ run "should_restrict_each_component_to_its_callers" {
 	assert {
 		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-dex-server"][0].spec.ingress[0].from[0].podSelector.matchLabels["app.kubernetes.io/name"] == "argocd-server"
 		error_message="dex must only accept argocd-server"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-gateway-proxy-ingress"][0].spec.podSelector.matchLabels["gateway.envoyproxy.io/owning-gateway-namespace"] == "argocd-system" && !contains(keys([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-gateway-proxy-ingress"][0].spec.ingress[0]), "from")
+		error_message="The Envoy proxies of the Gateway in the ArgoCD namespace must accept clients from anywhere on their listener ports"
 	}
 	assert {
 		condition=length([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-redis"][0].spec.ingress[0].from) == 3
@@ -272,8 +280,8 @@ run "should_tolerate_the_restore_workflow_by_its_field_manager" {
 }
 run "should_write_the_network_policies_through_extra_objects" {
 	assert {
-		condition=length([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.kind == "NetworkPolicy"]) == 8
-		error_message="The ArgoCD release must render exactly eight NetworkPolicies through extraObjects"
+		condition=length([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.kind == "NetworkPolicy"]) == 9
+		error_message="The ArgoCD release must render exactly nine NetworkPolicies through extraObjects"
 	}
 	assert {
 		condition=alltrue([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : !contains(keys(o.metadata), "namespace")])

@@ -224,6 +224,43 @@ resource "helm_release" "argocd" {
 							kind="NetworkPolicy"
 							metadata={
 								labels=local.common_labels
+								name="argocd-gateway-proxy-ingress"
+							}
+							spec={
+								ingress=concat(
+									[
+										{
+											ports=[
+												{
+													port=10080
+													protocol="TCP"
+												},
+												{
+													port=10443
+													protocol="TCP"
+												},
+												{
+													port=10443
+													protocol="UDP"
+												},
+											]
+										},
+									],
+									local.observability_metrics_ingress)
+								podSelector={
+									matchLabels={
+										"app.kubernetes.io/managed-by"="envoy-gateway"
+										"app.kubernetes.io/name"="envoy"
+										"gateway.envoyproxy.io/owning-gateway-namespace"=local.argocd_namespace
+									}
+								}
+							}
+						},
+						{
+							apiVersion="networking.k8s.io/v1"
+							kind="NetworkPolicy"
+							metadata={
+								labels=local.common_labels
 								name="argocd-notifications-controller-ingress"
 							}
 							spec={
@@ -373,11 +410,6 @@ resource "helm_release" "argocd" {
 										{
 											from=[
 												{
-													namespaceSelector={
-														matchLabels={
-															"kubernetes.io/metadata.name"="envoy-gateway-system"
-														}
-													}
 													podSelector={
 														matchLabels={
 															"app.kubernetes.io/managed-by"="envoy-gateway"
