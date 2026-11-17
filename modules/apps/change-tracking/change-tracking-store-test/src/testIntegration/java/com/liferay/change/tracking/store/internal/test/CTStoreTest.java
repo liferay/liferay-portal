@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.log.LogCapture;
@@ -76,13 +77,15 @@ public class CTStoreTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
+		Company company = CompanyTestUtil.addCompany();
+
+		_companyId = company.getCompanyId();
+
 		_ctStore = _ctStoreFactory.createCTStore(
 			(Store)ProxyUtil.newProxyInstance(
 				Store.class.getClassLoader(), new Class<?>[] {Store.class},
 				new RecorderInvocationHandler(_fileSystemStore)),
 			_STORE_TYPE);
-
-		_companyId = TestPropsValues.getCompanyId();
 	}
 
 	@Before
