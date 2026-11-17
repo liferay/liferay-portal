@@ -174,7 +174,8 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		);
 
 		_initMessageContext(
-			true, NameIDType.EMAIL, _SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS);
+			true, true, NameIDType.EMAIL,
+			_SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS);
 		_initUnknownUserHandling(false);
 
 		_testUserFieldExpressionResolver.setUserFieldExpression("emailAddress");
@@ -216,7 +217,7 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		);
 
 		_initMessageContext(
-			false, NameIDType.UNSPECIFIED, _SAML_NAME_IDENTIFIER_VALUE);
+			true, false, NameIDType.UNSPECIFIED, _SAML_NAME_IDENTIFIER_VALUE);
 		_initUnknownUserHandling(true);
 
 		_testUserFieldExpressionResolver.setUserFieldExpression("screenName");
@@ -245,7 +246,8 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		);
 
 		_initMessageContext(
-			true, NameIDType.EMAIL, _SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS);
+			true, true, NameIDType.EMAIL,
+			_SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS);
 		_initUnknownUserHandling(false);
 
 		_testUserFieldExpressionResolver.setUserFieldExpression("emailAddress");
@@ -272,7 +274,7 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		);
 
 		_initMessageContext(
-			true, NameIDType.UNSPECIFIED, _SAML_NAME_IDENTIFIER_VALUE);
+			true, true, NameIDType.UNSPECIFIED, _SAML_NAME_IDENTIFIER_VALUE);
 		_initUnknownUserHandling(false);
 
 		_testUserFieldExpressionResolver.setUserFieldExpression("screenName");
@@ -300,7 +302,7 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 
 		_initMatchingUserHandling();
 		_initMessageContext(
-			true, NameIDType.EMAIL, _SAML_NAME_IDENTIFIER_VALUE);
+			true, true, NameIDType.EMAIL, _SAML_NAME_IDENTIFIER_VALUE);
 
 		_testUserFieldExpressionResolver.setUserFieldExpression("emailAddress");
 
@@ -327,7 +329,7 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 
 		_initMatchingUserHandling();
 		_initMessageContext(
-			false, NameIDType.UNSPECIFIED,
+			true, false, NameIDType.UNSPECIFIED,
 			_SUBJECT_NAME_IDENTIFIER_SCREEN_NAME);
 
 		_testUserFieldExpressionResolver.setUserFieldExpression("screenName");
@@ -355,7 +357,7 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 
 		_initMatchingUserHandling();
 		_initMessageContext(
-			true, NameIDType.UNSPECIFIED, _SAML_NAME_IDENTIFIER_VALUE);
+			true, true, NameIDType.UNSPECIFIED, _SAML_NAME_IDENTIFIER_VALUE);
 
 		_testUserFieldExpressionResolver.setUserFieldExpression("screenName");
 
@@ -364,6 +366,13 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 			new ServiceContext());
 
 		Assert.assertNotNull(user);
+	}
+
+	@Test
+	public void testResolveUser() throws Exception {
+		_testResolveUserWhenEmailAddressAttributeIsMissing();
+		_testResolveUserWhenUserEmailAddressVerifiedIsFalse();
+		_testResolveUserWhenUserEmailAddressVerifiedIsTrue();
 	}
 
 	@Test(expected = SubjectException.class)
@@ -375,7 +384,8 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		);
 
 		_initMessageContext(
-			true, NameIDType.EMAIL, _SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS);
+			true, true, NameIDType.EMAIL,
+			_SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS);
 		_initUnknownUserHandling(false);
 
 		_testUserFieldExpressionResolver.setUserFieldExpression("emailAddress");
@@ -402,7 +412,8 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		);
 
 		_initMessageContext(
-			true, NameIDType.EMAIL, _SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS);
+			true, true, NameIDType.EMAIL,
+			_SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS);
 		_initUnknownUserHandling(false);
 
 		_testUserFieldExpressionResolver.setUserFieldExpression("emailAddress");
@@ -427,7 +438,8 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		);
 
 		_initMessageContext(
-			true, NameIDType.EMAIL, _SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS);
+			true, true, NameIDType.EMAIL,
+			_SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS);
 		_initUnknownUserHandling(false);
 
 		_attributes.add(
@@ -538,7 +550,9 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		return membershipsUserFieldExpressionHandler;
 	}
 
-	private void _initMatchingUserHandling() throws Exception {
+	private User _initMatchingUserHandling() throws Exception {
+		Mockito.clearInvocations(_userLocalService);
+
 		ContactLocalService contactLocalService = getMockPortalService(
 			ContactLocalServiceUtil.class, ContactLocalService.class);
 
@@ -619,6 +633,13 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		);
 
 		Mockito.when(
+			_userLocalService.updateEmailAddressVerified(
+				Mockito.anyLong(), Mockito.eq(true))
+		).thenReturn(
+			user
+		);
+
+		Mockito.when(
 			_userLocalService.updateUser(
 				Mockito.any(Long.class), Mockito.nullable(String.class),
 				Mockito.nullable(String.class), Mockito.nullable(String.class),
@@ -641,11 +662,13 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		).thenReturn(
 			user
 		);
+
+		return user;
 	}
 
 	private void _initMessageContext(
-		boolean addScreenNameAttribute, String nameIdFormat,
-		String nameIdValue) {
+		boolean addEmailAddressAttribute, boolean addScreenNameAttribute,
+		String nameIdFormat, String nameIdValue) {
 
 		Assertion assertion = OpenSamlUtil.buildAssertion();
 
@@ -676,9 +699,12 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 
 		_attributes = attributeStatement.getAttributes();
 
-		_attributes.add(
-			OpenSamlUtil.buildAttribute(
-				"emailAddress", _SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS));
+		if (addEmailAddressAttribute) {
+			_attributes.add(
+				OpenSamlUtil.buildAttribute(
+					"emailAddress", _SUBJECT_NAME_IDENTIFIER_EMAIL_ADDRESS));
+		}
+
 		_attributes.add(OpenSamlUtil.buildAttribute("firstName", "test"));
 		_attributes.add(OpenSamlUtil.buildAttribute("lastName", "test"));
 
@@ -1084,6 +1110,72 @@ public class DefaultUserResolverTest extends BaseSamlTestCase {
 		);
 
 		return userLocalService;
+	}
+
+	private void _testResolveUserWhenEmailAddressAttributeIsMissing()
+		throws Exception {
+
+		_initMatchingUserHandling();
+		_initMessageContext(
+			false, true, NameIDType.UNSPECIFIED, _SAML_NAME_IDENTIFIER_VALUE);
+
+		_testUserFieldExpressionResolver.setUserFieldExpression("screenName");
+
+		Assert.assertNotNull(
+			_defaultUserResolver.resolveUser(
+				new UserResolverSAMLContextImpl(_messageContext),
+				new ServiceContext()));
+
+		Mockito.verify(
+			_userLocalService, Mockito.never()
+		).updateEmailAddressVerified(
+			Mockito.anyLong(), Mockito.anyBoolean()
+		);
+	}
+
+	private void _testResolveUserWhenUserEmailAddressVerifiedIsFalse()
+		throws Exception {
+
+		User user = _initMatchingUserHandling();
+
+		_initMessageContext(
+			true, true, NameIDType.EMAIL, _SAML_NAME_IDENTIFIER_VALUE);
+
+		_testUserFieldExpressionResolver.setUserFieldExpression("emailAddress");
+
+		_defaultUserResolver.resolveUser(
+			new UserResolverSAMLContextImpl(_messageContext),
+			new ServiceContext());
+
+		Mockito.verify(
+			_userLocalService
+		).updateEmailAddressVerified(
+			user.getUserId(), true
+		);
+	}
+
+	private void _testResolveUserWhenUserEmailAddressVerifiedIsTrue()
+		throws Exception {
+
+		User user = _initMatchingUserHandling();
+
+		user.setEmailAddressVerified(true);
+
+		_initMessageContext(
+			true, true, NameIDType.EMAIL, _SAML_NAME_IDENTIFIER_VALUE);
+
+		_testUserFieldExpressionResolver.setUserFieldExpression("emailAddress");
+
+		Assert.assertNotNull(
+			_defaultUserResolver.resolveUser(
+				new UserResolverSAMLContextImpl(_messageContext),
+				new ServiceContext()));
+
+		Mockito.verify(
+			_userLocalService, Mockito.never()
+		).updateEmailAddressVerified(
+			Mockito.anyLong(), Mockito.anyBoolean()
+		);
 	}
 
 	private static final String _ATTRIBUTE_MAPPINGS =
