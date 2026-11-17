@@ -6,12 +6,14 @@
 package com.liferay.layout.content.page.editor.web.internal.portlet.action;
 
 import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.web.internal.comment.CommentUtil;
 import com.liferay.layout.content.page.editor.web.internal.workflow.WorkflowUtil;
 import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -25,6 +27,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -57,6 +61,24 @@ public class EditFragmentEntryLinkCommentMVCActionCommand
 		long commentId = ParamUtil.getLong(actionRequest, "commentId");
 
 		Comment comment = _commentManager.fetchComment(commentId);
+
+		FragmentEntryLink fragmentEntryLink = null;
+
+		if ((comment != null) &&
+			Objects.equals(
+				comment.getClassName(), FragmentEntryLink.class.getName())) {
+
+			fragmentEntryLink =
+				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+					comment.getClassPK());
+		}
+
+		if ((fragmentEntryLink == null) ||
+			(fragmentEntryLink.getPlid() != themeDisplay.getPlid())) {
+
+			throw new NoSuchModelException(
+				"No comment exists with the primary key " + commentId);
+		}
 
 		String body = ParamUtil.getString(
 			actionRequest, "body", comment.getBody());
@@ -97,6 +119,9 @@ public class EditFragmentEntryLinkCommentMVCActionCommand
 
 	@Reference
 	private CommentManager _commentManager;
+
+	@Reference
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 	@Reference
 	private Portal _portal;
