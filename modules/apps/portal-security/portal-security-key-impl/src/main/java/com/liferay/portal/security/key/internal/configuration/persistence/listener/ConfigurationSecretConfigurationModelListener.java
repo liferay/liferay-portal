@@ -98,12 +98,11 @@ public class ConfigurationSecretConfigurationModelListener
 						continue;
 					}
 
-					String secretIdentifier =
-						SecretIdentifierUtil.getSecretIdentifier(
-							key, pid, properties);
+					String identifier = keyReference.getIdentifier();
 
-					if (!secretIdentifier.equals(
-							keyReference.getIdentifier())) {
+					if (!identifier.equals(
+							SecretIdentifierUtil.getSecretIdentifier(
+								key, pid, properties))) {
 
 						continue;
 					}
