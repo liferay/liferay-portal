@@ -6,10 +6,22 @@
 package com.liferay.headless.commerce.admin.channel.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.Creator;
 import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.TaxCategory;
+import com.liferay.headless.commerce.admin.channel.client.pagination.Page;
+import com.liferay.headless.commerce.admin.channel.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.channel.client.resource.v1_0.TaxCategoryResource;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.rule.Inject;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -23,18 +35,19 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class TaxCategoryResourceTest extends BaseTaxCategoryResourceTestCase {
 
-	@Ignore
 	@Override
 	@Test
 	public void testGetTaxCategoriesPage() throws Exception {
 		super.testGetTaxCategoriesPage();
+
+		_testGetTaxCategoriesPageWithFilter();
 	}
 
 	@Ignore
 	@Override
 	@Test
-	public void testGetTaxCategoriesPageWithPagination() throws Exception {
-		super.testGetTaxCategoriesPageWithPagination();
+	public void testGetTaxCategoriesPageWithFilterDateTimeEquals()
+		throws Exception {
 	}
 
 	@Ignore
@@ -97,6 +110,7 @@ public class TaxCategoryResourceTest extends BaseTaxCategoryResourceTestCase {
 		super.testPostTaxCategory();
 
 		_testPostTaxCategoryUpsertsByExternalReferenceCode();
+		_testPostTaxCategoryWithCreator();
 	}
 
 	@Ignore
@@ -121,6 +135,14 @@ public class TaxCategoryResourceTest extends BaseTaxCategoryResourceTestCase {
 	}
 
 	@Override
+	protected TaxCategory testGetTaxCategoriesPage_addTaxCategory(
+			TaxCategory taxCategory)
+		throws Exception {
+
+		return taxCategoryResource.postTaxCategory(taxCategory);
+	}
+
+	@Override
 	protected TaxCategory testGetTaxCategory_addTaxCategory() throws Exception {
 		return taxCategoryResource.postTaxCategory(randomTaxCategory());
 	}
@@ -128,6 +150,13 @@ public class TaxCategoryResourceTest extends BaseTaxCategoryResourceTestCase {
 	@Override
 	protected TaxCategory
 			testGetTaxCategoryByExternalReferenceCode_addTaxCategory()
+		throws Exception {
+
+		return taxCategoryResource.postTaxCategory(randomTaxCategory());
+	}
+
+	@Override
+	protected TaxCategory testGetTaxCategoryPermissionsPage_addTaxCategory()
 		throws Exception {
 
 		return taxCategoryResource.postTaxCategory(randomTaxCategory());
@@ -149,11 +178,49 @@ public class TaxCategoryResourceTest extends BaseTaxCategoryResourceTestCase {
 	}
 
 	@Override
+	protected TaxCategory testPostTaxCategory_addPermissionsTaxCategory(
+			TaxCategory taxCategory)
+		throws Exception {
+
+		return permissionsTaxCategoryResource.postTaxCategory(taxCategory);
+	}
+
+	@Override
 	protected TaxCategory testPostTaxCategory_addTaxCategory(
 			TaxCategory taxCategory)
 		throws Exception {
 
 		return taxCategoryResource.postTaxCategory(taxCategory);
+	}
+
+	@Override
+	protected TaxCategory testPutTaxCategoryPermissionsPage_addTaxCategory()
+		throws Exception {
+
+		return taxCategoryResource.postTaxCategory(randomTaxCategory());
+	}
+
+	private void _testGetTaxCategoriesPageWithFilter() throws Exception {
+		TaxCategory randomTaxCategory = randomTaxCategory();
+
+		randomTaxCategory.setExternalReferenceCode(
+			"ERC-" + RandomTestUtil.randomString());
+
+		TaxCategory taxCategory = testGetTaxCategoriesPage_addTaxCategory(
+			randomTaxCategory);
+
+		Page<TaxCategory> taxCategoriesPage =
+			taxCategoryResource.getTaxCategoriesPage(
+				null,
+				"externalReferenceCode eq '" +
+					taxCategory.getExternalReferenceCode() + "'",
+				Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, taxCategoriesPage.getTotalCount());
+
+		assertEquals(
+			Collections.singletonList(taxCategory),
+			(List<TaxCategory>)taxCategoriesPage.getItems());
 	}
 
 	private void _testPatchTaxCategoryByExternalReferenceCodeKeepsName()
@@ -205,5 +272,34 @@ public class TaxCategoryResourceTest extends BaseTaxCategoryResourceTestCase {
 		Assert.assertEquals(
 			randomTaxCategory.getName(), upsertTaxCategory.getName());
 	}
+
+	private void _testPostTaxCategoryWithCreator() throws Exception {
+		String password = RandomTestUtil.randomString();
+		User user = UserTestUtil.addOmniadminUser();
+
+		_userLocalService.updatePassword(
+			user.getUserId(), password, password, false, true);
+
+		TaxCategoryResource taxCategoryResource = TaxCategoryResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "creator"
+		).build();
+
+		TaxCategory postTaxCategory = taxCategoryResource.postTaxCategory(
+			randomTaxCategory());
+
+		Creator creator = postTaxCategory.getCreator();
+
+		Assert.assertEquals(
+			user.getExternalReferenceCode(),
+			creator.getExternalReferenceCode());
+	}
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
