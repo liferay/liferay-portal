@@ -19,6 +19,7 @@ import Variables from './http-request/Variables';
 import ModelSummary from './model/ModelSummary';
 import Notifications from './notifications/Notifications';
 import NotificationsSummary from './notifications/NotificationsSummary';
+import ParametersSummary from './parameters/ParametersSummary';
 import PromptSummary from './prompt/PromptSummary';
 import RAGSummary from './rag/RAGSummary';
 import ServiceConfiguration from './service/ServiceConfiguration';
@@ -41,6 +42,7 @@ const sectionComponents = {
 	nodeInformation: NodeInformation,
 	notifications: Notifications,
 	notificationsSummary: NotificationsSummary,
+	parametersSummary: ParametersSummary,
 	payload: Payload,
 	promptSummary: PromptSummary,
 	ragSummary: RAGSummary,
