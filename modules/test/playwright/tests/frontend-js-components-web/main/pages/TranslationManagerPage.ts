@@ -8,11 +8,13 @@ import {Locator, Page} from '@playwright/test';
 export class TranslationManagerPage {
 	readonly adminLocalizedInputContainer: Locator;
 	readonly adminEnglishLocalizedInputContainer: Locator;
+	readonly adminTriggerButton: Locator;
 	readonly localizedInput: Locator;
 	readonly page: Page;
 	readonly englishTriggerButton: Locator;
 	readonly triggerButton: Locator;
 	readonly manageButton: Locator;
+	readonly manageMenuItem: Locator;
 	readonly dialog: Locator;
 	readonly catalanChoice: Locator;
 	readonly cancelButton: Locator;
@@ -21,6 +23,7 @@ export class TranslationManagerPage {
 	readonly searchInput: Locator;
 	readonly germanChoice: Locator;
 	readonly catalanRow: Locator;
+	readonly englishRow: Locator;
 	readonly frenchRow: Locator;
 
 	constructor(page: Page) {
@@ -33,6 +36,11 @@ export class TranslationManagerPage {
 			.first()
 			.locator('.input-localized.input-localized-input')
 			.first();
+		this.adminTriggerButton = page
+			.locator('.col', {
+				has: page.getByRole('heading', {exact: true, name: 'Admin'}),
+			})
+			.getByTitle('Select a Language');
 		this.localizedInput =
 			this.adminLocalizedInputContainer.getByRole('textbox');
 		this.triggerButton =
@@ -40,6 +48,9 @@ export class TranslationManagerPage {
 		this.englishTriggerButton =
 			this.adminEnglishLocalizedInputContainer.getByRole('button');
 		this.manageButton = page.getByRole('button', {
+			name: 'Manage Translations',
+		});
+		this.manageMenuItem = page.getByRole('menuitem', {
 			name: 'Manage Translations',
 		});
 		this.dialog = page.getByRole('dialog', {
@@ -59,6 +70,9 @@ export class TranslationManagerPage {
 		});
 		this.catalanRow = this.dialog.getByRole('row', {
 			name: 'Catalan (Spain)',
+		});
+		this.englishRow = this.dialog.getByRole('row', {
+			name: 'English (United States)',
 		});
 		this.frenchRow = this.dialog.getByRole('row', {
 			name: 'French (France)',
