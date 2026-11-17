@@ -11,21 +11,27 @@ import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
+import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
+import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOptionValue;
+import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 
@@ -153,7 +159,9 @@ public class ProductOptionValueResourceTest
 	public void testPatchProductOptionValue() throws Exception {
 		super.testPatchProductOptionValue();
 
+		_testPatchProductOptionValueWithInvalidQuantity();
 		_testPatchProductOptionValueWithSkuExternalReferenceCode();
+		_testPatchProductOptionValueWithoutPriceType();
 	}
 
 	@Override
@@ -172,6 +180,7 @@ public class ProductOptionValueResourceTest
 		super.testPostProductOptionIdProductOptionValue();
 
 		_testPostProductOptionIdProductOptionValueWithSkuExternalReferenceCode();
+		_testPostProductOptionIdProductOptionValueWithoutPriceType();
 	}
 
 	@Ignore
@@ -282,6 +291,33 @@ public class ProductOptionValueResourceTest
 			productOptionValue);
 	}
 
+	private void _testPatchProductOptionValueWithInvalidQuantity()
+		throws Exception {
+
+		ProductOptionValue postProductOptionValue =
+			testPatchProductOptionValue_addProductOptionValue();
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> productOptionValueResource.patchProductOptionValue(
+				postProductOptionValue.getId(),
+				new ProductOptionValue() {
+					{
+						quantity = BigDecimal.ZERO;
+						skuId = _cpInstance.getCPInstanceId();
+					}
+				}));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+		Assert.assertEquals(
+			LanguageUtil.get(
+				LocaleUtil.getDefault(),
+				"the-option-value-quantity-is-invalid"),
+			problem.getTitle());
+	}
+
 	private void _testPatchProductOptionValueWithSkuExternalReferenceCode()
 		throws Exception {
 
@@ -324,6 +360,65 @@ public class ProductOptionValueResourceTest
 			randomPatchProductOptionValue.getSkuExternalReferenceCode());
 		Assert.assertEquals(
 			cpInstanceId, GetterUtil.getLong(getProductOptionValue.getSkuId()));
+	}
+
+	private void _testPatchProductOptionValueWithoutPriceType()
+		throws Exception {
+
+		CPOption cpOption = CPTestUtil.addCPOption(
+			testGroup.getGroupId(), false);
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
+				null, _cpDefinition.getCPDefinitionId(),
+				cpOption.getCPOptionId(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				CPConstants.PRODUCT_OPTION_DATE_KEY,
+				RandomTestUtil.randomDouble(), false, false, false, false,
+				StringPool.BLANK,
+				ServiceContextTestUtil.getServiceContext(
+					testCompany.getCompanyId(), testGroup.getGroupId(),
+					_user.getUserId()));
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			_cpDefinitionOptionValueRelLocalService.
+				addCPDefinitionOptionValueRel(
+					null, cpDefinitionOptionRel.getCPDefinitionOptionRelId(), 0,
+					StringUtil.toLowerCase(RandomTestUtil.randomString()),
+					RandomTestUtil.randomLocaleStringMap(), false, null,
+					RandomTestUtil.randomDouble(), BigDecimal.ONE,
+					StringPool.BLANK,
+					ServiceContextTestUtil.getServiceContext(
+						testCompany.getCompanyId(), testGroup.getGroupId(),
+						_user.getUserId()));
+
+		ProductOptionValue patchProductOptionValue =
+			productOptionValueResource.patchProductOptionValue(
+				cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
+				new ProductOptionValue() {
+					{
+						priority = RandomTestUtil.randomDouble();
+					}
+				});
+
+		Assert.assertEquals(
+			0,
+			BigDecimal.ZERO.compareTo(patchProductOptionValue.getQuantity()));
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> productOptionValueResource.patchProductOptionValue(
+				cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
+				new ProductOptionValue() {
+					{
+						quantity = BigDecimal.ONE;
+					}
+				}));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 	}
 
 	private void _testPostProductOptionByExternalReferenceCodeProductOptionValueWithExternalReferenceCode()
@@ -386,6 +481,70 @@ public class ProductOptionValueResourceTest
 			GetterUtil.getLong(postProductOptionValue.getSkuId()));
 	}
 
+	private void _testPostProductOptionIdProductOptionValueWithoutPriceType()
+		throws Exception {
+
+		CPOption cpOption = CPTestUtil.addCPOption(
+			testGroup.getGroupId(), false);
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
+				null, _cpDefinition.getCPDefinitionId(),
+				cpOption.getCPOptionId(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				CPConstants.PRODUCT_OPTION_DATE_KEY,
+				RandomTestUtil.randomDouble(), false, false, false, false,
+				StringPool.BLANK,
+				ServiceContextTestUtil.getServiceContext(
+					testCompany.getCompanyId(), testGroup.getGroupId(),
+					_user.getUserId()));
+
+		ProductOptionValue postProductOptionValue =
+			productOptionValueResource.postProductOptionIdProductOptionValue(
+				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+				new ProductOptionValue() {
+					{
+						key = StringUtil.toLowerCase(
+							RandomTestUtil.randomString());
+						name = LanguageUtils.getLanguageIdMap(
+							RandomTestUtil.randomLocaleStringMap());
+					}
+				});
+
+		Assert.assertEquals(
+			0, BigDecimal.ZERO.compareTo(postProductOptionValue.getQuantity()));
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			_cpDefinitionOptionValueRelLocalService.
+				addCPDefinitionOptionValueRel(
+					null, cpDefinitionOptionRel.getCPDefinitionOptionRelId(), 0,
+					StringUtil.toLowerCase(RandomTestUtil.randomString()),
+					RandomTestUtil.randomLocaleStringMap(), false, null,
+					RandomTestUtil.randomDouble(), BigDecimal.ONE,
+					StringPool.BLANK,
+					ServiceContextTestUtil.getServiceContext(
+						testCompany.getCompanyId(), testGroup.getGroupId(),
+						_user.getUserId()));
+
+		postProductOptionValue =
+			productOptionValueResource.postProductOptionIdProductOptionValue(
+				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+				new ProductOptionValue() {
+					{
+						key = cpDefinitionOptionValueRel.getKey();
+						name = LanguageUtils.getLanguageIdMap(
+							RandomTestUtil.randomLocaleStringMap());
+					}
+				});
+
+		Assert.assertEquals(
+			cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
+			GetterUtil.getLong(postProductOptionValue.getId()));
+		Assert.assertEquals(
+			0, BigDecimal.ZERO.compareTo(postProductOptionValue.getQuantity()));
+	}
+
 	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
 
@@ -401,6 +560,10 @@ public class ProductOptionValueResourceTest
 	@Inject
 	private CPDefinitionOptionRelLocalService
 		_cpDefinitionOptionRelLocalService;
+
+	@Inject
+	private CPDefinitionOptionValueRelLocalService
+		_cpDefinitionOptionValueRelLocalService;
 
 	@DeleteAfterTestRun
 	private CPInstance _cpInstance;

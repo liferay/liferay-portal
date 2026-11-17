@@ -8,6 +8,7 @@ package com.liferay.commerce.product.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.inventory.exception.CommerceInventoryWarehouseItemUnitOfMeasureKeyException;
 import com.liferay.commerce.product.constants.CPConstants;
+import com.liferay.commerce.product.exception.CPDefinitionOptionValueRelCPInstanceException;
 import com.liferay.commerce.product.exception.CPDefinitionOptionValueRelKeyException;
 import com.liferay.commerce.product.exception.CPDefinitionOptionValueRelPriceException;
 import com.liferay.commerce.product.exception.CPDefinitionOptionValueRelQuantityException;
@@ -774,7 +775,8 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 		).when(
 			"The option value is updated"
 		).then(
-			"Any of cpInstance attributes is set to the option value"
+			"The cpInstance attributes are not set, the quantity defaults to " +
+				"0 and a nonzero quantity is rejected"
 		);
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
@@ -789,6 +791,28 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 		Assert.assertTrue(
 			Validator.isNull(cpDefinitionOptionValueRel.getCPInstanceUuid()));
 		Assert.assertEquals(0, cpDefinitionOptionValueRel.getCProductId());
+
+		cpDefinitionOptionValueRel =
+			_cpDefinitionOptionValueRelLocalService.
+				addCPDefinitionOptionValueRel(
+					null, cpDefinitionOptionRel.getCPDefinitionOptionRelId(), 0,
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomLocaleStringMap(), false, null,
+					RandomTestUtil.nextDouble(), null, StringPool.BLANK,
+					_serviceContext);
+
+		Assert.assertEquals(
+			BigDecimal.ZERO, cpDefinitionOptionValueRel.getQuantity());
+
+		CPDefinitionOptionValueRel finalCPDefinitionOptionValueRel =
+			cpDefinitionOptionValueRel;
+
+		Assert.assertThrows(
+			CPDefinitionOptionValueRelCPInstanceException.class,
+			() -> _updateCPDefinitionOptionValueRel(
+				finalCPDefinitionOptionValueRel, 0,
+				finalCPDefinitionOptionValueRel.isPreselected(), null,
+				BigDecimal.ONE));
 	}
 
 	@Test
