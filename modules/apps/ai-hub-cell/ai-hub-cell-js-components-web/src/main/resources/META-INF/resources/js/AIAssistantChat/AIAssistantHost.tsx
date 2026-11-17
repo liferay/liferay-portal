@@ -20,6 +20,7 @@ import {
 	close,
 	getState,
 	releaseHost,
+	setExpanded,
 	subscribe,
 } from './AIAssistant';
 import AIAssistantChatBody from './AIAssistantChatBody';
@@ -30,7 +31,7 @@ import useAIChat from './useAIChat';
 import './chat.scss';
 
 const AIAssistantHost: React.FC = () => {
-	const {command} = useSyncExternalStore(subscribe, getState);
+	const {command, expanded} = useSyncExternalStore(subscribe, getState);
 
 	const [lastCommand, setLastCommand] =
 		useState<AIAssistantOpenCommand | null>(null);
@@ -39,8 +40,6 @@ const AIAssistantHost: React.FC = () => {
 		useState<AIAssistantOpenCommand | null>(null);
 
 	const [openedByEvent, setOpenedByEvent] = useState<boolean>(false);
-
-	const [expanded, setExpanded] = useState<boolean>(false);
 
 	const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(
 		null
@@ -84,7 +83,6 @@ const AIAssistantHost: React.FC = () => {
 			}
 			sessionActiveRef.current = true;
 			setLastCommand(command);
-			setExpanded(false);
 		}
 		setOpenedByEvent(false);
 	}, [command]);
