@@ -6,6 +6,8 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.FriendlyUrlHistory;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
@@ -50,6 +52,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -352,6 +355,7 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 		_testPostSiteUtilityPageWithPageSpecifications();
 		_testPostSiteUtilityPageWithServiceUnavailableType();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeAndFileBase64();
+		_testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeDLFileEntryProblemException();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeEmptyAndFileBase64();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeNullAndFileBase64();
 		_testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeNullAndURL();
@@ -1357,6 +1361,22 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 			_thumbnail1Bytes, externalReferenceCode, thumbnailURLReference);
 	}
 
+	private void _testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeDLFileEntryProblemException()
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			testGroup.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			_thumbnail1Bytes, null, null, null,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		_testPostUtilityPageThumbnailURLReferenceProblemException(
+			"Unable to use file entry " + fileEntry.getFileEntryId() +
+				" as a preview",
+			fileEntry.getExternalReferenceCode(), null);
+	}
+
 	private void _testPostSiteUtilityPageWithThumbnailURLReferenceExternalReferenceCodeEmptyAndFileBase64()
 		throws Exception {
 
@@ -1825,6 +1845,9 @@ public class UtilityPageResourceTest extends BaseUtilityPageResourceTestCase {
 	private static byte[] _thumbnail2Bytes;
 	private static String _thumbnail2URL;
 	private static ThumbnailHttpServer _thumbnailHttpServer;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
 
 	@Inject
 	private JSONFactory _jsonFactory;
