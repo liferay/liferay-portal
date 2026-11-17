@@ -6,6 +6,7 @@
 package com.liferay.object.rest.internal.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.headless.admin.taxonomy.client.dto.v1_0.TaxonomyCategory;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
@@ -33,6 +34,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.io.Serializable;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -4048,6 +4050,51 @@ public class ObjectEntryResourceFilterByRelatedObjectEntriesTest
 				String.format(
 					"%s eq '%s'", objectRelationshipERCObjectFieldName,
 					userAccountJSONObject.getString("externalReferenceCode"))),
+			getObjectDefinition1());
+	}
+
+	@Test
+	public void testFilterObjectEntriesByRelatedSystemObjectEntriesTaxonomyCategoryIds()
+		throws Exception {
+
+		// Many to many relationship
+
+		objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			getObjectDefinition1(), OBJECT_FIELD_NAME_1, OBJECT_FIELD_VALUE_1);
+
+		userAccountJSONObject = UserAccountTestUtil.addUserAccountJSONObject(
+			systemObjectDefinitionManager, Collections.emptyMap());
+
+		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+			getObjectDefinition1(), userSystemObjectDefinition,
+			objectEntry1.getPrimaryKey(), userAccountJSONObject.getLong("id"),
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		TaxonomyCategory taxonomyCategory =
+			postTaxonomyVocabularyTaxonomyCategory();
+
+		_testFilterObjectEntriesByRelatedSystemObjectEntriesFields(
+			escape(
+				String.format(
+					"%s/taxonomyCategoryIds/any(t:t eq %s)",
+					objectRelationship1.getName(), taxonomyCategory.getId())),
+			getObjectDefinition1());
+
+		objectRelationshipLocalService.deleteObjectRelationship(
+			objectRelationship1);
+
+		// One to many relationship
+
+		objectRelationship1 = addObjectRelationshipAndRelateObjectEntries(
+			userSystemObjectDefinition, getObjectDefinition1(),
+			userAccountJSONObject.getLong("id"), objectEntry1.getPrimaryKey(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		_testFilterObjectEntriesByRelatedSystemObjectEntriesFields(
+			escape(
+				String.format(
+					"%s/taxonomyCategoryIds/any(t:t eq %s)",
+					objectRelationship1.getName(), taxonomyCategory.getId())),
 			getObjectDefinition1());
 	}
 
