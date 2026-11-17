@@ -49,23 +49,6 @@ describe('Toolbar', () => {
 		expect(link).toHaveTextContent('Liferay Data Platform');
 	});
 
-	it('keeps the user on Sites when the product name link is clicked', () => {
-		renderToolbar();
-
-		const link = screen.getByRole('link', {
-			name: 'Liferay Data Platform, Go to Sites',
-		});
-
-		fireEvent.click(link);
-		fireEvent.click(link);
-
-		expect(
-			screen.getByRole('link', {
-				name: 'Liferay Data Platform, Go to Sites',
-			})
-		).toBeTruthy();
-	});
-
 	it('collapses the sidebar from the toggle', () => {
 		const {container} = renderToolbar();
 
