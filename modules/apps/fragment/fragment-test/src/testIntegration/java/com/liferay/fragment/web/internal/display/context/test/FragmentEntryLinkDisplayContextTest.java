@@ -248,17 +248,17 @@ public class FragmentEntryLinkDisplayContextTest {
 			_getFragmentEntryLinkDisplayContext(
 				fragmentEntry.getFragmentEntryId(), "all");
 
-		_assertPreviewURL(
-			draftLayoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
 		_assertNullPreviewURL(
 			_displayPageTemplateFragmentEntryLink,
 			fragmentEntryLinkDisplayContext);
-		_assertPreviewURL(
-			layoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
 		_assertNullPreviewURL(
 			_masterPageFragmentEntryLink, fragmentEntryLinkDisplayContext);
 		_assertPreviewURL(
 			_pageTemplateFragmentEntryLink, fragmentEntryLinkDisplayContext);
+		_assertPreviewURL(
+			draftLayoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
+		_assertPreviewURL(
+			layoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
 		_assertPreviewURL(
 			privateLayoutFragmentEntryLink, fragmentEntryLinkDisplayContext);
 
@@ -386,6 +386,9 @@ public class FragmentEntryLinkDisplayContextTest {
 		Assert.assertNull(searchContainer.getRowChecker());
 
 		_testGetSearchContainer(
+			_layoutFragmentEntryLink2.getGroupId(), "all",
+			_layoutFragmentEntryLink2);
+		_testGetSearchContainer(
 			groupId, "display-page-templates",
 			_displayPageTemplateFragmentEntryLink);
 		_testGetSearchContainer(
@@ -393,9 +396,6 @@ public class FragmentEntryLinkDisplayContextTest {
 		_testGetSearchContainer(
 			groupId, "page-templates", _pageTemplateFragmentEntryLink);
 		_testGetSearchContainer(groupId, "pages", _layoutFragmentEntryLink1);
-		_testGetSearchContainer(
-			_layoutFragmentEntryLink2.getGroupId(), "all",
-			_layoutFragmentEntryLink2);
 
 		searchContainer = _testGetSearchContainer(
 			0, "all", _layoutFragmentEntryLink1, _layoutFragmentEntryLink2,
@@ -470,7 +470,6 @@ public class FragmentEntryLinkDisplayContextTest {
 		String previewURL = ReflectionTestUtil.invoke(
 			fragmentEntryLinkDisplayContext, "getFragmentEntryLinkPreviewURL",
 			new Class<?>[] {FragmentEntryLink.class}, fragmentEntryLink);
-
 
 		Assert.assertFalse(previewURL.contains("p_l_mode"));
 		Assert.assertTrue(
