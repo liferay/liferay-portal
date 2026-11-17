@@ -15,10 +15,16 @@
 			],
 			"config": {
 				"allowNewFragmentEntries": true,
-				"fragmentEntryKeys": [
-					"BASIC_COMPONENT-button",
-					"BASIC_COMPONENT-card",
-					"com.liferay.fragment.internal.renderer.ContentObjectFragmentRenderer"
+				"fragmentEntries": [
+					{
+						"fragmentEntryRendererKey": "BASIC_COMPONENT-button"
+					},
+					{
+						"fragmentEntryRendererKey": "BASIC_COMPONENT-card"
+					},
+					{
+						"fragmentEntryRendererKey": "com.liferay.fragment.internal.renderer.ContentObjectFragmentRenderer"
+					}
 				]
 			},
 			"itemId": "ce501498-f2c9-4bc8-a684-bd82f4f29cd8",

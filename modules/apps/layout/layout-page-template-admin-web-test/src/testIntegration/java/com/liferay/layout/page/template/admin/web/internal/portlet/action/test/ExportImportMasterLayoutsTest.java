@@ -19,6 +19,7 @@ import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.CharPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Repository;
@@ -37,7 +38,6 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -47,8 +47,6 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import java.io.File;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -242,19 +240,6 @@ public class ExportImportMasterLayoutsTest {
 			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
 	}
 
-	private List<String> _removeNonfragmentEntryKeys(
-		List<String> importedFragmentEntryKeys) {
-
-		List<String> filteredFragmentEntryKeys = new ArrayList<>();
-
-		ListUtil.filter(
-			importedFragmentEntryKeys, filteredFragmentEntryKeys,
-			fragmentEntryKey -> !fragmentEntryKey.equals(
-				"lfr-all-fragments-id"));
-
-		return Collections.unmodifiableList(filteredFragmentEntryKeys);
-	}
-
 	private void _validateDropZoneLayoutStructureItem(
 		DropZoneLayoutStructureItem expectedDropZoneLayoutStructureItem,
 		DropZoneLayoutStructureItem actualDropZoneLayoutStructureItem) {
@@ -263,14 +248,14 @@ public class ExportImportMasterLayoutsTest {
 			expectedDropZoneLayoutStructureItem.isAllowNewFragmentEntries(),
 			actualDropZoneLayoutStructureItem.isAllowNewFragmentEntries());
 
+		JSONArray expectedFragmentEntriesJSONArray =
+			expectedDropZoneLayoutStructureItem.getFragmentEntriesJSONArray();
+		JSONArray actualFragmentEntriesJSONArray =
+			actualDropZoneLayoutStructureItem.getFragmentEntriesJSONArray();
+
 		Assert.assertEquals(
-			ListUtil.sort(
-				_removeNonfragmentEntryKeys(
-					expectedDropZoneLayoutStructureItem.
-						getFragmentEntryKeys())),
-			ListUtil.sort(
-				_removeNonfragmentEntryKeys(
-					actualDropZoneLayoutStructureItem.getFragmentEntryKeys())));
+			expectedFragmentEntriesJSONArray.toString(),
+			actualFragmentEntriesJSONArray.toString());
 	}
 
 	@DeleteAfterTestRun

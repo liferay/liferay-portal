@@ -5,13 +5,22 @@
 			],
 			"config": {
 				"allowNewFragmentEntries": true,
-				"fragmentEntryKeys": [
-					"BASIC_COMPONENT-button",
-					"BASIC_COMPONENT-card",
-					"BASIC_COMPONENT",
-					"com.liferay.fragment.internal.renderer.ContentObjectFragmentRenderer",
-					"content-display",
-					"lfr-all-fragments-id"
+				"fragmentEntries": [
+					{
+						"fragmentEntryRendererKey": "BASIC_COMPONENT-button"
+					},
+					{
+						"fragmentEntryRendererKey": "BASIC_COMPONENT-card"
+					},
+					{
+						"fragmentEntryRendererKey": "BASIC_COMPONENT"
+					},
+					{
+						"fragmentEntryRendererKey": "com.liferay.fragment.internal.renderer.ContentObjectFragmentRenderer"
+					},
+					{
+						"fragmentEntryRendererKey": "content-display"
+					}
 				]
 			},
 			"itemId": "DROP-ZONE-UUID",
